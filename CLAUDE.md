@@ -257,25 +257,36 @@ with profile_context("処理名"):  # コンテキスト計測
 ## ディレクトリ構成
 
 ```
-src/<library_name>/           # ライブラリパッケージ
-├── core/                     # コアロジック
-├── utils/                    # ユーティリティ
-├── types.py                  # 型定義
-├── py.typed                  # PEP 561マーカー
-└── docs/                     # ライブラリドキュメント
-    ├── project.md               # プロジェクトファイル（/new-project で作成）
-    ├── library-requirements.md  # LRD（ライブラリ要求定義書）
-    ├── functional-design.md     # 機能設計
-    ├── architecture.md          # アーキテクチャ設計
-    ├── repository-structure.md  # リポジトリ構造定義
-    ├── development-guidelines.md # 開発ガイドライン
-    └── glossary.md              # 用語集
+data/                         # データストレージ
+├── sqlite/                   # SQLite DB（OLTP: トランザクション処理）
+├── duckdb/                   # DuckDB（OLAP: 分析クエリ）
+├── raw/                      # 生データ（Parquet形式）
+│   ├── yfinance/             # yfinance取得データ（stocks/forex/indices）
+│   └── fred/                 # FRED経済指標
+├── processed/                # 加工済みデータ（daily/aggregated）
+└── exports/                  # エクスポート（csv/json）
+
+src/
+├── finance/                  # 共通インフラパッケージ
+│   ├── db/                   # データベースクライアント
+│   │   ├── sqlite_client.py  # SQLiteClient（トランザクション操作）
+│   │   ├── duckdb_client.py  # DuckDBClient（分析クエリ+Parquet）
+│   │   ├── connection.py     # 接続管理
+│   │   └── migrations/       # マイグレーションシステム
+│   ├── utils/                # ユーティリティ
+│   │   └── logging_config.py # ロギング設定
+│   ├── types.py              # 型定義
+│   └── py.typed              # PEP 561マーカー
+└── market_analysis/          # 市場分析パッケージ
+    ├── core/                 # コアロジック
+    ├── utils/                # ユーティリティ
+    └── docs/                 # ライブラリドキュメント
+        └── project.md        # プロジェクトファイル
 
 tests/
-├── unit/                     # 単体テスト
-├── property/                 # プロパティベーステスト
-├── integration/              # 統合テスト
-└── conftest.py               # フィクスチャ
+├── finance/                  # financeパッケージテスト
+│   └── db/unit/              # DBユニットテスト
+└── market_analysis/          # market_analysisテスト
 
 docs/                         # リポジトリ共通ドキュメント（規約等）
 .claude/                      # Claude Code設定
