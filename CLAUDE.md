@@ -1,13 +1,23 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-02
+updated_at: 2026-01-11
 # このプロパティは、Claude Codeが関連するドキュメントの更新を検知するために必要です。消去しないでください。
 ---
 
-# Python 開発テンプレート for Claude Code
+# finance - 金融市場分析・コンテンツ発信支援ライブラリ
 
 **Python 3.12+** | uv | Ruff | pyright | pytest + Hypothesis | pre-commit | GitHub Actions
+
+## プロジェクト概要
+
+金融市場の分析とnote.comでの金融・投資コンテンツ発信を効率化するPythonライブラリ。
+
+### 主要機能
+
+- **市場データ取得・分析**: Yahoo Finance (yfinance) を使用した株価・為替・指標データの取得と分析
+- **チャート・グラフ生成**: 分析結果の可視化と図表作成
+- **記事生成支援**: 分析結果を元に記事下書きを生成
 
 ## クイックリファレンス
 
@@ -112,7 +122,7 @@ raise FileNotFoundError(f"Config not found. Create by: python -m {__package__}.i
 ### ロギング（必須）
 
 ```python
-from project_name.utils.logging_config import get_logger
+from finance.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -163,7 +173,7 @@ def process_data(data: list) -> list:
 ### プロファイリング使用例
 
 ```python
-from project_name.utils.profiling import profile, timeit, profile_context
+from finance.utils.profiling import profile, timeit, profile_context
 
 @profile  # 詳細プロファイリング
 def heavy_function():
