@@ -160,7 +160,22 @@ git worktree add -b <branch-name> <worktree-path> <base-branch>
 git worktree add <worktree-path> <branch-name>
 ```
 
-### 3.3 作成確認
+### 3.3 MCP設定ファイルのコピー
+
+`.mcp.json` は `.gitignore` に含まれているため worktree にコピーされません。
+MCP を使用するために、メインリポジトリから新しい worktree にコピーします。
+
+```bash
+# メインリポジトリのルートパスを取得
+main_repo_path=$(git worktree list | head -1 | awk '{print $1}')
+
+# .mcp.json が存在する場合はコピー
+if [ -f "${main_repo_path}/.mcp.json" ]; then
+    cp "${main_repo_path}/.mcp.json" "<worktree-path>/.mcp.json"
+fi
+```
+
+### 3.4 作成確認
 
 ```bash
 # 作成されたworktreeの確認
@@ -169,6 +184,9 @@ git worktree list
 # 新しいworktreeでの状態確認
 git -C <worktree-path> status
 git -C <worktree-path> log --oneline -1
+
+# .mcp.json がコピーされたか確認
+ls -la <worktree-path>/.mcp.json 2>/dev/null && echo "✓ .mcp.json コピー済み"
 ```
 
 ---
@@ -299,4 +317,5 @@ CLAUDE.md の Git 規則に従います:
 - ステップ 1: 事前チェックが完了している
 - ステップ 2: worktree パスが決定している
 - ステップ 3: worktree が正常に作成されている（`git worktree list` で確認）
+- ステップ 3.3: `.mcp.json` が存在する場合、worktree にコピーされている
 - ステップ 4: 次のステップがユーザーに案内されている
