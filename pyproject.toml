@@ -22,6 +22,7 @@ dependencies = [
     "plotly>=5.18.0",
     # テキスト処理
     "jinja2>=3.1.0",
+    "tenacity>=9.1.2",
 ]
 [project.optional-dependencies]
 dev = [
