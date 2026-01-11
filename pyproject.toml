@@ -8,12 +8,16 @@ dependencies = [
     "structlog>=25.4.0",
     "rich>=13.7.0",
     "filelock>=3.20.1",
-    "urllib3>=2.6.0",
+    "urllib3>=2.6.3",
     # 市場データ取得
     "yfinance>=0.2.0",
+    "fredapi>=0.5.0",
+    # データベース
+    "duckdb>=1.0.0",
     # データ分析・可視化
     "pandas>=2.0.0",
     "numpy>=1.26.0",
+    "pyarrow>=15.0.0",
     "matplotlib>=3.8.0",
     "plotly>=5.18.0",
     # テキスト処理
@@ -95,6 +99,7 @@ ignore = [
     "PLR2004",
     "PLW2901",
     "SIM108",
+    "PLC0415",
 ]
 
 [tool.pyright]
