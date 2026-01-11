@@ -5,7 +5,8 @@
             "Bash(claude doctor)",
             "Bash(grep:*)",
             "Bash(find:*)",
-            "Bash(ls:*)"
+            "Bash(ls:*)",
+            "Bash(gh issue list:*)"
         ],
         "deny": [
             "Bash(rm -rf:*)",
