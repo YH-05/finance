@@ -1,0 +1,278 @@
+---
+title: CLAUDE.md
+created_at: 2025-12-30
+updated_at: 2026-01-02
+# このプロパティは、Claude Codeが関連するドキュメントの更新を検知するために必要です。消去しないでください。
+---
+
+# Python 開発テンプレート for Claude Code
+
+**Python 3.12+** | uv | Ruff | pyright | pytest + Hypothesis | pre-commit | GitHub Actions
+
+## クイックリファレンス
+
+### 必須コマンド
+
+```bash
+# 品質チェック
+make check-all          # 全チェック（format, lint, typecheck, test）
+make format             # コードフォーマット
+make lint               # リント
+make typecheck          # 型チェック
+make test               # テスト実行
+make test-cov           # カバレッジ付きテスト
+
+# 依存関係
+uv add package_name     # 通常パッケージ追加
+uv add --dev pkg        # 開発用パッケージ追加
+uv sync --all-extras    # 全依存関係を同期
+
+# GitHub操作
+/commit-and-pr コマンド  # PR作成（gh pr create使用）
+make issue TITLE="x" BODY="y"           # Issue作成
+```
+
+### Git 規則
+
+-   **ブランチ**: `feature/` | `fix/` | `refactor/` | `docs/` | `test/` | `release/`
+-   **ラベル**: `enhancement` | `bug` | `refactor` | `documentation` | `test`
+
+## 実装規約
+
+### 実装フロー
+
+1. format → lint → typecheck → test
+2. 新機能は TDD 必須
+3. 全コードにログ必須
+4. 重い処理はプロファイル実施
+
+### コーディングスタイル
+
+| 項目         | 規約                            |
+| ------------ | ------------------------------- |
+| 型ヒント     | Python 3.12+ スタイル（PEP 695） |
+| Docstring    | NumPy 形式                      |
+| クラス名     | PascalCase                      |
+| 関数/変数名  | snake_case                      |
+| 定数         | UPPER_SNAKE                     |
+| プライベート | \_prefix                        |
+
+### Docstring（NumPy 形式）
+
+```python
+def process_items(
+    items: list[dict[str, Any]],
+    max_count: int = 100,
+    validate: bool = True,
+) -> list[dict[str, Any]]:
+    """Process a list of items with optional validation.
+
+    Parameters
+    ----------
+    items : list[dict[str, Any]]
+        List of items to process
+    max_count : int, default=100
+        Maximum number of items to process
+    validate : bool, default=True
+        Whether to validate items before processing
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Processed items
+
+    Raises
+    ------
+    ValueError
+        If items is empty when validation is enabled
+    TypeError
+        If items contains non-dict elements
+
+    Examples
+    --------
+    >>> items = [{"id": 1, "name": "test"}]
+    >>> result = process_items(items)
+    >>> len(result)
+    1
+    """
+```
+
+### エラーメッセージ
+
+```python
+# ❌ Bad
+raise ValueError("Invalid input")
+
+# ✅ Good
+raise ValueError(f"Expected positive integer, got {count}")
+raise ValueError(f"Failed to process {source_file}: {e}")
+raise FileNotFoundError(f"Config not found. Create by: python -m {__package__}.init")
+```
+
+### ロギング（必須）
+
+```python
+from project_name.utils.logging_config import get_logger
+
+logger = get_logger(__name__)
+
+def process_data(data: list) -> list:
+    logger.debug("Processing started", item_count=len(data))
+    try:
+        result = transform(data)
+        logger.info("Processing completed", output_count=len(result))
+        return result
+    except Exception as e:
+        logger.error("Processing failed", error=str(e), exc_info=True)
+        raise
+```
+
+### 環境変数
+
+| 変数名      | 説明                              | デフォルト  |
+| ----------- | --------------------------------- | ----------- |
+| LOG_LEVEL   | ログレベル                        | INFO        |
+| LOG_FORMAT  | フォーマット (json/text)          | text        |
+| PROJECT_ENV | 環境 (development/production)     | development |
+
+### アンカーコメント
+
+```python
+# AIDEV-NOTE: 実装の意図や背景の説明
+# AIDEV-TODO: 未完了タスク
+# AIDEV-QUESTION: 確認が必要な疑問点
+```
+
+## template/ 参照パターン
+
+実装前に必ず参照すること。template/ は変更・削除禁止。
+
+| 実装対象         | 参照先                                                   |
+| ---------------- | -------------------------------------------------------- |
+| モジュール概要   | `template/src/template_package/README.md`               |
+| クラス/関数      | `template/src/template_package/core/example.py`         |
+| 型定義           | `template/src/template_package/types.py`                |
+| ユーティリティ   | `template/src/template_package/utils/helpers.py`        |
+| ロギング設定     | `template/src/template_package/utils/logging_config.py` |
+| プロファイリング | `template/src/template_package/utils/profiling.py`      |
+| 単体テスト       | `template/tests/unit/`                                  |
+| プロパティテスト | `template/tests/property/`                              |
+| 統合テスト       | `template/tests/integration/`                           |
+| フィクスチャ     | `template/tests/conftest.py`                            |
+
+### プロファイリング使用例
+
+```python
+from project_name.utils.profiling import profile, timeit, profile_context
+
+@profile  # 詳細プロファイリング
+def heavy_function():
+    ...
+
+@timeit  # 実行時間計測
+def timed_function():
+    ...
+
+with profile_context("処理名"):  # コンテキスト計測
+    ...
+```
+
+## タスク別ガイド参照
+
+| タスク             | 参照先                                                     |
+| ------------------ | ---------------------------------------------------------- |
+| 並行開発環境作成   | `/worktree <branch_name>` コマンド（worktree + ブランチ） |
+| 開発完了クリーンアップ | `/worktree-done <branch_name>` コマンド（PRマージ確認 → 削除） |
+| パッケージ作成     | `/new-package <package_name>` コマンド                      |
+| 開発開始           | `/new-project @src/<library_name>/docs/project.md`（LRD → 設計 → タスク）|
+| Issue管理          | `/issue @src/<library_name>/docs/project.md` コマンド       |
+| テスト作成         | `/write-tests` コマンド または `docs/testing-strategy.md` |
+| ドキュメント作成   | `docs/document-management.md`                             |
+| 図表作成           | `docs/diagram-guidelines.md`                              |
+| コーディング規約   | `docs/coding-standards.md`                                |
+| 開発プロセス       | `docs/development-process.md`                             |
+| コード品質改善     | `/ensure-quality` コマンド（自動修正）                     |
+| リファクタリング   | `/safe-refactor` コマンド                                  |
+| コード分析         | `/analyze` コマンド（分析レポート出力）                    |
+| 改善実装           | `/improve` コマンド（エビデンスベース改善）                |
+| セキュリティ検証   | `/scan` コマンド（検証・スコアリング）                     |
+| デバッグ           | `/troubleshoot` コマンド（体系的デバッグ）                 |
+| タスク管理         | `/task` コマンド（複雑タスク分解・管理）                   |
+| Git操作            | `/commit-and-pr` コマンド                                  |
+| ドキュメントレビュー | `/review-docs` コマンド                                  |
+| 初期化（初回のみ） | `/setup-repository` コマンド                             |
+| コマンド一覧       | `/index` コマンド                                          |
+
+## エビデンスベース開発
+
+### 禁止語と推奨語
+
+| 禁止           | 推奨                       |
+| -------------- | -------------------------- |
+| best, optimal  | measured X, documented Y   |
+| faster, slower | reduces X%, increases Y ms |
+| always, never  | typically, in most cases   |
+| perfect, ideal | meets requirement X        |
+
+### 証拠要件
+
+-   **性能**: "measured Xms" | "reduces X%"
+-   **品質**: "coverage X%" | "complexity Y"
+-   **セキュリティ**: "scan detected X"
+
+## 効率化テクニック
+
+### コミュニケーション記法
+
+```
+→  処理フロー      analyze → fix → test
+|  選択/区切り     option1 | option2
+&  並列/結合       task1 & task2
+»  シーケンス      step1 » step2
+@  参照/場所       @file:line
+```
+
+### 実行パターン
+
+-   **並列**: 依存なし & 競合なし → 複数ファイル読込、独立テスト
+-   **バッチ**: 同種操作 → 一括フォーマット、インポート修正
+-   **逐次**: 依存あり | 状態変更 → DB マイグレ、段階的リファクタ
+
+### エラーリカバリー
+
+-   **リトライ**: max 3 回、指数バックオフ
+-   **フォールバック**: 高速手法 → 確実な手法
+-   **状態復元**: チェックポイント » ロールバック
+
+## ディレクトリ構成
+
+```
+src/<library_name>/           # ライブラリパッケージ
+├── core/                     # コアロジック
+├── utils/                    # ユーティリティ
+├── types.py                  # 型定義
+├── py.typed                  # PEP 561マーカー
+└── docs/                     # ライブラリドキュメント
+    ├── project.md               # プロジェクトファイル（/new-project で作成）
+    ├── library-requirements.md  # LRD（ライブラリ要求定義書）
+    ├── functional-design.md     # 機能設計
+    ├── architecture.md          # アーキテクチャ設計
+    ├── repository-structure.md  # リポジトリ構造定義
+    ├── development-guidelines.md # 開発ガイドライン
+    └── glossary.md              # 用語集
+
+tests/
+├── unit/                     # 単体テスト
+├── property/                 # プロパティベーステスト
+├── integration/              # 統合テスト
+└── conftest.py               # フィクスチャ
+
+docs/                         # リポジトリ共通ドキュメント（規約等）
+.claude/                      # Claude Code設定
+```
+
+## 更新トリガー
+
+-   仕様/依存関係/構造/規約の変更時
+-   同一質問 2 回以上 → FAQ 追加
+-   エラーパターン 2 回以上 → トラブルシューティング追加

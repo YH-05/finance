@@ -1,0 +1,165 @@
+name: 🔧 実装タスク
+description: 機能要望から分解された実装タスク（task-decomposer 自動生成対応）
+title: "[Task]: "
+labels: ["implementation"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        このテンプレートは、機能要望から分解された個別の実装タスク用です。
+        task-decomposer エージェントによって自動生成されることもあります。
+
+        ## ⚠️ タスク完了の原則
+
+        **このタスクの全チェックボックスが完了するまで作業を継続すること**
+
+        - 「時間の都合により別タスクとして実施予定」は禁止
+        - 「実装が複雑すぎるため後回し」は禁止
+        - 未完了タスクを残したまま作業を終了しない
+
+        **タスクスキップが許可される唯一のケース**:
+        - 実装方針の変更により機能自体が不要になった
+        - アーキテクチャ変更により別の実装方法に置き換わった
+
+  - type: input
+    id: parent-issue
+    attributes:
+      label: 親 Issue
+      description: このタスクの元となる機能要望 Issue
+      placeholder: "#123"
+
+  - type: textarea
+    id: task-description
+    attributes:
+      label: タスク説明
+      description: 実装する内容を具体的に説明してください
+      placeholder: |
+        ## 概要
+        [何を実装するか 1-2 文で]
+
+        ## 背景
+        [なぜこのタスクが必要か]
+
+        ## 期待する動作
+        [実装後にどのような動作になるべきか]
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 受け入れ条件
+      description: このタスクが完了したと判断するための条件（測定可能な形式で）
+      placeholder: |
+        - [ ] [具体的な条件1: 〜ができる]
+        - [ ] [具体的な条件2: 〜が正しく動作する]
+        - [ ] ユニットテストが追加されている
+        - [ ] 型チェックが通る (make typecheck)
+        - [ ] make check-all が成功する
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-checklist
+    attributes:
+      label: 実装チェックリスト
+      description: TDD サイクルに基づく実装ステップ
+      placeholder: |
+        ## Phase 1: テスト作成（Red）
+        - [ ] テストファイルを作成: `tests/unit/test_xxx.py`
+        - [ ] 失敗するテストを書く
+        - [ ] テストが失敗することを確認 (`make test`)
+
+        ## Phase 2: 最小実装（Green）
+        - [ ] テストを通す最小限のコードを実装
+        - [ ] 型ヒントを追加
+        - [ ] テストが通ることを確認 (`make test`)
+
+        ## Phase 3: リファクタリング（Refactor）
+        - [ ] コードの重複を除去
+        - [ ] 命名の改善
+        - [ ] NumPy 形式の docstring を追加
+
+        ## Phase 4: 品質確認
+        - [ ] `make format` - コードフォーマット
+        - [ ] `make lint` - リントチェック
+        - [ ] `make typecheck` - 型チェック
+        - [ ] `make test` - テスト実行
+        - [ ] `make check-all` - 全チェック一括実行
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-details
+    attributes:
+      label: 技術的詳細
+      description: 実装方針、変更対象ファイル、考慮事項を記載してください
+      placeholder: |
+        ## 変更対象ファイル
+        - `src/<library>/core/xxx.py`: [新規作成/変更内容]
+        - `tests/unit/test_xxx.py`: [テスト内容]
+
+        ## 実装方針
+        - [採用するパターン/アプローチ]
+        - [技術的な制約や考慮事項]
+
+        ## データフロー
+        1. [入力]
+        2. [処理]
+        3. [出力]
+
+        ## エラーハンドリング
+        - [想定されるエラーと対処法]
+
+        ## 参照すべきテンプレート
+        - `template/src/template_package/core/example.py`
+        - `template/tests/unit/test_example.py`
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 依存関係
+      description: このタスクが依存する、またはブロックする Issue
+      placeholder: |
+        depends_on: #120, #121
+        blocks: #125
+
+  - type: dropdown
+    id: estimated-effort
+    attributes:
+      label: 見積もり工数
+      options:
+        - XS（1時間未満）
+        - S（1-2時間）
+        - M（2-4時間）
+        - L（4-8時間）
+        - XL（8時間以上 → 分割を検討）
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 優先度
+      options:
+        - high（すぐに必要）
+        - medium（次のリリースまでに）
+        - low（将来的に）
+
+  - type: textarea
+    id: retrospective
+    attributes:
+      label: 振り返り（実装完了後に記入）
+      description: 実装完了後、学びや改善点を記録してください
+      placeholder: |
+        ## 実装完了日
+        YYYY-MM-DD
+
+        ## 計画と実績の差分
+        - [計画と異なった点とその理由]
+
+        ## 学んだこと
+        - [技術的な学び]
+        - [プロセス上の改善点]
+
+        ## 次回への改善提案
+        - [より効率的な実装方法]
