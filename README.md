@@ -1,47 +1,53 @@
-# pydev-claude-code: Claude Code 向け Python テンプレート
+# finance - 金融市場分析・コンテンツ発信支援ライブラリ
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/uv-latest-green.svg)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![CI](https://github.com/discus0434/python-template-for-claude-code/actions/workflows/ci.yml/badge.svg)](https://github.com/discus0434/python-template-for-claude-code/actions/workflows/ci.yml)
+[![CI](https://github.com/YH-05/finance/actions/workflows/ci.yml/badge.svg)](https://github.com/YH-05/finance/actions/workflows/ci.yml)
 
-このリポジトリは、[Claude Code](https://www.anthropic.com/claude-code) との協働に最適化された、本番環境に対応可能な Python プロジェクトテンプレートです。適度な型チェック、Claude Code のパフォーマンスを引き出すための包括的なドキュメントやテンプレート、便利なカスタムスラッシュコマンドなどを備えています。
+金融市場の分析と note.com での金融・投資コンテンツ発信を効率化する Python ライブラリです。
+
+## 主要機能
+
+- **市場データ取得・分析**: Yahoo Finance (yfinance) を使用した株価・為替・指標データの取得と分析
+- **チャート・グラフ生成**: 分析結果の可視化と図表作成
+- **記事生成支援**: 分析結果を元に記事下書きを生成
+- **データベースインフラ**: SQLite (OLTP) + DuckDB (OLAP) のデュアルデータベース構成
+
+## パッケージ構成
+
+| パッケージ | 説明 |
+|-----------|------|
+| `finance` | 共通データベースインフラ、ユーティリティ |
+| `market_analysis` | 市場データ取得・分析機能 |
 
 ## 🚀 クイックスタート
 
-1.  GitHub で「Use this template」ボタンをクリックして、新しいリポジトリを作成
-2.  新しいリポジトリをクローン
-3.  セットアップスクリプトを実行
-4.  Claude Code を初回起動して認証
-5.  Claude Code の対話モードで`/setup-repository` コマンドを実行して、プロジェクトを初期化
-
 ```bash
-# 新しいリポジトリをクローン
-git clone https://github.com/yourusername/project-name.git
-cd project-name
+# リポジトリをクローン
+git clone https://github.com/YH-05/finance.git
+cd finance
 
-# ⚠️ 重要: Pythonバージョンを設定（3.12以上）
-uv python pin 3.12  # または 3.13 など
+# Python バージョンを設定（3.12以上）
+uv python pin 3.12
 
 # セットアップ
 make setup
-claude
-
-# プロジェクトの初期化
-claude  # /setup-repositoryを実行
 ```
 
-**⚠️ 重要:** セットアップ前に`uv python pin 3.12`（または `3.13` 等）を実行してください。このプロジェクトは **Python 3.12以上** に対応しています。
+## 使用例
 
-セットアップスクリプトは、以下の処理を自動的に実行します。
+```python
+from finance.db import SQLiteClient, DuckDBClient
 
--   プロジェクト内のすべての `project_name` を、指定したプロジェクト名に置換
--   `uv` を使用して Python の仮想環境を構築（Python 3.12以上）
--   Claude Code をインストール
--   GitHub CLI (`gh`) をインストール（途中でログインを求められることがあります）
--   すべての依存関係をインストール
--   pre-commit フックを設定
--   初期テストを実行
+# SQLite（トランザクション処理）
+with SQLiteClient() as client:
+    client.execute("INSERT INTO assets (symbol, name) VALUES (?, ?)", ("AAPL", "Apple Inc."))
+
+# DuckDB（分析クエリ）
+with DuckDBClient() as client:
+    result = client.query("SELECT * FROM prices_daily WHERE symbol = 'AAPL'")
+```
 
 ## ⚠️ よくある問題とトラブルシューティング
 
@@ -115,38 +121,39 @@ uv run pyright --version
 ## 📁 プロジェクト構造
 
 ```
-project-root/
-├── .claude/                      # Claude Codeの設定ファイル
-│   ├── skills/                   # スキル定義
+finance/
+├── .claude/                      # Claude Code 設定
 │   ├── commands/                 # スラッシュコマンド
+│   ├── skills/                   # スキル定義
 │   └── agents/                   # サブエージェント
-├── docs/                         # 永続ドキュメント（PRD、設計書等）
-├── .github/                      # GitHub Actionsの設定ファイル
-│   ├── workflows/                # CI/CD + ベンチマークのワークフロー
-│   │   ├── ci.yml                # メインCI（テスト、リント、型チェック）
-│   │   └── benchmark.yml         # パフォーマンスベンチマーク
-│   ├── dependabot.yml            # Dependabotの設定
-│   ├── ISSUE_TEMPLATE/           # Issueテンプレート
-│   └── PULL_REQUEST_TEMPLATE.md  # Pull Requestテンプレート
-├── scripts/                      # セットアップ用スクリプト
-├── src/                          # ソースコード
-│   └── <package_name>/           # メインパッケージ（`uv sync` でインストール可能）
-│       ├── __init__.py
-│       ├── py.typed              # PEP 561に準拠した型情報マーカー
-│       ├── types.py              # プロジェクト共通の型定義
+├── data/                         # データストレージ
+│   ├── sqlite/                   # SQLite DB（OLTP）
+│   ├── duckdb/                   # DuckDB（OLAP）
+│   ├── raw/                      # 生データ（Parquet）
+│   │   ├── yfinance/             # yfinance データ
+│   │   └── fred/                 # FRED 経済指標
+│   ├── processed/                # 加工済みデータ
+│   └── exports/                  # エクスポート（CSV/JSON）
+├── src/
+│   ├── finance/                  # 共通インフラパッケージ
+│   │   ├── db/                   # データベースクライアント
+│   │   │   ├── sqlite_client.py  # SQLiteClient
+│   │   │   ├── duckdb_client.py  # DuckDBClient
+│   │   │   └── migrations/       # マイグレーション
+│   │   ├── utils/                # ユーティリティ
+│   │   └── types.py              # 型定義
+│   └── market_analysis/          # 市場分析パッケージ
 │       ├── core/                 # コアロジック
-│       ├── utils/                # ユーティリティ
-│       └── docs/                 # プロジェクト固有ドキュメント
-│           └── project.md        # プロジェクトファイル（/new-project で作成）
-├── tests/                        # テストコード
-│   ├── unit/                     # 単体テスト
-│   ├── property/                 # プロパティベーステスト
-│   ├── integration/              # 結合テスト
-│   └── conftest.py               # pytestの設定
-├── .pre-commit-config.yaml       # pre-commitの設定
-├── pyproject.toml                # 依存関係とツールの設定
-├── README.md                     # プロジェクトの説明
-└── CLAUDE.md                     # Claude Code用ガイド
+│       └── utils/                # ユーティリティ
+├── tests/
+│   ├── finance/                  # finance テスト
+│   │   └── db/unit/              # DB ユニットテスト
+│   └── market_analysis/          # market_analysis テスト
+├── docs/                         # 共通ドキュメント
+├── .github/workflows/            # CI/CD
+├── pyproject.toml                # 依存関係
+├── CLAUDE.md                     # Claude Code ガイド
+└── README.md                     # このファイル
 ```
 
 ## 📚 ドキュメント階層
