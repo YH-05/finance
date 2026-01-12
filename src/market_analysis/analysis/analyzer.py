@@ -7,9 +7,10 @@ for adding technical indicators to market data.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Self, cast
+from typing import TYPE_CHECKING, Self, cast
 
-import pandas as pd
+if TYPE_CHECKING:
+    import pandas as pd
 
 from ..types import AnalysisResult
 from ..utils.logging_config import get_logger
