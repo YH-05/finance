@@ -12,7 +12,7 @@ Examples
 """
 
 # Analysis classes
-from .analysis import Analyzer, IndicatorCalculator
+from .analysis import Analyzer, CorrelationAnalyzer, IndicatorCalculator
 
 # Errors
 from .errors import (
@@ -26,6 +26,9 @@ from .errors import (
     TimeoutError,
     ValidationError,
 )
+
+# Export
+from .export import DataExporter
 
 # Types
 from .types import (
@@ -57,7 +60,10 @@ from .utils import (
 __all__ = [
     # Analysis
     "Analyzer",
+    "CorrelationAnalyzer",
     "IndicatorCalculator",
+    # Export
+    "DataExporter",
     # Ticker Registry
     "PRESET_GROUPS",
     "TickerInfo",
