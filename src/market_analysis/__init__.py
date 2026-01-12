@@ -27,6 +27,9 @@ from .errors import (
     ValidationError,
 )
 
+# Export
+from .export import DataExporter
+
 # Types
 from .types import (
     AgentOutput,
@@ -58,6 +61,8 @@ __all__ = [
     # Analysis
     "Analyzer",
     "IndicatorCalculator",
+    # Export
+    "DataExporter",
     # Ticker Registry
     "PRESET_GROUPS",
     "TickerInfo",
