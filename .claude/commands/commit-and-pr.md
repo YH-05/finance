@@ -88,15 +88,15 @@ PR に付けるラベル：
 5. **PR の作成**
 
     ```bash
-    make pr TITLE="<PR title>" BODY="<PR description>" LABEL="<label>"
+    make pr TITLE="<PRタイトル>" BODY="<PR説明>" LABEL="<label>"
     # または
-    gh pr create --title "<title>" --body "$(cat <<'EOF'
-    ## Summary
+    gh pr create --title "<タイトル>" --body "$(cat <<'EOF'
+    ## 概要
     - <変更点1>
     - <変更点2>
 
-    ## Test plan
-    - [ ] make check-allが成功することを確認
+    ## テストプラン
+    - [ ] make check-all が成功することを確認
     - [ ] 関連するテストが追加されていることを確認
     - [ ] ドキュメントが更新されていることを確認
 
@@ -104,6 +104,8 @@ PR に付けるラベル：
     EOF
     )"
     ```
+
+    **PRタイトルとボディは日本語で記述すること。**
 
 ## 注意事項
 

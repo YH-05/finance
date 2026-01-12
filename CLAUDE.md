@@ -48,6 +48,30 @@ make issue TITLE="x" BODY="y"           # Issue作成
 -   **ブランチ**: `feature/` | `fix/` | `refactor/` | `docs/` | `test/` | `release/`
 -   **ラベル**: `enhancement` | `bug` | `refactor` | `documentation` | `test`
 
+### PR / Issue 規則
+
+-   **言語**: タイトル・本文は**日本語**で記述
+-   **PRテンプレート**:
+    ```markdown
+    ## 概要
+    - <変更点1>
+    - <変更点2>
+
+    ## テストプラン
+    - [ ] make check-all が成功することを確認
+    ```
+-   **Issueテンプレート**:
+    ```markdown
+    ## 概要
+    [機能・問題の概要]
+
+    ## 詳細
+    [詳細な説明]
+
+    ## 受け入れ条件
+    - [ ] [条件1]
+    ```
+
 ## 実装規約
 
 ### 実装フロー
@@ -211,6 +235,7 @@ with profile_context("処理名"):  # コンテキスト計測
 | タスク管理         | `/task` コマンド（複雑タスク分解・管理）                   |
 | Git操作            | `/commit-and-pr` コマンド                                  |
 | PRマージ           | `/merge-pr` コマンド（コンフリクトチェック・CI確認・マージ） |
+| コンフリクト分析   | `/analyze-conflicts` コマンド（詳細分析・問題点・解決策） |
 | PRレビュー         | `/review-pr` コマンド（コード品質・セキュリティ・テスト） |
 | ドキュメントレビュー | `/review-docs` コマンド                                  |
 | 初期化（初回のみ） | `/setup-repository` コマンド                             |

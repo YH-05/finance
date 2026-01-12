@@ -37,6 +37,7 @@ description: SuperClaudeコマンドリファレンス
 | コマンド | 説明 |
 |----------|------|
 | `/analyze` | 多次元コード分析（分析レポート出力） |
+| `/analyze-conflicts` | PRのコンフリクトを詳細分析し、問題点と解決策を提示 |
 | `/commit-and-pr` | 変更のコミットとPR作成 |
 | `/ensure-quality` | コード品質の自動改善（make check-all相当） |
 | `/gemini-search` | Web search using Gemini CLI |
@@ -209,6 +210,7 @@ finance/
 | PR を作成したい | `/commit-and-pr` |
 | PR をマージしたい | `/merge-pr <pr-number>` |
 | PR をレビューしたい | `/review-pr` |
+| PR のコンフリクトを分析したい | `/analyze-conflicts <pr-number>` |
 
 ---
 

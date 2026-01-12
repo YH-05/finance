@@ -231,18 +231,37 @@ prompt: |
 
 ### GitHub Issue 操作
 
+**Issue のタイトルと本文は日本語で記述すること。**
+
 ```bash
-# 新規 Issue 作成
+# 新規 Issue 作成（日本語で記述）
 gh issue create \
-  --title "[タイトル]" \
-  --body "[本文]" \
+  --title "[日本語タイトル]" \
+  --body "[日本語本文]" \
   --label "[ラベル]"
 
 # Issue 更新（Tasklist 追加）
-gh issue edit [番号] --body "[更新本文]"
+gh issue edit [番号] --body "[更新本文（日本語）]"
 
 # ラベル更新
 gh issue edit [番号] --add-label "[ラベル]"
+```
+
+### Issue テンプレート
+
+```markdown
+## 概要
+[機能・問題の概要を日本語で記述]
+
+## 詳細
+[詳細な説明]
+
+## 受け入れ条件
+- [ ] [条件1]
+- [ ] [条件2]
+
+## 備考
+[補足情報があれば記載]
 ```
 
 ### ラベル自動判定

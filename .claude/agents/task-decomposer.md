@@ -103,23 +103,42 @@ color: orange
 
 ### ステップ 7: Issue 操作の実行
 
+**重要: Issue のタイトルと本文は必ず日本語で記述すること。**
+
 以下の gh コマンドを使用:
 
 ```bash
-# 新規 Issue 作成
+# 新規 Issue 作成（日本語で記述）
 gh issue create \
-  --title "[タイトル]" \
-  --body "[本文]" \
+  --title "[日本語タイトル]" \
+  --body "[日本語本文]" \
   --label "[ラベル]"
 
 # Issue 更新
-gh issue edit [番号] --body "[更新本文]"
+gh issue edit [番号] --body "[更新本文（日本語）]"
 
 # ラベル更新
 gh issue edit [番号] --add-label "[ラベル]" --remove-label "[ラベル]"
 
 # Issue クローズ
 gh issue close [番号]
+```
+
+### Issue 本文テンプレート
+
+```markdown
+## 概要
+[機能・タスクの概要]
+
+## 詳細
+[詳細な説明]
+
+## 受け入れ条件
+- [ ] [条件1]
+- [ ] [条件2]
+
+## 備考
+[補足情報]
 ```
 
 ## 同期ルール
