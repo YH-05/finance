@@ -1,0 +1,55 @@
+{
+    "article_id": "",
+    "topic": "",
+    "category": "quant_analysis",
+    "symbols": [],
+    "fred_series": [],
+    "date_range": {
+        "start": "",
+        "end": ""
+    },
+    "backtest_config": {
+        "strategy": "",
+        "initial_capital": 0,
+        "benchmark": ""
+    },
+    "target_audience": "advanced",
+    "tags": [],
+    "status": "research",
+    "created_at": "",
+    "updated_at": "",
+    "human_feedback": {
+        "hf1_topic_approved": false,
+        "hf3_claims_reviewed": false,
+        "hf5_draft_reviewed": false,
+        "hf6_final_approved": false
+    },
+    "workflow": {
+        "data_collection": {
+            "market_data": "pending",
+            "web_search": "pending",
+            "wiki_search": "pending"
+        },
+        "processing": {
+            "sources": "pending",
+            "claims": "pending",
+            "technical_analysis": "pending",
+            "backtest": "pending"
+        },
+        "research": {
+            "analysis": "pending",
+            "fact_checks": "pending",
+            "decisions": "pending",
+            "visualize": "pending"
+        },
+        "writing": {
+            "first_draft": "pending",
+            "critics": "pending",
+            "revised_draft": "pending"
+        },
+        "publishing": {
+            "final_review": "pending",
+            "published": "pending"
+        }
+    }
+}

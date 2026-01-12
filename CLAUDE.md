@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-11
+updated_at: 2026-01-12
 # このプロパティは、Claude Codeが関連するドキュメントの更新を検知するために必要です。消去しないでください。
 ---
 
@@ -215,6 +215,11 @@ with profile_context("処理名"):  # コンテキスト計測
 | ドキュメントレビュー | `/review-docs` コマンド                                  |
 | 初期化（初回のみ） | `/setup-repository` コマンド                             |
 | コマンド一覧       | `/index` コマンド                                          |
+| **金融記事作成**   |                                                            |
+| トピック提案       | `/finance-suggest-topics` コマンド（スコアリング付き提案） |
+| 記事初期化         | `/new-finance-article` コマンド（カテゴリ別テンプレート）  |
+| リサーチ実行       | `/finance-research` コマンド（データ収集→分析→決定）       |
+| 編集・批評         | `/finance-edit` コマンド（初稿→批評→修正）                 |
 
 ## エビデンスベース開発
 
@@ -303,10 +308,22 @@ tests/
 template/                     # テンプレート（参照専用）
 ├── src/template_package/     # パッケージテンプレート
 ├── tests/                    # テストテンプレート
-└── {article_id}-theme-name-en/  # 記事テンプレート
+├── {article_id}-theme-name-en/  # 記事テンプレート
+├── market_report/            # 市場レポートテンプレート
+├── stock_analysis/           # 個別銘柄分析テンプレート
+├── economic_indicators/      # 経済指標解説テンプレート
+├── investment_education/     # 投資教育テンプレート
+└── quant_analysis/           # クオンツ分析テンプレート
+
+articles/                     # 金融記事ワークスペース
+└── {category}_{id}_{slug}/   # 記事フォルダ
+    ├── article-meta.json     # 記事メタデータ・ワークフロー状態
+    ├── 01_research/          # リサーチ成果物
+    ├── 02_edit/              # 編集成果物
+    └── 03_published/         # 公開版
 
 docs/                         # リポジトリ共通ドキュメント（規約等）
-snippets/                     # 再利用コンテンツ
+snippets/                     # 再利用コンテンツ（免責事項等）
 ```
 
 <!-- END: DIRECTORY -->

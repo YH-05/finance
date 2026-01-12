@@ -1,0 +1,28 @@
+{
+    "article_id": "",
+    "critics": {
+        "fact": {
+            "score": 0,
+            "issues": []
+        },
+        "structure": {
+            "score": 0,
+            "issues": []
+        },
+        "compliance": {
+            "score": 0,
+            "issues": [],
+            "required_disclaimers": []
+        },
+        "data_accuracy": {
+            "score": 0,
+            "issues": []
+        },
+        "readability": {
+            "score": 0,
+            "issues": []
+        }
+    },
+    "overall_score": 0,
+    "priority_fixes": []
+}

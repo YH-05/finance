@@ -1,0 +1,18 @@
+{
+    "article_id": "",
+    "topic": "",
+    "category": "market_report",
+    "generated_at": "",
+    "queries": {
+        "wikipedia": [],
+        "web_search": [],
+        "financial_data": {
+            "symbols": [],
+            "fred_series": [],
+            "date_range": {
+                "start": "",
+                "end": ""
+            }
+        }
+    }
+}
