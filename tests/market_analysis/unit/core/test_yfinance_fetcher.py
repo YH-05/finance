@@ -191,18 +191,39 @@ class TestYFinanceFetcher:
         mock_ticker_class: MagicMock,
         fetcher: YFinanceFetcher,
     ) -> None:
-        """Test fetch returning empty DataFrame."""
+        """Test fetch returning empty DataFrame for valid symbol with no data."""
         mock_ticker = MagicMock()
         mock_ticker.history.return_value = pd.DataFrame()
-        mock_ticker.info = {}
+        # Valid symbol (has regularMarketPrice) but no historical data for period
+        mock_ticker.info = {"regularMarketPrice": 150.0}
         mock_ticker_class.return_value = mock_ticker
 
-        options = FetchOptions(symbols=["INVALID"])
+        options = FetchOptions(symbols=["AAPL"])
 
         results = fetcher.fetch(options)
 
         assert len(results) == 1
         assert results[0].is_empty
+
+    @patch("market_analysis.core.yfinance_fetcher.yf.Ticker")
+    def test_fetch_invalid_symbol_raises_error(
+        self,
+        mock_ticker_class: MagicMock,
+        fetcher: YFinanceFetcher,
+    ) -> None:
+        """Test fetch raises DataFetchError for invalid/delisted symbol."""
+        mock_ticker = MagicMock()
+        mock_ticker.history.return_value = pd.DataFrame()
+        # Invalid symbol: no regularMarketPrice indicates delisted/invalid
+        mock_ticker.info = {}
+        mock_ticker_class.return_value = mock_ticker
+
+        options = FetchOptions(symbols=["INVALID"])
+
+        with pytest.raises(DataFetchError) as exc_info:
+            fetcher.fetch(options)
+
+        assert "Invalid or delisted symbol" in str(exc_info.value)
 
     @patch("market_analysis.core.yfinance_fetcher.yf.Ticker")
     def test_fetch_with_cache_miss(

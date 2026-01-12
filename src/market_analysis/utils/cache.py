@@ -22,12 +22,26 @@ from .logging_config import get_logger
 
 logger = get_logger(__name__)
 
-# Default cache configuration
+# Default cache database path (relative to project root)
+# cache.py is at src/market_analysis/utils/cache.py
+DEFAULT_CACHE_DB_PATH = (
+    Path(__file__).parent.parent.parent.parent / "data" / "cache" / "market_data.db"
+)
+
+# Default cache configuration (in-memory by default for backwards compatibility)
 DEFAULT_CACHE_CONFIG = CacheConfig(
     enabled=True,
     ttl_seconds=3600,  # 1 hour
     max_entries=1000,
     db_path=None,  # In-memory by default
+)
+
+# Persistent cache configuration with file-based storage
+PERSISTENT_CACHE_CONFIG = CacheConfig(
+    enabled=True,
+    ttl_seconds=86400,  # 24 hours
+    max_entries=10000,
+    db_path=str(DEFAULT_CACHE_DB_PATH),
 )
 
 
@@ -559,9 +573,64 @@ def reset_cache() -> None:
             logger.info("Global cache reset")
 
 
+def create_persistent_cache(
+    db_path: str | Path | None = None,
+    ttl_seconds: int = 86400,
+    max_entries: int = 10000,
+) -> SQLiteCache:
+    """Create a persistent file-based cache.
+
+    This is a convenience function for creating a cache with file-based
+    storage for persistent data retention across sessions.
+
+    Parameters
+    ----------
+    db_path : str | Path | None
+        Path to the SQLite database file.
+        If None, uses the default path: data/cache/market_data.db
+    ttl_seconds : int
+        Time-to-live for cache entries in seconds (default: 86400 = 24 hours)
+    max_entries : int
+        Maximum number of cache entries (default: 10000)
+
+    Returns
+    -------
+    SQLiteCache
+        A configured cache instance with file-based storage
+
+    Examples
+    --------
+    >>> cache = create_persistent_cache()
+    >>> cache.set("AAPL_data", df)
+
+    >>> cache = create_persistent_cache(db_path="/custom/path/cache.db")
+    """
+    if db_path is None:
+        db_path = DEFAULT_CACHE_DB_PATH
+
+    config = CacheConfig(
+        enabled=True,
+        ttl_seconds=ttl_seconds,
+        max_entries=max_entries,
+        db_path=str(db_path),
+    )
+
+    logger.info(
+        "Creating persistent cache",
+        db_path=str(db_path),
+        ttl_seconds=ttl_seconds,
+        max_entries=max_entries,
+    )
+
+    return SQLiteCache(config)
+
+
 __all__ = [
     "DEFAULT_CACHE_CONFIG",
+    "DEFAULT_CACHE_DB_PATH",
+    "PERSISTENT_CACHE_CONFIG",
     "SQLiteCache",
+    "create_persistent_cache",
     "generate_cache_key",
     "get_cache",
     "reset_cache",

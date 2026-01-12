@@ -1,6 +1,7 @@
 """Tests for market_analysis.utils.cache module."""
 
 import time
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -175,3 +176,58 @@ class TestGlobalCache:
 
         assert cache1 is not cache2
         assert cache2.get("key") is None
+
+
+class TestPersistentCache:
+    """Tests for persistent cache functionality."""
+
+    def test_create_persistent_cache_default_path(self, tmp_path: Path) -> None:
+        """Test create_persistent_cache with default path creates cache."""
+        from market_analysis.utils.cache import create_persistent_cache
+
+        # Use tmp_path to avoid creating files in project
+        cache = create_persistent_cache(db_path=tmp_path / "test_cache.db")
+
+        cache.set("key1", "value1")
+        assert cache.get("key1") == "value1"
+        cache.close()
+
+    def test_create_persistent_cache_custom_ttl(self, tmp_path: Path) -> None:
+        """Test create_persistent_cache with custom TTL."""
+        from market_analysis.utils.cache import create_persistent_cache
+
+        cache = create_persistent_cache(
+            db_path=tmp_path / "test_cache.db",
+            ttl_seconds=7200,
+        )
+
+        assert cache.config.ttl_seconds == 7200
+        cache.close()
+
+    def test_create_persistent_cache_creates_directory(self, tmp_path: Path) -> None:
+        """Test create_persistent_cache creates parent directory."""
+        from market_analysis.utils.cache import create_persistent_cache
+
+        cache_path = tmp_path / "subdir" / "nested" / "cache.db"
+        cache = create_persistent_cache(db_path=cache_path)
+
+        cache.set("key", "value")
+        assert cache_path.parent.exists()
+        cache.close()
+
+    def test_persistent_cache_config(self) -> None:
+        """Test PERSISTENT_CACHE_CONFIG has correct values."""
+        from market_analysis.utils.cache import PERSISTENT_CACHE_CONFIG
+
+        assert PERSISTENT_CACHE_CONFIG.enabled is True
+        assert PERSISTENT_CACHE_CONFIG.ttl_seconds == 86400  # 24 hours
+        assert PERSISTENT_CACHE_CONFIG.max_entries == 10000
+        assert PERSISTENT_CACHE_CONFIG.db_path is not None
+
+    def test_default_cache_db_path(self) -> None:
+        """Test DEFAULT_CACHE_DB_PATH is set correctly."""
+        from market_analysis.utils.cache import DEFAULT_CACHE_DB_PATH
+
+        assert DEFAULT_CACHE_DB_PATH.name == "market_data.db"
+        assert "data" in DEFAULT_CACHE_DB_PATH.parts
+        assert "cache" in DEFAULT_CACHE_DB_PATH.parts

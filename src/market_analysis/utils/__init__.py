@@ -2,7 +2,10 @@
 
 from .cache import (
     DEFAULT_CACHE_CONFIG,
+    DEFAULT_CACHE_DB_PATH,
+    PERSISTENT_CACHE_CONFIG,
     SQLiteCache,
+    create_persistent_cache,
     generate_cache_key,
     get_cache,
     reset_cache,
@@ -17,6 +20,11 @@ from .retry import (
     retry_with_fallback,
     with_retry,
 )
+from .ticker_registry import (
+    TickerInfo,
+    TickerRegistry,
+    get_ticker_registry,
+)
 from .validators import (
     DATE_FORMATS,
     SYMBOL_PATTERN,
@@ -27,16 +35,22 @@ from .validators import (
 __all__ = [
     "DATE_FORMATS",
     "DEFAULT_CACHE_CONFIG",
+    "DEFAULT_CACHE_DB_PATH",
     "DEFAULT_RETRY_CONFIG",
+    "PERSISTENT_CACHE_CONFIG",
     "RETRYABLE_EXCEPTIONS",
     "SYMBOL_PATTERN",
     "RetryableOperation",
     "SQLiteCache",
+    "TickerInfo",
+    "TickerRegistry",
     "Validator",
+    "create_persistent_cache",
     "create_retry_decorator",
     "generate_cache_key",
     "get_cache",
     "get_logger",
+    "get_ticker_registry",
     "log_context",
     "reset_cache",
     "retry_on_rate_limit",
