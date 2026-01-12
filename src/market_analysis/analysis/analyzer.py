@@ -7,9 +7,10 @@ for adding technical indicators to market data.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Self, cast
+from typing import TYPE_CHECKING, Self, cast
 
-import pandas as pd
+if TYPE_CHECKING:
+    import pandas as pd
 
 from ..types import AnalysisResult
 from ..utils.logging_config import get_logger
@@ -128,7 +129,7 @@ class Analyzer:
 
     def _get_prices(self) -> pd.Series:
         """Get the price series for calculations."""
-        return cast(pd.Series, self._data[self._price_column])
+        return cast("pd.Series", self._data[self._price_column])
 
     def add_sma(self, window: int, column_name: str | None = None) -> Self:
         """Add Simple Moving Average indicator.

@@ -599,7 +599,7 @@ class FREDFetcher(BaseDataFetcher):
 
 
 __all__ = [
-    "FREDFetcher",
     "FRED_API_KEY_ENV",
     "FRED_SERIES_PATTERN",
+    "FREDFetcher",
 ]

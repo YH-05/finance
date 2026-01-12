@@ -377,6 +377,6 @@ class BaseDataFetcher(ABC):
 
 
 __all__ = [
-    "BaseDataFetcher",
     "STANDARD_COLUMNS",
+    "BaseDataFetcher",
 ]
