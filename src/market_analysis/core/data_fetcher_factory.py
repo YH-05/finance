@@ -4,6 +4,7 @@ This module provides a factory pattern implementation for creating
 data fetcher instances based on the specified data source.
 """
 
+from types import MappingProxyType
 from typing import Any
 
 from ..types import DataSource
@@ -14,11 +15,13 @@ from .yfinance_fetcher import YFinanceFetcher
 
 logger = get_logger(__name__, module="data_fetcher_factory")
 
-# Mapping of source names to fetcher classes
-_FETCHER_REGISTRY: dict[str, type[BaseDataFetcher]] = {
-    DataSource.YFINANCE.value: YFinanceFetcher,
-    DataSource.FRED.value: FREDFetcher,
-}
+# Immutable mapping of source names to fetcher classes
+_FETCHER_REGISTRY: MappingProxyType[str, type[BaseDataFetcher]] = MappingProxyType(
+    {
+        DataSource.YFINANCE.value: YFinanceFetcher,
+        DataSource.FRED.value: FREDFetcher,
+    }
+)
 
 
 class DataFetcherFactory:
@@ -89,7 +92,7 @@ class DataFetcherFactory:
                 supported_sources=supported,
             )
             raise ValueError(
-                f"Unknown data source: '{source}'. " f"Supported sources: {supported}"
+                f"Unknown data source: '{source}'. Supported sources: {supported}"
             )
 
         fetcher = fetcher_class(**kwargs)

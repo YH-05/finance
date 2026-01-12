@@ -1,20 +1,35 @@
 """market_analysis package.
 
-A Python library for market data fetching, analysis, and visualization.
+金融市場データの取得・分析・可視化を行う Python ライブラリ。
+
+Public API
+----------
+MarketData
+    市場データ取得の統合インターフェース
+Analysis
+    テクニカル分析（メソッドチェーン対応）
+__version__
+    パッケージバージョン
 
 Examples
 --------
->>> from market_analysis import Analyzer, TickerRegistry
->>> registry = TickerRegistry()
->>> mag7 = registry.get_group("MAGNIFICENT_7")
->>> print(mag7)
-['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA']
+>>> from market_analysis import MarketData, Analysis
+>>> data = MarketData()
+>>> stock_df = data.fetch_stock("AAPL", start="2024-01-01")
+>>> analysis = Analysis(stock_df)
+>>> result = analysis.add_sma(20).add_returns().result()
 """
 
-# Analysis classes
+# =============================================================================
+# Public API - メインの公開インターフェース
+# Analysis Classes - 内部分析クラス（上級ユーザー向け）
+# =============================================================================
 from .analysis import Analyzer, CorrelationAnalyzer, IndicatorCalculator
+from .api import Analysis, MarketData
 
-# Errors
+# =============================================================================
+# Errors - 例外クラス
+# =============================================================================
 from .errors import (
     AnalysisError,
     CacheError,
@@ -27,10 +42,14 @@ from .errors import (
     ValidationError,
 )
 
-# Export
+# =============================================================================
+# Export - データエクスポート
+# =============================================================================
 from .export import DataExporter
 
-# Types
+# =============================================================================
+# Types - 型定義
+# =============================================================================
 from .types import (
     AgentOutput,
     AgentOutputMetadata,
@@ -48,7 +67,9 @@ from .types import (
     RetryConfig,
 )
 
-# Utilities
+# =============================================================================
+# Utilities - ユーティリティ
+# =============================================================================
 from .utils import (
     PRESET_GROUPS,
     TickerInfo,
@@ -57,19 +78,20 @@ from .utils import (
     get_ticker_registry,
 )
 
+# =============================================================================
+# __all__ - 公開シンボル定義
+# =============================================================================
 __all__ = [
-    # Analysis
+    # --- Public API (主要インターフェース) ---
+    "MarketData",
+    "Analysis",
+    # --- Analysis (内部クラス) ---
     "Analyzer",
     "CorrelationAnalyzer",
     "IndicatorCalculator",
-    # Export
+    # --- Export ---
     "DataExporter",
-    # Ticker Registry
-    "PRESET_GROUPS",
-    "TickerInfo",
-    "TickerRegistry",
-    "get_ticker_registry",
-    # Types
+    # --- Types ---
     "AgentOutput",
     "AgentOutputMetadata",
     "AnalysisOptions",
@@ -84,7 +106,7 @@ __all__ = [
     "Interval",
     "MarketDataResult",
     "RetryConfig",
-    # Errors
+    # --- Errors ---
     "AnalysisError",
     "CacheError",
     "DataFetchError",
@@ -94,8 +116,12 @@ __all__ = [
     "RateLimitError",
     "TimeoutError",
     "ValidationError",
-    # Utilities
+    # --- Utilities ---
+    "PRESET_GROUPS",
+    "TickerInfo",
+    "TickerRegistry",
     "get_logger",
+    "get_ticker_registry",
 ]
 
 __version__ = "0.1.0"
