@@ -71,7 +71,7 @@ class TestRetryConfig:
 
         config = RetryConfig()
         with pytest.raises(FrozenInstanceError):
-            config.max_attempts = 5  # type: ignore[misc]
+            config.max_attempts = 5
 
 
 class TestCacheConfig:

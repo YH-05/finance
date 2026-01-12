@@ -273,7 +273,7 @@ class Validator:
 
     @staticmethod
     def validate_positive_int(
-        value: int,
+        value: object,
         field_name: str = "value",
         min_value: int = 1,
         max_value: int | None = None,
@@ -282,8 +282,8 @@ class Validator:
 
         Parameters
         ----------
-        value : int
-            The value to validate
+        value : object
+            The value to validate (will be type-checked at runtime)
         field_name : str
             Name of the field for error messages
         min_value : int
@@ -343,7 +343,7 @@ class Validator:
 
     @staticmethod
     def validate_positive_float(
-        value: float,
+        value: object,
         field_name: str = "value",
         min_value: float = 0.0,
         max_value: float | None = None,
@@ -353,8 +353,8 @@ class Validator:
 
         Parameters
         ----------
-        value : float
-            The value to validate
+        value : object
+            The value to validate (will be type-checked at runtime)
         field_name : str
             Name of the field for error messages
         min_value : float
