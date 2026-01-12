@@ -18,6 +18,39 @@ logger = get_logger(__name__, module="analysis_api")
 type CorrelationMethod = Literal["pearson", "spearman", "kendall"]
 
 
+def _find_column(df: pd.DataFrame, col_name: str, operation: str) -> pd.Series:
+    """Find column in DataFrame (case-insensitive).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to search in
+    col_name : str
+        Column name to find
+    operation : str
+        Operation name for error message
+
+    Returns
+    -------
+    pd.Series
+        The found column
+
+    Raises
+    ------
+    AnalysisError
+        If column is not found
+    """
+    col_lower = col_name.lower()
+    for c in df.columns:
+        if c.lower() == col_lower:
+            return cast(pd.Series, df[c])
+    raise AnalysisError(
+        f"Column '{col_name}' not found in DataFrame",
+        operation=operation,
+        code=ErrorCode.INVALID_PARAMETER,
+    )
+
+
 class Analysis:
     """Technical analysis class with method chaining support.
 
@@ -470,20 +503,8 @@ class Analysis:
             )
 
         try:
-            # Find the column (case-insensitive)
-            def get_column(df: pd.DataFrame, col_name: str) -> pd.Series:
-                col_lower = col_name.lower()
-                for c in df.columns:
-                    if c.lower() == col_lower:
-                        return cast(pd.Series, df[c])
-                raise AnalysisError(
-                    f"Column '{col_name}' not found in DataFrame",
-                    operation="rolling_correlation",
-                    code=ErrorCode.INVALID_PARAMETER,
-                )
-
-            series1 = get_column(df1, column)
-            series2 = get_column(df2, column)
+            series1 = _find_column(df1, column, "rolling_correlation")
+            series2 = _find_column(df2, column, "rolling_correlation")
 
             # Align series by index
             aligned = pd.concat([series1, series2], axis=1).dropna()
@@ -564,20 +585,8 @@ class Analysis:
         logger.info("Calculating beta", column=column)
 
         try:
-            # Find the column (case-insensitive)
-            def get_column(df: pd.DataFrame, col_name: str) -> pd.Series:
-                col_lower = col_name.lower()
-                for c in df.columns:
-                    if c.lower() == col_lower:
-                        return cast(pd.Series, df[c])
-                raise AnalysisError(
-                    f"Column '{col_name}' not found in DataFrame",
-                    operation="beta",
-                    code=ErrorCode.INVALID_PARAMETER,
-                )
-
-            stock_prices = get_column(stock, column)
-            benchmark_prices = get_column(benchmark, column)
+            stock_prices = _find_column(stock, column, "beta")
+            benchmark_prices = _find_column(benchmark, column, "beta")
 
             # Calculate returns
             stock_returns = stock_prices.pct_change().dropna()

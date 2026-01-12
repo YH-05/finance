@@ -146,7 +146,13 @@ class MarketData:
                 code=ErrorCode.INVALID_PARAMETER,
             ) from None
 
-    def _validate_symbol(self, symbol: str, field_name: str = "symbol") -> str:
+    def _validate_symbol(
+        self,
+        symbol: str,
+        field_name: str = "symbol",
+        *,
+        uppercase: bool = True,
+    ) -> str:
         """Validate and normalize symbol.
 
         Parameters
@@ -155,6 +161,9 @@ class MarketData:
             Symbol to validate
         field_name : str
             Field name for error messages
+        uppercase : bool, default=True
+            Whether to convert symbol to uppercase.
+            Set to False for symbols with special suffixes (e.g., "GC=F").
 
         Returns
         -------
@@ -175,7 +184,8 @@ class MarketData:
                 code=ErrorCode.INVALID_PARAMETER,
             )
 
-        return symbol.strip().upper()
+        cleaned = symbol.strip()
+        return cleaned.upper() if uppercase else cleaned
 
     def fetch_stock(
         self,
@@ -467,15 +477,7 @@ class MarketData:
         """
         # For commodities, we pass the symbol as-is since they often have
         # special suffixes like =F for futures
-        symbol_clean = symbol.strip()
-        if not symbol_clean:
-            logger.error("Empty symbol provided", field="symbol")
-            raise ValidationError(
-                "symbol cannot be empty",
-                field="symbol",
-                value=str(symbol),
-                code=ErrorCode.INVALID_PARAMETER,
-            )
+        symbol_clean = self._validate_symbol(symbol, uppercase=False)
 
         start_date = self._parse_date(start, default_offset_days=DEFAULT_LOOKBACK_DAYS)
         end_date = self._parse_date(end) or datetime.now()
