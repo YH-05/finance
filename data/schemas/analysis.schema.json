@@ -1,0 +1,232 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Analysis Schema",
+    "description": "論点整理結果と2段階リサーチ制御のスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "iteration", "analysis_date", "issues", "additional_queries", "recommendation", "summary"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "research_phase": {
+            "type": "string",
+            "enum": ["shallow", "deep"],
+            "description": "リサーチフェーズ（shallow: 浅い調査, deep: 深い調査）"
+        },
+        "depth_level": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2,
+            "description": "調査深度レベル（1: 初回調査, 2: 詳細調査）"
+        },
+        "iteration": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "反復回数（0: 初回, 1-2: 追加リサーチ）"
+        },
+        "analysis_date": {
+            "type": "string",
+            "format": "date",
+            "description": "分析実行日（YYYY-MM-DD）"
+        },
+        "issues": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["issue_id", "type", "description", "related_claims", "priority"],
+                "properties": {
+                    "issue_id": {
+                        "type": "string",
+                        "pattern": "^I[0-9]{3}$",
+                        "description": "問題の一意識別子（例: I001）"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["missing_info", "contradiction", "ambiguity", "unverified", "resolved", "partially_resolved"],
+                        "description": "問題のタイプ（resolved/partially_resolved は2段階リサーチ後の状態）"
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "問題の詳細説明"
+                    },
+                    "related_claims": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^C[0-9]{3}$"
+                        },
+                        "description": "関連する主張のID"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "enum": ["high", "medium", "low", "resolved"],
+                        "description": "優先度（resolved: 解決済み問題）"
+                    }
+                }
+            },
+            "description": "検出された問題リスト"
+        },
+        "information_gaps": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["gap_id", "description", "importance", "suggested_approach"],
+                "properties": {
+                    "gap_id": {
+                        "type": "string",
+                        "pattern": "^G[0-9]{3}$",
+                        "description": "情報ギャップの一意識別子（例: G001）"
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "特定されていない重要情報の説明"
+                    },
+                    "importance": {
+                        "type": "string",
+                        "enum": ["critical", "high", "medium", "low", "resolved"],
+                        "description": "重要度（resolved: 解決済みギャップ）"
+                    },
+                    "suggested_approach": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "調査方法の提案"
+                    }
+                }
+            },
+            "description": "情報ギャップのリスト"
+        },
+        "optimized_queries": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["query_id", "query", "purpose", "expected_insight"],
+                "properties": {
+                    "query_id": {
+                        "type": "string",
+                        "pattern": "^OQ[0-9]{3}$",
+                        "description": "最適化クエリの一意識別子（例: OQ001）"
+                    },
+                    "query": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "最適化された検索クエリ"
+                    },
+                    "purpose": {
+                        "type": "string",
+                        "enum": ["specific", "exploratory", "verification"],
+                        "description": "クエリの目的"
+                    },
+                    "expected_insight": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "期待される洞察"
+                    }
+                }
+            },
+            "description": "最適化されたクエリのリスト"
+        },
+        "additional_queries": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["query_id", "query", "target_sources", "reason"],
+                "properties": {
+                    "query_id": {
+                        "type": "string",
+                        "pattern": "^AQ[0-9]{3}$",
+                        "description": "追加クエリの一意識別子（例: AQ001）"
+                    },
+                    "query": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "追加検索クエリ"
+                    },
+                    "target_sources": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": ["web", "wikipedia", "reddit"]
+                        },
+                        "description": "検索対象の情報源"
+                    },
+                    "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "追加リサーチの理由"
+                    }
+                }
+            },
+            "description": "追加リサーチのためのクエリリスト"
+        },
+        "recommendation": {
+            "type": "object",
+            "required": ["needs_additional_research", "reason", "estimated_queries"],
+            "properties": {
+                "next_phase": {
+                    "type": "string",
+                    "enum": ["shallow", "deep", "complete"],
+                    "description": "次のフェーズ（shallow: 浅い調査, deep: 深い調査, complete: 完了）"
+                },
+                "needs_additional_research": {
+                    "type": "boolean",
+                    "description": "追加リサーチが必要かどうか"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "推奨理由"
+                },
+                "estimated_queries": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "追加クエリの推定数"
+                }
+            },
+            "description": "追加リサーチの推奨事項"
+        },
+        "summary": {
+            "type": "object",
+            "required": ["total_issues", "high_priority", "medium_priority", "low_priority", "additional_queries_generated"],
+            "properties": {
+                "total_issues": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "問題の総数"
+                },
+                "high_priority": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "高優先度問題の数"
+                },
+                "medium_priority": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "中優先度問題の数"
+                },
+                "low_priority": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "低優先度問題の数"
+                },
+                "information_gaps_found": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "発見された情報ギャップの数"
+                },
+                "optimized_queries_generated": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "生成された最適化クエリの数"
+                },
+                "additional_queries_generated": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "生成された追加クエリの数"
+                }
+            },
+            "description": "分析結果のサマリー"
+        }
+    }
+}

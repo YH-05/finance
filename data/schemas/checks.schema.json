@@ -1,0 +1,62 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Checks Schema",
+    "description": "記事品質チェックのスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "checks"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "checks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["check_id", "target_claim_id", "issue", "action"],
+                "properties": {
+                    "check_id": {
+                        "type": "string",
+                        "pattern": "^K[0-9]{3}$",
+                        "description": "チェックの一意識別子（例: K001）"
+                    },
+                    "target_claim_id": {
+                        "type": ["string", "null"],
+                        "pattern": "^C[0-9]{3}$",
+                        "description": "対象となる主張のID（全体的なチェックの場合はnull）"
+                    },
+                    "issue": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "発見された問題点"
+                    },
+                    "action": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "推奨される対応内容"
+                    }
+                }
+            },
+            "description": "品質チェック項目のリスト"
+        },
+        "statistics": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "チェック項目の総数"
+                },
+                "by_severity": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "description": "深刻度ごとの数（将来の拡張用）"
+                }
+            },
+            "description": "統計情報"
+        }
+    }
+}

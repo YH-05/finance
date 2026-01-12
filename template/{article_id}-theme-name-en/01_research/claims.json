@@ -1,0 +1,11 @@
+{
+    "article_id": "unsolved_001_20260101",
+    "claims": [
+        {
+            "claim_id": "C001",
+            "text": "都市伝説Xは1990年代に拡散した可能性が高い",
+            "source_ids": ["S001", "S002"],
+            "role": "main"
+        }
+    ]
+}

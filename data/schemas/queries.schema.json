@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Queries Schema",
+    "description": "リサーチクエリのスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "topic", "category", "generated_at", "queries"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "topic": {
+            "type": "string",
+            "minLength": 1,
+            "description": "リサーチ対象のトピック"
+        },
+        "category": {
+            "type": "string",
+            "enum": ["unsolved", "urban", "unidentified", "history"],
+            "description": "記事のカテゴリ"
+        },
+        "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "クエリ生成日時（ISO 8601形式）"
+        },
+        "queries": {
+            "type": "object",
+            "required": ["wikipedia", "web_search"],
+            "properties": {
+                "wikipedia": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["query_id", "query", "lang", "purpose"],
+                        "properties": {
+                            "query_id": {
+                                "type": "string",
+                                "pattern": "^Q[0-9]{3}$",
+                                "description": "クエリの一意識別子（例: Q001）"
+                            },
+                            "query": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "検索クエリ"
+                            },
+                            "lang": {
+                                "type": "string",
+                                "enum": ["ja", "en"],
+                                "description": "検索言語"
+                            },
+                            "purpose": {
+                                "type": "string",
+                                "enum": ["main", "related"],
+                                "description": "クエリの目的"
+                            }
+                        }
+                    },
+                    "description": "Wikipediaクエリのリスト"
+                },
+                "web_search": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["query_id", "query", "lang", "focus"],
+                        "properties": {
+                            "query_id": {
+                                "type": "string",
+                                "pattern": "^Q[0-9]{3}$",
+                                "description": "クエリの一意識別子（例: Q010）"
+                            },
+                            "query": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "検索クエリ"
+                            },
+                            "lang": {
+                                "type": "string",
+                                "enum": ["ja", "en"],
+                                "description": "検索言語"
+                            },
+                            "focus": {
+                                "type": "string",
+                                "enum": ["basic", "detail", "recent", "person", "location"],
+                                "description": "検索の焦点"
+                            }
+                        }
+                    },
+                    "description": "Web検索クエリのリスト"
+                }
+            },
+            "description": "クエリ群"
+        }
+    }
+}

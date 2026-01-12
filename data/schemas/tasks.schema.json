@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tasks.schema.json",
+  "title": "TaskList",
+  "description": "計画書から生成されたタスクリスト（GitHub連携用）",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "description": "元の計画書のID（ファイル名から拡張子を除いたもの）"
+    },
+    "plan_path": {
+      "type": "string",
+      "description": "元の計画書のファイルパス"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "GitHub Project 名"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "タスクリスト作成日時"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "タスクの配列",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "description": "タスクID（例: T001）",
+            "pattern": "^T[0-9]{3}$"
+          },
+          "title": {
+            "type": "string",
+            "description": "タスクのタイトル（GitHub Issue タイトルに使用）",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "description": {
+            "type": "string",
+            "description": "タスクの詳細説明（GitHub Issue 本文に使用）"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["todo", "in_progress", "done"],
+            "default": "todo",
+            "description": "タスクのステータス（GitHub Project のステータス列に対応）"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "優先度（priority:* ラベルに対応）"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["feature", "bug", "refactor", "docs", "test"],
+            "description": "タスク種別（type:* ラベルに対応）"
+          },
+          "phase": {
+            "type": "string",
+            "enum": ["research", "edit", "publish", "infra"],
+            "description": "フェーズ（phase:* ラベルに対応）"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "追加の GitHub Issue ラベル"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^T[0-9]{3}$"
+            },
+            "description": "依存するタスクID"
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "完了条件のリスト"
+          },
+          "github_issue_number": {
+            "type": ["integer", "null"],
+            "description": "作成された GitHub Issue 番号（作成後に自動設定）"
+          },
+          "github_issue_url": {
+            "type": ["string", "null"],
+            "format": "uri",
+            "description": "作成された GitHub Issue の URL"
+          }
+        },
+        "required": ["task_id", "title", "status"],
+        "additionalProperties": false
+      }
+    },
+    "github_project_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "GitHub Project の URL"
+    },
+    "statistics": {
+      "type": "object",
+      "description": "タスクの統計情報",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "総タスク数"
+        },
+        "by_status": {
+          "type": "object",
+          "properties": {
+            "todo": { "type": "integer" },
+            "in_progress": { "type": "integer" },
+            "done": { "type": "integer" }
+          }
+        },
+        "by_priority": {
+          "type": "object",
+          "properties": {
+            "high": { "type": "integer" },
+            "medium": { "type": "integer" },
+            "low": { "type": "integer" }
+          }
+        },
+        "issues_created": {
+          "type": "integer",
+          "description": "作成済み Issue 数"
+        },
+        "issues_failed": {
+          "type": "integer",
+          "description": "作成失敗 Issue 数"
+        }
+      }
+    }
+  },
+  "required": ["plan_id", "project_name", "tasks"],
+  "additionalProperties": false
+}

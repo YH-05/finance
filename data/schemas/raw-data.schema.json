@@ -1,0 +1,440 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Raw Data Schema",
+    "description": "収集した生データのスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "collectors", "collected_at", "query", "data_sources"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "research_mode": {
+            "type": "string",
+            "enum": ["shallow", "deep"],
+            "description": "リサーチモード（shallow: 浅い調査, deep: 深い調査）- research-web用"
+        },
+        "parallel_execution": {
+            "type": "object",
+            "description": "並列実行のメタデータ",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "並列実行が有効かどうか"
+                },
+                "batch_count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "バッチ数"
+                },
+                "batch_id": {
+                    "type": "string",
+                    "pattern": "^B[0-9]{2}$",
+                    "description": "このデータのバッチID（例: B01）"
+                },
+                "total_batches": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "総バッチ数"
+                },
+                "merged": {
+                    "type": "boolean",
+                    "description": "マージ済みかどうか"
+                },
+                "processing_time_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "処理時間（ミリ秒）"
+                }
+            }
+        },
+        "collectors": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["research-wiki", "research-reddit", "research-web"]
+            },
+            "minItems": 1,
+            "description": "データ収集に使用したエージェントのリスト"
+        },
+        "collected_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "収集日時（ISO 8601形式）"
+        },
+        "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "収集クエリの説明"
+        },
+        "data_sources": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "required": ["raw_id", "source_type", "title", "url", "language", "content", "metadata"],
+                        "properties": {
+                            "raw_id": {
+                                "type": "string",
+                                "pattern": "^R[0-9]{3}$",
+                                "description": "生データの一意識別子（例: R001）"
+                            },
+                            "source_type": {
+                                "type": "string",
+                                "const": "wikipedia"
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "記事のタイトル"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "記事のURL"
+                            },
+                            "language": {
+                                "type": "string",
+                                "enum": ["ja", "en"],
+                                "description": "記事の言語"
+                            },
+                            "content": {
+                                "type": "object",
+                                "required": ["summary", "sections", "key_facts", "related_topics"],
+                                "properties": {
+                                    "summary": {
+                                        "type": "string",
+                                        "description": "記事の要約"
+                                    },
+                                    "sections": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "required": ["title", "level"],
+                                            "properties": {
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "level": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        },
+                                        "description": "記事のセクション構造"
+                                    },
+                                    "key_facts": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "重要な事実のリスト"
+                                    },
+                                    "related_topics": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "required": ["title", "relevance"],
+                                            "properties": {
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "relevance": {
+                                                    "type": "string",
+                                                    "enum": ["high", "medium", "low"]
+                                                }
+                                            }
+                                        },
+                                        "description": "関連トピック"
+                                    }
+                                }
+                            },
+                            "metadata": {
+                                "type": "object",
+                                "required": ["word_count", "section_count"],
+                                "properties": {
+                                    "word_count": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "section_count": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "last_modified": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                }
+                            },
+                            "error": {
+                                "type": ["string", "null"],
+                                "description": "エラーメッセージ（エラーがない場合はnull）"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": ["raw_id", "source_type", "subreddit", "post", "reliability", "relevance"],
+                        "properties": {
+                            "raw_id": {
+                                "type": "string",
+                                "pattern": "^R[0-9]{3}$"
+                            },
+                            "source_type": {
+                                "type": "string",
+                                "const": "reddit"
+                            },
+                            "subreddit": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "サブレディット名"
+                            },
+                            "subreddit_info": {
+                                "type": ["object", "null"]
+                            },
+                            "post": {
+                                "type": "object",
+                                "required": ["post_id", "title", "url", "author", "score", "num_comments", "created_at"],
+                                "properties": {
+                                    "post_id": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "format": "uri"
+                                    },
+                                    "author": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": ["string", "null"]
+                                    },
+                                    "score": {
+                                        "type": "integer"
+                                    },
+                                    "num_comments": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                }
+                            },
+                            "reliability": {
+                                "type": "string",
+                                "enum": ["primary", "discussion", "speculation"],
+                                "description": "Reddit投稿の信頼性分類"
+                            },
+                            "relevance": {
+                                "type": "string",
+                                "enum": ["high", "medium", "low"],
+                                "description": "関連性"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": ["raw_id", "source_type", "subreddit", "title", "url", "content"],
+                        "properties": {
+                            "raw_id": {
+                                "type": "string",
+                                "pattern": "^R[0-9]{3}$"
+                            },
+                            "source_type": {
+                                "type": "string",
+                                "const": "reddit_summary"
+                            },
+                            "subreddit": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "サブレディット名"
+                            },
+                            "title": {
+                                "type": "string",
+                                "description": "投稿タイトル"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "投稿URL"
+                            },
+                            "content": {
+                                "type": "object",
+                                "properties": {
+                                    "post_summary": {
+                                        "type": "string",
+                                        "description": "投稿の要約"
+                                    },
+                                    "key_points": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "重要なポイント"
+                                    },
+                                    "score": {
+                                        "type": "integer",
+                                        "description": "投稿スコア"
+                                    },
+                                    "num_comments": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "description": "コメント数"
+                                    }
+                                },
+                                "description": "投稿内容の要約"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": ["raw_id", "source_type", "query", "engine", "results", "total_results", "collected_at"],
+                        "properties": {
+                            "raw_id": {
+                                "type": "string",
+                                "pattern": "^R[0-9]{3}$"
+                            },
+                            "source_type": {
+                                "type": "string",
+                                "const": "web_search"
+                            },
+                            "query": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "検索クエリ"
+                            },
+                            "engine": {
+                                "type": "string",
+                                "description": "使用した検索エンジン"
+                            },
+                            "results": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "required": ["rank", "title", "url", "snippet", "priority"],
+                                    "properties": {
+                                        "rank": {
+                                            "type": "integer",
+                                            "minimum": 1
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "snippet": {
+                                            "type": "string"
+                                        },
+                                        "priority": {
+                                            "type": "string",
+                                            "enum": ["high", "medium", "low"]
+                                        }
+                                    }
+                                },
+                                "description": "検索結果のリスト"
+                            },
+                            "total_results": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "description": "検索結果の総数"
+                            },
+                            "collected_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "収集日時"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": ["raw_id", "source_type", "title", "url", "language", "content"],
+                        "properties": {
+                            "raw_id": {
+                                "type": "string",
+                                "pattern": "^R[0-9]{3}$"
+                            },
+                            "source_type": {
+                                "type": "string",
+                                "const": "web"
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "記事のタイトル"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "記事のURL"
+                            },
+                            "language": {
+                                "type": "string",
+                                "enum": ["ja", "en"],
+                                "description": "記事の言語"
+                            },
+                            "content": {
+                                "type": "object",
+                                "properties": {
+                                    "snippet": {
+                                        "type": "string",
+                                        "description": "記事の抜粋"
+                                    },
+                                    "summary": {
+                                        "type": "string",
+                                        "description": "記事の要約"
+                                    },
+                                    "key_facts": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "重要な事実のリスト"
+                                    }
+                                },
+                                "description": "記事のコンテンツ"
+                            }
+                        }
+                    }
+                ]
+            },
+            "description": "収集した生データのリスト"
+        },
+        "subreddits_searched": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["name", "posts_found", "posts_relevant"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "サブレディット名"
+                    },
+                    "posts_found": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "発見した投稿数"
+                    },
+                    "posts_relevant": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "関連性のある投稿数"
+                    }
+                }
+            },
+            "description": "検索したサブレディットのリスト"
+        },
+        "statistics": {
+            "type": "object",
+            "description": "収集データの統計情報"
+        }
+    }
+}

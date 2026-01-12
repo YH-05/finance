@@ -1,0 +1,73 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Decisions Schema",
+    "description": "採用判断のスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "decisions"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "decisions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["decision_id", "target_claim_id", "decision", "reason"],
+                "properties": {
+                    "decision_id": {
+                        "type": "string",
+                        "pattern": "^D[0-9]{3}$",
+                        "description": "判断の一意識別子（例: D001）"
+                    },
+                    "target_claim_id": {
+                        "type": "string",
+                        "pattern": "^C[0-9]{3}$",
+                        "description": "判断対象の主張のID"
+                    },
+                    "decision": {
+                        "type": "string",
+                        "enum": ["accept", "reject", "hold"],
+                        "description": "判断結果"
+                    },
+                    "reason": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "minItems": 1,
+                        "description": "判断理由のリスト"
+                    }
+                }
+            },
+            "description": "採用判断のリスト"
+        },
+        "summary": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "判断の総数"
+                },
+                "accepted": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "採用された主張の数"
+                },
+                "rejected": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "棄却された主張の数"
+                },
+                "hold": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "保留された主張の数"
+                }
+            },
+            "description": "判断結果のサマリー"
+        }
+    }
+}

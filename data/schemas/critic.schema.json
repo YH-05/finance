@@ -1,0 +1,199 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Critic Schema",
+    "description": "批評結果のスキーマ定義（edit-manager と edit-reviser 間で共有）",
+    "type": "object",
+    "required": ["article_id", "critics", "summary", "priorities"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "review_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "批評実施日時"
+        },
+        "critics": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["critic_type", "status", "issues"],
+                "properties": {
+                    "critic_type": {
+                        "type": "string",
+                        "enum": ["fact", "structure", "entertainment", "depth", "voice", "platform"],
+                        "description": "批評家の種類"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["success", "partial", "failed"],
+                        "description": "批評の実行状態"
+                    },
+                    "issues": {
+                        "type": "array",
+                        "minItems": 5,
+                        "items": {
+                            "type": "object",
+                            "required": ["issue_id", "severity", "description"],
+                            "properties": {
+                                "issue_id": {
+                                    "type": "string",
+                                    "pattern": "^I[0-9]{3}$",
+                                    "description": "問題の一意識別子（例: I001）"
+                                },
+                                "severity": {
+                                    "type": "string",
+                                    "enum": ["high", "medium", "low"],
+                                    "description": "問題の重要度"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "description": "問題の説明"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "問題箇所（セクション名や行番号など）"
+                                },
+                                "suggestion": {
+                                    "type": "string",
+                                    "description": "改善提案"
+                                }
+                            }
+                        },
+                        "description": "検出された問題のリスト"
+                    }
+                }
+            },
+            "description": "各批評家の結果リスト"
+        },
+        "summary": {
+            "type": "object",
+            "required": ["grade", "key_improvements"],
+            "properties": {
+                "grade": {
+                    "type": "string",
+                    "enum": ["A", "B", "C", "D", "F"],
+                    "description": "総合評価グレード"
+                },
+                "key_improvements": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "主要な改善点のリスト"
+                },
+                "strengths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "記事の強みのリスト"
+                }
+            },
+            "description": "批評の要約"
+        },
+        "priorities": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["priority", "title", "severity", "description"],
+                "properties": {
+                    "priority": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "優先順位（1が最高）"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "対応項目のタイトル"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": ["high", "medium", "low"],
+                        "description": "重要度"
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "詳細説明"
+                    },
+                    "suggestion": {
+                        "type": "string",
+                        "description": "具体的な改善提案"
+                    },
+                    "related_issues": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^I[0-9]{3}$"
+                        },
+                        "description": "関連する問題IDのリスト"
+                    }
+                }
+            },
+            "description": "優先対応事項のリスト"
+        },
+        "statistics": {
+            "type": "object",
+            "properties": {
+                "total_issues": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "問題の総数"
+                },
+                "by_severity": {
+                    "type": "object",
+                    "properties": {
+                        "high": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "medium": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "low": {
+                            "type": "integer",
+                            "minimum": 0
+                        }
+                    },
+                    "description": "重要度ごとの問題数"
+                },
+                "by_critic": {
+                    "type": "object",
+                    "properties": {
+                        "fact": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "structure": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "entertainment": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "depth": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "voice": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "platform": {
+                            "type": "integer",
+                            "minimum": 0
+                        }
+                    },
+                    "description": "批評家ごとの問題数"
+                }
+            },
+            "description": "統計情報"
+        }
+    }
+}

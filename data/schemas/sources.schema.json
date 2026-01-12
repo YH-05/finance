@@ -1,0 +1,104 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Sources Schema",
+    "description": "情報源のスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "sources"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "generated_from": {
+            "type": "string",
+            "enum": ["text", "raw-data"],
+            "description": "生成元の形式"
+        },
+        "sources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["source_id", "type", "title", "topic", "summary", "reliability", "extracted_at"],
+                "properties": {
+                    "source_id": {
+                        "type": "string",
+                        "pattern": "^S[0-9]{3}$",
+                        "description": "情報源の一意識別子（例: S001）"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["web", "book", "video", "news", "academic", "other"],
+                        "description": "情報源の種別"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "ソースのタイトル"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "情報源のURL（該当する場合）"
+                    },
+                    "topic": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "トピック"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "情報源の要約"
+                    },
+                    "reliability": {
+                        "type": "string",
+                        "enum": ["high", "medium", "low"],
+                        "description": "信頼性評価"
+                    },
+                    "extracted_at": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "抽出日（YYYY-MM-DD形式）"
+                    }
+                }
+            },
+            "description": "情報源のリスト"
+        },
+        "statistics": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "情報源の総数"
+                },
+                "by_type": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "description": "種別ごとの数"
+                },
+                "by_reliability": {
+                    "type": "object",
+                    "properties": {
+                        "high": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "medium": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "low": {
+                            "type": "integer",
+                            "minimum": 0
+                        }
+                    },
+                    "description": "信頼性ごとの数"
+                }
+            },
+            "description": "統計情報"
+        }
+    }
+}

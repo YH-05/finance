@@ -1,0 +1,118 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Fact Checks Schema",
+    "description": "ファクトチェック結果のスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "fact_checks", "summary"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "fact_checks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["check_id", "target_claim_id", "verification_status", "confidence", "supporting_sources", "conflicting_sources", "conflicts", "notes"],
+                "properties": {
+                    "check_id": {
+                        "type": "string",
+                        "pattern": "^FC[0-9]{3}$",
+                        "description": "ファクトチェックの一意識別子（例: FC001）"
+                    },
+                    "target_claim_id": {
+                        "type": "string",
+                        "pattern": "^C[0-9]{3}$",
+                        "description": "検証対象の主張のID"
+                    },
+                    "verification_status": {
+                        "type": "string",
+                        "enum": ["verified", "disputed", "unverifiable", "speculation"],
+                        "description": "検証ステータス"
+                    },
+                    "confidence": {
+                        "type": "string",
+                        "enum": ["high", "medium", "low"],
+                        "description": "信頼度"
+                    },
+                    "supporting_sources": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^S[0-9]{3}$"
+                        },
+                        "description": "支持する情報源のIDリスト"
+                    },
+                    "conflicting_sources": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^S[0-9]{3}$"
+                        },
+                        "description": "矛盾する情報源のIDリスト"
+                    },
+                    "conflicts": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["source_ids", "description"],
+                            "properties": {
+                                "source_ids": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "pattern": "^S[0-9]{3}$"
+                                    },
+                                    "description": "矛盾する情報源のIDリスト"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "description": "矛盾の詳細説明"
+                                }
+                            }
+                        },
+                        "description": "検出された矛盾のリスト"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "追加のメモや所見"
+                    }
+                }
+            },
+            "description": "ファクトチェックのリスト"
+        },
+        "summary": {
+            "type": "object",
+            "required": ["total_claims", "verified", "disputed", "unverifiable", "speculation"],
+            "properties": {
+                "total_claims": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "検証対象の主張の総数"
+                },
+                "verified": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "検証済みの主張の数"
+                },
+                "disputed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "係争中の主張の数"
+                },
+                "unverifiable": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "検証不能な主張の数"
+                },
+                "speculation": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "推測に基づく主張の数"
+                }
+            },
+            "description": "ファクトチェック結果のサマリー"
+        }
+    }
+}

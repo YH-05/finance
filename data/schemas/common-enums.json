@@ -1,0 +1,62 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Common Enums",
+    "description": "全スキーマで共通して使用されるenum値の定義",
+    "$defs": {
+        "reliability": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "信頼性レベル（高・中・低）"
+        },
+        "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "優先度レベル（高・中・低）"
+        },
+        "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "信頼度レベル（高・中・低）"
+        },
+        "category": {
+            "type": "string",
+            "enum": ["unsolved", "urban", "unidentified", "history"],
+            "description": "記事カテゴリ（未解決事件・都市伝説・不思議現象・歴史の謎）"
+        },
+        "decision": {
+            "type": "string",
+            "enum": ["accept", "reject", "hold"],
+            "description": "採用判断（採用・不採用・保留）"
+        },
+        "claim_role": {
+            "type": "string",
+            "enum": ["main", "supporting", "background"],
+            "description": "主張の役割（主要・補助・背景）"
+        },
+        "verification_status": {
+            "type": "string",
+            "enum": ["verified", "disputed", "unverifiable", "speculation"],
+            "description": "検証ステータス（検証済み・係争中・検証不能・推測）"
+        },
+        "issue_type": {
+            "type": "string",
+            "enum": ["missing_info", "contradiction", "ambiguity", "unverified"],
+            "description": "問題のタイプ（情報不足・矛盾・曖昧・未検証）"
+        },
+        "source_type": {
+            "type": "string",
+            "enum": ["web", "book", "video", "news", "academic", "other"],
+            "description": "情報源の種別"
+        },
+        "language": {
+            "type": "string",
+            "enum": ["ja", "en"],
+            "description": "言語（日本語・英語）"
+        },
+        "workflow_status": {
+            "type": "string",
+            "enum": ["pending", "in_progress", "done", "skipped"],
+            "description": "ワークフローステータス（待機中・進行中・完了・スキップ）"
+        }
+    }
+}
