@@ -236,6 +236,101 @@ class TestCalculateVolatility:
             )
 
 
+class TestCalculateBollingerBands:
+    """Tests for Bollinger Bands calculation."""
+
+    def test_bollinger_basic(self) -> None:
+        """Test basic Bollinger Bands calculation."""
+        prices = pd.Series([100.0, 102.0, 101.0, 103.0, 104.0, 102.0, 105.0, 106.0])
+        bands = IndicatorCalculator.calculate_bollinger_bands(prices, window=5)
+
+        # Check that all three bands are returned
+        assert "upper" in bands
+        assert "middle" in bands
+        assert "lower" in bands
+
+        # First 4 values should be NaN (window-1)
+        assert pd.isna(bands["middle"].iloc[0])
+        assert pd.isna(bands["middle"].iloc[3])
+
+        # Valid values from index 4 onwards
+        assert pd.notna(bands["middle"].iloc[4])
+        assert pd.notna(bands["upper"].iloc[4])
+        assert pd.notna(bands["lower"].iloc[4])
+
+    def test_bollinger_band_order(self) -> None:
+        """Test that upper > middle > lower."""
+        prices = pd.Series([100.0, 102.0, 101.0, 103.0, 104.0, 102.0, 105.0, 106.0])
+        bands = IndicatorCalculator.calculate_bollinger_bands(prices, window=5)
+
+        for i in range(4, len(prices)):
+            assert bands["upper"].iloc[i] > bands["middle"].iloc[i]
+            assert bands["middle"].iloc[i] > bands["lower"].iloc[i]
+
+    def test_bollinger_middle_equals_sma(self) -> None:
+        """Test that middle band equals SMA."""
+        prices = pd.Series([100.0, 102.0, 101.0, 103.0, 104.0, 102.0, 105.0, 106.0])
+        bands = IndicatorCalculator.calculate_bollinger_bands(prices, window=5)
+        sma = IndicatorCalculator.calculate_sma(prices, window=5)
+
+        for i in range(len(prices)):
+            if pd.notna(bands["middle"].iloc[i]):
+                assert bands["middle"].iloc[i] == pytest.approx(sma.iloc[i])
+
+    def test_bollinger_custom_std(self) -> None:
+        """Test Bollinger Bands with custom standard deviation."""
+        prices = pd.Series([100.0, 102.0, 101.0, 103.0, 104.0, 102.0, 105.0, 106.0])
+        bands_2std = IndicatorCalculator.calculate_bollinger_bands(
+            prices, window=5, num_std=2.0
+        )
+        bands_1std = IndicatorCalculator.calculate_bollinger_bands(
+            prices, window=5, num_std=1.0
+        )
+
+        # Bands with 2 std should be wider than 1 std
+        for i in range(4, len(prices)):
+            width_2std = bands_2std["upper"].iloc[i] - bands_2std["lower"].iloc[i]
+            width_1std = bands_1std["upper"].iloc[i] - bands_1std["lower"].iloc[i]
+            assert width_2std > width_1std
+
+    def test_bollinger_empty_series(self) -> None:
+        """Test Bollinger Bands with empty series returns empty series."""
+        prices = pd.Series(dtype=np.float64)
+        bands = IndicatorCalculator.calculate_bollinger_bands(prices, window=5)
+
+        assert len(bands["upper"]) == 0
+        assert len(bands["middle"]) == 0
+        assert len(bands["lower"]) == 0
+
+    def test_bollinger_invalid_window(self) -> None:
+        """Test Bollinger Bands raises ValueError for invalid window."""
+        prices = pd.Series([100.0, 102.0, 101.0])
+
+        with pytest.raises(ValueError, match="Window must be at least 2"):
+            IndicatorCalculator.calculate_bollinger_bands(prices, window=1)
+
+    def test_bollinger_invalid_num_std(self) -> None:
+        """Test Bollinger Bands raises ValueError for invalid num_std."""
+        prices = pd.Series([100.0, 102.0, 101.0])
+
+        with pytest.raises(ValueError, match="num_std must be positive"):
+            IndicatorCalculator.calculate_bollinger_bands(prices, window=2, num_std=0)
+
+        with pytest.raises(ValueError, match="num_std must be positive"):
+            IndicatorCalculator.calculate_bollinger_bands(prices, window=2, num_std=-1)
+
+    def test_bollinger_constant_prices(self) -> None:
+        """Test Bollinger Bands with constant prices."""
+        prices = pd.Series([100.0] * 10)
+        bands = IndicatorCalculator.calculate_bollinger_bands(prices, window=5)
+
+        # With constant prices, std=0, so upper=middle=lower
+        for i in range(4, len(prices)):
+            assert bands["upper"].iloc[i] == pytest.approx(100.0)
+            assert bands["middle"].iloc[i] == pytest.approx(100.0)
+            assert bands["lower"].iloc[i] == pytest.approx(100.0)
+
+
 class TestCalculateAll:
     """Tests for calculate_all convenience method."""
 

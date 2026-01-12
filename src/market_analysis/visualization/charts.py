@@ -7,26 +7,16 @@ with support for themes, common layouts, and export functionality.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
+from logging import Logger
 from pathlib import Path
 from typing import Any
 
 import plotly.graph_objects as go
 import plotly.io as pio
 
+from ..utils.logger_factory import create_logger
 
-def _get_logger() -> Any:
-    """Get logger with lazy initialization to avoid circular imports."""
-    try:
-        from ..utils.logging_config import get_logger
-
-        return get_logger(__name__, module="visualization")
-    except ImportError:
-        import logging
-
-        return logging.getLogger(__name__)
-
-
-logger: Any = _get_logger()
+logger: Logger = create_logger(__name__, module="visualization")
 
 
 # =============================================================================

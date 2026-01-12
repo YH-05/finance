@@ -304,6 +304,89 @@ class IndicatorCalculator:
         return result
 
     @staticmethod
+    def calculate_bollinger_bands(
+        prices: pd.Series,
+        window: int = 20,
+        num_std: float = 2.0,
+    ) -> dict[str, pd.Series]:
+        """Calculate Bollinger Bands.
+
+        Bollinger Bands consist of a middle band (SMA) and upper/lower bands
+        that are standard deviations away from the middle band.
+
+        Parameters
+        ----------
+        prices : pd.Series
+            Price series (typically closing prices)
+        window : int, default=20
+            Number of periods for the moving average
+        num_std : float, default=2.0
+            Number of standard deviations for the bands
+
+        Returns
+        -------
+        dict[str, pd.Series]
+            Dictionary with keys 'middle', 'upper', 'lower'
+
+        Raises
+        ------
+        ValueError
+            If window is less than 2 or num_std is not positive
+
+        Examples
+        --------
+        >>> prices = pd.Series([100, 102, 101, 103, 105, 104, 106, 108])
+        >>> bands = IndicatorCalculator.calculate_bollinger_bands(prices, window=5)
+        >>> 'upper' in bands and 'middle' in bands and 'lower' in bands
+        True
+        """
+        logger.debug(
+            "Calculating Bollinger Bands",
+            window=window,
+            num_std=num_std,
+            data_points=len(prices),
+        )
+
+        if window < 2:
+            logger.error("Invalid window size", window=window)
+            raise ValueError(f"Window must be at least 2, got {window}")
+
+        if num_std <= 0:
+            logger.error("Invalid num_std", num_std=num_std)
+            raise ValueError(f"num_std must be positive, got {num_std}")
+
+        if prices.empty:
+            logger.warning("Empty price series provided")
+            return {
+                "middle": pd.Series(dtype=np.float64),
+                "upper": pd.Series(dtype=np.float64),
+                "lower": pd.Series(dtype=np.float64),
+            }
+
+        # Calculate middle band (SMA)
+        middle = cast(
+            "pd.Series", prices.rolling(window=window, min_periods=window).mean()
+        )
+
+        # Calculate standard deviation
+        rolling_std = cast(
+            "pd.Series", prices.rolling(window=window, min_periods=window).std()
+        )
+
+        # Calculate upper and lower bands
+        upper = cast("pd.Series", middle + (rolling_std * num_std))
+        lower = cast("pd.Series", middle - (rolling_std * num_std))
+
+        logger.debug(
+            "Bollinger Bands calculation completed",
+            window=window,
+            num_std=num_std,
+            valid_values=middle.notna().sum(),
+        )
+
+        return {"middle": middle, "upper": upper, "lower": lower}
+
+    @staticmethod
     def calculate_all(
         prices: pd.Series,
         sma_windows: list[int] | None = None,
