@@ -392,5 +392,144 @@
             "sector": "communication_services",
             "description": "S&P500の通信サービスセクター銘柄に投資するETF。"
         }
+    },
+    "US Stocks": {
+        "AAPL": {
+            "name_ja": "アップル",
+            "name_en": "Apple Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "technology",
+            "description": "iPhone、Mac、iPad等を製造する世界最大のテクノロジー企業。"
+        },
+        "MSFT": {
+            "name_ja": "マイクロソフト",
+            "name_en": "Microsoft Corporation",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "technology",
+            "description": "Windows、Azure、Office等を提供するソフトウェア大手。"
+        },
+        "GOOGL": {
+            "name_ja": "アルファベット（Google）",
+            "name_en": "Alphabet Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "communication_services",
+            "description": "Google検索、YouTube、Android等を運営する持株会社。"
+        },
+        "AMZN": {
+            "name_ja": "アマゾン",
+            "name_en": "Amazon.com Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "consumer_discretionary",
+            "description": "世界最大のEコマース企業。AWSでクラウド事業も展開。"
+        },
+        "NVDA": {
+            "name_ja": "エヌビディア",
+            "name_en": "NVIDIA Corporation",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "technology",
+            "description": "GPU・AI半導体の世界的リーダー。データセンター向けが急成長。"
+        },
+        "META": {
+            "name_ja": "メタ（Facebook）",
+            "name_en": "Meta Platforms Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "communication_services",
+            "description": "Facebook、Instagram、WhatsApp等を運営するSNS大手。"
+        },
+        "TSLA": {
+            "name_ja": "テスラ",
+            "name_en": "Tesla Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "consumer_discretionary",
+            "description": "電気自動車とエネルギー貯蔵システムの製造企業。"
+        },
+        "NFLX": {
+            "name_ja": "ネットフリックス",
+            "name_en": "Netflix Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "communication_services",
+            "description": "世界最大の動画ストリーミングサービス。"
+        },
+        "AVGO": {
+            "name_ja": "ブロードコム",
+            "name_en": "Broadcom Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "technology",
+            "description": "半導体およびインフラソフトウェア企業。"
+        },
+        "SNOW": {
+            "name_ja": "スノーフレーク",
+            "name_en": "Snowflake Inc.",
+            "category": "stock",
+            "region": "US",
+            "currency": "USD",
+            "sector": "technology",
+            "description": "クラウドベースのデータウェアハウス企業。"
+        }
+    },
+    "JP Stocks": {
+        "7203.T": {
+            "name_ja": "トヨタ自動車",
+            "name_en": "Toyota Motor Corporation",
+            "category": "stock",
+            "region": "JP",
+            "currency": "JPY",
+            "sector": "consumer_discretionary",
+            "description": "世界最大級の自動車メーカー。"
+        },
+        "6758.T": {
+            "name_ja": "ソニーグループ",
+            "name_en": "Sony Group Corporation",
+            "category": "stock",
+            "region": "JP",
+            "currency": "JPY",
+            "sector": "consumer_discretionary",
+            "description": "エレクトロニクス、ゲーム、音楽、映画等を展開する総合企業。"
+        },
+        "9984.T": {
+            "name_ja": "ソフトバンクグループ",
+            "name_en": "SoftBank Group Corp.",
+            "category": "stock",
+            "region": "JP",
+            "currency": "JPY",
+            "sector": "communication_services",
+            "description": "通信事業と投資事業を展開する持株会社。"
+        },
+        "6861.T": {
+            "name_ja": "キーエンス",
+            "name_en": "Keyence Corporation",
+            "category": "stock",
+            "region": "JP",
+            "currency": "JPY",
+            "sector": "technology",
+            "description": "FAセンサー等の開発・製造企業。高収益体質で知られる。"
+        },
+        "8306.T": {
+            "name_ja": "三菱UFJフィナンシャル・グループ",
+            "name_en": "Mitsubishi UFJ Financial Group",
+            "category": "stock",
+            "region": "JP",
+            "currency": "JPY",
+            "sector": "financials",
+            "description": "日本最大の金融グループ。"
+        }
     }
 }
