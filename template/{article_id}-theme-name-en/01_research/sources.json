@@ -1,0 +1,15 @@
+{
+    "article_id": "unsolved_001_20260101",
+    "sources": [
+        {
+            "source_id": "S001",
+            "type": "web",
+            "title": "都市伝説Xの起源",
+            "url": "https://example.com",
+            "topic": "都市伝説X",
+            "summary": "都市伝説Xの起源とその影響についての詳細な分析。",
+            "reliability": "medium",
+            "extracted_at": "2026-01-01"
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "article_id": "",
+    "topic": "",
+    "category": "",
+    "tags": [],
+    "status": "research",
+    "created_at": "",
+    "updated_at": "",
+    "workflow": {
+        "research": {
+            "queries": "pending",
+            "raw_data": "pending",
+            "sources": "pending",
+            "claims": "pending",
+            "analysis": "pending",
+            "iterations_completed": 0,
+            "depth_completed": 0,
+            "fact_checks": "pending",
+            "decisions": "pending",
+            "visualize": "pending"
+        },
+        "writing": {
+            "first_draft": "pending",
+            "checks": "pending",
+            "revised_draft": "pending"
+        },
+        "publishing": {
+            "final_review": "pending",
+            "published": "pending"
+        }
+    }
+}

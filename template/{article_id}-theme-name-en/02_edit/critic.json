@@ -1,0 +1,25 @@
+{
+    "article_id": "",
+    "review_date": "",
+    "critics": [],
+    "summary": {
+        "grade": "",
+        "key_improvements": [],
+        "strengths": []
+    },
+    "priorities": [],
+    "statistics": {
+        "total_issues": 0,
+        "by_severity": {
+            "high": 0,
+            "medium": 0,
+            "low": 0
+        },
+        "by_critic": {
+            "fact": 0,
+            "structure": 0,
+            "entertainment": 0,
+            "depth": 0
+        }
+    }
+}

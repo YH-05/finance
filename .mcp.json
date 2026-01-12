@@ -50,6 +50,13 @@
             "env": {
                 "NOTION_API_KEY": "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"
             }
+        },
+        "sec-edgar-mcp": {
+            "command": "uvx",
+            "args": ["sec-edgar-mcp"],
+            "env": {
+                "SEC_EDGAR_USER_AGENT": "Yuki Hata (youxitiankaggle@gmail.com)"
+            }
         }
     }
 }

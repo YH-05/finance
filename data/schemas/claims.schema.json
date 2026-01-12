@@ -1,0 +1,76 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Claims Schema",
+    "description": "主張のスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "claims"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "description": "記事の一意識別子"
+        },
+        "claims": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["claim_id", "text", "source_ids", "role"],
+                "properties": {
+                    "claim_id": {
+                        "type": "string",
+                        "pattern": "^C[0-9]{3}$",
+                        "description": "主張の一意識別子（例: C001）"
+                    },
+                    "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "主張の内容"
+                    },
+                    "source_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^S[0-9]{3}$"
+                        },
+                        "minItems": 1,
+                        "description": "この主張の出典となる情報源のIDリスト"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": ["main", "supporting", "background"],
+                        "description": "主張の役割"
+                    }
+                }
+            },
+            "description": "主張のリスト"
+        },
+        "statistics": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "主張の総数"
+                },
+                "by_role": {
+                    "type": "object",
+                    "properties": {
+                        "main": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "supporting": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "background": {
+                            "type": "integer",
+                            "minimum": 0
+                        }
+                    },
+                    "description": "役割ごとの数"
+                }
+            },
+            "description": "統計情報"
+        }
+    }
+}

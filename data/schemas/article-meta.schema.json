@@ -1,0 +1,124 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Article Metadata Schema",
+    "description": "記事メタデータのスキーマ定義",
+    "type": "object",
+    "required": ["article_id", "topic", "category", "status", "created_at", "updated_at", "workflow"],
+    "properties": {
+        "article_id": {
+            "type": "string",
+            "pattern": "^(unsolved|urban|unidentified|history)_[0-9]{3}_[a-z0-9-]+$",
+            "description": "記事の一意識別子（例: unsolved_002_db-cooper）"
+        },
+        "topic": {
+            "type": "string",
+            "minLength": 1,
+            "description": "記事のトピック名"
+        },
+        "category": {
+            "type": "string",
+            "enum": ["unsolved", "urban", "unidentified", "history"],
+            "description": "記事のカテゴリ"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "記事のタグリスト"
+        },
+        "status": {
+            "type": "string",
+            "enum": ["research", "writing", "editing", "published"],
+            "description": "記事の現在のステータス"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date",
+            "description": "記事作成日（YYYY-MM-DD）"
+        },
+        "updated_at": {
+            "type": "string",
+            "format": "date",
+            "description": "最終更新日（YYYY-MM-DD）"
+        },
+        "workflow": {
+            "type": "object",
+            "required": ["research", "writing", "publishing"],
+            "properties": {
+                "research": {
+                    "type": "object",
+                    "properties": {
+                        "queries": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "raw_data": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "sources": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "claims": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "analysis": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "iterations_completed": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 2
+                        },
+                        "fact_checks": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "decisions": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "visualize": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        }
+                    }
+                },
+                "writing": {
+                    "type": "object",
+                    "properties": {
+                        "first_draft": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "checks": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "revised_draft": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        }
+                    }
+                },
+                "publishing": {
+                    "type": "object",
+                    "properties": {
+                        "final_review": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        },
+                        "published": {
+                            "type": "string",
+                            "enum": ["pending", "done"]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

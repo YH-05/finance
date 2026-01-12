@@ -1,0 +1,19 @@
+{
+    "article_id": "",
+    "iteration": 0,
+    "analysis_date": "",
+    "issues": [],
+    "additional_queries": [],
+    "recommendation": {
+        "needs_additional_research": false,
+        "reason": "",
+        "estimated_queries": 0
+    },
+    "summary": {
+        "total_issues": 0,
+        "high_priority": 0,
+        "medium_priority": 0,
+        "low_priority": 0,
+        "additional_queries_generated": 0
+    }
+}

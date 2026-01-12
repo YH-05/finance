@@ -1,0 +1,11 @@
+{
+    "article_id": "unsolved_001_20260101",
+    "checks": [
+        {
+            "check_id": "K001",
+            "target_claim_id": "C001",
+            "issue": "断定表現が強すぎる",
+            "action": "表現を弱めた"
+        }
+    ]
+}

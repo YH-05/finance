@@ -1,0 +1,11 @@
+{
+    "article_id": "unsolved_001_20260101",
+    "decisions": [
+        {
+            "decision_id": "D001",
+            "target_claim_id": "C001",
+            "decision": "accept",
+            "reason": ["複数ソースで時期が一致", "反証が確認できない"]
+        }
+    ]
+}

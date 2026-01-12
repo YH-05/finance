@@ -18,6 +18,15 @@ description: SuperClaudeコマンドリファレンス
 - **コマンド**: `.claude/commands/*.md` の frontmatter `description` から検出
 - **スキル**: `.claude/skills/*/SKILL.md` の frontmatter `name`, `description` から検出
 - **エージェント**: `.claude/agents.md` から読み込み
+- **ディレクトリ構成**: プロジェクトルートから4層までスキャン（除外: `__pycache__`, `.git`, `.venv` 等）
+
+### 更新対象ファイル
+
+| ファイル | 更新内容 |
+|----------|----------|
+| `.claude/commands/index.md` | コマンド/スキル/エージェント/ディレクトリ一覧 |
+| `CLAUDE.md` | ディレクトリ構成セクション |
+| `README.md` | プロジェクト構造セクション |
 
 ---
 
@@ -27,16 +36,18 @@ description: SuperClaudeコマンドリファレンス
 
 | コマンド | 説明 |
 |----------|------|
-| `/issue` | GitHub Issue とタスクの管理・同期を行う |
 | `/analyze` | 多次元コード分析（分析レポート出力） |
 | `/commit-and-pr` | 変更のコミットとPR作成 |
 | `/ensure-quality` | コード品質の自動改善（make check-all相当） |
 | `/gemini-search` | Web search using Gemini CLI |
 | `/improve` | エビデンスベースの改善実装 |
+| `/issue` | GitHub Issue とタスクの管理・同期を行う |
+| `/merge-pr` | PRのコンフリクトチェック・CI確認・マージを実行 |
 | `/new-package` | モノレポ内に新しいPythonパッケージを作成する |
 | `/new-project` | プロジェクトファイルから開発を開始。LRD・設計ドキュメント作成とタスク分解を行う |
 | `/push` | 変更をコミットしてリモートにプッシュ |
 | `/review-docs` | ドキュメントの詳細レビューをサブエージェントで実行 |
+| `/review-pr` | PRレビュー（コード品質・セキュリティ・テスト） |
 | `/safe-refactor` | 安全なリファクタリング |
 | `/scan` | セキュリティと品質の包括的検証 |
 | `/setup-repository` | テンプレートリポジトリの初期化（初回のみ） |
@@ -113,7 +124,61 @@ description: SuperClaudeコマンドリファレンス
 | `doc-reviewer` | ドキュメントレビュー |
 | `task-decomposer` | タスク分解・GitHub Issues連携・project.md同期 |
 
+### 特殊
+
+| エージェント | 説明 |
+|-------------|------|
+| `claude-code-guide` | Claude Code CLI、Agent SDK、APIに関する質問対応 |
+| `statusline-setup` | ステータスライン設定 |
+
 <!-- END: AGENTS -->
+
+---
+
+## ディレクトリ構成
+
+<!-- AUTO-GENERATED: DIRECTORY -->
+
+```
+finance/
+├── .claude/                      # Claude Code 設定
+│   ├── agents/                   # サブエージェント定義
+│   ├── commands/                 # スラッシュコマンド (20)
+│   └── skills/                   # スキル定義 (7)
+├── .github/                      # GitHub automation
+│   ├── ISSUE_TEMPLATE/           # Issue テンプレート
+│   └── workflows/                # CI/CD
+├── data/                         # データストレージ
+│   ├── config/                   # 設定ファイル
+│   ├── sqlite/                   # SQLite DB（OLTP）
+│   ├── duckdb/                   # DuckDB（OLAP）
+│   ├── raw/                      # 生データ（Parquet）
+│   │   ├── yfinance/             # yfinance データ
+│   │   └── fred/                 # FRED 経済指標
+│   ├── processed/                # 加工済みデータ
+│   ├── exports/                  # エクスポート（CSV/JSON）
+│   └── schemas/                  # JSON スキーマ
+├── docs/                         # 共通ドキュメント
+├── snippets/                     # 再利用コンテンツ
+├── src/
+│   ├── finance/                  # 共通インフラパッケージ
+│   │   ├── db/                   # データベースクライアント
+│   │   │   └── migrations/       # マイグレーション
+│   │   └── utils/                # ユーティリティ
+│   └── market_analysis/          # 市場分析パッケージ
+│       ├── core/                 # コアロジック
+│       ├── utils/                # ユーティリティ
+│       └── docs/                 # パッケージドキュメント
+├── template/                     # テンプレート（参照専用）
+│   ├── src/template_package/     # パッケージテンプレート
+│   ├── tests/                    # テストテンプレート
+│   └── {article_id}-theme-name-en/  # 記事テンプレート
+└── tests/                        # テストスイート
+    ├── finance/                  # finance テスト
+    └── market_analysis/          # market_analysis テスト
+```
+
+<!-- END: DIRECTORY -->
 
 ---
 
@@ -142,6 +207,8 @@ description: SuperClaudeコマンドリファレンス
 | 問題を解決したい | `/troubleshoot` |
 | 変更をプッシュしたい | `/push` |
 | PR を作成したい | `/commit-and-pr` |
+| PR をマージしたい | `/merge-pr <pr-number>` |
+| PR をレビューしたい | `/review-pr` |
 
 ---
 
@@ -150,7 +217,7 @@ description: SuperClaudeコマンドリファレンス
 ### 新機能開発（独立環境で）
 
 ```
-/worktree feature/xxx → /new-project → /issue → feature-implementer で実装 → /write-tests → /commit-and-pr → (マージ) → /worktree-done
+/worktree feature/xxx → /new-project → /issue → feature-implementer で実装 → /write-tests → /commit-and-pr → /merge-pr <number> → /worktree-done
 ```
 
 ### 新機能開発
@@ -162,7 +229,7 @@ description: SuperClaudeコマンドリファレンス
 ### バグ修正
 
 ```
-/worktree fix/xxx → /troubleshoot → 修正 → /ensure-quality → /commit-and-pr → (マージ) → /worktree-done
+/worktree fix/xxx → /troubleshoot → 修正 → /ensure-quality → /commit-and-pr → /merge-pr <number> → /worktree-done
 ```
 
 ### パフォーマンス最適化
@@ -175,8 +242,106 @@ description: SuperClaudeコマンドリファレンス
 
 ## 更新手順（--update モード）
 
-1. `.claude/commands/*.md` をスキャンし frontmatter から description を抽出
-2. `.claude/skills/*/SKILL.md` をスキャンし frontmatter から name, description を抽出
-3. `.claude/agents.md` からエージェント定義を読み込み
-4. この index.md を更新
-5. 結果を表示
+### 並列実行アーキテクチャ
+
+Task ツールで4つの Explore サブエージェントを**並列起動**し、結果を統合します。
+
+```
+/index --update
+    │
+    ├─> Task(Explore): コマンド検出 ─────────┐
+    ├─> Task(Explore): スキル検出 ──────────┤ 並列
+    ├─> Task(Explore): エージェント読み込み ─┤ 実行
+    └─> Task(Explore): ディレクトリスキャン ─┘
+                        │
+                        v
+              結果統合（YAML形式）
+                        │
+        ┌───────────────┼───────────────┐
+        v               v               v
+   index.md        CLAUDE.md       README.md
+    更新             更新            更新
+```
+
+### サブエージェント詳細
+
+#### 1. コマンド検出エージェント
+
+```yaml
+subagent_type: "Explore"
+対象: .claude/commands/*.md（index.md 除く）
+抽出: frontmatter description
+出力形式:
+  commands:
+    - name: "analyze"
+      description: "多次元コード分析"
+```
+
+#### 2. スキル検出エージェント
+
+```yaml
+subagent_type: "Explore"
+対象: .claude/skills/*/SKILL.md
+抽出: frontmatter name, description
+出力形式:
+  skills:
+    - name: "architecture-design"
+      description: "アーキテクチャ設計書を作成"
+```
+
+#### 3. エージェント読み込みエージェント
+
+```yaml
+subagent_type: "Explore"
+対象: .claude/agents.md
+抽出: カテゴリ別エージェント定義
+出力形式:
+  agents:
+    - category: "汎用"
+      items:
+        - name: "Bash"
+          description: "コマンド実行"
+```
+
+#### 4. ディレクトリスキャンエージェント
+
+```yaml
+subagent_type: "Explore"
+対象: プロジェクトルート
+深さ: 4層
+除外: __pycache__, .git, .venv, .pytest_cache, .ruff_cache, node_modules, *.egg-info
+出力形式:
+  directory_structure:
+    tree: |
+      finance/
+      ├── .claude/
+      ...
+```
+
+### 結果統合スキーマ
+
+```yaml
+metadata:
+  generated_at: "ISO8601"
+  execution_status:
+    commands: "success|failed"
+    skills: "success|failed"
+    agents: "success|failed"
+    directory: "success|failed"
+  errors: []
+
+commands: [...]
+skills: [...]
+agents: [...]
+directory_structure:
+  tree: "ASCII tree string"
+```
+
+### エラーハンドリング
+
+| 状況 | 対応 |
+|------|------|
+| サブエージェントタイムアウト | 既存内容を維持 + 警告表示 |
+| ファイル読み込み失敗 | スキップして他を処理 |
+| マーカーペア不正 | エラー終了（手動修正を促す） |
+| 検出結果が空 | 警告表示、既存内容維持 |
