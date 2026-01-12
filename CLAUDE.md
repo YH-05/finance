@@ -294,8 +294,8 @@ with profile_context("処理名"):  # コンテキスト計測
 
 ```
 .claude/                      # Claude Code設定
-├── agents/                   # サブエージェント定義
-├── commands/                 # スラッシュコマンド (20)
+├── agents/                   # サブエージェント定義 (43)
+├── commands/                 # スラッシュコマンド (25)
 └── skills/                   # スキル定義 (7)
 
 data/                         # データストレージ
@@ -321,7 +321,11 @@ src/
 │   ├── types.py              # 型定義
 │   └── py.typed              # PEP 561マーカー
 └── market_analysis/          # 市場分析パッケージ
-    ├── core/                 # コアロジック
+    ├── core/                 # データフェッチャー
+    ├── analysis/             # 分析ロジック
+    ├── api/                  # パブリックAPI
+    ├── visualization/        # チャート生成
+    ├── export/               # データエクスポート
     ├── utils/                # ユーティリティ
     └── docs/                 # ライブラリドキュメント
         └── project.md        # プロジェクトファイル

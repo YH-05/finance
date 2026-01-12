@@ -125,8 +125,8 @@ uv run pyright --version
 ```
 finance/
 ├── .claude/                      # Claude Code 設定
-│   ├── agents/                   # サブエージェント定義
-│   ├── commands/                 # スラッシュコマンド (20)
+│   ├── agents/                   # サブエージェント定義 (43)
+│   ├── commands/                 # スラッシュコマンド (25)
 │   └── skills/                   # スキル定義 (7)
 ├── .github/                      # GitHub automation
 │   ├── ISSUE_TEMPLATE/           # Issue テンプレート
@@ -149,7 +149,11 @@ finance/
 │   │   │   └── migrations/       # マイグレーション
 │   │   └── utils/                # ユーティリティ
 │   └── market_analysis/          # 市場分析パッケージ
-│       ├── core/                 # コアロジック
+│       ├── core/                 # データフェッチャー
+│       ├── analysis/             # 分析ロジック
+│       ├── api/                  # パブリックAPI
+│       ├── visualization/        # チャート生成
+│       ├── export/               # データエクスポート
 │       ├── utils/                # ユーティリティ
 │       └── docs/                 # パッケージドキュメント
 ├── template/                     # テンプレート（参照専用）

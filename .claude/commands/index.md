@@ -40,12 +40,16 @@ description: SuperClaudeコマンドリファレンス
 | `/analyze-conflicts` | PRのコンフリクトを詳細分析し、問題点と解決策を提示 |
 | `/commit-and-pr` | 変更のコミットとPR作成 |
 | `/ensure-quality` | コード品質の自動改善（make check-all相当） |
+| `/finance-edit` | 金融記事の編集ワークフロー（初稿→批評→修正） |
+| `/finance-research` | 金融記事のリサーチワークフロー（データ収集→分析→検証→可視化） |
+| `/finance-suggest-topics` | 金融記事のトピック提案（スコアリング付き） |
 | `/gemini-search` | Web search using Gemini CLI |
 | `/improve` | エビデンスベースの改善実装 |
 | `/issue` | GitHub Issue とタスクの管理・同期を行う |
 | `/merge-pr` | PRのコンフリクトチェック・CI確認・マージを実行 |
+| `/new-finance-article` | 新規金融記事フォルダ作成（カテゴリ別テンプレート） |
 | `/new-package` | モノレポ内に新しいPythonパッケージを作成する |
-| `/new-project` | プロジェクトファイルから開発を開始。LRD・設計ドキュメント作成とタスク分解を行う |
+| `/new-project` | 開発プロジェクトを開始（パッケージ開発または軽量プロジェクト） |
 | `/push` | 変更をコミットしてリモートにプッシュ |
 | `/review-docs` | ドキュメントの詳細レビューをサブエージェントで実行 |
 | `/review-pr` | PRレビュー（コード品質・セキュリティ・テスト） |
@@ -143,8 +147,8 @@ description: SuperClaudeコマンドリファレンス
 ```
 finance/
 ├── .claude/                      # Claude Code 設定
-│   ├── agents/                   # サブエージェント定義
-│   ├── commands/                 # スラッシュコマンド (20)
+│   ├── agents/                   # サブエージェント定義 (43)
+│   ├── commands/                 # スラッシュコマンド (25)
 │   └── skills/                   # スキル定義 (7)
 ├── .github/                      # GitHub automation
 │   ├── ISSUE_TEMPLATE/           # Issue テンプレート
@@ -168,6 +172,10 @@ finance/
 │   │   └── utils/                # ユーティリティ
 │   └── market_analysis/          # 市場分析パッケージ
 │       ├── core/                 # コアロジック
+│       ├── analysis/             # 分析ロジック
+│       ├── api/                  # パブリックAPI
+│       ├── visualization/        # チャート生成
+│       ├── export/               # データエクスポート
 │       ├── utils/                # ユーティリティ
 │       └── docs/                 # パッケージドキュメント
 ├── template/                     # テンプレート（参照専用）
