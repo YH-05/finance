@@ -1,0 +1,231 @@
+# PRレビューレポート
+# 生成日時: 2026-01-12 18:29:39
+# 生成コマンド: /review-pr 46
+
+metadata:
+  generated_at: "2026-01-12T18:29:39+09:00"
+  pr_number: 46
+  pr_title: "feat: MarketData & Analysis パブリックAPI実装 (#27, #28)"
+  base_branch: "main"
+  head_branch: "feature/analysis-api"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 11
+  additions: 2225
+  deletions: 7
+  changed_files:
+    - path: "docs/pr-review-20260112-180810.yaml"
+      additions: 143
+      deletions: 0
+    - path: "src/market_analysis/__init__.py"
+      additions: 12
+      deletions: 7
+    - path: "src/market_analysis/api/__init__.py"
+      additions: 9
+      deletions: 0
+    - path: "src/market_analysis/api/analysis.py"
+      additions: 623
+      deletions: 0
+    - path: "src/market_analysis/api/market_data.py"
+      additions: 683
+      deletions: 0
+    - path: "src/market_analysis/core/__init__.py"
+      additions: 2
+      deletions: 0
+    - path: "src/market_analysis/core/data_fetcher_factory.py"
+      additions: 127
+      deletions: 0
+    - path: "tests/market_analysis/unit/api/__init__.py"
+      additions: 1
+      deletions: 0
+    - path: "tests/market_analysis/unit/api/test_analysis.py"
+      additions: 273
+      deletions: 0
+    - path: "tests/market_analysis/unit/api/test_market_data.py"
+      additions: 274
+      deletions: 0
+    - path: "tests/market_analysis/unit/core/test_data_fetcher_factory.py"
+      additions: 78
+      deletions: 0
+
+scores:
+  code_quality: 87
+  security: 78
+  test: 78
+  overall: 81
+
+code_quality:
+  strengths:
+    - "Factoryパターンの適切な実装: 単一のcreateメソッドでデータソースに応じたFetcherを生成"
+    - "レジストリベースの拡張性: _FETCHER_REGISTRYにより新しいソースの追加が容易"
+    - "詳細なDocstring: NumPy形式のドキュメンテーションが全てのメソッドに付与"
+    - "適切なロギング: debug/info/errorの各レベルで操作を追跡可能"
+    - "型ヒントの完全な適用: Python 3.12+スタイルで全ての関数シグネチャに型注釈"
+    - "メソッドチェーンのサポート: Analysis APIでFluentインターフェースを実現"
+    - "大文字小文字の正規化: source_lowerによりユーザー入力の柔軟性を確保"
+    - "包括的なエラーハンドリング: ValidationError, DataFetchError, AnalysisErrorの適切な使い分け"
+
+  issues:
+    critical: []
+    high:
+      - id: "CODE-HIGH-001"
+        location: "data_fetcher_factory.py:92"
+        description: "f-stringの冗長な連結"
+        suggestion: "f\"Unknown data source: '{source}'. Supported sources: {supported}\" に統合"
+    medium:
+      - id: "CODE-MED-001"
+        location: "data_fetcher_factory.py:18-21"
+        description: "モジュールレベルの可変レジストリ _FETCHER_REGISTRY が外部から変更される可能性"
+        suggestion: "MappingProxyTypeでラップして不変性を担保"
+      - id: "CODE-MED-002"
+        location: "market_data.py:684-685"
+        description: "get_column関数がrolling_correlationとbetaで重複定義"
+        suggestion: "ユーティリティ関数として外出し、DRY原則を適用"
+      - id: "CODE-MED-003"
+        location: "analysis.py:column未使用"
+        description: "add_sma, add_emaのcolumnパラメータが実際には使用されていない"
+        suggestion: "パラメータを削除するか、Analyzerに渡す実装を追加"
+    low:
+      - id: "CODE-LOW-001"
+        location: "data_fetcher_factory.py:41"
+        description: "staticmethodの使用 - 将来的にインスタンス状態を持つ可能性を考慮するとclassmethodの方が拡張性がある"
+        suggestion: "現状は問題なし。拡張時にclassmethodへの変更を検討"
+      - id: "CODE-LOW-002"
+        location: "test_data_fetcher_factory.py:74-78"
+        description: "assert len(sources) == 2 のハードコード"
+        suggestion: "assert len(sources) >= 2 に変更してソース追加時の保守性向上"
+
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "PASS"
+    liskov_substitution: "PASS"
+    interface_segregation: "PASS"
+    dependency_inversion: "PASS"
+
+security:
+  vulnerability_count:
+    critical: 0
+    high: 1
+    medium: 3
+    low: 2
+
+  findings:
+    - id: "SEC-001"
+      severity: "HIGH"
+      category: "A08 データ整合性 / A02 暗号化"
+      location: "utils/cache.py:467,471"
+      description: "pickle.loads()による任意コード実行リスク（ローカルDBのため直接の攻撃ベクトルは限定的）"
+      recommendation: "parquet形式またはJSON+スキーマ検証への移行を検討"
+      cwe_id: "CWE-502"
+    - id: "SEC-002"
+      severity: "MEDIUM"
+      category: "A03 インジェクション"
+      location: "export/exporter.py:505-508,539-544"
+      description: "SQLiteへのエクスポート時にテーブル名をf-stringで動的構築（シンボル検証があるためリスクは低い）"
+      recommendation: "テーブル名を正規表現でホワイトリスト検証"
+      cwe_id: "CWE-89"
+    - id: "SEC-003"
+      severity: "MEDIUM"
+      category: "A05 設定ミス"
+      location: "utils/cache.py:139-143"
+      description: "SQLite接続でcheck_same_thread=False（適切なロック機構が実装済み）"
+      recommendation: "現状維持で問題なし。将来的にコネクションプール導入を検討"
+      cwe_id: "CWE-362"
+    - id: "SEC-004"
+      severity: "MEDIUM"
+      category: "A04 安全でない設計"
+      location: "export/exporter.py:286"
+      description: "テーブル名生成時に一部特殊文字（. -）が残る可能性"
+      recommendation: "全特殊文字を置換するサニタイズ関数を作成"
+      cwe_id: "CWE-20"
+    - id: "SEC-005"
+      severity: "LOW"
+      category: "A09 ログ"
+      location: "core/fred_fetcher.py:90-94"
+      description: "api_key_sourceをログ出力（APIキー値は出力されていないため適切）"
+      recommendation: "本番環境でDEBUGログ無効化を確認"
+      cwe_id: "CWE-532"
+    - id: "SEC-006"
+      severity: "LOW"
+      category: "A04 安全でない設計"
+      location: "export/exporter.py:142-143"
+      description: "Path.parent.mkdir(parents=True)で任意ディレクトリ作成可能"
+      recommendation: "ローカルツールとして問題なし。Web統合時にパス検証を追加"
+      cwe_id: "CWE-22"
+
+  good_patterns:
+    - "入力検証（validators.py）が包括的に実装"
+    - "環境変数によるAPIキー管理"
+    - "パラメータ化クエリによるSQLインジェクション対策"
+    - "機密情報がログに出力されない設計"
+
+test:
+  coverage_assessment: "FAIR"
+  edge_cases_covered: false
+  total_test_count: 43
+
+  missing_tests:
+    - "大文字小文字の混在テスト (例: 'YFinance', 'YFINANCE')"
+    - "None入力のテスト"
+    - "空白のみの文字列入力テスト"
+    - "kwargsの不正な引数のテスト"
+    - "kwargsがfetcherに正しく渡されているか検証"
+    - "ログ出力の検証（caplog使用）"
+
+  test_quality:
+    isolation: "PASS"
+    reproducibility: "PASS"
+    readability: "PASS"
+
+  strengths:
+    - "テスト名が日本語docstringで意図が明確"
+    - "fixtureとmonkeypatchの適切な使用"
+    - "クラス分けによる論理的なテスト構造"
+    - "正常系・異常系の基本パターンをカバー"
+
+recommended_actions:
+  required:
+    - priority: 1
+      action: "大文字小文字混在ソース名のテスト追加"
+      related_issues:
+        - "テストカバレッジ不足"
+    - priority: 2
+      action: "None/空白入力のバリデーションテスト追加"
+      related_issues:
+        - "境界値テスト不足"
+
+  suggested:
+    - priority: 1
+      action: "f-string連結を単一に統合 (CODE-HIGH-001)"
+      related_issues:
+        - "CODE-HIGH-001"
+    - priority: 2
+      action: "_FETCHER_REGISTRYをMappingProxyTypeでラップ (CODE-MED-001)"
+      related_issues:
+        - "CODE-MED-001"
+    - priority: 3
+      action: "get_columnユーティリティ関数の外出し (CODE-MED-002)"
+      related_issues:
+        - "CODE-MED-002"
+    - priority: 4
+      action: "未使用のcolumnパラメータの整理 (CODE-MED-003)"
+      related_issues:
+        - "CODE-MED-003"
+
+summary:
+  verdict: "APPROVE"
+  comment: |
+    MarketData & Analysis APIの実装は高品質で、プロジェクトの設計基準を満たしています。
+
+    主な評価ポイント:
+    1. **設計品質 (87点)**: Factoryパターン、メソッドチェーン、SOLID原則に準拠
+    2. **セキュリティ (78点)**: 基本的な対策は実装済み。pickleの使用に注意
+    3. **テスト品質 (78点)**: 基本パターンはカバー、エッジケースのテスト追加推奨
+
+    **総合スコア: 81点** - マージ可能な品質
+
+    PRの説明にある通り、43件の新規テストが追加され、全475テストが成功しています。
+    Issue #27 (MarketData API) と Issue #28 (Analysis API) の要件を満たしています。
+
+    改善推奨事項は軽微であり、フォローアップPRで対応可能です。

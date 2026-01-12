@@ -245,6 +245,38 @@ class TestHeatmapChartExport:
 # =============================================================================
 
 
+class TestHeatmapChartErrorHandling:
+    """Tests for HeatmapChart error handling."""
+
+    def test_異常系_build前にsave呼び出しでRuntimeError(
+        self, sample_correlation_matrix: pd.DataFrame, tmp_path: Path
+    ) -> None:
+        """build()前にsave()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = HeatmapChart(sample_correlation_matrix)
+        output_path = tmp_path / "should_not_exist.png"
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.save(output_path)
+
+    def test_異常系_build前にshow呼び出しでRuntimeError(
+        self, sample_correlation_matrix: pd.DataFrame
+    ) -> None:
+        """build()前にshow()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = HeatmapChart(sample_correlation_matrix)
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.show()
+
+    def test_異常系_build前にto_html呼び出しでRuntimeError(
+        self, sample_correlation_matrix: pd.DataFrame
+    ) -> None:
+        """build()前にto_html()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = HeatmapChart(sample_correlation_matrix)
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.to_html()
+
+
 class TestHeatmapChartEdgeCases:
     """Tests for edge cases in HeatmapChart."""
 

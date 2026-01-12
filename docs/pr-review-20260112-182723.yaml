@@ -1,0 +1,191 @@
+# PRレビューレポート
+# 生成日時: 2026-01-12 18:27:23
+# 生成コマンド: /review-pr 45
+
+metadata:
+  generated_at: "2026-01-12 18:27:23"
+  pr_number: 45
+  pr_title: "feat: /new-project に軽量プロジェクトモードを追加"
+  base_branch: "main"
+  head_branch: "feature/new-project"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 2
+  additions: 636
+  deletions: 41
+  changed_files:
+    - path: ".claude/commands/new-project.md"
+      additions: 634
+      deletions: 40
+    - path: "CLAUDE.md"
+      additions: 2
+      deletions: 1
+
+scores:
+  code_quality: 78
+  security: 65
+  test: 45
+  overall: 63
+
+code_quality:
+  strengths:
+    - "2つのモードの明確な分岐と使い分けの説明が充実しており、ユーザーが適切なモードを選択しやすい"
+    - "インタビューフローが体系的に設計されており、4フェーズで段階的に情報を収集できる"
+    - "質問1の回答に応じて質問2が分岐する設計により、文脈に応じた適切な質問が可能"
+    - "計画書テンプレートが包括的で、プロジェクト管理に必要な情報を網羅している"
+    - "既存のパッケージ開発モードを維持しつつ新機能を追加しており、後方互換性を確保"
+    - "エラーハンドリングのメッセージが具体的で、ユーザーが次に何をすべきか明確"
+
+  issues:
+    critical: []
+    high: []
+    medium:
+      - location: ".claude/commands/new-project.md:309"
+        description: "質問8「影響ディレクトリ」で .claude/ が選択されるケースに対応するテスト要件がフェーズ4に含まれていない"
+        recommendation: "質問12のオプションに「コマンド/エージェントの手動検証」を追加"
+      - location: ".claude/commands/new-project.md:55-60"
+        description: "引数解析ロジックが擬似コードで記述されているが、実際のClaude Codeのコマンド引数パース方法との整合性が不明確"
+        recommendation: "$ARGUMENTSまたはコマンド引数の実際のパース方法を明記"
+      - location: ".claude/commands/new-project.md:442-443"
+        description: "GitHub Project作成で --owner @me は個人オーナーを想定しているが、Organization配下では動作しない可能性"
+        recommendation: "リポジトリオーナーを動的に取得する方法を追加"
+      - location: ".claude/commands/new-project.md:385-395"
+        description: "スラッグ生成のルールで日本語から英語への変換方法が不明確"
+        recommendation: "Claude Codeが自動で翻訳することを明記するか、確認ステップを追加"
+    low:
+      - location: ".claude/commands/new-project.md:296"
+        description: "コメントに文字化け「どのディ��クトリ」がある"
+        recommendation: "「どのディレクトリ」に修正"
+
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "PASS"
+    liskov_substitution: "N/A"
+    interface_segregation: "N/A"
+    dependency_inversion: "PASS"
+
+security:
+  vulnerability_count:
+    critical: 0
+    high: 2
+    medium: 3
+    low: 2
+
+  findings:
+    - id: "SEC-001"
+      severity: "HIGH"
+      category: "コマンドインジェクション"
+      location: ".claude/commands/new-project.md:軽量モード ステップ3-4"
+      description: "ユーザー入力（プロジェクト名）がシェルコマンドに直接埋め込まれる設計"
+      recommendation: "入力検証ルールを追加（許可文字: 英数字、日本語、ハイフン、アンダースコア、スペース）"
+      cwe_id: "CWE-78"
+
+    - id: "SEC-002"
+      severity: "HIGH"
+      category: "パストラバーサル"
+      location: ".claude/commands/new-project.md:軽量モード ステップ2"
+      description: "スラッグ化ルールに .. や / の除去が明記されていない"
+      recommendation: "スラッグ化ルールに明示的なセキュリティ検証を追加"
+      cwe_id: "CWE-22"
+
+    - id: "SEC-003"
+      severity: "MEDIUM"
+      category: "セキュリティ設定ミス"
+      location: ".claude/commands/new-project.md:軽量モード ステップ3"
+      description: "GitHub認証エラー時に認証情報の詳細が露出する可能性"
+      recommendation: "エラーメッセージに認証情報の詳細を含めない"
+      cwe_id: "CWE-200"
+
+    - id: "SEC-004"
+      severity: "MEDIUM"
+      category: "入力検証不足"
+      location: ".claude/commands/new-project.md:ステップ0"
+      description: "「その他の文字列」を無条件でプロジェクト名として使用する設計"
+      recommendation: "引数解析時の事前検証を追加"
+      cwe_id: "CWE-20"
+
+    - id: "SEC-005"
+      severity: "MEDIUM"
+      category: "ログとモニタリングの失敗"
+      location: ".claude/commands/new-project.md:全体"
+      description: "セキュリティイベントのログ記録に関する記述がない"
+      recommendation: "認証失敗、入力検証エラー等のログ記録ポリシーを追加"
+      cwe_id: "CWE-778"
+
+    - id: "SEC-006"
+      severity: "LOW"
+      category: "情報露出"
+      location: ".claude/commands/new-project.md:軽量モード ステップ4"
+      description: "Issue本文テンプレートに内部パス情報が含まれる"
+      recommendation: "パブリックリポジトリの場合は相対パスを避ける"
+      cwe_id: "CWE-200"
+
+    - id: "SEC-007"
+      severity: "LOW"
+      category: "認証スコープ不足"
+      location: ".claude/commands/new-project.md:軽量モード ステップ3"
+      description: "GitHub認証スコープの検証がない"
+      recommendation: "必要な権限スコープ（project, repo）を明記"
+      cwe_id: "CWE-269"
+
+test:
+  coverage_assessment: "FAIR"
+  edge_cases_covered: false
+  missing_tests:
+    - "引数なしエラーケースの確認"
+    - "--interactive モードの動作確認"
+    - "無効なパス形式のエラーハンドリング確認"
+    - "GitHub認証失敗時のエラーメッセージ確認"
+    - "GitHub Project作成失敗時のフォールバック動作確認"
+    - "インタビュー途中キャンセル時の挙動確認"
+    - "質問分岐ロジックの各パターン確認"
+    - "計画書テンプレートの変数置換確認"
+    - "Issue作成時のラベル自動判定ロジックの確認"
+
+  test_quality:
+    isolation: "N/A"
+    reproducibility: "WARN"
+    readability: "N/A"
+
+  notes: |
+    .claude/commands/ 配下のファイルはClaude Codeのコマンド定義であり、
+    標準的なPythonテストフレームワークでの自動テストは対象外。
+    手動テストチェックリストの拡充を推奨。
+
+recommended_actions:
+  required:
+    - priority: 1
+      action: "SEC-001: 入力検証ルールを明記（許可文字、禁止文字、最大長）"
+      related_issues: ["CWE-78"]
+    - priority: 2
+      action: "SEC-002: スラッグ化ルールに . と / の除去を明記"
+      related_issues: ["CWE-22"]
+    - priority: 3
+      action: "296行目の文字化け「どのディ��クトリ」を「どのディレクトリ」に修正"
+      related_issues: []
+
+  suggested:
+    - priority: 1
+      action: "Organization配下のリポジトリでも動作するようオーナー取得ロジックを追加"
+    - priority: 2
+      action: "手動テストプランを拡充（エラーハンドリング、分岐ロジックの各パターン）"
+    - priority: 3
+      action: "セキュリティ考慮事項セクションをドキュメントに追加"
+    - priority: 4
+      action: ".claude/配下が選択された場合のテスト要件を質問12に追加"
+
+summary:
+  verdict: "REQUEST_CHANGES"
+  comment: |
+    このPRは /new-project コマンドに軽量プロジェクトモードを追加する良い拡張です。
+
+    設計面では、体系的なインタビューフロー（4フェーズ12問）と既存機能との共存が
+    適切に実現されています。
+
+    ただし、以下の点で修正を推奨します:
+    1. セキュリティ: ユーザー入力の検証ルールが明記されていない（HIGH x2）
+    2. 品質: 文字化けの修正
+    3. テスト: 手動テストプランの拡充
+
+    必須対応項目を修正後、再レビューをお願いします。

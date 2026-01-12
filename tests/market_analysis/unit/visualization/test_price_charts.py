@@ -441,6 +441,62 @@ class TestLineChartIndicators:
 
 
 # =============================================================================
+# Error Handling Tests
+# =============================================================================
+
+
+class TestPriceChartErrorHandling:
+    """Tests for price chart error handling."""
+
+    def test_異常系_CandlestickChart_build前にsave呼び出しでRuntimeError(
+        self, price_data: PriceChartData, tmp_path: Path
+    ) -> None:
+        """build()前にsave()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = CandlestickChart(price_data)
+        output_path = tmp_path / "should_not_exist.png"
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.save(output_path)
+
+    def test_異常系_CandlestickChart_build前にshow呼び出しでRuntimeError(
+        self, price_data: PriceChartData
+    ) -> None:
+        """build()前にshow()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = CandlestickChart(price_data)
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.show()
+
+    def test_異常系_CandlestickChart_build前にto_html呼び出しでRuntimeError(
+        self, price_data: PriceChartData
+    ) -> None:
+        """build()前にto_html()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = CandlestickChart(price_data)
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.to_html()
+
+    def test_異常系_LineChart_build前にsave呼び出しでRuntimeError(
+        self, price_data: PriceChartData, tmp_path: Path
+    ) -> None:
+        """build()前にsave()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = LineChart(price_data)
+        output_path = tmp_path / "should_not_exist.png"
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.save(output_path)
+
+    def test_異常系_LineChart_build前にshow呼び出しでRuntimeError(
+        self, price_data: PriceChartData
+    ) -> None:
+        """build()前にshow()を呼ぶとRuntimeErrorが発生することを確認。"""
+        chart = LineChart(price_data)
+
+        with pytest.raises(RuntimeError, match="Chart not built"):
+            chart.show()
+
+
+# =============================================================================
 # Edge Cases
 # =============================================================================
 

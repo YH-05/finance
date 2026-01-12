@@ -1,0 +1,193 @@
+# PRレビューレポート
+# 生成日時: 2026-01-12 19:30:00
+# 生成コマンド: /review-pr 44
+
+metadata:
+  generated_at: "2026-01-12 19:30:00"
+  pr_number: 44
+  pr_title: "feat: PlotlyChart と HeatmapChart の実装 (#24, #25)"
+  base_branch: "main"
+  head_branch: "feature/visualize"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 11
+  additions: 2257
+  deletions: 13
+  changed_files:
+    - path: "docs/pr-review-20260112-160000.yaml"
+      additions: 185
+      deletions: 0
+    - path: "src/market_analysis/analysis/indicators.py"
+      additions: 83
+      deletions: 0
+    - path: "src/market_analysis/utils/__init__.py"
+      additions: 2
+      deletions: 0
+    - path: "src/market_analysis/utils/logger_factory.py"
+      additions: 52
+      deletions: 0
+    - path: "src/market_analysis/visualization/__init__.py"
+      additions: 22
+      deletions: 0
+    - path: "src/market_analysis/visualization/charts.py"
+      additions: 3
+      deletions: 13
+    - path: "src/market_analysis/visualization/heatmap.py"
+      additions: 267
+      deletions: 0
+    - path: "src/market_analysis/visualization/price_charts.py"
+      additions: 733
+      deletions: 0
+    - path: "tests/market_analysis/unit/analysis/test_indicators.py"
+      additions: 95
+      deletions: 0
+    - path: "tests/market_analysis/unit/visualization/test_heatmap.py"
+      additions: 325
+      deletions: 0
+    - path: "tests/market_analysis/unit/visualization/test_price_charts.py"
+      additions: 490
+      deletions: 0
+
+scores:
+  code_quality: 88
+  security: 92
+  test: 88
+  overall: 89
+
+code_quality:
+  strengths:
+    - "全公開APIにNumPy形式のDocstringが完備"
+    - "Python 3.12+スタイルの型ヒントが全関数に適用"
+    - "Fluent API（メソッドチェーン）パターンの採用: chart.add_sma(20).add_ema(12).build().save()"
+    - "全主要処理に構造化ログを配置"
+    - "明確で具体的なエラーメッセージ: f'Window must be at least 2, got {window}'"
+    - "包括的なテストカバレッジ（64件の新規テスト）"
+    - "logger_factory.pyの導入で循環インポート問題を解決"
+    - "PriceChartDataに__post_init__バリデーション実装"
+
+  issues:
+    critical: []
+    high: []
+    medium:
+      - id: "REV-001"
+        location: "src/market_analysis/visualization/heatmap.py:256"
+        issue: "self._method属性が保存されるが使用されていない"
+        suggestion: "チャートタイトルに表示するか、属性を削除"
+      - id: "REV-002"
+        location: "src/market_analysis/visualization/heatmap.py:180-196"
+        issue: "_create_annotationsメソッドのテキスト色決定ロジックが複雑"
+        suggestion: "_get_text_color(value: float) -> str メソッドに抽出"
+    low:
+      - id: "REV-003"
+        location: "tests/market_analysis/unit/visualization/test_heatmap.py:155"
+        issue: "テストでプライベート属性（_symbols, _method）にアクセス"
+        suggestion: "テスト用のpublic getterを追加するか、公開APIのみをテスト"
+      - id: "REV-004"
+        location: "src/market_analysis/visualization/price_charts.py:377-385"
+        issue: "LineChartで存在しないprice_columnを指定した場合のエラーハンドリングがない"
+        suggestion: "__init__またはbuild()でカラム存在チェックを追加"
+
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "PASS"
+    liskov_substitution: "PASS"
+    interface_segregation: "WARN"
+    dependency_inversion: "PASS"
+
+security:
+  vulnerability_count:
+    critical: 0
+    high: 0
+    medium: 1
+    low: 2
+
+  findings:
+    - id: "SEC-001"
+      severity: "MEDIUM"
+      category: "A04 安全でない設計"
+      location: "src/market_analysis/visualization/charts.py:592"
+      description: "save()メソッドでパストラバーサル攻撃のリスクがある"
+      recommendation: "パスを正規化し、許可されたディレクトリ内に制限することを推奨"
+      cwe_id: "CWE-22"
+    - id: "SEC-002"
+      severity: "LOW"
+      category: "A09 ログ"
+      location: "src/market_analysis/visualization/charts.py:594-599"
+      description: "ファイル保存時にパスをログに記録しているが、パスに機密情報が含まれる可能性"
+      recommendation: "将来の拡張時にログ出力内容を再評価"
+      cwe_id: "CWE-532"
+    - id: "SEC-003"
+      severity: "LOW"
+      category: "A04 安全でない設計"
+      location: "src/market_analysis/visualization/heatmap.py:247"
+      description: "ユーザー提供のラベル文字列をそのままアノテーションテキストとして使用"
+      recommendation: "Plotlyは内部でHTMLエスケープを行うため現状リスクは低い"
+      cwe_id: "CWE-79"
+
+  owasp_compliance:
+    A01_access_control: "N/A"
+    A02_cryptography: "N/A"
+    A03_injection: "PASS"
+    A04_insecure_design: "PASS"
+    A05_misconfiguration: "PASS"
+    A06_vulnerable_components: "PASS"
+    A07_authentication: "N/A"
+    A08_integrity: "PASS"
+    A09_logging: "WARN"
+    A10_ssrf: "N/A"
+
+test:
+  coverage_assessment: "GOOD"
+  edge_cases_covered: true
+  missing_tests:
+    - "HeatmapChart: カラーバーのカスタマイズテスト"
+    - "CandlestickChart: show()メソッドの直接テスト"
+    - "LineChart: 複数シンボルの比較チャートテスト"
+    - "PriceChartData: タイムゾーン対応テスト"
+    - "ボリンジャーバンド: NaN含む入力テスト"
+
+  test_quality:
+    isolation: "PASS"
+    reproducibility: "PASS"
+    readability: "PASS"
+
+  test_summary:
+    total_new_tests: 64
+    total_tests_passed: 488
+    test_categories:
+      bollinger_bands: 8
+      heatmap_chart: 21
+      price_charts: 35
+
+recommended_actions:
+  required: []
+
+  suggested:
+    - priority: 1
+      action: "self._method属性の削除または活用"
+      related_issues:
+        - "REV-001"
+    - priority: 2
+      action: "_get_text_color()メソッドへの抽出"
+      related_issues:
+        - "REV-002"
+    - priority: 3
+      action: "LineChartのprice_columnバリデーション追加"
+      related_issues:
+        - "REV-004"
+    - priority: 4
+      action: "save()メソッドにパス検証を検討（ライブラリの使用コンテキスト次第）"
+      related_issues:
+        - "SEC-001"
+
+summary:
+  verdict: "APPROVE"
+  comment: |
+    全体的に高品質な実装です。NumPy形式のDocstring、完全な型ヒント、
+    構造化ロギング、包括的なテスト（64件）が揃っており、プロジェクト規約に準拠しています。
+
+    セキュリティ面では、CRITICALおよびHIGHレベルの脆弱性は検出されず、
+    適切な入力検証が実装されています。
+
+    推奨される改善点はありますが、マージをブロックするような問題はありません。
