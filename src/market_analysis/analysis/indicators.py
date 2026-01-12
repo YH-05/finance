@@ -79,7 +79,7 @@ class IndicatorCalculator:
             return pd.Series(dtype=np.float64)
 
         result = cast(
-            pd.Series, prices.rolling(window=window, min_periods=window).mean()
+            "pd.Series", prices.rolling(window=window, min_periods=window).mean()
         )
 
         logger.debug(
@@ -144,7 +144,8 @@ class IndicatorCalculator:
             return pd.Series(dtype=np.float64)
 
         result = cast(
-            pd.Series, prices.ewm(span=window, adjust=adjust, min_periods=window).mean()
+            "pd.Series",
+            prices.ewm(span=window, adjust=adjust, min_periods=window).mean(),
         )
 
         logger.debug(
@@ -285,12 +286,12 @@ class IndicatorCalculator:
 
         # Calculate rolling standard deviation
         result = cast(
-            pd.Series, returns.rolling(window=window, min_periods=window).std()
+            "pd.Series", returns.rolling(window=window, min_periods=window).std()
         )
 
         # Annualize if requested
         if annualize:
-            result = cast(pd.Series, result * np.sqrt(annualization_factor))
+            result = cast("pd.Series", result * np.sqrt(annualization_factor))
 
         logger.debug(
             "Volatility calculation completed",

@@ -128,7 +128,7 @@ class Analyzer:
 
     def _get_prices(self) -> pd.Series:
         """Get the price series for calculations."""
-        return cast(pd.Series, self._data[self._price_column])
+        return cast("pd.Series", self._data[self._price_column])
 
     def add_sma(self, window: int, column_name: str | None = None) -> Self:
         """Add Simple Moving Average indicator.

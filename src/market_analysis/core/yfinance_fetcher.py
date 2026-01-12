@@ -511,6 +511,6 @@ class YFinanceFetcher(BaseDataFetcher):
 
 
 __all__ = [
-    "YFinanceFetcher",
     "YFINANCE_SYMBOL_PATTERN",
+    "YFinanceFetcher",
 ]
