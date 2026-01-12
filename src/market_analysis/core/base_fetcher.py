@@ -234,7 +234,7 @@ class BaseDataFetcher(ABC):
         try:
             selected = normalized[STANDARD_COLUMNS]
             # When indexing with a list, pandas returns a DataFrame
-            assert isinstance(selected, pd.DataFrame)
+            assert isinstance(selected, pd.DataFrame)  # nosec B101
             normalized = selected
         except KeyError as e:
             logger.error(

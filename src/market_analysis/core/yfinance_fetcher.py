@@ -248,7 +248,7 @@ class YFinanceFetcher(BaseDataFetcher):
             source=self.source.value,
         )
 
-        assert self._cache is not None
+        assert self._cache is not None  # nosec B101
         cached_data = self._cache.get(cache_key)
 
         if cached_data is not None and isinstance(cached_data, pd.DataFrame):
@@ -292,7 +292,7 @@ class YFinanceFetcher(BaseDataFetcher):
 
         ttl = self._cache_config.ttl_seconds if self._cache_config else None
 
-        assert self._cache is not None
+        assert self._cache is not None  # nosec B101
         self._cache.set(
             cache_key,
             data,
