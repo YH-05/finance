@@ -219,7 +219,8 @@ with profile_context("処理名"):  # コンテキスト計測
 | 並行開発環境作成   | `/worktree <branch_name>` コマンド（worktree + ブランチ） |
 | 開発完了クリーンアップ | `/worktree-done <branch_name>` コマンド（PRマージ確認 → 削除） |
 | パッケージ作成     | `/new-package <package_name>` コマンド                      |
-| 開発開始           | `/new-project @src/<library_name>/docs/project.md`（LRD → 設計 → タスク）|
+| 開発開始（パッケージ）| `/new-project @src/<library_name>/docs/project.md`（LRD → 設計 → タスク）|
+| 開発開始（軽量）   | `/new-project "プロジェクト名"`（インタビュー → GitHub Project → Issue）|
 | Issue管理          | `/issue @src/<library_name>/docs/project.md` コマンド       |
 | テスト作成         | `/write-tests` コマンド または `docs/testing-strategy.md` |
 | ドキュメント作成   | `docs/document-management.md`                             |
