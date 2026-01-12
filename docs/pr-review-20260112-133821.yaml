@@ -1,0 +1,181 @@
+# PRレビューレポート
+# 生成日時: 2026-01-12 13:38:21
+# 生成コマンド: /review-pr 35
+
+metadata:
+  generated_at: "2026-01-12 13:38:21"
+  pr_number: 35
+  pr_title: "feat: add technical analysis module with indicators and analyzer"
+  base_branch: "main"
+  head_branch: "feature/market-data"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 24
+  additions: 5537
+  deletions: 13
+  changed_files:
+    - path: "src/market_analysis/analysis/analyzer.py"
+      additions: 427
+    - path: "src/market_analysis/analysis/indicators.py"
+      additions: 393
+    - path: "src/market_analysis/core/base_fetcher.py"
+      additions: 382
+    - path: "src/market_analysis/core/fred_fetcher.py"
+      additions: 605
+    - path: "src/market_analysis/core/yfinance_fetcher.py"
+      additions: 516
+    - path: "src/market_analysis/utils/ticker_registry.py"
+      additions: 396
+    - path: "data/config/yfinance_tickers.json"
+      additions: 396
+
+scores:
+  code_quality: 85
+  security: 82
+  test: 85
+  overall: 84
+
+verdict: "APPROVE"
+
+code_quality:
+  summary: |
+    高品質なコードベースで、Python 3.12+の機能を活用し、型ヒント・ドキュメント・
+    ロギングが充実している。SOLID原則への準拠度も高い。
+
+  strengths:
+    - "NumPy形式のDocstringが全クラス・関数に一貫して付与されている"
+    - "型ヒントが100%カバーされており、pyrightの厳密モードにも対応"
+    - "BaseDataFetcherによる抽象化でStrategy/Template Methodパターンを適切に実装"
+    - "Analyzer クラスのFluent Interface（メソッドチェーン）設計が優れている"
+    - "カスタムエラー階層（MarketAnalysisError → DataFetchError等）が適切に設計"
+    - "全てのクラス・関数でstructured loggingを使用"
+
+  issues:
+    critical: []
+    high:
+      - id: "HIGH-001"
+        location: "fred_fetcher.py:300-306, yfinance_fetcher.py:243-249"
+        description: "_get_from_cache と _save_to_cache のロジックがほぼ同一（DRY違反）"
+        recommendation: "BaseDataFetcher にテンプレートメソッドとして移動"
+      - id: "HIGH-002"
+        location: "fred_fetcher.py:433-437, yfinance_fetcher.py:377-382"
+        description: "_fetch_with_retry メソッドが両Fetcherで同一実装（DRY違反）"
+        recommendation: "BaseDataFetcher にリトライロジックを共通化"
+    medium:
+      - id: "MED-001"
+        location: "analyzer.py:133-200"
+        description: "add_sma と add_ema メソッドの構造が非常に類似"
+        recommendation: "_add_indicator() ヘルパーメソッドを作成"
+      - id: "MED-002"
+        location: "ticker_registry.py:376-396"
+        description: "グローバル変数によるシングルトン実装"
+        recommendation: "reset_registry() 関数の追加"
+    low:
+      - id: "LOW-001"
+        location: "errors.py:461"
+        description: "TimeoutError が組み込みと名前衝突"
+        recommendation: "OperationTimeoutError への改名を検討"
+
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "PASS"
+    liskov_substitution: "PASS"
+    interface_segregation: "PASS"
+    dependency_inversion: "WARN"
+
+security:
+  vulnerability_count:
+    critical: 0
+    high: 1
+    medium: 2
+    low: 2
+    info: 2
+
+  findings:
+    - id: "SEC-001"
+      severity: "HIGH"
+      category: "データ整合性"
+      location: "cache.py:467, 471"
+      description: "pickle.loads()によるデシリアライズ（RCE リスク）"
+      recommendation: "キャッシュDBファイルのアクセス権限制限、整合性検証を追加"
+      cwe_id: "CWE-502"
+      mitigated: true
+      mitigation: "nosec B301で許可済み、内部使用のみ"
+
+    - id: "SEC-002"
+      severity: "MEDIUM"
+      category: "設定"
+      location: "fred_fetcher.py:84"
+      description: "APIキーのソースをログに出力"
+      recommendation: "DEBUGレベルのみに制限"
+      cwe_id: "CWE-532"
+
+    - id: "SEC-003"
+      severity: "MEDIUM"
+      category: "入力検証"
+      location: "ticker_registry.py:108-116"
+      description: "config_pathのパストラバーサル検証なし"
+      recommendation: "パス正規化と検証を追加"
+      cwe_id: "CWE-22"
+
+    - id: "SEC-004"
+      severity: "LOW"
+      category: "乱数"
+      location: "retry.py:389"
+      description: "random.random()使用（セキュリティ目的ではない）"
+      cwe_id: "CWE-330"
+      mitigated: true
+      mitigation: "nosec B311で許可済み"
+
+test:
+  coverage_assessment: "GOOD"
+  edge_cases_covered: true
+  test_count:
+    analyzer: 23
+    indicators: 27
+    base_fetcher: 16
+    fred_fetcher: 18
+    yfinance_fetcher: 17
+    ticker_registry: 27
+    cache: 22
+
+  missing_tests:
+    - "Analyzer.add_ema with adjust=False"
+    - "Analyzer alternative price column fallback"
+    - "Analyzer with empty DataFrame"
+    - "Rate limiting behavior"
+
+  test_quality:
+    isolation: "PASS"
+    reproducibility: "PASS"
+    readability: "PASS"
+    mock_usage: "PASS"
+
+recommended_actions:
+  required: []
+  suggested:
+    - priority: 1
+      action: "キャッシュ・リトライロジックをBaseDataFetcherに共通化"
+    - priority: 2
+      action: "TimeoutErrorクラス名の変更（組み込みとの衝突回避）"
+    - priority: 3
+      action: "Analyzer._add_indicator()ヘルパーメソッド追加"
+    - priority: 4
+      action: "TickerRegistryにreset_registry()関数追加"
+
+summary:
+  comment: |
+    高品質な実装で、Python 3.12+の機能を最大限活用しています。
+    型ヒント、ドキュメント、ロギング、テストが充実しており、
+    SOLID原則にも概ね準拠しています。
+
+    DRY違反が一部見られますが、機能的には問題なく、
+    将来のリファクタリングで対応可能です。
+
+    セキュリティ面では、pickle使用が唯一の懸念点ですが、
+    内部キャッシュ用途であり、適切なコメントで許可されています。
+
+    テストカバレッジは良好で、主要な機能とエッジケースがカバーされています。
+
+    **結論: APPROVE**

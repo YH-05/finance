@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 from market_analysis.utils.ticker_registry import (
+    PRESET_GROUPS,
     TickerInfo,
     TickerRegistry,
     get_ticker_registry,
@@ -324,3 +325,175 @@ class TestDefaultConfig:
 
         assert registry.contains("GC=F")
         assert registry.contains("CL=F")
+
+
+class TestPresetGroups:
+    """Tests for preset group functionality."""
+
+    def test_preset_groups_defined(self) -> None:
+        """Test that preset groups are defined."""
+        assert "MAGNIFICENT_7" in PRESET_GROUPS
+        assert "MAJOR_INDICES" in PRESET_GROUPS
+        assert "MAJOR_FOREX" in PRESET_GROUPS
+
+    def test_magnificent_7_contents(self) -> None:
+        """Test MAGNIFICENT_7 group contents."""
+        mag7 = PRESET_GROUPS["MAGNIFICENT_7"]
+        assert "AAPL" in mag7
+        assert "MSFT" in mag7
+        assert "NVDA" in mag7
+        assert len(mag7) == 7
+
+    def test_get_group(self) -> None:
+        """Test getting a preset group."""
+        registry = TickerRegistry()
+        mag7 = registry.get_group("MAGNIFICENT_7")
+
+        assert len(mag7) == 7
+        assert "AAPL" in mag7
+        assert "TSLA" in mag7
+
+    def test_get_group_returns_copy(self) -> None:
+        """Test that get_group returns a copy, not the original list."""
+        registry = TickerRegistry()
+        group1 = registry.get_group("MAGNIFICENT_7")
+        group2 = registry.get_group("MAGNIFICENT_7")
+
+        assert group1 == group2
+        assert group1 is not group2
+
+    def test_get_group_invalid(self) -> None:
+        """Test getting an invalid preset group raises KeyError."""
+        registry = TickerRegistry()
+
+        with pytest.raises(KeyError, match="Unknown preset group"):
+            registry.get_group("NONEXISTENT_GROUP")
+
+    def test_get_groups_single(self) -> None:
+        """Test getting a single group via get_groups."""
+        registry = TickerRegistry()
+        result = registry.get_groups(["MAGNIFICENT_7"])
+
+        assert len(result) == 7
+        assert "AAPL" in result
+
+    def test_get_groups_multiple(self) -> None:
+        """Test getting multiple groups combined."""
+        registry = TickerRegistry()
+        result = registry.get_groups(["MAGNIFICENT_7", "MAJOR_INDICES"])
+
+        # MAGNIFICENT_7 has 7, MAJOR_INDICES has 7, no overlap
+        assert len(result) == 14
+
+    def test_get_groups_deduplicates(self) -> None:
+        """Test that get_groups deduplicates overlapping symbols."""
+        registry = TickerRegistry()
+        # MAGNIFICENT_7 and FANG_PLUS have overlapping symbols
+        result = registry.get_groups(["MAGNIFICENT_7", "FANG_PLUS"])
+
+        # MAGNIFICENT_7: AAPL, MSFT, GOOGL, AMZN, NVDA, META, TSLA (7)
+        # FANG_PLUS: META, AAPL, AMZN, NFLX, GOOGL, MSFT, NVDA, TSLA, SNOW, AVGO (10)
+        # Overlap: AAPL, MSFT, GOOGL, AMZN, NVDA, META, TSLA (7)
+        # Unique to FANG_PLUS: NFLX, SNOW, AVGO (3)
+        # Total: 7 + 3 = 10
+        assert len(result) == 10
+        assert "NFLX" in result
+        assert "SNOW" in result
+
+    def test_list_preset_groups(self) -> None:
+        """Test listing all preset groups."""
+        registry = TickerRegistry()
+        groups = registry.list_preset_groups()
+
+        assert "MAGNIFICENT_7" in groups
+        assert "MAJOR_INDICES" in groups
+        assert "ALL_SECTORS" in groups
+        # Should be sorted
+        assert groups == sorted(groups)
+
+
+class TestSearchFunctionality:
+    """Tests for search functionality."""
+
+    def test_search_by_symbol(self) -> None:
+        """Test searching by ticker symbol."""
+        registry = TickerRegistry()
+        results = registry.search("AAPL")
+
+        assert len(results) >= 1
+        symbols = [r.symbol for r in results]
+        assert "AAPL" in symbols
+
+    def test_search_by_japanese_name(self) -> None:
+        """Test searching by Japanese name."""
+        registry = TickerRegistry()
+        results = registry.search("トヨタ")
+
+        assert len(results) >= 1
+        symbols = [r.symbol for r in results]
+        assert "7203.T" in symbols
+
+    def test_search_by_english_name(self) -> None:
+        """Test searching by English name."""
+        registry = TickerRegistry()
+        results = registry.search("apple")
+
+        assert len(results) >= 1
+        symbols = [r.symbol for r in results]
+        assert "AAPL" in symbols
+
+    def test_search_case_insensitive(self) -> None:
+        """Test that search is case-insensitive."""
+        registry = TickerRegistry()
+        results_upper = registry.search("APPLE")
+        results_lower = registry.search("apple")
+
+        assert len(results_upper) == len(results_lower)
+
+    def test_search_no_results(self) -> None:
+        """Test search with no matching results."""
+        registry = TickerRegistry()
+        results = registry.search("xyznonexistent123")
+
+        assert results == []
+
+    def test_search_partial_match(self) -> None:
+        """Test search with partial match."""
+        registry = TickerRegistry()
+        results = registry.search("USD")
+
+        # Should find forex pairs and dollar index
+        assert len(results) >= 1
+
+
+class TestGetInfoAlias:
+    """Tests for get_info method (alias for get)."""
+
+    def test_get_info_returns_same_as_get(self) -> None:
+        """Test that get_info returns the same result as get."""
+        registry = TickerRegistry()
+
+        info_via_get = registry.get("^GSPC")
+        info_via_get_info = registry.get_info("^GSPC")
+
+        assert info_via_get == info_via_get_info
+
+    def test_get_info_nonexistent(self) -> None:
+        """Test get_info with non-existent symbol."""
+        registry = TickerRegistry()
+        result = registry.get_info("INVALID_SYMBOL")
+
+        assert result is None
+
+
+class TestValidateMethod:
+    """Tests for validate method."""
+
+    def test_validate_invalid_symbol(self) -> None:
+        """Test validating an invalid symbol returns False."""
+        import asyncio
+
+        registry = TickerRegistry()
+        result = asyncio.run(registry.validate("INVALID_SYMBOL_XYZ123"))
+
+        assert result is False

@@ -15,6 +15,62 @@ from market_analysis.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
+
+# Preset groups for common use cases
+PRESET_GROUPS: dict[str, list[str]] = {
+    # Major indices
+    "MAJOR_INDICES": ["^N225", "^GSPC", "^DJI", "^IXIC", "^FTSE", "^GDAXI", "^FCHI"],
+    # Major forex pairs
+    "MAJOR_FOREX": ["USDJPY=X", "EURUSD=X", "GBPUSD=X", "AUDUSD=X"],
+    # Commodities
+    "COMMODITIES": ["GC=F", "CL=F", "SI=F", "NG=F"],
+    # Magnificent 7
+    "MAGNIFICENT_7": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"],
+    # FANG+
+    "FANG_PLUS": [
+        "META",
+        "AAPL",
+        "AMZN",
+        "NFLX",
+        "GOOGL",
+        "MSFT",
+        "NVDA",
+        "TSLA",
+        "SNOW",
+        "AVGO",
+    ],
+    # Japanese major stocks
+    "JP_MAJOR_STOCKS": ["7203.T", "6758.T", "9984.T", "6861.T", "8306.T"],
+    # US Sector ETFs
+    "SECTOR_TECHNOLOGY": ["XLK"],
+    "SECTOR_HEALTHCARE": ["XLV"],
+    "SECTOR_FINANCIALS": ["XLF"],
+    "SECTOR_CONSUMER_DISC": ["XLY"],
+    "SECTOR_CONSUMER_STAPLES": ["XLP"],
+    "SECTOR_ENERGY": ["XLE"],
+    "SECTOR_INDUSTRIALS": ["XLI"],
+    "SECTOR_MATERIALS": ["XLB"],
+    "SECTOR_UTILITIES": ["XLU"],
+    "SECTOR_REAL_ESTATE": ["XLRE"],
+    "SECTOR_COMM_SERVICES": ["XLC"],
+    # All sector ETFs
+    "ALL_SECTORS": [
+        "XLK",
+        "XLV",
+        "XLF",
+        "XLY",
+        "XLP",
+        "XLE",
+        "XLI",
+        "XLB",
+        "XLU",
+        "XLRE",
+        "XLC",
+    ],
+    # Bond ETFs
+    "BOND_ETFS": ["TLT", "IEF", "SHY", "LQD", "HYG", "TIP"],
+}
+
 # Default configuration file path
 # ticker_registry.py is in src/market_analysis/utils/
 # data/config/ is at the project root
@@ -371,6 +427,194 @@ class TickerRegistry:
         """Iterate over all ticker symbols."""
         self._load()
         return iter(self._tickers.keys())
+
+    def get_info(self, symbol: str) -> TickerInfo | None:
+        """Get ticker information by symbol (alias for get).
+
+        Parameters
+        ----------
+        symbol : str
+            The ticker symbol
+
+        Returns
+        -------
+        TickerInfo | None
+            Ticker information if found, None otherwise
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> info = registry.get_info("^GSPC")
+        >>> info.name_ja
+        'S&P 500'
+        """
+        return self.get(symbol)
+
+    def get_group(self, group_name: str) -> list[str]:
+        """Get ticker symbols from a preset group.
+
+        Parameters
+        ----------
+        group_name : str
+            Name of the preset group (e.g., "MAGNIFICENT_7", "MAJOR_INDICES")
+
+        Returns
+        -------
+        list[str]
+            List of ticker symbols in the group
+
+        Raises
+        ------
+        KeyError
+            If the group name is not found
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> mag7 = registry.get_group("MAGNIFICENT_7")
+        >>> "AAPL" in mag7
+        True
+        """
+        if group_name not in PRESET_GROUPS:
+            available = ", ".join(sorted(PRESET_GROUPS.keys()))
+            raise KeyError(
+                f"Unknown preset group '{group_name}'. Available: {available}"
+            )
+        return list(PRESET_GROUPS[group_name])
+
+    def get_groups(self, group_names: list[str]) -> list[str]:
+        """Get ticker symbols from multiple preset groups (deduplicated).
+
+        Parameters
+        ----------
+        group_names : list[str]
+            List of preset group names
+
+        Returns
+        -------
+        list[str]
+            Combined list of ticker symbols (deduplicated, order preserved)
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> portfolio = registry.get_groups(["MAGNIFICENT_7", "MAJOR_INDICES"])
+        >>> len(portfolio) > 7
+        True
+        """
+        seen: set[str] = set()
+        result: list[str] = []
+        for group_name in group_names:
+            for symbol in self.get_group(group_name):
+                if symbol not in seen:
+                    seen.add(symbol)
+                    result.append(symbol)
+        return result
+
+    def list_preset_groups(self) -> list[str]:
+        """List all available preset group names.
+
+        Returns
+        -------
+        list[str]
+            List of preset group names
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> groups = registry.list_preset_groups()
+        >>> "MAGNIFICENT_7" in groups
+        True
+        """
+        return sorted(PRESET_GROUPS.keys())
+
+    def search(self, query: str) -> list[TickerInfo]:
+        """Search tickers by name (Japanese or English) or symbol.
+
+        Parameters
+        ----------
+        query : str
+            Search query (case-insensitive)
+
+        Returns
+        -------
+        list[TickerInfo]
+            List of matching ticker information
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> results = registry.search("トヨタ")
+        >>> len(results) > 0
+        True
+
+        >>> results = registry.search("apple")
+        >>> any(r.symbol == "AAPL" for r in results)
+        True
+        """
+        self._load()
+        query_lower = query.lower()
+        results: list[TickerInfo] = []
+
+        for ticker_info in self._tickers.values():
+            if (
+                query_lower in ticker_info.symbol.lower()
+                or query_lower in ticker_info.name_ja.lower()
+                or query_lower in ticker_info.name_en.lower()
+                or query_lower in ticker_info.description.lower()
+            ):
+                results.append(ticker_info)
+
+        logger.debug(
+            "Ticker search completed",
+            query=query,
+            result_count=len(results),
+        )
+        return results
+
+    async def validate(self, symbol: str) -> bool:
+        """Validate a ticker symbol using yfinance API.
+
+        Parameters
+        ----------
+        symbol : str
+            The ticker symbol to validate
+
+        Returns
+        -------
+        bool
+            True if the symbol is valid and returns data
+
+        Examples
+        --------
+        >>> import asyncio
+        >>> registry = TickerRegistry()
+        >>> asyncio.run(registry.validate("AAPL"))
+        True
+        """
+        try:
+            import yfinance as yf
+
+            ticker = yf.Ticker(symbol)
+            # Try to get basic info - if it fails, the ticker is invalid
+            info = ticker.info
+            # Check if we got meaningful data
+            is_valid = bool(info and info.get("symbol"))
+
+            logger.debug(
+                "Ticker validation completed",
+                symbol=symbol,
+                is_valid=is_valid,
+            )
+            return is_valid
+
+        except Exception as e:
+            logger.warning(
+                "Ticker validation failed",
+                symbol=symbol,
+                error=str(e),
+            )
+            return False
 
 
 # Singleton instance for convenience
