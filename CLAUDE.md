@@ -209,6 +209,7 @@ with profile_context("処理名"):  # コンテキスト計測
 | デバッグ           | `/troubleshoot` コマンド（体系的デバッグ）                 |
 | タスク管理         | `/task` コマンド（複雑タスク分解・管理）                   |
 | Git操作            | `/commit-and-pr` コマンド                                  |
+| PRレビュー         | `/review-pr` コマンド（コード品質・セキュリティ・テスト） |
 | ドキュメントレビュー | `/review-docs` コマンド                                  |
 | 初期化（初回のみ） | `/setup-repository` コマンド                             |
 | コマンド一覧       | `/index` コマンド                                          |
