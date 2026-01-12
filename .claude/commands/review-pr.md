@@ -49,15 +49,29 @@ gh pr view --json number,title,body,files,additions,deletions,baseRefName,headRe
 
 ### ステップ 2: マルチサブエージェントレビュー（並列実行）
 
-3つのサブエージェントを**並列**で起動してレビューを実行します。
+**7つのサブエージェント**を**並列**で起動してレビューを実行します。
 
-#### 2.1 code-analyzer サブエージェント（コード品質）
+#### エージェント構成
+
+| グループ | エージェント | 担当領域 |
+|---------|------------|---------|
+| コード品質 | pr-readability | 可読性・命名規則・Docstring・型ヒント |
+| コード品質 | pr-design | SOLID原則・DRY・抽象化レベル |
+| コード品質 | pr-performance | アルゴリズム複雑度・メモリ効率・I/O |
+| セキュリティ | pr-security-code | OWASP A01-A05（コード脆弱性） |
+| セキュリティ | pr-security-infra | OWASP A06-A10 + 依存関係監査 |
+| テスト | pr-test-coverage | テスト有無・カバレッジ・エッジケース |
+| テスト | pr-test-quality | テスト品質・独立性・再現性 |
+
+#### 2.1 コード品質グループ（3並列）
+
+##### pr-readability（可読性）
 
 ```yaml
-subagent_type: "code-analyzer"
-description: "PR code quality review"
+subagent_type: "pr-readability"
+description: "PR readability review"
 prompt: |
-  PRの変更コードをレビューしてください。
+  PRの変更コードの可読性をレビューしてください。
 
   ## 対象ファイル
   [変更ファイルリスト]
@@ -66,24 +80,70 @@ prompt: |
   [git diff の内容]
 
   ## レビュー観点
-  1. 可読性（命名・ドキュメント・コメント）
-  2. 設計（単一責任・DRY・抽象化レベル）
-  3. 命名（変数名・関数名・一貫性）
-  4. SOLID原則（S/O/L/I/D）
+  1. 命名規則（PascalCase/snake_case/UPPER_SNAKE）
+  2. 型ヒントカバレッジ（目標90%以上）
+  3. Docstringカバレッジ（目標80%以上）
+  4. コメントの品質
 
   ## 出力
-  YAML形式で以下を出力:
-  - score: 0-100
-  - strengths: 良い点のリスト
-  - issues: 問題点（critical/high/medium/low別）
-  - solid_compliance: 各原則のPASS/WARN/FAIL
+  pr_readability 形式のYAMLを出力
 ```
 
-#### 2.2 security-scanner サブエージェント（セキュリティ）
+##### pr-design（設計）
 
 ```yaml
-subagent_type: "security-scanner"
-description: "PR security review"
+subagent_type: "pr-design"
+description: "PR design review"
+prompt: |
+  PRの変更コードの設計品質をレビューしてください。
+
+  ## 対象ファイル
+  [変更ファイルリスト]
+
+  ## 差分
+  [git diff の内容]
+
+  ## レビュー観点
+  1. SOLID原則（S/O/L/I/D）
+  2. DRY原則（重複コード検出）
+  3. 抽象化レベルの一貫性
+  4. 設計パターンの適用
+
+  ## 出力
+  pr_design 形式のYAMLを出力
+```
+
+##### pr-performance（パフォーマンス）
+
+```yaml
+subagent_type: "pr-performance"
+description: "PR performance review"
+prompt: |
+  PRの変更コードのパフォーマンスをレビューしてください。
+
+  ## 対象ファイル
+  [変更ファイルリスト]
+
+  ## 差分
+  [git diff の内容]
+
+  ## レビュー観点
+  1. サイクロマティック複雑度
+  2. アルゴリズム効率（O(n²)検出）
+  3. メモリ効率
+  4. I/O最適化・キャッシング機会
+
+  ## 出力
+  pr_performance 形式のYAMLを出力
+```
+
+#### 2.2 セキュリティグループ（2並列）
+
+##### pr-security-code（コードセキュリティ）
+
+```yaml
+subagent_type: "pr-security-code"
+description: "PR code security review"
 prompt: |
   PRの変更コードをセキュリティ観点でレビューしてください。
 
@@ -93,25 +153,53 @@ prompt: |
   ## 差分
   [git diff の内容]
 
-  ## レビュー観点
-  1. 脆弱性（インジェクション・乱数・パストラバーサル・機密情報）
-  2. 入力検証（ユーザー入力・サニタイゼーション・型チェック）
-  3. 認証/認可（アクセス制御・認証チェック・セッション管理）
+  ## レビュー観点（OWASP A01-A05）
+  1. A01: アクセス制御の不備
+  2. A02: 暗号化の失敗
+  3. A03: インジェクション
+  4. A04: 安全でない設計
+  5. A05: セキュリティの設定ミス
+  6. 機密情報のハードコード検出
 
   ## 出力
-  YAML形式で以下を出力:
-  - score: 0-100
-  - vulnerability_count: 重大度別件数
-  - findings: 検出された問題（id/severity/category/location/description/recommendation/cwe_id）
+  pr_security_code 形式のYAMLを出力
 ```
 
-#### 2.3 implementation-validator サブエージェント（テスト）
+##### pr-security-infra（インフラセキュリティ）
 
 ```yaml
-subagent_type: "implementation-validator"
-description: "PR test review"
+subagent_type: "pr-security-infra"
+description: "PR infra security review"
 prompt: |
-  PRの変更に対するテストをレビューしてください。
+  PRの変更をインフラセキュリティ観点でレビューしてください。
+
+  ## 対象ファイル
+  [変更ファイルリスト]
+
+  ## 差分
+  [git diff の内容]
+
+  ## レビュー観点（OWASP A06-A10）
+  1. A06: 脆弱で古いコンポーネント
+  2. A07: 識別と認証の失敗
+  3. A08: ソフトウェアとデータの整合性の失敗
+  4. A09: セキュリティログとモニタリングの失敗
+  5. A10: SSRF
+  6. 依存関係の脆弱性監査
+
+  ## 出力
+  pr_security_infra 形式のYAMLを出力
+```
+
+#### 2.3 テストグループ（2並列）
+
+##### pr-test-coverage（カバレッジ）
+
+```yaml
+subagent_type: "pr-test-coverage"
+description: "PR test coverage review"
+prompt: |
+  PRの変更に対するテストカバレッジをレビューしてください。
 
   ## 対象ファイル
   [変更ファイルリスト]
@@ -120,22 +208,85 @@ prompt: |
   [git diff の内容]
 
   ## レビュー観点
-  1. カバレッジ（テスト有無・正常系・エッジケース）
-  2. テストケースの妥当性（テスト名・アサーション・モック使用）
-  3. テストの品質（独立性・再現性・可読性）
+  1. テストの存在確認
+  2. カバレッジ評価（GOOD/FAIR/POOR）
+  3. エッジケース網羅性
+  4. 分岐カバレッジ
 
   ## 出力
-  YAML形式で以下を出力:
-  - score: 0-100
-  - coverage_assessment: GOOD/FAIR/POOR
-  - edge_cases_covered: true/false
-  - missing_tests: 不足テストケースのリスト
-  - test_quality: isolation/reproducibility/readability のPASS/WARN/FAIL
+  pr_test_coverage 形式のYAMLを出力
+```
+
+##### pr-test-quality（品質）
+
+```yaml
+subagent_type: "pr-test-quality"
+description: "PR test quality review"
+prompt: |
+  PRのテストコードの品質をレビューしてください。
+
+  ## 対象ファイル
+  [変更ファイルリスト]
+
+  ## 差分
+  [git diff の内容]
+
+  ## レビュー観点
+  1. テスト命名の品質
+  2. アサーションの適切性
+  3. モック使用の適切性
+  4. テスト独立性・再現性
+
+  ## 出力
+  pr_test_quality 形式のYAMLを出力
 ```
 
 ### ステップ 3: レビュー結果の統合と出力
 
-サブエージェントからの結果を統合して**3つの出力**を生成します。
+7つのサブエージェントからの結果を**3カテゴリ**に統合して出力を生成します。
+
+#### 結果統合ロジック
+
+```yaml
+# スコア統合方針
+scores:
+  code_quality:  # 3エージェントから算出
+    formula: (readability × 0.35) + (design × 0.40) + (performance × 0.25)
+    components:
+      - pr-readability → readability_score
+      - pr-design → design_score
+      - pr-performance → performance_score
+
+  security:  # 2エージェントから算出
+    formula: (code_security × 0.60) + (infra_security × 0.40)
+    components:
+      - pr-security-code → code_security_score
+      - pr-security-infra → infra_security_score
+
+  test:  # 2エージェントから算出
+    formula: (coverage × 0.50) + (quality × 0.50)
+    components:
+      - pr-test-coverage → coverage_score
+      - pr-test-quality → quality_score
+
+  overall:  # 3カテゴリから算出
+    formula: (code_quality × 0.40) + (security × 0.35) + (test × 0.25)
+
+# 問題統合方針
+issues_merge:
+  code_quality:
+    - pr-readability.issues → naming, type_hints, docstrings
+    - pr-design.issues → solid, dry, abstraction
+    - pr-performance.issues → algorithm, memory, io
+
+  security:
+    - pr-security-code.findings → A01-A05, secrets
+    - pr-security-infra.findings → A06-A10, dependencies
+
+  test:
+    - pr-test-coverage.missing_tests → 欠落テスト
+    - pr-test-quality.issues → 品質問題
+```
 
 #### 3.1 マークダウン出力（ターミナル標準出力）
 
@@ -360,7 +511,19 @@ EOF
 
 ## 注意事項
 
+- **7つのサブエージェント**が並列実行されるため、効率的に処理されます
 - レビューは詳細な分析のため、数分かかる場合があります
-- サブエージェントは並列実行されるため、効率的に処理されます
 - セキュリティレビューは補完的なツールとして使用し、専門的なセキュリティ監査の代替にはなりません
 - YAMLレポートは `docs/` ディレクトリに日付・時刻付きで保存されます
+
+## エージェント一覧
+
+| エージェント | モデル | 役割 |
+|------------|-------|------|
+| pr-readability | sonnet | 可読性・命名・型ヒント・Docstring |
+| pr-design | sonnet | SOLID・DRY・抽象化レベル |
+| pr-performance | sonnet | 複雑度・アルゴリズム・メモリ・I/O |
+| pr-security-code | sonnet | OWASP A01-A05・機密情報 |
+| pr-security-infra | sonnet | OWASP A06-A10・依存関係監査 |
+| pr-test-coverage | sonnet | テスト有無・カバレッジ・エッジケース |
+| pr-test-quality | sonnet | テスト品質・独立性・再現性 |
