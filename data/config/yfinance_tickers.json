@@ -1,0 +1,396 @@
+{
+    "Stock Indices": {
+        "^GSPC": {
+            "name_ja": "S&P 500",
+            "name_en": "S&P 500 Index",
+            "category": "index",
+            "region": "US",
+            "currency": "USD",
+            "description": "米国大型株500銘柄の時価総額加重平均指数。"
+        },
+        "^DJI": {
+            "name_ja": "ダウ工業株30種平均",
+            "name_en": "Dow Jones Industrial Average",
+            "category": "index",
+            "region": "US",
+            "currency": "USD",
+            "description": "米国を代表する30銘柄の株価平均指数。"
+        },
+        "^IXIC": {
+            "name_ja": "NASDAQ総合指数",
+            "name_en": "NASDAQ Composite",
+            "category": "index",
+            "region": "US",
+            "currency": "USD",
+            "description": "NASDAQに上場する全銘柄の時価総額加重平均指数。"
+        },
+        "^NDX": {
+            "name_ja": "NASDAQ 100",
+            "name_en": "NASDAQ 100 Index",
+            "category": "index",
+            "region": "US",
+            "currency": "USD",
+            "description": "NASDAQ上場の非金融大型株100銘柄の指数。"
+        },
+        "^RUT": {
+            "name_ja": "ラッセル2000",
+            "name_en": "Russell 2000 Index",
+            "category": "index",
+            "region": "US",
+            "currency": "USD",
+            "description": "米国小型株2000銘柄の指数。"
+        },
+        "^VIX": {
+            "name_ja": "VIX指数",
+            "name_en": "CBOE Volatility Index",
+            "category": "volatility",
+            "region": "US",
+            "currency": "USD",
+            "description": "S&P500オプションから算出される市場の予想変動率。恐怖指数とも呼ばれる。"
+        },
+        "^N225": {
+            "name_ja": "日経平均株価",
+            "name_en": "Nikkei 225",
+            "category": "index",
+            "region": "JP",
+            "currency": "JPY",
+            "description": "東京証券取引所プライム市場の代表的な225銘柄の株価平均指数。"
+        },
+        "^FTSE": {
+            "name_ja": "FTSE 100",
+            "name_en": "FTSE 100 Index",
+            "category": "index",
+            "region": "UK",
+            "currency": "GBP",
+            "description": "ロンドン証券取引所上場の時価総額上位100銘柄の指数。"
+        },
+        "^GDAXI": {
+            "name_ja": "DAX",
+            "name_en": "DAX Index",
+            "category": "index",
+            "region": "DE",
+            "currency": "EUR",
+            "description": "フランクフルト証券取引所の主要40銘柄の指数。"
+        },
+        "^FCHI": {
+            "name_ja": "CAC 40",
+            "name_en": "CAC 40 Index",
+            "category": "index",
+            "region": "FR",
+            "currency": "EUR",
+            "description": "ユーロネクスト・パリ上場の時価総額上位40銘柄の指数。"
+        },
+        "^HSI": {
+            "name_ja": "香港ハンセン指数",
+            "name_en": "Hang Seng Index",
+            "category": "index",
+            "region": "HK",
+            "currency": "HKD",
+            "description": "香港証券取引所の主要銘柄の時価総額加重平均指数。"
+        },
+        "000001.SS": {
+            "name_ja": "上海総合指数",
+            "name_en": "Shanghai Composite Index",
+            "category": "index",
+            "region": "CN",
+            "currency": "CNY",
+            "description": "上海証券取引所上場の全銘柄の指数。"
+        }
+    },
+    "Forex": {
+        "USDJPY=X": {
+            "name_ja": "米ドル/円",
+            "name_en": "USD/JPY",
+            "category": "forex",
+            "base": "USD",
+            "quote": "JPY",
+            "description": "米ドルと日本円の為替レート。"
+        },
+        "EURUSD=X": {
+            "name_ja": "ユーロ/米ドル",
+            "name_en": "EUR/USD",
+            "category": "forex",
+            "base": "EUR",
+            "quote": "USD",
+            "description": "ユーロと米ドルの為替レート。世界で最も取引量の多い通貨ペア。"
+        },
+        "GBPUSD=X": {
+            "name_ja": "英ポンド/米ドル",
+            "name_en": "GBP/USD",
+            "category": "forex",
+            "base": "GBP",
+            "quote": "USD",
+            "description": "英ポンドと米ドルの為替レート。"
+        },
+        "AUDUSD=X": {
+            "name_ja": "豪ドル/米ドル",
+            "name_en": "AUD/USD",
+            "category": "forex",
+            "base": "AUD",
+            "quote": "USD",
+            "description": "豪ドルと米ドルの為替レート。資源国通貨として注目される。"
+        },
+        "USDCAD=X": {
+            "name_ja": "米ドル/カナダドル",
+            "name_en": "USD/CAD",
+            "category": "forex",
+            "base": "USD",
+            "quote": "CAD",
+            "description": "米ドルとカナダドルの為替レート。原油価格と相関が高い。"
+        },
+        "USDCHF=X": {
+            "name_ja": "米ドル/スイスフラン",
+            "name_en": "USD/CHF",
+            "category": "forex",
+            "base": "USD",
+            "quote": "CHF",
+            "description": "米ドルとスイスフランの為替レート。スイスフランは安全資産として知られる。"
+        },
+        "EURJPY=X": {
+            "name_ja": "ユーロ/円",
+            "name_en": "EUR/JPY",
+            "category": "forex",
+            "base": "EUR",
+            "quote": "JPY",
+            "description": "ユーロと日本円の為替レート。"
+        },
+        "GBPJPY=X": {
+            "name_ja": "英ポンド/円",
+            "name_en": "GBP/JPY",
+            "category": "forex",
+            "base": "GBP",
+            "quote": "JPY",
+            "description": "英ポンドと日本円の為替レート。"
+        },
+        "DX-Y.NYB": {
+            "name_ja": "米ドル指数",
+            "name_en": "US Dollar Index",
+            "category": "forex",
+            "base": "USD",
+            "quote": "basket",
+            "description": "主要6通貨（EUR, JPY, GBP, CAD, SEK, CHF）に対する米ドルの価値を示す指数。"
+        }
+    },
+    "Commodities": {
+        "GC=F": {
+            "name_ja": "金先物",
+            "name_en": "Gold Futures",
+            "category": "commodity",
+            "subcategory": "precious_metal",
+            "unit": "USD/oz",
+            "description": "COMEX金先物。安全資産として、地政学リスクやインフレヘッジとして注目される。"
+        },
+        "SI=F": {
+            "name_ja": "銀先物",
+            "name_en": "Silver Futures",
+            "category": "commodity",
+            "subcategory": "precious_metal",
+            "unit": "USD/oz",
+            "description": "COMEX銀先物。工業用途と投資用途の両方の需要がある。"
+        },
+        "PL=F": {
+            "name_ja": "プラチナ先物",
+            "name_en": "Platinum Futures",
+            "category": "commodity",
+            "subcategory": "precious_metal",
+            "unit": "USD/oz",
+            "description": "NYMEXプラチナ先物。自動車触媒として工業需要が高い。"
+        },
+        "CL=F": {
+            "name_ja": "WTI原油先物",
+            "name_en": "Crude Oil WTI Futures",
+            "category": "commodity",
+            "subcategory": "energy",
+            "unit": "USD/barrel",
+            "description": "NYMEXのWTI原油先物。世界の原油価格の指標。"
+        },
+        "BZ=F": {
+            "name_ja": "ブレント原油先物",
+            "name_en": "Brent Crude Oil Futures",
+            "category": "commodity",
+            "subcategory": "energy",
+            "unit": "USD/barrel",
+            "description": "ICEブレント原油先物。欧州・アジアの原油価格の指標。"
+        },
+        "NG=F": {
+            "name_ja": "天然ガス先物",
+            "name_en": "Natural Gas Futures",
+            "category": "commodity",
+            "subcategory": "energy",
+            "unit": "USD/MMBtu",
+            "description": "NYMEX天然ガス先物。季節性が高く、冬季の暖房需要で変動。"
+        },
+        "HG=F": {
+            "name_ja": "銅先物",
+            "name_en": "Copper Futures",
+            "category": "commodity",
+            "subcategory": "industrial_metal",
+            "unit": "USD/lb",
+            "description": "COMEX銅先物。景気の先行指標として「ドクター・カッパー」と呼ばれる。"
+        },
+        "ZC=F": {
+            "name_ja": "トウモロコシ先物",
+            "name_en": "Corn Futures",
+            "category": "commodity",
+            "subcategory": "agriculture",
+            "unit": "USD/bushel",
+            "description": "CBOTトウモロコシ先物。食料・飼料・バイオ燃料として需要。"
+        },
+        "ZW=F": {
+            "name_ja": "小麦先物",
+            "name_en": "Wheat Futures",
+            "category": "commodity",
+            "subcategory": "agriculture",
+            "unit": "USD/bushel",
+            "description": "CBOT小麦先物。世界の食料価格に影響。"
+        },
+        "ZS=F": {
+            "name_ja": "大豆先物",
+            "name_en": "Soybean Futures",
+            "category": "commodity",
+            "subcategory": "agriculture",
+            "unit": "USD/bushel",
+            "description": "CBOT大豆先物。食用油・飼料として需要。"
+        }
+    },
+    "Bond ETFs": {
+        "TLT": {
+            "name_ja": "米国長期国債ETF",
+            "name_en": "iShares 20+ Year Treasury Bond ETF",
+            "category": "etf",
+            "subcategory": "bond",
+            "duration": "long",
+            "description": "20年超の米国債に投資するETF。金利感応度が高い。"
+        },
+        "IEF": {
+            "name_ja": "米国中期国債ETF",
+            "name_en": "iShares 7-10 Year Treasury Bond ETF",
+            "category": "etf",
+            "subcategory": "bond",
+            "duration": "intermediate",
+            "description": "7-10年の米国債に投資するETF。"
+        },
+        "SHY": {
+            "name_ja": "米国短期国債ETF",
+            "name_en": "iShares 1-3 Year Treasury Bond ETF",
+            "category": "etf",
+            "subcategory": "bond",
+            "duration": "short",
+            "description": "1-3年の米国債に投資するETF。金利リスクが低い。"
+        },
+        "LQD": {
+            "name_ja": "投資適格社債ETF",
+            "name_en": "iShares iBoxx Investment Grade Corporate Bond ETF",
+            "category": "etf",
+            "subcategory": "bond",
+            "duration": "intermediate",
+            "description": "投資適格の米国社債に投資するETF。"
+        },
+        "HYG": {
+            "name_ja": "ハイイールド社債ETF",
+            "name_en": "iShares iBoxx High Yield Corporate Bond ETF",
+            "category": "etf",
+            "subcategory": "bond",
+            "duration": "intermediate",
+            "description": "ハイイールド（ジャンク）社債に投資するETF。信用リスクが高い。"
+        },
+        "TIP": {
+            "name_ja": "米国物価連動国債ETF",
+            "name_en": "iShares TIPS Bond ETF",
+            "category": "etf",
+            "subcategory": "bond",
+            "duration": "intermediate",
+            "description": "米国物価連動国債（TIPS）に投資するETF。インフレヘッジ。"
+        }
+    },
+    "Sector ETFs": {
+        "XLF": {
+            "name_ja": "金融セクターETF",
+            "name_en": "Financial Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "financials",
+            "description": "S&P500の金融セクター銘柄に投資するETF。"
+        },
+        "XLK": {
+            "name_ja": "テクノロジーセクターETF",
+            "name_en": "Technology Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "technology",
+            "description": "S&P500のテクノロジーセクター銘柄に投資するETF。"
+        },
+        "XLE": {
+            "name_ja": "エネルギーセクターETF",
+            "name_en": "Energy Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "energy",
+            "description": "S&P500のエネルギーセクター銘柄に投資するETF。"
+        },
+        "XLV": {
+            "name_ja": "ヘルスケアセクターETF",
+            "name_en": "Health Care Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "healthcare",
+            "description": "S&P500のヘルスケアセクター銘柄に投資するETF。"
+        },
+        "XLI": {
+            "name_ja": "資本財セクターETF",
+            "name_en": "Industrial Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "industrials",
+            "description": "S&P500の資本財セクター銘柄に投資するETF。"
+        },
+        "XLY": {
+            "name_ja": "一般消費財セクターETF",
+            "name_en": "Consumer Discretionary Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "consumer_discretionary",
+            "description": "S&P500の一般消費財セクター銘柄に投資するETF。"
+        },
+        "XLP": {
+            "name_ja": "生活必需品セクターETF",
+            "name_en": "Consumer Staples Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "consumer_staples",
+            "description": "S&P500の生活必需品セクター銘柄に投資するETF。"
+        },
+        "XLU": {
+            "name_ja": "公益事業セクターETF",
+            "name_en": "Utilities Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "utilities",
+            "description": "S&P500の公益事業セクター銘柄に投資するETF。"
+        },
+        "XLRE": {
+            "name_ja": "不動産セクターETF",
+            "name_en": "Real Estate Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "real_estate",
+            "description": "S&P500の不動産セクター銘柄に投資するETF。"
+        },
+        "XLB": {
+            "name_ja": "素材セクターETF",
+            "name_en": "Materials Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "materials",
+            "description": "S&P500の素材セクター銘柄に投資するETF。"
+        },
+        "XLC": {
+            "name_ja": "通信サービスセクターETF",
+            "name_en": "Communication Services Select Sector SPDR Fund",
+            "category": "etf",
+            "subcategory": "sector",
+            "sector": "communication_services",
+            "description": "S&P500の通信サービスセクター銘柄に投資するETF。"
+        }
+    }
+}
