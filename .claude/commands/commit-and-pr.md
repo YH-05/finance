@@ -107,6 +107,27 @@ PR に付けるラベル：
 
     **PRタイトルとボディは日本語で記述すること。**
 
+6. **PRレビューファイルのコミット（オプション）**
+
+    `/review-pr` コマンドで生成されたレビューファイル（`docs/pr-review-*.yaml`）がある場合は、追加コミットとしてプッシュします：
+
+    ```bash
+    # レビューファイルの確認
+    git status docs/pr-review-*.yaml 2>/dev/null
+
+    # ファイルがあればコミット
+    git add docs/pr-review-*.yaml
+    git commit -m "$(cat <<'EOF'
+    docs: add PR review report
+
+    🤖 Generated with [Claude Code](https://claude.ai/code)
+
+    Co-Authored-By: Claude <noreply@anthropic.com>
+    EOF
+    )"
+    git push
+    ```
+
 ## 注意事項
 
 1. **コミット前の確認**
