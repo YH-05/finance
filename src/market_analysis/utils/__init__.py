@@ -21,6 +21,7 @@ from .retry import (
     with_retry,
 )
 from .ticker_registry import (
+    PRESET_GROUPS,
     TickerInfo,
     TickerRegistry,
     get_ticker_registry,
@@ -38,6 +39,7 @@ __all__ = [
     "DEFAULT_CACHE_DB_PATH",
     "DEFAULT_RETRY_CONFIG",
     "PERSISTENT_CACHE_CONFIG",
+    "PRESET_GROUPS",
     "RETRYABLE_EXCEPTIONS",
     "SYMBOL_PATTERN",
     "RetryableOperation",
