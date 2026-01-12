@@ -4,15 +4,17 @@ A Python library for market data fetching, analysis, and visualization.
 
 Examples
 --------
->>> from market_analysis import Analyzer, TickerRegistry
->>> registry = TickerRegistry()
->>> mag7 = registry.get_group("MAGNIFICENT_7")
->>> print(mag7)
-['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA']
+>>> from market_analysis import MarketData, Analysis
+>>> data = MarketData()
+>>> stock_df = data.fetch_stock("AAPL", start="2024-01-01")
+>>> analysis = Analysis(stock_df)
+>>> analysis.add_sma(20).add_returns()
 """
 
-# Analysis classes
+# Public API
+# Analysis classes (internal)
 from .analysis import Analyzer, CorrelationAnalyzer, IndicatorCalculator
+from .api import Analysis, MarketData
 
 # Errors
 from .errors import (
@@ -58,7 +60,10 @@ from .utils import (
 )
 
 __all__ = [
-    # Analysis
+    # Public API
+    "Analysis",
+    "MarketData",
+    # Analysis (internal)
     "Analyzer",
     "CorrelationAnalyzer",
     "IndicatorCalculator",
