@@ -9,6 +9,7 @@ Both support technical indicator overlays and date range filtering.
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from logging import Logger
 from typing import Any
 
 import pandas as pd
@@ -16,22 +17,10 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 from ..analysis.indicators import IndicatorCalculator
+from ..utils.logger_factory import create_logger
 from .charts import ChartBuilder, ChartConfig
 
-
-def _get_logger() -> Any:
-    """Get logger with lazy initialization to avoid circular imports."""
-    try:
-        from ..utils.logging_config import get_logger
-
-        return get_logger(__name__, module="visualization")
-    except ImportError:
-        import logging
-
-        return logging.getLogger(__name__)
-
-
-logger: Any = _get_logger()
+logger: Logger = create_logger(__name__, module="visualization")
 
 
 # =============================================================================
@@ -54,12 +43,41 @@ class PriceChartData:
         Start date for filtering (default: None, no filter)
     end_date : datetime | str | None
         End date for filtering (default: None, no filter)
+
+    Raises
+    ------
+    ValueError
+        If required OHLC columns are missing or date range is invalid
     """
 
     df: pd.DataFrame
     symbol: str = ""
     start_date: datetime | str | None = None
     end_date: datetime | str | None = None
+
+    def __post_init__(self) -> None:
+        """Validate data after initialization."""
+        # Required OHLC columns (Volume is optional)
+        required_cols = {"Open", "High", "Low", "Close"}
+        missing = required_cols - set(self.df.columns)
+        if missing:
+            raise ValueError(f"Missing required columns: {missing}")
+
+        # Validate date range
+        if self.start_date is not None and self.end_date is not None:
+            start = pd.to_datetime(self.start_date)
+            end = pd.to_datetime(self.end_date)
+            if start > end:
+                raise ValueError(
+                    f"start_date ({start}) must be before end_date ({end})"
+                )
+
+        logger.debug(
+            "PriceChartData validated",
+            symbol=self.symbol,
+            rows=len(self.df),
+            columns=list(self.df.columns),
+        )
 
     def get_filtered_data(self) -> pd.DataFrame:
         """Get data filtered by date range.
@@ -296,84 +314,157 @@ class PriceChartBuilder(ChartBuilder):
             color = overlay.color or self._get_next_indicator_color()
 
             if overlay.indicator_type == "sma":
-                window = overlay.params.get("window", 20)
-                values = IndicatorCalculator.calculate_sma(close_prices, window)
-                self._figure.add_trace(
-                    go.Scatter(
-                        x=df.index,
-                        y=values,
-                        mode="lines",
-                        name=overlay.name,
-                        line={"color": color, "width": 1},
-                    ),
-                    row=1,
-                    col=1,
-                )
-
+                self._add_sma_trace(df.index, close_prices, overlay, color)
             elif overlay.indicator_type == "ema":
-                window = overlay.params.get("window", 12)
-                values = IndicatorCalculator.calculate_ema(close_prices, window)
-                self._figure.add_trace(
-                    go.Scatter(
-                        x=df.index,
-                        y=values,
-                        mode="lines",
-                        name=overlay.name,
-                        line={"color": color, "width": 1},
-                    ),
-                    row=1,
-                    col=1,
-                )
-
+                self._add_ema_trace(df.index, close_prices, overlay, color)
             elif overlay.indicator_type == "bollinger":
-                window = overlay.params.get("window", 20)
-                num_std = overlay.params.get("num_std", 2.0)
-                bands = IndicatorCalculator.calculate_bollinger_bands(
-                    close_prices, window, num_std
-                )
-
-                # Upper band
-                self._figure.add_trace(
-                    go.Scatter(
-                        x=df.index,
-                        y=bands["upper"],
-                        mode="lines",
-                        name=f"{overlay.name} Upper",
-                        line={"color": color, "width": 1, "dash": "dash"},
-                    ),
-                    row=1,
-                    col=1,
-                )
-
-                # Middle band (SMA)
-                self._figure.add_trace(
-                    go.Scatter(
-                        x=df.index,
-                        y=bands["middle"],
-                        mode="lines",
-                        name=f"{overlay.name} Middle",
-                        line={"color": color, "width": 1},
-                    ),
-                    row=1,
-                    col=1,
-                )
-
-                # Lower band
-                self._figure.add_trace(
-                    go.Scatter(
-                        x=df.index,
-                        y=bands["lower"],
-                        mode="lines",
-                        name=f"{overlay.name} Lower",
-                        line={"color": color, "width": 1, "dash": "dash"},
-                    ),
-                    row=1,
-                    col=1,
-                )
+                self._add_bollinger_traces(df.index, close_prices, overlay, color)
 
         logger.debug(
             "Indicator traces added",
             count=len(self._indicators),
+        )
+
+    def _add_sma_trace(
+        self,
+        index: pd.Index,
+        close_prices: pd.Series,
+        overlay: IndicatorOverlay,
+        color: str,
+    ) -> None:
+        """Add SMA indicator trace.
+
+        Parameters
+        ----------
+        index : pd.Index
+            DataFrame index (dates)
+        close_prices : pd.Series
+            Close price series
+        overlay : IndicatorOverlay
+            Indicator configuration
+        color : str
+            Line color
+        """
+        if self._figure is None:
+            return
+
+        window = overlay.params.get("window", 20)
+        values = IndicatorCalculator.calculate_sma(close_prices, window)
+        self._figure.add_trace(
+            go.Scatter(
+                x=index,
+                y=values,
+                mode="lines",
+                name=overlay.name,
+                line={"color": color, "width": 1},
+            ),
+            row=1,
+            col=1,
+        )
+
+    def _add_ema_trace(
+        self,
+        index: pd.Index,
+        close_prices: pd.Series,
+        overlay: IndicatorOverlay,
+        color: str,
+    ) -> None:
+        """Add EMA indicator trace.
+
+        Parameters
+        ----------
+        index : pd.Index
+            DataFrame index (dates)
+        close_prices : pd.Series
+            Close price series
+        overlay : IndicatorOverlay
+            Indicator configuration
+        color : str
+            Line color
+        """
+        if self._figure is None:
+            return
+
+        window = overlay.params.get("window", 12)
+        values = IndicatorCalculator.calculate_ema(close_prices, window)
+        self._figure.add_trace(
+            go.Scatter(
+                x=index,
+                y=values,
+                mode="lines",
+                name=overlay.name,
+                line={"color": color, "width": 1},
+            ),
+            row=1,
+            col=1,
+        )
+
+    def _add_bollinger_traces(
+        self,
+        index: pd.Index,
+        close_prices: pd.Series,
+        overlay: IndicatorOverlay,
+        color: str,
+    ) -> None:
+        """Add Bollinger Bands traces (upper, middle, lower).
+
+        Parameters
+        ----------
+        index : pd.Index
+            DataFrame index (dates)
+        close_prices : pd.Series
+            Close price series
+        overlay : IndicatorOverlay
+            Indicator configuration
+        color : str
+            Line color
+        """
+        if self._figure is None:
+            return
+
+        window = overlay.params.get("window", 20)
+        num_std = overlay.params.get("num_std", 2.0)
+        bands = IndicatorCalculator.calculate_bollinger_bands(
+            close_prices, window, num_std
+        )
+
+        # Upper band
+        self._figure.add_trace(
+            go.Scatter(
+                x=index,
+                y=bands["upper"],
+                mode="lines",
+                name=f"{overlay.name} Upper",
+                line={"color": color, "width": 1, "dash": "dash"},
+            ),
+            row=1,
+            col=1,
+        )
+
+        # Middle band (SMA)
+        self._figure.add_trace(
+            go.Scatter(
+                x=index,
+                y=bands["middle"],
+                mode="lines",
+                name=f"{overlay.name} Middle",
+                line={"color": color, "width": 1},
+            ),
+            row=1,
+            col=1,
+        )
+
+        # Lower band
+        self._figure.add_trace(
+            go.Scatter(
+                x=index,
+                y=bands["lower"],
+                mode="lines",
+                name=f"{overlay.name} Lower",
+                line={"color": color, "width": 1, "dash": "dash"},
+            ),
+            row=1,
+            col=1,
         )
 
     def _add_volume_trace(self, df: pd.DataFrame) -> None:

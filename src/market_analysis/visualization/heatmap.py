@@ -4,6 +4,7 @@ This module provides the HeatmapChart class for creating correlation
 matrix heatmaps with customizable color scales and annotations.
 """
 
+from logging import Logger
 from typing import Any
 
 import numpy as np
@@ -11,22 +12,10 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from ..types import CorrelationResult
+from ..utils.logger_factory import create_logger
 from .charts import ChartBuilder, ChartConfig
 
-
-def _get_logger() -> Any:
-    """Get logger with lazy initialization to avoid circular imports."""
-    try:
-        from ..utils.logging_config import get_logger
-
-        return get_logger(__name__, module="visualization")
-    except ImportError:
-        import logging
-
-        return logging.getLogger(__name__)
-
-
-logger: Any = _get_logger()
+logger: Logger = create_logger(__name__, module="visualization")
 
 
 # =============================================================================

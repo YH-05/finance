@@ -120,6 +120,59 @@ class TestPriceChartData:
         filtered = data.get_filtered_data()
         assert filtered.index.min() >= pd.Timestamp("2024-01-15")  # type: ignore[operator]
 
+    def test_異常系_必須カラム欠損でValueError(self) -> None:
+        """必須カラム（OHLC）が欠損している場合にValueErrorが発生することを確認。"""
+        # Closeカラムが欠損
+        df_missing_close = pd.DataFrame(
+            {
+                "Open": [100, 101],
+                "High": [102, 103],
+                "Low": [99, 100],
+                "Volume": [1000, 2000],
+            },
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        with pytest.raises(ValueError, match="Missing required columns"):
+            PriceChartData(df=df_missing_close, symbol="TEST")
+
+    def test_異常系_複数カラム欠損でValueError(self) -> None:
+        """複数の必須カラムが欠損している場合にValueErrorが発生することを確認。"""
+        df_missing_multiple = pd.DataFrame(
+            {
+                "Open": [100, 101],
+                "Volume": [1000, 2000],
+            },
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        with pytest.raises(ValueError, match="Missing required columns"):
+            PriceChartData(df=df_missing_multiple, symbol="TEST")
+
+    def test_異常系_日付範囲不正でValueError(
+        self, sample_ohlcv_df: pd.DataFrame
+    ) -> None:
+        """start_dateがend_dateより後の場合にValueErrorが発生することを確認。"""
+        with pytest.raises(ValueError, match="start_date.*must be before end_date"):
+            PriceChartData(
+                df=sample_ohlcv_df,
+                symbol="TEST",
+                start_date="2024-01-20",
+                end_date="2024-01-10",
+            )
+
+    def test_正常系_Volumeなしでも初期化可能(self) -> None:
+        """Volume列がなくても初期化できることを確認（OHLCのみ必須）。"""
+        df_no_volume = pd.DataFrame(
+            {
+                "Open": [100, 101],
+                "High": [102, 103],
+                "Low": [99, 100],
+                "Close": [101, 102],
+            },
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        data = PriceChartData(df=df_no_volume, symbol="TEST")
+        assert len(data.df) == 2
+
 
 # =============================================================================
 # IndicatorOverlay Tests

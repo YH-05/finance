@@ -10,6 +10,7 @@ from .cache import (
     get_cache,
     reset_cache,
 )
+from .logger_factory import create_logger
 from .logging_config import get_logger, log_context, set_log_level, setup_logging
 from .retry import (
     DEFAULT_RETRY_CONFIG,
@@ -47,6 +48,7 @@ __all__ = [
     "TickerInfo",
     "TickerRegistry",
     "Validator",
+    "create_logger",
     "create_persistent_cache",
     "create_retry_decorator",
     "generate_cache_key",
