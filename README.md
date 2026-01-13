@@ -125,9 +125,9 @@ uv run pyright --version
 ```
 finance/
 ├── .claude/                      # Claude Code 設定
-│   ├── agents/                   # サブエージェント定義 (43)
+│   ├── agents/                   # サブエージェント定義 (42)
 │   ├── commands/                 # スラッシュコマンド (25)
-│   └── skills/                   # スキル定義 (7)
+│   └── skills/                   # スキル定義 (8)
 ├── .github/                      # GitHub automation
 │   ├── ISSUE_TEMPLATE/           # Issue テンプレート
 │   └── workflows/                # CI/CD

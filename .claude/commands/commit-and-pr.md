@@ -109,14 +109,14 @@ PR に付けるラベル：
 
 6. **PRレビューファイルのコミット（オプション）**
 
-    `/review-pr` コマンドで生成されたレビューファイル（`docs/pr-review-*.yaml`）がある場合は、追加コミットとしてプッシュします：
+    `/review-pr` コマンドで生成されたレビューファイル（`docs/pr-review/pr-review-*.yaml`）がある場合は、追加コミットとしてプッシュします：
 
     ```bash
     # レビューファイルの確認
-    git status docs/pr-review-*.yaml 2>/dev/null
+    git status docs/pr-review/pr-review-*.yaml 2>/dev/null
 
     # ファイルがあればコミット
-    git add docs/pr-review-*.yaml
+    git add docs/pr-review/pr-review-*.yaml
     git commit -m "$(cat <<'EOF'
     docs: add PR review report
 

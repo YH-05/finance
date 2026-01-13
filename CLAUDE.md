@@ -294,9 +294,9 @@ with profile_context("処理名"):  # コンテキスト計測
 
 ```
 .claude/                      # Claude Code設定
-├── agents/                   # サブエージェント定義 (43)
+├── agents/                   # サブエージェント定義 (42)
 ├── commands/                 # スラッシュコマンド (25)
-└── skills/                   # スキル定義 (7)
+└── skills/                   # スキル定義 (8)
 
 data/                         # データストレージ
 ├── config/                   # 設定ファイル（FRED series等）

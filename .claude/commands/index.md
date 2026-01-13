@@ -72,6 +72,7 @@ description: SuperClaudeコマンドリファレンス
 
 | スキル | 説明 |
 |--------|------|
+| `agent-memory` | メモリの保存・呼び出し・整理を行うスキル |
 | `architecture-design` | アーキテクチャ設計書を作成するための詳細ガイドとテンプレート |
 | `development-guidelines` | 開発プロセスとコーディング規約を確立するためのガイドとテンプレート |
 | `functional-design` | 機能設計書を作成するための詳細ガイドとテンプレート |
@@ -147,9 +148,9 @@ description: SuperClaudeコマンドリファレンス
 ```
 finance/
 ├── .claude/                      # Claude Code 設定
-│   ├── agents/                   # サブエージェント定義 (43)
+│   ├── agents/                   # サブエージェント定義 (42)
 │   ├── commands/                 # スラッシュコマンド (25)
-│   └── skills/                   # スキル定義 (7)
+│   └── skills/                   # スキル定義 (8)
 ├── .github/                      # GitHub automation
 │   ├── ISSUE_TEMPLATE/           # Issue テンプレート
 │   └── workflows/                # CI/CD
