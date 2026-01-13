@@ -14,7 +14,11 @@ description: GitHub Issue とタスクの管理・同期を行う
 ## コマンド構文
 
 ```bash
+# パッケージ開発モード
 /issue @src/<library_name>/docs/project.md
+
+# 軽量プロジェクトモード
+/issue @docs/project/<project-slug>.md
 ```
 
 ## 概要
@@ -29,11 +33,28 @@ description: GitHub Issue とタスクの管理・同期を行う
 
 ---
 
-## ステップ 0: 引数解析
+## ステップ 0: 引数解析とモード判定
 
 1. `@` で指定されたパスを解析する
-2. パスから `<library_name>` を抽出する（`src/` と `/docs/` の間の部分）
-3. パスが `/docs/project.md` で終わることを確認
+2. パス形式に応じてモードを判定:
+
+### パターン A: パッケージ開発モード
+
+- パターン: `@src/<library_name>/docs/project.md`
+- 抽出: `<library_name>` を `src/` と `/docs/` の間から取得
+- 例: `@src/market_analysis/docs/project.md` → `library_name = "market_analysis"`
+- 設定: `mode = "package_mode"`
+
+### パターン B: 軽量プロジェクトモード（新規）
+
+- パターン: `@docs/project/<slug>.md`
+- 抽出: `<slug>` をファイル名から取得（拡張子を除去）
+- 例: `@docs/project/research-agent.md` → `slug = "research-agent"`
+- 設定: `mode = "lightweight_mode"`
+- **GitHub Project 番号の抽出**:
+  1. project.md を読み込み
+  2. `**GitHub Project**: [#N](URL)` 形式からプロジェクト番号 N を抽出
+  3. 番号が見つからない場合は警告を表示し、Project なしで続行
 
 **引数が不正な場合**:
 
@@ -41,7 +62,8 @@ description: GitHub Issue とタスクの管理・同期を行う
 エラー: 引数の形式が正しくありません。
 
 使用例:
-/issue @src/<library_name>/docs/project.md
+- パッケージ開発: /issue @src/<library_name>/docs/project.md
+- 軽量プロジェクト: /issue @docs/project/<project-slug>.md
 ```
 
 ---
@@ -77,6 +99,47 @@ gh auth login
 - project.md の `Issue: [#番号](URL)` から Issue 番号を抽出
 - GitHub Issues とのマッチングを確認
 - 不整合があれば警告を表示
+
+### 1.4 GitHub Project 情報の取得（軽量プロジェクトモードのみ）
+
+ステップ 0 でプロジェクト番号が取得できた場合、以下を実行:
+
+#### 1.4.1 Project フィールド情報の取得
+
+```bash
+gh project field-list {project_number} --owner @me --format json
+```
+
+**取得する情報**:
+- Status フィールド ID
+- ステータスオプション（Todo, In Progress, Done など）の ID
+
+#### 1.4.2 Project Item 一覧の取得
+
+```bash
+gh project item-list {project_number} --owner @me --format json
+```
+
+**取得する情報**:
+- 各 Item の ID
+- 紐付けられた Issue URL
+- 現在のステータス
+
+#### 1.4.3 Issue と Project Item の対応表作成
+
+- Issue 番号 → Item ID のマッピングを作成
+- 現在のステータス値を保持
+
+**認証スコープ不足の場合**:
+
+```text
+警告: GitHub Project へのアクセス権限がありません。
+
+解決方法:
+gh auth refresh -s project
+
+Project 同期なしで Issue 管理のみ実行します。
+```
 
 ---
 
@@ -194,8 +257,11 @@ description: "Task decomposition and issue sync"
 prompt: |
   タスク分解と Issue 同期を実行してください。
 
-  ## ライブラリ名
-  <library_name>
+  ## 実行モード
+  [package_mode / lightweight_mode]
+
+  ## ライブラリ名 / プロジェクト名
+  [library_name または slug]
 
   ## project.md パス
   [project.md のパス]
@@ -203,12 +269,24 @@ prompt: |
   ## GitHub Issues（JSON）
   [gh issue list の結果]
 
+  ## GitHub Project 情報（軽量プロジェクトモードのみ）
+  - Project 番号: {project_number}
+  - Project ID: {project_id}（gh project view で取得）
+  - Status フィールド ID: {status_field_id}
+  - ステータスオプション:
+    - Todo: {todo_option_id}
+    - In Progress: {in_progress_option_id}
+    - Done: {done_option_id}
+  - Project Items: [item_list の結果]
+
   ## ユーザー入力
   [ヒアリング結果またはファイル内容]
 
-  ## モード
+  ## 入力モード
   [new / external / sync]
 ```
+
+**パッケージ開発モードの場合**: GitHub Project 情報セクションは省略される。
 
 ### task-decomposer の処理
 

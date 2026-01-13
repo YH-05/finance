@@ -20,11 +20,23 @@ color: orange
 
 プロンプトから以下を受け取ります:
 
-- `library_name`: ライブラリ名
+- `execution_mode`: 実行モード
+  - `package_mode`: パッケージ開発モード（従来）
+  - `lightweight_mode`: 軽量プロジェクトモード（新規）
+- `library_name` または `slug`: 識別子
 - `project_md_path`: project.md のパス
 - `github_issues`: gh issue list の結果（JSON）
+- `github_project_info`: GitHub Project 情報（軽量モードのみ）
+  - `project_number`: プロジェクト番号
+  - `project_id`: プロジェクト ID
+  - `status_field_id`: Status フィールドの ID
+  - `status_options`: ステータスオプションの ID マップ
+    - `todo`: Todo オプション ID
+    - `in_progress`: In Progress オプション ID
+    - `done`: Done オプション ID
+  - `project_items`: プロジェクト内アイテム一覧
 - `user_input`: ユーザーからの入力（自然言語 or ファイル内容）
-- `mode`: 実行モード
+- `input_mode`: 入力モード
   - `new`: 新規タスク追加
   - `sync`: 同期のみ
   - `external`: 外部ファイルから読み込み
@@ -39,21 +51,21 @@ color: orange
 
 ### ステップ 2: モードに応じた処理
 
-#### mode = "new" の場合
+#### input_mode = "new" の場合
 
 1. `user_input` から要件を抽出
 2. 既存 Issue との類似性を判定
 3. 類似あり → 親 Issue を特定、Tasklist として sub-issue 追加
 4. 類似なし → 新規 Issue として作成
 
-#### mode = "external" の場合
+#### input_mode = "external" の場合
 
 1. `user_input`（ファイル内容）から要件を抽出
 2. 複数の機能がある場合は個別にタスク化
 3. 各タスクについて類似性判定を実行
 4. 適切な Issue を作成/更新
 
-#### mode = "sync" の場合
+#### input_mode = "sync" の場合
 
 1. 差分検出のみ実行
 2. 新規タスク追加はスキップ
@@ -100,6 +112,60 @@ color: orange
 1. project.md から Issue 未作成のタスクを抽出
 2. `gh issue create` で Issue を作成
 3. ラベルを自動付与
+
+### ステップ 6b: GitHub Project 同期（軽量プロジェクトモードのみ）
+
+`execution_mode = "lightweight_mode"` かつ `github_project_info` が存在する場合のみ実行。
+
+#### 1. Issue 作成後の Project 追加
+
+新規 Issue を作成した後、GitHub Project に追加:
+
+```bash
+gh project item-add {project_number} --owner @me --url {issue_url}
+```
+
+#### 2. ステータス同期（project.md → GitHub Project）
+
+project.md のタスク状態を GitHub Project に反映:
+
+```bash
+# Item ID の取得（Project Items から Issue URL で検索）
+ITEM_ID=$(gh project item-list {project_number} --owner @me --format json | \
+  jq -r '.items[] | select(.content.url == "{issue_url}") | .id')
+
+# ステータスを更新
+gh project item-edit \
+  --id "$ITEM_ID" \
+  --project-id "{project_id}" \
+  --field-id "{status_field_id}" \
+  --single-select-option-id "{status_option_id}"
+```
+
+**ステータスマッピング**:
+
+| project.md の状態 | GitHub Project Status |
+|-------------------|----------------------|
+| `- [ ]` + `ステータス: todo` | Todo |
+| `- [ ]` + `ステータス: in_progress` | In Progress |
+| `- [x]` または `ステータス: done` | Done |
+
+#### 3. ステータス同期（GitHub Project → project.md）
+
+GitHub Project のステータス変更を project.md に反映:
+
+1. `project_items` から各アイテムのステータスを取得
+2. 対応する project.md のタスクを更新:
+   - `Todo` → `ステータス: todo`、チェックボックス維持
+   - `In Progress` → `ステータス: in_progress`、チェックボックス維持
+   - `Done` → `ステータス: done`、チェックボックスを `[x]` に
+
+#### 4. 競合解決
+
+| 状況 | 解決策 |
+|------|--------|
+| project.md と GitHub Project でステータスが異なる | GitHub Project を正とする（より新しい情報） |
+| Issue が closed だが Project ステータスが Done でない | Issue 状態を優先し Done に更新 |
 
 ### ステップ 7: Issue 操作の実行
 
@@ -210,7 +276,9 @@ gh issue close [番号]
 
 ## project.md フォーマット
 
-### 期待するフォーマット
+### パッケージ開発モード用フォーマット
+
+`execution_mode = "package_mode"` の場合に使用。
 
 ```markdown
 #### 機能 1.1: [機能名]
@@ -226,10 +294,48 @@ gh issue close [番号]
   - [x] [完了した条件]
 ```
 
+### 軽量プロジェクトモード用フォーマット
+
+`execution_mode = "lightweight_mode"` の場合に使用。
+
+```markdown
+# {プロジェクト名}
+
+**GitHub Project**: [#7](https://github.com/users/{owner}/projects/7)
+
+## タスク一覧
+
+### 準備
+
+- [ ] タスク1
+  - Issue: [#47](https://github.com/owner/repo/issues/47)
+  - ステータス: todo
+- [ ] タスク2
+  - Issue: [#48](https://github.com/owner/repo/issues/48)
+  - ステータス: in_progress
+- [x] タスク3
+  - Issue: [#49](https://github.com/owner/repo/issues/49)
+  - ステータス: done
+
+### 実装
+
+- [ ] タスク4
+  - Issue: [#50](https://github.com/owner/repo/issues/50)
+  - ステータス: todo
+```
+
 ### パース対象
 
+**共通**:
 - `Issue:` 行から Issue URL を抽出
-- `優先度:` 行から優先度を抽出
 - `ステータス:` 行からステータスを抽出
+- チェックボックス `- [ ]` / `- [x]` から完了状態を判定
+
+**パッケージ開発モード**:
+- `優先度:` 行から優先度を抽出
 - `depends_on:` / `blocks:` から依存関係を抽出
 - 受け入れ条件のチェックボックス状態を抽出
+
+**軽量プロジェクトモード**:
+- `**GitHub Project**:` から Project 番号を抽出
+- タスク名はチェックボックス直後のテキスト
