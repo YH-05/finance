@@ -83,11 +83,82 @@ from rss import (
 
 ## 使用例
 
-```python
-from rss import get_logger
+### フィード管理
 
-logger = get_logger(__name__)
-# 実装が進むと、ここに具体的な使用例が追加されます
+```python
+from pathlib import Path
+from rss.services import FeedManager
+
+manager = FeedManager(Path("data/raw/rss"))
+
+# フィード登録
+feed_id = manager.add_feed(
+    url="https://example.com/feed.xml",
+    title="Example Feed",
+    category="finance",
+)
+
+# フィード一覧取得
+feeds = manager.list_feeds()
+
+# フィード削除
+manager.remove_feed(feed_id)
+```
+
+### フィード取得
+
+```python
+from pathlib import Path
+from rss.services import FeedFetcher
+
+fetcher = FeedFetcher(Path("data/raw/rss"))
+
+# 全フィード取得
+results = fetcher.fetch_all()
+for result in results:
+    if result.success:
+        print(f"{result.feed_id}: {result.new_items} new items")
+```
+
+### 日次バッチ実行
+
+APSchedulerを使用した日次バッチ実行機能を提供します。
+
+```python
+from pathlib import Path
+from rss.services import BatchScheduler, FeedFetcher
+
+# 方法1: FeedFetcherから作成
+fetcher = FeedFetcher(Path("data/raw/rss"))
+scheduler = BatchScheduler(fetcher, hour=6, minute=0)  # 毎日午前6時
+
+# 方法2: ファクトリメソッドを使用
+scheduler = BatchScheduler.create_from_data_dir(
+    Path("data/raw/rss"),
+    hour=7,
+    minute=30,  # 毎日午前7時30分
+)
+
+# 手動でバッチ実行
+stats = scheduler.run_batch()
+print(f"Success: {stats.success_count}/{stats.total_feeds}")
+print(f"New items: {stats.new_items}")
+
+# スケジューラーを起動（ブロッキングモード）
+scheduler.start(blocking=True)
+
+# バックグラウンドモードで起動
+scheduler.start(blocking=False)
+# ... 他の処理 ...
+scheduler.stop()
+```
+
+**注意**: 日次バッチ実行機能を使用するには、APSchedulerをインストールする必要があります:
+
+```bash
+uv add 'finance[scheduler]'
+# または
+uv add apscheduler
 ```
 
 ## 拡張ガイド

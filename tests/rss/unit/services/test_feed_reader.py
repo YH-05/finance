@@ -130,7 +130,7 @@ class TestGetItems:
         feed_id = "feed-001"
         items = [
             _create_test_item(
-                item_id=f"item-{i:03d}", published=f"2026-01-{10+i:02d}T10:00:00Z"
+                item_id=f"item-{i:03d}", published=f"2026-01-{10 + i:02d}T10:00:00Z"
             )
             for i in range(5)
         ]
@@ -168,7 +168,7 @@ class TestGetItems:
         feed_id = "feed-001"
         items = [
             _create_test_item(
-                item_id=f"item-{i:03d}", published=f"2026-01-{14-i:02d}T10:00:00Z"
+                item_id=f"item-{i:03d}", published=f"2026-01-{14 - i:02d}T10:00:00Z"
             )
             for i in range(5)
         ]

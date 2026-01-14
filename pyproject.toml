@@ -49,6 +49,9 @@ docs = [
     "myst-parser>=2.0.0",
 ]
 
+# rss scheduler optional dependency
+scheduler = ["apscheduler>=3.10.0"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -172,6 +175,7 @@ markers = [
 
 [dependency-groups]
 dev = [
+    "apscheduler>=3.11.2",
     "filelock>=3.20.3",
     "pip-audit>=2.10.0",
     "pre-commit>=4.5.1",
