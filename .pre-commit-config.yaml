@@ -58,7 +58,7 @@ repos:
     hooks:
       - id: check-project-sync
         name: check-project-sync
-        entry: python scripts/check_project_sync.py
+        entry: uv run python scripts/check_project_sync.py
         language: system
         pass_filenames: false
         stages: [pre-push]
