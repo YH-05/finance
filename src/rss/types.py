@@ -179,14 +179,14 @@ class FeedItem:
         Item title
     link : str
         Item URL
-    published : str
-        Publication timestamp (ISO 8601 format)
-    summary : str
-        Item summary
-    content : str
-        Full content
+    published : str | None
+        Publication timestamp (ISO 8601 format), None if not provided
+    summary : str | None
+        Item summary, None if not provided
+    content : str | None
+        Full content, None if not provided
     author : str | None
-        Author name
+        Author name, None if not provided
     fetched_at : str
         Fetch timestamp (ISO 8601 format)
     """
@@ -194,9 +194,9 @@ class FeedItem:
     item_id: str
     title: str
     link: str
-    published: str
-    summary: str
-    content: str
+    published: str | None
+    summary: str | None
+    content: str | None
     author: str | None
     fetched_at: str
 
