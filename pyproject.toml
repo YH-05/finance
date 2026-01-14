@@ -188,6 +188,7 @@ markers = [
 dev = [
     "apscheduler>=3.11.2",
     "filelock>=3.20.3",
+    "marimo>=0.19.2",
     "pip-audit>=2.10.0",
     "pre-commit>=4.5.1",
     "pyright>=1.1.403",
