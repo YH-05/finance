@@ -237,7 +237,7 @@ class TestSaveItems:
         feed_id = "550e8400-e29b-41d4-a716-446655440000"
         items_data = FeedItemsData(version="1.0", feed_id="different-feed-id", items=[])
 
-        with pytest.raises(ValueError, match="data.feed_id .* must match feed_id"):
+        with pytest.raises(ValueError, match=r"data.feed_id .* must match feed_id"):
             storage.save_items(feed_id, items_data)
 
     def test_save_items_utf8_encoding(self, tmp_path: Path) -> None:

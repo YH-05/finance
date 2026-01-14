@@ -76,7 +76,7 @@ class TestLoadJsonFile:
         json_file = temp_dir / "array.json"
         json_file.write_text("[1, 2, 3]", encoding="utf-8")
 
-        with pytest.raises(ValueError, match="Expected JSON object.*got list"):
+        with pytest.raises(ValueError, match=r"Expected JSON object.*got list"):
             load_json_file(json_file)
 
     def test_エッジケース_空の辞書を読み込める(
