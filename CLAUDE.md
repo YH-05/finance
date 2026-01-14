@@ -297,7 +297,7 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 .claude/                      # Claude Code設定
 ├── agents/                   # サブエージェント定義 (46)
-├── commands/                 # スラッシュコマンド (29)
+├── commands/                 # スラッシュコマンド (27)
 └── skills/                   # スキル定義 (10)
 
 data/                         # データストレージ
@@ -323,50 +323,32 @@ src/
 │   ├── types.py              # 型定義
 │   └── py.typed              # PEP 561マーカー
 ├── market_analysis/          # 市場分析パッケージ
-│   ├── core/                 # データフェッチャー
-│   ├── analysis/             # 分析ロジック
-│   ├── api/                  # パブリックAPI
+│   ├── core/                 # データフェッチャー（yfinance, FRED）
+│   ├── analysis/             # 分析ロジック（indicators, correlation）
+│   ├── api/                  # パブリックAPI（analysis, chart, market_data）
 │   ├── visualization/        # チャート生成
 │   ├── export/               # データエクスポート
-│   ├── utils/                # ユーティリティ
+│   ├── utils/                # ユーティリティ（cache, retry, validators）
 │   └── docs/                 # ライブラリドキュメント
 │       └── project.md        # プロジェクトファイル
 └── rss/                      # RSS配信パッケージ
     ├── cli/                  # CLIインターフェース
-    │   └── main.py           # rss-cliエントリポイント
-    ├── core/                 # コア機能
-    │   ├── diff_detector.py  # 差分検出
-    │   ├── http_client.py    # HTTPクライアント
-    │   └── parser.py         # RSS/Atomパーサー
-    ├── mcp/                  # MCPサーバー
-    │   └── server.py         # MCP統合
+    ├── core/                 # コア機能（parser, diff_detector）
+    ├── mcp/                  # MCPサーバー統合
     ├── services/             # サービス層
-    │   ├── batch_scheduler.py # バッチスケジューラ
-    │   ├── feed_fetcher.py   # フィード取得
-    │   ├── feed_manager.py   # フィード管理
-    │   └── feed_reader.py    # フィード読込
     ├── storage/              # JSON永続化
-    │   ├── json_storage.py   # JSONStorage
-    │   └── lock_manager.py   # ファイルロック
     ├── validators/           # バリデーション
-    │   └── url_validator.py  # URL検証
     ├── utils/                # ユーティリティ
-    ├── exceptions.py         # 例外定義
     └── docs/                 # ライブラリドキュメント
 
 tests/
 ├── finance/                  # financeパッケージテスト
-│   └── db/unit/              # DBユニットテスト
+│   └── db/unit/              # DBユニットテスト (3)
 ├── market_analysis/          # market_analysisテスト
+│   └── unit/                 # ユニットテスト (24)
 └── rss/                      # rssテスト
-    └── unit/                 # ユニットテスト
-        ├── cli/              # CLIテスト (1)
-        ├── core/             # コアテスト (3)
-        ├── mcp/              # MCPテスト (1)
-        ├── services/         # サービステスト (4)
-        ├── storage/          # ストレージテスト (2)
-        ├── utils/            # ユーティリティテスト (1)
-        └── validators/       # バリデータテスト (1)
+    ├── unit/                 # ユニットテスト (13)
+    └── integration/          # 統合テスト (1)
 
 template/                     # テンプレート（参照専用）
 ├── src/template_package/     # パッケージテンプレート

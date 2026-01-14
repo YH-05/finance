@@ -20,6 +20,7 @@ market_analysis/
 ├── api/                         # パブリックAPI（推奨エントリポイント）
 │   ├── __init__.py
 │   ├── analysis.py              # Analysis - テクニカル分析（メソッドチェーン対応）
+│   ├── chart.py                 # Chart - チャート生成インターフェース
 │   └── market_data.py           # MarketData - データ取得統合インターフェース
 ├── analysis/                    # 分析ロジック
 │   ├── __init__.py
@@ -66,14 +67,14 @@ market_analysis/
 
 | モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
 |-----------|------|-----------|------|-------|------|
-| `types.py` | ✅ 実装済み | 1 | 436 | - | TypedDict, Enum等の型定義 |
-| `errors.py` | ✅ 実装済み | 1 | 442 | - | MarketAnalysisError等の例外クラス |
-| `api/` | ✅ 実装済み | 3 | 1,107 | 2 | MarketData, Analysis（メソッドチェーン対応） |
-| `analysis/` | ✅ 実装済み | 4 | 1,158 | 3 | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 5 | 1,348 | 4 | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
-| `export/` | ✅ 実装済み | 2 | 582 | 1 | DataExporter |
-| `utils/` | ✅ 実装済み | 7 | 2,244 | 1 | logging, validators, cache, retry, ticker_registry |
-| `visualization/` | ✅ 実装済み | 4 | 1,392 | 3 | ChartBuilder, CandlestickChart, HeatmapChart |
+| `types.py` | ✅ 実装済み | 1 | 555 | - | TypedDict, Enum等の型定義 |
+| `errors.py` | ✅ 実装済み | 1 | 515 | - | MarketAnalysisError等の例外クラス |
+| `api/` | ✅ 実装済み | 4 | 1,774 | 3 | MarketData, Analysis, Chart（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 4 | 1,427 | 3 | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 5 | 1,650 | 4 | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
+| `export/` | ✅ 実装済み | 2 | 692 | 1 | DataExporter |
+| `utils/` | ✅ 実装済み | 7 | 2,746 | 1 | logging, validators, cache, retry, ticker_registry |
+| `visualization/` | ✅ 実装済み | 4 | 1,747 | 3 | ChartBuilder, CandlestickChart, HeatmapChart |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -84,7 +85,7 @@ market_analysis/
 ### 主要インターフェース（推奨）
 
 ```python
-from market_analysis import MarketData, Analysis
+from market_analysis import MarketData, Analysis, Chart
 
 # データ取得
 data = MarketData()
@@ -93,6 +94,11 @@ stock_df = data.fetch_stock("AAPL", start="2024-01-01")
 # テクニカル分析（メソッドチェーン）
 analysis = Analysis(stock_df)
 result = analysis.add_sma(20).add_returns().result()
+
+# チャート生成
+chart = Chart(stock_df, title="AAPL Price Chart")
+chart.price_chart(overlays=["SMA_20", "EMA_50"])
+chart.save("chart.png")
 ```
 
 ### 内部分析クラス（上級ユーザー向け）
@@ -101,7 +107,7 @@ result = analysis.add_sma(20).add_returns().result()
 from market_analysis import Analyzer, CorrelationAnalyzer, IndicatorCalculator
 ```
 
-### チャート生成
+### チャート生成（詳細API）
 
 ```python
 from market_analysis.visualization import CandlestickChart, HeatmapChart, PriceChartData
@@ -179,10 +185,10 @@ from market_analysis import (
 
 | 項目 | 値 |
 |-----|-----|
-| Pythonファイル数 | 28 |
-| 総行数（実装コード） | 8,801 |
+| Pythonファイル数 | 29 |
+| 総行数（実装コード） | 11,234 |
 | モジュール数 | 6 |
-| テストファイル数 | 14 |
+| テストファイル数 | 15 |
 | テストカバレッジ | N/A |
 
 <!-- END: STATS -->

@@ -125,7 +125,7 @@ uv run pyright --version
 ```
 finance/
 ├── .claude/                      # Claude Code 設定
-│   ├── agents/                   # サブエージェント定義 (45)
+│   ├── agents/                   # サブエージェント定義 (46)
 │   ├── commands/                 # スラッシュコマンド (27)
 │   └── skills/                   # スキル定義 (10)
 ├── .github/                      # GitHub automation
@@ -149,17 +149,17 @@ finance/
 │   │   │   └── migrations/       # マイグレーション
 │   │   └── utils/                # ユーティリティ
 │   ├── market_analysis/          # 市場分析パッケージ
-│   │   ├── core/                 # データフェッチャー
-│   │   ├── analysis/             # 分析ロジック
-│   │   ├── api/                  # パブリックAPI
+│   │   ├── core/                 # データフェッチャー（yfinance, FRED）
+│   │   ├── analysis/             # 分析ロジック（indicators, correlation）
+│   │   ├── api/                  # パブリックAPI（analysis, chart, market_data）
 │   │   ├── visualization/        # チャート生成
 │   │   ├── export/               # データエクスポート
-│   │   ├── utils/                # ユーティリティ
+│   │   ├── utils/                # ユーティリティ（cache, retry, validators）
 │   │   └── docs/                 # パッケージドキュメント
 │   └── rss/                      # RSS配信パッケージ
 │       ├── cli/                  # CLIインターフェース
-│       ├── core/                 # フィード生成
-│       ├── mcp/                  # MCPサーバー
+│       ├── core/                 # コア機能（parser, diff_detector）
+│       ├── mcp/                  # MCPサーバー統合
 │       ├── services/             # サービス層
 │       ├── storage/              # JSON永続化
 │       ├── validators/           # バリデーション
@@ -170,9 +170,9 @@ finance/
 │   ├── tests/                    # テストテンプレート
 │   └── {article_id}-theme-name-en/  # 記事テンプレート
 ├── tests/                        # テストスイート
-│   ├── finance/                  # finance テスト
-│   ├── market_analysis/          # market_analysis テスト
-│   └── rss/                      # rss テスト
+│   ├── finance/                  # finance テスト（db: 3）
+│   ├── market_analysis/          # market_analysis テスト（unit: 24）
+│   └── rss/                      # rss テスト（unit: 13, integration: 1）
 ├── pyproject.toml                # 依存関係
 ├── CLAUDE.md                     # Claude Code ガイド
 └── README.md                     # このファイル

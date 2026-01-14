@@ -39,7 +39,6 @@ description: SuperClaudeコマンドリファレンス
 | `/analyze`                | 多次元コード分析（分析レポート出力）                                                                               |
 | `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                                                                |
 | `/commit-and-pr`          | 変更のコミットと PR 作成                                                                                           |
-| `/create-worktrees`       | /plan-worktrees の結果から複数の worktree を一括作成します                                                         |
 | `/ensure-quality`         | コード品質の自動改善（make check-all 相当）                                                                        |
 | `/finance-edit`           | 金融記事の編集ワークフローを実行します。初稿作成 → 批評 → 修正の一連の処理を自動化します。                         |
 | `/finance-research`       | 金融記事のリサーチワークフローを実行します。データ収集 → 分析 → 検証 → 可視化の一連の処理を自動化します。          |
@@ -169,16 +168,19 @@ description: SuperClaudeコマンドリファレンス
 <!-- AUTO-GENERATED: DIRECTORY -->
 
 ```
-finance/
-├── .claude/                              # Claude Code設定
-│   ├── agents/ (46)                      # エージェント定義
-│   ├── agents_sample/ (22)               # エージェントサンプル
-│   ├── archive/ (2)                      # アーカイブ
-│   ├── commands/ (29)                    # スラッシュコマンド定義
-│   ├── commands_sample/ (11)             # コマンドサンプル
-│   ├── skills/ (10)                      # スキル定義
-│   │   ├── agent-expert/
+finance/                                     # Project root
+├── .claude/                                 # Claude Code config (agents, commands, skills)
+│   ├── agents/                              # (46) Specialized agents for code/docs/finance tasks
+│   ├── agents_sample/                       # (22) Sample finance article workflow agents
+│   ├── archive/                             # (2) Archived agents
+│   ├── commands/                            # (29) Slash commands for development workflow
+│   ├── commands_sample/                     # (11) Sample article workflow commands
+│   ├── settings.json
+│   ├── settings.local.json
+│   ├── skills/                              # (10) Skill definitions
+│   │   ├── agent-expert/                    # Agent design expertise
 │   │   ├── agent-memory/
+│   │   │   └── memories/workflow/           # Worktree workflow rules
 │   │   ├── architecture-design/
 │   │   ├── create-worktrees/
 │   │   ├── development-guidelines/
@@ -187,182 +189,126 @@ finance/
 │   │   ├── prd-writing/
 │   │   ├── project-file/
 │   │   └── repository-structure/
-│   ├── agents.md
-│   ├── settings.json
-│   └── settings.local.json
-├── .github/
-│   ├── ISSUE_TEMPLATE/ (4)
-│   ├── workflows/ (3)
+│   └── agents.md
+│
+├── .github/                                 # GitHub workflows & templates
+│   ├── ISSUE_TEMPLATE/                      # (4) Issue templates
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   ├── PUSH_TEMPLATE.md
-│   └── dependabot.yml
-├── data/                                 # データストレージ
-│   ├── config/ (2)                       # 設定ファイル
-│   ├── duckdb/                           # DuckDB (OLAP)
-│   ├── exports/
+│   ├── dependabot.yml
+│   └── workflows/                           # (3) CI/CD workflows
+│
+├── data/                                    # Data storage & schemas
+│   ├── config/                              # (2) Config files (fred_series, yfinance_tickers)
+│   ├── duckdb/                              # OLAP: Parquet analysis queries
+│   ├── sqlite/                              # OLTP: Transaction processing
+│   ├── raw/                                 # Raw API data
+│   │   ├── fred/indicators/
+│   │   └── yfinance/                        # stocks, forex, indices
+│   ├── processed/                           # Processed data
+│   │   ├── daily/
+│   │   └── aggregated/
+│   ├── exports/                             # Output data
 │   │   ├── csv/
 │   │   └── json/
-│   ├── processed/
-│   │   ├── aggregated/
-│   │   └── daily/
-│   ├── raw/
-│   │   ├── fred/indicators/
-│   │   └── yfinance/
-│   │       ├── forex/
-│   │       ├── indices/
-│   │       └── stocks/
-│   ├── schemas/ (12)                     # JSONスキーマ
-│   ├── sqlite/                           # SQLite (OLTP)
+│   ├── schemas/                             # (12) JSON schemas for all data types
 │   └── README.md
-├── docs/                                 # リポジトリ共通ドキュメント
-│   ├── pr-review/ (14)
-│   ├── project/ (1)
+│
+├── docs/                                    # Repository documentation
 │   ├── coding-standards.md
 │   ├── development-process.md
 │   ├── diagram-guidelines.md
 │   ├── document-management.md
+│   ├── image-collector-guide.md
 │   ├── testing-strategy.md
-│   └── type-checker-migration.md
-├── src/
-│   ├── finance/                          # 共通インフラパッケージ
-│   │   ├── db/
-│   │   │   ├── migrations/
-│   │   │   │   └── versions/
-│   │   │   ├── __init__.py
+│   ├── type-checker-migration.md
+│   ├── pr-review/                           # (14) PR review reports
+│   └── project/                             # (3) Project documentation
+│
+├── src/                                     # Python packages
+│   ├── finance/                             # Shared infrastructure
+│   │   ├── db/                              # Database clients (SQLite, DuckDB)
 │   │   │   ├── connection.py
+│   │   │   ├── sqlite_client.py
 │   │   │   ├── duckdb_client.py
-│   │   │   └── sqlite_client.py
+│   │   │   └── migrations/                  # Schema versioning
 │   │   ├── utils/
-│   │   │   ├── __init__.py
 │   │   │   └── logging_config.py
-│   │   ├── __init__.py
-│   │   ├── py.typed
-│   │   ├── README.md
-│   │   └── types.py
-│   ├── market_analysis/                  # 市場分析パッケージ
-│   │   ├── analysis/
-│   │   │   ├── __init__.py
-│   │   │   ├── analyzer.py
-│   │   │   ├── correlation.py
-│   │   │   └── indicators.py
-│   │   ├── api/
-│   │   │   ├── __init__.py
-│   │   │   ├── analysis.py
-│   │   │   └── market_data.py
-│   │   ├── core/
-│   │   │   ├── __init__.py
-│   │   │   ├── base_fetcher.py
-│   │   │   ├── data_fetcher_factory.py
-│   │   │   ├── fred_fetcher.py
-│   │   │   └── yfinance_fetcher.py
-│   │   ├── docs/ (8)
-│   │   ├── export/
-│   │   │   ├── __init__.py
-│   │   │   └── exporter.py
-│   │   ├── utils/ (7)
-│   │   ├── visualization/
-│   │   │   ├── __init__.py
-│   │   │   ├── charts.py
-│   │   │   ├── heatmap.py
-│   │   │   └── price_charts.py
-│   │   ├── __init__.py
+│   │   ├── types.py
+│   │   └── py.typed                         # PEP 561 marker
+│   │
+│   ├── market_analysis/                     # Market data analysis
+│   │   ├── core/                            # Data fetchers (yfinance, FRED)
+│   │   ├── analysis/                        # Analytics (indicators, correlation)
+│   │   ├── api/                             # Public API (analysis, chart, market_data)
+│   │   ├── visualization/                   # Chart generation
+│   │   ├── export/                          # Data export
+│   │   ├── utils/                           # Utilities (cache, retry, validators)
 │   │   ├── errors.py
-│   │   ├── py.typed
-│   │   ├── README.md
-│   │   └── types.py
-│   └── rss/                              # RSS配信パッケージ
-│       ├── cli/
-│       │   ├── __init__.py
-│       │   └── main.py
-│       ├── core/
-│       │   ├── __init__.py
-│       │   ├── diff_detector.py
-│       │   ├── http_client.py
-│       │   └── parser.py
-│       ├── docs/ (8)
-│       ├── mcp/
-│       │   ├── __init__.py
-│       │   └── server.py
-│       ├── services/
-│       │   ├── __init__.py
-│       │   ├── batch_scheduler.py
-│       │   ├── feed_fetcher.py
-│       │   ├── feed_manager.py
-│       │   └── feed_reader.py
-│       ├── storage/
-│       │   ├── __init__.py
-│       │   ├── json_storage.py
-│       │   └── lock_manager.py
-│       ├── utils/
-│       │   ├── __init__.py
-│       │   └── logging_config.py
-│       ├── validators/
-│       │   ├── __init__.py
-│       │   └── url_validator.py
-│       ├── __init__.py
+│   │   ├── types.py
+│   │   ├── docs/                            # (8) Package documentation
+│   │   └── py.typed
+│   │
+│   └── rss/                                 # RSS feed management
+│       ├── cli/                             # CLI interface
+│       ├── core/                            # Parser, HTTP client, diff detector
+│       ├── mcp/                             # MCP server integration
+│       ├── services/                        # Feed management services
+│       ├── storage/                         # JSON persistence
+│       ├── validators/                      # URL validation
+│       ├── utils/                           # Logging
 │       ├── exceptions.py
-│       ├── py.typed
-│       ├── README.md
-│       └── types.py
-├── template/                             # テンプレート（参照専用）
-│   ├── economic_indicators/ (1 + subdirs)
-│   ├── investment_education/ (1 + subdirs)
-│   ├── market_report/ (1 + subdirs)
-│   ├── quant_analysis/ (1 + subdirs)
-│   ├── src/template_package/
-│   │   ├── core/
-│   │   ├── utils/
-│   │   ├── __init__.py
-│   │   ├── py.typed
-│   │   ├── README.md
-│   │   └── types.py
-│   ├── stock_analysis/ (1 + subdirs)
-│   ├── tests/ (unit/property/integration)
-│   └── {article_id}-theme-name-en/
-├── tests/
-│   ├── finance/
-│   │   ├── db/
-│   │   │   ├── unit/ (3)
-│   │   │   └── integration/
-│   │   ├── __init__.py
-│   │   └── conftest.py
+│       ├── types.py
+│       ├── docs/                            # (8) Package documentation
+│       └── py.typed
+│
+├── tests/                                   # Test suite
+│   ├── finance/                             # Finance package tests
+│   │   └── db/unit/                         # (3) Database tests
+│   ├── market_analysis/                     # Market analysis tests
+│   │   └── unit/                            # (24) Unit tests across all modules
+│   ├── rss/                                 # RSS tests
+│   │   ├── unit/                            # (13) Unit tests
+│   │   └── integration/                     # (1) Integration tests
 │   ├── integration/
-│   ├── market_analysis/
-│   │   ├── unit/ (7 subdirs)
-│   │   ├── property/
-│   │   ├── integration/
-│   │   ├── __init__.py
-│   │   └── conftest.py
 │   ├── property/
-│   ├── rss/
-│   │   ├── unit/
-│   │   │   ├── cli/ (1)
-│   │   │   ├── core/ (3)
-│   │   │   ├── mcp/ (1)
-│   │   │   ├── services/ (4)
-│   │   │   ├── storage/ (2)
-│   │   │   ├── utils/ (1)
-│   │   │   └── validators/ (1)
-│   │   ├── storage/unit/ (1)
-│   │   ├── property/
-│   │   ├── integration/ (1)
-│   │   ├── __init__.py
-│   │   └── conftest.py
-│   ├── unit/
-│   │   ├── market_analysis/ (5)
-│   │   └── validators/ (1)
-│   └── __init__.py
-├── scripts/ (2)
-├── snippets/ (7)
+│   └── unit/                                # Top-level unit tests
+│
+├── template/                                # Reference patterns (READ-ONLY)
+│   ├── src/template_package/                # Package structure template
+│   ├── tests/                               # Test structure template
+│   ├── {article_id}-theme-name-en/          # Article workflow template
+│   │   ├── 01_research/                     # Analysis, claims, fact-checks, queries, etc.
+│   │   ├── 02_edit/                         # Drafts, criticism, revision
+│   │   └── 03_published/
+│   ├── market_report/                       # Market report article template
+│   ├── stock_analysis/                      # Stock analysis article template
+│   ├── economic_indicators/                 # Economic indicator article template
+│   ├── investment_education/                # Investment education article template
+│   └── quant_analysis/                      # Quantitative analysis article template
+│
+├── snippets/                                # Reusable content
+│   ├── disclaimer.md                        # Legal disclaimers
+│   ├── not-advice.md
+│   ├── data-source.md
+│   ├── investment-risk.md
+│   ├── warning.md
+│   ├── cta-premium.md
+│   └── sns-announcement.md
+│
+├── scripts/                                 # Utility scripts
+│   ├── setup.sh
+│   └── update_project_name.py
+│
+├── .python-version                          # Python version specification
+├── .pre-commit-config.yaml                  # Pre-commit hooks
+├── .mcp.json                                # MCP configuration
 ├── .gitignore
-├── .mcp.json
-├── .pre-commit-config.yaml
-├── .python-version
-├── CLAUDE.md
-├── Makefile
-├── pyproject.toml
-├── README.md
-└── uv.lock
+├── CLAUDE.md                                # Project instructions
+├── README.md                                # Project overview
+├── Makefile                                 # Development commands
+├── pyproject.toml                           # Python project config
+└── uv.lock                                  # Dependency lock file
 ```
 
 <!-- END: DIRECTORY -->

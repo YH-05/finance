@@ -30,6 +30,15 @@ rss/
 │   ├── diff_detector.py
 │   ├── http_client.py
 │   └── parser.py
+├── docs/
+│   ├── architecture.md
+│   ├── development-guidelines.md
+│   ├── functional-design.md
+│   ├── glossary.md
+│   ├── library-requirements.md
+│   ├── project.md
+│   ├── repository-structure.md
+│   └── tasks.md
 ├── mcp/
 │   ├── __init__.py
 │   └── server.py
