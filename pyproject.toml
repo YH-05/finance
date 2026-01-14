@@ -74,6 +74,12 @@ packages = ["src/finance", "src/market_analysis", "src/rss", "src/quant", "src/f
 line-length = 88
 indent-width = 4
 target-version = "py312"
+exclude = [
+    ".venv",
+    "notebook_sample",
+    "src_sample",
+    "notebook",
+]
 
 [tool.ruff.lint]
 exclude = [".venv", "src/*/docs/.steering"]
