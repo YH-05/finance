@@ -1,0 +1,157 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Sentiment Analysis Schema",
+    "description": "センチメント分析エージェントの出力形式定義",
+    "type": "object",
+    "required": ["overall_sentiment", "sources_analyzed", "analysis_date"],
+    "properties": {
+        "overall_sentiment": {
+            "type": "object",
+            "required": ["score", "label", "trend"],
+            "properties": {
+                "score": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "市場全体のセンチメントスコア（0: 極度の恐怖、100: 極度の強欲）"
+                },
+                "label": {
+                    "type": "string",
+                    "enum": ["extreme_fear", "fear", "neutral", "greed", "extreme_greed"],
+                    "description": "センチメントラベル（extreme_fear: 極度の恐怖、fear: 恐怖、neutral: 中立、greed: 強欲、extreme_greed: 極度の強欲）"
+                },
+                "trend": {
+                    "type": "string",
+                    "enum": ["improving", "stable", "declining"],
+                    "description": "センチメントトレンド（improving: 改善、stable: 安定、declining: 悪化）"
+                }
+            },
+            "description": "市場全体のセンチメント"
+        },
+        "by_symbol": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["symbol", "score", "label", "mentions"],
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "銘柄コード（例: AAPL, TSLA）"
+                    },
+                    "score": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "銘柄別センチメントスコア"
+                    },
+                    "label": {
+                        "type": "string",
+                        "enum": ["extreme_fear", "fear", "neutral", "greed", "extreme_greed"],
+                        "description": "銘柄別センチメントラベル"
+                    },
+                    "mentions": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "言及回数"
+                    },
+                    "key_points": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "主要なポイント"
+                    }
+                }
+            },
+            "description": "銘柄別センチメント"
+        },
+        "by_topic": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["topic", "score", "label"],
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "enum": ["earnings", "macro", "geopolitical", "monetary_policy", "sector_rotation", "technical", "other"],
+                        "description": "トピック（earnings: 決算、macro: マクロ経済、geopolitical: 地政学、monetary_policy: 金融政策、sector_rotation: セクターローテーション、technical: テクニカル、other: その他）"
+                    },
+                    "score": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "トピック別センチメントスコア"
+                    },
+                    "label": {
+                        "type": "string",
+                        "enum": ["extreme_fear", "fear", "neutral", "greed", "extreme_greed"],
+                        "description": "トピック別センチメントラベル"
+                    },
+                    "mentions": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "言及回数"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "トピックの要約"
+                    }
+                }
+            },
+            "description": "トピック別センチメント"
+        },
+        "sources_analyzed": {
+            "type": "object",
+            "required": ["total", "by_type"],
+            "properties": {
+                "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "分析したソースの総数"
+                },
+                "by_type": {
+                    "type": "object",
+                    "properties": {
+                        "news": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "ニュース記事数"
+                        },
+                        "social": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "ソーシャルメディア投稿数"
+                        },
+                        "analyst": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "アナリストレポート数"
+                        },
+                        "other": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "その他のソース数"
+                        }
+                    },
+                    "description": "ソースタイプ別の内訳"
+                }
+            },
+            "description": "分析したソース数"
+        },
+        "analysis_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "分析実行日時（ISO 8601形式）"
+        },
+        "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "分析結果の信頼度（high: 高、medium: 中、low: 低）"
+        },
+        "notes": {
+            "type": "string",
+            "description": "追加の備考や注意事項"
+        }
+    }
+}
