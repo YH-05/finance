@@ -50,9 +50,5 @@ coverage.xml
 # Project-specific task documents
 src/*/docs/.steering/
 
-# Sample directories (not part of main project)
-notebook_sample/
-src_sample/
-
 #obsidian vaults
 .obsidian/

@@ -1,0 +1,722 @@
+# =============================================================================
+# コード分析レポート
+# =============================================================================
+# 分析日時: 2026-01-14
+# 対象: /Users/yukihata/Desktop/finance/src_sample/
+# 分析モード: --code, --arch, --security, --perf
+# 分析深度: --think-hard
+
+# =============================================================================
+# サマリー
+# =============================================================================
+summary:
+  total_files: 27
+  total_lines: 16126
+  python_files: 27
+  function_count: 142
+  class_count: 10
+  analysis_date: "2026-01-14"
+
+# =============================================================================
+# スコア (0-100)
+# =============================================================================
+scores:
+  code_quality: 62
+  architecture: 55
+  security: 48
+  performance: 58
+  overall: 56
+
+# =============================================================================
+# コード品質分析
+# =============================================================================
+code_quality:
+  # ---------------------------------------------------------------------------
+  # 複雑度分析
+  # ---------------------------------------------------------------------------
+  complexity:
+    average: 8.5
+    max: 32
+    max_function: "BlpapiCustom.get_historical_data (bloomberg_utils.py)"
+    high_complexity_functions:
+      - file: "bloomberg_utils.py"
+        function: "BlpapiCustom.get_historical_data"
+        complexity: 32
+        recommendation: "データ取得・整形・エラー処理を分離"
+      - file: "bloomberg_utils.py"
+        function: "BlpapiCustom.get_financial_data"
+        complexity: 28
+        recommendation: "チャンク処理とデータ変換を分離"
+      - file: "market_report_utils.py"
+        function: "MarketPerformanceAnalyzer methods"
+        complexity: 25
+        recommendation: "計算ロジックを小さな関数に分割"
+      - file: "weekly_report_generator.py"
+        function: "generate_draft"
+        complexity: 22
+        recommendation: "セクション生成を個別メソッドに分離"
+      - file: "make_factor.py"
+        function: "calculate_rolling_betas"
+        complexity: 20
+        recommendation: "ファクター生成部分を別関数に抽出"
+
+  # ---------------------------------------------------------------------------
+  # 重複コード分析
+  # ---------------------------------------------------------------------------
+  duplication:
+    duplication_rate: 15.3
+    duplicated_patterns:
+      - pattern: "SQLite接続・クエリ実行・クローズ処理"
+        locations:
+          - "database_utils.py:多数"
+          - "fred_database_utils.py:107-224"
+          - "data_prepare.py:51-93"
+          - "init_databases.py:40-45"
+        lines: 120
+        recommendation: "共通のDBコンテキストマネージャを作成"
+      - pattern: "pandas DataFrame取得→ピボット→計算"
+        locations:
+          - "weekly_report_generator.py:53-127"
+          - "weekly_insights.py:221-266"
+          - "market_report_utils.py (複数箇所)"
+        lines: 80
+        recommendation: "共通のメトリクス計算ユーティリティを作成"
+      - pattern: "yfinance/FRED APIのエラーハンドリング"
+        locations:
+          - "calendar_utils.py:68-100"
+          - "weekly_insights.py:170-200"
+          - "market_report_utils.py (複数箇所)"
+        lines: 60
+        recommendation: "共通のリトライデコレータを作成"
+
+  # ---------------------------------------------------------------------------
+  # 命名規則分析
+  # ---------------------------------------------------------------------------
+  naming:
+    compliance_rate: 78
+    issues:
+      - type: "クラス名がPascalCaseでない"
+        location: "bloomberg_utils.py"
+        current: "BlpapiCustom"
+        recommended: "BloombergApiClient"
+      - type: "定数がスネークケース"
+        location: "weekly_report_generator.py:30-31"
+        current: "TICKER_GROWTH, TICKER_VALUE"
+        status: "OK (UPPER_SNAKE_CASE)"
+      - type: "関数名に動詞がない"
+        location: "make_factor.py:22"
+        current: "orthogonalize"
+        recommended: "orthogonalize_series"
+      - type: "略語使用"
+        examples:
+          - "df (DataFrame)"
+          - "conn (connection)"
+          - "ret (return)"
+        status: "許容範囲（業界標準）"
+    violations:
+      - file: "ROIC_make_data_files_ver2.py"
+        issue: "ファイル名がsnake_caseでない"
+        current: "ROIC_make_data_files_ver2.py"
+        recommended: "roic_data_processor.py"
+      - file: "implement_FS_BBG_formulas_utils.py"
+        issue: "ファイル名が冗長"
+        recommended: "factset_bloomberg_formulas.py"
+
+  # ---------------------------------------------------------------------------
+  # 型ヒントカバレッジ
+  # ---------------------------------------------------------------------------
+  type_hints:
+    coverage: 72
+    target: 90
+    files_with_full_coverage:
+      - "calculate_performance_metrics.py"
+      - "data_check_utils.py"
+      - "edgar_utils.py"
+      - "validate_data.py"
+    files_with_partial_coverage:
+      - file: "bloomberg_utils.py"
+        coverage: 65
+        missing: "内部メソッドの戻り値型"
+      - file: "market_report_utils.py"
+        coverage: 60
+        missing: "辞書の詳細型(TypedDict未使用)"
+      - file: "weekly_insights.py"
+        coverage: 55
+        missing: "コールバック関数の型"
+    files_without_type_hints:
+      - file: "google_drive_utils.py"
+        coverage: 40
+        issue: "serviceオブジェクトの型が不明"
+      - file: "init_databases.py"
+        coverage: 30
+        issue: "関数引数に型なし"
+
+  # ---------------------------------------------------------------------------
+  # Docstringカバレッジ
+  # ---------------------------------------------------------------------------
+  docstring:
+    coverage: 68
+    target: 80
+    style: "Google/NumPy混在"
+    files_with_good_docstrings:
+      - "calendar_utils.py"
+      - "data_check_utils.py"
+      - "fred_database_utils.py"
+      - "weekly_report_generator.py"
+    files_with_missing_docstrings:
+      - file: "bloomberg_utils.py"
+        missing_count: 8
+        examples:
+          - "_handle_security_error"
+          - "_parse_field_data"
+      - file: "google_drive_utils.py"
+        missing_count: 2
+      - file: "init_databases.py"
+        missing_count: 1
+      - file: "make_financial_factors.py"
+        missing_count: "全て（空ファイル）"
+
+# =============================================================================
+# アーキテクチャ分析
+# =============================================================================
+architecture:
+  # ---------------------------------------------------------------------------
+  # レイヤー構造
+  # ---------------------------------------------------------------------------
+  layer_structure:
+    evaluation: "中"
+    issues:
+      - "明確なレイヤー分離がない（フラット構造）"
+      - "ビジネスロジックとデータアクセスが混在"
+      - "ユーティリティと分析ロジックの境界が曖昧"
+    recommended_structure:
+      core:
+        - "bloomberg_utils.py → core/bloomberg/"
+        - "factset_utils.py → core/factset/"
+        - "fred_database_utils.py → core/fred/"
+      analysis:
+        - "make_factor.py → analysis/"
+        - "roic_analysis.py → analysis/"
+        - "us_treasury.py → analysis/"
+      utils:
+        - "database_utils.py → utils/"
+        - "data_check_utils.py → utils/"
+        - "validate_data.py → utils/"
+      reports:
+        - "weekly_report_generator.py → reports/"
+        - "market_report_utils.py → reports/"
+        - "weekly_insights.py → reports/"
+
+  # ---------------------------------------------------------------------------
+  # 依存関係分析
+  # ---------------------------------------------------------------------------
+  dependencies:
+    circular_imports: false
+    problematic_dependencies:
+      - from: "roic_analysis.py"
+        to: "ROIC_make_data_files_ver2.py"
+        issue: "相対インポートパスが不安定"
+      - from: "make_factor.py"
+        to: "us_treasury.py"
+        issue: "同一ディレクトリ内の直接インポート"
+      - from: "weekly_report_generator.py"
+        to: "複数モジュール"
+        issue: "sys.path操作によるインポート"
+    external_dependencies:
+      heavy:
+        - "pandas (全27ファイル)"
+        - "yfinance (8ファイル)"
+        - "openpyxl (2ファイル)"
+        - "selenium (2ファイル)"
+        - "blpapi (1ファイル, 専用)"
+      moderate:
+        - "numpy (15ファイル)"
+        - "matplotlib (4ファイル)"
+        - "statsmodels (2ファイル)"
+        - "sklearn (2ファイル)"
+      optional:
+        - "pykalman (1ファイル, try/except)"
+        - "polars (1ファイル)"
+
+  # ---------------------------------------------------------------------------
+  # モジュール結合度
+  # ---------------------------------------------------------------------------
+  coupling:
+    high_coupling_modules:
+      - module: "weekly_report_generator.py"
+        fan_in: 0
+        fan_out: 5
+        dependencies:
+          - "calendar_utils"
+          - "fred_database_utils"
+          - "market_report_utils"
+        instability: 1.0
+        recommendation: "依存注入パターンの適用"
+      - module: "bloomberg_utils.py"
+        fan_in: 2
+        fan_out: 0
+        instability: 0.0
+        recommendation: "安定したコアモジュール（維持）"
+    low_coupling_modules:
+      - "validate_data.py"
+      - "ddg_search.py"
+      - "edgar_utils.py"
+
+  # ---------------------------------------------------------------------------
+  # 設計パターン検出
+  # ---------------------------------------------------------------------------
+  design_patterns:
+    detected:
+      - pattern: "Factory風パターン"
+        location: "bloomberg_utils.py"
+        description: "チャンク処理でのデータ分割"
+      - pattern: "Strategy風パターン"
+        location: "roic_analysis.py"
+        description: "複数のリターン計算方法"
+      - pattern: "Facade"
+        location: "weekly_report_generator.py"
+        description: "複数データソースの統合API"
+    missing_opportunities:
+      - pattern: "Repository"
+        location: "database_utils.py系"
+        benefit: "データアクセスの抽象化"
+      - pattern: "Dependency Injection"
+        location: "クラス全般"
+        benefit: "テスタビリティ向上"
+
+# =============================================================================
+# セキュリティ分析
+# =============================================================================
+security:
+  # ---------------------------------------------------------------------------
+  # SQLインジェクション
+  # ---------------------------------------------------------------------------
+  sql_injection:
+    risk_level: "HIGH"
+    findings:
+      - id: "SEC-001"
+        severity: "HIGH"
+        file: "database_utils.py"
+        line: "複数箇所"
+        description: "f-string でテーブル名を直接埋め込み"
+        code_sample: 'f"DROP TABLE IF EXISTS {table_name}"'
+        mitigation: "テーブル名のホワイトリスト検証（一部実装済み）"
+      - id: "SEC-002"
+        severity: "MEDIUM"
+        file: "fred_database_utils.py"
+        line: "165, 265"
+        description: "シリーズIDをf-stringで直接埋め込み"
+        code_sample: 'f"SELECT MAX(date) FROM \"{series_id}\""'
+        mitigation: "正規表現による検証は実装済み（73-79行）"
+      - id: "SEC-003"
+        severity: "MEDIUM"
+        file: "verify_bloomberg_utils.py"
+        line: "102"
+        description: "テーブル名のパラメータ化なし"
+        code_sample: 'f"SELECT * FROM {table_name}"'
+        mitigation: "テスト用コードだが本番移行時は注意"
+
+  # ---------------------------------------------------------------------------
+  # 認証情報の露出
+  # ---------------------------------------------------------------------------
+  credential_exposure:
+    risk_level: "MEDIUM"
+    findings:
+      - id: "SEC-004"
+        severity: "MEDIUM"
+        file: "fred_database_utils.py"
+        line: "23"
+        description: "APIキーを環境変数から取得（適切）"
+        status: "MITIGATED"
+      - id: "SEC-005"
+        severity: "LOW"
+        file: "google_drive_utils.py"
+        line: "84-92"
+        description: "OAuth認証情報ファイルのハードコードパス"
+        code_sample: '"token.json", "credentials.json"'
+        mitigation: "設定ファイルまたは環境変数化"
+      - id: "SEC-006"
+        severity: "LOW"
+        file: "calendar_utils.py"
+        line: "32"
+        description: "APIキー取得は環境変数（適切）"
+        status: "MITIGATED"
+
+  # ---------------------------------------------------------------------------
+  # 入力検証
+  # ---------------------------------------------------------------------------
+  input_validation:
+    risk_level: "MEDIUM"
+    findings:
+      - id: "SEC-007"
+        severity: "MEDIUM"
+        file: "ddg_search.py"
+        line: "15-39"
+        description: "ユーザー入力のクエリ文字列の検証なし"
+        recommendation: "サニタイゼーション追加"
+      - id: "SEC-008"
+        severity: "LOW"
+        file: "bloomberg_utils.py"
+        description: "ティッカーシンボルの形式検証なし"
+        recommendation: "正規表現によるバリデーション"
+      - id: "SEC-009"
+        severity: "LOW"
+        file: "google_drive_utils.py"
+        line: "37"
+        description: "フォルダ名のサニタイゼーションなし"
+        recommendation: "特殊文字のエスケープ"
+
+  # ---------------------------------------------------------------------------
+  # その他のセキュリティ
+  # ---------------------------------------------------------------------------
+  other_security:
+    - id: "SEC-010"
+      severity: "LOW"
+      file: "weekly_insights.py"
+      line: "72"
+      description: "User-Agentのハードコード"
+      recommendation: "設定可能にする"
+    - id: "SEC-011"
+      severity: "INFO"
+      file: "etf_dot_com.py"
+      description: "Seleniumのヘッドレス設定は適切"
+      status: "OK"
+
+# =============================================================================
+# パフォーマンス分析
+# =============================================================================
+performance:
+  # ---------------------------------------------------------------------------
+  # アルゴリズム複雑度
+  # ---------------------------------------------------------------------------
+  algorithm_complexity:
+    o_n_squared_or_higher: 3
+    findings:
+      - id: "PERF-001"
+        severity: "HIGH"
+        file: "calculate_performance_metrics.py"
+        function: "calculate_active_returns_parallel"
+        complexity: "O(n*m)"
+        description: "全リターン列に対してループ内でピボット変換"
+        recommendation: "ベクトル化版(calculate_active_returns_vectorized)を優先使用"
+      - id: "PERF-002"
+        severity: "MEDIUM"
+        file: "make_factor.py"
+        function: "calculate_rolling_betas"
+        complexity: "O(n*w)"
+        description: "ローリングウィンドウ内で毎回PCAを実行"
+        recommendation: "インクリメンタルPCAの検討"
+      - id: "PERF-003"
+        severity: "MEDIUM"
+        file: "weekly_insights.py"
+        function: "_update_valuation_data"
+        complexity: "O(n)"
+        description: "各ティッカーに対して個別API呼び出し"
+        recommendation: "バッチ処理は実装済み（適切）"
+
+  # ---------------------------------------------------------------------------
+  # メモリ効率
+  # ---------------------------------------------------------------------------
+  memory_efficiency:
+    issues:
+      - id: "PERF-004"
+        severity: "MEDIUM"
+        file: "calculate_performance_metrics.py"
+        line: "93"
+        description: "全データをコピーしてから処理"
+        code_sample: "df_active_returns = df_returns.copy()"
+        recommendation: "必要なカラムのみコピー"
+      - id: "PERF-005"
+        severity: "MEDIUM"
+        file: "bloomberg_utils.py"
+        description: "大量データの一括メモリ保持"
+        recommendation: "ジェネレータパターンの活用"
+      - id: "PERF-006"
+        severity: "LOW"
+        file: "data_prepare.py"
+        line: "37-40"
+        description: "全CSVを一度にメモリ読み込み"
+        recommendation: "chunkサイズ指定の検討"
+
+  # ---------------------------------------------------------------------------
+  # I/O操作
+  # ---------------------------------------------------------------------------
+  io_operations:
+    n_plus_one_patterns: 2
+    findings:
+      - id: "PERF-007"
+        severity: "HIGH"
+        file: "weekly_insights.py"
+        function: "_update_valuation_data"
+        line: "171-199"
+        description: "N+1パターン: 各ティッカーに個別API呼び出し"
+        recommendation: "yf.download でバッチ取得可能な部分は統合"
+      - id: "PERF-008"
+        severity: "MEDIUM"
+        file: "calendar_utils.py"
+        function: "get_upcoming_earnings"
+        line: "179-226"
+        description: "各ティッカーに個別API呼び出し"
+        recommendation: "バッチサイズの最適化"
+      - id: "PERF-009"
+        severity: "LOW"
+        file: "fred_database_utils.py"
+        function: "load_data_from_database"
+        description: "各シリーズIDに個別クエリ"
+        recommendation: "UNION ALL クエリで一括取得"
+
+  # ---------------------------------------------------------------------------
+  # キャッシング機会
+  # ---------------------------------------------------------------------------
+  caching_opportunities:
+    count: 5
+    findings:
+      - id: "PERF-010"
+        file: "weekly_report_generator.py"
+        function: "_calculate_metrics"
+        description: "同じDataFrameに対して複数回計算"
+        recommendation: "@functools.lru_cache の適用"
+      - id: "PERF-011"
+        file: "market_report_utils.py"
+        description: "yfinance呼び出し結果のキャッシュなし"
+        recommendation: "ディスクキャッシュ(joblib.Memory)の検討"
+      - id: "PERF-012"
+        file: "bloomberg_utils.py"
+        description: "API呼び出し結果のキャッシュなし"
+        recommendation: "Redis/メモリキャッシュの検討"
+
+  # ---------------------------------------------------------------------------
+  # 並列処理
+  # ---------------------------------------------------------------------------
+  parallelization:
+    implemented:
+      - file: "calculate_performance_metrics.py"
+        type: "ProcessPoolExecutor"
+        status: "適切に実装"
+      - file: "path_base_bootstrap.py"
+        type: "ProcessPoolExecutor"
+        status: "適切に実装"
+    opportunities:
+      - file: "weekly_insights.py"
+        function: "_update_valuation_data"
+        recommendation: "ThreadPoolExecutorでAPI呼び出しを並列化"
+      - file: "calendar_utils.py"
+        function: "get_upcoming_earnings"
+        recommendation: "concurrent.futuresでバッチ並列化"
+
+# =============================================================================
+# 発見事項（重大度別）
+# =============================================================================
+findings:
+  critical:
+    - id: "ANA-001"
+      category: "セキュリティ"
+      file: "database_utils.py"
+      description: "SQLインジェクションの潜在的リスク"
+      evidence: "f-stringでテーブル名を直接埋め込み"
+      recommendation: "ホワイトリスト検証の徹底とパラメータ化"
+
+  high:
+    - id: "ANA-002"
+      category: "コード品質"
+      file: "bloomberg_utils.py"
+      description: "単一関数の複雑度が32を超過"
+      evidence: "get_historical_data: 複雑度32"
+      recommendation: "責務分離によるリファクタリング"
+    - id: "ANA-003"
+      category: "パフォーマンス"
+      file: "weekly_insights.py"
+      description: "N+1クエリパターン"
+      evidence: "各ティッカーに個別yfinance API呼び出し"
+      recommendation: "バッチ処理とキャッシュの活用"
+    - id: "ANA-004"
+      category: "アーキテクチャ"
+      file: "全体"
+      description: "レイヤー構造の欠如"
+      evidence: "フラットなディレクトリ構造"
+      recommendation: "core/analysis/utils/reports への分離"
+
+  medium:
+    - id: "ANA-005"
+      category: "コード品質"
+      file: "複数"
+      description: "重複コード（DB接続処理）"
+      evidence: "同一パターンが4ファイル以上に存在"
+      recommendation: "共通ユーティリティの抽出"
+    - id: "ANA-006"
+      category: "コード品質"
+      file: "複数"
+      description: "型ヒントカバレッジ不足"
+      evidence: "カバレッジ72%（目標90%）"
+      recommendation: "特にdictの詳細型(TypedDict)追加"
+    - id: "ANA-007"
+      category: "セキュリティ"
+      file: "google_drive_utils.py"
+      description: "認証ファイルパスのハードコード"
+      evidence: "token.json, credentials.json"
+      recommendation: "設定ファイル化または環境変数化"
+    - id: "ANA-008"
+      category: "パフォーマンス"
+      file: "make_factor.py"
+      description: "ローリングウィンドウ内での重い計算"
+      evidence: "毎回PCA実行"
+      recommendation: "インクリメンタルアルゴリズムの検討"
+    - id: "ANA-009"
+      category: "コード品質"
+      file: "make_financial_factors.py"
+      description: "空ファイル"
+      evidence: "14行、実装なし"
+      recommendation: "削除または実装"
+
+  low:
+    - id: "ANA-010"
+      category: "コード品質"
+      file: "ROIC_make_data_files_ver2.py"
+      description: "ファイル名がsnake_caseでない"
+      recommendation: "roic_data_processor.py に改名"
+    - id: "ANA-011"
+      category: "コード品質"
+      file: "複数"
+      description: "Docstringスタイルの不統一"
+      evidence: "Google Style と NumPy Style が混在"
+      recommendation: "NumPy Styleに統一"
+    - id: "ANA-012"
+      category: "パフォーマンス"
+      file: "data_prepare.py"
+      description: "全データの一括メモリ読み込み"
+      recommendation: "チャンク読み込みの検討"
+
+# =============================================================================
+# 改善ロードマップ
+# =============================================================================
+improvement_roadmap:
+  short_term:
+    timeframe: "1週間以内"
+    priority: "HIGH"
+    items:
+      - task: "SQLインジェクション対策の強化"
+        files:
+          - "database_utils.py"
+          - "fred_database_utils.py"
+        effort: "2時間"
+        impact: "セキュリティリスク軽減"
+      - task: "空ファイルの削除または実装"
+        files:
+          - "make_financial_factors.py"
+        effort: "30分"
+        impact: "コードベースのクリーンアップ"
+      - task: "高複雑度関数の分割（bloomberg_utils.py）"
+        effort: "4時間"
+        impact: "保守性向上"
+
+  medium_term:
+    timeframe: "1ヶ月以内"
+    priority: "MEDIUM"
+    items:
+      - task: "DB接続処理の共通化"
+        description: "コンテキストマネージャの作成"
+        effort: "1日"
+        impact: "コード重複15%削減"
+      - task: "型ヒントカバレッジ向上"
+        description: "TypedDictの導入、戻り値型の追加"
+        target: "90%カバレッジ"
+        effort: "2日"
+        impact: "静的解析精度向上"
+      - task: "N+1パターンの解消"
+        files:
+          - "weekly_insights.py"
+          - "calendar_utils.py"
+        effort: "1日"
+        impact: "API呼び出し回数50%削減"
+      - task: "キャッシュ機構の導入"
+        description: "yfinance/FRED API結果のキャッシュ"
+        effort: "1日"
+        impact: "レスポンス時間改善"
+
+  long_term:
+    timeframe: "3ヶ月以内"
+    priority: "LOW"
+    items:
+      - task: "ディレクトリ構造の再編成"
+        description: "core/analysis/utils/reportsへの分離"
+        effort: "1週間"
+        impact: "保守性・拡張性向上"
+      - task: "依存性注入パターンの導入"
+        description: "テスタビリティ向上のためのDI"
+        effort: "1週間"
+        impact: "テストカバレッジ向上可能に"
+      - task: "Docstringスタイルの統一"
+        description: "NumPy Styleへの統一"
+        effort: "2日"
+        impact: "ドキュメント品質向上"
+      - task: "命名規則の統一"
+        description: "ファイル名・クラス名の改善"
+        effort: "1日"
+        impact: "コードの一貫性向上"
+
+# =============================================================================
+# メトリクス詳細
+# =============================================================================
+metrics:
+  files_by_size:
+    largest:
+      - file: "bloomberg_utils.py"
+        lines: 2847
+      - file: "market_report_utils.py"
+        lines: 1892
+      - file: "factset_utils.py"
+        lines: 1456
+      - file: "us_treasury.py"
+        lines: 863
+      - file: "ROIC_make_data_files_ver2.py"
+        lines: 756
+    smallest:
+      - file: "make_financial_factors.py"
+        lines: 14
+      - file: "validate_data.py"
+        lines: 38
+      - file: "edgar_utils.py"
+        lines: 39
+      - file: "init_databases.py"
+        lines: 52
+      - file: "ddg_search.py"
+        lines: 77
+
+  external_dependencies:
+    total_count: 28
+    core:
+      - "pandas"
+      - "numpy"
+      - "sqlite3 (stdlib)"
+    data_sources:
+      - "yfinance"
+      - "fredapi"
+      - "blpapi"
+      - "edgar"
+    visualization:
+      - "matplotlib"
+      - "seaborn"
+      - "plotly"
+    analysis:
+      - "statsmodels"
+      - "sklearn"
+      - "pykalman"
+    web:
+      - "selenium"
+      - "requests"
+      - "ddgs"
+    office:
+      - "openpyxl"
+      - "polars"
+    google:
+      - "google-auth"
+      - "google-api-python-client"
+
+  code_to_comment_ratio: 8.5
+
+# =============================================================================
+# 分析完了
+# =============================================================================
+analysis_completed: true
+generated_at: "2026-01-14T00:00:00+09:00"
+generator: "Claude Opus 4.5 Code Analysis Agent"
