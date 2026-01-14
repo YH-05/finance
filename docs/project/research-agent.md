@@ -61,7 +61,7 @@
 
 ### 準備
 
-- [ ] 既存リサーチ系エージェントの調査（finance-web, finance-wiki等）
+- [x] 既存リサーチ系エージェントの調査（finance-web, finance-wiki等）→ [調査レポート](./research-agent-survey.md)
 - [ ] 画像収集の要件定義（対象サイト、フォーマット、保存先）
 - [ ] 設計方針の確定
 
