@@ -58,6 +58,7 @@ description: SuperClaudeコマンドリファレンス
 | `/safe-refactor`          | 安全なリファクタリング                                                                                             |
 | `/scan`                   | セキュリティと品質の包括的検証                                                                                     |
 | `/setup-repository`       | テンプレートリポジトリの初期化（初回のみ）                                                                         |
+| `/sync-issue`             | GitHub Issue のコメントから進捗・タスク・仕様変更を同期                                                            |
 | `/task`                   | 複雑なタスクの管理                                                                                                 |
 | `/troubleshoot`           | 体系的なデバッグ                                                                                                   |
 | `/worktree`               | 新しい worktree とブランチを作成して開発を開始                                                                     |
@@ -134,6 +135,12 @@ description: SuperClaudeコマンドリファレンス
 | `doc-reviewer`                  | ドキュメントレビュー                            |
 | `task-decomposer`               | タスク分解・GitHub Issues 連携・project.md 同期 |
 
+### Issue管理
+
+| エージェント        | 説明                                                                       |
+| ------------------- | -------------------------------------------------------------------------- |
+| `comment-analyzer`  | Issue コメントを解析し、進捗・サブタスク・仕様変更を構造化データとして抽出 |
+
 ### 特殊
 
 | エージェント        | 説明                                             |
@@ -158,11 +165,11 @@ description: SuperClaudeコマンドリファレンス
 ```
 finance/
 ├── .claude/                              # Claude Code設定
-│   ├── agents/ (45)                      # エージェント定義
+│   ├── agents/ (46)                      # エージェント定義
 │   ├── agents_sample/ (22)               # エージェントサンプル
 │   ├── archive/ (2)                      # アーカイブ
-│   ├── commands/ (27)                    # スラッシュコマンド定義
-│   ├── commands_sample/ (12)             # コマンドサンプル
+│   ├── commands/ (29)                    # スラッシュコマンド定義
+│   ├── commands_sample/ (11)             # コマンドサンプル
 │   ├── skills/ (10)                      # スキル定義
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
