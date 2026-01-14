@@ -88,7 +88,7 @@ class TestLockFeeds:
         # Try to acquire lock with short timeout - should fail
         with (
             pytest.raises(
-                FileLockError, match="Failed to acquire lock.*after 0.5 seconds"
+                FileLockError, match=r"Failed to acquire lock.*after 0.5 seconds"
             ),
             manager.lock_feeds(timeout=0.5),
         ):
@@ -194,7 +194,7 @@ class TestLockItems:
         # Try to acquire lock with short timeout - should fail
         with (
             pytest.raises(
-                FileLockError, match="Failed to acquire lock.*after 0.5 seconds"
+                FileLockError, match=r"Failed to acquire lock.*after 0.5 seconds"
             ),
             manager.lock_items(feed_id, timeout=0.5),
         ):
