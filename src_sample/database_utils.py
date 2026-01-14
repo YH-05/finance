@@ -168,7 +168,7 @@ def step1_load_file_to_db(
 
         # 各ファイルをループ処理でデータベースに直接書き込み
         for i, file_path in enumerate(file_list):
-            print(f"({i+1}/{len(file_list)}) {file_path.name} を読み込み中...")
+            print(f"({i + 1}/{len(file_list)}) {file_path.name} を読み込み中...")
 
             if file_type == "parquet":
                 df = pd.read_parquet(file_path)
@@ -226,7 +226,7 @@ def step2_create_variable_tables(db_name) -> None:
         unique_variables = unique_variables_sql["variable"].tolist()
 
         for i, variable in enumerate(unique_variables):
-            print(f"({i+1}/{len(unique_variables)}) {variable} のテーブルを作成中...")
+            print(f"({i + 1}/{len(unique_variables)}) {variable} のテーブルを作成中...")
 
             # SQLクエリでデータをフィルタリングし、新しいテーブルとして作成
             query = f"""
@@ -272,14 +272,14 @@ def step3_create_return_table(db_path) -> None:
         if month < 12:
             return_col = f"Return_{month}M"
         else:
-            return_col = f"Return_{month//12}Y"
+            return_col = f"Return_{month // 12}Y"
         df[return_col] = df.groupby(["P_SYMBOL"])["log_value"].diff(periods=month)
 
         # 将来リターン
         if month < 12:
             return_col = f"Return_{month}MForward"
         else:
-            return_col = f"Return_{month//12}YForward"
+            return_col = f"Return_{month // 12}YForward"
         df[return_col] = df.groupby(["P_SYMBOL"])["log_value"].diff(periods=-month)
 
     save_cols = ["date", "P_SYMBOL"] + [s for s in df.columns if s.startswith("Return")]

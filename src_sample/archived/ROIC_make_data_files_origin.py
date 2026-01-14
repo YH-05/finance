@@ -793,7 +793,7 @@ def test_assign_roic_label(
     # Only evaluate move/drop if start and end ranks are available
     if not pd.isna(current_rank) and not pd.isna(final_rank):
         if judge_by_slope:
-            slope_col = f"ROIC_Slope_{int(year_period*12)}MForward"
+            slope_col = f"ROIC_Slope_{int(year_period * 12)}MForward"
             slope = row.get(slope_col, np.nan)  # Safely get the pre-calculated slope
             # Only evaluate if slope is also available and valid
             if not pd.isna(slope):
@@ -1010,9 +1010,9 @@ def make_roic_label_and_performance_table():
         col
         for col in df_return_and_roic_filled.columns
         if (
-            ("ROIC" in col)
+            (("ROIC" in col)
             and ("QForward" in col)
-            and ("Slope" not in col)
+            and ("Slope" not in col))
             or (col == "ROIC")
         )
     ]

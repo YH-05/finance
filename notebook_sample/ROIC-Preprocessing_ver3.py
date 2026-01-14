@@ -59,6 +59,7 @@ def _():
     import src.calculate_performance_metrics as performance_metrics_utils
     import src.database_utils as db_utils
     import src.ROIC_make_data_files_ver2 as roic_utils
+
     from src import bloomberg_utils, factset_utils
 
     financials_db_path = INDEX_DIR / "Financials_and_Price.db"
@@ -553,9 +554,9 @@ def _(
         default_start_date=datetime.datetime(2000, 1, 1),
         verbose=True,
     )
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"処理完了: {rows_updated:,}行を処理しました")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     return (blp,)
 
 

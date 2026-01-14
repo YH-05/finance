@@ -648,7 +648,7 @@ def analyze_yield_curve_pca(df_yield: pd.DataFrame, n_components: int = 3):
     cols = (
         ["Level", "Slope", "Curvature"]
         if n_components == 3
-        else [f"PC_{i+1}" for i in range(principal_components_aligned.shape[1])]
+        else [f"PC_{i + 1}" for i in range(principal_components_aligned.shape[1])]
     )
     df_pca = pd.DataFrame(
         principal_components_aligned,
@@ -685,7 +685,7 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
     df_yield_diff = df_yield.diff().dropna(how="any")
     pc_scores = pca.transform(df_yield_diff)[:, :3]
     df_pca = pd.DataFrame(
-        pc_scores, columns=[f"PC{i+1}" for i in range(3)], index=df_yield_diff.index
+        pc_scores, columns=[f"PC{i + 1}" for i in range(3)], index=df_yield_diff.index
     )
 
     # 寄与率と累積寄与率（all components）
@@ -769,7 +769,12 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
 
     for i, ax in enumerate(axes_pc):
         sns.lineplot(
-            data=df_pca, x=df_pca.index, y=f"PC{i+1}", ax=ax, alpha=0.8, color=colors[i]
+            data=df_pca,
+            x=df_pca.index,
+            y=f"PC{i + 1}",
+            ax=ax,
+            alpha=0.8,
+            color=colors[i],
         )
         ax.set_ylabel(pc_labels[i])
         ax.axhline(0, color="grey", linestyle="--", linewidth=0.8)

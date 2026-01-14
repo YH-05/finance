@@ -47,6 +47,7 @@ def _():
     sys.path.insert(0, str(QUANTS_DIR))  # type: ignore
     import src.fred_database_utils as fred_utils  # type: ignore
     import src.market_report_utils as mru  # type: ignore
+
     from src import us_treasury
 
     # sys.path.append(str(ROOT_DIR))

@@ -14,12 +14,11 @@ from typing import Any
 import numpy as np
 import openpyxl
 import pandas as pd
+import src.database_utils as db_utils
+import src.ROIC_make_data_files_ver2 as roic_utils
 import yaml
 from dotenv import load_dotenv
 from tqdm import tqdm
-
-import src.database_utils as db_utils
-import src.ROIC_make_data_files_ver2 as roic_utils
 
 warnings.simplefilter("ignore")
 
@@ -329,7 +328,7 @@ def unify_factset_code_data(split_save_mode: bool = False):
         saved_paths = [
             (
                 index_constituents_dir
-                / f"Index_Constituents_with_Factset_code-compressed-{len(already_exsiting_compressed_files)+1}.parquet"
+                / f"Index_Constituents_with_Factset_code-compressed-{len(already_exsiting_compressed_files) + 1}.parquet"
             )
         ]
         df_all.to_parquet(saved_paths[0], index=False, compression="zstd")
