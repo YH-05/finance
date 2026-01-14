@@ -11,6 +11,7 @@
             "Bash(ls:*)",
             "Bash(uv sync:*)",
             "Bash(uv pip show:*)",
+            "Bash(uv pip list:*)",
             "Bash(uv add:*)",
             "Bash(uv run pytest:*)",
             "Bash(uv run ruff check:*)",

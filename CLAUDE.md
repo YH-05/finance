@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-12
+updated_at: 2026-01-14
 # このプロパティは、Claude Codeが関連するドキュメントの更新を検知するために必要です。消去しないでください。
 ---
 
@@ -295,9 +295,9 @@ with profile_context("処理名"):  # コンテキスト計測
 
 ```
 .claude/                      # Claude Code設定
-├── agents/                   # サブエージェント定義 (44)
+├── agents/                   # サブエージェント定義 (45)
 ├── commands/                 # スラッシュコマンド (27)
-└── skills/                   # スキル定義 (9)
+└── skills/                   # スキル定義 (10)
 
 data/                         # データストレージ
 ├── config/                   # 設定ファイル（FRED series等）
@@ -331,8 +331,19 @@ src/
 │   └── docs/                 # ライブラリドキュメント
 │       └── project.md        # プロジェクトファイル
 └── rss/                      # RSS配信パッケージ
+    ├── cli/                  # CLIインターフェース
+    │   └── main.py           # rss-cliエントリポイント
     ├── core/                 # コア機能
-    │   └── diff_detector.py  # 差分検出
+    │   ├── diff_detector.py  # 差分検出
+    │   ├── http_client.py    # HTTPクライアント
+    │   └── parser.py         # RSS/Atomパーサー
+    ├── mcp/                  # MCPサーバー
+    │   └── server.py         # MCP統合
+    ├── services/             # サービス層
+    │   ├── batch_scheduler.py # バッチスケジューラ
+    │   ├── feed_fetcher.py   # フィード取得
+    │   ├── feed_manager.py   # フィード管理
+    │   └── feed_reader.py    # フィード読込
     ├── storage/              # JSON永続化
     │   ├── json_storage.py   # JSONStorage
     │   └── lock_manager.py   # ファイルロック
@@ -347,6 +358,14 @@ tests/
 │   └── db/unit/              # DBユニットテスト
 ├── market_analysis/          # market_analysisテスト
 └── rss/                      # rssテスト
+    └── unit/                 # ユニットテスト
+        ├── cli/              # CLIテスト (1)
+        ├── core/             # コアテスト (3)
+        ├── mcp/              # MCPテスト (1)
+        ├── services/         # サービステスト (4)
+        ├── storage/          # ストレージテスト (2)
+        ├── utils/            # ユーティリティテスト (1)
+        └── validators/       # バリデータテスト (1)
 
 template/                     # テンプレート（参照専用）
 ├── src/template_package/     # パッケージテンプレート

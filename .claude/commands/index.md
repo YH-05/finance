@@ -39,6 +39,7 @@ description: SuperClaudeコマンドリファレンス
 | `/analyze`                | 多次元コード分析（分析レポート出力）                                                                               |
 | `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                                                                |
 | `/commit-and-pr`          | 変更のコミットと PR 作成                                                                                           |
+| `/create-worktrees`       | /plan-worktrees の結果から複数の worktree を一括作成します                                                         |
 | `/ensure-quality`         | コード品質の自動改善（make check-all 相当）                                                                        |
 | `/finance-edit`           | 金融記事の編集ワークフローを実行します。初稿作成 → 批評 → 修正の一連の処理を自動化します。                         |
 | `/finance-research`       | 金融記事のリサーチワークフローを実行します。データ収集 → 分析 → 検証 → 可視化の一連の処理を自動化します。          |
@@ -73,9 +74,10 @@ description: SuperClaudeコマンドリファレンス
 
 | スキル                   | 説明                                                                                                                                                                                                                                                                                          |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `agent-expert`           | Create and optimize specialized Claude Code agents. Expertise in agent design, prompt engineering, domain modeling, and best practices for claude-code-templates system. Use PROACTIVELY when designing new agents or improving existing ones.                                                |
+| `agent-expert`           | Create and optimize specialized Claude Code agents. Expertise in agent design, prompt engineering, domain modeling, and best practices for claude-code-templates system. Use PROACTIVELY when designing new agents or improving existing ones.                                               |
 | `agent-memory`           | Use this skill when the user asks to save, remember, recall, or organize memories. Triggers on: 'remember this', 'save this', 'note this', 'what did we discuss about...', 'check your notes', 'clean up memories'. Also use proactively when discovering valuable findings worth preserving. |
 | `architecture-design`    | アーキテクチャ設計書を作成するための詳細ガイドとテンプレート。アーキテクチャ設計時にのみ使用。                                                                                                                                                                                                |
+| `create-worktrees`       | /plan-worktrees の結果から複数の worktree を一括作成するスキル。Issue 番号のリストを受け取り、各 Issue に対して /worktree コマンドを順番に実行する。                                                                                                                                          |
 | `development-guidelines` | チーム全体で統一された開発プロセスとコーディング規約を確立するための包括的なガイドとテンプレート。開発ガイドライン作成時、コード実装時に使用する。                                                                                                                                            |
 | `functional-design`      | 機能設計書を作成するための詳細ガイドとテンプレート。機能設計書作成時にのみ使用。                                                                                                                                                                                                              |
 | `glossary-creation`      | 用語集を作成するための詳細ガイドとテンプレート。用語集作成時にのみ使用。                                                                                                                                                                                                                      |
@@ -156,15 +158,16 @@ description: SuperClaudeコマンドリファレンス
 ```
 finance/
 ├── .claude/                              # Claude Code設定
-│   ├── agents/ (44)                      # エージェント定義
+│   ├── agents/ (45)                      # エージェント定義
 │   ├── agents_sample/ (22)               # エージェントサンプル
 │   ├── archive/ (2)                      # アーカイブ
 │   ├── commands/ (27)                    # スラッシュコマンド定義
 │   ├── commands_sample/ (12)             # コマンドサンプル
-│   ├── skills/ (9)                       # スキル定義
+│   ├── skills/ (10)                      # スキル定義
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
+│   │   ├── create-worktrees/
 │   │   ├── development-guidelines/
 │   │   ├── functional-design/
 │   │   ├── glossary-creation/
@@ -255,10 +258,24 @@ finance/
 │   │   ├── README.md
 │   │   └── types.py
 │   └── rss/                              # RSS配信パッケージ
+│       ├── cli/
+│       │   ├── __init__.py
+│       │   └── main.py
 │       ├── core/
 │       │   ├── __init__.py
-│       │   └── diff_detector.py
+│       │   ├── diff_detector.py
+│       │   ├── http_client.py
+│       │   └── parser.py
 │       ├── docs/ (8)
+│       ├── mcp/
+│       │   ├── __init__.py
+│       │   └── server.py
+│       ├── services/
+│       │   ├── __init__.py
+│       │   ├── batch_scheduler.py
+│       │   ├── feed_fetcher.py
+│       │   ├── feed_manager.py
+│       │   └── feed_reader.py
 │       ├── storage/
 │       │   ├── __init__.py
 │       │   ├── json_storage.py
@@ -306,11 +323,16 @@ finance/
 │   ├── property/
 │   ├── rss/
 │   │   ├── unit/
-│   │   │   ├── core/
-│   │   │   └── storage/
-│   │   ├── storage/unit/
+│   │   │   ├── cli/ (1)
+│   │   │   ├── core/ (3)
+│   │   │   ├── mcp/ (1)
+│   │   │   ├── services/ (4)
+│   │   │   ├── storage/ (2)
+│   │   │   ├── utils/ (1)
+│   │   │   └── validators/ (1)
+│   │   ├── storage/unit/ (1)
 │   │   ├── property/
-│   │   ├── integration/
+│   │   ├── integration/ (1)
 │   │   ├── __init__.py
 │   │   └── conftest.py
 │   ├── unit/

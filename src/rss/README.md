@@ -22,9 +22,23 @@ rss/
 ├── py.typed
 ├── types.py
 ├── exceptions.py
+├── cli/
+│   ├── __init__.py
+│   └── main.py
 ├── core/
 │   ├── __init__.py
-│   └── diff_detector.py
+│   ├── diff_detector.py
+│   ├── http_client.py
+│   └── parser.py
+├── mcp/
+│   ├── __init__.py
+│   └── server.py
+├── services/
+│   ├── __init__.py
+│   ├── batch_scheduler.py
+│   ├── feed_fetcher.py
+│   ├── feed_manager.py
+│   └── feed_reader.py
 ├── storage/
 │   ├── __init__.py
 │   ├── json_storage.py
@@ -44,12 +58,15 @@ rss/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|-----|
-| `types.py` | ✅ 実装済み | 1 | 280 |
-| `exceptions.py` | ✅ 実装済み | 1 | 161 |
-| `core/` | ✅ 実装済み | 2 | 97 |
-| `storage/` | ✅ 実装済み | 3 | 667 |
-| `utils/` | ✅ 実装済み | 2 | 367 |
-| `validators/` | 🚧 開発中 | 2 | 235 |
+| `types.py` | ✅ 実装済み | 1 | 237 |
+| `exceptions.py` | ✅ 実装済み | 1 | 120 |
+| `cli/` | ✅ 実装済み | 2 | 520 |
+| `core/` | ✅ 実装済み | 4 | 578 |
+| `mcp/` | ✅ 実装済み | 2 | 540 |
+| `services/` | ✅ 実装済み | 5 | 1,341 |
+| `storage/` | ✅ 実装済み | 3 | 546 |
+| `utils/` | ✅ 実装済み | 2 | 275 |
+| `validators/` | ✅ 実装済み | 2 | 189 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -57,7 +74,45 @@ rss/
 
 <!-- AUTO-GENERATED: API -->
 
-### 関数
+### サービスクラス
+
+```python
+from rss import (
+    BatchScheduler,
+    FeedFetcher,
+    FeedManager,
+    FeedReader,
+)
+```
+
+### データモデル
+
+```python
+from rss import (
+    BatchStats,
+    Feed,
+    FeedItem,
+    FetchInterval,
+    FetchResult,
+    FetchStatus,
+)
+```
+
+### 例外クラス
+
+```python
+from rss import (
+    FeedAlreadyExistsError,
+    FeedFetchError,
+    FeedNotFoundError,
+    FeedParseError,
+    FileLockError,
+    InvalidURLError,
+    RSSError,
+)
+```
+
+### ユーティリティ
 
 ```python
 from rss import (
@@ -73,10 +128,10 @@ from rss import (
 
 | 項目 | 値 |
 |-----|---|
-| Pythonファイル数 | 12 |
-| 総行数（実装コード） | 1,807 |
-| モジュール数 | 4 |
-| テストファイル数 | 3 |
+| Pythonファイル数 | 23 |
+| 総行数（実装コード） | 4,427 |
+| モジュール数 | 7 |
+| テストファイル数 | 14 |
 | テストカバレッジ | N/A |
 
 <!-- END: STATS -->
