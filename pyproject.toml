@@ -54,9 +54,13 @@ scheduler = ["apscheduler>=3.10.0"]
 mcp = [
     "mcp>=1.0.0",
 ]
+cli = [
+    "click>=8.1.0",
+]
 
 [project.scripts]
 rss-mcp = "rss.mcp.server:main"
+rss-cli = "rss.cli.main:cli"
 
 [build-system]
 requires = ["hatchling"]
