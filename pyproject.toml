@@ -161,7 +161,6 @@ addopts = [
     "-ra",
     "--strict-markers",
     "--strict-config",
-    "--cov-branch",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",

@@ -82,44 +82,44 @@ from .utils import (
 # __all__ - 公開シンボル定義
 # =============================================================================
 __all__ = [
-    # --- Public API (主要インターフェース) ---
-    "MarketData",
-    "Analysis",
-    # --- Analysis (内部クラス) ---
-    "Analyzer",
-    "CorrelationAnalyzer",
-    "IndicatorCalculator",
-    # --- Export ---
-    "DataExporter",
+    # --- Utilities ---
+    "PRESET_GROUPS",
     # --- Types ---
     "AgentOutput",
     "AgentOutputMetadata",
-    "AnalysisOptions",
-    "AnalysisResult",
-    "AssetType",
-    "CacheConfig",
-    "ChartOptions",
-    "CorrelationResult",
-    "DataSource",
-    "ExportOptions",
-    "FetchOptions",
-    "Interval",
-    "MarketDataResult",
-    "RetryConfig",
+    # --- Public API (主要インターフェース) ---
+    "Analysis",
     # --- Errors ---
     "AnalysisError",
+    "AnalysisOptions",
+    "AnalysisResult",
+    # --- Analysis (内部クラス) ---
+    "Analyzer",
+    "AssetType",
+    "CacheConfig",
     "CacheError",
+    "ChartOptions",
+    "CorrelationAnalyzer",
+    "CorrelationResult",
+    # --- Export ---
+    "DataExporter",
     "DataFetchError",
+    "DataSource",
     "ErrorCode",
     "ExportError",
+    "ExportOptions",
+    "FetchOptions",
+    "IndicatorCalculator",
+    "Interval",
     "MarketAnalysisError",
+    "MarketData",
+    "MarketDataResult",
     "RateLimitError",
-    "TimeoutError",
-    "ValidationError",
-    # --- Utilities ---
-    "PRESET_GROUPS",
+    "RetryConfig",
     "TickerInfo",
     "TickerRegistry",
+    "TimeoutError",
+    "ValidationError",
     "get_logger",
     "get_ticker_registry",
 ]
