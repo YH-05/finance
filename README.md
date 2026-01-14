@@ -126,11 +126,11 @@ uv run pyright --version
 finance/
 ├── .claude/                      # Claude Code 設定
 │   ├── agents/                   # サブエージェント定義 (46)
-│   ├── commands/                 # スラッシュコマンド (27)
+│   ├── commands/                 # スラッシュコマンド (28)
 │   └── skills/                   # スキル定義 (10)
 ├── .github/                      # GitHub automation
-│   ├── ISSUE_TEMPLATE/           # Issue テンプレート
-│   └── workflows/                # CI/CD
+│   ├── ISSUE_TEMPLATE/           # Issue テンプレート (4)
+│   └── workflows/                # CI/CD (3)
 ├── data/                         # データストレージ
 │   ├── config/                   # 設定ファイル
 │   ├── sqlite/                   # SQLite DB（OLTP）
@@ -140,7 +140,7 @@ finance/
 │   │   └── fred/                 # FRED 経済指標
 │   ├── processed/                # 加工済みデータ
 │   ├── exports/                  # エクスポート（CSV/JSON）
-│   └── schemas/                  # JSON スキーマ
+│   └── schemas/                  # JSON スキーマ (12)
 ├── docs/                         # 共通ドキュメント
 ├── snippets/                     # 再利用コンテンツ
 ├── src/
@@ -155,7 +155,7 @@ finance/
 │   │   ├── visualization/        # チャート生成
 │   │   ├── export/               # データエクスポート
 │   │   ├── utils/                # ユーティリティ（cache, retry, validators）
-│   │   └── docs/                 # パッケージドキュメント
+│   │   └── docs/                 # パッケージドキュメント (8)
 │   └── rss/                      # RSS配信パッケージ
 │       ├── cli/                  # CLIインターフェース
 │       ├── core/                 # コア機能（parser, diff_detector）
@@ -164,7 +164,7 @@ finance/
 │       ├── storage/              # JSON永続化
 │       ├── validators/           # バリデーション
 │       ├── utils/                # ユーティリティ
-│       └── docs/                 # ライブラリドキュメント
+│       └── docs/                 # ライブラリドキュメント (8)
 ├── template/                     # テンプレート（参照専用）
 │   ├── src/template_package/     # パッケージテンプレート
 │   ├── tests/                    # テストテンプレート

@@ -13,6 +13,82 @@ financeパッケージは、プロジェクト全体で使用される共通イ�
 
 **現在のバージョン:** 0.1.0
 
+## クイックスタート
+
+<!-- AUTO-GENERATED: QUICKSTART -->
+
+### インストール
+
+```bash
+# このリポジトリのパッケージとして利用
+uv sync --all-extras
+```
+
+### 基本的な使い方
+
+```python
+from finance import get_logger
+
+# ロガーの取得と使用
+logger = get_logger(__name__)
+logger.info("Processing started", item_count=100)
+```
+
+### よくある使い方
+
+#### ユースケース1: SQLiteでトランザクション操作
+
+```python
+from finance.db import SQLiteClient, get_db_path
+
+# データベースクライアントの作成
+client = SQLiteClient(get_db_path("sqlite", "market"))
+
+# データの挿入
+client.execute(
+    "INSERT INTO stocks (symbol, price) VALUES (?, ?)",
+    ("AAPL", 150.0)
+)
+
+# データの取得
+results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
+```
+
+#### ユースケース2: DuckDBで分析クエリ
+
+```python
+from finance.db import DuckDBClient, get_db_path
+
+# DuckDBクライアントの作成
+client = DuckDBClient(get_db_path("duckdb", "analytics"))
+
+# Parquetファイルから直接クエリ
+df = client.read_parquet("data/raw/yfinance/stocks/*.parquet")
+
+# 分析クエリの実行
+result = client.query_df("""
+    SELECT symbol, AVG(close) as avg_price
+    FROM df
+    GROUP BY symbol
+""")
+```
+
+#### ユースケース3: 構造化ロギング
+
+```python
+from finance import get_logger
+from finance.utils.logging_config import log_context
+
+logger = get_logger(__name__)
+
+# コンテキスト付きログ
+with log_context(user_id=123, request_id="abc"):
+    logger.info("Processing user request")
+    # このコンテキスト内の全ログにuser_idとrequest_idが含まれる
+```
+
+<!-- END: QUICKSTART -->
+
 ## ディレクトリ構成
 
 <!-- AUTO-GENERATED: STRUCTURE -->
@@ -43,9 +119,9 @@ finance/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|-----|
-| `types.py` | ✅ 実装済み | 1 | 30 |
-| `db/` | ✅ 実装済み | 6 | 342 |
-| `utils/` | ✅ 実装済み | 2 | 273 |
+| `types.py` | ✅ 実装済み | 1 | 26 |
+| `db/` | ✅ 実装済み | 6 | 303 |
+| `utils/` | ✅ 実装済み | 2 | 250 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -53,11 +129,133 @@ finance/
 
 <!-- AUTO-GENERATED: API -->
 
-### 関数
+### データベースクライアント
+
+finance パッケージは2種類のデータベースクライアントを提供します。
+
+#### `SQLiteClient`
+
+**説明**: SQLiteデータベースへのトランザクション処理（OLTP）用クライアント
+
+**基本的な使い方**:
 
 ```python
-from finance import (
-    get_logger,
+from finance.db import SQLiteClient, get_db_path
+
+# クライアントの初期化
+client = SQLiteClient(get_db_path("sqlite", "market"))
+
+# データの挿入・更新・削除
+client.execute(
+    "INSERT INTO stocks (symbol, price) VALUES (?, ?)",
+    ("AAPL", 150.0)
+)
+
+# データの取得
+results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `execute(sql, params)` | SQL実行してデータ取得 | `list[sqlite3.Row]` |
+| `execute_many(sql, params_list)` | 一括INSERT/UPDATE | `int` (影響行数) |
+| `execute_script(script)` | SQLスクリプト実行 | `None` |
+| `connection()` | コンテキストマネージャー | `sqlite3.Connection` |
+
+---
+
+#### `DuckDBClient`
+
+**説明**: DuckDBデータベースへの分析クエリ（OLAP）用クライアント。Parquetファイルの直接読み込みに対応。
+
+**基本的な使い方**:
+
+```python
+from finance.db import DuckDBClient, get_db_path
+
+# クライアントの初期化
+client = DuckDBClient(get_db_path("duckdb", "analytics"))
+
+# Parquetファイルから直接クエリ
+df = client.read_parquet("data/raw/yfinance/stocks/*.parquet")
+
+# 分析クエリの実行
+result = client.query_df("SELECT symbol, AVG(close) FROM df GROUP BY symbol")
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `query_df(sql)` | SQLクエリ実行してDataFrame取得 | `pd.DataFrame` |
+| `execute(sql)` | SQLを実行（結果なし） | `None` |
+| `read_parquet(pattern)` | Parquetファイル読み込み | `pd.DataFrame` |
+| `write_parquet(df, path)` | DataFrameをParquetに書き込み | `None` |
+
+---
+
+### ユーティリティ関数
+
+#### `get_logger(name, **context)`
+
+**説明**: 構造化ログを出力するロガーインスタンスを取得
+
+**使用例**:
+
+```python
+from finance import get_logger
+
+# 基本的な使い方
+logger = get_logger(__name__)
+logger.info("Processing started", item_count=100)
+logger.error("Processing failed", error="Invalid input")
+
+# コンテキスト付きロガー
+logger = get_logger(__name__, module="data_processor", version="1.0")
+logger.debug("Debug message with context")
+```
+
+**主なパラメータ**:
+
+- `name` (必須): ロガー名（通常は `__name__`）
+- `**context`: ロガーに紐付けるコンテキスト情報
+
+---
+
+#### `get_db_path(db_type, name)`
+
+**説明**: データベースファイルのパスを取得
+
+**使用例**:
+
+```python
+from finance.db import get_db_path
+
+# SQLiteデータベースのパス
+sqlite_path = get_db_path("sqlite", "market")  # data/sqlite/market.db
+
+# DuckDBデータベースのパス
+duckdb_path = get_db_path("duckdb", "analytics")  # data/duckdb/analytics.duckdb
+```
+
+---
+
+### 型定義
+
+データ構造の定義。型ヒントやバリデーションに使用:
+
+```python
+from finance.types import (
+    DatabaseType,      # "sqlite" | "duckdb"
+    DataSource,        # "yfinance" | "fred"
+    AssetCategory,     # "stocks" | "forex" | "indices" | "indicators"
+    FileFormat,        # "parquet" | "csv" | "json"
+    LogFormat,         # "json" | "console" | "plain"
+    LogLevel,          # "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL"
+    DatabaseConfig,    # データベース設定のTypeDict
+    FetchResult,       # データ取得結果のTypeDict
 )
 ```
 
@@ -70,9 +268,10 @@ from finance import (
 | 項目 | 値 |
 |-----|---|
 | Pythonファイル数 | 10 |
-| 総行数（実装コード） | 649 |
+| 総行数（実装コード） | 582 |
 | モジュール数 | 2 |
 | テストファイル数 | 3 |
+| テストカバレッジ | N/A |
 
 <!-- END: STATS -->
 

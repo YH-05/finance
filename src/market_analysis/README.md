@@ -8,6 +8,88 @@
 
 **現在のバージョン:** 0.1.0
 
+<!-- AUTO-GENERATED: QUICKSTART -->
+
+## クイックスタート
+
+### インストール
+
+```bash
+# このリポジトリのパッケージとして利用
+uv sync --all-extras
+```
+
+### 基本的な使い方
+
+```python
+from market_analysis import MarketData, Analysis, Chart
+
+# 1. 市場データを取得
+data = MarketData()
+stock_df = data.fetch_stock("AAPL", start="2024-01-01")
+
+# 2. テクニカル分析を実行（メソッドチェーン）
+analysis = Analysis(stock_df)
+result = analysis.add_sma(20).add_ema(50).add_returns().result()
+
+# 3. チャートを生成
+chart = Chart(result.data, title="AAPL 株価チャート")
+chart.price_chart(overlays=["SMA_20", "EMA_50"])
+chart.save("chart.png")
+```
+
+### よくある使い方
+
+#### ユースケース1: 複数銘柄の相関分析
+
+```python
+from market_analysis import MarketData, Analysis, Chart
+
+# データ取得
+data = MarketData()
+aapl_df = data.fetch_stock("AAPL", start="2024-01-01")
+msft_df = data.fetch_stock("MSFT", start="2024-01-01")
+
+# 相関分析
+corr_matrix = Analysis.correlation([aapl_df, msft_df])
+
+# ヒートマップ生成
+fig = Chart.correlation_heatmap(corr_matrix, title="株価相関マップ")
+```
+
+#### ユースケース2: 経済指標の取得と分析
+
+```python
+from market_analysis import MarketData
+
+# FRED から経済指標を取得
+data = MarketData(fred_api_key="your_api_key")
+gdp_df = data.fetch_fred("GDP", start="2020-01-01")
+unemployment_df = data.fetch_fred("UNRATE", start="2020-01-01")
+```
+
+#### ユースケース3: テクニカル指標の計算
+
+```python
+from market_analysis import Analysis
+
+# 単一指標の計算
+analysis = Analysis(stock_df)
+result = analysis.add_sma(20).result()
+
+# 複数指標の組み合わせ
+result = (
+    analysis
+    .add_sma(20)
+    .add_ema(12)
+    .add_returns()
+    .add_volatility(window=20)
+    .result()
+)
+```
+
+<!-- END: QUICKSTART -->
+
 ## ディレクトリ構成
 
 <!-- AUTO-GENERATED: STRUCTURE -->
@@ -69,12 +151,12 @@ market_analysis/
 |-----------|------|-----------|------|-------|------|
 | `types.py` | ✅ 実装済み | 1 | 555 | - | TypedDict, Enum等の型定義 |
 | `errors.py` | ✅ 実装済み | 1 | 515 | - | MarketAnalysisError等の例外クラス |
-| `api/` | ✅ 実装済み | 4 | 1,774 | 3 | MarketData, Analysis, Chart（メソッドチェーン対応） |
-| `analysis/` | ✅ 実装済み | 4 | 1,427 | 3 | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 5 | 1,650 | 4 | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
-| `export/` | ✅ 実装済み | 2 | 692 | 1 | DataExporter |
-| `utils/` | ✅ 実装済み | 7 | 2,746 | 1 | logging, validators, cache, retry, ticker_registry |
-| `visualization/` | ✅ 実装済み | 4 | 1,747 | 3 | ChartBuilder, CandlestickChart, HeatmapChart |
+| `api/` | ✅ 実装済み | 4 | 1,774 | ✅ | MarketData, Analysis, Chart（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 4 | 1,427 | ✅ | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 5 | 1,650 | ✅ | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
+| `export/` | ✅ 実装済み | 2 | 692 | ✅ | DataExporter |
+| `utils/` | ✅ 実装済み | 7 | 2,746 | ✅ | logging, validators, cache, retry, ticker_registry |
+| `visualization/` | ✅ 実装済み | 4 | 1,747 | ✅ | ChartBuilder, CandlestickChart, HeatmapChart |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -82,101 +164,253 @@ market_analysis/
 
 <!-- AUTO-GENERATED: API -->
 
-### 主要インターフェース（推奨）
+### クイックスタート
+
+パッケージの基本的な使い方を最初に示します。
 
 ```python
 from market_analysis import MarketData, Analysis, Chart
 
-# データ取得
+# 最も基本的な使い方（3ステップ）
 data = MarketData()
 stock_df = data.fetch_stock("AAPL", start="2024-01-01")
 
-# テクニカル分析（メソッドチェーン）
 analysis = Analysis(stock_df)
-result = analysis.add_sma(20).add_returns().result()
+result = analysis.add_sma(20).result()
 
-# チャート生成
-chart = Chart(stock_df, title="AAPL Price Chart")
-chart.price_chart(overlays=["SMA_20", "EMA_50"])
+chart = Chart(result.data)
 chart.save("chart.png")
 ```
+
+### 主要クラス
+
+#### `MarketData`
+
+**説明**: 市場データ取得の統合インターフェース。Yahoo Finance（yfinance）とFRED（米国経済指標）からデータを取得します。
+
+**基本的な使い方**:
+
+```python
+from market_analysis import MarketData
+
+# 初期化（キャッシュ有効）
+data = MarketData(cache_path="data/cache.db")
+
+# 株価データの取得
+stock_df = data.fetch_stock("AAPL", start="2024-01-01", end="2024-12-31")
+
+# 為替レートの取得
+forex_df = data.fetch_forex("USDJPY", start="2024-01-01")
+
+# 経済指標の取得（FRED APIキーが必要）
+data_with_fred = MarketData(fred_api_key="your_api_key")
+gdp_df = data_with_fred.fetch_fred("GDP", start="2020-01-01")
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `fetch_stock(symbol, start, end)` | 株価データを取得 | `pd.DataFrame` |
+| `fetch_forex(pair, start, end)` | 為替データを取得 | `pd.DataFrame` |
+| `fetch_fred(series_id, start, end)` | FRED経済指標を取得 | `pd.DataFrame` |
+| `fetch_index(symbol, start, end)` | 指数データを取得 | `pd.DataFrame` |
+
+---
+
+#### `Analysis`
+
+**説明**: テクニカル分析を行うクラス。メソッドチェーンで複数の指標を順次追加できます。
+
+**基本的な使い方**:
+
+```python
+from market_analysis import Analysis
+
+# 初期化
+analysis = Analysis(stock_df)
+
+# 単一指標の追加
+result = analysis.add_sma(20).result()
+
+# 複数指標の組み合わせ（メソッドチェーン）
+result = (
+    analysis
+    .add_sma(20)           # 単純移動平均
+    .add_ema(12)           # 指数移動平均
+    .add_returns()         # リターン計算
+    .add_volatility(20)    # ボラティリティ
+    .result()
+)
+
+# 相関分析（クラスメソッド）
+corr_matrix = Analysis.correlation([aapl_df, msft_df])
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `add_sma(window)` | 単純移動平均を追加 | `Self` |
+| `add_ema(span)` | 指数移動平均を追加 | `Self` |
+| `add_returns()` | リターンを計算 | `Self` |
+| `add_volatility(window)` | ボラティリティを計算 | `Self` |
+| `result()` | 分析結果を取得 | `AnalysisResult` |
+| `correlation(dataframes)` | 相関分析（クラスメソッド） | `pd.DataFrame` |
+
+---
+
+#### `Chart`
+
+**説明**: チャート生成インターフェース。価格チャート、ヒートマップを作成できます。
+
+**基本的な使い方**:
+
+```python
+from market_analysis import Chart
+
+# 初期化
+chart = Chart(stock_df, title="AAPL 株価チャート")
+
+# 価格チャートの生成（指標オーバーレイ付き）
+fig = chart.price_chart(overlays=["SMA_20", "EMA_50"])
+
+# ファイル保存
+chart.save("chart.png")
+
+# 相関ヒートマップ（クラスメソッド）
+corr_matrix = Analysis.correlation([aapl_df, msft_df])
+fig = Chart.correlation_heatmap(corr_matrix, title="株価相関マップ")
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `price_chart(overlays)` | 価格チャートを生成 | `go.Figure` |
+| `save(filepath)` | チャートをファイル保存 | `None` |
+| `correlation_heatmap(matrix, title)` | 相関ヒートマップ（クラスメソッド） | `go.Figure` |
+
+---
 
 ### 内部分析クラス（上級ユーザー向け）
 
+より細かい制御が必要な場合は、内部クラスを直接使用できます。
+
 ```python
 from market_analysis import Analyzer, CorrelationAnalyzer, IndicatorCalculator
+
+# Analyzer: 低レベル分析インターフェース
+analyzer = Analyzer(stock_df, symbol="AAPL")
+
+# CorrelationAnalyzer: 相関分析専用クラス
+corr_analyzer = CorrelationAnalyzer()
+corr_matrix = corr_analyzer.calculate([df1, df2])
+
+# IndicatorCalculator: 指標計算専用クラス
+calc = IndicatorCalculator(stock_df)
+sma = calc.sma(window=20)
 ```
 
-### チャート生成（詳細API）
-
-```python
-from market_analysis.visualization import CandlestickChart, HeatmapChart, PriceChartData
-
-# ローソク足チャート
-data = PriceChartData(df=ohlcv_df, symbol="AAPL")
-chart = CandlestickChart(data).add_sma(20).build()
-chart.save("chart.png")
-
-# ヒートマップ
-chart = HeatmapChart(correlation_matrix).build().save("heatmap.png")
-```
+---
 
 ### データエクスポート
 
+#### `DataExporter`
+
+**説明**: 分析結果をCSV、JSON、Parquet形式でエクスポートします。
+
+**使用例**:
+
 ```python
 from market_analysis import DataExporter
+
+exporter = DataExporter()
+exporter.to_csv(result.data, "output.csv")
+exporter.to_json(result.data, "output.json")
+exporter.to_parquet(result.data, "output.parquet")
 ```
+
+---
 
 ### 型定義
 
+データ構造の定義。型ヒントやバリデーションに使用します。
+
 ```python
 from market_analysis import (
-    # Enum
-    AssetType,
-    DataSource,
-    Interval,
-    # TypedDict / Options
-    AgentOutput,
-    AgentOutputMetadata,
-    AnalysisOptions,
-    AnalysisResult,
-    CacheConfig,
-    ChartOptions,
-    CorrelationResult,
-    ExportOptions,
-    FetchOptions,
-    MarketDataResult,
-    RetryConfig,
+    # Enum型（定数定義）
+    AssetType,       # 資産タイプ（STOCK, FOREX, CRYPTO等）
+    DataSource,      # データソース（YFINANCE, FRED）
+    Interval,        # 時間間隔（1d, 1wk, 1mo等）
+
+    # TypedDict（データ構造）
+    AgentOutput,           # エージェント出力形式
+    AgentOutputMetadata,   # メタデータ
+    AnalysisOptions,       # 分析オプション
+    AnalysisResult,        # 分析結果
+    CacheConfig,           # キャッシュ設定
+    ChartOptions,          # チャートオプション
+    CorrelationResult,     # 相関分析結果
+    ExportOptions,         # エクスポートオプション
+    FetchOptions,          # データ取得オプション
+    MarketDataResult,      # 市場データ結果
+    RetryConfig,           # リトライ設定
 )
 ```
+
+---
 
 ### エラーハンドリング
 
+例外処理に使用するエラークラスです。
+
 ```python
 from market_analysis import (
-    MarketAnalysisError,  # 基底例外
-    AnalysisError,        # 分析エラー
-    CacheError,           # キャッシュエラー
-    DataFetchError,       # データ取得エラー
+    MarketAnalysisError,  # 基底例外クラス
+    AnalysisError,        # 分析処理のエラー
+    CacheError,           # キャッシュ操作のエラー
+    DataFetchError,       # データ取得のエラー
     ErrorCode,            # エラーコード定数
-    ExportError,          # エクスポートエラー
-    RateLimitError,       # レート制限エラー
+    ExportError,          # エクスポート処理のエラー
+    RateLimitError,       # APIレート制限エラー
     TimeoutError,         # タイムアウトエラー
     ValidationError,      # バリデーションエラー
 )
+
+# 使用例
+try:
+    data = MarketData()
+    stock_df = data.fetch_stock("INVALID_SYMBOL")
+except DataFetchError as e:
+    print(f"データ取得失敗: {e}")
 ```
+
+---
 
 ### ユーティリティ
 
+便利な補助機能を提供します。
+
 ```python
 from market_analysis import (
-    PRESET_GROUPS,
-    TickerInfo,
-    TickerRegistry,
-    get_logger,
-    get_ticker_registry,
+    PRESET_GROUPS,         # プリセットティッカーグループ
+    TickerInfo,            # ティッカー情報（TypedDict）
+    TickerRegistry,        # ティッカーレジストリクラス
+    get_logger,            # ロガー取得関数
+    get_ticker_registry,   # レジストリ取得関数
 )
+
+# ティッカーレジストリの使用
+registry = get_ticker_registry()
+ticker_info = registry.get("AAPL")
+print(ticker_info["name"])  # "Apple Inc."
+
+# ロガーの使用
+logger = get_logger(__name__)
+logger.info("処理開始")
 ```
+
 <!-- END: API -->
 
 ## 統計
@@ -188,7 +422,7 @@ from market_analysis import (
 | Pythonファイル数 | 29 |
 | 総行数（実装コード） | 11,234 |
 | モジュール数 | 6 |
-| テストファイル数 | 15 |
+| テストファイル数 | 25 |
 | テストカバレッジ | N/A |
 
 <!-- END: STATS -->

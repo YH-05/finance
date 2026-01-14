@@ -297,7 +297,7 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 .claude/                      # Claude Code設定
 ├── agents/                   # サブエージェント定義 (46)
-├── commands/                 # スラッシュコマンド (27)
+├── commands/                 # スラッシュコマンド (28)
 └── skills/                   # スキル定義 (10)
 
 data/                         # データストレージ
@@ -309,7 +309,7 @@ data/                         # データストレージ
 │   └── fred/                 # FRED経済指標
 ├── processed/                # 加工済みデータ（daily/aggregated）
 ├── exports/                  # エクスポート（csv/json）
-└── schemas/                  # JSONスキーマ
+└── schemas/                  # JSONスキーマ (12)
 
 src/
 ├── finance/                  # 共通インフラパッケージ
@@ -329,8 +329,7 @@ src/
 │   ├── visualization/        # チャート生成
 │   ├── export/               # データエクスポート
 │   ├── utils/                # ユーティリティ（cache, retry, validators）
-│   └── docs/                 # ライブラリドキュメント
-│       └── project.md        # プロジェクトファイル
+│   └── docs/                 # ライブラリドキュメント (8)
 └── rss/                      # RSS配信パッケージ
     ├── cli/                  # CLIインターフェース
     ├── core/                 # コア機能（parser, diff_detector）
@@ -339,7 +338,7 @@ src/
     ├── storage/              # JSON永続化
     ├── validators/           # バリデーション
     ├── utils/                # ユーティリティ
-    └── docs/                 # ライブラリドキュメント
+    └── docs/                 # ライブラリドキュメント (8)
 
 tests/
 ├── finance/                  # financeパッケージテスト
