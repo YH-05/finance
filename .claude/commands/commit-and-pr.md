@@ -57,13 +57,26 @@ PR に付けるラベル：
     - git status と git diff で変更を確認
     - 変更の種類を判断（feature/fix/refactor/docs/test）
 
-2. **ブランチの作成**
+2. **コード簡素化（自動実行）**
+
+    - code-simplifier エージェントを起動
+    - 変更されたファイルに対してコード整理を実行
+    - 型ヒント、Docstring、命名規則、関数分割などを改善
+    - 各修正後に自動的にテスト実行・検証
+
+3. **品質確認（自動実行）**
+
+    - quality-checker エージェント（--quick モード）を起動
+    - format/lint/typecheck/test の自動修正
+    - 問題があれば自動修正
+
+4. **ブランチの作成**
 
     ```bash
     git checkout -b <branch-type>/<descriptive-name>
     ```
 
-3. **ステージングとコミット**
+5. **ステージングとコミット**
 
     ```bash
     git add <files>
@@ -79,13 +92,13 @@ PR に付けるラベル：
     )"
     ```
 
-4. **リモートへのプッシュ**
+6. **リモートへのプッシュ**
 
     ```bash
     git push -u origin <branch-name>
     ```
 
-5. **PR の作成**
+7. **PR の作成**
 
     ```bash
     make pr TITLE="<PRタイトル>" BODY="<PR説明>" LABEL="<label>"
@@ -107,7 +120,7 @@ PR に付けるラベル：
 
     **PRタイトルとボディは日本語で記述すること。**
 
-6. **PRレビューファイルのコミット（オプション）**
+8. **PRレビューファイルのコミット（オプション）**
 
     `/review-pr` コマンドで生成されたレビューファイル（`docs/pr-review/pr-review-*.yaml`）がある場合は、追加コミットとしてプッシュします：
 
@@ -132,6 +145,12 @@ PR に付けるラベル：
 
 1. **コミット前の確認**
 
+    - **code-simplifier** でコード簡素化:
+      ```yaml
+      subagent_type: "code-simplifier"
+      prompt: |
+        git diffで変更されたファイルを対象にコード簡素化を実行してください。
+      ```
     - **quality-checker（--quick モード）** で品質確認:
       ```yaml
       subagent_type: "quality-checker"
