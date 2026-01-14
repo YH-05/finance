@@ -170,5 +170,7 @@ markers = [
 
 [dependency-groups]
 dev = [
+    "pre-commit>=4.5.1",
     "pyright>=1.1.403",
+    "pytest-cov>=7.0.0",
 ]

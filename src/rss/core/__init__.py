@@ -1,3 +1,5 @@
 """Core functionality of the rss package."""
 
-__all__: list[str] = []
+from .diff_detector import DiffDetector
+
+__all__: list[str] = ["DiffDetector"]

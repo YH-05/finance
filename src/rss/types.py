@@ -104,3 +104,17 @@ class LogEvent(TypedDict):
 # Log formatting types
 type LogFormat = Literal["json", "console", "plain"]
 type LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+
+
+# RSS feed types
+class FeedItem(TypedDict):
+    """RSS/Atom feed item."""
+
+    item_id: str
+    title: str
+    link: str
+    published: str
+    summary: str
+    content: str
+    author: str
+    fetched_at: str
