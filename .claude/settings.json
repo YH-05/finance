@@ -44,6 +44,7 @@
             "Bash(git -C /Users/yukihata/Desktop/.worktrees/finance/* status --porcelain)",
             "Bash(git -C /Users/yukihata/Desktop/.worktrees/finance/* log @{u}..HEAD --oneline)",
             "Bash(gh issue list:*)",
+            "Bash(gh issue view:*)",
             "Bash(gh run view:*)",
             "Bash(gh pr list:*)",
             "Bash(gh pr view:*)",

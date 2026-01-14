@@ -12,6 +12,9 @@ on:
 
 jobs:
   claude-review:
+    # 自動レビューを無効化（再有効化する場合は if: false を削除）
+    if: false
+
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
