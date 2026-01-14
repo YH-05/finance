@@ -49,8 +49,14 @@ docs = [
     "myst-parser>=2.0.0",
 ]
 
-# rss scheduler optional dependency
+# rss optional dependencies
 scheduler = ["apscheduler>=3.10.0"]
+mcp = [
+    "mcp>=1.0.0",
+]
+
+[project.scripts]
+rss-mcp = "rss.mcp.server:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -182,5 +188,6 @@ dev = [
     "pyright>=1.1.403",
     "pytest-asyncio>=1.3.0",
     "pytest-cov>=7.0.0",
+    "ruff>=0.14.11",
     "virtualenv>=20.36.1",
 ]
