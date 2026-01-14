@@ -9,7 +9,6 @@ def _(mo):
     mo.md(r"""
     # Monitoring_List-Securities.ipynb
     """)
-    return
 
 
 @app.cell
@@ -18,22 +17,13 @@ def _():
     # %load_ext autoreload
     # '%autoreload 2' command supported automatically in marimo
 
-    import pandas as pd
-    from pathlib import Path
-    import numpy as np
     import datetime
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    import plotly.graph_objects as go
-    import matplotlib.ticker as mtick
-    from pprint import pprint
-    import yaml
     import sqlite3
-    from database_utils import get_table_names, append_diff_to_sqlite
-    import factset_downloaded_data_utils as f_db_utils
-    import ROIC_make_data_files_ver2 as roic_utils
-    import bloomberg_utils as bbg_utils
     import warnings
+    from pathlib import Path
+
+    import bloomberg_utils as bbg_utils
+    import pandas as pd
 
     warnings.simplefilter("ignore")
 
@@ -47,11 +37,10 @@ def _():
     INDEX_CONSTITUENTS_DIR = FACTSET_DIR / "Index_Constituents"
     BBG_DIR = DATA_DIR / "Bloomberg"
 
-
     db_path = INDEX_DIR / "Financials_and_Price.db"
     factset_index_db_path = INDEX_CONSTITUENTS_DIR / "Index_Constituents.db"
     bpm_db_path = BPM_DIR / "Index_Constituents.db"
-    bloomberg_db_path =BBG_DIR / "Bloomberg.db"
+    bloomberg_db_path = BBG_DIR / "Bloomberg.db"
     return (
         UNIVERSE_CODE,
         bbg_utils,
@@ -68,7 +57,6 @@ def _(mo):
     mo.md(r"""
     ## MSCI KOKUSAI 構成銘柄取得
     """)
-    return
 
 
 @app.cell
@@ -93,7 +81,6 @@ def _(UNIVERSE_CODE, bpm_db_path, datetime, display, pd, sqlite3):
 @app.cell
 def _(df, display):
     display(df[df["SEDOL"] == "688692"].tail())
-    return
 
 
 @app.cell
@@ -124,12 +111,12 @@ def _(
         table_name="price_sedol",
         primary_keys=["Date", "SEDOL"],
     )
-    return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 

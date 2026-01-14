@@ -19,7 +19,6 @@ def _(mo):
     4. Macro Analysis (Conditional Performance)
     5. Visualization
     """)
-    return
 
 
 @app.cell
@@ -29,27 +28,26 @@ def _():
     # '%autoreload 2' command supported automatically in marimo
 
     import sys
-    import os
     from pathlib import Path
-    from dotenv import load_dotenv
+
     import pandas as pd
-    import numpy as np
+    from dotenv import load_dotenv
 
     # Add project root to path
     current_dir = Path.cwd()
-    if current_dir.name == 'notebook':
+    if current_dir.name == "notebook":
         root_dir = current_dir.parent
     else:
         root_dir = current_dir
 
     sys.path.append(str(root_dir))
 
-    from src.roic_analysis.performance_analysis import PerformanceAnalyzer
     from src.roic_analysis.factor_analysis import FactorAnalyzer
     from src.roic_analysis.macro_analyzer import MacroAnalyzer
+    from src.roic_analysis.performance_analysis import PerformanceAnalyzer
     from src.roic_analysis.visualization import ROICVisualizer
 
-    load_dotenv(root_dir / '.env')
+    load_dotenv(root_dir / ".env")
     return (
         FactorAnalyzer,
         MacroAnalyzer,
@@ -65,7 +63,6 @@ def _(mo):
     mo.md(r"""
     ## 1. Load Data
     """)
-    return
 
 
 @app.cell
@@ -88,7 +85,6 @@ def _(mo):
     mo.md(r"""
     ## 2. Performance Analysis
     """)
-    return
 
 
 @app.cell
@@ -141,7 +137,6 @@ def _(mo):
     mo.md(r"""
     ## 3. Factor Analysis (Double Sort)
     """)
-    return
 
 
 @app.cell
@@ -160,9 +155,9 @@ def _(FactorAnalyzer, df, visualizer):
         )
 
         visualizer.plot_factor_heatmap(
-            portfolio_returns, title=f"Double Sort: {factor1} (Rows) vs {factor2} (Cols)"
+            portfolio_returns,
+            title=f"Double Sort: {factor1} (Rows) vs {factor2} (Cols)",
         )
-    return
 
 
 @app.cell(hide_code=True)
@@ -170,7 +165,6 @@ def _(mo):
     mo.md(r"""
     ## 4. Macro Analysis
     """)
-    return
 
 
 @app.cell
@@ -206,12 +200,12 @@ def _(MacroAnalyzer, df, display, root_dir, visualizer):
             )
     except Exception as e:
         print(f"Macro analysis skipped or failed: {e}")
-    return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 

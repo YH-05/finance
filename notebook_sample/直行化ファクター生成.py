@@ -9,13 +9,12 @@ def _(mo):
     mo.md(r"""
     [Gemini](https://gemini.google.com/app/a0cd28b75b80675e?utm_source=app_launcher&utm_medium=owned&utm_campaign=base_all)
     """)
-    return
 
 
 @app.cell
 def _():
-    import pandas as pd
     import numpy as np
+    import pandas as pd
     import statsmodels.api as sm
     from sklearn.decomposition import PCA
 
@@ -47,7 +46,6 @@ def _():
     df_raw = pd.DataFrame(data, index=dates)
     # ---------------------------------------------------------------------------------
 
-
     def orthogonalize(series_to_clean, regressors):
         """
         ある系列(series_to_clean)を、他の変数(regressors)で回帰させ、
@@ -74,7 +72,6 @@ def _():
         residuals = pd.Series(model.resid, index=Y.index)
         return residuals
 
-
     # ================================================================================
     # 1. データの前処理とマーケットファクターの作成
     # ================================================================================
@@ -94,7 +91,6 @@ def _():
     # 【完成】マーケットファクター（超過リターン）
     df["Factor_Market"] = df["mkt_return"] - df["daily_rf"]
     print(" -> マーケットファクター (Factor_Market) を作成しました。\n")
-
 
     # ================================================================================
     # 2. 金利ファクターの作成と直交化
@@ -122,7 +118,6 @@ def _():
     df["Factor_Curvature"] = orthogonalize(df["Curvature_Shock"], df["Factor_Market"])
     print(" -> 金利ファクター (Level, Slope, Curvature) を作成し、直交化しました。\n")
 
-
     # ================================================================================
     # 3. FtoQファクターの作成と直交化
     # ================================================================================
@@ -140,7 +135,6 @@ def _():
     df["Factor_FtoQ"] = orthogonalize(df["FtoQ_Shock"], regressors_ftoq)
     print(" -> FtoQファクター (Factor_FtoQ) を作成し、直交化しました。\n")
 
-
     # ================================================================================
     # 4. インフレファクターの作成と直交化
     # ================================================================================
@@ -150,11 +144,16 @@ def _():
 
     # 4-2. インフレをこれまでに作成した全てのファクターに対して直交化
     regressors_inflation = df[
-        ["Factor_Market", "Factor_Level", "Factor_Slope", "Factor_Curvature", "Factor_FtoQ"]
+        [
+            "Factor_Market",
+            "Factor_Level",
+            "Factor_Slope",
+            "Factor_Curvature",
+            "Factor_FtoQ",
+        ]
     ]
     df["Factor_Inflation"] = orthogonalize(df["Inflation_Shock"], regressors_inflation)
     print(" -> インフレファクター (Factor_Inflation) を作成し、直交化しました。\n")
-
 
     # ================================================================================
     # 5. 最終的なファクターセットの完成
@@ -180,12 +179,12 @@ def _():
     # 相関行列を計算し、小数点以下4桁で表示
     correlation_matrix = df_factors.corr()
     print(correlation_matrix.round(4))
-    return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 

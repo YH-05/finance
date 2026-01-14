@@ -7,6 +7,7 @@ app = marimo.App()
 @app.cell
 def _():
     import feedparser
+
     return (feedparser,)
 
 
@@ -24,7 +25,6 @@ def _(feedparser):
     for entry in feed.entries[:5]:
         print(entry.title)
         print(entry.link)
-    return
 
 
 @app.cell(hide_code=True)
@@ -34,12 +34,12 @@ def _(mo):
 
     RSS フィードが更新されていない可能性がある。
     """)
-    return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 

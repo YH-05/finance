@@ -9,31 +9,30 @@ def _(mo):
     mo.md(r"""
     https://qiita.com/Fortinbras/items/d8f546d628168ddef48f
     """)
-    return
 
 
 @app.cell
 def _():
     from google.colab import drive
-    drive.mount('/content/drive')
-    return
+
+    drive.mount("/content/drive")
 
 
 @app.cell
 def _():
     from plotly import graph_objects as go
-    import os
+
     return (go,)
 
 
 @app.cell
 def _(go):
-    #朝日新聞社のBSの数値をサンプルのデータとして利用
+    # 朝日新聞社のBSの数値をサンプルのデータとして利用
     # (子会社の朝日放送HDもしくはテレビ朝日HDが適時開示に「親会社の決算」を発表している)
     data = {
-        "総資産":[ 594628,605226,611502 ,607605 ,614114 ,599162,554408],
-        "負債": [256320,288806, 278072,234054,231745,223782,217897],
-        "純資産": [338307,316419,333429 ,373551 ,382368 ,375380,336511],
+        "総資産": [594628, 605226, 611502, 607605, 614114, 599162, 554408],
+        "負債": [256320, 288806, 278072, 234054, 231745, 223782, 217897],
+        "純資産": [338307, 316419, 333429, 373551, 382368, 375380, 336511],
         "labels": [
             "2015/03本",
             "2016/03本",
@@ -41,14 +40,14 @@ def _(go):
             "2018/03本",
             "2019/03本",
             "2020/03本",
-            "2020/09中"
-        ]
+            "2020/09中",
+        ],
     }
 
     # グラフ描画
     fig1 = go.Figure(
-       # データの指定
-       data=[
+        # データの指定
+        data=[
             go.Bar(
                 name="総資産",
                 x=data["labels"],
@@ -67,22 +66,22 @@ def _(go):
                 x=data["labels"],
                 y=data["純資産"],
                 offsetgroup=1,
-            )
+            ),
         ],
-       # レイアウトの指定
+        # レイアウトの指定
         layout=go.Layout(
             title="朝日新聞社_貸借対照表(BS)",
             xaxis_title="決算期",
-            yaxis_title="JPY(単位:百万円)"
-        )
+            yaxis_title="JPY(単位:百万円)",
+        ),
     )
     fig1.show()
-    return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 

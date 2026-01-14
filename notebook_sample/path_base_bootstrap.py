@@ -11,41 +11,22 @@ def _():
     # '%autoreload 2' command supported automatically in marimo
 
     import matplotlib.pyplot as plt
-    import seaborn as sns
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-    import numpy as np
-    import curl_cffi
     import pandas as pd
+
     pd.options.display.precision = 2
-    import sqlite3
-    import json
-    import yaml
-    import yfinance as yf
-    import datetime
-    from market_report_utils import (
-            MarketPerformanceAnalyzer,
-            apply_df_style,
-            plot_vix_and_high_yield_spread,
-            plot_vix_and_uncertainty_index
-        )
-    from fred_database_utils import (
-            store_fred_database,
-            get_fred_ids_from_file,
-            load_data_from_database,
-            delete_table_from_db  # type: ignore
-        )
-    from us_treasury import (
-            plot_us_interest_rates_and_spread_3,
-            plot_us_corporate_bond_spreads  # type: ignore
-        )
-    from path_base_bootstrap import (
-            run_portfolio_bootstrap,
-            print_bootstrap_stats,
-            run_multiple_bootstrap_simulations
-        )
     from pathlib import Path
-    from fredapi import Fred
+
+    from fred_database_utils import (
+        get_fred_ids_from_file,
+    )
+    from market_report_utils import (
+        MarketPerformanceAnalyzer,
+    )
+    from path_base_bootstrap import (
+        print_bootstrap_stats,
+        run_multiple_bootstrap_simulations,
+        run_portfolio_bootstrap,
+    )
 
     ROOT_DIR = Path().cwd().parent
     DATA_DIR = ROOT_DIR / "data"
@@ -157,7 +138,6 @@ def _(
     print_bootstrap_stats(stats)
     plt.tight_layout()
     plt.show()
-    return
 
 
 if __name__ == "__main__":

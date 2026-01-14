@@ -9,13 +9,15 @@ def _():
     # magic command not supported in marimo; please file an issue to add support
     # %load_ext autoreload
     # '%autoreload 2' command supported automatically in marimo
-    from market_report_utils import TSAPassengerDataCollector
-    import pandas as pd
     from datetime import datetime
-    import numpy as np
     from pathlib import Path
+
+    import numpy as np
+    import pandas as pd
+    from market_report_utils import TSAPassengerDataCollector
+
     ROOT_DIR = Path().cwd().parent
-    DATA_DIR = ROOT_DIR / 'data/TSA'
+    DATA_DIR = ROOT_DIR / "data/TSA"
     return DATA_DIR, TSAPassengerDataCollector, datetime, np, pd
 
 
@@ -38,8 +40,7 @@ def _(DATA_DIR, TSAPassengerDataCollector, datetime, np, pd):
 
     # plot
     fig = data_collector.plot_passenger_trend(tsa_data)
-    fig.savefig(DATA_DIR / f"tsa_checkpoint_passenger_numbers.png", dpi=300)
-    return
+    fig.savefig(DATA_DIR / "tsa_checkpoint_passenger_numbers.png", dpi=300)
 
 
 if __name__ == "__main__":

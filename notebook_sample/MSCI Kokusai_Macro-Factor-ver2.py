@@ -13,7 +13,6 @@ def _(mo):
     -   [Gemini](https://gemini.google.com/app/a0cd28b75b80675e?utm_source=app_launcher&utm_medium=owned&utm_campaign=base_all)
     -   [Gemini](https://gemini.google.com/app/0da10f614b7e7434?utm_source=app_launcher&utm_medium=owned&utm_campaign=base_all)
     """)
-    return
 
 
 @app.cell(hide_code=True)
@@ -68,7 +67,6 @@ def _(mo):
 
     [Google Document を参照](https://docs.google.com/document/d/1OJ1hipUb0jYnwNXVZmq4FhBTmOqx0nSz0VpI-uF8PRQ/edit?tab=t.0)
     """)
-    return
 
 
 @app.cell
@@ -76,53 +74,46 @@ def _():
     # magic command not supported in marimo; please file an issue to add support
     # %load_ext autoreload
     # '%autoreload 2' command supported automatically in marimo
-    import pandas as pd
-    import polars as pl
-    from pathlib import Path
-    import sqlite3
-    import numpy as np
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    import matplotlib.gridspec as gridspec
-    from matplotlib.ticker import PercentFormatter
-    from matplotlib.ticker import MultipleLocator
-    import statsmodels.api as sm
-    import seaborn as sns
-    import json
     import os
+    import sqlite3
     import sys
-    from sklearn.decomposition import PCA
-    from dotenv import load_dotenv
-    from dateutil.relativedelta import relativedelta
-    from datetime import datetime, date, timedelta
-    from typing import List
-    from fredapi import Fred
-    from tqdm import tqdm
-    from data_check_utils import calculate_missing_stats, extract_dates_in_range
-    from database_utils import get_table_names, step1_load_file_to_db, step2_create_variable_tables, step3_create_return_table
-    from make_factor import orthogonalize
-    from data_prepare import createDB_bpm_and_factset_code
-    from concurrent.futures import ThreadPoolExecutor
     import warnings
-    warnings.simplefilter('ignore')
+    from pathlib import Path
+
+    import numpy as np
+    import pandas as pd
+    from make_factor import orthogonalize
+
+    warnings.simplefilter("ignore")
     Q_DIR = Path().cwd().parent.parent
-    DATA_DIR = Q_DIR / 'data' / 'MSCI_KOKUSAI'
-    PRJ_DIR = Q_DIR / 'A_001'
-    BM_DIR = Q_DIR / 'data/Factset/Benchmark'
-    FRED_DIR = Path().cwd().parents[2] / 'FRED'
-    print(f'FRED directory: {FRED_DIR}')
-    fred_module = str((FRED_DIR / 'src').resolve())
+    DATA_DIR = Q_DIR / "data" / "MSCI_KOKUSAI"
+    PRJ_DIR = Q_DIR / "A_001"
+    BM_DIR = Q_DIR / "data/Factset/Benchmark"
+    FRED_DIR = Path().cwd().parents[2] / "FRED"
+    print(f"FRED directory: {FRED_DIR}")
+    fred_module = str((FRED_DIR / "src").resolve())
     if fred_module not in sys.path:
         sys.path.append(fred_module)
-        print(f'{fred_module}をsys.pathに追加しました。')
-    from fred_database_utils import store_fred_database, get_fred_ids_from_file, load_data_from_database
-    from us_treasury import plot_us_interest_rates_and_spread, analyze_yield_curve_pca, plot_loadings_and_explained_variance, load_yield_data_from_database
-    FRED_API = os.getenv('FRED_API_KEY')
+        print(f"{fred_module}をsys.pathに追加しました。")
+    from fred_database_utils import (
+        get_fred_ids_from_file,
+        load_data_from_database,
+        store_fred_database,
+    )
+    from us_treasury import (
+        analyze_yield_curve_pca,
+        load_yield_data_from_database,
+        plot_loadings_and_explained_variance,
+    )
+
+    FRED_API = os.getenv("FRED_API_KEY")
     # Factset Benchmark directory
-    series_id_list = get_fred_ids_from_file(FRED_DIR / 'fred_series.json')
-    _db_path = FRED_DIR / 'FRED.db'
+    series_id_list = get_fred_ids_from_file(FRED_DIR / "fred_series.json")
+    _db_path = FRED_DIR / "FRED.db"
     # Prepare FRED Data
-    store_fred_database(db_path=_db_path, series_id_list=series_id_list, FRED_API=FRED_API)
+    store_fred_database(
+        db_path=_db_path, series_id_list=series_id_list, FRED_API=FRED_API
+    )
     return (
         BM_DIR,
         DATA_DIR,
@@ -143,7 +134,6 @@ def _(mo):
     mo.md(r"""
     ## Prepare Data
     """)
-    return
 
 
 @app.cell(hide_code=True)
@@ -151,7 +141,6 @@ def _(mo):
     mo.md(r"""
     ### Return data
     """)
-    return
 
 
 @app.cell(hide_code=True)
@@ -159,16 +148,19 @@ def _(mo):
     mo.md(r"""
     #### MSCI Kokusai Constituents
     """)
-    return
 
 
 @app.cell
 def _(DATA_DIR, display, np, pd, sqlite3):
-    _db_path = DATA_DIR / 'MSCI_KOKUSAI_Price_Daily.db'
+    _db_path = DATA_DIR / "MSCI_KOKUSAI_Price_Daily.db"
     _conn = sqlite3.connect(_db_path)
-    return_secs = pd.read_sql('SELECT * FROM FG_PRICE_Daily ORDER BY date', con=_conn, parse_dates=['date']).assign(log_value=lambda row: np.log(row['value']))
-    return_secs['Return'] = return_secs.groupby('P_SYMBOL')['log_value'].diff()
-    return_secs = return_secs[['date', 'P_SYMBOL', 'Return']].dropna(how='any', ignore_index=True)
+    return_secs = pd.read_sql(
+        "SELECT * FROM FG_PRICE_Daily ORDER BY date", con=_conn, parse_dates=["date"]
+    ).assign(log_value=lambda row: np.log(row["value"]))
+    return_secs["Return"] = return_secs.groupby("P_SYMBOL")["log_value"].diff()
+    return_secs = return_secs[["date", "P_SYMBOL", "Return"]].dropna(
+        how="any", ignore_index=True
+    )
     display(return_secs)
     return (return_secs,)
 
@@ -178,14 +170,22 @@ def _(mo):
     mo.md(r"""
     #### MSCI Kokusai Index
     """)
-    return
 
 
 @app.cell
 def _(BM_DIR, display, np, pd, sqlite3):
-    _db_path = BM_DIR / 'BM_Price_Daily.db'
+    _db_path = BM_DIR / "BM_Price_Daily.db"
     _conn = sqlite3.connect(_db_path)
-    return_index = pd.read_sql("SELECT * FROM FG_PRICE_Daily WHERE P_SYMBOL='MSCI Kokusai Index (World ex Japan)' ORDER BY date", con=_conn, parse_dates=['date']).assign(log_value=lambda row: np.log(row['value'])).assign(Return=lambda row: row['log_value'].diff()).dropna(ignore_index=True)[['date', 'P_SYMBOL', 'Return']]
+    return_index = (
+        pd.read_sql(
+            "SELECT * FROM FG_PRICE_Daily WHERE P_SYMBOL='MSCI Kokusai Index (World ex Japan)' ORDER BY date",
+            con=_conn,
+            parse_dates=["date"],
+        )
+        .assign(log_value=lambda row: np.log(row["value"]))
+        .assign(Return=lambda row: row["log_value"].diff())
+        .dropna(ignore_index=True)[["date", "P_SYMBOL", "Return"]]
+    )
     _conn.close()
     display(return_index)
     return (return_index,)
@@ -196,22 +196,31 @@ def _(mo):
     mo.md(r"""
     ### Calculate Excess Return
     """)
-    return
 
 
 @app.cell
 def _(FRED_DIR, display, pd, return_index, return_secs, sqlite3):
-    _db_path = FRED_DIR / 'FRED.db'
+    _db_path = FRED_DIR / "FRED.db"
     _conn = sqlite3.connect(_db_path)
-    risk_free_rate = pd.read_sql('SELECT * FROM DTB3', con=_conn, parse_dates=['date']).assign(DTB3=lambda row: row['DTB3'].div(252 * 100))
+    risk_free_rate = pd.read_sql(
+        "SELECT * FROM DTB3", con=_conn, parse_dates=["date"]
+    ).assign(DTB3=lambda row: row["DTB3"].div(252 * 100))
     _conn.close()
-    print('Risk free rate(DTB3)')
+    print("Risk free rate(DTB3)")
     display(risk_free_rate)
-    excess_return_secs = pd.merge(return_secs, risk_free_rate, on=['date'], how='left').dropna(how='any', ignore_index=True).assign(Excess_Return=lambda row: row['Return'].sub(row['DTB3']))  # convert to daily data
-    print('Excess return of securities')
+    excess_return_secs = (
+        pd.merge(return_secs, risk_free_rate, on=["date"], how="left")
+        .dropna(how="any", ignore_index=True)
+        .assign(Excess_Return=lambda row: row["Return"].sub(row["DTB3"]))
+    )  # convert to daily data
+    print("Excess return of securities")
     display(excess_return_secs)
-    excess_return_index = pd.merge(return_index, risk_free_rate, on=['date'], how='left').dropna(how='any', ignore_index=True).assign(Factor_Market=lambda row: row['Return'].sub(row['DTB3']))
-    print('Excess return of MSCI Kokusai Index')
+    excess_return_index = (
+        pd.merge(return_index, risk_free_rate, on=["date"], how="left")
+        .dropna(how="any", ignore_index=True)
+        .assign(Factor_Market=lambda row: row["Return"].sub(row["DTB3"]))
+    )
+    print("Excess return of MSCI Kokusai Index")
     display(excess_return_index)
     return excess_return_index, excess_return_secs
 
@@ -223,7 +232,6 @@ def _(mo):
 
     #### 金利変動幅に対して PCA(Leve, Slope, Curvature)
     """)
-    return
 
 
 @app.cell
@@ -234,14 +242,18 @@ def _(
     load_yield_data_from_database,
     plot_loadings_and_explained_variance,
 ):
-    _db_path = FRED_DIR / 'FRED.db'
+    _db_path = FRED_DIR / "FRED.db"
     df_yield = load_yield_data_from_database(db_path=_db_path)
     display(df_yield.head())
     display(df_yield.tail())
     plot_loadings_and_explained_variance(df_yield=df_yield)
     # Check: loading and contribution
     df_pca, pca = analyze_yield_curve_pca(df_yield=df_yield)
-    df_pca = df_pca.assign(Level_Shock=lambda row: row['PC1'].diff(), Slope_Shock=lambda row: row['PC2'].diff(), Curvature_Shock=lambda row: row['PC3'].diff()).dropna()
+    df_pca = df_pca.assign(
+        Level_Shock=lambda row: row["PC1"].diff(),
+        Slope_Shock=lambda row: row["PC2"].diff(),
+        Curvature_Shock=lambda row: row["PC3"].diff(),
+    ).dropna()
     # PCA and PCA Shock
     display(df_pca)
     return (df_pca,)
@@ -252,17 +264,29 @@ def _(mo):
     mo.md(r"""
     ### Flight to Quality Factor and Inflation Factor
     """)
-    return
 
 
 @app.cell
 def _(FRED_DIR, display, load_data_from_database, pd):
     # Flight to Quality Factor
-    _db_path = FRED_DIR / 'FRED.db'
-    df_FtoQ = load_data_from_database(db_path=_db_path, series_id_list=['BAMLH0A0HYM2', 'BAMLC0A0CM'])
-    df_FtoQ = pd.pivot(df_FtoQ, index='date', columns='variable', values='value').sort_index().assign(FtoQ=lambda row: row['BAMLH0A0HYM2'].sub(row['BAMLC0A0CM'])).assign(FtoQ_Shock=lambda row: row['FtoQ'].diff()).dropna(how='any')[['FtoQ_Shock']]
+    _db_path = FRED_DIR / "FRED.db"
+    df_FtoQ = load_data_from_database(
+        db_path=_db_path, series_id_list=["BAMLH0A0HYM2", "BAMLC0A0CM"]
+    )
+    df_FtoQ = (
+        pd.pivot(df_FtoQ, index="date", columns="variable", values="value")
+        .sort_index()
+        .assign(FtoQ=lambda row: row["BAMLH0A0HYM2"].sub(row["BAMLC0A0CM"]))
+        .assign(FtoQ_Shock=lambda row: row["FtoQ"].diff())
+        .dropna(how="any")[["FtoQ_Shock"]]
+    )
     display(df_FtoQ)
-    df_Inflation = load_data_from_database(db_path=_db_path, series_id_list=['T10YIE']).set_index('date').assign(Inflation_Shock=lambda row: row['value'].diff()).dropna()[['Inflation_Shock']]
+    df_Inflation = (
+        load_data_from_database(db_path=_db_path, series_id_list=["T10YIE"])
+        .set_index("date")
+        .assign(Inflation_Shock=lambda row: row["value"].diff())
+        .dropna()[["Inflation_Shock"]]
+    )
     # Inflation Factor
     display(df_Inflation)
     return df_FtoQ, df_Inflation
@@ -273,7 +297,6 @@ def _(mo):
     mo.md(r"""
     ### 直行化
     """)
-    return
 
 
 @app.cell
@@ -320,7 +343,13 @@ def _(
 
     # インフレファクター直行化: マーケット、金利ファクター、FtoQファクターに対して直行化
     regressors_inflation = df_factor[
-        ["Factor_Market", "Factor_Level", "Factor_Slope", "Factor_Curvature", "Factor_FtoQ"]
+        [
+            "Factor_Market",
+            "Factor_Level",
+            "Factor_Slope",
+            "Factor_Curvature",
+            "Factor_FtoQ",
+        ]
     ]
     df_factor["Factor_Inflation"] = orthogonalize(
         df_factor["Inflation_Shock"], regressors=regressors_inflation
@@ -359,12 +388,12 @@ def _(df_factor, display, excess_return_secs, pd):
         right_index=True,
     )
     display(df_data)
-    return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 

@@ -4,7 +4,9 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^(notebook_sample|src_sample)/
       - id: end-of-file-fixer
+        exclude: ^(notebook_sample|src_sample)/
       - id: check-yaml
       - id: check-toml
       - id: check-json
@@ -12,6 +14,7 @@ repos:
       - id: check-merge-conflict
         exclude: ^\.claude/commands/analyze-conflicts\.md$
       - id: debug-statements
+        exclude: ^(notebook_sample|src_sample)/
 
   # Python formatting and linting
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -19,7 +22,9 @@ repos:
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix, --config=pyproject.toml]
+        exclude: ^(notebook_sample|src_sample)/
       - id: ruff-format
+        exclude: ^(notebook_sample|src_sample)/
 
   # Type checking
   - repo: local
@@ -38,6 +43,7 @@ repos:
       - id: bandit
         args: [-c, pyproject.toml]
         additional_dependencies: ["bandit[toml]"]
+        exclude: ^(notebook_sample|src_sample)/
 
   # Dependency vulnerability scanning
   - repo: https://github.com/pypa/pip-audit
