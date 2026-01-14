@@ -1,13 +1,9 @@
 """Unit tests for DiffDetector."""
 
-from typing import TYPE_CHECKING
-
 import pytest
 
 from rss.core.diff_detector import DiffDetector
-
-if TYPE_CHECKING:
-    from rss.types import FeedItem
+from rss.types import FeedItem
 
 
 class TestDiffDetectorInit:
@@ -27,26 +23,26 @@ class TestDetectNewItems:
         detector = DiffDetector()
 
         fetched_items: list[FeedItem] = [
-            {
-                "item_id": "1",
-                "title": "Item 1",
-                "link": "https://example.com/1",
-                "published": "2026-01-14T09:00:00Z",
-                "summary": "Summary 1",
-                "content": "Content 1",
-                "author": "Author 1",
-                "fetched_at": "2026-01-14T10:00:00Z",
-            },
-            {
-                "item_id": "2",
-                "title": "Item 2",
-                "link": "https://example.com/2",
-                "published": "2026-01-14T09:00:00Z",
-                "summary": "Summary 2",
-                "content": "Content 2",
-                "author": "Author 2",
-                "fetched_at": "2026-01-14T10:00:00Z",
-            },
+            FeedItem(
+                item_id="1",
+                title="Item 1",
+                link="https://example.com/1",
+                published="2026-01-14T09:00:00Z",
+                summary="Summary 1",
+                content="Content 1",
+                author="Author 1",
+                fetched_at="2026-01-14T10:00:00Z",
+            ),
+            FeedItem(
+                item_id="2",
+                title="Item 2",
+                link="https://example.com/2",
+                published="2026-01-14T09:00:00Z",
+                summary="Summary 2",
+                content="Content 2",
+                author="Author 2",
+                fetched_at="2026-01-14T10:00:00Z",
+            ),
         ]
 
         existing_items: list[FeedItem] = []
@@ -60,16 +56,16 @@ class TestDetectNewItems:
         """Test that no items are new when all fetched items exist."""
         detector = DiffDetector()
 
-        item1: FeedItem = {
-            "item_id": "1",
-            "title": "Item 1",
-            "link": "https://example.com/1",
-            "published": "2026-01-14T09:00:00Z",
-            "summary": "Summary 1",
-            "content": "Content 1",
-            "author": "Author 1",
-            "fetched_at": "2026-01-14T10:00:00Z",
-        }
+        item1 = FeedItem(
+            item_id="1",
+            title="Item 1",
+            link="https://example.com/1",
+            published="2026-01-14T09:00:00Z",
+            summary="Summary 1",
+            content="Content 1",
+            author="Author 1",
+            fetched_at="2026-01-14T10:00:00Z",
+        )
 
         existing_items: list[FeedItem] = [item1]
         fetched_items: list[FeedItem] = [item1]
@@ -83,27 +79,27 @@ class TestDetectNewItems:
         """Test that only new items are returned when some items exist."""
         detector = DiffDetector()
 
-        item1: FeedItem = {
-            "item_id": "1",
-            "title": "Item 1",
-            "link": "https://example.com/1",
-            "published": "2026-01-14T09:00:00Z",
-            "summary": "Summary 1",
-            "content": "Content 1",
-            "author": "Author 1",
-            "fetched_at": "2026-01-14T10:00:00Z",
-        }
+        item1 = FeedItem(
+            item_id="1",
+            title="Item 1",
+            link="https://example.com/1",
+            published="2026-01-14T09:00:00Z",
+            summary="Summary 1",
+            content="Content 1",
+            author="Author 1",
+            fetched_at="2026-01-14T10:00:00Z",
+        )
 
-        item2: FeedItem = {
-            "item_id": "2",
-            "title": "Item 2",
-            "link": "https://example.com/2",
-            "published": "2026-01-14T09:00:00Z",
-            "summary": "Summary 2",
-            "content": "Content 2",
-            "author": "Author 2",
-            "fetched_at": "2026-01-14T10:00:00Z",
-        }
+        item2 = FeedItem(
+            item_id="2",
+            title="Item 2",
+            link="https://example.com/2",
+            published="2026-01-14T09:00:00Z",
+            summary="Summary 2",
+            content="Content 2",
+            author="Author 2",
+            fetched_at="2026-01-14T10:00:00Z",
+        )
 
         existing_items: list[FeedItem] = [item1]
         fetched_items: list[FeedItem] = [item1, item2]
@@ -118,27 +114,27 @@ class TestDetectNewItems:
         detector = DiffDetector()
 
         # Items with same link but different other fields
-        existing_item: FeedItem = {
-            "item_id": "1",
-            "title": "Old Title",
-            "link": "https://example.com/article",
-            "published": "2026-01-13T09:00:00Z",
-            "summary": "Old Summary",
-            "content": "Old Content",
-            "author": "Old Author",
-            "fetched_at": "2026-01-13T10:00:00Z",
-        }
+        existing_item = FeedItem(
+            item_id="1",
+            title="Old Title",
+            link="https://example.com/article",
+            published="2026-01-13T09:00:00Z",
+            summary="Old Summary",
+            content="Old Content",
+            author="Old Author",
+            fetched_at="2026-01-13T10:00:00Z",
+        )
 
-        fetched_item: FeedItem = {
-            "item_id": "2",
-            "title": "New Title",
-            "link": "https://example.com/article",  # Same link
-            "published": "2026-01-14T09:00:00Z",
-            "summary": "New Summary",
-            "content": "New Content",
-            "author": "New Author",
-            "fetched_at": "2026-01-14T10:00:00Z",
-        }
+        fetched_item = FeedItem(
+            item_id="2",
+            title="New Title",
+            link="https://example.com/article",  # Same link
+            published="2026-01-14T09:00:00Z",
+            summary="New Summary",
+            content="New Content",
+            author="New Author",
+            fetched_at="2026-01-14T10:00:00Z",
+        )
 
         existing_items: list[FeedItem] = [existing_item]
         fetched_items: list[FeedItem] = [fetched_item]
@@ -153,16 +149,16 @@ class TestDetectNewItems:
         detector = DiffDetector()
 
         existing_items: list[FeedItem] = [
-            {
-                "item_id": "1",
-                "title": "Item 1",
-                "link": "https://example.com/1",
-                "published": "2026-01-14T09:00:00Z",
-                "summary": "Summary 1",
-                "content": "Content 1",
-                "author": "Author 1",
-                "fetched_at": "2026-01-14T10:00:00Z",
-            }
+            FeedItem(
+                item_id="1",
+                title="Item 1",
+                link="https://example.com/1",
+                published="2026-01-14T09:00:00Z",
+                summary="Summary 1",
+                content="Content 1",
+                author="Author 1",
+                fetched_at="2026-01-14T10:00:00Z",
+            )
         ]
         fetched_items: list[FeedItem] = []
 
@@ -201,16 +197,16 @@ class TestDetectNewItemsLogging:
 
         existing_items: list[FeedItem] = []
         fetched_items: list[FeedItem] = [
-            {
-                "item_id": "1",
-                "title": "Item 1",
-                "link": "https://example.com/1",
-                "published": "2026-01-14T09:00:00Z",
-                "summary": "Summary 1",
-                "content": "Content 1",
-                "author": "Author 1",
-                "fetched_at": "2026-01-14T10:00:00Z",
-            }
+            FeedItem(
+                item_id="1",
+                title="Item 1",
+                link="https://example.com/1",
+                published="2026-01-14T09:00:00Z",
+                summary="Summary 1",
+                content="Content 1",
+                author="Author 1",
+                fetched_at="2026-01-14T10:00:00Z",
+            )
         ]
 
         # Execute method - should not raise any exceptions

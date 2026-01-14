@@ -77,12 +77,10 @@ class DiffDetector:
         )
 
         # Extract links from existing items for fast lookup
-        existing_links = {item["link"] for item in existing_items}
+        existing_links = {item.link for item in existing_items}
 
         # Filter fetched items to only include new ones
-        new_items = [
-            item for item in fetched_items if item["link"] not in existing_links
-        ]
+        new_items = [item for item in fetched_items if item.link not in existing_links]
 
         logger.info(
             "差分検出完了",
