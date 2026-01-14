@@ -40,6 +40,12 @@ color: orange
   - `new`: 新規タスク追加
   - `sync`: 同期のみ
   - `external`: 外部ファイルから読み込み
+  - `comment_sync`: コメントから抽出した更新を適用
+- `comment_analysis_result`: コメント解析結果（`comment_sync` モード時のみ）
+  - `status_changes`: ステータス変更リスト
+  - `acceptance_criteria_updates`: 受け入れ条件更新リスト
+  - `new_subtasks`: 新規サブタスクリスト
+  - `requirement_changes`: 仕様変更リスト
 
 ## 処理フロー
 
@@ -69,6 +75,38 @@ color: orange
 
 1. 差分検出のみ実行
 2. 新規タスク追加はスキップ
+
+#### input_mode = "comment_sync" の場合
+
+`comment_analysis_result` を受け取り、以下を実行:
+
+1. **ステータス変更の適用**:
+   - `status_changes` の各項目について:
+     - `to_status: "done"` の場合: Issue をクローズ、project.md のステータスを更新
+     - `to_status: "in_progress"` の場合: project.md のステータスを更新
+     - GitHub Project のステータスも同期
+
+2. **受け入れ条件の更新**:
+   - `acceptance_criteria_updates` の各項目について:
+     - `type: "completion"`: Issue 本文と project.md のチェックボックスを `[x]` に更新
+     - `type: "addition"`: Issue 本文と project.md に新しい条件を追加
+     - `type: "modification"`: 既存条件のテキストを更新
+     - `type: "removal"`: 条件を削除（確認済みの場合のみ）
+
+3. **新規サブタスクの作成**:
+   - `new_subtasks` の各項目について:
+     - 新規 Issue を作成（日本語でタイトル・本文を記述）
+     - 親 Issue の Tasklist に sub-issue として追加
+     - project.md にタスクを追加
+     - GitHub Project に追加
+
+4. **仕様変更の反映**:
+   - `requirement_changes` の各項目について:
+     - `type: "addition"`: Issue 本文の「詳細」セクションに追記
+     - `type: "modification"`: 既存の説明を更新
+     - project.md の説明セクションも同期
+
+**優先順位**: コメントの `comment_timestamp` が新しいものを優先
 
 ### ステップ 3: 類似性判定
 

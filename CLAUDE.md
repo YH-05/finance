@@ -223,6 +223,7 @@ with profile_context("処理名"):  # コンテキスト計測
 | 開発開始（パッケージ）| `/new-project @src/<library_name>/docs/project.md`（LRD → 設計 → タスク）|
 | 開発開始（軽量）   | `/new-project "プロジェクト名"`（インタビュー → GitHub Project → Issue）|
 | Issue管理          | `/issue @src/<library_name>/docs/project.md` コマンド       |
+| Issueコメント同期  | `/sync-issue #番号` コマンド（コメント→進捗・タスク・仕様同期）|
 | テスト作成         | `/write-tests` コマンド または `docs/testing-strategy.md` |
 | ドキュメント作成   | `docs/document-management.md`                             |
 | 図表作成           | `docs/diagram-guidelines.md`                              |
@@ -295,8 +296,8 @@ with profile_context("処理名"):  # コンテキスト計測
 
 ```
 .claude/                      # Claude Code設定
-├── agents/                   # サブエージェント定義 (45)
-├── commands/                 # スラッシュコマンド (27)
+├── agents/                   # サブエージェント定義 (46)
+├── commands/                 # スラッシュコマンド (29)
 └── skills/                   # スキル定義 (10)
 
 data/                         # データストレージ
