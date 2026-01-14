@@ -34,6 +34,7 @@ dev = [
     "pytest-cov>=5.0.0",
     "pytest-xdist>=3.5.0",
     "pytest-benchmark>=5.1.0",
+    "pytest-httpserver>=1.0.0",
     "hypothesis>=6.0.0",
     "pyright>=1.1.389",
     "ruff>=0.4.0",
