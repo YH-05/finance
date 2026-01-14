@@ -31,10 +31,10 @@ def create_excel_safely(output_path, data):
                 print(f"リスト形式のデータを書き込み中 (要素数: {len(data)})")
                 for i, value in enumerate(data):
                     try:
-                        sheet[f"A{i+2}"] = value  # type: ignore
+                        sheet[f"A{i + 2}"] = value  # type: ignore
                     except Exception as e:
-                        print(f"行{i+2}でエラー: {e}")
-                        sheet[f"A{i+2}"] = str(value)  # type: ignore
+                        print(f"行{i + 2}でエラー: {e}")
+                        sheet[f"A{i + 2}"] = str(value)  # type: ignore
             else:
                 print("単一値を書き込み中")
                 sheet["A2"] = data  # type: ignore

@@ -44,6 +44,7 @@ def _():
     BLOOMBERG_PRICE_DIR = Path(os.environ.get("BLOOMBERG_PRICE_DIR"))  # type: ignore
     sys.path.insert(0, str(QUANTS_DIR))  # type: ignore
     import src.implement_FS_BBG_formulas_utils as implement_utils  # type: ignore
+
     from src import (
         bloomberg_utils,
         factset_utils,  # type: ignore
