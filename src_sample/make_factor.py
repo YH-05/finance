@@ -67,7 +67,7 @@ def orthogonalize_all_descriptors(df_descriptor: pd.DataFrame) -> pd.DataFrame:
     # 金利ファクター直行化
     for factor in ["Factor_Level", "Factor_Slope", "Factor_Curvature"]:
         df_descriptor[factor] = orthogonalize(
-            df_descriptor[f"{factor.replace("Factor_", "")}_Shock"],
+            df_descriptor[f"{factor.replace('Factor_', '')}_Shock"],
             df_descriptor["Factor_Market"],
         )
 

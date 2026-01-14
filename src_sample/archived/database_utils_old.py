@@ -337,7 +337,7 @@ class DBHandler:
                 with connection.cursor() as cursor:
                     columns = ", ".join(df.columns)
                     placeholders = ", ".join(
-                        [f":{i+1}" for i in range(len(df.columns))]
+                        [f":{i + 1}" for i in range(len(df.columns))]
                     )
                     sql = (
                         f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
@@ -391,7 +391,7 @@ class DBHandler:
                 with connection.cursor() as cursor:
                     columns = ", ".join(df.columns)
                     placeholders = ", ".join(
-                        [f":{i+1}" for i in range(len(df.columns))]
+                        [f":{i + 1}" for i in range(len(df.columns))]
                     )
                     sql = f"INSERT INTO {schema}.{table_name} ({columns}) VALUES ({placeholders})"
 
@@ -435,7 +435,7 @@ class DBHandler:
 
                     sql_merge = f"""
                         MERGE INTO {schema}.{table_name} t
-                        USING (SELECT {', '.join([f':{i+1} AS {col}' for i, col in enumerate(df.columns)])} FROM dual) s
+                        USING (SELECT {", ".join([f":{i + 1} AS {col}" for i, col in enumerate(df.columns)])} FROM dual) s
                         ON ({merge_conditions})
                         WHEN NOT MATCHED THEN
                             INSERT ({columns}) VALUES ({placeholders_insert})
@@ -462,11 +462,10 @@ class DBHandler:
             table_name: 削除対象のテーブル名
             where_clause: 削除条件を指定する WHERE 句
         """
-        with self._connect() as connection:
-            with connection.cursor() as cursor:
-                sql = f"DELETE FROM {table_name} WHERE {where_clause}"
-                cursor.execute(sql)
-                connection.commit()
+        with self._connect() as connection, connection.cursor() as cursor:
+            sql = f"DELETE FROM {table_name} WHERE {where_clause}"
+            cursor.execute(sql)
+            connection.commit()
 
     # -----------------------------------------------------------------------------------------
     def write_to_pandas(self, sql: str) -> pd.DataFrame:
