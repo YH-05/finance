@@ -638,6 +638,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+cli = [
+    { name = "click" },
+]
 dev = [
     { name = "bandit" },
     { name = "hypothesis" },
@@ -680,6 +683,7 @@ dev = [
 requires-dist = [
     { name = "apscheduler", marker = "extra == 'scheduler'", specifier = ">=3.10.0" },
     { name = "bandit", marker = "extra == 'dev'", specifier = ">=1.7.0" },
+    { name = "click", marker = "extra == 'cli'", specifier = ">=8.1.0" },
     { name = "duckdb", specifier = ">=1.0.0" },
     { name = "feedparser", specifier = ">=6.0.12" },
     { name = "filelock", specifier = ">=3.20.3" },
@@ -713,7 +717,7 @@ requires-dist = [
     { name = "urllib3", specifier = ">=2.6.3" },
     { name = "yfinance", specifier = ">=0.2.0" },
 ]
-provides-extras = ["dev", "docs", "scheduler", "mcp"]
+provides-extras = ["dev", "docs", "scheduler", "mcp", "cli"]
 
 [package.metadata.requires-dev]
 dev = [
