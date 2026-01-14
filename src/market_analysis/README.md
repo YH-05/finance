@@ -149,16 +149,16 @@ market_analysis/
 
 | モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
 |-----------|------|-----------|------|-------|------|
-| `types.py` | ✅ 実装済み | 1 | 555 | - | TypedDict, Enum等の型定義（18型） |
-| `errors.py` | ✅ 実装済み | 1 | 515 | - | MarketAnalysisError等の例外クラス（8エラー） |
-| `api/` | ✅ 実装済み | 4 | 1,774 | ✅ (3) | MarketData, Analysis, Chart（メソッドチェーン対応） |
-| `analysis/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 5 | 1,650 | ✅ (4) | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
-| `export/` | ✅ 実装済み | 2 | 692 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
-| `utils/` | ✅ 実装済み | 7 | 2,746 | ✅ (1) | logging, validators, cache, retry, ticker_registry |
-| `visualization/` | ✅ 実装済み | 4 | 1,747 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart |
+| `types.py` | ✅ 実装済み | 1 | 436 | - | TypedDict, Enum等の型定義（18型） |
+| `errors.py` | ✅ 実装済み | 1 | 442 | - | MarketAnalysisError等の例外クラス（8エラー） |
+| `api/` | ✅ 実装済み | 4 | 1,475 | ✅ (3) | MarketData, Analysis, Chart（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 4 | 1,158 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 5 | 1,348 | ✅ (4) | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
+| `export/` | ✅ 実装済み | 2 | 582 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
+| `utils/` | ✅ 実装済み | 7 | 2,244 | ✅ (1) | logging, validators, cache, retry, ticker_registry |
+| `visualization/` | ✅ 実装済み | 4 | 1,392 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart |
 
-**テスト構成**: 単体テスト (15) + 統合テスト (0) = 計15テスト
+**テスト構成**: 単体テスト (15) + 統合テスト (0) = 計15テスト（型定義・例外クラスの専用テストは別途検討中）
 
 <!-- END: IMPLEMENTATION -->
 
@@ -422,14 +422,18 @@ logger.info("処理開始")
 | 項目 | 値 |
 |-----|-----|
 | Pythonファイル数 | 29 |
-| 総行数（実装コード） | 11,234 |
+| 総行数（実装コード） | 9,176 |
 | モジュール数 | 8 |
 | テストファイル数 | 15 |
 | テストカバレッジ | N/A |
 
 **モジュール構成**:
-- コアモジュール: `types.py`, `errors.py`
-- 機能モジュール: `api/`, `analysis/`, `core/`, `export/`, `utils/`, `visualization/`
+- コアモジュール: `types.py` (436行), `errors.py` (442行)
+- 機能モジュール: `api/` (1,475行), `analysis/` (1,158行), `core/` (1,348行), `export/` (582行), `utils/` (2,244行), `visualization/` (1,392行)
+
+**実装進捗**:
+- 完全実装: 8/8 モジュール (100%)
+- テスト整備: 6/8 モジュール (75%) - types.py, errors.py は型・例外定義のため専用テスト検討中
 
 **データソース**:
 - Yahoo Finance (yfinance) - 株価・為替・指数データ
