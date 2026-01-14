@@ -151,7 +151,7 @@ class TestPriceChartData:
         self, sample_ohlcv_df: pd.DataFrame
     ) -> None:
         """start_dateがend_dateより後の場合にValueErrorが発生することを確認。"""
-        with pytest.raises(ValueError, match="start_date.*must be before end_date"):
+        with pytest.raises(ValueError, match=r"start_date.*must be before end_date"):
             PriceChartData(
                 df=sample_ohlcv_df,
                 symbol="TEST",
