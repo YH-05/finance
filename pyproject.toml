@@ -26,6 +26,7 @@ dependencies = [
     "scipy>=1.17.0",
     "kaleido>=1.2.0",
     "httpx>=0.28.1",
+    "feedparser>=6.0.12",
 ]
 [project.optional-dependencies]
 dev = [
