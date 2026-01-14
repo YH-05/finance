@@ -39,16 +39,17 @@ description: SuperClaudeコマンドリファレンス
 | `/analyze`                | 多次元コード分析（分析レポート出力）                                                                               |
 | `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                                                                |
 | `/commit-and-pr`          | 変更のコミットと PR 作成                                                                                           |
-| `/create-worktrees`       | /plan-worktrees の結果から複数の worktree を一括作成                                                               |
+| `/create-worktrees`       | 複数 Worktree 一括作成                                                                                             |
 | `/ensure-quality`         | コード品質の自動改善（make check-all 相当）                                                                        |
-| `/finance-edit`           | 金融記事の編集ワークフローを実行します。初稿作成 → 批評 → 修正の一連の処理を自動化します。                         |
-| `/finance-research`       | 金融記事のリサーチワークフローを実行します。データ収集 → 分析 → 検証 → 可視化の一連の処理を自動化します。          |
-| `/finance-suggest-topics` | 金融記事のトピックを提案します。カテゴリ、時事性、読者関心度等を考慮してスコアリングされた提案リストを表示します。 |
+| `/finance-edit`           | 金融記事の編集ワークフロー（初稿作成 → 批評 → 修正）                                                               |
+| `/finance-research`       | 金融記事のリサーチワークフロー（データ収集 → 分析 → 検証 → 可視化）                                                |
+| `/finance-suggest-topics` | 金融記事のトピック提案（スコアリング付き）                                                                         |
 | `/gemini-search`          | Web search using Gemini CLI                                                                                        |
 | `/improve`                | エビデンスベースの改善実装                                                                                         |
 | `/issue`                  | GitHub Issue とタスクの管理・同期を行う                                                                            |
+| `/issue-refine`           | GitHub Issue の内容をブラッシュアップして更新する                                                                  |
 | `/merge-pr`               | PR のコンフリクトチェック・CI 確認・マージを実行                                                                   |
-| `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成します。                                     |
+| `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成                                             |
 | `/new-package`            | モノレポ内に新しい Python パッケージを作成する                                                                     |
 | `/new-project`            | 開発プロジェクトを開始。パッケージ開発または軽量プロジェクトに対応                                                 |
 | `/plan-worktrees`         | GitHub Project を参照し、Todo の Issue を並列開発用にグルーピング表示                                              |
@@ -170,11 +171,11 @@ description: SuperClaudeコマンドリファレンス
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (46 agents + 28 commands + 10 skills)
+├── .claude/                                 # Claude Code configuration (48 agents + 29 commands + 10 skills)
 │   ├── agents/                              # (46) Specialized agents
 │   ├── agents_sample/                       # (22) Sample agent definitions
 │   ├── archive/                             # (2) Archived agents
-│   ├── commands/                            # (28) Slash commands
+│   ├── commands/                            # (29) Slash commands
 │   ├── commands_sample/                     # (12) Sample command definitions
 │   ├── skills/                              # (10) Skill modules
 │   │   ├── agent-expert/                    # Agent design skill

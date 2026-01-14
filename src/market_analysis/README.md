@@ -95,7 +95,7 @@ result = (
 <!-- AUTO-GENERATED: STRUCTURE -->
 ```
 market_analysis/
-├── __init__.py                  # 公開API定義（__version__含む）
+├── __init__.py                  # 公開API定義（__version__, __all__）
 ├── py.typed                     # PEP 561マーカー
 ├── types.py                     # 型定義（TypedDict, Enum等）
 ├── errors.py                    # 例外クラス定義
@@ -112,32 +112,32 @@ market_analysis/
 ├── core/                        # データフェッチャー
 │   ├── __init__.py
 │   ├── base_fetcher.py          # BaseDataFetcher（抽象基底クラス）
-│   ├── data_fetcher_factory.py  # DataFetcherFactory
-│   ├── fred_fetcher.py          # FREDFetcher（FRED API）
-│   └── yfinance_fetcher.py      # YFinanceFetcher（Yahoo Finance）
+│   ├── data_fetcher_factory.py  # DataFetcherFactory（ファクトリパターン）
+│   ├── fred_fetcher.py          # FREDFetcher（FRED API経済指標）
+│   └── yfinance_fetcher.py      # YFinanceFetcher（Yahoo Finance株価）
 ├── export/                      # データエクスポート
 │   ├── __init__.py
-│   └── exporter.py              # DataExporter
+│   └── exporter.py              # DataExporter（CSV/JSON/Parquet）
 ├── utils/                       # ユーティリティ関数
 │   ├── __init__.py
-│   ├── cache.py                 # SQLiteキャッシュ
-│   ├── logger_factory.py        # ロガー生成
+│   ├── cache.py                 # SQLiteキャッシュ（TTL付き）
+│   ├── logger_factory.py        # ロガー生成ファクトリ
 │   ├── logging_config.py        # 構造化ロギング設定
-│   ├── retry.py                 # リトライ機能
-│   ├── ticker_registry.py       # ティッカーレジストリ
-│   └── validators.py            # バリデーション
+│   ├── retry.py                 # リトライデコレータ（指数バックオフ）
+│   ├── ticker_registry.py       # ティッカーレジストリ（シンボル管理）
+│   └── validators.py            # バリデーション関数（日付・ティッカー等）
 ├── visualization/               # チャート生成
 │   ├── __init__.py
 │   ├── charts.py                # ChartBuilder, ChartConfig, ChartTheme
-│   ├── heatmap.py               # HeatmapChart
-│   └── price_charts.py          # CandlestickChart, LineChart
+│   ├── heatmap.py               # HeatmapChart（相関マトリクス可視化）
+│   └── price_charts.py          # CandlestickChart, LineChart（価格チャート）
 └── docs/                        # ライブラリドキュメント
     ├── project.md               # プロジェクトファイル
     ├── architecture.md          # アーキテクチャ設計書
     ├── development-guidelines.md # 開発ガイドライン
     ├── functional-design.md     # 機能設計書
     ├── glossary.md              # 用語集
-    ├── library-requirements.md  # LRD
+    ├── library-requirements.md  # LRD（ライブラリ要求定義書）
     ├── repository-structure.md  # リポジトリ構造定義書
     └── tasks.md                 # タスク管理
 ```
@@ -149,14 +149,16 @@ market_analysis/
 
 | モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
 |-----------|------|-----------|------|-------|------|
-| `types.py` | ✅ 実装済み | 1 | 555 | - | TypedDict, Enum等の型定義 |
-| `errors.py` | ✅ 実装済み | 1 | 515 | - | MarketAnalysisError等の例外クラス |
-| `api/` | ✅ 実装済み | 4 | 1,774 | ✅ | MarketData, Analysis, Chart（メソッドチェーン対応） |
-| `analysis/` | ✅ 実装済み | 4 | 1,427 | ✅ | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 5 | 1,650 | ✅ | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
-| `export/` | ✅ 実装済み | 2 | 692 | ✅ | DataExporter |
-| `utils/` | ✅ 実装済み | 7 | 2,746 | ✅ | logging, validators, cache, retry, ticker_registry |
-| `visualization/` | ✅ 実装済み | 4 | 1,747 | ✅ | ChartBuilder, CandlestickChart, HeatmapChart |
+| `types.py` | ✅ 実装済み | 1 | 555 | - | TypedDict, Enum等の型定義（18型） |
+| `errors.py` | ✅ 実装済み | 1 | 515 | - | MarketAnalysisError等の例外クラス（8エラー） |
+| `api/` | ✅ 実装済み | 4 | 1,774 | ✅ (3) | MarketData, Analysis, Chart（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 5 | 1,650 | ✅ (4) | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
+| `export/` | ✅ 実装済み | 2 | 692 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
+| `utils/` | ✅ 実装済み | 7 | 2,746 | ✅ (1) | logging, validators, cache, retry, ticker_registry |
+| `visualization/` | ✅ 実装済み | 4 | 1,747 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart |
+
+**テスト構成**: 単体テスト (15) + 統合テスト (0) = 計15テスト
 
 <!-- END: IMPLEMENTATION -->
 
@@ -421,9 +423,17 @@ logger.info("処理開始")
 |-----|-----|
 | Pythonファイル数 | 29 |
 | 総行数（実装コード） | 11,234 |
-| モジュール数 | 6 |
-| テストファイル数 | 25 |
+| モジュール数 | 8 |
+| テストファイル数 | 15 |
 | テストカバレッジ | N/A |
+
+**モジュール構成**:
+- コアモジュール: `types.py`, `errors.py`
+- 機能モジュール: `api/`, `analysis/`, `core/`, `export/`, `utils/`, `visualization/`
+
+**データソース**:
+- Yahoo Finance (yfinance) - 株価・為替・指数データ
+- FRED (Federal Reserve Economic Data) - 米国経済指標
 
 <!-- END: STATS -->
 

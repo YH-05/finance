@@ -65,7 +65,7 @@ client = DuckDBClient(get_db_path("duckdb", "analytics"))
 # Parquetファイルから直接クエリ
 df = client.read_parquet("data/raw/yfinance/stocks/*.parquet")
 
-# 分析クエリの実行
+# 集計クエリの実行
 result = client.query_df("""
     SELECT symbol, AVG(close) as avg_price
     FROM df
@@ -77,14 +77,12 @@ result = client.query_df("""
 
 ```python
 from finance import get_logger
-from finance.utils.logging_config import log_context
 
 logger = get_logger(__name__)
 
-# コンテキスト付きログ
-with log_context(user_id=123, request_id="abc"):
-    logger.info("Processing user request")
-    # このコンテキスト内の全ログにuser_idとrequest_idが含まれる
+# 構造化データ付きログ出力
+logger.info("Processing started", item_count=100, source="yfinance")
+logger.error("Fetch failed", symbol="AAPL", error="Connection timeout")
 ```
 
 <!-- END: QUICKSTART -->
@@ -100,8 +98,8 @@ finance/
 ├── db/
 │   ├── __init__.py
 │   ├── connection.py
-│   ├── duckdb_client.py
 │   ├── sqlite_client.py
+│   ├── duckdb_client.py
 │   └── migrations/
 │       ├── __init__.py
 │       ├── runner.py
@@ -119,9 +117,9 @@ finance/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|-----|
-| `types.py` | ✅ 実装済み | 1 | 26 |
-| `db/` | ✅ 実装済み | 6 | 303 |
-| `utils/` | ✅ 実装済み | 2 | 250 |
+| `types.py` | ✅ 実装済み | 1 | 45 |
+| `db/` | ✅ 実装済み | 7 | 423 |
+| `utils/` | ✅ 実装済み | 2 | 342 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -129,9 +127,26 @@ finance/
 
 <!-- AUTO-GENERATED: API -->
 
-### データベースクライアント
+### クイックスタート
 
-finance パッケージは2種類のデータベースクライアントを提供します。
+financeパッケージは共通インフラ（データベース・ロギング）を提供します。
+
+```python
+from finance import get_logger
+from finance.db import SQLiteClient, get_db_path
+
+# ロギングの基本
+logger = get_logger(__name__)
+logger.info("Processing started", item_count=100)
+
+# データベース操作の基本
+client = SQLiteClient(get_db_path("sqlite", "market"))
+results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
+```
+
+---
+
+### 主要クラス
 
 #### `SQLiteClient`
 
@@ -145,7 +160,7 @@ from finance.db import SQLiteClient, get_db_path
 # クライアントの初期化
 client = SQLiteClient(get_db_path("sqlite", "market"))
 
-# データの挿入・更新・削除
+# データの挿入
 client.execute(
     "INSERT INTO stocks (symbol, price) VALUES (?, ?)",
     ("AAPL", 150.0)
@@ -181,7 +196,7 @@ client = DuckDBClient(get_db_path("duckdb", "analytics"))
 # Parquetファイルから直接クエリ
 df = client.read_parquet("data/raw/yfinance/stocks/*.parquet")
 
-# 分析クエリの実行
+# 集計クエリの実行
 result = client.query_df("SELECT symbol, AVG(close) FROM df GROUP BY symbol")
 ```
 
@@ -196,7 +211,7 @@ result = client.query_df("SELECT symbol, AVG(close) FROM df GROUP BY symbol")
 
 ---
 
-### ユーティリティ関数
+### 関数
 
 #### `get_logger(name, **context)`
 
@@ -211,13 +226,9 @@ from finance import get_logger
 logger = get_logger(__name__)
 logger.info("Processing started", item_count=100)
 logger.error("Processing failed", error="Invalid input")
-
-# コンテキスト付きロガー
-logger = get_logger(__name__, module="data_processor", version="1.0")
-logger.debug("Debug message with context")
 ```
 
-**主なパラメータ**:
+**パラメータ**:
 
 - `name` (必須): ロガー名（通常は `__name__`）
 - `**context`: ロガーに紐付けるコンテキスト情報
@@ -244,7 +255,7 @@ duckdb_path = get_db_path("duckdb", "analytics")  # data/duckdb/analytics.duckdb
 
 ### 型定義
 
-データ構造の定義。型ヒントやバリデーションに使用:
+データ構造の定義。型ヒントに使用:
 
 ```python
 from finance.types import (
@@ -268,7 +279,7 @@ from finance.types import (
 | 項目 | 値 |
 |-----|---|
 | Pythonファイル数 | 10 |
-| 総行数（実装コード） | 582 |
+| 総行数（実装コード） | 816 |
 | モジュール数 | 2 |
 | テストファイル数 | 3 |
 | テストカバレッジ | N/A |
