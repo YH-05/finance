@@ -13,6 +13,7 @@
             "Bash(uv pip show:*)",
             "Bash(uv add:*)",
             "Bash(uv run pytest:*)",
+            "Bash(uv run ruff check:*)",
             "Bash(git status:*)",
             "Bash(git add:*)",
             "Bash(git commit:*)",
