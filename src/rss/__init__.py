@@ -10,6 +10,8 @@ FeedFetcher
     Fetches RSS/Atom feeds from URLs and parses content.
 FeedReader
     Reads and filters stored feed items.
+BatchScheduler
+    Schedules and executes batch feed fetching operations.
 
 Data Models
 -----------
@@ -23,6 +25,8 @@ FetchInterval
     Enum for feed fetch intervals (daily, weekly, manual).
 FetchStatus
     Enum for fetch status (success, failure, pending).
+BatchStats
+    Statistics from a batch fetch operation.
 
 Exceptions
 ----------
@@ -43,8 +47,8 @@ FileLockError
 
 Examples
 --------
->>> from rss import FeedManager, FeedFetcher, FeedReader
->>> from rss import Feed, FeedItem, FetchResult
+>>> from rss import FeedManager, FeedFetcher, FeedReader, BatchScheduler
+>>> from rss import Feed, FeedItem, FetchResult, BatchStats
 >>> from rss import RSSError, FeedNotFoundError
 """
 
@@ -57,11 +61,13 @@ from .exceptions import (
     InvalidURLError,
     RSSError,
 )
-from .services import FeedFetcher, FeedManager, FeedReader
-from .types import Feed, FeedItem, FetchInterval, FetchResult, FetchStatus
+from .services import BatchScheduler, FeedFetcher, FeedManager, FeedReader
+from .types import BatchStats, Feed, FeedItem, FetchInterval, FetchResult, FetchStatus
 from .utils.logging_config import get_logger
 
 __all__ = [
+    "BatchScheduler",
+    "BatchStats",
     "Feed",
     "FeedAlreadyExistsError",
     "FeedFetchError",

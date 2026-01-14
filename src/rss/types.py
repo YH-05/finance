@@ -278,3 +278,37 @@ class FetchResult:
     items_count: int
     new_items: int
     error_message: str | None
+
+
+@dataclass
+class BatchStats:
+    """Batch execution statistics.
+
+    Attributes
+    ----------
+    total_feeds : int
+        Total number of feeds processed
+    success_count : int
+        Number of successful fetches
+    failure_count : int
+        Number of failed fetches
+    total_items : int
+        Total number of items across all feeds
+    new_items : int
+        Total number of new items fetched
+    started_at : str
+        Batch start timestamp (ISO 8601 format)
+    completed_at : str
+        Batch completion timestamp (ISO 8601 format)
+    duration_seconds : float
+        Total duration in seconds
+    """
+
+    total_feeds: int
+    success_count: int
+    failure_count: int
+    total_items: int
+    new_items: int
+    started_at: str
+    completed_at: str
+    duration_seconds: float
