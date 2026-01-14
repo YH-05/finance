@@ -107,4 +107,28 @@ JSON形式で保存・エクスポートする。
 
 ---
 
+## 実装タスク
+
+### フェーズ 1: 基盤実装（MVI: Minimum Viable Implementation）
+
+#### 機能 1.1: 型定義（types.py）
+- Issue: [#53](https://github.com/YH-05/finance/issues/53)
+- 優先度: P0
+- ステータス: todo
+- 依存関係: なし
+- 説明: RSS/Atomフィード管理に必要な型定義を実装
+- 受け入れ条件:
+  - [ ] `FetchInterval` Enumが3つの値を持つ（DAILY, WEEKLY, MANUAL）
+  - [ ] `FetchStatus` Enumが3つの値を持つ（SUCCESS, FAILURE, PENDING）
+  - [ ] `Feed` dataclassが全フィールドを持つ
+  - [ ] `FeedItem` dataclassが全フィールドを持つ
+  - [ ] `FeedsData` dataclassが version と feeds フィールドを持つ
+  - [ ] `FeedItemsData` dataclassが version, feed_id, items フィールドを持つ
+  - [ ] `HTTPResponse` dataclassが status_code, content, headers フィールドを持つ
+  - [ ] `FetchResult` dataclassが feed_id, success, items_count, new_items, error_message フィールドを持つ
+  - [ ] 全型がPython 3.12+の型ヒント（PEP 695）を使用
+  - [ ] pyrightで型チェックエラー0件
+
+---
+
 > このファイルは `/new-project @src/rss/docs/project.md` で詳細化されました
