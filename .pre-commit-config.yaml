@@ -52,3 +52,15 @@ repos:
   #   hooks:
   #     - id: detect-secrets
   #       args: [--baseline, .secrets.baseline]
+
+  # Project synchronization check (pre-push)
+  - repo: local
+    hooks:
+      - id: check-project-sync
+        name: check-project-sync
+        entry: python scripts/check_project_sync.py
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        always_run: true
+        verbose: true

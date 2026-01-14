@@ -53,6 +53,7 @@ description: SuperClaudeコマンドリファレンス
 | `/new-package`            | モノレポ内に新しい Python パッケージを作成する                                                                     |
 | `/new-project`            | 開発プロジェクトを開始。パッケージ開発または軽量プロジェクトに対応                                                 |
 | `/plan-worktrees`         | GitHub Project を参照し、Todo の Issue を並列開発用にグルーピング表示                                              |
+| `/project-refine`         | プロジェクト全体の適合性チェックとタスク再構成を行う                                                               |
 | `/push`                   | 変更をコミットしてリモートにプッシュ                                                                               |
 | `/review-docs`            | ドキュメントの詳細レビューをサブエージェントで実行                                                                 |
 | `/review-pr`              | PR レビュー（コード品質・セキュリティ・テスト）                                                                    |
@@ -171,11 +172,11 @@ description: SuperClaudeコマンドリファレンス
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (48 agents + 29 commands + 10 skills)
+├── .claude/                                 # Claude Code configuration (48 agents + 30 commands + 10 skills)
 │   ├── agents/                              # (46) Specialized agents
 │   ├── agents_sample/                       # (22) Sample agent definitions
 │   ├── archive/                             # (2) Archived agents
-│   ├── commands/                            # (29) Slash commands
+│   ├── commands/                            # (30) Slash commands
 │   ├── commands_sample/                     # (12) Sample command definitions
 │   ├── skills/                              # (10) Skill modules
 │   │   ├── agent-expert/                    # Agent design skill

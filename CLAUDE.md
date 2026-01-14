@@ -47,6 +47,10 @@ make issue TITLE="x" BODY="y"           # Issue作成
 
 -   **ブランチ**: `feature/` | `fix/` | `refactor/` | `docs/` | `test/` | `release/`
 -   **ラベル**: `enhancement` | `bug` | `refactor` | `documentation` | `test`
+-   **pre-push hook**: プロジェクト整合性チェック（循環依存・ステータス不整合を検出）
+    - Critical エラー → push をブロック
+    - Warning → 警告表示（`--strict` でブロック）
+    - スキップ: `git push --no-verify`
 
 ### PR / Issue 規則
 
@@ -224,6 +228,7 @@ with profile_context("処理名"):  # コンテキスト計測
 | 開発開始（軽量）   | `/new-project "プロジェクト名"`（インタビュー → GitHub Project → Issue）|
 | Issue管理          | `/issue @src/<library_name>/docs/project.md` コマンド       |
 | Issueブラッシュアップ | `/issue-refine 番号` コマンド（内容改善・明確化・テンプレート準拠）|
+| プロジェクト健全性 | `/project-refine` コマンド（適合性チェック・タスク再構成）|
 | Issueコメント同期  | `/sync-issue #番号` コマンド（コメント→進捗・タスク・仕様同期）|
 | テスト作成         | `/write-tests` コマンド または `docs/testing-strategy.md` |
 | ドキュメント作成   | `docs/document-management.md`                             |
@@ -298,7 +303,7 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 .claude/                      # Claude Code設定
 ├── agents/                   # サブエージェント定義 (48)
-├── commands/                 # スラッシュコマンド (29)
+├── commands/                 # スラッシュコマンド (30)
 └── skills/                   # スキル定義 (10)
 
 data/                         # データストレージ
