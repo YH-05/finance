@@ -457,7 +457,7 @@ class DataExporter:
             if self._result.metadata:
                 result_dict["metadata"] = self._result.metadata
 
-        elif isinstance(self._result, AnalysisResult):
+        elif isinstance(self._result, AnalysisResult):  # type: ignore[reportUnnecessaryIsInstance]
             result_dict["analyzed_at"] = self._result.analyzed_at.isoformat()
             if self._result.statistics:
                 result_dict["statistics"] = self._result.statistics
@@ -605,7 +605,7 @@ class DataExporter:
             data["source"] = self._result.source.value
             data["from_cache"] = self._result.from_cache
 
-        elif isinstance(self._result, AnalysisResult):
+        elif isinstance(self._result, AnalysisResult):  # type: ignore[reportUnnecessaryIsInstance]
             if self._result.statistics:
                 data["statistics"] = self._result.statistics
             if self._result.indicators:

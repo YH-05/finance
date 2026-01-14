@@ -60,7 +60,7 @@ class JSONStorage:
         ValueError
             If data_dir is not a Path object
         """
-        if not isinstance(data_dir, Path):
+        if not isinstance(data_dir, Path):  # type: ignore[reportUnnecessaryIsInstance]
             logger.error(
                 "Invalid data_dir type",
                 data_dir=str(data_dir),

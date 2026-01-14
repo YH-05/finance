@@ -481,7 +481,7 @@ class FREDFetcher(BaseDataFetcher):
                 observation_end=end,
             )
 
-            if series is None or series.empty:
+            if series.empty:
                 logger.warning("No data returned for series", series_id=series_id)
                 raise DataFetchError(
                     f"No data found for FRED series: {series_id}",

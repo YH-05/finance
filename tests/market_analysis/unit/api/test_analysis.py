@@ -28,7 +28,7 @@ class TestAnalysisInit:
     def test_init_with_none_raises_error(self) -> None:
         """NoneでValidationErrorが発生."""
         with pytest.raises(ValidationError, match="cannot be empty"):
-            Analysis(None)  # type: ignore
+            Analysis(None)
 
 
 class TestAnalysisAddSma:

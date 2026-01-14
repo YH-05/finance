@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 
 import pytest
-from pytest_httpserver import HTTPServer
+from pytest_httpserver import HTTPServer  # type: ignore[import-untyped]
 
 from finance.utils.logging_config import get_logger
 from rss import (

@@ -99,7 +99,7 @@ class TestThemeColors:
     def test_正常系_テーマカラーはフローズン(self) -> None:
         """ThemeColorsがイミュータブルであることを確認。"""
         with pytest.raises(AttributeError):
-            LIGHT_THEME_COLORS.background = "#000000"  # type: ignore[misc]
+            LIGHT_THEME_COLORS.background = "#000000"
 
 
 class TestGetThemeColors:

@@ -183,7 +183,7 @@ def get_theme_colors(theme: ChartTheme | str) -> ThemeColors:
     >>> colors.background
     '#1E1E1E'
     """
-    if isinstance(theme, str):
+    if isinstance(theme, str):  # type: ignore[reportUnnecessaryIsInstance]
         theme = ChartTheme(theme)
 
     if theme == ChartTheme.DARK:
@@ -242,7 +242,7 @@ class ChartConfig:
             width=self.width,
             height=self.height,
             theme=self.theme.value
-            if isinstance(self.theme, ChartTheme)
+            if isinstance(self.theme, ChartTheme)  # type: ignore[reportUnnecessaryIsInstance]
             else self.theme,
         )
 
@@ -252,7 +252,7 @@ class ChartConfig:
             raise ValueError(f"Height must be positive, got {self.height}")
 
         # Convert string theme to enum
-        if isinstance(self.theme, str):
+        if isinstance(self.theme, str):  # type: ignore[reportUnnecessaryIsInstance]
             self.theme = ChartTheme(self.theme)
 
 
@@ -345,7 +345,7 @@ class ChartBuilder(ABC):
         ChartBuilder
             Self for method chaining
         """
-        if isinstance(theme, str):
+        if isinstance(theme, str):  # type: ignore[reportUnnecessaryIsInstance]
             theme = ChartTheme(theme)
 
         self.config.theme = theme
@@ -585,7 +585,7 @@ class ChartBuilder(ABC):
                     f"Cannot infer format from extension '{ext}'. "
                     f"Supported formats: {[f.value for f in ExportFormat]}"
                 ) from err
-        elif isinstance(format, str):
+        elif isinstance(format, str):  # type: ignore[reportUnnecessaryIsInstance]
             format = ExportFormat(format)
 
         # Ensure parent directory exists
