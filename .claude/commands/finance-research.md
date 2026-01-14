@@ -25,11 +25,15 @@ Phase 2: データ収集（並列）
 ├── finance-market-data → market_data/data.json
 ├── finance-web → raw-data.json (web_search)
 ├── finance-wiki → raw-data.json (wikipedia)
+├── finance-sec-filings → raw-data.json (sec_filings)
 └── [HF2] データ確認（任意）
 
 Phase 3: データ処理
 ├── finance-source → sources.json
 └── finance-claims → claims.json
+
+Phase 3.5: センチメント分析
+└── finance-sentiment-analyzer → sentiment_analysis.json
 
 Phase 4: 分析・検証
 ├── finance-claims-analyzer → analysis.json
@@ -80,12 +84,18 @@ Phase 5: 可視化
    Task 3: finance-wiki
    - queries.json の wikipedia を実行
    → 01_research/raw-data.json (wikipedia セクション)
+
+   Task 4: finance-sec-filings
+   - symbols から企業のSEC開示情報を取得
+   - 決算書、10-K、10-Q、8-Kなどを分析
+   → 01_research/raw-data.json (sec_filings セクション)
    ```
 
 5. **workflow 更新**
    - market_data = "done"
    - web_search = "done"
    - wiki_search = "done"
+   - sec_filings = "done"
 
 6. **[HF2] データ確認（任意）**
    ```
@@ -95,6 +105,7 @@ Phase 5: 可視化
    - 市場データ: {count}件
    - Web検索: {count}件
    - Wikipedia: {count}件
+   - SEC開示情報: {count}件
 
    データを確認しますか？ (y/n)
    確認する場合は raw-data.json を表示します。
@@ -120,9 +131,21 @@ Phase 5: 可視化
    - sources = "done"
    - claims = "done"
 
+### Phase 3.5: センチメント分析
+
+10. **finance-sentiment-analyzer 実行**
+    ```
+    Task: finance-sentiment-analyzer
+    Input: raw-data.json (web_search, sec_filings), sources.json
+    Output: sentiment_analysis.json
+    ```
+
+11. **workflow 更新**
+    - sentiment_analysis = "done"
+
 ### Phase 4: 分析・検証
 
-10. **分析エージェント実行**
+12. **分析エージェント実行**
 
     カテゴリに応じて適切なエージェントを実行：
 
@@ -138,7 +161,7 @@ Phase 5: 可視化
     Output: economic_analysis.json
     ```
 
-11. **検証エージェント実行（並列）**
+13. **検証エージェント実行（並列）**
 
     ```
     Task 1: finance-claims-analyzer
@@ -150,14 +173,14 @@ Phase 5: 可視化
     Output: fact-checks.json
     ```
 
-12. **finance-decisions 実行**
+14. **finance-decisions 実行**
     ```
     Task: finance-decisions
     Input: claims.json, fact-checks.json
     Output: decisions.json
     ```
 
-13. **[HF3] 主張採用確認（推奨）**
+15. **[HF3] 主張採用確認（推奨）**
     ```
     分析が完了しました。
 
@@ -170,21 +193,21 @@ Phase 5: 可視化
     確認する場合は decisions.json を表示します。
     ```
 
-14. **workflow 更新**
+16. **workflow 更新**
     - analysis = "done"
     - fact_checks = "done"
     - decisions = "done"
 
 ### Phase 5: 可視化
 
-15. **finance-visualize 実行**
+17. **finance-visualize 実行**
     ```
     Task: finance-visualize
-    Input: claims.json, decisions.json, market_data/data.json
+    Input: claims.json, decisions.json, market_data/data.json, sentiment_analysis.json
     Output: visualize/summary.md, visualize/charts/
     ```
 
-16. **[HF4] チャート確認（任意）**
+18. **[HF4] チャート確認（任意）**
     ```
     可視化が完了しました。
 
@@ -195,7 +218,7 @@ Phase 5: 可視化
     チャートを確認しますか？ (y/n)
     ```
 
-17. **workflow 更新**
+19. **workflow 更新**
     - visualize = "done"
 
 ## 完了報告
@@ -211,9 +234,11 @@ Phase 5: 可視化
 - 市場データ: {market_data_count}件
 - Webソース: {web_count}件
 - Wikipedia: {wiki_count}件
+- SEC開示情報: {sec_count}件
 
 ### 分析結果
 - 抽出した主張: {claims_count}件
+- センチメント分析: {sentiment_score}
 - 採用判定:
   - 採用: {accept_count}件
   - 不採用: {reject_count}件
@@ -225,6 +250,7 @@ Phase 5: 可視化
 - `01_research/market_data/data.json`
 - `01_research/sources.json`
 - `01_research/claims.json`
+- `01_research/sentiment_analysis.json`
 - `01_research/analysis.json`
 - `01_research/fact-checks.json`
 - `01_research/decisions.json`
@@ -277,4 +303,4 @@ Phase 5: 可視化
 
 - **前提コマンド**: `/new-finance-article`
 - **次のコマンド**: `/finance-edit`
-- **使用エージェント**: finance-query-generator, finance-market-data, finance-web, finance-wiki, finance-source, finance-claims, finance-claims-analyzer, finance-fact-checker, finance-decisions, finance-visualize
+- **使用エージェント**: finance-query-generator, finance-market-data, finance-web, finance-wiki, finance-sec-filings, finance-source, finance-claims, finance-sentiment-analyzer, finance-claims-analyzer, finance-fact-checker, finance-decisions, finance-visualize
