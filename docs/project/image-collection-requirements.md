@@ -24,6 +24,7 @@ note記事用の画像収集機能について、対象サイト、収集フロ�
 |----------|-----|-----------|------|
 | TradingView | https://www.tradingview.com | 埋め込み許可 | チャート埋め込み |
 | Yahoo Finance | https://finance.yahoo.com | Editorial | 参考データ |
+| カブたん | https://kabutan.jp | Editorial | 日本株情報・決算速報 |
 
 ### 1.3 公式ソース（優先度: 中）
 
@@ -39,6 +40,74 @@ note記事用の画像収集機能について、対象サイト、収集フロ�
 |--------|------|
 | market_analysis.visualization | 株価チャート・分析グラフ |
 | matplotlib / plotly | カスタムチャート |
+
+### 1.5 信頼できる金融情報ニュースメディア（RSS対応）
+
+#### 日本語メディア
+
+| サイト名 | URL | RSS | 特徴 |
+|----------|-----|-----|------|
+| 日本経済新聞 | https://www.nikkei.com | https://www.nikkei.com/rss/ | 一部無料記事、チャート・企業ロゴ豊富 |
+| ロイター日本語版 | https://jp.reuters.com | https://jp.reuters.com/arc/outboundfeeds/rss/ | 無料記事多数、ニュース写真充実 |
+| Bloomberg日本語版 | https://www.bloomberg.co.jp | https://www.bloomberg.co.jp/feed/podcast/professional.xml | 市場データ・チャート画像豊富 |
+| 東洋経済オンライン | https://toyokeizai.net | https://toyokeizai.net/list/feed/rss | 無料記事多数、解説記事充実 |
+| Yahoo!ファイナンス | https://finance.yahoo.co.jp | 各カテゴリ別RSS | 無料、チャート・企業情報豊富 |
+| カブたん | https://kabutan.jp | - | 日本株専門、決算速報・株価情報充実 |
+
+#### 英語メディア（国際的な視点）
+
+| サイト名 | URL | RSS | 特徴 |
+|----------|-----|-----|------|
+| Reuters | https://www.reuters.com | https://www.reuters.com/tools/rss | カテゴリ別RSS多数、画像豊富 |
+| Financial Times | https://www.ft.com | https://www.ft.com/rss | 一部無料記事、高品質なチャート |
+| MarketWatch | https://www.marketwatch.com | http://feeds.marketwatch.com/marketwatch/topstories/ | 無料記事多数、市場データ充実 |
+| Seeking Alpha | https://seekingalpha.com | カテゴリ別RSS | 無料記事あり、詳細な分析 |
+
+#### 中央銀行・公的機関（一次情報源）
+
+| サイト名 | URL | RSS | 特徴 |
+|----------|-----|-----|------|
+| 日本銀行 | https://www.boj.or.jp | https://www.boj.or.jp/rss/index.htm | 公式データ・チャート、信頼性最高 |
+| Federal Reserve | https://www.federalreserve.gov | https://www.federalreserve.gov/feeds/press_all.xml | FOMC声明、経済データ |
+
+### 1.6 有用なRedditサブレディット
+
+#### 総合金融・経済
+
+| サブレディット | メンバー数 | 用途 |
+|---------------|-----------|------|
+| r/investing | 2.5M+ | 長期投資・資産運用の議論 |
+| r/stocks | 6M+ | 個別株の議論・分析、ニュース・チャート共有 |
+| r/finance | 1.5M+ | プロフェッショナル向け金融議論 |
+| r/economics | 4M+ | マクロ経済・政策議論 |
+
+#### 市場分析・テクニカル
+
+| サブレディット | メンバー数 | 用途 |
+|---------------|-----------|------|
+| r/wallstreetbets | 15M+ | 市場トレンド・センチメント把握（要注意） |
+| r/Daytrading | 500K+ | デイトレード戦略、チャート分析 |
+| r/technicalanalysis | 100K+ | テクニカル分析専門 |
+
+#### 暗号資産・DeFi
+
+| サブレディット | メンバー数 | 用途 |
+|---------------|-----------|------|
+| r/CryptoCurrency | 8M+ | 暗号資産全般、ニュース・市場動向 |
+| r/Bitcoin | 5M+ | Bitcoin専門 |
+
+#### 個人投資家向け
+
+| サブレディット | メンバー数 | 用途 |
+|---------------|-----------|------|
+| r/Bogleheads | 500K+ | インデックス投資・長期運用 |
+| r/dividends | 400K+ | 配当株投資 |
+
+#### 日本市場
+
+| サブレディット | メンバー数 | 用途 |
+|---------------|-----------|------|
+| r/JapanFinance | 50K+ | 日本在住者向け投資情報、税制・制度議論 |
 
 ## 2. 画像収集フロー
 
@@ -290,13 +359,68 @@ CC-BY等で帰属表示が必要な場合:
 - [ ] 帰属表示が必要な画像は出典を明記
 - [ ] 不明な場合は使用しない
 
+## 5. 活用できるMCPサーバー
+
+### 5.1 既に利用可能なMCPサーバー
+
+| MCP サーバー | 用途 | 活用例 |
+|-------------|------|--------|
+| reddit | Redditの投稿・コメント取得 | 金融系サブレディットの情報収集、センチメント分析 |
+| fetch | Web上のコンテンツ取得 | RSSフィード・記事の取得、画像URL抽出 |
+| wikipedia | Wikipedia記事取得 | 企業情報・用語解説の収集 |
+| sec-edgar-mcp | SEC EDGAR企業情報取得 | 米国上場企業の公式資料・IR画像取得 |
+| notion | Notionデータベース操作 | 収集データの整理・管理 |
+
+### 5.2 主要MCPツール一覧
+
+#### Reddit MCP
+
+```
+mcp__reddit__get_subreddit_hot_posts    # 人気投稿取得
+mcp__reddit__get_subreddit_new_posts    # 新着投稿取得
+mcp__reddit__get_post_content           # 投稿内容取得
+mcp__reddit__get_post_comments          # コメント取得
+```
+
+#### Fetch MCP
+
+```
+mcp__fetch__fetch                       # Webコンテンツ取得
+```
+
+#### SEC EDGAR MCP
+
+```
+mcp__sec-edgar-mcp__get_company_info    # 企業情報取得
+mcp__sec-edgar-mcp__get_recent_filings  # 最新提出書類取得
+mcp__sec-edgar-mcp__get_financials      # 財務データ取得
+```
+
+#### Wikipedia MCP
+
+```
+mcp__wikipedia__search_wikipedia        # キーワード検索
+mcp__wikipedia__get_article             # 記事全文取得
+mcp__wikipedia__get_summary             # 要約取得
+mcp__wikipedia__extract_key_facts       # 重要事実抽出
+```
+
+### 5.3 追加検討を推奨するMCPサーバー
+
+| MCP サーバー | 用途 | 備考 |
+|-------------|------|------|
+| mcp-server-rss | RSSフィード専用パーサー | フィード取得の効率化 |
+| mcp-server-brave-search | Brave検索API | 画像検索の強化 |
+| mcp-server-yfinance | Yahoo Finance データ取得 | 既にyfinanceライブラリ使用中だがMCP経由も可 |
+
 ---
 
-## 次のステップ
+## 6. 次のステップ
 
 1. この要件に基づき、`finance-image` エージェントを実装
 2. Unsplash/Pexels/Pixabay API の調査（API キー取得方法）
 3. market_analysis との連携方法を検討
+4. Reddit MCP を活用したセンチメント分析機能の検討
 
 ---
 
