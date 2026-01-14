@@ -294,9 +294,9 @@ with profile_context("処理名"):  # コンテキスト計測
 
 ```
 .claude/                      # Claude Code設定
-├── agents/                   # サブエージェント定義 (42)
-├── commands/                 # スラッシュコマンド (25)
-└── skills/                   # スキル定義 (8)
+├── agents/                   # サブエージェント定義 (44)
+├── commands/                 # スラッシュコマンド (26)
+└── skills/                   # スキル定義 (9)
 
 data/                         # データストレージ
 ├── config/                   # 設定ファイル（FRED series等）
@@ -320,20 +320,25 @@ src/
 │   │   └── logging_config.py # ロギング設定
 │   ├── types.py              # 型定義
 │   └── py.typed              # PEP 561マーカー
-└── market_analysis/          # 市場分析パッケージ
-    ├── core/                 # データフェッチャー
-    ├── analysis/             # 分析ロジック
-    ├── api/                  # パブリックAPI
-    ├── visualization/        # チャート生成
-    ├── export/               # データエクスポート
+├── market_analysis/          # 市場分析パッケージ
+│   ├── core/                 # データフェッチャー
+│   ├── analysis/             # 分析ロジック
+│   ├── api/                  # パブリックAPI
+│   ├── visualization/        # チャート生成
+│   ├── export/               # データエクスポート
+│   ├── utils/                # ユーティリティ
+│   └── docs/                 # ライブラリドキュメント
+│       └── project.md        # プロジェクトファイル
+└── rss/                      # RSS配信パッケージ
+    ├── core/                 # フィード生成
     ├── utils/                # ユーティリティ
     └── docs/                 # ライブラリドキュメント
-        └── project.md        # プロジェクトファイル
 
 tests/
 ├── finance/                  # financeパッケージテスト
 │   └── db/unit/              # DBユニットテスト
-└── market_analysis/          # market_analysisテスト
+├── market_analysis/          # market_analysisテスト
+└── rss/                      # rssテスト
 
 template/                     # テンプレート（参照専用）
 ├── src/template_package/     # パッケージテンプレート

@@ -10,6 +10,7 @@
 
 ## ディレクトリ構成
 
+<!-- AUTO-GENERATED: STRUCTURE -->
 ```
 market_analysis/
 ├── __init__.py              # 公開 API 定義（__version__含む）
@@ -57,33 +58,28 @@ market_analysis/
     ├── glossary.md              # 用語集
     └── tasks.md                 # タスク管理
 ```
+<!-- END: STRUCTURE -->
 
 ## 実装状況
 
-| モジュール                | 状態        | 備考                                      |
-| ------------------------- | ----------- | ----------------------------------------- |
-| `types.py`                | ✅ 実装済み | TypedDict, Enum等の型定義                 |
-| `errors.py`               | ✅ 実装済み | MarketAnalysisError等の例外クラス         |
-| `api/market_data.py`      | ✅ 実装済み | MarketData - データ取得統合API            |
-| `api/analysis.py`         | ✅ 実装済み | Analysis - メソッドチェーン対応分析API    |
-| `core/base_fetcher.py`    | ✅ 実装済み | BaseDataFetcher抽象基底クラス             |
-| `core/yfinance_fetcher.py`| ✅ 実装済み | YFinanceFetcher（株価・為替・指標）       |
-| `core/fred_fetcher.py`    | ✅ 実装済み | FREDFetcher（経済指標）                   |
-| `core/data_fetcher_factory.py` | ✅ 実装済み | DataFetcherFactory                   |
-| `analysis/analyzer.py`    | ✅ 実装済み | Analyzer（メイン分析クラス）              |
-| `analysis/indicators.py`  | ✅ 実装済み | IndicatorCalculator（SMA, EMA, RSI等）    |
-| `analysis/correlation.py` | ✅ 実装済み | CorrelationAnalyzer                       |
-| `visualization/charts.py` | ✅ 実装済み | ChartBuilder, ChartConfig, ChartTheme     |
-| `visualization/price_charts.py` | ✅ 実装済み | CandlestickChart, LineChart         |
-| `visualization/heatmap.py`| ✅ 実装済み | HeatmapChart                              |
-| `export/exporter.py`      | ✅ 実装済み | DataExporter                              |
-| `utils/logging_config.py` | ✅ 実装済み | 構造化ロギング                            |
-| `utils/validators.py`     | ✅ 実装済み | バリデーション                            |
-| `utils/cache.py`          | ✅ 実装済み | SQLiteキャッシュ                          |
-| `utils/retry.py`          | ✅ 実装済み | リトライ機能                              |
-| `utils/ticker_registry.py`| ✅ 実装済み | ティッカーレジストリ                      |
+<!-- AUTO-GENERATED: IMPLEMENTATION -->
+
+| モジュール | 状態 | ファイル数 | 行数 | 備考 |
+|-----------|------|-----------|-----|------|
+| `types.py` | ✅ 実装済み | 1 | 555 | TypedDict, Enum等の型定義 |
+| `errors.py` | ✅ 実装済み | 1 | 515 | MarketAnalysisError等の例外クラス |
+| `api/` | ✅ 実装済み | 3 | 1,326 | MarketData, Analysis（メソッドチェーン対応） |
+| `core/` | ✅ 実装済み | 5 | 1,650 | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
+| `analysis/` | ✅ 実装済み | 4 | 1,427 | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `visualization/` | ✅ 実装済み | 4 | 1,747 | ChartBuilder, CandlestickChart, HeatmapChart |
+| `export/` | ✅ 実装済み | 2 | 692 | DataExporter |
+| `utils/` | ✅ 実装済み | 7 | 2,746 | logging, validators, cache, retry, ticker_registry |
+
+<!-- END: IMPLEMENTATION -->
 
 ## 公開 API
+
+<!-- AUTO-GENERATED: API -->
 
 ### 主要インターフェース（推奨）
 
@@ -155,6 +151,21 @@ from market_analysis import (
 ```python
 from market_analysis import get_logger, TickerRegistry, get_ticker_registry, PRESET_GROUPS
 ```
+<!-- END: API -->
+
+## 統計
+
+<!-- AUTO-GENERATED: STATS -->
+
+| 項目 | 値 |
+|-----|---|
+| Pythonファイル数 | 28 |
+| 総行数（実装コード） | 10,785 |
+| モジュール数 | 8 |
+| テストファイル数 | 24 |
+| テストカバレッジ | N/A |
+
+<!-- END: STATS -->
 
 ## 拡張ガイド
 
