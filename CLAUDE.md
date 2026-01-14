@@ -216,6 +216,7 @@ with profile_context("処理名"):  # コンテキスト計測
 
 | タスク             | 参照先                                                     |
 | ------------------ | ---------------------------------------------------------- |
+| 並行開発計画       | `/plan-worktrees <project_number>` コマンド（依存関係解析→Wave グルーピング）|
 | 並行開発環境作成   | `/worktree <branch_name>` コマンド（worktree + ブランチ） |
 | 開発完了クリーンアップ | `/worktree-done <branch_name>` コマンド（PRマージ確認 → 削除） |
 | パッケージ作成     | `/new-package <package_name>` コマンド                      |
@@ -295,7 +296,7 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 .claude/                      # Claude Code設定
 ├── agents/                   # サブエージェント定義 (44)
-├── commands/                 # スラッシュコマンド (26)
+├── commands/                 # スラッシュコマンド (27)
 └── skills/                   # スキル定義 (9)
 
 data/                         # データストレージ
@@ -330,8 +331,15 @@ src/
 │   └── docs/                 # ライブラリドキュメント
 │       └── project.md        # プロジェクトファイル
 └── rss/                      # RSS配信パッケージ
-    ├── core/                 # フィード生成
+    ├── core/                 # コア機能
+    │   └── diff_detector.py  # 差分検出
+    ├── storage/              # JSON永続化
+    │   ├── json_storage.py   # JSONStorage
+    │   └── lock_manager.py   # ファイルロック
+    ├── validators/           # バリデーション
+    │   └── url_validator.py  # URL検証
     ├── utils/                # ユーティリティ
+    ├── exceptions.py         # 例外定義
     └── docs/                 # ライブラリドキュメント
 
 tests/

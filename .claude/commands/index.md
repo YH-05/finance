@@ -50,6 +50,7 @@ description: SuperClaudeコマンドリファレンス
 | `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成します。                                     |
 | `/new-package`            | モノレポ内に新しい Python パッケージを作成する                                                                     |
 | `/new-project`            | 開発プロジェクトを開始。パッケージ開発または軽量プロジェクトに対応                                                 |
+| `/plan-worktrees`         | GitHub Project を参照し、Todo の Issue を並列開発用にグルーピング表示                                              |
 | `/push`                   | 変更をコミットしてリモートにプッシュ                                                                               |
 | `/review-docs`            | ドキュメントの詳細レビューをサブエージェントで実行                                                                 |
 | `/review-pr`              | PR レビュー（コード品質・セキュリティ・テスト）                                                                    |
@@ -154,42 +155,34 @@ description: SuperClaudeコマンドリファレンス
 
 ```
 finance/
-├── .claude/
-│   ├── agents/ (44)
-│   ├── agents_sample/ (22)
-│   ├── archive/ (2)
-│   ├── commands/ (26)
-│   ├── commands_sample/ (12)
+├── .claude/                              # Claude Code設定
+│   ├── agents/ (44)                      # エージェント定義
+│   ├── agents_sample/ (22)               # エージェントサンプル
+│   ├── archive/ (2)                      # アーカイブ
+│   ├── commands/ (27)                    # スラッシュコマンド定義
+│   ├── commands_sample/ (12)             # コマンドサンプル
+│   ├── skills/ (9)                       # スキル定義
+│   │   ├── agent-expert/
+│   │   ├── agent-memory/
+│   │   ├── architecture-design/
+│   │   ├── development-guidelines/
+│   │   ├── functional-design/
+│   │   ├── glossary-creation/
+│   │   ├── prd-writing/
+│   │   ├── project-file/
+│   │   └── repository-structure/
+│   ├── agents.md
 │   ├── settings.json
-│   ├── settings.local.json
-│   └── skills/ (9)
-│       ├── agent-expert/
-│       ├── agent-memory/
-│       ├── architecture-design/
-│       ├── development-guidelines/
-│       ├── functional-design/
-│       ├── glossary-creation/
-│       ├── prd-writing/
-│       ├── project-file/
-│       └── repository-structure/
+│   └── settings.local.json
 ├── .github/
 │   ├── ISSUE_TEMPLATE/ (4)
+│   ├── workflows/ (3)
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   ├── PUSH_TEMPLATE.md
-│   ├── dependabot.yml
-│   └── workflows/ (3)
-├── .gitignore
-├── .mcp.json
-├── .mcp.json.bak
-├── .pre-commit-config.yaml
-├── .python-version
-├── CLAUDE.md
-├── Makefile
-├── README.md
-├── data/
-│   ├── README.md
-│   ├── config/ (2)
-│   ├── duckdb/
+│   └── dependabot.yml
+├── data/                                 # データストレージ
+│   ├── config/ (2)                       # 設定ファイル
+│   ├── duckdb/                           # DuckDB (OLAP)
 │   ├── exports/
 │   │   ├── csv/
 │   │   └── json/
@@ -197,46 +190,40 @@ finance/
 │   │   ├── aggregated/
 │   │   └── daily/
 │   ├── raw/
-│   │   ├── fred/
-│   │   │   └── indicators/
+│   │   ├── fred/indicators/
 │   │   └── yfinance/
 │   │       ├── forex/
 │   │       ├── indices/
 │   │       └── stocks/
-│   ├── schemas/ (12)
-│   └── sqlite/
-├── docs/
+│   ├── schemas/ (12)                     # JSONスキーマ
+│   ├── sqlite/                           # SQLite (OLTP)
+│   └── README.md
+├── docs/                                 # リポジトリ共通ドキュメント
+│   ├── pr-review/ (14)
+│   ├── project/ (1)
 │   ├── coding-standards.md
 │   ├── development-process.md
 │   ├── diagram-guidelines.md
 │   ├── document-management.md
-│   ├── pr-review/ (12)
-│   ├── project/ (1)
-│   └── testing-strategy.md
-├── pyproject.toml
-├── scripts/ (2)
-├── snippets/ (7)
+│   ├── testing-strategy.md
+│   └── type-checker-migration.md
 ├── src/
-│   ├── finance/
-│   │   ├── README.md
-│   │   ├── __init__.py
+│   ├── finance/                          # 共通インフラパッケージ
 │   │   ├── db/
+│   │   │   ├── migrations/
+│   │   │   │   └── versions/
 │   │   │   ├── __init__.py
 │   │   │   ├── connection.py
 │   │   │   ├── duckdb_client.py
-│   │   │   ├── migrations/
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── runner.py
-│   │   │   │   └── versions/
 │   │   │   └── sqlite_client.py
-│   │   ├── py.typed
-│   │   ├── types.py
-│   │   └── utils/
-│   │       ├── __init__.py
-│   │       └── logging_config.py
-│   ├── market_analysis/
-│   │   ├── README.md
+│   │   ├── utils/
+│   │   │   ├── __init__.py
+│   │   │   └── logging_config.py
 │   │   ├── __init__.py
+│   │   ├── py.typed
+│   │   ├── README.md
+│   │   └── types.py
+│   ├── market_analysis/                  # 市場分析パッケージ
 │   │   ├── analysis/
 │   │   │   ├── __init__.py
 │   │   │   ├── analyzer.py
@@ -253,68 +240,93 @@ finance/
 │   │   │   ├── fred_fetcher.py
 │   │   │   └── yfinance_fetcher.py
 │   │   ├── docs/ (8)
-│   │   ├── errors.py
 │   │   ├── export/
 │   │   │   ├── __init__.py
 │   │   │   └── exporter.py
-│   │   ├── py.typed
-│   │   ├── types.py
 │   │   ├── utils/ (7)
-│   │   └── visualization/
-│   │       ├── __init__.py
-│   │       ├── charts.py
-│   │       ├── heatmap.py
-│   │       └── price_charts.py
-│   └── rss/
-│       ├── README.md
-│       ├── __init__.py
+│   │   ├── visualization/
+│   │   │   ├── __init__.py
+│   │   │   ├── charts.py
+│   │   │   ├── heatmap.py
+│   │   │   └── price_charts.py
+│   │   ├── __init__.py
+│   │   ├── errors.py
+│   │   ├── py.typed
+│   │   ├── README.md
+│   │   └── types.py
+│   └── rss/                              # RSS配信パッケージ
 │       ├── core/
+│       │   ├── __init__.py
+│       │   └── diff_detector.py
 │       ├── docs/ (8)
+│       ├── storage/
+│       │   ├── __init__.py
+│       │   ├── json_storage.py
+│       │   └── lock_manager.py
+│       ├── utils/
+│       │   ├── __init__.py
+│       │   └── logging_config.py
+│       ├── validators/
+│       │   ├── __init__.py
+│       │   └── url_validator.py
+│       ├── __init__.py
+│       ├── exceptions.py
 │       ├── py.typed
-│       ├── types.py
-│       └── utils/
-│           ├── __init__.py
-│           └── logging_config.py
-├── template/
+│       ├── README.md
+│       └── types.py
+├── template/                             # テンプレート（参照専用）
 │   ├── economic_indicators/ (1 + subdirs)
 │   ├── investment_education/ (1 + subdirs)
 │   ├── market_report/ (1 + subdirs)
 │   ├── quant_analysis/ (1 + subdirs)
-│   ├── src/
-│   │   └── template_package/
-│   │       ├── README.md
-│   │       ├── __init__.py
-│   │       ├── core/
-│   │       ├── py.typed
-│   │       ├── types.py
-│   │       └── utils/
+│   ├── src/template_package/
+│   │   ├── core/
+│   │   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── py.typed
+│   │   ├── README.md
+│   │   └── types.py
 │   ├── stock_analysis/ (1 + subdirs)
 │   ├── tests/ (unit/property/integration)
-│   └── {article_id}-theme-name-en/ (template)
+│   └── {article_id}-theme-name-en/
 ├── tests/
-│   ├── __init__.py
 │   ├── finance/
+│   │   ├── db/
+│   │   │   ├── unit/ (3)
+│   │   │   └── integration/
 │   │   ├── __init__.py
-│   │   ├── conftest.py
-│   │   └── db/
-│   │       ├── unit/ (3)
-│   │       └── integration/
+│   │   └── conftest.py
 │   ├── integration/
 │   ├── market_analysis/
-│   │   ├── __init__.py
-│   │   ├── conftest.py
 │   │   ├── unit/ (7 subdirs)
 │   │   ├── property/
-│   │   └── integration/
+│   │   ├── integration/
+│   │   ├── __init__.py
+│   │   └── conftest.py
 │   ├── property/
 │   ├── rss/
-│   │   ├── __init__.py
-│   │   ├── conftest.py
 │   │   ├── unit/
+│   │   │   ├── core/
+│   │   │   └── storage/
+│   │   ├── storage/unit/
 │   │   ├── property/
-│   │   └── integration/
-│   └── unit/
-│       └── market_analysis/ (5)
+│   │   ├── integration/
+│   │   ├── __init__.py
+│   │   └── conftest.py
+│   ├── unit/
+│   │   ├── market_analysis/ (5)
+│   │   └── validators/ (1)
+│   └── __init__.py
+├── scripts/ (2)
+├── snippets/ (7)
+├── .gitignore
+├── .mcp.json
+├── .pre-commit-config.yaml
+├── .python-version
+├── CLAUDE.md
+├── Makefile
+├── pyproject.toml
+├── README.md
 └── uv.lock
 ```
 
@@ -337,6 +349,7 @@ finance/
 
 | やりたいこと                  | コマンド                                  |
 | ----------------------------- | ----------------------------------------- |
+| 並列開発の計画を立てたい      | `/plan-worktrees <project-number>`        |
 | 独立した作業環境で開発したい  | `/worktree <feature-name>`                |
 | 開発完了後のクリーンアップ    | `/worktree-done`                          |
 | 新しいパッケージを作りたい    | `/new-package <name>`                     |
@@ -354,6 +367,12 @@ finance/
 ---
 
 ## 効率的なワークフロー
+
+### チーム並列開発
+
+```
+/plan-worktrees <project> → 各メンバーが Wave 1 の Issue を担当 → /worktree feature/issue-N → 実装 → /commit-and-pr → Wave 2 に進む
+```
 
 ### 新機能開発（独立環境で）
 

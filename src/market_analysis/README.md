@@ -13,49 +13,49 @@
 <!-- AUTO-GENERATED: STRUCTURE -->
 ```
 market_analysis/
-├── __init__.py              # 公開 API 定義（__version__含む）
-├── py.typed                 # PEP 561 マーカー
+├── __init__.py              # 公開API定義（__version__含む）
+├── py.typed                 # PEP 561マーカー
 ├── types.py                 # 型定義（TypedDict, Enum等）
 ├── errors.py                # 例外クラス定義
-├── api/                     # パブリック API（推奨エントリポイント）
+├── api/                     # パブリックAPI（推奨エントリポイント）
 │   ├── __init__.py
-│   ├── market_data.py       # MarketData - データ取得統合インターフェース
-│   └── analysis.py          # Analysis - テクニカル分析（メソッドチェーン対応）
-├── core/                    # データフェッチャー
-│   ├── __init__.py
-│   ├── base_fetcher.py      # BaseDataFetcher（抽象基底クラス）
-│   ├── yfinance_fetcher.py  # YFinanceFetcher（Yahoo Finance）
-│   ├── fred_fetcher.py      # FREDFetcher（FRED API）
-│   └── data_fetcher_factory.py  # DataFetcherFactory
+│   ├── analysis.py          # Analysis - テクニカル分析（メソッドチェーン対応）
+│   └── market_data.py       # MarketData - データ取得統合インターフェース
 ├── analysis/                # 分析ロジック
 │   ├── __init__.py
 │   ├── analyzer.py          # Analyzer（メイン分析クラス）
-│   ├── indicators.py        # IndicatorCalculator（テクニカル指標）
-│   └── correlation.py       # CorrelationAnalyzer（相関分析）
-├── visualization/           # チャート生成
+│   ├── correlation.py       # CorrelationAnalyzer（相関分析）
+│   └── indicators.py        # IndicatorCalculator（テクニカル指標）
+├── core/                    # データフェッチャー
 │   ├── __init__.py
-│   ├── charts.py            # ChartBuilder, ChartConfig, ChartTheme
-│   ├── price_charts.py      # CandlestickChart, LineChart
-│   └── heatmap.py           # HeatmapChart
+│   ├── base_fetcher.py      # BaseDataFetcher（抽象基底クラス）
+│   ├── data_fetcher_factory.py  # DataFetcherFactory
+│   ├── fred_fetcher.py      # FREDFetcher（FRED API）
+│   └── yfinance_fetcher.py  # YFinanceFetcher（Yahoo Finance）
 ├── export/                  # データエクスポート
 │   ├── __init__.py
 │   └── exporter.py          # DataExporter
 ├── utils/                   # ユーティリティ関数
 │   ├── __init__.py
-│   ├── logging_config.py    # 構造化ロギング設定
-│   ├── logger_factory.py    # ロガー生成
-│   ├── validators.py        # バリデーション
 │   ├── cache.py             # SQLiteキャッシュ
+│   ├── logger_factory.py    # ロガー生成
+│   ├── logging_config.py    # 構造化ロギング設定
 │   ├── retry.py             # リトライ機能
-│   └── ticker_registry.py   # ティッカーレジストリ
+│   ├── ticker_registry.py   # ティッカーレジストリ
+│   └── validators.py        # バリデーション
+├── visualization/           # チャート生成
+│   ├── __init__.py
+│   ├── charts.py            # ChartBuilder, ChartConfig, ChartTheme
+│   ├── heatmap.py           # HeatmapChart
+│   └── price_charts.py      # CandlestickChart, LineChart
 └── docs/                    # ライブラリドキュメント
-    ├── project.md           # プロジェクトファイル
-    ├── library-requirements.md  # LRD
-    ├── functional-design.md     # 機能設計書
+    ├── project.md               # プロジェクトファイル
     ├── architecture.md          # アーキテクチャ設計書
-    ├── repository-structure.md  # リポジトリ構造定義書
     ├── development-guidelines.md # 開発ガイドライン
+    ├── functional-design.md     # 機能設計書
     ├── glossary.md              # 用語集
+    ├── library-requirements.md  # LRD
+    ├── repository-structure.md  # リポジトリ構造定義書
     └── tasks.md                 # タスク管理
 ```
 <!-- END: STRUCTURE -->
@@ -64,16 +64,16 @@ market_analysis/
 
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 
-| モジュール | 状態 | ファイル数 | 行数 | 備考 |
-|-----------|------|-----------|-----|------|
-| `types.py` | ✅ 実装済み | 1 | 555 | TypedDict, Enum等の型定義 |
-| `errors.py` | ✅ 実装済み | 1 | 515 | MarketAnalysisError等の例外クラス |
-| `api/` | ✅ 実装済み | 3 | 1,326 | MarketData, Analysis（メソッドチェーン対応） |
-| `core/` | ✅ 実装済み | 5 | 1,650 | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
-| `analysis/` | ✅ 実装済み | 4 | 1,427 | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `visualization/` | ✅ 実装済み | 4 | 1,747 | ChartBuilder, CandlestickChart, HeatmapChart |
-| `export/` | ✅ 実装済み | 2 | 692 | DataExporter |
-| `utils/` | ✅ 実装済み | 7 | 2,746 | logging, validators, cache, retry, ticker_registry |
+| モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
+|-----------|------|-----------|-----|-------|------|
+| `types.py` | ✅ 実装済み | 1 | 555 | - | TypedDict, Enum等の型定義 |
+| `errors.py` | ✅ 実装済み | 1 | 515 | - | MarketAnalysisError等の例外クラス |
+| `api/` | ✅ 実装済み | 3 | 1,326 | 2 | MarketData, Analysis（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 4 | 1,427 | 3 | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 5 | 1,650 | 4 | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
+| `export/` | ✅ 実装済み | 2 | 692 | 1 | DataExporter |
+| `utils/` | ✅ 実装済み | 7 | 2,746 | 1 | logging, validators, cache, retry, ticker_registry |
+| `visualization/` | ✅ 実装済み | 4 | 1,747 | 3 | ChartBuilder, CandlestickChart, HeatmapChart |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -125,9 +125,22 @@ from market_analysis import DataExporter
 
 ```python
 from market_analysis import (
-    AssetType, DataSource, Interval,
-    FetchOptions, AnalysisOptions, ChartOptions, ExportOptions,
-    MarketDataResult, AnalysisResult, CorrelationResult,
+    # Enum
+    AssetType,
+    DataSource,
+    Interval,
+    # TypedDict / Options
+    AgentOutput,
+    AgentOutputMetadata,
+    AnalysisOptions,
+    AnalysisResult,
+    CacheConfig,
+    ChartOptions,
+    CorrelationResult,
+    ExportOptions,
+    FetchOptions,
+    MarketDataResult,
+    RetryConfig,
 )
 ```
 
@@ -136,20 +149,27 @@ from market_analysis import (
 ```python
 from market_analysis import (
     MarketAnalysisError,  # 基底例外
-    DataFetchError,       # データ取得エラー
-    ValidationError,      # バリデーションエラー
     AnalysisError,        # 分析エラー
     CacheError,           # キャッシュエラー
+    DataFetchError,       # データ取得エラー
+    ErrorCode,            # エラーコード定数
     ExportError,          # エクスポートエラー
     RateLimitError,       # レート制限エラー
     TimeoutError,         # タイムアウトエラー
+    ValidationError,      # バリデーションエラー
 )
 ```
 
 ### ユーティリティ
 
 ```python
-from market_analysis import get_logger, TickerRegistry, get_ticker_registry, PRESET_GROUPS
+from market_analysis import (
+    PRESET_GROUPS,
+    TickerInfo,
+    TickerRegistry,
+    get_logger,
+    get_ticker_registry,
+)
 ```
 <!-- END: API -->
 
@@ -160,9 +180,9 @@ from market_analysis import get_logger, TickerRegistry, get_ticker_registry, PRE
 | 項目 | 値 |
 |-----|---|
 | Pythonファイル数 | 28 |
-| 総行数（実装コード） | 10,785 |
-| モジュール数 | 8 |
-| テストファイル数 | 24 |
+| 総行数（実装コード） | 9,784 |
+| モジュール数 | 6 |
+| テストファイル数 | 14 |
 | テストカバレッジ | N/A |
 
 <!-- END: STATS -->

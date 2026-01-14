@@ -136,7 +136,7 @@ PR: #<number> - <title>
 クリーンアップを続行します...
 ```
 
-→ ステップ2へ進む
+→ ステップ1.5へ進む
 
 **ケースD: PRがクローズ（CLOSED, 未マージ）**
 
@@ -153,6 +153,76 @@ PR: #<number> - <title>
 ```
 
 AskUserQuestion で確認を求める。
+
+---
+
+## ステップ 1.5: 関連IssueのGitHub Project更新
+
+PRがマージされた場合、関連するIssueをGitHub Projectで「Done」に移動する。
+
+### 1.5.1 関連Issueの特定
+
+PRの本文から関連Issueを抽出:
+
+```bash
+gh pr view <pr-number> --json body,closingIssuesReferences --jq '.closingIssuesReferences[].number'
+```
+
+**注意**: `closes #XX`, `fixes #XX`, `resolves #XX` などのキーワードで紐付けられたIssueが対象
+
+### 1.5.2 各IssueのProject情報取得
+
+各Issueについて、所属するGitHub Projectを確認:
+
+```bash
+gh issue view <issue-number> --json projectItems --jq '.projectItems[] | "\(.project.title)|\(.project.number)"'
+```
+
+### 1.5.3 ProjectのフィールドID取得
+
+各Projectについて、StatusフィールドのIDとDoneオプションのIDを取得:
+
+```bash
+# Statusフィールドの情報を取得
+gh project field-list <project-number> --owner <owner> --format json | \
+  jq -r '.fields[] | select(.name == "Status") | "\(.id)|\(.options[] | select(.name == "Done") | .id)"'
+```
+
+### 1.5.4 ステータスを「Done」に更新
+
+```bash
+# ProjectアイテムIDを取得
+ITEM_ID=$(gh project item-list <project-number> --owner <owner> --format json | \
+  jq -r '.items[] | select(.content.number == <issue-number>) | .id')
+
+# ステータスを更新
+gh project item-edit \
+  --project-id <project-id> \
+  --id $ITEM_ID \
+  --field-id <status-field-id> \
+  --single-select-option-id <done-option-id>
+```
+
+### 1.5.5 更新結果の表示
+
+```
+GitHub Project のステータスを更新しました:
+
+Project: <project-name>
+  - Issue #<number>: <title> → Done ✓
+  - Issue #<number>: <title> → Done ✓
+
+（Projectに未登録のIssueはスキップされます）
+```
+
+**関連Issueがない場合**:
+
+```
+PRに関連するIssueが見つかりませんでした。
+GitHub Projectの更新をスキップします。
+```
+
+→ ステップ2へ進む
 
 ---
 
@@ -272,6 +342,10 @@ git -C <main-repo-path> push origin --delete <branch-name>
 削除したブランチ: <branch-name>（ローカル + リモート）
 マージされたPR: #<pr-number>
 
+GitHub Project 更新:
+  - Issue #<number>: Done ✓
+  - Issue #<number>: Done ✓
+
 メインリポジトリ: <main-repo-path>
 
 次のステップ:
@@ -371,6 +445,7 @@ cd ../.worktrees/.../feature-new-api
 このワークフローは、以下の全ての条件を満たした時点で完了:
 
 - ステップ 1: PRがMERGED状態であることが確認されている
+- ステップ 1.5: 関連IssueがGitHub Projectで「Done」に更新されている
 - ステップ 2: 未保存変更がないか、ユーザーが確認済み
 - ステップ 3: worktreeが削除されている（`git worktree list` で確認）
 - ステップ 4: ローカル・リモートブランチが削除されている

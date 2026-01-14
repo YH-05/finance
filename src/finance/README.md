@@ -24,8 +24,8 @@ finance/
 ├── db/
 │   ├── __init__.py
 │   ├── connection.py
-│   ├── sqlite_client.py
 │   ├── duckdb_client.py
+│   ├── sqlite_client.py
 │   └── migrations/
 │       ├── __init__.py
 │       ├── runner.py
@@ -43,9 +43,9 @@ finance/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|-----|
-| `types.py` | ✅ 実装済み | 1 | 50 |
-| `db/` | ✅ 実装済み | 7 | 547 |
-| `utils/` | ✅ 実装済み | 2 | 52 |
+| `types.py` | ✅ 実装済み | 1 | 30 |
+| `db/` | ✅ 実装済み | 6 | 342 |
+| `utils/` | ✅ 実装済み | 2 | 273 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -70,7 +70,7 @@ from finance import (
 | 項目 | 値 |
 |-----|---|
 | Pythonファイル数 | 10 |
-| 総行数（実装コード） | 649 |
+| 総行数（実装コード） | 645 |
 | モジュール数 | 2 |
 | テストファイル数 | 3 |
 
