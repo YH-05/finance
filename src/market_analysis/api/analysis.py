@@ -43,7 +43,7 @@ def _find_column(df: pd.DataFrame, col_name: str, operation: str) -> pd.Series:
     col_lower = col_name.lower()
     for c in df.columns:
         if c.lower() == col_lower:
-            return cast(pd.Series, df[c])
+            return cast("pd.Series", df[c])
     raise AnalysisError(
         f"Column '{col_name}' not found in DataFrame",
         operation=operation,
@@ -416,7 +416,7 @@ class Analysis:
                         code=ErrorCode.INVALID_PARAMETER,
                     )
 
-                price_data[symbols[i]] = cast(pd.Series, df[actual_col])
+                price_data[symbols[i]] = cast("pd.Series", df[actual_col])
 
             # Create combined DataFrame
             combined = pd.DataFrame(price_data)
