@@ -9,7 +9,6 @@ from rss.exceptions import InvalidURLError
 from rss.types import Feed, FeedItem, FetchInterval, FetchStatus
 from rss.validators.url_validator import URLValidator
 
-
 # AIDEV-NOTE: カスタムストラテジーの定義
 # RSSフィードデータの各フィールドに対する有効・無効なデータを生成
 
@@ -36,7 +35,11 @@ def valid_urls(draw: st.DrawFn) -> str:
     )
     domain = ".".join(domain_parts)
     # パス（オプション）
-    path = draw(st.text(alphabet=st.characters(whitelist_categories=("Ll", "Lu", "Nd")), max_size=50))
+    path = draw(
+        st.text(
+            alphabet=st.characters(whitelist_categories=("Ll", "Lu", "Nd")), max_size=50
+        )
+    )
     if path:
         return f"{scheme}://{domain}/{path}"
     return f"{scheme}://{domain}"
@@ -190,11 +193,15 @@ class TestFeedDataProperty:
         url=valid_urls(),
         title=valid_titles(),
         category=valid_categories(),
-        fetch_interval=st.sampled_from([FetchInterval.DAILY, FetchInterval.WEEKLY, FetchInterval.MANUAL]),
+        fetch_interval=st.sampled_from(
+            [FetchInterval.DAILY, FetchInterval.WEEKLY, FetchInterval.MANUAL]
+        ),
         created_at=iso8601_timestamps(),
         updated_at=iso8601_timestamps(),
         last_fetched=st.one_of(st.none(), iso8601_timestamps()),
-        last_status=st.sampled_from([FetchStatus.SUCCESS, FetchStatus.FAILURE, FetchStatus.PENDING]),
+        last_status=st.sampled_from(
+            [FetchStatus.SUCCESS, FetchStatus.FAILURE, FetchStatus.PENDING]
+        ),
         enabled=st.booleans(),
     )
     def test_プロパティ_有効なフィールドでFeedが生成される(
@@ -332,7 +339,9 @@ class TestEdgeCasesProperty:
             max_size=200,
         )
     )
-    def test_プロパティ_ASCII特殊文字を含むタイトルが処理される(self, title: str) -> None:
+    def test_プロパティ_ASCII特殊文字を含むタイトルが処理される(
+        self, title: str
+    ) -> None:
         """ASCII範囲の特殊文字を含むタイトルが正しく処理されることを検証."""
         if title.strip():  # 空白のみでない場合
             self.validator.validate_title(title)
