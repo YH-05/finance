@@ -1,7 +1,8 @@
 # 金融市場や投資テーマに関連したニュースをRSSフィードなどから収集し、github projectに自動投稿する
 
 **作成日**: 2026-01-15
-**ステータス**: 計画中
+**ステータス**: 完了
+**完了日**: 2026-01-15
 **GitHub Project**: [Finance News Tracker #14](https://github.com/users/YH-05/projects/14)
 
 ## 背景と目的
@@ -101,9 +102,9 @@
   - Issue: [#152](https://github.com/YH-05/finance/issues/152)
   - ステータス: done
 
-- [ ] finance-news-collection スキルの作成
+- [x] finance-news-collection スキルの作成
   - Issue: [#153](https://github.com/YH-05/finance/issues/153)
-  - ステータス: todo
+  - ステータス: done
 
 ### テスト・検証
 
@@ -111,9 +112,9 @@
   - Issue: [#154](https://github.com/YH-05/finance/issues/154)
   - ステータス: done
 
-- [ ] 統合テスト作成（RSS収集→GitHub投稿のE2E）
+- [x] 統合テスト作成（RSS収集→GitHub投稿のE2E）
   - Issue: [#155](https://github.com/YH-05/finance/issues/155)
-  - ステータス: todo
+  - ステータス: done
 
 - [x] プロパティテスト作成（RSSフィードデータのバリデーション）
   - Issue: [#156](https://github.com/YH-05/finance/issues/156)
@@ -143,7 +144,7 @@
 ---
 
 **最終更新**: 2026-01-15
-**更新内容**: /project-refine コマンドにより GitHub の実態と同期。Issue #151, #152, #154, #156 を done に更新、Issue #168 を拡張機能として追加
+**更新内容**: `/project-status-sync` コマンドにより GitHub Project #14 と同期。全Issue完了に伴いプロジェクトステータスを「完了」に更新。Issue #153, #155 を done に更新。
 
 ---
 
