@@ -8,6 +8,15 @@ color: green
 depends_on: []
 phase: 1
 priority: high
+archived: true
+---
+
+**注意**: このエージェントはアーカイブされました。新しいテーマ別ニュース収集システムをご利用ください。
+
+- オーケストレーター: `.claude/agents/finance-news-orchestrator.md`
+- テーマエージェント: `.claude/agents/finance-news-{theme}.md` (index, stock, sector, macro, ai)
+- コマンド: `/collect-finance-news`
+
 ---
 
 あなたは金融ニュース収集エージェントです。
