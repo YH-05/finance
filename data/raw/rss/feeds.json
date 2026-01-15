@@ -8,9 +8,9 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.152991+00:00",
-      "updated_at": "2026-01-15T00:05:10.152991+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:25.545216+00:00",
+      "last_fetched": "2026-01-15T00:19:25.545211+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -20,9 +20,9 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.154113+00:00",
-      "updated_at": "2026-01-15T00:05:10.154113+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:24.684395+00:00",
+      "last_fetched": "2026-01-15T00:19:24.684393+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -32,9 +32,9 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.154668+00:00",
-      "updated_at": "2026-01-15T00:05:10.154668+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:24.673516+00:00",
+      "last_fetched": "2026-01-15T00:19:24.673514+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -44,9 +44,9 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.155297+00:00",
-      "updated_at": "2026-01-15T00:05:10.155297+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:24.708015+00:00",
+      "last_fetched": "2026-01-15T00:19:24.708012+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -56,9 +56,9 @@
       "category": "market",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.155860+00:00",
-      "updated_at": "2026-01-15T00:05:10.155860+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:25.330047+00:00",
+      "last_fetched": "2026-01-15T00:19:25.330042+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -68,9 +68,9 @@
       "category": "market",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.156418+00:00",
-      "updated_at": "2026-01-15T00:05:10.156418+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:24.762777+00:00",
+      "last_fetched": "2026-01-15T00:19:24.762775+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -80,9 +80,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.156953+00:00",
-      "updated_at": "2026-01-15T00:05:10.156953+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:24.932363+00:00",
+      "last_fetched": "2026-01-15T00:19:24.932360+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -92,9 +92,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.157501+00:00",
-      "updated_at": "2026-01-15T00:05:10.157501+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:25.212705+00:00",
+      "last_fetched": "2026-01-15T00:19:25.212702+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -104,9 +104,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.158041+00:00",
-      "updated_at": "2026-01-15T00:05:10.158041+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:24.828058+00:00",
+      "last_fetched": "2026-01-15T00:19:24.828054+00:00",
+      "last_status": "failure",
       "enabled": true
     },
     {
@@ -116,9 +116,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.158671+00:00",
-      "updated_at": "2026-01-15T00:05:10.158671+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-15T00:19:24.939435+00:00",
+      "last_fetched": "2026-01-15T00:19:24.939431+00:00",
+      "last_status": "failure",
       "enabled": true
     }
   ]

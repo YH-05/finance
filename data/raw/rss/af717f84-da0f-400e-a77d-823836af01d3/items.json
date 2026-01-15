@@ -1,0 +1,206 @@
+{
+  "version": "1.0",
+  "feed_id": "af717f84-da0f-400e-a77d-823836af01d3",
+  "items": [
+    {
+      "item_id": "c6dcfd5a-780c-4f68-8857-ab596ab1144a",
+      "title": "India’s Emversity doubles valuation as it scales workers AI can’t replace",
+      "link": "https://techcrunch.com/2026/01/14/indias-emversity-doubles-valuation-as-it-scales-workers-ai-cant-replace/",
+      "published": "2026-01-15T00:04:46+00:00",
+      "summary": "Emversity has raised $30 million in a new round as it scales job-ready training in India.",
+      "content": null,
+      "author": "Jagmeet Singh",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "73715b26-07d7-418b-a987-0e011ee0d2fb",
+      "title": "Musk denies awareness of Grok sexual underage images as California AG launches probe",
+      "link": "https://techcrunch.com/2026/01/14/musk-denies-awareness-of-grok-sexual-underage-images-as-california-ag-launches-probe/",
+      "published": "2026-01-14T22:42:51+00:00",
+      "summary": "The California attorney general has opened a formal investigation into Elon Musk's xAI after its chatbot Grok began generating nonconsensual sexual images of real women and even children.",
+      "content": null,
+      "author": "Rebecca Bellan",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "41e2b95f-1795-44fd-a61f-487d856d15c2",
+      "title": "OpenAI signs deal, worth $10B, for compute from Cerebras",
+      "link": "https://techcrunch.com/2026/01/14/openai-signs-deal-reportedly-worth-10-billion-for-compute-from-cerebras/",
+      "published": "2026-01-14T22:25:32+00:00",
+      "summary": "The collaboration will help OpenAI's models deliver faster response times for more difficult or time-consuming tasks, the companies said.",
+      "content": null,
+      "author": "Lucas Ropek",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "11053dc7-78ad-4873-9887-0ad1e67df1f1",
+      "title": "Netflix’s first original video podcasts feature Pete Davidson and Michael Irvin",
+      "link": "https://techcrunch.com/2026/01/14/netflixs-first-original-video-podcasts-feature-pete-davidson-and-michael-irvin/",
+      "published": "2026-01-14T20:57:40+00:00",
+      "summary": "As Netflix tries to take down YouTube’s dominance in the podcast space, it's getting new originals with Pete Davidson and Michael Irvin.",
+      "content": null,
+      "author": "Lauren Forristal",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "31547737-2a5b-433b-839c-2c1a67e1831a",
+      "title": "App downloads declined again in 2025, but consumer spending soared to nearly $156B",
+      "link": "https://techcrunch.com/2026/01/14/app-downloads-declined-again-in-2025-but-consumer-spending-soared-to-nearly-156b/",
+      "published": "2026-01-14T20:05:28+00:00",
+      "summary": "Global app downloads were down, but consumer spending was up to nearly $156B in 2025.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "c3f2fd6c-db39-49d9-aa1c-b49a0cbe5519",
+      "title": "AI models are starting to crack high-level math problems",
+      "link": "https://techcrunch.com/2026/01/14/ai-models-are-starting-to-crack-high-level-math-problems/",
+      "published": "2026-01-14T19:10:23+00:00",
+      "summary": "Since the release of GPT 5.2, AI tools have become inescapable in high-level mathematics.",
+      "content": null,
+      "author": "Russell Brandom",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "a46ac14e-e502-44d0-9eb5-477140e9594d",
+      "title": "Blackstone, General Atlantic-backed Liftoff Mobile files for IPO",
+      "link": "https://techcrunch.com/2026/01/14/blackstone-general-atlantic-backed-liftoff-mobile-files-for-ipo/",
+      "published": "2026-01-14T19:00:07+00:00",
+      "summary": "The company offers a platform that helps mobile app developers market their wares and has an army of bankers working on its IPO.",
+      "content": null,
+      "author": "Julie Bort",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "6704482d-7d90-415c-9e5f-827cf5361346",
+      "title": "Digg launches its new Reddit rival to the public",
+      "link": "https://techcrunch.com/2026/01/14/digg-launches-its-new-reddit-rival-to-the-public/",
+      "published": "2026-01-14T19:00:00+00:00",
+      "summary": "Digg, a reboot of an earlier social news site, is now relaunching as a Reddit competitor focused on communities.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "1f191f64-2580-4cc7-b74f-48054c777852",
+      "title": "Google’s Trends Explore page gets new Gemini capabilities",
+      "link": "https://techcrunch.com/2026/01/14/googles-trends-explore-page-gets-new-gemini-capabilities/",
+      "published": "2026-01-14T18:36:41+00:00",
+      "summary": "The Trends Explore page for users to analyze search interest just got a major upgrade. It now uses Gemini to identify and compare relevant trends.",
+      "content": null,
+      "author": "Lauren Forristal",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "fa03d6c2-f535-4c2d-80cc-ec46aa7d093d",
+      "title": "Bandcamp takes a stand against AI music, banning it from the platform",
+      "link": "https://techcrunch.com/2026/01/14/bandcamp-takes-a-stand-against-ai-music-banning-it-from-the-platform/",
+      "published": "2026-01-14T17:06:04+00:00",
+      "summary": "\"We want musicians to keep making music, and for fans to have confidence that the music they find on Bandcamp was created by humans,\" the company said.",
+      "content": null,
+      "author": "Amanda Silberling",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "e3b92302-62f2-42d9-849a-93ac950edfd0",
+      "title": "Bill Gates-backed Type One Energy raises $87M ahead of $250M Series B",
+      "link": "https://techcrunch.com/2026/01/14/bill-gates-backed-type-one-energy-raises-87m-ahead-of-250m-series-b/",
+      "published": "2026-01-14T16:39:49+00:00",
+      "summary": "Type One Energy has raised more than $160 million from investors to date. The new funding will help the company further refine its stellarator technology.",
+      "content": null,
+      "author": "Tim De Chant",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "ecba786a-1c07-4eab-b1ee-1fc69e404adc",
+      "title": "Robotics software maker Skild AI hits $14B valuation",
+      "link": "https://techcrunch.com/2026/01/14/robotic-software-maker-skild-ai-hits-14b-valuation/",
+      "published": "2026-01-14T16:13:33+00:00",
+      "summary": "Skild AI, which is building general-purpose robotic software, just raised a $1.4 billion funding round led by SoftBank.",
+      "content": null,
+      "author": "Rebecca Szkutak",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "67b0613e-6961-49dd-92ee-f68aea622669",
+      "title": "Gemini’s new beta feature provides proactive responses based on your photos, emails, and more",
+      "link": "https://techcrunch.com/2026/01/14/geminis-new-beta-feature-provides-proactive-responses-based-on-your-photos-emails-and-more/",
+      "published": "2026-01-14T16:00:00+00:00",
+      "summary": "Personal Intelligence is off by default, as users have the option to choose if and when they want to connect their Google apps to Gemini.",
+      "content": null,
+      "author": "Aisha Malik",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "82244d08-0ed1-4459-97d8-d34b2e79607b",
+      "title": "AI security firm, depthfirst, announces $40 million Series A",
+      "link": "https://techcrunch.com/2026/01/14/ai-security-firm-depthfirst-announces-40-million-series-a/",
+      "published": "2026-01-14T15:50:17+00:00",
+      "summary": "The company used an AI-native platform to help companies fight threats.",
+      "content": null,
+      "author": "Lucas Ropek",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "f6e92098-f6fa-403e-a468-258cdf1cc2b6",
+      "title": "US cargo tech company publicly exposed its shipping systems and customer data to the web",
+      "link": "https://techcrunch.com/2026/01/14/us-cargo-tech-company-publicly-exposed-its-shipping-systems-and-customer-data-to-the-web/",
+      "published": "2026-01-14T15:40:53+00:00",
+      "summary": "Shipping tech company Bluspark left internal plaintext passwords, including those of executives, exposed to the internet, at a time when hacks in the shipping industry are on the rise.",
+      "content": null,
+      "author": "Zack Whittaker",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "44039e77-e9c8-4e5d-86ea-aab8554574e9",
+      "title": "YouTube now has a way for parents to block kids from watching Shorts",
+      "link": "https://techcrunch.com/2026/01/14/youtube-now-has-a-way-for-parents-to-block-kids-from-watching-shorts/",
+      "published": "2026-01-14T15:20:25+00:00",
+      "summary": "Parents will be able to toggle the Shorts time limit on connected children's accounts.",
+      "content": null,
+      "author": "Amanda Silberling",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "64bbf5df-6779-4824-a18e-79cb766fa508",
+      "title": "Tesla will only offer subscriptions for Full Self-Driving (Supervised) going forward",
+      "link": "https://techcrunch.com/2026/01/14/tesla-will-only-offer-subscriptions-for-full-self-driving-supervised-going-forward/",
+      "published": "2026-01-14T15:01:37+00:00",
+      "summary": "It's a huge change to Tesla's approach with FSD, and it could impact Musk's $1T pay package and the company's myriad legal troubles.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "1dfa5e47-17fe-4b77-bd6d-2270c505b611",
+      "title": "How WitnessAI raised $58M to solve enterprise AI’s biggest risk",
+      "link": "https://techcrunch.com/video/how-witnessai-raised-58m-to-solve-enterprise-ais-biggest-risk/",
+      "published": "2026-01-14T15:00:00+00:00",
+      "summary": "As companies deploy AI-powered chatbots, agents, and copilots across their operations,&#160;they&#8217;re&#160;facing a new risk: how do you let employees and AI agents use powerful AI tools without accidentally leaking sensitive data, violating compliance rules, or&#160;opening the door to prompt-based injections? Witness AI just raised $58 million to find a solution, building what they call &#8220;the [&#8230;]",
+      "content": null,
+      "author": "Theresa Loconsolo",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "2bf84114-d4ba-42be-8612-f2aec428e5eb",
+      "title": "VoiceRun nabs $5.5M to build a voice agent factory",
+      "link": "https://techcrunch.com/2026/01/14/voicerun-nabs-5-5m-to-build-voice-agent-factory/",
+      "published": "2026-01-14T13:30:00+00:00",
+      "summary": "VoiceRun, a startup that creates voice agents, raised $5.5 million in a round led by Flybridge.",
+      "content": null,
+      "author": "Dominic-Madori Davis",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    },
+    {
+      "item_id": "91adff09-abcb-4168-90b4-792261efa7c8",
+      "title": "Meta to reportedly lay off 10% of Reality Labs staff",
+      "link": "https://techcrunch.com/2026/01/14/meta-to-reportedly-lay-off-10-of-reality-labs-staff/",
+      "published": "2026-01-14T12:51:00+00:00",
+      "summary": "The publication noted that Reality Labs had roughly 15,000 employees, and the job cuts could impact over 1,000 people.",
+      "content": null,
+      "author": "Ivan Mehta",
+      "fetched_at": "2026-01-15T00:18:47.901850+00:00"
+    }
+  ]
+}

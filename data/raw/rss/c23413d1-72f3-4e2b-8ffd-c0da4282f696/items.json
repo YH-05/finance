@@ -1,0 +1,126 @@
+{
+  "version": "1.0",
+  "feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696",
+  "items": [
+    {
+      "item_id": "8f96b331-a466-433c-90d0-02971d9bc898",
+      "title": "Trump says he has received assurances ‘killing in Iran is stopping’",
+      "link": "https://www.ft.com/content/c698ff51-7854-4cf9-a92b-0c06e2a1a182",
+      "published": "2026-01-14T21:49:27+00:00",
+      "summary": "President declines to rule out military action after Washington evacuated personnel from Qatar command centre",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "99748862-de99-4461-a1d9-e4c8fd7fec16",
+      "title": "The historic bazaar where Iran’s protests began",
+      "link": "https://www.ft.com/content/3f9608df-913f-455d-ac67-76a91286764b",
+      "published": "2026-01-14T18:12:40+00:00",
+      "summary": "Tehran’s Grand Bazaar, whose shopkeepers helped bring Islamist clerics to power in 1979, once again became a hotspot for anti-regime rallies",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "bccb7175-3a26-4ded-9761-e39fb0af88d0",
+      "title": "The dangers of a trigger-happy US president",
+      "link": "https://www.ft.com/content/64917371-c076-449d-aa93-f15ee03037a5",
+      "published": "2026-01-14T18:29:53+00:00",
+      "summary": "American intervention in Iran carries far greater risks than in Venezuela",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "ab17f48c-de0b-492e-b15c-59cd0c1a5c85",
+      "title": "Israel waits on US to settle ‘unfinished business’ with Iran",
+      "link": "https://www.ft.com/content/0c5a836a-3176-4d2e-b78c-1eb6ffd8be0c",
+      "published": "2026-01-14T21:51:52+00:00",
+      "summary": "Any action against Tehran could tip regional balance further in Israel’s favour, even as some US interests are put at risk",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "8300c0a4-022b-4138-9ba9-06b4b37720bd",
+      "title": "How Nigel Farage gets away with it",
+      "link": "https://www.ft.com/content/e519b064-64e4-422c-b2e7-aa256344fe11",
+      "published": "2026-01-14T12:29:39+00:00",
+      "summary": "His two great liabilities, Brexit and Donald Trump, are unmentionable in British politics",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "400a5e7b-3680-4af9-adc4-11e73e0f0a76",
+      "title": "The Maga war on European democracy",
+      "link": "https://www.ft.com/content/f1230ddd-0e24-4f0f-8b6e-3fde907fc651",
+      "published": "2026-01-14T05:00:31+00:00",
+      "summary": "America’s national security strategy projects internal fears abroad",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "71c03014-4539-4ee6-b372-1ec34cecce8c",
+      "title": "US, Denmark and Greenland to form Arctic working group after tense talks",
+      "link": "https://www.ft.com/content/6edecbed-c88e-401f-9bbd-911db69e5a54",
+      "published": "2026-01-14T20:59:09+00:00",
+      "summary": "‘Fundamental disagreement’ remains as Donald Trump maintains his campaign to take over the territory",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "f706b45d-36e7-40f6-b3a7-99606eebf6d2",
+      "title": "US to pause immigrant visa processing for nationals of 75 countries",
+      "link": "https://www.ft.com/content/df02ed88-8e36-4bff-920b-dcd67ec38cfc",
+      "published": "2026-01-14T18:01:04+00:00",
+      "summary": "Move is part of an effort to limit entries from foreigners who rely on government welfare",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "5a085ceb-4ba1-49f9-bdcd-0bff8a1c16cc",
+      "title": "Sadiq Khan to warn AI could cause ‘mass unemployment’ in London",
+      "link": "https://www.ft.com/content/6f92844e-6eb6-48dc-a36a-fd63115e45b5",
+      "published": "2026-01-14T22:30:08+00:00",
+      "summary": "Mayor concerned that capital will be at ‘sharpest edge of change’ given dependence on white-collar jobs",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "6665862f-7019-4234-b840-11c8a5d32d0b",
+      "title": "IMF presses governments to step up support for workers displaced by AI",
+      "link": "https://www.ft.com/content/7e2ae3ad-4cfb-4e3f-a370-702781899e05",
+      "published": "2026-01-14T07:00:08+00:00",
+      "summary": "Analysis finds evidence of the technology hitting wages and employment in certain areas",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "9fe8d001-bbe6-496c-aa75-0af32f9b284b",
+      "title": "Rachel Reeves signals expansion of pubs tax U-turn to other businesses",
+      "link": "https://www.ft.com/content/d1d1974c-c1cf-4864-8ecb-55bc885d7537",
+      "published": "2026-01-14T19:12:55+00:00",
+      "summary": "Chancellor says a post-Budget retreat could include extension to other hospitality",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    },
+    {
+      "item_id": "c75196c2-655a-4e19-b5fd-7408fcb5974b",
+      "title": "Latest U-turn raises renewed questions over Starmer’s judgment",
+      "link": "https://www.ft.com/content/ddffc1e8-9579-4243-ad4b-6bf8a781e618",
+      "published": "2026-01-14T13:00:46+00:00",
+      "summary": "After retreat on digital ID cards, chancellor indicates climbdown on business rates for pubs is coming soon",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-15T00:18:48.763090+00:00"
+    }
+  ]
+}
