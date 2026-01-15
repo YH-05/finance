@@ -1,18 +1,157 @@
-# RSS MCP API 調査結果 - 金融ニュース収集
+# 金融市場や投資テーマに関連したニュースをRSSフィードなどから収集し、github projectに自動投稿する
+
+**作成日**: 2026-01-15
+**ステータス**: 計画中
+**GitHub Project**: [Finance News Tracker #14](https://github.com/users/YH-05/projects/14)
+
+## 背景と目的
+
+### 背景
+
+- **背景の種類**: 新しいニーズが発生
+- **詳細**: 手動プロセスの自動化が必要
+- **具体的な状況**: 金融情報ソースが多く、複数のRSSフィードやニュースサイトを毎日手動で確認する必要があり、追跡が困難な状況。効率化のために自動収集とGitHub Projectへの自動登録が求められている。
+
+### 目的
+
+金融市場や投資テーマに関連したニュースをRSSフィードから自動的に収集し、GitHub Projectに自動投稿することで、情報収集の効率化と一元管理を実現する。
+
+## スコープ
+
+### 含むもの
+
+- **変更範囲**: 新規ファイルのみ（既存コードは変更しない）
+- **影響ディレクトリ**:
+  - `.claude/` - エージェント、コマンド、スキルの追加
+  - `docs/` - ドキュメントの追加
+
+### 含まないもの
+
+- パフォーマンス最適化（まずは動作することを優先）
+- 既存パッケージ（src/rss/等）の変更
+
+## 成果物
+
+| 種類 | 名前 | 説明 |
+| ---- | ---- | ---- |
+| エージェント | finance-news-collector | RSSフィードからニュースを収集し、GitHub Projectに投稿するエージェント |
+| コマンド | /collect-finance-news | ニュース収集コマンド |
+| スキル | finance-news-collection | 金融ニュース収集スキル |
+| ドキュメント | finance-news-collection-guide.md | 使用方法ガイド |
+| GitHub Project | Finance News Tracker | ニュース管理用プロジェクト |
+
+## 成功基準
+
+- [x] 特定のRSSフィードから金融ニュースを収集できる
+- [x] 収集したニュースがGitHub Projectに自動登録される
+- [x] ドキュメントが整備され、使い方が明確になる
+
+## 技術的考慮事項
+
+### 実装アプローチ
+
+既存の `src/rss/` パッケージを活用し、以下の流れで実装:
+
+1. RSS MCPサーバーを使用してフィード情報を取得
+2. 金融関連のフィルタリングロジックを適用
+3. GitHub CLI (gh) を使用してProjectへ自動登録
+4. エージェント・コマンド・スキルの形で提供
+
+### 依存関係
+
+- **src/rss/** - RSS フィード収集機能（既存パッケージ）
+- **GitHub CLI (gh)** - GitHub Project/Issueの操作
+- **MCP サーバー (RSS)** - RSSフィード管理
+
+### テスト要件
+
+- **ユニットテスト** - フィルタリングロジック、データ変換処理
+- **統合テスト** - RSS収集 → GitHub投稿の一連フロー
+- **プロパティテスト** - 入力データのバリデーション
+
+## タスク一覧
+
+インタビュー結果から導出したタスク:
+
+### 準備
+
+- [ ] 既存 src/rss/ パッケージの調査
+  - Issue: [#147](https://github.com/YH-05/finance/issues/147)
+  - ステータス: todo
+- [x] RSS MCPサーバーのAPI確認
+  - Issue: [#148](https://github.com/YH-05/finance/issues/148)
+  - ステータス: done
+  - 調査結果: 下記「付録」セクション参照
+- [ ] GitHub CLI の project 操作方法の確認
+  - Issue: [#149](https://github.com/YH-05/finance/issues/149)
+  - ステータス: todo
+- [ ] 金融ニュースフィルタリング基準の定義
+  - Issue: [#150](https://github.com/YH-05/finance/issues/150)
+  - ステータス: todo
+
+### 実装
+
+- [ ] finance-news-collector エージェントの作成
+  - Issue: [#151](https://github.com/YH-05/finance/issues/151)
+  - ステータス: todo
+
+- [ ] /collect-finance-news コマンドの作成
+  - Issue: [#152](https://github.com/YH-05/finance/issues/152)
+  - ステータス: todo
+
+- [ ] finance-news-collection スキルの作成
+  - Issue: [#153](https://github.com/YH-05/finance/issues/153)
+  - ステータス: todo
+
+### テスト・検証
+
+- [ ] ユニットテスト作成（フィルタリングロジック・データ変換処理）
+  - Issue: [#154](https://github.com/YH-05/finance/issues/154)
+  - ステータス: todo
+
+- [ ] 統合テスト作成（RSS収集→GitHub投稿のE2E）
+  - Issue: [#155](https://github.com/YH-05/finance/issues/155)
+  - ステータス: todo
+
+- [ ] プロパティテスト作成（RSSフィードデータのバリデーション）
+  - Issue: [#156](https://github.com/YH-05/finance/issues/156)
+  - ステータス: todo
+
+- [ ] 手動テスト実施（実際のRSSフィード・GitHub Projectで動作確認）
+  - Issue: [#157](https://github.com/YH-05/finance/issues/157)
+  - ステータス: todo
+
+### ドキュメント
+
+- [ ] ドキュメント作成（finance-news-collection-guide.md）
+  - Issue: [#158](https://github.com/YH-05/finance/issues/158)
+  - ステータス: todo
+
+- [ ] エージェント・コマンド・スキルのREADME更新
+  - Issue: [#159](https://github.com/YH-05/finance/issues/159)
+  - ステータス: todo
+
+---
+
+**最終更新**: 2026-01-15
+
+---
+
+## 付録: RSS MCP API 調査結果（Issue #148完了報告）
 
 **調査日**: 2026-01-15
 **Issue**: [#148](https://github.com/YH-05/finance/issues/148)
 **ステータス**: 完了
 
-## 概要
+### 概要
 
 RSS MCP サーバーが提供する API を調査し、金融ニュース収集に最適な API と使用方法を決定しました。
 
-## RSS MCP サーバーが提供する7つのツール
+### RSS MCP サーバーが提供する7つのツール
 
-### 1. フィード管理
+#### 1. フィード管理
 
-#### 1.1 `rss_list_feeds` - フィード一覧取得
+##### 1.1 `rss_list_feeds` - フィード一覧取得
 
 ```python
 # パラメータ
@@ -39,7 +178,7 @@ enabled_only: bool = False           # 有効なフィードのみ
 }
 ```
 
-#### 1.2 `rss_add_feed` - 新規フィード追加
+##### 1.2 `rss_add_feed` - 新規フィード追加
 
 ```python
 # パラメータ
@@ -57,7 +196,7 @@ enabled: bool = True                 # 有効化フラグ
 }
 ```
 
-#### 1.3 `rss_update_feed` - フィード更新
+##### 1.3 `rss_update_feed` - フィード更新
 
 ```python
 # パラメータ
@@ -74,7 +213,7 @@ enabled: bool | None = None          # 新しい有効化状態
 }
 ```
 
-#### 1.4 `rss_remove_feed` - フィード削除
+##### 1.4 `rss_remove_feed` - フィード削除
 
 ```python
 # パラメータ
@@ -87,9 +226,9 @@ feed_id: str                         # 削除対象のフィードID
 }
 ```
 
-### 2. 記事取得
+#### 2. 記事取得
 
-#### 2.1 `rss_get_items` - 記事一覧取得 ⭐️推奨
+##### 2.1 `rss_get_items` - 記事一覧取得 ⭐️推奨
 
 ```python
 # パラメータ
@@ -115,7 +254,7 @@ offset: int = 0                      # ページネーション用オフセッ�
 }
 ```
 
-#### 2.2 `rss_fetch_feed` - 最新記事取得（非同期）⭐️推奨
+##### 2.2 `rss_fetch_feed` - 最新記事取得（非同期）⭐️推奨
 
 ```python
 # パラメータ
@@ -131,9 +270,9 @@ feed_id: str                         # 取得対象のフィードID
 }
 ```
 
-### 3. 記事検索
+#### 3. 記事検索
 
-#### 3.1 `rss_search_items` - キーワード検索 ⭐️推奨
+##### 3.1 `rss_search_items` - キーワード検索 ⭐️推奨
 
 ```python
 # パラメータ
@@ -151,11 +290,11 @@ limit: int = 50                      # 最大結果数
 }
 ```
 
-## 金融ニュース収集に最適な API
+### 金融ニュース収集に最適な API
 
-### 推奨ワークフロー
+#### 推奨ワークフロー
 
-#### ステップ1: 初期セットアップ（フィード登録）
+##### ステップ1: 初期セットアップ（フィード登録）
 
 ```python
 # 日経新聞、Bloomberg、ロイターなどの金融ニュースフィードを登録
@@ -168,7 +307,7 @@ rss_add_feed(
 )
 ```
 
-#### ステップ2: 最新記事の取得
+##### ステップ2: 最新記事の取得
 
 **方法A: 全フィードから記事を取得**
 
@@ -188,7 +327,7 @@ result = await rss_fetch_feed(feed_id="feed_123")
 print(f"新規記事: {result['new_items']}件")
 ```
 
-#### ステップ3: 特定トピックの記事を検索
+##### ステップ3: 特定トピックの記事を検索
 
 ```python
 # "日銀"に関する記事を検索
@@ -207,9 +346,9 @@ result = rss_search_items(
 )
 ```
 
-## サンプルコード: Python APIの直接利用
+### サンプルコード: Python APIの直接利用
 
-### 例1: フィード管理と記事取得
+#### 例1: フィード管理と記事取得
 
 ```python
 from pathlib import Path
@@ -258,7 +397,7 @@ async def fetch_latest():
 asyncio.run(fetch_latest())
 ```
 
-### 例2: キーワード検索
+#### 例2: キーワード検索
 
 ```python
 from pathlib import Path
@@ -281,7 +420,7 @@ for item in items:
     print(f"  要約: {item.summary[:100]}...")
 ```
 
-### 例3: カテゴリ別記事取得
+#### 例3: カテゴリ別記事取得
 
 ```python
 from pathlib import Path
@@ -306,7 +445,7 @@ for feed in finance_feeds:
 print(f"合計: {len(all_items)}件の記事")
 ```
 
-## エラーハンドリング
+### エラーハンドリング
 
 全てのツールは以下の例外を返す可能性があります：
 
@@ -327,9 +466,9 @@ print(f"合計: {len(all_items)}件の記事")
 - RSSError                  # その他のRSSエラー
 ```
 
-## 金融ニュース収集のベストプラクティス
+### 金融ニュース収集のベストプラクティス
 
-### 1. フィード登録時の推奨設定
+#### 1. フィード登録時の推奨設定
 
 ```python
 # 主要な金融ニュースソース
@@ -349,7 +488,7 @@ financial_feeds = [
 ]
 ```
 
-### 2. 定期的な記事更新
+#### 2. 定期的な記事更新
 
 ```python
 # 全フィードから最新記事を取得
@@ -364,7 +503,7 @@ async def update_all_feeds():
         print(f"{feed.title}: 新規{result.new_items}件")
 ```
 
-### 3. トピック別記事収集
+#### 3. トピック別記事収集
 
 ```python
 # 特定のトピックに関する記事を収集
@@ -383,9 +522,9 @@ for topic in topics:
     print(f"{topic}: {len(items)}件")
 ```
 
-## 結論
+### 結論
 
-### 金融ニュース収集に最適な3つのAPI
+#### 金融ニュース収集に最適な3つのAPI
 
 1. **`rss_get_items`**:
    - 金融記事の一覧表示・閲覧
@@ -399,7 +538,7 @@ for topic in topics:
    - 特定トピックの記事検索
    - カテゴリとキーワードで柔軟な絞り込み
 
-### 次のステップ
+#### 次のステップ
 
 1. 主要な金融ニュースソースのフィード URL を収集
 2. `rss_add_feed` でフィードを登録
@@ -407,7 +546,7 @@ for topic in topics:
 4. `rss_search_items` で関心のあるトピックを検索
 5. 取得した記事を `market_analysis` パッケージで分析
 
-## 参考資料
+### 参考資料
 
 - RSS MCP サーバー実装: `src/rss/mcp/server.py`
 - フィード管理: `src/rss/services/feed_manager.py`

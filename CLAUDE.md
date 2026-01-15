@@ -308,52 +308,61 @@ with profile_context("処理名"):  # コンテキスト計測
 <!-- AUTO-GENERATED: DIRECTORY -->
 
 ```
-finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (47 agents + 31 commands + 10 skills)
-│   ├── agents/                              # (47) Specialized agents
-│   ├── agents_sample/                       # Sample agent definitions
-│   ├── archive/                             # Archived agents
-│   ├── commands/                            # (31) Slash commands
-│   ├── commands_sample/                     # Sample command definitions
-│   ├── skills/                              # (10) Skill modules
-│   │   ├── agent-expert/                    # Agent design skill
-│   │   ├── agent-memory/                    # Knowledge graph memory system
-│   │   ├── architecture-design/             # Architecture design skill
-│   │   ├── create-worktrees/                # Multi-worktree creation
-│   │   ├── development-guidelines/          # Guidelines skill
-│   │   ├── functional-design/               # Functional design skill
-│   │   ├── glossary-creation/               # Glossary skill
-│   │   ├── prd-writing/                     # PRD skill
-│   │   ├── project-file/                    # Project file skill
-│   │   └── repository-structure/            # Repo structure skill
+finance/                                             # Project root
+├── .claude/                                         # Claude Code configuration
+│   ├── agents/                                      (47 agents)
+│   ├── agents_sample/
+│   ├── archive/
+│   ├── commands/                                    (31 commands)
+│   ├── commands_sample/
+│   ├── skills/                                      (10 skills)
+│   │   ├── agent-expert/
+│   │   ├── agent-memory/
+│   │   ├── architecture-design/
+│   │   ├── create-worktrees/
+│   │   ├── development-guidelines/
+│   │   ├── functional-design/
+│   │   ├── glossary-creation/
+│   │   ├── prd-writing/
+│   │   ├── project-file/
+│   │   └── repository-structure/
 │   ├── settings.json
 │   ├── settings.local.json
 │   └── agents.md
 │
-├── .github/                                 # GitHub configuration
-│   ├── ISSUE_TEMPLATE/                      # Issue templates
+├── .github/                                         # GitHub configuration
+│   ├── ISSUE_TEMPLATE/
+│   ├── workflows/
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   ├── PUSH_TEMPLATE.md
-│   ├── dependabot.yml
-│   └── workflows/                           # GitHub Actions workflows
+│   └── dependabot.yml
 │
-├── data/                                    # Data storage layer
-│   ├── config/                              # Configuration files
-│   ├── duckdb/                              # DuckDB OLAP database
-│   ├── sqlite/                              # SQLite OLTP database
-│   ├── raw/                                 # Raw data (Parquet format)
+├── .benchmarks/
+├── .venv/
+├── .pytest_cache/
+├── .ruff_cache/
+│
+├── data/                                            # Data storage layer
+│   ├── config/
+│   ├── duckdb/                                      # OLAP database
+│   ├── sqlite/                                      # OLTP database
+│   ├── raw/                                         # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   └── yfinance/                        # stocks, forex, indices
-│   ├── processed/                           # Processed data
+│   │   ├── rss/                                     (7 feeds)
+│   │   └── yfinance/
+│   │       ├── forex/
+│   │       ├── indices/
+│   │       └── stocks/
+│   ├── processed/
 │   │   ├── daily/
 │   │   └── aggregated/
-│   ├── exports/                             # Exported data
+│   ├── exports/
 │   │   ├── csv/
 │   │   └── json/
-│   ├── schemas/                             # (12) JSON schemas
+│   ├── schemas/                                     (12 JSON schemas)
 │   └── README.md
 │
-├── docs/                                    # Repository documentation
+├── docs/                                            # Repository documentation
 │   ├── coding-standards.md
 │   ├── development-process.md
 │   ├── diagram-guidelines.md
@@ -361,97 +370,146 @@ finance/                                     # Project root
 │   ├── image-collector-guide.md
 │   ├── testing-strategy.md
 │   ├── type-checker-migration.md
-│   ├── pr-review/                           # PR review reports (YAML)
-│   └── project/                             # Project research docs
+│   ├── pr-review/                                   # PR review reports
+│   └── project/                                     # Project research docs
 │
-├── src/                                     # Source code
-│   ├── finance/                             # Core infrastructure package
-│   │   ├── db/                              # Database layer
-│   │   │   ├── sqlite_client.py             # SQLite client (OLTP)
-│   │   │   ├── duckdb_client.py             # DuckDB client (OLAP)
+├── src/                                             # Source code
+│   ├── finance/                                     # Core infrastructure
+│   │   ├── db/                                      # Database layer
+│   │   │   ├── sqlite_client.py
+│   │   │   ├── duckdb_client.py
 │   │   │   ├── connection.py
-│   │   │   └── migrations/                  # Database schema migrations
+│   │   │   └── migrations/
 │   │   ├── utils/
 │   │   │   └── logging_config.py
 │   │   ├── types.py
-│   │   └── py.typed                         # PEP 561 marker
-│   │
-│   ├── market_analysis/                     # Market analysis library
-│   │   ├── core/                            # Data fetchers (yfinance, FRED)
-│   │   ├── analysis/                        # Analysis algorithms (indicators, correlation)
-│   │   ├── api/                             # Public API (analysis, chart, market_data)
-│   │   ├── visualization/                   # Chart generation
-│   │   ├── export/                          # Data export
-│   │   ├── utils/                           # Utilities (cache, retry, validators)
-│   │   ├── errors.py
-│   │   ├── types.py
-│   │   ├── docs/                            # (8) Library documentation
+│   │   ├── __init__.py
+│   │   ├── README.md
 │   │   └── py.typed
 │   │
-│   └── rss/                                 # RSS feed monitoring package
-│       ├── cli/                             # CLI interface
-│       ├── core/                            # Parser, HTTP client, diff detector
-│       ├── mcp/                             # MCP server integration
-│       ├── services/                        # Service layer
-│       ├── storage/                         # JSON persistence
-│       ├── validators/                      # URL validation
-│       ├── utils/                           # Logging
-│       ├── exceptions.py
-│       ├── types.py
-│       ├── docs/                            # (8) Library documentation
-│       └── py.typed
+│   ├── market_analysis/                             # Market analysis library
+│   │   ├── core/                                    # Data fetchers (yfinance, FRED)
+│   │   ├── analysis/                                # Analysis algorithms
+│   │   ├── api/                                     # Public API
+│   │   ├── visualization/                           # Chart generation
+│   │   ├── export/                                  # Data export
+│   │   ├── utils/                                   # Utilities (cache, retry)
+│   │   ├── docs/                                    (8 documentation files)
+│   │   ├── errors.py
+│   │   ├── types.py
+│   │   ├── __init__.py
+│   │   ├── README.md
+│   │   └── py.typed
+│   │
+│   ├── rss/                                         # RSS feed monitoring
+│   │   ├── cli/                                     # CLI interface
+│   │   ├── core/                                    # Parser, HTTP client, diff detector
+│   │   ├── mcp/                                     # MCP server integration
+│   │   ├── services/                                # Service layer
+│   │   ├── storage/                                 # JSON persistence
+│   │   ├── validators/                              # URL validation
+│   │   ├── utils/                                   # Logging
+│   │   ├── docs/                                    (8 documentation files)
+│   │   ├── exceptions.py
+│   │   ├── types.py
+│   │   ├── __init__.py
+│   │   ├── README.md
+│   │   └── py.typed
+│   │
+│   ├── factor/                                      # Factor analysis library
+│   │   ├── core/
+│   │   ├── utils/
+│   │   ├── docs/
+│   │   ├── types.py
+│   │   ├── __init__.py
+│   │   ├── README.md
+│   │   └── py.typed
+│   │
+│   └── strategy/
 │
-├── tests/                                   # Test suite
-│   ├── finance/                             # Finance package tests
-│   │   └── db/unit/                         # (3) DB client tests
-│   ├── market_analysis/                     # Market analysis tests
-│   │   └── unit/                            # (24) Tests
-│   └── rss/                                 # RSS package tests
-│       ├── unit/                            # (13) Unit tests
-│       └── integration/                     # (1) Integration test
+├── tests/                                           # Test suite
+│   ├── unit/                                        # Unit tests
+│   │   ├── market_analysis/                         (5 test files)
+│   │   ├── validators/                              (1 test file)
+│   │   └── __init__.py
+│   │
+│   ├── rss/                                         # RSS tests
+│   │   ├── unit/                                    (13 test files)
+│   │   │   ├── core/
+│   │   │   ├── mcp/
+│   │   │   ├── cli/
+│   │   │   ├── services/
+│   │   │   ├── storage/
+│   │   │   ├── utils/
+│   │   │   └── validators/
+│   │   ├── integration/                             (1 integration test)
+│   │   └── property/
+│   │
+│   ├── finance/                                     # Finance tests
+│   │   ├── unit/
+│   │   └── db/
+│   │
+│   ├── market_analysis/
+│   ├── factor/
+│   ├── strategy/
+│   ├── quant/                                       # Quantitative analysis
+│   │   ├── unit/
+│   │   ├── property/
+│   │   └── integration/
+│   │
+│   ├── property/                                    # Property tests
+│   └── integration/                                 # Integration tests
 │
-├── template/                                # Reference templates (read-only)
-│   ├── src/template_package/                # Package structure template
-│   ├── tests/                               # Test structure template
-│   ├── {article_id}-theme-name-en/          # Article template
-│   │   ├── 01_research/
-│   │   ├── 02_edit/
-│   │   └── 03_published/
-│   ├── market_report/                       # Market report template
-│   ├── stock_analysis/                      # Stock analysis template
-│   ├── economic_indicators/                 # Economic indicators template
-│   ├── investment_education/                # Investment education template
-│   └── quant_analysis/                      # Quantitative analysis template
+├── src_sample/                                      # Sample/legacy code
+│   ├── src-memo/
+│   ├── test_roic_analysis/
+│   ├── archived/
+│   └── (25+ utility scripts)
 │
-├── articles/                                # Finance article workspace
-│   └── {category}_{id}_{slug}/              # Article folder
-│       ├── article-meta.json                # Article metadata & workflow state
-│       ├── 01_research/                     # Research artifacts
-│       ├── 02_edit/                         # Editorial artifacts
-│       └── 03_published/                    # Published version
+├── template/                                        # Reference templates (read-only)
+│   ├── src/template_package/
+│   ├── tests/
+│   ├── {article_id}-theme-name-en/
+│   ├── market_report/
+│   ├── stock_analysis/
+│   ├── economic_indicators/
+│   ├── investment_education/
+│   └── quant_analysis/
 │
-├── snippets/                                # Reusable content
+├── articles/                                        # Finance article workspace
+│   └── {category}_{id}_{slug}/
+│       ├── article-meta.json
+│       ├── 01_research/
+│       ├── 02_edit/
+│       └── 03_published/
+│
+├── notebook/                                        # Jupyter notebooks
+├── notebook_sample/
+│   └── archived/
+│
+├── snippets/                                        # Reusable content
 │   ├── disclaimer.md
 │   ├── not-advice.md
 │   ├── data-source.md
 │   ├── investment-risk.md
 │   ├── warning.md
-│   ├── cta-premium.md
+│   ├── cta-permium.md
 │   └── sns-announcement.md
 │
-├── scripts/                                 # Utility scripts
+├── scripts/                                         # Utility scripts
 │   ├── setup.sh
 │   └── update_project_name.py
 │
-├── CLAUDE.md                                # Project instructions
-├── README.md                                # Project overview
-├── Makefile                                 # Build automation
-├── pyproject.toml                           # Python project config
-├── uv.lock                                  # Dependency lock file
-├── .python-version                          # Python version spec
-├── .pre-commit-config.yaml
-├── .mcp.json                                # MCP server config
-└── .gitignore
+├── CLAUDE.md                                        # Project instructions
+├── README.md                                        # Project overview
+├── Makefile                                         # Build automation
+├── pyproject.toml                                   # Python project config
+├── uv.lock                                          # Dependency lock file
+├── .python-version                                  # Python version spec
+├── .pre-commit-config.yaml                          # Pre-commit hooks
+├── .mcp.json                                        # MCP server config
+├── .gitignore
+└── rss_recent_articles.py                           # Recent RSS articles script
 ```
 
 <!-- END: DIRECTORY -->
