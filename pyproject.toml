@@ -130,8 +130,9 @@ ignore = [
 ]
 
 [tool.pyright]
-include = ["src", "tests"]
+include = ["src", "tests", ".claude/agents"]
 exclude = [".venv", "**/__pycache__", "build", "dist"]
+extraPaths = [".claude/agents"]
 venvPath = "."
 venv = ".venv"
 pythonVersion = "3.12"  # 最小サポートバージョン（3.12以上に対応）
