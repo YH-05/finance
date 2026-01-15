@@ -3,6 +3,16 @@
   "feed_id": "af717f84-da0f-400e-a77d-823836af01d3",
   "items": [
     {
+      "item_id": "d8ac994d-217d-4b0d-a3e2-91c0209cc3ba",
+      "title": "The FTC’s data-sharing order against GM is finally settled",
+      "link": "https://techcrunch.com/2026/01/14/the-ftcs-data-sharing-order-against-gm-is-finally-settled/",
+      "published": "2026-01-15T00:27:54+00:00",
+      "summary": "The order, first proposed a year ago, bans GM from collecting and then selling geolocation data to third parties, like data brokers and insurance companies.",
+      "content": null,
+      "author": "Kirsten Korosec",
+      "fetched_at": "2026-01-15T00:28:46.349297+00:00"
+    },
+    {
       "item_id": "c6dcfd5a-780c-4f68-8857-ab596ab1144a",
       "title": "India’s Emversity doubles valuation as it scales workers AI can’t replace",
       "link": "https://techcrunch.com/2026/01/14/indias-emversity-doubles-valuation-as-it-scales-workers-ai-cant-replace/",

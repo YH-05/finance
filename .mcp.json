@@ -59,8 +59,8 @@
             }
         },
         "rss": {
-            "command": "uvx",
-            "args": ["--from", ".", "rss-mcp"],
+            "command": "uv",
+            "args": ["run", "rss-mcp"],
             "env": {
                 "RSS_DATA_DIR": "./data/raw/rss"
             }
