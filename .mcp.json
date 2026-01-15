@@ -64,6 +64,13 @@
             "env": {
                 "RSS_DATA_DIR": "./data/raw/rss"
             }
+        },
+        "slack": {
+            "command": "uvx",
+            "args": ["mcp-slack"],
+            "env": {
+                "SLACK_BOT_TOKEN": "xoxb-10037291992179-10284587908951-THCxkuDGUjh7Wth1GEAhMAX5"
+            }
         }
     }
 }

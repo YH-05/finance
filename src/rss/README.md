@@ -114,21 +114,22 @@ uv add 'finance[scheduler]'
 ## ディレクトリ構成
 
 <!-- AUTO-GENERATED: STRUCTURE -->
+
 ```
 rss/
-├── __init__.py
-├── py.typed
-├── types.py
-├── exceptions.py
-├── cli/
+├── __init__.py          # Public API exports
+├── py.typed             # PEP 561 type marker
+├── types.py             # Type definitions (Feed, FeedItem, etc.)
+├── exceptions.py        # Custom exceptions
+├── cli/                 # Command-line interface
 │   ├── __init__.py
 │   └── main.py
-├── core/
+├── core/                # Core functionality
 │   ├── __init__.py
-│   ├── diff_detector.py
-│   ├── http_client.py
-│   └── parser.py
-├── docs/
+│   ├── diff_detector.py    # Duplicate detection
+│   ├── http_client.py      # HTTP client (httpx)
+│   └── parser.py           # RSS/Atom parser (feedparser)
+├── docs/                # Library documentation
 │   ├── architecture.md
 │   ├── development-guidelines.md
 │   ├── functional-design.md
@@ -137,43 +138,46 @@ rss/
 │   ├── project.md
 │   ├── repository-structure.md
 │   └── tasks.md
-├── mcp/
+├── mcp/                 # MCP server integration
 │   ├── __init__.py
 │   └── server.py
-├── services/
+├── services/            # Service layer
 │   ├── __init__.py
-│   ├── batch_scheduler.py
-│   ├── feed_fetcher.py
-│   ├── feed_manager.py
-│   └── feed_reader.py
-├── storage/
+│   ├── batch_scheduler.py  # Batch scheduling (APScheduler)
+│   ├── feed_fetcher.py     # Feed fetching orchestration
+│   ├── feed_manager.py     # Feed CRUD operations
+│   └── feed_reader.py      # Feed reading/searching
+├── storage/             # Persistence layer
 │   ├── __init__.py
-│   ├── json_storage.py
-│   └── lock_manager.py
-├── utils/
+│   ├── json_storage.py     # JSON file operations
+│   └── lock_manager.py     # File-based locking
+├── utils/               # Utilities
 │   ├── __init__.py
-│   └── logging_config.py
-└── validators/
+│   └── logging_config.py   # Structured logging
+└── validators/          # Validation layer
     ├── __init__.py
-    └── url_validator.py
+    └── url_validator.py    # URL/title/category validation
 ```
+
 <!-- END: STRUCTURE -->
 
 ## 実装状況
 
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 
-| モジュール | 状態 | ファイル数 | 行数 |
-|-----------|------|-----------|-----|
-| `types.py` | ✅ 実装済み | 1 | 314 |
-| `exceptions.py` | ✅ 実装済み | 1 | 161 |
-| `cli/` | ✅ 実装済み | 2 | 640 |
-| `core/` | ✅ 実装済み | 4 | 722 |
-| `mcp/` | ✅ 実装済み | 2 | 654 |
-| `services/` | ✅ 実装済み | 5 | 1,666 |
-| `storage/` | ✅ 実装済み | 3 | 667 |
-| `utils/` | ✅ 実装済み | 2 | 367 |
-| `validators/` | ✅ 実装済み | 2 | 235 |
+| モジュール        | 状態        | ファイル数 | 説明                                             |
+| ----------------- | ----------- | ---------- | ------------------------------------------------ |
+| `types.py`        | ✅ 実装済み | 1          | 型定義（Feed, FeedItem, BatchStats 等）          |
+| `exceptions.py`   | ✅ 実装済み | 1          | カスタム例外（7種類）                            |
+| `cli/`            | ✅ 実装済み | 2          | CLI インターフェース（add/list/fetch/remove 等） |
+| `core/`           | ✅ 実装済み | 4          | コア機能（HTTP/パース/差分検出）                 |
+| `mcp/`            | ✅ 実装済み | 2          | MCP サーバー統合（9 ツール提供）                 |
+| `services/`       | ✅ 実装済み | 5          | サービス層（Manager/Fetcher/Reader/Scheduler）   |
+| `storage/`        | ✅ 実装済み | 3          | 永続化層（JSON ストレージ・ロック管理）          |
+| `utils/`          | ✅ 実装済み | 2          | ユーティリティ（構造化ロギング）                 |
+| `validators/`     | ✅ 実装済み | 2          | バリデーション（URL/タイトル/カテゴリ）          |
+
+**テストカバレッジ**: 全モジュールにテストが存在（unit: 13 ファイル, integration: 1 ファイル）
 
 <!-- END: IMPLEMENTATION -->
 
@@ -409,13 +413,18 @@ logger.info("Processing started")
 
 <!-- AUTO-GENERATED: STATS -->
 
-| 項目 | 値 |
-|-----|---|
-| Pythonファイル数 | 23 |
-| 総行数（実装コード） | 5,515 |
-| モジュール数 | 8 |
-| テストファイル数 | 14 |
-| テストカバレッジ | N/A |
+| 項目                     | 値  |
+| ------------------------ | --- |
+| Python ファイル数        | 23  |
+| モジュール数             | 9   |
+| テストファイル数         | 14  |
+| 実装カバレッジ           | 100% (全モジュールにテストあり) |
+
+**主要コンポーネント**:
+- サービスクラス: 4 (Manager/Fetcher/Reader/Scheduler)
+- コアモジュール: 3 (HTTP/Parser/DiffDetector)
+- データモデル: 10 (Feed/FeedItem/FetchResult 等)
+- 例外クラス: 7 (基底 + 6 種類の専用例外)
 
 <!-- END: STATS -->
 
