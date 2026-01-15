@@ -93,13 +93,13 @@
 
 ### 実装
 
-- [ ] finance-news-collector エージェントの作成
+- [x] finance-news-collector エージェントの作成
   - Issue: [#151](https://github.com/YH-05/finance/issues/151)
-  - ステータス: todo
+  - ステータス: done
 
-- [ ] /collect-finance-news コマンドの作成
+- [x] /collect-finance-news コマンドの作成
   - Issue: [#152](https://github.com/YH-05/finance/issues/152)
-  - ステータス: todo
+  - ステータス: done
 
 - [ ] finance-news-collection スキルの作成
   - Issue: [#153](https://github.com/YH-05/finance/issues/153)
@@ -107,17 +107,17 @@
 
 ### テスト・検証
 
-- [ ] ユニットテスト作成（フィルタリングロジック・データ変換処理）
+- [x] ユニットテスト作成（フィルタリングロジック・データ変換処理）
   - Issue: [#154](https://github.com/YH-05/finance/issues/154)
-  - ステータス: todo
+  - ステータス: done
 
 - [ ] 統合テスト作成（RSS収集→GitHub投稿のE2E）
   - Issue: [#155](https://github.com/YH-05/finance/issues/155)
   - ステータス: todo
 
-- [ ] プロパティテスト作成（RSSフィードデータのバリデーション）
+- [x] プロパティテスト作成（RSSフィードデータのバリデーション）
   - Issue: [#156](https://github.com/YH-05/finance/issues/156)
-  - ステータス: todo
+  - ステータス: done
 
 - [ ] 手動テスト実施（実際のRSSフィード・GitHub Projectで動作確認）
   - Issue: [#157](https://github.com/YH-05/finance/issues/157)
@@ -133,10 +133,17 @@
   - Issue: [#159](https://github.com/YH-05/finance/issues/159)
   - ステータス: todo
 
+### 拡張機能
+
+- [ ] ニュース専用のGitHub Project カテゴリ別カラム作成
+  - Issue: [#168](https://github.com/YH-05/finance/issues/168)
+  - ステータス: todo
+  - 詳細: 米国株、日本株、セクター、テーマなどカテゴリごとにカラムを作成し、収集したニュースを分類管理
+
 ---
 
 **最終更新**: 2026-01-15
-**更新内容**: 準備フェーズタスク（#147, #148, #149, #150）のステータスを GitHub Project #14 の実際の状態と同期
+**更新内容**: /project-refine コマンドにより GitHub の実態と同期。Issue #151, #152, #154, #156 を done に更新、Issue #168 を拡張機能として追加
 
 ---
 

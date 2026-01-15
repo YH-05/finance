@@ -5,6 +5,7 @@
     "permissions": {
         "allow": [
             "Write(*)",
+            "Edit(*)",
             "Bash(claude --version)",
             "Bash(claude doctor)",
             "Bash(grep:*)",
