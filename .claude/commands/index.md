@@ -38,6 +38,7 @@ description: SuperClaudeコマンドリファレンス
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `/analyze`                | 多次元コード分析（分析レポート出力）                                                                               |
 | `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                                                                |
+| `/collect-finance-news`   | RSSフィードから金融ニュースを収集し、GitHub Projectに自動投稿します。                                              |
 | `/commit-and-pr`          | 変更のコミットと PR 作成                                                                                           |
 | `/create-worktrees`       | 複数 Worktree 一括作成                                                                                             |
 | `/delete-worktrees`       | 複数のworktreeとブランチを一括削除                                                                                 |
