@@ -76,48 +76,59 @@
 ### 準備
 
 - [ ] 既存 src/rss/ パッケージの調査
+  - Issue: [#147](https://github.com/YH-05/finance/issues/147)
+  - ステータス: todo
 - [ ] RSS MCPサーバーのAPI確認
+  - Issue: [#148](https://github.com/YH-05/finance/issues/148)
+  - ステータス: todo
 - [ ] GitHub CLI の project 操作方法の確認
+  - Issue: [#149](https://github.com/YH-05/finance/issues/149)
+  - ステータス: todo
 - [ ] 金融ニュースフィルタリング基準の定義
+  - Issue: [#150](https://github.com/YH-05/finance/issues/150)
+  - ステータス: todo
 
 ### 実装
 
-- [ ] **finance-news-collector エージェント**の作成
-  - RSS MCPサーバーからフィード取得
-  - 金融関連キーワードによるフィルタリング
-  - GitHub Project への自動投稿ロジック
+- [ ] finance-news-collector エージェントの作成
+  - Issue: [#151](https://github.com/YH-05/finance/issues/151)
+  - ステータス: todo
 
-- [ ] **/collect-finance-news コマンド**の作成
-  - エージェント起動インターフェース
-  - パラメータ設定（フィードURL、Project番号等）
+- [ ] /collect-finance-news コマンドの作成
+  - Issue: [#152](https://github.com/YH-05/finance/issues/152)
+  - ステータス: todo
 
-- [ ] **finance-news-collection スキル**の作成
-  - ニュース収集のワークフロー定義
-  - エラーハンドリング
-  - ロギング設定
+- [ ] finance-news-collection スキルの作成
+  - Issue: [#153](https://github.com/YH-05/finance/issues/153)
+  - ステータス: todo
 
 ### テスト・検証
 
-- [ ] ユニットテスト作成
-  - フィルタリングロジックのテスト
-  - データ変換処理のテスト
+- [ ] ユニットテスト作成（フィルタリングロジック・データ変換処理）
+  - Issue: [#154](https://github.com/YH-05/finance/issues/154)
+  - ステータス: todo
 
-- [ ] 統合テスト作成
-  - RSS収集からGitHub投稿までのE2Eテスト
+- [ ] 統合テスト作成（RSS収集→GitHub投稿のE2E）
+  - Issue: [#155](https://github.com/YH-05/finance/issues/155)
+  - ステータス: todo
 
-- [ ] プロパティテスト作成
-  - RSS フィードデータのバリデーション
+- [ ] プロパティテスト作成（RSSフィードデータのバリデーション）
+  - Issue: [#156](https://github.com/YH-05/finance/issues/156)
+  - ステータス: todo
 
 - [ ] 手動テスト実施（実際のRSSフィード・GitHub Projectで動作確認）
+  - Issue: [#157](https://github.com/YH-05/finance/issues/157)
+  - ステータス: todo
 
 ### ドキュメント
 
-- [ ] `docs/finance-news-collection-guide.md` 作成
-  - セットアップ手順
-  - 使用例
-  - トラブルシューティング
+- [ ] ドキュメント作成（finance-news-collection-guide.md）
+  - Issue: [#158](https://github.com/YH-05/finance/issues/158)
+  - ステータス: todo
 
 - [ ] エージェント・コマンド・スキルのREADME更新
+  - Issue: [#159](https://github.com/YH-05/finance/issues/159)
+  - ステータス: todo
 
 ---
 
