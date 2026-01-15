@@ -432,7 +432,7 @@ for item in items:
 
 ### GitHub
 
-- **GitHub Project**: [Finance News Tracker #14](https://github.com/users/YH-05/projects/14)
+- **GitHub Project**: [Finance News Collection #15](https://github.com/users/YH-05/projects/15)
 - **関連Issue**: [#151](https://github.com/YH-05/finance/issues/151), [#152](https://github.com/YH-05/finance/issues/152)
 
 ## 今後の拡張

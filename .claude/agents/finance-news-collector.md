@@ -267,7 +267,7 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
 # 金融ニュースをGitHub Issueとして作成
 gh issue create \
     --repo YH-05/finance \
-    --title "{news_title}" \
+    --title "[NEWS] {news_title}" \
     --body "$(cat <<'EOF'
 ## 概要
 

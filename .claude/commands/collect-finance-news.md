@@ -9,7 +9,7 @@ argument-hint: [--project N] [--limit N] [--keywords "..."] [--feed-id ID]
 
 | パラメータ | 必須 | デフォルト | 説明 |
 |-----------|------|-----------|------|
-| --project | - | 14 | GitHub Project番号（Finance News Tracker） |
+| --project | - | 15 | GitHub Project番号（Finance News Collection） |
 | --limit | - | 50 | 取得する記事数の最大値 |
 | --keywords | - | - | 追加フィルタリング用キーワード（カンマ区切り） |
 | --feed-id | - | - | 特定のフィードIDのみを対象とする |
@@ -117,7 +117,7 @@ Phase 3: 結果報告
    ## 金融ニュース収集完了
 
    ### 実行パラメータ
-   - **GitHub Project**: #14 (Finance News Tracker)
+   - **GitHub Project**: #15 (Finance News Collection)
    - **取得上限**: 50件
    - **追加キーワード**: {keywords}
 
@@ -147,7 +147,7 @@ Phase 3: 結果報告
 
    ### 次のアクション
 
-   - GitHub Projectで詳細を確認: https://github.com/users/YH-05/projects/14
+   - GitHub Projectで詳細を確認: https://github.com/users/YH-05/projects/15
    - 再度収集を実行: /collect-finance-news
    ```
 
@@ -310,10 +310,10 @@ gh auth login
 ### 例4: 別のGitHub Projectに投稿
 
 ```bash
-/collect-finance-news --project 15
+/collect-finance-news --project 14
 ```
 
-Finance News Tracker以外のプロジェクトに投稿します。
+Finance News Collection以外のプロジェクトに投稿します（通常は不要）。
 
 ## 設定カスタマイズ
 
@@ -359,10 +359,10 @@ mcp__rss__add_feed(
 - **エージェント**: `.claude/agents/finance-news-collector.md`
 - **計画書**: `docs/project/financial-news-rss-collector.md`
 - **フィルタリング基準**: `docs/finance-news-filtering-criteria.md`
-- **GitHub Project**: https://github.com/users/YH-05/projects/14
+- **GitHub Project**: https://github.com/users/YH-05/projects/15
 
 ## 関連コマンド
 
 - **フィード管理**: RSS MCPツールで直接管理
-- **Issue確認**: `gh issue list --project "Finance News Tracker"`
+- **Issue確認**: `gh issue list --label "news"`
 - **設定確認**: `cat data/config/finance-news-filter.json`

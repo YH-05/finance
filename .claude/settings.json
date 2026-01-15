@@ -117,5 +117,37 @@
             "Bash(format /)"
         ]
     },
-    "hooks": {}
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "AskUserQuestion",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "afplay .claude/sounds/notification.mp3 2>/dev/null &"
+                    }
+                ]
+            }
+        ],
+        "PermissionRequest": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "afplay .claude/sounds/notification.mp3 2>/dev/null &"
+                    }
+                ]
+            }
+        ],
+        "Notification": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "afplay .claude/sounds/notification.mp3 2>/dev/null &"
+                    }
+                ]
+            }
+        ]
+    }
 }
