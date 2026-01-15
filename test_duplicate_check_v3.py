@@ -50,7 +50,9 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
     return len(common) / len(total)
 
 
-def is_duplicate(item: FeedItem, existing_issues: list[GitHubIssue], threshold: float) -> tuple[bool, str]:
+def is_duplicate(
+    item: FeedItem, existing_issues: list[GitHubIssue], threshold: float
+) -> tuple[bool, str]:
     """重複チェックを実行
 
     Returns:
@@ -64,7 +66,10 @@ def is_duplicate(item: FeedItem, existing_issues: list[GitHubIssue], threshold: 
         # タイトル類似度チェック
         similarity = calculate_title_similarity(item.title, issue.title)
         if similarity >= threshold:
-            return True, f"タイトル類似度 {similarity:.2f} (閾値: {threshold}): Issue #{issue.number}"
+            return (
+                True,
+                f"タイトル類似度 {similarity:.2f} (閾値: {threshold}): Issue #{issue.number}",
+            )
 
     return False, ""
 
@@ -155,7 +160,7 @@ def main():
         if is_dup:
             print(f"  → 🔴 重複検出: {reason}")
         else:
-            print(f"  → 🟢 新規記事")
+            print("  → 🟢 新規記事")
         print()
 
     # 4. 閾値の妥当性検証
@@ -169,12 +174,30 @@ def main():
     print()
 
     variations = [
-        ("完全一致", "Your wealth and investments are on the line if Trump torpedoes the Fed's independence"),
-        ("1語変更", "Your wealth and investments would be on the line if Trump torpedoes the Fed's independence"),
-        ("2語変更", "Your wealth and investments would be at risk if Trump torpedoes Fed independence"),
-        ("5語変更", "Your investments could be at risk if Trump undermines Fed independence"),
-        ("大幅変更", "Trump's potential interference with Fed independence threatens your financial security"),
-        ("完全に異なる", "Bitcoin price surges to new record high amid market volatility"),
+        (
+            "完全一致",
+            "Your wealth and investments are on the line if Trump torpedoes the Fed's independence",
+        ),
+        (
+            "1語変更",
+            "Your wealth and investments would be on the line if Trump torpedoes the Fed's independence",
+        ),
+        (
+            "2語変更",
+            "Your wealth and investments would be at risk if Trump torpedoes Fed independence",
+        ),
+        (
+            "5語変更",
+            "Your investments could be at risk if Trump undermines Fed independence",
+        ),
+        (
+            "大幅変更",
+            "Trump's potential interference with Fed independence threatens your financial security",
+        ),
+        (
+            "完全に異なる",
+            "Bitcoin price surges to new record high amid market volatility",
+        ),
     ]
 
     print(f"類似度閾値: {threshold}")

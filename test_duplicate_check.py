@@ -7,6 +7,7 @@
 
 import json
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -68,7 +69,7 @@ def get_existing_issues() -> list[GitHubIssue]:
     # Issue #171-175を個別に取得
     for issue_number in range(171, 176):
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B607
                 [
                     "gh",
                     "issue",
@@ -123,7 +124,9 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
     return len(common) / len(total)
 
 
-def is_duplicate(item: FeedItem, existing_issues: list[GitHubIssue], threshold: float) -> tuple[bool, str]:
+def is_duplicate(
+    item: FeedItem, existing_issues: list[GitHubIssue], threshold: float
+) -> tuple[bool, str]:
     """重複チェックを実行
 
     Returns:
@@ -137,7 +140,10 @@ def is_duplicate(item: FeedItem, existing_issues: list[GitHubIssue], threshold: 
         # タイトル類似度チェック
         similarity = calculate_title_similarity(item.title, issue.title)
         if similarity >= threshold:
-            return True, f"タイトル類似度 {similarity:.2f} (閾値: {threshold}): Issue #{issue.number}"
+            return (
+                True,
+                f"タイトル類似度 {similarity:.2f} (閾値: {threshold}): Issue #{issue.number}",
+            )
 
     return False, ""
 
@@ -191,7 +197,9 @@ def main():
 
     # 4. フィルタリング
     print("[4] 金融キーワードでフィルタリング")
-    filtered_items = [item for item in all_items if matches_financial_keywords(item, filter_config)]
+    filtered_items = [
+        item for item in all_items if matches_financial_keywords(item, filter_config)
+    ]
     print(f"    ✓ フィルタリング後: {len(filtered_items)}件")
     print()
 
@@ -268,4 +276,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

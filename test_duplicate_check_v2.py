@@ -7,6 +7,7 @@ RSSデータから直接検索し、重複チェックが正しく機能する�
 
 import json
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -68,7 +69,7 @@ def get_existing_issues() -> list[GitHubIssue]:
     # Issue #171-175を個別に取得
     for issue_number in range(171, 176):
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B607
                 [
                     "gh",
                     "issue",
@@ -123,7 +124,9 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
     return len(common) / len(total)
 
 
-def is_duplicate(item: FeedItem, existing_issues: list[GitHubIssue], threshold: float) -> tuple[bool, str]:
+def is_duplicate(
+    item: FeedItem, existing_issues: list[GitHubIssue], threshold: float
+) -> tuple[bool, str]:
     """重複チェックを実行
 
     Returns:
@@ -137,7 +140,10 @@ def is_duplicate(item: FeedItem, existing_issues: list[GitHubIssue], threshold: 
         # タイトル類似度チェック
         similarity = calculate_title_similarity(item.title, issue.title)
         if similarity >= threshold:
-            return True, f"タイトル類似度 {similarity:.2f} (閾値: {threshold}): Issue #{issue.number}"
+            return (
+                True,
+                f"タイトル類似度 {similarity:.2f} (閾値: {threshold}): Issue #{issue.number}",
+            )
 
     return False, ""
 
@@ -188,7 +194,9 @@ def main():
 
         if not found:
             not_found_issues.append(issue)
-            print(f"    ✗ Issue #{issue.number}: RSSデータに存在しない（フィードから削除済み）")
+            print(
+                f"    ✗ Issue #{issue.number}: RSSデータに存在しない（フィードから削除済み）"
+            )
 
     print()
 
@@ -231,7 +239,7 @@ def main():
         for issue in not_found_issues:
             print(f"  - Issue #{issue.number}: {issue.title}")
             print(f"    URL: {issue.article_url}")
-            print(f"    → フィードから削除済み（時間経過により）")
+            print("    → フィードから削除済み（時間経過により）")
         print()
 
     if duplicates:
@@ -247,7 +255,7 @@ def main():
         for issue, item in new_items:
             print(f"  - Issue #{issue.number}: {item.title}")
             print(f"    URL: {item.link}")
-            print(f"    → 重複チェックロジックに問題がある可能性")
+            print("    → 重複チェックロジックに問題がある可能性")
         print()
 
     # 期待結果との比較
@@ -262,16 +270,20 @@ def main():
     if len(duplicates) == expected_duplicates and len(new_items) == expected_failures:
         print("✅ テスト成功: 期待通りの結果です")
         print(f"   - RSSデータに存在するIssue: {len(found_items)}件")
-        print(f"   - 重複検出成功: {len(duplicates)}件（期待: {expected_duplicates}件）")
+        print(
+            f"   - 重複検出成功: {len(duplicates)}件（期待: {expected_duplicates}件）"
+        )
         print(f"   - 重複検出失敗: {len(new_items)}件（期待: {expected_failures}件）")
         return 0
     else:
         print("❌ テスト失敗: 期待と異なる結果です")
         print(f"   - RSSデータに存在するIssue: {len(found_items)}件")
-        print(f"   - 重複検出成功: {len(duplicates)}件（期待: {expected_duplicates}件）")
+        print(
+            f"   - 重複検出成功: {len(duplicates)}件（期待: {expected_duplicates}件）"
+        )
         print(f"   - 重複検出失敗: {len(new_items)}件（期待: {expected_failures}件）")
         return 1
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())
