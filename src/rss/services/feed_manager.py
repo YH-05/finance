@@ -4,6 +4,7 @@ This module provides the FeedManager class for managing RSS feed registration,
 listing, updating, and deletion.
 """
 
+import json
 import shutil
 import uuid
 from datetime import UTC, datetime
@@ -14,7 +15,14 @@ import httpx
 
 from ..exceptions import FeedAlreadyExistsError, FeedFetchError, FeedNotFoundError
 from ..storage.json_storage import JSONStorage
-from ..types import Feed, FetchInterval, FetchStatus
+from ..types import (
+    Feed,
+    FetchInterval,
+    FetchStatus,
+    PresetApplyResult,
+    PresetFeed,
+    PresetsConfig,
+)
 from ..validators.url_validator import URLValidator
 
 
@@ -521,3 +529,149 @@ class FeedManager:
             title=removed_feed.title,
             url=removed_feed.url,
         )
+
+    def apply_presets(
+        self,
+        presets_file: Path,
+        *,
+        validate_urls: bool = False,
+    ) -> PresetApplyResult:
+        """Apply preset feeds from a configuration file.
+
+        Parameters
+        ----------
+        presets_file : Path
+            Path to the presets JSON file
+        validate_urls : bool, default=False
+            Whether to validate URL reachability before adding
+
+        Returns
+        -------
+        PresetApplyResult
+            Summary of the preset application operation
+
+        Raises
+        ------
+        FileNotFoundError
+            If the presets file does not exist
+        ValueError
+            If the presets file has invalid JSON format
+
+        Examples
+        --------
+        >>> from pathlib import Path
+        >>> manager = FeedManager(Path("data/raw/rss"))
+        >>> result = manager.apply_presets(Path("data/config/rss-presets.json"))
+        >>> print(f"Added: {result.added}, Skipped: {result.skipped}")
+        """
+        logger.info(
+            "Applying presets",
+            presets_file=str(presets_file),
+            validate_urls=validate_urls,
+        )
+
+        # Load presets file
+        if not presets_file.exists():
+            error_msg = f"Presets file not found: {presets_file}"
+            logger.error(error_msg)
+            raise FileNotFoundError(error_msg)
+
+        try:
+            with presets_file.open() as f:
+                data = json.load(f)
+        except json.JSONDecodeError as e:
+            error_msg = f"Invalid JSON in presets file: {e}"
+            logger.error(error_msg, error=str(e))
+            raise ValueError(error_msg) from e
+
+        # Parse presets config
+        try:
+            presets_config = PresetsConfig(
+                version=data["version"],
+                presets=[
+                    PresetFeed(
+                        url=p["url"],
+                        title=p["title"],
+                        category=p["category"],
+                        fetch_interval=p["fetch_interval"],
+                        enabled=p["enabled"],
+                    )
+                    for p in data["presets"]
+                ],
+            )
+        except (KeyError, TypeError) as e:
+            error_msg = f"Invalid presets file structure: {e}"
+            logger.error(error_msg, error=str(e))
+            raise ValueError(error_msg) from e
+
+        # Apply presets
+        total = len(presets_config.presets)
+        added = 0
+        skipped = 0
+        failed = 0
+        errors: list[str] = []
+
+        for preset in presets_config.presets:
+            try:
+                # Parse fetch interval
+                interval_map = {
+                    "daily": FetchInterval.DAILY,
+                    "weekly": FetchInterval.WEEKLY,
+                    "manual": FetchInterval.MANUAL,
+                }
+                fetch_interval = interval_map.get(
+                    preset.fetch_interval.lower(), FetchInterval.DAILY
+                )
+
+                # Add feed
+                self.add_feed(
+                    url=preset.url,
+                    title=preset.title,
+                    category=preset.category,
+                    fetch_interval=fetch_interval,
+                    validate_url=validate_urls,
+                    enabled=preset.enabled,
+                )
+                added += 1
+                logger.debug(
+                    "Preset feed added",
+                    url=preset.url,
+                    title=preset.title,
+                )
+
+            except FeedAlreadyExistsError:
+                skipped += 1
+                logger.debug(
+                    "Preset feed skipped (already exists)",
+                    url=preset.url,
+                    title=preset.title,
+                )
+
+            except Exception as e:
+                failed += 1
+                error_msg = f"Failed to add preset '{preset.title}': {e}"
+                errors.append(error_msg)
+                logger.warning(
+                    "Preset feed failed",
+                    url=preset.url,
+                    title=preset.title,
+                    error=str(e),
+                )
+
+        result = PresetApplyResult(
+            total=total,
+            added=added,
+            skipped=skipped,
+            failed=failed,
+            errors=errors,
+        )
+
+        logger.info(
+            "Presets applied",
+            total=total,
+            added=added,
+            skipped=skipped,
+            failed=failed,
+        )
+
+        return result

@@ -57,6 +57,13 @@
             "env": {
                 "SEC_EDGAR_USER_AGENT": "Yuki Hata (youxitiankaggle@gmail.com)"
             }
+        },
+        "rss": {
+            "command": "uvx",
+            "args": ["--from", ".", "rss-mcp"],
+            "env": {
+                "RSS_DATA_DIR": "./data/raw/rss"
+            }
         }
     }
 }
