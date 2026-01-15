@@ -53,6 +53,12 @@ Task ツールで使用可能なサブエージェント（subagent_type）の�
 |-------------|------|
 | `research-image-collector` | note記事用の画像を収集し images.json を生成 |
 
+## 金融エージェント
+
+| エージェント | 説明 |
+|-------------|------|
+| `finance-news-collector` | RSSフィードから金融ニュースを収集し、GitHub Projectに投稿 |
+
 ## 特殊エージェント
 
 | エージェント | 説明 |

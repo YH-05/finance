@@ -257,6 +257,8 @@ with profile_context("処理名"):  # コンテキスト計測
 | ドキュメントレビュー | `/review-docs` コマンド                                  |
 | 初期化（初回のみ） | `/setup-repository` コマンド                             |
 | コマンド一覧       | `/index` コマンド                                          |
+| **金融ニュース収集** |                                                          |
+| ニュース収集       | `/collect-finance-news` コマンド（RSS→フィルタリング→GitHub投稿） |
 | **金融記事作成**   |                                                            |
 | トピック提案       | `/finance-suggest-topics` コマンド（スコアリング付き提案） |
 | 記事初期化         | `/new-finance-article` コマンド（カテゴリ別テンプレート）  |

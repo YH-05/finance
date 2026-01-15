@@ -355,6 +355,7 @@ mcp__rss__add_feed(
 
 ## 関連リソース
 
+- **スキル**: `.claude/skills/finance-news-collection/`
 - **エージェント**: `.claude/agents/finance-news-collector.md`
 - **計画書**: `docs/project/financial-news-rss-collector.md`
 - **フィルタリング基準**: `docs/finance-news-filtering-criteria.md`
