@@ -75,9 +75,7 @@ def load_filter_config(config_path: Path) -> dict[str, Any]:
         return json.load(f)
 
 
-def matches_financial_keywords(
-    item_text: str, filter_config: dict[str, Any]
-) -> bool:
+def matches_financial_keywords(item_text: str, filter_config: dict[str, Any]) -> bool:
     """Check if text matches financial keywords.
 
     Parameters
@@ -127,9 +125,7 @@ def is_excluded(item_text: str, filter_config: dict[str, Any]) -> bool:
         for keyword in keywords:
             if keyword.lower() in text_lower:
                 # Don't exclude if it also matches financial keywords
-                if matches_financial_keywords(item_text, filter_config):
-                    return False
-                return True
+                return not matches_financial_keywords(item_text, filter_config)
 
     return False
 
@@ -498,21 +494,15 @@ class TestFilteringLogic:
     ) -> None:
         """Test financial keyword matching."""
         # Should match
-        assert matches_financial_keywords(
-            "日銀が政策金利を引き上げ", filter_config
-        )
+        assert matches_financial_keywords("日銀が政策金利を引き上げ", filter_config)
         assert matches_financial_keywords("株価が上昇した", filter_config)
         assert matches_financial_keywords("為替相場の動向", filter_config)
 
         # Should not match
-        assert not matches_financial_keywords(
-            "サッカー試合の結果", filter_config
-        )
+        assert not matches_financial_keywords("サッカー試合の結果", filter_config)
         assert not matches_financial_keywords("映画の新作公開", filter_config)
 
-    def test_正常系_除外キーワード判定(
-        self, filter_config: dict[str, Any]
-    ) -> None:
+    def test_正常系_除外キーワード判定(self, filter_config: dict[str, Any]) -> None:
         """Test exclusion keyword detection."""
         # Should be excluded
         assert is_excluded("サッカー日本代表が優勝", filter_config)
@@ -523,9 +513,7 @@ class TestFilteringLogic:
         assert not is_excluded("株価が急上昇", filter_config)
 
         # Should not be excluded (mixed content with financial keywords)
-        assert not is_excluded(
-            "オリンピック開催が株価に影響", filter_config
-        )
+        assert not is_excluded("オリンピック開催が株価に影響", filter_config)
 
 
 class TestGitHubIntegrationHelpers:
@@ -541,28 +529,23 @@ class TestGitHubIntegrationHelpers:
             return SequenceMatcher(None, title1, title2).ratio()
 
         # High similarity
-        assert calculate_similarity("日銀が金利を引き上げ", "日銀が金利を引き上げ") > 0.9
         assert (
-            calculate_similarity("株価上昇のニュース", "株価上昇に関するニュース")
-            > 0.7
+            calculate_similarity("日銀が金利を引き上げ", "日銀が金利を引き上げ") > 0.9
+        )
+        assert (
+            calculate_similarity("株価上昇のニュース", "株価上昇に関するニュース") > 0.7
         )
 
         # Low similarity
-        assert (
-            calculate_similarity("日銀が金利を引き上げ", "株価が急落した") < 0.5
-        )
+        assert calculate_similarity("日銀が金利を引き上げ", "株価が急落した") < 0.5
 
     @pytest.mark.integration
     @patch("subprocess.run")
-    def test_正常系_GitHub_CLI呼び出し(
-        self, mock_subprocess: MagicMock
-    ) -> None:
+    def test_正常系_GitHub_CLI呼び出し(self, mock_subprocess: MagicMock) -> None:
         """Test GitHub CLI invocation."""
         # Mock successful issue creation
         mock_subprocess.return_value.returncode = 0
-        mock_subprocess.return_value.stdout = (
-            b"https://github.com/user/repo/issues/200"
-        )
+        mock_subprocess.return_value.stdout = b"https://github.com/user/repo/issues/200"
 
         # Call GitHub CLI
         result = mock_subprocess(
