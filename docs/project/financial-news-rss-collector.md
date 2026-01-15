@@ -75,19 +75,21 @@
 
 ### 準備
 
-- [ ] 既存 src/rss/ パッケージの調査
+- [x] 既存 src/rss/ パッケージの調査
   - Issue: [#147](https://github.com/YH-05/finance/issues/147)
-  - ステータス: todo
+  - ステータス: done
+  - 調査結果: `docs/project/rss-package-investigation.md` 参照
 - [x] RSS MCPサーバーのAPI確認
   - Issue: [#148](https://github.com/YH-05/finance/issues/148)
   - ステータス: done
   - 調査結果: 下記「付録」セクション参照
-- [ ] GitHub CLI の project 操作方法の確認
+- [x] GitHub CLI の project 操作方法の確認
   - Issue: [#149](https://github.com/YH-05/finance/issues/149)
-  - ステータス: todo
-- [ ] 金融ニュースフィルタリング基準の定義
+  - ステータス: done
+- [x] 金融ニュースフィルタリング基準の定義
   - Issue: [#150](https://github.com/YH-05/finance/issues/150)
-  - ステータス: todo
+  - ステータス: done
+  - 調査結果: `docs/finance-news-filtering-criteria.md` 参照
 
 ### 実装
 
@@ -134,6 +136,7 @@
 ---
 
 **最終更新**: 2026-01-15
+**更新内容**: 準備フェーズタスク（#147, #148, #149, #150）のステータスを GitHub Project #14 の実際の状態と同期
 
 ---
 

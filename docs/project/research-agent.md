@@ -1,8 +1,9 @@
 # リサーチエージェントの追加
 
 **作成日**: 2026-01-13
-**ステータス**: 計画中
+**ステータス**: 完了
 **GitHub Project**: [#7](https://github.com/users/YH-05/projects/7)
+**完了日**: 2026-01-15
 
 ## 背景と目的
 
@@ -59,29 +60,37 @@
 
 ## タスク一覧
 
+GitHub Issues との対応:
+
 ### 準備
 
-- [x] 既存リサーチ系エージェントの調査（finance-web, finance-wiki等）→ [調査レポート](./research-agent-survey.md)
-- [x] 画像収集の要件定義（対象サイト、フォーマット、保存先）→ [要件定義書](./image-collection-requirements.md)
-- [ ] 設計方針の確定
+- [x] 既存リサーチ系エージェントの調査（finance-web, finance-wiki等）
+  - Issue: [#47](https://github.com/YH-05/finance/issues/47)
+  - ステータス: done
+  - 成果物: [調査レポート](./research-agent-survey.md)
+- [x] 画像収集の要件定義（対象サイト、フォーマット、保存先）
+  - Issue: [#48](https://github.com/YH-05/finance/issues/48)
+  - ステータス: done
+  - 成果物: [要件定義書](./image-collection-requirements.md)
 
 ### 実装
 
-- [x] 画像収集エージェントの定義ファイル作成 → [エージェント定義](../../.claude/agents/research-image-collector.md)
-- [ ] MCP/WebFetch を活用した画像URL取得ロジック
-- [ ] 画像ダウンロード・保存機能（必要に応じて）
-- [ ] agents.md への登録
-
-### テスト・検証
-
-- [ ] 手動テスト - 実際の画像収集動作確認
-- [ ] エラーハンドリングの確認
+- [x] 画像収集エージェントの定義ファイル作成
+  - Issue: [#49](https://github.com/YH-05/finance/issues/49)
+  - ステータス: done
+  - 成果物: [エージェント定義](../../.claude/agents/research-image-collector.md)
+- [x] agents.md への登録と /index 更新
+  - Issue: [#50](https://github.com/YH-05/finance/issues/50)
+  - ステータス: done
 
 ### ドキュメント
 
-- [x] エージェント使用ガイドの作成 → [使用ガイド](../image-collector-guide.md)
-- [ ] `/index --update` でコマンド一覧を更新
+- [x] エージェント使用ガイドの作成
+  - Issue: [#51](https://github.com/YH-05/finance/issues/51)
+  - ステータス: done
+  - 成果物: [使用ガイド](../image-collector-guide.md)
 
 ---
 
-**最終更新**: 2026-01-14
+**最終更新**: 2026-01-15
+**更新内容**: プロジェクトステータスを「完了」に更新、GitHub Project #7 の全Issue (#47-51) と同期
