@@ -214,7 +214,7 @@ def calculate_reliability_score(item: FeedItem, filter_config: dict) -> int:
 # GitHub Project の Issue 一覧を取得
 gh issue list \
     --repo YH-05/finance \
-    --project "Finance News Tracker" \
+    --project 15 \
     --limit 100 \
     --json number,title,url,createdAt \
     --jq '.[] | {number, title, url, createdAt}'
@@ -290,7 +290,7 @@ gh issue create \
 EOF
 )" \
     --label "news" \
-    --project "Finance News Tracker"
+    --project 15
 ```
 
 #### ステップ5.2: 投稿結果のログ記録
@@ -454,12 +454,13 @@ vi data/config/finance-news-filter.json
 ### GitHub Project の変更
 
 ```bash
-# デフォルトは "Finance News Tracker" (Project #14)
+# デフォルトは "Finance News Collection" (Project #15)
 # 変更する場合は、Issue作成コマンドの --project オプションを変更
 ```
 
 ## 参考資料
 
+- **プロジェクトガイド**: `docs/finance-news-project-guide.md`
 - **計画書**: `docs/project/financial-news-rss-collector.md`
 - **フィルタリング基準**: `docs/finance-news-filtering-criteria.md`
 - **RSS MCPツール**: `src/rss/mcp/server.py`
