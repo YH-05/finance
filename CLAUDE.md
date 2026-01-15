@@ -41,6 +41,11 @@ uv sync --all-extras    # 全依存関係を同期
 /commit-and-pr コマンド  # PR作成（gh pr create使用）
 /merge-pr <number>       # PRマージ（コンフリクト・CI確認→マージ）
 make issue TITLE="x" BODY="y"           # Issue作成
+
+# GitHub Projects 自動化
+# PR作成時: Issue → In Progress
+# PRマージ時: Issue → Done
+# 詳細: docs/github-projects-automation.md
 ```
 
 ### Git 規則
@@ -244,6 +249,7 @@ with profile_context("処理名"):  # コンテキスト計測
 | タスク管理         | `/task` コマンド（複雑タスク分解・管理）                   |
 | Git操作            | `/commit-and-pr` コマンド                                  |
 | PRマージ           | `/merge-pr` コマンド（コンフリクトチェック・CI確認・マージ） |
+| GitHub Projects自動化 | `docs/github-projects-automation.md`（PR作成→In Progress、PRマージ→Done） |
 | コンフリクト分析   | `/analyze-conflicts` コマンド（詳細分析・問題点・解決策） |
 | PRレビュー         | `/review-pr` コマンド（コード品質・セキュリティ・テスト） |
 | ドキュメントレビュー | `/review-docs` コマンド                                  |

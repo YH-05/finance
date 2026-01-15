@@ -108,6 +108,8 @@ PR に付けるラベル：
     - <変更点1>
     - <変更点2>
 
+    Fixes #<issue-number>
+
     ## テストプラン
     - [ ] make check-all が成功することを確認
     - [ ] 関連するテストが追加されていることを確認
@@ -119,6 +121,11 @@ PR に付けるラベル：
     ```
 
     **PRタイトルとボディは日本語で記述すること。**
+
+    **重要: Issue リンク**
+    - PR本文に `Fixes #<issue-number>` を含めることで、GitHub ProjectsのワークフローがPRとIssueを関連付けます
+    - PRマージ時に自動的にIssueが `Done` に移動します（GitHub Projects自動化設定が必要）
+    - 詳細は `docs/github-projects-automation.md` を参照
 
 8. **PRレビューファイルのコミット（オプション）**
 
