@@ -16,7 +16,7 @@ body:
     id: summary
     attributes:
       label: 概要
-      description: ニュースの要約を記載してください
+      description: ニュースの要約を日本語で記載してください(400字以上)
       placeholder: |
         例: Fed議長の独立性に関する政治的圧力が、インフレ、ドル、株式市場の予測可能性に影響を与える可能性について論じた記事。
     validations:
