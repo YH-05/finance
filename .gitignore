@@ -47,6 +47,7 @@ coverage.xml
 
 # Project specific
 .secrets.baseline
+trash/
 
 # Project-specific task documents
 src/*/docs/.steering/

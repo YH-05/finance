@@ -93,14 +93,19 @@ GitHub Issues との対応:
 ### 追加タスク
 
 -   [ ] RSS から情報収集するエージェントを改善したい
-    -   finance-news-orchestrator.md
-    -   finance-news-index.md
-    -   finance-news-macro.md
-    -   finance-news-sector.md
-    -   finance-news-ai.md
+    -   Issue: [#254](https://github.com/YH-05/finance/issues/254)
+    -   ステータス: todo
+    -   対象エージェント:
+        -   finance-news-orchestrator.md
+        -   finance-news-index.md
+        -   finance-news-macro.md
+        -   finance-news-sector.md
+        -   finance-news-ai.md
 -   [ ] 現在は finance-news-orchestrator エージェントがサブエージェントの情報を集約して github project に issue を登録しているが、今後はサブエージェントごとに issue を登録させたい。
+    -   Issue: [#255](https://github.com/YH-05/finance/issues/255)
+    -   ステータス: todo
 
 ---
 
-**最終更新**: 2026-01-15
-**更新内容**: プロジェクトステータスを「完了」に更新、GitHub Project #7 の全 Issue (#47-51) と同期
+**最終更新**: 2026-01-16
+**更新内容**: 追加タスク2件をIssue化（#254, #255）、GitHub Project #7に登録、ステータスをTodoに設定

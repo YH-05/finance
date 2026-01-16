@@ -561,6 +561,8 @@ finance/                                    # Project root
 │   ├── test_roic_analysis/
 │   └── archived/
 │
+├── trash/                                  # Garbage folder (pending deletion)
+│
 ├── CLAUDE.md                               # Project instructions
 ├── README.md                               # Project overview
 ├── Makefile                                # Build automation
@@ -568,11 +570,18 @@ finance/                                    # Project root
 ├── uv.lock                                 # Dependency lock file
 ├── .python-version                         # Python version spec
 ├── .pre-commit-config.yaml                 # Pre-commit hooks
-├── .mcp.json                               # MCP server config
-└── rss_recent_articles.py                  # Recent RSS articles script
+└── .mcp.json                               # MCP server config
 ```
 
 <!-- END: DIRECTORY -->
+
+## trash/ フォルダについて
+
+`trash/` はゴミ箱フォルダです。Claude Code はファイル削除の権限が制限されているため、不要と判断されたファイルはこのフォルダに移動されます。
+
+-   **用途**: 削除待ちの不要ファイルを一時保管
+-   **対象**: 一時的なスクリプト、重複コード、デバッグ用ファイルなど
+-   **運用**: ユーザーが定期的に確認し、不要であれば手動で削除してください
 
 ## 更新トリガー
 
