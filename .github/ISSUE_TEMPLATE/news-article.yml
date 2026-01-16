@@ -35,8 +35,8 @@ body:
     id: published_date
     attributes:
       label: 公開日
-      description: 記事の公開日時（ISO 8601形式推奨）
-      placeholder: "2026-01-14T21:27:00+00:00"
+      description: 記事の公開日時（YYYY-MM-DD HH:MM形式。JST。）
+      placeholder: "2026-01-14 21:00(JST)"
     validations:
       required: false
 
