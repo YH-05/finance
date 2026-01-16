@@ -28,6 +28,7 @@ dependencies = [
     "httpx>=0.28.1",
     "feedparser>=6.0.12",
     "fastmcp>=2.14.3",
+    "ipykernel>=7.1.0",
 ]
 [project.optional-dependencies]
 dev = [

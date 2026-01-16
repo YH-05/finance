@@ -48,6 +48,15 @@ coverage.xml
 # Project specific
 .secrets.baseline
 trash/
+.backup/
+.tmp/
+amp
+
+# Claude Code memories
+.claude/skills/agent-memory/memories/
+
+# Jupyter notebooks (local only)
+notebook/*.ipynb
 
 # Project-specific task documents
 src/*/docs/.steering/
