@@ -69,7 +69,7 @@ def load_json_file(filepath: Path) -> dict:
             error_line = int(str(e).split("line")[1].split()[0])
             log_error(f"エラー箇所（行 {error_line} 付近）:")
             for i in range(max(0, error_line - 3), min(len(lines), error_line + 3)):
-                log_error(f"  {i+1}: {lines[i][:100]}")
+                log_error(f"  {i + 1}: {lines[i][:100]}")
         except Exception:  # nosec B110
             pass
 
@@ -346,7 +346,7 @@ def set_status_to_index(issue_number: str, project_config: dict) -> None:
         # Step 1: Issue Node IDを取得
         query1 = f"""
         query {{
-          repository(owner: "{project_config['owner']}", name: "finance") {{
+          repository(owner: "{project_config["owner"]}", name: "finance") {{
             issue(number: {issue_number}) {{
               id
             }}
@@ -408,9 +408,9 @@ def set_status_to_index(issue_number: str, project_config: dict) -> None:
         mutation {{
           updateProjectV2ItemFieldValue(
             input: {{
-              projectId: "{project_config['project_id']}"
+              projectId: "{project_config["project_id"]}"
               itemId: "{project_item_id}"
-              fieldId: "{project_config['status_field_id']}"
+              fieldId: "{project_config["status_field_id"]}"
               value: {{
                 singleSelectOptionId: "f75ad846"
               }}
