@@ -312,6 +312,7 @@ class FactSetFetcher(BaseDataFetcher):
             )
 
         # Build UNION ALL query
+        # nosec B608 - factor_list contains internal table names, not user input
         query = """
             SELECT `date`, `P_SYMBOL`, `variable`, `value` FROM {}
         """.format(
@@ -560,6 +561,7 @@ class FactSetFetcher(BaseDataFetcher):
         """
         assert self._db_path is not None  # nosec B101
 
+        # nosec B608 - universe_code is internal index name, not user input
         query = f"""
             SELECT
                 `date`, `P_SYMBOL`, `SEDOL`, `Asset ID`, `FG_COMPANY_NAME`,
