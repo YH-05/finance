@@ -478,7 +478,7 @@ class FactSetFetcher(BaseDataFetcher):
                     if "P_SYMBOL" in df.columns and symbol in df["P_SYMBOL"].values:
                         mask = df["P_SYMBOL"] == symbol
                         df_symbol = df.loc[mask].copy()
-                        assert isinstance(df_symbol, pd.DataFrame)
+                        assert isinstance(df_symbol, pd.DataFrame)  # nosec B101
 
                         if "date" in df_symbol.columns:
                             df_symbol["date"] = pd.to_datetime(df_symbol["date"])
