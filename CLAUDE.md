@@ -234,6 +234,7 @@ with profile_context("処理名"):  # コンテキスト計測
 | 開発開始（パッケージ）| `/new-project @src/<library_name>/docs/project.md`（LRD → 設計 → タスク）|
 | 開発開始（軽量）   | `/new-project "プロジェクト名"`（インタビュー → GitHub Project → Issue）|
 | Issue管理          | `/issue @src/<library_name>/docs/project.md` コマンド       |
+| Issue自動実装      | `/issue-implement <番号>` コマンド（テスト→実装→品質→PR一括実行）|
 | Issueブラッシュアップ | `/issue-refine 番号` コマンド（内容改善・明確化・テンプレート準拠）|
 | プロジェクト健全性 | `/project-refine` コマンド（適合性チェック・タスク再構成）|
 | Issueコメント同期  | `/sync-issue #番号` コマンド（コメント→進捗・タスク・仕様同期）|
