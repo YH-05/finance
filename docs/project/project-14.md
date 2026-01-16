@@ -3,7 +3,7 @@
 **作成日**: 2026-01-15
 **ステータス**: 完了
 **完了日**: 2026-01-15
-**GitHub Project**: [Finance News Tracker #14](https://github.com/users/YH-05/projects/14)
+**GitHub Project**: [#14](https://github.com/users/YH-05/projects/14)
 
 ## 背景と目的
 
