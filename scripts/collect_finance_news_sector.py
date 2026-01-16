@@ -188,10 +188,10 @@ def create_issue(
 - ソース: {source}
 - 信頼性: {score}/100
 - 公開日: {published_jst}
-- URL: {item.get('link', '')}
+- URL: {item.get("link", "")}
 
 ## マッチしたキーワード
-{', '.join(matched_keywords)}
+{", ".join(matched_keywords)}
 """
 
     try:

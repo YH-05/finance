@@ -191,14 +191,14 @@ def create_github_issue(
 
 ## 記事概要
 
-**ソース**: {item.get('source', 'Unknown')}
+**ソース**: {item.get("source", "Unknown")}
 **信頼性**: {reliability_score}/100
-**公開日**: {item.get('published', 'Unknown')}
-**URL**: {item.get('link', 'No URL')}
+**公開日**: {item.get("published", "Unknown")}
+**URL**: {item.get("link", "No URL")}
 
 ## マッチしたキーワード
 
-{', '.join(matched_keywords) if matched_keywords else 'なし'}
+{", ".join(matched_keywords) if matched_keywords else "なし"}
 
 ## 次のアクション
 

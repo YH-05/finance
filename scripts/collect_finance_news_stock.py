@@ -208,7 +208,7 @@ def create_issue(
     # 日本語要約がない場合はRSSサマリーを使用
     summary_section = f"""## 日本語要約（400字程度）
 
-{japanese_summary if japanese_summary else item.get('summary', '（要約なし）')}
+{japanese_summary if japanese_summary else item.get("summary", "（要約なし）")}
 """
 
     body = f"""{summary_section}
@@ -218,10 +218,10 @@ def create_issue(
 - ソース: {source}
 - 信頼性: {score}/100
 - 公開日: {published_jst}
-- URL: {item['link']}
+- URL: {item["link"]}
 
 ## マッチしたキーワード
-{', '.join(matched_keywords)}
+{", ".join(matched_keywords)}
 """
 
     try:

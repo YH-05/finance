@@ -234,7 +234,7 @@ def create_issue(
 - ソース: {source}
 - 信頼性: {score}/100
 - 公開日: {published_jst}
-- URL: {item['link']}
+- URL: {item["link"]}
 
 ## マッチしたキーワード
 {keywords_md}
@@ -364,9 +364,9 @@ query {{
 mutation {{
   updateProjectV2ItemFieldValue(
     input: {{
-      projectId: "{project_config['project_id']}"
+      projectId: "{project_config["project_id"]}"
       itemId: "{target_item_id}"
-      fieldId: "{project_config['status_field_id']}"
+      fieldId: "{project_config["status_field_id"]}"
       value: {{
         singleSelectOptionId: "c40731f6"
       }}
