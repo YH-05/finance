@@ -42,6 +42,10 @@ class ErrorCode(str, Enum):
         Error during export
     TIMEOUT : str
         Operation timeout
+    SERVICE_UNAVAILABLE : str
+        Service not available or configured
+    CONNECTION_ERROR : str
+        Connection to external service failed
     """
 
     UNKNOWN = "UNKNOWN"
@@ -56,6 +60,8 @@ class ErrorCode(str, Enum):
     ANALYSIS_ERROR = "ANALYSIS_ERROR"
     EXPORT_ERROR = "EXPORT_ERROR"
     TIMEOUT = "TIMEOUT"
+    SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
+    CONNECTION_ERROR = "CONNECTION_ERROR"
 
 
 class MarketAnalysisError(Exception):

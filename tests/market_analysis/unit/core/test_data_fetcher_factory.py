@@ -72,7 +72,8 @@ class TestDataFetcherFactoryGetSupportedSources:
         assert "fred" in sources
 
     def test_get_supported_sources_count(self) -> None:
-        """サポートソースが2つある."""
+        """サポートソースが6つある（実4 + モック2）."""
         sources = DataFetcherFactory.get_supported_sources()
 
-        assert len(sources) == 2
+        # 4 real sources (yfinance, fred, bloomberg, factset) + 2 mock
+        assert len(sources) == 6
