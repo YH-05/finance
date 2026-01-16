@@ -541,7 +541,7 @@ class BloombergFetcher(BaseDataFetcher):
         try:
             if element.hasElement(field):
                 return element.getElementValue(field)
-        except Exception:  # noqa: BLE001  # nosec B110 - intentional pass
+        except Exception:  # nosec B110 - intentional pass
             pass
         return None
 

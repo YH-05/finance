@@ -311,11 +311,10 @@ class FactSetFetcher(BaseDataFetcher):
                 code=ErrorCode.DATA_NOT_FOUND,
             )
 
-        # Build UNION ALL query
-        # nosec B608 - factor_list contains internal table names, not user input
+        # Build UNION ALL query (factor_list contains internal table names, not user input)
         query = """
             SELECT `date`, `P_SYMBOL`, `variable`, `value` FROM {}
-        """.format(
+        """.format(  # nosec B608
             "\n    UNION ALL\n    SELECT `date`, `P_SYMBOL`, `variable`, `value` FROM ".join(
                 factor_list
             )
@@ -561,7 +560,7 @@ class FactSetFetcher(BaseDataFetcher):
         """
         assert self._db_path is not None  # nosec B101
 
-        # nosec B608 - universe_code is internal index name, not user input
+        # universe_code is internal index name, not user input
         query = f"""
             SELECT
                 `date`, `P_SYMBOL`, `SEDOL`, `Asset ID`, `FG_COMPANY_NAME`,
@@ -569,7 +568,7 @@ class FactSetFetcher(BaseDataFetcher):
                 `Weight (%)`
             FROM
                 {universe_code}
-        """
+        """  # nosec B608
 
         with sqlite3.connect(self._db_path) as conn:
             df: pd.DataFrame = pd.read_sql(query, con=conn, parse_dates=["date"])
