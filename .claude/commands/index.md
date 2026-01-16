@@ -34,40 +34,41 @@ description: SuperClaudeコマンドリファレンス
 
 <!-- AUTO-GENERATED: COMMANDS -->
 
-| コマンド                  | 説明                                                                                                               |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `/analyze`                | 多次元コード分析（分析レポート出力）                                                                               |
-| `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                                                                |
-| `/collect-finance-news`   | RSSフィードから金融ニュースを収集し、GitHub Projectに自動投稿します。                                              |
-| `/commit-and-pr`          | 変更のコミットと PR 作成                                                                                           |
-| `/create-worktrees`       | 複数 Worktree 一括作成                                                                                             |
-| `/delete-worktrees`       | 複数のworktreeとブランチを一括削除                                                                                 |
-| `/ensure-quality`         | コード品質の自動改善（make check-all 相当）                                                                        |
-| `/finance-edit`           | 金融記事の編集ワークフロー（初稿作成 → 批評 → 修正）                                                               |
-| `/finance-research`       | 金融記事のリサーチワークフロー（データ収集 → 分析 → 検証 → 可視化）                                                |
-| `/finance-suggest-topics` | 金融記事のトピック提案（スコアリング付き）                                                                         |
-| `/gemini-search`          | Web search using Gemini CLI                                                                                        |
-| `/improve`                | エビデンスベースの改善実装                                                                                         |
-| `/issue`                  | GitHub Issue とタスクの管理・同期を行う                                                                            |
-| `/issue-refine`           | GitHub Issue の内容をブラッシュアップして更新する                                                                  |
-| `/merge-pr`               | PR のコンフリクトチェック・CI 確認・マージを実行                                                                   |
-| `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成                                             |
-| `/new-package`            | モノレポ内に新しい Python パッケージを作成する                                                                     |
-| `/new-project`            | 開発プロジェクトを開始。パッケージ開発または軽量プロジェクトに対応                                                 |
-| `/plan-worktrees`         | GitHub Project を参照し、Todo の Issue を並列開発用にグルーピング表示                                              |
-| `/project-refine`         | プロジェクト全体の適合性チェックとタスク再構成を行う                                                               |
-| `/push`                   | 変更をコミットしてリモートにプッシュ                                                                               |
-| `/review-docs`            | ドキュメントの詳細レビューをサブエージェントで実行                                                                 |
-| `/review-pr`              | PR レビュー（コード品質・セキュリティ・テスト）                                                                    |
-| `/safe-refactor`          | 安全なリファクタリング                                                                                             |
-| `/scan`                   | セキュリティと品質の包括的検証                                                                                     |
-| `/setup-repository`       | テンプレートリポジトリの初期化（初回のみ）                                                                         |
-| `/sync-issue`             | GitHub Issue のコメントから進捗・タスク・仕様変更を同期                                                            |
-| `/task`                   | 複雑なタスクの管理                                                                                                 |
-| `/troubleshoot`           | 体系的なデバッグ                                                                                                   |
-| `/worktree`               | 新しい worktree とブランチを作成して開発を開始                                                                     |
-| `/worktree-done`          | worktree の開発完了後、PR マージ確認を経て安全にクリーンアップ                                                     |
-| `/write-tests`            | t-wada 流 TDD によるテスト作成                                                                                     |
+| コマンド                  | 説明                                                                   |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `/analyze`                | 多次元コード分析（分析レポート出力）                                   |
+| `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                    |
+| `/collect-finance-news`   | テーマ別に金融ニュースを収集し、GitHub Project 15 に自動投稿           |
+| `/commit-and-pr`          | 変更のコミットと PR 作成                                               |
+| `/create-worktrees`       | 複数 Worktree 一括作成                                                 |
+| `/delete-worktrees`       | 複数の worktree とブランチを一括削除                                   |
+| `/ensure-quality`         | コード品質の自動改善（make check-all 相当）                            |
+| `/finance-edit`           | 金融記事の編集ワークフロー（初稿作成 → 批評 → 修正）                   |
+| `/finance-full`           | 記事作成の全工程を一括実行（フォルダ作成 → リサーチ → 執筆）           |
+| `/finance-research`       | 金融記事のリサーチワークフロー（データ収集 → 分析 → 検証 → 可視化）    |
+| `/finance-suggest-topics` | 金融記事のトピック提案（スコアリング付き）                             |
+| `/gemini-search`          | Web search using Gemini CLI                                            |
+| `/improve`                | エビデンスベースの改善実装                                             |
+| `/issue`                  | GitHub Issue とタスクの管理・同期を行う                                |
+| `/issue-refine`           | GitHub Issue の内容をブラッシュアップして更新する                      |
+| `/merge-pr`               | PR のコンフリクトチェック・CI 確認・マージを実行                       |
+| `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成 |
+| `/new-package`            | モノレポ内に新しい Python パッケージを作成する                         |
+| `/new-project`            | 開発プロジェクトを開始。パッケージ開発または軽量プロジェクトに対応     |
+| `/plan-worktrees`         | GitHub Project を参照し、Todo の Issue を並列開発用にグルーピング表示  |
+| `/project-refine`         | プロジェクト全体の適合性チェックとタスク再構成を行う                   |
+| `/push`                   | 変更をコミットしてリモートにプッシュ                                   |
+| `/review-docs`            | ドキュメントの詳細レビューをサブエージェントで実行                     |
+| `/review-pr`              | PR レビュー（コード品質・セキュリティ・テスト）                        |
+| `/safe-refactor`          | 安全なリファクタリング                                                 |
+| `/scan`                   | セキュリティと品質の包括的検証                                         |
+| `/setup-repository`       | テンプレートリポジトリの初期化（初回のみ）                             |
+| `/sync-issue`             | GitHub Issue のコメントから進捗・タスク・仕様変更を同期                |
+| `/task`                   | 複雑なタスクの管理                                                     |
+| `/troubleshoot`           | 体系的なデバッグ                                                       |
+| `/worktree`               | 新しい worktree とブランチを作成して開発を開始                         |
+| `/worktree-done`          | worktree の開発完了後、PR マージ確認を経て安全にクリーンアップ         |
+| `/write-tests`            | t-wada 流 TDD によるテスト作成                                         |
 
 <!-- END: COMMANDS -->
 
@@ -77,18 +78,19 @@ description: SuperClaudeコマンドリファレンス
 
 <!-- AUTO-GENERATED: SKILLS -->
 
-| スキル                   | 説明                                                                                                                                                                                                                                                                                          |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `agent-expert`           | Create and optimize specialized Claude Code agents. Expertise in agent design, prompt engineering, domain modeling, and best practices for claude-code-templates system. Use PROACTIVELY when designing new agents or improving existing ones.                                               |
-| `agent-memory`           | Use this skill when the user asks to save, remember, recall, or organize memories. Triggers on: 'remember this', 'save this', 'note this', 'what did we discuss about...', 'check your notes', 'clean up memories'. Also use proactively when discovering valuable findings worth preserving. |
-| `architecture-design`    | アーキテクチャ設計書を作成するための詳細ガイドとテンプレート。アーキテクチャ設計時にのみ使用。                                                                                                                                                                                                |
-| `create-worktrees`       | /plan-worktrees の結果から複数の worktree を一括作成するスキル。Issue 番号のリストを受け取り、各 Issue に対して /worktree コマンドを順番に実行する。                                                                                                                                          |
-| `development-guidelines` | チーム全体で統一された開発プロセスとコーディング規約を確立するための包括的なガイドとテンプレート。開発ガイドライン作成時、コード実装時に使用する。                                                                                                                                            |
-| `functional-design`      | 機能設計書を作成するための詳細ガイドとテンプレート。機能設計書作成時にのみ使用。                                                                                                                                                                                                              |
-| `glossary-creation`      | 用語集を作成するための詳細ガイドとテンプレート。用語集作成時にのみ使用。                                                                                                                                                                                                                      |
-| `prd-writing`            | ライブラリ要求定義書(LRD)を作成するための詳細ガイドとテンプレート。LRD 作成時にのみ使用。                                                                                                                                                                                                     |
-| `project-file`           | プロジェクトファイル（project.md）を作成・編集するための詳細ガイドとテンプレート。                                                                                                                                                                                                            |
-| `repository-structure`   | リポジトリ構造定義書を作成するための詳細ガイドとテンプレート。リポジトリ構造定義時にのみ使用。                                                                                                                                                                                                |
+| スキル                    | 説明                                                                                                                                                                                                                                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agent-expert`            | Create and optimize specialized Claude Code agents. Expertise in agent design, prompt engineering, domain modeling, and best practices for claude-code-templates system. Use PROACTIVELY when designing new agents or improving existing ones.                                               |
+| `agent-memory`            | Use this skill when the user asks to save, remember, recall, or organize memories. Triggers on: 'remember this', 'save this', 'note this', 'what did we discuss about...', 'check your notes', 'clean up memories'. Also use proactively when discovering valuable findings worth preserving. |
+| `architecture-design`     | アーキテクチャ設計書を作成するための詳細ガイドとテンプレート。アーキテクチャ設計時にのみ使用。                                                                                                                                                                                                |
+| `create-worktrees`        | /plan-worktrees の結果から複数の worktree を一括作成するスキル。Issue 番号のリストを受け取り、各 Issue に対して /worktree コマンドを順番に実行する。                                                                                                                                          |
+| `development-guidelines`  | チーム全体で統一された開発プロセスとコーディング規約を確立するための包括的なガイドとテンプレート。開発ガイドライン作成時、コード実装時に使用する。                                                                                                                                            |
+| `finance-news-collection` | 金融ニュース収集のワークフロー定義をスキルとして作成する。                                                                                                                                                                                                                                    |
+| `functional-design`       | 機能設計書を作成するための詳細ガイドとテンプレート。機能設計書作成時にのみ使用。                                                                                                                                                                                                              |
+| `glossary-creation`       | 用語集を作成するための詳細ガイドとテンプレート。用語集作成時にのみ使用。                                                                                                                                                                                                                      |
+| `prd-writing`             | ライブラリ要求定義書(LRD)を作成するための詳細ガイドとテンプレート。LRD 作成時にのみ使用。                                                                                                                                                                                                     |
+| `project-file`            | プロジェクトファイル（project.md）を作成・編集するための詳細ガイドとテンプレート。                                                                                                                                                                                                            |
+| `repository-structure`    | リポジトリ構造定義書を作成するための詳細ガイドとテンプレート。リポジトリ構造定義時にのみ使用。                                                                                                                                                                                                |
 
 <!-- END: SKILLS -->
 
@@ -139,17 +141,23 @@ description: SuperClaudeコマンドリファレンス
 | `doc-reviewer`                  | ドキュメントの品質レビューと改善提案                                                |
 | `task-decomposer`               | タスク分解と GitHub Issues 連携。類似性判定、依存関係管理、project.md との双方向同期 |
 
-### Issue管理エージェント
+### Issue 管理エージェント
 
-| エージェント        | 説明                                                                       |
-| ------------------- | -------------------------------------------------------------------------- |
-| `comment-analyzer`  | Issue コメントを解析し、進捗・サブタスク・仕様変更を構造化データとして抽出 |
+| エージェント       | 説明                                                                       |
+| ------------------ | -------------------------------------------------------------------------- |
+| `comment-analyzer` | Issue コメントを解析し、進捗・サブタスク・仕様変更を構造化データとして抽出 |
 
 ### リサーチエージェント
 
-| エージェント               | 説明                                           |
-| -------------------------- | ---------------------------------------------- |
-| `research-image-collector` | note 記事用の画像を収集し images.json を生成    |
+| エージェント               | 説明                                        |
+| -------------------------- | ------------------------------------------- |
+| `research-image-collector` | note 記事用の画像を収集し images.json を生成 |
+
+### 金融エージェント
+
+| エージェント              | 説明                                                  |
+| ------------------------- | ----------------------------------------------------- |
+| `finance-news-collector`  | RSS フィードから金融ニュースを収集し、GitHub Project に投稿 |
 
 ### 特殊エージェント
 
@@ -170,21 +178,25 @@ description: SuperClaudeコマンドリファレンス
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
 │   ├── agents/                             # (50 agents)
+│   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
 │   ├── commands/                           # (32 commands)
 │   ├── commands_sample/
-│   ├── skills/                             # (10 skills)
+│   ├── skills/                             # (12 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
 │   │   ├── create-worktrees/
 │   │   ├── development-guidelines/
+│   │   ├── finance-news-collection/
 │   │   ├── functional-design/
 │   │   ├── glossary-creation/
 │   │   ├── prd-writing/
 │   │   ├── project-file/
+│   │   ├── project-status-sync/
 │   │   └── repository-structure/
+│   ├── sounds/
 │   ├── settings.json
 │   ├── settings.local.json
 │   └── agents.md
@@ -205,7 +217,7 @@ finance/                                    # Project root
 │   ├── sqlite/                             # OLTP database
 │   ├── raw/                                # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                            # (7 feed subscriptions)
+│   │   ├── rss/                            # (8 feed subscriptions)
 │   │   │   ├── 338f1076-a903-422d-913d-e889b1bec581/
 │   │   │   ├── c23413d1-72f3-4e2b-8ffd-c0da4282f696/
 │   │   │   ├── af717f84-da0f-400e-a77d-823836af01d3/
@@ -213,7 +225,8 @@ finance/                                    # Project root
 │   │   │   ├── 4dc65edc-5c17-4ff8-ab38-7dd248f96006/
 │   │   │   ├── 40fea0da-0199-4b26-b56e-e2c8e0e4c6cc/
 │   │   │   ├── 5abc350a-f5e3-46ab-923a-57068cfe298c/
-│   │   │   └── 2524572e-48e0-48a4-8d00-f07d0ddd56af/
+│   │   │   ├── 2524572e-48e0-48a4-8d00-f07d0ddd56af/
+│   │   │   └── feeds.json
 │   │   └── yfinance/
 │   │       ├── forex/
 │   │       ├── indices/
@@ -232,11 +245,17 @@ finance/                                    # Project root
 │   ├── development-process.md
 │   ├── diagram-guidelines.md
 │   ├── document-management.md
-│   ├── image-collector-guide.md
+│   ├── github-projects-automation.md
 │   ├── testing-strategy.md
 │   ├── type-checker-migration.md
 │   ├── pr-review/                          # PR review reports
 │   └── project/                            # Project research docs
+│       ├── finance-news-*.md               # ニュース収集関連
+│       ├── project-7.md
+│       ├── project-11.md
+│       ├── project-14.md
+│       ├── project-16.md
+│       └── research/
 │
 ├── src/                                    # Source code
 │   ├── finance/                            # Core infrastructure
@@ -290,13 +309,14 @@ finance/                                    # Project root
 │   │   ├── README.md
 │   │   └── py.typed
 │   │
-│   └── strategy/
+│   └── strategy/                           # Strategy library
 │       ├── core/
 │       ├── utils/
 │       ├── docs/
 │       ├── types.py
 │       ├── __init__.py
-│       └── README.md
+│       ├── README.md
+│       └── py.typed
 │
 ├── tests/                                  # Test suite
 │   ├── unit/                               # Unit tests
@@ -305,7 +325,7 @@ finance/                                    # Project root
 │   │   └── __init__.py
 │   │
 │   ├── rss/                                # RSS tests
-│   │   ├── unit/                           # (13 test files)
+│   │   ├── unit/                           # (16 test files)
 │   │   │   ├── core/
 │   │   │   ├── mcp/
 │   │   │   ├── cli/
@@ -344,6 +364,7 @@ finance/                                    # Project root
 │   │   ├── property/
 │   │   └── integration/
 │   │
+│   ├── finance_news_collector/
 │   ├── quant/                              # Quantitative analysis
 │   │   ├── unit/
 │   │   ├── property/
@@ -400,7 +421,8 @@ finance/                                    # Project root
 ├── examples/
 ├── scripts/                                # Utility scripts
 │   ├── setup.sh
-│   └── update_project_name.py
+│   ├── update_project_name.py
+│   └── collect_finance_news*.py            # ニュース収集スクリプト
 │
 ├── snippets/                               # Reusable content
 │   ├── disclaimer.md
@@ -408,13 +430,15 @@ finance/                                    # Project root
 │   ├── data-source.md
 │   ├── investment-risk.md
 │   ├── warning.md
-│   ├── cta-permium.md
+│   ├── cta-premium.md
 │   └── sns-announcement.md
 │
 ├── src_sample/                             # Sample/legacy code
 │   ├── src-memo/
 │   ├── test_roic_analysis/
 │   └── archived/
+│
+├── trash/                                  # Garbage folder (pending deletion)
 │
 ├── CLAUDE.md                               # Project instructions
 ├── README.md                               # Project overview
@@ -423,8 +447,7 @@ finance/                                    # Project root
 ├── uv.lock                                 # Dependency lock file
 ├── .python-version                         # Python version spec
 ├── .pre-commit-config.yaml                 # Pre-commit hooks
-├── .mcp.json                               # MCP server config
-└── rss_recent_articles.py                  # Recent RSS articles script
+└── .mcp.json                               # MCP server config
 ```
 
 <!-- END: DIRECTORY -->
@@ -501,7 +524,7 @@ finance/                                    # Project root
 
 ### 並列実行アーキテクチャ
 
-Task ツールで 7 つのサブエージェントを**並列起動**し、結果を統合します。
+Task ツールで 9 つのサブエージェントを**並列起動**し、結果を統合します。
 
 ```
 /index --update
@@ -509,10 +532,12 @@ Task ツールで 7 つのサブエージェントを**並列起動**し、結�
     ├─> Task(Explore): コマンド検出 ─────────────┐
     ├─> Task(Explore): スキル検出 ────────────────┤
     ├─> Task(Explore): エージェント読み込み ──────┤ 並列実行
-    ├─> Task(Explore): ディレクトリスキャン ──────┤ (7エージェント)
+    ├─> Task(Explore): ディレクトリスキャン ──────┤ (9エージェント)
     ├─> Task(package-readme-updater): finance README ──┤
     ├─> Task(package-readme-updater): market_analysis README ─┤
-    └─> Task(package-readme-updater): rss README ──────┘
+    ├─> Task(package-readme-updater): rss README ──────┤
+    ├─> Task(package-readme-updater): factor README ───┤
+    └─> Task(package-readme-updater): strategy README ─┘
                         │
                         v
           結果統合（YAML形式 + README更新確認）
@@ -520,7 +545,7 @@ Task ツールで 7 つのサブエージェントを**並列起動**し、結�
         ┌───────────────┼──────────────────┬──────────────────┐
         v               v                  v                  v
    index.md        CLAUDE.md          README.md       src/*/README.md
-    更新             更新               更新              更新（3つ）
+    更新             更新               更新              更新（5つ）
 ```
 
 ### サブエージェント詳細
@@ -608,6 +633,26 @@ subagent_type: "package-readme-updater"
 出力: src/rss/README.md
 ```
 
+#### 8. factor README 更新エージェント
+
+```yaml
+subagent_type: "package-readme-updater"
+対象: src/factor/
+パッケージ名: "factor"
+モード: "minimal" # 最小限の構成
+出力: src/factor/README.md
+```
+
+#### 9. strategy README 更新エージェント
+
+```yaml
+subagent_type: "package-readme-updater"
+対象: src/strategy/
+パッケージ名: "strategy"
+モード: "minimal" # 最小限の構成
+出力: src/strategy/README.md
+```
+
 ### 結果統合スキーマ
 
 ```yaml
@@ -621,6 +666,8 @@ metadata:
         package_readme_finance: "success|failed"
         package_readme_market_analysis: "success|failed"
         package_readme_rss: "success|failed"
+        package_readme_factor: "success|failed"
+        package_readme_strategy: "success|failed"
     errors: []
 
 commands: [...]
@@ -632,6 +679,8 @@ package_readmes:
     finance: "updated|skipped|failed"
     market_analysis: "updated|skipped|failed"
     rss: "updated|skipped|failed"
+    factor: "updated|skipped|failed"
+    strategy: "updated|skipped|failed"
 ```
 
 ### エラーハンドリング

@@ -315,21 +315,25 @@ with profile_context("処理名"):  # コンテキスト計測
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
 │   ├── agents/                             # (50 agents)
+│   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
 │   ├── commands/                           # (32 commands)
 │   ├── commands_sample/
-│   ├── skills/                             # (10 skills)
+│   ├── skills/                             # (12 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
 │   │   ├── create-worktrees/
 │   │   ├── development-guidelines/
+│   │   ├── finance-news-collection/
 │   │   ├── functional-design/
 │   │   ├── glossary-creation/
 │   │   ├── prd-writing/
 │   │   ├── project-file/
+│   │   ├── project-status-sync/
 │   │   └── repository-structure/
+│   ├── sounds/
 │   ├── settings.json
 │   ├── settings.local.json
 │   └── agents.md
@@ -350,7 +354,7 @@ finance/                                    # Project root
 │   ├── sqlite/                             # OLTP database
 │   ├── raw/                                # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                            # (7 feed subscriptions)
+│   │   ├── rss/                            # (8 feed subscriptions)
 │   │   │   ├── 338f1076-a903-422d-913d-e889b1bec581/
 │   │   │   ├── c23413d1-72f3-4e2b-8ffd-c0da4282f696/
 │   │   │   ├── af717f84-da0f-400e-a77d-823836af01d3/
@@ -358,7 +362,8 @@ finance/                                    # Project root
 │   │   │   ├── 4dc65edc-5c17-4ff8-ab38-7dd248f96006/
 │   │   │   ├── 40fea0da-0199-4b26-b56e-e2c8e0e4c6cc/
 │   │   │   ├── 5abc350a-f5e3-46ab-923a-57068cfe298c/
-│   │   │   └── 2524572e-48e0-48a4-8d00-f07d0ddd56af/
+│   │   │   ├── 2524572e-48e0-48a4-8d00-f07d0ddd56af/
+│   │   │   └── feeds.json
 │   │   └── yfinance/
 │   │       ├── forex/
 │   │       ├── indices/
@@ -377,11 +382,17 @@ finance/                                    # Project root
 │   ├── development-process.md
 │   ├── diagram-guidelines.md
 │   ├── document-management.md
-│   ├── image-collector-guide.md
+│   ├── github-projects-automation.md
 │   ├── testing-strategy.md
 │   ├── type-checker-migration.md
 │   ├── pr-review/                          # PR review reports
 │   └── project/                            # Project research docs
+│       ├── finance-news-*.md               # ニュース収集関連
+│       ├── project-7.md
+│       ├── project-11.md
+│       ├── project-14.md
+│       ├── project-16.md
+│       └── research/
 │
 ├── src/                                    # Source code
 │   ├── finance/                            # Core infrastructure
@@ -435,13 +446,14 @@ finance/                                    # Project root
 │   │   ├── README.md
 │   │   └── py.typed
 │   │
-│   └── strategy/
+│   └── strategy/                           # Strategy library
 │       ├── core/
 │       ├── utils/
 │       ├── docs/
 │       ├── types.py
 │       ├── __init__.py
-│       └── README.md
+│       ├── README.md
+│       └── py.typed
 │
 ├── tests/                                  # Test suite
 │   ├── unit/                               # Unit tests
@@ -450,7 +462,7 @@ finance/                                    # Project root
 │   │   └── __init__.py
 │   │
 │   ├── rss/                                # RSS tests
-│   │   ├── unit/                           # (13 test files)
+│   │   ├── unit/                           # (16 test files)
 │   │   │   ├── core/
 │   │   │   ├── mcp/
 │   │   │   ├── cli/
@@ -545,7 +557,8 @@ finance/                                    # Project root
 ├── examples/
 ├── scripts/                                # Utility scripts
 │   ├── setup.sh
-│   └── update_project_name.py
+│   ├── update_project_name.py
+│   └── collect_finance_news*.py            # ニュース収集スクリプト
 │
 ├── snippets/                               # Reusable content
 │   ├── disclaimer.md
@@ -553,7 +566,7 @@ finance/                                    # Project root
 │   ├── data-source.md
 │   ├── investment-risk.md
 │   ├── warning.md
-│   ├── cta-permium.md
+│   ├── cta-premium.md
 │   └── sns-announcement.md
 │
 ├── src_sample/                             # Sample/legacy code

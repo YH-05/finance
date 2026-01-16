@@ -124,10 +124,11 @@ uv run pyright --version
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (47 agents + 31 commands + 10 skills)
-│   ├── agents/                              # (47) Specialized agents
-│   ├── commands/                            # (31) Slash commands
-│   ├── skills/                              # (10) Skill modules
+├── .claude/                                 # Claude Code configuration (50 agents + 32 commands + 12 skills)
+│   ├── agents/                              # (50) Specialized agents
+│   │   └── finance_news_collector/          # テーマ別収集エージェント
+│   ├── commands/                            # (32) Slash commands
+│   ├── skills/                              # (12) Skill modules
 │   └── agents.md
 ├── .github/                                 # GitHub configuration
 │   ├── ISSUE_TEMPLATE/                      # Issue templates
@@ -138,6 +139,7 @@ finance/                                     # Project root
 │   ├── sqlite/                              # SQLite OLTP database
 │   ├── raw/                                 # Raw data (Parquet format)
 │   │   ├── fred/indicators/
+│   │   ├── rss/                             # (8) RSS feed subscriptions
 │   │   └── yfinance/                        # stocks, forex, indices
 │   ├── processed/                           # Processed data (daily/aggregated)
 │   ├── exports/                             # Exported data (csv/json)
@@ -163,26 +165,36 @@ finance/                                     # Project root
 │   │   ├── types.py
 │   │   ├── docs/                            # (8) Library documentation
 │   │   └── py.typed
-│   └── rss/                                 # RSS feed monitoring package
-│       ├── cli/                             # CLI interface
-│       ├── core/                            # Parser, HTTP client, diff detector
-│       ├── mcp/                             # MCP server integration
-│       ├── services/                        # Service layer
-│       ├── storage/                         # JSON persistence
-│       ├── validators/                      # URL validation
-│       ├── utils/                           # Logging
-│       ├── exceptions.py
-│       ├── types.py
-│       ├── docs/                            # (8) Library documentation
+│   ├── rss/                                 # RSS feed monitoring package
+│   │   ├── cli/                             # CLI interface
+│   │   ├── core/                            # Parser, HTTP client, diff detector
+│   │   ├── mcp/                             # MCP server integration
+│   │   ├── services/                        # Service layer
+│   │   ├── storage/                         # JSON persistence
+│   │   ├── validators/                      # URL validation
+│   │   ├── utils/                           # Logging
+│   │   ├── exceptions.py
+│   │   ├── types.py
+│   │   ├── docs/                            # (8) Library documentation
+│   │   └── py.typed
+│   ├── factor/                              # Factor analysis library
+│   │   ├── core/
+│   │   ├── utils/
+│   │   └── py.typed
+│   └── strategy/                            # Strategy library
+│       ├── core/
+│       ├── utils/
 │       └── py.typed
 ├── tests/                                   # Test suite
 │   ├── finance/                             # Finance package tests
 │   │   └── db/unit/                         # (3) DB client tests
 │   ├── market_analysis/                     # Market analysis tests
-│   │   └── unit/                            # (24) Tests
-│   └── rss/                                 # RSS package tests
-│       ├── unit/                            # (13) Unit tests
-│       └── integration/                     # (1) Integration test
+│   │   └── unit/                            # (20) Tests
+│   ├── rss/                                 # RSS package tests
+│   │   ├── unit/                            # (16) Unit tests
+│   │   └── integration/                     # (1) Integration test
+│   ├── factor/                              # Factor analysis tests
+│   └── strategy/                            # Strategy tests
 ├── template/                                # Reference templates (read-only)
 │   ├── src/template_package/                # Package structure template
 │   ├── tests/                               # Test structure template
