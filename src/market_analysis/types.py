@@ -31,11 +31,17 @@ class DataSource(str, Enum):
         Federal Reserve Economic Data
     LOCAL : str
         Local cache/database
+    BLOOMBERG : str
+        Bloomberg Terminal data source
+    FACTSET : str
+        FactSet data source
     """
 
     YFINANCE = "yfinance"
     FRED = "fred"
     LOCAL = "local"
+    BLOOMBERG = "bloomberg"
+    FACTSET = "factset"
 
 
 class AssetType(str, Enum):
@@ -87,6 +93,36 @@ class Interval(str, Enum):
     MONTHLY = "1mo"
     HOURLY = "1h"
     MINUTE = "1m"
+
+
+class IdentifierType(str, Enum):
+    """Security identifier types.
+
+    Attributes
+    ----------
+    TICKER : str
+        Exchange ticker symbol (e.g., AAPL, 7203.T)
+    SEDOL : str
+        Stock Exchange Daily Official List (7 characters)
+    CUSIP : str
+        Committee on Uniform Securities Identification Procedures (9 characters)
+    ISIN : str
+        International Securities Identification Number (12 characters)
+    FIGI : str
+        Financial Instrument Global Identifier (12 characters)
+
+    Examples
+    --------
+    >>> id_type = IdentifierType.ISIN
+    >>> id_type.value
+    'isin'
+    """
+
+    TICKER = "ticker"
+    SEDOL = "sedol"
+    CUSIP = "cusip"
+    ISIN = "isin"
+    FIGI = "figi"
 
 
 # =============================================================================
@@ -540,6 +576,7 @@ __all__ = [
     "ExportFormat",
     "ExportOptions",
     "FetchOptions",
+    "IdentifierType",
     "IndicatorDict",
     "Interval",
     "JSONObject",
