@@ -91,15 +91,15 @@ def matches_financial_keywords(item_text: str, filter_config: dict[str, Any]) ->
         True if text matches financial keywords
     """
     text_lower = item_text.lower()
-    include_keywords = filter_config["keywords"]["include"]
+    include_keywords: dict[str, list[str]] = filter_config["keywords"]["include"]
 
     match_count = 0
-    for _category, keywords in include_keywords.items():
+    for keywords in include_keywords.values():
         for keyword in keywords:
             if keyword.lower() in text_lower:
                 match_count += 1
 
-    min_matches = filter_config["filtering"]["min_keyword_matches"]
+    min_matches: int = filter_config["filtering"]["min_keyword_matches"]
     return match_count >= min_matches
 
 
@@ -119,9 +119,9 @@ def is_excluded(item_text: str, filter_config: dict[str, Any]) -> bool:
         True if text should be excluded
     """
     text_lower = item_text.lower()
-    exclude_keywords = filter_config["keywords"]["exclude"]
+    exclude_keywords: dict[str, list[str]] = filter_config["keywords"]["exclude"]
 
-    for _category, keywords in exclude_keywords.items():
+    for keywords in exclude_keywords.values():
         for keyword in keywords:
             if keyword.lower() in text_lower:
                 # Don't exclude if it also matches financial keywords
@@ -266,7 +266,7 @@ class TestRSSToGitHubE2E:
 
 ## 詳細
 
-{item.content or ''}
+{item.content or ""}
 """
 
             # Call GitHub CLI to create issue

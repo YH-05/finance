@@ -1,8 +1,27 @@
 """factor package."""
 
+from .enums import FactorCategory, NormalizationMethod
+from .errors import (
+    FactorError,
+    InsufficientDataError,
+    NormalizationError,
+    OrthogonalizationError,
+    ValidationError,
+)
+from .types import FactorConfig, FactorResult, OrthogonalizationResult
 from .utils.logging_config import get_logger
 
 __all__ = [
+    "FactorCategory",
+    "FactorConfig",
+    "FactorError",
+    "FactorResult",
+    "InsufficientDataError",
+    "NormalizationError",
+    "NormalizationMethod",
+    "OrthogonalizationError",
+    "OrthogonalizationResult",
+    "ValidationError",
     "get_logger",
 ]
 
