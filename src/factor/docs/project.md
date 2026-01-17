@@ -132,7 +132,7 @@
 | Issue | タイトル | 優先度 | 見積もり | ステータス |
 |-------|---------|--------|---------|----------|
 | [#123](https://github.com/YH-05/finance/issues/123) | T09: MomentumFactor | P0 | 1h | Todo |
-| [#124](https://github.com/YH-05/finance/issues/124) | T10: ReversalFactor | P0 | 0.5h | Todo |
+| [#124](https://github.com/YH-05/finance/issues/124) | T10: ReversalFactor | P0 | 0.5h | ✅ Done |
 | [#125](https://github.com/YH-05/finance/issues/125) | T11: VolatilityFactor | P0 | 0.5h | Todo |
 
 **依存関係**: feature/factor-core -> T09, T10, T11
@@ -169,12 +169,12 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 7 |
-| Todo | 14 |
+| ✅ Done | 8 |
+| Todo | 13 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) Issue #117 (T07: Factor 基底クラス) 完了を同期
+**更新内容**: GitHub Project #13 (factor) Issue #124 (T10: ReversalFactor) 完了を同期
 
 ---
 
