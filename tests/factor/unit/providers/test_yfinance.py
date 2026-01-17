@@ -23,7 +23,6 @@ import pytest
 
 from factor.errors import DataFetchError
 from factor.providers.base import DataProvider
-
 from factor.providers.yfinance import YFinanceProvider
 
 # ============================================================================
