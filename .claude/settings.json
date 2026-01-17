@@ -1,4 +1,5 @@
 {
+    "plansDirectory": "docs/plan",
     "env": {
         "ENABLE_TOOL_SEARCH": "true"
     },
