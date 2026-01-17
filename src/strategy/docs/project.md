@@ -28,8 +28,8 @@
 - [x] ボラティリティ（標準偏差） [#113](https://github.com/YH-05/finance/issues/113) ✅ Done
 - [x] シャープレシオ [#113](https://github.com/YH-05/finance/issues/113) ✅ Done
 - [x] ソルティノレシオ [#113](https://github.com/YH-05/finance/issues/113) ✅ Done
-- [ ] 最大ドローダウン [#114](https://github.com/YH-05/finance/issues/114)
-- [ ] VaR（バリューアットリスク） [#114](https://github.com/YH-05/finance/issues/114)
+- [x] 最大ドローダウン [#114](https://github.com/YH-05/finance/issues/114) ✅ Done
+- [x] VaR（バリューアットリスク） [#114](https://github.com/YH-05/finance/issues/114) ✅ Done
 - [ ] ベータ値 [#118](https://github.com/YH-05/finance/issues/118)
 - [ ] トレイナーレシオ [#118](https://github.com/YH-05/finance/issues/118)
 - [ ] 情報レシオ [#118](https://github.com/YH-05/finance/issues/118)
