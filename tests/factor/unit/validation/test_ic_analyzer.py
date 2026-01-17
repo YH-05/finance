@@ -779,3 +779,166 @@ class TestParameterizedCases:
 
         assert isinstance(result, ICResult)
         assert result.n_periods > 0
+
+
+# =============================================================================
+# TestCalculateIC: calculate_ic エイリアスメソッドテスト
+# =============================================================================
+
+
+class TestCalculateIC:
+    """calculate_ic エイリアスメソッドのテスト。
+
+    Issue #261 で要求されているエイリアスメソッド。
+    Pearson相関でICを計算し、floatを返す。
+    """
+
+    def test_正常系_calculate_icがfloatを返す(
+        self,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_icメソッドがfloat型のICを返すことを確認。"""
+        analyzer = ICAnalyzer(method="pearson")
+        ic = analyzer.calculate_ic(sample_factor_values, sample_forward_returns)
+
+        assert isinstance(ic, float)
+        assert -1.0 <= ic <= 1.0
+
+    def test_正常系_pearson相関で計算される(
+        self,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_icがPearson相関で計算されることを確認。"""
+        analyzer = ICAnalyzer(method="pearson")
+        ic = analyzer.calculate_ic(sample_factor_values, sample_forward_returns)
+
+        # analyzeメソッドで取得したmean_icと一致するはず
+        result = analyzer.analyze(sample_factor_values, sample_forward_returns)
+        assert ic == pytest.approx(result.mean_ic, rel=1e-6)
+
+    def test_正常系_完全正相関でIC約1(
+        self,
+        perfect_positive_correlation_data: tuple[pd.DataFrame, pd.DataFrame],
+    ) -> None:
+        """完全正相関データでPearson ICが約1になることを確認。"""
+        factor_df, return_df = perfect_positive_correlation_data
+        analyzer = ICAnalyzer(method="pearson")
+        ic = analyzer.calculate_ic(factor_df, return_df)
+
+        assert ic == pytest.approx(1.0, abs=0.001)
+
+
+# =============================================================================
+# TestCalculateRankIC: calculate_rank_ic エイリアスメソッドテスト
+# =============================================================================
+
+
+class TestCalculateRankIC:
+    """calculate_rank_ic エイリアスメソッドのテスト。
+
+    Issue #261 で要求されているエイリアスメソッド。
+    Spearman相関でRank ICを計算し、floatを返す。
+    """
+
+    def test_正常系_calculate_rank_icがfloatを返す(
+        self,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_rank_icメソッドがfloat型のRank ICを返すことを確認。"""
+        analyzer = ICAnalyzer(method="spearman")
+        rank_ic = analyzer.calculate_rank_ic(
+            sample_factor_values, sample_forward_returns
+        )
+
+        assert isinstance(rank_ic, float)
+        assert -1.0 <= rank_ic <= 1.0
+
+    def test_正常系_spearman相関で計算される(
+        self,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_rank_icがSpearman相関で計算されることを確認。"""
+        analyzer = ICAnalyzer(method="spearman")
+        rank_ic = analyzer.calculate_rank_ic(
+            sample_factor_values, sample_forward_returns
+        )
+
+        # analyzeメソッドで取得したmean_icと一致するはず
+        result = analyzer.analyze(sample_factor_values, sample_forward_returns)
+        assert rank_ic == pytest.approx(result.mean_ic, rel=1e-6)
+
+    def test_正常系_完全正相関でRankIC約1(
+        self,
+        perfect_positive_correlation_data: tuple[pd.DataFrame, pd.DataFrame],
+    ) -> None:
+        """完全正相関データでSpearman Rank ICが約1になることを確認。"""
+        factor_df, return_df = perfect_positive_correlation_data
+        analyzer = ICAnalyzer(method="spearman")
+        rank_ic = analyzer.calculate_rank_ic(factor_df, return_df)
+
+        assert rank_ic == pytest.approx(1.0, abs=0.001)
+
+    def test_正常系_完全逆相関でRankIC約マイナス1(
+        self,
+        perfect_negative_correlation_data: tuple[pd.DataFrame, pd.DataFrame],
+    ) -> None:
+        """完全逆相関データでSpearman Rank ICが約-1になることを確認。"""
+        factor_df, return_df = perfect_negative_correlation_data
+        analyzer = ICAnalyzer(method="spearman")
+        rank_ic = analyzer.calculate_rank_ic(factor_df, return_df)
+
+        assert rank_ic == pytest.approx(-1.0, abs=0.001)
+
+
+# =============================================================================
+# TestCalculateIR: calculate_ir エイリアスメソッドテスト
+# =============================================================================
+
+
+class TestCalculateIR:
+    """calculate_ir エイリアスメソッドのテスト。
+
+    Issue #261 で要求されているエイリアスメソッド。
+    情報比率（IR = mean_ic / std_ic）を計算し、floatを返す。
+    """
+
+    def test_正常系_calculate_irがfloatを返す(
+        self,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_irメソッドがfloat型のIRを返すことを確認。"""
+        analyzer = ICAnalyzer(method="spearman")
+        ir = analyzer.calculate_ir(sample_factor_values, sample_forward_returns)
+
+        assert isinstance(ir, float)
+        # IR は NaN でなければ有効な float
+        assert not np.isnan(ir)
+
+    def test_正常系_analyzeのIRと一致(
+        self,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_irがanalyzeで返されるIRと一致することを確認。"""
+        analyzer = ICAnalyzer(method="spearman")
+        ir = analyzer.calculate_ir(sample_factor_values, sample_forward_returns)
+
+        result = analyzer.analyze(sample_factor_values, sample_forward_returns)
+        assert ir == pytest.approx(result.ir, rel=1e-6)
+
+    def test_正常系_高いICで高いIR(
+        self,
+        perfect_positive_correlation_data: tuple[pd.DataFrame, pd.DataFrame],
+    ) -> None:
+        """完全相関（安定したIC）でIRが高くなることを確認。"""
+        factor_df, return_df = perfect_positive_correlation_data
+        analyzer = ICAnalyzer(method="spearman")
+        ir = analyzer.calculate_ir(factor_df, return_df)
+
+        # 完全相関ではstd_icが0に近いため、IRは非常に大きくなる
+        assert ir > 1.0 or np.isinf(ir)

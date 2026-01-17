@@ -531,3 +531,145 @@ class QuantileAnalyzer:
         logger.debug("Quantile plot created")
 
         return fig
+
+    def analyze_by_quantile(
+        self,
+        factor_values: pd.DataFrame,
+        forward_returns: pd.DataFrame,
+    ) -> pd.Series:
+        """Calculate mean returns by quantile.
+
+        This is a convenience method that wraps analyze() and returns just
+        the mean returns by quantile.
+
+        Parameters
+        ----------
+        factor_values : pd.DataFrame
+            Factor values with datetime index and symbol columns.
+        forward_returns : pd.DataFrame
+            Forward returns with same structure as factor_values.
+
+        Returns
+        -------
+        pd.Series
+            Mean returns by quantile (index: quantile number 1 to n_quantiles)
+
+        Examples
+        --------
+        >>> analyzer = QuantileAnalyzer(n_quantiles=5)
+        >>> mean_returns = analyzer.analyze_by_quantile(factor_values, forward_returns)
+        >>> print(mean_returns)
+        1    0.0012
+        2    0.0025
+        3    0.0038
+        4    0.0051
+        5    0.0064
+        dtype: float64
+        """
+        logger.debug(
+            "Analyzing by quantile",
+            factor_shape=factor_values.shape,
+            return_shape=forward_returns.shape,
+            n_quantiles=self.n_quantiles,
+        )
+
+        result = self.analyze(factor_values, forward_returns)
+        mean_returns = result.mean_returns
+
+        logger.debug(
+            "Quantile analysis completed",
+            n_quantiles=len(mean_returns),
+        )
+        return mean_returns
+
+    def calculate_spread_return(
+        self,
+        factor_values: pd.DataFrame,
+        forward_returns: pd.DataFrame,
+    ) -> float:
+        """Calculate Long-Short spread (Top quantile - Bottom quantile).
+
+        This is a convenience method that wraps analyze() and returns just
+        the long-short spread return.
+
+        Parameters
+        ----------
+        factor_values : pd.DataFrame
+            Factor values with datetime index and symbol columns.
+        forward_returns : pd.DataFrame
+            Forward returns with same structure as factor_values.
+
+        Returns
+        -------
+        float
+            Long-Short spread return (top quantile return - bottom quantile return)
+
+        Examples
+        --------
+        >>> analyzer = QuantileAnalyzer(n_quantiles=5)
+        >>> spread = analyzer.calculate_spread_return(factor_values, forward_returns)
+        >>> print(f"Long-Short Spread: {spread:.4f}")
+        Long-Short Spread: 0.0052
+        """
+        logger.debug(
+            "Calculating spread return",
+            factor_shape=factor_values.shape,
+            return_shape=forward_returns.shape,
+            n_quantiles=self.n_quantiles,
+        )
+
+        result = self.analyze(factor_values, forward_returns)
+        spread = result.long_short_return
+
+        logger.debug(
+            "Spread return calculated",
+            spread=spread,
+        )
+        return spread
+
+    def plot_quantile_performance(
+        self,
+        factor_values: pd.DataFrame,
+        forward_returns: pd.DataFrame,
+        title: str | None = None,
+    ) -> go.Figure:
+        """Plot quantile performance as a bar chart.
+
+        This is a convenience method that wraps analyze() and plot(),
+        allowing direct visualization from factor and return data.
+
+        Parameters
+        ----------
+        factor_values : pd.DataFrame
+            Factor values with datetime index and symbol columns.
+        forward_returns : pd.DataFrame
+            Forward returns with same structure as factor_values.
+        title : str | None, default=None
+            Chart title. If None, a default title is used.
+
+        Returns
+        -------
+        go.Figure
+            Plotly Figure object for the bar chart.
+
+        Examples
+        --------
+        >>> analyzer = QuantileAnalyzer(n_quantiles=5)
+        >>> fig = analyzer.plot_quantile_performance(
+        ...     factor_values, forward_returns, title="Momentum Factor"
+        ... )
+        >>> fig.show()
+        """
+        logger.debug(
+            "Plotting quantile performance",
+            factor_shape=factor_values.shape,
+            return_shape=forward_returns.shape,
+            n_quantiles=self.n_quantiles,
+            title=title,
+        )
+
+        result = self.analyze(factor_values, forward_returns)
+        fig = self.plot(result, title=title)
+
+        logger.debug("Quantile performance plot created")
+        return fig

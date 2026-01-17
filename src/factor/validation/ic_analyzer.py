@@ -447,5 +447,143 @@ class ICAnalyzer:
             common_symbols=len(common_columns),
         )
 
+    def calculate_ic(
+        self,
+        factor_values: pd.DataFrame,
+        forward_returns: pd.DataFrame,
+    ) -> float:
+        """Calculate Information Coefficient using Pearson correlation.
+
+        This is a convenience method that wraps analyze() and returns just
+        the mean IC value using Pearson correlation.
+
+        Parameters
+        ----------
+        factor_values : pd.DataFrame
+            Factor values (index: date, columns: symbols)
+        forward_returns : pd.DataFrame
+            Forward returns (index: date, columns: symbols)
+
+        Returns
+        -------
+        float
+            Mean IC (Pearson correlation) across all periods
+
+        Examples
+        --------
+        >>> analyzer = ICAnalyzer(method="pearson")
+        >>> ic = analyzer.calculate_ic(factor_values, forward_returns)
+        >>> print(f"IC: {ic:.4f}")
+        IC: 0.0523
+        """
+        logger.debug(
+            "Calculating IC using Pearson correlation",
+            factor_shape=factor_values.shape,
+            return_shape=forward_returns.shape,
+        )
+
+        # Use Pearson correlation for IC calculation
+        original_method = self.method
+        self.method = "pearson"
+
+        try:
+            result = self.analyze(factor_values, forward_returns)
+            ic = result.mean_ic
+        finally:
+            self.method = original_method
+
+        logger.debug("IC calculated", ic=ic)
+        return ic
+
+    def calculate_rank_ic(
+        self,
+        factor_values: pd.DataFrame,
+        forward_returns: pd.DataFrame,
+    ) -> float:
+        """Calculate Rank IC using Spearman correlation.
+
+        This is a convenience method that wraps analyze() and returns just
+        the mean IC value using Spearman correlation (Rank IC).
+
+        Parameters
+        ----------
+        factor_values : pd.DataFrame
+            Factor values (index: date, columns: symbols)
+        forward_returns : pd.DataFrame
+            Forward returns (index: date, columns: symbols)
+
+        Returns
+        -------
+        float
+            Mean Rank IC (Spearman correlation) across all periods
+
+        Examples
+        --------
+        >>> analyzer = ICAnalyzer(method="spearman")
+        >>> rank_ic = analyzer.calculate_rank_ic(factor_values, forward_returns)
+        >>> print(f"Rank IC: {rank_ic:.4f}")
+        Rank IC: 0.0612
+        """
+        logger.debug(
+            "Calculating Rank IC using Spearman correlation",
+            factor_shape=factor_values.shape,
+            return_shape=forward_returns.shape,
+        )
+
+        # Use Spearman correlation for Rank IC calculation
+        original_method = self.method
+        self.method = "spearman"
+
+        try:
+            result = self.analyze(factor_values, forward_returns)
+            rank_ic = result.mean_ic
+        finally:
+            self.method = original_method
+
+        logger.debug("Rank IC calculated", rank_ic=rank_ic)
+        return rank_ic
+
+    def calculate_ir(
+        self,
+        factor_values: pd.DataFrame,
+        forward_returns: pd.DataFrame,
+    ) -> float:
+        """Calculate Information Ratio (IR = mean IC / std IC).
+
+        The Information Ratio measures the consistency of factor predictive
+        power. A higher IR indicates more consistent IC values over time.
+
+        Parameters
+        ----------
+        factor_values : pd.DataFrame
+            Factor values (index: date, columns: symbols)
+        forward_returns : pd.DataFrame
+            Forward returns (index: date, columns: symbols)
+
+        Returns
+        -------
+        float
+            Information Ratio (mean IC / standard deviation of IC)
+
+        Examples
+        --------
+        >>> analyzer = ICAnalyzer(method="spearman")
+        >>> ir = analyzer.calculate_ir(factor_values, forward_returns)
+        >>> print(f"IR: {ir:.4f}")
+        IR: 1.245
+        """
+        logger.debug(
+            "Calculating Information Ratio",
+            factor_shape=factor_values.shape,
+            return_shape=forward_returns.shape,
+            method=self.method,
+        )
+
+        result = self.analyze(factor_values, forward_returns)
+        ir = result.ir
+
+        logger.debug("IR calculated", ir=ir)
+        return ir
+
 
 __all__ = ["ICAnalyzer", "ICResult"]
