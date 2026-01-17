@@ -396,9 +396,9 @@ class TestAllDefinition:
         import factor
 
         for name in factor.__all__:
-            assert hasattr(
-                factor, name
-            ), f"{name} is in __all__ but not accessible from package"
+            assert hasattr(factor, name), (
+                f"{name} is in __all__ but not accessible from package"
+            )
 
 
 class TestBulkImport:

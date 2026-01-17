@@ -1135,13 +1135,13 @@ def _(mo, return_dist_symbols, return_histogram_fig, stats_table_md):
 
 
 @app.cell
-def _(mo, performance_tab_content, return_distribution_content, tab2_content):
+def _(mo, performance_tab_content, return_distribution_content, tab2_content, tab3_content):
     """Tab navigation for dashboard sections with all implemented tabs."""
     tabs_with_all = mo.ui.tabs(
         {
             "パフォーマンス概要": performance_tab_content,
             "マクロ指標": tab2_content,
-            "相関・ベータ分析": mo.md("## Tab 3: 相関・ベータ分析\n\n- セクターETFローリングベータ（vs S&P500）\n- ドルインデックス vs 貴金属相関\n- 相関ヒートマップ\n\n> 未実装"),
+            "相関・ベータ分析": tab3_content,
             "リターン分布": return_distribution_content,
         }
     )
@@ -1159,6 +1159,335 @@ def _(mo, selected_period, tabs_with_all):
         gap=2,
     )
     return (_dashboard,)
+
+
+# =============================================================================
+# Tab 3: 相関・ベータ分析
+# =============================================================================
+
+
+@app.cell
+def _(mo):
+    """Rolling window slider for Tab 3."""
+    rolling_window_slider = mo.ui.slider(
+        start=20,
+        stop=252,
+        step=1,
+        value=60,
+        label="ローリング窓サイズ（日数）",
+        show_value=True,
+    )
+    return (rolling_window_slider,)
+
+
+@app.cell
+def _():
+    """Import market_analysis API for Tab 3."""
+    import contextlib
+    import warnings
+
+    import pandas as pd
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+
+    from market_analysis import CorrelationAnalyzer, MarketData
+    from market_analysis.visualization import HeatmapChart
+
+    warnings.filterwarnings("ignore")
+    return (
+        CorrelationAnalyzer,
+        HeatmapChart,
+        MarketData,
+        contextlib,
+        go,
+        make_subplots,
+        pd,
+    )
+
+
+@app.cell
+def _(
+    MarketData, METALS, SECTOR_ETFS, contextlib, get_date_range_from_period, pd, selected_period
+):
+    """Fetch data for Tab 3 analysis."""
+    market_data = MarketData()
+    start_date, end_date = get_date_range_from_period(selected_period)
+
+    # Fetch sector ETF data + S&P500 benchmark
+    sector_data = {}  # dict[str, DataFrame]
+    benchmark_symbol = "SPY"  # S&P500 ETF as benchmark
+    sector_symbols = [*SECTOR_ETFS, benchmark_symbol]
+
+    for symbol in sector_symbols:
+        try:
+            df = market_data.fetch_stock(symbol, start=start_date, end=end_date)
+            sector_data[symbol] = df
+        except Exception:  # nosec B110 - intentional pass for graceful degradation
+            pass
+
+    # Fetch metals data
+    metals_data = {}  # dict[str, DataFrame]
+    for symbol in METALS:
+        try:
+            df = market_data.fetch_stock(symbol, start=start_date, end=end_date)
+            metals_data[symbol] = df
+        except Exception:  # nosec B110 - intentional pass for graceful degradation
+            pass
+
+    # Fetch USD Index from FRED
+    usd_data = None  # DataFrame | None
+    with contextlib.suppress(Exception):
+        usd_data = market_data.fetch_fred("DTWEXAFEGS", start=start_date, end=end_date)
+
+    return benchmark_symbol, market_data, metals_data, sector_data, usd_data
+
+
+@app.cell
+def _(
+    CorrelationAnalyzer,
+    benchmark_symbol,
+    pd,
+    rolling_window_slider,
+    sector_data,
+):
+    """Calculate rolling beta for sector ETFs vs S&P500."""
+    rolling_window = rolling_window_slider.value
+
+    # Calculate returns for all sectors
+    sector_returns = {}  # dict[str, Series]
+    for symbol, df in sector_data.items():
+        if "close" in df.columns:
+            returns = df["close"].pct_change().dropna()
+            sector_returns[symbol] = returns
+
+    # Calculate rolling beta for each sector vs benchmark
+    rolling_betas = {}  # dict[str, Series]
+    if benchmark_symbol in sector_returns:
+        benchmark_returns = sector_returns[benchmark_symbol]
+        for symbol, returns in sector_returns.items():
+            if symbol == benchmark_symbol:
+                continue
+            try:
+                # Align returns
+                aligned = pd.concat([returns, benchmark_returns], axis=1).dropna()
+                if len(aligned) >= rolling_window:
+                    beta = CorrelationAnalyzer.calculate_rolling_beta(
+                        aligned.iloc[:, 0],
+                        aligned.iloc[:, 1],
+                        window=rolling_window,
+                    )
+                    rolling_betas[symbol] = beta
+            except Exception:  # nosec B110 - intentional pass for graceful degradation
+                pass
+
+    return rolling_betas, rolling_window, sector_returns
+
+
+@app.cell
+def _(go, make_subplots, rolling_betas, rolling_window):
+    """Create sector ETF rolling beta chart."""
+    # Select key sectors to display
+    display_sectors = ["XLK", "XLF", "XLE", "XLU", "XLRE"]
+    sector_names = {
+        "XLK": "Technology",
+        "XLF": "Financials",
+        "XLE": "Energy",
+        "XLU": "Utilities",
+        "XLRE": "Real Estate",
+        "XLV": "Healthcare",
+        "XLY": "Consumer Disc.",
+        "XLP": "Consumer Staples",
+        "XLI": "Industrials",
+        "XLB": "Materials",
+        "XLC": "Communication",
+    }
+
+    fig_beta = make_subplots(rows=1, cols=1)
+
+    colors = [
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b",
+        "#e377c2",
+    ]
+
+    for i, symbol in enumerate(display_sectors):
+        if symbol in rolling_betas:
+            beta_series = rolling_betas[symbol].dropna()
+            fig_beta.add_trace(
+                go.Scatter(
+                    x=beta_series.index,
+                    y=beta_series.values,
+                    mode="lines",
+                    name=f"{symbol} ({sector_names.get(symbol, symbol)})",
+                    line={"color": colors[i % len(colors)]},
+                )
+            )
+
+    # Add beta = 1 reference line
+    if rolling_betas:
+        fig_beta.add_hline(
+            y=1.0,
+            line_dash="dash",
+            line_color="gray",
+            annotation_text="β=1",
+            annotation_position="right",
+        )
+
+    fig_beta.update_layout(
+        title=f"セクターETF ローリングベータ (vs SPY, {rolling_window}日窓)",
+        xaxis_title="日付",
+        yaxis_title="ベータ",
+        legend={"orientation": "h", "yanchor": "bottom", "y": -0.3},
+        height=450,
+        template="plotly_white",
+    )
+    return colors, display_sectors, fig_beta, sector_names
+
+
+@app.cell
+def _(CorrelationAnalyzer, metals_data, pd, rolling_window, usd_data):
+    """Calculate rolling correlation between USD index and metals."""
+    usd_metals_correlations = {}  # dict[str, Series]
+
+    if usd_data is not None and "close" in usd_data.columns:
+        usd_prices = usd_data["close"]
+
+        for symbol, df in metals_data.items():
+            if "close" in df.columns:
+                try:
+                    metal_prices = df["close"]
+                    # Align data
+                    aligned = pd.concat([usd_prices, metal_prices], axis=1).dropna()
+                    if len(aligned) >= rolling_window:
+                        corr = CorrelationAnalyzer.calculate_rolling_correlation(
+                            aligned.iloc[:, 0],
+                            aligned.iloc[:, 1],
+                            window=rolling_window,
+                        )
+                        usd_metals_correlations[symbol] = corr
+                except Exception:  # nosec B110 - intentional pass for graceful degradation
+                    pass
+    return (usd_metals_correlations,)
+
+
+@app.cell
+def _(go, make_subplots, rolling_window, usd_metals_correlations):
+    """Create USD vs metals rolling correlation chart."""
+    metal_names = {
+        "GLD": "Gold",
+        "SLV": "Silver",
+        "CPER": "Copper",
+        "PPLT": "Platinum",
+        "PALL": "Palladium",
+    }
+
+    fig_usd_metals = make_subplots(rows=1, cols=1)
+
+    colors_metals = ["#FFD700", "#C0C0C0", "#B87333", "#E5E4E2", "#CED0DD"]
+
+    for i, (symbol, corr_series) in enumerate(usd_metals_correlations.items()):
+        corr_clean = corr_series.dropna()
+        fig_usd_metals.add_trace(
+            go.Scatter(
+                x=corr_clean.index,
+                y=corr_clean.values,
+                mode="lines",
+                name=f"{symbol} ({metal_names.get(symbol, symbol)})",
+                line={"color": colors_metals[i % len(colors_metals)]},
+            )
+        )
+
+    # Add reference lines
+    fig_usd_metals.add_hline(
+        y=0, line_dash="dash", line_color="gray", annotation_text="相関=0"
+    )
+
+    fig_usd_metals.update_layout(
+        title=f"ドルインデックス vs 貴金属 ローリング相関 ({rolling_window}日窓)",
+        xaxis_title="日付",
+        yaxis_title="相関係数",
+        yaxis={"range": [-1, 1]},
+        legend={"orientation": "h", "yanchor": "bottom", "y": -0.3},
+        height=400,
+        template="plotly_white",
+    )
+    return colors_metals, fig_usd_metals, metal_names
+
+
+@app.cell
+def _(CorrelationAnalyzer, pd, sector_returns):
+    """Calculate correlation matrix for sector ETFs."""
+    # Create returns DataFrame for correlation matrix
+    returns_df = pd.DataFrame(sector_returns)
+
+    # Calculate correlation matrix
+    if not returns_df.empty and returns_df.shape[1] >= 2:
+        correlation_matrix = CorrelationAnalyzer.calculate_correlation_matrix(
+            returns_df, method="pearson"
+        )
+    else:
+        correlation_matrix = pd.DataFrame()
+    return correlation_matrix, returns_df
+
+
+@app.cell
+def _(HeatmapChart, correlation_matrix):
+    """Create correlation heatmap for sector ETFs."""
+    if not correlation_matrix.empty:
+        heatmap_chart = HeatmapChart(
+            correlation_matrix,
+            show_values=True,
+            value_format=".2f",
+        )
+        heatmap_chart.build()
+        fig_heatmap = heatmap_chart.figure
+        fig_heatmap.update_layout(
+            title="セクターETF 相関ヒートマップ",
+            height=500,
+            width=600,
+        )
+    else:
+        import plotly.graph_objects as go
+
+        fig_heatmap = go.Figure()
+        fig_heatmap.add_annotation(
+            text="データ不足のためヒートマップを表示できません",
+            xref="paper",
+            yref="paper",
+            x=0.5,
+            y=0.5,
+            showarrow=False,
+        )
+    return fig_heatmap, heatmap_chart
+
+
+@app.cell
+def _(
+    fig_beta,
+    fig_heatmap,
+    fig_usd_metals,
+    mo,
+    rolling_window_slider,
+):
+    """Assemble Tab 3 content."""
+    tab3_content = mo.vstack(
+        [
+            mo.md("## Tab 3: 相関・ベータ分析"),
+            mo.hstack([rolling_window_slider], justify="start"),
+            mo.md("### セクターETF ローリングベータ (vs S&P500)"),
+            fig_beta,
+            mo.md("### ドルインデックス vs 貴金属 相関"),
+            fig_usd_metals,
+            mo.md("### セクターETF 相関ヒートマップ"),
+            fig_heatmap,
+        ],
+        align="stretch",
+    )
+    return (tab3_content,)
 
 
 if __name__ == "__main__":
