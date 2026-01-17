@@ -8,17 +8,17 @@
 
 - **フェーズ**: 実装中
 - **開始日**: 2026-01-17
-- **最終更新**: 2026-01-17
+- **最終更新**: 2026-01-18
 
 ## GitHub Issues
 
 | # | タイトル | ラベル | ステータス |
 |---|---------|--------|----------|
 | [#304](https://github.com/YH-05/finance/issues/304) | marimo app 基本骨格実装 | enhancement | Done |
-| [#305](https://github.com/YH-05/finance/issues/305) | Tab 1: パフォーマンス概要実装 | enhancement | Todo |
-| [#306](https://github.com/YH-05/finance/issues/306) | Tab 2: マクロ指標実装 | enhancement | Todo |
-| [#307](https://github.com/YH-05/finance/issues/307) | Tab 3: 相関・ベータ分析実装 | enhancement | Todo |
-| [#308](https://github.com/YH-05/finance/issues/308) | Tab 4: リターン分布実装 | enhancement | Todo |
+| [#305](https://github.com/YH-05/finance/issues/305) | Tab 1: パフォーマンス概要実装 | enhancement | Done |
+| [#306](https://github.com/YH-05/finance/issues/306) | Tab 2: マクロ指標実装 | enhancement | Done |
+| [#307](https://github.com/YH-05/finance/issues/307) | Tab 3: 相関・ベータ分析実装 | enhancement | In Progress |
+| [#308](https://github.com/YH-05/finance/issues/308) | Tab 4: リターン分布実装 | enhancement | Done |
 | [#309](https://github.com/YH-05/finance/issues/309) | 統合テスト・動作確認 | test | Todo |
 
 ## 目標
