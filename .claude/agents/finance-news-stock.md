@@ -34,9 +34,6 @@ priority: high
 
 ## 処理フロー
 
-**共通処理ガイドを参照してください**:
-`.claude/agents/finance_news_collector/common-processing-guide.md`
-
 ### 概要
 
 ```
@@ -51,15 +48,175 @@ Phase 2: フィルタリング
 ├── 信頼性スコアリング
 └── 重複チェック
 
-Phase 3: GitHub投稿
+Phase 3: GitHub投稿（このエージェントが直接実行）
 ├── 記事内容取得と要約生成
-├── Issue作成（Issueテンプレート準拠）
-├── Project 15に追加
-└── Status設定 (Stock: 47fc9ee4)
+├── Issue作成（gh issue create）
+├── Project 15に追加（gh project item-add）
+└── Status設定（GraphQL API）
 
 Phase 4: 結果報告
 └── 統計サマリー出力
 ```
+
+### Phase 3: GitHub投稿（詳細）
+
+このエージェントは直接以下の処理を実行します（オーケストレーターに依存しない）。
+
+#### ステップ3.1: Issue作成
+
+```bash
+gh issue create \
+    --repo YH-05/finance \
+    --title "[NEWS] {title}" \
+    --body "$(cat <<'EOF'
+### 概要
+
+{japanese_summary}
+
+### 情報源URL
+
+{link}
+
+### 公開日
+
+{published_jst}(JST)
+
+### 信頼性スコア
+
+{score}点
+
+### カテゴリ
+
+Stock（個別銘柄）
+
+### フィード/情報源名
+
+{source}
+
+### 備考・メモ
+
+- テーマ: Stock（個別銘柄）
+- マッチキーワード: {matched_keywords}
+EOF
+)" \
+    --label "news"
+```
+
+#### ステップ3.2: Project追加
+
+```bash
+gh project item-add 15 \
+    --owner YH-05 \
+    --url {issue_url}
+```
+
+#### ステップ3.3: Status設定（GraphQL API）
+
+```bash
+# Step 1: Issue Node IDを取得
+gh api graphql -f query='
+query {
+  repository(owner: "YH-05", name: "finance") {
+    issue(number: {issue_number}) {
+      id
+    }
+  }
+}'
+
+# Step 2: Project Item IDを取得
+gh api graphql -f query='
+query {
+  node(id: "{issue_node_id}") {
+    ... on Issue {
+      projectItems(first: 10) {
+        nodes {
+          id
+          project {
+            number
+          }
+        }
+      }
+    }
+  }
+}'
+
+# Step 3: StatusをStockに設定
+gh api graphql -f query='
+mutation {
+  updateProjectV2ItemFieldValue(
+    input: {
+      projectId: "PVT_kwHOBoK6AM4BMpw_"
+      itemId: "{project_item_id}"
+      fieldId: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
+      value: {
+        singleSelectOptionId: "47fc9ee4"
+      }
+    }
+  ) {
+    projectV2Item {
+      id
+    }
+  }
+}'
+```
+
+### エラーハンドリング
+
+このエージェントは以下のエラーを直接処理します:
+
+#### E001: Issue作成失敗
+
+```python
+try:
+    result = subprocess.run(
+        ["gh", "issue", "create", ...],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+except subprocess.CalledProcessError as e:
+    ログ出力: f"警告: Issue作成失敗: {item['title']}"
+    ログ出力: f"エラー詳細: {e.stderr}"
+
+    if "rate limit" in str(e.stderr).lower():
+        ログ出力: "GitHub API レート制限に達しました。1時間待機してください。"
+
+    failed += 1
+    continue  # 次の記事へ進む
+```
+
+#### E002: Project追加失敗
+
+```python
+try:
+    subprocess.run(
+        ["gh", "project", "item-add", "15", "--owner", "YH-05", "--url", issue_url],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+except subprocess.CalledProcessError as e:
+    ログ出力: f"警告: Project追加失敗: Issue #{issue_number}"
+    ログ出力: f"エラー詳細: {e.stderr}"
+    # Issue作成は成功しているため処理継続
+```
+
+#### E003: Status設定失敗
+
+```python
+try:
+    # GraphQL APIでStatus設定
+    ...
+except Exception as e:
+    ログ出力: f"警告: Status設定失敗: Issue #{issue_number}"
+    ログ出力: "Issue作成は成功しています。手動でStatusを設定してください。"
+    # Issue作成は成功しているため処理継続
+```
+
+### 共通処理ガイド
+
+詳細なアルゴリズムについては以下を参照:
+`.claude/agents/finance_news_collector/common-processing-guide.md`
 
 ## 判定例
 
