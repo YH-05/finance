@@ -314,7 +314,7 @@ class Portfolio:
             logger.info("Period set from preset", preset=preset)
         else:
             # Use custom period
-            assert start is not None  # For type checker
+            assert start is not None  # nosec B101 - For type checker
             start_date = self._parse_date(start)
             end_date = self._parse_date(end) if end else date.today()
 
