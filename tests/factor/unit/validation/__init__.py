@@ -1,1 +1,1 @@
-"""Validation module tests for factor package."""
+"""Unit tests for factor validation module."""

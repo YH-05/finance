@@ -10,13 +10,15 @@ from .errors import (
 )
 from .types import FactorConfig, FactorResult, OrthogonalizationResult, QuantileResult
 from .utils.logging_config import get_logger
-from .validation import QuantileAnalyzer
+from .validation import ICAnalyzer, ICResult, QuantileAnalyzer
 
 __all__ = [
     "FactorCategory",
     "FactorConfig",
     "FactorError",
     "FactorResult",
+    "ICAnalyzer",
+    "ICResult",
     "InsufficientDataError",
     "NormalizationError",
     "NormalizationMethod",
