@@ -15,7 +15,7 @@
 
 ### 基盤機能（Infrastructure）
 - [x] 共通型定義（types.py） [#104](https://github.com/YH-05/finance/issues/104) ✅ Done
-- [ ] エラー・警告クラス（errors.py） [#106](https://github.com/YH-05/finance/issues/106) 🔄 In Progress
+- [x] エラー・警告クラス（errors.py） [#106](https://github.com/YH-05/finance/issues/106) ✅ Done
 - [ ] DataProvider プロトコル [#107](https://github.com/YH-05/finance/issues/107)
 - [ ] MarketAnalysisProvider [#111](https://github.com/YH-05/finance/issues/111)
 
