@@ -18,7 +18,7 @@
 | [#305](https://github.com/YH-05/finance/issues/305) | Tab 1: パフォーマンス概要実装 | enhancement | In Progress |
 | [#306](https://github.com/YH-05/finance/issues/306) | Tab 2: マクロ指標実装 | enhancement | Done |
 | [#307](https://github.com/YH-05/finance/issues/307) | Tab 3: 相関・ベータ分析実装 | enhancement | In Progress |
-| [#308](https://github.com/YH-05/finance/issues/308) | Tab 4: リターン分布実装 | enhancement | In Progress |
+| [#308](https://github.com/YH-05/finance/issues/308) | Tab 4: リターン分布実装 | enhancement | Done |
 | [#309](https://github.com/YH-05/finance/issues/309) | 統合テスト・動作確認 | test | Todo |
 
 ## 目標
