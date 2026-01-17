@@ -916,3 +916,427 @@ class TestVaR:
         # 信頼水準が高いほど VaR は小さい（より大きな損失）
         assert var_90 >= var_95 - 1e-10
         assert var_95 >= var_99 - 1e-10
+
+
+class TestBeta:
+    """ベータ値計算のテスト."""
+
+    def test_正常系_ベータ値が計算できる(
+        self,
+        sample_returns: pd.Series,
+        benchmark_returns: pd.Series,
+    ) -> None:
+        """ベンチマーク指定時にベータ値が計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ
+        benchmark_returns : pd.Series
+            ベンチマークのリターンデータ
+
+        Notes
+        -----
+        Formula: beta = cov(returns, benchmark) / var(benchmark)
+        """
+        calculator = RiskCalculator(sample_returns)
+        beta = calculator.beta(benchmark_returns)
+
+        assert isinstance(beta, float)
+        assert not math.isnan(beta)
+
+    def test_正常系_ベータ値の計算式が正しい(
+        self,
+        sample_returns: pd.Series,
+        benchmark_returns: pd.Series,
+    ) -> None:
+        """ベータ値の計算式が正しいことを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ
+        benchmark_returns : pd.Series
+            ベンチマークのリターンデータ
+
+        Notes
+        -----
+        Formula: beta = cov(returns, benchmark) / var(benchmark)
+        """
+        calculator = RiskCalculator(sample_returns)
+        beta = calculator.beta(benchmark_returns)
+
+        # 期待値の計算
+        aligned = pd.DataFrame(
+            {
+                "portfolio": sample_returns,
+                "benchmark": benchmark_returns,
+            }
+        ).dropna()
+
+        portfolio_series = pd.Series(aligned["portfolio"])
+        benchmark_series = pd.Series(aligned["benchmark"])
+        covariance = portfolio_series.cov(benchmark_series)
+        benchmark_variance = benchmark_series.var()
+        expected = covariance / benchmark_variance
+
+        assert math.isclose(beta, expected, rel_tol=1e-10)
+
+    def test_正常系_同一リターンでベータ1(self) -> None:
+        """ポートフォリオとベンチマークが同一の場合、ベータが1になることを確認.
+
+        Notes
+        -----
+        完全相関の場合、beta = cov(x,x) / var(x) = var(x) / var(x) = 1
+        """
+        np.random.seed(42)
+        returns = pd.Series(np.random.normal(0.001, 0.02, 100))
+
+        calculator = RiskCalculator(returns)
+        beta = calculator.beta(returns)
+
+        assert math.isclose(beta, 1.0, rel_tol=1e-10)
+
+    def test_エッジケース_ベンチマーク分散ゼロでNaN(self) -> None:
+        """ベンチマークの分散がゼロの場合、NaN を返すことを確認.
+
+        Notes
+        -----
+        分散ゼロはゼロ除算になるため、NaN を返す。
+        """
+        np.random.seed(42)
+        portfolio_returns = pd.Series(np.random.normal(0.001, 0.02, 100))
+        constant_benchmark = pd.Series([0.001] * 100)  # 分散ゼロ
+
+        calculator = RiskCalculator(portfolio_returns)
+        beta = calculator.beta(constant_benchmark)
+
+        assert math.isnan(beta)
+
+    def test_正常系_日付アライメントが正しく動作(self) -> None:
+        """異なる日付インデックスでも正しくアライメントされることを確認.
+
+        Notes
+        -----
+        ポートフォリオとベンチマークの日付が一致しない場合、
+        共通の日付のみを使用して計算する。
+        """
+        np.random.seed(42)
+        portfolio_returns = pd.Series(
+            np.random.normal(0.001, 0.02, 100),
+            index=pd.date_range("2023-01-01", periods=100, freq="B"),
+        )
+        # 一部異なる日付
+        benchmark_returns = pd.Series(
+            np.random.normal(0.0005, 0.015, 100),
+            index=pd.date_range("2023-01-05", periods=100, freq="B"),
+        )
+
+        calculator = RiskCalculator(portfolio_returns)
+        beta = calculator.beta(benchmark_returns)
+
+        assert isinstance(beta, float)
+        assert not math.isnan(beta)
+
+
+class TestTreynorRatio:
+    """トレイナーレシオ計算のテスト."""
+
+    def test_正常系_トレイナーレシオが計算できる(
+        self,
+        sample_returns: pd.Series,
+        benchmark_returns: pd.Series,
+    ) -> None:
+        """ベンチマーク指定時にトレイナーレシオが計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ
+        benchmark_returns : pd.Series
+            ベンチマークのリターンデータ
+
+        Notes
+        -----
+        Formula: treynor = (annualized_return - risk_free_rate) / beta
+        """
+        calculator = RiskCalculator(sample_returns, risk_free_rate=0.02)
+        treynor = calculator.treynor_ratio(benchmark_returns)
+
+        assert isinstance(treynor, float)
+        assert not math.isnan(treynor)
+
+    def test_正常系_トレイナーレシオの計算式が正しい(
+        self,
+        sample_returns: pd.Series,
+        benchmark_returns: pd.Series,
+    ) -> None:
+        """トレイナーレシオの計算式が正しいことを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ
+        benchmark_returns : pd.Series
+            ベンチマークのリターンデータ
+
+        Notes
+        -----
+        Formula: treynor = (annualized_return - risk_free_rate) / beta
+        """
+        risk_free_rate = 0.02
+        annualization_factor = 252
+
+        calculator = RiskCalculator(
+            sample_returns,
+            risk_free_rate=risk_free_rate,
+            annualization_factor=annualization_factor,
+        )
+        treynor = calculator.treynor_ratio(benchmark_returns)
+
+        # 期待値の計算
+        annualized_return = float(sample_returns.mean()) * annualization_factor
+        beta = calculator.beta(benchmark_returns)
+        expected = (annualized_return - risk_free_rate) / beta
+
+        assert math.isclose(treynor, expected, rel_tol=1e-10)
+
+    def test_正常系_リスクフリーレートが反映される(self) -> None:
+        """リスクフリーレートが計算に反映されることを確認.
+
+        Notes
+        -----
+        ベータが正の場合、リスクフリーレートが高いほどトレイナーレシオは低下。
+        ベータが負の場合は逆の関係になる。
+        """
+        np.random.seed(42)
+        # 正のベータを確保するため、同じシードで相関のあるリターンを生成
+        base_returns = np.random.normal(0.001, 0.02, 100)
+        portfolio_returns = pd.Series(
+            base_returns * 1.2 + np.random.normal(0, 0.005, 100)
+        )
+        benchmark_returns = pd.Series(base_returns)
+
+        calc_rf_zero = RiskCalculator(portfolio_returns, risk_free_rate=0.0)
+        calc_rf_positive = RiskCalculator(portfolio_returns, risk_free_rate=0.05)
+
+        # ベータが正であることを確認
+        beta = calc_rf_zero.beta(benchmark_returns)
+        assert beta > 0, f"Expected positive beta, got {beta}"
+
+        treynor_rf_zero = calc_rf_zero.treynor_ratio(benchmark_returns)
+        treynor_rf_positive = calc_rf_positive.treynor_ratio(benchmark_returns)
+
+        # ベータが正の場合、リスクフリーレートが高いほどトレイナーレシオは低下
+        assert treynor_rf_positive < treynor_rf_zero
+
+    def test_エッジケース_ベータゼロでInfまたはNaN(self) -> None:
+        """ベータがゼロの場合の動作を確認.
+
+        Notes
+        -----
+        ベータがゼロの場合、ゼロ除算になるため無限大または NaN を返す。
+        """
+        np.random.seed(42)
+        # 完全に無相関にするのは難しいため、ベンチマーク分散ゼロでベータ NaN のケースをテスト
+        portfolio_returns = pd.Series(np.random.normal(0.001, 0.02, 100))
+        constant_benchmark = pd.Series([0.001] * 100)  # 分散ゼロ
+
+        calculator = RiskCalculator(portfolio_returns)
+        treynor = calculator.treynor_ratio(constant_benchmark)
+
+        # ベータが NaN の場合、トレイナーレシオも NaN
+        assert math.isnan(treynor) or math.isinf(treynor)
+
+
+class TestInformationRatio:
+    """情報レシオ計算のテスト."""
+
+    def test_正常系_情報レシオが計算できる(
+        self,
+        sample_returns: pd.Series,
+        benchmark_returns: pd.Series,
+    ) -> None:
+        """ベンチマーク指定時に情報レシオが計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ
+        benchmark_returns : pd.Series
+            ベンチマークのリターンデータ
+
+        Notes
+        -----
+        Formula: IR = mean(active_returns) / std(active_returns) * sqrt(annualization_factor)
+        where active_returns = portfolio_returns - benchmark_returns
+        """
+        calculator = RiskCalculator(sample_returns)
+        ir = calculator.information_ratio(benchmark_returns)
+
+        assert isinstance(ir, float)
+        assert not math.isnan(ir)
+
+    def test_正常系_情報レシオの計算式が正しい(
+        self,
+        sample_returns: pd.Series,
+        benchmark_returns: pd.Series,
+    ) -> None:
+        """情報レシオの計算式が正しいことを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ
+        benchmark_returns : pd.Series
+            ベンチマークのリターンデータ
+
+        Notes
+        -----
+        Formula: IR = mean(active_returns) / std(active_returns) * sqrt(annualization_factor)
+        """
+        annualization_factor = 252
+
+        calculator = RiskCalculator(
+            sample_returns, annualization_factor=annualization_factor
+        )
+        ir = calculator.information_ratio(benchmark_returns)
+
+        # 期待値の計算
+        aligned = pd.DataFrame(
+            {
+                "portfolio": sample_returns,
+                "benchmark": benchmark_returns,
+            }
+        ).dropna()
+
+        portfolio_series = pd.Series(aligned["portfolio"])
+        benchmark_series = pd.Series(aligned["benchmark"])
+        active_returns = portfolio_series - benchmark_series
+        expected = float(
+            (active_returns.mean() / active_returns.std())
+            * np.sqrt(annualization_factor)
+        )
+
+        assert math.isclose(ir, expected, rel_tol=1e-10)
+
+    def test_正常系_アウトパフォーム時に正の情報レシオ(self) -> None:
+        """ポートフォリオがベンチマークをアウトパフォームする場合、正の IR になることを確認.
+
+        Notes
+        -----
+        アクティブリターンの平均が正の場合、情報レシオは正になる。
+        """
+        np.random.seed(42)
+        # 共通のベースリターンに対して、ポートフォリオが常にアウトパフォーム
+        base_returns = np.random.normal(0.001, 0.02, 100)
+        portfolio_returns = pd.Series(base_returns + 0.001)  # 常に0.1%上回る
+        benchmark_returns = pd.Series(base_returns)
+
+        calculator = RiskCalculator(portfolio_returns)
+        ir = calculator.information_ratio(benchmark_returns)
+
+        assert ir > 0
+
+    def test_正常系_アンダーパフォーム時に負の情報レシオ(self) -> None:
+        """ポートフォリオがベンチマークをアンダーパフォームする場合、負の IR になることを確認.
+
+        Notes
+        -----
+        アクティブリターンの平均が負の場合、情報レシオは負になる。
+        """
+        np.random.seed(42)
+        # 共通のベースリターンに対して、ポートフォリオが常にアンダーパフォーム
+        base_returns = np.random.normal(0.001, 0.02, 100)
+        portfolio_returns = pd.Series(base_returns - 0.001)  # 常に0.1%下回る
+        benchmark_returns = pd.Series(base_returns)
+
+        calculator = RiskCalculator(portfolio_returns)
+        ir = calculator.information_ratio(benchmark_returns)
+
+        assert ir < 0
+
+    def test_エッジケース_同一リターンでゼロまたはNaN(self) -> None:
+        """ポートフォリオとベンチマークが同一の場合、ゼロまたは NaN になることを確認.
+
+        Notes
+        -----
+        アクティブリターンがゼロの場合、平均もゼロで標準偏差もゼロになり、
+        0/0 となるため NaN を返す。
+        """
+        np.random.seed(42)
+        returns = pd.Series(np.random.normal(0.001, 0.02, 100))
+
+        calculator = RiskCalculator(returns)
+        ir = calculator.information_ratio(returns)
+
+        # 同一リターンの場合、アクティブリターン = 0 で NaN
+        assert math.isnan(ir) or math.isclose(ir, 0.0, abs_tol=1e-10)
+
+    def test_エッジケース_トラッキングエラーゼロでInfまたはNaN(self) -> None:
+        """トラッキングエラー（アクティブリターンの標準偏差）がゼロの場合の動作を確認.
+
+        Notes
+        -----
+        トラッキングエラーがゼロでアクティブリターン平均が正の場合、無限大を返す。
+        """
+        # 定数のリターン（トラッキングエラーゼロ、アクティブリターン正）
+        portfolio_returns = pd.Series([0.011] * 100)  # 定数リターン
+        benchmark_returns = pd.Series(
+            [0.010] * 100
+        )  # 定数リターン（ポートフォリオより0.1%低い）
+
+        calculator = RiskCalculator(portfolio_returns)
+        ir = calculator.information_ratio(benchmark_returns)
+
+        # トラッキングエラーゼロでアクティブリターン正の場合、無限大
+        assert math.isinf(ir) and ir > 0
+
+
+class TestBenchmarkMetricsErrors:
+    """ベンチマーク指標のエラーハンドリングテスト."""
+
+    def test_異常系_空のベンチマークでValueError(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """空のベンチマークリターンでエラーになることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ
+        """
+        empty_benchmark = pd.Series([], dtype=float)
+        calculator = RiskCalculator(sample_returns)
+
+        with pytest.raises(ValueError, match="benchmark.*empty"):
+            calculator.beta(empty_benchmark)
+
+        with pytest.raises(ValueError, match="benchmark.*empty"):
+            calculator.treynor_ratio(empty_benchmark)
+
+        with pytest.raises(ValueError, match="benchmark.*empty"):
+            calculator.information_ratio(empty_benchmark)
+
+    def test_異常系_共通日付なしでValueError(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """ポートフォリオとベンチマークに共通日付がない場合エラーになることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            ポートフォリオのリターンデータ（2023年）
+        """
+        # 完全に異なる期間のベンチマーク
+        benchmark_returns = pd.Series(
+            np.random.normal(0.001, 0.02, 100),
+            index=pd.date_range("2025-01-01", periods=100, freq="B"),
+        )
+
+        calculator = RiskCalculator(sample_returns)
+
+        with pytest.raises(ValueError, match="common|overlapping"):
+            calculator.beta(benchmark_returns)
