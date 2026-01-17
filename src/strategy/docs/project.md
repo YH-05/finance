@@ -14,41 +14,41 @@
 ## 主要機能
 
 ### 基盤機能（Infrastructure）
-- [ ] 共通型定義（types.py） [#104](https://github.com/yukihata/finance/issues/104)
-- [ ] エラー・警告クラス（errors.py） [#106](https://github.com/yukihata/finance/issues/106)
-- [ ] DataProvider プロトコル [#107](https://github.com/yukihata/finance/issues/107)
-- [ ] MarketAnalysisProvider [#111](https://github.com/yukihata/finance/issues/111)
+- [x] 共通型定義（types.py） [#104](https://github.com/YH-05/finance/issues/104) ✅ Done
+- [ ] エラー・警告クラス（errors.py） [#106](https://github.com/YH-05/finance/issues/106) 🔄 In Progress
+- [ ] DataProvider プロトコル [#107](https://github.com/YH-05/finance/issues/107)
+- [ ] MarketAnalysisProvider [#111](https://github.com/YH-05/finance/issues/111)
 
 ### ポートフォリオ管理（Portfolio Management）
-- [ ] ポートフォリオ構成の定義（ティッカー + 比率） [#112](https://github.com/yukihata/finance/issues/112)
-- [ ] 資産配分の計算と可視化（円グラフ、棒グラフ） [#121](https://github.com/yukihata/finance/issues/121)
-- [ ] セクター・資産クラス別の構成分析 [#112](https://github.com/yukihata/finance/issues/112)
+- [ ] ポートフォリオ構成の定義（ティッカー + 比率） [#112](https://github.com/YH-05/finance/issues/112)
+- [ ] 資産配分の計算と可視化（円グラフ、棒グラフ） [#121](https://github.com/YH-05/finance/issues/121)
+- [ ] セクター・資産クラス別の構成分析 [#112](https://github.com/YH-05/finance/issues/112)
 
 ### リスク分析（Risk Analysis）
-- [ ] ボラティリティ（標準偏差） [#113](https://github.com/yukihata/finance/issues/113)
-- [ ] シャープレシオ [#113](https://github.com/yukihata/finance/issues/113)
-- [ ] ソルティノレシオ [#113](https://github.com/yukihata/finance/issues/113)
-- [ ] 最大ドローダウン [#114](https://github.com/yukihata/finance/issues/114)
-- [ ] VaR（バリューアットリスク） [#114](https://github.com/yukihata/finance/issues/114)
-- [ ] ベータ値 [#118](https://github.com/yukihata/finance/issues/118)
-- [ ] トレイナーレシオ [#118](https://github.com/yukihata/finance/issues/118)
-- [ ] 情報レシオ [#118](https://github.com/yukihata/finance/issues/118)
+- [ ] ボラティリティ（標準偏差） [#113](https://github.com/YH-05/finance/issues/113)
+- [ ] シャープレシオ [#113](https://github.com/YH-05/finance/issues/113)
+- [ ] ソルティノレシオ [#113](https://github.com/YH-05/finance/issues/113)
+- [ ] 最大ドローダウン [#114](https://github.com/YH-05/finance/issues/114)
+- [ ] VaR（バリューアットリスク） [#114](https://github.com/YH-05/finance/issues/114)
+- [ ] ベータ値 [#118](https://github.com/YH-05/finance/issues/118)
+- [ ] トレイナーレシオ [#118](https://github.com/YH-05/finance/issues/118)
+- [ ] 情報レシオ [#118](https://github.com/YH-05/finance/issues/118)
 
 ### リバランス機能（Rebalancing）
-- [ ] 配分ドリフトの検出と可視化 [#119](https://github.com/yukihata/finance/issues/119) [#121](https://github.com/yukihata/finance/issues/121)
+- [ ] 配分ドリフトの検出と可視化 [#119](https://github.com/YH-05/finance/issues/119) [#121](https://github.com/YH-05/finance/issues/121)
 - [ ] リバランスコスト計算（取引コスト、税金影響）
 - [ ] リバランスタイミング分析
 
 ### 期間設定（Period Configuration）
-- [ ] プリセット期間（1年、3年、5年） [#104](https://github.com/yukihata/finance/issues/104) [#112](https://github.com/yukihata/finance/issues/112)
-- [ ] カスタム期間（開始日・終了日指定） [#104](https://github.com/yukihata/finance/issues/104) [#112](https://github.com/yukihata/finance/issues/112)
+- [x] プリセット期間（1年、3年、5年） [#104](https://github.com/YH-05/finance/issues/104) ✅ Done
+- [x] カスタム期間（開始日・終了日指定） [#104](https://github.com/YH-05/finance/issues/104) ✅ Done
 
 ### データ出力（Export）
-- [ ] pandas DataFrame [#120](https://github.com/yukihata/finance/issues/120)
-- [ ] JSON/辞書形式（AIエージェント向け） [#120](https://github.com/yukihata/finance/issues/120)
-- [ ] Plotlyチャート [#121](https://github.com/yukihata/finance/issues/121)
-- [ ] レポートテキスト（マークダウン） [#120](https://github.com/yukihata/finance/issues/120)
-- [ ] marimoノートブック連携 [#120](https://github.com/yukihata/finance/issues/120) [#121](https://github.com/yukihata/finance/issues/121)
+- [ ] pandas DataFrame [#120](https://github.com/YH-05/finance/issues/120)
+- [ ] JSON/辞書形式（AIエージェント向け） [#120](https://github.com/YH-05/finance/issues/120)
+- [ ] Plotlyチャート [#121](https://github.com/YH-05/finance/issues/121)
+- [ ] レポートテキスト（マークダウン） [#120](https://github.com/YH-05/finance/issues/120)
+- [ ] marimoノートブック連携 [#120](https://github.com/YH-05/finance/issues/120) [#121](https://github.com/YH-05/finance/issues/121)
 
 ### 将来実装（Future）
 - [ ] トレーディング戦略の基盤（戦略インターフェース、シグナル生成）
