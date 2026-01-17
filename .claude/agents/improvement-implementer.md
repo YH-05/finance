@@ -30,6 +30,39 @@ color: purple
 - [ ] 一度に複数の大きな変更を行う
 - [ ] 動作を変更する変更をリファクタリングと呼ぶ
 
+## context7 によるドキュメント参照
+
+改善実装時には、使用するライブラリの最新ドキュメントを context7 MCP ツールで確認してください。
+
+### 使用手順
+
+1. **ライブラリIDの解決**:
+   ```
+   mcp__context7__resolve-library-id を使用
+   - libraryName: 調べたいライブラリ名（例: "typing", "functools", "collections"）
+   - query: 調べたい内容（例: "Protocol class", "lru_cache options"）
+   ```
+
+2. **ドキュメントのクエリ**:
+   ```
+   mcp__context7__query-docs を使用
+   - libraryId: resolve-library-idで取得したID
+   - query: 具体的な質問
+   ```
+
+### 参照が必須のケース
+
+- 型ヒント（typing モジュール）の高度な機能を使用する際
+- パフォーマンス最適化のためのデータ構造を選択する際
+- キャッシング（functools.lru_cache）を実装する際
+- 依存性注入パターンを実装する際
+
+### 注意事項
+
+- 1つの質問につき最大3回までの呼び出し制限あり
+- 機密情報（APIキー等）をクエリに含めない
+- 改善パターンが正しいか、ドキュメントで確認してから適用する
+
 ## 改善カテゴリ
 
 ### 1. コード品質改善 (--quality)

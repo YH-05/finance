@@ -83,6 +83,39 @@ def test_add_負の数():
     assert add(-1, -2) == -3
 ```
 
+## context7 によるドキュメント参照
+
+テスト作成時には、テストフレームワークの最新ドキュメントを context7 MCP ツールで確認してください。
+
+### 使用手順
+
+1. **ライブラリIDの解決**:
+   ```
+   mcp__context7__resolve-library-id を使用
+   - libraryName: 調べたいライブラリ名（例: "pytest", "hypothesis"）
+   - query: 調べたい内容（例: "fixture scope", "property based testing"）
+   ```
+
+2. **ドキュメントのクエリ**:
+   ```
+   mcp__context7__query-docs を使用
+   - libraryId: resolve-library-idで取得したID
+   - query: 具体的な質問
+   ```
+
+### 参照が必須のケース
+
+- pytest の高度なフィクスチャ機能（scope, autouse, parametrize）を使用する際
+- Hypothesis でカスタムストラテジーを定義する際
+- モック（unittest.mock, pytest-mock）の複雑なパターンを使用する際
+- 非同期テスト（pytest-asyncio）を書く際
+
+### 注意事項
+
+- 1つの質問につき最大3回までの呼び出し制限あり
+- 機密情報（APIキー等）をクエリに含めない
+- テストパターンに迷った場合は必ずドキュメントを確認する
+
 ## テストの種類
 
 ### 1. 単体テスト (tests/unit/)

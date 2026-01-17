@@ -18,6 +18,39 @@ test-planner が設計したテストTODOに基づき、関数・クラス単位
 - 正常系・異常系・エッジケースのカバー
 - TDD Red フェーズの実現（失敗するテスト）
 
+## context7 によるドキュメント参照
+
+単体テスト作成時には、テストフレームワークの最新ドキュメントを context7 MCP ツールで確認してください。
+
+### 使用手順
+
+1. **ライブラリIDの解決**:
+   ```
+   mcp__context7__resolve-library-id を使用
+   - libraryName: 調べたいライブラリ名（例: "pytest", "unittest.mock"）
+   - query: 調べたい内容（例: "parametrize decorator", "mock patch"）
+   ```
+
+2. **ドキュメントのクエリ**:
+   ```
+   mcp__context7__query-docs を使用
+   - libraryId: resolve-library-idで取得したID
+   - query: 具体的な質問
+   ```
+
+### 参照が必須のケース
+
+- pytest.mark.parametrize の高度な使用法
+- フィクスチャの scope や autouse の設定
+- モック（patch, MagicMock）の適切な使用方法
+- pytest.raises でのエラーメッセージ検証
+
+### 注意事項
+
+- 1つの質問につき最大3回までの呼び出し制限あり
+- 機密情報（APIキー等）をクエリに含めない
+- テストパターンに迷った場合は必ずドキュメントを確認する
+
 ## テスト作成プロセス
 
 ### ステップ 1: テスト設計の確認

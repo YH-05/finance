@@ -147,6 +147,39 @@ def test_regression_missing_key_handled():
     assert result is None  # または適切なエラーが発生
 ```
 
+## context7 によるドキュメント参照
+
+デバッグ時には、関連ライブラリの最新ドキュメントを context7 MCP ツールで確認してください。
+
+### 使用手順
+
+1. **ライブラリIDの解決**:
+   ```
+   mcp__context7__resolve-library-id を使用
+   - libraryName: 調べたいライブラリ名（例: "pandas", "sqlalchemy"）
+   - query: 調べたい内容（例: "error handling", "connection pooling"）
+   ```
+
+2. **ドキュメントのクエリ**:
+   ```
+   mcp__context7__query-docs を使用
+   - libraryId: resolve-library-idで取得したID
+   - query: 具体的な質問
+   ```
+
+### 参照が必須のケース
+
+- ライブラリ固有のエラーメッセージの意味を確認する際
+- 正しいAPIの使用方法を確認する際
+- 非推奨（deprecated）の機能を新しい方法に置き換える際
+- ライブラリのバージョン間の違いを確認する際
+
+### 注意事項
+
+- 1つの質問につき最大3回までの呼び出し制限あり
+- 機密情報（APIキー等）をクエリに含めない
+- エラーの原因が不明な場合は、まずドキュメントで正しい使い方を確認する
+
 ## 一般的な問題パターン
 
 ### 型エラー

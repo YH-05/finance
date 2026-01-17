@@ -34,6 +34,39 @@ def test_add_commutative(a, b):
     assert add(a, b) == add(b, a)  # 全ての整数で成立
 ```
 
+## context7 によるドキュメント参照
+
+プロパティテスト作成時には、Hypothesis の最新ドキュメントを context7 MCP ツールで確認してください。
+
+### 使用手順
+
+1. **ライブラリIDの解決**:
+   ```
+   mcp__context7__resolve-library-id を使用
+   - libraryName: 調べたいライブラリ名（例: "hypothesis"）
+   - query: 調べたい内容（例: "custom strategy", "stateful testing"）
+   ```
+
+2. **ドキュメントのクエリ**:
+   ```
+   mcp__context7__query-docs を使用
+   - libraryId: resolve-library-idで取得したID
+   - query: 具体的な質問
+   ```
+
+### 参照が必須のケース
+
+- カスタムストラテジー（st.composite, st.builds）を定義する際
+- settings の詳細オプション（deadline, suppress_health_check）を設定する際
+- データベースやフィクスチャとの連携パターン
+- Stateful Testing を実装する際
+
+### 注意事項
+
+- 1つの質問につき最大3回までの呼び出し制限あり
+- 機密情報（APIキー等）をクエリに含めない
+- 複雑なストラテジーはドキュメントで正しい書き方を確認する
+
 ## テスト作成プロセス
 
 ### ステップ 1: プロパティの特定

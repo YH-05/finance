@@ -30,6 +30,39 @@ test-planner が設計したテストTODOに基づき、コンポーネント間
 | 実行速度 | 高速 | 比較的低速 |
 | 外部リソース | 使用しない | 使用する場合あり |
 
+## context7 によるドキュメント参照
+
+統合テスト作成時には、テストフレームワークや関連ライブラリの最新ドキュメントを context7 MCP ツールで確認してください。
+
+### 使用手順
+
+1. **ライブラリIDの解決**:
+   ```
+   mcp__context7__resolve-library-id を使用
+   - libraryName: 調べたいライブラリ名（例: "pytest", "pytest-httpserver"）
+   - query: 調べたい内容（例: "tmp_path fixture", "mock http server"）
+   ```
+
+2. **ドキュメントのクエリ**:
+   ```
+   mcp__context7__query-docs を使用
+   - libraryId: resolve-library-idで取得したID
+   - query: 具体的な質問
+   ```
+
+### 参照が必須のケース
+
+- pytest のビルトインフィクスチャ（tmp_path, monkeypatch）の使用法
+- データベーステスト用のセットアップ・ティアダウン
+- HTTP モックサーバー（pytest-httpserver, responses）の設定
+- 非同期統合テスト（pytest-asyncio）の書き方
+
+### 注意事項
+
+- 1つの質問につき最大3回までの呼び出し制限あり
+- 機密情報（APIキー等）をクエリに含めない
+- 外部リソースとの統合パターンはドキュメントで確認する
+
 ## テスト作成プロセス
 
 ### ステップ 1: 統合ポイントの特定

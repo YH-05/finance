@@ -183,6 +183,39 @@ gh issue edit <issue_number> --body "..."
 - [ ] quality-checker を実行せずに次のタスクへ
 - [ ] Issue を更新せずに次のタスクへ
 
+## context7 によるドキュメント参照
+
+実装時には、使用するライブラリの最新ドキュメントを context7 MCP ツールで確認してください。
+
+### 使用手順
+
+1. **ライブラリIDの解決**:
+   ```
+   mcp__context7__resolve-library-id を使用
+   - libraryName: 調べたいライブラリ名（例: "pytest", "pydantic", "pandas"）
+   - query: 調べたい内容（例: "data validation", "dataframe operations"）
+   ```
+
+2. **ドキュメントのクエリ**:
+   ```
+   mcp__context7__query-docs を使用
+   - libraryId: resolve-library-idで取得したID
+   - query: 具体的な質問
+   ```
+
+### 参照が必須のケース
+
+- 外部ライブラリのAPIを初めて使用する際
+- ライブラリのベストプラクティスに従った実装を行う際
+- 型ヒントの正しい書き方を確認する際
+- エラーハンドリングのパターンを確認する際
+
+### 注意事項
+
+- 1つの質問につき最大3回までの呼び出し制限あり
+- 機密情報（APIキー等）をクエリに含めない
+- 実装前に必ずドキュメントを確認し、正しいAPIの使い方を把握する
+
 ## 参照すべきドキュメント
 
 ### GitHub Issue
