@@ -1,0 +1,600 @@
+"""Unit tests for RiskCalculator class.
+
+RiskCalculator はポートフォリオのリターンデータから各種リスク指標を計算する
+内部コンポーネントである。このモジュールでは以下の指標の計算をテストする:
+- ボラティリティ（年率）
+- シャープレシオ
+- ソルティノレシオ
+- 下方偏差
+"""
+
+import math
+from typing import TYPE_CHECKING
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from strategy.risk.calculator import RiskCalculator
+
+if TYPE_CHECKING:
+    pass
+
+
+class TestRiskCalculatorInit:
+    """RiskCalculator の初期化テスト."""
+
+    def test_正常系_デフォルトパラメータで初期化できる(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """デフォルトパラメータで RiskCalculator を初期化できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+
+        assert calculator is not None
+        assert calculator._risk_free_rate == 0.0
+        assert calculator._annualization_factor == 252
+
+    def test_正常系_カスタムパラメータで初期化できる(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """カスタムパラメータで RiskCalculator を初期化できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(
+            sample_returns,
+            risk_free_rate=0.02,
+            annualization_factor=52,  # 週次データ
+        )
+
+        assert calculator._risk_free_rate == 0.02
+        assert calculator._annualization_factor == 52
+
+    def test_異常系_空のSeriesでValueError(self) -> None:
+        """空の Series で初期化するとエラーになることを確認."""
+        empty_returns = pd.Series([], dtype=float)
+
+        with pytest.raises(ValueError, match="returns must not be empty"):
+            RiskCalculator(empty_returns)
+
+    def test_異常系_負のannualization_factorでValueError(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """負の年率化係数で初期化するとエラーになることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        with pytest.raises(
+            ValueError,
+            match="annualization_factor must be positive",
+        ):
+            RiskCalculator(sample_returns, annualization_factor=-1)
+
+    def test_異常系_ゼロのannualization_factorでValueError(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """ゼロの年率化係数で初期化するとエラーになることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        with pytest.raises(
+            ValueError,
+            match="annualization_factor must be positive",
+        ):
+            RiskCalculator(sample_returns, annualization_factor=0)
+
+
+class TestVolatility:
+    """ボラティリティ計算のテスト."""
+
+    def test_正常系_正のリターンでボラティリティが正(
+        self,
+        positive_returns: pd.Series,
+    ) -> None:
+        """正のリターンでボラティリティが正の値になることを確認.
+
+        Parameters
+        ----------
+        positive_returns : pd.Series
+            全て正のリターンデータ
+
+        Notes
+        -----
+        Formula: volatility = std(returns) * sqrt(annualization_factor)
+        """
+        calculator = RiskCalculator(positive_returns)
+        volatility = calculator.volatility()
+
+        assert volatility > 0
+        assert isinstance(volatility, float)
+
+    def test_正常系_負のリターンでボラティリティが正(
+        self,
+        negative_returns: pd.Series,
+    ) -> None:
+        """負のリターンでもボラティリティは正の値になることを確認.
+
+        Parameters
+        ----------
+        negative_returns : pd.Series
+            全て負のリターンデータ
+
+        Notes
+        -----
+        ボラティリティは標準偏差を基にするため常に非負である。
+        """
+        calculator = RiskCalculator(negative_returns)
+        volatility = calculator.volatility()
+
+        assert volatility > 0
+        assert isinstance(volatility, float)
+
+    def test_正常系_混合リターンでボラティリティ計算(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """正負混合のリターンでボラティリティが計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            正負混合のリターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+        volatility = calculator.volatility()
+
+        # 期待値の計算: std * sqrt(252)
+        expected = sample_returns.std() * np.sqrt(252)
+
+        assert volatility > 0
+        assert math.isclose(volatility, expected, rel_tol=1e-10)
+
+    def test_正常系_年率化係数が正しく適用される(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """異なる年率化係数で正しく年率化されることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calc_daily = RiskCalculator(sample_returns, annualization_factor=252)
+        calc_weekly = RiskCalculator(sample_returns, annualization_factor=52)
+
+        vol_daily = calc_daily.volatility()
+        vol_weekly = calc_weekly.volatility()
+
+        # 日次と週次で係数の比率に基づいた関係
+        expected_ratio = np.sqrt(252) / np.sqrt(52)
+        actual_ratio = vol_daily / vol_weekly
+
+        assert math.isclose(actual_ratio, expected_ratio, rel_tol=1e-10)
+
+    def test_エッジケース_同一リターンでボラティリティゼロ(self) -> None:
+        """全て同じリターンの場合、ボラティリティがゼロになることを確認.
+
+        Notes
+        -----
+        標準偏差がゼロになるため、ボラティリティもゼロになる。
+        """
+        constant_returns = pd.Series([0.01] * 100)
+        calculator = RiskCalculator(constant_returns)
+        volatility = calculator.volatility()
+
+        assert volatility == 0.0
+
+
+class TestSharpeRatio:
+    """シャープレシオ計算のテスト."""
+
+    def test_正常系_正のリターンでシャープレシオが正(
+        self,
+        positive_returns: pd.Series,
+    ) -> None:
+        """正のリターンでシャープレシオが正の値になることを確認.
+
+        Parameters
+        ----------
+        positive_returns : pd.Series
+            全て正のリターンデータ
+
+        Notes
+        -----
+        Formula: sharpe = (mean(excess_returns) / std(excess_returns)) * sqrt(annualization_factor)
+        """
+        calculator = RiskCalculator(positive_returns, risk_free_rate=0.0)
+        sharpe = calculator.sharpe_ratio()
+
+        assert sharpe > 0
+        assert isinstance(sharpe, float)
+
+    def test_正常系_負のリターンでシャープレシオが負(
+        self,
+        negative_returns: pd.Series,
+    ) -> None:
+        """負のリターンでシャープレシオが負の値になることを確認.
+
+        Parameters
+        ----------
+        negative_returns : pd.Series
+            全て負のリターンデータ
+        """
+        calculator = RiskCalculator(negative_returns, risk_free_rate=0.0)
+        sharpe = calculator.sharpe_ratio()
+
+        assert sharpe < 0
+        assert isinstance(sharpe, float)
+
+    def test_正常系_リスクフリーレートが反映される(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """リスクフリーレートが計算に反映されることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        リスクフリーレートが高いほどシャープレシオは低下する。
+        """
+        calc_rf_zero = RiskCalculator(sample_returns, risk_free_rate=0.0)
+        calc_rf_positive = RiskCalculator(sample_returns, risk_free_rate=0.05)
+
+        sharpe_rf_zero = calc_rf_zero.sharpe_ratio()
+        sharpe_rf_positive = calc_rf_positive.sharpe_ratio()
+
+        # リスクフリーレートが高いほどシャープレシオは低下
+        assert sharpe_rf_positive < sharpe_rf_zero
+
+    def test_正常系_計算式が正しい(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """シャープレシオの計算式が正しいことを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        risk_free_rate = 0.02
+        annualization_factor = 252
+
+        calculator = RiskCalculator(
+            sample_returns,
+            risk_free_rate=risk_free_rate,
+            annualization_factor=annualization_factor,
+        )
+        sharpe = calculator.sharpe_ratio()
+
+        # 期待値の計算
+        daily_rf = risk_free_rate / annualization_factor
+        excess_returns = sample_returns - daily_rf
+        expected = (
+            excess_returns.mean() / excess_returns.std()
+        ) * np.sqrt(annualization_factor)
+
+        assert math.isclose(sharpe, expected, rel_tol=1e-10)
+
+    def test_エッジケース_ゼロ標準偏差で無限大または例外(self) -> None:
+        """標準偏差がゼロの場合の動作を確認.
+
+        Notes
+        -----
+        全て同じリターンの場合、標準偏差がゼロになり、
+        シャープレシオは無限大（正の平均）またはNaN（ゼロの平均）になる。
+        """
+        constant_returns = pd.Series([0.01] * 100)
+        calculator = RiskCalculator(constant_returns, risk_free_rate=0.0)
+
+        sharpe = calculator.sharpe_ratio()
+
+        # 標準偏差がゼロで平均が正の場合、無限大
+        assert math.isinf(sharpe) or math.isnan(sharpe)
+
+
+class TestSortinoRatio:
+    """ソルティノレシオ計算のテスト."""
+
+    def test_正常系_正のリターンでソルティノレシオが正(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """正負混合のリターンでソルティノレシオが計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            正負混合のリターンデータ
+
+        Notes
+        -----
+        Formula: sortino = (mean(excess_returns) / downside_std) * sqrt(annualization_factor)
+        """
+        calculator = RiskCalculator(sample_returns, risk_free_rate=0.0)
+        sortino = calculator.sortino_ratio()
+
+        assert isinstance(sortino, float)
+        # 平均リターンが正なら正のソルティノレシオ
+        if sample_returns.mean() > 0:
+            assert sortino > 0
+
+    def test_正常系_下方偏差のみを使用(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """ソルティノレシオが下方偏差のみを使用することを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        ソルティノレシオはシャープレシオと異なり、
+        負のリターンのみを使用して標準偏差を計算する。
+        """
+        calculator = RiskCalculator(sample_returns, risk_free_rate=0.0)
+
+        sortino = calculator.sortino_ratio()
+        sharpe = calculator.sharpe_ratio()
+
+        # 下方偏差は通常、全体の標準偏差より小さいため、
+        # ソルティノレシオはシャープレシオより大きくなることが多い
+        # （ただし、リターン分布によっては異なる）
+        assert sortino != sharpe  # 少なくとも異なる値
+
+    def test_正常系_リスクフリーレートが反映される(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """リスクフリーレートが計算に反映されることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calc_rf_zero = RiskCalculator(sample_returns, risk_free_rate=0.0)
+        calc_rf_positive = RiskCalculator(sample_returns, risk_free_rate=0.05)
+
+        sortino_rf_zero = calc_rf_zero.sortino_ratio()
+        sortino_rf_positive = calc_rf_positive.sortino_ratio()
+
+        # リスクフリーレートが高いほどソルティノレシオは低下
+        assert sortino_rf_positive < sortino_rf_zero
+
+    def test_エッジケース_全て正のリターンで無限大(
+        self,
+        positive_returns: pd.Series,
+    ) -> None:
+        """全て正のリターンの場合、下方偏差がゼロで無限大になることを確認.
+
+        Parameters
+        ----------
+        positive_returns : pd.Series
+            全て正のリターンデータ
+
+        Notes
+        -----
+        下方偏差がゼロの場合、平均リターンが正なら無限大を返す。
+        """
+        calculator = RiskCalculator(positive_returns, risk_free_rate=0.0)
+        sortino = calculator.sortino_ratio()
+
+        # 下方偏差がゼロで平均が正の場合、無限大
+        assert math.isinf(sortino) and sortino > 0
+
+    def test_エッジケース_全て負のリターンで負のソルティノレシオ(
+        self,
+        negative_returns: pd.Series,
+    ) -> None:
+        """全て負のリターンの場合、負のソルティノレシオになることを確認.
+
+        Parameters
+        ----------
+        negative_returns : pd.Series
+            全て負のリターンデータ
+        """
+        calculator = RiskCalculator(negative_returns, risk_free_rate=0.0)
+        sortino = calculator.sortino_ratio()
+
+        assert sortino < 0
+        assert isinstance(sortino, float)
+
+
+class TestDownsideDeviation:
+    """下方偏差計算のテスト."""
+
+    def test_正常系_混合リターンで下方偏差が正(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """正負混合のリターンで下方偏差が正の値になることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            正負混合のリターンデータ
+
+        Notes
+        -----
+        下方偏差は負のリターンの標準偏差であり、常に非負である。
+        """
+        calculator = RiskCalculator(sample_returns)
+        downside_dev = calculator.downside_deviation()
+
+        assert downside_dev > 0
+        assert isinstance(downside_dev, float)
+
+    def test_正常系_負のリターンのみを使用(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """下方偏差が負のリターンのみを使用して計算されることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+        downside_dev = calculator.downside_deviation()
+
+        # 期待値: 負のリターンの標準偏差 * sqrt(annualization_factor)
+        negative_returns = sample_returns[sample_returns < 0]
+        expected = negative_returns.std() * np.sqrt(252)
+
+        assert math.isclose(downside_dev, expected, rel_tol=1e-10)
+
+    def test_正常系_全て負のリターンで計算(
+        self,
+        negative_returns: pd.Series,
+    ) -> None:
+        """全て負のリターンで下方偏差が計算できることを確認.
+
+        Parameters
+        ----------
+        negative_returns : pd.Series
+            全て負のリターンデータ
+        """
+        calculator = RiskCalculator(negative_returns)
+        downside_dev = calculator.downside_deviation()
+
+        # 全て負のリターンの標準偏差
+        expected = negative_returns.std() * np.sqrt(252)
+
+        assert downside_dev > 0
+        assert math.isclose(downside_dev, expected, rel_tol=1e-10)
+
+    def test_エッジケース_全て正のリターンで下方偏差ゼロ(
+        self,
+        positive_returns: pd.Series,
+    ) -> None:
+        """全て正のリターンの場合、下方偏差がゼロになることを確認.
+
+        Parameters
+        ----------
+        positive_returns : pd.Series
+            全て正のリターンデータ
+        """
+        calculator = RiskCalculator(positive_returns)
+        downside_dev = calculator.downside_deviation()
+
+        assert downside_dev == 0.0
+
+    def test_正常系_年率化係数が正しく適用される(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """下方偏差に年率化係数が正しく適用されることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calc_daily = RiskCalculator(sample_returns, annualization_factor=252)
+        calc_monthly = RiskCalculator(sample_returns, annualization_factor=12)
+
+        dd_daily = calc_daily.downside_deviation()
+        dd_monthly = calc_monthly.downside_deviation()
+
+        # 年率化係数の比率に基づいた関係
+        expected_ratio = np.sqrt(252) / np.sqrt(12)
+        actual_ratio = dd_daily / dd_monthly
+
+        assert math.isclose(actual_ratio, expected_ratio, rel_tol=1e-10)
+
+
+class TestRiskCalculatorIntegration:
+    """RiskCalculator の統合的なテスト."""
+
+    def test_正常系_全指標が計算できる(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """全てのリスク指標が計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(
+            sample_returns,
+            risk_free_rate=0.02,
+            annualization_factor=252,
+        )
+
+        # 全指標を計算
+        volatility = calculator.volatility()
+        sharpe = calculator.sharpe_ratio()
+        sortino = calculator.sortino_ratio()
+        downside_dev = calculator.downside_deviation()
+
+        # 全て float であることを確認
+        assert isinstance(volatility, float)
+        assert isinstance(sharpe, float)
+        assert isinstance(sortino, float)
+        assert isinstance(downside_dev, float)
+
+        # 基本的な数学的関係を確認
+        assert volatility >= 0
+        assert downside_dev >= 0
+
+    def test_正常系_実際の市場データ形式で計算(self) -> None:
+        """実際の市場データに近い形式で計算できることを確認.
+
+        Notes
+        -----
+        日次リターン、252営業日、2%のリスクフリーレートを想定。
+        """
+        # 実際の市場データに近いリターン（平均0.04%, 標準偏差1%程度）
+        np.random.seed(42)
+        returns = pd.Series(
+            np.random.normal(0.0004, 0.01, 252),  # 252営業日分
+            index=pd.date_range("2023-01-01", periods=252, freq="B"),
+        )
+
+        calculator = RiskCalculator(
+            returns,
+            risk_free_rate=0.02,
+            annualization_factor=252,
+        )
+
+        volatility = calculator.volatility()
+        sharpe = calculator.sharpe_ratio()
+        sortino = calculator.sortino_ratio()
+        downside_dev = calculator.downside_deviation()
+
+        # 現実的な範囲内の値であることを確認
+        assert 0.1 < volatility < 0.3  # 年率10%-30%のボラティリティ
+        assert -2 < sharpe < 2  # 一般的なシャープレシオの範囲
+        assert -3 < sortino < 3  # 一般的なソルティノレシオの範囲
+        assert downside_dev > 0
