@@ -4,13 +4,16 @@ This package contains factor implementations organized by category:
 - macro: Macroeconomic factors (interest rates, inflation, etc.)
 - price: Price-based factors (momentum, etc.)
 - quality: Quality factors (ROIC, etc.)
+- value: Value factors (PER, PBR, dividend yield, EV/EBITDA)
 """
 
 from .price import MomentumFactor
 from .quality import ROICFactor, ROICTransitionLabeler
+from .value import ValueFactor
 
 __all__ = [
     "MomentumFactor",
     "ROICFactor",
     "ROICTransitionLabeler",
+    "ValueFactor",
 ]
