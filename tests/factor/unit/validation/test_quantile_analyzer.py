@@ -552,3 +552,208 @@ class TestPyrightStrict:
         # plot -> go.Figure
         fig: go.Figure = analyzer.plot(result)
         assert isinstance(fig, go.Figure)
+
+
+# =============================================================================
+# TestAnalyzeByQuantile: analyze_by_quantile エイリアスメソッドテスト
+# =============================================================================
+
+
+class TestAnalyzeByQuantile:
+    """analyze_by_quantile エイリアスメソッドのテスト。
+
+    Issue #261 で要求されているエイリアスメソッド。
+    分位別平均リターンを計算し、pd.Seriesを返す。
+    """
+
+    def test_正常系_analyze_by_quantileがSeriesを返す(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """analyze_by_quantileメソッドがpd.Seriesを返すことを確認。"""
+        result = analyzer.analyze_by_quantile(
+            sample_factor_values, sample_forward_returns
+        )
+
+        assert isinstance(result, pd.Series)
+        assert len(result) == analyzer.n_quantiles
+
+    def test_正常系_analyzeのmean_returnsと一致(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """analyze_by_quantileがanalyzeで返されるmean_returnsと一致することを確認。"""
+        series_result = analyzer.analyze_by_quantile(
+            sample_factor_values, sample_forward_returns
+        )
+        full_result = analyzer.analyze(sample_factor_values, sample_forward_returns)
+
+        pd.testing.assert_series_equal(series_result, full_result.mean_returns)
+
+    def test_正常系_分位番号がインデックス(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """結果のインデックスが分位番号（1からn_quantiles）であることを確認。"""
+        result = analyzer.analyze_by_quantile(
+            sample_factor_values, sample_forward_returns
+        )
+
+        expected_index = list(range(1, analyzer.n_quantiles + 1))
+        assert list(result.index) == expected_index
+
+    def test_正常系_単調性のあるデータで順序が正しい(
+        self,
+        analyzer: QuantileAnalyzer,
+        monotonic_factor_values: pd.DataFrame,
+        monotonic_forward_returns: pd.DataFrame,
+    ) -> None:
+        """単調性のあるデータで分位リターンが正しい順序になることを確認。"""
+        result = analyzer.analyze_by_quantile(
+            monotonic_factor_values, monotonic_forward_returns
+        )
+
+        # 高い分位ほど高いリターン（単調増加）
+        for i in range(len(result) - 1):
+            assert result.iloc[i] <= result.iloc[i + 1]
+
+
+# =============================================================================
+# TestCalculateSpreadReturn: calculate_spread_return エイリアスメソッドテスト
+# =============================================================================
+
+
+class TestCalculateSpreadReturn:
+    """calculate_spread_return エイリアスメソッドのテスト。
+
+    Issue #261 で要求されているエイリアスメソッド。
+    Long-Shortスプレッド（Top分位 - Bottom分位）を計算し、floatを返す。
+    """
+
+    def test_正常系_calculate_spread_returnがfloatを返す(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_spread_returnメソッドがfloat型を返すことを確認。"""
+        spread = analyzer.calculate_spread_return(
+            sample_factor_values, sample_forward_returns
+        )
+
+        assert isinstance(spread, float)
+
+    def test_正常系_analyzeのlong_short_returnと一致(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """calculate_spread_returnがanalyzeで返されるlong_short_returnと一致することを確認。"""
+        spread = analyzer.calculate_spread_return(
+            sample_factor_values, sample_forward_returns
+        )
+        result = analyzer.analyze(sample_factor_values, sample_forward_returns)
+
+        assert spread == pytest.approx(result.long_short_return, rel=1e-6)
+
+    def test_正常系_単調データで正のスプレッド(
+        self,
+        analyzer: QuantileAnalyzer,
+        monotonic_factor_values: pd.DataFrame,
+        monotonic_forward_returns: pd.DataFrame,
+    ) -> None:
+        """単調性のあるデータでスプレッドが正になることを確認。"""
+        spread = analyzer.calculate_spread_return(
+            monotonic_factor_values, monotonic_forward_returns
+        )
+
+        # ファクターとリターンが正の相関 → Top > Bottom → 正のスプレッド
+        assert spread > 0
+
+    def test_正常系_スプレッドはTop分位マイナスBottom分位(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """スプレッドがTop分位リターン - Bottom分位リターンであることを確認。"""
+        spread = analyzer.calculate_spread_return(
+            sample_factor_values, sample_forward_returns
+        )
+        mean_returns = analyzer.analyze_by_quantile(
+            sample_factor_values, sample_forward_returns
+        )
+
+        expected = mean_returns.iloc[-1] - mean_returns.iloc[0]
+        assert spread == pytest.approx(expected, rel=1e-6)
+
+
+# =============================================================================
+# TestPlotQuantilePerformance: plot_quantile_performance エイリアスメソッドテスト
+# =============================================================================
+
+
+class TestPlotQuantilePerformance:
+    """plot_quantile_performance エイリアスメソッドのテスト。
+
+    Issue #261 で要求されているエイリアスメソッド。
+    分位パフォーマンスを可視化し、go.Figureを返す。
+    """
+
+    def test_正常系_plot_quantile_performanceがFigureを返す(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """plot_quantile_performanceメソッドがplotly Figureを返すことを確認。"""
+        fig = analyzer.plot_quantile_performance(
+            sample_factor_values, sample_forward_returns
+        )
+
+        assert isinstance(fig, go.Figure)
+
+    def test_正常系_タイトルを設定できる(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """カスタムタイトルを設定できることを確認。"""
+        custom_title = "Custom Quantile Performance"
+        fig = analyzer.plot_quantile_performance(
+            sample_factor_values, sample_forward_returns, title=custom_title
+        )
+
+        assert fig.layout.title is not None
+        title_text = (
+            fig.layout.title.text
+            if hasattr(fig.layout.title, "text")
+            else str(fig.layout.title)
+        )
+        assert custom_title in title_text
+
+    def test_正常系_plotメソッドと同等の結果(
+        self,
+        analyzer: QuantileAnalyzer,
+        sample_factor_values: pd.DataFrame,
+        sample_forward_returns: pd.DataFrame,
+    ) -> None:
+        """plot_quantile_performanceがplotメソッドと同等の結果を返すことを確認。"""
+        # plot_quantile_performance は analyze → plot の結合メソッド
+        fig1 = analyzer.plot_quantile_performance(
+            sample_factor_values, sample_forward_returns
+        )
+        result = analyzer.analyze(sample_factor_values, sample_forward_returns)
+        fig2 = analyzer.plot(result)
+
+        # Figure構造が同等であることを確認
+        assert isinstance(fig1, go.Figure)
+        assert isinstance(fig2, go.Figure)
