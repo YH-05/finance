@@ -20,9 +20,9 @@
 - [ ] MarketAnalysisProvider [#111](https://github.com/YH-05/finance/issues/111)
 
 ### ポートフォリオ管理（Portfolio Management）
-- [ ] ポートフォリオ構成の定義（ティッカー + 比率） [#112](https://github.com/YH-05/finance/issues/112)
+- [x] ポートフォリオ構成の定義（ティッカー + 比率） [#112](https://github.com/YH-05/finance/issues/112) ✅ Done
 - [ ] 資産配分の計算と可視化（円グラフ、棒グラフ） [#121](https://github.com/YH-05/finance/issues/121)
-- [ ] セクター・資産クラス別の構成分析 [#112](https://github.com/YH-05/finance/issues/112)
+- [x] セクター・資産クラス別の構成分析 [#112](https://github.com/YH-05/finance/issues/112) ✅ Done
 
 ### リスク分析（Risk Analysis）
 - [ ] ボラティリティ（標準偏差） [#113](https://github.com/YH-05/finance/issues/113)

@@ -1,1 +1,1 @@
-"""Unit tests for price factors."""
+"""Unit tests for price-based factors."""

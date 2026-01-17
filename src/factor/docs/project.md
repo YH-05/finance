@@ -112,7 +112,7 @@
 | [#109](https://github.com/YH-05/finance/issues/109) | T03: ロギング設定 | P0 | 0.5h | ✅ Done |
 | [#110](https://github.com/YH-05/finance/issues/110) | T04: DataProvider Protocol | P0 | 1h | ✅ Done |
 | [#115](https://github.com/YH-05/finance/issues/115) | T05: Cache クラス | P0 | 1-2h | ✅ Done |
-| [#116](https://github.com/YH-05/finance/issues/116) | T06: YFinanceProvider | P0 | 2-3h | Todo |
+| [#116](https://github.com/YH-05/finance/issues/116) | T06: YFinanceProvider | P0 | 2-3h | ✅ Done |
 
 **依存関係**: T01, T02 -> T04 -> T06, T05 -> T06
 
@@ -131,9 +131,9 @@
 
 | Issue | タイトル | 優先度 | 見積もり | ステータス |
 |-------|---------|--------|---------|----------|
-| [#123](https://github.com/YH-05/finance/issues/123) | T09: MomentumFactor | P0 | 1h | Todo |
-| [#124](https://github.com/YH-05/finance/issues/124) | T10: ReversalFactor | P0 | 0.5h | Todo |
-| [#125](https://github.com/YH-05/finance/issues/125) | T11: VolatilityFactor | P0 | 0.5h | Todo |
+| [#123](https://github.com/YH-05/finance/issues/123) | T09: MomentumFactor | P0 | 1h | 🔄 In Progress |
+| [#124](https://github.com/YH-05/finance/issues/124) | T10: ReversalFactor | P0 | 0.5h | ✅ Done |
+| [#125](https://github.com/YH-05/finance/issues/125) | T11: VolatilityFactor | P0 | 0.5h | ✅ Done |
 
 **依存関係**: feature/factor-core -> T09, T10, T11
 
@@ -142,7 +142,7 @@
 
 | Issue | タイトル | 優先度 | 見積もり | ステータス |
 |-------|---------|--------|---------|----------|
-| [#126](https://github.com/YH-05/finance/issues/126) | T12: ValueFactor | P0 | 1-1.5h | Todo |
+| [#126](https://github.com/YH-05/finance/issues/126) | T12: ValueFactor | P0 | 1-1.5h | 🔄 In Progress |
 | [#127](https://github.com/YH-05/finance/issues/127) | T13: CompositeValueFactor | P0 | 1h | Todo |
 | [#128](https://github.com/YH-05/finance/issues/128) | T14: QualityFactor | P0 | 1-1.5h | Todo |
 | [#129](https://github.com/YH-05/finance/issues/129) | T15: CompositeQualityFactor | P0 | 1h | Todo |
@@ -155,8 +155,8 @@
 
 | Issue | タイトル | 優先度 | 見積もり | ステータス |
 |-------|---------|--------|---------|----------|
-| [#131](https://github.com/YH-05/finance/issues/131) | T17: ICAnalyzer | P0 | 1-2h | Todo |
-| [#132](https://github.com/YH-05/finance/issues/132) | T18: QuantileAnalyzer | P0 | 1-2h | Todo |
+| [#131](https://github.com/YH-05/finance/issues/131) | T17: ICAnalyzer | P0 | 1-2h | ✅ Done |
+| [#132](https://github.com/YH-05/finance/issues/132) | T18: QuantileAnalyzer | P0 | 1-2h | ✅ Done |
 | [#133](https://github.com/YH-05/finance/issues/133) | T19: ファクターカテゴリ拡張 | P0 | 1h | Todo |
 | [#134](https://github.com/YH-05/finance/issues/134) | T20: パッケージエクスポート | P0 | 0.5h | Todo |
 | [#135](https://github.com/YH-05/finance/issues/135) | T21: 統合テスト | P0 | 2-3h | Todo |
@@ -169,12 +169,13 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 7 |
-| Todo | 14 |
+| ✅ Done | 12 |
+| 🔄 In Progress | 2 |
+| Todo | 7 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) Issue #117 (T07: Factor 基底クラス) 完了を同期
+**更新内容**: GitHub Project #13 (factor) と project.md を同期（#116, #125, #131, #132 完了、#123, #126 進行中）
 
 ---
 
