@@ -9,11 +9,13 @@ from .errors import (
     OrthogonalizationError,
     ValidationError,
 )
+from .factors.value import CompositeValueFactor, ValueFactor
 from .types import FactorConfig, FactorResult, OrthogonalizationResult, QuantileResult
 from .utils.logging_config import get_logger
 from .validation import ICAnalyzer, ICResult, QuantileAnalyzer
 
 __all__ = [
+    "CompositeValueFactor",
     "Factor",
     "FactorCategory",
     "FactorComputeOptions",
@@ -31,6 +33,7 @@ __all__ = [
     "QuantileAnalyzer",
     "QuantileResult",
     "ValidationError",
+    "ValueFactor",
     "get_logger",
 ]
 
