@@ -21,7 +21,7 @@
 
 ### ポートフォリオ管理（Portfolio Management）
 - [x] ポートフォリオ構成の定義（ティッカー + 比率） [#112](https://github.com/YH-05/finance/issues/112) ✅ Done
-- [ ] 資産配分の計算と可視化（円グラフ、棒グラフ） [#121](https://github.com/YH-05/finance/issues/121)
+- [x] 資産配分の計算と可視化（円グラフ、棒グラフ） [#121](https://github.com/YH-05/finance/issues/121) ✅ Done
 - [x] セクター・資産クラス別の構成分析 [#112](https://github.com/YH-05/finance/issues/112) ✅ Done
 
 ### リスク分析（Risk Analysis）
@@ -46,10 +46,10 @@
 ### データ出力（Export）
 - [x] pandas DataFrame [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
 - [x] JSON/辞書形式（AIエージェント向け） [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
-- [ ] Plotlyチャート [#121](https://github.com/YH-05/finance/issues/121)
+- [x] Plotlyチャート [#121](https://github.com/YH-05/finance/issues/121) ✅ Done
 - [x] レポートテキスト（マークダウン） [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
 - [x] marimoノートブック連携（出力フォーマッタ） [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
-- [ ] marimoノートブック連携（可視化） [#121](https://github.com/YH-05/finance/issues/121)
+- [x] marimoノートブック連携（可視化） [#121](https://github.com/YH-05/finance/issues/121) ✅ Done
 
 ### 将来実装（Future）
 - [ ] トレーディング戦略の基盤（戦略インターフェース、シグナル生成）
