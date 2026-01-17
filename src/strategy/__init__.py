@@ -9,9 +9,9 @@ from .risk import RiskCalculator, RiskMetricsResult
 from .utils.logging_config import get_logger
 
 __all__ = [
-    "get_logger",
     "RiskCalculator",
     "RiskMetricsResult",
+    "get_logger",
 ]
 
 __version__ = "0.1.0"

@@ -9,16 +9,12 @@ RiskCalculator はポートフォリオのリターンデータから各種リ�
 """
 
 import math
-from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
 import pytest
 
 from strategy.risk.calculator import RiskCalculator
-
-if TYPE_CHECKING:
-    pass
 
 
 class TestRiskCalculatorInit:
@@ -294,9 +290,9 @@ class TestSharpeRatio:
         # 期待値の計算
         daily_rf = risk_free_rate / annualization_factor
         excess_returns = sample_returns - daily_rf
-        expected = (
-            excess_returns.mean() / excess_returns.std()
-        ) * np.sqrt(annualization_factor)
+        expected = (excess_returns.mean() / excess_returns.std()) * np.sqrt(
+            annualization_factor
+        )
 
         assert math.isclose(sharpe, expected, rel_tol=1e-10)
 

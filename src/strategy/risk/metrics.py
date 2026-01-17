@@ -226,9 +226,7 @@ class RiskMetricsResult:
             "cumulative_return": self.cumulative_return,
         }
 
-        df = pd.DataFrame.from_dict(
-            data, orient="index", columns=pd.Index(["Value"])
-        )
+        df = pd.DataFrame.from_dict(data, orient="index", columns=pd.Index(["Value"]))
         df.index.name = "Metric"
 
         logger.debug(

@@ -22,7 +22,9 @@ class TestVolatilityProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.5, max_value=0.5, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.5, max_value=0.5, allow_nan=False, allow_infinity=False
+            ),
             min_size=10,
             max_size=500,
         ),
@@ -60,7 +62,9 @@ class TestVolatilityProperty:
 
     @given(
         base_returns=st.lists(
-            st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=100,
         ),
@@ -108,7 +112,9 @@ class TestVolatilityProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=100,
         ),
@@ -146,7 +152,9 @@ class TestSharpeRatioProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=200,
         ),
@@ -183,7 +191,9 @@ class TestSharpeRatioProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=0.001, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=0.001, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=100,
         ),
@@ -211,7 +221,9 @@ class TestSharpeRatioProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.1, max_value=-0.001, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=-0.001, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=100,
         ),
@@ -243,7 +255,9 @@ class TestSortinoRatioProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=200,
         ),
@@ -270,7 +284,9 @@ class TestSortinoRatioProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=0.001, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=0.001, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=100,
         ),
@@ -305,7 +321,9 @@ class TestDownsideDeviationProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.5, max_value=0.5, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.5, max_value=0.5, allow_nan=False, allow_infinity=False
+            ),
             min_size=10,
             max_size=500,
         ),
@@ -336,7 +354,9 @@ class TestDownsideDeviationProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=0.001, max_value=0.5, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=0.001, max_value=0.5, allow_nan=False, allow_infinity=False
+            ),
             min_size=10,
             max_size=100,
         ),
@@ -362,7 +382,9 @@ class TestDownsideDeviationProperty:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=30,
             max_size=200,
         ),
@@ -408,7 +430,9 @@ class TestMathematicalRelationships:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=50,
             max_size=200,
         ),
@@ -460,7 +484,9 @@ class TestBoundaryConditions:
     """境界条件のプロパティテスト."""
 
     @given(
-        constant_value=st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+        constant_value=st.floats(
+            min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+        ),
         size=st.integers(min_value=10, max_value=100),
     )
     @settings(max_examples=50)
@@ -487,7 +513,9 @@ class TestBoundaryConditions:
 
     @given(
         returns=st.lists(
-            st.floats(min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
             min_size=20,
             max_size=100,
         ),
