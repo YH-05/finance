@@ -8,8 +8,9 @@ from .errors import (
     OrthogonalizationError,
     ValidationError,
 )
-from .types import FactorConfig, FactorResult, OrthogonalizationResult
+from .types import FactorConfig, FactorResult, OrthogonalizationResult, QuantileResult
 from .utils.logging_config import get_logger
+from .validation import QuantileAnalyzer
 
 __all__ = [
     "FactorCategory",
@@ -21,6 +22,8 @@ __all__ = [
     "NormalizationMethod",
     "OrthogonalizationError",
     "OrthogonalizationResult",
+    "QuantileAnalyzer",
+    "QuantileResult",
     "ValidationError",
     "get_logger",
 ]

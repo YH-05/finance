@@ -226,6 +226,47 @@ class FactorResult:
 
 
 @dataclass
+class QuantileResult:
+    """Result of quantile analysis.
+
+    Parameters
+    ----------
+    quantile_returns : pd.DataFrame
+        Returns by quantile (index: Date, columns: quantile number)
+    mean_returns : pd.Series
+        Mean returns by quantile
+    long_short_return : float
+        Top quantile return minus bottom quantile return
+    monotonicity_score : float
+        Score measuring monotonicity of returns across quantiles (0-1)
+    n_quantiles : int
+        Number of quantiles
+    turnover : pd.Series | None
+        Turnover rate for each quantile (optional)
+
+    Examples
+    --------
+    >>> result = QuantileResult(
+    ...     quantile_returns=quantile_df,
+    ...     mean_returns=mean_series,
+    ...     long_short_return=0.05,
+    ...     monotonicity_score=0.8,
+    ...     n_quantiles=5,
+    ...     turnover=None,
+    ... )
+    >>> result.long_short_return
+    0.05
+    """
+
+    quantile_returns: pd.DataFrame
+    mean_returns: pd.Series
+    long_short_return: float
+    monotonicity_score: float
+    n_quantiles: int
+    turnover: pd.Series | None = None
+
+
+@dataclass
 class OrthogonalizationResult:
     """Result of factor orthogonalization.
 
@@ -304,6 +345,7 @@ __all__ = [
     "OrthogonalizationResult",
     "ProcessingResult",
     "ProcessorStatus",
+    "QuantileResult",
     "SortOrder",
     "ValidationResult",
     "ValidationStatus",
