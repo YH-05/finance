@@ -131,7 +131,7 @@
 
 | Issue | タイトル | 優先度 | 見積もり | ステータス |
 |-------|---------|--------|---------|----------|
-| [#123](https://github.com/YH-05/finance/issues/123) | T09: MomentumFactor | P0 | 1h | 🔄 In Progress |
+| [#123](https://github.com/YH-05/finance/issues/123) | T09: MomentumFactor | P0 | 1h | ✅ Done |
 | [#124](https://github.com/YH-05/finance/issues/124) | T10: ReversalFactor | P0 | 0.5h | ✅ Done |
 | [#125](https://github.com/YH-05/finance/issues/125) | T11: VolatilityFactor | P0 | 0.5h | ✅ Done |
 
@@ -169,13 +169,13 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 12 |
-| 🔄 In Progress | 2 |
+| ✅ Done | 13 |
+| 🔄 In Progress | 1 |
 | Todo | 7 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) と project.md を同期（#116, #125, #131, #132 完了、#123, #126 進行中）
+**更新内容**: GitHub Project #13 (factor) と project.md を同期（#123 MomentumFactor 完了、#126 進行中）
 
 ---
 
