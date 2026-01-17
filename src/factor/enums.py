@@ -23,6 +23,8 @@ class FactorCategory(str, Enum):
         Momentum factors (price momentum, earnings momentum)
     SIZE : str
         Size factors (market cap, asset size)
+    PRICE : str
+        Price-based factors (returns, volatility)
 
     Examples
     --------
@@ -36,6 +38,7 @@ class FactorCategory(str, Enum):
     VALUE = "value"
     MOMENTUM = "momentum"
     SIZE = "size"
+    PRICE = "price"
 
 
 class NormalizationMethod(str, Enum):

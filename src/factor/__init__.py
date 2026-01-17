@@ -1,5 +1,6 @@
 """factor package."""
 
+from .core.base import Factor, FactorComputeOptions, FactorMetadata
 from .enums import FactorCategory, NormalizationMethod
 from .errors import (
     FactorError,
@@ -13,9 +14,12 @@ from .utils.logging_config import get_logger
 from .validation import ICAnalyzer, ICResult, QuantileAnalyzer
 
 __all__ = [
+    "Factor",
     "FactorCategory",
+    "FactorComputeOptions",
     "FactorConfig",
     "FactorError",
+    "FactorMetadata",
     "FactorResult",
     "ICAnalyzer",
     "ICResult",
