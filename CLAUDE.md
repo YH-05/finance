@@ -387,13 +387,21 @@ finance/                                    # Project root
 │   ├── testing-strategy.md
 │   ├── type-checker-migration.md
 │   ├── pr-review/                          # PR review reports
-│   └── project/                            # Project research docs
-│       ├── finance-news-*.md               # ニュース収集関連
-│       ├── project-7.md
-│       ├── project-11.md
-│       ├── project-14.md
-│       ├── project-16.md
-│       └── research/
+│   └── project/                            # Project documentation
+│       ├── project-7/                      # エージェント開発
+│       │   ├── README.md
+│       │   ├── image-collector-guide.md
+│       │   └── research/
+│       ├── project-11/                     # note金融コンテンツ発信強化
+│       │   ├── README.md
+│       │   ├── market-analysis-guidelines.md
+│       │   └── note-magazine-strategy.md
+│       ├── project-14/                     # 金融ニュース収集
+│       │   ├── README.md
+│       │   ├── finance-news-*.md           # (4 guide files)
+│       │   └── research/
+│       └── project-16/                     # src_sample Migration
+│           └── README.md
 │
 ├── src/                                    # Source code
 │   ├── finance/                            # Core infrastructure
