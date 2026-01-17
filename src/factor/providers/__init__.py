@@ -1,9 +1,10 @@
-"""Providers module for factor library.
+"""Factor providers package.
 
-This module provides data provider interfaces and implementations
-for fetching financial data.
+This package contains data provider interfaces, implementations,
+and caching functionality for fetching financial data.
 """
 
 from factor.providers.base import DataProvider
+from factor.providers.cache import Cache
 
-__all__ = ["DataProvider"]
+__all__ = ["Cache", "DataProvider"]

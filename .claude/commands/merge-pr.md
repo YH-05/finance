@@ -314,7 +314,43 @@ git fetch origin
 git pull origin main
 ```
 
-#### 6.2 完了報告
+### ステップ 7: プロジェクトステータスの同期
+
+マージ完了後、GitHub ProjectsとドキュメントのIssueステータスを同期します。
+
+#### 7.1 `/project-status-sync` スキルの実行
+
+**自動実行**: マージ成功後、以下を確認して `/project-status-sync` を実行
+
+1. **対象Issueの特定**: マージされたPRに関連するIssueを確認
+   ```bash
+   # PRに関連するIssueを確認
+   gh pr view <number> --json closingIssuesReferences
+   ```
+
+2. **GitHub Project番号の特定**: 関連IssueがどのGitHub Projectに属するかを確認
+   ```bash
+   # Issue がどの Project に紐づいているかを確認
+   gh project item-list <project-number> --owner YH-05 --format json | jq '.items[] | select(.content.number == <issue-number>)'
+   ```
+
+3. **同期処理の実行**: `/project-status-sync` スキルを呼び出して、対応するプロジェクトドキュメントを更新
+
+```
+プロジェクトステータスを同期しています...
+
+- GitHub Project #<project-number> の状態を確認
+- docs/project/project-<project-number>/ 配下のドキュメントを更新
+- Issue #<issue-number> のステータスを反映
+```
+
+**同期内容**:
+- 完了したIssueのチェックボックスを `[x]` に更新
+- `ステータス: todo` を `ステータス: done` に更新
+- プロジェクト全体のステータス更新（全Issue完了時）
+- 変更をコミット・プッシュ
+
+#### 7.2 完了報告
 
 ```
 ================================================================================
@@ -329,6 +365,10 @@ PR情報:
   マージ先: <baseRefName>
 
 ローカル main: 最新に同期済み
+
+プロジェクト同期:
+  ✓ GitHub Project #<project-number> と docs/project/ を同期完了
+  ✓ Issue #<issue-number> のステータスを done に更新
 
 次のステップ:
   - 新しい開発を開始: /worktree <feature-name>
@@ -366,6 +406,7 @@ PR情報:
 | コマンド | 説明 |
 |----------|------|
 | `/analyze-conflicts` | コンフリクトの詳細分析（自動実行） |
+| `/project-status-sync` | GitHub Projects とドキュメントの同期（マージ後自動実行） |
 | `/review-pr` | PRの詳細レビュー |
 | `/commit-and-pr` | 変更のコミットとPR作成 |
 | `/worktree-done` | worktreeのクリーンアップ |

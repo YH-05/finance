@@ -111,7 +111,7 @@
 | [#108](https://github.com/YH-05/finance/issues/108) | T02: エラー型定義 (errors.py) | P0 | 0.5-1h | ✅ Done |
 | [#109](https://github.com/YH-05/finance/issues/109) | T03: ロギング設定 | P0 | 0.5h | ✅ Done |
 | [#110](https://github.com/YH-05/finance/issues/110) | T04: DataProvider Protocol | P0 | 1h | Todo |
-| [#115](https://github.com/YH-05/finance/issues/115) | T05: Cache クラス | P0 | 1-2h | Todo |
+| [#115](https://github.com/YH-05/finance/issues/115) | T05: Cache クラス | P0 | 1-2h | ✅ Done |
 | [#116](https://github.com/YH-05/finance/issues/116) | T06: YFinanceProvider | P0 | 2-3h | Todo |
 
 **依存関係**: T01, T02 -> T04 -> T06, T05 -> T06
@@ -169,12 +169,12 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 4 |
-| Todo | 17 |
+| ✅ Done | 5 |
+| Todo | 16 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 の状態を同期、Issue (#105, #108, #109, #122) を Done に更新
+**更新内容**: GitHub Project #13 (factor) Issue #115 完了を同期
 
 ---
 
