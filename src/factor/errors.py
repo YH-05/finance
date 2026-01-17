@@ -304,7 +304,48 @@ class ValidationError(FactorError):
         self.value = value
 
 
+class DataFetchError(FactorError):
+    """Exception raised when data fetching fails.
+
+    This exception is raised when a data provider fails to fetch
+    data from an external source (e.g., API timeout, invalid symbols).
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message
+    symbols : list[str] | None
+        List of symbols that failed to fetch
+    details : dict[str, Any] | None
+        Additional context about the error
+    cause : Exception | None
+        The underlying exception that caused this error
+
+    Examples
+    --------
+    >>> raise DataFetchError(
+    ...     "Failed to fetch price data from yfinance",
+    ...     symbols=["AAPL", "INVALID"],
+    ...     cause=original_exception,
+    ... )
+    """
+
+    def __init__(
+        self,
+        message: str,
+        symbols: list[str] | None = None,
+        details: dict[str, Any] | None = None,
+        cause: Exception | None = None,
+    ) -> None:
+        details = details or {}
+        if symbols:
+            details["symbols"] = symbols
+        super().__init__(message, details=details, cause=cause)
+        self.symbols = symbols
+
+
 __all__ = [
+    "DataFetchError",
     "FactorError",
     "InsufficientDataError",
     "NormalizationError",
