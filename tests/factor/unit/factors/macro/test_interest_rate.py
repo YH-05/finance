@@ -68,7 +68,9 @@ class TestInterestRateFactorProperties:
         ]
 
         for expected_series in expected_base:
-            assert expected_series in series, f"{expected_series} should be in required_series"
+            assert (
+                expected_series in series
+            ), f"{expected_series} should be in required_series"
 
 
 class TestInterestRateFactorCalculate:
@@ -154,9 +156,9 @@ class TestInterestRateFactorCalculate:
         for i, col1 in enumerate(result.columns):
             for j, col2 in enumerate(result.columns):
                 if i != j:
-                    assert abs(corr_matrix.loc[col1, col2]) < 0.15, (
-                        f"Correlation between {col1} and {col2} is too high"
-                    )
+                    assert (
+                        abs(corr_matrix.loc[col1, col2]) < 0.15
+                    ), f"Correlation between {col1} and {col2} is too high"
 
     def test_異常系_データ不足でエラー(self) -> None:
         """データが不足している場合にエラーが発生することを確認。"""
@@ -192,8 +194,19 @@ class TestInterestRateFactorOrthogonalization:
 
         # Simple yield data
         yield_data = {}
-        for mat in ["DGS1MO", "DGS3MO", "DGS6MO", "DGS1", "DGS2",
-                    "DGS3", "DGS5", "DGS7", "DGS10", "DGS20", "DGS30"]:
+        for mat in [
+            "DGS1MO",
+            "DGS3MO",
+            "DGS6MO",
+            "DGS1",
+            "DGS2",
+            "DGS3",
+            "DGS5",
+            "DGS7",
+            "DGS10",
+            "DGS20",
+            "DGS30",
+        ]:
             yield_data[mat] = np.random.randn(n).cumsum() + 2.0
 
         self.yield_data = pd.DataFrame(yield_data, index=dates)
@@ -252,8 +265,21 @@ class TestInterestRateFactorSignAlignment:
         trend = np.linspace(0, 2, n)  # Upward trend
 
         yield_data = {}
-        for i, mat in enumerate(["DGS1MO", "DGS3MO", "DGS6MO", "DGS1", "DGS2",
-                                  "DGS3", "DGS5", "DGS7", "DGS10", "DGS20", "DGS30"]):
+        for i, mat in enumerate(
+            [
+                "DGS1MO",
+                "DGS3MO",
+                "DGS6MO",
+                "DGS1",
+                "DGS2",
+                "DGS3",
+                "DGS5",
+                "DGS7",
+                "DGS10",
+                "DGS20",
+                "DGS30",
+            ]
+        ):
             yield_data[mat] = trend + 2.0 + i * 0.1 + np.random.randn(n) * 0.01
 
         data = pd.DataFrame(yield_data, index=dates)
@@ -277,8 +303,19 @@ class TestInterestRateFactorSignAlignment:
         dates = pd.date_range("2020-01-01", periods=n, freq="B")
 
         yield_data = {}
-        for mat in ["DGS1MO", "DGS3MO", "DGS6MO", "DGS1", "DGS2",
-                    "DGS3", "DGS5", "DGS7", "DGS10", "DGS20", "DGS30"]:
+        for mat in [
+            "DGS1MO",
+            "DGS3MO",
+            "DGS6MO",
+            "DGS1",
+            "DGS2",
+            "DGS3",
+            "DGS5",
+            "DGS7",
+            "DGS10",
+            "DGS20",
+            "DGS30",
+        ]:
             yield_data[mat] = np.random.randn(n).cumsum() + 2.0
 
         data = pd.DataFrame(yield_data, index=dates)
@@ -298,8 +335,19 @@ class TestInterestRateFactorSignAlignment:
         dates = pd.date_range("2020-01-01", periods=n, freq="B")
 
         yield_data = {}
-        for mat in ["DGS1MO", "DGS3MO", "DGS6MO", "DGS1", "DGS2",
-                    "DGS3", "DGS5", "DGS7", "DGS10", "DGS20", "DGS30"]:
+        for mat in [
+            "DGS1MO",
+            "DGS3MO",
+            "DGS6MO",
+            "DGS1",
+            "DGS2",
+            "DGS3",
+            "DGS5",
+            "DGS7",
+            "DGS10",
+            "DGS20",
+            "DGS30",
+        ]:
             yield_data[mat] = np.random.randn(n).cumsum() + 2.0
 
         data = pd.DataFrame(yield_data, index=dates)

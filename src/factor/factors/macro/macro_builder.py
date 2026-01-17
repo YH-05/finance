@@ -9,7 +9,7 @@ import pandas as pd
 
 from ...core.orthogonalization import Orthogonalizer
 from ...utils.logging_config import get_logger
-from .flight_to_quality import FlightToQualityFactor, HY_SPREAD_SERIES, IG_SPREAD_SERIES
+from .flight_to_quality import HY_SPREAD_SERIES, IG_SPREAD_SERIES, FlightToQualityFactor
 from .inflation import INFLATION_SERIES, InflationFactor
 from .interest_rate import TREASURY_YIELD_SERIES, InterestRateFactor
 
@@ -345,4 +345,4 @@ class MacroFactorBuilder:
         return series
 
 
-__all__ = ["MacroFactorBuilder", "FACTOR_NAMES"]
+__all__ = ["FACTOR_NAMES", "MacroFactorBuilder"]

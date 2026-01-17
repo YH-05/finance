@@ -144,7 +144,7 @@ class InflationFactor(BaseMacroFactor):
             raise KeyError(msg)
 
         # Get inflation expectation data
-        inflation_data = cast(pd.Series, data[INFLATION_SERIES])
+        inflation_data = cast("pd.Series", data[INFLATION_SERIES])
 
         # Calculate shock (change)
         inflation_shock = inflation_data.diff()
@@ -216,4 +216,4 @@ class InflationFactor(BaseMacroFactor):
             return inflation_shock
 
 
-__all__ = ["InflationFactor", "INFLATION_SERIES"]
+__all__ = ["INFLATION_SERIES", "InflationFactor"]

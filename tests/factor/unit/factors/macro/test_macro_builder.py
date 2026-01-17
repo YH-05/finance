@@ -80,8 +80,17 @@ class TestMacroFactorBuilderBuildAllFactors:
         # Yield curve data
         yield_data = {}
         maturities = [
-            "DGS1MO", "DGS3MO", "DGS6MO", "DGS1", "DGS2",
-            "DGS3", "DGS5", "DGS7", "DGS10", "DGS20", "DGS30",
+            "DGS1MO",
+            "DGS3MO",
+            "DGS6MO",
+            "DGS1",
+            "DGS2",
+            "DGS3",
+            "DGS5",
+            "DGS7",
+            "DGS10",
+            "DGS20",
+            "DGS30",
         ]
         for i, mat in enumerate(maturities):
             yield_data[mat] = np.random.randn(n).cumsum() * 0.01 + 2.0 + i * 0.1
@@ -153,9 +162,9 @@ class TestMacroFactorBuilderBuildAllFactors:
             for j, col2 in enumerate(result.columns):
                 if i != j:
                     corr = abs(corr_matrix.loc[col1, col2])
-                    assert corr < 0.2, (
-                        f"Correlation between {col1} and {col2} is too high: {corr:.3f}"
-                    )
+                    assert (
+                        corr < 0.2
+                    ), f"Correlation between {col1} and {col2} is too high: {corr:.3f}"
 
 
 class TestMacroFactorBuilderOrthogonalizationOrder:
@@ -253,9 +262,7 @@ class TestMacroFactorBuilderDataValidation:
 
         mismatched_data = {
             "market_return": pd.Series(np.random.randn(10), index=dates_short),
-            "yields": pd.DataFrame(
-                {"DGS10": np.random.randn(100)}, index=dates_long
-            ),
+            "yields": pd.DataFrame({"DGS10": np.random.randn(100)}, index=dates_long),
         }
 
         # Should either raise an error or handle gracefully by alignment

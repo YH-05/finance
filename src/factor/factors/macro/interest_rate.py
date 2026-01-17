@@ -172,7 +172,7 @@ class InterestRateFactor(BaseMacroFactor):
                 factor_name=self.name,
             )
 
-        yield_data = cast(pd.DataFrame, data[available_series])
+        yield_data = cast("pd.DataFrame", data[available_series])
 
         # Perform PCA on yield changes
         try:
@@ -230,7 +230,7 @@ class InterestRateFactor(BaseMacroFactor):
 
         result_data: dict[str, pd.Series] = {}
         for col in factors.columns:
-            factor_series = cast(pd.Series, factors[col])
+            factor_series = cast("pd.Series", factors[col])
             factor_series.name = col
 
             try:
@@ -250,4 +250,4 @@ class InterestRateFactor(BaseMacroFactor):
         return result
 
 
-__all__ = ["InterestRateFactor", "TREASURY_YIELD_SERIES"]
+__all__ = ["TREASURY_YIELD_SERIES", "InterestRateFactor"]

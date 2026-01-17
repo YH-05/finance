@@ -220,4 +220,4 @@ class FlightToQualityFactor(BaseMacroFactor):
             return ftoq_shock
 
 
-__all__ = ["FlightToQualityFactor", "HY_SPREAD_SERIES", "IG_SPREAD_SERIES"]
+__all__ = ["HY_SPREAD_SERIES", "IG_SPREAD_SERIES", "FlightToQualityFactor"]
