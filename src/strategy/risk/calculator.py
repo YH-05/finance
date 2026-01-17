@@ -5,9 +5,11 @@ risk metrics from portfolio returns data.
 """
 
 import math
+from typing import Literal
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 
 from ..utils.logging_config import get_logger
 
@@ -370,3 +372,120 @@ class RiskCalculator:
         )
 
         return float(downside_dev)
+
+    def max_drawdown(self) -> float:
+        """Calculate maximum drawdown (MDD).
+
+        Maximum drawdown measures the largest peak-to-trough decline
+        in cumulative returns.
+
+        Returns
+        -------
+        float
+            Maximum drawdown (negative value, e.g., -0.15 = -15%)
+
+        Notes
+        -----
+        Formula:
+        - cumulative = (1 + returns).cumprod()
+        - running_max = cumulative.cummax()
+        - drawdown = (cumulative - running_max) / running_max
+        - max_drawdown = min(drawdown)
+
+        Examples
+        --------
+        >>> calc = RiskCalculator(returns)
+        >>> mdd = calc.max_drawdown()
+        >>> -1.0 <= mdd <= 0.0  # MDD is always in [-1, 0]
+        True
+        """
+        logger.debug("Calculating max drawdown")
+
+        cumulative = (1 + self._returns).cumprod()
+        running_max = cumulative.cummax()
+        drawdown = (cumulative - running_max) / running_max
+        mdd = float(drawdown.min())
+
+        logger.debug(
+            "Max drawdown calculated",
+            max_drawdown=mdd,
+            returns_count=len(self._returns),
+        )
+
+        return mdd
+
+    def var(
+        self,
+        confidence: float = 0.95,
+        method: Literal["historical", "parametric"] = "historical",
+    ) -> float:
+        """Calculate Value at Risk (VaR).
+
+        VaR measures the potential loss in value of a portfolio over
+        a defined period for a given confidence interval.
+
+        Parameters
+        ----------
+        confidence : float, default=0.95
+            Confidence level (e.g., 0.95 = 95%)
+        method : {"historical", "parametric"}, default="historical"
+            Calculation method:
+            - "historical": Uses empirical distribution (percentile)
+            - "parametric": Assumes normal distribution
+
+        Returns
+        -------
+        float
+            VaR value (typically negative, representing potential loss)
+
+        Raises
+        ------
+        ValueError
+            If method is not "historical" or "parametric"
+
+        Notes
+        -----
+        Formula (Historical):
+            var = percentile(returns, (1 - confidence) * 100)
+
+        Formula (Parametric):
+            var = mean(returns) + z_score * std(returns)
+            where z_score = norm.ppf(1 - confidence)
+
+        Examples
+        --------
+        >>> calc = RiskCalculator(returns)
+        >>> var_95 = calc.var(confidence=0.95)
+        >>> var_99 = calc.var(confidence=0.99)
+        >>> var_99 <= var_95  # Higher confidence = larger potential loss
+        True
+        """
+        logger.debug(
+            "Calculating VaR",
+            confidence=confidence,
+            method=method,
+        )
+
+        if method not in ("historical", "parametric"):
+            logger.error(
+                "Invalid VaR method",
+                method=method,
+            )
+            raise ValueError(
+                f"method must be 'historical' or 'parametric', got {method!r}"
+            )
+
+        if method == "historical":
+            var = float(np.percentile(self._returns, (1 - confidence) * 100))
+        else:
+            z_score = stats.norm.ppf(1 - confidence)
+            var = float(self._returns.mean() + z_score * self._returns.std())
+
+        logger.debug(
+            "VaR calculated",
+            confidence=confidence,
+            method=method,
+            var=var,
+        )
+
+        return var
