@@ -20,7 +20,7 @@ RSS フィードから記事を取得し、テーマ別エージェント（inde
 1. **データ準備のみ**: Issue 作成は行わず、データ準備のみを担当
 2. **一時ファイル保存**: 取得したデータは`.tmp/news-collection-{timestamp}.json`に保存
 3. **完全性**: すべての RSS 記事と既存 Issue を取得
-4. **エラーハンドリング**: 失敗時は詳細なエラーログを出力
+4. **エラーハンドリング**: MCPサーバー接続失敗時は代替手段を使用
 
 ## 処理フロー
 
@@ -33,12 +33,14 @@ RSS フィードから記事を取得し、テーマ別エージェント（inde
     ↓ エラーの場合
     エラーログ出力 → 処理中断
 
-[2] RSS MCP ツールのロード
+[2] RSS MCP ツールのロード（フォールバック付き）
     ↓
     MCPSearch で rss ツールを検索・ロード
     select:mcp__rss__list_feeds
     select:mcp__rss__get_items
     ↓ 利用できない場合
+    【フォールバック】data/raw/rss/ からJSONファイルを直接読み込み
+    ↓ それも失敗する場合
     エラーログ出力 → 処理中断
 
 [3] GitHub CLI の確認
@@ -57,20 +59,59 @@ RSS フィードから記事を取得し、テーマ別エージェント（inde
 
 #### ステップ 2.1: RSS 記事取得
 
-**MCP ツールを使用して RSS フィードから記事を取得**:
+**Method A: MCP ツール経由（推奨）**
 
 ```python
 # RSS MCP ツールで全記事を取得
-result = mcp__rss__get_items(
-    feed_id=None,      # 全フィード（7個）
-    limit=50,          # 最新50件
-    offset=0
-)
+try:
+    result = mcp__rss__get_items(
+        feed_id=None,      # 全フィード（7個）
+        limit=50,          # 最新50件
+        offset=0
+    )
+    items = result["items"]
+    total = result["total"]
+    ログ出力: f"RSS記事取得完了（MCP経由）: {len(items)}件 / {total}件"
 
-items = result["items"]
-total = result["total"]
+except Exception as e:
+    ログ出力: f"MCP接続失敗: {e}"
+    ログ出力: "フォールバック: ローカルファイルから読み込み"
+    # Method Bへフォールバック
+```
 
-ログ出力: f"RSS記事取得完了: {len(items)}件 / {total}件"
+**Method B: ローカルファイル経由（フォールバック）**
+
+MCPサーバーが利用できない場合、`data/raw/rss/` から直接読み込む:
+
+```python
+def load_rss_from_local():
+    """ローカルのRSSキャッシュからデータを読み込む"""
+    items = []
+    rss_dir = Path("data/raw/rss")
+
+    # feeds.json からフィード情報を取得
+    feeds_file = rss_dir / "feeds.json"
+    if not feeds_file.exists():
+        raise FileNotFoundError("RSS feeds.json が見つかりません")
+
+    with open(feeds_file) as f:
+        feeds = json.load(f)
+
+    # 各フィードディレクトリからアイテムを収集
+    for feed_id in feeds.get("feeds", {}).keys():
+        feed_dir = rss_dir / feed_id
+        if feed_dir.exists():
+            for item_file in feed_dir.glob("*.json"):
+                if item_file.name != "feed_meta.json":
+                    with open(item_file) as f:
+                        item = json.load(f)
+                        items.append(item)
+
+    # 日付でソート（新しい順）
+    items.sort(key=lambda x: x.get("published", ""), reverse=True)
+
+    ログ出力: f"RSS記事取得完了（ローカル）: {len(items)}件"
+    return items[:50]  # 最新50件に制限
 ```
 
 **記事データ構造**:
@@ -101,18 +142,6 @@ gh issue list \
     --jq '.[] | {number, title, url, body, createdAt}'
 ```
 
-**取得データ構造**:
-
-```json
-{
-    "number": 171,
-    "title": "[NEWS] タイトル",
-    "url": "https://github.com/YH-05/finance/issues/171",
-    "body": "Issue本文",
-    "createdAt": "2026-01-15T09:00:00Z"
-}
-```
-
 ### Phase 3: データ保存
 
 #### ステップ 3.1: 一時ファイル作成
@@ -125,32 +154,14 @@ gh issue list \
 {
     "session_id": "news-collection-20260115-143000",
     "timestamp": "2026-01-15T14:30:00Z",
+    "data_source": "mcp|local",
     "config": {
         "project_number": 15,
         "project_owner": "YH-05",
         "limit": 50
     },
-    "rss_items": [
-        {
-            "item_id": "uuid",
-            "title": "日経平均、3万円台を回復",
-            "link": "https://...",
-            "summary": "...",
-            "content": "...",
-            "published": "2026-01-15T10:00:00Z",
-            "author": null,
-            "fetched_at": "2026-01-15T14:30:00Z"
-        }
-    ],
-    "existing_issues": [
-        {
-            "number": 171,
-            "title": "[NEWS] ...",
-            "url": "https://github.com/YH-05/finance/issues/171",
-            "body": "...",
-            "createdAt": "2026-01-15T09:00:00Z"
-        }
-    ],
+    "rss_items": [...],
+    "existing_issues": [...],
     "themes": ["index", "stock", "sector", "macro", "ai"],
     "statistics": {
         "total_rss_items": 50,
@@ -159,62 +170,22 @@ gh issue list \
 }
 ```
 
-#### ステップ 3.2: ファイル書き込み
-
-```python
-import json
-from datetime import datetime
-from pathlib import Path
-
-# タイムスタンプ生成
-timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-session_id = f"news-collection-{timestamp}"
-filepath = Path(f".tmp/{session_id}.json")
-
-# データ構造作成
-data = {
-    "session_id": session_id,
-    "timestamp": datetime.now().isoformat(),
-    "config": {
-        "project_number": 15,
-        "project_owner": "YH-05",
-        "limit": 50
-    },
-    "rss_items": items,
-    "existing_issues": existing_issues,
-    "themes": ["index", "stock", "sector", "macro", "ai"],
-    "statistics": {
-        "total_rss_items": len(items),
-        "total_existing_issues": len(existing_issues)
-    }
-}
-
-# ファイル書き込み
-filepath.write_text(json.dumps(data, ensure_ascii=False, indent=2))
-
-ログ出力: f"データ保存完了: {filepath}"
-```
-
 ### Phase 4: 完了報告
-
-#### ステップ 4.1: サマリー出力
 
 ```markdown
 ## データ準備完了
 
 ### 収集データ
-
--   **RSS 記事数**: {len(items)}件
--   **既存 Issue 数**: {len(existing_issues)}件
--   **対象テーマ**: index, stock, sector, macro, ai
+- **RSS 記事数**: {len(items)}件
+- **既存 Issue 数**: {len(existing_issues)}件
+- **対象テーマ**: index, stock, sector, macro, ai
+- **データソース**: {MCP | ローカルファイル}
 
 ### 一時ファイル
-
--   **パス**: .tmp/news-collection-{timestamp}.json
--   **セッション ID**: news-collection-{timestamp}
+- **パス**: .tmp/news-collection-{timestamp}.json
+- **セッション ID**: news-collection-{timestamp}
 
 ### 次のステップ
-
 テーマ別エージェント（finance-news-{theme}）を並列起動してください。
 各エージェントは一時ファイルを読み込み、テーマごとにフィルタリング・投稿を行います。
 ```
@@ -223,67 +194,66 @@ filepath.write_text(json.dumps(data, ensure_ascii=False, indent=2))
 
 ### E001: 設定ファイルエラー
 
-**発生条件**:
-
--   `data/config/finance-news-themes.json` が存在しない
--   JSON 形式が不正
+**発生条件**: `data/config/finance-news-themes.json` が存在しない or JSON不正
 
 **対処法**:
-
 ```python
 try:
     with open("data/config/finance-news-themes.json") as f:
         config = json.load(f)
 except FileNotFoundError:
     ログ出力: "エラー: テーマ設定ファイルが見つかりません"
-    ログ出力: "期待されるパス: data/config/finance-news-themes.json"
     raise
 except json.JSONDecodeError as e:
     ログ出力: f"エラー: JSON形式が不正です - {e}"
     raise
 ```
 
-### E002: RSS MCP ツールエラー
+### E002: RSS MCP ツールエラー（強化版）
 
-**発生条件**:
+**発生条件**: RSS MCP サーバーが起動していない or ツールが利用できない
 
--   RSS MCP サーバーが起動していない
--   RSS MCP ツールが利用できない
-
-**対処法**:
+**対処法**（3段階フォールバック）:
 
 ```python
-try:
-    # MCPSearch で rss ツールをロード
-    mcp_result = MCPSearch(query="select:mcp__rss__get_items")
+def get_rss_items():
+    """RSS記事を取得（3段階フォールバック）"""
 
-    if not mcp_result:
-        raise Exception("RSS MCPツールが見つかりません")
+    # Step 1: MCP経由で取得を試行
+    try:
+        mcp_result = MCPSearch(query="select:mcp__rss__get_items")
+        if mcp_result:
+            result = mcp__rss__get_items(feed_id=None, limit=50, offset=0)
+            ログ出力: f"RSS取得成功（MCP経由）: {len(result['items'])}件"
+            return result['items'], "mcp"
+    except Exception as e:
+        ログ出力: f"MCP接続失敗: {e}"
 
-except Exception as e:
-    ログ出力: f"エラー: RSS MCPツールのロードに失敗 - {e}"
-    ログ出力: "確認方法: .mcp.json の設定を確認してください"
-    raise
+    # Step 2: ローカルキャッシュから取得を試行
+    try:
+        items = load_rss_from_local()
+        ログ出力: f"RSS取得成功（ローカル）: {len(items)}件"
+        return items, "local"
+    except Exception as e:
+        ログ出力: f"ローカル読み込み失敗: {e}"
+
+    # Step 3: 空リストで継続（警告付き）
+    ログ出力: "警告: RSS記事を取得できませんでした。空リストで継続します。"
+    return [], "none"
 ```
 
 ### E003: GitHub CLI エラー
 
-**発生条件**:
-
--   `gh` コマンドが利用できない
--   GitHub 認証が切れている
+**発生条件**: `gh` コマンドが利用できない or 認証切れ
 
 **対処法**:
-
 ```bash
-# GitHub CLI の確認
 if ! command -v gh &> /dev/null; then
     echo "エラー: GitHub CLI (gh) がインストールされていません"
     echo "インストール方法: https://cli.github.com/"
     exit 1
 fi
 
-# 認証確認
 if ! gh auth status &> /dev/null; then
     echo "エラー: GitHub認証が必要です"
     echo "認証方法: gh auth login"
@@ -291,99 +261,62 @@ if ! gh auth status &> /dev/null; then
 fi
 ```
 
-### E004: 記事取得エラー
-
-**発生条件**:
-
--   フィードが取得できない
--   ネットワークエラー
+### E004: ファイル書き込みエラー
 
 **対処法**:
-
--   リトライロジック（最大 3 回、指数バックオフ）
--   エラーログ記録
--   処理継続（部分的に成功したデータで進行）
-
-```python
-max_retries = 3
-for retry in range(max_retries):
-    try:
-        result = mcp__rss__get_items(...)
-        break
-    except Exception as e:
-        ログ出力: f"RSS取得失敗（{retry+1}/{max_retries}回目）: {e}"
-        if retry == max_retries - 1:
-            ログ出力: "リトライ失敗。部分的なデータで継続します。"
-            items = []  # 空リストで継続
-        else:
-            time.sleep(2 ** retry)  # 指数バックオフ
-```
-
-### E005: ファイル書き込みエラー
-
-**発生条件**:
-
--   `.tmp/`ディレクトリが存在しない
--   ディスク容量不足
--   権限エラー
-
-**対処法**:
-
 ```python
 try:
     filepath.parent.mkdir(parents=True, exist_ok=True)
     filepath.write_text(json.dumps(data, ensure_ascii=False, indent=2))
 except Exception as e:
     ログ出力: f"エラー: ファイル書き込み失敗 - {e}"
-    ログ出力: f"パス: {filepath}"
     raise
 ```
 
-## 実行例
+## 実行ログの例
 
-### 基本的な使用方法
-
-```
-1. オーケストレーターを起動
-2. 自動的にRSSフィードから記事を取得
-3. 既存GitHub Issueを取得
-4. 一時ファイルに保存
-5. 完了報告を出力
-```
-
-### 実行ログの例
+### 正常ケース（MCP経由）
 
 ```
 [INFO] テーマ設定ファイル読み込み: data/config/finance-news-themes.json
 [INFO] RSS MCPツールをロード中...
 [INFO] RSS記事取得中... (limit=50)
-[INFO] RSS記事取得完了: 50件 / 150件
+[INFO] RSS記事取得完了（MCP経由）: 50件 / 150件
 [INFO] 既存GitHub Issue取得中...
 [INFO] 既存Issue取得完了: 22件
 [INFO] データ保存中... (.tmp/news-collection-20260115-143000.json)
 [INFO] データ保存完了
 
 ## データ準備完了
+...
+```
 
-### 収集データ
-- **RSS記事数**: 50件
-- **既存Issue数**: 22件
-- **対象テーマ**: index, stock, sector, macro, ai
+### フォールバックケース（ローカル経由）
 
-### 一時ファイル
-- **パス**: .tmp/news-collection-20260115-143000.json
-- **セッションID**: news-collection-20260115-143000
+```
+[INFO] テーマ設定ファイル読み込み: data/config/finance-news-themes.json
+[INFO] RSS MCPツールをロード中...
+[WARN] MCP接続失敗: MCPサーバーが応答しません
+[INFO] フォールバック: ローカルファイルから読み込み
+[INFO] RSS記事取得完了（ローカル）: 45件
+[INFO] 既存GitHub Issue取得中...
+[INFO] 既存Issue取得完了: 22件
+[INFO] データ保存中... (.tmp/news-collection-20260115-143000.json)
+[INFO] データ保存完了
 
-### 次のステップ
-テーマ別エージェント（finance-news-{theme}）を並列起動してください。
+## データ準備完了
+- **データソース**: ローカルファイル
+...
 ```
 
 ## 参考資料
 
--   **テーマ設定**: `data/config/finance-news-themes.json`
--   **RSS MCP ツール**: `src/rss/mcp/server.py`
--   **テーマ別エージェント**: `.claude/agents/finance-news-{theme}.md`
--   **コマンド**: `.claude/commands/collect-finance-news.md`
+- **テーマ設定**: `data/config/finance-news-themes.json`
+- **RSSローカルキャッシュ**: `data/raw/rss/`
+- **共通処理ガイド**: `.claude/agents/finance_news_collector/common-processing-guide.md`
+- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.yml`
+- **テーマ別エージェント**: `.claude/agents/finance-news-{theme}.md`
+- **コマンド**: `.claude/commands/collect-finance-news.md`
 
 ## 制約事項
 
