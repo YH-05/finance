@@ -71,6 +71,10 @@
             "env": {
                 "SLACK_BOT_TOKEN": "xoxb-10037291992179-10284587908951-THCxkuDGUjh7Wth1GEAhMAX5"
             }
+        },
+        "context7": {
+            "command": "npx",
+            "args": ["-y", "@upstash/context7-mcp@latest"]
         }
     }
 }
