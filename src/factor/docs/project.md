@@ -157,7 +157,7 @@
 |-------|---------|--------|---------|----------|
 | [#131](https://github.com/YH-05/finance/issues/131) | T17: ICAnalyzer | P0 | 1-2h | ✅ Done |
 | [#132](https://github.com/YH-05/finance/issues/132) | T18: QuantileAnalyzer | P0 | 1-2h | ✅ Done |
-| [#133](https://github.com/YH-05/finance/issues/133) | T19: ファクターカテゴリ拡張 | P0 | 1h | Todo |
+| [#133](https://github.com/YH-05/finance/issues/133) | T19: ファクターカテゴリ拡張 | P0 | 1h | ✅ Done |
 | [#134](https://github.com/YH-05/finance/issues/134) | T20: パッケージエクスポート | P0 | 0.5h | Todo |
 | [#135](https://github.com/YH-05/finance/issues/135) | T21: 統合テスト | P0 | 2-3h | Todo |
 
@@ -169,13 +169,13 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 17 |
+| ✅ Done | 18 |
 | 🔄 In Progress | 0 |
-| Todo | 4 |
+| Todo | 3 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) と project.md を同期（#127 CompositeValueFactor 完了）
+**更新内容**: GitHub Project #13 (factor) と project.md を同期（#133 ファクターカテゴリ拡張 完了）
 
 ---
 
