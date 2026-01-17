@@ -1,6 +1,12 @@
 """factor package."""
 
 from .core.base import Factor, FactorComputeOptions, FactorMetadata
+from .core.registry import (
+    FactorNotFoundError,
+    FactorRegistry,
+    get_registry,
+    register_factor,
+)
 from .enums import FactorCategory, NormalizationMethod
 from .errors import (
     FactorError,
@@ -22,6 +28,8 @@ __all__ = [
     "FactorConfig",
     "FactorError",
     "FactorMetadata",
+    "FactorNotFoundError",
+    "FactorRegistry",
     "FactorResult",
     "ICAnalyzer",
     "ICResult",
@@ -35,6 +43,8 @@ __all__ = [
     "ValidationError",
     "ValueFactor",
     "get_logger",
+    "get_registry",
+    "register_factor",
 ]
 
 __version__ = "0.1.0"
