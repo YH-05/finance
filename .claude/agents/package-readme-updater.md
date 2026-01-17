@@ -28,9 +28,11 @@ color: cyan
 
 **注意**: `<package_name>` は必ずプロンプトから指定されます。
 
-## 作業プロセス
+## 作業プロセス（並列化アーキテクチャ）
 
-### ステップ 1: パッケージ構造のスキャン
+処理を3フェーズに分割し、Phase 2 で並列実行することで 30〜65% の高速化を実現。
+
+### Phase 1: 構造スキャン [順次実行]
 
 `src/<package_name>/` 配下を再帰的にスキャンし、以下を収集:
 
@@ -48,27 +50,26 @@ color: cyan
 
 **ツリー生成**: 最大 4 層まで表示、ASCII 形式
 
-### ステップ 2: 実装状況の判定
+**出力形式**:
 
-各モジュールディレクトリ (core/, api/, utils/ 等) について、以下のロジックで状態を判定:
+```yaml
+# structure-scanner の出力例
+files:
+  - path: "core/fetcher.py"
+    lines: 150
+  - path: "utils/helpers.py"
+    lines: 45
+tree: |
+  package_name/
+  ├── __init__.py
+  └── core/
+```
 
-**判定ロジック**:
+### Phase 2: 並列処理 [3タスク同時実行]
 
-1. **⏳ 未実装**:
+Phase 1 の結果を受け取り、**3つの処理を並列実行**:
 
-    - `__init__.py` がない
-    - `.py` ファイルが `__init__.py` のみ
-
-2. **🚧 開発中**:
-
-    - `.py` ファイルが複数あるが、テストファイルがない
-
-3. **✅ 実装済み**:
-    - `.py` ファイルが複数あり、テストも存在する
-
-**テスト確認**: `tests/<package_name>/<module_name>/` 配下に `test_*.py` が存在するか
-
-### ステップ 3: 公開 API の抽出と説明生成
+#### Task 2-A: API 抽出
 
 `src/<package_name>/__init__.py` から以下を抽出:
 
@@ -101,7 +102,7 @@ color: cyan
 └── パラメータ: symbol(必須), period(デフォルト="1y"), interval(デフォルト="1d")
 ```
 
-### ステップ 4: モジュール統計の計算
+#### Task 2-B: 統計計算
 
 以下の統計を算出:
 
@@ -115,7 +116,35 @@ color: cyan
 
 **注意**: カバレッジ取得が失敗した場合は "N/A" とし、エラーで停止しない。
 
-### ステップ 5: README の更新
+#### Task 2-C: 実装状況判定
+
+各モジュールディレクトリ (core/, api/, utils/ 等) について、以下のロジックで状態を判定:
+
+**判定ロジック**:
+
+1. **⏳ 未実装**:
+
+    - `__init__.py` がない
+    - `.py` ファイルが `__init__.py` のみ
+
+2. **🚧 開発中**:
+
+    - `.py` ファイルが複数あるが、テストファイルがない
+
+3. **✅ 実装済み**:
+    - `.py` ファイルが複数あり、テストも存在する
+
+**テスト確認**: `tests/<package_name>/<module_name>/` 配下に `test_*.py` が存在するか
+
+### Phase 3: 結果統合・出力 [順次実行]
+
+Phase 2 の3タスクの結果をマージし、README.md を更新:
+
+1. 各タスクの結果を統合
+2. マーカーペア内を新しい内容で置換
+3. 品質チェックを実行
+
+### README の更新
 
 既存の `src/<package_name>/README.md` を読み込み、マーカーペア内を更新:
 
@@ -406,6 +435,55 @@ detector = DiffDetector()
 new_entries = detector.detect_new(entries)
 ```
 
+### factor パッケージ（最小限）
+
+factor はファクター投資分析パッケージなので、最小限の README を作成:
+
+-   概要: "ファクター投資・マルチファクターモデル分析パッケージ"
+-   **クイックスタート**: ファクターモデルの基本的な使い方（実装後）
+-   ディレクトリ構成
+-   実装状況（`core/`, `utils/` のみ）
+-   公開 API（`get_logger` 等）と使用例
+-   統計（簡略版）
+
+**使用例の重点**:
+
+```python
+# ログ設定
+from factor.utils.logging_config import get_logger
+logger = get_logger(__name__)
+
+# ファクター分析（実装後）
+# from factor import FactorModel
+# model = FactorModel()
+# result = model.analyze(data)
+```
+
+### strategy パッケージ（最小限）
+
+strategy は投資戦略パッケージなので、最小限の README を作成:
+
+-   概要: "投資戦略の構築・バックテスト・評価パッケージ"
+-   **クイックスタート**: 戦略バックテストの基本的な使い方（実装後）
+-   ディレクトリ構成
+-   実装状況（`core/`, `utils/` のみ）
+-   公開 API（`get_logger` 等）と使用例
+-   統計（簡略版）
+
+**使用例の重点**:
+
+```python
+# ログ設定
+from strategy.utils.logging_config import get_logger
+logger = get_logger(__name__)
+
+# 戦略バックテスト（実装後）
+# from strategy import Strategy, Backtest
+# strategy = Strategy()
+# backtest = Backtest(strategy)
+# result = backtest.run(data)
+```
+
 ## エラーハンドリング
 
 | 状況                           | 対応                                         |
@@ -478,3 +556,5 @@ new_entries = detector.detect_new(entries)
 -   [ ] finance: 最小限の構成 + DB操作の使用例
 -   [ ] market_analysis: 詳細構造 + データ取得→分析→可視化の一連の例
 -   [ ] rss: 標準構成 + フィード管理の基本フロー
+-   [ ] factor: 最小限の構成 + ファクター分析の使用例（実装後）
+-   [ ] strategy: 最小限の構成 + バックテストの使用例（実装後）

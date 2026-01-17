@@ -157,7 +157,7 @@ class WeeklyInsightGenerator:
         for i in range(0, len(tickers), batch_size):
             batch = tickers[i : i + batch_size]
             print(
-                f"Fetching valuation data batch {i//batch_size + 1}/{(len(tickers)-1)//batch_size + 1}..."
+                f"Fetching valuation data batch {i // batch_size + 1}/{(len(tickers) - 1) // batch_size + 1}..."
             )
 
             # yfinance.Tickers を使うとマルチスレッドでinfoを取得できるが、不安定なこともある

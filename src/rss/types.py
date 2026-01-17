@@ -312,3 +312,69 @@ class BatchStats:
     started_at: str
     completed_at: str
     duration_seconds: float
+
+
+@dataclass
+class PresetFeed:
+    """Preset feed configuration.
+
+    Attributes
+    ----------
+    url : str
+        Feed URL (HTTP/HTTPS only)
+    title : str
+        Feed title
+    category : str
+        Feed category
+    fetch_interval : str
+        Fetch interval ("daily", "weekly", or "manual")
+    enabled : bool
+        Whether the feed is enabled
+    """
+
+    url: str
+    title: str
+    category: str
+    fetch_interval: str
+    enabled: bool
+
+
+@dataclass
+class PresetsConfig:
+    """Preset feeds configuration.
+
+    Attributes
+    ----------
+    version : str
+        Configuration version
+    presets : list[PresetFeed]
+        List of preset feeds
+    """
+
+    version: str
+    presets: list[PresetFeed]
+
+
+@dataclass
+class PresetApplyResult:
+    """Result of applying presets.
+
+    Attributes
+    ----------
+    total : int
+        Total number of presets
+    added : int
+        Number of feeds successfully added
+    skipped : int
+        Number of feeds skipped (already exists)
+    failed : int
+        Number of feeds that failed to add
+    errors : list[str]
+        List of error messages
+    """
+
+    total: int
+    added: int
+    skipped: int
+    failed: int
+    errors: list[str]

@@ -40,7 +40,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
+from mcp.server.fastmcp import FastMCP
 
 from ..exceptions import (
     FeedAlreadyExistsError,

@@ -422,7 +422,7 @@ def calculate_Return(
 
     for period_month in periods_months:
         period_name = (
-            f"{int(period_month//12)}Y" if period_month >= 36 else f"{period_month}M"
+            f"{int(period_month // 12)}Y" if period_month >= 36 else f"{period_month}M"
         )
 
         # 通常のリターンとforwardリターンを計算
@@ -1337,7 +1337,7 @@ def make_roic_transition_label(
     # Only evaluate move/drop if start and end ranks are available
     if not pd.isna(current_rank) and not pd.isna(final_rank):
         if judge_by_slope:
-            slope_col = f"ROIC_Slope_{int(year_period*12)}M{shift_direction_suffix}"
+            slope_col = f"ROIC_Slope_{int(year_period * 12)}M{shift_direction_suffix}"
             slope = row.get(slope_col, np.nan)  # Safely get the pre-calculated slope
             # Only evaluate if slope is also available and valid
             if not pd.isna(slope):
@@ -1560,9 +1560,9 @@ def make_roic_label_and_performance_table():
         col
         for col in df_return_and_roic_filled.columns
         if (
-            ("ROIC" in col)
+            (("ROIC" in col)
             and ("QForward" in col)
-            and ("Slope" not in col)
+            and ("Slope" not in col))
             or (col == "ROIC")
         )
     ]
@@ -2382,7 +2382,7 @@ def _determine_optimal_epsilon(df, growth_variables=None, percentile=0.05):
         growth_variables = [col for col in df_wide.columns if "CAGR_3Y" in col]
 
     print("=" * 70)
-    print(f"Epsilon決定分析（{percentile*100:.0f}パーセンタイル基準）")
+    print(f"Epsilon決定分析（{percentile * 100:.0f}パーセンタイル基準）")
     print("=" * 70)
 
     epsilon_dict = {}
@@ -2411,13 +2411,13 @@ def _determine_optimal_epsilon(df, growth_variables=None, percentile=0.05):
         epsilon_dict[var] = epsilon_recommended
 
         print(f"\n{var} (絶対値の分布):")
-        print(f"  1%ile:  {p01:.6f} ({p01*100:.2f}%)")
-        print(f"  5%ile:  {p05:.6f} ({p05*100:.2f}%)")
-        print(f"  10%ile: {p10:.6f} ({p10*100:.2f}%)")
-        print(f"  25%ile: {p25:.6f} ({p25*100:.2f}%)")
-        print(f"  Median: {median:.6f} ({median*100:.2f}%)")
+        print(f"  1%ile:  {p01:.6f} ({p01 * 100:.2f}%)")
+        print(f"  5%ile:  {p05:.6f} ({p05 * 100:.2f}%)")
+        print(f"  10%ile: {p10:.6f} ({p10 * 100:.2f}%)")
+        print(f"  25%ile: {p25:.6f} ({p25 * 100:.2f}%)")
+        print(f"  Median: {median:.6f} ({median * 100:.2f}%)")
         print(
-            f"  → 推奨epsilon: {epsilon_recommended:.6f} ({epsilon_recommended*100:.2f}%)"
+            f"  → 推奨epsilon: {epsilon_recommended:.6f} ({epsilon_recommended * 100:.2f}%)"
         )
 
     # 全体の推奨値（保守的に最大値）
@@ -2425,7 +2425,7 @@ def _determine_optimal_epsilon(df, growth_variables=None, percentile=0.05):
         overall_epsilon = max(epsilon_dict.values())
         print("\n" + "=" * 70)
         print(
-            f"全体推奨epsilon（保守的）: {overall_epsilon:.6f} ({overall_epsilon*100:.2f}%)"
+            f"全体推奨epsilon（保守的）: {overall_epsilon:.6f} ({overall_epsilon * 100:.2f}%)"
         )
         print("=" * 70)
         epsilon_dict["_overall_conservative"] = overall_epsilon

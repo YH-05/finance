@@ -1,5 +1,8 @@
 # rss プロジェクト
 
+**ステータス**: ✅ 完了（2026-01-15）
+**GitHub Project**: [#10](https://github.com/users/YH-05/projects/10)
+
 ## 概要
 
 外部RSSフィードを収集・集約し、構造化データとして管理するPythonライブラリ。
@@ -114,7 +117,7 @@ JSON形式で保存・エクスポートする。
 #### 機能 1.1: 型定義（types.py）
 - Issue: [#53](https://github.com/YH-05/finance/issues/53)
 - 優先度: P0
-- ステータス: todo
+- ステータス: done
 - 依存関係: なし
 - 説明: RSS/Atomフィード管理に必要な型定義を実装
 - 受け入れ条件:

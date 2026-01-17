@@ -3,12 +3,24 @@
 
 GitHub Issues / Project と project.md の整合性を検証します。
 
-Usage:
-    python scripts/check_project_sync.py [--strict] [--skip-github]
+Usage
+-----
+python scripts/check_project_sync.py [--strict] [--skip-github]
 
-Options:
-    --strict      警告もエラーとして扱う
-    --skip-github GitHub API チェックをスキップ（ローカルチェックのみ）
+Options
+-------
+--strict
+    警告もエラーとして扱う
+--skip-github
+    GitHub API チェックをスキップ（ローカルチェックのみ）
+
+Notes
+-----
+このスクリプトは以下のチェックを実行します:
+- 循環依存の検出
+- 優先度と依存関係の整合性検証
+- ステータスの整合性検証（project.md vs GitHub Issues）
+- Issue未紐付けタスクの検出
 """
 
 from __future__ import annotations
@@ -32,7 +44,23 @@ BOLD = "\033[1m"
 
 @dataclass
 class Issue:
-    """GitHub Issue の情報."""
+    """GitHub Issue の情報.
+
+    Attributes
+    ----------
+    number : int
+        Issue番号
+    title : str
+        Issueタイトル
+    state : str
+        状態（OPEN/CLOSED）
+    labels : list[str]
+        ラベルリスト
+    depends_on : list[int]
+        このIssueが依存するIssue番号のリスト
+    blocks : list[int]
+        このIssueがブロックするIssue番号のリスト
+    """
 
     number: int
     title: str
@@ -44,7 +72,23 @@ class Issue:
 
 @dataclass
 class ProjectTask:
-    """project.md のタスク情報."""
+    """project.md のタスク情報.
+
+    Attributes
+    ----------
+    id : str
+        タスクID（例: "1.1"）
+    title : str
+        タスクタイトル
+    issue_number : int | None
+        紐付けられたIssue番号（未紐付けの場合はNone）
+    priority : str
+        優先度（high/medium/low）
+    status : str
+        ステータス（todo/in_progress/done）
+    depends_on : list[int]
+        依存するIssue番号のリスト
+    """
 
     id: str
     title: str
@@ -56,7 +100,17 @@ class ProjectTask:
 
 @dataclass
 class CheckResult:
-    """チェック結果."""
+    """チェック結果.
+
+    Attributes
+    ----------
+    level : str
+        重要度（"critical", "warning", "info"）
+    message : str
+        結果メッセージ
+    details : str
+        詳細情報（オプション）
+    """
 
     level: str  # "critical", "warning", "info"
     message: str
@@ -64,7 +118,23 @@ class CheckResult:
 
 
 def run_gh_command(args: list[str]) -> dict[str, Any] | list[Any] | None:
-    """gh コマンドを実行して JSON を返す."""
+    """gh コマンドを実行して JSON を返す.
+
+    Parameters
+    ----------
+    args : list[str]
+        gh コマンドに渡す引数リスト
+
+    Returns
+    -------
+    dict[str, Any] | list[Any] | None
+        コマンドの実行結果（JSON形式）、失敗時はNone
+
+    Notes
+    -----
+    - タイムアウトは30秒
+    - gh コマンドが見つからない場合やJSON解析に失敗した場合はNoneを返す
+    """
     try:
         result = subprocess.run(
             ["gh", *args],  # nosec B607 - gh is GitHub CLI, intentionally used
@@ -81,7 +151,19 @@ def run_gh_command(args: list[str]) -> dict[str, Any] | list[Any] | None:
 
 
 def find_project_files() -> list[Path]:
-    """project.md ファイルを検索."""
+    """project.md ファイルを検索.
+
+    Returns
+    -------
+    list[Path]
+        見つかった project.md ファイルのリスト
+
+    Notes
+    -----
+    以下の2つのモードに対応:
+    - パッケージ開発モード: src/*/docs/project.md
+    - 軽量プロジェクトモード: docs/project/*.md
+    """
     project_files = []
 
     # パッケージ開発モード: src/*/docs/project.md
@@ -98,7 +180,25 @@ def find_project_files() -> list[Path]:
 
 
 def parse_project_md(path: Path) -> tuple[list[ProjectTask], int | None]:
-    """project.md をパースしてタスク一覧と GitHub Project 番号を抽出."""
+    """project.md をパースしてタスク一覧と GitHub Project 番号を抽出.
+
+    Parameters
+    ----------
+    path : Path
+        project.md ファイルのパス
+
+    Returns
+    -------
+    tuple[list[ProjectTask], int | None]
+        (タスク一覧, GitHub Project番号)のタプル
+        Project番号が見つからない場合はNone
+
+    Notes
+    -----
+    タスク形式: #### 機能 X.Y: タイトル
+    必須フィールド: Issue, 優先度, ステータス
+    オプション: depends_on
+    """
     content = path.read_text(encoding="utf-8")
     tasks: list[ProjectTask] = []
     project_number: int | None = None
@@ -153,7 +253,26 @@ def parse_project_md(path: Path) -> tuple[list[ProjectTask], int | None]:
 
 
 def parse_issue_dependencies(body: str) -> tuple[list[int], list[int]]:
-    """Issue 本文から依存関係を抽出."""
+    """Issue 本文から依存関係を抽出.
+
+    Parameters
+    ----------
+    body : str
+        Issue本文
+
+    Returns
+    -------
+    tuple[list[int], list[int]]
+        (depends_on, blocks)のタプル
+        depends_on: このIssueが依存するIssue番号のリスト
+        blocks: このIssueがブロックするIssue番号のリスト
+
+    Notes
+    -----
+    認識パターン:
+    - depends_on: #123, depends on #123
+    - blocks: #123
+    """
     depends_on: list[int] = []
     blocks: list[int] = []
 
@@ -167,7 +286,19 @@ def parse_issue_dependencies(body: str) -> tuple[list[int], list[int]]:
 
 
 def fetch_github_issues() -> list[Issue]:
-    """GitHub Issues を取得."""
+    """GitHub Issues を取得.
+
+    Returns
+    -------
+    list[Issue]
+        取得したIssueのリスト、失敗時は空リスト
+
+    Notes
+    -----
+    - gh CLI を使用してIssueを取得
+    - 最大200件まで取得
+    - 依存関係情報も自動的にパース
+    """
     data = run_gh_command(
         [
             "issue",
@@ -201,7 +332,23 @@ def fetch_github_issues() -> list[Issue]:
 
 
 def check_circular_dependencies(issues: list[Issue]) -> list[CheckResult]:
-    """循環依存を検出."""
+    """循環依存を検出.
+
+    Parameters
+    ----------
+    issues : list[Issue]
+        チェック対象のIssueリスト
+
+    Returns
+    -------
+    list[CheckResult]
+        検出された循環依存のリスト
+
+    Notes
+    -----
+    深さ優先探索（DFS）を使用して循環を検出します。
+    同一の循環パターンは1回のみ報告されます。
+    """
     results: list[CheckResult] = []
 
     # 依存関係グラフを構築
@@ -224,7 +371,7 @@ def check_circular_dependencies(issues: list[Issue]) -> list[CheckResult]:
             elif dep in rec_stack and dep in path:
                 # 循環を検出
                 cycle_start = path.index(dep)
-                return path[cycle_start:] + [dep]
+                return [*path[cycle_start:], dep]
 
         path.pop()
         rec_stack.remove(start)
@@ -255,7 +402,24 @@ def check_circular_dependencies(issues: list[Issue]) -> list[CheckResult]:
 def check_priority_consistency(
     tasks: list[ProjectTask], issues: list[Issue]
 ) -> list[CheckResult]:
-    """優先度と依存関係の整合性をチェック."""
+    """優先度と依存関係の整合性をチェック.
+
+    Parameters
+    ----------
+    tasks : list[ProjectTask]
+        project.mdのタスクリスト
+    issues : list[Issue]
+        GitHub Issueリスト
+
+    Returns
+    -------
+    list[CheckResult]
+        検出された優先度矛盾のリスト
+
+    Notes
+    -----
+    高優先度タスクが低優先度タスクに依存している場合、警告を発行します。
+    """
     results: list[CheckResult] = []
 
     # Issue 番号 → 優先度のマップを作成
@@ -298,7 +462,26 @@ def check_priority_consistency(
 def check_status_consistency(
     tasks: list[ProjectTask], issues: list[Issue]
 ) -> list[CheckResult]:
-    """ステータスの整合性をチェック."""
+    """ステータスの整合性をチェック.
+
+    Parameters
+    ----------
+    tasks : list[ProjectTask]
+        project.mdのタスクリスト
+    issues : list[Issue]
+        GitHub Issueリスト
+
+    Returns
+    -------
+    list[CheckResult]
+        検出されたステータス不整合のリスト
+
+    Notes
+    -----
+    以下のケースで警告を発行:
+    - project.md: done だが GitHub: open
+    - project.md: todo/in_progress だが GitHub: closed
+    """
     results: list[CheckResult] = []
 
     issue_state_map = {issue.number: issue.state for issue in issues}
@@ -335,7 +518,22 @@ def check_status_consistency(
 
 
 def check_orphan_tasks(tasks: list[ProjectTask]) -> list[CheckResult]:
-    """Issue に紐づいていないタスクを検出."""
+    """Issue に紐づいていないタスクを検出.
+
+    Parameters
+    ----------
+    tasks : list[ProjectTask]
+        project.mdのタスクリスト
+
+    Returns
+    -------
+    list[CheckResult]
+        Issue未紐付けタスクのリスト（infoレベル）
+
+    Notes
+    -----
+    Issue番号がNoneのタスクを検出し、/issueコマンドでの作成を推奨します。
+    """
     results: list[CheckResult] = []
 
     for task in tasks:
@@ -354,7 +552,20 @@ def check_orphan_tasks(tasks: list[ProjectTask]) -> list[CheckResult]:
 def print_results(
     results: list[CheckResult], project_file: Path
 ) -> tuple[int, int, int]:
-    """結果を表示し、各レベルの件数を返す."""
+    """結果を表示し、各レベルの件数を返す.
+
+    Parameters
+    ----------
+    results : list[CheckResult]
+        チェック結果リスト
+    project_file : Path
+        チェック対象のproject.mdファイルパス
+
+    Returns
+    -------
+    tuple[int, int, int]
+        (critical件数, warning件数, info件数)のタプル
+    """
     critical_count = 0
     warning_count = 0
     info_count = 0
@@ -380,7 +591,21 @@ def print_results(
 
 
 def main() -> int:
-    """メイン処理."""
+    """メイン処理.
+
+    Returns
+    -------
+    int
+        終了コード
+        0: 成功、1: Critical エラーまたは Warning（strictモード）
+
+    Notes
+    -----
+    実行モード:
+    - 通常モード: Criticalエラーのみで失敗
+    - strictモード (--strict): Warningでも失敗
+    - ローカルモード (--skip-github): GitHub API呼び出しをスキップ
+    """
     strict_mode = "--strict" in sys.argv
     skip_github = "--skip-github" in sys.argv
 

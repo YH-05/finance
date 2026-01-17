@@ -628,5 +628,92 @@ def search(
     logger.info("Search completed", query=query, count=len(item_list))
 
 
+@cli.group()
+def preset() -> None:
+    """Manage preset feeds."""
+    pass
+
+
+@preset.command()
+@click.option(
+    "--file",
+    "-f",
+    "presets_file",
+    type=click.Path(exists=True, path_type=Path),
+    default=Path("data/config/rss-presets.json"),
+    help="Presets file path (default: data/config/rss-presets.json)",
+)
+@click.option(
+    "--validate/--no-validate",
+    default=False,
+    help="Validate URL reachability",
+)
+@click.option("--json", "json_output", is_flag=True, help="Output as JSON")
+@click.pass_context
+def apply(
+    ctx: click.Context,
+    presets_file: Path,
+    validate: bool,
+    json_output: bool,
+) -> None:
+    """Apply preset feeds from a configuration file."""
+    logger.info("Applying presets", presets_file=str(presets_file), validate=validate)
+
+    data_dir = _get_data_dir(ctx)
+    manager = FeedManager(data_dir)
+
+    try:
+        result = manager.apply_presets(presets_file, validate_urls=validate)
+
+        if json_output:
+            _output_json(
+                {
+                    "total": result.total,
+                    "added": result.added,
+                    "skipped": result.skipped,
+                    "failed": result.failed,
+                    "errors": result.errors,
+                }
+            )
+        else:
+            console.print("[green]Presets applied successfully[/green]")
+            console.print(f"  Total: {result.total}")
+            console.print(f"  Added: {result.added}")
+            console.print(f"  Skipped: {result.skipped}")
+            console.print(f"  Failed: {result.failed}")
+
+            if result.errors:
+                console.print("\n[yellow]Errors:[/yellow]")
+                for error in result.errors:
+                    console.print(f"  - {error}")
+
+        logger.info(
+            "Presets applied",
+            total=result.total,
+            added=result.added,
+            skipped=result.skipped,
+            failed=result.failed,
+        )
+
+    except FileNotFoundError as e:
+        _handle_error(
+            RSSError(str(e)),
+            "Presets file not found",
+            json_output,
+            presets_file=str(presets_file),
+        )
+
+    except ValueError as e:
+        _handle_error(
+            RSSError(str(e)),
+            "Invalid presets file",
+            json_output,
+            presets_file=str(presets_file),
+        )
+
+    except RSSError as e:
+        _handle_error(e, "RSS error", json_output)
+
+
 if __name__ == "__main__":
     cli()

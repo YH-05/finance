@@ -1,0 +1,91 @@
+{
+  "version": "1.0",
+  "keywords": {
+    "include": {
+      "market": [
+        "株価", "株式", "上場", "株主", "株高", "株安", "相場", "指数",
+        "日経平均", "TOPIX", "マザーズ", "東証", "証券取引所",
+        "stock", "equity", "share", "IPO", "index", "Nikkei", "TOPIX", "exchange",
+        "為替", "円高", "円安", "ドル円", "ユーロ", "FX", "外国為替", "通貨",
+        "forex", "currency", "exchange rate", "yen", "dollar", "euro",
+        "債券", "国債", "社債", "利回り", "償還",
+        "bond", "treasury", "yield", "maturity",
+        "金", "原油", "商品", "先物",
+        "gold", "oil", "commodity", "futures"
+      ],
+      "policy": [
+        "金利", "政策金利", "量的緩和", "金融緩和", "金融引き締め",
+        "日銀", "FRB", "ECB", "中央銀行",
+        "interest rate", "monetary policy", "quantitative easing", "QE", "Fed", "central bank",
+        "GDP", "消費者物価指数", "CPI", "失業率", "景気動向指数",
+        "鉱工業生産", "貿易収支", "経常収支",
+        "unemployment", "PMI", "trade balance"
+      ],
+      "corporate": [
+        "決算", "業績", "売上高", "営業利益", "純利益",
+        "EPS", "ROE", "ROA", "増収", "減益", "上方修正", "下方修正",
+        "earnings", "revenue", "profit", "guidance",
+        "M&A", "買収", "合併", "提携", "資本参加", "株式取得",
+        "acquisition", "merger", "alliance", "stake"
+      ],
+      "investment": [
+        "投資", "投資家", "ファンド", "資産運用", "ポートフォリオ",
+        "分散投資", "リスク管理", "リターン",
+        "investment", "investor", "fund", "asset management", "portfolio", "diversification",
+        "投資信託", "ETF", "REIT", "仮想通貨", "暗号資産",
+        "ビットコイン", "デリバティブ", "オプション",
+        "mutual fund", "cryptocurrency", "Bitcoin", "derivatives", "options"
+      ],
+      "financial_institutions": [
+        "銀行", "証券", "保険", "フィンテック", "決済",
+        "bank", "securities", "insurance", "fintech", "payment",
+        "金融庁", "規制", "コンプライアンス", "インサイダー取引",
+        "情報開示", "NISA", "iDeCo", "税制",
+        "regulation", "compliance", "disclosure", "tax"
+      ]
+    },
+    "exclude": {
+      "sports": [
+        "サッカー", "野球", "バスケ", "テニス", "オリンピック",
+        "ワールドカップ", "優勝", "試合", "選手", "監督",
+        "soccer", "baseball", "basketball", "tennis", "Olympics"
+      ],
+      "entertainment": [
+        "映画", "音楽", "ドラマ", "アニメ", "芸能人",
+        "俳優", "歌手", "アイドル", "コンサート",
+        "movie", "music", "drama", "anime", "actor", "singer"
+      ],
+      "politics": [
+        "選挙", "内閣改造", "防衛", "安全保障",
+        "election", "cabinet", "defense", "security"
+      ],
+      "general": [
+        "事故", "災害", "犯罪", "裁判", "天気",
+        "accident", "disaster", "crime", "trial", "weather"
+      ]
+    }
+  },
+  "sources": {
+    "tier1": [
+      "nikkei.com",
+      "reuters.com",
+      "bloomberg.com",
+      "wsj.com",
+      "ft.com"
+    ],
+    "tier2": [
+      "asahi.com",
+      "yomiuri.co.jp",
+      "toyokeizai.net",
+      "diamond.jp",
+      "forbes.com"
+    ],
+    "tier3": []
+  },
+  "filtering": {
+    "min_keyword_matches": 1,
+    "title_similarity_threshold": 0.85,
+    "time_window_hours": 1,
+    "min_reliability_score": 2
+  }
+}

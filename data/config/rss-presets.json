@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "presets": [
+    {
+      "url": "https://hnrss.org/newest?points=100",
+      "title": "Hacker News (100+ points)",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://techcrunch.com/feed/",
+      "title": "TechCrunch",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://feeds.arstechnica.com/arstechnica/index",
+      "title": "Ars Technica",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://www.theverge.com/rss/index.xml",
+      "title": "The Verge",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://feeds.marketwatch.com/marketwatch/topstories/",
+      "title": "MarketWatch Top Stories",
+      "category": "market",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://seekingalpha.com/feed.xml",
+      "title": "Seeking Alpha",
+      "category": "market",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://finance.yahoo.com/news/rssindex",
+      "title": "Yahoo Finance",
+      "category": "finance",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://www.ft.com/?format=rss",
+      "title": "Financial Times",
+      "category": "finance",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://www.reuters.com/rssFeed/businessNews",
+      "title": "Reuters Business News",
+      "category": "finance",
+      "fetch_interval": "daily",
+      "enabled": true
+    },
+    {
+      "url": "https://www.nikkei.com/rss/",
+      "title": "日経電子版",
+      "category": "finance",
+      "fetch_interval": "daily",
+      "enabled": true
+    }
+  ]
+}

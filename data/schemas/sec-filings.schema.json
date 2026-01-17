@@ -1,0 +1,324 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/yukihito-jokyu/finance/schemas/sec-filings.schema.json",
+    "title": "SEC Filings Data Schema",
+    "description": "SEC EDGARエージェントが出力する01_research/sec_filings.jsonの構造定義。企業の過去の決算データ（10-K/10-Q）、重要イベント（8-K）、インサイダー取引（Form 4）に加え、他データソースからの将来の決算発表日程を統合可能な標準化形式。",
+    "type": "object",
+    "required": ["cik", "ticker", "company_name", "latest_filing", "collected_at"],
+    "properties": {
+        "cik": {
+            "type": "string",
+            "pattern": "^[0-9]{10}$",
+            "description": "SEC Central Index Key（CIK番号）。10桁の数値文字列。"
+        },
+        "ticker": {
+            "type": "string",
+            "pattern": "^[A-Z]{1,5}$",
+            "description": "ティッカーシンボル。大文字のアルファベット1-5文字。"
+        },
+        "company_name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "企業の正式名称。"
+        },
+        "latest_filing": {
+            "type": "object",
+            "required": ["filing_type", "fiscal_period", "filing_date", "financials"],
+            "properties": {
+                "filing_type": {
+                    "type": "string",
+                    "enum": ["10-K", "10-Q"],
+                    "description": "最新決算書類の種類。10-K（年次報告書）または10-Q（四半期報告書）。"
+                },
+                "fiscal_period": {
+                    "type": "string",
+                    "pattern": "^(FY|Q[1-4])\\s?\\d{4}$",
+                    "description": "会計期間。形式：'FY2024'（年次）または'Q1 2024'（四半期）。"
+                },
+                "filing_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "SEC提出日。ISO 8601形式（YYYY-MM-DD）。"
+                },
+                "financials": {
+                    "type": "object",
+                    "required": ["revenue", "operating_income", "net_income", "eps"],
+                    "properties": {
+                        "revenue": {
+                            "type": "number",
+                            "description": "売上高（単位：USD）。"
+                        },
+                        "operating_income": {
+                            "type": "number",
+                            "description": "営業利益（単位：USD）。"
+                        },
+                        "net_income": {
+                            "type": "number",
+                            "description": "純利益（単位：USD）。負の値は純損失を示す。"
+                        },
+                        "eps": {
+                            "type": "number",
+                            "description": "1株当たり利益（Earnings Per Share）。"
+                        },
+                        "yoy_change": {
+                            "type": "object",
+                            "properties": {
+                                "revenue_change_pct": {
+                                    "type": "number",
+                                    "description": "前年同期比売上成長率（パーセント）。例：15.5は15.5%成長を意味する。"
+                                },
+                                "net_income_change_pct": {
+                                    "type": "number",
+                                    "description": "前年同期比純利益成長率（パーセント）。"
+                                }
+                            },
+                            "description": "前年同期比の変化率。オプショナル。"
+                        }
+                    },
+                    "description": "財務データの主要指標。"
+                },
+                "accession_number": {
+                    "type": "string",
+                    "pattern": "^[0-9]{10}-[0-9]{2}-[0-9]{6}$",
+                    "description": "SECアクセッション番号。形式：0000000000-00-000000。オプショナル。"
+                }
+            },
+            "description": "最新の決算データ（10-K または 10-Q）。"
+        },
+        "recent_8k": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["filing_date", "item_codes", "summary"],
+                "properties": {
+                    "filing_date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "8-K提出日。ISO 8601形式（YYYY-MM-DD）。"
+                    },
+                    "item_codes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^[1-9]\\.[0-9]{2}$"
+                        },
+                        "minItems": 1,
+                        "description": "8-K Item番号のリスト。形式：'1.01', '5.02' など。"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "重要イベントの概要説明。"
+                    },
+                    "accession_number": {
+                        "type": "string",
+                        "pattern": "^[0-9]{10}-[0-9]{2}-[0-9]{6}$",
+                        "description": "SECアクセッション番号。オプショナル。"
+                    }
+                }
+            },
+            "description": "最近提出された8-K報告書のリスト。重要イベント（企業買収、役員変更等）を含む。オプショナル。"
+        },
+        "insider_transactions": {
+            "type": "object",
+            "required": ["period", "total_transactions", "net_shares_change", "sentiment"],
+            "properties": {
+                "period": {
+                    "type": "string",
+                    "description": "集計期間の説明。例：'Last 3 months', 'Last 6 months'。"
+                },
+                "total_transactions": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "期間内のインサイダー取引総数。"
+                },
+                "net_shares_change": {
+                    "type": "integer",
+                    "description": "純増減株数。正の値は買い越し、負の値は売り越しを示す。"
+                },
+                "sentiment": {
+                    "type": "string",
+                    "enum": ["bullish", "bearish", "neutral"],
+                    "description": "インサイダー取引のセンチメント分析結果。bullish（強気）、bearish（弱気）、neutral（中立）。"
+                },
+                "notable_transactions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["name", "title", "transaction_date", "shares", "transaction_type"],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "インサイダーの氏名。"
+                            },
+                            "title": {
+                                "type": "string",
+                                "description": "役職名。例：'CEO', 'CFO', 'Director'。"
+                            },
+                            "transaction_date": {
+                                "type": "string",
+                                "format": "date",
+                                "description": "取引日。ISO 8601形式（YYYY-MM-DD）。"
+                            },
+                            "shares": {
+                                "type": "integer",
+                                "description": "取引株数。"
+                            },
+                            "transaction_type": {
+                                "type": "string",
+                                "enum": ["purchase", "sale"],
+                                "description": "取引種別。purchase（購入）またはsale（売却）。"
+                            }
+                        }
+                    },
+                    "description": "注目すべき個別のインサイダー取引。オプショナル。"
+                }
+            },
+            "description": "インサイダー取引（Form 4）のサマリー。オプショナル。"
+        },
+        "upcoming_events": {
+            "type": "object",
+            "properties": {
+                "next_earnings_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "次回決算発表予定日。ISO 8601形式（YYYY-MM-DD）。他のデータソース（yfinance等）から取得。"
+                },
+                "earnings_call_time": {
+                    "type": "string",
+                    "description": "カンファレンスコール予定時刻。形式例：'4:30 PM ET', '16:30 JST'。オプショナル。"
+                },
+                "estimated_eps": {
+                    "type": "number",
+                    "description": "アナリスト予想EPS。オプショナル。"
+                },
+                "data_source": {
+                    "type": "string",
+                    "description": "データ取得元の識別子。例：'yfinance', 'earnings_calendar_api', 'bloomberg'。"
+                },
+                "other_events": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["event_date", "event_type", "description"],
+                        "properties": {
+                            "event_date": {
+                                "type": "string",
+                                "format": "date",
+                                "description": "イベント予定日。ISO 8601形式（YYYY-MM-DD）。"
+                            },
+                            "event_type": {
+                                "type": "string",
+                                "enum": ["shareholders_meeting", "product_launch", "conference", "other"],
+                                "description": "イベント種別。株主総会、製品発表、カンファレンス参加等。"
+                            },
+                            "description": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "イベントの詳細説明。"
+                            },
+                            "data_source": {
+                                "type": "string",
+                                "description": "このイベント情報の取得元。"
+                            }
+                        }
+                    },
+                    "description": "その他の予定イベント（株主総会、製品発表等）。オプショナル。"
+                }
+            },
+            "description": "今後の予定イベント（拡張セクション）。他のデータソース（yfinance、決算カレンダーAPI等）から取得した情報と統合可能。全体がオプショナル。"
+        },
+        "collected_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "データ収集日時。ISO 8601形式（YYYY-MM-DDTHH:MM:SSZ）。"
+        },
+        "data_sources": {
+            "type": "object",
+            "properties": {
+                "sec_edgar": {
+                    "type": "boolean",
+                    "description": "SEC EDGARからデータを取得したかどうか。"
+                },
+                "yfinance": {
+                    "type": "boolean",
+                    "description": "yfinanceからデータを取得したかどうか。"
+                },
+                "other": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "その他のデータソース名のリスト。"
+                }
+            },
+            "description": "使用したデータソースの記録。オプショナル。"
+        }
+    },
+    "examples": [
+        {
+            "cik": "0000789019",
+            "ticker": "MSFT",
+            "company_name": "MICROSOFT CORP",
+            "latest_filing": {
+                "filing_type": "10-K",
+                "fiscal_period": "FY2024",
+                "filing_date": "2024-07-30",
+                "financials": {
+                    "revenue": 245122000000,
+                    "operating_income": 109435000000,
+                    "net_income": 88136000000,
+                    "eps": 11.80,
+                    "yoy_change": {
+                        "revenue_change_pct": 15.7,
+                        "net_income_change_pct": 22.1
+                    }
+                },
+                "accession_number": "0000789019-24-000123"
+            },
+            "recent_8k": [
+                {
+                    "filing_date": "2024-10-30",
+                    "item_codes": ["2.02"],
+                    "summary": "Announcement of Q1 FY2025 earnings results",
+                    "accession_number": "0000789019-24-000145"
+                }
+            ],
+            "insider_transactions": {
+                "period": "Last 3 months",
+                "total_transactions": 15,
+                "net_shares_change": -50000,
+                "sentiment": "neutral",
+                "notable_transactions": [
+                    {
+                        "name": "Satya Nadella",
+                        "title": "CEO",
+                        "transaction_date": "2024-11-15",
+                        "shares": 25000,
+                        "transaction_type": "sale"
+                    }
+                ]
+            },
+            "upcoming_events": {
+                "next_earnings_date": "2025-01-28",
+                "earnings_call_time": "5:30 PM ET",
+                "estimated_eps": 3.15,
+                "data_source": "yfinance",
+                "other_events": [
+                    {
+                        "event_date": "2025-06-15",
+                        "event_type": "shareholders_meeting",
+                        "description": "Annual shareholders meeting",
+                        "data_source": "company_ir"
+                    }
+                ]
+            },
+            "collected_at": "2025-01-14T10:30:00Z",
+            "data_sources": {
+                "sec_edgar": true,
+                "yfinance": true,
+                "other": []
+            }
+        }
+    ]
+}

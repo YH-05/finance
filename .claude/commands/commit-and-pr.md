@@ -108,6 +108,8 @@ PR に付けるラベル：
     - <変更点1>
     - <変更点2>
 
+    Fixes #<issue-number>
+
     ## テストプラン
     - [ ] make check-all が成功することを確認
     - [ ] 関連するテストが追加されていることを確認
@@ -120,7 +122,53 @@ PR に付けるラベル：
 
     **PRタイトルとボディは日本語で記述すること。**
 
-8. **PRレビューファイルのコミット（オプション）**
+    **重要: Issue リンク**
+    - PR本文に `Fixes #<issue-number>` を含めることで、GitHub ProjectsのワークフローがPRとIssueを関連付けます
+    - PRマージ時に自動的にIssueが `Done` に移動します（GitHub Projects自動化設定が必要）
+    - 詳細は `docs/github-projects-automation.md` を参照
+
+8. **GitHub CI のチェック（自動実行）**
+
+    PR作成後、GitHub ActionsのCIステータスを確認し、エラーがあれば修正します：
+
+    ```bash
+    # PR番号を取得
+    PR_NUMBER=$(gh pr view --json number -q .number)
+
+    # CIステータスをチェック（最大5分待機）
+    gh pr checks "$PR_NUMBER" --watch
+
+    # チェック結果を取得
+    FAILED_CHECKS=$(gh pr checks "$PR_NUMBER" --json name,conclusion -q '.[] | select(.conclusion=="failure") | .name')
+    ```
+
+    **CIエラーがある場合：**
+
+    1. エラー内容を詳細に確認
+        ```bash
+        # 失敗したチェックのログを取得
+        gh run view --log-failed
+        ```
+    2. エラー原因を特定（format/lint/typecheck/testのいずれか）
+    3. 必要な修正を実施
+        - format エラー: `make format` を実行
+        - lint エラー: `make lint` を実行
+        - typecheck エラー: 型エラーを修正
+        - test エラー: テストを修正
+    4. 修正をコミット＆プッシュ
+        ```bash
+        git add .
+        git commit -m "fix: CI エラーを修正"
+        git push
+        ```
+    5. CI再実行を待機し、すべてのチェックがパスするまで繰り返し
+
+    **CIエラーがない場合：**
+
+    - すべてのチェックがパスしたことを確認
+    - PR URLを表示して完了
+
+9. **PRレビューファイルのコミット（オプション）**
 
     `/review-pr` コマンドで生成されたレビューファイル（`docs/pr-review/pr-review-*.yaml`）がある場合は、追加コミットとしてプッシュします：
 
@@ -172,6 +220,11 @@ PR に付けるラベル：
     - テストプランを必ず含める
     - レビュアーが理解しやすい説明を心がける
     - 関連する Issue があればリンクする
+
+4. **CI チェック**
+    - PR作成後は必ずCIの結果を確認
+    - エラーがある場合は即座に修正
+    - すべてのチェックがパスしてから完了
 
 ## 使用例
 

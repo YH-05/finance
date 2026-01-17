@@ -10,6 +10,7 @@ repos:
       - id: check-yaml
       - id: check-toml
       - id: check-json
+        exclude: ^(notebook_sample|src_sample)/
       - id: check-added-large-files
       - id: check-merge-conflict
         exclude: ^\.claude/commands/analyze-conflicts\.md$

@@ -1,0 +1,115 @@
+name: 金融ニュース記事
+description: RSS/Webリサーチから収集した金融ニュース記事
+title: "[NEWS] "
+labels: ["news"]
+projects: ["YH-05/15"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 金融ニュース記事登録
+
+        このテンプレートは、RSS/Webリサーチから収集した金融ニュース記事を登録するためのものです。
+        `/collect-finance-news` コマンドでも自動的にこの形式で作成されます。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: ニュースの要約を日本語で記載してください(400字以上)
+      placeholder: |
+        例: Fed議長の独立性に関する政治的圧力が、インフレ、ドル、株式市場の予測可能性に影響を与える可能性について論じた記事。
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 情報源URL
+      description: ニュース記事の元URL
+      placeholder: https://example.com/article
+    validations:
+      required: true
+
+  - type: input
+    id: published_date
+    attributes:
+      label: 公開日
+      description: 記事の公開日時（YYYY-MM-DD HH:MM形式。JST。）
+      placeholder: "2026-01-14 21:00(JST)"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: credibility
+    attributes:
+      label: 信頼性スコア
+      description: 情報源の信頼性を5段階で評価
+      options:
+        - "1点 - 信頼性低"
+        - "2点 - やや信頼性低"
+        - "3点 - 中程度"
+        - "4点 - やや信頼性高"
+        - "5点 - 信頼性高"
+      default: 2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: カテゴリ
+      description: ニュースのカテゴリを選択
+      options:
+        - 米国株
+        - 日本株
+        - セクター分析
+        - テーマ投資
+        - マクロ経済
+        - その他
+      default: 5
+    validations:
+      required: true
+
+  - type: input
+    id: feed_source
+    attributes:
+      label: フィード/情報源名
+      description: RSSフィード名またはWebサイト名
+      placeholder: "例: MarketWatch Top Stories, Financial Times, Yahoo Finance"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 優先度
+      description: 記事化の優先度
+      options:
+        - High - 即座に記事化すべき
+        - Medium - 通常の記事化候補
+        - Low - 参考情報
+      default: 1
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 備考・メモ
+      description: 追加情報や記事化時の注意点など
+      placeholder: |
+        - 関連する他のニュース: #XXX
+        - 記事化のアングル案: ...
+        - 参考データソース: ...
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        **自動収集について**: `/collect-finance-news` コマンドを使用すると、RSSフィードから自動的にニュースが収集され、このフォーマットでIssueが作成されます。
+
+        手動で登録する場合は、上記のフィールドを埋めて「Submit new issue」をクリックしてください。

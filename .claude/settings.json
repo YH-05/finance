@@ -4,6 +4,9 @@
     },
     "permissions": {
         "allow": [
+            "Write(*)",
+            "Edit(*)",
+            "Update(*)",
             "Bash(claude --version)",
             "Bash(claude doctor)",
             "Bash(grep:*)",
@@ -69,9 +72,6 @@
             "Read(.claude/commands/index.md)",
             "Read(CLAUDE.md)",
             "Read(README.md)",
-            "Edit(.claude/commands/index.md)",
-            "Edit(CLAUDE.md)",
-            "Edit(README.md)",
             "Bash(git push)"
         ],
         "deny": [
@@ -115,5 +115,37 @@
             "Bash(format /)"
         ]
     },
-    "hooks": {}
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "AskUserQuestion",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "afplay .claude/sounds/notification.mp3 2>/dev/null &"
+                    }
+                ]
+            }
+        ],
+        "PermissionRequest": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "afplay .claude/sounds/notification.mp3 2>/dev/null &"
+                    }
+                ]
+            }
+        ],
+        "Notification": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "afplay .claude/sounds/notification.mp3 2>/dev/null &"
+                    }
+                ]
+            }
+        ]
+    }
 }

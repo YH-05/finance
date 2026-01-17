@@ -22,7 +22,6 @@ import seaborn as sns
 import yfinance as yf
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-
 from src.fred_database_utils import FredDataProcessor
 
 
@@ -966,7 +965,7 @@ class TSAPassengerDataCollector:
                 # テーブルが存在しない場合は全データを追加対象とする
                 df_to_add = df
 
-            print(f"{'-'*20} + TSA Passenger Data + {'-'*20}")
+            print(f"{'-' * 20} + TSA Passenger Data + {'-' * 20}")
             if not df_to_add.empty:
                 print(
                     f"{len(df_to_add)}件の新規データをテーブル '{table_name}' に追加します。"
@@ -1010,7 +1009,7 @@ class TSAPassengerDataCollector:
         ax.set_xlabel("Year-Month")
         ax.set_ylabel("Number of Passengers(Millions)")
         ax.yaxis.set_major_formatter(
-            mtick.FuncFormatter(lambda x, pos: f"{int(x/1000000)}")
+            mtick.FuncFormatter(lambda x, pos: f"{int(x / 1000000)}")
         )
 
         ax_sub = ax.twinx()
@@ -1369,7 +1368,7 @@ def rolling_correlation(df_price: pd.DataFrame, target_col: str) -> pd.DataFrame
     """
     df_return = df_price.sort_values("Date", ignore_index=True)
     for period in [1, 20, 20 * 3, 20 * 6, 252]:
-        colname = "1d" if period == 1 else f"{int(period//20)}m"
+        colname = "1d" if period == 1 else f"{int(period // 20)}m"
         df_return[f"return_{colname}"] = df_return.groupby("Ticker")[
             "value"
         ].pct_change(period)

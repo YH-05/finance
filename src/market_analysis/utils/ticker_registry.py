@@ -69,6 +69,16 @@ PRESET_GROUPS: dict[str, list[str]] = {
     ],
     # Bond ETFs
     "BOND_ETFS": ["TLT", "IEF", "SHY", "LQD", "HYG", "TIP"],
+    # Style factors
+    "STYLE_GROWTH": ["VUG", "IWF", "VONG"],  # グロース
+    "STYLE_VALUE": ["VTV", "IWD", "VONV"],  # バリュー
+    "STYLE_QUALITY": ["QUAL", "SPHQ"],  # クオリティー
+    "STYLE_MOMENTUM": ["MTUM", "PDP"],  # モメンタム
+    "STYLE_LOW_VOL": ["SPLV", "USMV"],  # 低ボラティリティ
+    # Size factors
+    "SIZE_LARGE": ["SPY", "IVV", "VOO"],  # 大型株
+    "SIZE_MID": ["IJH", "VO", "IWR"],  # 中型株
+    "SIZE_SMALL": ["IWM", "VB", "IJR"],  # 小型株
 }
 
 # Default configuration file path
@@ -82,7 +92,7 @@ DEFAULT_CONFIG_PATH = (
 )
 
 
-TickerCategory = Literal[
+type TickerCategory = Literal[
     "index",
     "forex",
     "commodity",
@@ -415,16 +425,58 @@ class TickerRegistry:
         return symbol in self._tickers
 
     def __len__(self) -> int:
-        """Return the number of registered tickers."""
+        """Return the number of registered tickers.
+
+        Returns
+        -------
+        int
+            Number of registered tickers
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> len(registry) > 0
+        True
+        """
         self._load()
         return len(self._tickers)
 
     def __contains__(self, symbol: str) -> bool:
-        """Check if a symbol is registered."""
+        """Check if a symbol is registered.
+
+        Parameters
+        ----------
+        symbol : str
+            The ticker symbol
+
+        Returns
+        -------
+        bool
+            True if symbol is registered
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> "^GSPC" in registry
+        True
+        """
         return self.contains(symbol)
 
     def __iter__(self):
-        """Iterate over all ticker symbols."""
+        """Iterate over all ticker symbols.
+
+        Yields
+        ------
+        str
+            Ticker symbol
+
+        Examples
+        --------
+        >>> registry = TickerRegistry()
+        >>> symbols = list(registry)
+        >>> len(symbols) > 0
+        True
+        """
         self._load()
         return iter(self._tickers.keys())
 
@@ -554,16 +606,20 @@ class TickerRegistry:
         """
         self._load()
         query_lower = query.lower()
-        results: list[TickerInfo] = []
 
-        for ticker_info in self._tickers.values():
-            if (
-                query_lower in ticker_info.symbol.lower()
-                or query_lower in ticker_info.name_ja.lower()
-                or query_lower in ticker_info.name_en.lower()
-                or query_lower in ticker_info.description.lower()
-            ):
-                results.append(ticker_info)
+        def matches_query(ticker_info: TickerInfo) -> bool:
+            """Check if ticker matches the search query."""
+            return any(
+                query_lower in field.lower()
+                for field in [
+                    ticker_info.symbol,
+                    ticker_info.name_ja,
+                    ticker_info.name_en,
+                    ticker_info.description,
+                ]
+            )
+
+        results = [info for info in self._tickers.values() if matches_query(info)]
 
         logger.debug(
             "Ticker search completed",
