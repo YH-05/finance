@@ -1,1 +1,1 @@
-"""Tests for factor implementations."""
+"""Unit tests for factor implementations."""

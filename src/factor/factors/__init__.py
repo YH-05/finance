@@ -2,6 +2,12 @@
 
 This package contains factor implementations organized by category:
 - macro: Macroeconomic factors (interest rates, inflation, etc.)
+- quality: Quality factors (ROIC, etc.)
 """
 
-__all__: list[str] = []
+from .quality import ROICFactor, ROICTransitionLabeler
+
+__all__ = [
+    "ROICFactor",
+    "ROICTransitionLabeler",
+]

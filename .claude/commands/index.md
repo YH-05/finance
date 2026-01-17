@@ -50,6 +50,7 @@ description: SuperClaudeコマンドリファレンス
 | `/gemini-search`          | Web search using Gemini CLI                                            |
 | `/improve`                | エビデンスベースの改善実装                                             |
 | `/issue`                  | GitHub Issue とタスクの管理・同期を行う                                |
+| `/issue-implement`        | GitHub Issue 番号から自動実装・PR 作成まで一括実行                     |
 | `/issue-refine`           | GitHub Issue の内容をブラッシュアップして更新する                      |
 | `/merge-pr`               | PR のコンフリクトチェック・CI 確認・マージを実行                       |
 | `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成 |
@@ -90,6 +91,7 @@ description: SuperClaudeコマンドリファレンス
 | `glossary-creation`       | 用語集を作成するための詳細ガイドとテンプレート。用語集作成時にのみ使用。                                                                                                                                                                                                                      |
 | `prd-writing`             | ライブラリ要求定義書(LRD)を作成するための詳細ガイドとテンプレート。LRD 作成時にのみ使用。                                                                                                                                                                                                     |
 | `project-file`            | プロジェクトファイル（project.md）を作成・編集するための詳細ガイドとテンプレート。                                                                                                                                                                                                            |
+| `project-status-sync`     | GitHub Projects の Issue 完了状態と docs/project/ のプロジェクトドキュメントを同期する。開発完了後にドキュメントを実態に合わせて更新。                                                                                                                                                        |
 | `repository-structure`    | リポジトリ構造定義書を作成するための詳細ガイドとテンプレート。リポジトリ構造定義時にのみ使用。                                                                                                                                                                                                |
 
 <!-- END: SKILLS -->
@@ -177,11 +179,11 @@ description: SuperClaudeコマンドリファレンス
 ```
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
-│   ├── agents/                             # (50 agents)
+│   ├── agents/                             # (57 agents)
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
-│   ├── commands/                           # (32 commands)
+│   ├── commands/                           # (35 commands)
 │   ├── commands_sample/
 │   ├── skills/                             # (12 skills)
 │   │   ├── agent-expert/
@@ -237,7 +239,7 @@ finance/                                    # Project root
 │   ├── exports/
 │   │   ├── csv/
 │   │   └── json/
-│   ├── schemas/                            # (12 JSON schemas)
+│   ├── schemas/                            # (14 JSON schemas)
 │   └── README.md
 │
 ├── docs/                                   # Repository documentation
