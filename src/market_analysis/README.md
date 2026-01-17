@@ -113,8 +113,11 @@ market_analysis/
 │   ├── __init__.py
 │   ├── base_fetcher.py          # BaseDataFetcher（抽象基底クラス）
 │   ├── data_fetcher_factory.py  # DataFetcherFactory（ファクトリパターン）
+│   ├── yfinance_fetcher.py      # YFinanceFetcher（Yahoo Finance株価）
 │   ├── fred_fetcher.py          # FREDFetcher（FRED API経済指標）
-│   └── yfinance_fetcher.py      # YFinanceFetcher（Yahoo Finance株価）
+│   ├── bloomberg_fetcher.py     # BloombergFetcher（Bloomberg Terminal）
+│   ├── factset_fetcher.py       # FactSetFetcher（FactSetファイルローダー）
+│   └── mock_fetchers.py         # MockFetchers（テスト用モック実装）
 ├── export/                      # データエクスポート
 │   ├── __init__.py
 │   └── exporter.py              # DataExporter（CSV/JSON/Parquet）
@@ -153,12 +156,19 @@ market_analysis/
 | `errors.py` | ✅ 実装済み | 1 | 515 | ✅ | MarketAnalysisError等の例外クラス（8エラー） |
 | `api/` | ✅ 実装済み | 3 | 1,475 | ✅ (3) | MarketData, Analysis, Chart（メソッドチェーン対応） |
 | `analysis/` | ✅ 実装済み | 3 | 1,158 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 4 | 1,348 | ✅ (4) | BaseDataFetcher, YFinanceFetcher, FREDFetcher |
+| `core/` | ✅ 実装済み | 7 | 3,746 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers |
 | `export/` | ✅ 実装済み | 1 | 582 | ✅ | DataExporter（CSV/JSON/Parquet対応） |
 | `utils/` | ✅ 実装済み | 6 | 2,244 | ✅ (2) | logging, validators, cache, retry, ticker_registry |
 | `visualization/` | ✅ 実装済み | 3 | 1,392 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart |
 
-**テスト構成**: 単体テスト (20) + 統合テスト (0) = 計20テスト
+**テスト構成**: 単体テスト (18) + 統合テスト (0) = 計18テスト
+
+**データソース対応状況**:
+- ✅ Yahoo Finance (yfinance) - 株価・為替・指数データ
+- ✅ FRED (Federal Reserve Economic Data) - 米国経済指標
+- ✅ Bloomberg Terminal (BLPAPI) - プロフェッショナル市場データ（要ライセンス）
+- ✅ FactSet - ファイルベースデータローダー（要契約）
+- ✅ Mock Fetchers - テスト・開発用モック実装
 
 <!-- END: IMPLEMENTATION -->
 
@@ -421,24 +431,27 @@ logger.info("処理開始")
 
 | 項目 | 値 |
 |-----|-----|
-| Pythonファイル数 | 29 |
-| 総行数（実装コード） | 11,290 |
+| Pythonファイル数 | 32 |
+| 総行数（実装コード） | 13,429 |
 | モジュール数 | 8 |
-| テストファイル数 | 20 |
+| テストファイル数 | 18 |
 | テストカバレッジ | N/A |
 
 **モジュール構成**:
 - コアモジュール: `types.py` (型定義18種), `errors.py` (例外クラス8種)
-- 機能モジュール: `api/` (3クラス), `analysis/` (3クラス), `core/` (4クラス), `export/` (1クラス), `utils/` (6モジュール), `visualization/` (3クラス)
+- 機能モジュール: `api/` (3クラス), `analysis/` (3クラス), `core/` (7フェッチャー), `export/` (1クラス), `utils/` (6モジュール), `visualization/` (3クラス)
 
 **実装進捗**:
 - 完全実装: 8/8 モジュール (100%)
 - テスト整備: 8/8 モジュール (100%) - 全モジュールに単体テスト整備完了
-- テスト数: 単体テスト 20ファイル、統合テスト 0ファイル
+- テスト数: 単体テスト 18ファイル、統合テスト 0ファイル
 
 **データソース**:
 - Yahoo Finance (yfinance) - 株価・為替・指数データ
 - FRED (Federal Reserve Economic Data) - 米国経済指標
+- Bloomberg Terminal (BLPAPI) - プロフェッショナル市場データ（要ライセンス）
+- FactSet - ファイルベースデータローダー（要契約）
+- Mock Fetchers - テスト・開発用モック実装
 
 <!-- END: STATS -->
 

@@ -6,6 +6,7 @@
         "allow": [
             "Write(*)",
             "Edit(*)",
+            "Update(*)",
             "Bash(claude --version)",
             "Bash(claude doctor)",
             "Bash(grep:*)",
@@ -71,9 +72,6 @@
             "Read(.claude/commands/index.md)",
             "Read(CLAUDE.md)",
             "Read(README.md)",
-            "Edit(.claude/commands/index.md)",
-            "Edit(CLAUDE.md)",
-            "Edit(README.md)",
             "Bash(git push)"
         ],
         "deny": [
