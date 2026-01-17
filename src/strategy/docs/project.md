@@ -44,11 +44,12 @@
 - [x] カスタム期間（開始日・終了日指定） [#104](https://github.com/YH-05/finance/issues/104) ✅ Done
 
 ### データ出力（Export）
-- [ ] pandas DataFrame [#120](https://github.com/YH-05/finance/issues/120)
-- [ ] JSON/辞書形式（AIエージェント向け） [#120](https://github.com/YH-05/finance/issues/120)
+- [x] pandas DataFrame [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
+- [x] JSON/辞書形式（AIエージェント向け） [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
 - [ ] Plotlyチャート [#121](https://github.com/YH-05/finance/issues/121)
-- [ ] レポートテキスト（マークダウン） [#120](https://github.com/YH-05/finance/issues/120)
-- [ ] marimoノートブック連携 [#120](https://github.com/YH-05/finance/issues/120) [#121](https://github.com/YH-05/finance/issues/121)
+- [x] レポートテキスト（マークダウン） [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
+- [x] marimoノートブック連携（出力フォーマッタ） [#120](https://github.com/YH-05/finance/issues/120) ✅ Done
+- [ ] marimoノートブック連携（可視化） [#121](https://github.com/YH-05/finance/issues/121)
 
 ### 将来実装（Future）
 - [ ] トレーディング戦略の基盤（戦略インターフェース、シグナル生成）
