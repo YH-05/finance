@@ -16,8 +16,8 @@
 ### 基盤機能（Infrastructure）
 - [x] 共通型定義（types.py） [#104](https://github.com/YH-05/finance/issues/104) ✅ Done
 - [x] エラー・警告クラス（errors.py） [#106](https://github.com/YH-05/finance/issues/106) ✅ Done
-- [ ] DataProvider プロトコル [#107](https://github.com/YH-05/finance/issues/107)
-- [ ] MarketAnalysisProvider [#111](https://github.com/YH-05/finance/issues/111)
+- [x] DataProvider プロトコル [#107](https://github.com/YH-05/finance/issues/107) ✅ Done
+- [x] MarketAnalysisProvider [#111](https://github.com/YH-05/finance/issues/111) ✅ Done
 
 ### ポートフォリオ管理（Portfolio Management）
 - [x] ポートフォリオ構成の定義（ティッカー + 比率） [#112](https://github.com/YH-05/finance/issues/112) ✅ Done
@@ -25,9 +25,9 @@
 - [x] セクター・資産クラス別の構成分析 [#112](https://github.com/YH-05/finance/issues/112) ✅ Done
 
 ### リスク分析（Risk Analysis）
-- [ ] ボラティリティ（標準偏差） [#113](https://github.com/YH-05/finance/issues/113)
-- [ ] シャープレシオ [#113](https://github.com/YH-05/finance/issues/113)
-- [ ] ソルティノレシオ [#113](https://github.com/YH-05/finance/issues/113)
+- [x] ボラティリティ（標準偏差） [#113](https://github.com/YH-05/finance/issues/113) ✅ Done
+- [x] シャープレシオ [#113](https://github.com/YH-05/finance/issues/113) ✅ Done
+- [x] ソルティノレシオ [#113](https://github.com/YH-05/finance/issues/113) ✅ Done
 - [ ] 最大ドローダウン [#114](https://github.com/YH-05/finance/issues/114)
 - [ ] VaR（バリューアットリスク） [#114](https://github.com/YH-05/finance/issues/114)
 - [ ] ベータ値 [#118](https://github.com/YH-05/finance/issues/118)
