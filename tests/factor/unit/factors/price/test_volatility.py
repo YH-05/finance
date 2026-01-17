@@ -29,7 +29,6 @@ from factor.errors import ValidationError
 from factor.factors.price.volatility import VolatilityFactor
 from factor.providers.base import DataProvider
 
-
 # =============================================================================
 # テスト用のモッククラス
 # =============================================================================
