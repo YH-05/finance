@@ -355,12 +355,14 @@ BLOOMBERG_AVAILABLE=true pytest tests/market_analysis/integration/ -v
 
 ## 進捗状況
 
-| Wave     | Issue                                               | 優先度 | ステータス | 開始日 | 完了日 |
-| -------- | --------------------------------------------------- | ------ | ---------- | ------ | ------ |
-| Wave 0   | [#256](https://github.com/YH-05/finance/issues/256) | P0     | Todo       | -      | -      |
-| Wave 1-3 | [#257](https://github.com/YH-05/finance/issues/257) | P0     | Todo       | -      | -      |
-| Wave 4   | [#260](https://github.com/YH-05/finance/issues/260) | P1     | Todo       | -      | -      |
-| Wave 5   | [#258](https://github.com/YH-05/finance/issues/258) | P1     | Todo       | -      | -      |
-| Wave 6   | [#259](https://github.com/YH-05/finance/issues/259) | P1     | Todo       | -      | -      |
-| Wave 7   | [#261](https://github.com/YH-05/finance/issues/261) | P2     | Todo       | -      | -      |
-| Wave 8   | [#262](https://github.com/YH-05/finance/issues/262) | P2     | Todo       | -      | -      |
+| Wave     | Issue                                               | 優先度 | ステータス | 開始日     | 完了日     |
+| -------- | --------------------------------------------------- | ------ | ---------- | ---------- | ---------- |
+| Wave 0   | [#256](https://github.com/YH-05/finance/issues/256) | P0     | Done       | 2026-01-16 | 2026-01-16 |
+| Wave 1-3 | [#257](https://github.com/YH-05/finance/issues/257) | P0     | Done       | 2026-01-16 | 2026-01-16 |
+| Wave 4   | [#260](https://github.com/YH-05/finance/issues/260) | P1     | Done       | 2026-01-17 | 2026-01-17 |
+| Wave 5   | [#258](https://github.com/YH-05/finance/issues/258) | P1     | Done       | 2026-01-16 | 2026-01-16 |
+| Wave 6   | [#259](https://github.com/YH-05/finance/issues/259) | P1     | Done       | 2026-01-16 | 2026-01-16 |
+| Wave 7   | [#261](https://github.com/YH-05/finance/issues/261) | P2     | -          | -          | -          |
+| Wave 8   | [#262](https://github.com/YH-05/finance/issues/262) | P2     | Todo       | -          | -          |
+
+**進捗サマリー**: 5/7 Wave 完了（Wave 7 は Issue 未作成、Wave 8 のみ残）
