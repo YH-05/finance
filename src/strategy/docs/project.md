@@ -30,9 +30,9 @@
 - [x] ソルティノレシオ [#113](https://github.com/YH-05/finance/issues/113) ✅ Done
 - [x] 最大ドローダウン [#114](https://github.com/YH-05/finance/issues/114) ✅ Done
 - [x] VaR（バリューアットリスク） [#114](https://github.com/YH-05/finance/issues/114) ✅ Done
-- [ ] ベータ値 [#118](https://github.com/YH-05/finance/issues/118)
-- [ ] トレイナーレシオ [#118](https://github.com/YH-05/finance/issues/118)
-- [ ] 情報レシオ [#118](https://github.com/YH-05/finance/issues/118)
+- [x] ベータ値 [#118](https://github.com/YH-05/finance/issues/118) ✅ Done
+- [x] トレイナーレシオ [#118](https://github.com/YH-05/finance/issues/118) ✅ Done
+- [x] 情報レシオ [#118](https://github.com/YH-05/finance/issues/118) ✅ Done
 
 ### リバランス機能（Rebalancing）
 - [x] 配分ドリフトの検出と可視化 [#119](https://github.com/YH-05/finance/issues/119) ✅ Done [#121](https://github.com/YH-05/finance/issues/121)
