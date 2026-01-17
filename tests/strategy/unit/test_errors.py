@@ -294,7 +294,9 @@ class TestNormalizationWarning:
         """warnings.warnでNormalizationWarningを発行できることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            warnings.warn("Data normalized to 0-1 range", NormalizationWarning, stacklevel=2)
+            warnings.warn(
+                "Data normalized to 0-1 range", NormalizationWarning, stacklevel=2
+            )
 
             assert len(w) == 1
             assert issubclass(w[0].category, NormalizationWarning)
