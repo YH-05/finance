@@ -594,3 +594,325 @@ class TestRiskCalculatorIntegration:
         assert -2 < sharpe < 2  # 一般的なシャープレシオの範囲
         assert -3 < sortino < 3  # 一般的なソルティノレシオの範囲
         assert downside_dev > 0
+
+
+class TestMaxDrawdown:
+    """最大ドローダウン (MDD) 計算のテスト."""
+
+    def test_正常系_正負混合リターンでMDDが負(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """正負混合のリターンで MDD が負の値になることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            正負混合のリターンデータ
+
+        Notes
+        -----
+        MDD は最大の累積損失を表すため、常に 0 以下の値となる。
+        """
+        calculator = RiskCalculator(sample_returns)
+        mdd = calculator.max_drawdown()
+
+        assert mdd <= 0
+        assert isinstance(mdd, float)
+
+    def test_正常系_MDDの計算式が正しい(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """MDD の計算式が正しいことを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        Formula:
+        - cumulative = (1 + returns).cumprod()
+        - running_max = cumulative.cummax()
+        - drawdown = (cumulative - running_max) / running_max
+        - max_drawdown = min(drawdown)
+        """
+        calculator = RiskCalculator(sample_returns)
+        mdd = calculator.max_drawdown()
+
+        # 期待値の計算
+        cumulative = (1 + sample_returns).cumprod()
+        running_max = cumulative.cummax()
+        drawdown = (cumulative - running_max) / running_max
+        expected = float(drawdown.min())
+
+        assert math.isclose(mdd, expected, rel_tol=1e-10)
+
+    def test_正常系_全て正のリターンでMDDがゼロ(
+        self,
+        positive_returns: pd.Series,
+    ) -> None:
+        """全て正のリターンで MDD がゼロになることを確認.
+
+        Parameters
+        ----------
+        positive_returns : pd.Series
+            全て正のリターンデータ
+
+        Notes
+        -----
+        累積リターンが常に増加するため、ドローダウンは発生しない。
+        """
+        calculator = RiskCalculator(positive_returns)
+        mdd = calculator.max_drawdown()
+
+        assert mdd == 0.0
+
+    def test_正常系_全て負のリターンでMDDが負(
+        self,
+        negative_returns: pd.Series,
+    ) -> None:
+        """全て負のリターンで MDD が負の値になることを確認.
+
+        Parameters
+        ----------
+        negative_returns : pd.Series
+            全て負のリターンデータ
+        """
+        calculator = RiskCalculator(negative_returns)
+        mdd = calculator.max_drawdown()
+
+        assert mdd < 0
+        # MDD は -1.0 以上（完全損失以上にはならない）
+        assert mdd >= -1.0
+
+    def test_境界条件_MDDの範囲が0から負1(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """MDD が -1.0 から 0.0 の範囲内であることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        MDD は 0（ドローダウンなし）から -1（完全損失）の範囲となる。
+        """
+        calculator = RiskCalculator(sample_returns)
+        mdd = calculator.max_drawdown()
+
+        assert -1.0 <= mdd <= 0.0
+
+
+class TestVaR:
+    """VaR (Value at Risk) 計算のテスト."""
+
+    def test_正常系_VaR95ヒストリカル(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """95% VaR (ヒストリカル法) が計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        VaR は損失を表すため、通常は負の値となる。
+        """
+        calculator = RiskCalculator(sample_returns)
+        var_95 = calculator.var(confidence=0.95, method="historical")
+
+        assert isinstance(var_95, float)
+        # VaR は通常負の値（損失を表す）
+        # ただし、リターンが全て正の場合は正の値もありうる
+        assert not math.isnan(var_95)
+
+    def test_正常系_VaR99ヒストリカル(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """99% VaR (ヒストリカル法) が計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+        var_99 = calculator.var(confidence=0.99, method="historical")
+
+        assert isinstance(var_99, float)
+        assert not math.isnan(var_99)
+
+    def test_正常系_VaR95パラメトリック(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """95% VaR (パラメトリック法) が計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        パラメトリック法は正規分布を仮定して計算する。
+        """
+        calculator = RiskCalculator(sample_returns)
+        var_95 = calculator.var(confidence=0.95, method="parametric")
+
+        assert isinstance(var_95, float)
+        assert not math.isnan(var_95)
+
+    def test_正常系_VaR99パラメトリック(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """99% VaR (パラメトリック法) が計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+        var_99 = calculator.var(confidence=0.99, method="parametric")
+
+        assert isinstance(var_99, float)
+        assert not math.isnan(var_99)
+
+    def test_正常系_VaR99はVaR95より小さいまたは等しい(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """99% VaR は 95% VaR 以下であることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        信頼水準が高いほど、より悪いケースを捉えるため、
+        VaR の値（損失）は大きくなる（より負の値になる）。
+        """
+        calculator = RiskCalculator(sample_returns)
+        var_95 = calculator.var(confidence=0.95, method="historical")
+        var_99 = calculator.var(confidence=0.99, method="historical")
+
+        # 99% VaR は 95% VaR 以下（より大きな損失を示す）
+        assert var_99 <= var_95 + 1e-10  # 浮動小数点誤差を考慮
+
+    def test_正常系_VaRヒストリカルの計算式が正しい(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """ヒストリカル VaR の計算式が正しいことを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        Formula: var = percentile(returns, (1 - confidence) * 100)
+        """
+        calculator = RiskCalculator(sample_returns)
+        var_95 = calculator.var(confidence=0.95, method="historical")
+
+        # 期待値の計算
+        expected = float(np.percentile(sample_returns, (1 - 0.95) * 100))
+
+        assert math.isclose(var_95, expected, rel_tol=1e-10)
+
+    def test_正常系_VaRパラメトリックの計算式が正しい(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """パラメトリック VaR の計算式が正しいことを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+
+        Notes
+        -----
+        Formula: var = mean(returns) + z_score * std(returns)
+        where z_score = norm.ppf(1 - confidence)
+        """
+        from scipy import stats
+
+        calculator = RiskCalculator(sample_returns)
+        var_95 = calculator.var(confidence=0.95, method="parametric")
+
+        # 期待値の計算
+        z_score = stats.norm.ppf(1 - 0.95)
+        expected = float(sample_returns.mean() + z_score * sample_returns.std())
+
+        assert math.isclose(var_95, expected, rel_tol=1e-10)
+
+    def test_正常系_デフォルトはヒストリカル法(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """デフォルトの method がヒストリカル法であることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+        var_default = calculator.var(confidence=0.95)
+        var_historical = calculator.var(confidence=0.95, method="historical")
+
+        assert var_default == var_historical
+
+    def test_異常系_無効なmethodでValueError(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """無効な method を指定すると ValueError になることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+
+        with pytest.raises(ValueError, match="method must be"):
+            calculator.var(confidence=0.95, method="invalid")  # type: ignore
+
+    def test_正常系_異なる信頼水準での計算(
+        self,
+        sample_returns: pd.Series,
+    ) -> None:
+        """異なる信頼水準で VaR が計算できることを確認.
+
+        Parameters
+        ----------
+        sample_returns : pd.Series
+            テスト用の日次リターンデータ
+        """
+        calculator = RiskCalculator(sample_returns)
+
+        var_90 = calculator.var(confidence=0.90, method="historical")
+        var_95 = calculator.var(confidence=0.95, method="historical")
+        var_99 = calculator.var(confidence=0.99, method="historical")
+
+        # 信頼水準が高いほど VaR は小さい（より大きな損失）
+        assert var_90 >= var_95 - 1e-10
+        assert var_95 >= var_99 - 1e-10

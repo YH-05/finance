@@ -560,3 +560,205 @@ class TestBoundaryConditions:
         actual_ratio = vol2 / vol1
 
         assert math.isclose(actual_ratio, expected_ratio, rel_tol=1e-5)
+
+
+class TestMaxDrawdownProperty:
+    """最大ドローダウン計算のプロパティテスト."""
+
+    @given(
+        returns=st.lists(
+            st.floats(
+                min_value=-0.5, max_value=0.5, allow_nan=False, allow_infinity=False
+            ),
+            min_size=10,
+            max_size=500,
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_MDDは常に0から負1の範囲(
+        self,
+        returns: list[float],
+    ) -> None:
+        """MDD は -1.0 から 0.0 の範囲内であることを検証.
+
+        Parameters
+        ----------
+        returns : list[float]
+            ランダムに生成されたリターンデータ
+
+        Notes
+        -----
+        MDD は 0（ドローダウンなし）から -1（完全損失）の範囲となる。
+        """
+        returns_series = pd.Series(returns)
+        calculator = RiskCalculator(returns_series)
+
+        mdd = calculator.max_drawdown()
+
+        assert -1.0 <= mdd <= 0.0
+        assert not math.isnan(mdd)
+
+    @given(
+        returns=st.lists(
+            st.floats(
+                min_value=0.001, max_value=0.5, allow_nan=False, allow_infinity=False
+            ),
+            min_size=10,
+            max_size=100,
+        ),
+    )
+    @settings(max_examples=50)
+    def test_プロパティ_全て正のリターンでMDDはゼロ(
+        self,
+        returns: list[float],
+    ) -> None:
+        """全て正のリターンで MDD がゼロになることを検証.
+
+        Parameters
+        ----------
+        returns : list[float]
+            全て正のリターンデータ
+        """
+        returns_series = pd.Series(returns)
+        calculator = RiskCalculator(returns_series)
+
+        mdd = calculator.max_drawdown()
+
+        assert mdd == 0.0
+
+    @given(
+        returns=st.lists(
+            st.floats(
+                min_value=-0.5, max_value=-0.001, allow_nan=False, allow_infinity=False
+            ),
+            min_size=10,
+            max_size=100,
+        ),
+    )
+    @settings(max_examples=50)
+    def test_プロパティ_全て負のリターンでMDDは負(
+        self,
+        returns: list[float],
+    ) -> None:
+        """全て負のリターンで MDD が負になることを検証.
+
+        Parameters
+        ----------
+        returns : list[float]
+            全て負のリターンデータ
+        """
+        returns_series = pd.Series(returns)
+        calculator = RiskCalculator(returns_series)
+
+        mdd = calculator.max_drawdown()
+
+        assert mdd < 0.0
+        assert mdd >= -1.0
+
+
+class TestVaRProperty:
+    """VaR 計算のプロパティテスト."""
+
+    @given(
+        returns=st.lists(
+            st.floats(
+                min_value=-0.3, max_value=0.3, allow_nan=False, allow_infinity=False
+            ),
+            min_size=20,
+            max_size=500,
+        ),
+        confidence=st.floats(min_value=0.5, max_value=0.99),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_VaRは有限値(
+        self,
+        returns: list[float],
+        confidence: float,
+    ) -> None:
+        """VaR が有限値であることを検証.
+
+        Parameters
+        ----------
+        returns : list[float]
+            リターンデータ
+        confidence : float
+            信頼水準
+        """
+        returns_series = pd.Series(returns)
+        calculator = RiskCalculator(returns_series)
+
+        var_historical = calculator.var(confidence=confidence, method="historical")
+        var_parametric = calculator.var(confidence=confidence, method="parametric")
+
+        assert not math.isnan(var_historical)
+        assert not math.isinf(var_historical)
+        assert not math.isnan(var_parametric)
+        assert not math.isinf(var_parametric)
+
+    @given(
+        returns=st.lists(
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
+            min_size=50,
+            max_size=200,
+        ),
+    )
+    @settings(max_examples=50)
+    def test_プロパティ_VaR99はVaR95以下(
+        self,
+        returns: list[float],
+    ) -> None:
+        """99% VaR は 95% VaR 以下であることを検証.
+
+        Parameters
+        ----------
+        returns : list[float]
+            リターンデータ
+
+        Notes
+        -----
+        信頼水準が高いほど、より悪いケースを捉えるため、
+        VaR の値（損失）は大きくなる（より負の値になる）。
+        """
+        returns_series = pd.Series(returns)
+        calculator = RiskCalculator(returns_series)
+
+        var_95 = calculator.var(confidence=0.95, method="historical")
+        var_99 = calculator.var(confidence=0.99, method="historical")
+
+        # 99% VaR は 95% VaR 以下（より大きな損失を示す）
+        assert var_99 <= var_95 + 1e-10
+
+    @given(
+        returns=st.lists(
+            st.floats(
+                min_value=-0.1, max_value=0.1, allow_nan=False, allow_infinity=False
+            ),
+            min_size=50,
+            max_size=200,
+        ),
+    )
+    @settings(max_examples=50)
+    def test_プロパティ_VaRはリターン範囲内(
+        self,
+        returns: list[float],
+    ) -> None:
+        """VaR がリターンの範囲内にあることを検証.
+
+        Parameters
+        ----------
+        returns : list[float]
+            リターンデータ
+
+        Notes
+        -----
+        ヒストリカル VaR は過去のリターンから計算するため、
+        必ずリターンの最小値から最大値の範囲内に収まる。
+        """
+        returns_series = pd.Series(returns)
+        calculator = RiskCalculator(returns_series)
+
+        var_95 = calculator.var(confidence=0.95, method="historical")
+
+        assert min(returns) <= var_95 <= max(returns)
