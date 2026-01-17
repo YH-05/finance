@@ -13,7 +13,6 @@ import pytest
 from factor.errors import InsufficientDataError, ValidationError
 from factor.validation.ic_analyzer import ICAnalyzer, ICResult
 
-
 # =============================================================================
 # Test Fixtures
 # =============================================================================
