@@ -103,7 +103,9 @@ class TestYieldCurvePCARegression:
         """cumulative_variance プロパティが正しいことを確認。"""
         result = pca.fit_transform(input_yields, use_changes=True, align_signs=True)
 
-        expected_cumulative = np.cumsum(expected_variance["explained_variance_ratio"].to_numpy())
+        expected_cumulative = np.cumsum(
+            expected_variance["explained_variance_ratio"].to_numpy()
+        )
 
         np.testing.assert_array_almost_equal(
             result.cumulative_variance,
@@ -294,7 +296,9 @@ class TestYieldCurvePCARegressionSignAlignment:
         result_aligned = pca.fit_transform(yields, use_changes=True, align_signs=True)
 
         pca2 = YieldCurvePCA(n_components=3)
-        result_not_aligned = pca2.fit_transform(yields, use_changes=True, align_signs=False)
+        result_not_aligned = pca2.fit_transform(
+            yields, use_changes=True, align_signs=False
+        )
 
         # Results may differ if signs needed adjustment
         # (they should be equal in absolute value)
@@ -359,7 +363,9 @@ class TestYieldCurvePCARegressionTransform:
             index=pd.date_range("2020-01-01", periods=50, freq="D"),
         )
 
-        with pytest.raises(RuntimeError, match="Must call fit_transform before transform"):
+        with pytest.raises(
+            RuntimeError, match="Must call fit_transform before transform"
+        ):
             pca.transform(yields)
 
     def test_回帰_get_loadings_の取得(

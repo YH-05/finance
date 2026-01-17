@@ -115,7 +115,11 @@ class TestEndToEndWorkflows:
             current_roic = base_roics[i]
             for date in dates:
                 noise = np.random.randn() * 0.02
-                current_roic = persistences[i] * current_roic + (1 - persistences[i]) * base_roics[i] + noise
+                current_roic = (
+                    persistences[i] * current_roic
+                    + (1 - persistences[i]) * base_roics[i]
+                    + noise
+                )
                 current_roic = max(0.01, min(0.40, current_roic))  # Bound ROIC
 
                 data.append(
@@ -365,7 +369,9 @@ class TestEndToEndWorkflows:
         )
 
         # Step 6: Analyze by sector
-        sector_label_dist = labeled_data.groupby("sector")["ROIC_Label"].value_counts(normalize=True)
+        sector_label_dist = labeled_data.groupby("sector")["ROIC_Label"].value_counts(
+            normalize=True
+        )
 
         # Verify we have sector-level analysis
         assert len(sector_label_dist) > 0
@@ -382,12 +388,20 @@ class TestEndToEndDataQuality:
 
         # Create data with many NaN values
         yields_data = {}
-        base_yields = {"DGS1MO": 0.5, "DGS3MO": 0.7, "DGS1": 1.0, "DGS2": 1.5, "DGS10": 2.5}
+        base_yields = {
+            "DGS1MO": 0.5,
+            "DGS3MO": 0.7,
+            "DGS1": 1.0,
+            "DGS2": 1.5,
+            "DGS10": 2.5,
+        }
 
         for series_id, base_yield in base_yields.items():
             values = base_yield + np.cumsum(np.random.randn(n_samples) * 0.01)
             # Add 20% NaN values
-            nan_indices = np.random.choice(n_samples, size=int(n_samples * 0.2), replace=False)
+            nan_indices = np.random.choice(
+                n_samples, size=int(n_samples * 0.2), replace=False
+            )
             values[nan_indices] = np.nan
             yields_data[series_id] = values
 
@@ -463,9 +477,20 @@ class TestEndToEndDataQuality:
         """異なる日付型でも処理が正常に動作することを確認。"""
         dates_types = [
             pd.date_range("2020-01-01", periods=10, freq="QE"),  # DatetimeIndex
-            pd.to_datetime(["2020-01-01", "2020-04-01", "2020-07-01", "2020-10-01",
-                           "2021-01-01", "2021-04-01", "2021-07-01", "2021-10-01",
-                           "2022-01-01", "2022-04-01"]),  # DatetimeIndex from strings
+            pd.to_datetime(
+                [
+                    "2020-01-01",
+                    "2020-04-01",
+                    "2020-07-01",
+                    "2020-10-01",
+                    "2021-01-01",
+                    "2021-04-01",
+                    "2021-07-01",
+                    "2021-10-01",
+                    "2022-01-01",
+                    "2022-04-01",
+                ]
+            ),  # DatetimeIndex from strings
         ]
 
         for dates in dates_types:

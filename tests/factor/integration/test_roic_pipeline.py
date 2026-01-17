@@ -132,7 +132,13 @@ class TestROICPipeline:
         assert "ROIC_Label" in labeled_df.columns
 
         # Check that valid labels exist
-        valid_labels = {"remain high", "remain low", "move to high", "drop to low", "others"}
+        valid_labels = {
+            "remain high",
+            "remain low",
+            "move to high",
+            "drop to low",
+            "others",
+        }
         unique_labels = set(labeled_df["ROIC_Label"].dropna().unique())
         assert unique_labels.issubset(valid_labels)
 
@@ -279,10 +285,12 @@ class TestROICPipeline:
         assert "ROIC_Label" in loose_labeled.columns
 
         # Loose thresholds should generally produce more "remain" labels
-        strict_remain = (strict_labeled["ROIC_Label"] == "remain high").sum() + \
-                       (strict_labeled["ROIC_Label"] == "remain low").sum()
-        loose_remain = (loose_labeled["ROIC_Label"] == "remain high").sum() + \
-                      (loose_labeled["ROIC_Label"] == "remain low").sum()
+        strict_remain = (strict_labeled["ROIC_Label"] == "remain high").sum() + (
+            strict_labeled["ROIC_Label"] == "remain low"
+        ).sum()
+        loose_remain = (loose_labeled["ROIC_Label"] == "remain high").sum() + (
+            loose_labeled["ROIC_Label"] == "remain low"
+        ).sum()
 
         # This is a soft assertion - loose thresholds typically produce more matches
         assert strict_remain >= 0
@@ -359,7 +367,13 @@ class TestROICPipeline:
         assert len(labels) > 0
 
         # All labels should be in the valid set
-        valid_labels = {"remain high", "remain low", "move to high", "drop to low", "others"}
+        valid_labels = {
+            "remain high",
+            "remain low",
+            "move to high",
+            "drop to low",
+            "others",
+        }
         for label in labels:
             assert label in valid_labels, f"Unexpected label: {label}"
 
@@ -417,7 +431,20 @@ class TestROICPipelineEdgeCases:
             {
                 "date": ["2020-01-01"] * 12,
                 "ticker": [f"STOCK{i}" for i in range(12)],
-                "ROIC": [0.10, 0.15, np.nan, 0.20, 0.25, np.nan, 0.30, 0.35, 0.40, 0.45, 0.50, np.nan],
+                "ROIC": [
+                    0.10,
+                    0.15,
+                    np.nan,
+                    0.20,
+                    0.25,
+                    np.nan,
+                    0.30,
+                    0.35,
+                    0.40,
+                    0.45,
+                    0.50,
+                    np.nan,
+                ],
             }
         )
 

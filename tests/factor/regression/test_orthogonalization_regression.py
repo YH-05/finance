@@ -24,12 +24,16 @@ class TestOrthogonalizerRegression:
     @pytest.fixture
     def single_expected(self) -> pd.DataFrame:
         """Load expected values for single orthogonalization from fixture."""
-        return pd.read_parquet(FIXTURES_DIR / "orthogonalization_single_expected.parquet")
+        return pd.read_parquet(
+            FIXTURES_DIR / "orthogonalization_single_expected.parquet"
+        )
 
     @pytest.fixture
     def cascade_expected(self) -> pd.DataFrame:
         """Load expected values for cascade orthogonalization from fixture."""
-        return pd.read_parquet(FIXTURES_DIR / "orthogonalization_cascade_expected.parquet")
+        return pd.read_parquet(
+            FIXTURES_DIR / "orthogonalization_cascade_expected.parquet"
+        )
 
     @pytest.fixture
     def metadata(self) -> pd.DataFrame:
@@ -242,7 +246,9 @@ class TestOrthogonalizerRegressionCascade:
             "f3": pd.Series(np.random.randn(n), name="f3"),
         }
 
-        results = orthogonalizer.orthogonalize_cascade(factors, order=["f1", "f2", "f3"])
+        results = orthogonalizer.orthogonalize_cascade(
+            factors, order=["f1", "f2", "f3"]
+        )
 
         # f1 should be exactly unchanged
         f1_result = results["f1"].orthogonalized_data.iloc[:, 0]
@@ -271,10 +277,14 @@ class TestOrthogonalizerRegressionCascade:
         factors = {"f1": f1, "f2": f2, "f3": f3}
 
         # Order 1: f1 -> f2 -> f3
-        results1 = orthogonalizer.orthogonalize_cascade(factors, order=["f1", "f2", "f3"])
+        results1 = orthogonalizer.orthogonalize_cascade(
+            factors, order=["f1", "f2", "f3"]
+        )
 
         # Order 2: f2 -> f1 -> f3
-        results2 = orthogonalizer.orthogonalize_cascade(factors, order=["f2", "f1", "f3"])
+        results2 = orthogonalizer.orthogonalize_cascade(
+            factors, order=["f2", "f1", "f3"]
+        )
 
         # Results should be different due to order
         f1_order1 = results1["f1"].orthogonalized_data.iloc[:, 0]
@@ -298,7 +308,9 @@ class TestOrthogonalizerRegressionCascade:
 
         factors = {"f1": f1, "f2": f2, "f3": f3}
 
-        results = orthogonalizer.orthogonalize_cascade(factors, order=["f1", "f2", "f3"])
+        results = orthogonalizer.orthogonalize_cascade(
+            factors, order=["f1", "f2", "f3"]
+        )
 
         # Get orthogonalized factors
         ortho_f1 = results["f1"].orthogonalized_data.iloc[:, 0]

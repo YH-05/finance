@@ -117,7 +117,9 @@ def generate_orthogonalization_fixtures() -> None:
             "residuals_expected": residuals_expected,
         }
     )
-    single_fixture.to_parquet(FIXTURES_DIR / "orthogonalization_single_expected.parquet")
+    single_fixture.to_parquet(
+        FIXTURES_DIR / "orthogonalization_single_expected.parquet"
+    )
 
     # Save cascade orthogonalization fixture
     cascade_fixture = pd.DataFrame(
@@ -130,7 +132,9 @@ def generate_orthogonalization_fixtures() -> None:
             "f3_ortho": f3_ortho,
         }
     )
-    cascade_fixture.to_parquet(FIXTURES_DIR / "orthogonalization_cascade_expected.parquet")
+    cascade_fixture.to_parquet(
+        FIXTURES_DIR / "orthogonalization_cascade_expected.parquet"
+    )
 
     # Save metadata
     metadata = pd.DataFrame(
