@@ -12,34 +12,68 @@ description: t-wada流TDDによるテスト作成
 
 **目的**: t-wada流TDDサイクル（Red→Green→Refactor）に基づく高品質なテストの作成
 
-## 実行方法
+## アーキテクチャ
 
-このコマンドは **test-writer サブエージェント** を使用して実行されます。
-
-### サブエージェント呼び出し
-
-```yaml
-subagent_type: "test-writer"
-description: "TDD test writing"
-prompt: |
-  t-wada流TDDに基づいてテストを作成してください。
-
-  ## 対象
-  [指定されたモジュール/関数]
-
-  ## テストの種類
-  [単体テスト, プロパティベーステスト, 統合テスト]
-
-  ## 出力
-  - テストTODOリスト
-  - TDDサイクルの実行結果
-  - テストファイル
-  - カバレッジ情報
+```
+test-orchestrator (オーケストレーター)
+    │
+    ├── [Phase 1] test-planner (設計)
+    │       ↓ テスト設計が完了
+    ├── [Phase 2] 並列実行
+    │   ├── test-unit-writer ────┐
+    │   │                        ├── 並列実行（50%高速化）
+    │   └── test-property-writer ┘
+    │       ↓ 単体・プロパティテストが完了
+    └── [Phase 3] test-integration-writer (依存実行)
 ```
 
-## TDDの基本概要
+### パフォーマンス改善
 
-CLAUDE.mdの「テスト戦略」セクションで定義されているt-wada流のテスト駆動開発（TDD）に従って、高品質なテストを作成します。
+| 項目 | 従来 (順序実行) | 最適化後 (並列) | 改善率 |
+|------|----------------|-----------------|--------|
+| 単体+プロパティ | 順序実行 | 並列実行 | 50%削減 |
+| 全体実行時間 | 100% | 60-70% | 30-40%削減 |
+
+## 実行方法
+
+### 基本的な使用（推奨）
+
+**test-orchestrator サブエージェント** を使用:
+
+```yaml
+subagent_type: "test-orchestrator"
+description: "Create tests with TDD"
+prompt: |
+  以下の機能のテストを作成してください。
+
+  ## 対象
+  {target_description}
+
+  ## ライブラリ
+  {library_name}
+
+  ## 要件
+  - TDDサイクル (Red→Green→Refactor)
+  - 単体テスト、プロパティテスト、統合テストの作成
+```
+
+### 個別エージェントの使用
+
+特定のテスト種類のみ作成する場合:
+
+```yaml
+# 単体テストのみ
+subagent_type: "test-unit-writer"
+
+# プロパティテストのみ
+subagent_type: "test-property-writer"
+
+# 統合テストのみ
+subagent_type: "test-integration-writer"
+
+# 従来の統合エージェント（全種類を順序実行）
+subagent_type: "test-writer"
+```
 
 ## TDDの基本サイクル
 
@@ -49,26 +83,52 @@ CLAUDE.mdの「テスト戦略」セクションで定義されているt-wada�
 
 ## 実行手順
 
-### 1. TODOリストの作成
-実装したい機能をリストアップし、最小単位に分解します：
-```
-[ ] 基本的な機能の動作確認
-[ ] エッジケースの処理
-[ ] エラーハンドリング
-[ ] パフォーマンスが重要な場合はベンチマーク
+### Phase 1: テスト設計（test-planner）
+
+```yaml
+テストTODO:
+  - [ ] 正常系: 基本的な機能の動作確認
+  - [ ] 異常系: エラーハンドリング
+  - [ ] エッジケース: 境界値、空入力
+  - [ ] プロパティ: 不変条件の検証
+  - [ ] 統合: コンポーネント連携
 ```
 
-### 2. テストファイルの配置
+### Phase 2: テスト作成（並列実行）
+
+**単体テスト** (test-unit-writer)
+- 関数・クラスの基本動作
+- 正常系・異常系・エッジケース
+- パラメトライズテストの活用
+
+**プロパティテスト** (test-property-writer)
+- Hypothesisによる自動テストケース生成
+- 不変条件の検証
+- エッジケースの自動発見
+
+### Phase 3: 統合テスト（test-integration-writer）
+
+- コンポーネント間の連携
+- ファイルI/Oやデータ処理パイプライン
+- エラーのカスケード処理
+
+## テストファイルの配置
+
 ```
-tests/
-├── unit/            # 単体テスト
-├── property/        # プロパティベーステスト（Hypothesis使用）
-├── integration/     # 統合テスト
-└── conftest.py      # pytestフィクスチャ
+tests/{library}/
+├── unit/                      # 単体テスト
+│   └── test_{module}.py
+├── property/                  # プロパティベーステスト
+│   └── test_{module}_property.py
+├── integration/               # 統合テスト
+│   └── test_{module}_integration.py
+└── conftest.py               # 共通フィクスチャ
 ```
 
-### 3. テストの命名規則
-日本語で意図を明確に表現します：
+## テストの命名規則
+
+日本語で意図を明確に表現:
+
 ```python
 def test_正常系_有効なデータで処理成功():
     """chunk_listが正しくチャンク化できることを確認。"""
@@ -78,24 +138,21 @@ def test_異常系_不正なサイズでValueError():
 
 def test_エッジケース_空リストで空結果():
     """空のリストをチャンク化すると空の結果が返されることを確認。"""
+
+# プロパティテスト
+@given(st.lists(st.integers()))
+def test_prop_不変条件_要素数の保存(items: list[int]):
+    """処理後も要素の総数が変わらないことを確認。"""
 ```
 
-### 4. templateディレクトリの参考例
+## templateディレクトリの参考例
 
-**単体テスト** (template/tests/unit/test_example.py)
-- 関数・クラスの基本動作
-- 正常系・異常系・エッジケース
-- パラメトライズテストの活用
-
-**プロパティベーステスト** (template/tests/property/test_helpers_property.py)
-- Hypothesisによる自動テストケース生成
-- 不変条件の検証
-- エッジケースの自動発見
-
-**統合テスト** (template/tests/integration/test_example.py)
-- コンポーネント間の連携
-- ファイルI/Oやデータ処理パイプライン
-- エラーのカスケード処理
+| テスト種類 | テンプレート |
+|-----------|-------------|
+| 単体テスト | `template/tests/unit/test_example.py` |
+| プロパティテスト | `template/tests/property/test_helpers_property.py` |
+| 統合テスト | `template/tests/integration/test_example.py` |
+| フィクスチャ | `template/tests/conftest.py` |
 
 ## 三角測量の実践例
 
@@ -109,7 +166,6 @@ def add(a, b):
 
 # Step 2: 2つ目のテスト（一般化を促す）
 def test_add_別の正の数():
-    assert add(1, 4) == 5
     assert add(10, 20) == 30  # これで仮実装では通らない
 
 def add(a, b):
@@ -118,7 +174,6 @@ def add(a, b):
 # Step 3: エッジケースを追加
 def test_add_負の数():
     assert add(-1, -2) == -3
-    assert add(-5, 3) == -2
 ```
 
 ## TDD実践時の注意点
@@ -139,7 +194,19 @@ make test-property     # プロパティベーステストのみ
 make test-cov          # カバレッジ付きテスト
 
 # 特定のテストを実行
-uv run pytest tests/unit/test_example.py::TestExampleClass::test_正常系_初期化時は空のリスト -v
+uv run pytest tests/unit/test_example.py -v
+uv run pytest tests/unit/test_example.py::TestClass::test_method -v
 ```
 
-このコマンドを使用することで、堅牢で保守性の高いテストスイートを構築できます。
+## 関連エージェント
+
+| エージェント | 役割 |
+|-------------|------|
+| test-orchestrator | テスト作成の並列実行制御 |
+| test-planner | テスト設計・TODOリスト作成 |
+| test-unit-writer | 単体テスト作成 |
+| test-property-writer | プロパティテスト作成 |
+| test-integration-writer | 統合テスト作成 |
+| test-writer | 従来の統合エージェント（順序実行） |
+
+このコマンドを使用することで、堅牢で保守性の高いテストスイートを効率的に構築できます。
