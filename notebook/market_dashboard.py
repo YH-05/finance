@@ -108,7 +108,7 @@ def _(datetime, timedelta):
                     symbol, start=start_date, end=end_date
                 )
                 result[symbol] = df
-            except Exception:  # nosec B112 - Intentional: skip unavailable symbols
+            except Exception:  # nosec B110 - Intentional: skip unavailable symbols
                 pass
 
         return result
@@ -137,7 +137,7 @@ def _(datetime, timedelta):
                     symbol, start=start_date, end=end_date
                 )
                 result[symbol] = df
-            except Exception:  # nosec B112 - Intentional: skip unavailable symbols
+            except Exception:  # nosec B110 - Intentional: skip unavailable symbols
                 pass
 
         return result
