@@ -236,7 +236,7 @@ class TestStrategyWarning:
         """warnings.warnでStrategyWarningを発行できることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            warnings.warn("Test warning message", StrategyWarning)
+            warnings.warn("Test warning message", StrategyWarning, stacklevel=2)
 
             assert len(w) == 1
             assert issubclass(w[0].category, StrategyWarning)
@@ -246,7 +246,7 @@ class TestStrategyWarning:
         """StrategyWarningをフィルタリングできることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.filterwarnings("ignore", category=StrategyWarning)
-            warnings.warn("This should be ignored", StrategyWarning)
+            warnings.warn("This should be ignored", StrategyWarning, stacklevel=2)
 
             assert len(w) == 0
 
@@ -265,7 +265,7 @@ class TestDataWarning:
         """warnings.warnでDataWarningを発行できることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            warnings.warn("Missing data for some dates", DataWarning)
+            warnings.warn("Missing data for some dates", DataWarning, stacklevel=2)
 
             assert len(w) == 1
             assert issubclass(w[0].category, DataWarning)
@@ -274,7 +274,7 @@ class TestDataWarning:
         """DataWarningをStrategyWarningとしてフィルタリングできることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.filterwarnings("always", category=StrategyWarning)
-            warnings.warn("Data warning", DataWarning)
+            warnings.warn("Data warning", DataWarning, stacklevel=2)
 
             # DataWarningはStrategyWarningのサブクラスなので捕捉される
             assert len(w) == 1
@@ -294,7 +294,7 @@ class TestNormalizationWarning:
         """warnings.warnでNormalizationWarningを発行できることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            warnings.warn("Data normalized to 0-1 range", NormalizationWarning)
+            warnings.warn("Data normalized to 0-1 range", NormalizationWarning, stacklevel=2)
 
             assert len(w) == 1
             assert issubclass(w[0].category, NormalizationWarning)
@@ -304,7 +304,7 @@ class TestNormalizationWarning:
         """NormalizationWarningをStrategyWarningとしてフィルタリングできることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.filterwarnings("always", category=StrategyWarning)
-            warnings.warn("Normalization applied", NormalizationWarning)
+            warnings.warn("Normalization applied", NormalizationWarning, stacklevel=2)
 
             assert len(w) == 1
 
@@ -428,7 +428,7 @@ class TestWarningHierarchy:
         """全ての警告クラスがwarnings.warnで使用できることを確認."""
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            warnings.warn("Test warning", warning_class)
+            warnings.warn("Test warning", warning_class, stacklevel=2)
 
             assert len(w) == 1
             assert issubclass(w[0].category, warning_class)
