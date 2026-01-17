@@ -769,7 +769,9 @@ class TestParameterizedCases:
             np.random.randn(20, n_symbols), index=dates, columns=pd.Index(symbols)
         )
         return_df = pd.DataFrame(
-            np.random.randn(20, n_symbols) * 0.02, index=dates, columns=pd.Index(symbols)
+            np.random.randn(20, n_symbols) * 0.02,
+            index=dates,
+            columns=pd.Index(symbols),
         )
 
         analyzer = ICAnalyzer(method="spearman")
