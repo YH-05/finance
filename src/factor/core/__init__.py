@@ -8,22 +8,28 @@ This module exports the main classes for factor analysis:
 - ReturnCalculator: Return calculation (multi-period, forward, active returns)
 - Orthogonalizer: Factor orthogonalization using OLS residuals
 - YieldCurvePCA: PCA analysis for yield curves with sign alignment
+- FactorRegistry: Centralized registry for factor class management
 """
 
 from .base import Factor, FactorComputeOptions, FactorMetadata
 from .normalizer import Normalizer
 from .orthogonalization import Orthogonalizer
 from .pca import PCAResult, YieldCurvePCA
+from .registry import FactorNotFoundError, FactorRegistry, get_registry, register_factor
 from .return_calculator import ReturnCalculator, ReturnConfig
 
 __all__ = [
     "Factor",
     "FactorComputeOptions",
     "FactorMetadata",
+    "FactorNotFoundError",
+    "FactorRegistry",
     "Normalizer",
     "Orthogonalizer",
     "PCAResult",
     "ReturnCalculator",
     "ReturnConfig",
     "YieldCurvePCA",
+    "get_registry",
+    "register_factor",
 ]
