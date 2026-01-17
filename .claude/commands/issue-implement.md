@@ -267,57 +267,18 @@ prompt: |
   - 不要コードの削除
 ```
 
-### 4.2 ブランチ作成
+### 4.2 コミット & PR作成
 
-```bash
-# Issueタイトルからslugを生成
-SLUG=$(echo "{title}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | head -c 30)
+**`/commit-and-pr` コマンド** を実行:
 
-# ブランチ作成
-git checkout -b feature/issue-{number}-${SLUG}
-```
+code-simplifier 完了後、`/commit-and-pr` コマンドを呼び出してコミットとPR作成を一括実行する。
 
-### 4.3 コミット作成
+**追加要件**:
+- コミットメッセージに `Fixes #{number}` を含める
+- PR本文に Issue へのリンクを含める
+- ブランチ名は `feature/issue-{number}-{slug}` 形式
 
-```bash
-git add .
-git commit -m "$(cat <<'EOF'
-feat: {title}
-
-Fixes #{number}
-
-Co-Authored-By: Claude <noreply@anthropic.com>
-EOF
-)"
-```
-
-### 4.4 プッシュ & PR作成
-
-```bash
-# プッシュ
-git push -u origin feature/issue-{number}-${SLUG}
-
-# PR作成（日本語で記述）
-gh pr create --title "{title}" --body "$(cat <<'EOF'
-## 概要
-Issue #{number} の実装
-
-## 変更内容
-- {変更点1}
-- {変更点2}
-
-Fixes #{number}
-
-## テストプラン
-- [ ] make check-all が成功することを確認
-- [ ] 関連するテストが追加されていることを確認
-
-🤖 Generated with [Claude Code](https://claude.ai/code)
-EOF
-)"
-```
-
-### 4.5 CI確認
+### 4.3 CI確認
 
 ```bash
 # PR番号を取得
