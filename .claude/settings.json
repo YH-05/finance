@@ -7,6 +7,7 @@
             "Write(*)",
             "Edit(*)",
             "Update(*)",
+            "Skill(*)",
             "Bash(claude --version)",
             "Bash(claude doctor)",
             "Bash(grep:*)",
@@ -60,6 +61,8 @@
             "Bash(gh pr checks:*)",
             "Bash(gh pr merge:*)",
             "Bash(gh pr create:*)",
+            "Bash(gh issue edit:*)",
+            "Bash(gh api:*)",
             "Bash(git fetch origin:*)",
             "Bash(git pull origin:*)",
             "Task(Explore:Detect commands)",
@@ -72,7 +75,7 @@
             "Read(.claude/commands/index.md)",
             "Read(CLAUDE.md)",
             "Read(README.md)",
-            "Bash(git push)"
+            "Bash(git push:*)"
         ],
         "deny": [
             "Bash(rm -rf:*)",
@@ -116,17 +119,6 @@
         ]
     },
     "hooks": {
-        "PreToolUse": [
-            {
-                "matcher": "AskUserQuestion",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "afplay .claude/sounds/notification.mp3 2>/dev/null &"
-                    }
-                ]
-            }
-        ],
         "PermissionRequest": [
             {
                 "hooks": [
