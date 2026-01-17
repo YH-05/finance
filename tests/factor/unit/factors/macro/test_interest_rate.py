@@ -68,9 +68,9 @@ class TestInterestRateFactorProperties:
         ]
 
         for expected_series in expected_base:
-            assert expected_series in series, (
-                f"{expected_series} should be in required_series"
-            )
+            assert (
+                expected_series in series
+            ), f"{expected_series} should be in required_series"
 
 
 class TestInterestRateFactorCalculate:
@@ -156,9 +156,9 @@ class TestInterestRateFactorCalculate:
         for i, col1 in enumerate(result.columns):
             for j, col2 in enumerate(result.columns):
                 if i != j:
-                    assert abs(corr_matrix.loc[col1, col2]) < 0.15, (
-                        f"Correlation between {col1} and {col2} is too high"
-                    )
+                    assert (
+                        abs(corr_matrix.loc[col1, col2]) < 0.15
+                    ), f"Correlation between {col1} and {col2} is too high"
 
     def test_異常系_データ不足でエラー(self) -> None:
         """データが不足している場合にエラーが発生することを確認。"""

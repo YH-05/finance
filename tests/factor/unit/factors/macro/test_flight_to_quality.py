@@ -184,9 +184,9 @@ class TestFlightToQualityFactorOrthogonalization:
             control_values = self.control_factors.loc[common_idx, control_col]
 
             corr = factor_values.corr(control_values)
-            assert abs(corr) < 0.1, (
-                f"FtoQ should be uncorrelated with {control_col}, got {corr:.3f}"
-            )
+            assert (
+                abs(corr) < 0.1
+            ), f"FtoQ should be uncorrelated with {control_col}, got {corr:.3f}"
 
     def test_正常系_直交化なしでも計算できる(self) -> None:
         """control_factorsなしでも計算できることを確認。"""
