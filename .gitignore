@@ -58,6 +58,9 @@ amp
 # Jupyter notebooks (local only)
 notebook/*.ipynb
 
+# Marimo session files
+notebook_sample/__marimo__/
+
 # Project-specific task documents
 src/*/docs/.steering/
 
