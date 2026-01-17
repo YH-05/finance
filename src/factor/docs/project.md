@@ -142,7 +142,7 @@
 
 | Issue | タイトル | 優先度 | 見積もり | ステータス |
 |-------|---------|--------|---------|----------|
-| [#126](https://github.com/YH-05/finance/issues/126) | T12: ValueFactor | P0 | 1-1.5h | 🔄 In Progress |
+| [#126](https://github.com/YH-05/finance/issues/126) | T12: ValueFactor | P0 | 1-1.5h | ✅ Done |
 | [#127](https://github.com/YH-05/finance/issues/127) | T13: CompositeValueFactor | P0 | 1h | Todo |
 | [#128](https://github.com/YH-05/finance/issues/128) | T14: QualityFactor | P0 | 1-1.5h | Todo |
 | [#129](https://github.com/YH-05/finance/issues/129) | T15: CompositeQualityFactor | P0 | 1h | Todo |
@@ -169,13 +169,13 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 13 |
-| 🔄 In Progress | 1 |
+| ✅ Done | 14 |
+| 🔄 In Progress | 0 |
 | Todo | 7 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) と project.md を同期（#123 MomentumFactor 完了、#126 進行中）
+**更新内容**: GitHub Project #13 (factor) と project.md を同期（#126 ValueFactor 完了）
 
 ---
 
