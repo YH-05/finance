@@ -145,7 +145,7 @@
 | [#126](https://github.com/YH-05/finance/issues/126) | T12: ValueFactor | P0 | 1-1.5h | ✅ Done |
 | [#127](https://github.com/YH-05/finance/issues/127) | T13: CompositeValueFactor | P0 | 1h | ✅ Done |
 | [#128](https://github.com/YH-05/finance/issues/128) | T14: QualityFactor | P0 | 1-1.5h | ✅ Done |
-| [#129](https://github.com/YH-05/finance/issues/129) | T15: CompositeQualityFactor | P0 | 1h | Todo |
+| [#129](https://github.com/YH-05/finance/issues/129) | T15: CompositeQualityFactor | P0 | 1h | ✅ Done |
 | [#130](https://github.com/YH-05/finance/issues/130) | T16: SizeFactor | P0 | 0.5-1h | ✅ Done |
 
 **依存関係**: feature/factor-core -> T12, T14, T16; T08, T12 -> T13; T08, T14 -> T15
@@ -169,13 +169,13 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 18 |
+| ✅ Done | 19 |
 | 🔄 In Progress | 0 |
-| Todo | 3 |
+| Todo | 2 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) と project.md を同期（#133 ファクターカテゴリ拡張 完了）
+**更新内容**: GitHub Project #13 (factor) と project.md を同期（#129 CompositeQualityFactor 完了）
 
 ---
 
