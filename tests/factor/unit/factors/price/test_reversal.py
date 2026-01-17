@@ -26,7 +26,6 @@ from factor.errors import ValidationError
 from factor.factors.price.reversal import ReversalFactor
 from factor.providers.base import DataProvider
 
-
 # =============================================================================
 # テスト用のモッククラス
 # =============================================================================
@@ -288,7 +287,20 @@ class TestReversalFactorReversalCalculation:
         # 明確に上昇するデータを作成
         dates = pd.date_range("2024-01-01", "2024-01-10", freq="D")
         prices = pd.DataFrame(
-            {"AAPL": [100.0, 101.0, 102.0, 103.0, 104.0, 105.0, 106.0, 107.0, 108.0, 109.0]},
+            {
+                "AAPL": [
+                    100.0,
+                    101.0,
+                    102.0,
+                    103.0,
+                    104.0,
+                    105.0,
+                    106.0,
+                    107.0,
+                    108.0,
+                    109.0,
+                ]
+            },
             index=dates,
         )
         prices.index.name = "Date"
@@ -318,7 +330,20 @@ class TestReversalFactorReversalCalculation:
         # 明確に下落するデータを作成
         dates = pd.date_range("2024-01-01", "2024-01-10", freq="D")
         prices = pd.DataFrame(
-            {"GOOGL": [109.0, 108.0, 107.0, 106.0, 105.0, 104.0, 103.0, 102.0, 101.0, 100.0]},
+            {
+                "GOOGL": [
+                    109.0,
+                    108.0,
+                    107.0,
+                    106.0,
+                    105.0,
+                    104.0,
+                    103.0,
+                    102.0,
+                    101.0,
+                    100.0,
+                ]
+            },
             index=dates,
         )
         prices.index.name = "Date"
