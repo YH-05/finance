@@ -121,7 +121,7 @@
 
 | Issue | タイトル | 優先度 | 見積もり | ステータス |
 |-------|---------|--------|---------|----------|
-| [#117](https://github.com/YH-05/finance/issues/117) | T07: Factor 基底クラス | P0 | 1-2h | Todo |
+| [#117](https://github.com/YH-05/finance/issues/117) | T07: Factor 基底クラス | P0 | 1-2h | ✅ Done |
 | [#122](https://github.com/YH-05/finance/issues/122) | T08: Normalizer クラス | P0 | 1-2h | ✅ Done |
 
 **依存関係**: feature/factor-foundation -> T07 -> T08
@@ -169,12 +169,12 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 6 |
-| Todo | 15 |
+| ✅ Done | 7 |
+| Todo | 14 |
 | **合計** | 21 |
 
 **最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) Issue #110 完了を同期
+**更新内容**: GitHub Project #13 (factor) Issue #117 (T07: Factor 基底クラス) 完了を同期
 
 ---
 
