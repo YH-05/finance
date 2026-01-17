@@ -5,7 +5,6 @@ QuantileAnalyzer は分位ポートフォリオ分析を行うクラスで、
 各分位のリターンを計算・分析する機能を提供する。
 """
 
-
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go

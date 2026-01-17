@@ -162,9 +162,9 @@ class TestMacroFactorBuilderBuildAllFactors:
             for j, col2 in enumerate(result.columns):
                 if i != j:
                     corr = abs(corr_matrix.loc[col1, col2])
-                    assert (
-                        corr < 0.2
-                    ), f"Correlation between {col1} and {col2} is too high: {corr:.3f}"
+                    assert corr < 0.2, (
+                        f"Correlation between {col1} and {col2} is too high: {corr:.3f}"
+                    )
 
 
 class TestMacroFactorBuilderOrthogonalizationOrder:
