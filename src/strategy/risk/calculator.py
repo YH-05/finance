@@ -489,3 +489,247 @@ class RiskCalculator:
         )
 
         return var
+
+    def _align_with_benchmark(
+        self,
+        benchmark_returns: pd.Series,
+    ) -> tuple[pd.Series, pd.Series]:
+        """Align portfolio and benchmark returns by common dates.
+
+        Parameters
+        ----------
+        benchmark_returns : pd.Series
+            Benchmark returns time series
+
+        Returns
+        -------
+        tuple[pd.Series, pd.Series]
+            Aligned (portfolio_returns, benchmark_returns)
+
+        Raises
+        ------
+        ValueError
+            If benchmark_returns is empty or no common dates exist
+        """
+        if len(benchmark_returns) == 0:
+            logger.error("benchmark_returns is empty")
+            raise ValueError("benchmark_returns must not be empty")
+
+        aligned = pd.DataFrame(
+            {
+                "portfolio": self._returns,
+                "benchmark": benchmark_returns,
+            }
+        ).dropna()
+
+        if len(aligned) == 0:
+            logger.error(
+                "No common dates between portfolio and benchmark",
+                portfolio_dates=len(self._returns),
+                benchmark_dates=len(benchmark_returns),
+            )
+            raise ValueError(
+                "No common or overlapping dates between portfolio and benchmark returns"
+            )
+
+        logger.debug(
+            "Aligned portfolio and benchmark returns",
+            common_dates=len(aligned),
+        )
+
+        return pd.Series(aligned["portfolio"]), pd.Series(aligned["benchmark"])
+
+    def beta(self, benchmark_returns: pd.Series) -> float:
+        """Calculate beta relative to a benchmark.
+
+        Beta measures the sensitivity of portfolio returns to benchmark returns.
+        A beta > 1 indicates higher volatility than the benchmark.
+
+        Parameters
+        ----------
+        benchmark_returns : pd.Series
+            Benchmark returns time series
+
+        Returns
+        -------
+        float
+            Beta value (NaN if benchmark variance is zero)
+
+        Raises
+        ------
+        ValueError
+            If benchmark_returns is empty or no common dates exist
+
+        Notes
+        -----
+        Formula: beta = cov(portfolio, benchmark) / var(benchmark)
+
+        Examples
+        --------
+        >>> calc = RiskCalculator(portfolio_returns)
+        >>> beta = calc.beta(benchmark_returns)
+        >>> beta > 0  # Typically positive for equity portfolios
+        True
+        """
+        logger.debug("Calculating beta")
+
+        portfolio_aligned, benchmark_aligned = self._align_with_benchmark(
+            benchmark_returns
+        )
+
+        covariance = portfolio_aligned.cov(benchmark_aligned)
+        benchmark_variance = benchmark_aligned.var()
+
+        if benchmark_variance < _EPSILON:
+            logger.warning(
+                "Benchmark variance is effectively zero, returning NaN",
+                benchmark_variance=benchmark_variance,
+            )
+            return float("nan")
+
+        beta = float(covariance / benchmark_variance)
+
+        logger.debug(
+            "Beta calculated",
+            covariance=covariance,
+            benchmark_variance=benchmark_variance,
+            beta=beta,
+        )
+
+        return beta
+
+    def treynor_ratio(self, benchmark_returns: pd.Series) -> float:
+        """Calculate Treynor ratio.
+
+        The Treynor ratio measures return per unit of systematic risk (beta).
+
+        Parameters
+        ----------
+        benchmark_returns : pd.Series
+            Benchmark returns time series
+
+        Returns
+        -------
+        float
+            Treynor ratio (NaN if beta is zero or NaN)
+
+        Raises
+        ------
+        ValueError
+            If benchmark_returns is empty or no common dates exist
+
+        Notes
+        -----
+        Formula: treynor = (annualized_return - risk_free_rate) / beta
+
+        Examples
+        --------
+        >>> calc = RiskCalculator(portfolio_returns, risk_free_rate=0.02)
+        >>> treynor = calc.treynor_ratio(benchmark_returns)
+        """
+        logger.debug("Calculating Treynor ratio")
+
+        beta = self.beta(benchmark_returns)
+
+        if math.isnan(beta):
+            logger.warning("Beta is NaN, returning NaN for Treynor ratio")
+            return float("nan")
+
+        if abs(beta) < _EPSILON:
+            annualized_return = float(self._returns.mean()) * self._annualization_factor
+            excess_return = annualized_return - self._risk_free_rate
+
+            if excess_return > _EPSILON:
+                treynor = float("inf")
+            elif excess_return < -_EPSILON:
+                treynor = float("-inf")
+            else:
+                treynor = float("nan")
+
+            logger.warning(
+                "Beta is effectively zero",
+                beta=beta,
+                result=treynor,
+            )
+            return treynor
+
+        annualized_return = float(self._returns.mean()) * self._annualization_factor
+        treynor = (annualized_return - self._risk_free_rate) / beta
+
+        logger.debug(
+            "Treynor ratio calculated",
+            annualized_return=annualized_return,
+            risk_free_rate=self._risk_free_rate,
+            beta=beta,
+            treynor_ratio=treynor,
+        )
+
+        return float(treynor)
+
+    def information_ratio(self, benchmark_returns: pd.Series) -> float:
+        """Calculate Information ratio.
+
+        The Information ratio measures active return per unit of tracking error.
+
+        Parameters
+        ----------
+        benchmark_returns : pd.Series
+            Benchmark returns time series
+
+        Returns
+        -------
+        float
+            Information ratio (NaN or inf if tracking error is zero)
+
+        Raises
+        ------
+        ValueError
+            If benchmark_returns is empty or no common dates exist
+
+        Notes
+        -----
+        Formula: IR = mean(active_returns) / std(active_returns) * sqrt(annualization_factor)
+        where active_returns = portfolio_returns - benchmark_returns
+
+        Examples
+        --------
+        >>> calc = RiskCalculator(portfolio_returns)
+        >>> ir = calc.information_ratio(benchmark_returns)
+        >>> ir > 0  # Positive if outperforming benchmark
+        True
+        """
+        logger.debug("Calculating Information ratio")
+
+        portfolio_aligned, benchmark_aligned = self._align_with_benchmark(
+            benchmark_returns
+        )
+
+        active_returns = portfolio_aligned - benchmark_aligned
+        active_mean = float(active_returns.mean())
+        active_std = float(active_returns.std())
+
+        if active_std < _EPSILON:
+            if active_mean > _EPSILON:
+                ir = float("inf")
+            elif active_mean < -_EPSILON:
+                ir = float("-inf")
+            else:
+                ir = float("nan")
+
+            logger.warning(
+                "Tracking error is effectively zero",
+                active_std=active_std,
+                result=ir,
+            )
+            return ir
+
+        ir = (active_mean / active_std) * np.sqrt(self._annualization_factor)
+
+        logger.debug(
+            "Information ratio calculated",
+            active_mean=active_mean,
+            tracking_error=active_std,
+            information_ratio=ir,
+        )
+
+        return float(ir)

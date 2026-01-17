@@ -155,3 +155,25 @@ def sample_metrics_result(valid_metrics_data: dict[str, Any]) -> "RiskMetricsRes
     from strategy.risk.metrics import RiskMetricsResult
 
     return RiskMetricsResult(**valid_metrics_data)
+
+
+@pytest.fixture
+def benchmark_returns() -> pd.Series:
+    """ベンチマーク用の日次リターンデータを生成.
+
+    Returns
+    -------
+    pd.Series
+        ベンチマークのリターンデータ（100日分）
+
+    Notes
+    -----
+    sample_returns と同じ期間で、相関のあるデータを生成。
+    """
+    np.random.seed(100)
+    returns = np.random.normal(0.0003, 0.012, 100)  # 平均0.03%, 標準偏差1.2%
+    return pd.Series(
+        returns,
+        index=pd.date_range("2023-01-01", periods=100, freq="B"),
+        name="benchmark_returns",
+    )
