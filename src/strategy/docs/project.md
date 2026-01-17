@@ -35,7 +35,7 @@
 - [ ] 情報レシオ [#118](https://github.com/YH-05/finance/issues/118)
 
 ### リバランス機能（Rebalancing）
-- [ ] 配分ドリフトの検出と可視化 [#119](https://github.com/YH-05/finance/issues/119) [#121](https://github.com/YH-05/finance/issues/121)
+- [x] 配分ドリフトの検出と可視化 [#119](https://github.com/YH-05/finance/issues/119) ✅ Done [#121](https://github.com/YH-05/finance/issues/121)
 - [ ] リバランスコスト計算（取引コスト、税金影響）
 - [ ] リバランスタイミング分析
 
