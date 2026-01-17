@@ -262,8 +262,8 @@ def _(
         try:
             df = market_data.fetch_stock(symbol, start=start_date, end=end_date)
             sector_data[symbol] = df
-        except Exception:
-            pass  # Skip if data not available
+        except Exception:  # nosec B110 - intentional pass for graceful degradation
+            pass
 
     # Fetch metals data
     metals_data = {}  # dict[str, DataFrame]
@@ -271,7 +271,7 @@ def _(
         try:
             df = market_data.fetch_stock(symbol, start=start_date, end=end_date)
             metals_data[symbol] = df
-        except Exception:
+        except Exception:  # nosec B110 - intentional pass for graceful degradation
             pass
 
     # Fetch USD Index from FRED
@@ -317,7 +317,7 @@ def _(
                         window=rolling_window,
                     )
                     rolling_betas[symbol] = beta
-            except Exception:
+            except Exception:  # nosec B110 - intentional pass for graceful degradation
                 pass
 
     return rolling_betas, rolling_window, sector_returns
@@ -409,7 +409,7 @@ def _(CorrelationAnalyzer, metals_data, pd, rolling_window, usd_data):
                             window=rolling_window,
                         )
                         usd_metals_correlations[symbol] = corr
-                except Exception:
+                except Exception:  # nosec B110 - intentional pass for graceful degradation
                     pass
     return (usd_metals_correlations,)
 
