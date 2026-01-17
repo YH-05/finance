@@ -14,9 +14,9 @@ import warnings
 
 import pandas as pd
 import pytest
-from strategy.portfolio import Portfolio
 
 from strategy.errors import InvalidTickerError, NormalizationWarning, ValidationError
+from strategy.portfolio import Portfolio
 from strategy.providers.protocol import DataProvider
 from strategy.types import Holding, PresetPeriod, TickerInfo
 
