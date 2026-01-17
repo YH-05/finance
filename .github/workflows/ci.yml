@@ -99,7 +99,7 @@ jobs:
     - name: Run tests
       run: |
         uv run pytest tests/ \
-          --cov=src/project_name \
+          --cov=src \
           --cov-report=xml \
           --cov-report=term-missing \
           --cov-report=html \
