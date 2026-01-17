@@ -152,14 +152,14 @@ market_analysis/
 
 | モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
 |-----------|------|-----------|------|-------|------|
-| `types.py` | ✅ 実装済み | 1 | 555 | ✅ | TypedDict, Enum等の型定義（18型） |
-| `errors.py` | ✅ 実装済み | 1 | 515 | ✅ | MarketAnalysisError等の例外クラス（8エラー） |
-| `api/` | ✅ 実装済み | 3 | 1,475 | ✅ (3) | MarketData, Analysis, Chart（メソッドチェーン対応） |
-| `analysis/` | ✅ 実装済み | 3 | 1,158 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 7 | 3,746 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers |
-| `export/` | ✅ 実装済み | 1 | 582 | ✅ | DataExporter（CSV/JSON/Parquet対応） |
-| `utils/` | ✅ 実装済み | 6 | 2,244 | ✅ (2) | logging, validators, cache, retry, ticker_registry |
-| `visualization/` | ✅ 実装済み | 3 | 1,392 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart |
+| `types.py` | ✅ 実装済み | 1 | 592 | ✅ | TypedDict, Enum等の型定義（18型） |
+| `errors.py` | ✅ 実装済み | 1 | 521 | ✅ | MarketAnalysisError等の例外クラス（8エラー） |
+| `api/` | ✅ 実装済み | 3 | 1,763 | ✅ (3) | MarketData, Analysis, Chart（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 3 | 1,416 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 7 | 3,705 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers |
+| `export/` | ✅ 実装済み | 1 | 678 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
+| `utils/` | ✅ 実装済み | 6 | 2,736 | ✅ (1) | logging, validators, cache, retry, ticker_registry |
+| `visualization/` | ✅ 実装済み | 3 | 1,687 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart |
 
 **テスト構成**: 単体テスト (18) + 統合テスト (0) = 計18テスト
 

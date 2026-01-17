@@ -447,7 +447,15 @@ finance/                                    # Project root
 │   │   └── py.typed
 │   │
 │   ├── factor/                             # Factor analysis library
-│   │   ├── core/
+│   │   ├── core/                           # Core algorithms
+│   │   ├── factors/                        # Factor implementations
+│   │   │   ├── macro/
+│   │   │   ├── price/
+│   │   │   ├── quality/
+│   │   │   ├── size/
+│   │   │   └── value/
+│   │   ├── providers/                      # Data providers
+│   │   ├── validation/                     # Factor validation
 │   │   ├── utils/
 │   │   ├── docs/
 │   │   ├── types.py
@@ -457,6 +465,10 @@ finance/                                    # Project root
 │   │
 │   └── strategy/                           # Strategy library
 │       ├── core/
+│       ├── output/                         # Output formatter
+│       ├── rebalance/                      # Rebalancing
+│       ├── risk/                           # Risk management
+│       ├── providers/                      # Data providers
 │       ├── utils/
 │       ├── docs/
 │       ├── types.py
@@ -509,6 +521,8 @@ finance/                                    # Project root
 │   │   ├── unit/
 │   │   ├── property/
 │   │   └── integration/
+│   │
+│   ├── finance_news_collector/             # News collector tests
 │   │
 │   ├── quant/                              # Quantitative analysis
 │   │   ├── unit/

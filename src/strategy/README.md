@@ -21,52 +21,67 @@ uv sync --all-extras
 ### 基本的な使い方
 
 ```python
-# ログ設定
-from strategy.utils.logging_config import get_logger, setup_logging
+from strategy import RiskCalculator, ResultFormatter
+import pandas as pd
 
-# ロギングを初期化
-setup_logging(level="INFO", format="console")
-logger = get_logger(__name__)
+# 1. リターンデータを準備
+returns = pd.Series([0.01, -0.02, 0.03, 0.01, -0.01])
 
-# ログを出力
-logger.info("投資戦略パッケージを初期化しました")
+# 2. リスク指標を計算
+calculator = RiskCalculator(returns, risk_free_rate=0.02)
+result = calculator.calculate()
+
+# 3. 結果をフォーマット
+formatter = ResultFormatter()
+df = formatter.to_dataframe(result)
+print(df)
 ```
 
 ### よくある使い方
 
-#### ロギング設定とコンテキスト管理
+#### ユースケース1: ポートフォリオのリスク分析
 
 ```python
-from strategy.utils.logging_config import get_logger, log_context, set_log_level
-from strategy.types import LogLevel
+from strategy import RiskCalculator, ResultFormatter
+import pandas as pd
 
-# ロガーを取得
-logger = get_logger(__name__, module="strategy")
+# ポートフォリオのリターンデータ
+returns = pd.Series([...])  # 日次リターン
 
-# コンテキスト情報を付与してログ
-with log_context(user_id=123, request_id="req_001"):
-    logger.info("戦略実行を開始", strategy="momentum")
+# リスク指標を計算
+calculator = RiskCalculator(
+    returns=returns,
+    risk_free_rate=0.02,  # 年率2%
+    annualization_factor=252  # 日次データ
+)
+metrics = calculator.calculate()
 
-# ログレベルを動的に変更
-set_log_level("DEBUG")
-logger.debug("詳細なデバッグ情報")
+# Markdown形式で出力
+formatter = ResultFormatter()
+markdown = formatter.to_markdown(metrics)
+print(markdown)
 ```
 
-#### パフォーマンス計測
+#### ユースケース2: 結果のエクスポート
 
 ```python
-from strategy.utils.logging_config import get_logger, log_performance
+from strategy import RiskCalculator, ResultFormatter
 
-logger = get_logger(__name__)
+# リスク指標を計算
+calculator = RiskCalculator(returns)
+result = calculator.calculate()
 
-@log_performance(logger)
-def backtest_strategy(data, parameters):
-    """戦略のバックテストを実行"""
-    # バックテスト処理
-    return results
+# 様々な形式で出力
+formatter = ResultFormatter()
 
-# 実行時に自動的に処理時間がログされます
-results = backtest_strategy(market_data, {"window": 20})
+# DataFrame形式
+df = formatter.to_dataframe(result)
+
+# 辞書形式（JSON互換）
+data_dict = formatter.to_dict(result)
+
+# Markdown形式（レポート用）
+markdown = formatter.to_markdown(result)
 ```
 <!-- END: QUICKSTART -->
 
@@ -79,12 +94,29 @@ strategy/
 ├── py.typed
 ├── README.md
 ├── types.py                          # 型定義
-├── core/
+├── errors.py                         # エラー定義
+├── portfolio.py                      # ポートフォリオ定義
+├── core/                             # コアモジュール
 │   └── __init__.py
-├── utils/
+├── risk/                             # リスク計算モジュール
 │   ├── __init__.py
-│   └── logging_config.py            # 構造化ロギング設定
-└── docs/
+│   ├── calculator.py                 # RiskCalculator
+│   └── metrics.py                    # RiskMetricsResult
+├── output/                           # 出力フォーマッタ
+│   ├── __init__.py
+│   └── formatter.py                  # ResultFormatter
+├── rebalance/                        # リバランス分析
+│   ├── __init__.py
+│   ├── rebalancer.py                 # Rebalancer
+│   └── types.py                      # DriftResult
+├── providers/                        # データプロバイダ
+│   ├── __init__.py
+│   ├── protocol.py                   # DataProvider
+│   └── market_analysis.py            # MarketAnalysisProvider
+├── utils/                            # ユーティリティ
+│   ├── __init__.py
+│   └── logging_config.py             # 構造化ロギング設定
+└── docs/                             # ドキュメント
     ├── architecture.md
     ├── development-guidelines.md
     ├── functional-design.md
@@ -99,11 +131,17 @@ strategy/
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 ## 実装状況
 
-| モジュール      | 状態      | ファイル数 | 行数 |
-| --------------- | --------- | ---------- | ---- |
-| `types.py`      | ✅ 実装済み | 1          | 106  |
-| `utils/`        | ✅ 実装済み | 2          | 367  |
-| `core/`         | ⏳ 未実装  | 1          | 3    |
+| モジュール      | 状態      | ファイル数 | 行数 | テスト |
+| --------------- | --------- | ---------- | ---- | ------ |
+| `types.py`      | ✅ 実装済み | 1          | 278  | 1      |
+| `errors.py`     | ✅ 実装済み | 1          | 29   | 1      |
+| `portfolio.py`  | ✅ 実装済み | 1          | 142  | 1      |
+| `risk/`         | ✅ 実装済み | 3          | 746  | 3      |
+| `output/`       | ✅ 実装済み | 2          | 447  | 1      |
+| `rebalance/`    | ✅ 実装済み | 3          | 308  | 2      |
+| `providers/`    | ✅ 実装済み | 3          | 484  | 3      |
+| `utils/`        | ✅ 実装済み | 2          | 367  | 0      |
+| `core/`         | ⏳ 未実装  | 1          | 3    | 0      |
 
 **ステータス説明:**
 
@@ -114,146 +152,163 @@ strategy/
 <!-- AUTO-GENERATED: API -->
 ## 公開 API
 
-### ユーティリティ関数
+### クイックスタート
 
-#### `get_logger(name, **context)`
+パッケージの基本的な使い方:
 
-**説明**: 構造化ロギング機能を備えたロガーインスタンスを取得します。
+```python
+from strategy import RiskCalculator, ResultFormatter
+import pandas as pd
+
+# リスク指標の計算
+calculator = RiskCalculator(returns=pd.Series([0.01, -0.02, 0.03]))
+result = calculator.calculate()
+
+# 結果のフォーマット
+formatter = ResultFormatter()
+print(formatter.to_markdown(result))
+```
+
+### 主要クラス
+
+#### `RiskCalculator`
+
+**説明**: ポートフォリオリターンからリスク指標を計算するクラス
 
 **基本的な使い方**:
 
 ```python
-from strategy.utils.logging_config import get_logger
+from strategy import RiskCalculator
+import pandas as pd
+
+# 初期化
+calculator = RiskCalculator(
+    returns=pd.Series([...]),  # 日次リターン
+    risk_free_rate=0.02,       # 年率2%
+    annualization_factor=252   # 日次データ
+)
+
+# リスク指標を計算
+result = calculator.calculate()
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `calculate()` | 全リスク指標を計算 | `RiskMetricsResult` |
+| `volatility()` | 年率ボラティリティ | `float` |
+| `sharpe_ratio()` | シャープレシオ | `float` |
+| `sortino_ratio()` | ソルティノレシオ | `float` |
+| `max_drawdown()` | 最大ドローダウン | `float` |
+
+---
+
+#### `ResultFormatter`
+
+**説明**: リスク指標結果を様々な形式に変換するフォーマッタ
+
+**基本的な使い方**:
+
+```python
+from strategy import ResultFormatter
+
+# 初期化
+formatter = ResultFormatter()
+
+# 様々な形式に変換
+df = formatter.to_dataframe(result)        # DataFrame
+data = formatter.to_dict(result)           # 辞書（JSON互換）
+markdown = formatter.to_markdown(result)   # Markdown
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `to_dataframe(result)` | DataFrame形式に変換 | `pd.DataFrame` |
+| `to_dict(result)` | 辞書形式に変換 | `dict[str, Any]` |
+| `to_markdown(result)` | Markdown形式に変換 | `str` |
+
+---
+
+### データクラス
+
+#### `RiskMetricsResult`
+
+**説明**: リスク指標の計算結果を保持するデータクラス
+
+**使用例**:
+
+```python
+from strategy import RiskMetricsResult
+
+# RiskCalculator.calculate() の戻り値として取得
+result = calculator.calculate()
+
+# 各指標にアクセス
+print(result.volatility)         # ボラティリティ
+print(result.sharpe_ratio)       # シャープレシオ
+print(result.max_drawdown)       # 最大ドローダウン
+```
+
+**主な属性**:
+
+- `volatility`: 年率ボラティリティ
+- `sharpe_ratio`: シャープレシオ
+- `sortino_ratio`: ソルティノレシオ
+- `max_drawdown`: 最大ドローダウン
+- `var_95`: 95% VaR
+- `var_99`: 99% VaR
+- `annualized_return`: 年率リターン
+- `cumulative_return`: 累積リターン
+
+---
+
+### ユーティリティ関数
+
+#### `get_logger(name, **context)`
+
+**説明**: 構造化ロギング機能を備えたロガーインスタンスを取得
+
+**使用例**:
+
+```python
+from strategy import get_logger
 
 logger = get_logger(__name__)
 logger.info("処理開始", user_id=123)
-logger.error("エラーが発生しました", error_type="ValidationError")
 ```
-
-**パラメータ**:
-
-| パラメータ | 型 | 説明 |
-|-----------|-----|------|
-| `name` | str | ロガー名（通常は `__name__`） |
-| `**context` | Any | ロガーに事前バインドするコンテキスト変数 |
-
-**戻り値**: `BoundLogger` - 構造化ロギング機能を持つロガーインスタンス
 
 ---
 
 ### 型定義
 
-パッケージが使用する共通の型定義を提供します。
-
-**主要な型**:
+データ構造の定義。型ヒントやバリデーションに使用:
 
 ```python
 from strategy.types import (
-    ProcessorStatus,      # "success" | "error" | "pending"
-    ValidationStatus,     # "valid" | "invalid" | "skipped"
-    ItemDict,            # アイテムデータの型定義
-    ConfigDict,          # 設定データの型定義
-    ProcessingResult,    # 処理結果の型定義
-    ValidationResult,    # バリデーション結果の型定義
-    LogLevel,           # "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL"
+    AssetClass,      # 資産クラス定義
+    Holding,         # 保有銘柄
+    TickerInfo,      # ティッカー情報
+    Period,          # 分析期間
+    PresetPeriod,    # プリセット期間
 )
-```
-
-#### `setup_logging(*, level, format, log_file, ...)`
-
-**説明**: 構造化ロギングの設定を初期化します。
-
-**使用例**:
-
-```python
-from strategy.utils.logging_config import setup_logging
-
-# 開発環境用の設定
-setup_logging(level="INFO", format="console")
-
-# 本番環境用の設定
-setup_logging(level="WARNING", format="json", log_file="logs/app.log")
-```
-
-**パラメータ**:
-
-| パラメータ | 型 | デフォルト | 説明 |
-|-----------|-----|-----------|------|
-| `level` | LogLevel | "INFO" | ログレベル (DEBUG, INFO, WARNING, ERROR, CRITICAL) |
-| `format` | LogFormat | "console" | 出力形式 (json, console, plain) |
-| `log_file` | Path \| None | None | ログファイル出力先 |
-| `include_timestamp` | bool | True | タイムスタンプの追加 |
-| `include_caller_info` | bool | True | 呼び出し元情報の追加 |
-| `force` | bool | False | 既存設定を上書き |
-
----
-
-#### `log_context(**kwargs)` - コンテキストマネージャー
-
-**説明**: ログに一時的にコンテキスト情報を付与します。
-
-**使用例**:
-
-```python
-from strategy.utils.logging_config import log_context
-
-with log_context(user_id=123, request_id="req_001"):
-    logger.info("リクエスト処理中")  # user_id と request_id が自動付与される
-```
-
----
-
-#### `set_log_level(level, logger_name)`
-
-**説明**: ログレベルを動的に変更します。
-
-**使用例**:
-
-```python
-from strategy.utils.logging_config import set_log_level
-
-# ルートロガーのレベルを変更
-set_log_level("DEBUG")
-
-# 特定のロガーのレベルを変更
-set_log_level("ERROR", logger_name="strategy.core")
-```
-
----
-
-#### `log_performance(logger)` - デコレータ
-
-**説明**: 関数の実行時間とパフォーマンスを自動的にログに記録します。
-
-**使用例**:
-
-```python
-from strategy.utils.logging_config import get_logger, log_performance
-
-logger = get_logger(__name__)
-
-@log_performance(logger)
-def process_strategy_data(data, config):
-    # 処理実行
-    return result
-
-# 実行時に自動的に処理時間がログされます
-result = process_strategy_data(market_data, {})
 ```
 <!-- END: API -->
 
 <!-- AUTO-GENERATED: STATS -->
 ## 統計
 
-| 項目                 | 値   |
-| -------------------- | ---- |
-| Python ファイル数    | 5    |
-| 総行数（実装コード） | 485  |
-| モジュール数         | 2    |
-| テストファイル数     | 4    |
-| テストカバレッジ     | N/A  |
+| 項目                 | 値     |
+| -------------------- | ------ |
+| Python ファイル数    | 18     |
+| 総行数（実装コード） | 3,349  |
+| モジュール数         | 6      |
+| テストファイル数     | 12     |
+| テストカバレッジ     | N/A    |
 
-**注**: テストカバレッジはまだ構造段階のため、実装完了後に計測予定です。
+**注**: テストカバレッジは実装完了後に計測予定です。
 <!-- END: STATS -->
 
 ## 拡張ガイド
