@@ -17,7 +17,6 @@ from strategy.rebalance.types import DriftResult
 from strategy.types import TickerInfo
 from strategy.visualization.charts import ChartGenerator
 
-
 # =============================================================================
 # TestChartGeneratorInitialization
 # =============================================================================
@@ -394,7 +393,11 @@ class TestChartLayout:
 
         assert fig.layout.title is not None
         # タイトルのテキストを取得
-        title_text = fig.layout.title.text if hasattr(fig.layout.title, "text") else str(fig.layout.title)
+        title_text = (
+            fig.layout.title.text
+            if hasattr(fig.layout.title, "text")
+            else str(fig.layout.title)
+        )
         assert len(title_text) > 0
 
     def test_正常系_ポートフォリオ名がタイトルに含まれる(
@@ -406,7 +409,11 @@ class TestChartLayout:
 
         fig = generator.plot_allocation(chart_type="pie")
 
-        title_text = fig.layout.title.text if hasattr(fig.layout.title, "text") else str(fig.layout.title)
+        title_text = (
+            fig.layout.title.text
+            if hasattr(fig.layout.title, "text")
+            else str(fig.layout.title)
+        )
         # ポートフォリオ名 "60/40 Portfolio" がタイトルに含まれる
         assert "60/40" in title_text or "Portfolio" in title_text
 

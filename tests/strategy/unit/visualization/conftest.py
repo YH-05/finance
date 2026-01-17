@@ -10,7 +10,6 @@ from strategy.portfolio import Portfolio
 from strategy.rebalance.types import DriftResult
 from strategy.types import TickerInfo
 
-
 # =============================================================================
 # Portfolio Fixtures
 # =============================================================================
