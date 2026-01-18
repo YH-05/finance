@@ -31,6 +31,7 @@ dependencies = [
     "ipykernel>=7.1.0",
     "statsmodels>=0.14.6",
     "scikit-learn>=1.8.0",
+    "marimo>=0.19.4",
 ]
 [project.optional-dependencies]
 dev = [
