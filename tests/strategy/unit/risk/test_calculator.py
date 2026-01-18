@@ -1310,13 +1310,13 @@ class TestBenchmarkMetricsErrors:
         empty_benchmark = pd.Series([], dtype=float)
         calculator = RiskCalculator(sample_returns)
 
-        with pytest.raises(ValueError, match="benchmark.*empty"):
+        with pytest.raises(ValueError, match=r"benchmark.*empty"):
             calculator.beta(empty_benchmark)
 
-        with pytest.raises(ValueError, match="benchmark.*empty"):
+        with pytest.raises(ValueError, match=r"benchmark.*empty"):
             calculator.treynor_ratio(empty_benchmark)
 
-        with pytest.raises(ValueError, match="benchmark.*empty"):
+        with pytest.raises(ValueError, match=r"benchmark.*empty"):
             calculator.information_ratio(empty_benchmark)
 
     def test_異常系_共通日付なしでValueError(
@@ -1338,5 +1338,5 @@ class TestBenchmarkMetricsErrors:
 
         calculator = RiskCalculator(sample_returns)
 
-        with pytest.raises(ValueError, match="common|overlapping"):
+        with pytest.raises(ValueError, match=r"common|overlapping"):
             calculator.beta(benchmark_returns)
