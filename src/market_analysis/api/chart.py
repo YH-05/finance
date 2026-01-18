@@ -130,6 +130,36 @@ class Chart:
         """
         return self._title
 
+    def _resolve_column_name(self, column: str) -> str | None:
+        """Resolve column name with case-insensitive matching.
+
+        Parameters
+        ----------
+        column : str
+            Column name to resolve
+
+        Returns
+        -------
+        str | None
+            Actual column name from data if found, None otherwise
+        """
+        # Exact match first
+        if column in self._data.columns:
+            return column
+
+        # Case-insensitive match
+        column_lower = column.lower()
+        for col in self._data.columns:
+            if col.lower() == column_lower:
+                logger.debug(
+                    "Column name resolved case-insensitively",
+                    requested=column,
+                    resolved=col,
+                )
+                return col
+
+        return None
+
     def price_chart(
         self,
         column: str = "Close",
@@ -145,7 +175,8 @@ class Chart:
         Parameters
         ----------
         column : str, default="Close"
-            Column to use for the price line
+            Column to use for the price line. Case-insensitive matching is
+            performed, so both "Close" and "close" will work.
         overlays : list[str] | None, default=None
             List of indicator columns to overlay on the chart.
             Supports patterns like "SMA_20", "EMA_50" which will be
@@ -172,15 +203,23 @@ class Chart:
         >>> fig = chart.price_chart(overlays=["SMA_20", "EMA_50"])  # With overlays
         >>> chart.save("chart.png")
         """
-        if column not in self._data.columns:
+        # Case-insensitive column matching (Issue #316: support YFinance lowercase columns)
+        resolved_column = self._resolve_column_name(column)
+        if resolved_column is None:
             raise ValueError(
                 f"Column '{column}' not found in data. "
                 f"Available columns: {list(self._data.columns)}"
             )
 
+        # Determine the standard column name for PriceChartData (which normalizes to standard names)
+        # If user requested "close" (lowercase), PriceChartData will normalize to "Close"
+        standard_column = column  # Use original requested name for normalization
+        if column.lower() in {"open", "high", "low", "close"}:
+            standard_column = column.capitalize()
+
         logger.info(
             "Creating price chart",
-            column=column,
+            column=standard_column,
             overlays=overlays,
             width=width,
             height=height,
@@ -194,18 +233,21 @@ class Chart:
             theme=ChartTheme.LIGHT,
         )
 
-        # Create price chart data
+        # Create price chart data (normalizes column names to standard format)
         price_data = PriceChartData(
             df=self._data,
             symbol=self._title or "",
         )
 
-        # Build chart
+        # Check for volume with case-insensitive match
+        has_volume = self._resolve_column_name("Volume") is not None
+
+        # Build chart with standard column name (PriceChartData normalizes columns)
         chart_builder = LineChart(
             data=price_data,
             config=config,
-            show_volume="Volume" in self._data.columns,
-            price_column=column,
+            show_volume=has_volume,
+            price_column=standard_column,
         )
 
         # Add overlay indicators
