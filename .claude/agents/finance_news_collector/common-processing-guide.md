@@ -4,36 +4,180 @@
 
 ## 共通設定
 
-- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.yml`
+- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`（Markdown形式）
 - **GitHub Project**: #15 (`PVT_kwHOBoK6AM4BMpw_`)
 - **Statusフィールド**: `PVTSSF_lAHOBoK6AM4BMpw_zg739ZE`
 - **公開日時フィールド**: `PVTF_lAHOBoK6AM4BMpw_zg8BzrI`（Date型、ソート用）
 
+## 使用ツール
+
+各サブエージェントは以下のツールを使用します：
+
+```yaml
+tools:
+  - Read              # ファイル読み込み
+  - Bash              # gh CLI実行
+  - MCPSearch         # MCPツール検索・ロード
+  - mcp__rss__fetch_feed   # RSSフィード更新
+  - mcp__rss__get_items    # RSS記事取得
+```
+
 ## Phase 1: 初期化
 
-### ステップ1.1: 一時ファイル読み込み
+### ステップ1.1: MCPツールのロード
 
+```python
+def load_mcp_tools() -> bool:
+    """MCPツールをロードする"""
+
+    try:
+        # MCPSearchでRSSツールをロード
+        MCPSearch(query="select:mcp__rss__fetch_feed")
+        MCPSearch(query="select:mcp__rss__get_items")
+        return True
+    except Exception as e:
+        ログ出力: f"警告: MCPツールのロード失敗: {e}"
+        ログ出力: "ローカルフォールバックを使用します"
+        return False
 ```
-[1] 一時ファイル読み込み
-    ↓
-    .tmp/news-collection-{timestamp}.json を読み込む
-    ↓ エラーの場合
-    エラーログ出力 → 処理中断
 
-[2] 統計カウンタ初期化
-    ↓
-    processed = 0
-    matched = 0
-    duplicates = 0
-    created = 0
-    failed = 0
+### ステップ1.2: 既存Issue取得（重複チェック用）
+
+```bash
+gh issue list \
+    --repo YH-05/finance \
+    --label "news" \
+    --state all \
+    --limit 100 \
+    --json number,title,body,createdAt
 ```
 
-## Phase 2: AI判断によるテーマ分類
+### ステップ1.3: 統計カウンタ初期化
+
+```python
+processed = 0
+matched = 0
+duplicates = 0
+created = 0
+failed = 0
+```
+
+## Phase 2: RSS取得（フィード直接取得）
+
+**重要**: 各サブエージェントは自分の担当フィードから直接記事を取得します。
+
+### ステップ2.1: 担当フィードからの取得
+
+```python
+def fetch_assigned_feeds(assigned_feeds: list[dict]) -> list[dict]:
+    """担当フィードから記事を取得する
+
+    Parameters
+    ----------
+    assigned_feeds : list[dict]
+        担当フィードのリスト（feed_id, titleを含む）
+
+    Returns
+    -------
+    list[dict]
+        取得した記事のリスト
+    """
+
+    all_items = []
+
+    for feed in assigned_feeds:
+        feed_id = feed["feed_id"]
+        feed_title = feed["title"]
+
+        try:
+            # Step 1: フィードを最新化
+            mcp__rss__fetch_feed(feed_id=feed_id)
+
+            # Step 2: 記事を取得（24時間以内）
+            items = mcp__rss__get_items(
+                feed_id=feed_id,
+                hours=24,
+                limit=50
+            )
+
+            # フィード情報を付加
+            for item in items:
+                item["feed_source"] = feed_title
+                item["feed_id"] = feed_id
+
+            all_items.extend(items)
+            ログ出力: f"取得完了: {feed_title} ({len(items)}件)"
+
+        except Exception as e:
+            ログ出力: f"警告: フィード取得失敗: {feed_title}: {e}"
+            # ローカルフォールバックを試行
+            local_items = load_from_local(feed_id, feed_title)
+            all_items.extend(local_items)
+
+    return all_items
+```
+
+### ステップ2.2: ローカルフォールバック
+
+MCPツールが利用できない場合、ローカルに保存されたRSSデータを使用します。
+
+```python
+def load_from_local(feed_id: str, feed_title: str) -> list[dict]:
+    """ローカルのRSSデータから記事を取得する
+
+    Parameters
+    ----------
+    feed_id : str
+        フィードID
+    feed_title : str
+        フィード名（ログ用）
+
+    Returns
+    -------
+    list[dict]
+        取得した記事のリスト
+    """
+
+    local_path = f"data/raw/rss/{feed_id}/items.json"
+
+    try:
+        with open(local_path) as f:
+            data = json.load(f)
+
+        items = data.get("items", [])
+
+        # 24時間以内のアイテムのみフィルタ
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+        recent_items = []
+
+        for item in items:
+            published = item.get("published")
+            if published:
+                try:
+                    dt = datetime.fromisoformat(published.replace('Z', '+00:00'))
+                    if dt >= cutoff:
+                        item["feed_source"] = feed_title
+                        item["feed_id"] = feed_id
+                        recent_items.append(item)
+                except ValueError:
+                    continue
+
+        ログ出力: f"ローカルから取得: {feed_title} ({len(recent_items)}件)"
+        return recent_items
+
+    except FileNotFoundError:
+        ログ出力: f"警告: ローカルデータなし: {local_path}"
+        return []
+    except json.JSONDecodeError as e:
+        ログ出力: f"警告: JSONパースエラー: {local_path}: {e}"
+        return []
+```
+
+## Phase 3: AI判断によるテーマ分類
 
 **重要**: キーワードマッチングは使用しません。**AIが記事の内容を読み取り、テーマに該当するか判断**します。
 
-### ステップ2.1: AI判断によるテーマ判定
+### ステップ3.1: AI判断によるテーマ判定
 
 各記事について、タイトルと要約（summary）を読み取り、以下の基準でテーマに該当するか判断します。
 
@@ -71,7 +215,7 @@
 | "OpenAI launches new model capabilities" | AI企業の動向 → 該当 | AI |
 | "Celebrity launches new clothing line" | 金融・経済と無関係 → 非該当 | - |
 
-### ステップ2.2: 除外判断
+### ステップ3.2: 除外判断
 
 以下のカテゴリに該当する記事は除外します（金融テーマに関連する場合を除く）:
 
@@ -80,7 +224,7 @@
 - **政治**: 選挙、内閣関連（ただし、金融政策・規制に関連する場合は対象）
 - **一般ニュース**: 事故、災害、犯罪
 
-### ステップ2.3: 重複チェック
+### ステップ3.3: 重複チェック
 
 ```python
 def calculate_title_similarity(title1: str, title2: str) -> float:
@@ -120,9 +264,9 @@ def is_duplicate(new_item: dict, existing_issues: list[dict], threshold: float =
     return False
 ```
 
-## Phase 3: GitHub投稿
+## Phase 4: GitHub投稿
 
-### ステップ3.0: 記事内容取得と要約生成
+### ステップ4.0: 記事内容取得と要約生成
 
 **重要**: Issue作成前に、必ず記事URLから実際の内容を取得して日本語要約を生成すること。
 
@@ -174,7 +318,7 @@ def generate_japanese_summary(content: str, max_length: int = 400) -> str:
     return summary
 ```
 
-### ステップ3.1: 日時フォーマット関数
+### ステップ4.1: 日時フォーマット関数
 
 **重要**: GitHub Projectでソートするため、公開日時をISO 8601形式に変換します。
 また、Issue本文には「収集日時」（Issue作成時の日時）も必ず記載します。
@@ -230,7 +374,7 @@ def get_collected_at_jst() -> str:
     return datetime.now(jst).strftime('%Y-%m-%d %H:%M')
 ```
 
-### ステップ3.2: Issue作成
+### ステップ4.2: Issue作成（テンプレート読み込み方式）
 
 **重要: Issueタイトルの日本語化ルール**:
 1. **タイトル形式**: `[{theme_ja}] {japanese_title}`
@@ -238,48 +382,50 @@ def get_collected_at_jst() -> str:
    - `[株価指数]`, `[個別銘柄]`, `[セクター]`, `[マクロ経済]`, `[AI]`
 3. **タイトル翻訳**: 英語記事の場合は日本語に翻訳（要約生成時に同時に実施）
 
+**テンプレート読み込み→プレースホルダー置換**:
+
 ```bash
-# 収集日時を取得（Issue作成直前に実行）
+# Step 1: テンプレートを読み込む
+template=$(cat .github/ISSUE_TEMPLATE/news-article.md | tail -n +7)  # frontmatter除外
+
+# Step 2: 収集日時を取得（Issue作成直前に実行）
 collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
 
+# Step 3: プレースホルダーを置換
+body="${template//\{\{summary\}\}/$japanese_summary}"
+body="${body//\{\{url\}\}/$link}"
+body="${body//\{\{published_date\}\}/$published_jst(JST)}"
+body="${body//\{\{collected_at\}\}/$collected_at(JST)}"
+body="${body//\{\{credibility\}\}/3点 - 中程度}"
+body="${body//\{\{category\}\}/$category}"
+body="${body//\{\{feed_source\}\}/$source}"
+body="${body//\{\{priority\}\}/Medium - 通常の記事化候補}"
+body="${body//\{\{notes\}\}/- テーマ: $theme_name
+- AI判定理由: $判定理由}"
+
+# Step 4: Issue作成
 gh issue create \
     --repo YH-05/finance \
     --title "[{theme_ja}] {japanese_title}" \
-    --body "$(cat <<EOF
-### 概要
-
-{japanese_summary}
-
-### 情報源URL
-
-{link}
-
-### 公開日
-
-{published_jst}(JST)
-
-### 収集日時
-
-${collected_at}(JST)
-
-### カテゴリ
-
-{category}
-
-### フィード/情報源名
-
-{source}
-
-### 備考・メモ
-
-- テーマ: {theme_name}
-- AI判定理由: {判定理由を簡潔に記載}
-EOF
-)" \
+    --body "$body" \
     --label "news"
 ```
 
-### ステップ3.3: Project追加
+**テンプレートプレースホルダー一覧** (`.github/ISSUE_TEMPLATE/news-article.md`):
+
+| プレースホルダー | 説明 | 例 |
+|-----------------|------|-----|
+| `{{summary}}` | 日本語要約（400字以上） | - |
+| `{{url}}` | 情報源URL | `https://...` |
+| `{{published_date}}` | 公開日時 | `2026-01-15 10:00(JST)` |
+| `{{collected_at}}` | 収集日時 | `2026-01-15 14:30(JST)` |
+| `{{credibility}}` | 信頼性スコア | `3点 - 中程度` |
+| `{{category}}` | カテゴリ | `Index（株価指数）` |
+| `{{feed_source}}` | フィード名 | `CNBC - Markets` |
+| `{{priority}}` | 優先度 | `Medium - 通常の記事化候補` |
+| `{{notes}}` | 備考・メモ | テーマ、AI判定理由 |
+
+### ステップ4.3: Project追加
 
 ```bash
 gh project item-add 15 \
@@ -287,7 +433,7 @@ gh project item-add 15 \
     --url {issue_url}
 ```
 
-### ステップ3.4: Status設定（GraphQL API）
+### ステップ4.4: Status設定（GraphQL API）
 
 **Step 1: Issue Node IDを取得**
 
@@ -344,9 +490,9 @@ mutation {
 }'
 ```
 
-**⚠️ 注意: ステップ3.4完了後、必ず続けてステップ3.5（公開日時設定）を実行すること！**
+**⚠️ 注意: ステップ4.4完了後、必ず続けてステップ4.5（公開日時設定）を実行すること！**
 
-### ステップ3.5: 公開日時フィールドを設定（Date型）【必須・最重要】
+### ステップ4.5: 公開日時フィールドを設定（Date型）【必須・最重要】
 
 > **🚨 絶対に省略しないでください！🚨**
 >
@@ -381,7 +527,7 @@ mutation {
 
 **日付形式**: `YYYY-MM-DD`（例: `2026-01-15`）
 
-## Phase 4: 結果報告
+## Phase 5: 結果報告
 
 ### 統計サマリー出力フォーマット
 
@@ -423,19 +569,33 @@ mutation {
 
 ## 共通エラーハンドリング
 
-### E001: 一時ファイル読み込みエラー
+### E001: MCPツール接続エラー
 
 ```python
-try:
-    with open(filepath) as f:
-        data = json.load(f)
-except FileNotFoundError:
-    ログ出力: f"エラー: 一時ファイルが見つかりません: {filepath}"
-    ログ出力: "オーケストレーターが正しく実行されたか確認してください"
-    sys.exit(1)
-except json.JSONDecodeError as e:
-    ログ出力: f"エラー: JSON形式が不正です: {e}"
-    sys.exit(1)
+def handle_mcp_error(feed_id: str, feed_title: str, error: Exception) -> list[dict]:
+    """MCPツール接続失敗時のフォールバック処理
+
+    Parameters
+    ----------
+    feed_id : str
+        フィードID
+    feed_title : str
+        フィード名（ログ用）
+    error : Exception
+        発生したエラー
+
+    Returns
+    -------
+    list[dict]
+        ローカルから取得した記事（取得できない場合は空リスト）
+    """
+
+    ログ出力: f"警告: MCPツール接続失敗: {feed_title}"
+    ログ出力: f"エラー詳細: {error}"
+    ログ出力: "ローカルフォールバックを試行します"
+
+    # ローカルデータから取得を試みる
+    return load_from_local(feed_id, feed_title)
 ```
 
 ### E002: Issue作成エラー
@@ -478,7 +638,7 @@ except subprocess.CalledProcessError as e:
 
 ## 参考資料
 
-- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.yml`
+- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`（Markdown形式）
 - **オーケストレーター**: `.claude/agents/finance-news-orchestrator.md`
 - **コマンド**: `.claude/commands/collect-finance-news.md`
 - **GitHub Project**: https://github.com/users/YH-05/projects/15
