@@ -164,10 +164,13 @@
 | [#30](https://github.com/YH-05/finance/issues/30) | パッケージエクスポートの設定 | Done |
 | [#33](https://github.com/YH-05/finance/issues/33) | yfinance のティッカー管理 | Done |
 | [#38](https://github.com/YH-05/finance/issues/38) | ChartBuilder 基盤クラスの実装 | Done |
+| [#316](https://github.com/YH-05/finance/issues/316) | Chart.price_chart で Close カラムが見つからない ValueError を修正 | Done |
+| [#324](https://github.com/YH-05/finance/issues/324) | fetch_stock で複数銘柄の株価データを一括取得できるようにする | Done |
+| [#325](https://github.com/YH-05/finance/issues/325) | fetch_fred で複数 series_id の一括取得と統一データフレーム形式への変更 | Todo |
 
-**全23件完了** (2026-01-18)
+**25件完了 / 26件中** (2026-01-18)
 
 ---
 
 **最終更新**: 2026-01-18
-**更新内容**: GitHub Project #6 と同期、全Issue (#5-#38) のステータスを Done に更新
+**更新内容**: GitHub Project #6 と同期、Issue #316, #324, #325 を追加。#324 (fetch_stock 複数銘柄対応) を Done に更新
