@@ -3,6 +3,11 @@
   "themes": {
     "index": {
       "github_status_id": "f75ad846",
+      "feeds": [
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c04",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c05"
+      ],
+      "feed_names": ["CNBC - Markets", "CNBC - Investing"],
       "keywords": {
         "include": [
           "株価", "株式", "上場", "相場", "指数", "株高", "株安",
@@ -18,6 +23,11 @@
     },
     "stock": {
       "github_status_id": "47fc9ee4",
+      "feeds": [
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c12",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c11"
+      ],
+      "feed_names": ["CNBC - Earnings", "CNBC - Business"],
       "keywords": {
         "include": [
           "決算", "業績", "売上高", "営業利益", "純利益",
@@ -33,6 +43,14 @@
     },
     "sector": {
       "github_status_id": "98236657",
+      "feeds": [
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c14",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c17",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20"
+      ],
+      "feed_names": ["CNBC - Finance", "CNBC - Health Care", "CNBC - Autos", "CNBC - Energy", "CNBC - Retail"],
       "keywords": {
         "include": [
           "銀行", "証券", "保険", "フィンテック", "決済",
@@ -50,6 +68,13 @@
     },
     "macro": {
       "github_status_id": "c40731f6",
+      "feeds": [
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09",
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10"
+      ],
+      "feed_names": ["CNBC - Economy", "CNBC - World News", "CNBC - Asia News", "CNBC - Europe News"],
       "keywords": {
         "include": [
           "金利", "政策金利", "量的緩和", "金融緩和", "金融引き締め",
@@ -68,6 +93,10 @@
     },
     "ai": {
       "github_status_id": "17189c86",
+      "feeds": [
+        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08"
+      ],
+      "feed_names": ["CNBC - Technology"],
       "keywords": {
         "include": [
           "AI", "人工知能", "機械学習", "ディープラーニング",

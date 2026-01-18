@@ -21,6 +21,7 @@ priority: high
 |------|-----|
 | **テーマキー** | `ai` |
 | **GitHub Status ID** | `17189c86` (AI) |
+| **対象CNBCフィード** | CNBC - Technology |
 | **対象キーワード** | AI, 人工知能, 機械学習, ChatGPT, 生成AI, LLM, NVIDIA |
 | **優先度キーワード** | AI規制, AI投資, AI企業, 生成AI, ChatGPT |
 
@@ -42,6 +43,7 @@ Phase 1: 初期化
 └── 統計カウンタ初期化
 
 Phase 2: フィルタリング
+├── フィードフィルタリング（CNBC - Technology のみ）
 ├── AIキーワードマッチング
 ├── 除外キーワードチェック
 └── 重複チェック

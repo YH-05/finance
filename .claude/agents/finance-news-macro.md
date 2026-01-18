@@ -21,6 +21,7 @@ priority: high
 |------|-----|
 | **テーマキー** | `macro` |
 | **GitHub Status ID** | `c40731f6` (Macro) |
+| **対象CNBCフィード** | CNBC - Economy, World News, Asia News, Europe News |
 | **対象キーワード** | 金利, 日銀, FRB, GDP, CPI, 失業率, 為替, 円高, 円安 |
 | **優先度キーワード** | 金融政策, 経済指標, 日銀決定会合, FOMC, 政策金利 |
 
@@ -42,6 +43,7 @@ Phase 1: 初期化
 └── 統計カウンタ初期化
 
 Phase 2: フィルタリング
+├── フィードフィルタリング（CNBC - Economy, World News, Asia News, Europe News のみ）
 ├── Macroキーワードマッチング
 ├── 除外キーワードチェック
 └── 重複チェック

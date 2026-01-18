@@ -21,6 +21,7 @@ priority: high
 |------|-----|
 | **テーマキー** | `index` |
 | **GitHub Status ID** | `f75ad846` (Index) |
+| **対象CNBCフィード** | CNBC - Markets, CNBC - Investing |
 | **対象キーワード** | 株価, 指数, 日経平均, S&P500, TOPIX, ダウ, ナスダック |
 | **優先度キーワード** | 日経平均株価, NYダウ, TOPIX, S&P500 |
 
@@ -42,6 +43,7 @@ Phase 1: 初期化
 └── 統計カウンタ初期化
 
 Phase 2: フィルタリング
+├── フィードフィルタリング（CNBC - Markets, Investing のみ）
 ├── Indexキーワードマッチング
 ├── 除外キーワードチェック
 └── 重複チェック

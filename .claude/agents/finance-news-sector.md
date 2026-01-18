@@ -21,6 +21,7 @@ priority: high
 |------|-----|
 | **テーマキー** | `sector` |
 | **GitHub Status ID** | `98236657` (Sector) |
+| **対象CNBCフィード** | CNBC - Finance, Health Care, Autos, Energy, Retail |
 | **対象キーワード** | 銀行, 証券, 保険, フィンテック, 自動車, 半導体, エネルギー |
 | **優先度キーワード** | 業界再編, セクター分析, 産業動向 |
 
@@ -42,6 +43,7 @@ Phase 1: 初期化
 └── 統計カウンタ初期化
 
 Phase 2: フィルタリング
+├── フィードフィルタリング（CNBC - Finance, Health Care, Autos, Energy, Retail のみ）
 ├── Sectorキーワードマッチング
 ├── 除外キーワードチェック
 └── 重複チェック

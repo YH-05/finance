@@ -39,6 +39,52 @@
 
 ## Phase 2: フィルタリング
 
+### ステップ2.0: フィードフィルタリング（CNBC限定）
+
+各テーマエージェントは、`finance-news-themes.json` で指定された対象フィードからのみ記事を処理します。
+
+```python
+def filter_by_feeds(items: list[dict], theme: dict) -> list[dict]:
+    """対象フィードからの記事のみをフィルタリング"""
+
+    target_feeds = set(theme.get('feeds', []))
+
+    if not target_feeds:
+        # feeds未設定の場合は全記事を対象
+        return items
+
+    filtered = []
+    for item in items:
+        feed_id = item.get('feed_id', '')
+        if feed_id in target_feeds:
+            filtered.append(item)
+
+    return filtered
+```
+
+**対象フィード設定**（`data/config/finance-news-themes.json`）:
+
+| テーマ | 対象CNBCフィード |
+|--------|-----------------|
+| index | Markets, Investing |
+| stock | Earnings, Business |
+| sector | Finance, Health Care, Autos, Energy, Retail |
+| macro | Economy, World News, Asia News, Europe News |
+| ai | Technology |
+
+**処理フロー**:
+```
+[1] 一時ファイルから全記事を取得
+    ↓
+[2] フィードフィルタリング（対象CNBCフィードのみ抽出）
+    ↓
+[3] テーマキーワードマッチング
+    ↓
+[4] 除外キーワードチェック
+    ↓
+[5] 重複チェック
+```
+
 ### ステップ2.1: テーマキーワードマッチング
 
 ```python

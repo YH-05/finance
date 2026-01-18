@@ -21,6 +21,7 @@ priority: high
 |------|-----|
 | **テーマキー** | `stock` |
 | **GitHub Status ID** | `47fc9ee4` (Stock) |
+| **対象CNBCフィード** | CNBC - Earnings, CNBC - Business |
 | **対象キーワード** | 決算, 業績, EPS, ROE, ROA, M&A, 買収, 合併, 増収, 減益 |
 | **優先度キーワード** | 決算短信, M&A, 買収, 合併, 業績予想 |
 
@@ -42,6 +43,7 @@ Phase 1: 初期化
 └── 統計カウンタ初期化
 
 Phase 2: フィルタリング
+├── フィードフィルタリング（CNBC - Earnings, Business のみ）
 ├── Stockキーワードマッチング
 ├── 除外キーワードチェック
 └── 重複チェック
