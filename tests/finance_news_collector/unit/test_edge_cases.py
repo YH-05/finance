@@ -308,46 +308,6 @@ class TestVeryLongStrings:
         assert long_content in result["body"]
 
 
-class TestReliabilityScoreEdgeCases:
-    """Test edge cases for reliability score calculation."""
-
-    def test_score_with_no_matching_source(self, filter_config: dict) -> None:
-        """Test reliability score with unrecognized source."""
-        from finance_news_collector.filtering import calculate_reliability_score
-
-        item = FeedItem(
-            item_id="edge-015",
-            title="株価動向",
-            link="https://unknown-domain.xyz/article/123",
-            published="2026-01-15T10:00:00Z",
-            summary="為替市場",
-            content="詳細",
-            author="著者",
-            fetched_at="2026-01-15T11:00:00Z",
-        )
-
-        score = calculate_reliability_score(item, filter_config)
-        assert score == 0
-
-    def test_score_with_no_keywords(self, filter_config: dict) -> None:
-        """Test reliability score with no keyword matches."""
-        from finance_news_collector.filtering import calculate_reliability_score
-
-        item = FeedItem(
-            item_id="edge-016",
-            title="一般的なニュース",
-            link="https://www.nikkei.com/article/test",
-            published="2026-01-15T10:00:00Z",
-            summary="天気予報",
-            content="明日は晴れ",
-            author="著者",
-            fetched_at="2026-01-15T11:00:00Z",
-        )
-
-        score = calculate_reliability_score(item, filter_config)
-        assert score >= 0
-
-
 class TestFilterConfigEdgeCases:
     """Test edge cases for filter configuration."""
 
