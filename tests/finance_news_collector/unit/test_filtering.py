@@ -269,5 +269,3 @@ class TestIsExcluded:
 
         result = is_excluded(item, filter_config)
         assert result is True
-
-
