@@ -5,8 +5,6 @@ RSSフィードアイテムをGitHub Issue形式に変換する機能を提供�
 
 from rss.types import FeedItem
 
-from .filtering import calculate_reliability_score
-
 
 def convert_to_issue_format(item: FeedItem, filter_config: dict) -> dict[str, str]:
     """Convert FeedItem to GitHub Issue format.
@@ -48,9 +46,6 @@ def convert_to_issue_format(item: FeedItem, filter_config: dict) -> dict[str, st
     >>> "## 概要" in result["body"]
     True
     """
-    # Calculate reliability score
-    reliability_score = calculate_reliability_score(item, filter_config)
-
     # Extract category from config if available
     category = filter_config.get("category", "finance")
 
@@ -76,8 +71,6 @@ def convert_to_issue_format(item: FeedItem, filter_config: dict) -> dict[str, st
 
     if item.published:
         body_parts.append(f"- **公開日**: {item.published}")
-
-    body_parts.append(f"- **信頼性スコア**: {reliability_score}")
 
     if "category" in filter_config:
         body_parts.append(f"- **カテゴリ**: {category}")

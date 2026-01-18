@@ -39,6 +39,52 @@
 
 ## Phase 2: フィルタリング
 
+### ステップ2.0: フィードフィルタリング（CNBC限定）
+
+各テーマエージェントは、`finance-news-themes.json` で指定された対象フィードからのみ記事を処理します。
+
+```python
+def filter_by_feeds(items: list[dict], theme: dict) -> list[dict]:
+    """対象フィードからの記事のみをフィルタリング"""
+
+    target_feeds = set(theme.get('feeds', []))
+
+    if not target_feeds:
+        # feeds未設定の場合は全記事を対象
+        return items
+
+    filtered = []
+    for item in items:
+        feed_id = item.get('feed_id', '')
+        if feed_id in target_feeds:
+            filtered.append(item)
+
+    return filtered
+```
+
+**対象フィード設定**（`data/config/finance-news-themes.json`）:
+
+| テーマ | 対象CNBCフィード |
+|--------|-----------------|
+| index | Markets, Investing |
+| stock | Earnings, Business |
+| sector | Finance, Health Care, Autos, Energy, Retail |
+| macro | Economy, World News, Asia News, Europe News |
+| ai | Technology |
+
+**処理フロー**:
+```
+[1] 一時ファイルから全記事を取得
+    ↓
+[2] フィードフィルタリング（対象CNBCフィードのみ抽出）
+    ↓
+[3] テーマキーワードマッチング
+    ↓
+[4] 除外キーワードチェック
+    ↓
+[5] 重複チェック
+```
+
 ### ステップ2.1: テーマキーワードマッチング
 
 ```python
@@ -83,74 +129,7 @@ def is_excluded(item: dict, common: dict, theme: dict) -> bool:
     return False
 ```
 
-### ステップ2.3: 信頼性スコアリング
-
-**CNBC優先戦略**: CNBCは金融ニュースの主要ソースとしてtier1扱いし、さらに追加ボーナスを付与。
-
-```python
-def calculate_reliability_score(item: dict, theme: dict, common: dict) -> int:
-    """信頼性スコアを計算（0-100）- CNBC優先版"""
-
-    link = item.get('link', '')
-
-    # CNBC特別処理: 最優先ソースとして扱う
-    is_cnbc = "cnbc.com" in link
-    cnbc_bonus = 1.2 if is_cnbc else 1.0  # CNBCに20%ボーナス
-
-    # Tier判定（情報源の信頼性）
-    tier = 1
-    for domain in common['sources']['tier1']:
-        if domain in link:
-            tier = 3
-            break
-    if tier == 1:
-        for domain in common['sources']['tier2']:
-            if domain in link:
-                tier = 2
-                break
-
-    # source_priorityフラグがある場合はCNBC優先
-    if item.get('source_priority') == 'cnbc':
-        tier = max(tier, 3)  # 最低でもtier1扱い
-
-    # キーワードマッチ度
-    text = f"{item['title']} {item.get('summary', '')} {item.get('content', '')}".lower()
-    keyword_matches = sum(1 for kw in theme['keywords']['include'] if kw.lower() in text)
-    keyword_ratio = min(keyword_matches / 10, 1.0)
-
-    # Priority boost（重要キーワードボーナス）
-    boost = 1.0
-    for priority_kw in theme['keywords']['priority_boost']:
-        if priority_kw.lower() in item['title'].lower():
-            boost = 1.5
-            break
-
-    # Reliability weight（テーマ別ウェイト）
-    weight = theme.get('reliability_weight', 1.0)
-
-    # スコア計算（CNBCボーナス適用）
-    score = tier * keyword_ratio * boost * weight * cnbc_bonus * 100
-
-    return min(int(score), 100)
-```
-
-**CNBCスコア計算例**:
-
-```
-記事: "Fed Signals Interest Rate Decision"
-ソース: cnbc.com (Tier 1 + CNBCボーナス)
-
-tier = 3 (Tier 1)
-keyword_matches = 2 (interest rate, Fed)
-keyword_ratio = 0.2
-boost = 1.5 (priority_boost: "FOMC")
-weight = 1.3 (Macroテーマ)
-cnbc_bonus = 1.2 (CNBC優先)
-
-score = 3 × 0.2 × 1.5 × 1.3 × 1.2 × 100 = 140 → 100（上限）
-```
-
-### ステップ2.4: 重複チェック
+### ステップ2.3: 重複チェック
 
 ```python
 def calculate_title_similarity(title1: str, title2: str) -> float:
@@ -261,10 +240,16 @@ def format_published_jst(published_str: str) -> str:
 
 **Issueテンプレート** (`.github/ISSUE_TEMPLATE/news-article.yml`) に準拠した形式で作成:
 
+**重要: Issueタイトルの日本語化ルール**:
+1. **タイトル形式**: `[{theme_ja}] {japanese_title}`
+2. **テーマ名プレフィックス（日本語）**:
+   - `[株価指数]`, `[個別銘柄]`, `[セクター]`, `[マクロ経済]`, `[AI]`
+3. **タイトル翻訳**: 英語記事の場合は日本語に翻訳（要約生成時に同時に実施）
+
 ```bash
 gh issue create \
     --repo YH-05/finance \
-    --title "[NEWS] {title}" \
+    --title "[{theme_ja}] {japanese_title}" \
     --body "$(cat <<'EOF'
 ### 概要
 
@@ -278,10 +263,6 @@ gh issue create \
 
 {published_jst}(JST)
 
-### 信頼性スコア
-
-{credibility_score}点
-
 ### カテゴリ
 
 {category}
@@ -290,15 +271,10 @@ gh issue create \
 
 {source}
 
-### 優先度
-
-{priority}
-
 ### 備考・メモ
 
 - テーマ: {theme_name}
 - マッチキーワード: {matched_keywords}
-- 信頼性: {score}/100
 EOF
 )" \
     --label "news"
@@ -388,7 +364,6 @@ mutation {
 
 1. **{title}** [#{issue_number}]
    - ソース: {source}
-   - 信頼性: {score}/100
    - URL: https://github.com/YH-05/finance/issues/{issue_number}
 
 ### 除外されたニュース

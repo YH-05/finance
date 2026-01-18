@@ -82,16 +82,6 @@ class TestConvertToIssueFormat:
         assert sample_feed_item.published is not None
         assert sample_feed_item.published in result["body"]
 
-    def test_issue_body_contains_reliability_score(
-        self, sample_feed_item: FeedItem, filter_config: dict
-    ) -> None:
-        """Test issue body contains reliability score."""
-        from finance_news_collector.transformation import convert_to_issue_format
-
-        result = convert_to_issue_format(sample_feed_item, filter_config)
-
-        assert "信頼性スコア" in result["body"]
-
     def test_issue_body_contains_content(
         self, sample_feed_item: FeedItem, filter_config: dict
     ) -> None:
