@@ -66,3 +66,4 @@ src/*/docs/.steering/
 
 #obsidian vaults
 .obsidian/
+notebook/__marimo__/

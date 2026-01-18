@@ -14,7 +14,6 @@ def _():
     import pandas as pd
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
-
     return datetime, go, make_subplots, mo, np, pd, timedelta
 
 
@@ -30,7 +29,7 @@ def _(mo):
         ---
         """
     )
-    return (_header,)
+    return
 
 
 @app.cell
@@ -233,14 +232,12 @@ def _(datetime, timedelta):
             return {"data": df, "error": None}
         except Exception as e:
             return {"data": None, "error": str(e)}
-
     return (
         MarketData,
         fetch_commodity_data,
         fetch_fred_data,
         fetch_stock_data_bulk,
         fetch_stock_data_single,
-        get_date_range_from_days,
         get_date_range_from_period,
     )
 
@@ -317,152 +314,140 @@ def _():
         "USEPUINDXD": "経済不確実性指数",
         "DTWEXAFEGS": "ドルインデックス",
     }
-
-    return (
-        FRED_SERIES,
-        MAG7_SOX,
-        MAJOR_INDICES,
-        METALS,
-        SECTOR_ETFS,
-        TICKER_NAMES,
-    )
+    return MAG7_SOX, MAJOR_INDICES, METALS, SECTOR_ETFS, TICKER_NAMES
 
 
-# =============================================================================
-# Tab 1: パフォーマンス概要
-# =============================================================================
+app._unparsable_cell(
+    """
+    def _():
+        \"\"\"Performance calculation functions.\"\"\"
+        from typing import Any
 
+        def calculate_period_return(
+            df: Any, days: int, price_col: str = \"close\"
+        ) -> float | None:
+            \"\"\"Calculate return for a specific period.
 
-@app.cell
-def _(np, pd):
-    """Performance calculation functions."""
-    from typing import Any
+            Parameters
+            ----------
+            df : pd.DataFrame
+                Price data with datetime index
+            days : int
+                Number of trading days for the period
+            price_col : str
+                Column name for price data
 
-    def calculate_period_return(
-        df: Any, days: int, price_col: str = "close"
-    ) -> float | None:
-        """Calculate return for a specific period.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            Price data with datetime index
-        days : int
-            Number of trading days for the period
-        price_col : str
-            Column name for price data
-
-        Returns
-        -------
-        float | None
-            Return as percentage, None if insufficient data
-        """
-        if df.empty or len(df) < 2:
-            return None
-
-        try:
-            # Get the most recent price
-            current_price = df[price_col].iloc[-1]
-
-            # Find price from 'days' trading days ago
-            if len(df) >= days:
-                past_price = df[price_col].iloc[-days]
-            else:
-                # Use earliest available price if less data
-                past_price = df[price_col].iloc[0]
-
-            if past_price == 0 or np.isnan(past_price):
+            Returns
+            -------
+            float | None
+                Return as percentage, None if insufficient data
+            \"\"\"
+            if df.empty or len(df) < 2:
                 return None
 
-            return ((current_price - past_price) / past_price) * 100
-        except (IndexError, KeyError):
-            return None
+            try:
+                # Get the most recent price
+                current_price = df[price_col].iloc[-1]
 
-    def calculate_ytd_return(df: Any, price_col: str = "close") -> float | None:
-        """Calculate Year-to-Date return.
+                # Find price from 'days' trading days ago
+                if len(df) >= days:
+                    past_price = df[price_col].iloc[-days]
+                else:
+                    # Use earliest available price if less data
+                    past_price = df[price_col].iloc[0]
 
-        Parameters
-        ----------
-        df : pd.DataFrame
-            Price data with datetime index
-        price_col : str
-            Column name for price data
+                if past_price == 0 or np.isnan(past_price):
+                    return None
 
-        Returns
-        -------
-        float | None
-            YTD return as percentage, None if insufficient data
-        """
-        if df.empty or len(df) < 2:
-            return None
-
-        try:
-            current_price = df[price_col].iloc[-1]
-
-            # Find first trading day of current year
-            current_year = df.index[-1].year
-            year_start_data = df[df.index.year == current_year]
-
-            if year_start_data.empty:
+                return ((current_price - past_price) / past_price) * 100
+            except (IndexError, KeyError):
                 return None
 
-            year_start_price = year_start_data[price_col].iloc[0]
+        def calculate_ytd_return(df: Any, price_col: str = \"close\") -> float | None:
+            \"\"\"Calculate Year-to-Date return.
 
-            if year_start_price == 0 or np.isnan(year_start_price):
+            Parameters
+            ----------
+            df : pd.DataFrame
+                Price data with datetime index
+            price_col : str
+                Column name for price data
+
+            Returns
+            -------
+            float | None
+                YTD return as percentage, None if insufficient data
+            \"\"\"
+            if df.empty or len(df) < 2:
                 return None
 
-            return ((current_price - year_start_price) / year_start_price) * 100
-        except (IndexError, KeyError, AttributeError):
-            return None
+            try:
+                current_price = df[price_col].iloc[-1]
 
-    def calculate_performance_metrics(
-        data: dict[str, Any],
-        ticker_names: dict[str, str],
-    ) -> Any:
-        """Calculate performance metrics for multiple symbols.
+                # Find first trading day of current year
+                current_year = df.index[-1].year
+                year_start_data = df[df.index.year == current_year]
 
-        Parameters
-        ----------
-        data : dict[str, pd.DataFrame]
-            Dictionary of symbol -> price DataFrame
-        ticker_names : dict[str, str]
-            Dictionary of symbol -> display name
+                if year_start_data.empty:
+                    return None
 
-        Returns
-        -------
-        pd.DataFrame
-            Performance table with 1D, 1W, 1M, YTD returns
-        """
-        records = []
+                year_start_price = year_start_data[price_col].iloc[0]
 
-        for symbol, df in data.items():
-            if df.empty:
-                continue
+                if year_start_price == 0 or np.isnan(year_start_price):
+                    return None
 
-            name = ticker_names.get(symbol, symbol)
-            current_price = df["close"].iloc[-1] if not df.empty else None
+                return ((current_price - year_start_price) / year_start_price) * 100
+            except (IndexError, KeyError, AttributeError):
+                return None
 
-            record = {
-                "シンボル": symbol,
-                "名称": name,
-                "現在値": current_price,
-                "1D": calculate_period_return(df, 1),
-                "1W": calculate_period_return(df, 5),
-                "1M": calculate_period_return(df, 21),
-                "YTD": calculate_ytd_return(df),
-            }
-            records.append(record)
+        def calculate_performance_metrics(
+            data: dict[str, Any],
+            ticker_names: dict[str, str],
+        ) -> Any:
+            \"\"\"Calculate performance metrics for multiple symbols.
 
-        if not records:
-            return pd.DataFrame()
+            Parameters
+            ----------
+            data : dict[str, pd.DataFrame]
+                Dictionary of symbol -> price DataFrame
+            ticker_names : dict[str, str]
+                Dictionary of symbol -> display name
 
-        return pd.DataFrame(records)
+            Returns
+            -------
+            pd.DataFrame
+                Performance table with 1D, 1W, 1M, YTD returns
+            \"\"\"
+            records = []
 
-    return (
-        calculate_performance_metrics,
-        calculate_period_return,
-        calculate_ytd_return,
-    )
+            for symbol, df in data.items():
+                if df.empty:
+                    continue
+
+                name = ticker_names.get(symbol, symbol)
+                current_price = df[\"close\"].iloc[-1] if not df.empty else None
+
+                record = {
+                    \"シンボル\": symbol,
+                    \"名称\": name,
+                    \"現在値\": current_price,
+                    \"1D\": calculate_period_return(df, 1),
+                    \"1W\": calculate_period_return(df, 5),
+                    \"1M\": calculate_period_return(df, 21),
+                    \"YTD\": calculate_ytd_return(df),
+                }
+        return records.append(record)
+
+            if not records:
+                return pd.DataFrame()
+
+            return pd.DataFrame(records)
+
+
+    _()
+    """,
+    name="_"
+)
 
 
 @app.cell
@@ -505,15 +490,7 @@ def _(
     }
 
     mo.output.clear()
-    return (
-        indices_mag7_data,
-        indices_mag7_perf,
-        metals_data,
-        metals_perf,
-        performance_data,
-        sector_data,
-        sector_perf,
-    )
+    return metals_data, performance_data, sector_data
 
 
 @app.cell
@@ -560,7 +537,6 @@ def _(mo, pd):
             )
 
         return mo.ui.table(styled_df, selection=None)
-
     return (style_performance_table,)
 
 
@@ -584,17 +560,7 @@ def _(mo, performance_data, selected_days, style_performance_table):
             metals_table,
         ]
     )
-    return (
-        indices_table,
-        metals_table,
-        performance_tab_content,
-        sector_table,
-    )
-
-
-# =============================================================================
-# Tab 2: マクロ指標
-# =============================================================================
+    return (performance_tab_content,)
 
 
 @app.cell
@@ -642,8 +608,7 @@ def _(fetch_fred_data, mo, pd, selected_period):
             mo.md(f"✓ マクロ指標データ取得完了 ({len(macro_data)} シリーズ)"),
             kind="success",
         )
-
-    return _macro_status, macro_data, macro_errors, yield_spread_df
+    return macro_data, yield_spread_df
 
 
 @app.cell
@@ -652,7 +617,6 @@ def _(fetch_stock_data_single, selected_period):
     vix_result = fetch_stock_data_single("^VIX", selected_period)
     vix_data = vix_result["data"]
     vix_error = vix_result["error"]
-
     return vix_data, vix_error
 
 
@@ -714,7 +678,6 @@ def _(go, macro_data, mo):
             mo.md("金利データの取得に失敗しました"),
             kind="danger",
         )
-
     return (interest_rates_chart,)
 
 
@@ -762,7 +725,6 @@ def _(go, mo, yield_spread_df):
             mo.md("イールドスプレッドの計算に失敗しました"),
             kind="danger",
         )
-
     return (yield_spread_chart,)
 
 
@@ -848,7 +810,6 @@ def _(go, macro_data, make_subplots, mo, vix_data, vix_error):
             mo.md("リスク指標データの取得に失敗しました:\n" + "\n".join(errors)),
             kind="danger",
         )
-
     return (vix_hy_chart,)
 
 
@@ -870,11 +831,6 @@ def _(interest_rates_chart, mo, vix_hy_chart, yield_spread_chart):
     return (tab2_content,)
 
 
-# =============================================================================
-# Tab 4: リターン分布
-# =============================================================================
-
-
 @app.cell
 def _(mo):
     """Return distribution symbol selector."""
@@ -887,7 +843,7 @@ def _(mo):
 
 
 @app.cell
-def _(MarketData, np, selected_period):
+def _(MarketData, np):
     """Calculate weekly returns with statistics."""
 
     def calculate_weekly_returns(symbol: str, period: str) -> dict | None:
@@ -962,7 +918,6 @@ def _(MarketData, np, selected_period):
             }
         except Exception:
             return None
-
     return (calculate_weekly_returns,)
 
 
@@ -1073,7 +1028,7 @@ def _(go, return_data, return_dist_symbols):
 
 
 @app.cell
-def _(mo, return_data, return_dist_symbols):
+def _(return_data, return_dist_symbols):
     """Create statistics summary table."""
 
     def create_stats_table(data: dict | None, symbol: str) -> str:
@@ -1095,20 +1050,20 @@ def _(mo, return_data, return_dist_symbols):
             return "データを取得できませんでした"
 
         table = f"""
-### {symbol} 週次リターン統計サマリー
+    ### {symbol} 週次リターン統計サマリー
 
-| 指標 | 値 |
-|------|-----|
-| サンプル数 | {data['count']} |
-| 平均（週次） | {data['mean']:.4%} |
-| 標準偏差（週次） | {data['std']:.4%} |
-| 最小値 | {data['min']:.4%} |
-| 最大値 | {data['max']:.4%} |
-| 年率リターン | {data['annualized_return']:.2%} |
-| 年率ボラティリティ | {data['annualized_vol']:.2%} |
-| 歪度 | {data['skewness']:.3f} |
-| 尖度 | {data['kurtosis']:.3f} |
-"""
+    | 指標 | 値 |
+    |------|-----|
+    | サンプル数 | {data['count']} |
+    | 平均（週次） | {data['mean']:.4%} |
+    | 標準偏差（週次） | {data['std']:.4%} |
+    | 最小値 | {data['min']:.4%} |
+    | 最大値 | {data['max']:.4%} |
+    | 年率リターン | {data['annualized_return']:.2%} |
+    | 年率ボラティリティ | {data['annualized_vol']:.2%} |
+    | 歪度 | {data['skewness']:.3f} |
+    | 尖度 | {data['kurtosis']:.3f} |
+    """
         return table
 
     stats_table_md = create_stats_table(return_data, return_dist_symbols.value)
@@ -1129,13 +1084,14 @@ def _(mo, return_dist_symbols, return_histogram_fig, stats_table_md):
     return (return_distribution_content,)
 
 
-# =============================================================================
-# Dashboard Main
-# =============================================================================
-
-
 @app.cell
-def _(mo, performance_tab_content, return_distribution_content, tab2_content, tab3_content):
+def _(
+    mo,
+    performance_tab_content,
+    return_distribution_content,
+    tab2_content,
+    tab3_content,
+):
     """Tab navigation for dashboard sections with all implemented tabs."""
     tabs_with_all = mo.ui.tabs(
         {
@@ -1158,12 +1114,7 @@ def _(mo, selected_period, tabs_with_all):
         ],
         gap=2,
     )
-    return (_dashboard,)
-
-
-# =============================================================================
-# Tab 3: 相関・ベータ分析
-# =============================================================================
+    return
 
 
 @app.cell
@@ -1207,7 +1158,12 @@ def _():
 
 @app.cell
 def _(
-    MarketData, METALS, SECTOR_ETFS, contextlib, get_date_range_from_period, pd, selected_period
+    METALS,
+    MarketData,
+    SECTOR_ETFS,
+    contextlib,
+    get_date_range_from_period,
+    selected_period,
 ):
     """Fetch data for Tab 3 analysis."""
     market_data = MarketData()
@@ -1238,8 +1194,7 @@ def _(
     usd_data = None  # DataFrame | None
     with contextlib.suppress(Exception):
         usd_data = market_data.fetch_fred("DTWEXAFEGS", start=start_date, end=end_date)
-
-    return benchmark_symbol, market_data, metals_data, sector_data, usd_data
+    return benchmark_symbol, metals_data, sector_data, usd_data
 
 
 @app.cell
@@ -1279,7 +1234,6 @@ def _(
                     rolling_betas[symbol] = beta
             except Exception:  # nosec B110 - intentional pass for graceful degradation
                 pass
-
     return rolling_betas, rolling_window, sector_returns
 
 
@@ -1345,7 +1299,7 @@ def _(go, make_subplots, rolling_betas, rolling_window):
         height=450,
         template="plotly_white",
     )
-    return colors, display_sectors, fig_beta, sector_names
+    return (fig_beta,)
 
 
 @app.cell
@@ -1415,7 +1369,7 @@ def _(go, make_subplots, rolling_window, usd_metals_correlations):
         height=400,
         template="plotly_white",
     )
-    return colors_metals, fig_usd_metals, metal_names
+    return (fig_usd_metals,)
 
 
 @app.cell
@@ -1431,7 +1385,7 @@ def _(CorrelationAnalyzer, pd, sector_returns):
         )
     else:
         correlation_matrix = pd.DataFrame()
-    return correlation_matrix, returns_df
+    return (correlation_matrix,)
 
 
 @app.cell
@@ -1462,17 +1416,11 @@ def _(HeatmapChart, correlation_matrix):
             y=0.5,
             showarrow=False,
         )
-    return fig_heatmap, heatmap_chart
+    return fig_heatmap, go
 
 
 @app.cell
-def _(
-    fig_beta,
-    fig_heatmap,
-    fig_usd_metals,
-    mo,
-    rolling_window_slider,
-):
+def _(fig_beta, fig_heatmap, fig_usd_metals, mo, rolling_window_slider):
     """Assemble Tab 3 content."""
     tab3_content = mo.vstack(
         [
