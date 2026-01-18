@@ -32,6 +32,7 @@ dependencies = [
     "statsmodels>=0.14.6",
     "scikit-learn>=1.8.0",
     "marimo>=0.19.4",
+    "nbformat>=5.10.4",
 ]
 [project.optional-dependencies]
 dev = [

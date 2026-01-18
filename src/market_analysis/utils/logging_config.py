@@ -129,7 +129,18 @@ def setup_logging(
         Whether to add caller information (file, function, line)
     force : bool
         Force reconfiguration even if already configured
+
+    Examples
+    --------
+    >>> # Suppress DEBUG/INFO logs in notebook
+    >>> from market_analysis.utils.logging_config import setup_logging
+    >>> setup_logging(level="WARNING", force=True)
     """
+    # structlog のキャッシュをリセット（force=True の場合）
+    # これにより、既にキャッシュされたロガーにも新しい設定が適用される
+    if force:
+        structlog.reset_defaults()
+
     # 環境変数からログレベルを取得
     env_level = os.environ.get("LOG_LEVEL", "").upper()
     if env_level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
@@ -184,12 +195,13 @@ def setup_logging(
         processors.append(structlog.processors.KeyValueRenderer())
 
     # structlogの設定
+    # force=True の場合はキャッシュを無効にして、新しい設定を確実に適用
     structlog.configure(
         processors=processors,
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
         wrapper_class=structlog.stdlib.BoundLogger,
-        cache_logger_on_first_use=True,
+        cache_logger_on_first_use=not force,
     )
 
     # 標準ライブラリのloggingも設定
@@ -242,6 +254,11 @@ def get_logger(name: str, **context: Any) -> BoundLogger:
     >>> logger = get_logger(__name__, module="data_processor", version="1.0")
     >>> logger.error("Processing failed", error_type="ValidationError")
     """
+    # structlog が未設定の場合は自動的に初期化
+    # これにより、stdlib.LoggerFactory が使われ、filter_by_level が正しく動作する
+    if not structlog.is_configured():
+        setup_logging()
+
     logger: BoundLogger = structlog.get_logger(name)
 
     if context:

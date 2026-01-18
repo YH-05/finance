@@ -9,11 +9,14 @@ description: GitHub Issue とタスクの管理・同期を行う
 > - 開発キックオフ・設計ドキュメント作成 → `/new-project`
 > - 品質チェック・自動修正 → `/ensure-quality`
 
-**目的**: GitHub Issues と project.md の双方向同期、タスク分解、類似 Issue の判定
+**目的**: GitHub Issues と project.md の双方向同期、タスク分解、類似 Issue の判定、クイックチケット発行
 
 ## コマンド構文
 
 ```bash
+# クイックチケット発行モード（新規）
+/issue --add <要件を自然言語で簡単に記述>
+
 # パッケージ開発モード
 /issue @src/<library_name>/docs/project.md
 
@@ -21,7 +24,228 @@ description: GitHub Issue とタスクの管理・同期を行う
 /issue @docs/project/<project-slug>.md
 ```
 
+---
+
+## クイックチケット発行モード（--add）
+
+`/issue --add` は、小さな Issue を素早く作成するためのモードです。
+自然言語で要件を簡単に記述するだけで、Claude Code が詳細を対話的にヒアリングし、Issue を作成します。
+
+### 使用例
+
+```bash
+/issue --add ログイン画面にパスワードリセット機能を追加したい
+/issue --add RSSフィードの取得でタイムアウトエラーが出る
+/issue --add market_analysisのREADMEを更新
+```
+
+### クイックチケット発行フロー
+
+#### ステップ Q1: 引数の解析
+
+1. `--add` フラグの存在を確認
+2. フラグ以降のテキストを「要件概要」として抽出
+3. 要件概要が空の場合はエラー:
+   ```text
+   エラー: 要件を指定してください。
+
+   使用例:
+   /issue --add ログイン画面にパスワードリセット機能を追加したい
+   ```
+
+#### ステップ Q2: GitHub Project の選択
+
+AskUserQuestion で対象プロジェクトを選択:
+
+```yaml
+questions:
+  - question: "どの GitHub Project に Issue を追加しますか？"
+    header: "Project"
+    multiSelect: false
+    options:
+      - label: "Project なし"
+        description: "GitHub Project に紐付けない"
+      - label: "Project 番号を指定"
+        description: "番号を入力して指定"
+```
+
+**「Project 番号を指定」を選択した場合**:
+追加の質問で番号を取得（Other を使用して自由入力）
+
+#### ステップ Q3: 詳細定義のヒアリング
+
+Claude Code が要件概要を分析し、以下の項目を AskUserQuestion で順次確認:
+
+##### 質問 1: Issue の種類
+
+```yaml
+questions:
+  - question: "「{要件概要}」はどのような Issue ですか？"
+    header: "種類"
+    multiSelect: false
+    options:
+      - label: "新機能の追加 (Recommended)"
+        description: "これまでなかった機能を新規追加"
+      - label: "既存機能の改善"
+        description: "既存機能の拡張・強化・UX改善"
+      - label: "バグ修正"
+        description: "不具合・エラーの修正"
+      - label: "リファクタリング"
+        description: "動作を変えずにコード品質を改善"
+```
+
+※ Claude Code が要件概要から最も適切と判断したオプションに「(Recommended)」を付与
+
+##### 質問 2: 対象パッケージ/コンポーネント
+
+```yaml
+questions:
+  - question: "どのパッケージ/コンポーネントに関連しますか？"
+    header: "対象"
+    multiSelect: true
+    options:
+      - label: "finance (コア)"
+        description: "共通基盤・ユーティリティ"
+      - label: "market_analysis"
+        description: "市場データ取得・分析"
+      - label: "rss"
+        description: "RSSフィード監視"
+      - label: "factor"
+        description: "ファクター分析"
+```
+
+※ オプションはリポジトリの `src/` 配下のパッケージから動的に生成
+
+##### 質問 3: 優先度
+
+```yaml
+questions:
+  - question: "この Issue の優先度は？"
+    header: "優先度"
+    multiSelect: false
+    options:
+      - label: "High（すぐに必要）"
+        description: "ブロッカーまたは緊急"
+      - label: "Medium（次のリリースまでに）(Recommended)"
+        description: "通常の優先度"
+      - label: "Low（将来的に）"
+        description: "余裕があれば対応"
+```
+
+##### 質問 4: 追加の詳細
+
+```yaml
+questions:
+  - question: "追加で伝えたい詳細はありますか？（なければスキップ）"
+    header: "詳細"
+    multiSelect: false
+    options:
+      - label: "特になし"
+        description: "要件概要で十分"
+      - label: "詳細を追加"
+        description: "背景や具体的な要件を追記"
+```
+
+**「詳細を追加」を選択した場合**:
+Other を使用して自由入力を受け付ける
+
+#### ステップ Q4: Issue 内容の生成と確認
+
+Claude Code が収集した情報から Issue の内容を生成:
+
+```markdown
+## Issue プレビュー
+
+**タイトル**: [生成されたタイトル（日本語）]
+
+**ラベル**: enhancement, priority:medium, market_analysis
+
+**本文**:
 ## 概要
+[要件概要を整理した説明]
+
+## 詳細
+[ヒアリングで得た追加情報]
+
+## 受け入れ条件
+- [ ] [種類に応じた標準条件1]
+- [ ] [種類に応じた標準条件2]
+- [ ] make check-all が成功する
+```
+
+AskUserQuestion で確認:
+
+```yaml
+questions:
+  - question: "この内容で Issue を作成してよいですか？"
+    header: "確認"
+    multiSelect: false
+    options:
+      - label: "作成する (Recommended)"
+        description: "この内容で Issue を作成"
+      - label: "タイトルを修正"
+        description: "タイトルを変更してから作成"
+      - label: "キャンセル"
+        description: "Issue を作成しない"
+```
+
+#### ステップ Q5: Issue の作成
+
+```bash
+# Issue 作成
+gh issue create \
+  --title "[タイトル]" \
+  --body "[本文]" \
+  --label "[ラベル1,ラベル2]"
+
+# GitHub Project への追加（指定された場合）
+gh project item-add {project_number} --owner @me --url {issue_url}
+```
+
+#### ステップ Q6: 結果表示
+
+```markdown
+## Issue を作成しました
+
+- **Issue**: [#番号](URL)
+- **タイトル**: [タイトル]
+- **ラベル**: enhancement, priority:medium
+- **Project**: #6 に追加済み
+
+### 次のステップ
+
+- 実装を開始: `/issue-implement {番号}`
+- 詳細を追記: `gh issue edit {番号} --body "..."`
+- project.md と同期: `/issue @docs/project/xxx.md`
+```
+
+### ラベル自動判定（クイックモード）
+
+| 種類 | 自動付与ラベル |
+|------|----------------|
+| 新機能の追加 | `enhancement` |
+| 既存機能の改善 | `enhancement` |
+| バグ修正 | `bug` |
+| リファクタリング | `refactor` |
+
+| 優先度 | 自動付与ラベル |
+|--------|----------------|
+| High | `priority:high` |
+| Medium | `priority:medium` |
+| Low | `priority:low` |
+
+### 受け入れ条件テンプレート（種類別）
+
+| 種類 | 標準受け入れ条件 |
+|------|------------------|
+| 新機能の追加 | ユニットテストが追加されている, 機能が正常に動作する |
+| 既存機能の改善 | 既存テストが通る, 改善内容が動作する |
+| バグ修正 | バグが再現しなくなる, リグレッションテストが追加されている |
+| リファクタリング | 既存テストが全て通る, 動作に変更がない |
+
+---
+
+## 概要（従来モード）
 
 1. GitHub Issues と project.md を読み込み、現状を把握
 2. ユーザー入力または外部ファイルから新規タスクを収集
@@ -35,8 +259,17 @@ description: GitHub Issue とタスクの管理・同期を行う
 
 ## ステップ 0: 引数解析とモード判定
 
-1. `@` で指定されたパスを解析する
-2. パス形式に応じてモードを判定:
+1. 引数を解析する
+2. 引数形式に応じてモードを判定:
+
+### パターン Q: クイックチケット発行モード（--add）
+
+- パターン: `--add <要件概要>`
+- 判定: 引数が `--add` で始まる場合
+- 抽出: `--add` 以降のテキストを「要件概要」として取得
+- 例: `--add ログイン画面にパスワードリセット機能を追加` → `要件概要 = "ログイン画面にパスワードリセット機能を追加"`
+- 設定: `mode = "quick_add"`
+- **処理**: 「クイックチケット発行モード（--add）」セクションのフローを実行し、従来モードのステップはスキップ
 
 ### パターン A: パッケージ開発モード
 
@@ -62,6 +295,7 @@ description: GitHub Issue とタスクの管理・同期を行う
 エラー: 引数の形式が正しくありません。
 
 使用例:
+- クイックチケット: /issue --add ログイン画面にパスワードリセット機能を追加
 - パッケージ開発: /issue @src/<library_name>/docs/project.md
 - 軽量プロジェクト: /issue @docs/project/<project-slug>.md
 ```
