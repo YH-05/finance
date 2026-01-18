@@ -2,12 +2,12 @@
 
 このガイドは、テーマ別ニュース収集エージェント（finance-news-{theme}）の共通処理を定義します。
 
-## 共通設定ファイル
+## 共通設定
 
-- **テーマ設定**: `data/config/finance-news-themes.json`
 - **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.yml`
 - **GitHub Project**: #15 (`PVT_kwHOBoK6AM4BMpw_`)
 - **Statusフィールド**: `PVTSSF_lAHOBoK6AM4BMpw_zg739ZE`
+- **公開日時フィールド**: `PVTF_lAHOBoK6AM4BMpw_zg8BzrI`（Date型、ソート用）
 
 ## Phase 1: 初期化
 
@@ -20,114 +20,65 @@
     ↓ エラーの場合
     エラーログ出力 → 処理中断
 
-[2] テーマ設定読み込み
-    ↓
-    data/config/finance-news-themes.json を読み込む
-    themes["{theme}"] セクションを取得
-    ↓ エラーの場合
-    エラーログ出力 → 処理中断
-
-[3] 統計カウンタ初期化
+[2] 統計カウンタ初期化
     ↓
     processed = 0
     matched = 0
-    excluded = 0
     duplicates = 0
     created = 0
     failed = 0
 ```
 
-## Phase 2: フィルタリング
+## Phase 2: AI判断によるテーマ分類
 
-### ステップ2.0: フィードフィルタリング（CNBC限定）
+**重要**: キーワードマッチングは使用しません。**AIが記事の内容を読み取り、テーマに該当するか判断**します。
 
-各テーマエージェントは、`finance-news-themes.json` で指定された対象フィードからのみ記事を処理します。
+### ステップ2.1: AI判断によるテーマ判定
 
-```python
-def filter_by_feeds(items: list[dict], theme: dict) -> list[dict]:
-    """対象フィードからの記事のみをフィルタリング"""
+各記事について、タイトルと要約（summary）を読み取り、以下の基準でテーマに該当するか判断します。
 
-    target_feeds = set(theme.get('feeds', []))
+**テーマ別判定基準**:
 
-    if not target_feeds:
-        # feeds未設定の場合は全記事を対象
-        return items
+| テーマ | 判定基準 |
+|--------|----------|
+| **Index** | 株価指数（日経平均、TOPIX、S&P500、ダウ、ナスダック等）の動向、市場全体の上昇/下落、ETF関連 |
+| **Stock** | 個別企業の決算発表、業績予想、M&A、買収、提携、株式公開、経営陣の変更 |
+| **Sector** | 特定業界（銀行、保険、自動車、半導体、ヘルスケア、エネルギー等）の動向、規制変更 |
+| **Macro** | 金融政策（金利、量的緩和）、中央銀行（Fed、日銀、ECB）、経済指標（GDP、CPI、雇用統計）、為替 |
+| **AI** | AI技術、機械学習、生成AI、AI企業（OpenAI、NVIDIA等）、AI投資、AI規制 |
 
-    filtered = []
-    for item in items:
-        feed_id = item.get('feed_id', '')
-        if feed_id in target_feeds:
-            filtered.append(item)
+**判定プロセス**:
 
-    return filtered
 ```
-
-**対象フィード設定**（`data/config/finance-news-themes.json`）:
-
-| テーマ | 対象CNBCフィード |
-|--------|-----------------|
-| index | Markets, Investing |
-| stock | Earnings, Business |
-| sector | Finance, Health Care, Autos, Energy, Retail |
-| macro | Economy, World News, Asia News, Europe News |
-| ai | Technology |
-
-**処理フロー**:
-```
-[1] 一時ファイルから全記事を取得
+[1] 記事のタイトルと要約を読む
     ↓
-[2] フィードフィルタリング（対象CNBCフィードのみ抽出）
+[2] 記事の主題を理解する
     ↓
-[3] テーマキーワードマッチング
+[3] 上記テーマ判定基準に照らして該当するか判断
     ↓
-[4] 除外キーワードチェック
-    ↓
-[5] 重複チェック
+[4] 該当する場合 → Phase 2.2へ
+    該当しない場合 → スキップ
 ```
 
-### ステップ2.1: テーマキーワードマッチング
+**判定例**:
 
-```python
-def matches_theme_keywords(item: dict, theme: dict) -> tuple[bool, list[str]]:
-    """テーマのキーワードにマッチするかチェック"""
+| 記事タイトル | AIの判断 | テーマ |
+|------------|---------|--------|
+| "S&P 500 hits new record high amid tech rally" | 株価指数の動向について → 該当 | Index |
+| "Fed signals rate cut in March meeting" | 金融政策・中央銀行の動向 → 該当 | Macro |
+| "Apple reports Q4 earnings beat" | 個別企業の決算発表 → 該当 | Stock |
+| "Banks face new capital requirements" | 銀行セクターの規制 → 該当 | Sector |
+| "OpenAI launches new model capabilities" | AI企業の動向 → 該当 | AI |
+| "Celebrity launches new clothing line" | 金融・経済と無関係 → 非該当 | - |
 
-    # 検索対象テキスト
-    text = f"{item['title']} {item.get('summary', '')} {item.get('content', '')}".lower()
+### ステップ2.2: 除外判断
 
-    # キーワードマッチング（単語境界認識）
-    matched_keywords = []
-    for keyword in theme['keywords']['include']:
-        # 単語境界パターン（\b）を使用
-        pattern = r'\b' + re.escape(keyword.lower()) + r'\b'
-        if re.search(pattern, text, re.IGNORECASE):
-            matched_keywords.append(keyword)
+以下のカテゴリに該当する記事は除外します（金融テーマに関連する場合を除く）:
 
-    # 最低マッチ数チェック
-    min_matches = theme['min_keyword_matches']
-    is_match = len(matched_keywords) >= min_matches
-
-    return is_match, matched_keywords
-```
-
-### ステップ2.2: 除外キーワードチェック
-
-```python
-def is_excluded(item: dict, common: dict, theme: dict) -> bool:
-    """除外対象かチェック"""
-
-    text = f"{item['title']} {item.get('summary', '')}".lower()
-
-    # 除外キーワードチェック
-    for category, keywords in common['exclude_keywords'].items():
-        for keyword in keywords:
-            if keyword.lower() in text:
-                # 金融キーワードも含む場合は除外しない
-                is_match, _ = matches_theme_keywords(item, theme)
-                if not is_match:
-                    return True
-
-    return False
-```
+- **スポーツ**: 試合結果、選手移籍など（ただし、スポーツ関連企業の決算等は対象）
+- **エンターテインメント**: 映画、音楽、芸能ニュース
+- **政治**: 選挙、内閣関連（ただし、金融政策・規制に関連する場合は対象）
+- **一般ニュース**: 事故、災害、犯罪
 
 ### ステップ2.3: 重複チェック
 
@@ -221,24 +172,54 @@ def generate_japanese_summary(content: str, max_length: int = 400) -> str:
 
     summary = generate_summary(prompt)
     return summary
+```
+
+### ステップ3.1: 公開日時のISO形式変換
+
+**重要**: GitHub Projectでソートするため、公開日時をISO 8601形式に変換します。
+
+```python
+from datetime import datetime, timezone
+import pytz
 
 
-def format_published_jst(published_str: str) -> str:
-    """公開日をJST YYYY-MM-DD HH:MM形式に変換"""
+def format_published_iso(published_str: str | None) -> str:
+    """公開日をISO 8601形式に変換（YYYY-MM-DD）"""
 
-    from datetime import datetime
-    import pytz
+    if not published_str:
+        # 公開日がない場合は現在日時を使用
+        return datetime.now(timezone.utc).strftime('%Y-%m-%d')
 
-    dt = datetime.fromisoformat(published_str.replace('Z', '+00:00'))
+    try:
+        dt = datetime.fromisoformat(published_str.replace('Z', '+00:00'))
+    except ValueError:
+        # パース失敗時は現在日時を使用
+        dt = datetime.now(timezone.utc)
+
+    # Date型フィールドはYYYY-MM-DD形式
+    return dt.strftime('%Y-%m-%d')
+
+
+def format_published_jst(published_str: str | None) -> str:
+    """公開日をJST YYYY-MM-DD HH:MM形式に変換（Issue本文用）"""
+
     jst = pytz.timezone('Asia/Tokyo')
-    dt_jst = dt.astimezone(jst)
 
+    if not published_str:
+        # 公開日がない場合は現在日時を使用
+        return datetime.now(jst).strftime('%Y-%m-%d %H:%M')
+
+    try:
+        dt = datetime.fromisoformat(published_str.replace('Z', '+00:00'))
+    except ValueError:
+        # パース失敗時は現在日時を使用
+        dt = datetime.now(timezone.utc)
+
+    dt_jst = dt.astimezone(jst)
     return dt_jst.strftime('%Y-%m-%d %H:%M')
 ```
 
-### ステップ3.1: Issue作成
-
-**Issueテンプレート** (`.github/ISSUE_TEMPLATE/news-article.yml`) に準拠した形式で作成:
+### ステップ3.2: Issue作成
 
 **重要: Issueタイトルの日本語化ルール**:
 1. **タイトル形式**: `[{theme_ja}] {japanese_title}`
@@ -274,13 +255,13 @@ gh issue create \
 ### 備考・メモ
 
 - テーマ: {theme_name}
-- マッチキーワード: {matched_keywords}
+- AI判定理由: {判定理由を簡潔に記載}
 EOF
 )" \
     --label "news"
 ```
 
-### ステップ3.2: Project追加
+### ステップ3.3: Project追加
 
 ```bash
 gh project item-add 15 \
@@ -288,7 +269,7 @@ gh project item-add 15 \
     --url {issue_url}
 ```
 
-### ステップ3.3: Status設定（GraphQL API）
+### ステップ3.4: Status設定（GraphQL API）
 
 **Step 1: Issue Node IDを取得**
 
@@ -345,6 +326,43 @@ mutation {
 }'
 ```
 
+**⚠️ 注意: ステップ3.4完了後、必ず続けてステップ3.5（公開日時設定）を実行すること！**
+
+### ステップ3.5: 公開日時フィールドを設定（Date型）【必須・最重要】
+
+> **🚨 絶対に省略しないでください！🚨**
+>
+> このステップを省略すると、GitHub Projectで「No date」と表示され、
+> 記事の時系列管理ができなくなります。
+
+**⚠️ 必須**: このステップを省略するとGitHub Projectで「No date」と表示されます。
+**⚠️ 必須**: Issue作成後、Status設定と共に必ず実行すること。
+**⚠️ 確認**: 実行後、GitHub Project上で日付が正しく表示されていることを確認すること。
+
+GitHub ProjectでIssueを公開日時でソートするため、必ず設定してください。
+
+```bash
+gh api graphql -f query='
+mutation {
+  updateProjectV2ItemFieldValue(
+    input: {
+      projectId: "PVT_kwHOBoK6AM4BMpw_"
+      itemId: "{project_item_id}"
+      fieldId: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
+      value: {
+        date: "{published_iso}"
+      }
+    }
+  ) {
+    projectV2Item {
+      id
+    }
+  }
+}'
+```
+
+**日付形式**: `YYYY-MM-DD`（例: `2026-01-15`）
+
 ## Phase 4: 結果報告
 
 ### 統計サマリー出力フォーマット
@@ -354,8 +372,7 @@ mutation {
 
 ### 処理統計
 - **処理記事数**: {processed}件
-- **テーママッチ**: {matched}件
-- **除外**: {excluded}件
+- **テーママッチ**: {matched}件（AI判断）
 - **重複**: {duplicates}件
 - **新規投稿**: {created}件
 - **投稿失敗**: {failed}件
@@ -364,13 +381,27 @@ mutation {
 
 1. **{title}** [#{issue_number}]
    - ソース: {source}
+   - 公開日時: {published_jst}
+   - AI判定理由: {判定理由}
    - URL: https://github.com/YH-05/finance/issues/{issue_number}
-
-### 除外されたニュース
-- スポーツ関連: {sports_count}件
-- エンタメ関連: {entertainment_count}件
-- テーマ不一致: {mismatch_count}件
 ```
+
+## テーマ別Status ID一覧
+
+| テーマ | Status名 | Option ID |
+|--------|----------|-----------|
+| index | Index | `f75ad846` |
+| stock | Stock | `47fc9ee4` |
+| sector | Sector | `98236657` |
+| macro | Macro Economics | `c40731f6` |
+| ai | AI | `17189c86` |
+
+## GitHub Projectフィールド一覧
+
+| フィールド名 | フィールドID | 型 | 用途 |
+|-------------|-------------|-----|------|
+| Status | `PVTSSF_lAHOBoK6AM4BMpw_zg739ZE` | SingleSelect | テーマ分類 |
+| 公開日時 | `PVTF_lAHOBoK6AM4BMpw_zg8BzrI` | Date | ソート用 |
 
 ## 共通エラーハンドリング
 
@@ -389,23 +420,7 @@ except json.JSONDecodeError as e:
     sys.exit(1)
 ```
 
-### E002: テーマ設定読み込みエラー
-
-```python
-try:
-    with open("data/config/finance-news-themes.json") as f:
-        config = json.load(f)
-    theme = config['themes']['{theme}']
-    common = config['common']
-except FileNotFoundError:
-    ログ出力: "エラー: テーマ設定ファイルが見つかりません"
-    sys.exit(1)
-except KeyError:
-    ログ出力: "エラー: '{theme}' テーマが定義されていません"
-    sys.exit(1)
-```
-
-### E003: Issue作成エラー
+### E002: Issue作成エラー
 
 ```python
 try:
@@ -426,7 +441,7 @@ except subprocess.CalledProcessError as e:
     continue
 ```
 
-### E004: Status設定エラー
+### E003: 公開日時設定エラー
 
 ```python
 try:
@@ -437,31 +452,14 @@ try:
         check=True
     )
 except subprocess.CalledProcessError as e:
-    ログ出力: f"警告: Status設定失敗: Issue #{issue_number}"
+    ログ出力: f"警告: 公開日時設定失敗: Issue #{issue_number}"
     ログ出力: f"エラー詳細: {e.stderr}"
-    ログ出力: "Issue作成は成功しています。手動でStatusを設定してください。"
+    ログ出力: "Issue作成は成功しています。手動で公開日時を設定してください。"
     continue
 ```
 
-### E005: ネットワークエラー
-
-- リトライロジック（最大3回、指数バックオフ）
-- エラーログ記録
-- 処理継続（失敗した記事をスキップ）
-
-## テーマ別Status ID一覧
-
-| テーマ | Status名 | Option ID |
-|--------|----------|-----------|
-| index | Index | `f75ad846` |
-| stock | Stock | `47fc9ee4` |
-| sector | Sector | `98236657` |
-| macro | Macro | `c40731f6` |
-| ai | AI | `17189c86` |
-
 ## 参考資料
 
-- **テーマ設定**: `data/config/finance-news-themes.json`
 - **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.yml`
 - **オーケストレーター**: `.claude/agents/finance-news-orchestrator.md`
 - **コマンド**: `.claude/commands/collect-finance-news.md`

@@ -52,7 +52,8 @@ Phase 3: GitHub投稿（このエージェントが直接実行）
 ├── 記事内容取得と要約生成
 ├── Issue作成（gh issue create）
 ├── Project 15に追加（gh project item-add）
-└── Status設定（GraphQL API）
+├── Status設定（GraphQL API）
+└── 公開日時設定（GraphQL API）【必須】
 
 Phase 4: 結果報告
 └── 統計サマリー出力
@@ -158,6 +159,48 @@ mutation {
     }
   }
 }'
+```
+
+#### ステップ3.4: 公開日時フィールドを設定（Date型）【必須】
+
+**⚠️ このステップを省略するとGitHub Projectで「No date」と表示されます。**
+
+```bash
+# 公開日時をYYYY-MM-DD形式で設定
+gh api graphql -f query='
+mutation {
+  updateProjectV2ItemFieldValue(
+    input: {
+      projectId: "PVT_kwHOBoK6AM4BMpw_"
+      itemId: "{project_item_id}"
+      fieldId: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
+      value: {
+        date: "{published_iso}"
+      }
+    }
+  ) {
+    projectV2Item {
+      id
+    }
+  }
+}'
+```
+
+**日付形式**: `YYYY-MM-DD`（例: `2026-01-15`）
+
+**日付変換ロジック**:
+```python
+from datetime import datetime, timezone
+
+def format_published_iso(published_str: str | None) -> str:
+    """公開日をISO 8601形式に変換（YYYY-MM-DD）"""
+    if not published_str:
+        return datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    try:
+        dt = datetime.fromisoformat(published_str.replace('Z', '+00:00'))
+    except ValueError:
+        dt = datetime.now(timezone.utc)
+    return dt.strftime('%Y-%m-%d')
 ```
 
 ### エラーハンドリング
