@@ -21,17 +21,20 @@ uv sync --all-extras
 ### 基本的な使い方
 
 ```python
-from strategy import RiskCalculator, ResultFormatter
+from strategy import RiskCalculator, ResultFormatter, get_logger
 import pandas as pd
 
-# 1. リターンデータを準備
+# 1. ログ設定
+logger = get_logger(__name__)
+
+# 2. リターンデータを準備
 returns = pd.Series([0.01, -0.02, 0.03, 0.01, -0.01])
 
-# 2. リスク指標を計算
+# 3. リスク指標を計算
 calculator = RiskCalculator(returns, risk_free_rate=0.02)
 result = calculator.calculate()
 
-# 3. 結果をフォーマット
+# 4. 結果をフォーマット
 formatter = ResultFormatter()
 df = formatter.to_dataframe(result)
 print(df)
@@ -62,26 +65,19 @@ markdown = formatter.to_markdown(metrics)
 print(markdown)
 ```
 
-#### ユースケース2: 結果のエクスポート
+#### ユースケース2: チャート生成
 
 ```python
-from strategy import RiskCalculator, ResultFormatter
+from strategy import ChartGenerator
+from strategy.portfolio import Portfolio
 
-# リスク指標を計算
-calculator = RiskCalculator(returns)
-result = calculator.calculate()
+# ポートフォリオを作成
+portfolio = Portfolio([("VOO", 0.6), ("BND", 0.4)])
 
-# 様々な形式で出力
-formatter = ResultFormatter()
-
-# DataFrame形式
-df = formatter.to_dataframe(result)
-
-# 辞書形式（JSON互換）
-data_dict = formatter.to_dict(result)
-
-# Markdown形式（レポート用）
-markdown = formatter.to_markdown(result)
+# チャート生成
+generator = ChartGenerator(portfolio=portfolio)
+fig = generator.plot_allocation()
+fig.show()  # または fig.write_html("chart.html")
 ```
 <!-- END: QUICKSTART -->
 
@@ -96,7 +92,7 @@ strategy/
 ├── types.py                          # 型定義
 ├── errors.py                         # エラー定義
 ├── portfolio.py                      # ポートフォリオ定義
-├── core/                             # コアモジュール
+├── core/                             # コアモジュール（未実装）
 │   └── __init__.py
 ├── risk/                             # リスク計算モジュール
 │   ├── __init__.py
@@ -105,6 +101,9 @@ strategy/
 ├── output/                           # 出力フォーマッタ
 │   ├── __init__.py
 │   └── formatter.py                  # ResultFormatter
+├── visualization/                    # チャート生成
+│   ├── __init__.py
+│   └── charts.py                     # ChartGenerator
 ├── rebalance/                        # リバランス分析
 │   ├── __init__.py
 │   ├── rebalancer.py                 # Rebalancer
@@ -113,39 +112,31 @@ strategy/
 │   ├── __init__.py
 │   ├── protocol.py                   # DataProvider
 │   └── market_analysis.py            # MarketAnalysisProvider
-├── utils/                            # ユーティリティ
-│   ├── __init__.py
-│   └── logging_config.py             # 構造化ロギング設定
-└── docs/                             # ドキュメント
-    ├── architecture.md
-    ├── development-guidelines.md
-    ├── functional-design.md
-    ├── glossary.md
-    ├── library-requirements.md
-    ├── project.md
-    ├── repository-structure.md
-    └── tasks.md
+└── utils/                            # ユーティリティ
+    ├── __init__.py
+    └── logging_config.py             # 構造化ロギング設定
 ```
 <!-- END: STRUCTURE -->
 
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 ## 実装状況
 
-| モジュール      | 状態      | ファイル数 | 行数 | テスト |
-| --------------- | --------- | ---------- | ---- | ------ |
-| `types.py`      | ✅ 実装済み | 1          | 278  | 1      |
-| `errors.py`     | ✅ 実装済み | 1          | 29   | 1      |
-| `portfolio.py`  | ✅ 実装済み | 1          | 142  | 1      |
-| `risk/`         | ✅ 実装済み | 3          | 746  | 3      |
-| `output/`       | ✅ 実装済み | 2          | 447  | 1      |
-| `rebalance/`    | ✅ 実装済み | 3          | 308  | 2      |
-| `providers/`    | ✅ 実装済み | 3          | 484  | 3      |
-| `utils/`        | ✅ 実装済み | 2          | 367  | 0      |
-| `core/`         | ⏳ 未実装  | 1          | 3    | 0      |
+| モジュール         | 状態        | ファイル数 | 行数  |
+| ------------------ | ----------- | ---------- | ----- |
+| `types.py`         | ✅ 実装済み | 1          | 277   |
+| `errors.py`        | ✅ 実装済み | 1          | 303   |
+| `portfolio.py`     | ✅ 実装済み | 1          | 394   |
+| `risk/`            | ✅ 実装済み | 3          | 990   |
+| `output/`          | ✅ 実装済み | 2          | 447   |
+| `visualization/`   | ✅ 実装済み | 2          | 424   |
+| `rebalance/`       | ✅ 実装済み | 3          | 308   |
+| `providers/`       | ✅ 実装済み | 3          | 484   |
+| `utils/`           | ✅ 実装済み | 2          | 367   |
+| `core/`            | ⏳ 未実装   | 1          | 3     |
 
 **ステータス説明:**
 
-- **✅ 実装済み**: コア機能が実装され、テスト構造が整備されている
+- **✅ 実装済み**: コア機能が実装され、テストが整備されている
 - **⏳ 未実装**: 初期化のみで実装が進行していない
 <!-- END: IMPLEMENTATION -->
 
@@ -157,8 +148,11 @@ strategy/
 パッケージの基本的な使い方:
 
 ```python
-from strategy import RiskCalculator, ResultFormatter
+from strategy import RiskCalculator, ResultFormatter, get_logger
 import pandas as pd
+
+# ログ設定
+logger = get_logger(__name__)
 
 # リスク指標の計算
 calculator = RiskCalculator(returns=pd.Series([0.01, -0.02, 0.03]))
@@ -170,6 +164,62 @@ print(formatter.to_markdown(result))
 ```
 
 ### 主要クラス
+
+#### `ChartGenerator`
+
+**説明**: ポートフォリオ可視化用のチャート生成クラス（Plotly使用）
+
+**基本的な使い方**:
+
+```python
+from strategy import ChartGenerator
+from strategy.portfolio import Portfolio
+
+# ポートフォリオを作成
+portfolio = Portfolio([("VOO", 0.6), ("BND", 0.4)])
+
+# チャート生成
+generator = ChartGenerator(portfolio=portfolio)
+fig = generator.plot_allocation()
+fig.show()
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `plot_allocation()` | 資産配分チャートを生成 | `plotly.graph_objects.Figure` |
+| `plot_drift()` | ドリフト分析チャートを生成 | `plotly.graph_objects.Figure` |
+
+---
+
+#### `ResultFormatter`
+
+**説明**: リスク指標結果を様々な形式に変換するフォーマッタ
+
+**基本的な使い方**:
+
+```python
+from strategy import ResultFormatter
+
+# 初期化
+formatter = ResultFormatter()
+
+# 様々な形式に変換
+df = formatter.to_dataframe(result)        # DataFrame
+data = formatter.to_dict(result)           # 辞書（JSON互換）
+markdown = formatter.to_markdown(result)   # Markdown
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `to_dataframe(result)` | DataFrame形式に変換 | `pd.DataFrame` |
+| `to_dict(result)` | 辞書形式に変換 | `dict[str, Any]` |
+| `to_markdown(result)` | Markdown形式に変換 | `str` |
+
+---
 
 #### `RiskCalculator`
 
@@ -203,36 +253,6 @@ result = calculator.calculate()
 | `max_drawdown()` | 最大ドローダウン | `float` |
 
 ---
-
-#### `ResultFormatter`
-
-**説明**: リスク指標結果を様々な形式に変換するフォーマッタ
-
-**基本的な使い方**:
-
-```python
-from strategy import ResultFormatter
-
-# 初期化
-formatter = ResultFormatter()
-
-# 様々な形式に変換
-df = formatter.to_dataframe(result)        # DataFrame
-data = formatter.to_dict(result)           # 辞書（JSON互換）
-markdown = formatter.to_markdown(result)   # Markdown
-```
-
-**主なメソッド**:
-
-| メソッド | 説明 | 戻り値 |
-|---------|------|--------|
-| `to_dataframe(result)` | DataFrame形式に変換 | `pd.DataFrame` |
-| `to_dict(result)` | 辞書形式に変換 | `dict[str, Any]` |
-| `to_markdown(result)` | Markdown形式に変換 | `str` |
-
----
-
-### データクラス
 
 #### `RiskMetricsResult`
 
@@ -279,22 +299,6 @@ from strategy import get_logger
 logger = get_logger(__name__)
 logger.info("処理開始", user_id=123)
 ```
-
----
-
-### 型定義
-
-データ構造の定義。型ヒントやバリデーションに使用:
-
-```python
-from strategy.types import (
-    AssetClass,      # 資産クラス定義
-    Holding,         # 保有銘柄
-    TickerInfo,      # ティッカー情報
-    Period,          # 分析期間
-    PresetPeriod,    # プリセット期間
-)
-```
 <!-- END: API -->
 
 <!-- AUTO-GENERATED: STATS -->
@@ -302,10 +306,10 @@ from strategy.types import (
 
 | 項目                 | 値     |
 | -------------------- | ------ |
-| Python ファイル数    | 18     |
-| 総行数（実装コード） | 3,349  |
-| モジュール数         | 6      |
-| テストファイル数     | 12     |
+| Python ファイル数    | 20     |
+| 総行数（実装コード） | 4,020  |
+| モジュール数         | 7      |
+| テストファイル数     | 13     |
 | テストカバレッジ     | N/A    |
 
 **注**: テストカバレッジは実装完了後に計測予定です。
