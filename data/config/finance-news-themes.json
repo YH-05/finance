@@ -1,175 +1,53 @@
 {
-  "version": "1.0",
+  "version": "2.0",
+  "description": "金融ニュース収集テーマ設定（AI判断方式）",
   "themes": {
     "index": {
+      "name": "Index",
+      "name_ja": "株価指数",
       "github_status_id": "f75ad846",
-      "feeds": [
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c04",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c05"
-      ],
-      "feed_names": ["CNBC - Markets", "CNBC - Investing"],
-      "keywords": {
-        "include": [
-          "株価", "株式", "上場", "相場", "指数", "株高", "株安",
-          "日経平均", "TOPIX", "マザーズ", "東証", "証券取引所",
-          "S&P500", "ダウ", "ナスダック", "NYダウ",
-          "stock", "equity", "share", "index", "Nikkei", "TOPIX", "Dow", "S&P", "Nasdaq", "market"
-        ],
-        "priority_boost": [
-          "日経平均株価", "NYダウ", "TOPIX", "S&P500", "ナスダック総合指数"
-        ]
-      },
-      "min_keyword_matches": 1
+      "description": "株価指数（日経平均、TOPIX、S&P500、ダウ、ナスダック等）の動向、市場全体の上昇/下落、ETF関連"
     },
     "stock": {
+      "name": "Stock",
+      "name_ja": "個別銘柄",
       "github_status_id": "47fc9ee4",
-      "feeds": [
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c12",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c11"
-      ],
-      "feed_names": ["CNBC - Earnings", "CNBC - Business"],
-      "keywords": {
-        "include": [
-          "決算", "業績", "売上高", "営業利益", "純利益",
-          "EPS", "ROE", "ROA", "増収", "減益", "上方修正", "下方修正",
-          "M&A", "買収", "合併", "提携", "資本参加", "株式取得",
-          "earnings", "revenue", "profit", "guidance", "acquisition", "merger", "alliance", "stake"
-        ],
-        "priority_boost": [
-          "決算短信", "M&A", "買収", "合併", "業績予想"
-        ]
-      },
-      "min_keyword_matches": 1
+      "description": "個別企業の決算発表、業績予想、M&A、買収、提携、株式公開、経営陣の変更"
     },
     "sector": {
+      "name": "Sector",
+      "name_ja": "セクター",
       "github_status_id": "98236657",
-      "feeds": [
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c14",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c17",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20"
-      ],
-      "feed_names": ["CNBC - Finance", "CNBC - Health Care", "CNBC - Autos", "CNBC - Energy", "CNBC - Retail"],
-      "keywords": {
-        "include": [
-          "銀行", "証券", "保険", "フィンテック", "決済",
-          "金融庁", "規制", "コンプライアンス",
-          "自動車", "半導体", "エネルギー", "テクノロジー",
-          "ヘルスケア", "消費財", "産業", "セクター", "業界",
-          "bank", "securities", "insurance", "fintech", "payment",
-          "regulation", "compliance", "automotive", "semiconductor", "sector", "industry"
-        ],
-        "priority_boost": [
-          "業界再編", "セクター分析", "産業動向"
-        ]
-      },
-      "min_keyword_matches": 1
+      "description": "特定業界（銀行、保険、自動車、半導体、ヘルスケア、エネルギー等）の動向、規制変更"
     },
     "macro": {
+      "name": "Macro Economics",
+      "name_ja": "マクロ経済",
       "github_status_id": "c40731f6",
-      "feeds": [
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09",
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10"
-      ],
-      "feed_names": ["CNBC - Economy", "CNBC - World News", "CNBC - Asia News", "CNBC - Europe News"],
-      "keywords": {
-        "include": [
-          "金利", "政策金利", "量的緩和", "金融緩和", "金融引き締め",
-          "日銀", "FRB", "ECB", "中央銀行",
-          "GDP", "消費者物価指数", "CPI", "失業率", "景気動向指数",
-          "鉱工業生産", "貿易収支", "経常収支",
-          "為替", "円高", "円安", "ドル円", "通貨",
-          "interest rate", "monetary policy", "quantitative easing", "QE", "Fed", "central bank",
-          "unemployment", "PMI", "trade balance", "currency", "forex"
-        ],
-        "priority_boost": [
-          "金融政策", "経済指標", "日銀決定会合", "FOMC", "政策金利"
-        ]
-      },
-      "min_keyword_matches": 1
+      "description": "金融政策（金利、量的緩和）、中央銀行（Fed、日銀、ECB）、経済指標（GDP、CPI、雇用統計）、為替"
     },
     "ai": {
+      "name": "AI",
+      "name_ja": "AI",
       "github_status_id": "17189c86",
-      "feeds": [
-        "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08"
-      ],
-      "feed_names": ["CNBC - Technology"],
-      "keywords": {
-        "include": [
-          "AI", "人工知能", "機械学習", "ディープラーニング",
-          "ChatGPT", "生成AI", "大規模言語モデル", "LLM",
-          "OpenAI", "Google AI", "Claude", "Gemini",
-          "NVIDIA", "エヌビディア", "GPU", "半導体AI",
-          "artificial intelligence", "machine learning", "deep learning",
-          "generative AI", "neural network", "transformer"
-        ],
-        "priority_boost": [
-          "AI規制", "AI投資", "AI企業", "生成AI", "ChatGPT"
-        ]
-      },
-      "min_keyword_matches": 1
+      "description": "AI技術、機械学習、生成AI、AI企業（OpenAI、NVIDIA等）、AI投資、AI規制"
     }
   },
-  "common": {
-    "exclude_keywords": {
-      "sports": [
-        "サッカー", "野球", "バスケ", "テニス", "オリンピック",
-        "ワールドカップ", "優勝", "試合", "選手", "監督",
-        "soccer", "baseball", "basketball", "tennis", "Olympics"
-      ],
-      "entertainment": [
-        "映画", "音楽", "ドラマ", "アニメ", "芸能人",
-        "俳優", "歌手", "アイドル", "コンサート",
-        "movie", "music", "drama", "anime", "actor", "singer"
-      ],
-      "politics": [
-        "選挙", "内閣改造", "防衛", "安全保障",
-        "election", "cabinet", "defense", "security"
-      ],
-      "general": [
-        "事故", "災害", "犯罪", "裁判", "天気",
-        "accident", "disaster", "crime", "trial", "weather"
-      ]
-    },
-    "sources": {
-      "tier1": [
-        "cnbc.com",
-        "bloomberg.com",
-        "reuters.com",
-        "wsj.com",
-        "ft.com",
-        "nikkei.com",
-        "seekingalpha.com"
-      ],
-      "tier2": [
-        "asahi.com",
-        "yomiuri.co.jp",
-        "toyokeizai.net",
-        "diamond.jp",
-        "forbes.com",
-        "finance.yahoo.com",
-        "marketwatch.com",
-        "barrons.com",
-        "investopedia.com"
-      ],
-      "tier3": [
-        "techcrunch.com",
-        "theverge.com",
-        "arstechnica.com",
-        "axios.com"
-      ]
-    },
-    "filtering": {
-      "title_similarity_threshold": 0.85
-    }
+  "exclude_categories": {
+    "sports": "試合結果、選手移籍など（スポーツ関連企業の決算等は対象）",
+    "entertainment": "映画、音楽、芸能ニュース",
+    "politics": "選挙、内閣関連（金融政策・規制に関連する場合は対象）",
+    "general": "事故、災害、犯罪"
   },
   "project": {
     "project_id": "PVT_kwHOBoK6AM4BMpw_",
     "status_field_id": "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE",
+    "published_date_field_id": "PVTF_lAHOBoK6AM4BMpw_zg8BzrI",
     "owner": "YH-05",
     "number": 15
+  },
+  "filtering": {
+    "method": "ai_judgment",
+    "duplicate_similarity_threshold": 0.85
   }
 }

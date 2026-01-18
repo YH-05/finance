@@ -61,6 +61,48 @@ RSS フィードから記事を取得し、テーマ別エージェント（inde
     現在時刻からタイムスタンプを生成（YYYYMMDD-HHMMSS形式）
 ```
 
+### Phase 1.5: CNBCフィードのフェッチ（重要）
+
+**重要**: CNBCフィードは登録されているが未フェッチ状態（`last_status: "pending"`）の場合があります。
+データ取得前に必ずフェッチを実行してください。
+
+```python
+def fetch_cnbc_feeds():
+    """CNBCフィードをフェッチして最新記事を取得"""
+
+    # Step 1: 全フィードを取得
+    feeds_result = mcp__rss__list_feeds()
+    all_feeds = feeds_result.get("feeds", [])
+
+    # Step 2: CNBCフィード（未フェッチ）を識別
+    cnbc_pending = [
+        f for f in all_feeds
+        if "cnbc.com" in f.get("url", "")
+        and f.get("last_status") == "pending"
+    ]
+
+    ログ出力: f"CNBCフィード（未フェッチ）: {len(cnbc_pending)}件"
+
+    # Step 3: 各フィードをフェッチ
+    fetched_count = 0
+    for feed in cnbc_pending:
+        try:
+            result = mcp__rss__fetch_feed(feed_id=feed["feed_id"])
+            if result.get("success"):
+                fetched_count += 1
+                ログ出力: f"フェッチ成功: {feed['title']} ({result.get('new_items', 0)}件)"
+        except Exception as e:
+            ログ出力: f"警告: {feed['title']} フェッチ失敗: {e}"
+            continue
+
+    ログ出力: f"CNBCフェッチ完了: {fetched_count}/{len(cnbc_pending)}件"
+    return fetched_count
+
+
+# Phase 2の前に実行
+fetch_cnbc_feeds()
+```
+
 ### Phase 2: データ収集
 
 #### ステップ 2.1: RSS 記事取得
@@ -292,6 +334,11 @@ gh issue list \
 ### 次のステップ
 テーマ別エージェント（finance-news-{theme}）を並列起動してください。
 各エージェントは一時ファイルを読み込み、テーマごとにフィルタリング・投稿を行います。
+
+### ⚠️ 重要: 公開日時設定について
+各テーマ別エージェントは、Issue作成後に**必ず公開日時フィールドを設定**してください。
+この手順を省略すると、GitHub Projectで「No date」と表示されます。
+詳細: `.claude/agents/finance_news_collector/common-processing-guide.md` のステップ3.5を参照
 ```
 
 ## エラーハンドリング
