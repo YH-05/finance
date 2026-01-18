@@ -290,6 +290,52 @@ class MarketData:
 
         return pd.DataFrame(all_rows)
 
+    def _convert_fred_to_long_format(
+        self,
+        results: list[Any],
+    ) -> pd.DataFrame:
+        """Convert multiple FRED results to long format.
+
+        Parameters
+        ----------
+        results : list[Any]
+            List of MarketDataResult objects from FRED
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with columns: date, series_id, field, value
+        """
+        all_rows = []
+
+        for result in results:
+            if result.is_empty:
+                continue
+
+            df = result.data.copy()
+            series_id = result.symbol
+
+            # Reset index to get date as column
+            if hasattr(df.index, "strftime"):
+                df = df.reset_index()
+                date_col = df.columns[0]
+                df = df.rename(columns={date_col: "date"})
+
+            # FRED data typically has 'close' column containing the value
+            # Convert to long format with 'value' as the field name
+            if "close" in df.columns:
+                for _, row in df.iterrows():
+                    all_rows.append(
+                        {
+                            "date": row["date"],
+                            "series_id": series_id,
+                            "field": "value",
+                            "value": row["close"],
+                        }
+                    )
+
+        return pd.DataFrame(all_rows)
+
     def fetch_stock(
         self,
         symbol: str | list[str],
@@ -486,7 +532,7 @@ class MarketData:
 
     def fetch_fred(
         self,
-        series_id: str,
+        series_id: str | list[str],
         start: datetime | str | None = None,
         end: datetime | str | None = None,
     ) -> pd.DataFrame:
@@ -494,8 +540,9 @@ class MarketData:
 
         Parameters
         ----------
-        series_id : str
+        series_id : str | list[str]
             FRED series ID (e.g., "DGS10", "GDP", "CPIAUCSL")
+            or list of series IDs (e.g., ["DGS10", "GDP", "CPIAUCSL"])
         start : datetime | str | None
             Start date (default: 1 year ago)
         end : datetime | str | None
@@ -504,7 +551,9 @@ class MarketData:
         Returns
         -------
         pd.DataFrame
-            Economic indicator data
+            - For single series_id (str): OHLCV-like data with 'close' column
+            - For multiple series_ids (list): Long format with columns:
+              date, series_id, field, value
 
         Raises
         ------
@@ -516,17 +565,28 @@ class MarketData:
         Examples
         --------
         >>> data = MarketData()
+        >>> # Single series_id returns OHLCV-like format
         >>> df = data.fetch_fred("DGS10", start="2024-01-01")
-        >>> "close" in df.columns  # FRED data is normalized to OHLCV format
+        >>> "close" in df.columns
         True
+        >>> # Multiple series_ids return long format
+        >>> df = data.fetch_fred(["DGS10", "GDP"], start="2024-01-01")
+        >>> df.columns.tolist()
+        ['date', 'series_id', 'field', 'value']
         """
-        series_id = self._validate_symbol(series_id, "series_id")
+        # Determine if input is single series_id or multiple
+        is_single_series = isinstance(series_id, str)
+
+        # Validate series_ids
+        validated_series_ids = self._validate_symbols(series_id)
+
         start_date = self._parse_date(start, default_offset_days=DEFAULT_LOOKBACK_DAYS)
         end_date = self._parse_date(end) or datetime.now()
 
         logger.info(
             "Fetching FRED data",
-            series_id=series_id,
+            series_ids=validated_series_ids,
+            series_count=len(validated_series_ids),
             start_date=str(start_date),
             end_date=str(end_date),
         )
@@ -543,30 +603,43 @@ class MarketData:
         fetcher = DataFetcherFactory.create("fred", **fetcher_kwargs)
 
         options = FetchOptions(
-            symbols=[series_id],
+            symbols=validated_series_ids,
             start_date=start_date,
             end_date=end_date,
         )
 
         results = fetcher.fetch(options)
 
-        if not results or results[0].is_empty:
-            logger.error("No data returned for series", series_id=series_id)
+        if not results or all(r.is_empty for r in results):
+            series_str = ", ".join(validated_series_ids)
+            logger.error("No data returned for series", series_ids=validated_series_ids)
             raise DataFetchError(
-                f"No data found for FRED series: {series_id}",
-                symbol=series_id,
+                f"No data found for FRED series: {series_str}",
+                symbol=validated_series_ids[0] if validated_series_ids else "",
                 source=DataSource.FRED.value,
                 code=ErrorCode.DATA_NOT_FOUND,
             )
 
+        # Return format depends on input type
+        if is_single_series:
+            # Single series_id: return traditional OHLCV-like format
+            logger.info(
+                "FRED data fetched",
+                series_id=validated_series_ids[0],
+                rows=results[0].row_count,
+                from_cache=results[0].from_cache,
+            )
+            return results[0].data
+
+        # Multiple series_ids: return long format
+        df = self._convert_fred_to_long_format(results)
         logger.info(
-            "FRED data fetched",
-            series_id=series_id,
-            rows=results[0].row_count,
-            from_cache=results[0].from_cache,
+            "FRED data fetched (multi-series)",
+            series_count=len(validated_series_ids),
+            rows=len(df),
         )
 
-        return results[0].data
+        return df
 
     def fetch_commodity(
         self,

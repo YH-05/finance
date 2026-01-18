@@ -312,6 +312,185 @@ class TestMarketDataFetchFred:
         assert isinstance(result, pd.DataFrame)
         assert len(result) == 2
 
+    # ========================================
+    # Issue #325: 複数 series_id 対応テストケース
+    # ========================================
+
+    @patch("market_analysis.api.market_data.DataFetcherFactory")
+    def test_正常系_複数series_idリストを受け付ける(
+        self, mock_factory: MagicMock
+    ) -> None:
+        """複数のseries_idのリストを引数として受け付けることを確認."""
+        # Arrange
+        mock_df_dgs10 = pd.DataFrame(
+            {"close": [4.5, 4.6]},
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_df_gdp = pd.DataFrame(
+            {"close": [25000.0, 25100.0]},
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_results = [
+            MarketDataResult(
+                symbol="DGS10",
+                data=mock_df_dgs10,
+                source=DataSource.FRED,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+            MarketDataResult(
+                symbol="GDP",
+                data=mock_df_gdp,
+                source=DataSource.FRED,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+        ]
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = mock_results
+        mock_factory.create.return_value = mock_fetcher
+
+        # Act
+        market_data = MarketData()
+        result = market_data.fetch_fred(
+            ["DGS10", "GDP"], start="2024-01-01", end="2024-01-31"
+        )
+
+        # Assert
+        assert isinstance(result, pd.DataFrame)
+        # 複数series_idの結果が結合されている
+        assert len(result) > 0
+
+    @patch("market_analysis.api.market_data.DataFetcherFactory")
+    def test_正常系_出力カラムが統一フォーマット(self, mock_factory: MagicMock) -> None:
+        """複数series_idの出力がdate, series_id, field, valueの4列に統一されることを確認."""
+        # Arrange
+        mock_df = pd.DataFrame(
+            {"close": [4.5]},
+            index=pd.date_range("2024-01-01", periods=1),
+        )
+        mock_results = [
+            MarketDataResult(
+                symbol="DGS10",
+                data=mock_df,
+                source=DataSource.FRED,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+        ]
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = mock_results
+        mock_factory.create.return_value = mock_fetcher
+
+        # Act
+        market_data = MarketData()
+        result = market_data.fetch_fred(["DGS10"], start="2024-01-01", end="2024-01-02")
+
+        # Assert
+        expected_columns = {"date", "series_id", "field", "value"}
+        assert set(result.columns) == expected_columns
+        # 1日 x 1フィールド(close) = 1行
+        assert len(result) == 1
+        assert result["series_id"].iloc[0] == "DGS10"
+        assert result["field"].iloc[0] == "value"
+
+    @patch("market_analysis.api.market_data.DataFetcherFactory")
+    def test_正常系_単一series_idの後方互換性(self, mock_factory: MagicMock) -> None:
+        """単一series_id（文字列）を渡した場合も従来通り動作することを確認."""
+        # Arrange
+        mock_df = pd.DataFrame(
+            {"close": [4.5, 4.6]},
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_result = MarketDataResult(
+            symbol="DGS10",
+            data=mock_df,
+            source=DataSource.FRED,
+            fetched_at=datetime.now(),
+            from_cache=False,
+        )
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = [mock_result]
+        mock_factory.create.return_value = mock_fetcher
+
+        # Act
+        market_data = MarketData()
+        result = market_data.fetch_fred("DGS10", start="2024-01-01", end="2024-01-31")
+
+        # Assert
+        # 単一series_idの場合、従来のOHLCVカラム形式を維持
+        assert isinstance(result, pd.DataFrame)
+        assert len(result) == 2
+        assert "close" in result.columns
+
+    def test_異常系_空のリストでエラー(self) -> None:
+        """空のリストを渡した場合、ValidationErrorが発生することを確認."""
+        market_data = MarketData()
+        with pytest.raises(ValidationError, match="cannot be empty"):
+            market_data.fetch_fred([])
+
+    def test_異常系_リスト内に空文字があるとエラー(self) -> None:
+        """リスト内に空文字が含まれている場合、ValidationErrorが発生することを確認."""
+        market_data = MarketData()
+        with pytest.raises(ValidationError, match="cannot be empty"):
+            market_data.fetch_fred(["DGS10", "", "GDP"])
+
+    @patch("market_analysis.api.market_data.DataFetcherFactory")
+    def test_正常系_複数series_idで全データが含まれる(
+        self, mock_factory: MagicMock
+    ) -> None:
+        """複数series_idの結果に全てのseries_idのデータが含まれることを確認."""
+        # Arrange
+        mock_df_dgs10 = pd.DataFrame(
+            {"close": [4.5, 4.6]},
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_df_cpi = pd.DataFrame(
+            {"close": [300.0, 301.0]},
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_df_gdp = pd.DataFrame(
+            {"close": [25000.0, 25100.0]},
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_results = [
+            MarketDataResult(
+                symbol="DGS10",
+                data=mock_df_dgs10,
+                source=DataSource.FRED,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+            MarketDataResult(
+                symbol="CPIAUCSL",
+                data=mock_df_cpi,
+                source=DataSource.FRED,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+            MarketDataResult(
+                symbol="GDP",
+                data=mock_df_gdp,
+                source=DataSource.FRED,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+        ]
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = mock_results
+        mock_factory.create.return_value = mock_fetcher
+
+        # Act
+        market_data = MarketData()
+        result = market_data.fetch_fred(
+            ["DGS10", "CPIAUCSL", "GDP"], start="2024-01-01", end="2024-01-02"
+        )
+
+        # Assert
+        assert set(result["series_id"].unique()) == {"DGS10", "CPIAUCSL", "GDP"}
+        # 3 series_id x 2日 x 1フィールド = 6行
+        assert len(result) == 6
+
 
 class TestMarketDataFetchCommodity:
     """Tests for MarketData.fetch_commodity method."""
