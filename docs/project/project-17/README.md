@@ -6,7 +6,7 @@
 
 ## ステータス
 
-- **フェーズ**: 実装中
+- **フェーズ**: 完了
 - **開始日**: 2026-01-17
 - **最終更新**: 2026-01-18
 
@@ -19,7 +19,7 @@
 | [#306](https://github.com/YH-05/finance/issues/306) | Tab 2: マクロ指標実装 | enhancement | Done |
 | [#307](https://github.com/YH-05/finance/issues/307) | Tab 3: 相関・ベータ分析実装 | enhancement | Done |
 | [#308](https://github.com/YH-05/finance/issues/308) | Tab 4: リターン分布実装 | enhancement | Done |
-| [#309](https://github.com/YH-05/finance/issues/309) | 統合テスト・動作確認 | test | Todo |
+| [#309](https://github.com/YH-05/finance/issues/309) | 統合テスト・動作確認 | test | Done |
 
 ## 目標
 
