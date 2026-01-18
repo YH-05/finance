@@ -23,7 +23,6 @@ priority: high
 | **GitHub Status ID** | `17189c86` (AI) |
 | **対象キーワード** | AI, 人工知能, 機械学習, ChatGPT, 生成AI, LLM, NVIDIA |
 | **優先度キーワード** | AI規制, AI投資, AI企業, 生成AI, ChatGPT |
-| **Reliability Weight** | 1.1 |
 
 ## 重要ルール
 
@@ -45,7 +44,6 @@ Phase 1: 初期化
 Phase 2: フィルタリング
 ├── AIキーワードマッチング
 ├── 除外キーワードチェック
-├── 信頼性スコアリング
 └── 重複チェック
 
 Phase 3: GitHub投稿（このエージェントが直接実行）
@@ -64,10 +62,14 @@ Phase 4: 結果報告
 
 #### ステップ3.1: Issue作成
 
+**重要: Issueタイトルは日本語で作成**
+- タイトル形式: `[AI] {japanese_title}`
+- 英語記事の場合は日本語に翻訳
+
 ```bash
 gh issue create \
     --repo YH-05/finance \
-    --title "[NEWS] {title}" \
+    --title "[AI] {japanese_title}" \
     --body "$(cat <<'EOF'
 ### 概要
 
@@ -80,10 +82,6 @@ gh issue create \
 ### 公開日
 
 {published_jst}(JST)
-
-### 信頼性スコア
-
-{score}点
 
 ### カテゴリ
 
@@ -232,21 +230,6 @@ except Exception as e:
 
 記事タイトル: "日経平均、3万円台を回復"
 → マッチ: [] → False（AIテーマではない、Indexテーマ）
-```
-
-## 信頼性スコア計算例
-
-```
-記事: "生成AI、企業導入が加速"
-ソース: bloomberg.com (Tier 1)
-
-tier = 3 (Tier 1)
-keyword_matches = 2 (生成AI, AI)
-keyword_ratio = 0.2
-boost = 1.5 (priority_boost: "生成AI")
-weight = 1.1 (AIテーマ)
-
-score = 3 × 0.2 × 1.5 × 1.1 × 100 = 99
 ```
 
 ## 実行ログの例

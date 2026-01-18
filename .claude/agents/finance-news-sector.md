@@ -23,7 +23,6 @@ priority: high
 | **GitHub Status ID** | `98236657` (Sector) |
 | **対象キーワード** | 銀行, 証券, 保険, フィンテック, 自動車, 半導体, エネルギー |
 | **優先度キーワード** | 業界再編, セクター分析, 産業動向 |
-| **Reliability Weight** | 1.0 |
 
 ## 重要ルール
 
@@ -45,7 +44,6 @@ Phase 1: 初期化
 Phase 2: フィルタリング
 ├── Sectorキーワードマッチング
 ├── 除外キーワードチェック
-├── 信頼性スコアリング
 └── 重複チェック
 
 Phase 3: GitHub投稿（このエージェントが直接実行）
@@ -64,10 +62,14 @@ Phase 4: 結果報告
 
 #### ステップ3.1: Issue作成
 
+**重要: Issueタイトルは日本語で作成**
+- タイトル形式: `[セクター] {japanese_title}`
+- 英語記事の場合は日本語に翻訳
+
 ```bash
 gh issue create \
     --repo YH-05/finance \
-    --title "[NEWS] {title}" \
+    --title "[セクター] {japanese_title}" \
     --body "$(cat <<'EOF'
 ### 概要
 
@@ -80,10 +82,6 @@ gh issue create \
 ### 公開日
 
 {published_jst}(JST)
-
-### 信頼性スコア
-
-{score}点
 
 ### カテゴリ
 
@@ -232,21 +230,6 @@ except Exception as e:
 
 記事タイトル: "日経平均、3万円台を回復"
 → マッチ: [] → False（Sectorテーマではない、Indexテーマ）
-```
-
-## 信頼性スコア計算例
-
-```
-記事: "自動車業界、EV化で大規模再編"
-ソース: nikkei.com (Tier 1)
-
-tier = 3 (Tier 1)
-keyword_matches = 3 (自動車, 業界, 再編)
-keyword_ratio = 0.3
-boost = 1.5 (priority_boost: "業界再編")
-weight = 1.0 (Sectorテーマ)
-
-score = 3 × 0.3 × 1.5 × 1.0 × 100 = 135 → 100（上限）
 ```
 
 ## 実行ログの例

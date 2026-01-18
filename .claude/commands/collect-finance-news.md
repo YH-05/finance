@@ -210,11 +210,10 @@ Task: finance-news-ai
 1. 一時ファイルから記事データ読み込み
 2. テーマキーワードでフィルタリング
 3. 除外キーワードチェック
-4. 信頼性スコア計算
-5. 重複チェック
-6. GitHub Issue作成 (`gh issue create --title "[NEWS] {title}" --label "news"`)
-7. Project追加 (`gh project item-add 15 --owner YH-05 --url {issue_url}`)
-8. Status設定 (GraphQL API)
+4. 重複チェック
+5. GitHub Issue作成 (`gh issue create --title "[{theme_ja}] {japanese_title}" --label "news"`)
+6. Project追加 (`gh project item-add 15 --owner YH-05 --url {issue_url}`)
+7. Status設定 (GraphQL API)
 
 ### Phase 4: 結果報告
 
@@ -243,17 +242,17 @@ Task: finance-news-ai
 
 **Index（株価指数）**
 1. **日経平均、3万円台を回復** [#200]
-   - ソース: 日経新聞 | 信頼性: 95/100
+   - ソース: 日経新聞
    - URL: https://github.com/YH-05/finance/issues/200
 
 **Stock（個別銘柄）**
 1. **トヨタ、過去最高益を記録** [#205]
-   - ソース: ロイター | 信頼性: 92/100
+   - ソース: ロイター
    - URL: https://github.com/YH-05/finance/issues/205
 
 **Macro Economics（マクロ経済）**
 1. **日銀、政策金利を引き上げ** [#210]
-   - ソース: Bloomberg | 信頼性: 98/100
+   - ソース: Bloomberg
    - URL: https://github.com/YH-05/finance/issues/210
 
 ### 次のアクション
@@ -285,13 +284,11 @@ GitHub投稿せずに収集結果のみを確認できます。
 
 ✅ 1. 日経平均、3万円台を回復
    - ソース: 日経新聞
-   - 信頼性: 95/100
    - キーワード: 日経平均, 株価, 指数
    - URL: https://www.nikkei.com/article/...
 
 ✅ 2. S&P500、史上最高値を更新
    - ソース: Reuters
-   - 信頼性: 90/100
    - キーワード: S&P500, 指数, 最高値
    - URL: https://www.reuters.com/...
 
@@ -299,7 +296,6 @@ GitHub投稿せずに収集結果のみを確認できます。
 
 ✅ 1. トヨタ、過去最高益を記録
    - ソース: ロイター
-   - 信頼性: 92/100
    - キーワード: トヨタ, 決算, 業績
    - URL: https://www.reuters.com/...
 
@@ -484,7 +480,6 @@ vi data/config/finance-news-themes.json
 - `themes.{theme}.keywords.include`: テーマ別includeキーワード
 - `themes.{theme}.keywords.priority_boost`: 優先度ブーストキーワード
 - `themes.{theme}.min_keyword_matches`: 最低マッチ数
-- `themes.{theme}.reliability_weight`: テーマ別信頼性ウェイト
 - `common.exclude_keywords`: 共通除外キーワード
 - `common.sources.tier1/tier2/tier3`: 情報源Tier分類
 - `common.filtering.title_similarity_threshold`: タイトル類似度閾値

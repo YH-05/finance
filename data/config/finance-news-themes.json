@@ -14,8 +14,7 @@
           "日経平均株価", "NYダウ", "TOPIX", "S&P500", "ナスダック総合指数"
         ]
       },
-      "min_keyword_matches": 1,
-      "reliability_weight": 1.0
+      "min_keyword_matches": 1
     },
     "stock": {
       "github_status_id": "47fc9ee4",
@@ -30,8 +29,7 @@
           "決算短信", "M&A", "買収", "合併", "業績予想"
         ]
       },
-      "min_keyword_matches": 1,
-      "reliability_weight": 1.2
+      "min_keyword_matches": 1
     },
     "sector": {
       "github_status_id": "98236657",
@@ -48,8 +46,7 @@
           "業界再編", "セクター分析", "産業動向"
         ]
       },
-      "min_keyword_matches": 1,
-      "reliability_weight": 1.0
+      "min_keyword_matches": 1
     },
     "macro": {
       "github_status_id": "c40731f6",
@@ -67,8 +64,7 @@
           "金融政策", "経済指標", "日銀決定会合", "FOMC", "政策金利"
         ]
       },
-      "min_keyword_matches": 1,
-      "reliability_weight": 1.3
+      "min_keyword_matches": 1
     },
     "ai": {
       "github_status_id": "17189c86",
@@ -85,8 +81,7 @@
           "AI規制", "AI投資", "AI企業", "生成AI", "ChatGPT"
         ]
       },
-      "min_keyword_matches": 1,
-      "reliability_weight": 1.1
+      "min_keyword_matches": 1
     }
   },
   "common": {
@@ -139,8 +134,7 @@
       ]
     },
     "filtering": {
-      "title_similarity_threshold": 0.85,
-      "min_reliability_score": 2
+      "title_similarity_threshold": 0.85
     }
   },
   "project": {

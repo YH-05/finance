@@ -23,7 +23,6 @@ priority: high
 | **GitHub Status ID** | `47fc9ee4` (Stock) |
 | **対象キーワード** | 決算, 業績, EPS, ROE, ROA, M&A, 買収, 合併, 増収, 減益 |
 | **優先度キーワード** | 決算短信, M&A, 買収, 合併, 業績予想 |
-| **Reliability Weight** | 1.2 |
 
 ## 重要ルール
 
@@ -45,7 +44,6 @@ Phase 1: 初期化
 Phase 2: フィルタリング
 ├── Stockキーワードマッチング
 ├── 除外キーワードチェック
-├── 信頼性スコアリング
 └── 重複チェック
 
 Phase 3: GitHub投稿（このエージェントが直接実行）
@@ -64,10 +62,14 @@ Phase 4: 結果報告
 
 #### ステップ3.1: Issue作成
 
+**重要: Issueタイトルは日本語で作成**
+- タイトル形式: `[個別銘柄] {japanese_title}`
+- 英語記事の場合は日本語に翻訳
+
 ```bash
 gh issue create \
     --repo YH-05/finance \
-    --title "[NEWS] {title}" \
+    --title "[個別銘柄] {japanese_title}" \
     --body "$(cat <<'EOF'
 ### 概要
 
@@ -80,10 +82,6 @@ gh issue create \
 ### 公開日
 
 {published_jst}(JST)
-
-### 信頼性スコア
-
-{score}点
 
 ### カテゴリ
 
@@ -232,21 +230,6 @@ except Exception as e:
 
 記事タイトル: "日経平均、3万円台を回復"
 → マッチ: [] → False（Stockテーマではない、Indexテーマ）
-```
-
-## 信頼性スコア計算例
-
-```
-記事: "トヨタ、決算短信を発表 過去最高益"
-ソース: nikkei.com (Tier 1)
-
-tier = 3 (Tier 1)
-keyword_matches = 2 (決算, 決算短信)
-keyword_ratio = 0.2
-boost = 1.5 (priority_boost: "決算短信")
-weight = 1.2 (Stockテーマ)
-
-score = 3 × 0.2 × 1.5 × 1.2 × 100 = 108 → 100（上限）
 ```
 
 ## 実行ログの例
