@@ -169,6 +169,52 @@ class TestPriceChart:
         with pytest.raises(ValueError, match="Column 'NonExistent' not found"):
             chart.price_chart(column="NonExistent")
 
+    def test_正常系_小文字カラム名でプライスチャート作成(self) -> None:
+        """小文字カラム名（YFinanceフォーマット）でプライスチャートを作成できることを確認。
+
+        Issue #316: YFinanceから取得したデータは小文字カラム名（close）を使用するため、
+        デフォルトの'Close'だとValueErrorが発生する問題への対応。
+        """
+        dates = pd.date_range(start="2024-01-01", periods=30, freq="D")
+        np.random.seed(42)
+        # YFinance形式：小文字カラム名
+        df_lowercase = pd.DataFrame(
+            {
+                "open": np.random.rand(30) * 10 + 100,
+                "high": np.random.rand(30) * 10 + 110,
+                "low": np.random.rand(30) * 10 + 90,
+                "close": np.random.rand(30) * 10 + 100,
+                "volume": np.random.randint(1000, 10000, 30),
+            },
+            index=dates,
+        )
+        chart = Chart(df_lowercase, title="NVDA")
+        # デフォルト引数（column='Close'）で呼び出しても動作すること
+        fig = chart.price_chart()
+        assert isinstance(fig, go.Figure)
+
+    def test_正常系_小文字カラム名でオーバーレイ付きチャート作成(self) -> None:
+        """小文字カラム名でオーバーレイ付きプライスチャートを作成できることを確認。
+
+        Issue #316 リグレッションテスト：再現手順と同じ条件でエラーが発生しないことを確認。
+        """
+        dates = pd.date_range(start="2024-01-01", periods=50, freq="D")
+        np.random.seed(42)
+        df_lowercase = pd.DataFrame(
+            {
+                "open": np.random.rand(50) * 10 + 100,
+                "high": np.random.rand(50) * 10 + 110,
+                "low": np.random.rand(50) * 10 + 90,
+                "close": np.random.rand(50) * 10 + 100,
+                "volume": np.random.randint(1000, 10000, 50),
+            },
+            index=dates,
+        )
+        chart = Chart(df_lowercase, title="NVDA")
+        # Issue #316 の再現手順と同じ
+        fig = chart.price_chart(overlays=["EMA_20", "EMA_50"])
+        assert isinstance(fig, go.Figure)
+
     def test_正常系_無効なオーバーレイは無視される(self, chart: Chart) -> None:
         """無効なオーバーレイフォーマットは無視されることを確認。"""
         # Should not raise, just log warning

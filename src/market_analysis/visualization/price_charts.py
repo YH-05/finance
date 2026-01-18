@@ -36,6 +36,7 @@ class PriceChartData:
     ----------
     df : pd.DataFrame
         OHLCV DataFrame with columns: Open, High, Low, Close, Volume
+        (case-insensitive matching supported for YFinance compatibility)
         Index should be DatetimeIndex
     symbol : str
         Symbol name for display
@@ -58,10 +59,24 @@ class PriceChartData:
     def __post_init__(self) -> None:
         """Validate data after initialization."""
         # Required OHLC columns (Volume is optional)
+        # Support case-insensitive column matching (Issue #316: YFinance lowercase columns)
         required_cols = {"Open", "High", "Low", "Close"}
-        missing = required_cols - set(self.df.columns)
+        column_mapping = self._create_column_mapping(required_cols)
+
+        missing = required_cols - set(column_mapping.keys())
         if missing:
             raise ValueError(f"Missing required columns: {missing}")
+
+        # Rename columns to standard format if needed
+        if column_mapping:
+            reverse_mapping = {v: k for k, v in column_mapping.items()}
+            self.df = self.df.rename(columns=reverse_mapping)
+
+        # Also normalize Volume column if present
+        volume_mapping = self._create_column_mapping({"Volume"})
+        if volume_mapping:
+            reverse_volume = {v: k for k, v in volume_mapping.items()}
+            self.df = self.df.rename(columns=reverse_volume)
 
         # Validate date range
         if self.start_date is not None and self.end_date is not None:
@@ -78,6 +93,40 @@ class PriceChartData:
             rows=len(self.df),
             columns=list(self.df.columns),
         )
+
+    def _create_column_mapping(self, required_cols: set[str]) -> dict[str, str]:
+        """Create mapping from standard column names to actual column names.
+
+        Performs case-insensitive matching to support YFinance lowercase columns.
+
+        Parameters
+        ----------
+        required_cols : set[str]
+            Set of required column names (standard format)
+
+        Returns
+        -------
+        dict[str, str]
+            Mapping from standard name to actual column name in DataFrame
+        """
+        mapping: dict[str, str] = {}
+        actual_cols_lower = {col.lower(): col for col in self.df.columns}
+
+        for required_col in required_cols:
+            # Exact match first
+            if required_col in self.df.columns:
+                mapping[required_col] = required_col
+            # Case-insensitive match
+            elif required_col.lower() in actual_cols_lower:
+                actual_col = actual_cols_lower[required_col.lower()]
+                mapping[required_col] = actual_col
+                logger.debug(
+                    "Column name resolved case-insensitively",
+                    requested=required_col,
+                    resolved=actual_col,
+                )
+
+        return mapping
 
     def get_filtered_data(self) -> pd.DataFrame:
         """Get data filtered by date range.
