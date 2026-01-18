@@ -1,75 +1,208 @@
 {
-  "version": "1.0",
-  "presets": [
-    {
-      "url": "https://hnrss.org/newest?points=100",
-      "title": "Hacker News (100+ points)",
-      "category": "tech",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://techcrunch.com/feed/",
-      "title": "TechCrunch",
-      "category": "tech",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://feeds.arstechnica.com/arstechnica/index",
-      "title": "Ars Technica",
-      "category": "tech",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://www.theverge.com/rss/index.xml",
-      "title": "The Verge",
-      "category": "tech",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://feeds.marketwatch.com/marketwatch/topstories/",
-      "title": "MarketWatch Top Stories",
-      "category": "market",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://seekingalpha.com/feed.xml",
-      "title": "Seeking Alpha",
-      "category": "market",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://finance.yahoo.com/news/rssindex",
-      "title": "Yahoo Finance",
-      "category": "finance",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://www.ft.com/?format=rss",
-      "title": "Financial Times",
-      "category": "finance",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://www.reuters.com/rssFeed/businessNews",
-      "title": "Reuters Business News",
-      "category": "finance",
-      "fetch_interval": "daily",
-      "enabled": true
-    },
-    {
-      "url": "https://www.nikkei.com/rss/",
-      "title": "日経電子版",
-      "category": "finance",
-      "fetch_interval": "daily",
-      "enabled": true
-    }
-  ]
+    "version": "1.0",
+    "presets": [
+        {
+            "url": "https://hnrss.org/newest?points=100",
+            "title": "Hacker News (100+ points)",
+            "category": "tech",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://techcrunch.com/feed/",
+            "title": "TechCrunch",
+            "category": "tech",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://feeds.arstechnica.com/arstechnica/index",
+            "title": "Ars Technica",
+            "category": "tech",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.theverge.com/rss/index.xml",
+            "title": "The Verge",
+            "category": "tech",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://feeds.marketwatch.com/marketwatch/topstories/",
+            "title": "MarketWatch Top Stories",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://seekingalpha.com/feed.xml",
+            "title": "Seeking Alpha",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://finance.yahoo.com/news/rssindex",
+            "title": "Yahoo Finance",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.ft.com/?format=rss",
+            "title": "Financial Times",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114",
+            "title": "CNBC - Top News",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100727362",
+            "title": "CNBC - World News",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15837362",
+            "title": "CNBC - US News",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20907743",
+            "title": "CNBC - Markets",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069",
+            "title": "CNBC - Investing",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
+            "title": "CNBC - Economy",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
+            "title": "CNBC - Finance",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19854910",
+            "title": "CNBC - Technology",
+            "category": "tech",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19832390",
+            "title": "CNBC - Asia News",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19794221",
+            "title": "CNBC - Europe News",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147",
+            "title": "CNBC - Business",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839135",
+            "title": "CNBC - Earnings",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000113",
+            "title": "CNBC - Politics",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000108",
+            "title": "CNBC - Health Care",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000115",
+            "title": "CNBC - Real Estate",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001054",
+            "title": "CNBC - Wealth",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000101",
+            "title": "CNBC - Autos",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19836768",
+            "title": "CNBC - Energy",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000110",
+            "title": "CNBC - Media",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000116",
+            "title": "CNBC - Retail",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000739",
+            "title": "CNBC - Travel",
+            "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        }
+    ]
 }
