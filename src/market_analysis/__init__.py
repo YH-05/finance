@@ -31,7 +31,7 @@ Examples
 # Analysis Classes - 内部分析クラス（上級ユーザー向け）
 # =============================================================================
 from .analysis import Analyzer, CorrelationAnalyzer, IndicatorCalculator
-from .api import Analysis, Chart, MarketData
+from .api import Analysis, Chart, MarketData, MarketPerformanceAnalyzer
 
 # =============================================================================
 # Errors - 例外クラス
@@ -115,6 +115,7 @@ __all__ = [
     "MarketAnalysisError",
     "MarketData",
     "MarketDataResult",
+    "MarketPerformanceAnalyzer",
     "RateLimitError",
     "RetryConfig",
     "TickerInfo",
