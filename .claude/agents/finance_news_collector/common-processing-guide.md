@@ -174,9 +174,10 @@ def generate_japanese_summary(content: str, max_length: int = 400) -> str:
     return summary
 ```
 
-### ステップ3.1: 公開日時のISO形式変換
+### ステップ3.1: 日時フォーマット関数
 
 **重要**: GitHub Projectでソートするため、公開日時をISO 8601形式に変換します。
+また、Issue本文には「収集日時」（Issue作成時の日時）も必ず記載します。
 
 ```python
 from datetime import datetime, timezone
@@ -217,6 +218,16 @@ def format_published_jst(published_str: str | None) -> str:
 
     dt_jst = dt.astimezone(jst)
     return dt_jst.strftime('%Y-%m-%d %H:%M')
+
+
+def get_collected_at_jst() -> str:
+    """収集日時（現在時刻）をJST形式で取得（YYYY-MM-DD HH:MM）
+
+    Issue作成時に呼び出し、収集日時として記録する。
+    """
+
+    jst = pytz.timezone('Asia/Tokyo')
+    return datetime.now(jst).strftime('%Y-%m-%d %H:%M')
 ```
 
 ### ステップ3.2: Issue作成
@@ -228,10 +239,13 @@ def format_published_jst(published_str: str | None) -> str:
 3. **タイトル翻訳**: 英語記事の場合は日本語に翻訳（要約生成時に同時に実施）
 
 ```bash
+# 収集日時を取得（Issue作成直前に実行）
+collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
+
 gh issue create \
     --repo YH-05/finance \
     --title "[{theme_ja}] {japanese_title}" \
-    --body "$(cat <<'EOF'
+    --body "$(cat <<EOF
 ### 概要
 
 {japanese_summary}
@@ -243,6 +257,10 @@ gh issue create \
 ### 公開日
 
 {published_jst}(JST)
+
+### 収集日時
+
+${collected_at}(JST)
 
 ### カテゴリ
 
