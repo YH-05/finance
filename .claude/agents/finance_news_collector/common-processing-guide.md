@@ -85,11 +85,17 @@ def is_excluded(item: dict, common: dict, theme: dict) -> bool:
 
 ### ステップ2.3: 信頼性スコアリング
 
+**CNBC優先戦略**: CNBCは金融ニュースの主要ソースとしてtier1扱いし、さらに追加ボーナスを付与。
+
 ```python
 def calculate_reliability_score(item: dict, theme: dict, common: dict) -> int:
-    """信頼性スコアを計算（0-100）"""
+    """信頼性スコアを計算（0-100）- CNBC優先版"""
 
     link = item.get('link', '')
+
+    # CNBC特別処理: 最優先ソースとして扱う
+    is_cnbc = "cnbc.com" in link
+    cnbc_bonus = 1.2 if is_cnbc else 1.0  # CNBCに20%ボーナス
 
     # Tier判定（情報源の信頼性）
     tier = 1
@@ -102,6 +108,10 @@ def calculate_reliability_score(item: dict, theme: dict, common: dict) -> int:
             if domain in link:
                 tier = 2
                 break
+
+    # source_priorityフラグがある場合はCNBC優先
+    if item.get('source_priority') == 'cnbc':
+        tier = max(tier, 3)  # 最低でもtier1扱い
 
     # キーワードマッチ度
     text = f"{item['title']} {item.get('summary', '')} {item.get('content', '')}".lower()
@@ -118,10 +128,26 @@ def calculate_reliability_score(item: dict, theme: dict, common: dict) -> int:
     # Reliability weight（テーマ別ウェイト）
     weight = theme.get('reliability_weight', 1.0)
 
-    # スコア計算
-    score = tier * keyword_ratio * boost * weight * 100
+    # スコア計算（CNBCボーナス適用）
+    score = tier * keyword_ratio * boost * weight * cnbc_bonus * 100
 
     return min(int(score), 100)
+```
+
+**CNBCスコア計算例**:
+
+```
+記事: "Fed Signals Interest Rate Decision"
+ソース: cnbc.com (Tier 1 + CNBCボーナス)
+
+tier = 3 (Tier 1)
+keyword_matches = 2 (interest rate, Fed)
+keyword_ratio = 0.2
+boost = 1.5 (priority_boost: "FOMC")
+weight = 1.3 (Macroテーマ)
+cnbc_bonus = 1.2 (CNBC優先)
+
+score = 3 × 0.2 × 1.5 × 1.3 × 1.2 × 100 = 140 → 100（上限）
 ```
 
 ### ステップ2.4: 重複チェック

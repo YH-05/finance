@@ -43,6 +43,12 @@ RSS フィードから記事を取得し、テーマ別エージェント（inde
     ↓ それも失敗する場合
     エラーログ出力 → 処理中断
 
+[2.5] 情報検索戦略: CNBC優先取得
+    ↓
+    CNBCフィードを優先的に取得（21フィード）
+    他のフィードは補完として取得
+    詳細: Phase 2のステップ2.1参照
+
 [3] GitHub CLI の確認
     ↓
     gh コマンドが利用可能か確認
@@ -59,20 +65,91 @@ RSS フィードから記事を取得し、テーマ別エージェント（inde
 
 #### ステップ 2.1: RSS 記事取得
 
+**情報検索戦略: CNBC優先**
+
+CNBCは21種類のRSSフィードを提供しており、金融ニュースの主要ソースとして優先的に取得します。
+
+| カテゴリ | CNBCフィード | 用途 |
+|---------|-------------|------|
+| **マーケット** | Markets, Investing, Earnings | Index, Stock テーマ |
+| **経済** | Economy, Finance | Macro テーマ |
+| **セクター** | Technology, Health Care, Energy, Autos, Retail, Real Estate, Media | Sector テーマ |
+| **総合** | Top News, World News, US News, Asia News, Europe News, Business | 全テーマ共通 |
+| **その他** | Wealth, Politics, Travel | 補足情報 |
+
+**取得優先順位**:
+1. **CNBC フィード（21種）**: cnbc.com ドメインのフィードを最優先
+2. **Tier 1 フィード**: Bloomberg, Reuters, WSJ, FT, Seeking Alpha
+3. **Tier 2 フィード**: MarketWatch, Yahoo Finance, その他
+
 **Method A: MCP ツール経由（推奨）**
 
 ```python
-# RSS MCP ツールで全記事を取得
-try:
-    result = mcp__rss__get_items(
-        feed_id=None,      # 全フィード（7個）
-        limit=50,          # 最新50件
-        offset=0
-    )
-    items = result["items"]
-    total = result["total"]
-    ログ出力: f"RSS記事取得完了（MCP経由）: {len(items)}件 / {total}件"
+# RSS MCP ツールで記事を取得（CNBC優先戦略）
+def get_rss_items_with_cnbc_priority(limit=50):
+    """CNBC優先でRSS記事を取得"""
 
+    # Step 1: 全フィード一覧を取得
+    feeds_result = mcp__rss__list_feeds()
+    all_feeds = feeds_result.get("feeds", [])
+
+    # Step 2: CNBCフィードを識別
+    cnbc_feeds = [f for f in all_feeds if "cnbc.com" in f.get("url", "")]
+    other_feeds = [f for f in all_feeds if "cnbc.com" not in f.get("url", "")]
+
+    ログ出力: f"CNBCフィード: {len(cnbc_feeds)}件, その他: {len(other_feeds)}件"
+
+    items = []
+
+    # Step 3: CNBCフィードから優先取得
+    cnbc_limit = min(limit * 2 // 3, 35)  # 全体の2/3、最大35件
+    for feed in cnbc_feeds[:10]:  # 最も関連性の高い10フィードから
+        try:
+            result = mcp__rss__get_items(
+                feed_id=feed["feed_id"],
+                limit=5  # フィードあたり最大5件
+            )
+            for item in result.get("items", []):
+                item["source_priority"] = "cnbc"  # CNBC優先フラグ
+                items.append(item)
+        except Exception as e:
+            ログ出力: f"警告: {feed['title']} 取得失敗: {e}"
+            continue
+
+        if len(items) >= cnbc_limit:
+            break
+
+    ログ出力: f"CNBC記事: {len(items)}件取得"
+
+    # Step 4: 残り枠を他のフィードから補完
+    remaining = limit - len(items)
+    if remaining > 0:
+        for feed in other_feeds:
+            try:
+                result = mcp__rss__get_items(
+                    feed_id=feed["feed_id"],
+                    limit=3  # フィードあたり最大3件
+                )
+                for item in result.get("items", []):
+                    item["source_priority"] = "other"
+                    items.append(item)
+            except Exception as e:
+                continue
+
+            if len(items) >= limit:
+                break
+
+    # Step 5: 日付でソート（新しい順）、ただしCNBCは優先
+    items.sort(key=lambda x: (
+        x.get("source_priority") != "cnbc",  # CNBCを上位に
+        x.get("published", "")
+    ), reverse=True)
+
+    ログ出力: f"RSS記事取得完了（MCP経由・CNBC優先）: {len(items)}件"
+    return items[:limit]
+
+try:
+    items = get_rss_items_with_cnbc_priority(limit=50)
 except Exception as e:
     ログ出力: f"MCP接続失敗: {e}"
     ログ出力: "フォールバック: ローカルファイルから読み込み"
@@ -85,7 +162,7 @@ MCPサーバーが利用できない場合、`data/raw/rss/` から直接読み�
 
 ```python
 def load_rss_from_local():
-    """ローカルのRSSキャッシュからデータを読み込む"""
+    """ローカルのRSSキャッシュからデータを読み込む（CNBC優先）"""
     items = []
     rss_dir = Path("data/raw/rss")
 
@@ -95,22 +172,49 @@ def load_rss_from_local():
         raise FileNotFoundError("RSS feeds.json が見つかりません")
 
     with open(feeds_file) as f:
-        feeds = json.load(f)
+        feeds_data = json.load(f)
 
-    # 各フィードディレクトリからアイテムを収集
-    for feed_id in feeds.get("feeds", {}).keys():
+    feeds = feeds_data.get("feeds", [])
+
+    # CNBCフィードとその他を分離
+    cnbc_feed_ids = [
+        f["feed_id"] for f in feeds
+        if "cnbc.com" in f.get("url", "")
+    ]
+    other_feed_ids = [
+        f["feed_id"] for f in feeds
+        if "cnbc.com" not in f.get("url", "")
+    ]
+
+    # CNBCフィードから優先的に収集
+    for feed_id in cnbc_feed_ids:
         feed_dir = rss_dir / feed_id
         if feed_dir.exists():
             for item_file in feed_dir.glob("*.json"):
                 if item_file.name != "feed_meta.json":
                     with open(item_file) as f:
                         item = json.load(f)
+                        item["source_priority"] = "cnbc"
                         items.append(item)
 
-    # 日付でソート（新しい順）
-    items.sort(key=lambda x: x.get("published", ""), reverse=True)
+    # 他のフィードから補完
+    for feed_id in other_feed_ids:
+        feed_dir = rss_dir / feed_id
+        if feed_dir.exists():
+            for item_file in feed_dir.glob("*.json"):
+                if item_file.name != "feed_meta.json":
+                    with open(item_file) as f:
+                        item = json.load(f)
+                        item["source_priority"] = "other"
+                        items.append(item)
 
-    ログ出力: f"RSS記事取得完了（ローカル）: {len(items)}件"
+    # 日付でソート（新しい順）、ただしCNBCは優先
+    items.sort(key=lambda x: (
+        x.get("source_priority") != "cnbc",
+        x.get("published", "")
+    ), reverse=True)
+
+    ログ出力: f"RSS記事取得完了（ローカル・CNBC優先）: {len(items)}件"
     return items[:50]  # 最新50件に制限
 ```
 

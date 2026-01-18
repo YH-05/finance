@@ -112,13 +112,13 @@
     },
     "sources": {
       "tier1": [
-        "nikkei.com",
-        "reuters.com",
+        "cnbc.com",
         "bloomberg.com",
+        "reuters.com",
         "wsj.com",
         "ft.com",
-        "seekingalpha.com",
-        "cnbc.com"
+        "nikkei.com",
+        "seekingalpha.com"
       ],
       "tier2": [
         "asahi.com",
