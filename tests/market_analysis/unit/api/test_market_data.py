@@ -92,6 +92,156 @@ class TestMarketDataFetchStock:
         with pytest.raises(DataFetchError, match="No data found"):
             market_data.fetch_stock("INVALID")
 
+    # ========================================
+    # Issue #324: 複数銘柄対応テストケース
+    # ========================================
+
+    @patch("market_analysis.api.market_data.DataFetcherFactory")
+    def test_正常系_複数銘柄リストを受け付ける(self, mock_factory: MagicMock) -> None:
+        """複数銘柄のリストを引数として受け付けることを確認."""
+        # Arrange
+        mock_df_aapl = pd.DataFrame(
+            {
+                "open": [100.0, 101.0],
+                "high": [105.0, 106.0],
+                "low": [99.0, 100.0],
+                "close": [104.0, 105.0],
+                "volume": [1000000, 1100000],
+            },
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_df_googl = pd.DataFrame(
+            {
+                "open": [140.0, 141.0],
+                "high": [145.0, 146.0],
+                "low": [139.0, 140.0],
+                "close": [144.0, 145.0],
+                "volume": [2000000, 2100000],
+            },
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_results = [
+            MarketDataResult(
+                symbol="AAPL",
+                data=mock_df_aapl,
+                source=DataSource.YFINANCE,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+            MarketDataResult(
+                symbol="GOOGL",
+                data=mock_df_googl,
+                source=DataSource.YFINANCE,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+        ]
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = mock_results
+        mock_factory.create.return_value = mock_fetcher
+
+        # Act
+        market_data = MarketData()
+        result = market_data.fetch_stock(
+            ["AAPL", "GOOGL"], start="2024-01-01", end="2024-01-31"
+        )
+
+        # Assert
+        assert isinstance(result, pd.DataFrame)
+        # 複数銘柄の結果が結合されている（2銘柄 x 2日 x 5フィールド = 20行）
+        assert len(result) > 0
+
+    @patch("market_analysis.api.market_data.DataFetcherFactory")
+    def test_正常系_出力カラムが統一フォーマット(self, mock_factory: MagicMock) -> None:
+        """複数銘柄の出力がdate, ticker, field, valueの4列に統一されることを確認."""
+        # Arrange
+        mock_df = pd.DataFrame(
+            {
+                "open": [100.0],
+                "high": [105.0],
+                "low": [99.0],
+                "close": [104.0],
+                "volume": [1000000],
+            },
+            index=pd.date_range("2024-01-01", periods=1),
+        )
+        mock_results = [
+            MarketDataResult(
+                symbol="AAPL",
+                data=mock_df,
+                source=DataSource.YFINANCE,
+                fetched_at=datetime.now(),
+                from_cache=False,
+            ),
+        ]
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = mock_results
+        mock_factory.create.return_value = mock_fetcher
+
+        # Act
+        market_data = MarketData()
+        result = market_data.fetch_stock(["AAPL"], start="2024-01-01", end="2024-01-02")
+
+        # Assert
+        expected_columns = {"date", "ticker", "field", "value"}
+        assert set(result.columns) == expected_columns
+        # 1日 x 5フィールド = 5行
+        assert len(result) == 5
+        assert set(result["field"].unique()) == {
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+        }
+
+    @patch("market_analysis.api.market_data.DataFetcherFactory")
+    def test_正常系_単一銘柄の後方互換性(self, mock_factory: MagicMock) -> None:
+        """単一銘柄（文字列）を渡した場合も従来通り動作することを確認."""
+        # Arrange
+        mock_df = pd.DataFrame(
+            {
+                "open": [100.0, 101.0],
+                "high": [105.0, 106.0],
+                "low": [99.0, 100.0],
+                "close": [104.0, 105.0],
+                "volume": [1000000, 1100000],
+            },
+            index=pd.date_range("2024-01-01", periods=2),
+        )
+        mock_result = MarketDataResult(
+            symbol="AAPL",
+            data=mock_df,
+            source=DataSource.YFINANCE,
+            fetched_at=datetime.now(),
+            from_cache=False,
+        )
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = [mock_result]
+        mock_factory.create.return_value = mock_fetcher
+
+        # Act
+        market_data = MarketData()
+        result = market_data.fetch_stock("AAPL", start="2024-01-01", end="2024-01-31")
+
+        # Assert
+        # 単一銘柄の場合、従来のOHLCVカラム形式を維持
+        assert isinstance(result, pd.DataFrame)
+        assert len(result) == 2
+        assert "close" in result.columns
+
+    def test_異常系_空のリストでエラー(self) -> None:
+        """空のリストを渡した場合、ValidationErrorが発生することを確認."""
+        market_data = MarketData()
+        with pytest.raises(ValidationError, match="cannot be empty"):
+            market_data.fetch_stock([])
+
+    def test_異常系_リスト内に空文字があるとエラー(self) -> None:
+        """リスト内に空文字が含まれている場合、ValidationErrorが発生することを確認."""
+        market_data = MarketData()
+        with pytest.raises(ValidationError, match="cannot be empty"):
+            market_data.fetch_stock(["AAPL", "", "GOOGL"])
+
 
 class TestMarketDataFetchForex:
     """Tests for MarketData.fetch_forex method."""
