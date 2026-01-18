@@ -40,6 +40,15 @@ body:
     validations:
       required: false
 
+  - type: input
+    id: collected_at
+    attributes:
+      label: 収集日時
+      description: ニュースを収集した日時（YYYY-MM-DD HH:MM形式。JST。自動入力）
+      placeholder: "2026-01-15 09:30(JST)"
+    validations:
+      required: false
+
   - type: dropdown
     id: credibility
     attributes:

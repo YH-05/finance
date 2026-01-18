@@ -70,10 +70,13 @@ Phase 4: 結果報告
 - 英語記事の場合は日本語に翻訳
 
 ```bash
+# 収集日時を取得（Issue作成直前に実行）
+collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
+
 gh issue create \
     --repo YH-05/finance \
     --title "[株価指数] {japanese_title}" \
-    --body "$(cat <<'EOF'
+    --body "$(cat <<EOF
 ### 概要
 
 {japanese_summary}
@@ -85,6 +88,10 @@ gh issue create \
 ### 公開日
 
 {published_jst}(JST)
+
+### 収集日時
+
+${collected_at}(JST)
 
 ### カテゴリ
 
