@@ -187,9 +187,112 @@ class MarketData:
         cleaned = symbol.strip()
         return cleaned.upper() if uppercase else cleaned
 
+    def _validate_symbols(
+        self,
+        symbol: str | list[str],
+    ) -> list[str]:
+        """Validate and normalize symbol(s).
+
+        Parameters
+        ----------
+        symbol : str | list[str]
+            Symbol or list of symbols to validate
+
+        Returns
+        -------
+        list[str]
+            Validated list of symbols
+
+        Raises
+        ------
+        ValidationError
+            If any symbol is invalid
+        """
+        # Handle list input
+        if isinstance(symbol, list):
+            if not symbol:
+                logger.error("Empty symbol list provided")
+                raise ValidationError(
+                    "symbol list cannot be empty",
+                    field="symbol",
+                    value="[]",
+                    code=ErrorCode.INVALID_PARAMETER,
+                )
+
+            validated_symbols = []
+            for i, s in enumerate(symbol):
+                try:
+                    validated_symbols.append(self._validate_symbol(s))
+                except ValidationError as e:
+                    logger.error(
+                        "Invalid symbol in list",
+                        index=i,
+                        symbol=s,
+                        error=str(e),
+                    )
+                    raise ValidationError(
+                        f"symbol at index {i} cannot be empty",
+                        field="symbol",
+                        value=str(s),
+                        code=ErrorCode.INVALID_PARAMETER,
+                    ) from e
+
+            return validated_symbols
+
+        # Handle single string input
+        return [self._validate_symbol(symbol)]
+
+    def _convert_to_long_format(
+        self,
+        results: list[Any],
+    ) -> pd.DataFrame:
+        """Convert multiple OHLCV results to long format.
+
+        Parameters
+        ----------
+        results : list[Any]
+            List of MarketDataResult objects
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with columns: date, ticker, field, value
+        """
+        all_rows = []
+
+        for result in results:
+            if result.is_empty:
+                continue
+
+            df = result.data.copy()
+            ticker = result.symbol
+
+            # Reset index to get date as column
+            if hasattr(df.index, "strftime"):
+                df = df.reset_index()
+                date_col = df.columns[0]
+                df = df.rename(columns={date_col: "date"})
+
+            # Melt to long format
+            ohlcv_cols = ["open", "high", "low", "close", "volume"]
+            available_cols = [c for c in ohlcv_cols if c in df.columns]
+
+            for _, row in df.iterrows():
+                for field in available_cols:
+                    all_rows.append(
+                        {
+                            "date": row["date"],
+                            "ticker": ticker,
+                            "field": field,
+                            "value": row[field],
+                        }
+                    )
+
+        return pd.DataFrame(all_rows)
+
     def fetch_stock(
         self,
-        symbol: str,
+        symbol: str | list[str],
         start: datetime | str | None = None,
         end: datetime | str | None = None,
     ) -> pd.DataFrame:
@@ -197,8 +300,9 @@ class MarketData:
 
         Parameters
         ----------
-        symbol : str
+        symbol : str | list[str]
             Ticker symbol (e.g., "AAPL", "7203.T" for Japanese stocks)
+            or list of ticker symbols (e.g., ["AAPL", "GOOGL", "MSFT"])
         start : datetime | str | None
             Start date (default: 1 year ago)
         end : datetime | str | None
@@ -207,7 +311,8 @@ class MarketData:
         Returns
         -------
         pd.DataFrame
-            OHLCV data with columns: open, high, low, close, volume
+            - For single symbol (str): OHLCV data with columns: open, high, low, close, volume
+            - For multiple symbols (list): Long format with columns: date, ticker, field, value
 
         Raises
         ------
@@ -219,17 +324,28 @@ class MarketData:
         Examples
         --------
         >>> data = MarketData()
+        >>> # Single symbol returns OHLCV format
         >>> df = data.fetch_stock("AAPL", start="2024-01-01", end="2024-12-31")
         >>> df.columns.tolist()
         ['open', 'high', 'low', 'close', 'volume']
+        >>> # Multiple symbols return long format
+        >>> df = data.fetch_stock(["AAPL", "GOOGL"], start="2024-01-01")
+        >>> df.columns.tolist()
+        ['date', 'ticker', 'field', 'value']
         """
-        symbol = self._validate_symbol(symbol)
+        # Determine if input is single symbol or multiple
+        is_single_symbol = isinstance(symbol, str)
+
+        # Validate symbols
+        validated_symbols = self._validate_symbols(symbol)
+
         start_date = self._parse_date(start, default_offset_days=DEFAULT_LOOKBACK_DAYS)
         end_date = self._parse_date(end) or datetime.now()
 
         logger.info(
             "Fetching stock data",
-            symbol=symbol,
+            symbols=validated_symbols,
+            symbol_count=len(validated_symbols),
             start_date=str(start_date),
             end_date=str(end_date),
         )
@@ -242,30 +358,43 @@ class MarketData:
         )
 
         options = FetchOptions(
-            symbols=[symbol],
+            symbols=validated_symbols,
             start_date=start_date,
             end_date=end_date,
         )
 
         results = fetcher.fetch(options)
 
-        if not results or results[0].is_empty:
-            logger.error("No data returned for symbol", symbol=symbol)
+        if not results or all(r.is_empty for r in results):
+            symbols_str = ", ".join(validated_symbols)
+            logger.error("No data returned for symbols", symbols=validated_symbols)
             raise DataFetchError(
-                f"No data found for symbol: {symbol}",
-                symbol=symbol,
+                f"No data found for symbol(s): {symbols_str}",
+                symbol=validated_symbols[0] if validated_symbols else "",
                 source=DataSource.YFINANCE.value,
                 code=ErrorCode.DATA_NOT_FOUND,
             )
 
+        # Return format depends on input type
+        if is_single_symbol:
+            # Single symbol: return traditional OHLCV format
+            logger.info(
+                "Stock data fetched",
+                symbol=validated_symbols[0],
+                rows=results[0].row_count,
+                from_cache=results[0].from_cache,
+            )
+            return results[0].data
+
+        # Multiple symbols: return long format
+        df = self._convert_to_long_format(results)
         logger.info(
-            "Stock data fetched",
-            symbol=symbol,
-            rows=results[0].row_count,
-            from_cache=results[0].from_cache,
+            "Stock data fetched (multi-symbol)",
+            symbol_count=len(validated_symbols),
+            rows=len(df),
         )
 
-        return results[0].data
+        return df
 
     def fetch_forex(
         self,
