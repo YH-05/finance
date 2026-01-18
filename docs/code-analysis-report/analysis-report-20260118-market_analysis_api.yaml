@@ -1,0 +1,361 @@
+# 分析レポート
+# 生成日時: 2026-01-18
+# 生成コマンド: /analyze --all @src/market_analysis/api/analysis.py
+
+metadata:
+  generated_at: "2026-01-18"
+  target: "src/market_analysis/api/analysis.py"
+  analysis_modes:
+    - code
+    - arch
+    - security
+    - perf
+  depth: "standard"
+
+summary:
+  total_files: 1
+  total_lines: 1177
+  total_functions: 28
+  total_classes: 3
+
+scores:
+  code_quality: 75
+  architecture: 70
+  security: 85
+  performance: 65
+  overall: 74
+
+# =============================================================================
+# コード品質分析
+# =============================================================================
+code_quality:
+  complexity:
+    average: 3.4
+    max: 11
+    max_function: "correlation"
+    high_complexity_functions:
+      - name: "correlation"
+        file: "src/market_analysis/api/analysis.py"
+        line: 326
+        complexity: 11
+        recommendation: "抽出メソッドパターンで分割を検討"
+      - name: "get_data_since_period_start"
+        file: "src/market_analysis/api/analysis.py"
+        line: 834
+        complexity: 7
+        recommendation: "条件分岐の戦略パターン適用を検討"
+      - name: "rolling_correlation"
+        file: "src/market_analysis/api/analysis.py"
+        line: 458
+        complexity: 5
+      - name: "beta"
+        file: "src/market_analysis/api/analysis.py"
+        line: 553
+        complexity: 4
+
+  duplication:
+    rate: "8%"
+    locations:
+      - files:
+          - "Analysis.correlation (lines 400-424)"
+          - "_find_column (lines 48-56)"
+        description: "カラム検索ロジックの重複"
+
+  type_hint_coverage: "100%"
+  docstring_coverage: "95%"
+
+  naming_conventions:
+    compliant: true
+    issues: []
+
+  long_functions:
+    - name: "MarketPerformanceAnalyzer.__init__"
+      line: 642
+      lines: 91
+      recommendation: "初期化ロジックをヘルパーメソッドに分割"
+    - name: "get_data_since_period_start"
+      line: 834
+      lines: 82
+      recommendation: "YTD/MTDロジックを個別メソッドに分離"
+
+# =============================================================================
+# アーキテクチャ分析
+# =============================================================================
+architecture:
+  layer_structure: "概ね良好"
+
+  class_responsibilities:
+    Analysis:
+      role: "テクニカル分析のファサードAPI"
+      methods: 10
+      cohesion: "高"
+      evaluation: "良好 - メソッドチェーンパターンを適切に実装"
+
+    MarketPerformanceAnalyzer:
+      role: "市場パフォーマンス分析・可視化"
+      methods: 18
+      cohesion: "中"
+      evaluation: "改善余地あり - 責務が広すぎる"
+      issues:
+        - "データ取得、分析、可視化が1クラスに混在"
+        - "プロット関数が多数あり分離検討"
+
+  circular_dependencies: false
+
+  problematic_dependencies:
+    - source: "MarketPerformanceAnalyzer"
+      target: "yfinance (直接呼び出し)"
+      reason: "APIクラス内で外部ライブラリを直接呼び出し - 依存性注入推奨"
+    - source: "MarketPerformanceAnalyzer"
+      target: "curl_cffi (直接インスタンス化)"
+      reason: "HTTPセッション管理が分散 - 共通化推奨"
+
+  design_patterns:
+    used:
+      - name: "Method Chaining (Fluent Interface)"
+        location: "Analysis クラス"
+        evaluation: "適切に実装"
+      - name: "Facade"
+        location: "Analysis クラス"
+        evaluation: "Analyzer, CorrelationAnalyzer をラップ"
+
+    recommended:
+      - name: "Strategy Pattern"
+        target: "get_data_since_period_start"
+        reason: "YTD/MTD切り替えロジックの分離"
+      - name: "Factory Pattern"
+        target: "MarketPerformanceAnalyzer.yf_download_with_curl"
+        reason: "データソース切り替えの柔軟性向上"
+
+# =============================================================================
+# セキュリティ分析
+# =============================================================================
+security:
+  critical_issues: []
+  high_issues: []
+
+  medium_issues:
+    - id: "SEC-001"
+      category: "例外処理"
+      location: "line 765, 872, 898"
+      description: "print文によるエラー出力"
+      evidence: "print(f\"エラー: 銘柄 {ticker}...\")"
+      recommendation: "logger.error() を使用しログレベルを統一"
+      owasp: "A09:2021 Security Logging and Monitoring Failures"
+
+  low_issues:
+    - id: "SEC-002"
+      category: "例外処理"
+      location: "lines 444, 539, 621"
+      description: "広範な Exception キャッチ後の再スロー"
+      evidence: "except Exception as e: ... raise AnalysisError(...)"
+      recommendation: "パターン自体は適切だが、特定例外の優先キャッチを検討"
+
+  info:
+    - id: "SEC-003"
+      description: "外部APIアクセス (yfinance)"
+      mitigation: "ネットワークエラーは適切にハンドリング済み"
+    - id: "SEC-004"
+      description: "ユーザー入力はシンボル名とパラメータのみ"
+      mitigation: "SQLインジェクション等のリスクなし"
+
+  input_validation:
+    status: "適切"
+    validated_inputs:
+      - "period パラメータ (正の整数チェック)"
+      - "dataframes リスト長チェック"
+      - "symbols と dataframes の整合性チェック"
+
+# =============================================================================
+# パフォーマンス分析
+# =============================================================================
+performance:
+  quadratic_or_worse_algorithms: 0
+
+  memory_concerns:
+    - id: "PERF-001"
+      location: "line 515, 601"
+      description: "pd.concat による DataFrame 結合"
+      impact: "大量データ時のメモリ使用増"
+      recommendation: "必要に応じて pre-allocation を検討"
+    - id: "PERF-002"
+      location: "line 770"
+      description: "ループ内で list.append + 最後に pd.concat"
+      impact: "銘柄数に比例してメモリ増加"
+      recommendation: "少量データなら許容範囲"
+
+  io_operations:
+    - id: "PERF-003"
+      location: "lines 802, 812"
+      description: "yf.download() - ネットワークI/O"
+      impact: "API呼び出しがボトルネック"
+      current_mitigation: "curl_cffi セッション使用"
+      recommendation: "キャッシュ層の活用を検討"
+    - id: "PERF-004"
+      location: "__init__ (line 717)"
+      description: "初期化時に全ティッカーのデータ取得"
+      impact: "インスタンス生成が重い"
+      recommendation: "遅延ロードパターンの検討"
+
+  inefficient_patterns:
+    - id: "PERF-005"
+      location: "lines 49, 406"
+      description: "DataFrame columns のループ検索"
+      impact: "O(n) - カラム数に比例"
+      current_count: 2
+      recommendation: "許容範囲だが、set検索で O(1) 化可能"
+
+  caching_opportunities:
+    - location: "MarketPerformanceAnalyzer"
+      description: "performance_table の再計算回避"
+      current: "コンストラクタで1回計算済み"
+      status: "対応済み"
+    - location: "yf_download_with_curl"
+      description: "同一ティッカーの重複取得防止"
+      status: "未対応 - キャッシュ層追加推奨"
+
+  dataframe_operations:
+    copy_calls: 0
+    concat_calls: 3
+    dropna_calls: 6
+    fillna_calls: 1
+
+# =============================================================================
+# 発見事項
+# =============================================================================
+findings:
+  critical: []
+
+  high:
+    - id: "ANA-001"
+      category: "アーキテクチャ"
+      location: "MarketPerformanceAnalyzer クラス全体"
+      description: "単一責任原則 (SRP) 違反の可能性"
+      evidence: "1クラスで: データ取得 + 分析 + 可視化 = 18メソッド、542行"
+      recommendation: |
+        以下の分割を検討:
+        1. MarketDataFetcher: データ取得専用
+        2. PerformanceCalculator: リターン計算
+        3. PerformanceVisualizer: プロット生成
+
+  medium:
+    - id: "ANA-002"
+      category: "コード品質"
+      location: "correlation メソッド (line 326)"
+      description: "サイクロマティック複雑度 11 (閾値: 10)"
+      evidence: "CC=11, 130行"
+      recommendation: "カラム検索ロジックを共通化、早期リターンの活用"
+
+    - id: "ANA-003"
+      category: "コード品質"
+      location: "line 766-767, 873-874"
+      description: "print文使用によるログ出力の不統一"
+      evidence: "print(f\"エラー: ...\"), print(f\"警告: ...\")"
+      recommendation: "logger.error(), logger.warning() に統一"
+
+    - id: "ANA-004"
+      category: "パフォーマンス"
+      location: "__init__ (line 717)"
+      description: "コンストラクタでの重いI/O処理"
+      evidence: "yf_download_with_curl() を初期化時に実行"
+      recommendation: "遅延ロード (Lazy Loading) パターンの適用"
+
+    - id: "ANA-005"
+      category: "アーキテクチャ"
+      location: "line 400-424 と line 48-56"
+      description: "カラム検索ロジックの重複"
+      evidence: "_find_column と correlation 内の検索ロジック"
+      recommendation: "_find_column の再利用"
+
+  low:
+    - id: "ANA-006"
+      category: "コード品質"
+      location: "lines 661-671"
+      description: "コメントアウトされたコード"
+      evidence: "TICKERS_WORLD がコメントアウト"
+      recommendation: "不要なら削除、必要なら設定化"
+
+    - id: "ANA-007"
+      category: "ドキュメント"
+      location: "MarketPerformanceAnalyzer"
+      description: "日本語と英語のdocstringが混在"
+      evidence: "クラスdocstringは日本語、メソッドは英語"
+      recommendation: "言語を統一"
+
+# =============================================================================
+# 改善ロードマップ
+# =============================================================================
+improvement_roadmap:
+  short_term:
+    - priority: 1
+      task: "print文をlogger呼び出しに置換"
+      related_findings:
+        - "ANA-003"
+      effort: "低"
+      impact: "ログ監視・デバッグ改善"
+
+    - priority: 2
+      task: "コメントアウトコードの整理"
+      related_findings:
+        - "ANA-006"
+      effort: "低"
+      impact: "可読性向上"
+
+    - priority: 3
+      task: "_find_column の再利用でカラム検索ロジック統一"
+      related_findings:
+        - "ANA-005"
+      effort: "低"
+      impact: "DRY原則遵守"
+
+  mid_term:
+    - priority: 1
+      task: "correlation メソッドのリファクタリング"
+      related_findings:
+        - "ANA-002"
+      effort: "中"
+      impact: "保守性向上、テスト容易化"
+
+    - priority: 2
+      task: "MarketPerformanceAnalyzer の遅延ロード実装"
+      related_findings:
+        - "ANA-004"
+      effort: "中"
+      impact: "初期化時間短縮"
+
+  long_term:
+    - priority: 1
+      task: "MarketPerformanceAnalyzer の責務分離"
+      related_findings:
+        - "ANA-001"
+      effort: "高"
+      impact: "テスト容易化、拡張性向上"
+      approach: |
+        1. MarketDataFetcher: yfinance/curl_cffi 関連
+        2. ReturnCalculator: リターン計算ロジック
+        3. PerformanceVisualizer: Plotlyプロット生成
+        4. MarketPerformanceAnalyzer: ファサードとして統合
+
+# =============================================================================
+# 総評
+# =============================================================================
+summary_evaluation:
+  strengths:
+    - "型ヒント100%カバレッジで型安全性が高い"
+    - "pyright/ruff でエラー・警告ゼロ"
+    - "Analysis クラスのメソッドチェーン設計が優秀"
+    - "エラーハンドリングが体系的（カスタム例外クラス使用）"
+    - "ロギングが概ね適切に実装"
+
+  weaknesses:
+    - "MarketPerformanceAnalyzer の責務が広すぎる"
+    - "コンストラクタでの重いI/O処理"
+    - "一部 print 文が残存"
+    - "コメントアウトコードの残存"
+
+  overall_assessment: |
+    Analysis クラスは高品質で、メソッドチェーンパターンを適切に実装。
+    MarketPerformanceAnalyzer は機能は豊富だが、単一責任原則の観点から
+    責務分離の検討が望ましい。セキュリティ上の重大な問題はない。
+    短期的な改善（print→logger、コメント整理）を実施後、
+    中長期でアーキテクチャ改善を計画することを推奨。

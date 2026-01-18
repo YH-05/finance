@@ -41,7 +41,8 @@ prompt: |
 
   ## レポート出力
   分析完了後、以下のパスにYAML形式でレポートを保存してください：
-  - 出力先: src/<library_name>/docs/analysis-report-YYYYMMDD.yaml
+  - 出力先: docs/code-analysis-report/analysis-report-YYYYMMDD-<target>.yaml
+  - テンプレート参照: docs/code-analysis-report/TEMPLATE.yaml
   - --output オプションが指定された場合はそのパスに出力
 ```
 
@@ -52,6 +53,16 @@ prompt: |
 ```
 
 ## オプション
+
+### --all
+
+全ての観点（code, arch, security, perf）を一括で分析：
+
+```bash
+/analyze --all
+# 上記は以下と同等:
+# /analyze --code --arch --security --perf
+```
 
 ### --code
 
@@ -97,8 +108,8 @@ prompt: |
 
 レポートの出力先を指定：
 
-- デフォルト: `src/<library_name>/docs/analysis-report-YYYYMMDD.yaml`
-- 例: `--output reports/my-analysis.yaml`
+- デフォルト: `docs/code-analysis-report/analysis-report-YYYYMMDD-<target>.yaml`
+- 例: `--output docs/code-analysis-report/custom-analysis.yaml`
 
 ### 分析深度フラグ
 
@@ -111,6 +122,9 @@ prompt: |
 ### 基本的な使用
 
 ```bash
+# 全観点の包括的分析
+/analyze --all
+
 # カレントディレクトリのコード品質分析
 /analyze --code
 
@@ -124,6 +138,9 @@ prompt: |
 ### 複合分析
 
 ```bash
+# 全観点を詳細に分析
+/analyze --all --think-hard
+
 # コードとセキュリティの包括的分析
 /analyze --code --security --think-hard
 
@@ -135,24 +152,42 @@ prompt: |
 
 ```bash
 # 特定のパスにレポートを出力
-/analyze --code --output src/my_lib/docs/analysis-report-20240115.yaml
+/analyze --code --output docs/code-analysis-report/custom-report.yaml
 
-# レポートディレクトリに出力
-/analyze --arch --output reports/architecture-analysis.yaml
+# デフォルト出力先（自動命名）
+/analyze --all @src/rss/
+# → docs/code-analysis-report/analysis-report-20260118-rss.yaml
 ```
 
 ## 出力形式
 
-分析結果は以下のYAML形式でファイルに保存されます：
+分析結果は以下のYAML形式でファイルに保存されます。
 
 ### 出力先
 
 ```
-src/<library_name>/docs/analysis-report-YYYYMMDD.yaml
+docs/code-analysis-report/analysis-report-YYYYMMDD-<target>.yaml
 ```
 
-- `<library_name>`: 分析対象のライブラリ名（自動検出）
-- `YYYYMMDD`: 分析実行日（例: 20240115）
+- `YYYYMMDD`: 分析実行日（例: 20260118）
+- `<target>`: 分析対象（例: market_analysis, rss, full）
+
+### ファイル命名例
+
+| 分析対象 | 出力ファイル名 |
+|----------|----------------|
+| `@src/market_analysis/` | `analysis-report-20260118-market_analysis.yaml` |
+| `@src/rss/` | `analysis-report-20260118-rss.yaml` |
+| プロジェクト全体 | `analysis-report-20260118-full.yaml` |
+| 特定ファイル | `analysis-report-20260118-analysis_py.yaml` |
+
+### テンプレート
+
+レポートの詳細構造は以下を参照：
+
+```
+docs/code-analysis-report/TEMPLATE.yaml
+```
 
 ### レポート構造
 
@@ -282,4 +317,4 @@ improvement_roadmap:
 - 大規模なコードベースでは`--ultrathink`の使用に時間がかかる場合があります
 - セキュリティ分析は補完的なツールとして使用し、専門的なセキュリティ監査の代替にはなりません
 - パフォーマンス分析は静的解析に基づくため、実際のベンチマークと併用してください
-- レポートファイルは上書きされるため、履歴を残す場合は日付付きファイル名を使用してください
+- レポートは日付とターゲット名で一意に命名されるため、同日・同対象の再実行で上書きされます

@@ -1,0 +1,259 @@
+# =============================================================================
+# コード分析レポートテンプレート
+# =============================================================================
+# このファイルは /analyze コマンドが生成するレポートのテンプレートです。
+# 実際のレポートは analysis-report-YYYYMMDD-<target>.yaml として生成されます。
+#
+# 命名規則:
+#   - analysis-report-20260118-market_analysis.yaml
+#   - analysis-report-20260118-rss.yaml
+#   - analysis-report-20260118-full.yaml (プロジェクト全体)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# メタデータ
+# -----------------------------------------------------------------------------
+metadata:
+  generated_at: "YYYY-MM-DD HH:MM:SS"     # 生成日時
+  target: "<分析対象パス>"                  # 分析対象（ファイル/ディレクトリ）
+  analysis_modes:                          # 実行した分析モード
+    - code                                 # コード品質
+    - arch                                 # アーキテクチャ
+    - security                             # セキュリティ
+    - perf                                 # パフォーマンス
+  depth: "standard"                        # 分析深度: standard | think-hard | ultrathink
+  command: "/analyze --all <target>"       # 実行コマンド
+
+# -----------------------------------------------------------------------------
+# サマリー
+# -----------------------------------------------------------------------------
+summary:
+  total_files: 0                           # 分析対象ファイル数
+  total_lines: 0                           # 総行数
+  total_functions: 0                       # 関数数
+  total_classes: 0                         # クラス数
+
+# -----------------------------------------------------------------------------
+# スコア (0-100)
+# -----------------------------------------------------------------------------
+scores:
+  code_quality: 0                          # コード品質スコア
+  architecture: 0                          # アーキテクチャスコア
+  security: 0                              # セキュリティスコア
+  performance: 0                           # パフォーマンススコア
+  overall: 0                               # 総合スコア
+
+# =============================================================================
+# コード品質分析
+# =============================================================================
+code_quality:
+  # 複雑性メトリクス
+  complexity:
+    average: 0.0                           # 平均サイクロマティック複雑度
+    max: 0                                 # 最大サイクロマティック複雑度
+    max_function: "<関数名>"               # 最も複雑な関数
+    high_complexity_functions:             # 高複雑度関数リスト (CC > 10)
+      - name: "<関数名>"
+        file: "<ファイルパス>"
+        line: 0
+        complexity: 0
+        recommendation: "<改善提案>"
+
+  # コード重複
+  duplication:
+    rate: "0%"                             # 重複率
+    locations:                             # 重複箇所
+      - files:
+          - "<ファイル1>"
+          - "<ファイル2>"
+        lines: "10-20"
+        description: "<重複内容の説明>"
+
+  # カバレッジ
+  type_hint_coverage: "0%"                 # 型ヒントカバレッジ
+  docstring_coverage: "0%"                 # docstringカバレッジ
+
+  # 命名規則
+  naming_conventions:
+    compliant: true                        # 規約準拠
+    issues: []                             # 違反箇所リスト
+
+  # 長い関数 (50行以上)
+  long_functions:
+    - name: "<関数名>"
+      line: 0
+      lines: 0
+      recommendation: "<改善提案>"
+
+# =============================================================================
+# アーキテクチャ分析
+# =============================================================================
+architecture:
+  layer_structure: "<評価>"                # レイヤー構造の評価
+
+  # クラス責務分析
+  class_responsibilities:
+    ClassName:
+      role: "<役割>"
+      methods: 0
+      cohesion: "高 | 中 | 低"
+      evaluation: "<評価コメント>"
+      issues: []
+
+  # 依存関係
+  circular_dependencies: false             # 循環依存の有無
+  problematic_dependencies:                # 問題のある依存関係
+    - source: "<依存元>"
+      target: "<依存先>"
+      reason: "<理由>"
+
+  # 設計パターン
+  design_patterns:
+    used:                                  # 使用中のパターン
+      - name: "<パターン名>"
+        location: "<場所>"
+        evaluation: "<評価>"
+    recommended:                           # 推奨パターン
+      - name: "<パターン名>"
+        target: "<適用対象>"
+        reason: "<理由>"
+
+# =============================================================================
+# セキュリティ分析
+# =============================================================================
+security:
+  # 重大度別の問題
+  critical_issues: []                      # 致命的な問題
+  high_issues: []                          # 高リスクの問題
+
+  medium_issues:                           # 中リスクの問題
+    - id: "SEC-001"
+      category: "<カテゴリ>"
+      location: "<場所>"
+      description: "<説明>"
+      evidence: "<証拠>"
+      recommendation: "<推奨対応>"
+      owasp: "<OWASP参照>"                 # 例: A09:2021
+
+  low_issues: []                           # 低リスクの問題
+
+  info:                                    # 情報レベルの指摘
+    - id: "SEC-INFO-001"
+      description: "<説明>"
+      mitigation: "<緩和策>"
+
+  # 入力検証
+  input_validation:
+    status: "適切 | 不十分 | 未実装"
+    validated_inputs: []                   # 検証済み入力
+    unvalidated_inputs: []                 # 未検証入力
+
+# =============================================================================
+# パフォーマンス分析
+# =============================================================================
+performance:
+  # アルゴリズム複雑度
+  quadratic_or_worse_algorithms: 0         # O(n²)以上のアルゴリズム数
+
+  # メモリ関連
+  memory_concerns:
+    - id: "PERF-001"
+      location: "<場所>"
+      description: "<説明>"
+      impact: "<影響>"
+      recommendation: "<推奨対応>"
+
+  # I/O操作
+  io_operations:
+    - id: "PERF-002"
+      location: "<場所>"
+      description: "<説明>"
+      impact: "<影響>"
+      current_mitigation: "<現在の緩和策>"
+      recommendation: "<推奨対応>"
+
+  # 非効率なパターン
+  inefficient_patterns:
+    - id: "PERF-003"
+      location: "<場所>"
+      description: "<説明>"
+      impact: "<影響>"
+      current_count: 0
+      recommendation: "<推奨対応>"
+
+  # キャッシング機会
+  caching_opportunities:
+    - location: "<場所>"
+      description: "<説明>"
+      status: "対応済み | 未対応"
+
+  # DataFrame操作統計
+  dataframe_operations:
+    copy_calls: 0
+    concat_calls: 0
+    dropna_calls: 0
+    fillna_calls: 0
+
+# =============================================================================
+# 発見事項 (重大度別)
+# =============================================================================
+findings:
+  critical:                                # 致命的 - 即座に対応必要
+    - id: "ANA-001"
+      category: "<コード品質 | アーキテクチャ | セキュリティ | パフォーマンス>"
+      location: "<ファイル>:<行番号>"
+      description: "<問題の説明>"
+      evidence: "<メトリクス値や具体例>"
+      recommendation: "<改善案>"
+
+  high: []                                 # 高 - 早急に対応推奨
+
+  medium: []                               # 中 - 計画的に対応
+
+  low: []                                  # 低 - 余裕があれば対応
+
+# =============================================================================
+# 改善ロードマップ
+# =============================================================================
+improvement_roadmap:
+  # 短期 (1週間以内)
+  short_term:
+    - priority: 1
+      task: "<タスク内容>"
+      related_findings:
+        - "ANA-001"
+      effort: "低 | 中 | 高"
+      impact: "<期待される効果>"
+
+  # 中期 (1ヶ月以内)
+  mid_term:
+    - priority: 1
+      task: "<タスク内容>"
+      related_findings: []
+      effort: "低 | 中 | 高"
+      impact: "<期待される効果>"
+
+  # 長期
+  long_term:
+    - priority: 1
+      task: "<タスク内容>"
+      related_findings: []
+      effort: "低 | 中 | 高"
+      impact: "<期待される効果>"
+      approach: |
+        <詳細な実装アプローチ>
+
+# =============================================================================
+# 総評
+# =============================================================================
+summary_evaluation:
+  strengths:                               # 強み
+    - "<強み1>"
+    - "<強み2>"
+
+  weaknesses:                              # 弱み
+    - "<弱み1>"
+    - "<弱み2>"
+
+  overall_assessment: |                    # 総合評価
+    <総合的な評価コメント>
