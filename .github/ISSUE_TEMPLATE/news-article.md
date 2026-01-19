@@ -5,8 +5,6 @@ title: "[NEWS] "
 labels: news
 ---
 
-### 概要
-
 {{summary}}
 
 ### 情報源URL

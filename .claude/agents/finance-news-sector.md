@@ -297,11 +297,15 @@ for result in fetch_result["results"]:
 - **Issueボディは `.github/ISSUE_TEMPLATE/news-article.md` テンプレートを読み込んで使用**
 - **概要（summary）は400字以上の詳細な日本語要約を使用**
 
-> **🚨 URL設定の重要ルール 🚨**:
-> `{{url}}`には**RSSから取得したオリジナルのlink**をそのまま使用すること。
-> - ✅ 正しい: RSSの`link`フィールドの値（例: `item["link"]`）
+> **🚨 URL設定【最重要ルール】🚨**:
+> `{{url}}`には**RSSから取得したオリジナルのlink**を**絶対に変更せず**そのまま使用すること。
+> - ✅ 正しい: RSSの`link`フィールドの値（`item["link"]`をそのまま使用）
 > - ❌ 間違い: WebFetchのリダイレクト先URL
-> - ❌ 間違い: URLを推測・加工したもの
+> - ❌ 間違い: URLを推測・加工・短縮したもの
+> - ❌ 間違い: news-article-fetcherの戻り値のURLを加工したもの
+>
+> **サブエージェント連携時の注意**:
+> `news-article-fetcher`に渡すURLも、戻り値で受け取るURLも、一切変更してはいけない。
 
 ```bash
 # Step 1: テンプレートを読み込む（frontmatter除外）
