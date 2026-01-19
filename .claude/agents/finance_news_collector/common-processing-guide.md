@@ -2,6 +2,139 @@
 
 このガイドは、テーマ別ニュース収集エージェント（finance-news-{theme}）の共通処理を定義します。
 
+## 🚨 最重要: 入力データ検証（Phase 0）
+
+> **参照**: `.claude/rules/subagent-data-passing.md`
+
+サブエージェントが処理を開始する前に、**入力データの完全性を必ず検証**すること。
+
+### 必須フィールドチェック
+
+```python
+def validate_article_data(article: dict) -> tuple[bool, str]:
+    """記事データの必須フィールドを検証する
+
+    Parameters
+    ----------
+    article : dict
+        検証対象の記事データ
+
+    Returns
+    -------
+    tuple[bool, str]
+        (検証成功, エラーメッセージ)
+    """
+
+    required_fields = ["title", "link", "published", "summary"]
+
+    for field in required_fields:
+        if field not in article or not article[field]:
+            return False, f"必須フィールド '{field}' がありません"
+
+    # URLの形式チェック
+    if not article["link"].startswith(("http://", "https://")):
+        return False, f"無効なURL形式: {article['link']}"
+
+    return True, ""
+
+
+def validate_input_data(data: dict) -> tuple[bool, list[str]]:
+    """入力データ全体を検証する
+
+    Parameters
+    ----------
+    data : dict
+        プロンプトまたは一時ファイルから受け取ったデータ
+
+    Returns
+    -------
+    tuple[bool, list[str]]
+        (検証成功, エラーメッセージのリスト)
+    """
+
+    errors = []
+
+    # 1. rss_items または articles の存在確認
+    articles = data.get("rss_items") or data.get("articles") or []
+    if not articles:
+        errors.append("記事データが空です")
+        return False, errors
+
+    # 2. 各記事の必須フィールド検証
+    for i, article in enumerate(articles):
+        valid, msg = validate_article_data(article)
+        if not valid:
+            errors.append(f"記事[{i}]: {msg}")
+
+    # 3. 簡略化データの検出（警告）
+    if isinstance(articles[0], str):
+        errors.append("データが文字列形式です。JSON形式の完全なデータが必要です")
+
+    return len(errors) == 0, errors
+```
+
+### 検証失敗時の対応
+
+```python
+# Phase 0: 入力データ検証
+valid, errors = validate_input_data(input_data)
+
+if not valid:
+    # エラー報告して処理中断
+    error_report = "\n".join([f"  - {e}" for e in errors])
+    print(f"""
+## ⛔ 入力データ検証エラー
+
+入力データが不完全なため処理を中断します。
+
+### 検出されたエラー
+{error_report}
+
+### 必要なデータ形式
+
+記事データには以下のフィールドが必須です:
+- `title`: 記事タイトル
+- `link`: 元記事のURL（**絶対に省略禁止**）
+- `published`: 公開日時
+- `summary`: 記事要約
+
+### 参照
+- `.claude/rules/subagent-data-passing.md`
+""")
+    # 処理を終了
+    return
+```
+
+### データ形式の例
+
+**正しい形式**:
+```json
+{
+  "rss_items": [
+    {
+      "item_id": "60af4cc3-0a47-4cfb-ae89-ed8872209f5d",
+      "title": "Trump threatens to sue JPMorgan Chase",
+      "link": "https://www.cnbc.com/2026/01/17/trump-jpmorgan-chase-debanking.html",
+      "published": "2026-01-18T13:47:50+00:00",
+      "summary": "President Trump threatened to sue JPMorgan...",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-18T22:40:08.589493+00:00"
+    }
+  ],
+  "existing_issues": [...]
+}
+```
+
+**禁止される形式**:
+```
+# ❌ 簡略化されたリスト形式は絶対禁止
+1. "Trump threatens JPMorgan" - 銀行関連
+2. "BYD is a buy" - EV関連
+```
+
+---
+
 ## 共通設定
 
 - **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`（Markdown形式）

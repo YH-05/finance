@@ -188,6 +188,11 @@ Processing:
 
 #### 5. テーマ別エージェント並列起動
 
+> **🚨 重要: サブエージェントへのデータ渡しルール 🚨**
+>
+> 必ず `.claude/rules/subagent-data-passing.md` を参照すること。
+> **データの簡略化・省略は絶対禁止**。完全なJSON形式でデータを渡すこと。
+
 **対象テーマの決定**:
 ```python
 # --themes パラメータで指定
@@ -197,39 +202,85 @@ else:
     target_themes = themes.split(",")
 ```
 
+**データ渡し方式（2つのパターン）**:
+
+**パターンA: 一時ファイル経由（推奨）**
+```python
+# Phase 2で作成した一時ファイルを参照
+temp_file = f".tmp/news-collection-{timestamp}.json"
+
+Task(
+    subagent_type="finance-news-stock",
+    prompt=f"一時ファイルを読み込んで処理してください: {temp_file}"
+)
+```
+
+**パターンB: プロンプト内でJSON直接渡し**
+```python
+# 完全なRSSデータをJSON形式で渡す（簡略化禁止）
+Task(
+    subagent_type="finance-news-stock",
+    prompt=f"""以下のRSSデータを処理してください。
+
+## RSS記事データ（完全版）【省略禁止】
+```json
+{json.dumps(rss_items, ensure_ascii=False, indent=2)}
+```
+
+## 既存Issue（重複チェック用）
+```json
+{json.dumps(existing_issues, ensure_ascii=False, indent=2)}
+```
+"""
+)
+```
+
+**⛔ 絶対禁止: データの簡略化**
+```python
+# ❌ これは絶対にやってはいけない
+Task(
+    prompt="""以下の記事を処理:
+    1. "記事タイトル" - 簡単な説明
+    2. "記事タイトル" - 簡単な説明
+    """
+)
+# → URLがないためIssue作成不可、重大な障害発生
+```
+
 **並列起動**:
 ```
 # 複数のTask toolを並列呼び出し（単一メッセージで複数tool use）
 
 Task: finance-news-index
-  - input: .tmp/news-collection-{timestamp}.json
+  - input: .tmp/news-collection-{timestamp}.json（完全なRSSデータ）
   - output: GitHub Issues (Status=Index)
 
 Task: finance-news-stock
-  - input: .tmp/news-collection-{timestamp}.json
+  - input: .tmp/news-collection-{timestamp}.json（完全なRSSデータ）
   - output: GitHub Issues (Status=Stock)
 
 Task: finance-news-sector
-  - input: .tmp/news-collection-{timestamp}.json
+  - input: .tmp/news-collection-{timestamp}.json（完全なRSSデータ）
   - output: GitHub Issues (Status=Sector)
 
 Task: finance-news-macro
-  - input: .tmp/news-collection-{timestamp}.json
+  - input: .tmp/news-collection-{timestamp}.json（完全なRSSデータ）
   - output: GitHub Issues (Status=Macro Economics)
 
 Task: finance-news-ai
-  - input: .tmp/news-collection-{timestamp}.json
+  - input: .tmp/news-collection-{timestamp}.json（完全なRSSデータ）
   - output: GitHub Issues (Status=AI)
 ```
 
 **各エージェントの処理**:
-1. 一時ファイルから記事データ読み込み
-2. テーマキーワードでフィルタリング
-3. 除外キーワードチェック
-4. 重複チェック
-5. GitHub Issue作成 (`gh issue create --title "[{theme_ja}] {japanese_title}" --label "news"`)
-6. Project追加 (`gh project item-add 15 --owner YH-05 --url {issue_url}`)
-7. Status設定 (GraphQL API)
+1. 一時ファイルから記事データ読み込み（または直接JSON受信）
+2. **入力データ検証**（link, published, title, summaryの存在確認）
+3. テーマキーワードでフィルタリング
+4. 除外キーワードチェック
+5. 重複チェック
+6. GitHub Issue作成 (`gh issue create --title "[{theme_ja}] {japanese_title}" --label "news"`)
+7. Project追加 (`gh project item-add 15 --owner YH-05 --url {issue_url}`)
+8. Status設定 (GraphQL API)
 
 ### Phase 4: 結果報告
 
