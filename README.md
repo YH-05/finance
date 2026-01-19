@@ -124,12 +124,13 @@ uv run pyright --version
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (69 agents + 36 commands + 14 skills)
-│   ├── agents/                              # (69) Specialized agents
+├── .claude/                                 # Claude Code configuration (67 agents + 36 commands + 13 skills)
+│   ├── agents/                              # (67) Specialized agents
 │   │   ├── deep-research/
 │   │   └── finance_news_collector/          # テーマ別収集エージェント
 │   ├── commands/                            # (36) Slash commands
-│   ├── skills/                              # (14) Skill modules
+│   ├── rules/                               # Shared rule definitions
+│   ├── skills/                              # (13) Skill modules
 │   └── agents.md
 ├── .github/                                 # GitHub configuration
 │   ├── ISSUE_TEMPLATE/                      # Issue templates
@@ -140,7 +141,7 @@ finance/                                     # Project root
 │   ├── sqlite/                              # SQLite OLTP database
 │   ├── raw/                                 # Raw data (Parquet format)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                             # (28) RSS feed subscriptions
+│   │   ├── rss/                             # (33) RSS feed subscriptions
 │   │   └── yfinance/                        # stocks, forex, indices
 │   ├── processed/                           # Processed data (daily/aggregated)
 │   ├── exports/                             # Exported data (csv/json)

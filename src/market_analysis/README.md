@@ -93,57 +93,59 @@ result = (
 ## ディレクトリ構成
 
 <!-- AUTO-GENERATED: STRUCTURE -->
+
 ```
 market_analysis/
-├── __init__.py                  # 公開API定義（__version__, __all__）
+├── __init__.py                  # 公開API定義（100行）
 ├── py.typed                     # PEP 561マーカー
-├── types.py                     # 型定義（TypedDict, Enum等）13種類
-├── errors.py                    # 例外クラス定義（8クラス）
+├── types.py                     # 型定義13種（468行）
+├── errors.py                    # 例外クラス8種（448行）
 ├── api/                         # パブリックAPI（推奨エントリポイント）
 │   ├── __init__.py
-│   ├── analysis.py              # Analysis - テクニカル分析（メソッドチェーン対応）
-│   ├── chart.py                 # Chart - チャート生成インターフェース
-│   └── market_data.py           # MarketData - データ取得統合インターフェース
+│   ├── analysis.py              # Analysis - テクニカル分析（928行）
+│   ├── chart.py                 # Chart - チャート生成（395行）
+│   └── market_data.py           # MarketData - データ取得統合（728行）
 ├── analysis/                    # 分析ロジック
 │   ├── __init__.py
-│   ├── analyzer.py              # Analyzer（メイン分析クラス）
-│   ├── correlation.py           # CorrelationAnalyzer（相関分析）
-│   └── indicators.py            # IndicatorCalculator（テクニカル指標）
+│   ├── analyzer.py              # Analyzer（342行）
+│   ├── correlation.py           # CorrelationAnalyzer（423行）
+│   └── indicators.py            # IndicatorCalculator（384行）
 ├── core/                        # データフェッチャー
 │   ├── __init__.py
-│   ├── base_fetcher.py          # BaseDataFetcher（抽象基底クラス）
-│   ├── data_fetcher_factory.py  # DataFetcherFactory（ファクトリパターン）
-│   ├── yfinance_fetcher.py      # YFinanceFetcher（Yahoo Finance株価）
-│   ├── fred_fetcher.py          # FREDFetcher（FRED API経済指標）
-│   ├── bloomberg_fetcher.py     # BloombergFetcher（Bloomberg Terminal）
-│   ├── factset_fetcher.py       # FactSetFetcher（FactSetファイルローダー）
-│   └── mock_fetchers.py         # MockFetchers（テスト用モック実装）
+│   ├── base_fetcher.py          # BaseDataFetcher（309行）
+│   ├── data_fetcher_factory.py  # DataFetcherFactory（139行）
+│   ├── yfinance_fetcher.py      # YFinanceFetcher（422行）
+│   ├── fred_fetcher.py          # FREDFetcher（500行）
+│   ├── bloomberg_fetcher.py     # BloombergFetcher（507行）
+│   ├── factset_fetcher.py       # FactSetFetcher（592行）
+│   └── mock_fetchers.py         # MockFetchers（549行）
 ├── export/                      # データエクスポート
 │   ├── __init__.py
-│   └── exporter.py              # DataExporter（CSV/JSON/Parquet）
+│   └── exporter.py              # DataExporter（571行）
 ├── utils/                       # ユーティリティ関数
 │   ├── __init__.py
-│   ├── cache.py                 # SQLiteキャッシュ（TTL付き）
-│   ├── logger_factory.py        # ロガー生成ファクトリ
-│   ├── logging_config.py        # 構造化ロギング設定
-│   ├── retry.py                 # リトライデコレータ（指数バックオフ）
-│   ├── ticker_registry.py       # ティッカーレジストリ（シンボル管理）
-│   └── validators.py            # バリデーション関数（日付・ティッカー等）
+│   ├── cache.py                 # SQLiteキャッシュ（521行）
+│   ├── logger_factory.py        # ロガー生成（40行）
+│   ├── logging_config.py        # 構造化ロギング（279行）
+│   ├── retry.py                 # リトライ（333行）
+│   ├── ticker_registry.py       # ティッカーレジストリ（571行）
+│   └── validators.py            # バリデーション（491行）
 ├── visualization/               # チャート生成
 │   ├── __init__.py
-│   ├── charts.py                # ChartBuilder, ChartConfig, ChartTheme
-│   ├── heatmap.py               # HeatmapChart（相関マトリクス可視化）
-│   └── price_charts.py          # CandlestickChart, LineChart（価格チャート）
-└── docs/                        # ライブラリドキュメント
-    ├── project.md               # プロジェクトファイル
-    ├── architecture.md          # アーキテクチャ設計書
-    ├── development-guidelines.md # 開発ガイドライン
-    ├── functional-design.md     # 機能設計書
-    ├── glossary.md              # 用語集
-    ├── library-requirements.md  # LRD（ライブラリ要求定義書）
-    ├── repository-structure.md  # リポジトリ構造定義書
-    └── tasks.md                 # タスク管理
+│   ├── charts.py                # ChartBuilder（552行）
+│   ├── heatmap.py               # HeatmapChart（205行）
+│   └── price_charts.py          # CandlestickChart, LineChart（616行）
+└── docs/                        # ライブラリドキュメント（8ファイル）
+    ├── project.md
+    ├── architecture.md
+    ├── development-guidelines.md
+    ├── functional-design.md
+    ├── glossary.md
+    ├── library-requirements.md
+    ├── repository-structure.md
+    └── tasks.md
 ```
+
 <!-- END: STRUCTURE -->
 
 ## 実装状況
@@ -152,16 +154,16 @@ market_analysis/
 
 | モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
 |-----------|------|-----------|------|-------|------|
-| `types.py` | ✅ 実装済み | 1 | 592 | ✅ | TypedDict, Enum等の型定義（13型） |
-| `errors.py` | ✅ 実装済み | 1 | 521 | ✅ | MarketAnalysisError等の例外クラス（8エラー） |
-| `api/` | ✅ 実装済み | 4 | 2,056 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer（メソッドチェーン対応） |
+| `types.py` | ✅ 実装済み | 1 | 468 | ✅ | 型定義13種（TypedDict, Enum等） |
+| `errors.py` | ✅ 実装済み | 1 | 448 | ✅ | 例外クラス8種（MarketAnalysisError等） |
+| `api/` | ✅ 実装済み | 4 | 2,056 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer |
 | `analysis/` | ✅ 実装済み | 4 | 1,158 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 8 | 3,057 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers, DataFetcherFactory |
-| `export/` | ✅ 実装済み | 2 | 582 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
-| `utils/` | ✅ 実装済み | 7 | 2,299 | ✅ (1) | logging, validators, cache, retry, ticker_registry, logger_factory |
-| `visualization/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart, LineChart |
+| `core/` | ✅ 実装済み | 8 | 3,057 | ✅ (7) | 5種データフェッチャー + Factory + Mock |
+| `export/` | ✅ 実装済み | 2 | 582 | ✅ (1) | DataExporter（CSV/JSON/Parquet） |
+| `utils/` | ✅ 実装済み | 7 | 2,299 | ✅ (1) | cache, retry, validators, ticker_registry等 |
+| `visualization/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | ChartBuilder, HeatmapChart, LineChart等 |
 
-**テスト構成**: 単体テスト (18) + 統合テスト (1) = 計19テスト
+**テスト構成**: 単体テスト 18ファイル + 統合テスト 1ファイル = 計19テスト
 
 **データソース対応状況**:
 - ✅ Yahoo Finance (yfinance) - 株価・為替・指数データ
@@ -473,7 +475,7 @@ logger.info("処理開始")
 | テストカバレッジ | N/A |
 
 **モジュール構成**:
-- コアモジュール: `types.py` (型定義13種, 592行), `errors.py` (例外クラス8種, 521行)
+- コアモジュール: `types.py` (型定義13種, 468行), `errors.py` (例外クラス8種, 448行)
 - 機能モジュール: `api/` (4クラス, 2,056行), `analysis/` (3クラス, 1,158行), `core/` (8フェッチャー, 3,057行), `export/` (1クラス, 582行), `utils/` (7モジュール, 2,299行), `visualization/` (4クラス, 1,427行)
 
 **実装進捗**:

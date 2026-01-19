@@ -12,7 +12,7 @@ argument-hint: [--since 1d|3d|7d] [--themes "index,stock,..."] [--limit N] [--dr
 | --since | - | 1d | 公開日時フィルタ（1d=1日, 3d=3日, 7d=7日以内の記事のみ） |
 | --project | - | 15 | GitHub Project番号（Finance News Collection） |
 | --limit | - | 50 | 取得する記事数の最大値 |
-| --themes | - | all | 対象テーマ（index,stock,sector,macro,ai またはall） |
+| --themes | - | all | 対象テーマ（index,stock,sector,macro,ai,finance またはall） |
 | --dry-run | - | false | GitHub投稿せずに収集結果のみ表示 |
 
 ### --since オプション詳細
@@ -49,7 +49,8 @@ Phase 3: テーマ別収集（並列）
 ├── finance-news-stock      [Status=Stock]
 ├── finance-news-sector     [Status=Sector]
 ├── finance-news-macro      [Status=Macro Economics]
-└── finance-news-ai         [Status=AI]
+├── finance-news-ai         [Status=AI]
+└── finance-news-finance    [Status=Finance]
     ↓ 各エージェントが並列実行
     ├── キーワードフィルタリング
     ├── 重複チェック
@@ -79,11 +80,12 @@ fi
 ```json
 {
   "themes": {
-    "index": { "github_status_id": "f75ad846", ... },
-    "stock": { "github_status_id": "47fc9ee4", ... },
-    "sector": { "github_status_id": "98236657", ... },
-    "macro": { "github_status_id": "c40731f6", ... },
-    "ai": { "github_status_id": "17189c86", ... }
+    "index": { "github_status_id": "3925acc3", ... },
+    "stock": { "github_status_id": "f762022e", ... },
+    "sector": { "github_status_id": "48762504", ... },
+    "macro": { "github_status_id": "730034a5", ... },
+    "ai": { "github_status_id": "6fbb43d0", ... },
+    "finance": { "github_status_id": "ac4a91b1", ... }
   },
   "common": { ... },
   "project": {
@@ -197,7 +199,7 @@ Processing:
 ```python
 # --themes パラメータで指定
 if themes == "all":
-    target_themes = ["index", "stock", "sector", "macro", "ai"]
+    target_themes = ["index", "stock", "sector", "macro", "ai", "finance"]
 else:
     target_themes = themes.split(",")
 ```
@@ -270,6 +272,10 @@ Task: finance-news-macro
 Task: finance-news-ai
   - input: .tmp/news-collection-{timestamp}.json（完全なRSSデータ）
   - output: GitHub Issues (Status=AI)
+
+Task: finance-news-finance
+  - input: .tmp/news-collection-{timestamp}.json（完全なRSSデータ）
+  - output: GitHub Issues (Status=Finance)
 ```
 
 **各エージェントの処理**:
@@ -304,7 +310,8 @@ Task: finance-news-ai
 | Sector | 50 | 30 | 8 | 0 | 5 | 3 | 0 |
 | Macro | 50 | 45 | 10 | 1 | 6 | 7 | 0 |
 | AI | 50 | 25 | 6 | 0 | 4 | 4 | 0 |
-| **合計** | 250 | 175 | 51 | 4 | 30 | **27** | 0 |
+| Finance | 50 | 35 | 9 | 1 | 5 | 5 | 0 |
+| **合計** | 300 | 210 | 60 | 5 | 35 | **32** | 0 |
 
 ### 投稿されたニュース（テーマ別抜粋）
 
@@ -322,6 +329,11 @@ Task: finance-news-ai
 1. **日銀、政策金利を引き上げ** [#210]
    - ソース: Bloomberg
    - URL: https://github.com/YH-05/finance/issues/210
+
+**Finance（金融・財務）**
+1. **テスラ、50億ドルの株式公開を発表** [#215]
+   - ソース: NASDAQ
+   - URL: https://github.com/YH-05/finance/issues/215
 
 ### 次のアクション
 
@@ -589,7 +601,7 @@ mcp__rss__add_feed(
 2. **RSS記事の取得制限**: 1回のリクエストで最大100件
 3. **重複チェックの範囲**: 直近100件のIssueのみ
 4. **実行頻度**: 1日1回を推奨（フィードの更新頻度に依存）
-5. **並列実行**: 5エージェント同時実行によるGitHub API負荷増加
+5. **並列実行**: 6エージェント同時実行によるGitHub API負荷増加
 6. **Issue番号の連続性**: 並列実行のため、Issue番号は連続しない可能性あり
 
 ## 関連リソース
@@ -601,6 +613,7 @@ mcp__rss__add_feed(
   - `.claude/agents/finance-news-sector.md` (Sectorテーマ)
   - `.claude/agents/finance-news-macro.md` (Macro Economicsテーマ)
   - `.claude/agents/finance-news-ai.md` (AIテーマ)
+  - `.claude/agents/finance-news-finance.md` (Financeテーマ)
 - **テーマ設定**: `data/config/finance-news-themes.json`
 - **GitHub Project**: https://github.com/users/YH-05/projects/15
 - **RSS MCPツール**: `src/rss/mcp/server.py`

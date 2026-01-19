@@ -28,7 +28,7 @@ permissionMode: bypassPermissions
 | 項目 | 値 |
 |------|-----|
 | **テーマキー** | `stock` |
-| **GitHub Status ID** | `47fc9ee4` (Stock) |
+| **GitHub Status ID** | `f762022e` (Stock) |
 | **対象キーワード** | 決算, 業績, EPS, ROE, ROA, M&A, 買収, 合併, 増収, 減益 |
 | **優先度キーワード** | 決算短信, M&A, 買収, 合併, 業績予想 |
 
@@ -405,7 +405,7 @@ mutation {
       itemId: "{project_item_id}"
       fieldId: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
       value: {
-        singleSelectOptionId: "47fc9ee4"
+        singleSelectOptionId: "f762022e"
       }
     }
   ) {

@@ -5,32 +5,38 @@
     "index": {
       "name": "Index",
       "name_ja": "株価指数",
-      "github_status_id": "f75ad846",
+      "github_status_id": "3925acc3",
       "description": "株価指数（日経平均、TOPIX、S&P500、ダウ、ナスダック等）の動向、市場全体の上昇/下落、ETF関連"
     },
     "stock": {
       "name": "Stock",
       "name_ja": "個別銘柄",
-      "github_status_id": "47fc9ee4",
+      "github_status_id": "f762022e",
       "description": "個別企業の決算発表、業績予想、M&A、買収、提携、株式公開、経営陣の変更"
     },
     "sector": {
       "name": "Sector",
       "name_ja": "セクター",
-      "github_status_id": "98236657",
+      "github_status_id": "48762504",
       "description": "特定業界（銀行、保険、自動車、半導体、ヘルスケア、エネルギー等）の動向、規制変更"
     },
     "macro": {
       "name": "Macro Economics",
       "name_ja": "マクロ経済",
-      "github_status_id": "c40731f6",
+      "github_status_id": "730034a5",
       "description": "金融政策（金利、量的緩和）、中央銀行（Fed、日銀、ECB）、経済指標（GDP、CPI、雇用統計）、為替"
     },
     "ai": {
       "name": "AI",
       "name_ja": "AI",
-      "github_status_id": "17189c86",
+      "github_status_id": "6fbb43d0",
       "description": "AI技術、機械学習、生成AI、AI企業（OpenAI、NVIDIA等）、AI投資、AI規制"
+    },
+    "finance": {
+      "name": "Finance",
+      "name_ja": "金融",
+      "github_status_id": "ac4a91b1",
+      "description": "企業財務（決算、財務報告）、資金調達（IPO、増資、社債）、株主還元（配当、自社株買い）、金融商品"
     }
   },
   "exclude_categories": {

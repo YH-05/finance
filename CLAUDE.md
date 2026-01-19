@@ -315,14 +315,15 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
-│   ├── agents/                             # (70 agents)
+│   ├── agents/                             # (67 agents)
 │   │   ├── deep-research/
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
 │   ├── commands/                           # (36 commands)
 │   ├── commands_sample/
-│   ├── skills/                             # (14 skills)
+│   ├── rules/                              # 共有ルール定義
+│   ├── skills/                             # (13 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
@@ -357,7 +358,7 @@ finance/                                    # Project root
 │   ├── sqlite/                             # OLTP database
 │   ├── raw/                                # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                            # (28 feed subscriptions)
+│   │   ├── rss/                            # (33 feed subscriptions)
 │   │   │   └── feeds.json
 │   │   └── yfinance/
 │   │       ├── forex/

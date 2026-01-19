@@ -384,6 +384,126 @@
       "last_fetched": null,
       "last_status": "pending",
       "enabled": true
+    },
+    {
+      "feed_id": "e353f91c-621e-4bd9-9f8e-acf98ee7d310",
+      "url": "https://www.nasdaq.com/feed/nasdaq-original/rss.xml",
+      "title": "NASDAQ Original",
+      "category": "market",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:33.808650+00:00",
+      "updated_at": "2026-01-19T07:26:26.556840+00:00",
+      "last_fetched": "2026-01-19T07:26:26.556838+00:00",
+      "last_status": "success",
+      "enabled": true
+    },
+    {
+      "feed_id": "ee4ee564-bcc3-43a1-996e-e9e26a07f43e",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=ETFs",
+      "title": "NASDAQ ETFs",
+      "category": "market",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:33.865828+00:00",
+      "updated_at": "2026-01-19T07:26:26.744896+00:00",
+      "last_fetched": "2026-01-19T07:26:26.744893+00:00",
+      "last_status": "success",
+      "enabled": true
+    },
+    {
+      "feed_id": "50080b59-d28e-41c3-bd22-ad76bbe4a0c7",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=Markets",
+      "title": "NASDAQ Markets",
+      "category": "market",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:33.904791+00:00",
+      "updated_at": "2026-01-19T07:26:27.021663+00:00",
+      "last_fetched": "2026-01-19T07:26:27.021655+00:00",
+      "last_status": "success",
+      "enabled": true
+    },
+    {
+      "feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=Options",
+      "title": "NASDAQ Options",
+      "category": "market",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:33.939394+00:00",
+      "updated_at": "2026-01-19T07:25:33.939394+00:00",
+      "last_fetched": null,
+      "last_status": "pending",
+      "enabled": true
+    },
+    {
+      "feed_id": "75c8c7fe-5811-4e66-866b-d643ae3a132d",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=Stocks",
+      "title": "NASDAQ Stocks",
+      "category": "market",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:34.019701+00:00",
+      "updated_at": "2026-01-19T07:26:27.324713+00:00",
+      "last_fetched": "2026-01-19T07:26:27.324706+00:00",
+      "last_status": "success",
+      "enabled": true
+    },
+    {
+      "feed_id": "8f48e41e-fe9a-4951-806f-13ff29e09423",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=Artificial+Intelligence",
+      "title": "NASDAQ AI",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:34.060168+00:00",
+      "updated_at": "2026-01-19T07:26:27.638953+00:00",
+      "last_fetched": "2026-01-19T07:26:27.638949+00:00",
+      "last_status": "success",
+      "enabled": true
+    },
+    {
+      "feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=Financial+Advisors",
+      "title": "NASDAQ Financial Advisors",
+      "category": "finance",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:34.115179+00:00",
+      "updated_at": "2026-01-19T07:25:34.115179+00:00",
+      "last_fetched": null,
+      "last_status": "pending",
+      "enabled": true
+    },
+    {
+      "feed_id": "ba20211a-4d8f-4310-a023-75be99c09a0b",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=FinTech",
+      "title": "NASDAQ FinTech",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:34.183496+00:00",
+      "updated_at": "2026-01-19T07:25:34.183496+00:00",
+      "last_fetched": null,
+      "last_status": "pending",
+      "enabled": true
+    },
+    {
+      "feed_id": "224be93d-8efc-4802-84dd-a14c2452c636",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=Innovation",
+      "title": "NASDAQ Innovation",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:34.220745+00:00",
+      "updated_at": "2026-01-19T07:25:34.220745+00:00",
+      "last_fetched": null,
+      "last_status": "pending",
+      "enabled": true
+    },
+    {
+      "feed_id": "7acfdb64-6475-4341-8ea0-30c1c538b80e",
+      "url": "https://www.nasdaq.com/feed/rssoutbound?category=Technology",
+      "title": "NASDAQ Technology",
+      "category": "tech",
+      "fetch_interval": "daily",
+      "created_at": "2026-01-19T07:25:34.253680+00:00",
+      "updated_at": "2026-01-19T07:25:34.253680+00:00",
+      "last_fetched": null,
+      "last_status": "pending",
+      "enabled": true
     }
   ]
 }

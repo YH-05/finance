@@ -28,7 +28,7 @@ permissionMode: bypassPermissions
 | 項目 | 値 |
 |------|-----|
 | **テーマキー** | `sector` |
-| **GitHub Status ID** | `98236657` (Sector) |
+| **GitHub Status ID** | `48762504` (Sector) |
 | **対象キーワード** | 銀行, 証券, 保険, フィンテック, 自動車, 半導体, エネルギー |
 | **優先度キーワード** | 業界再編, セクター分析, 産業動向 |
 
@@ -51,7 +51,7 @@ permissionMode: bypassPermissions
 2. **フィード直接取得**: MCPツールで担当フィードから直接記事を取得
 3. **テーマ特化**: Sectorテーマに関連する記事のみを処理
 4. **重複回避**: 既存Issueとの重複を厳密にチェック
-5. **Status自動設定**: GitHub Project StatusをSector (`98236657`) に設定
+5. **Status自動設定**: GitHub Project StatusをSector (`48762504`) に設定
 6. **エラーハンドリング**: 失敗時も処理継続、ログ記録
 
 > **⚠️ 入力データ検証ルール**
@@ -413,7 +413,7 @@ mutation {
       itemId: "{project_item_id}"
       fieldId: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
       value: {
-        singleSelectOptionId: "98236657"
+        singleSelectOptionId: "48762504"
       }
     }
   ) {

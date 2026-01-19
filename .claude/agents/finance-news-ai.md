@@ -28,7 +28,7 @@ permissionMode: bypassPermissions
 | 項目 | 値 |
 |------|-----|
 | **テーマキー** | `ai` |
-| **GitHub Status ID** | `17189c86` (AI) |
+| **GitHub Status ID** | `6fbb43d0` (AI) |
 | **対象キーワード** | AI, 人工知能, 機械学習, ChatGPT, 生成AI, LLM, NVIDIA |
 | **優先度キーワード** | AI規制, AI投資, AI企業, 生成AI, ChatGPT |
 
@@ -43,6 +43,10 @@ permissionMode: bypassPermissions
 | Ars Technica | `338f1076-a903-422d-913d-e889b1bec581` |
 | The Verge | `69722878-9f3d-4985-b7c2-d263fc9a3fdf` |
 | Hacker News | `4dc65edc-5c17-4ff8-ab38-7dd248f96006` |
+| NASDAQ AI | `8f48e41e-fe9a-4951-806f-13ff29e09423` |
+| NASDAQ FinTech | `ba20211a-4d8f-4310-a023-75be99c09a0b` |
+| NASDAQ Innovation | `224be93d-8efc-4802-84dd-a14c2452c636` |
+| NASDAQ Technology | `7acfdb64-6475-4341-8ea0-30c1c538b80e` |
 
 ## 重要ルール
 
@@ -50,7 +54,7 @@ permissionMode: bypassPermissions
 2. **フィード直接取得**: MCPツールで担当フィードから直接記事を取得
 3. **テーマ特化**: AIテーマに関連する記事のみを処理
 4. **重複回避**: 既存Issueとの重複を厳密にチェック
-5. **Status自動設定**: GitHub Project StatusをAI (`17189c86`) に設定
+5. **Status自動設定**: GitHub Project StatusをAI (`6fbb43d0`) に設定
 6. **エラーハンドリング**: 失敗時も処理継続、ログ記録
 
 > **⚠️ 入力データ検証ルール**
@@ -133,6 +137,10 @@ ASSIGNED_FEEDS = [
     {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
     {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"},
     {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News"},
+    {"feed_id": "8f48e41e-fe9a-4951-806f-13ff29e09423", "title": "NASDAQ AI"},
+    {"feed_id": "ba20211a-4d8f-4310-a023-75be99c09a0b", "title": "NASDAQ FinTech"},
+    {"feed_id": "224be93d-8efc-4802-84dd-a14c2452c636", "title": "NASDAQ Innovation"},
+    {"feed_id": "7acfdb64-6475-4341-8ea0-30c1c538b80e", "title": "NASDAQ Technology"},
 ]
 
 def fetch_assigned_feeds():
@@ -411,7 +419,7 @@ mutation {
       itemId: "{project_item_id}"
       fieldId: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
       value: {
-        singleSelectOptionId: "17189c86"
+        singleSelectOptionId: "6fbb43d0"
       }
     }
   ) {

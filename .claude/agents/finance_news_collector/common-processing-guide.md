@@ -935,11 +935,12 @@ mutation {
 
 | テーマ | Status名 | Option ID |
 |--------|----------|-----------|
-| index | Index | `f75ad846` |
-| stock | Stock | `47fc9ee4` |
-| sector | Sector | `98236657` |
-| macro | Macro Economics | `c40731f6` |
-| ai | AI | `17189c86` |
+| index | Index | `3925acc3` |
+| stock | Stock | `f762022e` |
+| sector | Sector | `48762504` |
+| macro | Macro Economics | `730034a5` |
+| ai | AI | `6fbb43d0` |
+| finance | Finance | `ac4a91b1` |
 
 ## GitHub Projectフィールド一覧
 

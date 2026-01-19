@@ -28,7 +28,7 @@ permissionMode: bypassPermissions
 | 項目 | 値 |
 |------|-----|
 | **テーマキー** | `macro` |
-| **GitHub Status ID** | `c40731f6` (Macro) |
+| **GitHub Status ID** | `730034a5` (Macro) |
 | **対象キーワード** | 金利, 日銀, FRB, GDP, CPI, 失業率, 為替, 円高, 円安 |
 | **優先度キーワード** | 金融政策, 経済指標, 日銀決定会合, FOMC, 政策金利 |
 
@@ -54,7 +54,7 @@ permissionMode: bypassPermissions
 2. **フィード直接取得**: MCPツールで担当フィードから直接記事を取得
 3. **テーマ特化**: Macroテーマに関連する記事のみを処理
 4. **重複回避**: 既存Issueとの重複を厳密にチェック
-5. **Status自動設定**: GitHub Project StatusをMacro (`c40731f6`) に設定
+5. **Status自動設定**: GitHub Project StatusをMacro (`730034a5`) に設定
 6. **エラーハンドリング**: 失敗時も処理継続、ログ記録
 
 > **⚠️ 入力データ検証ルール**
@@ -419,7 +419,7 @@ mutation {
       itemId: "{project_item_id}"
       fieldId: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
       value: {
-        singleSelectOptionId: "c40731f6"
+        singleSelectOptionId: "730034a5"
       }
     }
   ) {
