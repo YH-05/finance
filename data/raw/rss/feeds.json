@@ -8,9 +8,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:08.591627+00:00",
+      "last_fetched": "2026-01-18T22:40:08.591625+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -20,9 +20,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:22.756023+00:00",
+      "last_fetched": "2026-01-18T22:40:22.756022+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -32,9 +32,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:23.054591+00:00",
+      "last_fetched": "2026-01-18T22:40:23.054584+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -44,9 +44,9 @@
       "category": "market",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:08.983023+00:00",
+      "last_fetched": "2026-01-18T22:40:08.983015+00:00",
+      "last_status": "failure",
       "enabled": true
     },
     {
@@ -56,9 +56,9 @@
       "category": "market",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:09.425781+00:00",
+      "last_fetched": "2026-01-18T22:40:09.425778+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -68,9 +68,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:10.471716+00:00",
+      "last_fetched": "2026-01-18T22:40:10.471713+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -80,9 +80,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:10.807047+00:00",
+      "last_fetched": "2026-01-18T22:40:10.807041+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -92,9 +92,9 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:11.562731+00:00",
+      "last_fetched": "2026-01-18T22:40:11.562728+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -104,9 +104,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:24.083833+00:00",
+      "last_fetched": "2026-01-18T22:40:24.083830+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -116,9 +116,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:25.221956+00:00",
+      "last_fetched": "2026-01-18T22:40:25.221951+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -128,9 +128,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:12.411639+00:00",
+      "last_fetched": "2026-01-18T22:40:12.411637+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -140,9 +140,9 @@
       "category": "market",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:12.718670+00:00",
+      "last_fetched": "2026-01-18T22:40:12.718665+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -152,9 +152,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:33.629700+00:00",
+      "last_fetched": "2026-01-18T22:40:33.629698+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -164,9 +164,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:26.102576+00:00",
+      "last_fetched": "2026-01-18T22:40:26.102574+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -176,9 +176,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:34.465090+00:00",
+      "last_fetched": "2026-01-18T22:40:34.465087+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -188,9 +188,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:34.779455+00:00",
+      "last_fetched": "2026-01-18T22:40:34.779451+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -200,9 +200,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:26.648749+00:00",
+      "last_fetched": "2026-01-18T22:40:26.648746+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -212,9 +212,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:27.113772+00:00",
+      "last_fetched": "2026-01-18T22:40:27.113766+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -224,9 +224,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:35.102285+00:00",
+      "last_fetched": "2026-01-18T22:40:35.102282+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -236,9 +236,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:35.474920+00:00",
+      "last_fetched": "2026-01-18T22:40:35.474910+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {
@@ -248,9 +248,9 @@
       "category": "finance",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-18T12:00:00.000000+00:00",
-      "last_fetched": null,
-      "last_status": "pending",
+      "updated_at": "2026-01-18T22:40:35.985054+00:00",
+      "last_fetched": "2026-01-18T22:40:35.985051+00:00",
+      "last_status": "success",
       "enabled": true
     },
     {

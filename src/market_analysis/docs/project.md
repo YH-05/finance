@@ -167,10 +167,20 @@
 | [#316](https://github.com/YH-05/finance/issues/316) | Chart.price_chart で Close カラムが見つからない ValueError を修正 | Done |
 | [#324](https://github.com/YH-05/finance/issues/324) | fetch_stock で複数銘柄の株価データを一括取得できるようにする | Done |
 | [#325](https://github.com/YH-05/finance/issues/325) | fetch_fred で複数 series_id の一括取得と統一データフレーム形式への変更 | Todo |
+| [#374](https://github.com/YH-05/finance/issues/374) | [refactor]: print を logger.error に置き換え（analysis.py） | Todo |
+| [#375](https://github.com/YH-05/finance/issues/375) | [refactor]: _find_column の再利用によるコード重複削減 | Todo |
+| [#376](https://github.com/YH-05/finance/issues/376) | [refactor]: 未使用変数・パラメータの整理（analysis.py） | Todo |
+| [#377](https://github.com/YH-05/finance/issues/377) | [refactor]: コメントアウトされたコード（TICKERS_WORLD）と対応メソッドの整理 | Todo |
+| [#378](https://github.com/YH-05/finance/issues/378) | [refactor]: MarketPerformanceAnalyzer の責務分離 | Todo |
+| [#379](https://github.com/YH-05/finance/issues/379) | [refactor]: Analysis クラスから静的メソッドを CorrelationApi クラスに分離 | Todo |
+| [#380](https://github.com/YH-05/finance/issues/380) | [refactor]: パラメータ検証ロジックの共通化（デコレータ/バリデータ） | Todo |
+| [#381](https://github.com/YH-05/finance/issues/381) | [refactor]: MarketPerformanceAnalyzer の遅延読み込み（Lazy Loading）化 | Todo |
+| [#382](https://github.com/YH-05/finance/issues/382) | [refactor]: MarketPerformanceAnalyzer への依存性注入（DI）パターン導入 | Todo |
+| [#383](https://github.com/YH-05/finance/issues/383) | [refactor]: 非同期データ取得の導入 | Todo |
 
-**25件完了 / 26件中** (2026-01-18)
+**25件完了 / 36件中** (2026-01-19)
 
 ---
 
-**最終更新**: 2026-01-18
-**更新内容**: GitHub Project #6 と同期、Issue #316, #324, #325 を追加。#324 (fetch_stock 複数銘柄対応) を Done に更新
+**最終更新**: 2026-01-19
+**更新内容**: コード分析レポート（analysis.py）の要対処事項をIssue化（#374-#383）、GitHub Project #6に追加

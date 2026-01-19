@@ -49,7 +49,7 @@ gh label create "news" \
 
 #### 2. Issue テンプレート作成
 
-**ファイル**: `.github/ISSUE_TEMPLATE/news-article.yml`
+**ファイル**: `.github/ISSUE_TEMPLATE/news-article.md`
 
 **特徴**:
 
@@ -145,7 +145,7 @@ gh issue edit 175 --title "[NEWS] Rachel Reeves signals expansion of pubs tax U-
 
 #### 5. Issue テンプレート（再掲）
 
-**ファイル**: `.github/ISSUE_TEMPLATE/news-article.yml`
+**ファイル**: `.github/ISSUE_TEMPLATE/news-article.md`
 
 **YAML 設定**:
 
@@ -183,7 +183,7 @@ projects: ["YH-05/15"]
 | news ラベル          | ✅ 完了  | 既存 5 件 + 自動付与設定完了   |
 | Project 分離         | ✅ 完了  | Project 15 に全件移動          |
 | [NEWS]プレフィックス | ✅ 完了  | 既存 5 件 + 自動付与設定完了   |
-| Issue テンプレート   | ✅ 完了  | news-article.yml 作成完了      |
+| Issue テンプレート   | ✅ 完了  | news-article.md 作成完了      |
 | 自動化設定           | ✅ 完了  | エージェント・コマンド修正完了 |
 
 ---
@@ -208,7 +208,7 @@ M  .claude/skills/finance-news-collection/SKILL.md
 ### 新規ファイル
 
 ```
-?? .github/ISSUE_TEMPLATE/news-article.yml
+?? .github/ISSUE_TEMPLATE/news-article.md
    - 金融ニュース記事専用テンプレート
    - 自動ラベル・Project・プレフィックス設定
 ```
@@ -222,7 +222,7 @@ M .claude/commands/collect-finance-news.md
 M .claude/settings.json
 M .claude/skills/finance-news-collection/SKILL.md
 ?? .claude/sounds/
-?? .github/ISSUE_TEMPLATE/news-article.yml
+?? .github/ISSUE_TEMPLATE/news-article.md
 ```
 
 **ステータス**: 全ての変更は `git add` 未実行、コミット未実施
@@ -239,7 +239,7 @@ M .claude/skills/finance-news-collection/SKILL.md
 git add .claude/agents/finance-news-collector.md \
         .claude/commands/collect-finance-news.md \
         .claude/skills/finance-news-collection/SKILL.md \
-        .github/ISSUE_TEMPLATE/news-article.yml
+        .github/ISSUE_TEMPLATE/news-article.md
 
 git commit -m "feat: ニュース記事と開発Issue区別機能を実装
 
@@ -353,7 +353,7 @@ gh issue list --label "!news"
 
 ### 戦略 4: Issue テンプレート
 
-**ファイル**: `.github/ISSUE_TEMPLATE/news-article.yml`
+**ファイル**: `.github/ISSUE_TEMPLATE/news-article.md`
 
 **フィールド**:
 
@@ -385,7 +385,7 @@ gh issue list --label "!news"
 **確認**:
 
 ```bash
-cat .github/ISSUE_TEMPLATE/news-article.yml | grep labels
+cat .github/ISSUE_TEMPLATE/news-article.md | grep labels
 ```
 
 **対処**:
@@ -401,7 +401,7 @@ labels: ["news"] # この行があることを確認
 **確認**:
 
 ```bash
-cat .github/ISSUE_TEMPLATE/news-article.yml | grep projects
+cat .github/ISSUE_TEMPLATE/news-article.md | grep projects
 ```
 
 **対処**:
@@ -482,7 +482,7 @@ Status: PVTSSF_lAHOBoK6AM4BMpw_zg739ZE
 -   エージェント: `.claude/agents/finance-news-collector.md`
 -   コマンド: `.claude/commands/collect-finance-news.md`
 -   スキル: `.claude/skills/finance-news-collection/SKILL.md`
--   テンプレート: `.github/ISSUE_TEMPLATE/news-article.yml`
+-   テンプレート: `.github/ISSUE_TEMPLATE/news-article.md`
 -   フィルター設定: `data/config/finance-news-filter.json`
 
 ### 関連ドキュメント
@@ -518,7 +518,7 @@ gh issue list --label "news" --state all
 git add .claude/agents/finance-news-collector.md \
         .claude/commands/collect-finance-news.md \
         .claude/skills/finance-news-collection/SKILL.md \
-        .github/ISSUE_TEMPLATE/news-article.yml
+        .github/ISSUE_TEMPLATE/news-article.md
 
 git commit -m "feat: ニュース記事と開発Issue区別機能を実装
 

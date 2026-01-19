@@ -12,6 +12,7 @@ tools:
   - Read
   - Bash
   - MCPSearch
+  - WebFetch
   - mcp__rss__fetch_feed
   - mcp__rss__get_items
 permissionMode: bypassPermissions
@@ -68,13 +69,19 @@ Phase 2: RSS取得（直接実行）【新規】
 ├── 担当フィードをフェッチ（mcp__rss__fetch_feed）
 └── 記事を取得（mcp__rss__get_items）
 
+Phase 2.5: 公開日時フィルタリング（--since指定時）
+├── --sinceパラメータの解析（1d/3d/7d → 日数変換）
+├── カットオフ日時の計算（現在日時 - 指定日数）
+└── 古い記事を除外（published or fetched_at < cutoff）
+
 Phase 3: フィルタリング
 ├── Sectorキーワードマッチング
 ├── 除外キーワードチェック
 └── 重複チェック
 
 Phase 4: GitHub投稿（このエージェントが直接実行）
-├── 記事内容取得と要約生成
+├── 【最重要】WebFetchで記事URLから本文取得
+├── 400字以上の日本語要約を生成
 ├── Issue作成（gh issue create）
 ├── Project 15に追加（gh project item-add）
 ├── Status設定（GraphQL API）
@@ -178,9 +185,96 @@ def load_from_local():
     return items
 ```
 
+### Phase 2.5: 公開日時フィルタリング（オプション）
+
+`--since`パラメータが指定された場合、公開日時でフィルタリングします。
+
+詳細なアルゴリズムは共通処理ガイドを参照:
+`.claude/agents/finance_news_collector/common-processing-guide.md` の「Phase 2.5: 公開日時フィルタリング」
+
+```python
+# --sinceパラメータが指定されている場合のみ実行
+if since_param:
+    since_days = parse_since_param(since_param)  # "1d" → 1, "3d" → 3, "7d" → 7
+    items, date_filtered_count = filter_by_published_date(items, since_days)
+    ログ出力: f"公開日時フィルタ: {date_filtered_count}件除外（{since_days}日以内）"
+```
+
 ### Phase 4: GitHub投稿（詳細）
 
 このエージェントは直接以下の処理を実行します（オーケストレーターに依存しない）。
+
+#### ステップ4.0: 記事本文取得と要約生成【最重要・必須】
+
+> **🚨 このステップは絶対に省略しないでください！🚨**
+>
+> RSSの概要（summary）だけでは情報が不十分です。
+> **必ずWebFetchツールで記事URLから本文を取得**して詳細な日本語要約を生成すること。
+
+**各記事に対して以下を実行**:
+
+```python
+# ステップ4.0.1: WebFetchで記事本文を取得
+article_content = WebFetch(
+    url=item["link"],
+    prompt="""この金融ニュース記事の本文を詳しく要約してください。
+
+必ず以下の情報を含めてください：
+1. **主要な事実**: 何が起きたのか、誰が関与しているか
+2. **数値データ**: 売上高、シェア、成長率など具体的な数字
+3. **背景・理由**: なぜこの動向が起きたのか
+4. **業界への影響**: セクター全体、競合他社への影響
+5. **今後の展望**: アナリストの見通し、業界予測
+6. **関連企業**: 言及されている企業名、業界団体など
+
+重要な数字や固有名詞は必ず含めてください。
+推測ではなく、記事に書かれている事実のみを記載してください。"""
+)
+
+# ステップ4.0.2: 日本語要約を生成（400字以上）
+japanese_summary = f"""【要約】
+
+{article_content}
+
+---
+**元記事情報**:
+- タイトル: {item["title"]}
+- ソース: {item["source_feed"]}
+"""
+
+# ステップ4.0.3: 日本語タイトルを生成（英語の場合は翻訳）
+if is_english(item["title"]):
+    japanese_title = translate_to_japanese(item["title"])
+else:
+    japanese_title = item["title"]
+```
+
+**要約に含めるべき情報**（セクター分析テーマ特化）:
+
+| 項目 | 必須度 | 例 |
+|-----|-------|-----|
+| セクター名 | 必須 | 「半導体セクター」「ヘルスケア業界」 |
+| 市場規模・成長率 | 必須 | 「市場規模は2030年までに500億ドルに成長予測」 |
+| 主要プレイヤー | 必須 | 「Intel、TSMC、Samsung が市場を牽引」 |
+| 規制・政策動向 | 推奨 | 「政府は半導体支援策を発表」 |
+| 技術トレンド | 推奨 | 「AI需要がデータセンター投資を加速」 |
+| 競争環境 | あれば | 「中国企業が台頭、価格競争が激化」 |
+
+**WebFetch失敗時のフォールバック**:
+```python
+try:
+    article_content = WebFetch(url=item["link"], prompt="...")
+except Exception as e:
+    ログ出力: f"WebFetch失敗: {item['link']} - {e}"
+    # フォールバック: RSSの概要を使用（警告付き）
+    article_content = f"""⚠️ 記事本文の取得に失敗しました。RSSの概要:
+
+{item.get("summary", "概要なし")}
+
+---
+詳細は元記事を参照: {item["link"]}
+"""
+```
 
 #### ステップ4.1: Issue作成（テンプレート読み込み方式）
 
@@ -188,6 +282,7 @@ def load_from_local():
 - Issueタイトルは日本語で作成（英語記事の場合は日本語に翻訳）
 - タイトル形式: `[セクター] {japanese_title}`
 - **Issueボディは `.github/ISSUE_TEMPLATE/news-article.md` テンプレートを読み込んで使用**
+- **概要（summary）は400字以上の詳細な日本語要約を使用**
 
 ```bash
 # Step 1: テンプレートを読み込む（frontmatter除外）
@@ -197,6 +292,7 @@ template=$(cat .github/ISSUE_TEMPLATE/news-article.md | tail -n +7)
 collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
 
 # Step 3: プレースホルダーを置換
+# ※ japanese_summary はステップ4.0で生成した400字以上の要約
 body="${template//\{\{summary\}\}/$japanese_summary}"
 body="${body//\{\{url\}\}/$link}"
 body="${body//\{\{published_date\}\}/$published_jst(JST)}"
@@ -208,19 +304,25 @@ body="${body//\{\{priority\}\}/Medium - 通常の記事化候補}"
 body="${body//\{\{notes\}\}/- テーマ: Sector（セクター分析）
 - AI判定理由: $判定理由}"
 
-# Step 4: Issue作成
-gh issue create \
+# Step 4: Issue作成（closed状態で作成）
+issue_url=$(gh issue create \
     --repo YH-05/finance \
     --title "[セクター] {japanese_title}" \
     --body "$body" \
-    --label "news"
+    --label "news")
+
+# Issue番号を抽出
+issue_number=$(echo "$issue_url" | grep -oE '[0-9]+$')
+
+# Step 5: Issueをcloseする（ニュースIssueはclosed状態で保存）
+gh issue close "$issue_number" --repo YH-05/finance
 ```
 
 **テンプレートプレースホルダー対応表**（`.github/ISSUE_TEMPLATE/news-article.md`）:
 
 | プレースホルダー | 値 |
 |-----------------|-----|
-| `{{summary}}` | {japanese_summary}（400字以上） |
+| `{{summary}}` | {japanese_summary}（**400字以上の詳細要約**） |
 | `{{url}}` | {link} |
 | `{{published_date}}` | {published_jst}(JST) |
 | `{{collected_at}}` | ${collected_at}(JST)【必須】 |
@@ -452,6 +554,7 @@ except Exception as e:
 ### 処理統計
 - **担当フィード数**: 6件
 - **取得記事数**: 19件
+- **日時フィルタ除外**: 0件（--since指定時のみ）
 - **テーママッチ**: 8件
 - **除外**: 3件
 - **重複**: 3件

@@ -1,6 +1,6 @@
 ---
 description: テーマ別に金融ニュースを収集し、GitHub Project 15に自動投稿します
-argument-hint: [--project N] [--limit N] [--themes "index,stock,..."] [--dry-run]
+argument-hint: [--since 1d|3d|7d] [--themes "index,stock,..."] [--limit N] [--dry-run]
 ---
 
 テーマ別金融ニュース収集を実行します。
@@ -9,10 +9,26 @@ argument-hint: [--project N] [--limit N] [--themes "index,stock,..."] [--dry-run
 
 | パラメータ | 必須 | デフォルト | 説明 |
 |-----------|------|-----------|------|
+| --since | - | 1d | 公開日時フィルタ（1d=1日, 3d=3日, 7d=7日以内の記事のみ） |
 | --project | - | 15 | GitHub Project番号（Finance News Collection） |
 | --limit | - | 50 | 取得する記事数の最大値 |
 | --themes | - | all | 対象テーマ（index,stock,sector,macro,ai またはall） |
 | --dry-run | - | false | GitHub投稿せずに収集結果のみ表示 |
+
+### --since オプション詳細
+
+記事の**公開日時（published）**を基準に、現在日時からの日数でフィルタリングします。
+
+| 値 | 説明 | 例（現在が2026-01-19の場合） |
+|-----|------|------------------------------|
+| `1d` | 過去1日（24時間）以内 | 2026-01-18 00:00以降の記事 |
+| `3d` | 過去3日以内 | 2026-01-16 00:00以降の記事 |
+| `7d` | 過去7日以内 | 2026-01-12 00:00以降の記事 |
+
+**注意**:
+- 公開日時（published）はRSSフィードに記載された記事の公開日時です
+- GitHub Issueの作成日時ではありません
+- 公開日時がない記事は、取得日時（fetched_at）で代替判定します
 
 ## 処理フロー
 
@@ -224,19 +240,20 @@ Task: finance-news-ai
 
 ### 実行パラメータ
 - **GitHub Project**: #15 (Finance News Collection)
+- **公開日時フィルタ**: 過去1日以内（--since 1d）
 - **取得上限**: 50件
 - **対象テーマ**: index, stock, sector, macro, ai
 
 ### 収集結果（テーマ別）
 
-| テーマ | 処理数 | マッチ | 除外 | 重複 | 新規投稿 | 失敗 |
-|-------|-------|-------|-----|-----|---------|-----|
-| Index | 50 | 12 | 2 | 7 | 5 | 0 |
-| Stock | 50 | 15 | 1 | 8 | 8 | 0 |
-| Sector | 50 | 8 | 0 | 5 | 3 | 0 |
-| Macro | 50 | 10 | 1 | 6 | 7 | 0 |
-| AI | 50 | 6 | 0 | 4 | 4 | 0 |
-| **合計** | 250 | 51 | 4 | 30 | **27** | 0 |
+| テーマ | 処理数 | 期間内 | マッチ | 除外 | 重複 | 新規投稿 | 失敗 |
+|-------|-------|-------|-------|-----|-----|---------|-----|
+| Index | 50 | 35 | 12 | 2 | 7 | 5 | 0 |
+| Stock | 50 | 40 | 15 | 1 | 8 | 8 | 0 |
+| Sector | 50 | 30 | 8 | 0 | 5 | 3 | 0 |
+| Macro | 50 | 45 | 10 | 1 | 6 | 7 | 0 |
+| AI | 50 | 25 | 6 | 0 | 4 | 4 | 0 |
+| **合計** | 250 | 175 | 51 | 4 | 30 | **27** | 0 |
 
 ### 投稿されたニュース（テーマ別抜粋）
 
@@ -435,7 +452,23 @@ gh auth login
 
 ## 高度な使用例
 
-### 例1: 特定のテーマのみ収集
+### 例1: 過去3日以内のニュースを収集
+
+```bash
+/collect-finance-news --since 3d
+```
+
+過去3日以内に公開された記事のみを収集します。
+
+### 例2: 過去1週間のニュースを収集（週次レポート用）
+
+```bash
+/collect-finance-news --since 7d --themes "index,macro"
+```
+
+過去7日以内のIndex・Macroテーマのニュースを収集します。
+
+### 例3: 特定のテーマのみ収集
 
 ```bash
 /collect-finance-news --themes "index,macro"
@@ -443,7 +476,7 @@ gh auth login
 
 IndexとMacro Economicsテーマのみニュースを収集します。
 
-### 例2: 少量のニュースを収集
+### 例4: 少量のニュースを収集
 
 ```bash
 /collect-finance-news --limit 10
@@ -451,15 +484,15 @@ IndexとMacro Economicsテーマのみニュースを収集します。
 
 テスト用に10件のみ収集します（各テーマエージェントに渡される）。
 
-### 例3: dry-runで事前確認
+### 例5: dry-runで事前確認
 
 ```bash
-/collect-finance-news --dry-run --limit 10
+/collect-finance-news --dry-run --since 3d --limit 10
 ```
 
-投稿せずに、フィルタリング結果を確認します。
+投稿せずに、過去3日以内の記事のフィルタリング結果を確認します。
 
-### 例4: 別のGitHub Projectに投稿（非推奨）
+### 例6: 別のGitHub Projectに投稿（非推奨）
 
 ```bash
 /collect-finance-news --project 14
