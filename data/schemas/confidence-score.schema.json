@@ -1,0 +1,334 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Confidence Score Schema",
+  "description": "信頼度スコアリング結果のスキーマ定義",
+  "type": "object",
+  "required": ["research_id", "scored_at", "scoring_methodology", "data_point_scores", "summary"],
+  "properties": {
+    "research_id": {
+      "type": "string",
+      "description": "リサーチの一意識別子"
+    },
+    "scored_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "スコアリング実行日時"
+    },
+    "scoring_methodology": {
+      "type": "object",
+      "required": ["version", "weights"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "スコアリング手法のバージョン"
+        },
+        "weights": {
+          "type": "object",
+          "required": ["source_reliability", "corroboration", "temporal_relevance", "consistency"],
+          "properties": {
+            "source_reliability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "ソース信頼度の重み"
+            },
+            "corroboration": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "複数ソース確認度の重み"
+            },
+            "temporal_relevance": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "データ鮮度の重み"
+            },
+            "consistency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "内部整合性の重み"
+            }
+          }
+        }
+      },
+      "description": "スコアリング方法論"
+    },
+    "data_point_scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["score_id", "data_point_id", "description", "confidence_score", "score_breakdown", "confidence_level", "usability"],
+        "properties": {
+          "score_id": {
+            "type": "string",
+            "pattern": "^CS[0-9]{3}$",
+            "description": "スコアの一意識別子（例: CS001）"
+          },
+          "data_point_id": {
+            "type": "string",
+            "description": "対象データポイントのID"
+          },
+          "description": {
+            "type": "string",
+            "description": "データポイントの説明"
+          },
+          "confidence_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "総合信頼度スコア（0-1）"
+          },
+          "score_breakdown": {
+            "type": "object",
+            "required": ["source_reliability", "corroboration", "temporal_relevance", "consistency"],
+            "properties": {
+              "source_reliability": {
+                "type": "object",
+                "required": ["score"],
+                "properties": {
+                  "score": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "sources": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tier": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 3
+                  }
+                }
+              },
+              "corroboration": {
+                "type": "object",
+                "required": ["score"],
+                "properties": {
+                  "score": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "source_count": {
+                    "type": "integer"
+                  },
+                  "details": {
+                    "type": "string"
+                  }
+                }
+              },
+              "temporal_relevance": {
+                "type": "object",
+                "required": ["score"],
+                "properties": {
+                  "score": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "data_age_days": {
+                    "type": "integer"
+                  },
+                  "details": {
+                    "type": "string"
+                  }
+                }
+              },
+              "consistency": {
+                "type": "object",
+                "required": ["score"],
+                "properties": {
+                  "score": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "discrepancy_pct": {
+                    "type": ["number", "null"]
+                  },
+                  "details": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "confidence_level": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "信頼度レベル"
+          },
+          "usability": {
+            "type": "string",
+            "enum": ["fully_usable", "use_with_caution", "not_recommended"],
+            "description": "使用推奨レベル"
+          }
+        }
+      },
+      "description": "データポイントごとのスコア"
+    },
+    "claim_scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["score_id", "claim", "confidence_score", "confidence_level", "verification_status"],
+        "properties": {
+          "score_id": {
+            "type": "string",
+            "pattern": "^CCS[0-9]{3}$",
+            "description": "主張スコアの一意識別子（例: CCS001）"
+          },
+          "claim": {
+            "type": "string",
+            "description": "主張の内容"
+          },
+          "confidence_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "主張の信頼度スコア"
+          },
+          "supporting_data_points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "支持するデータポイントのIDリスト"
+          },
+          "confidence_level": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "信頼度レベル"
+          },
+          "verification_status": {
+            "type": "string",
+            "enum": ["verified", "partially_verified", "unverified"],
+            "description": "検証ステータス"
+          }
+        }
+      },
+      "description": "主張ごとのスコア"
+    },
+    "confidence_distribution": {
+      "type": "object",
+      "properties": {
+        "high": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "threshold": {
+              "type": "string"
+            },
+            "percentage": {
+              "type": "number"
+            }
+          }
+        },
+        "medium": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "threshold": {
+              "type": "string"
+            },
+            "percentage": {
+              "type": "number"
+            }
+          }
+        },
+        "low": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "threshold": {
+              "type": "string"
+            },
+            "percentage": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "description": "信頼度の分布"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_scored", "average_confidence", "overall_quality"],
+      "properties": {
+        "total_scored": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "スコアリング対象総数"
+        },
+        "average_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "平均信頼度スコア"
+        },
+        "median_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "中央値信頼度スコア"
+        },
+        "fully_usable": {
+          "type": "integer",
+          "description": "完全に使用可能な数"
+        },
+        "use_with_caution": {
+          "type": "integer",
+          "description": "注意して使用する数"
+        },
+        "not_recommended": {
+          "type": "integer",
+          "description": "使用非推奨の数"
+        },
+        "overall_quality": {
+          "type": "string",
+          "enum": ["excellent", "good", "fair", "poor"],
+          "description": "全体の品質評価"
+        }
+      },
+      "description": "スコアリング結果のサマリー"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "action"],
+        "properties": {
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "優先度"
+          },
+          "action": {
+            "type": "string",
+            "description": "推奨アクション"
+          },
+          "affected_scores": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "影響を受けるスコアのIDリスト"
+          }
+        }
+      },
+      "description": "改善のための推奨事項"
+    }
+  }
+}

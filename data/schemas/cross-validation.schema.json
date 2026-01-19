@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cross Validation Schema",
+  "description": "クロス検証結果のスキーマ定義",
+  "type": "object",
+  "required": ["research_id", "validated_at", "validations", "summary"],
+  "properties": {
+    "research_id": {
+      "type": "string",
+      "description": "リサーチの一意識別子"
+    },
+    "validated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "検証実行日時"
+    },
+    "validations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["validation_id", "data_point", "sources_checked", "validation_result"],
+        "properties": {
+          "validation_id": {
+            "type": "string",
+            "pattern": "^V[0-9]{3}$",
+            "description": "検証の一意識別子（例: V001）"
+          },
+          "data_point": {
+            "type": "object",
+            "required": ["category", "field", "description"],
+            "properties": {
+              "category": {
+                "type": "string",
+                "enum": ["financial", "price", "valuation", "economic", "event", "opinion"],
+                "description": "データカテゴリ"
+              },
+              "field": {
+                "type": "string",
+                "description": "フィールド名"
+              },
+              "description": {
+                "type": "string",
+                "description": "データポイントの説明"
+              }
+            }
+          },
+          "sources_checked": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["source_id", "tier", "value"],
+              "properties": {
+                "source_id": {
+                  "type": "string",
+                  "description": "ソース識別子"
+                },
+                "tier": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 3,
+                  "description": "ソース信頼度Tier"
+                },
+                "value": {
+                  "description": "取得した値"
+                },
+                "unit": {
+                  "type": "string",
+                  "description": "単位"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "データ日付"
+                }
+              }
+            },
+            "description": "照合したソースのリスト"
+          },
+          "validation_result": {
+            "type": "object",
+            "required": ["status"],
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": ["confirmed", "discrepancy", "unverifiable"],
+                "description": "検証ステータス"
+              },
+              "discrepancy_pct": {
+                "type": ["number", "null"],
+                "description": "乖離率（%）"
+              },
+              "within_tolerance": {
+                "type": "boolean",
+                "description": "許容範囲内かどうか"
+              },
+              "consensus_value": {
+                "description": "コンセンサス値"
+              },
+              "primary_source": {
+                "type": "string",
+                "description": "採用したプライマリソース"
+              },
+              "notes": {
+                "type": "string",
+                "description": "補足メモ"
+              }
+            }
+          }
+        }
+      },
+      "description": "検証結果のリスト"
+    },
+    "claims_validation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["validation_id", "claim", "status", "confidence"],
+        "properties": {
+          "validation_id": {
+            "type": "string",
+            "pattern": "^VC[0-9]{3}$",
+            "description": "主張検証の一意識別子（例: VC001）"
+          },
+          "claim": {
+            "type": "string",
+            "description": "検証対象の主張"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "参照ソースのリスト"
+          },
+          "cross_reference": {
+            "type": "object",
+            "description": "クロスリファレンスデータ"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["confirmed", "disputed", "unverifiable", "speculation"],
+            "description": "検証ステータス"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "信頼度"
+          }
+        }
+      },
+      "description": "主張の検証結果リスト"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_validations", "confirmed", "discrepancies", "confirmation_rate"],
+      "properties": {
+        "total_validations": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "検証総数"
+        },
+        "confirmed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "確認された数"
+        },
+        "discrepancies": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "乖離が見つかった数"
+        },
+        "unverifiable": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "検証不能な数"
+        },
+        "confirmation_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "確認率（%）"
+        },
+        "high_confidence": {
+          "type": "integer",
+          "description": "高信頼度の数"
+        },
+        "medium_confidence": {
+          "type": "integer",
+          "description": "中信頼度の数"
+        },
+        "low_confidence": {
+          "type": "integer",
+          "description": "低信頼度の数"
+        }
+      },
+      "description": "検証結果のサマリー"
+    }
+  }
+}

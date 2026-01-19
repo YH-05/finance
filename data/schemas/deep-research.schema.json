@@ -1,0 +1,214 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Deep Research Schema",
+  "description": "ディープリサーチのメタデータと結果のスキーマ定義",
+  "type": "object",
+  "required": ["research_id", "type", "params", "workflow", "created_at"],
+  "properties": {
+    "research_id": {
+      "type": "string",
+      "pattern": "^DR_(stock|sector|macro|theme)_[0-9]{8}_[a-zA-Z0-9-]+$",
+      "description": "リサーチの一意識別子（例: DR_stock_20260119_AAPL）"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["stock", "sector", "macro", "theme"],
+      "description": "リサーチタイプ"
+    },
+    "params": {
+      "type": "object",
+      "required": ["depth", "output"],
+      "properties": {
+        "ticker": {
+          "type": "string",
+          "pattern": "^[A-Z]{1,5}$",
+          "description": "ティッカーシンボル（stockタイプの場合）"
+        },
+        "sector": {
+          "type": "string",
+          "description": "セクター名（sectorタイプの場合）"
+        },
+        "topic": {
+          "type": "string",
+          "description": "トピック名（themeタイプの場合）"
+        },
+        "depth": {
+          "type": "string",
+          "enum": ["quick", "standard", "comprehensive"],
+          "description": "分析深度"
+        },
+        "output": {
+          "type": "string",
+          "enum": ["article", "report", "memo"],
+          "description": "出力形式"
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "required": ["phase_0", "phase_1", "phase_2", "phase_3", "phase_4"],
+      "properties": {
+        "phase_0": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "done", "failed"],
+          "description": "Phase 0: 設定確認"
+        },
+        "phase_1": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "done", "failed"],
+          "description": "Phase 1: データ収集"
+        },
+        "phase_2": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "done", "failed"],
+          "description": "Phase 2: クロス検証"
+        },
+        "phase_3": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "done", "failed"],
+          "description": "Phase 3: 深掘り分析"
+        },
+        "phase_4": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "done", "failed"],
+          "description": "Phase 4: 出力生成"
+        },
+        "current_phase": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4,
+          "description": "現在のフェーズ番号"
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "最終更新日時"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["phase", "error", "timestamp"],
+            "properties": {
+              "phase": {
+                "type": "integer",
+                "description": "エラー発生フェーズ"
+              },
+              "error": {
+                "type": "string",
+                "description": "エラーメッセージ"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "エラー発生日時"
+              }
+            }
+          },
+          "description": "発生したエラーのリスト"
+        }
+      }
+    },
+    "data_collection": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": ["success", "partial", "failed"]
+              },
+              "tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3
+              },
+              "count": {
+                "type": "integer"
+              },
+              "error": {
+                "type": ["string", "null"]
+              }
+            }
+          }
+        },
+        "total_data_points": {
+          "type": "integer",
+          "description": "収集したデータポイント総数"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "cross_validation_id": {
+          "type": "string",
+          "description": "クロス検証結果ファイルへの参照"
+        },
+        "confidence_scores_id": {
+          "type": "string",
+          "description": "信頼度スコアファイルへの参照"
+        },
+        "bias_analysis_id": {
+          "type": "string",
+          "description": "バイアス分析ファイルへの参照"
+        },
+        "overall_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "全体の信頼度スコア"
+        }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "analysis_id": {
+          "type": "string",
+          "description": "分析結果ファイルへの参照"
+        },
+        "key_findings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "主要な発見"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "report_file": {
+          "type": "string",
+          "description": "レポートファイルパス"
+        },
+        "charts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "生成されたチャートファイルのリスト"
+        },
+        "word_count": {
+          "type": "integer",
+          "description": "レポートの文字数"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "リサーチ作成日時"
+    },
+    "completed_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "リサーチ完了日時"
+    }
+  }
+}
