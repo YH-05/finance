@@ -29,8 +29,7 @@ RSSフィードから金融関連のニュースを自動的に収集し、
 1. **RSS MCP ツールの使用**: RSS記事の取得には必ずRSS MCPツールを使用
 2. **フィルタリング**: `data/config/finance-news-filter.json` の基準に従う
 3. **重複チェック**: 既存のGitHub Issueとの重複を確認
-4. **信頼性スコアリング**: 情報源の信頼性を評価
-5. **エラーハンドリング**: すべてのエラーをログに記録し、適切に処理
+4. **エラーハンドリング**: すべてのエラーをログに記録し、適切に処理
 
 ## 処理フロー
 
@@ -176,45 +175,6 @@ def is_excluded(item: FeedItem, filter_config: dict) -> bool:
     return False
 ```
 
-#### ステップ3.3: 信頼性スコアリング
-
-```python
-def calculate_reliability_score(item: FeedItem, filter_config: dict) -> int:
-    """信頼性スコアを計算"""
-
-    sources = filter_config["sources"]
-
-    # 情報源のTierを判定
-    tier = 0
-    for tier_name, domains in sources.items():
-        for domain in domains:
-            if domain in item.link:
-                if tier_name == "tier1":
-                    tier = 3
-                elif tier_name == "tier2":
-                    tier = 2
-                else:
-                    tier = 1
-                break
-        if tier > 0:
-            break
-
-    # キーワードマッチ度
-    text = f"{item.title} {item.summary} {item.content}".lower()
-    keyword_matches = 0
-    for category, keywords in filter_config["keywords"]["include"].items():
-        for keyword in keywords:
-            if keyword.lower() in text:
-                keyword_matches += 1
-
-    keyword_match_ratio = keyword_matches / max(len(text), 1)
-
-    # スコア計算
-    score = tier * keyword_match_ratio * 100
-
-    return int(score)
-```
-
 ### 4. 重複チェック
 
 #### ステップ4.1: 既存Issue取得
@@ -286,7 +246,6 @@ gh issue create \
 
 - **URL**: {link}
 - **公開日**: {published}
-- **信頼性スコア**: {reliability_score}
 - **カテゴリ**: {category}
 
 ## 詳細

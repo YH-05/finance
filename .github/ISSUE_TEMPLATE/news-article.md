@@ -21,10 +21,6 @@ labels: news
 
 {{collected_at}}
 
-### 信頼性スコア
-
-{{credibility}}
-
 ### カテゴリ
 
 {{category}}
@@ -32,10 +28,6 @@ labels: news
 ### フィード/情報源名
 
 {{feed_source}}
-
-### 優先度
-
-{{priority}}
 
 ### 備考・メモ
 
