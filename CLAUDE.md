@@ -315,7 +315,7 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
-│   ├── agents/                             # (69 agents)
+│   ├── agents/                             # (70 agents)
 │   │   ├── deep-research/
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
