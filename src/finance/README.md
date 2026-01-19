@@ -116,8 +116,8 @@ finance/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|-----|
-| `types.py` | 🚧 開発中 | 1 | 30 |
-| `db/` | ✅ 実装済み | 6 | 342 |
+| `types.py` | ✅ 実装済み | 1 | 30 |
+| `db/` | ✅ 実装済み | 6 | 240 |
 | `utils/` | 🚧 開発中 | 2 | 273 |
 
 <!-- END: IMPLEMENTATION -->
@@ -126,32 +126,53 @@ finance/
 
 <!-- AUTO-GENERATED: API -->
 
-### クイックスタート
+### トップレベルAPI
 
-financeパッケージは共通インフラ（データベース・ロギング）を提供します。
+financeパッケージから直接インポートできるAPI:
 
 ```python
 from finance import get_logger
-from finance.db import SQLiteClient, get_db_path
 
-# ロギングの基本
 logger = get_logger(__name__)
 logger.info("Processing started", item_count=100)
+```
 
-# データベース操作の基本
-client = SQLiteClient(get_db_path("sqlite", "market"))
-results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
+#### `get_logger(name, **context)`
+
+**説明**: 構造化ログを出力するロガーインスタンスを取得
+
+**パラメータ**:
+- `name` (必須): ロガー名（通常は `__name__`）
+- `**context`: ロガーに紐付けるコンテキスト情報
+
+**使用例**:
+
+```python
+from finance import get_logger
+
+logger = get_logger(__name__)
+logger.info("Processing started", item_count=100)
+logger.error("Processing failed", error="Invalid input")
 ```
 
 ---
 
-### 主要クラス
+### データベースAPI (`finance.db`)
 
 #### `SQLiteClient`
 
 **説明**: SQLiteデータベースへのトランザクション処理（OLTP）用クライアント
 
-**基本的な使い方**:
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `execute(sql, params)` | SQL実行してデータ取得 | `list[sqlite3.Row]` |
+| `execute_many(sql, params_list)` | 一括INSERT/UPDATE | `int` (影響行数) |
+| `execute_script(script)` | SQLスクリプト実行 | `None` |
+| `connection()` | コンテキストマネージャー | `sqlite3.Connection` |
+
+**使用例**:
 
 ```python
 from finance.db import SQLiteClient, get_db_path
@@ -169,22 +190,22 @@ client.execute(
 results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
 ```
 
-**主なメソッド**:
-
-| メソッド | 説明 | 戻り値 |
-|---------|------|--------|
-| `execute(sql, params)` | SQL実行してデータ取得 | `list[sqlite3.Row]` |
-| `execute_many(sql, params_list)` | 一括INSERT/UPDATE | `int` (影響行数) |
-| `execute_script(script)` | SQLスクリプト実行 | `None` |
-| `connection()` | コンテキストマネージャー | `sqlite3.Connection` |
-
 ---
 
 #### `DuckDBClient`
 
 **説明**: DuckDBデータベースへの分析クエリ（OLAP）用クライアント。Parquetファイルの直接読み込みに対応。
 
-**基本的な使い方**:
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `query_df(sql)` | SQLクエリ実行してDataFrame取得 | `pd.DataFrame` |
+| `execute(sql)` | SQLを実行（結果なし） | `None` |
+| `read_parquet(pattern)` | Parquetファイル読み込み | `pd.DataFrame` |
+| `write_parquet(df, path)` | DataFrameをParquetに書き込み | `None` |
+
+**使用例**:
 
 ```python
 from finance.db import DuckDBClient, get_db_path
@@ -199,44 +220,15 @@ df = client.read_parquet("data/raw/yfinance/stocks/*.parquet")
 result = client.query_df("SELECT symbol, AVG(close) FROM df GROUP BY symbol")
 ```
 
-**主なメソッド**:
-
-| メソッド | 説明 | 戻り値 |
-|---------|------|--------|
-| `query_df(sql)` | SQLクエリ実行してDataFrame取得 | `pd.DataFrame` |
-| `execute(sql)` | SQLを実行（結果なし） | `None` |
-| `read_parquet(pattern)` | Parquetファイル読み込み | `pd.DataFrame` |
-| `write_parquet(df, path)` | DataFrameをParquetに書き込み | `None` |
-
----
-
-### 関数
-
-#### `get_logger(name, **context)`
-
-**説明**: 構造化ログを出力するロガーインスタンスを取得
-
-**使用例**:
-
-```python
-from finance import get_logger
-
-# 基本的な使い方
-logger = get_logger(__name__)
-logger.info("Processing started", item_count=100)
-logger.error("Processing failed", error="Invalid input")
-```
-
-**パラメータ**:
-
-- `name` (必須): ロガー名（通常は `__name__`）
-- `**context`: ロガーに紐付けるコンテキスト情報
-
 ---
 
 #### `get_db_path(db_type, name)`
 
 **説明**: データベースファイルのパスを取得
+
+**パラメータ**:
+- `db_type`: "sqlite" | "duckdb"
+- `name`: データベース名
 
 **使用例**:
 
@@ -252,7 +244,7 @@ duckdb_path = get_db_path("duckdb", "analytics")  # data/duckdb/analytics.duckdb
 
 ---
 
-### 型定義
+### 型定義 (`finance.types`)
 
 データ構造の定義。型ヒントに使用:
 
@@ -266,6 +258,10 @@ from finance.types import (
     LogLevel,          # "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL"
     DatabaseConfig,    # データベース設定のTypeDict
     FetchResult,       # データ取得結果のTypeDict
+    MigrationInfo,     # マイグレーション情報のTypeDict
+    JSONPrimitive,     # str | int | float | bool | None
+    JSONValue,         # JSONPrimitive | Mapping[str, JSONValue] | list[JSONValue]
+    JSONObject,        # Mapping[str, JSONValue]
 )
 ```
 

@@ -97,8 +97,8 @@ result = (
 market_analysis/
 ├── __init__.py                  # 公開API定義（__version__, __all__）
 ├── py.typed                     # PEP 561マーカー
-├── types.py                     # 型定義（TypedDict, Enum等）
-├── errors.py                    # 例外クラス定義
+├── types.py                     # 型定義（TypedDict, Enum等）13種類
+├── errors.py                    # 例外クラス定義（8クラス）
 ├── api/                         # パブリックAPI（推奨エントリポイント）
 │   ├── __init__.py
 │   ├── analysis.py              # Analysis - テクニカル分析（メソッドチェーン対応）
@@ -152,16 +152,16 @@ market_analysis/
 
 | モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
 |-----------|------|-----------|------|-------|------|
-| `types.py` | ✅ 実装済み | 1 | 592 | ✅ | TypedDict, Enum等の型定義（18型） |
+| `types.py` | ✅ 実装済み | 1 | 592 | ✅ | TypedDict, Enum等の型定義（13型） |
 | `errors.py` | ✅ 実装済み | 1 | 521 | ✅ | MarketAnalysisError等の例外クラス（8エラー） |
-| `api/` | ✅ 実装済み | 4 | 2,559 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer（メソッドチェーン対応） |
-| `analysis/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 8 | 3,746 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers, DataFetcherFactory |
-| `export/` | ✅ 実装済み | 2 | 692 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
-| `utils/` | ✅ 実装済み | 7 | 2,819 | ✅ (1) | logging, validators, cache, retry, ticker_registry, logger_factory |
-| `visualization/` | ✅ 実装済み | 4 | 1,796 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart, LineChart |
+| `api/` | ✅ 実装済み | 4 | 2,056 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 4 | 1,158 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 8 | 3,057 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers, DataFetcherFactory |
+| `export/` | ✅ 実装済み | 2 | 582 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
+| `utils/` | ✅ 実装済み | 7 | 2,299 | ✅ (1) | logging, validators, cache, retry, ticker_registry, logger_factory |
+| `visualization/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart, LineChart |
 
-**テスト構成**: 単体テスト (19) + 統合テスト (0) = 計19テスト
+**テスト構成**: 単体テスト (18) + 統合テスト (1) = 計19テスト
 
 **データソース対応状況**:
 - ✅ Yahoo Finance (yfinance) - 株価・為替・指数データ
@@ -467,19 +467,19 @@ logger.info("処理開始")
 | 項目 | 値 |
 |-----|-----|
 | Pythonファイル数 | 32 |
-| 総行数（実装コード） | 14,152 |
+| 総行数（実装コード） | 11,692 |
 | モジュール数 | 8 |
 | テストファイル数 | 19 |
 | テストカバレッジ | N/A |
 
 **モジュール構成**:
-- コアモジュール: `types.py` (型定義18種, 592行), `errors.py` (例外クラス8種, 521行)
-- 機能モジュール: `api/` (4クラス, 2,559行), `analysis/` (3クラス, 1,427行), `core/` (8フェッチャー, 3,746行), `export/` (1クラス, 692行), `utils/` (7モジュール, 2,819行), `visualization/` (4クラス, 1,796行)
+- コアモジュール: `types.py` (型定義13種, 592行), `errors.py` (例外クラス8種, 521行)
+- 機能モジュール: `api/` (4クラス, 2,056行), `analysis/` (3クラス, 1,158行), `core/` (8フェッチャー, 3,057行), `export/` (1クラス, 582行), `utils/` (7モジュール, 2,299行), `visualization/` (4クラス, 1,427行)
 
 **実装進捗**:
 - 完全実装: 8/8 モジュール (100%)
 - テスト整備: 8/8 モジュール (100%) - 全モジュールに単体テスト整備完了
-- テスト数: 単体テスト 19ファイル、統合テスト 0ファイル
+- テスト数: 単体テスト 18ファイル、統合テスト 1ファイル
 
 **データソース**:
 - Yahoo Finance (yfinance) - 株価・為替・指数データ

@@ -119,7 +119,6 @@ factor_class = registry.get("custom")
 ```
 factor/
 ├── __init__.py
-├── py.typed
 ├── types.py
 ├── errors.py
 ├── enums.py
@@ -167,9 +166,10 @@ factor/
 │   ├── __init__.py
 │   ├── ic_analyzer.py
 │   └── quantile_analyzer.py
-└── utils/
-    ├── __init__.py
-    └── logging_config.py
+├── utils/
+│   ├── __init__.py
+│   └── logging_config.py
+└── docs/
 ```
 
 <!-- END: STRUCTURE -->
@@ -177,16 +177,20 @@ factor/
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 ## 実装状況
 
-| モジュール      | 状態        | ファイル数 | 説明                             |
-| --------------- | ----------- | ---------- | -------------------------------- |
-| `types.py`      | ✅ 実装済み | 1          | 型定義（FactorConfig, FactorResult等） |
-| `errors.py`     | ✅ 実装済み | 1          | カスタム例外クラス               |
-| `enums.py`      | ✅ 実装済み | 1          | Enum定義（FactorCategory等）     |
-| `core/`         | ✅ 実装済み | 7          | コアアルゴリズム（Factor基底、正規化、PCA等） |
-| `factors/`      | ✅ 実装済み | 19         | ファクター実装（価格・バリュー・クオリティ等） |
-| `providers/`    | ✅ 実装済み | 4          | データプロバイダー（YFinance、キャッシュ） |
-| `validation/`   | ✅ 実装済み | 3          | ファクター検証（IC分析、分位分析） |
-| `utils/`        | ✅ 実装済み | 2          | ユーティリティ（ロギング）       |
+| モジュール        | 状態        | ファイル数 | 説明                                           |
+| ----------------- | ----------- | ---------- | ---------------------------------------------- |
+| `types.py`        | ✅ 実装済み | 1          | 型定義（FactorConfig, FactorResult等）         |
+| `errors.py`       | ✅ 実装済み | 1          | カスタム例外クラス                             |
+| `enums.py`        | ✅ 実装済み | 1          | Enum定義（FactorCategory, NormalizationMethod）|
+| `core/`           | ✅ 実装済み | 7          | コアアルゴリズム（Factor基底、正規化、PCA等）  |
+| `factors/macro/`  | ✅ 実装済み | 6          | マクロファクター（金利、インフレ、質への逃避）|
+| `factors/price/`  | ✅ 実装済み | 4          | 価格ファクター（モメンタム、リバーサル等）    |
+| `factors/quality/`| ✅ 実装済み | 5          | クオリティファクター（ROIC、複合等）          |
+| `factors/size/`   | ✅ 実装済み | 2          | サイズファクター（時価総額）                  |
+| `factors/value/`  | ✅ 実装済み | 3          | バリューファクター（PER、PBR、複合等）        |
+| `providers/`      | ✅ 実装済み | 4          | データプロバイダー（YFinance、キャッシュ）    |
+| `validation/`     | ✅ 実装済み | 3          | ファクター検証（IC分析、分位分析）            |
+| `utils/`          | ✅ 実装済み | 2          | ユーティリティ（構造化ロギング）              |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -582,7 +586,7 @@ logger.error("computation_failed", factor="momentum", error=str(e))
 | -------------------- | ------ |
 | Python ファイル数    | 41     |
 | 総行数（実装コード） | 10,523 |
-| モジュール数         | 8      |
+| モジュール数         | 11     |
 | テストファイル数     | 33     |
 | テストカバレッジ     | N/A    |
 

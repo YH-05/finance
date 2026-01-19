@@ -322,11 +322,12 @@ finance/                                    # Project root
 │   ├── archive/
 │   ├── commands/                           # (36 commands)
 │   ├── commands_sample/
-│   ├── skills/                             # (12 skills)
+│   ├── skills/                             # (14 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
 │   │   ├── create-worktrees/
+│   │   ├── deep-research/
 │   │   ├── development-guidelines/
 │   │   ├── finance-news-collection/
 │   │   ├── functional-design/
@@ -356,7 +357,7 @@ finance/                                    # Project root
 │   ├── sqlite/                             # OLTP database
 │   ├── raw/                                # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                            # (21 feed subscriptions)
+│   │   ├── rss/                            # (28 feed subscriptions)
 │   │   │   └── feeds.json
 │   │   └── yfinance/
 │   │       ├── forex/
@@ -464,6 +465,7 @@ finance/                                    # Project root
 │       ├── rebalance/                      # Rebalancing
 │       ├── risk/                           # Risk management
 │       ├── providers/                      # Data providers
+│       ├── visualization/                  # Chart generation
 │       ├── utils/
 │       ├── docs/
 │       ├── types.py

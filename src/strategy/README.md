@@ -112,7 +112,15 @@ strategy/
 ├── types.py                          # 型定義（TickerInfo等）
 ├── errors.py                         # カスタム例外定義
 ├── portfolio.py                      # Portfolioクラス
-├── docs/                             # ドキュメント
+├── docs/                             # ドキュメント（8ファイル）
+│   ├── architecture.md
+│   ├── development-guidelines.md
+│   ├── functional-design.md
+│   ├── glossary.md
+│   ├── library-requirements.md
+│   ├── project.md
+│   ├── repository-structure.md
+│   └── tasks.md
 ├── core/                             # コアモジュール
 │   └── __init__.py
 ├── risk/                             # リスク計算モジュール
@@ -144,16 +152,16 @@ strategy/
 
 | モジュール         | 状態        | ファイル数 | 行数  |
 | ------------------ | ----------- | ---------- | ----- |
-| `types.py`         | ✅ 実装済み | 1          | 199   |
-| `errors.py`        | ✅ 実装済み | 1          | 240   |
-| `portfolio.py`     | ✅ 実装済み | 1          | 320   |
-| `risk/`            | ✅ 実装済み | 3          | 806   |
-| `output/`          | ✅ 実装済み | 2          | 381   |
-| `visualization/`   | ✅ 実装済み | 2          | 339   |
-| `rebalance/`       | ✅ 実装済み | 3          | 241   |
-| `providers/`       | ✅ 実装済み | 3          | 391   |
-| `utils/`           | ✅ 実装済み | 2          | 275   |
-| `core/`            | ⏳ 未実装   | 1          | 2     |
+| `types.py`         | ✅ 実装済み | 1          | 277   |
+| `errors.py`        | ✅ 実装済み | 1          | 303   |
+| `portfolio.py`     | ✅ 実装済み | 1          | 394   |
+| `risk/`            | ✅ 実装済み | 3          | 990   |
+| `output/`          | ✅ 実装済み | 2          | 447   |
+| `visualization/`   | ✅ 実装済み | 2          | 424   |
+| `rebalance/`       | ✅ 実装済み | 3          | 308   |
+| `providers/`       | ✅ 実装済み | 3          | 484   |
+| `utils/`           | ✅ 実装済み | 2          | 367   |
+| `core/`            | ⏳ 未実装   | 1          | 3     |
 
 **ステータス説明:**
 
@@ -347,8 +355,8 @@ logger.error("計算エラー", error="データ不足")
 | 項目                 | 値     |
 | -------------------- | ------ |
 | Python ファイル数    | 20     |
-| 総行数（実装コード） | 3,213  |
-| モジュール数         | 7      |
+| 総行数（実装コード） | 4,020  |
+| モジュール数         | 8      |
 | テストファイル数     | 13     |
 | テストカバレッジ     | N/A    |
 

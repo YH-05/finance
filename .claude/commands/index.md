@@ -86,6 +86,7 @@ description: SuperClaudeコマンドリファレンス
 | `agent-memory`            | Use this skill when the user asks to save, remember, recall, or organize memories. Triggers on: 'remember this', 'save this', 'note this', 'what did we discuss about...', 'check your notes', 'clean up memories'. Also use proactively when discovering valuable findings worth preserving. |
 | `architecture-design`     | アーキテクチャ設計書を作成するための詳細ガイドとテンプレート。アーキテクチャ設計時にのみ使用。                                                                                                                                                                                                |
 | `create-worktrees`        | /plan-worktrees の結果から複数の worktree を一括作成するスキル。Issue 番号のリストを受け取り、各 Issue に対して /worktree コマンドを順番に実行する。                                                                                                                                          |
+| `deep-research`           | 金融市場・投資テーマ専用のディープリサーチワークフロー。複数ソースからデータ収集→クロス検証→深掘り分析→レポート生成までを自動化。                                                                                                                                                            |
 | `development-guidelines`  | チーム全体で統一された開発プロセスとコーディング規約を確立するための包括的なガイドとテンプレート。開発ガイドライン作成時、コード実装時に使用する。                                                                                                                                            |
 | `finance-news-collection` | 金融ニュース収集のワークフロー定義をスキルとして作成する。                                                                                                                                                                                                                                    |
 | `functional-design`       | 機能設計書を作成するための詳細ガイドとテンプレート。機能設計書作成時にのみ使用。                                                                                                                                                                                                              |
@@ -187,11 +188,12 @@ finance/                                    # Project root
 │   ├── archive/
 │   ├── commands/                           # (36 commands)
 │   ├── commands_sample/
-│   ├── skills/                             # (12 skills)
+│   ├── skills/                             # (14 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
 │   │   ├── create-worktrees/
+│   │   ├── deep-research/
 │   │   ├── development-guidelines/
 │   │   ├── finance-news-collection/
 │   │   ├── functional-design/
@@ -221,7 +223,7 @@ finance/                                    # Project root
 │   ├── sqlite/                             # OLTP database
 │   ├── raw/                                # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                            # (21 feed subscriptions)
+│   │   ├── rss/                            # (28 feed subscriptions)
 │   │   │   └── feeds.json
 │   │   └── yfinance/
 │   │       ├── forex/
@@ -329,6 +331,7 @@ finance/                                    # Project root
 │       ├── rebalance/                      # Rebalancing
 │       ├── risk/                           # Risk management
 │       ├── providers/                      # Data providers
+│       ├── visualization/                  # Chart generation
 │       ├── utils/
 │       ├── docs/
 │       ├── types.py
