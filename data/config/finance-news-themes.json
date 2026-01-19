@@ -1,42 +1,96 @@
 {
-  "version": "2.0",
-  "description": "金融ニュース収集テーマ設定（AI判断方式）",
+  "version": "2.1",
+  "description": "金融ニュース収集テーマ設定（テーマ別フィード割り当て）",
   "themes": {
     "index": {
       "name": "Index",
       "name_ja": "株価指数",
       "github_status_id": "3925acc3",
-      "description": "株価指数（日経平均、TOPIX、S&P500、ダウ、ナスダック等）の動向、市場全体の上昇/下落、ETF関連"
+      "description": "株価指数（日経平均、TOPIX、S&P500、ダウ、ナスダック等）の動向、市場全体の上昇/下落、ETF関連",
+      "feeds": [
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c04", "title": "CNBC - Markets"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c05", "title": "CNBC - Investing"},
+        {"feed_id": "40fea0da-0199-4b26-b56e-e2c8e0e4c6cc", "title": "MarketWatch Top Stories"},
+        {"feed_id": "50080b59-d28e-41c3-bd22-ad76bbe4a0c7", "title": "NASDAQ Markets"},
+        {"feed_id": "ee4ee564-bcc3-43a1-996e-e9e26a07f43e", "title": "NASDAQ ETFs"}
+      ]
     },
     "stock": {
       "name": "Stock",
       "name_ja": "個別銘柄",
       "github_status_id": "f762022e",
-      "description": "個別企業の決算発表、業績予想、M&A、買収、提携、株式公開、経営陣の変更"
+      "description": "個別企業の決算発表、業績予想、M&A、買収、提携、株式公開、経営陣の変更",
+      "feeds": [
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c12", "title": "CNBC - Earnings"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c11", "title": "CNBC - Business"},
+        {"feed_id": "2524572e-48e0-48a4-8d00-f07d0ddd56af", "title": "Seeking Alpha"},
+        {"feed_id": "75c8c7fe-5811-4e66-866b-d643ae3a132d", "title": "NASDAQ Stocks"},
+        {"feed_id": "e353f91c-621e-4bd9-9f8e-acf98ee7d310", "title": "NASDAQ Original"}
+      ]
     },
     "sector": {
       "name": "Sector",
       "name_ja": "セクター",
       "github_status_id": "48762504",
-      "description": "特定業界（銀行、保険、自動車、半導体、ヘルスケア、エネルギー等）の動向、規制変更"
+      "description": "特定業界（銀行、保険、自動車、半導体、ヘルスケア、エネルギー等）の動向、規制変更",
+      "feeds": [
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c14", "title": "CNBC - Health Care"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c15", "title": "CNBC - Real Estate"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c17", "title": "CNBC - Autos"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18", "title": "CNBC - Energy"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c19", "title": "CNBC - Media"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20", "title": "CNBC - Retail"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21", "title": "CNBC - Travel"}
+      ]
     },
     "macro": {
       "name": "Macro Economics",
       "name_ja": "マクロ経済",
       "github_status_id": "730034a5",
-      "description": "金融政策（金利、量的緩和）、中央銀行（Fed、日銀、ECB）、経済指標（GDP、CPI、雇用統計）、為替"
+      "description": "金融政策（金利、量的緩和）、中央銀行（Fed、日銀、ECB）、経済指標（GDP、CPI、雇用統計）、為替",
+      "feeds": [
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06", "title": "CNBC - Economy"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02", "title": "CNBC - World News"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03", "title": "CNBC - US News"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09", "title": "CNBC - Asia News"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10", "title": "CNBC - Europe News"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"},
+        {"feed_id": "ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca", "title": "Trading Economics News"},
+        {"feed_id": "a1fd6bfd-d707-424b-b08f-d383c2044d2a", "title": "Federal Reserve Press"},
+        {"feed_id": "c4cb2750-0d35-40d4-b478-85887b416923", "title": "IMF News"}
+      ]
     },
     "ai": {
       "name": "AI",
       "name_ja": "AI",
       "github_status_id": "6fbb43d0",
-      "description": "AI技術、機械学習、生成AI、AI企業（OpenAI、NVIDIA等）、AI投資、AI規制"
+      "description": "AI技術、機械学習、生成AI、AI企業（OpenAI、NVIDIA等）、AI投資、AI規制",
+      "feeds": [
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "title": "CNBC - Technology"},
+        {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News (100+ points)"},
+        {"feed_id": "af717f84-da0f-400e-a77d-823836af01d3", "title": "TechCrunch"},
+        {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
+        {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"},
+        {"feed_id": "8f48e41e-fe9a-4951-806f-13ff29e09423", "title": "NASDAQ AI"},
+        {"feed_id": "ba20211a-4d8f-4310-a023-75be99c09a0b", "title": "NASDAQ FinTech"},
+        {"feed_id": "224be93d-8efc-4802-84dd-a14c2452c636", "title": "NASDAQ Innovation"},
+        {"feed_id": "7acfdb64-6475-4341-8ea0-30c1c538b80e", "title": "NASDAQ Technology"}
+      ]
     },
     "finance": {
       "name": "Finance",
       "name_ja": "金融",
       "github_status_id": "ac4a91b1",
-      "description": "企業財務（決算、財務報告）、資金調達（IPO、増資、社債）、株主還元（配当、自社株買い）、金融商品"
+      "description": "企業財務（決算、財務報告）、資金調達（IPO、増資、社債）、株主還元（配当、自社株買い）、金融商品",
+      "feeds": [
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "title": "CNBC - Finance"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16", "title": "CNBC - Wealth"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"},
+        {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
+        {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"},
+        {"feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e", "title": "NASDAQ Financial Advisors"},
+        {"feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e", "title": "NASDAQ Options"}
+      ]
     }
   },
   "exclude_categories": {

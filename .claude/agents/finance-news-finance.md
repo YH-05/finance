@@ -38,15 +38,13 @@ permissionMode: bypassPermissions
 
 | フィード名 | feed_id |
 |-----------|---------|
-| NASDAQ Original | `e353f91c-621e-4bd9-9f8e-acf98ee7d310` |
-| NASDAQ ETFs | `ee4ee564-bcc3-43a1-996e-e9e26a07f43e` |
-| NASDAQ Markets | `50080b59-d28e-41c3-bd22-ad76bbe4a0c7` |
-| NASDAQ Options | `59aa8df4-ede1-4edf-a61a-6e3d6453250e` |
-| NASDAQ Stocks | `75c8c7fe-5811-4e66-866b-d643ae3a132d` |
-| NASDAQ Financial Advisors | `8c5cce88-2d75-462e-89dd-fabcf8e9497e` |
 | CNBC - Finance | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07` |
 | CNBC - Wealth | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16` |
+| CNBC - Top News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01` |
 | Yahoo Finance | `5abc350a-f5e3-46ab-923a-57068cfe298c` |
+| Financial Times | `c23413d1-72f3-4e2b-8ffd-c0da4282f696` |
+| NASDAQ Financial Advisors | `8c5cce88-2d75-462e-89dd-fabcf8e9497e` |
+| NASDAQ Options | `59aa8df4-ede1-4edf-a61a-6e3d6453250e` |
 
 ## 重要ルール
 
@@ -145,15 +143,13 @@ gh issue list \
 
 ```python
 ASSIGNED_FEEDS = [
-    {"feed_id": "e353f91c-621e-4bd9-9f8e-acf98ee7d310", "title": "NASDAQ Original"},
-    {"feed_id": "ee4ee564-bcc3-43a1-996e-e9e26a07f43e", "title": "NASDAQ ETFs"},
-    {"feed_id": "50080b59-d28e-41c3-bd22-ad76bbe4a0c7", "title": "NASDAQ Markets"},
-    {"feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e", "title": "NASDAQ Options"},
-    {"feed_id": "75c8c7fe-5811-4e66-866b-d643ae3a132d", "title": "NASDAQ Stocks"},
-    {"feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e", "title": "NASDAQ Financial Advisors"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "title": "CNBC - Finance"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16", "title": "CNBC - Wealth"},
+    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"},
     {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
+    {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"},
+    {"feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e", "title": "NASDAQ Financial Advisors"},
+    {"feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e", "title": "NASDAQ Options"},
 ]
 
 def fetch_assigned_feeds():

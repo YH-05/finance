@@ -77,6 +77,7 @@ normalized = normalizer.normalize(factor_data)
 ```
 factor/
 ├── __init__.py
+├── py.typed
 ├── types.py
 ├── errors.py
 ├── enums.py
@@ -128,6 +129,14 @@ factor/
 │   ├── __init__.py
 │   └── logging_config.py
 └── docs/
+    ├── architecture.md
+    ├── glossary.md
+    ├── project.md
+    ├── functional-design.md
+    ├── tasks.md
+    ├── development-guidelines.md
+    ├── repository-structure.md
+    └── library-requirements.md
 ```
 
 <!-- END: STRUCTURE -->
@@ -135,20 +144,20 @@ factor/
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 ## 実装状況
 
-| モジュール        | 状態        | ファイル数 | 説明                                           |
-| ----------------- | ----------- | ---------- | ---------------------------------------------- |
-| `types.py`        | ✅ 実装済み | 1          | 型定義（FactorConfig, FactorResult等）         |
-| `errors.py`       | ✅ 実装済み | 1          | カスタム例外クラス                             |
-| `enums.py`        | ✅ 実装済み | 1          | Enum定義（FactorCategory, NormalizationMethod）|
-| `core/`           | ✅ 実装済み | 7          | コアアルゴリズム（Factor基底、正規化、PCA等）  |
-| `factors/macro/`  | ✅ 実装済み | 6          | マクロファクター（金利、インフレ、質への逃避）|
-| `factors/price/`  | ✅ 実装済み | 4          | 価格ファクター（モメンタム、リバーサル等）    |
-| `factors/quality/`| ✅ 実装済み | 5          | クオリティファクター（ROIC、複合等）          |
-| `factors/size/`   | ✅ 実装済み | 2          | サイズファクター（時価総額）                  |
-| `factors/value/`  | ✅ 実装済み | 3          | バリューファクター（PER、PBR、複合等）        |
-| `providers/`      | ✅ 実装済み | 4          | データプロバイダー（YFinance、キャッシュ）    |
-| `validation/`     | ✅ 実装済み | 3          | ファクター検証（IC分析、分位分析）            |
-| `utils/`          | ✅ 実装済み | 2          | ユーティリティ（構造化ロギング）              |
+| モジュール        | 状態        | ファイル数 | 行数  | 説明                                           |
+| ----------------- | ----------- | ---------- | ----- | ---------------------------------------------- |
+| `types.py`        | ✅ 実装済み | 1          | 272   | 型定義（FactorConfig, FactorResult等）         |
+| `errors.py`       | ✅ 実装済み | 1          | 299   | カスタム例外クラス                             |
+| `enums.py`        | ✅ 実装済み | 1          | 60    | Enum定義（FactorCategory, NormalizationMethod）|
+| `core/`           | ✅ 実装済み | 6          | 1,873 | コアアルゴリズム（Factor基底、正規化、PCA等）  |
+| `factors/macro/`  | ✅ 実装済み | 5          | 941   | マクロファクター（金利、インフレ、質への逃避）|
+| `factors/price/`  | ✅ 実装済み | 3          | 708   | 価格ファクター（モメンタム、リバーサル等）    |
+| `factors/quality/`| ✅ 実装済み | 4          | 934   | クオリティファクター（ROIC、複合等）          |
+| `factors/size/`   | ✅ 実装済み | 1          | 322   | サイズファクター（時価総額）                  |
+| `factors/value/`  | ✅ 実装済み | 2          | 585   | バリューファクター（PER、PBR、複合等）        |
+| `providers/`      | ✅ 実装済み | 3          | 1,012 | データプロバイダー（YFinance、キャッシュ）    |
+| `validation/`     | ✅ 実装済み | 2          | 1,025 | ファクター検証（IC分析、分位分析）            |
+| `utils/`          | ✅ 実装済み | 1          | 275   | ユーティリティ（構造化ロギング）              |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -336,13 +345,13 @@ logger.info("factor_initialized", symbols=100)
 <!-- AUTO-GENERATED: STATS -->
 ## 統計
 
-| 項目                 | 値     |
-| -------------------- | ------ |
-| Python ファイル数    | 41     |
-| 総行数（実装コード） | 10,523 |
-| モジュール数         | 11     |
-| テストファイル数     | 33     |
-| テストカバレッジ     | N/A    |
+| 項目                 | 値    |
+| -------------------- | ----- |
+| Python ファイル数    | 41    |
+| 総行数（実装コード） | 8,425 |
+| モジュール数         | 6     |
+| テストファイル数     | 33    |
+| テストカバレッジ     | N/A   |
 
 <!-- END: STATS -->
 

@@ -88,6 +88,59 @@ result = (
 )
 ```
 
+#### ユースケース4: セクター分析（2026年新機能）
+
+```python
+from market_analysis.analysis.sector import (
+    calculate_sector_returns,
+    get_top_bottom_sectors,
+)
+
+# 11セクターの騰落率を取得
+sector_returns = calculate_sector_returns(period="1M")
+print(sector_returns)
+# {'technology': 0.085, 'energy': -0.032, ...}
+
+# トップ3とボトム3セクターを取得
+top_sectors, bottom_sectors = get_top_bottom_sectors(sector_returns, n=3)
+```
+
+#### ユースケース5: 決算カレンダー（2026年新機能）
+
+```python
+from market_analysis.analysis.earnings import fetch_earnings_calendar
+from datetime import datetime, timedelta
+
+# 今後2週間の決算予定を取得
+end_date = datetime.now() + timedelta(days=14)
+earnings_list = fetch_earnings_calendar(
+    tickers=["AAPL", "MSFT", "NVDA"],
+    end_date=end_date
+)
+
+for earning in earnings_list:
+    print(f"{earning.ticker}: {earning.earnings_date}, EPS予想: {earning.eps_estimate}")
+```
+
+#### ユースケース6: 多期間騰落率計算（2026年新機能）
+
+```python
+from market_analysis.analysis.returns import (
+    calculate_return,
+    calculate_returns_for_symbols,
+)
+
+# 単一銘柄の1日騰落率
+daily_return = calculate_return("AAPL", period="1D")
+print(f"AAPL 1日騰落率: {daily_return:.2%}")
+
+# 複数銘柄の複数期間騰落率
+symbols = ["^GSPC", "^N225", "AAPL"]
+periods = ["1D", "1W", "MTD", "YTD"]
+returns_df = calculate_returns_for_symbols(symbols, periods)
+print(returns_df)
+```
+
 <!-- END: QUICKSTART -->
 
 ## ディレクトリ構成
@@ -96,45 +149,48 @@ result = (
 
 ```
 market_analysis/
-├── __init__.py                  # 公開API定義（100行）
+├── __init__.py                  # 公開API定義（129行）
 ├── py.typed                     # PEP 561マーカー
-├── types.py                     # 型定義13種（468行）
-├── errors.py                    # 例外クラス8種（448行）
+├── types.py                     # 型定義13種（592行）
+├── errors.py                    # 例外クラス8種（521行）
 ├── api/                         # パブリックAPI（推奨エントリポイント）
 │   ├── __init__.py
-│   ├── analysis.py              # Analysis - テクニカル分析（928行）
-│   ├── chart.py                 # Chart - チャート生成（395行）
-│   └── market_data.py           # MarketData - データ取得統合（728行）
+│   ├── analysis.py              # Analysis - テクニカル分析（1,177行）
+│   ├── chart.py                 # Chart - チャート生成（488行）
+│   └── market_data.py           # MarketData - データ取得統合（887行）
 ├── analysis/                    # 分析ロジック
 │   ├── __init__.py
-│   ├── analyzer.py              # Analyzer（342行）
-│   ├── correlation.py           # CorrelationAnalyzer（423行）
-│   └── indicators.py            # IndicatorCalculator（384行）
+│   ├── analyzer.py              # Analyzer（428行）
+│   ├── correlation.py           # CorrelationAnalyzer（511行）
+│   ├── indicators.py            # IndicatorCalculator（477行）
+│   ├── earnings.py              # EarningsCalendar - 決算日程取得（414行）
+│   ├── returns.py               # MultiPeriodReturns - 多期間騰落率（505行）
+│   └── sector.py                # SectorAnalysis - セクター分析（639行）
 ├── core/                        # データフェッチャー
 │   ├── __init__.py
-│   ├── base_fetcher.py          # BaseDataFetcher（309行）
-│   ├── data_fetcher_factory.py  # DataFetcherFactory（139行）
-│   ├── yfinance_fetcher.py      # YFinanceFetcher（422行）
-│   ├── fred_fetcher.py          # FREDFetcher（500行）
-│   ├── bloomberg_fetcher.py     # BloombergFetcher（507行）
-│   ├── factset_fetcher.py       # FactSetFetcher（592行）
-│   └── mock_fetchers.py         # MockFetchers（549行）
+│   ├── base_fetcher.py          # BaseDataFetcher（382行）
+│   ├── data_fetcher_factory.py  # DataFetcherFactory（174行）
+│   ├── yfinance_fetcher.py      # YFinanceFetcher（516行）
+│   ├── fred_fetcher.py          # FREDFetcher（605行）
+│   ├── bloomberg_fetcher.py     # BloombergFetcher（640行）
+│   ├── factset_fetcher.py       # FactSetFetcher（723行）
+│   └── mock_fetchers.py         # MockFetchers（665行）
 ├── export/                      # データエクスポート
 │   ├── __init__.py
-│   └── exporter.py              # DataExporter（571行）
+│   └── exporter.py              # DataExporter（678行）
 ├── utils/                       # ユーティリティ関数
 │   ├── __init__.py
-│   ├── cache.py                 # SQLiteキャッシュ（521行）
-│   ├── logger_factory.py        # ロガー生成（40行）
-│   ├── logging_config.py        # 構造化ロギング（279行）
-│   ├── retry.py                 # リトライ（333行）
-│   ├── ticker_registry.py       # ティッカーレジストリ（571行）
-│   └── validators.py            # バリデーション（491行）
+│   ├── cache.py                 # SQLiteキャッシュ（637行）
+│   ├── logger_factory.py        # ロガー生成（52行）
+│   ├── logging_config.py        # 構造化ロギング（377行）
+│   ├── retry.py                 # リトライ（410行）
+│   ├── ticker_registry.py       # ティッカーレジストリ（696行）
+│   └── validators.py            # バリデーション（581行）
 ├── visualization/               # チャート生成
 │   ├── __init__.py
-│   ├── charts.py                # ChartBuilder（552行）
-│   ├── heatmap.py               # HeatmapChart（205行）
-│   └── price_charts.py          # CandlestickChart, LineChart（616行）
+│   ├── charts.py                # ChartBuilder（687行）
+│   ├── heatmap.py               # HeatmapChart（267行）
+│   └── price_charts.py          # CandlestickChart, LineChart（782行）
 └── docs/                        # ライブラリドキュメント（8ファイル）
     ├── project.md
     ├── architecture.md
@@ -154,16 +210,21 @@ market_analysis/
 
 | モジュール | 状態 | ファイル数 | 行数 | テスト | 備考 |
 |-----------|------|-----------|------|-------|------|
-| `types.py` | ✅ 実装済み | 1 | 468 | ✅ | 型定義13種（TypedDict, Enum等） |
-| `errors.py` | ✅ 実装済み | 1 | 448 | ✅ | 例外クラス8種（MarketAnalysisError等） |
-| `api/` | ✅ 実装済み | 4 | 2,056 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer |
-| `analysis/` | ✅ 実装済み | 4 | 1,158 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 8 | 3,057 | ✅ (7) | 5種データフェッチャー + Factory + Mock |
-| `export/` | ✅ 実装済み | 2 | 582 | ✅ (1) | DataExporter（CSV/JSON/Parquet） |
-| `utils/` | ✅ 実装済み | 7 | 2,299 | ✅ (1) | cache, retry, validators, ticker_registry等 |
-| `visualization/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | ChartBuilder, HeatmapChart, LineChart等 |
+| `types.py` | ✅ 実装済み | 1 | 592 | ✅ | 型定義13種（TypedDict, Enum等） |
+| `errors.py` | ✅ 実装済み | 1 | 521 | ✅ | 例外クラス8種（MarketAnalysisError等） |
+| `api/` | ✅ 実装済み | 4 | 2,552 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer |
+| `analysis/` | ✅ 実装済み | 7 | 2,974 | ✅ (6) | Analyzer, Indicators, Correlation, Earnings, Returns, Sector |
+| `core/` | ✅ 実装済み | 8 | 3,705 | ✅ (7) | 5種データフェッチャー + Factory + Mock |
+| `export/` | ✅ 実装済み | 2 | 678 | ✅ (1) | DataExporter（CSV/JSON/Parquet） |
+| `utils/` | ✅ 実装済み | 7 | 2,753 | ✅ (1) | cache, retry, validators, ticker_registry等 |
+| `visualization/` | ✅ 実装済み | 4 | 1,736 | ✅ (3) | ChartBuilder, HeatmapChart, LineChart等 |
 
-**テスト構成**: 単体テスト 18ファイル + 統合テスト 1ファイル = 計19テスト
+**テスト構成**: 単体テスト 21ファイル + 統合テスト 1ファイル = 計22テスト
+
+**分析機能の拡張**:
+- ✅ セクター分析（sector.py）- 11セクターのETFパフォーマンス分析、トップ/ボトムセクター検出
+- ✅ 決算カレンダー（earnings.py）- 決算予定日の取得、EPS/売上予想の抽出
+- ✅ 多期間騰落率（returns.py）- 1D/1W/MTD/YTD等の複数期間リターン計算
 
 **データソース対応状況**:
 - ✅ Yahoo Finance (yfinance) - 株価・為替・指数データ
@@ -468,20 +529,25 @@ logger.info("処理開始")
 
 | 項目 | 値 |
 |-----|-----|
-| Pythonファイル数 | 32 |
-| 総行数（実装コード） | 11,692 |
+| Pythonファイル数 | 35 |
+| 総行数（実装コード） | 12,818 |
 | モジュール数 | 8 |
-| テストファイル数 | 19 |
+| テストファイル数 | 22 |
 | テストカバレッジ | N/A |
 
 **モジュール構成**:
-- コアモジュール: `types.py` (型定義13種, 468行), `errors.py` (例外クラス8種, 448行)
-- 機能モジュール: `api/` (4クラス, 2,056行), `analysis/` (3クラス, 1,158行), `core/` (8フェッチャー, 3,057行), `export/` (1クラス, 582行), `utils/` (7モジュール, 2,299行), `visualization/` (4クラス, 1,427行)
+- コアモジュール: `types.py` (型定義13種, 592行), `errors.py` (例外クラス8種, 521行)
+- 機能モジュール: `api/` (4クラス, 2,552行), `analysis/` (6クラス, 2,974行), `core/` (8フェッチャー, 3,705行), `export/` (1クラス, 678行), `utils/` (7モジュール, 2,753行), `visualization/` (4クラス, 1,736行)
 
 **実装進捗**:
 - 完全実装: 8/8 モジュール (100%)
 - テスト整備: 8/8 モジュール (100%) - 全モジュールに単体テスト整備完了
-- テスト数: 単体テスト 18ファイル、統合テスト 1ファイル
+- テスト数: 単体テスト 21ファイル、統合テスト 1ファイル
+
+**最新追加機能（2026-01）**:
+- セクター分析（sector.py）: 11セクターのETFパフォーマンス、トップ/ボトムセクター検出、寄与銘柄分析
+- 決算カレンダー（earnings.py）: 決算予定日取得、EPS/売上予想の抽出、期間フィルタリング
+- 多期間騰落率（returns.py）: 1D/1W/MTD/1M/3M/6M/YTD/1Y/3Y/5Y のリターン計算、米国/グローバル指数対応
 
 **データソース**:
 - Yahoo Finance (yfinance) - 株価・為替・指数データ

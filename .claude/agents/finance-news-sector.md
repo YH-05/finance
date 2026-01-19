@@ -44,6 +44,7 @@ permissionMode: bypassPermissions
 | CNBC - Energy | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18` |
 | CNBC - Media | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c19` |
 | CNBC - Retail | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20` |
+| CNBC - Travel | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21` |
 
 ## 重要ルール
 
@@ -135,6 +136,7 @@ ASSIGNED_FEEDS = [
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18", "title": "CNBC - Energy"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c19", "title": "CNBC - Media"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20", "title": "CNBC - Retail"},
+    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21", "title": "CNBC - Travel"},
 ]
 
 def fetch_assigned_feeds():

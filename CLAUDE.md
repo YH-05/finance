@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-14
+updated_at: 2026-01-20
 # このプロパティは、Claude Codeが関連するドキュメントの更新を検知するために必要です。消去しないでください。
 ---
 
@@ -321,7 +321,7 @@ finance/                                    # Project root
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
-│   ├── commands/                           # (36 commands)
+│   ├── commands/                           # (37 commands)
 │   ├── commands_sample/
 │   ├── rules/                              # 共有ルール定義
 │   ├── skills/                             # (13 skills)
@@ -398,7 +398,9 @@ finance/                                    # Project root
 │       │   ├── README.md
 │       │   ├── finance-news-*.md           # (4 guide files)
 │       │   └── research/
-│       └── project-16/                     # src_sample Migration
+│       ├── project-16/                     # src_sample Migration
+│       │   └── README.md
+│       └── project-17/                     # Market Report System
 │           └── README.md
 │
 ├── src/                                    # Source code

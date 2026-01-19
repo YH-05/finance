@@ -39,14 +39,14 @@ permissionMode: bypassPermissions
 | フィード名 | feed_id |
 |-----------|---------|
 | CNBC - Economy | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06` |
-| CNBC - Finance | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07` |
-| CNBC - Top News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01` |
 | CNBC - World News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02` |
 | CNBC - US News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03` |
 | CNBC - Asia News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09` |
 | CNBC - Europe News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10` |
-| FRB News Releases | `a1fd6bfd-d6e7-4c8a-9b0c-1d2e3f4a5b6c` |
-| IMF News | `c4cb2750-e8f9-4a0b-b1c2-d3e4f5a6b7c8` |
+| CNBC - Politics | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13` |
+| Trading Economics News | `ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca` |
+| Federal Reserve Press | `a1fd6bfd-d707-424b-b08f-d383c2044d2a` |
+| IMF News | `c4cb2750-0d35-40d4-b478-85887b416923` |
 
 ## 重要ルール
 
@@ -133,14 +133,14 @@ gh issue list \
 ```python
 ASSIGNED_FEEDS = [
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06", "title": "CNBC - Economy"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "title": "CNBC - Finance"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02", "title": "CNBC - World News"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03", "title": "CNBC - US News"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09", "title": "CNBC - Asia News"},
     {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10", "title": "CNBC - Europe News"},
-    {"feed_id": "a1fd6bfd-d6e7-4c8a-9b0c-1d2e3f4a5b6c", "title": "FRB News Releases"},
-    {"feed_id": "c4cb2750-e8f9-4a0b-b1c2-d3e4f5a6b7c8", "title": "IMF News"},
+    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"},
+    {"feed_id": "ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca", "title": "Trading Economics News"},
+    {"feed_id": "a1fd6bfd-d707-424b-b08f-d383c2044d2a", "title": "Federal Reserve Press"},
+    {"feed_id": "c4cb2750-0d35-40d4-b478-85887b416923", "title": "IMF News"},
 ]
 
 def fetch_assigned_feeds():

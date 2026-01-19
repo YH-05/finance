@@ -118,19 +118,19 @@ uv add apscheduler
 
 ```
 rss/
-├── __init__.py          # Public API exports
-├── py.typed             # PEP 561 type marker
-├── types.py             # Type definitions (Feed, FeedItem, etc.)
-├── exceptions.py        # Custom exceptions
-├── cli/                 # Command-line interface
+├── __init__.py              # Public API exports (90 lines)
+├── py.typed                 # PEP 561 type marker
+├── types.py                 # Type definitions (291 lines)
+├── exceptions.py            # Custom exceptions (120 lines)
+├── cli/                     # Command-line interface (2 files, 595 lines)
 │   ├── __init__.py
-│   └── main.py
-├── core/                # Core functionality
+│   └── main.py              # CLI commands (add/list/fetch/remove/search)
+├── core/                    # Core functionality (4 files, 578 lines)
 │   ├── __init__.py
-│   ├── diff_detector.py    # Duplicate detection
-│   ├── http_client.py      # HTTP client (httpx)
-│   └── parser.py           # RSS/Atom parser (feedparser)
-├── docs/                # Library documentation
+│   ├── diff_detector.py     # Duplicate detection (68 lines)
+│   ├── http_client.py       # HTTP client with httpx (314 lines)
+│   └── parser.py            # RSS/Atom parser with feedparser (192 lines)
+├── docs/                    # Library documentation (8 files)
 │   ├── architecture.md
 │   ├── development-guidelines.md
 │   ├── functional-design.md
@@ -139,25 +139,25 @@ rss/
 │   ├── project.md
 │   ├── repository-structure.md
 │   └── tasks.md
-├── mcp/                 # MCP server integration
+├── mcp/                     # MCP server integration (2 files, 540 lines)
 │   ├── __init__.py
-│   └── server.py
-├── services/            # Service layer
+│   └── server.py            # MCP tools (9 tools provided)
+├── services/                # Service layer (5 files, 1,474 lines)
 │   ├── __init__.py
-│   ├── batch_scheduler.py  # Batch scheduling (APScheduler)
-│   ├── feed_fetcher.py     # Feed fetching orchestration
-│   ├── feed_manager.py     # Feed CRUD operations
-│   └── feed_reader.py      # Feed reading/searching
-├── storage/             # Persistence layer
+│   ├── batch_scheduler.py   # Batch scheduling with APScheduler (276 lines)
+│   ├── feed_fetcher.py      # Feed fetching orchestration (408 lines)
+│   ├── feed_manager.py      # Feed CRUD operations (553 lines)
+│   └── feed_reader.py       # Feed reading/searching (231 lines)
+├── storage/                 # Persistence layer (3 files, 546 lines)
 │   ├── __init__.py
-│   ├── json_storage.py     # JSON file operations
-│   └── lock_manager.py     # File-based locking
-├── utils/               # Utilities
+│   ├── json_storage.py      # JSON file operations
+│   └── lock_manager.py      # File-based locking
+├── utils/                   # Utilities (2 files, 275 lines)
 │   ├── __init__.py
-│   └── logging_config.py   # Structured logging
-└── validators/          # Validation layer
+│   └── logging_config.py    # Structured logging (structlog)
+└── validators/              # Validation layer (2 files, 189 lines)
     ├── __init__.py
-    └── url_validator.py    # URL/title/category validation
+    └── url_validator.py     # URL/title/category validation
 ```
 
 <!-- END: STRUCTURE -->
@@ -168,17 +168,17 @@ rss/
 
 | モジュール        | 状態        | ファイル数 | 行数  | 説明                                             |
 | ----------------- | ----------- | ---------- | ----- | ------------------------------------------------ |
-| `types.py`        | ✅ 実装済み | 1          | 380   | 型定義（Feed, FeedItem, BatchStats 等）          |
-| `exceptions.py`   | ✅ 実装済み | 1          | 161   | カスタム例外（7種類）                            |
-| `cli/`            | ✅ 実装済み | 2          | 727   | CLI インターフェース（add/list/fetch/remove 等） |
-| `core/`           | ✅ 実装済み | 4          | 722   | コア機能（HTTP/パース/差分検出）                 |
-| `mcp/`            | ✅ 実装済み | 2          | 654   | MCP サーバー統合（9 ツール提供）                 |
-| `services/`       | ✅ 実装済み | 5          | 1,820 | サービス層（Manager/Fetcher/Reader/Scheduler）   |
-| `storage/`        | ✅ 実装済み | 3          | 667   | 永続化層（JSON ストレージ・ロック管理）          |
-| `utils/`          | ✅ 実装済み | 2          | 367   | ユーティリティ（構造化ロギング）                 |
-| `validators/`     | ✅ 実装済み | 2          | 235   | バリデーション（URL/タイトル/カテゴリ）          |
+| `types.py`        | ✅ 実装済み | 1          | 291   | 型定義（Feed, FeedItem, BatchStats 等）          |
+| `exceptions.py`   | ✅ 実装済み | 1          | 120   | カスタム例外（7種類）                            |
+| `cli/`            | ✅ 実装済み | 2          | 595   | CLI インターフェース（add/list/fetch/remove 等） |
+| `core/`           | ✅ 実装済み | 4          | 578   | コア機能（HTTP/パース/差分検出）                 |
+| `mcp/`            | ✅ 実装済み | 2          | 540   | MCP サーバー統合（9 ツール提供）                 |
+| `services/`       | ✅ 実装済み | 5          | 1,474 | サービス層（Manager/Fetcher/Reader/Scheduler）   |
+| `storage/`        | ✅ 実装済み | 3          | 546   | 永続化層（JSON ストレージ・ロック管理）          |
+| `utils/`          | ✅ 実装済み | 2          | 275   | ユーティリティ（構造化ロギング）                 |
+| `validators/`     | ✅ 実装済み | 2          | 189   | バリデーション（URL/タイトル/カテゴリ）          |
 
-**テストカバレッジ**: 全モジュールにテストが存在（unit: 12 ファイル, integration: 2 ファイル, property: 1 ファイル, storage: 1 ファイル）
+**テストカバレッジ**: 全モジュールにテストが存在（unit: 13 ファイル, integration: 2 ファイル, property: 1 ファイル）
 
 <!-- END: IMPLEMENTATION -->
 
@@ -413,12 +413,12 @@ except FeedNotFoundError as e:
 
 <!-- AUTO-GENERATED: STATS -->
 
-| 項目                     | 値  |
-| ------------------------ | --- |
-| Python ファイル数        | 23  |
-| 総行数（実装コード）     | 5,822  |
-| モジュール数             | 7   |
-| テストファイル数         | 30  |
+| 項目                     | 値     |
+| ------------------------ | ------ |
+| Python ファイル数        | 23     |
+| 総行数（実装コード）     | 4,689  |
+| モジュール数             | 9      |
+| テストファイル数         | 16     |
 | 実装カバレッジ           | 100% (全モジュールにテストあり) |
 
 **主要コンポーネント**:
@@ -426,7 +426,9 @@ except FeedNotFoundError as e:
 - コアモジュール: 3 (HTTP/Parser/DiffDetector)
 - データモデル: 6 (Feed/FeedItem/FetchResult/BatchStats/FetchInterval/FetchStatus)
 - 例外クラス: 7 (基底 + 6 種類の専用例外)
-- ユーティリティ: 2 (ロギング/バリデーション)
+- ユーティリティ: 3 (ロギング/バリデーション/ストレージ)
+- MCP統合: 9 ツール (フィード管理・取得・検索)
+- CLI統合: 7 コマンド (add/list/fetch/remove/search/show/update)
 
 <!-- END: STATS -->
 
