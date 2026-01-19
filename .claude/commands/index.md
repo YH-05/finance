@@ -34,42 +34,43 @@ description: SuperClaudeコマンドリファレンス
 
 <!-- AUTO-GENERATED: COMMANDS -->
 
-| コマンド                  | 説明                                                                   |
-| ------------------------- | ---------------------------------------------------------------------- |
-| `/analyze`                | 多次元コード分析（分析レポート出力）                                   |
-| `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                    |
-| `/collect-finance-news`   | テーマ別に金融ニュースを収集し、GitHub Project 15 に自動投稿           |
-| `/commit-and-pr`          | 変更のコミットと PR 作成                                               |
-| `/create-worktrees`       | 複数 Worktree 一括作成                                                 |
-| `/delete-worktrees`       | 複数の worktree とブランチを一括削除                                   |
-| `/ensure-quality`         | コード品質の自動改善（make check-all 相当）                            |
-| `/finance-edit`           | 金融記事の編集ワークフロー（初稿作成 → 批評 → 修正）                   |
-| `/finance-full`           | 記事作成の全工程を一括実行（フォルダ作成 → リサーチ → 執筆）           |
-| `/finance-research`       | 金融記事のリサーチワークフロー（データ収集 → 分析 → 検証 → 可視化）    |
-| `/finance-suggest-topics` | 金融記事のトピック提案（スコアリング付き）                             |
-| `/gemini-search`          | Web search using Gemini CLI                                            |
-| `/improve`                | エビデンスベースの改善実装                                             |
-| `/issue`                  | GitHub Issue とタスクの管理・同期を行う                                |
-| `/issue-implement`        | GitHub Issue 番号から自動実装・PR 作成まで一括実行                     |
-| `/issue-refine`           | GitHub Issue の内容をブラッシュアップして更新する                      |
-| `/merge-pr`               | PR のコンフリクトチェック・CI 確認・マージを実行                       |
-| `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成 |
-| `/new-package`            | モノレポ内に新しい Python パッケージを作成する                         |
-| `/new-project`            | 開発プロジェクトを開始。パッケージ開発または軽量プロジェクトに対応     |
-| `/plan-worktrees`         | GitHub Project を参照し、Todo の Issue を並列開発用にグルーピング表示  |
-| `/project-refine`         | プロジェクト全体の適合性チェックとタスク再構成を行う                   |
-| `/push`                   | 変更をコミットしてリモートにプッシュ                                   |
-| `/review-docs`            | ドキュメントの詳細レビューをサブエージェントで実行                     |
-| `/review-pr`              | PR レビュー（コード品質・セキュリティ・テスト）                        |
-| `/safe-refactor`          | 安全なリファクタリング                                                 |
-| `/scan`                   | セキュリティと品質の包括的検証                                         |
-| `/setup-repository`       | テンプレートリポジトリの初期化（初回のみ）                             |
-| `/sync-issue`             | GitHub Issue のコメントから進捗・タスク・仕様変更を同期                |
-| `/task`                   | 複雑なタスクの管理                                                     |
-| `/troubleshoot`           | 体系的なデバッグ                                                       |
-| `/worktree`               | 新しい worktree とブランチを作成して開発を開始                         |
-| `/worktree-done`          | worktree の開発完了後、PR マージ確認を経て安全にクリーンアップ         |
-| `/write-tests`            | t-wada 流 TDD によるテスト作成                                         |
+| コマンド                  | 説明                                                                                           |
+| ------------------------- | ---------------------------------------------------------------------------------------------- |
+| `/analyze`                | 多次元コード分析（分析レポート出力）                                                           |
+| `/analyze-conflicts`      | PR のコンフリクトを詳細分析し、問題点と解決策を提示                                            |
+| `/collect-finance-news`   | テーマ別に金融ニュースを収集し、GitHub Project 15 に自動投稿                                   |
+| `/commit-and-pr`          | 変更のコミットと PR 作成                                                                       |
+| `/create-worktrees`       | 複数 Worktree 一括作成                                                                         |
+| `/deep-research`          | 金融市場・投資テーマ専用のディープリサーチ（複数ソース収集 → クロス検証 → 深掘り → レポート） |
+| `/delete-worktrees`       | 複数の worktree とブランチを一括削除                                                           |
+| `/ensure-quality`         | コード品質の自動改善（make check-all 相当）                                                    |
+| `/finance-edit`           | 金融記事の編集ワークフロー（初稿作成 → 批評 → 修正）                                           |
+| `/finance-full`           | 記事作成の全工程を一括実行（フォルダ作成 → リサーチ → 執筆）                                   |
+| `/finance-research`       | 金融記事のリサーチワークフロー（データ収集 → 分析 → 検証 → 可視化）                            |
+| `/finance-suggest-topics` | 金融記事のトピック提案（スコアリング付き）                                                     |
+| `/gemini-search`          | Web search using Gemini CLI                                                                    |
+| `/improve`                | エビデンスベースの改善実装                                                                     |
+| `/issue`                  | GitHub Issue とタスクの管理・同期を行う                                                        |
+| `/issue-implement`        | GitHub Issue 番号から自動実装・PR 作成まで一括実行                                             |
+| `/issue-refine`           | GitHub Issue の内容をブラッシュアップして更新する                                              |
+| `/merge-pr`               | PR のコンフリクトチェック・CI 確認・マージを実行                                               |
+| `/new-finance-article`    | 新規金融記事フォルダを作成し、カテゴリ別テンプレートから初期構造を生成                         |
+| `/new-package`            | モノレポ内に新しい Python パッケージを作成する                                                 |
+| `/new-project`            | 開発プロジェクトを開始。パッケージ開発または軽量プロジェクトに対応                             |
+| `/plan-worktrees`         | GitHub Project を参照し、Todo の Issue を並列開発用にグルーピング表示                          |
+| `/project-refine`         | プロジェクト全体の適合性チェックとタスク再構成を行う                                           |
+| `/push`                   | 変更をコミットしてリモートにプッシュ                                                           |
+| `/review-docs`            | ドキュメントの詳細レビューをサブエージェントで実行                                             |
+| `/review-pr`              | PR レビュー（コード品質・セキュリティ・テスト）                                                |
+| `/safe-refactor`          | 安全なリファクタリング                                                                         |
+| `/scan`                   | セキュリティと品質の包括的検証                                                                 |
+| `/setup-repository`       | テンプレートリポジトリの初期化（初回のみ）                                                     |
+| `/sync-issue`             | GitHub Issue のコメントから進捗・タスク・仕様変更を同期                                        |
+| `/task`                   | 複雑なタスクの管理                                                                             |
+| `/troubleshoot`           | 体系的なデバッグ                                                                               |
+| `/worktree`               | 新しい worktree とブランチを作成して開発を開始                                                 |
+| `/worktree-done`          | worktree の開発完了後、PR マージ確認を経て安全にクリーンアップ                                 |
+| `/write-tests`            | t-wada 流 TDD によるテスト作成                                                                 |
 
 <!-- END: COMMANDS -->
 
@@ -179,11 +180,12 @@ description: SuperClaudeコマンドリファレンス
 ```
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
-│   ├── agents/                             # (57 agents)
+│   ├── agents/                             # (69 agents)
+│   │   ├── deep-research/
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
-│   ├── commands/                           # (35 commands)
+│   ├── commands/                           # (36 commands)
 │   ├── commands_sample/
 │   ├── skills/                             # (12 skills)
 │   │   ├── agent-expert/
@@ -219,15 +221,7 @@ finance/                                    # Project root
 │   ├── sqlite/                             # OLTP database
 │   ├── raw/                                # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                            # (8 feed subscriptions)
-│   │   │   ├── 338f1076-a903-422d-913d-e889b1bec581/
-│   │   │   ├── c23413d1-72f3-4e2b-8ffd-c0da4282f696/
-│   │   │   ├── af717f84-da0f-400e-a77d-823836af01d3/
-│   │   │   ├── 69722878-9f3d-4985-b7c2-d263fc9a3fdf/
-│   │   │   ├── 4dc65edc-5c17-4ff8-ab38-7dd248f96006/
-│   │   │   ├── 40fea0da-0199-4b26-b56e-e2c8e0e4c6cc/
-│   │   │   ├── 5abc350a-f5e3-46ab-923a-57068cfe298c/
-│   │   │   ├── 2524572e-48e0-48a4-8d00-f07d0ddd56af/
+│   │   ├── rss/                            # (21 feed subscriptions)
 │   │   │   └── feeds.json
 │   │   └── yfinance/
 │   │       ├── forex/
@@ -250,14 +244,24 @@ finance/                                    # Project root
 │   ├── github-projects-automation.md
 │   ├── testing-strategy.md
 │   ├── type-checker-migration.md
+│   ├── code-analysis-report/               # Code analysis reports
+│   ├── plan/                               # Project plans
 │   ├── pr-review/                          # PR review reports
-│   └── project/                            # Project research docs
-│       ├── finance-news-*.md               # ニュース収集関連
-│       ├── project-7.md
-│       ├── project-11.md
-│       ├── project-14.md
-│       ├── project-16.md
-│       └── research/
+│   └── project/                            # Project documentation
+│       ├── project-7/                      # エージェント開発
+│       │   ├── README.md
+│       │   ├── image-collector-guide.md
+│       │   └── research/
+│       ├── project-11/                     # note金融コンテンツ発信強化
+│       │   ├── README.md
+│       │   ├── market-analysis-guidelines.md
+│       │   └── note-magazine-strategy.md
+│       ├── project-14/                     # 金融ニュース収集
+│       │   ├── README.md
+│       │   ├── finance-news-*.md           # (4 guide files)
+│       │   └── research/
+│       └── project-16/                     # src_sample Migration
+│           └── README.md
 │
 ├── src/                                    # Source code
 │   ├── finance/                            # Core infrastructure
@@ -303,7 +307,15 @@ finance/                                    # Project root
 │   │   └── py.typed
 │   │
 │   ├── factor/                             # Factor analysis library
-│   │   ├── core/
+│   │   ├── core/                           # Core algorithms
+│   │   ├── factors/                        # Factor implementations
+│   │   │   ├── macro/
+│   │   │   ├── price/
+│   │   │   ├── quality/
+│   │   │   ├── size/
+│   │   │   └── value/
+│   │   ├── providers/                      # Data providers
+│   │   ├── validation/                     # Factor validation
 │   │   ├── utils/
 │   │   ├── docs/
 │   │   ├── types.py
@@ -313,6 +325,10 @@ finance/                                    # Project root
 │   │
 │   └── strategy/                           # Strategy library
 │       ├── core/
+│       ├── output/                         # Output formatter
+│       ├── rebalance/                      # Rebalancing
+│       ├── risk/                           # Risk management
+│       ├── providers/                      # Data providers
 │       ├── utils/
 │       ├── docs/
 │       ├── types.py

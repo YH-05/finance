@@ -315,11 +315,12 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
-│   ├── agents/                             # (57 agents)
+│   ├── agents/                             # (69 agents)
+│   │   ├── deep-research/
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
-│   ├── commands/                           # (35 commands)
+│   ├── commands/                           # (36 commands)
 │   ├── commands_sample/
 │   ├── skills/                             # (12 skills)
 │   │   ├── agent-expert/
@@ -355,15 +356,7 @@ finance/                                    # Project root
 │   ├── sqlite/                             # OLTP database
 │   ├── raw/                                # Raw data (Parquet)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                            # (8 feed subscriptions)
-│   │   │   ├── 338f1076-a903-422d-913d-e889b1bec581/
-│   │   │   ├── c23413d1-72f3-4e2b-8ffd-c0da4282f696/
-│   │   │   ├── af717f84-da0f-400e-a77d-823836af01d3/
-│   │   │   ├── 69722878-9f3d-4985-b7c2-d263fc9a3fdf/
-│   │   │   ├── 4dc65edc-5c17-4ff8-ab38-7dd248f96006/
-│   │   │   ├── 40fea0da-0199-4b26-b56e-e2c8e0e4c6cc/
-│   │   │   ├── 5abc350a-f5e3-46ab-923a-57068cfe298c/
-│   │   │   ├── 2524572e-48e0-48a4-8d00-f07d0ddd56af/
+│   │   ├── rss/                            # (21 feed subscriptions)
 │   │   │   └── feeds.json
 │   │   └── yfinance/
 │   │       ├── forex/
@@ -386,6 +379,8 @@ finance/                                    # Project root
 │   ├── github-projects-automation.md
 │   ├── testing-strategy.md
 │   ├── type-checker-migration.md
+│   ├── code-analysis-report/               # Code analysis reports
+│   ├── plan/                               # Project plans
 │   ├── pr-review/                          # PR review reports
 │   └── project/                            # Project documentation
 │       ├── project-7/                      # エージェント開発

@@ -154,14 +154,14 @@ market_analysis/
 |-----------|------|-----------|------|-------|------|
 | `types.py` | ✅ 実装済み | 1 | 592 | ✅ | TypedDict, Enum等の型定義（18型） |
 | `errors.py` | ✅ 実装済み | 1 | 521 | ✅ | MarketAnalysisError等の例外クラス（8エラー） |
-| `api/` | ✅ 実装済み | 3 | 1,763 | ✅ (3) | MarketData, Analysis, Chart（メソッドチェーン対応） |
-| `analysis/` | ✅ 実装済み | 3 | 1,416 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
-| `core/` | ✅ 実装済み | 7 | 3,705 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers |
-| `export/` | ✅ 実装済み | 1 | 678 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
-| `utils/` | ✅ 実装済み | 6 | 2,736 | ✅ (1) | logging, validators, cache, retry, ticker_registry |
-| `visualization/` | ✅ 実装済み | 3 | 1,687 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart |
+| `api/` | ✅ 実装済み | 4 | 2,559 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer（メソッドチェーン対応） |
+| `analysis/` | ✅ 実装済み | 4 | 1,427 | ✅ (3) | Analyzer, IndicatorCalculator, CorrelationAnalyzer |
+| `core/` | ✅ 実装済み | 8 | 3,746 | ✅ (7) | BaseDataFetcher, YFinanceFetcher, FREDFetcher, BloombergFetcher, FactSetFetcher, MockFetchers, DataFetcherFactory |
+| `export/` | ✅ 実装済み | 2 | 692 | ✅ (1) | DataExporter（CSV/JSON/Parquet対応） |
+| `utils/` | ✅ 実装済み | 7 | 2,819 | ✅ (1) | logging, validators, cache, retry, ticker_registry, logger_factory |
+| `visualization/` | ✅ 実装済み | 4 | 1,796 | ✅ (3) | ChartBuilder, CandlestickChart, HeatmapChart, LineChart |
 
-**テスト構成**: 単体テスト (18) + 統合テスト (0) = 計18テスト
+**テスト構成**: 単体テスト (19) + 統合テスト (0) = 計19テスト
 
 **データソース対応状況**:
 - ✅ Yahoo Finance (yfinance) - 株価・為替・指数データ
@@ -305,6 +305,41 @@ fig = Chart.correlation_heatmap(corr_matrix, title="株価相関マップ")
 
 ---
 
+#### `MarketPerformanceAnalyzer`
+
+**説明**: 主要インデックス、セクター、個別株のパフォーマンスを一元的に分析・可視化するクラス。株価データ取得、リターン計算、累積リターンプロットを提供します。
+
+**基本的な使い方**:
+
+```python
+from market_analysis import MarketPerformanceAnalyzer
+
+# 初期化（自動的にデータを取得・計算）
+analyzer = MarketPerformanceAnalyzer()
+
+# 累積リターンの取得
+cum_returns = analyzer.cum_return_plot
+
+# パフォーマンステーブルの取得
+perf_table = analyzer.performance_table
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `yf_download_with_curl(tickers)` | yfinanceでデータ取得 | `pd.DataFrame` |
+| `plot_cumulative_returns(...)` | 累積リターンをプロット | `go.Figure` |
+
+**対象資産**:
+- 米国主要指数: S&P 500, ダウ, ナスダック等
+- MAG7 + 半導体: AAPL, MSFT, NVDA, GOOGL, AMZN, TSLA, META, ^SOX
+- セクター: 11セクター（XLK, XLF, XLV等）
+- 商品: 金属（GLD, SLV等）、原油（CL=F）
+- センチメント: VIX, ドル指数
+
+---
+
 ### 内部分析クラス（上級ユーザー向け）
 
 より細かい制御が必要な場合は、内部クラスを直接使用できます。
@@ -432,19 +467,19 @@ logger.info("処理開始")
 | 項目 | 値 |
 |-----|-----|
 | Pythonファイル数 | 32 |
-| 総行数（実装コード） | 13,429 |
+| 総行数（実装コード） | 14,152 |
 | モジュール数 | 8 |
-| テストファイル数 | 18 |
+| テストファイル数 | 19 |
 | テストカバレッジ | N/A |
 
 **モジュール構成**:
-- コアモジュール: `types.py` (型定義18種), `errors.py` (例外クラス8種)
-- 機能モジュール: `api/` (3クラス), `analysis/` (3クラス), `core/` (7フェッチャー), `export/` (1クラス), `utils/` (6モジュール), `visualization/` (3クラス)
+- コアモジュール: `types.py` (型定義18種, 592行), `errors.py` (例外クラス8種, 521行)
+- 機能モジュール: `api/` (4クラス, 2,559行), `analysis/` (3クラス, 1,427行), `core/` (8フェッチャー, 3,746行), `export/` (1クラス, 692行), `utils/` (7モジュール, 2,819行), `visualization/` (4クラス, 1,796行)
 
 **実装進捗**:
 - 完全実装: 8/8 モジュール (100%)
 - テスト整備: 8/8 モジュール (100%) - 全モジュールに単体テスト整備完了
-- テスト数: 単体テスト 18ファイル、統合テスト 0ファイル
+- テスト数: 単体テスト 19ファイル、統合テスト 0ファイル
 
 **データソース**:
 - Yahoo Finance (yfinance) - 株価・為替・指数データ

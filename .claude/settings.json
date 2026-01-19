@@ -5,6 +5,9 @@
     },
     "permissions": {
         "allow": [
+            "Read(*)",
+            "Glob(*)",
+            "Bash",
             "Write(*)",
             "Edit(*)",
             "Update(*)",

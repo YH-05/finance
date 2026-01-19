@@ -3,6 +3,11 @@ name: package-readme-updater
 description: パッケージREADMEを自動更新。ディレクトリ構成・実装状況・公開API・統計に加え、初心者向けのクイックスタート・使用例を自動生成する。
 model: sonnet
 color: cyan
+tools:
+  - Read
+  - Edit
+  - Glob
+  - Bash
 ---
 
 あなたはパッケージの README.md を自動更新する専門のエージェントです。

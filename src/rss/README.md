@@ -71,7 +71,7 @@ for feed in feeds:
     print(f"{feed.title}: {feed.url}")
 
 # 全エントリー取得（ページング）
-items = reader.get_all_items(limit=10, offset=0)
+items = reader.get_items(limit=10, offset=0)
 for item in items:
     print(f"{item.title}: {item.link}")
 
@@ -85,14 +85,13 @@ for item in results:
 
 ```python
 from pathlib import Path
-from rss import BatchScheduler
+from rss import BatchScheduler, FeedFetcher
+
+# フェッチャーを作成
+fetcher = FeedFetcher(Path("data/raw/rss"))
 
 # 毎日午前6時にフィード取得を実行
-scheduler = BatchScheduler.create_from_data_dir(
-    Path("data/raw/rss"),
-    hour=6,
-    minute=0,
-)
+scheduler = BatchScheduler(fetcher, hour=6, minute=0)
 
 # 手動実行
 stats = scheduler.run_batch()
@@ -101,12 +100,14 @@ print(f"New items: {stats.new_items}")
 
 # 自動実行（バックグラウンド）
 scheduler.start(blocking=False)
+# 停止する場合
+# scheduler.stop()
 ```
 
 **注意**: スケジューリング機能を使用するには `apscheduler` が必要です。
 
 ```bash
-uv add 'finance[scheduler]'
+uv add apscheduler
 ```
 
 <!-- END: QUICKSTART -->
@@ -177,7 +178,7 @@ rss/
 | `utils/`          | ✅ 実装済み | 2          | 367   | ユーティリティ（構造化ロギング）                 |
 | `validators/`     | ✅ 実装済み | 2          | 235   | バリデーション（URL/タイトル/カテゴリ）          |
 
-**テストカバレッジ**: 全モジュールにテストが存在（unit: 13 ファイル, property: 1 ファイル, integration: 2 ファイル, storage: 1 ファイル）
+**テストカバレッジ**: 全モジュールにテストが存在（unit: 12 ファイル, integration: 2 ファイル, property: 1 ファイル, storage: 1 ファイル）
 
 <!-- END: IMPLEMENTATION -->
 
@@ -289,7 +290,7 @@ from rss import FeedReader
 reader = FeedReader(Path("data/raw/rss"))
 
 # 全エントリー取得（ページング）
-items = reader.get_all_items(limit=10, offset=0)
+items = reader.get_items(limit=10, offset=0)
 
 # キーワード検索
 results = reader.search_items("金融政策", limit=5)
@@ -299,7 +300,7 @@ results = reader.search_items("金融政策", limit=5)
 
 | メソッド | 説明 | 戻り値 |
 |---------|------|--------|
-| `get_all_items(limit, offset)` | 全エントリー取得 | `list[FeedItem]` |
+| `get_items(feed_id, limit, offset)` | 全エントリー取得（ページング対応） | `list[FeedItem]` |
 | `search_items(keyword, limit, offset)` | キーワード検索 | `list[FeedItem]` |
 
 ---
@@ -312,14 +313,13 @@ results = reader.search_items("金融政策", limit=5)
 
 ```python
 from pathlib import Path
-from rss import BatchScheduler
+from rss import BatchScheduler, FeedFetcher
 
-# ファクトリメソッドで作成
-scheduler = BatchScheduler.create_from_data_dir(
-    Path("data/raw/rss"),
-    hour=6,
-    minute=0,
-)
+# フェッチャーを作成
+fetcher = FeedFetcher(Path("data/raw/rss"))
+
+# スケジューラーを作成
+scheduler = BatchScheduler(fetcher, hour=6, minute=0)
 
 # 手動実行
 stats = scheduler.run_batch()
@@ -342,7 +342,19 @@ scheduler.stop()
 
 ### 関数
 
-このパッケージは主にクラスベースのAPIを提供しています。
+#### `get_logger(name, module=None)`
+
+**説明**: 構造化ロギング用のロガーを取得する関数。
+
+**使用例**:
+
+```python
+from rss import get_logger
+
+logger = get_logger(__name__, module="my_module")
+logger.info("Processing started", count=10)
+logger.error("Processing failed", error="Connection timeout")
+```
 
 ---
 
@@ -353,10 +365,10 @@ scheduler.stop()
 ```python
 from rss import (
     # データモデル
-    Feed,           # フィード情報
-    FeedItem,       # フィードエントリー
-    FetchResult,    # 取得結果
-    BatchStats,     # バッチ統計
+    Feed,           # フィード情報（id, url, title, category 等）
+    FeedItem,       # フィードエントリー（title, link, published 等）
+    FetchResult,    # 取得結果（success, new_items, error 等）
+    BatchStats,     # バッチ統計（total_feeds, success_count 等）
 
     # Enum
     FetchInterval,  # 取得間隔（DAILY/WEEKLY/MANUAL）
@@ -385,6 +397,7 @@ from rss import (
 **使用例**:
 
 ```python
+from pathlib import Path
 from rss import FeedManager, FeedNotFoundError
 
 manager = FeedManager(Path("data/raw/rss"))
@@ -392,19 +405,6 @@ try:
     feed = manager.get_feed("invalid_id")
 except FeedNotFoundError as e:
     print(f"Feed not found: {e}")
-```
-
----
-
-### ユーティリティ
-
-ロギング設定:
-
-```python
-from rss import get_logger
-
-logger = get_logger(__name__, module="my_module")
-logger.info("Processing started")
 ```
 
 <!-- END: API -->
@@ -424,8 +424,9 @@ logger.info("Processing started")
 **主要コンポーネント**:
 - サービスクラス: 4 (Manager/Fetcher/Reader/Scheduler)
 - コアモジュール: 3 (HTTP/Parser/DiffDetector)
-- データモデル: 10 (Feed/FeedItem/FetchResult 等)
+- データモデル: 6 (Feed/FeedItem/FetchResult/BatchStats/FetchInterval/FetchStatus)
 - 例外クラス: 7 (基底 + 6 種類の専用例外)
+- ユーティリティ: 2 (ロギング/バリデーション)
 
 <!-- END: STATS -->
 

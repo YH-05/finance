@@ -124,10 +124,11 @@ uv run pyright --version
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (57 agents + 35 commands + 12 skills)
-│   ├── agents/                              # (57) Specialized agents
+├── .claude/                                 # Claude Code configuration (69 agents + 36 commands + 12 skills)
+│   ├── agents/                              # (69) Specialized agents
+│   │   ├── deep-research/
 │   │   └── finance_news_collector/          # テーマ別収集エージェント
-│   ├── commands/                            # (35) Slash commands
+│   ├── commands/                            # (36) Slash commands
 │   ├── skills/                              # (12) Skill modules
 │   └── agents.md
 ├── .github/                                 # GitHub configuration
@@ -139,22 +140,28 @@ finance/                                     # Project root
 │   ├── sqlite/                              # SQLite OLTP database
 │   ├── raw/                                 # Raw data (Parquet format)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                             # (8) RSS feed subscriptions
+│   │   ├── rss/                             # (21) RSS feed subscriptions
 │   │   └── yfinance/                        # stocks, forex, indices
 │   ├── processed/                           # Processed data (daily/aggregated)
 │   ├── exports/                             # Exported data (csv/json)
 │   └── schemas/                             # (14) JSON schemas
 ├── docs/                                    # Repository documentation
+│   ├── code-analysis-report/                # Code analysis reports
+│   ├── plan/                                # Project plans
 │   ├── pr-review/                           # PR review reports
-│   └── project/                             # Project research docs
-├── src/                                     # Source code (124 Python files)
-│   ├── finance/                             # Core infrastructure package
+│   └── project/                             # Project documentation
+│       ├── project-7/                       # エージェント開発
+│       ├── project-11/                      # note金融コンテンツ発信強化
+│       ├── project-14/                      # 金融ニュース収集
+│       └── project-16/                      # src_sample Migration
+├── src/                                     # Source code (172 Python files)
+│   ├── finance/                             # Core infrastructure (11 files)
 │   │   ├── db/                              # Database layer (SQLite + DuckDB)
 │   │   │   └── migrations/                  # Database schema migrations
 │   │   ├── utils/                           # Utilities (logging)
 │   │   ├── types.py
 │   │   └── py.typed
-│   ├── market_analysis/                     # Market analysis library (31 files)
+│   ├── market_analysis/                     # Market analysis library (41 files)
 │   │   ├── core/                            # Data fetchers (yfinance, FRED)
 │   │   ├── analysis/                        # Analysis algorithms
 │   │   ├── api/                             # Public API
@@ -165,7 +172,7 @@ finance/                                     # Project root
 │   │   ├── types.py
 │   │   ├── docs/                            # (8) Library documentation
 │   │   └── py.typed
-│   ├── rss/                                 # RSS feed monitoring package (23 files)
+│   ├── rss/                                 # RSS feed monitoring package (32 files)
 │   │   ├── cli/                             # CLI interface
 │   │   ├── core/                            # Parser, HTTP client, diff detector
 │   │   ├── mcp/                             # MCP server integration
@@ -177,14 +184,14 @@ finance/                                     # Project root
 │   │   ├── types.py
 │   │   ├── docs/                            # (8) Library documentation
 │   │   └── py.typed
-│   ├── factor/                              # Factor analysis library (41 files)
+│   ├── factor/                              # Factor analysis library (50 files)
 │   │   ├── core/                            # Core algorithms
 │   │   ├── factors/                         # Factor implementations (macro, price, quality, size, value)
 │   │   ├── providers/                       # Data providers
 │   │   ├── validation/                      # Factor validation
 │   │   ├── utils/
 │   │   └── py.typed
-│   └── strategy/                            # Strategy library (18 files)
+│   └── strategy/                            # Strategy library (29 files)
 │       ├── core/
 │       ├── output/                          # Output formatter
 │       ├── rebalance/                       # Rebalancing
@@ -192,16 +199,16 @@ finance/                                     # Project root
 │       ├── providers/                       # Data providers
 │       ├── utils/
 │       └── py.typed
-├── tests/                                   # Test suite (161 Python files)
+├── tests/                                   # Test suite (65+ test files)
 │   ├── finance/                             # Finance package tests
 │   │   └── db/unit/                         # (3) DB client tests
 │   ├── market_analysis/                     # Market analysis tests
-│   │   └── unit/                            # (18) Tests
+│   │   └── unit/                            # (19) Tests
 │   ├── rss/                                 # RSS package tests
-│   │   ├── unit/                            # (30) Unit tests
+│   │   ├── unit/                            # (16) Unit tests
 │   │   └── integration/                     # (2) Integration tests
-│   ├── factor/                              # Factor analysis tests (32 files)
-│   ├── strategy/                            # Strategy tests (12 files)
+│   ├── factor/                              # Factor analysis tests (33 files)
+│   ├── strategy/                            # Strategy tests (13 files)
 │   └── finance_news_collector/              # News collector tests
 ├── template/                                # Reference templates (read-only)
 │   ├── src/template_package/                # Package structure template

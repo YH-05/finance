@@ -1,0 +1,490 @@
+# =============================================================================
+# コード分析レポート
+# =============================================================================
+# 対象: src/market_analysis/api/analysis.py
+# 分析モード: --all (code, arch, security, perf)
+# 分析深度: --think (標準)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# メタデータ
+# -----------------------------------------------------------------------------
+metadata:
+  generated_at: "2026-01-19 分析実施"
+  target: "src/market_analysis/api/analysis.py"
+  analysis_modes:
+    - code
+    - arch
+    - security
+    - perf
+  depth: "standard"
+  command: "/analyze --all src/market_analysis/api/analysis.py"
+
+# -----------------------------------------------------------------------------
+# サマリー
+# -----------------------------------------------------------------------------
+summary:
+  total_files: 1
+  total_lines: 1178
+  total_functions: 26
+  total_classes: 2
+
+# -----------------------------------------------------------------------------
+# スコア (0-100)
+# -----------------------------------------------------------------------------
+scores:
+  code_quality: 72
+  architecture: 65
+  security: 78
+  performance: 60
+  overall: 69
+
+# =============================================================================
+# コード品質分析
+# =============================================================================
+code_quality:
+  # 複雑性メトリクス
+  complexity:
+    average: 6.2
+    max: 18
+    max_function: "_calculate_period_returns"
+    high_complexity_functions:
+      - name: "_calculate_period_returns"
+        file: "src/market_analysis/api/analysis.py"
+        line: 973
+        complexity: 18
+        recommendation: "期間ごとのリターン計算を個別のプライベートメソッドに分割し、メインメソッドは統合のみを担当させる"
+      - name: "get_data_since_period_start"
+        file: "src/market_analysis/api/analysis.py"
+        line: 834
+        complexity: 15
+        recommendation: "yearly/monthly の処理を個別のメソッドに分離し、Strategy パターンまたは単純な関数分割を適用"
+      - name: "correlation"
+        file: "src/market_analysis/api/analysis.py"
+        line: 326
+        complexity: 12
+        recommendation: "列検索ロジックを _find_column と統一し、データ準備と計算ロジックを分離"
+      - name: "__init__ (MarketPerformanceAnalyzer)"
+        file: "src/market_analysis/api/analysis.py"
+        line: 642
+        complexity: 11
+        recommendation: "データ取得と前処理を別メソッドに分離。定数定義はクラス属性として外部化を検討"
+
+  # コード重複
+  duplication:
+    rate: "15%"
+    locations:
+      - files:
+          - "src/market_analysis/api/analysis.py (L402-424)"
+          - "src/market_analysis/api/analysis.py (L26-56)"
+        lines: "22行"
+        description: "列検索ロジック: correlation メソッド内にも _find_column と同様のケース非依存列検索が存在"
+      - files:
+          - "src/market_analysis/api/analysis.py (L183-190)"
+          - "src/market_analysis/api/analysis.py (L225-232)"
+          - "src/market_analysis/api/analysis.py (L297-304)"
+          - "src/market_analysis/api/analysis.py (L501-508)"
+        lines: "8行 x 4箇所"
+        description: "パラメータ検証パターン: period < N の検証ロジックが複数箇所で重複"
+      - files:
+          - "src/market_analysis/api/analysis.py (L1122-1127)"
+          - "src/market_analysis/api/analysis.py (L1129-1134)"
+          - "src/market_analysis/api/analysis.py (L1136-1143)"
+          - "src/market_analysis/api/analysis.py (L1145-1152)"
+          - "src/market_analysis/api/analysis.py (L1154-1159)"
+          - "src/market_analysis/api/analysis.py (L1161-1166)"
+          - "src/market_analysis/api/analysis.py (L1168-1173)"
+        lines: "5-7行 x 7箇所"
+        description: "プロットラッパーメソッド群: 全て _plot_lines を呼ぶだけの薄いラッパー"
+
+  # カバレッジ
+  type_hint_coverage: "85%"
+  docstring_coverage: "78%"
+
+  # 命名規則
+  naming_conventions:
+    compliant: false
+    issues:
+      - location: "L651-713"
+        issue: "TICKERS_US_AND_SP500, SECTOR_MAP_EN 等のクラス属性がインスタンス属性として __init__ 内で定義されている"
+        recommendation: "クラス定数は class 直下で定義するか、別の設定モジュールに移動"
+      - location: "L801"
+        issue: "datetime_col_name 変数が条件分岐後で使用されていない (デッドコード)"
+        recommendation: "変数を削除または活用"
+
+  # 長い関数 (50行以上)
+  long_functions:
+    - name: "correlation"
+      line: 326
+      lines: 130
+      recommendation: "データ準備、バリデーション、計算の3フェーズに分離"
+    - name: "__init__ (MarketPerformanceAnalyzer)"
+      line: 642
+      lines: 92
+      recommendation: "定数定義、データ取得、前処理をそれぞれ別メソッドに分離"
+    - name: "get_data_since_period_start"
+      line: 834
+      lines: 83
+      recommendation: "yearly/monthly 処理を個別のヘルパーメソッドに分離"
+    - name: "_calculate_period_returns"
+      line: 973
+      lines: 66
+      recommendation: "各期間のリターン計算を個別メソッドに抽出"
+    - name: "yf_download_with_curl"
+      line: 773
+      lines: 55
+      recommendation: "日次/分足データ処理を個別のヘルパーに分離"
+    - name: "_plot_lines"
+      line: 1075
+      lines: 45
+      recommendation: "許容範囲内だが、Plotly設定を別途定義することで可読性向上"
+
+# =============================================================================
+# アーキテクチャ分析
+# =============================================================================
+architecture:
+  layer_structure: "中程度の問題あり"
+
+  # クラス責務分析
+  class_responsibilities:
+    Analysis:
+      role: "テクニカル分析のFluent Interface API"
+      methods: 11
+      cohesion: "高"
+      evaluation: "良好。メソッドチェーンパターンを適切に実装。静的メソッド群（correlation, rolling_correlation, beta）は別クラスへの分離を検討"
+      issues:
+        - "静的メソッド3つ（correlation, rolling_correlation, beta）はCorrelationAnalyzerの委譲であり、AnalysisクラスのFluent APIの責務から外れている"
+    MarketPerformanceAnalyzer:
+      role: "市場パフォーマンス分析・可視化"
+      methods: 15
+      cohesion: "低"
+      evaluation: "責務過多。データ取得、リターン計算、期間フィルタリング、可視化の4つの責務が混在"
+      issues:
+        - "__init__ で外部API呼び出しが発生（副作用が大きい）"
+        - "TICKERS定数とSECTOR_MAPがインスタンスに紐づいている"
+        - "plot_* メソッド群が7つあり、可視化責務が肥大化"
+        - "get_eps_historical_data は株価パフォーマンスと無関係なEPSデータ取得"
+
+  # 依存関係
+  circular_dependencies: false
+  problematic_dependencies:
+    - source: "MarketPerformanceAnalyzer.__init__"
+      target: "yfinance API (外部)"
+      reason: "コンストラクタ内での外部API呼び出しはテスト困難性を高める。依存性注入（DI）パターンの適用を推奨"
+    - source: "MarketPerformanceAnalyzer"
+      target: "curl_cffi.Session"
+      reason: "HTTPセッション管理がクラス内部でハードコードされている。Sessionを外部から注入可能にすべき"
+
+  # 設計パターン
+  design_patterns:
+    used:
+      - name: "Fluent Interface / Builder"
+        location: "Analysis クラス"
+        evaluation: "良好。add_sma, add_ema 等のメソッドチェーンで直感的なAPI"
+      - name: "Facade"
+        location: "Analysis.correlation, beta, rolling_correlation"
+        evaluation: "適切。CorrelationAnalyzer の複雑さを隠蔽"
+    recommended:
+      - name: "Strategy Pattern"
+        target: "get_data_since_period_start"
+        reason: "yearly/monthly の処理分岐を Strategy として分離すると拡張性向上"
+      - name: "Factory Method"
+        target: "MarketPerformanceAnalyzer"
+        reason: "データソースやティッカーセットを差し替え可能にするためのファクトリ"
+      - name: "Dependency Injection"
+        target: "MarketPerformanceAnalyzer"
+        reason: "yfinance/curl_cffi セッションを外部から注入してテスト容易性を向上"
+
+# =============================================================================
+# セキュリティ分析
+# =============================================================================
+security:
+  critical_issues: []
+  high_issues: []
+
+  medium_issues:
+    - id: "SEC-001"
+      category: "例外処理"
+      location: "L765-768"
+      description: "get_eps_historical_data で例外メッセージをprint出力しているが、機密情報がログに露出する可能性"
+      evidence: "print(f\"エラー: 銘柄 {ticker} のEPSデータ取得中に例外が発生しました: {e}\")"
+      recommendation: "logger.error を使用し、本番環境では適切なログレベル管理を行う"
+      owasp: "A09:2021 - Security Logging and Monitoring Failures"
+
+  low_issues:
+    - id: "SEC-002"
+      category: "入力検証"
+      location: "Analysis.__init__, MarketPerformanceAnalyzer"
+      description: "シンボル入力の検証が不十分。悪意のあるシンボル文字列によるインジェクション可能性は低いが、空文字列やNoneのハンドリングが一部不完全"
+      recommendation: "シンボルバリデーション関数を作成し、一貫した検証を適用"
+
+  info:
+    - id: "SEC-INFO-001"
+      description: "yfinance/curl_cffi を使用した外部API通信。HTTPSが使用されており通信は暗号化されている"
+      mitigation: "現状問題なし。API キーを使用する場合は環境変数から取得すること"
+
+  # 入力検証
+  input_validation:
+    status: "適切"
+    validated_inputs:
+      - "period パラメータ (< 1 または < 2 のチェック)"
+      - "data パラメータ (None/empty チェック)"
+      - "dataframes リスト (長さ < 2 チェック)"
+      - "symbols と dataframes の長さ一致チェック"
+    unvalidated_inputs:
+      - "column パラメータ: 存在チェックはあるがサニタイズなし（問題なし）"
+      - "tickers_to_download: 空リストの明示的なエラーハンドリングなし"
+
+# =============================================================================
+# パフォーマンス分析
+# =============================================================================
+performance:
+  quadratic_or_worse_algorithms: 1
+
+  memory_concerns:
+    - id: "PERF-001"
+      location: "L717-722 (MarketPerformanceAnalyzer.__init__)"
+      description: "__init__ で yf.download が全ティッカー（40+銘柄）の2年分データを一括取得し、メモリに保持"
+      impact: "インスタンス化のたびに大量のメモリを消費。大規模なティッカーリストでメモリ不足の可能性"
+      recommendation: "遅延読み込み（Lazy Loading）パターンの適用。必要なデータのみをオンデマンドで取得"
+    - id: "PERF-002"
+      location: "L725-729"
+      description: "log_return, cum_return_plot が price_data と同サイズのDataFrameとして保持される"
+      impact: "メモリ使用量が3倍（price_data, log_return, cum_return_plot）"
+      recommendation: "プロパティとして必要時に計算するか、キャッシュ付きプロパティ（@cached_property）を使用"
+
+  io_operations:
+    - id: "PERF-003"
+      location: "L717, L796, L756-757"
+      description: "yfinance API 呼び出しが __init__ で同期的に実行される"
+      impact: "インスタンス化に数秒〜数十秒かかる可能性。並列処理なし"
+      current_mitigation: "curl_cffi による HTTP/2 対応で若干の高速化"
+      recommendation: "非同期化（asyncio）または ThreadPoolExecutor による並列取得を検討"
+
+  inefficient_patterns:
+    - id: "PERF-004"
+      location: "L402-424 (correlation メソッド内)"
+      description: "各DataFrameに対するO(n)の列検索がネストしており、全体でO(n*m)となる（n=DataFrame数, m=平均列数）"
+      impact: "DataFrameが多数の場合にスケールしない"
+      current_count: 1
+      recommendation: "_find_column 関数を再利用してコードを統一"
+    - id: "PERF-005"
+      location: "L1088"
+      description: "_plot_lines 内で price_data[tickers_or_sectors] のスライスと日付フィルタリングが毎回実行される"
+      impact: "プロットのたびにDataFrameのコピーが発生"
+      current_count: 7 (plot_* メソッドの数)
+      recommendation: "フィルタ済みDataFrameをキャッシュするか、事前計算して保持"
+
+  caching_opportunities:
+    - location: "get_data_since_period_start"
+      description: "YTD/MTD データは日次で変わらないため、日付ベースのキャッシュが有効"
+      status: "未対応"
+    - location: "_calculate_period_returns"
+      description: "パフォーマンステーブルは __init__ で事前計算されており適切"
+      status: "対応済み"
+    - location: "correlation 計算"
+      description: "同じDataFrame組み合わせの相関は繰り返し計算可能性あり"
+      status: "未対応"
+
+  # DataFrame操作統計
+  dataframe_operations:
+    copy_calls: 0
+    concat_calls: 4
+    dropna_calls: 5
+    fillna_calls: 1
+
+# =============================================================================
+# 発見事項 (重大度別)
+# =============================================================================
+findings:
+  critical: []
+
+  high:
+    - id: "ANA-001"
+      category: "アーキテクチャ"
+      location: "MarketPerformanceAnalyzer:642-733"
+      description: "コンストラクタ内での外部API呼び出しと大量のデータ保持により、テスト困難性とメモリ効率が低下"
+      evidence: "__init__ 内で yf_download_with_curl を呼び出し、40+銘柄の2年分データを取得"
+      recommendation: "ファクトリパターンまたは依存性注入を適用し、データ取得を分離"
+
+    - id: "ANA-002"
+      category: "コード品質"
+      location: "MarketPerformanceAnalyzer"
+      description: "単一クラスに4つの責務（データ取得、計算、フィルタリング、可視化）が混在"
+      evidence: "15メソッドが混在、plot_* が7メソッド"
+      recommendation: "MarketDataFetcher, ReturnCalculator, MarketVisualizer に分離"
+
+  medium:
+    - id: "ANA-003"
+      category: "コード品質"
+      location: "L402-424"
+      description: "列検索ロジックの重複: _find_column 関数と同様のロジックが correlation メソッド内に存在"
+      evidence: "for c in df.columns: if c.lower() == col: パターンが2箇所"
+      recommendation: "_find_column を再利用するようにリファクタリング"
+
+    - id: "ANA-004"
+      category: "パフォーマンス"
+      location: "MarketPerformanceAnalyzer.__init__"
+      description: "データの事前読み込みによるインスタンス化の遅延"
+      evidence: "yf.download による同期的なAPI呼び出し"
+      recommendation: "Lazy Loading パターンを適用し、データを必要時に取得"
+
+    - id: "ANA-005"
+      category: "コード品質"
+      location: "L765-768"
+      description: "例外処理で print を使用（logger を使用すべき）"
+      evidence: "print(f\"エラー: 銘柄 {ticker} のEPSデータ取得中に例外が発生しました: {e}\")"
+      recommendation: "logger.error を使用"
+
+    - id: "ANA-006"
+      category: "コード品質"
+      location: "L1129-1134"
+      description: "plot_world_indices が TICKERS_WORLD を参照するが、TICKERS_WORLD はコメントアウトされている"
+      evidence: "self._plot_lines(self.TICKERS_WORLD, ...)"
+      recommendation: "コメントアウトされたコードと対応するメソッドを削除するか、機能を復活"
+
+  low:
+    - id: "ANA-007"
+      category: "コード品質"
+      location: "L801"
+      description: "datetime_col_name 変数が intra_day_intervals 以外の分岐で未使用"
+      evidence: "datetime_col_name = \"Date\" が設定されるが、その後使用されていない"
+      recommendation: "変数を削除するか、適切に使用"
+
+    - id: "ANA-008"
+      category: "コード品質"
+      location: "Analysis クラス"
+      description: "add_sma, add_ema の column パラメータが未使用"
+      evidence: "column パラメータを受け取るが、self._analyzer に渡していない"
+      recommendation: "パラメータを削除するか、Analyzer に渡して機能を有効化"
+
+# =============================================================================
+# 改善ロードマップ
+# =============================================================================
+improvement_roadmap:
+  # 短期 (1週間以内)
+  short_term:
+    - priority: 1
+      task: "print を logger.error に置き換え"
+      related_findings:
+        - "ANA-005"
+      effort: "低"
+      impact: "セキュリティとログ品質の向上"
+
+    - priority: 2
+      task: "_find_column の再利用によるコード重複削減"
+      related_findings:
+        - "ANA-003"
+      effort: "低"
+      impact: "保守性向上、バグ混入リスク低減"
+
+    - priority: 3
+      task: "未使用変数・パラメータの整理"
+      related_findings:
+        - "ANA-007"
+        - "ANA-008"
+      effort: "低"
+      impact: "コードの明確化"
+
+    - priority: 4
+      task: "コメントアウトされたコード（TICKERS_WORLD）と対応メソッドの整理"
+      related_findings:
+        - "ANA-006"
+      effort: "低"
+      impact: "デッドコードの排除"
+
+  # 中期 (1ヶ月以内)
+  mid_term:
+    - priority: 1
+      task: "MarketPerformanceAnalyzer の責務分離"
+      related_findings:
+        - "ANA-002"
+      effort: "高"
+      impact: "テスト容易性、保守性の大幅向上"
+
+    - priority: 2
+      task: "Analysis クラスから静的メソッド（correlation, rolling_correlation, beta）を CorrelationApi クラスに分離"
+      related_findings: []
+      effort: "中"
+      impact: "クラスの凝集度向上"
+
+    - priority: 3
+      task: "パラメータ検証ロジックの共通化（デコレータまたはバリデータクラス）"
+      related_findings: []
+      effort: "中"
+      impact: "コード重複削減、一貫性向上"
+
+  # 長期
+  long_term:
+    - priority: 1
+      task: "MarketPerformanceAnalyzer のデータ取得を遅延読み込み（Lazy Loading）化"
+      related_findings:
+        - "ANA-001"
+        - "ANA-004"
+      effort: "高"
+      impact: "メモリ効率とインスタンス化速度の大幅改善"
+      approach: |
+        1. price_data, log_return, cum_return_plot を @cached_property に変更
+        2. ALL_TICKERS をクラス定数に移動
+        3. yf_download_with_curl を初回アクセス時にのみ呼び出す
+        4. データ取得部分をインターフェース化し、DI可能に
+
+    - priority: 2
+      task: "依存性注入（DI）パターンの導入"
+      related_findings:
+        - "ANA-001"
+      effort: "高"
+      impact: "テスト容易性、拡張性の大幅向上"
+      approach: |
+        1. DataFetcher インターフェースを定義
+        2. YFinanceDataFetcher 実装を作成
+        3. MarketPerformanceAnalyzer に DataFetcher を注入
+        4. テスト用 MockDataFetcher を作成
+
+    - priority: 3
+      task: "非同期データ取得の導入"
+      related_findings:
+        - "ANA-004"
+      effort: "高"
+      impact: "複数銘柄の並列取得によるパフォーマンス向上"
+      approach: |
+        1. aiohttp または httpx による非同期HTTPクライアント導入
+        2. asyncio.gather による並列取得
+        3. 同期APIとの互換性維持（同期ラッパーの提供）
+
+# =============================================================================
+# 総評
+# =============================================================================
+summary_evaluation:
+  strengths:
+    - "Analysis クラスの Fluent Interface パターンは直感的で使いやすいAPIを提供"
+    - "包括的な型ヒントとNumPy形式のDocstringによる高い可読性"
+    - "適切なエラー処理: カスタム例外クラスと詳細なエラーメッセージ"
+    - "ロギングが適切に実装されており、デバッグと監視が容易"
+    - "内部モジュール（Analyzer, CorrelationAnalyzer）への適切な委譲"
+
+  weaknesses:
+    - "MarketPerformanceAnalyzer の責務過多と __init__ での副作用（外部API呼び出し）"
+    - "コード重複（列検索ロジック、パラメータ検証、プロットラッパー）"
+    - "メモリ効率の問題（全データの事前読み込み、複数の派生DataFrameの保持）"
+    - "一部のデッドコード（コメントアウトされた TICKERS_WORLD と対応メソッド）"
+    - "print によるエラー出力（logger を使用すべき）"
+
+  overall_assessment: |
+    このファイルは2つの異なる特性を持つクラスで構成されています。
+
+    **Analysis クラス（高品質）**:
+    - Fluent Interface パターンを適切に実装
+    - 型安全性と入力検証が充実
+    - 内部実装への委譲が適切
+
+    **MarketPerformanceAnalyzer クラス（改善が必要）**:
+    - 単一クラスに複数の責務が混在（データ取得、計算、可視化）
+    - コンストラクタでの外部API呼び出しがテスト困難性を高めている
+    - メモリ効率の改善余地あり
+
+    **総合スコア: 69/100**
+
+    短期的には print の logger 置き換えとコード重複の解消が優先事項です。
+    中長期的には MarketPerformanceAnalyzer の責務分離と遅延読み込みの導入が
+    コード品質とパフォーマンスの大幅な改善につながります。
