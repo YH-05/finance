@@ -276,6 +276,12 @@ except Exception as e:
 - **Issueボディは `.github/ISSUE_TEMPLATE/news-article.md` テンプレートを読み込んで使用**
 - **概要（summary）は400字以上の詳細な日本語要約を使用**
 
+> **🚨 URL設定の重要ルール 🚨**:
+> `{{url}}`には**RSSから取得したオリジナルのlink**をそのまま使用すること。
+> - ✅ 正しい: RSSの`link`フィールドの値（例: `item["link"]`）
+> - ❌ 間違い: WebFetchのリダイレクト先URL
+> - ❌ 間違い: URLを推測・加工したもの
+
 ```bash
 # Step 1: テンプレートを読み込む（frontmatter除外）
 template=$(cat .github/ISSUE_TEMPLATE/news-article.md | tail -n +7)
@@ -283,10 +289,13 @@ template=$(cat .github/ISSUE_TEMPLATE/news-article.md | tail -n +7)
 # Step 2: 収集日時を取得（Issue作成直前に実行）【必須フィールド】
 collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
 
-# Step 3: プレースホルダーを置換
+# Step 3: RSSオリジナルURLを取得
+# $link = item["link"] （RSSのlinkフィールドをそのまま使用、絶対に変換しない）
+
+# Step 4: プレースホルダーを置換
 # ※ japanese_summary はステップ4.0で生成した400字以上の要約
 body="${template//\{\{summary\}\}/$japanese_summary}"
-body="${body//\{\{url\}\}/$link}"
+body="${body//\{\{url\}\}/$link}"  # ← RSSオリジナルURLをそのまま使用
 body="${body//\{\{published_date\}\}/$published_jst(JST)}"
 body="${body//\{\{collected_at\}\}/$collected_at(JST)}"
 body="${body//\{\{credibility\}\}/3点 - 中程度}"
