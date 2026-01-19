@@ -420,8 +420,18 @@ def fetch_top_companies(sector_key: str) -> list[dict[str, Any]] | None:
             logger.debug("No top companies data returned", sector_key=sector_key)
             return None
 
+        # Reset index to include symbol as a column
+        # yf.Sector.top_companies has symbol as index
+        df_reset = top_companies_df.reset_index()
+
+        # Normalize column names (symbol from index, weight from 'market weight')
+        if "symbol" not in df_reset.columns and "index" in df_reset.columns:
+            df_reset = df_reset.rename(columns={"index": "symbol"})
+        if "weight" not in df_reset.columns and "market weight" in df_reset.columns:
+            df_reset = df_reset.rename(columns={"market weight": "weight"})
+
         # Convert DataFrame to list of dictionaries
-        companies: list[dict[str, Any]] = top_companies_df.to_dict(orient="records")
+        companies: list[dict[str, Any]] = df_reset.to_dict(orient="records")
 
         logger.info(
             "Top companies fetched",
@@ -551,8 +561,11 @@ def _build_sector_info_list(
 def _build_contributors(
     companies: list[dict[str, Any]],
     max_contributors: int = 5,
+    period: int = 5,
 ) -> list[SectorContributor]:
     """Build list of SectorContributor objects from company data.
+
+    Uses batch download with yf.download for efficiency.
 
     Parameters
     ----------
@@ -560,22 +573,111 @@ def _build_contributors(
         List of company dictionaries from yf.Sector.top_companies
     max_contributors : int, default=5
         Maximum number of contributors to include
+    period : int, default=5
+        Number of business days for return calculation (5 = 1 week)
 
     Returns
     -------
     list[SectorContributor]
         List of SectorContributor objects with stock returns
     """
-    contributors: list[SectorContributor] = []
+    if not companies:
+        return []
 
-    for company in companies[:max_contributors]:
-        # Extract company info
+    # Step 1: Extract symbols from companies
+    target_companies = companies[:max_contributors]
+    symbols = [
+        company.get("symbol") or company.get("ticker", "")
+        for company in target_companies
+    ]
+    symbols = [s for s in symbols if s]  # Remove empty strings
+
+    if not symbols:
+        return []
+
+    # Step 2: Batch download all stock data at once
+    stock_returns: dict[str, float | None] = {}
+    try:
+        logger.debug(
+            "Batch downloading stock data for contributors",
+            symbols=symbols,
+            symbol_count=len(symbols),
+        )
+
+        df = yf.download(symbols, period="1mo", progress=False)
+
+        if df is not None and not df.empty:
+            # Step 3: Calculate returns for each symbol
+            for symbol in symbols:
+                try:
+                    prices: pd.Series
+                    if isinstance(df.columns, pd.MultiIndex):
+                        # Multi-ticker download returns MultiIndex columns
+                        if "Close" in df.columns.get_level_values(0):
+                            close_df = df["Close"]
+                            if symbol in close_df.columns:
+                                symbol_data = close_df[symbol].dropna()
+                                if isinstance(symbol_data, pd.DataFrame):
+                                    prices = symbol_data.iloc[:, 0]
+                                else:
+                                    prices = symbol_data
+                            else:
+                                logger.debug(
+                                    "Symbol not found in batch data",
+                                    symbol=symbol,
+                                )
+                                stock_returns[symbol] = None
+                                continue
+                        else:
+                            stock_returns[symbol] = None
+                            continue
+                    # Single ticker case
+                    elif "Close" in df.columns:
+                        close_data = df["Close"]
+                        if isinstance(close_data, pd.DataFrame):
+                            prices = close_data.iloc[:, 0].dropna()
+                        else:
+                            prices = close_data.dropna()
+                    else:
+                        stock_returns[symbol] = None
+                        continue
+
+                    if len(prices) > period:
+                        stock_returns[symbol] = calculate_return(prices, period)
+                    else:
+                        stock_returns[symbol] = None
+
+                except Exception as e:
+                    logger.debug(
+                        "Failed to calculate return for symbol",
+                        symbol=symbol,
+                        error=str(e),
+                    )
+                    stock_returns[symbol] = None
+        else:
+            # Mark all as None if batch download failed
+            for symbol in symbols:
+                stock_returns[symbol] = None
+
+    except Exception as e:
+        logger.warning(
+            "Batch download failed for contributors",
+            symbols=symbols,
+            error=str(e),
+        )
+        for symbol in symbols:
+            stock_returns[symbol] = None
+
+    # Step 4: Build SectorContributor objects
+    contributors: list[SectorContributor] = []
+    for company in target_companies:
         symbol = company.get("symbol") or company.get("ticker", "")
+        if not symbol:
+            continue
+
         name = company.get("name", "")
         weight = company.get("weight", 0.0)
-
-        # Calculate stock return
-        stock_return = _fetch_stock_return(symbol)
+        stock_return = stock_returns.get(symbol)
 
         contributor = SectorContributor(
             ticker=str(symbol),
@@ -585,55 +687,10 @@ def _build_contributors(
         )
         contributors.append(contributor)
 
+    logger.debug(
+        "Contributors built",
+        count=len(contributors),
+        with_returns=sum(1 for c in contributors if c.return_1w != 0.0),
+    )
+
     return contributors
-
-
-def _fetch_stock_return(symbol: str, period: int = 5) -> float | None:
-    """Fetch stock return for a single symbol.
-
-    Parameters
-    ----------
-    symbol : str
-        Stock ticker symbol
-    period : int, default=5
-        Number of business days for return calculation
-
-    Returns
-    -------
-    float | None
-        Stock return or None if fetch fails
-    """
-    if not symbol:
-        return None
-
-    try:
-        logger.debug("Fetching stock return", symbol=symbol, period=period)
-
-        df = yf.download(symbol, period="1mo", progress=False)
-
-        if df is None or df.empty:
-            logger.debug("No data for stock", symbol=symbol)
-            return None
-
-        # Extract Close prices
-        if "Close" in df.columns:
-            close_data = df["Close"]
-            if isinstance(close_data, pd.DataFrame):
-                prices = close_data.iloc[:, 0].dropna()
-            else:
-                prices = close_data.dropna()
-        else:
-            return None
-
-        if len(prices) <= period:
-            return None
-
-        return calculate_return(prices, period)
-
-    except Exception as e:
-        logger.warning(
-            "Failed to fetch stock return",
-            symbol=symbol,
-            error=str(e),
-        )
-        return None

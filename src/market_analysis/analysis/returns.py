@@ -419,6 +419,8 @@ def _fetch_and_calculate_returns(
 ) -> list[dict[str, Any]]:
     """Fetch price data and calculate returns for a list of tickers.
 
+    Uses batch download with yf.download for efficiency.
+
     Parameters
     ----------
     tickers : list[str]
@@ -432,68 +434,101 @@ def _fetch_and_calculate_returns(
         List of dictionaries containing ticker and returns data
     """
     logger.debug(
-        "Fetching and calculating returns",
+        "Fetching and calculating returns (batch)",
         category=category,
         ticker_count=len(tickers),
     )
 
+    if not tickers:
+        return []
+
     results: list[dict[str, Any]] = []
 
-    for ticker in tickers:
-        try:
-            logger.debug("Fetching data for ticker", ticker=ticker, category=category)
+    try:
+        # Batch download all tickers at once
+        logger.debug("Batch downloading data", tickers=tickers, category=category)
+        df = yf.download(tickers, period="6y", progress=False)
 
-            # Fetch data with sufficient history for 5Y calculation
-            df = yf.download(ticker, period="6y", progress=False)
+        if df is None or df.empty:
+            logger.warning("No data returned for batch download", category=category)
+            return []
 
-            if df is None or df.empty:
-                logger.warning("No data returned for ticker", ticker=ticker)
+        # Process each ticker
+        for ticker in tickers:
+            try:
+                # Extract Close prices for this ticker
+                prices: pd.Series
+                if isinstance(df.columns, pd.MultiIndex):
+                    # Multi-ticker download returns MultiIndex columns
+                    if "Close" in df.columns.get_level_values(0):
+                        close_df = df["Close"]
+                        if ticker in close_df.columns:
+                            ticker_data = close_df[ticker].dropna()
+                            if isinstance(ticker_data, pd.DataFrame):
+                                prices = ticker_data.iloc[:, 0]
+                            else:
+                                prices = ticker_data
+                        else:
+                            logger.debug(
+                                "Ticker not found in batch data",
+                                ticker=ticker,
+                                category=category,
+                            )
+                            continue
+                    else:
+                        logger.debug(
+                            "No Close column in MultiIndex",
+                            ticker=ticker,
+                            category=category,
+                        )
+                        continue
+                # Single ticker case (when only 1 ticker in list)
+                elif "Close" in df.columns:
+                    close_data = df["Close"]
+                    if isinstance(close_data, pd.DataFrame):
+                        prices = close_data.iloc[:, 0].dropna()
+                    else:
+                        prices = close_data.dropna()
+                else:
+                    logger.warning("No Close column found", ticker=ticker)
+                    continue
+
+                if prices.empty:
+                    logger.debug("Empty price data after dropna", ticker=ticker)
+                    continue
+
+                # Calculate multi-period returns
+                returns = calculate_multi_period_returns(prices)
+
+                result = {
+                    "ticker": ticker,
+                    **returns,
+                }
+                results.append(result)
+
+                logger.debug(
+                    "Returns calculated for ticker",
+                    ticker=ticker,
+                    valid_periods=sum(1 for v in returns.values() if v is not None),
+                )
+
+            except Exception as e:
+                logger.warning(
+                    "Failed to process ticker",
+                    ticker=ticker,
+                    category=category,
+                    error=str(e),
+                )
                 continue
 
-            # Extract Close prices
-            prices: pd.Series
-            if "Close" in df.columns:
-                close_data = df["Close"]
-                if isinstance(close_data, pd.DataFrame):
-                    prices = close_data.iloc[:, 0]
-                else:
-                    prices = close_data
-            elif isinstance(
-                df.columns, pd.MultiIndex
-            ) and "Close" in df.columns.get_level_values(0):
-                # Handle multi-index columns from yfinance
-                close_data = df["Close"]
-                if isinstance(close_data, pd.DataFrame):
-                    prices = close_data.iloc[:, 0]
-                else:
-                    prices = close_data
-            else:
-                logger.warning("No Close column found", ticker=ticker)
-                continue
-
-            # Calculate multi-period returns
-            returns = calculate_multi_period_returns(prices)
-
-            result = {
-                "ticker": ticker,
-                **returns,
-            }
-            results.append(result)
-
-            logger.debug(
-                "Returns calculated for ticker",
-                ticker=ticker,
-                valid_periods=sum(1 for v in returns.values() if v is not None),
-            )
-
-        except Exception as e:
-            logger.warning(
-                "Failed to process ticker",
-                ticker=ticker,
-                category=category,
-                error=str(e),
-            )
-            continue
+    except Exception as e:
+        logger.error(
+            "Batch download failed",
+            category=category,
+            error=str(e),
+            exc_info=True,
+        )
+        return []
 
     logger.debug(
         "Category returns calculation completed",
