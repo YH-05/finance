@@ -2,13 +2,8 @@ import datetime
 
 import curl_cffi
 import pandas as pd
-from pandas.core.frame import DataFrame
 import yfinance as yf
-
-from src import fred_database_utils as fred_utils
-from src import market_report_utils as mru
-from src import us_treasury
-from src.market_report import news
+from pandas.core.frame import DataFrame
 
 
 class YfinanceFethcer:

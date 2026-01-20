@@ -1,12 +1,11 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timedelta
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import curl_cffi
 import pandas as pd
+import yfinance as yf
 from pandas import DataFrame
 from rich.console import Console
-import yfinance as yf
 
 from src.market_report import analysis
 

@@ -35,6 +35,8 @@ dependencies = [
     "nbformat>=5.10.4",
     "seaborn>=0.13.2",
     "lxml>=6.0.2",
+    # Bloomberg API
+    "blpapi>=3.24.0",
 ]
 [project.optional-dependencies]
 dev = [
@@ -198,6 +200,9 @@ markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
 ]
+
+[tool.uv]
+extra-index-url = ["https://blpapi.bloomberg.com/repository/releases/python/simple/"]
 
 [dependency-groups]
 dev = [

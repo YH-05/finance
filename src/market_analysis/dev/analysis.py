@@ -2,11 +2,11 @@ import datetime
 
 import curl_cffi
 import pandas as pd
+import yfinance as yf
 from pandas import DataFrame
 from rich.console import Console
-import yfinance as yf
 
-from src.market_report import data_fetch, news
+from src.market_report import data_fetch
 
 
 class MagnificentSevenAnalyzer:
@@ -100,7 +100,9 @@ class TopCompaniesAnalyzer:
 
     def get_sector_top_companies(self, sector: str) -> DataFrame:
         """特定のセクターのtop companiesのDataFrameを取得する"""
-        top_companies: DataFrame = yf.Sector(sector, session=self.session).top_companies  # ty:ignore[invalid-assignment]
+        top_companies: DataFrame = yf.Sector(
+            sector, session=self.session
+        ).top_companies  # ty:ignore[invalid-assignment]
         top_companies["Sector"] = sector
         return top_companies
 

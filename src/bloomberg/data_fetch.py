@@ -5,14 +5,13 @@ Tickerだけでなく、SEDOL, CUSIP, ISIN, FIGIなどの様々な識別子に�
 
 import datetime
 import logging
-from pathlib import Path
 import sqlite3
-from typing import Any, List, Optional, Tuple  # noqa: UP035
+from pathlib import Path
+from typing import Any
 
 import blpapi
 import numpy as np
 import pandas as pd
-
 
 # ロギング設定
 logging.basicConfig(

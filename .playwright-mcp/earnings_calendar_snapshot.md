@@ -1,0 +1,1399 @@
+### New console messages
+- [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ https://cs.nex8.net/cs/openx:0
+- [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://match.prod.b...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://dps.jp.cinarra.com/pxd?PLATFOR...
+- [ERROR] Loading the image 'https://ad.turn.com/r/cs?pid=75&us_privacy=&gdpr=0&gdpr_consent=' violate...
+- [ERROR] Loading the image 'https://ds.uncn.jp/mg/0/sync_push' violates the following Content Securit...
+- [ERROR] Loading the image 'https://serv.ds.kakao.com/adx/criteo/sync-uid?redirect_uri=https%3a%2f%2f...
+- [ERROR] Loading the image 'https://cs.admanmedia.com/e805be652c9053b8f771665f0ac3c361.gif?puid=k-XyS...
+- [ERROR] Loading the image 'https://t.adx.opera.com/pub/sync?pubid=pub13186530141056&gdpr=0&consent=&...
+- [ERROR] Loading the image 'https://www.temu.com/api/adx/cm/pixel-criteo?adx_uid=k-XySP8YrK87RE8so3bH...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: net::ERR_TOO_MANY_REDIRECTS @ https://simage2.pubmatic.com/AdServer...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: net::ERR_TOO_MANY_REDIRECTS @ https://partners.tremorhub.com/sync?U...
+- [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ https://cs.nex8.net/cs/openx:0
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://dps.jp.cinarra.com/pxd?PLATFOR...
+- [LOG] {AKGCx8: b} @ https://usync.ingage.tech/cdn-cgi/challenge-platform/scripts/jsd/main.js:0
+- [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ https://cs.nex8.net/cs/openx:0
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://dps.jp.cinarra.com/pxd?PLATFOR...
+- [LOG] {AKGCx8: b} @ https://usync.ingage.tech/cdn-cgi/challenge-platform/scripts/jsd/main.js:0
+- [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ https://cs.nex8.net/cs/openx:0
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://dps.jp.cinarra.com/pxd?PLATFOR...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://match.rundsp.com/redirect?ex=o...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+- [ERROR] Loading the image 'https://csync.loopme.me/?pubid=17106&gdpr=0&gdpr_consent=&us_privacy=1---...
+- [ERROR] Loading the image 'https://hb.trustedstack.com/cksync.php?cs=61&type=kz&gdpr=${GDPR}&gdpr_co...
+- [ERROR] Failed to load resource: net::ERR_TOO_MANY_REDIRECTS @ https://simage2.pubmatic.com/AdServer...
+- [ERROR] Failed to load resource: net::ERR_TOO_MANY_REDIRECTS @ https://partners.tremorhub.com/sync?U...
+- [ERROR] Loading the image 'https://jadserve.postrelease.com/suid/101787?gdpr=0&gdpr_consent=&us_priv...
+- [LOG] {AKGCx8: b} @ https://usync.ingage.tech/cdn-cgi/challenge-platform/scripts/jsd/main.js:0
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ https://cs.nex8.net/cs/openx:0
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://dps.jp.cinarra.com/pxd?PLATFOR...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://match.rundsp.com/redirect?ex=o...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://cs.ingage.te...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://cs.ingage.te...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 424 (Failed Dependency) @ htt...
+- [ERROR] Failed to load resource: the server responded with a status of 410 (Gone) @ https://ads.stic...
+- [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://sync.connect...
+- [ERROR] Loading the image 'https://trace.popin.cc/ju/cs/prebid?gdpr=0&gdpr_consent=&us_privacy=1---&...
+- [ERROR] Loading the image 'https://csync.loopme.me/?pubid=17106&gdpr=0&gdpr_consent=&us_privacy=1---...
+- [WARNING] <link rel=preload> uses an unsupported `as` value @ https://finance.yahoo.com/calendar/ear...
+- [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can...
+- [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can...
+- [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can...
+- [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can...
+- [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can...
+- [ERROR] Loading the image 'https://www.google.co.jp/ads/ga-audiences?v=1&t=sr&slf_rd=1&_r=4&tid=G-YD...
+- [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can...
+- [ERROR] Loading the image 'https://www.temu.com/api/adx/cm/pixel-taboola?id=c47b1f4f-6d9b-422d-817a-...
+- [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://...
+- [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://...
+- [ERROR] Loading the image 'https://trace.popin.cc/ju/cs/prebid?gdpr=0&gdpr_consent=&us_privacy=1---&...
+- [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can...
+- [ERROR] Loading the image 'https://ad.turn.com/r/cs?pid=75&us_privacy=&gdpr=0&gdpr_consent=' violate...
+- [ERROR] Loading the image 'https://ds.uncn.jp/mg/0/sync_push' violates the following Content Securit...
+- [ERROR] Loading the image 'https://serv.ds.kakao.com/adx/criteo/sync-uid?redirect_uri=https%3a%2f%2f...
+- [ERROR] Loading the image 'https://cs.admanmedia.com/e805be652c9053b8f771665f0ac3c361.gif?puid=k-XyS...
+- [ERROR] Loading the image 'https://t.adx.opera.com/pub/sync?pubid=pub13186530141056&gdpr=0&consent=&...
+- [ERROR] Loading the image 'https://www.temu.com/api/adx/cm/pixel-criteo?adx_uid=k-XySP8YrK87RE8so3bH...
+- [ERROR] Loading the image 'https://csync.loopme.me/?pubid=17106&gdpr=0&gdpr_consent=&us_privacy=1---...
+- [ERROR] Loading the image 'https://hb.trustedstack.com/cksync.php?cs=61&type=kz&gdpr=${GDPR}&gdpr_co...
+- [ERROR] Loading the image 'https://jadserve.postrelease.com/suid/101787?gdpr=0&gdpr_consent=&us_priv...
+- [ERROR] Loading the image 'https://trace.popin.cc/ju/cs/prebid?gdpr=0&gdpr_consent=&us_privacy=1---&...
+- [ERROR] Loading the image 'https://csync.loopme.me/?pubid=17106&gdpr=0&gdpr_consent=&us_privacy=1---...
+- [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://cm.mgid.com/...
+- [ERROR] Attestation check for Shared Storage on https://www.googleadservices.com failed. @ https://w...
+- [ERROR] Loading the image 'https://jadserve.postrelease.com/suid/101787?gdpr=0&gdpr_consent=&us_priv...
+- [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ https://cs.nex8.net/cs/openx:0
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://dps.jp.cinarra.com/pxd?PLATFOR...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://match.rundsp.com/redirect?ex=o...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://cs.lkqd.net/cs?partnerId=59&pa...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://cs.lkqd.net/cs?partnerId=59&re...
+- [ERROR] Attestation check for Shared Storage on https://www.googleadservices.com failed. @ https://w...
+- [ERROR] Attestation check for Shared Storage on https://www.googleadservices.com failed. @ https://w...
+- [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://...
+- [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ https://cs.nex8.net/cs/openx:0
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://dps.jp.cinarra.com/pxd?PLATFOR...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://match.rundsp.com/redirect?ex=o...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+- [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://j.mrpdata.net/c.html?ex=OpenX:...
+
+### Page state
+- Page URL: https://finance.yahoo.com/calendar/earnings/
+- Page Title: Company Earnings Calendar - Yahoo Finance
+- Page Snapshot:
+```yaml
+- generic [active] [ref=e1]:
+  - iframe [ref=e1544]:
+    - iframe [ref=f248e2]:
+      - generic [ref=f250e3]:
+        - generic [ref=f250e4]:
+          - generic:
+            - img [ref=f250e8] [cursor=pointer]
+            - button [ref=f250e10] [cursor=pointer]:
+              - img [ref=f250e11]
+        - insertion [ref=f250e18]
+  - generic [ref=e5]:
+    - link "Skip to navigation":
+      - /url: "#ybar-navigation"
+    - link "Skip to main content":
+      - /url: "#nimbus-app"
+    - link "Skip to right column":
+      - /url: "#right-rail"
+    - banner [ref=e6]:
+      - generic [ref=e7]:
+        - banner [ref=e8]:
+          - generic [ref=e11]:
+            - generic [ref=e12]:
+              - generic [ref=e13]:
+                - heading "Yahoo Finance" [level=1] [ref=e14]
+                - link "Yahoo Finance" [ref=e15] [cursor=pointer]:
+                  - /url: https://finance.yahoo.com/
+                  - img [ref=e16]
+                  - text: Yahoo Finance
+              - search [ref=e20]:
+                - generic [ref=e21]: Search query
+                - textbox "Search query" [ref=e22]:
+                  - /placeholder: Search for news, tickers or companies
+                - generic:
+                  - img
+                - button "Search" [ref=e24] [cursor=pointer]:
+                  - img [ref=e25]
+            - navigation [ref=e28]:
+              - list [ref=e29]:
+                - listitem [ref=e30]:
+                  - link "News" [ref=e31] [cursor=pointer]:
+                    - /url: https://www.yahoo.com/
+                - listitem [ref=e32]:
+                  - link "Finance" [ref=e33] [cursor=pointer]:
+                    - /url: https://finance.yahoo.com/
+                - listitem [ref=e34]:
+                  - link "Sports" [ref=e35] [cursor=pointer]:
+                    - /url: https://sports.yahoo.com/
+                - listitem [ref=e36]:
+                  - button "More" [ref=e37] [cursor=pointer]:
+                    - generic [ref=e38]: More
+                    - img [ref=e39]
+            - toolbar [ref=e41]:
+              - generic [ref=e43]:
+                - checkbox "Notifications" [disabled] [ref=e44]
+                - img [ref=e46]
+              - link "Check your mail" [ref=e51] [cursor=pointer]:
+                - /url: https://mail.yahoo.com/
+                - img [ref=e52]
+                - generic [ref=e55]: Mail
+              - link "Sign in" [ref=e59] [cursor=pointer]:
+                - /url: https://login.yahoo.com/?.lang=en-US&src=finance&.done=https%3A%2F%2Ffinance.yahoo.com%2Fcalendar%2Fearnings%2F&pspid=1183335972&activity=ybar-signin
+        - navigation "Navigation" [ref=e60]:
+          - menubar "Navigation menubar" [ref=e61]:
+            - menuitem "My Portfolio" [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]: My Portfolio
+            - menuitem "News" [ref=e64] [cursor=pointer]:
+              - generic [ref=e65]: News
+            - menuitem "Markets" [ref=e66] [cursor=pointer]:
+              - generic [ref=e67]: Markets
+            - menuitem "Research" [ref=e68] [cursor=pointer]:
+              - generic [ref=e69]: Research
+            - menuitem "Personal Finance" [ref=e70] [cursor=pointer]:
+              - generic [ref=e71]: Personal Finance
+            - menuitem "Videos" [ref=e72] [cursor=pointer]:
+              - generic [ref=e73]: Videos
+            - menuitem "Watch Now" [ref=e74] [cursor=pointer]:
+              - generic [ref=e75]: Watch Now
+    - main [ref=e77]:
+      - generic [ref=e79]:
+        - complementary "Left navigation" [ref=e80]:
+          - navigation "calendar navigation" [ref=e82]:
+            - menubar "calendar navigation menubar" [ref=e83]:
+              - menuitem "Screeners" [ref=e84] [cursor=pointer]:
+                - generic [ref=e85]: Screeners
+              - menuitem "Calendar" [ref=e86] [cursor=pointer]:
+                - generic [ref=e87]: Calendar
+              - menuitem "Stock Comparison" [ref=e88] [cursor=pointer]:
+                - generic [ref=e89]: Stock Comparison
+              - menuitem "Advanced Chart" [ref=e90] [cursor=pointer]:
+                - generic [ref=e91]: Advanced Chart
+              - menuitem "Currency Converter" [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]: Currency Converter
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - navigation "Calendar Navigation" [ref=e96]:
+              - menubar "Calendar Navigation menubar" [ref=e97]:
+                - menuitem "All Events" [ref=e98] [cursor=pointer]:
+                  - generic [ref=e99]: All Events
+                - menuitem "Earnings" [ref=e100] [cursor=pointer]:
+                  - generic [ref=e101]: Earnings
+                - menuitem "Stock Splits" [ref=e102] [cursor=pointer]:
+                  - generic [ref=e103]: Stock Splits
+                - menuitem "IPOs" [ref=e104] [cursor=pointer]:
+                  - generic [ref=e105]: IPOs
+                - menuitem "Economic Events" [ref=e106] [cursor=pointer]:
+                  - generic [ref=e107]: Economic Events
+            - generic [ref=e108]:
+              - generic [ref=e109]:
+                - generic [ref=e110]:
+                  - heading "Earnings Calendar for:" [level=1] [ref=e111]
+                  - button "Jan 18, 2026 - Jan 24, 2026" [ref=e113] [cursor=pointer]:
+                    - img [ref=e115]
+                    - paragraph [ref=e117]: Jan 18, 2026 - Jan 24, 2026
+                - search [ref=e119]:
+                  - img [ref=e121]
+                  - textbox "Find earnings for symbols" [ref=e123]
+              - generic [ref=e126]:
+                - button "prev" [ref=e127] [cursor=pointer]:
+                  - img [ref=e129]
+                - button "next" [ref=e131] [cursor=pointer]:
+                  - img [ref=e133]
+              - generic [ref=e139]:
+                - generic [ref=e141]: Sun, Jan 18
+                - generic [ref=e142]:
+                  - generic [ref=e143]: Mon, Jan 19
+                  - link "Earnings" [ref=e145] [cursor=pointer]:
+                    - /url: /calendar/earnings?from=2026-01-18&to=2026-01-24&day=2026-01-19
+                    - generic [ref=e146]: 6 Earnings
+                - generic [ref=e148]:
+                  - generic [ref=e149]: Tue, Jan 20
+                  - link "Earnings" [ref=e151] [cursor=pointer]:
+                    - /url: /calendar/earnings?from=2026-01-18&to=2026-01-24&day=2026-01-20
+                    - generic [ref=e152]: 30 Earnings
+                - generic [ref=e154]:
+                  - generic [ref=e155]: Wed, Jan 21
+                  - link "Earnings" [ref=e157] [cursor=pointer]:
+                    - /url: /calendar/earnings?from=2026-01-18&to=2026-01-24&day=2026-01-21
+                    - generic [ref=e158]: 51 Earnings
+                - generic [ref=e160]:
+                  - generic [ref=e161]: Thu, Jan 22
+                  - link "Earnings" [ref=e163] [cursor=pointer]:
+                    - /url: /calendar/earnings?from=2026-01-18&to=2026-01-24&day=2026-01-22
+                    - generic [ref=e164]: 82 Earnings
+                - generic [ref=e166]:
+                  - generic [ref=e167]: Fri, Jan 23
+                  - link "Earnings" [ref=e169] [cursor=pointer]:
+                    - /url: /calendar/earnings?from=2026-01-18&to=2026-01-24&day=2026-01-23
+                    - generic [ref=e170]: 15 Earnings
+                - generic [ref=e173]: Sat, Jan 24
+              - generic [ref=e174]:
+                - paragraph [ref=e177]: Earnings On Tue, Jan 20
+                - table [ref=e179]:
+                  - rowgroup [ref=e180]:
+                    - row "Symbol Company Event Name Earnings Call Time EPS Estimate Reported EPS Surprise (%) Market Cap Follow" [ref=e181]:
+                      - columnheader "Symbol" [ref=e182] [cursor=pointer]:
+                        - generic [ref=e183]: Symbol
+                      - columnheader "Company" [ref=e184]:
+                        - generic [ref=e185]: Company
+                      - columnheader "Event Name" [ref=e186]:
+                        - generic [ref=e187]: Event Name
+                      - columnheader "Earnings Call Time" [ref=e188]:
+                        - generic [ref=e189]: Earnings Call Time
+                      - columnheader "EPS Estimate" [ref=e190]:
+                        - generic [ref=e191]: EPS Estimate
+                      - columnheader "Reported EPS" [ref=e192]:
+                        - generic [ref=e193]: Reported EPS
+                      - columnheader "Surprise (%)" [ref=e194]:
+                        - generic [ref=e195]: Surprise (%)
+                      - columnheader "Market Cap" [ref=e196]:
+                        - generic [ref=e197]: Market Cap
+                      - columnheader "Follow" [ref=e198]:
+                        - generic [ref=e199]: Follow
+                  - rowgroup [ref=e200]:
+                    - row "NFLX Netflix, Inc. Q4 2025 Earnings Announcement AMC 0.55 - - 372.88B Follow" [ref=e201]:
+                      - cell "NFLX" [ref=e202]:
+                        - link "NFLX" [ref=e204] [cursor=pointer]:
+                          - /url: /quote/NFLX/
+                      - cell "Netflix, Inc." [ref=e205]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e206]
+                      - cell "AMC" [ref=e207]
+                      - cell "0.55" [ref=e208]
+                      - cell "-" [ref=e209]
+                      - cell "-" [ref=e210]:
+                        - paragraph [ref=e211]: "-"
+                      - cell "372.88B" [ref=e212]
+                      - cell "Follow" [ref=e213]:
+                        - button "Follow" [ref=e215] [cursor=pointer]:
+                          - img [ref=e217]
+                    - row "IBKR Interactive Brokers Group, Inc. Q4 2025 Earnings Announcement AMC 0.59 - - 124.71B Follow" [ref=e219]:
+                      - cell "IBKR" [ref=e220]:
+                        - link "IBKR" [ref=e222] [cursor=pointer]:
+                          - /url: /quote/IBKR/
+                      - cell "Interactive Brokers Group, Inc." [ref=e223]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e224]
+                      - cell "AMC" [ref=e225]
+                      - cell "0.59" [ref=e226]
+                      - cell "-" [ref=e227]
+                      - cell "-" [ref=e228]:
+                        - paragraph [ref=e229]: "-"
+                      - cell "124.71B" [ref=e230]
+                      - cell "Follow" [ref=e231]:
+                        - button "Follow" [ref=e233] [cursor=pointer]:
+                          - img [ref=e235]
+                    - row "MMM 3M Company Q4 2025 Earnings Announcement BMO 1.8 - - 89.38B Follow" [ref=e237]:
+                      - cell "MMM" [ref=e238]:
+                        - link "MMM" [ref=e240] [cursor=pointer]:
+                          - /url: /quote/MMM/
+                      - cell "3M Company" [ref=e241]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e242]
+                      - cell "BMO" [ref=e243]
+                      - cell "1.8" [ref=e244]
+                      - cell "-" [ref=e245]
+                      - cell "-" [ref=e246]:
+                        - paragraph [ref=e247]: "-"
+                      - cell "89.38B" [ref=e248]
+                      - cell "Follow" [ref=e249]:
+                        - button "Follow" [ref=e251] [cursor=pointer]:
+                          - img [ref=e253]
+                    - row "USB U.S. Bancorp Q4 2025 Earnings Announcement BMO 1.19 - - 84.66B Follow" [ref=e255]:
+                      - cell "USB" [ref=e256]:
+                        - link "USB" [ref=e258] [cursor=pointer]:
+                          - /url: /quote/USB/
+                      - cell "U.S. Bancorp" [ref=e259]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e260]
+                      - cell "BMO" [ref=e261]
+                      - cell "1.19" [ref=e262]
+                      - cell "-" [ref=e263]
+                      - cell "-" [ref=e264]:
+                        - paragraph [ref=e265]: "-"
+                      - cell "84.66B" [ref=e266]
+                      - cell "Follow" [ref=e267]:
+                        - button "Follow" [ref=e269] [cursor=pointer]:
+                          - img [ref=e271]
+                    - row "FAST Fastenal Company Q4 2025 Earnings Announcement BMO 0.26 - - 50.22B Follow" [ref=e273]:
+                      - cell "FAST" [ref=e274]:
+                        - link "FAST" [ref=e276] [cursor=pointer]:
+                          - /url: /quote/FAST/
+                      - cell "Fastenal Company" [ref=e277]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e278]
+                      - cell "BMO" [ref=e279]
+                      - cell "0.26" [ref=e280]
+                      - cell "-" [ref=e281]
+                      - cell "-" [ref=e282]:
+                        - paragraph [ref=e283]: "-"
+                      - cell "50.22B" [ref=e284]
+                      - cell "Follow" [ref=e285]:
+                        - button "Follow" [ref=e287] [cursor=pointer]:
+                          - img [ref=e289]
+                    - row "DHI D.R. Horton, Inc. Q1 2026 Earnings Announcement BMO 1.92 - - 45.55B Follow" [ref=e291]:
+                      - cell "DHI" [ref=e292]:
+                        - link "DHI" [ref=e294] [cursor=pointer]:
+                          - /url: /quote/DHI/
+                      - cell "D.R. Horton, Inc." [ref=e295]
+                      - cell "Q1 2026 Earnings Announcement" [ref=e296]
+                      - cell "BMO" [ref=e297]
+                      - cell "1.92" [ref=e298]
+                      - cell "-" [ref=e299]
+                      - cell "-" [ref=e300]:
+                        - paragraph [ref=e301]: "-"
+                      - cell "45.55B" [ref=e302]
+                      - cell "Follow" [ref=e303]:
+                        - button "Follow" [ref=e305] [cursor=pointer]:
+                          - img [ref=e307]
+                    - row "UAL United Airlines Holdings, Inc. Q4 2025 Earnings Announcement AMC 2.94 - - 36.74B Follow" [ref=e309]:
+                      - cell "UAL" [ref=e310]:
+                        - link "UAL" [ref=e312] [cursor=pointer]:
+                          - /url: /quote/UAL/
+                      - cell "United Airlines Holdings, Inc." [ref=e313]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e314]
+                      - cell "AMC" [ref=e315]
+                      - cell "2.94" [ref=e316]
+                      - cell "-" [ref=e317]
+                      - cell "-" [ref=e318]:
+                        - paragraph [ref=e319]: "-"
+                      - cell "36.74B" [ref=e320]
+                      - cell "Follow" [ref=e321]:
+                        - button "Follow" [ref=e323] [cursor=pointer]:
+                          - img [ref=e325]
+                    - row "FITB Fifth Third Bancorp Q4 2025 Earnings Announcement BMO 0.99 - - 32.5B Follow" [ref=e327]:
+                      - cell "FITB" [ref=e328]:
+                        - link "FITB" [ref=e330] [cursor=pointer]:
+                          - /url: /quote/FITB/
+                      - cell "Fifth Third Bancorp" [ref=e331]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e332]
+                      - cell "BMO" [ref=e333]
+                      - cell "0.99" [ref=e334]
+                      - cell "-" [ref=e335]
+                      - cell "-" [ref=e336]:
+                        - paragraph [ref=e337]: "-"
+                      - cell "32.5B" [ref=e338]
+                      - cell "Follow" [ref=e339]:
+                        - button "Follow" [ref=e341] [cursor=pointer]:
+                          - img [ref=e343]
+                    - row "KEY KeyCorp Q4 2025 Earnings Announcement BMO 0.39 - - 23.14B Follow" [ref=e345]:
+                      - cell "KEY" [ref=e346]:
+                        - link "KEY" [ref=e348] [cursor=pointer]:
+                          - /url: /quote/KEY/
+                      - cell "KeyCorp" [ref=e349]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e350]
+                      - cell "BMO" [ref=e351]
+                      - cell "0.39" [ref=e352]
+                      - cell "-" [ref=e353]
+                      - cell "-" [ref=e354]:
+                        - paragraph [ref=e355]: "-"
+                      - cell "23.14B" [ref=e356]
+                      - cell "Follow" [ref=e357]:
+                        - button "Follow" [ref=e359] [cursor=pointer]:
+                          - img [ref=e361]
+                    - row "WTFC Wintrust Financial Corporation Q4 2025 Earnings Announcement AMC 2.93 - - 9.77B Follow" [ref=e363]:
+                      - cell "WTFC" [ref=e364]:
+                        - link "WTFC" [ref=e366] [cursor=pointer]:
+                          - /url: /quote/WTFC/
+                      - cell "Wintrust Financial Corporation" [ref=e367]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e368]
+                      - cell "AMC" [ref=e369]
+                      - cell "2.93" [ref=e370]
+                      - cell "-" [ref=e371]
+                      - cell "-" [ref=e372]:
+                        - paragraph [ref=e373]: "-"
+                      - cell "9.77B" [ref=e374]
+                      - cell "Follow" [ref=e375]:
+                        - button "Follow" [ref=e377] [cursor=pointer]:
+                          - img [ref=e379]
+                    - row "ZION Zions Bancorporation, National Association Q4 2025 Earnings Announcement AMC 1.57 - - 8.8B Follow" [ref=e381]:
+                      - cell "ZION" [ref=e382]:
+                        - link "ZION" [ref=e384] [cursor=pointer]:
+                          - /url: /quote/ZION/
+                      - cell "Zions Bancorporation, National Association" [ref=e385]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e386]
+                      - cell "AMC" [ref=e387]
+                      - cell "1.57" [ref=e388]
+                      - cell "-" [ref=e389]
+                      - cell "-" [ref=e390]:
+                        - paragraph [ref=e391]: "-"
+                      - cell "8.8B" [ref=e392]
+                      - cell "Follow" [ref=e393]:
+                        - button "Follow" [ref=e395] [cursor=pointer]:
+                          - img [ref=e397]
+                    - row "FNB F.N.B. Corporation Q4 2025 Earnings Announcement AMC 0.41 - - 6.23B Follow" [ref=e399]:
+                      - cell "FNB" [ref=e400]:
+                        - link "FNB" [ref=e402] [cursor=pointer]:
+                          - /url: /quote/FNB/
+                      - cell "F.N.B. Corporation" [ref=e403]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e404]
+                      - cell "AMC" [ref=e405]
+                      - cell "0.41" [ref=e406]
+                      - cell "-" [ref=e407]
+                      - cell "-" [ref=e408]:
+                        - paragraph [ref=e409]: "-"
+                      - cell "6.23B" [ref=e410]
+                      - cell "Follow" [ref=e411]:
+                        - button "Follow" [ref=e413] [cursor=pointer]:
+                          - img [ref=e415]
+                    - row "HWC Hancock Whitney Corporation Q4 2025 Earnings Announcement AMC 1.49 - - 5.79B Follow" [ref=e417]:
+                      - cell "HWC" [ref=e418]:
+                        - link "HWC" [ref=e420] [cursor=pointer]:
+                          - /url: /quote/HWC/
+                      - cell "Hancock Whitney Corporation" [ref=e421]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e422]
+                      - cell "AMC" [ref=e423]
+                      - cell "1.49" [ref=e424]
+                      - cell "-" [ref=e425]
+                      - cell "-" [ref=e426]:
+                        - paragraph [ref=e427]: "-"
+                      - cell "5.79B" [ref=e428]
+                      - cell "Follow" [ref=e429]:
+                        - button "Follow" [ref=e431] [cursor=pointer]:
+                          - img [ref=e433]
+                    - row "OZK Bank OZK Q4 2025 Earnings Announcement AMC 1.55 - - 5.43B Follow" [ref=e435]:
+                      - cell "OZK" [ref=e436]:
+                        - link "OZK" [ref=e438] [cursor=pointer]:
+                          - /url: /quote/OZK/
+                      - cell "Bank OZK" [ref=e439]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e440]
+                      - cell "AMC" [ref=e441]
+                      - cell "1.55" [ref=e442]
+                      - cell "-" [ref=e443]
+                      - cell "-" [ref=e444]:
+                        - paragraph [ref=e445]: "-"
+                      - cell "5.43B" [ref=e446]
+                      - cell "Follow" [ref=e447]:
+                        - button "Follow" [ref=e449] [cursor=pointer]:
+                          - img [ref=e451]
+                    - row "SFBS ServisFirst Bancshares, Inc. Q4 2025 Earnings Announcement AMC 1.38 - - 4.27B Follow" [ref=e453]:
+                      - cell "SFBS" [ref=e454]:
+                        - link "SFBS" [ref=e456] [cursor=pointer]:
+                          - /url: /quote/SFBS/
+                      - cell "ServisFirst Bancshares, Inc." [ref=e457]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e458]
+                      - cell "AMC" [ref=e459]
+                      - cell "1.38" [ref=e460]
+                      - cell "-" [ref=e461]
+                      - cell "-" [ref=e462]:
+                        - paragraph [ref=e463]: "-"
+                      - cell "4.27B" [ref=e464]
+                      - cell "Follow" [ref=e465]:
+                        - button "Follow" [ref=e467] [cursor=pointer]:
+                          - img [ref=e469]
+                    - row "SFNC Simmons First National Corporation Q4 2025 Earnings Announcement AMC 0.48 - - 2.78B Follow" [ref=e471]:
+                      - cell "SFNC" [ref=e472]:
+                        - link "SFNC" [ref=e474] [cursor=pointer]:
+                          - /url: /quote/SFNC/
+                      - cell "Simmons First National Corporation" [ref=e475]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e476]
+                      - cell "AMC" [ref=e477]
+                      - cell "0.48" [ref=e478]
+                      - cell "-" [ref=e479]
+                      - cell "-" [ref=e480]:
+                        - paragraph [ref=e481]: "-"
+                      - cell "2.78B" [ref=e482]
+                      - cell "Follow" [ref=e483]:
+                        - button "Follow" [ref=e485] [cursor=pointer]:
+                          - img [ref=e487]
+                    - row "NIC Nicolet Bankshares, Inc. Q4 2025 Earnings Announcement AMC 2.54 - - 1.95B Follow" [ref=e489]:
+                      - cell "NIC" [ref=e490]:
+                        - link "NIC" [ref=e492] [cursor=pointer]:
+                          - /url: /quote/NIC/
+                      - cell "Nicolet Bankshares, Inc." [ref=e493]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e494]
+                      - cell "AMC" [ref=e495]
+                      - cell "2.54" [ref=e496]
+                      - cell "-" [ref=e497]
+                      - cell "-" [ref=e498]:
+                        - paragraph [ref=e499]: "-"
+                      - cell "1.95B" [ref=e500]
+                      - cell "Follow" [ref=e501]:
+                        - button "Follow" [ref=e503] [cursor=pointer]:
+                          - img [ref=e505]
+                    - row "PRGS Progress Software Corporation Q4 2025 Earnings Announcement AMC 1.31 - - 1.73B Follow" [ref=e507]:
+                      - cell "PRGS" [ref=e508]:
+                        - link "PRGS" [ref=e510] [cursor=pointer]:
+                          - /url: /quote/PRGS/
+                      - cell "Progress Software Corporation" [ref=e511]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e512]
+                      - cell "AMC" [ref=e513]
+                      - cell "1.31" [ref=e514]
+                      - cell "-" [ref=e515]
+                      - cell "-" [ref=e516]:
+                        - paragraph [ref=e517]: "-"
+                      - cell "1.73B" [ref=e518]
+                      - cell "Follow" [ref=e519]:
+                        - button "Follow" [ref=e521] [cursor=pointer]:
+                          - img [ref=e523]
+                    - row "KARO Karooooo Ltd. Q3 2026 Earnings Announcement AMC 8.1 - - 1.45B Follow" [ref=e525]:
+                      - cell "KARO" [ref=e526]:
+                        - link "KARO" [ref=e528] [cursor=pointer]:
+                          - /url: /quote/KARO/
+                      - cell "Karooooo Ltd." [ref=e529]
+                      - cell "Q3 2026 Earnings Announcement" [ref=e530]
+                      - cell "AMC" [ref=e531]
+                      - cell "8.1" [ref=e532]
+                      - cell "-" [ref=e533]
+                      - cell "-" [ref=e534]:
+                        - paragraph [ref=e535]: "-"
+                      - cell "1.45B" [ref=e536]
+                      - cell "Follow" [ref=e537]:
+                        - button "Follow" [ref=e539] [cursor=pointer]:
+                          - img [ref=e541]
+                    - row "FOR Forestar Group Inc. Q1 2026 Earnings Announcement BMO 0.3 - - 1.39B Follow" [ref=e543]:
+                      - cell "FOR" [ref=e544]:
+                        - link "FOR" [ref=e546] [cursor=pointer]:
+                          - /url: /quote/FOR/
+                      - cell "Forestar Group Inc." [ref=e547]
+                      - cell "Q1 2026 Earnings Announcement" [ref=e548]
+                      - cell "BMO" [ref=e549]
+                      - cell "0.3" [ref=e550]
+                      - cell "-" [ref=e551]
+                      - cell "-" [ref=e552]:
+                        - paragraph [ref=e553]: "-"
+                      - cell "1.39B" [ref=e554]
+                      - cell "Follow" [ref=e555]:
+                        - button "Follow" [ref=e557] [cursor=pointer]:
+                          - img [ref=e559]
+                    - row "PEBO Peoples Bancorp Inc. Q4 2025 Earnings Announcement BMO 0.88 - - 1.11B Follow" [ref=e561]:
+                      - cell "PEBO" [ref=e562]:
+                        - link "PEBO" [ref=e564] [cursor=pointer]:
+                          - /url: /quote/PEBO/
+                      - cell "Peoples Bancorp Inc." [ref=e565]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e566]
+                      - cell "BMO" [ref=e567]
+                      - cell "0.88" [ref=e568]
+                      - cell "-" [ref=e569]
+                      - cell "-" [ref=e570]:
+                        - paragraph [ref=e571]: "-"
+                      - cell "1.11B" [ref=e572]
+                      - cell "Follow" [ref=e573]:
+                        - button "Follow" [ref=e575] [cursor=pointer]:
+                          - img [ref=e577]
+                    - row "MBWM Mercantile Bank Corporation Q4 2025 Earnings Announcement BMO 1.37 - - 863.02M Follow" [ref=e579]:
+                      - cell "MBWM" [ref=e580]:
+                        - link "MBWM" [ref=e582] [cursor=pointer]:
+                          - /url: /quote/MBWM/
+                      - cell "Mercantile Bank Corporation" [ref=e583]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e584]
+                      - cell "BMO" [ref=e585]
+                      - cell "1.37" [ref=e586]
+                      - cell "-" [ref=e587]
+                      - cell "-" [ref=e588]:
+                        - paragraph [ref=e589]: "-"
+                      - cell "863.02M" [ref=e590]
+                      - cell "Follow" [ref=e591]:
+                        - button "Follow" [ref=e593] [cursor=pointer]:
+                          - img [ref=e595]
+                    - row "RJET Republic Airways Holdings Inc. Q1 2026 Earnings Announcement BMO - - - 838.1M Follow" [ref=e597]:
+                      - cell "RJET" [ref=e598]:
+                        - link "RJET" [ref=e600] [cursor=pointer]:
+                          - /url: /quote/RJET/
+                      - cell "Republic Airways Holdings Inc." [ref=e601]
+                      - cell "Q1 2026 Earnings Announcement" [ref=e602]
+                      - cell "BMO" [ref=e603]
+                      - cell "-" [ref=e604]
+                      - cell "-" [ref=e605]
+                      - cell "-" [ref=e606]:
+                        - paragraph [ref=e607]: "-"
+                      - cell "838.1M" [ref=e608]
+                      - cell "Follow" [ref=e609]:
+                        - button "Follow" [ref=e611] [cursor=pointer]:
+                          - img [ref=e613]
+                    - row "MCB Metropolitan Bank Holding Corp. Q4 2025 Earnings Announcement AMC 2.2 - - 828.5M Follow" [ref=e615]:
+                      - cell "MCB" [ref=e616]:
+                        - link "MCB" [ref=e618] [cursor=pointer]:
+                          - /url: /quote/MCB/
+                      - cell "Metropolitan Bank Holding Corp." [ref=e619]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e620]
+                      - cell "AMC" [ref=e621]
+                      - cell "2.2" [ref=e622]
+                      - cell "-" [ref=e623]
+                      - cell "-" [ref=e624]:
+                        - paragraph [ref=e625]: "-"
+                      - cell "828.5M" [ref=e626]
+                      - cell "Follow" [ref=e627]:
+                        - button "Follow" [ref=e629] [cursor=pointer]:
+                          - img [ref=e631]
+                    - row "SMBK SmartFinancial, Inc. Q4 2025 Earnings Announcement AMC 0.78 - - 671.24M Follow" [ref=e633]:
+                      - cell "SMBK" [ref=e634]:
+                        - link "SMBK" [ref=e636] [cursor=pointer]:
+                          - /url: /quote/SMBK/
+                      - cell "SmartFinancial, Inc." [ref=e637]
+                      - cell "Q4 2025 Earnings Announcement" [ref=e638]
+                      - cell "AMC" [ref=e639]
+                      - cell "0.78" [ref=e640]
+                      - cell "-" [ref=e641]
+                      - cell "-" [ref=e642]:
+                        - paragraph [ref=e643]: "-"
+                      - cell "671.24M" [ref=e644]
+                      - cell "Follow" [ref=e645]:
+                        - button "Follow" [ref=e647] [cursor=pointer]:
+                          - img [ref=e649]
+                  - rowgroup:
+                    - row
+                - generic [ref=e651]:
+                  - generic [ref=e652]:
+                    - text: Rows per page
+                    - button "25" [ref=e656] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e657]: "25"
+                  - generic [ref=e658]: 1-25 of 30
+                  - generic [ref=e659]:
+                    - button "Goto first page" [disabled]:
+                      - generic:
+                        - img
+                    - button "Goto previous page" [disabled]:
+                      - generic:
+                        - img
+                    - button "Goto next page" [ref=e660] [cursor=pointer]:
+                      - img [ref=e662]
+                    - button "Goto last page" [ref=e664] [cursor=pointer]:
+                      - img [ref=e666]
+              - list [ref=e673]:
+                - listitem [ref=e674]:
+                  - article [ref=e675]:
+                    - 'link "Trump in Davos, Netflix and Intel results on deck as earnings season ramps up: What to watch this week" [ref=e676] [cursor=pointer]':
+                      - /url: https://finance.yahoo.com/news/trump-in-davos-netflix-and-intel-results-on-deck-as-earnings-season-ramps-up-what-to-watch-this-week-123046765.html
+                      - 'img "Trump in Davos, Netflix and Intel results on deck as earnings season ramps up: What to watch this week" [ref=e678]'
+                    - generic [ref=e679]:
+                      - 'link "Trump in Davos, Netflix and Intel results on deck as earnings season ramps up: What to watch this week" [ref=e680] [cursor=pointer]':
+                        - /url: https://finance.yahoo.com/news/trump-in-davos-netflix-and-intel-results-on-deck-as-earnings-season-ramps-up-what-to-watch-this-week-123046765.html
+                        - 'heading "Trump in Davos, Netflix and Intel results on deck as earnings season ramps up: What to watch this week" [level=3] [ref=e681]'
+                      - generic [ref=e683]:
+                        - text: Yahoo Finance
+                        - generic [ref=e684]: •
+                        - text: 20h ago
+                - listitem [ref=e685]:
+                  - article [ref=e686]:
+                    - link "Mercantile Bank Corporation Announces Strong Fourth Quarter and Full-Year 2025 Results" [ref=e687] [cursor=pointer]:
+                      - /url: https://finance.yahoo.com/news/mercantile-bank-corporation-announces-strong-100500934.html
+                      - img "Mercantile Bank Corporation Announces Strong Fourth Quarter and Full-Year 2025 Results" [ref=e689]
+                    - generic [ref=e690]:
+                      - link "Mercantile Bank Corporation Announces Strong Fourth Quarter and Full-Year 2025 Results" [ref=e691] [cursor=pointer]:
+                        - /url: https://finance.yahoo.com/news/mercantile-bank-corporation-announces-strong-100500934.html
+                        - heading "Mercantile Bank Corporation Announces Strong Fourth Quarter and Full-Year 2025 Results" [level=3] [ref=e692]
+                      - generic [ref=e694]:
+                        - text: PR Newswire
+                        - generic [ref=e695]: •
+                        - text: 13m ago
+                - listitem [ref=e696]:
+                  - generic [ref=e703] [cursor=pointer]:
+                    - link "Image for Taboola Advertising Unit":
+                      - /url: https://seekingalpha.com/article/4856577-top-10-stocks-for-2026
+                      - img "Image for Taboola Advertising Unit" [ref=e705]
+                    - 'link "Top 10 Stocks for 2026 Seeking Alpha in Taboola advertising section . Sponsored: learn about this recommendation (opens dialog)" [ref=e707]':
+                      - /url: https://seekingalpha.com/article/4856577-top-10-stocks-for-2026
+                      - generic [ref=e708]:
+                        - link "Top 10 Stocks for 2026" [ref=e709]
+                        - generic [ref=e710]:
+                          - link "Seeking Alpha in Taboola advertising section" [ref=e711]: Seeking Alpha
+                          - generic [ref=e712]: .
+                          - 'link "Sponsored: learn about this recommendation (opens dialog)" [ref=e714]':
+                            - /url: "https://popup.taboola.com/en/?template=colorbox&utm_source=yahoo-finances&utm_medium=referral&utm_content=stream-c-neo-v3:taboola-stream-2:"
+                            - text: Ad
+                - listitem [ref=e715]:
+                  - article [ref=e716]:
+                    - link "Mercantile Bank Corporation Increases Regular Cash Dividend" [ref=e717] [cursor=pointer]:
+                      - /url: https://finance.yahoo.com/news/mercantile-bank-corporation-increases-regular-100000050.html
+                      - img "Mercantile Bank Corporation Increases Regular Cash Dividend" [ref=e719]
+                    - generic [ref=e720]:
+                      - link "Mercantile Bank Corporation Increases Regular Cash Dividend" [ref=e721] [cursor=pointer]:
+                        - /url: https://finance.yahoo.com/news/mercantile-bank-corporation-increases-regular-100000050.html
+                        - heading "Mercantile Bank Corporation Increases Regular Cash Dividend" [level=3] [ref=e722]
+                      - generic [ref=e724]:
+                        - text: PR Newswire
+                        - generic [ref=e725]: •
+                        - text: 18m ago
+                - listitem [ref=e726]:
+                  - article [ref=e727]:
+                    - 'link "Trending tickers: Netflix, Intel, Nvidia, GSK and DFS" [ref=e728] [cursor=pointer]':
+                      - /url: https://finance.yahoo.com/news/netflix-intel-nvidia-gsk-dfs-trending-tickers-093331105.html
+                      - 'img "Trending tickers: Netflix, Intel, Nvidia, GSK and DFS" [ref=e730]'
+                    - generic [ref=e731]:
+                      - 'link "Trending tickers: Netflix, Intel, Nvidia, GSK and DFS" [ref=e732] [cursor=pointer]':
+                        - /url: https://finance.yahoo.com/news/netflix-intel-nvidia-gsk-dfs-trending-tickers-093331105.html
+                        - 'heading "Trending tickers: Netflix, Intel, Nvidia, GSK and DFS" [level=3] [ref=e733]'
+                      - generic [ref=e735]:
+                        - text: Yahoo Finance UK
+                        - generic [ref=e736]: •
+                        - text: 44m ago
+                - listitem [ref=e737]:
+                  - article [ref=e738]:
+                    - 'link "Trump at Davos, Netflix Earnings, Supreme Court: What to Watch This Week" [ref=e739] [cursor=pointer]':
+                      - /url: https://finance.yahoo.com/m/cf3cfdcc-81c5-3556-a578-2376b2442810/trump-at-davos-netflix.html
+                      - 'img "Trump at Davos, Netflix Earnings, Supreme Court: What to Watch This Week" [ref=e741]'
+                    - generic [ref=e742]:
+                      - 'link "Trump at Davos, Netflix Earnings, Supreme Court: What to Watch This Week" [ref=e743] [cursor=pointer]':
+                        - /url: https://finance.yahoo.com/m/cf3cfdcc-81c5-3556-a578-2376b2442810/trump-at-davos-netflix.html
+                        - 'heading "Trump at Davos, Netflix Earnings, Supreme Court: What to Watch This Week" [level=3] [ref=e744]'
+                      - generic [ref=e746]:
+                        - text: The Wall Street Journal
+                        - generic [ref=e747]: •
+                        - text: 2h ago
+                - listitem [ref=e748]:
+                  - article [ref=e749]:
+                    - link "Are Stock Splits a Buy Signal?" [ref=e750] [cursor=pointer]:
+                      - /url: https://finance.yahoo.com/news/stock-splits-buy-signal-013300938.html
+                      - img "Are Stock Splits a Buy Signal?" [ref=e752]
+                    - generic [ref=e753]:
+                      - link "Are Stock Splits a Buy Signal?" [ref=e754] [cursor=pointer]:
+                        - /url: https://finance.yahoo.com/news/stock-splits-buy-signal-013300938.html
+                        - heading "Are Stock Splits a Buy Signal?" [level=3] [ref=e755]
+                      - generic [ref=e757]:
+                        - text: Zacks
+                        - generic [ref=e758]: •
+                        - text: 8h ago
+                - listitem [ref=e759]:
+                  - article [ref=e760]:
+                    - link "Assessing Netflix (NFLX) Valuation After Recent Share Price Pullback And Long Term Return Strength" [ref=e761] [cursor=pointer]:
+                      - /url: https://finance.yahoo.com/news/assessing-netflix-nflx-valuation-recent-010925149.html
+                      - img "Assessing Netflix (NFLX) Valuation After Recent Share Price Pullback And Long Term Return Strength" [ref=e763]
+                    - generic [ref=e764]:
+                      - link "Assessing Netflix (NFLX) Valuation After Recent Share Price Pullback And Long Term Return Strength" [ref=e765] [cursor=pointer]:
+                        - /url: https://finance.yahoo.com/news/assessing-netflix-nflx-valuation-recent-010925149.html
+                        - heading "Assessing Netflix (NFLX) Valuation After Recent Share Price Pullback And Long Term Return Strength" [level=3] [ref=e766]
+                      - generic [ref=e768]:
+                        - text: Simply Wall St.
+                        - generic [ref=e769]: •
+                        - text: 9h ago
+                - listitem [ref=e770]:
+                  - article [ref=e771]:
+                    - link "Assessing 3M (MMM) Valuation After Recent Share Price Moves And Litigation Uncertainty" [ref=e772] [cursor=pointer]:
+                      - /url: https://finance.yahoo.com/news/assessing-3m-mmm-valuation-recent-010916872.html
+                      - img "Assessing 3M (MMM) Valuation After Recent Share Price Moves And Litigation Uncertainty" [ref=e774]
+                    - generic [ref=e775]:
+                      - link "Assessing 3M (MMM) Valuation After Recent Share Price Moves And Litigation Uncertainty" [ref=e776] [cursor=pointer]:
+                        - /url: https://finance.yahoo.com/news/assessing-3m-mmm-valuation-recent-010916872.html
+                        - heading "Assessing 3M (MMM) Valuation After Recent Share Price Moves And Litigation Uncertainty" [level=3] [ref=e777]
+                      - generic [ref=e779]:
+                        - text: Simply Wall St.
+                        - generic [ref=e780]: •
+                        - text: 9h ago
+                - listitem [ref=e781]:
+                  - generic [ref=e788] [cursor=pointer]:
+                    - link "Image for Taboola Advertising Unit":
+                      - /url: https://newsphere.jp/list/most_popular_shrines_among_foreign_visitors
+                      - img "Image for Taboola Advertising Unit" [ref=e790]
+                    - 'link "訪日外国人の生の声でランキングした「外国人に刺さる神社トップ10」 NewSphere in Taboola advertising section . Sponsored: learn about this recommendation (opens dialog)" [ref=e792]':
+                      - /url: https://newsphere.jp/list/most_popular_shrines_among_foreign_visitors
+                      - generic [ref=e793]:
+                        - link "訪日外国人の生の声でランキングした「外国人に刺さる神社トップ10」" [ref=e794]
+                        - generic [ref=e795]:
+                          - link "NewSphere in Taboola advertising section" [ref=e796]: NewSphere
+                          - generic [ref=e797]: .
+                          - 'link "Sponsored: learn about this recommendation (opens dialog)" [ref=e799]':
+                            - /url: "https://popup.taboola.com/en/?template=colorbox&utm_source=yahoo-finances&utm_medium=referral&utm_content=stream-c-neo-v3:taboola-stream-9:"
+                            - text: Ad
+                - listitem [ref=e800]:
+                  - article [ref=e801]:
+                    - link "Is Wintrust Financial (WTFC) Pricing Reflect Recent Regional Bank Rethink Accurately" [ref=e802] [cursor=pointer]:
+                      - /url: https://finance.yahoo.com/news/wintrust-financial-wtfc-pricing-reflect-010915875.html
+                      - img "Is Wintrust Financial (WTFC) Pricing Reflect Recent Regional Bank Rethink Accurately" [ref=e804]
+                    - generic [ref=e805]:
+                      - link "Is Wintrust Financial (WTFC) Pricing Reflect Recent Regional Bank Rethink Accurately" [ref=e806] [cursor=pointer]:
+                        - /url: https://finance.yahoo.com/news/wintrust-financial-wtfc-pricing-reflect-010915875.html
+                        - heading "Is Wintrust Financial (WTFC) Pricing Reflect Recent Regional Bank Rethink Accurately" [level=3] [ref=e807]
+                      - generic [ref=e809]:
+                        - text: Simply Wall St.
+                        - generic [ref=e810]: •
+                        - text: 9h ago
+                - listitem [ref=e811]:
+                  - article [ref=e812]:
+                    - link "Buy Netflix Stock for a Rebound as Q4 Earnings Approach?" [ref=e813] [cursor=pointer]:
+                      - /url: https://finance.yahoo.com/news/buy-netflix-stock-rebound-q4-235100899.html
+                      - img "Buy Netflix Stock for a Rebound as Q4 Earnings Approach?" [ref=e815]
+                    - generic [ref=e816]:
+                      - link "Buy Netflix Stock for a Rebound as Q4 Earnings Approach?" [ref=e817] [cursor=pointer]:
+                        - /url: https://finance.yahoo.com/news/buy-netflix-stock-rebound-q4-235100899.html
+                        - heading "Buy Netflix Stock for a Rebound as Q4 Earnings Approach?" [level=3] [ref=e818]
+                      - generic [ref=e820]:
+                        - text: Zacks
+                        - generic [ref=e821]: •
+                        - text: 10h ago
+                - listitem
+          - generic [ref=e824]:
+            - generic [ref=e825]:
+              - link "Yahoo Finance" [ref=e826] [cursor=pointer]:
+                - /url: /
+                - img [ref=e828]
+              - generic [ref=e832]: Copyright © 2026 Yahoo. All rights reserved.
+              - generic [ref=e833]:
+                - link "Follow on Twitter" [ref=e834] [cursor=pointer]:
+                  - /url: https://twitter.com/YahooFinance
+                  - img [ref=e836]
+                - link "Follow on Facebook" [ref=e839] [cursor=pointer]:
+                  - /url: https://facebook.com/yahoofinance
+                  - img [ref=e841]
+                - link "Follow on LinkedIn" [ref=e843] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/yahoo-finance
+                  - img [ref=e845]
+            - generic [ref=e847]:
+              - generic [ref=e848]: What's trending
+              - link "Dow Jones" [ref=e849] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/quote/%5EDJI/
+              - link "S&P 500" [ref=e850] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/quote/SPY/
+              - link "DAX Index" [ref=e851] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/quote/%5EGDAXI/
+              - link "Nvidia" [ref=e852] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/quote/NVDA/
+              - link "Tesla" [ref=e853] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/quote/TSLA/
+              - link "DJT" [ref=e854] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/quote/DJT/
+              - link "Tariffs" [ref=e855] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/topic/tariffs/
+            - generic [ref=e856]:
+              - generic [ref=e857]: Explore more
+              - link "Mortgages" [ref=e858] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/personal-finance/mortgages/
+              - link "Credit Cards" [ref=e859] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/personal-finance/credit-cards/
+              - link "Sectors" [ref=e860] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/sectors/
+              - link "Crypto Heatmap" [ref=e861] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/crypto/heatmap/
+              - link "Financial News" [ref=e862] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/news/
+            - generic [ref=e863]:
+              - generic [ref=e864]: About
+              - link "Data Disclaimer" [ref=e865] [cursor=pointer]:
+                - /url: https://help.yahoo.com/kb/finance-for-web/SLN2310.html?locale=en_US
+              - link "Help" [ref=e866] [cursor=pointer]:
+                - /url: https://help.yahoo.com/kb/finance-for-web
+              - link "Feedback" [ref=e867] [cursor=pointer]:
+                - /url: https://yahoo.uservoice.com/forums/952723-finance-b3
+              - link "Sitemap" [ref=e868] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/sitemap/
+              - link "Licensing" [ref=e869] [cursor=pointer]:
+                - /url: https://info.wrightsmedia.com/yahoo-finance-licensing
+              - link "What's New" [ref=e870] [cursor=pointer]:
+                - /url: https://finance.yahoo.com/about/whatsnew/
+              - link "About Our Ads" [ref=e871] [cursor=pointer]:
+                - /url: https://policies.oath.com/us/en/oath/privacy/adinfo/index.html
+              - generic [ref=e872]:
+                - generic [ref=e873]:
+                  - link "Terms" [ref=e874] [cursor=pointer]:
+                    - /url: https://guce.yahoo.com/terms?locale=en-US
+                  - text: and
+                  - link "Privacy Policy" [ref=e875] [cursor=pointer]:
+                    - /url: https://guce.yahoo.com/privacy-policy?locale=en-US
+                - link "Privacy Dashboard" [ref=e877] [cursor=pointer]:
+                  - /url: https://guce.yahoo.com/privacy-dashboard?locale=en-US
+      - complementary "Dock" [ref=e878]:
+        - dialog "Dock" [ref=e879]:
+          - generic [ref=e881]:
+            - search [ref=e886]:
+              - img [ref=e888]
+              - textbox "Quote Lookup" [ref=e890]
+            - generic [ref=e891]:
+              - list [ref=e892]:
+                - listitem [ref=e893]:
+                  - generic [ref=e896]:
+                    - generic [ref=e900]:
+                      - img [ref=e903]
+                      - generic [ref=e905]: U.S. markets open in 4h 12m
+                    - tablist [ref=e907]:
+                      - tab "US" [selected] [ref=e908]
+                      - tab "Europe" [ref=e909] [cursor=pointer]
+                      - tab "Asia" [ref=e910] [cursor=pointer]
+                      - tab "Cryptocurrencies" [ref=e911] [cursor=pointer]
+                      - tab "Rates" [ref=e912] [cursor=pointer]
+                      - tab "Commodities" [ref=e913] [cursor=pointer]
+                      - tab "Currencies" [ref=e914] [cursor=pointer]
+                    - list [ref=e915]:
+                      - listitem [ref=e916]:
+                        - generic [ref=e917]:
+                          - link "S&P Futures 6,852.25 -124.50 (-1.78%)" [ref=e918] [cursor=pointer]:
+                            - /url: /quote/ES%3DF/
+                            - generic [ref=e919]:
+                              - generic [ref=e920]: S&P Futures
+                              - img [ref=e923]
+                              - generic [ref=e927]: 6,852.25
+                              - generic [ref=e928]:
+                                - generic [ref=e929]: "-124.50"
+                                - generic [ref=e930]: (-1.78%)
+                          - button "Follow" [ref=e932] [cursor=pointer]:
+                            - img [ref=e934]
+                      - listitem [ref=e936]:
+                        - generic [ref=e937]:
+                          - link "Dow Futures 48,714.00 -833.00 (-1.68%)" [ref=e938] [cursor=pointer]:
+                            - /url: /quote/YM%3DF/
+                            - generic [ref=e939]:
+                              - generic [ref=e940]: Dow Futures
+                              - img [ref=e943]
+                              - generic [ref=e947]: 48,714.00
+                              - generic [ref=e948]:
+                                - generic [ref=e950]: "-833.00"
+                                - generic [ref=e951]: (-1.68%)
+                          - button "Follow" [ref=e953] [cursor=pointer]:
+                            - img [ref=e955]
+                      - listitem [ref=e957]:
+                        - generic [ref=e958]:
+                          - link "Nasdaq Futures 25,131.75 -557.25 (-2.17%)" [ref=e959] [cursor=pointer]:
+                            - /url: /quote/NQ%3DF/
+                            - generic [ref=e960]:
+                              - generic [ref=e961]: Nasdaq Futures
+                              - img [ref=e964]
+                              - generic [ref=e968]: 25,131.75
+                              - generic [ref=e969]:
+                                - generic [ref=e970]: "-557.25"
+                                - generic [ref=e971]: (-2.17%)
+                          - button "Follow" [ref=e973] [cursor=pointer]:
+                            - img [ref=e975]
+                      - listitem [ref=e977]:
+                        - generic [ref=e978]:
+                          - link "Russell 2000 Futures 2,632.70 -58.50 (-2.17%)" [ref=e979] [cursor=pointer]:
+                            - /url: /quote/RTY%3DF/
+                            - generic [ref=e980]:
+                              - generic [ref=e981]: Russell 2000 Futures
+                              - img [ref=e984]
+                              - generic [ref=e988]: 2,632.70
+                              - generic [ref=e989]:
+                                - generic [ref=e990]: "-58.50"
+                                - generic [ref=e991]: (-2.17%)
+                          - button "Follow" [ref=e993] [cursor=pointer]:
+                            - img [ref=e995]
+                      - listitem [ref=e997]:
+                        - generic [ref=e998]:
+                          - link "VIX 20.66 +4.82 (+30.43%)" [ref=e1545] [cursor=pointer]:
+                            - /url: /quote/%5EVIX/
+                            - generic [ref=e1000]:
+                              - generic [ref=e1001]: VIX
+                              - img [ref=e1004]
+                              - generic [ref=e1008]: "20.66"
+                              - generic [ref=e1009]:
+                                - generic [ref=e1010]: "+4.82"
+                                - generic [ref=e1011]: (+30.43%)
+                          - button "Follow" [ref=e1013] [cursor=pointer]:
+                            - img [ref=e1015]
+                      - listitem [ref=e1017]:
+                        - generic [ref=e1018]:
+                          - link "Gold 4,737.20 +141.80 (+3.09%)" [ref=e1019] [cursor=pointer]:
+                            - /url: /quote/GC%3DF/
+                            - generic [ref=e1020]:
+                              - generic [ref=e1021]: Gold
+                              - img [ref=e1024]
+                              - generic [ref=e1028]: 4,737.20
+                              - generic [ref=e1029]:
+                                - generic [ref=e1030]: "+141.80"
+                                - generic [ref=e1031]: (+3.09%)
+                          - button "Follow" [ref=e1033] [cursor=pointer]:
+                            - img [ref=e1035]
+                    - generic [ref=e1037]:
+                      - button "prev" [disabled]:
+                        - generic:
+                          - img
+                      - button "next" [ref=e1038] [cursor=pointer]:
+                        - img [ref=e1040]
+                - listitem
+                - listitem [ref=e1042]:
+                  - generic [ref=e1045]:
+                    - link "Trending tickers" [ref=e1049] [cursor=pointer]:
+                      - /url: /trending-tickers
+                      - generic [ref=e1050]: Trending tickers
+                    - list [ref=e1051]:
+                      - listitem [ref=e1052]:
+                        - generic [ref=e1053]:
+                          - link "NVDA NVIDIA Corporation 186.11 -1.01 (-0.54%)" [ref=e1054] [cursor=pointer]:
+                            - /url: /quote/NVDA/
+                            - generic [ref=e1055]:
+                              - generic [ref=e1056]: NVDA
+                              - generic "NVIDIA Corporation" [ref=e1057]
+                              - generic [ref=e1058]: "186.11"
+                              - generic [ref=e1059]:
+                                - generic [ref=e1061]: "-1.01"
+                                - generic [ref=e1062]: (-0.54%)
+                          - button "Follow" [ref=e1064] [cursor=pointer]:
+                            - img [ref=e1066]
+                      - listitem [ref=e1068]:
+                        - generic [ref=e1069]:
+                          - link "NQ=F Nasdaq 100 Mar 26 25,131.75 -557.25 (-2.17%)" [ref=e1070] [cursor=pointer]:
+                            - /url: /quote/NQ%3DF/
+                            - generic [ref=e1071]:
+                              - generic [ref=e1072]: NQ=F
+                              - generic "Nasdaq 100 Mar 26" [ref=e1073]
+                              - generic [ref=e1074]: 25,131.75
+                              - generic [ref=e1075]:
+                                - generic [ref=e1076]: "-557.25"
+                                - generic [ref=e1077]: (-2.17%)
+                          - button "Follow" [ref=e1079] [cursor=pointer]:
+                            - img [ref=e1081]
+                      - listitem [ref=e1083]:
+                        - generic [ref=e1084]:
+                          - link "META Meta Platforms, Inc. 620.25 -0.55 (-0.09%)" [ref=e1085] [cursor=pointer]:
+                            - /url: /quote/META/
+                            - generic [ref=e1086]:
+                              - generic [ref=e1087]: META
+                              - generic "Meta Platforms, Inc." [ref=e1088]
+                              - generic [ref=e1089]: "620.25"
+                              - generic [ref=e1090]:
+                                - generic [ref=e1092]: "-0.55"
+                                - generic [ref=e1093]: (-0.09%)
+                          - button "Follow" [ref=e1095] [cursor=pointer]:
+                            - img [ref=e1097]
+                      - listitem [ref=e1099]:
+                        - generic [ref=e1100]:
+                          - link "CRML Critical Metals Corp. 17.65 +0.40 (+2.32%)" [ref=e1101] [cursor=pointer]:
+                            - /url: /quote/CRML/
+                            - generic [ref=e1102]:
+                              - generic [ref=e1103]: CRML
+                              - generic "Critical Metals Corp." [ref=e1104]
+                              - generic [ref=e1105]: "17.65"
+                              - generic [ref=e1106]:
+                                - generic [ref=e1107]: "+0.40"
+                                - generic [ref=e1108]: (+2.32%)
+                          - button "Follow" [ref=e1110] [cursor=pointer]:
+                            - img [ref=e1112]
+                      - listitem [ref=e1114]:
+                        - generic [ref=e1115]:
+                          - link "ES=F E-Mini S&P 500 Mar 26 6,852.25 -124.50 (-1.78%)" [ref=e1116] [cursor=pointer]:
+                            - /url: /quote/ES%3DF/
+                            - generic [ref=e1117]:
+                              - generic [ref=e1118]: ES=F
+                              - generic "E-Mini S&P 500 Mar 26" [ref=e1119]
+                              - generic [ref=e1120]: 6,852.25
+                              - generic [ref=e1121]:
+                                - generic [ref=e1122]: "-124.50"
+                                - generic [ref=e1123]: (-1.78%)
+                          - button "Follow" [ref=e1125] [cursor=pointer]:
+                            - img [ref=e1127]
+                - listitem [ref=e1129]:
+                  - generic [ref=e1133]:
+                    - link "Portfolio" [ref=e1137] [cursor=pointer]:
+                      - /url: /portfolios
+                      - generic [ref=e1138]: Portfolio
+                    - generic [ref=e1140]:
+                      - paragraph [ref=e1141]: Sign in to access your portfolio
+                      - link "Sign in" [ref=e1142] [cursor=pointer]:
+                        - /url: https://login.yahoo.com/config/login?done=https%3A%2F%2Ffinance.yahoo.com%2Fcalendar%2Fearnings%2F&intl=us&lang=en-US&activity=dock-portfolio&pspid=1183335972&src=finance
+                - listitem
+                - listitem [ref=e1143]:
+                  - generic [ref=e1146]:
+                    - link "Top gainers" [ref=e1150] [cursor=pointer]:
+                      - /url: /gainers/
+                      - generic [ref=e1151]: Top gainers
+                    - list [ref=e1152]:
+                      - listitem [ref=e1153]:
+                        - generic [ref=e1154]:
+                          - link "IBRX ImmunityBio, Inc. 5.52 +1.57 (+39.75%)" [ref=e1155] [cursor=pointer]:
+                            - /url: /quote/IBRX/
+                            - generic [ref=e1156]:
+                              - generic [ref=e1157]: IBRX
+                              - generic "ImmunityBio, Inc." [ref=e1158]
+                              - generic [ref=e1159]: "5.52"
+                              - generic [ref=e1160]:
+                                - generic [ref=e1162]: "+1.57"
+                                - generic [ref=e1163]: (+39.75%)
+                          - button "Follow" [ref=e1165] [cursor=pointer]:
+                            - img [ref=e1167]
+                      - listitem [ref=e1169]:
+                        - generic [ref=e1170]:
+                          - link "AGX Argan, Inc. 383.66 +54.00 (+16.38%)" [ref=e1171] [cursor=pointer]:
+                            - /url: /quote/AGX/
+                            - generic [ref=e1172]:
+                              - generic [ref=e1173]: AGX
+                              - generic "Argan, Inc." [ref=e1174]
+                              - generic [ref=e1175]: "383.66"
+                              - generic [ref=e1176]:
+                                - generic [ref=e1178]: "+54.00"
+                                - generic [ref=e1179]: (+16.38%)
+                          - button "Follow" [ref=e1181] [cursor=pointer]:
+                            - img [ref=e1183]
+                      - listitem [ref=e1185]:
+                        - generic [ref=e1186]:
+                          - link "RIOT Riot Platforms, Inc. 19.23 +2.64 (+15.92%)" [ref=e1187] [cursor=pointer]:
+                            - /url: /quote/RIOT/
+                            - generic [ref=e1188]:
+                              - generic [ref=e1189]: RIOT
+                              - generic "Riot Platforms, Inc." [ref=e1190]
+                              - generic [ref=e1191]: "19.23"
+                              - generic [ref=e1192]:
+                                - generic [ref=e1194]: "+2.64"
+                                - generic [ref=e1195]: (+15.92%)
+                          - button "Follow" [ref=e1197] [cursor=pointer]:
+                            - img [ref=e1199]
+                      - listitem [ref=e1201]:
+                        - generic [ref=e1202]:
+                          - link "ASTS AST SpaceMobile, Inc. 115.77 +14.52 (+14.34%)" [ref=e1203] [cursor=pointer]:
+                            - /url: /quote/ASTS/
+                            - generic [ref=e1204]:
+                              - generic [ref=e1205]: ASTS
+                              - generic "AST SpaceMobile, Inc." [ref=e1206]
+                              - generic [ref=e1207]: "115.77"
+                              - generic [ref=e1208]:
+                                - generic [ref=e1210]: "+14.52"
+                                - generic [ref=e1211]: (+14.34%)
+                          - button "Follow" [ref=e1213] [cursor=pointer]:
+                            - img [ref=e1215]
+                      - listitem [ref=e1217]:
+                        - generic [ref=e1218]:
+                          - link "FIGR Figure Technology Solutions, Inc. 73.91 +9.00 (+13.86%)" [ref=e1219] [cursor=pointer]:
+                            - /url: /quote/FIGR/
+                            - generic [ref=e1220]:
+                              - generic [ref=e1221]: FIGR
+                              - generic "Figure Technology Solutions, Inc." [ref=e1222]
+                              - generic [ref=e1223]: "73.91"
+                              - generic [ref=e1224]:
+                                - generic [ref=e1226]: "+9.00"
+                                - generic [ref=e1227]: (+13.86%)
+                          - button "Follow" [ref=e1229] [cursor=pointer]:
+                            - img [ref=e1231]
+                - listitem [ref=e1233]:
+                  - generic [ref=e1236]:
+                    - link "Top losers" [ref=e1240] [cursor=pointer]:
+                      - /url: /losers/
+                      - generic [ref=e1241]: Top losers
+                    - list [ref=e1242]:
+                      - listitem [ref=e1243]:
+                        - generic [ref=e1244]:
+                          - link "EMAT Evolution Metals & Technologies Corp. 8.40 -1.52 (-15.32%)" [ref=e1245] [cursor=pointer]:
+                            - /url: /quote/EMAT/
+                            - generic [ref=e1246]:
+                              - generic [ref=e1247]: EMAT
+                              - generic "Evolution Metals & Technologies Corp." [ref=e1248]
+                              - generic [ref=e1249]: "8.40"
+                              - generic [ref=e1250]:
+                                - generic [ref=e1252]: "-1.52"
+                                - generic [ref=e1253]: (-15.32%)
+                          - button "Follow" [ref=e1255] [cursor=pointer]:
+                            - img [ref=e1257]
+                      - listitem [ref=e1259]:
+                        - generic [ref=e1260]:
+                          - link "ZGN Ermenegildo Zegna N.V. 9.56 -1.46 (-13.25%)" [ref=e1261] [cursor=pointer]:
+                            - /url: /quote/ZGN/
+                            - generic [ref=e1262]:
+                              - generic [ref=e1263]: ZGN
+                              - generic "Ermenegildo Zegna N.V." [ref=e1264]
+                              - generic [ref=e1265]: "9.56"
+                              - generic [ref=e1266]:
+                                - generic [ref=e1268]: "-1.46"
+                                - generic [ref=e1269]: (-13.25%)
+                          - button "Follow" [ref=e1271] [cursor=pointer]:
+                            - img [ref=e1273]
+                      - listitem [ref=e1275]:
+                        - generic [ref=e1276]:
+                          - link "SSL Sasol Limited 6.31 -0.84 (-11.75%)" [ref=e1277] [cursor=pointer]:
+                            - /url: /quote/SSL/
+                            - generic [ref=e1278]:
+                              - generic [ref=e1279]: SSL
+                              - generic "Sasol Limited" [ref=e1280]
+                              - generic [ref=e1281]: "6.31"
+                              - generic [ref=e1282]:
+                                - generic [ref=e1284]: "-0.84"
+                                - generic [ref=e1285]: (-11.75%)
+                          - button "Follow" [ref=e1287] [cursor=pointer]:
+                            - img [ref=e1289]
+                      - listitem [ref=e1291]:
+                        - generic [ref=e1292]:
+                          - link "TLN Talen Energy Corporation 371.66 -47.41 (-11.31%)" [ref=e1293] [cursor=pointer]:
+                            - /url: /quote/TLN/
+                            - generic [ref=e1294]:
+                              - generic [ref=e1295]: TLN
+                              - generic "Talen Energy Corporation" [ref=e1296]
+                              - generic [ref=e1297]: "371.66"
+                              - generic [ref=e1298]:
+                                - generic [ref=e1300]: "-47.41"
+                                - generic [ref=e1301]: (-11.31%)
+                          - button "Follow" [ref=e1303] [cursor=pointer]:
+                            - img [ref=e1305]
+                      - listitem [ref=e1307]:
+                        - generic [ref=e1308]:
+                          - link "CEG Constellation Energy Corporation 307.71 -33.42 (-9.80%)" [ref=e1309] [cursor=pointer]:
+                            - /url: /quote/CEG/
+                            - generic [ref=e1310]:
+                              - generic [ref=e1311]: CEG
+                              - generic "Constellation Energy Corporation" [ref=e1312]
+                              - generic [ref=e1313]: "307.71"
+                              - generic [ref=e1314]:
+                                - generic [ref=e1316]: "-33.42"
+                                - generic [ref=e1317]: (-9.80%)
+                          - button "Follow" [ref=e1319] [cursor=pointer]:
+                            - img [ref=e1321]
+                - listitem [ref=e1323]:
+                  - generic [ref=e1326]:
+                    - link "Most active" [ref=e1330] [cursor=pointer]:
+                      - /url: /most-active/
+                      - generic [ref=e1331]: Most active
+                    - list [ref=e1332]:
+                      - listitem [ref=e1333]:
+                        - generic [ref=e1334]:
+                          - link "WMT Walmart Inc. 119.70 +0.50 (+0.42%)" [ref=e1335] [cursor=pointer]:
+                            - /url: /quote/WMT/
+                            - generic [ref=e1336]:
+                              - generic [ref=e1337]: WMT
+                              - generic "Walmart Inc." [ref=e1338]
+                              - generic [ref=e1339]: "119.70"
+                              - generic [ref=e1340]:
+                                - generic [ref=e1342]: "+0.50"
+                                - generic [ref=e1343]: (+0.42%)
+                          - button "Follow" [ref=e1345] [cursor=pointer]:
+                            - img [ref=e1347]
+                      - listitem [ref=e1349]:
+                        - generic [ref=e1350]:
+                          - link "NVDA NVIDIA Corporation 186.11 -1.01 (-0.54%)" [ref=e1351] [cursor=pointer]:
+                            - /url: /quote/NVDA/
+                            - generic [ref=e1352]:
+                              - generic [ref=e1353]: NVDA
+                              - generic "NVIDIA Corporation" [ref=e1354]
+                              - generic [ref=e1355]: "186.11"
+                              - generic [ref=e1356]:
+                                - generic [ref=e1358]: "-1.01"
+                                - generic [ref=e1359]: (-0.54%)
+                          - button "Follow" [ref=e1361] [cursor=pointer]:
+                            - img [ref=e1363]
+                      - listitem [ref=e1365]:
+                        - generic [ref=e1366]:
+                          - link "IBRX ImmunityBio, Inc. 5.52 +1.57 (+39.75%)" [ref=e1367] [cursor=pointer]:
+                            - /url: /quote/IBRX/
+                            - generic [ref=e1368]:
+                              - generic [ref=e1369]: IBRX
+                              - generic "ImmunityBio, Inc." [ref=e1370]
+                              - generic [ref=e1371]: "5.52"
+                              - generic [ref=e1372]:
+                                - generic [ref=e1374]: "+1.57"
+                                - generic [ref=e1375]: (+39.75%)
+                          - button "Follow" [ref=e1377] [cursor=pointer]:
+                            - img [ref=e1379]
+                      - listitem [ref=e1381]:
+                        - generic [ref=e1382]:
+                          - link "ONDS Ondas Inc. 12.14 -0.71 (-5.50%)" [ref=e1383] [cursor=pointer]:
+                            - /url: /quote/ONDS/
+                            - generic [ref=e1384]:
+                              - generic [ref=e1385]: ONDS
+                              - generic "Ondas Inc." [ref=e1386]
+                              - generic [ref=e1387]: "12.14"
+                              - generic [ref=e1388]:
+                                - generic [ref=e1390]: "-0.71"
+                                - generic [ref=e1391]: (-5.50%)
+                          - button "Follow" [ref=e1393] [cursor=pointer]:
+                            - img [ref=e1395]
+                      - listitem [ref=e1397]:
+                        - generic [ref=e1398]:
+                          - link "INTC Intel Corporation 46.99 -1.28 (-2.65%)" [ref=e1399] [cursor=pointer]:
+                            - /url: /quote/INTC/
+                            - generic [ref=e1400]:
+                              - generic [ref=e1401]: INTC
+                              - generic "Intel Corporation" [ref=e1402]
+                              - generic [ref=e1403]: "46.99"
+                              - generic [ref=e1404]:
+                                - generic [ref=e1406]: "-1.28"
+                                - generic [ref=e1407]: (-2.65%)
+                          - button "Follow" [ref=e1409] [cursor=pointer]:
+                            - img [ref=e1411]
+                - listitem [ref=e1413]:
+                  - generic [ref=e1416]:
+                    - link "Top economic events" [ref=e1420] [cursor=pointer]:
+                      - /url: /calendar/economic
+                      - generic [ref=e1421]: Top economic events
+                    - img "Progress Spinner" [ref=e1423]
+                - listitem [ref=e1440]:
+                  - generic [ref=e1443]:
+                    - generic [ref=e1445]:
+                      - link "Earnings events" [ref=e1447] [cursor=pointer]:
+                        - /url: /calendar/earnings?day=2026-01-20
+                        - generic [ref=e1448]: Earnings events
+                      - group [ref=e1449]:
+                        - generic [ref=e1451]:
+                          - checkbox "My earnings events" [ref=e1452] [cursor=pointer]
+                          - generic [ref=e1453]: My earnings events
+                          - img [ref=e1455]
+                        - generic [ref=e1458]:
+                          - checkbox "Earnings events" [checked] [ref=e1459] [cursor=pointer]
+                          - generic [ref=e1460]: Earnings events
+                          - img [ref=e1462]
+                    - generic [ref=e1464]:
+                      - button "Upcoming" [ref=e1469] [cursor=pointer]:
+                        - generic:
+                          - img
+                        - generic [ref=e1470]: Upcoming
+                      - generic [ref=e1471]:
+                        - generic [ref=e1472]:
+                          - generic [ref=e1473]:
+                            - generic [ref=e1475]: JAN
+                            - generic [ref=e1477]: "20"
+                          - generic [ref=e1478]:
+                            - generic [ref=e1479]:
+                              - link "USB" [ref=e1481] [cursor=pointer]:
+                                - /url: /quote/USB/
+                              - generic [ref=e1482]: U.S. Bancorp
+                              - button "Add to calendar" [ref=e1484] [cursor=pointer]:
+                                - img [ref=e1486]
+                            - generic [ref=e1488]:
+                              - link "FAST" [ref=e1490] [cursor=pointer]:
+                                - /url: /quote/FAST/
+                              - generic [ref=e1491]: Fastenal Company
+                              - button "Add to calendar" [ref=e1493] [cursor=pointer]:
+                                - img [ref=e1495]
+                            - generic [ref=e1497]:
+                              - link "FITB" [ref=e1499] [cursor=pointer]:
+                                - /url: /quote/FITB/
+                              - generic [ref=e1500]: Fifth Third Bancorp
+                              - button "Add to calendar" [ref=e1502] [cursor=pointer]:
+                                - img [ref=e1504]
+                            - generic [ref=e1506]:
+                              - link "KEY" [ref=e1508] [cursor=pointer]:
+                                - /url: /quote/KEY/
+                              - generic [ref=e1509]: KeyCorp
+                              - button "Add to calendar" [ref=e1511] [cursor=pointer]:
+                                - img [ref=e1513]
+                        - generic [ref=e1515]:
+                          - generic [ref=e1516]:
+                            - generic [ref=e1518]: JAN
+                            - generic [ref=e1520]: "21"
+                          - generic [ref=e1522]:
+                            - link "NFLX" [ref=e1524] [cursor=pointer]:
+                              - /url: /quote/NFLX/
+                            - generic [ref=e1525]: Netflix, Inc.
+                            - button "Add to calendar" [ref=e1527] [cursor=pointer]:
+                              - img [ref=e1529]
+              - button "Edit your Dock" [ref=e1532] [cursor=pointer]:
+                - generic [ref=e1533]: Edit your Dock
+              - generic [ref=e1535]:
+                - generic [ref=e1536]:
+                  - link "Terms" [ref=e1537] [cursor=pointer]:
+                    - /url: https://guce.yahoo.com/terms?locale=en-US
+                  - text: and
+                  - link "Privacy Policy" [ref=e1538] [cursor=pointer]:
+                    - /url: https://guce.yahoo.com/privacy-policy?locale=en-US
+                - link "Privacy Dashboard" [ref=e1540] [cursor=pointer]:
+                  - /url: https://guce.yahoo.com/privacy-dashboard?locale=en-US
+            - iframe [ref=e1541]:
+
+```
