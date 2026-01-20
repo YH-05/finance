@@ -118,18 +118,18 @@ uv add apscheduler
 
 ```
 rss/
-├── __init__.py              # Public API exports (90 lines)
+├── __init__.py              # Public API exports (89 lines)
 ├── py.typed                 # PEP 561 type marker
-├── types.py                 # Type definitions (291 lines)
-├── exceptions.py            # Custom exceptions (120 lines)
-├── cli/                     # Command-line interface (2 files, 595 lines)
+├── types.py                 # Type definitions (380 lines)
+├── exceptions.py            # Custom exceptions (161 lines)
+├── cli/                     # Command-line interface (2 files, 727 lines)
 │   ├── __init__.py
 │   └── main.py              # CLI commands (add/list/fetch/remove/search)
-├── core/                    # Core functionality (4 files, 578 lines)
+├── core/                    # Core functionality (4 files, 722 lines)
 │   ├── __init__.py
-│   ├── diff_detector.py     # Duplicate detection (68 lines)
-│   ├── http_client.py       # HTTP client with httpx (314 lines)
-│   └── parser.py            # RSS/Atom parser with feedparser (192 lines)
+│   ├── diff_detector.py     # Duplicate detection (92 lines)
+│   ├── http_client.py       # HTTP client with httpx (371 lines)
+│   └── parser.py            # RSS/Atom parser with feedparser (253 lines)
 ├── docs/                    # Library documentation (8 files)
 │   ├── architecture.md
 │   ├── development-guidelines.md
@@ -139,25 +139,25 @@ rss/
 │   ├── project.md
 │   ├── repository-structure.md
 │   └── tasks.md
-├── mcp/                     # MCP server integration (2 files, 540 lines)
+├── mcp/                     # MCP server integration (2 files, 654 lines)
 │   ├── __init__.py
 │   └── server.py            # MCP tools (9 tools provided)
-├── services/                # Service layer (5 files, 1,474 lines)
+├── services/                # Service layer (5 files, 1,820 lines)
 │   ├── __init__.py
-│   ├── batch_scheduler.py   # Batch scheduling with APScheduler (276 lines)
-│   ├── feed_fetcher.py      # Feed fetching orchestration (408 lines)
-│   ├── feed_manager.py      # Feed CRUD operations (553 lines)
-│   └── feed_reader.py       # Feed reading/searching (231 lines)
-├── storage/                 # Persistence layer (3 files, 546 lines)
+│   ├── batch_scheduler.py   # Batch scheduling with APScheduler (342 lines)
+│   ├── feed_fetcher.py      # Feed fetching orchestration (497 lines)
+│   ├── feed_manager.py      # Feed CRUD operations (677 lines)
+│   └── feed_reader.py       # Feed reading/searching (296 lines)
+├── storage/                 # Persistence layer (3 files, 667 lines)
 │   ├── __init__.py
-│   ├── json_storage.py      # JSON file operations
-│   └── lock_manager.py      # File-based locking
-├── utils/                   # Utilities (2 files, 275 lines)
+│   ├── json_storage.py      # JSON file operations (428 lines)
+│   └── lock_manager.py      # File-based locking (239 lines)
+├── utils/                   # Utilities (2 files, 367 lines)
 │   ├── __init__.py
-│   └── logging_config.py    # Structured logging (structlog)
-└── validators/              # Validation layer (2 files, 189 lines)
+│   └── logging_config.py    # Structured logging (structlog, 360 lines)
+└── validators/              # Validation layer (2 files, 235 lines)
     ├── __init__.py
-    └── url_validator.py     # URL/title/category validation
+    └── url_validator.py     # URL/title/category validation (230 lines)
 ```
 
 <!-- END: STRUCTURE -->
@@ -168,15 +168,15 @@ rss/
 
 | モジュール        | 状態        | ファイル数 | 行数  | 説明                                             |
 | ----------------- | ----------- | ---------- | ----- | ------------------------------------------------ |
-| `types.py`        | ✅ 実装済み | 1          | 291   | 型定義（Feed, FeedItem, BatchStats 等）          |
-| `exceptions.py`   | ✅ 実装済み | 1          | 120   | カスタム例外（7種類）                            |
-| `cli/`            | ✅ 実装済み | 2          | 595   | CLI インターフェース（add/list/fetch/remove 等） |
-| `core/`           | ✅ 実装済み | 4          | 578   | コア機能（HTTP/パース/差分検出）                 |
-| `mcp/`            | ✅ 実装済み | 2          | 540   | MCP サーバー統合（9 ツール提供）                 |
-| `services/`       | ✅ 実装済み | 5          | 1,474 | サービス層（Manager/Fetcher/Reader/Scheduler）   |
-| `storage/`        | ✅ 実装済み | 3          | 546   | 永続化層（JSON ストレージ・ロック管理）          |
-| `utils/`          | ✅ 実装済み | 2          | 275   | ユーティリティ（構造化ロギング）                 |
-| `validators/`     | ✅ 実装済み | 2          | 189   | バリデーション（URL/タイトル/カテゴリ）          |
+| `types.py`        | ✅ 実装済み | 1          | 380   | 型定義（Feed, FeedItem, BatchStats 等）          |
+| `exceptions.py`   | ✅ 実装済み | 1          | 161   | カスタム例外（7種類）                            |
+| `cli/`            | ✅ 実装済み | 2          | 727   | CLI インターフェース（add/list/fetch/remove 等） |
+| `core/`           | ✅ 実装済み | 4          | 722   | コア機能（HTTP/パース/差分検出）                 |
+| `mcp/`            | ✅ 実装済み | 2          | 654   | MCP サーバー統合（9 ツール提供）                 |
+| `services/`       | ✅ 実装済み | 5          | 1,820 | サービス層（Manager/Fetcher/Reader/Scheduler）   |
+| `storage/`        | ✅ 実装済み | 3          | 667   | 永続化層（JSON ストレージ・ロック管理）          |
+| `utils/`          | ✅ 実装済み | 2          | 367   | ユーティリティ（構造化ロギング）                 |
+| `validators/`     | ✅ 実装済み | 2          | 235   | バリデーション（URL/タイトル/カテゴリ）          |
 
 **テストカバレッジ**: 全モジュールにテストが存在（unit: 13 ファイル, integration: 2 ファイル, property: 1 ファイル）
 
@@ -416,7 +416,7 @@ except FeedNotFoundError as e:
 | 項目                     | 値     |
 | ------------------------ | ------ |
 | Python ファイル数        | 23     |
-| 総行数（実装コード）     | 4,689  |
+| 総行数（実装コード）     | 5,822  |
 | モジュール数             | 9      |
 | テストファイル数         | 16     |
 | 実装カバレッジ           | 100% (全モジュールにテストあり) |

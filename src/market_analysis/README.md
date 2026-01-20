@@ -213,7 +213,7 @@ market_analysis/
 | `types.py` | ✅ 実装済み | 1 | 592 | ✅ | 型定義13種（TypedDict, Enum等） |
 | `errors.py` | ✅ 実装済み | 1 | 521 | ✅ | 例外クラス8種（MarketAnalysisError等） |
 | `api/` | ✅ 実装済み | 4 | 2,552 | ✅ (3) | MarketData, Analysis, Chart, MarketPerformanceAnalyzer |
-| `analysis/` | ✅ 実装済み | 7 | 2,974 | ✅ (6) | Analyzer, Indicators, Correlation, Earnings, Returns, Sector |
+| `analysis/` | ✅ 実装済み | 7 | 3,031 | ✅ (6) | Analyzer, Indicators, Correlation, Earnings, Returns, Sector |
 | `core/` | ✅ 実装済み | 8 | 3,705 | ✅ (7) | 5種データフェッチャー + Factory + Mock |
 | `export/` | ✅ 実装済み | 2 | 678 | ✅ (1) | DataExporter（CSV/JSON/Parquet） |
 | `utils/` | ✅ 実装済み | 7 | 2,753 | ✅ (1) | cache, retry, validators, ticker_registry等 |
@@ -221,17 +221,17 @@ market_analysis/
 
 **テスト構成**: 単体テスト 21ファイル + 統合テスト 1ファイル = 計22テスト
 
-**分析機能の拡張**:
-- ✅ セクター分析（sector.py）- 11セクターのETFパフォーマンス分析、トップ/ボトムセクター検出
-- ✅ 決算カレンダー（earnings.py）- 決算予定日の取得、EPS/売上予想の抽出
-- ✅ 多期間騰落率（returns.py）- 1D/1W/MTD/YTD等の複数期間リターン計算
+**分析機能の拡張（2026-01追加）**:
+- ✅ セクター分析（sector.py, 696行）- 11セクターのETFパフォーマンス分析、トップ/ボトムセクター検出、寄与銘柄分析
+- ✅ 決算カレンダー（earnings.py, 414行）- 決算予定日の取得、EPS/売上予想の抽出、期間フィルタリング
+- ✅ 多期間騰落率（returns.py, 540行）- 1D/1W/MTD/1M/3M/6M/YTD/1Y/3Y/5Y のリターン計算
 
 **データソース対応状況**:
-- ✅ Yahoo Finance (yfinance) - 株価・為替・指数データ
-- ✅ FRED (Federal Reserve Economic Data) - 米国経済指標
-- ✅ Bloomberg Terminal (BLPAPI) - プロフェッショナル市場データ（要ライセンス）
-- ✅ FactSet - ファイルベースデータローダー（要契約）
-- ✅ Mock Fetchers - テスト・開発用モック実装
+- ✅ Yahoo Finance (yfinance_fetcher.py, 516行) - 株価・為替・指数データ
+- ✅ FRED (fred_fetcher.py, 605行) - 米国経済指標
+- ✅ Bloomberg Terminal (bloomberg_fetcher.py, 640行) - プロフェッショナル市場データ（要ライセンス）
+- ✅ FactSet (factset_fetcher.py, 723行) - ファイルベースデータローダー（要契約）
+- ✅ Mock Fetchers (mock_fetchers.py, 665行) - テスト・開発用モック実装
 
 <!-- END: IMPLEMENTATION -->
 
@@ -529,15 +529,21 @@ logger.info("処理開始")
 
 | 項目 | 値 |
 |-----|-----|
-| Pythonファイル数 | 35 |
-| 総行数（実装コード） | 12,818 |
+| Pythonファイル数 | 38 |
+| 総行数（実装コード） | 16,444 |
 | モジュール数 | 8 |
 | テストファイル数 | 22 |
 | テストカバレッジ | N/A |
 
 **モジュール構成**:
 - コアモジュール: `types.py` (型定義13種, 592行), `errors.py` (例外クラス8種, 521行)
-- 機能モジュール: `api/` (4クラス, 2,552行), `analysis/` (6クラス, 2,974行), `core/` (8フェッチャー, 3,705行), `export/` (1クラス, 678行), `utils/` (7モジュール, 2,753行), `visualization/` (4クラス, 1,736行)
+- パブリックAPI: `api/` (4クラス, 2,552行) - MarketData, Analysis, Chart, MarketPerformanceAnalyzer
+- 分析エンジン: `analysis/` (7モジュール, 3,031行) - Analyzer, Indicators, Correlation, Earnings, Returns, Sector
+- データ取得: `core/` (8フェッチャー, 3,705行) - YFinance, FRED, Bloomberg, FactSet + Mock
+- エクスポート: `export/` (1クラス, 678行) - CSV/JSON/Parquet対応
+- ユーティリティ: `utils/` (7モジュール, 2,753行) - Cache, Retry, Validators, TickerRegistry
+- 可視化: `visualization/` (4クラス, 1,736行) - ChartBuilder, Heatmap, PriceCharts
+- 開発ツール: `dev/` (4スクリプト, 473行) - 週次レポート、決算カレンダー等
 
 **実装進捗**:
 - 完全実装: 8/8 モジュール (100%)
@@ -545,16 +551,16 @@ logger.info("処理開始")
 - テスト数: 単体テスト 21ファイル、統合テスト 1ファイル
 
 **最新追加機能（2026-01）**:
-- セクター分析（sector.py）: 11セクターのETFパフォーマンス、トップ/ボトムセクター検出、寄与銘柄分析
-- 決算カレンダー（earnings.py）: 決算予定日取得、EPS/売上予想の抽出、期間フィルタリング
-- 多期間騰落率（returns.py）: 1D/1W/MTD/1M/3M/6M/YTD/1Y/3Y/5Y のリターン計算、米国/グローバル指数対応
+- セクター分析（sector.py, 696行）: 11セクターのETFパフォーマンス、トップ/ボトムセクター検出、寄与銘柄分析
+- 決算カレンダー（earnings.py, 414行）: 決算予定日取得、EPS/売上予想の抽出、期間フィルタリング
+- 多期間騰落率（returns.py, 540行）: 1D/1W/MTD/1M/3M/6M/YTD/1Y/3Y/5Y のリターン計算、米国/グローバル指数対応
 
 **データソース**:
-- Yahoo Finance (yfinance) - 株価・為替・指数データ
-- FRED (Federal Reserve Economic Data) - 米国経済指標
-- Bloomberg Terminal (BLPAPI) - プロフェッショナル市場データ（要ライセンス）
-- FactSet - ファイルベースデータローダー（要契約）
-- Mock Fetchers - テスト・開発用モック実装
+- Yahoo Finance (yfinance) - 株価・為替・指数データ（yfinance_fetcher.py, 516行）
+- FRED (Federal Reserve Economic Data) - 米国経済指標（fred_fetcher.py, 605行）
+- Bloomberg Terminal (BLPAPI) - プロフェッショナル市場データ（bloomberg_fetcher.py, 640行、要ライセンス）
+- FactSet - ファイルベースデータローダー（factset_fetcher.py, 723行、要契約）
+- Mock Fetchers - テスト・開発用モック実装（mock_fetchers.py, 665行）
 
 <!-- END: STATS -->
 

@@ -41,7 +41,7 @@ print(formatter.to_markdown(result))
 
 ### よくある使い方
 
-#### ポートフォリオのリスク分析
+#### ユースケース1: ポートフォリオのリスク分析
 
 ```python
 from strategy import RiskCalculator, ResultFormatter
@@ -50,7 +50,7 @@ import pandas as pd
 # ポートフォリオの日次リターンデータ
 returns = pd.Series([0.01, -0.005, 0.02, -0.01, 0.015])
 
-# リスク指標を計算
+# リスク指標を計算（Sharpe比、Sortino比、最大ドローダウンなど）
 calculator = RiskCalculator(
     returns=returns,
     risk_free_rate=0.02,         # 年率2%（無リスク金利）
@@ -61,6 +61,23 @@ metrics = calculator.calculate()
 # Markdown形式で出力
 formatter = ResultFormatter()
 print(formatter.to_markdown(metrics))
+```
+
+#### ユースケース2: ポートフォリオの可視化
+
+```python
+from strategy import ChartGenerator
+from strategy.portfolio import Portfolio
+
+# ポートフォリオを定義（60%株式、40%債券）
+portfolio = Portfolio([("VOO", 0.6), ("BND", 0.4)])
+
+# チャートジェネレータを作成
+generator = ChartGenerator(portfolio=portfolio)
+
+# 資産配分の円グラフを生成
+fig = generator.plot_allocation()
+fig.show()
 ```
 <!-- END: QUICKSTART -->
 
@@ -142,61 +159,119 @@ formatter = ResultFormatter()
 print(formatter.to_markdown(result))
 ```
 
+---
+
 ### 主要クラス
 
 #### `RiskCalculator`
 
-ポートフォリオリターンから各種リスク指標を計算するクラス。
+**説明**: ポートフォリオリターンから各種リスク指標（ボラティリティ、Sharpe比、Sortino比、最大ドローダウンなど）を計算
+
+**基本的な使い方**:
 
 ```python
 from strategy import RiskCalculator
 import pandas as pd
 
+# 日次リターンデータを準備
 returns = pd.Series([0.01, -0.005, 0.02, -0.01, 0.015])
-calculator = RiskCalculator(returns=returns, risk_free_rate=0.02)
+
+# 初期化とリスク指標の計算
+calculator = RiskCalculator(
+    returns=returns,
+    risk_free_rate=0.02,         # 年率無リスク金利
+    annualization_factor=252     # 日次データの年率換算係数
+)
 result = calculator.calculate()
 ```
 
-**主なメソッド**: `calculate()`, `volatility()`, `sharpe_ratio()`, `sortino_ratio()`, `max_drawdown()`
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `calculate()` | 全リスク指標を一括計算 | `RiskMetricsResult` |
+| `volatility()` | ボラティリティ（標準偏差）を計算 | `float` |
+| `sharpe_ratio()` | Sharpe比を計算 | `float` |
+| `sortino_ratio()` | Sortino比を計算 | `float` |
+| `max_drawdown()` | 最大ドローダウンを計算 | `float` |
 
 ---
 
 #### `RiskMetricsResult`
 
-リスク指標の計算結果を保持するデータクラス。
+**説明**: リスク指標の計算結果を保持するデータクラス
 
-**主な属性**: `volatility`, `sharpe_ratio`, `sortino_ratio`, `max_drawdown`, `var_95`, `var_99`, `annualized_return`, `cumulative_return`
+**主な属性**:
+
+| 属性 | 型 | 説明 |
+|------|-----|------|
+| `volatility` | `float` | 年率ボラティリティ |
+| `sharpe_ratio` | `float` | Sharpe比（リスク調整後リターン） |
+| `sortino_ratio` | `float` | Sortino比（下方リスク調整後リターン） |
+| `max_drawdown` | `float` | 最大ドローダウン（最大下落率） |
+| `var_95` | `float` | 95%信頼区間のVaR（バリュー・アット・リスク） |
+| `var_99` | `float` | 99%信頼区間のVaR |
+| `annualized_return` | `float` | 年率リターン |
+| `cumulative_return` | `float` | 累積リターン |
 
 ---
 
 #### `ResultFormatter`
 
-リスク指標結果を様々な形式に変換するフォーマッタ。
+**説明**: リスク指標結果を様々な形式（DataFrame、辞書、Markdown、HTML）に変換するフォーマッタ
+
+**基本的な使い方**:
 
 ```python
 from strategy import ResultFormatter
 
 formatter = ResultFormatter()
-df = formatter.to_dataframe(result)        # DataFrame
-data = formatter.to_dict(result)           # 辞書
-markdown = formatter.to_markdown(result)   # Markdown
+
+# 様々な形式に変換
+df = formatter.to_dataframe(result)        # DataFrame形式
+data = formatter.to_dict(result)           # 辞書（JSON互換）
+markdown = formatter.to_markdown(result)   # Markdown形式
+html = formatter.to_html(result)           # HTML形式
 ```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `to_dataframe(result)` | DataFrame形式に変換 | `pd.DataFrame` |
+| `to_dict(result)` | 辞書形式に変換（JSON互換） | `dict[str, Any]` |
+| `to_markdown(result)` | Markdown形式に変換 | `str` |
+| `to_html(result)` | HTML形式に変換 | `str` |
 
 ---
 
 #### `ChartGenerator`
 
-Plotlyを使用したポートフォリオ可視化。
+**説明**: Plotlyを使用したポートフォリオの可視化（資産配分、ドリフト分析など）
+
+**基本的な使い方**:
 
 ```python
 from strategy import ChartGenerator
 from strategy.portfolio import Portfolio
 
+# ポートフォリオを定義
 portfolio = Portfolio([("VOO", 0.6), ("BND", 0.4)])
+
+# チャートジェネレータを作成
 generator = ChartGenerator(portfolio=portfolio)
+
+# 資産配分の円グラフを生成・表示
 fig = generator.plot_allocation()
 fig.show()
 ```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `plot_allocation()` | 資産配分の円グラフを生成 | `go.Figure` |
+| `plot_drift()` | ドリフト分析（目標比率との乖離）を可視化 | `go.Figure` |
 
 ---
 
@@ -204,13 +279,32 @@ fig.show()
 
 #### `get_logger(name, **context)`
 
-構造化ロギング機能を備えたロガーインスタンスを取得。
+**説明**: 構造化ロギング機能を備えたロガーインスタンスを取得
+
+**使用例**:
 
 ```python
 from strategy import get_logger
 
 logger = get_logger(__name__)
 logger.info("リスク計算開始", ticker="VOO", period="1y")
+```
+
+**パラメータ**: `name` (必須) - ロガー名、`**context` - ログに含めるコンテキスト情報
+
+---
+
+### 型定義
+
+データ構造の定義。型ヒントやバリデーションに使用:
+
+```python
+from strategy.types import (
+    Holding,        # ポートフォリオ保有銘柄
+    Period,         # 分析期間の定義
+    PresetPeriod,   # プリセット期間（"1y", "3y" など）
+    TickerInfo,     # ティッカー情報（セクター、資産クラスなど）
+)
 ```
 <!-- END: API -->
 

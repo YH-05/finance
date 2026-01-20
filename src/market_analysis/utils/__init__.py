@@ -10,6 +10,15 @@ from .cache import (
     get_cache,
     reset_cache,
 )
+from .date_utils import (
+    calculate_weekly_comment_period,
+    format_date_japanese,
+    format_date_us,
+    get_last_tuesday,
+    get_previous_tuesday,
+    get_trading_days_in_period,
+    parse_date,
+)
 from .logger_factory import create_logger
 from .logging_config import get_logger, log_context, set_log_level, setup_logging
 from .retry import (
@@ -48,14 +57,21 @@ __all__ = [
     "TickerInfo",
     "TickerRegistry",
     "Validator",
+    "calculate_weekly_comment_period",
     "create_logger",
     "create_persistent_cache",
     "create_retry_decorator",
+    "format_date_japanese",
+    "format_date_us",
     "generate_cache_key",
     "get_cache",
+    "get_last_tuesday",
     "get_logger",
+    "get_previous_tuesday",
     "get_ticker_registry",
+    "get_trading_days_in_period",
     "log_context",
+    "parse_date",
     "reset_cache",
     "retry_on_rate_limit",
     "retry_with_fallback",

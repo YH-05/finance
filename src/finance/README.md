@@ -93,7 +93,6 @@ logger.error("Fetch failed", symbol="AAPL", error="Connection timeout")
 ```
 finance/
 ├── __init__.py
-├── py.typed
 ├── types.py
 ├── db/
 │   ├── __init__.py
@@ -116,9 +115,9 @@ finance/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|-----|
-| `types.py` | ✅ 実装済み | 1 | 50 |
-| `db/` | ✅ 実装済み | 6 | 433 |
-| `utils/` | 🚧 開発中 | 2 | 361 |
+| `types.py` | ✅ 実装済み | 1 | 30 |
+| `db/` | ✅ 実装済み | 6 | 342 |
+| `utils/` | 🚧 開発中 | 2 | 273 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -274,7 +273,7 @@ from finance.types import (
 | 項目 | 値 |
 |-----|---|
 | Pythonファイル数 | 10 |
-| 総行数（実装コード） | 844 |
+| 総行数（実装コード） | 649 |
 | モジュール数 | 2 |
 | テストファイル数 | 3 |
 | テストカバレッジ | N/A |

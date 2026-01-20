@@ -82,6 +82,10 @@
             "env": {
                 "TAVILY_API_KEY": "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"
             }
+        },
+        "playwright": {
+            "command": "npx",
+            "args": ["-y", "@playwright/mcp@latest"]
         }
     }
 }

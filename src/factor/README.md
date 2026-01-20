@@ -21,52 +21,75 @@ uv sync --all-extras
 ### 基本的な使い方
 
 ```python
-from factor import get_logger
-
-# ログ設定
-logger = get_logger(__name__)
-logger.info("factor_package_initialized")
-```
-
-### 主要な使用例
-
-#### ファクター計算
-
-```python
 from factor import YFinanceProvider, ValueFactor
-from factor import get_logger
 
-logger = get_logger(__name__)
-
-# データプロバイダー
+# 1. データプロバイダーを作成
 provider = YFinanceProvider()
 
-# バリューファクター（PER）
+# 2. ファクターを初期化
 factor = ValueFactor(metric="per", invert=True)
+
+# 3. ファクター値を計算
 result = factor.compute(
     provider=provider,
     universe=["AAPL", "GOOGL", "MSFT"],
     start_date="2024-01-01",
     end_date="2024-12-31",
 )
-
-logger.info("factor_computed", rows=len(result))
 ```
 
-#### ファクター正規化
+### よくある使い方
+
+#### ユースケース1: バリューファクターの計算
 
 ```python
-from factor import Normalizer, NormalizationMethod
+from factor import YFinanceProvider, ValueFactor
+
+provider = YFinanceProvider()
+
+# PERベースのバリューファクター（低PERほど高スコア）
+per_factor = ValueFactor(metric="per", invert=True)
+per_scores = per_factor.compute(
+    provider=provider,
+    universe=["AAPL", "GOOGL", "MSFT", "AMZN"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+```
+
+#### ユースケース2: モメンタムファクターの計算
+
+```python
+from factor import YFinanceProvider, MomentumFactor
+
+provider = YFinanceProvider()
+
+# 過去12ヶ月のモメンタムファクター
+momentum = MomentumFactor(lookback_days=252)
+scores = momentum.compute(
+    provider=provider,
+    universe=["AAPL", "GOOGL", "MSFT"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+```
+
+#### ユースケース3: ファクターの正規化と分析
+
+```python
+from factor import Normalizer, NormalizationMethod, QuantileAnalyzer
 import pandas as pd
 
-factor_data = pd.DataFrame({
-    "AAPL": [1.2, 1.5, 1.3],
-    "GOOGL": [0.8, 0.9, 0.7],
-})
-
-# Z-score正規化
+# ファクター値の正規化（Z-score）
 normalizer = Normalizer(method=NormalizationMethod.ZSCORE)
-normalized = normalizer.normalize(factor_data)
+normalized_scores = normalizer.normalize(per_scores)
+
+# 分位ポートフォリオ分析
+analyzer = QuantileAnalyzer(n_quantiles=5)
+quantile_result = analyzer.analyze(
+    factor_data=normalized_scores,
+    returns=returns_data,
+)
 ```
 
 <!-- END: QUICKSTART -->
@@ -144,97 +167,263 @@ factor/
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 ## 実装状況
 
-| モジュール        | 状態        | ファイル数 | 行数  | 説明                                           |
-| ----------------- | ----------- | ---------- | ----- | ---------------------------------------------- |
-| `types.py`        | ✅ 実装済み | 1          | 272   | 型定義（FactorConfig, FactorResult等）         |
-| `errors.py`       | ✅ 実装済み | 1          | 299   | カスタム例外クラス                             |
-| `enums.py`        | ✅ 実装済み | 1          | 60    | Enum定義（FactorCategory, NormalizationMethod）|
-| `core/`           | ✅ 実装済み | 6          | 1,873 | コアアルゴリズム（Factor基底、正規化、PCA等）  |
-| `factors/macro/`  | ✅ 実装済み | 5          | 941   | マクロファクター（金利、インフレ、質への逃避）|
-| `factors/price/`  | ✅ 実装済み | 3          | 708   | 価格ファクター（モメンタム、リバーサル等）    |
-| `factors/quality/`| ✅ 実装済み | 4          | 934   | クオリティファクター（ROIC、複合等）          |
-| `factors/size/`   | ✅ 実装済み | 1          | 322   | サイズファクター（時価総額）                  |
-| `factors/value/`  | ✅ 実装済み | 2          | 585   | バリューファクター（PER、PBR、複合等）        |
-| `providers/`      | ✅ 実装済み | 3          | 1,012 | データプロバイダー（YFinance、キャッシュ）    |
-| `validation/`     | ✅ 実装済み | 2          | 1,025 | ファクター検証（IC分析、分位分析）            |
-| `utils/`          | ✅ 実装済み | 1          | 275   | ユーティリティ（構造化ロギング）              |
+| モジュール        | 状態        | ファイル数 | 行数 | 説明                                           |
+| ----------------- | ----------- | ---------- | ---- | ---------------------------------------------- |
+| `__init__.py`     | ✅ 実装済み | 1          | 78   | パッケージエントリーポイント                   |
+| `types.py`        | ✅ 実装済み | 1          | 114  | 型定義（FactorConfig, FactorResult等）         |
+| `errors.py`       | ✅ 実装済み | 1          | 127  | カスタム例外クラス                             |
+| `enums.py`        | ✅ 実装済み | 1          | 17   | Enum定義（FactorCategory, NormalizationMethod）|
+| `core/`           | ✅ 実装済み | 7          | 790  | コアアルゴリズム（Factor基底、正規化、PCA等）  |
+| `factors/`        | ✅ 実装済み | 21         | 1,595| ファクター実装（価格、バリュー、クオリティ等）|
+| `providers/`      | ✅ 実装済み | 4          | 441  | データプロバイダー（YFinance、キャッシュ）    |
+| `validation/`     | ✅ 実装済み | 3          | 597  | ファクター検証（IC分析、分位分析）            |
+| `utils/`          | ✅ 実装済み | 2          | 139  | ユーティリティ（構造化ロギング）              |
 
 <!-- END: IMPLEMENTATION -->
 
 <!-- AUTO-GENERATED: API -->
 ## 公開 API
 
-### 主要クラス
+### クイックスタート
 
-#### `Factor` (基底クラス)
-
-全ファクター実装の抽象基底クラス。カスタムファクターを作成する際に継承します。
+パッケージの基本的な使い方:
 
 ```python
-from factor import Factor, FactorCategory
+from factor import YFinanceProvider, ValueFactor
+
+# データプロバイダーを作成
+provider = YFinanceProvider()
+
+# バリューファクターを初期化・計算
+factor = ValueFactor(metric="per", invert=True)
+result = factor.compute(
+    provider=provider,
+    universe=["AAPL", "GOOGL", "MSFT"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+```
+
+### 主要クラス
+
+#### `Factor`
+
+**説明**: 全ファクター実装の抽象基底クラス。カスタムファクターを作成する際に継承します。
+
+**基本的な使い方**:
+
+```python
+from factor import Factor, FactorCategory, YFinanceProvider
 
 class CustomFactor(Factor):
     name = "custom"
-    description = "Custom factor"
+    description = "Custom factor implementation"
     category = FactorCategory.VALUE
 
     def compute(self, provider, universe, start_date, end_date):
         prices = provider.get_prices(universe, start_date, end_date)
         return prices.pct_change()
+
+# 使用例
+provider = YFinanceProvider()
+custom = CustomFactor()
+scores = custom.compute(provider, ["AAPL"], "2024-01-01", "2024-12-31")
 ```
+
+**主な抽象メソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `compute(provider, universe, start_date, end_date)` | ファクター値を計算 | `pd.DataFrame` |
 
 ---
 
 #### `YFinanceProvider`
 
-Yahoo Financeからデータを取得するプロバイダー。
+**説明**: Yahoo Financeから価格・ファンダメンタルデータを取得するプロバイダー。
+
+**基本的な使い方**:
 
 ```python
 from factor import YFinanceProvider
 
 provider = YFinanceProvider()
-prices = provider.get_prices(["AAPL"], "2024-01-01", "2024-12-31")
+
+# 株価データ取得
+prices = provider.get_prices(["AAPL", "GOOGL"], "2024-01-01", "2024-12-31")
+
+# ファンダメンタルデータ取得
+fundamentals = provider.get_fundamentals(["AAPL", "GOOGL"])
 ```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `get_prices(symbols, start, end)` | 株価データ取得 | `pd.DataFrame` |
+| `get_fundamentals(symbols)` | ファンダメンタルデータ取得 | `dict` |
 
 ---
 
 #### `ValueFactor`
 
-バリューファクター（PER、PBR、配当利回り、EV/EBITDA）。
+**説明**: バリューファクター（PER、PBR、配当利回り、EV/EBITDA）を計算。
+
+**基本的な使い方**:
 
 ```python
 from factor import ValueFactor, YFinanceProvider
 
 provider = YFinanceProvider()
-factor = ValueFactor(metric="per", invert=True)
-scores = factor.compute(provider, ["AAPL"], "2024-01-01", "2024-12-31")
+
+# PERファクター（低PERほど高スコア）
+per_factor = ValueFactor(metric="per", invert=True)
+scores = per_factor.compute(
+    provider=provider,
+    universe=["AAPL", "GOOGL", "MSFT"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
 ```
+
+**主なパラメータ**:
+
+- `metric` (必須): "per", "pbr", "dividend_yield", "ev_ebitda"
+- `invert` (デフォルト=False): True の場合、低い値ほど高スコア
 
 ---
 
 #### `MomentumFactor`
 
-モメンタムファクター（過去リターン）。
+**説明**: 過去リターンに基づくモメンタムファクター。
+
+**基本的な使い方**:
 
 ```python
 from factor import MomentumFactor, YFinanceProvider
 
 provider = YFinanceProvider()
-factor = MomentumFactor(lookback_days=252)
-scores = factor.compute(provider, ["AAPL"], "2024-01-01", "2024-12-31")
+
+# 過去12ヶ月（252営業日）のモメンタム
+momentum = MomentumFactor(lookback_days=252)
+scores = momentum.compute(
+    provider=provider,
+    universe=["AAPL", "GOOGL", "MSFT"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
 ```
+
+**主なパラメータ**:
+
+- `lookback_days` (必須): モメンタム計算期間（営業日数）
 
 ---
 
 #### `Normalizer`
 
-ファクター値の正規化（z-score、ランク、パーセンタイル）。
+**説明**: ファクター値を正規化（z-score、ランク、パーセンタイル）。
+
+**基本的な使い方**:
 
 ```python
 from factor import Normalizer, NormalizationMethod
+import pandas as pd
 
+factor_data = pd.DataFrame({
+    "AAPL": [1.2, 1.5, 1.3],
+    "GOOGL": [0.8, 0.9, 0.7],
+})
+
+# Z-score正規化
 normalizer = Normalizer(method=NormalizationMethod.ZSCORE)
 normalized = normalizer.normalize(factor_data)
+```
+
+**主なパラメータ**:
+
+- `method` (必須): `NormalizationMethod.ZSCORE`, `RANK`, `PERCENTILE`
+
+---
+
+#### `QuantileAnalyzer`
+
+**説明**: ファクター値に基づく分位ポートフォリオ分析。
+
+**基本的な使い方**:
+
+```python
+from factor import QuantileAnalyzer
+
+analyzer = QuantileAnalyzer(n_quantiles=5)
+result = analyzer.analyze(
+    factor_data=normalized_scores,
+    returns=returns_data,
+)
+
+# 各分位のリターン統計を確認
+print(result.quantile_returns)
+```
+
+**主なパラメータ**:
+
+- `n_quantiles` (デフォルト=5): 分位数
+
+---
+
+### ファクター実装一覧
+
+#### 価格ファクター
+
+```python
+from factor import (
+    MomentumFactor,      # モメンタム（過去リターン）
+    ReversalFactor,      # リバーサル（短期反転）
+    VolatilityFactor,    # ボラティリティ
+)
+```
+
+#### バリューファクター
+
+```python
+from factor import (
+    ValueFactor,          # バリューファクター（PER、PBR等）
+    CompositeValueFactor, # 複合バリューファクター
+)
+```
+
+#### クオリティファクター
+
+```python
+from factor import (
+    QualityFactor,          # クオリティ（ROE、ROA等）
+    CompositeQualityFactor, # 複合クオリティ
+    ROICFactor,             # ROIC（投下資本利益率）
+    ROICTransitionLabeler,  # ROICラベリング
+)
+```
+
+#### サイズファクター
+
+```python
+from factor import (
+    SizeFactor,  # サイズ（時価総額）
+)
+```
+
+---
+
+### コアツール
+
+```python
+from factor import (
+    Normalizer,         # ファクター正規化
+    Orthogonalizer,     # ファクター直交化
+    YieldCurvePCA,      # イールドカーブPCA分析
+    ReturnCalculator,   # リターン計算
+    ICAnalyzer,         # IC/IR分析
+    QuantileAnalyzer,   # 分位ポートフォリオ分析
+)
 ```
 
 ---
@@ -260,6 +449,8 @@ NormalizationMethod.PERCENTILE  # パーセンタイル正規化
 ---
 
 ### 型定義
+
+データ構造の定義。型ヒントやバリデーションに使用:
 
 ```python
 from factor import (
@@ -297,48 +488,49 @@ from factor import (
 
 #### `get_logger(name: str) -> BoundLogger`
 
-構造化ログ用ロガー取得。
+**説明**: 構造化ロガーを取得。
+
+**使用例**:
 
 ```python
 from factor import get_logger
 
 logger = get_logger(__name__)
 logger.info("factor_initialized", symbols=100)
+logger.warning("insufficient_data", symbol="AAPL", required=252, available=100)
 ```
 
 ---
 
-### 関数
-
 #### `get_registry() -> FactorRegistry`
 
-ファクターレジストリのシングルトンインスタンスを取得。
+**説明**: ファクターレジストリのシングルトンインスタンスを取得。
 
-#### `register_factor(factor_class: type[Factor]) -> type[Factor]`
+**使用例**:
 
-ファクタークラスをレジストリに登録するデコレーター。
+```python
+from factor import get_registry
+
+registry = get_registry()
+all_factors = registry.list_factors()
+```
 
 ---
 
-### その他の実装ファクター
+#### `register_factor(factor_class: type[Factor]) -> type[Factor]`
 
-- `QualityFactor` - クオリティファクター（ROE、ROA等）
-- `CompositeQualityFactor` - 複合クオリティファクター
-- `CompositeValueFactor` - 複合バリューファクター
-- `ROICFactor` - ROIC（投下資本利益率）ファクター
-- `ROICTransitionLabeler` - ROICラベリング
-- `SizeFactor` - サイズファクター（時価総額）
-- `ReversalFactor` - リバーサルファクター（短期反転）
-- `VolatilityFactor` - ボラティリティファクター
+**説明**: カスタムファクタークラスをレジストリに登録するデコレーター。
 
-### その他のツール
+**使用例**:
 
-- `Orthogonalizer` - ファクター直交化
-- `YieldCurvePCA` - イールドカーブPCA分析
-- `ReturnCalculator` - リターン計算
-- `ICAnalyzer` - IC/IR分析
-- `QuantileAnalyzer` - 分位ポートフォリオ分析
-- `Cache` - データキャッシュ
+```python
+from factor import register_factor, Factor
+
+@register_factor
+class CustomFactor(Factor):
+    name = "custom"
+    # ...
+```
 
 <!-- END: API -->
 
@@ -348,7 +540,7 @@ logger.info("factor_initialized", symbols=100)
 | 項目                 | 値    |
 | -------------------- | ----- |
 | Python ファイル数    | 41    |
-| 総行数（実装コード） | 8,425 |
+| 総行数（実装コード） | 3,898 |
 | モジュール数         | 6     |
 | テストファイル数     | 33    |
 | テストカバレッジ     | N/A   |
