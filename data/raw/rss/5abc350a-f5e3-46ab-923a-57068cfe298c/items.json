@@ -3,6 +3,506 @@
   "feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c",
   "items": [
     {
+      "item_id": "a46e5e6f-342b-4613-a80c-bb989cb989f6",
+      "title": "Georgia squatter claims ‘peaceful hostile takeover’ of home as US states move to strengthen owner protections",
+      "link": "https://finance.yahoo.com/news/georgia-squatter-claims-peaceful-hostile-203500919.html",
+      "published": "2026-01-19T20:35:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "454aacc5-21e7-4678-8a0f-e9b309f00a80",
+      "title": "5 Best Value Stocks To Buy Now",
+      "link": "https://finance.yahoo.com/news/5-best-value-stocks-buy-121324573.html",
+      "published": "2026-01-19T12:13:24+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "137931f2-f644-4daf-bdc8-b000dc6cd34d",
+      "title": "Figo pet insurance review 2026: 3.4 out of 5 stars",
+      "link": "https://finance.yahoo.com/personal-finance/insurance/review/figo-pet-insurance-review-205346304.html",
+      "published": "2025-06-04T20:53:46+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "9ce0492f-6188-4e96-ab43-7fe6ea9c1dbe",
+      "title": "What to Expect From Marriott International’s Next Quarterly Earnings Report",
+      "link": "https://finance.yahoo.com/news/expect-marriott-international-next-quarterly-120127091.html",
+      "published": "2026-01-19T12:01:27+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "1698b23c-0959-4ce2-975e-d2fc398ea89c",
+      "title": "What You Need to Know Ahead of American International Group’s Earnings Release",
+      "link": "https://finance.yahoo.com/news/know-ahead-american-international-group-121352877.html",
+      "published": "2026-01-19T12:13:52+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "c1feda21-8427-42c8-b45a-bf3668dbfa63",
+      "title": "Analyst Report: Herbalife Nutrition Ltd",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_3045_AnalystReport_1768932326000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T18:05:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "888b29f9-a0bb-4fff-9ad7-1c19d9a1882c",
+      "title": "What to Expect From Humana’s Next Quarterly Earnings Report",
+      "link": "https://finance.yahoo.com/news/expect-humana-next-quarterly-earnings-115911570.html",
+      "published": "2026-01-19T11:59:11+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "3af3d40b-7a6f-4013-b0a1-faefedd284ce",
+      "title": "The Peter Lynch “Rules” That People Misunderstand",
+      "link": "https://finance.yahoo.com/news/peter-lynch-rules-people-misunderstand-120042964.html",
+      "published": "2026-01-19T12:00:42+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "415757f9-adde-4dcc-9f74-e845dd56d276",
+      "title": "Memory Bottlenecks Cloud NVIDIA’s (NVDA) Latest China Export Approval",
+      "link": "https://finance.yahoo.com/news/memory-bottlenecks-cloud-nvidia-nvda-115923745.html",
+      "published": "2026-01-19T11:59:23+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "de431520-2861-4b9d-9494-f3621d542094",
+      "title": "What You Need To Know Ahead of Baxter International's Earnings Release",
+      "link": "https://finance.yahoo.com/news/know-ahead-baxter-internationals-earnings-115947240.html",
+      "published": "2026-01-19T11:59:47+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "809ed04c-b9fa-483a-8245-afaf4c6268e3",
+      "title": "Apple Inc. (AAPL) Faces Added Uncertainty from Regulatory Scrutiny in India",
+      "link": "https://finance.yahoo.com/news/apple-inc-aapl-faces-added-115314843.html",
+      "published": "2026-01-19T11:53:14+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "a8bc9a22-c81f-491c-afc8-6420bf057eaf",
+      "title": "Analyst Report: PNC Financial Services Group",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_3629_AnalystReport_1768932326000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T18:05:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "d13f07b4-e85b-473e-b0e9-452b96a4eaa2",
+      "title": "Earnings Preview: What to Expect From Pool Corporation's Report",
+      "link": "https://finance.yahoo.com/news/earnings-preview-expect-pool-corporations-114821764.html",
+      "published": "2026-01-19T11:48:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "e9cf7e03-cad8-496e-8e14-92ed5e96caa9",
+      "title": "State Street reports 5% decline in Q4 2025 profit",
+      "link": "https://finance.yahoo.com/news/state-street-reports-5-decline-121120175.html",
+      "published": "2026-01-19T12:11:20+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "f7ccaff3-f485-4343-a99d-d9dc5f6c9dbf",
+      "title": "Here's What to Expect From Newmont's Next Earnings Report",
+      "link": "https://finance.yahoo.com/news/heres-expect-newmonts-next-earnings-114614316.html",
+      "published": "2026-01-19T11:46:14+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "0eddb0e4-c95d-4f38-a4bc-5f47d6dab546",
+      "title": "3 Undervalued Dividend Stocks to Buy in 2026",
+      "link": "https://finance.yahoo.com/news/3-undervalued-dividend-stocks-buy-122620940.html",
+      "published": "2026-01-19T12:26:20+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "856c152e-15ca-4502-bf82-391bb3eb2c1f",
+      "title": "Live Nation Entertainment's Q4 2025 Earnings: What to Expect",
+      "link": "https://finance.yahoo.com/news/live-nation-entertainments-q4-2025-113925207.html",
+      "published": "2026-01-19T11:39:25+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "c6c63f5f-4890-4b7e-9cbb-220f8742b270",
+      "title": "Analyst Report: Fedex Corp",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_2965_AnalystReport_1768932326000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T18:05:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "cd1fe5a2-af45-4ff1-8471-2d21b9518baa",
+      "title": "Market is Undervaluing Uber Technologies’ (UBER) Core Mobility Business, Morgan Stanley Says",
+      "link": "https://finance.yahoo.com/news/market-undervaluing-uber-technologies-uber-113508483.html",
+      "published": "2026-01-19T11:35:08+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "f76369f5-e665-441e-9f1d-21c8f69a076b",
+      "title": "Serbian coffee chain Kafeterija acquires local rival Loft",
+      "link": "https://finance.yahoo.com/news/serbian-coffee-chain-kafeterija-acquires-120957506.html",
+      "published": "2026-01-19T12:09:57+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "53caffc7-f9da-4947-bcf9-23cc6d576244",
+      "title": "Wall Street is Bullish on Vontier Corporation (VNT), Here’s Why",
+      "link": "https://finance.yahoo.com/news/wall-street-bullish-vontier-corporation-122742553.html",
+      "published": "2026-01-19T12:27:42+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "66057d17-2acc-415f-8dc8-a5c708892952",
+      "title": "Here’s What Wall Street Thinks About NICE Ltd (NICE)",
+      "link": "https://finance.yahoo.com/news/wall-street-thinks-nice-ltd-122751268.html",
+      "published": "2026-01-19T12:27:51+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "a82781d3-b04f-4279-8615-c516119e0c9b",
+      "title": "Scotiabank and Wolfe Research Cut Exxon Mobil (XOM) Price Targets",
+      "link": "https://finance.yahoo.com/news/scotiabank-wolfe-research-cut-exxon-122716870.html",
+      "published": "2026-01-19T12:27:16+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "b3cf5e4d-d0ca-4a39-a615-5ffb2932218c",
+      "title": "Weekly Stock List",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_45894_StockPicks_1768912471000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T12:34:31+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "a44640ee-d9e1-4d3b-8065-fe137d6b1439",
+      "title": "Here’s What Wall Street Thinks About Science Applications International Corporation (SAIC)",
+      "link": "https://finance.yahoo.com/news/wall-street-thinks-science-applications-122744427.html",
+      "published": "2026-01-19T12:27:44+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "15911cb8-f2a6-471f-94f5-c45c3b41fa31",
+      "title": "Standard Chartered weighs future of credit card business in India – report",
+      "link": "https://finance.yahoo.com/news/standard-chartered-weighs-future-credit-121601257.html",
+      "published": "2026-01-19T12:16:01+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "2df902bf-3566-475d-84b9-11ca3eeb1fad",
+      "title": "Occidental (OXY) Sells OxyChem, Scotiabank Lowers PT",
+      "link": "https://finance.yahoo.com/news/occidental-oxy-sells-oxychem-scotiabank-122731959.html",
+      "published": "2026-01-19T12:27:31+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "1e1ce719-c5f0-42b4-9ca3-2a743f06094b",
+      "title": "Wall Street is Bullish on TaskUs, Inc (TASK), Here’s Why",
+      "link": "https://finance.yahoo.com/news/wall-street-bullish-taskus-inc-122750781.html",
+      "published": "2026-01-19T12:27:50+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "f1eae2c2-2868-4c5f-9528-d5f329585ea9",
+      "title": "KeyBanc Downgrades EOG Resources (EOG) to Sector Weight, RBC Capital Lowers PT",
+      "link": "https://finance.yahoo.com/news/keybanc-downgrades-eog-resources-eog-122733041.html",
+      "published": "2026-01-19T12:27:33+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "eae2140f-a968-4f7d-ba8a-65b1f0f666d8",
+      "title": "Daily Spotlight: Fed Chatter Impacts Dollar",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_45891_MarketOutlook_1768912398000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T12:33:18+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "40f59a5f-c382-4896-baeb-0af851276e9a",
+      "title": "Here’s What Wall Street Thinks About Dropbox, Inc. (DBX)",
+      "link": "https://finance.yahoo.com/news/wall-street-thinks-dropbox-inc-122745735.html",
+      "published": "2026-01-19T12:27:45+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "8a92e9af-04ee-4e81-a0da-cdda07d728a3",
+      "title": "Andreessen Horowitz Makes a $3 Billion Bet Against the AI Bubble",
+      "link": "https://finance.yahoo.com/news/andreessen-horowitz-makes-3-billion-121031191.html",
+      "published": "2026-01-19T12:10:31+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "f483afec-2686-4526-a529-8e00b2dc102e",
+      "title": "Benchmark and Barclays Maintain Neutral View on Antero Resources (AR)",
+      "link": "https://finance.yahoo.com/news/benchmark-barclays-maintain-neutral-view-122728150.html",
+      "published": "2026-01-19T12:27:28+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "f688a7f1-220c-4d62-b52d-c21f4abddd61",
+      "title": "Analysts Turn More Positive on SLB N.V. (SLB)",
+      "link": "https://finance.yahoo.com/news/analysts-turn-more-positive-slb-122727271.html",
+      "published": "2026-01-19T12:27:27+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "066ad92e-2860-47db-af45-b7378bf64f38",
+      "title": "Benchmark and Jefferies Stay Bullish on Expand Energy (EXE)",
+      "link": "https://finance.yahoo.com/news/benchmark-jefferies-stay-bullish-expand-122721556.html",
+      "published": "2026-01-19T12:27:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "0b644470-e016-45e9-a037-feb732792a1e",
+      "title": "Technical Assessment: Bullish in the Intermediate-Term",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_45890_TechnicalAnalysis_1768912382000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T12:33:02+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "694d5ab4-aa6a-4c7f-bc9a-97fd35a4ecfb",
+      "title": "​Arrow Electronics, Inc. (ARW) Partners With .Lumen",
+      "link": "https://finance.yahoo.com/news/arrow-electronics-inc-arw-partners-122741662.html",
+      "published": "2026-01-19T12:27:41+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "44fece52-d28b-4729-b37f-314e634b89bd",
+      "title": "Tesla (NASDAQ: TSLA) Bull, Base and Bear Price Prediction and Forecast",
+      "link": "https://finance.yahoo.com/news/tesla-nasdaq-tsla-bull-bear-153808849.html",
+      "published": "2026-01-19T12:15:08+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "c3de3558-3bea-4d0d-8c6a-e8721012b09e",
+      "title": "Analysts Stay Positive on Chevron (CVX) Despite Challenges",
+      "link": "https://finance.yahoo.com/news/analysts-stay-positive-chevron-cvx-122718690.html",
+      "published": "2026-01-19T12:27:18+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "b07aec30-ed80-4b40-9e8d-9c2f4d27d005",
+      "title": "BofA Cuts EQT Corporation (EQT) Price Target, Bernstein Slightly Lifts",
+      "link": "https://finance.yahoo.com/news/bofa-cuts-eqt-corporation-eqt-122719524.html",
+      "published": "2026-01-19T12:27:19+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "3779d17f-204e-4cd0-95e5-69b9ad7e5dfa",
+      "title": "Kyndryl Holdings (KD) Announces a Multi-year Partnership With Wayne State University",
+      "link": "https://finance.yahoo.com/news/kyndryl-holdings-kd-announces-multi-122748146.html",
+      "published": "2026-01-19T12:27:48+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "402169f0-b4de-42d3-86f8-38bdb3946604",
+      "title": "Analyst Report: Bank of New York Mellon Corp",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_2777_AnalystReport_1768911501000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T12:18:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "2f542f55-fe72-4ecf-938a-97935f87b327",
+      "title": "Is Kinder Morgan (KMI) One of the Best American Energy Stocks to Buy Now?",
+      "link": "https://finance.yahoo.com/news/kinder-morgan-kmi-one-best-122730887.html",
+      "published": "2026-01-19T12:27:30+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "c08c8c8f-6211-4b02-be83-d1d2b2dc3953",
+      "title": "Can't Choose Between Silver and Gold? These ETFs Hold Both",
+      "link": "https://finance.yahoo.com/news/cant-choose-between-silver-gold-120800710.html",
+      "published": "2026-01-19T12:08:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "50971c48-a0cd-4106-a4ca-39c0cc5bccb6",
+      "title": "Scotiabank Upgrades Cheniere Energy (LNG) to Outperform, Wolfe Research Raises PT",
+      "link": "https://finance.yahoo.com/news/scotiabank-upgrades-cheniere-energy-lng-122722708.html",
+      "published": "2026-01-19T12:27:22+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "e967b440-2551-459d-8439-6226682abeb9",
+      "title": "BofA Downgrades ConocoPhillips (COP), JPMorgan and Piper Sandler Lower PT",
+      "link": "https://finance.yahoo.com/news/bofa-downgrades-conocophillips-cop-jpmorgan-122725612.html",
+      "published": "2026-01-19T12:27:25+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "c48e4f90-8612-4af7-af48-69aa68323137",
+      "title": "DXC Technology Company (DXC) Launches a New Automotive Software Platform",
+      "link": "https://finance.yahoo.com/news/dxc-technology-company-dxc-launches-122747703.html",
+      "published": "2026-01-19T12:27:47+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "ab2fd823-29db-4187-847d-7269aacc3efd",
+      "title": "Analyst Report: M & T Bank Corp",
+      "link": "https://finance.yahoo.com/research/reports/ARGUS_3644_AnalystReport_1768911501000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+      "published": "2026-01-20T12:18:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "ee4e0871-3d42-41bf-9e9a-d8757ae2df08",
+      "title": "Earnings Preview: What to Expect From VICI Properties' Report",
+      "link": "https://finance.yahoo.com/news/earnings-preview-expect-vici-properties-113325801.html",
+      "published": "2026-01-19T11:33:25+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
+      "item_id": "bde90a79-7f7d-41ec-a41b-1f232ef2c054",
+      "title": "SCOR joins insurer consortium for new global AI and data centre cover",
+      "link": "https://finance.yahoo.com/news/scor-joins-insurer-consortium-global-120159968.html",
+      "published": "2026-01-19T12:01:59+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.117708+00:00"
+    },
+    {
       "item_id": "755d7b1d-6f9e-4387-b930-6fc628933849",
       "title": "What to Expect From Eli Lilly’s Q4 2025 Earnings Report",
       "link": "https://finance.yahoo.com/news/expect-eli-lilly-q4-2025-125200633.html",

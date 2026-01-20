@@ -3,6 +3,136 @@
   "feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696",
   "items": [
     {
+      "item_id": "f89133b3-0034-436f-bc45-a708ac8c4917",
+      "title": "Dollar and US stocks fall as Trump says ‘no going back’ on Greenland bid",
+      "link": "https://www.ft.com/content/6292304a-b4b3-4f04-89bb-f05861b40cb8",
+      "published": "2026-01-20T20:33:03+00:00",
+      "summary": "European leaders criticise stance on Arctic island, with Macron taking aim at US president’s ‘useless aggressivity’",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "41cad3c4-a5cd-43b1-bcdf-f95ff278d2be",
+      "title": "US groups delay debt issuance plans as Greenland tensions spook investors",
+      "link": "https://www.ft.com/content/500d9508-72a2-4b04-a225-33adbbf8af78",
+      "published": "2026-01-20T18:52:34+00:00",
+      "summary": "The dollar and Wall Street stocks fell after US president said ‘no going back’ on campaign to control Arctic territory",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "ad98cc69-34d4-45bf-9b05-429937e3add7",
+      "title": "Greenland is ground zero for Arctic ‘Great Game’",
+      "link": "https://www.ft.com/content/3bc80cb4-e08b-427e-81fd-a7ad5689f4a5",
+      "published": "2026-01-20T05:00:14+00:00",
+      "summary": "‘It may sound like American chauvinism . . . and it is. We’re done apologising about that,’ says Trump official",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "e872da57-b774-4236-bb3b-193ef11ff914",
+      "title": "How Trump turned mockery into a weapon of diplomacy",
+      "link": "https://www.ft.com/content/31763f10-62d0-480b-9d4e-76b234daa966",
+      "published": "2026-01-20T14:31:31+00:00",
+      "summary": "US president assails allies with talk of ‘great stupidity’, dog sleds and AI images",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "dfe9b053-e4bb-4f01-811c-d0961ac6b2ef",
+      "title": "Why the Trump administration is going to Davos",
+      "link": "https://www.ft.com/content/a675b8af-46b7-4f93-a616-41f0a002c22e",
+      "published": "2026-01-20T18:06:56+00:00",
+      "summary": "Capitalism has a new sheriff in town",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "714f85a3-ad06-4493-83fe-c78217a8ccc0",
+      "title": "The world’s economy — past, present and future",
+      "link": "https://www.ft.com/content/0a2fadfe-db3e-40c9-8711-4c4072ce3559",
+      "published": "2026-01-20T16:42:38+00:00",
+      "summary": "The US is no longer predictable nor bound by any fundamental principles of action",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "0f5d0dc1-33e4-4e23-a0f5-cc1f6606e116",
+      "title": "Starmer turns away from Trump’s Board of Peace as US-UK tensions mount",
+      "link": "https://www.ft.com/content/159bc866-1f2a-44eb-8bff-ff7c73749def",
+      "published": "2026-01-20T14:49:57+00:00",
+      "summary": "Prime minister unlikely to sign up to body that charges $1bn fee and includes Russian president, officials say",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "e1a842a7-174a-4458-9a96-76b4db09a747",
+      "title": "Trump criticises ‘stupidity’ of UK’s Chagos Islands deal",
+      "link": "https://www.ft.com/content/fc4eda20-0129-4a02-878f-0fcc49a5defe",
+      "published": "2026-01-20T14:28:25+00:00",
+      "summary": "US president says Keir Starmer’s plan to give away territory is ‘weakness’",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "3ece744f-89fb-4c88-8b28-c61f3295a4b1",
+      "title": "Keir Starmer’s leadership under pressure from Angela Rayner and Andy Burnham",
+      "link": "https://www.ft.com/content/309ab2cb-70a2-4dfc-ade5-4a573d137d5e",
+      "published": "2026-01-20T17:35:57+00:00",
+      "summary": "Senior figures from Labour leftwing burnish their profiles with public interventions",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "e8414fc2-8ba4-4b38-abae-a38ab28117b5",
+      "title": "UK would be ‘foolish’ to pursue customs union with EU, business secretary says",
+      "link": "https://www.ft.com/content/73c80adc-776a-4738-950a-9c08ef08d759",
+      "published": "2026-01-20T00:01:10+00:00",
+      "summary": "Peter Kyle warns against ‘simple solutions’ for boosting growth in FT interview",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "87e215da-54ac-4e0c-a38a-d439cdf2aa03",
+      "title": "UK approves China’s ‘mega’ embassy in London",
+      "link": "https://www.ft.com/content/52c04197-4f6c-4a71-9c0f-82fc5eaecf24",
+      "published": "2026-01-20T17:23:24+00:00",
+      "summary": "Ministers give green light to project on edge of City after months of political wrangling",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "c84f5946-6a11-4809-8f66-af22ff89a45e",
+      "title": "Musk asks followers if he should buy Ryanair",
+      "link": "https://www.ft.com/content/c3266418-9035-4fe5-8af7-69c1098ad9bb",
+      "published": "2026-01-20T17:28:39+00:00",
+      "summary": "Tesla boss posts poll on X in escalation of spat with Michael O’Leary over adding Starlink internet to airline’s planes",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
+      "item_id": "f9d6cccb-1f4b-40e0-bb3f-15d560802a21",
+      "title": "Neither Musk nor WiFi would improve Ryanair",
+      "link": "https://www.ft.com/content/32abe3b5-4771-480a-9721-b1bc7a4ba347",
+      "published": "2026-01-20T17:29:19+00:00",
+      "summary": "Need for connectivity tends to grow the longer the flight, weakening the case for the budget airline",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-20T20:55:52.976910+00:00"
+    },
+    {
       "item_id": "3bee788c-1f8e-4acc-a2c5-05dac01e0304",
       "title": "Musk bows to pressure over Grok creating sexualised AI images",
       "link": "https://www.ft.com/content/72c2a5b7-e10d-4e7c-8af0-e95b64d99d79",

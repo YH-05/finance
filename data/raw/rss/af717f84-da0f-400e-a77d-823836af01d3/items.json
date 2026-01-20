@@ -3,6 +3,206 @@
   "feed_id": "af717f84-da0f-400e-a77d-823836af01d3",
   "items": [
     {
+      "item_id": "8ff8e415-6a52-42b7-bda4-5819d39e6dc2",
+      "title": "UStrive security lapse exposed personal data of its users, including children",
+      "link": "https://techcrunch.com/2026/01/20/ustrive-security-lapse-exposed-personal-data-of-its-users-including-children/",
+      "published": "2026-01-20T20:47:47+00:00",
+      "summary": "The online mentoring site UStrive exposed email addresses, phone numbers, and other non-public information to other logged-in users. The nonprofit told TechCrunch that the issue is now fixed, but wouldn't commit to alerting affected individuals.",
+      "content": null,
+      "author": "Zack Whittaker",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "5a3cabce-dfe8-4416-a021-4909045ff71e",
+      "title": "Ethernovia raises $90M as investors rush to fund ‘physical AI’",
+      "link": "https://techcrunch.com/2026/01/20/ethernovia-raises-90m-as-investors-rush-to-fund-physical-ai/",
+      "published": "2026-01-20T20:27:30+00:00",
+      "summary": "The automotive-focused company is looking to expand its Ethernet-based processors to fields like robotics.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "5084939a-2e0a-4a8d-b741-37bcb0d74216",
+      "title": "Amazon CEO Andy Jassy says tariffs are starting to drive up product prices",
+      "link": "https://techcrunch.com/2026/01/20/amazon-ceo-andy-jassy-says-tariffs-are-starting-to-drive-up-product-prices/",
+      "published": "2026-01-20T19:50:14+00:00",
+      "summary": "Jassy said on Tuesday that while Amazon is trying to keep prices low, price hikes may be unavoidable in some cases.",
+      "content": null,
+      "author": "Aisha Malik",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "6f014cec-9159-4419-a906-ab9e1745eb34",
+      "title": "ICE becomes one of the most-blocked accounts on Bluesky after its verification",
+      "link": "https://techcrunch.com/2026/01/20/ice-becomes-one-of-the-most-blocked-accounts-on-bluesky-after-its-verification/",
+      "published": "2026-01-20T18:01:48+00:00",
+      "summary": "ICE has been verified on Bluesky, and quickly becomes one of the top most-blocked accounts.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "0c3fc729-4867-43ad-8c52-b334838a19e6",
+      "title": "Retail startup Another raises a $2.5M seed to help sell excess inventory",
+      "link": "https://techcrunch.com/2026/01/20/retail-startup-another-raises-a-2-5m-seed-to-help-sell-excess-inventory/",
+      "published": "2026-01-20T18:00:52+00:00",
+      "summary": "Another raises a $2.5 million seed round led by Anthemis FIL and Westbound to help retailers with off-channel inventory.",
+      "content": null,
+      "author": "Dominic-Madori Davis",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "4b2871f7-e8a1-4b60-a34d-64f29187878e",
+      "title": "One of the first alternative app stores in the EU is shutting down",
+      "link": "https://techcrunch.com/2026/01/20/one-of-the-first-alternative-app-stores-in-the-eu-is-shutting-down/",
+      "published": "2026-01-20T16:22:53+00:00",
+      "summary": "Setapp Mobile, one of the first alternative app stores in the EU, is shutting down next month, citing Apple's ever-changing terms.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "65e89340-78da-4559-ae7b-b220fe8f6bf3",
+      "title": "Grubhub parent acquires restaurant rewards startup Claim",
+      "link": "https://techcrunch.com/2026/01/20/grubhub-parent-acquires-restaurant-rewards-startup-claim/",
+      "published": "2026-01-20T16:22:31+00:00",
+      "summary": "The acquisition will give restaurants on Grubhub access to Claim’s customer acquisition and retention tools, while Grubhub diners can receive rewards.",
+      "content": null,
+      "author": "Aisha Malik",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "fd70d634-c79f-47f9-94d5-659af3ea82e3",
+      "title": "Humans&, a ‘human-centric’ AI startup founded by Anthropic, xAI, Google alums, raised $480M seed round",
+      "link": "https://techcrunch.com/2026/01/20/humans-a-human-centric-ai-startup-founded-by-anthropic-xai-google-alums-raised-480m-seed-round/",
+      "published": "2026-01-20T16:00:57+00:00",
+      "summary": "Humans&#038;, a startup that believes AI should empower people, not replace them, has reportedly raised a $480 million seed round at a $4.48 billion valuation.",
+      "content": null,
+      "author": "Rebecca Bellan",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "3cb3520a-7850-4004-ab85-6769d9429fe7",
+      "title": "Eat App wants a bite of India’s restaurant reservation business with an acquisition and Swiggy partnership",
+      "link": "https://techcrunch.com/2026/01/20/eat-app-wants-a-bite-of-indias-restaurant-reservation-business-with-an-acquisition-and-swiggy-partnership/",
+      "published": "2026-01-20T16:00:00+00:00",
+      "summary": "Eat App is making India its central focus to market its reservation and dine-in growth suite.",
+      "content": null,
+      "author": "Ivan Mehta",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "501b9ab8-b548-480c-87be-01ce9e3309e7",
+      "title": "SpaceX didn’t properly inspect crane before collapse at Starbase, OSHA says",
+      "link": "https://techcrunch.com/2026/01/20/spacex-didnt-properly-inspect-crane-before-collapse-at-starbase-osha-says/",
+      "published": "2026-01-20T15:55:45+00:00",
+      "summary": "The federal safety agency has hit SpaceX with a $115,850 fine after finding seven \"serious\" violations during its investigation.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "a50ed359-4be6-4208-8aba-3b3a025f4ca3",
+      "title": "Netflix is rolling out a live voting feature",
+      "link": "https://techcrunch.com/2026/01/20/netflix-is-rolling-out-a-live-voting-feature/",
+      "published": "2026-01-20T15:00:00+00:00",
+      "summary": "Netflix said that the feature will work globally, and the platform will tally votes in real time. Viewers will have a limited time to vote, and once that time has lapsed, additional votes won't count. That means if you're watching the show later, you can't participate in the voting.",
+      "content": null,
+      "author": "Ivan Mehta",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "c5de09c6-7638-43b0-bf4e-96b2897474de",
+      "title": "Netflix revises offer to pay all cash for Warner Bros. to fend off Paramount",
+      "link": "https://techcrunch.com/2026/01/20/netflix-revises-offer-to-pay-all-cash-for-warner-bros-to-stave-off-paramount/",
+      "published": "2026-01-20T14:00:40+00:00",
+      "summary": "However, the streaming giant is still offering the same $27.75 the companies had agreed on for WBD's movie studio and streaming assets, and the deal continues to value the company at $82.7 billion.",
+      "content": null,
+      "author": "Ram Iyer",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "f78388fa-8910-4e00-83e1-c814918479f4",
+      "title": "Indian vibe-coding startup Emergent triples valuation to $300M with $70M fundraise",
+      "link": "https://techcrunch.com/2026/01/20/indian-vibe-coding-startup-emergent-raises-70m-at-300m-valuation-from-softbank-khosla-ventures/",
+      "published": "2026-01-20T13:50:09+00:00",
+      "summary": "The funding comes as the startup claims it has scaled ARR to $50 million and is targeting $100 million by April 2026.",
+      "content": null,
+      "author": "Jagmeet Singh",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "1b6887f4-7b05-4cf9-9c55-95351fc12aeb",
+      "title": "Meta’s Oversight Board takes up permanent bans in landmark case",
+      "link": "https://techcrunch.com/2026/01/20/metas-oversight-board-is-taking-on-its-first-case-focused-the-companys-ability-to-disable-accounts/",
+      "published": "2026-01-20T11:00:00+00:00",
+      "summary": "For the first time, Meta's Oversight Board is looking for specific policy recommendations around disabled accounts.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "c24a9cfd-5c8c-43e9-8bac-e48e9c67a34f",
+      "title": "Everstone combines Wingify and ABTasty for $100M+ digital experience optimization platform",
+      "link": "https://techcrunch.com/2026/01/20/everstone-combines-wingify-and-ab-tasty-for-100m-digital-experience-optimization-platform/",
+      "published": "2026-01-20T08:00:00+00:00",
+      "summary": "The combined business will serve more than 4,000 customers globally and surpass $100 million in annual revenue.",
+      "content": null,
+      "author": "Jagmeet Singh",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "10afd42f-0b51-45d9-95b6-4ca7acb4b7ee",
+      "title": "Here are the 55 US AI startups that raised $100M or more in 2025",
+      "link": "https://techcrunch.com/2026/01/19/here-are-the-49-us-ai-startups-that-have-raised-100m-or-more-in-2025/",
+      "published": "2026-01-19T18:06:34+00:00",
+      "summary": "Last year was monumental for the AI industry in the U.S. and beyond. How will 2025 compare?",
+      "content": null,
+      "author": "Rebecca Szkutak",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "0e5fe174-728c-4e99-9801-6680df946183",
+      "title": "Well, there goes the metaverse!",
+      "link": "https://techcrunch.com/2026/01/19/well-there-goes-the-metaverse/",
+      "published": "2026-01-19T16:00:00+00:00",
+      "summary": "The metaverse is on its last legs as VR is eclipsed by AI. But that's not the only thing that went wrong for Meta's VR ambitions.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "f1f672f7-854f-4fa1-8052-b9a77fd764d8",
+      "title": "Rogue agents and shadow AI: Why VCs are betting big on AI security",
+      "link": "https://techcrunch.com/2026/01/19/rogue-agents-and-shadow-ai-why-vcs-are-betting-big-on-ai-security/",
+      "published": "2026-01-19T16:00:00+00:00",
+      "summary": "Misaligned agents are just one layer of the AI security challenge that startup Witness AI is trying to solve. It detects employee use of unapproved tools, blocks attacks, and ensures compliance.",
+      "content": null,
+      "author": "Rebecca Bellan",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "1690751b-672c-4d76-b6f9-0cd1e6559247",
+      "title": "Looking ahead to 2026: What’s next for Startup Battlefield 200",
+      "link": "https://techcrunch.com/2026/01/19/looking-ahead-to-2026-whats-next-for-startup-battlefield-200/",
+      "published": "2026-01-19T15:00:00+00:00",
+      "summary": "See what to expect for Startup Battlefield 200 in 2026, the ultimate startup pitch competition on the global stage at TechCrunch Disrupt. Join the mailing list to be the first to know when applications drop.",
+      "content": null,
+      "author": "Isabelle Johannessen",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
+      "item_id": "ba89ca32-d1e4-4818-89b5-3afa317d3d33",
+      "title": "BioticsAI, which won Disrupt’s Battlefield competition in 2023, gains FDA approval for its AI-powered fetal ultrasound product",
+      "link": "https://techcrunch.com/2026/01/19/biotics-ai-battlefield-2023-gains-fda-approval-for-its-ai-powered-fetal-ultrasound-product/",
+      "published": "2026-01-19T15:00:00+00:00",
+      "summary": "TechCrunch Disrupt Battlefield 2023 winner BioticsAI announced on Monday that it has received FDA clearance for its AI software that helps detect fetal abnormalities in ultrasound images.",
+      "content": null,
+      "author": "Dominic-Madori Davis",
+      "fetched_at": "2026-01-20T20:55:51.654041+00:00"
+    },
+    {
       "item_id": "d8ac994d-217d-4b0d-a3e2-91c0209cc3ba",
       "title": "The FTC’s data-sharing order against GM is finally settled",
       "link": "https://techcrunch.com/2026/01/14/the-ftcs-data-sharing-order-against-gm-is-finally-settled/",
