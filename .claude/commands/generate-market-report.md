@@ -1,11 +1,14 @@
 ---
 description: 週次マーケットレポートを自動生成します（データ収集→ニュース検索→レポート作成）
-argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD]
+argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD] [--weekly-comment]
 ---
 
 # /generate-market-report - マーケットレポート生成
 
 週次マーケットレポートを自動生成するコマンドです。
+
+`--weekly-comment` オプションを使用すると、火曜〜火曜の期間を対象とした
+3000字以上の詳細なマーケットコメントを生成します。
 
 ## 使用例
 
@@ -18,6 +21,12 @@ argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD]
 
 # 特定の日付でレポート生成
 /generate-market-report --date 2026-01-19
+
+# 週次コメント生成モード（推奨: 水曜日に実行）
+/generate-market-report --weekly-comment
+
+# 週次コメント生成（日付指定）
+/generate-market-report --weekly-comment --date 2026-01-22
 ```
 
 ## 入力パラメータ
@@ -26,6 +35,7 @@ argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD]
 |-----------|------|-----------|------|
 | --output | - | articles/market_report_{date} | 出力ディレクトリ |
 | --date | - | 今日の日付 | レポート対象日（YYYY-MM-DD形式） |
+| --weekly-comment | - | false | 週次コメント生成モード（火曜〜火曜の期間を対象） |
 
 ## 処理フロー
 
@@ -491,21 +501,301 @@ ${OUTPUT_DIR}/02_edit/report.md
 
 ---
 
+# 週次コメントモード（--weekly-comment）
+
+`--weekly-comment` オプションを指定すると、火曜〜火曜の期間を対象とした
+詳細なマーケットコメント（3000字以上）を生成します。
+
+## 週次コメント処理フロー
+
+```
+/generate-market-report --weekly-comment
+    │
+    ├── Phase 1: 初期化
+    │   ├── 対象期間の自動計算（火曜〜火曜）
+    │   │   └── 水曜日実行: 前週火曜〜当週火曜
+    │   └── 出力ディレクトリ作成
+    │       └── articles/weekly_comment_{YYYYMMDD}/
+    │
+    ├── Phase 2: データ収集
+    │   ├── Pythonスクリプト実行（weekly_comment_data.py）
+    │   ├── indices.json: S&P500, RSP, VUG, VTV
+    │   ├── mag7.json: MAG7 + SOX
+    │   └── sectors.json: 上位・下位3セクター
+    │
+    ├── Phase 3: ニュース収集（3サブエージェント並列）
+    │   ├── weekly-comment-indices-fetcher（指数背景）
+    │   ├── weekly-comment-mag7-fetcher（MAG7背景）
+    │   └── weekly-comment-sectors-fetcher（セクター背景）
+    │
+    ├── Phase 4: コメント生成（3000字以上）
+    │   ├── テンプレート読み込み
+    │   │   └── template/market_report/weekly_comment_template.md
+    │   ├── データ埋め込み
+    │   ├── ニュースコンテキスト統合
+    │   └── Markdownファイル出力
+    │
+    └── Phase 5: 出力
+        └── articles/weekly_comment_{date}/02_edit/weekly_comment.md
+```
+
+## 週次コメント出力ディレクトリ構造
+
+```
+articles/weekly_comment_{YYYYMMDD}/
+├── data/
+│   ├── indices.json        # 指数騰落率（S&P500, RSP, VUG, VTV）
+│   ├── mag7.json           # MAG7 + SOX騰落率
+│   ├── sectors.json        # セクター分析（上位・下位3）
+│   ├── metadata.json       # 期間情報
+│   └── news_context.json   # ニュース検索結果
+└── 02_edit/
+    └── weekly_comment.md   # 週次コメント（3000字以上）
+```
+
+## 週次コメント Phase 1: 初期化（詳細）
+
+### 1.1 対象期間の自動計算
+
+```python
+from market_analysis.utils.date_utils import calculate_weekly_comment_period
+
+# 例: 2026/1/22（水曜日）に実行した場合
+period = calculate_weekly_comment_period()
+# period["start"] = 2026-01-14 (火曜日)
+# period["end"] = 2026-01-21 (火曜日)
+# period["report_date"] = 2026-01-22 (水曜日)
+```
+
+### 1.2 出力ディレクトリ作成
+
+```bash
+# デフォルトパス
+OUTPUT_DIR="articles/weekly_comment_${REPORT_DATE}"
+
+# 構造作成
+mkdir -p "${OUTPUT_DIR}/data"
+mkdir -p "${OUTPUT_DIR}/02_edit"
+```
+
+## 週次コメント Phase 2: データ収集（詳細）
+
+### 2.1 Pythonスクリプト実行
+
+```bash
+uv run python scripts/weekly_comment_data.py \
+    --start ${START_DATE} \
+    --end ${END_DATE} \
+    --output "${OUTPUT_DIR}/data"
+```
+
+### 2.2 出力データ形式
+
+#### indices.json
+```json
+{
+  "as_of": "2026-01-21",
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "indices": [
+    {"ticker": "^GSPC", "name": "S&P 500", "weekly_return": 0.025},
+    {"ticker": "RSP", "name": "S&P 500 Equal Weight", "weekly_return": 0.018},
+    {"ticker": "VUG", "name": "Vanguard Growth ETF", "weekly_return": 0.032},
+    {"ticker": "VTV", "name": "Vanguard Value ETF", "weekly_return": 0.012}
+  ]
+}
+```
+
+#### mag7.json
+```json
+{
+  "as_of": "2026-01-21",
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "mag7": [
+    {"ticker": "TSLA", "name": "Tesla", "weekly_return": 0.037},
+    ...
+  ],
+  "sox": {"ticker": "^SOX", "name": "SOX Index", "weekly_return": 0.031}
+}
+```
+
+#### sectors.json
+```json
+{
+  "as_of": "2026-01-21",
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "top_sectors": [...],
+  "bottom_sectors": [...],
+  "all_sectors": [...]
+}
+```
+
+## 週次コメント Phase 3: ニュース収集（詳細）
+
+### 3.1 サブエージェント並列実行
+
+3つのサブエージェントを**並列**で実行:
+
+```python
+# 並列実行（Task tool を複数同時呼び出し）
+Task(
+    subagent_type="weekly-comment-indices-fetcher",
+    description="指数ニュース収集",
+    prompt="...",
+    run_in_background=True
+)
+
+Task(
+    subagent_type="weekly-comment-mag7-fetcher",
+    description="MAG7ニュース収集",
+    prompt="...",
+    run_in_background=True
+)
+
+Task(
+    subagent_type="weekly-comment-sectors-fetcher",
+    description="セクターニュース収集",
+    prompt="...",
+    run_in_background=True
+)
+```
+
+### 3.2 各サブエージェントへの入力
+
+```json
+{
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "data_file": "articles/weekly_comment_20260122/data/indices.json"
+}
+```
+
+### 3.3 ニュースコンテキスト統合
+
+```json
+// news_context.json
+{
+  "generated_at": "2026-01-22T09:00:00+09:00",
+  "indices": {
+    "market_sentiment": "bullish",
+    "key_drivers": [...],
+    "commentary_draft": "..."
+  },
+  "mag7": {
+    "mag7_analysis": [...],
+    "sox_analysis": {...},
+    "commentary_draft": "..."
+  },
+  "sectors": {
+    "top_sectors_analysis": [...],
+    "bottom_sectors_analysis": [...],
+    "commentary_draft": {...}
+  }
+}
+```
+
+## 週次コメント Phase 4: コメント生成（詳細）
+
+### 4.1 テンプレート読み込み
+
+```bash
+TEMPLATE="template/market_report/weekly_comment_template.md"
+```
+
+### 4.2 プレースホルダー置換
+
+| プレースホルダー | 値の例 |
+|-----------------|--------|
+| `{report_date_formatted}` | `2026/1/22(Wed)` |
+| `{end_date_formatted}` | `1/21` |
+| `{spx_return}` | `+2.50%` |
+| `{rsp_return}` | `+1.80%` |
+| `{vug_return}` | `+3.20%` |
+| `{vtv_return}` | `+1.20%` |
+| `{indices_comment}` | サブエージェント生成テキスト |
+| `{mag7_table}` | MAG7テーブル（Markdown形式） |
+| `{mag7_comment}` | サブエージェント生成テキスト |
+| `{top_sectors_table}` | 上位セクターテーブル |
+| `{top_sectors_comment}` | サブエージェント生成テキスト |
+| `{bottom_sectors_table}` | 下位セクターテーブル |
+| `{bottom_sectors_comment}` | サブエージェント生成テキスト |
+
+### 4.3 出力文字数目標
+
+| セクション | 最低文字数 |
+|-----------|-----------|
+| 指数コメント | 500字 |
+| MAG7コメント | 800字 |
+| 上位セクターコメント | 400字 |
+| 下位セクターコメント | 400字 |
+| 今後の材料 | 200字 |
+| **合計** | **3000字以上** |
+
+## 週次コメント出力例
+
+```markdown
+# 2026/1/22(Wed) Weekly Comment
+
+## Indices (AS OF 1/21)
+
+| 指数 | 週間リターン |
+|------|-------------|
+| S&P 500 | +2.50% |
+| 等ウェイト (RSP) | +1.80% |
+| グロース (VUG) | +3.20% |
+| バリュー (VTV) | +1.20% |
+
+外株です。S&P500指数は週間+2.50%上昇しました。市場全体は...
+（500字以上のコメント）
+
+## Magnificent 7
+
+| 銘柄 | 週間リターン |
+|------|-------------|
+| Tesla | +3.70% |
+| NVIDIA | +1.90% |
+...
+
+MAG7では、TSLAが+3.70%で週間トップパフォーマーとなりました...
+（800字以上のコメント）
+
+## セクター別パフォーマンス
+
+### 上位3セクター
+（400字以上のコメント）
+
+### 下位3セクター
+（400字以上のコメント）
+
+## 今後の材料
+（200字以上のコメント）
+```
+
+---
+
 ## 制約事項
 
 1. **データソース**: Yahoo Finance APIの制限により、リアルタイムデータではなく前日終値ベース
 2. **ニュース検索**: RSS MCP は登録済みフィード（33件）のみ検索可能
 3. **決算データ**: earnings.json は今後2週間分の主要企業のみ
 4. **レポート言語**: 日本語での出力を前提
+5. **週次コメント期間**: 火曜〜火曜の7日間（水曜日に実行推奨）
 
 ---
 
 ## 関連リソース
 
 - **Pythonスクリプト**: `scripts/market_report_data.py`
+- **週次コメントスクリプト**: `scripts/weekly_comment_data.py`
 - **テンプレート**: `template/market_report/02_edit/first_draft.md`
+- **週次コメントテンプレート**: `template/market_report/weekly_comment_template.md`
 - **サンプルレポート**: `template/market_report/sample/20251210_weekly_comment.md`
 - **データスキーマ**: `data/schemas/`
+- **日付ユーティリティ**: `src/market_analysis/utils/date_utils.py`
+
+## 週次コメント用サブエージェント
+
+- **指数ニュース収集**: `.claude/agents/weekly-comment-indices-fetcher.md`
+- **MAG7ニュース収集**: `.claude/agents/weekly-comment-mag7-fetcher.md`
+- **セクターニュース収集**: `.claude/agents/weekly-comment-sectors-fetcher.md`
 
 ## 関連コマンド
 
