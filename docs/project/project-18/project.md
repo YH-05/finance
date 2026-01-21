@@ -28,7 +28,7 @@
 |---|--------|------|----------|-------|
 | 0.1 | GitHub Project「System Update」の作成 | なし | Done | - |
 | 0.2 | スキル標準構造テンプレートの作成 | なし | Done | [#598](https://github.com/YH-05/finance/issues/598) |
-| 0.3 | スキルプリロード仕様書の作成 | 0.2 | Todo | [#599](https://github.com/YH-05/finance/issues/599) |
+| 0.3 | スキルプリロード仕様書の作成 | 0.2 | Done | [#599](https://github.com/YH-05/finance/issues/599) |
 | 0.4 | エージェントへのスキル参照パターンの確定 | 0.3 | Todo | [#600](https://github.com/YH-05/finance/issues/600) |
 
 ---
