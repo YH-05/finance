@@ -6,7 +6,7 @@ import yfinance as yf
 from pandas import DataFrame
 from rich.console import Console
 
-from src.market_report import data_fetch
+from src.market_analysis.dev import data_fetch
 
 
 class MagnificentSevenAnalyzer:

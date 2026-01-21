@@ -1,0 +1,450 @@
+# =============================================================================
+# コード分析レポート
+# =============================================================================
+# 対象: /Users/yukihata/Desktop/finance/src/market_analysis/dev/analysis.py
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# メタデータ
+# -----------------------------------------------------------------------------
+metadata:
+  generated_at: "2026-01-21 12:00:00"
+  target: "/Users/yukihata/Desktop/finance/src/market_analysis/dev/analysis.py"
+  analysis_modes:
+    - code
+    - arch
+    - security
+    - perf
+  depth: "standard"
+  command: "/analyze --all src/market_analysis/dev/analysis.py"
+
+# -----------------------------------------------------------------------------
+# サマリー
+# -----------------------------------------------------------------------------
+summary:
+  total_files: 1
+  total_lines: 126
+  total_functions: 6
+  total_classes: 3
+
+# -----------------------------------------------------------------------------
+# スコア (0-100)
+# -----------------------------------------------------------------------------
+scores:
+  code_quality: 55
+  architecture: 50
+  security: 70
+  performance: 45
+  overall: 55
+
+# =============================================================================
+# コード品質分析
+# =============================================================================
+code_quality:
+  # 複雑性メトリクス
+  complexity:
+    average: 2.5
+    max: 4
+    max_function: "get_all_sectors_top_companies"
+    high_complexity_functions: []
+    # 注: 全関数は低複雑度（CC < 10）
+
+  # コード重複
+  duplication:
+    rate: "15%"
+    locations:
+      - files:
+          - "analysis.py:28-29"
+          - "analysis.py:69-70"
+        lines: "2"
+        description: "YfinanceFetcher インスタンス生成と get_performance 呼び出しの重複パターン"
+
+  # カバレッジ
+  type_hint_coverage: "40%"
+  docstring_coverage: "50%"
+
+  # 命名規則
+  naming_conventions:
+    compliant: false
+    issues:
+      - id: "NAME-001"
+        location: "analysis.py:28, 69"
+        description: "変数名 'yf_fethcer' にタイポ。正しくは 'yf_fetcher'"
+        severity: "medium"
+      - id: "NAME-002"
+        location: "analysis.py:15, 39, 85"
+        description: "__init__ メソッドに戻り値型ヒント (-> None) がない"
+        severity: "low"
+      - id: "NAME-003"
+        location: "analysis.py:27, 67, 101, 109, 118"
+        description: "関数パラメータおよび戻り値に型ヒントが不完全"
+        severity: "medium"
+
+  # 長い関数 (50行以上)
+  long_functions: []
+  # 注: 全関数は50行未満
+
+  # 追加の品質問題
+  additional_issues:
+    - id: "QUAL-001"
+      location: "analysis.py:9"
+      description: "不正なインポートパス 'from src.market_report import data_fetch'。'src.' プレフィックスは本番環境で動作しない可能性あり"
+      severity: "high"
+      recommendation: "相対インポート 'from . import data_fetch' または 'from market_analysis.dev import data_fetch' に修正"
+    - id: "QUAL-002"
+      location: "analysis.py:3"
+      description: "未使用のインポート 'curl_cffi'（TopCompaniesAnalyzer でのみ使用だが、curl_cffi.requests.Session として使用）"
+      severity: "low"
+    - id: "QUAL-003"
+      location: "analysis.py:105"
+      description: "コメントに誤った型無視指示 '# ty:ignore[invalid-assignment]'。正しくは '# type: ignore'"
+      severity: "low"
+
+# =============================================================================
+# アーキテクチャ分析
+# =============================================================================
+architecture:
+  layer_structure: "dev/ ディレクトリ内の開発中コード。正式なレイヤー構造には従っていない"
+
+  # クラス責務分析
+  class_responsibilities:
+    MagnificentSevenAnalyzer:
+      role: "Magnificent 7銘柄のパフォーマンス分析"
+      methods: 2
+      cohesion: "高"
+      evaluation: "単一責務原則に従っている"
+      issues: []
+
+    SectorAnalyzer:
+      role: "S&P500セクターETFのパフォーマンス分析"
+      methods: 2
+      cohesion: "高"
+      evaluation: "単一責務原則に従っている"
+      issues:
+        - "sector_map_en と sector_etf_tickers に重複情報がある"
+
+    TopCompaniesAnalyzer:
+      role: "セクター別トップ企業の取得"
+      methods: 3
+      cohesion: "高"
+      evaluation: "単一責務原則に従っているが、セッション管理が改善可能"
+      issues:
+        - "セッション管理がクラス内に閉じ込められており、再利用性が低い"
+
+  # 依存関係
+  circular_dependencies: false
+  problematic_dependencies:
+    - source: "analysis.py"
+      target: "src.market_report.data_fetch"
+      reason: "'src.' プレフィックスは不正なインポートパス。market_report ディレクトリは存在しない"
+    - source: "analysis.py"
+      target: "data_fetch.YfinanceFethcer"
+      reason: "data_fetch.py 内のクラス名にもタイポがある（Fethcer → Fetcher）"
+
+  # 設計パターン
+  design_patterns:
+    used:
+      - name: "Analyzer パターン（独自）"
+        location: "各クラス"
+        evaluation: "一貫した設計だが、共通インターフェースがない"
+    recommended:
+      - name: "Strategy パターン"
+        target: "YfinanceFetcher の取得ロジック"
+        reason: "異なる期間・間隔での取得戦略を柔軟に切り替え可能にする"
+      - name: "Template Method パターン"
+        target: "各 Analyzer クラス"
+        reason: "共通の分析フローを抽象化し、具体的な処理をサブクラスで実装"
+      - name: "Dependency Injection"
+        target: "YfinanceFethcer のインスタンス化"
+        reason: "各 Analyzer が YfinanceFethcer を直接生成しているため、テスト困難"
+
+# =============================================================================
+# セキュリティ分析
+# =============================================================================
+security:
+  critical_issues: []
+  high_issues: []
+
+  medium_issues:
+    - id: "SEC-001"
+      category: "外部依存"
+      location: "analysis.py:86"
+      description: "curl_cffi.requests.Session で 'safari15_5' を偽装している。このブラウザ偽装は利用規約違反の可能性"
+      evidence: "impersonate='safari15_5'"
+      recommendation: "yfinance の公式推奨方法を確認し、適切なセッション設定を使用"
+      owasp: "N/A"
+
+  low_issues:
+    - id: "SEC-002"
+      category: "エラー露出"
+      location: "analysis.py:全体"
+      description: "例外処理が実装されていない。API エラー時にスタックトレースが露出する可能性"
+      evidence: "try-except ブロックなし"
+      recommendation: "外部 API 呼び出しには try-except を実装し、適切なエラーハンドリングを追加"
+      owasp: "A09:2021 - Security Logging and Monitoring Failures"
+
+  info:
+    - id: "SEC-INFO-001"
+      description: "外部 API (yfinance) への依存。API の可用性やレート制限に注意が必要"
+      mitigation: "リトライロジックとキャッシュの実装を推奨"
+
+  # 入力検証
+  input_validation:
+    status: "未実装"
+    validated_inputs: []
+    unvalidated_inputs:
+      - "performance_period パラメータ（文字列として受け取り、そのまま使用）"
+      - "sector パラメータ（文字列として受け取り、そのまま使用）"
+
+# =============================================================================
+# パフォーマンス分析
+# =============================================================================
+performance:
+  # アルゴリズム複雑度
+  quadratic_or_worse_algorithms: 0
+
+  # メモリ関連
+  memory_concerns:
+    - id: "PERF-001"
+      location: "analysis.py:111-114"
+      description: "ループ内で DataFrame を append してから pd.concat。非効率なメモリ使用"
+      impact: "セクター数が増えるとメモリ使用量とGCオーバーヘッドが増大"
+      recommendation: |
+        リスト内包表記でDataFrameリストを構築し、最後に一度だけconcatする:
+        top_companies = [self.get_sector_top_companies(sector) for sector in self.sectors]
+        return pd.concat(top_companies)
+
+  # I/O操作
+  io_operations:
+    - id: "PERF-002"
+      location: "analysis.py:28-29, 69-70"
+      description: "各メソッド呼び出しで YfinanceFethcer を新規インスタンス化し、API呼び出しを実行"
+      impact: "同一データの重複取得によるネットワーク遅延とAPI負荷"
+      current_mitigation: "なし"
+      recommendation: |
+        - YfinanceFethcer をクラスレベルでインスタンス化し再利用
+        - データのキャッシュ機構を実装
+        - 依存性注入により外部からフェッチャーを渡す
+    - id: "PERF-003"
+      location: "analysis.py:101-107, 109-115"
+      description: "get_all_sectors_top_companies で11回の逐次 API 呼び出し"
+      impact: "ネットワーク遅延が累積し、実行時間が大幅に増加"
+      current_mitigation: "なし"
+      recommendation: |
+        - concurrent.futures.ThreadPoolExecutor による並列取得
+        - asyncio による非同期取得
+        - バッチ取得が可能な場合はまとめて取得
+
+  # 非効率なパターン
+  inefficient_patterns:
+    - id: "PERF-004"
+      location: "analysis.py:75-77"
+      description: "DataFrame のスライシングでマジックナンバー [0, 1, 2, -3, -2, -1] を使用"
+      impact: "可読性低下、保守性低下"
+      current_count: 1
+      recommendation: "head(3) と tail(3) を使用するか、定数として定義"
+
+  # キャッシング機会
+  caching_opportunities:
+    - location: "get_performance メソッド"
+      description: "同一期間・銘柄のパフォーマンスデータをキャッシュ可能"
+      status: "未対応"
+    - location: "get_sector_top_companies メソッド"
+      description: "セクター別トップ企業データは日次更新程度。キャッシュ可能"
+      status: "未対応"
+
+  # DataFrame操作統計
+  dataframe_operations:
+    copy_calls: 0
+    concat_calls: 1
+    dropna_calls: 0
+    fillna_calls: 0
+    pivot_calls: 1
+    sort_values_calls: 2
+    iloc_calls: 1
+
+# =============================================================================
+# 発見事項 (重大度別)
+# =============================================================================
+findings:
+  critical:
+    - id: "ANA-001"
+      category: "アーキテクチャ"
+      location: "analysis.py:9"
+      description: "不正なインポートパス 'from src.market_report import data_fetch'。市場レポートモジュールは存在しない"
+      evidence: "Glob 検索で market_report ディレクトリは存在せず、data_fetch.py は market_analysis/dev/ 内に存在"
+      recommendation: |
+        インポートパスを修正:
+        from market_analysis.dev import data_fetch
+        または相対インポート:
+        from . import data_fetch
+
+  high:
+    - id: "ANA-002"
+      category: "コード品質"
+      location: "analysis.py:28, 69"
+      description: "変数名にタイポ 'yf_fethcer'（正: yf_fetcher）"
+      evidence: "同一ファイル内で一貫したタイポ"
+      recommendation: "yf_fetcher に修正"
+    - id: "ANA-003"
+      category: "パフォーマンス"
+      location: "analysis.py:28-29, 69-70"
+      description: "各メソッドで YfinanceFethcer を新規生成。リソースの無駄"
+      evidence: "インスタンス生成コードが2箇所で重複"
+      recommendation: "クラスの __init__ で一度だけインスタンス化するか、依存性注入を使用"
+
+  medium:
+    - id: "ANA-004"
+      category: "コード品質"
+      location: "analysis.py:全体"
+      description: "型ヒントカバレッジが40%と低い"
+      evidence: "__init__ メソッドの戻り値型、一部パラメータの型が未定義"
+      recommendation: "全関数・メソッドに型ヒントを追加"
+    - id: "ANA-005"
+      category: "セキュリティ"
+      location: "analysis.py:全体"
+      description: "例外処理が未実装。外部 API エラー時にアプリケーションがクラッシュする"
+      evidence: "try-except ブロックなし"
+      recommendation: "外部 API 呼び出しに try-except を追加し、適切なエラーハンドリングを実装"
+    - id: "ANA-006"
+      category: "パフォーマンス"
+      location: "analysis.py:109-115"
+      description: "11個のセクターを逐次処理。並列化で高速化可能"
+      evidence: "for ループによる逐次 API 呼び出し"
+      recommendation: "ThreadPoolExecutor または asyncio による並列取得を実装"
+
+  low:
+    - id: "ANA-007"
+      category: "コード品質"
+      location: "analysis.py:40-52, 53-65"
+      description: "sector_etf_tickers と sector_map_en に重複情報"
+      evidence: "両方に同じティッカーシンボルが含まれている"
+      recommendation: "sector_map_en のみを保持し、tickers は keys() で取得"
+    - id: "ANA-008"
+      category: "コード品質"
+      location: "analysis.py:105"
+      description: "誤った型無視コメント '# ty:ignore'"
+      evidence: "正しくは '# type: ignore'"
+      recommendation: "コメントを修正"
+    - id: "ANA-009"
+      category: "コード品質"
+      location: "analysis.py:118"
+      description: "main() 関数に型ヒントなし"
+      evidence: "def main(): に -> None がない"
+      recommendation: "def main() -> None: に修正"
+
+# =============================================================================
+# 改善ロードマップ
+# =============================================================================
+improvement_roadmap:
+  # 短期 (1週間以内)
+  short_term:
+    - priority: 1
+      task: "インポートパスの修正"
+      related_findings:
+        - "ANA-001"
+      effort: "低"
+      impact: "コードが正常に動作するようになる"
+    - priority: 2
+      task: "タイポの修正（yf_fethcer → yf_fetcher）"
+      related_findings:
+        - "ANA-002"
+      effort: "低"
+      impact: "コードの可読性向上"
+    - priority: 3
+      task: "型ヒントの追加"
+      related_findings:
+        - "ANA-004"
+        - "ANA-009"
+      effort: "低"
+      impact: "型安全性向上、IDE補完の改善"
+
+  # 中期 (1ヶ月以内)
+  mid_term:
+    - priority: 1
+      task: "YfinanceFethcer のシングルトン化または依存性注入"
+      related_findings:
+        - "ANA-003"
+      effort: "中"
+      impact: "リソース効率の向上、テスト容易性の改善"
+    - priority: 2
+      task: "例外処理の追加"
+      related_findings:
+        - "ANA-005"
+      effort: "中"
+      impact: "アプリケーションの堅牢性向上"
+    - priority: 3
+      task: "データ取得の並列化"
+      related_findings:
+        - "ANA-006"
+      effort: "中"
+      impact: "get_all_sectors_top_companies の実行時間を最大11倍改善"
+
+  # 長期
+  long_term:
+    - priority: 1
+      task: "共通 Analyzer インターフェースの設計と実装"
+      related_findings: []
+      effort: "高"
+      impact: "コードの再利用性と拡張性の大幅な向上"
+      approach: |
+        1. 抽象基底クラス BaseAnalyzer を定義
+        2. 共通メソッド（analyze, get_data, format_output）を定義
+        3. 各 Analyzer をリファクタリングして BaseAnalyzer を継承
+        4. 依存性注入によるデータフェッチャーの注入
+    - priority: 2
+      task: "キャッシュ機構の実装"
+      related_findings: []
+      effort: "中"
+      impact: "API 呼び出し回数の削減、レスポンス時間の短縮"
+      approach: |
+        1. functools.lru_cache または独自キャッシュクラスの実装
+        2. TTL (Time To Live) の設定
+        3. キャッシュ無効化戦略の定義
+    - priority: 3
+      task: "dev/ ディレクトリから正式モジュールへの移行"
+      related_findings: []
+      effort: "高"
+      impact: "プロダクション品質のコードベース確立"
+      approach: |
+        1. テストの作成（TDD アプローチ）
+        2. 型ヒントの完全追加
+        3. NumPy 形式の docstring 追加
+        4. core/ または analysis/ への移動
+        5. __init__.py での公開 API 定義
+
+# =============================================================================
+# 総評
+# =============================================================================
+summary_evaluation:
+  strengths:
+    - "単一責務原則に従ったクラス設計"
+    - "低いサイクロマティック複雑度（全関数が CC < 10）"
+    - "一貫した Analyzer パターンの適用"
+    - "pandas/yfinance を適切に活用したデータ処理"
+
+  weaknesses:
+    - "不正なインポートパスにより実行不可能な状態"
+    - "型ヒントカバレッジが低い（40%）"
+    - "例外処理が未実装"
+    - "YfinanceFetcher の重複インスタンス化"
+    - "変数名にタイポが存在"
+    - "dev/ ディレクトリ内の開発中コードで品質基準を満たしていない"
+
+  overall_assessment: |
+    このファイルは market_analysis/dev/ ディレクトリ内の開発中コードであり、
+    プロダクション品質には達していません。
+
+    最も深刻な問題は、インポートパスが不正で実際には動作しない可能性が高いことです。
+    'from src.market_report import data_fetch' は存在しないパスを参照しており、
+    正しくは同ディレクトリ内の data_fetch.py を参照すべきです。
+
+    クラス設計自体は単一責務原則に従っており、低複雑度で理解しやすいコードです。
+    しかし、型ヒントの不足、例外処理の欠如、タイポなどの品質問題が存在します。
+
+    短期的にはインポートパスの修正とタイポ修正を優先し、
+    中期的には例外処理の追加と並列処理の実装を行うことを推奨します。
+    長期的には dev/ から正式モジュールへの移行を検討してください。
+
+    総合スコア 55/100 は、開発中コードとしては許容範囲ですが、
+    本番利用前に上記の改善が必要です。
