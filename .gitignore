@@ -52,9 +52,6 @@ trash/
 .tmp/
 amp
 
-# Claude Code memories
-.claude/skills/agent-memory/memories/
-
 # Jupyter notebooks (local only)
 notebook/*.ipynb
 
