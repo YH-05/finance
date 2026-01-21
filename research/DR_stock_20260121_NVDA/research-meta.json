@@ -1,0 +1,50 @@
+{
+  "research_id": "DR_stock_20260121_NVDA",
+  "type": "stock",
+  "params": {
+    "ticker": "NVDA",
+    "depth": "comprehensive",
+    "output": "report"
+  },
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "current_phase": 4,
+    "last_updated": "2026-01-21T00:00:00Z",
+    "errors": []
+  },
+  "data_collection": {
+    "sources": {
+      "sec_edgar": {"status": "success", "tier": 1, "count": 4},
+      "yfinance": {"status": "success", "tier": 2, "count": 1},
+      "web_search": {"status": "success", "tier": 3, "count": 30},
+      "rss": {"status": "success", "tier": 3, "count": 20}
+    },
+    "total_data_points": 55
+  },
+  "validation": {
+    "cross_validation_id": "CV_DR_stock_20260121_NVDA",
+    "confidence_scores_id": "CS_DR_stock_20260121_NVDA",
+    "bias_analysis_id": "BA_DR_stock_20260121_NVDA",
+    "overall_confidence": 0.74
+  },
+  "analysis": {
+    "analysis_id": "stock-analysis.json",
+    "key_findings": [
+      "財務健全性スコア 9.5/10（純現金$500億、ROE 107%）",
+      "Forward PE 23x、PEG 0.35は成長率対比で魅力的",
+      "AIチップ市場シェア85-92%、CUDAエコシステムが競争優位",
+      "確率加重目標株価$232.50（+31%アップサイド）"
+    ]
+  },
+  "output": {
+    "report_file": "05_output/report.md",
+    "charts": [],
+    "word_count": 3500
+  },
+  "created_at": "2026-01-21T00:00:00Z",
+  "completed_at": "2026-01-21T00:00:00Z"
+}

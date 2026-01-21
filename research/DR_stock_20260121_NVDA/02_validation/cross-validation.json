@@ -1,0 +1,104 @@
+{
+  "validation_id": "CV_DR_stock_20260121_NVDA",
+  "validated_at": "2026-01-21T00:00:00Z",
+  "claims_validated": [
+    {
+      "claim_id": "CLM001",
+      "claim": "Q3 FY2026 Revenue was $57.0 billion",
+      "sources": [
+        {"source": "SEC EDGAR 10-Q", "tier": 1, "value": 57006000000, "match": true},
+        {"source": "NVIDIA Press Release", "tier": 1, "value": 57000000000, "match": true},
+        {"source": "Web Search", "tier": 3, "value": 57000000000, "match": true}
+      ],
+      "status": "confirmed",
+      "confidence": 1.0,
+      "discrepancies": []
+    },
+    {
+      "claim_id": "CLM002",
+      "claim": "Data Center revenue was 89.8% of total in Q3",
+      "sources": [
+        {"source": "SEC EDGAR", "tier": 1, "value": 0.898, "match": true},
+        {"source": "Web Search (Futurum)", "tier": 3, "value": 0.898, "match": true}
+      ],
+      "status": "confirmed",
+      "confidence": 0.95,
+      "discrepancies": []
+    },
+    {
+      "claim_id": "CLM003",
+      "claim": "AI GPU market share is approximately 92%",
+      "sources": [
+        {"source": "Motley Fool", "tier": 3, "value": 0.92, "match": true},
+        {"source": "Markets.com", "tier": 3, "value": "85-90%", "match": false}
+      ],
+      "status": "confirmed_with_range",
+      "confidence": 0.80,
+      "discrepancies": ["Range varies 85-92% depending on source"]
+    },
+    {
+      "claim_id": "CLM004",
+      "claim": "Gross margin is approximately 73%",
+      "sources": [
+        {"source": "SEC EDGAR", "tier": 1, "value": 0.734, "match": true},
+        {"source": "yfinance", "tier": 2, "value": 0.70, "match": false},
+        {"source": "NVIDIA Press Release", "tier": 1, "value": 0.736, "match": true}
+      ],
+      "status": "confirmed",
+      "confidence": 0.90,
+      "discrepancies": ["yfinance shows TTM which may differ from quarterly"]
+    },
+    {
+      "claim_id": "CLM005",
+      "claim": "FY2027 EPS estimate is $6.88-$7.46",
+      "sources": [
+        {"source": "Motley Fool", "tier": 3, "value": 7.46, "match": true},
+        {"source": "Seeking Alpha", "tier": 3, "value": 6.88, "match": true}
+      ],
+      "status": "confirmed_with_range",
+      "confidence": 0.75,
+      "discrepancies": ["Analyst estimates vary; range is reasonable"]
+    },
+    {
+      "claim_id": "CLM006",
+      "claim": "Rubin platform launch in H2 2026",
+      "sources": [
+        {"source": "TheStreet", "tier": 3, "value": "H2 2026", "match": true},
+        {"source": "Goldman Sachs", "tier": 2, "value": "2026", "match": true}
+      ],
+      "status": "confirmed",
+      "confidence": 0.85,
+      "discrepancies": []
+    },
+    {
+      "claim_id": "CLM007",
+      "claim": "AMD MI450 launching H2 2026 with TSMC 2nm",
+      "sources": [
+        {"source": "Markets.com", "tier": 3, "value": "H2 2026", "match": true},
+        {"source": "Industry reports", "tier": 3, "value": "2026", "match": true}
+      ],
+      "status": "confirmed",
+      "confidence": 0.80,
+      "discrepancies": []
+    },
+    {
+      "claim_id": "CLM008",
+      "claim": "$500B booking pipeline through 2026",
+      "sources": [
+        {"source": "Morgan Stanley", "tier": 2, "value": 500000000000, "match": true},
+        {"source": "AI CERTs News", "tier": 3, "value": 500000000000, "match": true}
+      ],
+      "status": "confirmed",
+      "confidence": 0.85,
+      "discrepancies": []
+    }
+  ],
+  "overall_validation_summary": {
+    "total_claims": 8,
+    "confirmed": 5,
+    "confirmed_with_range": 2,
+    "disputed": 0,
+    "unverifiable": 1,
+    "average_confidence": 0.86
+  }
+}

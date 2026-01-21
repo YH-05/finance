@@ -1,0 +1,76 @@
+{
+  "confidence_id": "CS_DR_stock_20260121_NVDA",
+  "scored_at": "2026-01-21T00:00:00Z",
+  "scoring_methodology": {
+    "source_reliability_weight": 0.4,
+    "corroboration_weight": 0.3,
+    "temporal_relevance_weight": 0.2,
+    "consistency_weight": 0.1
+  },
+  "source_reliability_tiers": {
+    "tier1": {"sources": ["SEC EDGAR", "FRED", "Official IR"], "score": 1.0},
+    "tier2": {"sources": ["yfinance", "Bloomberg", "Reuters", "Goldman Sachs", "Morgan Stanley"], "score": 0.7},
+    "tier3": {"sources": ["News", "Seeking Alpha", "Motley Fool", "General Web"], "score": 0.4}
+  },
+  "data_category_scores": {
+    "financial_data": {
+      "source_reliability": 0.95,
+      "corroboration": 1.0,
+      "temporal_relevance": 0.95,
+      "consistency": 0.95,
+      "weighted_score": 0.96,
+      "assessment": "high_confidence",
+      "notes": "SEC EDGAR data is authoritative; Q3 FY2026 10-Q filed 2025-11-19"
+    },
+    "valuation_data": {
+      "source_reliability": 0.70,
+      "corroboration": 0.90,
+      "temporal_relevance": 1.0,
+      "consistency": 0.85,
+      "weighted_score": 0.82,
+      "assessment": "high_confidence",
+      "notes": "yfinance real-time data; analyst estimates show reasonable consensus"
+    },
+    "market_position": {
+      "source_reliability": 0.50,
+      "corroboration": 0.75,
+      "temporal_relevance": 0.90,
+      "consistency": 0.70,
+      "weighted_score": 0.67,
+      "assessment": "medium_confidence",
+      "notes": "Market share estimates vary 85-92%; sources are tier 2-3"
+    },
+    "competitive_landscape": {
+      "source_reliability": 0.45,
+      "corroboration": 0.70,
+      "temporal_relevance": 0.85,
+      "consistency": 0.65,
+      "weighted_score": 0.61,
+      "assessment": "medium_confidence",
+      "notes": "AMD/Intel roadmaps based on press releases and analyst reports"
+    },
+    "future_outlook": {
+      "source_reliability": 0.50,
+      "corroboration": 0.65,
+      "temporal_relevance": 0.80,
+      "consistency": 0.60,
+      "weighted_score": 0.61,
+      "assessment": "medium_confidence",
+      "notes": "EPS estimates and price targets are analyst consensus, inherently uncertain"
+    },
+    "risk_factors": {
+      "source_reliability": 0.75,
+      "corroboration": 0.80,
+      "temporal_relevance": 0.90,
+      "consistency": 0.75,
+      "weighted_score": 0.79,
+      "assessment": "high_confidence",
+      "notes": "Risk factors from 10-K filing and multiple corroborating sources"
+    }
+  },
+  "overall_confidence": {
+    "weighted_average": 0.74,
+    "tier": "high",
+    "assessment": "Data quality is strong for financial metrics. Market position and forward estimates have medium confidence due to reliance on tier 2-3 sources."
+  }
+}

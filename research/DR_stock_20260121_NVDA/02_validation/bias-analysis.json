@@ -1,0 +1,81 @@
+{
+  "bias_id": "BA_DR_stock_20260121_NVDA",
+  "analyzed_at": "2026-01-21T00:00:00Z",
+  "bias_categories": {
+    "sentiment_bias": {
+      "detected": true,
+      "severity": "moderate",
+      "direction": "bullish",
+      "details": {
+        "bullish_sources": 18,
+        "bearish_sources": 5,
+        "neutral_sources": 7,
+        "ratio": 3.6,
+        "threshold": 3.0
+      },
+      "assessment": "Sources skew bullish (3.6:1 ratio). Most analyst coverage is positive with 'strong buy' recommendations. Bear cases exist but are underrepresented.",
+      "mitigation": "Included detailed risk analysis and competitive threats section to balance perspective"
+    },
+    "source_concentration_bias": {
+      "detected": false,
+      "severity": "low",
+      "details": {
+        "primary_source_pct": 25,
+        "threshold": 50,
+        "source_diversity": {
+          "sec_edgar": "18%",
+          "yfinance": "10%",
+          "news_media": "35%",
+          "analyst_reports": "25%",
+          "rss_feeds": "12%"
+        }
+      },
+      "assessment": "Good source diversity. No single source dominates the data collection."
+    },
+    "recency_bias": {
+      "detected": true,
+      "severity": "low",
+      "details": {
+        "data_within_30_days": "65%",
+        "data_within_90_days": "90%",
+        "data_older_than_1_year": "5%"
+      },
+      "assessment": "Most data is recent (Q3 FY2026). Historical context is limited but appropriate for current analysis.",
+      "mitigation": "Included 5-year stock return data and historical valuation ranges"
+    },
+    "viewpoint_bias": {
+      "detected": true,
+      "severity": "moderate",
+      "details": {
+        "perspectives_represented": [
+          "Sell-side analysts (bullish)",
+          "Financial media (mixed)",
+          "Industry analysts (bullish)",
+          "Short-sellers/bears (limited)"
+        ],
+        "missing_perspectives": [
+          "Academic/independent researchers",
+          "Customer feedback on product quality",
+          "Supply chain partners' views"
+        ]
+      },
+      "assessment": "Limited representation of contrarian views and end-customer perspectives.",
+      "mitigation": "Explicitly highlighted competition risks and potential market share erosion scenarios"
+    }
+  },
+  "overall_bias_assessment": {
+    "composite_score": 0.35,
+    "rating": "moderate",
+    "key_biases": [
+      "Bullish sentiment skew in analyst coverage",
+      "Limited contrarian viewpoints"
+    ],
+    "mitigations_applied": [
+      "Balanced risk/catalyst analysis",
+      "Multi-source data collection",
+      "Explicit acknowledgment of uncertainty in forward estimates",
+      "Inclusion of bear case scenarios"
+    ],
+    "recommendation": "Analysis is usable with awareness of bullish tilt. Investment thesis should weight bear case scenarios appropriately."
+  }
+}

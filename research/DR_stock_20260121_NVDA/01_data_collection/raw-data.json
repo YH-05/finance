@@ -1,0 +1,160 @@
+{
+  "research_id": "DR_stock_20260121_NVDA",
+  "collected_at": "2026-01-21T00:00:00Z",
+  "data_sources": {
+    "sec_edgar": {
+      "status": "success",
+      "tier": 1,
+      "count": 4,
+      "data": {
+        "financials": {
+          "filing_date": "2025-11-19",
+          "form_type": "10-Q",
+          "period": "2025-10-26",
+          "income_statement": {
+            "revenues": 57006000000,
+            "gross_profit": 41849000000,
+            "operating_income": 36010000000,
+            "net_income": 31910000000,
+            "eps_basic": 1.31,
+            "eps_diluted": 1.30,
+            "cost_of_revenue": 15157000000
+          },
+          "balance_sheet": {
+            "total_assets": 161148000000,
+            "current_assets": 116492000000,
+            "total_liabilities": 42251000000,
+            "current_liabilities": 26075000000,
+            "stockholders_equity": 118897000000,
+            "cash_and_equivalents": 11486000000,
+            "accounts_receivable": 33391000000,
+            "property_plant_equipment": 9780000000
+          },
+          "cash_flow": {
+            "operating_activities": 66530000000,
+            "investing_activities": 21367000000,
+            "financing_activities": -42266000000
+          },
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000230/0001045810-25-000230.txt"
+        },
+        "recent_filings": {
+          "total_count": 20,
+          "form_4_count": 15,
+          "form_144_count": 5,
+          "latest_filing_date": "2026-01-15"
+        },
+        "insider_summary": {
+          "period_days": 365,
+          "total_filings": 121,
+          "form_4_count": 119
+        }
+      }
+    },
+    "yfinance": {
+      "status": "success",
+      "tier": 2,
+      "count": 1,
+      "data": {
+        "ticker": "NVDA",
+        "company_name": "NVIDIA Corporation",
+        "current_price": 178.07,
+        "market_cap": 4335470641152,
+        "pe_ratio": 44.08,
+        "forward_pe": 23.35,
+        "pb_ratio": 36.40,
+        "ev_ebitda": 37.95,
+        "dividend_yield": 0.0002,
+        "beta": 2.314,
+        "52_week_high": 212.19,
+        "52_week_low": 86.62,
+        "avg_volume": 185518893,
+        "shares_outstanding": 24305000000,
+        "profit_margins": 0.53,
+        "operating_margins": 0.63,
+        "return_on_equity": 1.07,
+        "return_on_assets": 0.54,
+        "revenue_growth": 0.625,
+        "earnings_growth": 0.667,
+        "gross_margins": 0.70,
+        "free_cash_flow": 53282873344,
+        "total_debt": 10821999616,
+        "total_cash": 60608000000,
+        "analyst_target_mean": 253.41,
+        "analyst_target_high": 352.0,
+        "analyst_target_low": 140.0,
+        "recommendation": "strong_buy",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "stock_returns": {
+          "1y_return": 29.34,
+          "3y_return": 954.79,
+          "5y_return": 1202.25
+        }
+      }
+    },
+    "web_search": {
+      "status": "success",
+      "tier": 3,
+      "count": 30,
+      "data": {
+        "earnings_outlook": {
+          "q4_fy2026_revenue_est": 65600000000,
+          "q4_fy2026_eps_est": 1.44,
+          "fy2026_eps_est": 4.42,
+          "fy2027_eps_est": 6.88,
+          "fy2027_wall_street_eps": 7.46,
+          "analyst_price_target": 258
+        },
+        "market_position": {
+          "ai_gpu_market_share": 92,
+          "data_center_revenue_q3": 51200000000,
+          "data_center_revenue_pct": 89.8,
+          "yoy_data_center_growth": 66
+        },
+        "product_roadmap": {
+          "current_generation": "Blackwell",
+          "next_generation": "Rubin",
+          "rubin_launch": "H2 2026",
+          "blackwell_booking_pipeline": 500000000000
+        },
+        "competition": {
+          "amd_mi450_launch": "H2 2026",
+          "amd_data_center_revenue_2026": 26000000000,
+          "intel_gaudi_status": "mid-range market",
+          "hyperscaler_custom_chips": ["Google TPU", "Amazon Trainium", "Meta MTIA"]
+        },
+        "risks": [
+          "AMD MI450 competition with OpenAI partnership",
+          "Hyperscaler custom chip development",
+          "U.S.-China export restrictions",
+          "Valuation premium compression",
+          "Supply constraints extending into 2026",
+          "Power infrastructure bottlenecks"
+        ],
+        "catalysts": [
+          "Blackwell Ultra GB300 shipments doubling in 2026",
+          "Rubin platform launch H2 2026",
+          "AI CapEx growth 50-60% YoY in 2026",
+          "Data center demand projected 60,000 racks by 2026"
+        ]
+      }
+    },
+    "rss": {
+      "status": "success",
+      "tier": 3,
+      "count": 20,
+      "data": {
+        "recent_headlines": [
+          "Nvidia: GPUs Don't Matter Anymore (Rating Upgrade)",
+          "Memory Bottlenecks Cloud NVIDIA's Latest China Export Approval",
+          "Trump administration clears way for Nvidia H200 chip sales to China with 25% surcharge",
+          "US, Taiwan to Invest $250 Billion in American Semiconductor Manufacturing",
+          "BlackRock, Microsoft-Backed AI Venture Draws $12.5 Billion",
+          "Chip stocks pop after TSMC's earnings beat boosts confidence"
+        ],
+        "sentiment": "mixed_to_positive"
+      }
+    }
+  },
+  "total_data_points": 55
+}
