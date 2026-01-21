@@ -106,10 +106,14 @@ name: agent-name              # kebab-case、ファイル名と一致
 category: category-name       # エージェントのカテゴリ
 description: |                # Task tool に表示される説明（簡潔に）
   What this agent does and when to use it.
+skills: [skill-name]          # オプション：参照するスキル
+allowed-tools: Read, Write    # オプション：使用可能なツール
 model: inherit                # inherit | sonnet | haiku | opus
 color: lime                   # オプション：色指定
 ---
 ```
+
+**フロントマター検証の詳細**は `./frontmatter-review.md` を参照してください。
 
 **description の書き方**:
 - 1-2文で簡潔に
