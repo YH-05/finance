@@ -55,7 +55,7 @@
 
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
-| 5 | workflow-expert スキル SKILL.md の作成 | M | なし | Todo | [#605](https://github.com/YH-05/finance/issues/605) |
+| 5 | workflow-expert スキル SKILL.md の作成 | M | なし | Done | [#605](https://github.com/YH-05/finance/issues/605) |
 | 6 | workflow-expert スキル guide.md の作成 | M | #5 | Todo | [#606](https://github.com/YH-05/finance/issues/606) |
 
 ### Wave 1: レポジトリ管理スキル（並列実装可）
