@@ -107,11 +107,20 @@ description: Short description for the Task tool
 
 作成後の確認項目：
 
-- [ ] フロントマターが正しく設定されている
+- [ ] フロントマターが正しく設定されている（詳細は `./frontmatter-review.md` を参照）
 - [ ] トリガー条件が明確
 - [ ] 実用的な例が3-4個含まれている
 - [ ] ツールの使用方法が明記されている
 - [ ] 制約事項とセキュリティ考慮が含まれている
+
+**フロントマター検証の詳細**:
+
+`./frontmatter-review.md` に基づいて以下を確認：
+
+- `name`: kebab-case、ファイル名と一致
+- `description`: 具体的でトリガーキーワードを含む
+- `skills`: 参照先スキルが存在するか（設定時）
+- `allowed-tools`: 有効なツール名のみ（設定時）
 
 ### 5. 既存エージェントのブラッシュアップ
 
@@ -246,6 +255,17 @@ AskUserQuestion: "ブラッシュアップ後、どうなれば成功と言え�
 - セクション構成
 - 例の書き方
 - コメント付きガイド
+
+### ./frontmatter-review.md
+
+エージェントフロントマターの検証ガイド：
+
+- 検証対象フィールド（name, description, category, skills, allowed-tools, model, color）
+- フィールド別検証ルール
+- `skills:` フィールドの存在確認方法
+- `allowed-tools` の有効なツール一覧
+- 検証チェックリスト
+- 自動検証スクリプト例
 
 ## 使用例
 
