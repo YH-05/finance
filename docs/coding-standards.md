@@ -500,6 +500,81 @@ def expensive_calculation(input: str) -> Result:
     return result
 ```
 
+## ライブラリ別ベストプラクティス
+
+### yfinance
+
+> **詳細ドキュメント**: `docs/yfinance-best-practices.md`
+
+**curl_cffi によるセッション管理**:
+
+```python
+import curl_cffi
+import yfinance as yf
+
+class YfinanceFetcher:
+    def __init__(self):
+        # クラスレベルでセッションを共有（リソース効率化）
+        self.session = curl_cffi.requests.Session(impersonate="safari15_5")
+
+    def get_data(self, symbol: str):
+        ticker = yf.Ticker(symbol, session=self.session)
+        return ticker.info
+```
+
+**複数銘柄の一括取得**:
+
+```python
+# ✅ 良い例: 一括ダウンロード
+df = yf.download(
+    tickers=["AAPL", "MSFT", "GOOGL"],
+    period="2y",
+    session=session,
+    auto_adjust=False,
+)
+
+# ❌ 悪い例: ループで個別取得
+for ticker in tickers:
+    yf.download(ticker, ...)  # 非効率
+```
+
+**yfinance クラスの使い分け**:
+
+| クラス | 用途 | session |
+|--------|------|---------|
+| `yf.Ticker` | 個別銘柄データ | 推奨 |
+| `yf.Sector` | セクター情報 | 推奨 |
+| `yf.Search` | ニュース検索 | 不要 |
+| `yf.download()` | 価格データ一括取得 | 推奨（日次以上） |
+
+**エラーハンドリング**:
+
+```python
+for symbol in symbols:
+    try:
+        data = yf.Ticker(symbol, session=session).info
+
+        if data is None:  # None チェック必須
+            logger.warning(f"{symbol}: データがNone")
+            continue
+
+    except AttributeError as e:
+        logger.error(f"{symbol}: 属性エラー - {e}")
+        continue
+    except Exception as e:
+        logger.error(f"{symbol}: {type(e).__name__}: {e}")
+        continue
+```
+
+**タイムゾーン処理**:
+
+```python
+# 米国市場時間を考慮
+now_et = pd.Timestamp.now(tz="America/New_York")
+```
+
+---
+
 ## テストコード
 
 ### テストの構造 (Given-When-Then)
