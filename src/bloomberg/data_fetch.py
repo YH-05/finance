@@ -463,9 +463,11 @@ class BlpapiFetcher:
                         request.append("securities", sec)  # type: ignore
 
                     request_fields = fields.copy()
-                    if include_announcement_date:
-                        if "ANNOUNCEMENT_DT" not in request_fields:
-                            request_fields.append("ANNOUNCEMENT_DT")
+                    if (
+                        include_announcement_date
+                        and "ANNOUNCEMENT_DT" not in request_fields
+                    ):
+                        request_fields.append("ANNOUNCEMENT_DT")
 
                     for field in request_fields:
                         request.append("fields", field)  # type: ignore
@@ -958,7 +960,7 @@ class BlpapiFetcher:
     # --------------------------------------------------------------------------
     def get_multiple_sources_news(
         self,
-        sources: list[str] = ["BFW", "BN"],
+        sources: list[str] | None = None,
         days_back: int = 7,
         max_results: int = 2000,
         verbose: bool = True,
@@ -972,6 +974,8 @@ class BlpapiFetcher:
         :param verbose: ログ出力の有効/無効
         :return: ソース別のニュース辞書
         """
+        if sources is None:
+            sources = ["BFW", "BN"]
         session = self._create_session(verbose=verbose)
         if not session:
             return {}
@@ -1267,7 +1271,7 @@ class BlpapiFetcher:
     # --------------------------------------------------------------------------
     def compare_sector_news(
         self,
-        sectors: list[str] = ["TECH", "FINANCE", "ENERGY", "HEALTH"],
+        sectors: list[str] | None = None,
         days_back: int = 30,
         source: str = "BN",
         verbose: bool = True,
@@ -1281,6 +1285,8 @@ class BlpapiFetcher:
         :param verbose: ログ出力の有効/無効
         :return: DataFrame with sector comparison
         """
+        if sectors is None:
+            sectors = ["TECH", "FINANCE", "ENERGY", "HEALTH"]
         results = {}
 
         for sector in sectors:

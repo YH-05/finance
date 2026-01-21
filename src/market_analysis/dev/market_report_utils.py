@@ -1767,7 +1767,7 @@ def plot_rolling_beta(
     window_years: Literal[3, 5],
     tickers_to_plot: List[str],
     target_index_name: str,
-    beta_variable_name: str = None,
+    beta_variable_name: str | None = None,
 ):
     fig = go.Figure()
     # periods_ordered = ["1d", "1m", "3m", "6m", "12m"]

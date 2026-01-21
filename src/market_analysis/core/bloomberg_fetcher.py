@@ -98,7 +98,7 @@ def _get_blpapi() -> Any:
         )
 
     try:
-        import blpapi  # type: ignore[import-untyped]
+        import blpapi
 
         return blpapi
     except ImportError as e:

@@ -5,12 +5,12 @@ metal.py
 """
 
 import os
-from pathlib import Path
 import sqlite3
+from pathlib import Path
 
-from dotenv import load_dotenv
 import pandas as pd
 import plotly.graph_objects as go
+from dotenv import load_dotenv
 
 from src.fred_database_utils import FredDataProcessor
 from src.market_report_utils import MarketPerformanceAnalyzer

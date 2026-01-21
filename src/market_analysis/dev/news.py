@@ -1,10 +1,8 @@
-from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 
 import curl_cffi
-from rich.console import Console
 import yfinance as yf
-
+from rich.console import Console
 
 console = Console()
 
