@@ -49,7 +49,7 @@
 
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
-| 4 | agent-expert スキルにフロントマターレビュー機能を追加 | S | なし | Todo | [#604](https://github.com/YH-05/finance/issues/604) |
+| 4 | agent-expert スキルにフロントマターレビュー機能を追加 | S | なし | Done | [#604](https://github.com/YH-05/finance/issues/604) |
 
 #### workflow-expert スキル（新規）
 
