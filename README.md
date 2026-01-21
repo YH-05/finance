@@ -21,33 +21,6 @@
 | `finance` | 共通データベースインフラ、ユーティリティ |
 | `market_analysis` | 市場データ取得・分析機能 |
 
-## 🚀 クイックスタート
-
-```bash
-# リポジトリをクローン
-git clone https://github.com/YH-05/finance.git
-cd finance
-
-# Python バージョンを設定（3.12以上）
-uv python pin 3.12
-
-# セットアップ
-make setup
-```
-
-## 使用例
-
-```python
-from finance.db import SQLiteClient, DuckDBClient
-
-# SQLite（トランザクション処理）
-with SQLiteClient() as client:
-    client.execute("INSERT INTO assets (symbol, name) VALUES (?, ?)", ("AAPL", "Apple Inc."))
-
-# DuckDB（分析クエリ）
-with DuckDBClient() as client:
-    result = client.query("SELECT * FROM prices_daily WHERE symbol = 'AAPL'")
-```
 
 ## ⚠️ よくある問題とトラブルシューティング
 
