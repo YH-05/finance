@@ -797,12 +797,207 @@ allowed-tools: Read, Write
     │
     └── フェーズ1（レポジトリ管理）
             │
-            └── フェーズ2（コーディング）
+            └── フェーズ2（コーディング + Git操作）
                     │
-                    ├── 2.1 coding-standards ─┐
-                    ├── 2.2 tdd-development  ─┼─ 並列実行可能
-                    └── 2.3 error-handling  ─┘
+                    ├── Wave 1: コーディングスキル
+                    │   ├── 2.1 coding-standards ─┐
+                    │   ├── 2.2 tdd-development  ─┼─ 並列実行可能
+                    │   └── 2.3 error-handling  ─┘
+                    │
+                    └── Wave 2: Git操作スキル
+                        ├── 2.4 worktree-management ─┐
+                        └── 2.5 git-workflow         ─┴─ 並列実行可能
 ```
+
+---
+
+## フェーズ 2 追加: Git操作スキル
+
+### 目標
+
+Git操作系コマンドをスキルに移行し、ワークフローを統合：
+
+**Wave 2（Git操作スキル）**:
+1. worktree-management スキル（worktree, worktree-done, plan-worktrees, create-worktrees, delete-worktrees を統合）
+2. git-workflow スキル（push, commit-and-pr, merge-pr, gemini-search を統合）
+
+### 設計方針
+
+#### 1. スキルの粒度
+
+**決定**: 2つの大スキルに機能を統合
+
+- **worktree-management**: 並列開発環境の管理に特化
+- **git-workflow**: Git操作とPR管理に特化
+
+**理由**:
+- 関連する機能を1つのスキルに集約し、参照を容易にする
+- コマンドは薄いラッパーとしてスキルを呼び出す形式に変更
+
+#### 2. コマンドとスキルの関係
+
+**決定**: コマンドはスキルを参照する形式に変更（**スキル完成後、削除**）
+
+- スキル完成後、対応するコマンドを削除
+- 実際のロジック・ガイダンスはスキルに集約
+
+---
+
+### 2.4 worktree-management スキル
+
+#### 構造
+
+```
+.claude/skills/worktree-management/
+├── SKILL.md              # クイックリファレンス（概要、基本操作）
+├── guide.md              # 詳細ガイド（並列開発戦略、Wave管理）
+└── examples/
+    ├── create-worktree.md      # worktree作成パターン
+    ├── parallel-development.md # 並列開発ワークフロー
+    └── cleanup.md              # クリーンアップパターン
+```
+
+#### SKILL.md 概要
+
+```markdown
+---
+name: worktree-management
+description: Git worktreeを使用した並列開発環境の管理。作成・計画・クリーンアップのベストプラクティス。
+allowed-tools: Read, Bash
+---
+```
+
+**クイックリファレンス内容**:
+- worktree の作成パターン（ブランチ命名規則）
+- 並列開発計画（Wave グルーピング）
+- クリーンアップフロー（PRマージ確認→削除）
+- .mcp.json コピーの重要性
+
+**統合対象コマンド**:
+- `/worktree` - worktree作成
+- `/worktree-done` - worktreeクリーンアップ
+- `/plan-worktrees` - 並列開発計画
+- `/create-worktrees` - 一括worktree作成
+- `/delete-worktrees` - 一括worktree削除
+
+#### タスクテーブル
+
+| # | タスク | 依存 | 成果物 |
+|---|--------|------|--------|
+| 2.4.1 | SKILL.md の作成 | なし | `.claude/skills/worktree-management/SKILL.md` |
+| 2.4.2 | guide.md の作成 | 2.4.1 | `guide.md` |
+| 2.4.3 | examples/create-worktree.md の作成 | 2.4.1 | `examples/create-worktree.md` |
+| 2.4.4 | examples/parallel-development.md の作成 | 2.4.1 | `examples/parallel-development.md` |
+| 2.4.5 | examples/cleanup.md の作成 | 2.4.1 | `examples/cleanup.md` |
+| 2.4.6 | コマンドのスキル参照追加 | 2.4.2 | コマンド更新 |
+| 2.4.7 | 検証 | 2.4.6 | 動作確認 |
+
+**並列実行可能**: 2.4.3〜2.4.5
+
+---
+
+### 2.5 git-workflow スキル
+
+#### 構造
+
+```
+.claude/skills/git-workflow/
+├── SKILL.md              # クイックリファレンス（コミット、PR、マージ）
+├── guide.md              # 詳細ガイド（Conventional Commits、CI確認）
+└── examples/
+    ├── commit-patterns.md    # コミットメッセージパターン
+    ├── pr-creation.md        # PR作成ワークフロー
+    ├── merge-workflow.md     # マージワークフロー
+    └── web-search.md         # Gemini検索パターン
+```
+
+#### SKILL.md 概要
+
+```markdown
+---
+name: git-workflow
+description: Git操作とPR管理のベストプラクティス。コミット、プッシュ、PR作成、マージ、Web検索。
+allowed-tools: Read, Bash
+---
+```
+
+**クイックリファレンス内容**:
+- Conventional Commits フォーマット
+- PR作成フロー（品質チェック→コミット→PR）
+- マージフロー（コンフリクトチェック→CI確認→マージ）
+- Gemini CLI を使用した Web 検索
+
+**統合対象コマンド**:
+- `/push` - コミット＆プッシュ
+- `/commit-and-pr` - コミット＆PR作成
+- `/merge-pr` - PRマージ
+- `/gemini-search` - Web検索
+
+#### タスクテーブル
+
+| # | タスク | 依存 | 成果物 |
+|---|--------|------|--------|
+| 2.5.1 | SKILL.md の作成 | なし | `.claude/skills/git-workflow/SKILL.md` |
+| 2.5.2 | guide.md の作成 | 2.5.1 | `guide.md` |
+| 2.5.3 | examples/commit-patterns.md の作成 | 2.5.1 | `examples/commit-patterns.md` |
+| 2.5.4 | examples/pr-creation.md の作成 | 2.5.1 | `examples/pr-creation.md` |
+| 2.5.5 | examples/merge-workflow.md の作成 | 2.5.1 | `examples/merge-workflow.md` |
+| 2.5.6 | examples/web-search.md の作成 | 2.5.1 | `examples/web-search.md` |
+| 2.5.7 | コマンドのスキル参照追加 | 2.5.2 | コマンド更新 |
+| 2.5.8 | 検証 | 2.5.7 | 動作確認 |
+
+**並列実行可能**: 2.5.3〜2.5.6
+
+---
+
+### フェーズ2 Wave 2 タスク分解（GitHub Issue）
+
+#### worktree-management スキル
+
+| # | タイトル | 工数 | 依存 |
+|---|---------|------|------|
+| 2.4 | [スキル移行] worktree-management スキル SKILL.md の作成 | M | なし |
+| 2.5 | [スキル移行] worktree-management スキル guide.md の作成 | M | #2.4 |
+| 2.6 | [スキル移行] worktree-management スキル examples/ の作成 | M | #2.4 |
+| 2.7 | [スキル移行] worktree-management スキル コマンド統合 | S | #2.5 |
+
+#### git-workflow スキル
+
+| # | タイトル | 工数 | 依存 |
+|---|---------|------|------|
+| 2.8 | [スキル移行] git-workflow スキル SKILL.md の作成 | M | なし |
+| 2.9 | [スキル移行] git-workflow スキル guide.md の作成 | M | #2.8 |
+| 2.10 | [スキル移行] git-workflow スキル examples/ の作成 | M | #2.8 |
+| 2.11 | [スキル移行] git-workflow スキル コマンド統合 | S | #2.9 |
+
+#### 統合テスト
+
+| # | タイトル | 工数 | 依存 |
+|---|---------|------|------|
+| 2.12 | [スキル移行] フェーズ2 Wave 2 統合テスト | M | #2.7, #2.11 |
+
+---
+
+### フェーズ2 Wave 2 完了基準
+
+#### スキル作成
+- [ ] `.claude/skills/worktree-management/` が存在し、SKILL.md, guide.md, examples/ が揃っている
+- [ ] `.claude/skills/git-workflow/` が存在し、SKILL.md, guide.md, examples/ が揃っている
+
+#### コマンド更新
+- [ ] `/worktree` がスキルを参照
+- [ ] `/worktree-done` がスキルを参照
+- [ ] `/plan-worktrees` がスキルを参照
+- [ ] `/create-worktrees` がスキルを参照
+- [ ] `/delete-worktrees` がスキルを参照
+- [ ] `/push` がスキルを参照
+- [ ] `/commit-and-pr` がスキルを参照
+- [ ] `/merge-pr` がスキルを参照
+- [ ] `/gemini-search` がスキルを参照
+
+#### 品質確認
+- [ ] 各コマンドが既存と同等の機能を提供
+- [ ] スキルの guide.md が参照可能
 
 ---
 
@@ -810,19 +1005,142 @@ allowed-tools: Read, Write
 
 ### 目標
 
-6つの金融分析スキルを実装し、金融エージェント群に統合する：
+7つの金融分析スキルを実装し、金融エージェント群に統合する：
 
-**Wave 0（データ取得・基盤）**:
-1. market-data スキル（MarketData API、yfinance/FRED統合）
-2. rss-integration スキル（RSSライブラリ統合）
+**🔴 Wave 0（最優先 - ニュース収集システム）**:
+1. **finance-news-workflow スキル** - `/collect-finance-news` コマンドの完全スキル移行
 
-**Wave 1（分析スキル）**:
-3. technical-analysis スキル（Analysis API、テクニカル指標）
-4. financial-calculations スキル（リターン計算、相関分析）
+**Wave 1（データ取得・基盤）**:
+2. market-data スキル（MarketData API、yfinance/FRED統合）
+3. rss-integration スキル（RSSライブラリ統合）
 
-**Wave 2（外部連携）**:
-5. sec-edgar スキル（SEC EDGAR MCP統合）
-6. web-research スキル（Tavily MCP、Web検索）
+**Wave 2（分析スキル）**:
+4. technical-analysis スキル（Analysis API、テクニカル指標）
+5. financial-calculations スキル（リターン計算、相関分析）
+
+**Wave 3（外部連携）**:
+6. sec-edgar スキル（SEC EDGAR MCP統合）
+7. web-research スキル（Tavily MCP、Web検索）
+
+---
+
+## フェーズ 3 Wave 0: finance-news-workflow スキル（最優先）
+
+### 概要
+
+`/collect-finance-news` コマンドをスキルベースに完全移行し、関連するエージェント・コマンド・スキルを整理する。
+
+### 統合対象
+
+| 種別 | ファイル | 役割 |
+|------|---------|------|
+| **コマンド** | `.claude/commands/collect-finance-news.md` | ニュース収集エントリーポイント |
+| **スキル** | `.claude/skills/finance-news-collection/SKILL.md` | ワークフロー定義（既存） |
+| **エージェント** | `.claude/agents/finance-news-orchestrator.md` | オーケストレーター |
+| **エージェント** | `.claude/agents/finance-news-collector.md` | メインコレクター |
+| **エージェント** | `.claude/agents/finance-news-index.md` | Indexテーマ |
+| **エージェント** | `.claude/agents/finance-news-stock.md` | Stockテーマ |
+| **エージェント** | `.claude/agents/finance-news-sector.md` | Sectorテーマ |
+| **エージェント** | `.claude/agents/finance-news-macro.md` | Macroテーマ |
+| **エージェント** | `.claude/agents/finance-news-ai.md` | AIテーマ |
+| **エージェント** | `.claude/agents/finance-news-finance.md` | Financeテーマ |
+
+### 設計方針
+
+#### 1. スキル構造
+
+```
+.claude/skills/finance-news-workflow/
+├── SKILL.md                    # クイックリファレンス（概要、4フェーズフロー）
+├── guide.md                    # 詳細ガイド（フィルタリング、重複チェック）
+├── templates/
+│   ├── issue-template.md       # Issue作成テンプレート
+│   └── summary-template.md     # 結果サマリーテンプレート
+└── examples/
+    ├── daily-collection.md     # 日次収集パターン
+    ├── theme-filtering.md      # テーマフィルタリングパターン
+    └── dry-run.md              # dry-runモードパターン
+```
+
+#### 2. コマンドとスキルの関係
+
+**決定**: コマンドはスキルを参照する形式に変更（**スキル完成後、削除**）
+
+```markdown
+# /collect-finance-news コマンド（変更後）
+
+参照スキル:
+- @.claude/skills/finance-news-workflow/SKILL.md
+
+このスキルに従って処理を実行してください。
+```
+
+#### 3. エージェントの整理
+
+**決定**: テーマ別エージェントを維持、スキル参照を追加
+
+| エージェント | 変更内容 |
+|------------|----------|
+| finance-news-orchestrator | `skills: [finance-news-workflow, rss-integration]` 追加 |
+| finance-news-collector | `skills: [finance-news-workflow, rss-integration]` 追加 |
+| finance-news-* (テーマ別) | `skills: [finance-news-workflow]` 追加、共通処理をスキルから参照 |
+
+### SKILL.md 概要
+
+```markdown
+---
+name: finance-news-workflow
+description: 金融ニュース収集の4フェーズワークフロー。RSS取得→フィルタリング→重複チェック→GitHub投稿。
+allowed-tools: Read, Bash, Task, MCPSearch
+---
+```
+
+**クイックリファレンス内容**:
+- 4フェーズワークフロー（初期化→データ準備→テーマ別収集→結果報告）
+- パラメータ一覧（--since, --themes, --limit, --dry-run）
+- テーマ設定ファイル構造
+- RSS MCP ツール一覧
+
+### タスクテーブル
+
+| # | タスク | 依存 | 成果物 |
+|---|--------|------|--------|
+| 3.0.1 | SKILL.md の作成 | なし | `.claude/skills/finance-news-workflow/SKILL.md` |
+| 3.0.2 | guide.md の作成 | 3.0.1 | `guide.md` |
+| 3.0.3 | templates/ の作成 | 3.0.1 | `templates/` |
+| 3.0.4 | examples/ の作成 | 3.0.1 | `examples/` |
+| 3.0.5 | /collect-finance-news コマンドの更新 | 3.0.2 | コマンド更新 |
+| 3.0.6 | オーケストレーター・コレクターエージェントの更新 | 3.0.2 | エージェント更新 |
+| 3.0.7 | テーマ別エージェント群の更新 | 3.0.2 | エージェント更新（6件） |
+| 3.0.8 | 既存 finance-news-collection スキルの統合・削除 | 3.0.5 | スキル整理 |
+| 3.0.9 | 検証 | 3.0.7 | 動作確認 |
+
+**並列実行可能**: 3.0.3〜3.0.4
+
+### 完了基準
+
+#### スキル作成
+- [ ] `.claude/skills/finance-news-workflow/` が存在し、SKILL.md, guide.md, templates/, examples/ が揃っている
+- [ ] 既存 `.claude/skills/finance-news-collection/` が統合・削除されている
+
+#### コマンド更新
+- [ ] `/collect-finance-news` がスキルを参照する形式に変更されている
+- [ ] `/collect-finance-news --dry-run` が動作する
+- [ ] `/collect-finance-news --themes "index,stock"` が動作する
+
+#### エージェント更新
+- [ ] `finance-news-orchestrator.md` が `skills: [finance-news-workflow]` を参照
+- [ ] `finance-news-collector.md` が `skills: [finance-news-workflow]` を参照
+- [ ] 6つのテーマ別エージェントが `skills: [finance-news-workflow]` を参照
+
+#### 品質確認
+- [ ] `/collect-finance-news` の既存機能が全て動作
+- [ ] テーマ別並列実行が正常動作
+- [ ] GitHub Project への投稿が正常動作
+
+---
+
+## フェーズ 3 Wave 1-3: 金融分析スキル（元の計画）
 
 ### 設計方針
 
@@ -1174,7 +1492,23 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 
 ### フェーズ3 タスク分解（GitHub Issue）
 
-#### Wave 0: データ取得・基盤スキル（並列実装可）
+#### Wave 0: ニュース収集システム（最優先）
+
+| # | タイトル | 工数 | 依存 |
+|---|---------|------|------|
+| 3.0.1 | [スキル移行] finance-news-workflow スキル SKILL.md の作成 | M | なし |
+| 3.0.2 | [スキル移行] finance-news-workflow スキル guide.md の作成 | M | #3.0.1 |
+| 3.0.3 | [スキル移行] finance-news-workflow スキル templates/ の作成 | M | #3.0.1 |
+| 3.0.4 | [スキル移行] finance-news-workflow スキル examples/ の作成 | M | #3.0.1 |
+| 3.0.5 | [スキル移行] /collect-finance-news コマンドの更新 | S | #3.0.2 |
+| 3.0.6 | [スキル移行] finance-news-orchestrator, collector エージェント更新 | S | #3.0.2 |
+| 3.0.7 | [スキル移行] テーマ別エージェント群（6件）の更新 | M | #3.0.2 |
+| 3.0.8 | [スキル移行] 既存 finance-news-collection スキルの統合・削除 | S | #3.0.5 |
+| 3.0.9 | [スキル移行] finance-news-workflow 統合テスト | M | #3.0.7, #3.0.8 |
+
+---
+
+#### Wave 1: データ取得・基盤スキル（並列実装可）
 
 **market-data スキル**
 
@@ -1194,7 +1528,7 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 | 3.7 | [スキル移行] rss-integration スキル examples/ の作成 | M | #3.5 |
 | 3.8 | [スキル移行] rss-integration スキル エージェント統合 | S | #3.6 |
 
-#### Wave 1: 分析スキル（並列実装可、Wave 0 依存）
+#### Wave 2: 分析スキル（並列実装可、Wave 1 依存）
 
 **technical-analysis スキル**
 
@@ -1214,7 +1548,7 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 | 3.15 | [スキル移行] financial-calculations スキル examples/ の作成 | M | #3.13 |
 | 3.16 | [スキル移行] financial-calculations スキル エージェント統合 | S | #3.14 |
 
-#### Wave 2: 外部連携スキル（並列実装可）
+#### Wave 3: 外部連携スキル（並列実装可）
 
 **sec-edgar スキル**
 
@@ -1234,35 +1568,38 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 | 3.23 | [スキル移行] web-research スキル examples/ の作成 | M | #3.21 |
 | 3.24 | [スキル移行] web-research スキル エージェント統合 | S | #3.22 |
 
-#### Wave 3: 統合テスト
+#### Wave 4: 統合テスト
 
 | # | タイトル | 工数 | 依存 |
 |---|---------|------|------|
-| 3.25 | [スキル移行] フェーズ3 全スキルの統合テスト実施 | M | #3.4, #3.8, #3.12, #3.16, #3.20, #3.24 |
+| 3.25 | [スキル移行] フェーズ3 全スキルの統合テスト実施 | M | #3.0.9, #3.4, #3.8, #3.12, #3.16, #3.20, #3.24 |
 
 ---
 
 ### フェーズ3 依存関係グラフ
 
 ```
-フェーズ2（コーディング）
+フェーズ2（コーディング + Git操作）
     │
     └── フェーズ3（金融分析）
             │
-            ├── Wave 0 (データ取得・基盤)
+            ├── 🔴 Wave 0 (最優先: ニュース収集システム)
+            │   └── finance-news-workflow: #3.0.1 -> #3.0.2 -> (#3.0.3, #3.0.4) -> #3.0.5~#3.0.8 -> #3.0.9
+            │
+            ├── Wave 1 (データ取得・基盤)
             │   ├── market-data:      #3.1 -> #3.2, #3.3 -> #3.4
             │   └── rss-integration:  #3.5 -> #3.6, #3.7 -> #3.8
             │
-            ├── Wave 1 (分析) ← market-data
+            ├── Wave 2 (分析) ← market-data
             │   ├── technical-analysis:     #3.9 -> #3.10, #3.11 -> #3.12
             │   └── financial-calculations: #3.13 -> #3.14, #3.15 -> #3.16
             │
-            ├── Wave 2 (外部連携)
+            ├── Wave 3 (外部連携)
             │   ├── sec-edgar:     #3.17 -> #3.18, #3.19 -> #3.20
             │   └── web-research:  #3.21 -> #3.22, #3.23 -> #3.24
             │
-            └── Wave 3 (統合)
-                    └── #3.25 ← #3.4, #3.8, #3.12, #3.16, #3.20, #3.24
+            └── Wave 4 (統合)
+                    └── #3.25 ← #3.0.9, #3.4, #3.8, #3.12, #3.16, #3.20, #3.24
 ```
 
 ---
@@ -1277,7 +1614,13 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 
 ### フェーズ3 完了基準
 
-#### スキル作成
+#### Wave 0: ニュース収集システム（最優先）
+- [ ] `.claude/skills/finance-news-workflow/` が存在し、SKILL.md, guide.md, templates/, examples/ が揃っている
+- [ ] 既存 `.claude/skills/finance-news-collection/` が統合・削除されている
+- [ ] `/collect-finance-news` がスキルを参照し、全機能が動作
+- [ ] 8つの finance-news-* エージェントがスキルを参照
+
+#### Wave 1-3: スキル作成
 - [ ] `.claude/skills/market-data/` が存在し、SKILL.md, guide.md, examples/ が揃っている
 - [ ] `.claude/skills/rss-integration/` が存在し、SKILL.md, guide.md, examples/ が揃っている
 - [ ] `.claude/skills/technical-analysis/` が存在し、SKILL.md, guide.md, examples/ が揃っている
@@ -1288,12 +1631,13 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 #### エージェント更新
 - [ ] `finance-technical-analysis.md` が `skills: [market-data, technical-analysis]` を参照
 - [ ] `finance-economic-analysis.md` が `skills: [market-data, financial-calculations]` を参照
-- [ ] `finance-news-collector.md` が `skills: [rss-integration]` を参照
+- [ ] `finance-news-collector.md` が `skills: [finance-news-workflow, rss-integration]` を参照
 - [ ] `finance-sec-filings.md` が `skills: [sec-edgar]` を参照
 - [ ] `finance-web.md` が `skills: [web-research]` を参照
 
 #### 品質確認
 - [ ] 全スキルで examples/ のコードが実行可能
+- [ ] `/collect-finance-news` コマンドが正常動作（最優先で確認）
 - [ ] `/finance-research` コマンドが正常動作
 
 ---
@@ -1312,31 +1656,68 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 | `src/rss/services/*.py` | RSS サービス層 |
 | `src/rss/types.py` | RSS 型定義 |
 
+#### 参照元（Wave 0 - ニュース収集）
+
+| ファイル | 役割 |
+|---------|------|
+| `.claude/commands/collect-finance-news.md` | ニュース収集コマンド |
+| `.claude/skills/finance-news-collection/SKILL.md` | 既存ワークフロー定義 |
+| `.claude/agents/finance-news-orchestrator.md` | オーケストレーター |
+| `.claude/agents/finance-news-collector.md` | メインコレクター |
+| `.claude/agents/finance-news-*.md` (6件) | テーマ別エージェント |
+| `data/config/finance-news-themes.json` | テーマ設定ファイル |
+
 #### 新規作成
 
 | ファイル | 内容 |
 |----------|------|
+| `.claude/skills/finance-news-workflow/` | **金融ニュース収集ワークフロースキル（最優先）** |
 | `.claude/skills/market-data/` | 市場データ取得スキル一式 |
 | `.claude/skills/rss-integration/` | RSS 統合スキル一式 |
 | `.claude/skills/technical-analysis/` | テクニカル分析スキル一式 |
 | `.claude/skills/financial-calculations/` | 金融計算スキル一式 |
 | `.claude/skills/sec-edgar/` | SEC EDGAR スキル一式 |
 | `.claude/skills/web-research/` | Web 調査スキル一式 |
+| `.claude/skills/worktree-management/` | **Worktree管理スキル（フェーズ2追加）** |
+| `.claude/skills/git-workflow/` | **Git操作スキル（フェーズ2追加）** |
 
-#### 変更対象（エージェント）
+#### 変更対象（フェーズ2 - Git操作コマンド）
 
 | ファイル | 変更内容 |
 |----------|----------|
+| `.claude/commands/worktree.md` | worktree-management スキルを参照 |
+| `.claude/commands/worktree-done.md` | worktree-management スキルを参照 |
+| `.claude/commands/plan-worktrees.md` | worktree-management スキルを参照 |
+| `.claude/commands/create-worktrees.md` | worktree-management スキルを参照 |
+| `.claude/commands/delete-worktrees.md` | worktree-management スキルを参照 |
+| `.claude/commands/push.md` | git-workflow スキルを参照 |
+| `.claude/commands/commit-and-pr.md` | git-workflow スキルを参照 |
+| `.claude/commands/merge-pr.md` | git-workflow スキルを参照 |
+| `.claude/commands/gemini-search.md` | git-workflow スキルを参照 |
+
+#### 変更対象（フェーズ3 - 金融エージェント）
+
+| ファイル | 変更内容 |
+|----------|----------|
+| `.claude/commands/collect-finance-news.md` | finance-news-workflow スキルを参照 |
+| `.claude/agents/finance-news-orchestrator.md` | `skills: [finance-news-workflow, rss-integration]` を追加 |
+| `.claude/agents/finance-news-collector.md` | `skills: [finance-news-workflow, rss-integration]` を追加 |
+| `.claude/agents/finance-news-*.md` (6件) | `skills: [finance-news-workflow]` を追加 |
 | `.claude/agents/finance-technical-analysis.md` | `skills: [market-data, technical-analysis]` を追加 |
 | `.claude/agents/finance-economic-analysis.md` | `skills: [market-data, financial-calculations]` を追加 |
 | `.claude/agents/finance-market-data.md` | `skills: [market-data]` を追加 |
-| `.claude/agents/finance-news-collector.md` | `skills: [rss-integration]` を追加 |
 | `.claude/agents/finance-sec-filings.md` | `skills: [sec-edgar]` を追加 |
 | `.claude/agents/finance-web.md` | `skills: [web-research]` を追加 |
 | `.claude/agents/finance-wiki.md` | `skills: [web-research]` を追加 |
 | `.claude/agents/finance-fact-checker.md` | `skills: [sec-edgar, web-research]` を追加 |
 | `.claude/agents/dr-source-aggregator.md` | `skills: [market-data, web-research]` を追加 |
 | `.claude/agents/dr-stock-analyzer.md` | `skills: [market-data, technical-analysis, sec-edgar]` を追加 |
+
+#### 削除対象
+
+| ファイル | 理由 |
+|----------|------|
+| `.claude/skills/finance-news-collection/` | finance-news-workflow に統合 |
 
 ---
 
@@ -1537,6 +1918,29 @@ allowed-tools: Read, WebFetch, WebSearch, ToolSearch, mcp__tavily__*
 | Pythonスクリプト | **実装しない**（既存ツール ruff/pyright/pytest を活用） |
 | docs/coding-standards.md | スキルへ移行（docs/はスキルへの参照リンクのみ残す） |
 | docs/testing-strategy.md | スキルへ移行（docs/はスキルへの参照リンクのみ残す） |
+
+---
+
+## 決定事項（フェーズ2 Wave 2 追加 - Git操作）
+
+| 項目 | 決定内容 |
+|------|----------|
+| Git操作コマンド | スキルを参照する形式に変更（**スキル完成後、削除**） |
+| worktree関連 | worktree-management スキルに統合 |
+| Git操作関連 | git-workflow スキルに統合 |
+| gemini-search | git-workflow スキルに統合（Web検索機能） |
+
+---
+
+## 決定事項（フェーズ3 Wave 0 追加 - ニュース収集）
+
+| 項目 | 決定内容 |
+|------|----------|
+| 最優先 | `/collect-finance-news` のスキル移行を**フェーズ3の最優先**とする |
+| スキル統合 | 既存 finance-news-collection スキルを finance-news-workflow に統合 |
+| コマンド | スキルを参照する形式に変更（**スキル完成後、削除**） |
+| テーマ別エージェント | 維持、スキル参照を追加 |
+| 設定ファイル | `data/config/finance-news-themes.json` は維持 |
 
 ---
 
