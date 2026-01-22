@@ -5,6 +5,21 @@ description: t-wada流TDDとテスト作成のベストプラクティス
 
 # テスト戦略ガイドライン
 
+> **Note**: このドキュメントはテスト戦略の概要を提供します。
+> 詳細なガイドラインとテンプレートは [tdd-development スキル](./../.claude/skills/tdd-development/SKILL.md) を参照してください。
+
+## 詳細ナレッジベース
+
+TDD の詳細なガイドラインとテンプレートは以下のスキルを参照:
+
+| リソース | パス | 説明 |
+|---------|------|------|
+| **SKILL.md** | `.claude/skills/tdd-development/SKILL.md` | TDDの基本、命名規則、優先度設計 |
+| **guide.md** | `.claude/skills/tdd-development/guide.md` | 三角測量、テスト設計プロセス |
+| **単体テスト** | `.claude/skills/tdd-development/templates/unit-test.md` | 単体テストテンプレート |
+| **プロパティテスト** | `.claude/skills/tdd-development/templates/property-test.md` | Hypothesisテンプレート |
+| **統合テスト** | `.claude/skills/tdd-development/templates/integration-test.md` | 統合テストテンプレート |
+
 ## TDD の基本サイクル
 
 ```
@@ -289,6 +304,14 @@ uv run pytest tests/unit/test_example.py::TestExampleClass::test_正常系_初�
 ```
 
 ## 参照
+
+### TDD スキル（推奨）
+
+-   **SKILL.md**: `.claude/skills/tdd-development/SKILL.md`
+-   **詳細ガイド**: `.claude/skills/tdd-development/guide.md`
+-   **テンプレート**: `.claude/skills/tdd-development/templates/`
+
+### テンプレートファイル
 
 -   単体テスト例: `template/tests/unit/test_example.py`
 -   プロパティテスト例: `template/tests/property/test_helpers_property.py`

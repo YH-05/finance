@@ -9,6 +9,7 @@ depends_on:
   - test-property-writer
 skills:
   - coding-standards
+  - tdd-development
 ---
 
 # 統合テスト作成エージェント

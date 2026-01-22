@@ -7,6 +7,7 @@ depends_on:
   - test-planner
 skills:
   - coding-standards
+  - tdd-development
 ---
 
 # プロパティテスト作成エージェント

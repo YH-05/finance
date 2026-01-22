@@ -6,6 +6,7 @@ color: cyan
 skills:
   - error-handling
   - coding-standards
+  - tdd-development
 ---
 
 # 機能実装エージェント

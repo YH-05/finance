@@ -4,6 +4,8 @@ description: テスト設計を行うサブエージェント。テストTODOリ
 model: inherit
 color: cyan
 depends_on: []
+skills:
+  - tdd-development
 ---
 
 # テスト設計エージェント

@@ -3,6 +3,8 @@ name: test-writer
 description: t-wada流TDDに基づいてテストを作成するサブエージェント。Red→Green→Refactorサイクルを実行する。
 model: inherit
 color: orange
+skills:
+  - tdd-development
 ---
 
 # テスト作成エージェント
