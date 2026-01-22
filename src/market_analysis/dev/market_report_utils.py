@@ -1121,8 +1121,8 @@ class BloombergDataProcessor:
             if table_exists:
                 # テーブルが存在する場合、最新の日付を取得
                 latest_date_str = pd.read_sql(
-                    f"SELECT MAX(Date) FROM {TABLE_NAME}",
-                    conn,  # nosec B608
+                    f"SELECT MAX(Date) FROM {TABLE_NAME}",  # nosec B608
+                    conn,
                 ).iloc[0, 0]
 
                 if latest_date_str:
@@ -1278,8 +1278,8 @@ class BloombergDataProcessor:
             if table_exists:
                 # テーブルが存在する場合、最新の日付を取得
                 latest_date_str = pd.read_sql(
-                    f"SELECT MAX(Date) FROM {TABLE_NAME}",
-                    conn,  # nosec B608
+                    f"SELECT MAX(Date) FROM {TABLE_NAME}",  # nosec B608
+                    conn,
                 ).iloc[0, 0]
 
                 if latest_date_str:
