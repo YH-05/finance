@@ -12,7 +12,7 @@
 
 | フェーズ | 内容 | ステータス |
 |---------|------|----------|
-| フェーズ 0 | 基盤整備（Project作成、テンプレート、仕様書） | Todo |
+| フェーズ 0 | 基盤整備（Project作成、テンプレート、仕様書） | Done |
 | フェーズ 1 | レポジトリ管理スキル（7スキル作成） | Todo |
 | フェーズ 2 | コーディングスキル（3スキル作成） | Todo |
 | フェーズ 3 | 金融分析スキル（後続） | Backlog |
@@ -29,7 +29,7 @@
 | 0.1 | GitHub Project「System Update」の作成 | なし | Done | - |
 | 0.2 | スキル標準構造テンプレートの作成 | なし | Done | [#598](https://github.com/YH-05/finance/issues/598) |
 | 0.3 | スキルプリロード仕様書の作成 | 0.2 | Done | [#599](https://github.com/YH-05/finance/issues/599) |
-| 0.4 | エージェントへのスキル参照パターンの確定 | 0.3 | Todo | [#600](https://github.com/YH-05/finance/issues/600) |
+| 0.4 | エージェントへのスキル参照パターンの確定 | 0.3 | Done | [#600](https://github.com/YH-05/finance/issues/600) |
 
 ---
 
