@@ -330,7 +330,7 @@ finance/                                    # Project root
 │   ├── commands/                           # (37 commands)
 │   ├── commands_sample/
 │   ├── rules/                              # 共有ルール定義
-│   ├── skills/                             # (13 skills)
+│   ├── skills/                             # (14 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
@@ -343,7 +343,8 @@ finance/                                    # Project root
 │   │   ├── prd-writing/
 │   │   ├── project-file/
 │   │   ├── project-status-sync/
-│   │   └── repository-structure/
+│   │   ├── repository-structure/
+│   │   └── task-decomposition/
 │   ├── sounds/
 │   ├── settings.json
 │   ├── settings.local.json
