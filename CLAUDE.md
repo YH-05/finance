@@ -327,10 +327,10 @@ finance/                                    # Project root
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
 │   ├── archive/
-│   ├── commands/                           # (37 commands)
+│   ├── commands/                           # (28 commands)
 │   ├── commands_sample/
 │   ├── rules/                              # 共有ルール定義
-│   ├── skills/                             # (14 skills)
+│   ├── skills/                             # (20 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
@@ -340,11 +340,17 @@ finance/                                    # Project root
 │   │   ├── finance-news-collection/
 │   │   ├── functional-design/
 │   │   ├── glossary-creation/
+│   │   ├── index/
+│   │   ├── issue-creation/
+│   │   ├── issue-implementation/
+│   │   ├── issue-refinement/
+│   │   ├── issue-sync/
 │   │   ├── prd-writing/
-│   │   ├── project-file/
-│   │   ├── project-status-sync/
+│   │   ├── project-management/
 │   │   ├── repository-structure/
-│   │   └── task-decomposition/
+│   │   ├── skill-expert/
+│   │   ├── task-decomposition/
+│   │   └── workflow-expert/
 │   ├── sounds/
 │   ├── settings.json
 │   ├── settings.local.json
