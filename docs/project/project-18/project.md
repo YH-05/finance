@@ -82,7 +82,7 @@
 |---|--------|------|------|----------|-------|
 | 13 | タスク分解スキル SKILL.md の作成 | M | #3 | Done | [#613](https://github.com/YH-05/finance/issues/613) |
 | 14 | タスク分解スキル guide.md の作成 | M | #13 | Done | [#614](https://github.com/YH-05/finance/issues/614) |
-| 15 | task-decomposer エージェントをスキルに統合 | M | #14 | Todo | [#615](https://github.com/YH-05/finance/issues/615) |
+| 15 | task-decomposer エージェントをスキルに統合 | M | #14 | Done | [#615](https://github.com/YH-05/finance/issues/615) |
 
 #### Issue管理スキル
 
