@@ -124,12 +124,11 @@ ls -d .claude/skills/*/SKILL.md | xargs dirname | xargs basename -a
 - `create-worktrees`
 - `deep-research`
 - `development-guidelines`
-- `finance-news-collection`
+- `finance-news-workflow`
 - `functional-design`
 - `glossary-creation`
 - `prd-writing`
-- `project-file`
-- `project-status-sync`
+- `project-management`
 - `repository-structure`
 
 ### 5. `allowed-tools` フィールド（オプション）
