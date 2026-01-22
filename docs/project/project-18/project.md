@@ -74,7 +74,7 @@
 |---|--------|------|------|----------|-------|
 | 10 | プロジェクト管理スキル SKILL.md の作成 | M | #3 | Done | [#610](https://github.com/YH-05/finance/issues/610) |
 | 11 | プロジェクト管理スキル guide.md の作成 | M | #10 | Done | [#611](https://github.com/YH-05/finance/issues/611) |
-| 12 | 既存プロジェクト管理コマンド/スキルを置換 | M | #11 | Todo | [#612](https://github.com/YH-05/finance/issues/612) |
+| 12 | 既存プロジェクト管理コマンド/スキルを置換 | M | #11 | Done | [#612](https://github.com/YH-05/finance/issues/612) |
 
 #### タスク分解スキル
 
