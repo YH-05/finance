@@ -330,26 +330,34 @@ finance/                                    # Project root
 │   ├── commands/                           # (28 commands)
 │   ├── commands_sample/
 │   ├── rules/                              # 共有ルール定義
-│   ├── skills/                             # (20 skills)
+│   ├── skills/                             # (31 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
+│   │   ├── commit-and-pr/
 │   │   ├── create-worktrees/
 │   │   ├── deep-research/
+│   │   ├── delete-worktrees/
 │   │   ├── development-guidelines/
 │   │   ├── finance-news-collection/
 │   │   ├── functional-design/
+│   │   ├── gemini-search/
 │   │   ├── glossary-creation/
 │   │   ├── index/
 │   │   ├── issue-creation/
 │   │   ├── issue-implementation/
 │   │   ├── issue-refinement/
 │   │   ├── issue-sync/
+│   │   ├── merge-pr/
+│   │   ├── plan-worktrees/
 │   │   ├── prd-writing/
 │   │   ├── project-management/
+│   │   ├── push/
 │   │   ├── repository-structure/
 │   │   ├── skill-expert/
 │   │   ├── task-decomposition/
+│   │   ├── worktree/
+│   │   ├── worktree-done/
 │   │   └── workflow-expert/
 │   ├── sounds/
 │   ├── settings.json

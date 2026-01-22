@@ -1,11 +1,12 @@
 ---
-description: worktreeの開発完了後、PRマージ確認を経て安全にクリーンアップ
-skill-preload: worktree-done
+name: worktree-done
+description: worktreeの開発完了後、PRマージ確認を経て安全にクリーンアップするスキル。
+/worktree-done コマンドで使用。マージ確認→worktree削除→ブランチ削除の安全なクリーンアップを実行。
+
+allowed-tools: Read, Bash
 ---
 
-# /worktree-done - Worktree 完了・クリーンアップ
-
-> **スキル参照**: `.claude/skills/worktree-done/SKILL.md`
+# Worktree Done - Worktree 完了・クリーンアップ
 
 worktree での開発完了後、PR がメインブランチにマージされたことを確認してから、worktree とブランチを安全に削除します。
 

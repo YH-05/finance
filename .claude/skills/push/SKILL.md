@@ -1,11 +1,12 @@
 ---
-description: 変更をコミットしてリモートにプッシュ
-skill-preload: push
+name: push
+description: 変更をコミットしてリモートにプッシュするスキル。
+/push コマンドで使用。コミットメッセージの自動生成、ステージング、プッシュを一括実行。
+
+allowed-tools: Read, Bash
 ---
 
-# コミット & プッシュ
-
-> **スキル参照**: `.claude/skills/push/SKILL.md`
+# Push - コミット & プッシュ
 
 変更をコミットし、リモートリポジトリにプッシュします。
 

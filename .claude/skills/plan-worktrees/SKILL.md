@@ -1,11 +1,12 @@
 ---
-description: GitHub Projectを参照し、Todoの Issue を並列開発用にグルーピング表示
-skill-preload: plan-worktrees
+name: plan-worktrees
+description: GitHub Projectを参照し、TodoのIssueを並列開発用にグルーピング表示するスキル。
+/plan-worktrees コマンドで使用。依存関係を考慮した並列開発計画の可視化を行う。
+
+allowed-tools: Read, Bash
 ---
 
-# /plan-worktrees - Worktree 並列開発計画
-
-> **スキル参照**: `.claude/skills/plan-worktrees/SKILL.md`
+# Plan Worktrees - Worktree 並列開発計画
 
 GitHub Project の Todo 状態の Issue を分析し、worktree による並列開発のためのグルーピングを提案します。
 
@@ -315,35 +316,6 @@ Wave 1 の PR がマージされたら Wave 2 に進む。
 
 ---
 
-## ステップ 6: 追加情報（オプション）
-
-### 6.1 ラベル別サマリー
-
-```markdown
-## 📊 ラベル別サマリー
-
-| ラベル | Issue 数 | Wave 分布 |
-|--------|----------|-----------|
-| priority:high | 3 | Wave 1: 2, Wave 2: 1 |
-| priority:medium | 5 | Wave 1: 1, Wave 2: 3, Wave 3: 1 |
-| type:feature | 4 | Wave 1: 2, Wave 2: 2 |
-| type:test | 2 | Wave 2: 2 |
-```
-
-### 6.2 クリティカルパス
-
-```markdown
-## 🛤️ クリティカルパス
-
-最も長い依存チェーン:
-
-#10 → #12 → #15 → #18（4 ステップ）
-
-このパスの Issue を優先的に完了させることで、全体のリードタイムを短縮できます。
-```
-
----
-
 ## エラーハンドリング
 
 | ケース | 対処 |
@@ -365,7 +337,7 @@ Wave 1 の PR がマージされたら Wave 2 に進む。
 ================================================================================
 
 Project: #1
-リポジトリ: YH-05/prj-note
+リポジトリ: YH-05/finance
 Todo Issue: 4 件
 Wave 数: 2
 
@@ -411,8 +383,8 @@ worktree 完了後:
 | コマンド | 説明 |
 |----------|------|
 | `/worktree` | 新しい worktree を作成 |
+| `/create-worktrees` | 複数 worktree を一括作成 |
 | `/worktree-done` | worktree の完了とクリーンアップ |
-| `/issue` | Issue 管理・タスク分解 |
 | `/commit-and-pr` | コミットと PR 作成 |
 
 ---

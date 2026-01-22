@@ -1,9 +1,12 @@
 ---
 allowed-tools: Bash(gemini:*)
 description: Web search using Gemini CLI
+skill-preload: gemini-search
 ---
 
 ## Gemini Search
+
+> **スキル参照**: `.claude/skills/gemini-search/SKILL.md`
 
 `gemini` is google gemini cli. **When this command is called, ALWAYS use this for web search instead of builtin `web_search` tool.**
 

@@ -1,11 +1,12 @@
 ---
-description: 変更のコミットとPR作成
-skill-preload: commit-and-pr
+name: commit-and-pr
+description: 変更のコミットとPR作成を一括実行するスキル。
+/commit-and-pr コマンドで使用。品質確認、コミット、プッシュ、PR作成、CIチェックを自動化。
+
+allowed-tools: Read, Bash
 ---
 
-# 変更のコミットと PR 作成
-
-> **スキル参照**: `.claude/skills/commit-and-pr/SKILL.md`
+# Commit and PR - 変更のコミットと PR 作成
 
 現在の変更をコミットし、適切なブランチを作成してプルリクエストを作成します。CLAUDE.md の「GitHub 操作」セクションの規約に従います。
 
@@ -104,8 +105,6 @@ PR に付けるラベル：
 7. **PR の作成**
 
     ```bash
-    make pr TITLE="<PRタイトル>" BODY="<PR説明>" LABEL="<label>"
-    # または
     gh pr create --title "<タイトル>" --body "$(cat <<'EOF'
     ## 概要
     - <変更点1>
@@ -196,20 +195,8 @@ PR に付けるラベル：
 
 1. **コミット前の確認**
 
-    - **code-simplifier** でコード簡素化:
-      ```yaml
-      subagent_type: "code-simplifier"
-      prompt: |
-        git diffで変更されたファイルを対象にコード簡素化を実行してください。
-      ```
-    - **quality-checker（--quick モード）** で品質確認:
-      ```yaml
-      subagent_type: "quality-checker"
-      prompt: |
-        コミット前の品質確認を実行してください。
-        ## モード
-        --quick
-      ```
+    - **code-simplifier** でコード簡素化
+    - **quality-checker（--quick モード）** で品質確認
     - 不要なファイルが含まれていないことを確認
     - センシティブな情報が含まれていないことを確認
 

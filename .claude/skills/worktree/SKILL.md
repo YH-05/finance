@@ -1,15 +1,16 @@
 ---
-description: 新しいworktreeとブランチを作成して開発を開始
-skill-preload: worktree
+name: worktree
+description: 新しいworktreeとブランチを作成して開発を開始するスキル。
+/worktree コマンドで使用。並列開発のための独立した作業環境を即座に準備する。
+
+allowed-tools: Read, Bash
 ---
 
-# /worktree - 開発用Worktree作成
-
-> **スキル参照**: `.claude/skills/worktree/SKILL.md`
+# Worktree - 開発用Worktree作成
 
 新しい開発・実装を行う際に、メインブランチから新しいworktreeとブランチを派生させて、そのworktreeで開発を開始します。
 
-**目的**: 並行開発のための独立した作業環境を即座に準備
+**目的**: 並列開発のための独立した作業環境を即座に準備
 
 ## 使用例
 
@@ -121,9 +122,9 @@ worktree は親ディレクトリの `.worktrees/` フォルダに作成しま�
 
 ```
 parent-directory/
-├── pydev-claude-code/          # メインリポジトリ (現在地)
+├── finance/                    # メインリポジトリ (現在地)
 └── .worktrees/
-    └── pydev-claude-code/
+    └── finance/
         ├── feature-user-auth/  # worktree 1
         ├── fix-login-bug/      # worktree 2
         └── ...
@@ -133,7 +134,7 @@ parent-directory/
 
 ```python
 # 例: /worktree feature/user-authentication
-repo_name = "pydev-claude-code"
+repo_name = "finance"
 branch_name = "feature/user-authentication"
 worktree_dir_name = branch_name.replace("/", "-")  # "feature-user-authentication"
 worktree_path = f"../.worktrees/{repo_name}/{worktree_dir_name}"
@@ -309,7 +310,7 @@ CLAUDE.md の Git 規則に従います:
 |----------|------|
 | `/push` | 変更をコミット & プッシュ |
 | `/commit-and-pr` | コミット & PR作成 |
-| `/issue` | Issue管理・タスク分解 |
+| `/worktree-done` | worktree の完了とクリーンアップ |
 
 ---
 

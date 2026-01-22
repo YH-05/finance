@@ -1,11 +1,12 @@
 ---
-description: 複数のworktreeとブランチを一括削除
-skill-preload: delete-worktrees
+name: delete-worktrees
+description: 複数のworktreeとブランチを一括削除するスキル。
+/delete-worktrees コマンドで使用。開発完了後、複数のworktreeを効率的にクリーンアップする。
+
+allowed-tools: Read, Bash
 ---
 
-# /delete-worktrees - 複数Worktree一括削除
-
-> **スキル参照**: `.claude/skills/delete-worktrees/SKILL.md`
+# Delete Worktrees - 複数Worktree一括削除
 
 複数の worktree とブランチを一括で削除します。
 
