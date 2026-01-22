@@ -1597,7 +1597,7 @@ def calculate_kalman_beta(
         # OLSで初期アルファとベータを推定
         from scipy.stats import linregress
 
-        slope_init, intercept_init, _, _, _ = linregress(warmup_X.flatten(), warmup_y)
+        slope_init, _intercept_init, _, _, _ = linregress(warmup_X.flatten(), warmup_y)
 
         # モデルの構築（外生変数を使わず、観測値を調整する方法）
         # y_adjusted = y - intercept (アルファを除去)
