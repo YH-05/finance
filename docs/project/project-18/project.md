@@ -43,7 +43,7 @@
 |---|--------|------|------|----------|-------|
 | 1 | skill-expert スキル SKILL.md の作成 | M | なし | Done | [#601](https://github.com/YH-05/finance/issues/601) |
 | 2 | skill-expert スキル guide.md の作成 | M | #1 | Done | [#602](https://github.com/YH-05/finance/issues/602) |
-| 3 | skill-expert スキル template.md の作成 | S | #1 | Todo | [#603](https://github.com/YH-05/finance/issues/603) |
+| 3 | skill-expert スキル template.md の作成 | S | #1 | Done | [#603](https://github.com/YH-05/finance/issues/603) |
 
 #### agent-expert スキル拡張
 
@@ -56,7 +56,7 @@
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
 | 5 | workflow-expert スキル SKILL.md の作成 | M | なし | Done | [#605](https://github.com/YH-05/finance/issues/605) |
-| 6 | workflow-expert スキル guide.md の作成 | M | #5 | Todo | [#606](https://github.com/YH-05/finance/issues/606) |
+| 6 | workflow-expert スキル guide.md の作成 | M | #5 | Done | [#606](https://github.com/YH-05/finance/issues/606) |
 
 ### Wave 1: レポジトリ管理スキル（並列実装可）
 
