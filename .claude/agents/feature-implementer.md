@@ -5,6 +5,7 @@ model: inherit
 color: cyan
 skills:
   - error-handling
+  - coding-standards
 ---
 
 # 機能実装エージェント

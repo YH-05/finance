@@ -5,6 +5,7 @@ model: inherit
 color: green
 skills:
   - error-handling
+  - coding-standards
 ---
 
 # コード簡素化エージェント

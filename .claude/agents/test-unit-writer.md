@@ -5,6 +5,8 @@ model: inherit
 color: green
 depends_on:
   - test-planner
+skills:
+  - coding-standards
 ---
 
 # 単体テスト作成エージェント
