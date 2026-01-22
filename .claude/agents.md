@@ -29,6 +29,17 @@ Task ツールで使用可能なサブエージェント（subagent_type）の�
 | `feature-implementer` | TDDループを自動実行。GitHub Issueのチェックボックスを更新しながら実装 |
 | `debugger` | 体系的なデバッグ。問題特定、根本原因分析、解決策実装 |
 | `improvement-implementer` | エビデンスベースの改善実装。メトリクス測定→改善→検証 |
+| `code-simplifier` | コードの複雑性削減と可読性向上 |
+
+## テストエージェント
+
+| エージェント | 説明 |
+|-------------|------|
+| `test-planner` | テスト設計とTODOリスト作成 |
+| `test-unit-writer` | 単体テスト作成 |
+| `test-property-writer` | プロパティベーステスト作成 |
+| `test-integration-writer` | 統合テスト作成 |
+| `test-orchestrator` | テスト作成の並列実行制御 |
 
 ## ドキュメントエージェント
 
@@ -41,6 +52,18 @@ Task ツールで使用可能なサブエージェント（subagent_type）の�
 | `glossary-writer` | 用語集作成。ライブラリ固有の用語と技術用語を定義 |
 | `doc-reviewer` | ドキュメントの品質レビューと改善提案 |
 | `task-decomposer` | タスク分解とGitHub Issues連携。類似性判定、依存関係管理、project.mdとの双方向同期 |
+
+## PRレビューエージェント
+
+| エージェント | 説明 |
+|-------------|------|
+| `pr-readability` | 可読性・命名規則・ドキュメント検証 |
+| `pr-design` | SOLID原則・設計パターン・DRY検証 |
+| `pr-performance` | アルゴリズム複雑度・メモリ効率・I/O検証 |
+| `pr-security-code` | コードセキュリティ（OWASP A01-A05）検証 |
+| `pr-security-infra` | インフラセキュリティ（OWASP A06-A10）検証 |
+| `pr-test-coverage` | テストカバレッジ・エッジケース検証 |
+| `pr-test-quality` | テスト品質（命名・アサーション・モック）検証 |
 
 ## Issue管理エージェント
 
@@ -59,6 +82,39 @@ Task ツールで使用可能なサブエージェント（subagent_type）の�
 | エージェント | 説明 |
 |-------------|------|
 | `finance-news-collector` | RSSフィードから金融ニュースを収集し、GitHub Projectに投稿 |
+| `finance-news-orchestrator` | テーマ別ニュース収集の並列実行制御 |
+| `finance-news-ai` | AI関連ニュースを収集・投稿 |
+| `finance-news-index` | 株価指数関連ニュースを収集・投稿 |
+| `finance-news-stock` | 個別銘柄関連ニュースを収集・投稿 |
+| `finance-news-sector` | セクター分析関連ニュースを収集・投稿 |
+| `finance-news-macro` | マクロ経済関連ニュースを収集・投稿 |
+| `finance-news-finance` | 金融・財務関連ニュースを収集・投稿 |
+| `news-article-fetcher` | 記事URLから本文取得・日本語要約生成 |
+| `weekly-comment-indices-fetcher` | 週次コメント用指数ニュース収集 |
+| `weekly-comment-mag7-fetcher` | 週次コメント用MAG7ニュース収集 |
+| `weekly-comment-sectors-fetcher` | 週次コメント用セクターニュース収集 |
+| `finance-article-writer` | リサーチ結果から記事初稿を生成 |
+| `finance-claims` | 金融関連の主張・事実を抽出 |
+| `finance-claims-analyzer` | 情報ギャップと追加調査の必要性を判定 |
+| `finance-critic-compliance` | 金融規制・コンプライアンス準拠確認 |
+| `finance-critic-data` | データ・数値の正確性検証 |
+| `finance-critic-fact` | 事実正確性検証 |
+| `finance-critic-readability` | 読みやすさと訴求力評価 |
+| `finance-critic-structure` | 文章構成評価 |
+| `finance-decisions` | 主張の採用可否判定 |
+| `finance-economic-analysis` | FRED経済指標分析 |
+| `finance-fact-checker` | 主張の信頼度判定 |
+| `finance-market-data` | 市場データ取得・保存 |
+| `finance-query-generator` | 検索クエリ生成 |
+| `finance-reviser` | 批評結果を反映した記事修正 |
+| `finance-sec-filings` | SEC EDGAR財務データ取得・分析 |
+| `finance-sentiment-analyzer` | センチメント分析 |
+| `finance-source` | 情報源の抽出・整理 |
+| `finance-technical-analysis` | テクニカル指標分析 |
+| `finance-topic-suggester` | トピック提案・スコアリング |
+| `finance-visualize` | 分析結果の可視化 |
+| `finance-web` | Web検索で金融情報収集 |
+| `finance-wiki` | Wikipedia背景情報収集 |
 
 ## 設計・エキスパートエージェント
 
@@ -75,3 +131,4 @@ Task ツールで使用可能なサブエージェント（subagent_type）の�
 |-------------|------|
 | `claude-code-guide` | Claude Code CLI、Agent SDK、APIに関する質問対応 |
 | `statusline-setup` | ステータスライン設定 |
+| `package-readme-updater` | パッケージREADME自動更新 |

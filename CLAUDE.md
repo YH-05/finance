@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-20
+updated_at: 2026-01-22
 # このプロパティは、Claude Codeが関連するドキュメントの更新を検知するために必要です。消去しないでください。
 ---
 
@@ -322,7 +322,7 @@ with profile_context("処理名"):  # コンテキスト計測
 ```
 finance/                                    # Project root
 ├── .claude/                                # Claude Code configuration
-│   ├── agents/                             # (67 agents)
+│   ├── agents/                             # (70 agents)
 │   │   ├── deep-research/
 │   │   └── finance_news_collector/         # テーマ別収集エージェント
 │   ├── agents_sample/
@@ -330,7 +330,7 @@ finance/                                    # Project root
 │   ├── commands/                           # (28 commands)
 │   ├── commands_sample/
 │   ├── rules/                              # 共有ルール定義
-│   ├── skills/                             # (31 skills)
+│   ├── skills/                             # (32 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
@@ -358,7 +358,8 @@ finance/                                    # Project root
 │   │   ├── task-decomposition/
 │   │   ├── worktree/
 │   │   ├── worktree-done/
-│   │   └── workflow-expert/
+│   │   ├── workflow-expert/
+│   │   └── finance-news-workflow/
 │   ├── sounds/
 │   ├── settings.json
 │   ├── settings.local.json
