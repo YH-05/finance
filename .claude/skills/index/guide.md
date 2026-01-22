@@ -1,5 +1,270 @@
 # Index スキル 設計ガイド
 
+このガイドは CLAUDE.md/README.md の自動更新機能について詳細に説明します。
+
+## 目次
+
+1. [CLAUDE.md 更新手順](#claudemd-更新手順)
+2. [README.md 更新手順](#readmemd-更新手順)
+3. [マーカーセクション形式](#マーカーセクション形式)
+4. [除外パターン一覧](#除外パターン一覧)
+5. [自動検出の仕組み](#自動検出の仕組み)
+6. [並列実行アーキテクチャ](#並列実行アーキテクチャ)
+7. [エラーハンドリング](#エラーハンドリング)
+8. [トラブルシューティング](#トラブルシューティング)
+
+---
+
+## CLAUDE.md 更新手順
+
+CLAUDE.md のディレクトリ構成セクションを自動更新する手順です。
+
+### 対象セクション
+
+CLAUDE.md 内の以下のマーカー間が更新対象:
+
+```markdown
+<!-- AUTO-GENERATED: DIRECTORY -->
+
+```
+finance/                                    # Project root
+├── .claude/                                # Claude Code configuration
+...
+```
+
+<!-- END: DIRECTORY -->
+```
+
+### 更新フロー
+
+```
+1. ディレクトリスキャンを実行
+   │
+   ├─ MCP ツール使用（推奨）
+   │   ToolSearch: "select:mcp__filesystem__directory_tree"
+   │   mcp__filesystem__directory_tree:
+   │     path: "."
+   │     max_depth: 4
+   │
+   └─ フォールバック（MCP 利用不可時）
+       Bash: "tree -L 4 -I '除外パターン' --dirsfirst"
+
+2. 除外パターンを適用してフィルタリング
+
+3. template.md に従ってフォーマット
+   - コメント付加（ファイル数、説明等）
+   - 省略表記の適用
+
+4. CLAUDE.md のマーカー間を置換
+   Edit:
+     file_path: "CLAUDE.md"
+     old_string: "<!-- AUTO-GENERATED: DIRECTORY -->...<!-- END: DIRECTORY -->"
+     new_string: "更新後の内容"
+```
+
+### 実行例
+
+```yaml
+# Step 1: ディレクトリ構成を取得
+ToolSearch:
+  query: "select:mcp__filesystem__directory_tree"
+
+mcp__filesystem__directory_tree:
+  path: "."
+  max_depth: 4
+
+# Step 2: CLAUDE.md を読み込み
+Read:
+  file_path: "CLAUDE.md"
+
+# Step 3: マーカー間を更新
+Edit:
+  file_path: "CLAUDE.md"
+  old_string: |
+    <!-- AUTO-GENERATED: DIRECTORY -->
+
+    ```
+    [古いディレクトリ構成]
+    ```
+
+    <!-- END: DIRECTORY -->
+  new_string: |
+    <!-- AUTO-GENERATED: DIRECTORY -->
+
+    ```
+    [新しいディレクトリ構成]
+    ```
+
+    <!-- END: DIRECTORY -->
+```
+
+---
+
+## README.md 更新手順
+
+README.md のプロジェクト構造セクションを自動更新する手順です。
+
+### 対象セクション
+
+README.md 内の以下のマーカー間が更新対象:
+
+```markdown
+<!-- AUTO-GENERATED: DIRECTORY -->
+
+```
+finance/                                    # Project root
+├── src/
+...
+```
+
+<!-- END: DIRECTORY -->
+```
+
+### 更新フロー
+
+CLAUDE.md と同様のフローですが、README.md 用に簡略化された構成を使用します:
+
+```
+1. ディレクトリスキャンを実行（CLAUDE.md と共通）
+
+2. README.md 用にフォーマット
+   - 主要ディレクトリのみ表示
+   - 詳細は CLAUDE.md 参照を促す
+
+3. README.md のマーカー間を置換
+```
+
+### パッケージ README の更新
+
+各パッケージ（src/*/）の README.md も `package-readme-updater` エージェントで更新可能:
+
+```yaml
+# 各パッケージの README を並列更新
+Task:
+  subagent_type: "package-readme-updater"
+  description: "Update finance README"
+  prompt: |
+    src/finance/ の README.md を更新してください。
+    パッケージ名: finance
+```
+
+**更新内容**:
+- ディレクトリ構成
+- 実装状況
+- 公開 API
+- 統計情報
+- クイックスタート
+- 使用例
+
+---
+
+## マーカーセクション形式
+
+自動更新されるセクションを識別するためのマーカー構文です。
+
+### 基本形式
+
+```markdown
+<!-- AUTO-GENERATED: SECTION_NAME -->
+
+自動生成される内容
+
+<!-- END: SECTION_NAME -->
+```
+
+### マーカー名一覧
+
+| マーカー名 | 使用ファイル | 内容 |
+|-----------|-------------|------|
+| `COMMANDS` | index.md | コマンド一覧テーブル |
+| `SKILLS` | index.md | スキル一覧テーブル |
+| `AGENTS` | index.md | エージェント一覧 |
+| `DIRECTORY` | index.md, CLAUDE.md, README.md | ディレクトリ構成 |
+
+### マーカー配置ルール
+
+1. **開始・終了マーカーはペアで必須**
+   - 片方だけでは動作しない
+   - 名前は完全一致が必要
+
+2. **マーカー間の内容は完全に置換される**
+   - 手動編集は次回更新時に上書き
+   - 永続化したい内容はマーカー外に配置
+
+3. **マーカーの入れ子は非対応**
+   - 同じ名前のマーカーを入れ子にしない
+   - 異なる名前でも入れ子は避ける
+
+### マーカー更新のロジック
+
+```python
+# 疑似コード
+def update_marker_section(content: str, marker_name: str, new_content: str) -> str:
+    start_marker = f"<!-- AUTO-GENERATED: {marker_name} -->"
+    end_marker = f"<!-- END: {marker_name} -->"
+
+    start_idx = content.find(start_marker)
+    end_idx = content.find(end_marker)
+
+    if start_idx == -1 or end_idx == -1:
+        raise MarkerNotFoundError(f"Marker pair not found: {marker_name}")
+
+    before = content[:start_idx + len(start_marker)]
+    after = content[end_idx:]
+
+    return f"{before}\n\n{new_content}\n\n{after}"
+```
+
+---
+
+## 除外パターン一覧
+
+ディレクトリスキャン時に除外されるパターンの完全なリストです。
+
+### 必須除外パターン
+
+| パターン | 説明 |
+|---------|------|
+| `__pycache__` | Python バイトコードキャッシュ |
+| `.git` | Git リポジトリメタデータ |
+| `.venv` | Python 仮想環境 |
+| `.pytest_cache` | pytest キャッシュ |
+| `.ruff_cache` | Ruff リンターキャッシュ |
+| `node_modules` | Node.js 依存関係 |
+| `*.egg-info` | Python パッケージメタデータ |
+
+### 追加除外パターン（任意）
+
+| パターン | 説明 |
+|---------|------|
+| `.mypy_cache` | mypy キャッシュ |
+| `.pyright` | Pyright キャッシュ |
+| `*.pyc` | コンパイル済み Python ファイル |
+| `.DS_Store` | macOS メタデータ |
+| `*.egg` | Python egg パッケージ |
+| `dist` | ビルド出力 |
+| `build` | ビルド出力 |
+| `.tox` | tox テスト環境 |
+| `.nox` | nox テスト環境 |
+| `htmlcov` | カバレッジ HTML レポート |
+| `.coverage` | カバレッジデータ |
+
+### tree コマンドでの除外指定
+
+```bash
+# 基本除外パターン
+tree -L 4 -I '__pycache__|.git|.venv|.pytest_cache|.ruff_cache|node_modules|*.egg-info' --dirsfirst
+
+# 拡張除外パターン
+tree -L 4 -I '__pycache__|.git|.venv|.pytest_cache|.ruff_cache|.mypy_cache|.pyright|node_modules|*.egg-info|*.pyc|.DS_Store|dist|build|htmlcov|.coverage' --dirsfirst
+```
+
+### MCP ツールでの除外
+
+MCP の `directory_tree` ツールは自動的に一般的なパターンを除外しますが、追加除外が必要な場合は結果をフィルタリングします。
+
+---
+
 ## 自動検出の仕組み
 
 ### コマンド検出
@@ -96,47 +361,6 @@ mcp__filesystem__directory_tree:
 
 # 方法2: フォールバック（MCP 利用不可時）
 Bash: "tree -L 4 -I '__pycache__|.git|.venv|.pytest_cache|.ruff_cache|node_modules|*.egg-info' --dirsfirst"
-```
-
-## マーカー構文
-
-### マーカーの形式
-
-```markdown
-<!-- AUTO-GENERATED: SECTION_NAME -->
-
-自動生成される内容
-
-<!-- END: SECTION_NAME -->
-```
-
-### 使用されるマーカー名
-
-| マーカー名 | ファイル | 内容 |
-|-----------|---------|------|
-| `COMMANDS` | index.md | コマンド一覧テーブル |
-| `SKILLS` | index.md | スキル一覧テーブル |
-| `AGENTS` | index.md | エージェント一覧 |
-| `DIRECTORY` | index.md, CLAUDE.md, README.md | ディレクトリ構成 |
-
-### マーカー更新ロジック
-
-```python
-# 疑似コード
-def update_marker_section(content: str, marker_name: str, new_content: str) -> str:
-    start_marker = f"<!-- AUTO-GENERATED: {marker_name} -->"
-    end_marker = f"<!-- END: {marker_name} -->"
-
-    start_idx = content.find(start_marker)
-    end_idx = content.find(end_marker)
-
-    if start_idx == -1 or end_idx == -1:
-        raise MarkerNotFoundError(f"Marker pair not found: {marker_name}")
-
-    before = content[:start_idx + len(start_marker)]
-    after = content[end_idx:]
-
-    return f"{before}\n\n{new_content}\n\n{after}"
 ```
 
 ## 並列実行アーキテクチャ
