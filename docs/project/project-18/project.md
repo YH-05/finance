@@ -64,16 +64,16 @@
 
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
-| 7 | index スキル SKILL.md の作成 | M | #3 | Todo | [#607](https://github.com/YH-05/finance/issues/607) |
-| 8 | index スキル guide.md の作成 | S | #7 | Todo | [#608](https://github.com/YH-05/finance/issues/608) |
+| 7 | index スキル SKILL.md の作成 | M | #3 | Done | [#607](https://github.com/YH-05/finance/issues/607) |
+| 8 | index スキル guide.md の作成 | S | #7 | Done | [#608](https://github.com/YH-05/finance/issues/608) |
 | 9 | 既存 /index コマンドを index スキルに置換 | S | #8 | Todo | [#609](https://github.com/YH-05/finance/issues/609) |
 
 #### プロジェクト管理スキル
 
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
-| 10 | プロジェクト管理スキル SKILL.md の作成 | M | #3 | Todo | [#610](https://github.com/YH-05/finance/issues/610) |
-| 11 | プロジェクト管理スキル guide.md の作成 | M | #10 | Todo | [#611](https://github.com/YH-05/finance/issues/611) |
+| 10 | プロジェクト管理スキル SKILL.md の作成 | M | #3 | Done | [#610](https://github.com/YH-05/finance/issues/610) |
+| 11 | プロジェクト管理スキル guide.md の作成 | M | #10 | Done | [#611](https://github.com/YH-05/finance/issues/611) |
 | 12 | 既存プロジェクト管理コマンド/スキルを置換 | M | #11 | Todo | [#612](https://github.com/YH-05/finance/issues/612) |
 
 #### タスク分解スキル
@@ -89,7 +89,7 @@
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
 | 16 | Issue管理スキル SKILL.md の作成 | M | #3 | Done | [#616](https://github.com/YH-05/finance/issues/616) |
-| 17 | Issue管理スキル guide.md の作成 | M | #16 | Todo | [#617](https://github.com/YH-05/finance/issues/617) |
+| 17 | Issue管理スキル guide.md の作成 | M | #16 | Done | [#617](https://github.com/YH-05/finance/issues/617) |
 | 18 | 既存 issue 系コマンドを Issue管理スキルに置換 | L | #17 | Todo | [#618](https://github.com/YH-05/finance/issues/618) |
 
 ### Wave 2: 統合
