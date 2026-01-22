@@ -4,6 +4,7 @@ description: コードの複雑性を削減し、可読性・保守性を向上�
 model: inherit
 color: green
 skills:
+  - error-handling
   - coding-standards
 ---
 

@@ -4,6 +4,7 @@ description: TDDループを自動実行するサブエージェント。GitHub 
 model: inherit
 color: cyan
 skills:
+  - error-handling
   - coding-standards
 ---
 
