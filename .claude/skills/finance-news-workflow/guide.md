@@ -1,0 +1,896 @@
+# 金融ニュース収集ワークフロー詳細ガイド
+
+このガイドは、finance-news-workflow スキルの詳細な処理フローとルールを説明します。
+
+## 目次
+
+1. [フィルタリングルール](#フィルタリングルール)
+2. [重複チェックロジック](#重複チェックロジック)
+3. [テーマ別処理フロー](#テーマ別処理フロー)
+4. [GitHub Project投稿](#github-project投稿)
+5. [エラーハンドリング詳細](#エラーハンドリング詳細)
+
+---
+
+## フィルタリングルール
+
+### 1. 時間フィルタ（--since）
+
+記事の**公開日時（published）**を基準にフィルタリングします。
+
+#### パラメータ値
+
+| 値 | 説明 | 例（現在が2026-01-22の場合） |
+|-----|------|------------------------------|
+| `1d` | 過去1日（24時間）以内 | 2026-01-21 00:00以降の記事 |
+| `3d` | 過去3日以内 | 2026-01-19 00:00以降の記事 |
+| `7d` | 過去7日以内 | 2026-01-15 00:00以降の記事 |
+
+#### 実装ロジック
+
+```python
+from datetime import datetime, timedelta, timezone
+
+def parse_since_param(since: str) -> int:
+    """--sinceパラメータを日数に変換
+
+    Parameters
+    ----------
+    since : str
+        期間指定（例: "1d", "3d", "7d"）
+
+    Returns
+    -------
+    int
+        日数（デフォルト: 1）
+    """
+    if since.endswith("d"):
+        try:
+            return int(since[:-1])
+        except ValueError:
+            pass
+    return 1  # デフォルト: 1日
+
+
+def filter_by_published_date(
+    items: list[dict],
+    since_days: int,
+) -> tuple[list[dict], int]:
+    """公開日時でフィルタリング
+
+    Parameters
+    ----------
+    items : list[dict]
+        RSS記事リスト
+    since_days : int
+        現在日時から遡る日数
+
+    Returns
+    -------
+    tuple[list[dict], int]
+        (フィルタリング後の記事リスト, 期間外でスキップされた件数)
+
+    Notes
+    -----
+    - published フィールドは記事の公開日時（RSSのpubDate）
+    - published がない場合は fetched_at で代替判定
+    - 両方ない場合は処理対象に含める（除外しない）
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(days=since_days)
+    filtered = []
+    skipped = 0
+
+    for item in items:
+        date_str = item.get("published") or item.get("fetched_at")
+
+        if not date_str:
+            # 日時情報がない場合は処理対象に含める
+            filtered.append(item)
+            continue
+
+        try:
+            dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+            if dt >= cutoff:
+                filtered.append(item)
+            else:
+                skipped += 1
+        except ValueError:
+            # パース失敗時は処理対象に含める
+            filtered.append(item)
+
+    return filtered, skipped
+```
+
+#### 処理フロー
+
+```
+[1] --since パラメータをパース（デフォルト: 1d）
+    ↓
+[2] カットオフ日時を計算（現在日時 - since_days）
+    ↓
+[3] 各記事をチェック
+    │
+    ├─ published または fetched_at が存在する場合
+    │   │
+    │   ├─ カットオフ日時以降 → フィルタリング後リストに追加
+    │   │
+    │   └─ カットオフ日時より前 → スキップ（カウント）
+    │
+    └─ 日時情報がない場合 → フィルタリング後リストに追加
+    ↓
+[4] 統計に記録（date_filtered = スキップ件数）
+```
+
+---
+
+### 2. テーマフィルタ（--themes）
+
+対象テーマを指定して収集範囲を限定します。
+
+#### パラメータ値
+
+| 値 | 説明 |
+|----|------|
+| `all` | 全テーマを対象（デフォルト） |
+| `index` | 株価指数（日経平均、S&P500等） |
+| `stock` | 個別銘柄（決算、M&A等） |
+| `sector` | セクター（業界動向） |
+| `macro` | マクロ経済（金融政策、経済指標） |
+| `ai` | AI（技術、企業、投資） |
+| `finance` | 金融（財務、資金調達） |
+
+#### 複数テーマ指定
+
+カンマ区切りで複数テーマを指定可能:
+
+```bash
+# Index と Macro のみ収集
+/collect-finance-news --themes "index,macro"
+
+# AI と Stock のみ収集
+/collect-finance-news --themes "ai,stock"
+```
+
+#### 実装ロジック
+
+```python
+def parse_themes_param(themes: str) -> list[str]:
+    """--themesパラメータをテーマリストに変換
+
+    Parameters
+    ----------
+    themes : str
+        テーマ指定（例: "all", "index,macro"）
+
+    Returns
+    -------
+    list[str]
+        対象テーマのリスト
+    """
+    all_themes = ["index", "stock", "sector", "macro", "ai", "finance"]
+
+    if themes == "all":
+        return all_themes
+
+    return [t.strip() for t in themes.split(",") if t.strip() in all_themes]
+```
+
+---
+
+### 3. 件数制限（--limit）
+
+取得記事数の最大値を指定します。
+
+| パラメータ | デフォルト | 最大値 | 説明 |
+|-----------|-----------|-------|------|
+| `--limit` | 50 | 100 | 各フィードから取得する記事数の上限 |
+
+**注意点**:
+- 各テーマエージェントに渡される記事数の上限
+- GitHub API レート制限回避のため、大量取得時は注意
+
+---
+
+### 4. テーマ判定（AI判断）
+
+**重要**: キーワードマッチングは使用しません。AIが記事の内容を読み取り、テーマに該当するか判断します。
+
+#### テーマ別判定基準
+
+| テーマ | 判定基準 |
+|--------|----------|
+| **Index** | 株価指数（日経平均、TOPIX、S&P500、ダウ、ナスダック等）の動向、市場全体の上昇/下落、ETF関連 |
+| **Stock** | 個別企業の決算発表、業績予想、M&A、買収、提携、株式公開、経営陣の変更 |
+| **Sector** | 特定業界（銀行、保険、自動車、半導体、ヘルスケア、エネルギー等）の動向、規制変更 |
+| **Macro** | 金融政策（金利、量的緩和）、中央銀行（Fed、日銀、ECB）、経済指標（GDP、CPI、雇用統計）、為替 |
+| **AI** | AI技術、機械学習、生成AI、AI企業（OpenAI、NVIDIA等）、AI投資、AI規制 |
+| **Finance** | 企業財務、資金調達（IPO、増資、社債）、株主還元（配当、自社株買い）、金融商品 |
+
+#### 判定プロセス
+
+```
+[1] 記事のタイトルと要約（summary）を読む
+    ↓
+[2] 記事の主題を理解する
+    ↓
+[3] テーマ判定基準に照らして該当するか判断
+    ↓
+[4] 該当する場合 → 処理続行
+    該当しない場合 → スキップ
+```
+
+#### 判定例
+
+| 記事タイトル | AIの判断 | テーマ |
+|------------|---------|--------|
+| "S&P 500 hits new record high amid tech rally" | 株価指数の動向 → 該当 | Index |
+| "Fed signals rate cut in March meeting" | 金融政策・中央銀行 → 該当 | Macro |
+| "Apple reports Q4 earnings beat" | 個別企業の決算 → 該当 | Stock |
+| "Banks face new capital requirements" | 銀行セクターの規制 → 該当 | Sector |
+| "OpenAI launches new model capabilities" | AI企業の動向 → 該当 | AI |
+| "Celebrity launches new clothing line" | 金融・経済と無関係 → 非該当 | - |
+
+---
+
+### 5. 除外カテゴリ
+
+以下のカテゴリに該当する記事は除外します（金融テーマに関連する場合を除く）:
+
+| カテゴリ | 説明 | 例外 |
+|---------|------|------|
+| **スポーツ** | 試合結果、選手移籍など | スポーツ関連企業の決算等は対象 |
+| **エンターテインメント** | 映画、音楽、芸能ニュース | - |
+| **政治** | 選挙、内閣関連 | 金融政策・規制に関連する場合は対象 |
+| **一般ニュース** | 事故、災害、犯罪 | - |
+
+---
+
+## 重複チェックロジック
+
+### 1. 既存Issue取得方法
+
+GitHub CLIで直近のニュースIssueを取得します。
+
+```bash
+gh issue list \
+    --repo YH-05/finance \
+    --label "news" \
+    --state all \
+    --limit 100 \
+    --json number,title,body,url,createdAt
+```
+
+#### 取得データ構造
+
+```json
+{
+  "existing_issues": [
+    {
+      "number": 344,
+      "title": "[マクロ経済] 日銀、政策金利を据え置き",
+      "url": "https://github.com/YH-05/finance/issues/344",
+      "body": "## 概要\n...\n## 情報源\nhttps://example.com/article/123",
+      "createdAt": "2026-01-21T08:22:33Z"
+    }
+  ]
+}
+```
+
+### 2. 重複判定基準
+
+2つの方法で重複を判定します:
+
+#### 方法1: URL完全一致
+
+```python
+def is_url_duplicate(new_url: str, existing_issues: list[dict]) -> bool:
+    """URLの完全一致で重複チェック
+
+    Parameters
+    ----------
+    new_url : str
+        新規記事のURL
+    existing_issues : list[dict]
+        既存Issueのリスト
+
+    Returns
+    -------
+    bool
+        重複している場合True
+    """
+    for issue in existing_issues:
+        body = issue.get("body", "")
+        if new_url and new_url in body:
+            return True
+    return False
+```
+
+#### 方法2: タイトル類似度（Jaccard係数）
+
+```python
+def calculate_title_similarity(title1: str, title2: str) -> float:
+    """タイトルの類似度を計算（Jaccard係数）
+
+    Parameters
+    ----------
+    title1 : str
+        タイトル1
+    title2 : str
+        タイトル2
+
+    Returns
+    -------
+    float
+        類似度（0.0〜1.0）
+
+    Notes
+    -----
+    Jaccard係数 = |A ∩ B| / |A ∪ B|
+    単語の共通率で類似度を算出
+    """
+    words1 = set(title1.lower().split())
+    words2 = set(title2.lower().split())
+
+    if not words1 or not words2:
+        return 0.0
+
+    common = words1.intersection(words2)
+    total = words1.union(words2)
+
+    return len(common) / len(total)
+
+
+def is_title_duplicate(
+    new_title: str,
+    existing_issues: list[dict],
+    threshold: float = 0.85,
+) -> bool:
+    """タイトル類似度で重複チェック
+
+    Parameters
+    ----------
+    new_title : str
+        新規記事のタイトル
+    existing_issues : list[dict]
+        既存Issueのリスト
+    threshold : float
+        類似度閾値（デフォルト: 0.85）
+
+    Returns
+    -------
+    bool
+        重複している場合True
+    """
+    for issue in existing_issues:
+        issue_title = issue.get("title", "")
+        similarity = calculate_title_similarity(new_title, issue_title)
+        if similarity >= threshold:
+            return True
+    return False
+```
+
+### 3. 重複判定フロー
+
+```
+[1] 新規記事のURLを取得
+    ↓
+[2] URL完全一致チェック
+    │
+    ├─ 一致 → 重複と判定（スキップ）
+    │
+    └─ 不一致 → 次のチェックへ
+    ↓
+[3] タイトル類似度チェック（閾値: 0.85）
+    │
+    ├─ 類似度 >= 0.85 → 重複と判定（スキップ）
+    │
+    └─ 類似度 < 0.85 → 新規記事として処理続行
+```
+
+### 4. 統合された重複チェック関数
+
+```python
+def is_duplicate(
+    new_item: dict,
+    existing_issues: list[dict],
+    threshold: float = 0.85,
+) -> bool:
+    """既存Issueと重複しているかチェック
+
+    Parameters
+    ----------
+    new_item : dict
+        新規記事データ
+    existing_issues : list[dict]
+        既存Issueのリスト
+    threshold : float
+        タイトル類似度閾値（デフォルト: 0.85）
+
+    Returns
+    -------
+    bool
+        重複している場合True
+    """
+    new_link = new_item.get("link", "")
+    new_title = new_item.get("title", "")
+
+    for issue in existing_issues:
+        # URL完全一致
+        body = issue.get("body", "")
+        if new_link and new_link in body:
+            return True
+
+        # タイトル類似度チェック
+        issue_title = issue.get("title", "")
+        similarity = calculate_title_similarity(new_title, issue_title)
+        if similarity >= threshold:
+            return True
+
+    return False
+```
+
+---
+
+## テーマ別処理フロー
+
+### 1. 全体アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    /collect-finance-news                        │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   Phase 1: 初期化                                │
+│  ├── テーマ設定ファイル確認                                      │
+│  ├── RSS MCP ツール確認（リトライ付き）                          │
+│  └── GitHub CLI 確認                                             │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│               Phase 2: データ準備（オーケストレーター）           │
+│  finance-news-orchestrator エージェント起動                      │
+│  ├── 既存Issue取得（gh issue list）                              │
+│  └── 一時ファイル保存（.tmp/news-collection-{timestamp}.json）   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                Phase 3: テーマ別収集（並列）                      │
+│                                                                  │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐             │
+│  │ finance-news │ │ finance-news │ │ finance-news │             │
+│  │    -index    │ │    -stock    │ │   -sector    │             │
+│  └──────────────┘ └──────────────┘ └──────────────┘             │
+│                                                                  │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐             │
+│  │ finance-news │ │ finance-news │ │ finance-news │             │
+│  │    -macro    │ │     -ai      │ │   -finance   │             │
+│  └──────────────┘ └──────────────┘ └──────────────┘             │
+│                                                                  │
+│  各エージェントが並列実行:                                        │
+│  ├── 担当フィードからRSS取得                                     │
+│  ├── 公開日時フィルタリング                                      │
+│  ├── AI判断によるテーマ分類                                      │
+│  ├── 重複チェック                                                │
+│  ├── Issue作成                                                   │
+│  ├── Project追加                                                 │
+│  └── Status・公開日時設定                                        │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   Phase 4: 結果報告                              │
+│  └── テーマ別投稿数サマリー表示                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 2. オーケストレーターの処理フロー
+
+```
+finance-news-orchestrator
+    │
+    ├─[1] 設定ファイル読み込み
+    │     └─ data/config/finance-news-themes.json
+    │
+    ├─[2] GitHub CLI 確認
+    │     ├─ gh コマンド存在確認
+    │     └─ gh auth status で認証確認
+    │
+    ├─[3] 既存Issue取得
+    │     └─ gh issue list --label "news" --limit 100
+    │
+    ├─[4] タイムスタンプ生成
+    │     └─ YYYYMMDD-HHMMSS形式
+    │
+    ├─[5] 一時ファイル保存
+    │     └─ .tmp/news-collection-{timestamp}.json
+    │
+    └─[6] 完了報告
+          └─ セッションID、既存Issue数、フィード割り当てを報告
+```
+
+### 3. テーマ別エージェントの処理フロー
+
+各テーマ別エージェント（finance-news-{theme}）は以下のフローを実行:
+
+```
+finance-news-{theme}
+    │
+    ├─[Phase 0] 入力データ検証
+    │     ├─ 必須フィールド確認（title, link, published, summary）
+    │     └─ 検証失敗時 → エラー報告して中断
+    │
+    ├─[Phase 1] 初期化
+    │     ├─ MCPツールのロード（mcp__rss__fetch_feed, mcp__rss__get_items）
+    │     ├─ 既存Issue取得（重複チェック用）
+    │     └─ 統計カウンタ初期化
+    │
+    ├─[Phase 2] RSS取得
+    │     ├─ 担当フィードからRSS取得
+    │     └─ ローカルフォールバック（MCP失敗時）
+    │
+    ├─[Phase 2.5] 公開日時フィルタリング
+    │     └─ --since パラメータによるフィルタ
+    │
+    ├─[Phase 3] AI判断によるテーマ分類
+    │     ├─ タイトル・要約からテーマ判定
+    │     ├─ 除外カテゴリチェック
+    │     └─ 重複チェック
+    │
+    ├─[Phase 4] GitHub投稿
+    │     ├─ [4.0] 記事本文取得・要約生成（news-article-fetcher サブエージェント）
+    │     ├─ [4.1] 日時フォーマット変換
+    │     ├─ [4.2] Issue作成（closed状態）
+    │     ├─ [4.3] Project追加
+    │     ├─ [4.4] Status設定
+    │     └─ [4.5] 公開日時設定【必須】
+    │
+    └─[Phase 5] 結果報告
+          └─ 統計サマリー出力
+```
+
+### 4. テーマ別フィード割り当て
+
+| テーマ | エージェント | 担当フィード数 | 主なソース |
+|--------|-------------|---------------|-----------|
+| Index | finance-news-index | 5 | CNBC Markets, MarketWatch, NASDAQ |
+| Stock | finance-news-stock | 5 | CNBC Earnings, Seeking Alpha, NASDAQ |
+| Sector | finance-news-sector | 7 | CNBC (Health, Real Estate, Autos, Energy, Media, Retail, Travel) |
+| Macro | finance-news-macro | 9 | CNBC Economy, Fed Press, IMF, Trading Economics |
+| AI | finance-news-ai | 9 | CNBC Tech, Hacker News, TechCrunch, Ars Technica, NASDAQ AI |
+| Finance | finance-news-finance | 7 | CNBC Finance, Yahoo Finance, FT, NASDAQ |
+
+### 5. 並列実行パターン
+
+```python
+# 複数のTask toolを並列呼び出し（単一メッセージで複数tool use）
+
+# 対象テーマの決定
+target_themes = parse_themes_param(args.themes)
+
+# 並列起動
+tasks = []
+for theme in target_themes:
+    task = Task(
+        subagent_type=f"finance-news-{theme}",
+        description=f"{theme}テーマのニュース収集",
+        prompt=f"""一時ファイルを読み込んで{theme}テーマのニュースを処理してください。
+
+## パラメータ
+- --since: {args.since}
+- --limit: {args.limit}
+- --dry-run: {args.dry_run}
+
+## 一時ファイル
+{temp_file_path}
+""",
+        run_in_background=True
+    )
+    tasks.append(task)
+
+# 全タスクの完了を待機
+for task in tasks:
+    result = TaskOutput(task_id=task.id)
+    # 結果を集約
+```
+
+---
+
+## GitHub Project投稿
+
+### 1. Issue作成フォーマット
+
+#### Issueタイトル
+
+```
+[{theme_ja}] {japanese_title}
+```
+
+| テーマ | 日本語名 | 例 |
+|--------|---------|-----|
+| Index | 株価指数 | [株価指数] S&P500が史上最高値を更新 |
+| Stock | 個別銘柄 | [個別銘柄] アップル、Q4決算で予想を上回る |
+| Sector | セクター | [セクター] 銀行セクターに新規制導入 |
+| Macro | マクロ経済 | [マクロ経済] FRBが3月利下げを示唆 |
+| AI | AI | [AI] OpenAIが新モデルを発表 |
+| Finance | 金融 | [金融] テスラが50億ドルの株式公開を発表 |
+
+#### Issue本文（テンプレート）
+
+テンプレート: `.github/ISSUE_TEMPLATE/news-article.md`
+
+```markdown
+## 概要
+
+{{summary}}
+
+## 情報源
+
+{{url}}
+
+## 詳細情報
+
+| 項目 | 内容 |
+|------|------|
+| 公開日時 | {{published_date}} |
+| 収集日時 | {{collected_at}} |
+| カテゴリ | {{category}} |
+| ソース | {{feed_source}} |
+
+## 備考
+
+{{notes}}
+```
+
+#### 日本語要約フォーマット（4セクション構成）
+
+```markdown
+### 概要
+- [主要事実を箇条書きで3行程度]
+- [数値データがあれば含める]
+- [関連企業があれば含める]
+
+### 背景
+[この出来事の背景・経緯を記載。記事に記載がなければ「[記載なし]」]
+
+### 市場への影響
+[株式・為替・債券等への影響を記載。記事に記載がなければ「[記載なし]」]
+
+### 今後の見通し
+[今後予想される展開・注目点を記載。記事に記載がなければ「[記載なし]」]
+```
+
+### 2. ラベル設定
+
+```bash
+gh issue create \
+    --repo YH-05/finance \
+    --title "[{theme_ja}] {japanese_title}" \
+    --body "$body" \
+    --label "news"
+```
+
+**注意**: Issueは `closed` 状態で作成します:
+
+```bash
+# Issue作成後にcloseする
+gh issue close "$issue_number" --repo YH-05/finance
+```
+
+### 3. Project追加方法
+
+#### ステップ1: Projectに追加
+
+```bash
+gh project item-add 15 \
+    --owner YH-05 \
+    --url {issue_url}
+```
+
+#### ステップ2: Issue Node ID取得
+
+```bash
+gh api graphql -f query='
+query {
+  repository(owner: "YH-05", name: "finance") {
+    issue(number: {issue_number}) {
+      id
+    }
+  }
+}'
+```
+
+#### ステップ3: Project Item ID取得
+
+```bash
+gh api graphql -f query='
+query {
+  node(id: "{issue_node_id}") {
+    ... on Issue {
+      projectItems(first: 10) {
+        nodes {
+          id
+          project {
+            number
+          }
+        }
+      }
+    }
+  }
+}'
+```
+
+#### ステップ4: Status設定
+
+```bash
+gh api graphql -f query='
+mutation {
+  updateProjectV2ItemFieldValue(
+    input: {
+      projectId: "PVT_kwHOBoK6AM4BMpw_"
+      itemId: "{project_item_id}"
+      fieldId: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
+      value: {
+        singleSelectOptionId: "{status_option_id}"
+      }
+    }
+  ) {
+    projectV2Item {
+      id
+    }
+  }
+}'
+```
+
+#### ステップ5: 公開日時設定【必須】
+
+```bash
+gh api graphql -f query='
+mutation {
+  updateProjectV2ItemFieldValue(
+    input: {
+      projectId: "PVT_kwHOBoK6AM4BMpw_"
+      itemId: "{project_item_id}"
+      fieldId: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
+      value: {
+        date: "{published_iso}"
+      }
+    }
+  ) {
+    projectV2Item {
+      id
+    }
+  }
+}'
+```
+
+**日付形式**: `YYYY-MM-DD`（例: `2026-01-22`）
+
+### 4. テーマ別Status ID一覧
+
+| テーマ | Status名 | Option ID |
+|--------|----------|-----------|
+| index | Index | `3925acc3` |
+| stock | Stock | `f762022e` |
+| sector | Sector | `48762504` |
+| macro | Macro Economics | `730034a5` |
+| ai | AI | `6fbb43d0` |
+| finance | Finance | `ac4a91b1` |
+
+### 5. GitHub Projectフィールド一覧
+
+| フィールド名 | フィールドID | 型 | 用途 |
+|-------------|-------------|-----|------|
+| Status | `PVTSSF_lAHOBoK6AM4BMpw_zg739ZE` | SingleSelect | テーマ分類 |
+| 公開日時 | `PVTF_lAHOBoK6AM4BMpw_zg8BzrI` | Date | ソート用 |
+
+---
+
+## エラーハンドリング詳細
+
+### E001: テーマ設定ファイルエラー
+
+**発生条件**:
+- `data/config/finance-news-themes.json` が存在しない
+- JSON形式が不正
+
+**対処法**:
+
+```python
+try:
+    with open("data/config/finance-news-themes.json") as f:
+        config = json.load(f)
+except FileNotFoundError:
+    print("エラー: テーマ設定ファイルが見つかりません")
+    print("期待されるパス: data/config/finance-news-themes.json")
+    raise
+except json.JSONDecodeError as e:
+    print(f"エラー: JSON形式が不正です - {e}")
+    raise
+```
+
+### E002: RSS MCP ツールエラー
+
+**発生条件**:
+- RSS MCPサーバーが起動していない
+- MCPサーバーの起動が完了していない
+
+**自動対処（リトライロジック）**:
+
+```
+[試行1] MCPSearch: query="rss", max_results=5
+    ↓
+ツールが見つからない場合
+    ↓
+[待機] 3秒待機
+    ↓
+[試行2] MCPSearch: query="rss", max_results=5
+    ↓
+それでも見つからない場合
+    ↓
+エラー報告 → 処理中断
+```
+
+### E003: GitHub CLI エラー
+
+**発生条件**:
+- `gh` コマンドがインストールされていない
+- GitHub認証が切れている
+
+**確認コマンド**:
+
+```bash
+# コマンド存在確認
+command -v gh
+
+# 認証確認
+gh auth status
+```
+
+### E004: ネットワークエラー
+
+**発生条件**:
+- RSS フィードへの接続失敗
+- GitHub API への接続失敗
+
+**対処法**:
+- 自動リトライ（最大3回、指数バックオフ）
+- ローカルフォールバック
+
+### E005: GitHub API レート制限
+
+**発生条件**:
+- 1時間あたり5000リクエストを超過
+
+**対処法**:
+- 1時間待機
+- `--limit` オプションで取得数を削減
+
+### E006: 並列実行エラー
+
+**発生条件**:
+- 一部のテーマエージェントが失敗
+
+**対処法**:
+- 成功したテーマの結果は有効
+- 失敗したテーマのみ `--themes` で再実行
+
+```bash
+# 失敗したテーマのみ再実行
+/collect-finance-news --themes "stock,ai"
+```
+
+---
+
+## 参考資料
+
+- **SKILL.md**: `.claude/skills/finance-news-workflow/SKILL.md`
+- **コマンド**: `.claude/commands/collect-finance-news.md`
+- **オーケストレーター**: `.claude/agents/finance-news-orchestrator.md`
+- **共通処理ガイド**: `.claude/agents/finance_news_collector/common-processing-guide.md`
+- **テーマ設定**: `data/config/finance-news-themes.json`
+- **GitHub Project**: https://github.com/users/YH-05/projects/15
+- **データ渡しルール**: `.claude/rules/subagent-data-passing.md`
