@@ -3,6 +3,8 @@ name: quality-checker
 description: コード品質の検証・自動修正を行う統合サブエージェント。モードに応じて検証のみ、自動修正、クイックチェックを実行。
 model: inherit
 color: cyan
+skills:
+  - coding-standards
 ---
 
 # コード品質統合エージェント

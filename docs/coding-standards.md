@@ -1,5 +1,37 @@
 # 実装ガイド (Implementation Guide)
 
+このドキュメントは参照用として保持されています。
+**最新のコーディング規約は coding-standards スキルを参照してください。**
+
+## スキル参照
+
+| リソース | パス |
+|---------|------|
+| クイックリファレンス | `.claude/skills/coding-standards/SKILL.md` |
+| 詳細ガイド | `.claude/skills/coding-standards/guide.md` |
+| 型ヒント例 | `.claude/skills/coding-standards/examples/type-hints.md` |
+| Docstring例 | `.claude/skills/coding-standards/examples/docstrings.md` |
+| エラーメッセージ例 | `.claude/skills/coding-standards/examples/error-messages.md` |
+| 命名規則例 | `.claude/skills/coding-standards/examples/naming.md` |
+| ロギング例 | `.claude/skills/coding-standards/examples/logging.md` |
+
+## 概要
+
+| 項目 | 規約 |
+|------|------|
+| 型ヒント | Python 3.12+ スタイル（PEP 695） |
+| Docstring | NumPy 形式 |
+| クラス名 | PascalCase |
+| 関数/変数名 | snake_case |
+| 定数 | UPPER_SNAKE |
+| プライベート | _prefix |
+
+---
+
+**注**: 以下の内容はレガシー参照用です。最新情報はスキルを確認してください。
+
+---
+
 ## Python 規約
 
 ### 型ヒント

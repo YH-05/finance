@@ -1,5 +1,19 @@
 # コーディング規約
 
+このファイルはコーディング規約の概要です。詳細なガイドと例は **coding-standards スキル**を参照してください。
+
+## スキル参照
+
+| リソース | パス |
+|---------|------|
+| クイックリファレンス | `.claude/skills/coding-standards/SKILL.md` |
+| 詳細ガイド | `.claude/skills/coding-standards/guide.md` |
+| 型ヒント例 | `.claude/skills/coding-standards/examples/type-hints.md` |
+| Docstring例 | `.claude/skills/coding-standards/examples/docstrings.md` |
+| エラーメッセージ例 | `.claude/skills/coding-standards/examples/error-messages.md` |
+| 命名規則例 | `.claude/skills/coding-standards/examples/naming.md` |
+| ロギング例 | `.claude/skills/coding-standards/examples/logging.md` |
+
 ## 概要
 
 | 項目 | 規約 |
@@ -11,122 +25,45 @@
 | 定数 | UPPER_SNAKE |
 | プライベート | _prefix |
 
-## 型ヒント（Python 3.12+ / PEP 695）
+## クイックリファレンス
+
+### 型ヒント（PEP 695）
 
 ```python
 # 組み込み型を直接使用
-def process_items(items: list[str]) -> dict[str, int]:
-    return {item: items.count(item) for item in set(items)}
+def process_items(items: list[str]) -> dict[str, int]: ...
 
-# ジェネリック関数・クラス（PEP 695 新構文）
+# ジェネリック関数（PEP 695 新構文）
 def first[T](items: list[T]) -> T | None:
     return items[0] if items else None
-
-class Stack[T]:
-    def __init__(self) -> None:
-        self._items: list[T] = []
-
-# ParamSpec（デコレータ用）
-def logged[**P, R](func: Callable[P, R]) -> Callable[P, R]:
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        print(f"Calling {func.__name__}")
-        return func(*args, **kwargs)
-    return wrapper
-
-# 境界付き型パラメータ
-def unique[T: Hashable](items: list[T]) -> set[T]:
-    return set(items)
 ```
 
-## 命名規則
+### 命名規則
 
 ```python
-# 変数: snake_case、名詞
+# 変数: snake_case、Boolean: is_, has_, should_, can_
 user_name = "John"
-is_completed = True  # Boolean: is_, has_, should_, can_
+is_completed = True
 
 # 関数: snake_case、動詞で始める
 def fetch_user_data() -> User: ...
-def validate_email(email: str) -> bool: ...
 
-# クラス: PascalCase、名詞
+# クラス: PascalCase
 class TaskManager: ...
-class UserAuthenticationService: ...
 
 # 定数: UPPER_SNAKE_CASE
 MAX_RETRY_COUNT = 3
-API_BASE_URL = "https://api.example.com"
-
-# ファイル名: snake_case.py
-# task_service.py, user_repository.py
 ```
 
-## Docstring（NumPy 形式）
-
-```python
-def process_items(
-    items: list[dict[str, Any]],
-    max_count: int = 100,
-    validate: bool = True,
-) -> list[dict[str, Any]]:
-    """Process a list of items with optional validation.
-
-    Parameters
-    ----------
-    items : list[dict[str, Any]]
-        List of items to process
-    max_count : int, default=100
-        Maximum number of items to process
-    validate : bool, default=True
-        Whether to validate items before processing
-
-    Returns
-    -------
-    list[dict[str, Any]]
-        Processed items
-
-    Raises
-    ------
-    ValueError
-        If items is empty when validation is enabled
-
-    Examples
-    --------
-    >>> items = [{"id": 1, "name": "test"}]
-    >>> result = process_items(items)
-    >>> len(result)
-    1
-    """
-```
-
-## 関数設計
-
-- **単一責務**: 1関数 = 1つの責務
-- **関数の長さ**: 目標20行以内、推奨50行以内、100行以上はリファクタ
-- **パラメータ数**: 多い場合はdataclassでまとめる
-
-```python
-# dataclassでパラメータをまとめる
-@dataclass
-class CreateTaskOptions:
-    title: str
-    description: str | None = None
-    priority: Literal["high", "medium", "low"] = "medium"
-
-def create_task(options: CreateTaskOptions) -> Task:
-    ...
-```
-
-## エラーメッセージ
+### エラーメッセージ
 
 ```python
 # 具体的で解決策を示す
 raise ValueError(f"Expected positive integer, got {count}")
-raise ValueError(f"Failed to process {source_file}: {e}")
 raise FileNotFoundError(f"Config not found. Create by: python -m {__package__}.init")
 ```
 
-## アンカーコメント
+### アンカーコメント
 
 ```python
 # AIDEV-NOTE: 実装の意図や背景の説明
@@ -136,4 +73,5 @@ raise FileNotFoundError(f"Config not found. Create by: python -m {__package__}.i
 
 ## 詳細参照
 
-完全なコーディング規約: `docs/coding-standards.md`
+- **完全なガイド**: `.claude/skills/coding-standards/guide.md`
+- **従来のドキュメント**: `docs/coding-standards.md`

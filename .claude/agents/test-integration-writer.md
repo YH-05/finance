@@ -8,6 +8,7 @@ depends_on:
   - test-unit-writer
   - test-property-writer
 skills:
+  - coding-standards
   - tdd-development
 ---
 

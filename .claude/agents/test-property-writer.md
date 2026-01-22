@@ -6,6 +6,7 @@ color: yellow
 depends_on:
   - test-planner
 skills:
+  - coding-standards
   - tdd-development
 ---
 
