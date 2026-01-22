@@ -331,6 +331,409 @@ allowed-tools: Read, Write, Bash
 
 ---
 
+## エージェントフロントマターでの `skills:` 記述パターン
+
+### 基本パターン
+
+```yaml
+---
+name: agent-name
+description: エージェントの説明
+skills:
+  - skill-name-1
+  - skill-name-2
+allowed-tools: Read, Write, Bash
+---
+```
+
+### パターン1: 単一スキル参照
+
+コード品質チェック等、単一の専門性に特化したエージェント：
+
+```yaml
+---
+name: quality-checker
+description: コード品質をチェックするサブエージェント
+skills:
+  - coding-standards
+allowed-tools: Read, Bash, Grep
+---
+```
+
+### パターン2: 複数スキル参照（関連スキルの組み合わせ）
+
+TDD実装等、複数の知識領域を必要とするエージェント：
+
+```yaml
+---
+name: feature-implementer
+description: TDDで機能を実装するサブエージェント
+skills:
+  - coding-standards
+  - tdd-development
+  - error-handling
+allowed-tools: Read, Edit, Bash, Grep, Task
+---
+```
+
+### パターン3: 専門ドメイン＋共通スキル
+
+専門領域と共通規約の両方を必要とするエージェント：
+
+```yaml
+---
+name: test-planner
+description: テスト計画を策定するサブエージェント
+skills:
+  - tdd-development
+  - coding-standards
+allowed-tools: Read, Write, Glob, Grep
+---
+```
+
+### パターン4: スキルなし
+
+特定のスキルを必要としない汎用エージェント：
+
+```yaml
+---
+name: task-manager
+description: タスク管理を行うサブエージェント
+allowed-tools: Read, Write, Bash
+---
+
+# タスク管理エージェント
+
+このエージェントは特定のスキルをプリロードせず、
+一般的なタスク管理機能を提供します。
+```
+
+---
+
+## 複数スキル参照時の順序・優先度
+
+### 配列順序の重要性
+
+`skills:` フィールドの配列順序は、スキルの**注入順序**を決定します：
+
+```yaml
+skills:
+  - coding-standards    # 1番目に注入
+  - tdd-development     # 2番目に注入
+  - error-handling      # 3番目に注入
+```
+
+### 推奨される順序
+
+| 位置 | 内容 | 理由 |
+|------|------|------|
+| 1番目 | 最も基本的なスキル | コンテキストの土台となる |
+| 2番目 | 主要な専門スキル | タスクの中心となる知識 |
+| 3番目以降 | 補助的なスキル | 追加の参照情報 |
+
+### 順序決定の原則
+
+**原則1: 汎用→特化**
+
+```yaml
+# ✅ 推奨: 汎用的なスキルから特化したスキルへ
+skills:
+  - coding-standards    # 汎用（コーディング全般）
+  - tdd-development     # 特化（テスト駆動開発）
+```
+
+**原則2: 依存関係順**
+
+スキルAがスキルBの知識を前提とする場合、Aを後に配置：
+
+```yaml
+# ✅ 推奨: error-handling は coding-standards の知識を前提
+skills:
+  - coding-standards    # 前提知識
+  - error-handling      # 前提知識を活用
+```
+
+**原則3: 参照頻度順**
+
+より頻繁に参照されるスキルを先に配置：
+
+```yaml
+# ✅ 推奨: TDDエージェントでは tdd-development を先に
+skills:
+  - tdd-development     # 主要（高頻度参照）
+  - coding-standards    # 補助（低頻度参照）
+```
+
+### 順序が影響するケース
+
+1. **競合する定義**: 同一概念に対して異なる定義がある場合、後のスキルが優先
+2. **コンテキスト構築**: 先に注入されたスキルがコンテキストの基盤となる
+3. **プロンプト長**: 先に注入されたスキルが長い場合、後のスキルの影響が相対的に低下
+
+### 注意事項
+
+- スキル間に明示的な依存関係がある場合、依存されるスキルを先に配置
+- 競合を避けるため、同一領域の複数スキルの同時参照は避ける
+- 3-4個を超えるスキルの同時参照は推奨しない（コンテキスト効率の低下）
+
+---
+
+## スキルとエージェントの責務分担ガイドライン
+
+### 責務の違い
+
+| 観点 | スキル | エージェント |
+|------|--------|------------|
+| **役割** | 知識・規約・パターンの提供 | タスクの実行・オーケストレーション |
+| **内容** | What（何をすべきか）、Why（なぜそうすべきか） | How（どう実行するか）、When（いつ実行するか） |
+| **更新頻度** | 低（規約・ベストプラクティスの変更時） | 高（ワークフロー改善時） |
+| **依存関係** | 他スキルへの参照なし（自己完結） | 複数スキルを参照可能 |
+
+### スキルに含めるべき内容
+
+```yaml
+スキルの内容:
+  - コーディング規約・ベストプラクティス
+  - 命名規則・フォーマット規約
+  - パターン・テンプレート
+  - チェックリスト・検証基準
+  - 参考例・アンチパターン
+```
+
+**例: `coding-standards` スキル**
+
+```markdown
+# コーディング規約スキル
+
+## 型ヒント（Python 3.12+ / PEP 695）
+- `list[str]` を使用（`List[str]` ではなく）
+- ジェネリクスは `def first[T](items: list[T]) -> T | None:`
+
+## 命名規則
+- 変数: snake_case
+- クラス: PascalCase
+- 定数: UPPER_SNAKE
+
+## Docstring
+- NumPy形式を使用
+- Parameters, Returns, Raises を必須に
+```
+
+### エージェントに含めるべき内容
+
+```yaml
+エージェントの内容:
+  - 処理フロー（ステップバイステップ）
+  - 入力/出力の定義
+  - ツールの使用方法
+  - 条件分岐・エラーハンドリング
+  - 完了条件・チェックポイント
+```
+
+**例: `feature-implementer` エージェント**
+
+```markdown
+# 機能実装エージェント
+
+## 処理フロー
+
+1. GitHub Issue を読み込み
+2. TDDサイクルを実行
+   - 🔴 Red: テスト作成
+   - 🟢 Green: 最小実装
+   - 🔵 Refactor: 整理
+3. Issue のチェックボックスを更新
+4. ループ継続
+
+## ツールの使用
+
+```bash
+gh issue view <number> --json body
+```
+```
+
+### 責務分担の判断基準
+
+以下の質問で責務を判断：
+
+| 質問 | スキルに含める | エージェントに含める |
+|------|--------------|-------------------|
+| 複数のエージェントで共有される知識か？ | ✅ | ❌ |
+| 特定のワークフローに依存するか？ | ❌ | ✅ |
+| 「規約」「ルール」「パターン」に関するか？ | ✅ | ❌ |
+| 「実行」「処理」「フロー」に関するか？ | ❌ | ✅ |
+| 変更頻度が低いか？ | ✅ | ❌ |
+
+### 分担パターン
+
+**パターンA: 規約参照型**
+
+```
+スキル: コーディング規約、命名規則、Docstring形式
+    ↓ 参照
+エージェント: 実装時に規約を適用、違反をチェック
+```
+
+**パターンB: テンプレート活用型**
+
+```
+スキル: テストテンプレート、コード例
+    ↓ 参照
+エージェント: テンプレートを使用してコード生成
+```
+
+**パターンC: チェックリスト型**
+
+```
+スキル: 品質チェックリスト、検証基準
+    ↓ 参照
+エージェント: チェックリストを順番に実行
+```
+
+---
+
+## 既存エージェントへの適用例
+
+### 例1: `feature-implementer` エージェントの更新
+
+**現状（スキル参照なし）**:
+
+```yaml
+---
+name: feature-implementer
+description: TDDループを自動実行するサブエージェント
+model: inherit
+color: cyan
+---
+```
+
+**更新後（スキル参照あり）**:
+
+```yaml
+---
+name: feature-implementer
+description: TDDループを自動実行するサブエージェント
+skills:
+  - coding-standards      # コーディング規約
+  - tdd-development       # TDD開発プロセス
+  - error-handling        # エラーハンドリングパターン
+model: inherit
+color: cyan
+---
+```
+
+**変更点**:
+- `skills:` フィールドを追加
+- 本文から規約の詳細説明を削除（スキルに移譲）
+- 「プリロードされたスキルの規約に従う」という記述を追加
+
+**本文の更新例**:
+
+```markdown
+# 機能実装エージェント
+
+あなたはTDD（テスト駆動開発）に基づいて機能を実装する専門のエージェントです。
+
+**プリロードされたスキル**:
+- `coding-standards`: 型ヒント、命名規則、Docstring形式
+- `tdd-development`: Red → Green → Refactor サイクル
+- `error-handling`: 例外クラス設計、エラーメッセージパターン
+
+これらのスキルの規約に従って実装を行ってください。
+```
+
+### 例2: `test-writer` エージェントの更新
+
+**現状**:
+
+```yaml
+---
+name: test-writer
+description: t-wada流TDDに基づいてテストを作成するサブエージェント
+model: inherit
+color: orange
+---
+```
+
+**更新後**:
+
+```yaml
+---
+name: test-writer
+description: t-wada流TDDに基づいてテストを作成するサブエージェント
+skills:
+  - tdd-development       # TDD開発プロセス・テストテンプレート
+  - coding-standards      # テストコードのスタイル規約
+model: inherit
+color: orange
+---
+```
+
+**本文の更新**:
+- TDDサイクルの詳細説明 → `tdd-development` スキルに移譲
+- テスト命名規則の詳細 → `coding-standards` スキルに移譲
+- エージェント本文はフローと実行手順に集中
+
+### 例3: `quality-checker` エージェントの更新
+
+**現状**: スキル参照なし
+
+**更新後**:
+
+```yaml
+---
+name: quality-checker
+description: コード品質をチェック・修正するサブエージェント
+skills:
+  - coding-standards      # コーディング規約（チェック基準）
+model: inherit
+color: green
+---
+```
+
+**変更点**:
+- `coding-standards` スキルを参照
+- 品質チェック基準をスキルから取得
+- エージェントは「どうチェックするか」「どう修正するか」に集中
+
+### 例4: テストエージェント群の統一
+
+複数のテスト関連エージェントで同一スキルを参照：
+
+```yaml
+# test-orchestrator.md
+skills:
+  - tdd-development
+  - coding-standards
+
+# test-planner.md
+skills:
+  - tdd-development
+  - coding-standards
+
+# test-unit-writer.md
+skills:
+  - tdd-development
+  - coding-standards
+
+# test-property-writer.md
+skills:
+  - tdd-development
+  - coding-standards
+
+# test-integration-writer.md
+skills:
+  - tdd-development
+  - coding-standards
+```
+
+**メリット**:
+- テスト関連エージェントが同一の規約を参照
+- 規約の更新が一箇所で完結
+- エージェント間の一貫性が保証
+
+---
+
 ## 関連ドキュメント
 
 ### 内部参照
@@ -349,4 +752,5 @@ allowed-tools: Read, Write, Bash
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|---------|
+| 2026-01-22 | 1.1.0 | エージェントへのスキル参照パターン、複数スキル参照時のルール、責務分担ガイドライン、既存エージェント更新例を追加 |
 | 2026-01-22 | 1.0.0 | 初版作成 |
