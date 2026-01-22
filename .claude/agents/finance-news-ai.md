@@ -8,6 +8,8 @@ color: cyan
 depends_on: [finance-news-orchestrator]
 phase: 2
 priority: high
+skills:
+  - finance-news-workflow
 tools:
   - Read
   - Bash
