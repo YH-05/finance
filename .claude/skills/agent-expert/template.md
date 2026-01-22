@@ -14,16 +14,17 @@ description: |
   Brief description of what this agent does and when to use it.
   Include trigger keywords for automatic invocation.
 
+# 色指定（必須）
+# lime, blue, purple, orange, cyan, yellow など
+# エージェントの識別・分類に使用
+color: lime
+
 # モデル指定（オプション）
 # inherit: 親から継承（デフォルト）
 # haiku: 高速・低コストタスク向け
 # sonnet: 標準（バランス型）
 # opus: 複雑なタスク向け
 model: inherit
-
-# 色指定（オプション）
-# lime, blue, purple, orange など
-color: lime
 ---
 
 # [エージェント名]
@@ -383,8 +384,8 @@ tool example
 このテンプレートを使用する際：
 
 1. **フロントマターを適切に設定**
-   - name, category, description を記入
-   - model と color は必要に応じて設定
+   - name, description, color を必ず記入
+   - category, model は必要に応じて設定
 
 2. **各セクションをカスタマイズ**
    - 不要なセクションは削除

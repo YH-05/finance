@@ -78,6 +78,7 @@ AskUserQuestion ツールを使用して、以下を確認：
 name: agent-name
 category: category-name
 description: Short description for the Task tool
+color: lime
 ---
 
 # Agent Purpose and Context
@@ -108,6 +109,7 @@ description: Short description for the Task tool
 作成後の確認項目：
 
 - [ ] フロントマターが正しく設定されている（詳細は `./frontmatter-review.md` を参照）
+- [ ] **`color` が設定されている（必須）**
 - [ ] トリガー条件が明確
 - [ ] 実用的な例が3-4個含まれている
 - [ ] ツールの使用方法が明記されている
@@ -119,6 +121,7 @@ description: Short description for the Task tool
 
 - `name`: kebab-case、ファイル名と一致
 - `description`: 具体的でトリガーキーワードを含む
+- `color`: 必須（lime, blue, purple, orange, cyan, yellow など）
 - `skills`: 参照先スキルが存在するか（設定時）
 - `allowed-tools`: 有効なツール名のみ（設定時）
 
@@ -260,7 +263,7 @@ AskUserQuestion: "ブラッシュアップ後、どうなれば成功と言え�
 
 エージェントフロントマターの検証ガイド：
 
-- 検証対象フィールド（name, description, category, skills, allowed-tools, model, color）
+- 検証対象フィールド（name, description, color【必須】, category, skills, allowed-tools, model）
 - フィールド別検証ルール
 - `skills:` フィールドの存在確認方法
 - `allowed-tools` の有効なツール一覧

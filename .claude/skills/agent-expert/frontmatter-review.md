@@ -10,11 +10,11 @@
 ---
 name: string          # 必須: エージェント名（kebab-case）
 description: string   # 必須: Task tool に表示される説明
+color: string         # 必須: 表示色（lime, blue, purple, orange, cyan, yellow など）
 category: string      # オプション: エージェントのカテゴリ
 skills: string[]      # オプション: 参照するスキルのリスト
 allowed-tools: string # オプション: 使用可能なツールのリスト
 model: string         # オプション: inherit | sonnet | haiku | opus
-color: string         # オプション: 表示色
 ---
 ```
 
@@ -193,15 +193,24 @@ done
 
 **デフォルト**: `inherit`（指定しない場合）
 
-### 7. `color` フィールド（オプション）
+### 7. `color` フィールド（必須）
 
 **検証項目**:
 
 | チェック項目 | ルール | 例 |
 |-------------|--------|-----|
+| 必須 | 空でないこと | ✅ `lime` |
 | 有効な値 | 定義済みの色名 | `lime`, `blue`, `purple`, `orange`, `cyan`, `yellow` |
 
-**用途**: UI表示時の識別色
+**用途**: UI表示時の識別色、エージェントの視覚的分類
+
+**推奨される色の使い分け**:
+- `lime`: 汎用・ユーティリティ系
+- `blue`: 分析・リサーチ系
+- `purple`: 作成・生成系
+- `orange`: 検証・批評系
+- `cyan`: データ処理系
+- `yellow`: 管理・オーケストレーション系
 
 ## 検証チェックリスト
 
@@ -214,6 +223,8 @@ done
 - [ ] `name` がファイル名と一致している
 - [ ] `description` が設定されている
 - [ ] `description` が具体的で明確である
+- [ ] `color` が設定されている
+- [ ] `color` が有効な色名である（lime, blue, purple, orange, cyan, yellow）
 
 ### オプション項目（設定されている場合）
 
@@ -222,7 +233,6 @@ done
 - [ ] `allowed-tools` のツール名が全て有効である
 - [ ] `allowed-tools` が最小権限の原則に従っている
 - [ ] `model` が有効な値である（inherit/sonnet/haiku/opus）
-- [ ] `color` が有効な色名である
 
 ### 整合性チェック
 
