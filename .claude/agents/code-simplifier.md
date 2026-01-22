@@ -3,6 +3,8 @@ name: code-simplifier
 description: コードの複雑性を削減し、可読性・保守性を向上させる専門エージェント。最近変更されたコードを対象に整理・リファクタリングする。
 model: inherit
 color: green
+skills:
+  - coding-standards
 ---
 
 # コード簡素化エージェント
