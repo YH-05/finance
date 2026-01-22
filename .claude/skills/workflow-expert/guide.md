@@ -3,6 +3,146 @@
 このガイドでは、複雑なタスクをワークフローとして設計する手順と、
 マルチエージェント連携のベストプラクティスを解説します。
 
+---
+
+## Sequential Thinking による段階的計画
+
+ワークフロー設計では、**必ず Sequential Thinking を使用して段階的に計画**してください。
+複雑な設計を一度に行おうとすると、見落としや矛盾が生じやすくなります。
+
+### Sequential Thinking の使用方法
+
+MCP ツール `mcp__sequential-thinking__sequentialthinking` を使用します。
+
+```yaml
+# パラメータ
+thought: "現在の思考ステップ"
+thoughtNumber: 1  # 現在の思考番号
+totalThoughts: 5  # 予想される総思考数（後で調整可能）
+nextThoughtNeeded: true  # 次の思考が必要か
+isRevision: false  # 前の思考を修正する場合は true
+revisesThought: null  # 修正対象の思考番号
+branchFromThought: null  # 分岐元の思考番号
+branchId: null  # 分岐識別子
+needsMoreThoughts: false  # 追加の思考が必要か
+```
+
+### ワークフロー設計での Sequential Thinking フロー
+
+以下の順序で段階的に設計を進めます：
+
+```
+Thought 1: 要件の分析
+    ↓
+Thought 2: パターン候補の検討
+    ↓
+Thought 3: パターン選択と理由
+    ↓
+Thought 4: Phase 構造の設計
+    ↓
+Thought 5: エージェント割り当て
+    ↓
+Thought 6: データフローの設計
+    ↓
+Thought 7: エラーハンドリングの設計
+    ↓
+Thought 8: 仮説の検証と最終確認
+```
+
+### 具体的な実行例
+
+#### Thought 1: 要件の分析
+
+```json
+{
+  "thought": "ワークフローの要件を分析する。目的: 複数テーマのニュースを並列収集してGitHub Projectに投稿。入力: RSSフィード、既存Issue。出力: 新規Issue作成、サマリー。制約: テーマ別に独立した処理、重複チェック必須。",
+  "thoughtNumber": 1,
+  "totalThoughts": 6,
+  "nextThoughtNeeded": true
+}
+```
+
+#### Thought 2: パターン候補の検討
+
+```json
+{
+  "thought": "パターン候補を検討する。(1) シーケンシャル: 各テーマを順番に処理 - 遅い、依存関係なし不要。(2) ファンアウト/ファンイン: 各テーマを並列処理後に集約 - 効率的、テーマが独立しているため適合。(3) オーケストレーター: セッション準備 + 並列ワーカー - データ準備が必要なため適合。",
+  "thoughtNumber": 2,
+  "totalThoughts": 6,
+  "nextThoughtNeeded": true
+}
+```
+
+#### Thought 3: パターン選択と理由
+
+```json
+{
+  "thought": "パターン選択: オーケストレーター + ファンアウト/ファンイン の組み合わせ。理由: (1) RSSデータと既存Issueの事前取得が必要（オーケストレーター）、(2) 6テーマは独立して並列処理可能（ファンアウト）、(3) 結果サマリーで集約（ファンイン）。軽量オーケストレーターで十分。",
+  "thoughtNumber": 3,
+  "totalThoughts": 6,
+  "nextThoughtNeeded": true
+}
+```
+
+#### Thought 4: Phase 構造の設計
+
+```json
+{
+  "thought": "Phase構造を設計する。Phase 0: 初期化 - RSSフィード取得、既存Issue取得、一時ファイル保存。Phase 1: テーマ別収集 - 6エージェント並列起動（index, stock, sector, macro, ai, finance）。Phase 2: 結果報告 - 各エージェントの処理結果をサマリー出力。",
+  "thoughtNumber": 4,
+  "totalThoughts": 6,
+  "nextThoughtNeeded": true
+}
+```
+
+#### Thought 5: エージェント割り当て
+
+```json
+{
+  "thought": "エージェント割り当てを設計する。オーケストレーター: finance-news-orchestrator（セッション準備のみ）。ワーカー: finance-news-index, finance-news-stock, finance-news-sector, finance-news-macro, finance-news-ai, finance-news-finance（各テーマ専門）。各ワーカーは同じインターフェース: RSS記事フィルタリング → Issue作成 → 結果報告。",
+  "thoughtNumber": 5,
+  "totalThoughts": 6,
+  "nextThoughtNeeded": true
+}
+```
+
+#### Thought 6: 仮説の検証と最終確認
+
+```json
+{
+  "thought": "設計の検証。(1) 要件との整合性: ✓ 並列処理で効率化、✓ テーマ別の独立処理、✓ 重複チェック（既存Issue参照）。(2) 潜在的問題: データ渡しでの情報欠落 → JSON形式で完全なデータを渡すルール適用。(3) エラーハンドリング: 部分成功パターン採用、失敗テーマのみログ出力。設計完了。",
+  "thoughtNumber": 6,
+  "totalThoughts": 6,
+  "nextThoughtNeeded": false
+}
+```
+
+### Sequential Thinking の重要なポイント
+
+| ポイント | 説明 |
+|---------|------|
+| **柔軟な調整** | `totalThoughts` は途中で増減可能。複雑さに応じて調整 |
+| **修正の記録** | 前の思考を修正する場合は `isRevision: true` と `revisesThought` を設定 |
+| **分岐の活用** | 複数の選択肢を検討する場合は `branchFromThought` で分岐 |
+| **不確実性の表現** | 曖昧な点は思考内で明示的に記述 |
+| **仮説と検証** | 最終思考で設計の妥当性を検証 |
+
+### 修正が必要な場合の例
+
+```json
+{
+  "thought": "Thought 3 を修正する。オーケストレーター + ファンアウト/ファンイン に加えて、エラーリカバリーが必要なことに気づいた。失敗したテーマの再処理機能を追加する。",
+  "thoughtNumber": 7,
+  "totalThoughts": 8,
+  "nextThoughtNeeded": true,
+  "isRevision": true,
+  "revisesThought": 3,
+  "needsMoreThoughts": true
+}
+```
+
+---
+
 ## ワークフロー設計手順
 
 ### ステップ 1: 要件の明確化

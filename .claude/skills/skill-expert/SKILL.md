@@ -106,7 +106,10 @@ allowed-tools: Read, Write, Glob, Grep, AskUserQuestion, Task
 - `index`: CLAUDE.md/README.md の自動更新
 - `project-management`: GitHub Project と project.md の管理
 - `task-decomposition`: タスク分解と依存関係管理
-- `issue-management`: Issue の作成・実装・同期
+- `issue-creation`: Issue の作成
+- `issue-implementation`: Issue の自動実装
+- `issue-refinement`: Issue のブラッシュアップ
+- `issue-sync`: Issue コメントからの同期
 
 ### coding（コーディング）
 

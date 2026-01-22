@@ -4,7 +4,7 @@ description: |
   ワークフロー設計とマルチエージェント連携の専門スキル。
   複雑なタスクのPhase分解、エージェント間の連携設計、
   スキルプリロードの設計支援を提供。ワークフロー設計時に使用。
-allowed-tools: Read, Write, Glob, Grep, AskUserQuestion, Task
+allowed-tools: Read, Write, Glob, Grep, AskUserQuestion, Task, mcp__sequential-thinking__sequentialthinking
 ---
 
 # Workflow Expert
@@ -264,6 +264,31 @@ allowed-tools: Read, Edit, Bash, Grep, Task
 | **allowed-tools** | 最小限（通常は Read のみ） |
 
 ## プロセス
+
+### 0. Sequential Thinking による段階的計画（必須）
+
+ワークフロー設計では、**必ず Sequential Thinking を使用**して段階的に計画します。
+
+```yaml
+# MCP ツール: mcp__sequential-thinking__sequentialthinking
+thought: "現在の思考ステップ"
+thoughtNumber: 1
+totalThoughts: 6  # 予想思考数（調整可能）
+nextThoughtNeeded: true
+```
+
+**推奨思考フロー**:
+
+```
+Thought 1: 要件の分析（目的、入力、出力、制約）
+Thought 2: パターン候補の検討（各パターンの適合性評価）
+Thought 3: パターン選択と理由（選択根拠の明確化）
+Thought 4: Phase 構造の設計（各Phaseの入出力定義）
+Thought 5: エージェント割り当て（責務分担）
+Thought 6: 仮説の検証と最終確認
+```
+
+詳細な使用例は `./guide.md` の「Sequential Thinking による段階的計画」を参照。
 
 ### 1. 要件分析
 
