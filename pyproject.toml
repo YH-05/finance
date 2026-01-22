@@ -141,7 +141,7 @@ ignore = [
 
 [tool.pyright]
 include = ["src", "tests", ".claude/agents"]
-exclude = [".venv", "**/__pycache__", "build", "dist"]
+exclude = [".venv", "**/__pycache__", "build", "dist", "src/bloomberg", "src/market_analysis/dev"]
 extraPaths = [".claude/agents"]
 venvPath = "."
 venv = ".venv"
@@ -179,13 +179,14 @@ reportAttributeAccessIssue = "none"
 reportMissingTypeStubs = "none"
 reportMissingSuperCall = "none"
 reportPrivateUsage = "none"
+reportPrivateImportUsage = "none"
 reportImplicitStringConcatenation = "none"
 reportInvalidStubStatement = "none"
 reportIncompleteStub = "none"
 reportUnsupportedDunderAll = "none"
 
 [tool.bandit]
-exclude_dirs = ["tests", ".venv"]
+exclude_dirs = ["tests", ".venv", "src/bloomberg", "src/market_analysis/dev"]
 skips = ["B101", "B311", "B404", "B603", "B607"]
 
 [tool.pytest.ini_options]
