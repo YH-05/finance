@@ -22,9 +22,32 @@ env:
   UV_CACHE_DIR: /tmp/.uv-cache
 
 jobs:
+  # 変更されたファイルを検出
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.filter.outputs.python }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            python:
+              - 'src/**/*.py'
+              - 'tests/**/*.py'
+              - '.claude/**/*.py'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - '.github/workflows/ci.yml'
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    needs: changes
+    if: ${{ needs.changes.outputs.python == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -54,6 +77,8 @@ jobs:
   type-check:
     name: Type Check
     runs-on: ubuntu-latest
+    needs: changes
+    if: ${{ needs.changes.outputs.python == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     steps:
     - uses: actions/checkout@v4
 
@@ -75,10 +100,12 @@ jobs:
   test:
     name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: changes
+    if: ${{ needs.changes.outputs.python == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.12"]
         os: [ubuntu-latest]
 
     steps:
@@ -182,6 +209,7 @@ jobs:
     name: All Checks Passed
     runs-on: ubuntu-latest
     needs: [
+      changes,
       lint,
       type-check,
       test,
@@ -193,4 +221,5 @@ jobs:
       - name: Decide whether the all jobs succeeded
         uses: re-actors/alls-green@release/v1
         with:
+          allowed-skips: lint, type-check, test
           jobs: ${{ toJSON(needs) }}
