@@ -42,7 +42,7 @@
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
 | 1 | skill-expert スキル SKILL.md の作成 | M | なし | Done | [#601](https://github.com/YH-05/finance/issues/601) |
-| 2 | skill-expert スキル guide.md の作成 | M | #1 | Todo | [#602](https://github.com/YH-05/finance/issues/602) |
+| 2 | skill-expert スキル guide.md の作成 | M | #1 | Done | [#602](https://github.com/YH-05/finance/issues/602) |
 | 3 | skill-expert スキル template.md の作成 | S | #1 | Todo | [#603](https://github.com/YH-05/finance/issues/603) |
 
 #### agent-expert スキル拡張
