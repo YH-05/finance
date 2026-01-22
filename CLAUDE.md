@@ -136,6 +136,7 @@ updated_at: 2026-01-22
 | `issue-refinement` | Issue内容のブラッシュアップ（8項目の詳細確認） | `/issue-refine` |
 | `issue-implementation` | Issue自動実装とPR作成（Python/Agent/Command/Skillの4タイプ対応） | `/issue-implement` |
 | `issue-sync` | Issueコメントから進捗・タスク・仕様変更の同期 | `/sync-issue` |
+| `new-project` | 新規プロジェクト作成（パッケージ/軽量の2モード） | `/new-project` |
 | `project-management` | GitHub Projectとproject.mdの作成・管理・同期 | `/new-project` |
 | `task-decomposition` | タスク分解、依存関係解析、類似タスク判定 | `/task` |
 
@@ -354,10 +355,10 @@ updated_at: 2026-01-22
 ```
 finance/
 ├── .claude/                    # Claude Code 設定
-│   ├── agents/                 # サブエージェント定義（67個）
+│   ├── agents/                 # サブエージェント定義（70個）
 │   ├── commands/               # スラッシュコマンド（28個）
 │   ├── rules/                  # 共有ルール（規約詳細）
-│   └── skills/                 # スキル定義（31個）
+│   └── skills/                 # スキル定義（32個）
 │
 ├── src/                        # ソースコード
 │   ├── finance/                # コアインフラ（DB, utils）

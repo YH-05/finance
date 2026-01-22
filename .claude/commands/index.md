@@ -17,7 +17,6 @@ description: コマンド・スキル・エージェント・ディレクトリ�
 |----------|------|
 | /analyze | 多次元コード分析（分析レポート出力） |
 | /analyze-conflicts | PRのコンフリクトを詳細分析し、問題点と解決策を提示 |
-| /collect-finance-news | テーマ別に金融ニュースを収集し、GitHub Project 15に自動投稿 |
 | /commit-and-pr | 変更のコミットとPR作成 |
 | /delete-worktrees | 複数のworktreeとブランチを一括削除 |
 | /ensure-quality | コード品質の自動改善（make check-all相当） |
@@ -28,6 +27,7 @@ description: コマンド・スキル・エージェント・ディレクトリ�
 | /gemini-search | Gemini CLIを使用したWeb検索 |
 | /generate-market-report | 週次マーケットレポートを自動生成 |
 | /improve | エビデンスベースの改善実装 |
+| /index | コマンド・スキル・エージェント・ディレクトリ構成の一覧表示と更新 |
 | /merge-pr | PRのコンフリクトチェック・CI確認・マージを実行 |
 | /new-finance-article | 新規金融記事フォルダを作成 |
 | /new-package | モノレポ内に新しいPythonパッケージを作成 |
@@ -44,7 +44,7 @@ description: コマンド・スキル・エージェント・ディレクトリ�
 | /worktree-done | worktreeの開発完了後、PRマージ確認を経て安全にクリーンアップ |
 | /write-tests | t-wada流TDDによるテスト作成 |
 
-## スキル一覧 (31件)
+## スキル一覧 (32件)
 
 | スキル | 説明 |
 |--------|------|
@@ -68,6 +68,7 @@ description: コマンド・スキル・エージェント・ディレクトリ�
 | issue-refinement | GitHub Issueのブラッシュアップ |
 | issue-sync | Issueコメントから進捗・タスク・仕様を同期 |
 | merge-pr | PRコンフリクトチェック・CI確認・マージ |
+| new-project | 新規プロジェクトを作成（パッケージ/軽量の2モード） |
 | plan-worktrees | Todoの Issueを並列開発用にグルーピング |
 | prd-writing | ライブラリ要求定義書(LRD)作成のガイド |
 | project-management | GitHub Projectとproject.mdの管理・同期 |
@@ -80,7 +81,7 @@ description: コマンド・スキル・エージェント・ディレクトリ�
 | worktree | 新しいworktreeとブランチを作成 |
 | worktree-done | worktree完了後の安全なクリーンアップ |
 
-## エージェント一覧 (70件)
+## エージェント一覧 (70件 - `.claude/agents.md` 参照)
 
 詳細は `.claude/agents.md` を参照してください。
 

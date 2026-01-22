@@ -432,6 +432,38 @@ except FeedNotFoundError as e:
 
 <!-- END: STATS -->
 
+## 依存関係
+
+### 必須依存関係
+
+| パッケージ | 用途 | 最小バージョン |
+|-----------|------|---------------|
+| `httpx` | HTTP通信（非同期対応） | 0.28.1+ |
+| `feedparser` | RSS/Atomフィードパース | 6.0.12+ |
+| `structlog` | 構造化ロギング | 25.4.0+ |
+| `filelock` | ファイルロック管理 | 3.20.3+ |
+
+### オプション依存関係
+
+| パッケージ | 用途 | インストール方法 |
+|-----------|------|-----------------|
+| `apscheduler` | バッチスケジューリング | `uv add apscheduler` or `uv sync --extra scheduler` |
+| `fastmcp` | MCP統合 | `uv sync --extra mcp` |
+| `click` | CLI機能 | `uv sync --extra cli` |
+
+### インストール例
+
+```bash
+# 基本機能のみ
+uv sync
+
+# スケジューリング機能を含む
+uv sync --extra scheduler
+
+# 全機能を有効化
+uv sync --all-extras
+```
+
 ## 開発ガイド
 
 ### 拡張方法

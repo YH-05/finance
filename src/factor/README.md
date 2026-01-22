@@ -101,57 +101,57 @@ quantile_result = analyzer.analyze(
 factor/
 ├── __init__.py
 ├── py.typed
-├── types.py
-├── errors.py
-├── enums.py
-├── core/
+├── types.py           # 型定義（FactorConfig, FactorResult等）
+├── errors.py          # カスタム例外クラス
+├── enums.py           # Enum定義（FactorCategory, NormalizationMethod）
+├── core/              # コアアルゴリズム
 │   ├── __init__.py
-│   ├── base.py
-│   ├── registry.py
-│   ├── normalizer.py
-│   ├── return_calculator.py
-│   ├── orthogonalization.py
-│   └── pca.py
-├── factors/
+│   ├── base.py                # Factor抽象基底クラス
+│   ├── registry.py            # ファクターレジストリ
+│   ├── normalizer.py          # ファクター正規化
+│   ├── return_calculator.py   # リターン計算
+│   ├── orthogonalization.py   # ファクター直交化
+│   └── pca.py                 # イールドカーブPCA分析
+├── factors/           # ファクター実装
 │   ├── __init__.py
-│   ├── macro/
+│   ├── macro/         # マクロ経済ファクター
 │   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── macro_builder.py
-│   │   ├── interest_rate.py
-│   │   ├── inflation.py
-│   │   └── flight_to_quality.py
-│   ├── price/
+│   │   ├── base.py             # マクロファクター基底クラス
+│   │   ├── macro_builder.py    # マクロファクタービルダー
+│   │   ├── interest_rate.py    # 金利ファクター
+│   │   ├── inflation.py        # インフレファクター
+│   │   └── flight_to_quality.py # フライト・トゥ・クオリティ
+│   ├── price/         # 価格ファクター
 │   │   ├── __init__.py
-│   │   ├── momentum.py
-│   │   ├── reversal.py
-│   │   └── volatility.py
-│   ├── quality/
+│   │   ├── momentum.py   # モメンタム
+│   │   ├── reversal.py   # リバーサル
+│   │   └── volatility.py # ボラティリティ
+│   ├── quality/       # クオリティファクター
 │   │   ├── __init__.py
-│   │   ├── quality.py
-│   │   ├── roic.py
-│   │   ├── roic_label.py
-│   │   └── composite.py
-│   ├── size/
+│   │   ├── quality.py     # 基本クオリティ
+│   │   ├── roic.py        # ROIC
+│   │   ├── roic_label.py  # ROICラベリング
+│   │   └── composite.py   # 複合クオリティ
+│   ├── size/          # サイズファクター
 │   │   ├── __init__.py
-│   │   └── size.py
-│   └── value/
+│   │   └── size.py        # 時価総額
+│   └── value/         # バリューファクター
 │       ├── __init__.py
-│       ├── value.py
-│       └── composite.py
-├── providers/
+│       ├── value.py       # 基本バリュー
+│       └── composite.py   # 複合バリュー
+├── providers/         # データプロバイダー
 │   ├── __init__.py
-│   ├── base.py
-│   ├── cache.py
-│   └── yfinance.py
-├── validation/
+│   ├── base.py        # プロバイダープロトコル
+│   ├── cache.py       # キャッシュユーティリティ
+│   └── yfinance.py    # Yahoo Financeプロバイダー
+├── validation/        # ファクター検証
 │   ├── __init__.py
-│   ├── ic_analyzer.py
-│   └── quantile_analyzer.py
-├── utils/
+│   ├── ic_analyzer.py       # IC/IR分析
+│   └── quantile_analyzer.py # 分位ポートフォリオ分析
+├── utils/             # ユーティリティ
 │   ├── __init__.py
-│   └── logging_config.py
-└── docs/
+│   └── logging_config.py # 構造化ロギング
+└── docs/              # ドキュメント
     ├── architecture.md
     ├── glossary.md
     ├── project.md
@@ -167,17 +167,17 @@ factor/
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 ## 実装状況
 
-| モジュール        | 状態        | ファイル数 | 行数 | 説明                                           |
-| ----------------- | ----------- | ---------- | ---- | ---------------------------------------------- |
-| `__init__.py`     | ✅ 実装済み | 1          | 78   | パッケージエントリーポイント                   |
-| `types.py`        | ✅ 実装済み | 1          | 114  | 型定義（FactorConfig, FactorResult等）         |
-| `errors.py`       | ✅ 実装済み | 1          | 127  | カスタム例外クラス                             |
-| `enums.py`        | ✅ 実装済み | 1          | 17   | Enum定義（FactorCategory, NormalizationMethod）|
-| `core/`           | ✅ 実装済み | 7          | 790  | コアアルゴリズム（Factor基底、正規化、PCA等）  |
-| `factors/`        | ✅ 実装済み | 21         | 1,595| ファクター実装（価格、バリュー、クオリティ等）|
-| `providers/`      | ✅ 実装済み | 4          | 441  | データプロバイダー（YFinance、キャッシュ）    |
-| `validation/`     | ✅ 実装済み | 3          | 597  | ファクター検証（IC分析、分位分析）            |
-| `utils/`          | ✅ 実装済み | 2          | 139  | ユーティリティ（構造化ロギング）              |
+| モジュール        | 状態        | ファイル数 | 行数  | 説明                                           |
+| ----------------- | ----------- | ---------- | ----- | ---------------------------------------------- |
+| `__init__.py`     | ✅ 実装済み | 1          | 139   | パッケージエントリーポイント                   |
+| `types.py`        | ✅ 実装済み | 1          | 352   | 型定義（FactorConfig, FactorResult等）         |
+| `errors.py`       | ✅ 実装済み | 1          | 354   | カスタム例外クラス                             |
+| `enums.py`        | ✅ 実装済み | 1          | 74    | Enum定義（FactorCategory, NormalizationMethod）|
+| `core/`           | ✅ 実装済み | 7          | 2,320 | コアアルゴリズム（Factor基底、正規化、PCA等）  |
+| `factors/`        | ✅ 実装済み | 21         | 4,414 | ファクター実装（価格、バリュー、クオリティ等）|
+| `providers/`      | ✅ 実装済み | 4          | 1,227 | データプロバイダー（YFinance、キャッシュ）    |
+| `validation/`     | ✅ 実装済み | 3          | 1,276 | ファクター検証（IC分析、分位分析）            |
+| `utils/`          | ✅ 実装済み | 2          | 119   | ユーティリティ（構造化ロギング）              |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -537,15 +537,44 @@ class CustomFactor(Factor):
 <!-- AUTO-GENERATED: STATS -->
 ## 統計
 
-| 項目                 | 値    |
-| -------------------- | ----- |
-| Python ファイル数    | 41    |
-| 総行数（実装コード） | 3,898 |
-| モジュール数         | 6     |
-| テストファイル数     | 33    |
-| テストカバレッジ     | N/A   |
+| 項目                 | 値     |
+| -------------------- | ------ |
+| Python ファイル数    | 41     |
+| 総行数（実装コード） | 10,275 |
+| モジュール数         | 6      |
+| テストファイル数     | 33     |
+| テストカバレッジ     | N/A    |
 
 <!-- END: STATS -->
+
+## 依存関係
+
+### 必須パッケージ
+
+| パッケージ | 用途 |
+|-----------|------|
+| `pandas` | データフレーム操作、時系列データ処理 |
+| `numpy` | 数値計算、配列操作 |
+| `scipy` | 統計計算（z-score、ランク等） |
+| `yfinance` | Yahoo Financeからの株価・ファンダメンタルデータ取得 |
+| `structlog` | 構造化ロギング |
+
+### 内部パッケージ
+
+このパッケージは以下の内部パッケージに依存しています:
+
+- `finance` - コアインフラ（ロギング、データベース）
+- `market_analysis` - 市場データ取得（YFinance、FRED連携）
+
+### インストール
+
+```bash
+# 全依存関係をインストール
+uv sync --all-extras
+
+# 本番環境のみ
+uv sync
+```
 
 ## 拡張ガイド
 

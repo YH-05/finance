@@ -79,6 +79,26 @@ generator = ChartGenerator(portfolio=portfolio)
 fig = generator.plot_allocation()
 fig.show()
 ```
+
+#### ユースケース3: リバランス分析
+
+```python
+from strategy.portfolio import Portfolio
+from strategy.rebalance import Rebalancer
+
+# ポートフォリオを定義
+portfolio = Portfolio([("VOO", 0.6), ("BND", 0.4)])
+
+# 現在の市場価値（例：価格変動後）
+current_values = {"VOO": 65000, "BND": 35000}
+
+# リバランサーでドリフトを検出
+rebalancer = Rebalancer(portfolio)
+drift = rebalancer.detect_drift(current_values)
+
+print(f"ドリフト: {drift.max_drift_pct:.2%}")
+print(f"リバランス推奨: {'はい' if drift.needs_rebalancing else 'いいえ'}")
+```
 <!-- END: QUICKSTART -->
 
 <!-- AUTO-GENERATED: STRUCTURE -->
@@ -197,6 +217,71 @@ result = calculator.calculate()
 
 ---
 
+#### `Portfolio`
+
+**説明**: ポートフォリオの保有銘柄と資産配分を管理。リバランスや分析の基盤となるクラス
+
+**基本的な使い方**:
+
+```python
+from strategy.portfolio import Portfolio
+
+# ポートフォリオを定義（60%株式、40%債券）
+portfolio = Portfolio(
+    holdings=[("VOO", 0.6), ("BND", 0.4)],
+    name="60/40 ポートフォリオ"
+)
+
+# 保有銘柄を確認
+print(portfolio.tickers)  # ['VOO', 'BND']
+print(portfolio.weights)  # {'VOO': 0.6, 'BND': 0.4}
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `add_holding(ticker, weight)` | 銘柄を追加 | `None` |
+| `remove_holding(ticker)` | 銘柄を削除 | `None` |
+| `set_period(period)` | 分析期間を設定 | `None` |
+| `normalize_weights()` | 比率を正規化（合計1.0に調整） | `None` |
+
+---
+
+#### `Rebalancer`
+
+**説明**: ポートフォリオのドリフト（目標比率からの乖離）を検出し、リバランス推奨を提供
+
+**基本的な使い方**:
+
+```python
+from strategy.portfolio import Portfolio
+from strategy.rebalance import Rebalancer
+
+# ポートフォリオを定義
+portfolio = Portfolio([("VOO", 0.6), ("BND", 0.4)])
+
+# 現在の市場価値（価格変動後）
+current_values = {"VOO": 65000, "BND": 35000}
+
+# ドリフトを検出
+rebalancer = Rebalancer(portfolio)
+drift = rebalancer.detect_drift(current_values)
+
+print(f"最大ドリフト: {drift.max_drift_pct:.2%}")
+print(f"リバランス必要: {drift.needs_rebalancing}")
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `detect_drift(current_values)` | ドリフトを検出 | `DriftResult` |
+| `calculate_rebalance_cost(...)` | リバランスコストを計算 | `float` |
+| `should_rebalance(...)` | リバランス推奨を判定 | `bool` |
+
+---
+
 #### `RiskMetricsResult`
 
 **説明**: リスク指標の計算結果を保持するデータクラス
@@ -211,6 +296,9 @@ result = calculator.calculate()
 | `max_drawdown` | `float` | 最大ドローダウン（最大下落率） |
 | `var_95` | `float` | 95%信頼区間のVaR（バリュー・アット・リスク） |
 | `var_99` | `float` | 99%信頼区間のVaR |
+| `beta` | `float \| None` | ベンチマーク相対のベータ（市場感応度） |
+| `treynor_ratio` | `float \| None` | Treynor比（体系的リスク調整後リターン） |
+| `information_ratio` | `float \| None` | 情報比率（アクティブリターン/トラッキングエラー） |
 | `annualized_return` | `float` | 年率リターン |
 | `cumulative_return` | `float` | 累積リターン |
 
@@ -271,7 +359,7 @@ fig.show()
 | メソッド | 説明 | 戻り値 |
 |---------|------|--------|
 | `plot_allocation()` | 資産配分の円グラフを生成 | `go.Figure` |
-| `plot_drift()` | ドリフト分析（目標比率との乖離）を可視化 | `go.Figure` |
+| `plot_drift(drift_result)` | ドリフト分析（目標比率との乖離）を可視化 | `go.Figure` |
 
 ---
 
@@ -304,6 +392,17 @@ from strategy.types import (
     Period,         # 分析期間の定義
     PresetPeriod,   # プリセット期間（"1y", "3y" など）
     TickerInfo,     # ティッカー情報（セクター、資産クラスなど）
+    AssetClass,     # 資産クラス（"equity", "bond", "commodity" など）
+)
+
+from strategy.rebalance.types import (
+    DriftResult,    # ドリフト検出結果
+)
+
+from strategy.errors import (
+    StrategyError,       # 基底例外クラス
+    ValidationError,     # バリデーションエラー
+    DataProviderError,   # データプロバイダーエラー
 )
 ```
 <!-- END: API -->
@@ -319,6 +418,35 @@ from strategy.types import (
 | テストファイル数     | 13     |
 | テストカバレッジ     | N/A    |
 <!-- END: STATS -->
+
+## 依存関係
+
+### 外部パッケージ
+
+| パッケージ | 用途 | 必須 |
+|-----------|------|------|
+| `pandas` | データフレーム処理、リターン計算 | ✅ |
+| `numpy` | 数値計算、統計処理 | ✅ |
+| `scipy` | 統計関数（VaR計算など） | ✅ |
+| `plotly` | インタラクティブチャート生成 | ✅ |
+| `python-dateutil` | 日付・期間計算 | ✅ |
+
+### 内部パッケージ依存
+
+| パッケージ | 関係 | 説明 |
+|-----------|------|------|
+| `finance` | 依存 | ロギング設定（`finance.utils.logging_config`）を利用 |
+| `market_analysis` | 任意 | データプロバイダーとして利用可能（`strategy.providers.market_analysis`） |
+
+### インストール
+
+```bash
+# 全依存関係をインストール
+uv sync --all-extras
+
+# 開発用依存関係を含む
+uv sync --all-extras --dev
+```
 
 ## 拡張ガイド
 

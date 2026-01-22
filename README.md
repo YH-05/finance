@@ -97,13 +97,13 @@ uv run pyright --version
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (67 agents + 36 commands + 13 skills)
-│   ├── agents/                              # (67) Specialized agents
+├── .claude/                                 # Claude Code configuration (70 agents + 28 commands + 32 skills)
+│   ├── agents/                              # (70) Specialized agents
 │   │   ├── deep-research/
 │   │   └── finance_news_collector/          # テーマ別収集エージェント
-│   ├── commands/                            # (36) Slash commands
+│   ├── commands/                            # (28) Slash commands
 │   ├── rules/                               # Shared rule definitions
-│   ├── skills/                              # (13) Skill modules
+│   ├── skills/                              # (32) Skill modules
 │   └── agents.md
 ├── .github/                                 # GitHub configuration
 │   ├── ISSUE_TEMPLATE/                      # Issue templates
@@ -114,11 +114,11 @@ finance/                                     # Project root
 │   ├── sqlite/                              # SQLite OLTP database
 │   ├── raw/                                 # Raw data (Parquet format)
 │   │   ├── fred/indicators/
-│   │   ├── rss/                             # (33) RSS feed subscriptions
+│   │   ├── rss/                             # RSS feed subscriptions
 │   │   └── yfinance/                        # stocks, forex, indices
 │   ├── processed/                           # Processed data (daily/aggregated)
 │   ├── exports/                             # Exported data (csv/json)
-│   └── schemas/                             # (14) JSON schemas
+│   └── schemas/                             # JSON schemas
 ├── docs/                                    # Repository documentation
 │   ├── code-analysis-report/                # Code analysis reports
 │   ├── plan/                                # Project plans
@@ -127,15 +127,17 @@ finance/                                     # Project root
 │       ├── project-7/                       # エージェント開発
 │       ├── project-11/                      # note金融コンテンツ発信強化
 │       ├── project-14/                      # 金融ニュース収集
-│       └── project-16/                      # src_sample Migration
-├── src/                                     # Source code (172 Python files)
-│   ├── finance/                             # Core infrastructure (11 files)
+│       ├── project-16/                      # src_sample Migration
+│       ├── project-20/                      # ナレッジ管理システム
+│       └── project-21/                      # 新規プロジェクト
+├── src/                                     # Source code
+│   ├── finance/                             # Core infrastructure
 │   │   ├── db/                              # Database layer (SQLite + DuckDB)
 │   │   │   └── migrations/                  # Database schema migrations
 │   │   ├── utils/                           # Utilities (logging)
 │   │   ├── types.py
 │   │   └── py.typed
-│   ├── market_analysis/                     # Market analysis library (41 files)
+│   ├── market_analysis/                     # Market analysis library
 │   │   ├── core/                            # Data fetchers (yfinance, FRED)
 │   │   ├── analysis/                        # Analysis algorithms
 │   │   ├── api/                             # Public API
@@ -144,9 +146,9 @@ finance/                                     # Project root
 │   │   ├── utils/                           # Utilities (cache, retry, validators)
 │   │   ├── errors.py
 │   │   ├── types.py
-│   │   ├── docs/                            # (8) Library documentation
+│   │   ├── docs/                            # Library documentation
 │   │   └── py.typed
-│   ├── rss/                                 # RSS feed monitoring package (32 files)
+│   ├── rss/                                 # RSS feed monitoring package
 │   │   ├── cli/                             # CLI interface
 │   │   ├── core/                            # Parser, HTTP client, diff detector
 │   │   ├── mcp/                             # MCP server integration
@@ -156,38 +158,40 @@ finance/                                     # Project root
 │   │   ├── utils/                           # Logging
 │   │   ├── exceptions.py
 │   │   ├── types.py
-│   │   ├── docs/                            # (8) Library documentation
+│   │   ├── docs/                            # Library documentation
 │   │   └── py.typed
-│   ├── factor/                              # Factor analysis library (50 files)
+│   ├── factor/                              # Factor analysis library
 │   │   ├── core/                            # Core algorithms
 │   │   ├── factors/                         # Factor implementations (macro, price, quality, size, value)
 │   │   ├── providers/                       # Data providers
 │   │   ├── validation/                      # Factor validation
 │   │   ├── utils/
 │   │   └── py.typed
-│   └── strategy/                            # Strategy library (29 files)
-│       ├── core/
-│       ├── output/                          # Output formatter
-│       ├── rebalance/                       # Rebalancing
-│       ├── risk/                            # Risk management
-│       ├── providers/                       # Data providers
-│       ├── utils/
-│       └── py.typed
-├── tests/                                   # Test suite (65+ test files)
+│   ├── strategy/                            # Strategy library
+│   │   ├── core/
+│   │   ├── output/                          # Output formatter
+│   │   ├── rebalance/                       # Rebalancing
+│   │   ├── risk/                            # Risk management
+│   │   ├── providers/                       # Data providers
+│   │   ├── utils/
+│   │   └── py.typed
+│   └── bloomberg/                           # Bloomberg連携
+├── tests/                                   # Test suite
 │   ├── finance/                             # Finance package tests
-│   │   └── db/unit/                         # (3) DB client tests
+│   │   └── db/unit/                         # DB client tests
 │   ├── market_analysis/                     # Market analysis tests
-│   │   └── unit/                            # (19) Tests
+│   │   └── unit/                            # Tests
 │   ├── rss/                                 # RSS package tests
-│   │   ├── unit/                            # (16) Unit tests
-│   │   └── integration/                     # (2) Integration tests
-│   ├── factor/                              # Factor analysis tests (33 files)
-│   ├── strategy/                            # Strategy tests (13 files)
+│   │   ├── unit/                            # Unit tests
+│   │   └── integration/                     # Integration tests
+│   ├── factor/                              # Factor analysis tests
+│   ├── strategy/                            # Strategy tests
 │   └── finance_news_collector/              # News collector tests
 ├── template/                                # Reference templates (read-only)
 │   ├── src/template_package/                # Package structure template
 │   ├── tests/                               # Test structure template
 │   └── {article_id}-theme-name-en/          # Article template
+├── articles/                                # 金融記事ワークスペース
 ├── snippets/                                # Reusable content (disclaimers, etc.)
 ├── scripts/                                 # Utility scripts
 ├── CLAUDE.md                                # Project instructions
