@@ -32,7 +32,7 @@ updated_at: 2026-01-22
 - worktree作成 → `/worktree <branch_name>`
 
 ### 金融コンテンツ作成
-- ニュース収集 → `/collect-finance-news`
+- ニュース収集 → `/finance-news-workflow`
 - トピック提案 → `/finance-suggest-topics`
 - 記事フォルダ作成 → `/new-finance-article`
 - リサーチ実行 → `/finance-research`
@@ -47,25 +47,296 @@ updated_at: 2026-01-22
 ### 一覧表示
 - 全コマンド一覧 → `/index`
 
+---
+
+## コマンド一覧
+
+### Git・PR操作
+
+| コマンド | 説明 | スキル |
+|----------|------|--------|
+| `/commit-and-pr` | 変更のコミットとPR作成 | `commit-and-pr` |
+| `/push` | 変更をコミットしてリモートにプッシュ | `push` |
+| `/merge-pr <番号>` | PRのコンフリクトチェック・CI確認・マージ | `merge-pr` |
+| `/review-pr` | PRレビュー（コード品質・セキュリティ・テスト） | - |
+| `/analyze-conflicts` | コンフリクト分析と解決策提示 | - |
+
+### Worktree・並行開発
+
+| コマンド | 説明 | スキル |
+|----------|------|--------|
+| `/worktree <branch_name>` | 新しいworktreeとブランチを作成して開発開始 | `worktree` |
+| `/plan-worktrees <project>` | GitHub Projectを参照し並列開発計画を表示 | `plan-worktrees` |
+| `/create-worktrees <issues>` | 複数のworktreeを一括作成 | `create-worktrees` |
+| `/worktree-done <branch>` | PRマージ確認後にworktreeを安全にクリーンアップ | `worktree-done` |
+| `/delete-worktrees <branches>` | 複数のworktreeとブランチを一括削除 | `delete-worktrees` |
+
+### コード品質・分析
+
+| コマンド | 説明 | スキル |
+|----------|------|--------|
+| `/write-tests` | t-wada流TDDによるテスト作成 | `tdd-development` |
+| `/ensure-quality` | コード品質の自動改善（make check-all相当） | - |
+| `/analyze` | 多次元コード分析（品質・アーキテクチャ・性能） | - |
+| `/improve` | エビデンスベースの改善実装 | - |
+| `/safe-refactor` | 安全なリファクタリング | - |
+| `/scan` | セキュリティと品質の包括的検証 | - |
+| `/troubleshoot` | 体系的なデバッグ | `troubleshoot` |
+
+### Issue・プロジェクト管理
+
+| コマンド | 説明 | スキル |
+|----------|------|--------|
+| `/issue` | GitHub Issueの作成とタスク分解 | `issue-creation` |
+| `/issue-refine <番号>` | Issueの内容をブラッシュアップ | `issue-refinement` |
+| `/issue-implement <番号>` | GitHub Issueの自動実装とPR作成 | `issue-implementation` |
+| `/sync-issue <番号>` | Issueコメントから進捗・タスク・仕様変更を同期 | `issue-sync` |
+| `/new-project` | プロジェクト作成（GitHub Project連携） | `project-management` |
+| `/task` | 複雑なタスクの管理 | `task-decomposition` |
+
+### 金融コンテンツ作成
+
+| コマンド | 説明 | スキル |
+|----------|------|--------|
+| `/finance-suggest-topics` | 金融記事のトピックを提案しスコアリング | - |
+| `/new-finance-article` | 新規金融記事フォルダを作成し初期構造を生成 | - |
+| `/finance-research` | 金融記事のリサーチワークフロー（データ収集→分析→検証→可視化） | `deep-research` |
+| `/finance-edit` | 金融記事の編集ワークフロー（初稿作成→批評→修正） | - |
+| `/finance-full` | 記事作成の全工程を一括実行 | - |
+| `/generate-market-report` | 週次マーケットレポートを自動生成 | - |
+
+### ドキュメント・その他
+
+| コマンド | 説明 | スキル |
+|----------|------|--------|
+| `/review-docs` | ドキュメントレビュー | - |
+| `/new-package <name>` | モノレポ内に新しいPythonパッケージを作成 | - |
+| `/setup-repository` | テンプレートリポジトリの初期化（初回のみ） | - |
+| `/index` | コマンド・スキル・エージェント・ディレクトリ構成の一覧表示と更新 | `index` |
+| `/gemini-search` | Gemini CLIを使用したWeb検索 | `gemini-search` |
+
+---
+
+## スキル一覧
+
+### コーディング・開発
+
+| スキル | 説明 | 呼び出し方法 |
+|--------|------|--------------|
+| `coding-standards` | Python 3.12+コーディング規約（PEP 695型ヒント、命名規則、Docstring） | プロアクティブ |
+| `tdd-development` | t-wada流TDD（Red→Green→Refactor、テスト命名規則） | `/write-tests` |
+| `error-handling` | Pythonエラーハンドリングパターン（Simple/Richパターン選択） | プロアクティブ |
+| `development-guidelines` | 開発プロセスとコーディング規約の確立 | ドキュメント作成時 |
+
+### Issue・プロジェクト管理
+
+| スキル | 説明 | 呼び出し方法 |
+|--------|------|--------------|
+| `issue-creation` | GitHub Issue作成とタスク分解（クイック/パッケージ/軽量の3モード） | `/issue` |
+| `issue-refinement` | Issue内容のブラッシュアップ（8項目の詳細確認） | `/issue-refine` |
+| `issue-implementation` | Issue自動実装とPR作成（Python/Agent/Command/Skillの4タイプ対応） | `/issue-implement` |
+| `issue-sync` | Issueコメントから進捗・タスク・仕様変更の同期 | `/sync-issue` |
+| `project-management` | GitHub Projectとproject.mdの作成・管理・同期 | `/new-project` |
+| `task-decomposition` | タスク分解、依存関係解析、類似タスク判定 | `/task` |
+
+### Git・Worktree
+
+| スキル | 説明 | 呼び出し方法 |
+|--------|------|--------------|
+| `commit-and-pr` | 品質確認、コミット、プッシュ、PR作成、CIチェック | `/commit-and-pr` |
+| `push` | コミットメッセージ自動生成、ステージング、プッシュ | `/push` |
+| `merge-pr` | PRのコンフリクト確認・CI確認・マージ実行 | `/merge-pr` |
+| `worktree` | 並列開発用の独立した作業環境を即座に準備 | `/worktree` |
+| `plan-worktrees` | 依存関係を考慮した並列開発計画の可視化 | `/plan-worktrees` |
+| `create-worktrees` | 複数worktree一括作成 | `/create-worktrees` |
+| `worktree-done` | マージ確認→worktree削除→ブランチ削除の安全なクリーンアップ | `/worktree-done` |
+| `delete-worktrees` | 複数worktree一括削除 | `/delete-worktrees` |
+
+### ドキュメント作成
+
+| スキル | 説明 | 呼び出し方法 |
+|--------|------|--------------|
+| `prd-writing` | ライブラリ要求定義書(LRD)作成 | `/new-project` |
+| `functional-design` | 機能設計書作成 | ドキュメント作成時 |
+| `architecture-design` | アーキテクチャ設計書作成 | ドキュメント作成時 |
+| `repository-structure` | リポジトリ構造定義書作成 | ドキュメント作成時 |
+| `glossary-creation` | 用語集作成 | ドキュメント作成時 |
+
+### 専門スキル
+
+| スキル | 説明 | 呼び出し方法 |
+|--------|------|--------------|
+| `agent-expert` | Claude Codeエージェントの設計・最適化 | プロアクティブ |
+| `skill-expert` | Claude Codeスキルの設計・最適化 | プロアクティブ |
+| `workflow-expert` | ワークフロー設計とマルチエージェント連携 | プロアクティブ |
+| `agent-memory` | 会話をまたいで知識を保存・参照 | `remember this`等 |
+| `deep-research` | 金融市場・投資テーマのディープリサーチ | `/finance-research` |
+| `finance-news-workflow` | 金融ニュース収集の4フェーズワークフロー | `/finance-news-workflow` |
+| `index` | CLAUDE.md/README.mdの自動更新 | `/index` |
+| `gemini-search` | Gemini CLIを使用したWeb検索 | `/gemini-search` |
+
+---
+
+## エージェント一覧
+
+### ドキュメント作成エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `functional-design-writer` | 機能設計書を作成/更新（LRDを元に技術的な機能設計を詳細化） |
+| `architecture-design-writer` | アーキテクチャ設計書を作成/更新（技術スタックとシステム構造を定義） |
+| `repository-structure-writer` | リポジトリ構造定義書を作成/更新（具体的なディレクトリ構造を定義） |
+| `development-guidelines-writer` | 開発ガイドラインを作成/更新（コーディング規約と開発プロセス） |
+| `glossary-writer` | 用語集を作成/更新（ライブラリ固有の用語と技術用語を定義） |
+| `doc-reviewer` | ドキュメントの品質をレビューし改善提案 |
+
+### コード品質・分析エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `code-analyzer` | コード品質・アーキテクチャ・パフォーマンスの多次元分析 |
+| `code-simplifier` | コードの複雑性削減、可読性・保守性向上 |
+| `quality-checker` | コード品質の検証・自動修正（検証のみ/自動修正/クイックの3モード） |
+| `security-scanner` | OWASP Top 10に基づくセキュリティ監査 |
+| `debugger` | 体系的なデバッグ（問題特定→根本原因分析→解決策実装） |
+| `improvement-implementer` | エビデンスベースの改善実装（メトリクス測定→改善→検証） |
+| `implementation-validator` | 実装コードの品質検証とスペック整合性確認 |
+
+### テストエージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `test-orchestrator` | テスト作成の並列実行を制御するオーケストレーター |
+| `test-planner` | テスト設計（TODOリスト作成、テストケース分類、優先度付け） |
+| `test-unit-writer` | 単体テスト作成（関数・クラス単位） |
+| `test-property-writer` | Hypothesisを使用したプロパティベーステスト作成 |
+| `test-integration-writer` | コンポーネント間連携の統合テスト作成 |
+| `test-writer` | t-wada流TDDに基づくテスト作成 |
+| `feature-implementer` | TDDループ自動実行（Issue更新しながらRed→Green→Refactor） |
+
+### PRレビューエージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `pr-readability` | PRの可読性・命名規則・ドキュメント検証 |
+| `pr-design` | PRのSOLID原則・設計パターン・DRY検証 |
+| `pr-performance` | PRのアルゴリズム複雑度・メモリ効率・I/O検証 |
+| `pr-security-code` | PRのコード内セキュリティ脆弱性検証（OWASP A01-A05） |
+| `pr-security-infra` | PRのインフラセキュリティ検証（OWASP A06-A10） |
+| `pr-test-coverage` | PRのテストカバレッジとエッジケース網羅性検証 |
+| `pr-test-quality` | PRのテスト品質検証（命名・アサーション・モック・独立性） |
+
+### Issue・タスク管理エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `issue-implementer` | GitHub Issueの自動実装とPR作成（4タイプ対応） |
+| `task-decomposer` | タスク分解、Issue類似性判定、依存関係管理、双方向同期 |
+| `comment-analyzer` | Issueコメントを解析し進捗・サブタスク・仕様変更を抽出 |
+
+### 金融ニュース収集エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `finance-news-orchestrator` | テーマ別ニュース収集の並列実行を制御 |
+| `finance-news-collector` | RSSフィードから金融ニュースを収集しGitHub Projectに投稿 |
+| `finance-news-index` | Index（株価指数）関連ニュース収集 |
+| `finance-news-stock` | Stock（個別銘柄）関連ニュース収集 |
+| `finance-news-sector` | Sector（セクター分析）関連ニュース収集 |
+| `finance-news-macro` | Macro Economics（マクロ経済）関連ニュース収集 |
+| `finance-news-finance` | Finance（金融・財務）関連ニュース収集 |
+| `finance-news-ai` | AI（人工知能・テクノロジー）関連ニュース収集 |
+
+### 金融リサーチエージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `finance-query-generator` | 金融トピックから検索クエリを生成 |
+| `finance-web` | Web検索で金融情報を収集しraw-data.jsonに追記 |
+| `finance-wiki` | Wikipediaから金融関連の背景情報を収集 |
+| `finance-source` | raw-data.jsonから情報源を抽出・整理しsources.jsonを生成 |
+| `finance-claims` | sources.jsonから主張・事実を抽出しclaims.jsonを生成 |
+| `finance-claims-analyzer` | claims.jsonを分析し情報ギャップと追加調査の必要性を判定 |
+| `finance-fact-checker` | claims.jsonの各主張を検証し信頼度を判定 |
+| `finance-decisions` | 各主張の採用可否を判定 |
+| `finance-market-data` | YFinance/FREDを使用して市場データを取得 |
+| `finance-technical-analysis` | 市場データからテクニカル指標を計算・分析 |
+| `finance-economic-analysis` | FRED経済指標データを分析しマクロ経済状況を評価 |
+| `finance-sec-filings` | SEC EDGARから企業決算・財務データを取得・分析 |
+| `finance-sentiment-analyzer` | ニュース・ソーシャルメディアのセンチメント分析 |
+| `finance-visualize` | リサーチ結果を可視化しチャートやサマリーを生成 |
+
+### 金融記事作成エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `finance-topic-suggester` | 金融記事のトピックを提案しスコアリング |
+| `finance-article-writer` | リサーチ結果から金融記事の初稿を生成 |
+| `finance-critic-fact` | 記事の事実正確性を検証 |
+| `finance-critic-data` | 記事内のデータ・数値の正確性を検証 |
+| `finance-critic-structure` | 記事の文章構成を評価 |
+| `finance-critic-readability` | 記事の読みやすさと読者への訴求力を評価 |
+| `finance-critic-compliance` | 金融規制・コンプライアンスへの準拠を確認 |
+| `finance-reviser` | 批評結果を反映して記事を修正 |
+| `research-image-collector` | note記事用の画像を収集しimages.jsonを生成 |
+| `news-article-fetcher` | 記事URLから本文を取得し日本語要約を生成 |
+
+### 週次レポートエージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `weekly-comment-indices-fetcher` | 週次コメント用の指数関連ニュースを収集 |
+| `weekly-comment-mag7-fetcher` | 週次コメント用のMAG7関連ニュースを収集 |
+| `weekly-comment-sectors-fetcher` | 週次コメント用のセクター関連ニュースを収集 |
+
+### 設計・作成支援エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `agent-creator` | agent-expertスキルを参照しエージェントの設計・実装・検証を実行 |
+| `skill-creator` | skill-expertスキルを参照しスキルの設計・実装・検証を実行 |
+| `command-expert` | Claude Codeコマンドの設計・最適化 |
+| `workflow-designer` | ワークフロー設計とマルチエージェント連携 |
+| `package-readme-updater` | パッケージREADMEを自動更新（構成・API・使用例） |
+
+---
+
+## Pythonパッケージ一覧
+
+| パッケージ | 説明 | 主な機能 |
+|------------|------|----------|
+| `finance` | コアインフラパッケージ | DB接続、ユーティリティ、ロギング、プロファイリング |
+| `market_analysis` | 金融市場分析パッケージ | yfinance連携、FRED連携、テクニカル分析 |
+| `rss` | RSSフィード管理パッケージ | フィード監視、記事取得、重複チェック |
+| `factor` | ファクター投資・分析パッケージ | マルチファクターモデル、ファクター分析 |
+| `strategy` | 投資戦略パッケージ | 戦略構築、バックテスト、評価 |
+| `bloomberg` | Bloomberg連携パッケージ | Bloomberg API連携 |
+
+---
+
 ## 規約・詳細参照
 
-- コーディング規約 → `@.claude/rules/coding-standards.md`
-- テスト戦略 → `@.claude/rules/testing-strategy.md`
-- Git運用 → `@.claude/rules/git-rules.md`
-- 開発プロセス → `@.claude/rules/development-process.md`
-- 共通指示 → `@.claude/rules/common-instructions.md`
-- エビデンスベース → `@.claude/rules/evidence-based.md`
-- サブエージェント → `@.claude/rules/subagent-data-passing.md`
+| 規約 | パス |
+|------|------|
+| コーディング規約 | `@.claude/rules/coding-standards.md` |
+| テスト戦略 | `@.claude/rules/testing-strategy.md` |
+| Git運用 | `@.claude/rules/git-rules.md` |
+| 開発プロセス | `@.claude/rules/development-process.md` |
+| 共通指示 | `@.claude/rules/common-instructions.md` |
+| エビデンスベース | `@.claude/rules/evidence-based.md` |
+| サブエージェント | `@.claude/rules/subagent-data-passing.md` |
+
+---
 
 ## ディレクトリ構成
 
 ```
 finance/
 ├── .claude/                    # Claude Code 設定
-│   ├── agents/                 # サブエージェント定義
-│   ├── commands/               # スラッシュコマンド
+│   ├── agents/                 # サブエージェント定義（67個）
+│   ├── commands/               # スラッシュコマンド（28個）
 │   ├── rules/                  # 共有ルール（規約詳細）
-│   └── skills/                 # スキル定義
+│   └── skills/                 # スキル定義（31個）
 │
 ├── src/                        # ソースコード
 │   ├── finance/                # コアインフラ（DB, utils）
@@ -91,6 +362,8 @@ finance/
 ├── snippets/                   # 再利用可能コンテンツ
 └── trash/                      # 削除待ちファイル
 ```
+
+---
 
 ## 制約事項
 

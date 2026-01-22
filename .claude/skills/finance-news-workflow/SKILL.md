@@ -12,10 +12,10 @@ RSSフィードから金融ニュースを自動収集し、GitHub Project #15�
 
 ```bash
 # 標準実行
-/collect-finance-news
+/finance-news-workflow
 
 # オプション付き
-/collect-finance-news --since 3d --themes "index,macro" --limit 30 --dry-run
+/finance-news-workflow --since 3d --themes "index,macro" --limit 30 --dry-run
 ```
 
 ## 4フェーズワークフロー
@@ -111,7 +111,6 @@ Phase 4: 結果報告
 
 | リソース | パス |
 |---------|------|
-| コマンド | `.claude/commands/collect-finance-news.md` |
 | オーケストレーター | `.claude/agents/finance-news-orchestrator.md` |
 | テーマ設定 | `data/config/finance-news-themes.json` |
 | GitHub Project | https://github.com/users/YH-05/projects/15 |
