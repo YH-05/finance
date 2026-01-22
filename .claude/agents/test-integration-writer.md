@@ -7,6 +7,8 @@ depends_on:
   - test-planner
   - test-unit-writer
   - test-property-writer
+skills:
+  - tdd-development
 ---
 
 # 統合テスト作成エージェント

@@ -4,6 +4,8 @@ description: テスト作成の並列実行を制御するオーケストレー�
 model: inherit
 color: purple
 depends_on: []
+skills:
+  - tdd-development
 ---
 
 # テストオーケストレーター

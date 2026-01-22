@@ -1,5 +1,6 @@
 ---
 description: t-wada流TDDによるテスト作成
+allowed-tools: Task
 ---
 
 # /write-tests - t-wada流TDDによるテスト作成
@@ -11,6 +12,14 @@ description: t-wada流TDDによるテスト作成
 > - コードの詳細分析 → `/analyze`
 
 **目的**: t-wada流TDDサイクル（Red→Green→Refactor）に基づく高品質なテストの作成
+
+## 詳細ナレッジベース
+
+TDD の詳細なガイドラインとテンプレートは以下のスキルを参照:
+
+- **スキル**: `.claude/skills/tdd-development/SKILL.md`
+- **詳細ガイド**: `.claude/skills/tdd-development/guide.md`
+- **テンプレート**: `.claude/skills/tdd-development/templates/`
 
 ## アーキテクチャ
 

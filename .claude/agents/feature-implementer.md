@@ -3,6 +3,8 @@ name: feature-implementer
 description: TDDループを自動実行するサブエージェント。GitHub Issue のチェックボックスを更新しながら Red→Green→Refactor サイクルを繰り返す。
 model: inherit
 color: cyan
+skills:
+  - tdd-development
 ---
 
 # 機能実装エージェント

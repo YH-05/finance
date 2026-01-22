@@ -1,5 +1,13 @@
 # テスト戦略
 
+## 詳細ナレッジベース
+
+TDD の詳細なガイドラインとテンプレートは以下のスキルを参照:
+
+- **スキル**: `.claude/skills/tdd-development/SKILL.md`
+- **詳細ガイド**: `.claude/skills/tdd-development/guide.md`
+- **テンプレート**: `.claude/skills/tdd-development/templates/`
+
 ## TDD の基本サイクル
 
 ```
@@ -100,5 +108,6 @@ uv run pytest tests/unit/test_example.py::TestClass::test_method -v
 
 ## 参照
 
+- **TDDスキル**: `.claude/skills/tdd-development/SKILL.md`（推奨）
 - テンプレート: `template/tests/`
 - 詳細ガイド: `docs/testing-strategy.md`

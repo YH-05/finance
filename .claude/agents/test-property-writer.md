@@ -5,6 +5,8 @@ model: inherit
 color: yellow
 depends_on:
   - test-planner
+skills:
+  - tdd-development
 ---
 
 # プロパティテスト作成エージェント
