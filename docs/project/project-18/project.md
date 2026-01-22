@@ -88,7 +88,7 @@
 
 | # | タスク | 工数 | 依存 | ステータス | Issue |
 |---|--------|------|------|----------|-------|
-| 16 | Issue管理スキル SKILL.md の作成 | M | #3 | Todo | [#616](https://github.com/YH-05/finance/issues/616) |
+| 16 | Issue管理スキル SKILL.md の作成 | M | #3 | Done | [#616](https://github.com/YH-05/finance/issues/616) |
 | 17 | Issue管理スキル guide.md の作成 | M | #16 | Todo | [#617](https://github.com/YH-05/finance/issues/617) |
 | 18 | 既存 issue 系コマンドを Issue管理スキルに置換 | L | #17 | Todo | [#618](https://github.com/YH-05/finance/issues/618) |
 
