@@ -66,7 +66,7 @@
 |---|--------|------|------|----------|-------|
 | 7 | index スキル SKILL.md の作成 | M | #3 | Done | [#607](https://github.com/YH-05/finance/issues/607) |
 | 8 | index スキル guide.md の作成 | S | #7 | Done | [#608](https://github.com/YH-05/finance/issues/608) |
-| 9 | 既存 /index コマンドを index スキルに置換 | S | #8 | Todo | [#609](https://github.com/YH-05/finance/issues/609) |
+| 9 | 既存 /index コマンドを index スキルに置換 | S | #8 | Done | [#609](https://github.com/YH-05/finance/issues/609) |
 
 #### プロジェクト管理スキル
 
