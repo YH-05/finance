@@ -199,18 +199,20 @@ done
 
 | チェック項目 | ルール | 例 |
 |-------------|--------|-----|
-| 必須 | 空でないこと | ✅ `lime` |
-| 有効な値 | 定義済みの色名 | `lime`, `blue`, `purple`, `orange`, `cyan`, `yellow` |
+| 必須 | 空でないこと | ✅ `green` |
+| 有効な値 | 定義済みの色名 | `green`, `blue`, `purple`, `orange`, `cyan`, `yellow`, `red`, `pink`, `magenta`, `indigo`, `gray` |
 
 **用途**: UI表示時の識別色、エージェントの視覚的分類
 
 **推奨される色の使い分け**:
-- `lime`: 汎用・ユーティリティ系
+- `green`: 汎用・ユーティリティ系
 - `blue`: 分析・リサーチ系
 - `purple`: 作成・生成系
 - `orange`: 検証・批評系
 - `cyan`: データ処理系
 - `yellow`: 管理・オーケストレーション系
+- `red`: 重要・警告系
+- `pink`: 補助・サポート系
 
 ## 検証チェックリスト
 
@@ -224,7 +226,7 @@ done
 - [ ] `description` が設定されている
 - [ ] `description` が具体的で明確である
 - [ ] `color` が設定されている
-- [ ] `color` が有効な色名である（lime, blue, purple, orange, cyan, yellow）
+- [ ] `color` が有効な色名である（green, blue, purple, orange, cyan, yellow, red, pink, magenta, indigo, gray）
 
 ### オプション項目（設定されている場合）
 

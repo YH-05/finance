@@ -15,9 +15,9 @@ description: |
   Include trigger keywords for automatic invocation.
 
 # 色指定（必須）
-# lime, blue, purple, orange, cyan, yellow など
+# green, blue, purple, orange, cyan, yellow, red, pink, magenta, indigo, gray
 # エージェントの識別・分類に使用
-color: lime
+color: green
 
 # モデル指定（オプション）
 # inherit: 親から継承（デフォルト）

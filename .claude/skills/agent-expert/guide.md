@@ -106,7 +106,7 @@ name: agent-name              # 必須: kebab-case、ファイル名と一致
 category: category-name       # オプション: エージェントのカテゴリ
 description: |                # 必須: Task tool に表示される説明（簡潔に）
   What this agent does and when to use it.
-color: lime                   # 必須: 表示色（lime, blue, purple, orange, cyan, yellow など）
+color: green                   # 必須: 表示色（lime, blue, purple, orange, cyan, yellow など）
 skills: [skill-name]          # オプション: 参照するスキル
 allowed-tools: Read, Write    # オプション: 使用可能なツール
 model: inherit                # オプション: inherit | sonnet | haiku | opus

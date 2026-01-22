@@ -78,7 +78,7 @@ AskUserQuestion ツールを使用して、以下を確認：
 name: agent-name
 category: category-name
 description: Short description for the Task tool
-color: lime
+color: green
 ---
 
 # Agent Purpose and Context
@@ -121,7 +121,7 @@ color: lime
 
 - `name`: kebab-case、ファイル名と一致
 - `description`: 具体的でトリガーキーワードを含む
-- `color`: 必須（lime, blue, purple, orange, cyan, yellow など）
+- `color`: 必須（green, blue, purple, orange, cyan, yellow, red, pink, magenta, indigo, gray）
 - `skills`: 参照先スキルが存在するか（設定時）
 - `allowed-tools`: 有効なツール名のみ（設定時）
 
