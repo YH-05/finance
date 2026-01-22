@@ -28,373 +28,89 @@ description: GitHub Issue のコメントから進捗・タスク・仕様変更
 /sync-issue #123 --since="2026-01-01"
 ```
 
-## 概要
+## スキルの呼び出し
 
-1. Issue 番号または project.md パスを解析
-2. Issue 情報とコメントを取得
-3. コメントから進捗・サブタスク・仕様変更を AI で解析
-4. 確信度が低い場合はユーザーに確認
-5. project.md と GitHub Project を同期
-6. 結果を表示
+このコマンドは **issue-sync** スキルを使用します。
 
----
+**スキル情報**:
 
-## ステップ 0: 引数解析
+- **スキル名**: issue-sync
+- **配置先**: `.claude/skills/issue-sync/`
+- **主な機能**:
+  - コメント解析: AI によるコメントからの情報抽出
+  - 確信度ベース確認: 自動適用と手動確認の適切な使い分け
+  - 三方向同期: Issue・project.md・GitHub Project の同期
+  - ステータス更新: 進捗に応じた自動ステータス更新
 
-### パターン A: Issue 番号指定
+## 処理フロー
 
-- 形式: `#123` または `#123 #124 #125`
-- 抽出: `#` に続く数字を Issue 番号として取得
-- 複数指定された場合は順番に処理
-
-### パターン B: project.md パス指定
-
-- 形式: `@src/<library_name>/docs/project.md` または `@docs/project/<slug>.md`
-- 処理:
-  1. project.md を読み込み
-  2. `Issue: [#番号](URL)` から全 Issue 番号を抽出
-  3. 抽出した全 Issue を対象に同期
-
-### オプション
-
-- `--since="YYYY-MM-DD"`: 指定日以降のコメントのみ対象
-
-**引数が不正な場合**:
-
-```text
-エラー: 引数の形式が正しくありません。
-
-使用例:
-- 単一 Issue: /sync-issue #123
-- 複数 Issue: /sync-issue #123 #124 #125
-- project.md: /sync-issue @src/market_analysis/docs/project.md
+```
+/sync-issue #123
+    │
+    └─ Skill ツールで issue-sync スキルを呼び出し
+        │
+        ├─ ステップ 1: データ取得
+        │   ├─ Issue 情報取得
+        │   ├─ コメント取得（GraphQL）
+        │   ├─ project.md 読み込み
+        │   └─ GitHub Project 情報取得
+        │
+        ├─ ステップ 2: コメント解析
+        │   └─ comment-analyzer サブエージェント起動
+        │
+        ├─ ステップ 3: 競合解決・確認
+        │   └─ 低確信度の場合ユーザー確認
+        │
+        ├─ ステップ 4: 同期実行
+        │   └─ task-decomposer サブエージェント起動
+        │
+        └─ ステップ 5: 結果表示
 ```
 
----
+## 確信度ベース確認
 
-## ステップ 1: データ取得
+| レベル | 範囲 | アクション |
+|--------|------|-----------|
+| HIGH | 0.80+ | 自動適用 |
+| MEDIUM | 0.70-0.79 | 適用、確認なし |
+| LOW | < 0.70 | ユーザー確認必須 |
 
-### 1.1 リポジトリ情報の取得
-
-```bash
-gh repo view --json owner,name -q '"\(.owner.login)/\(.name)"'
-```
-
-### 1.2 Issue 情報の取得
-
-各 Issue について以下を実行:
-
-```bash
-gh issue view {issue_number} --json number,title,body,state,labels
-```
-
-### 1.3 コメント取得（GraphQL）
-
-```bash
-gh api graphql -f owner="{owner}" -f repo="{repo}" -F number={issue_number} -f query='
-  query($owner:String!, $repo:String!, $number:Int!) {
-    repository(owner:$owner, name:$repo) {
-      issue(number:$number) {
-        title
-        body
-        state
-        comments(last:100) {
-          nodes {
-            author { login }
-            body
-            createdAt
-          }
-        }
-      }
-    }
-  }
-'
-```
-
-**`--since` オプションが指定された場合**:
-
-取得したコメントから `createdAt` が指定日以降のものだけをフィルタリング
-
-### 1.4 project.md の読み込み（パス指定時）
-
-1. project.md を読み込み
-2. 既存タスクの状態を抽出
-3. Issue との対応関係を確認
-
-### 1.5 GitHub Project 情報の取得
-
-project.md から `**GitHub Project**: [#N](URL)` 形式でプロジェクト番号を抽出した場合:
-
-```bash
-# フィールド情報取得
-gh project field-list {project_number} --owner @me --format json
-
-# Item 一覧取得
-gh project item-list {project_number} --owner @me --format json
-```
-
-**認証エラーの場合**:
-
-```text
-エラー: GitHub 認証に失敗しました。
-
-解決方法:
-gh auth login
-```
-
-**Project スコープ不足の場合**:
-
-```text
-警告: GitHub Project へのアクセス権限がありません。
-
-解決方法:
-gh auth refresh -s project
-
-Project 同期なしで Issue 管理のみ実行します。
-```
-
----
-
-## ステップ 2: コメント解析（comment-analyzer 起動）
-
-Task ツールを使用して **comment-analyzer** サブエージェントを起動:
-
-```yaml
-subagent_type: "comment-analyzer"
-description: "Issue comment analysis"
-prompt: |
-  Issue コメントを解析し、進捗・サブタスク・仕様変更を抽出してください。
-
-  ## Issue 情報
-
-  ### Issue #{issue_number}: {title}
-
-  **本文**:
-  {body}
-
-  **現在の状態**: {state}
-
-  **コメント一覧**:
-  {comments_formatted}
-
-  ## 出力
-
-  以下の形式で抽出結果を報告してください:
-
-  ```yaml
-  extracted_updates:
-    status_changes: [...]
-    acceptance_criteria_updates: [...]
-    new_subtasks: [...]
-    requirement_changes: [...]
-
-  confidence_summary:
-    overall: 0.XX
-    needs_confirmation: true/false
-  ```
-```
-
-### comment-analyzer の出力確認
-
-エージェントの出力から以下を確認:
-
-1. `confidence_summary.needs_confirmation` が `true` の場合 → ステップ 3 で確認
-2. `confidence_summary.needs_confirmation` が `false` の場合 → ステップ 4 へ
-
----
-
-## ステップ 3: 競合解決・ユーザー確認
-
-### 3.1 確認が必要なケース
-
-- `confidence < 0.70` の更新がある
+**確認必須ケース**:
 - ステータスダウングレード（done → in_progress）
 - 受け入れ条件の削除
 - 複数の矛盾するステータス変更
 
-### 3.2 確認ダイアログ
+## 引数の渡し方
 
-AskUserQuestion ツールで確認:
+コマンドの引数は **$ARGUMENTS** プレースホルダーでスキルに渡されます。
 
-```yaml
-questions:
-  - question: "以下の変更を適用しますか？"
-    header: "コメントから検出された更新"
-    options:
-      - label: "すべて適用"
-        description: "検出された全ての更新を適用"
-      - label: "確認しながら適用"
-        description: "各更新を個別に確認（低確信度の項目のみ）"
-      - label: "適用しない"
-        description: "変更をスキップし、現状を維持"
-```
+**例**:
 
-### 3.3 個別確認（「確認しながら適用」選択時）
+- `/sync-issue #123` → `$ARGUMENTS = "#123"`
+- `/sync-issue #123 #124 #125` → `$ARGUMENTS = "#123 #124 #125"`
+- `/sync-issue @docs/project/research-agent.md` → `$ARGUMENTS = "@docs/project/research-agent.md"`
+- `/sync-issue #123 --since="2026-01-01"` → `$ARGUMENTS = "#123 --since=\"2026-01-01\""`
 
-低確信度の各項目について:
+## サブエージェント連携
 
-```yaml
-questions:
-  - question: "{evidence} から「{description}」を検出しました。適用しますか？"
-    header: "{update_type}"
-    options:
-      - label: "適用する"
-        description: "この変更を適用"
-      - label: "スキップ"
-        description: "この変更をスキップ"
-```
+| エージェント | 用途 |
+|--------------|------|
+| comment-analyzer | コメント解析、進捗抽出 |
+| task-decomposer | 同期実行、project.md 更新 |
 
----
+## 関連スキル
 
-## ステップ 4: 同期実行（task-decomposer 起動）
-
-Task ツールを使用して **task-decomposer** サブエージェントを起動:
-
-```yaml
-subagent_type: "task-decomposer"
-description: "Comment sync execution"
-prompt: |
-  コメント解析結果を反映して同期を実行してください。
-
-  ## 実行モード
-  {package_mode / lightweight_mode}
-
-  ## ライブラリ名 / プロジェクト名
-  {library_name または slug}
-
-  ## project.md パス
-  {project_md_path}
-
-  ## GitHub Issues（JSON）
-  {gh issue list の結果}
-
-  ## GitHub Project 情報（軽量プロジェクトモードのみ）
-  - Project 番号: {project_number}
-  - Project ID: {project_id}
-  - Status フィールド ID: {status_field_id}
-  - ステータスオプション:
-    - Todo: {todo_option_id}
-    - In Progress: {in_progress_option_id}
-    - Done: {done_option_id}
-  - Project Items: {item_list}
-
-  ## 入力モード
-  comment_sync
-
-  ## コメント解析結果
-  {comment_analysis_result}
-
-  ## 適用する更新
-  {filtered_updates（確認で承認されたもの）}
-```
-
-### task-decomposer の処理（comment_sync モード）
-
-1. **ステータス変更の適用**:
-   - Issue の状態を更新（必要に応じて close/reopen）
-   - project.md のステータスを更新
-   - GitHub Project のステータスを更新
-
-2. **受け入れ条件の更新**:
-   - Issue 本文のチェックボックスを更新
-   - project.md の受け入れ条件を同期
-
-3. **新規サブタスクの作成**:
-   - 新規 Issue を作成
-   - 親 Issue の Tasklist に追加
-   - project.md に追加
-   - GitHub Project に追加
-
-4. **仕様変更の反映**:
-   - Issue 本文に追記
-   - project.md の説明・条件を更新
-
----
-
-## ステップ 5: 結果表示
-
-処理結果を表示:
-
-```markdown
-## コメント同期結果
-
-### 対象 Issue
-- [#123](URL): タイトル1
-- [#124](URL): タイトル2
-
-### 解析結果
-
-#### ステータス更新
-| Issue | 変更前 | 変更後 | 根拠 |
-|-------|--------|--------|------|
-| #123 | in_progress | done | 「対応完了しました」|
-
-#### 受け入れ条件更新
-| Issue | 条件 | 状態 | 根拠 |
-|-------|------|------|------|
-| #123 | Google OAuth対応 | ✅ 完了 | 「OAuth対応完了」|
-| #123 | Apple Sign-In対応 | 📝 追加 | 「追加で必要」|
-
-#### 新規サブタスク
-- [#125](URL): GitHub OAuth対応（#123 から派生）
-
-### 同期結果
-
-#### project.md の更新
-- 機能 1.1: ステータスを done に更新
-- 機能 1.1: 受け入れ条件「Apple Sign-In対応」を追加
-- 機能 1.3: 新規タスク「GitHub OAuth対応」を追加
-
-#### GitHub Project の更新
-- #123: ステータスを Done に更新
-- #125: Project に追加、ステータスを Todo に設定
-
-### 未処理のコメント
-以下のコメントは解析対象外としました:
-- [bot]: CI結果の自動コメント
-- [user]: 絵文字のみのリアクション
-
-## 次のステップ
-
-- `/issue @{project_md_path}` で全体の同期状況を確認
-- 新規サブタスクの実装を開始
-```
-
----
-
-## エラーハンドリング
-
-| ケース | 対処 |
+| スキル | 用途 |
 |--------|------|
-| GitHub 認証エラー | `gh auth login` を案内 |
-| Issue が存在しない | エラーメッセージを表示 |
-| project.md が見つからない | `/issue` で作成を提案 |
-| コメント取得に失敗 | リトライ後、部分同期を提案 |
-| GraphQL クエリエラー | REST API にフォールバック |
-| LLM 解析タイムアウト | 部分結果を使用して続行 |
+| issue-creation | Issue 作成・タスク分解 |
+| issue-implementation | Issue の自動実装 |
+| issue-refinement | Issue のブラッシュアップ |
+| issue-sync | コメントからの同期（このコマンド） |
 
----
+## 詳細情報
 
-## 競合解決ルール
+詳細なガイドラインとテンプレートは以下のスキルリソースを参照:
 
-| 状況 | 解決策 |
-|------|--------|
-| コメント vs project.md で状態が異なる | コメント優先（最新情報） |
-| コメント vs GitHub Project で状態が異なる | コメント優先 |
-| 複数コメントで矛盾 | 最新のコメント優先 |
-| Issue が closed だが完了コメントなし | closed 状態を維持 |
-| confidence < 0.70 | ユーザーに確認 |
-| ステータスダウングレード | ユーザーに確認（再オープンの意図を確認） |
-
----
-
-## 完了条件
-
-このワークフローは、以下の全ての条件を満たした時点で完了:
-
-- ステップ 0: 引数が正しく解析されている
-- ステップ 1: Issue 情報とコメントが取得されている
-- ステップ 2: comment-analyzer による解析が完了している
-- ステップ 3: 確認が必要な場合はユーザー確認が完了している
-- ステップ 4: task-decomposer による同期が完了している
-- ステップ 5: 結果が表示されている
+- `.claude/skills/issue-sync/SKILL.md` - スキル定義
+- `.claude/skills/issue-sync/guide.md` - 詳細ガイド（競合解決ルール）
+- `.claude/skills/issue-sync/template.md` - 同期レポートテンプレート
