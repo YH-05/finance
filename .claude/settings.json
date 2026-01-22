@@ -82,6 +82,7 @@
             "Task(package-readme-updater:Update strategy README)",
             "Task(code-simplifier:*)",
             "Task(quality-checker:*)",
+            "Task(issue-implementer:*)",
             "Read(.claude/commands/index.md)",
             "Read(CLAUDE.md)",
             "Read(README.md)",
