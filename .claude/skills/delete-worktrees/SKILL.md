@@ -3,7 +3,7 @@ name: delete-worktrees
 description: 複数のworktreeとブランチを一括削除するスキル。
 /delete-worktrees コマンドで使用。開発完了後、複数のworktreeを効率的にクリーンアップする。
 
-allowed-tools: Read, Bash
+allowed-tools: Read, Bash, Task
 ---
 
 # Delete Worktrees - 複数Worktree一括削除
@@ -24,46 +24,45 @@ allowed-tools: Read, Bash
 
 ---
 
-## ステップ 0: 引数解析
+## ステップ 0: 引数解析と事前検証
 
 1. 引数からブランチ名のリストを取得（スペース区切り）
 2. **引数がない場合**: 現在のworktree一覧を表示してエラー
 
+```bash
+git worktree list
 ```
-エラー: 削除するブランチ名を指定してください。
 
-使用方法:
-  /delete-worktrees <branch-name1> <branch-name2> ...
-
-例:
-  /delete-worktrees feature/issue-64 feature/issue-67
-
-現在のworktree一覧:
-<git worktree list の出力>
-```
+3. 各ブランチ名について worktree が存在するか確認
+4. 存在しないブランチは警告を表示してリストから除外
 
 ---
 
-## ステップ 1: 各ブランチに対して /worktree-done を実行
+## ステップ 1: Task ツールで並列削除
 
-**重要**: 直接 `git worktree remove` を使用せず、必ず `/worktree-done` コマンド（Skill ツール）を使用する。
+**重要**: 単一のメッセージで複数の Task ツール呼び出しを並列実行する。
 
-各ブランチ名に対して順番に `/worktree-done` を実行:
+各ブランチに対して Task ツールを **同時に** 呼び出す:
 
-```bash
-# feature/issue-64 のクリーンアップ
-Skill tool: /worktree-done feature/issue-64
+```
+Task(
+  subagent_type: "general-purpose",
+  description: "worktree cleanup: feature/issue-64",
+  prompt: "/worktree-done feature/issue-64 を実行してください。"
+)
 
-# feature/issue-67 のクリーンアップ
-Skill tool: /worktree-done feature/issue-67
+Task(
+  subagent_type: "general-purpose",
+  description: "worktree cleanup: feature/issue-67",
+  prompt: "/worktree-done feature/issue-67 を実行してください。"
+)
 ```
 
-### 実行手順
+### 並列実行の要件
 
-1. ブランチ名のリストを取得
-2. 各ブランチに対して Skill ツールで `/worktree-done {ブランチ名}` を実行
-3. 次のブランチに進む
-4. 全て完了するまで繰り返す
+- **必須**: 全ての Task 呼び出しを単一のメッセージで送信すること
+- 各 Task は独立して `/worktree-done` スキルを実行
+- 全ての Task 完了を待機
 
 ---
 
@@ -103,23 +102,18 @@ Skill tool: /worktree-done feature/issue-67
 
 ### エラー時の継続判断
 
-各ブランチの削除は独立しているため、1つのブランチで失敗しても残りは継続します。
+各ブランチの削除は独立した Task で並列実行されるため、1つのブランチで失敗しても他は影響を受けません。
 
-```
-⚠️ feature/issue-64 の削除に失敗しました
-理由: <error message>
-
-次のブランチの削除を継続します...
-```
+結果サマリーで各ブランチの成功/失敗を確認してください。
 
 ---
 
 ## 注意事項
 
-1. **必ず /worktree-done コマンドを使用**: `git worktree remove` を直接使用しない
-2. **順番に実行**: 各 worktree は順番に削除（並列実行しない）
-3. **PRのマージ確認**: `/worktree-done` が各ブランチのマージ状態を確認
-4. **エラー時も継続**: 1つの worktree 削除に失敗しても、残りは継続
+1. **必ず Task ツールで /worktree-done を実行**: `git worktree remove` を直接使用しない
+2. **並列実行**: 全ての Task を単一のメッセージで呼び出して並列削除
+3. **PRのマージ確認**: 各 `/worktree-done` がブランチのマージ状態を確認
+4. **エラー時も継続**: 1つの worktree 削除に失敗しても、他は継続
 5. **mainブランチは削除不可**: `/worktree-done` が検証するため安全
 
 ---
@@ -165,7 +159,8 @@ Skill tool: /worktree-done feature/issue-67
 
 ## 完了条件
 
-- 全ての指定ブランチに対して `/worktree-done` が実行されている
+- 全ての指定ブランチに対して Task ツールで `/worktree-done` が並列実行されている
+- 全ての Task が完了している
 - 各ブランチの処理結果（成功/失敗）が記録されている
 - 結果サマリーが表示されている
 - 次のステップが案内されている

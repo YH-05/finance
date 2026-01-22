@@ -53,7 +53,7 @@
         },
         "sec-edgar-mcp": {
             "command": "uvx",
-            "args": ["sec-edgar-mcp"],
+            "args": ["--with", "pyrate-limiter<4.0", "sec-edgar-mcp"],
             "env": {
                 "SEC_EDGAR_USER_AGENT": "Yuki Hata (youxitiankaggle@gmail.com)"
             }
