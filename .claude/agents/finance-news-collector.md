@@ -8,6 +8,9 @@ color: green
 depends_on: []
 phase: 1
 priority: high
+skills:
+  - finance-news-workflow
+  - rss-integration
 archived: true
 ---
 
