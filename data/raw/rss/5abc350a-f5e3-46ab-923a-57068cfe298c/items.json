@@ -3,6 +3,426 @@
   "feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c",
   "items": [
     {
+      "item_id": "d913d978-0cf8-4e70-8de3-625093a91e6e",
+      "title": "Trump Media Sets Feb 2 Record Date for Shareholder Digital Token Distribution",
+      "link": "https://finance.yahoo.com/news/trump-media-sets-feb-2-201338691.html",
+      "published": "2026-01-20T20:13:38+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "3342273c-7589-4567-a03f-86c03b08ea10",
+      "title": "Crude Rallies as the Dollar Falls and Black Sea Oil Production Disrupted",
+      "link": "https://finance.yahoo.com/news/crude-rallies-dollar-falls-black-201921678.html",
+      "published": "2026-01-20T20:19:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "451a0e64-4ca2-429e-abcb-5d322c89ed24",
+      "title": "What’s a ‘Good Enough’ Financial Plan?",
+      "link": "https://finance.yahoo.com/news/good-enough-financial-plan-201555964.html",
+      "published": "2026-01-20T20:15:55+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "993ee9b5-a0f9-4854-afe4-aeae41b1ee6c",
+      "title": "Newrez mortgage review 2026",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/review/newrez-mortgage-review-153257591.html",
+      "published": "2024-06-07T15:32:57+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "9a97cc4e-4091-497f-8a96-95f863846d48",
+      "title": "Are IRA contributions tax-deductible? Here are the rules.",
+      "link": "https://finance.yahoo.com/personal-finance/taxes/article/ira-tax-deduction-200457400.html",
+      "published": "2026-01-20T20:04:57+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "342d9228-9f57-43f8-8b27-30a0cae34f19",
+      "title": "Exxon Mobil, Altria, and Other Defensive Dividend Stocks for a Rocky Market",
+      "link": "https://www.barrons.com/articles/exxon-mobil-altria-dividend-stock-market-3b4e2454?siteid=yhoof2&yptr=yahoo",
+      "published": "2026-01-20T20:13:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "c3a7486c-557d-4b3a-9092-900b91215747",
+      "title": "Do banks report deposits to the IRS​?",
+      "link": "https://finance.yahoo.com/personal-finance/banking/article/do-banks-report-deposits-to-the-irs-180714651.html",
+      "published": "2025-03-31T18:07:14+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "ba808491-27b3-4f01-bc4e-120f7f68b635",
+      "title": "5 questions for Netflix subscribers about the Warner Bros. deal",
+      "link": "https://finance.yahoo.com/personal-finance/banking/article/5-questions-for-netflix-subscribers-about-the-warner-bros-deal-154301609.html",
+      "published": "2025-12-09T15:43:01+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "558817d7-0de0-45c4-b1de-8cace0b31250",
+      "title": "Escalating Greenland Tensions Sink the Dollar and Boost Precious Metals",
+      "link": "https://finance.yahoo.com/news/escalating-greenland-tensions-sink-dollar-203249625.html",
+      "published": "2026-01-20T20:32:49+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "7bdd141b-35fb-4313-ac1e-5a5be3b44989",
+      "title": "Amazon (AMZN) Seen as One of the Strongest AI Bull Cases Heading Into 2026, Bernstein Says",
+      "link": "https://finance.yahoo.com/news/amazon-amzn-seen-one-strongest-203638058.html",
+      "published": "2026-01-20T20:36:38+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "1451856c-69e4-491f-98d6-91d402458190",
+      "title": "Netflix just made a bold new move on Warner Bros.",
+      "link": "https://finance.yahoo.com/news/netflix-just-made-bold-move-201300804.html",
+      "published": "2026-01-20T20:13:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "43754791-9232-467c-8fd2-a65a9683091c",
+      "title": "RBC Initiates Nvidia (NVDA) at Outperform, Cites $500B+ AI Backlog and Ecosystem Dominance",
+      "link": "https://finance.yahoo.com/news/rbc-initiates-nvidia-nvda-outperform-203907038.html",
+      "published": "2026-01-20T20:39:07+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "081cb27b-cedd-4d54-87f5-c8b82f567641",
+      "title": "RBC Initiates Broadcom (AVGO) at Sector Perform, Flags Margin and Valuation Risks Despite AI Upside",
+      "link": "https://finance.yahoo.com/news/rbc-initiates-broadcom-avgo-sector-204121548.html",
+      "published": "2026-01-20T20:41:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "744e4fd4-4445-4784-9350-d848ce1438ac",
+      "title": "Is disability income taxable? It depends.",
+      "link": "https://finance.yahoo.com/personal-finance/taxes/article/is-disability-income-taxable-225451744.html",
+      "published": "2025-02-25T22:54:51+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "10d0396d-3b38-4e64-b033-8b5233613230",
+      "title": "RBC Initiates Micron (MU) at Outperform, Sees $50+ Peak EPS Potential From HBM Upside",
+      "link": "https://finance.yahoo.com/news/rbc-initiates-micron-mu-outperform-205128905.html",
+      "published": "2026-01-20T20:51:28+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "094be320-3118-4502-9943-22a9763ae9db",
+      "title": "Is Archer Aviation a Buy in 2026?",
+      "link": "https://finance.yahoo.com/news/archer-aviation-buy-2026-202000914.html",
+      "published": "2026-01-20T20:20:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "bff649ab-9bde-4e49-9104-277c42f5a30e",
+      "title": "RBC Initiates Intel (INTC) at Sector Perform, Awaits Proof on Margins and Foundry Execution",
+      "link": "https://finance.yahoo.com/news/rbc-initiates-intel-intc-sector-205239771.html",
+      "published": "2026-01-20T20:52:39+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "21eca985-205a-4bbc-819b-95122bc5455c",
+      "title": "RBC Sees Multiple Secular and Cyclical Drivers Supporting ASML Upside",
+      "link": "https://finance.yahoo.com/news/rbc-sees-multiple-secular-cyclical-205413330.html",
+      "published": "2026-01-20T20:54:13+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "097e6f49-4e93-498a-939b-ba77bbce31b7",
+      "title": "Kurdistan’s Oil Lifeline at Risk as Baghdad Payments Fall Short Again",
+      "link": "https://finance.yahoo.com/news/kurdistan-oil-lifeline-risk-baghdad-210000349.html",
+      "published": "2026-01-20T21:00:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "3efdf959-3e53-481d-b64c-f73a52396ed2",
+      "title": "Netflix slightly beats revenue estimates, shares slide amid bidding war for Warner Bros",
+      "link": "https://finance.yahoo.com/news/netflix-beats-revenue-estimates-subscribers-210143947.html",
+      "published": "2026-01-20T21:01:43+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "2a117a08-9d7d-4e60-96b0-3d80a6baa8cb",
+      "title": "PPLT Delivers Bigger Gains Than AAAU but Swings More Widely",
+      "link": "https://finance.yahoo.com/news/pplt-delivers-bigger-gains-aaau-201627633.html",
+      "published": "2026-01-20T20:16:27+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "545f8611-7296-411c-9171-7f7240cce40d",
+      "title": "RBC Initiates Coverage on Marvell (MRVL), Cites 25% Valuation Discount to Peers",
+      "link": "https://finance.yahoo.com/news/rbc-initiates-coverage-marvell-mrvl-210235201.html",
+      "published": "2026-01-20T21:02:35+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "e12e23fd-c3ba-436a-a01f-651adf6c43c9",
+      "title": "Morgan Stanley Initiates Nebius (NBIS) at Equalweight, Flags Long-Term AI Infrastructure Upside",
+      "link": "https://finance.yahoo.com/news/morgan-stanley-initiates-nebius-nbis-210437033.html",
+      "published": "2026-01-20T21:04:37+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "7678d6a7-8daa-4e24-8043-a241806f1933",
+      "title": "Intel Stock Is Already Up 19% in 2026. Can Q4 Earnings Propel It Higher in 2026?",
+      "link": "https://finance.yahoo.com/news/intel-stock-already-19-2026-210552393.html",
+      "published": "2026-01-20T21:05:52+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "e554b947-aacc-4462-81ec-342d980e6713",
+      "title": "RBC Initiates Astera Labs (ALAB) at Outperform, Sees Retimer Growth and Scorpio Ramp Driving Upside",
+      "link": "https://finance.yahoo.com/news/rbc-initiates-astera-labs-alab-210610190.html",
+      "published": "2026-01-20T21:06:10+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "9ad2cfd4-8f56-49a5-a011-64c808c02d7d",
+      "title": "Crypto Rallies Are Getting Shorter: Wintermute CEO",
+      "link": "https://finance.yahoo.com/video/crypto-rallies-getting-shorter-wintermute-201208775.html",
+      "published": "2026-01-20T20:12:08+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "ad5902b6-556d-4589-b272-d3681483ebc0",
+      "title": "Piper Sandler Raises Microchip (MCHP) Target to $85, Calls It Top Mid-Cap Pick",
+      "link": "https://finance.yahoo.com/news/piper-sandler-raises-microchip-mchp-210801193.html",
+      "published": "2026-01-20T21:08:01+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "69140533-0044-4898-bf08-fbe42ffd3402",
+      "title": "Critical Metals Announces Saudi Arabia Production Venture, Analyst Raises Target",
+      "link": "https://www.investors.com/news/critical-metals-rare-earth-metals-saudi-arabia-joint-venture-facility-crml-stock-us-defense/?src=A00220&yptr=yahoo",
+      "published": "2026-01-20T21:23:58+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "5965e3e0-f522-400f-9467-dd764710d350",
+      "title": "Stock Market Today: Dow Craters On Greenland Tariff News; Nvidia Sees Big Loss (Live Coverage)",
+      "link": "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-trump-greeland-tariffs-netflix-earnings-nflx/?src=A00220&yptr=yahoo",
+      "published": "2026-01-20T21:25:07+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "d02817ff-14a2-4d9b-bdcb-08f70c9b45f7",
+      "title": "Netflix Stock Falls After Video Streamer Misses With Q1 Outlook",
+      "link": "https://www.investors.com/news/technology/netflix-stock-nflx-q4-2025-earnings/?src=A00220&yptr=yahoo",
+      "published": "2026-01-20T21:33:17+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "b10b08c3-dbbc-4e6b-9fd8-e26cef5b75a4",
+      "title": "MicroStrategy’s Largest Bitcoin Purchase in a Year Shakes Stock Market Confidence",
+      "link": "https://finance.yahoo.com/news/microstrategy-largest-bitcoin-purchase-shakes-201333808.html",
+      "published": "2026-01-20T20:13:33+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "2e5f9668-d99a-46ed-bfaa-0f152da2b327",
+      "title": "This Little-Known Fertility Stock Is Up 215% in the Past 5 Days. Should You Chase the Mysterious Penny Stock Rally Here?",
+      "link": "https://finance.yahoo.com/news/little-known-fertility-stock-215-213413024.html",
+      "published": "2026-01-20T21:34:13+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "0d09a75d-846b-468f-b200-d10c625b7281",
+      "title": "Stocks Plunge on Greenland Crisis and Soaring Bond Yields",
+      "link": "https://finance.yahoo.com/news/stocks-plunge-greenland-crisis-soaring-213609984.html",
+      "published": "2026-01-20T21:36:09+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "0912faa7-f1e9-4628-8c64-b3561a457638",
+      "title": "Nvidia, Tesla lead tech stocks lower as Trump trade war threats rattle market",
+      "link": "https://finance.yahoo.com/news/nvidia-tesla-lead-tech-stocks-lower-as-trump-trade-war-threats-rattle-market-162928073.html",
+      "published": "2026-01-20T16:29:28+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "03813805-a2da-4970-8bd4-880e4cc1d5b7",
+      "title": "Is Ryanair Stock a Buy, Sell, or Hold as Elon Musk Proposes Buying the Discount Airline?",
+      "link": "https://finance.yahoo.com/news/ryanair-stock-buy-sell-hold-214101360.html",
+      "published": "2026-01-20T21:41:01+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "e1c9eca3-a9a2-4135-8517-f0d88f97c5dc",
+      "title": "1 Top Cryptocurrency to Buy Before It Soars 1,000%, According to Michael Saylor",
+      "link": "https://finance.yahoo.com/news/1-top-cryptocurrency-buy-soars-202500486.html",
+      "published": "2026-01-20T20:25:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "88c6ee6f-9c34-44bb-8133-dd0b52a24728",
+      "title": "Chase Sapphire Preferred vs. Capital One Venture: Which offers more value?",
+      "link": "https://finance.yahoo.com/personal-finance/credit-cards/comparison/chase-sapphire-preferred-vs-capital-one-venture-012925883.html",
+      "published": "2024-12-05T01:29:25+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "690d2351-1166-49a6-aa37-2c15f5465e8e",
+      "title": "Stock market today: Dow plummets 800 points, S&P 500, Nasdaq sink over 2% as Trump's Greenland threats clobber stocks",
+      "link": "https://finance.yahoo.com/news/live/stock-market-today-dow-plummets-800-points-sp-500-nasdaq-sink-over-2-as-trumps-greenland-threats-clobber-stocks-210046255.html",
+      "published": "2026-01-20T21:00:46+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "986d2b08-9aee-4fe6-8ef7-c632fb159544",
+      "title": "Are credit cards with annual fees worth it?",
+      "link": "https://finance.yahoo.com/personal-finance/credit-cards/article/are-credit-cards-with-annual-fees-worth-it-214012757.html",
+      "published": "2024-09-05T18:27:52+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "00e100c3-f243-49da-bb32-4b32b130b3a2",
+      "title": "Citibank mortgage review 2026",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/review/citibank-mortgage-review-184256591.html",
+      "published": "2024-08-01T18:42:56+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "c12189d2-4b06-4a3d-8ce2-2e040308761b",
+      "title": "Trump Media to Airdrop Crypto Tokens to Shareholders in February",
+      "link": "https://finance.yahoo.com/news/trump-media-airdrop-crypto-tokens-202517358.html",
+      "published": "2026-01-20T20:25:17+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
+      "item_id": "76df79c5-0615-49b7-84b9-bf1126e10b05",
+      "title": "Capital One Venture Rewards Credit Card review: A top travel card with a generous welcome bonus",
+      "link": "https://finance.yahoo.com/personal-finance/credit-cards/review/capital-one-venture-rewards-credit-card-171119195.html",
+      "published": "2024-08-14T21:01:19+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:17.828510+00:00"
+    },
+    {
       "item_id": "a46e5e6f-342b-4613-a80c-bb989cb989f6",
       "title": "Georgia squatter claims ‘peaceful hostile takeover’ of home as US states move to strengthen owner protections",
       "link": "https://finance.yahoo.com/news/georgia-squatter-claims-peaceful-hostile-203500919.html",

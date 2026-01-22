@@ -3,6 +3,96 @@
   "feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696",
   "items": [
     {
+      "item_id": "e967f088-d4ad-4a83-a05c-4335a8d007cc",
+      "title": "Trump’s Greenland pivot leaves Europe flummoxed",
+      "link": "https://www.ft.com/content/fb90d690-f22c-49ab-8ebc-22e2e8f757f3",
+      "published": "2026-01-22T05:00:33+00:00",
+      "summary": "EU leaders to meet as US president drops tariffs and military threat to take Arctic island from Denmark",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "a2fb4336-8f5d-4c14-808e-9f138cc8ed4a",
+      "title": "Davos latest: Markets rally after Trump touts Greenland deal",
+      "link": "https://www.ft.com/content/3c5e84b4-4e9f-4bed-a0c8-2d41de52497d",
+      "published": "2026-01-22T06:08:10+00:00",
+      "summary": "Gold softens after US president retreats from EU tariff threats",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "4313d0c3-1d7b-4062-90ef-de437500b640",
+      "title": "Who wants to join Trump’s ‘Board of Peace’?",
+      "link": "https://www.ft.com/content/a5003682-3391-4261-802f-05071c1c3c32",
+      "published": "2026-01-21T21:48:07+00:00",
+      "summary": "A fledgling club of autocrats, strongmen and monarchs is taking shape as the US president tries to recast the global order",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "9da3e277-25ec-4b65-948e-84fab971b84d",
+      "title": "Carney’s new global order needs a huge shift in political will",
+      "link": "https://www.ft.com/content/5dcbc846-5f32-4076-909b-94b5ef87895c",
+      "published": "2026-01-22T05:00:22+00:00",
+      "summary": "Middle-power diplomacy of the sort the Canadian PM calls for requires governments to throw off domestic constraints",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "c20719d1-0576-49ea-b383-cf1128f7687a",
+      "title": "BofA’s Moynihan left off invite list for Trump reception at Davos",
+      "link": "https://www.ft.com/content/bdfe7f46-e065-488e-b72f-1005c861271d",
+      "published": "2026-01-21T21:56:09+00:00",
+      "summary": "The snub is the second time the CEO has been excluded from an event with the president and hints at a deeper rift",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "c0a23170-5720-49d0-ada0-4930889f2485",
+      "title": "UK government borrowing fell to £11.6bn in December",
+      "link": "https://www.ft.com/content/d92234e4-df09-448b-815a-b28817136339",
+      "published": "2026-01-22T07:09:37+00:00",
+      "summary": "Less-than-expected figure comes after chancellor Rachel Reeves’ second tax-raising Budget",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "19be8fca-acfe-4558-aaf6-2f3db737f734",
+      "title": "European governments turn to short-term debt as borrowing costs rise",
+      "link": "https://www.ft.com/content/60367289-9336-4b0f-8358-de7af630e7a3",
+      "published": "2026-01-22T05:00:12+00:00",
+      "summary": "Sovereign issuers are curbing sales of long-term bonds amid waning demand from pension funds",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "a5395aae-7426-4986-9bf1-e61d377623bd",
+      "title": "EQT to buy Coller Capital for up to $3.7bn",
+      "link": "https://www.ft.com/content/45fca5a4-4422-4c24-8f26-afc3392afcbe",
+      "published": "2026-01-22T06:41:44+00:00",
+      "summary": "Swedish investment group seeks foothold in private equity secondaries with acquisition",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
+      "item_id": "38960cc0-f31a-407c-b7d0-860c37124953",
+      "title": "US congressional committee votes to hold Bill and Hillary Clinton in contempt",
+      "link": "https://www.ft.com/content/90445456-6943-4dc4-82d6-2c44e98941d9",
+      "published": "2026-01-21T20:55:12+00:00",
+      "summary": "Former president along with erstwhile secretary of state could face criminal charges if found guilty",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-22T08:20:18.696171+00:00"
+    },
+    {
       "item_id": "f89133b3-0034-436f-bc45-a708ac8c4917",
       "title": "Dollar and US stocks fall as Trump says ‘no going back’ on Greenland bid",
       "link": "https://www.ft.com/content/6292304a-b4b3-4f04-89bb-f05861b40cb8",
