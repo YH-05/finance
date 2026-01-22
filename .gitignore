@@ -20,6 +20,8 @@ env/
 # IDE
 .vscode/
 .idea/
+.makemd/
+.space/
 *.swp
 *.swo
 *~
