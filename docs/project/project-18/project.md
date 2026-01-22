@@ -15,7 +15,7 @@
 | フェーズ 0 | 基盤整備（Project作成、テンプレート、仕様書） | Done |
 | フェーズ 1 | レポジトリ管理スキル（7スキル作成） | Todo |
 | フェーズ 2 | コーディングスキル（3スキル作成） | Todo |
-| フェーズ 3 | 金融分析スキル（後続） | Backlog |
+| フェーズ 3 | 金融分析スキル（6スキル作成） | Todo |
 | フェーズ 4 | 記事執筆スキル（後続） | Backlog |
 
 ---
@@ -110,6 +110,76 @@
 
 ---
 
+## フェーズ 3: 金融分析スキル
+
+### Wave 0: データ取得・基盤スキル（並列実装可）
+
+#### market-data スキル
+
+| # | タスク | 工数 | 依存 | ステータス | Issue |
+|---|--------|------|------|----------|-------|
+| 3.1 | market-data スキル SKILL.md の作成 | M | なし | Todo | - |
+| 3.2 | market-data スキル guide.md の作成 | M | #3.1 | Todo | - |
+| 3.3 | market-data スキル examples/ の作成 | M | #3.1 | Todo | - |
+| 3.4 | market-data スキル エージェント統合 | S | #3.2 | Todo | - |
+
+#### rss-integration スキル
+
+| # | タスク | 工数 | 依存 | ステータス | Issue |
+|---|--------|------|------|----------|-------|
+| 3.5 | rss-integration スキル SKILL.md の作成 | M | なし | Todo | - |
+| 3.6 | rss-integration スキル guide.md の作成 | M | #3.5 | Todo | - |
+| 3.7 | rss-integration スキル examples/ の作成 | M | #3.5 | Todo | - |
+| 3.8 | rss-integration スキル エージェント統合 | S | #3.6 | Todo | - |
+
+### Wave 1: 分析スキル（並列実装可、Wave 0 依存）
+
+#### technical-analysis スキル
+
+| # | タスク | 工数 | 依存 | ステータス | Issue |
+|---|--------|------|------|----------|-------|
+| 3.9 | technical-analysis スキル SKILL.md の作成 | M | #3.2 | Todo | - |
+| 3.10 | technical-analysis スキル guide.md の作成 | M | #3.9 | Todo | - |
+| 3.11 | technical-analysis スキル examples/ の作成 | M | #3.9 | Todo | - |
+| 3.12 | technical-analysis スキル エージェント統合 | S | #3.10 | Todo | - |
+
+#### financial-calculations スキル
+
+| # | タスク | 工数 | 依存 | ステータス | Issue |
+|---|--------|------|------|----------|-------|
+| 3.13 | financial-calculations スキル SKILL.md の作成 | M | #3.2 | Todo | - |
+| 3.14 | financial-calculations スキル guide.md の作成 | M | #3.13 | Todo | - |
+| 3.15 | financial-calculations スキル examples/ の作成 | M | #3.13 | Todo | - |
+| 3.16 | financial-calculations スキル エージェント統合 | S | #3.14 | Todo | - |
+
+### Wave 2: 外部連携スキル（並列実装可）
+
+#### sec-edgar スキル
+
+| # | タスク | 工数 | 依存 | ステータス | Issue |
+|---|--------|------|------|----------|-------|
+| 3.17 | sec-edgar スキル SKILL.md の作成 | M | なし | Todo | - |
+| 3.18 | sec-edgar スキル guide.md の作成 | M | #3.17 | Todo | - |
+| 3.19 | sec-edgar スキル examples/ の作成 | M | #3.17 | Todo | - |
+| 3.20 | sec-edgar スキル エージェント統合 | S | #3.18 | Todo | - |
+
+#### web-research スキル
+
+| # | タスク | 工数 | 依存 | ステータス | Issue |
+|---|--------|------|------|----------|-------|
+| 3.21 | web-research スキル SKILL.md の作成 | M | なし | Todo | - |
+| 3.22 | web-research スキル guide.md の作成 | M | #3.21 | Todo | - |
+| 3.23 | web-research スキル examples/ の作成 | M | #3.21 | Todo | - |
+| 3.24 | web-research スキル エージェント統合 | S | #3.22 | Todo | - |
+
+### Wave 3: 統合テスト
+
+| # | タスク | 工数 | 依存 | ステータス | Issue |
+|---|--------|------|------|----------|-------|
+| 3.25 | フェーズ3 全スキルの統合テスト実施 | M | #3.4, #3.8, #3.12, #3.16, #3.20, #3.24 | Todo | - |
+
+---
+
 ## 依存関係グラフ
 
 ```
@@ -139,6 +209,23 @@
                             ├── #620 coding-standards
                             ├── #621 tdd-development
                             └── #622 error-handling
+                                    │
+                                    └── フェーズ3（金融分析）
+                                            │
+                                            ├── Wave 0 (データ取得・基盤)
+                                            │   ├── market-data:      #3.1 -> #3.2, #3.3 -> #3.4
+                                            │   └── rss-integration:  #3.5 -> #3.6, #3.7 -> #3.8
+                                            │
+                                            ├── Wave 1 (分析) ← market-data
+                                            │   ├── technical-analysis:     #3.9 -> #3.10, #3.11 -> #3.12
+                                            │   └── financial-calculations: #3.13 -> #3.14, #3.15 -> #3.16
+                                            │
+                                            ├── Wave 2 (外部連携)
+                                            │   ├── sec-edgar:     #3.17 -> #3.18, #3.19 -> #3.20
+                                            │   └── web-research:  #3.21 -> #3.22, #3.23 -> #3.24
+                                            │
+                                            └── Wave 3 (統合)
+                                                    └── #3.25 ← #3.4, #3.8, #3.12, #3.16, #3.20, #3.24
 ```
 
 ---
@@ -177,7 +264,31 @@
 
 ## 参照
 
+### ドキュメント
 - 計画書: [docs/plan/2026-01-21_System-Update-Implementation.md](../../plan/2026-01-21_System-Update-Implementation.md)
+
+### ディレクトリ
 - スキルディレクトリ: `.claude/skills/`
 - エージェントディレクトリ: `.claude/agents/`
 - コマンドディレクトリ: `.claude/commands/`
+
+### フェーズ3 参照ライブラリ
+| ライブラリ | パス | 用途 |
+|-----------|------|------|
+| market_analysis | `src/market_analysis/` | 市場データ取得・分析 |
+| rss | `src/rss/` | RSS フィード管理 |
+| SEC EDGAR MCP | `.mcp.json` (sec-edgar-mcp) | 企業財務データ |
+| Tavily MCP | `.mcp.json` (tavily) | Web 検索 |
+
+### フェーズ3 対象エージェント
+| エージェント | スキル参照（予定） |
+|-------------|-------------------|
+| finance-technical-analysis | market-data, technical-analysis |
+| finance-economic-analysis | market-data, financial-calculations |
+| finance-market-data | market-data |
+| finance-news-collector | rss-integration |
+| finance-sec-filings | sec-edgar |
+| finance-web | web-research |
+| finance-fact-checker | sec-edgar, web-research |
+| dr-source-aggregator | market-data, web-research |
+| dr-stock-analyzer | market-data, technical-analysis, sec-edgar |
