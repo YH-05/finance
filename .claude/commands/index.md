@@ -2,31 +2,83 @@
 description: SuperClaudeコマンドリファレンス
 ---
 
-# SuperClaude リファレンス
+# /index - SuperClaude リファレンス
 
-このコマンドは、プロジェクトで利用可能なコマンド、スキル、エージェントの一覧を表示・更新します。
+このコマンドは index スキルを呼び出し、プロジェクトで利用可能なコマンド、スキル、エージェントの一覧を表示・更新します。
 
 ## 実行モード
 
 | モード | コマンド          | 説明                                           |
 | ------ | ----------------- | ---------------------------------------------- |
 | 表示   | `/index`          | 現在のリファレンスを表示                       |
-| 更新   | `/index --update` | コマンド/スキル/エージェントを自動検出して更新 |
+| 更新   | `/index --update` | コマンド/スキル/エージェント/ディレクトリを自動検出して更新 |
 
-### 自動検出の仕組み
+## 使用方法
 
--   **コマンド**: `.claude/commands/*.md` の frontmatter `description` から検出
--   **スキル**: `.claude/skills/*/SKILL.md` の frontmatter `name`, `description` から検出
--   **エージェント**: `.claude/agents.md` から読み込み
--   **ディレクトリ構成**: プロジェクトルートから 4 層までスキャン（除外: `__pycache__`, `.git`, `.venv` 等）
+### 表示モード（/index）
 
-### 更新対象ファイル
+```bash
+/index
+```
 
-| ファイル                    | 更新内容                                      |
-| --------------------------- | --------------------------------------------- |
-| `.claude/commands/index.md` | コマンド/スキル/エージェント/ディレクトリ一覧 |
-| `CLAUDE.md`                 | ディレクトリ構成セクション                    |
-| `README.md`                 | プロジェクト構造セクション                    |
+現在の index.md を読み込んでリファレンス情報を表示します。
+
+### 更新モード（/index --update）
+
+```bash
+/index --update
+```
+
+以下のファイルを自動更新します:
+- `.claude/commands/index.md` - コマンド/スキル/エージェント/ディレクトリ一覧
+- `CLAUDE.md` - ディレクトリ構成セクション
+- `README.md` - プロジェクト構造セクション
+
+---
+
+## 実行手順
+
+### 引数の確認
+
+1. `$ARGUMENTS` を確認
+2. `--update` フラグがあれば更新モード、なければ表示モード
+
+### 表示モード
+
+1. 以下のリファレンスセクションを表示:
+   - コマンド一覧
+   - スキル一覧
+   - エージェント一覧
+   - ディレクトリ構成
+
+### 更新モード
+
+index スキルの guide.md に従って以下を実行:
+
+1. **並列検出フェーズ**: Task ツールで 4 つのサブエージェントを並列起動
+   - コマンド検出: `.claude/commands/*.md` から description を抽出
+   - スキル検出: `.claude/skills/*/SKILL.md` から name, description を抽出
+   - エージェント読み込み: `.claude/agents.md` から定義を抽出
+   - ディレクトリスキャン: プロジェクトルートから 4 層までスキャン
+
+2. **パッケージ README 更新フェーズ**: Task ツールで 5 つのサブエージェントを並列起動
+   - finance README: `src/finance/` の README.md を更新
+   - market_analysis README: `src/market_analysis/` の README.md を更新
+   - rss README: `src/rss/` の README.md を更新
+   - factor README: `src/factor/` の README.md を更新
+   - strategy README: `src/strategy/` の README.md を更新
+
+3. **統合・更新フェーズ**: 検出結果を統合し、ファイルを更新
+
+---
+
+## 詳細情報
+
+詳細なガイドは index スキルを参照:
+
+- **スキル定義**: `.claude/skills/index/SKILL.md`
+- **詳細ガイド**: `.claude/skills/index/guide.md`
+- **テンプレート**: `.claude/skills/index/template.md`
 
 ---
 
@@ -51,6 +103,7 @@ description: SuperClaudeコマンドリファレンス
 | `/gemini-search`           | Web search using Gemini CLI                                                                    |
 | `/generate-market-report`  | 週次マーケットレポートを自動生成（データ収集 → ニュース検索 → レポート作成）                   |
 | `/improve`                 | エビデンスベースの改善実装                                                                     |
+| `/index`                   | SuperClaudeコマンドリファレンス                                                                |
 | `/issue`                   | GitHub Issue とタスクの管理・同期を行う                                                        |
 | `/issue-implement`         | GitHub Issue 番号から自動実装・PR 作成まで一括実行                                             |
 | `/issue-refine`            | GitHub Issue の内容をブラッシュアップして更新する                                              |
@@ -92,10 +145,12 @@ description: SuperClaudeコマンドリファレンス
 | `finance-news-collection` | 金融ニュース収集のワークフロー定義をスキルとして作成する。                                                                                                                                                                                                                                    |
 | `functional-design`       | 機能設計書を作成するための詳細ガイドとテンプレート。機能設計書作成時にのみ使用。                                                                                                                                                                                                              |
 | `glossary-creation`       | 用語集を作成するための詳細ガイドとテンプレート。用語集作成時にのみ使用。                                                                                                                                                                                                                      |
+| `index`                   | CLAUDE.md/README.md の自動更新機能を提供するスキル。コマンド、スキル、エージェント、ディレクトリ構成の検出と更新を行う。/index（表示）または /index --update（更新）で使用。                                                                                                                  |
 | `prd-writing`             | ライブラリ要求定義書(LRD)を作成するための詳細ガイドとテンプレート。LRD 作成時にのみ使用。                                                                                                                                                                                                     |
 | `project-file`            | プロジェクトファイル（project.md）を作成・編集するための詳細ガイドとテンプレート。                                                                                                                                                                                                            |
 | `project-status-sync`     | GitHub Projects の Issue 完了状態と docs/project/ のプロジェクトドキュメントを同期する。開発完了後にドキュメントを実態に合わせて更新。                                                                                                                                                        |
 | `repository-structure`    | リポジトリ構造定義書を作成するための詳細ガイドとテンプレート。リポジトリ構造定義時にのみ使用。                                                                                                                                                                                                |
+| `task-decomposition`      | タスク分解、Issue類似性判定、依存関係管理のためのナレッジベーススキル。要件からのタスク分解、Mermaid形式での可視化、Issue管理との連携時に使用。                                                                                                                                               |
 
 <!-- END: SKILLS -->
 
@@ -190,7 +245,7 @@ finance/                                    # Project root
 │   ├── commands/                           # (37 commands)
 │   ├── commands_sample/
 │   ├── rules/                              # 共有ルール定義
-│   ├── skills/                             # (13 skills)
+│   ├── skills/                             # (15 skills)
 │   │   ├── agent-expert/
 │   │   ├── agent-memory/
 │   │   ├── architecture-design/
@@ -200,10 +255,12 @@ finance/                                    # Project root
 │   │   ├── finance-news-collection/
 │   │   ├── functional-design/
 │   │   ├── glossary-creation/
+│   │   ├── index/
 │   │   ├── prd-writing/
 │   │   ├── project-file/
 │   │   ├── project-status-sync/
-│   │   └── repository-structure/
+│   │   ├── repository-structure/
+│   │   └── task-decomposition/
 │   ├── sounds/
 │   ├── settings.json
 │   ├── settings.local.json
@@ -389,7 +446,8 @@ finance/                                    # Project root
 │   │   ├── property/
 │   │   └── integration/
 │   │
-│   ├── finance_news_collector/
+│   ├── finance_news_collector/             # News collector tests
+│   │
 │   ├── quant/                              # Quantitative analysis
 │   │   ├── unit/
 │   │   ├── property/
@@ -545,178 +603,11 @@ finance/                                    # Project root
 
 ---
 
-## 更新手順（--update モード）
+## 関連スキル
 
-### 並列実行アーキテクチャ
+- **index**: `.claude/skills/index/SKILL.md`
 
-Task ツールで 9 つのサブエージェントを**並列起動**し、結果を統合します。
+## 参考資料
 
-```
-/index --update
-    │
-    ├─> Task(Explore): コマンド検出 ─────────────┐
-    ├─> Task(Explore): スキル検出 ────────────────┤
-    ├─> Task(Explore): エージェント読み込み ──────┤ 並列実行
-    ├─> Task(Explore): ディレクトリスキャン ──────┤ (9エージェント)
-    ├─> Task(package-readme-updater): finance README ──┤
-    ├─> Task(package-readme-updater): market_analysis README ─┤
-    ├─> Task(package-readme-updater): rss README ──────┤
-    ├─> Task(package-readme-updater): factor README ───┤
-    └─> Task(package-readme-updater): strategy README ─┘
-                        │
-                        v
-          結果統合（YAML形式 + README更新確認）
-                        │
-        ┌───────────────┼──────────────────┬──────────────────┐
-        v               v                  v                  v
-   index.md        CLAUDE.md          README.md       src/*/README.md
-    更新             更新               更新              更新（5つ）
-```
-
-### サブエージェント詳細
-
-#### 1. コマンド検出エージェント
-
-```yaml
-subagent_type: "Explore"
-対象: .claude/commands/*.md（index.md 除く）
-抽出: frontmatter description
-出力形式:
-    commands:
-        - name: "analyze"
-          description: "多次元コード分析"
-```
-
-#### 2. スキル検出エージェント
-
-```yaml
-subagent_type: "Explore"
-対象: .claude/skills/*/SKILL.md
-抽出: frontmatter name, description
-出力形式:
-    skills:
-        - name: "architecture-design"
-          description: "アーキテクチャ設計書を作成"
-```
-
-#### 3. エージェント読み込みエージェント
-
-```yaml
-subagent_type: "Explore"
-対象: .claude/agents.md
-抽出: カテゴリ別エージェント定義
-出力形式:
-    agents:
-        - category: "汎用"
-          items:
-              - name: "Bash"
-                description: "コマンド実行"
-```
-
-#### 4. ディレクトリスキャンエージェント
-
-```yaml
-subagent_type: "Explore"
-対象: プロジェクトルート
-深さ: 4層
-除外: __pycache__, .git, .venv, .pytest_cache, .ruff_cache, node_modules, *.egg-info
-出力形式:
-    directory_structure:
-        tree: |
-            finance/
-            ├── .claude/
-            ...
-```
-
-#### 5. finance README 更新エージェント
-
-```yaml
-subagent_type: "package-readme-updater"
-対象: src/finance/
-パッケージ名: "finance"
-モード: "minimal" # 最小限の構成
-出力: src/finance/README.md
-```
-
-#### 6. market_analysis README 更新エージェント
-
-```yaml
-subagent_type: "package-readme-updater"
-対象: src/market_analysis/
-パッケージ名: "market_analysis"
-モード: "detailed" # 詳細構成（既存維持）
-出力: src/market_analysis/README.md
-```
-
-#### 7. rss README 更新エージェント
-
-```yaml
-subagent_type: "package-readme-updater"
-対象: src/rss/
-パッケージ名: "rss"
-モード: "standard" # 標準構成（テンプレート→実装）
-出力: src/rss/README.md
-```
-
-#### 8. factor README 更新エージェント
-
-```yaml
-subagent_type: "package-readme-updater"
-対象: src/factor/
-パッケージ名: "factor"
-モード: "minimal" # 最小限の構成
-出力: src/factor/README.md
-```
-
-#### 9. strategy README 更新エージェント
-
-```yaml
-subagent_type: "package-readme-updater"
-対象: src/strategy/
-パッケージ名: "strategy"
-モード: "minimal" # 最小限の構成
-出力: src/strategy/README.md
-```
-
-### 結果統合スキーマ
-
-```yaml
-metadata:
-    generated_at: "ISO8601"
-    execution_status:
-        commands: "success|failed"
-        skills: "success|failed"
-        agents: "success|failed"
-        directory: "success|failed"
-        package_readme_finance: "success|failed"
-        package_readme_market_analysis: "success|failed"
-        package_readme_rss: "success|failed"
-        package_readme_factor: "success|failed"
-        package_readme_strategy: "success|failed"
-    errors: []
-
-commands: [...]
-skills: [...]
-agents: [...]
-directory_structure:
-    tree: "ASCII tree string"
-package_readmes:
-    finance: "updated|skipped|failed"
-    market_analysis: "updated|skipped|failed"
-    rss: "updated|skipped|failed"
-    factor: "updated|skipped|failed"
-    strategy: "updated|skipped|failed"
-```
-
-### エラーハンドリング
-
-| 状況                         | 対応                                        |
-| ---------------------------- | ------------------------------------------- |
-| サブエージェントタイムアウト | 既存内容を維持 + 警告表示                   |
-| ファイル読み込み失敗         | スキップして他を処理                        |
-| マーカーペア不正             | エラー終了（手動修正を促す）                |
-| 検出結果が空                 | 警告表示、既存内容維持                      |
-| **README.md 不在**           | **警告を出し、テンプレートから新規作成**    |
-| ****init**.py パース失敗**   | **警告を出し、API セクションを "N/A" 表示** |
-| **テストディレクトリ不在**   | **警告せず、テスト統計を "0" 表示**         |
-| **カバレッジ計測失敗**       | **警告せず、カバレッジを "N/A" 表示**       |
+- `CLAUDE.md`: プロジェクト全体のガイドライン
+- `.claude/agents.md`: エージェント定義
