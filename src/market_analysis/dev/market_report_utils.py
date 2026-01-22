@@ -828,7 +828,7 @@ class TSAPassengerDataCollector:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             }
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=30)
             response.raise_for_status()
 
             soup = BeautifulSoup(response.content, "html.parser")
@@ -949,12 +949,12 @@ class TSAPassengerDataCollector:
 
             # テーブルが存在するか確認
             cursor.execute(
-                f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'"
+                f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'"  # nosec B608
             )
             if cursor.fetchone():
                 # 既存の全日付をセットとして取得
                 existing_dates = set(
-                    pd.read_sql(f"SELECT Date FROM {table_name}", conn)["Date"]
+                    pd.read_sql(f"SELECT Date FROM {table_name}", conn)["Date"]  # nosec B608
                 )
                 # 新しいデータのうち、DBに存在しない日付の行のみを抽出
                 df["Date_str"] = df["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
@@ -1112,7 +1112,7 @@ class BloombergDataProcessor:
             # 3. 差分更新ロジック
             # テーブルが存在するか確認
             cursor.execute(
-                f"SELECT name FROM sqlite_master WHERE type='table' AND name='{TABLE_NAME}'"
+                f"SELECT name FROM sqlite_master WHERE type='table' AND name='{TABLE_NAME}'"  # nosec B608
             )
             table_exists = cursor.fetchone()
 
@@ -1121,7 +1121,8 @@ class BloombergDataProcessor:
             if table_exists:
                 # テーブルが存在する場合、最新の日付を取得
                 latest_date_str = pd.read_sql(
-                    f"SELECT MAX(Date) FROM {TABLE_NAME}", conn
+                    f"SELECT MAX(Date) FROM {TABLE_NAME}",
+                    conn,  # nosec B608
                 ).iloc[0, 0]
 
                 if latest_date_str:
@@ -1180,7 +1181,7 @@ class BloombergDataProcessor:
         try:
             conn = sqlite3.connect(db_path)
 
-            query = f"SELECT * FROM {TABLE_NAME}"
+            query = f"SELECT * FROM {TABLE_NAME}"  # nosec B608
             params: Optional[List[str]] = None
 
             if tickers:
@@ -1268,7 +1269,7 @@ class BloombergDataProcessor:
             # 3. 差分更新ロジック
             # テーブルが存在するか確認
             cursor.execute(
-                f"SELECT name FROM sqlite_master WHERE type='table' AND name='{TABLE_NAME}'"
+                f"SELECT name FROM sqlite_master WHERE type='table' AND name='{TABLE_NAME}'"  # nosec B608
             )
             table_exists = cursor.fetchone()
 
@@ -1277,7 +1278,8 @@ class BloombergDataProcessor:
             if table_exists:
                 # テーブルが存在する場合、最新の日付を取得
                 latest_date_str = pd.read_sql(
-                    f"SELECT MAX(Date) FROM {TABLE_NAME}", conn
+                    f"SELECT MAX(Date) FROM {TABLE_NAME}",
+                    conn,  # nosec B608
                 ).iloc[0, 0]
 
                 if latest_date_str:

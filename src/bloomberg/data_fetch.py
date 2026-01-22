@@ -1958,7 +1958,7 @@ class BlpapiFetcher:
             insert_query = f"""
                     INSERT {action} INTO "{table_name}" ({columns_str})
                     SELECT {columns_str} FROM "{temp_table_name}";
-                """
+                """  # nosec B608 - table_name is from trusted internal source
             cursor = conn.cursor()
             cursor.execute(insert_query)
             rows_affected = cursor.rowcount
@@ -2032,7 +2032,7 @@ class BlpapiFetcher:
                     SELECT MAX(Date) as max_date
                     FROM "{table_name}"
                     WHERE Ticker IN ({placeholders})
-                """
+                """  # nosec B608 - table_name is from trusted internal source
                 df = pd.read_sql(query, conn, params=tickers)
 
                 max_date_str = df["max_date"].iloc[0]

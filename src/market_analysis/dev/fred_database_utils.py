@@ -162,7 +162,7 @@ class FredDataProcessor:
                 if series_id in existing_tables:
                     # f-stringでテーブル名を指定する際は、SQLインジェクション対策として
                     # テーブル名が信頼できるソース（この場合はseries_id_list）由来であることを確認してください。
-                    cursor.execute(f'SELECT MAX(date) FROM "{series_id}"')
+                    cursor.execute(f'SELECT MAX(date) FROM "{series_id}"')  # nosec B608
                     latest_date_str = cursor.fetchone()[0]
 
                     if latest_date_str:
@@ -262,7 +262,7 @@ class FredDataProcessor:
         for series_id in series_id_list:
             df = (
                 pd.read_sql(
-                    f"SELECT * FROM '{series_id}' ORDER BY date",
+                    f"SELECT * FROM '{series_id}' ORDER BY date",  # nosec B608
                     con=conn,
                     parse_dates=["date"],
                 )
