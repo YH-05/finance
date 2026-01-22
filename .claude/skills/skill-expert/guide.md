@@ -551,7 +551,7 @@ NG例:
 特定のドメインに特化したスキル。
 
 **例**:
-- `finance-news-collection`: 金融ニュース収集
+- `finance-news-workflow`: 金融ニュース収集ワークフロー
 - `prd-writing`: PRD（要求定義書）作成
 - `deep-research`: ディープリサーチ
 

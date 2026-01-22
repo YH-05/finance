@@ -44,7 +44,7 @@ description: コマンド・スキル・エージェント・ディレクトリ�
 | /worktree-done | worktreeの開発完了後、PRマージ確認を経て安全にクリーンアップ |
 | /write-tests | t-wada流TDDによるテスト作成 |
 
-## スキル一覧 (32件)
+## スキル一覧 (31件)
 
 | スキル | 説明 |
 |--------|------|
@@ -58,7 +58,6 @@ description: コマンド・スキル・エージェント・ディレクトリ�
 | delete-worktrees | 複数worktreeとブランチを一括削除 |
 | development-guidelines | 開発プロセスとコーディング規約のガイド |
 | error-handling | Pythonエラーハンドリングパターンのナレッジベース |
-| finance-news-collection | 金融ニュース収集のワークフロー定義 |
 | finance-news-workflow | 金融ニュース収集の4フェーズワークフロー |
 | functional-design | 機能設計書作成のガイドとテンプレート |
 | gemini-search | Gemini CLIを使用したWeb検索 |
