@@ -119,11 +119,21 @@ body:
   - type: textarea
     id: dependencies
     attributes:
-      label: 依存関係
-      description: このタスクが依存する、またはブロックする Issue
+      label: 依存関係（必須）
+      description: |
+        このタスクが依存する Issue を明記してください。
+        ⚠️ 並列開発（/plan-worktrees）で正しく Wave 分類するために必須です。
+        依存がない場合は「なし」と記載してください。
       placeholder: |
+        ## 依存先（このタスクの前に完了が必要）
         depends_on: #120, #121
+        （または「なし」と記載）
+
+        ## ブロック先（このタスク完了後に着手可能）
         blocks: #125
+        （または「なし」と記載）
+    validations:
+      required: true
 
   - type: dropdown
     id: estimated-effort
