@@ -6,12 +6,13 @@
 
 1. [CLAUDE.md 更新手順](#claudemd-更新手順)
 2. [README.md 更新手順](#readmemd-更新手順)
-3. [マーカーセクション形式](#マーカーセクション形式)
-4. [除外パターン一覧](#除外パターン一覧)
-5. [自動検出の仕組み](#自動検出の仕組み)
-6. [並列実行アーキテクチャ](#並列実行アーキテクチャ)
-7. [エラーハンドリング](#エラーハンドリング)
-8. [トラブルシューティング](#トラブルシューティング)
+3. [依存関係図更新手順](#依存関係図更新手順)
+4. [マーカーセクション形式](#マーカーセクション形式)
+5. [除外パターン一覧](#除外パターン一覧)
+6. [自動検出の仕組み](#自動検出の仕組み)
+7. [並列実行アーキテクチャ](#並列実行アーキテクチャ)
+8. [エラーハンドリング](#エラーハンドリング)
+9. [トラブルシューティング](#トラブルシューティング)
 
 ---
 
@@ -158,6 +159,140 @@ Task:
 
 ---
 
+## 依存関係図更新手順
+
+README.md の依存関係図（Mermaid形式）を自動更新する手順です。
+
+### 対象セクション
+
+README.md 内の以下のマーカー間が更新対象:
+
+```markdown
+<!-- AUTO-GENERATED: DEPENDENCY -->
+
+### Pythonパッケージ依存関係
+[Mermaid図]
+
+### コマンド → スキル → エージェント 依存関係
+[Mermaid図]
+
+<!-- END: DEPENDENCY -->
+```
+
+### 更新フロー
+
+```
+1. 依存関係を検出
+   │
+   ├─ コマンド→スキル: .claude/commands/*.md から skill: 参照を抽出
+   ├─ スキル→エージェント: .claude/skills/*/SKILL.md から Task 呼び出しを抽出
+   └─ Pythonパッケージ: src/*/__init__.py から import 文を解析
+
+2. Mermaid形式に変換
+   - Pythonパッケージ: graph TB 形式
+   - コマンド→スキル→エージェント: graph LR 形式
+   - ワークフロー: 並列・直列を表現
+
+3. README.md のマーカー間を置換
+```
+
+### 検出対象
+
+#### 1. Pythonパッケージ依存関係
+
+| ソース | 検出方法 |
+|--------|----------|
+| `src/*/__init__.py` | `from {package} import` を抽出 |
+| `src/*/core/*.py` | 外部パッケージ import を抽出 |
+
+**依存関係の階層**:
+```
+finance (base)
+├── market_analysis
+│   ├── factor
+│   │   └── strategy
+│   └── strategy
+├── rss
+└── bloomberg
+```
+
+#### 2. コマンド→スキル依存関係
+
+| ソース | 検出方法 |
+|--------|----------|
+| `.claude/commands/*.md` | frontmatter の `skill:` フィールド |
+| `.claude/commands/*.md` | 本文中の `Skill(skill: "xxx")` 呼び出し |
+
+#### 3. スキル→エージェント依存関係
+
+| ソース | 検出方法 |
+|--------|----------|
+| `.claude/skills/*/SKILL.md` | `Task(subagent_type: "xxx")` 呼び出し |
+| `.claude/skills/*/*.md` | ガイド内のエージェント参照 |
+
+### Mermaid図の形式
+
+#### Pythonパッケージ依存関係
+
+```mermaid
+graph TB
+    subgraph "Core Layer"
+        finance["finance<br/>(コアインフラ)"]
+    end
+
+    subgraph "Analysis Layer"
+        market_analysis["market_analysis"]
+        rss["rss"]
+    end
+
+    finance --> market_analysis
+    finance --> rss
+```
+
+#### コマンド→スキル→エージェント
+
+```mermaid
+graph LR
+    subgraph "Commands"
+        cmd["/command-name"]
+    end
+
+    subgraph "Skills"
+        skill["skill-name"]
+    end
+
+    subgraph "Agents"
+        agent["agent-name"]
+    end
+
+    cmd --> skill --> agent
+```
+
+### 実行例
+
+```yaml
+# Step 1: 依存関係を検出
+Task:
+  subagent_type: "Explore"
+  description: "Detect dependencies"
+  prompt: |
+    以下の依存関係を検出してください:
+    1. コマンド→スキル: .claude/commands/*.md の skill: 参照
+    2. スキル→エージェント: .claude/skills/*/SKILL.md の Task 呼び出し
+    3. Pythonパッケージ: src/*/ の import 文
+
+# Step 2: Mermaid図を生成
+# 検出結果からMermaid形式のグラフを生成
+
+# Step 3: README.md のマーカー間を更新
+Edit:
+  file_path: "README.md"
+  old_string: "<!-- AUTO-GENERATED: DEPENDENCY -->...<!-- END: DEPENDENCY -->"
+  new_string: "新しいMermaid図"
+```
+
+---
+
 ## マーカーセクション形式
 
 自動更新されるセクションを識別するためのマーカー構文です。
@@ -180,6 +315,7 @@ Task:
 | `SKILLS` | index.md | スキル一覧テーブル |
 | `AGENTS` | index.md | エージェント一覧 |
 | `DIRECTORY` | index.md, CLAUDE.md, README.md | ディレクトリ構成 |
+| `DEPENDENCY` | README.md | 依存関係図（Mermaid） |
 
 ### マーカー配置ルール
 

@@ -208,6 +208,188 @@ finance/                                     # Project root
     -   よく使うコマンドと GitHub 操作
     -   型ヒント、テスト戦略、セキュリティ
 
+## 🔗 依存関係図
+
+<!-- AUTO-GENERATED: DEPENDENCY -->
+
+### Pythonパッケージ依存関係
+
+```mermaid
+graph TB
+    subgraph "Core Layer"
+        finance["finance<br/>(コアインフラ)"]
+    end
+
+    subgraph "Analysis Layer"
+        market_analysis["market_analysis<br/>(市場分析)"]
+        rss["rss<br/>(RSS管理)"]
+    end
+
+    subgraph "Specialized Layer"
+        factor["factor<br/>(ファクター分析)"]
+        strategy["strategy<br/>(投資戦略)"]
+        bloomberg["bloomberg<br/>(Bloomberg連携)"]
+    end
+
+    finance --> market_analysis
+    finance --> rss
+    finance --> bloomberg
+    market_analysis --> factor
+    finance --> factor
+    factor --> strategy
+    market_analysis --> strategy
+    finance --> strategy
+```
+
+### コマンド → スキル → エージェント 依存関係
+
+```mermaid
+graph LR
+    subgraph "Commands"
+        cmd_commit["/commit-and-pr"]
+        cmd_news["/finance-news-workflow"]
+        cmd_research["/finance-research"]
+        cmd_project["/new-project"]
+        cmd_issue["/issue"]
+        cmd_test["/write-tests"]
+        cmd_index["/index"]
+    end
+
+    subgraph "Skills"
+        skill_commit["commit-and-pr"]
+        skill_news["finance-news-workflow"]
+        skill_research["deep-research"]
+        skill_project["new-project"]
+        skill_issue["issue-creation"]
+        skill_tdd["tdd-development"]
+        skill_index["index"]
+    end
+
+    subgraph "Agents"
+        agent_quality["quality-checker"]
+        agent_simplifier["code-simplifier"]
+        agent_news_orch["finance-news-orchestrator"]
+        agent_news_themes["テーマ別エージェント x6"]
+        agent_research["リサーチエージェント x14"]
+        agent_design["設計エージェント x6"]
+        agent_task["task-decomposer"]
+        agent_test["test-orchestrator"]
+        agent_explore["Explore"]
+        agent_readme["package-readme-updater"]
+    end
+
+    cmd_commit --> skill_commit
+    cmd_news --> skill_news
+    cmd_research --> skill_research
+    cmd_project --> skill_project
+    cmd_issue --> skill_issue
+    cmd_test --> skill_tdd
+    cmd_index --> skill_index
+
+    skill_commit --> agent_quality
+    skill_commit --> agent_simplifier
+    skill_news --> agent_news_orch
+    agent_news_orch --> agent_news_themes
+    skill_research --> agent_research
+    skill_project --> agent_design
+    skill_project --> agent_task
+    skill_tdd --> agent_test
+    skill_index --> agent_explore
+    skill_index --> agent_readme
+```
+
+### 金融ニュース収集ワークフロー
+
+```mermaid
+graph TB
+    subgraph "Orchestrator"
+        orch["finance-news-orchestrator"]
+    end
+
+    subgraph "Parallel Agents"
+        index["finance-news-index<br/>(株価指数)"]
+        stock["finance-news-stock<br/>(個別銘柄)"]
+        sector["finance-news-sector<br/>(セクター)"]
+        macro["finance-news-macro<br/>(マクロ経済)"]
+        ai["finance-news-ai<br/>(AI/テクノロジー)"]
+        fin["finance-news-finance<br/>(金融/財務)"]
+    end
+
+    subgraph "Output"
+        gh["GitHub Project Issues"]
+    end
+
+    orch --> index
+    orch --> stock
+    orch --> sector
+    orch --> macro
+    orch --> ai
+    orch --> fin
+
+    index --> gh
+    stock --> gh
+    sector --> gh
+    macro --> gh
+    ai --> gh
+    fin --> gh
+```
+
+### 金融リサーチパイプライン
+
+```mermaid
+graph TB
+    subgraph "Phase 1: Data Collection"
+        query["finance-query-generator"]
+        web["finance-web"]
+        wiki["finance-wiki"]
+    end
+
+    subgraph "Phase 2: Analysis"
+        source["finance-source"]
+        claims["finance-claims"]
+        analyzer["finance-claims-analyzer"]
+    end
+
+    subgraph "Phase 3: Verification"
+        fact["finance-fact-checker"]
+        decisions["finance-decisions"]
+    end
+
+    subgraph "Phase 4: Market Data"
+        market["finance-market-data"]
+        technical["finance-technical-analysis"]
+        economic["finance-economic-analysis"]
+        sec["finance-sec-filings"]
+        sentiment["finance-sentiment-analyzer"]
+    end
+
+    subgraph "Phase 5: Output"
+        visualize["finance-visualize"]
+        output["report.md"]
+    end
+
+    query --> web
+    query --> wiki
+    web --> source
+    wiki --> source
+    source --> claims
+    claims --> analyzer
+    analyzer --> fact
+    fact --> decisions
+    decisions --> market
+    market --> technical
+    market --> economic
+    market --> sec
+    market --> sentiment
+    technical --> visualize
+    economic --> visualize
+    sec --> visualize
+    sentiment --> visualize
+    visualize --> output
+```
+
+<!-- END: DEPENDENCY -->
+
 ## 🤖 Claude Code 開発フロー
 
 このプロジェクトでは、スラッシュコマンド、スキル、サブエージェントを組み合わせて開発を進めます。

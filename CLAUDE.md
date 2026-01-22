@@ -314,6 +314,27 @@ updated_at: 2026-01-22
 
 ---
 
+## 依存関係
+
+### Pythonパッケージ
+
+- `finance` (コア) → `market_analysis`, `rss`, `bloomberg`
+- `market_analysis` → `factor`, `strategy`
+- `factor` → `strategy`
+
+### コマンド → スキル → エージェント
+
+- `/commit-and-pr` → `commit-and-pr` → `quality-checker`, `code-simplifier`
+- `/finance-news-workflow` → `finance-news-workflow` → `finance-news-orchestrator` → 6テーマ別エージェント
+- `/finance-research` → `deep-research` → 14リサーチエージェント
+- `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`
+- `/write-tests` → `tdd-development` → `test-orchestrator` → 5テストエージェント
+- `/index` → `index` → `Explore`, `package-readme-updater`
+
+詳細なMermaid図は [README.md](README.md#-依存関係図) を参照。
+
+---
+
 ## 規約・詳細参照
 
 | 規約 | パス |
