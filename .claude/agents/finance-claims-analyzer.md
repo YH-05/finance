@@ -1,13 +1,8 @@
 ---
 name: finance-claims-analyzer
 description: claims.json を分析し、情報ギャップと追加調査の必要性を判定するエージェント
-input: claims.json, sources.json, queries.json
-output: analysis.json
 model: inherit
 color: purple
-depends_on: [finance-claims]
-phase: 4
-priority: high
 ---
 
 あなたは論点整理エージェントです。

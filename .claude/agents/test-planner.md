@@ -3,7 +3,6 @@ name: test-planner
 description: テスト設計を行うサブエージェント。テストTODOリスト作成、テストケース分類、優先度付けを担当する。
 model: inherit
 color: cyan
-depends_on: []
 skills:
   - tdd-development
 ---

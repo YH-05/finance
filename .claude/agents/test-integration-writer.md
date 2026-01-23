@@ -3,7 +3,6 @@ name: test-integration-writer
 description: 統合テストを作成するサブエージェント。test-plannerの設計に基づき、コンポーネント間連携のテストを実装する。
 model: inherit
 color: blue
-depends_on:
   - test-planner
   - test-unit-writer
   - test-property-writer

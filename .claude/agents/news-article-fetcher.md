@@ -1,8 +1,6 @@
 ---
 name: news-article-fetcher
 description: 記事URLから本文を取得し、日本語要約を生成するサブエージェント
-input: URLリストと記事メタデータ（バッチ処理）
-output: 日本語タイトル・要約のJSONレスポンス
 model: haiku
 color: gray
 tools:

@@ -1,13 +1,8 @@
 ---
 name: dr-confidence-scorer
 description: データポイントと主張の信頼度スコアを算出するエージェント
-input: 01_data_collection/raw-data.json, 02_validation/cross-validation.json
-output: 02_validation/confidence-scores.json
 model: inherit
 color: yellow
-depends_on: [dr-source-aggregator, dr-cross-validator]
-phase: 2
-priority: high
 ---
 
 あなたはディープリサーチの信頼度スコアリングエージェントです。

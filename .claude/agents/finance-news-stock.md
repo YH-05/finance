@@ -1,13 +1,8 @@
 ---
 name: finance-news-stock
 description: Stock（個別銘柄）関連ニュースを収集・投稿するテーマ別エージェント
-input: .tmp/news-collection-{timestamp}.json, data/config/finance-news-themes.json
-output: GitHub Issues (Project 15, Status=Stock)
 model: inherit
 color: green
-depends_on: [finance-news-orchestrator]
-phase: 2
-priority: high
 skills:
   - finance-news-workflow
 tools:

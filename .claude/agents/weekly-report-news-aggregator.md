@@ -1,13 +1,8 @@
 ---
 name: weekly-report-news-aggregator
 description: GitHub Project からニュースを集約し週次レポート用のデータを生成するサブエージェント
-input: 対象期間（start, end）, GitHub Project 番号（デフォルト: 15）
-output: JSON形式のニュースリスト（カテゴリ分類済み）
 model: haiku
 color: cyan
-depends_on: []
-phase: 1
-priority: high
 tools:
   - Bash
   - Read

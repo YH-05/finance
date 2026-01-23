@@ -1,13 +1,8 @@
 ---
 name: weekly-comment-mag7-fetcher
 description: 週次コメント用のMAG7関連ニュースを収集するサブエージェント
-input: mag7.json (MAG7パフォーマンスデータ), 対象期間
-output: JSON形式のニュースサマリー（銘柄別動向背景）
 model: haiku
 color: green
-depends_on: []
-phase: 3
-priority: high
 tools:
   - Read
   - MCPSearch

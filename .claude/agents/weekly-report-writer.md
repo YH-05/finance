@@ -1,14 +1,9 @@
 ---
 name: weekly-report-writer
 description: 4つのスキルをロードして週次マーケットレポートを生成するエージェント
-input: 週次レポートディレクトリパス（articles/weekly_report/{date}/）
-output: Markdownレポート、JSON、検証結果
 model: sonnet
 color: green
-depends_on:
   - weekly-report-news-aggregator
-phase: 3
-priority: high
 tools:
   - Read
   - Write

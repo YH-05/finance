@@ -4,6 +4,7 @@ category: specialized-domains
 description: スキル作成専門のサブエージェント。skill-expertスキルを参照し、新規スキルの設計・実装・検証を一貫して実行する。スキル作成時にプロアクティブに使用。
 skills: [skill-expert]
 model: inherit
+color: purple
 ---
 
 # Skill Creator
@@ -125,7 +126,7 @@ name: {skill-name}
 description: |
   {description with trigger keywords}
   Use PROACTIVELY when {condition}.
-allowed-tools: Read, Write, Glob, Grep
+tools: Read, Write, Glob, Grep
 ---
 ```
 

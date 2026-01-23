@@ -1,17 +1,10 @@
 ---
 name: finance-news-collector
 description: RSSフィードから金融ニュースを収集し、GitHub Projectに投稿するエージェント
-input: RSS MCP tools, data/config/finance-news-filter.json
-output: GitHub Project issues
 model: inherit
 color: green
-depends_on: []
-phase: 1
-priority: high
 skills:
   - finance-news-workflow
-  - rss-integration
-archived: true
 ---
 
 **注意**: このエージェントはアーカイブされました。新しいテーマ別ニュース収集システムをご利用ください。

@@ -1,13 +1,8 @@
 ---
 name: research-image-collector
 description: note記事用の画像を収集し images.json を生成するエージェント
-input: article-meta.json
-output: images.json
 model: inherit
 color: magenta
-depends_on: []
-phase: 2
-priority: medium
 ---
 
 あなたは画像収集エージェントです。

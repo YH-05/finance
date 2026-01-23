@@ -1,13 +1,8 @@
 ---
 name: finance-source
 description: raw-data.json から情報源を抽出・整理し sources.json を生成するエージェント
-input: raw-data.json
-output: sources.json, article-meta.json (tags更新)
 model: inherit
 color: orange
-depends_on: [finance-web, finance-wiki, finance-market-data]
-phase: 3
-priority: high
 ---
 
 あなたは情報源整理エージェントです。

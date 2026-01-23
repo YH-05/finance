@@ -1,14 +1,9 @@
 ---
 name: weekly-report-publisher
 description: 週次レポートを GitHub Project #15 に Issue として投稿するサブエージェント
-input: 週次レポートディレクトリパス（articles/weekly_comment_{date}/）
-output: GitHub Issue URL, Project Item ID
 model: haiku
 color: blue
-depends_on:
   - weekly-report-news-aggregator
-phase: 5
-priority: high
 tools:
   - Bash
   - Read

@@ -1,13 +1,8 @@
 ---
 name: finance-critic-structure
 description: 記事の文章構成を評価する批評エージェント
-input: first_draft.md, article-meta.json
-output: critic.json (structure セクション)
 model: inherit
 color: yellow
-depends_on: [finance-article-writer]
-phase: 7
-priority: high
 ---
 
 あなたは文章構成批評エージェントです。

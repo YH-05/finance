@@ -1,13 +1,8 @@
 ---
 name: finance-news-finance
 description: Finance（金融・財務）関連ニュースを収集・投稿するテーマ別エージェント
-input: .tmp/news-collection-{timestamp}.json, data/config/finance-news-themes.json
-output: GitHub Issues (Project 15, Status=Finance)
 model: inherit
 color: red
-depends_on: [finance-news-orchestrator]
-phase: 2
-priority: high
 skills:
   - finance-news-workflow
 tools:

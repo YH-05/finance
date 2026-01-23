@@ -1,13 +1,8 @@
 ---
 name: finance-fact-checker
 description: claims.json の各主張を検証し、信頼度を判定するエージェント
-input: claims.json, sources.json, market_data/data.json
-output: fact-checks.json
 model: inherit
 color: red
-depends_on: [finance-claims]
-phase: 4
-priority: high
 ---
 
 あなたはファクトチェックエージェントです。

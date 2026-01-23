@@ -3,7 +3,6 @@ name: test-unit-writer
 description: 単体テストを作成するサブエージェント。test-plannerの設計に基づき、関数・クラス単位のテストを実装する。
 model: inherit
 color: green
-depends_on:
   - test-planner
 skills:
   - coding-standards

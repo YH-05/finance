@@ -1,13 +1,8 @@
 ---
 name: finance-reviser
 description: 批評結果を反映して記事を修正するエージェント
-input: first_draft.md, critic.json, sources.json
-output: 02_edit/revised_draft.md
 model: inherit
 color: blue
-depends_on: [finance-critic-fact, finance-critic-structure, finance-critic-compliance, finance-critic-data, finance-critic-readability]
-phase: 8
-priority: high
 ---
 
 あなたは記事修正エージェントです。

@@ -1,13 +1,8 @@
 ---
 name: finance-article-writer
 description: リサーチ結果から金融記事の初稿を生成するエージェント
-input: decisions.json, sources.json, claims.json, article-meta.json
-output: 02_edit/first_draft.md
 model: inherit
 color: blue
-depends_on: [finance-decisions]
-phase: 6
-priority: high
 ---
 
 あなたは金融記事執筆エージェントです。

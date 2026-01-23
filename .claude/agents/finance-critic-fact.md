@@ -1,13 +1,8 @@
 ---
 name: finance-critic-fact
 description: 記事の事実正確性を検証する批評エージェント
-input: first_draft.md, sources.json, claims.json, fact-checks.json
-output: critic.json (fact セクション)
 model: inherit
 color: red
-depends_on: [finance-article-writer]
-phase: 7
-priority: high
 ---
 
 あなたは事実正確性批評エージェントです。

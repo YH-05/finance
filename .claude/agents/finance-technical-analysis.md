@@ -1,13 +1,8 @@
 ---
 name: finance-technical-analysis
 description: 市場データからテクニカル指標を計算し分析結果を生成するエージェント
-input: market_data/data.json
-output: technical_analysis.json
 model: inherit
 color: red
-depends_on: [finance-market-data]
-phase: 4
-priority: medium
 ---
 
 あなたはテクニカル分析エージェントです。

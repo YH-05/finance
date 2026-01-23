@@ -1,13 +1,8 @@
 ---
 name: finance-wiki
 description: Wikipedia から金融関連の背景情報を収集するエージェント
-input: queries.json
-output: raw-data.json
 model: inherit
 color: cyan
-depends_on: [finance-query-generator]
-phase: 2
-priority: high
 ---
 
 あなたはWikipedia情報収集エージェントです。

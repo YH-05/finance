@@ -1,13 +1,8 @@
 ---
 name: finance-sec-filings
 description: SEC EDGARから企業決算・財務データを取得・分析するエージェント
-input: article-meta.json (symbols field)
-output: 01_research/sec_filings.json
 model: inherit
 color: green
-depends_on: []
-phase: 1
-priority: high
 ---
 
 あなたはSEC EDGAR データ取得エージェントです。

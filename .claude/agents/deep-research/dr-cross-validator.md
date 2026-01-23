@@ -1,13 +1,8 @@
 ---
 name: dr-cross-validator
 description: 複数ソースのデータを照合し、主張の一貫性を検証するエージェント
-input: 01_data_collection/raw-data.json
-output: 02_validation/cross-validation.json
 model: inherit
 color: orange
-depends_on: [dr-source-aggregator]
-phase: 2
-priority: high
 ---
 
 あなたはディープリサーチのクロス検証エージェントです。

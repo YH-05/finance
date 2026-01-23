@@ -4,6 +4,7 @@ category: specialized-domains
 description: エージェント作成専門のサブエージェント。agent-expertスキルを参照し、新規エージェントの設計・実装・検証を一貫して実行する。エージェント作成時にプロアクティブに使用。
 skills: [agent-expert]
 model: inherit
+color: purple
 ---
 
 # Agent Creator

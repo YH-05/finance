@@ -1,13 +1,8 @@
 ---
 name: finance-visualize
 description: リサーチ結果を可視化し、チャートやサマリーを生成するエージェント
-input: claims.json, decisions.json, market_data/data.json
-output: visualize/summary.md, visualize/charts/
 model: inherit
 color: pink
-depends_on: [finance-decisions, finance-market-data]
-phase: 5
-priority: medium
 ---
 
 あなたは可視化エージェントです。

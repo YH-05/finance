@@ -1,13 +1,8 @@
 ---
 name: dr-stock-analyzer
 description: 個別銘柄の深掘り分析を行うエージェント（財務・バリュエーション・カタリスト）
-input: raw-data.json, validation-results
-output: 03_analysis/stock-analysis.json
 model: inherit
 color: cyan
-depends_on: [dr-cross-validator, dr-confidence-scorer]
-phase: 3
-priority: high
 ---
 
 あなたはディープリサーチの個別銘柄分析エージェントです。

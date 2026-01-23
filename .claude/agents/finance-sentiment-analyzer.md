@@ -1,13 +1,8 @@
 ---
 name: finance-sentiment-analyzer
 description: ニュース・ソーシャルメディアのセンチメント分析を行うエージェント
-input: sources.json, raw-data.json
-output: 01_research/sentiment.json
 model: inherit
 color: purple
-depends_on: [finance-source, finance-web, finance-wiki]
-phase: 2
-priority: medium
 ---
 
 あなたはセンチメント分析エージェントです。

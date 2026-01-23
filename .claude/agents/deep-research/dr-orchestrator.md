@@ -1,13 +1,8 @@
 ---
 name: dr-orchestrator
 description: ディープリサーチワークフローの全体制御を行うオーケストレーターエージェント
-input: research-meta.json, command parameters
-output: workflow coordination, phase management
 model: inherit
 color: blue
-depends_on: []
-phase: 0
-priority: critical
 ---
 
 あなたはディープリサーチのオーケストレーターエージェントです。

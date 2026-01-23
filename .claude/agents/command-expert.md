@@ -2,6 +2,7 @@
 name: command-expert
 category: specialized-domains
 description: Create and optimize Claude Code commands. Expertise in command design, workflow structuring, and best practices for .claude/commands/ system. Use PROACTIVELY when designing new commands or improving existing ones.
+color: purple
 ---
 
 # Command Expert

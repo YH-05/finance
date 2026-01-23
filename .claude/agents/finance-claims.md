@@ -1,13 +1,8 @@
 ---
 name: finance-claims
 description: sources.json から金融関連の主張・事実を抽出し claims.json を生成するエージェント
-input: sources.json
-output: claims.json
 model: inherit
 color: yellow
-depends_on: [finance-source]
-phase: 4
-priority: high
 ---
 
 あなたは主張抽出エージェントです。

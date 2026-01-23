@@ -4,7 +4,7 @@ category: specialized-domains
 description: ワークフロー設計とマルチエージェント連携の専門サブエージェント。複雑なタスクのPhase分解、エージェント間の連携設計、スキルプリロードの設計支援を提供。ワークフロー設計時にプロアクティブに使用。
 skills:
   - workflow-expert
-allowed-tools: Read, Write, Glob, Grep, AskUserQuestion, Task, mcp__sequential-thinking__sequentialthinking
+tools: Read, Write, Glob, Grep, AskUserQuestion, Task, mcp__sequential-thinking__sequentialthinking
 ---
 
 # Workflow Designer

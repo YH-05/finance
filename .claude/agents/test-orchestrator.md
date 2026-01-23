@@ -3,7 +3,6 @@ name: test-orchestrator
 description: テスト作成の並列実行を制御するオーケストレーター。test-planner→(test-unit-writer & test-property-writer)→test-integration-writerを制御する。
 model: inherit
 color: purple
-depends_on: []
 skills:
   - tdd-development
 ---

@@ -1,13 +1,8 @@
 ---
 name: dr-sector-analyzer
 description: セクター比較分析を行うエージェント（ローテーション・銘柄選定）
-input: raw-data.json, validation-results
-output: 03_analysis/sector-analysis.json
 model: inherit
-color: teal
-depends_on: [dr-cross-validator, dr-confidence-scorer]
-phase: 3
-priority: high
+color: cyan
 ---
 
 あなたはディープリサーチのセクター分析エージェントです。

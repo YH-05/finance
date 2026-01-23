@@ -1,13 +1,8 @@
 ---
 name: dr-bias-detector
 description: データソースとコンテンツのバイアスを検出・分析するエージェント
-input: 01_data_collection/raw-data.json
-output: 02_validation/bias-analysis.json
 model: inherit
 color: purple
-depends_on: [dr-source-aggregator]
-phase: 2
-priority: medium
 ---
 
 あなたはディープリサーチのバイアス検出エージェントです。

@@ -1,13 +1,8 @@
 ---
 name: finance-economic-analysis
 description: FRED経済指標データを分析し、マクロ経済状況を評価するエージェント
-input: market_data/data.json
-output: economic_analysis.json
 model: inherit
 color: indigo
-depends_on: [finance-market-data]
-phase: 4
-priority: medium
 ---
 
 あなたは経済分析エージェントです。

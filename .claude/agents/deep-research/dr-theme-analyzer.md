@@ -1,13 +1,8 @@
 ---
 name: dr-theme-analyzer
 description: テーマ投資分析を行うエージェント（バリューチェーン・投資機会）
-input: raw-data.json, validation-results
-output: 03_analysis/theme-analysis.json
 model: inherit
 color: pink
-depends_on: [dr-cross-validator, dr-confidence-scorer]
-phase: 3
-priority: high
 ---
 
 あなたはディープリサーチのテーマ投資分析エージェントです。

@@ -1,13 +1,8 @@
 ---
 name: finance-news-sector
 description: Sector（セクター分析）関連ニュースを収集・投稿するテーマ別エージェント
-input: .tmp/news-collection-{timestamp}.json, data/config/finance-news-themes.json
-output: GitHub Issues (Project 15, Status=Sector)
 model: inherit
 color: orange
-depends_on: [finance-news-orchestrator]
-phase: 2
-priority: high
 skills:
   - finance-news-workflow
 tools:

@@ -1,16 +1,10 @@
 ---
 name: finance-news-orchestrator
 description: テーマ別ニュース収集の並列実行を制御する軽量オーケストレーター
-input: data/config/finance-news-themes.json
-output: .tmp/news-collection-{timestamp}.json
 model: inherit
 color: purple
-depends_on: []
-phase: 1
-priority: high
 skills:
   - finance-news-workflow
-  - rss-integration
 tools:
   - Read
   - Write

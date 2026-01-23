@@ -1,13 +1,8 @@
 ---
 name: weekly-comment-indices-fetcher
 description: 週次コメント用の指数関連ニュースを収集するサブエージェント
-input: indices.json (指数パフォーマンスデータ), 対象期間
-output: JSON形式のニュースサマリー（市場センチメント、上昇/下落要因）
 model: haiku
 color: green
-depends_on: []
-phase: 3
-priority: high
 tools:
   - Read
   - MCPSearch

@@ -1,13 +1,8 @@
 ---
 name: finance-news-macro
 description: Macro Economics（マクロ経済）関連ニュースを収集・投稿するテーマ別エージェント
-input: .tmp/news-collection-{timestamp}.json, data/config/finance-news-themes.json
-output: GitHub Issues (Project 15, Status=Macro)
 model: inherit
 color: red
-depends_on: [finance-news-orchestrator]
-phase: 2
-priority: high
 skills:
   - finance-news-workflow
 tools:

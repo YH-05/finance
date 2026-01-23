@@ -1,13 +1,8 @@
 ---
 name: finance-market-data
 description: YFinanceFetcher/FREDFetcherを使用して市場データを取得し、market_data/data.jsonに保存するエージェント
-input: article_id, symbols, fred_series, date_range
-output: 01_research/market_data/data.json
 model: inherit
 color: blue
-depends_on: []
-phase: 2
-priority: high
 ---
 
 あなたは市場データ取得エージェントです。

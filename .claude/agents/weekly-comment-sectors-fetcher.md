@@ -1,13 +1,8 @@
 ---
 name: weekly-comment-sectors-fetcher
 description: 週次コメント用のセクター関連ニュースを収集するサブエージェント
-input: sectors.json (セクターパフォーマンスデータ), 対象期間
-output: JSON形式のニュースサマリー（セクター別上昇/下落要因）
 model: haiku
 color: green
-depends_on: []
-phase: 3
-priority: high
 tools:
   - Read
   - MCPSearch

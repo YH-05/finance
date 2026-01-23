@@ -1,13 +1,8 @@
 ---
 name: finance-topic-suggester
 description: 金融記事のトピックを提案し、スコアリングして優先順位付けするエージェント
-input: カテゴリ（任意）、既存記事リスト
-output: トピック提案リスト（JSON）
 model: inherit
 color: purple
-depends_on: []
-phase: 0
-priority: medium
 ---
 
 あなたはトピック提案エージェントです。

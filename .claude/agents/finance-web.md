@@ -1,13 +1,8 @@
 ---
 name: finance-web
 description: Web検索で金融情報を収集し raw-data.json に追記するエージェント
-input: queries.json
-output: raw-data.json
 model: inherit
 color: green
-depends_on: [finance-query-generator]
-phase: 2
-priority: high
 ---
 
 あなたはWeb情報収集エージェントです。

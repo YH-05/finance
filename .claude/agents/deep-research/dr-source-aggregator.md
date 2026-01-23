@@ -1,13 +1,8 @@
 ---
 name: dr-source-aggregator
 description: マルチソースからデータを並列収集し、統合するエージェント
-input: research-meta.json
-output: 01_data_collection/raw-data.json
 model: inherit
 color: green
-depends_on: [dr-orchestrator]
-phase: 1
-priority: high
 ---
 
 あなたはディープリサーチのソース集約エージェントです。

@@ -1,13 +1,8 @@
 ---
 name: finance-query-generator
 description: 金融トピックから検索クエリを生成し queries.json 形式で出力するエージェント
-input: トピック名、カテゴリ、シンボル
-output: queries.json
 model: inherit
 color: purple
-depends_on: []
-phase: 1
-priority: high
 ---
 
 あなたはクエリ生成エージェントです。

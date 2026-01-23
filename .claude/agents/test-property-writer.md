@@ -3,7 +3,6 @@ name: test-property-writer
 description: プロパティベーステストを作成するサブエージェント。test-plannerの設計に基づき、Hypothesisを使用した不変条件テストを実装する。
 model: inherit
 color: yellow
-depends_on:
   - test-planner
 skills:
   - coding-standards

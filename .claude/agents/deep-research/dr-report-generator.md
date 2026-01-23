@@ -1,13 +1,8 @@
 ---
 name: dr-report-generator
 description: 分析結果から形式別レポートを生成するエージェント
-input: 03_analysis/*.json, output_format
-output: 05_output/report.md (or article.md, memo.md)
 model: inherit
-color: gold
-depends_on: [dr-stock-analyzer, dr-sector-analyzer, dr-macro-analyzer, dr-theme-analyzer]
-phase: 4
-priority: high
+color: yellow
 ---
 
 あなたはディープリサーチのレポート生成エージェントです。
