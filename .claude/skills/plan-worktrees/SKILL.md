@@ -1,8 +1,6 @@
 ---
 name: plan-worktrees
-description: GitHub Projectを参照し、TodoのIssueを並列開発用にグルーピング表示するスキル。
-/plan-worktrees コマンドで使用。依存関係を考慮した並列開発計画の可視化を行う。
-
+description: GitHub ProjectのTodo Issueを並列開発用にグルーピング表示。/plan-worktrees コマンドで使用。依存関係を考慮した並列開発計画を可視化する。
 allowed-tools: Read, Bash
 ---
 

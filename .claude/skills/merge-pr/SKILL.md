@@ -1,8 +1,6 @@
 ---
 name: merge-pr
-description: PRのコンフリクトチェック・CI確認・マージを実行するスキル。
-/merge-pr コマンドで使用。mainブランチ上からPR番号を指定し、安全にマージを実行。
-
+description: PRのコンフリクトチェック・CI確認・マージを実行。/merge-pr コマンドで使用。mainブランチ上からPR番号を指定し安全にマージ。
 allowed-tools: Read, Bash
 ---
 

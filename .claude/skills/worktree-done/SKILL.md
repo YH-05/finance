@@ -1,8 +1,6 @@
 ---
 name: worktree-done
-description: worktreeの開発完了後、PRマージ確認を経て安全にクリーンアップするスキル。
-/worktree-done コマンドで使用。マージ確認→worktree削除→ブランチ削除の安全なクリーンアップを実行。
-
+description: worktree開発完了後のクリーンアップ。/worktree-done コマンドで使用。PRマージ確認→worktree削除→ブランチ削除を安全に実行。
 allowed-tools: Read, Bash
 ---
 

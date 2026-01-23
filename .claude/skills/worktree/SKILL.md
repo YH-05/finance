@@ -1,8 +1,6 @@
 ---
 name: worktree
-description: 新しいworktreeとブランチを作成して開発を開始するスキル。
-/worktree コマンドで使用。並列開発のための独立した作業環境を即座に準備する。
-
+description: 新しいworktreeとブランチを作成して開発を開始。/worktree コマンドで使用。並列開発用の独立した作業環境を即座に準備する。
 allowed-tools: Read, Bash
 ---
 

@@ -295,12 +295,64 @@ allowed-tools: Read, Write
 [MUST/SHOULD criteria]
 ```
 
+## フロントマター仕様
+
+スキルの SKILL.md ファイルのフロントマターは以下の仕様に従う必要があります。
+
+### 必須フィールド
+
+| フィールド | 必須 | 説明 |
+|-----------|------|------|
+| `name` | ✓ | スキル名（ディレクトリ名と一致、kebab-case） |
+| `description` | ✓ | スキルの説明（1行、改行禁止） |
+| `allowed-tools` | - | 使用を許可するツール（省略可） |
+
+### description の書き方
+
+**重要**: `description` は**改行を含めない1行の文字列**で記述すること。
+
+```yaml
+# ✓ 正しい例（1行）
+description: 新しいworktreeとブランチを作成して開発を開始。/worktree コマンドで使用。
+
+# ✗ 誤った例（改行あり）
+description: 新しいworktreeとブランチを作成するスキル。
+/worktree コマンドで使用。
+```
+
+**理由**:
+- 改行を含むと YAML パースエラーの原因になる
+- 複数行の場合は `|` ブロックスカラーが必要だが、description には不適切
+- Skill ツールの description 表示で見切れる
+
+**description のベストプラクティス**:
+- 100文字以内を目安
+- 「〜するスキル」ではなく「〜する」で終わる動詞形
+- コマンド名を含める（例: `/worktree コマンドで使用`）
+- トリガーキーワードを含める
+
+### allowed-tools の設定
+
+必要最小限のツールのみを指定：
+
+```yaml
+# 読み取りのみ
+allowed-tools: Read
+
+# 読み書き
+allowed-tools: Read, Write, Edit
+
+# GitHub 操作を含む
+allowed-tools: Read, Write, Bash, Task
+```
+
 ### 4. テストとバリデーション
 
 作成後の確認項目：
 
 - [ ] フロントマターが正しく設定されている
 - [ ] name がディレクトリ名と一致
+- [ ] description が1行で改行を含まない
 - [ ] description が簡潔で目的を説明
 - [ ] allowed-tools が最小限に設定
 - [ ] 実用的な例が3個以上含まれている
