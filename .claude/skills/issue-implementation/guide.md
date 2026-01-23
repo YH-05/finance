@@ -106,9 +106,14 @@ options:
 
 ## 2. Python ワークフロー（Phase 1-5）
 
+**🚨 重要: Python開発では必ずサブエージェントに委譲してください**
+
+Python開発フローでは、直接コードを書くことは**禁止**です。
+各 Phase で指定されたサブエージェントに**全ての開発作業を委譲**してください。
+
 ### Phase 1: テスト作成
 
-**test-writer サブエージェント** を起動:
+**🚨 test-writer サブエージェントに全委譲**（必須）:
 
 ```yaml
 subagent_type: "test-writer"
@@ -144,7 +149,7 @@ prompt: |
 
 ### Phase 2: 実装
 
-**feature-implementer サブエージェント** を起動:
+**🚨 feature-implementer サブエージェントに全委譲**（必須）:
 
 ```yaml
 subagent_type: "feature-implementer"
@@ -180,7 +185,7 @@ prompt: |
 
 ### Phase 3: 品質保証
 
-**quality-checker サブエージェント（--auto-fix）** を起動:
+**🚨 quality-checker サブエージェントに全委譲**（--auto-fix、必須）:
 
 ```yaml
 subagent_type: "quality-checker"
@@ -213,7 +218,7 @@ prompt: |
 
 #### 4.1 コード整理
 
-**code-simplifier サブエージェント** を起動:
+**🚨 code-simplifier サブエージェントに全委譲**（必須）:
 
 ```yaml
 subagent_type: "code-simplifier"
@@ -271,67 +276,71 @@ gh project item-edit \
 
 **注意**: 「Done」への更新は PR の `Fixes #{number}` により、PRマージ時に GitHub Workflow が自動実行
 
+### 🚨 Python ワークフローの禁止事項
+
+以下の行為は**禁止**です：
+
+| 禁止行為 | 理由 |
+|----------|------|
+| 直接テストコードを書く | test-writer に委譲すること |
+| 直接実装コードを書く | feature-implementer に委譲すること |
+| 直接品質修正を行う | quality-checker に委譲すること |
+| 直接コード整理を行う | code-simplifier に委譲すること |
+
+**正しい実装パターン**:
+1. Issue情報を取得してタイプ判定（Phase 0）
+2. サブエージェントにタスクを委譲（Phase 1-4）
+3. 結果を確認して次のPhaseに進む
+4. 最終的にPR作成と完了処理
+
 ---
 
 ## 3. Agent ワークフロー（Phase A1-A4）
 
-### Phase A1: 要件分析
+### Phase A1-A3: agent-creator エージェントに委譲
 
-**agent-expert エージェント** を起動:
+**🚨 重要**: Agent 開発では `agent-creator` エージェントが要件分析→設計→実装→検証を一貫して実行します。
+
+**agent-creator サブエージェント** を起動:
 
 ```yaml
-subagent_type: "agent-expert"
-description: "Analyze agent requirements"
+subagent_type: "agent-creator"
+description: "Create agent from issue"
 prompt: |
-  Issue #{number} のエージェント要件を分析してください。
+  Issue #{number} に基づいてエージェントを作成してください。
 
   ## Issue情報
-  タイトル: {title}
-  本文: {body}
+  - 番号: #{number}
+  - タイトル: {title}
+  - 本文:
+  {body}
 
   ## 受け入れ条件
   {checklist_items}
 
   ## 要件
-  1. AskUserQuestion でエージェントの詳細を確認
-     - エージェント名（kebab-case）
-     - 主要な責任と専門性
-     - トリガー条件
-     - 使用するツール
-  2. 既存のエージェントとの重複確認
-  3. 設計方針を決定
+  1. agent-expert スキルのガイドラインに厳密に従う
+  2. 要件分析 → 設計 → 実装 → 検証を一貫して実行
+  3. フロントマター検証を必ず実行（agent-expert スキル参照）
+  4. 既存エージェントとの重複確認
 
   ## 参照
-  - .claude/agents/ の既存エージェント
-  - .claude/skills/agent-expert/template.md
+  - .claude/skills/agent-expert/guide.md - 設計原則
+  - .claude/skills/agent-expert/template.md - テンプレート
+  - .claude/skills/agent-expert/frontmatter-review.md - 検証ルール
+
+  ## 完了条件
+  - [ ] .claude/agents/{agent-name}.md が作成されている
+  - [ ] フロントマター検証がPASS
+  - [ ] 3-4個の実用的な使用例が含まれている
+  - [ ] MUST/NEVERガイドラインが明記されている
 ```
 
-### Phase A2: 設計・作成
-
-```yaml
-description: "Create agent file"
-prompt: |
-  分析結果に基づいてエージェントファイルを作成してください。
-
-  ## 作成先
-  .claude/agents/{agent-name}.md
-
-  ## 要件
-  1. template.md に基づいた構造
-  2. フロントマター（name, category, description）
-  3. 目的、いつ使用するか、処理フロー
-  4. 3-4個の使用例
-  5. ガイドライン
-```
-
-### Phase A3: 検証
-
-以下を確認:
-- [ ] フロントマターの name がファイル名と一致
-- [ ] description が簡潔で目的を説明
-- [ ] category が適切に設定
-- [ ] トリガー条件が明確
-- [ ] 使用例が実用的
+**agent-creator が実行する内容**:
+1. **要件分析**: 既存エージェント確認、AskUserQuestion で詳細確認
+2. **設計**: エージェント名（kebab-case）、カテゴリ、description 決定
+3. **実装**: template.md に基づきファイル作成
+4. **検証**: frontmatter-review.md に基づく品質検証
 
 ### Phase A4: PR作成
 
@@ -391,49 +400,57 @@ prompt: |
 
 ## 5. Skill ワークフロー（Phase S1-S4）
 
-### Phase S1: 要件分析
+### Phase S1-S3: skill-creator エージェントに委譲
 
-**skill-expert エージェント** を起動:
+**🚨 重要**: Skill 開発では `skill-creator` エージェントが要件分析→設計→実装→検証を一貫して実行します。
+
+**skill-creator サブエージェント** を起動:
 
 ```yaml
-subagent_type: "skill-expert"
+subagent_type: "skill-creator"
+description: "Create skill from issue"
 prompt: |
-  Issue #{number} のスキル要件を分析してください。
+  Issue #{number} に基づいてスキルを作成してください。
+
+  ## Issue情報
+  - 番号: #{number}
+  - タイトル: {title}
+  - 本文:
+  {body}
+
+  ## 受け入れ条件
+  {checklist_items}
 
   ## 要件
-  1. AskUserQuestion でスキルの詳細を確認
-     - スキル名（kebab-case）
-     - 目的とドメイン
-     - 必要なリソースファイル（guide.md, template.md）
-     - 使用するツール
-  2. 既存のスキル構造を調査
+  1. skill-expert スキルのガイドラインに厳密に従う
+  2. 要件分析 → 設計 → 実装 → 検証を一貫して実行
+  3. フロントマター検証を必ず実行（skill-expert スキル参照）
+  4. 既存スキルとの重複確認
+  5. ナレッジベースの原則に従う（知識提供に徹し、実処理はツールに委譲）
+
+  ## 参照
+  - .claude/skills/skill-expert/guide.md - 設計原則
+  - .claude/skills/skill-expert/template.md - テンプレート
+
+  ## 作成先
+  .claude/skills/{skill-name}/
+  ├── SKILL.md（必須）
+  ├── guide.md（必要に応じて）
+  └── template.md（必要に応じて）
+
+  ## 完了条件
+  - [ ] .claude/skills/{skill-name}/SKILL.md が作成されている
+  - [ ] フロントマター検証がPASS
+  - [ ] 3-4個の実用的な使用例が含まれている
+  - [ ] MUST/SHOULD品質基準が明記されている
+  - [ ] 必要なリソースファイル（guide.md等）が作成されている
 ```
 
-### Phase S2: 設計・作成
-
-```yaml
-## 作成先
-.claude/skills/{skill-name}/
-├── SKILL.md
-├── guide.md（必要に応じて）
-└── template.md（必要に応じて）
-
-## SKILL.md 要件
-1. フロントマター（name, description, allowed-tools）
-2. 目的
-3. いつ使用するか
-4. プロセス
-5. リソース（guide.md, template.md がある場合）
-```
-
-### Phase S3: 検証
-
-以下を確認:
-- [ ] SKILL.md のフロントマターが正しい
-- [ ] name がディレクトリ名と一致
-- [ ] allowed-tools が最小限に設定
-- [ ] プロセスが論理的
-- [ ] リソースファイルが正しく参照されている
+**skill-creator が実行する内容**:
+1. **要件分析**: 既存スキル確認、AskUserQuestion で詳細確認
+2. **設計**: スキル名（kebab-case）、カテゴリ、リソース構成決定
+3. **実装**: SKILL.md + 必要なリソースファイル作成
+4. **検証**: フロントマター・構造・実用性の品質検証
 
 ### Phase S4: PR作成
 

@@ -76,25 +76,28 @@ Phase 0: Issue検証・タイプ判定
 
 ### Python ワークフロー（Phase 1-5）
 
+**🚨 重要**: Python 開発では、各 Phase を専門のサブエージェントに**必ず委譲**します。
+直接コードを書くのではなく、サブエージェントに全ての開発作業を委譲してください。
+
 ```
 Phase 1: テスト作成
-    └─ test-writer サブエージェント起動
+    └─ 🚨 test-writer サブエージェントに**全委譲**
         ├─ 受け入れ条件ごとにテストケース作成
         └─ Red状態（失敗するテスト）で完了
 
 Phase 2: 実装
-    └─ feature-implementer サブエージェント起動
+    └─ 🚨 feature-implementer サブエージェントに**全委譲**
         ├─ TDDサイクル実行（Red→Green→Refactor）
         ├─ 各タスク完了時に Issue チェックボックス更新
         └─ quality-checker(--quick) でパス確認
 
 Phase 3: 品質保証
-    └─ quality-checker サブエージェント起動（--auto-fix）
+    └─ 🚨 quality-checker サブエージェントに**全委譲**（--auto-fix）
         ├─ 自動修正ループ（最大5回）
         └─ make check-all 成功で完了
 
 Phase 4: PR作成
-    ├─ code-simplifier サブエージェント起動
+    ├─ 🚨 code-simplifier サブエージェントに**全委譲**
     ├─ /commit-and-pr コマンド実行
     └─ CI確認（最大5分待機）
 
@@ -103,25 +106,28 @@ Phase 5: 完了処理
     └─ 完了レポート出力
 ```
 
+**禁止事項**: Python開発フローで直接コードを編集することは禁止です。必ずサブエージェントに委譲してください。
+
 ### Agent/Command/Skill ワークフロー
 
 ```
-Phase A1/C1/S1: 要件分析
-    └─ xxx-expert サブエージェント起動
-        ├─ AskUserQuestion で詳細確認
-        └─ 既存との重複確認
-
-Phase A2/C2/S2: 設計・作成
-    └─ テンプレートに基づきファイル作成
-
-Phase A3/C3/S3: 検証
-    ├─ フロントマター検証
-    ├─ 構造検証
-    └─ エラー時は前フェーズに戻る
+Phase A1-A3/S1-S3: 開発（専門エージェントに委譲）
+    │
+    ├─ Agent開発 → agent-creator エージェントに全委譲
+    │   └─ 要件分析→設計→実装→検証を一貫実行
+    │
+    ├─ Skill開発 → skill-creator エージェントに全委譲
+    │   └─ 要件分析→設計→実装→検証を一貫実行
+    │
+    └─ Command開発 → command-expert エージェント起動
+        └─ 要件分析→設計→実装→検証
 
 Phase A4/C4/S4: PR作成
     └─ /commit-and-pr コマンド実行
 ```
+
+**重要**: Agent/Skill 開発では、`agent-creator`/`skill-creator` エージェントが
+expert スキルを参照して設計・実装・検証を一貫して実行します。
 
 ## 活用ツールの使用方法
 
@@ -140,15 +146,17 @@ gh pr checks "$PR_NUMBER" --watch
 
 ### サブエージェント連携
 
-| エージェント | 用途 |
-|--------------|------|
-| test-writer | テスト作成（Python実装） |
-| feature-implementer | TDD実装（Python実装） |
-| quality-checker | 品質自動修正 |
-| code-simplifier | コード整理 |
-| agent-expert | エージェント作成 |
-| command-expert | コマンド作成 |
-| skill-expert | スキル作成 |
+**🚨 重要**: Python開発フローでは、以下のエージェントに**必ず委譲**してください。直接コードを書くことは禁止です。
+
+| エージェント | 用途 | 委譲 |
+|--------------|------|------|
+| test-writer | 🚨 **テスト作成を全委譲**（Python実装） | 必須 |
+| feature-implementer | 🚨 **TDD実装を全委譲**（Python実装） | 必須 |
+| quality-checker | 🚨 **品質自動修正を全委譲** | 必須 |
+| code-simplifier | 🚨 **コード整理を全委譲** | 必須 |
+| agent-creator | 🚨 **Agent開発を一括実行**（要件分析→設計→実装→検証） | 必須 |
+| skill-creator | 🚨 **Skill開発を一括実行**（要件分析→設計→実装→検証） | 必須 |
+| command-expert | 🚨 **コマンド作成を全委譲** | 必須 |
 
 ## リソース
 
@@ -310,18 +318,21 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
 ### Python ワークフロー
 
 - [ ] Phase 0: Issue情報が取得でき、開発タイプが `python` と判定
-- [ ] Phase 1: テストがRed状態で作成
-- [ ] Phase 2: 全タスクが実装され、Issueチェックボックスが更新
-- [ ] Phase 3: make check-all が成功
-- [ ] Phase 4: PRが作成され、CIがパス
+- [ ] Phase 1: 🚨 **test-writer に委譲**してテストがRed状態で作成
+- [ ] Phase 2: 🚨 **feature-implementer に委譲**して全タスクが実装され、Issueチェックボックスが更新
+- [ ] Phase 3: 🚨 **quality-checker に委譲**して make check-all が成功
+- [ ] Phase 4: 🚨 **code-simplifier に委譲**後、PRが作成され、CIがパス
 - [ ] Phase 5: 完了レポートが出力
+
+**🚨 禁止**: 直接コードを編集することは禁止。必ず上記エージェントに委譲すること。
 
 ### Agent/Command/Skill ワークフロー
 
 - [ ] Phase 0: Issue情報が取得でき、開発タイプが判定
-- [ ] Phase X1: 要件が分析され、名前が決定
-- [ ] Phase X2: ファイルが作成され、必須セクションが含まれる
-- [ ] Phase X3: 検証チェックリストがすべてパス
+- [ ] Phase X1-X3: 専門エージェントによる開発が完了
+  - [ ] 🚨 **Agent開発**: `agent-creator` エージェントが要件分析→設計→実装→検証を一括実行
+  - [ ] 🚨 **Skill開発**: `skill-creator` エージェントが要件分析→設計→実装→検証を一括実行
+  - [ ] Command開発: `command-expert` エージェントで実行
 - [ ] Phase X4: PRが作成され、CIがパス
 
 ## 関連スキル
