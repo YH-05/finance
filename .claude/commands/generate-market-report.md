@@ -1,14 +1,21 @@
 ---
 description: 週次マーケットレポートを自動生成します（データ収集→ニュース検索→レポート作成）
-argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD] [--weekly-comment]
+argument-hint: [--weekly] [--weekly-comment] [--project 15] [--no-search] [--publish] [--date YYYY-MM-DD]
 ---
 
 # /generate-market-report - マーケットレポート生成
 
 週次マーケットレポートを自動生成するコマンドです。
 
-`--weekly-comment` オプションを使用すると、火曜〜火曜の期間を対象とした
-3000字以上の詳細なマーケットコメントを生成します。
+## モード比較
+
+| モード | 説明 | GitHub Project 連携 | 出力形式 |
+|--------|------|-------------------|---------|
+| 基本モード | 指定日のレポート生成 | なし | 簡易レポート |
+| `--weekly-comment` | 火曜〜火曜の週次コメント | なし | 3000字以上のコメント |
+| `--weekly` | **フル週次レポート（推奨）** | **あり** | 3200字以上の詳細レポート |
+
+`--weekly` は `--weekly-comment` の上位互換であり、GitHub Project からのニュース集約機能が追加されています。
 
 ## 使用例
 
@@ -21,6 +28,25 @@ argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD] [--w
 
 # 特定の日付でレポート生成
 /generate-market-report --date 2026-01-19
+
+# ========== 週次レポートモード（推奨） ==========
+
+# フル週次レポート生成（GitHub Project連携）
+/generate-market-report --weekly
+
+# フル週次レポート + GitHub Issue 投稿
+/generate-market-report --weekly --publish
+
+# 別の GitHub Project を使用
+/generate-market-report --weekly --project 20
+
+# GitHub Project のみ使用（追加検索なし）
+/generate-market-report --weekly --no-search
+
+# 日付指定（任意の水曜日を指定可能）
+/generate-market-report --weekly --date 2026-01-22
+
+# ========== 旧: 週次コメントモード（互換性維持） ==========
 
 # 週次コメント生成モード（推奨: 水曜日に実行）
 /generate-market-report --weekly-comment
@@ -36,12 +62,17 @@ argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD] [--w
 
 | パラメータ | 必須 | デフォルト | 説明 |
 |-----------|------|-----------|------|
-| --output | - | articles/market_report_{date} | 出力ディレクトリ |
+| --output | - | articles/market_report_{date} または articles/weekly_report/{date} | 出力ディレクトリ |
 | --date | - | 今日の日付 | レポート対象日（YYYY-MM-DD形式） |
-| --weekly-comment | - | false | 週次コメント生成モード（火曜〜火曜の期間を対象） |
-| --publish | - | false | レポート生成後に GitHub Issue として投稿（週次コメントモード時のみ有効） |
+| --weekly | - | false | **フル週次レポート生成モード（GitHub Project 連携あり、推奨）** |
+| --weekly-comment | - | false | 週次コメント生成モード（旧形式、互換性維持） |
+| --project | - | 15 | GitHub Project 番号（--weekly モード時のみ有効） |
+| --no-search | - | false | 追加検索を無効化（--weekly モード時のみ有効、GitHub Project のニュースのみ使用） |
+| --publish | - | false | レポート生成後に GitHub Issue として投稿（--weekly または --weekly-comment モード時のみ有効） |
 
 ## 処理フロー
+
+### 基本モード
 
 ```
 Phase 1: 初期化
@@ -68,6 +99,62 @@ Phase 4: レポート生成
 └── Markdownファイル出力
 
 Phase 5: 完了処理
+└── 結果サマリー表示
+```
+
+### --weekly モード（フル週次レポート）
+
+```
+Phase 1: 初期化
+├── 対象期間の自動計算（火曜〜火曜）
+├── 出力ディレクトリ作成
+│   └── articles/weekly_report/{YYYY-MM-DD}/
+├── 必要ツール確認（gh CLI）
+└── テンプレート確認
+    └── template/market_report/weekly_market_report_template.md
+
+Phase 2: 市場データ収集
+├── Pythonスクリプト実行（weekly_comment_data.py）
+├── indices.json: 主要指数パフォーマンス
+├── mag7.json: MAG7 + SOX パフォーマンス
+├── sectors.json: セクター分析
+└── metadata.json: 期間情報
+
+Phase 3: GitHub Project ニュース取得（サブエージェント）
+├── weekly-report-news-aggregator 呼び出し
+├── Project #{project} から対象期間のニュースを取得
+├── カテゴリ分類（indices/mag7/sectors/macro/tech/finance）
+└── news_from_project.json に出力
+
+Phase 4: 追加ニュース検索（--no-search でスキップ可能）
+├── news_from_project.json のカテゴリ別件数を確認
+├── 件数不足のカテゴリについて追加検索
+│   ├── RSS MCP で検索
+│   ├── Tavily で補完
+│   └── Gemini Search でバックアップ
+└── news_supplemental.json に出力
+
+Phase 5: レポート生成（サブエージェント）
+├── weekly-report-writer 呼び出し
+├── データ集約（weekly-data-aggregation スキル）
+├── コメント生成（weekly-comment-generation スキル）
+├── テンプレート埋め込み（weekly-template-rendering スキル）
+├── 品質検証（weekly-report-validation スキル）
+└── 02_edit/weekly_report.md に出力
+
+Phase 6: 品質検証
+├── 文字数確認（目標: 3200字以上）
+├── セクション別文字数確認
+├── データ整合性チェック
+└── validation_result.json に結果出力
+
+Phase 7: Issue 投稿（--publish オプション時のみ）
+├── weekly-report-publisher 呼び出し
+├── GitHub Issue 作成
+├── Project #{project} に追加（カテゴリ: Weekly Report）
+└── Issue URL を出力
+
+Phase 8: 完了処理
 └── 結果サマリー表示
 ```
 
@@ -505,10 +592,588 @@ ${OUTPUT_DIR}/02_edit/report.md
 
 ---
 
-# 週次コメントモード（--weekly-comment）
+# フル週次レポートモード（--weekly）
+
+`--weekly` オプションを指定すると、GitHub Project と連携した詳細な週次マーケットレポート
+（3200字以上）を生成します。これは `--weekly-comment` の上位互換モードです。
+
+## --weekly と --weekly-comment の違い
+
+| 項目 | --weekly | --weekly-comment |
+|------|----------|-----------------|
+| ニュース取得 | GitHub Project + 追加検索 | RSS/Tavily のみ |
+| カテゴリ分類 | 6カテゴリ（自動分類） | 3カテゴリ（手動） |
+| 目標文字数 | 3200字以上 | 3000字以上 |
+| テンプレート | weekly_market_report_template.md | weekly_comment_template.md |
+| 品質検証 | あり（スコア評価） | なし |
+| サブエージェント | 3つ使用 | ニュース収集のみ |
+| 出力ディレクトリ | articles/weekly_report/{date}/ | articles/weekly_comment_{date}/ |
+
+## --weekly 処理フロー詳細
+
+### Phase 1: 初期化
+
+#### 1.1 対象期間の自動計算
+
+```python
+from market_analysis.utils.date_utils import calculate_weekly_comment_period
+
+# 例: 2026/1/22（水曜日）に実行した場合
+period = calculate_weekly_comment_period()
+# period["start"] = 2026-01-14 (火曜日)
+# period["end"] = 2026-01-21 (火曜日)
+# period["report_date"] = 2026-01-22 (水曜日)
+```
+
+#### 1.2 出力ディレクトリ作成
+
+```bash
+# デフォルトパス（--weekly モード）
+OUTPUT_DIR="articles/weekly_report/${REPORT_DATE}"
+
+# 構造作成
+mkdir -p "${OUTPUT_DIR}/data"
+mkdir -p "${OUTPUT_DIR}/02_edit"
+mkdir -p "${OUTPUT_DIR}/03_published"
+```
+
+**ディレクトリ構造**:
+```
+articles/weekly_report/{YYYY-MM-DD}/
+├── data/
+│   ├── indices.json          # 指数パフォーマンス
+│   ├── mag7.json             # MAG7 パフォーマンス
+│   ├── sectors.json          # セクター分析
+│   ├── metadata.json         # 期間・生成情報
+│   ├── news_from_project.json # GitHub Project からのニュース
+│   ├── news_supplemental.json # 追加検索結果（--no-search がない場合）
+│   ├── aggregated_data.json  # 集約データ
+│   └── comments.json         # 生成コメント
+├── 02_edit/
+│   ├── weekly_report.md      # Markdown レポート
+│   └── weekly_report.json    # 構造化データ
+├── 03_published/
+│   └── (公開用に編集後の最終版)
+└── validation_result.json    # 品質検証結果
+```
+
+#### 1.3 必要ツール確認
+
+```bash
+# GitHub CLI 確認（必須）
+if ! command -v gh &> /dev/null; then
+    echo "エラー: GitHub CLI (gh) がインストールされていません"
+    exit 1
+fi
+
+# 認証確認
+gh auth status || {
+    echo "エラー: GitHub CLI が認証されていません"
+    echo "対処法: gh auth login を実行"
+    exit 1
+}
+```
+
+### Phase 2: 市場データ収集
+
+```bash
+uv run python scripts/weekly_comment_data.py \
+    --start ${START_DATE} \
+    --end ${END_DATE} \
+    --output "${OUTPUT_DIR}/data"
+```
+
+**出力ファイル**:
+
+#### indices.json
+```json
+{
+  "as_of": "2026-01-21",
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "indices": [
+    {"ticker": "^GSPC", "name": "S&P 500", "weekly_return": 0.025, "price": 6012.45},
+    {"ticker": "RSP", "name": "S&P 500 Equal Weight", "weekly_return": 0.018, "price": 175.30},
+    {"ticker": "VUG", "name": "Vanguard Growth ETF", "weekly_return": 0.032, "price": 385.20},
+    {"ticker": "VTV", "name": "Vanguard Value ETF", "weekly_return": 0.012, "price": 168.50}
+  ]
+}
+```
+
+#### mag7.json
+```json
+{
+  "as_of": "2026-01-21",
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "mag7": [
+    {"ticker": "AAPL", "name": "Apple", "weekly_return": 0.015, "price": 245.50},
+    {"ticker": "MSFT", "name": "Microsoft", "weekly_return": 0.022, "price": 425.30},
+    {"ticker": "GOOGL", "name": "Alphabet", "weekly_return": -0.008, "price": 185.20},
+    {"ticker": "AMZN", "name": "Amazon", "weekly_return": 0.028, "price": 215.80},
+    {"ticker": "META", "name": "Meta", "weekly_return": -0.012, "price": 585.40},
+    {"ticker": "NVDA", "name": "NVIDIA", "weekly_return": 0.019, "price": 950.20},
+    {"ticker": "TSLA", "name": "Tesla", "weekly_return": 0.037, "price": 285.60}
+  ],
+  "sox": {"ticker": "^SOX", "name": "SOX Index", "weekly_return": 0.031, "price": 5250.30}
+}
+```
+
+#### sectors.json
+```json
+{
+  "as_of": "2026-01-21",
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "top_sectors": [
+    {"ticker": "XLK", "name": "Technology", "weekly_return": 0.025},
+    {"ticker": "XLE", "name": "Energy", "weekly_return": 0.018},
+    {"ticker": "XLF", "name": "Financials", "weekly_return": 0.012}
+  ],
+  "bottom_sectors": [
+    {"ticker": "XLV", "name": "Healthcare", "weekly_return": -0.029},
+    {"ticker": "XLU", "name": "Utilities", "weekly_return": -0.022},
+    {"ticker": "XLB", "name": "Materials", "weekly_return": -0.015}
+  ],
+  "all_sectors": [...]
+}
+```
+
+#### metadata.json
+```json
+{
+  "report_date": "2026-01-22",
+  "period": {
+    "start": "2026-01-14",
+    "end": "2026-01-21"
+  },
+  "generated_at": "2026-01-22T09:30:00+09:00",
+  "mode": "weekly",
+  "project_number": 15
+}
+```
+
+### Phase 3: GitHub Project ニュース取得
+
+```python
+# weekly-report-news-aggregator サブエージェントを呼び出し
+Task(
+    subagent_type="weekly-report-news-aggregator",
+    description="GitHub Project からニュース取得",
+    prompt=f"""
+GitHub Project #{project_number} から対象期間のニュースを取得してください。
+
+## 入力パラメータ
+
+start: {START_DATE}
+end: {END_DATE}
+project_number: {project_number}
+
+## 出力先
+
+{OUTPUT_DIR}/data/news_from_project.json
+
+## 期待される処理
+
+1. gh project item-list {project_number} で Issue を取得
+2. 対象期間でフィルタリング（{START_DATE} 〜 {END_DATE}）
+3. カテゴリ分類（indices/mag7/sectors/macro/tech/finance）
+4. JSON 形式で出力
+"""
+)
+```
+
+**出力形式（news_from_project.json）**:
+```json
+{
+  "period": {"start": "2026-01-14", "end": "2026-01-21"},
+  "project_number": 15,
+  "generated_at": "2026-01-22T09:35:00Z",
+  "total_count": 25,
+  "news": [
+    {
+      "issue_number": 171,
+      "title": "Fed signals potential rate pause",
+      "category": "macro",
+      "url": "https://github.com/YH-05/finance/issues/171",
+      "created_at": "2026-01-15T08:30:00Z",
+      "summary": "FRBが利上げ停止の可能性を示唆...",
+      "original_url": "https://..."
+    }
+  ],
+  "by_category": {
+    "indices": [...],
+    "mag7": [...],
+    "sectors": [...],
+    "macro": [...],
+    "tech": [...],
+    "finance": [],
+    "other": []
+  },
+  "statistics": {
+    "indices": 3,
+    "mag7": 5,
+    "sectors": 4,
+    "macro": 8,
+    "tech": 3,
+    "finance": 2,
+    "other": 0
+  }
+}
+```
+
+### Phase 4: 追加ニュース検索
+
+`--no-search` オプションが指定されていない場合、カテゴリ別の件数を確認し、
+不足しているカテゴリについて追加検索を実行します。
+
+**判定基準**:
+| カテゴリ | 最低件数 | 不足時の対処 |
+|---------|---------|-------------|
+| indices | 2件 | RSS/Tavily で追加検索 |
+| mag7 | 3件 | RSS/Tavily で追加検索 |
+| sectors | 2件 | RSS/Tavily で追加検索 |
+| macro | 2件 | RSS/Tavily で追加検索 |
+
+```python
+# 追加検索が必要な場合
+if not no_search:
+    for category, min_count in CATEGORY_MIN_COUNTS.items():
+        if news_statistics[category] < min_count:
+            # RSS MCP で検索
+            rss_results = rss_search(CATEGORY_KEYWORDS[category])
+
+            # 不足が続く場合は Tavily で補完
+            if len(rss_results) < min_count:
+                tavily_results = tavily_search(CATEGORY_KEYWORDS[category])
+
+    # 結果を news_supplemental.json に保存
+```
+
+**出力形式（news_supplemental.json）**:
+```json
+{
+  "searched_at": "2026-01-22T09:40:00Z",
+  "reason": "カテゴリ別ニュース補完",
+  "search_queries": [
+    {"category": "sectors", "query": "sector rotation energy healthcare"},
+    {"category": "macro", "query": "Federal Reserve interest rate policy"}
+  ],
+  "results": [
+    {
+      "category": "sectors",
+      "title": "Energy sector leads market rally",
+      "source": "RSS Feed",
+      "url": "https://...",
+      "published": "2026-01-20T14:00:00Z",
+      "summary": "エネルギーセクターが市場上昇をリード..."
+    }
+  ],
+  "statistics": {
+    "sectors": 2,
+    "macro": 1
+  }
+}
+```
+
+### Phase 5: レポート生成
+
+```python
+# weekly-report-writer サブエージェントを呼び出し
+Task(
+    subagent_type="weekly-report-writer",
+    description="週次レポート生成",
+    prompt=f"""
+入力データから週次マーケットレポートを生成してください。
+
+## 入力パラメータ
+
+report_dir: {OUTPUT_DIR}
+
+## 期待される処理
+
+1. データ集約（weekly-data-aggregation スキル）
+   - 入力: {OUTPUT_DIR}/data/ 内の全 JSON
+   - 出力: {OUTPUT_DIR}/data/aggregated_data.json
+
+2. コメント生成（weekly-comment-generation スキル）
+   - 入力: aggregated_data.json
+   - 出力: {OUTPUT_DIR}/data/comments.json
+
+3. テンプレート埋め込み（weekly-template-rendering スキル）
+   - テンプレート: template/market_report/weekly_market_report_template.md
+   - 出力: {OUTPUT_DIR}/02_edit/weekly_report.md
+
+4. 品質検証（weekly-report-validation スキル）
+   - 出力: {OUTPUT_DIR}/validation_result.json
+
+## 文字数目標
+
+| セクション | 目標文字数 |
+|-----------|-----------|
+| ハイライト | 200字 |
+| 指数コメント | 500字 |
+| MAG7コメント | 800字 |
+| 上位セクターコメント | 400字 |
+| 下位セクターコメント | 400字 |
+| マクロ経済コメント | 400字 |
+| 投資テーマコメント | 300字 |
+| 来週の材料 | 200字 |
+| **合計** | **3200字以上** |
+"""
+)
+```
+
+### Phase 6: 品質検証
+
+Phase 5 で生成された `validation_result.json` を確認します。
+
+**検証項目**:
+1. **フォーマット検証**: Markdown 構文、テーブル形式
+2. **文字数検証**: 合計 3200 字以上、セクション別
+3. **データ整合性検証**: 数値の妥当性、日付の整合性
+4. **LLM レビュー**: 内容品質（スコア評価）
+
+**検証結果形式（validation_result.json）**:
+```json
+{
+  "status": "PASS",
+  "score": 95,
+  "grade": "A",
+  "checks": {
+    "format": {"status": "PASS", "issues": []},
+    "character_count": {
+      "status": "PASS",
+      "total": 3450,
+      "target": 3200,
+      "by_section": {...}
+    },
+    "data_integrity": {"status": "PASS", "issues": []},
+    "content_quality": {
+      "status": "PASS",
+      "score": 95,
+      "feedback": "..."
+    }
+  },
+  "warnings": [],
+  "recommendations": []
+}
+```
+
+**グレード基準**:
+| グレード | スコア | 判定 |
+|---------|-------|------|
+| A | 90-100 | 優秀 |
+| B | 80-89 | 良好 |
+| C | 70-79 | 可（警告あり） |
+| D | 60-69 | 要改善 |
+| F | 0-59 | 不合格 |
+
+### Phase 7: Issue 投稿（オプション）
+
+`--publish` オプションが指定されている場合に実行します。
+
+```python
+# weekly-report-publisher サブエージェントを呼び出し
+Task(
+    subagent_type="weekly-report-publisher",
+    description="週次レポート Issue 投稿",
+    prompt=f"""
+週次レポートを GitHub Issue として投稿してください。
+
+## 入力パラメータ
+
+report_dir: {OUTPUT_DIR}
+project_number: {project_number}
+
+## 期待される処理
+
+1. {OUTPUT_DIR}/data/ からデータ読み込み
+2. {OUTPUT_DIR}/02_edit/weekly_report.md からレポート読み込み
+3. Issue 本文を生成
+4. GitHub Issue を作成
+5. GitHub Project #{project_number} に追加（カテゴリ: Weekly Report）
+"""
+)
+```
+
+### Phase 8: 完了処理
+
+**成功時の出力**:
+```markdown
+================================================================================
+                    /generate-market-report --weekly 完了
+================================================================================
+
+## 生成されたファイル
+
+| ファイル | パス | サイズ |
+|----------|------|--------|
+| 指数データ | articles/weekly_report/2026-01-22/data/indices.json | 2KB |
+| MAG7データ | articles/weekly_report/2026-01-22/data/mag7.json | 3KB |
+| セクターデータ | articles/weekly_report/2026-01-22/data/sectors.json | 5KB |
+| Project ニュース | articles/weekly_report/2026-01-22/data/news_from_project.json | 15KB |
+| 追加検索結果 | articles/weekly_report/2026-01-22/data/news_supplemental.json | 3KB |
+| 集約データ | articles/weekly_report/2026-01-22/data/aggregated_data.json | 20KB |
+| コメント | articles/weekly_report/2026-01-22/data/comments.json | 12KB |
+| **レポート** | **articles/weekly_report/2026-01-22/02_edit/weekly_report.md** | **15KB** |
+| 検証結果 | articles/weekly_report/2026-01-22/validation_result.json | 2KB |
+
+## データサマリー
+
+### 対象期間
+- **開始日**: 2026-01-14（火）
+- **終了日**: 2026-01-21（火）
+- **レポート日**: 2026-01-22（水）
+
+### 主要指数
+- S&P 500: +2.50%
+- 等ウェイト (RSP): +1.80%
+- グロース (VUG): +3.20%
+- バリュー (VTV): +1.20%
+
+### MAG7 サマリー
+- トップ: TSLA +3.70%
+- ボトム: META -1.20%
+
+### セクター
+- 上位: Technology (+2.50%), Energy (+1.80%), Financials (+1.20%)
+- 下位: Healthcare (-2.90%), Utilities (-2.20%), Materials (-1.50%)
+
+### ニュース統計
+- GitHub Project: 25件
+- 追加検索: 3件
+- 合計: 28件
+
+## 品質検証
+
+- **スコア**: 95/100（グレード: A）
+- **文字数**: 3,450字（目標: 3,200字）✓
+- **ステータス**: PASS ✓
+
+## 次のアクション
+
+1. レポートを確認:
+   cat articles/weekly_report/2026-01-22/02_edit/weekly_report.md
+
+2. 編集・修正:
+   edit articles/weekly_report/2026-01-22/02_edit/weekly_report.md
+
+3. Issue として投稿（まだの場合）:
+   /generate-market-report --weekly --publish
+
+================================================================================
+```
+
+**--publish オプション時の追加出力**:
+```markdown
+## 投稿された Issue
+
+- **Issue**: #830 - [週次レポート] 2026-01-22 マーケットレポート
+- **URL**: https://github.com/YH-05/finance/issues/830
+- **Project**: #15 (Finance News Collection)
+- **Status**: Weekly Report
+```
+
+---
+
+## --weekly モードのエラーハンドリング
+
+### E010: GitHub Project アクセスエラー
+
+**発生条件**:
+- Project が存在しない
+- アクセス権限がない
+
+**対処法**:
+```
+エラー: GitHub Project #15 にアクセスできません
+
+確認項目:
+1. Project の存在確認:
+   gh project list --owner @me
+
+2. Project 番号の確認:
+   gh project view 15 --owner @me
+
+3. 別の Project を指定:
+   /generate-market-report --weekly --project 20
+```
+
+### E011: ニュース取得件数不足
+
+**発生条件**:
+- GitHub Project にニュースが少ない
+- 対象期間にニュースがない
+
+**対処法**:
+```
+警告: GitHub Project からのニュースが不足しています
+
+取得件数: 3件（推奨: 10件以上）
+
+対処法:
+1. 追加検索を有効化:
+   /generate-market-report --weekly  # --no-search なしで実行
+
+2. 期間を拡大（手動でデータ追加）
+
+3. 続行（不足したまま）:
+   現在の状態でレポート生成を続行しますか？ [y/N]
+```
+
+### E012: レポート生成エラー
+
+**発生条件**:
+- weekly-report-writer サブエージェントがエラー
+- 必須データの欠損
+
+**対処法**:
+```
+エラー: レポート生成に失敗しました
+
+フェーズ: Phase 5 (レポート生成)
+原因: indices.json が見つかりません
+
+対処法:
+1. データ収集を再実行:
+   uv run python scripts/weekly_comment_data.py --output {output}/data
+
+2. 手動でデータを配置:
+   cp {source}/indices.json {output}/data/
+```
+
+### E013: 品質検証失敗
+
+**発生条件**:
+- 文字数が目標未達
+- データ整合性エラー
+- グレードがD以下
+
+**対処法**:
+```
+警告: 品質検証で問題が検出されました
+
+スコア: 65/100（グレード: D）
+ステータス: WARN
+
+問題点:
+1. 文字数不足（合計: 2,800字、目標: 3,200字）
+2. MAG7 コメントが短い（450字、目標: 800字）
+
+推奨対処:
+1. コメントを手動で拡充
+2. --publish なしで再実行し、レポートを確認
+3. 品質検証をスキップして続行:
+   （非推奨: 品質が保証されません）
+```
+
+---
+
+# 週次コメントモード（--weekly-comment）【旧形式】
 
 `--weekly-comment` オプションを指定すると、火曜〜火曜の期間を対象とした
 詳細なマーケットコメント（3000字以上）を生成します。
+
+> **注意**: `--weekly-comment` は互換性のために維持されています。
+> 新規利用では `--weekly` オプションの使用を推奨します。
 
 ## 週次コメント処理フロー
 
@@ -893,3 +1558,48 @@ project_number: 15
 - **ニュース収集**: `/collect-finance-news`
 - **記事作成**: `/new-finance-article`
 - **リサーチ実行**: `/finance-research`
+
+---
+
+## 関連リソース
+
+### Pythonスクリプト
+- **市場データ収集**: `scripts/market_report_data.py`
+- **週次コメントデータ**: `scripts/weekly_comment_data.py`
+- **日付ユーティリティ**: `src/market_analysis/utils/date_utils.py`
+
+### テンプレート
+- **フル週次レポート（--weekly）**: `template/market_report/weekly_market_report_template.md`
+- **週次コメント（--weekly-comment）**: `template/market_report/weekly_comment_template.md`
+- **基本レポート**: `template/market_report/02_edit/first_draft.md`
+- **サンプルレポート**: `template/market_report/sample/`
+
+### サブエージェント
+
+#### --weekly モード用
+| エージェント | 説明 |
+|-------------|------|
+| `weekly-report-news-aggregator` | GitHub Project からニュース集約 |
+| `weekly-report-writer` | 4つのスキルでレポート生成 |
+| `weekly-report-publisher` | GitHub Issue として投稿 |
+
+#### --weekly-comment モード用（互換性維持）
+| エージェント | 説明 |
+|-------------|------|
+| `weekly-comment-indices-fetcher` | 指数ニュース収集 |
+| `weekly-comment-mag7-fetcher` | MAG7 ニュース収集 |
+| `weekly-comment-sectors-fetcher` | セクターニュース収集 |
+
+### スキル（--weekly モードで使用）
+| スキル | 説明 |
+|--------|------|
+| `weekly-data-aggregation` | 入力データの集約・正規化 |
+| `weekly-comment-generation` | セクション別コメント生成 |
+| `weekly-template-rendering` | テンプレートへのデータ埋め込み |
+| `weekly-report-validation` | 品質検証（フォーマット・文字数・整合性） |
+
+### GitHub Project
+- **Finance News Collection**: [Project #15](https://github.com/users/YH-05/projects/15)
+
+### データスキーマ
+- **スキーマ定義**: `data/schemas/`
