@@ -1,0 +1,445 @@
+{
+  "metadata": {
+    "report_date": "2026-01-23",
+    "period": {
+      "start": "2026-01-13",
+      "end": "2026-01-20"
+    },
+    "generated_at": "2026-01-23T14:35:00+09:00",
+    "data_sources": {
+      "indices": true,
+      "mag7": true,
+      "sectors": true,
+      "news_from_project": true,
+      "news_supplemental": true
+    },
+    "warnings": []
+  },
+  "indices": {
+    "primary": {
+      "spx": {
+        "ticker": "^GSPC",
+        "name": "S&P 500",
+        "weekly_return": -0.0240,
+        "return_formatted": "-2.40%",
+        "latest_close": 6796.86
+      },
+      "rsp": {
+        "ticker": "RSP",
+        "name": "S&P 500 Equal Weight",
+        "weekly_return": -0.0086,
+        "return_formatted": "-0.86%",
+        "latest_close": 196.08
+      },
+      "vug": {
+        "ticker": "VUG",
+        "name": "Vanguard Growth ETF",
+        "weekly_return": -0.0380,
+        "return_formatted": "-3.80%",
+        "latest_close": 472.57
+      },
+      "vtv": {
+        "ticker": "VTV",
+        "name": "Vanguard Value ETF",
+        "weekly_return": -0.0044,
+        "return_formatted": "-0.44%",
+        "latest_close": 195.73
+      }
+    },
+    "style_analysis": {
+      "growth_vs_value": "バリュー優位（グロースが-3.80%に対しバリューは-0.44%、差は3.36ポイント）",
+      "large_vs_small": "中小型株優位（S&P 500が-2.40%に対し等ウェイトは-0.86%、差は1.54ポイント）",
+      "market_tone": "リスクオフ局面。グロース株・大型株が売られ、ディフェンシブ・バリュー株が相対的に堅調"
+    }
+  },
+  "mag7": {
+    "stocks": [
+      {
+        "ticker": "MSFT",
+        "name": "Microsoft",
+        "weekly_return": -0.0343,
+        "return_formatted": "-3.43%",
+        "latest_close": 454.52
+      },
+      {
+        "ticker": "GOOGL",
+        "name": "Alphabet",
+        "weekly_return": -0.0416,
+        "return_formatted": "-4.16%",
+        "latest_close": 322.00
+      },
+      {
+        "ticker": "NVDA",
+        "name": "NVIDIA",
+        "weekly_return": -0.0417,
+        "return_formatted": "-4.17%",
+        "latest_close": 178.07
+      },
+      {
+        "ticker": "META",
+        "name": "Meta",
+        "weekly_return": -0.0427,
+        "return_formatted": "-4.27%",
+        "latest_close": 604.12
+      },
+      {
+        "ticker": "AMZN",
+        "name": "Amazon",
+        "weekly_return": -0.0478,
+        "return_formatted": "-4.78%",
+        "latest_close": 231.00
+      },
+      {
+        "ticker": "AAPL",
+        "name": "Apple",
+        "weekly_return": -0.0550,
+        "return_formatted": "-5.50%",
+        "latest_close": 246.70
+      },
+      {
+        "ticker": "TSLA",
+        "name": "Tesla",
+        "weekly_return": -0.0625,
+        "return_formatted": "-6.25%",
+        "latest_close": 419.25
+      }
+    ],
+    "sox": {
+      "ticker": "^SOX",
+      "name": "Philadelphia Semiconductor Index",
+      "weekly_return": 0.0060,
+      "return_formatted": "+0.60%",
+      "latest_close": 7794.19
+    },
+    "top_performer": {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "return": "-3.43%"
+    },
+    "bottom_performer": {
+      "ticker": "TSLA",
+      "name": "Tesla",
+      "return": "-6.25%"
+    },
+    "average_return": -0.0437,
+    "average_return_formatted": "-4.37%"
+  },
+  "sectors": {
+    "all": [
+      {
+        "ticker": "XLP",
+        "name": "Consumer Staples",
+        "weekly_return": 0.0154,
+        "return_formatted": "+1.54%",
+        "latest_close": 82.36
+      },
+      {
+        "ticker": "XLE",
+        "name": "Energy",
+        "weekly_return": 0.0128,
+        "return_formatted": "+1.28%",
+        "latest_close": 47.60
+      },
+      {
+        "ticker": "XLRE",
+        "name": "Real Estate",
+        "weekly_return": 0.0115,
+        "return_formatted": "+1.15%",
+        "latest_close": 41.40
+      },
+      {
+        "ticker": "XLU",
+        "name": "Utilities",
+        "weekly_return": 0.0026,
+        "return_formatted": "+0.26%",
+        "latest_close": 42.96
+      },
+      {
+        "ticker": "XLI",
+        "name": "Industrials",
+        "weekly_return": -0.0029,
+        "return_formatted": "-0.29%",
+        "latest_close": 163.53
+      },
+      {
+        "ticker": "XLV",
+        "name": "Healthcare",
+        "weekly_return": -0.0085,
+        "return_formatted": "-0.85%",
+        "latest_close": 155.40
+      },
+      {
+        "ticker": "XLB",
+        "name": "Basic Materials",
+        "weekly_return": -0.0111,
+        "return_formatted": "-1.11%",
+        "latest_close": 48.19
+      },
+      {
+        "ticker": "XLF",
+        "name": "Financial Services",
+        "weekly_return": -0.0190,
+        "return_formatted": "-1.90%",
+        "latest_close": 53.20
+      },
+      {
+        "ticker": "XLC",
+        "name": "Communication Services",
+        "weekly_return": -0.0293,
+        "return_formatted": "-2.93%",
+        "latest_close": 113.47
+      },
+      {
+        "ticker": "XLK",
+        "name": "Information Technology",
+        "weekly_return": -0.0317,
+        "return_formatted": "-3.17%",
+        "latest_close": 141.84
+      },
+      {
+        "ticker": "XLY",
+        "name": "Consumer Discretionary",
+        "weekly_return": -0.0410,
+        "return_formatted": "-4.10%",
+        "latest_close": 119.12
+      }
+    ],
+    "top_3": [
+      {
+        "ticker": "XLP",
+        "name": "Consumer Staples",
+        "weekly_return": 0.0154,
+        "return_formatted": "+1.54%",
+        "latest_close": 82.36
+      },
+      {
+        "ticker": "XLE",
+        "name": "Energy",
+        "weekly_return": 0.0128,
+        "return_formatted": "+1.28%",
+        "latest_close": 47.60
+      },
+      {
+        "ticker": "XLRE",
+        "name": "Real Estate",
+        "weekly_return": 0.0115,
+        "return_formatted": "+1.15%",
+        "latest_close": 41.40
+      }
+    ],
+    "bottom_3": [
+      {
+        "ticker": "XLY",
+        "name": "Consumer Discretionary",
+        "weekly_return": -0.0410,
+        "return_formatted": "-4.10%",
+        "latest_close": 119.12
+      },
+      {
+        "ticker": "XLK",
+        "name": "Information Technology",
+        "weekly_return": -0.0317,
+        "return_formatted": "-3.17%",
+        "latest_close": 141.84
+      },
+      {
+        "ticker": "XLC",
+        "name": "Communication Services",
+        "weekly_return": -0.0293,
+        "return_formatted": "-2.93%",
+        "latest_close": 113.47
+      }
+    ],
+    "rotation_signal": "ディフェンシブセクターへのローテーション。生活必需品、エネルギー、不動産が上位、テクノロジー・一般消費財が下位"
+  },
+  "news": {
+    "total_count": 28,
+    "by_category": {
+      "indices": [
+        {
+          "title": "Stock Market News, Jan. 22, 2026: Dow, S&P 500 and Nasdaq notch two back-to-back days of gains after Trump's Greenland pivot boosts risk appetite",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/livecoverage/stock-market-today-dow-sp500-nasdaq-extend-rally-trump-greenland-pivot-pce-data-intel-earnings",
+          "published": "2026-01-22",
+          "summary": "株式市場は上昇、トランプ大統領のグリーンランド方針転換を受けてリスク選好が改善。ラッセル2000は2026年で8回目の最高値更新。"
+        },
+        {
+          "title": "Stock Market Today: Dow, S&P 500 and Nasdaq waver as early rally loses steam; major indexes head for second losing week",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-and-nasdaq-point-higher-as-appetite-for-tech-stocks-set-to-continue",
+          "published": "2026-01-16",
+          "summary": "主要指数は週間で2回目の下落へ。S&P 500の7,000到達は見た目より困難かもしれない。"
+        },
+        {
+          "title": "Trump 2.0 stock market underperforms Trump 1.0",
+          "source": "Axios",
+          "url": "https://www.axios.com/2026/01/21/trump-dow-jones-stock-market-obama",
+          "published": "2026-01-21",
+          "summary": "トランプ大統領2期目の株式市場は1期目を下回るパフォーマンス。S&P 500は就任から15.7%上昇、1期目の24.1%を下回る。"
+        },
+        {
+          "title": "Markets News, Jan. 21, 2026: Stocks End Sharply Higher as Trump Rules Out Force in Greenland",
+          "source": "Investopedia",
+          "url": "https://www.investopedia.com/dow-jones-today-01212026-11889344",
+          "published": "2026-01-21",
+          "summary": "株式は大幅高で終了、トランプ大統領がグリーンランドでの武力行使を否定し関税脅威を撤回。金・銀は過去最高値を記録。"
+        }
+      ],
+      "mag7": [
+        {
+          "title": "3 No-Brainer AI Stocks to Buy Hand Over Fist for 2026",
+          "source": "The Motley Fool",
+          "url": "https://www.fool.com/investing/2026/01/19/3-no-brainer-ai-stocks-to-buy-hand-over-fist-2026/",
+          "published": "2026-01-19",
+          "summary": "NVIDIA は AI ワークロード向けアクセラレーテッドコンピューティング需要が堅調。Alphabet は第3四半期にクラウドバックログが1550億ドルに到達。"
+        },
+        {
+          "title": "Popular analyst reveals 9 'buy the dip' tech stocks",
+          "source": "TheStreet",
+          "url": "https://www.thestreet.com/investing/stocks/popular-analyst-reveals-9-buy-the-dip-tech-stocks",
+          "published": "2026-01-20",
+          "summary": "Dan Ives アナリストはテクノロジー株の下落を買いの好機と見る。MAG7株を含む9銘柄を推奨。"
+        },
+        {
+          "title": "Arctic Chill: Global Markets Reeling as Trump Demands Greenland Purchase",
+          "source": "Chronicle-Journal",
+          "url": "http://markets.chroniclejournal.com/chroniclejournal/article/marketminute-2026-1-20-arctic-chill-global-markets-reeling-as-trump-demands-greenland-purchase-with-massive-tariff-threats",
+          "published": "2026-01-20",
+          "summary": "テクノロジーセクターでNVIDIA、Amazon、Metaが大幅下落。トランプ大統領のグリーンランド購入要求と関税脅威が市場に波及。"
+        },
+        {
+          "title": "2026's Biggest AI Trends: Self-Driving Cars",
+          "source": "24/7 Wall St.",
+          "url": "https://247wallst.com/investing/2026/01/20/2026s-biggest-ai-trends-self-driving-cars-tsla-googl-uber-nvda-stock/",
+          "published": "2026-01-20",
+          "summary": "自動運転技術が転換点に。NVIDIA、Tesla、Alphabetが自動運転分野でリード。NVIDIAのビジョンオンリーシステムがOEMの導入を容易に。"
+        },
+        {
+          "title": "Meta tops Big Tech lobbying spending once again",
+          "source": "Axios",
+          "url": "https://www.axios.com/2026/01/21/meta-big-tech-lobbying-spending-q4",
+          "published": "2026-01-21",
+          "summary": "Meta がBig Techのロビー活動支出でトップ。Q4支出は650万ドル。Amazon、Googleが続く。AI規制や子供のオンライン安全に関する法案でロビー活動。"
+        }
+      ],
+      "sectors": [
+        {
+          "issue_number": 182,
+          "title": "NeuroPace, Inc. (NPCE) Presents at 44th Annual J.P. Morgan Healthcare Conference - Slideshow",
+          "category": "sectors",
+          "url": "https://github.com/YH-05/finance/issues/182",
+          "original_url": "https://seekingalpha.com/article/4859940-neuropace-inc-npce-presents-at-44th-annual-j-p-morgan-healthcare-conference-slideshow?source=feed_all_articles",
+          "summary": "NeuroPaceがJ.P.Morganヘルスケアカンファレンスで発表"
+        },
+        {
+          "issue_number": 187,
+          "title": "Why oil experts say U.S.-Iran tensions feel different this time compared with previous crises",
+          "category": "sectors",
+          "url": "https://github.com/YH-05/finance/issues/187",
+          "original_url": "https://www.marketwatch.com/story/why-oil-experts-say-u-s-iran-tensions-feel-different-this-time-around-than-previous-crises-e1b772d6?mod=mw_rss_topstories",
+          "summary": "米国・イラン緊張が過去の危機と異なる理由を専門家が分析"
+        },
+        {
+          "issue_number": 190,
+          "title": "Diamondback Energy: Why $50 Oil Is Not Realistic",
+          "category": "sectors",
+          "url": "https://github.com/YH-05/finance/issues/190",
+          "original_url": "https://seekingalpha.com/article/4859898-diamondback-energy-why-50-oil-is-not-realistic?source=feed_all_articles",
+          "summary": "Diamondback Energyが50ドル原油は非現実的と主張"
+        }
+      ],
+      "macro": [
+        {
+          "issue_number": 171,
+          "title": "Your wealth and investments are on the line if Trump torpedoes the Fed's independence",
+          "category": "macro",
+          "url": "https://github.com/YH-05/finance/issues/171",
+          "summary": "トランプ大統領がFed独立性を損なえば投資に影響との警告"
+        },
+        {
+          "issue_number": 172,
+          "title": "Global Central Bankers Line Up to Support Fed Chair. Markets, Not So Much.",
+          "category": "macro",
+          "url": "https://github.com/YH-05/finance/issues/172",
+          "summary": "世界の中央銀行がFed議長を支持、市場の反応は冷ややか"
+        },
+        {
+          "issue_number": 174,
+          "title": "Sadiq Khan to warn AI could cause 'mass unemployment' in London",
+          "category": "macro",
+          "url": "https://github.com/YH-05/finance/issues/174",
+          "summary": "ロンドン市長がAIによる大量失業のリスクを警告"
+        },
+        {
+          "issue_number": 181,
+          "title": "PDI: A 15% Yielding Flagship Ready For The Rate-Cut Cycle",
+          "category": "macro",
+          "url": "https://github.com/YH-05/finance/issues/181",
+          "original_url": "https://seekingalpha.com/article/4859925-pdi-a-15-percent-yielding-flagship-ready-for-the-rate-cut-cycle?source=feed_all_articles",
+          "summary": "利下げサイクルに備えた15%利回りファンドの分析"
+        }
+      ],
+      "tech": [
+        {
+          "issue_number": 183,
+          "title": "Indra Sistemas: Strong Buy Rating Upgrade As Europe's Defense And AI Boom Accelerates",
+          "category": "tech",
+          "url": "https://github.com/YH-05/finance/issues/183",
+          "original_url": "https://seekingalpha.com/article/4859921-indra-sistemas-strong-buy-rating-upgrade-as-europes-defense-and-ai-boom-accelerates?source=feed_all_articles",
+          "summary": "欧州の防衛・AI需要拡大でIndra Sistemasが強い買い推奨に格上げ"
+        },
+        {
+          "issue_number": 185,
+          "title": "Pentagon's 'Arsenal of Freedom' tour borrows name from Star Trek episode—about killer AI",
+          "category": "tech",
+          "url": "https://github.com/YH-05/finance/issues/185",
+          "original_url": "https://arstechnica.com/culture/2026/01/pentagons-arsenal-of-freedom-tour-borrows-name-from-star-trek-episode-about-killer-ai/",
+          "summary": "ペンタゴンのAI戦略ツアーがスタートレックのエピソードから名称を借用"
+        },
+        {
+          "issue_number": 188,
+          "title": "Broadcom: Buy This AI Chip Cash King Now Or Regret It Later",
+          "category": "tech",
+          "url": "https://github.com/YH-05/finance/issues/188",
+          "original_url": "https://seekingalpha.com/article/4859903-broadcom-buy-this-ai-chip-cash-king-now-or-regret-it-later?source=feed_all_articles",
+          "summary": "BroadcomがAIチップ市場でキャッシュキングとして注目"
+        }
+      ],
+      "finance": [
+        {
+          "issue_number": 173,
+          "title": "US, Denmark and Greenland to form Arctic working group after tense talks",
+          "category": "finance",
+          "url": "https://github.com/YH-05/finance/issues/173"
+        },
+        {
+          "issue_number": 175,
+          "title": "Rachel Reeves signals expansion of pubs tax U-turn to other businesses",
+          "category": "finance",
+          "url": "https://github.com/YH-05/finance/issues/175"
+        },
+        {
+          "issue_number": 180,
+          "title": "The FTC's data-sharing order against GM is finally settled",
+          "category": "finance",
+          "url": "https://github.com/YH-05/finance/issues/180",
+          "original_url": "https://techcrunch.com/2026/01/14/the-ftcs-data-sharing-order-against-gm-is-finally-settled/"
+        },
+        {
+          "issue_number": 184,
+          "title": "Adyen: High Quality Growth At A Fair Price",
+          "category": "finance",
+          "url": "https://github.com/YH-05/finance/issues/184",
+          "original_url": "https://seekingalpha.com/article/4859914-adyen-high-quality-growth-at-a-fair-price?source=feed_all_articles"
+        }
+      ]
+    },
+    "highlights": [
+      "S&P 500は週間-2.40%で2週連続下落、グロース株・大型株の調整が鮮明",
+      "MAG7は平均-4.37%と大幅下落、Teslaが-6.25%で最も弱い",
+      "ディフェンシブセクターが堅調、生活必需品+1.54%、エネルギー+1.28%",
+      "トランプ大統領のグリーンランド関税脅威と政策不透明感が市場の重石",
+      "週末にはリスク選好が回復、政策不安の後退で反発の兆し"
+    ]
+  }
+}

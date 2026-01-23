@@ -1,0 +1,33 @@
+{
+  "as_of": "2026-01-20",
+  "period": {
+    "start": "2026-01-13",
+    "end": "2026-01-20"
+  },
+  "indices": [
+    {
+      "ticker": "^GSPC",
+      "name": "S&P 500",
+      "weekly_return": -0.023964186698116778,
+      "latest_close": 6796.85986328125
+    },
+    {
+      "ticker": "RSP",
+      "name": "S&P 500 Equal Weight",
+      "weekly_return": -0.008595393663336087,
+      "latest_close": 196.0800018310547
+    },
+    {
+      "ticker": "VUG",
+      "name": "Vanguard Growth ETF",
+      "weekly_return": -0.038005828681106836,
+      "latest_close": 472.57000732421875
+    },
+    {
+      "ticker": "VTV",
+      "name": "Vanguard Value ETF",
+      "weekly_return": -0.004374589889474485,
+      "latest_close": 195.72999572753906
+    }
+  ]
+}
