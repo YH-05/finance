@@ -286,6 +286,8 @@ updated_at: 2026-01-22
 
 | エージェント | 説明 |
 |--------------|------|
+| `weekly-report-news-aggregator` | GitHub Project からニュースを集約し週次レポート用データを生成 |
+| `weekly-report-publisher` | 週次レポートを GitHub Issue として投稿し Project #15 に追加 |
 | `weekly-comment-indices-fetcher` | 週次コメント用の指数関連ニュースを収集 |
 | `weekly-comment-mag7-fetcher` | 週次コメント用のMAG7関連ニュースを収集 |
 | `weekly-comment-sectors-fetcher` | 週次コメント用のセクター関連ニュースを収集 |
