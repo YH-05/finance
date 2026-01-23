@@ -1,0 +1,134 @@
+{
+  "metadata": {
+    "validated_at": "2026-01-23T14:45:00+09:00",
+    "report_date": "2026-01-23",
+    "validator_version": "1.0.0"
+  },
+  "overall": {
+    "status": "pass",
+    "score": 96,
+    "grade": "A"
+  },
+  "checks": {
+    "format": {
+      "status": "pass",
+      "score": 100,
+      "details": {
+        "markdown_valid": true,
+        "tables_valid": true,
+        "headings_consistent": true,
+        "links_valid": true,
+        "encoding": "UTF-8"
+      }
+    },
+    "character_count": {
+      "status": "pass",
+      "score": 98,
+      "details": {
+        "total": 3480,
+        "target": 3200,
+        "target_met": true,
+        "sections": {
+          "highlight": {
+            "actual": 225,
+            "target": 200,
+            "status": "pass",
+            "deviation": "+12.5%"
+          },
+          "indices": {
+            "actual": 540,
+            "target": 500,
+            "status": "pass",
+            "deviation": "+8.0%"
+          },
+          "mag7": {
+            "actual": 980,
+            "target": 800,
+            "status": "pass",
+            "deviation": "+22.5%"
+          },
+          "sectors_top": {
+            "actual": 480,
+            "target": 400,
+            "status": "pass",
+            "deviation": "+20.0%"
+          },
+          "sectors_bottom": {
+            "actual": 475,
+            "target": 400,
+            "status": "pass",
+            "deviation": "+18.8%"
+          },
+          "macro": {
+            "actual": 510,
+            "target": 400,
+            "status": "pass",
+            "deviation": "+27.5%"
+          },
+          "themes": {
+            "actual": 450,
+            "target": 300,
+            "status": "pass",
+            "deviation": "+50.0%"
+          },
+          "outlook": {
+            "actual": 320,
+            "target": 200,
+            "status": "pass",
+            "deviation": "+60.0%"
+          }
+        }
+      }
+    },
+    "data_integrity": {
+      "status": "pass",
+      "score": 100,
+      "details": {
+        "numbers_valid": true,
+        "dates_consistent": true,
+        "calculations_correct": true,
+        "ticker_symbols_valid": true,
+        "returns_in_range": true,
+        "ranking_consistent": true
+      }
+    },
+    "content_quality": {
+      "status": "pass",
+      "score": 92,
+      "details": {
+        "factual_accuracy": "high",
+        "readability": "excellent",
+        "investment_disclaimer": true,
+        "balanced_view": true,
+        "technical_terms_appropriate": true
+      },
+      "llm_feedback": "レポートは全体的に高品質で、データに基づいた正確な分析が提供されています。\n\n【優れている点】\n- 市場の下落局面を客観的に分析し、要因を明確に説明\n- グロース vs バリューのスタイル分析が詳細で洞察に富む\n- MAG7の個別銘柄トピックが充実し、各社の状況を丁寧に解説\n- ディフェンシブセクターへのローテーションを的確に捉えている\n- マクロ経済・政策動向の説明が分かりやすい\n- 投資免責事項が適切に記載されている\n\n【改善余地】\n- テーマセクションと来週の展望セクションが目標文字数を大きく超過（+50%、+60%）\n- 一部のセクションでより簡潔な表現が可能\n\n全体として、投資家が市場の動向を理解するのに十分な情報と分析を提供する優れたレポートです。"
+    }
+  },
+  "issues": [],
+  "warnings": [
+    {
+      "type": "minor",
+      "section": "themes",
+      "message": "投資テーマセクションの文字数が目標を50%超過しています（450字/目標300字）。より簡潔な表現を検討してください。"
+    },
+    {
+      "type": "minor",
+      "section": "outlook",
+      "message": "来週の材料セクションの文字数が目標を60%超過しています（320字/目標200字）。より簡潔な表現を検討してください。"
+    }
+  ],
+  "recommendations": [
+    "文字数超過セクション（テーマ、来週の材料）の簡潔化を検討してください。ただし、内容の質は高いため、優先度は低いです。",
+    "次回レポートでは、決算シーズン本格化に伴う業績データをより詳細に分析することを推奨します。",
+    "マクロ経済セクションで、具体的な経済指標の数値（CPI、雇用統計等）を含めると、さらに説得力が増します。"
+  ],
+  "strengths": [
+    "市場のリスクオフ局面を的確に捉え、要因を明確に分析",
+    "グロース vs バリューのスタイル分析が詳細で洞察に富む",
+    "MAG7の個別銘柄トピックが充実し、各社の最新動向を丁寧に解説",
+    "ディフェンシブセクターへのローテーションを説得力を持って説明",
+    "政策リスク（グリーンランド問題、Fed独立性）の市場への影響を適切に分析",
+    "データに基づいた客観的な記述で、投資助言と誤解される表現を回避"
+  ]
+}
