@@ -27,6 +27,9 @@ argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD] [--w
 
 # 週次コメント生成（日付指定）
 /generate-market-report --weekly-comment --date 2026-01-22
+
+# 週次コメント生成 + GitHub Issue 投稿
+/generate-market-report --weekly-comment --publish
 ```
 
 ## 入力パラメータ
@@ -36,6 +39,7 @@ argument-hint: [--output articles/market_report_{date}] [--date YYYY-MM-DD] [--w
 | --output | - | articles/market_report_{date} | 出力ディレクトリ |
 | --date | - | 今日の日付 | レポート対象日（YYYY-MM-DD形式） |
 | --weekly-comment | - | false | 週次コメント生成モード（火曜〜火曜の期間を対象） |
+| --publish | - | false | レポート生成後に GitHub Issue として投稿（週次コメントモード時のみ有効） |
 
 ## 処理フロー
 
@@ -535,8 +539,13 @@ ${OUTPUT_DIR}/02_edit/report.md
     │   ├── ニュースコンテキスト統合
     │   └── Markdownファイル出力
     │
-    └── Phase 5: 出力
-        └── articles/weekly_comment_{date}/02_edit/weekly_comment.md
+    ├── Phase 5: 出力
+    │   └── articles/weekly_comment_{date}/02_edit/weekly_comment.md
+    │
+    └── Phase 6: Issue 投稿（オプション）
+        ├── weekly-report-publisher サブエージェント呼び出し
+        ├── GitHub Issue 作成
+        └── GitHub Project #15 に追加（カテゴリ: Weekly Report）
 ```
 
 ## 週次コメント出力ディレクトリ構造
@@ -796,6 +805,88 @@ MAG7では、TSLAが+3.70%で週間トップパフォーマーとなりました
 - **指数ニュース収集**: `.claude/agents/weekly-comment-indices-fetcher.md`
 - **MAG7ニュース収集**: `.claude/agents/weekly-comment-mag7-fetcher.md`
 - **セクターニュース収集**: `.claude/agents/weekly-comment-sectors-fetcher.md`
+- **Issue 投稿**: `.claude/agents/weekly-report-publisher.md`
+
+---
+
+## Phase 6: Issue 投稿（--publish オプション）
+
+`--publish` オプションを指定すると、週次レポート生成後に自動で GitHub Issue として投稿します。
+
+### 6.1 サブエージェント呼び出し
+
+```python
+# weekly-report-publisher サブエージェントを呼び出し
+Task(
+    subagent_type="weekly-report-publisher",
+    description="週次レポート Issue 投稿",
+    prompt=f"""
+週次レポートを GitHub Issue として投稿してください。
+
+## 入力パラメータ
+
+report_dir: {OUTPUT_DIR}
+project_number: 15
+
+## 期待される処理
+
+1. {OUTPUT_DIR}/data/ からデータ読み込み
+2. {OUTPUT_DIR}/02_edit/weekly_comment.md からレポート読み込み
+3. Issue 本文を生成
+4. GitHub Issue を作成
+5. GitHub Project #15 に追加（カテゴリ: Weekly Report）
+"""
+)
+```
+
+### 6.2 完了時の出力
+
+```markdown
+================================================================================
+                    /generate-market-report --weekly-comment --publish 完了
+================================================================================
+
+## 生成されたレポート
+
+- **レポートファイル**: {output}/02_edit/weekly_comment.md
+- **文字数**: 3,200字
+
+## 投稿された Issue
+
+- **Issue**: #825 - [週次レポート] 2026-01-22 マーケットレポート
+- **URL**: https://github.com/YH-05/finance/issues/825
+- **Project**: #15 (Finance News Collection)
+- **Status**: Weekly Report
+
+================================================================================
+```
+
+### 6.3 --publish なしの場合
+
+`--publish` を指定しない場合、Phase 5 で終了し、Issue 投稿はスキップされます。
+
+```markdown
+================================================================================
+                    /generate-market-report --weekly-comment 完了
+================================================================================
+
+## 生成されたレポート
+
+- **レポートファイル**: {output}/02_edit/weekly_comment.md
+- **文字数**: 3,200字
+
+## 次のステップ
+
+1. レポートを確認:
+   cat {output}/02_edit/weekly_comment.md
+
+2. Issue として投稿（オプション）:
+   /generate-market-report --weekly-comment --publish
+   または
+   Task(subagent_type="weekly-report-publisher", ...)
+
+================================================================================
+```
 
 ## 関連コマンド
 
