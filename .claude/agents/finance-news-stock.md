@@ -93,6 +93,7 @@ Phase 3: フィルタリング
 └── 重複チェック
 
 Phase 4: GitHub投稿（このエージェントが直接実行）
+├── **URL必須バリデーション（URLなしはスキップ）**【必須】
 ├── 【サブエージェント委譲】news-article-fetcher で記事本文取得・要約生成
 │   └── 戻り値: {url, japanese_title, japanese_summary} のみ受け取り
 ├── Issue作成（gh issue create）

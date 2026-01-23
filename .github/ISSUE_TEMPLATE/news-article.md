@@ -7,7 +7,9 @@ labels: news
 
 {{summary}}
 
-### 情報源URL
+### 情報源URL【必須】
+
+> ⚠️ このフィールドは必須です。RSSの元記事URLを必ず入力してください。
 
 {{url}}
 

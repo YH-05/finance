@@ -1,7 +1,7 @@
 # 週次市場動向レポート生成システム
 
 **作成日**: 2026-01-22
-**ステータス**: 計画中
+**ステータス**: 実装中
 **GitHub Project**: [#21](https://github.com/users/YH-05/projects/21) ✓
 
 ## 背景と目的
@@ -224,35 +224,35 @@ articles/weekly_report/{YYYY-MM-DD}/
 
 ## タスク一覧
 
-### Phase 1: 調査・設計
+### Phase 1: 調査・設計 ✅
 
-- [ ] 既存コード・テンプレートの調査
+- [x] 既存コード・テンプレートの調査
   - Issue: [#770](https://github.com/YH-05/finance/issues/770)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 1h
 
-- [ ] レポートテンプレートの設計
+- [x] レポートテンプレートの設計
   - Issue: [#771](https://github.com/YH-05/finance/issues/771)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 1h
 
-### Phase 2: データ収集機能
+### Phase 2: データ収集機能 ✅
 
-- [ ] GitHub Project ニュース取得エージェントの作成
+- [x] GitHub Project ニュース取得エージェントの作成
   - Issue: [#772](https://github.com/YH-05/finance/issues/772)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 2h
 
-- [ ] ニュースカテゴリ分類ロジックの実装
+- [x] ニュースカテゴリ分類ロジックの実装
   - Issue: [#773](https://github.com/YH-05/finance/issues/773)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 2h
 
 ### Phase 3: レポート生成機能
 
-- [ ] レポートテンプレートの作成
+- [x] レポートテンプレートの作成
   - Issue: [#774](https://github.com/YH-05/finance/issues/774)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 1h
 
 - [ ] レポート生成エージェントの作成
@@ -260,21 +260,21 @@ articles/weekly_report/{YYYY-MM-DD}/
   - ステータス: todo
   - 見積もり: 3h
 
-### Phase 4: GitHub Project 連携
+### Phase 4: GitHub Project 連携 ✅
 
-- [ ] 週次レポート用 Issue テンプレートの作成
+- [x] 週次レポート用 Issue テンプレートの作成
   - Issue: [#806](https://github.com/YH-05/finance/issues/806)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 1h
 
-- [ ] GitHub Project #15 に「Weekly Report」カテゴリを追加
+- [x] GitHub Project #15 に「Weekly Report」カテゴリを追加
   - Issue: [#812](https://github.com/YH-05/finance/issues/812)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 0.5h
 
-- [ ] レポート投稿エージェントの作成
+- [x] レポート投稿エージェントの作成
   - Issue: [#813](https://github.com/YH-05/finance/issues/813)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 2h
 
 ### Phase 5: 統合・コマンド更新
@@ -310,4 +310,7 @@ articles/weekly_report/{YYYY-MM-DD}/
 
 ---
 
+---
+
+**進捗**: 8/14 完了 (57%)
 **最終更新**: 2026-01-23

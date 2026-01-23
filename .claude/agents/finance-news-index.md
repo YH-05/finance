@@ -94,6 +94,7 @@ Phase 3: フィルタリング
 └── 重複チェック
 
 Phase 4: GitHub投稿（このエージェントが直接実行）
+├── **URL必須バリデーション（URLなしはスキップ）**【必須】
 ├── 【サブエージェント委譲】news-article-fetcher で記事本文取得・要約生成
 │   └── 戻り値: {url, japanese_title, japanese_summary} のみ受け取り
 ├── Issue作成（gh issue create）
@@ -217,7 +218,31 @@ if since_param:
 
 このエージェントは直接以下の処理を実行します（オーケストレーターに依存しない）。
 
-#### ステップ4.0: 記事本文取得と要約生成【サブエージェント委譲】
+#### ステップ4.0: URL必須バリデーション【投稿前チェック】
+
+> **🚨 Issue作成前に必ず実行すること 🚨**
+>
+> URLが存在しない記事は**絶対にIssue作成してはいけません**。
+> 情報源URLはIssueテンプレートの必須フィールドです。
+
+```python
+for item in filtered_items:
+    url = item.get("link", "").strip()
+
+    # URL必須チェック
+    if not url or not url.startswith(("http://", "https://")):
+        ログ出力: f"⛔ スキップ（URLなし）: {item.get('title', '不明')}"
+        stats["skipped_no_url"] += 1
+        continue
+
+    # URL検証OK → 以降の処理へ
+    ...
+```
+
+詳細なバリデーション関数は共通処理ガイドを参照:
+`.claude/agents/finance_news_collector/common-processing-guide.md` の「ステップ4.1.5」
+
+#### ステップ4.0.5: 記事本文取得と要約生成【サブエージェント委譲】
 
 > **🚨 コンテキスト効率化のため、WebFetch処理をサブエージェントに委譲します 🚨**
 >
@@ -586,6 +611,7 @@ except Exception as e:
 - **テーママッチ**: 5件
 - **除外**: 1件
 - **重複**: 2件
+- **URLなしスキップ**: 0件
 - **新規投稿**: 3件
 - **投稿失敗**: 0件
 ```

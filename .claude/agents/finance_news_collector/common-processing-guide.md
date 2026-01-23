@@ -707,6 +707,70 @@ def get_collected_at_jst() -> str:
     return datetime.now(jst).strftime('%Y-%m-%d %H:%M')
 ```
 
+### ステップ4.1.5: URL必須バリデーション【投稿前チェック】
+
+> **🚨 Issue作成前に必ず実行すること 🚨**
+>
+> URLが存在しない記事は**絶対にIssue作成してはいけません**。
+
+```python
+def validate_url_for_issue(item: dict, fetch_result: dict | None = None) -> tuple[bool, str | None]:
+    """Issue作成前にURLの存在を検証する
+
+    Parameters
+    ----------
+    item : dict
+        RSSから取得した記事アイテム
+    fetch_result : dict | None
+        news-article-fetcherの結果（オプション）
+
+    Returns
+    -------
+    tuple[bool, str | None]
+        (検証成功, エラーメッセージ)
+
+    Notes
+    -----
+    - URLがない記事はIssue作成しない
+    - 空文字列もURLなしとして扱う
+    """
+
+    url = item.get("link", "").strip()
+
+    if not url:
+        return False, f"URLなし: {item.get('title', '不明')}"
+
+    if not url.startswith(("http://", "https://")):
+        return False, f"無効なURL形式: {url}"
+
+    return True, None
+
+
+# 使用例: Phase 4投稿ループ
+for item in filtered_items:
+    # URL必須バリデーション
+    valid, error = validate_url_for_issue(item)
+    if not valid:
+        ログ出力: f"⛔ スキップ（URL必須違反）: {error}"
+        stats["skipped_no_url"] += 1
+        continue
+
+    # Issue作成へ進む
+    ...
+```
+
+**統計に追加するフィールド**:
+
+```python
+stats["skipped_no_url"] = 0  # URLなしでスキップした件数
+```
+
+**結果報告への追加**:
+
+```markdown
+- **URLなしスキップ**: {skipped_no_url}件
+```
+
 ### ステップ4.2: Issue作成（テンプレート読み込み方式）
 
 **重要: Issueタイトルの日本語化ルール**:
@@ -919,6 +983,7 @@ mutation {
 - **処理記事数**: {processed}件
 - **テーママッチ**: {matched}件（AI判断）
 - **重複**: {duplicates}件
+- **URLなしスキップ**: {skipped_no_url}件
 - **新規投稿**: {created}件
 - **投稿失敗**: {failed}件
 
