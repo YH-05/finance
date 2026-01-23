@@ -103,7 +103,7 @@ updated_at: 2026-01-22
 | `/finance-research` | 金融記事のリサーチワークフロー（データ収集→分析→検証→可視化） | `deep-research` |
 | `/finance-edit` | 金融記事の編集ワークフロー（初稿作成→批評→修正） | - |
 | `/finance-full` | 記事作成の全工程を一括実行 | - |
-| `/generate-market-report` | 週次マーケットレポートを自動生成 | - |
+| `/generate-market-report` | 週次マーケットレポートを自動生成 | `generate-market-report` |
 
 ### ドキュメント・その他
 
@@ -173,6 +173,7 @@ updated_at: 2026-01-22
 | `agent-memory` | 会話をまたいで知識を保存・参照 | `remember this`等 |
 | `deep-research` | 金融市場・投資テーマのディープリサーチ | `/finance-research` |
 | `finance-news-workflow` | 金融ニュース収集の4フェーズワークフロー | `/finance-news-workflow` |
+| `generate-market-report` | 週次マーケットレポート自動生成（データ収集→ニュース検索→レポート作成） | `/generate-market-report` |
 | `index` | CLAUDE.md/README.mdの自動更新 | `/index` |
 | `gemini-search` | Gemini CLIを使用したWeb検索 | `/gemini-search` |
 
@@ -360,7 +361,7 @@ finance/
 │   ├── agents/                 # サブエージェント定義（70個）
 │   ├── commands/               # スラッシュコマンド（28個）
 │   ├── rules/                  # 共有ルール（規約詳細）
-│   └── skills/                 # スキル定義（32個）
+│   └── skills/                 # スキル定義（33個）
 │
 ├── src/                        # ソースコード
 │   ├── finance/                # コアインフラ（DB, utils）
