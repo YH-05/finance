@@ -188,13 +188,20 @@ gh issue list \
 ### ステップ1.3: 統計カウンタ初期化
 
 ```python
-processed = 0       # 取得した記事総数
-date_filtered = 0   # 公開日時フィルタでスキップされた件数
-matched = 0         # テーマにマッチした件数
-excluded = 0        # 除外キーワードでスキップされた件数
-duplicates = 0      # 重複でスキップされた件数
-created = 0         # 新規作成したIssue数
-failed = 0          # 作成失敗した件数
+# 統計カウンタ（必ず全項目を初期化すること）
+stats = {
+    "processed": 0,       # 取得した記事総数
+    "date_filtered": 0,   # 公開日時フィルタでスキップされた件数
+    "matched": 0,         # テーマにマッチした件数
+    "excluded": 0,        # 除外キーワードでスキップされた件数
+    "duplicates": 0,      # 🚨 重複でスキップされた件数（必須カウント）
+    "skipped_no_url": 0,  # URLなしでスキップされた件数
+    "created": 0,         # 新規作成したIssue数
+    "failed": 0,          # 作成失敗した件数
+}
+
+# 重複した記事のリスト（レポート用）
+duplicate_articles = []  # [{"title": "...", "url": "...", "existing_issue": 123}, ...]
 ```
 
 ## Phase 2: RSS取得（フィード直接取得）
@@ -493,8 +500,29 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
     return len(common) / len(total)
 
 
-def is_duplicate(new_item: dict, existing_issues: list[dict], threshold: float = 0.85) -> bool:
-    """既存Issueと重複しているかチェック"""
+def is_duplicate(
+    new_item: dict,
+    existing_issues: list[dict],
+    threshold: float = 0.85
+) -> tuple[bool, int | None, str | None]:
+    """既存Issueと重複しているかチェック
+
+    Parameters
+    ----------
+    new_item : dict
+        チェック対象の記事
+    existing_issues : list[dict]
+        既存のIssueリスト
+    threshold : float
+        タイトル類似度の閾値
+
+    Returns
+    -------
+    tuple[bool, int | None, str | None]
+        (重複判定, 既存Issue番号, 重複理由)
+        - 重複の場合: (True, issue_number, "URL一致" or "タイトル類似")
+        - 重複なしの場合: (False, None, None)
+    """
 
     new_link = new_item.get('link', '')
     new_title = new_item.get('title', '')
@@ -503,16 +531,61 @@ def is_duplicate(new_item: dict, existing_issues: list[dict], threshold: float =
         # URL完全一致
         body = issue.get('body', '')
         if new_link and new_link in body:
-            return True
+            return True, issue.get('number'), "URL一致"
 
         # タイトル類似度チェック
         issue_title = issue.get('title', '')
         similarity = calculate_title_similarity(new_title, issue_title)
 
         if similarity >= threshold:
-            return True
+            return True, issue.get('number'), f"タイトル類似({similarity:.0%})"
 
-    return False
+    return False, None, None
+
+
+def check_duplicates_and_count(
+    items: list[dict],
+    existing_issues: list[dict],
+    stats: dict,
+    duplicate_articles: list[dict],
+) -> list[dict]:
+    """重複チェックを実行し、統計をカウントする
+
+    Parameters
+    ----------
+    items : list[dict]
+        チェック対象の記事リスト
+    existing_issues : list[dict]
+        既存のIssueリスト
+    stats : dict
+        統計カウンタ（duplicatesを更新）
+    duplicate_articles : list[dict]
+        重複記事リスト（追記される）
+
+    Returns
+    -------
+    list[dict]
+        重複を除いた記事リスト
+    """
+
+    non_duplicates = []
+
+    for item in items:
+        is_dup, issue_number, reason = is_duplicate(item, existing_issues)
+
+        if is_dup:
+            stats["duplicates"] += 1
+            duplicate_articles.append({
+                "title": item.get("title", ""),
+                "url": item.get("link", ""),
+                "existing_issue": issue_number,
+                "reason": reason,
+            })
+            ログ出力: f"重複スキップ: {item.get('title', '')} → Issue #{issue_number} ({reason})"
+        else:
+            non_duplicates.append(item)
+
+    return non_duplicates
 ```
 
 ## Phase 4: GitHub投稿
@@ -974,26 +1047,110 @@ mutation {
 
 ## Phase 5: 結果報告
 
-### 統計サマリー出力フォーマット
+### 統計サマリー出力フォーマット【必須】
+
+> **🚨 重複件数の出力は必須です 🚨**
+>
+> 処理統計には必ず「重複」の件数を含めてください。
+> これにより、オーケストレーターが全テーマの重複件数を集計できます。
 
 ```markdown
 ## {theme_name} ニュース収集完了
 
 ### 処理統計
-- **処理記事数**: {processed}件
-- **テーママッチ**: {matched}件（AI判断）
-- **重複**: {duplicates}件
-- **URLなしスキップ**: {skipped_no_url}件
-- **新規投稿**: {created}件
-- **投稿失敗**: {failed}件
+
+| 項目 | 件数 |
+|------|------|
+| 処理記事数 | {stats["processed"]} |
+| 公開日時フィルタ除外 | {stats["date_filtered"]} |
+| テーママッチ | {stats["matched"]} |
+| **重複スキップ** | **{stats["duplicates"]}** |
+| URLなしスキップ | {stats["skipped_no_url"]} |
+| 新規投稿 | {stats["created"]} |
+| 投稿失敗 | {stats["failed"]} |
 
 ### 投稿されたニュース
 
-1. **{title}** [#{issue_number}]
-   - ソース: {source}
-   - 公開日時: {published_jst}
-   - AI判定理由: {判定理由}
-   - URL: https://github.com/YH-05/finance/issues/{issue_number}
+| Issue # | タイトル | 公開日 |
+|---------|----------|--------|
+{{#created_issues}}
+| #{{issue_number}} | {{title}} | {{published_date}} |
+{{/created_issues}}
+
+{{#has_duplicates}}
+### 重複でスキップされた記事
+
+| 記事タイトル | 重複先 | 理由 |
+|-------------|--------|------|
+{{#duplicate_articles}}
+| {{title}} | #{{existing_issue}} | {{reason}} |
+{{/duplicate_articles}}
+{{/has_duplicates}}
+```
+
+### 結果報告の実装例
+
+```python
+def generate_result_report(
+    theme_name: str,
+    stats: dict,
+    created_issues: list[dict],
+    duplicate_articles: list[dict],
+) -> str:
+    """結果レポートを生成する
+
+    Parameters
+    ----------
+    theme_name : str
+        テーマ名（日本語）
+    stats : dict
+        統計カウンタ
+    created_issues : list[dict]
+        作成したIssueのリスト
+    duplicate_articles : list[dict]
+        重複でスキップした記事のリスト
+
+    Returns
+    -------
+    str
+        Markdown形式のレポート
+    """
+
+    report = f"""## {theme_name} ニュース収集完了
+
+### 処理統計
+
+| 項目 | 件数 |
+|------|------|
+| 処理記事数 | {stats["processed"]} |
+| 公開日時フィルタ除外 | {stats["date_filtered"]} |
+| テーママッチ | {stats["matched"]} |
+| **重複スキップ** | **{stats["duplicates"]}** |
+| URLなしスキップ | {stats["skipped_no_url"]} |
+| 新規投稿 | {stats["created"]} |
+| 投稿失敗 | {stats["failed"]} |
+
+### 投稿されたニュース
+
+| Issue # | タイトル | 公開日 |
+|---------|----------|--------|
+"""
+
+    for issue in created_issues:
+        report += f"| #{issue['number']} | {issue['title']} | {issue['published_date']} |\n"
+
+    # 重複記事の詳細（オプション）
+    if duplicate_articles:
+        report += f"""
+### 重複でスキップされた記事（{len(duplicate_articles)}件）
+
+| 記事タイトル | 重複先 | 理由 |
+|-------------|--------|------|
+"""
+        for dup in duplicate_articles:
+            report += f"| {dup['title'][:50]}... | #{dup['existing_issue']} | {dup['reason']} |\n"
+
+    return report
 ```
 
 ## テーマ別Status ID一覧
