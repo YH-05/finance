@@ -5,7 +5,7 @@
 このドキュメントは、market_analysis ライブラリで使用される用語の定義を管理します。
 全てのドキュメント、コード、コミュニケーションで統一的に使用してください。
 
-**更新日**: 2026-01-11
+**更新日**: 2026-01-23
 
 ---
 
@@ -172,6 +172,167 @@ Beta = Cov(Stock, Benchmark) / Var(Benchmark)
 **関連用語**: [相関分析](#相関分析-correlation-analysis)
 
 **英語表記**: Beta
+
+### セクター (Sector)
+
+**定義**: 産業や事業分野による株式の分類カテゴリ。
+
+**説明**:
+GICS (Global Industry Classification Standard) に基づく11セクター分類を使用。セクターローテーション分析やパフォーマンス比較に活用。
+
+**主要セクター**:
+
+| セクター | 代表的 ETF | 説明 |
+|----------|-----------|------|
+| Technology | XLK | テクノロジー・IT |
+| Healthcare | XLV | ヘルスケア・製薬 |
+| Financials | XLF | 金融・銀行 |
+| Consumer Discretionary | XLY | 一般消費財 |
+| Consumer Staples | XLP | 生活必需品 |
+| Energy | XLE | エネルギー |
+| Industrials | XLI | 資本財・産業 |
+| Materials | XLB | 素材 |
+| Utilities | XLU | 公益事業 |
+| Real Estate | XLRE | 不動産 |
+| Communication Services | XLC | コミュニケーション |
+
+**関連用語**: [セクター分析](#セクター分析-sector-analysis)、[MAG7](#mag7-magnificent-seven)
+
+**英語表記**: Sector
+
+### セクター分析 (Sector Analysis)
+
+**定義**: 各セクターの相対的なパフォーマンスを比較・分析する手法。
+
+**説明**:
+セクター間の騰落率比較、セクターローテーションの検出、ポートフォリオのセクター配分最適化に使用。本ライブラリでは `SectorAnalyzer` クラスで実装。
+
+**関連用語**: [セクター](#セクター-sector)、[騰落率](#騰落率-price-change-rate)
+
+**実装箇所**: `src/market_analysis/core/sector.py`
+
+**英語表記**: Sector Analysis
+
+### 騰落率 (Price Change Rate)
+
+**定義**: 特定期間における価格の変化率。
+
+**計算式**:
+```
+騰落率 = (終了価格 - 開始価格) / 開始価格 × 100 (%)
+```
+
+**説明**:
+日次、週次、月次、年初来 (YTD) など、複数の期間で計算。セクター分析やパフォーマンス比較の基礎となる指標。
+
+**期間の種類**:
+- 日次 (Daily): 1日間の変化率
+- 週次 (Weekly): 1週間の変化率
+- 月次 (Monthly): 1ヶ月間の変化率
+- 年初来 (YTD): 年初からの累積変化率
+- 52週 (52W): 過去52週間の変化率
+
+**関連用語**: [日次リターン](#日次リターン-daily-return)
+
+**実装箇所**: `src/market_analysis/core/returns.py`
+
+**英語表記**: Price Change Rate / Return
+
+### MAG7 (Magnificent Seven)
+
+**定義**: 米国株式市場を代表する7つの大型テクノロジー銘柄の総称。
+
+**説明**:
+市場全体の動向を把握する上で重要な指標。S&P 500 の時価総額の大部分を占め、市場のセンチメントを反映。
+
+**構成銘柄**:
+
+| 銘柄 | ティッカー | 企業名 |
+|------|----------|--------|
+| AAPL | AAPL | Apple Inc. |
+| MSFT | MSFT | Microsoft Corporation |
+| GOOGL | GOOGL | Alphabet Inc. |
+| AMZN | AMZN | Amazon.com Inc. |
+| NVDA | NVDA | NVIDIA Corporation |
+| META | META | Meta Platforms Inc. |
+| TSLA | TSLA | Tesla Inc. |
+
+**関連用語**: [セクター](#セクター-sector)
+
+**英語表記**: Magnificent Seven (MAG7)
+
+### 決算カレンダー (Earnings Calendar)
+
+**定義**: 企業の四半期決算発表予定日をまとめたスケジュール。
+
+**説明**:
+決算発表は株価に大きな影響を与えるイベント。決算前後のボラティリティ上昇、決算サプライズによる株価変動を予測・分析するために使用。
+
+**関連用語**: [EPS](#eps-earnings-per-share)
+
+**実装箇所**: `src/market_analysis/core/earnings.py`
+
+**英語表記**: Earnings Calendar
+
+### EPS (Earnings Per Share)
+
+**定義**: 1株当たり利益。企業の収益性を示す指標。
+
+**計算式**:
+```
+EPS = 純利益 / 発行済株式数
+```
+
+**説明**:
+- 実績 EPS (Actual): 確定した決算数値
+- 予想 EPS (Estimate): アナリストによる予想値
+- サプライズ: 実績と予想の差異
+
+**関連用語**: [決算カレンダー](#決算カレンダー-earnings-calendar)
+
+**英語表記**: Earnings Per Share (EPS)
+
+### マーケットレポート (Market Report)
+
+**定義**: 市場動向を定期的にまとめた分析レポート。
+
+**説明**:
+本ライブラリでは、週次マーケットレポートを自動生成する機能を提供。主要指数の動向、セクター分析、MAG7 の状況、決算カレンダーを統合したレポートを作成。
+
+**レポート構成**:
+1. 市場概況 (主要指数の騰落率)
+2. セクター分析 (セクター別パフォーマンス)
+3. MAG7 分析 (大型テック銘柄の動向)
+4. 決算カレンダー (今週の決算発表予定)
+5. 経済指標 (FRED データ)
+
+**関連用語**: [騰落率](#騰落率-price-change-rate)、[セクター分析](#セクター分析-sector-analysis)
+
+**実装箇所**: `src/market_analysis/scripts/market_report_data.py`
+
+**英語表記**: Market Report
+
+### SEC EDGAR
+
+**定義**: 米国証券取引委員会 (SEC) の電子開示システム。
+
+**説明**:
+上場企業の公式財務報告書（10-K、10-Q、8-K、Form 4 等）を提供。企業のファンダメンタル分析やインサイダー取引の追跡に使用。
+
+**主要なファイリング種類**:
+
+| フォーム | 説明 | 頻度 |
+|---------|------|------|
+| 10-K | 年次報告書 | 年次 |
+| 10-Q | 四半期報告書 | 四半期 |
+| 8-K | 臨時報告書 | 随時 |
+| Form 4 | インサイダー取引報告 | 取引後2営業日以内 |
+
+**公式サイト**: https://www.sec.gov/edgar
+
+**関連用語**: [決算カレンダー](#決算カレンダー-earnings-calendar)
+
+**英語表記**: SEC EDGAR (Electronic Data Gathering, Analysis, and Retrieval)
 
 ---
 
@@ -681,11 +842,14 @@ market_analysis ライブラリの全エラーの基底クラス。直接送出�
 
 ### か行
 - [キャッシュ](#キャッシュ-cache) - アーキテクチャ用語
+- [決算カレンダー](#決算カレンダー-earnings-calendar) - ドメイン用語
 - [コアロジック層](#コアロジック層-core-layer) - アーキテクチャ用語
 
 ### さ行
 - [指数移動平均 (EMA)](#指数移動平均-ema-exponential-moving-average) - テクニカル指標
 - [終値 (Close Price)](#終値-close-price) - ドメイン用語
+- [セクター](#セクター-sector) - ドメイン用語
+- [セクター分析](#セクター分析-sector-analysis) - ドメイン用語
 - [相関分析](#相関分析-correlation-analysis) - ドメイン用語
 
 ### た行
@@ -693,6 +857,7 @@ market_analysis ライブラリの全エラーの基底クラス。直接送出�
 - [ティッカーシンボル](#ティッカーシンボル-ticker-symbol) - ドメイン用語
 - [調整後終値 (Adjusted Close)](#調整後終値-adjusted-close) - ドメイン用語
 - [通貨ペア](#通貨ペア-currency-pair) - ドメイン用語
+- [騰落率](#騰落率-price-change-rate) - ドメイン用語
 
 ### な行
 - [日次リターン (Daily Return)](#日次リターン-daily-return) - ドメイン用語
@@ -700,6 +865,9 @@ market_analysis ライブラリの全エラーの基底クラス。直接送出�
 ### は行
 - [ベータ値 (Beta)](#ベータ値-beta) - ドメイン用語
 - [ボラティリティ (Volatility)](#ボラティリティ-volatility) - ドメイン用語
+
+### ま行
+- [マーケットレポート](#マーケットレポート-market-report) - ドメイン用語
 
 ### ら行
 - [レイヤードアーキテクチャ](#レイヤードアーキテクチャ-layered-architecture) - アーキテクチャ用語
@@ -711,10 +879,12 @@ market_analysis ライブラリの全エラーの基底クラス。直接送出�
 - [AnalysisResult](#analysisresult) - データモデル用語
 - [API](#api) - 略語
 - [DataFetchError](#datafetcherror) - エラー・例外
+- [EPS](#eps-earnings-per-share) - ドメイン用語
 - [ExportError](#exporterror) - エラー・例外
 - [FRED API](#fred-api) - 技術用語
 - [Hypothesis](#hypothesis) - 技術用語
 - [LRD](#lrd) - 略語
+- [MAG7](#mag7-magnificent-seven) - ドメイン用語
 - [MarketAnalysisError](#marketanalysiserror) - エラー・例外
 - [MarketDataResult](#marketdataresult) - データモデル用語
 - [marimo](#marimo) - 技術用語
@@ -723,6 +893,7 @@ market_analysis ライブラリの全エラーの基底クラス。直接送出�
 - [pandas](#pandas) - 技術用語
 - [plotly](#plotly) - 技術用語
 - [pyright](#pyright) - 技術用語
+- [SEC EDGAR](#sec-edgar) - 技術用語
 - [structlog](#structlog) - 技術用語
 - [TDD](#tdd) - 略語
 - [TTL](#ttl) - 略語
@@ -735,4 +906,5 @@ market_analysis ライブラリの全エラーの基底クラス。直接送出�
 
 | 日付 | 変更者 | 変更内容 |
 |------|--------|----------|
+| 2026-01-23 | 更新 | セクター、騰落率、MAG7、決算カレンダー、EPS、マーケットレポート、SEC EDGAR を追加 |
 | 2026-01-11 | 初版作成 | 全カテゴリの用語を定義 |

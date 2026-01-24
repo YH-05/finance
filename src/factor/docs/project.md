@@ -1,8 +1,9 @@
 # factor プロジェクト
 
 **GitHub Project**: [#13](https://github.com/users/YH-05/projects/13)
-**ステータス**: 進行中
+**ステータス**: 完了
 **作成日**: 2026-01-15
+**完了日**: 2026-01-17
 
 ## 概要
 
@@ -159,7 +160,7 @@
 | [#132](https://github.com/YH-05/finance/issues/132) | T18: QuantileAnalyzer | P0 | 1-2h | ✅ Done |
 | [#133](https://github.com/YH-05/finance/issues/133) | T19: ファクターカテゴリ拡張 | P0 | 1h | ✅ Done |
 | [#134](https://github.com/YH-05/finance/issues/134) | T20: パッケージエクスポート | P0 | 0.5h | ✅ Done |
-| [#135](https://github.com/YH-05/finance/issues/135) | T21: 統合テスト | P0 | 2-3h | Todo |
+| [#135](https://github.com/YH-05/finance/issues/135) | T21: 統合テスト | P0 | 2-3h | ✅ Done |
 
 **依存関係**: T01 -> T17, T18; 全ファクター -> T19 -> T20 -> T21
 
@@ -169,13 +170,13 @@
 
 | ステータス | 件数 |
 |----------|------|
-| ✅ Done | 20 |
+| ✅ Done | 21 |
 | 🔄 In Progress | 0 |
-| Todo | 1 |
+| Todo | 0 |
 | **合計** | 21 |
 
-**最終更新**: 2026-01-17
-**更新内容**: GitHub Project #13 (factor) と project.md を同期（#134 パッケージエクスポート完了）
+**最終更新**: 2026-01-23
+**更新内容**: GitHub Project #13 と整合性検証・同期（#135 統合テスト完了、プロジェクト完了）
 
 ---
 

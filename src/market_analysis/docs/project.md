@@ -32,7 +32,7 @@
 
 - [x] 基本指標: 移動平均、リターン、ボラティリティ - Issue: [#21](https://github.com/YH-05/finance/issues/21), [#22](https://github.com/YH-05/finance/issues/22)
 - [x] 相関分析: 複数銘柄間の相関係数、ベータ値 - Issue: [#23](https://github.com/YH-05/finance/issues/23)
-- [ ] セクター分析: セクター別パフォーマンス比較
+- [x] セクター分析: セクター別パフォーマンス比較 - Issue: [#470](https://github.com/YH-05/finance/issues/470)
 
 ### 可視化（Visualization）
 
@@ -166,21 +166,35 @@
 | [#38](https://github.com/YH-05/finance/issues/38) | ChartBuilder 基盤クラスの実装 | Done |
 | [#316](https://github.com/YH-05/finance/issues/316) | Chart.price_chart で Close カラムが見つからない ValueError を修正 | Done |
 | [#324](https://github.com/YH-05/finance/issues/324) | fetch_stock で複数銘柄の株価データを一括取得できるようにする | Done |
-| [#325](https://github.com/YH-05/finance/issues/325) | fetch_fred で複数 series_id の一括取得と統一データフレーム形式への変更 | Todo |
-| [#374](https://github.com/YH-05/finance/issues/374) | [refactor]: print を logger.error に置き換え（analysis.py） | Todo |
-| [#375](https://github.com/YH-05/finance/issues/375) | [refactor]: _find_column の再利用によるコード重複削減 | Todo |
-| [#376](https://github.com/YH-05/finance/issues/376) | [refactor]: 未使用変数・パラメータの整理（analysis.py） | Todo |
-| [#377](https://github.com/YH-05/finance/issues/377) | [refactor]: コメントアウトされたコード（TICKERS_WORLD）と対応メソッドの整理 | Todo |
-| [#378](https://github.com/YH-05/finance/issues/378) | [refactor]: MarketPerformanceAnalyzer の責務分離 | Todo |
-| [#379](https://github.com/YH-05/finance/issues/379) | [refactor]: Analysis クラスから静的メソッドを CorrelationApi クラスに分離 | Todo |
-| [#380](https://github.com/YH-05/finance/issues/380) | [refactor]: パラメータ検証ロジックの共通化（デコレータ/バリデータ） | Todo |
-| [#381](https://github.com/YH-05/finance/issues/381) | [refactor]: MarketPerformanceAnalyzer の遅延読み込み（Lazy Loading）化 | Todo |
-| [#382](https://github.com/YH-05/finance/issues/382) | [refactor]: MarketPerformanceAnalyzer への依存性注入（DI）パターン導入 | Todo |
-| [#383](https://github.com/YH-05/finance/issues/383) | [refactor]: 非同期データ取得の導入 | Todo |
+| [#325](https://github.com/YH-05/finance/issues/325) | fetch_fred で複数 series_id の一括取得と統一データフレーム形式への変更 | Done |
+| [#374](https://github.com/YH-05/finance/issues/374) | [refactor]: print を logger.error に置き換え（analysis.py） | Pending |
+| [#375](https://github.com/YH-05/finance/issues/375) | [refactor]: _find_column の再利用によるコード重複削減 | Pending |
+| [#376](https://github.com/YH-05/finance/issues/376) | [refactor]: 未使用変数・パラメータの整理（analysis.py） | Pending |
+| [#377](https://github.com/YH-05/finance/issues/377) | [refactor]: コメントアウトされたコード（TICKERS_WORLD）と対応メソッドの整理 | Done |
+| [#378](https://github.com/YH-05/finance/issues/378) | [refactor]: MarketPerformanceAnalyzer の責務分離 | Pending |
+| [#379](https://github.com/YH-05/finance/issues/379) | [refactor]: Analysis クラスから静的メソッドを CorrelationApi クラスに分離 | Pending |
+| [#380](https://github.com/YH-05/finance/issues/380) | [refactor]: パラメータ検証ロジックの共通化（デコレータ/バリデータ） | Pending |
+| [#381](https://github.com/YH-05/finance/issues/381) | [refactor]: MarketPerformanceAnalyzer の遅延読み込み（Lazy Loading）化 | Pending |
+| [#382](https://github.com/YH-05/finance/issues/382) | [refactor]: MarketPerformanceAnalyzer への依存性注入（DI）パターン導入 | Pending |
+| [#383](https://github.com/YH-05/finance/issues/383) | [refactor]: 非同期データ取得の導入 | Pending |
+| [#468](https://github.com/YH-05/finance/issues/468) | マーケットレポート生成システムの実装 | Todo |
+| [#469](https://github.com/YH-05/finance/issues/469) | 多期間騰落率計算モジュールの実装 (returns.py) | Done |
+| [#470](https://github.com/YH-05/finance/issues/470) | セクター分析モジュールの実装 (sector.py) | Done |
+| [#471](https://github.com/YH-05/finance/issues/471) | 決算カレンダーモジュールの実装 (earnings.py) | Done |
+| [#472](https://github.com/YH-05/finance/issues/472) | データ収集スクリプトの実装 (market_report_data.py) | Done |
+| [#473](https://github.com/YH-05/finance/issues/473) | レポート生成コマンドの実装 (generate-market-report.md) | Done |
+| [#474](https://github.com/YH-05/finance/issues/474) | レポートテンプレートの更新 (first_draft.md) | Done |
+| [#517](https://github.com/YH-05/finance/issues/517) | Yahoo Finance Earnings Calendar スクレイパーの実装 | Todo |
+| [#518](https://github.com/YH-05/finance/issues/518) | EarningsCalendarScraper: 依存関係と型定義の追加 | Todo |
+| [#519](https://github.com/YH-05/finance/issues/519) | EarningsCalendarScraper: データクラスの追加 | Todo |
+| [#520](https://github.com/YH-05/finance/issues/520) | EarningsCalendarScraper: スクレイパークラスの実装 | Todo |
+| [#521](https://github.com/YH-05/finance/issues/521) | EarningsCalendarScraper: 日付範囲取得とエラーハンドリング | Todo |
+| [#522](https://github.com/YH-05/finance/issues/522) | EarningsCalendarScraper: テスト作成 | Todo |
+| [#523](https://github.com/YH-05/finance/issues/523) | EarningsCalendarScraper: エクスポート更新とドキュメント | Todo |
 
-**25件完了 / 36件中** (2026-01-19)
+**33件完了 / 50件中** (2026-01-23)
 
 ---
 
-**最終更新**: 2026-01-19
-**更新内容**: コード分析レポート（analysis.py）の要対処事項をIssue化（#374-#383）、GitHub Project #6に追加
+**最終更新**: 2026-01-23
+**更新内容**: GitHub Project #6 とステータス同期（#325, #377, #469-#474 完了、#468, #517-#523 追加）
