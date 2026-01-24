@@ -14,47 +14,33 @@
 
 ## フィルタリングルール
 
-### 1. 時間フィルタ（--since）
+### 1. 日数フィルタ（--days）
 
-記事の**公開日時（published）**を基準にフィルタリングします。
+記事の**公開日時（published）**を基準に、過去N日以内の記事のみを対象とします。
 
-#### パラメータ値
+#### パラメータ
 
-| 値 | 説明 | 例（現在が2026-01-22の場合） |
-|-----|------|------------------------------|
-| `1d` | 過去1日（24時間）以内 | 2026-01-21 00:00以降の記事 |
-| `3d` | 過去3日以内 | 2026-01-19 00:00以降の記事 |
-| `7d` | 過去7日以内 | 2026-01-15 00:00以降の記事 |
+| パラメータ | デフォルト | 説明 |
+|-----------|-----------|------|
+| `--days` | 7 | 過去何日分のニュースを対象とするか |
+
+#### 例（現在が2026-01-24の場合）
+
+| 値 | 対象範囲 |
+|-----|------|
+| `--days 1` | 2026-01-23 00:00 以降の記事 |
+| `--days 3` | 2026-01-21 00:00 以降の記事 |
+| `--days 7` | 2026-01-17 00:00 以降の記事（デフォルト） |
 
 #### 実装ロジック
 
 ```python
 from datetime import datetime, timedelta, timezone
 
-def parse_since_param(since: str) -> int:
-    """--sinceパラメータを日数に変換
-
-    Parameters
-    ----------
-    since : str
-        期間指定（例: "1d", "3d", "7d"）
-
-    Returns
-    -------
-    int
-        日数（デフォルト: 1）
-    """
-    if since.endswith("d"):
-        try:
-            return int(since[:-1])
-        except ValueError:
-            pass
-    return 1  # デフォルト: 1日
-
 
 def filter_by_published_date(
     items: list[dict],
-    since_days: int,
+    days_back: int,
 ) -> tuple[list[dict], int]:
     """公開日時でフィルタリング
 
@@ -62,8 +48,8 @@ def filter_by_published_date(
     ----------
     items : list[dict]
         RSS記事リスト
-    since_days : int
-        現在日時から遡る日数
+    days_back : int
+        現在日時から遡る日数（デフォルト: 7）
 
     Returns
     -------
@@ -72,20 +58,23 @@ def filter_by_published_date(
 
     Notes
     -----
-    - published フィールドは記事の公開日時（RSSのpubDate）
-    - published がない場合は fetched_at で代替判定
-    - 両方ない場合は処理対象に含める（除外しない）
+    - RSS MCPサーバーは各種フィード形式の日時を `published` に正規化:
+      - RSS 2.0: pubDate → published
+      - Atom: published, updated → published
+    - published がない場合は fetched_at（取得日時）をフォールバック使用
+    - どちらもない場合のみ除外
     """
-    cutoff = datetime.now(timezone.utc) - timedelta(days=since_days)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days_back)
     filtered = []
     skipped = 0
 
     for item in items:
+        # published を優先、なければ fetched_at をフォールバック
         date_str = item.get("published") or item.get("fetched_at")
 
         if not date_str:
-            # 日時情報がない場合は処理対象に含める
-            filtered.append(item)
+            # どちらもない記事は除外
+            skipped += 1
             continue
 
         try:
@@ -95,8 +84,8 @@ def filter_by_published_date(
             else:
                 skipped += 1
         except ValueError:
-            # パース失敗時は処理対象に含める
-            filtered.append(item)
+            # パース失敗時は除外
+            skipped += 1
 
     return filtered, skipped
 ```
@@ -104,22 +93,38 @@ def filter_by_published_date(
 #### 処理フロー
 
 ```
-[1] --since パラメータをパース（デフォルト: 1d）
+[1] --days パラメータを取得（デフォルト: 7）
     ↓
-[2] カットオフ日時を計算（現在日時 - since_days）
+[2] カットオフ日時を計算（現在日時 - days_back）
     ↓
 [3] 各記事をチェック
     │
-    ├─ published または fetched_at が存在する場合
-    │   │
-    │   ├─ カットオフ日時以降 → フィルタリング後リストに追加
-    │   │
-    │   └─ カットオフ日時より前 → スキップ（カウント）
+    ├─ published が存在する場合 → published を使用
     │
-    └─ 日時情報がない場合 → フィルタリング後リストに追加
+    ├─ published がない & fetched_at がある場合 → fetched_at を使用
+    │
+    └─ どちらもない場合 → スキップ
     ↓
-[4] 統計に記録（date_filtered = スキップ件数）
+[4] 日時をカットオフと比較
+    │
+    ├─ カットオフ日時以降 → フィルタリング後リストに追加
+    │
+    └─ カットオフ日時より前 → スキップ
+    ↓
+[5] 統計に記録（date_filtered = スキップ件数）
 ```
+
+**日時フィールドの正規化**:
+
+RSS MCPサーバー（`src/rss/core/parser.py`）は各種フィード形式を自動的に正規化します：
+
+| フィード形式 | 元のフィールド | 正規化先 |
+|-------------|---------------|---------|
+| RSS 2.0 | `pubDate` | `published` |
+| Atom | `published` | `published` |
+| Atom | `updated`（publishedがない場合） | `published` |
+
+フィード自体に日時がない場合は `published` が `None` になるため、`fetched_at`（取得日時）をフォールバックとして使用します。
 
 ---
 
@@ -144,11 +149,11 @@ def filter_by_published_date(
 カンマ区切りで複数テーマを指定可能:
 
 ```bash
-# Index と Macro のみ収集
-/collect-finance-news --themes "index,macro"
+# Index と Macro のみ収集（過去3日間）
+/finance-news-workflow --days 3 --themes "index,macro"
 
 # AI と Stock のみ収集
-/collect-finance-news --themes "ai,stock"
+/finance-news-workflow --themes "ai,stock"
 ```
 
 #### 実装ロジック
@@ -177,21 +182,7 @@ def parse_themes_param(themes: str) -> list[str]:
 
 ---
 
-### 3. 件数制限（--limit）
-
-取得記事数の最大値を指定します。
-
-| パラメータ | デフォルト | 最大値 | 説明 |
-|-----------|-----------|-------|------|
-| `--limit` | 50 | 100 | 各フィードから取得する記事数の上限 |
-
-**注意点**:
-- 各テーマエージェントに渡される記事数の上限
-- GitHub API レート制限回避のため、大量取得時は注意
-
----
-
-### 4. テーマ判定（AI判断）
+### 3. テーマ判定（AI判断）
 
 **重要**: キーワードマッチングは使用しません。AIが記事の内容を読み取り、テーマに該当するか判断します。
 
@@ -249,16 +240,25 @@ def parse_themes_param(themes: str) -> list[str]:
 
 ### 1. 既存Issue取得方法
 
-GitHub CLIで直近のニュースIssueを取得します。
+GitHub CLIで指定日数以内に作成されたニュースIssueを取得します。
 
 ```bash
+# SINCE_DATE = 現在日時 - days_back（YYYY-MM-DD形式）
 gh issue list \
     --repo YH-05/finance \
     --label "news" \
     --state all \
-    --limit 100 \
+    --search "created:>=${SINCE_DATE}" \
     --json number,title,body,url,createdAt
 ```
+
+#### 日数ベースのフィルタリング
+
+| --days | SINCE_DATE（2026-01-24の場合） | 対象範囲 |
+|--------|-------------------------------|---------|
+| 1 | 2026-01-23 | 直近1日間 |
+| 3 | 2026-01-21 | 直近3日間 |
+| 7 | 2026-01-17 | 直近7日間（デフォルト） |
 
 #### 取得データ構造
 
@@ -499,8 +499,8 @@ finance-news-orchestrator
     │     ├─ gh コマンド存在確認
     │     └─ gh auth status で認証確認
     │
-    ├─[3] 既存Issue取得
-    │     └─ gh issue list --label "news" --limit 100
+    ├─[3] 既存Issue取得（日数ベース）
+    │     └─ gh issue list --label "news" --search "created:>=${SINCE_DATE}"
     │
     ├─[4] タイムスタンプ生成
     │     └─ YYYYMMDD-HHMMSS形式
@@ -533,7 +533,7 @@ finance-news-{theme}
     │     └─ ローカルフォールバック（MCP失敗時）
     │
     ├─[Phase 2.5] 公開日時フィルタリング
-    │     └─ --since パラメータによるフィルタ
+    │     └─ --days パラメータによるフィルタ（published がない記事は除外）
     │
     ├─[Phase 3] AI判断によるテーマ分類
     │     ├─ タイトル・要約からテーマ判定
@@ -580,8 +580,7 @@ for theme in target_themes:
         prompt=f"""一時ファイルを読み込んで{theme}テーマのニュースを処理してください。
 
 ## パラメータ
-- --since: {args.since}
-- --limit: {args.limit}
+- --days: {args.days}
 - --dry-run: {args.dry_run}
 
 ## 一時ファイル
@@ -867,7 +866,7 @@ gh auth status
 
 **対処法**:
 - 1時間待機
-- `--limit` オプションで取得数を削減
+- `--days` を減らして対象期間を短縮
 
 ### E006: 並列実行エラー
 

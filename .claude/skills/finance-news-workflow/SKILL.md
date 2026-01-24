@@ -11,11 +11,11 @@ RSSフィードから金融ニュースを自動収集し、GitHub Project #15�
 ## 使用方法
 
 ```bash
-# 標準実行
+# 標準実行（デフォルト: 過去7日間）
 /finance-news-workflow
 
 # オプション付き
-/finance-news-workflow --since 3d --themes "index,macro" --limit 30 --dry-run
+/finance-news-workflow --days 3 --themes "index,macro" --dry-run
 ```
 
 ## 4フェーズワークフロー
@@ -48,9 +48,8 @@ Phase 4: 結果報告
 
 | パラメータ | デフォルト | 説明 |
 |-----------|-----------|------|
-| --since | 1d | 公開日時フィルタ（1d/3d/7d） |
+| --days | 7 | 過去何日分のニュースを対象とするか（日数指定） |
 | --project | 15 | GitHub Project番号 |
-| --limit | 50 | 取得記事数の最大値 |
 | --themes | all | 対象テーマ（index,stock,sector,macro,ai,finance / all） |
 | --dry-run | false | GitHub投稿せずに結果確認のみ |
 
@@ -130,6 +129,6 @@ Phase 4: 結果報告
 ## 制約事項
 
 - **GitHub API**: 1時間あたり5000リクエスト
-- **RSS取得**: 1リクエスト最大100件
-- **重複チェック**: 直近100件のIssueのみ
-- **実行頻度**: 1日1回を推奨
+- **RSS取得**: フィードの保持件数に依存（通常10〜50件）
+- **重複チェック**: 指定日数（--days）と同じ範囲の既存Issueを対象
+- **実行頻度**: 1日1回を推奨（定期実行で取り漏れを防ぐ）

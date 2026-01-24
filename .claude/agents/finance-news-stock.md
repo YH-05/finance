@@ -77,10 +77,11 @@ Phase 2: RSS取得（直接実行）【新規】
 ├── 担当フィードをフェッチ（mcp__rss__fetch_feed）
 └── 記事を取得（mcp__rss__get_items）
 
-Phase 2.5: 公開日時フィルタリング（--since指定時）
-├── --sinceパラメータの解析（1d/3d/7d → 日数変換）
+Phase 2.5: 公開日時フィルタリング【必須】
+├── --daysパラメータの取得（デフォルト: 7）
 ├── カットオフ日時の計算（現在日時 - 指定日数）
-└── 古い記事を除外（published or fetched_at < cutoff）
+├── published → fetched_at のフォールバック
+└── 古い記事を除外（published < cutoff）
 
 Phase 3: フィルタリング
 ├── Stockキーワードマッチング
@@ -110,13 +111,15 @@ MCPSearch(query="select:mcp__rss__fetch_feed")
 MCPSearch(query="select:mcp__rss__get_items")
 ```
 
-#### ステップ1.2: 既存Issue取得
+#### ステップ1.2: 既存Issue取得（日数ベース）
 
 ```bash
+# SINCE_DATE = 現在日時 - days_back（YYYY-MM-DD形式）
 gh issue list \
     --repo YH-05/finance \
     --label "news" \
-    --limit 100 \
+    --state all \
+    --search "created:>=${SINCE_DATE}" \
     --json number,title,url,body,createdAt
 ```
 
@@ -156,8 +159,8 @@ def get_feed_items():
     for feed in ASSIGNED_FEEDS:
         try:
             result = mcp__rss__get_items(
-                feed_id=feed["feed_id"],
-                limit=10  # フィードあたり最大10件
+                feed_id=feed["feed_id"]
+                # limitは指定しない（日数ベースのフィルタリングを使用）
             )
             for item in result.get("items", []):
                 item["source_feed"] = feed["title"]
@@ -193,19 +196,19 @@ def load_from_local():
     return items
 ```
 
-### Phase 2.5: 公開日時フィルタリング（オプション）
+### Phase 2.5: 公開日時フィルタリング【必須】
 
-`--since`パラメータが指定された場合、公開日時でフィルタリングします。
+`--days`パラメータ（デフォルト: 7）に基づいて公開日時でフィルタリングします。
+**publishedがない場合はfetched_at（取得日時）をフォールバックとして使用します。**
 
 詳細なアルゴリズムは共通処理ガイドを参照:
-`.claude/agents/finance_news_collector/common-processing-guide.md` の「Phase 2.5: 公開日時フィルタリング」
+`.claude/skills/finance-news-workflow/guide.md` の「日数フィルタ（--days）」
 
 ```python
-# --sinceパラメータが指定されている場合のみ実行
-if since_param:
-    since_days = parse_since_param(since_param)  # "1d" → 1, "3d" → 3, "7d" → 7
-    items, date_filtered_count = filter_by_published_date(items, since_days)
-    ログ出力: f"公開日時フィルタ: {date_filtered_count}件除外（{since_days}日以内）"
+# 日数ベースのフィルタリング（必須実行）
+days_back = 7  # プロンプトから取得（デフォルト: 7）
+items, skipped_count = filter_by_published_date(items, days_back)
+ログ出力: f"公開日時フィルタ: {skipped_count}件除外（{days_back}日以内）"
 ```
 
 ### Phase 4: GitHub投稿（詳細）

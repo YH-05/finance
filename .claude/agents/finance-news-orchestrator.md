@@ -60,20 +60,35 @@ permissionMode: bypassPermissions
     現在時刻からタイムスタンプを生成（YYYYMMDD-HHMMSS形式）
 ```
 
-### Phase 2: 既存Issue取得
+### Phase 2: 既存Issue取得（日数ベース）
 
-#### ステップ 2.1: 既存 GitHub Issue 取得
+#### ステップ 2.1: カットオフ日付を計算
 
-**GitHub CLI で既存のニュース Issue を取得**:
+プロンプトで渡された `--days` パラメータ（デフォルト: 7）から SINCE_DATE を計算します。
+
+```python
+from datetime import datetime, timedelta
+
+days_back = 7  # プロンプトから取得
+since_date = (datetime.now() - timedelta(days=days_back)).strftime("%Y-%m-%d")
+# 例: 2026-01-17（現在が2026-01-24の場合）
+```
+
+#### ステップ 2.2: 既存 GitHub Issue 取得
+
+**GitHub CLI で指定日数以内に作成されたニュース Issue を取得**:
 
 ```bash
+# SINCE_DATE = 現在日時 - days_back（YYYY-MM-DD形式）
 gh issue list \
     --repo YH-05/finance \
     --label "news" \
-    --limit 100 \
-    --json number,title,url,body,createdAt \
-    --jq '.[] | {number, title, url, body, createdAt}'
+    --state all \
+    --search "created:>=${SINCE_DATE}" \
+    --json number,title,url,body,createdAt
 ```
+
+**重要**: `--limit` ではなく `--search "created:>="` で日付ベースのフィルタリングを行います。
 
 ### Phase 3: データ保存
 
@@ -90,7 +105,7 @@ gh issue list \
     "config": {
         "project_number": 15,
         "project_owner": "YH-05",
-        "limit": 50
+        "days_back": 7
     },
     "existing_issues": [...],
     "themes": ["index", "stock", "sector", "macro", "ai"],
@@ -217,6 +232,6 @@ except Exception as e:
 ## 制約事項
 
 1. **RSS 取得なし**: RSS取得はサブエージェントが直接実行
-2. **既存 Issue の取得制限**: 直近 100 件のみ
+2. **既存 Issue の取得範囲**: `--days` パラメータで指定された日数以内（デフォルト: 7日）
 3. **一時ファイルの有効期限**: 24 時間（手動削除推奨）
 4. **並列実行制御**: このエージェントは並列実行制御を行わない（コマンド層の責務）
