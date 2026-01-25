@@ -1,1 +1,1 @@
-"""Unit tests for database package."""
+"""Unit tests for finance package."""
