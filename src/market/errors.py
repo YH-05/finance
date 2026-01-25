@@ -29,6 +29,7 @@ class ErrorCode(str, Enum):
     UNKNOWN = "UNKNOWN"
     EXPORT_ERROR = "EXPORT_ERROR"
     INVALID_PARAMETER = "INVALID_PARAMETER"
+    CACHE_ERROR = "CACHE_ERROR"
 
 
 class MarketError(Exception):
@@ -181,7 +182,58 @@ class ExportError(MarketError):
         self.path = path
 
 
+class CacheError(MarketError):
+    """Exception raised when cache operations fail.
+
+    This exception is raised for errors during cache read, write,
+    or management operations.
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message
+    operation : str | None
+        The cache operation that failed (e.g., "get", "set", "delete")
+    key : str | None
+        The cache key involved in the operation
+    code : ErrorCode
+        Error code (defaults to CACHE_ERROR)
+    details : dict[str, Any] | None
+        Additional context
+    cause : Exception | None
+        The underlying exception
+
+    Examples
+    --------
+    >>> raise CacheError(
+    ...     "Failed to write cache entry",
+    ...     operation="set",
+    ...     key="AAPL_data",
+    ... )
+    """
+
+    def __init__(
+        self,
+        message: str,
+        operation: str | None = None,
+        key: str | None = None,
+        code: ErrorCode = ErrorCode.CACHE_ERROR,
+        details: dict[str, Any] | None = None,
+        cause: Exception | None = None,
+    ) -> None:
+        details = details or {}
+        if operation:
+            details["operation"] = operation
+        if key:
+            details["key"] = key
+
+        super().__init__(message, code=code, details=details, cause=cause)
+        self.operation = operation
+        self.key = key
+
+
 __all__ = [
+    "CacheError",
     "ErrorCode",
     "ExportError",
     "MarketError",

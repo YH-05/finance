@@ -31,7 +31,7 @@ ExportError
     Exception for export operations
 """
 
-from .errors import ErrorCode, ExportError, MarketError
+from .errors import CacheError, ErrorCode, ExportError, MarketError
 from .export import DataExporter
 from .types import (
     AgentOutput,
@@ -45,6 +45,7 @@ __all__ = [
     "AgentOutput",
     "AgentOutputMetadata",
     "AnalysisResult",
+    "CacheError",
     "DataExporter",
     "DataSource",
     "ErrorCode",
