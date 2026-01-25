@@ -1,4 +1,13 @@
 {
+  "env": {
+    "ENABLE_MCP_TOOL_SEARCH": "true"
+  },
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Skill(new-project)"
+    ]
+  },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "git",
@@ -16,13 +25,5 @@
     "context7",
     "tavily",
     "playwright"
-  ],
-  "permissions": {
-    "allow": [
-      "WebFetch(domain:github.com)"
-    ]
-  },
-  "env": {
-    "ENABLE_MCP_TOOL_SEARCH": "true"
-  }
+  ]
 }

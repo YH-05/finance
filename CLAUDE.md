@@ -83,11 +83,11 @@ updated_at: 2026-01-22
 | コマンド | 説明 | スキル |
 |----------|------|--------|
 | `/write-tests` | t-wada流TDDによるテスト作成 | `tdd-development` |
-| `/ensure-quality` | コード品質の自動改善（make check-all相当） | - |
-| `/analyze` | 多次元コード分析（品質・アーキテクチャ・性能） | - |
-| `/improve` | エビデンスベースの改善実装 | - |
-| `/safe-refactor` | 安全なリファクタリング | - |
-| `/scan` | セキュリティと品質の包括的検証 | - |
+| `/ensure-quality` | コード品質の自動改善（make check-all相当） | `ensure-quality` |
+| `/analyze` | 多次元コード分析（品質・アーキテクチャ・性能） | `analyze` |
+| `/improve` | エビデンスベースの改善実装 | `improve` |
+| `/safe-refactor` | 安全なリファクタリング | `safe-refactor` |
+| `/scan` | セキュリティと品質の包括的検証 | `scan` |
 | `/troubleshoot` | 体系的なデバッグ | `troubleshoot` |
 
 ### Issue・プロジェクト管理
@@ -116,7 +116,9 @@ updated_at: 2026-01-22
 
 | コマンド | 説明 | スキル |
 |----------|------|--------|
-| `/review-docs` | ドキュメントレビュー | - |
+| `/review-pr` | PRレビュー（コード品質・セキュリティ・テスト） | `review-pr` |
+| `/review-docs` | ドキュメントレビュー | `review-docs` |
+| `/analyze-conflicts` | PRのコンフリクト分析と解決策提示 | `analyze-conflicts` |
 | `/new-package <name>` | モノレポ内に新しいPythonパッケージを作成 | - |
 | `/setup-repository` | テンプレートリポジトリの初期化（初回のみ） | - |
 | `/index` | コマンド・スキル・エージェント・ディレクトリ構成の一覧表示と更新 | `index` |
@@ -134,6 +136,12 @@ updated_at: 2026-01-22
 | `tdd-development` | t-wada流TDD（Red→Green→Refactor、テスト命名規則） | `/write-tests` |
 | `error-handling` | Pythonエラーハンドリングパターン（Simple/Richパターン選択） | プロアクティブ |
 | `development-guidelines` | 開発プロセスとコーディング規約の確立 | ドキュメント作成時 |
+| `ensure-quality` | コード品質の自動改善（品質修正→コード整理の2フェーズ） | `/ensure-quality` |
+| `analyze` | 多次元コード分析（コード・アーキテクチャ・セキュリティ・パフォーマンス） | `/analyze` |
+| `improve` | エビデンスベースの改善実装（測定→改善→検証） | `/improve` |
+| `safe-refactor` | テストカバレッジを維持しながら安全にリファクタリング | `/safe-refactor` |
+| `scan` | セキュリティと品質の包括的検証（OWASP Top 10準拠） | `/scan` |
+| `troubleshoot` | 体系的なデバッグ（問題特定→原因分析→解決策実装） | `/troubleshoot` |
 
 ### Issue・プロジェクト管理
 
@@ -159,6 +167,14 @@ updated_at: 2026-01-22
 | `create-worktrees` | 複数worktree一括作成 | `/create-worktrees` |
 | `worktree-done` | マージ確認→worktree削除→ブランチ削除の安全なクリーンアップ | `/worktree-done` |
 | `delete-worktrees` | 複数worktree一括削除 | `/delete-worktrees` |
+
+### レビュー・検証
+
+| スキル | 説明 | 呼び出し方法 |
+|--------|------|--------------|
+| `review-pr` | PRの包括的レビュー（7サブエージェント並列実行：品質・セキュリティ・テスト） | `/review-pr` |
+| `review-docs` | ドキュメントの詳細レビュー（完全性・具体性・一貫性・測定可能性） | `/review-docs` |
+| `analyze-conflicts` | PRコンフリクトの詳細分析と解決策提示（リスク評価・依存関係分析） | `/analyze-conflicts` |
 
 ### ドキュメント作成
 
