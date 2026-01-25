@@ -51,7 +51,8 @@ repos:
     rev: v2.7.3
     hooks:
       - id: pip-audit
-        args: [--desc, --fix]
+        # CVE-2026-0994: protobuf DoS vulnerability - no fix available yet (2026-01-25)
+        args: [--desc, --fix, --ignore-vuln, CVE-2026-0994]
 
   # Secret detection (optional - uncomment if needed)
   # - repo: https://github.com/Yelp/detect-secrets
