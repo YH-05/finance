@@ -1,9 +1,17 @@
 """Market package for financial market data analysis.
 
 This package provides core infrastructure for market data handling including:
+- Data fetching (Yahoo Finance, FRED, etc.)
 - Data export (JSON, CSV, SQLite, Agent-optimized JSON)
 - Type definitions for market data
 - Error handling
+
+Submodules
+----------
+yfinance
+    Yahoo Finance data fetcher
+export
+    Data export utilities
 
 Public API
 ----------
