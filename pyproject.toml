@@ -15,7 +15,7 @@ dependencies = [
     # データベース
     "duckdb>=1.0.0",
     # データ分析・可視化
-    "pandas>=2.0.0",
+    "pandas>=2.0.0,<3.0.0",  # pandas 3.0は型互換性の問題があるため2.xに固定
     "numpy>=1.26.0",
     "pyarrow>=15.0.0",
     "matplotlib>=3.8.0",
