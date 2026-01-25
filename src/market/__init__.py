@@ -12,6 +12,8 @@ yfinance
     Yahoo Finance data fetcher
 fred
     Federal Reserve Economic Data (FRED) API integration
+factset
+    FactSet API integration (planned)
 export
     Data export utilities
 
