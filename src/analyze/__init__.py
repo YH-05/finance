@@ -6,6 +6,7 @@ This package provides analysis tools for financial data including:
 - Sector analysis (sector performance, rotation)
 - Earnings analysis (earnings calendar, estimates)
 - Returns calculation (multi-period returns, MTD, YTD)
+- Visualization (charts, heatmaps, price charts)
 - Fundamental analysis (planned)
 - Quantitative analysis (planned)
 
@@ -21,6 +22,8 @@ earnings
     Earnings calendar and earnings data analysis
 returns
     Multi-period returns calculation (1D, 1W, MTD, 1M, 3M, YTD, etc.)
+visualization
+    Financial chart creation module (ChartBuilder, HeatmapChart, CandlestickChart, etc.)
 """
 
 from analyze import sector
