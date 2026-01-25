@@ -21,6 +21,42 @@
 | `finance` | 共通データベースインフラ、ユーティリティ |
 | `market_analysis` | 市場データ取得・分析機能 |
 
+## 🚀 セットアップ
+
+### 基本セットアップ
+
+```bash
+# 依存関係のインストール
+uv sync --all-extras
+
+# Pythonバージョンの固定（推奨）
+uv python pin 3.12  # または 3.13
+```
+
+### MCP Server Setup
+
+このプロジェクトは複数のMCPサーバーを使用して外部サービスと連携します。
+
+#### 1. 設定ファイルの作成
+
+```bash
+cp .mcp.json.template .mcp.json
+```
+
+#### 2. APIキーの設定
+
+`.mcp.json` を編集し、以下のAPIキーを設定してください：
+
+- **Notion API Key** - Notion統合用（任意）
+- **Slack Bot Token** - Slackワークスペース連携用（任意）
+- **Tavily API Key** - Web検索API用（任意）
+- **SEC EDGAR User-Agent** - SEC EDGAR API用（必須：名前とメールアドレス）
+
+詳細な設定手順は [docs/mcp-setup.md](docs/mcp-setup.md) を参照してください。
+
+**セキュリティ注意:**
+- `.mcp.json` は機密情報を含むため、Gitで追跡されません
+- APIキーは安全に管理し、定期的にローテーションしてください
 
 ## ⚠️ よくある問題とトラブルシューティング
 

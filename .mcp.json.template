@@ -48,14 +48,14 @@
             "command": "npx",
             "args": ["-y", "@ramidecodes/mcp-server-notion@latest"],
             "env": {
-                "NOTION_API_KEY": "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"
+                "NOTION_API_KEY": "your_notion_api_key_here"
             }
         },
         "sec-edgar-mcp": {
             "command": "uvx",
             "args": ["--with", "pyrate-limiter<4.0", "sec-edgar-mcp"],
             "env": {
-                "SEC_EDGAR_USER_AGENT": "Yuki Hata (youxitiankaggle@gmail.com)"
+                "SEC_EDGAR_USER_AGENT": "Your Name (your.email@example.com)"
             }
         },
         "rss": {
@@ -69,7 +69,7 @@
             "command": "uvx",
             "args": ["mcp-slack"],
             "env": {
-                "SLACK_BOT_TOKEN": "xoxb-10037291992179-10284587908951-THCxkuDGUjh7Wth1GEAhMAX5"
+                "SLACK_BOT_TOKEN": "your_slack_bot_token_here"
             }
         },
         "context7": {
@@ -80,7 +80,7 @@
             "command": "npx",
             "args": ["-y", "tavily-mcp"],
             "env": {
-                "TAVILY_API_KEY": "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"
+                "TAVILY_API_KEY": "your_tavily_api_key_here"
             }
         },
         "playwright": {
