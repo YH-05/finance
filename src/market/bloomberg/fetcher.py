@@ -35,7 +35,7 @@ from pathlib import Path
 import blpapi
 import pandas as pd
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 from market.bloomberg.constants import (
     DEFAULT_HOST,
     DEFAULT_PORT,

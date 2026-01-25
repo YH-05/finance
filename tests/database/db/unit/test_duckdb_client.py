@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from finance.db.duckdb_client import DuckDBClient
+from database.db.duckdb_client import DuckDBClient
 
 
 class TestDuckDBClient:

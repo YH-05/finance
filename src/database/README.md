@@ -1,10 +1,10 @@
-# finance
+# database
 
 共通インフラパッケージ（データベース・ユーティリティ）
 
 ## 概要
 
-financeパッケージは、プロジェクト全体で使用される共通インフラストラクチャを提供します。
+databaseパッケージは、プロジェクト全体で使用される共通インフラストラクチャを提供します。
 
 **主な機能:**
 - SQLiteクライアント（OLTP: トランザクション処理）
@@ -27,7 +27,7 @@ uv sync --all-extras
 ### 基本的な使い方
 
 ```python
-from finance import get_logger
+from database import get_logger
 
 # ロガーの取得と使用
 logger = get_logger(__name__)
@@ -39,7 +39,7 @@ logger.info("Processing started", item_count=100)
 #### ユースケース1: SQLiteでトランザクション操作
 
 ```python
-from finance.db import SQLiteClient, get_db_path
+from database.db import SQLiteClient, get_db_path
 
 # データベースクライアントの作成
 client = SQLiteClient(get_db_path("sqlite", "market"))
@@ -57,7 +57,7 @@ results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
 #### ユースケース2: DuckDBで分析クエリ
 
 ```python
-from finance.db import DuckDBClient, get_db_path
+from database.db import DuckDBClient, get_db_path
 
 # DuckDBクライアントの作成
 client = DuckDBClient(get_db_path("duckdb", "analytics"))
@@ -76,7 +76,7 @@ result = client.query_df("""
 #### ユースケース3: 構造化ロギング
 
 ```python
-from finance import get_logger
+from database import get_logger
 
 logger = get_logger(__name__)
 
@@ -91,7 +91,7 @@ logger.error("Fetch failed", symbol="AAPL", error="Connection timeout")
 
 <!-- AUTO-GENERATED: STRUCTURE -->
 ```
-finance/
+database/
 ├── __init__.py
 ├── py.typed
 ├── types.py
@@ -128,10 +128,10 @@ finance/
 
 ### トップレベルAPI
 
-financeパッケージから直接インポートできるAPI:
+databaseパッケージから直接インポートできるAPI:
 
 ```python
-from finance import get_logger
+from database import get_logger
 
 logger = get_logger(__name__)
 logger.info("Processing started", item_count=100)
@@ -148,7 +148,7 @@ logger.info("Processing started", item_count=100)
 **使用例**:
 
 ```python
-from finance import get_logger
+from database import get_logger
 
 logger = get_logger(__name__)
 logger.info("Processing started", item_count=100)
@@ -157,7 +157,7 @@ logger.error("Processing failed", error="Invalid input")
 
 ---
 
-### データベースAPI (`finance.db`)
+### データベースAPI (`database.db`)
 
 #### `SQLiteClient`
 
@@ -175,7 +175,7 @@ logger.error("Processing failed", error="Invalid input")
 **使用例**:
 
 ```python
-from finance.db import SQLiteClient, get_db_path
+from database.db import SQLiteClient, get_db_path
 
 # クライアントの初期化
 client = SQLiteClient(get_db_path("sqlite", "market"))
@@ -208,7 +208,7 @@ results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
 **使用例**:
 
 ```python
-from finance.db import DuckDBClient, get_db_path
+from database.db import DuckDBClient, get_db_path
 
 # クライアントの初期化
 client = DuckDBClient(get_db_path("duckdb", "analytics"))
@@ -233,7 +233,7 @@ result = client.query_df("SELECT symbol, AVG(close) FROM df GROUP BY symbol")
 **使用例**:
 
 ```python
-from finance.db import get_db_path
+from database.db import get_db_path
 
 # SQLiteデータベースのパス
 sqlite_path = get_db_path("sqlite", "market")  # data/sqlite/market.db
@@ -244,12 +244,12 @@ duckdb_path = get_db_path("duckdb", "analytics")  # data/duckdb/analytics.duckdb
 
 ---
 
-### 型定義 (`finance.types`)
+### 型定義 (`database.types`)
 
 データ構造の定義。型ヒントに使用:
 
 ```python
-from finance.types import (
+from database.types import (
     DatabaseType,      # "sqlite" | "duckdb"
     DataSource,        # "yfinance" | "fred"
     AssetCategory,     # "stocks" | "forex" | "indices" | "indicators"
@@ -296,7 +296,7 @@ from finance.types import (
 
 ### 他パッケージとの関係
 
-`finance` パッケージはコアインフラとして、以下のパッケージから利用されます:
+`database` パッケージはコアインフラとして、以下のパッケージから利用されます:
 
 - `market_analysis`: 市場データの保存と分析クエリ
 - `rss`: RSSフィードデータの保存
@@ -306,7 +306,7 @@ from finance.types import (
 ## 使用例
 
 ```python
-from finance import get_logger
+from database import get_logger
 
 logger = get_logger(__name__)
 logger.info("Processing started", item_count=100)

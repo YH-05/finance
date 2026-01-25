@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -21,7 +21,7 @@ class SQLiteClient:
 
     Examples
     --------
-    >>> from finance.db import SQLiteClient, get_db_path
+    >>> from database.db import SQLiteClient, get_db_path
     >>> client = SQLiteClient(get_db_path("sqlite", "market"))
     >>> with client.connection() as conn:
     ...     cursor = conn.execute("SELECT 1")

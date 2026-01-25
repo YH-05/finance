@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from finance.types import DatabaseType
+from database.types import DatabaseType
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent

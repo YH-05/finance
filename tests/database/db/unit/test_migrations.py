@@ -3,7 +3,7 @@
 import sqlite3
 from pathlib import Path
 
-from finance.db.migrations.runner import apply_migrations, get_migration_status
+from database.db.migrations.runner import apply_migrations, get_migration_status
 
 
 class TestMigrations:

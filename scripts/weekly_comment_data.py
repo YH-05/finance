@@ -42,7 +42,7 @@ from typing import Any
 import pandas as pd
 import yfinance as yf
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 from market_analysis.utils.date_utils import (
     calculate_weekly_comment_period,
     format_date_japanese,

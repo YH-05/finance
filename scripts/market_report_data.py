@@ -48,7 +48,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 from market_analysis.analysis.earnings import get_upcoming_earnings
 from market_analysis.analysis.returns import generate_returns_report
 from market_analysis.analysis.sector import analyze_sector_performance

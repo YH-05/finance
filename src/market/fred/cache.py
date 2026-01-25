@@ -16,7 +16,7 @@ from typing import Any, Generator
 
 import pandas as pd
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 
 from .types import CacheConfig
 
