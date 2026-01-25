@@ -1,0 +1,28 @@
+{
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "git",
+    "filesystem",
+    "reddit",
+    "memory",
+    "sequential-thinking",
+    "fetch",
+    "time",
+    "wikipedia",
+    "notion",
+    "sec-edgar-mcp",
+    "rss",
+    "slack",
+    "context7",
+    "tavily",
+    "playwright"
+  ],
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)"
+    ]
+  },
+  "env": {
+    "ENABLE_MCP_TOOL_SEARCH": "true"
+  }
+}

@@ -238,7 +238,7 @@ for item in filtered_items:
 ```
 
 詳細なバリデーション関数は共通処理ガイドを参照:
-`.claude/agents/finance_news_collector/common-processing-guide.md` の「ステップ4.1.5」
+`.claude/skills/finance-news-workflow/common-processing-guide.md` の「ステップ4.1.5」
 
 #### ステップ4.0.5: 記事本文取得と要約生成【サブエージェント委譲】
 
@@ -558,7 +558,7 @@ except Exception as e:
 ### 共通処理ガイド
 
 詳細なアルゴリズムについては以下を参照:
-`.claude/agents/finance_news_collector/common-processing-guide.md`
+`.claude/skills/finance-news-workflow/common-processing-guide.md`
 
 ## 判定例
 
@@ -644,7 +644,7 @@ except Exception as e:
 
 ## 参考資料
 
-- **共通処理ガイド**: `.claude/agents/finance_news_collector/common-processing-guide.md`
+- **共通処理ガイド**: `.claude/skills/finance-news-workflow/common-processing-guide.md`
 - **テーマ設定**: `data/config/finance-news-themes.json`
 - **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`
 - **オーケストレーター**: `.claude/agents/finance-news-orchestrator.md`

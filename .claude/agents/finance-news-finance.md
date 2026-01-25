@@ -470,7 +470,7 @@ mutation {
 
 ## 参考資料
 
-- **共通処理ガイド**: `.claude/agents/finance_news_collector/common-processing-guide.md`
+- **共通処理ガイド**: `.claude/skills/finance-news-workflow/common-processing-guide.md`
 - **テーマ設定**: `data/config/finance-news-themes.json`
 - **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`
 - **オーケストレーター**: `.claude/agents/finance-news-orchestrator.md`

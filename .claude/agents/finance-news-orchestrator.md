@@ -151,7 +151,7 @@ gh issue list \
 ### 公開日時設定について
 各テーマ別エージェントは、Issue作成後に**必ず公開日時フィールドを設定**してください。
 この手順を省略すると、GitHub Projectで「No date」と表示されます。
-詳細: `.claude/agents/finance_news_collector/common-processing-guide.md` のステップ3.5を参照
+詳細: `.claude/skills/finance-news-workflow/common-processing-guide.md` のステップ3.5を参照
 ```
 
 ## エラーハンドリング
@@ -224,7 +224,7 @@ except Exception as e:
 ## 参考資料
 
 - **テーマ設定**: `data/config/finance-news-themes.json`
-- **共通処理ガイド**: `.claude/agents/finance_news_collector/common-processing-guide.md`
+- **共通処理ガイド**: `.claude/skills/finance-news-workflow/common-processing-guide.md`
 - **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`
 - **テーマ別エージェント**: `.claude/agents/finance-news-{theme}.md`
 - **コマンド**: `.claude/commands/collect-finance-news.md`

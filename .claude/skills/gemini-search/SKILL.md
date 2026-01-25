@@ -1,8 +1,6 @@
 ---
 name: gemini-search
-description: Gemini CLIを使用したWeb検索スキル。
-/gemini-search コマンドで使用。ビルトインのweb_searchの代わりにGemini CLIを使用。
-
+description: Gemini CLIを使用したWeb検索スキル。ビルトインのweb_searchの代わりにGemini CLIを使用。
 allowed-tools: Bash(gemini:*)
 ---
 
