@@ -3,6 +3,7 @@
 This package provides analysis tools for financial data including:
 - Technical analysis (indicators, patterns, signals)
 - Statistical analysis (descriptive statistics, correlation)
+- Sector analysis (sector performance, rotation)
 - Fundamental analysis (planned)
 - Quantitative analysis (planned)
 
@@ -12,14 +13,17 @@ technical
     Technical analysis module (moving averages, RSI, MACD, etc.)
 statistics
     Statistical analysis module (descriptive statistics, correlation)
+sector
+    Sector analysis module (sector performance, ETF tracking)
 """
 
-from .statistics.types import (
+from analyze import sector
+from analyze.statistics.types import (
     CorrelationMethod,
     CorrelationResult,
     DescriptiveStats,
 )
-from .technical import (
+from analyze.technical import (
     BollingerBandsParams,
     BollingerBandsResult,
     EMAParams,
@@ -44,6 +48,7 @@ __all__ = [
     "ReturnParams",
     "SMAParams",
     "VolatilityParams",
+    "sector",
 ]
 
 __version__ = "0.1.0"
