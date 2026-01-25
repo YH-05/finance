@@ -150,6 +150,7 @@ updated_at: 2026-01-22
 | `issue-creation` | GitHub Issue作成とタスク分解（クイック/パッケージ/軽量の3モード） | `/issue` |
 | `issue-refinement` | Issue内容のブラッシュアップ（8項目の詳細確認） | `/issue-refine` |
 | `issue-implementation` | Issue自動実装とPR作成（Python/Agent/Command/Skillの4タイプ対応） | `/issue-implement` |
+| `project-implementation` | Project内のTodo/In Progress Issueを依存関係順に自動実装 | `/project-implement` |
 | `issue-sync` | Issueコメントから進捗・タスク・仕様変更の同期 | `/sync-issue` |
 | `new-project` | 新規プロジェクト作成（パッケージ/軽量の2モード） | `/new-project` |
 | `project-management` | GitHub Projectとproject.mdの作成・管理・同期 | `/new-project` |
