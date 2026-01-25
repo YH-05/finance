@@ -42,6 +42,7 @@ for result in results:
 | `market.yfinance` | Yahoo Finance データ取得 | ✅ 実装済み |
 | `market.fred` | FRED 経済指標データ取得 | ✅ 実装済み |
 | `market.factset` | FactSet データ取得 | 🚧 計画中 |
+| `market.alternative` | オルタナティブデータ | 🚧 計画中 |
 | `market.bloomberg` | Bloomberg データ取得 | 🚧 計画中 |
 | `market.export` | データエクスポート | ✅ 実装済み |
 
@@ -169,19 +170,32 @@ src/market/
 ├── README.md
 ├── types.py             # 共通型定義
 ├── errors.py            # 共通エラー定義
-├── yfinance/            # Yahoo Finance 連携
+├── yfinance/            # Yahoo Finance データ取得
 │   ├── __init__.py
-│   └── ...
-├── fred/                # FRED 連携
+│   ├── fetcher.py
+│   ├── types.py
+│   └── errors.py
+├── fred/                # FRED 経済指標データ取得
 │   ├── __init__.py
-│   └── ...
+│   ├── README.md
+│   ├── fetcher.py
+│   ├── base_fetcher.py
+│   ├── cache.py
+│   ├── constants.py
+│   ├── types.py
+│   └── errors.py
 ├── factset/             # FactSet 連携（計画中）
 │   ├── __init__.py
 │   └── README.md
+├── alternative/         # オルタナティブデータ（計画中）
+│   ├── __init__.py
+│   └── README.md
 ├── export/              # データエクスポート
-│   └── ...
+│   ├── __init__.py
+│   └── exporter.py
 └── utils/               # ユーティリティ
-    └── ...
+    ├── __init__.py
+    └── logging_config.py
 ```
 
 ## 開発
