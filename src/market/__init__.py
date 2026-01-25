@@ -10,6 +10,8 @@ Submodules
 ----------
 yfinance
     Yahoo Finance data fetcher
+fred
+    Federal Reserve Economic Data (FRED) API integration
 export
     Data export utilities
 
