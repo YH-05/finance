@@ -230,9 +230,14 @@ def skewed_series() -> pd.Series:
     return pd.Series([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 10.0, 15.0, 20.0])
 
 
-# ============================================================================
-# Common Fixtures
-# ============================================================================
+@pytest.fixture
+def sample_data() -> list[dict[str, Any]]:
+    """Create sample data for testing."""
+    return [
+        {"id": 1, "name": "Item 1", "value": 100},
+        {"id": 2, "name": "Item 2", "value": 200},
+        {"id": 3, "name": "Item 3", "value": 300},
+    ]
 
 
 @pytest.fixture
