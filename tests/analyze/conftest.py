@@ -10,6 +10,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
+# ============================================================================
+# Technical Analysis Fixtures
+# ============================================================================
+
 
 @pytest.fixture
 def sample_prices() -> pd.Series:
@@ -67,6 +71,35 @@ def constant_prices() -> pd.Series:
     return pd.Series([100.0] * 50)
 
 
+# ============================================================================
+# Statistics Fixtures
+# ============================================================================
+
+
+@pytest.fixture
+def sample_series() -> pd.Series:
+    """Create a sample numeric series for testing."""
+    return pd.Series([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0])
+
+
+@pytest.fixture
+def sample_series_with_nan() -> pd.Series:
+    """Create a sample series with NaN values."""
+    return pd.Series([1.0, 2.0, np.nan, 4.0, 5.0, np.nan, 7.0, 8.0, 9.0, 10.0])
+
+
+@pytest.fixture
+def empty_series() -> pd.Series:
+    """Create an empty series."""
+    return pd.Series(dtype=np.float64)
+
+
+@pytest.fixture
+def constant_series() -> pd.Series:
+    """Create a series with constant values (zero variance)."""
+    return pd.Series([5.0, 5.0, 5.0, 5.0, 5.0])
+
+
 @pytest.fixture
 def sample_returns(sample_prices: pd.Series) -> pd.Series:
     """Create sample return data from sample prices.
@@ -74,6 +107,38 @@ def sample_returns(sample_prices: pd.Series) -> pd.Series:
     Returns a Series of percentage returns.
     """
     return sample_prices.pct_change()
+
+
+@pytest.fixture
+def benchmark_returns() -> pd.Series:
+    """Create benchmark return series for beta calculations."""
+    return pd.Series(
+        [0.005, 0.01, -0.005, 0.015, -0.01, 0.0075, 0.0025, -0.0025, 0.01, 0.005]
+    )
+
+
+@pytest.fixture
+def sample_dataframe() -> pd.DataFrame:
+    """Create sample DataFrame with multiple series for correlation matrix."""
+    return pd.DataFrame(
+        {
+            "A": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+            "B": [2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0],
+            "C": [10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0],
+        }
+    )
+
+
+@pytest.fixture
+def skewed_series() -> pd.Series:
+    """Create a skewed series for skewness testing."""
+    # Right-skewed data (positive skewness)
+    return pd.Series([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 10.0, 15.0, 20.0])
+
+
+# ============================================================================
+# Common Fixtures
+# ============================================================================
 
 
 @pytest.fixture
