@@ -4,6 +4,152 @@ Issue 自動実装の詳細ガイドです。
 
 ---
 
+## 0. 複数Issue連続実装モード
+
+### 0.1 引数の解析
+
+**引数解析ロジック**:
+
+```python
+# 概念的な処理
+args = arguments.split()
+issue_numbers = [int(n) for n in args if n.isdigit()]
+
+if len(issue_numbers) == 0:
+    # エラー: 引数なし
+elif len(issue_numbers) == 1:
+    # 単一Issueモード（従来通り）
+else:
+    # 複数Issue連続実装モード
+```
+
+### 0.2 複数Issue連続実装フロー
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                  複数Issue連続実装                        │
+└─────────────────────────────────────────────────────────┘
+
+For each issue in issue_numbers:
+    │
+    ├─ Issue #{n} の実装を開始
+    │   └─ Phase 0-5 を実行（通常のワークフロー）
+    │
+    ├─ Issue #{n} の実装完了？
+    │   │
+    │   ├─ 成功
+    │   │   ├─ コミット（PR作成なし）
+    │   │   │   └─ git add -A && git commit -m "feat: ... (Fixes #{n})"
+    │   │   │
+    │   │   ├─ 最後のIssue？
+    │   │   │   ├─ YES → PR作成へ
+    │   │   │   └─ NO  → /clear して次のIssueへ
+    │   │   │
+    │   │   └─ /clear 実行
+    │   │       └─ 次のIssueへ進む
+    │   │
+    │   └─ 失敗（エラー発生）
+    │       └─ ユーザーに確認
+    │           ├─ "スキップして次へ" → 次のIssueへ
+    │           ├─ "停止してここまでをPR" → PR作成へ
+    │           └─ "全て中断" → 処理終了
+    │
+    └─ 次のIssueへ
+
+最後のIssue完了後:
+    │
+    ├─ 全コミットをプッシュ
+    │   └─ git push -u origin <branch>
+    │
+    ├─ PR作成
+    │   └─ gh pr create --title "..." --body "..."
+    │
+    └─ 完了レポート出力
+```
+
+### 0.3 コミットメッセージ形式
+
+各Issueのコミットメッセージ:
+
+```bash
+# Issue #{n} のコミット
+git commit -m "$(cat <<'EOF'
+feat(<scope>): <変更内容の要約>
+
+<詳細説明>
+
+Fixes #<n>
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+### 0.4 PR本文形式（複数Issue）
+
+```markdown
+## Summary
+
+複数のIssueを連続実装しました。
+
+### 実装したIssue
+- #958: analyze → market依存関係の確立
+- #959: factor → market + analyze依存関係の確立
+- #960: strategy → market + analyze + factor依存関係の確立
+
+### 変更概要
+- <変更点1>
+- <変更点2>
+- <変更点3>
+
+## Test plan
+- [ ] make check-all が成功することを確認
+- [ ] 各Issueの受け入れ条件を確認
+
+Fixes #958, #959, #960
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+### 0.5 エラーハンドリング
+
+```yaml
+# エラー発生時のユーザー確認
+question: "Issue #{number} でエラーが発生しました。どうしますか？"
+header: "エラー対応"
+options:
+  - label: "スキップして次へ進む"
+    description: "このIssueをスキップし、次のIssueに進む"
+  - label: "停止してここまでをPR"
+    description: "エラー発生前までの変更でPRを作成"
+  - label: "全て中断"
+    description: "処理を中断し、変更はコミット済みのまま維持"
+```
+
+**各選択肢の動作**:
+
+| 選択肢 | 動作 | 結果 |
+|--------|------|------|
+| スキップして次へ | 失敗したIssueを記録し、次のIssueに進む | 最終的にPRに含まれない |
+| 停止してここまでをPR | 成功したIssueまでの変更でPR作成 | 失敗以降は未実装 |
+| 全て中断 | 処理を完全停止 | コミット済み変更は残る |
+
+### 0.6 /clear の実行
+
+各Issue完了後（最後のIssue以外）:
+
+```bash
+# コンテキストをクリアして次のIssueへ
+/clear
+```
+
+**注意**: /clear はコンテキストをリセットしますが、以下は維持されます:
+- Git の変更・コミット履歴
+- 作成したファイル
+- ブランチの状態
+
+---
+
 ## 1. Phase 0: Issue検証・準備・タイプ判定
 
 ### 1.1 引数の検証
@@ -15,9 +161,11 @@ Issue 自動実装の詳細ガイドです。
 
 使用方法:
   /issue-implement <issue_number>
+  /issue-implement <issue_number1> <issue_number2> ...
 
 例:
   /issue-implement 123
+  /issue-implement 958 959 960
 ```
 
 ### 1.2 Issue情報の取得

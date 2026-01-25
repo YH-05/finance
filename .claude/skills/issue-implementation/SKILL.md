@@ -4,6 +4,7 @@ description: |
   GitHub Issue の自動実装と PR 作成を行うスキル。
   /issue-implement コマンドで使用。
   Python/Agent/Command/Skill の4つの開発タイプに対応。
+  複数Issue番号を指定すると連続実装し、1つのPRにまとめる。
 allowed-tools: Bash, Read, Write, Glob, Grep, AskUserQuestion, Task
 ---
 
@@ -19,6 +20,7 @@ GitHub Issue から自動実装・PR作成までを一括実行するナレッ�
 - **Python ワークフロー**: テスト作成→実装→品質保証→PR作成
 - **Agent/Command/Skill ワークフロー**: 要件分析→設計・作成→検証→PR作成
 - **自動品質チェック**: make check-all の自動実行と修正
+- **複数Issue連続実装**: 複数のIssueを連続実装し、1つのPRにまとめる
 
 ## いつ使用するか
 
@@ -34,6 +36,7 @@ GitHub Issue から自動実装・PR作成までを一括実行するナレッ�
 ### 明示的な使用（ユーザー要求）
 
 - `/issue-implement <番号>` コマンドの実行時
+- `/issue-implement <番号1> <番号2> ...` 複数Issue連続実装時
 
 ## 対応する開発タイプ
 
@@ -43,6 +46,55 @@ GitHub Issue から自動実装・PR作成までを一括実行するナレッ�
 | `agent` | エージェント開発 | 要件分析→設計・作成→検証→PR作成 |
 | `command` | コマンド開発 | 要件分析→設計・作成→検証→PR作成 |
 | `skill` | スキル開発 | 要件分析→設計・作成→検証→PR作成 |
+
+## 複数Issue連続実装モード
+
+複数のIssue番号を指定すると、連続実装モードが有効になります。
+
+### コマンド構文
+
+```bash
+# 単一Issue（従来通り）
+/issue-implement 958
+
+# 複数Issue（連続実装モード）
+/issue-implement 958 959 960
+```
+
+### 処理フロー（複数Issue）
+
+```
+Issue #958 実装 → コミット → /clear
+     ↓
+Issue #959 実装 → コミット → /clear
+     ↓
+Issue #960 実装 → コミット → PR作成（最後のみ）
+```
+
+### 動作の違い
+
+| 項目 | 単一Issue | 複数Issue |
+|------|-----------|-----------|
+| 各Issue完了後 | コミット + PR作成 | コミットのみ + /clear |
+| PR作成タイミング | 即座 | 最後のIssueのみ |
+| PR形式 | 1 Issue = 1 PR | 複数 Issue = 1 PR |
+| エラー時 | 即座に停止 | ユーザーに確認（続行/停止） |
+
+### エラーハンドリング（複数Issue）
+
+途中でエラーが発生した場合、ユーザーに確認します：
+
+```yaml
+question: "Issue #{number} でエラーが発生しました。どうしますか？"
+header: "エラー対応"
+options:
+  - label: "スキップして次へ進む"
+    description: "このIssueをスキップし、次のIssueに進む"
+  - label: "停止してここまでをPR"
+    description: "エラー発生前までの変更でPRを作成"
+  - label: "全て中断"
+    description: "処理を中断し、変更はコミット済みのまま維持"
+```
 
 ## プロセス
 
@@ -195,7 +247,7 @@ Issue 実装の詳細ガイド：
 
 ## 使用例
 
-### 例1: Python 実装
+### 例1: Python 実装（単一Issue）
 
 **状況**: Python コードの Issue を実装したい
 
@@ -234,7 +286,52 @@ Issue 実装の詳細ガイド：
 
 ---
 
-### 例2: エージェント作成
+### 例2: 複数Issue連続実装
+
+**状況**: 依存関係のある複数のIssueを連続で実装したい
+
+**処理**:
+```bash
+/issue-implement 958 959 960
+```
+
+**処理フロー**:
+1. Issue #958 を実装 → コミット → /clear
+2. Issue #959 を実装 → コミット → /clear
+3. Issue #960 を実装 → コミット → PR作成
+
+**期待される出力**:
+```markdown
+## /issue-implement #958 #959 #960 完了
+
+### サマリー
+- 実装したIssue: 3件
+- 作成したPR: #500
+
+### Issue別結果
+| Issue | タイトル | 状態 |
+|-------|----------|------|
+| #958 | analyze → market依存関係の確立 | ✓ |
+| #959 | factor連携 | ✓ |
+| #960 | strategy連携 | ✓ |
+
+### コミット履歴
+1. feat(analyze): market依存関係を確立 (Fixes #958)
+2. feat(factor): market+analyze依存関係を確立 (Fixes #959)
+3. feat(strategy): 全パッケージ依存関係を確立 (Fixes #960)
+
+### 作成したPR
+- PR: #500
+- URL: https://github.com/YH-05/finance/pull/500
+
+### 次のステップ
+1. PRをレビュー: gh pr view 500 --web
+2. PRをマージ: /merge-pr 500
+```
+
+---
+
+### 例4: エージェント作成
 
 **状況**: 新しいエージェントを作成する Issue
 
@@ -263,6 +360,19 @@ Issue 実装の詳細ガイド：
 - Issue のチェックボックスが更新されている
 - GitHub Project ステータスが更新されている
 - 完了レポートが出力されている
+
+### 複数Issue連続実装時の追加基準
+
+**必須（MUST）**:
+- [ ] 各Issueごとにコミットが作成されている
+- [ ] 最後のIssue完了後にPRが作成されている
+- [ ] エラー発生時にユーザーに確認している
+- [ ] 全Issueの変更が1つのPRにまとまっている
+
+**推奨（SHOULD）**:
+- 各Issueのコミットメッセージに `Fixes #<number>` が含まれている
+- PR本文に全ての実装Issueがリストされている
+- 進捗レポートが各Issue完了時に出力されている
 
 ## 出力フォーマット
 
@@ -362,6 +472,16 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
   - [ ] 🚨 **Skill開発**: `skill-creator` エージェントが要件分析→設計→実装→検証を一括実行
   - [ ] Command開発: `command-expert` エージェントで実行
 - [ ] Phase X4: PRが作成され、CIがパス
+
+### 複数Issue連続実装ワークフロー
+
+- [ ] 引数から複数のIssue番号が正しく解析されている
+- [ ] 各Issueに対して適切なワークフローが実行されている
+- [ ] 各Issue完了後にコミットが作成されている（最後以外は /clear 実行）
+- [ ] エラー発生時にユーザーに確認し、選択に応じた処理が実行されている
+- [ ] 最後のIssue完了後にPRが作成されている
+- [ ] PR本文に全ての実装Issueがリストされている
+- [ ] 完了レポートに全Issueの結果が含まれている
 
 ## 関連スキル
 
