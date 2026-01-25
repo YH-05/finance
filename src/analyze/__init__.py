@@ -4,6 +4,7 @@ This package provides analysis tools for financial data including:
 - Technical analysis (indicators, patterns, signals)
 - Statistical analysis (descriptive statistics, correlation)
 - Sector analysis (sector performance, rotation)
+- Earnings analysis (earnings calendar, estimates)
 - Fundamental analysis (planned)
 - Quantitative analysis (planned)
 
@@ -15,9 +16,12 @@ statistics
     Statistical analysis module (descriptive statistics, correlation)
 sector
     Sector analysis module (sector performance, ETF tracking)
+earnings
+    Earnings calendar and earnings data analysis
 """
 
 from analyze import sector
+from analyze.earnings import EarningsCalendar, EarningsData, get_upcoming_earnings
 from analyze.statistics.types import (
     CorrelationMethod,
     CorrelationResult,
@@ -42,12 +46,15 @@ __all__ = [
     "CorrelationResult",
     "DescriptiveStats",
     "EMAParams",
+    "EarningsCalendar",
+    "EarningsData",
     "MACDParams",
     "MACDResult",
     "RSIParams",
     "ReturnParams",
     "SMAParams",
     "VolatilityParams",
+    "get_upcoming_earnings",
     "sector",
 ]
 
