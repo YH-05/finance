@@ -45,7 +45,7 @@ issue_number: GitHub Issue 番号（必須）
 
 | タイプ | 対象 | ワークフロー |
 |--------|------|--------------|
-| `python` | Pythonコード開発 | テスト作成→実装→品質保証→PR作成 |
+| `python` | Pythonコード開発 | テスト作成→データモデル設計→実装→コード整理→品質保証→PR作成 |
 | `agent` | エージェント開発 | 要件分析→設計・作成→検証→PR作成 |
 | `command` | コマンド開発 | 要件分析→設計・作成→検証→PR作成 |
 | `skill` | スキル開発 | 要件分析→設計・作成→検証→PR作成 |
@@ -64,9 +64,11 @@ issue_number: GitHub Issue 番号（必須）
 │                                                             │
 │ 3. タイプ別ワークフロー実行                                 │
 │    │                                                        │
-│    ├─ Python: Phase 1-5                                     │
+│    ├─ Python: Phase 1-7                                     │
 │    │  ├─ test-writer でテスト作成（Red）                   │
+│    │  ├─ pydantic-model-designer でデータモデル設計        │
 │    │  ├─ feature-implementer で実装（Green→Refactor）      │
+│    │  ├─ code-simplifier でコード整理                      │
 │    │  ├─ quality-checker で品質保証                        │
 │    │  └─ /commit-and-pr でPR作成                           │
 │    │                                                        │
@@ -85,6 +87,7 @@ issue_number: GitHub Issue 番号（必須）
 | エージェント | 用途 |
 |--------------|------|
 | test-writer | テスト作成（Python実装） |
+| pydantic-model-designer | Pydanticモデル設計（Python実装） |
 | feature-implementer | TDD実装（Python実装） |
 | quality-checker | 品質自動修正 |
 | code-simplifier | コード整理 |
@@ -165,6 +168,7 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
 |-------|------|------|
 | 0. 検証・準備 | ✓ | Issue情報取得済み |
 | 1. テスト作成 | ✓ | {test_count} tests |
+| 2. データモデル設計 | ✓ | {model_count} models |
 ...
 
 ## 次のステップ
@@ -179,9 +183,11 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
 | 0 | Issue not found | 処理中断、番号確認を案内 |
 | 0 | Issue closed | ユーザーに確認（AskUserQuestion は使用しない） |
 | 1 | Test creation failed | 最大3回リトライ |
-| 2 | Implementation failed | タスク分割して再試行 |
-| 3 | Quality check failed | 自動修正（最大5回） |
-| 4 | CI failed | エラー分析 → 修正 → 再プッシュ |
+| 2 | Model design failed | 要件を再確認、シンプルなモデルから開始 |
+| 3 | Implementation failed | タスク分割して再試行 |
+| 4 | Code simplification failed | 変更対象を絞って再試行 |
+| 5 | Quality check failed | 自動修正（最大5回） |
+| 6 | CI failed | エラー分析 → 修正 → 再プッシュ |
 
 ## 完了条件
 
@@ -189,10 +195,12 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
 
 - [ ] Phase 0: Issue情報が取得でき、開発タイプが判定
 - [ ] Phase 1: テストがRed状態で作成
-- [ ] Phase 2: 全タスクが実装され、Issueチェックボックスが更新
-- [ ] Phase 3: make check-all が成功
-- [ ] Phase 4: PRが作成され、CIがパス
-- [ ] Phase 5: 完了レポートが出力
+- [ ] Phase 2: Pydanticモデルが作成され、make typecheckがパス
+- [ ] Phase 3: 全タスクが実装され、Issueチェックボックスが更新
+- [ ] Phase 4: コード整理が完了
+- [ ] Phase 5: make check-all が成功
+- [ ] Phase 6: PRが作成され、CIがパス
+- [ ] Phase 7: 完了レポートが出力
 
 ### Agent/Command/Skill ワークフロー
 

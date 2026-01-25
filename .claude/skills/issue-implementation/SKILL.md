@@ -39,7 +39,7 @@ GitHub Issue から自動実装・PR作成までを一括実行するナレッ�
 
 | タイプ | 対象 | ワークフロー |
 |--------|------|--------------|
-| `python` | Pythonコード開発 | テスト作成→実装→品質保証→PR作成 |
+| `python` | Pythonコード開発 | テスト作成→データモデル設計→実装→コード整理→品質保証→PR作成 |
 | `agent` | エージェント開発 | 要件分析→設計・作成→検証→PR作成 |
 | `command` | コマンド開発 | 要件分析→設計・作成→検証→PR作成 |
 | `skill` | スキル開発 | 要件分析→設計・作成→検証→PR作成 |
@@ -74,7 +74,7 @@ Phase 0: Issue検証・タイプ判定
     └─ 対象パッケージ特定（python タイプの場合）
 ```
 
-### Python ワークフロー（Phase 1-5）
+### Python ワークフロー（Phase 1-7）
 
 **🚨 重要**: Python 開発では、各 Phase を専門のサブエージェントに**必ず委譲**します。
 直接コードを書くのではなく、サブエージェントに全ての開発作業を委譲してください。
@@ -85,23 +85,37 @@ Phase 1: テスト作成
         ├─ 受け入れ条件ごとにテストケース作成
         └─ Red状態（失敗するテスト）で完了
 
-Phase 2: 実装
+Phase 2: データモデル設計
+    └─ 🚨 pydantic-model-designer サブエージェントに**全委譲**
+        ├─ Issue要件からPydanticモデルを設計
+        ├─ types.py または models/ に配置
+        ├─ フィールド定義（型、制約、バリデーション）
+        └─ make typecheck でパス確認
+
+Phase 3: 実装
     └─ 🚨 feature-implementer サブエージェントに**全委譲**
         ├─ TDDサイクル実行（Red→Green→Refactor）
+        ├─ Phase 2で作成したモデルを活用
         ├─ 各タスク完了時に Issue チェックボックス更新
         └─ quality-checker(--quick) でパス確認
 
-Phase 3: 品質保証
+Phase 4: コード整理
+    └─ 🚨 code-simplifier サブエージェントに**全委譲**
+        ├─ 型ヒント完全化
+        ├─ Docstring追加（NumPy形式）
+        ├─ 命名規則統一
+        └─ 不要コードの削除
+
+Phase 5: 品質保証
     └─ 🚨 quality-checker サブエージェントに**全委譲**（--auto-fix）
         ├─ 自動修正ループ（最大5回）
         └─ make check-all 成功で完了
 
-Phase 4: PR作成
-    ├─ 🚨 code-simplifier サブエージェントに**全委譲**
+Phase 6: PR作成
     ├─ /commit-and-pr コマンド実行
     └─ CI確認（最大5分待機）
 
-Phase 5: 完了処理
+Phase 7: 完了処理
     ├─ GitHub Project ステータス更新
     └─ 完了レポート出力
 ```
@@ -151,6 +165,7 @@ gh pr checks "$PR_NUMBER" --watch
 | エージェント | 用途 | 委譲 |
 |--------------|------|------|
 | test-writer | 🚨 **テスト作成を全委譲**（Python実装） | 必須 |
+| pydantic-model-designer | 🚨 **データモデル設計を全委譲**（Pydanticモデル作成） | 必須 |
 | feature-implementer | 🚨 **TDD実装を全委譲**（Python実装） | 必須 |
 | quality-checker | 🚨 **品質自動修正を全委譲** | 必須 |
 | code-simplifier | 🚨 **コード整理を全委譲** | 必須 |
@@ -191,10 +206,12 @@ Issue 実装の詳細ガイド：
 
 1. Phase 0: Issue検証（python タイプ判定）
 2. Phase 1: test-writer でテスト作成
-3. Phase 2: feature-implementer で実装
-4. Phase 3: quality-checker で品質保証
-5. Phase 4: PR作成
-6. Phase 5: 完了処理
+3. Phase 2: pydantic-model-designer でデータモデル設計
+4. Phase 3: feature-implementer で実装
+5. Phase 4: code-simplifier でコード整理
+6. Phase 5: quality-checker で品質保証
+7. Phase 6: PR作成
+8. Phase 7: 完了処理
 
 **期待される出力**:
 ```markdown
@@ -207,10 +224,12 @@ Issue 実装の詳細ガイド：
 |-------|------|
 | 0. 検証・準備 | ✓ |
 | 1. テスト作成 | ✓ (5 tests) |
-| 2. 実装 | ✓ (3/3 tasks) |
-| 3. 品質保証 | ✓ make check-all PASS |
-| 4. PR作成 | ✓ #456 |
-| 5. 完了処理 | ✓ |
+| 2. データモデル設計 | ✓ (3 models) |
+| 3. 実装 | ✓ (3/3 tasks) |
+| 4. コード整理 | ✓ code-simplifier |
+| 5. 品質保証 | ✓ make check-all PASS |
+| 6. PR作成 | ✓ #456 |
+| 7. 完了処理 | ✓ |
 ```
 
 ---
@@ -285,7 +304,12 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
 |-------|------|------|
 | 0. 検証・準備 | ✓ | Issue情報取得済み |
 | 1. テスト作成 | ✓ | {test_count} tests |
-...
+| 2. データモデル設計 | ✓ | {model_count} models |
+| 3. 実装 | ✓ | {task_count} tasks |
+| 4. コード整理 | ✓ | code-simplifier |
+| 5. 品質保証 | ✓ | make check-all PASS |
+| 6. PR作成 | ✓ | #{pr_number} |
+| 7. 完了処理 | ✓ | Project更新済み |
 
 ## 次のステップ
 1. PRをレビュー: gh pr view {pr_number} --web
@@ -300,9 +324,11 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
 |-------|--------|------|
 | 0 | Issue not found | 処理中断、番号確認を案内 |
 | 1 | Test creation failed | 最大3回リトライ |
-| 2 | Implementation failed | タスク分割して再試行 |
-| 3 | Quality check failed | 自動修正（最大5回） |
-| 4 | CI failed | エラー分析 → 修正 → 再プッシュ |
+| 2 | Model design failed | 要件を再確認、シンプルなモデルから開始 |
+| 3 | Implementation failed | タスク分割して再試行 |
+| 4 | Code simplification failed | 変更対象を絞って再試行 |
+| 5 | Quality check failed | 自動修正（最大5回） |
+| 6 | CI failed | エラー分析 → 修正 → 再プッシュ |
 
 ### Agent/Command/Skill ワークフロー
 
@@ -319,10 +345,12 @@ Phase 0: 検証・準備・タイプ判定 ✓ 完了
 
 - [ ] Phase 0: Issue情報が取得でき、開発タイプが `python` と判定
 - [ ] Phase 1: 🚨 **test-writer に委譲**してテストがRed状態で作成
-- [ ] Phase 2: 🚨 **feature-implementer に委譲**して全タスクが実装され、Issueチェックボックスが更新
-- [ ] Phase 3: 🚨 **quality-checker に委譲**して make check-all が成功
-- [ ] Phase 4: 🚨 **code-simplifier に委譲**後、PRが作成され、CIがパス
-- [ ] Phase 5: 完了レポートが出力
+- [ ] Phase 2: 🚨 **pydantic-model-designer に委譲**してPydanticモデルが作成され、make typecheckがパス
+- [ ] Phase 3: 🚨 **feature-implementer に委譲**して全タスクが実装され、Issueチェックボックスが更新
+- [ ] Phase 4: 🚨 **code-simplifier に委譲**してコード整理が完了
+- [ ] Phase 5: 🚨 **quality-checker に委譲**して make check-all が成功
+- [ ] Phase 6: PRが作成され、CIがパス
+- [ ] Phase 7: 完了レポートが出力
 
 **🚨 禁止**: 直接コードを編集することは禁止。必ず上記エージェントに委譲すること。
 

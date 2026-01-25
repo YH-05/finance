@@ -5,7 +5,8 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:github.com)",
-      "Skill(new-project)"
+      "Skill(new-project)",
+      "mcp__rss__rss_fetch_feed"
     ]
   },
   "enableAllProjectMcpServers": true,
