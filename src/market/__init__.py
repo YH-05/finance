@@ -4,6 +4,7 @@ This package provides core infrastructure for market data handling including:
 - Data fetching (Yahoo Finance, FRED, etc.)
 - Data export (JSON, CSV, SQLite, Agent-optimized JSON)
 - Type definitions for market data
+- JSON schema definitions for validation
 - Error handling
 
 Submodules
@@ -18,6 +19,8 @@ export
     Data export utilities
 alternative
     Alternative data sources (planned)
+schema
+    JSON schema definitions (Pydantic V2 models)
 
 Public API
 ----------
@@ -33,10 +36,28 @@ AgentOutput
     Structured output for AI agents
 ExportError
     Exception for export operations
+StockDataMetadata
+    Metadata for stock price data
+EconomicDataMetadata
+    Metadata for economic indicator data
+MarketConfig
+    Complete market data configuration
 """
 
 from .errors import CacheError, ErrorCode, ExportError, MarketError
 from .export import DataExporter
+from .schema import (
+    CacheConfig,
+    DataSourceConfig,
+    DateRange,
+    EconomicDataMetadata,
+    ExportConfig,
+    MarketConfig,
+    StockDataMetadata,
+    validate_config,
+    validate_economic_metadata,
+    validate_stock_metadata,
+)
 from .types import (
     AgentOutput,
     AgentOutputMetadata,
@@ -49,13 +70,23 @@ __all__ = [
     "AgentOutput",
     "AgentOutputMetadata",
     "AnalysisResult",
+    "CacheConfig",
     "CacheError",
     "DataExporter",
     "DataSource",
+    "DataSourceConfig",
+    "DateRange",
+    "EconomicDataMetadata",
     "ErrorCode",
+    "ExportConfig",
     "ExportError",
+    "MarketConfig",
     "MarketDataResult",
     "MarketError",
+    "StockDataMetadata",
+    "validate_config",
+    "validate_economic_metadata",
+    "validate_stock_metadata",
 ]
 
 __version__ = "0.1.0"
