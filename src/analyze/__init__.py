@@ -2,6 +2,7 @@
 
 This package provides analysis tools for financial data including:
 - Technical analysis (indicators, patterns, signals)
+- Sector analysis (sector performance, rotation)
 - Fundamental analysis (planned)
 - Quantitative analysis (planned)
 
@@ -9,9 +10,12 @@ Submodules
 ----------
 technical
     Technical analysis module (moving averages, RSI, MACD, etc.)
+sector
+    Sector analysis module (sector performance, ETF tracking)
 """
 
-from .technical import (
+from analyze import sector
+from analyze.technical import (
     BollingerBandsParams,
     BollingerBandsResult,
     EMAParams,
@@ -24,6 +28,7 @@ from .technical import (
 )
 
 __all__ = [
+    # Technical analysis
     "BollingerBandsParams",
     "BollingerBandsResult",
     "EMAParams",
@@ -33,6 +38,8 @@ __all__ = [
     "ReturnParams",
     "SMAParams",
     "VolatilityParams",
+    # Sector analysis
+    "sector",
 ]
 
 __version__ = "0.1.0"
