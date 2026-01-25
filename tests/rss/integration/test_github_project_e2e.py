@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from pytest_httpserver import HTTPServer  # type: ignore[import-untyped]
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 from rss import FeedFetcher, FeedManager, FeedReader
 
 logger = get_logger(__name__)

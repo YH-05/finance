@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from finance.db.sqlite_client import SQLiteClient
+from database.db.sqlite_client import SQLiteClient
 
 
 class TestSQLiteClient:

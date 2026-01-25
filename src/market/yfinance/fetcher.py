@@ -11,7 +11,7 @@ from typing import Any
 import pandas as pd
 import yfinance as yf
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 from market.yfinance.errors import DataFetchError, ErrorCode, ValidationError
 from market.yfinance.types import (
     CacheConfig,

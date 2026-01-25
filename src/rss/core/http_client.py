@@ -20,7 +20,7 @@ def _get_logger() -> Any:
         Logger instance (structlog or standard logging)
     """
     try:
-        from finance.utils.logging_config import get_logger
+        from database.utils.logging_config import get_logger
 
         return get_logger(__name__, module="http_client")
     except ImportError:

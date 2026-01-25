@@ -3,8 +3,8 @@
 import sqlite3
 from pathlib import Path
 
-from finance.types import MigrationInfo
-from finance.utils.logging_config import get_logger
+from database.types import MigrationInfo
+from database.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -74,8 +74,8 @@ def apply_migrations(db_path: Path) -> int:
 
     Examples
     --------
-    >>> from finance.db import get_db_path
-    >>> from finance.db.migrations import apply_migrations
+    >>> from database.db import get_db_path
+    >>> from database.db.migrations import apply_migrations
     >>> count = apply_migrations(get_db_path("sqlite", "market"))
     """
     db_path.parent.mkdir(parents=True, exist_ok=True)

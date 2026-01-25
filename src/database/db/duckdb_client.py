@@ -5,7 +5,7 @@ from pathlib import Path
 import duckdb
 import pandas as pd
 
-from finance.utils.logging_config import get_logger
+from database.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -20,7 +20,7 @@ class DuckDBClient:
 
     Examples
     --------
-    >>> from finance.db import DuckDBClient, get_db_path
+    >>> from database.db import DuckDBClient, get_db_path
     >>> client = DuckDBClient(get_db_path("duckdb", "analytics"))
     >>> df = client.query_df("SELECT 1 as value")
     >>> df['value'].iloc[0]
