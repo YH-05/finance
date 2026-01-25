@@ -16,6 +16,8 @@ factset
     FactSet API integration (planned)
 export
     Data export utilities
+alternative
+    Alternative data sources (planned)
 
 Public API
 ----------
