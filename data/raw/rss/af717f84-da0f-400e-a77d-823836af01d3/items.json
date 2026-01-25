@@ -3,6 +3,206 @@
   "feed_id": "af717f84-da0f-400e-a77d-823836af01d3",
   "items": [
     {
+      "item_id": "21929488-5b77-4476-99ec-deef1fe08e7a",
+      "title": "Gmail is having issues with spam and misclassification",
+      "link": "https://techcrunch.com/2026/01/24/gmail-is-having-issues-with-spam-and-misclassification/",
+      "published": "2026-01-24T22:58:00+00:00",
+      "summary": "If your Gmail account doesn’t seem to be working properly today, you’re not alone.",
+      "content": null,
+      "author": "Anthony Ha",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "fbedaefb-04ed-4d23-90e4-3f3187bc63a6",
+      "title": "Tech CEOs boast and bicker about AI at Davos",
+      "link": "https://techcrunch.com/2026/01/24/tech-ceos-boast-and-bicker-about-ai-at-davos/",
+      "published": "2026-01-24T20:00:46+00:00",
+      "summary": "There were times at this week’s meeting of the World Economic Forum when Davos seemed transformed into a high-powered tech conference.",
+      "content": null,
+      "author": "Anthony Ha",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "140665db-7de0-4d71-9ef7-fd60840f6897",
+      "title": "Former Googlers seek to captivate kids with an AI-powered learning app",
+      "link": "https://techcrunch.com/2026/01/24/former-google-trio-is-building-an-interactive-ai-powered-learning-app-for-kids/",
+      "published": "2026-01-24T18:21:21+00:00",
+      "summary": "Sparkli said that education systems often fall behind in teaching modern concepts. The company wants to teach kids about topics like skills design, financial literacy, and entrepreneurship by creating an AI-powered learning \"expedition.\"",
+      "content": null,
+      "author": "Ivan Mehta",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "5a46fa8a-3509-4131-99f2-3fe32e525125",
+      "title": "SEC drops lawsuit against Winklevoss twins’ Gemini crypto exchange",
+      "link": "https://techcrunch.com/2026/01/24/sec-drops-lawsuit-against-winklevoss-twins-gemini-crypto-exchange/",
+      "published": "2026-01-24T18:06:33+00:00",
+      "summary": "The Securities and Exchange Commission has dropped its lawsuit against Gemini, the crypto exchange founded by Trump backers Cameron and Tyler Winklevoss.",
+      "content": null,
+      "author": "Anthony Ha",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "6b49032b-b31a-4ef9-b0c5-02925bc7c317",
+      "title": "A new test for AI labs: Are you even trying to make money?",
+      "link": "https://techcrunch.com/2026/01/24/a-new-test-for-ai-labs-are-you-even-trying-to-make-money/",
+      "published": "2026-01-24T17:00:00+00:00",
+      "summary": "It’s getting hard to tell which AI labs. are actually trying to make money. We created a rating system to help sort it out.",
+      "content": null,
+      "author": "Russell Brandom",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "c4c26826-2268-40c8-a6a8-473b5a856f76",
+      "title": "How PopWheels helped a food cart ditch generators for e-bike batteries",
+      "link": "https://techcrunch.com/2026/01/24/how-popwheels-helped-a-food-cart-ditch-generators-for-e-bike-batteries/",
+      "published": "2026-01-24T16:00:00+00:00",
+      "summary": "PopWheels realized its battery swapping network could be used for more than food delivery workers who need to charge their e-bikes. Now, its planning for an \"aggressive rollout\" this summer.",
+      "content": null,
+      "author": "Tim De Chant",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "913a0f09-e437-4235-80f0-a9692110a372",
+      "title": "Legal AI giant Harvey acquires Hexus as competition heats up in legal tech",
+      "link": "https://techcrunch.com/2026/01/23/legal-ai-giant-harvey-acquires-hexus-as-competition-heats-up-in-legal-tech/",
+      "published": "2026-01-24T05:27:22+00:00",
+      "summary": "Hexus founder and CEO Sakshi Pratap, who previously held engineering roles at Walmart, Oracle, and Google, tells TechCrunch that her San Francisco-based team has already joined Harvey, while the startup's India-based engineers will come onboard once Harvey establishes a Bangalore office.",
+      "content": null,
+      "author": "Connie Loizos",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "1ec5c902-81dc-409d-9605-e6aae527bea1",
+      "title": "Apple iPhone just had its best year in India as the smartphone market stays broadly flat",
+      "link": "https://techcrunch.com/2026/01/23/apple-iphone-just-had-its-best-year-in-india-as-the-smartphone-market-stays-broadly-flat/",
+      "published": "2026-01-24T05:00:00+00:00",
+      "summary": "Apple shipped a record 14 million iPhones in India in 2025 and gained market share.",
+      "content": null,
+      "author": "Jagmeet Singh",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "5cd27003-70eb-4c6c-9b46-d1a270a1b703",
+      "title": "TikTok users freak out over app’s ‘immigration status’ collection — here’s what it means",
+      "link": "https://techcrunch.com/2026/01/23/tiktok-users-freak-out-over-apps-immigration-status-collection-heres-what-it-means/",
+      "published": "2026-01-24T04:34:02+00:00",
+      "summary": "TikTok users are freaking out over a mention of \"immigration status\" data collection, but lawyers explain the disclosure is related to state privacy laws.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "23ab0caf-86f6-4403-addb-3ec36dc2b97e",
+      "title": "Who’s behind AMI Labs, Yann LeCun’s ‘world model’ startup",
+      "link": "https://techcrunch.com/2026/01/23/whos-behind-ami-labs-yann-lecuns-world-model-startup/",
+      "published": "2026-01-24T00:04:45+00:00",
+      "summary": "Yann LeCun's new venture, AMI Labs, has drawn intense attention since the AI scientist left Meta to found it.",
+      "content": null,
+      "author": "Anna Heim",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "826f032a-a28a-44cb-9e5e-5bf1ba9e3b6c",
+      "title": "Waymo probed by National Transportation Safety Board over illegal school bus behavior",
+      "link": "https://techcrunch.com/2026/01/23/waymo-probed-by-national-transportation-safety-board-over-illegal-school-bus-behavior/",
+      "published": "2026-01-23T21:50:47+00:00",
+      "summary": "The NTSB joins the National Highway Traffic Safety Administration in investigating Waymo vehicles illegally passing stopped school buses.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "d3a06c7f-550a-425e-ba1c-9989cf75c529",
+      "title": "The Rippling/Deel corporate spying scandal may have taken another wild turn",
+      "link": "https://techcrunch.com/2026/01/23/the-rippling-deel-corporate-spying-scandal-may-have-taken-another-wild-turn/",
+      "published": "2026-01-23T21:13:28+00:00",
+      "summary": "The Department of Justice may be conducting a criminal investigation. This is arguably the biggest drama between two HR startups ever.",
+      "content": null,
+      "author": "Julie Bort",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "a94b76f1-e961-49d8-815f-ac885b6c1e79",
+      "title": "What to know about Netflix’s landmark acquisition of Warner Bros.",
+      "link": "https://techcrunch.com/2026/01/23/what-to-know-about-netflixs-landmark-acquisition-of-warner-bros/",
+      "published": "2026-01-23T20:31:27+00:00",
+      "summary": "Learn more about Netflix's acquisition of Warner Bros., considered the most historic megadeal in Hollywood, as it continues to develop.",
+      "content": null,
+      "author": "Lauren Forristal",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "267fb0bf-1992-4832-b2ee-54dd8afe8eec",
+      "title": "Researchers say Russian government hackers were behind attempted Poland power outage",
+      "link": "https://techcrunch.com/2026/01/23/researchers-say-russian-government-hackers-were-behind-attempted-poland-power-outage/",
+      "published": "2026-01-23T20:17:24+00:00",
+      "summary": "Security researchers have attributed the attempted use of destructive \"wiper\" malware across Poland's energy infrastructure in late December to a Russian-backed hacking group known for causing power outages in neighboring Ukraine.",
+      "content": null,
+      "author": "Zack Whittaker",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "d8d80d91-c210-4938-90af-cff14e3e823a",
+      "title": "How did Davos turn into a tech conference?",
+      "link": "https://techcrunch.com/video/how-did-davos-turn-into-a-tech-conference/",
+      "published": "2026-01-23T20:00:00+00:00",
+      "summary": "The World Economic Forum&#8217;s annual meeting in Davos&#160;felt different this year, and not just because Meta and Salesforce took over storefronts on the main promenade.&#160;AI dominated the conversation in a way that overshadowed traditional topics like climate change and global poverty, and the CEOs&#160;weren&#8217;t&#160;holding back. There was public criticism of trade policy, warnings about AI [&#8230;]",
+      "content": null,
+      "author": "Theresa Loconsolo",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "26346bcb-6eed-4d37-aaa9-c7b3e8734373",
+      "title": "Google Photos’ latest feature lets you meme yourself",
+      "link": "https://techcrunch.com/2026/01/23/google-photos-latest-feature-lets-you-meme-yourself/",
+      "published": "2026-01-23T17:02:22+00:00",
+      "summary": "The addition is meant to just be a fun way to explore your photos and experiment with Google's Gemini AI technology, and specifically Nano Banana.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "bd4fd9b0-ba81-4540-873c-28b25f17fca2",
+      "title": "Meta pauses teen access to AI characters ahead of new version",
+      "link": "https://techcrunch.com/2026/01/23/meta-pauses-teen-access-to-ai-characters-ahead-of-new-version/",
+      "published": "2026-01-23T17:00:00+00:00",
+      "summary": "Meta today said that it is pausing teens' access to its AI characters globally across all its apps. The company mentioned that it is not abandoning its efforts but wants to develop an updated version of AI characters for teens.",
+      "content": null,
+      "author": "Ivan Mehta",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "6b938a1a-f501-4301-b15d-fca1568d4889",
+      "title": "Here’s what you should know about the US TikTok deal",
+      "link": "https://techcrunch.com/2026/01/23/heres-whats-you-should-know-about-the-us-tiktok-deal/",
+      "published": "2026-01-23T16:17:19+00:00",
+      "summary": "A number of investors are competing for the opportunity to purchase the app, and if a deal were to go through, the platform's U.S. business could have its valuation soar to upward of $60 billion.",
+      "content": null,
+      "author": "Lauren Forristal, Amanda Silberling",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "5b304c28-a0e0-49e0-982f-170b2b6eff31",
+      "title": "This startup will send 1,000 people’s ashes to space — affordably — in 2027",
+      "link": "https://techcrunch.com/2026/01/23/this-startup-will-send-1000-peoples-ashes-to-space-affordably-in-2027/",
+      "published": "2026-01-23T16:00:00+00:00",
+      "summary": "Started by an engineer who worked on the space shuttle program, and at Blue Origin, Space Beyond has a spot on a 2027 Falcon 9 flight.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
+      "item_id": "00f06523-7224-46eb-9ba9-b582902cee33",
+      "title": "Microsoft gave FBI a set of BitLocker encryption keys to unlock suspects’ laptops: Reports",
+      "link": "https://techcrunch.com/2026/01/23/microsoft-gave-fbi-a-set-of-bitlocker-encryption-keys-to-unlock-suspects-laptops-reports/",
+      "published": "2026-01-23T15:54:09+00:00",
+      "summary": "The FBI served Microsoft a warrant requesting encryption recovery keys to decrypt the hard drives of people involved in an alleged fraud case in Guam.",
+      "content": null,
+      "author": "Lorenzo Franceschi-Bicchierai",
+      "fetched_at": "2026-01-25T09:15:33.092545+00:00"
+    },
+    {
       "item_id": "8ff8e415-6a52-42b7-bda4-5819d39e6dc2",
       "title": "UStrive security lapse exposed personal data of its users, including children",
       "link": "https://techcrunch.com/2026/01/20/ustrive-security-lapse-exposed-personal-data-of-its-users-including-children/",

@@ -3,6 +3,456 @@
   "feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c",
   "items": [
     {
+      "item_id": "ab681580-f959-45eb-adf4-4a1027fe990a",
+      "title": "This ETF Almost Doubled Last Year and It's Nearly Twice as Cheap as the S&P 500. Is It a Buy?",
+      "link": "https://finance.yahoo.com/news/etf-almost-doubled-last-nearly-051506142.html",
+      "published": "2026-01-24T05:15:06+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "b73e078a-974c-496f-b803-6211276ef650",
+      "title": "Oppenheimer Questions Valuation of Boston Scientific’s $14.5 Billion Penumbra Deal",
+      "link": "https://finance.yahoo.com/news/oppenheimer-questions-14-5b-penumbra-025258409.html",
+      "published": "2026-01-24T03:58:58+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "6e2a3efe-f316-489f-bbe6-818d801eda93",
+      "title": "Margin Concerns Remain for Worthington Enterprises (WOR)",
+      "link": "https://finance.yahoo.com/news/margin-concerns-remain-worthington-enterprises-053121544.html",
+      "published": "2026-01-24T05:31:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "92d84fae-ef47-4887-abd2-cf3ce17ff9b2",
+      "title": "Acuity Inc (AYI) Has Strong Upside Despite Target Price Cut",
+      "link": "https://finance.yahoo.com/news/acuity-inc-ayi-strong-upside-053120287.html",
+      "published": "2026-01-24T05:31:20+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "26d78a0b-b01d-4122-8aab-9165f11b8e00",
+      "title": "UBS Maintains Buy Rating on Alaska Air (ALK) Stock",
+      "link": "https://finance.yahoo.com/news/ubs-maintains-buy-rating-alaska-053123427.html",
+      "published": "2026-01-24T05:31:23+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "ebdee391-61f4-42c5-8849-0b099984acf9",
+      "title": "Analyst sends blunt 3-word warning on Intel stock after earnings",
+      "link": "https://finance.yahoo.com/news/analyst-sends-blunt-3-word-043300474.html",
+      "published": "2026-01-24T04:33:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "4183d999-118c-4cc0-9896-1affeb0220bd",
+      "title": "ABM Industries (ABM) Still Has An Attractive Upside Despite Truist Downgrade",
+      "link": "https://finance.yahoo.com/news/abm-industries-abm-still-attractive-053112519.html",
+      "published": "2026-01-24T05:31:12+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "59fff2b2-e978-4330-97fe-d546d3e4b451",
+      "title": "CBIZ Inc (CBZ) Continues To Slide Despite Leadership Change",
+      "link": "https://finance.yahoo.com/news/cbiz-inc-cbz-continues-slide-053126766.html",
+      "published": "2026-01-24T05:31:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "95c4cd4d-fa39-4cbc-a11a-691eca13b340",
+      "title": "GEO Group (GEO) Still Has Solid Upside According To Analysts",
+      "link": "https://finance.yahoo.com/news/geo-group-geo-still-solid-053124027.html",
+      "published": "2026-01-24T05:31:24+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "1e161684-4177-4407-8178-fdd3ba37fed7",
+      "title": "Multiple Analysts Reaffirm Gates Industrial Corporation (GTES) Upside in 2026",
+      "link": "https://finance.yahoo.com/news/multiple-analysts-reaffirm-gates-industrial-053114219.html",
+      "published": "2026-01-24T05:31:14+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "c629d81a-d248-4bdf-8638-7dbcce60c224",
+      "title": "Trump Hailed Crypto Bill As Stepping Stone To Financial Freedom—So Why Did The Senate Delay Until March?",
+      "link": "https://finance.yahoo.com/news/trump-hailed-crypto-bill-stepping-043140443.html",
+      "published": "2026-01-24T04:31:40+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "a6314efb-f93c-420a-aaef-220181c156ab",
+      "title": "Stephens Analysts Expect Matson Inc (MATX) To Outperform Peers",
+      "link": "https://finance.yahoo.com/news/stephens-analysts-expect-matson-inc-053118330.html",
+      "published": "2026-01-24T05:31:18+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "652070f1-f97d-4ef2-8423-35183c585a2a",
+      "title": "KBR Inc (KBR) at the Forefront of Next Generation Missile Defense Systems",
+      "link": "https://finance.yahoo.com/news/kbr-inc-kbr-forefront-next-053117127.html",
+      "published": "2026-01-24T05:31:17+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "3398c91a-a77b-430d-8c4c-9f0c68adc3f1",
+      "title": "Hafnia Limited (HAFN) Is Undervalued According To Analysts",
+      "link": "https://finance.yahoo.com/news/hafnia-limited-hafn-undervalued-according-053115090.html",
+      "published": "2026-01-24T05:31:15+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "470c5061-22ab-4640-a75f-908063d969ff",
+      "title": "Is Recursion Pharmaceuticals Inc. (RXRX) The Best Overlooked Penny Stock to Invest In?",
+      "link": "https://finance.yahoo.com/news/recursion-pharmaceuticals-inc-rxrx-best-083503562.html",
+      "published": "2026-01-24T08:35:03+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "691a2d6d-29da-4c34-a74a-b2ea4165babe",
+      "title": "Is OpenAI's Decision to Begin Selling Ads on ChatGPT a Desperate Cry for Help?",
+      "link": "https://finance.yahoo.com/news/openais-decision-begin-selling-ads-052000520.html",
+      "published": "2026-01-24T05:20:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "963dbab8-aa10-43bd-9baa-9f55bc6bee2d",
+      "title": "SEC agrees to dismiss case over crypto lending by Winklevoss' Gemini",
+      "link": "https://finance.yahoo.com/news/sec-agrees-dismiss-case-over-022633499.html",
+      "published": "2026-01-24T02:26:33+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "e1919fbc-ee5b-471d-996e-4914edd8d58c",
+      "title": "Tax credits are a valuable tool to trim your tax bill — here’s how they work",
+      "link": "https://finance.yahoo.com/news/tax-credits-valuable-tool-trim-003152743.html",
+      "published": "2026-01-24T01:45:18+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "8254f142-59d1-4b97-82b6-6f4aac172977",
+      "title": "These Dividend Aristocrats Wildly Outperformed the S&P 500",
+      "link": "https://finance.yahoo.com/news/dividend-aristocrats-wildly-outperformed-p-000002214.html",
+      "published": "2026-01-24T00:00:02+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "8cd4456e-cd4d-4ab7-a4f4-249fd0c9befc",
+      "title": "CIBC Sees Major Upside in BlackBerry Limited (BB)",
+      "link": "https://finance.yahoo.com/news/cibc-sees-major-upside-blackberry-104830392.html",
+      "published": "2026-01-24T10:48:30+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "f8ca6e71-6121-4977-93b2-20d199f09c54",
+      "title": "Europe Prepares for a Nightmare Scenario: The U.S. Blocking Access to Tech",
+      "link": "https://www.wsj.com/tech/europe-prepares-for-a-nightmare-scenario-the-u-s-blocking-access-to-tech-1967b39b?siteid=yhoof2&yptr=yahoo",
+      "published": "2026-01-24T04:00:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "8a4b0acf-80f8-4f3b-9221-45fdba37ece3",
+      "title": "Mixed Analyst Calls Keep B2Gold Corp. (BTG) in Focus",
+      "link": "https://finance.yahoo.com/news/mixed-analyst-calls-keep-b2gold-104832460.html",
+      "published": "2026-01-24T10:48:32+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "cbe491aa-d37a-452c-a482-26aa4745cc20",
+      "title": "Best CD rates today, January 24, 2026 (best account provides 4% APY)",
+      "link": "https://finance.yahoo.com/personal-finance/banking/article/best-cd-rates-today-saturday-january-24-2026-110003971.html",
+      "published": "2026-01-24T11:00:03+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "22b63ee5-899f-4f91-a3b5-a2b01fbae616",
+      "title": "Best money market account rates today, January 24, 2026 (best account provides 4.1% APY)",
+      "link": "https://finance.yahoo.com/personal-finance/banking/article/best-money-market-account-rates-today-saturday-january-24-2026-110026525.html",
+      "published": "2026-01-24T11:00:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "ffb46299-8e8f-4ccf-84ba-8397410dc5fc",
+      "title": "Best high-yield savings interest rates today, January 24, 2026 (Earn up to 4% APY)",
+      "link": "https://finance.yahoo.com/personal-finance/article/best-high-yield-savings-interest-rates-today-saturday-january-24-2026-110026896.html",
+      "published": "2026-01-24T11:00:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "2a609a07-89da-496a-8fb4-db90b85e1666",
+      "title": "China Built a Vast Oil Stake in Venezuela. Now It Risks Getting Muscled Out.",
+      "link": "https://www.wsj.com/world/americas/china-venezuela-oil-trump-65ce1da2?siteid=yhoof2&yptr=yahoo",
+      "published": "2026-01-24T04:00:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "fe2a56e9-1e89-4bf6-9e37-e09419d884c5",
+      "title": "HELOC and home equity loan rates Saturday, January 24, 2026: Why now is a smart time to tap home equity",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/heloc-home-equity-loan-interest-rates-today-saturday-january-24-2026-110035658.html",
+      "published": "2026-01-24T11:00:35+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "f795e70a-af28-41fc-9d17-a430f9075b45",
+      "title": "Mortgage and refinance interest rates today, January 24, 2026: The 30-year drops to an important baseline",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/mortgage-refinance-interest-rates-today-saturday-january-24-2026-110052027.html",
+      "published": "2026-01-24T11:00:52+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "178d4826-1eb2-4a1a-a1f2-39243ff722e6",
+      "title": "Mine card review: No hidden fees, no interest, and no credit check — plus an exclusive offer for Yahoo Finance readers",
+      "link": "https://finance.yahoo.com/personal-finance/credit-cards/review/mine-credit-builder-debit-card-210255507.html",
+      "published": "2026-01-08T21:02:55+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "973a0dce-b84d-47b1-961a-7daac9caff5d",
+      "title": "Does Chase have a high-yield savings account?",
+      "link": "https://finance.yahoo.com/personal-finance/banking/article/does-chase-have-a-high-yield-savings-account-203846304.html",
+      "published": "2026-01-23T20:38:46+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "0b43f9a0-bd60-476e-b3a7-b6bdfa123544",
+      "title": "Legal AI giant Harvey acquires Hexus as competition heats up in legal tech",
+      "link": "https://finance.yahoo.com/news/legal-ai-giant-harvey-acquires-052722699.html",
+      "published": "2026-01-24T05:27:22+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "f8cc2715-4288-43b9-9869-1d1465fcaaef",
+      "title": "3 benefits to making 1 extra mortgage payment per year",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/one-extra-mortgage-payment-per-year-185030812.html",
+      "published": "2024-06-11T18:50:30+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "a04b65d1-9c24-4686-85f7-895b4de772e2",
+      "title": "When will mortgage rates go down to 5%? Don't miss the lenders offering sub-6% loans now.",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/when-will-mortgage-rates-go-down-to-5-201806162.html",
+      "published": "2025-06-04T20:18:06+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "b1d8913f-94ce-4675-97b4-ea17e55957b3",
+      "title": "Esurance car insurance review 2026",
+      "link": "https://finance.yahoo.com/personal-finance/insurance/review/esurance-car-insurance-review-180017987.html",
+      "published": "2026-01-23T18:00:17+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "005a15f5-b8f1-40d1-b38e-2b2c577b97da",
+      "title": "Will mortgage rates fall ahead of January's Fed meeting?",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/will-mortgage-rates-decrease-before-the-next-fed-meeting-174648246.html",
+      "published": "2026-01-23T17:46:48+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "51fd1532-7cd9-4837-b8f2-6ef759caa087",
+      "title": "1 Reason Why Now Is a Great Time to Buy Micron Technology",
+      "link": "https://finance.yahoo.com/news/1-reason-why-now-great-035100475.html",
+      "published": "2026-01-24T03:51:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "a83d4306-b6cb-4db7-8be3-8497c186f9f9",
+      "title": "5 ways to save on taxes in retirement",
+      "link": "https://finance.yahoo.com/personal-finance/taxes/article/taxes-in-retirement-162008500.html",
+      "published": "2024-01-20T16:20:08+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "d90bef45-1be1-4148-af9c-70163b0ef443",
+      "title": "Want to refinance your house in the first half of 2026? What you need to know.",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/want-to-refinance-your-mortgage-in-the-first-half-of-2026-191722124.html",
+      "published": "2025-12-02T19:17:22+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "7aa83973-e5e4-41d7-bd4f-75c8be67391d",
+      "title": "Carrington Mortgage Services review 2026",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/review/carrington-mortgage-services-review-230635460.html",
+      "published": "2024-07-15T23:06:35+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "dcd9669f-c3aa-4662-b77f-ce4054204195",
+      "title": "Thinking of buying gold? Here's what investors should watch for.",
+      "link": "https://finance.yahoo.com/personal-finance/investing/article/risks-for-gold-investors-100015304.html",
+      "published": "2025-10-08T10:00:15+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "7369f0c9-cf3b-41c1-a61a-42bef1307073",
+      "title": "Trump uncertainty: Crypto startups raise $362m despite roaring ‘Sell America’ trade",
+      "link": "https://finance.yahoo.com/news/trump-uncertainty-crypto-startups-raise-060600265.html",
+      "published": "2026-01-24T06:06:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "311d82ca-b2ba-48aa-abd9-482aef6b9d96",
+      "title": "Farm Bureau car insurance review 2026: 4.4 out of 5 stars",
+      "link": "https://finance.yahoo.com/personal-finance/insurance/review/farm-bureau-car-insurance-review-155248099.html",
+      "published": "2026-01-23T15:52:48+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "21e163f1-393e-46db-bc68-57edc22d06ed",
+      "title": "What are the mortgage rate predictions for the next 5 years?",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/what-are-the-mortgage-rate-predictions-for-the-next-5-years-195826150.html",
+      "published": "2025-08-18T19:58:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "8871e557-5126-4fd9-b6d2-83ca91ac59f9",
+      "title": "Rates under 6%: Mortgage lenders with the best rates this week, Jan. 20-25, 2026",
+      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/rates-under-6-mortgage-lenders-with-the-best-rates-this-week-jan-20-25-2026-170834452.html",
+      "published": "2025-11-03T17:08:34+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
+      "item_id": "b91a6b99-5e05-4b9a-8f63-e838bddeec1b",
+      "title": "Gold price today, Friday, January 23: Gold surges towards $5,000 per ounce",
+      "link": "https://finance.yahoo.com/personal-finance/investing/article/gold-price-today-friday-january-23-gold-surges-towards-5000-per-ounce-121618437.html",
+      "published": "2026-01-20T12:16:18+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-25T09:15:31.859172+00:00"
+    },
+    {
       "item_id": "d913d978-0cf8-4e70-8de3-625093a91e6e",
       "title": "Trump Media Sets Feb 2 Record Date for Shareholder Digital Token Distribution",
       "link": "https://finance.yahoo.com/news/trump-media-sets-feb-2-201338691.html",
