@@ -1,7 +1,5 @@
 """Unit tests for DiffDetector."""
 
-import pytest
-
 from rss.core.diff_detector import DiffDetector
 from rss.types import FeedItem
 
@@ -184,15 +182,13 @@ class TestDetectNewItemsLogging:
     """Test logging behavior of detect_new_items.
 
     Note: Logging tests verify that the method executes without errors.
-    Actual log output is verified through manual testing and code review.
-    structlog outputs to stdout directly, which makes it difficult to
-    capture with pytest's caplog fixture.
+    structlog logging behavior depends on global configuration which can
+    vary based on test execution order. These tests verify correct execution
+    rather than specific log output.
     """
 
-    def test_detect_new_items_executes_with_logging(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
-        """Test that detect_new_items executes with logging."""
+    def test_detect_new_items_executes_with_logging(self) -> None:
+        """Test that detect_new_items executes with logging enabled."""
         detector = DiffDetector()
 
         existing_items: list[FeedItem] = []
@@ -210,16 +206,8 @@ class TestDetectNewItemsLogging:
         ]
 
         # Execute method - should not raise any exceptions
+        # Logging is enabled internally, this verifies no errors occur
         new_items = detector.detect_new_items(existing_items, fetched_items)
 
         # Verify the method executed correctly
         assert len(new_items) == 1
-
-        # Verify logs were written to stdout (structlog output)
-        # Note: In CI environment, structlog may not output to stdout
-        captured = capsys.readouterr()
-        assert (
-            "差分検出開始" in captured.out
-            or "差分検出完了" in captured.out
-            or captured.out == ""
-        )

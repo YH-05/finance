@@ -785,13 +785,19 @@ class TestDefaultConstants:
 
 
 class TestLogging:
-    """Test structured logging behavior."""
+    """Test structured logging behavior.
+
+    Note: structlog logging behavior depends on global configuration which can
+    vary based on test execution order. These tests verify correct execution
+    rather than specific log output.
+    """
 
     @pytest.mark.asyncio
     async def test_fetch_success_logs_info(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+        self,
+        tmp_path: Path,
     ) -> None:
-        """Test that successful fetch logs at INFO level."""
+        """Test that successful fetch executes with logging enabled."""
         feed = Feed(
             feed_id="test-feed",
             url="https://example.com/feed.xml",
@@ -828,21 +834,19 @@ class TestLogging:
         feeds_data = FeedsData(version="1.0", feeds=[feed])
         fetcher.storage.save_feeds(feeds_data)
 
-        await fetcher.fetch_feed(feed.feed_id)
+        # Execute method - should not raise any exceptions
+        # Logging is enabled internally, this verifies no errors occur
+        result = await fetcher.fetch_feed(feed.feed_id)
 
-        # Note: In CI environment, structlog may not output to stdout
-        captured = capsys.readouterr()
-        assert (
-            "successfully" in captured.out.lower()
-            or "info" in captured.out.lower()
-            or captured.out == ""
-        )
+        # Verify the method executed correctly
+        assert result.success is True
 
     @pytest.mark.asyncio
     async def test_fetch_error_logs_error(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+        self,
+        tmp_path: Path,
     ) -> None:
-        """Test that fetch error logs at ERROR level."""
+        """Test that fetch error is handled with logging enabled."""
         feed = Feed(
             feed_id="test-feed",
             url="https://example.com/feed.xml",
@@ -864,12 +868,9 @@ class TestLogging:
         feeds_data = FeedsData(version="1.0", feeds=[feed])
         fetcher.storage.save_feeds(feeds_data)
 
-        await fetcher.fetch_feed(feed.feed_id)
+        # Execute method - should not raise any exceptions (error is logged internally)
+        # Logging is enabled internally, this verifies no errors occur
+        result = await fetcher.fetch_feed(feed.feed_id)
 
-        # Note: In CI environment, structlog may not output to stdout
-        captured = capsys.readouterr()
-        assert (
-            "failed" in captured.out.lower()
-            or "error" in captured.out.lower()
-            or captured.out == ""
-        )
+        # Verify the method handled the error correctly
+        assert result.success is False

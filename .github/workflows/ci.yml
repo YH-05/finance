@@ -71,7 +71,7 @@ jobs:
     - name: Check for security issues
       run: |
         uv pip install --upgrade pip
-        # CVE-2026-0994: protobuf vulnerability - waiting for fix
+        # CVE-2026-0994: protobuf DoS vulnerability - no fix available yet (2026-01-25)
         uv run pip-audit --skip-editable --ignore-vuln CVE-2026-0994
         uv run bandit -r src/
 

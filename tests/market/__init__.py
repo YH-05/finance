@@ -1,1 +1,1 @@
-"""Tests for market package."""
+"""Test suite for market package."""

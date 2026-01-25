@@ -432,31 +432,35 @@ class TestBatchStatsType:
 
 
 class TestLogging:
-    """Test structured logging behavior."""
+    """Test structured logging behavior.
+
+    Note: structlog logging behavior depends on global configuration which can
+    vary based on test execution order. These tests verify correct execution
+    rather than specific log output.
+    """
 
     def test_run_batch_logs_start_and_end(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+        self,
+        tmp_path: Path,
     ) -> None:
-        """Test that batch execution logs start and end."""
+        """Test that batch execution runs with logging enabled."""
         mock_fetcher = Mock(spec=FeedFetcher)
         mock_fetcher.data_dir = tmp_path
         mock_fetcher.fetch_all.return_value = []
 
         scheduler = BatchScheduler(mock_fetcher)
-        scheduler.run_batch()
+        # Execute method - should not raise any exceptions
+        # Logging is enabled internally, this verifies no errors occur
+        stats = scheduler.run_batch()
 
-        # Note: In CI environment, structlog may not output to stdout
-        captured = capsys.readouterr()
-        assert (
-            "started" in captured.out.lower()
-            or "completed" in captured.out.lower()
-            or captured.out == ""
-        )
+        # Verify the method executed correctly
+        assert stats.total_feeds == 0
 
     def test_run_batch_logs_individual_results(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+        self,
+        tmp_path: Path,
     ) -> None:
-        """Test that batch execution logs individual feed results."""
+        """Test that batch execution processes individual results with logging."""
         mock_fetcher = Mock(spec=FeedFetcher)
         mock_fetcher.data_dir = tmp_path
         mock_fetcher.fetch_all.return_value = [
@@ -477,17 +481,11 @@ class TestLogging:
         ]
 
         scheduler = BatchScheduler(mock_fetcher)
-        scheduler.run_batch()
+        # Execute method - should not raise any exceptions
+        # Logging is enabled internally, this verifies no errors occur
+        stats = scheduler.run_batch()
 
-        # Note: In CI environment, structlog may not output to stdout
-        captured = capsys.readouterr()
-        assert (
-            "feed-1" in captured.out.lower()
-            or "succeeded" in captured.out.lower()
-            or captured.out == ""
-        )
-        assert (
-            "feed-2" in captured.out.lower()
-            or "failed" in captured.out.lower()
-            or captured.out == ""
-        )
+        # Verify the method executed correctly
+        assert stats.total_feeds == 2
+        assert stats.success_count == 1
+        assert stats.failure_count == 1
