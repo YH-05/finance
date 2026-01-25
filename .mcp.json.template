@@ -5,23 +5,23 @@
             "args": ["mcp-server-git", "--repository", "."]
         },
         "filesystem": {
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-filesystem", "."]
         },
         "reddit": {
             "command": "uvx",
             "args": ["mcp-server-reddit"]
         },
         "memory": {
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-memory"],
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-memory"],
             "env": {
                 "MEMORY_FILE_PATH": "./memory-mcp/memory.jsonl"
             }
         },
         "sequential-thinking": {
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
             "env": {
                 "DISABLE_THOUGHT_LOGGING": "false"
             }
@@ -45,8 +45,8 @@
             "args": ["wikipedia-mcp"]
         },
         "notion": {
-            "command": "npx",
-            "args": ["-y", "@ramidecodes/mcp-server-notion@latest"],
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@ramidecodes/mcp-server-notion@latest"],
             "env": {
                 "NOTION_API_KEY": "your_notion_api_key_here"
             }
@@ -73,19 +73,19 @@
             }
         },
         "context7": {
-            "command": "npx",
-            "args": ["-y", "@upstash/context7-mcp@latest"]
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@upstash/context7-mcp@latest"]
         },
         "tavily": {
-            "command": "npx",
-            "args": ["-y", "tavily-mcp"],
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "tavily-mcp"],
             "env": {
                 "TAVILY_API_KEY": "your_tavily_api_key_here"
             }
         },
         "playwright": {
-            "command": "npx",
-            "args": ["-y", "@playwright/mcp@latest"]
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@playwright/mcp@latest"]
         }
     }
 }

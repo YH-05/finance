@@ -50,6 +50,32 @@ Create a Slack app and get the bot token from: https://api.slack.com/apps
 
 Get your Tavily API key from: https://tavily.com/
 
+## Platform-Specific Configuration
+
+### Windows
+
+On Windows, `npx` commands require a `cmd /c` wrapper. The template files are already configured for Windows:
+
+```json
+{
+  "command": "cmd",
+  "args": ["/c", "npx", "-y", "package-name"]
+}
+```
+
+### macOS/Linux
+
+On macOS and Linux, you can use `npx` directly:
+
+```json
+{
+  "command": "npx",
+  "args": ["-y", "package-name"]
+}
+```
+
+If you're using this project on macOS/Linux, modify the `command` and `args` for npx-based servers in your `.mcp.json`.
+
 ## Configured MCP Servers
 
 ### Core Servers
