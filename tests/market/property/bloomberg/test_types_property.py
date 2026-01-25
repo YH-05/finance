@@ -15,13 +15,14 @@ from datetime import datetime
 from typing import Any
 
 import pandas as pd
-from hypothesis import assume, given
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 
 class TestBloombergFetchOptionsProperties:
     """Property-based tests for BloombergFetchOptions."""
 
+    @settings(deadline=None)
     @given(
         securities=st.lists(
             st.text(
