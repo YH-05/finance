@@ -71,7 +71,8 @@ jobs:
     - name: Check for security issues
       run: |
         uv pip install --upgrade pip
-        uv run pip-audit --skip-editable
+        # CVE-2026-0994: protobuf vulnerability - waiting for fix
+        uv run pip-audit --skip-editable --ignore-vuln CVE-2026-0994
         uv run bandit -r src/
 
   type-check:
