@@ -1,113 +1,53 @@
 {
-  "metadata": {
-    "validated_at": "2026-01-26T10:00:00+09:00",
-    "report_date": "2026-01-26",
-    "validator_version": "1.0.0"
+  "validation_date": "2026-01-26T10:31:00+09:00",
+  "report_file": "02_edit/weekly_report.md",
+  "period": {
+    "start": "2026-01-13",
+    "end": "2026-01-20"
   },
-  "overall": {
-    "status": "pass",
-    "score": 96,
-    "grade": "A"
+  "quality_metrics": {
+    "character_count": 6830,
+    "target_characters": 3200,
+    "character_ratio": 2.13,
+    "line_count": 202,
+    "sections_count": 10
   },
-  "checks": {
-    "format": {
-      "status": "pass",
-      "score": 100,
-      "details": {
-        "markdown_valid": true,
-        "tables_valid": true,
-        "headings_consistent": true,
-        "links_valid": true
-      }
+  "data_sources": {
+    "market_data": {
+      "indices": true,
+      "mag7": true,
+      "sectors": true,
+      "sox": true
     },
-    "character_count": {
-      "status": "pass",
-      "score": 100,
-      "details": {
-        "total": 5333,
-        "target": 3200,
-        "achievement_rate": 166.7,
-        "sections": {
-          "highlight": {
-            "actual": 200,
-            "target": 200,
-            "status": "pass"
-          },
-          "indices": {
-            "actual": 520,
-            "target": 500,
-            "status": "pass"
-          },
-          "mag7": {
-            "actual": 920,
-            "target": 800,
-            "status": "pass"
-          },
-          "sectors_top": {
-            "actual": 420,
-            "target": 400,
-            "status": "pass"
-          },
-          "sectors_bottom": {
-            "actual": 410,
-            "target": 400,
-            "status": "pass"
-          },
-          "macro": {
-            "actual": 430,
-            "target": 400,
-            "status": "pass"
-          },
-          "themes": {
-            "actual": 410,
-            "target": 300,
-            "status": "pass"
-          },
-          "outlook": {
-            "actual": 302,
-            "target": 200,
-            "status": "pass"
-          }
-        }
-      }
-    },
-    "data_integrity": {
-      "status": "pass",
-      "score": 100,
-      "details": {
-        "numbers_valid": true,
-        "dates_consistent": true,
-        "calculations_correct": true,
-        "indices_accurate": true,
-        "mag7_accurate": true,
-        "sectors_accurate": true
-      }
-    },
-    "content_quality": {
-      "status": "pass",
-      "score": 92,
-      "details": {
-        "factual_accuracy": "high",
-        "readability": "excellent",
-        "investment_disclaimer": true,
-        "balanced_view": true,
-        "data_driven": true,
-        "context_provided": true
-      },
-      "llm_feedback": "レポートは全体的に非常に高品質です。Trump政権の関税政策という重要な市場イベントを中心に、指数分析、MAG7の詳細な個別銘柄解説、セクターローテーション分析が充実しています。グロースからバリューへの大幅なローテーション（-3.36%差）という歴史的な市場動向を的確に捉えており、投資家にとって有用な洞察を提供しています。データに基づいた客観的な分析と、適切な免責事項の記載も評価できます。"
-    }
+    "news_sources": [
+      "MarketWatch",
+      "CNBC",
+      "Forbes",
+      "Bloomberg",
+      "Investopedia",
+      "Reuters",
+      "Yahoo Finance"
+    ]
   },
-  "issues": [],
-  "warnings": [],
-  "recommendations": [
-    "今週は政策リスクが市場を支配した週でした。来週のレポートでは、決算発表の具体的な内容とガイダンスの分析を重点的に扱うことを推奨します。",
-    "SOX指数がプラスを維持した点は重要なポイントです。AI以外の半導体需要の強さを示すデータがあれば、さらに深堀りする価値があります。"
-  ],
-  "highlights": [
-    "Trump政権の関税脅迫による市場の急落を的確に捉えた分析",
-    "グロース vs バリューの歴史的な乖離（-3.36%差）の詳細な解説",
-    "MAG7全銘柄の個別分析が充実しており、投資家の意思決定に有用",
-    "ディフェンシブセクターへの資金シフトという明確なトレンドの提示",
-    "SOX指数のプラス維持が示す半導体需要の底堅さの指摘"
-  ]
+  "content_checks": {
+    "has_highlights": true,
+    "has_indices_table": true,
+    "has_mag7_table": true,
+    "has_sectors_table": true,
+    "has_macro_section": true,
+    "has_upcoming_events": true,
+    "has_summary": true,
+    "has_disclaimer": true
+  },
+  "validation_result": {
+    "status": "PASS",
+    "grade": "A",
+    "notes": [
+      "Character count (6,830) exceeds target (3,200) by 113%",
+      "All required sections present",
+      "Data tables properly formatted",
+      "Multiple news sources cited",
+      "Upcoming events and earnings calendar included"
+    ]
+  }
 }

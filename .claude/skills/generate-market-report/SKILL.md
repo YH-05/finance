@@ -86,8 +86,8 @@ Phase 5: レポート生成（サブエージェント）
 Phase 6: 品質検証
 └── 文字数・フォーマット・データ整合性チェック
 
-Phase 7: Issue 投稿（--publish 時のみ）
-└── weekly-report-publisher → GitHub Issue 作成
+Phase 7: Issue 投稿（デフォルト有効、--no-publish でスキップ）
+└── weekly-report-publisher → GitHub Issue 作成 & Project #15 追加
 
 Phase 8: 完了処理
 └── 結果サマリー表示
@@ -103,7 +103,8 @@ Phase 8: 完了処理
 | `--weekly-comment` | false | 週次コメント生成（旧形式） |
 | `--project` | 15 | GitHub Project 番号（--weekly時） |
 | `--no-search` | false | 追加検索を無効化（--weekly時） |
-| `--publish` | false | GitHub Issue として投稿 |
+| `--publish` | **true** | GitHub Issue として投稿（デフォルト有効） |
+| `--no-publish` | false | GitHub Issue への投稿を無効化 |
 
 ## 出力ディレクトリ構造
 
@@ -126,13 +127,13 @@ articles/weekly_report/{YYYY-MM-DD}/
 
 ## 使用例
 
-### 例1: フル週次レポート生成（推奨）
+### 例1: フル週次レポート生成 & Issue投稿（デフォルト）
 
 **状況**: 毎週水曜日に週次レポートを作成したい
 
 **コマンド**:
 ```bash
-/generate-market-report --weekly
+/generate-market-report
 ```
 
 **処理**:
@@ -142,22 +143,23 @@ articles/weekly_report/{YYYY-MM-DD}/
 4. 不足カテゴリを追加検索で補完
 5. 3200字以上のレポートを生成
 6. 品質検証を実行
+7. **GitHub Issue を作成し Project #15 に追加（デフォルト）**
 
 ---
 
-### 例2: GitHub Issue として投稿
+### 例2: ローカルファイルのみ（Issue投稿なし）
 
-**状況**: 生成したレポートを Issue として投稿したい
+**状況**: レポートを確認してから Issue として投稿したい
 
 **コマンド**:
 ```bash
-/generate-market-report --weekly --publish
+/generate-market-report --no-publish
 ```
 
 **処理**:
 1. フル週次レポートを生成
-2. GitHub Issue を作成
-3. Project #15 に追加（カテゴリ: Weekly Report）
+2. GitHub Issue への投稿をスキップ
+3. ローカルファイルのみ生成
 
 ---
 
@@ -198,7 +200,7 @@ articles/weekly_report/{YYYY-MM-DD}/
 |-------------|------|-----------|
 | `weekly-report-news-aggregator` | GitHub Project からニュース集約 | --weekly |
 | `weekly-report-writer` | 4つのスキルでレポート生成 | --weekly |
-| `weekly-report-publisher` | GitHub Issue として投稿 | --publish |
+| `weekly-report-publisher` | GitHub Issue として投稿 | デフォルト（--no-publish でスキップ） |
 | `weekly-comment-indices-fetcher` | 指数ニュース収集 | --weekly-comment |
 | `weekly-comment-mag7-fetcher` | MAG7 ニュース収集 | --weekly-comment |
 | `weekly-comment-sectors-fetcher` | セクターニュース収集 | --weekly-comment |
@@ -261,7 +263,7 @@ gh project list --owner @me
 
 **対処法**:
 - コメントを手動で拡充
-- `--publish` なしで再実行し、レポートを確認
+- `--no-publish` で再実行し、レポートを確認してから手動で投稿
 
 ## 品質基準
 
@@ -282,7 +284,7 @@ gh project list --owner @me
 
 - [ ] 出力ディレクトリにレポートファイルが生成されている
 - [ ] 品質検証が PASS または WARN で完了している
-- [ ] --publish 時は GitHub Issue が作成されている
+- [ ] GitHub Issue が作成され Project #15 に追加されている（`--no-publish` 時を除く）
 - [ ] 結果サマリーが表示されている
 
 ## 関連コマンド
