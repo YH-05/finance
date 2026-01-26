@@ -13,6 +13,8 @@ analyze パッケージは以下の分析機能を提供します:
 - **returns**: リターン計算（複数期間リターン、MTD、YTD）
 - **visualization**: 可視化（チャート、ヒートマップ、ローソク足）
 - **integration**: market パッケージとの統合
+- **config**: 設定管理（シンボルグループ、期間設定の読み込み）
+- **reporting**: レポート生成（パフォーマンス分析、AIエージェント連携）
 
 ## インストール
 
@@ -51,6 +53,8 @@ all_indicators = TechnicalIndicators.calculate_all(prices)
 | `analyze.returns` | 複数期間リターン計算 | 実装済み |
 | `analyze.visualization` | チャート・グラフ生成 | 実装済み |
 | `analyze.integration` | market パッケージとの統合 | 実装済み |
+| `analyze.config` | 設定管理（シンボルグループ、期間設定） | 実装済み |
+| `analyze.reporting` | パフォーマンスレポート生成（AIエージェント向け） | 実装済み |
 
 ---
 
@@ -424,6 +428,78 @@ print(colors.negative)  # 下落色
 
 ---
 
+## config モジュール
+
+設定管理機能を提供します。
+
+### シンボルグループの読み込み
+
+```python
+from analyze.config import (
+    load_symbols_config,
+    get_symbol_group,
+    get_symbols,
+    get_return_periods,
+)
+
+# 設定を読み込み
+config = load_symbols_config()
+
+# シンボルグループを取得
+mag7_symbols = get_symbol_group("MAG7")
+
+# グループ内の全シンボルを取得
+all_symbols = get_symbols(group="indices")
+
+# リターン計算用の期間リストを取得
+periods = get_return_periods()
+```
+
+---
+
+## reporting モジュール
+
+パフォーマンス分析レポートの生成機能を提供します。
+
+### パフォーマンス分析（AIエージェント向け）
+
+```python
+from analyze.reporting import (
+    PerformanceAnalyzer4Agent,
+    PerformanceResult,
+)
+
+# AIエージェント向けのパフォーマンス分析
+analyzer = PerformanceAnalyzer4Agent()
+
+# クロスセクション分析（複数シンボル、複数期間）
+result = analyzer.analyze_cross_section(
+    data=df,
+    group="MAG7",
+    periods=["1d", "1w", "1mo", "ytd"],
+)
+
+# 結果はJSON形式で出力可能
+performance_json = result.to_dict()
+```
+
+### パフォーマンス分析（汎用）
+
+```python
+from analyze.reporting import PerformanceAnalyzer
+
+# 汎用パフォーマンス分析
+analyzer = PerformanceAnalyzer()
+
+# グループごとの分析
+result = analyzer.analyze(
+    data=df,
+    group_by="symbol",
+)
+```
+
+---
+
 ## integration モジュール
 
 market パッケージとの統合機能を提供します。
@@ -460,6 +536,8 @@ analysis = analyze_market_data(df)
 
 ## 公開 API（トップレベル）
 
+### 型定義
+
 ```python
 from analyze import (
     # technical モジュール
@@ -468,7 +546,13 @@ from analyze import (
 
     # statistics モジュール
     DescriptiveStats, CorrelationResult, CorrelationMethod,
+)
+```
 
+### クラス・関数
+
+```python
+from analyze import (
     # earnings モジュール
     EarningsCalendar, EarningsData, get_upcoming_earnings,
 
@@ -483,6 +567,27 @@ from analyze import (
 
     # sector モジュール
     sector,
+)
+```
+
+### config モジュール
+
+```python
+from analyze.config import (
+    load_symbols_config,
+    get_symbol_group,
+    get_symbols,
+    get_return_periods,
+)
+```
+
+### reporting モジュール
+
+```python
+from analyze.reporting import (
+    PerformanceAnalyzer,
+    PerformanceAnalyzer4Agent,
+    PerformanceResult,
 )
 ```
 
@@ -519,9 +624,16 @@ src/analyze/
 │   ├── charts.py         # ChartBuilder, ChartConfig
 │   ├── heatmap.py        # HeatmapChart
 │   └── price_charts.py   # CandlestickChart, LineChart
-└── integration/          # market パッケージ統合
+├── integration/          # market パッケージ統合
+│   ├── __init__.py
+│   └── market_integration.py  # MarketDataAnalyzer
+├── config/               # 設定管理
+│   ├── __init__.py
+│   └── loader.py         # 設定読み込み関数
+└── reporting/            # レポート生成
     ├── __init__.py
-    └── market_integration.py  # MarketDataAnalyzer
+    ├── performance.py    # PerformanceAnalyzer クラス
+    └── performance_agent.py  # PerformanceAnalyzer4Agent クラス
 ```
 
 ---

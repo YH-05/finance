@@ -144,6 +144,10 @@ factor/
 │   ├── base.py        # プロバイダープロトコル
 │   ├── cache.py       # キャッシュユーティリティ
 │   └── yfinance.py    # Yahoo Financeプロバイダー
+├── integration/       # 他パッケージとの統合
+│   ├── __init__.py
+│   ├── market_integration.py   # market パッケージ連携
+│   └── analyze_integration.py  # analyze パッケージ連携
 ├── validation/        # ファクター検証
 │   ├── __init__.py
 │   ├── ic_analyzer.py       # IC/IR分析
@@ -176,6 +180,7 @@ factor/
 | `core/`           | ✅ 実装済み | 7          | 2,320 | コアアルゴリズム（Factor基底、正規化、PCA等）  |
 | `factors/`        | ✅ 実装済み | 21         | 4,414 | ファクター実装（価格、バリュー、クオリティ等）|
 | `providers/`      | ✅ 実装済み | 4          | 1,227 | データプロバイダー（YFinance、キャッシュ）    |
+| `integration/`    | ✅ 実装済み | 2          | 835   | 統合モジュール（market、analyze パッケージ連携）|
 | `validation/`     | ✅ 実装済み | 3          | 1,276 | ファクター検証（IC分析、分位分析）            |
 | `utils/`          | ✅ 実装済み | 2          | 119   | ユーティリティ（構造化ロギング）              |
 
@@ -532,6 +537,110 @@ class CustomFactor(Factor):
     # ...
 ```
 
+---
+
+### 統合モジュール（market + analyze パッケージとの連携）
+
+#### `MarketDataProvider`
+
+**説明**: `market` パッケージの `YFinanceFetcher` をアダプトしたデータプロバイダー。
+
+**基本的な使い方**:
+
+```python
+from factor import MarketDataProvider, ValueFactor
+
+# market パッケージのフェッチャーをラップ
+provider = MarketDataProvider()
+
+# ValueFactor で使用
+value_factor = ValueFactor(metric="per", invert=True)
+scores = value_factor.compute(
+    provider=provider,
+    universe=["AAPL", "GOOGL"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+```
+
+---
+
+#### `EnhancedFactorAnalyzer`
+
+**説明**: `analyze` パッケージのテクニカル指標を組み込んだファクター分析ツール。
+
+**基本的な使い方**:
+
+```python
+from factor import EnhancedFactorAnalyzer
+import pandas as pd
+
+analyzer = EnhancedFactorAnalyzer(indicators=["SMA", "RSI", "MACD"])
+result = analyzer.analyze(
+    symbol="AAPL",
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+
+# テクニカル指標を含むファクター分析結果を取得
+print(result.indicators)
+```
+
+---
+
+#### `create_market_provider() -> MarketDataProvider`
+
+**説明**: MarketDataProvider のファクトリー関数。初期化済みプロバイダーを取得。
+
+**使用例**:
+
+```python
+from factor import create_market_provider
+
+provider = create_market_provider()
+prices = provider.get_prices(["AAPL"], "2024-01-01", "2024-12-31")
+```
+
+---
+
+#### `create_enhanced_analyzer(indicators: list[str]) -> EnhancedFactorAnalyzer`
+
+**説明**: EnhancedFactorAnalyzer のファクトリー関数。
+
+**使用例**:
+
+```python
+from factor import create_enhanced_analyzer
+
+analyzer = create_enhanced_analyzer(indicators=["SMA", "RSI"])
+result = analyzer.analyze("AAPL", "2024-01-01", "2024-12-31")
+```
+
+---
+
+#### `calculate_factor_with_indicators(symbol, factor, indicators, start_date, end_date) -> dict`
+
+**説明**: ファクター値とテクニカル指標を同時に計算するユーティリティ関数。
+
+**使用例**:
+
+```python
+from factor import calculate_factor_with_indicators, ValueFactor
+
+factor = ValueFactor(metric="per", invert=True)
+result = calculate_factor_with_indicators(
+    symbol="AAPL",
+    factor=factor,
+    indicators=["SMA", "RSI", "MACD"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+
+# 結果には factor_values と indicators が含まれる
+print(result["factor_values"])
+print(result["indicators"])
+```
+
 <!-- END: API -->
 
 <!-- AUTO-GENERATED: STATS -->
@@ -539,9 +648,9 @@ class CustomFactor(Factor):
 
 | 項目                 | 値     |
 | -------------------- | ------ |
-| Python ファイル数    | 41     |
-| 総行数（実装コード） | 10,275 |
-| モジュール数         | 6      |
+| Python ファイル数    | 44     |
+| 総行数（実装コード） | 11,382 |
+| モジュール数         | 7      |
 | テストファイル数     | 33     |
 | テストカバレッジ     | N/A    |
 

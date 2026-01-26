@@ -99,6 +99,23 @@ drift = rebalancer.detect_drift(current_values)
 print(f"ドリフト: {drift.max_drift_pct:.2%}")
 print(f"リバランス推奨: {'はい' if drift.needs_rebalancing else 'いいえ'}")
 ```
+
+#### ユースケース4: 統合戦略構築
+
+```python
+from strategy import IntegratedStrategyBuilder
+
+# market、analyze、factorパッケージを統合して戦略構築
+builder = IntegratedStrategyBuilder()
+
+strategy = builder.build_from_signals(
+    tickers=["VOO", "BND"],
+    start_date="2023-01-01",
+    end_date="2024-01-01"
+)
+
+print(f"構築された戦略: {strategy}")
+```
 <!-- END: QUICKSTART -->
 
 <!-- AUTO-GENERATED: STRUCTURE -->
@@ -111,7 +128,6 @@ strategy/
 ├── types.py
 ├── errors.py
 ├── portfolio.py
-├── docs/
 ├── core/
 │   └── __init__.py
 ├── risk/
@@ -132,6 +148,12 @@ strategy/
 │   ├── __init__.py
 │   ├── protocol.py
 │   └── market_analysis.py
+├── integration/
+│   ├── __init__.py
+│   ├── builder.py
+│   ├── market_integration.py
+│   ├── analyze_integration.py
+│   └── factor_integration.py
 └── utils/
     ├── __init__.py
     └── logging_config.py
@@ -151,6 +173,7 @@ strategy/
 | `visualization/` | ✅ 実装済み | 2          | 424  |
 | `rebalance/`     | ✅ 実装済み | 3          | 308  |
 | `providers/`     | ✅ 実装済み | 3          | 484  |
+| `integration/`   | ✅ 実装済み | 5          | 650  |
 | `utils/`         | 🚧 開発中   | 2          | 367  |
 | `core/`          | ⏳ 未実装   | 1          | 3    |
 <!-- END: IMPLEMENTATION -->
@@ -363,6 +386,126 @@ fig.show()
 
 ---
 
+### 統合モジュール（Integration）
+
+#### `IntegratedStrategyBuilder`
+
+**説明**: market、analyze、factorパッケージを統合してポートフォリオ戦略を構築するビルダークラス
+
+**基本的な使い方**:
+
+```python
+from strategy import IntegratedStrategyBuilder
+import pandas as pd
+
+# ビルダーを作成
+builder = IntegratedStrategyBuilder()
+
+# テクニカル信号とファクター分析を統合して戦略を構築
+strategy = builder.build_from_signals(
+    tickers=["VOO", "BND"],
+    start_date="2023-01-01",
+    end_date="2024-01-01"
+)
+
+print(strategy)
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `build_from_signals(tickers, start_date, end_date)` | テクニカル信号から戦略を構築 | `dict[str, Any]` |
+| `build_with_factors(tickers, factors)` | ファクター分析を含めて戦略を構築 | `dict[str, Any]` |
+
+---
+
+#### `FactorBasedRiskCalculator`
+
+**説明**: ファクターエクスポジャーを考慮したリスク指標の計算
+
+**基本的な使い方**:
+
+```python
+from strategy import FactorBasedRiskCalculator
+import pandas as pd
+
+# ファクターベースのリスク計算
+calculator = FactorBasedRiskCalculator(
+    returns=pd.Series([0.01, -0.005, 0.02, -0.01, 0.015]),
+    factor_exposures={"momentum": 0.5, "value": 0.3}
+)
+
+result = calculator.calculate()
+print(result)
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `calculate()` | ファクター調整後のリスク指標を計算 | `dict[str, Any]` |
+
+---
+
+#### `TechnicalSignalProvider`
+
+**説明**: analyze パッケージのテクニカル指標から投資シグナルを生成
+
+**基本的な使い方**:
+
+```python
+from strategy import TechnicalSignalProvider
+import pandas as pd
+
+# 価格データを準備
+prices = pd.Series([100, 102, 101, 105, 103, 107])
+
+# テクニカルシグナルを生成
+provider = TechnicalSignalProvider()
+signals = provider.generate_signals(prices)
+
+print(signals)
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `generate_signals(prices)` | テクニカル指標からシグナルを生成 | `dict[str, Any]` |
+
+---
+
+#### `StrategyMarketDataProvider`
+
+**説明**: market パッケージを使用してマーケットデータを取得
+
+**基本的な使い方**:
+
+```python
+from strategy import StrategyMarketDataProvider
+
+# マーケットデータプロバイダーを作成
+provider = StrategyMarketDataProvider()
+
+# 株価データを取得
+data = provider.fetch(
+    tickers=["VOO", "BND"],
+    start_date="2023-01-01",
+    end_date="2024-01-01"
+)
+
+print(data)
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `fetch(tickers, start_date, end_date)` | マーケットデータを取得 | `pd.DataFrame` |
+
+---
+
 ### ユーティリティ関数
 
 #### `get_logger(name, **context)`
@@ -412,10 +555,10 @@ from strategy.errors import (
 
 | 項目                 | 値     |
 | -------------------- | ------ |
-| Python ファイル数    | 20     |
-| 総行数（実装コード） | 4,020  |
-| モジュール数         | 8      |
-| テストファイル数     | 13     |
+| Python ファイル数    | 25     |
+| 総行数（実装コード） | 4,670  |
+| モジュール数         | 9      |
+| テストファイル数     | 28     |
 | テストカバレッジ     | N/A    |
 <!-- END: STATS -->
 

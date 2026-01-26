@@ -430,10 +430,10 @@ updated_at: 2026-01-22
 ```
 finance/
 ├── .claude/                    # Claude Code 設定
-│   ├── agents/                 # サブエージェント定義（70個）
-│   ├── commands/               # スラッシュコマンド（28個）
+│   ├── agents/                 # サブエージェント定義（85個）
+│   ├── commands/               # スラッシュコマンド（19個）
 │   ├── rules/                  # 共有ルール（規約詳細）
-│   └── skills/                 # スキル定義（33個）
+│   └── skills/                 # スキル定義（47個）
 │
 ├── src/                        # ソースコード
 │   ├── database/               # コアインフラ（DB, utils, logging）
