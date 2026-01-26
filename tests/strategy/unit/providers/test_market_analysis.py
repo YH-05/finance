@@ -21,8 +21,13 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
-from market_analysis.errors import DataFetchError, ErrorCode
-from market_analysis.types import DataSource, FetchOptions, MarketDataResult
+from market.yfinance import (
+    DataFetchError,
+    DataSource,
+    ErrorCode,
+    FetchOptions,
+    MarketDataResult,
+)
 from strategy.errors import DataProviderError
 from strategy.providers.market_analysis import MarketAnalysisProvider
 from strategy.providers.protocol import DataProvider

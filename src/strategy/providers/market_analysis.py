@@ -9,9 +9,7 @@ from typing import Any
 import pandas as pd
 import yfinance as yf
 
-from market_analysis.core.yfinance_fetcher import YFinanceFetcher
-from market_analysis.errors import DataFetchError
-from market_analysis.types import FetchOptions
+from market.yfinance import DataFetchError, FetchOptions, YFinanceFetcher
 from strategy.errors import DataProviderError
 from strategy.types import TickerInfo
 from strategy.utils.logging_config import get_logger
