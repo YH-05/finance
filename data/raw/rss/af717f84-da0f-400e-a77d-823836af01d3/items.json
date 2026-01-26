@@ -3,6 +3,86 @@
   "feed_id": "af717f84-da0f-400e-a77d-823836af01d3",
   "items": [
     {
+      "item_id": "5c827a49-ccab-4c31-a4d2-fbd5cb5f696d",
+      "title": "This founder cracked firefighting — now he’s creating an AI gold mine",
+      "link": "https://techcrunch.com/2026/01/25/this-founder-cracked-firefighting-now-hes-creating-an-ai-gold-mine/",
+      "published": "2026-01-25T23:20:36+00:00",
+      "summary": "The nozzle is just the beginning – what company founder Sunny Sethi calls \"the muscle on the ground.”",
+      "content": null,
+      "author": "Connie Loizos",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
+      "item_id": "c59aaea1-e2d8-4cbb-802d-94985ecebcdc",
+      "title": "ChatGPT is pulling answers from Elon Musk’s Grokipedia",
+      "link": "https://techcrunch.com/2026/01/25/chatgpt-is-pulling-answers-from-elon-musks-grokipedia/",
+      "published": "2026-01-25T22:35:53+00:00",
+      "summary": "Information from the conservative-leaning, AI-generated encyclopedia developed by Elon Musk’s xAI is beginning to appear in answers from ChatGPT.",
+      "content": null,
+      "author": "Anthony Ha",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
+      "item_id": "eb7b47d0-8ab7-4615-b8ea-fc0d096404ea",
+      "title": "Humans& thinks coordination is the next frontier for AI, and they’re building a model to prove it",
+      "link": "https://techcrunch.com/2026/01/25/humans-thinks-coordination-is-the-next-frontier-for-ai-and-theyre-building-a-model-to-prove-it/",
+      "published": "2026-01-25T22:11:06+00:00",
+      "summary": "Humans&#038;, a new startup founded by alumni of Anthropic, Meta, OpenAI, xAI, and Google DeepMind, is building the next generation of foundation models for collaboration, not chat.",
+      "content": null,
+      "author": "Rebecca Bellan",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
+      "item_id": "e95785e7-ea48-4f89-b311-e782b8003e9b",
+      "title": "Science fiction writers, Comic-Con say goodbye to AI",
+      "link": "https://techcrunch.com/2026/01/25/science-fiction-writers-comic-con-say-goodbye-to-ai/",
+      "published": "2026-01-25T21:53:42+00:00",
+      "summary": "Some of the major players in science fiction and pop culture are taking firmer stances against generative AI.",
+      "content": null,
+      "author": "Anthony Ha",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
+      "item_id": "9a55edf5-b37b-4fea-944f-981dd5df2fca",
+      "title": "TechCrunch Mobility: RIP, Tesla Autopilot, and the NTSB investigates Waymo",
+      "link": "https://techcrunch.com/2026/01/25/techcrunch-mobility-rip-tesla-autopilot-and-the-ntsb-investigates-waymo/",
+      "published": "2026-01-25T17:06:00+00:00",
+      "summary": "Welcome back to TechCrunch Mobility — your central hub for news and insights on the future of transportation.",
+      "content": null,
+      "author": "Kirsten Korosec",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
+      "item_id": "b5067d4b-524f-40b5-b7bc-bc7c4c548671",
+      "title": "Apple will reportedly unveil its Gemini-powered Siri assistant in February",
+      "link": "https://techcrunch.com/2026/01/25/apple-will-reportedly-unveil-its-gemini-powered-siri-assistant-in-february/",
+      "published": "2026-01-25T16:56:31+00:00",
+      "summary": "We’re about to get our first real look at the results of the recently announced AI partnership between Apple and Google.",
+      "content": null,
+      "author": "Anthony Ha",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
+      "item_id": "5b35ffa7-0473-47c4-b0f1-730ab3afaaf9",
+      "title": "What is Bending Spoons? The little-known firm behind Vimeo’s sweeping layoffs",
+      "link": "https://techcrunch.com/2026/01/25/what-is-bending-spoons-everything-to-know-about-aols-acquirer/",
+      "published": "2026-01-25T16:25:19+00:00",
+      "summary": "Bending Spoons remains largely unknown, even as its portfolio of products has served more than a billion people.",
+      "content": null,
+      "author": "Anna Heim",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
+      "item_id": "a1677e53-0b71-4654-966d-f61fca5de84e",
+      "title": "Google says it’s fixed Gmail issues with spam and misclassification",
+      "link": "https://techcrunch.com/2026/01/25/gmail-is-having-issues-with-spam-and-misclassification/",
+      "published": "2026-01-25T16:16:39+00:00",
+      "summary": "If your Gmail account doesn’t seem to be working properly today, you’re not alone.",
+      "content": null,
+      "author": "Anthony Ha",
+      "fetched_at": "2026-01-25T23:54:07.406865+00:00"
+    },
+    {
       "item_id": "21929488-5b77-4476-99ec-deef1fe08e7a",
       "title": "Gmail is having issues with spam and misclassification",
       "link": "https://techcrunch.com/2026/01/24/gmail-is-having-issues-with-spam-and-misclassification/",
