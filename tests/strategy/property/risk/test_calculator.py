@@ -390,11 +390,11 @@ class TestDownsideDeviationProperty:
         ),
     )
     @settings(max_examples=50)
-    def test_プロパティ_下方偏差はボラティリティ以下(
+    def test_プロパティ_下方偏差とボラティリティの関係(
         self,
         returns: list[float],
     ) -> None:
-        """下方偏差はボラティリティ以下であることを検証.
+        """下方偏差とボラティリティが計算可能であることを検証.
 
         Parameters
         ----------
@@ -403,11 +403,13 @@ class TestDownsideDeviationProperty:
 
         Notes
         -----
-        下方偏差は負のリターンのみを使用するため、
-        通常はボラティリティ（全リターンの標準偏差）以下となる。
-        ただし、全て負のリターンの場合は等しくなる可能性がある。
-        また、負のリターンが1つしかない場合は下方偏差がゼロになる
-        （標準偏差の計算に2つ以上の値が必要なため）。
+        下方偏差は負のリターンのみを使用する。
+        数学的には、下方偏差がボラティリティを超えることがある。
+        例えば、負のリターンが少数で変動が大きい場合:
+        - 全データ: [0.01, 0.01, 0.01, -0.5, -0.1]
+        - 全体の標準偏差 < 負のリターンの標準偏差
+
+        このテストでは両指標が計算可能で非負であることを検証する。
         """
         returns_series = pd.Series(returns)
 
@@ -415,7 +417,6 @@ class TestDownsideDeviationProperty:
         assume(float(returns_series.std()) > _EPSILON)
 
         # 負のリターンが2つ以上あることを確認
-        # （1つの場合は下方偏差がゼロになり、全て負の場合と異なる）
         negative_count = sum(1 for r in returns if r < 0)
         assume(negative_count >= 2)
 
@@ -424,13 +425,13 @@ class TestDownsideDeviationProperty:
         downside_dev = calculator.downside_deviation()
         volatility = calculator.volatility()
 
-        # ボラティリティがゼロの場合はスキップ（両方ゼロ）
-        assume(volatility > 0)
+        # 両方とも非負であること
+        assert downside_dev >= 0
+        assert volatility >= 0
 
-        # 下方偏差はボラティリティ以下
-        # 全て負のリターンの場合は同等になるため、等号を許容
-        # 浮動小数点の誤差を考慮して少し余裕を持たせる
-        assert downside_dev <= volatility + 1e-9
+        # 両方とも有限値であること
+        assert not math.isnan(downside_dev)
+        assert not math.isnan(volatility)
 
 
 class TestMathematicalRelationships:
@@ -446,11 +447,11 @@ class TestMathematicalRelationships:
         ),
     )
     @settings(max_examples=50)
-    def test_プロパティ_ソルティノレシオとシャープレシオの関係(
+    def test_プロパティ_ソルティノレシオとシャープレシオは有限値(
         self,
         returns: list[float],
     ) -> None:
-        """ソルティノレシオとシャープレシオの関係を検証.
+        """ソルティノレシオとシャープレシオが計算可能であることを検証.
 
         Parameters
         ----------
@@ -459,8 +460,9 @@ class TestMathematicalRelationships:
 
         Notes
         -----
-        下方偏差 <= ボラティリティ なので、同じ超過リターンの場合
-        ソルティノレシオ >= シャープレシオ となる（符号が同じ場合）。
+        下方偏差がボラティリティを超える場合があるため、
+        ソルティノ >= シャープ の関係は常に成り立つわけではない。
+        このテストでは両指標が計算可能であることのみを検証する。
         """
         returns_series = pd.Series(returns)
 
@@ -475,17 +477,11 @@ class TestMathematicalRelationships:
         sortino = calculator.sortino_ratio()
         sharpe = calculator.sharpe_ratio()
 
-        # 無限大の場合はスキップ
-        assume(not math.isinf(sortino) and not math.isinf(sharpe))
-
-        # 平均リターンの符号が同じ場合
-        mean_return = returns_series.mean()
-        if mean_return > 0:
-            # 正のリターンの場合、ソルティノ >= シャープ
-            assert sortino >= sharpe - 1e-10
-        elif mean_return < 0:
-            # 負のリターンの場合、ソルティノ <= シャープ（両方負なので絶対値で比較）
-            assert abs(sortino) >= abs(sharpe) - 1e-10
+        # 無限大でない場合は有限値であること
+        if not math.isinf(sortino):
+            assert not math.isnan(sortino)
+        if not math.isinf(sharpe):
+            assert not math.isnan(sharpe)
 
 
 class TestBoundaryConditions:
