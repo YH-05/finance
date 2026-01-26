@@ -9,24 +9,44 @@ indices:
       name: "Dow Jones Industrial Average"
     - symbol: "^IXIC"
       name: "NASDAQ Composite"
+    - symbol: "^NDX"
+      name: "Nasdaq 100"
+    - symbol: "^RUI"
+      name: "Russell 1000"
     - symbol: "^RUT"
       name: "Russell 2000"
+    - symbol: "^RUA"
+      name: "Russell 3000"
+    - symbol: "^SOX"
+      name: "Philadelphia Semiconductor"
 
   global:
     - symbol: "^N225"
       name: "日経225"
-    - symbol: "^TOPX"
-      name: "TOPIX"
     - symbol: "^STOXX50E"
       name: "Euro STOXX 50"
     - symbol: "^FTSE"
       name: "FTSE 100"
     - symbol: "^GDAXI"
       name: "DAX"
+    - symbol: "^FCHI"
+      name: "CAC 40"
+    - symbol: "^AXJO"
+      name: "ASX 200"
+    - symbol: "^NSEI"
+      name: "Nifty 50"
+    - symbol: "^TWII"
+      name: "台湾加権指数"
+    - symbol: "^KS11"
+      name: "KOSPI"
     - symbol: "000001.SS"
       name: "上海総合"
     - symbol: "^HSI"
       name: "ハンセン指数"
+    - symbol: "URTH"
+      name: "MSCI World ETF"
+    - symbol: "EEM"
+      name: "MSCI Emerging Markets ETF"
 
 mag7:
   - symbol: "AAPL"
@@ -34,13 +54,13 @@ mag7:
   - symbol: "MSFT"
     name: "Microsoft"
   - symbol: "GOOGL"
-    name: "Alphabet (Google)"
+    name: "Alphabet"
   - symbol: "AMZN"
     name: "Amazon"
   - symbol: "NVDA"
     name: "NVIDIA"
   - symbol: "META"
-    name: "Meta (Facebook)"
+    name: "Meta"
   - symbol: "TSLA"
     name: "Tesla"
 
@@ -71,6 +91,7 @@ sectors:
 # 騰落率計算期間の定義
 return_periods:
   "1D": 1       # 1営業日
+  "WoW": "prev_tue"  # 先週火曜日終値から（週次比較用）
   "1W": 5       # 1週間（5営業日）
   "MTD": "mtd"  # 月初来
   "1M": 21      # 1ヶ月（21営業日）

@@ -17,6 +17,22 @@ from market.yfinance import FetchOptions, YFinanceFetcher
 
 
 class PerformanceAnalyzer:
+    """symbols.yamlで定義したシンボルグループのパフォーマンスを計測する.
+
+    symbols.yamlで定義された任意のグループ（indices, mag7, sectors等）に対して、
+    複数期間（1D, 1W, MTD, 1M, 3M, 6M, YTD, 1Y, 3Y, 5Y）の騰落率を一括計算する。
+
+    Examples
+    --------
+    >>> analyzer = PerformanceAnalyzer()
+    >>> # 米国指数のパフォーマンス
+    >>> us_returns = analyzer.get_group_performance("indices", "us")
+    >>> # MAG7のパフォーマンス
+    >>> mag7_returns = analyzer.get_group_performance("mag7")
+    >>> # セクターETFのパフォーマンス
+    >>> sector_returns = analyzer.get_group_performance("sectors")
+    """
+
     def __init__(self) -> None:
         self.logger = get_logger(__name__, component="PerformanceAnalyzer")
 
@@ -154,11 +170,17 @@ class PerformanceAnalyzer:
                 raise ValueError(msg)
             start_price = symbol_data.iloc[-(period_value + 1)]["value"]
         else:
-            # MTD/YTD の計算
+            # MTD/YTD/prev_tue の計算
             if period_value == "mtd":
                 start_of_period = latest_date.replace(day=1)
             elif period_value == "ytd":
                 start_of_period = latest_date.replace(month=1, day=1)
+            elif period_value == "prev_tue":
+                # 先週火曜日を計算（週は月曜始まり）
+                # 今日の曜日: 月=0, 火=1, ... 日=6
+                weekday = latest_date.weekday()
+                days_to_prev_tue = weekday + 6  # 先週火曜までの日数
+                start_of_period = latest_date - timedelta(days=days_to_prev_tue)
             else:
                 msg = f"Unknown period: {period_value}"
                 raise ValueError(msg)
@@ -173,7 +195,7 @@ class PerformanceAnalyzer:
         return_pct = ((latest_price - start_price) / start_price) * 100
         return round(return_pct, 2)
 
-    def get_price_dataframe(self, list_symbol: list[str]) -> DataFrame:
+    def get_close_dataframe(self, list_symbol: list[str]) -> DataFrame:
         fetch_options = FetchOptions(
             symbols=list_symbol,
             start_date=(datetime.today() - timedelta(days=365 * 5 + 30)).strftime(
@@ -196,6 +218,118 @@ class PerformanceAnalyzer:
         df: DataFrame = pd.concat(dfs).sort_values("Date", ignore_index=True)
         return df
 
+    def get_group_performance(
+        self,
+        group: str,
+        subgroup: str | None = None,
+    ) -> DataFrame:
+        """指定グループのパフォーマンス（騰落率）を計算する.
+
+        Parameters
+        ----------
+        group : str
+            シンボルグループ名（"indices", "mag7", "sectors" 等）
+        subgroup : str | None, optional
+            サブグループ名（"us", "global" 等、indicesの場合に使用）
+
+        Returns
+        -------
+        DataFrame
+            騰落率データ（symbol, period, return_pct カラムを持つ）
+
+        Examples
+        --------
+        >>> analyzer = PerformanceAnalyzer()
+        >>> # 米国指数
+        >>> us_indices = analyzer.get_group_performance("indices", "us")
+        >>> # MAG7
+        >>> mag7 = analyzer.get_group_performance("mag7")
+        """
+        symbols = get_symbols(group, subgroup)
+        if not symbols:
+            self.logger.warning(
+                "No symbols found for group",
+                group=group,
+                subgroup=subgroup,
+            )
+            return DataFrame({"symbol": [], "period": [], "return_pct": []})
+
+        self.logger.info(
+            "Fetched symbols",
+            group=group,
+            subgroup=subgroup,
+            symbol_count=len(symbols),
+            symbols=symbols,
+        )
+
+        price = self.get_close_dataframe(list_symbol=symbols)
+        return_periods = get_return_periods()
+        self.logger.info("Return periods", periods=list(return_periods.keys()))
+
+        returns = self.calculate_returns(price, return_periods)
+        self.logger.info(
+            "Calculated returns",
+            group=group,
+            result_count=len(returns),
+            symbols=returns["symbol"].nunique() if not returns.empty else 0,
+        )
+
+        return returns
+
+    def get_group_close(
+        self,
+        group: str,
+        subgroup: str | None = None,
+    ) -> DataFrame:
+        """指定グループの終値データを取得する.
+
+        Parameters
+        ----------
+        group : str
+            シンボルグループ名（"indices", "mag7", "sectors" 等）
+        subgroup : str | None, optional
+            サブグループ名（"us", "global" 等、indicesの場合に使用）
+
+        Returns
+        -------
+        DataFrame
+            終値データ（Date, symbol, variable, value カラムを持つ）
+
+        Examples
+        --------
+        >>> analyzer = PerformanceAnalyzer()
+        >>> # 米国指数の終値
+        >>> us_close = analyzer.get_group_close("indices", "us")
+        >>> # MAG7の終値
+        >>> mag7_close = analyzer.get_group_close("mag7")
+        """
+        symbols = get_symbols(group, subgroup)
+        if not symbols:
+            self.logger.warning(
+                "No symbols found for group",
+                group=group,
+                subgroup=subgroup,
+            )
+            return DataFrame({"Date": [], "symbol": [], "variable": [], "value": []})
+
+        self.logger.info(
+            "Fetching close prices",
+            group=group,
+            subgroup=subgroup,
+            symbol_count=len(symbols),
+            symbols=symbols,
+        )
+
+        close_df = self.get_close_dataframe(list_symbol=symbols)
+        self.logger.info(
+            "Fetched close prices",
+            group=group,
+            result_count=len(close_df),
+            symbols=close_df["symbol"].nunique() if not close_df.empty else 0,
+        )
+
+        return close_df
+
     def get_index_performance(self) -> DataFrame:
         """米国指数のパフォーマンス（騰落率）を計算する.
 
@@ -203,24 +337,110 @@ class PerformanceAnalyzer:
         -------
         DataFrame
             騰落率データ（symbol, period, return_pct カラムを持つ）
+
+        Note
+        ----
+        get_group_performance("indices", "us") のエイリアス
         """
-        symbols_us = get_symbols("indices", "us")
-        self.logger.info(
-            "Fetched symbols", symbol_count=len(symbols_us), symbols=symbols_us
-        )
-        price = self.get_price_dataframe(list_symbol=symbols_us)
+        return self.get_group_performance("indices", "us")
 
-        return_periods = get_return_periods()
-        self.logger.info("Return periods", periods=list(return_periods.keys()))
+    def get_global_index_performance(self) -> DataFrame:
+        """グローバル指数のパフォーマンス（騰落率）を計算する.
 
-        returns = self.calculate_returns(price, return_periods)
-        self.logger.info(
-            "Calculated returns",
-            result_count=len(returns),
-            symbols=returns["symbol"].nunique() if not returns.empty else 0,
-        )
+        Returns
+        -------
+        DataFrame
+            騰落率データ（symbol, period, return_pct カラムを持つ）
 
-        return returns
+        Note
+        ----
+        get_group_performance("indices", "global") のエイリアス
+        """
+        return self.get_group_performance("indices", "global")
+
+    def get_mag7_performance(self) -> DataFrame:
+        """MAG7銘柄のパフォーマンス（騰落率）を計算する.
+
+        Returns
+        -------
+        DataFrame
+            騰落率データ（symbol, period, return_pct カラムを持つ）
+
+        Note
+        ----
+        get_group_performance("mag7") のエイリアス
+        """
+        return self.get_group_performance("mag7")
+
+    def get_sector_performance(self) -> DataFrame:
+        """セクターETFのパフォーマンス（騰落率）を計算する.
+
+        Returns
+        -------
+        DataFrame
+            騰落率データ（symbol, period, return_pct カラムを持つ）
+
+        Note
+        ----
+        get_group_performance("sectors") のエイリアス
+        """
+        return self.get_group_performance("sectors")
+
+    def get_index_close(self) -> DataFrame:
+        """米国指数の終値データを取得する.
+
+        Returns
+        -------
+        DataFrame
+            終値データ（Date, symbol, variable, value カラムを持つ）
+
+        Note
+        ----
+        get_group_close("indices", "us") のエイリアス
+        """
+        return self.get_group_close("indices", "us")
+
+    def get_global_index_close(self) -> DataFrame:
+        """グローバル指数の終値データを取得する.
+
+        Returns
+        -------
+        DataFrame
+            終値データ（Date, symbol, variable, value カラムを持つ）
+
+        Note
+        ----
+        get_group_close("indices", "global") のエイリアス
+        """
+        return self.get_group_close("indices", "global")
+
+    def get_mag7_close(self) -> DataFrame:
+        """MAG7銘柄の終値データを取得する.
+
+        Returns
+        -------
+        DataFrame
+            終値データ（Date, symbol, variable, value カラムを持つ）
+
+        Note
+        ----
+        get_group_close("mag7") のエイリアス
+        """
+        return self.get_group_close("mag7")
+
+    def get_sector_close(self) -> DataFrame:
+        """セクターETFの終値データを取得する.
+
+        Returns
+        -------
+        DataFrame
+            終値データ（Date, symbol, variable, value カラムを持つ）
+
+        Note
+        ----
+        get_group_close("sectors") のエイリアス
+        """
+        return self.get_group_close("sectors")
 
 
 def main():
@@ -228,18 +448,44 @@ def main():
     setup_logging(level="INFO", format="console", force=True)
     analyzer = PerformanceAnalyzer()
 
+    # 期間の表示順序を定義
+    period_order = ["1D", "WoW", "1W", "MTD", "1M", "3M", "6M", "YTD", "1Y", "3Y", "5Y"]
+
     # 米国指数の騰落率
     index_returns = analyzer.get_index_performance()
     print("\n=== US Index Performance ===")
-    print(index_returns.pivot(index="symbol", columns="period", values="return_pct"))
+    pivot_index = index_returns.pivot(
+        index="symbol", columns="period", values="return_pct"
+    ).sort_values("1D", ascending=False)
+    print(pivot_index.reindex(columns=period_order))
+
+    # グローバル指数の騰落率
+    global_returns = analyzer.get_global_index_performance()
+    print("\n=== Global Index Performance ===")
+    pivot_global = global_returns.pivot(
+        index="symbol", columns="period", values="return_pct"
+    ).sort_values("1D", ascending=False)
+    print(pivot_global.reindex(columns=period_order))
 
     # MAG7の騰落率
-    symbols_mag7 = get_symbols(group="mag7")
-    price_mag7 = analyzer.get_price_dataframe(list_symbol=symbols_mag7)
-    return_periods = get_return_periods()
-    mag7_returns = analyzer.calculate_returns(price_mag7, return_periods)
+    mag7_returns = analyzer.get_mag7_performance()
     print("\n=== MAG7 Performance ===")
-    print(mag7_returns.pivot(index="symbol", columns="period", values="return_pct"))
+    pivot_mag7 = mag7_returns.pivot(
+        index="symbol", columns="period", values="return_pct"
+    ).sort_values("1D", ascending=False)
+    print(pivot_mag7.reindex(columns=period_order))
+
+    # セクターETFの騰落率
+    sector_returns = analyzer.get_sector_performance()
+    print("\n=== Sector ETF Performance ===")
+    pivot_sector = sector_returns.pivot(
+        index="symbol", columns="period", values="return_pct"
+    ).sort_values("1D", ascending=False)
+    print(pivot_sector.reindex(columns=period_order))
+
+    print("\n=== Sector ETF Price ===")
+    sector_price = analyzer.get_sector_close()
+    print(sector_price)
 
 
 if __name__ == "__main__":
