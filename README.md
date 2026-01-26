@@ -18,8 +18,12 @@
 
 | パッケージ | 説明 |
 |-----------|------|
-| `finance` | 共通データベースインフラ、ユーティリティ |
-| `market_analysis` | 市場データ取得・分析機能 |
+| `database` | 共通データベースインフラ、ユーティリティ |
+| `market` | 市場データ取得機能 (yfinance, FRED) |
+| `analyze` | 市場データ分析機能 (テクニカル分析, 騰落率) |
+| `rss` | RSSフィード管理・監視 |
+| `factor` | ファクター投資・分析 |
+| `strategy` | 投資戦略構築 |
 
 ## 🚀 セットアップ
 
@@ -167,22 +171,22 @@ finance/                                     # Project root
 │       ├── project-20/                      # ナレッジ管理システム
 │       └── project-21/                      # 新規プロジェクト
 ├── src/                                     # Source code
-│   ├── finance/                             # Core infrastructure
+│   ├── database/                            # Core infrastructure
 │   │   ├── db/                              # Database layer (SQLite + DuckDB)
 │   │   │   └── migrations/                  # Database schema migrations
-│   │   ├── utils/                           # Utilities (logging)
+│   │   ├── utils/                           # Utilities (logging, date utils)
 │   │   ├── types.py
 │   │   └── py.typed
-│   ├── market_analysis/                     # Market analysis library
-│   │   ├── core/                            # Data fetchers (yfinance, FRED)
-│   │   ├── analysis/                        # Analysis algorithms
-│   │   ├── api/                             # Public API
-│   │   ├── visualization/                   # Chart generation
-│   │   ├── export/                          # Data export
-│   │   ├── utils/                           # Utilities (cache, retry, validators)
-│   │   ├── errors.py
-│   │   ├── types.py
-│   │   ├── docs/                            # Library documentation
+│   ├── market/                              # Market data fetching
+│   │   ├── yfinance/                        # Yahoo Finance fetcher
+│   │   ├── fred/                            # FRED fetcher
+│   │   ├── utils/                           # Utilities
+│   │   └── py.typed
+│   ├── analyze/                             # Market analysis
+│   │   ├── returns/                         # Returns calculation
+│   │   ├── sector/                          # Sector analysis
+│   │   ├── technical/                       # Technical indicators
+│   │   ├── earnings/                        # Earnings calendar
 │   │   └── py.typed
 │   ├── rss/                                 # RSS feed monitoring package
 │   │   ├── cli/                             # CLI interface
@@ -211,11 +215,12 @@ finance/                                     # Project root
 │   │   ├── providers/                       # Data providers
 │   │   ├── utils/
 │   │   └── py.typed
-│   └── bloomberg/                           # Bloomberg連携
 ├── tests/                                   # Test suite
-│   ├── finance/                             # Finance package tests
-│   │   └── db/unit/                         # DB client tests
-│   ├── market_analysis/                     # Market analysis tests
+│   ├── database/                            # Database package tests
+│   │   └── unit/                            # DB client tests
+│   ├── market/                              # Market package tests
+│   │   └── unit/                            # Tests
+│   ├── analyze/                             # Analyze package tests
 │   │   └── unit/                            # Tests
 │   ├── rss/                                 # RSS package tests
 │   │   ├── unit/                            # Unit tests
@@ -257,28 +262,29 @@ finance/                                     # Project root
 ```mermaid
 graph TB
     subgraph "Core Layer"
-        finance["finance<br/>(コアインフラ)"]
+        database["database<br/>(コアインフラ)"]
     end
 
-    subgraph "Analysis Layer"
-        market_analysis["market_analysis<br/>(市場分析)"]
+    subgraph "Data Layer"
+        market["market<br/>(市場データ取得)"]
         rss["rss<br/>(RSS管理)"]
     end
 
-    subgraph "Specialized Layer"
+    subgraph "Analysis Layer"
+        analyze["analyze<br/>(市場分析)"]
         factor["factor<br/>(ファクター分析)"]
-        strategy["strategy<br/>(投資戦略)"]
-        bloomberg["bloomberg<br/>(Bloomberg連携)"]
     end
 
-    finance --> market_analysis
-    finance --> rss
-    finance --> bloomberg
-    market_analysis --> factor
-    finance --> factor
+    subgraph "Strategy Layer"
+        strategy["strategy<br/>(投資戦略)"]
+    end
+
+    database --> market
+    database --> rss
+    market --> analyze
+    analyze --> factor
     factor --> strategy
-    market_analysis --> strategy
-    finance --> strategy
+    market --> strategy
 ```
 
 ### コマンド → スキル → エージェント 依存関係

@@ -34,9 +34,9 @@ Notes
 
 See Also
 --------
-market_analysis.analysis.returns : 騰落率計算モジュール
-market_analysis.analysis.sector : セクター分析モジュール
-market_analysis.analysis.earnings : 決算カレンダーモジュール
+analyze.returns : 騰落率計算モジュール
+analyze.sector : セクター分析モジュール
+analyze.earnings : 決算カレンダーモジュール
 """
 
 from __future__ import annotations
@@ -48,10 +48,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from database.utils.logging_config import get_logger
-from market_analysis.analysis.earnings import get_upcoming_earnings
-from market_analysis.analysis.returns import generate_returns_report
-from market_analysis.analysis.sector import analyze_sector_performance
+from analyze import generate_returns_report, get_upcoming_earnings
+from analyze.sector import analyze_sector_performance
+from database.utils import get_logger
 
 logger = get_logger(__name__)
 

@@ -1,6 +1,6 @@
 """MarketAnalysisProvider implementation.
 
-market_analysis パッケージを使用した DataProvider の実装。
+market パッケージを使用した DataProvider の実装。
 YFinanceFetcher を使用して株価データを取得し、TickerInfo を提供する。
 """
 
@@ -9,9 +9,7 @@ from typing import Any
 import pandas as pd
 import yfinance as yf
 
-from market_analysis.core.yfinance_fetcher import YFinanceFetcher
-from market_analysis.errors import DataFetchError
-from market_analysis.types import FetchOptions
+from market.yfinance import DataFetchError, FetchOptions, YFinanceFetcher
 from strategy.errors import DataProviderError
 from strategy.types import TickerInfo
 from strategy.utils.logging_config import get_logger
@@ -20,9 +18,9 @@ logger = get_logger(__name__, module="market_analysis_provider")
 
 
 class MarketAnalysisProvider:
-    """DataProvider implementation using market_analysis package.
+    """DataProvider implementation using market package.
 
-    市場データの取得に market_analysis パッケージの YFinanceFetcher を使用する
+    市場データの取得に market パッケージの YFinanceFetcher を使用する
     DataProvider の実装。
 
     Parameters

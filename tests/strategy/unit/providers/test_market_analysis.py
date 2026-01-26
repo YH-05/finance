@@ -5,10 +5,10 @@
 テストTODO:
 - [x] MarketAnalysisProvider クラスが実装されている
 - [x] DataProvider Protocol を満たしている
-- [x] get_prices() で market_analysis の YFinanceFetcher を使用
+- [x] get_prices() で market パッケージの YFinanceFetcher を使用
 - [x] get_ticker_info() で銘柄情報を取得
 - [x] get_ticker_infos() で複数銘柄情報を一括取得
-- [x] market_analysis のエラーを DataProviderError に変換
+- [x] market パッケージのエラーを DataProviderError に変換
 - [x] キャッシュ設定を使用
 
 Note: 統合テストは tests/strategy/integration/providers/test_market_analysis.py に配置
@@ -21,8 +21,13 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
-from market_analysis.errors import DataFetchError, ErrorCode
-from market_analysis.types import DataSource, FetchOptions, MarketDataResult
+from market.yfinance import (
+    DataFetchError,
+    DataSource,
+    ErrorCode,
+    FetchOptions,
+    MarketDataResult,
+)
 from strategy.errors import DataProviderError
 from strategy.providers.market_analysis import MarketAnalysisProvider
 from strategy.providers.protocol import DataProvider
@@ -395,7 +400,7 @@ class TestErrorHandling:
         self,
         mock_fetcher_class: MagicMock,
     ) -> None:
-        """market_analysis の DataFetchError を DataProviderError に変換することを確認。"""
+        """market パッケージの DataFetchError を DataProviderError に変換することを確認。"""
         # Arrange
         mock_fetcher = MagicMock()
         mock_fetcher_class.return_value = mock_fetcher

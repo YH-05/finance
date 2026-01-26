@@ -334,12 +334,12 @@ updated_at: 2026-01-22
 
 | パッケージ | 説明 | 主な機能 |
 |------------|------|----------|
-| `finance` | コアインフラパッケージ | DB接続、ユーティリティ、ロギング、プロファイリング |
-| `market_analysis` | 金融市場分析パッケージ | yfinance連携、FRED連携、テクニカル分析 |
+| `database` | コアインフラパッケージ | DB接続、ユーティリティ、ロギング、日付ユーティリティ |
+| `market` | 市場データ取得パッケージ | yfinance連携、FRED連携 |
+| `analyze` | 市場データ分析パッケージ | テクニカル分析、騰落率計算、セクター分析 |
 | `rss` | RSSフィード管理パッケージ | フィード監視、記事取得、重複チェック |
 | `factor` | ファクター投資・分析パッケージ | マルチファクターモデル、ファクター分析 |
 | `strategy` | 投資戦略パッケージ | 戦略構築、バックテスト、評価 |
-| `bloomberg` | Bloomberg連携パッケージ | Bloomberg API連携 |
 
 ---
 
@@ -347,8 +347,9 @@ updated_at: 2026-01-22
 
 ### Pythonパッケージ
 
-- `finance` (コア) → `market_analysis`, `rss`, `bloomberg`
-- `market_analysis` → `factor`, `strategy`
+- `database` (コア) → `market`, `analyze`, `rss`
+- `market` → `analyze`, `factor`, `strategy`
+- `analyze` → `strategy`
 - `factor` → `strategy`
 
 ### コマンド → スキル → エージェント
@@ -389,12 +390,12 @@ finance/
 │   └── skills/                 # スキル定義（33個）
 │
 ├── src/                        # ソースコード
-│   ├── finance/                # コアインフラ（DB, utils）
-│   ├── market_analysis/        # 市場分析（yfinance, FRED）
+│   ├── database/               # コアインフラ（DB, utils, logging）
+│   ├── market/                 # 市場データ取得（yfinance, FRED）
+│   ├── analyze/                # 市場分析（テクニカル分析）
 │   ├── rss/                    # RSSフィード監視
 │   ├── factor/                 # ファクター分析
-│   ├── strategy/               # 投資戦略
-│   └── bloomberg/              # Bloomberg連携
+│   └── strategy/               # 投資戦略
 │
 ├── tests/                      # テストスイート
 │   ├── {package}/unit/         # 単体テスト
