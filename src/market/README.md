@@ -315,6 +315,196 @@ except DataFetchError as e:
     print(f"エラーコード: {e.code}")
 ```
 
+### 時価総額・財務指標の取得
+
+`yf.Ticker` を直接使用して、時価総額や PER などの財務指標を取得できます。
+
+```python
+import yfinance as yf
+
+# 単一銘柄の財務指標
+ticker = yf.Ticker("AAPL")
+info = ticker.info
+
+# 主要な財務指標
+print(f"時価総額: ${info.get('marketCap', 0):,.0f}")
+print(f"PER（TTM）: {info.get('trailingPE', 'N/A')}")
+print(f"PBR: {info.get('priceToBook', 'N/A')}")
+print(f"配当利回り: {info.get('dividendYield', 0) * 100:.2f}%")
+print(f"52週高値: ${info.get('fiftyTwoWeekHigh', 0):.2f}")
+print(f"52週安値: ${info.get('fiftyTwoWeekLow', 0):.2f}")
+```
+
+### 複数銘柄の財務データ一括取得
+
+```python
+import yfinance as yf
+import pandas as pd
+
+# MAG7 銘柄の財務データを一括取得
+symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"]
+
+# 取得したい指標
+metrics = [
+    "marketCap",      # 時価総額
+    "trailingPE",     # PER（TTM）
+    "forwardPE",      # 予想PER
+    "priceToBook",    # PBR
+    "dividendYield",  # 配当利回り
+    "beta",           # ベータ値
+    "fiftyTwoWeekHigh",
+    "fiftyTwoWeekLow",
+]
+
+# 各銘柄のデータを収集
+data = []
+for symbol in symbols:
+    ticker = yf.Ticker(symbol)
+    info = ticker.info
+    row = {"symbol": symbol}
+    for metric in metrics:
+        row[metric] = info.get(metric)
+    data.append(row)
+
+# DataFrame に変換
+df = pd.DataFrame(data)
+df.set_index("symbol", inplace=True)
+
+# 時価総額を兆ドル単位に変換
+df["marketCap_T"] = df["marketCap"] / 1e12
+
+# 配当利回りをパーセント表示
+df["dividendYield_pct"] = df["dividendYield"].fillna(0) * 100
+
+print(df[["marketCap_T", "trailingPE", "priceToBook", "dividendYield_pct"]])
+```
+
+出力例:
+```
+        marketCap_T  trailingPE  priceToBook  dividendYield_pct
+symbol
+AAPL          3.45       28.50        45.20               0.44
+MSFT          3.12       35.80        12.30               0.72
+GOOGL         2.15       24.20         6.80               0.00
+AMZN          2.05       42.50         8.90               0.00
+NVDA          3.20       55.30        48.50               0.02
+META          1.45       27.80         8.20               0.35
+TSLA          0.85      120.50        15.60               0.00
+```
+
+### 財務諸表データの取得
+
+損益計算書、貸借対照表、キャッシュフロー計算書を取得できます。
+
+```python
+import yfinance as yf
+
+ticker = yf.Ticker("AAPL")
+
+# 損益計算書（年次）
+income_stmt = ticker.financials
+print("=== 損益計算書（直近4年）===")
+print(income_stmt.loc[["Total Revenue", "Gross Profit", "Net Income"]])
+
+# 貸借対照表（年次）
+balance_sheet = ticker.balance_sheet
+print("\n=== 貸借対照表 ===")
+print(balance_sheet.loc[["Total Assets", "Total Liabilities Net Minority Interest", "Stockholders Equity"]])
+
+# キャッシュフロー計算書（年次）
+cashflow = ticker.cashflow
+print("\n=== キャッシュフロー ===")
+print(cashflow.loc[["Operating Cash Flow", "Capital Expenditure", "Free Cash Flow"]])
+
+# 四半期データも取得可能
+quarterly_income = ticker.quarterly_financials
+quarterly_balance = ticker.quarterly_balance_sheet
+quarterly_cashflow = ticker.quarterly_cashflow
+```
+
+### 複数銘柄の財務比較
+
+```python
+import yfinance as yf
+import pandas as pd
+
+def get_financial_summary(symbol: str) -> dict:
+    """銘柄の財務サマリーを取得"""
+    ticker = yf.Ticker(symbol)
+    info = ticker.info
+
+    # 最新の財務データ
+    try:
+        income = ticker.financials
+        balance = ticker.balance_sheet
+
+        # 最新年度のデータ（最初の列）
+        latest_income = income.iloc[:, 0] if not income.empty else pd.Series()
+        latest_balance = balance.iloc[:, 0] if not balance.empty else pd.Series()
+
+        return {
+            "symbol": symbol,
+            "name": info.get("shortName", symbol),
+            "marketCap": info.get("marketCap", 0),
+            "trailingPE": info.get("trailingPE"),
+            "priceToBook": info.get("priceToBook"),
+            "revenue": latest_income.get("Total Revenue", 0),
+            "netIncome": latest_income.get("Net Income", 0),
+            "totalAssets": latest_balance.get("Total Assets", 0),
+            "totalDebt": latest_balance.get("Total Debt", 0),
+            "roe": info.get("returnOnEquity"),
+            "roa": info.get("returnOnAssets"),
+        }
+    except Exception as e:
+        print(f"Warning: {symbol} の財務データ取得に失敗: {e}")
+        return {"symbol": symbol, "error": str(e)}
+
+# 比較対象銘柄
+symbols = ["AAPL", "MSFT", "GOOGL"]
+
+# 財務データを収集
+summaries = [get_financial_summary(s) for s in symbols]
+df = pd.DataFrame(summaries)
+
+# 単位変換（十億ドル）
+for col in ["marketCap", "revenue", "netIncome", "totalAssets", "totalDebt"]:
+    if col in df.columns:
+        df[f"{col}_B"] = df[col] / 1e9
+
+# 利益率の計算
+df["profitMargin"] = df["netIncome"] / df["revenue"] * 100
+
+print(df[["symbol", "name", "marketCap_B", "revenue_B", "profitMargin", "trailingPE"]])
+```
+
+### 主要な info フィールド一覧
+
+| フィールド | 説明 |
+|-----------|------|
+| `marketCap` | 時価総額 |
+| `trailingPE` | PER（過去12ヶ月） |
+| `forwardPE` | 予想PER |
+| `priceToBook` | PBR |
+| `priceToSales` | PSR |
+| `enterpriseValue` | 企業価値（EV） |
+| `dividendYield` | 配当利回り |
+| `dividendRate` | 年間配当額 |
+| `payoutRatio` | 配当性向 |
+| `beta` | ベータ値 |
+| `fiftyTwoWeekHigh` | 52週高値 |
+| `fiftyTwoWeekLow` | 52週安値 |
+| `averageVolume` | 平均出来高 |
+| `returnOnEquity` | ROE |
+| `returnOnAssets` | ROA |
+| `profitMargins` | 利益率 |
+| `grossMargins` | 粗利率 |
+| `operatingMargins` | 営業利益率 |
+| `revenueGrowth` | 売上成長率 |
+| `earningsGrowth` | 利益成長率 |
+| `currentRatio` | 流動比率 |
+| `quickRatio` | 当座比率 |
+| `debtToEquity` | 負債資本比率 |
+
 ### キャッシュとリトライ設定
 
 ```python
