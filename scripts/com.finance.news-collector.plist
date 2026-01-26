@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- ジョブの識別子 -->
+    <key>Label</key>
+    <string>com.finance.news-collector</string>
+
+    <!-- 説明 -->
+    <key>Comment</key>
+    <string>金融ニュース自動収集（finance-news-workflow）</string>
+
+    <!-- 実行するプログラム -->
+    <key>ProgramArguments</key>
+    <array>
+        <!-- IMPORTANT: このパスは環境に合わせて変更してください -->
+        <string>/Users/yukihata/Desktop/finance/scripts/collect-news.sh</string>
+    </array>
+
+    <!-- 作業ディレクトリ -->
+    <key>WorkingDirectory</key>
+    <string>/Users/yukihata/Desktop/finance</string>
+
+    <!-- 実行スケジュール: 毎日朝7時 -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>7</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- ログ出力 -->
+    <key>StandardOutPath</key>
+    <string>/Users/yukihata/Desktop/finance/logs/news-collector.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yukihata/Desktop/finance/logs/news-collector-error.log</string>
+
+    <!-- 環境変数 -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- PATH を設定（uv, gh などが見つかるように） -->
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+
+        <!-- GitHub認証用（必要に応じて設定） -->
+        <!-- <key>GITHUB_TOKEN</key>
+        <string>your-token-here</string> -->
+    </dict>
+
+    <!-- 失敗時の再試行 -->
+    <key>StartInterval</key>
+    <integer>0</integer>
+
+    <!-- 起動時に実行しない -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- プロセス終了後の再起動 -->
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
