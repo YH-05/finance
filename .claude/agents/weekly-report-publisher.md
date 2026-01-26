@@ -270,10 +270,12 @@ mutation {
 }'
 ```
 
-### 公開日時を設定
+### 公開日時を設定（Issue作成時刻）
 
 ```bash
-# 公開日時を設定
+# 公開日時をIssue作成時刻（今日）に設定
+PUBLISH_DATE=$(date +%Y-%m-%d)
+
 gh api graphql -f query='
 mutation {
   updateProjectV2ItemFieldValue(
@@ -281,7 +283,7 @@ mutation {
       projectId: "PVT_kwHOBoK6AM4BMpw"
       itemId: "'$item_id'"
       fieldId: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
-      value: {date: "'$REPORT_DATE'"}
+      value: {date: "'$PUBLISH_DATE'"}
     }
   ) {
     projectV2Item {
@@ -374,7 +376,7 @@ report_dir: "articles/weekly_comment_20260122"
 
 - **Item ID**: PVTI_xxx
 - **Status**: Weekly Report
-- **公開日時**: 2026-01-22
+- **公開日時**: Issue作成日（今日）
 
 ## レポート情報
 
@@ -441,7 +443,7 @@ dry_run=false で実際に Issue を作成します。
 - [ ] 必要なデータファイルがすべて存在することを確認する
 - [ ] Issue 作成前に重複チェックを行う
 - [ ] GitHub Project #15 に正しいカテゴリで追加する
-- [ ] **公開日時フィールドを必ず設定する**（対象期間の終了日を使用）
+- [ ] **公開日時フィールドを必ず設定する**（Issue作成時刻＝今日の日付を使用）
 - [ ] **レポートリンクは完全なGitHub URLを使用する**（相対パス禁止）
   - 形式: `https://github.com/YH-05/finance/blob/main/{report_path}`
 - [ ] 結果を JSON 形式で出力する
@@ -543,7 +545,7 @@ dry_run=false で実際に Issue を作成します。
 - [ ] GitHub Issue が作成される
 - [ ] GitHub Project #15 に追加される
 - [ ] Status が "Weekly Report" に設定される
-- [ ] **公開日時が設定される**（対象期間の終了日）
+- [ ] **公開日時が設定される**（Issue作成時刻＝今日の日付）
 - [ ] 結果が JSON 形式で出力される
 
 ## 制限事項

@@ -1,6 +1,6 @@
 ---
 description: 週次マーケットレポートを自動生成します（データ収集→ニュース検索→レポート作成）
-argument-hint: [--weekly] [--weekly-comment] [--project 15] [--no-search] [--publish] [--date YYYY-MM-DD]
+argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] [--no-search] [--publish]
 ---
 
 # /generate-market-report - マーケットレポート生成
@@ -20,19 +20,26 @@ argument-hint: [--weekly] [--weekly-comment] [--project 15] [--no-search] [--pub
 ## 使用例
 
 ```bash
-# 基本的な使用方法（今日の日付でレポート生成）
+# ========== 日付指定（YYYY-MM-DD形式）==========
+
+# 基本的な使用方法（今日を終了日として1週間分のレポート生成）
 /generate-market-report
 
-# 出力先を指定
-/generate-market-report --output articles/market_report_20260119
+# 特定の日付を終了日としてレポート生成
+# 例: 2026-01-20 を終了日とし、2026-01-13 〜 2026-01-20 の1週間分
+/generate-market-report --date 2026-01-20
 
-# 特定の日付でレポート生成
-/generate-market-report --date 2026-01-19
+# 過去の期間でレポート生成
+# 例: 2026-01-15 を終了日とし、2026-01-08 〜 2026-01-15 の1週間分
+/generate-market-report --date 2026-01-15
 
 # ========== 週次レポートモード（推奨） ==========
 
 # フル週次レポート生成（GitHub Project連携）
 /generate-market-report --weekly
+
+# 特定日付でフル週次レポート生成
+/generate-market-report --weekly --date 2026-01-20
 
 # フル週次レポート + GitHub Issue 投稿
 /generate-market-report --weekly --publish
@@ -43,16 +50,18 @@ argument-hint: [--weekly] [--weekly-comment] [--project 15] [--no-search] [--pub
 # GitHub Project のみ使用（追加検索なし）
 /generate-market-report --weekly --no-search
 
-# 日付指定（任意の水曜日を指定可能）
-/generate-market-report --weekly --date 2026-01-22
+# ========== 出力先指定 ==========
+
+# 出力先を指定
+/generate-market-report --output articles/market_report_20260119
 
 # ========== 旧: 週次コメントモード（互換性維持） ==========
 
-# 週次コメント生成モード（推奨: 水曜日に実行）
+# 週次コメント生成モード
 /generate-market-report --weekly-comment
 
 # 週次コメント生成（日付指定）
-/generate-market-report --weekly-comment --date 2026-01-22
+/generate-market-report --weekly-comment --date 2026-01-20
 
 # 週次コメント生成 + GitHub Issue 投稿
 /generate-market-report --weekly-comment --publish
@@ -62,13 +71,26 @@ argument-hint: [--weekly] [--weekly-comment] [--project 15] [--no-search] [--pub
 
 | パラメータ | 必須 | デフォルト | 説明 |
 |-----------|------|-----------|------|
+| --date | - | 今日の日付 | **レポート終了日（YYYY-MM-DD形式）。この日付から1週間前が開始日となる** |
 | --output | - | articles/market_report_{date} または articles/weekly_report/{date} | 出力ディレクトリ |
-| --date | - | 今日の日付 | レポート対象日（YYYY-MM-DD形式） |
 | --weekly | - | false | **フル週次レポート生成モード（GitHub Project 連携あり、推奨）** |
 | --weekly-comment | - | false | 週次コメント生成モード（旧形式、互換性維持） |
 | --project | - | 15 | GitHub Project 番号（--weekly モード時のみ有効） |
 | --no-search | - | false | 追加検索を無効化（--weekly モード時のみ有効、GitHub Project のニュースのみ使用） |
 | --publish | - | false | レポート生成後に GitHub Issue として投稿（--weekly または --weekly-comment モード時のみ有効） |
+
+### 日付と期間の計算
+
+`--date` で指定した日付が**終了日**となり、**開始日は終了日の7日前**に自動計算されます。
+
+```
+例: --date 2026-01-20
+  開始日: 2026-01-13
+  終了日: 2026-01-20
+  期間: 2026-01-13 〜 2026-01-20（7日間）
+```
+
+**注意**: `--date` を省略した場合は今日の日付が終了日となります。
 
 ## 処理フロー
 
@@ -106,7 +128,8 @@ Phase 5: 完了処理
 
 ```
 Phase 1: 初期化
-├── 対象期間の自動計算（火曜〜火曜）
+├── 対象期間の計算（--date から7日前 〜 --date）
+│   └── 例: --date 2026-01-20 → 2026-01-13 〜 2026-01-20
 ├── 出力ディレクトリ作成
 │   └── articles/weekly_report/{YYYY-MM-DD}/
 ├── 必要ツール確認（gh CLI）
@@ -613,16 +636,20 @@ ${OUTPUT_DIR}/02_edit/report.md
 
 ### Phase 1: 初期化
 
-#### 1.1 対象期間の自動計算
+#### 1.1 対象期間の計算
 
 ```python
-from market_analysis.utils.date_utils import calculate_weekly_comment_period
+from datetime import date, timedelta
 
-# 例: 2026/1/22（水曜日）に実行した場合
-period = calculate_weekly_comment_period()
-# period["start"] = 2026-01-14 (火曜日)
-# period["end"] = 2026-01-21 (火曜日)
-# period["report_date"] = 2026-01-22 (水曜日)
+# --date オプションで指定された日付を終了日とする（省略時は今日）
+end_date = date.fromisoformat(args.date) if args.date else date.today()
+
+# 開始日は終了日の7日前
+start_date = end_date - timedelta(days=7)
+
+# 例: --date 2026-01-20 の場合
+# start_date = 2026-01-13
+# end_date = 2026-01-20
 ```
 
 #### 1.2 出力ディレクトリ作成
@@ -1169,7 +1196,7 @@ project_number: {project_number}
 
 # 週次コメントモード（--weekly-comment）【旧形式】
 
-`--weekly-comment` オプションを指定すると、火曜〜火曜の期間を対象とした
+`--weekly-comment` オプションを指定すると、指定日から1週間の期間を対象とした
 詳細なマーケットコメント（3000字以上）を生成します。
 
 > **注意**: `--weekly-comment` は互換性のために維持されています。
@@ -1181,8 +1208,8 @@ project_number: {project_number}
 /generate-market-report --weekly-comment
     │
     ├── Phase 1: 初期化
-    │   ├── 対象期間の自動計算（火曜〜火曜）
-    │   │   └── 水曜日実行: 前週火曜〜当週火曜
+    │   ├── 対象期間の計算（--date から7日前 〜 --date）
+    │   │   └── 例: --date 2026-01-20 → 2026-01-13 〜 2026-01-20
     │   └── 出力ディレクトリ作成
     │       └── articles/weekly_comment_{YYYYMMDD}/
     │
@@ -1229,16 +1256,20 @@ articles/weekly_comment_{YYYYMMDD}/
 
 ## 週次コメント Phase 1: 初期化（詳細）
 
-### 1.1 対象期間の自動計算
+### 1.1 対象期間の計算
 
 ```python
-from market_analysis.utils.date_utils import calculate_weekly_comment_period
+from datetime import date, timedelta
 
-# 例: 2026/1/22（水曜日）に実行した場合
-period = calculate_weekly_comment_period()
-# period["start"] = 2026-01-14 (火曜日)
-# period["end"] = 2026-01-21 (火曜日)
-# period["report_date"] = 2026-01-22 (水曜日)
+# --date オプションで指定された日付を終了日とする（省略時は今日）
+end_date = date.fromisoformat(args.date) if args.date else date.today()
+
+# 開始日は終了日の7日前
+start_date = end_date - timedelta(days=7)
+
+# 例: --date 2026-01-20 の場合
+# start_date = 2026-01-13
+# end_date = 2026-01-20
 ```
 
 ### 1.2 出力ディレクトリ作成
@@ -1451,7 +1482,7 @@ MAG7では、TSLAが+3.70%で週間トップパフォーマーとなりました
 2. **ニュース検索**: RSS MCP は登録済みフィード（33件）のみ検索可能
 3. **決算データ**: earnings.json は今後2週間分の主要企業のみ
 4. **レポート言語**: 日本語での出力を前提
-5. **週次コメント期間**: 火曜〜火曜の7日間（水曜日に実行推奨）
+5. **レポート期間**: 指定日（または今日）から7日前までの1週間
 
 ---
 
