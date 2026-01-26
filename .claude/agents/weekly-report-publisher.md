@@ -74,7 +74,7 @@ Phase 2: Issue 本文生成
 │   ├── {{mag7_summary}} → MAG7 サマリー
 │   ├── {{top_sectors}} → 上位セクター
 │   ├── {{bottom_sectors}} → 下位セクター
-│   ├── {{report_path}} → レポートファイルパス
+│   ├── {{report_path}} → レポートファイルパス（**完全なGitHub URL必須**）
 │   └── {{generated_at}} → 生成日時
 └── Issue 本文を生成
 
@@ -183,6 +183,8 @@ REPORT_DATE="2026-01-22"
 START_DATE="2026-01-14"
 END_DATE="2026-01-21"
 GENERATED_AT=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M (JST)')
+# 重要: レポートパスは完全なGitHub URLを使用すること
+REPORT_PATH="https://github.com/YH-05/finance/blob/main/articles/weekly_report/${REPORT_DATE}/02_edit/weekly_report.md"
 
 # Step 2: Issue 本文を生成
 body="## 週次マーケットレポート ${REPORT_DATE}
@@ -213,7 +215,7 @@ ${mag7_summary}
 
 ### 詳細レポート
 
-[Markdownレポート](${report_path})
+📄 [Markdownレポート](${REPORT_PATH})
 
 ---
 
@@ -439,6 +441,9 @@ dry_run=false で実際に Issue を作成します。
 - [ ] 必要なデータファイルがすべて存在することを確認する
 - [ ] Issue 作成前に重複チェックを行う
 - [ ] GitHub Project #15 に正しいカテゴリで追加する
+- [ ] **公開日時フィールドを必ず設定する**（対象期間の終了日を使用）
+- [ ] **レポートリンクは完全なGitHub URLを使用する**（相対パス禁止）
+  - 形式: `https://github.com/YH-05/finance/blob/main/{report_path}`
 - [ ] 結果を JSON 形式で出力する
 
 ### NEVER（禁止）
@@ -538,6 +543,7 @@ dry_run=false で実際に Issue を作成します。
 - [ ] GitHub Issue が作成される
 - [ ] GitHub Project #15 に追加される
 - [ ] Status が "Weekly Report" に設定される
+- [ ] **公開日時が設定される**（対象期間の終了日）
 - [ ] 結果が JSON 形式で出力される
 
 ## 制限事項
