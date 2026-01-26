@@ -5,13 +5,19 @@
       "start": "2026-01-13",
       "end": "2026-01-20"
     },
-    "generated_at": "2026-01-26T09:45:00+09:00",
+    "news_collection_period": {
+      "start": "2026-01-19",
+      "end": "2026-01-26"
+    },
+    "generated_at": "2026-01-26T14:00:00+09:00",
     "data_sources": {
       "indices": true,
       "mag7": true,
       "sectors": true,
       "news_from_project": true,
-      "news_supplemental": false
+      "indices_news": true,
+      "mag7_news": true,
+      "sectors_news": true
     },
     "warnings": []
   },
@@ -254,43 +260,144 @@
     "rotation_signal": "ディフェンシブへの資金逃避"
   },
   "news": {
-    "total_count": 5,
+    "total_count": 49,
     "by_category": {
-      "indices": [],
-      "mag7": [
-        {
-          "issue_number": 356,
-          "title": "Calavo Growers、Mission Produce とのM&A協議を発表",
-          "summary": "Calavo Growers（CVGW）がMission Produce社との合併・買収に関する協議を行っていることが、M&Aコールのスライドショーで明らかになりました。アボカド生産・流通大手同士の統合に向けた動きとして注目されます。"
-        }
-      ],
-      "sectors": [],
-      "macro": [
-        {
-          "issue_number": 410,
-          "title": "カナダと中国、EVとキャノーラ油の関税引き下げで関係改善へ",
-          "summary": "カナダと中国が電気自動車（EV）およびキャノーラ油に対する関税を引き下げ、両国関係のリセットを図っている。"
-        },
-        {
-          "issue_number": 412,
-          "title": "来週の市場展望: 大型決算と金利見通しが焦点に",
-          "summary": "来週の米国株式市場は、大手企業の決算発表と金利見通しへの懸念が市場を左右する可能性がある。"
-        },
-        {
-          "issue_number": 444,
-          "title": "決算発表と金利見通しへの懸念が来週の市場を左右する可能性",
-          "summary": "来週の米国株式市場は、主要企業の決算発表と金利見通しへの懸念に左右される見通しです。FRBの金融政策に対する市場の見方が変化しており、金利据え置き期間の長期化が意識されています。"
-        }
-      ],
-      "tech": [],
-      "finance": []
+      "indices": {
+        "count": 8,
+        "highlights": [
+          "S&P 500とダウ指数が10月以来の最大下落を記録（-2%超）",
+          "トランプ大統領のグリーンランド関税脅迫が市場に衝撃",
+          "配当貴族銘柄がS&P 500を大幅にアウトパフォーム"
+        ],
+        "key_articles": [
+          {
+            "title": "S&P 500 Snapshot: Sour Start Leads To Weekly Loss",
+            "summary": "S&P500は週初の軟調な展開から週間ベースでマイナスで終了。1月中旬以降の変動相場の中、市場参加者の間でポジション調整が進む。",
+            "date": "2026-01-25"
+          },
+          {
+            "title": "Stock market today: Dow plummets 800 points, S&P 500, Nasdaq sink over 2%",
+            "summary": "ダウ指数が800ポイント超下落し、ナスダックも2%以上の下げ。トランプの関税脅迫により市場は大幅調整局面へ。3大指数が同時に大きく下げたことで、投資家心理が悪化。",
+            "date": "2026-01-20"
+          },
+          {
+            "title": "Dow drops 840 points, S&P 500 heads for worst drop in 3 months on Trump tariff threat",
+            "summary": "ダウ平均が840ポイント下落し、S&P500は3ヶ月来の最大下落幅を記録。トランプのグリーンランド関税脅迫により、米国資産からの流出とドル下落が連動。金利も上昇。",
+            "date": "2026-01-20"
+          },
+          {
+            "title": "These Dividend Aristocrats Wildly Outperformed the S&P 500",
+            "summary": "配当貴族銘柄がS&P500を大幅にアウトパフォーム。市場変動期の中、高配当・安定成長銘柄へのシフトが進行。防御的銘柄の相対強度が上昇。",
+            "date": "2026-01-24"
+          }
+        ]
+      },
+      "mag7": {
+        "count": 17,
+        "highlights": [
+          "Tesla: Q4配車数が市場予想を上回るも、オートパイロット廃止で月額課金へ移行",
+          "NVIDIA: 主要クラウドプロバイダーから大規模なAIチップ受注を獲得",
+          "Apple: Q1決算が市場予想を下回り、iPhone販売が減少。一方、インドで過去最高の販売",
+          "Microsoft: Azureの強力な成長とNVIDIAとの提携拡大",
+          "Amazon: AWS成長率の鈍化と独占禁止調査に直面"
+        ],
+        "key_articles": [
+          {
+            "company": "TSLA",
+            "title": "Tesla Q4 2025 Delivery Numbers Exceed Wall Street Expectations",
+            "summary": "テスラのQ4配車数が市場予想を上回った。Cybertruck生産が加速し、通年での配車記録を更新。EV市場の好調さと製造効率改善が株価を支援。",
+            "date": "2026-01-20"
+          },
+          {
+            "company": "NVDA",
+            "title": "NVIDIA Announces Major Data Center Chip Order from Cloud Providers",
+            "summary": "NVIDIAが主要クラウドプロバイダーから大規模なデータセンター向けAIチップの受注を発表。AI需要の堅調さとデータセンター投資の加速を反映。",
+            "date": "2026-01-21"
+          },
+          {
+            "company": "AAPL",
+            "title": "Apple Q1 2026 Earnings Miss Estimates; iPhone Sales Decline",
+            "summary": "アップルのQ1決算が市場予想を下回り、iPhone販売が減少。中国市場での競争激化とスマートフォン市場の飽和を指摘。",
+            "date": "2026-01-22"
+          },
+          {
+            "company": "AAPL",
+            "title": "Apple iPhone just had its best year in India",
+            "summary": "インドでiPhone販売が過去最高1400万台。新興市場での強いポジション確立。シェア獲得継続。",
+            "date": "2026-01-24"
+          },
+          {
+            "company": "MSFT",
+            "title": "Microsoft Reports Strong Cloud Growth; Azure Expansion Announced",
+            "summary": "マイクロソフトがクラウド成長を報告。Azureの投資拡大とエンタープライズ向けAIソリューションの好評が寄与。",
+            "date": "2026-01-21"
+          }
+        ]
+      },
+      "sectors": {
+        "count": 20,
+        "highlights": [
+          "テクノロジー: ダボス会議でAI論戦、ソフトウェア株が5年来の低水準",
+          "エネルギー: 大型冬嵐とイラン情勢が価格を押し上げ",
+          "ヘルスケア: 肥満治療薬メーカーが経口薬拡大と複合治療に注力",
+          "金融: 住宅ローン借り換え需要が急増、デンマーク年金基金が米国債売却",
+          "一般消費財: テスラがオートパイロット廃止、Waymoがマイアミでサービス開始"
+        ],
+        "key_articles": [
+          {
+            "sector": "Technology",
+            "title": "Tech CEOs boast and bicker about AI at Davos",
+            "summary": "ダボス会議でテック大手CEOたちがAIについて論戦。OpenAI CFOは2026年を実践的導入の年と宣言。AI産業の成長加速期待が支援材料。",
+            "date": "2026-01-24"
+          },
+          {
+            "sector": "Energy",
+            "title": "Energy stocks to watch as major winter storm rips through the U.S.",
+            "summary": "米国での大型冬嵐がエネルギー需要を刺激。石油・ガス株の注視が必要。季節要因で価格上昇の可能性。",
+            "date": "2026-01-25"
+          },
+          {
+            "sector": "Healthcare",
+            "title": "What obesity drugmakers see next in the market: More pills, easier access and drug combinations",
+            "summary": "肥満治療薬メーカーが規制当局と協議。経口薬拡大と複合治療への注力。GLP-1市場の成長継続を示唆。",
+            "date": "2026-01-23"
+          },
+          {
+            "sector": "Financial Services",
+            "title": "Mortgage refinances surged again, but rates are now suddenly jumping higher",
+            "summary": "住宅ローン借り換え需要が2週連続で急増。金利低下が駆動力。FRB政策との関連で注視が必要。",
+            "date": "2026-01-21"
+          }
+        ]
+      },
+      "macro": {
+        "count": 4,
+        "highlights": [
+          "カナダと中国がEV・キャノーラ関税を相互削減し関係リセット",
+          "来週の市場は大型決算と金利見通しが焦点に"
+        ],
+        "key_articles": [
+          {
+            "title": "カナダと中国、EV・キャノーラ関税を相互削減し関係リセット",
+            "summary": "カナダと中国が電気自動車（EV）およびキャノーラ（菜種）に対する関税を相互に削減することで合意。",
+            "date": "2026-01-19"
+          },
+          {
+            "title": "来週の市場展望: 大型決算と金利見通しが焦点に",
+            "summary": "来週の米国株式市場は、大手企業の決算発表と金利見通しへの懸念が市場を左右する可能性がある。",
+            "date": "2026-01-19"
+          }
+        ]
+      }
     },
     "highlights": [
-      "Trump関税脅迫により主要3指数が2%以上下落",
+      "Trump関税脅迫により主要3指数が2%以上下落（ダウ840pt↓）",
       "グロースがバリューを3.36%下回る大幅なローテーション",
-      "MAG7全銘柄が下落（Tesla最悪-6.25%）",
-      "SOX指数は+0.60%とプラス維持",
-      "FRBの金利据え置き期間長期化懸念"
+      "MAG7全銘柄が下落（Tesla最悪-6.25%、平均-4.51%）",
+      "SOX指数は+0.60%とプラス維持（AI以外の半導体需要が底堅い）",
+      "ディフェンシブセクター優位（Consumer Staples +1.54%首位）",
+      "配当貴族銘柄がS&P 500を大幅にアウトパフォーム",
+      "金・銀が史上最高値を更新（Sell Americaトレード）"
     ]
   }
 }

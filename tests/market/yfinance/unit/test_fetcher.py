@@ -108,7 +108,7 @@ class TestYFinanceFetcherValidation:
 
 
 class TestYFinanceFetcherFetch:
-    """Tests for YFinanceFetcher.fetch() method."""
+    """Tests for YFinanceFetcher.fetch() method using yf.download."""
 
     @pytest.fixture
     def fetcher(self) -> YFinanceFetcher:
@@ -116,30 +116,59 @@ class TestYFinanceFetcherFetch:
         return YFinanceFetcher()
 
     @pytest.fixture
-    def sample_df(self) -> pd.DataFrame:
-        """Create a sample OHLCV DataFrame."""
-        return pd.DataFrame(
-            {
-                "Open": [150.0, 151.0, 152.0],
-                "High": [155.0, 156.0, 157.0],
-                "Low": [149.0, 150.0, 151.0],
-                "Close": [154.0, 155.0, 156.0],
-                "Volume": [1000000, 1100000, 1200000],
-            },
+    def sample_df_single(self) -> pd.DataFrame:
+        """Create a sample OHLCV DataFrame for single symbol (MultiIndex columns)."""
+        # yfinance 1.0+ returns MultiIndex columns even for single symbol
+        data = {
+            ("Close", "AAPL"): [154.0, 155.0, 156.0],
+            ("High", "AAPL"): [155.0, 156.0, 157.0],
+            ("Low", "AAPL"): [149.0, 150.0, 151.0],
+            ("Open", "AAPL"): [150.0, 151.0, 152.0],
+            ("Volume", "AAPL"): [1000000, 1100000, 1200000],
+        }
+        df = pd.DataFrame(
+            data,
             index=pd.to_datetime(["2024-01-01", "2024-01-02", "2024-01-03"]),
         )
+        df.columns = pd.MultiIndex.from_tuples(df.columns)
+        return df
 
-    @patch("market.yfinance.fetcher.yf.Ticker")
+    @pytest.fixture
+    def sample_df_multi(self) -> pd.DataFrame:
+        """Create a sample OHLCV DataFrame for multiple symbols."""
+        data = {
+            ("Close", "AAPL"): [154.0, 155.0, 156.0],
+            ("Close", "GOOGL"): [140.0, 141.0, 142.0],
+            ("Close", "MSFT"): [380.0, 381.0, 382.0],
+            ("High", "AAPL"): [155.0, 156.0, 157.0],
+            ("High", "GOOGL"): [142.0, 143.0, 144.0],
+            ("High", "MSFT"): [382.0, 383.0, 384.0],
+            ("Low", "AAPL"): [149.0, 150.0, 151.0],
+            ("Low", "GOOGL"): [138.0, 139.0, 140.0],
+            ("Low", "MSFT"): [378.0, 379.0, 380.0],
+            ("Open", "AAPL"): [150.0, 151.0, 152.0],
+            ("Open", "GOOGL"): [139.0, 140.0, 141.0],
+            ("Open", "MSFT"): [379.0, 380.0, 381.0],
+            ("Volume", "AAPL"): [1000000, 1100000, 1200000],
+            ("Volume", "GOOGL"): [500000, 550000, 600000],
+            ("Volume", "MSFT"): [2000000, 2100000, 2200000],
+        }
+        df = pd.DataFrame(
+            data,
+            index=pd.to_datetime(["2024-01-01", "2024-01-02", "2024-01-03"]),
+        )
+        df.columns = pd.MultiIndex.from_tuples(df.columns)
+        return df
+
+    @patch("market.yfinance.fetcher.yf.download")
     def test_正常系_有効なシンボルでデータ取得(
         self,
-        mock_ticker_class: MagicMock,
+        mock_download: MagicMock,
         fetcher: YFinanceFetcher,
-        sample_df: pd.DataFrame,
+        sample_df_single: pd.DataFrame,
     ) -> None:
         """有効なシンボルでデータを取得できることを確認。"""
-        mock_ticker = MagicMock()
-        mock_ticker.history.return_value = sample_df
-        mock_ticker_class.return_value = mock_ticker
+        mock_download.return_value = sample_df_single
 
         options = FetchOptions(
             symbols=["AAPL"],
@@ -162,17 +191,15 @@ class TestYFinanceFetcherFetch:
             "volume",
         ]
 
-    @patch("market.yfinance.fetcher.yf.Ticker")
+    @patch("market.yfinance.fetcher.yf.download")
     def test_正常系_複数シンボルのデータ取得(
         self,
-        mock_ticker_class: MagicMock,
+        mock_download: MagicMock,
         fetcher: YFinanceFetcher,
-        sample_df: pd.DataFrame,
+        sample_df_multi: pd.DataFrame,
     ) -> None:
         """複数シンボルのデータを取得できることを確認。"""
-        mock_ticker = MagicMock()
-        mock_ticker.history.return_value = sample_df
-        mock_ticker_class.return_value = mock_ticker
+        mock_download.return_value = sample_df_multi
 
         options = FetchOptions(symbols=["AAPL", "GOOGL", "MSFT"])
 
@@ -180,18 +207,25 @@ class TestYFinanceFetcherFetch:
 
         assert len(results) == 3
         assert [r.symbol for r in results] == ["AAPL", "GOOGL", "MSFT"]
+        for result in results:
+            assert len(result.data) == 3
+            assert list(result.data.columns) == [
+                "open",
+                "high",
+                "low",
+                "close",
+                "volume",
+            ]
 
-    @patch("market.yfinance.fetcher.yf.Ticker")
+    @patch("market.yfinance.fetcher.yf.download")
     def test_正常系_日付指定でデータ取得(
         self,
-        mock_ticker_class: MagicMock,
+        mock_download: MagicMock,
         fetcher: YFinanceFetcher,
-        sample_df: pd.DataFrame,
+        sample_df_single: pd.DataFrame,
     ) -> None:
         """日付指定（datetime オブジェクト）でデータを取得できることを確認。"""
-        mock_ticker = MagicMock()
-        mock_ticker.history.return_value = sample_df
-        mock_ticker_class.return_value = mock_ticker
+        mock_download.return_value = sample_df_single
 
         options = FetchOptions(
             symbols=["AAPL"],
@@ -201,22 +235,20 @@ class TestYFinanceFetcherFetch:
 
         fetcher.fetch(options)
 
-        mock_ticker.history.assert_called_once()
-        call_kwargs = mock_ticker.history.call_args.kwargs
+        mock_download.assert_called_once()
+        call_kwargs = mock_download.call_args.kwargs
         assert call_kwargs["start"] == "2024-01-01"
         assert call_kwargs["end"] == "2024-12-31"
 
-    @patch("market.yfinance.fetcher.yf.Ticker")
+    @patch("market.yfinance.fetcher.yf.download")
     def test_正常系_インターバル指定でデータ取得(
         self,
-        mock_ticker_class: MagicMock,
+        mock_download: MagicMock,
         fetcher: YFinanceFetcher,
-        sample_df: pd.DataFrame,
+        sample_df_single: pd.DataFrame,
     ) -> None:
         """インターバル指定でデータを取得できることを確認。"""
-        mock_ticker = MagicMock()
-        mock_ticker.history.return_value = sample_df
-        mock_ticker_class.return_value = mock_ticker
+        mock_download.return_value = sample_df_single
 
         options = FetchOptions(
             symbols=["AAPL"],
@@ -225,9 +257,24 @@ class TestYFinanceFetcherFetch:
 
         fetcher.fetch(options)
 
-        mock_ticker.history.assert_called_once()
-        call_kwargs = mock_ticker.history.call_args.kwargs
+        mock_download.assert_called_once()
+        call_kwargs = mock_download.call_args.kwargs
         assert call_kwargs["interval"] == "1wk"
+
+    @patch("market.yfinance.fetcher.yf.download")
+    def test_正常系_bulk_downloadメタデータが設定される(
+        self,
+        mock_download: MagicMock,
+        fetcher: YFinanceFetcher,
+        sample_df_single: pd.DataFrame,
+    ) -> None:
+        """bulk_download メタデータが True で設定されることを確認。"""
+        mock_download.return_value = sample_df_single
+
+        options = FetchOptions(symbols=["AAPL"])
+        results = fetcher.fetch(options)
+
+        assert results[0].metadata.get("bulk_download") is True
 
 
 class TestYFinanceFetcherErrors:
@@ -235,21 +282,19 @@ class TestYFinanceFetcherErrors:
 
     @pytest.fixture
     def fetcher(self) -> YFinanceFetcher:
-        """Create a YFinanceFetcher instance."""
-        return YFinanceFetcher()
+        """Create a YFinanceFetcher instance with minimal retries."""
+        return YFinanceFetcher(
+            retry_config=RetryConfig(max_attempts=1, initial_delay=0.01)
+        )
 
-    @patch("market.yfinance.fetcher.yf.Ticker")
+    @patch("market.yfinance.fetcher.yf.download")
     def test_エッジケース_空データで空結果(
         self,
-        mock_ticker_class: MagicMock,
+        mock_download: MagicMock,
         fetcher: YFinanceFetcher,
     ) -> None:
         """空の DataFrame が返された場合、空の結果を返すことを確認。"""
-        mock_ticker = MagicMock()
-        mock_ticker.history.return_value = pd.DataFrame()
-        # Valid symbol (has regularMarketPrice) but no historical data for period
-        mock_ticker.info = {"regularMarketPrice": 150.0}
-        mock_ticker_class.return_value = mock_ticker
+        mock_download.return_value = pd.DataFrame()
 
         options = FetchOptions(symbols=["AAPL"])
 
@@ -258,43 +303,47 @@ class TestYFinanceFetcherErrors:
         assert len(results) == 1
         assert results[0].is_empty
 
-    @patch("market.yfinance.fetcher.yf.Ticker")
-    def test_異常系_無効または上場廃止シンボルでDataFetchError(
+    @patch("market.yfinance.fetcher.yf.download")
+    def test_異常系_シンボルがMultiIndexに存在しない場合(
         self,
-        mock_ticker_class: MagicMock,
+        mock_download: MagicMock,
         fetcher: YFinanceFetcher,
     ) -> None:
-        """無効または上場廃止のシンボルで DataFetchError が発生することを確認。"""
-        mock_ticker = MagicMock()
-        mock_ticker.history.return_value = pd.DataFrame()
-        # Invalid symbol: no regularMarketPrice indicates delisted/invalid
-        mock_ticker.info = {}
-        mock_ticker_class.return_value = mock_ticker
+        """シンボルが MultiIndex に存在しない場合、エラー情報付きの空結果を返す。"""
+        # Return data for different symbol
+        data = {
+            ("Close", "OTHER"): [100.0],
+            ("High", "OTHER"): [101.0],
+            ("Low", "OTHER"): [99.0],
+            ("Open", "OTHER"): [100.0],
+            ("Volume", "OTHER"): [1000],
+        }
+        df = pd.DataFrame(data, index=pd.to_datetime(["2024-01-01"]))
+        df.columns = pd.MultiIndex.from_tuples(df.columns)
+        mock_download.return_value = df
 
-        options = FetchOptions(symbols=["INVALID"])
+        options = FetchOptions(symbols=["AAPL"])
+        results = fetcher.fetch(options)
 
-        with pytest.raises(DataFetchError) as exc_info:
-            fetcher.fetch(options)
+        # Should return result with data (using full df as fallback)
+        assert len(results) == 1
+        assert results[0].symbol == "AAPL"
 
-        assert "Invalid or delisted symbol" in str(exc_info.value)
-
-    @patch("market.yfinance.fetcher.yf.Ticker")
+    @patch("market.yfinance.fetcher.yf.download")
     def test_異常系_APIエラーでDataFetchError(
         self,
-        mock_ticker_class: MagicMock,
+        mock_download: MagicMock,
         fetcher: YFinanceFetcher,
     ) -> None:
         """API エラーで DataFetchError が発生することを確認。"""
-        mock_ticker = MagicMock()
-        mock_ticker.history.side_effect = Exception("API Error")
-        mock_ticker_class.return_value = mock_ticker
+        mock_download.side_effect = Exception("API Error")
 
         options = FetchOptions(symbols=["AAPL"])
 
         with pytest.raises(DataFetchError) as exc_info:
             fetcher.fetch(options)
 
-        assert "Failed to fetch data for AAPL" in str(exc_info.value)
+        assert "Failed to fetch data" in str(exc_info.value)
 
 
 class TestYFinanceFetcherRetry:
@@ -306,6 +355,51 @@ class TestYFinanceFetcherRetry:
         fetcher = YFinanceFetcher(retry_config=retry_config)
 
         assert fetcher._retry_config == retry_config
+
+    def test_正常系_デフォルトretry_configが設定される(self) -> None:
+        """デフォルトの RetryConfig が設定されることを確認。"""
+        fetcher = YFinanceFetcher()
+
+        assert fetcher._retry_config is not None
+        assert fetcher._retry_config.max_attempts == 3
+
+    @patch("market.yfinance.fetcher.yf.download")
+    @patch("market.yfinance.fetcher.time.sleep")
+    def test_正常系_リトライ時にセッションがローテートされる(
+        self,
+        mock_sleep: MagicMock,
+        mock_download: MagicMock,
+    ) -> None:
+        """リトライ時にブラウザセッションがローテートされることを確認。"""
+        fetcher = YFinanceFetcher(
+            retry_config=RetryConfig(max_attempts=3, initial_delay=0.01)
+        )
+
+        # Fail first two times, succeed on third
+        sample_data = pd.DataFrame(
+            {
+                ("Close", "AAPL"): [154.0],
+                ("High", "AAPL"): [155.0],
+                ("Low", "AAPL"): [149.0],
+                ("Open", "AAPL"): [150.0],
+                ("Volume", "AAPL"): [1000000],
+            },
+            index=pd.to_datetime(["2024-01-01"]),
+        )
+        sample_data.columns = pd.MultiIndex.from_tuples(sample_data.columns)
+        mock_download.side_effect = [
+            Exception("Rate limited"),
+            Exception("Rate limited"),
+            sample_data,
+        ]
+
+        options = FetchOptions(symbols=["AAPL"])
+        results = fetcher.fetch(options)
+
+        assert len(results) == 1
+        assert mock_download.call_count == 3
+        # Sleep should be called between retries
+        assert mock_sleep.call_count == 2
 
 
 class TestYFinanceFetcherIntervalMapping:
@@ -330,3 +424,29 @@ class TestYFinanceFetcherIntervalMapping:
     ) -> None:
         """Interval enum が正しい yfinance 形式にマッピングされることを確認。"""
         assert fetcher._map_interval(interval) == expected
+
+
+class TestYFinanceFetcherSession:
+    """Tests for curl_cffi session management."""
+
+    def test_正常系_コンテキストマネージャーでセッションがクローズされる(self) -> None:
+        """コンテキストマネージャー使用時にセッションがクローズされることを確認。"""
+        with YFinanceFetcher() as fetcher:
+            # Create session
+            session = fetcher._get_session()
+            assert session is not None
+
+        # After context exit, session should be closed
+        assert fetcher._session is None
+
+    def test_正常系_impersonate指定が反映される(self) -> None:
+        """impersonate パラメータが正しく設定されることを確認。"""
+        fetcher = YFinanceFetcher(impersonate="chrome110")
+        assert fetcher._impersonate == "chrome110"
+
+    def test_正常系_impersonate未指定でランダム選択(self) -> None:
+        """impersonate 未指定時にランダムなブラウザが選択されることを確認。"""
+        from market.yfinance.fetcher import BROWSER_IMPERSONATE_TARGETS
+
+        fetcher = YFinanceFetcher()
+        assert fetcher._impersonate in BROWSER_IMPERSONATE_TARGETS

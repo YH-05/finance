@@ -17,6 +17,52 @@ updated_at: 2026-01-22
 - 情報が不足していたり曖昧な状況であったりした場合は、ユーザーにAskUserQeestionsツールを使って詳細を尋ねる
 - 自分だけで作業しない。可能な限りサブエージェントに作業を移譲する。適切なサブエージェントがなければ作成を提案する。
 
+## Python実装時の必須サブエージェント
+
+**Python コードを書く際は、必ず以下のサブエージェントに作業を委譲すること。**
+
+### 目的別サブエージェント一覧
+
+| 目的 | サブエージェント | 説明 |
+|------|------------------|------|
+| **機能実装** | `feature-implementer` | TDDループ（Red→Green→Refactor）を自動実行。Issue のチェックボックスを更新しながら実装 |
+| **テスト作成** | `test-writer` | t-wada流TDDに基づくテスト作成 |
+| **単体テスト** | `test-unit-writer` | 関数・クラス単位の単体テスト作成 |
+| **プロパティテスト** | `test-property-writer` | Hypothesisを使用した不変条件テスト作成 |
+| **統合テスト** | `test-integration-writer` | コンポーネント間連携のテスト作成 |
+| **品質チェック** | `quality-checker` | `make check-all` 相当の品質検証・自動修正 |
+| **コード整理** | `code-simplifier` | 複雑性削減、可読性・保守性向上 |
+| **デバッグ** | `debugger` | 問題特定→根本原因分析→解決策実装 |
+| **セキュリティ** | `security-scanner` | OWASP Top 10に基づくセキュリティ監査 |
+
+### 実装フロー例
+
+```
+1. 機能実装時
+   → feature-implementer（TDDサイクル実行）
+   → quality-checker --quick（各サイクル後の品質確認）
+
+2. テスト追加時
+   → test-planner（テスト設計）
+   → test-unit-writer / test-property-writer（テスト実装）
+
+3. 品質改善時
+   → quality-checker --auto-fix（自動修正）
+   → code-simplifier（コード整理）
+
+4. バグ修正時
+   → debugger（原因特定・修正）
+   → quality-checker --validate-only（修正確認）
+```
+
+### quality-checker のモード
+
+| モード | 用途 |
+|--------|------|
+| `--validate-only` | 検証のみ（CI/CD、最終確認） |
+| `--auto-fix` | 自動修正（`make check-all` 成功まで繰り返し） |
+| `--quick` | フォーマット・リントのみ（TDDサイクル中の高速チェック） |
+
 ## 目的別クイックガイド
 
 ### コード実装

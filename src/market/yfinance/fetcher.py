@@ -2,14 +2,21 @@
 
 This module provides a concrete implementation for fetching market data
 using the yfinance library to fetch data from Yahoo Finance.
+
+Uses curl_cffi to bypass Yahoo Finance rate limiting by impersonating
+a real browser's TLS fingerprint.
 """
 
+import random
 import re
+import time
 from datetime import datetime
 from typing import Any
 
 import pandas as pd
 import yfinance as yf
+from curl_cffi import requests as curl_requests
+from curl_cffi.requests import BrowserTypeLiteral
 
 from database.utils.logging_config import get_logger
 from market.yfinance.errors import DataFetchError, ErrorCode, ValidationError
@@ -23,6 +30,25 @@ from market.yfinance.types import (
 )
 
 logger = get_logger(__name__, module="market.yfinance.fetcher")
+
+# Browser impersonation targets for curl_cffi
+# These mimic real browser TLS fingerprints to avoid rate limiting
+BROWSER_IMPERSONATE_TARGETS: list[BrowserTypeLiteral] = [
+    "chrome",
+    "chrome110",
+    "chrome120",
+    "edge99",
+    "safari15_3",
+]
+
+# Default retry configuration for API calls
+DEFAULT_RETRY_CONFIG = RetryConfig(
+    max_attempts=3,
+    initial_delay=1.0,
+    max_delay=30.0,
+    exponential_base=2.0,
+    jitter=True,
+)
 
 # Valid yfinance symbol pattern
 # Supports: AAPL, BRK.B, BRK-B, ^GSPC (indices), USDJPY=X (forex)
@@ -38,12 +64,20 @@ class YFinanceFetcher:
     Fetches OHLCV data for stocks, indices, forex, and other
     financial instruments supported by Yahoo Finance.
 
+    Uses curl_cffi with browser impersonation to bypass Yahoo Finance
+    rate limiting. Supports bulk downloading of multiple symbols
+    via yf.download() for improved efficiency.
+
     Parameters
     ----------
     cache_config : CacheConfig | None
         Configuration for cache behavior.
     retry_config : RetryConfig | None
         Configuration for retry behavior on API errors.
+    impersonate : BrowserTypeLiteral | None
+        Browser to impersonate for TLS fingerprinting.
+        Options: "chrome", "chrome110", "chrome120", "edge99", "safari15_3".
+        If None, randomly selects from available options.
 
     Attributes
     ----------
@@ -67,14 +101,22 @@ class YFinanceFetcher:
         self,
         cache_config: CacheConfig | None = None,
         retry_config: RetryConfig | None = None,
+        impersonate: BrowserTypeLiteral | None = None,
     ) -> None:
         self._cache_config = cache_config
-        self._retry_config = retry_config
+        self._retry_config = retry_config or DEFAULT_RETRY_CONFIG
+        self._impersonate: BrowserTypeLiteral = (
+            impersonate
+            if impersonate is not None
+            else random.choice(BROWSER_IMPERSONATE_TARGETS)
+        )
+        self._session: curl_requests.Session | None = None
 
         logger.debug(
             "Initializing YFinanceFetcher",
             cache_enabled=cache_config is not None,
             retry_enabled=retry_config is not None,
+            impersonate=self._impersonate,
         )
 
     @property
@@ -98,6 +140,35 @@ class YFinanceFetcher:
             The default interval (DAILY by default)
         """
         return Interval.DAILY
+
+    def _get_session(self) -> curl_requests.Session:
+        """Get or create a curl_cffi session with browser impersonation.
+
+        Returns
+        -------
+        curl_requests.Session
+            Session configured with browser TLS fingerprint
+        """
+        if self._session is None:
+            self._session = curl_requests.Session(impersonate=self._impersonate)
+            logger.debug(
+                "Created curl_cffi session",
+                impersonate=self._impersonate,
+            )
+        return self._session
+
+    def _rotate_session(self) -> None:
+        """Rotate to a new browser impersonation to avoid detection."""
+        if self._session is not None:
+            self._session.close()
+            self._session = None
+
+        new_target: BrowserTypeLiteral = random.choice(BROWSER_IMPERSONATE_TARGETS)
+        self._impersonate = new_target
+        logger.debug(
+            "Rotated browser impersonation",
+            new_impersonate=self._impersonate,
+        )
 
     def validate_symbol(self, symbol: str) -> bool:
         """Validate that a symbol is valid for Yahoo Finance.
@@ -134,6 +205,10 @@ class YFinanceFetcher:
     ) -> list[MarketDataResult]:
         """Fetch market data for the given options.
 
+        Uses yf.download() for efficient bulk downloading of multiple symbols.
+        Implements retry logic with exponential backoff and browser rotation
+        to handle rate limiting.
+
         Parameters
         ----------
         options : FetchOptions
@@ -161,18 +236,19 @@ class YFinanceFetcher:
         self._validate_options(options)
 
         logger.info(
-            "Fetching market data",
+            "Fetching market data via yf.download",
             symbols=options.symbols,
             start_date=str(options.start_date),
             end_date=str(options.end_date),
             interval=options.interval.value,
+            symbol_count=len(options.symbols),
         )
 
-        results: list[MarketDataResult] = []
+        # Use bulk download for multiple symbols
+        bulk_data = self._fetch_bulk(options)
 
-        for symbol in options.symbols:
-            result = self._fetch_single(symbol, options)
-            results.append(result)
+        # Convert bulk data to individual results
+        results = self._create_results_from_bulk(bulk_data, options)
 
         logger.info(
             "Fetch completed",
@@ -229,12 +305,228 @@ class YFinanceFetcher:
 
         logger.debug("Fetch options validated successfully")
 
+    def _fetch_bulk(
+        self,
+        options: FetchOptions,
+    ) -> pd.DataFrame:
+        """Fetch data for multiple symbols using yf.download.
+
+        Implements retry logic with exponential backoff and browser
+        fingerprint rotation to handle Yahoo Finance rate limiting.
+
+        Parameters
+        ----------
+        options : FetchOptions
+            Fetch options including symbols and date range
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with MultiIndex columns (symbol, OHLCV)
+            or single-level columns if only one symbol
+
+        Raises
+        ------
+        DataFetchError
+            If all retry attempts fail
+        """
+        retry_config = self._retry_config or DEFAULT_RETRY_CONFIG
+        last_error: Exception | None = None
+
+        for attempt in range(retry_config.max_attempts):
+            try:
+                return self._do_bulk_fetch(options)
+
+            except Exception as e:
+                last_error = e
+                logger.warning(
+                    "Bulk fetch attempt failed",
+                    attempt=attempt + 1,
+                    max_attempts=retry_config.max_attempts,
+                    error=str(e),
+                    error_type=type(e).__name__,
+                )
+
+                if attempt < retry_config.max_attempts - 1:
+                    # Calculate delay with exponential backoff
+                    delay = min(
+                        retry_config.initial_delay
+                        * (retry_config.exponential_base**attempt),
+                        retry_config.max_delay,
+                    )
+
+                    # Add jitter if configured
+                    if retry_config.jitter:
+                        delay *= 0.5 + random.random()
+
+                    logger.debug(
+                        "Waiting before retry",
+                        delay_seconds=delay,
+                        next_attempt=attempt + 2,
+                    )
+                    time.sleep(delay)
+
+                    # Rotate browser fingerprint on retry
+                    self._rotate_session()
+
+        raise DataFetchError(
+            f"Failed to fetch data after {retry_config.max_attempts} attempts",
+            symbol=",".join(options.symbols),
+            source=self.source.value,
+            code=ErrorCode.API_ERROR,
+            cause=last_error,
+        )
+
+    def _do_bulk_fetch(
+        self,
+        options: FetchOptions,
+    ) -> pd.DataFrame:
+        """Execute the actual yf.download call.
+
+        Parameters
+        ----------
+        options : FetchOptions
+            Fetch options
+
+        Returns
+        -------
+        pd.DataFrame
+            Raw data from yf.download
+        """
+        session = self._get_session()
+
+        start = self._format_date(options.start_date)
+        end = self._format_date(options.end_date)
+        interval = self._map_interval(options.interval)
+
+        logger.debug(
+            "Calling yf.download",
+            symbols=options.symbols,
+            start=start,
+            end=end,
+            interval=interval,
+            impersonate=self._impersonate,
+        )
+
+        # Use yf.download for bulk fetching
+        result = yf.download(
+            tickers=options.symbols,
+            start=start,
+            end=end,
+            interval=interval,
+            auto_adjust=True,
+            actions=False,
+            progress=False,
+            session=session,
+            threads=True,  # Enable multi-threading for faster downloads
+        )
+
+        # Handle None return (shouldn't happen but be defensive)
+        if result is None:
+            logger.warning("yf.download returned None")
+            return pd.DataFrame(columns=pd.Index(STANDARD_COLUMNS))
+
+        df: pd.DataFrame = result
+
+        logger.debug(
+            "yf.download completed",
+            shape=df.shape if not df.empty else (0, 0),
+            columns=list(df.columns)[:10] if not df.empty else [],
+        )
+
+        return df
+
+    def _create_results_from_bulk(
+        self,
+        bulk_data: pd.DataFrame,
+        options: FetchOptions,
+    ) -> list[MarketDataResult]:
+        """Convert bulk download data to individual MarketDataResult objects.
+
+        Parameters
+        ----------
+        bulk_data : pd.DataFrame
+            DataFrame from yf.download (may have MultiIndex columns)
+        options : FetchOptions
+            Original fetch options
+
+        Returns
+        -------
+        list[MarketDataResult]
+            List of results, one per symbol
+        """
+        results: list[MarketDataResult] = []
+
+        # yfinance 1.0+ always returns MultiIndex columns: (metric, symbol)
+        # Handle each symbol by extracting its data
+        for symbol in options.symbols:
+            try:
+                if bulk_data.empty:
+                    symbol_data = pd.DataFrame(columns=pd.Index(STANDARD_COLUMNS))
+                elif isinstance(bulk_data.columns, pd.MultiIndex):
+                    # Extract data for this symbol from MultiIndex DataFrame
+                    # yf.download returns columns like ('Close', 'AAPL')
+                    try:
+                        symbol_data = bulk_data.xs(symbol, axis=1, level=1)
+                    except KeyError:
+                        # Symbol might be in level 0 for single-symbol case
+                        # Or not present at all
+                        logger.warning(
+                            "Symbol not found in MultiIndex, using full data",
+                            symbol=symbol,
+                        )
+                        symbol_data = bulk_data
+                else:
+                    # Non-MultiIndex (older yfinance or single symbol)
+                    symbol_data = bulk_data
+
+                normalized = self._normalize_dataframe(symbol_data, symbol)
+
+                results.append(
+                    self._create_result(
+                        symbol=symbol,
+                        data=normalized,
+                        from_cache=False,
+                        metadata={
+                            "interval": options.interval.value,
+                            "source": "yfinance",
+                            "bulk_download": True,
+                        },
+                    )
+                )
+
+            except Exception as e:
+                logger.warning(
+                    "Failed to extract symbol data",
+                    symbol=symbol,
+                    error=str(e),
+                    error_type=type(e).__name__,
+                )
+                results.append(
+                    self._create_result(
+                        symbol=symbol,
+                        data=pd.DataFrame(columns=pd.Index(STANDARD_COLUMNS)),
+                        from_cache=False,
+                        metadata={
+                            "interval": options.interval.value,
+                            "source": "yfinance",
+                            "bulk_download": True,
+                            "error": f"Failed to extract: {e}",
+                        },
+                    )
+                )
+
+        return results
+
     def _fetch_single(
         self,
         symbol: str,
         options: FetchOptions,
     ) -> MarketDataResult:
-        """Fetch data for a single symbol.
+        """Fetch data for a single symbol (fallback method).
+
+        This method is kept for backward compatibility and can be used
+        when bulk download fails for specific symbols.
 
         Parameters
         ----------
@@ -248,9 +540,9 @@ class YFinanceFetcher:
         MarketDataResult
             The fetch result
         """
-        logger.debug("Fetching single symbol", symbol=symbol)
+        logger.debug("Fetching single symbol (fallback)", symbol=symbol)
 
-        # Fetch from API
+        # Fetch from API using Ticker with curl_cffi session
         data = self._fetch_from_api(symbol, options)
 
         return self._create_result(
@@ -260,6 +552,7 @@ class YFinanceFetcher:
             metadata={
                 "interval": options.interval.value,
                 "source": "yfinance",
+                "bulk_download": False,
             },
         )
 
@@ -314,7 +607,9 @@ class YFinanceFetcher:
         symbol: str,
         options: FetchOptions,
     ) -> pd.DataFrame:
-        """Execute the actual yfinance fetch.
+        """Execute the actual yfinance fetch for a single symbol.
+
+        Uses curl_cffi session for the Ticker to bypass rate limiting.
 
         Parameters
         ----------
@@ -333,7 +628,8 @@ class YFinanceFetcher:
         DataFetchError
             If the symbol is invalid or no data is returned
         """
-        ticker = yf.Ticker(symbol)
+        session = self._get_session()
+        ticker = yf.Ticker(symbol, session=session)
 
         # Convert dates to string format for yfinance
         start = self._format_date(options.start_date)
@@ -435,17 +731,23 @@ class YFinanceFetcher:
         # Create a copy to avoid modifying the original
         normalized = df.copy()
 
-        # Normalize column names to lowercase
-        normalized.columns = normalized.columns.str.lower()
-
-        # Handle multi-level columns (common in yfinance)
+        # Handle multi-level columns first (common in yfinance 1.0+)
         if isinstance(normalized.columns, pd.MultiIndex):
             logger.debug(
                 "Flattening multi-level columns",
                 symbol=symbol,
                 levels=normalized.columns.nlevels,
             )
-            normalized.columns = normalized.columns.get_level_values(0)
+            # Get the first level (OHLCV names) and lowercase them
+            normalized.columns = pd.Index(
+                [
+                    col[0].lower() if isinstance(col, tuple) else str(col).lower()
+                    for col in normalized.columns
+                ]
+            )
+        else:
+            # Normalize column names to lowercase
+            normalized.columns = normalized.columns.str.lower()
 
         # Map common column name variations
         column_mapping = {
@@ -611,8 +913,28 @@ class YFinanceFetcher:
 
         return result
 
+    def close(self) -> None:
+        """Close the curl_cffi session and release resources.
+
+        Should be called when the fetcher is no longer needed.
+        """
+        if self._session is not None:
+            self._session.close()
+            self._session = None
+            logger.debug("Closed curl_cffi session")
+
+    def __enter__(self) -> "YFinanceFetcher":
+        """Support context manager protocol."""
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        """Close session on context exit."""
+        self.close()
+
 
 __all__ = [
+    "BROWSER_IMPERSONATE_TARGETS",
+    "DEFAULT_RETRY_CONFIG",
     "YFINANCE_SYMBOL_PATTERN",
     "YFinanceFetcher",
 ]
