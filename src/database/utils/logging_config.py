@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 import structlog
+from dotenv import load_dotenv
 from structlog import BoundLogger
 from structlog.contextvars import (
     bind_contextvars,
@@ -17,6 +18,50 @@ from structlog.contextvars import (
 )
 
 from ..types import LogFormat, LogLevel
+
+# 初期設定フラグ
+_initialized = False
+
+
+def _ensure_basic_config() -> None:
+    """最低限のログ設定を保証する（get_logger呼び出し前に実行）."""
+    global _initialized
+    if _initialized:
+        return
+    _initialized = True
+
+    # .envを読み込む
+    load_dotenv(override=True)
+
+    # デフォルトのログレベルを設定
+    default_level = os.environ.get("LOG_LEVEL", "INFO").upper()
+    if default_level not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+        default_level = "INFO"
+
+    # 標準loggingの設定
+    logging.basicConfig(
+        format="%(message)s",
+        level=getattr(logging, default_level),
+        force=True,
+    )
+
+    # structlogの最小限の設定
+    structlog.configure(
+        processors=[
+            structlog.contextvars.merge_contextvars,
+            structlog.stdlib.filter_by_level,
+            structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.dev.ConsoleRenderer(),
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=False,  # 後で再設定可能にする
+    )
 
 
 class LoggerProtocol(Protocol):
@@ -130,6 +175,9 @@ def setup_logging(
     force : bool
         Force reconfiguration even if already configured
     """
+    # .envファイルから環境変数を読み込む（プロジェクトルートを検索）
+    load_dotenv(override=True)
+
     # 環境変数からログレベルを取得
     env_level = os.environ.get("LOG_LEVEL", "").upper()
     if env_level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
@@ -242,6 +290,9 @@ def get_logger(name: str, **context: Any) -> BoundLogger:
     >>> logger = get_logger(__name__, module="data_processor", version="1.0")
     >>> logger.error("Processing failed", error_type="ValidationError")
     """
+    # 最初の呼び出し時に.envからログレベルを読み込む
+    _ensure_basic_config()
+
     logger: BoundLogger = structlog.get_logger(name)
 
     if context:
