@@ -142,7 +142,7 @@ ignore = [
 
 [tool.pyright]
 include = ["src", "tests", ".claude/agents"]
-exclude = [".venv", "**/__pycache__", "build", "dist", "src/bloomberg", "tests/skills/finance_news_workflow"]
+exclude = [".venv", "**/__pycache__", "build", "dist", "tests/skills/finance_news_workflow"]
 extraPaths = [".claude/agents"]
 venvPath = "."
 venv = ".venv"
@@ -192,7 +192,7 @@ reportUnsupportedDunderAll = "none"
 ignore-vulns = ["CVE-2026-0994"]
 
 [tool.bandit]
-exclude_dirs = ["tests", ".venv", "src/bloomberg"]
+exclude_dirs = ["tests", ".venv"]
 skips = ["B101", "B311", "B404", "B603", "B607"]
 
 [tool.pytest.ini_options]
@@ -212,7 +212,6 @@ markers = [
 ]
 
 [tool.uv]
-extra-index-url = ["https://blpapi.bloomberg.com/repository/releases/python/simple/"]
 
 [dependency-groups]
 dev = [
