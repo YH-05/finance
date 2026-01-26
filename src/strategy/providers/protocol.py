@@ -1,7 +1,7 @@
 """DataProvider Protocol definition.
 
 データ取得の抽象インターフェースを定義する。
-market_analysis パッケージ、テスト用モック、将来の商用プロバイダーを統一的に扱うための Protocol。
+market パッケージ、テスト用モック、将来の商用プロバイダーを統一的に扱うための Protocol。
 """
 
 from typing import Protocol, runtime_checkable
@@ -15,7 +15,7 @@ from strategy.types import TickerInfo
 class DataProvider(Protocol):
     """データプロバイダーの抽象インターフェース.
 
-    market_analysis パッケージ、テスト用モック、将来の商用プロバイダーなど、
+    market パッケージ、テスト用モック、将来の商用プロバイダーなど、
     異なるデータソースを統一的に扱うためのプロトコル。
 
     Notes

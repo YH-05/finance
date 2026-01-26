@@ -25,9 +25,9 @@ import pytest
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-from database.utils.logging_config import get_logger
-from market_analysis.utils.date_utils import (
+from database.utils import (
     calculate_weekly_comment_period,
+    get_logger,
     get_previous_tuesday,
 )
 
