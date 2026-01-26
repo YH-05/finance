@@ -22,6 +22,41 @@ GitHub Issue から自動実装・PR作成までを一括実行するナレッ�
 - **自動品質チェック**: make check-all の自動実行と修正
 - **複数Issue連続実装**: 複数のIssueを連続実装し、1つのPRにまとめる
 
+---
+
+## 🚨 必須ルール: Task ツールによるサブエージェント起動
+
+**直接コードを書くことは絶対に禁止です。**
+
+Python ワークフローでは、各 Phase で必ず **Task ツール**を使用してサブエージェントを起動してください。
+
+### 禁止される行為
+
+- Read/Write/Edit ツールで直接テストコードを書く
+- Read/Write/Edit ツールで直接実装コードを書く
+- サブエージェントを起動せずに Phase を完了したとみなす
+
+### 必須の行為
+
+各 Phase で以下の形式で Task ツールを呼び出すこと：
+
+```
+Task ツール呼び出し:
+  - subagent_type: "test-writer" (Phase 1)
+  - subagent_type: "pydantic-model-designer" (Phase 2)
+  - subagent_type: "feature-implementer" (Phase 3)
+  - subagent_type: "code-simplifier" (Phase 4)
+  - subagent_type: "quality-checker" (Phase 5)
+```
+
+### 判定基準
+
+Task ツールを使わずに直接実装した場合、そのワークフローは **失敗** とみなします。
+
+詳細な呼び出し方法は `guide.md` を参照してください。
+
+---
+
 ## いつ使用するか
 
 ### プロアクティブ使用（自動で検討）

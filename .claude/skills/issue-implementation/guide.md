@@ -281,85 +281,115 @@ options:
 
 ## 2. Python ワークフロー（Phase 1-7）
 
-**🚨 重要: Python開発では必ずサブエージェントに委譲してください**
+**🚨 重要: Python開発では必ず Task ツールでサブエージェントを起動してください**
 
 Python開発フローでは、直接コードを書くことは**禁止**です。
-各 Phase で指定されたサブエージェントに**全ての開発作業を委譲**してください。
+各 Phase で **Task ツール**を使用してサブエージェントを起動し、全ての開発作業を委譲してください。
+
+### Task ツールの呼び出し形式
+
+各 Phase で以下の形式で Task ツールを呼び出してください：
+
+| パラメータ | 説明 | 例 |
+|-----------|------|-----|
+| `subagent_type` | 起動するエージェント名 | `"test-writer"` |
+| `description` | 3-5語の簡潔な説明 | `"Create tests for Issue #123"` |
+| `prompt` | エージェントへの詳細な指示 | Issue情報、要件、対象パッケージ等 |
+
+**判定基準**: Task ツールを呼び出さずに Read/Write/Edit で直接コードを書いた場合、**失敗**とみなします。
+
+---
 
 ### Phase 1: テスト作成
 
-**🚨 test-writer サブエージェントに全委譲**（必須）:
+**🚨 Task ツールで test-writer を起動すること**（必須）
 
-```yaml
-subagent_type: "test-writer"
-description: "Create tests from issue"
-prompt: |
-  Issue #{number} のテストを作成してください。
+Task ツールを以下のパラメータで呼び出してください：
 
-  ## Issue情報
-  タイトル: {title}
+| パラメータ | 値 |
+|-----------|-----|
+| `subagent_type` | `"test-writer"` |
+| `description` | `"Create tests for Issue #{number}"` |
+| `prompt` | 下記参照 |
 
-  ## 受け入れ条件（テスト対象）
-  {checklist_items}
+**prompt に含めるべき内容**:
 
-  ## 対象パッケージ
-  {library_name}
+```
+Issue #{number} のテストを作成してください。
 
-  ## テスト配置先
-  tests/{library_name}/unit/
+## Issue情報
+タイトル: {title}
 
-  ## 要件
-  1. 受け入れ条件ごとにテストケースを作成
-  2. 日本語命名（test_正常系_xxx, test_異常系_xxx）
-  3. Red状態（失敗するテスト）で完了
+## 受け入れ条件（テスト対象）
+{checklist_items}
 
-  ## 参照テンプレート
-  template/tests/unit/test_example.py
+## 対象パッケージ
+{library_name}
+
+## テスト配置先
+tests/{library_name}/unit/
+
+## 要件
+1. 受け入れ条件ごとにテストケースを作成
+2. 日本語命名（test_正常系_xxx, test_異常系_xxx）
+3. Red状態（失敗するテスト）で完了
+
+## 参照テンプレート
+template/tests/unit/test_example.py
 ```
 
 **完了条件**:
+- [ ] Task ツールで test-writer が起動されている
 - [ ] テストファイルが作成されている
 - [ ] `make test` で Red（失敗）状態が確認できる
 - [ ] 受け入れ条件に対応するテストケースが存在する
 
 ### Phase 2: データモデル設計
 
-**🚨 pydantic-model-designer サブエージェントに全委譲**（必須）:
+**🚨 Task ツールで pydantic-model-designer を起動すること**（必須）
 
-```yaml
-subagent_type: "pydantic-model-designer"
-description: "Design Pydantic models from issue"
-prompt: |
-  Issue #{number} に必要なPydanticモデルを設計・作成してください。
+Task ツールを以下のパラメータで呼び出してください：
 
-  ## Issue情報
-  タイトル: {title}
-  本文:
-  {body}
+| パラメータ | 値 |
+|-----------|-----|
+| `subagent_type` | `"pydantic-model-designer"` |
+| `description` | `"Design Pydantic models for Issue #{number}"` |
+| `prompt` | 下記参照 |
 
-  ## 受け入れ条件
-  {checklist_items}
+**prompt に含めるべき内容**:
 
-  ## 対象パッケージ
-  {library_name}
+```
+Issue #{number} に必要なPydanticモデルを設計・作成してください。
 
-  ## Phase 1 で作成されたテストファイル
-  {test_files}
+## Issue情報
+タイトル: {title}
+本文:
+{body}
 
-  ## 要件
-  1. Issue要件から必要なデータ構造を特定
-  2. テストコードから期待される型情報を抽出
-  3. Pydanticモデルを types.py または models/ に作成
-  4. フィールドに型、制約、description を設定
-  5. 必要なバリデーターを実装
-  6. make typecheck でパスを確認
+## 受け入れ条件
+{checklist_items}
 
-  ## 参照
-  - .claude/agents/pydantic-model-designer.md
-  - template/src/template_package/types.py
+## 対象パッケージ
+{library_name}
+
+## Phase 1 で作成されたテストファイル
+{test_files}
+
+## 要件
+1. Issue要件から必要なデータ構造を特定
+2. テストコードから期待される型情報を抽出
+3. Pydanticモデルを types.py または models/ に作成
+4. フィールドに型、制約、description を設定
+5. 必要なバリデーターを実装
+6. make typecheck でパスを確認
+
+## 参照
+- .claude/agents/pydantic-model-designer.md
+- template/src/template_package/types.py
 ```
 
 **完了条件**:
+- [ ] Task ツールで pydantic-model-designer が起動されている
 - [ ] Issue要件に基づいたPydanticモデルが作成されている
 - [ ] 全フィールドに型ヒントと description がある
 - [ ] `make typecheck` がパス
@@ -368,40 +398,48 @@ prompt: |
 
 ### Phase 3: 実装
 
-**🚨 feature-implementer サブエージェントに全委譲**（必須）:
+**🚨 Task ツールで feature-implementer を起動すること**（必須）
 
-```yaml
-subagent_type: "feature-implementer"
-description: "Implement issue with TDD"
-prompt: |
-  Issue #{number} を実装してください。
+Task ツールを以下のパラメータで呼び出してください：
 
-  ## Issue番号
-  {number}
+| パラメータ | 値 |
+|-----------|-----|
+| `subagent_type` | `"feature-implementer"` |
+| `description` | `"Implement Issue #{number} with TDD"` |
+| `prompt` | 下記参照 |
 
-  ## ライブラリ名
-  {library_name}
+**prompt に含めるべき内容**:
 
-  ## 実装先
-  src/{library_name}/core/
+```
+Issue #{number} を実装してください。
 
-  ## Phase 2 で作成されたPydanticモデル
-  {created_models}
+## Issue番号
+{number}
 
-  ## テンプレート参照
-  template/src/template_package/core/example.py
+## ライブラリ名
+{library_name}
 
-  ## 要件
-  1. TDDサイクル（Red→Green→Refactor）を実行
-  2. Phase 2で作成したPydanticモデルを活用
-  3. 各タスク完了時にIssueチェックボックスを [x] に更新
-  4. quality-checker(--quick) でパスを確認
+## 実装先
+src/{library_name}/core/
 
-  ## Issueチェックボックス更新方法
-  gh issue edit {number} --body "$(更新後の本文)"
+## Phase 2 で作成されたPydanticモデル
+{created_models}
+
+## テンプレート参照
+template/src/template_package/core/example.py
+
+## 要件
+1. TDDサイクル（Red→Green→Refactor）を実行
+2. Phase 2で作成したPydanticモデルを活用
+3. 各タスク完了時にIssueチェックボックスを [x] に更新
+4. quality-checker(--quick) でパスを確認
+
+## Issueチェックボックス更新方法
+gh issue edit {number} --body "$(更新後の本文)"
 ```
 
 **完了条件**:
+- [ ] Task ツールで feature-implementer が起動されている
 - [ ] 全タスクが実装されている
 - [ ] Phase 2のPydanticモデルが適切に使用されている
 - [ ] `make test` で Green（成功）状態
@@ -409,59 +447,75 @@ prompt: |
 
 ### Phase 4: コード整理
 
-**🚨 code-simplifier サブエージェントに全委譲**（必須）:
+**🚨 Task ツールで code-simplifier を起動すること**（必須）
 
-```yaml
-subagent_type: "code-simplifier"
-description: "Simplify code before quality check"
-prompt: |
-  git diff で変更されたファイルのコード整理を実行してください。
+Task ツールを以下のパラメータで呼び出してください：
 
-  ## 対象
-  Phase 1-3 で変更されたファイル
+| パラメータ | 値 |
+|-----------|-----|
+| `subagent_type` | `"code-simplifier"` |
+| `description` | `"Simplify code for Issue #{number}"` |
+| `prompt` | 下記参照 |
 
-  ## 整理観点
-  - 型ヒント完全化
-  - Docstring追加（NumPy形式）
-  - 命名規則統一
-  - 不要コードの削除
+**prompt に含めるべき内容**:
 
-  ## 参照
-  - CLAUDE.md のコーディング規約
-  - template/ ディレクトリの実装例
+```
+git diff で変更されたファイルのコード整理を実行してください。
+
+## 対象
+Phase 1-3 で変更されたファイル
+
+## 整理観点
+- 型ヒント完全化
+- Docstring追加（NumPy形式）
+- 命名規則統一
+- 不要コードの削除
+
+## 参照
+- CLAUDE.md のコーディング規約
+- template/ ディレクトリの実装例
 ```
 
 **完了条件**:
+- [ ] Task ツールで code-simplifier が起動されている
 - [ ] 変更されたファイルのコード整理が完了
 - [ ] 型ヒントが適切に追加されている
 - [ ] Docstringが NumPy 形式で記述されている
 
 ### Phase 5: 品質保証
 
-**🚨 quality-checker サブエージェントに全委譲**（--auto-fix、必須）:
+**🚨 Task ツールで quality-checker を起動すること**（--auto-fix、必須）
 
-```yaml
-subagent_type: "quality-checker"
-description: "Auto-fix quality issues"
-prompt: |
-  コード品質の自動修正を実行してください。
+Task ツールを以下のパラメータで呼び出してください：
 
-  ## モード
-  --auto-fix
+| パラメータ | 値 |
+|-----------|-----|
+| `subagent_type` | `"quality-checker"` |
+| `description` | `"Auto-fix quality issues"` |
+| `prompt` | 下記参照 |
 
-  ## 目標
-  make check-all が成功するまで以下を繰り返し修正:
-  1. make format - コードフォーマット
-  2. make lint - リントチェック
-  3. make typecheck - 型チェック
-  4. make test - テスト実行
+**prompt に含めるべき内容**:
 
-  ## 参照
-  - CLAUDE.md のコーディング規約
-  - template/ ディレクトリの実装例
+```
+コード品質の自動修正を実行してください。
+
+## モード
+--auto-fix
+
+## 目標
+make check-all が成功するまで以下を繰り返し修正:
+1. make format - コードフォーマット
+2. make lint - リントチェック
+3. make typecheck - 型チェック
+4. make test - テスト実行
+
+## 参照
+- CLAUDE.md のコーディング規約
+- template/ ディレクトリの実装例
 ```
 
 **完了条件**:
+- [ ] Task ツールで quality-checker が起動されている
 - [ ] `make format` がエラーなし
 - [ ] `make lint` がエラーなし
 - [ ] `make typecheck` がエラーなし
