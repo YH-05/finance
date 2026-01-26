@@ -99,7 +99,7 @@ print(DataSource.FACTSET)    # FactSet (計画中)
 
 ## yfinance モジュール
 
-Yahoo Finance から OHLCV データを取得します。
+Yahoo Finance から OHLCV データを取得します。curl_cffi によるブラウザ偽装でレート制限を回避します。
 
 ### 基本的な使い方
 
@@ -128,6 +128,146 @@ print(f"Symbol: {result.symbol}")
 print(f"Source: {result.source}")  # DataSource.YFINANCE
 print(f"Rows: {len(result.data)}")
 print(result.data.head())
+```
+
+### 複数シンボルの一括取得
+
+yf.download() を使用した効率的な一括取得をサポートしています。
+
+```python
+from market.yfinance import YFinanceFetcher, FetchOptions, Interval
+
+fetcher = YFinanceFetcher()
+
+# MAG7 銘柄を一括取得
+options = FetchOptions(
+    symbols=["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+    interval=Interval.DAILY,
+)
+
+results = fetcher.fetch(options)
+
+# 各銘柄の結果を処理
+for result in results:
+    if not result.is_empty:
+        df = result.data
+        print(f"{result.symbol}: {result.row_count} rows")
+        print(f"  期間: {df.index.min()} 〜 {df.index.max()}")
+        print(f"  終値範囲: ${df['close'].min():.2f} - ${df['close'].max():.2f}")
+```
+
+### 株価指数・為替レートの取得
+
+```python
+from market.yfinance import YFinanceFetcher, FetchOptions
+
+fetcher = YFinanceFetcher()
+
+# 株価指数を取得
+index_options = FetchOptions(
+    symbols=["^GSPC", "^DJI", "^IXIC", "^N225"],  # S&P500, ダウ, ナスダック, 日経225
+    start_date="2024-01-01",
+)
+index_results = fetcher.fetch(index_options)
+
+for result in index_results:
+    print(f"{result.symbol}: {result.row_count} data points")
+
+# 為替レートを取得
+forex_options = FetchOptions(
+    symbols=["USDJPY=X", "EURUSD=X", "GBPUSD=X"],
+    start_date="2024-01-01",
+)
+forex_results = fetcher.fetch(forex_options)
+
+for result in forex_results:
+    if not result.is_empty:
+        latest = result.data['close'].iloc[-1]
+        print(f"{result.symbol}: {latest:.4f}")
+```
+
+### 時間足データの取得
+
+```python
+from market.yfinance import YFinanceFetcher, FetchOptions, Interval
+
+fetcher = YFinanceFetcher()
+
+# 週次データ
+weekly_options = FetchOptions(
+    symbols=["AAPL"],
+    start_date="2020-01-01",
+    interval=Interval.WEEKLY,
+)
+
+# 月次データ
+monthly_options = FetchOptions(
+    symbols=["AAPL"],
+    start_date="2015-01-01",
+    interval=Interval.MONTHLY,
+)
+
+# 時間足（直近60日間のみ取得可能）
+hourly_options = FetchOptions(
+    symbols=["AAPL"],
+    interval=Interval.HOURLY,  # 過去60日間の制限あり
+)
+```
+
+### コンテキストマネージャーの使用
+
+```python
+from market.yfinance import YFinanceFetcher, FetchOptions
+
+# with 文でリソースを自動解放
+with YFinanceFetcher() as fetcher:
+    options = FetchOptions(
+        symbols=["AAPL", "GOOGL"],
+        start_date="2024-01-01",
+    )
+    results = fetcher.fetch(options)
+
+    for result in results:
+        print(f"{result.symbol}: {result.row_count} rows")
+# セッションが自動的にクローズされる
+```
+
+### データの操作例
+
+```python
+from market.yfinance import YFinanceFetcher, FetchOptions
+import pandas as pd
+
+fetcher = YFinanceFetcher()
+
+options = FetchOptions(
+    symbols=["AAPL"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+results = fetcher.fetch(options)
+result = results[0]
+
+# DataFrame の構造
+# columns: ['open', 'high', 'low', 'close', 'volume']
+# index: DatetimeIndex
+df = result.data
+
+# 日次リターンの計算
+df['daily_return'] = df['close'].pct_change()
+
+# 移動平均の追加
+df['sma_20'] = df['close'].rolling(window=20).mean()
+df['sma_50'] = df['close'].rolling(window=50).mean()
+
+# 統計情報
+print(f"平均終値: ${df['close'].mean():.2f}")
+print(f"最高値: ${df['high'].max():.2f}")
+print(f"最安値: ${df['low'].min():.2f}")
+print(f"平均出来高: {df['volume'].mean():,.0f}")
+print(f"日次リターン標準偏差: {df['daily_return'].std():.4f}")
 ```
 
 ### FetchOptions パラメータ
@@ -209,6 +349,15 @@ fetcher = YFinanceFetcher(
 
 FRED (Federal Reserve Economic Data) から経済指標データを取得します。
 
+### 前提条件
+
+FRED API キーが必要です。[FRED](https://fred.stlouisfed.org/) でアカウントを作成し、API キーを取得してください。
+
+```bash
+# 環境変数に設定
+export FRED_API_KEY="your_api_key_here"
+```
+
 ### 基本的な使い方
 
 ```python
@@ -224,6 +373,183 @@ results = fetcher.fetch(options)
 
 for result in results:
     print(f"{result.symbol}: {len(result.data)} data points")
+```
+
+### 代表的な経済指標の取得
+
+```python
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions
+
+fetcher = FREDFetcher()
+
+# 主要経済指標
+options = FetchOptions(
+    symbols=[
+        "GDP",       # 国内総生産（四半期）
+        "CPIAUCSL",  # 消費者物価指数（月次）
+        "UNRATE",    # 失業率（月次）
+        "FEDFUNDS",  # フェデラルファンド金利（日次）
+        "DGS10",     # 10年国債利回り（日次）
+        "DGS2",      # 2年国債利回り（日次）
+    ],
+    start_date="2020-01-01",
+    end_date="2024-12-31",
+)
+
+results = fetcher.fetch(options)
+
+for result in results:
+    if not result.is_empty:
+        df = result.data
+        # FRED データは close カラムに値が格納される
+        print(f"{result.symbol}:")
+        print(f"  期間: {df.index.min()} 〜 {df.index.max()}")
+        print(f"  最新値: {df['close'].iloc[-1]:.2f}")
+        print(f"  データ点数: {result.row_count}")
+```
+
+### FRED シリーズ ID 一覧（よく使う指標）
+
+| シリーズ ID | 説明 | 頻度 |
+|-------------|------|------|
+| `GDP` | 国内総生産 | 四半期 |
+| `GDPC1` | 実質 GDP | 四半期 |
+| `CPIAUCSL` | 消費者物価指数（全項目） | 月次 |
+| `CPILFESL` | コア CPI（食料・エネルギー除く） | 月次 |
+| `UNRATE` | 失業率 | 月次 |
+| `PAYEMS` | 非農業部門雇用者数 | 月次 |
+| `FEDFUNDS` | フェデラルファンド金利 | 日次/月次 |
+| `DGS10` | 10年国債利回り | 日次 |
+| `DGS2` | 2年国債利回り | 日次 |
+| `DGS30` | 30年国債利回り | 日次 |
+| `T10Y2Y` | 10年-2年スプレッド（イールドカーブ） | 日次 |
+| `VIXCLS` | VIX 恐怖指数 | 日次 |
+| `DEXJPUS` | ドル円為替レート | 日次 |
+| `M2SL` | M2 マネーサプライ | 月次 |
+| `UMCSENT` | ミシガン大学消費者信頼感指数 | 月次 |
+
+### シリーズ情報の取得
+
+```python
+from market.fred import FREDFetcher
+
+fetcher = FREDFetcher()
+
+# シリーズのメタデータを取得
+info = fetcher.get_series_info("GDP")
+print(f"タイトル: {info.get('title')}")
+print(f"単位: {info.get('units')}")
+print(f"頻度: {info.get('frequency')}")
+print(f"季節調整: {info.get('seasonal_adjustment')}")
+```
+
+### イールドカーブ分析の例
+
+```python
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions
+import pandas as pd
+
+fetcher = FREDFetcher()
+
+# 各年限の国債利回りを取得
+options = FetchOptions(
+    symbols=[
+        "DGS1MO",  # 1ヶ月
+        "DGS3MO",  # 3ヶ月
+        "DGS6MO",  # 6ヶ月
+        "DGS1",    # 1年
+        "DGS2",    # 2年
+        "DGS5",    # 5年
+        "DGS10",   # 10年
+        "DGS30",   # 30年
+    ],
+    start_date="2024-01-01",
+)
+
+results = fetcher.fetch(options)
+
+# 最新のイールドカーブを構築
+yield_curve = {}
+for result in results:
+    if not result.is_empty:
+        yield_curve[result.symbol] = result.data['close'].iloc[-1]
+
+print("最新イールドカーブ:")
+for series_id, value in yield_curve.items():
+    print(f"  {series_id}: {value:.2f}%")
+
+# 10年-2年スプレッド（景気後退の先行指標）
+if "DGS10" in yield_curve and "DGS2" in yield_curve:
+    spread = yield_curve["DGS10"] - yield_curve["DGS2"]
+    print(f"\n10年-2年スプレッド: {spread:.2f}%")
+    if spread < 0:
+        print("⚠️ 逆イールド発生中（景気後退の可能性）")
+```
+
+### キャッシュとリトライの設定
+
+```python
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions, CacheConfig, RetryConfig
+from market.fred.cache import SQLiteCache
+
+# キャッシュ設定
+cache_config = CacheConfig(
+    enabled=True,
+    ttl_seconds=86400,  # 24時間
+    db_path="./cache/fred_cache.db",
+)
+
+# リトライ設定
+retry_config = RetryConfig(
+    max_attempts=5,
+    initial_delay=1.0,
+    max_delay=30.0,
+    exponential_base=2.0,
+)
+
+# キャッシュを初期化
+cache = SQLiteCache(db_path="./cache/fred_cache.db")
+
+# フェッチャーを初期化
+fetcher = FREDFetcher(
+    cache=cache,
+    cache_config=cache_config,
+    retry_config=retry_config,
+)
+
+options = FetchOptions(
+    symbols=["GDP", "CPIAUCSL"],
+    start_date="2020-01-01",
+    use_cache=True,  # キャッシュを使用
+)
+
+results = fetcher.fetch(options)
+
+for result in results:
+    cache_status = "キャッシュから取得" if result.from_cache else "API から取得"
+    print(f"{result.symbol}: {cache_status}")
+```
+
+### エラーハンドリング
+
+```python
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions
+from market.fred.errors import FREDFetchError, FREDValidationError
+
+try:
+    fetcher = FREDFetcher()
+    options = FetchOptions(symbols=["INVALID_SERIES_ID"])
+    results = fetcher.fetch(options)
+except FREDValidationError as e:
+    print(f"バリデーションエラー: {e}")
+    # API キーが設定されていない場合など
+except FREDFetchError as e:
+    print(f"データ取得エラー: {e}")
+    # 存在しないシリーズ ID、ネットワークエラーなど
 ```
 
 ### 利用可能な定数
