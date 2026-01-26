@@ -80,7 +80,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/analyze", "src/database", "src/market", "src/market_analysis", "src/rss", "src/quant", "src/factor", "src/strategy"]
+packages = ["src/analyze", "src/database", "src/market", "src/rss", "src/quant", "src/factor", "src/strategy"]
 
 [tool.ruff]
 line-length = 88
@@ -142,7 +142,7 @@ ignore = [
 
 [tool.pyright]
 include = ["src", "tests", ".claude/agents"]
-exclude = [".venv", "**/__pycache__", "build", "dist", "src/bloomberg", "src/market_analysis/dev", "tests/skills/finance_news_workflow"]
+exclude = [".venv", "**/__pycache__", "build", "dist", "src/bloomberg", "tests/skills/finance_news_workflow"]
 extraPaths = [".claude/agents"]
 venvPath = "."
 venv = ".venv"
@@ -192,7 +192,7 @@ reportUnsupportedDunderAll = "none"
 ignore-vulns = ["CVE-2026-0994"]
 
 [tool.bandit]
-exclude_dirs = ["tests", ".venv", "src/bloomberg", "src/market_analysis/dev"]
+exclude_dirs = ["tests", ".venv", "src/bloomberg"]
 skips = ["B101", "B311", "B404", "B603", "B607"]
 
 [tool.pytest.ini_options]
