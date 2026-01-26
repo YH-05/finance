@@ -1,0 +1,296 @@
+{
+  "metadata": {
+    "report_date": "2026-01-26",
+    "period": {
+      "start": "2026-01-13",
+      "end": "2026-01-20"
+    },
+    "generated_at": "2026-01-26T09:45:00+09:00",
+    "data_sources": {
+      "indices": true,
+      "mag7": true,
+      "sectors": true,
+      "news_from_project": true,
+      "news_supplemental": false
+    },
+    "warnings": []
+  },
+  "indices": {
+    "primary": {
+      "spx": {
+        "name": "S&P 500",
+        "ticker": "^GSPC",
+        "return": "-2.40%",
+        "raw": -0.023964,
+        "latest_close": 6796.86
+      },
+      "rsp": {
+        "name": "S&P 500 Equal Weight",
+        "ticker": "RSP",
+        "return": "-0.86%",
+        "raw": -0.008595,
+        "latest_close": 196.08
+      },
+      "vug": {
+        "name": "Vanguard Growth ETF",
+        "ticker": "VUG",
+        "return": "-3.80%",
+        "raw": -0.038006,
+        "latest_close": 472.57
+      },
+      "vtv": {
+        "name": "Vanguard Value ETF",
+        "ticker": "VTV",
+        "return": "-0.44%",
+        "raw": -0.004375,
+        "latest_close": 195.73
+      }
+    },
+    "style_analysis": {
+      "growth_vs_value": "グロース大幅劣後（-3.36%差）",
+      "growth_vs_value_diff": -3.36,
+      "large_vs_small": "大型株劣後（-1.54%差）",
+      "large_vs_small_diff": -1.54
+    }
+  },
+  "mag7": {
+    "stocks": [
+      {
+        "ticker": "MSFT",
+        "name": "Microsoft",
+        "return": "-3.43%",
+        "raw": -0.034313,
+        "latest_close": 454.52
+      },
+      {
+        "ticker": "GOOGL",
+        "name": "Alphabet (Google)",
+        "return": "-4.16%",
+        "raw": -0.041581,
+        "latest_close": 322.00
+      },
+      {
+        "ticker": "NVDA",
+        "name": "NVIDIA",
+        "return": "-4.17%",
+        "raw": -0.041655,
+        "latest_close": 178.07
+      },
+      {
+        "ticker": "META",
+        "name": "Meta (Facebook)",
+        "return": "-4.27%",
+        "raw": -0.042736,
+        "latest_close": 604.12
+      },
+      {
+        "ticker": "AMZN",
+        "name": "Amazon",
+        "return": "-4.78%",
+        "raw": -0.047815,
+        "latest_close": 231.00
+      },
+      {
+        "ticker": "AAPL",
+        "name": "Apple",
+        "return": "-5.50%",
+        "raw": -0.054970,
+        "latest_close": 246.70
+      },
+      {
+        "ticker": "TSLA",
+        "name": "Tesla",
+        "return": "-6.25%",
+        "raw": -0.062500,
+        "latest_close": 419.25
+      }
+    ],
+    "sox": {
+      "ticker": "^SOX",
+      "name": "Philadelphia Semiconductor Index",
+      "return": "+0.60%",
+      "raw": 0.005963,
+      "latest_close": 7794.19
+    },
+    "top_performer": {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "return": "-3.43%"
+    },
+    "bottom_performer": {
+      "ticker": "TSLA",
+      "name": "Tesla",
+      "return": "-6.25%"
+    },
+    "average_return": "-4.51%",
+    "average_raw": -0.045069
+  },
+  "sectors": {
+    "all": [
+      {
+        "ticker": "XLP",
+        "name": "Consumer Staples",
+        "return": "+1.54%",
+        "raw": 0.015411,
+        "latest_close": 82.36
+      },
+      {
+        "ticker": "XLE",
+        "name": "Energy",
+        "return": "+1.28%",
+        "raw": 0.012766,
+        "latest_close": 47.60
+      },
+      {
+        "ticker": "XLRE",
+        "name": "Real Estate",
+        "return": "+1.15%",
+        "raw": 0.011483,
+        "latest_close": 41.40
+      },
+      {
+        "ticker": "XLU",
+        "name": "Utilities",
+        "return": "+0.26%",
+        "raw": 0.002567,
+        "latest_close": 42.96
+      },
+      {
+        "ticker": "XLI",
+        "name": "Industrials",
+        "return": "-0.29%",
+        "raw": -0.002927,
+        "latest_close": 163.53
+      },
+      {
+        "ticker": "XLV",
+        "name": "Healthcare",
+        "return": "-0.85%",
+        "raw": -0.008549,
+        "latest_close": 155.40
+      },
+      {
+        "ticker": "XLB",
+        "name": "Basic Materials",
+        "return": "-1.11%",
+        "raw": -0.011081,
+        "latest_close": 48.19
+      },
+      {
+        "ticker": "XLF",
+        "name": "Financial Services",
+        "return": "-1.90%",
+        "raw": -0.018993,
+        "latest_close": 53.20
+      },
+      {
+        "ticker": "XLC",
+        "name": "Communication Services",
+        "return": "-2.93%",
+        "raw": -0.029258,
+        "latest_close": 113.47
+      },
+      {
+        "ticker": "XLK",
+        "name": "Information Technology",
+        "return": "-3.17%",
+        "raw": -0.031677,
+        "latest_close": 141.84
+      },
+      {
+        "ticker": "XLY",
+        "name": "Consumer Discretionary",
+        "return": "-4.10%",
+        "raw": -0.040979,
+        "latest_close": 119.12
+      }
+    ],
+    "top_3": [
+      {
+        "ticker": "XLP",
+        "name": "Consumer Staples",
+        "return": "+1.54%",
+        "raw": 0.015411,
+        "latest_close": 82.36
+      },
+      {
+        "ticker": "XLE",
+        "name": "Energy",
+        "return": "+1.28%",
+        "raw": 0.012766,
+        "latest_close": 47.60
+      },
+      {
+        "ticker": "XLRE",
+        "name": "Real Estate",
+        "return": "+1.15%",
+        "raw": 0.011483,
+        "latest_close": 41.40
+      }
+    ],
+    "bottom_3": [
+      {
+        "ticker": "XLY",
+        "name": "Consumer Discretionary",
+        "return": "-4.10%",
+        "raw": -0.040979,
+        "latest_close": 119.12
+      },
+      {
+        "ticker": "XLK",
+        "name": "Information Technology",
+        "return": "-3.17%",
+        "raw": -0.031677,
+        "latest_close": 141.84
+      },
+      {
+        "ticker": "XLC",
+        "name": "Communication Services",
+        "return": "-2.93%",
+        "raw": -0.029258,
+        "latest_close": 113.47
+      }
+    ],
+    "rotation_signal": "ディフェンシブへの資金逃避"
+  },
+  "news": {
+    "total_count": 5,
+    "by_category": {
+      "indices": [],
+      "mag7": [
+        {
+          "issue_number": 356,
+          "title": "Calavo Growers、Mission Produce とのM&A協議を発表",
+          "summary": "Calavo Growers（CVGW）がMission Produce社との合併・買収に関する協議を行っていることが、M&Aコールのスライドショーで明らかになりました。アボカド生産・流通大手同士の統合に向けた動きとして注目されます。"
+        }
+      ],
+      "sectors": [],
+      "macro": [
+        {
+          "issue_number": 410,
+          "title": "カナダと中国、EVとキャノーラ油の関税引き下げで関係改善へ",
+          "summary": "カナダと中国が電気自動車（EV）およびキャノーラ油に対する関税を引き下げ、両国関係のリセットを図っている。"
+        },
+        {
+          "issue_number": 412,
+          "title": "来週の市場展望: 大型決算と金利見通しが焦点に",
+          "summary": "来週の米国株式市場は、大手企業の決算発表と金利見通しへの懸念が市場を左右する可能性がある。"
+        },
+        {
+          "issue_number": 444,
+          "title": "決算発表と金利見通しへの懸念が来週の市場を左右する可能性",
+          "summary": "来週の米国株式市場は、主要企業の決算発表と金利見通しへの懸念に左右される見通しです。FRBの金融政策に対する市場の見方が変化しており、金利据え置き期間の長期化が意識されています。"
+        }
+      ],
+      "tech": [],
+      "finance": []
+    },
+    "highlights": [
+      "Trump関税脅迫により主要3指数が2%以上下落",
+      "グロースがバリューを3.36%下回る大幅なローテーション",
+      "MAG7全銘柄が下落（Tesla最悪-6.25%）",
+      "SOX指数は+0.60%とプラス維持",
+      "FRBの金利据え置き期間長期化懸念"
+    ]
+  }
+}

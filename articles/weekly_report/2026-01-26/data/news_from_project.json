@@ -1,0 +1,133 @@
+{
+  "period": {
+    "start": "2026-01-13",
+    "end": "2026-01-20"
+  },
+  "project_number": 15,
+  "generated_at": "2026-01-26T09:41:15.650299Z",
+  "total_count": 5,
+  "news": [
+    {
+      "issue_number": 410,
+      "title": "カナダと中国、EVとキャノーラ油の関税引き下げで関係改善へ",
+      "category": "macro",
+      "url": "https://github.com/YH-05/finance/issues/410",
+      "created_at": "2026-01-17",
+      "summary": "カナダと中国が電気自動車（EV）およびキャノーラ油に対する関税を引き下げ、両国関係のリセットを図っている。",
+      "source": "RSS Feed (自動収集)",
+      "original_url": "https://www.cnbc.com/2026/01/17/canada-and-china-slash-tariffs-on-evs-and-canola-in-reset-of-ties.html"
+    },
+    {
+      "issue_number": 440,
+      "title": "カナダと中国、EV・キャノーラ関税を相互削減し関係リセット",
+      "category": "macro",
+      "url": "https://github.com/YH-05/finance/issues/440",
+      "created_at": "2026-01-17",
+      "summary": "- カナダと中国が電気自動車（EV）およびキャノーラ（菜種）に対する関税を相互に削減することで合意しました\n- この動きは両国関係の「リセット」を象徴するものとして位置付けられています\n- 長期間にわたる貿易摩擦の緩和に向けた重要な一歩となります",
+      "source": "RSS Feed (自動収集)",
+      "original_url": ""
+    },
+    {
+      "issue_number": 412,
+      "title": "来週の市場展望: 大型決算と金利見通しが焦点に",
+      "category": "macro",
+      "url": "https://github.com/YH-05/finance/issues/412",
+      "created_at": "2026-01-16",
+      "summary": "来週の米国株式市場は、大手企業の決算発表と金利見通しへの懸念が市場を左右する可能性がある。",
+      "source": "RSS Feed (自動収集)",
+      "original_url": "https://www.cnbc.com/2026/01/16/stock-market-next-week-outlook-for-jan-19-23-2026.html"
+    },
+    {
+      "issue_number": 444,
+      "title": "決算発表と金利見通しへの懸念が来週の市場を左右する可能性",
+      "category": "macro",
+      "url": "https://github.com/YH-05/finance/issues/444",
+      "created_at": "2026-01-16",
+      "summary": "- 来週の米国株式市場は、主要企業の決算発表と金利見通しへの懸念に左右される見通しです\n- FRBの金融政策に対する市場の見方が変化しており、金利据え置き期間の長期化が意識されています\n- 企業業績と金融政策の両面から市場のボラティリティが高まる可能性があります",
+      "source": "RSS Feed (自動収集)",
+      "original_url": ""
+    },
+    {
+      "issue_number": 356,
+      "title": "Calavo Growers、Mission Produce とのM&A協議を発表",
+      "category": "mag7",
+      "url": "https://github.com/YH-05/finance/issues/356",
+      "created_at": "2026-01-14",
+      "summary": "Calavo Growers（CVGW）がMission Produce社との合併・買収に関する協議を行っていることが、M&Aコールのスライドショーで明らかになりました。アボカド生産・流通大手同士の統合に向けた動きとして注目されます。",
+      "source": "RSS Feed (自動収集)",
+      "original_url": ""
+    }
+  ],
+  "by_category": {
+    "indices": [],
+    "mag7": [
+      {
+        "issue_number": 356,
+        "title": "Calavo Growers、Mission Produce とのM&A協議を発表",
+        "category": "mag7",
+        "url": "https://github.com/YH-05/finance/issues/356",
+        "created_at": "2026-01-14",
+        "summary": "Calavo Growers（CVGW）がMission Produce社との合併・買収に関する協議を行っていることが、M&Aコールのスライドショーで明らかになりました。アボカド生産・流通大手同士の統合に向けた動きとして注目されます。",
+        "source": "RSS Feed (自動収集)",
+        "original_url": ""
+      }
+    ],
+    "sectors": [],
+    "macro": [
+      {
+        "issue_number": 410,
+        "title": "カナダと中国、EVとキャノーラ油の関税引き下げで関係改善へ",
+        "category": "macro",
+        "url": "https://github.com/YH-05/finance/issues/410",
+        "created_at": "2026-01-17",
+        "summary": "カナダと中国が電気自動車（EV）およびキャノーラ油に対する関税を引き下げ、両国関係のリセットを図っている。",
+        "source": "RSS Feed (自動収集)",
+        "original_url": "https://www.cnbc.com/2026/01/17/canada-and-china-slash-tariffs-on-evs-and-canola-in-reset-of-ties.html"
+      },
+      {
+        "issue_number": 440,
+        "title": "カナダと中国、EV・キャノーラ関税を相互削減し関係リセット",
+        "category": "macro",
+        "url": "https://github.com/YH-05/finance/issues/440",
+        "created_at": "2026-01-17",
+        "summary": "- カナダと中国が電気自動車（EV）およびキャノーラ（菜種）に対する関税を相互に削減することで合意しました\n- この動きは両国関係の「リセット」を象徴するものとして位置付けられています\n- 長期間にわたる貿易摩擦の緩和に向けた重要な一歩となります",
+        "source": "RSS Feed (自動収集)",
+        "original_url": ""
+      },
+      {
+        "issue_number": 412,
+        "title": "来週の市場展望: 大型決算と金利見通しが焦点に",
+        "category": "macro",
+        "url": "https://github.com/YH-05/finance/issues/412",
+        "created_at": "2026-01-16",
+        "summary": "来週の米国株式市場は、大手企業の決算発表と金利見通しへの懸念が市場を左右する可能性がある。",
+        "source": "RSS Feed (自動収集)",
+        "original_url": "https://www.cnbc.com/2026/01/16/stock-market-next-week-outlook-for-jan-19-23-2026.html"
+      },
+      {
+        "issue_number": 444,
+        "title": "決算発表と金利見通しへの懸念が来週の市場を左右する可能性",
+        "category": "macro",
+        "url": "https://github.com/YH-05/finance/issues/444",
+        "created_at": "2026-01-16",
+        "summary": "- 来週の米国株式市場は、主要企業の決算発表と金利見通しへの懸念に左右される見通しです\n- FRBの金融政策に対する市場の見方が変化しており、金利据え置き期間の長期化が意識されています\n- 企業業績と金融政策の両面から市場のボラティリティが高まる可能性があります",
+        "source": "RSS Feed (自動収集)",
+        "original_url": ""
+      }
+    ],
+    "finance": [],
+    "tech": [],
+    "earnings": [],
+    "other": []
+  },
+  "statistics": {
+    "indices": 0,
+    "mag7": 1,
+    "sectors": 0,
+    "macro": 4,
+    "finance": 0,
+    "tech": 0,
+    "earnings": 0,
+    "other": 0
+  }
+}
