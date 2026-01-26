@@ -1,42 +1,37 @@
-# database
+# database - 共通インフラパッケージ
 
-共通インフラパッケージ（データベース・ユーティリティ）
+プロジェクト全体で使用される共通インフラストラクチャを提供します。
 
 ## 概要
 
-databaseパッケージは、プロジェクト全体で使用される共通インフラストラクチャを提供します。
+database パッケージは以下の機能を提供します:
 
-**主な機能:**
-- SQLiteクライアント（OLTP: トランザクション処理）
-- DuckDBクライアント（OLAP: 分析クエリ）
-- 構造化ロギング
+- **SQLiteClient**: トランザクション処理 (OLTP)
+- **DuckDBClient**: 分析クエリ (OLAP)、Parquet 直接読み込み対応
+- **構造化ロギング**: structlog ベースの統一ログ出力
+- **日付ユーティリティ**: 取引期間計算、日本語/US 形式フォーマット
+- **フォーマット変換**: Parquet/JSON 相互変換
 
-**現在のバージョン:** 0.1.0
-
-## クイックスタート
-
-<!-- AUTO-GENERATED: QUICKSTART -->
-
-### インストール
+## インストール
 
 ```bash
 # このリポジトリのパッケージとして利用
 uv sync --all-extras
 ```
 
-### 基本的な使い方
+## クイックスタート
+
+### ロギング
 
 ```python
 from database import get_logger
 
-# ロガーの取得と使用
 logger = get_logger(__name__)
-logger.info("Processing started", item_count=100)
+logger.info("Processing started", item_count=100, source="yfinance")
+logger.error("Fetch failed", symbol="AAPL", error="Connection timeout")
 ```
 
-### よくある使い方
-
-#### ユースケース1: SQLiteでトランザクション操作
+### SQLite (OLTP)
 
 ```python
 from database.db import SQLiteClient, get_db_path
@@ -54,7 +49,7 @@ client.execute(
 results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
 ```
 
-#### ユースケース2: DuckDBで分析クエリ
+### DuckDB (OLAP)
 
 ```python
 from database.db import DuckDBClient, get_db_path
@@ -73,180 +68,122 @@ result = client.query_df("""
 """)
 ```
 
-#### ユースケース3: 構造化ロギング
+### 日付ユーティリティ
 
 ```python
-from database import get_logger
-
-logger = get_logger(__name__)
-
-# 構造化データ付きログ出力
-logger.info("Processing started", item_count=100, source="yfinance")
-logger.error("Fetch failed", symbol="AAPL", error="Connection timeout")
-```
-
-<!-- END: QUICKSTART -->
-
-## ディレクトリ構成
-
-<!-- AUTO-GENERATED: STRUCTURE -->
-```
-database/
-├── __init__.py
-├── py.typed
-├── types.py
-├── db/
-│   ├── __init__.py
-│   ├── connection.py
-│   ├── sqlite_client.py
-│   ├── duckdb_client.py
-│   └── migrations/
-│       ├── __init__.py
-│       ├── runner.py
-│       └── versions/
-└── utils/
-    ├── __init__.py
-    └── logging_config.py
-```
-<!-- END: STRUCTURE -->
-
-## 実装状況
-
-<!-- AUTO-GENERATED: IMPLEMENTATION -->
-
-| モジュール | 状態 | ファイル数 | 行数 |
-|-----------|------|-----------|-----|
-| `types.py` | ✅ 実装済み | 1 | 50 |
-| `db/` | ✅ 実装済み | 6 | 500 |
-| `utils/` | ✅ 実装済み | 2 | 361 |
-
-<!-- END: IMPLEMENTATION -->
-
-## 公開API
-
-<!-- AUTO-GENERATED: API -->
-
-### トップレベルAPI
-
-databaseパッケージから直接インポートできるAPI:
-
-```python
-from database import get_logger
-
-logger = get_logger(__name__)
-logger.info("Processing started", item_count=100)
-```
-
-#### `get_logger(name, **context)`
-
-**説明**: 構造化ログを出力するロガーインスタンスを取得
-
-**パラメータ**:
-- `name` (必須): ロガー名（通常は `__name__`）
-- `**context`: ロガーに紐付けるコンテキスト情報
-
-**使用例**:
-
-```python
-from database import get_logger
-
-logger = get_logger(__name__)
-logger.info("Processing started", item_count=100)
-logger.error("Processing failed", error="Invalid input")
-```
-
----
-
-### データベースAPI (`database.db`)
-
-#### `SQLiteClient`
-
-**説明**: SQLiteデータベースへのトランザクション処理（OLTP）用クライアント
-
-**主なメソッド**:
-
-| メソッド | 説明 | 戻り値 |
-|---------|------|--------|
-| `execute(sql, params)` | SQL実行してデータ取得 | `list[sqlite3.Row]` |
-| `execute_many(sql, params_list)` | 一括INSERT/UPDATE | `int` (影響行数) |
-| `execute_script(script)` | SQLスクリプト実行 | `None` |
-| `connection()` | コンテキストマネージャー | `sqlite3.Connection` |
-
-**使用例**:
-
-```python
-from database.db import SQLiteClient, get_db_path
-
-# クライアントの初期化
-client = SQLiteClient(get_db_path("sqlite", "market"))
-
-# データの挿入
-client.execute(
-    "INSERT INTO stocks (symbol, price) VALUES (?, ?)",
-    ("AAPL", 150.0)
+from datetime import date
+from database.utils.date_utils import (
+    calculate_weekly_comment_period,
+    format_date_japanese,
+    format_date_us,
+    get_trading_days_in_period,
+    parse_date,
 )
 
-# データの取得
-results = client.execute("SELECT * FROM stocks WHERE symbol = ?", ("AAPL",))
+# 週次コメント期間を計算（火曜日〜火曜日）
+period = calculate_weekly_comment_period()
+print(period["start"], "〜", period["end"])
+
+# 日付フォーマット
+d = date(2026, 1, 22)
+print(format_date_japanese(d, "full"))   # "2026年1月22日(水)"
+print(format_date_japanese(d, "short"))  # "1/22(水)"
+print(format_date_us(d, "full"))         # "January 22, 2026"
+
+# 取引日を取得
+trading_days = get_trading_days_in_period(date(2026, 1, 19), date(2026, 1, 23))
+
+# 日付文字列のパース
+parsed = parse_date("2026-01-22")  # YYYY-MM-DD, YYYYMMDD, MM/DD/YYYY 対応
 ```
 
----
+### フォーマット変換
 
-#### `DuckDBClient`
+```python
+from pathlib import Path
+from database.utils.format_converter import parquet_to_json, json_to_parquet
 
-**説明**: DuckDBデータベースへの分析クエリ（OLAP）用クライアント。Parquetファイルの直接読み込みに対応。
+# Parquet → JSON
+parquet_to_json(Path("data.parquet"), Path("data.json"))
 
-**主なメソッド**:
+# JSON → Parquet
+json_to_parquet(Path("data.json"), Path("data.parquet"))
+```
+
+## 公開 API
+
+### トップレベル (`database`)
+
+```python
+from database import get_logger
+
+logger = get_logger(__name__)
+```
+
+### データベース (`database.db`)
+
+```python
+from database.db import (
+    SQLiteClient,      # SQLite クライアント
+    DuckDBClient,      # DuckDB クライアント
+    get_db_path,       # DB パス取得
+    DATA_DIR,          # データディレクトリ
+    PROJECT_ROOT,      # プロジェクトルート
+)
+```
+
+#### SQLiteClient
 
 | メソッド | 説明 | 戻り値 |
 |---------|------|--------|
-| `query_df(sql)` | SQLクエリ実行してDataFrame取得 | `pd.DataFrame` |
-| `execute(sql)` | SQLを実行（結果なし） | `None` |
-| `read_parquet(pattern)` | Parquetファイル読み込み | `pd.DataFrame` |
-| `write_parquet(df, path)` | DataFrameをParquetに書き込み | `None` |
+| `execute(sql, params)` | SQL 実行してデータ取得 | `list[sqlite3.Row]` |
+| `execute_many(sql, params_list)` | 一括 INSERT/UPDATE | `int` (影響行数) |
+| `execute_script(script)` | SQL スクリプト実行 | `None` |
+| `connection()` | コンテキストマネージャー | `sqlite3.Connection` |
 
-**使用例**:
+#### DuckDBClient
 
-```python
-from database.db import DuckDBClient, get_db_path
+| メソッド | 説明 | 戻り値 |
+|---------|------|--------|
+| `query_df(sql)` | SQL クエリ実行して DataFrame 取得 | `pd.DataFrame` |
+| `execute(sql)` | SQL を実行（結果なし） | `None` |
+| `read_parquet(pattern)` | Parquet ファイル読み込み | `pd.DataFrame` |
+| `write_parquet(df, path)` | DataFrame を Parquet に書き込み | `None` |
 
-# クライアントの初期化
-client = DuckDBClient(get_db_path("duckdb", "analytics"))
-
-# Parquetファイルから直接クエリ
-df = client.read_parquet("data/raw/yfinance/stocks/*.parquet")
-
-# 集計クエリの実行
-result = client.query_df("SELECT symbol, AVG(close) FROM df GROUP BY symbol")
-```
-
----
-
-#### `get_db_path(db_type, name)`
-
-**説明**: データベースファイルのパスを取得
-
-**パラメータ**:
-- `db_type`: "sqlite" | "duckdb"
-- `name`: データベース名
-
-**使用例**:
+#### get_db_path
 
 ```python
 from database.db import get_db_path
 
-# SQLiteデータベースのパス
+# SQLite データベースのパス
 sqlite_path = get_db_path("sqlite", "market")  # data/sqlite/market.db
 
-# DuckDBデータベースのパス
+# DuckDB データベースのパス
 duckdb_path = get_db_path("duckdb", "analytics")  # data/duckdb/analytics.duckdb
 ```
 
----
+### ユーティリティ (`database.utils`)
+
+#### 日付ユーティリティ (`database.utils.date_utils`)
+
+| 関数 | 説明 |
+|------|------|
+| `calculate_weekly_comment_period(reference_date)` | 火曜日〜火曜日の週次期間を計算 |
+| `get_previous_tuesday(date)` | 直近の火曜日を取得 |
+| `get_last_tuesday(date)` | 先週の火曜日を取得 |
+| `format_date_japanese(date, style)` | 日本語形式でフォーマット |
+| `format_date_us(date, style)` | US 形式でフォーマット |
+| `get_trading_days_in_period(start, end)` | 期間内の取引日（平日）を取得 |
+| `parse_date(date_str)` | 日付文字列をパース |
+
+#### フォーマット変換 (`database.utils.format_converter`)
+
+| 関数 | 説明 |
+|------|------|
+| `parquet_to_json(input_path, output_path)` | Parquet を JSON に変換 |
+| `json_to_parquet(input_path, output_path)` | JSON を Parquet に変換 |
 
 ### 型定義 (`database.types`)
-
-データ構造の定義。型ヒントに使用:
 
 ```python
 from database.types import (
@@ -256,63 +193,92 @@ from database.types import (
     FileFormat,        # "parquet" | "csv" | "json"
     LogFormat,         # "json" | "console" | "plain"
     LogLevel,          # "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL"
-    DatabaseConfig,    # データベース設定のTypeDict
-    FetchResult,       # データ取得結果のTypeDict
-    MigrationInfo,     # マイグレーション情報のTypeDict
+    DatabaseConfig,    # データベース設定の TypedDict
+    FetchResult,       # データ取得結果の TypedDict
+    MigrationInfo,     # マイグレーション情報の TypedDict
     JSONPrimitive,     # str | int | float | bool | None
     JSONValue,         # JSONPrimitive | Mapping[str, JSONValue] | list[JSONValue]
     JSONObject,        # Mapping[str, JSONValue]
 )
 ```
 
-<!-- END: API -->
+## ディレクトリ構成
 
-## 統計
-
-<!-- AUTO-GENERATED: STATS -->
-
-| 項目 | 値 |
-|-----|---|
-| Pythonファイル数 | 10 |
-| 総行数（実装コード） | 649 |
-| モジュール数 | 2 |
-| テストファイル数 | 3 |
-| テストカバレッジ | N/A |
-
-<!-- END: STATS -->
+```
+src/database/
+├── __init__.py           # get_logger のエクスポート
+├── py.typed
+├── types.py              # 型定義
+├── parquet_schema.py     # Parquet スキーマ定義
+├── db/
+│   ├── __init__.py       # SQLiteClient, DuckDBClient エクスポート
+│   ├── connection.py     # get_db_path, DATA_DIR, PROJECT_ROOT
+│   ├── sqlite_client.py  # SQLiteClient
+│   ├── duckdb_client.py  # DuckDBClient
+│   └── migrations/
+│       ├── __init__.py
+│       ├── runner.py
+│       └── versions/
+└── utils/
+    ├── __init__.py
+    ├── logging_config.py  # get_logger
+    ├── date_utils.py      # 日付ユーティリティ
+    └── format_converter.py # Parquet/JSON 変換
+```
 
 ## 依存関係
 
 ### 外部パッケージ
 
-このパッケージは以下の外部ライブラリに依存しています:
-
 | パッケージ | 用途 | 必須/オプション |
 |-----------|------|----------------|
 | `structlog` | 構造化ロギング | 必須 |
-| `sqlite3` | SQLiteデータベース接続 | 必須（標準ライブラリ） |
-| `duckdb` | DuckDB分析エンジン | 必須 |
-| `pandas` | データフレーム操作 | 必須 |
+| `duckdb` | DuckDB 分析エンジン | 必須 |
+| `pandas` | DataFrame 操作 | 必須 |
+| `pyarrow` | Parquet 読み書き | 必須 |
+| `sqlite3` | SQLite データベース | 必須（標準ライブラリ） |
 
 ### 他パッケージとの関係
 
 `database` パッケージはコアインフラとして、以下のパッケージから利用されます:
 
-- `market_analysis`: 市場データの保存と分析クエリ
-- `rss`: RSSフィードデータの保存
+- `market`: 市場データの保存
+- `analyze`: 分析結果の保存とクエリ
+- `rss`: RSS フィードデータの保存
 - `factor`: ファクター分析結果の保存
 - `strategy`: バックテスト結果の保存
 
-## 使用例
+## 開発
 
-```python
-from database import get_logger
+### テスト実行
 
-logger = get_logger(__name__)
-logger.info("Processing started", item_count=100)
+```bash
+# 全テスト
+uv run pytest tests/database/
+
+# カバレッジ付き
+uv run pytest tests/database/ --cov=src/database --cov-report=term-missing
+```
+
+### 品質チェック
+
+```bash
+# フォーマット
+uv run ruff format src/database/ tests/database/
+
+# リント
+uv run ruff check src/database/ tests/database/
+
+# 型チェック
+uv run pyright src/database/ tests/database/
 ```
 
 ## 関連ドキュメント
 
-- `template/src/template_package/README.md` - テンプレート実装の詳細
-- `docs/development-guidelines.md` - 開発ガイドライン
+- [テンプレート実装](../../template/src/template_package/README.md)
+- [開発ガイドライン](../../docs/development-guidelines.md)
+- [コーディング規約](../../docs/coding-standards.md)
+
+## ライセンス
+
+MIT License
