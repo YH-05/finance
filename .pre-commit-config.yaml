@@ -72,3 +72,12 @@ repos:
         stages: [pre-push]
         always_run: true
         verbose: true
+
+      - id: check-circular-deps
+        name: check-circular-deps
+        entry: uv run python scripts/check_circular_deps.py
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        always_run: true
+        verbose: true

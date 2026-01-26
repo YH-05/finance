@@ -1,4 +1,4 @@
-.PHONY: help test test-cov test-unit test-property test-integration format lint typecheck security audit check check-all benchmark profile setup pr issue pr-list issue-list label-list clean
+.PHONY: help test test-cov test-unit test-property test-integration format lint typecheck security audit check check-all check-deps benchmark profile setup pr issue pr-list issue-list label-list clean
 
 # デフォルトターゲット
 help:
@@ -20,6 +20,7 @@ help:
 	@echo "  benchmark    - パフォーマンスベンチマーク実行"
 	@echo "  check        - format, lint, typecheck, testを順番に実行"
 	@echo "  check-all    - pre-commitで全ファイルをチェック"
+	@echo "  check-deps   - パッケージ間の循環依存チェック"
 	@echo "  pr           - PR作成 (TITLE=\"タイトル\" BODY=\"本文またはファイルパス\" [LABEL=\"ラベル\"])"
 	@echo "  pr-list      - 開いているPRの一覧表示"
 	@echo "  issue        - イシュー作成 (TITLE=\"タイトル\" BODY=\"本文またはファイルパス\" [LABEL=\"ラベル\"])"
@@ -83,6 +84,9 @@ check: format lint typecheck test
 
 check-all:
 	uv run pre-commit run --all-files
+
+check-deps:
+	uv run python scripts/check_circular_deps.py --graph --mermaid
 
 # GitHub操作
 pr:

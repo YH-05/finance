@@ -134,7 +134,9 @@ class TestMomentumFactorParameterConstraints:
         """skip_recent >= lookbackの場合、ValueErrorが発生する。"""
         skip_recent = lookback + skip_offset
 
-        with pytest.raises(ValueError, match="skip_recent.*must be less than lookback"):
+        with pytest.raises(
+            ValueError, match=r"skip_recent.*must be less than lookback"
+        ):
             MomentumFactor(lookback=lookback, skip_recent=skip_recent)
 
 
