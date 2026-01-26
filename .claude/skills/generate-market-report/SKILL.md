@@ -31,11 +31,11 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task, WebSearch
 
 ## モード比較
 
-| モード | 説明 | GitHub Project 連携 | 目標文字数 |
-|--------|------|-------------------|-----------|
-| 基本モード | 指定日のレポート生成 | なし | - |
-| `--weekly-comment` | 火曜〜火曜の週次コメント（旧形式） | なし | 3000字以上 |
-| `--weekly` | **フル週次レポート（推奨）** | **あり** | 3200字以上 |
+| モード | 説明 | GitHub Project 連携 | Issue 投稿 | 目標文字数 |
+|--------|------|-------------------|-----------|-----------|
+| 基本モード | 指定日のレポート生成 | なし | なし | - |
+| `--weekly-comment` | 火曜〜火曜の週次コメント（旧形式） | **あり** | **自動** | 3000字以上 |
+| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 3200字以上 |
 
 ## 処理フロー
 
@@ -86,8 +86,8 @@ Phase 5: レポート生成（サブエージェント）
 Phase 6: 品質検証
 └── 文字数・フォーマット・データ整合性チェック
 
-Phase 7: Issue 投稿（デフォルト有効、--no-publish でスキップ）
-└── weekly-report-publisher → GitHub Issue 作成 & Project #15 追加
+Phase 7: Issue 投稿（自動実行）
+└── weekly-report-publisher → GitHub Issue 作成（report ラベル）& Project #15 追加
 
 Phase 8: 完了処理
 └── 結果サマリー表示
@@ -103,8 +103,8 @@ Phase 8: 完了処理
 | `--weekly-comment` | false | 週次コメント生成（旧形式） |
 | `--project` | 15 | GitHub Project 番号（--weekly時） |
 | `--no-search` | false | 追加検索を無効化（--weekly時） |
-| `--publish` | **true** | GitHub Issue として投稿（デフォルト有効） |
-| `--no-publish` | false | GitHub Issue への投稿を無効化 |
+
+**注意**: `--weekly` および `--weekly-comment` モードでは、レポート生成後に自動的に GitHub Issue が作成され、`report` ラベルが付与されて Project #15 に「Weekly Report」ステータスで登録されます。
 
 ### 日付と期間の計算
 
@@ -138,7 +138,7 @@ articles/weekly_report/{YYYY-MM-DD}/
 
 ## 使用例
 
-### 例1: フル週次レポート生成 & Issue投稿（デフォルト）
+### 例1: フル週次レポート生成 & Issue投稿
 
 **状況**: 毎週水曜日に週次レポートを作成したい
 
@@ -154,27 +154,11 @@ articles/weekly_report/{YYYY-MM-DD}/
 4. 不足カテゴリを追加検索で補完
 5. 3200字以上のレポートを生成
 6. 品質検証を実行
-7. **GitHub Issue を作成し Project #15 に追加（デフォルト）**
+7. **GitHub Issue を作成（`report` ラベル付与）し Project #15 に追加**
 
 ---
 
-### 例2: ローカルファイルのみ（Issue投稿なし）
-
-**状況**: レポートを確認してから Issue として投稿したい
-
-**コマンド**:
-```bash
-/generate-market-report --no-publish
-```
-
-**処理**:
-1. フル週次レポートを生成
-2. GitHub Issue への投稿をスキップ
-3. ローカルファイルのみ生成
-
----
-
-### 例3: GitHub Project のみ使用
+### 例2: GitHub Project のみ使用
 
 **状況**: 追加検索なしでレポートを作成したい
 
@@ -187,10 +171,11 @@ articles/weekly_report/{YYYY-MM-DD}/
 1. GitHub Project からのニュースのみ使用
 2. 追加検索をスキップ
 3. レポートを生成
+4. GitHub Issue を作成し Project #15 に追加
 
 ---
 
-### 例4: 特定日付でレポート生成
+### 例3: 特定日付でレポート生成
 
 **状況**: 特定の日付を終了日として1週間分のレポートを作成したい
 
@@ -212,7 +197,7 @@ articles/weekly_report/{YYYY-MM-DD}/
 |-------------|------|-----------|
 | `weekly-report-news-aggregator` | GitHub Project からニュース集約 | --weekly |
 | `weekly-report-writer` | 4つのスキルでレポート生成 | --weekly |
-| `weekly-report-publisher` | GitHub Issue として投稿 | デフォルト（--no-publish でスキップ） |
+| `weekly-report-publisher` | GitHub Issue として投稿（`report` ラベル + Project #15 登録） | 自動実行 |
 | `weekly-comment-indices-fetcher` | 指数ニュース収集 | --weekly-comment |
 | `weekly-comment-mag7-fetcher` | MAG7 ニュース収集 | --weekly-comment |
 | `weekly-comment-sectors-fetcher` | セクターニュース収集 | --weekly-comment |
@@ -275,7 +260,7 @@ gh project list --owner @me
 
 **対処法**:
 - コメントを手動で拡充
-- `--no-publish` で再実行し、レポートを確認してから手動で投稿
+- 生成されたレポートファイル（02_edit/weekly_report.md）を手動で編集
 
 ## 品質基準
 
@@ -296,7 +281,8 @@ gh project list --owner @me
 
 - [ ] 出力ディレクトリにレポートファイルが生成されている
 - [ ] 品質検証が PASS または WARN で完了している
-- [ ] GitHub Issue が作成され Project #15 に追加されている（`--no-publish` 時を除く）
+- [ ] **GitHub Issue が作成されている（`report` ラベル付き）**
+- [ ] **Issue が Project #15 に追加されている（Status: Weekly Report）**
 - [ ] 結果サマリーが表示されている
 
 ## 関連コマンド

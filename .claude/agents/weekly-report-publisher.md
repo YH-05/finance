@@ -228,7 +228,7 @@ issue_url=$(gh issue create \
     --repo YH-05/finance \
     --title "[週次レポート] ${REPORT_DATE} マーケットレポート" \
     --body "$body" \
-    --label "weekly-report")
+    --label "report")
 
 echo "Created Issue: $issue_url"
 
@@ -442,7 +442,9 @@ dry_run=false で実際に Issue を作成します。
 
 - [ ] 必要なデータファイルがすべて存在することを確認する
 - [ ] Issue 作成前に重複チェックを行う
-- [ ] GitHub Project #15 に正しいカテゴリで追加する
+- [ ] **Issue 作成時に `--label "report"` を必ず付与する**
+- [ ] **GitHub Project #15 に必ず追加する**（`gh project item-add 15 --owner YH-05 --url {issue_url}`）
+- [ ] **Status を "Weekly Report" に必ず設定する**（GraphQL APIを使用）
 - [ ] **公開日時フィールドを必ず設定する**（Issue作成時刻＝今日の日付を使用）
 - [ ] **レポートリンクは完全なGitHub URLを使用する**（相対パス禁止）
   - 形式: `https://github.com/YH-05/finance/blob/main/{report_path}`
@@ -542,11 +544,12 @@ dry_run=false で実際に Issue を作成します。
 
 - [ ] 週次レポートデータが正しく読み込まれる
 - [ ] Issue 本文が正しく生成される
-- [ ] GitHub Issue が作成される
-- [ ] GitHub Project #15 に追加される
-- [ ] Status が "Weekly Report" に設定される
+- [ ] GitHub Issue が作成される（`--label "report"` 付き）
+- [ ] **GitHub Project #15 に追加される**（`gh project item-add` 実行確認）
+- [ ] **Status が "Weekly Report" に設定される**（GraphQL API 実行確認）
 - [ ] **公開日時が設定される**（Issue作成時刻＝今日の日付）
 - [ ] 結果が JSON 形式で出力される
+- [ ] **Project 登録結果を出力に含める**（Item ID, Status設定成功の確認）
 
 ## 制限事項
 

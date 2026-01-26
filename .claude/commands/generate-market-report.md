@@ -1,6 +1,6 @@
 ---
-description: 週次マーケットレポートを自動生成します（データ収集→ニュース検索→レポート作成）
-argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] [--no-search] [--publish]
+description: 週次マーケットレポートを自動生成します（データ収集→ニュース検索→レポート作成→Issue投稿）
+argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] [--no-search]
 ---
 
 # /generate-market-report - マーケットレポート生成
@@ -9,13 +9,15 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 
 ## モード比較
 
-| モード | 説明 | GitHub Project 連携 | 出力形式 |
-|--------|------|-------------------|---------|
-| 基本モード | 指定日のレポート生成 | なし | 簡易レポート |
-| `--weekly-comment` | 火曜〜火曜の週次コメント | なし | 3000字以上のコメント |
-| `--weekly` | **フル週次レポート（推奨）** | **あり** | 3200字以上の詳細レポート |
+| モード | 説明 | GitHub Project 連携 | Issue 投稿 | 出力形式 |
+|--------|------|-------------------|-----------|---------|
+| 基本モード | 指定日のレポート生成 | なし | なし | 簡易レポート |
+| `--weekly-comment` | 火曜〜火曜の週次コメント | **あり** | **自動** | 3000字以上のコメント |
+| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 3200字以上の詳細レポート |
 
 `--weekly` は `--weekly-comment` の上位互換であり、GitHub Project からのニュース集約機能が追加されています。
+
+**注意**: `--weekly` および `--weekly-comment` モードでは、レポート生成後に自動的に GitHub Issue が作成され、Project #15 に「Weekly Report」ステータスで登録されます。
 
 ## 使用例
 
@@ -35,14 +37,11 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 
 # ========== 週次レポートモード（推奨） ==========
 
-# フル週次レポート生成（GitHub Project連携）
+# フル週次レポート生成（GitHub Project連携 + Issue自動投稿）
 /generate-market-report --weekly
 
 # 特定日付でフル週次レポート生成
 /generate-market-report --weekly --date 2026-01-20
-
-# フル週次レポート + GitHub Issue 投稿
-/generate-market-report --weekly --publish
 
 # 別の GitHub Project を使用
 /generate-market-report --weekly --project 20
@@ -57,14 +56,11 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 
 # ========== 旧: 週次コメントモード（互換性維持） ==========
 
-# 週次コメント生成モード
+# 週次コメント生成モード（Issue自動投稿）
 /generate-market-report --weekly-comment
 
 # 週次コメント生成（日付指定）
 /generate-market-report --weekly-comment --date 2026-01-20
-
-# 週次コメント生成 + GitHub Issue 投稿
-/generate-market-report --weekly-comment --publish
 ```
 
 ## 入力パラメータ
@@ -73,11 +69,10 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 |-----------|------|-----------|------|
 | --date | - | 今日の日付 | **レポート終了日（YYYY-MM-DD形式）。この日付から1週間前が開始日となる** |
 | --output | - | articles/market_report_{date} または articles/weekly_report/{date} | 出力ディレクトリ |
-| --weekly | - | false | **フル週次レポート生成モード（GitHub Project 連携あり、推奨）** |
-| --weekly-comment | - | false | 週次コメント生成モード（旧形式、互換性維持） |
+| --weekly | - | false | **フル週次レポート生成モード（GitHub Project 連携 + Issue 自動投稿、推奨）** |
+| --weekly-comment | - | false | 週次コメント生成モード（Issue 自動投稿、旧形式） |
 | --project | - | 15 | GitHub Project 番号（--weekly モード時のみ有効） |
 | --no-search | - | false | 追加検索を無効化（--weekly モード時のみ有効、GitHub Project のニュースのみ使用） |
-| --publish | - | false | レポート生成後に GitHub Issue として投稿（--weekly または --weekly-comment モード時のみ有効） |
 
 ### 日付と期間の計算
 
@@ -171,10 +166,11 @@ Phase 6: 品質検証
 ├── データ整合性チェック
 └── validation_result.json に結果出力
 
-Phase 7: Issue 投稿（--publish オプション時のみ）
+Phase 7: Issue 投稿（自動実行）
 ├── weekly-report-publisher 呼び出し
-├── GitHub Issue 作成
-├── Project #{project} に追加（カテゴリ: Weekly Report）
+├── GitHub Issue 作成（`--label "report"` 付与）
+├── Project #{project} に追加（Status: Weekly Report）
+├── 公開日時フィールドを設定
 └── Issue URL を出力
 
 Phase 8: 完了処理
@@ -993,9 +989,9 @@ Phase 5 で生成された `validation_result.json` を確認します。
 | D | 60-69 | 要改善 |
 | F | 0-59 | 不合格 |
 
-### Phase 7: Issue 投稿（オプション）
+### Phase 7: Issue 投稿（自動実行）
 
-`--publish` オプションが指定されている場合に実行します。
+レポート生成後、自動的に GitHub Issue として投稿します。
 
 ```python
 # weekly-report-publisher サブエージェントを呼び出し
@@ -1010,13 +1006,22 @@ Task(
 report_dir: {OUTPUT_DIR}
 project_number: {project_number}
 
-## 期待される処理
+## 期待される処理（必須）
 
 1. {OUTPUT_DIR}/data/ からデータ読み込み
 2. {OUTPUT_DIR}/02_edit/weekly_report.md からレポート読み込み
 3. Issue 本文を生成
-4. GitHub Issue を作成
-5. GitHub Project #{project_number} に追加（カテゴリ: Weekly Report）
+4. **GitHub Issue を作成（`--label "report"` を必ず付与）**
+5. **GitHub Project #{project_number} に追加（`gh project item-add` 実行）**
+6. **Status を "Weekly Report" に設定（GraphQL API 実行）**
+7. **公開日時フィールドを設定**
+
+## 重要な確認事項
+
+- [ ] Issue に `report` ラベルが付与されているか確認
+- [ ] Issue が Project #{project_number} に追加されているか確認
+- [ ] Status が "Weekly Report" に設定されているか確認
+- [ ] 結果出力に Project 登録情報（Item ID, Status）を含める
 """
 )
 ```
@@ -1075,6 +1080,14 @@ project_number: {project_number}
 - **文字数**: 3,450字（目標: 3,200字）✓
 - **ステータス**: PASS ✓
 
+## 投稿された Issue
+
+- **Issue**: #830 - [週次レポート] 2026-01-22 マーケットレポート
+- **URL**: https://github.com/YH-05/finance/issues/830
+- **Project**: #15 (Finance News Collection)
+- **Status**: Weekly Report
+- **ラベル**: `report`
+
 ## 次のアクション
 
 1. レポートを確認:
@@ -1083,20 +1096,10 @@ project_number: {project_number}
 2. 編集・修正:
    edit articles/weekly_report/2026-01-22/02_edit/weekly_report.md
 
-3. Issue として投稿（まだの場合）:
-   /generate-market-report --weekly --publish
+3. Issue を確認:
+   gh issue view 830
 
 ================================================================================
-```
-
-**--publish オプション時の追加出力**:
-```markdown
-## 投稿された Issue
-
-- **Issue**: #830 - [週次レポート] 2026-01-22 マーケットレポート
-- **URL**: https://github.com/YH-05/finance/issues/830
-- **Project**: #15 (Finance News Collection)
-- **Status**: Weekly Report
 ```
 
 ---
@@ -1234,10 +1237,11 @@ project_number: {project_number}
     ├── Phase 5: 出力
     │   └── articles/weekly_comment_{date}/02_edit/weekly_comment.md
     │
-    └── Phase 6: Issue 投稿（オプション）
+    └── Phase 6: Issue 投稿（自動実行）
         ├── weekly-report-publisher サブエージェント呼び出し
-        ├── GitHub Issue 作成
-        └── GitHub Project #15 に追加（カテゴリ: Weekly Report）
+        ├── GitHub Issue 作成（`--label "report"` 付与）
+        ├── GitHub Project #15 に追加（Status: Weekly Report）
+        └── 公開日時フィールドを設定
 ```
 
 ## 週次コメント出力ディレクトリ構造
@@ -1505,9 +1509,9 @@ MAG7では、TSLAが+3.70%で週間トップパフォーマーとなりました
 
 ---
 
-## Phase 6: Issue 投稿（--publish オプション）
+## Phase 6: Issue 投稿（自動実行）
 
-`--publish` オプションを指定すると、週次レポート生成後に自動で GitHub Issue として投稿します。
+週次レポート生成後、自動的に GitHub Issue として投稿します。
 
 ### 6.1 サブエージェント呼び出し
 
@@ -1524,13 +1528,22 @@ Task(
 report_dir: {OUTPUT_DIR}
 project_number: 15
 
-## 期待される処理
+## 期待される処理（必須）
 
 1. {OUTPUT_DIR}/data/ からデータ読み込み
 2. {OUTPUT_DIR}/02_edit/weekly_comment.md からレポート読み込み
 3. Issue 本文を生成
-4. GitHub Issue を作成
-5. GitHub Project #15 に追加（カテゴリ: Weekly Report）
+4. **GitHub Issue を作成（`--label "report"` を必ず付与）**
+5. **GitHub Project #15 に追加（`gh project item-add` 実行）**
+6. **Status を "Weekly Report" に設定（GraphQL API 実行）**
+7. **公開日時フィールドを設定**
+
+## 重要な確認事項
+
+- [ ] Issue に `report` ラベルが付与されているか確認
+- [ ] Issue が Project #15 に追加されているか確認
+- [ ] Status が "Weekly Report" に設定されているか確認
+- [ ] 結果出力に Project 登録情報（Item ID, Status）を含める
 """
 )
 ```
@@ -1539,7 +1552,7 @@ project_number: 15
 
 ```markdown
 ================================================================================
-                    /generate-market-report --weekly-comment --publish 完了
+                    /generate-market-report --weekly-comment 完了
 ================================================================================
 
 ## 生成されたレポート
@@ -1553,33 +1566,15 @@ project_number: 15
 - **URL**: https://github.com/YH-05/finance/issues/825
 - **Project**: #15 (Finance News Collection)
 - **Status**: Weekly Report
-
-================================================================================
-```
-
-### 6.3 --publish なしの場合
-
-`--publish` を指定しない場合、Phase 5 で終了し、Issue 投稿はスキップされます。
-
-```markdown
-================================================================================
-                    /generate-market-report --weekly-comment 完了
-================================================================================
-
-## 生成されたレポート
-
-- **レポートファイル**: {output}/02_edit/weekly_comment.md
-- **文字数**: 3,200字
+- **ラベル**: `report`
 
 ## 次のステップ
 
 1. レポートを確認:
    cat {output}/02_edit/weekly_comment.md
 
-2. Issue として投稿（オプション）:
-   /generate-market-report --weekly-comment --publish
-   または
-   Task(subagent_type="weekly-report-publisher", ...)
+2. Issue を確認:
+   gh issue view 825
 
 ================================================================================
 ```

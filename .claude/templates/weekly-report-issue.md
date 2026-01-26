@@ -74,7 +74,7 @@ GitHub Project #15 に週次レポートを投稿するための Issue テンプ
 
 ### 必須ラベル
 
-- `weekly-report`: 週次レポート Issue に付与
+- `report`: 週次レポート Issue に付与
 
 ### オプションラベル
 
@@ -155,7 +155,7 @@ issue_url=$(gh issue create \
     --repo YH-05/finance \
     --title "[週次レポート] ${REPORT_DATE} マーケットレポート" \
     --body "$body" \
-    --label "weekly-report")
+    --label "report")
 
 # Step 4: Issue番号を抽出
 issue_number=$(echo "$issue_url" | grep -oE '[0-9]+$')
