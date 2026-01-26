@@ -1,15 +1,12 @@
 # market - 金融データ取得パッケージ
 
-金融市場データを取得するための統合パッケージ。Yahoo Finance、FRED、Bloomberg など複数のデータソースに対応。
+金融市場データを取得するための統合パッケージ。Yahoo Finance、FRED など複数のデータソースに対応。
 
 ## インストール
 
 ```bash
-# uv を使用
-uv add market
-
-# または pip
-pip install market
+# uv を使用（このリポジトリ内）
+uv sync --all-extras
 ```
 
 ## クイックスタート
@@ -39,20 +36,72 @@ for result in results:
 
 | モジュール | 説明 | ステータス |
 |-----------|------|-----------|
-| `market.yfinance` | Yahoo Finance データ取得 | ✅ 実装済み |
-| `market.fred` | FRED 経済指標データ取得 | ✅ 実装済み |
-| `market.factset` | FactSet データ取得 | 🚧 計画中 |
-| `market.alternative` | オルタナティブデータ | 🚧 計画中 |
-| `market.bloomberg` | Bloomberg データ取得 | 🚧 計画中 |
-| `market.export` | データエクスポート | ✅ 実装済み |
+| `market.yfinance` | Yahoo Finance データ取得 | 実装済み |
+| `market.fred` | FRED 経済指標データ取得 | 実装済み |
+| `market.export` | データエクスポート | 実装済み |
+| `market.schema` | JSON スキーマ定義 (Pydantic V2) | 実装済み |
+| `market.cache` | キャッシュ機能 | 実装済み |
+| `market.factset` | FactSet データ取得 | 計画中 |
+| `market.alternative` | オルタナティブデータ | 計画中 |
+| `market.bloomberg` | Bloomberg データ取得 | 計画中 |
+
+## 公開 API
+
+### トップレベルインポート
+
+```python
+from market import (
+    # データ型
+    DataSource,           # データソース列挙型
+    MarketDataResult,     # データ取得結果
+    AnalysisResult,       # 分析結果
+    AgentOutput,          # AI エージェント向け出力
+    AgentOutputMetadata,  # エージェント出力のメタデータ
+
+    # エクスポート
+    DataExporter,         # データエクスポーター
+
+    # 設定 (Pydantic V2 モデル)
+    MarketConfig,         # 完全な設定
+    CacheConfig,          # キャッシュ設定
+    DataSourceConfig,     # データソース設定
+    DateRange,            # 日付範囲
+    ExportConfig,         # エクスポート設定
+
+    # メタデータ
+    StockDataMetadata,    # 株価データのメタデータ
+    EconomicDataMetadata, # 経済指標のメタデータ
+
+    # バリデーション
+    validate_config,
+    validate_stock_metadata,
+    validate_economic_metadata,
+
+    # エラー
+    MarketError,          # 基底エラー
+    ExportError,          # エクスポートエラー
+    CacheError,           # キャッシュエラー
+    ErrorCode,            # エラーコード列挙型
+)
+```
+
+### DataSource 列挙型
+
+```python
+from market import DataSource
+
+print(DataSource.YFINANCE)   # Yahoo Finance
+print(DataSource.FRED)       # Federal Reserve Economic Data
+print(DataSource.LOCAL)      # ローカルファイル
+print(DataSource.BLOOMBERG)  # Bloomberg (計画中)
+print(DataSource.FACTSET)    # FactSet (計画中)
+```
 
 ## yfinance モジュール
 
-### 主要クラス
+Yahoo Finance から OHLCV データを取得します。
 
-#### YFinanceFetcher
-
-Yahoo Finance からOHLCVデータを取得するフェッチャー。
+### 基本的な使い方
 
 ```python
 from market.yfinance import (
@@ -62,7 +111,6 @@ from market.yfinance import (
     DataSource,
 )
 
-# 基本的な使用法
 fetcher = YFinanceFetcher()
 
 # 日次データを取得
@@ -82,9 +130,7 @@ print(f"Rows: {len(result.data)}")
 print(result.data.head())
 ```
 
-#### FetchOptions
-
-データ取得オプションを指定するデータクラス。
+### FetchOptions パラメータ
 
 | パラメータ | 型 | デフォルト | 説明 |
 |-----------|-----|-----------|------|
@@ -94,9 +140,7 @@ print(result.data.head())
 | `interval` | `Interval` | `Interval.DAILY` | データ間隔 |
 | `use_cache` | `bool` | True | キャッシュを使用するか |
 
-#### Interval
-
-サポートされるデータ間隔。
+### Interval 列挙型
 
 | 値 | 文字列 | 説明 |
 |----|--------|------|
@@ -131,12 +175,11 @@ except DataFetchError as e:
     print(f"エラーコード: {e.code}")
 ```
 
-### キャッシュ設定
+### キャッシュとリトライ設定
 
 ```python
 from market.yfinance import (
     YFinanceFetcher,
-    FetchOptions,
     CacheConfig,
     RetryConfig,
 )
@@ -162,37 +205,99 @@ fetcher = YFinanceFetcher(
 )
 ```
 
+## fred モジュール
+
+FRED (Federal Reserve Economic Data) から経済指標データを取得します。
+
+### 基本的な使い方
+
+```python
+from market.fred import FREDFetcher, FRED_API_KEY_ENV
+from market.fred.types import FetchOptions
+
+# 環境変数 FRED_API_KEY を設定するか、コンストラクタで渡す
+fetcher = FREDFetcher()
+
+# 経済指標を取得
+options = FetchOptions(symbols=["GDP", "CPIAUCSL", "UNRATE"])
+results = fetcher.fetch(options)
+
+for result in results:
+    print(f"{result.symbol}: {len(result.data)} data points")
+```
+
+### 利用可能な定数
+
+```python
+from market.fred import FRED_API_KEY_ENV, FRED_SERIES_PATTERN
+
+print(FRED_API_KEY_ENV)      # "FRED_API_KEY"
+print(FRED_SERIES_PATTERN)   # FRED シリーズ ID の正規表現パターン
+```
+
+## export モジュール
+
+データを各種フォーマットでエクスポートします。
+
+### DataExporter
+
+```python
+from market import DataExporter
+
+exporter = DataExporter()
+
+# JSON エクスポート
+exporter.to_json(data, "output.json")
+
+# CSV エクスポート
+exporter.to_csv(data, "output.csv")
+
+# SQLite に保存 (UPSERT サポート)
+exporter.to_sqlite(data, "database.db", "table_name")
+
+# AI エージェント向け JSON 出力
+agent_output = exporter.to_agent_json(data)
+```
+
 ## ディレクトリ構造
 
 ```
 src/market/
-├── __init__.py
+├── __init__.py          # 公開 API
 ├── README.md
 ├── types.py             # 共通型定義
 ├── errors.py            # 共通エラー定義
+├── schema.py            # Pydantic V2 スキーマ
 ├── yfinance/            # Yahoo Finance データ取得
 │   ├── __init__.py
-│   ├── fetcher.py
-│   ├── types.py
-│   └── errors.py
+│   ├── fetcher.py       # YFinanceFetcher
+│   ├── types.py         # FetchOptions, Interval 等
+│   └── errors.py        # DataFetchError, ValidationError
 ├── fred/                # FRED 経済指標データ取得
 │   ├── __init__.py
-│   ├── README.md
-│   ├── fetcher.py
+│   ├── fetcher.py       # FREDFetcher
 │   ├── base_fetcher.py
 │   ├── cache.py
 │   ├── constants.py
 │   ├── types.py
 │   └── errors.py
-├── factset/             # FactSet 連携（計画中）
+├── cache/               # キャッシュ機能
 │   ├── __init__.py
-│   └── README.md
-├── alternative/         # オルタナティブデータ（計画中）
-│   ├── __init__.py
-│   └── README.md
+│   ├── cache.py
+│   └── types.py
 ├── export/              # データエクスポート
 │   ├── __init__.py
-│   └── exporter.py
+│   └── exporter.py      # DataExporter
+├── factset/             # FactSet 連携 (計画中)
+│   └── __init__.py
+├── alternative/         # オルタナティブデータ (計画中)
+│   └── __init__.py
+├── bloomberg/           # Bloomberg 連携 (計画中)
+│   ├── __init__.py
+│   ├── constants.py
+│   ├── errors.py
+│   ├── fetcher.py
+│   └── types.py
 └── utils/               # ユーティリティ
     ├── __init__.py
     └── logging_config.py
