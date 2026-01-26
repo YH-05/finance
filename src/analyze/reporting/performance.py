@@ -16,4 +16,4 @@ class PerformanceAnalyzer:
         pass
 
     def get_index_performance(self) -> None:
-        pass
+        return None

@@ -1,0 +1,82 @@
+# Symbol Group Definitions
+# 金融市場分析で使用するシンボルグループの定義
+
+indices:
+  us:
+    - symbol: "^GSPC"
+      name: "S&P 500"
+    - symbol: "^DJI"
+      name: "Dow Jones Industrial Average"
+    - symbol: "^IXIC"
+      name: "NASDAQ Composite"
+    - symbol: "^RUT"
+      name: "Russell 2000"
+
+  global:
+    - symbol: "^N225"
+      name: "日経225"
+    - symbol: "^TOPX"
+      name: "TOPIX"
+    - symbol: "^STOXX50E"
+      name: "Euro STOXX 50"
+    - symbol: "^FTSE"
+      name: "FTSE 100"
+    - symbol: "^GDAXI"
+      name: "DAX"
+    - symbol: "000001.SS"
+      name: "上海総合"
+    - symbol: "^HSI"
+      name: "ハンセン指数"
+
+mag7:
+  - symbol: "AAPL"
+    name: "Apple"
+  - symbol: "MSFT"
+    name: "Microsoft"
+  - symbol: "GOOGL"
+    name: "Alphabet (Google)"
+  - symbol: "AMZN"
+    name: "Amazon"
+  - symbol: "NVDA"
+    name: "NVIDIA"
+  - symbol: "META"
+    name: "Meta (Facebook)"
+  - symbol: "TSLA"
+    name: "Tesla"
+
+sectors:
+  - symbol: "XLF"
+    name: "Financial Select Sector SPDR"
+  - symbol: "XLK"
+    name: "Technology Select Sector SPDR"
+  - symbol: "XLV"
+    name: "Health Care Select Sector SPDR"
+  - symbol: "XLE"
+    name: "Energy Select Sector SPDR"
+  - symbol: "XLI"
+    name: "Industrial Select Sector SPDR"
+  - symbol: "XLY"
+    name: "Consumer Discretionary Select Sector SPDR"
+  - symbol: "XLP"
+    name: "Consumer Staples Select Sector SPDR"
+  - symbol: "XLB"
+    name: "Materials Select Sector SPDR"
+  - symbol: "XLU"
+    name: "Utilities Select Sector SPDR"
+  - symbol: "XLRE"
+    name: "Real Estate Select Sector SPDR"
+  - symbol: "XLC"
+    name: "Communication Services Select Sector SPDR"
+
+# 騰落率計算期間の定義
+return_periods:
+  "1D": 1       # 1営業日
+  "1W": 5       # 1週間（5営業日）
+  "MTD": "mtd"  # 月初来
+  "1M": 21      # 1ヶ月（21営業日）
+  "3M": 63      # 3ヶ月
+  "6M": 126     # 6ヶ月
+  "YTD": "ytd"  # 年初来
+  "1Y": 252     # 1年
+  "3Y": 756     # 3年
+  "5Y": 1260    # 5年

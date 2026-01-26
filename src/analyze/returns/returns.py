@@ -15,67 +15,20 @@ from typing import Any
 import pandas as pd
 import yfinance as yf
 
+from analyze.config.loader import get_return_periods, get_symbols
 from database.utils.logging_config import get_logger
 
 logger = get_logger(__name__, module="returns")
 
 # =============================================================================
-# Constants
+# Constants (loaded from config/symbols.yaml)
 # =============================================================================
 
-RETURN_PERIODS: dict[str, int | str] = {
-    "1D": 1,  # 1営業日
-    "1W": 5,  # 1週間（5営業日）
-    "MTD": "mtd",  # 月初来
-    "1M": 21,  # 1ヶ月（21営業日）
-    "3M": 63,  # 3ヶ月
-    "6M": 126,  # 6ヶ月
-    "YTD": "ytd",  # 年初来
-    "1Y": 252,  # 1年
-    "3Y": 756,  # 3年
-    "5Y": 1260,  # 5年
-}
-
-TICKERS_GLOBAL_INDICES: list[str] = [
-    "^N225",  # 日経225
-    "^TOPX",  # TOPIX（yfinanceでの可用性要確認）
-    "^STOXX50E",  # Euro STOXX 50
-    "^FTSE",  # FTSE 100
-    "^GDAXI",  # DAX
-    "000001.SS",  # 上海総合
-    "^HSI",  # ハンセン指数
-]
-
-TICKERS_US_INDICES: list[str] = [
-    "^GSPC",  # S&P 500
-    "^DJI",  # Dow Jones Industrial Average
-    "^IXIC",  # NASDAQ Composite
-    "^RUT",  # Russell 2000
-]
-
-TICKERS_MAG7: list[str] = [
-    "AAPL",  # Apple
-    "MSFT",  # Microsoft
-    "GOOGL",  # Alphabet (Google)
-    "AMZN",  # Amazon
-    "NVDA",  # NVIDIA
-    "META",  # Meta (Facebook)
-    "TSLA",  # Tesla
-]
-
-TICKERS_SECTORS: list[str] = [
-    "XLF",  # Financial Select Sector SPDR
-    "XLK",  # Technology Select Sector SPDR
-    "XLV",  # Health Care Select Sector SPDR
-    "XLE",  # Energy Select Sector SPDR
-    "XLI",  # Industrial Select Sector SPDR
-    "XLY",  # Consumer Discretionary Select Sector SPDR
-    "XLP",  # Consumer Staples Select Sector SPDR
-    "XLB",  # Materials Select Sector SPDR
-    "XLU",  # Utilities Select Sector SPDR
-    "XLRE",  # Real Estate Select Sector SPDR
-    "XLC",  # Communication Services Select Sector SPDR
-]
+RETURN_PERIODS: dict[str, int | str] = get_return_periods()
+TICKERS_GLOBAL_INDICES: list[str] = get_symbols("indices", "global")
+TICKERS_US_INDICES: list[str] = get_symbols("indices", "us")
+TICKERS_MAG7: list[str] = get_symbols("mag7")
+TICKERS_SECTORS: list[str] = get_symbols("sectors")
 
 
 # =============================================================================
