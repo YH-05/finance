@@ -64,6 +64,28 @@ mag7:
   - symbol: "TSLA"
     name: "Tesla"
 
+commodities:
+  - symbol: "GC=F"
+    name: "Gold Futures"
+  - symbol: "SI=F"
+    name: "Silver Futures"
+  - symbol: "CL=F"
+    name: "WTI Crude Oil Futures"
+  - symbol: "BZ=F"
+    name: "Brent Crude Oil Futures"
+  - symbol: "NG=F"
+    name: "Natural Gas Futures"
+  - symbol: "HG=F"
+    name: "Copper Futures"
+  - symbol: "PL=F"
+    name: "Platinum Futures"
+  - symbol: "ZC=F"
+    name: "Corn Futures"
+  - symbol: "ZW=F"
+    name: "Wheat Futures"
+  - symbol: "ZS=F"
+    name: "Soybean Futures"
+
 sectors:
   - symbol: "XLF"
     name: "Financial Select Sector SPDR"

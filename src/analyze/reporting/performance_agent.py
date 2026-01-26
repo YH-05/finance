@@ -403,6 +403,16 @@ class PerformanceAnalyzer4Agent:
         """
         return self.get_group_performance("sectors")
 
+    def get_commodity_performance(self) -> PerformanceResult:
+        """コモディティのパフォーマンスを取得する.
+
+        Returns
+        -------
+        PerformanceResult
+            構造化されたパフォーマンス結果
+        """
+        return self.get_group_performance("commodities")
+
 
 def main() -> None:
     """エントリーポイント."""
@@ -423,6 +433,11 @@ def main() -> None:
     print("\n=== US Index Performance (JSON) ===")
     index_result = analyzer.get_index_performance()
     print(json.dumps(index_result.to_dict(), indent=2, ensure_ascii=False))
+
+    # コモディティのパフォーマンスを取得
+    print("\n=== Commodity Performance (JSON) ===")
+    commodity_result = analyzer.get_commodity_performance()
+    print(json.dumps(commodity_result.to_dict(), indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

@@ -51,8 +51,8 @@ DEFAULT_RETRY_CONFIG = RetryConfig(
 )
 
 # Valid yfinance symbol pattern
-# Supports: AAPL, BRK.B, BRK-B, ^GSPC (indices), USDJPY=X (forex)
-YFINANCE_SYMBOL_PATTERN = re.compile(r"^[\^]?[A-Z0-9.\-]+(=X)?$", re.IGNORECASE)
+# Supports: AAPL, BRK.B, BRK-B, ^GSPC (indices), USDJPY=X (forex), GC=F (futures)
+YFINANCE_SYMBOL_PATTERN = re.compile(r"^[\^]?[A-Z0-9.\-]+(=[XF])?$", re.IGNORECASE)
 
 # Standard OHLCV column names
 STANDARD_COLUMNS = ["open", "high", "low", "close", "volume"]
@@ -190,6 +190,8 @@ class YFinanceFetcher:
         >>> fetcher.validate_symbol("^GSPC")
         True
         >>> fetcher.validate_symbol("USDJPY=X")
+        True
+        >>> fetcher.validate_symbol("GC=F")
         True
         >>> fetcher.validate_symbol("")
         False

@@ -490,6 +490,20 @@ class PerformanceAnalyzer:
         """
         return self.get_group_performance("sectors")
 
+    def get_commodity_performance(self) -> DataFrame:
+        """コモディティのパフォーマンス（騰落率）を計算する.
+
+        Returns
+        -------
+        DataFrame
+            騰落率データ（symbol, period, return_pct カラムを持つ）
+
+        Note
+        ----
+        get_group_performance("commodities") のエイリアス
+        """
+        return self.get_group_performance("commodities")
+
     def get_index_close(self) -> DataFrame:
         """米国指数の終値データを取得する.
 
@@ -546,6 +560,20 @@ class PerformanceAnalyzer:
         """
         return self.get_group_close("sectors")
 
+    def get_commodity_close(self) -> DataFrame:
+        """コモディティの終値データを取得する.
+
+        Returns
+        -------
+        DataFrame
+            終値データ（Date, symbol, variable, value カラムを持つ）
+
+        Note
+        ----
+        get_group_close("commodities") のエイリアス
+        """
+        return self.get_group_close("commodities")
+
 
 def main():
     """パフォーマンス分析のエントリーポイント."""
@@ -587,6 +615,14 @@ def main():
         index="symbol", columns="period", values="return_pct"
     ).sort_values("1D", ascending=False)
     print(pivot_sector.reindex(columns=period_order))
+
+    # コモディティの騰落率
+    commodity_returns = analyzer.get_commodity_performance()
+    print("\n=== Commodity Performance ===")
+    pivot_commodity = commodity_returns.pivot(
+        index="symbol", columns="period", values="return_pct"
+    ).sort_values("1D", ascending=False)
+    print(pivot_commodity.reindex(columns=period_order))
 
 
 if __name__ == "__main__":
