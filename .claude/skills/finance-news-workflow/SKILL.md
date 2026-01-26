@@ -28,11 +28,14 @@ Phase 1: 初期化
 
 Phase 2: データ準備（オーケストレーター）
 └── finance-news-orchestrator エージェント起動
-    ├── RSS記事取得
-    ├── 既存Issue取得
+    ├── 既存Issue取得（gh issue list --limit 500）
+    ├── ★ 既存Issue本文から記事URL抽出・キャッシュ
     └── 一時ファイル保存（.tmp/news-collection-{timestamp}.json）
 
 Phase 3: テーマ別収集（並列）
+├── ★ 一時ファイルから既存Issueを読み込み（独自取得しない）
+├── 各エージェントが担当フィードからRSS取得
+├── ★ 記事URLで重複チェック（article_urlフィールド使用）
 ├── finance-news-index      [Status=Index]
 ├── finance-news-stock      [Status=Stock]
 ├── finance-news-sector     [Status=Sector]
@@ -41,8 +44,14 @@ Phase 3: テーマ別収集（並列）
 └── finance-news-finance    [Status=Finance]
 
 Phase 4: 結果報告
-└── テーマ別投稿数サマリー表示
+└── テーマ別投稿数・重複スキップ数サマリー表示
 ```
+
+## 重複チェックの仕組み
+
+1. **オーケストレーター**: 既存Issue本文から記事URLを抽出し、`article_url`フィールドとしてキャッシュ
+2. **テーマ別エージェント**: 一時ファイルから`existing_issues`を読み込み、`article_url`で比較
+3. **URL正規化**: トラッキングパラメータ（utm_*等）を除去して比較精度を向上
 
 ## パラメータ一覧
 

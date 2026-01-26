@@ -14,6 +14,10 @@ GitHub Project の Todo 状態の Issue を分析し、worktree による並列�
 - 依存関係を考慮した並列開発計画の可視化
 - worktree 内での連続開発グループの提案
 
+**出力形式**:
+- REPL出力: アスキーアート・テーブル形式（mermaid禁止）
+- ファイル出力: mermaid使用可
+
 ## コマンド構文
 
 ```bash

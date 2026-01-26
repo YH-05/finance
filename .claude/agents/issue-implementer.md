@@ -39,7 +39,19 @@ skill: "issue-implementation"
 
 ```yaml
 issue_number: GitHub Issue 番号（必須）
+skip_pr: PR作成をスキップするか（複数Issue連続実装時に true）
 ```
+
+## 複数Issue連続実装時の動作
+
+複数Issue連続実装時は、親エージェントから `skip_pr: true` で呼び出されます。
+
+**通常モード（単一Issue）**:
+- 実装完了後にPR作成まで実行
+
+**連続実装モード（skip_pr: true）**:
+- 実装完了後にコミットのみ作成（PR作成はスキップ）
+- 親エージェントが全Issue完了後にまとめてPR作成
 
 ## 対応する開発タイプ
 

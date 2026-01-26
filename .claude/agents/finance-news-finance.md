@@ -126,17 +126,33 @@ MCPSearch(query="select:mcp__rss__fetch_feed")
 MCPSearch(query="select:mcp__rss__get_items")
 ```
 
-#### ステップ1.2: 既存Issue取得（日数ベース）
+#### ステップ1.2: 既存Issue取得（一時ファイルから読み込み）
 
-```bash
-# SINCE_DATE = 現在日時 - days_back（YYYY-MM-DD形式）
-gh issue list \
-    --repo YH-05/finance \
-    --label "news" \
-    --state all \
-    --search "created:>=${SINCE_DATE}" \
-    --json number,title,url,body,createdAt
+> **🚨 重要: 独自に`gh issue list`を実行しないこと 🚨**
+>
+> オーケストレーターが既に取得・URL抽出済みのデータを使用する。
+> これにより、**並列実行時の重複チェック漏れ**を防止できる。
+
+```python
+import json
+
+def load_session_data(session_file: str) -> dict:
+    """一時ファイルからセッションデータを読み込む"""
+    with open(session_file) as f:
+        return json.load(f)
+
+
+# 使用例
+session_file = ".tmp/news-collection-{timestamp}.json"  # プロンプトから取得
+session_data = load_session_data(session_file)
+
+# 既存Issueを取得（article_url フィールドが既に抽出済み）
+existing_issues = session_data.get("existing_issues", [])
+ログ出力: f"既存Issue取得: {len(existing_issues)}件（一時ファイルから）"
 ```
+
+**重要**: `existing_issues` には `article_url` フィールドが含まれている。
+これはオーケストレーターがIssue本文から抽出した**記事URL**である。
 
 ### Phase 2: RSS取得（直接実行）
 

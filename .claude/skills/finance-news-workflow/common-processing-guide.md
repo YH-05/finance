@@ -176,13 +176,128 @@ def load_mcp_tools() -> bool:
 
 ### ステップ1.2: 既存Issue取得（重複チェック用）
 
+**重要**: 一時ファイル（`.tmp/news-collection-{timestamp}.json`）から既存Issueを読み込むこと。
+オーケストレーターが既に取得済みのデータを使用し、**独自に`gh issue list`を実行しない**。
+
+```python
+def load_existing_issues_from_session(session_file: str) -> list[dict]:
+    """一時ファイルから既存Issueを読み込む
+
+    Parameters
+    ----------
+    session_file : str
+        オーケストレーターが作成した一時ファイルのパス
+
+    Returns
+    -------
+    list[dict]
+        既存Issueのリスト（number, title, article_url, createdAt）
+    """
+    with open(session_file) as f:
+        session_data = json.load(f)
+
+    return session_data.get("existing_issues", [])
+```
+
+#### URLの抽出とキャッシュ
+
+オーケストレーターは既存Issueを取得する際、**各Issue本文から記事URLを抽出してキャッシュ**します。
+
 ```bash
 gh issue list \
     --repo YH-05/finance \
     --label "news" \
     --state all \
-    --limit 100 \
+    --limit 500 \
     --json number,title,body,createdAt
+```
+
+**URL抽出ロジック（オーケストレーターで実行）**:
+
+```python
+import re
+
+def extract_article_url_from_body(body: str) -> str | None:
+    """Issue本文から情報源URLを抽出する
+
+    Parameters
+    ----------
+    body : str
+        Issue本文（Markdown）
+
+    Returns
+    -------
+    str | None
+        抽出した記事URL、または None
+
+    Notes
+    -----
+    Issue本文の「情報源URL【必須】」セクションからURLを抽出する。
+    フォーマット:
+        ### 情報源URL【必須】
+        > ⚠️ このフィールドは必須です...
+        https://example.com/article
+
+    URL抽出ルール:
+    1. 「情報源URL」セクション以降を対象
+    2. https:// または http:// で始まるURLをキャプチャ
+    3. 空白・改行で終了
+    """
+
+    if not body:
+        return None
+
+    # 情報源URLセクション以降を抽出
+    url_section_match = re.search(
+        r'###\s*情報源URL.*?\n(.*?)(?=\n###|\Z)',
+        body,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if url_section_match:
+        section_text = url_section_match.group(1)
+        # URLを抽出（https:// または http:// で始まる）
+        url_match = re.search(
+            r'(https?://[^\s<>\[\]"\'\)]+)',
+            section_text
+        )
+        if url_match:
+            return url_match.group(1).rstrip('.,;:')
+
+    # フォールバック: 本文全体からURLを検索
+    url_match = re.search(
+        r'(https?://[^\s<>\[\]"\'\)]+)',
+        body
+    )
+    if url_match:
+        return url_match.group(1).rstrip('.,;:')
+
+    return None
+
+
+def prepare_existing_issues_with_urls(raw_issues: list[dict]) -> list[dict]:
+    """既存IssueからURLを抽出してキャッシュする
+
+    Parameters
+    ----------
+    raw_issues : list[dict]
+        gh issue list で取得した生のIssueリスト
+
+    Returns
+    -------
+    list[dict]
+        article_url を追加したIssueリスト
+    """
+    result = []
+    for issue in raw_issues:
+        article_url = extract_article_url_from_body(issue.get("body", ""))
+        result.append({
+            "number": issue["number"],
+            "title": issue["title"],
+            "article_url": article_url,  # 🚨 記事URL（Issueの url ではない）
+            "createdAt": issue.get("createdAt"),
+        })
+    return result
 ```
 
 ### ステップ1.3: 統計カウンタ初期化
@@ -484,7 +599,61 @@ stats["date_filtered"] = date_skipped
 
 ### ステップ3.3: 重複チェック
 
+> **🚨 重要: 重複チェックは最初に実行すること 🚨**
+>
+> テーママッチング後ではなく、**RSS取得直後（公開日時フィルタ後）**に重複チェックを行うこと。
+> これにより、異なるフィードから取得された同一記事を早期に除外できる。
+
 ```python
+def normalize_url(url: str) -> str:
+    """URLを正規化して比較しやすくする
+
+    Parameters
+    ----------
+    url : str
+        正規化対象のURL
+
+    Returns
+    -------
+    str
+        正規化されたURL
+
+    Notes
+    -----
+    - 末尾のスラッシュを除去
+    - トラッキングパラメータ（utm_* など）を除去
+    - 小文字化
+    """
+    if not url:
+        return ""
+
+    import urllib.parse
+
+    # 末尾スラッシュを除去
+    url = url.rstrip('/')
+
+    # URLをパース
+    parsed = urllib.parse.urlparse(url)
+
+    # クエリパラメータからトラッキング用を除去
+    if parsed.query:
+        params = urllib.parse.parse_qs(parsed.query)
+        # utm_*, guce_*, ncid などを除去
+        filtered_params = {
+            k: v for k, v in params.items()
+            if not k.startswith(('utm_', 'guce_', 'ncid', 'fbclid', 'gclid'))
+        }
+        new_query = urllib.parse.urlencode(filtered_params, doseq=True)
+        parsed = parsed._replace(query=new_query)
+
+    # 再構築（小文字化はホスト部分のみ）
+    normalized = urllib.parse.urlunparse(
+        parsed._replace(netloc=parsed.netloc.lower())
+    )
+
+    return normalized
+
+
 def calculate_title_similarity(title1: str, title2: str) -> float:
     """タイトルの類似度を計算（Jaccard係数）"""
 
@@ -510,9 +679,9 @@ def is_duplicate(
     Parameters
     ----------
     new_item : dict
-        チェック対象の記事
+        チェック対象の記事（linkフィールド必須）
     existing_issues : list[dict]
-        既存のIssueリスト
+        既存のIssueリスト（article_urlフィールドを使用）
     threshold : float
         タイトル類似度の閾値
 
@@ -522,16 +691,28 @@ def is_duplicate(
         (重複判定, 既存Issue番号, 重複理由)
         - 重複の場合: (True, issue_number, "URL一致" or "タイトル類似")
         - 重複なしの場合: (False, None, None)
+
+    Notes
+    -----
+    1. まずURL完全一致をチェック（正規化後）
+    2. 次にタイトル類似度をチェック
+    3. existing_issuesは article_url フィールドを持つこと
+       （オーケストレーターでprepare_existing_issues_with_urls()処理済み）
     """
 
     new_link = new_item.get('link', '')
     new_title = new_item.get('title', '')
+    new_link_normalized = normalize_url(new_link)
 
     for issue in existing_issues:
-        # URL完全一致
-        body = issue.get('body', '')
-        if new_link and new_link in body:
-            return True, issue.get('number'), "URL一致"
+        # ★ article_url フィールドを使用（bodyからではなく抽出済み）
+        existing_url = issue.get('article_url', '')
+        existing_url_normalized = normalize_url(existing_url)
+
+        # URL完全一致（正規化後）
+        if new_link_normalized and existing_url_normalized:
+            if new_link_normalized == existing_url_normalized:
+                return True, issue.get('number'), "URL一致"
 
         # タイトル類似度チェック
         issue_title = issue.get('title', '')

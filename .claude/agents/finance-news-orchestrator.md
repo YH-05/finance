@@ -84,11 +84,81 @@ gh issue list \
     --repo YH-05/finance \
     --label "news" \
     --state all \
+    --limit 500 \
     --search "created:>=${SINCE_DATE}" \
-    --json number,title,url,body,createdAt
+    --json number,title,body,createdAt
 ```
 
 **重要**: `--limit` ではなく `--search "created:>="` で日付ベースのフィルタリングを行います。
+
+#### ステップ 2.3: 記事URLの抽出とキャッシュ【必須】
+
+**🚨 重複チェックの精度向上のため、各Issue本文から記事URLを抽出してキャッシュします 🚨**
+
+```python
+import re
+import json
+
+def extract_article_url_from_body(body: str) -> str | None:
+    """Issue本文から情報源URLを抽出する
+
+    Notes
+    -----
+    Issue本文の「情報源URL【必須】」セクションからURLを抽出する。
+    """
+    if not body:
+        return None
+
+    # 情報源URLセクション以降を抽出
+    url_section_match = re.search(
+        r'###\s*情報源URL.*?\n(.*?)(?=\n###|\Z)',
+        body,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if url_section_match:
+        section_text = url_section_match.group(1)
+        url_match = re.search(r'(https?://[^\s<>\[\]"\'\)]+)', section_text)
+        if url_match:
+            return url_match.group(1).rstrip('.,;:')
+
+    # フォールバック: 本文全体からURLを検索
+    url_match = re.search(r'(https?://[^\s<>\[\]"\'\)]+)', body)
+    if url_match:
+        return url_match.group(1).rstrip('.,;:')
+
+    return None
+
+
+def prepare_existing_issues_with_urls(raw_issues: list[dict]) -> list[dict]:
+    """既存IssueからURLを抽出してキャッシュする"""
+    result = []
+    for issue in raw_issues:
+        article_url = extract_article_url_from_body(issue.get("body", ""))
+        result.append({
+            "number": issue["number"],
+            "title": issue["title"],
+            "article_url": article_url,  # 🚨 記事URL（Issue自体のurlではない）
+            "createdAt": issue.get("createdAt"),
+        })
+    return result
+
+
+# 使用例
+raw_issues = json.loads(subprocess.check_output([
+    "gh", "issue", "list",
+    "--repo", "YH-05/finance",
+    "--label", "news",
+    "--state", "all",
+    "--limit", "500",
+    "--search", f"created:>={since_date}",
+    "--json", "number,title,body,createdAt"
+]))
+
+# ★ URLを抽出してキャッシュ
+existing_issues = prepare_existing_issues_with_urls(raw_issues)
+ログ出力: f"既存Issue取得完了: {len(existing_issues)}件（URL抽出済み）"
+```
 
 ### Phase 3: データ保存
 
@@ -107,7 +177,14 @@ gh issue list \
         "project_owner": "YH-05",
         "days_back": 7
     },
-    "existing_issues": [...],
+    "existing_issues": [
+        {
+            "number": 1011,
+            "title": "[株価指数] グローバル分散投資に役立つETFの比較",
+            "article_url": "https://www.nasdaq.com/articles/...",
+            "createdAt": "2026-01-25T09:20:00Z"
+        }
+    ],
     "themes": ["index", "stock", "sector", "macro", "ai"],
     "feed_assignments": {
         "index": ["b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c04", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c05"],
