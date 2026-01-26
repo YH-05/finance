@@ -7,6 +7,7 @@ This package provides analysis tools for financial data including:
 - Earnings analysis (earnings calendar, estimates)
 - Returns calculation (multi-period returns, MTD, YTD)
 - Visualization (charts, heatmaps, price charts)
+- Market integration (fetch data from market package and analyze)
 - Fundamental analysis (planned)
 - Quantitative analysis (planned)
 
@@ -24,10 +25,17 @@ returns
     Multi-period returns calculation (1D, 1W, MTD, 1M, 3M, YTD, etc.)
 visualization
     Financial chart creation module (ChartBuilder, HeatmapChart, CandlestickChart, etc.)
+integration
+    Market data integration module (fetch from market package and analyze)
 """
 
 from analyze import sector
 from analyze.earnings import EarningsCalendar, EarningsData, get_upcoming_earnings
+from analyze.integration import (
+    MarketDataAnalyzer,
+    analyze_market_data,
+    fetch_and_analyze,
+)
 from analyze.returns import (
     RETURN_PERIODS,
     TICKERS_GLOBAL_INDICES,
@@ -72,12 +80,15 @@ __all__ = [
     "EarningsData",
     "MACDParams",
     "MACDResult",
+    "MarketDataAnalyzer",
     "RSIParams",
     "ReturnParams",
     "SMAParams",
     "VolatilityParams",
+    "analyze_market_data",
     "calculate_multi_period_returns",
     "calculate_return",
+    "fetch_and_analyze",
     "fetch_topix_data",
     "generate_returns_report",
     "get_upcoming_earnings",

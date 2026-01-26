@@ -20,6 +20,13 @@ Providers:
     - YFinanceProvider: Yahoo Finance data provider
     - Cache: Caching utility for providers
 
+Integration:
+    - MarketDataProvider: Adapter for market package's YFinanceFetcher
+    - EnhancedFactorAnalyzer: Factor analyzer with analyze package capabilities
+    - create_market_provider: Factory function for MarketDataProvider
+    - create_enhanced_analyzer: Factory function for EnhancedFactorAnalyzer
+    - calculate_factor_with_indicators: Calculate factor with technical indicators
+
 Validation:
     - ICAnalyzer: IC/IR analysis for factor evaluation
     - QuantileAnalyzer: Quantile-based factor analysis
@@ -68,6 +75,15 @@ from .factors.size import SizeFactor
 # Value Factors
 from .factors.value import CompositeValueFactor, ValueFactor
 
+# Integration (market + analyze packages)
+from .integration import (
+    EnhancedFactorAnalyzer,
+    MarketDataProvider,
+    calculate_factor_with_indicators,
+    create_enhanced_analyzer,
+    create_market_provider,
+)
+
 # Providers
 from .providers import Cache, DataProvider, YFinanceProvider
 
@@ -90,6 +106,8 @@ __all__ = [
     # Errors
     "DataFetchError",
     "DataProvider",
+    # Integration
+    "EnhancedFactorAnalyzer",
     # Core
     "Factor",
     # Enums
@@ -106,6 +124,8 @@ __all__ = [
     "ICAnalyzer",
     "ICResult",
     "InsufficientDataError",
+    # Integration (market package)
+    "MarketDataProvider",
     # Price Factors
     "MomentumFactor",
     "NormalizationError",
@@ -130,6 +150,10 @@ __all__ = [
     "VolatilityFactor",
     "YFinanceProvider",
     "YieldCurvePCA",
+    # Integration functions
+    "calculate_factor_with_indicators",
+    "create_enhanced_analyzer",
+    "create_market_provider",
     # Logging
     "get_logger",
     "get_registry",
