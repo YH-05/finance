@@ -109,17 +109,16 @@ select = [
 ]
 ignore = [
     "E501",
+    "F401",  # Allow unused imports (not auto-removed on save)
     "B007",
     "B008",
     "C401",
     "C408",
     "F821",
-    "TCH002",  # Allow runtime imports used for both types and values
+    "TC002",  # Allow runtime imports used for both types and values
     "F841",
     "G004",
     "T201",
-    "ANN101",
-    "ANN102",
     "RUF001",
     "RUF002",
     "RUF003",
@@ -160,7 +159,7 @@ reportIncompatibleVariableOverride = "error"
 reportOverlappingOverload = "error"
 reportUnusedCoroutine = "error"
 reportMatchNotExhaustive = "error"
-reportUnusedImport = "error"
+reportUnusedImport = "none"  # Allow unused imports
 reportDuplicateImport = "error"
 
 # 開発時に役立つ警告レベル
