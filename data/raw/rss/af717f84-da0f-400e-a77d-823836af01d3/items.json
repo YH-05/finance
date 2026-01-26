@@ -3,6 +3,186 @@
   "feed_id": "af717f84-da0f-400e-a77d-823836af01d3",
   "items": [
     {
+      "item_id": "d0b1a56d-944d-4765-927f-53a25ad31646",
+      "title": "Here’s the tech powering ICE’s deportation crackdown",
+      "link": "https://techcrunch.com/2026/01/26/heres-the-tech-powering-ices-deportation-crackdown/",
+      "published": "2026-01-26T21:00:00+00:00",
+      "summary": "From phone spyware and facial recognition to phone unlocking technology and databases and more, this tech powers Trump's deportation machine.",
+      "content": null,
+      "author": "Lorenzo Franceschi-Bicchierai, Zack Whittaker",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "407e872a-e807-4ed0-b46f-0877a684238d",
+      "title": "Social network UpScrolled sees surge in downloads following TikTok’s US takeover",
+      "link": "https://techcrunch.com/2026/01/26/social-network-upscrolled-sees-surge-in-downloads-following-tiktoks-us-takeover/",
+      "published": "2026-01-26T20:11:33+00:00",
+      "summary": "UpScrolled is a social network that pledges to remain impartial to political agendas. It blends familiar features from Instagram and X, letting users share photos, videos, and text posts, discover new content, and send direct messages.",
+      "content": null,
+      "author": "Aisha Malik",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "ebf8d507-f07c-4307-bfa6-9c4d58632b6f",
+      "title": "Rad Power Bikes reaches deal to sell itself for $13.2M",
+      "link": "https://techcrunch.com/2026/01/26/rad-power-bikes-reaches-deal-to-sell-itself-for-13-2-million/",
+      "published": "2026-01-26T19:56:33+00:00",
+      "summary": "A company called Life Electric Vehicle Holdings has emerged as the top bidder for Rad Power's assets. It's not clear what the company plans to do with them, though.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "1115b99d-1556-4389-bd68-761c04d7d5fb",
+      "title": "AI startup CVector raises $5M for its industrial ‘nervous system’",
+      "link": "https://techcrunch.com/2026/01/26/ai-startup-cvector-raises-5m-for-its-industrial-nervous-system/",
+      "published": "2026-01-26T19:10:03+00:00",
+      "summary": "Now, founders Richard Zhang and Tyler Ruggles are tasked with a bigger challenge: showing customers and investors how this AI-powered software layer translates to real savings on an industrial scale.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "64b1e196-9b1f-4bc5-bde8-1801c88c936b",
+      "title": "TikTok alternative Skylight soars to 380K+ users after TikTok US deal finalized",
+      "link": "https://techcrunch.com/2026/01/26/tiktok-alternative-skylight-soars-to-380k-users-after-tiktok-u-s-deal-finalized/",
+      "published": "2026-01-26T18:20:48+00:00",
+      "summary": "Skylight, co-founded by CEO Tori White and CTO Reed Harmeyer, offers a built-in video editor; user profiles; support for likes, commenting, and sharing; and the ability for community curators to create custom feeds for others to follow.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "5d422139-2615-450e-8395-6224bc88bb9a",
+      "title": "Anthropic launches interactive Claude apps, including Slack and other workplace tools",
+      "link": "https://techcrunch.com/2026/01/26/anthropic-launches-interactive-claude-apps-including-slack-and-other-workplace-tools/",
+      "published": "2026-01-26T18:00:00+00:00",
+      "summary": "Claude users will now be able to call up interactive apps inside the chatbot interface, with Cowork integration coming soon.",
+      "content": null,
+      "author": "Russell Brandom",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "195ee17b-f3c3-4a25-8814-c3f5dcec63bf",
+      "title": "Obvious Ventures lands fund five with a 360-degree view of planetary, human, economic health",
+      "link": "https://techcrunch.com/2026/01/26/obvious-ventures-lands-fund-five-with-a-360-degree-view-of-planetary-human-economic-health/",
+      "published": "2026-01-26T18:00:00+00:00",
+      "summary": "The 12-year-old firm raised $360,360,360 for its fifth fund. And there's a reason for that number.",
+      "content": null,
+      "author": "Marina Temkin",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "11a7924b-fa33-41ed-8a32-d4e1a580d4d8",
+      "title": "TikTok attributes recent glitches to a power outage at a US data center",
+      "link": "https://techcrunch.com/2026/01/26/tiktok-attributes-recent-glitches-to-a-power-outage-at-a-u-s-data-center/",
+      "published": "2026-01-26T17:48:50+00:00",
+      "summary": "The timing of these outages lines up with the long-awaited creation of a separate U.S. TikTok entity last week.",
+      "content": null,
+      "author": "Amanda Silberling",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "5e48350c-370c-4af8-b149-f6670bd4222f",
+      "title": "VC firm 2150 raises €210M fund to solve cities’ climate challenges",
+      "link": "https://techcrunch.com/2026/01/26/vc-firm-2150-raises-e210m-fund-to-solve-cities-climate-challenges/",
+      "published": "2026-01-26T17:29:35+00:00",
+      "summary": "Europe-based venture fund 2150 raised the money to invest in climate tech startups that help solve cities' carbon footprint.",
+      "content": null,
+      "author": "Tim De Chant",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "c1ccc527-7ebc-4d2e-9880-176735a58f67",
+      "title": "Saudi satirist hacked with Pegasus spyware wins damages in court battle",
+      "link": "https://techcrunch.com/2026/01/26/saudi-satirist-hacked-with-pegasus-spyware-wins-damages-in-court-battle/",
+      "published": "2026-01-26T17:20:07+00:00",
+      "summary": "The London High Court awarded the London-based satirist and human rights activist Ghanem Al-Masarir more than £3 million, after finding the Saudi government hacked his phone and was likely behind a physical attack targeting him in London.",
+      "content": null,
+      "author": "Zack Whittaker",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "13b6aea6-be1c-45dd-9c35-182f37e074c9",
+      "title": "Tech workers call for CEOs to speak up against ICE after the killing of Alex Pretti",
+      "link": "https://techcrunch.com/2026/01/26/tech-workers-call-for-ceos-to-speak-up-against-ice-after-the-killing-of-alex-pretti/",
+      "published": "2026-01-26T16:26:49+00:00",
+      "summary": "More than 450 tech workers from companies like Google, Meta, OpenAI, Amazon, and Salesforce have signed a letter urging their CEOs to call the White House and demand ICE leave our cities.",
+      "content": null,
+      "author": "Rebecca Bellan",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "77a5cd17-6a05-4a2e-9056-a2c9862f4cb5",
+      "title": "Microsoft announces powerful new chip for AI inference",
+      "link": "https://techcrunch.com/2026/01/26/microsoft-announces-powerful-new-chip-for-ai-inference/",
+      "published": "2026-01-26T16:00:00+00:00",
+      "summary": "Maia comes equipped with over 100 billion transistors, delivering over 10 petaflops in 4-bit precision and approximately 5 petaflops of 8-bit performance — a substantial increase over its predecessor.",
+      "content": null,
+      "author": "Lucas Ropek",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "8d4a1c52-ce6c-466b-9168-60f5d504cac0",
+      "title": "Nvidia invests $2B to help debt-ridden CoreWeave add 5GW of AI compute",
+      "link": "https://techcrunch.com/2026/01/26/nvidia-invests-2b-to-help-debt-ridden-coreweave-add-5gw-of-ai-compute/",
+      "published": "2026-01-26T15:52:55+00:00",
+      "summary": "CoreWeave will also integrate Nvidia's products across its platform, including the new Rubin chip architecture.",
+      "content": null,
+      "author": "Ram Iyer",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "52a9c689-af10-478d-81cb-e39ab1dc8084",
+      "title": "SpaceX eyes mid-March for first test of upgraded Starship rocket",
+      "link": "https://techcrunch.com/2026/01/26/spacex-eyes-mid-march-for-first-test-of-upgraded-starship-rocket/",
+      "published": "2026-01-26T15:16:49+00:00",
+      "summary": "The launch date had been up in the air after the rocket's booster stage suffered an explosion during testing in November.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "82ab4454-719f-4b48-9da4-9a7e262ef0c9",
+      "title": "Only 5 days left: Over half of the first 500 TechCrunch Disrupt 2026 plus-one passes at 50% off are already gone",
+      "link": "https://techcrunch.com/2026/01/26/only-5-days-left-over-half-of-the-first-500-techcrunch-disrupt-2026-plus-one-passes-at-50-off-are-already-gone/",
+      "published": "2026-01-26T15:00:00+00:00",
+      "summary": "Register now to save up to $680 on your TechCrunch Disrupt 2026 pass and get a +1 ticket at 50% off. Offer ends this Friday, January 30.",
+      "content": null,
+      "author": "TechCrunch Events",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "46c616c8-f302-4720-8796-3e1cd5572518",
+      "title": "Apple’s new AirTag is louder and can be found across longer distances",
+      "link": "https://techcrunch.com/2026/01/26/apples-new-airtag-is-louder-and-can-be-found-across-longer-distances/",
+      "published": "2026-01-26T14:46:00+00:00",
+      "summary": "Apple's new AirTag is louder and supports better finding at longer distances.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "1c1ac94a-8f20-4614-99f4-abf6bc46afd4",
+      "title": "Nvidia’s new AI weather models probably saw this storm coming weeks ago",
+      "link": "https://techcrunch.com/2026/01/26/nvidias-new-ai-weather-models-probably-saw-this-storm-coming-weeks-ago/",
+      "published": "2026-01-26T14:00:00+00:00",
+      "summary": "Nvidia announced three new AI weather tools today. Together, they promise to improve the accuracy of weather forecasts while also making them accessible to more users.",
+      "content": null,
+      "author": "Tim De Chant",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
+      "item_id": "d19bfc98-da87-49f1-86e2-3cc830a833b2",
+      "title": "Synthesia hits $4B valuation, lets employees cash out",
+      "link": "https://techcrunch.com/2026/01/26/synthesia-hits-4b-valuation-lets-employees-cash-in/",
+      "published": "2026-01-26T09:00:00+00:00",
+      "summary": "British startup Synthesia, whose AI platform helps companies create interactive training videos, has raised a $200 million Series E round of funding that brings its valuation to $4 billion — up from $2.1 billion just a year ago.",
+      "content": null,
+      "author": "Anna Heim",
+      "fetched_at": "2026-01-26T21:26:58.525055+00:00"
+    },
+    {
       "item_id": "5c827a49-ccab-4c31-a4d2-fbd5cb5f696d",
       "title": "This founder cracked firefighting — now he’s creating an AI gold mine",
       "link": "https://techcrunch.com/2026/01/25/this-founder-cracked-firefighting-now-hes-creating-an-ai-gold-mine/",

@@ -3,6 +3,306 @@
   "feed_id": "2524572e-48e0-48a4-8d00-f07d0ddd56af",
   "items": [
     {
+      "item_id": "00e9c9ce-d5a8-4473-b672-61804fae58c2",
+      "title": "REZ: ETF Following Housing Trends",
+      "link": "https://seekingalpha.com/article/4862715-rez-etf-following-housing-trends?source=feed_all_articles",
+      "published": "2026-01-26T21:13:59+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "e14f1ae6-d472-4d06-b249-a2ce33dc43e0",
+      "title": "Turning Geopolitical Noise Into Opportunity: 3 Buy-The-Dip Stocks",
+      "link": "https://seekingalpha.com/article/4862721-turning-geopolitical-noise-into-opportunity-3-buy-the-dip-stocks?source=feed_all_articles",
+      "published": "2026-01-26T21:01:02+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "3b630378-75ab-485e-8060-ac48b88075be",
+      "title": "Forestar Group: Facing Challenges With The Demand For New Homes",
+      "link": "https://seekingalpha.com/article/4862714-forestar-group-facing-challenges-with-the-demand-for-new-homes?source=feed_all_articles",
+      "published": "2026-01-26T21:00:03+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "2f148ac8-eccf-4429-b54f-decb933ed923",
+      "title": "Global Turmoil: Why Gold, Oil, And Semiconductors Are Back In Focus",
+      "link": "https://seekingalpha.com/article/4862710-global-turmoil-why-gold-oil-and-semiconductors-are-back-in-focus?source=feed_all_articles",
+      "published": "2026-01-26T20:44:15+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "009aaa93-663c-43bc-b638-aa6df3f9a899",
+      "title": "USA Rare Earth, Inc. (USAR) Shareholder/Analyst Call Transcript",
+      "link": "https://seekingalpha.com/article/4862719-usa-rare-earth-inc-usar-shareholder-analyst-call-transcript?source=feed_all_articles",
+      "published": "2026-01-26T20:42:20+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "c5e714d5-4732-4303-ae27-e308b6a42f86",
+      "title": "YETI: Don't Hold This Stock As Core U.S. Market Wanes",
+      "link": "https://seekingalpha.com/article/4862708-yeti-dont-hold-this-stock-as-core-us-market-wanes?source=feed_all_articles",
+      "published": "2026-01-26T20:41:47+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "73e964e6-6ba2-4945-bf6e-79bb07fca7f3",
+      "title": "4 Key Market Signals To Watch",
+      "link": "https://seekingalpha.com/article/4862716-4-key-market-signals-to-watch?source=feed_all_articles",
+      "published": "2026-01-26T20:40:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "4f3914ae-8fa1-4eb8-b836-e96e4f431ef9",
+      "title": "Pan American Silver: Get Ready For A Potential Q4 Earnings Blowout",
+      "link": "https://seekingalpha.com/article/4862706-pan-american-silver-get-ready-for-a-q4-earnings-blowout?source=feed_all_articles",
+      "published": "2026-01-26T20:32:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "eb5ee382-d794-4f4e-9e8a-51649d8af67b",
+      "title": "Durable Goods Orders Up 5.3% In November, Higher Than Expected",
+      "link": "https://seekingalpha.com/article/4862713-durable-goods-orders-up-5-3-percent-november-higher-than-expected?source=feed_all_articles",
+      "published": "2026-01-26T20:30:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "1b0a5c61-ec10-4bc0-b8de-4ce779767e4f",
+      "title": "CoreWeave: Nvidia Stake Isn't An Investment, It's A Bailout",
+      "link": "https://seekingalpha.com/article/4862705-coreweave-nvidia-stake-isnt-an-investment-its-a-bailout?source=feed_all_articles",
+      "published": "2026-01-26T20:24:11+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "fcd313d3-653f-44a1-aa41-dbaf73e9a324",
+      "title": "Caterpillar Q4 Preview: Backlog, Margins, And The AI Power Trade",
+      "link": "https://seekingalpha.com/article/4862704-caterpillar-q4-preview-backlog-margins-and-the-ai-power-trade?source=feed_all_articles",
+      "published": "2026-01-26T20:16:15+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "3da202dd-e501-4d69-931c-aedd4d5e9333",
+      "title": "Shutdown Looms After ICE Storm And The American Government Is Already Low On Trust",
+      "link": "https://seekingalpha.com/article/4862712-shutdown-looms-after-ice-storm-and-the-american-government-is-already-low-on-trust?source=feed_all_articles",
+      "published": "2026-01-26T20:15:31+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "fa543b05-8c97-4992-965c-c0b5053e3f87",
+      "title": "Bank of Hawaii Corporation (BOH) Q4 2025 Earnings Call Transcript",
+      "link": "https://seekingalpha.com/article/4862702-bank-of-hawaii-corporation-boh-q4-2025-earnings-call-transcript?source=feed_all_articles",
+      "published": "2026-01-26T20:12:20+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "68dd8814-971d-4b4f-b1be-1fb1dc49779a",
+      "title": "Gold Up, Dollar Down",
+      "link": "https://seekingalpha.com/article/4862701-gold-up-dollar-down?source=feed_all_articles",
+      "published": "2026-01-26T20:09:34+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "22f72398-daad-484f-948a-b73f5b1c7d32",
+      "title": "My Transition From Ray Dalio's 4-Asset Portfolio To The Barbell Allocation",
+      "link": "https://seekingalpha.com/article/4862700-my-transition-from-ray-dalios-4-asset-portfolio-to-the-barbell-allocation?source=feed_all_articles",
+      "published": "2026-01-26T20:06:25+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "a68a2bd1-d8f8-405e-aa86-b7c227d0431f",
+      "title": "Wall Street Lunch: The Biggest Restaurant Chain Hits The States",
+      "link": "https://seekingalpha.com/article/4862696-wall-street-lunch-the-biggest-restaurant-chain-hits-the-states?source=feed_all_articles",
+      "published": "2026-01-26T20:05:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "94adb003-cb74-4be9-9882-ce37d8eb7560",
+      "title": "Dallas Fed Manufacturing: Business Conditions Stabilize In January",
+      "link": "https://seekingalpha.com/article/4862711-dallas-fed-manufacturing-business-conditions-stabilize-january?source=feed_all_articles",
+      "published": "2026-01-26T20:05:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "49157923-5412-47c4-9d26-df23ed9915bb",
+      "title": "Steel Dynamics, Inc. (STLD) Q4 2025 Earnings Call Transcript",
+      "link": "https://seekingalpha.com/article/4862684-steel-dynamics-inc-stld-q4-2025-earnings-call-transcript?source=feed_all_articles",
+      "published": "2026-01-26T20:02:20+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "902d1d58-089c-4c23-afc7-f81941f9386e",
+      "title": "If I Could Own Only 3 Dividend Growth Stocks For The Long-Term",
+      "link": "https://seekingalpha.com/article/4862698-if-i-could-own-only-3-dividend-growth-stocks-for-the-long-term?source=feed_all_articles",
+      "published": "2026-01-26T19:48:46+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "1727616f-11bc-4b12-9f0e-ba8a14997e7f",
+      "title": "ETG: Solid Performance But Stay Cautious On Valuation",
+      "link": "https://seekingalpha.com/article/4862697-etg-solid-performance-but-stay-cautious-on-valuation?source=feed_all_articles",
+      "published": "2026-01-26T19:45:01+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "688c7292-ed61-49ca-a8ad-cb84702f0542",
+      "title": "MainStreet Bancshares, Inc. (MNSB) Q4 2025 Earnings Call Prepared Remarks Transcript",
+      "link": "https://seekingalpha.com/article/4862709-mainstreet-bancshares-inc-mnsb-q4-2025-earnings-call-prepared-remarks-transcript?source=feed_all_articles",
+      "published": "2026-01-26T19:42:21+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "34dc5511-99ad-4162-91d8-0f5d53724e6b",
+      "title": "Live Nation: Lawsuit Uncertainty And Lofty Valuations Make Me Pass On It",
+      "link": "https://seekingalpha.com/article/4862695-live-nation-lawsuit-uncertainty-and-lofty-valuations-make-me-pass-on-it?source=feed_all_articles",
+      "published": "2026-01-26T19:39:25+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "6a171bfb-c4ec-473f-961b-9e2c7d82dc5c",
+      "title": "Meta Pre-Earnings: Capex Fears Equal Buying Opportunity",
+      "link": "https://seekingalpha.com/article/4862693-meta-pre-earnings-capex-fears-equal-buying-opportunity?source=feed_all_articles",
+      "published": "2026-01-26T19:30:16+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "782590cf-4c36-41f2-ad20-6a5f7cca5b3b",
+      "title": "Weekly Treasury Simulation, January 23, 2026: Most Likely 3-Month Bill Rate Shows Steady Decline",
+      "link": "https://seekingalpha.com/article/4862691-weekly-treasury-simulation-january-23-2026-most-likely-3-month-bill-rate-shows-steady-decline?source=feed_all_articles",
+      "published": "2026-01-26T19:27:33+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "4141c388-06fc-4f2d-b931-84e1f2a3b7a0",
+      "title": "Chevron Q4: Taking Profits While Awaiting A Correction And A Less Uncertain Environment",
+      "link": "https://seekingalpha.com/article/4862690-chevron-q4-taking-profits-while-awaiting-a-correction-and-a-less-uncertain-environment?source=feed_all_articles",
+      "published": "2026-01-26T19:26:38+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "be6e6a0b-04d2-451c-b3b6-73a87fa84f96",
+      "title": "Stocks Rally To Top Of Their Ranges Ahead Of FOMC - Dow Jones And U.S. Stocks Outlook",
+      "link": "https://seekingalpha.com/article/4862703-stocks-rally-fomc-dow-jones-us-stocks-outlook?source=feed_all_articles",
+      "published": "2026-01-26T19:25:00+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "88f73e7b-a4db-482a-81b6-473f83d9af93",
+      "title": "When Everyone Feared The Shutdown, I Saw An Opportunity, And It Could Happen Again",
+      "link": "https://seekingalpha.com/article/4862687-when-everyone-feared-the-shutdown-i-saw-an-opportunity-and-it-could-happen-again?source=feed_all_articles",
+      "published": "2026-01-26T19:20:27+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "a1b5b4b5-7e68-473b-ac46-c520d85da5c9",
+      "title": "Bank of Hawaii: Strong Metric Improvement",
+      "link": "https://seekingalpha.com/article/4862686-bank-of-hawaii-strong-metric-improvement?source=feed_all_articles",
+      "published": "2026-01-26T19:10:16+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "5a9354cc-11c1-4903-aa9a-24afd6b4d606",
+      "title": "Viridian Therapeutics: Cautious Optimism As Key Milestones Approach (Rating Downgrade)",
+      "link": "https://seekingalpha.com/article/4862685-viridian-therapeutics-cautious-optimism-as-key-milestones-approach?source=feed_all_articles",
+      "published": "2026-01-26T19:05:26+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
+      "item_id": "1df08fb6-e80c-4443-ab05-cfe9c7504b32",
+      "title": "Bank of Marin Bancorp (BMRC) Q4 2025 Earnings Call Transcript",
+      "link": "https://seekingalpha.com/article/4862679-bank-of-marin-bancorp-bmrc-q4-2025-earnings-call-transcript?source=feed_all_articles",
+      "published": "2026-01-26T19:02:23+00:00",
+      "summary": null,
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-26T21:24:30.663153+00:00"
+    },
+    {
       "item_id": "f789cf0d-65a1-4e4a-8885-35ff20edd5fa",
       "title": "RingCentral: Willing To Bite At Low Prices As New Products Show Promise",
       "link": "https://seekingalpha.com/article/4862475-ringcentral-willing-to-bite-at-low-prices-as-new-products-show-promise?source=feed_all_articles",
