@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-22
+updated_at: 2026-01-24
 ---
 
 # finance - 金融市場分析・コンテンツ発信支援ライブラリ
@@ -156,7 +156,7 @@ updated_at: 2026-01-22
 | `/finance-research` | 金融記事のリサーチワークフロー（データ収集→分析→検証→可視化） | `deep-research` |
 | `/finance-edit` | 金融記事の編集ワークフロー（初稿作成→批評→修正） | - |
 | `/finance-full` | 記事作成の全工程を一括実行 | - |
-| `/generate-market-report` | 週次マーケットレポートを自動生成 | `generate-market-report` |
+| `/generate-market-report` | 週次マーケットレポートを自動生成（`--weekly` で週次レポート生成モード） | `generate-market-report` |
 
 ### ドキュメント・その他
 
@@ -359,6 +359,7 @@ updated_at: 2026-01-22
 | エージェント | 説明 |
 |--------------|------|
 | `weekly-report-news-aggregator` | GitHub Project からニュースを集約し週次レポート用データを生成 |
+| `weekly-report-writer` | 4つのスキルをロードして週次マーケットレポートを生成 |
 | `weekly-report-publisher` | 週次レポートを GitHub Issue として投稿し Project #15 に追加 |
 | `weekly-comment-indices-fetcher` | 週次コメント用の指数関連ニュースを収集 |
 | `weekly-comment-mag7-fetcher` | 週次コメント用のMAG7関連ニュースを収集 |
