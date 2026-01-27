@@ -31,17 +31,10 @@ permissionMode: bypassPermissions
 
 ## 担当フィード
 
-このエージェントが直接取得するRSSフィードです。
+**設定ソース**: `data/config/finance-news-themes.json` → `themes.finance.feeds`
 
-| フィード名 | feed_id |
-|-----------|---------|
-| CNBC - Finance | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07` |
-| CNBC - Wealth | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16` |
-| CNBC - Top News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01` |
-| Yahoo Finance | `5abc350a-f5e3-46ab-923a-57068cfe298c` |
-| Financial Times | `c23413d1-72f3-4e2b-8ffd-c0da4282f696` |
-| NASDAQ Financial Advisors | `8c5cce88-2d75-462e-89dd-fabcf8e9497e` |
-| NASDAQ Options | `59aa8df4-ede1-4edf-a61a-6e3d6453250e` |
+セッションファイル（`.tmp/news-collection-{timestamp}.json`）の `feed_assignments.finance` から動的に読み込まれます。
+設定変更は `themes.json` のみで完結します（各エージェントの修正不要）。
 
 ## 重要ルール
 
@@ -159,15 +152,9 @@ existing_issues = session_data.get("existing_issues", [])
 #### ステップ2.1: 担当フィードをフェッチ
 
 ```python
-ASSIGNED_FEEDS = [
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "title": "CNBC - Finance"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16", "title": "CNBC - Wealth"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"},
-    {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
-    {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"},
-    {"feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e", "title": "NASDAQ Financial Advisors"},
-    {"feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e", "title": "NASDAQ Options"},
-]
+# セッションファイルからフィード割り当てを読み込み
+# （オーケストレーターが themes.json から抽出済み）
+ASSIGNED_FEEDS = session_data["feed_assignments"]["finance"]
 
 def fetch_assigned_feeds():
     """担当フィードをフェッチして最新記事を取得"""

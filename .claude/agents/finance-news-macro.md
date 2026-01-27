@@ -31,19 +31,10 @@ permissionMode: bypassPermissions
 
 ## 担当フィード
 
-このエージェントが直接取得するRSSフィードです。
+**設定ソース**: `data/config/finance-news-themes.json` → `themes.macro.feeds`
 
-| フィード名 | feed_id |
-|-----------|---------|
-| CNBC - Economy | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06` |
-| CNBC - World News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02` |
-| CNBC - US News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03` |
-| CNBC - Asia News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09` |
-| CNBC - Europe News | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10` |
-| CNBC - Politics | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13` |
-| Trading Economics News | `ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca` |
-| Federal Reserve Press | `a1fd6bfd-d707-424b-b08f-d383c2044d2a` |
-| IMF News | `c4cb2750-0d35-40d4-b478-85887b416923` |
+セッションファイル（`.tmp/news-collection-{timestamp}.json`）の `feed_assignments.macro` から動的に読み込まれます。
+設定変更は `themes.json` のみで完結します（各エージェントの修正不要）。
 
 ## 重要ルール
 
@@ -148,17 +139,10 @@ existing_issues = session_data.get("existing_issues", [])
 #### ステップ2.1: 担当フィードをフェッチ
 
 ```python
-ASSIGNED_FEEDS = [
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06", "title": "CNBC - Economy"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02", "title": "CNBC - World News"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03", "title": "CNBC - US News"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09", "title": "CNBC - Asia News"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10", "title": "CNBC - Europe News"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"},
-    {"feed_id": "ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca", "title": "Trading Economics News"},
-    {"feed_id": "a1fd6bfd-d707-424b-b08f-d383c2044d2a", "title": "Federal Reserve Press"},
-    {"feed_id": "c4cb2750-0d35-40d4-b478-85887b416923", "title": "IMF News"},
-]
+# セッションファイルからフィード割り当てを読み込み
+# （オーケストレーターが themes.json から抽出済み）
+ASSIGNED_FEEDS = session_data["feed_assignments"]["macro"]
+# 形式: [{"feed_id": "...", "title": "CNBC - Economy"}, ...]
 
 def fetch_assigned_feeds():
     """担当フィードをフェッチして最新記事を取得"""

@@ -31,19 +31,10 @@ permissionMode: bypassPermissions
 
 ## 担当フィード
 
-このエージェントが直接取得するRSSフィードです。
+**設定ソース**: `data/config/finance-news-themes.json` → `themes.ai.feeds`
 
-| フィード名 | feed_id |
-|-----------|---------|
-| CNBC - Technology | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08` |
-| TechCrunch | `af717f84-da0f-400e-a77d-823836af01d3` |
-| Ars Technica | `338f1076-a903-422d-913d-e889b1bec581` |
-| The Verge | `69722878-9f3d-4985-b7c2-d263fc9a3fdf` |
-| Hacker News | `4dc65edc-5c17-4ff8-ab38-7dd248f96006` |
-| NASDAQ AI | `8f48e41e-fe9a-4951-806f-13ff29e09423` |
-| NASDAQ FinTech | `ba20211a-4d8f-4310-a023-75be99c09a0b` |
-| NASDAQ Innovation | `224be93d-8efc-4802-84dd-a14c2452c636` |
-| NASDAQ Technology | `7acfdb64-6475-4341-8ea0-30c1c538b80e` |
+セッションファイル（`.tmp/news-collection-{timestamp}.json`）の `feed_assignments.ai` から動的に読み込まれます。
+設定変更は `themes.json` のみで完結します（各エージェントの修正不要）。
 
 ## 重要ルール
 
@@ -148,17 +139,10 @@ existing_issues = session_data.get("existing_issues", [])
 #### ステップ2.1: 担当フィードをフェッチ
 
 ```python
-ASSIGNED_FEEDS = [
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "title": "CNBC - Technology"},
-    {"feed_id": "af717f84-da0f-400e-a77d-823836af01d3", "title": "TechCrunch"},
-    {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
-    {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"},
-    {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News"},
-    {"feed_id": "8f48e41e-fe9a-4951-806f-13ff29e09423", "title": "NASDAQ AI"},
-    {"feed_id": "ba20211a-4d8f-4310-a023-75be99c09a0b", "title": "NASDAQ FinTech"},
-    {"feed_id": "224be93d-8efc-4802-84dd-a14c2452c636", "title": "NASDAQ Innovation"},
-    {"feed_id": "7acfdb64-6475-4341-8ea0-30c1c538b80e", "title": "NASDAQ Technology"},
-]
+# セッションファイルからフィード割り当てを読み込み
+# （オーケストレーターが themes.json から抽出済み）
+ASSIGNED_FEEDS = session_data["feed_assignments"]["ai"]
+# 形式: [{"feed_id": "...", "title": "CNBC - Technology"}, ...]
 
 def fetch_assigned_feeds():
     """担当フィードをフェッチして最新記事を取得"""

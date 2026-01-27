@@ -31,17 +31,12 @@ permissionMode: bypassPermissions
 
 ## 担当フィード
 
-このエージェントが直接取得するRSSフィードです。
+**設定ソース**: `data/config/finance-news-themes.json` → `themes.sector.feeds`
 
-| フィード名 | feed_id |
-|-----------|---------|
-| CNBC - Health Care | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c14` |
-| CNBC - Real Estate | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c15` |
-| CNBC - Autos | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c17` |
-| CNBC - Energy | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18` |
-| CNBC - Media | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c19` |
-| CNBC - Retail | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20` |
-| CNBC - Travel | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21` |
+セッションファイル（`.tmp/news-collection-{timestamp}.json`）の `feed_assignments.sector` から動的に読み込まれます。
+設定変更は `themes.json` のみで完結します（各エージェントの修正不要）。
+
+**注意**: セクター名はフィードタイトルから動的に取得します（例: "CNBC - Health Care" → "ヘルスケア"）。
 
 ## 重要ルール
 
@@ -146,15 +141,25 @@ existing_issues = session_data.get("existing_issues", [])
 #### ステップ2.1: 担当フィードをフェッチ
 
 ```python
-ASSIGNED_FEEDS = [
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c14", "title": "CNBC - Health Care"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c15", "title": "CNBC - Real Estate"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c17", "title": "CNBC - Autos"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18", "title": "CNBC - Energy"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c19", "title": "CNBC - Media"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20", "title": "CNBC - Retail"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21", "title": "CNBC - Travel"},
-]
+# セッションファイルからフィード割り当てを読み込み
+# （オーケストレーターが themes.json から抽出済み）
+ASSIGNED_FEEDS = session_data["feed_assignments"]["sector"]
+# 形式: [{"feed_id": "...", "title": "CNBC - Health Care"}, ...]
+
+# セクター名マッピング（フィードタイトルから日本語セクター名を取得）
+SECTOR_NAME_MAP = {
+    "CNBC - Health Care": "ヘルスケア",
+    "CNBC - Real Estate": "不動産",
+    "CNBC - Autos": "自動車",
+    "CNBC - Energy": "エネルギー",
+    "CNBC - Media": "メディア",
+    "CNBC - Retail": "小売",
+    "CNBC - Travel": "旅行",
+}
+
+def get_sector_name(feed_title: str) -> str:
+    """フィードタイトルから日本語セクター名を取得"""
+    return SECTOR_NAME_MAP.get(feed_title, feed_title.replace("CNBC - ", ""))
 
 def fetch_assigned_feeds():
     """担当フィードをフェッチして最新記事を取得"""
@@ -184,6 +189,7 @@ def get_feed_items():
             )
             for item in result.get("items", []):
                 item["source_feed"] = feed["title"]
+                item["sector_name"] = feed["sector"]  # セクター名を追加
                 items.append(item)
             ログ出力: f"記事取得: {feed['title']} ({len(result.get('items', []))}件)"
         except Exception as e:
@@ -324,7 +330,9 @@ for result in fetch_result["results"]:
 
 **重要**:
 - Issueタイトルは日本語で作成（英語記事の場合は日本語に翻訳）
-- タイトル形式: `[セクター] {japanese_title}`
+- タイトル形式: `[セクター:{sector_name}] {japanese_title}`
+  - 例: `[セクター:エネルギー] 原油価格、OPECの減産で上昇`
+  - `sector_name` は記事のソースフィードから取得（ヘルスケア/不動産/自動車/エネルギー/メディア/小売/旅行）
 - **Issueボディは `.github/ISSUE_TEMPLATE/news-article.md` テンプレートを読み込んで使用**
 - **概要（summary）は400字以上の詳細な日本語要約を使用**
 
@@ -360,9 +368,10 @@ body="${body//\{\{notes\}\}/- テーマ: Sector（セクター分析）
 - AI判定理由: $判定理由}"
 
 # Step 4: Issue作成（closed状態で作成）
+# $sector_name = item["sector_name"]（フィードから取得したセクター名）
 issue_url=$(gh issue create \
     --repo YH-05/finance \
-    --title "[セクター] {japanese_title}" \
+    --title "[セクター:${sector_name}] {japanese_title}" \
     --body "$body" \
     --label "news")
 
@@ -630,11 +639,11 @@ except Exception as e:
 
 ### 投稿されたニュース
 
-| Issue # | タイトル | 公開日 |
-|---------|----------|--------|
-| #203 | 三菱UFJ、デジタル決済強化へ | 2026-01-22 |
-| #204 | 半導体業界、AI需要で活況 | 2026-01-22 |
-| #205 | トヨタ、EV戦略を加速 | 2026-01-22 |
+| Issue # | セクター | タイトル | 公開日 |
+|---------|----------|----------|--------|
+| #203 | 小売 | 三菱UFJ、デジタル決済強化へ | 2026-01-22 |
+| #204 | ヘルスケア | 医療AI、FDA承認取得 | 2026-01-22 |
+| #205 | 自動車 | トヨタ、EV戦略を加速 | 2026-01-22 |
 
 ### 重複でスキップされた記事（5件）
 

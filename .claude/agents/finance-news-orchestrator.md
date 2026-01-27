@@ -162,6 +162,48 @@ existing_issues = prepare_existing_issues_with_urls(raw_issues)
 
 ### Phase 3: データ保存
 
+#### ステップ 3.0: フィード割り当ての読み込み【新規】
+
+**themes.json から完全なフィードオブジェクトを抽出してセッションに保存します。**
+
+```python
+import json
+
+def load_feed_assignments(config_path: str = "data/config/finance-news-themes.json") -> dict:
+    """themes.json から各テーマのフィード割り当てを読み込む
+
+    Returns
+    -------
+    dict
+        テーマキー → [{feed_id, title}, ...] のマッピング
+    """
+    with open(config_path) as f:
+        config = json.load(f)
+
+    feed_assignments = {}
+    for theme_key, theme_data in config["themes"].items():
+        # 完全なフィードオブジェクト（feed_id, title）を保持
+        feed_assignments[theme_key] = theme_data["feeds"]
+
+    return feed_assignments
+
+
+# 使用例
+feed_assignments = load_feed_assignments()
+# 結果例:
+# {
+#     "index": [
+#         {"feed_id": "b1a2c3d4-...", "title": "CNBC - Markets"},
+#         {"feed_id": "b1a2c3d4-...", "title": "CNBC - Investing"},
+#         ...
+#     ],
+#     ...
+# }
+```
+
+**重要**: `feed_assignments` には `title` 情報を含めること。
+サブエージェントがセッションから読み込む際に、フィード名を特定するために必要。
+
 #### ステップ 3.1: 一時ファイル作成
 
 **ファイルパス**: `.tmp/news-collection-{timestamp}.json`
@@ -185,13 +227,62 @@ existing_issues = prepare_existing_issues_with_urls(raw_issues)
             "createdAt": "2026-01-25T09:20:00Z"
         }
     ],
-    "themes": ["index", "stock", "sector", "macro", "ai"],
+    "themes": ["index", "stock", "sector", "macro", "ai", "finance"],
     "feed_assignments": {
-        "index": ["b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c04", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c05"],
-        "stock": ["b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c12", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c11"],
-        "ai": ["b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "af717f84-da0f-400e-a77d-823836af01d3", "338f1076-a903-422d-913d-e889b1bec581", "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "4dc65edc-5c17-4ff8-ab38-7dd248f96006"],
-        "sector": ["b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c14", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c15", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c17", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c19", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20"],
-        "macro": ["b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09", "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10", "a1fd6bfd-d6e7-4c8a-9b0c-1d2e3f4a5b6c", "c4cb2750-e8f9-4a0b-b1c2-d3e4f5a6b7c8"]
+        "index": [
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c04", "title": "CNBC - Markets"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c05", "title": "CNBC - Investing"},
+            {"feed_id": "40fea0da-0199-4b26-b56e-e2c8e0e4c6cc", "title": "MarketWatch Top Stories"},
+            {"feed_id": "50080b59-d28e-41c3-bd22-ad76bbe4a0c7", "title": "NASDAQ Markets"},
+            {"feed_id": "ee4ee564-bcc3-43a1-996e-e9e26a07f43e", "title": "NASDAQ ETFs"}
+        ],
+        "stock": [
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c12", "title": "CNBC - Earnings"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c11", "title": "CNBC - Business"},
+            {"feed_id": "2524572e-48e0-48a4-8d00-f07d0ddd56af", "title": "Seeking Alpha"},
+            {"feed_id": "75c8c7fe-5811-4e66-866b-d643ae3a132d", "title": "NASDAQ Stocks"},
+            {"feed_id": "e353f91c-621e-4bd9-9f8e-acf98ee7d310", "title": "NASDAQ Original"}
+        ],
+        "sector": [
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c14", "title": "CNBC - Health Care"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c15", "title": "CNBC - Real Estate"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c17", "title": "CNBC - Autos"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c18", "title": "CNBC - Energy"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c19", "title": "CNBC - Media"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20", "title": "CNBC - Retail"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21", "title": "CNBC - Travel"}
+        ],
+        "macro": [
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06", "title": "CNBC - Economy"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02", "title": "CNBC - World News"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03", "title": "CNBC - US News"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09", "title": "CNBC - Asia News"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10", "title": "CNBC - Europe News"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"},
+            {"feed_id": "ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca", "title": "Trading Economics News"},
+            {"feed_id": "a1fd6bfd-d707-424b-b08f-d383c2044d2a", "title": "Federal Reserve Press"},
+            {"feed_id": "c4cb2750-0d35-40d4-b478-85887b416923", "title": "IMF News"}
+        ],
+        "ai": [
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "title": "CNBC - Technology"},
+            {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News (100+ points)"},
+            {"feed_id": "af717f84-da0f-400e-a77d-823836af01d3", "title": "TechCrunch"},
+            {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
+            {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"},
+            {"feed_id": "8f48e41e-fe9a-4951-806f-13ff29e09423", "title": "NASDAQ AI"},
+            {"feed_id": "ba20211a-4d8f-4310-a023-75be99c09a0b", "title": "NASDAQ FinTech"},
+            {"feed_id": "224be93d-8efc-4802-84dd-a14c2452c636", "title": "NASDAQ Innovation"},
+            {"feed_id": "7acfdb64-6475-4341-8ea0-30c1c538b80e", "title": "NASDAQ Technology"}
+        ],
+        "finance": [
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "title": "CNBC - Finance"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16", "title": "CNBC - Wealth"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"},
+            {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
+            {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"},
+            {"feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e", "title": "NASDAQ Financial Advisors"},
+            {"feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e", "title": "NASDAQ Options"}
+        ]
     },
     "statistics": {
         "total_existing_issues": 22

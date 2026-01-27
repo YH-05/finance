@@ -31,15 +31,10 @@ permissionMode: bypassPermissions
 
 ## 担当フィード
 
-このエージェントが直接取得するRSSフィードです。
+**設定ソース**: `data/config/finance-news-themes.json` → `themes.stock.feeds`
 
-| フィード名 | feed_id |
-|-----------|---------|
-| CNBC - Earnings | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c12` |
-| CNBC - Business | `b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c11` |
-| Seeking Alpha | `2524572e-48e0-48a4-8d00-f07d0ddd56af` |
-| NASDAQ Stocks | `75c8c7fe-5811-4e66-866b-d643ae3a132d` |
-| NASDAQ Original | `e353f91c-621e-4bd9-9f8e-acf98ee7d310` |
+セッションファイル（`.tmp/news-collection-{timestamp}.json`）の `feed_assignments.stock` から動的に読み込まれます。
+設定変更は `themes.json` のみで完結します（各エージェントの修正不要）。
 
 ## 重要ルール
 
@@ -144,13 +139,10 @@ existing_issues = session_data.get("existing_issues", [])
 #### ステップ2.1: 担当フィードをフェッチ
 
 ```python
-ASSIGNED_FEEDS = [
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c12", "title": "CNBC - Earnings"},
-    {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c11", "title": "CNBC - Business"},
-    {"feed_id": "2524572e-48e0-48a4-8d00-f07d0ddd56af", "title": "Seeking Alpha"},
-    {"feed_id": "75c8c7fe-5811-4e66-866b-d643ae3a132d", "title": "NASDAQ Stocks"},
-    {"feed_id": "e353f91c-621e-4bd9-9f8e-acf98ee7d310", "title": "NASDAQ Original"},
-]
+# セッションファイルからフィード割り当てを読み込み
+# （オーケストレーターが themes.json から抽出済み）
+ASSIGNED_FEEDS = session_data["feed_assignments"]["stock"]
+# 形式: [{"feed_id": "...", "title": "CNBC - Earnings"}, ...]
 
 def fetch_assigned_feeds():
     """担当フィードをフェッチして最新記事を取得"""
