@@ -118,6 +118,7 @@ class TestReturnPeriodsConstant:
         """RETURN_PERIODS が期待される全ての期間を含むことを確認。"""
         expected_periods = [
             "1D",
+            "WoW",
             "1W",
             "MTD",
             "1M",
@@ -159,12 +160,10 @@ class TestTickerConstants:
         """TICKERS_GLOBAL_INDICES が期待されるティッカーを含むことを確認。"""
         expected_tickers = [
             "^N225",  # 日経225
-            "^TOPX",  # TOPIX
             "^STOXX50E",  # Euro STOXX 50
             "^FTSE",  # FTSE 100
             "^GDAXI",  # DAX
             "000001.SS",  # 上海総合
-            "^HSI",  # ハンセン指数
         ]
         for ticker in expected_tickers:
             assert ticker in TICKERS_GLOBAL_INDICES

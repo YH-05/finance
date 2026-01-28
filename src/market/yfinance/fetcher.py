@@ -108,7 +108,7 @@ class YFinanceFetcher:
         self._impersonate: BrowserTypeLiteral = (
             impersonate
             if impersonate is not None
-            else random.choice(BROWSER_IMPERSONATE_TARGETS)
+            else random.choice(BROWSER_IMPERSONATE_TARGETS)  # nosec B311
         )
         self._session: curl_requests.Session | None = None
 
@@ -163,7 +163,7 @@ class YFinanceFetcher:
             self._session.close()
             self._session = None
 
-        new_target: BrowserTypeLiteral = random.choice(BROWSER_IMPERSONATE_TARGETS)
+        new_target: BrowserTypeLiteral = random.choice(BROWSER_IMPERSONATE_TARGETS)  # nosec B311
         self._impersonate = new_target
         logger.debug(
             "Rotated browser impersonation",
@@ -359,7 +359,7 @@ class YFinanceFetcher:
 
                     # Add jitter if configured
                     if retry_config.jitter:
-                        delay *= 0.5 + random.random()
+                        delay *= 0.5 + random.random()  # nosec B311
 
                     logger.debug(
                         "Waiting before retry",

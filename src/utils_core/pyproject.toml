@@ -1,0 +1,13 @@
+[project]
+name = "utils"
+version = "0.1.0"
+description = "Core utilities for the finance project"
+requires-python = ">=3.12"
+dependencies = [
+    "structlog>=24.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

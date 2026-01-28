@@ -6,7 +6,7 @@ repos:
       - id: trailing-whitespace
         exclude: ^(notebook_sample|src_sample)/
       - id: end-of-file-fixer
-        exclude: ^(notebook_sample|src_sample)/
+        exclude: ^(notebook_sample|src_sample)/|\.gitkeep$
       - id: check-yaml
       - id: check-toml
       - id: check-json
@@ -39,7 +39,7 @@ repos:
 
   # Security
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.9
+    rev: 1.8.3
     hooks:
       - id: bandit
         args: [-c, pyproject.toml]

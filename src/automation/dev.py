@@ -1,7 +1,7 @@
 import asyncio
 
-from claude_agent_sdk import ClaudeAgentOptions, query
-from claude_agent_sdk.types import ResultMessage
+from claude_agent_sdk import ClaudeAgentOptions, query  # type: ignore[import-not-found]
+from claude_agent_sdk.types import ResultMessage  # type: ignore[import-not-found]
 from rich.console import Console
 
 
