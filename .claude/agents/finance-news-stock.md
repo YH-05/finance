@@ -326,46 +326,61 @@ for result in fetch_result["results"]:
 [予想・見解、なければ「[記載なし]」]
 ```
 
-#### ステップ4.1: Issue作成（テンプレート読み込み方式）
+#### ステップ4.1: Issue作成（直接ボディ生成方式）
 
 **重要**:
 - Issueタイトルは日本語で作成（英語記事の場合は日本語に翻訳）
 - タイトル形式: `[個別銘柄] {japanese_title}`
-- **Issueボディは `.github/ISSUE_TEMPLATE/news-article.md` テンプレートを読み込んで使用**
+- **Issueボディは直接生成（HEREDOCを使用）**
 - **概要（summary）は400字以上の詳細な日本語要約を使用**
 
-> **🚨 URL設定【最重要ルール】🚨**:
-> `{{url}}`には**RSSから取得したオリジナルのlink**を**絶対に変更せず**そのまま使用すること。
-> - ✅ 正しい: RSSの`link`フィールドの値（`item["link"]`をそのまま使用）
-> - ❌ 間違い: WebFetchのリダイレクト先URL
-> - ❌ 間違い: URLを推測・加工・短縮したもの
-> - ❌ 間違い: news-article-fetcherの戻り値のURLを加工したもの
->
-> **サブエージェント連携時の注意**:
-> `news-article-fetcher`に渡すURLも、戻り値で受け取るURLも、一切変更してはいけない。
+> **URL設定【最重要ルール】**:
+> `${link}`には**RSSから取得したオリジナルのlink**を**絶対に変更せず**そのまま使用すること。
+> - 正しい: RSSの`link`フィールドの値（`item["link"]`をそのまま使用）
+> - 間違い: WebFetchのリダイレクト先URL
+> - 間違い: URLを推測・加工・短縮したもの
 
 ```bash
-# Step 1: テンプレートを読み込む（frontmatter除外）
-template=$(cat .github/ISSUE_TEMPLATE/news-article.md | tail -n +7)
-
-# Step 2: 収集日時を取得（Issue作成直前に実行）【必須フィールド】
+# Step 1: 収集日時を取得（Issue作成直前に実行）【必須フィールド】
 collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
 
-# Step 3: RSSオリジナルURLを取得
-# $link = item["link"] （RSSのlinkフィールドをそのまま使用、絶対に変換しない）
-
-# Step 4: プレースホルダーを置換
+# Step 2: Issueボディを直接生成（HEREDOCを使用）
 # ※ japanese_summary はステップ4.0で生成した400字以上の要約
-body="${template//\{\{summary\}\}/$japanese_summary}"
-body="${body//\{\{url\}\}/$link}"  # ← RSSオリジナルURLをそのまま使用
-body="${body//\{\{published_date\}\}/$published_jst(JST)}"
-body="${body//\{\{collected_at\}\}/$collected_at(JST)}"
-body="${body//\{\{category\}\}/Stock（個別銘柄）}"
-body="${body//\{\{feed_source\}\}/$source}"
-body="${body//\{\{notes\}\}/- テーマ: Stock（個別銘柄）
-- AI判定理由: $判定理由}"
+body=$(cat <<EOF
+${japanese_summary}
 
-# Step 4: Issue作成（closed状態で作成）
+### 情報源URL
+
+${link}
+
+### 公開日
+
+${published_jst}(JST)
+
+### 収集日時
+
+${collected_at}(JST)
+
+### カテゴリ
+
+Stock（個別銘柄）
+
+### フィード/情報源名
+
+${source}
+
+### 備考・メモ
+
+- テーマ: Stock（個別銘柄）
+- AI判定理由: ${判定理由}
+
+---
+
+**自動収集**: このIssueは \`/finance-news-workflow\` コマンドによって自動作成されました。
+EOF
+)
+
+# Step 3: Issue作成
 issue_url=$(gh issue create \
     --repo YH-05/finance \
     --title "[個別銘柄] {japanese_title}" \
@@ -375,21 +390,21 @@ issue_url=$(gh issue create \
 # Issue番号を抽出
 issue_number=$(echo "$issue_url" | grep -oE '[0-9]+$')
 
-# Step 5: Issueをcloseする（ニュースIssueはclosed状態で保存）
+# Step 4: Issueをcloseする（ニュースIssueはclosed状態で保存）
 gh issue close "$issue_number" --repo YH-05/finance
 ```
 
-**テンプレートプレースホルダー対応表**（`.github/ISSUE_TEMPLATE/news-article.md`）:
+**Issueボディフィールド一覧**:
 
-| プレースホルダー | 値 |
-|-----------------|-----|
-| `{{summary}}` | {japanese_summary}（**400字以上の詳細要約**） |
-| `{{url}}` | {link} |
-| `{{published_date}}` | {published_jst}(JST) |
-| `{{collected_at}}` | ${collected_at}(JST)【必須】 |
-| `{{category}}` | Stock（個別銘柄） |
-| `{{feed_source}}` | {source} |
-| `{{notes}}` | テーマ・AI判定理由 |
+| フィールド | 値 |
+|-----------|-----|
+| 要約 | {japanese_summary}（**400字以上の詳細要約**） |
+| 情報源URL | {link} |
+| 公開日 | {published_jst}(JST) |
+| 収集日時 | ${collected_at}(JST)【必須】 |
+| カテゴリ | Stock（個別銘柄） |
+| フィード名 | {source} |
+| 備考・メモ | テーマ・AI判定理由 |
 
 #### ステップ4.2: Project追加
 
@@ -651,7 +666,7 @@ except Exception as e:
 
 - **共通処理ガイド**: `.claude/skills/finance-news-workflow/common-processing-guide.md`
 - **テーマ設定**: `data/config/finance-news-themes.json`
-- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`
+- **Issueテンプレート（UI用）**: `.github/ISSUE_TEMPLATE/news-article.yml`
 - **オーケストレーター**: `.claude/agents/finance-news-orchestrator.md`
 - **GitHub Project**: https://github.com/users/YH-05/projects/15
 
