@@ -14,13 +14,13 @@
 ## 技術的考慮事項
 
 - structlog ベースの構造化ロギング
-- 既存パッケージ（database, market, rss, factor, strategy）との後方互換性維持
+- 既存パッケージ（database, market, rss, factor, strategy）のログ機能は完全廃止し、このパッケージに移行させる
 - ローテーション不要（手動管理）
 
 ## 成功基準
 
 - 全パッケージが utils.logging からインポート可能
-- 既存の import パス（例: `from database.utils.logging_config import get_logger`）が動作継続
+- 既存のdatabase/utilsのログ機能は完全廃止
 - `logs/` ディレクトリにログファイルが自動作成される
 
 ## アーキテクチャ
@@ -147,31 +147,7 @@ __all__ = ["get_logger", "setup_logging"]
 
 #### 2.1 database パッケージ
 
-**`src/database/utils/logging_config.py`** → utils からの再エクスポート:
-
-```python
-"""Logging configuration (re-exported from utils package)."""
-
-from utils.logging import (
-    LoggerProtocol,
-    get_logger,
-    log_context,
-    log_performance,
-    set_log_level,
-    setup_logging,
-)
-
-__all__ = [
-    "LoggerProtocol",
-    "get_logger",
-    "log_context",
-    "log_performance",
-    "set_log_level",
-    "setup_logging",
-]
-```
-
-**`src/database/types.py`** の `LogFormat`, `LogLevel` → utils から再エクスポート
+**databaseパッケージのログ機能は完全廃止**
 
 #### 2.2 他パッケージ（market, rss, factor, strategy）
 
@@ -210,19 +186,19 @@ utils = { workspace = true }
 
 | ファイル | 変更内容 |
 |----------|---------|
-| `src/database/utils/logging_config.py` | utils から再エクスポート |
-| `src/database/types.py` | LogFormat/LogLevel を utils から再エクスポート |
-| `src/market/utils/logging_config.py` | utils から再エクスポート |
-| `src/rss/utils/logging_config.py` | utils から再エクスポート |
-| `src/factor/utils/logging_config.py` | utils から再エクスポート |
-| `src/strategy/utils/logging_config.py` | utils から再エクスポート |
+| `src/database/utils/logging_config.py` | 廃止 |
+| `src/database/types.py` | 廃止 |
+| `src/market/utils/logging_config.py` | 廃止 |
+| `src/rss/utils/logging_config.py` | 廃止 |
+| `src/factor/utils/logging_config.py` | 廃止 |
+| `src/strategy/utils/logging_config.py` | 廃止 |
 | `pyproject.toml` | workspace に utils 追加 |
 
 ## 後方互換性
 
-- 既存の `from database.utils.logging_config import get_logger` は動作継続
-- 既存の `from market.utils.logging_config import get_logger` も動作継続
-- 新規推奨: `from utils.logging import get_logger`
+- 既存の `from database.utils.logging_config import get_logger` は完全廃止
+- 既存の `from market.utils.logging_config import get_logger` も完全廃止
+- 新規: `from utils.logging import get_logger`を使用する
 
 ## 検証方法
 
@@ -234,7 +210,4 @@ make check-all
 python -c "from utils.logging import get_logger; get_logger('test').info('test')"
 ls -la logs/  # finance-YYYY-MM-DD.log が作成されていることを確認
 
-# 3. 各パッケージからのインポート（後方互換性）
-python -c "from database.utils.logging_config import get_logger; get_logger('test').info('db test')"
-python -c "from rss.utils.logging_config import get_logger; get_logger('test').info('rss test')"
 ```
