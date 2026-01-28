@@ -1,0 +1,114 @@
+# yfinance.Search クラス用ニュース検索キーワード設定
+#
+# 用途: news パッケージで yfinance Search クラスを使用してニュースを取得する際の検索キーワード
+# 参照: src/news/docs/project.md
+#
+# カテゴリ説明:
+#   - monetary_policy: 金融政策関連（中央銀行、金利、量的緩和等）
+#   - economic_indicators: 経済指標（GDP、インフレ、雇用統計等）
+#   - trade: 貿易関連（関税、貿易戦争等）
+#   - global: グローバル経済（主要中央銀行、新興国市場等）
+#   - market_sentiment: 市場心理（ボラティリティ、リスクオン/オフ等）
+
+version: "1.0"
+
+macro_keywords:
+  # 金融政策関連
+  monetary_policy:
+    - "Federal Reserve"
+    - "Fed interest rate"
+    - "FOMC"
+    - "FOMC meeting"
+    - "Fed rate decision"
+    - "Jerome Powell"
+    - "quantitative easing"
+    - "quantitative tightening"
+    - "Fed balance sheet"
+    - "federal funds rate"
+    - "monetary policy statement"
+    - "hawkish Fed"
+    - "dovish Fed"
+
+  # 経済指標
+  economic_indicators:
+    - "GDP growth"
+    - "GDP report"
+    - "inflation CPI"
+    - "CPI report"
+    - "core inflation"
+    - "PPI inflation"
+    - "unemployment rate"
+    - "jobless claims"
+    - "nonfarm payrolls"
+    - "jobs report"
+    - "consumer confidence"
+    - "consumer spending"
+    - "retail sales"
+    - "industrial production"
+    - "ISM manufacturing"
+    - "ISM services"
+    - "housing starts"
+    - "durable goods orders"
+    - "PCE inflation"
+    - "personal income"
+
+  # 貿易関連
+  trade:
+    - "trade war"
+    - "tariffs"
+    - "US China trade"
+    - "trade deficit"
+    - "trade surplus"
+    - "trade negotiations"
+    - "trade sanctions"
+    - "export controls"
+    - "import restrictions"
+
+  # グローバル経済
+  global:
+    - "ECB monetary policy"
+    - "ECB rate decision"
+    - "Christine Lagarde"
+    - "Bank of Japan"
+    - "BOJ policy"
+    - "Bank of England"
+    - "BOE rate"
+    - "emerging markets"
+    - "EM currencies"
+    - "China economy"
+    - "Eurozone economy"
+    - "global recession"
+    - "sovereign debt"
+    - "currency crisis"
+
+  # 市場心理・リスク
+  market_sentiment:
+    - "VIX volatility"
+    - "market volatility"
+    - "risk on"
+    - "risk off"
+    - "safe haven"
+    - "flight to quality"
+    - "market correction"
+    - "bear market"
+    - "bull market"
+    - "market rally"
+    - "sell off"
+
+# 検索設定
+search_config:
+  # 各クエリの最大結果数
+  max_results_per_query: 20
+
+  # キーワードの組み合わせ方法
+  # single: 各キーワードを個別に検索
+  # combined: カテゴリ内のキーワードを組み合わせて検索
+  combination_method: "single"
+
+  # 優先度の高いカテゴリ（検索順序）
+  priority_categories:
+    - "monetary_policy"
+    - "economic_indicators"
+    - "global"
+    - "trade"
+    - "market_sentiment"
