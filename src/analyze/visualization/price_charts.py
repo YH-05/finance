@@ -16,7 +16,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 from analyze.technical import TechnicalIndicators as IndicatorCalculator
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 from .charts import ChartBuilder, ChartConfig
 

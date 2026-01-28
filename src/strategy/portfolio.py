@@ -10,9 +10,10 @@ import warnings
 from datetime import date
 from typing import TYPE_CHECKING, overload
 
+from utils_core.logging import get_logger
+
 from .errors import NormalizationWarning, ValidationError
 from .types import Holding, Period, PresetPeriod
-from .utils.logging_config import get_logger
 
 if TYPE_CHECKING:
     from .providers.protocol import DataProvider

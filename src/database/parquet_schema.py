@@ -40,7 +40,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

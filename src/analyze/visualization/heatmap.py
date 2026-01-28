@@ -11,7 +11,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from analyze.statistics.types import CorrelationResult
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 from .charts import ChartBuilder, ChartConfig
 

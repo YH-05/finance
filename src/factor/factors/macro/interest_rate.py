@@ -8,10 +8,11 @@ from typing import cast
 
 import pandas as pd
 
+from utils_core.logging import get_logger
+
 from ...core.orthogonalization import Orthogonalizer
 from ...core.pca import YieldCurvePCA
 from ...errors import InsufficientDataError
-from ...utils.logging_config import get_logger
 from .base import BaseMacroFactor
 
 logger = get_logger(__name__)

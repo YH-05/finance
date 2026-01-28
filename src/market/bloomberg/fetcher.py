@@ -35,7 +35,6 @@ from pathlib import Path
 import blpapi  # type: ignore[import-not-found]
 import pandas as pd
 
-from database.utils.logging_config import get_logger
 from market.bloomberg.constants import (
     DEFAULT_HOST,
     DEFAULT_PORT,
@@ -56,6 +55,7 @@ from market.bloomberg.types import (
     IDType,
     NewsStory,
 )
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="market.bloomberg.fetcher")
 

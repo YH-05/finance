@@ -18,7 +18,7 @@ from typing import Any
 import pandas as pd
 
 from market.errors import CacheError
-from market.utils import get_logger
+from utils_core.logging import get_logger
 
 from .types import CacheConfig
 

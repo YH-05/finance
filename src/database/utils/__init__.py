@@ -9,7 +9,7 @@ from database.utils.date_utils import (
     get_trading_days_in_period,
     parse_date,
 )
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 __all__ = [
     "calculate_weekly_comment_period",

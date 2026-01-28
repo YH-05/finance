@@ -10,8 +10,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from utils_core.logging import get_logger
+
 from ..errors import InsufficientDataError, ValidationError
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 

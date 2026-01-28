@@ -12,7 +12,7 @@ from typing import Any
 from pandas import DataFrame
 
 from analyze.reporting.performance import PerformanceAnalyzer
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 
 @dataclass
@@ -418,7 +418,7 @@ def main() -> None:
     """エントリーポイント."""
     import json
 
-    from database.utils.logging_config import setup_logging
+    from utils_core.logging import setup_logging
 
     setup_logging(level="INFO", format="console", force=True)
 

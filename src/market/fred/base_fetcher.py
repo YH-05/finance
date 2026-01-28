@@ -11,7 +11,7 @@ from typing import Any
 
 import pandas as pd
 
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 from .errors import FREDFetchError, FREDValidationError
 from .types import DataSource, FetchOptions, Interval, MarketDataResult

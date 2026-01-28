@@ -18,7 +18,6 @@ import yfinance as yf
 from curl_cffi import requests as curl_requests
 from curl_cffi.requests import BrowserTypeLiteral
 
-from database.utils.logging_config import get_logger
 from market.yfinance.errors import DataFetchError, ErrorCode, ValidationError
 from market.yfinance.types import (
     CacheConfig,
@@ -28,6 +27,7 @@ from market.yfinance.types import (
     MarketDataResult,
     RetryConfig,
 )
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="market.yfinance.fetcher")
 

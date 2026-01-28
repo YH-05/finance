@@ -52,6 +52,8 @@ Examples
 >>> from rss import RSSError, FeedNotFoundError
 """
 
+from utils_core.logging import get_logger
+
 from .exceptions import (
     FeedAlreadyExistsError,
     FeedFetchError,
@@ -63,7 +65,6 @@ from .exceptions import (
 )
 from .services import BatchScheduler, FeedFetcher, FeedManager, FeedReader
 from .types import BatchStats, Feed, FeedItem, FetchInterval, FetchResult, FetchStatus
-from .utils.logging_config import get_logger
 
 __all__ = [
     "BatchScheduler",

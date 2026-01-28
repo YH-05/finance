@@ -16,20 +16,9 @@ if TYPE_CHECKING:
     from strategy.portfolio import Portfolio
 
 
-# AIDEV-NOTE: 遅延初期化でロガーを取得（循環インポート回避）
-def _get_logger() -> Any:
-    """Get logger with lazy initialization to avoid circular imports."""
-    try:
-        from strategy.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
-        return get_logger(__name__, module="rebalancer")
-    except ImportError:
-        import logging
-
-        return logging.getLogger(__name__)
-
-
-logger: Any = _get_logger()
+logger: Any = get_logger(__name__, module="rebalancer")
 
 
 class Rebalancer:

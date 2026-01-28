@@ -41,7 +41,7 @@ from typing import TYPE_CHECKING, TypeVar
 
 from factor.enums import FactorCategory
 from factor.errors import FactorError
-from factor.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from factor.core.base import Factor

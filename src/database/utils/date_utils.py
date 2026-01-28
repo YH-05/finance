@@ -27,7 +27,7 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 from typing import Literal
 
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

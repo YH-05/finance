@@ -8,10 +8,11 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from utils_core.logging import get_logger
+
 from ..exceptions import RSSError
 from ..storage.lock_manager import LockManager
 from ..types import FeedItemsData, FeedsData
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -19,7 +19,7 @@ from market.types import (
     AnalysisResult,
     MarketDataResult,
 )
-from market.utils import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="export")
 

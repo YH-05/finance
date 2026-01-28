@@ -25,7 +25,7 @@ from typing import Any
 
 import pandas as pd
 
-from strategy.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 from .analyze_integration import TechnicalSignalProvider, create_signal_provider
 from .factor_integration import FactorBasedRiskCalculator, create_factor_risk_calculator
