@@ -17,6 +17,10 @@ from .result import (
     FetchResult,
     RetryConfig,
 )
+from .sink import (
+    SinkProtocol,
+    SinkType,
+)
 from .source import (
     SourceProtocol,
 )
@@ -30,6 +34,8 @@ __all__: list[str] = [
     "Provider",
     "RateLimitError",
     "RetryConfig",
+    "SinkProtocol",
+    "SinkType",
     "SourceError",
     "SourceProtocol",
     "Thumbnail",
