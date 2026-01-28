@@ -1,6 +1,7 @@
 import asyncio
 
 from claude_agent_sdk import ClaudeAgentOptions, query
+from claude_agent_sdk.types import ResultMessage
 from rich.console import Console
 
 
@@ -11,7 +12,8 @@ async def main():
         options=ClaudeAgentOptions(allowed_tools=["Read", "Bash"]),
     ):
         console.print(type(message))
-        console.print(message)
+        result = message.result if isinstance(message, ResultMessage) else message
+        console.print(result)
 
 
 asyncio.run(main())

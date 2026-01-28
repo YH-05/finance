@@ -427,17 +427,22 @@ def main() -> None:
     # MAG7のパフォーマンスを取得
     print("\n=== MAG7 Performance (JSON) ===")
     mag7_result = analyzer.get_mag7_performance()
-    print(json.dumps(mag7_result.to_dict(), indent=2, ensure_ascii=False))
+    mag7_result_json = json.dumps(mag7_result.to_dict(), indent=2, ensure_ascii=False)
+    print(mag7_result_json)
 
     # 米国指数のパフォーマンスを取得
     print("\n=== US Index Performance (JSON) ===")
     index_result = analyzer.get_index_performance()
-    print(json.dumps(index_result.to_dict(), indent=2, ensure_ascii=False))
+    index_result_json = json.dumps(index_result.to_dict(), indent=2, ensure_ascii=False)
+    print(index_result_json)
 
     # コモディティのパフォーマンスを取得
     print("\n=== Commodity Performance (JSON) ===")
     commodity_result = analyzer.get_commodity_performance()
-    print(json.dumps(commodity_result.to_dict(), indent=2, ensure_ascii=False))
+    commodity_result_json = json.dumps(
+        commodity_result.to_dict(), indent=2, ensure_ascii=False
+    )
+    print(commodity_result_json)
 
 
 if __name__ == "__main__":
