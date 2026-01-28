@@ -11,6 +11,8 @@ index
     IndexNewsSource for stock market indices (^GSPC, ^DJI, etc.).
 sector
     SectorNewsSource for sector ETFs (XLF, XLK, etc.).
+stock
+    StockNewsSource for individual stocks (MAG7 and sector representatives).
 """
 
 from .base import (
@@ -22,10 +24,12 @@ from .base import (
 )
 from .index import IndexNewsSource
 from .sector import SectorNewsSource
+from .stock import StockNewsSource
 
 __all__ = [
     "IndexNewsSource",
     "SectorNewsSource",
+    "StockNewsSource",
     "fetch_with_retry",
     "search_news_to_article",
     "ticker_news_to_article",
