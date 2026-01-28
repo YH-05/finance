@@ -682,9 +682,12 @@ class TestAgentProcessorLogging:
         self,
         sample_article: Article,
         mock_agent_response: dict[str, Any],
+        caplog: pytest.LogCaptureFixture,
         capsys: pytest.CaptureFixture[str],
     ) -> None:
         """処理開始時にログが出力されることを確認。"""
+        import logging
+
         from news.processors.agent_base import AgentProcessor
 
         class TestProcessor(AgentProcessor):
@@ -715,24 +718,30 @@ class TestAgentProcessorLogging:
         mock_sdk = MagicMock()
         mock_sdk.query = mock_query_generator
 
-        with patch.object(
-            processor,
-            "_get_sdk",
-            return_value=mock_sdk,
+        with (
+            caplog.at_level(logging.DEBUG, logger="news.processors.agent_base"),
+            patch.object(
+                processor,
+                "_get_sdk",
+                return_value=mock_sdk,
+            ),
         ):
             processor.process(sample_article)
 
-        # structlog は stdout に出力するため、capsys で確認
+        # structlog の出力先に応じて capsys または caplog で確認
         captured = capsys.readouterr()
-        # ログにプロセッサ名や処理開始のメッセージが含まれる
-        assert "test_log" in captured.out or "Processing article" in captured.out
+        log_text = captured.out + caplog.text
+        assert "test_log" in log_text or "Processing article" in log_text
 
     def test_正常系_エラー時にログが出力される(
         self,
         sample_article: Article,
+        caplog: pytest.LogCaptureFixture,
         capsys: pytest.CaptureFixture[str],
     ) -> None:
         """エラー発生時にログが出力されることを確認。"""
+        import logging
+
         from news.processors.agent_base import AgentProcessor, AgentProcessorError
 
         class TestProcessor(AgentProcessor):
@@ -765,12 +774,13 @@ class TestAgentProcessorLogging:
         mock_sdk.query = mock_query_with_error
 
         with (
+            caplog.at_level(logging.DEBUG, logger="news.processors.agent_base"),
             patch.object(processor, "_get_sdk", return_value=mock_sdk),
             pytest.raises(AgentProcessorError),
         ):
             processor.process(sample_article)
 
-        # structlog は stdout に出力するため、capsys で確認
+        # structlog の出力先に応じて capsys または caplog で確認
         captured = capsys.readouterr()
-        # エラーログが出力される
-        assert "error" in captured.out.lower() or "failed" in captured.out.lower()
+        log_text = (captured.out + caplog.text).lower()
+        assert "error" in log_text or "failed" in log_text

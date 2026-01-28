@@ -409,9 +409,12 @@ class TestSummarizerProcessorLogging:
         self,
         sample_article: Article,
         mock_summary_response: dict[str, Any],
+        caplog: pytest.LogCaptureFixture,
         capsys: pytest.CaptureFixture[str],
     ) -> None:
         """処理時にログが出力されることを確認。"""
+        import logging
+
         from news.processors.summarizer import SummarizerProcessor
 
         processor = SummarizerProcessor()
@@ -425,13 +428,17 @@ class TestSummarizerProcessorLogging:
         mock_sdk = MagicMock()
         mock_sdk.query = mock_query_generator
 
-        with patch.object(processor, "_get_sdk", return_value=mock_sdk):
+        with (
+            caplog.at_level(logging.DEBUG, logger="news.processors.agent_base"),
+            patch.object(processor, "_get_sdk", return_value=mock_sdk),
+        ):
             processor.process(sample_article)
 
+        # structlog の出力先に応じて capsys または caplog で確認
         captured = capsys.readouterr()
-        # ログにプロセッサ名や処理に関するメッセージが含まれる
+        log_text = captured.out + caplog.text
         assert (
-            "claude_summarizer" in captured.out
-            or "Processing" in captured.out
-            or "processed" in captured.out.lower()
+            "claude_summarizer" in log_text
+            or "Processing" in log_text
+            or "processed" in log_text.lower()
         )
