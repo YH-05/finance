@@ -13,6 +13,10 @@ from .errors import (
     SourceError,
     ValidationError,
 )
+from .processor import (
+    ProcessorProtocol,
+    ProcessorType,
+)
 from .result import (
     FetchResult,
     RetryConfig,
@@ -31,6 +35,8 @@ __all__: list[str] = [
     "ContentType",
     "FetchResult",
     "NewsError",
+    "ProcessorProtocol",
+    "ProcessorType",
     "Provider",
     "RateLimitError",
     "RetryConfig",
