@@ -18,7 +18,7 @@
   - 情報収集まではpythonの自動化スクリプトで行い、ニュースの解釈をAIに任せる
   - 情報収集をpythonで自動化することにより、AIの無駄なコンテキスト消費を抑える狙い
 - 将来的にはスクリプトを定期実行してニュース収集作業を自動化する
- 
+
 ### MCPサーバーやスキルとの使い分け
 - tavily mcpサーバーやgemini searchスキル、web searchを使用した検索は、AIが動的にweb検索を行うためのツール
 - それに対し、newsパッケージが提供するものは、あらかじめ定めたニュースソースからの情報収集自動化機能(AIに情報を渡すところまで)である
@@ -47,8 +47,9 @@
 
 - [ ] データソース抽象化（SourceProtocol）
 - [ ] 出力先抽象化（SinkProtocol）
-- [ ] 設定管理（SourceConfig, SinkConfig）
+- [ ] 設定管理（SourceConfig, SinkConfig, ProcessorConfig）
 - [ ] 基本的なニュース記事モデル（Article）
+- [ ] メインコレクター基盤（Collector）
 
 ### Phase 2: データソース実装
 
@@ -65,7 +66,7 @@
 - [ ] ファイル出力（JSON必須, ParquetやMarkdownはオプションとして）
   - [ ] 出力フォーマット作成
 - [ ] GitHub Issue/Project 出力
-- [ ] 週次レポート用データ出力
+- [ ] 週次レポート用データ出力（`aggregated_data.json` 形式）
 
 ### Phase 4: 運用機能
 
@@ -116,11 +117,15 @@ news/
 ├── sinks/
 │   ├── file.py         # ファイル出力（JSON, Parquet）
 │   ├── github.py       # GitHub Issue/Project 出力
-│   └── report.py       # 週次レポート用出力
+│   └── report.py       # 週次レポート用出力（aggregated_data.json 形式）
 ├── config/
-│   └── loader.py       # 設定ファイル読み込み
+│   └── loader.py       # 設定ファイル読み込み（data/config/ から読込）
 └── collector.py        # メインコレクター（オーケストレーション）
 ```
+
+**設定ファイル配置**:
+- 設定ファイル: `data/config/news_sources.yaml`
+- 設定読み込み: `news/config/loader.py` が `data/config/` を参照
 
 ## 技術的考慮事項
 
