@@ -1,15 +1,53 @@
 # utils プロジェクト
 
+**GitHub Project**: [#23 utils - 共通ユーティリティパッケージ](https://github.com/users/YH-05/projects/23)
+
 ## 概要
 
 共通ユーティリティパッケージ。ロギング設定を集約し、全パッケージは `utils` からインポートする。
 
 ## 主要機能
 
-- [ ] 共通ロギング設定（`logs/YYYY-MM-DD-HHMM.log` 形式で日付別出力）
+- [ ] 共通ロギング設定（`logs/finance-YYYY-MM-DD.log` 形式で日付別出力）
 - [ ] 開発・本番ともにコンソール + ファイル両方に出力
 - [ ] 全パッケージで共通の `get_logger()` を提供
 - [ ] 環境変数による設定（LOG_DIR, LOG_FILE_ENABLED, LOG_LEVEL, LOG_FORMAT）
+
+## Issue 一覧
+
+### Phase 1: utils パッケージ作成
+
+| # | タイトル | ステータス |
+|---|---------|-----------|
+| #1688 | パッケージ基本構造の作成 | Todo |
+| #1689 | types.py の作成 | Todo |
+| #1690 | logging/config.py の作成 | Todo |
+| #1691 | logging/__init__.py の作成 | Todo |
+| #1692 | README.md の作成 | Todo |
+
+### Phase 2: 各パッケージの更新
+
+| # | タイトル | ステータス |
+|---|---------|-----------|
+| #1693 | database パッケージのログ機能を廃止 | Todo |
+| #1694 | market パッケージのログ機能を廃止 | Todo |
+| #1695 | rss パッケージのログ機能を廃止 | Todo |
+| #1696 | analyze パッケージのログ機能を廃止 | Todo |
+| #1697 | factor パッケージのログ機能を廃止 | Todo |
+| #1698 | strategy パッケージのログ機能を廃止 | Todo |
+
+### Phase 3: pyproject.toml 更新
+
+| # | タイトル | ステータス |
+|---|---------|-----------|
+| #1699 | ルート pyproject.toml に utils を追加 | Todo |
+| #1700 | 各パッケージの依存関係に utils を追加 | Todo |
+
+### Phase 4: 検証
+
+| # | タイトル | ステータス |
+|---|---------|-----------|
+| #1701 | 全体テスト実行と動作確認 | Todo |
 
 ## 技術的考慮事項
 
