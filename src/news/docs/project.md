@@ -30,9 +30,13 @@
 
 ### 設計方針
 
+- yfinanceからのニュース取得を最優先で実装
 - **プラグイン方式**: データソースを抽象化し、新しいソースを容易に追加可能
-  - yfinanceからのニュース取得を最優先で実装
+  - ただしwebスクレイピングのみ対象。yfinanceのニュース収集など、特定のAPIがすでにあるものは除外。
 - **AI処理統合**: Claude Code エージェントと連携し、要約・分類を自動化
+  - Claude Codeには収集したニュース情報を**json形式**で渡す(ニュースソースのURLやサマリー、日付などのメタ情報も含めて)
+  - 収集情報の集約場所は一か所に定める: `finance/research/news/` フォルダに`{ニュースソース名}_{YYYYMMDD}.json`の命名規則でjson出力
+  - jsonのフォーマットを作成する必要がある
 - **rss パッケージと独立**: RSS 以外のソース（API、スクレイピング）に対応
 
 ## 主要機能
@@ -48,7 +52,7 @@
 
 - [ ] Web API ソース（NewsAPI, Tavily 等）
 - [ ] Web スクレイピングソース
-  - [ ] 汎用スクレイパー基盤（BeautifulSoup/lxml）
+  - [ ] 汎用スクレイパー基盤（Playwright/BeautifulSoup/lxml）
   - [ ] サイト別パーサー設定（CSS セレクタ、XPath）
   - [ ] ページネーション対応
   - [ ] レート制限・礼儀正しいクローリング
@@ -56,7 +60,8 @@
 
 ### Phase 3: 出力先実装
 
-- [ ] ファイル出力（JSON, Parquet, Markdown）
+- [ ] ファイル出力（JSON必須, ParquetやMarkdownはオプションとして）
+  - [ ] 出力フォーマット作成
 - [ ] GitHub Issue/Project 出力
 - [ ] 週次レポート用データ出力
 
@@ -150,5 +155,3 @@ news/
 - リアルタイム配信（バッチ処理のみ）
 
 ---
-
-> 次のステップ: `/issue @src/news/docs/project.md` で Issue を作成し、`feature-implementer` で TDD 実装
