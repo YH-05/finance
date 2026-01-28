@@ -11,7 +11,7 @@
   - webスクレイピングで取得した記事など
 - 出力先（ファイル、GitHub Issue、レポート用データ）を柔軟に切り替えたい
   - GitHub ProjectにIssueとしてニュースを投稿したい
-  - 日次のニュース収集や週次のレポート作成に役立てたい
+  - 日次のニュース収集や週次のレポート作成、将来の詳細レポート作成に役立てたい
 - 対象カテゴリ（金融、テクノロジー等）を設定可能にしたい
   - 情報ソースとカテゴリごとに取得方法を定める
 - 収集したニュースをAIに翻訳・要約・タグ付けなどをしてもらいたい
@@ -22,6 +22,11 @@
 - tavily mcpサーバーやgemini searchスキル、web searchを使用した検索は、AIが動的にweb検索を行うためのツール
 - それに対し、newsパッケージが提供するものは、あらかじめ定めたニュースソースからの情報収集自動化機能(AIに情報を渡すところまで)である
 - またrss mcpサーバー(financeプロジェクトで作成しているsrc/rssのこと)はRSSフィード取得に特化しているが、newsパッケージはRSSフィードを取り扱わない
+
+### webスクレイピングの方針
+- bot対策: コード実行にインターバルを設けてレート制限を回避
+- スクレイピング手法: BeautifulSoup、Playwrightなど
+- 開発方法: サイトによって対処方法が変わるため、ユーザーから開発要請を受けたらそのサイトのスクレイピングモジュールを開発する
 
 ### 設計方針
 
@@ -51,7 +56,7 @@
 
 ### Phase 3: 出力先実装
 
-- [ ] ファイル出力（JSON, Parquet）
+- [ ] ファイル出力（JSON, Parquet, Markdown）
 - [ ] GitHub Issue/Project 出力
 - [ ] 週次レポート用データ出力
 
@@ -87,6 +92,12 @@ news/
 │   ├── api/            # API ソース実装
 │   │   ├── newsapi.py
 │   │   └── tavily.py
+│   ├── yfinance/       # python yfinanceライブラリを使った実装
+│   │   ├── index.py    # マーケット・株式指数に関するニュース取得
+│   │   ├── sector.py   # 各セクター・業種に関するニュース取得
+│   │   ├── stock.py    # 個別銘柄に関するニュース取得
+│   │   ├── commodity.py   # コモディティ（原油、金属、農作物など）に関するニュース取得
+│   │   └── macro.py    # マクロ経済（金利含める）に関するニュース取得
 │   └── scraper/        # スクレイピングソース実装
 │       ├── base.py     # 汎用スクレイパー基盤
 │       ├── parser.py   # サイト別パーサー設定
@@ -113,6 +124,7 @@ news/
 | `httpx` | HTTP クライアント（API 呼び出し） |
 | `pydantic` | 設定・モデル定義 |
 | `beautifulsoup4` | Web スクレイピング |
+| `playwright` | Web スクレイピング |
 | `lxml` | 高速 HTML/XML パーサー |
 | `anthropic` | Claude API（AI処理） |
 
@@ -122,55 +134,7 @@ news/
 |-----------|------|
 | `rss` | **独立** - RSS フィードは rss パッケージが担当 |
 | `analyze` | **連携可能** - 収集後の分析処理を委譲 |
-| `database` | **利用** - ロギング、ユーティリティを利用 |
-
-### 設定ファイル形式
-
-```yaml
-# data/config/news_sources.yaml
-sources:
-  - type: newsapi
-    api_key: ${NEWS_API_KEY}
-    categories: [business, technology]
-    countries: [us, jp]
-
-  - type: tavily
-    api_key: ${TAVILY_API_KEY}
-    topics: [AI, finance]
-
-  - type: scraper
-    name: example_news_site
-    base_url: https://example.com/news
-    selectors:
-      article_list: "div.article-list > article"
-      title: "h2.title"
-      link: "a.article-link"
-      date: "time.published"
-      summary: "p.excerpt"
-    rate_limit: 1.0  # 秒間リクエスト数
-    pagination:
-      type: page_number  # page_number | load_more | infinite_scroll
-      max_pages: 5
-
-processors:
-  - type: summarizer
-    model: claude-3-haiku-20240307
-    language: ja
-    max_length: 200
-
-  - type: classifier
-    categories: [金融, テクノロジー, 経済, 政治]
-    extract_keywords: true
-
-sinks:
-  - type: file
-    format: json
-    path: data/raw/news/
-
-  - type: github
-    project: 15
-    labels: [news]
-```
+| `utils` | **利用** - ロギング、ユーティリティを利用 |
 
 ## 成功基準
 
@@ -184,7 +148,6 @@ sinks:
 - センチメント分析（→ analyze パッケージ）
 - RSS フィード対応（→ rss パッケージ）
 - リアルタイム配信（バッチ処理のみ）
-- JavaScript 必須サイトのスクレイピング（Playwright 等は対象外）
 
 ---
 
