@@ -7,9 +7,10 @@ and Investment Grade corporate bond spreads.
 
 import pandas as pd
 
+from utils_core.logging import get_logger
+
 from ...core.orthogonalization import Orthogonalizer
 from ...errors import InsufficientDataError
-from ...utils.logging_config import get_logger
 from .base import BaseMacroFactor
 
 logger = get_logger(__name__)

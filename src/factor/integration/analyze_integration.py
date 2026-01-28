@@ -28,7 +28,7 @@ import pandas as pd
 
 from analyze.statistics.correlation import calculate_correlation
 from analyze.technical.indicators import TechnicalIndicators
-from factor.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from analyze.statistics.types import CorrelationMethod

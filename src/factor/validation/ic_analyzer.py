@@ -26,7 +26,7 @@ def _get_logger() -> Any:
         Logger instance
     """
     try:
-        from factor.utils.logging_config import get_logger
+        from utils_core.logging import get_logger
 
         return get_logger(__name__, module="ic_analyzer")
     except ImportError:

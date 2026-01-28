@@ -7,8 +7,9 @@ orthogonalization ordering.
 
 import pandas as pd
 
+from utils_core.logging import get_logger
+
 from ...core.orthogonalization import Orthogonalizer
-from ...utils.logging_config import get_logger
 from .flight_to_quality import HY_SPREAD_SERIES, IG_SPREAD_SERIES, FlightToQualityFactor
 from .inflation import INFLATION_SERIES, InflationFactor
 from .interest_rate import TREASURY_YIELD_SERIES, InterestRateFactor

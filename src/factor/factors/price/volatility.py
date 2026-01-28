@@ -33,7 +33,7 @@ import pandas as pd
 from factor.core.base import Factor
 from factor.enums import FactorCategory
 from factor.providers.base import DataProvider
-from factor.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

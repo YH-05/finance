@@ -24,9 +24,9 @@ from datetime import datetime
 
 import pandas as pd
 
-from factor.utils.logging_config import get_logger
 from market.yfinance import FetchOptions, YFinanceFetcher
 from market.yfinance.types import Interval
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

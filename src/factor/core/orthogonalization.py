@@ -8,9 +8,10 @@ from typing import Any
 
 import pandas as pd
 
+from utils_core.logging import get_logger
+
 from ..errors import InsufficientDataError, OrthogonalizationError
 from ..types import OrthogonalizationResult
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 

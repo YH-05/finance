@@ -90,9 +90,6 @@ from .providers import Cache, DataProvider, YFinanceProvider
 # Types
 from .types import FactorConfig, FactorResult, OrthogonalizationResult, QuantileResult
 
-# Logging
-from .utils.logging_config import get_logger
-
 # Validation
 from .validation import ICAnalyzer, ICResult, QuantileAnalyzer
 
@@ -154,8 +151,6 @@ __all__ = [
     "calculate_factor_with_indicators",
     "create_enhanced_analyzer",
     "create_market_provider",
-    # Logging
-    "get_logger",
     "get_registry",
     "register_factor",
 ]
