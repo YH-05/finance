@@ -1,0 +1,493 @@
+"""Structured logging configuration using structlog.
+
+structlog ベースの構造化ロギング設定を提供する。
+
+Features
+--------
+- structlog による構造化ロギング
+- 日付別ログファイル出力（finance-YYYY-MM-DD.log 形式）
+- 環境変数による設定（LOG_DIR, LOG_FILE_ENABLED, LOG_LEVEL, LOG_FORMAT）
+- 重複ハンドラー追加の防止
+"""
+
+import functools
+import inspect
+import logging
+import os
+import sys
+import time
+from collections.abc import Iterator
+from contextlib import contextmanager
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any, Protocol
+
+import structlog
+from dotenv import load_dotenv
+from structlog import BoundLogger
+from structlog.contextvars import bind_contextvars, unbind_contextvars
+
+from ..types import LogFormat, LogLevel
+
+_initialized = False
+
+
+def _ensure_basic_config() -> None:
+    """get_logger 呼び出し前に最小限のロギング設定を確保する."""
+    global _initialized
+    if _initialized:
+        return
+    _initialized = True
+
+    load_dotenv(override=True)
+
+    default_level = os.environ.get("LOG_LEVEL", "INFO").upper()
+    if default_level not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+        default_level = "INFO"
+
+    logging.basicConfig(
+        format="%(message)s",
+        level=getattr(logging, default_level),
+        force=True,
+    )
+
+    structlog.configure(
+        processors=[
+            structlog.contextvars.merge_contextvars,
+            structlog.stdlib.filter_by_level,
+            structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.dev.ConsoleRenderer(),
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=False,
+    )
+
+
+class LoggerProtocol(Protocol):
+    """構造化ロガーのプロトコル定義."""
+
+    def bind(self, **kwargs: Any) -> "LoggerProtocol":
+        """コンテキスト変数をロガーにバインドする."""
+        ...
+
+    def unbind(self, *keys: str) -> "LoggerProtocol":
+        """コンテキスト変数をロガーからアンバインドする."""
+        ...
+
+    def debug(self, event: str, **kwargs: Any) -> None:
+        """DEBUG レベルのログを出力する."""
+        ...
+
+    def info(self, event: str, **kwargs: Any) -> None:
+        """INFO レベルのログを出力する."""
+        ...
+
+    def warning(self, event: str, **kwargs: Any) -> None:
+        """WARNING レベルのログを出力する."""
+        ...
+
+    def error(self, event: str, **kwargs: Any) -> None:
+        """ERROR レベルのログを出力する."""
+        ...
+
+    def critical(self, event: str, **kwargs: Any) -> None:
+        """CRITICAL レベルのログを出力する."""
+        ...
+
+
+def add_timestamp(_: Any, __: Any, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """ログエントリに ISO タイムスタンプを追加する.
+
+    Parameters
+    ----------
+    _ : Any
+        ロガー（未使用）
+    __ : Any
+        メソッド名（未使用）
+    event_dict : dict[str, Any]
+        変更対象のイベント辞書
+
+    Returns
+    -------
+    dict[str, Any]
+        タイムスタンプを追加したイベント辞書
+    """
+    event_dict["timestamp"] = datetime.now(UTC).isoformat()
+    return event_dict
+
+
+def add_caller_info(_: Any, __: Any, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """ログエントリに呼び出し元情報（ファイル、関数、行番号）を追加する.
+
+    Parameters
+    ----------
+    _ : Any
+        ロガー（未使用）
+    __ : Any
+        メソッド名（未使用）
+    event_dict : dict[str, Any]
+        変更対象のイベント辞書
+
+    Returns
+    -------
+    dict[str, Any]
+        呼び出し元情報を追加したイベント辞書
+    """
+    try:
+        frame = None
+        stack = inspect.stack()
+
+        for f in stack[4:12]:
+            if f.filename and f.function:
+                module = inspect.getmodule(f.frame)
+                if (
+                    module
+                    and not module.__name__.startswith("structlog")
+                    and not module.__name__.startswith("logging")
+                    and "site-packages" not in f.filename
+                ):
+                    frame = f
+                    break
+
+        if frame:
+            event_dict["caller"] = {
+                "filename": Path(frame.filename).name,
+                "function": frame.function,
+                "line": frame.lineno,
+            }
+    except Exception:  # nosec B110
+        pass
+
+    return event_dict
+
+
+def add_log_level_upper(_: Any, __: Any, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """ログレベルを大文字に変換する.
+
+    Parameters
+    ----------
+    _ : Any
+        ロガー（未使用）
+    __ : Any
+        メソッド名（未使用）
+    event_dict : dict[str, Any]
+        変更対象のイベント辞書
+
+    Returns
+    -------
+    dict[str, Any]
+        大文字のレベルを持つイベント辞書
+    """
+    if "level" in event_dict:
+        event_dict["level"] = event_dict["level"].upper()
+    return event_dict
+
+
+def _get_date_based_log_file(log_dir: Path) -> Path:
+    """日付ベースのログファイルパスを生成する.
+
+    Parameters
+    ----------
+    log_dir : Path
+        ログディレクトリのパス
+
+    Returns
+    -------
+    Path
+        finance-YYYY-MM-DD.log 形式のログファイルパス
+    """
+    today = datetime.now().strftime("%Y-%m-%d")
+    return log_dir / f"finance-{today}.log"
+
+
+def setup_logging(
+    *,
+    level: LogLevel | str = "INFO",
+    format: LogFormat = "console",
+    log_file: str | Path | None = None,
+    include_timestamp: bool = True,
+    include_caller_info: bool = True,
+    force: bool = False,
+) -> None:
+    """構造化ロギングの設定をセットアップする.
+
+    Parameters
+    ----------
+    level : LogLevel | str
+        ログレベル（DEBUG, INFO, WARNING, ERROR, CRITICAL）。
+        LOG_LEVEL 環境変数でも設定可能。
+    format : LogFormat
+        出力フォーマット: "json", "console", "plain"
+        - json: 構造化 JSON 出力（本番環境向け）
+        - console: カラー付き人間可読出力（開発環境向け）
+        - plain: シンプルな key=value 出力
+    log_file : str | Path | None
+        ログ出力先ファイルパス（LOG_DIR より優先）
+    include_timestamp : bool
+        ISO タイムスタンプをログに追加するか
+    include_caller_info : bool
+        呼び出し元情報（ファイル、関数、行番号）を追加するか
+    force : bool
+        既存の設定があっても強制的に再設定するか
+    """
+    load_dotenv(override=True)
+
+    env_level = os.environ.get("LOG_LEVEL", "").upper()
+    if env_level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+        level = env_level
+    elif env_level and env_level not in [
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "CRITICAL",
+    ]:
+        level = "INFO"
+
+    env_format = os.environ.get("LOG_FORMAT", "").lower()
+    if env_format in ["json", "console", "plain"]:
+        format = env_format  # type: ignore
+
+    env_log_dir = os.environ.get("LOG_DIR", "")
+    log_file_enabled = os.environ.get("LOG_FILE_ENABLED", "true").lower() != "false"
+
+    final_log_file: Path | None = None
+    if log_file:
+        final_log_file = Path(log_file)
+    elif log_file_enabled and env_log_dir:
+        log_dir = Path(env_log_dir)
+        log_dir.mkdir(parents=True, exist_ok=True)
+        final_log_file = _get_date_based_log_file(log_dir)
+
+    processors: list[Any] = [
+        structlog.contextvars.merge_contextvars,
+        structlog.stdlib.filter_by_level,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        add_log_level_upper,
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+    ]
+
+    if include_timestamp:
+        processors.insert(3, add_timestamp)
+
+    if include_caller_info:
+        processors.insert(4, add_caller_info)
+
+    is_development = (
+        os.environ.get("PROJECT_ENV") == "development" or format == "console"
+    )
+
+    if format == "json":
+        processors.append(structlog.processors.JSONRenderer())
+    elif format == "console" and is_development:
+        try:
+            processors.append(structlog.dev.ConsoleRenderer(colors=True))
+        except ImportError:
+            processors.append(structlog.dev.ConsoleRenderer())
+    else:
+        processors.append(structlog.processors.KeyValueRenderer())
+
+    structlog.configure(
+        processors=processors,
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
+
+    level_str = level.upper()
+    level_value = getattr(logging, level_str)
+
+    if force:
+        logging.root.handlers.clear()
+
+    logging.basicConfig(
+        format="%(message)s",
+        stream=sys.stdout,
+        level=level_value,
+        force=True,
+    )
+
+    logging.root.setLevel(level_value)
+
+    if final_log_file:
+        final_log_file.parent.mkdir(parents=True, exist_ok=True)
+
+        existing_file_handlers = [
+            h
+            for h in logging.root.handlers
+            if isinstance(h, logging.FileHandler)
+            and h.baseFilename == str(final_log_file.resolve())
+        ]
+
+        if not existing_file_handlers:
+            file_handler = logging.FileHandler(final_log_file, encoding="utf-8")
+            file_handler.setLevel(getattr(logging, level_str))
+            file_handler.setFormatter(logging.Formatter("%(message)s"))
+            logging.root.addHandler(file_handler)
+
+    if level != "DEBUG":
+        for logger_name in ["urllib3", "asyncio", "filelock"]:
+            logging.getLogger(logger_name).setLevel(logging.WARNING)
+
+
+def get_logger(name: str, **context: Any) -> BoundLogger:
+    """オプションのコンテキスト付きで構造化ロガーインスタンスを取得する.
+
+    Parameters
+    ----------
+    name : str
+        ロガー名（通常は __name__）
+    **context : Any
+        ロガーにバインドする初期コンテキスト
+
+    Returns
+    -------
+    BoundLogger
+        設定済みの structlog ロガーインスタンス
+
+    Examples
+    --------
+    >>> logger = get_logger(__name__)
+    >>> logger.info("Processing started", items_count=100)
+
+    >>> logger = get_logger(__name__, module="data_processor", version="1.0")
+    >>> logger.error("Processing failed", error_type="ValidationError")
+    """
+    _ensure_basic_config()
+
+    logger: BoundLogger = structlog.get_logger(name)
+
+    if context:
+        logger = logger.bind(**context)
+
+    return logger
+
+
+@contextmanager
+def log_context(**kwargs: Any) -> Iterator[None]:
+    """コンテキスト変数を一時的にバインドするコンテキストマネージャ.
+
+    Parameters
+    ----------
+    **kwargs : Any
+        バインドするコンテキスト変数
+
+    Yields
+    ------
+    None
+
+    Examples
+    --------
+    >>> logger = get_logger(__name__)
+    >>> with log_context(user_id=123, request_id="abc"):
+    ...     logger.info("Processing user request")
+    """
+    bind_contextvars(**kwargs)
+    try:
+        yield
+    finally:
+        unbind_contextvars(*kwargs.keys())
+
+
+def set_log_level(level: LogLevel | str, logger_name: str | None = None) -> None:
+    """ログレベルを動的に変更する.
+
+    Parameters
+    ----------
+    level : LogLevel | str
+        新しいログレベル
+    logger_name : str | None
+        更新対象のロガー名。None の場合はルートロガーを更新
+
+    Raises
+    ------
+    AttributeError
+        level が有効なログレベルでない場合
+    """
+    level_value = getattr(logging, level.upper())
+
+    if logger_name:
+        logging.getLogger(logger_name).setLevel(level_value)
+    else:
+        logging.root.setLevel(level_value)
+        for handler in logging.root.handlers:
+            handler.setLevel(level_value)
+
+
+def log_performance(logger: BoundLogger) -> Any:
+    """Decorator to log function performance metrics.
+
+    Parameters
+    ----------
+    logger : BoundLogger
+        Logger instance to use
+
+    Returns
+    -------
+    Callable
+        Decorated function
+
+    Examples
+    --------
+    >>> logger = get_logger(__name__)
+    >>> @log_performance(logger)
+    ... def process_data(items):
+    ...     return [item * 2 for item in items]
+    """
+
+    def decorator(func: Any) -> Any:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            start_time = time.perf_counter()
+            func_name = func.__name__
+
+            # Log function call
+            logger.debug(
+                f"Function {func_name} started",
+                function=func_name,
+                args_count=len(args),
+                kwargs_count=len(kwargs),
+            )
+
+            try:
+                result = func(*args, **kwargs)
+                duration_ms = (time.perf_counter() - start_time) * 1000
+
+                # Log successful completion with duration
+                logger.debug(
+                    f"Function {func_name} completed",
+                    function=func_name,
+                    duration_ms=round(duration_ms, 2),
+                    success=True,
+                )
+
+                return result
+
+            except Exception as e:
+                duration_ms = (time.perf_counter() - start_time) * 1000
+
+                # Log error with duration
+                logger.error(
+                    f"Function {func_name} failed",
+                    function=func_name,
+                    duration_ms=round(duration_ms, 2),
+                    success=False,
+                    error_type=type(e).__name__,
+                    error_message=str(e),
+                    exc_info=True,
+                )
+                raise
+
+        return wrapper
+
+    return decorator
