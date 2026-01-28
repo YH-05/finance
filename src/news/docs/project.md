@@ -59,13 +59,450 @@
 
 ## 主要機能
 
-### Phase 0: yfinance 調査
+### Phase 0: yfinance 調査 ✅ 完了
 
-- [ ] yfinance.Ticker.news の仕様確認
-- [ ] 取得可能なニュースの種類・形式・フィールド
-- [ ] レート制限の有無
-- [ ] ユニークキー（重複判定に使える項目）の特定
-- [ ] 既存 market パッケージとの重複確認
+- [x] yfinance.Ticker.news の仕様確認
+- [x] 取得可能なニュースの種類・形式・フィールド
+- [x] レート制限の有無
+- [x] ユニークキー（重複判定に使える項目）の特定
+- [x] 既存 market パッケージとの重複確認
+
+#### 調査結果（2026-01-28）
+
+**API仕様**:
+- `ticker.news` プロパティ: デフォルト10件のニュースを取得
+- `ticker.get_news(count=N, tab='news')` メソッド: 件数とタブ指定可能
+  - `tab` オプション: `"news"`, `"all"`, `"press releases"`
+
+**データ構造**:
+```python
+# 返り値: list[dict]
+# 各要素の構造:
+{
+    "id": "UUID形式の記事ID",  # ユニークキー
+    "content": {
+        "id": "UUID形式の記事ID",
+        "contentType": "STORY" | "VIDEO",
+        "title": "記事タイトル",
+        "summary": "記事要約",
+        "description": "詳細説明（空の場合あり）",
+        "pubDate": "2026-01-27T23:33:53Z",  # ISO8601形式
+        "displayTime": "2026-01-28T06:27:34Z",
+        "provider": {
+            "displayName": "Yahoo Finance",
+            "url": "http://finance.yahoo.com/"
+        },
+        "canonicalUrl": {
+            "url": "https://finance.yahoo.com/news/...",
+            "site": "finance",
+            "region": "US",
+            "lang": "en-US"
+        },
+        "thumbnail": {
+            "originalUrl": "https://...",
+            "originalWidth": 5971,
+            "originalHeight": 3980,
+            "resolutions": [...]
+        },
+        "metadata": {"editorsPick": true/false},
+        "finance": {"premiumFinance": {...}},
+        "storyline": {"storylineItems": [...]}  # 関連記事
+    }
+}
+```
+
+**レート制限**:
+- 10件連続リクエストで問題なし（平均0.3秒/リクエスト）
+- Yahoo Finance のレート制限は緩い（ただし大量リクエスト時は curl_cffi でブラウザ偽装推奨）
+
+**ユニークキー（重複チェック用）**:
+- **採用**: `canonicalUrl.url`（記事URL）を主キーとして使用
+- **理由**: URL はどのソースでも必ず存在し、記事を一意に特定できる
+
+**対応ティッカータイプ**:
+| タイプ | 例 | ニュース取得 |
+|--------|-----|-------------|
+| 個別銘柄 | AAPL, GOOGL | ✅ 10件/リクエスト |
+| 株価指数 | ^GSPC, ^DJI | ✅ 10件/リクエスト |
+| セクターETF | XLF, XLK | ✅ 10件/リクエスト |
+| コモディティ | GC=F, CL=F | ✅ 10件/リクエスト |
+
+**既存 market パッケージとの関係**:
+- `src/market/yfinance/` は **OHLCV価格データの取得のみ** を担当
+- ニュース機能は実装されていない → **重複なし**
+- news パッケージで独自に実装可能
+
+**エラーパターン調査結果**:
+| ケース | 挙動 | 対応方針 |
+|--------|------|----------|
+| 無効なティッカー | 空リスト `[]` を返す | 警告ログを出力、継続 |
+| 空文字ティッカー | `ValueError` 例外 | 事前バリデーションで防止 |
+| 上場廃止銘柄 | 空リスト `[]` を返す | 警告ログを出力、継続 |
+| 特殊文字 | 空リスト `[]` を返す | 事前バリデーションで防止 |
+| ネットワークエラー | 各種例外 | リトライ + 指数バックオフ |
+| レート制限 | HTTPエラー / 空応答 | リトライ + 長めの待機 |
+
+---
+
+## 詳細設計
+
+### エラーハンドリング戦略
+
+#### リトライ設定
+
+```python
+@dataclass(frozen=True)
+class RetryConfig:
+    """リトライ設定"""
+    max_attempts: int = 3          # 最大リトライ回数
+    initial_delay: float = 1.0     # 初回待機時間（秒）
+    max_delay: float = 60.0        # 最大待機時間（秒）
+    exponential_base: float = 2.0  # 指数バックオフの基数
+    jitter: bool = True            # ランダムなゆらぎを追加
+
+    # リトライ対象の例外
+    retryable_exceptions: tuple[type[Exception], ...] = (
+        ConnectionError,
+        TimeoutError,
+        # HTTPError (429 Too Many Requests, 5xx)
+    )
+```
+
+#### リトライフロー
+
+```
+1回目失敗 → 1秒待機 → 2回目失敗 → 2秒待機 → 3回目失敗 → エラーログ出力 → 次のティッカーへ継続
+                       (jitterで ±50%)
+```
+
+**重要**: リトライ失敗時は例外を握りつぶし（try-except）、エラーをログに記録して次の処理に進む。
+バッチ処理全体が1件の失敗で停止しないようにする。
+
+#### エラー分類と対応
+
+| エラー種別 | 例 | リトライ | 対応 |
+|-----------|-----|---------|------|
+| 一時的エラー | 接続タイムアウト, 429, 5xx | ✅ する | 指数バックオフでリトライ、最終失敗時はスキップ |
+| 永続的エラー | 無効ティッカー, 認証エラー | ❌ しない | 即座にスキップ、ログ出力 |
+| データなし | 空リスト返却 | ❌ しない | 警告ログ、空結果を返す |
+
+#### エラー回避の実装パターン
+
+```python
+def fetch_all(tickers: list[str]) -> list[FetchResult]:
+    """複数ティッカーのニュースを取得（エラー時も継続）"""
+    results: list[FetchResult] = []
+
+    for ticker in tickers:
+        try:
+            articles = fetch_with_retry(ticker)
+            results.append(FetchResult(
+                ticker=ticker,
+                articles=articles,
+                success=True,
+            ))
+        except Exception as e:
+            # エラーをログに記録し、次のティッカーへ継続
+            logger.error(
+                "Failed to fetch news",
+                ticker=ticker,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            results.append(FetchResult(
+                ticker=ticker,
+                articles=[],
+                success=False,
+                error=SourceError(str(e), source="yfinance", ticker=ticker),
+            ))
+
+    return results
+```
+
+#### カスタム例外クラス
+
+```python
+class NewsError(Exception):
+    """news パッケージの基底例外"""
+    pass
+
+class SourceError(NewsError):
+    """データソースからの取得エラー"""
+    def __init__(
+        self,
+        message: str,
+        source: str,
+        ticker: str | None = None,
+        cause: Exception | None = None,
+        retryable: bool = False,
+    ) -> None:
+        super().__init__(message)
+        self.source = source
+        self.ticker = ticker
+        self.cause = cause
+        self.retryable = retryable
+
+class ValidationError(NewsError):
+    """入力バリデーションエラー"""
+    def __init__(self, message: str, field: str, value: object) -> None:
+        super().__init__(message)
+        self.field = field
+        self.value = value
+
+class RateLimitError(SourceError):
+    """レート制限エラー（リトライ可能）"""
+    def __init__(self, source: str, retry_after: float | None = None) -> None:
+        super().__init__(
+            f"Rate limit exceeded for {source}",
+            source=source,
+            retryable=True,
+        )
+        self.retry_after = retry_after
+```
+
+#### 取得結果の型
+
+```python
+@dataclass
+class FetchResult:
+    """ニュース取得結果"""
+    ticker: str
+    articles: list[Article]
+    success: bool
+    error: SourceError | None = None
+    fetched_at: datetime = field(default_factory=datetime.now)
+    retry_count: int = 0
+
+    @property
+    def article_count(self) -> int:
+        return len(self.articles)
+
+    @property
+    def is_empty(self) -> bool:
+        return len(self.articles) == 0
+```
+
+---
+
+### Article モデル詳細設計
+
+#### 設計方針
+
+- **ソース非依存**: yfinance 固有のフィールドに依存しない汎用モデル
+- **必須フィールド最小化**: どのソースでも取得可能なフィールドのみ必須
+- **URL を主キーとして使用**: 重複チェックは `url` フィールドで行う（`id` は不要）
+- **拡張性**: `metadata` フィールドでソース固有の情報を保持
+
+#### Article モデル定義
+
+```python
+from datetime import datetime
+from enum import Enum
+from pydantic import BaseModel, Field, HttpUrl
+
+class ContentType(str, Enum):
+    """コンテンツ種別"""
+    ARTICLE = "article"    # 通常の記事
+    VIDEO = "video"        # 動画コンテンツ
+    PRESS_RELEASE = "press_release"  # プレスリリース
+    UNKNOWN = "unknown"
+
+class ArticleSource(str, Enum):
+    """記事ソース"""
+    YFINANCE = "yfinance"
+    SCRAPER = "scraper"
+    RSS = "rss"  # 将来的な連携用
+
+class Provider(BaseModel):
+    """配信元情報"""
+    name: str                      # 配信元名（例: "Yahoo Finance"）
+    url: HttpUrl | None = None     # 配信元URL
+
+class Thumbnail(BaseModel):
+    """サムネイル画像"""
+    url: HttpUrl
+    width: int | None = None
+    height: int | None = None
+
+class Article(BaseModel):
+    """ニュース記事の共通モデル
+
+    yfinance, スクレイパー等、複数のソースから取得した記事を
+    統一的に扱うためのデータモデル。
+
+    Attributes
+    ----------
+    url : HttpUrl
+        記事の元URL（重複チェックの主キー）
+    title : str
+        記事タイトル
+    published_at : datetime
+        公開日時（UTC）
+    source : ArticleSource
+        取得元ソース
+
+    Notes
+    -----
+    - **重複チェックは `url` で行う**（`id` はソースによって存在しない場合がある）
+    - `summary` が空の場合は `title` を使用することを推奨
+    """
+
+    # === 必須フィールド（どのソースでも必ず取得可能） ===
+    url: HttpUrl = Field(..., description="記事の元URL（重複チェックの主キー）")
+    title: str = Field(..., min_length=1, description="記事タイトル")
+    published_at: datetime = Field(..., description="公開日時（UTC）")
+    source: ArticleSource = Field(..., description="取得元ソース")
+
+    # === オプションフィールド ===
+    summary: str | None = Field(None, description="記事要約")
+    content_type: ContentType = Field(
+        default=ContentType.ARTICLE,
+        description="コンテンツ種別"
+    )
+    provider: Provider | None = Field(None, description="配信元情報")
+    thumbnail: Thumbnail | None = Field(None, description="サムネイル画像")
+
+    # === 関連情報 ===
+    related_tickers: list[str] = Field(
+        default_factory=list,
+        description="関連ティッカーシンボル"
+    )
+    tags: list[str] = Field(
+        default_factory=list,
+        description="タグ（カテゴリ、キーワード等）"
+    )
+
+    # === メタデータ ===
+    fetched_at: datetime = Field(
+        default_factory=datetime.utcnow,
+        description="取得日時（UTC）"
+    )
+    metadata: dict[str, object] = Field(
+        default_factory=dict,
+        description="ソース固有のメタデータ"
+    )
+
+    # === AI処理結果（後から追加） ===
+    summary_ja: str | None = Field(None, description="日本語要約（AI生成）")
+    category: str | None = Field(None, description="カテゴリ（AI分類）")
+    sentiment: float | None = Field(
+        None,
+        ge=-1.0,
+        le=1.0,
+        description="センチメントスコア（-1.0〜1.0）"
+    )
+
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat(),
+        }
+```
+
+#### yfinance → Article 変換
+
+```python
+def yfinance_to_article(raw: dict, ticker: str) -> Article:
+    """yfinance のニュースデータを Article モデルに変換
+
+    Parameters
+    ----------
+    raw : dict
+        yfinance から取得した生データ（{"id": ..., "content": {...}}）
+    ticker : str
+        取得元のティッカーシンボル
+
+    Returns
+    -------
+    Article
+        変換後の Article インスタンス
+    """
+    content = raw.get("content", {})
+
+    # contentType のマッピング
+    content_type_map = {
+        "STORY": ContentType.ARTICLE,
+        "VIDEO": ContentType.VIDEO,
+    }
+
+    return Article(
+        # 必須フィールド
+        url=content.get("canonicalUrl", {}).get("url"),
+        title=content.get("title", ""),
+        published_at=datetime.fromisoformat(
+            content.get("pubDate", "").replace("Z", "+00:00")
+        ),
+        source=ArticleSource.YFINANCE,
+        # オプションフィールド
+        summary=content.get("summary"),
+        content_type=content_type_map.get(
+            content.get("contentType"),
+            ContentType.UNKNOWN
+        ),
+        provider=Provider(
+            name=content.get("provider", {}).get("displayName", "Unknown"),
+            url=content.get("provider", {}).get("url"),
+        ) if content.get("provider") else None,
+        thumbnail=Thumbnail(
+            url=content.get("thumbnail", {}).get("originalUrl"),
+            width=content.get("thumbnail", {}).get("originalWidth"),
+            height=content.get("thumbnail", {}).get("originalHeight"),
+        ) if content.get("thumbnail", {}).get("originalUrl") else None,
+        related_tickers=[ticker],
+        metadata={
+            "yfinance_content_type": content.get("contentType"),
+            "editors_pick": content.get("metadata", {}).get("editorsPick", False),
+            "is_premium": content.get("finance", {}).get("premiumFinance", {}).get("isPremiumNews", False),
+            "region": content.get("canonicalUrl", {}).get("region"),
+            "lang": content.get("canonicalUrl", {}).get("lang"),
+        },
+    )
+```
+
+#### JSON 出力フォーマット
+
+```json
+{
+  "meta": {
+    "source": "yfinance",
+    "ticker": "AAPL",
+    "fetched_at": "2026-01-28T12:00:00Z",
+    "article_count": 10,
+    "version": "1.0"
+  },
+  "articles": [
+    {
+      "url": "https://finance.yahoo.com/news/...",
+      "title": "Apple Reports Q1 2026 Earnings",
+      "published_at": "2026-01-27T23:33:53Z",
+      "source": "yfinance",
+      "summary": "Apple announced...",
+      "content_type": "article",
+      "provider": {
+        "name": "Yahoo Finance",
+        "url": "http://finance.yahoo.com/"
+      },
+      "thumbnail": {
+        "url": "https://s.yimg.com/...",
+        "width": 5971,
+        "height": 3980
+      },
+      "related_tickers": ["AAPL"],
+      "tags": [],
+      "fetched_at": "2026-01-28T12:00:00Z",
+      "metadata": {
+        "yfinance_content_type": "STORY",
+        "editors_pick": true,
+        "is_premium": false
+      },
+      "summary_ja": null,
+      "category": null,
+      "sentiment": null
+    }
+  ]
+}
+```
+
+---
 
 ### Phase 1: 基盤構築
 
@@ -197,21 +634,21 @@ news/
 
 ### 高優先度（設計前に決定必須）
 
-| 項目 | 問題点 | 対応案 |
-|------|--------|--------|
-| yfinance API仕様の事前調査 | ニュース取得の制限、レート制限、取得可能なデータ形式が不明 | Phase 0として調査フェーズを追加 |
-| JSON出力フォーマット定義 | 「フォーマット作成が必要」とあるが具体的スキーマが未定義 | Phase 1でArticleモデルと共に定義 |
-| market パッケージとの関係 | 既存の `src/market/` にもyfinance関連実装がある | 重複回避・連携方針を明記 |
-| 具体的なティッカー/シンボル定義 | index, sector, stock, commodity, macro で何を取得するか未定義 | 設定ファイルで定義、デフォルト値も用意 |
+| 項目 | 問題点 | 対応案 | 状態 |
+|------|--------|--------|------|
+| yfinance API仕様の事前調査 | ニュース取得の制限、レート制限、取得可能なデータ形式が不明 | Phase 0として調査フェーズを追加 | ✅ 完了 |
+| JSON出力フォーマット定義 | 「フォーマット作成が必要」とあるが具体的スキーマが未定義 | Phase 1でArticleモデルと共に定義 | 未着手 |
+| market パッケージとの関係 | 既存の `src/market/` にもyfinance関連実装がある | 重複回避・連携方針を明記 | ✅ 完了（重複なし確認済み） |
+| 具体的なティッカー/シンボル定義 | index, sector, stock, commodity, macro で何を取得するか未定義 | 設定ファイルで定義、デフォルト値も用意 | 未着手 |
 
 ### 中優先度（Phase 1-2 開始前に決定）
 
-| 項目 | 問題点 | 対応案 |
-|------|--------|--------|
-| 重複チェックの具体的方法 | URLハッシュ？タイトル類似度？yfinanceニュースのユニークキーは何か | Phase 0調査で特定 |
-| 設定ファイルスキーマ | `news_sources.yaml` の具体的な形式が未定義 | Phase 1で定義 |
-| テストのモック方針 | yfinance APIをどうモックするか | vcr.py または responses を検討 |
-| GitHub投稿先Project番号 | どのProjectに投稿するか | 設定ファイルで指定可能に |
+| 項目 | 問題点 | 対応案 | 状態 |
+|------|--------|--------|------|
+| 重複チェックの具体的方法 | URLハッシュ？タイトル類似度？yfinanceニュースのユニークキーは何か | Phase 0調査で特定 | ✅ 完了（`id`フィールド使用） |
+| 設定ファイルスキーマ | `news_sources.yaml` の具体的な形式が未定義 | Phase 1で定義 | 未着手 |
+| テストのモック方針 | yfinance APIをどうモックするか | vcr.py または responses を検討 | 未着手 |
+| GitHub投稿先Project番号 | どのProjectに投稿するか | 設定ファイルで指定可能に | 未着手 |
 
 ### 低優先度（実装時に決定可能）
 
