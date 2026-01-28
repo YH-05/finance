@@ -6,7 +6,7 @@
 
 ## 主要機能
 
-- [ ] 共通ロギング設定（`logs/YYYY-MM-DD-HH-MM.log` 形式で日付別出力）
+- [ ] 共通ロギング設定（`logs/YYYY-MM-DD-HHMM.log` 形式で日付別出力）
 - [ ] 開発・本番ともにコンソール + ファイル両方に出力
 - [ ] 全パッケージで共通の `get_logger()` を提供
 - [ ] 環境変数による設定（LOG_DIR, LOG_FILE_ENABLED, LOG_LEVEL, LOG_FORMAT）
