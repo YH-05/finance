@@ -125,6 +125,8 @@ jobs:
       run: uv sync --all-extras
 
     - name: Run tests
+      env:
+        PYTHONPATH: ${{ github.workspace }}/src
       run: |
         uv run pytest tests/ \
           --cov=src \
