@@ -13,6 +13,8 @@ index
     IndexNewsSource for stock market indices (^GSPC, ^DJI, etc.).
 macro
     MacroNewsSource for macro economics news (keyword search).
+search
+    SearchNewsSource for general-purpose theme-based news (keyword search).
 sector
     SectorNewsSource for sector ETFs (XLF, XLK, etc.).
 stock
@@ -29,6 +31,7 @@ from .base import (
 from .commodity import CommodityNewsSource
 from .index import IndexNewsSource
 from .macro import MacroNewsSource
+from .search import SearchNewsSource
 from .sector import SectorNewsSource
 from .stock import StockNewsSource
 
@@ -36,6 +39,7 @@ __all__ = [
     "CommodityNewsSource",
     "IndexNewsSource",
     "MacroNewsSource",
+    "SearchNewsSource",
     "SectorNewsSource",
     "StockNewsSource",
     "fetch_with_retry",
