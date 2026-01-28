@@ -1,5 +1,7 @@
 # news プロジェクト
 
+**GitHub Project**: [#24](https://github.com/users/YH-05/projects/24)
+
 ## 概要
 
 **汎用ニュース収集パッケージ** - 複数のデータソースからニュースを取得し、様々な出力先に保存する。
