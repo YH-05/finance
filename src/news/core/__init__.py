@@ -17,6 +17,9 @@ from .result import (
     FetchResult,
     RetryConfig,
 )
+from .source import (
+    SourceProtocol,
+)
 
 __all__: list[str] = [
     "Article",
@@ -28,6 +31,7 @@ __all__: list[str] = [
     "RateLimitError",
     "RetryConfig",
     "SourceError",
+    "SourceProtocol",
     "Thumbnail",
     "ValidationError",
 ]
