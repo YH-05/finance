@@ -6,7 +6,7 @@ repos:
       - id: trailing-whitespace
         exclude: ^(notebook_sample|src_sample)/
       - id: end-of-file-fixer
-        exclude: ^(notebook_sample|src_sample)/
+        exclude: ^(notebook_sample|src_sample)/|\.gitkeep$
       - id: check-yaml
       - id: check-toml
       - id: check-json
