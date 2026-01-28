@@ -204,7 +204,7 @@ skips = ["B101", "B311", "B404", "B603", "B607"]
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 # finance_news_workflow/unit tests reference non-existent finance_news_collector module
-norecursedirs = ["tests/skills/finance_news_workflow/unit"]
+norecursedirs = ["tests/skills/finance_news_workflow/unit", "tests/market/unit/bloomberg", "tests/market/property/bloomberg"]
 addopts = [
     "-ra",
     "--strict-markers",
