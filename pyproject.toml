@@ -5,6 +5,7 @@ description = "金融市場分析・コンテンツ発信支援ライブラリ"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "utils",
     "structlog>=25.4.0",
     "rich>=13.7.0",
     "filelock>=3.20.3",
@@ -217,7 +218,13 @@ markers = [
     "integration: marks tests as integration tests",
 ]
 
-[tool.uv]
+[tool.uv.workspace]
+members = [
+    "src/utils_core",
+]
+
+[tool.uv.sources]
+utils = { workspace = true }
 
 [dependency-groups]
 dev = [
