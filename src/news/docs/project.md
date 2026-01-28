@@ -24,6 +24,21 @@
 - それに対し、newsパッケージが提供するものは、あらかじめ定めたニュースソースからの情報収集自動化機能(AIに情報を渡すところまで)である
 - またrss mcpサーバー(financeプロジェクトで作成しているsrc/rssのこと)はRSSフィード取得に特化しているが、newsパッケージはRSSフィードを取り扱わない
 
+### 既存エージェントとの関係
+
+本パッケージは2つの利用パターンを想定：
+
+**パターンA: 対話的利用**
+- ユーザー → Claude Code → newsパッケージ呼び出し
+- `.claude/agents/` 配下の `finance-news-*` エージェント群がnewsパッケージを呼び出す
+- 取得したデータをJSON形式で受け取り、エージェント側でGitHub Issue投稿等を実行
+
+**パターンB: 自動実行ワークフロー**
+- cron等 → Pythonスクリプト → newsパッケージでニュース収集
+- → Claude Agent SDK経由でエージェント起動
+- → エージェントが要約・分類・GitHub投稿を実行
+- 定期的なニュース収集の完全自動化を実現
+
 ### webスクレイピングの方針
 - bot対策: コード実行にインターバルを設けてレート制限を回避
 - スクレイピング手法: BeautifulSoup、Playwrightなど
@@ -31,9 +46,10 @@
 
 ### 設計方針
 
-- yfinanceからのニュース取得を最優先で実装
+- **yfinance 最優先**: Phase 2 で yfinance ニュース取得を実装
 - **プラグイン方式**: データソースを抽象化し、新しいソースを容易に追加可能
-  - ただしwebスクレイピングのみ対象。yfinanceのニュース収集など、特定のAPIがすでにあるものは除外。
+  - yfinance: 株式・指数・セクター・コモディティ・マクロ経済ニュース
+  - scraper: 将来的なWebスクレイピング対応（サイト別に開発）
 - **AI処理統合**: Claude Code エージェントと連携し、要約・分類を自動化
   - Claude Codeには収集したニュース情報を**json形式**で渡す(ニュースソースのURLやサマリー、日付などのメタ情報も含めて)
   - 収集情報の集約場所は一か所に定める: `finance/data/news/` フォルダに`{ニュースソース名}_{YYYYMMDD}.json`の命名規則でjson出力
@@ -43,6 +59,14 @@
 
 ## 主要機能
 
+### Phase 0: yfinance 調査
+
+- [ ] yfinance.Ticker.news の仕様確認
+- [ ] 取得可能なニュースの種類・形式・フィールド
+- [ ] レート制限の有無
+- [ ] ユニークキー（重複判定に使える項目）の特定
+- [ ] 既存 market パッケージとの重複確認
+
 ### Phase 1: 基盤構築
 
 - [ ] データソース抽象化（SourceProtocol）
@@ -51,41 +75,55 @@
 - [ ] 基本的なニュース記事モデル（Article）
 - [ ] メインコレクター基盤（Collector）
 
-### Phase 2: データソース実装
+### Phase 2: yfinance ニュースソース実装
 
-- [ ] Web API ソース（NewsAPI, Tavily 等）
-- [ ] Web スクレイピングソース
-  - [ ] 汎用スクレイパー基盤（Playwright/BeautifulSoup/lxml）
-  - [ ] サイト別パーサー設定（CSS セレクタ、XPath）
-  - [ ] ページネーション対応
-  - [ ] レート制限・礼儀正しいクローリング
+- [ ] yfinance ニュース取得基盤
+  - [ ] 株価指数ニュース（index.py）
+  - [ ] セクター別ニュース（sector.py）
+  - [ ] 個別銘柄ニュース（stock.py）
+  - [ ] コモディティニュース（commodity.py）
+  - [ ] マクロ経済ニュース（macro.py）
 - [ ] ソース設定ファイル（YAML/JSON）
 
-### Phase 3: 出力先実装
+### Phase 3: Web スクレイピングソース実装（将来拡張）
+
+- [ ] 汎用スクレイパー基盤（Playwright/BeautifulSoup/lxml）
+- [ ] サイト別パーサー設定（CSS セレクタ、XPath）
+- [ ] ページネーション対応
+- [ ] レート制限・礼儀正しいクローリング
+
+### Phase 4: 出力先実装
 
 - [ ] ファイル出力（JSON必須, ParquetやMarkdownはオプションとして）
   - [ ] 出力フォーマット作成
 - [ ] GitHub Issue/Project 出力
 - [ ] 週次レポート用データ出力（`aggregated_data.json` 形式）
 
-### Phase 4: 運用機能
+### Phase 5: 運用機能
 
 - [ ] 重複チェック機構
 - [ ] 取得履歴管理
 - [ ] エラーハンドリング・リトライ
 
-### Phase 5: AIエージェント連携
+### Phase 6: AIエージェント連携（Claude Agent SDK）
 
 - [ ] ProcessorProtocol（AI処理の抽象化）
+- [ ] Claude Agent SDK 統合
+  - [ ] エージェント呼び出し基盤
+  - [ ] 記事データのJSON受け渡し
 - [ ] 要約生成プロセッサ
-  - [ ] Claude Code エージェントへの記事データ受け渡し
+  - [ ] 要約エージェント呼び出し
   - [ ] 日本語要約の生成・保存
 - [ ] 分類・タグ付けプロセッサ
+  - [ ] 分類エージェント呼び出し
   - [ ] カテゴリ自動分類（金融、テクノロジー等）
   - [ ] キーワード・エンティティ抽出
 - [ ] パイプライン実行
   - [ ] 収集 → 処理 → 出力の一連のフロー
   - [ ] バッチ処理・並列実行対応
+- [ ] 自動実行ワークフロー
+  - [ ] cron/スケジューラ連携
+  - [ ] 定期実行スクリプト
 
 ## アーキテクチャ
 
@@ -97,23 +135,22 @@ news/
 │   ├── sink.py         # SinkProtocol（出力先抽象化）
 │   └── processor.py    # ProcessorProtocol（AI処理抽象化）
 ├── sources/
-│   ├── api/            # API ソース実装
-│   │   ├── newsapi.py
-│   │   └── tavily.py
 │   ├── yfinance/       # python yfinanceライブラリを使った実装
+│   │   ├── __init__.py
+│   │   ├── base.py     # yfinance共通基盤
 │   │   ├── index.py    # マーケット・株式指数に関するニュース取得
 │   │   ├── sector.py   # 各セクター・業種に関するニュース取得
 │   │   ├── stock.py    # 個別銘柄に関するニュース取得
-│   │   ├── commodity.py   # コモディティ（原油、金属、農作物など）に関するニュース取得
+│   │   ├── commodity.py # コモディティ（原油、金属、農作物など）に関するニュース取得
 │   │   └── macro.py    # マクロ経済（金利含める）に関するニュース取得
-│   └── scraper/        # スクレイピングソース実装
+│   └── scraper/        # スクレイピングソース実装（将来拡張）
 │       ├── base.py     # 汎用スクレイパー基盤
 │       ├── parser.py   # サイト別パーサー設定
 │       └── sites/      # サイト固有の実装
-├── processors/         # AI処理実装
-│   ├── summarizer.py   # 要約生成（Claude連携）
-│   ├── classifier.py   # 分類・タグ付け
-│   └── pipeline.py     # 処理パイプライン
+├── processors/         # AI処理実装（Claude Agent SDK経由）
+│   ├── summarizer.py   # 要約生成エージェント呼び出し
+│   ├── classifier.py   # 分類・タグ付けエージェント呼び出し
+│   └── pipeline.py     # 収集→処理→出力のパイプライン管理
 ├── sinks/
 │   ├── file.py         # ファイル出力（JSON, Parquet）
 │   ├── github.py       # GitHub Issue/Project 出力
@@ -131,14 +168,15 @@ news/
 
 ### 依存関係
 
-| パッケージ | 用途 |
-|-----------|------|
-| `httpx` | HTTP クライアント（API 呼び出し） |
-| `pydantic` | 設定・モデル定義 |
-| `beautifulsoup4` | Web スクレイピング |
-| `playwright` | Web スクレイピング |
-| `lxml` | 高速 HTML/XML パーサー |
-| `anthropic` | Claude API（AI処理） |
+| パッケージ | 用途 | Phase |
+|-----------|------|-------|
+| `pydantic` | 設定・モデル定義 | Phase 1 |
+| `yfinance` | 株式・指数ニュース取得 | Phase 2 |
+| `httpx` | HTTP クライアント（スクレイピング用） | Phase 3 |
+| `beautifulsoup4` | Web スクレイピング | Phase 3 |
+| `playwright` | 動的サイトスクレイピング | Phase 3 |
+| `lxml` | 高速 HTML/XML パーサー | Phase 3 |
+| `claude-code-sdk` | Claude Agent SDK（エージェント呼び出し） | Phase 6 |
 
 ### 既存パッケージとの関係
 
@@ -154,6 +192,33 @@ news/
 2. **設定駆動**: コード変更なしで取得対象・出力先を変更可能
 3. **信頼性**: 重複なし、エラー時のリトライ、取得履歴管理
 4. **テスト**: 各コンポーネントのカバレッジ 80% 以上
+
+## 要検討事項
+
+### 高優先度（設計前に決定必須）
+
+| 項目 | 問題点 | 対応案 |
+|------|--------|--------|
+| yfinance API仕様の事前調査 | ニュース取得の制限、レート制限、取得可能なデータ形式が不明 | Phase 0として調査フェーズを追加 |
+| JSON出力フォーマット定義 | 「フォーマット作成が必要」とあるが具体的スキーマが未定義 | Phase 1でArticleモデルと共に定義 |
+| market パッケージとの関係 | 既存の `src/market/` にもyfinance関連実装がある | 重複回避・連携方針を明記 |
+| 具体的なティッカー/シンボル定義 | index, sector, stock, commodity, macro で何を取得するか未定義 | 設定ファイルで定義、デフォルト値も用意 |
+
+### 中優先度（Phase 1-2 開始前に決定）
+
+| 項目 | 問題点 | 対応案 |
+|------|--------|--------|
+| 重複チェックの具体的方法 | URLハッシュ？タイトル類似度？yfinanceニュースのユニークキーは何か | Phase 0調査で特定 |
+| 設定ファイルスキーマ | `news_sources.yaml` の具体的な形式が未定義 | Phase 1で定義 |
+| テストのモック方針 | yfinance APIをどうモックするか | vcr.py または responses を検討 |
+| GitHub投稿先Project番号 | どのProjectに投稿するか | 設定ファイルで指定可能に |
+
+### 低優先度（実装時に決定可能）
+
+| 項目 | 問題点 | 対応案 |
+|------|--------|--------|
+| リトライ戦略の詳細 | 回数、バックオフ間隔が未定義 | Phase 5で実装時に決定 |
+| Phase間の並列可能性 | Phase 4と5は並列可能では？ | 依存関係を整理して判断 |
 
 ## 非スコープ
 
