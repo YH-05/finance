@@ -24,7 +24,7 @@ from market.types import (
 
 # Check if blpapi is available
 try:
-    import blpapi
+    import blpapi  # type: ignore[import-not-found]
 
     HAS_BLPAPI = True
 except ImportError:
