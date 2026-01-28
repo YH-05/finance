@@ -14,7 +14,7 @@ from ..types import FeedItem
 # Logger lazy initialization to avoid circular imports
 def _get_logger() -> Any:
     try:
-        from ..utils.logging_config import get_logger
+        from utils_core.logging import get_logger
 
         return get_logger(__name__, module="parser")
     except ImportError:

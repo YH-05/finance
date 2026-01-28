@@ -10,8 +10,9 @@ from pathlib import Path
 
 from filelock import FileLock, Timeout
 
+from utils_core.logging import get_logger
+
 from ..exceptions import FileLockError
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 

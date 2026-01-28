@@ -1,7 +1,7 @@
-"""Utility functions for the rss package."""
+"""Utility functions for the rss package.
 
-from .logging_config import get_logger
+Note: Logging functionality has been migrated to utils_core.logging.
+Import get_logger from utils_core.logging instead.
+"""
 
-__all__ = [
-    "get_logger",
-]
+__all__: list[str] = []

@@ -22,7 +22,7 @@ from ..types import Feed, FeedItemsData, FetchResult, FetchStatus
 def _get_logger() -> Any:
     """Get logger with lazy initialization to avoid circular imports."""
     try:
-        from ..utils.logging_config import get_logger
+        from utils_core.logging import get_logger
 
         return get_logger(__name__, module="feed_fetcher")
     except ImportError:
