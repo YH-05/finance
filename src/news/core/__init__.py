@@ -1,3 +1,17 @@
 """Core functionality of the news package."""
 
-__all__: list[str] = []
+from .article import (
+    Article,
+    ArticleSource,
+    ContentType,
+    Provider,
+    Thumbnail,
+)
+
+__all__: list[str] = [
+    "Article",
+    "ArticleSource",
+    "ContentType",
+    "Provider",
+    "Thumbnail",
+]
