@@ -193,6 +193,8 @@ cum_return = np.exp(log_return.cumsum()).fillna(1)
 
 ### ThreadPoolExecutor による並列化
 
+[注意!]レートリミット制限に注意
+
 ```python
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
