@@ -1,9 +1,7 @@
 """Logging utilities for the finance project."""
 
-from .config import (
-    add_caller_info,
-    add_log_level_upper,
-    add_timestamp,
+from utils.logging.config import (
+    LoggerProtocol,
     get_logger,
     log_context,
     log_performance,
@@ -12,9 +10,7 @@ from .config import (
 )
 
 __all__ = [
-    "add_caller_info",
-    "add_log_level_upper",
-    "add_timestamp",
+    "LoggerProtocol",
     "get_logger",
     "log_context",
     "log_performance",
