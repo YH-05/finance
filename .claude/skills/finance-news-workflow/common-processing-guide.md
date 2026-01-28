@@ -605,8 +605,21 @@ stats["date_filtered"] = date_skipped
 > これにより、異なるフィードから取得された同一記事を早期に除外できる。
 
 ```python
+# 除去対象のトラッキングパラメータ
+# プレフィックス型（末尾 "_" で判定）と完全一致型の両方を含む
+TRACKING_PARAMS = {
+    # プレフィックス型（既存）
+    "utm_", "guce_",
+    # 完全一致型（既存）
+    "ncid", "fbclid", "gclid",
+    # 完全一致型（新規追加）
+    "ref", "source", "campaign", "si", "mc_cid", "mc_eid",
+    "sref", "taid", "mod", "cmpid",
+}
+
+
 def normalize_url(url: str) -> str:
-    """URLを正規化して比較しやすくする
+    """URLを正規化して比較しやすくする（強化版）
 
     Parameters
     ----------
@@ -620,9 +633,16 @@ def normalize_url(url: str) -> str:
 
     Notes
     -----
+    正規化ルール（比較時のみ適用。保存URLは変更しない）:
     - 末尾のスラッシュを除去
-    - トラッキングパラメータ（utm_* など）を除去
-    - 小文字化
+    - ホスト部分の小文字化
+    - ``www.`` プレフィックスの除去
+    - フラグメント（``#section``）の除去
+    - 末尾 ``/index.html`` の除去
+    - トラッキングパラメータの除去（TRACKING_PARAMS 参照）
+
+    重要: この関数は重複チェックの比較用です。
+    Issue作成時に使用するURLは、RSSオリジナルの link をそのまま使用してください。
     """
     if not url:
         return ""
@@ -635,21 +655,35 @@ def normalize_url(url: str) -> str:
     # URLをパース
     parsed = urllib.parse.urlparse(url)
 
+    # ホスト部分: 小文字化 + www. 除去
+    netloc = parsed.netloc.lower()
+    if netloc.startswith("www."):
+        netloc = netloc[4:]
+
+    # フラグメント除去
+    parsed = parsed._replace(fragment="")
+
+    # 末尾 /index.html 除去
+    path = parsed.path
+    if path.endswith("/index.html"):
+        path = path[:-len("/index.html")]
+    parsed = parsed._replace(path=path)
+
     # クエリパラメータからトラッキング用を除去
     if parsed.query:
         params = urllib.parse.parse_qs(parsed.query)
-        # utm_*, guce_*, ncid などを除去
         filtered_params = {
             k: v for k, v in params.items()
-            if not k.startswith(('utm_', 'guce_', 'ncid', 'fbclid', 'gclid'))
+            if not any(
+                k.startswith(prefix) if prefix.endswith("_") else k == prefix
+                for prefix in TRACKING_PARAMS
+            )
         }
         new_query = urllib.parse.urlencode(filtered_params, doseq=True)
         parsed = parsed._replace(query=new_query)
 
-    # 再構築（小文字化はホスト部分のみ）
-    normalized = urllib.parse.urlunparse(
-        parsed._replace(netloc=parsed.netloc.lower())
-    )
+    # 再構築
+    normalized = urllib.parse.urlunparse(parsed._replace(netloc=netloc))
 
     return normalized
 
@@ -769,101 +803,267 @@ def check_duplicates_and_count(
     return non_duplicates
 ```
 
-## Phase 4: GitHub投稿
+## Phase 4: バッチ投稿（article-fetcherに委譲）
 
-### ステップ4.0: 記事内容取得と要約生成【サブエージェント委譲】
-
-> **🚨 コンテキスト効率化のため、WebFetch処理をサブエージェントに委譲します 🚨**
+> **🚨 コンテキスト効率化のため、Issue作成を含む全処理をサブエージェントに委譲します 🚨**
 >
-> 記事本文の取得と日本語要約の生成は `news-article-fetcher` サブエージェントが担当します。
-> これにより、WebFetch結果（HTML→Markdown本文）がテーマエージェントのコンテキストを圧迫しません。
+> 記事本文の取得、日本語要約の生成、Issue作成、Project追加、Status/Date設定は
+> すべて `news-article-fetcher` サブエージェント（Sonnet）が担当します。
+> テーマエージェントはフィルタリング済み記事をバッチ分割して委譲するのみです。
 
-**重要**: Issue作成前に、必ず `news-article-fetcher` サブエージェントで記事本文を取得して日本語要約を生成すること。
+### Phase 4 処理フロー概要
 
-#### 4.0.1: サブエージェント委譲の利点
-
-| 指標 | 従来方式 | サブエージェント方式 |
-|-----|---------|-------------------|
-| テーマエージェントのコンテキスト | 各記事の本文+要約が蓄積 | URLと結果のみ |
-| 要約生成ロジック | 5ファイルに重複 | 1ファイルに集約 |
-| 保守性 | 5ファイル同時修正が必要 | 1ファイルのみ修正 |
-| 処理の独立性 | 低（WebFetch失敗がエージェント全体に影響） | 高（サブエージェント内で完結） |
-
-#### 4.0.2: サブエージェント呼び出し方式
-
-フィルタリング後の記事リストを `news-article-fetcher` サブエージェントに渡します。
-
-```python
-# ステップ4.0.1: フィルタリング済み記事リストを準備
-articles_to_fetch = []
-for item in filtered_items:
-    articles_to_fetch.append({
-        "url": item["link"],
-        "title": item["title"],
-        "summary": item.get("summary", ""),
-        "feed_source": item["source_feed"],
-        "published": item.get("published", "")
-    })
-
-# ステップ4.0.2: news-article-fetcher サブエージェントを呼び出し
-fetch_result = Task(
-    subagent_type="news-article-fetcher",
-    description="記事本文取得と要約生成",
-    prompt=f"""以下の記事リストから本文を取得し、日本語要約を生成してください。
-
-入力:
-{json.dumps({"articles": articles_to_fetch, "theme": theme_name}, ensure_ascii=False, indent=2)}
-
-出力形式（JSON）:
-{{
-  "results": [
-    {{
-      "url": "...",
-      "original_title": "...",
-      "japanese_title": "...",
-      "japanese_summary": "...",
-      "success": true
-    }}
-  ],
-  "stats": {{
-    "total": N,
-    "success": M,
-    "failed": K
-  }}
-}}
-""",
-    model="haiku"
-)
-
-# ステップ4.0.3: 結果を使用
-for result in fetch_result["results"]:
-    if result["success"]:
-        japanese_title = result["japanese_title"]
-        japanese_summary = result["japanese_summary"]
-        # → Issue作成へ進む
-    else:
-        ログ出力: f"要約生成失敗: {result['url']}"
-        # フォールバック要約を使用（result["japanese_summary"]に警告付き要約が入っている）
+```
+Phase 4: バッチ投稿（article-fetcherに委譲）
+├── URL必須バリデーション
+├── 5件ずつバッチ分割（公開日時の新しい順）
+└── 各バッチ → news-article-fetcher（Sonnet）
+    ├── ペイウォール/JS事前チェック（article_content_checker.py）
+    ├── チェック通過 → WebFetch → 要約生成
+    ├── チェック不通過 → スキップ（stats記録）
+    ├── Issue作成 + close（.github/ISSUE_TEMPLATE/news-article.yml 準拠）
+    ├── Project追加
+    ├── Status設定
+    └── 公開日時設定
 ```
 
-#### 4.0.3: サブエージェントの戻り値
+### ステップ4.1: URL必須バリデーション【投稿前チェック】
 
-| フィールド | 型 | 説明 |
-|-----------|-----|------|
-| `url` | str | 元記事のURL（RSSオリジナル、WebFetchリダイレクト先ではない） |
-| `original_title` | str | 元のタイトル（英語の場合あり） |
-| `japanese_title` | str | 日本語タイトル（翻訳済み） |
-| `japanese_summary` | str | 4セクション構成の日本語要約（400字以上） |
-| `success` | bool | 処理成功フラグ |
-| `error` | str? | 失敗時のエラーメッセージ（オプション） |
+> **🚨 Issue作成前に必ず実行すること 🚨**
+>
+> URLが存在しない記事は**絶対にIssue作成してはいけません**。
+> バッチ分割前にURLなし記事を除外すること。
 
-> **🚨 URL設定の重要ルール 🚨**: サブエージェントから返される `url` は、
+```python
+def validate_url_for_issue(item: dict) -> tuple[bool, str | None]:
+    """Issue作成前にURLの存在を検証する
+
+    Parameters
+    ----------
+    item : dict
+        RSSから取得した記事アイテム
+
+    Returns
+    -------
+    tuple[bool, str | None]
+        (検証成功, エラーメッセージ)
+
+    Notes
+    -----
+    - URLがない記事はIssue作成しない
+    - 空文字列もURLなしとして扱う
+    """
+
+    url = item.get("link", "").strip()
+
+    if not url:
+        return False, f"URLなし: {item.get('title', '不明')}"
+
+    if not url.startswith(("http://", "https://")):
+        return False, f"無効なURL形式: {url}"
+
+    return True, None
+
+
+# 使用例: バッチ分割前のフィルタリング
+valid_items = []
+for item in filtered_items:
+    valid, error = validate_url_for_issue(item)
+    if not valid:
+        ログ出力: f"スキップ（URL必須違反）: {error}"
+        stats["skipped_no_url"] += 1
+        continue
+    valid_items.append(item)
+```
+
+### ステップ4.2: バッチ処理
+
+コンテキスト使用量を削減するため、記事を5件ずつ `news-article-fetcher` に委譲します。
+
+| パラメータ | 値 |
+|-----------|-----|
+| バッチサイズ | 5件 |
+| 処理順序 | 公開日時の新しい順 |
+| 委譲先 | news-article-fetcher（Sonnet） |
+| 委譲範囲 | ペイウォールチェック + WebFetch + 要約生成 + Issue作成 + Project追加 + Status/Date設定 |
+
+#### バッチ処理フロー
+
+```python
+BATCH_SIZE = 5
+
+# 公開日時の新しい順にソート
+sorted_items = sorted(valid_items, key=lambda x: x.get("published", ""), reverse=True)
+
+all_created = []
+all_skipped = []
+
+for i in range(0, len(sorted_items), BATCH_SIZE):
+    batch = sorted_items[i:i + BATCH_SIZE]
+    batch_num = (i // BATCH_SIZE) + 1
+    ログ出力: f"バッチ {batch_num} 処理中... ({len(batch)}件)"
+
+    # article-fetcher に委譲
+    result = Task(
+        subagent_type="news-article-fetcher",
+        description=f"バッチ{batch_num}: 記事取得・要約・Issue作成",
+        prompt=f"""以下の記事を処理してください。
+
+入力:
+{json.dumps({
+    "articles": [
+        {
+            "url": item["link"],
+            "title": item["title"],
+            "summary": item.get("summary", ""),
+            "feed_source": item.get("feed_source", ""),
+            "published": item.get("published", "")
+        }
+        for item in batch
+    ],
+    "issue_config": issue_config  # build_issue_config() で構築済み
+}, ensure_ascii=False, indent=2)}
+""")
+
+    # 結果集約
+    all_created.extend(result.get("created_issues", []))
+    all_skipped.extend(result.get("skipped", []))
+    stats["created"] += result["stats"]["issue_created"]
+    stats["failed"] += result["stats"]["issue_failed"]
+```
+
+#### バッチ間の状態管理
+
+- 各バッチの結果（`created_issues`, `skipped`）はテーマエージェント側で集約
+- 統計カウンタ（`stats`）は全バッチで共有・累積
+- バッチ失敗時も次のバッチは継続
+- 重複チェックはテーマエージェント側（バッチ分割前の Phase 3）で完了済み
+
+### ステップ4.3: article-fetcher 入力仕様
+
+#### articles[] の必須フィールド
+
+| フィールド | 必須 | 説明 |
+|-----------|------|------|
+| `url` | Yes | 元記事URL（RSSのlinkフィールド） |
+| `title` | Yes | 記事タイトル |
+| `summary` | Yes | RSS概要（フォールバック用） |
+| `feed_source` | Yes | フィード名 |
+| `published` | Yes | 公開日時（ISO 8601） |
+
+#### issue_config の必須フィールド
+
+| フィールド | 説明 | 例 |
+|-----------|------|-----|
+| `theme_key` | テーマキー | `"index"` |
+| `theme_label` | テーマ日本語名 | `"株価指数"` |
+| `status_option_id` | StatusのOption ID | `"3925acc3"` |
+| `project_id` | Project ID | `"PVT_kwHOBoK6AM4BMpw_"` |
+| `project_number` | Project番号 | `15` |
+| `project_owner` | Projectオーナー | `"YH-05"` |
+| `repo` | リポジトリ | `"YH-05/finance"` |
+| `status_field_id` | StatusフィールドID | `"PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"` |
+| `published_date_field_id` | 公開日フィールドID | `"PVTF_lAHOBoK6AM4BMpw_zg8BzrI"` |
+
+#### issue_config の構築パターン
+
+テーマエージェントはセッションファイルの `config` とテーマ固有設定を組み合わせて `issue_config` を構築します。
+
+```python
+def build_issue_config(
+    session_data: dict,
+    theme_key: str,
+    theme_label: str,
+    status_option_id: str,
+) -> dict:
+    """セッションデータからissue_configを構築する
+
+    Parameters
+    ----------
+    session_data : dict
+        オーケストレーターが作成したセッションファイルのデータ
+    theme_key : str
+        テーマキー（例: "index", "stock", "macro"）
+    theme_label : str
+        テーマ日本語名（例: "株価指数", "個別銘柄", "マクロ経済"）
+    status_option_id : str
+        GitHub ProjectのStatusフィールドのOption ID
+
+    Returns
+    -------
+    dict
+        article-fetcherに渡すissue_config
+    """
+
+    config = session_data["config"]
+    return {
+        "theme_key": theme_key,
+        "theme_label": theme_label,
+        "status_option_id": status_option_id,
+        "project_id": config["project_id"],
+        "project_number": config["project_number"],
+        "project_owner": config["project_owner"],
+        "repo": "YH-05/finance",
+        "status_field_id": config["status_field_id"],
+        "published_date_field_id": config["published_date_field_id"],
+    }
+```
+
+**使用例**:
+
+```python
+# テーマエージェント内での使用
+issue_config = build_issue_config(
+    session_data=session_data,
+    theme_key="index",
+    theme_label="株価指数",
+    status_option_id="3925acc3",
+)
+```
+
+### ステップ4.4: article-fetcher の戻り値
+
+article-fetcher は各バッチ処理後、以下のJSON形式で結果を返却します。
+
+```json
+{
+  "created_issues": [
+    {
+      "issue_number": 200,
+      "issue_url": "https://github.com/YH-05/finance/issues/200",
+      "title": "[株価指数] S&P500が過去最高値を更新",
+      "article_url": "https://www.cnbc.com/...",
+      "published_date": "2026-01-19"
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://...",
+      "title": "...",
+      "reason": "ペイウォール検出 (Tier 3: 'subscribe to continue' 検出, 本文320文字)"
+    }
+  ],
+  "stats": {
+    "total": 5,
+    "content_check_passed": 4,
+    "content_check_failed": 1,
+    "fetch_success": 3,
+    "fetch_failed": 1,
+    "issue_created": 3,
+    "issue_failed": 0,
+    "skipped_paywall": 1,
+    "skipped_format": 0
+  }
+}
+```
+
+> **🚨 URL設定の重要ルール 🚨**: `created_issues[].article_url` は
 > RSSオリジナルのlinkをそのまま保持しています。WebFetchでリダイレクトが
 > 発生しても、Issue記載のURLはこの値を使用してください。
 
-#### 4.0.4: 要約フォーマット（4セクション構成）
+### ステップ4.5: 要約フォーマット（4セクション構成）
 
-サブエージェントが生成する要約は以下のフォーマットに従います:
+article-fetcher が生成する要約は以下のフォーマットに従います:
 
 ```markdown
 ### 概要
@@ -893,361 +1093,24 @@ for result in fetch_result["results"]:
 | 市場への影響 | 株価・為替・債券への影響 | 影響の言及がない場合 |
 | 今後の見通し | 予想、アナリスト見解 | 将来予測の言及がない場合 |
 
-#### 4.0.5: サブエージェントの詳細仕様
+### ステップ4.6: article-fetcher の詳細仕様
 
 サブエージェントの詳細な実装については以下を参照:
 `.claude/agents/news-article-fetcher.md`
 
-**サブエージェント内部での処理**:
-1. 各記事URLに対してWebFetchで本文取得
-2. 4セクション構成の日本語要約を生成
-3. 英語タイトルを日本語に翻訳
-4. 失敗時はRSS概要を使用したフォールバック要約を生成
-5. 結果をJSON形式で一括返却
-
-### ステップ4.1: 日時フォーマット関数
-
-**重要**: GitHub Projectでソートするため、公開日時をISO 8601形式に変換します。
-また、Issue本文には「収集日時」（Issue作成時の日時）も必ず記載します。
-
-```python
-from datetime import datetime, timezone
-import pytz
-
-
-def format_published_iso(published_str: str | None) -> str:
-    """公開日をISO 8601形式に変換（YYYY-MM-DD）"""
-
-    if not published_str:
-        # 公開日がない場合は現在日時を使用
-        return datetime.now(timezone.utc).strftime('%Y-%m-%d')
-
-    try:
-        dt = datetime.fromisoformat(published_str.replace('Z', '+00:00'))
-    except ValueError:
-        # パース失敗時は現在日時を使用
-        dt = datetime.now(timezone.utc)
-
-    # Date型フィールドはYYYY-MM-DD形式
-    return dt.strftime('%Y-%m-%d')
-
-
-def format_published_jst(published_str: str | None) -> str:
-    """公開日をJST YYYY-MM-DD HH:MM形式に変換（Issue本文用）"""
-
-    jst = pytz.timezone('Asia/Tokyo')
-
-    if not published_str:
-        # 公開日がない場合は現在日時を使用
-        return datetime.now(jst).strftime('%Y-%m-%d %H:%M')
-
-    try:
-        dt = datetime.fromisoformat(published_str.replace('Z', '+00:00'))
-    except ValueError:
-        # パース失敗時は現在日時を使用
-        dt = datetime.now(timezone.utc)
-
-    dt_jst = dt.astimezone(jst)
-    return dt_jst.strftime('%Y-%m-%d %H:%M')
-
-
-def get_collected_at_jst() -> str:
-    """収集日時（現在時刻）をJST形式で取得（YYYY-MM-DD HH:MM）
-
-    Issue作成時に呼び出し、収集日時として記録する。
-    """
-
-    jst = pytz.timezone('Asia/Tokyo')
-    return datetime.now(jst).strftime('%Y-%m-%d %H:%M')
-```
-
-### ステップ4.1.5: URL必須バリデーション【投稿前チェック】
-
-> **🚨 Issue作成前に必ず実行すること 🚨**
->
-> URLが存在しない記事は**絶対にIssue作成してはいけません**。
-
-```python
-def validate_url_for_issue(item: dict, fetch_result: dict | None = None) -> tuple[bool, str | None]:
-    """Issue作成前にURLの存在を検証する
-
-    Parameters
-    ----------
-    item : dict
-        RSSから取得した記事アイテム
-    fetch_result : dict | None
-        news-article-fetcherの結果（オプション）
-
-    Returns
-    -------
-    tuple[bool, str | None]
-        (検証成功, エラーメッセージ)
-
-    Notes
-    -----
-    - URLがない記事はIssue作成しない
-    - 空文字列もURLなしとして扱う
-    """
-
-    url = item.get("link", "").strip()
-
-    if not url:
-        return False, f"URLなし: {item.get('title', '不明')}"
-
-    if not url.startswith(("http://", "https://")):
-        return False, f"無効なURL形式: {url}"
-
-    return True, None
-
-
-# 使用例: Phase 4投稿ループ
-for item in filtered_items:
-    # URL必須バリデーション
-    valid, error = validate_url_for_issue(item)
-    if not valid:
-        ログ出力: f"⛔ スキップ（URL必須違反）: {error}"
-        stats["skipped_no_url"] += 1
-        continue
-
-    # Issue作成へ進む
-    ...
-```
-
-**統計に追加するフィールド**:
-
-```python
-stats["skipped_no_url"] = 0  # URLなしでスキップした件数
-```
-
-**結果報告への追加**:
-
-```markdown
-- **URLなしスキップ**: {skipped_no_url}件
-```
-
-### ステップ4.2: Issue作成（テンプレート読み込み方式）
-
-**重要: Issueタイトルの日本語化ルール**:
-1. **タイトル形式**: `[{theme_ja}] {japanese_title}`
-2. **テーマ名プレフィックス（日本語）**:
-   - `[株価指数]`, `[個別銘柄]`, `[セクター]`, `[マクロ経済]`, `[AI]`
-3. **タイトル翻訳**: 英語記事の場合は日本語に翻訳（要約生成時に同時に実施）
-
-**🚨 URL設定の重要ルール 🚨**:
-
-> **絶対に守ること**: `{{url}}`には**RSSから取得したオリジナルのlink**をそのまま使用すること。
->
-> - ✅ 正しい: RSSの`link`フィールドの値をそのまま使用
-> - ❌ 間違い: WebFetchのリダイレクト先URL
-> - ❌ 間違い: URLを推測・生成する
-> - ❌ 間違い: URLを短縮・変換する
->
-> URLが存在しない場合は記事をスキップしてください。
-
-```python
-def get_article_url(rss_item: dict) -> str | None:
-    """RSSアイテムから記事URLを取得する
-
-    Parameters
-    ----------
-    rss_item : dict
-        RSSから取得した記事アイテム
-
-    Returns
-    -------
-    str | None
-        記事のURL（RSSのlinkフィールドの値そのまま）
-        linkが存在しない場合はNone
-
-    Notes
-    -----
-    - linkフィールドの値を一切変換・加工せずにそのまま返す
-    - WebFetchで別URLにリダイレクトされても、Issue記載はオリジナルURLを使用
-    """
-
-    url = rss_item.get("link")
-
-    if not url:
-        ログ出力: f"警告: URLなしの記事をスキップ: {rss_item.get('title', '不明')}"
-        return None
-
-    # URLは一切変換せず、そのまま返す
-    return url
-```
-
-**Issueボディの直接生成**:
-
-```bash
-# Step 1: 収集日時を取得（Issue作成直前に実行）
-collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
-
-# Step 2: RSSからオリジナルURLを取得（絶対に変換しない）
-# $link はRSSの"link"フィールドから取得した値をそのまま使用
-# WebFetchでリダイレクトされても、このURLは変更しない
-
-# Step 3: Issueボディを直接生成（HEREDOCを使用）
-body=$(cat <<EOF
-${japanese_summary}
-
-### 情報源URL
-
-${link}
-
-### 公開日
-
-${published_jst}(JST)
-
-### 収集日時
-
-${collected_at}(JST)
-
-### カテゴリ
-
-${category}
-
-### フィード/情報源名
-
-${source}
-
-### 備考・メモ
-
-- テーマ: ${theme_name}
-- AI判定理由: ${判定理由}
-
----
-
-**自動収集**: このIssueは \`/finance-news-workflow\` コマンドによって自動作成されました。
-EOF
-)
-
-# Step 4: Issue作成（closed状態で作成）
-issue_url=$(gh issue create \
-    --repo YH-05/finance \
-    --title "[{theme_ja}] {japanese_title}" \
-    --body "$body" \
-    --label "news")
-
-# Issue番号を抽出
-issue_number=$(echo "$issue_url" | grep -oE '[0-9]+$')
-
-# Step 5: Issueをcloseする（ニュースIssueはclosed状態で保存）
-gh issue close "$issue_number" --repo YH-05/finance
-```
-
-**Issueボディのフィールド一覧**:
-
-| フィールド | 説明 | 例 |
-|-----------|------|-----|
-| `${japanese_summary}` | 日本語要約（400字以上） | - |
-| `${link}` | 情報源URL | `https://...` |
-| `${published_jst}` | 公開日時 | `2026-01-15 10:00` |
-| `${collected_at}` | 収集日時 | `2026-01-15 14:30` |
-| `${category}` | カテゴリ | `Index（株価指数）` |
-| `${source}` | フィード名 | `CNBC - Markets` |
-| `${theme_name}` | テーマ名 | `マクロ経済` |
-| `${判定理由}` | AI判定理由 | `FRBの金利政策に関する記事` |
-
-### ステップ4.3: Project追加
-
-```bash
-gh project item-add 15 \
-    --owner YH-05 \
-    --url {issue_url}
-```
-
-### ステップ4.4: Status設定（GraphQL API）
-
-**Step 1: Issue Node IDを取得**
-
-```bash
-gh api graphql -f query='
-query {
-  repository(owner: "YH-05", name: "finance") {
-    issue(number: {issue_number}) {
-      id
-    }
-  }
-}'
-```
-
-**Step 2: Project Item IDを取得**
-
-```bash
-gh api graphql -f query='
-query {
-  node(id: "{issue_node_id}") {
-    ... on Issue {
-      projectItems(first: 10) {
-        nodes {
-          id
-          project {
-            number
-          }
-        }
-      }
-    }
-  }
-}'
-```
-
-**Step 3: Statusフィールドを設定**
-
-```bash
-gh api graphql -f query='
-mutation {
-  updateProjectV2ItemFieldValue(
-    input: {
-      projectId: "PVT_kwHOBoK6AM4BMpw_"
-      itemId: "{project_item_id}"
-      fieldId: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
-      value: {
-        singleSelectOptionId: "{status_option_id}"
-      }
-    }
-  ) {
-    projectV2Item {
-      id
-    }
-  }
-}'
-```
-
-**⚠️ 注意: ステップ4.4完了後、必ず続けてステップ4.5（公開日時設定）を実行すること！**
-
-### ステップ4.5: 公開日時フィールドを設定（Date型）【必須・最重要】
-
-> **🚨 絶対に省略しないでください！🚨**
->
-> このステップを省略すると、GitHub Projectで「No date」と表示され、
-> 記事の時系列管理ができなくなります。
-
-**⚠️ 必須**: このステップを省略するとGitHub Projectで「No date」と表示されます。
-**⚠️ 必須**: Issue作成後、Status設定と共に必ず実行すること。
-**⚠️ 確認**: 実行後、GitHub Project上で日付が正しく表示されていることを確認すること。
-
-GitHub ProjectでIssueを公開日時でソートするため、必ず設定してください。
-
-```bash
-gh api graphql -f query='
-mutation {
-  updateProjectV2ItemFieldValue(
-    input: {
-      projectId: "PVT_kwHOBoK6AM4BMpw_"
-      itemId: "{project_item_id}"
-      fieldId: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
-      value: {
-        date: "{published_iso}"
-      }
-    }
-  ) {
-    projectV2Item {
-      id
-    }
-  }
-}'
-```
-
-**日付形式**: `YYYY-MM-DD`（例: `2026-01-15`）
+**article-fetcher 内部での処理（各記事に対して）**:
+1. ペイウォール/JS事前チェック（`article_content_checker.py` 呼び出し）
+2. チェック通過時: WebFetchで本文取得
+3. 4セクション構成の日本語要約を生成
+4. 英語タイトルを日本語に翻訳
+5. Issue作成（`gh issue create` + close）-- `.github/ISSUE_TEMPLATE/news-article.yml` 準拠
+6. Project追加（`gh project item-add`）
+7. Status設定（GraphQL API）
+8. 公開日時設定（GraphQL API）
+9. チェック不通過時: `skipped` に記録しスキップ
+
+> **重要な変更**: WebFetch失敗時のフォールバック要約生成（RSS summaryベース）は**廃止**。
+> 本文が取得できない記事の要約は品質が担保できないため、Issue作成をスキップする。
 
 ## Phase 5: 結果報告
 
