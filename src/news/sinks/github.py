@@ -23,7 +23,7 @@ True
 from __future__ import annotations
 
 import json
-import subprocess
+import subprocess  # nosec B404 - gh CLI is trusted
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, Field, field_validator
@@ -385,7 +385,7 @@ class GitHubSink:
             if self._config.repository:
                 cmd.extend(["--repo", self._config.repository])
 
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 - gh CLI with safe args
                 cmd,
                 capture_output=True,
                 text=True,
@@ -456,7 +456,7 @@ class GitHubSink:
         for label in self._config.labels:
             cmd.extend(["--label", label])
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 - gh CLI with safe args
             cmd,
             capture_output=True,
             text=True,
@@ -503,7 +503,7 @@ class GitHubSink:
             issue_url,
         ]
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 - gh CLI with safe args
             cmd,
             capture_output=True,
             text=True,
