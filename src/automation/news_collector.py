@@ -167,7 +167,7 @@ class NewsCollector:
             Claude Agent SDK が利用できない場合
         """
         try:
-            from claude_agent_sdk import ClaudeAgentOptions, query
+            from claude_agent_sdk import ClaudeAgentOptions, query  # type: ignore[import-not-found]
         except ImportError as e:
             logger.error(
                 "Claude Agent SDK not installed",

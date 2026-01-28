@@ -32,7 +32,7 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-import blpapi
+import blpapi  # type: ignore[import-not-found]
 import pandas as pd
 
 from database.utils.logging_config import get_logger
