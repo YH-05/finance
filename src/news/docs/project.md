@@ -7,7 +7,8 @@
 ### 解決する課題
 
 - 複数のニュースソースを統一的に扱いたい
-  - python yfinanceで取得できるマーケット・セクター・個別銘柄のニュース
+  - python yfinance Tickerクラスで取得できる個別銘柄・指数・セクターETF・コモディティのニュース
+  - python yfinance Searchクラスで取得できるキーワード検索によるマクロ経済・テーマ別ニュース
   - webスクレイピングで取得した記事など
 - 出力先（ファイル、GitHub Issue、レポート用データ）を柔軟に切り替えたい
   - GitHub ProjectにIssueとしてニュースを投稿したい
@@ -47,8 +48,11 @@
 ### 設計方針
 
 - **yfinance 最優先**: Phase 2 で yfinance ニュース取得を実装
+  - **Ticker クラス**: 個別銘柄・指数・セクターETF・コモディティなど、特定ティッカーに関連するニュース
+  - **Search クラス**: マクロ経済・テーマ別など、キーワード検索によるニュース
 - **プラグイン方式**: データソースを抽象化し、新しいソースを容易に追加可能
-  - yfinance: 株式・指数・セクター・コモディティ・マクロ経済ニュース
+  - yfinance Ticker: 株式・指数・セクター・コモディティニュース
+  - yfinance Search: マクロ経済・テーマ別ニュース（キーワード検索）
   - scraper: 将来的なWebスクレイピング対応（サイト別に開発）
 - **AI処理統合**: Claude Code エージェントと連携し、要約・分類を自動化
   - Claude Codeには収集したニュース情報を**json形式**で渡す(ニュースソースのURLやサマリー、日付などのメタ情報も含めて)
@@ -62,6 +66,7 @@
 ### Phase 0: yfinance 調査 ✅ 完了
 
 - [x] yfinance.Ticker.news の仕様確認
+- [x] yfinance.Search.news の仕様確認
 - [x] 取得可能なニュースの種類・形式・フィールド
 - [x] レート制限の有無
 - [x] ユニークキー（重複判定に使える項目）の特定
@@ -69,12 +74,50 @@
 
 #### 調査結果（2026-01-28）
 
+##### yfinance.Ticker（個別銘柄・指数用）
+
 **API仕様**:
 - `ticker.news` プロパティ: デフォルト10件のニュースを取得
 - `ticker.get_news(count=N, tab='news')` メソッド: 件数とタブ指定可能
   - `tab` オプション: `"news"`, `"all"`, `"press releases"`
+- **制約**: 指定したティッカー（銘柄・指数・ETF等）に関連するニュースのみ取得可能
+- **用途**: 個別銘柄、株価指数、セクターETF、コモディティのニュース取得
 
-**データ構造**:
+##### yfinance.Search（キーワード検索用）
+
+**API仕様**:
+- `yf.Search(query, news_count=N)` でキーワード検索によるニュース取得
+- パラメータ:
+  - `query`: 検索キーワード（例: "Federal Reserve", "inflation", "AI technology"）
+  - `news_count`: 取得するニュース件数
+  - `max_results`: クォート結果の最大件数
+  - `include_research`: リサーチデータを含めるかどうか
+- **制約なし**: 任意のキーワードでニュース検索が可能
+- **用途**: テーマ別ニュース収集（マクロ経済、テクノロジートレンド等）
+
+**使用例**:
+```python
+import yfinance as yf
+
+# Searchクラスでキーワード検索
+news = yf.Search("Federal Reserve interest rate", news_count=10).news
+news = yf.Search("inflation economy", news_count=10).news
+news = yf.Search("AI technology stocks", news_count=10).news
+```
+
+##### TickerとSearchの使い分け
+
+| ユースケース | 推奨クラス | 理由 |
+|-------------|-----------|------|
+| 個別銘柄ニュース（AAPL, GOOGL等） | Ticker | ティッカー指定で関連ニュースを取得 |
+| 株価指数ニュース（^GSPC, ^DJI等） | Ticker | 指数ティッカーで関連ニュースを取得 |
+| セクターETFニュース（XLF, XLK等） | Ticker | ETFティッカーで関連ニュースを取得 |
+| コモディティニュース（GC=F, CL=F等） | Ticker | コモディティティッカーで取得 |
+| マクロ経済ニュース | **Search** | "Federal Reserve", "inflation"等のキーワードで検索 |
+| テーマ別ニュース | **Search** | 任意のテーマキーワードで検索 |
+| 業界動向ニュース | **Search** | "semiconductor industry"等で検索 |
+
+**Ticker.news データ構造**:
 ```python
 # 返り値: list[dict]
 # 各要素の構造:
@@ -107,6 +150,26 @@
         "metadata": {"editorsPick": true/false},
         "finance": {"premiumFinance": {...}},
         "storyline": {"storylineItems": [...]}  # 関連記事
+    }
+}
+```
+
+**Search.news データ構造**:
+```python
+# 返り値: list[dict]
+# Ticker.newsと同様の構造（content配下にニュース情報）
+# ただし related_tickers は検索クエリからは自動付与されない
+{
+    "id": "UUID形式の記事ID",
+    "content": {
+        "id": "UUID形式の記事ID",
+        "contentType": "STORY" | "VIDEO",
+        "title": "記事タイトル",
+        "summary": "記事要約",
+        "pubDate": "2026-01-27T23:33:53Z",
+        "canonicalUrl": {"url": "https://..."},
+        "provider": {"displayName": "...", "url": "..."},
+        "thumbnail": {...}
     }
 }
 ```
@@ -189,20 +252,20 @@ class RetryConfig:
 #### エラー回避の実装パターン
 
 ```python
-def fetch_all(tickers: list[str]) -> list[FetchResult]:
+# === Ticker ベース（個別銘柄・指数用） ===
+def fetch_all_by_ticker(tickers: list[str]) -> list[FetchResult]:
     """複数ティッカーのニュースを取得（エラー時も継続）"""
     results: list[FetchResult] = []
 
     for ticker in tickers:
         try:
-            articles = fetch_with_retry(ticker)
+            articles = fetch_ticker_with_retry(ticker)
             results.append(FetchResult(
                 ticker=ticker,
                 articles=articles,
                 success=True,
             ))
         except Exception as e:
-            # エラーをログに記録し、次のティッカーへ継続
             logger.error(
                 "Failed to fetch news",
                 ticker=ticker,
@@ -214,6 +277,36 @@ def fetch_all(tickers: list[str]) -> list[FetchResult]:
                 articles=[],
                 success=False,
                 error=SourceError(str(e), source="yfinance", ticker=ticker),
+            ))
+
+    return results
+
+
+# === Search ベース（キーワード検索用） ===
+def fetch_all_by_query(queries: list[str], news_count: int = 10) -> list[FetchResult]:
+    """複数キーワードでニュースを検索（エラー時も継続）"""
+    results: list[FetchResult] = []
+
+    for query in queries:
+        try:
+            articles = fetch_search_with_retry(query, news_count)
+            results.append(FetchResult(
+                query=query,
+                articles=articles,
+                success=True,
+            ))
+        except Exception as e:
+            logger.error(
+                "Failed to search news",
+                query=query,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            results.append(FetchResult(
+                query=query,
+                articles=[],
+                success=False,
+                error=SourceError(str(e), source="yfinance-search", ticker=None),
             ))
 
     return results
@@ -265,10 +358,13 @@ class RateLimitError(SourceError):
 ```python
 @dataclass
 class FetchResult:
-    """ニュース取得結果"""
-    ticker: str
+    """ニュース取得結果（Ticker/Search両対応）"""
     articles: list[Article]
     success: bool
+    # Ticker ベースの場合
+    ticker: str | None = None
+    # Search ベースの場合
+    query: str | None = None
     error: SourceError | None = None
     fetched_at: datetime = field(default_factory=datetime.now)
     retry_count: int = 0
@@ -280,6 +376,11 @@ class FetchResult:
     @property
     def is_empty(self) -> bool:
         return len(self.articles) == 0
+
+    @property
+    def source_identifier(self) -> str:
+        """取得元の識別子（ticker または query）"""
+        return self.ticker or self.query or "unknown"
 ```
 
 ---
@@ -309,7 +410,8 @@ class ContentType(str, Enum):
 
 class ArticleSource(str, Enum):
     """記事ソース"""
-    YFINANCE = "yfinance"
+    YFINANCE_TICKER = "yfinance_ticker"  # Ticker.news 経由
+    YFINANCE_SEARCH = "yfinance_search"  # Search.news 経由
     SCRAPER = "scraper"
     RSS = "rss"  # 将来的な連携用
 
@@ -401,13 +503,14 @@ class Article(BaseModel):
 #### yfinance → Article 変換
 
 ```python
-def yfinance_to_article(raw: dict, ticker: str) -> Article:
-    """yfinance のニュースデータを Article モデルに変換
+# === Ticker.news → Article 変換 ===
+def ticker_news_to_article(raw: dict, ticker: str) -> Article:
+    """yfinance Ticker.news のデータを Article モデルに変換
 
     Parameters
     ----------
     raw : dict
-        yfinance から取得した生データ（{"id": ..., "content": {...}}）
+        yfinance Ticker.news から取得した生データ
     ticker : str
         取得元のティッカーシンボル
 
@@ -418,21 +521,18 @@ def yfinance_to_article(raw: dict, ticker: str) -> Article:
     """
     content = raw.get("content", {})
 
-    # contentType のマッピング
     content_type_map = {
         "STORY": ContentType.ARTICLE,
         "VIDEO": ContentType.VIDEO,
     }
 
     return Article(
-        # 必須フィールド
         url=content.get("canonicalUrl", {}).get("url"),
         title=content.get("title", ""),
         published_at=datetime.fromisoformat(
             content.get("pubDate", "").replace("Z", "+00:00")
         ),
-        source=ArticleSource.YFINANCE,
-        # オプションフィールド
+        source=ArticleSource.YFINANCE_TICKER,
         summary=content.get("summary"),
         content_type=content_type_map.get(
             content.get("contentType"),
@@ -447,7 +547,7 @@ def yfinance_to_article(raw: dict, ticker: str) -> Article:
             width=content.get("thumbnail", {}).get("originalWidth"),
             height=content.get("thumbnail", {}).get("originalHeight"),
         ) if content.get("thumbnail", {}).get("originalUrl") else None,
-        related_tickers=[ticker],
+        related_tickers=[ticker],  # ティッカーを関連銘柄として設定
         metadata={
             "yfinance_content_type": content.get("contentType"),
             "editors_pick": content.get("metadata", {}).get("editorsPick", False),
@@ -456,14 +556,70 @@ def yfinance_to_article(raw: dict, ticker: str) -> Article:
             "lang": content.get("canonicalUrl", {}).get("lang"),
         },
     )
+
+
+# === Search.news → Article 変換 ===
+def search_news_to_article(raw: dict, query: str) -> Article:
+    """yfinance Search.news のデータを Article モデルに変換
+
+    Parameters
+    ----------
+    raw : dict
+        yfinance Search.news から取得した生データ
+    query : str
+        検索に使用したキーワード
+
+    Returns
+    -------
+    Article
+        変換後の Article インスタンス
+    """
+    content = raw.get("content", {})
+
+    content_type_map = {
+        "STORY": ContentType.ARTICLE,
+        "VIDEO": ContentType.VIDEO,
+    }
+
+    return Article(
+        url=content.get("canonicalUrl", {}).get("url"),
+        title=content.get("title", ""),
+        published_at=datetime.fromisoformat(
+            content.get("pubDate", "").replace("Z", "+00:00")
+        ),
+        source=ArticleSource.YFINANCE_SEARCH,
+        summary=content.get("summary"),
+        content_type=content_type_map.get(
+            content.get("contentType"),
+            ContentType.UNKNOWN
+        ),
+        provider=Provider(
+            name=content.get("provider", {}).get("displayName", "Unknown"),
+            url=content.get("provider", {}).get("url"),
+        ) if content.get("provider") else None,
+        thumbnail=Thumbnail(
+            url=content.get("thumbnail", {}).get("originalUrl"),
+            width=content.get("thumbnail", {}).get("originalWidth"),
+            height=content.get("thumbnail", {}).get("originalHeight"),
+        ) if content.get("thumbnail", {}).get("originalUrl") else None,
+        related_tickers=[],  # Search では自動付与されない
+        tags=[query],  # 検索キーワードをタグとして設定
+        metadata={
+            "yfinance_content_type": content.get("contentType"),
+            "search_query": query,  # 検索クエリを保存
+            "region": content.get("canonicalUrl", {}).get("region"),
+            "lang": content.get("canonicalUrl", {}).get("lang"),
+        },
+    )
 ```
 
 #### JSON 出力フォーマット
 
+**Ticker ベース（個別銘柄・指数）**:
 ```json
 {
   "meta": {
-    "source": "yfinance",
+    "source": "yfinance_ticker",
     "ticker": "AAPL",
     "fetched_at": "2026-01-28T12:00:00Z",
     "article_count": 10,
@@ -474,7 +630,7 @@ def yfinance_to_article(raw: dict, ticker: str) -> Article:
       "url": "https://finance.yahoo.com/news/...",
       "title": "Apple Reports Q1 2026 Earnings",
       "published_at": "2026-01-27T23:33:53Z",
-      "source": "yfinance",
+      "source": "yfinance_ticker",
       "summary": "Apple announced...",
       "content_type": "article",
       "provider": {
@@ -502,6 +658,48 @@ def yfinance_to_article(raw: dict, ticker: str) -> Article:
 }
 ```
 
+**Search ベース（キーワード検索）**:
+```json
+{
+  "meta": {
+    "source": "yfinance_search",
+    "query": "Federal Reserve interest rate",
+    "fetched_at": "2026-01-28T12:00:00Z",
+    "article_count": 10,
+    "version": "1.0"
+  },
+  "articles": [
+    {
+      "url": "https://finance.yahoo.com/news/...",
+      "title": "Fed Signals Rate Cut in 2026",
+      "published_at": "2026-01-27T20:15:00Z",
+      "source": "yfinance_search",
+      "summary": "The Federal Reserve indicated...",
+      "content_type": "article",
+      "provider": {
+        "name": "Reuters",
+        "url": "https://www.reuters.com/"
+      },
+      "thumbnail": {
+        "url": "https://s.yimg.com/...",
+        "width": 1200,
+        "height": 800
+      },
+      "related_tickers": [],
+      "tags": ["Federal Reserve interest rate"],
+      "fetched_at": "2026-01-28T12:00:00Z",
+      "metadata": {
+        "yfinance_content_type": "STORY",
+        "search_query": "Federal Reserve interest rate"
+      },
+      "summary_ja": null,
+      "category": null,
+      "sentiment": null
+    }
+  ]
+}
+```
+
 ---
 
 ### Phase 1: 基盤構築
@@ -515,12 +713,18 @@ def yfinance_to_article(raw: dict, ticker: str) -> Article:
 ### Phase 2: yfinance ニュースソース実装
 
 - [ ] yfinance ニュース取得基盤
-  - [ ] 株価指数ニュース（index.py）
-  - [ ] セクター別ニュース（sector.py）
-  - [ ] 個別銘柄ニュース（stock.py）
-  - [ ] コモディティニュース（commodity.py）
-  - [ ] マクロ経済ニュース（macro.py）
+  - [ ] 共通基盤（base.py）- Ticker/Search両対応
+  - [ ] **Ticker ベース**（特定銘柄・指数に関連するニュース）
+    - [ ] 株価指数ニュース（index.py）- ^GSPC, ^DJI 等のティッカー指定
+    - [ ] セクター別ニュース（sector.py）- XLF, XLK 等のセクターETF指定
+    - [ ] 個別銘柄ニュース（stock.py）- AAPL, GOOGL 等のティッカー指定
+    - [ ] コモディティニュース（commodity.py）- GC=F, CL=F 等のティッカー指定
+  - [ ] **Search ベース**（キーワード検索によるニュース）
+    - [ ] マクロ経済ニュース（macro.py）- "Federal Reserve", "inflation" 等のキーワード検索
+    - [ ] テーマ別ニュース（search.py）- 任意キーワードでの汎用検索
 - [ ] ソース設定ファイル（YAML/JSON）
+  - [ ] Ticker用設定（ティッカーリスト）
+  - [ ] Search用設定（キーワードリスト）
 
 ### Phase 3: Web スクレイピングソース実装（将来拡張）
 
@@ -574,12 +778,18 @@ news/
 ├── sources/
 │   ├── yfinance/       # python yfinanceライブラリを使った実装
 │   │   ├── __init__.py
-│   │   ├── base.py     # yfinance共通基盤
-│   │   ├── index.py    # マーケット・株式指数に関するニュース取得
-│   │   ├── sector.py   # 各セクター・業種に関するニュース取得
-│   │   ├── stock.py    # 個別銘柄に関するニュース取得
-│   │   ├── commodity.py # コモディティ（原油、金属、農作物など）に関するニュース取得
-│   │   └── macro.py    # マクロ経済（金利含める）に関するニュース取得
+│   │   ├── base.py     # yfinance共通基盤（Ticker/Search両対応）
+│   │   │
+│   │   │  # === Ticker ベース（特定銘柄・指数に関連するニュース） ===
+│   │   ├── index.py    # 株価指数ニュース（^GSPC, ^DJI等のティッカー指定）
+│   │   ├── sector.py   # セクターETFニュース（XLF, XLK等のティッカー指定）
+│   │   ├── stock.py    # 個別銘柄ニュース（AAPL, GOOGL等のティッカー指定）
+│   │   ├── commodity.py # コモディティニュース（GC=F, CL=F等のティッカー指定）
+│   │   │
+│   │   │  # === Search ベース（キーワード検索によるニュース） ===
+│   │   ├── macro.py    # マクロ経済ニュース（"Federal Reserve"等のキーワード検索）
+│   │   └── search.py   # テーマ別ニュース（任意キーワードでの汎用検索）
+│   │
 │   └── scraper/        # スクレイピングソース実装（将来拡張）
 │       ├── base.py     # 汎用スクレイパー基盤
 │       ├── parser.py   # サイト別パーサー設定
@@ -637,9 +847,10 @@ news/
 | 項目 | 問題点 | 対応案 | 状態 |
 |------|--------|--------|------|
 | yfinance API仕様の事前調査 | ニュース取得の制限、レート制限、取得可能なデータ形式が不明 | Phase 0として調査フェーズを追加 | ✅ 完了 |
+| yfinance Search クラス調査 | Tickerクラス以外のニュース取得手段が不明 | Phase 0で追加調査 | ✅ 完了（キーワード検索対応確認） |
 | JSON出力フォーマット定義 | 「フォーマット作成が必要」とあるが具体的スキーマが未定義 | Phase 1でArticleモデルと共に定義 | 未着手 |
 | market パッケージとの関係 | 既存の `src/market/` にもyfinance関連実装がある | 重複回避・連携方針を明記 | ✅ 完了（重複なし確認済み） |
-| 具体的なティッカー/シンボル定義 | index, sector, stock, commodity, macro で何を取得するか未定義 | 設定ファイルで定義、デフォルト値も用意 | 未着手 |
+| 具体的なティッカー/キーワード定義 | Ticker用（index, sector, stock, commodity）とSearch用（macro等）で何を取得するか未定義 | 設定ファイルで定義、デフォルト値も用意 | 未着手 |
 
 ### 中優先度（Phase 1-2 開始前に決定）
 
