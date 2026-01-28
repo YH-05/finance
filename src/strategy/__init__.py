@@ -8,6 +8,8 @@ This package provides portfolio strategy analysis tools including:
 - Integration with market, analyze, and factor packages
 """
 
+from utils_core.logging import get_logger
+
 from .integration import (
     FactorBasedRiskCalculator,
     IntegratedStrategyBuilder,
@@ -20,7 +22,6 @@ from .integration import (
 )
 from .output import ResultFormatter
 from .risk import RiskCalculator, RiskMetricsResult
-from .utils.logging_config import get_logger
 from .visualization import ChartGenerator
 
 __all__ = [

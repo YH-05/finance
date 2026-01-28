@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Literal
 
 import plotly.graph_objects as go
 
-from ..utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from ..portfolio import Portfolio
