@@ -8,6 +8,7 @@ Features
 - 日付別ログファイル出力（finance-YYYY-MM-DD.log 形式）
 - 環境変数による設定（LOG_DIR, LOG_FILE_ENABLED, LOG_LEVEL, LOG_FORMAT）
 - 重複ハンドラー追加の防止
+- ProcessorFormatter による logging ハンドラー連携
 """
 
 import functools
@@ -32,6 +33,19 @@ from ..types import LogFormat, LogLevel
 _initialized = False
 
 
+def _get_shared_processors() -> list[Any]:
+    """structlog と logging ハンドラーで共有するプロセッサーを返す."""
+    return [
+        structlog.contextvars.merge_contextvars,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+    ]
+
+
 def _ensure_basic_config() -> None:
     """get_logger 呼び出し前に最小限のロギング設定を確保する."""
     global _initialized
@@ -45,22 +59,35 @@ def _ensure_basic_config() -> None:
     if default_level not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
         default_level = "INFO"
 
-    logging.basicConfig(
-        format="%(message)s",
-        level=getattr(logging, default_level),
-        force=True,
+    # 共有プロセッサー
+    shared_processors = _get_shared_processors()
+
+    # コンソール用フォーマッター
+    console_formatter = structlog.stdlib.ProcessorFormatter(
+        foreign_pre_chain=shared_processors,
+        processors=[
+            structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+            structlog.dev.ConsoleRenderer(colors=True),
+        ],
     )
 
+    # ルートロガーを設定
+    root_logger = logging.getLogger()
+    root_logger.setLevel(getattr(logging, default_level))
+
+    # 既存のハンドラーをクリア
+    root_logger.handlers.clear()
+
+    # コンソールハンドラーを追加
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(console_formatter)
+    root_logger.addHandler(console_handler)
+
+    # structlog を設定（ProcessorFormatter 用）
     structlog.configure(
         processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.stdlib.filter_by_level,
-            structlog.stdlib.add_logger_name,
-            structlog.stdlib.add_log_level,
-            structlog.stdlib.PositionalArgumentsFormatter(),
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.dev.ConsoleRenderer(),
+            *shared_processors,
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
@@ -236,6 +263,8 @@ def setup_logging(
     force : bool
         既存の設定があっても強制的に再設定するか
     """
+    global _initialized
+
     load_dotenv(override=True)
 
     env_level = os.environ.get("LOG_LEVEL", "").upper()
@@ -265,77 +294,114 @@ def setup_logging(
         log_dir.mkdir(parents=True, exist_ok=True)
         final_log_file = _get_date_based_log_file(log_dir)
 
-    processors: list[Any] = [
+    level_str = level.upper()
+    level_value = getattr(logging, level_str)
+
+    # 共有プロセッサーを構築
+    shared_processors: list[Any] = [
         structlog.contextvars.merge_contextvars,
-        structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        add_log_level_upper,
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
     ]
 
     if include_timestamp:
-        processors.insert(3, add_timestamp)
+        shared_processors.append(add_timestamp)
 
     if include_caller_info:
-        processors.insert(4, add_caller_info)
+        shared_processors.append(add_caller_info)
 
+    shared_processors.extend(
+        [
+            add_log_level_upper,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.UnicodeDecoder(),
+        ]
+    )
+
+    # フォーマットに応じたレンダラーを選択
     is_development = (
         os.environ.get("PROJECT_ENV") == "development" or format == "console"
     )
 
     if format == "json":
-        processors.append(structlog.processors.JSONRenderer())
+        console_renderer: Any = structlog.processors.JSONRenderer()
+        file_renderer: Any = structlog.processors.JSONRenderer()
     elif format == "console" and is_development:
-        try:
-            processors.append(structlog.dev.ConsoleRenderer(colors=True))
-        except ImportError:
-            processors.append(structlog.dev.ConsoleRenderer())
+        console_renderer = structlog.dev.ConsoleRenderer(colors=True)
+        file_renderer = structlog.dev.ConsoleRenderer(colors=False)
     else:
-        processors.append(structlog.processors.KeyValueRenderer())
+        console_renderer = structlog.processors.KeyValueRenderer()
+        file_renderer = structlog.processors.KeyValueRenderer()
 
-    structlog.configure(
-        processors=processors,
-        context_class=dict,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,
-        cache_logger_on_first_use=True,
-    )
-
-    level_str = level.upper()
-    level_value = getattr(logging, level_str)
+    # ルートロガーを設定
+    root_logger = logging.getLogger()
 
     if force:
-        logging.root.handlers.clear()
+        root_logger.handlers.clear()
+        _initialized = False
 
-    logging.basicConfig(
-        format="%(message)s",
-        stream=sys.stdout,
-        level=level_value,
-        force=True,
+    root_logger.setLevel(level_value)
+
+    # コンソールハンドラーを追加（重複チェック）
+    has_console_handler = any(
+        isinstance(h, logging.StreamHandler) and not isinstance(h, logging.FileHandler)
+        for h in root_logger.handlers
     )
 
-    logging.root.setLevel(level_value)
+    if not has_console_handler:
+        console_formatter = structlog.stdlib.ProcessorFormatter(
+            foreign_pre_chain=shared_processors,
+            processors=[
+                structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                console_renderer,
+            ],
+        )
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(console_formatter)
+        console_handler.setLevel(level_value)
+        root_logger.addHandler(console_handler)
 
+    # ファイルハンドラーを追加（指定された場合）
     if final_log_file:
         final_log_file.parent.mkdir(parents=True, exist_ok=True)
 
         existing_file_handlers = [
             h
-            for h in logging.root.handlers
+            for h in root_logger.handlers
             if isinstance(h, logging.FileHandler)
             and h.baseFilename == str(final_log_file.resolve())
         ]
 
         if not existing_file_handlers:
+            file_formatter = structlog.stdlib.ProcessorFormatter(
+                foreign_pre_chain=shared_processors,
+                processors=[
+                    structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                    file_renderer,
+                ],
+            )
             file_handler = logging.FileHandler(final_log_file, encoding="utf-8")
-            file_handler.setLevel(getattr(logging, level_str))
-            file_handler.setFormatter(logging.Formatter("%(message)s"))
-            logging.root.addHandler(file_handler)
+            file_handler.setFormatter(file_formatter)
+            file_handler.setLevel(level_value)
+            root_logger.addHandler(file_handler)
 
-    if level != "DEBUG":
+    # structlog を設定（ProcessorFormatter 用）
+    structlog.configure(
+        processors=[
+            *shared_processors,
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=not force,
+    )
+
+    _initialized = True
+
+    if level_str != "DEBUG":
         for logger_name in ["urllib3", "asyncio", "filelock"]:
             logging.getLogger(logger_name).setLevel(logging.WARNING)
 

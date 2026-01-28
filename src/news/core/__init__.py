@@ -13,6 +13,12 @@ from .errors import (
     SourceError,
     ValidationError,
 )
+from .history import (
+    CollectionHistory,
+    CollectionRun,
+    SinkResult,
+    SourceStats,
+)
 from .processor import (
     ProcessorProtocol,
     ProcessorType,
@@ -32,6 +38,8 @@ from .source import (
 __all__: list[str] = [
     "Article",
     "ArticleSource",
+    "CollectionHistory",
+    "CollectionRun",
     "ContentType",
     "FetchResult",
     "NewsError",
@@ -41,9 +49,11 @@ __all__: list[str] = [
     "RateLimitError",
     "RetryConfig",
     "SinkProtocol",
+    "SinkResult",
     "SinkType",
     "SourceError",
     "SourceProtocol",
+    "SourceStats",
     "Thumbnail",
     "ValidationError",
 ]
