@@ -619,7 +619,9 @@ for task in tasks:
 
 #### Issue本文（テンプレート）
 
-テンプレート: `.github/ISSUE_TEMPLATE/news-article.md`
+テンプレート: `.github/ISSUE_TEMPLATE/news-article.yml`（GitHub UI用）
+
+**プログラムによるIssue作成**: HEREDOCで直接ボディを生成（`.claude/skills/finance-news-workflow/templates/issue-template.md` 参照）
 
 ```markdown
 ## 概要

@@ -56,22 +56,22 @@ GitHub Issue作成時のフォーマット定義。
 
 ---
 
-**自動収集**: このIssueは `/collect-finance-news` コマンドによって自動作成されました。
+**自動収集**: このIssueは `/finance-news-workflow` コマンドによって自動作成されました。
 ```
 
-## プレースホルダー一覧
+## フィールド一覧
 
-| プレースホルダー | 説明 | 例 | 必須 |
-|-----------------|------|-----|------|
-| `{{theme_ja}}` | テーマ名（日本語） | `株価指数` | ✅ |
-| `{{japanese_title}}` | 記事タイトル（日本語） | `S&P 500が最高値更新` | ✅ |
-| `{{summary}}` | 日本語要約（4セクション構成） | - | ✅ |
-| `{{url}}` | 元記事のURL | `https://cnbc.com/...` | ✅ |
-| `{{published_date}}` | 公開日時（JST形式） | `2026-01-15 10:00(JST)` | ✅ |
-| `{{collected_at}}` | 収集日時（JST形式） | `2026-01-15 14:30(JST)` | ✅ |
-| `{{category}}` | カテゴリ表記 | `Index（株価指数）` | ✅ |
-| `{{feed_source}}` | フィード名 | `CNBC - Markets` | ✅ |
-| `{{notes}}` | 備考・メモ | テーマ、AI判定理由 | ❌ |
+| フィールド | 説明 | 例 | 必須 |
+|-----------|------|-----|------|
+| `{{theme_ja}}` | テーマ名（日本語） | `株価指数` | Yes |
+| `{{japanese_title}}` | 記事タイトル（日本語） | `S&P 500が最高値更新` | Yes |
+| `{{summary}}` | 日本語要約（4セクション構成） | - | Yes |
+| `{{url}}` | 元記事のURL | `https://cnbc.com/...` | Yes |
+| `{{published_date}}` | 公開日時（JST形式） | `2026-01-15 10:00(JST)` | Yes |
+| `{{collected_at}}` | 収集日時（JST形式） | `2026-01-15 14:30(JST)` | Yes |
+| `{{category}}` | カテゴリ表記 | `Index（株価指数）` | Yes |
+| `{{feed_source}}` | フィード名 | `CNBC - Markets` | Yes |
+| `{{notes}}` | 備考・メモ | テーマ、AI判定理由 | No |
 
 ## 要約フォーマット（4セクション構成）
 
@@ -120,40 +120,63 @@ GitHub Issue作成時のフォーマット定義。
 
 > **絶対に守ること**: `{{url}}`には**RSSから取得したオリジナルのlink**をそのまま使用すること。
 >
-> - ✅ 正しい: RSSの`link`フィールドの値をそのまま使用
-> - ❌ 間違い: WebFetchのリダイレクト先URL
-> - ❌ 間違い: URLを推測・生成する
-> - ❌ 間違い: URLを短縮・変換する
+> - 正しい: RSSの`link`フィールドの値をそのまま使用
+> - 間違い: WebFetchのリダイレクト先URL
+> - 間違い: URLを推測・生成する
+> - 間違い: URLを短縮・変換する
 
 ## Issue作成手順
 
 ```bash
-# Step 1: テンプレート読み込み（frontmatter除外）
-template=$(cat .github/ISSUE_TEMPLATE/news-article.md | tail -n +7)
-
-# Step 2: 収集日時を取得
+# Step 1: 収集日時を取得
 collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
 
-# Step 3: プレースホルダーを置換
-body="${template//\{\{summary\}\}/$japanese_summary}"
-body="${body//\{\{url\}\}/$link}"
-body="${body//\{\{published_date\}\}/$published_jst(JST)}"
-body="${body//\{\{collected_at\}\}/$collected_at(JST)}"
-body="${body//\{\{category\}\}/$category}"
-body="${body//\{\{feed_source\}\}/$source}"
-body="${body//\{\{notes\}\}/$notes}"
+# Step 2: Issueボディを直接生成（HEREDOCを使用）
+body=$(cat <<EOF
+${japanese_summary}
 
-# Step 4: Issue作成
+### 情報源URL
+
+${link}
+
+### 公開日
+
+${published_jst}(JST)
+
+### 収集日時
+
+${collected_at}(JST)
+
+### カテゴリ
+
+${category}
+
+### フィード/情報源名
+
+${source}
+
+### 備考・メモ
+
+- テーマ: ${theme_name}
+- AI判定理由: ${判定理由}
+
+---
+
+**自動収集**: このIssueは \`/finance-news-workflow\` コマンドによって自動作成されました。
+EOF
+)
+
+# Step 3: Issue作成
 issue_url=$(gh issue create \
     --repo YH-05/finance \
     --title "[${theme_ja}] ${japanese_title}" \
     --body "$body" \
     --label "news")
 
-# Step 5: Issue番号を抽出
+# Step 4: Issue番号を抽出
 issue_number=$(echo "$issue_url" | grep -oE '[0-9]+$')
 
-# Step 6: Issueをclose（ニュースIssueはclosed状態で保存）
+# Step 5: Issueをclose（ニュースIssueはclosed状態で保存）
 gh issue close "$issue_number" --repo YH-05/finance
 ```
 
@@ -178,6 +201,6 @@ Issue作成後、以下を設定：
 
 ## 参照
 
-- **GitHub Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`
-- **共通処理ガイド**: `.claude/agents/finance_news_collector/common-processing-guide.md`
+- **GitHub Issueテンプレート（UI用）**: `.github/ISSUE_TEMPLATE/news-article.yml`
+- **共通処理ガイド**: `.claude/skills/finance-news-workflow/common-processing-guide.md`
 - **テーマ設定**: `data/config/finance-news-themes.json`

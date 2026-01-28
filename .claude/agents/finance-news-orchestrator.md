@@ -393,7 +393,7 @@ except Exception as e:
 
 - **テーマ設定**: `data/config/finance-news-themes.json`
 - **共通処理ガイド**: `.claude/skills/finance-news-workflow/common-processing-guide.md`
-- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`
+- **Issueテンプレート（UI用）**: `.github/ISSUE_TEMPLATE/news-article.yml`
 - **テーマ別エージェント**: `.claude/agents/finance-news-{theme}.md`
 - **コマンド**: `.claude/commands/collect-finance-news.md`
 

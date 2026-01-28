@@ -137,7 +137,7 @@ if not valid:
 
 ## 共通設定
 
-- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`（Markdown形式）
+- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.yml`（YAML形式、GitHub UI用）
 - **GitHub Project**: #15 (`PVT_kwHOBoK6AM4BMpw_`)
 - **Statusフィールド**: `PVTSSF_lAHOBoK6AM4BMpw_zg739ZE`
 - **公開日時フィールド**: `PVTF_lAHOBoK6AM4BMpw_zg8BzrI`（Date型、ソート用）
@@ -1075,28 +1075,50 @@ def get_article_url(rss_item: dict) -> str | None:
     return url
 ```
 
-**テンプレート読み込み→プレースホルダー置換**:
+**Issueボディの直接生成**:
 
 ```bash
-# Step 1: テンプレートを読み込む
-template=$(cat .github/ISSUE_TEMPLATE/news-article.md | tail -n +7)  # frontmatter除外
-
-# Step 2: 収集日時を取得（Issue作成直前に実行）
+# Step 1: 収集日時を取得（Issue作成直前に実行）
 collected_at=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
 
-# Step 3: RSSからオリジナルURLを取得（絶対に変換しない）
+# Step 2: RSSからオリジナルURLを取得（絶対に変換しない）
 # $link はRSSの"link"フィールドから取得した値をそのまま使用
 # WebFetchでリダイレクトされても、このURLは変更しない
 
-# Step 4: プレースホルダーを置換
-body="${template//\{\{summary\}\}/$japanese_summary}"
-body="${body//\{\{url\}\}/$link}"  # ← RSSオリジナルURLをそのまま使用
-body="${body//\{\{published_date\}\}/$published_jst(JST)}"
-body="${body//\{\{collected_at\}\}/$collected_at(JST)}"
-body="${body//\{\{category\}\}/$category}"
-body="${body//\{\{feed_source\}\}/$source}"
-body="${body//\{\{notes\}\}/- テーマ: $theme_name
-- AI判定理由: $判定理由}"
+# Step 3: Issueボディを直接生成（HEREDOCを使用）
+body=$(cat <<EOF
+${japanese_summary}
+
+### 情報源URL
+
+${link}
+
+### 公開日
+
+${published_jst}(JST)
+
+### 収集日時
+
+${collected_at}(JST)
+
+### カテゴリ
+
+${category}
+
+### フィード/情報源名
+
+${source}
+
+### 備考・メモ
+
+- テーマ: ${theme_name}
+- AI判定理由: ${判定理由}
+
+---
+
+**自動収集**: このIssueは \`/finance-news-workflow\` コマンドによって自動作成されました。
+EOF
+)
 
 # Step 4: Issue作成（closed状態で作成）
 issue_url=$(gh issue create \
@@ -1112,17 +1134,18 @@ issue_number=$(echo "$issue_url" | grep -oE '[0-9]+$')
 gh issue close "$issue_number" --repo YH-05/finance
 ```
 
-**テンプレートプレースホルダー一覧** (`.github/ISSUE_TEMPLATE/news-article.md`):
+**Issueボディのフィールド一覧**:
 
-| プレースホルダー | 説明 | 例 |
-|-----------------|------|-----|
-| `{{summary}}` | 日本語要約（400字以上） | - |
-| `{{url}}` | 情報源URL | `https://...` |
-| `{{published_date}}` | 公開日時 | `2026-01-15 10:00(JST)` |
-| `{{collected_at}}` | 収集日時 | `2026-01-15 14:30(JST)` |
-| `{{category}}` | カテゴリ | `Index（株価指数）` |
-| `{{feed_source}}` | フィード名 | `CNBC - Markets` |
-| `{{notes}}` | 備考・メモ | テーマ、AI判定理由 |
+| フィールド | 説明 | 例 |
+|-----------|------|-----|
+| `${japanese_summary}` | 日本語要約（400字以上） | - |
+| `${link}` | 情報源URL | `https://...` |
+| `${published_jst}` | 公開日時 | `2026-01-15 10:00` |
+| `${collected_at}` | 収集日時 | `2026-01-15 14:30` |
+| `${category}` | カテゴリ | `Index（株価指数）` |
+| `${source}` | フィード名 | `CNBC - Markets` |
+| `${theme_name}` | テーマ名 | `マクロ経済` |
+| `${判定理由}` | AI判定理由 | `FRBの金利政策に関する記事` |
 
 ### ステップ4.3: Project追加
 
@@ -1423,7 +1446,7 @@ except subprocess.CalledProcessError as e:
 
 ## 参考資料
 
-- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.md`（Markdown形式）
+- **Issueテンプレート**: `.github/ISSUE_TEMPLATE/news-article.yml`（YAML形式、GitHub UI用）
 - **オーケストレーター**: `.claude/agents/finance-news-orchestrator.md`
 - **コマンド**: `.claude/commands/collect-finance-news.md`
 - **GitHub Project**: https://github.com/users/YH-05/projects/15

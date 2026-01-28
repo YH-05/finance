@@ -1,0 +1,83 @@
+name: 📰 金融ニュース記事
+description: RSS/Webリサーチから収集した金融ニュース記事
+title: "[NEWS] "
+labels: ["news"]
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 記事要約
+      description: ニュース記事の要約を記載してください
+      placeholder: |
+        記事の主要な内容をここに記載します。
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 情報源URL
+      description: RSSの元記事URLを必ず入力してください
+      placeholder: https://example.com/article/123
+    validations:
+      required: true
+
+  - type: input
+    id: published_date
+    attributes:
+      label: 公開日
+      description: 記事の公開日時（ISO 8601形式推奨）
+      placeholder: "2026-01-28T09:00:00+09:00"
+    validations:
+      required: true
+
+  - type: input
+    id: collected_at
+    attributes:
+      label: 収集日時
+      description: この記事を収集した日時
+      placeholder: "2026-01-28T10:30:00+09:00"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: カテゴリ
+      description: ニュースのカテゴリを選択してください
+      options:
+        - Index（株価指数）
+        - Stock（個別銘柄）
+        - Sector（セクター分析）
+        - Macro（マクロ経済）
+        - Finance（金融・財務）
+        - AI（人工知能・テクノロジー）
+        - Other（その他）
+    validations:
+      required: true
+
+  - type: input
+    id: feed_source
+    attributes:
+      label: フィード/情報源名
+      description: RSS フィード名または情報源を記載してください
+      placeholder: Bloomberg, Reuters, Yahoo Finance など
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 備考・メモ
+      description: 追加のメモや備考があれば記載してください
+      placeholder: |
+        - 関連する他の記事
+        - 補足情報
+        など
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **自動収集**: このIssueは `/finance-news-workflow` コマンドによって自動作成されます。
