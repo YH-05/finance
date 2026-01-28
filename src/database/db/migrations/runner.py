@@ -4,7 +4,7 @@ import sqlite3
 from pathlib import Path
 
 from database.types import MigrationInfo
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

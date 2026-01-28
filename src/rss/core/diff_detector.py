@@ -8,7 +8,7 @@ from ..types import FeedItem
 # ロガーを遅延初期化で循環インポートを回避
 def _get_logger() -> Any:
     try:
-        from database.utils.logging_config import get_logger
+        from utils_core.logging import get_logger
 
         return get_logger(__name__, module="diff_detector")
     except ImportError:

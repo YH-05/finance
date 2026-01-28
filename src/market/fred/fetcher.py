@@ -12,7 +12,7 @@ from typing import Any
 import pandas as pd
 from fredapi import Fred
 
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 from .base_fetcher import BaseDataFetcher
 from .cache import SQLiteCache, generate_cache_key

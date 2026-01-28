@@ -13,8 +13,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from pytest_httpserver import HTTPServer  # type: ignore[import-untyped]
 
-from database.utils.logging_config import get_logger
 from rss import FeedFetcher, FeedManager, FeedReader
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

@@ -203,8 +203,7 @@ duckdb_path = get_db_path("duckdb", "analytics")
 #### ロギング
 
 ```python
-from database import get_logger
-from database.utils.logging_config import setup_logging, log_context
+from utils_core.logging import get_logger, setup_logging, log_context
 
 # ロガー取得
 logger = get_logger(__name__)

@@ -16,7 +16,7 @@ import pandas as pd
 import yfinance as yf
 
 from analyze.config.loader import get_return_periods, get_symbols
-from database.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="returns")
 

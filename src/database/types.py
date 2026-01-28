@@ -47,10 +47,6 @@ type JSONPrimitive = str | int | float | bool | None
 type JSONValue = JSONPrimitive | Mapping[str, "JSONValue"] | list["JSONValue"]
 type JSONObject = Mapping[str, JSONValue]
 
-# Log types
-type LogFormat = Literal["json", "console", "plain"]
-type LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-
 # Compression types for Parquet
 type ParquetCompression = Literal["snappy", "gzip", "brotli", "lz4", "zstd", "none"]
 

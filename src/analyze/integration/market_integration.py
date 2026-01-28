@@ -36,9 +36,9 @@ import pandas as pd
 
 from analyze.statistics.descriptive import describe
 from analyze.technical.indicators import TechnicalIndicators
-from database.utils.logging_config import get_logger
 from market.yfinance import FetchOptions, YFinanceFetcher
 from market.yfinance.types import Interval
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

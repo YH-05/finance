@@ -12,8 +12,8 @@ import pandas as pd
 from pandas import DataFrame, Timestamp
 
 from analyze.config import get_return_periods, get_symbol_group, get_symbols
-from database.utils.logging_config import get_logger, setup_logging
 from market.yfinance import FetchOptions, YFinanceFetcher
+from utils_core.logging import get_logger, setup_logging
 
 
 class PerformanceAnalyzer:
