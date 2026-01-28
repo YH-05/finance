@@ -7,6 +7,8 @@ Modules
 -------
 base
     Common utilities, conversion functions, retry logic, and validation.
+commodity
+    CommodityNewsSource for commodity futures (GC=F, CL=F, etc.).
 index
     IndexNewsSource for stock market indices (^GSPC, ^DJI, etc.).
 sector
@@ -22,11 +24,13 @@ from .base import (
     validate_query,
     validate_ticker,
 )
+from .commodity import CommodityNewsSource
 from .index import IndexNewsSource
 from .sector import SectorNewsSource
 from .stock import StockNewsSource
 
 __all__ = [
+    "CommodityNewsSource",
     "IndexNewsSource",
     "SectorNewsSource",
     "StockNewsSource",
