@@ -25,6 +25,16 @@ data/
 │   ├── daily/          # 日次集計
 │   └── aggregated/     # 集約データ
 │
+├── news/               # 金融・株式市場ニュースデータ
+│
+├── market/             # マーケットデータ
+│
+├── stock/              # 個別株データ
+│
+├── macroeconomics/     # マクロ経済データ
+│
+├── investment_theme/   # 投資テーマ(AI, Healthcare, Energy, Commodity, Wealth, ...)関連データ
+│
 └── exports/            # エクスポート用
     ├── csv/
     └── json/
