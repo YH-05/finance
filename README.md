@@ -137,13 +137,13 @@ uv run pyright --version
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (85 agents + 19 commands + 47 skills)
+├── .claude/                                 # Claude Code configuration (85 agents + 19 commands + 48 skills)
 │   ├── agents/                              # (85) Specialized agents
 │   │   ├── deep-research/
 │   │   └── finance_news_collector/          # テーマ別収集エージェント
 │   ├── commands/                            # (19) Slash commands
 │   ├── rules/                               # Shared rule definitions
-│   ├── skills/                              # (47) Skill modules
+│   ├── skills/                              # (48) Skill modules
 │   └── agents.md
 ├── .github/                                 # GitHub configuration
 │   ├── ISSUE_TEMPLATE/                      # Issue templates

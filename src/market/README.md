@@ -1,6 +1,6 @@
 # market - 金融データ取得パッケージ
 
-金融市場データを取得するための統合パッケージ。Yahoo Finance、FRED など複数のデータソースに対応。
+複数のデータソース（Yahoo Finance、FRED、Bloomberg）から金融市場データを統合的に取得・エクスポートするパッケージ。株価、経済指標、指数データなどを効率的に扱えます。
 
 ## インストール
 
@@ -9,42 +9,119 @@
 uv sync --all-extras
 ```
 
+<!-- AUTO-GENERATED: QUICKSTART -->
+
 ## クイックスタート
+
+### 最初の5分で試す
+
+**Yahoo Finance から株価データを取得する**（最も基本的な使い方）
 
 ```python
 from market.yfinance import YFinanceFetcher, FetchOptions
 
-# フェッチャーを初期化
+# 1. フェッチャーを初期化（初期化不要なので簡単）
 fetcher = YFinanceFetcher()
 
-# オプションを設定
+# 2. 取得するシンボルと期間を指定
 options = FetchOptions(
-    symbols=["AAPL", "GOOGL", "MSFT"],
+    symbols=["AAPL"],  # Apple の株価を取得
     start_date="2024-01-01",
     end_date="2024-12-31",
 )
 
-# データを取得
+# 3. データを取得
+results = fetcher.fetch(options)
+result = results[0]  # 最初の結果を取得
+
+# 4. データを確認
+print(f"シンボル: {result.symbol}")
+print(f"データ点数: {result.row_count}")
+print(result.data.head())  # 最初の5行を表示
+```
+
+### よくある使い方
+
+#### 1. 複数銘柄の一括取得
+
+```python
+from market.yfinance import YFinanceFetcher, FetchOptions
+
+fetcher = YFinanceFetcher()
+
+# MAG7 銘柄を一括取得（2024年の日次データ）
+options = FetchOptions(
+    symbols=["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+
 results = fetcher.fetch(options)
 
-# 結果を処理
+# 各銘柄の統計情報を表示
 for result in results:
-    print(f"{result.symbol}: {len(result.data)} rows")
+    df = result.data
+    print(f"{result.symbol}: 終値の範囲 ${df['close'].min():.2f} - ${df['close'].max():.2f}")
 ```
+
+#### 2. 経済指標データの取得（FRED）
+
+```python
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions as FREDFetchOptions
+
+fetcher = FREDFetcher()
+
+# 米国のマクロ経済指標を取得
+options = FREDFetchOptions(
+    symbols=["GDP", "CPIAUCSL", "UNRATE"],  # GDP, CPI, 失業率
+    start_date="2020-01-01",
+)
+
+results = fetcher.fetch(options)
+
+for result in results:
+    if not result.is_empty:
+        latest = result.data['close'].iloc[-1]
+        print(f"{result.symbol}: 最新値 {latest:.2f}")
+```
+
+#### 3. Bloomberg から株価データを取得
+
+```python
+from market.bloomberg import BloombergFetcher, BloombergFetchOptions
+
+fetcher = BloombergFetcher()
+
+options = BloombergFetchOptions(
+    securities=["AAPL US Equity"],
+    fields=["PX_LAST", "PX_VOLUME"],  # 終値と出来高
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+
+results = fetcher.get_historical_data(options)
+```
+
+<!-- END: QUICKSTART -->
+
+<!-- AUTO-GENERATED: IMPLEMENTATION -->
 
 ## 実装状況
 
-| モジュール | ファイル数 | 行数 | テスト | 状態 |
-|-----------|----------|------|--------|------|
-| `yfinance/` | 4 | 1,458 | ✅ | ✅ 実装済み |
-| `fred/` | 7 | 1,825 | ✅ | ✅ 実装済み |
-| `bloomberg/` | 5 | 1,754 | ✅ | ✅ 実装済み |
-| `cache/` | 3 | 777 | ❌ | ✅ 実装済み |
-| `export/` | 2 | 694 | ✅ | ✅ 実装済み |
-| `schema.py` | 1 | 420+ | ✅ | ✅ 実装済み |
-| `types.py` | 1 | 120+ | ✅ | ✅ 実装済み |
-| `factset/` | 1 | 24 | ❌ | 🚧 開発中 |
-| `alternative/` | 1 | 26 | ❌ | 🚧 開発中 |
+| モジュール | 状態 | ファイル数 | 行数 |
+|-----------|------|----------|------|
+| `yfinance/` | ✅ 実装済み | 4 | 700+ |
+| `fred/` | ✅ 実装済み | 7 | 1,000+ |
+| `bloomberg/` | ✅ 実装済み | 5 | 900+ |
+| `cache/` | ✅ 実装済み | 3 | 350+ |
+| `export/` | ✅ 実装済み | 2 | 400+ |
+| `schema.py` | ✅ 実装済み | 1 | 400+ |
+| `types.py` | ✅ 実装済み | 1 | 200+ |
+| `factset/` | 🚧 開発中 | 1 | 30 |
+| `alternative/` | 🚧 開発中 | 1 | 30 |
+
+<!-- END: IMPLEMENTATION -->
 
 ## サブモジュール
 
@@ -59,57 +136,267 @@ for result in results:
 | `market.factset` | FactSet データ取得（計画中） |
 | `market.alternative` | オルタナティブデータ（計画中） |
 
+<!-- AUTO-GENERATED: API -->
+
 ## 公開 API
 
-### トップレベルインポート
+このパッケージは、複数のデータソースから市場データを効率的に取得するための統合インターフェースを提供します。
+
+### 主要クラス
+
+#### YFinanceFetcher
+
+Yahoo Finance から株価データを取得するメインクラス。複数銘柄の一括取得とキャッシュ機能をサポートします。
+
+**説明**: Yahoo Finance API を使用して、日本株・米国株・指数・為替の OHLCV（始値・高値・安値・終値・出来高）データを取得します。
+
+**基本的な使い方**:
 
 ```python
-from market import (
-    # データ型
-    DataSource,           # データソース列挙型
-    MarketDataResult,     # データ取得結果
-    AnalysisResult,       # 分析結果
-    AgentOutput,          # AI エージェント向け出力
-    AgentOutputMetadata,  # エージェント出力のメタデータ
+from market.yfinance import YFinanceFetcher, FetchOptions
 
-    # エクスポート
-    DataExporter,         # データエクスポーター
+fetcher = YFinanceFetcher()
 
-    # 設定 (Pydantic V2 モデル)
-    MarketConfig,         # 完全な設定
-    CacheConfig,          # キャッシュ設定
-    DataSourceConfig,     # データソース設定
-    DateRange,            # 日付範囲
-    ExportConfig,         # エクスポート設定
-
-    # メタデータ
-    StockDataMetadata,    # 株価データのメタデータ
-    EconomicDataMetadata, # 経済指標のメタデータ
-
-    # バリデーション
-    validate_config,
-    validate_stock_metadata,
-    validate_economic_metadata,
-
-    # エラー
-    MarketError,          # 基底エラー
-    ExportError,          # エクスポートエラー
-    CacheError,           # キャッシュエラー
-    ErrorCode,            # エラーコード列挙型
+# 1つの銘柄を取得
+options = FetchOptions(
+    symbols=["AAPL"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
 )
+results = fetcher.fetch(options)
+
+# 結果にアクセス
+result = results[0]
+print(f"シンボル: {result.symbol}")
+print(f"行数: {result.row_count}")
+print(result.data.head())  # DataFrame で確認
 ```
 
-### DataSource 列挙型
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|----------|------|--------|
+| `fetch(options)` | FetchOptions に基づいてデータを取得 | `list[MarketDataResult]` |
+| `__enter__()` / `__exit__()` | コンテキストマネージャー（リソース自動解放） | `YFinanceFetcher` |
+
+---
+
+#### FREDFetcher
+
+FRED（連邦準備制度の経済データベース）から経済指標を取得します。
+
+**説明**: 米国の経済指標（GDP、失業率、インフレーション など）を FRED API から取得します。事前に FRED API キーの取得が必要です。
+
+**基本的な使い方**:
+
+```python
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions
+
+# 環境変数 FRED_API_KEY を設定済みであることが前提
+fetcher = FREDFetcher()
+
+# 経済指標を取得
+options = FetchOptions(
+    symbols=["GDP", "UNRATE"],  # GDP と失業率
+    start_date="2020-01-01",
+)
+results = fetcher.fetch(options)
+
+for result in results:
+    print(f"{result.symbol}: {result.row_count} data points")
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|----------|------|--------|
+| `fetch(options)` | FetchOptions に基づいてデータを取得 | `list[MarketDataResult]` |
+| `get_series_info(series_id)` | シリーズのメタデータを取得 | `dict` |
+
+---
+
+#### BloombergFetcher
+
+Bloomberg Terminal API 連携でプロフェッショナル向けデータを取得します。
+
+**説明**: Bloomberg 端末が利用可能な環境で、高度な金融データ（リアルタイム価格、ファンダメンタルズ、ニュースなど）を取得します。
+
+**基本的な使い方**:
+
+```python
+from market.bloomberg import BloombergFetcher, BloombergFetchOptions
+
+fetcher = BloombergFetcher()
+
+options = BloombergFetchOptions(
+    securities=["AAPL US Equity"],
+    fields=["PX_LAST", "PX_VOLUME"],  # 終値と出来高
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+
+results = fetcher.get_historical_data(options)
+```
+
+---
+
+#### DataExporter
+
+取得したデータを複数のフォーマットでエクスポートします。
+
+**説明**: DataFrame や MarketDataResult オブジェクトを JSON、CSV、SQLite などの形式で保存します。
+
+**基本的な使い方**:
+
+```python
+from market import DataExporter
+
+exporter = DataExporter()
+
+# JSON エクスポート
+exporter.to_json(result.data, "output.json")
+
+# CSV エクスポート
+exporter.to_csv(result.data, "output.csv")
+
+# SQLite に保存
+exporter.to_sqlite(result.data, "database.db", "market_data")
+
+# AI エージェント向け JSON
+agent_output = exporter.to_agent_json(result.data)
+```
+
+---
+
+### データ型
+
+#### MarketDataResult
+
+データ取得操作の結果を表します。シンボル、データフレーム、メタデータなどを含みます。
+
+```python
+from market import MarketDataResult
+
+# 例：YFinanceFetcher の結果
+result: MarketDataResult
+print(result.symbol)      # シンボル（例: "AAPL"）
+print(result.source)      # データソース（例: DataSource.YFINANCE）
+print(result.data)        # pandas DataFrame
+print(result.row_count)   # データ行数
+print(result.is_empty)    # データが空かどうか
+```
+
+#### DataSource 列挙型
+
+データの出所を示します。
 
 ```python
 from market import DataSource
 
-print(DataSource.YFINANCE)   # Yahoo Finance
-print(DataSource.FRED)       # Federal Reserve Economic Data
-print(DataSource.LOCAL)      # ローカルファイル
-print(DataSource.BLOOMBERG)  # Bloomberg (計画中)
-print(DataSource.FACTSET)    # FactSet (計画中)
+# 利用可能なデータソース
+DataSource.YFINANCE   # Yahoo Finance
+DataSource.FRED       # Federal Reserve Economic Data
+DataSource.BLOOMBERG  # Bloomberg Terminal
+DataSource.LOCAL      # ローカルファイル
+DataSource.FACTSET    # FactSet（計画中）
 ```
+
+---
+
+### 設定クラス（Pydantic V2 モデル）
+
+#### MarketConfig
+
+パッケージ全体の設定をまとめたクラス。複数のデータソースとキャッシュの設定を一元管理します。
+
+```python
+from market import MarketConfig, CacheConfig, DataSourceConfig
+
+config = MarketConfig(
+    cache=CacheConfig(
+        enabled=True,
+        ttl_seconds=3600,  # 1時間
+    ),
+    sources={
+        "yfinance": DataSourceConfig(
+            enabled=True,
+            timeout=30,
+        ),
+        "fred": DataSourceConfig(
+            enabled=True,
+            api_key="your_api_key",
+        ),
+    },
+)
+```
+
+#### DateRange
+
+日付範囲を表します。
+
+```python
+from market import DateRange
+from datetime import date
+
+date_range = DateRange(
+    start=date(2024, 1, 1),
+    end=date(2024, 12, 31),
+)
+```
+
+---
+
+### バリデーション関数
+
+設定のバリデーション機能を提供します。
+
+```python
+from market import (
+    validate_config,
+    validate_stock_metadata,
+    validate_economic_metadata,
+)
+
+# 設定のバリデーション
+try:
+    validate_config(config)
+    print("設定は有効です")
+except ValueError as e:
+    print(f"バリデーションエラー: {e}")
+```
+
+---
+
+### エラークラス
+
+#### MarketError
+
+基本的なエラークラス。すべてのパッケージ固有エラーの基底クラスです。
+
+#### ExportError
+
+エクスポート処理中のエラー。ファイル書き込みやフォーマット変換の失敗時に発生します。
+
+#### CacheError
+
+キャッシュ処理中のエラー。キャッシュの読み書き失敗時に発生します。
+
+```python
+from market import ExportError, CacheError
+
+try:
+    exporter.to_json(data, "output.json")
+except ExportError as e:
+    print(f"エクスポート失敗: {e}")
+
+try:
+    cache.get(key)
+except CacheError as e:
+    print(f"キャッシュエラー: {e}")
+```
+
+<!-- END: API -->
 
 ## yfinance モジュール
 
@@ -789,6 +1076,8 @@ exporter.to_sqlite(data, "database.db", "table_name")
 agent_output = exporter.to_agent_json(data)
 ```
 
+<!-- AUTO-GENERATED: STATS -->
+
 ## モジュール統計
 
 | 項目 | 値 |
@@ -796,8 +1085,12 @@ agent_output = exporter.to_agent_json(data)
 | Python ファイル数 | 29 |
 | 総行数（実装コード） | 7,499 |
 | モジュール数 | 9 |
-| テストファイル数 | 12+ |
+| テストファイル数 | 12 |
 | テストカバレッジ | 多くのモジュールで実装済み |
+
+<!-- END: STATS -->
+
+<!-- AUTO-GENERATED: STRUCTURE -->
 
 ## ディレクトリ構造
 
@@ -842,6 +1135,8 @@ src/market/
     ├── __init__.py
     └── logging_config.py
 ```
+
+<!-- END: STRUCTURE -->
 
 ## 開発
 

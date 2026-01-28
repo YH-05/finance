@@ -22,7 +22,11 @@ analyze パッケージは以下の分析機能を提供します:
 uv sync --all-extras
 ```
 
+<!-- AUTO-GENERATED: QUICKSTART -->
+
 ## クイックスタート
+
+### 基本的な使い方
 
 ```python
 import pandas as pd
@@ -42,19 +46,64 @@ rsi = TechnicalIndicators.calculate_rsi(prices, period=5)
 all_indicators = TechnicalIndicators.calculate_all(prices)
 ```
 
-## サブモジュール
+### よくある使い方
 
-| モジュール | 説明 | ステータス |
-|-----------|------|-----------|
-| `analyze.technical` | テクニカル分析（移動平均、RSI、MACD） | 実装済み |
-| `analyze.statistics` | 統計分析（記述統計、相関分析） | 実装済み |
-| `analyze.sector` | セクター分析（ETF パフォーマンス） | 実装済み |
-| `analyze.earnings` | 決算カレンダー・決算データ | 実装済み |
-| `analyze.returns` | 複数期間リターン計算 | 実装済み |
-| `analyze.visualization` | チャート・グラフ生成 | 実装済み |
-| `analyze.integration` | market パッケージとの統合 | 実装済み |
-| `analyze.config` | 設定管理（シンボルグループ、期間設定） | 実装済み |
-| `analyze.reporting` | パフォーマンスレポート生成（AIエージェント向け） | 実装済み |
+#### 複数銘柄のリターン計算
+
+```python
+from analyze.returns import calculate_multi_period_returns, TICKERS_MAG7
+
+# 複数期間のリターンを一括計算
+returns = calculate_multi_period_returns(
+    tickers=TICKERS_MAG7,  # Magnificent 7
+    periods=["1d", "1w", "1mo", "ytd"],
+)
+```
+
+#### セクター分析
+
+```python
+from analyze.sector import analyze_sector_performance
+
+# セクターパフォーマンスを分析
+result = analyze_sector_performance(period="1mo", top_n=5)
+for sector in result.sectors:
+    print(f"{sector.name}: {sector.return_1m:.2%}")
+```
+
+#### テクニカル指標とMA の組み合わせ
+
+```python
+from analyze.technical.indicators import TechnicalIndicators
+
+prices = pd.Series([...])
+
+# MACD とシグナルライン
+macd = TechnicalIndicators.calculate_macd(prices)
+
+# ボリンジャーバンド
+bands = TechnicalIndicators.calculate_bollinger_bands(prices, window=20)
+```
+
+<!-- END: QUICKSTART -->
+
+<!-- AUTO-GENERATED: IMPLEMENTATION -->
+
+## 実装状況
+
+| モジュール | 状態 | ファイル数 | 行数 |
+|-----------|------|-----------|------|
+| `technical/` | ✅ 実装済み | 3 | 935 |
+| `statistics/` | ✅ 実装済み | 4 | 1,294 |
+| `sector/` | ✅ 実装済み | 2 | 610 |
+| `earnings/` | ✅ 実装済み | 3 | 458 |
+| `returns/` | ✅ 実装済み | 2 | 424 |
+| `visualization/` | ✅ 実装済み | 4 | 1,511 |
+| `integration/` | ✅ 実装済み | 2 | 332 |
+| `config/` | ✅ 実装済み | 2 | 151 |
+| `reporting/` | ✅ 実装済み | 3 | 911 |
+
+<!-- END: IMPLEMENTATION -->
 
 ---
 
@@ -534,43 +583,181 @@ analysis = analyze_market_data(df)
 
 ---
 
-## 公開 API（トップレベル）
+<!-- AUTO-GENERATED: API -->
+
+## 公開 API
+
+### 主要クラス
+
+#### `TechnicalIndicators` (technical モジュール)
+
+**説明**: テクニカル指標を計算するための静的メソッドを提供するクラス
+
+**基本的な使い方**:
+
+```python
+import pandas as pd
+from analyze.technical.indicators import TechnicalIndicators
+
+prices = pd.Series([100.0, 102.0, 101.0, 103.0, 105.0])
+
+# 移動平均
+sma = TechnicalIndicators.calculate_sma(prices, window=3)
+ema = TechnicalIndicators.calculate_ema(prices, window=3)
+
+# RSI（相対力指数）
+rsi = TechnicalIndicators.calculate_rsi(prices, period=14)
+
+# MACD
+macd_result = TechnicalIndicators.calculate_macd(prices)
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 |
+|---------|------|
+| `calculate_sma()` | 単純移動平均 |
+| `calculate_ema()` | 指数移動平均 |
+| `calculate_rsi()` | 相対力指数（オシレーター） |
+| `calculate_macd()` | MACD（トレンド追随） |
+| `calculate_bollinger_bands()` | ボリンジャーバンド（ボラティリティ） |
+| `calculate_returns()` | リターン率 |
+| `calculate_volatility()` | ボラティリティ（標準偏差） |
+
+---
+
+#### `EarningsCalendar` (earnings モジュール)
+
+**説明**: 決算日程と決算推定値を管理するカレンダークラス
+
+**基本的な使い方**:
+
+```python
+from analyze.earnings import EarningsCalendar, get_upcoming_earnings
+
+# 方法1: クラスを使用
+calendar = EarningsCalendar()
+upcoming = calendar.get_upcoming_earnings(days_ahead=14)
+
+# 方法2: 便利関数を使用
+earnings_json = get_upcoming_earnings(days_ahead=7, format="json")
+```
+
+---
+
+#### `MarketDataAnalyzer` (integration モジュール)
+
+**説明**: market パッケージとの統合。データ取得と分析を一括実行
+
+**基本的な使い方**:
+
+```python
+from analyze.integration import MarketDataAnalyzer, fetch_and_analyze
+
+# 方法1: クラスを使用
+analyzer = MarketDataAnalyzer()
+result = analyzer.fetch_and_analyze(
+    symbols=["AAPL", "MSFT"],
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+)
+
+# 方法2: 便利関数を使用（テクニカル指標付き）
+result = fetch_and_analyze(
+    symbols=["AAPL"],
+    indicators=["sma_20", "rsi_14", "macd"],
+)
+```
+
+---
+
+### 関数
+
+#### `calculate_multi_period_returns()`
+
+**説明**: 複数の期間にわたるリターンを一括計算
+
+**使用例**:
+
+```python
+from analyze.returns import calculate_multi_period_returns, TICKERS_MAG7
+
+returns = calculate_multi_period_returns(
+    tickers=TICKERS_MAG7,
+    periods=["1d", "1w", "1mo", "ytd"],
+)
+```
+
+#### `analyze_sector_performance()`
+
+**説明**: セクター別のパフォーマンスを分析
+
+**使用例**:
+
+```python
+from analyze.sector import analyze_sector_performance
+
+result = analyze_sector_performance(period="1mo", top_n=5)
+for sector in result.sectors:
+    print(f"{sector.name}: {sector.return_1m:.2%}")
+```
+
+#### `generate_returns_report()`
+
+**説明**: リターン分析レポートを生成
+
+**使用例**:
+
+```python
+from analyze.returns import generate_returns_report, TICKERS_MAG7, RETURN_PERIODS
+
+report = generate_returns_report(
+    tickers=TICKERS_MAG7,
+    periods=RETURN_PERIODS,
+)
+```
+
+---
 
 ### 型定義
 
 ```python
+# Technical Analysis
 from analyze import (
-    # technical モジュール
     SMAParams, EMAParams, RSIParams, MACDParams, MACDResult,
     BollingerBandsParams, BollingerBandsResult, ReturnParams, VolatilityParams,
+)
 
-    # statistics モジュール
+# Statistics
+from analyze import (
     DescriptiveStats, CorrelationResult, CorrelationMethod,
 )
-```
 
-### クラス・関数
-
-```python
+# Earnings
 from analyze import (
-    # earnings モジュール
     EarningsCalendar, EarningsData, get_upcoming_earnings,
+)
 
-    # returns モジュール
-    calculate_return, calculate_multi_period_returns, generate_returns_report,
-    fetch_topix_data,
+# Returns & Constants
+from analyze import (
     RETURN_PERIODS, TICKERS_US_INDICES, TICKERS_GLOBAL_INDICES,
     TICKERS_MAG7, TICKERS_SECTORS,
-
-    # integration モジュール
-    MarketDataAnalyzer, analyze_market_data, fetch_and_analyze,
-
-    # sector モジュール
-    sector,
 )
+
+# Integration & Analysis
+from analyze import (
+    MarketDataAnalyzer, analyze_market_data, fetch_and_analyze,
+)
+
+# Sector
+from analyze import sector
 ```
 
-### config モジュール
+---
+
+### 設定・レポート
+
+**config モジュール**: シンボルグループと期間設定の管理
 
 ```python
 from analyze.config import (
@@ -581,7 +768,7 @@ from analyze.config import (
 )
 ```
 
-### reporting モジュール
+**reporting モジュール**: パフォーマンス分析レポート
 
 ```python
 from analyze.reporting import (
@@ -591,50 +778,70 @@ from analyze.reporting import (
 )
 ```
 
+<!-- END: API -->
+
 ---
+
+<!-- AUTO-GENERATED: STRUCTURE -->
 
 ## ディレクトリ構造
 
 ```
-src/analyze/
+analyze/
 ├── __init__.py           # 公開 API
 ├── py.typed
-├── README.md
 ├── technical/            # テクニカル分析
 │   ├── __init__.py
-│   ├── indicators.py     # TechnicalIndicators クラス
-│   └── types.py          # パラメータ・結果の型定義
+│   ├── indicators.py
+│   └── types.py
 ├── statistics/           # 統計分析
 │   ├── __init__.py
-│   ├── descriptive.py    # 記述統計関数
-│   ├── correlation.py    # 相関分析関数
-│   └── types.py          # 型定義
+│   ├── descriptive.py
+│   ├── correlation.py
+│   └── types.py
 ├── sector/               # セクター分析
 │   ├── __init__.py
-│   └── sector.py         # セクター分析関数
+│   └── sector.py
 ├── earnings/             # 決算分析
 │   ├── __init__.py
-│   ├── earnings.py       # EarningsCalendar クラス
-│   └── types.py          # EarningsData 型定義
+│   ├── earnings.py
+│   └── types.py
 ├── returns/              # リターン計算
 │   ├── __init__.py
-│   └── returns.py        # リターン計算関数
+│   └── returns.py
 ├── visualization/        # 可視化
 │   ├── __init__.py
-│   ├── charts.py         # ChartBuilder, ChartConfig
-│   ├── heatmap.py        # HeatmapChart
-│   └── price_charts.py   # CandlestickChart, LineChart
+│   ├── charts.py
+│   ├── heatmap.py
+│   └── price_charts.py
 ├── integration/          # market パッケージ統合
 │   ├── __init__.py
-│   └── market_integration.py  # MarketDataAnalyzer
+│   └── market_integration.py
 ├── config/               # 設定管理
 │   ├── __init__.py
-│   └── loader.py         # 設定読み込み関数
+│   └── loader.py
 └── reporting/            # レポート生成
     ├── __init__.py
-    ├── performance.py    # PerformanceAnalyzer クラス
-    └── performance_agent.py  # PerformanceAnalyzer4Agent クラス
+    ├── performance.py
+    └── performance_agent.py
 ```
+
+<!-- END: STRUCTURE -->
+
+---
+
+<!-- AUTO-GENERATED: STATS -->
+
+## 統計情報
+
+| 項目 | 値 |
+|------|-----|
+| Python ファイル数 | 26 |
+| 総行数（実装コード） | 6,812 |
+| モジュール数 | 9 |
+| テストファイル数 | 12 |
+
+<!-- END: STATS -->
 
 ---
 

@@ -18,78 +18,92 @@
 uv sync --all-extras
 ```
 
-### 基本的な使い方
+### 基本的な使い方（5分でわかる）
+
+ファクター投資で最も一般的な流れは「**データ取得 → ファクター計算 → ポートフォリオ構築**」です。
 
 ```python
-from factor import YFinanceProvider, ValueFactor
+from factor import YFinanceProvider, ValueFactor, Normalizer, NormalizationMethod
 
-# 1. データプロバイダーを作成
+# ステップ1: データプロバイダーを準備
 provider = YFinanceProvider()
 
-# 2. ファクターを初期化
+# ステップ2: バリューファクター（割安度）を計算
+# PER が低い企業を高スコア（invert=True）
 factor = ValueFactor(metric="per", invert=True)
-
-# 3. ファクター値を計算
-result = factor.compute(
+scores = factor.compute(
     provider=provider,
-    universe=["AAPL", "GOOGL", "MSFT"],
+    universe=["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
     start_date="2024-01-01",
     end_date="2024-12-31",
 )
+
+# ステップ3: スコアを正規化（-1 ~ 1 の範囲）
+normalizer = Normalizer(method=NormalizationMethod.ZSCORE)
+normalized_scores = normalizer.normalize(scores)
+
+print(normalized_scores)
 ```
 
 ### よくある使い方
 
-#### ユースケース1: バリューファクターの計算
+#### パターン1: 複数のファクターを組み合わせる
 
 ```python
-from factor import YFinanceProvider, ValueFactor
+from factor import YFinanceProvider, ValueFactor, MomentumFactor, Normalizer, NormalizationMethod
 
 provider = YFinanceProvider()
+universe = ["AAPL", "GOOGL", "MSFT", "AMZN"]
 
-# PERベースのバリューファクター（低PERほど高スコア）
-per_factor = ValueFactor(metric="per", invert=True)
-per_scores = per_factor.compute(
-    provider=provider,
-    universe=["AAPL", "GOOGL", "MSFT", "AMZN"],
-    start_date="2024-01-01",
-    end_date="2024-12-31",
-)
-```
+# バリューファクター（割安度）
+value = ValueFactor(metric="per", invert=True)
+value_scores = value.compute(provider, universe, "2024-01-01", "2024-12-31")
 
-#### ユースケース2: モメンタムファクターの計算
-
-```python
-from factor import YFinanceProvider, MomentumFactor
-
-provider = YFinanceProvider()
-
-# 過去12ヶ月のモメンタムファクター
+# モメンタムファクター（過去12ヶ月のリターン）
 momentum = MomentumFactor(lookback_days=252)
-scores = momentum.compute(
-    provider=provider,
-    universe=["AAPL", "GOOGL", "MSFT"],
-    start_date="2024-01-01",
-    end_date="2024-12-31",
-)
+momentum_scores = momentum.compute(provider, universe, "2024-01-01", "2024-12-31")
+
+# 両方のスコアを正規化して平均化
+normalizer = Normalizer(method=NormalizationMethod.ZSCORE)
+combined = (normalizer.normalize(value_scores) + normalizer.normalize(momentum_scores)) / 2
 ```
 
-#### ユースケース3: ファクターの正規化と分析
+#### パターン2: ファクターのパフォーマンスを検証する
 
 ```python
-from factor import Normalizer, NormalizationMethod, QuantileAnalyzer
+from factor import QuantileAnalyzer, YFinanceProvider, ValueFactor
 import pandas as pd
 
-# ファクター値の正規化（Z-score）
-normalizer = Normalizer(method=NormalizationMethod.ZSCORE)
-normalized_scores = normalizer.normalize(per_scores)
+provider = YFinanceProvider()
+factor = ValueFactor(metric="per", invert=True)
+scores = factor.compute(provider, ["AAPL", "GOOGL"], "2024-01-01", "2024-12-31")
 
 # 分位ポートフォリオ分析
+# スコアが高い企業と低い企業のグループを作成し、リターン差を確認
 analyzer = QuantileAnalyzer(n_quantiles=5)
-quantile_result = analyzer.analyze(
-    factor_data=normalized_scores,
-    returns=returns_data,
-)
+# ※ returns_data は実際の日次リターンデータ
+# result = analyzer.analyze(factor_data=scores, returns=returns_data)
+```
+
+#### パターン3: カスタムファクターを作成する
+
+```python
+from factor import Factor, FactorCategory, YFinanceProvider
+
+class PriceToSalesRatio(Factor):
+    """Price-to-Sales ファクター（営業利益率ベース）"""
+    name = "ps_ratio"
+    category = FactorCategory.VALUE
+    description = "Price-to-Sales ratio factor"
+
+    def compute(self, provider, universe, start_date, end_date):
+        # 実装は省略
+        pass
+
+# 使用
+provider = YFinanceProvider()
+ps_factor = PriceToSalesRatio()
+scores = ps_factor.compute(provider, ["AAPL"], "2024-01-01", "2024-12-31")
 ```
 
 <!-- END: QUICKSTART -->
@@ -191,23 +205,35 @@ factor/
 
 ### クイックスタート
 
-パッケージの基本的な使い方:
+パッケージの基本的な使い方を3つのステップで説明します:
 
 ```python
-from factor import YFinanceProvider, ValueFactor
+from factor import YFinanceProvider, ValueFactor, Normalizer, NormalizationMethod
 
-# データプロバイダーを作成
+# ステップ1: データソースを設定（Yahoo Finance）
 provider = YFinanceProvider()
 
-# バリューファクターを初期化・計算
+# ステップ2: ファクターモデルを定義
+# バリューファクター：PER が低い企業を高スコア
 factor = ValueFactor(metric="per", invert=True)
+
+# ステップ3: ファクター値を計算
 result = factor.compute(
     provider=provider,
     universe=["AAPL", "GOOGL", "MSFT"],
     start_date="2024-01-01",
     end_date="2024-12-31",
 )
+
+# 結果を正規化（全スコアを -1 ～ 1 の範囲に）
+normalizer = Normalizer(method=NormalizationMethod.ZSCORE)
+normalized = normalizer.normalize(result)
 ```
+
+**このコードで何ができるか:**
+- 3つの企業の割安度スコアを計算
+- スコアを正規化して比較可能に
+- 低い PER を持つ企業が高スコアになる
 
 ### 主要クラス
 
