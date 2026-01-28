@@ -105,6 +105,11 @@ Task ツールを使わずに直接実装した場合、そのワークフロー
 │ PR作成（--skip-pr でない場合のみ）                          │
 │    └─ gh pr create ...                                      │
 │                                                             │
+│ 🚨 Phase 7: CIチェック検証（PR作成時のみ、--skip-pr 時は省略）│
+│    ├─ gh pr checks --watch --fail-fast で完了待ち           │
+│    ├─ 全パス: 作業完了                                      │
+│    └─ 失敗: エラー修正→再プッシュ→再検証（最大3回）        │
+│                                                             │
 │ サマリー出力（親に返却される情報）                           │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -212,6 +217,53 @@ make check-all
 
 ---
 
+## 🚨 Phase 7: CIチェック検証（PR作成時のみ）
+
+**PR作成後（`--skip-pr` でない場合）、GitHub Actions の CIチェックが全てパスするまで作業を完了としない。**
+
+`--skip-pr` の場合は、親スキル（issue-implementation-serial）がPR作成後にCIチェックを検証するため、このPhaseはスキップする。
+
+### 実行手順
+
+#### 7.1 CIチェックの完了待ち
+
+```bash
+# CIチェックの完了を待つ（最大10分）
+gh pr checks <pr-number> --watch --fail-fast
+```
+
+#### 7.2 CIチェック結果の確認
+
+```bash
+gh pr checks <pr-number> --json name,state,bucket,description
+```
+
+#### 7.3 全チェックがパスした場合
+
+→ 作業完了としてサマリーを出力
+
+#### 7.4 いずれかのチェックが失敗した場合
+
+1. **失敗したチェックのログを確認**
+   ```bash
+   gh run view <run-id> --log-failed
+   ```
+
+2. **エラー原因を分析し修正を実施**
+
+3. **修正をコミット・プッシュ**
+   ```bash
+   git add <修正ファイル>
+   git commit -m "fix: CI エラーを修正"
+   git push
+   ```
+
+4. **再度CIチェックを検証（7.1 に戻る）**
+   - 最大3回まで修正→再検証を繰り返す
+   - 3回失敗した場合はエラーサマリーを返却
+
+---
+
 ## コミットメッセージ形式
 
 ```bash
@@ -257,6 +309,12 @@ commit:
 pr:
   number: 456  # --skip-pr の場合は null
   url: "https://github.com/YH-05/finance/pull/456"
+ci_checks:  # Phase 7 の結果（PR作成時のみ、--skip-pr の場合は null）
+  status: passed
+  checks:
+    - name: "check-all"
+      state: "pass"
+  fix_attempts: 0  # CI修正の試行回数
 ```
 
 ### 失敗時（Phase 6 コミット前検証失敗）
@@ -315,6 +373,8 @@ partial_commit:
 | 4 | Code simplification failed | 変更対象を絞って再試行 |
 | 5 | Quality check failed | 自動修正（最大5回） |
 | 6 | **make check-all failed** | **処理中断、コミットしない、エラー詳細を返却** |
+| 7 | **CIチェック失敗** | **エラー修正→再プッシュ→再検証（最大3回）** |
+| 7 | **CI修正不可（3回失敗）** | **失敗詳細をサマリーに含めて返却** |
 
 ---
 
@@ -330,6 +390,7 @@ partial_commit:
 - [ ] Phase 5: Task(quality-checker) で品質自動修正が完了
 - [ ] **Phase 6: `make check-all` が成功（コミット前検証）**
 - [ ] コミットが作成されている（Phase 6 成功後のみ）
+- [ ] **Phase 7: PR作成後のCIチェックが全てパス（`--skip-pr` でない場合のみ）**
 - [ ] サマリーが出力されている
 
 ### Agent/Command/Skill ワークフロー
@@ -338,6 +399,7 @@ partial_commit:
 - [ ] Task(xxx-creator/expert) で開発が完了
 - [ ] **`make check-all` が成功（コミット前検証）**
 - [ ] コミットが作成されている（検証成功後のみ）
+- [ ] **PR作成後のCIチェックが全てパス（`--skip-pr` でない場合のみ）**
 - [ ] サマリーが出力されている
 
 ---
