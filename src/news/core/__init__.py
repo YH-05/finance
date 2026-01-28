@@ -7,6 +7,9 @@ from .article import (
     Provider,
     Thumbnail,
 )
+from .dedup import (
+    DuplicateChecker,
+)
 from .errors import (
     NewsError,
     RateLimitError,
@@ -41,6 +44,7 @@ __all__: list[str] = [
     "CollectionHistory",
     "CollectionRun",
     "ContentType",
+    "DuplicateChecker",
     "FetchResult",
     "NewsError",
     "ProcessorProtocol",
