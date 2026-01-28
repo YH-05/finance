@@ -7,7 +7,8 @@
       "WebFetch(domain:github.com)",
       "Skill(new-project)",
       "mcp__rss__rss_fetch_feed",
-      "mcp__tavily__tavily_search"
+      "mcp__tavily__tavily_search",
+      "mcp__context7__resolve-library-id"
     ]
   },
   "enableAllProjectMcpServers": true,
