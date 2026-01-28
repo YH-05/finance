@@ -610,7 +610,7 @@ def _calculate_delay(attempt: int, config: RetryConfig) -> float:
     # Add jitter if enabled (±50% of delay)
     if config.jitter:
         jitter_range = delay * 0.5
-        delay = delay + random.uniform(-jitter_range, jitter_range)
+        delay = delay + random.uniform(-jitter_range, jitter_range)  # nosec B311 - not used for security/crypto
         delay = max(0.0, delay)  # Ensure non-negative
 
     return delay
