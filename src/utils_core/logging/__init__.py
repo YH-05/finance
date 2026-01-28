@@ -1,6 +1,6 @@
 """Logging utilities for the finance project."""
 
-from utils.logging.config import (
+from utils_core.logging.config import (
     LoggerProtocol,
     get_logger,
     log_context,

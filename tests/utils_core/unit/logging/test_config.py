@@ -35,7 +35,7 @@ class TestGetLogger:
     """get_logger 関数のテスト."""
 
     def test_正常系_ロガーを取得できる(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
 
@@ -48,7 +48,7 @@ class TestGetLogger:
         assert hasattr(logger, "bind")
 
     def test_正常系_名前付きロガーを取得できる(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger("test.module")
 
@@ -56,7 +56,7 @@ class TestGetLogger:
         assert logger is not None
 
     def test_正常系_コンテキスト付きでロガーを取得できる(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__, module="test", version="1.0")
 
@@ -65,7 +65,7 @@ class TestGetLogger:
     def test_正常系_ロガーでinfoログを出力できる(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
         logger.info("Test message", key="value")
@@ -75,26 +75,26 @@ class TestGetLogger:
         # 注: 実際の出力フォーマットは setup_logging の設定による
 
     def test_正常系_ロガーでdebugログを出力できる(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
         # 例外が発生しないことを確認
         logger.debug("Debug message", debug_key="debug_value")
 
     def test_正常系_ロガーでwarningログを出力できる(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
         logger.warning("Warning message")
 
     def test_正常系_ロガーでerrorログを出力できる(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
         logger.error("Error message", error_code=500)
 
     def test_正常系_ロガーでcriticalログを出力できる(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
         logger.critical("Critical message")
@@ -104,13 +104,13 @@ class TestSetupLogging:
     """setup_logging 関数のテスト."""
 
     def test_正常系_デフォルト設定でセットアップできる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         # 例外が発生しないことを確認
         setup_logging()
 
     def test_正常系_ログレベルを指定してセットアップできる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         setup_logging(level="DEBUG")
 
@@ -118,22 +118,22 @@ class TestSetupLogging:
         assert logging.root.level == logging.DEBUG
 
     def test_正常系_JSONフォーマットを指定できる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         setup_logging(format="json")
 
     def test_正常系_コンソールフォーマットを指定できる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         setup_logging(format="console")
 
     def test_正常系_プレーンフォーマットを指定できる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         setup_logging(format="plain")
 
     def test_正常系_ファイル出力を有効にできる(self, tmp_path: Path) -> None:
-        from utils.logging.config import get_logger, setup_logging
+        from utils_core.logging.config import get_logger, setup_logging
 
         log_file = tmp_path / "test.log"
         setup_logging(log_file=log_file)
@@ -145,7 +145,7 @@ class TestSetupLogging:
         assert log_file.exists()
 
     def test_正常系_環境変数LOG_LEVELでレベルを設定できる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_LEVEL": "WARNING"}):
             setup_logging()
@@ -153,7 +153,7 @@ class TestSetupLogging:
             assert logging.root.level == logging.WARNING
 
     def test_正常系_環境変数LOG_FORMATでフォーマットを設定できる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_FORMAT": "json"}):
             setup_logging()
@@ -161,7 +161,7 @@ class TestSetupLogging:
     def test_正常系_環境変数LOG_DIRでログディレクトリを設定できる(
         self, tmp_path: Path
     ) -> None:
-        from utils.logging.config import get_logger, setup_logging
+        from utils_core.logging.config import get_logger, setup_logging
 
         log_dir = tmp_path / "custom_logs"
         with patch.dict(os.environ, {"LOG_DIR": str(log_dir)}):
@@ -176,7 +176,7 @@ class TestSetupLogging:
     def test_正常系_環境変数LOG_FILE_ENABLEDでファイル出力を無効にできる(
         self, tmp_path: Path
     ) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(
             os.environ,
@@ -189,7 +189,7 @@ class TestSetupLogging:
             assert len(log_files) == 0
 
     def test_正常系_日付別ログファイルが作成される(self, tmp_path: Path) -> None:
-        from utils.logging.config import get_logger, setup_logging
+        from utils_core.logging.config import get_logger, setup_logging
 
         with patch.dict(os.environ, {"LOG_DIR": str(tmp_path)}):
             setup_logging()
@@ -203,17 +203,17 @@ class TestSetupLogging:
             assert expected_file.exists()
 
     def test_正常系_タイムスタンプを含めるオプションが機能する(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         setup_logging(include_timestamp=True)
 
     def test_正常系_呼び出し元情報を含めるオプションが機能する(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         setup_logging(include_caller_info=True)
 
     def test_正常系_forceオプションで再設定できる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         setup_logging(level="INFO")
         setup_logging(level="DEBUG", force=True)
@@ -221,7 +221,7 @@ class TestSetupLogging:
         assert logging.root.level == logging.DEBUG
 
     def test_正常系_重複ハンドラー追加が防止される(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         initial_handler_count = len(logging.root.handlers)
 
@@ -240,14 +240,14 @@ class TestSetLogLevel:
     """set_log_level 関数のテスト."""
 
     def test_正常系_ルートロガーのレベルを変更できる(self) -> None:
-        from utils.logging.config import set_log_level
+        from utils_core.logging.config import set_log_level
 
         set_log_level("DEBUG")
 
         assert logging.root.level == logging.DEBUG
 
     def test_正常系_特定のロガーのレベルを変更できる(self) -> None:
-        from utils.logging.config import set_log_level
+        from utils_core.logging.config import set_log_level
 
         logger_name = "test.specific.logger"
         set_log_level("ERROR", logger_name=logger_name)
@@ -255,21 +255,21 @@ class TestSetLogLevel:
         assert logging.getLogger(logger_name).level == logging.ERROR
 
     def test_正常系_全てのログレベルを設定できる(self) -> None:
-        from utils.logging.config import set_log_level
+        from utils_core.logging.config import set_log_level
 
         for level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
             set_log_level(level)
             assert logging.root.level == getattr(logging, level)
 
     def test_正常系_小文字のログレベルも受け付ける(self) -> None:
-        from utils.logging.config import set_log_level
+        from utils_core.logging.config import set_log_level
 
         set_log_level("debug")
 
         assert logging.root.level == logging.DEBUG
 
     def test_異常系_不正なログレベルでAttributeError(self) -> None:
-        from utils.logging.config import set_log_level
+        from utils_core.logging.config import set_log_level
 
         with pytest.raises(AttributeError):
             set_log_level("INVALID_LEVEL")
@@ -279,7 +279,7 @@ class TestLogContext:
     """log_context コンテキストマネージャのテスト."""
 
     def test_正常系_コンテキスト内でログにキーが追加される(self) -> None:
-        from utils.logging.config import get_logger, log_context
+        from utils_core.logging.config import get_logger, log_context
 
         logger = get_logger(__name__)
 
@@ -288,7 +288,7 @@ class TestLogContext:
             logger.info("Processing request")
 
     def test_正常系_コンテキスト終了後にキーが削除される(self) -> None:
-        from utils.logging.config import get_logger, log_context
+        from utils_core.logging.config import get_logger, log_context
 
         logger = get_logger(__name__)
 
@@ -299,7 +299,7 @@ class TestLogContext:
         logger.info("Outside context")
 
     def test_正常系_ネストしたコンテキストが機能する(self) -> None:
-        from utils.logging.config import get_logger, log_context
+        from utils_core.logging.config import get_logger, log_context
 
         logger = get_logger(__name__)
 
@@ -310,7 +310,7 @@ class TestLogContext:
             logger.info("Back to outer")
 
     def test_正常系_複数のキーを同時にバインドできる(self) -> None:
-        from utils.logging.config import get_logger, log_context
+        from utils_core.logging.config import get_logger, log_context
 
         logger = get_logger(__name__)
 
@@ -318,7 +318,7 @@ class TestLogContext:
             logger.info("Multiple keys bound")
 
     def test_正常系_例外が発生してもコンテキストがクリーンアップされる(self) -> None:
-        from utils.logging.config import get_logger, log_context
+        from utils_core.logging.config import get_logger, log_context
 
         logger = get_logger(__name__)
 
@@ -337,7 +337,7 @@ class TestLogPerformance:
     """log_performance デコレータのテスト."""
 
     def test_正常系_デコレータが関数を実行できる(self) -> None:
-        from utils.logging.config import get_logger, log_performance
+        from utils_core.logging.config import get_logger, log_performance
 
         logger = get_logger(__name__)
 
@@ -349,7 +349,7 @@ class TestLogPerformance:
         assert result == 5
 
     def test_正常系_関数の戻り値が正しく返される(self) -> None:
-        from utils.logging.config import get_logger, log_performance
+        from utils_core.logging.config import get_logger, log_performance
 
         logger = get_logger(__name__)
 
@@ -361,7 +361,7 @@ class TestLogPerformance:
         assert result == [1, 2, 3]
 
     def test_正常系_例外が発生しても再送出される(self) -> None:
-        from utils.logging.config import get_logger, log_performance
+        from utils_core.logging.config import get_logger, log_performance
 
         logger = get_logger(__name__)
 
@@ -373,7 +373,7 @@ class TestLogPerformance:
             raise_error()
 
     def test_正常系_引数とキーワード引数を正しく渡せる(self) -> None:
-        from utils.logging.config import get_logger, log_performance
+        from utils_core.logging.config import get_logger, log_performance
 
         logger = get_logger(__name__)
 
@@ -385,7 +385,7 @@ class TestLogPerformance:
         assert result == 25
 
     def test_正常系_関数名が保持される(self) -> None:
-        from utils.logging.config import get_logger, log_performance
+        from utils_core.logging.config import get_logger, log_performance
 
         logger = get_logger(__name__)
 
@@ -396,7 +396,7 @@ class TestLogPerformance:
         assert named_function.__name__ == "named_function"
 
     def test_正常系_ドキュストリングが保持される(self) -> None:
-        from utils.logging.config import get_logger, log_performance
+        from utils_core.logging.config import get_logger, log_performance
 
         logger = get_logger(__name__)
 
@@ -411,7 +411,7 @@ class TestProcessors:
     """カスタムプロセッサのテスト."""
 
     def test_正常系_タイムスタンプが追加される(self) -> None:
-        from utils.logging.config import add_timestamp
+        from utils_core.logging.config import add_timestamp
 
         event_dict: dict[str, Any] = {"event": "test"}
         result = add_timestamp(None, None, event_dict)
@@ -423,7 +423,7 @@ class TestProcessors:
         assert "T" in timestamp  # ISO形式には T が含まれる
 
     def test_正常系_呼び出し元情報が追加される(self) -> None:
-        from utils.logging.config import add_caller_info
+        from utils_core.logging.config import add_caller_info
 
         event_dict: dict[str, Any] = {"event": "test"}
         _ = add_caller_info(None, None, event_dict)
@@ -433,7 +433,7 @@ class TestProcessors:
         # 実装によっては caller キーが追加されない場合もある
 
     def test_正常系_ログレベルが大文字に変換される(self) -> None:
-        from utils.logging.config import add_log_level_upper
+        from utils_core.logging.config import add_log_level_upper
 
         event_dict: dict[str, Any] = {"event": "test", "level": "info"}
         result = add_log_level_upper(None, None, event_dict)
@@ -441,7 +441,7 @@ class TestProcessors:
         assert result["level"] == "INFO"
 
     def test_正常系_ログレベルがない場合もエラーにならない(self) -> None:
-        from utils.logging.config import add_log_level_upper
+        from utils_core.logging.config import add_log_level_upper
 
         event_dict: dict[str, Any] = {"event": "test"}
         result = add_log_level_upper(None, None, event_dict)
@@ -454,42 +454,42 @@ class TestEnvironmentVariables:
     """環境変数の処理に関するテスト."""
 
     def test_正常系_LOG_LEVEL_DEBUGが機能する(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_LEVEL": "DEBUG"}):
             setup_logging()
             assert logging.root.level == logging.DEBUG
 
     def test_正常系_LOG_LEVEL_INFOが機能する(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_LEVEL": "INFO"}):
             setup_logging()
             assert logging.root.level == logging.INFO
 
     def test_正常系_LOG_LEVEL_WARNINGが機能する(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_LEVEL": "WARNING"}):
             setup_logging()
             assert logging.root.level == logging.WARNING
 
     def test_正常系_LOG_LEVEL_ERRORが機能する(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_LEVEL": "ERROR"}):
             setup_logging()
             assert logging.root.level == logging.ERROR
 
     def test_正常系_LOG_LEVEL_CRITICALが機能する(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_LEVEL": "CRITICAL"}):
             setup_logging()
             assert logging.root.level == logging.CRITICAL
 
     def test_正常系_不正なLOG_LEVELはデフォルトINFOになる(self) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         with patch.dict(os.environ, {"LOG_LEVEL": "INVALID"}):
             setup_logging()
@@ -503,7 +503,7 @@ class TestLogFileCreation:
     def test_正常系_ログディレクトリが存在しない場合自動作成される(
         self, tmp_path: Path
     ) -> None:
-        from utils.logging.config import setup_logging
+        from utils_core.logging.config import setup_logging
 
         log_dir = tmp_path / "nested" / "log" / "dir"
         with patch.dict(os.environ, {"LOG_DIR": str(log_dir)}):
@@ -514,7 +514,7 @@ class TestLogFileCreation:
     def test_正常系_ログファイルにメッセージが書き込まれる(
         self, tmp_path: Path
     ) -> None:
-        from utils.logging.config import get_logger, setup_logging
+        from utils_core.logging.config import get_logger, setup_logging
 
         log_file = tmp_path / "test.log"
         setup_logging(log_file=log_file, force=True)
@@ -530,7 +530,7 @@ class TestLogFileCreation:
     def test_正常系_ログファイルがUTF8エンコーディングで書き込まれる(
         self, tmp_path: Path
     ) -> None:
-        from utils.logging.config import get_logger, setup_logging
+        from utils_core.logging.config import get_logger, setup_logging
 
         log_file = tmp_path / "utf8_test.log"
         setup_logging(log_file=log_file, force=True)
@@ -546,7 +546,7 @@ class TestLoggerProtocol:
     """LoggerProtocol の型定義テスト."""
 
     def test_正常系_ロガーがbindメソッドを持つ(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
         bound_logger = logger.bind(extra_key="extra_value")
@@ -554,7 +554,7 @@ class TestLoggerProtocol:
         assert bound_logger is not None
 
     def test_正常系_ロガーがunbindメソッドを持つ(self) -> None:
-        from utils.logging.config import get_logger
+        from utils_core.logging.config import get_logger
 
         logger = get_logger(__name__)
         bound_logger = logger.bind(key_to_remove="value")
@@ -567,7 +567,7 @@ class TestIntegration:
     """統合テスト."""
 
     def test_正常系_完全なログワークフローが機能する(self, tmp_path: Path) -> None:
-        from utils.logging.config import (
+        from utils_core.logging.config import (
             get_logger,
             log_context,
             log_performance,

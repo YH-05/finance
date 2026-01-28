@@ -10,13 +10,13 @@ class TestLogFormat:
     """LogFormat 型のテスト."""
 
     def test_正常系_LogFormat型が定義されている(self) -> None:
-        from utils.types import LogFormat
+        from utils_core.types import LogFormat
 
         # LogFormat が型エイリアスとして存在することを確認
         assert LogFormat is not None
 
     def test_正常系_LogFormatの許可値が正しい(self) -> None:
-        from utils.types import LogFormat
+        from utils_core.types import LogFormat
 
         # PEP 695 TypeAliasType の __value__ 属性から Literal の引数を取得
         # type X = Literal[...] の場合、X.__value__ が Literal[...] になる
@@ -25,7 +25,7 @@ class TestLogFormat:
         assert set(allowed_values) == expected
 
     def test_正常系_有効な値をLogFormat型として使用できる(self) -> None:
-        from utils.types import LogFormat
+        from utils_core.types import LogFormat
 
         # 許可された値が型の許可値に含まれることを検証
         allowed = get_args(LogFormat.__value__)
@@ -43,13 +43,13 @@ class TestLogLevel:
     """LogLevel 型のテスト."""
 
     def test_正常系_LogLevel型が定義されている(self) -> None:
-        from utils.types import LogLevel
+        from utils_core.types import LogLevel
 
         # LogLevel が型エイリアスとして存在することを確認
         assert LogLevel is not None
 
     def test_正常系_LogLevelの許可値が正しい(self) -> None:
-        from utils.types import LogLevel
+        from utils_core.types import LogLevel
 
         # PEP 695 TypeAliasType の __value__ 属性から Literal の引数を取得
         allowed_values = get_args(LogLevel.__value__)
@@ -57,7 +57,7 @@ class TestLogLevel:
         assert set(allowed_values) == expected
 
     def test_正常系_有効な値をLogLevel型として使用できる(self) -> None:
-        from utils.types import LogLevel
+        from utils_core.types import LogLevel
 
         # 許可された値が型の許可値に含まれることを検証
         allowed = get_args(LogLevel.__value__)
