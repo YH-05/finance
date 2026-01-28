@@ -116,9 +116,10 @@ class TestReturnPeriodsConstant:
 
     def test_正常系_RETURN_PERIODSに全期間が含まれる(self) -> None:
         """RETURN_PERIODS が期待される全ての期間を含むことを確認。"""
+        # 設定ファイルから読み込まれる期間（WoWが追加された）
         expected_periods = [
             "1D",
-            "WoW",
+            "WoW",  # Week over Week
             "1W",
             "MTD",
             "1M",
@@ -158,6 +159,8 @@ class TestTickerConstants:
 
     def test_正常系_グローバル指数ティッカーが含まれる(self) -> None:
         """TICKERS_GLOBAL_INDICES が期待されるティッカーを含むことを確認。"""
+        # 設定ファイルから読み込まれるグローバル指数
+        # ^TOPX はyfinanceでデータ取得できないため除外されている
         expected_tickers = [
             "^N225",  # 日経225
             "^STOXX50E",  # Euro STOXX 50

@@ -22,6 +22,32 @@ from market.types import (
     MarketDataResult,
 )
 
+# Check if blpapi is available
+try:
+    import blpapi  # type: ignore[import-not-found]
+
+    HAS_BLPAPI = True
+except ImportError:
+    HAS_BLPAPI = False
+
+
+def pytest_collection_modifyitems(
+    config: pytest.Config,
+    items: list[pytest.Item],
+) -> None:
+    """Skip Bloomberg tests if blpapi is not available.
+
+    This hook modifies the test collection to skip all tests in the
+    bloomberg directories when the blpapi module is not installed.
+    """
+    if HAS_BLPAPI:
+        return
+
+    skip_blpapi = pytest.mark.skip(reason="blpapi not available")
+    for item in items:
+        if "bloomberg" in str(item.fspath):
+            item.add_marker(skip_blpapi)
+
 
 @pytest.fixture
 def sample_data() -> list[dict[str, Any]]:
