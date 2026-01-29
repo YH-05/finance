@@ -61,6 +61,17 @@ repos:
   #     - id: detect-secrets
   #       args: [--baseline, .secrets.baseline]
 
+  # Marimo notebook conversion
+  - repo: local
+    hooks:
+      - id: marimo-convert
+        name: marimo-convert
+        entry: uv run python scripts/convert_notebooks.py
+        language: system
+        pass_filenames: false
+        types: [jupyter]
+        stages: [pre-commit]
+
   # Project synchronization check (pre-push)
   - repo: local
     hooks:
