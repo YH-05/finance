@@ -54,9 +54,6 @@ trash/
 .tmp/
 amp
 
-# Jupyter notebooks (local only)
-notebook/*.ipynb
-
 # Marimo session files
 notebook_sample/__marimo__/
 

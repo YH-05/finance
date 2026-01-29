@@ -22,8 +22,11 @@ def get_staged_notebooks() -> list[Path]:
     return [Path(f) for f in files if f.endswith(".ipynb") and Path(f).exists()]
 
 
-def convert_notebook(notebook_path: Path) -> Path:
-    """Convert a notebook to .py using marimo convert."""
+def convert_notebook(notebook_path: Path) -> Path | None:
+    """Convert a notebook to .py using marimo convert.
+
+    Returns the path if file was changed, None if unchanged.
+    """
     py_path = notebook_path.with_suffix(".py")
     result = subprocess.run(
         ["uv", "run", "marimo", "convert", str(notebook_path)],
@@ -35,9 +38,10 @@ def convert_notebook(notebook_path: Path) -> Path:
         print(f"Error converting {notebook_path}: {result.stderr}", file=sys.stderr)
         raise subprocess.CalledProcessError(result.returncode, "marimo convert")
 
-    py_path.write_text(result.stdout)
+    new_content = result.stdout
 
-    # Auto-fix with ruff (including unsafe fixes for auto-generated code)
+    # Auto-fix with ruff (write to temp, then format)
+    py_path.write_text(new_content)
     subprocess.run(
         ["uv", "run", "ruff", "check", "--fix", "--unsafe-fixes", str(py_path)],
         capture_output=True,
@@ -48,6 +52,19 @@ def convert_notebook(notebook_path: Path) -> Path:
         capture_output=True,
         check=False,
     )
+
+    # Check if the converted file is already staged with same content
+    staged_result = subprocess.run(
+        ["git", "show", f":{py_path}"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if staged_result.returncode == 0:
+        staged_content = staged_result.stdout
+        current_content = py_path.read_text()
+        if staged_content == current_content:
+            return None  # No change needed
 
     return py_path
 
@@ -65,15 +82,18 @@ def main() -> int:
     for notebook in notebooks:
         try:
             py_file = convert_notebook(notebook)
-            converted_files.append(py_file)
-            print(f"Converted: {notebook} -> {py_file}")
+            if py_file is not None:
+                converted_files.append(py_file)
+                print(f"Converted: {notebook} -> {py_file}")
+            else:
+                print(f"Up-to-date: {notebook}")
         except subprocess.CalledProcessError:
             errors = True
 
     if errors:
         return 1
 
-    # Stage the converted files
+    # Stage the converted files only if there are changes
     if converted_files:
         subprocess.run(
             ["git", "add", *[str(f) for f in converted_files]],

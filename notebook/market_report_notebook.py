@@ -1,72 +1,60 @@
 import marimo
 
-__generated_with = "0.19.4"
+__generated_with = "0.19.6"
 app = marimo.App()
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## `market_analysis.ipynb`
-    """)
-    return
-
-
-@app.cell
-def _():
-    from market_analysis.utils.logging_config import setup_logging
-    setup_logging(level="WARNING", force=True)
-
-    from market_analysis import MarketData, Analysis, Chart, MarketPerformanceAnalyzer
-    import os
-    from dotenv import load_dotenv
-    load_dotenv()
-    return Chart, MarketData, MarketPerformanceAnalyzer, os
-
-
-@app.cell
-def _(Chart, MarketData):
-    data = MarketData()
-    df_stock = data.fetch_stock("NVDA", start="2020-01-01")
-    # display(df_stock)
-    chart = Chart(df_stock, title='NVDA')
-    fig = chart.price_chart(overlays=['EMA_20', 'EMA_50', 'EMA_200'])
-    fig.show()
-    return
-
-
-@app.cell
-def _(MarketData, display, os):
-    fred_data = MarketData(fred_api_key=os.environ.get("FRED_API_KEY"))
-    df_gdp = fred_data.fetch_fred("GDP")
-    display(df_gdp)
-    return
-
-
-@app.cell
-def _():
-    import yfinance as yf
-    aapl = yf.Ticker("AAPL").get_analyst_price_targets()
-    print(aapl)
-    return
-
-
-@app.cell
-def _(MarketPerformanceAnalyzer):
-    analyzer = MarketPerformanceAnalyzer()
-    price = analyzer.price_data
-
-    price.tail(7)
-
-    performance_dict = analyzer.get_performance_groups()
-    performance_dict['Mag7_SOX']
-    return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## `market_report_notebook.ipynb`
+    """)
+
+
+@app.cell
+def _():
+    from database.utils.logging_config import setup_logging
+
+    setup_logging(level="ERROR", force=True)
+
+
+@app.cell
+def _(display):
+    from datetime import datetime, timedelta
+
+    from market.yfinance import FetchOptions, Interval, YFinanceFetcher
+
+    fetcher = YFinanceFetcher()
+
+    symbols = ["AAPL", "NVDA", "TSLA", "MSFT", "GOOGL", "META", "AMZN"]
+    start_date = (datetime.today() - timedelta(days=365 * 2)).strftime("%Y-%m-%d")
+    end_date = datetime.today().strftime("%Y-%m-%d")
+
+    # 複数銘柄を一括取得
+    mag7_data = fetcher.fetch_multiple(
+        symbols=symbols,
+        start_date=start_date,
+        end_date=end_date,
+        interval=Interval.DAILY,
+    )
+
+    # データフレームへの変換
+    for result in mag7_data:
+        df_data = (
+            result.data[["Close"]]
+            .reset_index()
+            .rename(columns={"Close": "value"})
+            .assign(symbol=result.symbol, variable="close")
+            .reindex(columns=["Date", "symbol", "variable", "value"])
+        )
+        display(df_data)
 
 
 if __name__ == "__main__":
