@@ -5,11 +5,14 @@ using the fredapi library to fetch economic data from the Federal
 Reserve Economic Data (FRED) service.
 """
 
+import json
 import os
 from datetime import datetime
-from typing import Any
+from pathlib import Path
+from typing import Any, ClassVar
 
 import pandas as pd
+from dotenv import load_dotenv
 from fredapi import Fred
 
 from utils_core.logging import get_logger
@@ -28,6 +31,11 @@ from .types import (
 )
 
 logger = get_logger(__name__, module="fred_fetcher")
+
+# Default path for FRED series presets configuration
+DEFAULT_PRESETS_PATH = (
+    Path(__file__).parents[3] / "data" / "config" / "fred_series.json"
+)
 
 
 class FREDFetcher(BaseDataFetcher):
@@ -67,7 +75,16 @@ class FREDFetcher(BaseDataFetcher):
     ...     end_date="2024-12-31",
     ... )
     >>> results = fetcher.fetch(options)
+
+    Using presets:
+    >>> fetcher.load_presets()  # Load from default config
+    >>> symbols = fetcher.get_preset_symbols("Treasury Yields")
+    >>> results = fetcher.fetch_preset("Treasury Yields", start_date="2020-01-01")
     """
+
+    # Class-level cache for presets data
+    _presets: ClassVar[dict[str, dict[str, Any]] | None] = None
+    _presets_path: ClassVar[Path | None] = None
 
     def __init__(
         self,
@@ -76,6 +93,10 @@ class FREDFetcher(BaseDataFetcher):
         cache_config: CacheConfig | None = None,
         retry_config: RetryConfig | None = None,
     ) -> None:
+        # Load .env from project root before reading environment variables
+        # Use override=False so explicit environment variables take precedence
+        load_dotenv()
+
         self._api_key = api_key or os.environ.get(FRED_API_KEY_ENV)
         self._cache = cache
         self._cache_config = cache_config
@@ -462,7 +483,8 @@ class FREDFetcher(BaseDataFetcher):
         Returns
         -------
         pd.DataFrame
-            Data with 'value' column (normalized to OHLCV-like format)
+            Data with 'value' column containing the time series data.
+            Index is DatetimeIndex.
 
         Raises
         ------
@@ -494,18 +516,9 @@ class FREDFetcher(BaseDataFetcher):
                 logger.warning("No data returned for series", series_id=series_id)
                 raise FREDFetchError(f"No data found for FRED series: {series_id}")
 
-            # Convert Series to DataFrame with OHLCV-like columns
-            # For economic data, we use the value for all OHLC columns
-            df = pd.DataFrame(
-                {
-                    "open": series,
-                    "high": series,
-                    "low": series,
-                    "close": series,
-                    "volume": pd.NA,
-                },
-                index=series.index,
-            )
+            # Convert Series to DataFrame with single 'value' column
+            # FRED data is a single time series, not OHLCV data
+            df = pd.DataFrame({"value": series}, index=series.index)
 
             # Ensure index is DatetimeIndex
             if not isinstance(df.index, pd.DatetimeIndex):
@@ -591,7 +604,252 @@ class FREDFetcher(BaseDataFetcher):
                 f"Failed to get info for series {series_id}: {e}"
             ) from e
 
+    # =========================================================================
+    # Preset Methods
+    # =========================================================================
+
+    @classmethod
+    def load_presets(
+        cls,
+        config_path: str | Path | None = None,
+        *,
+        force_reload: bool = False,
+    ) -> dict[str, dict[str, Any]]:
+        """Load FRED series presets from JSON configuration file.
+
+        Parameters
+        ----------
+        config_path : str | Path | None
+            Path to the JSON configuration file.
+            If None, uses default path: data/config/fred_series.json
+        force_reload : bool
+            If True, reload presets even if already loaded.
+
+        Returns
+        -------
+        dict[str, dict[str, Any]]
+            Loaded presets data with category -> series_id -> info structure.
+
+        Raises
+        ------
+        FileNotFoundError
+            If the configuration file does not exist.
+        ValueError
+            If the configuration file is not valid JSON.
+
+        Examples
+        --------
+        >>> FREDFetcher.load_presets()
+        >>> FREDFetcher.load_presets("/custom/path/fred_series.json")
+        """
+        path = Path(config_path) if config_path else DEFAULT_PRESETS_PATH
+
+        # Return cached presets if already loaded from same path
+        if not force_reload and cls._presets is not None and cls._presets_path == path:
+            logger.debug("Using cached presets", path=str(path))
+            return cls._presets
+
+        if not path.exists():
+            logger.error("Presets file not found", path=str(path))
+            raise FileNotFoundError(f"FRED presets file not found: {path}")
+
+        try:
+            with open(path, encoding="utf-8") as f:
+                cls._presets = json.load(f)
+                cls._presets_path = path
+
+            logger.info(
+                "FRED presets loaded",
+                path=str(path),
+                categories=list(cls._presets.keys()) if cls._presets else [],
+                total_series=sum(len(series) for series in cls._presets.values())
+                if cls._presets
+                else 0,
+            )
+
+            return cls._presets or {}
+
+        except json.JSONDecodeError as e:
+            logger.error("Invalid JSON in presets file", path=str(path), error=str(e))
+            raise ValueError(f"Invalid JSON in presets file {path}: {e}") from e
+
+    @classmethod
+    def get_preset_categories(cls) -> list[str]:
+        """Get list of available preset categories.
+
+        Returns
+        -------
+        list[str]
+            List of category names (e.g., "Treasury Yields", "Economic Indicators").
+
+        Raises
+        ------
+        RuntimeError
+            If presets have not been loaded.
+
+        Examples
+        --------
+        >>> FREDFetcher.load_presets()
+        >>> categories = FREDFetcher.get_preset_categories()
+        >>> print(categories)
+        ['Treasury Yields', 'Economic Indicators', ...]
+        """
+        if cls._presets is None:
+            raise RuntimeError("Presets not loaded. Call load_presets() first.")
+
+        return list(cls._presets.keys())
+
+    @classmethod
+    def get_preset_symbols(cls, category: str | None = None) -> list[str]:
+        """Get list of series IDs from presets.
+
+        Parameters
+        ----------
+        category : str | None
+            Category name to filter by.
+            If None, returns all series IDs from all categories.
+
+        Returns
+        -------
+        list[str]
+            List of FRED series IDs.
+
+        Raises
+        ------
+        RuntimeError
+            If presets have not been loaded.
+        KeyError
+            If the specified category does not exist.
+
+        Examples
+        --------
+        >>> FREDFetcher.load_presets()
+        >>> symbols = FREDFetcher.get_preset_symbols("Treasury Yields")
+        >>> print(symbols)
+        ['DGS1MO', 'DGS3MO', 'DGS6MO', ...]
+
+        >>> all_symbols = FREDFetcher.get_preset_symbols()  # All categories
+        """
+        if cls._presets is None:
+            raise RuntimeError("Presets not loaded. Call load_presets() first.")
+
+        if category is not None:
+            if category not in cls._presets:
+                raise KeyError(
+                    f"Category '{category}' not found. "
+                    f"Available: {list(cls._presets.keys())}"
+                )
+            return list(cls._presets[category].keys())
+
+        # Return all symbols from all categories
+        symbols: list[str] = []
+        for cat_series in cls._presets.values():
+            symbols.extend(cat_series.keys())
+        return symbols
+
+    @classmethod
+    def get_preset_info(cls, series_id: str) -> dict[str, Any] | None:
+        """Get preset information for a specific series ID.
+
+        Parameters
+        ----------
+        series_id : str
+            The FRED series ID to look up.
+
+        Returns
+        -------
+        dict[str, Any] | None
+            Series information from presets, or None if not found.
+
+        Raises
+        ------
+        RuntimeError
+            If presets have not been loaded.
+
+        Examples
+        --------
+        >>> FREDFetcher.load_presets()
+        >>> info = FREDFetcher.get_preset_info("DGS10")
+        >>> print(info["name_ja"])
+        '10年国債利回り'
+        """
+        if cls._presets is None:
+            raise RuntimeError("Presets not loaded. Call load_presets() first.")
+
+        for category, series_dict in cls._presets.items():
+            if series_id in series_dict:
+                info = series_dict[series_id].copy()
+                info["category_name"] = category
+                return info
+
+        return None
+
+    def fetch_preset(
+        self,
+        category: str | None = None,
+        start_date: datetime | str | None = None,
+        end_date: datetime | str | None = None,
+        *,
+        use_cache: bool = True,
+    ) -> list[MarketDataResult]:
+        """Fetch data for all series in a preset category.
+
+        Parameters
+        ----------
+        category : str | None
+            Category name to fetch.
+            If None, fetches all series from all categories.
+        start_date : datetime | str | None
+            Start date for data range.
+        end_date : datetime | str | None
+            End date for data range.
+        use_cache : bool
+            Whether to use cache.
+
+        Returns
+        -------
+        list[MarketDataResult]
+            List of results for each series in the category.
+
+        Raises
+        ------
+        RuntimeError
+            If presets have not been loaded.
+        KeyError
+            If the specified category does not exist.
+
+        Examples
+        --------
+        >>> fetcher = FREDFetcher()
+        >>> fetcher.load_presets()
+        >>> results = fetcher.fetch_preset(
+        ...     "Treasury Yields",
+        ...     start_date="2020-01-01",
+        ... )
+        >>> for r in results:
+        ...     print(f"{r.symbol}: {r.row_count} rows")
+        """
+        symbols = self.get_preset_symbols(category)
+
+        logger.info(
+            "Fetching preset data",
+            category=category or "all",
+            symbol_count=len(symbols),
+            start_date=str(start_date),
+            end_date=str(end_date),
+        )
+
+        options = FetchOptions(
+            symbols=symbols,
+            start_date=start_date,
+            end_date=end_date,
+            use_cache=use_cache,
+        )
+
+        return self.fetch(options)
+
 
 __all__ = [
+    "DEFAULT_PRESETS_PATH",
     "FREDFetcher",
 ]

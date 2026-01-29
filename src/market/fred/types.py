@@ -183,7 +183,9 @@ class MarketDataResult:
     symbol : str
         The symbol that was fetched
     data : pd.DataFrame
-        The fetched OHLCV data
+        The fetched data. Format depends on source:
+        - YFINANCE: OHLCV columns (open, high, low, close, volume)
+        - FRED: Single 'value' column with time series data
     source : DataSource
         Data source used
     fetched_at : datetime

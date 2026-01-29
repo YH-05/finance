@@ -100,7 +100,7 @@ print(f"ドリフト: {drift.max_drift_pct:.2%}")
 print(f"リバランス推奨: {'はい' if drift.needs_rebalancing else 'いいえ'}")
 ```
 
-#### ユースケース4: 統合戦略構築
+#### ユースケース4: 統合戦略構築（market・analyze・factor連携）
 
 ```python
 from strategy import IntegratedStrategyBuilder
@@ -123,59 +123,58 @@ print(f"構築された戦略: {strategy}")
 
 ```
 strategy/
-├── __init__.py
-├── py.typed
-├── types.py
-├── errors.py
-├── portfolio.py
-├── core/
+├── __init__.py          # パッケージエントリポイント
+├── py.typed            # 型情報マーカー
+├── types.py            # 型定義（Holding, Period, TickerInfo等）
+├── errors.py           # カスタム例外クラス
+├── portfolio.py        # Portfolioクラス（保有銘柄・資産配分管理）
+├── core/               # コアロジック（未実装）
 │   └── __init__.py
-├── risk/
+├── risk/               # リスク計算モジュール
 │   ├── __init__.py
-│   ├── calculator.py
-│   └── metrics.py
-├── output/
+│   ├── calculator.py   # RiskCalculator（ボラティリティ、Sharpe比等）
+│   └── metrics.py      # RiskMetricsResult（リスク指標結果）
+├── output/             # 結果フォーマットモジュール
 │   ├── __init__.py
-│   └── formatter.py
-├── visualization/
+│   └── formatter.py    # ResultFormatter（DataFrame、Markdown等）
+├── visualization/      # 可視化モジュール
 │   ├── __init__.py
-│   └── charts.py
-├── rebalance/
+│   └── charts.py       # ChartGenerator（Plotlyチャート生成）
+├── rebalance/          # リバランス分析モジュール
 │   ├── __init__.py
-│   ├── rebalancer.py
-│   └── types.py
-├── providers/
+│   ├── rebalancer.py   # Rebalancer（ドリフト検出・リバランス推奨）
+│   └── types.py        # DriftResult（ドリフト検出結果）
+├── providers/          # データプロバイダーモジュール
 │   ├── __init__.py
-│   ├── protocol.py
-│   └── market_analysis.py
-├── integration/
+│   ├── protocol.py     # MarketDataProviderプロトコル
+│   └── market_analysis.py  # market_analysis連携プロバイダー
+├── integration/        # パッケージ統合モジュール
 │   ├── __init__.py
-│   ├── builder.py
-│   ├── market_integration.py
-│   ├── analyze_integration.py
-│   └── factor_integration.py
-└── utils/
-    ├── __init__.py
-    └── logging_config.py
+│   ├── builder.py      # IntegratedStrategyBuilder（統合戦略構築）
+│   ├── market_integration.py   # market連携
+│   ├── analyze_integration.py  # analyze連携（テクニカル指標）
+│   └── factor_integration.py   # factor連携（ファクター分析）
+└── utils/              # ユーティリティ
+    └── __init__.py
 ```
 <!-- END: STRUCTURE -->
 
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
 ## 実装状況
 
-| モジュール       | 状態        | ファイル数 | 行数 |
-| ---------------- | ----------- | ---------- | ---- |
-| `types.py`       | ✅ 実装済み | 1          | 277  |
-| `errors.py`      | ✅ 実装済み | 1          | 303  |
-| `portfolio.py`   | ✅ 実装済み | 1          | 394  |
-| `risk/`          | ✅ 実装済み | 3          | 990  |
-| `output/`        | ✅ 実装済み | 2          | 447  |
-| `visualization/` | ✅ 実装済み | 2          | 424  |
-| `rebalance/`     | ✅ 実装済み | 3          | 308  |
-| `providers/`     | ✅ 実装済み | 3          | 482  |
+| モジュール       | 状態        | ファイル数 | 行数  |
+| ---------------- | ----------- | ---------- | ----- |
+| `types.py`       | ✅ 実装済み | 1          | 277   |
+| `errors.py`      | ✅ 実装済み | 1          | 303   |
+| `portfolio.py`   | ✅ 実装済み | 1          | 394   |
+| `risk/`          | ✅ 実装済み | 3          | 990   |
+| `output/`        | ✅ 実装済み | 2          | 448   |
+| `visualization/` | ✅ 実装済み | 2          | 424   |
+| `rebalance/`     | ✅ 実装済み | 3          | 297   |
+| `providers/`     | ✅ 実装済み | 3          | 482   |
 | `integration/`   | ✅ 実装済み | 5          | 1,404 |
-| `utils/`         | ✅ 実装済み | 2          | 367  |
-| `core/`          | ⏳ 未実装   | 1          | 3    |
+| `utils/`         | ⏳ 未実装   | 1          | 8     |
+| `core/`          | ⏳ 未実装   | 1          | 3     |
 <!-- END: IMPLEMENTATION -->
 
 <!-- AUTO-GENERATED: API -->
@@ -200,6 +199,39 @@ result = calculator.calculate()
 # 結果のフォーマット
 formatter = ResultFormatter()
 print(formatter.to_markdown(result))
+```
+
+---
+
+### エクスポート一覧
+
+```python
+from strategy import (
+    # リスク計算
+    RiskCalculator,         # リスク指標計算エンジン
+    RiskMetricsResult,      # リスク指標結果データクラス
+
+    # 出力・フォーマット
+    ResultFormatter,        # 結果を様々な形式に変換
+
+    # 可視化
+    ChartGenerator,         # Plotlyチャート生成
+
+    # 統合モジュール（market・analyze・factor連携）
+    IntegratedStrategyBuilder,      # 統合戦略構築ビルダー
+    StrategyMarketDataProvider,     # market連携データプロバイダー
+    TechnicalSignalProvider,        # analyze連携テクニカル指標
+    FactorBasedRiskCalculator,      # factor連携リスク計算
+
+    # ファクトリ関数
+    create_integrated_builder,      # IntegratedStrategyBuilder生成
+    create_strategy_market_provider,  # StrategyMarketDataProvider生成
+    create_signal_provider,         # TechnicalSignalProvider生成
+    create_factor_risk_calculator,  # FactorBasedRiskCalculator生成
+
+    # ユーティリティ
+    get_logger,            # 構造化ロギング
+)
 ```
 
 ---
@@ -506,6 +538,87 @@ print(data)
 
 ---
 
+### ファクトリ関数
+
+#### `create_integrated_builder()`
+
+**説明**: IntegratedStrategyBuilder のインスタンスを生成するファクトリ関数
+
+**使用例**:
+
+```python
+from strategy import create_integrated_builder
+
+# ビルダーを生成（market・analyze・factorの統合設定を自動構成）
+builder = create_integrated_builder()
+strategy = builder.build_from_signals(tickers=["VOO"], start_date="2023-01-01")
+```
+
+**戻り値**: `IntegratedStrategyBuilder`
+
+---
+
+#### `create_strategy_market_provider()`
+
+**説明**: StrategyMarketDataProvider のインスタンスを生成するファクトリ関数
+
+**使用例**:
+
+```python
+from strategy import create_strategy_market_provider
+
+# マーケットデータプロバイダーを生成
+provider = create_strategy_market_provider()
+data = provider.fetch(tickers=["VOO"], start_date="2023-01-01")
+```
+
+**戻り値**: `StrategyMarketDataProvider`
+
+---
+
+#### `create_signal_provider()`
+
+**説明**: TechnicalSignalProvider のインスタンスを生成するファクトリ関数
+
+**使用例**:
+
+```python
+from strategy import create_signal_provider
+import pandas as pd
+
+# テクニカルシグナルプロバイダーを生成
+provider = create_signal_provider()
+signals = provider.generate_signals(prices=pd.Series([100, 102, 101]))
+```
+
+**戻り値**: `TechnicalSignalProvider`
+
+---
+
+#### `create_factor_risk_calculator(returns, factor_exposures)`
+
+**説明**: FactorBasedRiskCalculator のインスタンスを生成するファクトリ関数
+
+**使用例**:
+
+```python
+from strategy import create_factor_risk_calculator
+import pandas as pd
+
+# ファクターベースリスク計算機を生成
+calculator = create_factor_risk_calculator(
+    returns=pd.Series([0.01, -0.005, 0.02]),
+    factor_exposures={"momentum": 0.5, "value": 0.3}
+)
+result = calculator.calculate()
+```
+
+**パラメータ**: `returns` (必須) - リターンデータ、`factor_exposures` (必須) - ファクターエクスポジャー辞書
+
+**戻り値**: `FactorBasedRiskCalculator`
+
+---
+
 ### ユーティリティ関数
 
 #### `get_logger(name, **context)`
@@ -555,10 +668,10 @@ from strategy.errors import (
 
 | 項目                 | 値     |
 | -------------------- | ------ |
-| Python ファイル数    | 25     |
-| 総行数（実装コード） | 5,443  |
-| モジュール数         | 9      |
-| テストファイル数     | 15     |
+| Python ファイル数    | 24     |
+| 総行数（実装コード） | 5,076  |
+| モジュール数         | 11     |
+| テストファイル数     | 28     |
 | テストカバレッジ     | N/A    |
 <!-- END: STATS -->
 
@@ -578,8 +691,12 @@ from strategy.errors import (
 
 | パッケージ | 関係 | 説明 |
 |-----------|------|------|
-| `finance` | 依存 | ロギング設定（`finance.utils.logging_config`）を利用 |
-| `market_analysis` | 任意 | データプロバイダーとして利用可能（`strategy.providers.market_analysis`） |
+| `utils_core` | 依存 | 構造化ロギング（`utils_core.logging.get_logger`）を利用 |
+| `market` | 任意 | マーケットデータ取得（`strategy.integration.market_integration`） |
+| `analyze` | 任意 | テクニカル指標生成（`strategy.integration.analyze_integration`） |
+| `factor` | 任意 | ファクター分析統合（`strategy.integration.factor_integration`） |
+
+**注**: 統合モジュール（`integration/`）を使用する場合のみ、market・analyze・factor パッケージが必要です。
 
 ### インストール
 

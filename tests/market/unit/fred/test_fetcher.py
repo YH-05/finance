@@ -210,14 +210,8 @@ class TestFetch:
         assert results[0].source == DataSource.FRED
         assert results[0].from_cache is False
         assert len(results[0].data) == 3
-        # FRED データは value を全 OHLC 列に使用
-        assert list(results[0].data.columns) == [
-            "open",
-            "high",
-            "low",
-            "close",
-            "volume",
-        ]
+        # FRED データは単一時系列なので value カラムのみ
+        assert list(results[0].data.columns) == ["value"]
 
     @patch("market.fred.fetcher.Fred")
     def test_正常系_複数シリーズのデータ取得(
@@ -474,3 +468,99 @@ class TestRetryConfig:
         fetcher = FREDFetcher(retry_config=retry_config)
 
         assert fetcher._retry_config == retry_config
+
+
+# =============================================================================
+# プリセット機能のテスト
+# =============================================================================
+
+
+class TestPresets:
+    """プリセット機能のテスト。"""
+
+    @pytest.fixture(autouse=True)
+    def reset_presets(self) -> None:
+        """各テスト前にプリセットキャッシュをリセット。"""
+        FREDFetcher._presets = None
+        FREDFetcher._presets_path = None
+
+    def test_正常系_プリセットファイルを読み込む(self) -> None:
+        """プリセットファイルを正常に読み込めることを確認。"""
+        presets = FREDFetcher.load_presets()
+
+        assert presets is not None
+        assert "Treasury Yields" in presets
+        assert "Economic Indicators" in presets
+
+    def test_正常系_カテゴリ一覧を取得(self) -> None:
+        """カテゴリ一覧を取得できることを確認。"""
+        FREDFetcher.load_presets()
+        categories = FREDFetcher.get_preset_categories()
+
+        assert "Treasury Yields" in categories
+        assert "Credit Spreads" in categories
+        assert "Labor Market" in categories
+
+    def test_正常系_カテゴリ別シンボル取得(self) -> None:
+        """カテゴリ別にシンボルを取得できることを確認。"""
+        FREDFetcher.load_presets()
+        symbols = FREDFetcher.get_preset_symbols("Treasury Yields")
+
+        assert "DGS10" in symbols
+        assert "DGS2" in symbols
+        assert "DGS30" in symbols
+
+    def test_正常系_全シンボル取得(self) -> None:
+        """全カテゴリのシンボルを取得できることを確認。"""
+        FREDFetcher.load_presets()
+        all_symbols = FREDFetcher.get_preset_symbols()
+
+        assert len(all_symbols) > 10
+        assert "DGS10" in all_symbols
+        assert "GDP" in all_symbols
+        assert "UNRATE" in all_symbols
+
+    def test_正常系_シリーズ情報取得(self) -> None:
+        """シリーズの詳細情報を取得できることを確認。"""
+        FREDFetcher.load_presets()
+        info = FREDFetcher.get_preset_info("DGS10")
+
+        assert info is not None
+        assert info["name_ja"] == "10年国債利回り"
+        assert info["category"] == "interest_rate"
+        assert info["category_name"] == "Treasury Yields"
+
+    def test_正常系_存在しないシリーズでNone(self) -> None:
+        """存在しないシリーズIDでNoneが返ることを確認。"""
+        FREDFetcher.load_presets()
+        info = FREDFetcher.get_preset_info("NONEXISTENT")
+
+        assert info is None
+
+    def test_異常系_プリセット未ロード時にRuntimeError(self) -> None:
+        """プリセット未ロード時にRuntimeErrorが発生することを確認。"""
+        with pytest.raises(RuntimeError, match="Presets not loaded"):
+            FREDFetcher.get_preset_categories()
+
+    def test_異常系_存在しないカテゴリでKeyError(self) -> None:
+        """存在しないカテゴリ指定時にKeyErrorが発生することを確認。"""
+        FREDFetcher.load_presets()
+
+        with pytest.raises(KeyError, match="not found"):
+            FREDFetcher.get_preset_symbols("Nonexistent Category")
+
+    def test_正常系_キャッシュが効く(self) -> None:
+        """2回目のload_presetsでキャッシュが使われることを確認。"""
+        presets1 = FREDFetcher.load_presets()
+        presets2 = FREDFetcher.load_presets()
+
+        assert presets1 is presets2  # 同じオブジェクト
+
+    def test_正常系_force_reloadでキャッシュ無視(self) -> None:
+        """force_reload=Trueでキャッシュを無視して再読み込みすることを確認。"""
+        presets1 = FREDFetcher.load_presets()
+        presets2 = FREDFetcher.load_presets(force_reload=True)
+
+        # 内容は同じだが、force_reloadで再読み込みされる
+        assert presets1 is not presets2
+        assert presets1 == presets2

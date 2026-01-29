@@ -1,7 +1,17 @@
 """Pytest configuration and fixtures for market.fred tests."""
 
+from collections.abc import Generator
+from unittest.mock import patch
+
 import pandas as pd
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def mock_load_dotenv() -> Generator[None]:
+    """Disable load_dotenv during tests to ensure env var mocking works."""
+    with patch("market.fred.fetcher.load_dotenv"):
+        yield
 
 
 @pytest.fixture

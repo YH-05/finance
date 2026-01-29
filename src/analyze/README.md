@@ -93,15 +93,15 @@ bands = TechnicalIndicators.calculate_bollinger_bands(prices, window=20)
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|------|
-| `technical/` | ✅ 実装済み | 3 | 935 |
-| `statistics/` | ✅ 実装済み | 4 | 1,294 |
-| `sector/` | ✅ 実装済み | 2 | 610 |
-| `earnings/` | ✅ 実装済み | 3 | 458 |
-| `returns/` | ✅ 実装済み | 2 | 424 |
-| `visualization/` | ✅ 実装済み | 4 | 1,511 |
-| `integration/` | ✅ 実装済み | 2 | 332 |
-| `config/` | ✅ 実装済み | 2 | 151 |
-| `reporting/` | ✅ 実装済み | 3 | 911 |
+| `visualization/` | ✅ 実装済み | 4 | 881 |
+| `statistics/` | ✅ 実装済み | 4 | 647 |
+| `reporting/` | 🚧 開発中 | 3 | 518 |
+| `sector/` | ✅ 実装済み | 2 | 406 |
+| `technical/` | 🚧 開発中 | 3 | 379 |
+| `returns/` | ✅ 実装済み | 2 | 278 |
+| `earnings/` | ✅ 実装済み | 3 | 198 |
+| `integration/` | ✅ 実装済み | 2 | 166 |
+| `config/` | 🚧 開発中 | 2 | 76 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -836,10 +836,10 @@ analyze/
 
 | 項目 | 値 |
 |------|-----|
-| Python ファイル数 | 26 |
-| 総行数（実装コード） | 6,812 |
+| Python ファイル数 | 25 |
+| 総行数（実装コード） | 3,549 |
 | モジュール数 | 9 |
-| テストファイル数 | 12 |
+| テストファイル数 | 13 |
 
 <!-- END: STATS -->
 

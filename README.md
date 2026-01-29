@@ -18,12 +18,15 @@
 
 | パッケージ | 説明 |
 |-----------|------|
-| `database` | 共通データベースインフラ、ユーティリティ |
-| `market` | 市場データ取得機能 (yfinance, FRED) |
-| `analyze` | 市場データ分析機能 (テクニカル分析, 騰落率) |
-| `rss` | RSSフィード管理・監視 |
-| `factor` | ファクター投資・分析 |
-| `strategy` | 投資戦略構築 |
+| `database` | 共通データベースインフラ（SQLite/DuckDB）、ユーティリティ、ロギング |
+| `market` | 市場データ取得機能（yfinance, FRED, Bloomberg）、キャッシュ、エクスポート |
+| `analyze` | 市場データ分析機能（テクニカル、統計、セクター分析、可視化） |
+| `rss` | RSSフィード管理・監視・記事抽出・MCP統合 |
+| `factor` | ファクター投資・分析（バリュー、モメンタム、クオリティ等） |
+| `strategy` | 投資戦略構築・リスク管理・ポートフォリオ分析 |
+| `news` | ニュース処理パイプライン |
+| `market_analysis` | 市場分析統合モジュール |
+| `utils_core` | 共通ユーティリティ・ロギング |
 
 ## 🚀 セットアップ
 
@@ -137,13 +140,13 @@ uv run pyright --version
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (85 agents + 19 commands + 48 skills)
-│   ├── agents/                              # (85) Specialized agents
-│   │   ├── deep-research/
+├── .claude/                                 # Claude Code configuration (92 agents + 18 commands + 46 skills)
+│   ├── agents/                              # (92) Specialized agents
+│   │   ├── deep-research/                   # ディープリサーチエージェント群
 │   │   └── finance_news_collector/          # テーマ別収集エージェント
-│   ├── commands/                            # (19) Slash commands
+│   ├── commands/                            # (18) Slash commands
 │   ├── rules/                               # Shared rule definitions
-│   ├── skills/                              # (48) Skill modules
+│   ├── skills/                              # (46) Skill modules
 │   └── agents.md
 ├── .github/                                 # GitHub configuration
 │   ├── ISSUE_TEMPLATE/                      # Issue templates
@@ -153,7 +156,7 @@ finance/                                     # Project root
 │   ├── duckdb/                              # DuckDB OLAP database
 │   ├── sqlite/                              # SQLite OLTP database
 │   ├── raw/                                 # Raw data (Parquet format)
-│   │   ├── fred/indicators/
+│   │   ├── fred/indicators/                 # FRED経済指標
 │   │   ├── rss/                             # RSS feed subscriptions
 │   │   └── yfinance/                        # stocks, forex, indices
 │   ├── processed/                           # Processed data (daily/aggregated)
@@ -168,8 +171,11 @@ finance/                                     # Project root
 │       ├── project-11/                      # note金融コンテンツ発信強化
 │       ├── project-14/                      # 金融ニュース収集
 │       ├── project-16/                      # src_sample Migration
+│       ├── project-17/                      # スキル開発
+│       ├── project-18/                      # ワークフロー改善
 │       ├── project-20/                      # ナレッジ管理システム
-│       └── project-21/                      # 新規プロジェクト
+│       ├── project-21/                      # 新規プロジェクト
+│       └── project-25/                      # 週次レポート
 ├── src/                                     # Source code
 │   ├── database/                            # Core infrastructure
 │   │   ├── db/                              # Database layer (SQLite + DuckDB)
@@ -180,59 +186,95 @@ finance/                                     # Project root
 │   ├── market/                              # Market data fetching
 │   │   ├── yfinance/                        # Yahoo Finance fetcher
 │   │   ├── fred/                            # FRED fetcher
+│   │   ├── bloomberg/                       # Bloomberg fetcher
+│   │   ├── cache/                           # Data caching
+│   │   ├── export/                          # Data export
 │   │   ├── utils/                           # Utilities
 │   │   └── py.typed
 │   ├── analyze/                             # Market analysis
 │   │   ├── returns/                         # Returns calculation
 │   │   ├── sector/                          # Sector analysis
 │   │   ├── technical/                       # Technical indicators
+│   │   ├── statistics/                      # Statistical analysis
 │   │   ├── earnings/                        # Earnings calendar
+│   │   ├── visualization/                   # Chart generation
+│   │   ├── reporting/                       # Report generation
 │   │   └── py.typed
 │   ├── rss/                                 # RSS feed monitoring package
 │   │   ├── cli/                             # CLI interface
 │   │   ├── core/                            # Parser, HTTP client, diff detector
 │   │   ├── mcp/                             # MCP server integration
-│   │   ├── services/                        # Service layer
+│   │   ├── services/                        # Service layer (ArticleExtractor)
 │   │   ├── storage/                         # JSON persistence
 │   │   ├── validators/                      # URL validation
 │   │   ├── utils/                           # Logging
-│   │   ├── exceptions.py
-│   │   ├── types.py
-│   │   ├── docs/                            # Library documentation
 │   │   └── py.typed
 │   ├── factor/                              # Factor analysis library
 │   │   ├── core/                            # Core algorithms
-│   │   ├── factors/                         # Factor implementations (macro, price, quality, size, value)
+│   │   ├── factors/                         # Factor implementations
+│   │   │   ├── macro/                       # Macro factors
+│   │   │   ├── price/                       # Momentum factors
+│   │   │   ├── quality/                     # Quality factors
+│   │   │   ├── size/                        # Size factors
+│   │   │   └── value/                       # Value factors
 │   │   ├── providers/                       # Data providers
 │   │   ├── validation/                      # Factor validation
-│   │   ├── utils/
 │   │   └── py.typed
 │   ├── strategy/                            # Strategy library
-│   │   ├── core/
+│   │   ├── core/                            # Core strategy
 │   │   ├── output/                          # Output formatter
 │   │   ├── rebalance/                       # Rebalancing
 │   │   ├── risk/                            # Risk management
+│   │   ├── integration/                     # market/analyze/factor integration
 │   │   ├── providers/                       # Data providers
-│   │   ├── utils/
+│   │   ├── visualization/                   # Portfolio charts
 │   │   └── py.typed
+│   ├── news/                                # News processing pipeline
+│   │   ├── config/                          # Configuration
+│   │   ├── core/                            # Core processors
+│   │   ├── processors/                      # News processors
+│   │   ├── sinks/                           # Output sinks
+│   │   ├── sources/                         # Data sources
+│   │   └── utils/                           # Utilities
+│   ├── market_analysis/                     # Market analysis integration
+│   │   ├── analysis/                        # Analysis modules
+│   │   ├── api/                             # API layer
+│   │   ├── core/                            # Core functionality
+│   │   ├── export/                          # Export functionality
+│   │   └── visualization/                   # Visualization
+│   └── utils_core/                          # Shared utilities
+│       └── logging/                         # Logging configuration
 ├── tests/                                   # Test suite
 │   ├── database/                            # Database package tests
-│   │   └── unit/                            # DB client tests
+│   │   ├── unit/                            # Unit tests
+│   │   └── property/                        # Property tests
 │   ├── market/                              # Market package tests
-│   │   └── unit/                            # Tests
+│   │   ├── unit/                            # Unit tests
+│   │   └── property/                        # Property tests
 │   ├── analyze/                             # Analyze package tests
-│   │   └── unit/                            # Tests
-│   ├── rss/                                 # RSS package tests
 │   │   ├── unit/                            # Unit tests
 │   │   └── integration/                     # Integration tests
+│   ├── rss/                                 # RSS package tests
+│   │   ├── unit/                            # Unit tests
+│   │   ├── property/                        # Property tests
+│   │   └── integration/                     # Integration tests
 │   ├── factor/                              # Factor analysis tests
+│   │   ├── unit/                            # Unit tests
+│   │   ├── property/                        # Property tests
+│   │   └── integration/                     # Integration tests
 │   ├── strategy/                            # Strategy tests
-│   └── finance_news_collector/              # News collector tests
+│   │   ├── unit/                            # Unit tests
+│   │   ├── property/                        # Property tests
+│   │   └── integration/                     # Integration tests
+│   ├── news/                                # News package tests
+│   └── market_analysis/                     # Market analysis tests
 ├── template/                                # Reference templates (read-only)
 │   ├── src/template_package/                # Package structure template
 │   ├── tests/                               # Test structure template
 │   └── {article_id}-theme-name-en/          # Article template
 ├── articles/                                # 金融記事ワークスペース
+│   └── weekly_report/                       # 週次レポート
+├── research/                                # ディープリサーチワークスペース
 ├── snippets/                                # Reusable content (disclaimers, etc.)
 ├── scripts/                                 # Utility scripts
 ├── CLAUDE.md                                # Project instructions

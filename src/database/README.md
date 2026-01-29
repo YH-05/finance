@@ -310,24 +310,24 @@ from database.types import (
 database/
 ├── __init__.py              # get_logger をエクスポート
 ├── py.typed                 # PEP 561 型情報マーカー
-├── types.py                 # 型定義（TypedDict、Literal）
-├── parquet_schema.py        # Parquet スキーマ定義
+├── types.py                 # 型定義（TypedDict、Literal、Enum）
+├── parquet_schema.py        # Parquet スキーマ定義（Pydantic モデル）
 │
 ├── db/                      # データベース接続・クライアント
-│   ├── __init__.py          # SQLiteClient, DuckDBClient をエクスポート
+│   ├── __init__.py          # SQLiteClient, DuckDBClient, get_db_path エクスポート
 │   ├── connection.py        # get_db_path(), DATA_DIR, PROJECT_ROOT
-│   ├── sqlite_client.py     # SQLiteClient (OLTP)
-│   ├── duckdb_client.py     # DuckDBClient (OLAP)
+│   ├── sqlite_client.py     # SQLiteClient (OLTP用トランザクション処理)
+│   ├── duckdb_client.py     # DuckDBClient (OLAP用分析クエリ)
 │   └── migrations/          # スキーママイグレーション
 │       ├── __init__.py
-│       ├── runner.py
-│       └── versions/
+│       ├── runner.py        # マイグレーション実行エンジン
+│       └── versions/        # バージョン管理された SQLスクリプト
+│           └── 001_initial_schema.sql
 │
 └── utils/                   # ユーティリティ関数
     ├── __init__.py
-    ├── logging_config.py    # get_logger() 他、structlog 設定
-    ├── date_utils.py        # 日付計算、フォーマット関数
-    └── format_converter.py  # Parquet ⇄ JSON 変換
+    ├── date_utils.py        # 日付計算、フォーマット、取引日判定
+    └── format_converter.py  # Parquet ⇄ JSON 変換（Pydantic 活用）
 ```
 
 <!-- END: STRUCTURE -->
@@ -340,14 +340,15 @@ database/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|----------|------|
-| `types.py` | ✅ 実装済み | 1 | 326 |
-| `db/` | ✅ 実装済み | 4 | 328 |
-| `utils/` | ✅ 実装済み | 3 | 885 |
-| **合計** | **✅** | **13** | **2,019** |
+| `types.py` | ✅ 実装済み | 1 | 324 |
+| `parquet_schema.py` | ✅ 実装済み | 1 | 441 |
+| `db/` | ✅ 実装済み | 6 | 342 |
+| `utils/` | ✅ 実装済み | 3 | 601 |
+| **合計** | **✅** | **12** | **1,712** |
 
 **テスト**:
 - テストファイル数: 7
-- テストカバレッジ: 対応
+- カバレッジ: 単体テスト・プロパティテスト完備
 
 <!-- END: IMPLEMENTATION -->
 
@@ -379,10 +380,11 @@ database/
 
 | 項目 | 値 |
 |------|-----|
-| Python ファイル数 | 13 |
-| 総行数（実装コード） | 2,019 |
+| Python ファイル数 | 12 |
+| 総行数（実装コード） | 1,712 |
 | モジュール数 | 3 |
 | テストファイル数 | 7 |
+| マイグレーションファイル | 1 |
 | 実装状態 | ✅ 完全実装 |
 
 <!-- END: STATS -->

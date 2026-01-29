@@ -166,18 +166,9 @@ factor/
 │   ├── __init__.py
 │   ├── ic_analyzer.py       # IC/IR分析
 │   └── quantile_analyzer.py # 分位ポートフォリオ分析
-├── utils/             # ユーティリティ
-│   ├── __init__.py
-│   └── logging_config.py # 構造化ロギング
-└── docs/              # ドキュメント
-    ├── architecture.md
-    ├── glossary.md
-    ├── project.md
-    ├── functional-design.md
-    ├── tasks.md
-    ├── development-guidelines.md
-    ├── repository-structure.md
-    └── library-requirements.md
+└── utils/             # ユーティリティ
+    ├── __init__.py
+    └── logging_config.py # 構造化ロギング
 ```
 
 <!-- END: STRUCTURE -->
@@ -187,16 +178,20 @@ factor/
 
 | モジュール        | 状態        | ファイル数 | 行数  | 説明                                           |
 | ----------------- | ----------- | ---------- | ----- | ---------------------------------------------- |
-| `__init__.py`     | ✅ 実装済み | 1          | 139   | パッケージエントリーポイント                   |
+| `__init__.py`     | ✅ 実装済み | 1          | 158   | パッケージエントリーポイント                   |
 | `types.py`        | ✅ 実装済み | 1          | 352   | 型定義（FactorConfig, FactorResult等）         |
 | `errors.py`       | ✅ 実装済み | 1          | 354   | カスタム例外クラス                             |
 | `enums.py`        | ✅ 実装済み | 1          | 74    | Enum定義（FactorCategory, NormalizationMethod）|
-| `core/`           | ✅ 実装済み | 7          | 2,320 | コアアルゴリズム（Factor基底、正規化、PCA等）  |
-| `factors/`        | ✅ 実装済み | 21         | 4,414 | ファクター実装（価格、バリュー、クオリティ等）|
+| `core/`           | ✅ 実装済み | 7          | 2,324 | コアアルゴリズム（Factor基底、正規化、PCA等）  |
+| `factors/macro/`  | ✅ 実装済み | 6          | 1,177 | マクロ経済ファクター（金利、インフレ等）       |
+| `factors/price/`  | ✅ 実装済み | 4          | 889   | 価格ファクター（モメンタム、リバーサル等）     |
+| `factors/quality/`| ✅ 実装済み | 5          | 1,195 | クオリティファクター（ROE、ROIC等）           |
+| `factors/size/`   | ✅ 実装済み | 2          | 398   | サイズファクター（時価総額）                  |
+| `factors/value/`  | ✅ 実装済み | 3          | 736   | バリューファクター（PER、PBR等）              |
 | `providers/`      | ✅ 実装済み | 4          | 1,227 | データプロバイダー（YFinance、キャッシュ）    |
-| `integration/`    | ✅ 実装済み | 2          | 835   | 統合モジュール（market、analyze パッケージ連携）|
+| `integration/`    | ✅ 実装済み | 3          | 835   | 統合モジュール（market、analyze パッケージ連携）|
 | `validation/`     | ✅ 実装済み | 3          | 1,276 | ファクター検証（IC分析、分位分析）            |
-| `utils/`          | ✅ 実装済み | 2          | 119   | ユーティリティ（構造化ロギング）              |
+| `utils/`          | ✅ 実装済み | 1          | 3     | ユーティリティ（構造化ロギング）              |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -517,22 +512,6 @@ from factor import (
 
 ### ユーティリティ
 
-#### `get_logger(name: str) -> BoundLogger`
-
-**説明**: 構造化ロガーを取得。
-
-**使用例**:
-
-```python
-from factor import get_logger
-
-logger = get_logger(__name__)
-logger.info("factor_initialized", symbols=100)
-logger.warning("insufficient_data", symbol="AAPL", required=252, available=100)
-```
-
----
-
 #### `get_registry() -> FactorRegistry`
 
 **説明**: ファクターレジストリのシングルトンインスタンスを取得。
@@ -674,10 +653,10 @@ print(result["indicators"])
 
 | 項目                 | 値     |
 | -------------------- | ------ |
-| Python ファイル数    | 44     |
-| 総行数（実装コード） | 11,382 |
-| モジュール数         | 7      |
-| テストファイル数     | 33     |
+| Python ファイル数    | 43     |
+| 総行数（実装コード） | 11,021 |
+| モジュール数         | 12     |
+| テストファイル数     | 37     |
 | テストカバレッジ     | N/A    |
 
 <!-- END: STATS -->
