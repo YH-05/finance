@@ -294,10 +294,176 @@ class ExtractedArticle(BaseModel):
     )
 
 
+class SummarizationStatus(StrEnum):
+    """Status of AI summarization.
+
+    Represents the result status of attempting to summarize an article
+    using an AI model. This is used to track whether summarization succeeded
+    or why it failed.
+
+    Attributes
+    ----------
+    SUCCESS : str
+        Summarization completed successfully. The summary field will contain
+        the structured summary.
+    FAILED : str
+        Summarization failed for an unspecified reason. Check error_message
+        for details.
+    TIMEOUT : str
+        The summarization request timed out before completing.
+    SKIPPED : str
+        Summarization was skipped because body extraction failed.
+        No body text was available to summarize.
+
+    Examples
+    --------
+    >>> SummarizationStatus.SUCCESS
+    <SummarizationStatus.SUCCESS: 'success'>
+    >>> SummarizationStatus.SUCCESS == "success"
+    True
+    >>> SummarizationStatus.SKIPPED.value
+    'skipped'
+    """
+
+    SUCCESS = "success"
+    FAILED = "failed"
+    TIMEOUT = "timeout"
+    SKIPPED = "skipped"
+
+
+class StructuredSummary(BaseModel):
+    """A structured summary of an article in 4 sections.
+
+    Represents the AI-generated summary of an article, organized into
+    four distinct sections for consistent formatting and easy consumption.
+
+    Attributes
+    ----------
+    overview : str
+        Overview section describing the main thesis of the article.
+    key_points : list[str]
+        Key points section listing important facts extracted from the article.
+    market_impact : str
+        Market impact section describing implications for investors.
+    related_info : str | None
+        Optional related information section providing background context.
+
+    Examples
+    --------
+    >>> from news.models import StructuredSummary
+    >>> summary = StructuredSummary(
+    ...     overview="The Federal Reserve held interest rates steady",
+    ...     key_points=["Inflation approaching 2% target", "Rate cut signaled"],
+    ...     market_impact="Bond markets may rally",
+    ... )
+    >>> summary.overview
+    'The Federal Reserve held interest rates steady'
+    >>> len(summary.key_points)
+    2
+    """
+
+    overview: str = Field(
+        ...,
+        description="Overview section describing the main thesis of the article",
+    )
+    key_points: list[str] = Field(
+        ...,
+        description="Key points section listing important facts from the article",
+    )
+    market_impact: str = Field(
+        ...,
+        description="Market impact section describing implications for investors",
+    )
+    related_info: str | None = Field(
+        default=None,
+        description="Optional related information providing background context",
+    )
+
+
+class SummarizedArticle(BaseModel):
+    """An article after AI summarization.
+
+    Represents an article after attempting to generate an AI summary
+    from its extracted body text. This is the output of a Summarizer component.
+
+    The summarization may succeed (summary contains structured content) or fail
+    for various reasons (API error, timeout, or skipped due to extraction failure).
+
+    Attributes
+    ----------
+    extracted : ExtractedArticle
+        The extracted article that was processed for summarization.
+    summary : StructuredSummary | None
+        The AI-generated structured summary, or None if summarization failed/skipped.
+    summarization_status : SummarizationStatus
+        The status of the summarization attempt (SUCCESS, FAILED, TIMEOUT, SKIPPED).
+    error_message : str | None
+        Error message if summarization failed, or None if successful.
+
+    Examples
+    --------
+    >>> from datetime import datetime, timezone
+    >>> from news.models import (
+    ...     ArticleSource, CollectedArticle, ExtractedArticle,
+    ...     ExtractionStatus, SourceType, StructuredSummary,
+    ...     SummarizationStatus, SummarizedArticle
+    ... )
+    >>> source = ArticleSource(
+    ...     source_type=SourceType.RSS,
+    ...     source_name="CNBC Markets",
+    ...     category="market",
+    ... )
+    >>> collected = CollectedArticle(
+    ...     url="https://www.cnbc.com/article/123",
+    ...     title="Market Update",
+    ...     source=source,
+    ...     collected_at=datetime.now(tz=timezone.utc),
+    ... )
+    >>> extracted = ExtractedArticle(
+    ...     collected=collected,
+    ...     body_text="Full article content here...",
+    ...     extraction_status=ExtractionStatus.SUCCESS,
+    ...     extraction_method="trafilatura",
+    ... )
+    >>> summary = StructuredSummary(
+    ...     overview="Markets rallied today",
+    ...     key_points=["S&P 500 up 1%", "Tech leads gains"],
+    ...     market_impact="Bullish sentiment continues",
+    ... )
+    >>> summarized = SummarizedArticle(
+    ...     extracted=extracted,
+    ...     summary=summary,
+    ...     summarization_status=SummarizationStatus.SUCCESS,
+    ... )
+    >>> summarized.summarization_status
+    <SummarizationStatus.SUCCESS: 'success'>
+    """
+
+    extracted: ExtractedArticle = Field(
+        ...,
+        description="The extracted article that was processed for summarization",
+    )
+    summary: StructuredSummary | None = Field(
+        ...,
+        description="The AI-generated structured summary, or None if failed/skipped",
+    )
+    summarization_status: SummarizationStatus = Field(
+        ...,
+        description="The status of the summarization attempt",
+    )
+    error_message: str | None = Field(
+        default=None,
+        description="Error message if summarization failed, or None if successful",
+    )
+
+
 __all__ = [
     "ArticleSource",
     "CollectedArticle",
     "ExtractedArticle",
     "ExtractionStatus",
     "SourceType",
+    "StructuredSummary",
+    "SummarizationStatus",
+    "SummarizedArticle",
 ]

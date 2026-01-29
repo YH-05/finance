@@ -893,3 +893,610 @@ class TestExtractedArticle:
         assert extracted.collected.source.source_type == SourceType.YFINANCE
         assert extracted.collected.source.source_name == "NVDA"
         assert extracted.collected.collected_at == collected_at
+
+
+class TestSummarizationStatus:
+    """SummarizationStatus StrEnum のテストクラス."""
+
+    def test_正常系_SUCCESS値が定義されている(self) -> None:
+        """SummarizationStatus.SUCCESS が "success" 値で定義されていること."""
+        from news.models import SummarizationStatus
+
+        assert SummarizationStatus.SUCCESS == "success"
+        assert SummarizationStatus.SUCCESS.value == "success"
+
+    def test_正常系_FAILED値が定義されている(self) -> None:
+        """SummarizationStatus.FAILED が "failed" 値で定義されていること."""
+        from news.models import SummarizationStatus
+
+        assert SummarizationStatus.FAILED == "failed"
+        assert SummarizationStatus.FAILED.value == "failed"
+
+    def test_正常系_TIMEOUT値が定義されている(self) -> None:
+        """SummarizationStatus.TIMEOUT が "timeout" 値で定義されていること."""
+        from news.models import SummarizationStatus
+
+        assert SummarizationStatus.TIMEOUT == "timeout"
+        assert SummarizationStatus.TIMEOUT.value == "timeout"
+
+    def test_正常系_SKIPPED値が定義されている(self) -> None:
+        """SummarizationStatus.SKIPPED が "skipped" 値で定義されていること."""
+        from news.models import SummarizationStatus
+
+        assert SummarizationStatus.SKIPPED == "skipped"
+        assert SummarizationStatus.SKIPPED.value == "skipped"
+
+    def test_正常系_全4種類の値が存在する(self) -> None:
+        """SummarizationStatus は SUCCESS, FAILED, TIMEOUT, SKIPPED の4種類のみ."""
+        from news.models import SummarizationStatus
+
+        members = list(SummarizationStatus)
+        assert len(members) == 4
+        assert SummarizationStatus.SUCCESS in members
+        assert SummarizationStatus.FAILED in members
+        assert SummarizationStatus.TIMEOUT in members
+        assert SummarizationStatus.SKIPPED in members
+
+    def test_正常系_StrEnumなので文字列として比較可能(self) -> None:
+        """SummarizationStatus は StrEnum なので文字列との比較が可能."""
+        from news.models import SummarizationStatus
+
+        assert SummarizationStatus.SUCCESS == "success"
+        assert SummarizationStatus.FAILED == "failed"
+        assert SummarizationStatus.TIMEOUT == "timeout"
+        assert SummarizationStatus.SKIPPED == "skipped"
+
+
+class TestStructuredSummary:
+    """StructuredSummary Pydantic モデルのテストクラス."""
+
+    def test_正常系_必須フィールドで作成できる(self) -> None:
+        """overview, key_points, market_impact で StructuredSummary を作成できる."""
+        from news.models import StructuredSummary
+
+        summary = StructuredSummary(
+            overview="米国株式市場は上昇基調を継続",
+            key_points=["S&P500が最高値更新", "ナスダック続伸"],
+            market_impact="投資家心理は楽観的",
+        )
+
+        assert summary.overview == "米国株式市場は上昇基調を継続"
+        assert summary.key_points == ["S&P500が最高値更新", "ナスダック続伸"]
+        assert summary.market_impact == "投資家心理は楽観的"
+        assert summary.related_info is None
+
+    def test_正常系_related_infoを指定して作成できる(self) -> None:
+        """related_info を指定して StructuredSummary を作成できる."""
+        from news.models import StructuredSummary
+
+        summary = StructuredSummary(
+            overview="FRBが金利を据え置き",
+            key_points=["インフレ目標2%に近づく", "次回会合で利下げ示唆"],
+            market_impact="債券市場に影響",
+            related_info="FOMCは2024年中に3回の利下げを予想",
+        )
+
+        assert summary.related_info == "FOMCは2024年中に3回の利下げを予想"
+
+    def test_正常系_key_pointsが空リストでも作成できる(self) -> None:
+        """key_points が空リストでも StructuredSummary を作成できる."""
+        from news.models import StructuredSummary
+
+        summary = StructuredSummary(
+            overview="概要のみの記事",
+            key_points=[],
+            market_impact="特になし",
+        )
+
+        assert summary.key_points == []
+
+    def test_異常系_overviewが必須(self) -> None:
+        """overview がない場合は ValidationError."""
+        from news.models import StructuredSummary
+
+        with pytest.raises(ValidationError) as exc_info:
+            StructuredSummary(
+                key_points=["ポイント1"],
+                market_impact="影響",
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("overview",) for e in errors)
+
+    def test_異常系_key_pointsが必須(self) -> None:
+        """key_points がない場合は ValidationError."""
+        from news.models import StructuredSummary
+
+        with pytest.raises(ValidationError) as exc_info:
+            StructuredSummary(
+                overview="概要",
+                market_impact="影響",
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("key_points",) for e in errors)
+
+    def test_異常系_market_impactが必須(self) -> None:
+        """market_impact がない場合は ValidationError."""
+        from news.models import StructuredSummary
+
+        with pytest.raises(ValidationError) as exc_info:
+            StructuredSummary(
+                overview="概要",
+                key_points=["ポイント"],
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("market_impact",) for e in errors)
+
+    def test_正常系_モデルをdictに変換できる(self) -> None:
+        """StructuredSummary は model_dump() で dict に変換可能."""
+        from news.models import StructuredSummary
+
+        summary = StructuredSummary(
+            overview="概要テキスト",
+            key_points=["ポイント1", "ポイント2"],
+            market_impact="市場影響",
+            related_info="関連情報",
+        )
+
+        data = summary.model_dump()
+
+        assert data["overview"] == "概要テキスト"
+        assert data["key_points"] == ["ポイント1", "ポイント2"]
+        assert data["market_impact"] == "市場影響"
+        assert data["related_info"] == "関連情報"
+
+    def test_正常系_dictからモデルを作成できる(self) -> None:
+        """dict から StructuredSummary を作成可能."""
+        from news.models import StructuredSummary
+
+        data = {
+            "overview": "概要",
+            "key_points": ["ポイント1", "ポイント2", "ポイント3"],
+            "market_impact": "影響",
+        }
+
+        summary = StructuredSummary.model_validate(data)
+
+        assert summary.overview == "概要"
+        assert len(summary.key_points) == 3
+        assert summary.market_impact == "影響"
+        assert summary.related_info is None
+
+    def test_正常系_JSONシリアライズ可能(self) -> None:
+        """StructuredSummary は JSON シリアライズ可能."""
+        from news.models import StructuredSummary
+
+        summary = StructuredSummary(
+            overview="概要テキスト",
+            key_points=["ポイント1"],
+            market_impact="市場影響",
+        )
+
+        json_str = summary.model_dump_json()
+
+        assert "概要テキスト" in json_str
+        assert "ポイント1" in json_str
+        assert "市場影響" in json_str
+
+
+class TestSummarizedArticle:
+    """SummarizedArticle Pydantic モデルのテストクラス."""
+
+    def test_正常系_要約成功時のモデルを作成できる(self) -> None:
+        """summarization_status が SUCCESS のとき正常に作成できる."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            StructuredSummary,
+            SummarizationStatus,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Market Update",
+            source=source,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Full article content here...",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        summary = StructuredSummary(
+            overview="米国株式市場が上昇",
+            key_points=["S&P500上昇", "テック株が牽引"],
+            market_impact="投資家心理改善",
+        )
+
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        assert summarized.extracted == extracted
+        assert summarized.summary == summary
+        assert summarized.summarization_status == SummarizationStatus.SUCCESS
+        assert summarized.error_message is None
+
+    def test_正常系_要約失敗時のモデルを作成できる(self) -> None:
+        """summarization_status が FAILED のとき正常に作成できる."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            SummarizationStatus,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Market Update",
+            source=source,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Full article content here...",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=None,
+            summarization_status=SummarizationStatus.FAILED,
+            error_message="API rate limit exceeded",
+        )
+
+        assert summarized.summary is None
+        assert summarized.summarization_status == SummarizationStatus.FAILED
+        assert summarized.error_message == "API rate limit exceeded"
+
+    def test_正常系_タイムアウト時のモデルを作成できる(self) -> None:
+        """summarization_status が TIMEOUT のとき正常に作成できる."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            SummarizationStatus,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Market Update",
+            source=source,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Full article content here...",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=None,
+            summarization_status=SummarizationStatus.TIMEOUT,
+            error_message="Request timed out after 60s",
+        )
+
+        assert summarized.summarization_status == SummarizationStatus.TIMEOUT
+        assert summarized.error_message == "Request timed out after 60s"
+
+    def test_正常系_本文抽出失敗でスキップ時のモデルを作成できる(self) -> None:
+        """summarization_status が SKIPPED のとき正常に作成できる（本文抽出失敗時）."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            SummarizationStatus,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="WSJ",
+            category="finance",
+        )
+        collected = CollectedArticle(
+            url="https://www.wsj.com/article/123",  # type: ignore[arg-type]
+            title="Premium Article",
+            source=source,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text=None,
+            extraction_status=ExtractionStatus.PAYWALL,
+            extraction_method="trafilatura",
+            error_message="Paywall detected",
+        )
+
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=None,
+            summarization_status=SummarizationStatus.SKIPPED,
+            error_message="Body extraction failed, summarization skipped",
+        )
+
+        assert summarized.summarization_status == SummarizationStatus.SKIPPED
+        assert summarized.summary is None
+
+    def test_異常系_extractedが必須(self) -> None:
+        """extracted がない場合は ValidationError."""
+        from news.models import SummarizationStatus, SummarizedArticle
+
+        with pytest.raises(ValidationError) as exc_info:
+            SummarizedArticle(
+                summary=None,
+                summarization_status=SummarizationStatus.FAILED,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("extracted",) for e in errors)
+
+    def test_異常系_summarization_statusが必須(self) -> None:
+        """summarization_status がない場合は ValidationError."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Market Update",
+            source=source,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+
+        with pytest.raises(ValidationError) as exc_info:
+            SummarizedArticle(
+                extracted=extracted,
+                summary=None,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("summarization_status",) for e in errors)
+
+    def test_正常系_モデルをdictに変換できる(self) -> None:
+        """SummarizedArticle は model_dump() で dict に変換可能."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            StructuredSummary,
+            SummarizationStatus,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected_at = datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Market Update",
+            source=source,
+            collected_at=collected_at,
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Article content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        summary = StructuredSummary(
+            overview="概要",
+            key_points=["ポイント1"],
+            market_impact="影響",
+        )
+
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        data = summarized.model_dump()
+
+        assert data["summarization_status"] == SummarizationStatus.SUCCESS
+        assert data["summary"]["overview"] == "概要"
+        assert data["extracted"]["body_text"] == "Article content"
+        assert data["error_message"] is None
+
+    def test_正常系_dictからモデルを作成できる(self) -> None:
+        """dict から SummarizedArticle を作成可能."""
+        from news.models import SummarizationStatus, SummarizedArticle
+
+        data = {
+            "extracted": {
+                "collected": {
+                    "url": "https://www.cnbc.com/article/123",
+                    "title": "Market Update",
+                    "source": {
+                        "source_type": "rss",
+                        "source_name": "CNBC Markets",
+                        "category": "market",
+                    },
+                    "collected_at": "2025-01-15T12:00:00Z",
+                },
+                "body_text": "Article content",
+                "extraction_status": "success",
+                "extraction_method": "trafilatura",
+            },
+            "summary": {
+                "overview": "概要",
+                "key_points": ["ポイント1", "ポイント2"],
+                "market_impact": "市場への影響",
+            },
+            "summarization_status": "success",
+        }
+
+        summarized = SummarizedArticle.model_validate(data)
+
+        assert summarized.summarization_status == SummarizationStatus.SUCCESS
+        assert summarized.summary is not None
+        assert summarized.summary.overview == "概要"
+        assert len(summarized.summary.key_points) == 2
+        assert summarized.extracted.body_text == "Article content"
+
+    def test_正常系_JSONシリアライズ可能(self) -> None:
+        """SummarizedArticle は JSON シリアライズ可能."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            StructuredSummary,
+            SummarizationStatus,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Market Update",
+            source=source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Article content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        summary = StructuredSummary(
+            overview="概要テキスト",
+            key_points=["ポイント1"],
+            market_impact="影響テキスト",
+        )
+
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        json_str = summarized.model_dump_json()
+
+        assert "概要テキスト" in json_str
+        assert '"summarization_status":"success"' in json_str
+        assert "https://www.cnbc.com/article/123" in json_str
+
+    def test_正常系_ExtractedArticleと関連が正しい(self) -> None:
+        """SummarizedArticle から ExtractedArticle の全プロパティにアクセスできる."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            SourceType,
+            StructuredSummary,
+            SummarizationStatus,
+            SummarizedArticle,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.YFINANCE,
+            source_name="NVDA",
+            category="yf_ai_stock",
+        )
+        published = datetime(2025, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+        collected_at = datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+        collected = CollectedArticle(
+            url="https://finance.yahoo.com/news/nvda",  # type: ignore[arg-type]
+            title="NVDA Earnings Report",
+            published=published,
+            raw_summary="NVDA reports quarterly earnings",
+            source=source,
+            collected_at=collected_at,
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Full article body about NVDA earnings...",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        summary = StructuredSummary(
+            overview="NVDA決算発表",
+            key_points=["売上高予想超え", "AIセグメント好調"],
+            market_impact="株価上昇期待",
+        )
+
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        # ExtractedArticle の全プロパティにアクセス可能
+        assert (
+            summarized.extracted.body_text == "Full article body about NVDA earnings..."
+        )
+        assert summarized.extracted.extraction_status == ExtractionStatus.SUCCESS
+        assert summarized.extracted.extraction_method == "trafilatura"
+
+        # CollectedArticle の全プロパティにもアクセス可能
+        assert (
+            str(summarized.extracted.collected.url)
+            == "https://finance.yahoo.com/news/nvda"
+        )
+        assert summarized.extracted.collected.title == "NVDA Earnings Report"
+        assert summarized.extracted.collected.published == published
+        assert summarized.extracted.collected.source.source_type == SourceType.YFINANCE
+        assert summarized.extracted.collected.source.source_name == "NVDA"
