@@ -7,5 +7,6 @@ The BaseCollector ABC defines the interface that all collectors must implement.
 """
 
 from news.collectors.base import BaseCollector
+from news.collectors.rss import RSSCollector
 
-__all__ = ["BaseCollector"]
+__all__ = ["BaseCollector", "RSSCollector"]
