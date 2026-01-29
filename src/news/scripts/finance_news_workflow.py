@@ -22,6 +22,10 @@ Limit articles:
 
     python -m news.scripts.finance_news_workflow --max-articles 10
 
+Enable verbose logging:
+
+    python -m news.scripts.finance_news_workflow --verbose
+
 Use a specific config file:
 
     python -m news.scripts.finance_news_workflow --config data/config/news-collection-config.yaml
@@ -37,7 +41,7 @@ from typing import TYPE_CHECKING
 
 from news.config.workflow import load_config
 from news.orchestrator import NewsWorkflowOrchestrator
-from news.utils.logging_config import get_logger
+from news.utils.logging_config import get_logger, set_log_level
 
 if TYPE_CHECKING:
     from news.models import WorkflowResult
@@ -105,6 +109,14 @@ examples:
         type=int,
         default=None,
         help="Maximum number of articles to process",
+    )
+
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        default=False,
+        help="Enable verbose (DEBUG level) logging output",
     )
 
     return parser
@@ -254,12 +266,17 @@ def main(argv: list[str] | None = None) -> int:
     parser = create_parser()
     args = parser.parse_args(argv)
 
+    # Set log level to DEBUG if verbose mode is enabled
+    if args.verbose:
+        set_log_level("DEBUG")
+
     logger.info(
         "Finance news workflow script started",
         config=args.config,
         dry_run=args.dry_run,
         status=args.status,
         max_articles=args.max_articles,
+        verbose=args.verbose,
     )
 
     # Determine config path

@@ -66,6 +66,27 @@ class TestCreateParser:
         args = parser.parse_args(["--max-articles", "10"])
         assert args.max_articles == 10
 
+    def test_正常系_verbose引数を指定できる(self) -> None:
+        from news.scripts.finance_news_workflow import create_parser
+
+        parser = create_parser()
+        args = parser.parse_args(["--verbose"])
+        assert args.verbose is True
+
+    def test_正常系_v短縮形でverboseを指定できる(self) -> None:
+        from news.scripts.finance_news_workflow import create_parser
+
+        parser = create_parser()
+        args = parser.parse_args(["-v"])
+        assert args.verbose is True
+
+    def test_正常系_verbose未指定でデフォルトはFalse(self) -> None:
+        from news.scripts.finance_news_workflow import create_parser
+
+        parser = create_parser()
+        args = parser.parse_args([])
+        assert args.verbose is False
+
     def test_正常系_全引数を同時に指定できる(self) -> None:
         from news.scripts.finance_news_workflow import create_parser
 
@@ -79,12 +100,14 @@ class TestCreateParser:
                 "index,stock",
                 "--max-articles",
                 "20",
+                "--verbose",
             ]
         )
         assert args.config == "config.yaml"
         assert args.dry_run is True
         assert args.status == "index,stock"
         assert args.max_articles == 20
+        assert args.verbose is True
 
     def test_異常系_max_articlesに非数値で拒否される(self) -> None:
         from news.scripts.finance_news_workflow import create_parser
@@ -316,6 +339,34 @@ output:
             result = main(["--config", str(mock_config_path)])
 
         assert result == 1
+
+    def test_正常系_verboseモードでログレベルがDEBUGに設定される(
+        self,
+        mock_config_path: Path,
+        mock_workflow_result: MagicMock,
+    ) -> None:
+        from news.scripts.finance_news_workflow import main
+
+        mock_orchestrator = AsyncMock()
+        mock_orchestrator.run.return_value = mock_workflow_result
+
+        with (
+            patch(
+                "news.scripts.finance_news_workflow.load_config",
+            ) as mock_load_config,
+            patch(
+                "news.scripts.finance_news_workflow.NewsWorkflowOrchestrator",
+                return_value=mock_orchestrator,
+            ),
+            patch(
+                "news.scripts.finance_news_workflow.set_log_level",
+            ) as mock_set_log_level,
+        ):
+            mock_load_config.return_value = MagicMock()
+            result = main(["--config", str(mock_config_path), "--verbose"])
+
+        assert result == 0
+        mock_set_log_level.assert_called_once_with("DEBUG")
 
 
 class TestPrintResultSummary:
