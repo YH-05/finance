@@ -238,7 +238,7 @@ class TestDetectPaywall:
         assert detect_paywall(text, len(text)) is True
 
     def test_正常系_中程度の本文に複数指標でTrue(self) -> None:
-        # 500-1500 chars with 2+ indicators
+        # 200-1500 chars with 2+ indicators
         text = (
             "This article is premium content. Already a subscriber? Sign in. "
             + "x" * 600
@@ -246,7 +246,7 @@ class TestDetectPaywall:
         assert detect_paywall(text, len(text)) is True
 
     def test_正常系_中程度の本文に1つの指標でFalse(self) -> None:
-        # 500-1500 chars with only 1 indicator should be False
+        # 200-1500 chars with only 1 indicator should be False
         text = "This article mentions premium content. " + "x" * 600
         assert detect_paywall(text, len(text)) is False
 
@@ -450,7 +450,7 @@ class TestCheckArticleContent:
 
     @pytest.mark.asyncio
     async def test_正常系_Tier1で十分な本文取得(self) -> None:
-        long_text = "Article content. " * 100  # > 500 chars
+        long_text = "Article content. " * 100  # > 200 chars
         with patch(
             "rss.services.article_content_checker._fetch_with_httpx",
             return_value=(long_text, 200),
@@ -600,8 +600,8 @@ class TestCLI:
 class TestConstants:
     """Test module constants."""
 
-    def test_正常系_最小コンテンツ長が500(self) -> None:
-        assert MIN_CONTENT_LENGTH == 500
+    def test_正常系_最小コンテンツ長が200(self) -> None:
+        assert MIN_CONTENT_LENGTH == 200
 
     def test_正常系_XPathセレクタが存在する(self) -> None:
         assert len(ARTICLE_SELECTORS) > 0

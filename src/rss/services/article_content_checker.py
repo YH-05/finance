@@ -34,7 +34,7 @@ from lxml import html
 # Constants
 # ---------------------------------------------------------------------------
 
-MIN_CONTENT_LENGTH = 500
+MIN_CONTENT_LENGTH = 200
 """Minimum content length (characters) to consider article accessible."""
 
 HTTPX_TIMEOUT = 15
@@ -349,8 +349,8 @@ def detect_paywall(text: str, content_length: int) -> bool:
 
     Checks for English and Japanese paywall phrases. The detection
     threshold varies based on content length:
-    - Short content (< 500 chars) + 1 indicator = paywalled
-    - Medium content (500-1500 chars) + 2 indicators = paywalled
+    - Short content (< 200 chars) + 1 indicator = paywalled
+    - Medium content (200-1500 chars) + 2 indicators = paywalled
 
     Parameters
     ----------
