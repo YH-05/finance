@@ -12,15 +12,23 @@ from analyze.reporting.performance_agent import (
     PerformanceAnalyzer4Agent,
     PerformanceResult,
 )
+from analyze.reporting.upcoming_events import (
+    EarningsDateInfo,
+    UpcomingEventsAnalyzer,
+    get_upcoming_earnings,
+)
 
 __all__ = [
     "CurrencyAnalyzer",
     "CurrencyAnalyzer4Agent",
     "CurrencyResult",
+    "EarningsDateInfo",
     "InterestRateAnalyzer",
     "InterestRateAnalyzer4Agent",
     "InterestRateResult",
     "PerformanceAnalyzer",
     "PerformanceAnalyzer4Agent",
     "PerformanceResult",
+    "UpcomingEventsAnalyzer",
+    "get_upcoming_earnings",
 ]
