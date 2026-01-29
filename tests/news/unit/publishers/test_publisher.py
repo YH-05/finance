@@ -906,3 +906,354 @@ class TestPublishWithIssueCreation:
             assert result.issue_number is None
             assert result.issue_url is None
             assert result.error_message is not None
+
+
+class TestGetExistingIssues:
+    """Tests for _get_existing_issues() method (P5-005)."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_直近7日のIssueからURLを取得(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_issues should return URLs from recent Issues."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        # Mock gh issue list response
+        mock_issues = [
+            {
+                "body": "**URL**: https://www.cnbc.com/article/123",
+                "createdAt": "2026-01-27T10:00:00Z",
+            },
+            {
+                "body": "**URL**: https://www.cnbc.com/article/456",
+                "createdAt": "2026-01-26T10:00:00Z",
+            },
+        ]
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            import json
+
+            mock_result = MagicMock()
+            mock_result.stdout = json.dumps(mock_issues)
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            urls = await publisher._get_existing_issues(days=7)
+
+            assert "https://www.cnbc.com/article/123" in urls
+            assert "https://www.cnbc.com/article/456" in urls
+            assert len(urls) == 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_ghコマンドに正しい引数を渡す(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_issues should call gh with correct arguments."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.stdout = "[]"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._get_existing_issues(days=7)
+
+            mock_run.assert_called_once()
+            call_args = mock_run.call_args[0][0]
+
+            assert call_args[0] == "gh"
+            assert call_args[1] == "issue"
+            assert call_args[2] == "list"
+            assert "--repo" in call_args
+            assert "YH-05/finance" in call_args
+            assert "--state" in call_args
+            assert "all" in call_args
+            assert "--limit" in call_args
+            assert "500" in call_args
+            assert "--json" in call_args
+            assert "body,createdAt" in call_args
+
+    @pytest.mark.asyncio
+    async def test_正常系_古いIssueは除外(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_issues should exclude Issues older than specified days."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        # Mix of recent and old Issues
+        mock_issues = [
+            {
+                "body": "**URL**: https://www.cnbc.com/article/recent",
+                "createdAt": "2026-01-28T10:00:00Z",  # Recent (within 7 days)
+            },
+            {
+                "body": "**URL**: https://www.cnbc.com/article/old",
+                "createdAt": "2026-01-10T10:00:00Z",  # Old (more than 7 days)
+            },
+        ]
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            import json
+
+            mock_result = MagicMock()
+            mock_result.stdout = json.dumps(mock_issues)
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            urls = await publisher._get_existing_issues(days=7)
+
+            assert "https://www.cnbc.com/article/recent" in urls
+            assert "https://www.cnbc.com/article/old" not in urls
+            assert len(urls) == 1
+
+    @pytest.mark.asyncio
+    async def test_正常系_URL形式以外の本文は無視(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_issues should ignore Issues without URL pattern."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        mock_issues = [
+            {
+                "body": "**URL**: https://www.cnbc.com/article/123",
+                "createdAt": "2026-01-27T10:00:00Z",
+            },
+            {
+                "body": "This Issue has no URL field",
+                "createdAt": "2026-01-27T10:00:00Z",
+            },
+            {
+                "body": None,  # Empty body
+                "createdAt": "2026-01-27T10:00:00Z",
+            },
+        ]
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            import json
+
+            mock_result = MagicMock()
+            mock_result.stdout = json.dumps(mock_issues)
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            urls = await publisher._get_existing_issues(days=7)
+
+            assert len(urls) == 1
+            assert "https://www.cnbc.com/article/123" in urls
+
+    @pytest.mark.asyncio
+    async def test_正常系_空のリストで空のセットを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_issues should return empty set for no Issues."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.stdout = "[]"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            urls = await publisher._get_existing_issues(days=7)
+
+            assert urls == set()
+
+
+class TestIsDuplicate:
+    """Tests for _is_duplicate() method (P5-005)."""
+
+    def test_正常系_重複URLでTrue(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_is_duplicate should return True when URL exists in existing_urls."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        existing_urls = {"https://www.cnbc.com/article/123"}
+
+        is_duplicate = publisher._is_duplicate(
+            summarized_article_with_summary, existing_urls
+        )
+
+        assert is_duplicate is True
+
+    def test_正常系_非重複URLでFalse(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_is_duplicate should return False when URL not in existing_urls."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        existing_urls = {"https://www.cnbc.com/article/different"}
+
+        is_duplicate = publisher._is_duplicate(
+            summarized_article_with_summary, existing_urls
+        )
+
+        assert is_duplicate is False
+
+    def test_正常系_空のセットでFalse(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_is_duplicate should return False for empty existing_urls set."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        existing_urls: set[str] = set()
+
+        is_duplicate = publisher._is_duplicate(
+            summarized_article_with_summary, existing_urls
+        )
+
+        assert is_duplicate is False
+
+
+class TestPublishBatchWithDuplicateCheck:
+    """Tests for publish_batch() with duplicate check (P5-005)."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_重複記事をDUPLICATEステータスでスキップ(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """publish_batch should mark duplicate articles as DUPLICATE."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        # Mock _get_existing_issues to return the article URL as existing
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value={"https://www.cnbc.com/article/123"},
+        ):
+            results = await publisher.publish_batch(
+                [summarized_article_with_summary], dry_run=False
+            )
+
+            assert len(results) == 1
+            assert results[0].publication_status == PublicationStatus.DUPLICATE
+            assert results[0].issue_number is None
+            assert results[0].issue_url is None
+
+    @pytest.mark.asyncio
+    async def test_正常系_非重複記事は正常に公開(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """publish_batch should publish non-duplicate articles."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        # Mock _get_existing_issues to return different URL
+        with (
+            patch.object(
+                publisher,
+                "_get_existing_issues",
+                return_value={"https://www.cnbc.com/article/different"},
+            ),
+            patch("news.publisher.subprocess.run") as mock_run,
+            patch.object(publisher, "_add_to_project"),
+        ):
+            mock_result = MagicMock()
+            mock_result.stdout = "https://github.com/YH-05/finance/issues/789\n"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            results = await publisher.publish_batch(
+                [summarized_article_with_summary], dry_run=False
+            )
+
+            assert len(results) == 1
+            assert results[0].publication_status == PublicationStatus.SUCCESS
+
+    @pytest.mark.asyncio
+    async def test_正常系_バッチ処理統計に重複数を含む(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_extracted_article: ExtractedArticle,
+        sample_summary: StructuredSummary,
+    ) -> None:
+        """publish_batch should track duplicate count in logs."""
+        from news.publisher import Publisher
+
+        # Create two articles with different URLs
+        article1 = SummarizedArticle(
+            extracted=sample_extracted_article,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        # Second article with different URL
+        collected2 = CollectedArticle(
+            url="https://www.cnbc.com/article/456",  # type: ignore[arg-type]
+            title="Different Article",
+            source=sample_extracted_article.collected.source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted2 = ExtractedArticle(
+            collected=collected2,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        article2 = SummarizedArticle(
+            extracted=extracted2,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=sample_config)
+
+        # First article is duplicate, second is not
+        with (
+            patch.object(
+                publisher,
+                "_get_existing_issues",
+                return_value={
+                    "https://www.cnbc.com/article/123"
+                },  # Only article1 is dup
+            ),
+            patch("news.publisher.subprocess.run") as mock_run,
+            patch.object(publisher, "_add_to_project"),
+        ):
+            mock_result = MagicMock()
+            mock_result.stdout = "https://github.com/YH-05/finance/issues/789\n"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            results = await publisher.publish_batch([article1, article2], dry_run=False)
+
+            assert len(results) == 2
+            # First should be duplicate
+            assert results[0].publication_status == PublicationStatus.DUPLICATE
+            # Second should be success
+            assert results[1].publication_status == PublicationStatus.SUCCESS

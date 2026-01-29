@@ -19,7 +19,9 @@ Examples
 
 from __future__ import annotations
 
+import json
 import subprocess  # nosec B404 - gh CLI is trusted
+from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 
 from news.models import (
@@ -250,7 +252,7 @@ class Publisher:
         -----
         - 個々の記事の公開が失敗しても他の記事は継続
         - dry_run=True の場合、Issue は作成されないがログ出力は行う
-        - 重複チェックは P5-004 以降で実装
+        - 重複チェックにより既存 Issue と同じ URL の記事は DUPLICATE ステータス
 
         Examples
         --------
@@ -269,9 +271,26 @@ class Publisher:
             dry_run=dry_run,
         )
 
+        # 重複チェック用に既存 Issue の URL を取得
+        existing_urls = await self._get_existing_issues(days=7)
+
         results: list[PublishedArticle] = []
+        duplicate_count = 0
 
         for article in articles:
+            # 重複チェック
+            if self._is_duplicate(article, existing_urls):
+                duplicate_count += 1
+                result = PublishedArticle(
+                    summarized=article,
+                    issue_number=None,
+                    issue_url=None,
+                    publication_status=PublicationStatus.DUPLICATE,
+                    error_message="Duplicate article detected",
+                )
+                results.append(result)
+                continue
+
             result = await self.publish(article)
             results.append(result)
 
@@ -287,6 +306,7 @@ class Publisher:
             failed=sum(
                 1 for r in results if r.publication_status == PublicationStatus.FAILED
             ),
+            duplicates=duplicate_count,
         )
 
         return results
@@ -593,6 +613,122 @@ class Publisher:
                 item_id=item_id,
                 date=date_str,
             )
+
+    async def _get_existing_issues(self, days: int = 7) -> set[str]:
+        """直近N日のIssue URLを取得。
+
+        GitHub Issue 一覧を取得し、Issue 本文から記事 URL を抽出する。
+        重複チェックに使用する。
+
+        Parameters
+        ----------
+        days : int, optional
+            取得対象期間（デフォルト: 7日）。
+            この期間内に作成された Issue のみを対象とする。
+
+        Returns
+        -------
+        set[str]
+            既存 Issue の記事 URL セット。
+
+        Notes
+        -----
+        - Issue 本文から "**URL**: https://..." の形式で URL を抽出する
+        - 指定期間より古い Issue は除外される
+        - URL パターンが見つからない Issue は無視される
+
+        Examples
+        --------
+        >>> urls = await publisher._get_existing_issues(days=7)
+        >>> "https://www.cnbc.com/article/123" in urls
+        True
+        """
+        since_date = datetime.now(timezone.utc) - timedelta(days=days)
+
+        logger.debug(
+            "Fetching existing issues",
+            since_date=since_date.isoformat(),
+            days=days,
+        )
+
+        result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "issue",
+                "list",
+                "--repo",
+                self._repo,
+                "--state",
+                "all",
+                "--limit",
+                "500",
+                "--json",
+                "body,createdAt",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        issues = json.loads(result.stdout)
+        urls: set[str] = set()
+
+        for issue in issues:
+            created_at = datetime.fromisoformat(
+                issue["createdAt"].replace("Z", "+00:00")
+            )
+            if created_at >= since_date:
+                # Issue 本文から URL を抽出（**URL**: https://... の形式）
+                body = issue.get("body") or ""
+                if "**URL**:" in body:
+                    for line in body.split("\n"):
+                        if line.startswith("**URL**:"):
+                            url = line.replace("**URL**:", "").strip()
+                            urls.add(url)
+
+        logger.debug(
+            "Found existing issue URLs",
+            url_count=len(urls),
+        )
+
+        return urls
+
+    def _is_duplicate(
+        self, article: SummarizedArticle, existing_urls: set[str]
+    ) -> bool:
+        """記事が重複しているか判定。
+
+        記事の URL が既存 Issue の URL セットに含まれているか確認する。
+
+        Parameters
+        ----------
+        article : SummarizedArticle
+            要約済み記事。
+        existing_urls : set[str]
+            既存 Issue の URL セット。_get_existing_issues() で取得する。
+
+        Returns
+        -------
+        bool
+            重複している場合 True、そうでない場合 False。
+
+        Examples
+        --------
+        >>> existing_urls = {"https://www.cnbc.com/article/123"}
+        >>> is_dup = publisher._is_duplicate(article, existing_urls)
+        >>> is_dup
+        True
+        """
+        article_url = str(article.extracted.collected.url)
+        is_dup = article_url in existing_urls
+
+        if is_dup:
+            logger.debug(
+                "Duplicate article detected",
+                article_url=article_url,
+            )
+
+        return is_dup
 
 
 __all__ = [
