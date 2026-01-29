@@ -7,7 +7,6 @@ reducing AI agent context load by handling:
 - RSS feed fetching by theme
 - Date filtering
 - Duplicate checking
-- Paywall pre-checking
 
 Usage:
     uv run python scripts/prepare_news_session.py --days 7 --themes all
@@ -35,10 +34,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from pydantic import BaseModel, Field
 
-from rss.services.article_content_checker import (
-    ContentStatus,
-    check_article_content,
-)
 from rss.services.feed_reader import FeedReader
 from rss.utils.url_normalizer import normalize_url
 
@@ -211,15 +206,12 @@ class SessionStats(BaseModel):
         Total number of articles fetched from RSS.
     duplicates : int
         Number of duplicate articles filtered.
-    paywall_blocked : int
-        Number of articles blocked due to paywall.
     accessible : int
         Number of accessible articles.
     """
 
     total: int
     duplicates: int
-    paywall_blocked: int
     accessible: int
 
 
@@ -286,11 +278,6 @@ def parse_args(args: list[str] | None = None) -> argparse.Namespace:
         type=str,
         default=None,
         help="Output file path (default: auto-generated in .tmp/)",
-    )
-    parser.add_argument(
-        "--skip-paywall-check",
-        action="store_true",
-        help="Skip paywall checking (faster but less accurate)",
     )
     parser.add_argument(
         "--verbose",
@@ -624,72 +611,6 @@ def check_duplicates(
 
 
 # ---------------------------------------------------------------------------
-# Paywall Detection
-# ---------------------------------------------------------------------------
-
-
-async def check_paywall_batch(
-    items: list[dict[str, Any]],
-    max_concurrent: int = 5,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Check paywall status for a batch of articles.
-
-    Parameters
-    ----------
-    items : list[dict[str, Any]]
-        List of RSS items to check.
-    max_concurrent : int
-        Maximum concurrent checks.
-
-    Returns
-    -------
-    tuple[list[dict[str, Any]], list[dict[str, Any]]]
-        Tuple of (accessible items, blocked items).
-    """
-    accessible: list[dict[str, Any]] = []
-    blocked: list[dict[str, Any]] = []
-
-    semaphore = asyncio.Semaphore(max_concurrent)
-
-    async def check_single(item: dict[str, Any]) -> tuple[dict[str, Any], bool, str]:
-        async with semaphore:
-            url = item.get("link", "")
-            try:
-                result = await check_article_content(url)
-
-                if result.status == ContentStatus.ACCESSIBLE:
-                    return item, True, ""
-                elif result.status == ContentStatus.PAYWALLED:
-                    return item, False, "ペイウォール検出"
-                elif result.status == ContentStatus.INSUFFICIENT:
-                    return item, False, "本文不十分"
-                else:
-                    return item, False, f"取得エラー: {result.reason}"
-
-            except Exception as e:
-                logger.debug("Paywall check failed for %s: %s", url, e)
-                return item, False, f"チェックエラー: {e!s}"
-
-    # Run checks concurrently
-    tasks = [check_single(item) for item in items]
-    results = await asyncio.gather(*tasks)
-
-    for item, is_accessible, reason in results:
-        if is_accessible:
-            accessible.append(item)
-        else:
-            blocked.append({**item, "reason": reason})
-
-    logger.info(
-        "Paywall check: %d accessible, %d blocked",
-        len(accessible),
-        len(blocked),
-    )
-
-    return accessible, blocked
-
-
-# ---------------------------------------------------------------------------
 # Session Generation
 # ---------------------------------------------------------------------------
 
@@ -728,14 +649,10 @@ def calculate_stats(
         Statistics dictionary.
     """
     accessible = sum(len(data.get("articles", [])) for data in theme_results.values())
-    paywall_blocked = sum(
-        len(data.get("blocked", [])) for data in theme_results.values()
-    )
 
     return {
         "total": total_fetched,
         "duplicates": duplicates_count,
-        "paywall_blocked": paywall_blocked,
         "accessible": accessible,
     }
 
@@ -863,7 +780,6 @@ async def run_async(
     days: int,
     themes_filter: list[str] | None,
     output_path: Path,
-    skip_paywall_check: bool,
 ) -> int:
     """Run the main async processing.
 
@@ -875,8 +791,6 @@ async def run_async(
         List of theme keys to process.
     output_path : Path
         Output file path.
-    skip_paywall_check : bool
-        Whether to skip paywall checking.
 
     Returns
     -------
@@ -922,23 +836,15 @@ async def run_async(
         unique, duplicates = check_duplicates(date_filtered, existing_urls)
         total_duplicates += len(duplicates)
 
-        # Check paywall
-        if skip_paywall_check:
-            accessible = unique
-            blocked: list[dict[str, Any]] = []
-        else:
-            accessible, blocked = await check_paywall_batch(unique)
-
         theme_results[theme_key] = {
-            "articles": accessible,
-            "blocked": blocked,
+            "articles": unique,
+            "blocked": [],
         }
 
         logger.info(
-            "Theme %s: %d accessible, %d blocked, %d duplicates",
+            "Theme %s: %d articles, %d duplicates",
             theme_key,
-            len(accessible),
-            len(blocked),
+            len(unique),
             len(duplicates),
         )
 
@@ -960,14 +866,10 @@ async def run_async(
     print("\nStatistics:")
     print(f"  Total fetched: {stats['total']}")
     print(f"  Duplicates: {stats['duplicates']}")
-    print(f"  Paywall blocked: {stats['paywall_blocked']}")
     print(f"  Accessible: {stats['accessible']}")
     print("\nTheme breakdown:")
     for theme_key, data in theme_results.items():
-        print(
-            f"  {theme_key}: {len(data['articles'])} accessible, "
-            f"{len(data['blocked'])} blocked"
-        )
+        print(f"  {theme_key}: {len(data['articles'])} articles")
     print("=" * 60)
 
     return 0
@@ -1006,7 +908,6 @@ def main(args: list[str] | None = None) -> int:
             days=parsed.days,
             themes_filter=themes_filter,
             output_path=output_path,
-            skip_paywall_check=parsed.skip_paywall_check,
         )
     )
 

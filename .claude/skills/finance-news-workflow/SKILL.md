@@ -1,35 +1,41 @@
 ---
 name: finance-news-workflow
-description: 金融ニュース収集の3フェーズワークフロー。Python CLI前処理→テーマ別エージェント直接呼び出し→結果報告。
-allowed-tools: Read, Bash, Task, MCPSearch
+description: 金融ニュース収集の3フェーズワークフロー。Python CLI前処理→テーマ別news-article-fetcher並列呼び出し→結果報告。
+allowed-tools: Read, Bash, Task
 ---
 
 # 金融ニュース収集ワークフロー
 
 RSSフィードから金融ニュースを自動収集し、GitHub Project #15に投稿するワークフロースキル。
 
-## 新アーキテクチャ（2026-01-29〜）
+## アーキテクチャ
 
 ```
-prepare_news_session.py (Python CLI) ← 決定論的前処理
-  ├── 既存Issue取得・URL抽出
-  ├── RSS取得（全テーマ一括）
-  ├── 公開日時フィルタリング
-  ├── 重複チェック
-  ├── ペイウォール事前チェック（Playwright使用）
-  └── セッションファイル出力（.tmp/news-{timestamp}.json）
-
-/finance-news-workflow (このスキル)
-  ├── Python CLI前処理実行
-  └── テーマエージェント × 11（並列呼び出し）
-        ├── テーマ設定を保持（ラベル、Status Option ID等）
-        ├── セッションファイルから自テーマの記事読み込み
-        ├── news-article-fetcher に委譲（バッチ）
-        │     ├── Tier 1: ArticleExtractor（trafilatura）
-        │     ├── Tier 2: MCP Playwright（動的サイト用）
-        │     └── Tier 3: RSS Summary フォールバック
-        ├── 結果を受け取り
-        └── 取得成功/失敗の件数をログ出力（モニタリング）
+/finance-news-workflow (このスキル = オーケストレーター)
+  │
+  ├── Phase 1: Python CLI前処理
+  │     └── prepare_news_session.py
+  │           ├── 既存Issue取得・URL抽出
+  │           ├── RSS取得（全テーマ一括）
+  │           ├── 公開日時フィルタリング
+  │           ├── 重複チェック
+  │           └── テーマ別JSONファイル出力（.tmp/news-batches/）
+  │
+  ├── Phase 2: news-article-fetcher 並列呼び出し（11テーマ）
+  │     ├── Task(news-article-fetcher, index.json)
+  │     ├── Task(news-article-fetcher, stock.json)
+  │     ├── Task(news-article-fetcher, sector.json)
+  │     ├── Task(news-article-fetcher, macro_cnbc.json)
+  │     ├── Task(news-article-fetcher, macro_other.json)
+  │     ├── Task(news-article-fetcher, ai_cnbc.json)
+  │     ├── Task(news-article-fetcher, ai_nasdaq.json)
+  │     ├── Task(news-article-fetcher, ai_tech.json)
+  │     ├── Task(news-article-fetcher, finance_cnbc.json)
+  │     ├── Task(news-article-fetcher, finance_nasdaq.json)
+  │     └── Task(news-article-fetcher, finance_other.json)
+  │
+  └── Phase 3: 結果集約・報告
+        └── 各エージェントの完了を待ち、統計を報告
 ```
 
 ## 使用方法
@@ -39,155 +45,144 @@ prepare_news_session.py (Python CLI) ← 決定論的前処理
 /finance-news-workflow
 
 # オプション付き
-/finance-news-workflow --days 3 --themes "index,macro_cnbc" --dry-run
+/finance-news-workflow --days 3 --themes "index,macro_cnbc"
 ```
 
-## 3フェーズワークフロー
-
-```
-Phase 1: 初期化・前処理
-├── テーマ設定ファイル確認（data/config/finance-news-themes.json）
-├── GitHub CLI 確認
-└── Python CLI 実行（prepare_news_session.py）
-    ├── 既存Issue取得・URL抽出
-    ├── RSS取得（全テーマ一括）
-    ├── 公開日時フィルタリング
-    ├── 重複チェック
-    ├── ペイウォール事前チェック
-    └── セッションファイル出力
-
-Phase 2: テーマ別収集（並列）
-├── セッションファイルパスを各エージェントに渡す
-├── finance-news-index      [Status=Index]
-├── finance-news-stock      [Status=Stock]
-├── finance-news-sector     [Status=Sector]
-├── finance-news-macro-cnbc [Status=Macro]
-├── finance-news-macro-other [Status=Macro]
-├── finance-news-ai-cnbc    [Status=AI]
-├── finance-news-ai-nasdaq  [Status=AI]
-├── finance-news-ai-tech    [Status=AI]
-├── finance-news-finance-cnbc    [Status=Finance]
-├── finance-news-finance-nasdaq  [Status=Finance]
-└── finance-news-finance-other   [Status=Finance]
-
-Phase 3: 結果報告
-└── テーマ別投稿数・スキップ数サマリー表示
-```
-
-## Phase 1: 初期化・前処理
+## Phase 1: Python CLI前処理
 
 ### ステップ1.1: 環境確認
 
 ```bash
 # テーマ設定ファイル確認
-if [ ! -f "data/config/finance-news-themes.json" ]; then
-    echo "エラー: テーマ設定ファイルが見つかりません"
-    exit 1
-fi
+test -f data/config/finance-news-themes.json
 
 # GitHub CLI 確認
 gh auth status
 ```
 
-### ステップ1.2: Python CLI 前処理実行
+### ステップ1.2: Python CLI実行 + テーマ別JSON出力
 
 ```bash
-# prepare_news_session.py を実行
-uv run python scripts/prepare_news_session.py --days ${days} --output .tmp/news-${timestamp}.json
+# 1. セッションファイル作成
+uv run python scripts/prepare_news_session.py --days ${days}
 
-# 出力: セッションファイルパス
-session_file=".tmp/news-${timestamp}.json"
+# 2. テーマ別JSONファイル作成
+python3 << 'EOF'
+import json
+from pathlib import Path
+
+session_file = Path(".tmp/news-YYYYMMDD-HHMMSS.json")  # 最新のセッションファイル
+session = json.load(open(session_file))
+
+output_dir = Path(".tmp/news-batches")
+output_dir.mkdir(exist_ok=True)
+
+config = session["config"]
+
+for theme_key, theme_data in session["themes"].items():
+    articles = theme_data["articles"]
+    theme_config = theme_data["theme_config"]
+
+    issue_config = {
+        "theme_key": theme_key,
+        "theme_label": theme_config["name_ja"].split(" (")[0],
+        "status_option_id": theme_config["github_status_id"],
+        "project_id": config["project_id"],
+        "project_number": config["project_number"],
+        "project_owner": config["project_owner"],
+        "repo": "YH-05/finance",
+        "status_field_id": config["status_field_id"],
+        "published_date_field_id": config["published_date_field_id"]
+    }
+
+    output_file = output_dir / f"{theme_key}.json"
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump({
+            "articles": articles,
+            "issue_config": issue_config
+        }, f, ensure_ascii=False, indent=2)
+
+    print(f"{theme_key}: {len(articles)} articles -> {output_file}")
+EOF
 ```
 
-**セッションファイル形式**:
+**出力ファイル形式**（各テーマ）:
 
 ```json
 {
-  "session_id": "news-20260129-143000",
-  "timestamp": "2026-01-29T14:30:00+09:00",
-  "config": {
+  "articles": [
+    {
+      "url": "https://...",
+      "title": "...",
+      "summary": "...",
+      "feed_source": "...",
+      "published": "2026-01-29T12:00:00+00:00"
+    }
+  ],
+  "issue_config": {
+    "theme_key": "index",
+    "theme_label": "株価指数",
+    "status_option_id": "3925acc3",
     "project_id": "PVT_kwHOBoK6AM4BMpw_",
     "project_number": 15,
     "project_owner": "YH-05",
+    "repo": "YH-05/finance",
     "status_field_id": "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE",
     "published_date_field_id": "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
-  },
-  "themes": {
-    "index": {
-      "articles": [...],
-      "blocked": [...],
-      "theme_config": {
-        "name_ja": "株価指数",
-        "github_status_id": "3925acc3"
-      }
-    },
-    ...
-  },
-  "stats": {
-    "total": 150,
-    "duplicates": 30,
-    "paywall_blocked": 10,
-    "accessible": 110
   }
 }
 ```
 
-## Phase 2: テーマ別収集（並列）
+## Phase 2: news-article-fetcher 並列呼び出し
 
-### ステップ2.1: テーマエージェント直接呼び出し
+### ステップ2.1: 全テーマを並列で呼び出し
 
-**オーケストレーターは廃止され、テーマエージェントを直接呼び出します。**
+**重要**: 11テーマ全てを**1つのメッセージ内で並列呼び出し**すること。
 
 ```python
-# 11テーマを並列で呼び出し
-theme_agents = [
-    "finance-news-index",
-    "finance-news-stock",
-    "finance-news-sector",
-    "finance-news-macro-cnbc",
-    "finance-news-macro-other",
-    "finance-news-ai-cnbc",
-    "finance-news-ai-nasdaq",
-    "finance-news-ai-tech",
-    "finance-news-finance-cnbc",
-    "finance-news-finance-nasdaq",
-    "finance-news-finance-other",
+# 11テーマを並列で呼び出し（1メッセージに11個のTask呼び出し）
+themes = [
+    "index", "stock", "sector",
+    "macro_cnbc", "macro_other",
+    "ai_cnbc", "ai_nasdaq", "ai_tech",
+    "finance_cnbc", "finance_nasdaq", "finance_other"
 ]
 
-results = []
-for agent in theme_agents:
-    result = Task(
-        subagent_type=agent,
-        description=f"{agent}: ニュース収集",
-        prompt=f"""
-セッションファイル: {session_file}
+# 各テーマのJSONファイルを読み込み、news-article-fetcherに渡す
+for theme in themes:
+    json_file = f".tmp/news-batches/{theme}.json"
+    data = json.load(open(json_file))
 
-セッションファイルを読み込み、自テーマの記事を news-article-fetcher に委譲してください。
-"""
-    )
-    results.append(result)
+    Task(
+        subagent_type="news-article-fetcher",
+        description=f"{theme}: {len(data['articles'])}件の記事処理",
+        prompt=f"""以下の記事データを処理してください。
+
+```json
+{json.dumps(data, ensure_ascii=False, indent=2)}
 ```
 
-### ステップ2.2: 結果集約
+各記事に対して:
+1. 3段階フォールバックで本文取得
+2. 日本語要約生成
+3. Issue作成・close
+4. Project追加・Status/Date設定
 
-各テーマエージェントから返却される結果を集約:
+JSON形式で結果を返してください。""",
+        run_in_background=True  # バックグラウンド実行
+    )
+```
+
+### ステップ2.2: 完了待ち
+
+全エージェントの完了を待ち、結果を集約:
 
 ```python
-all_stats = {
-    "total_articles": 0,
-    "total_blocked": 0,
-    "total_created": 0,
-    "total_failed": 0,
-    "by_theme": {}
-}
-
-for result in results:
-    theme = result["theme"]
-    all_stats["total_articles"] += result["stats"]["total_articles"]
-    all_stats["total_blocked"] += result["stats"]["blocked"]
-    all_stats["total_created"] += result["stats"]["created"]
-    all_stats["total_failed"] += result["stats"]["failed"]
-    all_stats["by_theme"][theme] = result["stats"]
+# TaskOutputで各エージェントの結果を取得
+results = {}
+for theme in themes:
+    result = TaskOutput(task_id=agent_ids[theme], block=True, timeout=600000)
+    results[theme] = parse_result(result)
 ```
 
 ## Phase 3: 結果報告
@@ -201,24 +196,22 @@ for result in results:
 
 | 項目 | 件数 |
 |------|------|
-| 前処理：取得記事数 | {stats.total} |
-| 前処理：重複スキップ | {stats.duplicates} |
-| 前処理：ペイウォールブロック | {stats.paywall_blocked} |
-| 投稿対象 | {stats.accessible} |
-| Issue作成成功 | {all_stats.total_created} |
-| Issue作成失敗 | {all_stats.total_failed} |
+| 前処理：取得記事数 | {total} |
+| 前処理：重複スキップ | {duplicates} |
+| 投稿対象 | {accessible} |
+| Issue作成成功 | {created} |
+| Issue作成失敗 | {failed} |
 
 ### テーマ別統計
 
 | テーマ | 対象 | 作成 | 失敗 | 抽出方法 |
 |--------|------|------|------|----------|
-| Index（株価指数） | {n} | {created} | {failed} | Tier1: {t1}, Tier2: {t2}, Tier3: {t3} |
-| Stock（個別銘柄） | {n} | {created} | {failed} | Tier1: {t1}, Tier2: {t2}, Tier3: {t3} |
+| Index（株価指数） | {n} | {created} | {failed} | Tier1/2/3 |
+| Stock（個別銘柄） | {n} | {created} | {failed} | Tier1/2/3 |
 | ... | ... | ... | ... | ... |
 
 ### セッション情報
 
-- **セッションID**: {session_id}
 - **実行時刻**: {timestamp}
 - **セッションファイル**: {session_file}
 ```
@@ -228,50 +221,23 @@ for result in results:
 | パラメータ | デフォルト | 説明 |
 |-----------|-----------|------|
 | --days | 7 | 過去何日分のニュースを対象とするか |
-| --project | 15 | GitHub Project番号 |
-| --themes | all | 対象テーマ（index,stock,sector,macro_cnbc,... / all） |
-| --dry-run | false | GitHub投稿せずに結果確認のみ |
+| --themes | all | 対象テーマ（index,stock,... / all） |
 
-## テーマ設定ファイル
+## テーマ一覧
 
-**場所**: `data/config/finance-news-themes.json`
-
-```json
-{
-  "themes": {
-    "index": {
-      "name": "Index",
-      "name_ja": "株価指数",
-      "github_status_id": "3925acc3",
-      "feeds": [{ "feed_id": "...", "title": "..." }]
-    },
-    ...
-  },
-  "project": {
-    "project_id": "PVT_kwHOBoK6AM4BMpw_",
-    "status_field_id": "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE",
-    "published_date_field_id": "PVTF_lAHOBoK6AM4BMpw_zg8BzrI",
-    "owner": "YH-05",
-    "number": 15
-  }
-}
-```
-
-## テーマ別エージェント
-
-| エージェント | GitHub Status | 対象 |
-|--------------|---------------|------|
-| finance-news-index | Index | 株価指数、ETF |
-| finance-news-stock | Stock | 個別銘柄、決算 |
-| finance-news-sector | Sector | 業界動向 |
-| finance-news-macro-cnbc | Macro | マクロ経済（CNBC系） |
-| finance-news-macro-other | Macro | マクロ経済（経済指標・中央銀行） |
-| finance-news-ai-cnbc | AI | AI（CNBC Technology） |
-| finance-news-ai-nasdaq | AI | AI（NASDAQ系） |
-| finance-news-ai-tech | AI | AI（テック系メディア） |
-| finance-news-finance-cnbc | Finance | 金融（CNBC系） |
-| finance-news-finance-nasdaq | Finance | 金融（NASDAQ系） |
-| finance-news-finance-other | Finance | 金融（金融メディア） |
+| テーマキー | 日本語名 | GitHub Status |
+|------------|----------|---------------|
+| index | 株価指数 | Index |
+| stock | 個別銘柄 | Stock |
+| sector | セクター | Sector |
+| macro_cnbc | マクロ経済 (CNBC) | Macro |
+| macro_other | マクロ経済 (その他) | Macro |
+| ai_cnbc | AI (CNBC) | AI |
+| ai_nasdaq | AI (NASDAQ) | AI |
+| ai_tech | AI (テックメディア) | AI |
+| finance_cnbc | 金融 (CNBC) | Finance |
+| finance_nasdaq | 金融 (NASDAQ) | Finance |
+| finance_other | 金融 (その他) | Finance |
 
 ## 関連リソース
 
@@ -279,7 +245,6 @@ for result in results:
 |---------|------|
 | Python CLI前処理 | `scripts/prepare_news_session.py` |
 | テーマ設定 | `data/config/finance-news-themes.json` |
-| テーマ別エージェント | `.claude/agents/finance-news-{theme}.md` |
 | news-article-fetcher | `.claude/agents/news-article-fetcher.md` |
 | GitHub Project | https://github.com/users/YH-05/projects/15 |
 
@@ -290,18 +255,22 @@ for result in results:
 | E001: テーマ設定ファイルエラー | ファイル存在・JSON形式を確認 |
 | E002: Python CLI エラー | prepare_news_session.py のログを確認 |
 | E003: GitHub CLI エラー | `gh auth login` で認証 |
-| E004: テーマエージェント失敗 | 失敗テーマのみ --themes で再実行 |
-| E005: news-article-fetcher 失敗 | セッションファイルから手動再実行 |
+| E004: news-article-fetcher 失敗 | JSONファイルから手動再実行 |
 
 ## 変更履歴
 
-### 2026-01-29: 新アーキテクチャ移行
+### 2026-01-29: テーマエージェント廃止
+
+- **テーマエージェント廃止**: 11個のテーマエージェントを `trash/agents/` に移動
+- **直接呼び出し方式**: スキルから news-article-fetcher を直接呼び出す
+- **ネスト削減**: 3段 → 1段（スキル → news-article-fetcher）
+- **ペイウォールチェック削除**: prepare_news_session.py から削除（処理時間: 30分 → 10秒）
+
+### 2026-01-29: 新アーキテクチャ移行（初版）
 
 - **オーケストレーター廃止**: `finance-news-orchestrator.md` を `trash/` に移動
 - **Python CLI前処理追加**: 決定論的処理をPythonに移行
-- **テーマエージェント軽量化**: 設定保持 + 委譲 + モニタリングに特化
 - **3段階フォールバック追加**: trafilatura → Playwright → RSS Summary
-- **ネスト削減**: 3段（オーケストレーター→テーマ→fetcher）から2段（テーマ→fetcher）へ
 
 ## 制約事項
 
