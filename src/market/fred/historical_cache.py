@@ -6,22 +6,49 @@ incremental updates.
 """
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
+from dotenv import load_dotenv
 
 from utils_core.logging import get_logger
 
 from .errors import FREDFetchError
-from .fetcher import DEFAULT_PRESETS_PATH, FREDFetcher
+from .fetcher import FREDFetcher
 from .types import FetchOptions
 
 logger = get_logger(__name__, module="fred_historical_cache")
 
-# Default path for cached FRED data
-DEFAULT_CACHE_PATH = Path(__file__).parents[3] / "data" / "raw" / "fred" / "indicators"
+# Environment variable for cache directory
+FRED_HISTORICAL_CACHE_DIR_ENV = "FRED_HISTORICAL_CACHE_DIR"
+
+# Default path for cached FRED data (used if env var not set)
+_DEFAULT_CACHE_PATH = Path(__file__).parents[3] / "data" / "raw" / "fred" / "indicators"
+
+
+def get_default_cache_path() -> Path:
+    """Get the default cache path from environment or fallback.
+
+    Checks FRED_HISTORICAL_CACHE_DIR environment variable first,
+    then falls back to data/raw/fred/indicators/.
+
+    Returns
+    -------
+    Path
+        Default cache directory path
+    """
+    load_dotenv()
+    env_path = os.environ.get(FRED_HISTORICAL_CACHE_DIR_ENV)
+    if env_path:
+        return Path(env_path)
+    return _DEFAULT_CACHE_PATH
+
+
+# For backwards compatibility
+DEFAULT_CACHE_PATH = _DEFAULT_CACHE_PATH
 
 # Cache file version
 CACHE_VERSION = 1
@@ -59,10 +86,11 @@ class HistoricalCache:
         ----------
         base_path : Path | str | None
             Base directory for cache files.
-            If None, uses default path.
+            If None, uses FRED_HISTORICAL_CACHE_DIR environment variable,
+            or falls back to data/raw/fred/indicators/.
         """
         if base_path is None:
-            self._base_path = DEFAULT_CACHE_PATH
+            self._base_path = get_default_cache_path()
         else:
             self._base_path = Path(base_path)
 
@@ -657,5 +685,7 @@ class HistoricalCache:
 
 __all__ = [
     "DEFAULT_CACHE_PATH",
+    "FRED_HISTORICAL_CACHE_DIR_ENV",
     "HistoricalCache",
+    "get_default_cache_path",
 ]

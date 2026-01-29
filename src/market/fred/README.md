@@ -94,6 +94,144 @@ date
 ...
 ```
 
+## 履歴データのローカルキャッシュ
+
+プリセット定義（`data/config/fred_series.json`）のシリーズについて、データ提供開始時点からの全履歴データをローカルにキャッシュできます。
+
+### 設定
+
+**方法1: 環境変数（推奨）**
+
+```bash
+export FRED_HISTORICAL_CACHE_DIR="/path/to/cache/dir"
+```
+
+**方法2: .env ファイル**
+
+```bash
+# .env ファイルに追加
+FRED_HISTORICAL_CACHE_DIR=/path/to/cache/dir
+```
+
+**方法3: 直接指定**
+
+```python
+from market.fred.historical_cache import HistoricalCache
+
+cache = HistoricalCache(base_path="/custom/path")
+```
+
+環境変数未設定の場合、デフォルトは `data/raw/fred/indicators/` です。
+
+### CLI での使用
+
+```bash
+# 全プリセットを同期
+uv run python -m market.fred.scripts.sync_historical --all
+
+# カテゴリ指定
+uv run python -m market.fred.scripts.sync_historical --category "Treasury Yields"
+
+# 単一シリーズ
+uv run python -m market.fred.scripts.sync_historical --series DGS10
+
+# 同期状況確認
+uv run python -m market.fred.scripts.sync_historical --status
+
+# 保存先ディレクトリ指定（環境変数より優先）
+uv run python -m market.fred.scripts.sync_historical --all --output-dir /custom/path
+
+# cron用（24時間以上古いデータのみ更新）
+uv run python -m market.fred.scripts.sync_historical --auto
+uv run python -m market.fred.scripts.sync_historical --auto --stale-hours 48
+```
+
+### Python からの使用
+
+```python
+from market.fred.historical_cache import HistoricalCache
+
+# 環境変数またはデフォルトパスを使用
+cache = HistoricalCache()
+
+# カスタムパス指定
+cache = HistoricalCache(base_path="/custom/path")
+
+# 全プリセットを同期
+results = cache.sync_all_presets()
+
+# カテゴリ単位で同期
+results = cache.sync_category("Treasury Yields")
+
+# 単一シリーズを同期
+result = cache.sync_series("DGS10")
+
+# キャッシュからデータ取得（DataFrame形式）
+df = cache.get_series_df("DGS10")
+print(df.head())
+
+# キャッシュからデータ取得（dict形式）
+data = cache.get_series("DGS10")
+
+# 同期状況確認
+status = cache.get_status()
+for series_id, info in status.items():
+    if info["cached"]:
+        print(f"{series_id}: {info['data_points']} points")
+    else:
+        print(f"{series_id}: not cached")
+
+# キャッシュ無効化（次回同期時に全件再取得）
+cache.invalidate("DGS10")
+```
+
+### cron 設定例
+
+```bash
+# 毎日 AM 6:00 に増分更新（24時間以上古いデータのみ）
+0 6 * * * cd /path/to/finance && uv run python -m market.fred.scripts.sync_historical --auto
+```
+
+### キャッシュファイル構造
+
+```
+data/raw/fred/indicators/
+├── _index.json      # 全シリーズの管理メタデータ
+├── DGS10.json       # 10年国債利回り
+├── GDP.json         # 名目GDP
+└── ...
+```
+
+各シリーズの JSON 構造:
+
+```json
+{
+  "series_id": "DGS10",
+  "preset_info": {
+    "name_ja": "10年国債利回り",
+    "name_en": "10-Year Treasury Constant Maturity Rate",
+    "category": "interest_rate",
+    "frequency": "daily",
+    "units": "percent"
+  },
+  "fred_metadata": {
+    "observation_start": "1962-01-02",
+    "observation_end": "2026-01-28",
+    "title": "10-Year Treasury Constant Maturity Rate",
+    "last_updated_api": "2026-01-28T15:16:00+00:00"
+  },
+  "cache_metadata": {
+    "last_fetched": "2026-01-29T10:00:00+00:00",
+    "data_points": 15847,
+    "version": 1
+  },
+  "data": [
+    {"date": "1962-01-02", "value": 4.06},
+    {"date": "1962-01-03", "value": 4.03}
+  ]
+}
+```
+
 ## 詳細な使い方
 
 ### 複数の経済指標を一括取得
@@ -441,15 +579,25 @@ FREDFetcher(
 
 ```
 market/fred/
-├── __init__.py       # パッケージエクスポート
-├── constants.py      # 定数（FRED_API_KEY_ENV, FRED_SERIES_PATTERN）
-├── errors.py         # 例外クラス
-├── types.py          # 型定義（FetchOptions, MarketDataResult 等）
-├── cache.py          # SQLiteCache（データキャッシュ）
-├── base_fetcher.py   # 抽象基底クラス
-├── fetcher.py        # FREDFetcher 実装
-└── README.md         # このファイル
+├── __init__.py          # パッケージエクスポート
+├── constants.py         # 定数（FRED_API_KEY_ENV, FRED_SERIES_PATTERN）
+├── errors.py            # 例外クラス
+├── types.py             # 型定義（FetchOptions, MarketDataResult 等）
+├── cache.py             # SQLiteCache（リクエストキャッシュ）
+├── historical_cache.py  # HistoricalCache（履歴データキャッシュ）
+├── base_fetcher.py      # 抽象基底クラス
+├── fetcher.py           # FREDFetcher 実装
+├── scripts/
+│   └── sync_historical.py  # 履歴データ同期 CLI スクリプト
+└── README.md            # このファイル
 ```
+
+## 環境変数
+
+| 変数名 | 説明 | デフォルト |
+|--------|------|-----------|
+| `FRED_API_KEY` | FRED API キー | なし（必須） |
+| `FRED_HISTORICAL_CACHE_DIR` | 履歴データキャッシュの保存先 | `data/raw/fred/indicators/` |
 
 ## トラブルシューティング
 
