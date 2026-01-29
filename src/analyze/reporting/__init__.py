@@ -1,5 +1,6 @@
 """reporting - パフォーマンスレポート生成モジュール."""
 
+from analyze.reporting.currency import CurrencyAnalyzer
 from analyze.reporting.interest_rate import InterestRateAnalyzer
 from analyze.reporting.interest_rate_agent import (
     InterestRateAnalyzer4Agent,
@@ -12,6 +13,7 @@ from analyze.reporting.performance_agent import (
 )
 
 __all__ = [
+    "CurrencyAnalyzer",
     "InterestRateAnalyzer",
     "InterestRateAnalyzer4Agent",
     "InterestRateResult",
