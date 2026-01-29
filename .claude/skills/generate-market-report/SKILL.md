@@ -68,18 +68,25 @@ Phase 1: 初期化
 ├── 出力ディレクトリ作成
 └── 必要ツール確認
 
-Phase 2: 市場データ収集
-└── weekly_comment_data.py → indices/mag7/sectors.json
+Phase 2: 市場データ収集（★PerformanceAnalyzer4Agent使用）
+├── collect_market_performance.py → data/market/
+│   ├── {category}_{YYYYMMDD-HHMM}.json（複数期間: 1D, 1W, MTD, YTD...）
+│   └── all_performance_{YYYYMMDD-HHMM}.json（統合）
+└── データ鮮度チェック（日付ズレ警告）
 
-Phase 3: GitHub Project ニュース取得
-└── weekly-report-news-aggregator → news_from_project.json
+Phase 3: 仮説生成（★新規）
+├── market-hypothesis-generator サブエージェント
+├── パターン検出 → 仮説生成 → 検索クエリ計画
+└── hypotheses_{YYYYMMDD-HHMM}.json 出力
 
-Phase 4: 追加ニュース検索（--no-search でスキップ可能）
-└── 不足カテゴリの補完 → news_supplemental.json
+Phase 4: ニュース調査（★仮説ベース検索）
+├── GitHub Project から既存ニュース取得
+├── 仮説ベースの追加検索（--no-search でスキップ可能）
+└── news_with_context.json（仮説との関連付き）
 
 Phase 5: レポート生成（サブエージェント）
 ├── weekly-data-aggregation スキル
-├── weekly-comment-generation スキル
+├── weekly-comment-generation スキル（仮説+検索結果を統合）
 ├── weekly-template-rendering スキル
 └── weekly-report-validation スキル
 

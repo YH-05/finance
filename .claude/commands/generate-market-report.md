@@ -131,31 +131,41 @@ Phase 1: 初期化
 └── テンプレート確認
     └── template/market_report/weekly_market_report_template.md
 
-Phase 2: 市場データ収集
-├── Pythonスクリプト実行（weekly_comment_data.py）
-├── indices.json: 主要指数パフォーマンス
-├── mag7.json: MAG7 + SOX パフォーマンス
-├── sectors.json: セクター分析
-└── metadata.json: 期間情報
+Phase 2: 市場データ収集（★PerformanceAnalyzer4Agent使用）
+├── Pythonスクリプト実行（collect_market_performance.py）
+├── data/market/ に出力:
+│   ├── indices_us_{YYYYMMDD-HHMM}.json（複数期間: 1D, 1W, MTD, YTD...）
+│   ├── indices_global_{YYYYMMDD-HHMM}.json
+│   ├── mag7_{YYYYMMDD-HHMM}.json（複数期間 + サマリー）
+│   ├── sectors_{YYYYMMDD-HHMM}.json（複数期間 + サマリー）
+│   ├── commodities_{YYYYMMDD-HHMM}.json
+│   └── all_performance_{YYYYMMDD-HHMM}.json（統合）
+└── データ鮮度チェック（日付ズレ警告）
 
-Phase 3: GitHub Project ニュース取得（サブエージェント）
-├── weekly-report-news-aggregator 呼び出し
-├── Project #{project} から対象期間のニュースを取得
-├── カテゴリ分類（indices/mag7/sectors/macro/tech/finance）
-└── news_from_project.json に出力
+Phase 3: 仮説生成（★新規）
+├── market-hypothesis-generator サブエージェント呼び出し
+├── パターン検出:
+│   ├── 期間間乖離（1D vs 1W, トレンド継続/反転）
+│   ├── グループ間比較（MAG7 vs SPX, Growth vs Value）
+│   └── セクターローテーション
+├── 仮説生成（背景要因の推測）
+├── 検索クエリ計画
+└── hypotheses_{YYYYMMDD-HHMM}.json に出力
 
-Phase 4: 追加ニュース検索（--no-search でスキップ可能）
-├── news_from_project.json のカテゴリ別件数を確認
-├── 件数不足のカテゴリについて追加検索
-│   ├── RSS MCP で検索
-│   ├── Tavily で補完
-│   └── Gemini Search でバックアップ
-└── news_supplemental.json に出力
+Phase 4: ニュース調査（★仮説ベース検索）
+├── GitHub Project から既存ニュース取得
+│   └── weekly-report-news-aggregator → news_from_project.json
+├── 仮説ベースの追加検索（--no-search でスキップ可能）
+│   ├── hypotheses.json の検索クエリを優先度順に実行
+│   ├── RSS MCP / Tavily で検索
+│   └── 検索結果を仮説IDと紐づけ
+└── news_with_context.json に出力（仮説との関連付き）
 
 Phase 5: レポート生成（サブエージェント）
 ├── weekly-report-writer 呼び出し
 ├── データ集約（weekly-data-aggregation スキル）
 ├── コメント生成（weekly-comment-generation スキル）
+│   └── 仮説と検索結果を統合してコメント作成
 ├── テンプレート埋め込み（weekly-template-rendering スキル）
 ├── 品質検証（weekly-report-validation スキル）
 └── 02_edit/weekly_report.md に出力

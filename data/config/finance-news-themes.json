@@ -43,53 +43,93 @@
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21", "title": "CNBC - Travel"}
       ]
     },
-    "macro": {
-      "name": "Macro Economics",
-      "name_ja": "マクロ経済",
+    "macro_cnbc": {
+      "name": "Macro Economics (CNBC)",
+      "name_ja": "マクロ経済 (CNBC)",
       "github_status_id": "730034a5",
-      "description": "金融政策（金利、量的緩和）、中央銀行（Fed、日銀、ECB）、経済指標（GDP、CPI、雇用統計）、為替",
+      "description": "マクロ経済関連ニュース（CNBC系フィード）",
       "feeds": [
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06", "title": "CNBC - Economy"},
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02", "title": "CNBC - World News"},
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03", "title": "CNBC - US News"},
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09", "title": "CNBC - Asia News"},
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10", "title": "CNBC - Europe News"},
-        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"}
+      ]
+    },
+    "macro_other": {
+      "name": "Macro Economics (Other)",
+      "name_ja": "マクロ経済 (その他)",
+      "github_status_id": "730034a5",
+      "description": "マクロ経済関連ニュース（経済指標・中央銀行）",
+      "feeds": [
         {"feed_id": "ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca", "title": "Trading Economics News"},
         {"feed_id": "a1fd6bfd-d707-424b-b08f-d383c2044d2a", "title": "Federal Reserve Press"},
         {"feed_id": "c4cb2750-0d35-40d4-b478-85887b416923", "title": "IMF News"}
       ]
     },
-    "ai": {
-      "name": "AI",
-      "name_ja": "AI",
+    "ai_cnbc": {
+      "name": "AI (CNBC)",
+      "name_ja": "AI (CNBC)",
       "github_status_id": "6fbb43d0",
-      "description": "AI技術、機械学習、生成AI、AI企業（OpenAI、NVIDIA等）、AI投資、AI規制",
+      "description": "AI技術関連ニュース（CNBC Technology）",
       "feeds": [
-        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "title": "CNBC - Technology"},
-        {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News (100+ points)"},
-        {"feed_id": "af717f84-da0f-400e-a77d-823836af01d3", "title": "TechCrunch"},
-        {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
-        {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "title": "CNBC - Technology"}
+      ]
+    },
+    "ai_nasdaq": {
+      "name": "AI (NASDAQ)",
+      "name_ja": "AI (NASDAQ)",
+      "github_status_id": "6fbb43d0",
+      "description": "AI技術関連ニュース（NASDAQ系フィード）",
+      "feeds": [
         {"feed_id": "8f48e41e-fe9a-4951-806f-13ff29e09423", "title": "NASDAQ AI"},
         {"feed_id": "ba20211a-4d8f-4310-a023-75be99c09a0b", "title": "NASDAQ FinTech"},
         {"feed_id": "224be93d-8efc-4802-84dd-a14c2452c636", "title": "NASDAQ Innovation"},
         {"feed_id": "7acfdb64-6475-4341-8ea0-30c1c538b80e", "title": "NASDAQ Technology"}
       ]
     },
-    "finance": {
-      "name": "Finance",
-      "name_ja": "金融",
+    "ai_tech": {
+      "name": "AI (Tech Media)",
+      "name_ja": "AI (テックメディア)",
+      "github_status_id": "6fbb43d0",
+      "description": "AI技術関連ニュース（テック系メディア）",
+      "feeds": [
+        {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News (100+ points)"},
+        {"feed_id": "af717f84-da0f-400e-a77d-823836af01d3", "title": "TechCrunch"},
+        {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
+        {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"}
+      ]
+    },
+    "finance_cnbc": {
+      "name": "Finance (CNBC)",
+      "name_ja": "金融 (CNBC)",
       "github_status_id": "ac4a91b1",
-      "description": "企業財務（決算、財務報告）、資金調達（IPO、増資、社債）、株主還元（配当、自社株買い）、金融商品",
+      "description": "金融・財務関連ニュース（CNBC系フィード）",
       "feeds": [
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "title": "CNBC - Finance"},
         {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16", "title": "CNBC - Wealth"},
-        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"},
-        {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
-        {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"},
+        {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"}
+      ]
+    },
+    "finance_nasdaq": {
+      "name": "Finance (NASDAQ)",
+      "name_ja": "金融 (NASDAQ)",
+      "github_status_id": "ac4a91b1",
+      "description": "金融・財務関連ニュース（NASDAQ系フィード）",
+      "feeds": [
         {"feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e", "title": "NASDAQ Financial Advisors"},
         {"feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e", "title": "NASDAQ Options"}
+      ]
+    },
+    "finance_other": {
+      "name": "Finance (Other)",
+      "name_ja": "金融 (その他)",
+      "github_status_id": "ac4a91b1",
+      "description": "金融・財務関連ニュース（金融メディア）",
+      "feeds": [
+        {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
+        {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"}
       ]
     }
   },

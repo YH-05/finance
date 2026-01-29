@@ -31,7 +31,7 @@ permissionMode: bypassPermissions
 ├── 既存Issue取得のみ（gh issue list）
 └── セッション情報配布
     ↓
-サブエージェント5つが完全並列実行
+サブエージェント11つが完全並列実行
 ├── 自分の担当フィードをフェッチ・取得（各エージェントが直接実行）
 ├── キーワードフィルタリング
 └── Issue作成
@@ -230,7 +230,7 @@ feed_assignments = load_feed_assignments()
             "createdAt": "2026-01-25T09:20:00Z"
         }
     ],
-    "themes": ["index", "stock", "sector", "macro", "ai", "finance"],
+    "themes": ["index", "stock", "sector", "macro_cnbc", "macro_other", "ai_cnbc", "ai_nasdaq", "ai_tech", "finance_cnbc", "finance_nasdaq", "finance_other"],
     "feed_assignments": {
         "index": [
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c04", "title": "CNBC - Markets"},
@@ -255,36 +255,46 @@ feed_assignments = load_feed_assignments()
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c20", "title": "CNBC - Retail"},
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c21", "title": "CNBC - Travel"}
         ],
-        "macro": [
+        "macro_cnbc": [
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c06", "title": "CNBC - Economy"},
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c02", "title": "CNBC - World News"},
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c03", "title": "CNBC - US News"},
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c09", "title": "CNBC - Asia News"},
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c10", "title": "CNBC - Europe News"},
-            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c13", "title": "CNBC - Politics"}
+        ],
+        "macro_other": [
             {"feed_id": "ff1e1c3d-ab0a-47b0-b21e-3ccac3b7e5ca", "title": "Trading Economics News"},
             {"feed_id": "a1fd6bfd-d707-424b-b08f-d383c2044d2a", "title": "Federal Reserve Press"},
             {"feed_id": "c4cb2750-0d35-40d4-b478-85887b416923", "title": "IMF News"}
         ],
-        "ai": [
-            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "title": "CNBC - Technology"},
-            {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News (100+ points)"},
-            {"feed_id": "af717f84-da0f-400e-a77d-823836af01d3", "title": "TechCrunch"},
-            {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
-            {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"},
+        "ai_cnbc": [
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c08", "title": "CNBC - Technology"}
+        ],
+        "ai_nasdaq": [
             {"feed_id": "8f48e41e-fe9a-4951-806f-13ff29e09423", "title": "NASDAQ AI"},
             {"feed_id": "ba20211a-4d8f-4310-a023-75be99c09a0b", "title": "NASDAQ FinTech"},
             {"feed_id": "224be93d-8efc-4802-84dd-a14c2452c636", "title": "NASDAQ Innovation"},
             {"feed_id": "7acfdb64-6475-4341-8ea0-30c1c538b80e", "title": "NASDAQ Technology"}
         ],
-        "finance": [
+        "ai_tech": [
+            {"feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006", "title": "Hacker News (100+ points)"},
+            {"feed_id": "af717f84-da0f-400e-a77d-823836af01d3", "title": "TechCrunch"},
+            {"feed_id": "338f1076-a903-422d-913d-e889b1bec581", "title": "Ars Technica"},
+            {"feed_id": "69722878-9f3d-4985-b7c2-d263fc9a3fdf", "title": "The Verge"}
+        ],
+        "finance_cnbc": [
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c07", "title": "CNBC - Finance"},
             {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c16", "title": "CNBC - Wealth"},
-            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"},
-            {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
-            {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"},
+            {"feed_id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01", "title": "CNBC - Top News"}
+        ],
+        "finance_nasdaq": [
             {"feed_id": "8c5cce88-2d75-462e-89dd-fabcf8e9497e", "title": "NASDAQ Financial Advisors"},
             {"feed_id": "59aa8df4-ede1-4edf-a61a-6e3d6453250e", "title": "NASDAQ Options"}
+        ],
+        "finance_other": [
+            {"feed_id": "5abc350a-f5e3-46ab-923a-57068cfe298c", "title": "Yahoo Finance"},
+            {"feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696", "title": "Financial Times"}
         ]
     },
     "statistics": {
@@ -300,16 +310,22 @@ feed_assignments = load_feed_assignments()
 
 ### 収集データ
 - **既存 Issue 数**: {len(existing_issues)}件
-- **対象テーマ**: index, stock, sector, macro, ai
+- **対象テーマ**: index, stock, sector, macro_cnbc, macro_other, ai_cnbc, ai_nasdaq, ai_tech, finance_cnbc, finance_nasdaq, finance_other
 
 ### フィード割り当て
 | エージェント | 担当フィード数 |
 |-------------|---------------|
-| index | 2 (Markets, Investing) |
-| stock | 2 (Earnings, Business) |
-| ai | 5 (Technology, TechCrunch, Ars Technica, The Verge, Hacker News) |
-| sector | 6 (Health Care, Real Estate, Autos, Energy, Media, Retail) |
-| macro | 9 (Economy, Finance, Top News, World News, US News, Asia, Europe, FRB, IMF) |
+| index | 5 (Markets, Investing, MarketWatch, NASDAQ Markets/ETFs) |
+| stock | 5 (Earnings, Business, Seeking Alpha, NASDAQ Stocks/Original) |
+| sector | 7 (Health Care, Real Estate, Autos, Energy, Media, Retail, Travel) |
+| macro_cnbc | 6 (Economy, World/US/Asia/Europe News, Politics) |
+| macro_other | 3 (Trading Economics, FRB, IMF) |
+| ai_cnbc | 1 (CNBC - Technology) |
+| ai_nasdaq | 4 (NASDAQ AI, FinTech, Innovation, Technology) |
+| ai_tech | 4 (Hacker News, TechCrunch, Ars Technica, The Verge) |
+| finance_cnbc | 3 (CNBC - Finance, Wealth, Top News) |
+| finance_nasdaq | 2 (NASDAQ Financial Advisors, Options) |
+| finance_other | 2 (Yahoo Finance, Financial Times) |
 
 ### 一時ファイル
 - **パス**: .tmp/news-collection-{timestamp}.json
@@ -387,7 +403,7 @@ except Exception as e:
 
 ## セッション準備完了
 - **既存 Issue 数**: 22件
-- **対象テーマ**: index, stock, sector, macro, ai
+- **対象テーマ**: index, stock, sector, macro_cnbc, macro_other, ai_cnbc, ai_nasdaq, ai_tech, finance_cnbc, finance_nasdaq, finance_other
 - **処理時間**: 約2-5秒
 ...
 ```

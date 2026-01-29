@@ -317,9 +317,14 @@ updated_at: 2026-01-28
 | `finance-news-index` | Index（株価指数）関連ニュース収集 |
 | `finance-news-stock` | Stock（個別銘柄）関連ニュース収集 |
 | `finance-news-sector` | Sector（セクター分析）関連ニュース収集 |
-| `finance-news-macro` | Macro Economics（マクロ経済）関連ニュース収集 |
-| `finance-news-finance` | Finance（金融・財務）関連ニュース収集 |
-| `finance-news-ai` | AI（人工知能・テクノロジー）関連ニュース収集 |
+| `finance-news-macro-cnbc` | Macro Economics（CNBC系フィード）関連ニュース収集 |
+| `finance-news-macro-other` | Macro Economics（経済指標・中央銀行）関連ニュース収集 |
+| `finance-news-finance-cnbc` | Finance（CNBC系フィード）関連ニュース収集 |
+| `finance-news-finance-nasdaq` | Finance（NASDAQ系フィード）関連ニュース収集 |
+| `finance-news-finance-other` | Finance（金融メディア）関連ニュース収集 |
+| `finance-news-ai-cnbc` | AI（CNBC Technology）関連ニュース収集 |
+| `finance-news-ai-nasdaq` | AI（NASDAQ系フィード）関連ニュース収集 |
+| `finance-news-ai-tech` | AI（テック系メディア）関連ニュース収集 |
 
 ### 金融リサーチエージェント
 

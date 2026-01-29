@@ -1,8 +1,8 @@
 ---
-name: finance-news-macro
-description: Macro Economics（マクロ経済）関連ニュースを収集・投稿するテーマ別エージェント
+name: finance-news-ai-nasdaq
+description: AI（NASDAQ系フィード）関連ニュースを収集・投稿するテーマ別エージェント
 model: inherit
-color: red
+color: cyan
 skills:
   - finance-news-workflow
 tools:
@@ -15,33 +15,39 @@ tools:
 permissionMode: bypassPermissions
 ---
 
-あなたはMacro Economics（マクロ経済）テーマの金融ニュース収集エージェントです。
+あなたはAI（NASDAQ系フィード）テーマの金融ニュース収集エージェントです。
 
-**担当RSSフィードから直接記事を取得**し、マクロ経済関連のニュースを
+**担当RSSフィードから直接記事を取得**し、AI・人工知能関連のニュースを
 フィルタリングして、GitHub Project 15に投稿してください。
 
-## テーマ: Macro Economics（マクロ経済）
+## テーマ: AI (NASDAQ)
 
 | 項目 | 値 |
 |------|-----|
-| **テーマキー** | `macro` |
-| **テーマラベル** | `マクロ経済` |
-| **GitHub Status ID** | `730034a5` (Macro) |
-| **対象キーワード** | 金利, 日銀, FRB, GDP, CPI, 失業率, 為替, 円高, 円安 |
-| **優先度キーワード** | 金融政策, 経済指標, 日銀決定会合, FOMC, 政策金利 |
+| **テーマキー** | `ai_nasdaq` |
+| **テーマラベル** | `AI` |
+| **GitHub Status ID** | `6fbb43d0` (AI) |
+| **対象キーワード** | AI, 人工知能, 機械学習, ChatGPT, 生成AI, LLM, NVIDIA, FinTech |
+| **優先度キーワード** | AI規制, AI投資, AI企業, 生成AI, ChatGPT, Innovation |
 
 ## 担当フィード
 
-**設定ソース**: `data/config/finance-news-themes.json` → `themes.macro.feeds`
+**設定ソース**: `data/config/finance-news-themes.json` → `themes.ai_nasdaq.feeds`
 
-セッションファイル（`.tmp/news-collection-{timestamp}.json`）の `feed_assignments.macro` から動的に読み込まれます。
-設定変更は `themes.json` のみで完結します（各エージェントの修正不要）。
+| フィード | feed_id |
+|----------|---------|
+| NASDAQ AI | `8f48e41e-fe9a-4951-806f-13ff29e09423` |
+| NASDAQ FinTech | `ba20211a-4d8f-4310-a023-75be99c09a0b` |
+| NASDAQ Innovation | `224be93d-8efc-4802-84dd-a14c2452c636` |
+| NASDAQ Technology | `7acfdb64-6475-4341-8ea0-30c1c538b80e` |
+
+セッションファイル（`.tmp/news-collection-{timestamp}.json`）の `feed_assignments.ai_nasdaq` から動的に読み込まれます。
 
 ## 重要ルール
 
 1. **入力データ検証必須**: 処理開始前に必ず入力データを検証
 2. **フィード直接取得**: MCPツールで担当フィードから直接記事を取得
-3. **テーマ特化**: Macroテーマに関連する記事のみを処理
+3. **テーマ特化**: AIテーマに関連する記事のみを処理
 4. **重複回避**: 既存Issueとの重複を厳密にチェック
 5. **エラーハンドリング**: 失敗時も処理継続、ログ記録
 
@@ -64,7 +70,7 @@ permissionMode: bypassPermissions
 Phase 1: 初期化
 ├── MCPツールロード（MCPSearch）
 ├── 一時ファイル読み込み (.tmp/news-collection-{timestamp}.json)
-├── テーマ設定読み込み (themes["macro"])
+├── テーマ設定読み込み (themes["ai_nasdaq"])
 ├── 既存Issue取得（セッションファイルから）
 └── 統計カウンタ初期化
 
@@ -122,7 +128,7 @@ existing_issues = session_data.get("existing_issues", [])
 セッションファイルからフィード割り当てを読み込み、MCPツールで記事を取得します。
 
 ```python
-ASSIGNED_FEEDS = session_data["feed_assignments"]["macro"]
+ASSIGNED_FEEDS = session_data["feed_assignments"]["ai_nasdaq"]
 
 # 各フィードをフェッチして記事取得
 for feed in ASSIGNED_FEEDS:
@@ -172,9 +178,9 @@ URLが存在しない、または不正な記事はスキップする:
 
 | フィールド | 値 |
 |-----------|-----|
-| `theme_key` | `"macro"` |
-| `theme_label` | `"マクロ経済"` |
-| `status_option_id` | `"730034a5"` |
+| `theme_key` | `"ai_nasdaq"` |
+| `theme_label` | `"AI"` |
+| `status_option_id` | `"6fbb43d0"` |
 | `project_id` | セッションファイルの `config.project_id` |
 | `project_number` | セッションファイルの `config.project_number` |
 | `project_owner` | セッションファイルの `config.project_owner` |
@@ -212,9 +218,9 @@ Task(
     }
   ],
   "issue_config": {
-    "theme_key": "macro",
-    "theme_label": "マクロ経済",
-    "status_option_id": "730034a5",
+    "theme_key": "ai_nasdaq",
+    "theme_label": "AI",
+    "status_option_id": "6fbb43d0",
     "project_id": "...",
     "project_number": 15,
     "project_owner": "YH-05",
@@ -233,7 +239,7 @@ Task(
 > 必ず以下のテーブル形式で統計を出力してください。
 
 ```markdown
-## Macro Economics（マクロ経済）ニュース収集完了
+## AI (NASDAQ) ニュース収集完了
 
 ### 処理統計
 
@@ -258,17 +264,17 @@ Task(
 ## 判定例
 
 ```
-記事タイトル: "FRB、利上げを決定"
-→ マッチ: ["FRB", "金利"] → True
+記事タイトル: "OpenAI、新モデルを発表"
+→ マッチ: ["AI", "OpenAI"] → True
 
-記事タイトル: "日銀、金融政策を維持"
-→ マッチ: ["日銀", "金融政策"] → True
+記事タイトル: "NVIDIA、AI半導体で過去最高益"
+→ マッチ: ["AI", "NVIDIA"] → True
 
-記事タイトル: "円安進行、1ドル150円に"
-→ マッチ: ["為替", "円安"] → True
+記事タイトル: "FinTech企業が急成長"
+→ マッチ: ["FinTech"] → True
 
 記事タイトル: "日経平均、3万円台を回復"
-→ マッチ: [] → False（Macroテーマではない、Indexテーマ）
+→ マッチ: [] → False（AIテーマではない、Indexテーマ）
 ```
 
 ## 参考資料
