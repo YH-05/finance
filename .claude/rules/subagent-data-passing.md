@@ -101,6 +101,111 @@ URLを省略すると、サブエージェントは以下ができなくなり�
 }
 ```
 
+### ルール6: article-fetcherへのデータ渡し
+
+article-fetcherにはIssue作成に必要な全情報を渡すこと。
+
+**必須**: `articles[]` と `issue_config` の両方を含めること。
+
+```json
+{
+  "articles": [
+    {
+      "url": "https://...",
+      "title": "...",
+      "summary": "...",
+      "feed_source": "CNBC - Markets",
+      "published": "2026-01-19T12:00:00+00:00"
+    }
+  ],
+  "issue_config": {
+    "theme_key": "index",
+    "theme_label": "株価指数",
+    "status_option_id": "3925acc3",
+    "project_id": "PVT_...",
+    "project_number": 15,
+    "project_owner": "YH-05",
+    "repo": "YH-05/finance",
+    "status_field_id": "PVTSSF_...",
+    "published_date_field_id": "PVTF_..."
+  }
+}
+```
+
+#### articles[] の必須フィールド
+
+| フィールド | 必須 | 説明 |
+|-----------|------|------|
+| `url` | ✅ | 元記事URL（RSSの`link`フィールド） |
+| `title` | ✅ | 記事タイトル |
+| `summary` | ✅ | RSS概要（フォールバック用） |
+| `feed_source` | ✅ | フィード名 |
+| `published` | ✅ | 公開日時（ISO 8601形式） |
+
+#### issue_config の必須フィールド
+
+| フィールド | 必須 | 説明 | 例 |
+|-----------|------|------|-----|
+| `theme_key` | ✅ | テーマキー | `"index"` |
+| `theme_label` | ✅ | テーマ日本語名 | `"株価指数"` |
+| `status_option_id` | ✅ | StatusのOption ID | `"3925acc3"` |
+| `project_id` | ✅ | Project ID | `"PVT_kwHOBoK6AM4BMpw_"` |
+| `project_number` | ✅ | Project番号 | `15` |
+| `project_owner` | ✅ | Projectオーナー | `"YH-05"` |
+| `repo` | ✅ | リポジトリ | `"YH-05/finance"` |
+| `status_field_id` | ✅ | StatusフィールドID | `"PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"` |
+| `published_date_field_id` | ✅ | 公開日フィールドID | `"PVTF_lAHOBoK6AM4BMpw_zg8BzrI"` |
+
+#### issue_config の構築方法
+
+テーマエージェントはセッションファイルの `config` とテーマ固有設定を組み合わせて `issue_config` を構築する:
+
+```python
+issue_config = {
+    "theme_key": "index",                                    # テーマ固有
+    "theme_label": "株価指数",                                # テーマ固有
+    "status_option_id": "3925acc3",                          # テーマ固有
+    "project_id": session_data["config"]["project_id"],      # セッション共通
+    "project_number": session_data["config"]["project_number"],  # セッション共通
+    "project_owner": session_data["config"]["project_owner"],    # セッション共通
+    "repo": "YH-05/finance",                                 # 固定値
+    "status_field_id": session_data["config"]["status_field_id"],            # セッション共通
+    "published_date_field_id": session_data["config"]["published_date_field_id"],  # セッション共通
+}
+```
+
+#### article-fetcherの出力形式
+
+article-fetcherは以下の形式で結果を返す:
+
+```json
+{
+  "created_issues": [
+    {
+      "issue_number": 200,
+      "issue_url": "https://github.com/YH-05/finance/issues/200",
+      "title": "[株価指数] S&P500が過去最高値を更新",
+      "article_url": "https://www.cnbc.com/...",
+      "published_date": "2026-01-19"
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://...",
+      "title": "...",
+      "reason": "ペイウォール検出"
+    }
+  ],
+  "stats": {
+    "total": 5,
+    "issue_created": 3,
+    "issue_failed": 0,
+    "skipped_paywall": 1,
+    "skipped_format": 0
+  }
+}
+```
+
 ## 違反時の影響
 
 データ省略の実際の影響例：
@@ -111,6 +216,9 @@ URLを省略すると、サブエージェントは以下ができなくなり�
 | `published` | 日時フィルタリング不可、Project日付フィールド設定不可 |
 | `summary` | 適切な日本語要約生成が困難 |
 | `existing_issues` | 重複投稿が発生 |
+| `issue_config` | article-fetcherがIssue作成・Project追加・Status/Date設定不可 |
+| `issue_config.theme_label` | Issueタイトルプレフィックス欠落 |
+| `issue_config.project_id` | Project追加・Status/Date設定不可 |
 
 ## 正しい実装パターン
 
@@ -166,6 +274,8 @@ Task(
 - [ ] データはJSON形式で渡しているか
 - [ ] 既存Issueも完全なデータで渡しているか
 - [ ] 自然言語での説明的な形式になっていないか
+- [ ] article-fetcher呼び出し時に `articles[]` と `issue_config` の両方を含めているか
+- [ ] `issue_config` に全9フィールドが含まれているか
 
 ## 関連ファイル
 
