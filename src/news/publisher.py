@@ -19,6 +19,7 @@ Examples
 
 from __future__ import annotations
 
+import subprocess  # nosec B404 - gh CLI is trusted
 from typing import TYPE_CHECKING
 
 from news.models import (
@@ -171,8 +172,56 @@ class Publisher:
             body_length=len(issue_body),
         )
 
-        # TODO: 実際の Issue 作成処理（P5-003以降）
-        raise NotImplementedError("Issue creation will be implemented in P5-003")
+        # Issue 作成
+        try:
+            issue_number, issue_url = await self._create_issue(article)
+
+            # Project に追加してフィールドを設定
+            await self._add_to_project(issue_number, article)
+
+            logger.info(
+                "Issue created successfully",
+                issue_number=issue_number,
+                issue_url=issue_url,
+                article_url=str(article.extracted.collected.url),
+            )
+
+            return PublishedArticle(
+                summarized=article,
+                issue_number=issue_number,
+                issue_url=issue_url,
+                publication_status=PublicationStatus.SUCCESS,
+            )
+
+        except subprocess.CalledProcessError as e:
+            error_msg = f"gh command failed: {e.stderr if e.stderr else str(e)}"
+            logger.error(
+                "Issue creation failed",
+                error=error_msg,
+                article_url=str(article.extracted.collected.url),
+            )
+            return PublishedArticle(
+                summarized=article,
+                issue_number=None,
+                issue_url=None,
+                publication_status=PublicationStatus.FAILED,
+                error_message=error_msg,
+            )
+        except Exception as e:
+            error_msg = f"Unexpected error: {e}"
+            logger.error(
+                "Issue creation failed unexpectedly",
+                error=error_msg,
+                error_type=type(e).__name__,
+                article_url=str(article.extracted.collected.url),
+            )
+            return PublishedArticle(
+                summarized=article,
+                issue_number=None,
+                issue_url=None,
+                publication_status=PublicationStatus.FAILED,
+                error_message=error_msg,
+            )
 
     async def publish_batch(
         self,
@@ -376,6 +425,174 @@ class Publisher:
         )
 
         return status_name, status_id
+
+    async def _create_issue(self, article: SummarizedArticle) -> tuple[int, str]:
+        """Issue を作成。
+
+        gh issue create コマンドを使用して GitHub Issue を作成する。
+
+        Parameters
+        ----------
+        article : SummarizedArticle
+            要約済み記事。summary が存在することを前提とする。
+
+        Returns
+        -------
+        tuple[int, str]
+            (Issue番号, Issue URL) のタプル。
+
+        Raises
+        ------
+        subprocess.CalledProcessError
+            gh コマンドの実行に失敗した場合。
+
+        Examples
+        --------
+        >>> issue_number, issue_url = await publisher._create_issue(article)
+        >>> issue_number
+        123
+        >>> issue_url
+        'https://github.com/YH-05/finance/issues/123'
+        """
+        title = self._generate_issue_title(article)
+        body = self._generate_issue_body(article)
+
+        result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "issue",
+                "create",
+                "--repo",
+                self._repo,
+                "--title",
+                title,
+                "--body",
+                body,
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        # gh issue create は Issue URL を返す
+        issue_url = result.stdout.strip()
+        issue_number = int(issue_url.split("/")[-1])
+
+        logger.debug(
+            "Created issue via gh CLI",
+            issue_number=issue_number,
+            issue_url=issue_url,
+        )
+
+        return issue_number, issue_url
+
+    async def _add_to_project(
+        self, issue_number: int, article: SummarizedArticle
+    ) -> None:
+        """Issue を Project に追加し、フィールドを設定。
+
+        gh project item-add で Issue を追加し、
+        gh project item-edit で Status と PublishedDate フィールドを設定する。
+
+        Parameters
+        ----------
+        issue_number : int
+            追加する Issue 番号。
+        article : SummarizedArticle
+            要約済み記事。Status 解決と公開日取得に使用する。
+
+        Raises
+        ------
+        subprocess.CalledProcessError
+            gh コマンドの実行に失敗した場合。
+
+        Notes
+        -----
+        - Status フィールドは常に設定される
+        - PublishedDate フィールドは article.extracted.collected.published が
+          存在する場合のみ設定される
+        """
+        # 1. Issue を Project に追加
+        issue_url = f"https://github.com/{self._repo}/issues/{issue_number}"
+        owner = self._repo.split("/")[0]
+
+        add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "project",
+                "item-add",
+                str(self._project_number),
+                "--owner",
+                owner,
+                "--url",
+                issue_url,
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        item_id = add_result.stdout.strip()
+
+        logger.debug(
+            "Added issue to project",
+            issue_number=issue_number,
+            project_number=self._project_number,
+            item_id=item_id,
+        )
+
+        # 2. Status フィールドを設定
+        _, status_id = self._resolve_status(article)
+
+        subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "project",
+                "item-edit",
+                "--project-id",
+                self._project_id,
+                "--id",
+                item_id,
+                "--field-id",
+                self._status_field_id,
+                "--single-select-option-id",
+                status_id,
+            ],
+            check=True,
+        )
+
+        logger.debug(
+            "Set status field",
+            item_id=item_id,
+            status_id=status_id,
+        )
+
+        # 3. PublishedDate フィールドを設定（公開日がある場合のみ）
+        published = article.extracted.collected.published
+        if published:
+            date_str = published.strftime("%Y-%m-%d")
+            subprocess.run(  # nosec B603 - gh CLI with safe args
+                [
+                    "gh",
+                    "project",
+                    "item-edit",
+                    "--project-id",
+                    self._project_id,
+                    "--id",
+                    item_id,
+                    "--field-id",
+                    self._published_date_field_id,
+                    "--date",
+                    date_str,
+                ],
+                check=True,
+            )
+
+            logger.debug(
+                "Set published date field",
+                item_id=item_id,
+                date=date_str,
+            )
 
 
 __all__ = [
