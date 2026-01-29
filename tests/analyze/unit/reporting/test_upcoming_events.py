@@ -16,8 +16,11 @@ import pytest
 from pandas import DataFrame
 
 from analyze.reporting.upcoming_events import (
+    MAJOR_RELEASES,
     EarningsDateInfo,
+    EconomicReleaseInfo,
     UpcomingEventsAnalyzer,
+    get_upcoming_economic_releases,
 )
 
 # =============================================================================
@@ -413,3 +416,295 @@ class TestLogging:
 
         # 結果が得られることを確認
         assert len(results) > 0
+
+
+# =============================================================================
+# Economic Indicator Release Tests (Issue #2420)
+# =============================================================================
+
+
+# =============================================================================
+# TestEconomicReleaseInfo
+# =============================================================================
+
+
+class TestEconomicReleaseInfo:
+    """EconomicReleaseInfo データクラスのテスト."""
+
+    def test_正常系_基本データで作成できる(self) -> None:
+        """EconomicReleaseInfoが基本データで作成できることを確認."""
+        info = EconomicReleaseInfo(
+            release_id=10,
+            name="Employment Situation",
+            name_ja="雇用統計",
+            release_date=datetime(2026, 2, 7, tzinfo=timezone.utc),
+            importance="high",
+        )
+
+        assert info.release_id == 10
+        assert info.name == "Employment Situation"
+        assert info.name_ja == "雇用統計"
+        assert info.release_date == datetime(2026, 2, 7, tzinfo=timezone.utc)
+        assert info.importance == "high"
+
+    def test_正常系_to_dict変換ができる(self) -> None:
+        """EconomicReleaseInfoをdict形式に変換できることを確認."""
+        info = EconomicReleaseInfo(
+            release_id=21,
+            name="Consumer Price Index",
+            name_ja="消費者物価指数",
+            release_date=datetime(2026, 2, 12, tzinfo=timezone.utc),
+            importance="high",
+        )
+
+        result = info.to_dict()
+
+        assert result["release_id"] == 21
+        assert result["name"] == "Consumer Price Index"
+        assert result["name_ja"] == "消費者物価指数"
+        assert result["release_date"] == "2026-02-12"
+        assert result["importance"] == "high"
+
+
+# =============================================================================
+# TestMajorReleases
+# =============================================================================
+
+
+class TestMajorReleases:
+    """MAJOR_RELEASES 定数のテスト."""
+
+    def test_正常系_8つのリリースが定義されている(self) -> None:
+        """MAJOR_RELEASESに8つのリリースが定義されていることを確認."""
+        assert len(MAJOR_RELEASES) == 8
+
+    def test_正常系_必須フィールドが含まれている(self) -> None:
+        """各リリースに必須フィールドが含まれていることを確認."""
+        required_fields = {"release_id", "name", "name_ja", "importance"}
+
+        for release in MAJOR_RELEASES:
+            for field in required_fields:
+                assert field in release, f"Missing field: {field}"
+
+    def test_正常系_雇用統計が含まれている(self) -> None:
+        """雇用統計（release_id=10）が含まれていることを確認."""
+        release_ids = [r["release_id"] for r in MAJOR_RELEASES]
+        assert 10 in release_ids
+
+    def test_正常系_重要度が正しく設定されている(self) -> None:
+        """重要度（high/medium/low）が正しく設定されていることを確認."""
+        valid_importances = {"high", "medium", "low"}
+
+        for release in MAJOR_RELEASES:
+            assert release["importance"] in valid_importances
+
+
+# =============================================================================
+# TestGetUpcomingEconomicReleases
+# =============================================================================
+
+
+class TestGetUpcomingEconomicReleases:
+    """経済指標発表予定取得のテスト."""
+
+    @pytest.fixture
+    def mock_fred_response(self) -> dict[str, Any]:
+        """FRED API のレスポンスをモック."""
+        return {
+            "realtime_start": "2026-01-29",
+            "realtime_end": "9999-12-31",
+            "order_by": "release_date",
+            "sort_order": "asc",
+            "count": 3,
+            "offset": 0,
+            "limit": 10000,
+            "release_dates": [
+                {"release_id": 10, "date": "2026-02-07"},
+                {"release_id": 10, "date": "2026-03-07"},
+                {"release_id": 10, "date": "2026-04-04"},
+            ],
+        }
+
+    @patch("analyze.reporting.upcoming_events.httpx.get")
+    def test_正常系_FRED_APIから発表予定を取得できる(
+        self,
+        mock_get: MagicMock,
+        mock_fred_response: dict[str, Any],
+    ) -> None:
+        """FRED APIから発表予定を取得できることを確認."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_fred_response
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        result = get_upcoming_economic_releases(days_ahead=30)
+
+        assert result is not None
+        assert "upcoming_economic_releases" in result
+
+    @patch("analyze.reporting.upcoming_events.httpx.get")
+    def test_正常系_日本語名が含まれる(
+        self,
+        mock_get: MagicMock,
+        mock_fred_response: dict[str, Any],
+    ) -> None:
+        """結果に日本語名が含まれることを確認."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_fred_response
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        result = get_upcoming_economic_releases(days_ahead=30)
+
+        releases = result["upcoming_economic_releases"]
+        if releases:
+            assert "name_ja" in releases[0]
+            # 雇用統計の日本語名を確認
+            employment_releases = [r for r in releases if r["release_id"] == 10]
+            if employment_releases:
+                assert employment_releases[0]["name_ja"] == "雇用統計"
+
+    @patch("analyze.reporting.upcoming_events.httpx.get")
+    def test_正常系_重要度が含まれる(
+        self,
+        mock_get: MagicMock,
+        mock_fred_response: dict[str, Any],
+    ) -> None:
+        """結果に重要度が含まれることを確認."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_fred_response
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        result = get_upcoming_economic_releases(days_ahead=30)
+
+        releases = result["upcoming_economic_releases"]
+        if releases:
+            assert "importance" in releases[0]
+            # 雇用統計の重要度を確認
+            employment_releases = [r for r in releases if r["release_id"] == 10]
+            if employment_releases:
+                assert employment_releases[0]["importance"] == "high"
+
+    @patch("analyze.reporting.upcoming_events.httpx.get")
+    def test_正常系_発表日でソートされている(
+        self,
+        mock_get: MagicMock,
+    ) -> None:
+        """結果が発表日で昇順ソートされていることを確認."""
+        # 複数のリリースIDの応答をシミュレート
+        mock_responses = [
+            MagicMock(
+                json=MagicMock(
+                    return_value={
+                        "release_dates": [{"release_id": 10, "date": "2026-02-07"}],
+                    }
+                ),
+                status_code=200,
+            ),
+            MagicMock(
+                json=MagicMock(
+                    return_value={
+                        "release_dates": [{"release_id": 21, "date": "2026-02-05"}],
+                    }
+                ),
+                status_code=200,
+            ),
+            MagicMock(
+                json=MagicMock(
+                    return_value={
+                        "release_dates": [{"release_id": 50, "date": "2026-02-10"}],
+                    }
+                ),
+                status_code=200,
+            ),
+        ]
+        mock_get.side_effect = mock_responses * 3  # 8 releases need responses
+
+        result = get_upcoming_economic_releases(days_ahead=30)
+
+        releases = result["upcoming_economic_releases"]
+        if len(releases) >= 2:
+            dates = [r["release_date"] for r in releases]
+            assert dates == sorted(dates)
+
+    @patch("analyze.reporting.upcoming_events.httpx.get")
+    def test_正常系_指定期間でフィルタリングできる(
+        self,
+        mock_get: MagicMock,
+    ) -> None:
+        """指定期間で発表予定をフィルタリングできることを確認."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = {
+            "release_dates": [
+                {"release_id": 10, "date": "2026-02-07"},
+                {"release_id": 10, "date": "2026-03-07"},  # 30日以上先
+            ],
+        }
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        # 14日先までを取得
+        result = get_upcoming_economic_releases(days_ahead=14)
+
+        releases = result["upcoming_economic_releases"]
+        now = datetime.now(tz=timezone.utc)
+        cutoff = now + timedelta(days=14)
+
+        for release in releases:
+            release_date = datetime.strptime(
+                release["release_date"], "%Y-%m-%d"
+            ).replace(tzinfo=timezone.utc)
+            assert release_date <= cutoff
+
+    @patch("analyze.reporting.upcoming_events.httpx.get")
+    def test_正常系_MAJOR_RELEASESでフィルタリングされる(
+        self,
+        mock_get: MagicMock,
+    ) -> None:
+        """MAJOR_RELEASESに含まれるリリースのみ取得されることを確認."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = {
+            "release_dates": [{"release_id": 10, "date": "2026-02-07"}],
+        }
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        result = get_upcoming_economic_releases(days_ahead=30)
+
+        releases = result["upcoming_economic_releases"]
+        major_release_ids = {r["release_id"] for r in MAJOR_RELEASES}
+
+        for release in releases:
+            assert release["release_id"] in major_release_ids
+
+    @patch("analyze.reporting.upcoming_events.httpx.get")
+    def test_異常系_API_エラー時は空リストを返す(
+        self,
+        mock_get: MagicMock,
+    ) -> None:
+        """FRED APIエラー時は空リストを返すことを確認."""
+        mock_get.side_effect = Exception("API Error")
+
+        result = get_upcoming_economic_releases(days_ahead=30)
+
+        assert result["upcoming_economic_releases"] == []
+
+    def test_異常系_API_キーがない場合はエラー(self) -> None:
+        """FRED APIキーがない場合はエラーを返すことを確認."""
+        # 環境変数をクリアしてテスト
+        import os
+
+        original_key = os.environ.get("FRED_API_KEY")
+        try:
+            if "FRED_API_KEY" in os.environ:
+                del os.environ["FRED_API_KEY"]
+
+            # APIキーなしで呼び出し
+            result = get_upcoming_economic_releases(days_ahead=30)
+
+            # エラーが返されるか、空リストが返される
+            assert result["upcoming_economic_releases"] == [] or "error" in result
+        finally:
+            if original_key:
+                os.environ["FRED_API_KEY"] = original_key

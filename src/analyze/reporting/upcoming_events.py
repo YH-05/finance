@@ -1,28 +1,41 @@
-"""S&P500時価総額上位20社の次回決算発表日を取得するモジュール.
+"""決算発表日および経済指標発表予定を取得するモジュール.
 
 yfinance を使用して決算発表日を取得する。
 ticker.calendar を優先的に使用し、KeyError が発生した場合は
 get_earnings_dates() にフォールバックする。
 
-Issue: #2419
-参照: https://github.com/ranaroussi/yfinance/issues/2143
+FRED API を使用して経済指標の発表予定を取得する。
+
+Issue: #2419 (決算発表日), #2420 (経済指標発表予定)
+参照:
+- https://github.com/ranaroussi/yfinance/issues/2143
+- https://fred.stlouisfed.org/docs/api/fred/release_dates.html
 
 Examples
 --------
+>>> # 決算発表日
 >>> analyzer = UpcomingEventsAnalyzer()
 >>> results = analyzer.get_upcoming_earnings(days_ahead=14)
 >>> for r in results:
 ...     print(f"{r.symbol}: {r.earnings_date}")
+
+>>> # 経済指標発表予定
+>>> result = get_upcoming_economic_releases(days_ahead=14)
+>>> for item in result["upcoming_economic_releases"]:
+...     print(f"{item['name_ja']}: {item['release_date']}")
 """
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Literal
 
+import httpx
 import pandas as pd
 import yfinance as yf
+from dotenv import load_dotenv
 from pandas import DataFrame, Timestamp
 
 from utils_core.logging import get_logger
@@ -59,6 +72,63 @@ TOP20_SYMBOLS = [
     "CVX",
     "MRK",
 ]
+
+# Major economic releases to track from FRED
+# See: https://fred.stlouisfed.org/docs/api/fred/release_dates.html
+MAJOR_RELEASES: list[dict[str, Any]] = [
+    {
+        "release_id": 10,
+        "name": "Employment Situation",
+        "name_ja": "雇用統計",
+        "importance": "high",
+    },
+    {
+        "release_id": 50,
+        "name": "Gross Domestic Product",
+        "name_ja": "GDP速報",
+        "importance": "high",
+    },
+    {
+        "release_id": 21,
+        "name": "Consumer Price Index",
+        "name_ja": "消費者物価指数",
+        "importance": "high",
+    },
+    {
+        "release_id": 53,
+        "name": "FOMC Statement",
+        "name_ja": "FOMC声明",
+        "importance": "high",
+    },
+    {
+        "release_id": 46,
+        "name": "Producer Price Index",
+        "name_ja": "生産者物価指数",
+        "importance": "medium",
+    },
+    {
+        "release_id": 328,
+        "name": "Personal Income and Outlays",
+        "name_ja": "個人所得・支出",
+        "importance": "medium",
+    },
+    {
+        "release_id": 83,
+        "name": "Industrial Production",
+        "name_ja": "鉱工業生産",
+        "importance": "low",
+    },
+    {
+        "release_id": 120,
+        "name": "Retail Sales",
+        "name_ja": "小売売上高",
+        "importance": "medium",
+    },
+]
+
+# FRED API configuration
+FRED_API_BASE_URL = "https://api.stlouisfed.org/fred"
+FRED_API_KEY_ENV = "FRED_API_KEY"
 
 
 # =============================================================================
@@ -100,6 +170,47 @@ class EarningsDateInfo:
             "name": self.name,
             "earnings_date": self.earnings_date.strftime("%Y-%m-%d"),
             "source": self.source,
+        }
+
+
+@dataclass
+class EconomicReleaseInfo:
+    """経済指標発表予定情報を格納するデータクラス.
+
+    Attributes
+    ----------
+    release_id : int
+        FRED リリースID（例: 10）
+    name : str
+        リリース名（例: "Employment Situation"）
+    name_ja : str
+        日本語名（例: "雇用統計"）
+    release_date : datetime
+        発表予定日（タイムゾーン付き）
+    importance : str
+        重要度（"high", "medium", "low"）
+    """
+
+    release_id: int
+    name: str
+    name_ja: str
+    release_date: datetime
+    importance: Literal["high", "medium", "low"]
+
+    def to_dict(self) -> dict[str, Any]:
+        """辞書形式に変換する.
+
+        Returns
+        -------
+        dict[str, Any]
+            シリアライズ可能な辞書
+        """
+        return {
+            "release_id": self.release_id,
+            "name": self.name,
+            "name_ja": self.name_ja,
+            "release_date": self.release_date.strftime("%Y-%m-%d"),
+            "importance": self.importance,
         }
 
 
@@ -518,9 +629,165 @@ def get_upcoming_earnings(
     return analyzer.to_json_output(earnings)
 
 
+def get_upcoming_economic_releases(
+    days_ahead: int = 14,
+    releases: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """主要経済指標の発表予定を取得する.
+
+    FRED API を使用して、MAJOR_RELEASES に定義された経済指標の
+    発表予定を取得する。
+
+    Parameters
+    ----------
+    days_ahead : int, default=14
+        何日先までの発表予定を取得するか
+    releases : list[dict[str, Any]] | None, optional
+        取得対象のリリース。指定しない場合は MAJOR_RELEASES を使用
+
+    Returns
+    -------
+    dict[str, Any]
+        JSON シリアライズ可能な辞書
+
+    Examples
+    --------
+    >>> result = get_upcoming_economic_releases(days_ahead=7)
+    >>> for item in result["upcoming_economic_releases"]:
+    ...     print(f"{item['name_ja']}: {item['release_date']}")
+
+    Notes
+    -----
+    FRED API キーは環境変数 FRED_API_KEY から取得する。
+    API キーがない場合やエラー時は空リストを返す。
+    """
+    load_dotenv()
+    api_key = os.environ.get(FRED_API_KEY_ENV)
+
+    if not api_key:
+        logger.warning(
+            "FRED API key not found",
+            env_var=FRED_API_KEY_ENV,
+        )
+        return {"upcoming_economic_releases": []}
+
+    target_releases = releases if releases is not None else MAJOR_RELEASES
+
+    logger.info(
+        "Getting upcoming economic releases",
+        days_ahead=days_ahead,
+        release_count=len(target_releases),
+    )
+
+    now = datetime.now(tz=timezone.utc)
+    cutoff_date = now + timedelta(days=days_ahead)
+
+    # FRED API の日付形式
+    realtime_start = now.strftime("%Y-%m-%d")
+    realtime_end = cutoff_date.strftime("%Y-%m-%d")
+
+    results: list[EconomicReleaseInfo] = []
+
+    # 各リリースの発表予定を取得
+    for release in target_releases:
+        release_id = release["release_id"]
+
+        try:
+            url = f"{FRED_API_BASE_URL}/release/dates"
+            params = {
+                "release_id": release_id,
+                "api_key": api_key,
+                "file_type": "json",
+                "realtime_start": realtime_start,
+                "realtime_end": realtime_end,
+                "include_release_dates_with_no_data": "true",
+            }
+
+            logger.debug(
+                "Fetching release dates",
+                release_id=release_id,
+                release_name=release["name"],
+            )
+
+            response = httpx.get(url, params=params, timeout=10.0)
+            response.raise_for_status()
+
+            data = response.json()
+            release_dates = data.get("release_dates", [])
+
+            for rd in release_dates:
+                date_str = rd.get("date")
+                if not date_str:
+                    continue
+
+                release_date = datetime.strptime(date_str, "%Y-%m-%d").replace(
+                    tzinfo=timezone.utc
+                )
+
+                # 期間フィルタリング（now < release_date <= cutoff）
+                if not (now < release_date <= cutoff_date):
+                    continue
+
+                info = EconomicReleaseInfo(
+                    release_id=release_id,
+                    name=release["name"],
+                    name_ja=release["name_ja"],
+                    release_date=release_date,
+                    importance=release["importance"],
+                )
+                results.append(info)
+
+                logger.debug(
+                    "Found release date",
+                    release_id=release_id,
+                    release_name=release["name"],
+                    release_date=date_str,
+                )
+
+        except httpx.HTTPStatusError as e:
+            logger.warning(
+                "FRED API HTTP error",
+                release_id=release_id,
+                status_code=e.response.status_code,
+                error=str(e),
+            )
+            continue
+        except httpx.RequestError as e:
+            logger.warning(
+                "FRED API request error",
+                release_id=release_id,
+                error=str(e),
+            )
+            continue
+        except Exception as e:
+            logger.warning(
+                "Failed to fetch release dates",
+                release_id=release_id,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            continue
+
+    # 発表日で昇順ソート
+    results.sort(key=lambda x: x.release_date)
+
+    logger.info(
+        "Economic releases fetch completed",
+        total_found=len(results),
+        releases_checked=len(target_releases),
+    )
+
+    return {
+        "upcoming_economic_releases": [info.to_dict() for info in results],
+    }
+
+
 __all__ = [
+    "MAJOR_RELEASES",
     "TOP20_SYMBOLS",
     "EarningsDateInfo",
+    "EconomicReleaseInfo",
     "UpcomingEventsAnalyzer",
     "get_upcoming_earnings",
+    "get_upcoming_economic_releases",
 ]
