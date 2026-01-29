@@ -42,7 +42,16 @@ permissionMode: bypassPermissions
       "title": "S&P 500 hits new record high",
       "summary": "The index closed at 5,200 points...",
       "feed_source": "CNBC - Markets",
-      "published": "2026-01-19T12:00:00+00:00"
+      "published": "2026-01-19T12:00:00+00:00",
+      "blocked_reason": null
+    },
+    {
+      "url": "https://www.seekingalpha.com/news/nasdaq-high",
+      "title": "Nasdaq hits new high",
+      "summary": "Tech stocks rally...",
+      "feed_source": "Seeking Alpha",
+      "published": "2026-01-19T14:00:00+00:00",
+      "blocked_reason": "ペイウォール検出"
     }
   ],
   "issue_config": {
@@ -70,6 +79,7 @@ permissionMode: bypassPermissions
 | `summary` | **必須** | RSS概要（Tier 3フォールバック時に使用） |
 | `feed_source` | **必須** | フィード名 |
 | `published` | **必須** | 公開日時（ISO 8601） |
+| `blocked_reason` | 任意 | `prepare_news_session.py` で検出された失敗理由（ペイウォール等）|
 
 #### issue_config の必須フィールド
 
@@ -113,6 +123,7 @@ permissionMode: bypassPermissions
     "tier1_success": 3,
     "tier2_success": 1,
     "tier3_fallback": 1,
+    "fallback_count": 1,
     "extraction_failed": 0,
     "issue_created": 5,
     "issue_failed": 0
@@ -134,13 +145,20 @@ permissionMode: bypassPermissions
      │   → 成功 → ステップ2へ
      │   → 失敗 → Tier 3へ
      └── Tier 3: RSS Summary フォールバック
-         → RSS要約を使用してIssue作成（注意書き付き）
+         → RSS要約を使用してIssue作成
+         → 失敗理由を取得（blocked_reason または Tier 1/2 エラー）
+         → Issue本文に警告メッセージと失敗理由を追加
+         → needs-review ラベルを追加
+         → stats.fallback_count をインクリメント
 
   2. 抽出した本文から日本語要約を生成（Claude推論）
+     - Tier 3 の場合: RSS要約をそのまま使用（4セクション形式ではない）
   3. タイトル翻訳（英語タイトルの場合）
   4. 要約フォーマット検証（### 概要 で始まるか）
+     - Tier 3 の場合: フォーマット検証をスキップ
   5. URL必須検証
   6. Issue作成（gh issue create + close）
+     - Tier 3 の場合: --label "needs-review" を追加
   7. Project追加（gh project item-add）
   8. Status設定（GraphQL API）
   9. 公開日時設定（GraphQL API）
@@ -207,18 +225,83 @@ Tier 1 & 2 失敗時、RSS の `summary` を使用してIssue作成:
 text = article["summary"]
 extraction_method = "rss_summary_fallback"
 
-# Issue本文に注意書きを追加
-fallback_notice = """
----
+# 失敗理由の取得
+# 優先順位:
+#   1. article["blocked_reason"]（prepare_news_session.py からの事前検出）
+#   2. Tier 1/2 のエラー詳細
+#   3. デフォルト: "本文取得失敗"
+def get_failure_reason(article: dict, tier1_error: str | None, tier2_error: str | None) -> str:
+    # 1. セッションファイルからの事前検出理由を優先
+    if article.get("blocked_reason"):
+        return article["blocked_reason"]
 
-**自動収集に関する注意**
+    # 2. Tier 1/2 のエラー情報
+    if tier2_error:
+        if "timeout" in tier2_error.lower():
+            return "タイムアウト"
+        elif "paywall" in tier2_error.lower():
+            return "ペイウォール検出"
+        return f"動的コンテンツ取得失敗: {tier2_error}"
 
-本文の自動取得に失敗しました。上記はRSS要約です。
-詳細は元記事をご確認ください。
+    if tier1_error:
+        if "paywall" in tier1_error.lower():
+            return "ペイウォール検出"
+        elif "insufficient" in tier1_error.lower():
+            return "本文不十分"
+        return f"本文抽出失敗: {tier1_error}"
+
+    # 3. デフォルト
+    return "本文取得失敗"
+
+failure_reason = get_failure_reason(article, tier1_error, tier2_error)
+```
+
+**失敗理由の種類**:
+- ペイウォール検出
+- 動的コンテンツ取得失敗
+- タイムアウト
+- 文章途中切れ
+- 本文不十分
+- その他
+
+**RSS summary が空の場合のハンドリング**:
+```python
+if not article.get("summary") or article["summary"].strip() == "":
+    # summary が空の場合は title のみで簡易 Issue 作成
+    text = f"（RSS要約なし。タイトル: {article['title']}）"
+    extraction_method = "rss_title_only_fallback"
+```
+
+**Issue本文形式（Tier 3 フォールバック時）**:
+
+```markdown
+## 概要
+
+{rss_summary}
+
+## 元記事
+
+🔗 {article_url}
+
+## 注意
+
+⚠️ **本文の自動取得に失敗しました**
 
 **失敗理由**: {failure_reason}
 （例: ペイウォール検出、動的コンテンツ取得失敗、タイムアウト等）
-"""
+
+上記はRSS要約です。詳細は元記事をご確認ください。
+```
+
+**ラベル追加**: Tier 3 フォールバック時は `needs-review` ラベルを自動付与
+
+```bash
+gh issue create \
+    --repo ${repo} \
+    --title "[${theme_label}] ${japanese_title}" \
+    --body "$body" \
+    --label "news" \
+    --label "needs-review"  # フォールバック時のみ追加
 ```
 
 ### ステップ2: 日本語要約を生成（4セクション構成）
@@ -316,7 +399,8 @@ gh issue close "$issue_number" --repo ${repo}
 | Playwright 取得失敗 | 2 | Tier 3 へ |
 | Playwright タイムアウト | 2 | Tier 3 へ |
 | 本文不十分（100文字未満） | 1-2 | 次の Tier へ |
-| Tier 3 でも取得不可 | 3 | RSS Summary で Issue 作成 |
+| Tier 3 でも取得不可 | 3 | RSS Summary で Issue 作成（`needs-review` ラベル付与） |
+| RSS Summary が空 | 3 | タイトルのみで簡易 Issue 作成（`needs-review` ラベル付与） |
 | Issue作成失敗 | - | `stats["issue_failed"]` カウント、次の記事へ |
 | Project追加失敗 | - | 警告ログ、Issue作成は成功扱い |
 | Status/Date設定失敗 | - | 警告ログ、Issue作成は成功扱い |
@@ -329,11 +413,14 @@ stats = {
     "tier1_success": 0,      # Tier 1（trafilatura）成功
     "tier2_success": 0,      # Tier 2（Playwright）成功
     "tier3_fallback": 0,     # Tier 3（RSS Summary）フォールバック
+    "fallback_count": 0,     # フォールバック総数（= tier3_fallback、モニタリング用）
     "extraction_failed": 0,   # 全Tier失敗（Issue作成スキップ）
     "issue_created": 0,
     "issue_failed": 0
 }
 ```
+
+**注意**: `fallback_count` は `tier3_fallback` と同じ値になりますが、モニタリング・レポート用に明示的に追加しています。
 
 ## 要約生成の詳細ルール
 
@@ -379,7 +466,8 @@ stats = {
       "title": "[株価指数] S&P500がテック株上昇を受け過去最高値を更新",
       "article_url": "https://www.cnbc.com/2026/01/19/sp-500-record.html",
       "published_date": "2026-01-19",
-      "extraction_method": "trafilatura"
+      "extraction_method": "trafilatura",
+      "labels": ["news"]
     },
     {
       "issue_number": 201,
@@ -387,7 +475,8 @@ stats = {
       "title": "[株価指数] 日経平均が3万円台を回復",
       "article_url": "https://www.cnbc.com/2026/01/19/nikkei-30000.html",
       "published_date": "2026-01-19",
-      "extraction_method": "playwright"
+      "extraction_method": "playwright",
+      "labels": ["news"]
     },
     {
       "issue_number": 202,
@@ -395,7 +484,9 @@ stats = {
       "title": "[株価指数] ナスダックが年初来高値を更新",
       "article_url": "https://www.seekingalpha.com/news/nasdaq-high",
       "published_date": "2026-01-19",
-      "extraction_method": "rss_summary_fallback"
+      "extraction_method": "rss_summary_fallback",
+      "failure_reason": "ペイウォール検出",
+      "labels": ["news", "needs-review"]
     }
   ],
   "skipped": [],
@@ -404,6 +495,7 @@ stats = {
     "tier1_success": 1,
     "tier2_success": 1,
     "tier3_fallback": 1,
+    "fallback_count": 1,
     "extraction_failed": 0,
     "issue_created": 3,
     "issue_failed": 0
