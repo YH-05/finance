@@ -278,6 +278,18 @@ class Publisher:
         duplicate_count = 0
 
         for article in articles:
+            # 要約がない場合はスキップ
+            if article.summary is None:
+                result = PublishedArticle(
+                    summarized=article,
+                    issue_number=None,
+                    issue_url=None,
+                    publication_status=PublicationStatus.SKIPPED,
+                    error_message="No summary available",
+                )
+                results.append(result)
+                continue
+
             # 重複チェック
             if self._is_duplicate(article, existing_urls):
                 duplicate_count += 1
@@ -287,6 +299,22 @@ class Publisher:
                     issue_url=None,
                     publication_status=PublicationStatus.DUPLICATE,
                     error_message="Duplicate article detected",
+                )
+                results.append(result)
+                continue
+
+            # ドライランの場合は Issue 作成をスキップ
+            if dry_run:
+                logger.info(
+                    "[DRY RUN] Would create issue",
+                    title=article.extracted.collected.title,
+                    url=str(article.extracted.collected.url),
+                )
+                result = PublishedArticle(
+                    summarized=article,
+                    issue_number=None,
+                    issue_url=None,
+                    publication_status=PublicationStatus.SUCCESS,
                 )
                 results.append(result)
                 continue

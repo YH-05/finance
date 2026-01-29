@@ -1257,3 +1257,171 @@ class TestPublishBatchWithDuplicateCheck:
             assert results[0].publication_status == PublicationStatus.DUPLICATE
             # Second should be success
             assert results[1].publication_status == PublicationStatus.SUCCESS
+
+
+class TestPublishBatchDryRun:
+    """Tests for publish_batch() with dry_run mode (P5-006)."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_dry_runでIssue作成をスキップ(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """publish_batch should skip Issue creation when dry_run=True."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        # Mock _get_existing_issues to return empty set (no duplicates)
+        # Should NOT call subprocess.run for gh issue create
+        with (
+            patch.object(
+                publisher,
+                "_get_existing_issues",
+                return_value=set(),
+            ) as mock_get_existing,
+            patch("news.publisher.subprocess.run") as mock_run,
+        ):
+            results = await publisher.publish_batch(
+                [summarized_article_with_summary], dry_run=True
+            )
+
+            assert len(results) == 1
+            assert results[0].publication_status == PublicationStatus.SUCCESS
+            # Issue should NOT be created
+            assert results[0].issue_number is None
+            assert results[0].issue_url is None
+
+            # subprocess.run should NOT be called for issue creation
+            # (only _get_existing_issues should be called)
+            mock_get_existing.assert_called_once()
+            mock_run.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_正常系_dry_runでも重複チェックは動作(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """publish_batch should still check duplicates when dry_run=True."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        # Mock _get_existing_issues to return the article URL (duplicate)
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value={"https://www.cnbc.com/article/123"},
+        ):
+            results = await publisher.publish_batch(
+                [summarized_article_with_summary], dry_run=True
+            )
+
+            assert len(results) == 1
+            # Should be DUPLICATE, not SUCCESS
+            assert results[0].publication_status == PublicationStatus.DUPLICATE
+
+    @pytest.mark.asyncio
+    async def test_正常系_dry_runで要約なし記事はSKIPPED(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_no_summary: SummarizedArticle,
+    ) -> None:
+        """publish_batch should return SKIPPED for articles without summary even in dry_run."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value=set(),
+        ):
+            results = await publisher.publish_batch(
+                [summarized_article_no_summary], dry_run=True
+            )
+
+            assert len(results) == 1
+            # No summary -> SKIPPED (not affected by dry_run)
+            assert results[0].publication_status == PublicationStatus.SKIPPED
+
+    @pytest.mark.asyncio
+    async def test_正常系_dry_runでログにWould_create_issueと出力(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """publish_batch should log 'Would create issue' when dry_run=True."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value=set(),
+        ):
+            await publisher.publish_batch(
+                [summarized_article_with_summary], dry_run=True
+            )
+
+            # Check that the log output contains the expected message
+            # structlog outputs to stdout by default
+            captured = capsys.readouterr()
+            assert "[DRY RUN] Would create issue" in captured.out
+
+    @pytest.mark.asyncio
+    async def test_正常系_dry_runで複数記事を処理(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_extracted_article: ExtractedArticle,
+        sample_summary: StructuredSummary,
+    ) -> None:
+        """publish_batch should process multiple articles correctly in dry_run mode."""
+        from news.publisher import Publisher
+
+        # Create two articles with different URLs
+        article1 = SummarizedArticle(
+            extracted=sample_extracted_article,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        # Second article with different URL
+        collected2 = CollectedArticle(
+            url="https://www.cnbc.com/article/456",  # type: ignore[arg-type]
+            title="Second Article",
+            source=sample_extracted_article.collected.source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted2 = ExtractedArticle(
+            collected=collected2,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        article2 = SummarizedArticle(
+            extracted=extracted2,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=sample_config)
+
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value=set(),
+        ):
+            results = await publisher.publish_batch([article1, article2], dry_run=True)
+
+            assert len(results) == 2
+            # Both should be SUCCESS (dry run)
+            assert results[0].publication_status == PublicationStatus.SUCCESS
+            assert results[1].publication_status == PublicationStatus.SUCCESS
+            # But no Issue numbers
+            assert results[0].issue_number is None
+            assert results[1].issue_number is None
