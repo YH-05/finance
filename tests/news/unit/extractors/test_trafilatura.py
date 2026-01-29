@@ -9,8 +9,10 @@ Tests cover:
 - Successful extraction scenarios
 - Error handling and status mapping
 - min_body_length validation
+- Retry functionality with exponential backoff (Issue #2383)
 """
 
+import asyncio
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -535,6 +537,266 @@ class TestTrafilaturaExtractorStatusMapping:
             result = await extractor.extract(sample_collected_article)
 
         assert result.extraction_status == ExtractionStatus.PAYWALL
+
+
+class TestTrafilaturaExtractorRetry:
+    """Tests for TrafilaturaExtractor retry functionality.
+
+    Issue #2383: Add retry logic to TrafilaturaExtractor.
+    - Maximum 3 retries
+    - Exponential backoff (1s, 2s, 4s)
+    """
+
+    @pytest.mark.asyncio
+    async def test_正常系_リトライパラメータでインスタンス化できる(self) -> None:
+        """TrafilaturaExtractor can be instantiated with retry parameters."""
+        extractor = TrafilaturaExtractor(max_retries=3, timeout_seconds=30)
+        assert extractor._max_retries == 3
+        assert extractor._timeout_seconds == 30
+
+    @pytest.mark.asyncio
+    async def test_正常系_デフォルトリトライパラメータ(self) -> None:
+        """Default retry parameters are set correctly."""
+        extractor = TrafilaturaExtractor()
+        assert extractor._max_retries == 3
+        assert extractor._timeout_seconds == 30
+
+    @pytest.mark.asyncio
+    async def test_正常系_1回目で成功時はリトライしない(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """extract should not retry when first attempt succeeds."""
+        extractor = TrafilaturaExtractor()
+        call_count = 0
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            nonlocal call_count
+            call_count += 1
+            return mock_rss_extracted_article_success
+
+        with patch.object(
+            extractor._extractor,
+            "extract",
+            side_effect=mock_extract,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert call_count == 1
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+
+    @pytest.mark.asyncio
+    async def test_正常系_2回目で成功時は2回呼び出される(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """extract should succeed on second attempt after first failure."""
+        extractor = TrafilaturaExtractor()
+        call_count = 0
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise Exception("First attempt failed")
+            return mock_rss_extracted_article_success
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert call_count == 2
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+        # Exponential backoff: 2^0 = 1 second
+        mock_sleep.assert_called_once_with(1)
+
+    @pytest.mark.asyncio
+    async def test_正常系_3回目で成功時は3回呼び出される(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """extract should succeed on third attempt after two failures."""
+        extractor = TrafilaturaExtractor()
+        call_count = 0
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            nonlocal call_count
+            call_count += 1
+            if call_count < 3:
+                raise Exception(f"Attempt {call_count} failed")
+            return mock_rss_extracted_article_success
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert call_count == 3
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+        # Exponential backoff: 2^0=1s, 2^1=2s
+        assert mock_sleep.call_count == 2
+        mock_sleep.assert_any_call(1)
+        mock_sleep.assert_any_call(2)
+
+    @pytest.mark.asyncio
+    async def test_異常系_3回全て失敗時はFAILEDステータス(
+        self,
+        sample_collected_article: CollectedArticle,
+    ) -> None:
+        """extract should return FAILED after all retries exhausted."""
+        extractor = TrafilaturaExtractor(max_retries=3)
+        call_count = 0
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            nonlocal call_count
+            call_count += 1
+            raise Exception(f"Attempt {call_count} failed")
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert call_count == 3
+        assert result.extraction_status == ExtractionStatus.FAILED
+        assert "Attempt 3 failed" in str(result.error_message)
+        # Exponential backoff: 2^0=1s, 2^1=2s (no sleep after last attempt)
+        assert mock_sleep.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_指数バックオフが正しく適用される(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """Exponential backoff should be applied correctly (1s, 2s, 4s)."""
+        extractor = TrafilaturaExtractor(max_retries=4)
+        call_count = 0
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            nonlocal call_count
+            call_count += 1
+            if call_count < 4:
+                raise Exception(f"Attempt {call_count} failed")
+            return mock_rss_extracted_article_success
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert call_count == 4
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+        # Exponential backoff: 2^0=1s, 2^1=2s, 2^2=4s
+        assert mock_sleep.call_count == 3
+        calls = [call.args[0] for call in mock_sleep.call_args_list]
+        assert calls == [1, 2, 4]
+
+    @pytest.mark.asyncio
+    async def test_異常系_タイムアウト時もリトライする(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """extract should retry on timeout and succeed on subsequent attempt."""
+        extractor = TrafilaturaExtractor(timeout_seconds=5)
+        call_count = 0
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise asyncio.TimeoutError("Timeout")
+            return mock_rss_extracted_article_success
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock),
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert call_count == 2
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+
+    @pytest.mark.asyncio
+    async def test_異常系_タイムアウト3回でTIMEOUTステータス(
+        self,
+        sample_collected_article: CollectedArticle,
+    ) -> None:
+        """extract should return TIMEOUT after all timeout retries."""
+        extractor = TrafilaturaExtractor(max_retries=3, timeout_seconds=5)
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            raise asyncio.TimeoutError("Timeout")
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock),
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert result.extraction_status == ExtractionStatus.TIMEOUT
+        assert "Timeout" in str(result.error_message)
+
+    @pytest.mark.asyncio
+    async def test_正常系_max_retries_1は即座に失敗を返す(
+        self,
+        sample_collected_article: CollectedArticle,
+    ) -> None:
+        """extract with max_retries=1 should fail immediately without retry."""
+        extractor = TrafilaturaExtractor(max_retries=1)
+        call_count = 0
+
+        async def mock_extract(url: str) -> RssExtractedArticle:
+            nonlocal call_count
+            call_count += 1
+            raise Exception("Failed")
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert call_count == 1
+        assert result.extraction_status == ExtractionStatus.FAILED
+        mock_sleep.assert_not_called()
 
 
 class TestTrafilaturaExtractorBatch:
