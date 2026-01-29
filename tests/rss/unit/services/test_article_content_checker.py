@@ -614,3 +614,142 @@ class TestConstants:
 
     def test_正常系_日本語ペイウォール指標が存在する(self) -> None:
         assert len(PAYWALL_INDICATORS_JA) > 0
+
+
+# ---------------------------------------------------------------------------
+# Fallback feature tests (Issue #1853)
+# ---------------------------------------------------------------------------
+
+
+class TestFallbackFeature:
+    """Test automatic fallback from Tier 1 to Tier 2."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_Tier1不十分でTier2自動フォールバック発生(self) -> None:
+        """Tier 1 が不十分な場合、自動的に Tier 2 が試行されることを確認。"""
+        short_text = "Short."
+        long_text = "JS rendered content with sufficient length. " * 20
+
+        with (
+            patch(
+                "rss.services.article_content_checker._fetch_with_httpx",
+                return_value=(short_text, 200),
+            ),
+            patch(
+                "rss.services.article_content_checker._fetch_with_playwright",
+                return_value=long_text,
+            ) as mock_playwright,
+        ):
+            result = await check_article_content("https://example.com/js-article")
+
+        # Tier 2 が呼び出されたことを確認
+        mock_playwright.assert_called_once_with("https://example.com/js-article")
+        assert result.status == ContentStatus.ACCESSIBLE
+        assert result.tier_used == 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_フォールバック発生時にログ記録(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """フォールバック発生時にログが記録されることを確認。"""
+        import logging
+
+        short_text = "Short."
+        long_text = "Long enough content for testing. " * 20
+
+        with (
+            patch(
+                "rss.services.article_content_checker._fetch_with_httpx",
+                return_value=(short_text, 200),
+            ),
+            patch(
+                "rss.services.article_content_checker._fetch_with_playwright",
+                return_value=long_text,
+            ),
+            caplog.at_level(logging.DEBUG),
+        ):
+            result = await check_article_content("https://example.com/article")
+
+        # フォールバック関連のログが記録されていることを確認
+        assert any(
+            "Tier 2" in record.message or "Tier 1" in record.message
+            for record in caplog.records
+        )
+        assert result.status == ContentStatus.ACCESSIBLE
+
+    @pytest.mark.asyncio
+    async def test_正常系_フォールバック回数の制限(self) -> None:
+        """フォールバックは最大回数を超えないことを確認。
+
+        現在の実装では Tier 1 → Tier 2 の1回のフォールバックのみ。
+        将来的に複数のフォールバック層が追加された場合に備えて、
+        無限ループが発生しないことを確認する。
+        """
+        short_text = "Short."
+
+        with (
+            patch(
+                "rss.services.article_content_checker._fetch_with_httpx",
+                return_value=(short_text, 200),
+            ),
+            patch(
+                "rss.services.article_content_checker._fetch_with_playwright",
+                return_value="Also short.",
+            ),
+        ):
+            # 無限ループせずに結果が返されることを確認
+            result = await check_article_content("https://example.com/article")
+
+        # フォールバック後も結果が返される（無限ループしない）
+        assert result.status in (
+            ContentStatus.INSUFFICIENT,
+            ContentStatus.ACCESSIBLE,
+            ContentStatus.PAYWALLED,
+        )
+        # tier_used が有効な値であることを確認
+        assert result.tier_used in (1, 2, 3)
+
+    @pytest.mark.asyncio
+    async def test_正常系_ContentCheckResult_fallback_countフィールド(self) -> None:
+        """ContentCheckResult にフォールバック回数が記録されることを確認。"""
+        short_text = "Short."
+        long_text = "Long enough content for testing. " * 20
+
+        with (
+            patch(
+                "rss.services.article_content_checker._fetch_with_httpx",
+                return_value=(short_text, 200),
+            ),
+            patch(
+                "rss.services.article_content_checker._fetch_with_playwright",
+                return_value=long_text,
+            ),
+        ):
+            result = await check_article_content("https://example.com/article")
+
+        # fallback_count フィールドが存在し、フォールバックが発生した場合は1以上
+        assert hasattr(result, "fallback_count")
+        assert result.fallback_count >= 1  # Tier 1 → Tier 2 のフォールバックが発生
+
+    @pytest.mark.asyncio
+    async def test_正常系_Tier1成功時はフォールバックなし(self) -> None:
+        """Tier 1 で十分なコンテンツが取得できた場合、フォールバックしないことを確認。"""
+        long_text = "Long enough content directly from Tier 1. " * 20
+
+        with (
+            patch(
+                "rss.services.article_content_checker._fetch_with_httpx",
+                return_value=(long_text, 200),
+            ),
+            patch(
+                "rss.services.article_content_checker._fetch_with_playwright",
+            ) as mock_playwright,
+        ):
+            result = await check_article_content("https://example.com/article")
+
+        # Tier 2 が呼び出されていないことを確認
+        mock_playwright.assert_not_called()
+        assert result.status == ContentStatus.ACCESSIBLE
+        assert result.tier_used == 1
+        assert hasattr(result, "fallback_count")
+        assert result.fallback_count == 0  # フォールバックなし
