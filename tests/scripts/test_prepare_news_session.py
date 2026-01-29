@@ -314,11 +314,7 @@ class TestDuplicateChecking:
 
 # ---------------------------------------------------------------------------
 # Test: Paywall Detection
-# ---------------------------------------------------------------------------
-
-# NOTE: Paywall detection tests are skipped because the feature is not yet
-# implemented in the current version of prepare_news_session.py.
-# The script currently skips paywall checks (--skip-paywall-check).
+# (Removed: paywall detection is no longer part of this preprocessing script)
 
 
 # ---------------------------------------------------------------------------
@@ -456,7 +452,7 @@ class TestStatsCalculation:
 
         assert stats["total"] == 25
         assert stats["duplicates"] == 7
-        # Note: paywall_blocked is not yet implemented in the current version
+        # Note: paywall_blocked is no longer tracked in this script
         assert stats["accessible"] == 15  # 10 + 5
 
 

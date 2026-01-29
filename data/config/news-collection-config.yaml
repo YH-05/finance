@@ -1,0 +1,133 @@
+version: "1.0"
+
+# ===========================================
+# カテゴリ → GitHub Status マッピング（共通）
+# ===========================================
+# RSSのcategoryフィールド、yfinanceのティッカーカテゴリ
+# いずれも同じマッピングを使用
+
+status_mapping:
+  # GitHub Project Status一覧
+  # index: 3925acc3, stock: f762022e, sector: 48762504
+  # macro: 730034a5, ai: 6fbb43d0, finance: ac4a91b1
+
+  # RSSカテゴリ（rss-presets.json の category フィールド）
+  tech: "ai"
+  market: "index"
+  finance: "finance"
+
+  # yfinanceカテゴリ
+  yf_index: "index"       # ^GSPC, ^DJI 等の指数
+  yf_stock: "stock"       # 一般的な個別株
+  yf_ai_stock: "ai"       # NVDA, AMD 等のAI関連株
+  yf_sector_etf: "sector" # XLF, XLK 等のセクターETF
+  yf_macro: "macro"       # マクロ経済関連
+
+# GitHub Status ID（自動解決用）
+github_status_ids:
+  index: "3925acc3"
+  stock: "f762022e"
+  sector: "48762504"
+  macro: "730034a5"
+  ai: "6fbb43d0"
+  finance: "ac4a91b1"
+
+# ===========================================
+# 情報源設定
+# ===========================================
+
+# RSS設定
+rss:
+  presets_file: "data/config/rss-presets.json"
+  # rss-presets.json の category フィールドを status_mapping で解決
+
+# yfinance設定（将来用）
+yfinance:
+  enabled: false
+  tickers:
+    # 指数
+    - symbol: "^GSPC"
+      category: "yf_index"
+    - symbol: "^DJI"
+      category: "yf_index"
+    - symbol: "^IXIC"
+      category: "yf_index"
+
+    # AI関連株
+    - symbol: "NVDA"
+      category: "yf_ai_stock"
+    - symbol: "AMD"
+      category: "yf_ai_stock"
+    - symbol: "GOOGL"
+      category: "yf_ai_stock"
+    - symbol: "MSFT"
+      category: "yf_ai_stock"
+
+    # 一般個別株
+    - symbol: "AAPL"
+      category: "yf_stock"
+    - symbol: "AMZN"
+      category: "yf_stock"
+    - symbol: "TSLA"
+      category: "yf_stock"
+
+    # セクターETF
+    - symbol: "XLF"
+      category: "yf_sector_etf"
+    - symbol: "XLK"
+      category: "yf_sector_etf"
+
+# ===========================================
+# 処理設定
+# ===========================================
+
+# 本文抽出設定
+extraction:
+  concurrency: 5
+  timeout_seconds: 30
+  min_body_length: 200
+  max_retries: 3
+
+# 要約設定
+summarization:
+  concurrency: 3
+  timeout_seconds: 60
+  max_retries: 3
+  prompt_template: |
+    以下の金融ニュース記事を分析し、日本語で構造化された要約を作成してください。
+
+    ## 記事情報
+    **タイトル**: {title}
+    **ソース**: {source}
+    **公開日**: {published}
+
+    **本文**:
+    {body}
+
+    ## 出力形式 (JSON)
+    {{
+      "overview": "記事の主旨を1-2文で要約",
+      "key_points": ["重要なポイント1", "重要なポイント2"],
+      "market_impact": "投資家・市場への影響",
+      "related_info": "関連する背景情報（なければnull）"
+    }}
+
+# GitHub設定
+github:
+  project_number: 15
+  project_id: "PVT_kwHOBoK6AM4BMpw_"
+  status_field_id: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
+  published_date_field_id: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
+  repository: "YH-05/finance"
+  duplicate_check_days: 7  # 重複チェック対象期間
+  dry_run: false
+
+# フィルタリング
+filtering:
+  max_age_hours: 168  # 7日
+
+# 出力設定
+output:
+  # 結果JSONの出力先（デフォルト）
+  result_dir: "data/exports/news-workflow"
+  # ファイル名パターン: workflow-result-{timestamp}.json
