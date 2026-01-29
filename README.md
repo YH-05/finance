@@ -140,13 +140,12 @@ uv run pyright --version
 
 ```
 finance/                                     # Project root
-├── .claude/                                 # Claude Code configuration (92 agents + 18 commands + 46 skills)
-│   ├── agents/                              # (92) Specialized agents
-│   │   ├── deep-research/                   # ディープリサーチエージェント群
-│   │   └── finance_news_collector/          # テーマ別収集エージェント
-│   ├── commands/                            # (18) Slash commands
+├── .claude/                                 # Claude Code configuration (79 agents + 19 commands + 48 skills)
+│   ├── agents/                              # (79) Specialized agents
+│   │   └── deep-research/                   # ディープリサーチエージェント群（11個）
+│   ├── commands/                            # (19) Slash commands
 │   ├── rules/                               # Shared rule definitions
-│   ├── skills/                              # (46) Skill modules
+│   ├── skills/                              # (48) Skill modules
 │   └── agents.md
 ├── .github/                                 # GitHub configuration
 │   ├── ISSUE_TEMPLATE/                      # Issue templates
@@ -474,6 +473,51 @@ graph TB
     sec --> visualize
     sentiment --> visualize
     visualize --> output
+```
+
+### Deep Research パイプライン
+
+```mermaid
+graph TB
+    subgraph "Orchestration"
+        orch["dr-orchestrator<br/>(ワークフロー制御)"]
+    end
+
+    subgraph "Data Collection"
+        src["dr-source-aggregator<br/>(マルチソース収集)"]
+    end
+
+    subgraph "Analysis (Parallel)"
+        macro["dr-macro-analyzer<br/>(マクロ経済)"]
+        stock["dr-stock-analyzer<br/>(個別銘柄)"]
+        sector["dr-sector-analyzer<br/>(セクター)"]
+        theme["dr-theme-analyzer<br/>(テーマ)"]
+    end
+
+    subgraph "Validation"
+        cross["dr-cross-validator<br/>(クロス検証)"]
+        bias["dr-bias-detector<br/>(バイアス検出)"]
+        conf["dr-confidence-scorer<br/>(信頼度算出)"]
+    end
+
+    subgraph "Output"
+        report["dr-report-generator<br/>(レポート生成)"]
+        viz["dr-visualizer<br/>(可視化)"]
+    end
+
+    orch --> src
+    src --> macro
+    src --> stock
+    src --> sector
+    src --> theme
+    macro --> cross
+    stock --> cross
+    sector --> cross
+    theme --> cross
+    cross --> bias
+    bias --> conf
+    conf --> report
+    conf --> viz
 ```
 
 <!-- END: DEPENDENCY -->

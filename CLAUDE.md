@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-28
+updated_at: 2026-01-30
 ---
 
 # finance - 金融市場分析・コンテンツ発信支援ライブラリ
@@ -371,6 +371,22 @@ updated_at: 2026-01-28
 | `weekly-comment-mag7-fetcher` | 週次コメント用のMAG7関連ニュースを収集 |
 | `weekly-comment-sectors-fetcher` | 週次コメント用のセクター関連ニュースを収集 |
 
+### Deep Research エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `dr-orchestrator` | ディープリサーチワークフローの全体制御を行うオーケストレーター |
+| `dr-macro-analyzer` | マクロ経済分析（経済指標・金融政策・市場影響） |
+| `dr-stock-analyzer` | 個別銘柄の深掘り分析（財務・バリュエーション・カタリスト） |
+| `dr-sector-analyzer` | セクター比較分析（ローテーション・銘柄選定） |
+| `dr-theme-analyzer` | テーマ投資分析（バリューチェーン・投資機会） |
+| `dr-source-aggregator` | マルチソースからデータを並列収集し統合 |
+| `dr-cross-validator` | 複数ソースのデータを照合し主張の一貫性を検証 |
+| `dr-bias-detector` | データソースとコンテンツのバイアスを検出・分析 |
+| `dr-confidence-scorer` | データポイントと主張の信頼度スコアを算出 |
+| `dr-report-generator` | 分析結果から形式別レポートを生成 |
+| `dr-visualizer` | 分析結果を可視化しチャート・図表を生成 |
+
 ### 設計・作成支援エージェント
 
 | エージェント | 説明 |
@@ -379,6 +395,7 @@ updated_at: 2026-01-28
 | `skill-creator` | skill-expertスキルを参照しスキルの設計・実装・検証を実行 |
 | `command-expert` | Claude Codeコマンドの設計・最適化 |
 | `workflow-designer` | ワークフロー設計とマルチエージェント連携 |
+| `pydantic-model-designer` | Pydanticモデルを設計・作成（テスト作成後、実装前にデータ構造を定義） |
 | `package-readme-updater` | パッケージREADMEを自動更新（構成・API・使用例） |
 
 ---
@@ -441,12 +458,11 @@ updated_at: 2026-01-28
 ```
 finance/
 ├── .claude/                    # Claude Code 設定
-│   ├── agents/                 # サブエージェント定義（92個）
-│   │   ├── deep-research/      # ディープリサーチエージェント群
-│   │   └── finance_news_collector/  # テーマ別収集エージェント
-│   ├── commands/               # スラッシュコマンド（18個）
+│   ├── agents/                 # サブエージェント定義（79個）
+│   │   └── deep-research/      # ディープリサーチエージェント群（11個）
+│   ├── commands/               # スラッシュコマンド（19個）
 │   ├── rules/                  # 共有ルール（規約詳細）
-│   └── skills/                 # スキル定義（46個）
+│   └── skills/                 # スキル定義（48個）
 │
 ├── src/                        # ソースコード
 │   ├── database/               # コアインフラ（DB, utils, logging）
