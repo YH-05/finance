@@ -363,7 +363,8 @@ class Publisher:
         """
         # article.summary is not None であることは呼び出し元で保証されている
         summary = article.summary
-        assert summary is not None  # type: ignore[union-attr]
+        if summary is None:  # pragma: no cover
+            raise ValueError("summary must not be None")
 
         collected = article.extracted.collected
 
