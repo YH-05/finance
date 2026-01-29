@@ -118,6 +118,42 @@ class ArticleSource(BaseModel):
     )
 
 
+class ExtractionStatus(StrEnum):
+    """Status of article body extraction.
+
+    Represents the result status of attempting to extract the main content
+    from an article URL. This is used to track whether extraction succeeded
+    or why it failed.
+
+    Attributes
+    ----------
+    SUCCESS : str
+        Extraction completed successfully. The body_text field will contain
+        the extracted content.
+    FAILED : str
+        Extraction failed for an unspecified reason. Check error_message
+        for details.
+    PAYWALL : str
+        The article is behind a paywall and content could not be extracted.
+    TIMEOUT : str
+        The extraction request timed out before completing.
+
+    Examples
+    --------
+    >>> ExtractionStatus.SUCCESS
+    <ExtractionStatus.SUCCESS: 'success'>
+    >>> ExtractionStatus.SUCCESS == "success"
+    True
+    >>> ExtractionStatus.PAYWALL.value
+    'paywall'
+    """
+
+    SUCCESS = "success"
+    FAILED = "failed"
+    PAYWALL = "paywall"
+    TIMEOUT = "timeout"
+
+
 class CollectedArticle(BaseModel):
     """An article collected from a news source.
 
@@ -185,8 +221,83 @@ class CollectedArticle(BaseModel):
     )
 
 
+class ExtractedArticle(BaseModel):
+    """An article after body text extraction.
+
+    Represents an article after attempting to extract its main body content
+    from the original URL. This is the output of an Extractor component.
+
+    The extraction may succeed (body_text contains content) or fail for
+    various reasons (paywall, timeout, other errors).
+
+    Attributes
+    ----------
+    collected : CollectedArticle
+        The original collected article that was processed.
+    body_text : str | None
+        The extracted main body text of the article, or None if extraction
+        failed.
+    extraction_status : ExtractionStatus
+        The status of the extraction attempt (SUCCESS, FAILED, PAYWALL, TIMEOUT).
+    extraction_method : str
+        The method used for extraction (e.g., "trafilatura", "fallback").
+    error_message : str | None
+        Error message if extraction failed, or None if successful.
+
+    Examples
+    --------
+    >>> from datetime import datetime, timezone
+    >>> from news.models import (
+    ...     ArticleSource, CollectedArticle, ExtractedArticle,
+    ...     ExtractionStatus, SourceType
+    ... )
+    >>> source = ArticleSource(
+    ...     source_type=SourceType.RSS,
+    ...     source_name="CNBC Markets",
+    ...     category="market",
+    ... )
+    >>> collected = CollectedArticle(
+    ...     url="https://www.cnbc.com/article/123",
+    ...     title="Market Update",
+    ...     source=source,
+    ...     collected_at=datetime.now(tz=timezone.utc),
+    ... )
+    >>> extracted = ExtractedArticle(
+    ...     collected=collected,
+    ...     body_text="Full article content here...",
+    ...     extraction_status=ExtractionStatus.SUCCESS,
+    ...     extraction_method="trafilatura",
+    ... )
+    >>> extracted.extraction_status
+    <ExtractionStatus.SUCCESS: 'success'>
+    """
+
+    collected: CollectedArticle = Field(
+        ...,
+        description="The original collected article that was processed",
+    )
+    body_text: str | None = Field(
+        ...,
+        description="The extracted main body text, or None if extraction failed",
+    )
+    extraction_status: ExtractionStatus = Field(
+        ...,
+        description="The status of the extraction attempt",
+    )
+    extraction_method: str = Field(
+        ...,
+        description="The method used for extraction (e.g., 'trafilatura', 'fallback')",
+    )
+    error_message: str | None = Field(
+        default=None,
+        description="Error message if extraction failed, or None if successful",
+    )
+
+
 __all__ = [
     "ArticleSource",
     "CollectedArticle",
+    "ExtractedArticle",
+    "ExtractionStatus",
     "SourceType",
 ]
