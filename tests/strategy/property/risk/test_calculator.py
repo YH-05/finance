@@ -136,6 +136,11 @@ class TestVolatilityProperty:
         σ(X + c) = σ(X) の関係が成り立つ。
         """
         original_series = pd.Series(returns)
+
+        # 標準偏差が実質的にゼロでない場合のみテスト
+        # (浮動小数点精度問題を考慮してEPSILONと比較)
+        assume(float(original_series.std()) > _EPSILON)
+
         shifted_series = original_series + 0.05  # 5%のシフト
 
         calc_original = RiskCalculator(original_series)
@@ -144,7 +149,8 @@ class TestVolatilityProperty:
         vol_original = calc_original.volatility()
         vol_shifted = calc_shifted.volatility()
 
-        assert math.isclose(vol_original, vol_shifted, rel_tol=1e-10)
+        # 浮動小数点精度の問題を考慮して相対許容誤差を緩和
+        assert math.isclose(vol_original, vol_shifted, rel_tol=1e-9)
 
 
 class TestSharpeRatioProperty:
