@@ -1,0 +1,115 @@
+{
+  "as_of": "2026-01-29",
+  "period": {
+    "start": "2026-01-22",
+    "end": "2026-01-29"
+  },
+  "top_sectors": [
+    {
+      "ticker": "XLK",
+      "name": "Information Technology",
+      "weekly_return": 0.030024783946170433,
+      "latest_close": 149.22999572753906
+    },
+    {
+      "ticker": "XLE",
+      "name": "Energy",
+      "weekly_return": 0.02330810454313989,
+      "latest_close": 50.04999923706055
+    },
+    {
+      "ticker": "XLU",
+      "name": "Utilities",
+      "weekly_return": 0.014516571291789961,
+      "latest_close": 43.33000183105469
+    }
+  ],
+  "bottom_sectors": [
+    {
+      "ticker": "XLV",
+      "name": "Healthcare",
+      "weekly_return": -0.02514369762050988,
+      "latest_close": 154.30999755859375
+    },
+    {
+      "ticker": "XLF",
+      "name": "Financial Services",
+      "weekly_return": -0.015238797136162713,
+      "latest_close": 52.9900016784668
+    },
+    {
+      "ticker": "XLI",
+      "name": "Industrials",
+      "weekly_return": -0.008217526346535121,
+      "latest_close": 164.13999938964844
+    }
+  ],
+  "all_sectors": [
+    {
+      "ticker": "XLK",
+      "name": "Information Technology",
+      "weekly_return": 0.030024783946170433,
+      "latest_close": 149.22999572753906
+    },
+    {
+      "ticker": "XLE",
+      "name": "Energy",
+      "weekly_return": 0.02330810454313989,
+      "latest_close": 50.04999923706055
+    },
+    {
+      "ticker": "XLU",
+      "name": "Utilities",
+      "weekly_return": 0.014516571291789961,
+      "latest_close": 43.33000183105469
+    },
+    {
+      "ticker": "XLB",
+      "name": "Basic Materials",
+      "weekly_return": 0.008683366340889571,
+      "latest_close": 49.95000076293945
+    },
+    {
+      "ticker": "XLC",
+      "name": "Communication Services",
+      "weekly_return": 0.004301075268817204,
+      "latest_close": 116.75
+    },
+    {
+      "ticker": "XLP",
+      "name": "Consumer Staples",
+      "weekly_return": 0.0006077920724216619,
+      "latest_close": 82.31999969482422
+    },
+    {
+      "ticker": "XLY",
+      "name": "Consumer Discretionary",
+      "weekly_return": -0.006932034614877045,
+      "latest_close": 121.7699966430664
+    },
+    {
+      "ticker": "XLRE",
+      "name": "Real Estate",
+      "weekly_return": -0.007049122990514997,
+      "latest_close": 40.849998474121094
+    },
+    {
+      "ticker": "XLI",
+      "name": "Industrials",
+      "weekly_return": -0.008217526346535121,
+      "latest_close": 164.13999938964844
+    },
+    {
+      "ticker": "XLF",
+      "name": "Financial Services",
+      "weekly_return": -0.015238797136162713,
+      "latest_close": 52.9900016784668
+    },
+    {
+      "ticker": "XLV",
+      "name": "Healthcare",
+      "weekly_return": -0.02514369762050988,
+      "latest_close": 154.30999755859375
+    }
+  ]
+}

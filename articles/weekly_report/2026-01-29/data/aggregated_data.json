@@ -1,0 +1,289 @@
+{
+  "metadata": {
+    "report_date": "2026-01-29",
+    "period": {
+      "start": "2026-01-22",
+      "end": "2026-01-29"
+    },
+    "generated_at": "2026-01-29T14:30:00+09:00",
+    "data_sources": {
+      "indices": true,
+      "mag7": true,
+      "sectors": true,
+      "news_from_project": true,
+      "news_supplemental": false
+    },
+    "warnings": []
+  },
+  "indices": {
+    "primary": {
+      "spx": {
+        "name": "S&P 500",
+        "ticker": "^GSPC",
+        "return": "+0.94%",
+        "raw": 0.009355766247383823,
+        "close": 6978.03
+      },
+      "rsp": {
+        "name": "S&P 500 Equal Weight",
+        "ticker": "RSP",
+        "return": "-0.70%",
+        "raw": -0.007011965990157523,
+        "close": 198.26
+      },
+      "vug": {
+        "name": "Vanguard Growth ETF",
+        "ticker": "VUG",
+        "return": "+1.80%",
+        "raw": 0.017962982232182057,
+        "close": 489.63
+      },
+      "vtv": {
+        "name": "Vanguard Value ETF",
+        "ticker": "VTV",
+        "return": "-0.25%",
+        "raw": -0.002465064373544493,
+        "close": 198.29
+      }
+    },
+    "style_analysis": {
+      "growth_vs_value": "グロース優位（+2.05%差）",
+      "growth_return": "+1.80%",
+      "value_return": "-0.25%",
+      "large_vs_small": "大型株優位（+1.64%差）",
+      "spx_return": "+0.94%",
+      "rsp_return": "-0.70%",
+      "market_breadth": "狭い（等ウェイトがマイナス）",
+      "style": "グロース回帰、大型ハイテク株主導"
+    }
+  },
+  "mag7": {
+    "stocks": [
+      {
+        "ticker": "MSFT",
+        "name": "Microsoft",
+        "return": "+6.76%",
+        "raw": 0.06758431804843361,
+        "close": 481.63,
+        "rank": 1
+      },
+      {
+        "ticker": "AMZN",
+        "name": "Amazon",
+        "return": "+3.70%",
+        "raw": 0.036997517728233634,
+        "close": 243.01,
+        "rank": 2
+      },
+      {
+        "ticker": "NVDA",
+        "name": "NVIDIA",
+        "return": "+3.61%",
+        "raw": 0.03613940741677545,
+        "close": 191.52,
+        "rank": 3
+      },
+      {
+        "ticker": "META",
+        "name": "Meta",
+        "return": "+3.26%",
+        "raw": 0.0325802934188565,
+        "close": 668.73,
+        "rank": 4
+      },
+      {
+        "ticker": "AAPL",
+        "name": "Apple",
+        "return": "+3.26%",
+        "raw": 0.03257497942044989,
+        "close": 256.44,
+        "rank": 5
+      },
+      {
+        "ticker": "GOOGL",
+        "name": "Alphabet",
+        "return": "+1.65%",
+        "raw": 0.016548681186228407,
+        "close": 336.01,
+        "rank": 6
+      },
+      {
+        "ticker": "TSLA",
+        "name": "Tesla",
+        "return": "-3.98%",
+        "raw": -0.03983441890688172,
+        "close": 431.46,
+        "rank": 7
+      }
+    ],
+    "top_performer": {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "return": "+6.76%"
+    },
+    "bottom_performer": {
+      "ticker": "TSLA",
+      "name": "Tesla",
+      "return": "-3.98%"
+    },
+    "average_return": "+2.47%",
+    "sox": {
+      "ticker": "^SOX",
+      "name": "Philadelphia Semiconductor Index",
+      "return": "+3.12%",
+      "raw": 0.031230913182454884,
+      "close": 8306.74
+    }
+  },
+  "sectors": {
+    "all": [
+      {
+        "ticker": "XLK",
+        "name": "Information Technology",
+        "return": "+3.00%",
+        "raw": 0.030024783946170433,
+        "close": 149.23,
+        "rank": 1
+      },
+      {
+        "ticker": "XLE",
+        "name": "Energy",
+        "return": "+2.33%",
+        "raw": 0.02330810454313989,
+        "close": 50.05,
+        "rank": 2
+      },
+      {
+        "ticker": "XLU",
+        "name": "Utilities",
+        "return": "+1.45%",
+        "raw": 0.014516571291789961,
+        "close": 43.33,
+        "rank": 3
+      },
+      {
+        "ticker": "XLB",
+        "name": "Basic Materials",
+        "return": "+0.87%",
+        "raw": 0.008683366340889571,
+        "close": 49.95,
+        "rank": 4
+      },
+      {
+        "ticker": "XLC",
+        "name": "Communication Services",
+        "return": "+0.43%",
+        "raw": 0.004301075268817204,
+        "close": 116.75,
+        "rank": 5
+      },
+      {
+        "ticker": "XLP",
+        "name": "Consumer Staples",
+        "return": "+0.06%",
+        "raw": 0.0006077920724216619,
+        "close": 82.32,
+        "rank": 6
+      },
+      {
+        "ticker": "XLY",
+        "name": "Consumer Discretionary",
+        "return": "-0.69%",
+        "raw": -0.006932034614877045,
+        "close": 121.77,
+        "rank": 7
+      },
+      {
+        "ticker": "XLRE",
+        "name": "Real Estate",
+        "return": "-0.70%",
+        "raw": -0.007049122990514997,
+        "close": 40.85,
+        "rank": 8
+      },
+      {
+        "ticker": "XLI",
+        "name": "Industrials",
+        "return": "-0.82%",
+        "raw": -0.008217526346535121,
+        "close": 164.14,
+        "rank": 9
+      },
+      {
+        "ticker": "XLF",
+        "name": "Financial Services",
+        "return": "-1.52%",
+        "raw": -0.015238797136162713,
+        "close": 52.99,
+        "rank": 10
+      },
+      {
+        "ticker": "XLV",
+        "name": "Healthcare",
+        "return": "-2.51%",
+        "raw": -0.02514369762050988,
+        "close": 154.31,
+        "rank": 11
+      }
+    ],
+    "top_3": [
+      {
+        "ticker": "XLK",
+        "name": "Information Technology",
+        "return": "+3.00%",
+        "close": 149.23
+      },
+      {
+        "ticker": "XLE",
+        "name": "Energy",
+        "return": "+2.33%",
+        "close": 50.05
+      },
+      {
+        "ticker": "XLU",
+        "name": "Utilities",
+        "return": "+1.45%",
+        "close": 43.33
+      }
+    ],
+    "bottom_3": [
+      {
+        "ticker": "XLV",
+        "name": "Healthcare",
+        "return": "-2.51%",
+        "close": 154.31
+      },
+      {
+        "ticker": "XLF",
+        "name": "Financial Services",
+        "return": "-1.52%",
+        "close": 52.99
+      },
+      {
+        "ticker": "XLI",
+        "name": "Industrials",
+        "return": "-0.82%",
+        "close": 164.14
+      }
+    ],
+    "rotation_signal": "グロース回帰（ITセクター+3.00%でトップ、ヘルスケア-2.51%で最下位）"
+  },
+  "news": {
+    "total_count": 100,
+    "by_category": {
+      "indices": "Index",
+      "mag7": "Stock",
+      "sectors": "Sector",
+      "macro": "Macro Economics",
+      "tech": "AI",
+      "finance": "Finance"
+    },
+    "highlights": [
+      "Microsoft決算好調、OpenAI投資で76億ドルの純利益増",
+      "Windows 11が10億ユーザー突破、Windows 10より130日早く達成",
+      "米国がWHO正式脱退、2.78億ドルの分担金未払い",
+      "Teslaが週間-3.98%でMAG7唯一のマイナス",
+      "S&P 500が+0.94%上昇も、等ウェイト指数は-0.70%で市場の二極化が鮮明"
+    ]
+  }
+}

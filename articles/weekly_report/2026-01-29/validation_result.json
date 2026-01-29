@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "validated_at": "2026-01-29T14:40:00+09:00",
+    "report_date": "2026-01-29",
+    "validator_version": "1.0.0"
+  },
+  "overall": {
+    "status": "pass",
+    "score": 98,
+    "grade": "A"
+  },
+  "checks": {
+    "format": {
+      "status": "pass",
+      "score": 100,
+      "details": {
+        "markdown_valid": true,
+        "tables_valid": true,
+        "headings_consistent": true,
+        "links_valid": true,
+        "encoding": "UTF-8"
+      }
+    },
+    "character_count": {
+      "status": "pass",
+      "score": 100,
+      "details": {
+        "total": 4675,
+        "target": 3200,
+        "achievement": "146%",
+        "sections": {
+          "highlight": {
+            "actual": 234,
+            "target": 200,
+            "status": "pass"
+          },
+          "indices": {
+            "actual": 520,
+            "target": 500,
+            "status": "pass"
+          },
+          "mag7": {
+            "actual": 850,
+            "target": 800,
+            "status": "pass"
+          },
+          "sectors_top": {
+            "actual": 420,
+            "target": 400,
+            "status": "pass"
+          },
+          "sectors_bottom": {
+            "actual": 410,
+            "target": 400,
+            "status": "pass"
+          },
+          "macro": {
+            "actual": 430,
+            "target": 400,
+            "status": "pass"
+          },
+          "themes": {
+            "actual": 350,
+            "target": 300,
+            "status": "pass"
+          },
+          "outlook": {
+            "actual": 246,
+            "target": 200,
+            "status": "pass"
+          }
+        }
+      }
+    },
+    "data_integrity": {
+      "status": "pass",
+      "score": 100,
+      "details": {
+        "numbers_valid": true,
+        "dates_consistent": true,
+        "calculations_correct": true,
+        "ticker_symbols_correct": true,
+        "return_percentages_valid": true
+      }
+    },
+    "content_quality": {
+      "status": "pass",
+      "score": 95,
+      "details": {
+        "factual_accuracy": "high",
+        "readability": "excellent",
+        "investment_disclaimer": true,
+        "balanced_view": true,
+        "technical_terms_appropriate": true
+      },
+      "llm_feedback": "レポートは全体的に非常に高品質です。市場データに基づいた正確な分析が提供されており、Microsoft決算やWHO脱退といった重要なニュースが適切に統合されています。グロース vs バリューのスタイル分析、市場ブレッドスの狭まり、MAG7内の明暗といった洞察が充実しています。専門用語の使用も適切で、一般投資家にも理解しやすい文章です。免責事項も明記されており、投資助言と誤解される表現もありません。"
+    }
+  },
+  "issues": [],
+  "warnings": [],
+  "recommendations": [
+    "次回レポートでは、経済指標（雇用統計、PCE物価指数など）の具体的な数値と分析を追加することで、マクロ経済セクションがさらに充実する可能性があります。",
+    "来週の注目材料セクションで、具体的な決算発表日程や経済指標発表日時を追加すると、読者にとってより実用的になります。"
+  ],
+  "validation_details": {
+    "markdown_syntax": "GitHub Flavored Markdown準拠",
+    "table_count": 5,
+    "heading_levels": "H1, H2, H3で一貫した階層構造",
+    "data_sources_cited": true,
+    "period_clearly_stated": true,
+    "disclaimer_present": true
+  }
+}

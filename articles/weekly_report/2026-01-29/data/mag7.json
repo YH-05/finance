@@ -1,0 +1,57 @@
+{
+  "as_of": "2026-01-29",
+  "period": {
+    "start": "2026-01-22",
+    "end": "2026-01-29"
+  },
+  "mag7": [
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "weekly_return": 0.06758431804843361,
+      "latest_close": 481.6300048828125
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "weekly_return": 0.036997517728233634,
+      "latest_close": 243.00999450683594
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "weekly_return": 0.03613940741677545,
+      "latest_close": 191.52000427246094
+    },
+    {
+      "ticker": "META",
+      "name": "Meta (Facebook)",
+      "weekly_return": 0.0325802934188565,
+      "latest_close": 668.72998046875
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple",
+      "weekly_return": 0.03257497942044989,
+      "latest_close": 256.44000244140625
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "Alphabet (Google)",
+      "weekly_return": 0.016548681186228407,
+      "latest_close": 336.010009765625
+    },
+    {
+      "ticker": "TSLA",
+      "name": "Tesla",
+      "weekly_return": -0.03983441890688172,
+      "latest_close": 431.4599914550781
+    }
+  ],
+  "sox": {
+    "ticker": "^SOX",
+    "name": "Philadelphia Semiconductor Index",
+    "weekly_return": 0.031230913182454884,
+    "latest_close": 8306.740234375
+  }
+}

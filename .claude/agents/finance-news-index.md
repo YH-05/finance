@@ -76,10 +76,8 @@ Phase 2.5: 公開日時フィルタリング【必須】
 ├── --daysパラメータの取得（デフォルト: 7）
 └── 古い記事を除外（published < cutoff）
 
-Phase 3: フィルタリング
-├── Indexキーワードマッチング
-├── 除外キーワードチェック
-└── 重複チェック
+Phase 3: 重複チェック
+└── 既存Issueとの重複を除外
 
 Phase 4: バッチ投稿（article-fetcherに委譲）
 ├── URL必須バリデーション
@@ -145,87 +143,89 @@ MCPサーバー利用不可時はローカルフォールバック（`data/raw/r
 詳細なアルゴリズムは共通処理ガイドを参照:
 `.claude/skills/finance-news-workflow/guide.md` の「日数フィルタ（--days）」
 
-### Phase 3: フィルタリング
+### Phase 3: 重複チェック
 
-Indexテーマのキーワードマッチング、除外キーワードチェック、重複チェックを実行。
+既存Issueとの重複をチェックし、重複する記事を除外します。
 
-詳細: `.claude/skills/finance-news-workflow/common-processing-guide.md`
+- 既存Issueの `body` に含まれる元記事URLと比較
+- URL一致で重複と判定
+- 重複件数を `stats["duplicates"]` に記録
 
 ### Phase 4: バッチ投稿（article-fetcherに委譲）
 
-フィルタリング済み記事を5件ずつ `news-article-fetcher` に委譲します。
+> **【必須】Taskツールで `news-article-fetcher` を呼び出すこと。**
+> **直接 `gh issue create` でIssue作成することは禁止。**
+> **Bashでの直接処理も禁止。必ずTaskツールを使用すること。**
+
 article-fetcher が ペイウォール事前チェック → WebFetch → 要約生成 → Issue作成 → Project追加 → Status/Date設定を一括実行します。
 
 #### ステップ4.1: URL必須バリデーション
 
-```python
-for item in filtered_items:
-    url = item.get("link", "").strip()
-    if not url or not url.startswith(("http://", "https://")):
-        stats["skipped_no_url"] += 1
-        continue
-```
+URLが存在しない、または不正な記事はスキップする:
+- `link` が空または存在しない → スキップ
+- `http://` または `https://` で始まらない → スキップ
+- スキップした件数を `stats["skipped_no_url"]` に記録
 
 #### ステップ4.2: issue_config の構築
 
-セッションファイルの `config` とテーマ固有設定を組み合わせて構築:
+以下の9フィールドを含む `issue_config` を構築する:
 
-```python
-issue_config = {
+| フィールド | 値 |
+|-----------|-----|
+| `theme_key` | `"index"` |
+| `theme_label` | `"株価指数"` |
+| `status_option_id` | `"3925acc3"` |
+| `project_id` | セッションファイルの `config.project_id` |
+| `project_number` | セッションファイルの `config.project_number` |
+| `project_owner` | セッションファイルの `config.project_owner` |
+| `repo` | `"YH-05/finance"` |
+| `status_field_id` | セッションファイルの `config.status_field_id` |
+| `published_date_field_id` | セッションファイルの `config.published_date_field_id` |
+
+#### ステップ4.3: バッチ処理【Taskツール必須】
+
+1. 公開日時の新しい順にソート
+2. 5件ずつバッチに分割
+3. **各バッチに対してTaskツールを呼び出す**
+
+**Taskツール呼び出し（必須）**:
+
+```
+Task(
+  subagent_type: "news-article-fetcher"
+  description: "バッチN: 記事取得・要約・Issue作成"
+  prompt: 以下のJSON形式のデータを含める
+)
+```
+
+**promptに含めるJSON構造**:
+
+```json
+{
+  "articles": [
+    {
+      "url": "記事のlink",
+      "title": "記事タイトル",
+      "summary": "記事の要約",
+      "feed_source": "フィード名",
+      "published": "公開日時"
+    }
+  ],
+  "issue_config": {
     "theme_key": "index",
     "theme_label": "株価指数",
     "status_option_id": "3925acc3",
-    "project_id": session_data["config"]["project_id"],
-    "project_number": session_data["config"]["project_number"],
-    "project_owner": session_data["config"]["project_owner"],
+    "project_id": "...",
+    "project_number": 15,
+    "project_owner": "YH-05",
     "repo": "YH-05/finance",
-    "status_field_id": session_data["config"]["status_field_id"],
-    "published_date_field_id": session_data["config"]["published_date_field_id"]
+    "status_field_id": "...",
+    "published_date_field_id": "..."
+  }
 }
 ```
 
-#### ステップ4.3: バッチ処理
-
-```python
-BATCH_SIZE = 5
-
-# 公開日時の新しい順にソート
-sorted_items = sorted(filtered_items, key=lambda x: x.get("published", ""), reverse=True)
-
-all_created = []
-all_skipped = []
-for i in range(0, len(sorted_items), BATCH_SIZE):
-    batch = sorted_items[i:i + BATCH_SIZE]
-    batch_num = (i // BATCH_SIZE) + 1
-
-    result = Task(
-        subagent_type="news-article-fetcher",
-        description=f"バッチ{batch_num}: 記事取得・要約・Issue作成",
-        prompt=f"""以下の記事を処理してください。
-
-入力:
-{json.dumps({
-    "articles": [
-        {
-            "url": item["link"],
-            "title": item["title"],
-            "summary": item.get("summary", ""),
-            "feed_source": item["source_feed"],
-            "published": item.get("published", "")
-        }
-        for item in batch
-    ],
-    "issue_config": issue_config
-}, ensure_ascii=False, indent=2)}
-""")
-
-    # 結果集約
-    all_created.extend(result.get("created_issues", []))
-    all_skipped.extend(result.get("skipped", []))
-    stats["created"] += result["stats"]["issue_created"]
-    stats["failed"] += result["stats"]["issue_failed"]
-    stats["skipped_paywall"] += result["stats"]["skipped_paywall"]
-```
+4. 各バッチの結果を集約（created_issues, skipped, stats）
 
 ### Phase 5: 結果報告
 
@@ -242,7 +242,6 @@ for i in range(0, len(sorted_items), BATCH_SIZE):
 | 担当フィード数 | {feed_count} |
 | 取得記事数 | {total_items} |
 | 公開日時フィルタ除外 | {date_filtered} |
-| テーママッチ | {theme_matched} |
 | **重複スキップ** | **{duplicates}** |
 | URLなしスキップ | {no_url} |
 | ペイウォールスキップ | {paywall_skipped} |
