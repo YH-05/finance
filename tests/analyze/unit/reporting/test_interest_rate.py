@@ -316,6 +316,87 @@ class TestGetSummary:
         assert "generated_at" in summary
 
 
+class TestAPIErrorHandling:
+    """APIエラー時の挙動テスト."""
+
+    @patch("analyze.reporting.interest_rate.FREDFetcher")
+    def test_異常系_APIエラー時にFREDFetchErrorがスローされる(
+        self,
+        mock_fetcher_class: MagicMock,
+    ) -> None:
+        """API エラー発生時に FREDFetchError がスローされることを確認."""
+        from market.fred.errors import FREDFetchError
+
+        # モックの設定: fetchが例外をスロー
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.side_effect = FREDFetchError("API rate limit exceeded")
+        mock_fetcher_class.return_value = mock_fetcher
+
+        analyzer = InterestRateAnalyzer()
+
+        with pytest.raises(FREDFetchError, match="API rate limit exceeded"):
+            analyzer.fetch_data()
+
+    @patch("analyze.reporting.interest_rate.FREDFetcher")
+    def test_異常系_ネットワークエラー時にFREDFetchErrorがスローされる(
+        self,
+        mock_fetcher_class: MagicMock,
+    ) -> None:
+        """ネットワークエラー発生時に FREDFetchError がスローされることを確認."""
+        from market.fred.errors import FREDFetchError
+
+        # モックの設定: ネットワークエラーをシミュレート
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.side_effect = FREDFetchError(
+            "Connection timeout while fetching DGS10"
+        )
+        mock_fetcher_class.return_value = mock_fetcher
+
+        analyzer = InterestRateAnalyzer()
+
+        with pytest.raises(FREDFetchError, match="Connection timeout"):
+            analyzer.fetch_data()
+
+    @patch("analyze.reporting.interest_rate.FREDFetcher")
+    def test_異常系_一部シリーズの取得失敗時は空データとして処理される(
+        self,
+        mock_fetcher_class: MagicMock,
+    ) -> None:
+        """一部シリーズの取得失敗時、そのシリーズは空データとして処理されることを確認."""
+        # モックの設定: 一部のシリーズが空データを返す
+        dates = pd.date_range("2026-01-25", periods=3, freq="D")
+
+        def create_mock_result(series_id: str, is_empty: bool = False) -> MagicMock:
+            mock_result = MagicMock()
+            mock_result.symbol = series_id
+            if is_empty:
+                mock_result.data = DataFrame()
+                mock_result.is_empty = True
+            else:
+                mock_result.data = DataFrame({"value": [4.0, 4.1, 4.2]}, index=dates)
+                mock_result.is_empty = False
+            return mock_result
+
+        mock_results = [
+            create_mock_result("DGS2"),
+            create_mock_result("DGS10"),
+            create_mock_result("DGS30", is_empty=True),  # このシリーズは取得失敗
+            create_mock_result("FEDFUNDS"),
+            create_mock_result("T10Y2Y"),
+        ]
+
+        mock_fetcher = MagicMock()
+        mock_fetcher.fetch.return_value = mock_results
+        mock_fetcher_class.return_value = mock_fetcher
+
+        analyzer = InterestRateAnalyzer()
+        data = analyzer.fetch_data()
+
+        # 空でないシリーズは4つ（DGS30は空）
+        assert len(data) == 4
+        assert "DGS30" not in data
+
+
 class TestEdgeCases:
     """エッジケースのテスト."""
 
