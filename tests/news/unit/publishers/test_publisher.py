@@ -238,14 +238,16 @@ class TestPublishBatch:
 
         publisher = Publisher(config=sample_config)
 
-        # Should not raise with dry_run parameter
-        result = await publisher.publish_batch(
-            [summarized_article_no_summary], dry_run=True
-        )
+        # Mock _get_existing_issues to avoid gh CLI call
+        with patch.object(publisher, "_get_existing_issues", return_value=set()):
+            # Should not raise with dry_run parameter
+            result = await publisher.publish_batch(
+                [summarized_article_no_summary], dry_run=True
+            )
 
-        assert len(result) == 1
-        # No summary -> SKIPPED regardless of dry_run
-        assert result[0].publication_status == PublicationStatus.SKIPPED
+            assert len(result) == 1
+            # No summary -> SKIPPED regardless of dry_run
+            assert result[0].publication_status == PublicationStatus.SKIPPED
 
 
 class TestGenerateIssueBody:
@@ -1352,26 +1354,31 @@ class TestPublishBatchDryRun:
         self,
         sample_config: NewsWorkflowConfig,
         summarized_article_with_summary: SummarizedArticle,
-        capsys: pytest.CaptureFixture[str],
     ) -> None:
         """publish_batch should log 'Would create issue' when dry_run=True."""
         from news.publisher import Publisher
 
         publisher = Publisher(config=sample_config)
 
-        with patch.object(
-            publisher,
-            "_get_existing_issues",
-            return_value=set(),
+        # Mock the logger to capture calls
+        with (
+            patch.object(
+                publisher,
+                "_get_existing_issues",
+                return_value=set(),
+            ),
+            patch("news.publisher.logger") as mock_logger,
         ):
             await publisher.publish_batch(
                 [summarized_article_with_summary], dry_run=True
             )
 
-            # Check that the log output contains the expected message
-            # structlog outputs to stdout by default
-            captured = capsys.readouterr()
-            assert "[DRY RUN] Would create issue" in captured.out
+            # Check that logger.info was called with dry run message
+            info_calls = [call for call in mock_logger.info.call_args_list]
+            dry_run_logged = any(
+                "[DRY RUN] Would create issue" in str(call) for call in info_calls
+            )
+            assert dry_run_logged, f"Expected dry run log message, got: {info_calls}"
 
     @pytest.mark.asyncio
     async def test_正常系_dry_runで複数記事を処理(
