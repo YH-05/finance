@@ -191,7 +191,7 @@ class RSSCollector(BaseCollector):
             preset = PresetFeed(
                 url=preset_data["url"],
                 title=preset_data["title"],
-                category=preset_data["category"],
+                category=preset_data.get("category", "other"),
                 fetch_interval=preset_data["fetch_interval"],
                 enabled=preset_data["enabled"],
             )

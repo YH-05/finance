@@ -242,6 +242,104 @@ class TestRSSCollectorConfigHandling:
             mock_client_class.assert_not_called()
             assert result == []
 
+    @pytest.mark.asyncio
+    async def test_正常系_category未指定時にotherがデフォルト値として設定される(
+        self,
+        mock_config: NewsWorkflowConfig,
+        sample_feed_items: list[FeedItem],
+    ) -> None:
+        """category should default to 'other' when not specified in preset."""
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            # Setup presets WITHOUT category field
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "No Category Feed",
+                        # "category" is intentionally omitted
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            # Setup HTTP response
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = sample_feed_items
+
+                result = await collector.collect()
+
+                # Verify that category defaults to "other"
+                assert len(result) == len(sample_feed_items)
+                for article in result:
+                    assert article.source.category == "other"
+
+    @pytest.mark.asyncio
+    async def test_正常系_category指定時にその値が設定される(
+        self,
+        mock_config: NewsWorkflowConfig,
+        sample_feed_items: list[FeedItem],
+    ) -> None:
+        """category should be set to the specified value when present in preset."""
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            # Setup presets WITH category field
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Market Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            # Setup HTTP response
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = sample_feed_items
+
+                result = await collector.collect()
+
+                # Verify that category is set to the specified value
+                assert len(result) == len(sample_feed_items)
+                for article in result:
+                    assert article.source.category == "market"
+
 
 class TestRSSCollectorErrorHandling:
     """Tests for RSSCollector error handling."""
