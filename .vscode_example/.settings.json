@@ -1,0 +1,118 @@
+{
+    // ----- Python環境 -----
+
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    // ----- marimo設定 -----
+    "marimo.pythonPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+
+    // ----- Pylance（軽量設定）-----
+
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "off", // ty使用
+    "python.analysis.indexing": true,
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.completeFunctionParens": true,
+
+    // エラー表示を無効化(tyで確認)
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportGeneralTypeIssues": "none",
+        "reportOptionalMemberAccess": "none",
+        "reportOptionalSubscript": "none",
+        "reportPrivateImportUsage": "none"
+    },
+    "python.analysis.exclude": [
+        "**/.venv/**",
+        "**/venv/**",
+        "**/data/**",
+        "**/docs/**",
+        "**/__pycache__/**",
+        "**/__marimo__/**",
+        "**/00_*/**",
+        "**/01_*/**",
+        "**/02_*/**",
+        "**/03_*/**",
+        "**/05_*/**",
+        "**/06_*/**",
+        "**/A_*/**",
+        "**/todo/**",
+        "**/*.lnk",
+        "**/.ty-build/**"
+    ],
+
+    "python.analysis.ignore": ["**/.venv/**", "**/data/**", "**/docs/**"],
+
+    // ----- Ruff -----
+
+    "ruff.enable": true,
+    "ruff.nativeServer": true,
+    "ruff.lint.enable": true,
+    "ruff.organizeImports": true,
+
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports.ruff": "explicit",
+            "source.fixAll.ruff": "explicit"
+        }
+    },
+
+    // Jupyter Notebook
+
+    "jupyter.notebookFileRoot": "${workspaceFolder}",
+    "notebook.output.textLineLimit": 30,
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+
+    // ファイル監視除外
+    "files.watcherExclude": {
+        "**/.venv/**": true,
+        "**/venv/**": true,
+        "**/data/**": true,
+        "**/docs/**": true,
+        "**/__pycache__/**": true,
+        "**/.git/**": true,
+        "**/.ipynb_checkpoints/**": true,
+        "**/00_*/**": true,
+        "**/01_*/**": true,
+        "**/02_*/**": true,
+        "**/03_*/**": true,
+        "**/05_*/**": true,
+        "**/06_*/**": true,
+        "**/A_*/**": true,
+        "**/todo/**": true,
+        "**/*.xlsx": true,
+        "**/*.ppt": true,
+        "**/*.pptx": true,
+        "**/*.pdf": true,
+        "**/*.lnk": true
+    },
+
+    "search.exclude": {
+        "**/.venv": true,
+        "**/data": true,
+        "**/docs": true,
+        "**/__pycache__": true,
+        "**/00_*": true,
+        "**/01_*": true,
+        "**/02_*": true,
+        "**/03_*": true,
+        "**/05_*": true,
+        "**/06_*": true,
+        "**/A_*": true,
+        "**/todo": true
+    },
+
+    // エディタ設定"
+
+    "editor.rulers": [100],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.eol": "\n"
+}
