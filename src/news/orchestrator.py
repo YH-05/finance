@@ -20,6 +20,7 @@ Examples
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from news.collectors.rss import RSSCollector
@@ -232,6 +233,9 @@ class NewsWorkflowOrchestrator:
             finished_at=finished_at,
         )
 
+        # Save result to JSON file
+        self._save_result(result)
+
         logger.info(
             "Workflow completed",
             total_collected=result.total_collected,
@@ -396,6 +400,38 @@ class NewsWorkflowOrchestrator:
             elapsed_seconds=elapsed_seconds,
             published_articles=published_articles,
         )
+
+    def _save_result(self, result: WorkflowResult) -> Path:
+        """Save WorkflowResult to JSON file.
+
+        Parameters
+        ----------
+        result : WorkflowResult
+            Workflow execution result to save.
+
+        Returns
+        -------
+        Path
+            Path to the saved JSON file.
+
+        Notes
+        -----
+        - Creates output directory if it doesn't exist
+        - Filename includes timestamp in format: workflow-result-YYYY-MM-DDTHH-MM-SS.json
+        - Uses Pydantic's model_dump_json for JSON serialization
+        """
+        output_dir = Path(self._config.output.result_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        output_path = output_dir / f"workflow-result-{timestamp}.json"
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(result.model_dump_json(indent=2))
+
+        logger.info("Result saved", path=str(output_path))
+
+        return output_path
 
 
 __all__ = [

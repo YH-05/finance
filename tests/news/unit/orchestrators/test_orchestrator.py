@@ -7,6 +7,7 @@ Following TDD approach: Red -> Green -> Refactor
 """
 
 from datetime import datetime, timezone
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -952,3 +953,291 @@ class TestOrchestratorBuildResult:
             assert result.total_published == 1
             assert result.started_at == started_at
             assert result.finished_at == finished_at
+
+
+class TestOrchestratorSaveResult:
+    """Tests for _save_result() method that saves WorkflowResult to JSON."""
+
+    def test_正常系_save_resultメソッドが存在する(
+        self, sample_config: NewsWorkflowConfig
+    ) -> None:
+        """Orchestrator should have a _save_result() method."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            assert hasattr(orchestrator, "_save_result")
+            assert callable(orchestrator._save_result)
+
+    def test_正常系_JSONファイルが保存される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        tmp_path: Path,
+    ) -> None:
+        """_save_result should save WorkflowResult as JSON file."""
+        import json
+
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        # Update config to use tmp_path
+        sample_config.output.result_dir = str(tmp_path)
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            # Create a sample WorkflowResult
+            result = WorkflowResult(
+                total_collected=10,
+                total_extracted=8,
+                total_summarized=7,
+                total_published=6,
+                total_duplicates=1,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+                finished_at=datetime(2026, 1, 15, 10, 15, 0, tzinfo=timezone.utc),
+                elapsed_seconds=900.0,
+                published_articles=[],
+            )
+
+            output_path = orchestrator._save_result(result)
+
+            # Verify file was created
+            assert output_path.exists()
+            assert output_path.suffix == ".json"
+
+            # Verify content
+            with open(output_path, encoding="utf-8") as f:
+                saved_data = json.load(f)
+            assert saved_data["total_collected"] == 10
+            assert saved_data["total_extracted"] == 8
+            assert saved_data["total_summarized"] == 7
+            assert saved_data["total_published"] == 6
+            assert saved_data["total_duplicates"] == 1
+
+    def test_正常系_ファイル名にタイムスタンプが含まれる(
+        self,
+        sample_config: NewsWorkflowConfig,
+        tmp_path: Path,
+    ) -> None:
+        """_save_result should include timestamp in filename."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        # Update config to use tmp_path
+        sample_config.output.result_dir = str(tmp_path)
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            # Create a sample WorkflowResult
+            result = WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=datetime.now(tz=timezone.utc),
+                finished_at=datetime.now(tz=timezone.utc),
+                elapsed_seconds=0.0,
+                published_articles=[],
+            )
+
+            output_path = orchestrator._save_result(result)
+
+            # Verify filename contains timestamp pattern
+            filename = output_path.name
+            assert filename.startswith("workflow-result-")
+            # Check timestamp format: YYYY-MM-DDTHH-MM-SS
+            import re
+
+            pattern = r"workflow-result-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.json"
+            assert re.match(pattern, filename), (
+                f"Filename {filename} does not match expected pattern"
+            )
+
+    def test_正常系_出力先ディレクトリが自動作成される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        tmp_path: Path,
+    ) -> None:
+        """_save_result should create output directory if it doesn't exist."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        # Use a nested path that doesn't exist
+        nested_dir = tmp_path / "nested" / "output" / "dir"
+        sample_config.output.result_dir = str(nested_dir)
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            result = WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=datetime.now(tz=timezone.utc),
+                finished_at=datetime.now(tz=timezone.utc),
+                elapsed_seconds=0.0,
+                published_articles=[],
+            )
+
+            output_path = orchestrator._save_result(result)
+
+            # Verify directory was created
+            assert nested_dir.exists()
+            assert output_path.parent == nested_dir
+
+    def test_正常系_保存先パスがログに出力される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        tmp_path: Path,
+    ) -> None:
+        """_save_result should log the output path."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        sample_config.output.result_dir = str(tmp_path)
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+            patch("news.orchestrator.logger") as mock_logger,
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            result = WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=datetime.now(tz=timezone.utc),
+                finished_at=datetime.now(tz=timezone.utc),
+                elapsed_seconds=0.0,
+                published_articles=[],
+            )
+
+            output_path = orchestrator._save_result(result)
+
+            # Verify logging was called with path
+            mock_logger.info.assert_called()
+            call_args_list = mock_logger.info.call_args_list
+            path_logged = any(
+                "Result saved" in str(call) and str(output_path) in str(call)
+                for call in call_args_list
+            )
+            assert path_logged, "Output path should be logged"
+
+    def test_正常系_save_resultがPathを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+        tmp_path: Path,
+    ) -> None:
+        """_save_result should return the output Path."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        sample_config.output.result_dir = str(tmp_path)
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            result = WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=datetime.now(tz=timezone.utc),
+                finished_at=datetime.now(tz=timezone.utc),
+                elapsed_seconds=0.0,
+                published_articles=[],
+            )
+
+            output_path = orchestrator._save_result(result)
+
+            assert isinstance(output_path, Path)
+
+
+class TestOrchestratorRunSavesResult:
+    """Tests for run() calling _save_result."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_runがsave_resultを呼び出す(
+        self,
+        sample_config: NewsWorkflowConfig,
+        tmp_path: Path,
+    ) -> None:
+        """run() should call _save_result with the result."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        sample_config.output.result_dir = str(tmp_path)
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            # Setup mocks
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(return_value=[])
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            result = await orchestrator.run()
+
+            # Verify JSON file was created
+            json_files = list(tmp_path.glob("workflow-result-*.json"))
+            assert len(json_files) == 1
