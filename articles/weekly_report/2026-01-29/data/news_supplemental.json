@@ -1,0 +1,81 @@
+{
+  "source": "tavily_search",
+  "search_date": "2026-01-29",
+  "period": {
+    "start": "2026-01-22",
+    "end": "2026-01-29"
+  },
+  "categories": {
+    "meta_ai": [
+      {
+        "title": "Meta shares soar as huge AI investments continue",
+        "url": "https://www.fool.com.au/2026/01/29/meta-shares-soar-as-huge-ai-investments-continue/",
+        "summary": "Meta expects capital expenditure of US$115-135 billion in 2026 as it pours money into AI infrastructure.",
+        "date": "2026-01-29"
+      },
+      {
+        "title": "Meta poised for nearly 40% upside on compelling AI and ad opportunities",
+        "url": "https://www.cnbc.com/2026/01/26/meta-poised-for-nearly-40percent-upside-on-compelling-ai-and-ad-opportunities-analyst-says.html",
+        "summary": "Rothschild & Co Redburn analyst sees Meta's advertising engine and AI capabilities as major catalysts. Acquisition of AI agent firm Manus could boost frontier AI position.",
+        "date": "2026-01-26"
+      },
+      {
+        "title": "Meta Shares Rally 9% - Earnings Show AI Investment Driving Growth",
+        "url": "https://pepperstone.com/en/analysis/navigating-markets/jmeta-stock-surges-after-earnings-as-revenue-outlook-and-ai-optimism-drive-14-reversal/",
+        "summary": "Meta shares rally 9% after earnings report shows AI investment driving growth.",
+        "date": "2026-01-28"
+      }
+    ],
+    "nvidia_chips": [
+      {
+        "title": "Chip stocks rise after earnings, Nvidia H200 China approval",
+        "url": "https://www.cnbc.com/2026/01/28/global-chip-stocks-today-nvidia-china-asml-sk-hynix.html",
+        "summary": "China approved sales of Nvidia's H200 to ByteDance, Alibaba and Tencent. ASML reported bumper Q4 earnings with orders above expectations. SK Hynix reported record full-year profit for 2025.",
+        "date": "2026-01-28"
+      },
+      {
+        "title": "1 Reason Nvidia Stock Could Surge in 2026",
+        "url": "https://www.fool.com/investing/2026/01/28/1-reason-nvidia-stock-could-surge-in-2026/",
+        "summary": "Skyrocketing demand for AI infrastructure upgrades could drive Nvidia stock higher in 2026.",
+        "date": "2026-01-28"
+      }
+    ],
+    "fed_rates": [
+      {
+        "title": "Fed leaves rates unchanged, sees 'somewhat elevated' inflation",
+        "url": "https://www.reuters.com/business/fed-expected-hold-rates-steady-rate-cut-pause-begins-2026-01-28/",
+        "summary": "Federal Reserve held interest rates steady at 3.5%-3.75% amid solid economy. Powell described diminished risks to both inflation and employment.",
+        "date": "2026-01-28"
+      },
+      {
+        "title": "Fed rate decision January 2026: Holds key rate steady",
+        "url": "https://www.cnbc.com/2026/01/28/fed-rate-decision-january-2026.html",
+        "summary": "FOMC voted to keep key interest rate in range of 3.5%-3.75%, meeting market expectations. Miran and Waller dissented.",
+        "date": "2026-01-28"
+      }
+    ],
+    "energy_oil": [
+      {
+        "title": "Oil prices hover around four-month high, buoyed by Iran concerns",
+        "url": "https://www.reuters.com/business/energy/oil-prices-mixed-us-supply-worries-linger-after-winter-storm-2026-01-28/",
+        "summary": "Oil prices rose to highest since late September on Iran concerns and weak U.S. dollar. U.S. crude inventories fell by 2.3 million barrels. Domestic crude output down 600,000 bpd after winter storm.",
+        "date": "2026-01-28"
+      },
+      {
+        "title": "Oil Price Strength Builds in Late January 2026",
+        "url": "https://www.polyestertime.com/oil-price-72/",
+        "summary": "Brent at ~$64.85 and WTI at ~$60.85, with markets reacting to supply surplus, OPEC+ output, economic data.",
+        "date": "2026-01-26"
+      }
+    ]
+  },
+  "summary": {
+    "total": 10,
+    "by_category": {
+      "meta_ai": 3,
+      "nvidia_chips": 2,
+      "fed_rates": 2,
+      "energy_oil": 2
+    }
+  }
+}
