@@ -404,3 +404,239 @@ class TestSummarizerClaudeIntegration:
             assert result.summarization_status == SummarizationStatus.FAILED
             assert result.summary is None
             assert result.error_message is not None
+
+
+class TestSummarizerJsonParsing:
+    """Tests for _parse_response JSON parsing (P4-003).
+
+    Tests for:
+    - ```json ... ``` markdown block extraction
+    - Direct JSON parsing
+    - Pydantic model_validate() validation
+    - Appropriate error messages
+    """
+
+    def test_正常系_直接JSONをパースできる(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Direct JSON (without markdown block) should be parsed correctly."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            json_response = """{
+                "overview": "概要テスト",
+                "key_points": ["ポイント1", "ポイント2"],
+                "market_impact": "市場影響テスト",
+                "related_info": null
+            }"""
+
+            result = summarizer._parse_response(json_response)
+
+            assert result.overview == "概要テスト"
+            assert result.key_points == ["ポイント1", "ポイント2"]
+            assert result.market_impact == "市場影響テスト"
+            assert result.related_info is None
+
+    def test_正常系_マークダウンJSON形式をパースできる(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """JSON wrapped in ```json ... ``` markdown block should be parsed."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            markdown_response = """```json
+{
+    "overview": "マークダウン概要",
+    "key_points": ["MDポイント1"],
+    "market_impact": "MD市場影響",
+    "related_info": "MD関連情報"
+}
+```"""
+
+            result = summarizer._parse_response(markdown_response)
+
+            assert result.overview == "マークダウン概要"
+            assert result.key_points == ["MDポイント1"]
+            assert result.market_impact == "MD市場影響"
+            assert result.related_info == "MD関連情報"
+
+    def test_正常系_マークダウンJSON形式の前後に空白がある場合(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """JSON block with whitespace before/after should be parsed."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            markdown_response = """Here is the summary:
+
+```json
+{
+    "overview": "空白付き概要",
+    "key_points": ["空白ポイント"],
+    "market_impact": "空白市場影響",
+    "related_info": null
+}
+```
+
+Thank you!"""
+
+            result = summarizer._parse_response(markdown_response)
+
+            assert result.overview == "空白付き概要"
+            assert result.key_points == ["空白ポイント"]
+
+    def test_正常系_Pydanticモデルバリデーションが適用される(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Response should be validated using Pydantic model_validate."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            # Valid JSON that passes Pydantic validation
+            valid_response = """{
+                "overview": "バリデーション概要",
+                "key_points": ["バリデーションポイント"],
+                "market_impact": "バリデーション影響",
+                "related_info": "関連情報あり"
+            }"""
+
+            result = summarizer._parse_response(valid_response)
+
+            # Should return StructuredSummary instance
+            assert isinstance(result, StructuredSummary)
+            assert result.related_info == "関連情報あり"
+
+    def test_異常系_JSONパースエラーで適切なエラーメッセージ(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Invalid JSON should raise ValueError with descriptive message."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            invalid_json = "{ invalid json }"
+
+            with pytest.raises(ValueError) as exc_info:
+                summarizer._parse_response(invalid_json)
+
+            error_message = str(exc_info.value)
+            assert "JSON parse error" in error_message
+
+    def test_異常系_バリデーションエラーで適切なエラーメッセージ(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Pydantic validation error should raise ValueError with descriptive message."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            # Valid JSON but invalid structure (missing required field)
+            invalid_structure = """{
+                "overview": "概要のみ"
+            }"""
+
+            with pytest.raises(ValueError) as exc_info:
+                summarizer._parse_response(invalid_structure)
+
+            error_message = str(exc_info.value)
+            assert "Validation error" in error_message
+
+    def test_異常系_key_pointsが文字列でバリデーションエラー(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """key_points should be a list, not a string."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            # key_points is a string instead of list
+            invalid_type = """{
+                "overview": "概要",
+                "key_points": "これはリストではない",
+                "market_impact": "市場影響"
+            }"""
+
+            with pytest.raises(ValueError) as exc_info:
+                summarizer._parse_response(invalid_type)
+
+            error_message = str(exc_info.value)
+            assert "Validation error" in error_message
+
+    @pytest.mark.asyncio
+    async def test_正常系_summarizeでマークダウンJSONが処理される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """summarize() should correctly process markdown-wrapped JSON response."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            # Claude often returns JSON in markdown blocks
+            mock_content.text = """```json
+{
+    "overview": "統合テスト概要",
+    "key_points": ["統合ポイント1", "統合ポイント2"],
+    "market_impact": "統合市場影響",
+    "related_info": null
+}
+```"""
+            mock_response.content = [mock_content]
+            mock_client.messages.create.return_value = mock_response
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.SUCCESS
+            assert result.summary is not None
+            assert result.summary.overview == "統合テスト概要"
+            assert result.summary.key_points == ["統合ポイント1", "統合ポイント2"]
+
+    @pytest.mark.asyncio
+    async def test_異常系_summarizeでバリデーションエラー時FAILEDを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """summarize() should return FAILED status on validation error."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            # Missing required fields
+            mock_content.text = '{"overview": "概要のみ"}'
+            mock_response.content = [mock_content]
+            mock_client.messages.create.return_value = mock_response
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.FAILED
+            assert result.summary is None
+            assert result.error_message is not None
+            assert "Validation error" in result.error_message

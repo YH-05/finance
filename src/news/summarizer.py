@@ -22,9 +22,11 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from typing import TYPE_CHECKING
 
 from anthropic import Anthropic
+from pydantic import ValidationError
 
 from news.models import (
     ExtractedArticle,
@@ -170,12 +172,13 @@ class Summarizer:
                 summarization_status=SummarizationStatus.SUCCESS,
                 error_message=None,
             )
-        except json.JSONDecodeError as e:
-            error_message = f"Failed to parse Claude response as JSON: {e}"
+        except ValueError as e:
+            # JSON parse error or Pydantic validation error
+            error_message = str(e)
             logger.error(
-                "JSON parse error",
+                "Parse/validation error",
                 article_url=str(article.collected.url),
-                error=str(e),
+                error=error_message,
             )
             return SummarizedArticle(
                 extracted=article,
@@ -271,7 +274,7 @@ JSONのみを出力し、他のテキストは含めないでください。"""
         Parameters
         ----------
         response_text : str
-            Claude からの JSON レスポンス。
+            Claude からの JSON レスポンス。```json ... ``` 形式にも対応。
 
         Returns
         -------
@@ -280,17 +283,24 @@ JSONのみを出力し、他のテキストは含めないでください。"""
 
         Raises
         ------
-        json.JSONDecodeError
-            JSON パースに失敗した場合。
+        ValueError
+            JSON パースまたは Pydantic バリデーションに失敗した場合。
         """
-        data = json.loads(response_text)
+        # ```json ... ``` 形式の抽出
+        json_match = re.search(r"```json\s*(.*?)\s*```", response_text, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(1)
+        else:
+            # 直接 JSON の場合
+            json_str = response_text.strip()
 
-        return StructuredSummary(
-            overview=data["overview"],
-            key_points=data["key_points"],
-            market_impact=data["market_impact"],
-            related_info=data.get("related_info"),
-        )
+        try:
+            data = json.loads(json_str)
+            return StructuredSummary.model_validate(data)
+        except json.JSONDecodeError as e:
+            raise ValueError(f"JSON parse error: {e}") from e
+        except ValidationError as e:
+            raise ValueError(f"Validation error: {e}") from e
 
     async def summarize_batch(
         self,
