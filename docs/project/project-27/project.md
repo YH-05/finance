@@ -7,6 +7,7 @@
 **主目的**: Claude Agent SDKを使った構造化要約の生成
 
 **設計方針**:
+
 - 情報源を抽象化し、将来的にRSS以外（yfinanceニュース、Webスクレイピング）にも対応
 - 収集（Collector）と本文抽出（Extractor）を分離した単一責務設計
 - パイプライン型データモデルで型安全性を確保
@@ -375,30 +376,30 @@ version: "1.0"
 # いずれも同じマッピングを使用
 
 status_mapping:
-  # GitHub Project Status一覧
-  # index: 3925acc3, stock: f762022e, sector: 48762504
-  # macro: 730034a5, ai: 6fbb43d0, finance: ac4a91b1
+    # GitHub Project Status一覧
+    # index: 3925acc3, stock: f762022e, sector: 48762504
+    # macro: 730034a5, ai: 6fbb43d0, finance: ac4a91b1
 
-  # RSSカテゴリ（rss-presets.json の category フィールド）
-  tech: "ai"
-  market: "index"
-  finance: "finance"
+    # RSSカテゴリ（rss-presets.json の category フィールド）
+    tech: "ai"
+    market: "index"
+    finance: "finance"
 
-  # yfinanceカテゴリ
-  yf_index: "index"       # ^GSPC, ^DJI 等の指数
-  yf_stock: "stock"       # 一般的な個別株
-  yf_ai_stock: "ai"       # NVDA, AMD 等のAI関連株
-  yf_sector_etf: "sector" # XLF, XLK 等のセクターETF
-  yf_macro: "macro"       # マクロ経済関連
+    # yfinanceカテゴリ
+    yf_index: "index" # ^GSPC, ^DJI 等の指数
+    yf_stock: "stock" # 一般的な個別株
+    yf_ai_stock: "ai" # NVDA, AMD 等のAI関連株
+    yf_sector_etf: "sector" # XLF, XLK 等のセクターETF
+    yf_macro: "macro" # マクロ経済関連
 
 # GitHub Status ID（自動解決用）
 github_status_ids:
-  index: "3925acc3"
-  stock: "f762022e"
-  sector: "48762504"
-  macro: "730034a5"
-  ai: "6fbb43d0"
-  finance: "ac4a91b1"
+    index: "3925acc3"
+    stock: "f762022e"
+    sector: "48762504"
+    macro: "730034a5"
+    ai: "6fbb43d0"
+    finance: "ac4a91b1"
 
 # ===========================================
 # 情報源設定
@@ -406,44 +407,44 @@ github_status_ids:
 
 # RSS設定
 rss:
-  presets_file: "data/config/rss-presets.json"
-  # rss-presets.json の category フィールドを status_mapping で解決
+    presets_file: "data/config/rss-presets.json"
+    # rss-presets.json の category フィールドを status_mapping で解決
 
 # yfinance設定（将来用）
 yfinance:
-  enabled: false
-  tickers:
-    # 指数
-    - symbol: "^GSPC"
-      category: "yf_index"
-    - symbol: "^DJI"
-      category: "yf_index"
-    - symbol: "^IXIC"
-      category: "yf_index"
+    enabled: false
+    tickers:
+        # 指数
+        - symbol: "^GSPC"
+          category: "yf_index"
+        - symbol: "^DJI"
+          category: "yf_index"
+        - symbol: "^IXIC"
+          category: "yf_index"
 
-    # AI関連株
-    - symbol: "NVDA"
-      category: "yf_ai_stock"
-    - symbol: "AMD"
-      category: "yf_ai_stock"
-    - symbol: "GOOGL"
-      category: "yf_ai_stock"
-    - symbol: "MSFT"
-      category: "yf_ai_stock"
+        # AI関連株
+        - symbol: "NVDA"
+          category: "yf_ai_stock"
+        - symbol: "AMD"
+          category: "yf_ai_stock"
+        - symbol: "GOOGL"
+          category: "yf_ai_stock"
+        - symbol: "MSFT"
+          category: "yf_ai_stock"
 
-    # 一般個別株
-    - symbol: "AAPL"
-      category: "yf_stock"
-    - symbol: "AMZN"
-      category: "yf_stock"
-    - symbol: "TSLA"
-      category: "yf_stock"
+        # 一般個別株
+        - symbol: "AAPL"
+          category: "yf_stock"
+        - symbol: "AMZN"
+          category: "yf_stock"
+        - symbol: "TSLA"
+          category: "yf_stock"
 
-    # セクターETF
-    - symbol: "XLF"
-      category: "yf_sector_etf"
-    - symbol: "XLK"
-      category: "yf_sector_etf"
+        # セクターETF
+        - symbol: "XLF"
+          category: "yf_sector_etf"
+        - symbol: "XLK"
+          category: "yf_sector_etf"
 
 # ===========================================
 # 処理設定
@@ -451,54 +452,54 @@ yfinance:
 
 # 本文抽出設定
 extraction:
-  concurrency: 5
-  timeout_seconds: 30
-  min_body_length: 200
-  max_retries: 3
+    concurrency: 5
+    timeout_seconds: 30
+    min_body_length: 200
+    max_retries: 3
 
 # 要約設定
 summarization:
-  concurrency: 3
-  timeout_seconds: 60
-  max_retries: 3
-  prompt_template: |
-    以下の金融ニュース記事を分析し、日本語で構造化された要約を作成してください。
+    concurrency: 3
+    timeout_seconds: 60
+    max_retries: 3
+    prompt_template: |
+        以下の金融ニュース記事を分析し、日本語で構造化された要約を作成してください。
 
-    ## 記事情報
-    **タイトル**: {title}
-    **ソース**: {source}
-    **公開日**: {published}
+        ## 記事情報
+        **タイトル**: {title}
+        **ソース**: {source}
+        **公開日**: {published}
 
-    **本文**:
-    {body}
+        **本文**:
+        {body}
 
-    ## 出力形式 (JSON)
-    {{
-      "overview": "記事の主旨を1-2文で要約",
-      "key_points": ["重要なポイント1", "重要なポイント2"],
-      "market_impact": "投資家・市場への影響",
-      "related_info": "関連する背景情報（なければnull）"
-    }}
+        ## 出力形式 (JSON)
+        {{
+          "overview": "記事の主旨を1-2文で要約",
+          "key_points": ["重要なポイント1", "重要なポイント2"],
+          "market_impact": "投資家・市場への影響",
+          "related_info": "関連する背景情報（なければnull）"
+        }}
 
 # GitHub設定
 github:
-  project_number: 15
-  project_id: "PVT_kwHOBoK6AM4BMpw_"
-  status_field_id: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
-  published_date_field_id: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
-  repository: "YH-05/finance"
-  duplicate_check_days: 7  # 重複チェック対象期間
-  dry_run: false
+    project_number: 15
+    project_id: "PVT_kwHOBoK6AM4BMpw_"
+    status_field_id: "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE"
+    published_date_field_id: "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
+    repository: "YH-05/finance"
+    duplicate_check_days: 7 # 重複チェック対象期間
+    dry_run: false
 
 # フィルタリング
 filtering:
-  max_age_hours: 168  # 7日
+    max_age_hours: 168 # 7日
 
 # 出力設定
 output:
-  # 結果JSONの出力先（デフォルト）
-  result_dir: "data/exports/news-workflow"
-  # ファイル名パターン: workflow-result-{timestamp}.json
+    # 結果JSONの出力先（デフォルト）
+    result_dir: "data/exports/news-workflow"
+    # ファイル名パターン: workflow-result-{timestamp}.json
 ```
 
 ## CLI使用方法
@@ -610,20 +611,25 @@ logs/
 # {title}
 
 ## 概要
+
 {overview}
 
 ## キーポイント
+
 - {key_point_1}
 - {key_point_2}
 - {key_point_3}
 
 ## 市場への影響
+
 {market_impact}
 
 ## 関連情報
+
 {related_info}
 
 ---
+
 **ソース**: {source_name}
 **公開日**: {published}
 **URL**: {url}
@@ -711,15 +717,15 @@ logs/
 
 ## 主要ファイル
 
-| ファイル                                | 説明                      |
-| --------------------------------------- | ------------------------- |
-| `src/rss/core/parser.py`                | FeedParser（再利用）      |
-| `src/rss/services/article_extractor.py` | ArticleExtractor（再利用）|
-| `src/news/processors/agent_base.py`     | Claude Agent SDKパターン  |
-| `src/news/sinks/github.py`              | GitHub Issue作成パターン  |
-| `data/config/rss-presets.json`          | RSSフィード設定           |
-| `data/config/finance-news-themes.json`  | テーマ設定（参考）        |
-| `notebook/claude-agent-test.ipynb`      | Claude Agent SDK使用例    |
+| ファイル                                | 説明                       |
+| --------------------------------------- | -------------------------- |
+| `src/rss/core/parser.py`                | FeedParser（再利用）       |
+| `src/rss/services/article_extractor.py` | ArticleExtractor（再利用） |
+| `src/news/processors/agent_base.py`     | Claude Agent SDKパターン   |
+| `src/news/sinks/github.py`              | GitHub Issue作成パターン   |
+| `data/config/rss-presets.json`          | RSSフィード設定            |
+| `data/config/finance-news-themes.json`  | テーマ設定（参考）         |
+| `notebook/claude-agent-test.ipynb`      | Claude Agent SDK使用例     |
 
 ## 検証方法
 
@@ -733,3 +739,271 @@ logs/
 - 既存の `/finance-news-workflow`（エージェントベース）は維持
 - 新ワークフローが安定稼働するまで並行運用
 - 手動で削除指示があるまで既存ワークフローは残す
+
+---
+
+## Phase 9: claude-agent-sdk 移行（追加計画）
+
+### 背景
+
+現在の `src/news/summarizer.py` は Anthropic Python SDK（`from anthropic import Anthropic`）を使用しており、API キーによる従量課金が必要。Claude Code サブスクリプション（Pro/Max）を活用するには `claude-agent-sdk` への移行が必要。
+
+### 現状と問題点
+
+| 項目              | 現状                                      | 問題                                 |
+| ----------------- | ----------------------------------------- | ------------------------------------ |
+| AI呼び出し        | `anthropic.Anthropic().messages.create()` | API キーが必要（従量課金）           |
+| 認証              | 環境変数 `ANTHROPIC_API_KEY`              | Claude Code サブスクリプション未活用 |
+| project.md の計画 | Claude Agent SDK 使用と記載               | 実装と乖離                           |
+
+### 解決策: claude-agent-sdk への移行
+
+#### インストール
+
+```bash
+uv add claude-agent-sdk
+```
+
+#### 前提条件
+
+- Python 3.10 以上
+- Node.js 18 以上
+- `claude` コマンドで事前認証済み
+
+#### 認証方法
+
+1. **ローカル実行**: `claude` コマンドで認証（API キー不要）
+2. **CI/CD**: 環境変数 `ANTHROPIC_API_KEY` を設定
+
+### 実装計画
+
+#### 変更対象ファイル
+
+| ファイル                             | 変更内容                                |
+| ------------------------------------ | --------------------------------------- |
+| `pyproject.toml`                     | `claude-agent-sdk` 依存関係追加         |
+| `src/news/summarizer.py`             | claude-agent-sdk を使用するよう書き換え |
+| `tests/news/unit/test_summarizer.py` | テスト更新（SDK モック対応）            |
+
+#### 新しい Summarizer 実装
+
+```python
+"""Summarizer using Claude Agent SDK."""
+
+from __future__ import annotations
+
+import asyncio
+import json
+import re
+from typing import TYPE_CHECKING
+
+from pydantic import ValidationError
+
+from news.models import (
+    ExtractedArticle,
+    StructuredSummary,
+    SummarizationStatus,
+    SummarizedArticle,
+)
+from news.utils.logging_config import get_logger
+
+if TYPE_CHECKING:
+    from news.config.workflow import NewsWorkflowConfig
+
+logger = get_logger(__name__, module="summarizer")
+
+
+class Summarizer:
+    """Claude Agent SDK を使用した構造化要約。
+
+    Claude Code サブスクリプション（Pro/Max）を活用して
+    記事本文を分析し、4セクション構造の日本語要約を生成する。
+
+    Parameters
+    ----------
+    config : NewsWorkflowConfig
+        ワークフロー設定。
+
+    Notes
+    -----
+    - 事前に `claude` コマンドで認証が必要
+    - CI/CD では環境変数 ANTHROPIC_API_KEY を設定
+    """
+
+    def __init__(self, config: NewsWorkflowConfig) -> None:
+        self._config = config
+        self._prompt_template = config.summarization.prompt_template
+        self._max_retries = config.summarization.max_retries
+        self._timeout_seconds = config.summarization.timeout_seconds
+
+    async def _call_claude_sdk(self, prompt: str) -> str:
+        """Claude Agent SDK を使用して要約を取得。
+
+        Parameters
+        ----------
+        prompt : str
+            要約プロンプト。
+
+        Returns
+        -------
+        str
+            Claude からのレスポンステキスト。
+
+        Raises
+        ------
+        RuntimeError
+            claude-agent-sdk がインストールされていない場合。
+        """
+        try:
+            from claude_agent_sdk import (
+                query,
+                ClaudeAgentOptions,
+                AssistantMessage,
+                TextBlock,
+            )
+        except ImportError as e:
+            raise RuntimeError(
+                "claude-agent-sdk is not installed. "
+                "Install with: uv add claude-agent-sdk"
+            ) from e
+
+        options = ClaudeAgentOptions(
+            allowed_tools=[],  # ツール不要（テキスト生成のみ）
+            permission_mode="default",
+        )
+
+        response_parts: list[str] = []
+        async for message in query(prompt=prompt, options=options):
+            if isinstance(message, AssistantMessage):
+                for block in message.content:
+                    if isinstance(block, TextBlock):
+                        response_parts.append(block.text)
+
+        return "".join(response_parts)
+
+    async def summarize(self, article: ExtractedArticle) -> SummarizedArticle:
+        """単一記事を要約する。
+
+        Parameters
+        ----------
+        article : ExtractedArticle
+            本文抽出済み記事。
+
+        Returns
+        -------
+        SummarizedArticle
+            要約結果を含む記事オブジェクト。
+        """
+        if article.body_text is None:
+            return SummarizedArticle(
+                extracted=article,
+                summary=None,
+                summarization_status=SummarizationStatus.SKIPPED,
+                error_message="No body text available",
+            )
+
+        prompt = self._build_prompt(article)
+
+        for attempt in range(self._max_retries):
+            try:
+                async with asyncio.timeout(self._timeout_seconds):
+                    response_text = await self._call_claude_sdk(prompt)
+
+                summary = self._parse_response(response_text)
+                return SummarizedArticle(
+                    extracted=article,
+                    summary=summary,
+                    summarization_status=SummarizationStatus.SUCCESS,
+                    error_message=None,
+                )
+
+            except asyncio.TimeoutError:
+                logger.warning(
+                    "Summarization timeout",
+                    attempt=attempt + 1,
+                    max_retries=self._max_retries,
+                )
+                if attempt == self._max_retries - 1:
+                    return SummarizedArticle(
+                        extracted=article,
+                        summary=None,
+                        summarization_status=SummarizationStatus.TIMEOUT,
+                        error_message=f"Timeout after {self._timeout_seconds}s",
+                    )
+
+            except Exception as e:
+                logger.warning(
+                    "Summarization failed",
+                    attempt=attempt + 1,
+                    error=str(e),
+                )
+                if attempt == self._max_retries - 1:
+                    return SummarizedArticle(
+                        extracted=article,
+                        summary=None,
+                        summarization_status=SummarizationStatus.FAILED,
+                        error_message=str(e),
+                    )
+
+            await asyncio.sleep(2 ** attempt)  # 指数バックオフ
+
+    def _build_prompt(self, article: ExtractedArticle) -> str:
+        """要約プロンプトを構築する。"""
+        collected = article.collected
+        published_str = (
+            collected.published.isoformat() if collected.published else "不明"
+        )
+
+        return f"""以下のニュース記事を日本語で要約してください。
+
+## 記事情報
+- タイトル: {collected.title}
+- ソース: {collected.source.source_name}
+- 公開日: {published_str}
+
+## 本文
+{article.body_text}
+
+## 出力形式
+以下のJSON形式で回答してください：
+{{
+    "overview": "記事の概要（1-2文）",
+    "key_points": ["キーポイント1", "キーポイント2", ...],
+    "market_impact": "市場への影響",
+    "related_info": "関連情報（任意、なければnull）"
+}}
+
+JSONのみを出力し、他のテキストは含めないでください。"""
+
+    def _parse_response(self, response_text: str) -> StructuredSummary:
+        """レスポンスをパースする。"""
+        # 既存の実装と同様
+        ...
+
+    async def summarize_batch(
+        self,
+        articles: list[ExtractedArticle],
+        concurrency: int = 3,
+    ) -> list[SummarizedArticle]:
+        """複数記事を並列要約する。"""
+        # 既存の実装と同様
+        ...
+```
+
+### タスクリスト
+
+- [ ] `uv add claude-agent-sdk` で依存関係追加
+- [ ] `src/news/summarizer.py` を上記実装に書き換え
+- [ ] `_parse_response` メソッドは既存実装を流用
+- [ ] `summarize_batch` メソッドは既存実装を流用
+- [ ] テストファイル `tests/news/unit/test_summarizer.py` を更新
+    - [ ] `claude_agent_sdk` のモック追加
+    - [ ] `AssistantMessage`, `TextBlock` のモック
+- [ ] ローカル実行テスト（`claude` コマンドで認証済みの環境）
+- [ ] CI/CD 設定確認（`ANTHROPIC_API_KEY` 環境変数）
+
+### 参考資料
+
+- [Claude Agent SDK クイックスタート](https://platform.claude.com/docs/ja/agent-sdk/quickstart)
+- [Agent SDK Python リファレンス](https://platform.claude.com/docs/ja/agent-sdk/python)
+- 既存実装: `src/news/processors/agent_base.py`
