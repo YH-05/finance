@@ -58,6 +58,30 @@
 
 ---
 
+## 金利・債券市場
+
+### 米国債利回り
+
+{interest_rates_table}
+
+{interest_rates_comment}
+
+### イールドカーブ分析
+
+{yield_curve_analysis}
+
+---
+
+## 為替市場
+
+### 円クロス主要通貨
+
+{currencies_table}
+
+{currencies_comment}
+
+---
+
 ## 投資テーマ別動向
 
 {theme_comment}
@@ -66,7 +90,15 @@
 
 ## 来週の注目材料
 
-{upcoming_events}
+### 主要企業決算
+
+{earnings_table}
+
+### 経済指標発表
+
+{economic_releases_table}
+
+{upcoming_events_comment}
 
 ---
 
