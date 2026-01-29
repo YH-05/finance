@@ -9,7 +9,9 @@
       "mcp__rss__rss_fetch_feed",
       "mcp__tavily__tavily_search",
       "mcp__context7__resolve-library-id",
-      "WebFetch(domain:ranaroussi.github.io)"
+      "WebFetch(domain:ranaroussi.github.io)",
+      "WebFetch(domain:www.nasdaq.com)",
+      "WebFetch(domain:finance.yahoo.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
