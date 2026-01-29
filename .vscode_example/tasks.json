@@ -1,0 +1,106 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // ==========================================
+        // Ruff関連
+        // ==========================================
+        {
+            "label": "Ruff: Check",
+            "type": "shell",
+            "command": "uv run ruff check src/ notebook/",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Ruff: Check & Fix",
+            "type": "shell",
+            "command": "uv run ruff check --fix src/ notebook/",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Ruff: Format",
+            "type": "shell",
+            "command": "uv run ruff format src/ notebook/",
+            "problemMatcher": []
+        },
+        {
+            "label": "Ruff: Format Current File",
+            "type": "shell",
+            "command": "uv run ruff format ${file}",
+            "problemMatcher": []
+        },
+
+        // ==========================================
+        // ty関連
+        // ==========================================
+        {
+            "label": "ty: Check All",
+            "type": "shell",
+            "command": "${workspaceFolder}/.ty-build/target/release/ty check src/",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "ty: Check Current File",
+            "type": "shell",
+            "command": "${workspaceFolder}/.ty-build/target/release/ty check ${file}",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+
+        // ==========================================
+        // 複合タスク
+        // ==========================================
+        {
+            "label": "⭐ Run All Checks",
+            "dependsOn": ["Ruff: Check & Fix", "ty: Check All"],
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "🔍 Check Current File",
+            "dependsOn": [
+                "Ruff: Format Current File",
+                "ty: Check Current File"
+            ],
+            "problemMatcher": []
+        },
+
+        // ==========================================
+        // その他便利タスク
+        // ==========================================
+        {
+            "label": "Jupyter: Start Server",
+            "type": "shell",
+            "command": "uv run jupyter notebook",
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Python: Run Current File",
+            "type": "shell",
+            "command": "uv run python ${file}",
+            "problemMatcher": []
+        },
+        {
+            "label": "uv: Sync Dependencies",
+            "type": "shell",
+            "command": "uv sync",
+            "problemMatcher": []
+        }
+    ]
+}
