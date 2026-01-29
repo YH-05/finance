@@ -495,6 +495,56 @@ class SummarizedArticle(BaseModel):
     )
 
 
+class FailureRecord(BaseModel):
+    """A record of a failed processing step in the workflow.
+
+    Represents information about an article that failed to process during
+    one of the workflow stages (extraction, summarization, or publication).
+    This is used for error tracking and reporting in WorkflowResult.
+
+    Attributes
+    ----------
+    url : str
+        The URL of the article that failed to process.
+    title : str
+        The title of the article that failed to process.
+    stage : str
+        The processing stage where the failure occurred.
+        Typically one of: "extraction", "summarization", "publication".
+    error : str
+        A description of the error that caused the failure.
+
+    Examples
+    --------
+    >>> from news.models import FailureRecord
+    >>> failure = FailureRecord(
+    ...     url="https://example.com/article",
+    ...     title="Failed Article",
+    ...     stage="extraction",
+    ...     error="Connection timeout after 30 seconds",
+    ... )
+    >>> failure.stage
+    'extraction'
+    """
+
+    url: str = Field(
+        ...,
+        description="The URL of the article that failed to process",
+    )
+    title: str = Field(
+        ...,
+        description="The title of the article that failed to process",
+    )
+    stage: str = Field(
+        ...,
+        description="The processing stage where the failure occurred (extraction, summarization, publication)",
+    )
+    error: str = Field(
+        ...,
+        description="A description of the error that caused the failure",
+    )
+
+
 class PublishedArticle(BaseModel):
     """An article after publication to GitHub Issues.
 
@@ -585,15 +635,123 @@ class PublishedArticle(BaseModel):
     )
 
 
+class WorkflowResult(BaseModel):
+    """The result of a complete news collection workflow execution.
+
+    Represents comprehensive statistics and details about a workflow run,
+    including counts at each stage, failure records, timing information,
+    and the list of successfully published articles.
+
+    Attributes
+    ----------
+    total_collected : int
+        The total number of articles collected from all sources.
+    total_extracted : int
+        The number of articles with successfully extracted body text.
+    total_summarized : int
+        The number of articles with successfully generated summaries.
+    total_published : int
+        The number of articles successfully published as GitHub Issues.
+    total_duplicates : int
+        The number of articles skipped due to duplicate detection.
+    extraction_failures : list[FailureRecord]
+        Records of articles that failed during the extraction stage.
+    summarization_failures : list[FailureRecord]
+        Records of articles that failed during the summarization stage.
+    publication_failures : list[FailureRecord]
+        Records of articles that failed during the publication stage.
+    started_at : datetime
+        The timestamp when the workflow started.
+    finished_at : datetime
+        The timestamp when the workflow finished.
+    elapsed_seconds : float
+        The total elapsed time in seconds.
+    published_articles : list[PublishedArticle]
+        The list of successfully published articles.
+
+    Examples
+    --------
+    >>> from datetime import datetime, timezone
+    >>> from news.models import WorkflowResult
+    >>> result = WorkflowResult(
+    ...     total_collected=10,
+    ...     total_extracted=8,
+    ...     total_summarized=7,
+    ...     total_published=5,
+    ...     total_duplicates=2,
+    ...     extraction_failures=[],
+    ...     summarization_failures=[],
+    ...     publication_failures=[],
+    ...     started_at=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+    ...     finished_at=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+    ...     elapsed_seconds=300.0,
+    ...     published_articles=[],
+    ... )
+    >>> result.total_published
+    5
+    """
+
+    total_collected: int = Field(
+        ...,
+        description="The total number of articles collected from all sources",
+    )
+    total_extracted: int = Field(
+        ...,
+        description="The number of articles with successfully extracted body text",
+    )
+    total_summarized: int = Field(
+        ...,
+        description="The number of articles with successfully generated summaries",
+    )
+    total_published: int = Field(
+        ...,
+        description="The number of articles successfully published as GitHub Issues",
+    )
+    total_duplicates: int = Field(
+        ...,
+        description="The number of articles skipped due to duplicate detection",
+    )
+    extraction_failures: list[FailureRecord] = Field(
+        ...,
+        description="Records of articles that failed during the extraction stage",
+    )
+    summarization_failures: list[FailureRecord] = Field(
+        ...,
+        description="Records of articles that failed during the summarization stage",
+    )
+    publication_failures: list[FailureRecord] = Field(
+        ...,
+        description="Records of articles that failed during the publication stage",
+    )
+    started_at: datetime = Field(
+        ...,
+        description="The timestamp when the workflow started",
+    )
+    finished_at: datetime = Field(
+        ...,
+        description="The timestamp when the workflow finished",
+    )
+    elapsed_seconds: float = Field(
+        ...,
+        description="The total elapsed time in seconds",
+    )
+    published_articles: list[PublishedArticle] = Field(
+        ...,
+        description="The list of successfully published articles",
+    )
+
+
 __all__ = [
     "ArticleSource",
     "CollectedArticle",
     "ExtractedArticle",
     "ExtractionStatus",
+    "FailureRecord",
     "PublicationStatus",
     "PublishedArticle",
     "SourceType",
     "StructuredSummary",
     "SummarizationStatus",
     "SummarizedArticle",
+    "WorkflowResult",
 ]

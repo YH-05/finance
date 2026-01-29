@@ -2074,3 +2074,698 @@ class TestPublishedArticle:
             == SourceType.YFINANCE
         )
         assert published.summarized.extracted.collected.source.source_name == "NVDA"
+
+
+class TestFailureRecord:
+    """FailureRecord Pydantic モデルのテストクラス."""
+
+    def test_正常系_全フィールドで作成できる(self) -> None:
+        """url, title, stage, error で FailureRecord を作成できる."""
+        from news.models import FailureRecord
+
+        record = FailureRecord(
+            url="https://www.cnbc.com/article/123",
+            title="Failed Article",
+            stage="extraction",
+            error="Connection timeout",
+        )
+
+        assert record.url == "https://www.cnbc.com/article/123"
+        assert record.title == "Failed Article"
+        assert record.stage == "extraction"
+        assert record.error == "Connection timeout"
+
+    def test_正常系_extraction_stageで作成できる(self) -> None:
+        """stage が extraction の FailureRecord を作成できる."""
+        from news.models import FailureRecord
+
+        record = FailureRecord(
+            url="https://example.com/article",
+            title="Extraction Failed",
+            stage="extraction",
+            error="Paywall detected",
+        )
+
+        assert record.stage == "extraction"
+
+    def test_正常系_summarization_stageで作成できる(self) -> None:
+        """stage が summarization の FailureRecord を作成できる."""
+        from news.models import FailureRecord
+
+        record = FailureRecord(
+            url="https://example.com/article",
+            title="Summarization Failed",
+            stage="summarization",
+            error="API rate limit exceeded",
+        )
+
+        assert record.stage == "summarization"
+
+    def test_正常系_publication_stageで作成できる(self) -> None:
+        """stage が publication の FailureRecord を作成できる."""
+        from news.models import FailureRecord
+
+        record = FailureRecord(
+            url="https://example.com/article",
+            title="Publication Failed",
+            stage="publication",
+            error="GitHub API error",
+        )
+
+        assert record.stage == "publication"
+
+    def test_異常系_urlが必須(self) -> None:
+        """url がない場合は ValidationError."""
+        from news.models import FailureRecord
+
+        with pytest.raises(ValidationError) as exc_info:
+            FailureRecord(
+                title="Failed Article",
+                stage="extraction",
+                error="Error message",
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("url",) for e in errors)
+
+    def test_異常系_titleが必須(self) -> None:
+        """title がない場合は ValidationError."""
+        from news.models import FailureRecord
+
+        with pytest.raises(ValidationError) as exc_info:
+            FailureRecord(
+                url="https://example.com/article",
+                stage="extraction",
+                error="Error message",
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("title",) for e in errors)
+
+    def test_異常系_stageが必須(self) -> None:
+        """stage がない場合は ValidationError."""
+        from news.models import FailureRecord
+
+        with pytest.raises(ValidationError) as exc_info:
+            FailureRecord(
+                url="https://example.com/article",
+                title="Failed Article",
+                error="Error message",
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("stage",) for e in errors)
+
+    def test_異常系_errorが必須(self) -> None:
+        """error がない場合は ValidationError."""
+        from news.models import FailureRecord
+
+        with pytest.raises(ValidationError) as exc_info:
+            FailureRecord(
+                url="https://example.com/article",
+                title="Failed Article",
+                stage="extraction",
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("error",) for e in errors)
+
+    def test_正常系_モデルをdictに変換できる(self) -> None:
+        """FailureRecord は model_dump() で dict に変換可能."""
+        from news.models import FailureRecord
+
+        record = FailureRecord(
+            url="https://example.com/article",
+            title="Failed Article",
+            stage="extraction",
+            error="Error details",
+        )
+
+        data = record.model_dump()
+
+        assert data["url"] == "https://example.com/article"
+        assert data["title"] == "Failed Article"
+        assert data["stage"] == "extraction"
+        assert data["error"] == "Error details"
+
+    def test_正常系_dictからモデルを作成できる(self) -> None:
+        """dict から FailureRecord を作成可能."""
+        from news.models import FailureRecord
+
+        data = {
+            "url": "https://example.com/article",
+            "title": "Failed Article",
+            "stage": "summarization",
+            "error": "API error",
+        }
+
+        record = FailureRecord.model_validate(data)
+
+        assert record.url == "https://example.com/article"
+        assert record.title == "Failed Article"
+        assert record.stage == "summarization"
+        assert record.error == "API error"
+
+    def test_正常系_JSONシリアライズ可能(self) -> None:
+        """FailureRecord は JSON シリアライズ可能."""
+        from news.models import FailureRecord
+
+        record = FailureRecord(
+            url="https://example.com/article",
+            title="Failed Article",
+            stage="publication",
+            error="GitHub error",
+        )
+
+        json_str = record.model_dump_json()
+
+        assert "https://example.com/article" in json_str
+        assert '"title":"Failed Article"' in json_str
+        assert '"stage":"publication"' in json_str
+        assert '"error":"GitHub error"' in json_str
+
+
+class TestWorkflowResult:
+    """WorkflowResult Pydantic モデルのテストクラス."""
+
+    def test_正常系_全フィールドで作成できる(self) -> None:
+        """WorkflowResult を全フィールドで作成できる."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            FailureRecord,
+            PublicationStatus,
+            PublishedArticle,
+            SourceType,
+            StructuredSummary,
+            SummarizationStatus,
+            SummarizedArticle,
+            WorkflowResult,
+        )
+
+        # PublishedArticle を作成
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC",
+            category="market",
+        )
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/1",  # type: ignore[arg-type]
+            title="Article 1",
+            source=source,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        summary = StructuredSummary(
+            overview="概要",
+            key_points=["ポイント"],
+            market_impact="影響",
+        )
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+        published = PublishedArticle(
+            summarized=summarized,
+            issue_number=100,
+            issue_url="https://github.com/YH-05/finance/issues/100",
+            publication_status=PublicationStatus.SUCCESS,
+        )
+
+        # FailureRecord を作成
+        extraction_failure = FailureRecord(
+            url="https://example.com/fail1",
+            title="Failed 1",
+            stage="extraction",
+            error="Timeout",
+        )
+        summarization_failure = FailureRecord(
+            url="https://example.com/fail2",
+            title="Failed 2",
+            stage="summarization",
+            error="API error",
+        )
+        publication_failure = FailureRecord(
+            url="https://example.com/fail3",
+            title="Failed 3",
+            stage="publication",
+            error="GitHub error",
+        )
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 30, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            extraction_failures=[extraction_failure],
+            summarization_failures=[summarization_failure],
+            publication_failures=[publication_failure],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=330.0,
+            published_articles=[published],
+        )
+
+        assert result.total_collected == 10
+        assert result.total_extracted == 8
+        assert result.total_summarized == 7
+        assert result.total_published == 5
+        assert result.total_duplicates == 2
+        assert len(result.extraction_failures) == 1
+        assert len(result.summarization_failures) == 1
+        assert len(result.publication_failures) == 1
+        assert result.started_at == started
+        assert result.finished_at == finished
+        assert result.elapsed_seconds == 330.0
+        assert len(result.published_articles) == 1
+
+    def test_正常系_空のリストで作成できる(self) -> None:
+        """失敗なし・公開記事なしでも WorkflowResult を作成できる."""
+        from news.models import WorkflowResult
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 1, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=0,
+            total_extracted=0,
+            total_summarized=0,
+            total_published=0,
+            total_duplicates=0,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=60.0,
+            published_articles=[],
+        )
+
+        assert result.total_collected == 0
+        assert result.extraction_failures == []
+        assert result.summarization_failures == []
+        assert result.publication_failures == []
+        assert result.published_articles == []
+
+    def test_正常系_複数の失敗記録で作成できる(self) -> None:
+        """複数の FailureRecord を含む WorkflowResult を作成できる."""
+        from news.models import FailureRecord, WorkflowResult
+
+        failures = [
+            FailureRecord(
+                url=f"https://example.com/fail{i}",
+                title=f"Failed {i}",
+                stage="extraction",
+                error=f"Error {i}",
+            )
+            for i in range(3)
+        ]
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 2, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=5,
+            total_extracted=2,
+            total_summarized=2,
+            total_published=2,
+            total_duplicates=0,
+            extraction_failures=failures,
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=120.0,
+            published_articles=[],
+        )
+
+        assert len(result.extraction_failures) == 3
+
+    def test_異常系_total_collectedが必須(self) -> None:
+        """total_collected がない場合は ValidationError."""
+        from news.models import WorkflowResult
+
+        started = datetime.now(tz=timezone.utc)
+        finished = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            WorkflowResult(
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=started,
+                finished_at=finished,
+                elapsed_seconds=0.0,
+                published_articles=[],
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("total_collected",) for e in errors)
+
+    def test_異常系_started_atが必須(self) -> None:
+        """started_at がない場合は ValidationError."""
+        from news.models import WorkflowResult
+
+        finished = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                finished_at=finished,
+                elapsed_seconds=0.0,
+                published_articles=[],
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("started_at",) for e in errors)
+
+    def test_異常系_finished_atが必須(self) -> None:
+        """finished_at がない場合は ValidationError."""
+        from news.models import WorkflowResult
+
+        started = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=started,
+                elapsed_seconds=0.0,
+                published_articles=[],
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("finished_at",) for e in errors)
+
+    def test_異常系_elapsed_secondsが必須(self) -> None:
+        """elapsed_seconds がない場合は ValidationError."""
+        from news.models import WorkflowResult
+
+        started = datetime.now(tz=timezone.utc)
+        finished = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=started,
+                finished_at=finished,
+                published_articles=[],
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("elapsed_seconds",) for e in errors)
+
+    def test_異常系_published_articlesが必須(self) -> None:
+        """published_articles がない場合は ValidationError."""
+        from news.models import WorkflowResult
+
+        started = datetime.now(tz=timezone.utc)
+        finished = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            WorkflowResult(
+                total_collected=0,
+                total_extracted=0,
+                total_summarized=0,
+                total_published=0,
+                total_duplicates=0,
+                extraction_failures=[],
+                summarization_failures=[],
+                publication_failures=[],
+                started_at=started,
+                finished_at=finished,
+                elapsed_seconds=0.0,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("published_articles",) for e in errors)
+
+    def test_正常系_モデルをdictに変換できる(self) -> None:
+        """WorkflowResult は model_dump() で dict に変換可能."""
+        from news.models import WorkflowResult
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[],
+        )
+
+        data = result.model_dump()
+
+        assert data["total_collected"] == 10
+        assert data["total_extracted"] == 8
+        assert data["total_summarized"] == 7
+        assert data["total_published"] == 5
+        assert data["total_duplicates"] == 2
+        assert data["extraction_failures"] == []
+        assert data["started_at"] == started
+        assert data["finished_at"] == finished
+        assert data["elapsed_seconds"] == 300.0
+
+    def test_正常系_dictからモデルを作成できる(self) -> None:
+        """dict から WorkflowResult を作成可能."""
+        from news.models import WorkflowResult
+
+        data = {
+            "total_collected": 5,
+            "total_extracted": 4,
+            "total_summarized": 3,
+            "total_published": 2,
+            "total_duplicates": 1,
+            "extraction_failures": [
+                {
+                    "url": "https://example.com/fail",
+                    "title": "Failed",
+                    "stage": "extraction",
+                    "error": "Error",
+                }
+            ],
+            "summarization_failures": [],
+            "publication_failures": [],
+            "started_at": "2025-01-15T10:00:00Z",
+            "finished_at": "2025-01-15T10:05:00Z",
+            "elapsed_seconds": 300.0,
+            "published_articles": [],
+        }
+
+        result = WorkflowResult.model_validate(data)
+
+        assert result.total_collected == 5
+        assert result.total_extracted == 4
+        assert len(result.extraction_failures) == 1
+        assert result.extraction_failures[0].url == "https://example.com/fail"
+
+    def test_正常系_JSONシリアライズ可能(self) -> None:
+        """WorkflowResult は JSON シリアライズ可能."""
+        from news.models import WorkflowResult
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[],
+        )
+
+        json_str = result.model_dump_json()
+
+        assert '"total_collected":10' in json_str
+        assert '"total_extracted":8' in json_str
+        assert '"total_summarized":7' in json_str
+        assert '"total_published":5' in json_str
+        assert '"total_duplicates":2' in json_str
+        assert '"elapsed_seconds":300.0' in json_str
+
+    def test_正常系_PublishedArticleと関連が正しい(self) -> None:
+        """WorkflowResult から PublishedArticle の全プロパティにアクセスできる."""
+        from news.models import (
+            ArticleSource,
+            CollectedArticle,
+            ExtractedArticle,
+            ExtractionStatus,
+            PublicationStatus,
+            PublishedArticle,
+            SourceType,
+            StructuredSummary,
+            SummarizationStatus,
+            SummarizedArticle,
+            WorkflowResult,
+        )
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC",
+            category="market",
+        )
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/1",  # type: ignore[arg-type]
+            title="Article 1",
+            source=source,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        summary = StructuredSummary(
+            overview="概要",
+            key_points=["ポイント"],
+            market_impact="影響",
+        )
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+        published = PublishedArticle(
+            summarized=summarized,
+            issue_number=100,
+            issue_url="https://github.com/YH-05/finance/issues/100",
+            publication_status=PublicationStatus.SUCCESS,
+        )
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=1,
+            total_extracted=1,
+            total_summarized=1,
+            total_published=1,
+            total_duplicates=0,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[published],
+        )
+
+        # PublishedArticle の全プロパティにアクセス可能
+        assert len(result.published_articles) == 1
+        assert result.published_articles[0].issue_number == 100
+        assert (
+            result.published_articles[0].publication_status == PublicationStatus.SUCCESS
+        )
+        assert result.published_articles[0].summarized.summary is not None
+        assert result.published_articles[0].summarized.summary.overview == "概要"
+        assert (
+            str(result.published_articles[0].summarized.extracted.collected.url)
+            == "https://www.cnbc.com/article/1"
+        )
+
+    def test_正常系_FailureRecordと関連が正しい(self) -> None:
+        """WorkflowResult から FailureRecord の全プロパティにアクセスできる."""
+        from news.models import FailureRecord, WorkflowResult
+
+        extraction_failure = FailureRecord(
+            url="https://example.com/fail1",
+            title="Extraction Failed",
+            stage="extraction",
+            error="Timeout error",
+        )
+        summarization_failure = FailureRecord(
+            url="https://example.com/fail2",
+            title="Summarization Failed",
+            stage="summarization",
+            error="API rate limit",
+        )
+        publication_failure = FailureRecord(
+            url="https://example.com/fail3",
+            title="Publication Failed",
+            stage="publication",
+            error="GitHub API error",
+        )
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=3,
+            total_extracted=2,
+            total_summarized=1,
+            total_published=0,
+            total_duplicates=0,
+            extraction_failures=[extraction_failure],
+            summarization_failures=[summarization_failure],
+            publication_failures=[publication_failure],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[],
+        )
+
+        # FailureRecord の全プロパティにアクセス可能
+        assert len(result.extraction_failures) == 1
+        assert result.extraction_failures[0].url == "https://example.com/fail1"
+        assert result.extraction_failures[0].stage == "extraction"
+        assert result.extraction_failures[0].error == "Timeout error"
+
+        assert len(result.summarization_failures) == 1
+        assert result.summarization_failures[0].url == "https://example.com/fail2"
+        assert result.summarization_failures[0].stage == "summarization"
+
+        assert len(result.publication_failures) == 1
+        assert result.publication_failures[0].url == "https://example.com/fail3"
+        assert result.publication_failures[0].stage == "publication"
