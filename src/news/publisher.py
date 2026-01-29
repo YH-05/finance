@@ -160,8 +160,19 @@ class Publisher:
                 error_message="No summary available",
             )
 
-        # TODO: Issue 作成処理（P5-002以降）
-        raise NotImplementedError("Issue creation will be implemented in P5-002")
+        # Issue 本文とタイトルを生成
+        issue_body = self._generate_issue_body(article)
+        issue_title = self._generate_issue_title(article)
+
+        logger.debug(
+            "Generated issue content",
+            article_url=str(article.extracted.collected.url),
+            title_length=len(issue_title),
+            body_length=len(issue_body),
+        )
+
+        # TODO: 実際の Issue 作成処理（P5-003以降）
+        raise NotImplementedError("Issue creation will be implemented in P5-003")
 
     async def publish_batch(
         self,
@@ -230,6 +241,94 @@ class Publisher:
         )
 
         return results
+
+    def _generate_issue_body(self, article: SummarizedArticle) -> str:
+        """Issue本文を生成。
+
+        4セクション構造（概要、キーポイント、市場への影響、関連情報）と
+        メタデータ（ソース、公開日、URL）を含むMarkdown形式の本文を生成する。
+
+        Parameters
+        ----------
+        article : SummarizedArticle
+            要約済み記事。summary が存在することを前提とする。
+
+        Returns
+        -------
+        str
+            Markdown形式のIssue本文。
+
+        Notes
+        -----
+        - summary が None の場合の動作は未定義（呼び出し元で事前にチェックすること）
+        - related_info が None の場合、関連情報セクションは省略される
+        - published が None の場合、公開日は「不明」と表示される
+        """
+        # article.summary is not None であることは呼び出し元で保証されている
+        summary = article.summary
+        assert summary is not None  # type: ignore[union-attr]
+
+        collected = article.extracted.collected
+
+        # キーポイントをマークダウンリストに変換
+        key_points_md = "\n".join(f"- {point}" for point in summary.key_points)
+
+        # 関連情報（オプション）
+        related_info_section = ""
+        if summary.related_info:
+            related_info_section = f"""
+## 関連情報
+{summary.related_info}
+"""
+
+        # 公開日のフォーマット
+        published_str = (
+            collected.published.strftime("%Y-%m-%d %H:%M")
+            if collected.published
+            else "不明"
+        )
+
+        body = f"""# {collected.title}
+
+## 概要
+{summary.overview}
+
+## キーポイント
+{key_points_md}
+
+## 市場への影響
+{summary.market_impact}
+{related_info_section}
+---
+**ソース**: {collected.source.source_name}
+**公開日**: {published_str}
+**URL**: {collected.url}
+"""
+        return body
+
+    def _generate_issue_title(self, article: SummarizedArticle) -> str:
+        """Issueタイトルを生成。
+
+        カテゴリに基づくプレフィックスを付与したタイトルを生成する。
+
+        Parameters
+        ----------
+        article : SummarizedArticle
+            要約済み記事。
+
+        Returns
+        -------
+        str
+            プレフィックス付きのIssueタイトル（例: "[index] 記事タイトル"）。
+
+        Notes
+        -----
+        - カテゴリから status へのマッピングは _status_mapping を使用
+        - マッピングにないカテゴリの場合は "other" をプレフィックスとして使用
+        """
+        category = article.extracted.collected.source.category
+        status = self._status_mapping.get(category, "other")
+        return f"[{status}] {article.extracted.collected.title}"
 
 
 __all__ = [

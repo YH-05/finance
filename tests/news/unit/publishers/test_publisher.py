@@ -241,3 +241,240 @@ class TestPublishBatch:
         assert len(result) == 1
         # No summary -> SKIPPED regardless of dry_run
         assert result[0].publication_status == PublicationStatus.SKIPPED
+
+
+class TestGenerateIssueBody:
+    """Tests for _generate_issue_body() method (P5-002)."""
+
+    def test_正常系_4セクション構造でIssue本文を生成(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_generate_issue_body should include 4 sections."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        body = publisher._generate_issue_body(summarized_article_with_summary)
+
+        # Check all 4 sections exist
+        assert "## 概要" in body
+        assert "## キーポイント" in body
+        assert "## 市場への影響" in body
+        assert "## 関連情報" in body
+
+    def test_正常系_メタデータが含まれる(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_generate_issue_body should include source, published date, and URL."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        body = publisher._generate_issue_body(summarized_article_with_summary)
+
+        # Check metadata section
+        assert "**ソース**:" in body
+        assert "CNBC Markets" in body
+        assert "**公開日**:" in body
+        assert "2025-01-15 10:00" in body
+        assert "**URL**:" in body
+        assert "https://www.cnbc.com/article/123" in body
+
+    def test_正常系_キーポイントがマークダウンリストで出力(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_generate_issue_body should output key_points as markdown list."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        body = publisher._generate_issue_body(summarized_article_with_summary)
+
+        # Check key points are formatted as markdown list
+        assert "- ポイント1" in body
+        assert "- ポイント2" in body
+
+    def test_正常系_関連情報なしでセクション省略(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_extracted_article: ExtractedArticle,
+    ) -> None:
+        """_generate_issue_body should omit related_info section when None."""
+        from news.publisher import Publisher
+
+        # Create summary without related_info
+        summary_no_related = StructuredSummary(
+            overview="S&P 500が上昇した。",
+            key_points=["ポイント1", "ポイント2"],
+            market_impact="市場への影響",
+            related_info=None,
+        )
+        article = SummarizedArticle(
+            extracted=sample_extracted_article,
+            summary=summary_no_related,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=sample_config)
+
+        body = publisher._generate_issue_body(article)
+
+        # Related info section should not exist
+        assert "## 関連情報" not in body
+        # Other sections should still exist
+        assert "## 概要" in body
+        assert "## キーポイント" in body
+        assert "## 市場への影響" in body
+
+    def test_正常系_公開日なしで不明と表示(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_source: ArticleSource,
+        sample_summary: StructuredSummary,
+    ) -> None:
+        """_generate_issue_body should show '不明' when published is None."""
+        from news.publisher import Publisher
+
+        # Create article without published date
+        collected = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Market Update",
+            published=None,
+            source=sample_source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        article = SummarizedArticle(
+            extracted=extracted,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=sample_config)
+
+        body = publisher._generate_issue_body(article)
+
+        assert "**公開日**: 不明" in body
+
+    def test_正常系_タイトルが本文の先頭に含まれる(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_generate_issue_body should include article title at the start."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        body = publisher._generate_issue_body(summarized_article_with_summary)
+
+        # Title should be at the start as h1
+        assert body.startswith("# Market Update: S&P 500 Rallies")
+
+
+class TestGenerateIssueTitle:
+    """Tests for _generate_issue_title() method (P5-002)."""
+
+    def test_正常系_カテゴリプレフィックスが付与される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_generate_issue_title should add category prefix from status_mapping."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        title = publisher._generate_issue_title(summarized_article_with_summary)
+
+        # category is "market", which maps to "index"
+        assert title == "[index] Market Update: S&P 500 Rallies"
+
+    def test_正常系_マッピングにないカテゴリでotherプレフィックス(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_extracted_article: ExtractedArticle,
+        sample_summary: StructuredSummary,
+    ) -> None:
+        """_generate_issue_title should use 'other' for unknown categories."""
+        from news.publisher import Publisher
+
+        # Create article with unknown category
+        unknown_source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="Unknown Source",
+            category="unknown_category",
+        )
+        collected = CollectedArticle(
+            url="https://example.com/article",  # type: ignore[arg-type]
+            title="Unknown Article",
+            source=unknown_source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        article = SummarizedArticle(
+            extracted=extracted,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=sample_config)
+
+        title = publisher._generate_issue_title(article)
+
+        assert title == "[other] Unknown Article"
+
+    def test_正常系_techカテゴリでaiプレフィックス(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_extracted_article: ExtractedArticle,
+        sample_summary: StructuredSummary,
+    ) -> None:
+        """_generate_issue_title should map 'tech' category to 'ai' prefix."""
+        from news.publisher import Publisher
+
+        # Create article with tech category
+        tech_source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="Tech News",
+            category="tech",
+        )
+        collected = CollectedArticle(
+            url="https://example.com/tech-article",  # type: ignore[arg-type]
+            title="AI Breakthrough",
+            source=tech_source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        article = SummarizedArticle(
+            extracted=extracted,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=sample_config)
+
+        title = publisher._generate_issue_title(article)
+
+        assert title == "[ai] AI Breakthrough"
