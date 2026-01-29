@@ -92,13 +92,16 @@ class Summarizer:
         """
         self._config = config
         self._prompt_template = config.summarization.prompt_template
+        self._max_retries = config.summarization.max_retries
+        self._timeout_seconds = config.summarization.timeout_seconds
         self._client = Anthropic()
 
         logger.debug(
             "Summarizer initialized",
             prompt_template_length=len(self._prompt_template),
             concurrency=config.summarization.concurrency,
-            timeout_seconds=config.summarization.timeout_seconds,
+            timeout_seconds=self._timeout_seconds,
+            max_retries=self._max_retries,
         )
 
     async def summarize(self, article: ExtractedArticle) -> SummarizedArticle:
@@ -154,52 +157,80 @@ class Summarizer:
                 error_message="No body text available",
             )
 
-        # Claude API を呼び出して要約を生成
-        try:
-            response_text = self._call_claude(article)
-            summary = self._parse_response(response_text)
+        # Claude API を呼び出して要約を生成（リトライ付き）
+        last_error: Exception | None = None
 
-            logger.info(
-                "Summarization completed",
-                article_url=str(article.collected.url),
-                overview_length=len(summary.overview),
-                key_points_count=len(summary.key_points),
-            )
+        for attempt in range(self._max_retries):
+            try:
+                response_text = self._call_claude(article)
+                summary = self._parse_response(response_text)
 
-            return SummarizedArticle(
-                extracted=article,
-                summary=summary,
-                summarization_status=SummarizationStatus.SUCCESS,
-                error_message=None,
-            )
-        except ValueError as e:
-            # JSON parse error or Pydantic validation error
-            error_message = str(e)
-            logger.error(
-                "Parse/validation error",
-                article_url=str(article.collected.url),
-                error=error_message,
-            )
-            return SummarizedArticle(
-                extracted=article,
-                summary=None,
-                summarization_status=SummarizationStatus.FAILED,
-                error_message=error_message,
-            )
-        except Exception as e:
-            error_message = f"Claude API error: {e}"
-            logger.error(
-                "Claude API error",
-                article_url=str(article.collected.url),
-                error=str(e),
-                exc_info=True,
-            )
-            return SummarizedArticle(
-                extracted=article,
-                summary=None,
-                summarization_status=SummarizationStatus.FAILED,
-                error_message=error_message,
-            )
+                logger.info(
+                    "Summarization completed",
+                    article_url=str(article.collected.url),
+                    overview_length=len(summary.overview),
+                    key_points_count=len(summary.key_points),
+                    attempt=attempt + 1,
+                )
+
+                return SummarizedArticle(
+                    extracted=article,
+                    summary=summary,
+                    summarization_status=SummarizationStatus.SUCCESS,
+                    error_message=None,
+                )
+
+            except ValueError as e:
+                # JSON parse error or Pydantic validation error - don't retry
+                error_message = str(e)
+                logger.error(
+                    "Parse/validation error",
+                    article_url=str(article.collected.url),
+                    error=error_message,
+                )
+                return SummarizedArticle(
+                    extracted=article,
+                    summary=None,
+                    summarization_status=SummarizationStatus.FAILED,
+                    error_message=error_message,
+                )
+
+            except TimeoutError:
+                last_error = TimeoutError(f"Timeout after {self._timeout_seconds}s")
+                logger.warning(
+                    "Summarization timeout",
+                    article_url=str(article.collected.url),
+                    attempt=attempt + 1,
+                    max_retries=self._max_retries,
+                )
+
+            except Exception as e:
+                last_error = e
+                logger.warning(
+                    "Summarization failed",
+                    article_url=str(article.collected.url),
+                    attempt=attempt + 1,
+                    max_retries=self._max_retries,
+                    error=str(e),
+                )
+
+            # 指数バックオフ（1s, 2s, 4s）- 最後の試行後はスリープしない
+            if attempt < self._max_retries - 1:
+                await asyncio.sleep(2**attempt)
+
+        # 全リトライ失敗
+        if isinstance(last_error, TimeoutError):
+            status = SummarizationStatus.TIMEOUT
+        else:
+            status = SummarizationStatus.FAILED
+
+        error_message = str(last_error) if last_error else "Unknown error"
+        return SummarizedArticle(
+            extracted=article,
+            summary=None,
+            summarization_status=status,
+            error_message=error_message,
+        )
 
     def _call_claude(self, article: ExtractedArticle) -> str:
         """Claude API を呼び出して要約を生成する。

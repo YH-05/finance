@@ -640,3 +640,320 @@ Thank you!"""
             assert result.summary is None
             assert result.error_message is not None
             assert "Validation error" in result.error_message
+
+
+class TestSummarizerRetry:
+    """Tests for retry logic in Summarizer (P4-005).
+
+    Tests for:
+    - Maximum 3 retries on failure
+    - Exponential backoff (1s, 2s, 4s)
+    - Timeout handling (default 60 seconds)
+    - Appropriate status after all retries fail
+    - Retry logging
+    """
+
+    @pytest.fixture
+    def retry_config(self) -> NewsWorkflowConfig:
+        """Create a config with explicit retry settings."""
+        return NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"market": "index"},
+            github_status_ids={"index": "test-id"},
+            rss={"presets_file": "test.json"},  # type: ignore[arg-type]
+            summarization=SummarizationConfig(
+                prompt_template="Summarize: {body}",
+                max_retries=3,
+                timeout_seconds=60,
+            ),
+            github={  # type: ignore[arg-type]
+                "project_number": 15,
+                "project_id": "PVT_test",
+                "status_field_id": "PVTSSF_test",
+                "published_date_field_id": "PVTF_test",
+                "repository": "owner/repo",
+            },
+            output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        )
+
+    @pytest.mark.asyncio
+    async def test_正常系_1回目の試行で成功(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """First attempt succeeds, no retries needed."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            mock_content.text = '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+            mock_response.content = [mock_content]
+            mock_client.messages.create.return_value = mock_response
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.SUCCESS
+            assert mock_client.messages.create.call_count == 1
+
+    @pytest.mark.asyncio
+    async def test_正常系_2回目の試行で成功(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """First attempt fails, second succeeds."""
+        from news.summarizer import Summarizer
+
+        with (
+            patch("news.summarizer.Anthropic") as mock_anthropic,
+            patch("asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            mock_content.text = '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+            mock_response.content = [mock_content]
+
+            # First call raises, second succeeds
+            mock_client.messages.create.side_effect = [
+                Exception("API Error"),
+                mock_response,
+            ]
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.SUCCESS
+            assert mock_client.messages.create.call_count == 2
+            # Verify backoff was applied (1 second)
+            mock_sleep.assert_called_once_with(1)
+
+    @pytest.mark.asyncio
+    async def test_正常系_3回目の試行で成功(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """First two attempts fail, third succeeds."""
+        from news.summarizer import Summarizer
+
+        with (
+            patch("news.summarizer.Anthropic") as mock_anthropic,
+            patch("asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            mock_content.text = '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+            mock_response.content = [mock_content]
+
+            # First two calls raise, third succeeds
+            mock_client.messages.create.side_effect = [
+                Exception("API Error 1"),
+                Exception("API Error 2"),
+                mock_response,
+            ]
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.SUCCESS
+            assert mock_client.messages.create.call_count == 3
+            # Verify backoff was applied (1s, 2s)
+            assert mock_sleep.call_count == 2
+            mock_sleep.assert_any_call(1)
+            mock_sleep.assert_any_call(2)
+
+    @pytest.mark.asyncio
+    async def test_異常系_3回リトライ後も失敗(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """All 3 retries fail, returns FAILED status."""
+        from news.summarizer import Summarizer
+
+        with (
+            patch("news.summarizer.Anthropic") as mock_anthropic,
+            patch("asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            mock_client = MagicMock()
+            mock_client.messages.create.side_effect = Exception("Persistent API Error")
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.FAILED
+            assert result.summary is None
+            assert result.error_message is not None
+            assert "Persistent API Error" in result.error_message
+            assert mock_client.messages.create.call_count == 3
+            # Verify backoff was applied (1s, 2s)
+            assert mock_sleep.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_異常系_タイムアウトでTIMEOUTステータスを返す(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Timeout should return TIMEOUT status after retries."""
+        from news.summarizer import Summarizer
+
+        with (
+            patch("news.summarizer.Anthropic") as mock_anthropic,
+            patch("asyncio.sleep", return_value=None),
+        ):
+            mock_client = MagicMock()
+            # Simulate timeout by raising asyncio.TimeoutError
+            mock_client.messages.create.side_effect = TimeoutError("Timeout")
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.TIMEOUT
+            assert result.summary is None
+            assert result.error_message is not None
+            assert mock_client.messages.create.call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_正常系_指数バックオフの待ち時間(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Backoff should follow 1s, 2s, 4s pattern."""
+        from news.summarizer import Summarizer
+
+        with (
+            patch("news.summarizer.Anthropic") as mock_anthropic,
+            patch("asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            mock_client = MagicMock()
+            mock_client.messages.create.side_effect = Exception("Error")
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            await summarizer.summarize(extracted_article_with_body)
+
+            # 3 attempts = 2 sleeps (between attempts)
+            # Backoff: 2^0=1, 2^1=2 (no sleep after last attempt)
+            assert mock_sleep.call_count == 2
+            calls = [call[0][0] for call in mock_sleep.call_args_list]
+            assert calls == [1, 2]
+
+    @pytest.mark.asyncio
+    async def test_正常系_リトライ中のログ出力(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Retry attempts should be logged with warning level."""
+        from news.summarizer import Summarizer
+
+        with (
+            patch("news.summarizer.Anthropic") as mock_anthropic,
+            patch("asyncio.sleep", return_value=None),
+            patch("news.summarizer.logger") as mock_logger,
+        ):
+            mock_client = MagicMock()
+            mock_client.messages.create.side_effect = Exception("API Error")
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            await summarizer.summarize(extracted_article_with_body)
+
+            # Verify warning logs were called for each retry
+            warning_calls = mock_logger.warning.call_args_list
+            assert len(warning_calls) == 3
+            # Check that attempt numbers are logged
+            for i, call in enumerate(warning_calls, start=1):
+                kwargs = call[1]
+                assert kwargs.get("attempt") == i
+                assert kwargs.get("max_retries") == 3
+
+    @pytest.mark.asyncio
+    async def test_正常系_configからmax_retriesを取得(
+        self,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """max_retries should be read from config."""
+        from news.summarizer import Summarizer
+
+        # Config with max_retries=2
+        config_2_retries = NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"market": "index"},
+            github_status_ids={"index": "test-id"},
+            rss={"presets_file": "test.json"},  # type: ignore[arg-type]
+            summarization=SummarizationConfig(
+                prompt_template="Summarize: {body}",
+                max_retries=2,
+                timeout_seconds=60,
+            ),
+            github={  # type: ignore[arg-type]
+                "project_number": 15,
+                "project_id": "PVT_test",
+                "status_field_id": "PVTSSF_test",
+                "published_date_field_id": "PVTF_test",
+                "repository": "owner/repo",
+            },
+            output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        )
+
+        with (
+            patch("news.summarizer.Anthropic") as mock_anthropic,
+            patch("asyncio.sleep", return_value=None),
+        ):
+            mock_client = MagicMock()
+            mock_client.messages.create.side_effect = Exception("Error")
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=config_2_retries)
+            await summarizer.summarize(extracted_article_with_body)
+
+            # Should only retry 2 times (as per config)
+            assert mock_client.messages.create.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_configからtimeout_secondsを取得(
+        self,
+        retry_config: NewsWorkflowConfig,
+    ) -> None:
+        """timeout_seconds should be read from config and used in __init__."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=retry_config)
+
+            # Verify timeout is stored from config
+            assert summarizer._timeout_seconds == 60
+
+    @pytest.mark.asyncio
+    async def test_正常系_本文なしの場合はリトライなしでSKIPPED(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_no_body: ExtractedArticle,
+    ) -> None:
+        """No body text should return SKIPPED without any retry attempts."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            mock_client = MagicMock()
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=retry_config)
+            result = await summarizer.summarize(extracted_article_no_body)
+
+            assert result.summarization_status == SummarizationStatus.SKIPPED
+            # Should not call Claude API at all
+            mock_client.messages.create.assert_not_called()
