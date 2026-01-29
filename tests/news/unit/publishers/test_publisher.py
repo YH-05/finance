@@ -34,7 +34,11 @@ def sample_config() -> NewsWorkflowConfig:
     return NewsWorkflowConfig(
         version="1.0",
         status_mapping={"market": "index", "tech": "ai"},
-        github_status_ids={"index": "test-index-id", "ai": "test-ai-id"},
+        github_status_ids={
+            "index": "test-index-id",
+            "ai": "test-ai-id",
+            "finance": "test-finance-id",
+        },
         rss={"presets_file": "test.json"},  # type: ignore[arg-type]
         summarization=SummarizationConfig(
             prompt_template="Summarize this article in Japanese: {body}",
@@ -478,3 +482,145 @@ class TestGenerateIssueTitle:
         title = publisher._generate_issue_title(article)
 
         assert title == "[ai] AI Breakthrough"
+
+
+class TestResolveStatus:
+    """Tests for _resolve_status() method (P5-003)."""
+
+    def test_正常系_カテゴリからStatusを解決(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_resolve_status should resolve category to status name and ID."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        # category is "market", which maps to "index"
+        status_name, status_id = publisher._resolve_status(
+            summarized_article_with_summary
+        )
+
+        assert status_name == "index"
+        assert status_id == "test-index-id"
+
+    def test_正常系_techカテゴリでaiステータス(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_extracted_article: ExtractedArticle,
+        sample_summary: StructuredSummary,
+    ) -> None:
+        """_resolve_status should map 'tech' category to 'ai' status."""
+        from news.publisher import Publisher
+
+        # Create article with tech category
+        tech_source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="Tech News",
+            category="tech",
+        )
+        collected = CollectedArticle(
+            url="https://example.com/tech-article",  # type: ignore[arg-type]
+            title="AI Breakthrough",
+            source=tech_source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        article = SummarizedArticle(
+            extracted=extracted,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=sample_config)
+
+        status_name, status_id = publisher._resolve_status(article)
+
+        assert status_name == "ai"
+        assert status_id == "test-ai-id"
+
+    def test_正常系_未知のカテゴリでfinanceフォールバック(
+        self,
+        sample_extracted_article: ExtractedArticle,
+        sample_summary: StructuredSummary,
+    ) -> None:
+        """_resolve_status should fallback to 'finance' for unknown categories."""
+        from news.publisher import Publisher
+
+        # Config with finance fallback
+        config_with_finance = NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"market": "index", "tech": "ai"},
+            github_status_ids={
+                "index": "test-index-id",
+                "ai": "test-ai-id",
+                "finance": "test-finance-id",
+            },
+            rss={"presets_file": "test.json"},  # type: ignore[arg-type]
+            summarization=SummarizationConfig(
+                prompt_template="Summarize this article in Japanese: {body}",
+            ),
+            github={  # type: ignore[arg-type]
+                "project_number": 15,
+                "project_id": "PVT_test",
+                "status_field_id": "PVTSSF_test",
+                "published_date_field_id": "PVTF_test",
+                "repository": "YH-05/finance",
+            },
+            output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        )
+
+        # Create article with unknown category
+        unknown_source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="Unknown Source",
+            category="unknown_category",
+        )
+        collected = CollectedArticle(
+            url="https://example.com/article",  # type: ignore[arg-type]
+            title="Unknown Article",
+            source=unknown_source,
+            collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        article = SummarizedArticle(
+            extracted=extracted,
+            summary=sample_summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+
+        publisher = Publisher(config=config_with_finance)
+
+        status_name, status_id = publisher._resolve_status(article)
+
+        # Should fallback to "finance"
+        assert status_name == "finance"
+        assert status_id == "test-finance-id"
+
+    def test_正常系_戻り値がタプル(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_resolve_status should return a tuple of (status_name, status_id)."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        result = publisher._resolve_status(summarized_article_with_summary)
+
+        assert isinstance(result, tuple)
+        assert len(result) == 2
+        assert isinstance(result[0], str)
+        assert isinstance(result[1], str)

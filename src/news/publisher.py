@@ -330,6 +330,53 @@ class Publisher:
         status = self._status_mapping.get(category, "other")
         return f"[{status}] {article.extracted.collected.title}"
 
+    def _resolve_status(self, article: SummarizedArticle) -> tuple[str, str]:
+        """カテゴリからGitHub Statusを解決。
+
+        ArticleSource.category から status_mapping を使用して Status 名を取得し、
+        github_status_ids から Status Option ID を取得する。
+
+        Parameters
+        ----------
+        article : SummarizedArticle
+            要約済み記事。
+
+        Returns
+        -------
+        tuple[str, str]
+            (Status名, Status Option ID) のタプル。
+            - Status名: "index", "stock", "sector", "macro", "ai", "finance" など
+            - Status Option ID: GitHub Project の Status フィールドの Option ID
+
+        Notes
+        -----
+        - 未知のカテゴリの場合は "finance" がデフォルト Status 名として使用される
+        - Status 名が github_status_ids に存在しない場合も "finance" の ID が使用される
+
+        Examples
+        --------
+        >>> publisher._resolve_status(article)
+        ("index", "3925acc3")
+        """
+        category = article.extracted.collected.source.category
+
+        # status_mapping でカテゴリ → Status名 を解決
+        # 例: "market" → "index", "tech" → "ai"
+        status_name = self._status_mapping.get(category, "finance")
+
+        # github_status_ids で Status名 → Option ID を解決
+        # 例: "index" → "3925acc3"
+        status_id = self._status_ids.get(status_name, self._status_ids["finance"])
+
+        logger.debug(
+            "Resolved status from category",
+            category=category,
+            status_name=status_name,
+            status_id=status_id,
+        )
+
+        return status_name, status_id
+
 
 __all__ = [
     "Publisher",
