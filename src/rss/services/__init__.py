@@ -1,5 +1,10 @@
 """Services for RSS feed management."""
 
+from .article_extractor import (
+    ArticleExtractor,
+    ExtractedArticle,
+    ExtractionStatus,
+)
 from .batch_scheduler import BatchScheduler
 from .feed_fetcher import FeedFetcher
 from .feed_manager import FeedManager
@@ -11,8 +16,11 @@ from .news_categorizer import (
 )
 
 __all__ = [
+    "ArticleExtractor",
     "BatchScheduler",
     "CategorizationResult",
+    "ExtractedArticle",
+    "ExtractionStatus",
     "FeedFetcher",
     "FeedManager",
     "FeedReader",

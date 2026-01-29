@@ -39,6 +39,7 @@ dependencies = [
     "playwright>=1.49.0",
     "protobuf>=6.33.4",
     "pretty-errors",
+    "trafilatura>=2.0.0",
 ]
 [project.optional-dependencies]
 dev = [

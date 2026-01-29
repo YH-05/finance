@@ -12,6 +12,8 @@ FeedReader
     Reads and filters stored feed items.
 BatchScheduler
     Schedules and executes batch feed fetching operations.
+ArticleExtractor
+    Extracts article content from web pages using trafilatura.
 
 Data Models
 -----------
@@ -27,6 +29,10 @@ FetchStatus
     Enum for fetch status (success, failure, pending).
 BatchStats
     Statistics from a batch fetch operation.
+ExtractedArticle
+    Result of article content extraction.
+ExtractionStatus
+    Enum for extraction status (success, failed, paywall, timeout).
 
 Exceptions
 ----------
@@ -50,6 +56,7 @@ Examples
 >>> from rss import FeedManager, FeedFetcher, FeedReader, BatchScheduler
 >>> from rss import Feed, FeedItem, FetchResult, BatchStats
 >>> from rss import RSSError, FeedNotFoundError
+>>> from rss import ArticleExtractor, ExtractedArticle, ExtractionStatus
 """
 
 from utils_core.logging import get_logger
@@ -63,12 +70,23 @@ from .exceptions import (
     InvalidURLError,
     RSSError,
 )
-from .services import BatchScheduler, FeedFetcher, FeedManager, FeedReader
+from .services import (
+    ArticleExtractor,
+    BatchScheduler,
+    ExtractedArticle,
+    ExtractionStatus,
+    FeedFetcher,
+    FeedManager,
+    FeedReader,
+)
 from .types import BatchStats, Feed, FeedItem, FetchInterval, FetchResult, FetchStatus
 
 __all__ = [
+    "ArticleExtractor",
     "BatchScheduler",
     "BatchStats",
+    "ExtractedArticle",
+    "ExtractionStatus",
     "Feed",
     "FeedAlreadyExistsError",
     "FeedFetchError",
