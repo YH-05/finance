@@ -92,8 +92,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-18T12:00:00.000000+00:00",
-      "updated_at": "2026-01-29T00:39:51.746855+00:00",
-      "last_fetched": "2026-01-29T00:39:51.746851+00:00",
+      "updated_at": "2026-01-29T02:57:08.529776+00:00",
+      "last_fetched": "2026-01-29T02:57:08.529769+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -260,8 +260,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.152991+00:00",
-      "updated_at": "2026-01-29T00:39:54.223086+00:00",
-      "last_fetched": "2026-01-29T00:39:54.223082+00:00",
+      "updated_at": "2026-01-29T02:57:09.553087+00:00",
+      "last_fetched": "2026-01-29T02:57:09.553081+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -272,8 +272,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.154113+00:00",
-      "updated_at": "2026-01-29T00:39:54.344833+00:00",
-      "last_fetched": "2026-01-29T00:39:54.344817+00:00",
+      "updated_at": "2026-01-29T02:57:09.618749+00:00",
+      "last_fetched": "2026-01-29T02:57:09.618746+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -284,8 +284,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.154668+00:00",
-      "updated_at": "2026-01-29T00:39:55.138198+00:00",
-      "last_fetched": "2026-01-29T00:39:55.138192+00:00",
+      "updated_at": "2026-01-29T02:57:09.840829+00:00",
+      "last_fetched": "2026-01-29T02:57:09.840824+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -296,8 +296,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-15T00:05:10.155297+00:00",
-      "updated_at": "2026-01-29T00:39:55.407836+00:00",
-      "last_fetched": "2026-01-29T00:39:55.407830+00:00",
+      "updated_at": "2026-01-29T02:57:09.978490+00:00",
+      "last_fetched": "2026-01-29T02:57:09.978485+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -452,8 +452,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-19T07:25:34.060168+00:00",
-      "updated_at": "2026-01-29T00:39:55.549731+00:00",
-      "last_fetched": "2026-01-29T00:39:55.549723+00:00",
+      "updated_at": "2026-01-29T02:57:10.439593+00:00",
+      "last_fetched": "2026-01-29T02:57:10.439589+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -476,8 +476,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-19T07:25:34.183496+00:00",
-      "updated_at": "2026-01-29T00:39:55.913582+00:00",
-      "last_fetched": "2026-01-29T00:39:55.913578+00:00",
+      "updated_at": "2026-01-29T02:57:10.559349+00:00",
+      "last_fetched": "2026-01-29T02:57:10.559346+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -488,8 +488,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-19T07:25:34.220745+00:00",
-      "updated_at": "2026-01-29T00:39:56.445896+00:00",
-      "last_fetched": "2026-01-29T00:39:56.445890+00:00",
+      "updated_at": "2026-01-29T02:57:10.870584+00:00",
+      "last_fetched": "2026-01-29T02:57:10.870581+00:00",
       "last_status": "success",
       "enabled": true
     },
@@ -500,8 +500,8 @@
       "category": "tech",
       "fetch_interval": "daily",
       "created_at": "2026-01-19T07:25:34.253680+00:00",
-      "updated_at": "2026-01-29T00:39:56.587121+00:00",
-      "last_fetched": "2026-01-29T00:39:56.587117+00:00",
+      "updated_at": "2026-01-29T02:57:10.985833+00:00",
+      "last_fetched": "2026-01-29T02:57:10.985828+00:00",
       "last_status": "success",
       "enabled": true
     }
