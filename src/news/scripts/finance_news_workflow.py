@@ -35,13 +35,16 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import logging
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from news.config.workflow import load_config
 from news.orchestrator import NewsWorkflowOrchestrator
-from news.utils.logging_config import get_logger, set_log_level
+from news.utils.logging_config import get_logger
+from news.utils.logging_config import setup_logging as _setup_logging
 
 if TYPE_CHECKING:
     from news.models import WorkflowResult
@@ -50,6 +53,73 @@ logger = get_logger(__name__, module="scripts.finance_news_workflow")
 
 # Default configuration file path
 DEFAULT_CONFIG_PATH = Path("data/config/news-collection-config.yaml")
+
+# Default log directory
+DEFAULT_LOG_DIR = Path("logs")
+
+
+def setup_logging(
+    *,
+    verbose: bool = False,
+    log_dir: Path | None = None,
+) -> Path:
+    """Initialize logging configuration for the workflow.
+
+    Sets up logging to both console and file. The log file is named
+    with the current date: `logs/news-workflow-{date}.log`.
+
+    Parameters
+    ----------
+    verbose : bool, optional
+        If True, sets log level to DEBUG. Default is INFO.
+    log_dir : Path | None, optional
+        Directory for log files. Default is `logs/`.
+
+    Returns
+    -------
+    Path
+        Path to the created log file.
+
+    Examples
+    --------
+    >>> log_file = setup_logging(verbose=False)
+    >>> log_file.name
+    'news-workflow-2026-01-30.log'
+
+    >>> log_file = setup_logging(verbose=True)
+    >>> logging.root.level == logging.DEBUG
+    True
+    """
+    log_level = "DEBUG" if verbose else "INFO"
+
+    # Use default log directory if not specified
+    if log_dir is None:
+        log_dir = DEFAULT_LOG_DIR
+
+    # Create log directory if it doesn't exist
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    # Generate date-based log file name
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    log_file = log_dir / f"news-workflow-{date_str}.log"
+
+    # Setup logging using the news.utils.logging_config module
+    _setup_logging(
+        level=log_level,
+        format="console",
+        log_file=log_file,
+        include_timestamp=True,
+        include_caller_info=True,
+        force=True,
+    )
+
+    logger.info(
+        "Logging initialized",
+        log_file=str(log_file),
+        level=log_level,
+    )
+
+    return log_file
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -266,9 +336,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = create_parser()
     args = parser.parse_args(argv)
 
-    # Set log level to DEBUG if verbose mode is enabled
-    if args.verbose:
-        set_log_level("DEBUG")
+    # Setup logging with file output and console output
+    setup_logging(verbose=args.verbose)
 
     logger.info(
         "Finance news workflow script started",
@@ -303,9 +372,11 @@ if __name__ == "__main__":
 # Export all public symbols
 __all__ = [
     "DEFAULT_CONFIG_PATH",
+    "DEFAULT_LOG_DIR",
     "create_parser",
     "main",
     "parse_statuses",
     "print_result_summary",
     "run_workflow",
+    "setup_logging",
 ]
