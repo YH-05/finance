@@ -3,6 +3,206 @@
   "feed_id": "af717f84-da0f-400e-a77d-823836af01d3",
   "items": [
     {
+      "item_id": "a09f7ec0-1b50-4392-9f99-c6db1ea30b5c",
+      "title": "Meta burned $19 billion on VR last year, and 2026 won’t be any better",
+      "link": "https://techcrunch.com/2026/01/28/meta-burned-19-billion-on-vr-last-year-and-2026-wont-be-any-better/",
+      "published": "2026-01-29T00:20:18+00:00",
+      "summary": "The reported financial losses follow a series of layoffs at the VR unit.",
+      "content": null,
+      "author": "Lucas Ropek",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "c7bd4e83-0ddc-4a2d-8d17-b3d4bf5c4b40",
+      "title": "Zuckerberg teases agentic commerce tools and major AI rollout in 2026",
+      "link": "https://techcrunch.com/2026/01/28/zuckerberg-teases-agentic-commerce-tools-and-major-ai-rollout-in-2026/",
+      "published": "2026-01-28T23:16:02+00:00",
+      "summary": "Mark Zuckerberg says 2026 will be \"a big year for delivering personal super intelligence.\"",
+      "content": null,
+      "author": "Russell Brandom",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "55d39f38-ce9a-4520-868c-340243134857",
+      "title": "Trump energy department loosens rules on nuclear safety",
+      "link": "https://techcrunch.com/2026/01/28/trump-energy-department-loosens-rules-on-nuclear-safety/",
+      "published": "2026-01-28T22:50:18+00:00",
+      "summary": "The new rules apply to nuclear reactors built on Department of Energy property, which includes several currently being developed by startups.",
+      "content": null,
+      "author": "Tim De Chant",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "d713ce4b-5202-4cd0-bb55-f689032365c4",
+      "title": "Microsoft gained $7.6B from OpenAI last quarter",
+      "link": "https://techcrunch.com/2026/01/28/microsoft-earnings-7-6-billion-openai/",
+      "published": "2026-01-28T22:47:24+00:00",
+      "summary": "Microsoft, one of OpenAI's major investors, is benefiting greatly from the AI lab's growth.",
+      "content": null,
+      "author": "Julie Bort",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "7efb490e-6271-4346-a65f-bdc172072a00",
+      "title": "Tesla is killing off the Model S and Model X",
+      "link": "https://techcrunch.com/2026/01/28/tesla-is-killing-off-the-model-s-and-model-x/",
+      "published": "2026-01-28T22:40:53+00:00",
+      "summary": "The company will stop making the pioneering EVs in the second quarter of 2026, CEO Elon Musk announced Wednesday.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "b127165c-302b-4f26-b5ef-ee69671e5b79",
+      "title": "Mark Zuckerberg says a future without smart glasses is ‘hard to imagine’",
+      "link": "https://techcrunch.com/2026/01/28/mark-zuckerberg-future-smart-glasses/",
+      "published": "2026-01-28T22:31:20+00:00",
+      "summary": "Take Zuckerberg's outlook with a grain of salt. After all, he thought we'd all be hanging out in the metaverse by now.",
+      "content": null,
+      "author": "Amanda Silberling",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "96a6e60e-f10a-4bb4-b98b-25e202508a5f",
+      "title": "Tesla to invest $2B in Elon Musk’s xAI",
+      "link": "https://techcrunch.com/2026/01/28/tesla-invested-2b-in-elon-musks-xai/",
+      "published": "2026-01-28T21:52:21+00:00",
+      "summary": "Elon Musk's AI company xAI  disclosed earlier this month it had raised $20 billion.",
+      "content": null,
+      "author": "Kirsten Korosec",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "39ac5dae-da12-448b-bf59-e2f925c23d08",
+      "title": "Elon Musk teases a new image-labeling system for X… we think?",
+      "link": "https://techcrunch.com/2026/01/28/elon-musk-teases-a-new-image-labeling-system-for-xwe-think/",
+      "published": "2026-01-28T21:46:18+00:00",
+      "summary": "Elon Musk says X will begin identifying \"manipulated media\" but doesn't share details.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "215250bb-9447-4293-9696-0547da6e443e",
+      "title": "SpaceX is coming to the public markets, and secondaries are already on fire",
+      "link": "https://techcrunch.com/video/spacex-is-coming-to-the-public-markets-and-secondaries-are-already-on-fire/",
+      "published": "2026-01-28T21:35:29+00:00",
+      "summary": "paceX is&#160;reportedly lining&#160;up&#160;four major Wall Street banks&#160;for a&#160;2026 IPO&#160;that could provide the&#160;reset&#160;the market needs.&#160; The company just completed a tender offer at an&#160;$800 billion&#160;valuation, and secondary market demand is through the roof. If SpaceX goes public anywhere near its&#160;rumored&#160;$1.5 trillion&#160;valuation, it&#160;could trigger&#160;an IPO cascade for&#160;other&#160;late-stage unicorns like OpenAI, Stripe, and Databricks.&#160; Watch as Equity host Rebecca Bellan [&#8230;]",
+      "content": null,
+      "author": "Theresa Loconsolo",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "e1c66ea5-e84a-41b0-b9d3-e8b0d7319e99",
+      "title": "AI security startup Outtake raises $40M from Iconiq, Satya Nadella, Bill Ackman, and other big names",
+      "link": "https://techcrunch.com/2026/01/28/ai-security-startup-outtake-raises-40m-from-iconiq-satya-nadella-bill-ackman-and-other-big-names/",
+      "published": "2026-01-28T21:18:52+00:00",
+      "summary": "Outtake makes an agentic cybersecurity platform to help enterprises detect identity fraud. Its angel investors read like a who's who of tech industry names.",
+      "content": null,
+      "author": "Julie Bort",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "f7e0e5ba-7906-45b6-b84d-a762194f4c74",
+      "title": "Tesla profit tanked 46% in 2025",
+      "link": "https://techcrunch.com/2026/01/28/tesla-earnings-profit-q4-2025/",
+      "published": "2026-01-28T21:16:11+00:00",
+      "summary": "The company's sales fell for a second year in a row, as Tesla looks to AI and robotics, including a new $2 billion investment in CEO Elon Musk's company xAI.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "d751ccae-8ff0-428a-a108-62eed855885e",
+      "title": "ServiceNow inks another AI partnership, this time with Anthropic",
+      "link": "https://techcrunch.com/2026/01/28/servicenow-inks-another-ai-partnership-this-time-with-anthropic/",
+      "published": "2026-01-28T21:13:00+00:00",
+      "summary": "ServiceNow partners with Anthropic just a week after announcing a partnership with OpenAI as the company takes a multi-model approach.",
+      "content": null,
+      "author": "Rebecca Szkutak",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "89dfa52d-8118-4b89-b863-744411867c64",
+      "title": "Luminar sale approved despite last-minute mystery bid",
+      "link": "https://techcrunch.com/2026/01/28/luminar-sale-approved-despite-last-minute-mystery-bid/",
+      "published": "2026-01-28T20:41:13+00:00",
+      "summary": "An unidentified bidder submitted a Hail Mary offer that was \"substantially higher\" than the winning bid at auction. Founder Austin Russell has been circling a bid, but it's not clear he was behind it.",
+      "content": null,
+      "author": "Sean O'Kane",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "48eea00c-ab33-4385-a382-c5fef8121e1b",
+      "title": "WhatsApp will now charge AI chatbots to operate in Italy",
+      "link": "https://techcrunch.com/2026/01/28/whatsapp-will-now-charge-ai-chatbots-to-operate-in-italy/",
+      "published": "2026-01-28T19:18:59+00:00",
+      "summary": "WhatsApp plans to charge developers of AI chatbots per message.",
+      "content": null,
+      "author": "Ivan Mehta",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "3ec66eff-ab16-4bd1-a201-e6ad3507d731",
+      "title": "Jennifer Garner’s Once Upon a Farm resumes IPO plans",
+      "link": "https://techcrunch.com/2026/01/28/jennifer-garners-once-upon-a-farm-resumes-ipo-plans/",
+      "published": "2026-01-28T19:09:24+00:00",
+      "summary": "The organic kids' snack food company may debut as soon as next week. It has issued a price range for shares, an SEC filing shows.",
+      "content": null,
+      "author": "Dominic-Madori Davis",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "33edff45-e458-4330-919a-944d800a5e90",
+      "title": "AI data labeler Handshake buys  Cleanlab, an acquisition target of multiple others",
+      "link": "https://techcrunch.com/2026/01/28/ai-data-labeler-handshake-buys-cleanlab-an-acquisition-target-of-multiple-others/",
+      "published": "2026-01-28T19:00:00+00:00",
+      "summary": "The deal’s purpose is primarily to acquire talent, aka an acqui-hire, adding nine key Cleanlab employees to Handshake’s research organization.",
+      "content": null,
+      "author": "Marina Temkin",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "5c6c1098-ed5d-4aa6-b3a1-d6cece38f736",
+      "title": "Chrome takes on AI browsers with tighter Gemini integration, agentic features for autonomous tasks",
+      "link": "https://techcrunch.com/2026/01/28/chrome-takes-on-ai-browsers-with-tighter-gemini-integration-agentic-features-for-autonomous-tasks/",
+      "published": "2026-01-28T18:00:00+00:00",
+      "summary": "Google Chrome is adding Gemini in the sidebar and is rolling out an agentic feature for AI Pro and Ultra users.",
+      "content": null,
+      "author": "Ivan Mehta",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "d9ed755d-c32d-4ae7-824e-588d8318e96d",
+      "title": "Apple tells Patreon to move creators to in-app purchase for subscriptions by November",
+      "link": "https://techcrunch.com/2026/01/28/apple-tells-patreon-to-move-creators-to-in-app-purchase-for-subscriptions-by-november/",
+      "published": "2026-01-28T17:45:00+00:00",
+      "summary": "Patreon isn’t happy about Apple’s new subscription billing mandate, arguing Apple’s shifting rules create uncertainty for creators.",
+      "content": null,
+      "author": "Sarah Perez",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "897050fb-39b6-4fcc-af1b-34c483292efb",
+      "title": "Tiny startup Arcee AI built a 400B-parameter open source LLM from scratch to best Meta’s Llama",
+      "link": "https://techcrunch.com/2026/01/28/tiny-startup-arcee-ai-built-a-400b-open-source-llm-from-scratch-to-best-metas-llama/",
+      "published": "2026-01-28T17:30:00+00:00",
+      "summary": "30-person startup Arcee AI has released a 400B model called Trinity, which it says is one of the biggest open source foundation models from a U.S. company.",
+      "content": null,
+      "author": "Julie Bort",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
+      "item_id": "6de8e1bb-33bf-4508-b252-235419674214",
+      "title": "Elon Musk reportedly wants a June SpaceX IPO to align with his birthday, the planets",
+      "link": "https://techcrunch.com/2026/01/28/elon-musk-reportedly-wants-a-june-spacex-ipo-to-align-with-his-birthday-the-planets/",
+      "published": "2026-01-28T17:12:38+00:00",
+      "summary": "SpaceX eyes June for IPO to align with Musk's birthday and the planets.",
+      "content": null,
+      "author": "Dominic-Madori Davis",
+      "fetched_at": "2026-01-29T00:39:54.342499+00:00"
+    },
+    {
       "item_id": "d0b1a56d-944d-4765-927f-53a25ad31646",
       "title": "Here’s the tech powering ICE’s deportation crackdown",
       "link": "https://techcrunch.com/2026/01/26/heres-the-tech-powering-ices-deportation-crackdown/",

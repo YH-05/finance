@@ -3,6 +3,116 @@
   "feed_id": "c23413d1-72f3-4e2b-8ffd-c0da4282f696",
   "items": [
     {
+      "item_id": "ae97e445-ae5b-4338-a1cd-87e40a96329e",
+      "title": "Federal Reserve signals no rush to cut rates as economy powers ahead",
+      "link": "https://www.ft.com/content/561faeca-845a-4508-bbc2-a20489ac40f1",
+      "published": "2026-01-28T21:08:14+00:00",
+      "summary": "Chair Jay Powell says robust growth and steadying jobs market show borrowing costs are not ‘restrictive’",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "fcfb6661-8706-4481-93b5-088ce5add5b2",
+      "title": "Bessent says Trump administration still pursuing ‘strong dollar policy’",
+      "link": "https://www.ft.com/content/e3fd65cd-a319-4cc1-a74b-5daa7f63799c",
+      "published": "2026-01-28T15:42:50+00:00",
+      "summary": "Greenback rebounds after Treasury secretary rejects speculation that Washington is intervening to boost yen",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "d73ee4f3-ca08-4ddc-8b2e-489e96f26265",
+      "title": "Rick Rieder is a massive dove",
+      "link": "https://www.ft.com/content/0d56fe0e-ba99-476f-be91-cf5eefb9dd7a",
+      "published": "2026-01-28T06:30:05+00:00",
+      "summary": "Plus, more on gold",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "ad30a570-9660-4988-9538-86dd845a54ce",
+      "title": "Tesla trims car line up in pivot to AI as annual revenue falls for first time",
+      "link": "https://www.ft.com/content/78d53ce6-a731-496c-8d8b-e53bc35f49a8",
+      "published": "2026-01-28T23:17:29+00:00",
+      "summary": "Elon Musk’s electric-car maker invests $2bn in the billionaire’s xAI",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "6b7cbd20-7f38-4da6-9c2c-f44046b6e9f1",
+      "title": "Meta’s record sales boost shares 10% despite massive spending plans",
+      "link": "https://www.ft.com/content/d1e5a35e-4e8b-4e5d-af4e-9e19dca51de8",
+      "published": "2026-01-28T23:54:22+00:00",
+      "summary": "Strong earnings appear to quiet demands from Wall Street to justify up to $135bn in capital expenditures",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "bdb5ec42-c07e-4dc7-87d8-eb89ea980844",
+      "title": "Microsoft’s AI spending and disappointing cloud growth overshadow strong profits",
+      "link": "https://www.ft.com/content/42f83ef4-dac0-4319-8522-0d0f6449fe7c",
+      "published": "2026-01-28T22:42:08+00:00",
+      "summary": "Revenue rises 17% to $81bn but 66% surge in capital expenditures revives debate about returns on vast AI costs",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "642b8752-1602-408d-851c-c568662e5408",
+      "title": "Universal basic income needed to cushion blow from AI job losses, says UK minister",
+      "link": "https://www.ft.com/content/3ebc4947-c7f7-4d79-ab69-6dad430d054b",
+      "published": "2026-01-28T21:00:09+00:00",
+      "summary": "Lord Jason Stockwood had previously suggested that tech companies could pay a windfall levy to fund the payments",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "61c29973-6753-4aa0-a170-a80891c931d1",
+      "title": "Metals surge boosts value of mining groups by almost $500bn",
+      "link": "https://www.ft.com/content/32ef3ff6-b356-49e3-8d7f-8039161c88b0",
+      "published": "2026-01-28T21:00:09+00:00",
+      "summary": "Moves fuelled by surge in prices of precious and base metals triggered by heightened geopolitical tensions",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "ae7fecc0-97af-461c-a3b2-dc17558e8f45",
+      "title": "The precious metal feeding frenzy",
+      "link": "https://www.ft.com/content/004ad702-c7d1-4f02-9f5d-9194d0dc668b",
+      "published": "2026-01-28T16:24:54+00:00",
+      "summary": "Gold and silver are on a tear but buyer beware . . .",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "4dade191-7562-4581-9513-44fb2c1109c9",
+      "title": "Amazon to axe another 16,000 corporate jobs",
+      "link": "https://www.ft.com/content/c6055c9d-5229-4cfc-9f75-c7d96e021929",
+      "published": "2026-01-28T10:46:22+00:00",
+      "summary": "Cuts will bring total number of lay-offs to 30,000 over past three months amid higher spending on AI",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
+      "item_id": "5fd418df-ba60-4a33-aadc-61db1f2017e7",
+      "title": "UK vehicle output hits lowest since 1950s as companies weigh defence shift",
+      "link": "https://www.ft.com/content/584c178c-8092-4bac-ac0b-49d94925d277",
+      "published": "2026-01-29T00:01:10+00:00",
+      "summary": "Sharp drop in production caused by fall-off in exports prompts carmakers to contemplate diversifying",
+      "content": null,
+      "author": null,
+      "fetched_at": "2026-01-29T00:39:50.641285+00:00"
+    },
+    {
       "item_id": "e967f088-d4ad-4a83-a05c-4335a8d007cc",
       "title": "Trump’s Greenland pivot leaves Europe flummoxed",
       "link": "https://www.ft.com/content/fb90d690-f22c-49ab-8ebc-22e2e8f757f3",

@@ -3,6 +3,106 @@
   "feed_id": "40fea0da-0199-4b26-b56e-e2c8e0e4c6cc",
   "items": [
     {
+      "item_id": "df727466-664d-401d-8fc0-c98a6efa1caf",
+      "title": "Investors cheer the end of Southwest’s open-seating era, as airline forecasts a big 2026 profit",
+      "link": "https://www.marketwatch.com/story/southwest-says-assigned-seats-will-make-it-more-profitable-this-year-as-stock-rallies-1e10db1d?mod=mw_rss_topstories",
+      "published": "2026-01-28T23:56:00+00:00",
+      "summary": "Southwest’s five-decade-long era of open seating ended on Tuesday.",
+      "content": null,
+      "author": "Bill Peters",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "9e6409fa-14eb-4118-be93-dd4791fd59b4",
+      "title": "AT&T’s earnings impress as subscriber growth booms and the stock jumps",
+      "link": "https://www.marketwatch.com/story/at-ts-earnings-impress-as-subscriber-growth-booms-and-the-stock-soars-39285b27?mod=mw_rss_topstories",
+      "published": "2026-01-28T23:50:00+00:00",
+      "summary": "AT&amp;T added 283,000 fiber subscribers and 421,000 net postpaid phone subscribers in the latest quarter, reflecting a push for “convergence” of connectivity offerings.",
+      "content": null,
+      "author": "Emily Bary",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "1614cb4b-1a1f-4b53-9e03-ca2a7e6baf26",
+      "title": "Starbucks rewards investors who have been betting the turnaround is taking hold",
+      "link": "https://www.marketwatch.com/story/starbucks-rewards-investors-with-another-quarter-of-growth-in-a-key-sales-metric-07ac6e69?mod=mw_rss_topstories",
+      "published": "2026-01-28T23:46:00+00:00",
+      "summary": "Starbucks sees a second straight quarter of growth in sales of stores open at least a year, in a sign that the turnaround is taking shape.",
+      "content": null,
+      "author": "Tomi Kilgore",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "91f15adb-1d5b-4451-bcb2-a66d2ad3bb89",
+      "title": "Micron and other chip stocks are seeing a big boost after these comments",
+      "link": "https://www.marketwatch.com/story/micron-and-other-chip-stocks-are-seeing-a-big-boost-after-these-comments-a3570761?mod=mw_rss_topstories",
+      "published": "2026-01-28T23:38:00+00:00",
+      "summary": "Seagate says prices could go higher for its storage products as supply remains tight due to AI.",
+      "content": null,
+      "author": "Britney Nguyen",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "e3287269-e0bc-4851-943c-8764e7ed885f",
+      "title": "S&P 500 touches 7,000 for the first time, led by a surprising group of stocks",
+      "link": "https://www.marketwatch.com/story/s-p-500-hits-7-000-for-the-first-time-led-by-a-surprising-group-of-stocks-183fe7c4?mod=mw_rss_topstories",
+      "published": "2026-01-28T22:56:00+00:00",
+      "summary": "The S&amp;P 500 on Wednesday blew past another psychological barrier, hitting 7,000 for the first time in history — before pulling back.",
+      "content": null,
+      "author": "Isabel Wang",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "500eac4b-b790-453d-b1a7-4b08def08513",
+      "title": "‘I feel like this does us a disservice’: My brother wants his $1 million inheritance in advance. Should he pay interest?",
+      "link": "https://www.marketwatch.com/story/i-feel-like-this-does-us-a-disservice-my-brother-wants-his-1-million-inheritance-in-advance-should-he-pay-interest-023155f6?mod=mw_rss_topstories",
+      "published": "2026-01-28T22:47:00+00:00",
+      "summary": "“The total value of our family trust is $4 million.”",
+      "content": null,
+      "author": "Quentin Fottrell",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "2c3777e6-1479-4470-899f-d05e71ac60e7",
+      "title": "‘I don’t own a house’: I’m 50 with $2 million and I’m scared about losing my job. Can I retire early?",
+      "link": "https://www.marketwatch.com/story/i-dont-own-a-house-im-50-with-2-million-and-im-scared-about-losing-my-job-can-i-retire-early-bff8a8c3?mod=mw_rss_topstories",
+      "published": "2026-01-28T22:46:00+00:00",
+      "summary": "“My monthly expenses are around $6,000. That includes rent.”",
+      "content": null,
+      "author": "Quentin Fottrell",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "4c8e83fd-b020-4c14-9cc6-319cbe07506c",
+      "title": "ServiceNow says AI is ‘really kicking in’ — but it’s not enough to help the stock",
+      "link": "https://www.marketwatch.com/story/servicenow-says-ai-is-really-kicking-in-but-its-not-enough-to-help-the-stock-662839dd?mod=mw_rss_topstories",
+      "published": "2026-01-28T22:46:00+00:00",
+      "summary": "Shares of the software company were set to extend declines despite a better-than-expected forecast.",
+      "content": null,
+      "author": "Emily Bary",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "88b4bdde-6aad-4f18-9977-2c3b3cd2e758",
+      "title": "10,000 flights canceled, a $200 million hit from the storm and a plunging stock: American Airlines’ bad week",
+      "link": "https://www.marketwatch.com/story/10-000-flights-canceled-a-200-million-hit-from-the-storm-and-a-plunging-stock-american-airlines-bad-week-97c1d22f?mod=mw_rss_topstories",
+      "published": "2026-01-28T21:05:00+00:00",
+      "summary": "American “is not in a position of strength as a business” to weather the reputational hit, which may further weaken customer preference for the airline, at least in the short term.",
+      "content": null,
+      "author": "Claudia Assis",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
+      "item_id": "e3698316-828c-4b4d-b263-a43f4378c1a3",
+      "title": "How do I open a ‘Trump account’? The IRS has one simple solution for you.",
+      "link": "https://www.marketwatch.com/story/how-do-i-open-a-trump-account-the-irs-has-one-simple-solution-for-you-41da00e3?mod=mw_rss_topstories",
+      "published": "2026-01-28T21:04:00+00:00",
+      "summary": "People can’t contribute money to the tax-advantaged accounts for children until July, but they can start the process of opening one now",
+      "content": null,
+      "author": "Andrew Keshner",
+      "fetched_at": "2026-01-29T00:39:37.857439+00:00"
+    },
+    {
       "item_id": "afab6898-8f7e-4f27-81e6-66b4d10c4b67",
       "title": "Investors may be led into a trap as stock market discards new tariff threats, analyst warns",
       "link": "https://www.marketwatch.com/story/investors-may-be-led-into-a-trap-as-stock-market-discards-new-tariff-threats-analyst-warns-44081e86?mod=mw_rss_topstories",

@@ -3,6 +3,206 @@
   "feed_id": "4dc65edc-5c17-4ff8-ab38-7dd248f96006",
   "items": [
     {
+      "item_id": "bf9efcd6-231f-425f-90a5-d2e140817a9d",
+      "title": "Please Don't Say Mean Things about the AI I Just Invested a Billion Dollars In",
+      "link": "https://www.mcsweeneys.net/articles/please-dont-say-mean-things-about-the-ai-that-i-just-invested-a-billion-dollars-in",
+      "published": "2026-01-28T23:36:23+00:00",
+      "summary": "<p>Article URL: <a href=\"https://www.mcsweeneys.net/articles/please-dont-say-mean-things-about-the-ai-that-i-just-invested-a-billion-dollars-in\">https://www.mcsweeneys.net/articles/please-dont-say-mean-things-about-the-ai-that-i-just-invested-a-billion-dollars-in</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46803356\">https://news.ycombinator.com/item?id=46803356</a></p>\n<p>Points: 123</p>\n<p># Comments: 23</p>",
+      "content": null,
+      "author": "randycupertino",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "612810fe-0dd2-4de8-8298-dc3a6c370563",
+      "title": "The UK paid £4.1M for a bookmarks site",
+      "link": "https://mahadk.com/posts/ai-skills-hub",
+      "published": "2026-01-28T23:16:12+00:00",
+      "summary": "<p>Article URL: <a href=\"https://mahadk.com/posts/ai-skills-hub\">https://mahadk.com/posts/ai-skills-hub</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46803119\">https://news.ycombinator.com/item?id=46803119</a></p>\n<p>Points: 104</p>\n<p># Comments: 24</p>",
+      "content": null,
+      "author": "JustSkyfall",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "e4ab40c1-ae9e-4fb3-96a9-a80cead43bc6",
+      "title": "Somebody used spoofed ADSB signals to raster the meme of JD Vance",
+      "link": "https://alecmuffett.com/article/143548",
+      "published": "2026-01-28T21:50:47+00:00",
+      "summary": "<p><a href=\"https://archive.ph/VrEtg\" rel=\"nofollow\">https://archive.ph/VrEtg</a><p><a href=\"https://globe.adsbexchange.com/?icao=adfdf9&amp;lat=26.678&amp;lon=-80.030&amp;zoom=14.4&amp;showTrace=2026-01-28\" rel=\"nofollow\">https://globe.adsbexchange.com/?icao=adfdf9&amp;lat=26.678&amp;lon=-...</a></p>\n<hr />\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46802067\">https://news.ycombinator.com/item?id=46802067</a></p>\n<p>Points: 268</p>\n<p># Comments: 74</p>",
+      "content": null,
+      "author": "wubin",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "33a43485-d958-405c-98a1-39c67bc7cc34",
+      "title": "Jellyfin LLM/\"AI\" Development Policy",
+      "link": "https://jellyfin.org/docs/general/contributing/llm-policies/",
+      "published": "2026-01-28T21:42:03+00:00",
+      "summary": "<p>Article URL: <a href=\"https://jellyfin.org/docs/general/contributing/llm-policies/\">https://jellyfin.org/docs/general/contributing/llm-policies/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46801976\">https://news.ycombinator.com/item?id=46801976</a></p>\n<p>Points: 123</p>\n<p># Comments: 62</p>",
+      "content": null,
+      "author": "mmoogle",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "0cbdb30d-1958-4c05-9dc7-c99f4f17ec01",
+      "title": "Apple to Soon Take Up to 30% Cut from All Patreon Creators in iOS App",
+      "link": "https://www.macrumors.com/2026/01/28/patreon-apple-tax/",
+      "published": "2026-01-28T20:59:30+00:00",
+      "summary": "<p>Article URL: <a href=\"https://www.macrumors.com/2026/01/28/patreon-apple-tax/\">https://www.macrumors.com/2026/01/28/patreon-apple-tax/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46801419\">https://news.ycombinator.com/item?id=46801419</a></p>\n<p>Points: 179</p>\n<p># Comments: 148</p>",
+      "content": null,
+      "author": "pier25",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "01a3f5a0-fffb-4f52-ba4e-27fe007b8912",
+      "title": "That's not how email works",
+      "link": "https://danq.me/2026/01/28/hsbc-dont-understand-email/",
+      "published": "2026-01-28T18:12:02+00:00",
+      "summary": "<p>Article URL: <a href=\"https://danq.me/2026/01/28/hsbc-dont-understand-email/\">https://danq.me/2026/01/28/hsbc-dont-understand-email/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46799304\">https://news.ycombinator.com/item?id=46799304</a></p>\n<p>Points: 220</p>\n<p># Comments: 139</p>",
+      "content": null,
+      "author": "HotGarbage",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "629c82d6-856b-4c13-b1fc-94751db843ba",
+      "title": "Mousefood – Build embedded terminal UIs for microcontrollers",
+      "link": "https://github.com/ratatui/mousefood",
+      "published": "2026-01-28T17:20:31+00:00",
+      "summary": "<p>Article URL: <a href=\"https://github.com/ratatui/mousefood\">https://github.com/ratatui/mousefood</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46798402\">https://news.ycombinator.com/item?id=46798402</a></p>\n<p>Points: 147</p>\n<p># Comments: 38</p>",
+      "content": null,
+      "author": "orhunp_",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "4ac7e034-5e53-42c0-86d0-93a0e3988f95",
+      "title": "Oban, the job processing framework from Elixir, has come to Python",
+      "link": "https://www.dimamik.com/posts/oban_py/",
+      "published": "2026-01-28T16:32:00+00:00",
+      "summary": "<p>Article URL: <a href=\"https://www.dimamik.com/posts/oban_py/\">https://www.dimamik.com/posts/oban_py/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46797594\">https://news.ycombinator.com/item?id=46797594</a></p>\n<p>Points: 165</p>\n<p># Comments: 74</p>",
+      "content": null,
+      "author": "dimamik",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "69aee1d8-a04e-4533-8fcd-2e5ac7eb50fa",
+      "title": "Amazon cuts 16k jobs",
+      "link": "https://www.reuters.com/legal/litigation/amazon-cuts-16000-jobs-globally-broader-restructuring-2026-01-28/",
+      "published": "2026-01-28T15:39:11+00:00",
+      "summary": "<p>Article URL: <a href=\"https://www.reuters.com/legal/litigation/amazon-cuts-16000-jobs-globally-broader-restructuring-2026-01-28/\">https://www.reuters.com/legal/litigation/amazon-cuts-16000-jobs-globally-broader-restructuring-2026-01-28/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46796745\">https://news.ycombinator.com/item?id=46796745</a></p>\n<p>Points: 477</p>\n<p># Comments: 661</p>",
+      "content": null,
+      "author": "DGAP",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "d6014c6e-890e-47eb-80c7-4c70ddbcb2d2",
+      "title": "Airfoil (2024)",
+      "link": "https://ciechanow.ski/airfoil/",
+      "published": "2026-01-28T14:32:30+00:00",
+      "summary": "<p>Article URL: <a href=\"https://ciechanow.ski/airfoil/\">https://ciechanow.ski/airfoil/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46795908\">https://news.ycombinator.com/item?id=46795908</a></p>\n<p>Points: 348</p>\n<p># Comments: 48</p>",
+      "content": null,
+      "author": "brk",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "77553fb0-323a-4501-b573-883d6473f408",
+      "title": "Microsoft forced me to switch to Linux",
+      "link": "https://www.himthe.dev/blog/microsoft-to-linux",
+      "published": "2026-01-28T14:28:21+00:00",
+      "summary": "<p>Article URL: <a href=\"https://www.himthe.dev/blog/microsoft-to-linux\">https://www.himthe.dev/blog/microsoft-to-linux</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46795864\">https://news.ycombinator.com/item?id=46795864</a></p>\n<p>Points: 1539</p>\n<p># Comments: 1231</p>",
+      "content": null,
+      "author": "bobsterlobster",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "17c1e2cd-0d17-48d5-a778-b65cdc333d55",
+      "title": "Show HN: I built a small browser engine from scratch in C++",
+      "link": "https://github.com/beginner-jhj/mini_browser",
+      "published": "2026-01-28T14:03:28+00:00",
+      "summary": "<p>Hi HN! Korean high school senior here, about to start CS in college.<p>I built a browser engine from scratch in C++ to understand how browsers work. First time using C++, 8 weeks of development, lots of debugging—but it works!<p>Features:<p>- HTML parsing with error correction<p>- CSS cascade and inheritance<p>- Block/inline layout engine<p>- Async image loading + caching<p>- Link navigation + history<p>Hardest parts:<p>- String parsing(html, css)<p>- Rendering<p>- Image Caching & Layout Reflowing<p>What I learned (beyond code):<p>- Systematic debugging is crucial<p>- Ship with known bugs rather than chase perfection<p>- The Power of \"Why?\"<p>~3,000 lines of C++17/Qt6. Would love feedback on code architecture and C++ best practices!<p>GitHub: <a href=\"https://github.com/beginner-jhj/mini_browser\" rel=\"nofollow\">https://github.com/beginner-jhj/mini_browser</a></p>\n<hr />\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46795540\">https://news.ycombinator.com/item?id=46795540</a></p>\n<p>Points: 119</p>\n<p># Comments: 40</p>",
+      "content": null,
+      "author": "crediblejhj",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "5a34d5a1-511c-44b3-9e45-fc8b2759f399",
+      "title": "ICE and Palantir: US agents using health data to hunt illegal immigrants",
+      "link": "https://www.bmj.com/content/392/bmj.s168",
+      "published": "2026-01-28T12:18:12+00:00",
+      "summary": "<p>Article URL: <a href=\"https://www.bmj.com/content/392/bmj.s168\">https://www.bmj.com/content/392/bmj.s168</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46794365\">https://news.ycombinator.com/item?id=46794365</a></p>\n<p>Points: 423</p>\n<p># Comments: 250</p>",
+      "content": null,
+      "author": "dberhane",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "10cbd0f3-2434-438e-b082-3a7a3239c7d3",
+      "title": "Show HN: The HN Arcade",
+      "link": "https://andrewgy8.github.io/hnarcade/",
+      "published": "2026-01-28T10:50:32+00:00",
+      "summary": "<p>I love seeing all the small games that people build and post to this site.<p>I don't want to forget any, so I have built a directory/arcade for the games here that I maintain.<p>Feel free to check it out, add your game if its missing and let me know what you think. Thanks!</p>\n<hr />\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46793693\">https://news.ycombinator.com/item?id=46793693</a></p>\n<p>Points: 297</p>\n<p># Comments: 76</p>",
+      "content": null,
+      "author": "yuppiepuppie",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "9cfc8e35-672a-49e1-86b7-66c0cf0d8cbf",
+      "title": "I stopped following the news",
+      "link": "https://mertbulan.com/2026/01/28/why-i-stopped-following-the-news/",
+      "published": "2026-01-28T08:33:57+00:00",
+      "summary": "<p>Article URL: <a href=\"https://mertbulan.com/2026/01/28/why-i-stopped-following-the-news/\">https://mertbulan.com/2026/01/28/why-i-stopped-following-the-news/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46792580\">https://news.ycombinator.com/item?id=46792580</a></p>\n<p>Points: 126</p>\n<p># Comments: 150</p>",
+      "content": null,
+      "author": "mertbio",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "e5853e68-dac3-406d-8972-759b226bf4c5",
+      "title": "ASML staffing changes could result in a net reduction of around 1700 positions",
+      "link": "https://www.asml.com/en/news/press-releases/2026/strengthening-focus-on-engineering-and-innovation",
+      "published": "2026-01-28T08:02:42+00:00",
+      "summary": "<p>Article URL: <a href=\"https://www.asml.com/en/news/press-releases/2026/strengthening-focus-on-engineering-and-innovation\">https://www.asml.com/en/news/press-releases/2026/strengthening-focus-on-engineering-and-innovation</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46792370\">https://news.ycombinator.com/item?id=46792370</a></p>\n<p>Points: 327</p>\n<p># Comments: 333</p>",
+      "content": null,
+      "author": "dep_b",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "a2af3e2b-9ecb-41e0-b941-f63bb44e19d5",
+      "title": "Make.ts",
+      "link": "https://matklad.github.io/2026/01/27/make-ts.html",
+      "published": "2026-01-28T07:35:51+00:00",
+      "summary": "<p>Article URL: <a href=\"https://matklad.github.io/2026/01/27/make-ts.html\">https://matklad.github.io/2026/01/27/make-ts.html</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46792194\">https://news.ycombinator.com/item?id=46792194</a></p>\n<p>Points: 211</p>\n<p># Comments: 114</p>",
+      "content": null,
+      "author": "ingve",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "4f0c884a-221b-4673-8de3-e7283aabd70d",
+      "title": "Rust at Scale: An Added Layer of Security for WhatsApp",
+      "link": "https://engineering.fb.com/2026/01/27/security/rust-at-scale-security-whatsapp/",
+      "published": "2026-01-28T06:21:07+00:00",
+      "summary": "<p>Article URL: <a href=\"https://engineering.fb.com/2026/01/27/security/rust-at-scale-security-whatsapp/\">https://engineering.fb.com/2026/01/27/security/rust-at-scale-security-whatsapp/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46791742\">https://news.ycombinator.com/item?id=46791742</a></p>\n<p>Points: 235</p>\n<p># Comments: 120</p>",
+      "content": null,
+      "author": "ubj",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "594c6db4-0d7a-4e6b-8f8a-6432031db7d6",
+      "title": "Android's desktop interface leaks",
+      "link": "https://9to5google.com/2026/01/27/android-desktop-leak/",
+      "published": "2026-01-28T03:34:45+00:00",
+      "summary": "<p>Article URL: <a href=\"https://9to5google.com/2026/01/27/android-desktop-leak/\">https://9to5google.com/2026/01/27/android-desktop-leak/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46790740\">https://news.ycombinator.com/item?id=46790740</a></p>\n<p>Points: 138</p>\n<p># Comments: 226</p>",
+      "content": null,
+      "author": "thunderbong",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
+      "item_id": "65672b2b-a9ae-4010-8a94-ae87acdcb852",
+      "title": "Super Monkey Ball ported to a website",
+      "link": "https://monkeyball-online.pages.dev/",
+      "published": "2026-01-28T01:44:25+00:00",
+      "summary": "<p>Article URL: <a href=\"https://monkeyball-online.pages.dev/\">https://monkeyball-online.pages.dev/</a></p>\n<p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=46789961\">https://news.ycombinator.com/item?id=46789961</a></p>\n<p>Points: 271</p>\n<p># Comments: 80</p>",
+      "content": null,
+      "author": "rebasedoctopus",
+      "fetched_at": "2026-01-29T00:39:54.218620+00:00"
+    },
+    {
       "item_id": "948c52d1-04bc-445d-bb3a-3d97663383c1",
       "title": "When AI 'builds a browser,' check the repo before believing the hype",
       "link": "https://www.theregister.com/2026/01/26/cursor_opinion/",
