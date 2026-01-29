@@ -217,7 +217,10 @@ feed_assignments = load_feed_assignments()
     "config": {
         "project_number": 15,
         "project_owner": "YH-05",
-        "days_back": 7
+        "days_back": 7,
+        "project_id": "PVT_kwHOBoK6AM4BMpw_",
+        "status_field_id": "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE",
+        "published_date_field_id": "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
     },
     "existing_issues": [
         {
