@@ -82,12 +82,21 @@ Task ツールを使わずに直接実装した場合、そのワークフロー
 │    ├─ チェックリスト抽出                                     │
 │    └─ 開発タイプ判定（ラベル/キーワード）                    │
 │                                                             │
+│ Phase 0.5: 外部API調査（条件付き） ← NEW                     │
+│    ├─ Issue内容から外部ライブラリ使用を検出                 │
+│    ├─ 検出時: Task(api-usage-researcher) で調査実行         │
+│    ├─ 未検出時: スキップして Phase 1 へ                     │
+│    └─ 調査結果(api_research)を後続Phaseに受け渡し           │
+│                                                             │
 │ タイプ別ワークフロー実行                                     │
 │    │                                                        │
 │    ├─ Python: Phase 1-5                                     │
 │    │  ├─ Task(test-writer) でテスト作成（Red）              │
+│    │  │     └─ api_research 結果を参照                      │
 │    │  ├─ Task(pydantic-model-designer) でモデル設計         │
+│    │  │     └─ api_research 結果を参照                      │
 │    │  ├─ Task(feature-implementer) で実装                   │
+│    │  │     └─ api_research 結果を参照                      │
 │    │  ├─ Task(code-simplifier) でコード整理                 │
 │    │  └─ Task(quality-checker) で品質保証                   │
 │    │                                                        │
@@ -141,9 +150,10 @@ Task ツールを使わずに直接実装した場合、そのワークフロー
 
 | Phase | subagent_type | prompt に含める情報 |
 |-------|---------------|---------------------|
-| 1 | `test-writer` | Issue情報、受け入れ条件、対象パッケージ |
-| 2 | `pydantic-model-designer` | Issue情報、Phase 1のテストファイル |
-| 3 | `feature-implementer` | Issue番号、ライブラリ名、Phase 2のモデル |
+| 0.5 | `api-usage-researcher` | Issue情報、受け入れ条件（**条件付き実行**） |
+| 1 | `test-writer` | Issue情報、受け入れ条件、対象パッケージ、**api_research結果** |
+| 2 | `pydantic-model-designer` | Issue情報、Phase 1のテストファイル、**api_research結果** |
+| 3 | `feature-implementer` | Issue番号、ライブラリ名、Phase 2のモデル、**api_research結果** |
 | 4 | `code-simplifier` | 変更されたファイル一覧 |
 | 5 | `quality-checker` | --auto-fix モード |
 | 6 | **直接実行** | `make check-all` でコミット前検証 |
@@ -155,6 +165,95 @@ Task ツールを使わずに直接実装した場合、そのワークフロー
 | agent | `agent-creator` | 要件分析→設計→実装→検証を一括実行 |
 | command | `command-expert` | コマンド設計→作成 |
 | skill | `skill-creator` | 要件分析→設計→実装→検証を一括実行 |
+
+---
+
+## Phase 0.5: 外部API調査（条件付き）
+
+Phase 0 完了後、Issue 内容に外部APIの使用が検出された場合のみ実行。
+
+### 実行条件
+
+Issue本文・ラベル・受け入れ条件から以下を検出した場合に実行:
+
+```yaml
+高信頼度キーワード:
+  - yfinance, yf.Ticker, yf.download
+  - requests, httpx, aiohttp
+  - pandas, pd.DataFrame
+  - numpy, np.array
+  - pydantic, BaseModel
+  - curl_cffi
+  - fredapi, fred
+  - sec-api, edgar
+  - openai, anthropic
+
+中信頼度パターン:
+  - import文への言及
+  - pip install / uv add への言及
+  - 外部API・認証・rate limiting への言及
+```
+
+### サブエージェント呼び出し
+
+```yaml
+subagent_type: api-usage-researcher
+prompt: |
+  Issue #{issue_number} の外部API調査を実行してください。
+
+  ## Issue情報
+  - タイトル: {issue_title}
+  - 本文: {issue_body}
+  - ラベル: {issue_labels}
+  - 受け入れ条件: {acceptance_criteria}
+```
+
+### 出力の後続 Phase への受け渡し
+
+`api_research` 結果（JSON）を Phase 1, 2, 3 のプロンプトに含める:
+
+```yaml
+Phase 1 (test-writer):
+  追加情報: |
+    ## 外部API調査結果
+    ```json
+    {api_research}
+    ```
+    - 検出されたライブラリのAPIを使用するテストを作成してください
+    - best_practices に従ってください
+
+Phase 2 (pydantic-model-designer):
+  追加情報: |
+    ## 外部API調査結果
+    ```json
+    {api_research}
+    ```
+    - return_type を参考にモデルを設計してください
+
+Phase 3 (feature-implementer):
+  追加情報: |
+    ## 外部API調査結果
+    ```json
+    {api_research}
+    ```
+    - apis_to_use の usage_pattern に従って実装してください
+    - project_patterns の既存実装を参考にしてください
+    - 追加のContext7調査は不要です（調査済み）
+```
+
+### スキップ時
+
+外部ライブラリが検出されなかった場合:
+
+```yaml
+api_research:
+  investigation_needed: false
+  detection_confidence: none
+
+後続Phase:
+  - api_research の参照をスキップ
+  - 通常のワークフローを実行
+```
 
 ---
 

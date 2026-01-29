@@ -267,6 +267,7 @@ updated_at: 2026-01-28
 
 | エージェント | 説明 |
 |--------------|------|
+| `api-usage-researcher` | 外部API使用時のドキュメント調査（Context7・プロジェクトパターン・ベストプラクティス収集） |
 | `code-analyzer` | コード品質・アーキテクチャ・パフォーマンスの多次元分析 |
 | `code-simplifier` | コードの複雑性削減、可読性・保守性向上 |
 | `quality-checker` | コード品質の検証・自動修正（検証のみ/自動修正/クイックの3モード） |
@@ -404,6 +405,7 @@ updated_at: 2026-01-28
 - `/commit-and-pr` → `commit-and-pr` → `quality-checker`, `code-simplifier`
 - `/finance-news-workflow` → `finance-news-workflow` → `finance-news-orchestrator` → 6テーマ別エージェント
 - `/finance-research` → `deep-research` → 14リサーチエージェント
+- `/issue-implement <番号>` → `issue-implement-single` → `api-usage-researcher`(条件付き), `test-writer`, `pydantic-model-designer`, `feature-implementer`, `code-simplifier`, `quality-checker`
 - `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`
 - `/write-tests` → `tdd-development` → `test-orchestrator` → 5テストエージェント
 - `/index` → `index` → `Explore`, `package-readme-updater`

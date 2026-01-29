@@ -189,9 +189,34 @@ gh issue edit <issue_number> --body "..."
 
 ## context7 によるドキュメント参照
 
-実装時には、使用するライブラリの最新ドキュメントを context7 MCP ツールで確認してください。
+### 事前調査結果の活用（推奨）
 
-### 使用手順
+**Phase 0.5 で `api-usage-researcher` が実行された場合、その結果を優先的に参照してください。**
+
+`api_research` 結果に含まれる情報:
+
+| フィールド | 用途 |
+|-----------|------|
+| `libraries[].apis_to_use` | 使用すべきAPI一覧（usage_pattern に従う） |
+| `libraries[].best_practices` | ベストプラクティス |
+| `libraries[].project_patterns` | プロジェクト内の既存パターン（既存実装ファイル、規約、エラーハンドリング） |
+| `recommendations` | 実装推奨事項 |
+
+```yaml
+api_research 活用例:
+  1. apis_to_use の usage_pattern をそのまま実装に使用
+  2. project_patterns.existing_usage_files を参照して既存実装に合わせる
+  3. best_practices に従ってセッション管理等を実装
+  4. project_patterns.error_handling の例外クラスを使用
+```
+
+### 追加確認が必要な場合
+
+`api_research` 結果で不足する情報がある場合のみ、context7 を追加で使用してください。
+
+### context7 直接使用（api_research がない場合）
+
+`api_research` が提供されていない場合は、以下の手順で直接確認:
 
 1. **ライブラリIDの解決**:
    ```
@@ -209,13 +234,14 @@ gh issue edit <issue_number> --body "..."
 
 ### 参照が必須のケース
 
-- 外部ライブラリのAPIを初めて使用する際
-- ライブラリのベストプラクティスに従った実装を行う際
+- 外部ライブラリのAPIを初めて使用する際（`api_research` がない場合）
+- `api_research` で情報が不足している場合
 - 型ヒントの正しい書き方を確認する際
 - エラーハンドリングのパターンを確認する際
 
 ### 注意事項
 
+- `api_research` がある場合は追加の Context7 呼び出しは通常不要
 - 1つの質問につき最大3回までの呼び出し制限あり
 - 機密情報（APIキー等）をクエリに含めない
 - 実装前に必ずドキュメントを確認し、正しいAPIの使い方を把握する
