@@ -149,5 +149,13 @@
   "filtering": {
     "method": "ai_judgment",
     "duplicate_similarity_threshold": 0.85
+  },
+  "execution": {
+    "batch_size": 10,
+    "max_articles_per_theme": 20,
+    "concurrency": 3,
+    "timeout_minutes": 10,
+    "checkpoint_enabled": true,
+    "checkpoint_dir": ".tmp/checkpoints"
   }
 }

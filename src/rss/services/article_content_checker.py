@@ -34,7 +34,7 @@ from lxml import html
 # Constants
 # ---------------------------------------------------------------------------
 
-MIN_CONTENT_LENGTH = 500
+MIN_CONTENT_LENGTH = 200
 """Minimum content length (characters) to consider article accessible."""
 
 HTTPX_TIMEOUT = 15
@@ -159,6 +159,9 @@ class ContentCheckResult:
         Human-readable explanation of the determination.
     tier_used : int
         Which tier produced the final result (1, 2, or 3).
+    fallback_count : int
+        Number of times fallback occurred during content retrieval.
+        0 means no fallback (Tier 1 succeeded), 1 means Tier 1 -> Tier 2, etc.
     """
 
     status: ContentStatus
@@ -166,6 +169,7 @@ class ContentCheckResult:
     raw_text: str
     reason: str
     tier_used: int
+    fallback_count: int = 0
 
 
 # ---------------------------------------------------------------------------
@@ -349,8 +353,8 @@ def detect_paywall(text: str, content_length: int) -> bool:
 
     Checks for English and Japanese paywall phrases. The detection
     threshold varies based on content length:
-    - Short content (< 500 chars) + 1 indicator = paywalled
-    - Medium content (500-1500 chars) + 2 indicators = paywalled
+    - Short content (< 200 chars) + 1 indicator = paywalled
+    - Medium content (200-1500 chars) + 2 indicators = paywalled
 
     Parameters
     ----------
@@ -413,6 +417,9 @@ async def check_article_content(url: str) -> ContentCheckResult:
     """
     logger.info("Starting content check", url=url)
 
+    # Track fallback count for Issue #1853
+    fallback_count = 0
+
     # --- Tier 1: httpx ---
     try:
         text, _status_code = await _fetch_with_httpx(url)
@@ -425,6 +432,7 @@ async def check_article_content(url: str) -> ContentCheckResult:
             raw_text="",
             reason=reason,
             tier_used=1,
+            fallback_count=fallback_count,
         )
     except (httpx.HTTPError, Exception) as e:
         reason = f"Tier 1: {type(e).__name__}: {e}"
@@ -435,6 +443,7 @@ async def check_article_content(url: str) -> ContentCheckResult:
             raw_text="",
             reason=reason,
             tier_used=1,
+            fallback_count=fallback_count,
         )
 
     content_length = len(text)
@@ -444,12 +453,18 @@ async def check_article_content(url: str) -> ContentCheckResult:
         logger.debug(
             "Tier 1: Sufficient content, proceeding to Tier 3", length=content_length
         )
-        return _check_paywall(text, content_length, tier_used=1, url=url)
+        return _check_paywall(
+            text, content_length, tier_used=1, url=url, fallback_count=fallback_count
+        )
 
     # --- Tier 2: Playwright (only if Tier 1 insufficient) ---
-    logger.debug(
-        "Tier 1: Insufficient content, trying Tier 2",
+    # Fallback from Tier 1 to Tier 2 (Issue #1853)
+    fallback_count += 1
+    logger.info(
+        "Fallback triggered: Tier 1 -> Tier 2",
+        url=url,
         tier1_length=content_length,
+        fallback_count=fallback_count,
     )
 
     try:
@@ -469,7 +484,13 @@ async def check_article_content(url: str) -> ContentCheckResult:
             "Tier 2: Sufficient content, proceeding to Tier 3",
             length=playwright_length,
         )
-        return _check_paywall(playwright_text, playwright_length, tier_used=2, url=url)
+        return _check_paywall(
+            playwright_text,
+            playwright_length,
+            tier_used=2,
+            url=url,
+            fallback_count=fallback_count,
+        )
 
     # Both Tier 1 and Tier 2 insufficient
     best_text = playwright_text if playwright_length > content_length else text
@@ -481,13 +502,14 @@ async def check_article_content(url: str) -> ContentCheckResult:
         f"(Tier 1: {content_length}文字, Tier 2: {playwright_length}文字, "
         f"閾値: {MIN_CONTENT_LENGTH}文字)"
     )
-    logger.info(reason, url=url)
+    logger.info(reason, url=url, fallback_count=fallback_count)
     return ContentCheckResult(
         status=ContentStatus.INSUFFICIENT,
         content_length=best_length,
         raw_text=best_text,
         reason=reason,
         tier_used=tier_used,
+        fallback_count=fallback_count,
     )
 
 
@@ -497,6 +519,7 @@ def _check_paywall(
     *,
     tier_used: int,
     url: str,
+    fallback_count: int = 0,
 ) -> ContentCheckResult:
     """Run Tier 3 paywall check on extracted text.
 
@@ -510,6 +533,8 @@ def _check_paywall(
         Which tier extracted the text (1 or 2).
     url : str
         Article URL for logging.
+    fallback_count : int, optional
+        Number of fallbacks that occurred, by default 0.
 
     Returns
     -------
@@ -535,6 +560,7 @@ def _check_paywall(
             raw_text=text,
             reason=reason,
             tier_used=3,
+            fallback_count=fallback_count,
         )
 
     reason = f"Tier {tier_used}: 本文取得成功 ({content_length}文字)"
@@ -545,6 +571,7 @@ def _check_paywall(
         raw_text=text,
         reason=reason,
         tier_used=tier_used,
+        fallback_count=fallback_count,
     )
 
 
