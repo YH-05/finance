@@ -33,6 +33,7 @@ from .core.article import Article, ArticleSource, ContentType, Provider, Thumbna
 from .core.result import FetchResult, RetryConfig
 from .core.sink import SinkProtocol, SinkType
 from .sinks.file import FileSink, WriteMode
+from .summarizer import Summarizer
 from .utils.logging_config import get_logger
 
 __all__ = [
@@ -45,6 +46,7 @@ __all__ = [
     "RetryConfig",
     "SinkProtocol",
     "SinkType",
+    "Summarizer",
     "Thumbnail",
     "WriteMode",
     "get_logger",
