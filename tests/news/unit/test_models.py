@@ -1,7 +1,9 @@
-"""Unit tests for news/models.py - SourceType and ArticleSource models.
+"""Unit tests for news/models.py - SourceType, ArticleSource, CollectedArticle models.
 
 Tests follow t-wada TDD naming conventions with Japanese test names.
 """
+
+from datetime import datetime, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -197,3 +199,254 @@ class TestArticleSource:
         assert '"source_type":"rss"' in json_str
         assert '"source_name":"CNBC Markets"' in json_str
         assert '"category":"market"' in json_str
+
+
+class TestCollectedArticle:
+    """CollectedArticle Pydantic モデルのテストクラス."""
+
+    def test_正常系_必須フィールドで作成できる(self) -> None:
+        """url, title, source, collected_at で CollectedArticle を作成できる."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected_at = datetime.now(tz=timezone.utc)
+
+        article = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Sample Article",
+            source=source,
+            collected_at=collected_at,
+        )
+
+        assert str(article.url) == "https://www.cnbc.com/article/123"
+        assert article.title == "Sample Article"
+        assert article.source == source
+        assert article.collected_at == collected_at
+        assert article.published is None
+        assert article.raw_summary is None
+
+    def test_正常系_オプションフィールドを指定して作成できる(self) -> None:
+        """published, raw_summary を指定して CollectedArticle を作成できる."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        published = datetime(2025, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+        collected_at = datetime.now(tz=timezone.utc)
+
+        article = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Sample Article",
+            published=published,
+            raw_summary="This is the RSS summary of the article.",
+            source=source,
+            collected_at=collected_at,
+        )
+
+        assert article.published == published
+        assert article.raw_summary == "This is the RSS summary of the article."
+
+    def test_正常系_YFINANCEソースで作成できる(self) -> None:
+        """yfinance ソースの記事を作成できる."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.YFINANCE,
+            source_name="NVDA",
+            category="yf_ai_stock",
+        )
+        collected_at = datetime.now(tz=timezone.utc)
+
+        article = CollectedArticle(
+            url="https://finance.yahoo.com/news/nvda-article",  # type: ignore[arg-type]
+            title="NVDA Q4 Earnings",
+            source=source,
+            collected_at=collected_at,
+        )
+
+        assert article.source.source_type == SourceType.YFINANCE
+        assert article.source.source_name == "NVDA"
+
+    def test_異常系_urlが必須(self) -> None:
+        """url がない場合は ValidationError."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected_at = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            CollectedArticle(
+                title="Sample Article",
+                source=source,
+                collected_at=collected_at,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("url",) for e in errors)
+
+    def test_異常系_titleが必須(self) -> None:
+        """title がない場合は ValidationError."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected_at = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            CollectedArticle(
+                url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+                source=source,
+                collected_at=collected_at,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("title",) for e in errors)
+
+    def test_異常系_sourceが必須(self) -> None:
+        """source がない場合は ValidationError."""
+        from news.models import CollectedArticle
+
+        collected_at = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            CollectedArticle(
+                url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+                title="Sample Article",
+                collected_at=collected_at,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("source",) for e in errors)
+
+    def test_異常系_collected_atが必須(self) -> None:
+        """collected_at がない場合は ValidationError."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+
+        with pytest.raises(ValidationError) as exc_info:
+            CollectedArticle(
+                url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+                title="Sample Article",
+                source=source,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("collected_at",) for e in errors)
+
+    def test_異常系_不正なURLでValidationError(self) -> None:
+        """不正なURL形式では ValidationError."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected_at = datetime.now(tz=timezone.utc)
+
+        with pytest.raises(ValidationError) as exc_info:
+            CollectedArticle(
+                url="not-a-valid-url",  # type: ignore[arg-type]
+                title="Sample Article",
+                source=source,
+                collected_at=collected_at,
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("url",) for e in errors)
+
+    def test_正常系_モデルをdictに変換できる(self) -> None:
+        """CollectedArticle は model_dump() で dict に変換可能."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected_at = datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+
+        article = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Sample Article",
+            raw_summary="Summary text",
+            source=source,
+            collected_at=collected_at,
+        )
+
+        data = article.model_dump()
+
+        assert str(data["url"]) == "https://www.cnbc.com/article/123"
+        assert data["title"] == "Sample Article"
+        assert data["raw_summary"] == "Summary text"
+        assert data["published"] is None
+        assert data["source"]["source_type"] == SourceType.RSS
+        assert data["collected_at"] == collected_at
+
+    def test_正常系_dictからモデルを作成できる(self) -> None:
+        """dict から CollectedArticle を作成可能."""
+        from news.models import CollectedArticle, SourceType
+
+        data = {
+            "url": "https://www.cnbc.com/article/123",
+            "title": "Sample Article",
+            "published": "2025-01-15T10:30:00Z",
+            "raw_summary": "Summary text",
+            "source": {
+                "source_type": "rss",
+                "source_name": "CNBC Markets",
+                "category": "market",
+            },
+            "collected_at": "2025-01-15T12:00:00Z",
+        }
+
+        article = CollectedArticle.model_validate(data)
+
+        assert str(article.url) == "https://www.cnbc.com/article/123"
+        assert article.title == "Sample Article"
+        assert article.source.source_type == SourceType.RSS
+        assert article.published is not None
+        assert article.raw_summary == "Summary text"
+
+    def test_正常系_JSONシリアライズ可能(self) -> None:
+        """CollectedArticle は JSON シリアライズ可能."""
+        from news.models import ArticleSource, CollectedArticle, SourceType
+
+        source = ArticleSource(
+            source_type=SourceType.RSS,
+            source_name="CNBC Markets",
+            category="market",
+        )
+        collected_at = datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+
+        article = CollectedArticle(
+            url="https://www.cnbc.com/article/123",  # type: ignore[arg-type]
+            title="Sample Article",
+            source=source,
+            collected_at=collected_at,
+        )
+
+        json_str = article.model_dump_json()
+
+        assert "https://www.cnbc.com/article/123" in json_str
+        assert '"title":"Sample Article"' in json_str
+        assert '"source_type":"rss"' in json_str

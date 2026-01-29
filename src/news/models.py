@@ -8,6 +8,7 @@ Notes
 -----
 - `SourceType` represents the type of data source (RSS, yfinance, scraper)
 - `ArticleSource` represents metadata about where an article came from
+- `CollectedArticle` represents an article collected from a source
 
 Examples
 --------
@@ -21,9 +22,10 @@ Examples
 <SourceType.RSS: 'rss'>
 """
 
+from datetime import datetime
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, HttpUrl
 
 
 class SourceType(StrEnum):
@@ -116,7 +118,75 @@ class ArticleSource(BaseModel):
     )
 
 
+class CollectedArticle(BaseModel):
+    """An article collected from a news source.
+
+    Represents an article immediately after collection, before any processing
+    such as summarization or classification. This is the output of a Collector.
+
+    Attributes
+    ----------
+    url : HttpUrl
+        The original URL of the article.
+    title : str
+        The article title.
+    published : datetime | None
+        The publication date/time of the article, if available.
+    raw_summary : str | None
+        The original summary from the source (e.g., RSS summary field).
+        This is the unprocessed summary from the data source.
+    source : ArticleSource
+        Metadata about where the article came from.
+    collected_at : datetime
+        The timestamp when the article was collected.
+
+    Examples
+    --------
+    >>> from datetime import datetime, timezone
+    >>> from news.models import ArticleSource, CollectedArticle, SourceType
+    >>> source = ArticleSource(
+    ...     source_type=SourceType.RSS,
+    ...     source_name="CNBC Markets",
+    ...     category="market",
+    ... )
+    >>> article = CollectedArticle(
+    ...     url="https://www.cnbc.com/article/123",
+    ...     title="Market Update",
+    ...     source=source,
+    ...     collected_at=datetime.now(tz=timezone.utc),
+    ... )
+    >>> article.title
+    'Market Update'
+    """
+
+    url: HttpUrl = Field(
+        ...,
+        description="The original URL of the article",
+    )
+    title: str = Field(
+        ...,
+        description="The article title",
+    )
+    published: datetime | None = Field(
+        default=None,
+        description="The publication date/time of the article, if available",
+    )
+    raw_summary: str | None = Field(
+        default=None,
+        description="The original summary from the source (e.g., RSS summary field)",
+    )
+    source: ArticleSource = Field(
+        ...,
+        description="Metadata about where the article came from",
+    )
+    collected_at: datetime = Field(
+        ...,
+        description="The timestamp when the article was collected",
+    )
+
+
 __all__ = [
     "ArticleSource",
+    "CollectedArticle",
     "SourceType",
 ]
