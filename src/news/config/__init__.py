@@ -9,6 +9,12 @@ Examples
 >>> config = loader.load("config.yaml")
 >>> config.settings.max_articles_per_source
 10
+
+>>> # Workflow configuration
+>>> from news.config import NewsWorkflowConfig, load_config
+>>> config = load_config("data/config/news-collection-config.yaml")
+>>> config.version
+'1.0'
 """
 
 from .errors import ConfigError, ConfigParseError, ConfigValidationError
@@ -24,6 +30,16 @@ from .models import (
     YFinanceSearchSourceConfig,
     YFinanceTickerSourceConfig,
 )
+from .workflow import (
+    ExtractionConfig,
+    FilteringConfig,
+    GitHubConfig,
+    NewsWorkflowConfig,
+    OutputConfig,
+    RssConfig,
+    SummarizationConfig,
+    load_config,
+)
 
 __all__ = [
     "DEFAULT_CONFIG_PATH",
@@ -31,13 +47,21 @@ __all__ = [
     "ConfigLoader",
     "ConfigParseError",
     "ConfigValidationError",
+    "ExtractionConfig",
     "FileSinkConfig",
+    "FilteringConfig",
+    "GitHubConfig",
     "GitHubSinkConfig",
     "NewsConfig",
+    "NewsWorkflowConfig",
+    "OutputConfig",
     "RetryConfig",
+    "RssConfig",
     "SettingsConfig",
     "SinksConfig",
     "SourcesConfig",
+    "SummarizationConfig",
     "YFinanceSearchSourceConfig",
     "YFinanceTickerSourceConfig",
+    "load_config",
 ]
