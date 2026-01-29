@@ -20,6 +20,10 @@ from analyze.reporting.upcoming_events import (
     get_upcoming_earnings,
     get_upcoming_economic_releases,
 )
+from analyze.reporting.upcoming_events_agent import (
+    UpcomingEvents4Agent,
+    UpcomingEventsResult,
+)
 
 __all__ = [
     "MAJOR_RELEASES",
@@ -34,7 +38,9 @@ __all__ = [
     "PerformanceAnalyzer",
     "PerformanceAnalyzer4Agent",
     "PerformanceResult",
+    "UpcomingEvents4Agent",
     "UpcomingEventsAnalyzer",
+    "UpcomingEventsResult",
     "get_upcoming_earnings",
     "get_upcoming_economic_releases",
 ]
