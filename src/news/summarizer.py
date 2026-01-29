@@ -1,6 +1,6 @@
 """Summarizer for generating structured Japanese summaries of news articles.
 
-This module provides the Summarizer class that uses Claude Agent SDK to generate
+This module provides the Summarizer class that uses Anthropic SDK to generate
 structured 4-section Japanese summaries of news articles.
 
 The Summarizer works with ExtractedArticle inputs (articles that have undergone
@@ -21,7 +21,10 @@ Examples
 from __future__ import annotations
 
 import asyncio
+import json
 from typing import TYPE_CHECKING
+
+from anthropic import Anthropic
 
 from news.models import (
     ExtractedArticle,
@@ -36,9 +39,13 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__, module="summarizer")
 
+# Claude model and max tokens configuration
+CLAUDE_MODEL = "claude-sonnet-4-20250514"
+CLAUDE_MAX_TOKENS = 1024
+
 
 class Summarizer:
-    """Claude Agent SDK を使用した構造化要約。
+    """Anthropic SDK を使用した構造化要約。
 
     記事本文を分析し、4セクション構造の日本語要約を生成する。
 
@@ -54,6 +61,8 @@ class Summarizer:
         ワークフロー設定の参照。
     _prompt_template : str
         AI 要約に使用するプロンプトテンプレート。
+    _client : Anthropic
+        Anthropic API クライアント。
 
     Examples
     --------
@@ -68,7 +77,7 @@ class Summarizer:
     Notes
     -----
     - 本文抽出が失敗している記事（body_text が None）は SKIPPED ステータスで返す
-    - Claude Agent SDK との統合は P4-002 で実装予定
+    - Anthropic SDK を使用して Claude API を呼び出す
     """
 
     def __init__(self, config: NewsWorkflowConfig) -> None:
@@ -81,6 +90,7 @@ class Summarizer:
         """
         self._config = config
         self._prompt_template = config.summarization.prompt_template
+        self._client = Anthropic()
 
         logger.debug(
             "Summarizer initialized",
@@ -113,8 +123,7 @@ class Summarizer:
         Notes
         -----
         - 非同期メソッドとして実装されており、await が必要
-        - Claude Agent SDK との統合は P4-002 で実装予定
-        - 現在の実装は body_text がある場合でも TODO として処理継続
+        - Anthropic SDK を使用して Claude API を呼び出す
 
         Examples
         --------
@@ -143,28 +152,144 @@ class Summarizer:
                 error_message="No body text available",
             )
 
-        # TODO: Claude Agent SDK 統合（P4-002）
-        # 現在は基本構造のみ。実際の要約処理は P4-002 で実装予定。
+        # Claude API を呼び出して要約を生成
+        try:
+            response_text = self._call_claude(article)
+            summary = self._parse_response(response_text)
+
+            logger.info(
+                "Summarization completed",
+                article_url=str(article.collected.url),
+                overview_length=len(summary.overview),
+                key_points_count=len(summary.key_points),
+            )
+
+            return SummarizedArticle(
+                extracted=article,
+                summary=summary,
+                summarization_status=SummarizationStatus.SUCCESS,
+                error_message=None,
+            )
+        except json.JSONDecodeError as e:
+            error_message = f"Failed to parse Claude response as JSON: {e}"
+            logger.error(
+                "JSON parse error",
+                article_url=str(article.collected.url),
+                error=str(e),
+            )
+            return SummarizedArticle(
+                extracted=article,
+                summary=None,
+                summarization_status=SummarizationStatus.FAILED,
+                error_message=error_message,
+            )
+        except Exception as e:
+            error_message = f"Claude API error: {e}"
+            logger.error(
+                "Claude API error",
+                article_url=str(article.collected.url),
+                error=str(e),
+                exc_info=True,
+            )
+            return SummarizedArticle(
+                extracted=article,
+                summary=None,
+                summarization_status=SummarizationStatus.FAILED,
+                error_message=error_message,
+            )
+
+    def _call_claude(self, article: ExtractedArticle) -> str:
+        """Claude API を呼び出して要約を生成する。
+
+        Parameters
+        ----------
+        article : ExtractedArticle
+            本文抽出済み記事。
+
+        Returns
+        -------
+        str
+            Claude からの JSON レスポンス。
+
+        Notes
+        -----
+        - 記事情報（タイトル、ソース、公開日、本文）をプロンプトに含める
+        - レスポンスは JSON 形式の StructuredSummary を期待
+        """
+        # 記事情報をプロンプトに含める
+        collected = article.collected
+        published_str = (
+            collected.published.isoformat() if collected.published else "不明"
+        )
+
+        prompt = f"""以下のニュース記事を日本語で要約してください。
+
+## 記事情報
+- タイトル: {collected.title}
+- ソース: {collected.source.source_name}
+- 公開日: {published_str}
+
+## 本文
+{article.body_text}
+
+## 出力形式
+以下のJSON形式で回答してください：
+{{
+    "overview": "記事の概要（1-2文）",
+    "key_points": ["キーポイント1", "キーポイント2", ...],
+    "market_impact": "市場への影響",
+    "related_info": "関連情報（任意、なければnull）"
+}}
+
+JSONのみを出力し、他のテキストは含めないでください。"""
+
         logger.debug(
-            "Summarization will be implemented in P4-002",
-            article_url=str(article.collected.url),
-            body_text_length=len(article.body_text),
+            "Calling Claude API",
+            article_url=str(collected.url),
+            prompt_length=len(prompt),
         )
 
-        # P4-002 までの仮実装: 基本的な StructuredSummary を返す
-        # 実際の AI 要約は P4-002 で実装
-        placeholder_summary = StructuredSummary(
-            overview="[要約は P4-002 で実装予定]",
-            key_points=["[キーポイントは P4-002 で実装予定]"],
-            market_impact="[市場への影響は P4-002 で実装予定]",
-            related_info=None,
+        response = self._client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=CLAUDE_MAX_TOKENS,
+            messages=[{"role": "user", "content": prompt}],
         )
 
-        return SummarizedArticle(
-            extracted=article,
-            summary=placeholder_summary,
-            summarization_status=SummarizationStatus.SUCCESS,
-            error_message=None,
+        response_text = response.content[0].text
+
+        logger.debug(
+            "Claude API response received",
+            article_url=str(collected.url),
+            response_length=len(response_text),
+        )
+
+        return response_text
+
+    def _parse_response(self, response_text: str) -> StructuredSummary:
+        """Claude のレスポンスを StructuredSummary にパースする。
+
+        Parameters
+        ----------
+        response_text : str
+            Claude からの JSON レスポンス。
+
+        Returns
+        -------
+        StructuredSummary
+            パースされた構造化要約。
+
+        Raises
+        ------
+        json.JSONDecodeError
+            JSON パースに失敗した場合。
+        """
+        data = json.loads(response_text)
+
+        return StructuredSummary(
+            overview=data["overview"],
+            key_points=data["key_points"],
+            market_impact=data["market_impact"],
+            related_info=data.get("related_info"),
         )
 
     async def summarize_batch(

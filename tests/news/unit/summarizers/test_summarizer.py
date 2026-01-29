@@ -4,11 +4,13 @@ Tests for the basic Summarizer class structure including:
 - Constructor initialization with NewsWorkflowConfig
 - summarize() method signature and behavior with no body text
 - summarize_batch() method signature
+- Claude SDK integration (P4-002)
 
 Following TDD approach: Red -> Green -> Refactor
 """
 
 from datetime import datetime, timezone
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -19,6 +21,7 @@ from news.models import (
     ExtractedArticle,
     ExtractionStatus,
     SourceType,
+    StructuredSummary,
     SummarizationStatus,
 )
 
@@ -219,3 +222,185 @@ class TestSummarizeBatch:
         assert len(result) == 2
         # First article (no body) should be SKIPPED
         assert result[0].summarization_status == SummarizationStatus.SKIPPED
+
+
+class TestSummarizerClaudeIntegration:
+    """Tests for Claude SDK integration (P4-002)."""
+
+    def test_正常系_Anthropicクライアントを使用している(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Summarizer should use Anthropic client."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            mock_client = MagicMock()
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+
+            # Verify Anthropic client was instantiated
+            mock_anthropic.assert_called_once()
+            assert summarizer._client is mock_client
+
+    def test_正常系_プロンプトテンプレートが設定から読み込まれる(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Prompt template should be loaded from config."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic"):
+            summarizer = Summarizer(config=sample_config)
+
+            # Verify prompt template is loaded from config
+            assert (
+                summarizer._prompt_template
+                == sample_config.summarization.prompt_template
+            )
+
+    @pytest.mark.asyncio
+    async def test_正常系_記事情報がプロンプトに含まれる(
+        self,
+        sample_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Article info (title, source, published, body) should be included in prompt."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            # Setup mock response
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            mock_content.text = '{"overview": "Test", "key_points": ["Point 1"], "market_impact": "Impact", "related_info": null}'
+            mock_response.content = [mock_content]
+            mock_client.messages.create.return_value = mock_response
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+            await summarizer.summarize(extracted_article_with_body)
+
+            # Verify messages.create was called
+            mock_client.messages.create.assert_called_once()
+            call_kwargs = mock_client.messages.create.call_args.kwargs
+            prompt_content = call_kwargs["messages"][0]["content"]
+
+            # Verify article info is in the prompt
+            article = extracted_article_with_body.collected
+            assert article.title in prompt_content
+            assert article.source.source_name in prompt_content
+            assert extracted_article_with_body.body_text in prompt_content
+
+    @pytest.mark.asyncio
+    async def test_正常系_Claudeのレスポンスが取得できる(
+        self,
+        sample_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Claude response should be parsed into StructuredSummary."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            # Setup mock response with valid JSON
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            mock_content.text = """{
+                "overview": "S&P 500が上昇した。",
+                "key_points": ["ポイント1", "ポイント2"],
+                "market_impact": "市場への影響",
+                "related_info": "関連情報"
+            }"""
+            mock_response.content = [mock_content]
+            mock_client.messages.create.return_value = mock_response
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            # Verify result
+            assert result.summarization_status == SummarizationStatus.SUCCESS
+            assert result.summary is not None
+            assert isinstance(result.summary, StructuredSummary)
+            assert result.summary.overview == "S&P 500が上昇した。"
+            assert result.summary.key_points == ["ポイント1", "ポイント2"]
+            assert result.summary.market_impact == "市場への影響"
+            assert result.summary.related_info == "関連情報"
+
+    @pytest.mark.asyncio
+    async def test_正常系_モデルとmax_tokensが正しく設定される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Model and max_tokens should be properly configured."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            # Setup mock response
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            mock_content.text = '{"overview": "Test", "key_points": ["Point 1"], "market_impact": "Impact", "related_info": null}'
+            mock_response.content = [mock_content]
+            mock_client.messages.create.return_value = mock_response
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+            await summarizer.summarize(extracted_article_with_body)
+
+            # Verify model and max_tokens
+            call_kwargs = mock_client.messages.create.call_args.kwargs
+            assert call_kwargs["model"] == "claude-sonnet-4-20250514"
+            assert call_kwargs["max_tokens"] == 1024
+
+    @pytest.mark.asyncio
+    async def test_異常系_APIエラーでFAILEDステータスを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """API error should result in FAILED status."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            # Setup mock to raise exception
+            mock_client = MagicMock()
+            mock_client.messages.create.side_effect = Exception("API Error")
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.FAILED
+            assert result.summary is None
+            assert result.error_message is not None
+            assert "API Error" in result.error_message
+
+    @pytest.mark.asyncio
+    async def test_異常系_JSONパースエラーでFAILEDステータスを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """JSON parse error should result in FAILED status."""
+        from news.summarizer import Summarizer
+
+        with patch("news.summarizer.Anthropic") as mock_anthropic:
+            # Setup mock response with invalid JSON
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_content = MagicMock()
+            mock_content.text = "This is not valid JSON"
+            mock_response.content = [mock_content]
+            mock_client.messages.create.return_value = mock_response
+            mock_anthropic.return_value = mock_client
+
+            summarizer = Summarizer(config=sample_config)
+            result = await summarizer.summarize(extracted_article_with_body)
+
+            assert result.summarization_status == SummarizationStatus.FAILED
+            assert result.summary is None
+            assert result.error_message is not None
