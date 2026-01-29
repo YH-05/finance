@@ -9,8 +9,8 @@ from __future__ import annotations
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from typing import Any
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -314,58 +314,7 @@ class TestDuplicateChecking:
 
 # ---------------------------------------------------------------------------
 # Test: Paywall Detection
-# ---------------------------------------------------------------------------
-
-
-class TestPaywallDetection:
-    """Test paywall detection functionality."""
-
-    @pytest.mark.asyncio
-    async def test_正常系_アクセス可能な記事を検出できる(self) -> None:
-        """Test detection of accessible articles."""
-        from rss.services.article_content_checker import ContentStatus
-        from scripts.prepare_news_session import check_paywall_batch
-
-        items = [{"link": "https://example.com/free-article", "title": "Free Article"}]
-
-        mock_result = MagicMock()
-        mock_result.status = ContentStatus.ACCESSIBLE
-        mock_result.reason = "Tier 1: 本文取得成功"
-
-        with patch(
-            "scripts.prepare_news_session.check_article_content",
-            new_callable=AsyncMock,
-            return_value=mock_result,
-        ):
-            accessible, blocked = await check_paywall_batch(items)
-
-            assert len(accessible) == 1
-            assert len(blocked) == 0
-
-    @pytest.mark.asyncio
-    async def test_正常系_ペイウォール記事を検出できる(self) -> None:
-        """Test detection of paywalled articles."""
-        from rss.services.article_content_checker import ContentStatus
-        from scripts.prepare_news_session import check_paywall_batch
-
-        items = [
-            {"link": "https://example.com/premium-article", "title": "Premium Article"}
-        ]
-
-        mock_result = MagicMock()
-        mock_result.status = ContentStatus.PAYWALLED
-        mock_result.reason = "Tier 3: ペイウォール検出"
-
-        with patch(
-            "scripts.prepare_news_session.check_article_content",
-            new_callable=AsyncMock,
-            return_value=mock_result,
-        ):
-            accessible, blocked = await check_paywall_batch(items)
-
-            assert len(accessible) == 0
-            assert len(blocked) == 1
-            assert "ペイウォール" in blocked[0]["reason"]
+# (Removed: paywall detection is no longer part of this preprocessing script)
 
 
 # ---------------------------------------------------------------------------
@@ -401,7 +350,7 @@ class TestSessionGeneration:
         session = generate_session(
             theme_results=theme_results,
             theme_config=sample_theme_config,
-            stats={"total": 5, "duplicates": 2, "paywall_blocked": 1, "accessible": 2},
+            stats={"total": 5, "duplicates": 2, "accessible": 2},
         )
 
         assert session.session_id.startswith("news-")
@@ -455,7 +404,7 @@ class TestOutputFile:
                 ],
             ),
             themes={},
-            stats=SessionStats(total=0, duplicates=0, paywall_blocked=0, accessible=0),
+            stats=SessionStats(total=0, duplicates=0, accessible=0),
         )
 
         output_path = tmp_path / "test-session.json"
@@ -503,7 +452,7 @@ class TestStatsCalculation:
 
         assert stats["total"] == 25
         assert stats["duplicates"] == 7
-        assert stats["paywall_blocked"] == 3  # 2 + 1
+        # Note: paywall_blocked is no longer tracked in this script
         assert stats["accessible"] == 15  # 10 + 5
 
 
@@ -547,14 +496,9 @@ class TestIntegration:
         with (
             patch("scripts.prepare_news_session.load_theme_config") as mock_config,
             patch("scripts.prepare_news_session.FeedReader") as mock_reader,
-            patch(
-                "scripts.prepare_news_session.check_paywall_batch",
-                new_callable=AsyncMock,
-            ) as mock_paywall,
         ):
             mock_config.return_value = sample_theme_config
             mock_reader.return_value.get_items.return_value = []
-            mock_paywall.return_value = ([], [])
 
             output_path = tmp_path / "output.json"
             result = main(
@@ -563,7 +507,6 @@ class TestIntegration:
                     str(output_path),
                     "--themes",
                     "index",
-                    "--skip-paywall-check",
                 ]
             )
 
