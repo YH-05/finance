@@ -1,0 +1,383 @@
+{
+    // ========================================
+    // ワークベンチ設定
+    // ========================================
+    "workbench.colorTheme": "Kanagawa Wave",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.editor.wrapTabs": true,
+    "workbench.experimental.share.enabled": true,
+
+    "workbench.editorAssociations": {
+        "*.copilotmd": "vscode.markdown.preview.editor",
+        "*.ipynb": "jupyter-notebook",
+        "file:/**/*.parquet": "jupyter-data-wrangler",
+        ".md": "default",
+        ".markdown": "default",
+    },
+
+    "workbench.colorCustomizations": {
+        "editor.selectionBackground": "#32cd32",
+        "terminal.background": "#00000000",
+        "[Vira*]": {},
+    },
+
+    // ========================================
+    // ウィンドウ設定
+    // ========================================
+    "window.systemColorTheme": "dark",
+    "window.autoDetectColorScheme": false,
+    "window.titleBarStyle": "custom",
+
+    // ========================================
+    // エディター設定
+    // ========================================
+    "editor.formatOnSave": true,
+    "editor.largeFileOptimizations": false,
+    "editor.linkedEditing": true,
+    "editor.unicodeHighlight.nonBasicASCII": false,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true,
+    },
+
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "heading.1.markdown entity.name.section.markdown",
+                "settings": {
+                    "foreground": "#4d85c3",
+                },
+            },
+            {
+                "scope": "heading.2.markdown entity.name.section.markdown",
+                "settings": {
+                    "foreground": "#ee4300",
+                    "fontStyle": "italic bold underline",
+                },
+            },
+            {
+                "scope": "heading.3.markdown entity.name.section.markdown",
+                "settings": {
+                    "foreground": "#eeee00",
+                    "fontStyle": "italic bold underline",
+                },
+            },
+            {
+                "scope": "heading.4.markdown entity.name.section.markdown",
+                "settings": {
+                    "foreground": "#15ff00",
+                    "fontStyle": "italic bold underline",
+                },
+            },
+            {
+                "scope": "heading.5.markdown entity.name.section.markdown",
+                "settings": {
+                    "foreground": "#ff9500",
+                    "fontStyle": "italic bold underline",
+                },
+            },
+            {
+                "scope": "heading.6.markdown entity.name.section.markdown",
+                "settings": {
+                    "foreground": "#9d00ff",
+                    "fontStyle": "italic bold underline",
+                },
+            },
+        ],
+    },
+
+    // ========================================
+    // ファイル設定
+    // ========================================
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.associations": {
+        "*.md": "markdown",
+        "*.json": "jsonc",
+    },
+
+    // ========================================
+    // Python設定
+    // ========================================
+    "python.defaultInterpreterPath": "H:\\HataY\\03_Work\\Quants\\.venv\\Scripts\\python.exe",
+    "python.condaPath": "C:\\ProgramData\\anaconda3\\Scripts\\conda.exe",
+    "python.languageServer": "Pylance",
+
+    "python.analysis.typeCheckingMode": "standard",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportAttributeAccessIssue": "information",
+    },
+    "python.analysis.exclude": [
+        "**/__pycache__",
+        "**/node_modules",
+        "**/.venv",
+        "**/venv",
+        "**/env",
+        "**/.git",
+        "**/site-packages",
+        "**/*.egg-info",
+    ],
+
+    // Python Indent
+    "pythonIndent.keepHangingBracketOnLine": true,
+    "pythonIndent.trimLinesWithOnlyWhitespace": true,
+    "pythonIndent.useTabOnHangingIndent": true,
+
+    // Docstring
+    "autoDocstring.includeName": true,
+    "autoDocstring.startOnNewLine": true,
+
+    // Ruff
+    "ruff.enable": true,
+    "ruff.nativeServer": true,
+    "ruff.organizeImports": true,
+    "ruff.fixAll": true,
+
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll": "explicit",
+        },
+    },
+
+    // ========================================
+    // Jupyter Notebook設定
+    // ========================================
+    "jupyter.askForKernelRestart": false,
+    "jupyter.interactiveWindow.creationMode": "perFile",
+    "jupyter.jupyterServerType": "local",
+    "jupyter.kernelLaunchTimeout": 180,
+    "jupyter.enableNativeInteractiveWindow": true,
+
+    "notebook.lineNumbers": "on",
+    "notebook.insertFinalNewline": true,
+    "notebook.defaultFormatter": "charliermarsh.ruff",
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit",
+    },
+
+    "dataWrangler.outputRenderer.enabled": false,
+
+    // ========================================
+    // Markdown設定
+    // ========================================
+    "markdown.styles": ["C:/Users/hatay_bb/markdown.css"],
+    "markdown.extension.toc.levels": "2..6",
+
+    "markdownlint.config": {
+        "MD007": false,
+        "MD030": false,
+        "MD036": false,
+    },
+
+    "markdown-preview-enhanced.previewTheme": "atom-light.css",
+    "markdown-preview-enhanced.codeBlockTheme": "atom-light.css",
+
+    "markdown-pdf.stylesRelativePathFile": true,
+    "markdown-pdf.styles": [
+        "/Users/yukihata/Desktop/papers-1/markdown-pdf.css",
+    ],
+    "markdown-pdf.margin.bottom": "1.5cm",
+    "markdown-pdf.headerTemplate": "<div style=\"font-size: 9px; margin-left: auto; margin-right: 1cm; \">%%ISO-DATE%%</div>",
+    "markdown-pdf.footerTemplate": "<div style=\"font-size: 9px; margin: 0 auto; text-align: center;\"><div style=\"border-top: 1px solid black; width: 520px; margin-bottom: 1.2px;\"></div><span class='pageNumber'></span> / <span class='totalPages'></span></div>",
+
+    "[markdown]": {
+        "editor.unicodeHighlight.ambiguousCharacters": false,
+        "editor.unicodeHighlight.invisibleCharacters": false,
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": {
+            "comments": false,
+            "strings": true,
+            "other": true,
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+
+    // ========================================
+    // Prettier設定
+    // ========================================
+    "prettier.bracketSameLine": true,
+    "prettier.tabWidth": 4,
+
+    // ========================================
+    // ターミナル設定
+    // ========================================
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "terminal.integrated.gpuAcceleration": "off",
+    "terminal.integrated.inheritEnv": false,
+    "terminal.integrated.env.windows": {},
+    "terminal.integrated.env.osx": {},
+
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell",
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe",
+            ],
+            "args": [],
+            "icon": "terminal-cmd",
+        },
+        "Git Bash": {
+            "source": "Git Bash",
+        },
+    },
+
+    // ========================================
+    // Git設定
+    // ========================================
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.enabled": true,
+    "git.defaultBranchName": "main",
+
+    // ========================================
+    // GitLens設定
+    // ========================================
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+
+    // ========================================
+    // エクスプローラー設定
+    // ========================================
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false,
+
+    // ========================================
+    // Diff Editor設定
+    // ========================================
+    "diffEditor.codeLens": true,
+
+    // ========================================
+    // 言語固有の設定
+    // ========================================
+    "[latex]": {
+        "editor.formatOnPaste": false,
+        "editor.suggestSelection": "recentlyUsedByPrefix",
+    },
+
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true,
+        },
+        "editor.defaultFormatter": "redhat.vscode-yaml",
+    },
+
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml",
+    },
+
+    // ========================================
+    // 拡張機能設定
+    // ========================================
+
+    // TODO Tree
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "XXX",
+        "[ ]",
+        "[x]",
+        "SEARCH",
+    ],
+    "todo-tree.highlights.customHighlight": {
+        "SEARCH": {
+            "icon": "$(search)",
+            "foreground": "#A6E22E",
+            "background": "#272822",
+            "iconColour": "#FFD700",
+            "type": "tag",
+        },
+        "BUG": {
+            "icon": "bug",
+        },
+        "HACK": {
+            "icon": "tools",
+        },
+        "FIXME": {
+            "icon": "flame",
+        },
+        "XXX": {
+            "icon": "x",
+        },
+        "[ ]": {
+            "icon": "issue-draft",
+        },
+        "[x]": {
+            "icon": "issue-closed",
+        },
+    },
+
+    // Emoji Sense
+    "emojisense.languages": {
+        "markdown": true,
+        "plaintext": {
+            "markupCompletionsEnabled": false,
+            "emojiDecoratorsEnabled": false,
+        },
+        "scminput": true,
+        "git-commit": true,
+    },
+
+    // VS Code Office
+    "vscode-office.editorTheme": "Dracula",
+    "vscode-office.openOutline": true,
+
+    // Glassit
+    "glassit.alpha": 150,
+
+    // Draw.io
+    "hediet.vscode-drawio.resizeImages": null,
+
+    // Gemini Code Assist
+    "geminicodeassist.project": "sustained-incentive-h1xdd",
+    "geminicodeassist.displayInlineContextHint": false,
+
+    // GitHub Copilot
+    "github.copilot.nextEditSuggestions.enabled": true,
+
+    // Claude Code
+    "claudeCode.useTerminal": true,
+    "claudeCode.preferredLocation": "sidebar",
+
+    // Docker
+    "docker.extension.enableComposeLanguageServer": false,
+
+    // ========================================
+    // セキュリティ/その他
+    // ========================================
+    "http.systemCertificatesNode": true,
+    "security.allowedUNCHosts": ["https://accounts.google.com"],
+    "redhat.telemetry.enabled": false,
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false,
+    },
+    "foam.files.exclude": [],
+    "files.exclude": {
+        "**/.git": false,
+    },
+}
