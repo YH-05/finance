@@ -86,6 +86,21 @@ commodities:
   - symbol: "ZS=F"
     name: "Soybean Futures"
 
+currencies:
+  jpy_crosses:
+    - symbol: "USDJPY=X"
+      name: "米ドル/円"
+    - symbol: "EURJPY=X"
+      name: "ユーロ/円"
+    - symbol: "GBPJPY=X"
+      name: "英ポンド/円"
+    - symbol: "AUDJPY=X"
+      name: "豪ドル/円"
+    - symbol: "CADJPY=X"
+      name: "カナダドル/円"
+    - symbol: "CHFJPY=X"
+      name: "スイスフラン/円"
+
 sectors:
   - symbol: "XLF"
     name: "Financial Select Sector SPDR"

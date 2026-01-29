@@ -15,7 +15,7 @@ class TestWeeklyMarketReportTemplate:
 
     TEMPLATE_PATH = Path("template/market_report/weekly_market_report_template.md")
 
-    # Required placeholders from Issue #774
+    # Required placeholders from Issue #774 and Issue #2425
     REQUIRED_PLACEHOLDERS = [
         "{report_date}",
         "{period_start}",
@@ -31,8 +31,18 @@ class TestWeeklyMarketReportTemplate:
         "{bottom_sectors_table}",
         "{bottom_sectors_comment}",
         "{macro_comment}",
+        # Issue #2425: Interest rates and bonds section
+        "{interest_rates_table}",
+        "{interest_rates_comment}",
+        "{yield_curve_analysis}",
+        # Issue #2425: Currency market section
+        "{currencies_table}",
+        "{currencies_comment}",
         "{theme_comment}",
-        "{upcoming_events}",
+        # Issue #2425: Extended upcoming events section
+        "{earnings_table}",
+        "{economic_releases_table}",
+        "{upcoming_events_comment}",
     ]
 
     def test_正常系_テンプレートファイルが存在する(self) -> None:
@@ -71,8 +81,18 @@ class TestWeeklyMarketReportTemplate:
             "bottom_sectors_table": "| セクター | ETF | 週間リターン |\n|----------|-----|-------------|\n| 公益 | XLU | -1.5% |",
             "bottom_sectors_comment": "公益セクターは金利上昇懸念から軟調でした。",
             "macro_comment": "FRBの発言に注目が集まりました。",
+            # Issue #2425: Interest rates and bonds section
+            "interest_rates_table": "| 期間 | 利回り | 前週比 |\n|------|--------|--------|\n| 2Y | 4.25% | +5bp |\n| 10Y | 4.50% | +10bp |",
+            "interest_rates_comment": "長期金利は上昇傾向が継続しています。",
+            "yield_curve_analysis": "2年-10年のスプレッドは25bpで、イールドカーブは正常化傾向にあります。",
+            # Issue #2425: Currency market section
+            "currencies_table": "| 通貨ペア | レート | 前週比 |\n|----------|--------|--------|\n| USD/JPY | 155.50 | +1.2% |",
+            "currencies_comment": "ドル円は日米金利差を背景に上昇しました。",
             "theme_comment": "AI投資テーマが引き続き注目されています。",
-            "upcoming_events": "- FOMC議事録公表\n- 雇用統計発表",
+            # Issue #2425: Extended upcoming events section
+            "earnings_table": "| 銘柄 | 発表日 | 予想EPS |\n|------|--------|--------|\n| AAPL | 1/25 | $2.10 |",
+            "economic_releases_table": "| 指標 | 発表日 | 予想 |\n|------|--------|------|\n| CPI | 1/26 | +3.0% |",
+            "upcoming_events_comment": "来週はFOMC議事録と主要企業の決算発表に注目です。",
         }
 
         # Perform substitution
