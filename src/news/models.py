@@ -294,6 +294,44 @@ class ExtractedArticle(BaseModel):
     )
 
 
+class PublicationStatus(StrEnum):
+    """Status of article publication to GitHub Issues.
+
+    Represents the result status of attempting to publish an article
+    as a GitHub Issue. This is used to track whether publication succeeded
+    or why it failed.
+
+    Attributes
+    ----------
+    SUCCESS : str
+        Publication completed successfully. The issue_number and issue_url
+        fields will contain the created issue information.
+    FAILED : str
+        Publication failed for an unspecified reason. Check error_message
+        for details.
+    SKIPPED : str
+        Publication was skipped because summarization failed.
+        No summary was available to publish.
+    DUPLICATE : str
+        Publication was skipped because a duplicate issue was detected.
+        The article has already been published.
+
+    Examples
+    --------
+    >>> PublicationStatus.SUCCESS
+    <PublicationStatus.SUCCESS: 'success'>
+    >>> PublicationStatus.SUCCESS == "success"
+    True
+    >>> PublicationStatus.DUPLICATE.value
+    'duplicate'
+    """
+
+    SUCCESS = "success"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+    DUPLICATE = "duplicate"
+
+
 class SummarizationStatus(StrEnum):
     """Status of AI summarization.
 
@@ -457,11 +495,103 @@ class SummarizedArticle(BaseModel):
     )
 
 
+class PublishedArticle(BaseModel):
+    """An article after publication to GitHub Issues.
+
+    Represents an article after attempting to publish it as a GitHub Issue.
+    This is the output of a Publisher component.
+
+    The publication may succeed (issue_number and issue_url contain values) or fail
+    for various reasons (API error, duplicate detection, summarization failure).
+
+    Attributes
+    ----------
+    summarized : SummarizedArticle
+        The summarized article that was processed for publication.
+    issue_number : int | None
+        The GitHub Issue number if publication succeeded, or None if failed/skipped.
+    issue_url : str | None
+        The GitHub Issue URL if publication succeeded, or None if failed/skipped.
+    publication_status : PublicationStatus
+        The status of the publication attempt (SUCCESS, FAILED, SKIPPED, DUPLICATE).
+    error_message : str | None
+        Error message if publication failed, or None if successful.
+
+    Examples
+    --------
+    >>> from datetime import datetime, timezone
+    >>> from news.models import (
+    ...     ArticleSource, CollectedArticle, ExtractedArticle,
+    ...     ExtractionStatus, SourceType, StructuredSummary,
+    ...     SummarizationStatus, SummarizedArticle,
+    ...     PublicationStatus, PublishedArticle
+    ... )
+    >>> source = ArticleSource(
+    ...     source_type=SourceType.RSS,
+    ...     source_name="CNBC Markets",
+    ...     category="market",
+    ... )
+    >>> collected = CollectedArticle(
+    ...     url="https://www.cnbc.com/article/123",
+    ...     title="Market Update",
+    ...     source=source,
+    ...     collected_at=datetime.now(tz=timezone.utc),
+    ... )
+    >>> extracted = ExtractedArticle(
+    ...     collected=collected,
+    ...     body_text="Full article content here...",
+    ...     extraction_status=ExtractionStatus.SUCCESS,
+    ...     extraction_method="trafilatura",
+    ... )
+    >>> summary = StructuredSummary(
+    ...     overview="Markets rallied today",
+    ...     key_points=["S&P 500 up 1%", "Tech leads gains"],
+    ...     market_impact="Bullish sentiment continues",
+    ... )
+    >>> summarized = SummarizedArticle(
+    ...     extracted=extracted,
+    ...     summary=summary,
+    ...     summarization_status=SummarizationStatus.SUCCESS,
+    ... )
+    >>> published = PublishedArticle(
+    ...     summarized=summarized,
+    ...     issue_number=123,
+    ...     issue_url="https://github.com/YH-05/finance/issues/123",
+    ...     publication_status=PublicationStatus.SUCCESS,
+    ... )
+    >>> published.publication_status
+    <PublicationStatus.SUCCESS: 'success'>
+    """
+
+    summarized: SummarizedArticle = Field(
+        ...,
+        description="The summarized article that was processed for publication",
+    )
+    issue_number: int | None = Field(
+        ...,
+        description="The GitHub Issue number if publication succeeded, or None if failed/skipped",
+    )
+    issue_url: str | None = Field(
+        ...,
+        description="The GitHub Issue URL if publication succeeded, or None if failed/skipped",
+    )
+    publication_status: PublicationStatus = Field(
+        ...,
+        description="The status of the publication attempt",
+    )
+    error_message: str | None = Field(
+        default=None,
+        description="Error message if publication failed, or None if successful",
+    )
+
+
 __all__ = [
     "ArticleSource",
     "CollectedArticle",
     "ExtractedArticle",
     "ExtractionStatus",
+    "PublicationStatus",
+    "PublishedArticle",
     "SourceType",
     "StructuredSummary",
     "SummarizationStatus",
