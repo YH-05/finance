@@ -7,6 +7,8 @@ Classes
 -------
 FREDFetcher
     Main class for fetching FRED data
+HistoricalCache
+    Local cache manager for FRED historical data
 
 Constants
 ---------
@@ -23,13 +25,22 @@ Examples
 >>> fetcher = FREDFetcher()  # Uses FRED_API_KEY env var
 >>> options = FetchOptions(symbols=["GDP", "CPIAUCSL"])
 >>> results = fetcher.fetch(options)
+
+For historical data caching:
+>>> from market.fred import HistoricalCache
+>>>
+>>> cache = HistoricalCache()
+>>> cache.sync_series("DGS10")
+>>> df = cache.get_series_df("DGS10")
 """
 
 from .constants import FRED_API_KEY_ENV, FRED_SERIES_PATTERN
 from .fetcher import FREDFetcher
+from .historical_cache import HistoricalCache
 
 __all__ = [
     "FRED_API_KEY_ENV",
     "FRED_SERIES_PATTERN",
     "FREDFetcher",
+    "HistoricalCache",
 ]

@@ -11,7 +11,8 @@
       "mcp__context7__resolve-library-id",
       "WebFetch(domain:ranaroussi.github.io)",
       "WebFetch(domain:www.nasdaq.com)",
-      "WebFetch(domain:finance.yahoo.com)"
+      "WebFetch(domain:finance.yahoo.com)",
+      "WebFetch(domain:fred.stlouisfed.org)"
     ]
   },
   "enableAllProjectMcpServers": true,

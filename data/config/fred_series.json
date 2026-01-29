@@ -100,6 +100,53 @@
             "description": "米国30年国債の利回り。超長期金利の指標。"
         }
     },
+    "TIPS Yields": {
+        "DFII5": {
+            "name_ja": "5年物価連動国債利回り",
+            "name_en": "5-Year Treasury Inflation-Indexed Security, Constant Maturity",
+            "category": "real_interest_rate",
+            "maturity": "5y",
+            "frequency": "daily",
+            "units": "percent",
+            "description": "5年物TIPS（物価連動国債）の実質利回り。インフレ調整後の実質金利を示す。"
+        },
+        "DFII7": {
+            "name_ja": "7年物価連動国債利回り",
+            "name_en": "7-Year Treasury Inflation-Indexed Security, Constant Maturity",
+            "category": "real_interest_rate",
+            "maturity": "7y",
+            "frequency": "daily",
+            "units": "percent",
+            "description": "7年物TIPS（物価連動国債）の実質利回り。"
+        },
+        "DFII10": {
+            "name_ja": "10年物価連動国債利回り",
+            "name_en": "10-Year Treasury Inflation-Indexed Security, Constant Maturity",
+            "category": "real_interest_rate",
+            "maturity": "10y",
+            "frequency": "daily",
+            "units": "percent",
+            "description": "10年物TIPS（物価連動国債）の実質利回り。長期実質金利の代表的指標。"
+        },
+        "DFII20": {
+            "name_ja": "20年物価連動国債利回り",
+            "name_en": "20-Year Treasury Inflation-Indexed Security, Constant Maturity",
+            "category": "real_interest_rate",
+            "maturity": "20y",
+            "frequency": "daily",
+            "units": "percent",
+            "description": "20年物TIPS（物価連動国債）の実質利回り。"
+        },
+        "DFII30": {
+            "name_ja": "30年物価連動国債利回り",
+            "name_en": "30-Year Treasury Inflation-Indexed Security, Constant Maturity",
+            "category": "real_interest_rate",
+            "maturity": "30y",
+            "frequency": "daily",
+            "units": "percent",
+            "description": "30年物TIPS（物価連動国債）の実質利回り。超長期実質金利の指標。"
+        }
+    },
     "Yield Curve Spreads": {
         "T10Y2Y": {
             "name_ja": "10年-2年スプレッド",
@@ -132,6 +179,14 @@
             "frequency": "daily",
             "units": "percent",
             "description": "名目5年国債とTIPSの利回り差。中期的なインフレ期待を示す。"
+        },
+        "T5YIFR": {
+            "name_ja": "5年先5年フォワードインフレ期待率",
+            "name_en": "5-Year, 5-Year Forward Inflation Expectation Rate",
+            "category": "inflation_expectation",
+            "frequency": "daily",
+            "units": "percent",
+            "description": "5年後から5年間の期待インフレ率。長期的なインフレ期待の安定性を示す重要指標。"
         }
     },
     "Credit Spreads": {
