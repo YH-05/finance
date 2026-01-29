@@ -14,6 +14,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# プロジェクトルートを動的に取得
+PROJECT_ROOT = Path(__file__).resolve().parents[4]
+
 # =============================================================================
 # フィクスチャ
 # =============================================================================
@@ -323,7 +326,7 @@ class TestModuleExecution:
             [sys.executable, "-m", "market.fred.scripts.sync_historical", "--help"],
             capture_output=True,
             text=True,
-            cwd="/Users/yukihata/Desktop/finance",
+            cwd=PROJECT_ROOT,
             check=False,
         )
 
