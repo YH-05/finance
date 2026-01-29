@@ -5,21 +5,25 @@ text from news article URLs. Extractors handle the conversion from a
 CollectedArticle (with just URL and metadata) to an ExtractedArticle
 (with the full article body text).
 
+Available Extractors
+--------------------
+BaseExtractor
+    Abstract base class for all extractors.
+TrafilaturaExtractor
+    Trafilatura-based extractor that wraps ArticleExtractor.
+
 Examples
 --------
->>> from news.extractors.base import BaseExtractor
->>> from news.models import CollectedArticle, ExtractedArticle
+>>> from news.extractors import TrafilaturaExtractor
+>>> from news.models import CollectedArticle, ExtractionStatus
 >>>
->>> class MyExtractor(BaseExtractor):
-...     @property
-...     def extractor_name(self) -> str:
-...         return "my_extractor"
-...
-...     async def extract(self, article: CollectedArticle) -> ExtractedArticle:
-...         # Implementation here
-...         pass
+>>> extractor = TrafilaturaExtractor()
+>>> result = await extractor.extract(article)
+>>> result.extraction_status
+<ExtractionStatus.SUCCESS: 'success'>
 """
 
 from news.extractors.base import BaseExtractor
+from news.extractors.trafilatura import TrafilaturaExtractor
 
-__all__ = ["BaseExtractor"]
+__all__ = ["BaseExtractor", "TrafilaturaExtractor"]
