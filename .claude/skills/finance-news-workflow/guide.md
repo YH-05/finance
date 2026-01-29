@@ -563,37 +563,77 @@ finance-news-{theme}
 | AI | finance-news-ai | 9 | CNBC Tech, Hacker News, TechCrunch, Ars Technica, NASDAQ AI |
 | Finance | finance-news-finance | 7 | CNBC Finance, Yahoo Finance, FT, NASDAQ |
 
-### 5. 並列実行パターン
+### 5. 並列実行パターン（並列度制御付き）
 
 ```python
-# 複数のTask toolを並列呼び出し（単一メッセージで複数tool use）
+# 並列度を設定から取得（デフォルト: 3）
+concurrency = config.get("execution", {}).get("concurrency", 3)
 
 # 対象テーマの決定
 target_themes = parse_themes_param(args.themes)
 
-# 並列起動
-tasks = []
-for theme in target_themes:
-    task = Task(
-        subagent_type=f"finance-news-{theme}",
-        description=f"{theme}テーマのニュース収集",
-        prompt=f"""一時ファイルを読み込んで{theme}テーマのニュースを処理してください。
+# concurrency 件ずつバッチ実行（タイムアウト対策）
+for i in range(0, len(target_themes), concurrency):
+    batch_themes = target_themes[i:i + concurrency]
+
+    # バッチ内は並列起動
+    tasks = []
+    for theme in batch_themes:
+        task = Task(
+            subagent_type=f"finance-news-{theme}",
+            description=f"{theme}テーマのニュース収集",
+            prompt=f"""一時ファイルを読み込んで{theme}テーマのニュースを処理してください。
 
 ## パラメータ
 - --days: {args.days}
 - --dry-run: {args.dry_run}
+- --batch-size: {args.batch_size}
+- --timeout: {args.timeout}
 
 ## 一時ファイル
 {temp_file_path}
-""",
-        run_in_background=True
-    )
-    tasks.append(task)
 
-# 全タスクの完了を待機
-for task in tasks:
-    result = TaskOutput(task_id=task.id)
-    # 結果を集約
+## 実行制御
+- 記事数上限: {config.get("execution", {}).get("max_articles_per_theme", 20)}件
+- タイムアウト: {config.get("execution", {}).get("timeout_minutes", 10)}分
+""",
+            run_in_background=True
+        )
+        tasks.append(task)
+
+    # バッチ内タスクの完了を待機
+    for task in tasks:
+        result = TaskOutput(task_id=task.id)
+        # 結果を集約
+        # チェックポイント保存
+```
+
+### 6. チェックポイント再開パターン
+
+```python
+# --resume オプション指定時
+if args.resume:
+    # 最新のチェックポイントを検索
+    checkpoint_dir = Path(config.get("execution", {}).get("checkpoint_dir", ".tmp/checkpoints"))
+    checkpoints = sorted(checkpoint_dir.glob("news-collection-*.json"), reverse=True)
+
+    if checkpoints:
+        with open(checkpoints[0]) as f:
+            checkpoint = json.load(f)
+
+        # 再開対象テーマを特定
+        themes_to_resume = []
+        for theme, status in checkpoint["themes"].items():
+            if status["status"] in ["pending", "in_progress"]:
+                themes_to_resume.append({
+                    "theme": theme,
+                    "start_index": status.get("last_processed_index", 0),
+                    "pending_articles": checkpoint.get("pending_articles", {}).get(theme, [])
+                })
+
+        # 再開処理を実行
+        for resume_info in themes_to_resume:
+            # ...
 ```
 
 ---

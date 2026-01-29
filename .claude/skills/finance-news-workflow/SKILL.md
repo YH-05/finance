@@ -61,6 +61,10 @@ Phase 4: 結果報告
 | --project | 15 | GitHub Project番号 |
 | --themes | all | 対象テーマ（index,stock,sector,macro,ai,finance / all） |
 | --dry-run | false | GitHub投稿せずに結果確認のみ |
+| --batch-size | 10 | 各テーマの処理記事数上限（タイムアウト対策） |
+| --concurrency | 3 | 同時実行するテーマ数（1-6、並列度制御） |
+| --resume | false | 前回のチェックポイントから再開 |
+| --timeout | 10 | 各テーマのタイムアウト時間（分） |
 
 ## テーマ設定ファイル
 

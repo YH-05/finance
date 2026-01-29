@@ -23,6 +23,8 @@ permissionMode: bypassPermissions
 1. **軽量化**: RSS取得は行わず、既存Issue取得とセッション管理のみ
 2. **一時ファイル保存**: セッション情報は`.tmp/news-collection-{timestamp}.json`に保存
 3. **エラーハンドリング**: GitHub CLI接続失敗時はエラー報告
+4. **実行制御**: `data/config/finance-news-themes.json` の `execution` セクションから設定を読み込み
+5. **チェックポイント**: 有効時は `.tmp/checkpoints/` にチェックポイントを保存
 
 ## アーキテクチャ
 
@@ -221,6 +223,14 @@ feed_assignments = load_feed_assignments()
         "project_id": "PVT_kwHOBoK6AM4BMpw_",
         "status_field_id": "PVTSSF_lAHOBoK6AM4BMpw_zg739ZE",
         "published_date_field_id": "PVTF_lAHOBoK6AM4BMpw_zg8BzrI"
+    },
+    "execution": {
+        "batch_size": 10,
+        "max_articles_per_theme": 20,
+        "concurrency": 3,
+        "timeout_minutes": 10,
+        "checkpoint_enabled": true,
+        "checkpoint_dir": ".tmp/checkpoints"
     },
     "existing_issues": [
         {

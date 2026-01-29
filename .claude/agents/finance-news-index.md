@@ -283,3 +283,33 @@ Task(
 2. **担当フィード限定**: 割り当てられたフィードのみから記事を取得
 3. **Issue作成順序**: 並列実行のため、Issue番号は連続しない可能性あり
 4. **キーワード競合**: 複数テーマにマッチする記事は最初に処理したテーマに割り当て
+5. **バッチサイズ制限**: `execution.batch_size` で指定された件数ずつ処理（タイムアウト対策）
+6. **記事数上限**: `execution.max_articles_per_theme` を超える記事は処理しない
+
+## 実行制御（タイムアウト対策）
+
+セッションファイルの `execution` セクションから設定を読み込み、処理を制御します。
+
+```python
+# 設定読み込み
+execution_config = session_data.get("execution", {})
+batch_size = execution_config.get("batch_size", 10)
+max_articles = execution_config.get("max_articles_per_theme", 20)
+checkpoint_enabled = execution_config.get("checkpoint_enabled", True)
+checkpoint_dir = execution_config.get("checkpoint_dir", ".tmp/checkpoints")
+
+# 記事数を制限
+articles = sorted(articles, key=lambda x: x["published"], reverse=True)
+articles = articles[:max_articles]
+
+# バッチ処理
+for i in range(0, len(articles), batch_size):
+    batch = articles[i:i + batch_size]
+
+    # チェックポイント保存（有効時）
+    if checkpoint_enabled:
+        save_checkpoint(checkpoint_dir, theme_key, i + len(batch), stats)
+
+    # バッチ処理実行
+    result = process_batch(batch, issue_config)
+```

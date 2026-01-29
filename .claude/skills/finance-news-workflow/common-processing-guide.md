@@ -142,6 +142,19 @@ if not valid:
 - **Statusフィールド**: `PVTSSF_lAHOBoK6AM4BMpw_zg739ZE`
 - **公開日時フィールド**: `PVTF_lAHOBoK6AM4BMpw_zg8BzrI`（Date型、ソート用）
 
+## 実行制御設定（タイムアウト対策）
+
+設定ソース: `data/config/finance-news-themes.json` → `execution`
+
+| 設定 | デフォルト | 説明 |
+|------|-----------|------|
+| `batch_size` | 10 | 各テーマの処理記事数上限 |
+| `max_articles_per_theme` | 20 | テーマあたりの最大記事数 |
+| `concurrency` | 3 | 同時実行するテーマ数（1-6） |
+| `timeout_minutes` | 10 | 各テーマのタイムアウト時間（分） |
+| `checkpoint_enabled` | true | チェックポイント機能の有効/無効 |
+| `checkpoint_dir` | `.tmp/checkpoints` | チェックポイント保存先 |
+
 ## 使用ツール
 
 各サブエージェントは以下のツールを使用します：
@@ -1305,6 +1318,162 @@ except subprocess.CalledProcessError as e:
     ログ出力: f"エラー詳細: {e.stderr}"
     ログ出力: "Issue作成は成功しています。手動で公開日時を設定してください。"
     continue
+```
+
+## チェックポイント機能（タイムアウト対策）
+
+### 概要
+
+バックグラウンドエージェントがタイムアウトで中途停止した場合に、処理を再開できるようにするための機能。
+
+### チェックポイントファイル形式
+
+**保存先**: `.tmp/checkpoints/news-collection-{timestamp}.json`
+
+```json
+{
+  "checkpoint_id": "news-collection-20260129-143000",
+  "created_at": "2026-01-29T14:30:00+09:00",
+  "updated_at": "2026-01-29T14:35:00+09:00",
+  "status": "in_progress",
+  "config": {
+    "days_back": 7,
+    "batch_size": 10,
+    "concurrency": 3,
+    "timeout_minutes": 10
+  },
+  "themes": {
+    "index": {
+      "status": "completed",
+      "started_at": "2026-01-29T14:30:05+09:00",
+      "completed_at": "2026-01-29T14:32:00+09:00",
+      "articles_processed": 8,
+      "issues_created": 5,
+      "issues_skipped": 3,
+      "last_processed_index": 8
+    },
+    "stock": {
+      "status": "in_progress",
+      "started_at": "2026-01-29T14:32:05+09:00",
+      "completed_at": null,
+      "articles_processed": 3,
+      "issues_created": 2,
+      "issues_skipped": 1,
+      "last_processed_index": 3
+    },
+    "sector": {
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "articles_processed": 0,
+      "issues_created": 0,
+      "issues_skipped": 0,
+      "last_processed_index": 0
+    }
+  },
+  "pending_articles": {
+    "stock": [
+      {
+        "url": "https://...",
+        "title": "...",
+        "published": "..."
+      }
+    ]
+  }
+}
+```
+
+### チェックポイント保存タイミング
+
+| イベント | 保存内容 |
+|---------|---------|
+| テーマ開始時 | `themes[theme].status = "in_progress"`, `started_at` |
+| 記事処理後（5件ごと） | `articles_processed`, `last_processed_index` |
+| テーマ完了時 | `themes[theme].status = "completed"`, `completed_at` |
+| エラー発生時 | `themes[theme].status = "failed"`, エラー詳細 |
+
+### 再開時の処理フロー
+
+```
+[1] チェックポイントファイルの検索
+    └─ .tmp/checkpoints/ から最新のファイルを取得
+
+[2] 再開可能か判定
+    ├─ status == "completed" → 既に完了、スキップ
+    ├─ status == "failed" → エラー表示、手動対応要求
+    └─ status == "in_progress" → 再開処理へ
+
+[3] 再開対象テーマの特定
+    ├─ status == "in_progress" → last_processed_index から再開
+    └─ status == "pending" → 最初から開始
+
+[4] pending_articles からデータ復元
+    └─ 未処理記事をロードして処理続行
+```
+
+### 再開オプション
+
+```bash
+# 前回のチェックポイントから再開
+/finance-news-workflow --resume
+
+# 特定のチェックポイントから再開
+/finance-news-workflow --resume --checkpoint-id "news-collection-20260129-143000"
+
+# 失敗したテーマのみ再実行
+/finance-news-workflow --themes "stock,sector" --resume
+```
+
+### バッチサイズ制限
+
+タイムアウトを防ぐため、各テーマの処理記事数を制限:
+
+```python
+# 設定から取得
+batch_size = config.get("execution", {}).get("batch_size", 10)
+max_articles = config.get("execution", {}).get("max_articles_per_theme", 20)
+
+# 記事リストを制限
+articles = sorted(articles, key=lambda x: x["published"], reverse=True)
+articles = articles[:max_articles]
+
+# バッチ分割して処理
+for i in range(0, len(articles), batch_size):
+    batch = articles[i:i + batch_size]
+    # チェックポイント保存
+    save_checkpoint(checkpoint_id, theme, i + len(batch))
+    # バッチ処理
+    process_batch(batch)
+```
+
+### 並列度制御
+
+同時実行するテーマ数を制限してリソース消費を抑制:
+
+```python
+# 設定から取得
+concurrency = config.get("execution", {}).get("concurrency", 3)
+
+# テーマをグループに分割
+all_themes = ["index", "stock", "sector", "macro_cnbc", "macro_other",
+              "ai_cnbc", "ai_nasdaq", "ai_tech",
+              "finance_cnbc", "finance_nasdaq", "finance_other"]
+
+# concurrency 件ずつ並列実行
+for i in range(0, len(all_themes), concurrency):
+    batch_themes = all_themes[i:i + concurrency]
+    # 並列実行（Task tool with run_in_background=True）
+    tasks = [
+        Task(
+            subagent_type=f"finance-news-{theme}",
+            run_in_background=True,
+            ...
+        )
+        for theme in batch_themes
+    ]
+    # 完了待ち
+    for task in tasks:
+        result = TaskOutput(task_id=task.id)
 ```
 
 ## 参考資料
