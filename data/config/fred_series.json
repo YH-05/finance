@@ -1,476 +1,483 @@
 {
-    "Treasury Yields": {
+    "Prices": {
+        "SP500": {
+            "name_ja": "S&P 500",
+            "name_en": "S&P 500",
+            "frequency": "Daily",
+            "units": "Index",
+            "description": "米国株式市場の動向を示す代表的な株価指数。"
+        },
+        "CPIAUCSL": {
+            "name_ja": "消費者物価指数 (CPI)",
+            "name_en": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average",
+            "frequency": "Monthly",
+            "units": "Index 1982-1984=100",
+            "description": "インフレの動向を示す代表的な指標。金融政策に大きな影響を与える。"
+        },
+        "USEPUINDXD": {
+            "name_ja": "経済政策不確実性指数（米国）",
+            "name_en": "Economic Policy Uncertainty Index for United States",
+            "frequency": "Daily, 7-Day",
+            "units": "Index",
+            "description": "米国の経済政策に関する先行き不透明感を指数化したもの。選挙、貿易摩擦、規制変更など政治的イベントが市場に与える不安を可視化する。VIXが市場価格の変動（結果）を反映するのに対し、これは不安の「原因」の一つを測る指標。"
+        }
+    },
+    "Interest Rates": {
+        "DFF": {
+            "name_ja": "FF金利 (実効金利)",
+            "name_en": "Effective Federal Funds Rate",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "最も基本的な米国の政策金利。金融機関が相互に資金を貸し借りする際の金利（無担保翌日物）の実績値。"
+        },
+        "FEDFUNDS": {
+            "name_ja": "FF金利 (月次平均)",
+            "name_en": "Federal Funds Effective Rate",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "DFFの月次平均値。月次の分析に利用。"
+        },
+        "SOFR": {
+            "name_ja": "SOFR",
+            "name_en": "Secured Overnight Financing Rate",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "担保付翌日物調達金利。米国債を担保とする翌日物のレポ取引金利。"
+        },
+        "DPRIME": {
+            "name_ja": "プライムレート",
+            "name_en": "Bank Prime Loan Rate",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "銀行が最優良企業へ短期融資を行う際の最優遇貸出金利。"
+        },
+        "DTB3": {
+            "name_ja": "米国債3ヶ月物利回り (流通市場)",
+            "name_en": "3-Month Treasury Bill Secondary Market Rate, Discount Basis",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "短期金利の代表格。金融政策の変更に敏感に反応。DGS3MOと類似。"
+        },
         "DGS1MO": {
-            "name_ja": "1ヶ月国債利回り",
-            "name_en": "1-Month Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "1mo",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国1ヶ月国債の利回り。短期金利の指標。"
+            "name_ja": "米国債1ヶ月物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 1-Month Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "超短期の金利動向を反映。金融政策の即時的な影響を示す。"
         },
         "DGS3MO": {
-            "name_ja": "3ヶ月国債利回り",
-            "name_en": "3-Month Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "3mo",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国3ヶ月国債の利回り。T-Billの代表的指標。"
+            "name_ja": "米国債3ヶ月物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 3-Month Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "短期金利の代表格。金融政策の変更に敏感に反応。"
         },
         "DGS6MO": {
-            "name_ja": "6ヶ月国債利回り",
-            "name_en": "6-Month Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "6mo",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国6ヶ月国債の利回り。"
+            "name_ja": "米国債6ヶ月物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 6-Month Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "短期金利。3ヶ月物と合わせて短期イールドカーブを形成。"
         },
         "DGS1": {
-            "name_ja": "1年国債利回り",
-            "name_en": "1-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "1y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国1年国債の利回り。"
+            "name_ja": "米国債1年物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 1-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "短期金利。1年先までの金融政策見通しを反映。"
         },
         "DGS2": {
-            "name_ja": "2年国債利回り",
-            "name_en": "2-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "2y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国2年国債の利回り。FRB政策金利に敏感。"
+            "name_ja": "米国債2年物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 2-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "中期金利。近い将来の金融政策に対する市場の期待を反映。"
         },
         "DGS3": {
-            "name_ja": "3年国債利回り",
-            "name_en": "3-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "3y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国3年国債の利回り。"
+            "name_ja": "米国債3年物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 3-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "中期金利。近い将来の金融政策に対する市場の期待を反映。"
         },
         "DGS5": {
-            "name_ja": "5年国債利回り",
-            "name_en": "5-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "5y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国5年国債の利回り。中期金利の指標。"
+            "name_ja": "米国債5年物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 5-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "中期金利。景気サイクルの中期的な見通しを反映。"
         },
         "DGS7": {
-            "name_ja": "7年国債利回り",
-            "name_en": "7-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "7y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国7年国債の利回り。"
+            "name_ja": "米国債7年物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 7-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "中期金利。5年債と10年債の中間に位置し、イールドカーブの形状を補完。"
         },
         "DGS10": {
-            "name_ja": "10年国債利回り",
-            "name_en": "10-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "10y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国10年国債の利回り。長期金利の代表的指標。住宅ローン金利等に影響。"
+            "name_ja": "米国債10年物利回り",
+            "name_en": "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "長期金利の最も重要な指標。株価の評価（ディスカウントレート）に影響。"
         },
         "DGS20": {
-            "name_ja": "20年国債利回り",
-            "name_en": "20-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "20y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国20年国債の利回り。"
+            "name_ja": "米国債20年物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 20-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "超長期の金利。住宅ローン金利や企業年金の運用利回りに影響。"
         },
         "DGS30": {
-            "name_ja": "30年国債利回り",
-            "name_en": "30-Year Treasury Constant Maturity Rate",
-            "category": "interest_rate",
-            "maturity": "30y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国30年国債の利回り。超長期金利の指標。"
+            "name_ja": "米国債30年物",
+            "name_en": "Market Yield on U.S. Treasury Securities at 30-Year Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "超長期の金利。年金基金などの長期投資家の動向を反映。"
         }
     },
-    "TIPS Yields": {
-        "DFII5": {
-            "name_ja": "5年物価連動国債利回り",
-            "name_en": "5-Year Treasury Inflation-Indexed Security, Constant Maturity",
-            "category": "real_interest_rate",
-            "maturity": "5y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "5年物TIPS（物価連動国債）の実質利回り。インフレ調整後の実質金利を示す。"
-        },
-        "DFII7": {
-            "name_ja": "7年物価連動国債利回り",
-            "name_en": "7-Year Treasury Inflation-Indexed Security, Constant Maturity",
-            "category": "real_interest_rate",
-            "maturity": "7y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "7年物TIPS（物価連動国債）の実質利回り。"
-        },
-        "DFII10": {
-            "name_ja": "10年物価連動国債利回り",
-            "name_en": "10-Year Treasury Inflation-Indexed Security, Constant Maturity",
-            "category": "real_interest_rate",
-            "maturity": "10y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "10年物TIPS（物価連動国債）の実質利回り。長期実質金利の代表的指標。"
-        },
-        "DFII20": {
-            "name_ja": "20年物価連動国債利回り",
-            "name_en": "20-Year Treasury Inflation-Indexed Security, Constant Maturity",
-            "category": "real_interest_rate",
-            "maturity": "20y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "20年物TIPS（物価連動国債）の実質利回り。"
-        },
-        "DFII30": {
-            "name_ja": "30年物価連動国債利回り",
-            "name_en": "30-Year Treasury Inflation-Indexed Security, Constant Maturity",
-            "category": "real_interest_rate",
-            "maturity": "30y",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "30年物TIPS（物価連動国債）の実質利回り。超長期実質金利の指標。"
-        }
-    },
-    "Yield Curve Spreads": {
+    "Yield Spread": {
         "T10Y2Y": {
-            "name_ja": "10年-2年スプレッド",
-            "name_en": "10-Year Treasury Minus 2-Year Treasury",
-            "category": "spread",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "10年国債と2年国債の利回り差。イールドカーブの傾きを示す。逆イールドは景気後退の前兆とされる。"
+            "name_ja": "長短金利差 (10年-2年)",
+            "name_en": "10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "景気後退の強力な先行指標。マイナス（逆イールド）は景気後退を示唆。"
         },
         "T10Y3M": {
-            "name_ja": "10年-3ヶ月スプレッド",
-            "name_en": "10-Year Treasury Minus 3-Month Treasury",
-            "category": "spread",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "10年国債と3ヶ月国債の利回り差。景気後退予測の指標。"
-        },
-        "T10YIE": {
-            "name_ja": "10年ブレークイーブンインフレ率",
-            "name_en": "10-Year Breakeven Inflation Rate",
-            "category": "inflation_expectation",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "名目10年国債とTIPSの利回り差。市場のインフレ期待を示す。"
+            "name_ja": "長短金利差 (10年-3ヶ月)",
+            "name_en": "10-Year Treasury Constant Maturity Minus 3-Month Treasury Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "T10Y2Yと同様に景気後退の先行指標として利用される。"
         },
         "T5YIE": {
-            "name_ja": "5年ブレークイーブンインフレ率",
+            "name_ja": "期待インフレ率(5年)",
             "name_en": "5-Year Breakeven Inflation Rate",
-            "category": "inflation_expectation",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "名目5年国債とTIPSの利回り差。中期的なインフレ期待を示す。"
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "市場が予想する将来5年間の平均インフレ率。中期的なインフレ期待を示す。"
         },
-        "T5YIFR": {
-            "name_ja": "5年先5年フォワードインフレ期待率",
-            "name_en": "5-Year, 5-Year Forward Inflation Expectation Rate",
-            "category": "inflation_expectation",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "5年後から5年間の期待インフレ率。長期的なインフレ期待の安定性を示す重要指標。"
-        }
-    },
-    "Credit Spreads": {
-        "BAMLH0A0HYM2": {
-            "name_ja": "ハイイールド社債スプレッド",
-            "name_en": "ICE BofA US High Yield Index Option-Adjusted Spread",
-            "category": "credit_spread",
-            "rating": "high_yield",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国ハイイールド社債と国債のスプレッド。信用リスクの指標。"
+        "T10YIE": {
+            "name_ja": "期待インフレ率(10年)",
+            "name_en": "10-Year Breakeven Inflation Rate",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "市場が予想する将来10年間の平均インフレ率。"
         },
         "BAMLC0A0CM": {
             "name_ja": "投資適格社債スプレッド",
             "name_en": "ICE BofA US Corporate Index Option-Adjusted Spread",
-            "category": "credit_spread",
-            "rating": "investment_grade",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "米国投資適格社債と国債のスプレッド。"
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "ICE BofA米国社債指数のオプション調整後スプレッド。企業の信用リスクを示す。"
+        },
+        "BAMLH0A0HYM2": {
+            "name_ja": "ハイイールド社債スプレッド",
+            "name_en": "ICE BofA US High Yield Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "ICE BofA米国ハイイールド債指数のオプション調整後スプレッド。市場のリスク許容度を反映。"
+        },
+        "MORTGAGE30US": {
+            "name_ja": "30年固定住宅ローン金利",
+            "name_en": "30-Year Fixed Rate Mortgage Average in the United States",
+            "frequency": "Weekly",
+            "units": "Percent",
+            "description": "米国の住宅市場の動向を測る上で重要な指標。"
+        }
+    },
+    "Corporate Bond Yield": {
+        "DAAA": {
+            "name_ja": "ムーディーズ Aaa社債",
+            "name_en": "Moody's Seasoned Aaa Corporate Bond Yield",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "信用格付けが最も高い（Aaa）事業会社の社債利回り。"
+        },
+        "DBAA": {
+            "name_ja": "ムーディーズ Baa社債",
+            "name_en": "Moody's Seasoned Baa Corporate Bond Yield",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "信用格付けが中程度（Baa）の事業会社の社債利回り。"
+        }
+    },
+    "Corporate Bond Yield Spread":{
+        "BAMLC0A0CM": {
+            "name_ja": "投資適格社債スプレッド",
+            "name_en": "ICE BofA US Corporate Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "ICE BofA米国社債マスター指数のOAS。企業の信用リスク全体を示す代表的な指標。投資適格債全体（Aaa、Aa、A、BBB）をカバー。"
+        },
+        "BAMLH0A0HYM2": {
+            "name_ja": "ハイイールド社債スプレッド",
+            "name_en": "ICE BofA US High Yield Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "ICE BofA米国ハイイールド債マスター指数のOAS。ジャンク債市場のリスクプレミアムであり、市場全体のリスク許容度を反映。"
+        },
+        "BAMLC0A1CAAA": {
+            "name_ja": "AAA社債スプレッド",
+            "name_en": "ICE BofA AAA US Corporate Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "最高格付（AAA）の米国社債OAS。市場の流動性や最も優良な企業の信用度を示す。"
+        },
+        "BAMLC0A2CAA": {
+            "name_ja": "AA社債スプレッド",
+            "name_en": "ICE BofA AA US Corporate Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "高格付（AA）の米国社債OAS。"
+        },
+        "BAMLC0A3CA": {
+            "name_ja": "A社債スプレッド",
+            "name_en": "ICE BofA Single-A US Corporate Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "中上格付（A）の米国社債OAS。"
         },
         "BAMLC0A4CBBB": {
-            "name_ja": "BBB格社債スプレッド",
+            "name_ja": "BBB社債スプレッド",
             "name_en": "ICE BofA BBB US Corporate Index Option-Adjusted Spread",
-            "category": "credit_spread",
-            "rating": "BBB",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "BBB格社債と国債のスプレッド。投資適格の下限。"
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "最低投資適格格付（BBB）の米国社債OAS。景気後退期には、この格付帯からの『ジャンク級への格下げ（Falling Angels）』リスクが注目される。"
+        },
+        "BAMLH0A1HYBB": {
+            "name_ja": "BB社債スプレッド",
+            "name_en": "ICE BofA BB US High Yield Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "ハイイールド債の中で最も質の高い格付（BB）のOAS。"
+        },
+        "BAMLH0A2HYB": {
+            "name_ja": "B社債スプレッド",
+            "name_en": "ICE BofA Single-B US High Yield Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "中級投機的格付（B）のOAS。"
+        },
+        "BAMLH0A3HYC": {
+            "name_ja": "CCC社債スプレッド",
+            "name_en": "ICE BofA CCC US High Yield Index Option-Adjusted Spread",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "最低投機的格付（CCC以下）のOAS。デフォルト（債務不履行）リスクが非常に高く、景気サイクル終盤での動向が注目される。"
         }
     },
-    "Federal Reserve": {
-        "FEDFUNDS": {
-            "name_ja": "フェデラルファンド金利",
-            "name_en": "Federal Funds Effective Rate",
-            "category": "policy_rate",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "FRBの政策金利。銀行間の翌日物貸出金利。"
-        },
-        "DFEDTARU": {
-            "name_ja": "FF金利誘導目標上限",
-            "name_en": "Federal Funds Target Range - Upper Limit",
-            "category": "policy_rate",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "FOMCが設定するFF金利の目標範囲の上限。"
-        },
-        "DFEDTARL": {
-            "name_ja": "FF金利誘導目標下限",
-            "name_en": "Federal Funds Target Range - Lower Limit",
-            "category": "policy_rate",
-            "frequency": "daily",
-            "units": "percent",
-            "description": "FOMCが設定するFF金利の目標範囲の下限。"
-        },
-        "WALCL": {
-            "name_ja": "FRB総資産",
-            "name_en": "Federal Reserve Total Assets",
-            "category": "balance_sheet",
-            "frequency": "weekly",
-            "units": "millions_usd",
-            "description": "FRBのバランスシート総資産。量的緩和の規模を示す。"
+    "Financial Data": {
+        "VIXCLS": {
+            "name_ja": "VIX指数",
+            "name_en": "CBOE Volatility Index: VIX",
+            "frequency": "Daily",
+            "units": "Index",
+            "description": "「恐怖指数」とも呼ばれ、市場の不確実性やボラティリティを示す。"
         }
     },
-    "Economic Indicators": {
-        "GDP": {
-            "name_ja": "実質GDP",
-            "name_en": "Real Gross Domestic Product",
-            "category": "gdp",
-            "frequency": "quarterly",
-            "units": "billions_usd",
-            "seasonally_adjusted": true,
-            "description": "米国の実質国内総生産。経済規模の最重要指標。"
-        },
-        "GDPC1": {
-            "name_ja": "実質GDP（連鎖方式）",
-            "name_en": "Real Gross Domestic Product (Chained 2017 Dollars)",
-            "category": "gdp",
-            "frequency": "quarterly",
-            "units": "billions_usd",
-            "seasonally_adjusted": true,
-            "description": "連鎖方式で計算された実質GDP。"
-        },
-        "A191RL1Q225SBEA": {
-            "name_ja": "実質GDP成長率",
-            "name_en": "Real GDP Growth Rate (Quarterly, Annualized)",
-            "category": "gdp",
-            "frequency": "quarterly",
-            "units": "percent",
-            "seasonally_adjusted": true,
-            "description": "実質GDPの前期比年率成長率。"
+    "Business & Economic Activity": {
+        "PCEC": {
+            "name_ja": "個人消費支出 (PCE)",
+            "name_en": "Personal Consumption Expenditures",
+            "frequency": "Monthly",
+            "units": "Billions of Dollars",
+            "description": "米国経済の約2/3を占める最重要要素。「ウォール街流」では実質時給の動向に追随するとされる。"
         }
     },
-    "Labor Market": {
+    "Population, Employment, & Labor Force": {
         "UNRATE": {
             "name_ja": "失業率",
             "name_en": "Unemployment Rate",
-            "category": "employment",
-            "frequency": "monthly",
-            "units": "percent",
-            "seasonally_adjusted": true,
-            "description": "労働力人口に占める失業者の割合。雇用情勢の代表的指標。"
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "景気の健全性を示す重要な指標。景気の遅行指標と見なされる。"
+        },
+        "CES0500000003": {
+            "name_ja": "実質平均時給",
+            "name_en": "Real Average Hourly Earnings of All Employees, Total Private",
+            "frequency": "Monthly",
+            "units": "Dollars per Hour, Seasonally Adjusted",
+            "description": "個人消費の最重要先行指標。この指標の変化率（勢い）が景気の転換点を予測する上で最重視される。"
         },
         "PAYEMS": {
             "name_ja": "非農業部門雇用者数",
-            "name_en": "Total Nonfarm Payrolls",
-            "category": "employment",
-            "frequency": "monthly",
-            "units": "thousands",
-            "seasonally_adjusted": true,
-            "description": "非農業部門の雇用者数。毎月第一金曜日発表の注目指標。"
+            "name_en": "All Employees, Total Nonfarm",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "雇用の増減を示す指標。「ウォール街流」では景気の結果を示す遅行指標と位置づけられる。"
         },
         "ICSA": {
             "name_ja": "新規失業保険申請件数",
             "name_en": "Initial Claims",
-            "category": "employment",
-            "frequency": "weekly",
-            "units": "number",
-            "seasonally_adjusted": true,
-            "description": "週間の新規失業保険申請件数。景気の先行指標。"
+            "frequency": "Weekly",
+            "units": "Number",
+            "description": "新たに失業保険給付を申請した件数（季節調整済）。雇用の先行指標として注目度が高く、労働市場の動向を迅速に反映する。"
         },
-        "AWHAETP": {
-            "name_ja": "週平均労働時間",
-            "name_en": "Average Weekly Hours of All Employees",
-            "category": "employment",
-            "frequency": "monthly",
-            "units": "hours",
-            "seasonally_adjusted": true,
-            "description": "民間非農業部門の週平均労働時間。"
-        },
-        "CES0500000003": {
-            "name_ja": "平均時給",
-            "name_en": "Average Hourly Earnings of All Employees",
-            "category": "employment",
-            "frequency": "monthly",
-            "units": "usd",
-            "seasonally_adjusted": true,
-            "description": "民間非農業部門の平均時給。賃金インフレの指標。"
+        "JTSJOL": {
+            "name_ja": "JOLTS 求人件数",
+            "name_en": "Job Openings: Total Nonfarm",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "JOLTS（求人労働異動調査）による、非農業部門の求人総数（季節調整済）。労働市場の需要（人手不足感）を示す指標。"
         }
     },
-    "Inflation": {
-        "CPIAUCSL": {
-            "name_ja": "消費者物価指数（総合）",
-            "name_en": "Consumer Price Index for All Urban Consumers",
-            "category": "inflation",
-            "frequency": "monthly",
-            "units": "index",
-            "base_year": "1982-84=100",
-            "seasonally_adjusted": true,
-            "description": "都市部消費者の物価水準を示す総合指数。"
+    "Money, Banking, & Finance": {
+        "TOTCI": {
+            "name_ja": "商工業貸出残高",
+            "name_en": "Commercial and Industrial Loans, All Commercial Banks",
+            "frequency": "Weekly",
+            "units": "Billions of U.S. Dollars",
+            "description": "企業の運転資金や設備投資の需要を反映し、実体経済の健全性を示す先行指標。特に設備投資関連セクターの分析に有用。"
         },
-        "CPILFESL": {
-            "name_ja": "消費者物価指数（コア）",
-            "name_en": "CPI Less Food and Energy",
-            "category": "inflation",
-            "frequency": "monthly",
-            "units": "index",
-            "base_year": "1982-84=100",
-            "seasonally_adjusted": true,
-            "description": "食品・エネルギーを除いたコアCPI。基調的インフレを示す。"
+        "REALLN": {
+            "name_ja": "不動産貸出残高",
+            "name_en": "Real Estate Loans, All Commercial Banks",
+            "frequency": "Weekly",
+            "units": "Billions of U.S. Dollars",
+            "description": "住宅・商業用不動産市場の動向を示し、金融セクターや建設セクターの健全性を測る指標。"
         },
-        "PCEPI": {
-            "name_ja": "PCE価格指数",
-            "name_en": "Personal Consumption Expenditures Price Index",
-            "category": "inflation",
-            "frequency": "monthly",
-            "units": "index",
-            "base_year": "2017=100",
-            "seasonally_adjusted": true,
-            "description": "個人消費支出の価格指数。FRBが重視するインフレ指標。"
+        "CONSUMER": {
+            "name_ja": "消費者ローン残高",
+            "name_en": "Consumer Loans, All Commercial Banks",
+            "frequency": "Weekly",
+            "units": "Billions of U.S. Dollars",
+            "description": "クレジットカードや自動車ローンなど個人消費の動向を直接的に反映する。一般消費財セクターの分析に有用。"
         },
-        "PCEPILFE": {
-            "name_ja": "コアPCE価格指数",
-            "name_en": "PCE Price Index Less Food and Energy",
-            "category": "inflation",
-            "frequency": "monthly",
-            "units": "index",
-            "base_year": "2017=100",
-            "seasonally_adjusted": true,
-            "description": "食品・エネルギーを除いたコアPCE。FRBの2%目標の対象。"
-        },
-        "PPIACO": {
-            "name_ja": "生産者物価指数",
-            "name_en": "Producer Price Index for All Commodities",
-            "category": "inflation",
-            "frequency": "monthly",
-            "units": "index",
-            "base_year": "1982=100",
-            "description": "生産者段階の物価水準。CPIの先行指標。"
-        }
-    },
-    "Consumer & Business": {
-        "UMCSENT": {
-            "name_ja": "ミシガン大消費者信頼感指数",
-            "name_en": "University of Michigan Consumer Sentiment Index",
-            "category": "sentiment",
-            "frequency": "monthly",
-            "units": "index",
-            "base_year": "1966Q1=100",
-            "description": "消費者の景況感を示す指数。個人消費の先行指標。"
-        },
-        "RSXFS": {
-            "name_ja": "小売売上高",
-            "name_en": "Advance Retail Sales: Retail Trade",
-            "category": "consumption",
-            "frequency": "monthly",
-            "units": "millions_usd",
-            "seasonally_adjusted": true,
-            "description": "小売業の売上高。個人消費動向を示す。"
-        },
-        "INDPRO": {
-            "name_ja": "鉱工業生産指数",
-            "name_en": "Industrial Production Index",
-            "category": "production",
-            "frequency": "monthly",
-            "units": "index",
-            "base_year": "2017=100",
-            "seasonally_adjusted": true,
-            "description": "製造業・鉱業・公益事業の生産活動を示す指数。"
-        },
-        "TCU": {
-            "name_ja": "設備稼働率",
-            "name_en": "Capacity Utilization: Total Industry",
-            "category": "production",
-            "frequency": "monthly",
-            "units": "percent",
-            "seasonally_adjusted": true,
-            "description": "産業全体の設備稼働率。インフレ圧力の指標。"
-        },
-        "HOUST": {
-            "name_ja": "住宅着工件数",
-            "name_en": "Housing Starts: Total: New Privately Owned",
-            "category": "housing",
-            "frequency": "monthly",
-            "units": "thousands",
-            "seasonally_adjusted": true,
-            "description": "新規住宅着工件数。住宅市場と景気の先行指標。"
-        }
-    },
-    "Money Supply": {
-        "M1SL": {
-            "name_ja": "マネーサプライM1",
-            "name_en": "M1 Money Stock",
-            "category": "money_supply",
-            "frequency": "monthly",
-            "units": "billions_usd",
-            "seasonally_adjusted": true,
-            "description": "現金通貨と要求払い預金の合計。狭義のマネーサプライ。"
+        "DPSACBW027SBOG": {
+            "name_ja": "預金総額",
+            "name_en": "Deposits, All Commercial Banks",
+            "frequency": "Weekly",
+            "units": "Billions of U.S. Dollars",
+            "description": "銀行システム全体の流動性の源泉。貸出との比率（Loan-to-Deposit Ratio）を分析することで銀行の貸出意欲を測れる。"
         },
         "M2SL": {
-            "name_ja": "マネーサプライM2",
-            "name_en": "M2 Money Stock",
-            "category": "money_supply",
-            "frequency": "monthly",
-            "units": "billions_usd",
-            "seasonally_adjusted": true,
-            "description": "M1に貯蓄預金等を加えたもの。広義のマネーサプライ。"
+            "name_ja": "M2マネーストック",
+            "name_en": "M2",
+            "frequency": "Weekly",
+            "units": "Billions of Dollars",
+            "description": "経済全体に供給されている流動性の量を示す最重要指標。名目GDP成長率を上回る伸びは「過剰流動性」と見なされ、株価など資産価格の上昇要因となり得る。"
+        },
+        "M1SL": {
+            "name_ja": "M1マネーストック",
+            "name_en": "M1",
+            "frequency": "Weekly",
+            "units": "Billions of Dollars",
+            "description": "現金や当座預金など、決済に使いやすい流動性の高い通貨の量を示す。M2の構成要素の一つ。"
+        },
+        "STLFSI4": {
+            "name_ja": "セントルイス連銀 金融ストレス指数",
+            "name_en": "St. Louis Fed Financial Stress Index",
+            "frequency": "Weekly",
+            "units": "Index",
+            "description": "セントルイス連銀が算出する金融市場全体のストレス指数。VIX、債券スプレッド、銀行間金利など18の指標から構成される。VIXが株式市場の恐怖に特化しているのに対し、これは銀行システムなど金融中枢へのストレス波及度を示す。"
+        },
+        "DTWEXBGS": {
+            "name_ja": "貿易加重米ドル指数：広範（モノ・サービス）",
+            "name_en": "Trade Weighted U.S. Dollar Index: Broad, Goods and Services",
+            "frequency": "Daily",
+            "units": "Index Jan 2006=100",
+            "description": "FRBが算出する、米国の主要な貿易相手国（広範）の通貨バスケットに対する名目ドル指数。モノとサービスの貿易額で加重平均されている。"
+        },
+        "DTWEXAFEGS": {
+            "name_ja": "名目米ドル指数：先進国通貨",
+            "name_en": "Nominal Advanced Foreign Economies U.S. Dollar Index",
+            "frequency": "Daily",
+            "units": "Index Jan 2006=100",
+            "description": "FRBが算出する、主要な先進国（ユーロ圏、カナダ、日本、英国など）の通貨に対する名目ドル指数。DXY（ICEドル指数）の代替として参照されることがある。"
         }
     },
-    "Market Indices": {
-        "SP500": {
-            "name_ja": "S&P500指数",
-            "name_en": "S&P 500 Index",
-            "category": "equity_index",
-            "frequency": "daily",
-            "units": "index",
-            "description": "米国大型株500銘柄の時価総額加重平均指数。"
+    "Consumer Confidence": {
+        "UMCSENT": {
+            "name_ja": "ミシガン大学消費者センチメント指数",
+            "name_en": "University of Michigan: Consumer Sentiment",
+            "frequency": "Monthly",
+            "units": "Index 1966:Q1=100",
+            "description": "米国の消費者の景況感を示す代表的な指標。個人消費の先行指標として注目されるが、景気の結果を反映する遅行指標と見なされることも多い。"
         },
-        "NASDAQCOM": {
-            "name_ja": "NASDAQ総合指数",
-            "name_en": "NASDAQ Composite Index",
-            "category": "equity_index",
-            "frequency": "daily",
-            "units": "index",
-            "description": "NASDAQ上場全銘柄の時価総額加重平均指数。"
+        "CSCICP03JPM665S": {
+            "name_ja": "日本の消費者態度指数",
+            "name_en": "Consumer Confidence Index for Japan",
+            "frequency": "Monthly",
+            "units": "Index (Normalized)",
+            "description": "日本の消費者の景況感を示す指標。内閣府が公表する「消費者動向調査」の結果から算出される。"
+        }
+    },
+    "Developed Countries - Real GDP Level": {
+        "G7NAEXKP01IXOBSAQ": {
+            "name_ja": "G7 実質GDP (指数)",
+            "name_en": "Real Gross Domestic Product for G7 (Index)",
+            "frequency": "Quarterly",
+            "units": "Index 2010=100, SA",
+            "description": "G7全体の経済規模を比較するための実質GDP水準指数（季節調整済み）。"
         },
-        "VIXCLS": {
-            "name_ja": "VIX指数",
-            "name_en": "CBOE Volatility Index: VIX",
-            "category": "volatility",
-            "frequency": "daily",
-            "units": "index",
-            "description": "S&P500オプションから算出される予想変動率。恐怖指数。"
+        "GDPC1": {
+            "name_ja": "米国 実質GDP",
+            "name_en": "Real Gross Domestic Product (US)",
+            "frequency": "Quarterly",
+            "units": "Billions of Chained 2017 Dollars, SAAR",
+            "description": "米国の実質GDP水準。経済成長のベースとなる指標。"
+        },
+        "JPNRGDPEXP": {
+            "name_ja": "日本 実質GDP",
+            "name_en": "Real Gross Domestic Product for Japan",
+            "frequency": "Quarterly",
+            "units": "Billions of Chained 2015 Yen, SA",
+            "description": "日本の実質GDP水準（円建て）。"
+        },
+        "CLVMNACSCAB1GQDE": {
+            "name_ja": "ドイツ 実質GDP",
+            "name_en": "Real Gross Domestic Product for Germany",
+            "frequency": "Quarterly",
+            "units": "Millions of Chained 2010 Euros, SA",
+            "description": "ドイツの実質GDP水準（ユーロ建て）。"
+        },
+        "NGDPRSAXDCGBQ": {
+            "name_ja": "英国 実質GDP",
+            "name_en": "Real Gross Domestic Product for Great Britain",
+            "frequency": "Quarterly",
+            "units": "Millions of Chained 2010 Pounds, SA",
+            "description": "英国の実質GDP水準（ポンド建て）。"
+        },
+        "CLVMNACSCAB1GQFR": {
+            "name_ja": "フランス 実質GDP",
+            "name_en": "Real Gross Domestic Product for France",
+            "frequency": "Quarterly",
+            "units": "Millions of Chained 2010 Euros, SA",
+            "description": "フランスの実質GDP水準（ユーロ建て）。"
+        },
+        "NGDPRSAXDCCAQ": {
+            "name_ja": "カナダ 実質GDP",
+            "name_en": "Real Gross Domestic Product for Canada",
+            "frequency": "Quarterly",
+            "units": "Millions of Chained 2017 Canadian Dollars, SA",
+            "description": "カナダの実質GDP水準（カナダドル建て）。"
+        },
+        "CLVMNACSCAB1GQIT": {
+            "name_ja": "イタリア 実質GDP",
+            "name_en": "Real Gross Domestic Product for Italy",
+            "frequency": "Quarterly",
+            "units": "Millions of Chained 2010 Euros, SA",
+            "description": "イタリアの実質GDP水準（ユーロ建て）。"
+        }
+    },
+    "Euro - Real GDP Level": {
+        "CLVMNACSCAB1GQEA19": {
+            "name_ja": "ユーロ圏 実質GDP",
+            "name_en": "Real Gross Domestic Product for Euro Area (19 countries)",
+            "frequency": "Quarterly",
+            "units": "Millions of Chained 2010 Euros, SA",
+            "description": "ユーロ圏全体の実質GDP水準（ユーロ建て）。"
+        }
+    },
+    "Southeast Asia - Real GDP Level": {
+        "NGDPRSAXDCIDQ": {
+            "name_ja": "インドネシア 実質GDP",
+            "name_en": "Real Gross Domestic Product for Indonesia",
+            "frequency": "Quarterly",
+            "units": "Billions of Domestic Currency, SA",
+            "description": "IMF提供。インドネシアの四半期実質GDP（ルピア建て、季節調整済み）。"
         }
     }
 }
