@@ -1,20 +1,49 @@
 """Integration test configuration and fixtures for news package.
 
-This module provides fixtures for verifying Claude subscription authentication
+This module provides fixtures for verifying Claude authentication
 and running integration tests that use the actual Claude Agent SDK.
+
+Authentication modes:
+1. **Local environment**: Uses subscription auth (claude auth login)
+   - ANTHROPIC_API_KEY should NOT be set
+   - Requires Claude Pro/Max subscription
+2. **CI/CD environment**: Uses API key auth
+   - ANTHROPIC_API_KEY must be set
+   - Skips tests if not set
 
 Notes
 -----
 Integration tests require:
-1. Claude Code CLI installed: claude --version
-2. Claude subscription authenticated: claude auth login
-3. ANTHROPIC_API_KEY NOT set (to use subscription instead of API key)
+- Local: `claude auth login` with Claude Pro/Max subscription
+- CI/CD: `ANTHROPIC_API_KEY` environment variable set in GitHub Secrets
 """
 
 import os
 import subprocess
 
 import pytest
+
+
+def is_ci_environment() -> bool:
+    """Check if running in CI environment.
+
+    Returns
+    -------
+    bool
+        True if CI environment variable is set to "true".
+    """
+    return os.environ.get("CI") == "true"
+
+
+def has_api_key() -> bool:
+    """Check if ANTHROPIC_API_KEY is set.
+
+    Returns
+    -------
+    bool
+        True if ANTHROPIC_API_KEY environment variable is set.
+    """
+    return bool(os.environ.get("ANTHROPIC_API_KEY"))
 
 
 def check_claude_cli_installed() -> tuple[bool, str]:
@@ -45,45 +74,50 @@ def check_claude_cli_installed() -> tuple[bool, str]:
         return False, str(e)
 
 
-def check_api_key_not_set() -> bool:
-    """Check that ANTHROPIC_API_KEY is not set.
-
-    Returns
-    -------
-    bool
-        True if ANTHROPIC_API_KEY is not set (preferred for subscription auth).
-    """
-    return os.environ.get("ANTHROPIC_API_KEY") is None
-
-
 @pytest.fixture(scope="session", autouse=True)
-def verify_subscription_auth() -> None:
-    """Verify subscription authentication is available.
+def verify_claude_auth() -> None:
+    """Verify Claude authentication is available (environment-aware).
 
-    This fixture runs once per test session and checks:
-    1. ANTHROPIC_API_KEY is not set (to prefer subscription auth)
-    2. Claude CLI is installed
+    This fixture runs once per test session and checks authentication
+    based on the environment:
 
-    Note: We cannot easily verify subscription auth status via CLI
-    since `claude auth status` is not a valid command. Authentication
-    will be verified when actual Claude API calls are made.
+    **CI environment**:
+    - Requires ANTHROPIC_API_KEY to be set
+    - Skips tests if not set (allows PR builds without secrets)
+
+    **Local environment**:
+    - Prefers subscription auth (ANTHROPIC_API_KEY not set)
+    - Warns if ANTHROPIC_API_KEY is set (API usage will be charged)
+    - Requires Claude CLI to be installed
 
     Raises
     ------
     pytest.skip
-        If the environment is not configured for subscription auth.
+        If the environment is not configured for authentication.
     """
-    # Check API key is not set
-    if not check_api_key_not_set():
-        pytest.skip(
-            "ANTHROPIC_API_KEY is set. "
-            "Unset it to use subscription auth: unset ANTHROPIC_API_KEY"
+    if is_ci_environment():
+        # CI environment: API key required
+        if not has_api_key():
+            pytest.skip(
+                "ANTHROPIC_API_KEY not set in CI environment. "
+                "Set the secret to run integration tests."
+            )
+        print("\n[Integration Test] Using API key auth (CI environment)")
+    # Local environment: subscription auth preferred
+    elif has_api_key():
+        print(
+            "\n[Integration Test] WARNING: ANTHROPIC_API_KEY is set. "
+            "API usage will be charged instead of subscription."
         )
-
-    # Check Claude CLI is installed
-    is_installed, version_or_error = check_claude_cli_installed()
-    if not is_installed:
-        pytest.skip(f"Claude CLI not available: {version_or_error}")
-
-    print(f"\n[Integration Test] Claude CLI version: {version_or_error}")
-    print("[Integration Test] ANTHROPIC_API_KEY: NOT SET (using subscription auth)")
+        print("[Integration Test] Using API key auth")
+    else:
+        # Check Claude CLI is installed for subscription auth
+        is_installed, version_or_error = check_claude_cli_installed()
+        if not is_installed:
+            pytest.skip(
+                f"Claude CLI not available: {version_or_error}. "
+                "Run 'npm install -g @anthropic-ai/claude-code' to install, "
+                "then 'claude auth login' to authenticate with subscription."
+            )
+        print(f"\n[Integration Test] Claude CLI version: {version_or_error}")
+        print("[Integration Test] Using subscription auth (ANTHROPIC_API_KEY not set)")
