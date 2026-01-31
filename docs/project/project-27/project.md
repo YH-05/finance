@@ -1016,3 +1016,133 @@ JSONのみを出力し、他のテキストは含めないでください。"""
 - [GitHub: anthropics/claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)
 - [PyPI: claude-agent-sdk](https://pypi.org/project/claude-agent-sdk/)
 - 既存実装: `src/news/processors/agent_base.py`
+
+---
+
+## Phase 10: ワークフロー信頼性向上
+
+### 背景
+
+2026-01-31 のワークフロー実行ログ分析により、以下の失敗パターンを特定:
+
+| カテゴリ | 件数 | 根本原因 |
+|---------|------|----------|
+| Body text too short | 225件 | CNBC等のJS動的レンダリング |
+| Publication failed | 154件 | gh project item-add のitem_id空 |
+| HTTP 403 | 14件 | SeekingAlpha等のボット検出 |
+| HTTP 401 | 2件 | WSJ/Reuters ペイウォール |
+| Invalid feed format | 2件 | RSSフィード形式エラー |
+
+### 解決策
+
+#### A. ログ改善
+- `logs/` ディレクトリをGit管理対象に追加
+- ファイル出力ログレベルをDEBUGに変更（詳細な障害分析用）
+
+#### B. Publication failed 対策
+- `gh project item-add` 戻り値の空チェック
+- 既存Project Item検出とスキップ
+
+#### C. ドメインブロックリスト
+- ペイウォール/ボット検出サイトを除外
+- 設定ファイルで管理
+
+#### D. User-Agent ローテーション
+- 複数User-Agentの設定
+- リクエスト毎にランダム選択
+
+#### E. Playwright フォールバック
+- trafilatura失敗時にPlaywrightで再取得
+- JS動的レンダリング対応
+
+#### F. RSSフィード検証
+- 無効フィードのスキップ
+- 詳細なエラーログ
+
+### タスクリスト（16タスク）
+
+| ID | タスク | 依存 | ファイル |
+|----|--------|------|----------|
+| **A. ログ改善** | | | |
+| P10-001 | .gitignoreからlogs/*.log除外 | P9-009 | [P10-001](tasks/P10-001-gitignore-logs.md) |
+| P10-002 | ファイルログをDEBUGレベルに変更 | P10-001 | [P10-002](tasks/P10-002-debug-log-level.md) |
+| **B. Publication failed対策** | | | |
+| P10-003 | item_id空チェック追加 | P10-002 | [P10-003](tasks/P10-003-item-id-validation.md) |
+| P10-004 | 既存Project Item検出 | P10-003 | [P10-004](tasks/P10-004-existing-item-check.md) |
+| **C. ドメインブロックリスト** | | | |
+| P10-005 | config.yamlにblocked_domains追加 | P10-002 | [P10-005](tasks/P10-005-blocked-domains-config.md) |
+| P10-006 | NewsWorkflowConfigにブロックリスト読み込み | P10-005 | [P10-006](tasks/P10-006-config-blocked-domains.md) |
+| P10-007 | RSSCollectorにドメインフィルタリング | P10-006 | [P10-007](tasks/P10-007-domain-filter-collector.md) |
+| **D. User-Agentローテーション** | | | |
+| P10-008 | config.yamlにuser_agents追加 | P10-002 | [P10-008](tasks/P10-008-user-agents-config.md) |
+| P10-009 | TrafilaturaExtractorにUser-Agent設定 | P10-008 | [P10-009](tasks/P10-009-user-agent-rotation.md) |
+| **E. Playwrightフォールバック** | | | |
+| P10-010 | playwright依存関係追加 | P10-002 | [P10-010](tasks/P10-010-playwright-dependency.md) |
+| P10-011 | PlaywrightExtractor基盤クラス | P10-010 | [P10-011](tasks/P10-011-playwright-extractor.md) |
+| P10-012 | trafilatura→Playwrightフォールバック | P10-011 | [P10-012](tasks/P10-012-fallback-extractor.md) |
+| P10-013 | フォールバックテスト | P10-012 | [P10-013](tasks/P10-013-fallback-tests.md) |
+| **F. RSSフィード検証** | | | |
+| P10-014 | フィード形式検証強化 | P10-002 | [P10-014](tasks/P10-014-feed-validation.md) |
+| P10-015 | 無効フィードスキップとログ | P10-014 | [P10-015](tasks/P10-015-invalid-feed-skip.md) |
+| **G. Phase 10完了** | | | |
+| P10-016 | Phase 10テスト・ドキュメント | P10-004,P10-007,P10-009,P10-013,P10-015 | [P10-016](tasks/P10-016-phase10-complete.md) |
+
+### 依存関係図
+
+```mermaid
+graph TD
+    P9-009[P9-009 Phase9完了] --> P10-001
+
+    subgraph A[A. ログ改善]
+        P10-001[P10-001 gitignore] --> P10-002[P10-002 DEBUGログ]
+    end
+
+    subgraph B[B. Publication対策]
+        P10-002 --> P10-003[P10-003 item_id検証]
+        P10-003 --> P10-004[P10-004 既存Item検出]
+    end
+
+    subgraph C[C. ドメインブロック]
+        P10-002 --> P10-005[P10-005 blocked_domains設定]
+        P10-005 --> P10-006[P10-006 Config読み込み]
+        P10-006 --> P10-007[P10-007 Collectorフィルタ]
+    end
+
+    subgraph D[D. User-Agent]
+        P10-002 --> P10-008[P10-008 user_agents設定]
+        P10-008 --> P10-009[P10-009 UA ローテーション]
+    end
+
+    subgraph E[E. Playwrightフォールバック]
+        P10-002 --> P10-010[P10-010 playwright依存]
+        P10-010 --> P10-011[P10-011 PlaywrightExtractor]
+        P10-011 --> P10-012[P10-012 フォールバック実装]
+        P10-012 --> P10-013[P10-013 フォールバックテスト]
+    end
+
+    subgraph F[F. RSSフィード検証]
+        P10-002 --> P10-014[P10-014 フィード検証強化]
+        P10-014 --> P10-015[P10-015 無効フィードスキップ]
+    end
+
+    P10-004 --> P10-016[P10-016 Phase10完了]
+    P10-007 --> P10-016
+    P10-009 --> P10-016
+    P10-013 --> P10-016
+    P10-015 --> P10-016
+```
+
+### 変更対象ファイル
+
+| ファイル | 変更内容 |
+|----------|----------|
+| `.gitignore` | `*.log` → `logs/` ディレクトリ以外のログを除外 |
+| `src/news/scripts/finance_news_workflow.py` | ログレベル設定変更 |
+| `src/news/publisher.py` | item_id空チェック、既存Item検出 |
+| `data/config/news-collection-config.yaml` | blocked_domains, user_agents追加 |
+| `src/news/config/workflow.py` | 新設定項目の読み込み |
+| `src/news/collectors/rss.py` | ドメインフィルタリング |
+| `src/news/extractors/trafilatura.py` | User-Agent設定、フォールバック呼び出し |
+| `src/news/extractors/playwright.py` | 新規作成 |
+| `src/rss/core/parser.py` | フィード検証強化 |
+| `pyproject.toml` | playwright依存関係追加 |

@@ -4,8 +4,8 @@
 
 ## サマリー
 
-- **総タスク数**: 41
-- **フェーズ数**: 9
+- **総タスク数**: 57
+- **フェーズ数**: 10
 
 ## Phase 1: 基盤（11タスク）
 
@@ -107,6 +107,46 @@
 | P9-008 | CI/CD 設定確認と更新 | P9-007 | [P9-008](P9-008-cicd-config.md) |
 | P9-009 | Phase 9 テスト完了確認 | P9-006,P9-007,P9-008 | [P9-009](P9-009-phase9-tests.md) |
 
+## Phase 10: ワークフロー信頼性向上（16タスク）
+
+2026-01-31のログ分析に基づく信頼性改善。
+
+| ID | タスク | 依存 | ファイル |
+|----|--------|------|----------|
+| **A. ログ改善** | | | |
+| P10-001 | .gitignoreからlogs/*.log除外 | P9-009 | [P10-001](P10-001-gitignore-logs.md) |
+| P10-002 | ファイルログをDEBUGレベルに変更 | P10-001 | [P10-002](P10-002-debug-log-level.md) |
+| **B. Publication failed対策** | | | |
+| P10-003 | item_id空チェック追加 | P10-002 | [P10-003](P10-003-item-id-validation.md) |
+| P10-004 | 既存Project Item検出 | P10-003 | [P10-004](P10-004-existing-item-check.md) |
+| **C. ドメインブロックリスト** | | | |
+| P10-005 | config.yamlにblocked_domains追加 | P10-002 | [P10-005](P10-005-blocked-domains-config.md) |
+| P10-006 | NewsWorkflowConfigにブロックリスト読み込み | P10-005 | [P10-006](P10-006-config-blocked-domains.md) |
+| P10-007 | RSSCollectorにドメインフィルタリング | P10-006 | [P10-007](P10-007-domain-filter-collector.md) |
+| **D. User-Agentローテーション** | | | |
+| P10-008 | config.yamlにuser_agents追加 | P10-002 | [P10-008](P10-008-user-agents-config.md) |
+| P10-009 | TrafilaturaExtractorにUser-Agent設定 | P10-008 | [P10-009](P10-009-user-agent-rotation.md) |
+| **E. Playwrightフォールバック** | | | |
+| P10-010 | playwright依存関係追加 | P10-002 | [P10-010](P10-010-playwright-dependency.md) |
+| P10-011 | PlaywrightExtractor基盤クラス | P10-010 | [P10-011](P10-011-playwright-extractor.md) |
+| P10-012 | trafilatura→Playwrightフォールバック | P10-011 | [P10-012](P10-012-fallback-extractor.md) |
+| P10-013 | フォールバックテスト | P10-012 | [P10-013](P10-013-fallback-tests.md) |
+| **F. RSSフィード検証** | | | |
+| P10-014 | フィード形式検証強化 | P10-002 | [P10-014](P10-014-feed-validation.md) |
+| P10-015 | 無効フィードスキップとログ | P10-014 | [P10-015](P10-015-invalid-feed-skip.md) |
+| **G. Phase 10完了** | | | |
+| P10-016 | Phase 10テスト・ドキュメント | P10-004,P10-007,P10-009,P10-013,P10-015 | [P10-016](P10-016-phase10-complete.md) |
+
+### 期待される改善効果
+
+| 問題 | 改善前 | 改善後（期待値） |
+|------|--------|-----------------|
+| Body text too short | 225件 | 50件以下（Playwrightフォールバック） |
+| Publication failed | 154件 | 0件（item_id空チェック） |
+| HTTP 403 | 14件 | 0件（ドメインブロック） |
+| HTTP 401 | 2件 | 0件（ドメインブロック） |
+| Invalid feed | 2件 | 0件（検証強化+スキップ） |
+
 ## 依存関係グラフ
 
 ```mermaid
@@ -157,6 +197,16 @@ graph TD
         P4-005 --> P9-001 --> P9-002 --> P9-003 --> P9-004 --> P9-005 --> P9-006
         P9-006 --> P9-007 --> P9-008
         P9-006 & P9-007 & P9-008 --> P9-009
+    end
+
+    subgraph Phase10[Phase 10: ワークフロー信頼性向上]
+        P9-009 --> P10-001 --> P10-002
+        P10-002 --> P10-003 --> P10-004
+        P10-002 --> P10-005 --> P10-006 --> P10-007
+        P10-002 --> P10-008 --> P10-009
+        P10-002 --> P10-010 --> P10-011 --> P10-012 --> P10-013
+        P10-002 --> P10-014 --> P10-015
+        P10-004 & P10-007 & P10-009 & P10-013 & P10-015 --> P10-016
     end
 ```
 
