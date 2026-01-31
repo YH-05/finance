@@ -370,14 +370,14 @@ output:
         mock_setup_logging.assert_called_once_with(verbose=True)
 
 
-class TestPrintResultSummary:
-    """Tests for result summary printing."""
+class TestPrintFailureSummary:
+    """Tests for failure summary printing."""
 
-    def test_正常系_結果サマリーがフォーマットされる(
+    def test_正常系_失敗がない場合は何も出力されない(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
         from news.models import WorkflowResult
-        from news.scripts.finance_news_workflow import print_result_summary
+        from news.scripts.finance_news_workflow import print_failure_summary
 
         result = WorkflowResult(
             total_collected=10,
@@ -394,16 +394,46 @@ class TestPrintResultSummary:
             published_articles=[],
         )
 
-        print_result_summary(result)
+        print_failure_summary(result)
 
         captured = capsys.readouterr()
-        assert "Workflow Result" in captured.out
-        assert "Collected: 10" in captured.out
-        assert "Extracted: 8" in captured.out
-        assert "Summarized: 7" in captured.out
-        assert "Published: 5" in captured.out
-        assert "Duplicates: 2" in captured.out
-        assert "Elapsed: 300.0s" in captured.out
+        assert captured.out == ""
+
+    def test_正常系_失敗がある場合は詳細が出力される(
+        self, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        from news.models import FailureRecord, WorkflowResult
+        from news.scripts.finance_news_workflow import print_failure_summary
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            extraction_failures=[
+                FailureRecord(
+                    url="https://example.com/1",
+                    title="Test Article",
+                    stage="extraction",
+                    error="Timeout error",
+                )
+            ],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            finished_at=datetime(2026, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            elapsed_seconds=300.0,
+            published_articles=[],
+        )
+
+        print_failure_summary(result)
+
+        captured = capsys.readouterr()
+        assert "失敗詳細" in captured.out
+        assert "抽出失敗" in captured.out
+        assert "Test Article" in captured.out
+        assert "Timeout error" in captured.out
 
 
 class TestSetupLogging:

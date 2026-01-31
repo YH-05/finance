@@ -869,11 +869,16 @@ class TestOrchestratorLogging:
     """Tests for logging at each stage."""
 
     @pytest.mark.asyncio
-    async def test_正常系_各ステージでログが出力される(
+    async def test_正常系_各ステージで進捗が出力される(
         self,
         sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+        capsys: pytest.CaptureFixture[str],
     ) -> None:
-        """run() should log progress at each stage."""
+        """run() should print progress at each stage."""
         from news.orchestrator import NewsWorkflowOrchestrator
 
         with (
@@ -881,9 +886,56 @@ class TestOrchestratorLogging:
             patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
             patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
             patch("news.orchestrator.Publisher") as mock_publisher_cls,
-            patch("news.orchestrator.logger") as mock_logger,
         ):
-            # Setup mocks
+            # Setup mocks with actual articles
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[sample_collected_article])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=sample_extracted_article)
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(
+                return_value=[sample_summarized_article]
+            )
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(
+                return_value=[sample_published_article]
+            )
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            await orchestrator.run()
+
+            # Verify progress output
+            captured = capsys.readouterr()
+            assert "ニュース収集ワークフロー開始" in captured.out
+            assert "[1/4]" in captured.out
+            assert "[2/4]" in captured.out
+            assert "[3/4]" in captured.out
+            assert "[4/4]" in captured.out
+            assert "ワークフロー完了" in captured.out
+
+    @pytest.mark.asyncio
+    async def test_正常系_記事なしの場合は早期終了メッセージが出力される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """run() should show early exit message when no articles."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            # Setup mocks with empty list
             mock_collector = MagicMock()
             mock_collector.collect = AsyncMock(return_value=[])
             mock_collector_cls.return_value = mock_collector
@@ -902,14 +954,11 @@ class TestOrchestratorLogging:
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
             await orchestrator.run()
 
-            # Verify logging calls exist
-            info_calls = mock_logger.info.call_args_list
-            assert len(info_calls) >= 4  # At least one per stage
-
-            # Check for stage-specific logs
-            log_messages = [str(call) for call in info_calls]
-            assert any("Workflow started" in msg for msg in log_messages)
-            assert any("Collect" in msg or "collect" in msg for msg in log_messages)
+            # Verify early exit message
+            captured = capsys.readouterr()
+            assert "ニュース収集ワークフロー開始" in captured.out
+            assert "[1/4]" in captured.out
+            assert "処理対象の記事がありません" in captured.out
 
 
 class TestOrchestratorBuildResult:
@@ -1206,6 +1255,10 @@ class TestOrchestratorRunSavesResult:
     async def test_正常系_runがsave_resultを呼び出す(
         self,
         sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
         tmp_path: Path,
     ) -> None:
         """run() should call _save_result with the result."""
@@ -1219,20 +1272,25 @@ class TestOrchestratorRunSavesResult:
             patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
             patch("news.orchestrator.Publisher") as mock_publisher_cls,
         ):
-            # Setup mocks
+            # Setup mocks with actual articles to ensure workflow doesn't early return
             mock_collector = MagicMock()
-            mock_collector.collect = AsyncMock(return_value=[])
+            mock_collector.collect = AsyncMock(return_value=[sample_collected_article])
             mock_collector_cls.return_value = mock_collector
 
             mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=sample_extracted_article)
             mock_extractor_cls.return_value = mock_extractor
 
             mock_summarizer = MagicMock()
-            mock_summarizer.summarize_batch = AsyncMock(return_value=[])
+            mock_summarizer.summarize_batch = AsyncMock(
+                return_value=[sample_summarized_article]
+            )
             mock_summarizer_cls.return_value = mock_summarizer
 
             mock_publisher = MagicMock()
-            mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.publish_batch = AsyncMock(
+                return_value=[sample_published_article]
+            )
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
