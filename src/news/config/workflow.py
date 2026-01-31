@@ -60,6 +60,119 @@ class RssConfig(BaseModel):
     )
 
 
+class UserAgentRotationConfig(BaseModel):
+    """User-Agent rotation configuration.
+
+    This configuration allows rotating User-Agent headers for HTTP requests,
+    which can help avoid rate limiting and blocking by websites.
+
+    Parameters
+    ----------
+    enabled : bool
+        Whether User-Agent rotation is enabled (default: True).
+    user_agents : list[str]
+        List of User-Agent strings to rotate through.
+
+    Examples
+    --------
+    >>> config = UserAgentRotationConfig(
+    ...     user_agents=["Mozilla/5.0 (Windows)", "Mozilla/5.0 (Mac)"]
+    ... )
+    >>> ua = config.get_random_user_agent()
+    >>> ua in config.user_agents
+    True
+
+    >>> disabled_config = UserAgentRotationConfig(enabled=False)
+    >>> disabled_config.get_random_user_agent() is None
+    True
+    """
+
+    enabled: bool = Field(
+        default=True,
+        description="Whether User-Agent rotation is enabled",
+    )
+    user_agents: list[str] = Field(
+        default_factory=list,
+        description="List of User-Agent strings to rotate through",
+    )
+
+    def get_random_user_agent(self) -> str | None:
+        """Get a random User-Agent from the configured list.
+
+        Returns
+        -------
+        str | None
+            A randomly selected User-Agent string, or None if rotation is
+            disabled or the list is empty.
+
+        Examples
+        --------
+        >>> config = UserAgentRotationConfig(user_agents=["UA1", "UA2"])
+        >>> ua = config.get_random_user_agent()
+        >>> ua in ["UA1", "UA2"]
+        True
+        """
+        if not self.enabled or not self.user_agents:
+            return None
+
+        import random
+
+        return random.choice(self.user_agents)
+
+
+class PlaywrightFallbackConfig(BaseModel):
+    """Playwright fallback configuration for JS-rendered page extraction.
+
+    This configuration controls the Playwright-based fallback extractor
+    used when trafilatura fails to extract content from JavaScript-rendered pages.
+
+    Parameters
+    ----------
+    enabled : bool
+        Whether Playwright fallback is enabled (default: True).
+    browser : str
+        Browser to use: "chromium", "firefox", or "webkit" (default: "chromium").
+    headless : bool
+        Whether to run browser in headless mode (default: True).
+    timeout_seconds : int
+        Page load timeout in seconds (default: 30).
+
+    Examples
+    --------
+    >>> config = PlaywrightFallbackConfig()
+    >>> config.enabled
+    True
+    >>> config.browser
+    'chromium'
+    >>> config.headless
+    True
+
+    >>> config = PlaywrightFallbackConfig(browser="firefox", timeout_seconds=60)
+    >>> config.browser
+    'firefox'
+    >>> config.timeout_seconds
+    60
+    """
+
+    enabled: bool = Field(
+        default=True,
+        description="Whether Playwright fallback is enabled",
+    )
+    browser: str = Field(
+        default="chromium",
+        description='Browser to use: "chromium", "firefox", or "webkit"',
+    )
+    headless: bool = Field(
+        default=True,
+        description="Whether to run browser in headless mode",
+    )
+    timeout_seconds: int = Field(
+        default=30,
+        ge=1,
+        description="Page load timeout in seconds",
+    )
+
+
 class ExtractionConfig(BaseModel):
     """Article body extraction configuration.
 
@@ -73,6 +186,10 @@ class ExtractionConfig(BaseModel):
         Minimum body text length to consider extraction successful (default: 200).
     max_retries : int
         Maximum retry attempts for failed extractions (default: 3).
+    user_agent_rotation : UserAgentRotationConfig
+        User-Agent rotation configuration.
+    playwright_fallback : PlaywrightFallbackConfig
+        Playwright fallback configuration for JS-rendered pages.
 
     Examples
     --------
@@ -81,6 +198,10 @@ class ExtractionConfig(BaseModel):
     5
     >>> config.timeout_seconds
     30
+    >>> config.user_agent_rotation.enabled
+    True
+    >>> config.playwright_fallback.enabled
+    True
     """
 
     concurrency: int = Field(
@@ -102,6 +223,14 @@ class ExtractionConfig(BaseModel):
         default=3,
         ge=0,
         description="Maximum retry attempts for failed extractions",
+    )
+    user_agent_rotation: UserAgentRotationConfig = Field(
+        default_factory=UserAgentRotationConfig,
+        description="User-Agent rotation configuration",
+    )
+    playwright_fallback: PlaywrightFallbackConfig = Field(
+        default_factory=PlaywrightFallbackConfig,
+        description="Playwright fallback configuration for JS-rendered pages",
     )
 
 
@@ -517,7 +646,9 @@ __all__ = [
     "GitHubConfig",
     "NewsWorkflowConfig",
     "OutputConfig",
+    "PlaywrightFallbackConfig",
     "RssConfig",
     "SummarizationConfig",
+    "UserAgentRotationConfig",
     "load_config",
 ]
