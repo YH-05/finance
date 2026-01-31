@@ -759,3 +759,193 @@ output:
         assert config.domain_filtering.enabled is True
         assert config.domain_filtering.log_blocked is True
         assert config.domain_filtering.blocked_domains == []
+
+
+class TestUserAgentRotationConfig:
+    """Test UserAgentRotationConfig Pydantic model."""
+
+    def test_正常系_デフォルト値で作成できる(self) -> None:
+        """UserAgentRotationConfigをデフォルト値で作成できることを確認。"""
+        from news.config.workflow import UserAgentRotationConfig
+
+        config = UserAgentRotationConfig()
+
+        assert config.enabled is True
+        assert config.user_agents == []
+
+    def test_正常系_カスタム値で作成できる(self) -> None:
+        """UserAgentRotationConfigをカスタム値で作成できることを確認。"""
+        from news.config.workflow import UserAgentRotationConfig
+
+        user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/605.1.15",
+        ]
+        config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=user_agents,
+        )
+
+        assert config.enabled is True
+        assert config.user_agents == user_agents
+
+    def test_正常系_User_Agentがランダムに選択される(self) -> None:
+        """User-Agentがランダムに選択されることを確認。"""
+        from news.config.workflow import UserAgentRotationConfig
+
+        config = UserAgentRotationConfig(
+            user_agents=["UA1", "UA2", "UA3"],
+        )
+
+        # 100回試行して複数種類が選択されることを確認
+        selections = {config.get_random_user_agent() for _ in range(100)}
+
+        assert len(selections) >= 2  # 複数種類が選択される
+
+    def test_正常系_無効時はNoneを返す(self) -> None:
+        """enabled=Falseの時はNoneを返すことを確認。"""
+        from news.config.workflow import UserAgentRotationConfig
+
+        config = UserAgentRotationConfig(
+            enabled=False,
+            user_agents=["UA1", "UA2"],
+        )
+
+        assert config.get_random_user_agent() is None
+
+    def test_正常系_空リストでNoneを返す(self) -> None:
+        """user_agentsが空の時はNoneを返すことを確認。"""
+        from news.config.workflow import UserAgentRotationConfig
+
+        config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=[],
+        )
+
+        assert config.get_random_user_agent() is None
+
+    def test_正常系_1つのUser_Agentで常に同じものを返す(self) -> None:
+        """user_agentsが1つの場合、常にそれを返すことを確認。"""
+        from news.config.workflow import UserAgentRotationConfig
+
+        config = UserAgentRotationConfig(
+            user_agents=["SingleUA"],
+        )
+
+        for _ in range(10):
+            assert config.get_random_user_agent() == "SingleUA"
+
+
+class TestExtractionConfigWithUserAgentRotation:
+    """Test ExtractionConfig with user_agent_rotation field."""
+
+    def test_正常系_user_agent_rotationがデフォルト値で作成される(self) -> None:
+        """user_agent_rotationがデフォルト値で作成されることを確認。"""
+        from news.config.workflow import ExtractionConfig, UserAgentRotationConfig
+
+        config = ExtractionConfig()
+
+        assert isinstance(config.user_agent_rotation, UserAgentRotationConfig)
+        assert config.user_agent_rotation.enabled is True
+        assert config.user_agent_rotation.user_agents == []
+
+    def test_正常系_user_agent_rotationをカスタム値で作成できる(self) -> None:
+        """user_agent_rotationをカスタム値で作成できることを確認。"""
+        from news.config.workflow import ExtractionConfig, UserAgentRotationConfig
+
+        ua_config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=["UA1", "UA2"],
+        )
+        config = ExtractionConfig(user_agent_rotation=ua_config)
+
+        assert config.user_agent_rotation.enabled is True
+        assert config.user_agent_rotation.user_agents == ["UA1", "UA2"]
+
+
+class TestLoadConfigWithUserAgentRotation:
+    """Test load_config function with user_agent_rotation."""
+
+    def test_正常系_user_agent_rotationセクションを読み込める(
+        self, tmp_path: Path
+    ) -> None:
+        """load_configがuser_agent_rotationセクションを読み込めることを確認。"""
+        from news.config.workflow import load_config
+
+        # Arrange
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            """
+version: "1.0"
+status_mapping:
+  tech: "ai"
+github_status_ids:
+  ai: "6fbb43d0"
+rss:
+  presets_file: "data/config/rss-presets.json"
+extraction:
+  user_agent_rotation:
+    enabled: true
+    user_agents:
+      - "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+      - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+summarization:
+  prompt_template: "test"
+github:
+  project_number: 15
+  project_id: "PVT_test"
+  status_field_id: "PVTSSF_test"
+  published_date_field_id: "PVTF_test"
+  repository: "owner/repo"
+output:
+  result_dir: "data/exports"
+"""
+        )
+
+        # Act
+        config = load_config(config_file)
+
+        # Assert
+        assert config.extraction.user_agent_rotation.enabled is True
+        assert len(config.extraction.user_agent_rotation.user_agents) == 2
+        assert (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            in config.extraction.user_agent_rotation.user_agents
+        )
+
+    def test_正常系_user_agent_rotationなしでデフォルト値が設定される(
+        self, tmp_path: Path
+    ) -> None:
+        """load_configでuser_agent_rotationがない場合、デフォルト値が設定されることを確認。"""
+        from news.config.workflow import load_config
+
+        # Arrange
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            """
+version: "1.0"
+status_mapping:
+  tech: "ai"
+github_status_ids:
+  ai: "6fbb43d0"
+rss:
+  presets_file: "data/config/rss-presets.json"
+summarization:
+  prompt_template: "test"
+github:
+  project_number: 15
+  project_id: "PVT_test"
+  status_field_id: "PVTSSF_test"
+  published_date_field_id: "PVTF_test"
+  repository: "owner/repo"
+output:
+  result_dir: "data/exports"
+"""
+        )
+
+        # Act
+        config = load_config(config_file)
+
+        # Assert
+        assert config.extraction.user_agent_rotation.enabled is True
+        assert config.extraction.user_agent_rotation.user_agents == []
