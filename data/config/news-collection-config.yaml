@@ -122,6 +122,31 @@ github:
   duplicate_check_days: 7  # 重複チェック対象期間
   dry_run: false
 
+# ===========================================
+# ドメインフィルタリング
+# ===========================================
+
+# ブロックするドメイン（記事収集対象外）
+blocked_domains:
+  # ペイウォール（HTTP 401）
+  - wsj.com
+  - reuters.com
+  - ft.com
+  - bloomberg.com
+  - barrons.com
+
+  # ボット検出（HTTP 403）
+  - seekingalpha.com
+
+  # その他（抽出困難）
+  - twitter.com
+  - x.com
+
+# ドメインフィルタリング設定
+domain_filtering:
+  enabled: true
+  log_blocked: true  # ブロック時にログ出力
+
 # フィルタリング
 filtering:
   max_age_hours: 168  # 7日
