@@ -1,11 +1,21 @@
 """Summarizer for generating structured Japanese summaries of news articles.
 
-This module provides the Summarizer class that uses Anthropic SDK to generate
+This module provides the Summarizer class that uses Claude Agent SDK to generate
 structured 4-section Japanese summaries of news articles.
 
 The Summarizer works with ExtractedArticle inputs (articles that have undergone
 body text extraction) and produces SummarizedArticle outputs with structured
 summaries.
+
+Claude Agent SDK Types
+----------------------
+The following types from claude-agent-sdk are used in this module:
+
+- ``query`` : async function that returns an async iterator for streaming responses
+- ``ClaudeAgentOptions`` : Configuration options (system_prompt, max_turns, allowed_tools)
+- ``AssistantMessage`` : Response message from Claude containing content blocks
+- ``TextBlock`` : Text content block within an AssistantMessage
+- ``ResultMessage`` : Final result message with cost information
 
 Examples
 --------
@@ -25,7 +35,6 @@ import json
 import re
 from typing import TYPE_CHECKING
 
-from anthropic import Anthropic
 from pydantic import ValidationError
 
 from news.models import (
@@ -41,14 +50,11 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__, module="summarizer")
 
-# Claude model and max tokens configuration
-CLAUDE_MODEL = "claude-sonnet-4-20250514"
-CLAUDE_MAX_TOKENS = 1024
-
 
 class Summarizer:
-    """Anthropic SDK を使用した構造化要約。
+    """Claude Agent SDK を使用した構造化要約。
 
+    Claude Code サブスクリプション（Pro/Max）を活用して
     記事本文を分析し、4セクション構造の日本語要約を生成する。
 
     Parameters
@@ -63,8 +69,16 @@ class Summarizer:
         ワークフロー設定の参照。
     _prompt_template : str
         AI 要約に使用するプロンプトテンプレート。
-    _client : Anthropic
-        Anthropic API クライアント。
+    _max_retries : int
+        最大リトライ回数。
+    _timeout_seconds : int
+        タイムアウト秒数。
+
+    Notes
+    -----
+    - 事前に `claude` コマンドで認証が必要
+    - CI/CD では環境変数 ANTHROPIC_API_KEY を設定
+    - 本文抽出が失敗している記事（body_text が None）は SKIPPED ステータスで返す
 
     Examples
     --------
@@ -75,11 +89,6 @@ class Summarizer:
     >>> result = await summarizer.summarize(extracted_article)
     >>> result.summary.overview
     'S&P 500が上昇...'
-
-    Notes
-    -----
-    - 本文抽出が失敗している記事（body_text が None）は SKIPPED ステータスで返す
-    - Anthropic SDK を使用して Claude API を呼び出す
     """
 
     def __init__(self, config: NewsWorkflowConfig) -> None:
@@ -94,7 +103,6 @@ class Summarizer:
         self._prompt_template = config.summarization.prompt_template
         self._max_retries = config.summarization.max_retries
         self._timeout_seconds = config.summarization.timeout_seconds
-        self._client = Anthropic()
 
         logger.debug(
             "Summarizer initialized",
@@ -128,7 +136,8 @@ class Summarizer:
         Notes
         -----
         - 非同期メソッドとして実装されており、await が必要
-        - Anthropic SDK を使用して Claude API を呼び出す
+        - Claude Agent SDK を使用して Claude API を呼び出す
+        - asyncio.timeout でタイムアウト処理を実装
 
         Examples
         --------
@@ -157,12 +166,17 @@ class Summarizer:
                 error_message="No body text available",
             )
 
-        # Claude API を呼び出して要約を生成（リトライ付き）
+        # プロンプトを構築
+        prompt = self._build_prompt(article)
+
+        # Claude Agent SDK を呼び出して要約を生成（リトライ付き）
         last_error: Exception | None = None
 
         for attempt in range(self._max_retries):
             try:
-                response_text = self._call_claude(article)
+                async with asyncio.timeout(self._timeout_seconds):
+                    response_text = await self._call_claude_sdk(prompt)
+
                 summary = self._parse_response(response_text)
 
                 logger.info(
@@ -195,8 +209,25 @@ class Summarizer:
                     error_message=error_message,
                 )
 
-            except TimeoutError:
-                last_error = TimeoutError(f"Timeout after {self._timeout_seconds}s")
+            except RuntimeError as e:
+                # SDK未インストール - リトライしない
+                error_message = str(e)
+                logger.error(
+                    "SDK not installed",
+                    article_url=str(article.collected.url),
+                    error=error_message,
+                )
+                return SummarizedArticle(
+                    extracted=article,
+                    summary=None,
+                    summarization_status=SummarizationStatus.FAILED,
+                    error_message=error_message,
+                )
+
+            except asyncio.TimeoutError:
+                last_error = asyncio.TimeoutError(
+                    f"Timeout after {self._timeout_seconds}s"
+                )
                 logger.warning(
                     "Summarization timeout",
                     article_url=str(article.collected.url),
@@ -205,6 +236,10 @@ class Summarizer:
                 )
 
             except Exception as e:
+                # CLINotFoundError は CLI未インストールで持続的なエラー
+                # ただし、_call_claude_sdk でログ出力済みなので、
+                # ここでは汎用的なリトライ処理を行う
+                # ProcessError, CLIConnectionError, ClaudeSDKError はリトライ対象
                 last_error = e
                 logger.warning(
                     "Summarization failed",
@@ -212,6 +247,7 @@ class Summarizer:
                     attempt=attempt + 1,
                     max_retries=self._max_retries,
                     error=str(e),
+                    error_type=type(e).__name__,
                 )
 
             # 指数バックオフ（1s, 2s, 4s）- 最後の試行後はスリープしない
@@ -219,7 +255,7 @@ class Summarizer:
                 await asyncio.sleep(2**attempt)
 
         # 全リトライ失敗
-        if isinstance(last_error, TimeoutError):
+        if isinstance(last_error, asyncio.TimeoutError):
             status = SummarizationStatus.TIMEOUT
         else:
             status = SummarizationStatus.FAILED
@@ -232,8 +268,8 @@ class Summarizer:
             error_message=error_message,
         )
 
-    def _call_claude(self, article: ExtractedArticle) -> str:
-        """Claude API を呼び出して要約を生成する。
+    def _build_prompt(self, article: ExtractedArticle) -> str:
+        """要約プロンプトを構築する。
 
         Parameters
         ----------
@@ -243,20 +279,14 @@ class Summarizer:
         Returns
         -------
         str
-            Claude からの JSON レスポンス。
-
-        Notes
-        -----
-        - 記事情報（タイトル、ソース、公開日、本文）をプロンプトに含める
-        - レスポンスは JSON 形式の StructuredSummary を期待
+            構築されたプロンプト文字列。
         """
-        # 記事情報をプロンプトに含める
         collected = article.collected
         published_str = (
             collected.published.isoformat() if collected.published else "不明"
         )
 
-        prompt = f"""以下のニュース記事を日本語で要約してください。
+        return f"""以下のニュース記事を日本語で要約してください。
 
 ## 記事情報
 - タイトル: {collected.title}
@@ -277,27 +307,113 @@ class Summarizer:
 
 JSONのみを出力し、他のテキストは含めないでください。"""
 
+    async def _call_claude_sdk(self, prompt: str) -> str:
+        """Claude Agent SDK を使用して要約を取得。
+
+        Parameters
+        ----------
+        prompt : str
+            要約プロンプト。
+
+        Returns
+        -------
+        str
+            Claude からのレスポンステキスト。
+
+        Raises
+        ------
+        RuntimeError
+            claude-agent-sdk がインストールされていない場合。
+        CLINotFoundError
+            Claude Code CLI がインストールされていない場合。
+            リトライ不可。
+        ProcessError
+            CLI プロセスがエラー終了した場合。
+            exit_code と stderr 属性を持つ。リトライ対象。
+        CLIConnectionError
+            CLI との通信エラーが発生した場合。リトライ対象。
+        ClaudeSDKError
+            その他の SDK エラー（基底クラス）。リトライ対象。
+
+        Notes
+        -----
+        - 遅延インポートで claude-agent-sdk を読み込む
+        - query() 関数を使用してストリーミングでレスポンスを受信
+        - AssistantMessage の TextBlock からテキストを抽出して結合
+        - allowed_tools=[] でツール使用を無効化（テキスト生成のみ）
+        - max_turns=1 で1ターンのみの対話
+        - SDK固有の例外は適切にログ出力後、呼び出し元に再送出する
+        """
+        try:
+            from claude_agent_sdk import (
+                AssistantMessage,
+                ClaudeAgentOptions,
+                ClaudeSDKError,
+                CLIConnectionError,
+                CLINotFoundError,
+                ProcessError,
+                TextBlock,
+                query,
+            )
+        except ImportError as e:
+            logger.error(
+                "Claude Agent SDK not installed",
+                error=str(e),
+                hint="Run: uv add claude-agent-sdk",
+            )
+            raise RuntimeError(
+                "claude-agent-sdk is not installed. "
+                "Install with: uv add claude-agent-sdk"
+            ) from e
+
+        options = ClaudeAgentOptions(
+            allowed_tools=[],  # ツール不要（テキスト生成のみ）
+            max_turns=1,  # 1ターンのみ
+        )
+
         logger.debug(
-            "Calling Claude API",
-            article_url=str(collected.url),
+            "Calling Claude Agent SDK",
             prompt_length=len(prompt),
         )
 
-        response = self._client.messages.create(
-            model=CLAUDE_MODEL,
-            max_tokens=CLAUDE_MAX_TOKENS,
-            messages=[{"role": "user", "content": prompt}],
-        )
+        try:
+            response_parts: list[str] = []
+            async for message in query(prompt=prompt, options=options):
+                if isinstance(message, AssistantMessage):
+                    for block in message.content:
+                        if isinstance(block, TextBlock):
+                            response_parts.append(block.text)
 
-        response_text = response.content[0].text
+            result = "".join(response_parts)
+            logger.debug(
+                "Claude Agent SDK response received",
+                response_length=len(result),
+            )
 
-        logger.debug(
-            "Claude API response received",
-            article_url=str(collected.url),
-            response_length=len(response_text),
-        )
+            return result
 
-        return response_text
+        except CLINotFoundError:
+            logger.error(
+                "Claude Code CLI not found",
+                hint="Install with: curl -fsSL https://claude.ai/install.sh | bash",
+            )
+            raise
+
+        except ProcessError as e:
+            logger.error(
+                "CLI process error",
+                exit_code=e.exit_code,
+                stderr=e.stderr[:200] if e.stderr else None,
+            )
+            raise
+
+        except CLIConnectionError as e:
+            logger.error("CLI connection error", error=str(e))
+            raise
+
+        except ClaudeSDKError as e:
+            logger.error("SDK error", error=str(e))
+            raise
 
     def _parse_response(self, response_text: str) -> StructuredSummary:
         """Claude のレスポンスを StructuredSummary にパースする。
