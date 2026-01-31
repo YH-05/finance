@@ -2769,3 +2769,263 @@ class TestWorkflowResult:
         assert len(result.publication_failures) == 1
         assert result.publication_failures[0].url == "https://example.com/fail3"
         assert result.publication_failures[0].stage == "publication"
+
+    def test_正常系_feed_errorsがデフォルトで空リスト(self) -> None:
+        """feed_errors should default to empty list."""
+        from news.models import WorkflowResult
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[],
+        )
+
+        assert result.feed_errors == []
+
+    def test_正常系_feed_errorsを指定して作成できる(self) -> None:
+        """feed_errors can be specified when creating WorkflowResult."""
+        from news.models import FeedError, WorkflowResult
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        feed_error = FeedError(
+            feed_url="https://example.com/feed.xml",
+            feed_name="Example Feed",
+            error="Connection timeout",
+            error_type="fetch",
+            timestamp=started,
+        )
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[],
+            feed_errors=[feed_error],
+        )
+
+        assert len(result.feed_errors) == 1
+        assert result.feed_errors[0].feed_url == "https://example.com/feed.xml"
+        assert result.feed_errors[0].error_type == "fetch"
+
+
+class TestFeedError:
+    """FeedError Pydantic モデルのテストクラス."""
+
+    def test_正常系_全フィールドで作成できる(self) -> None:
+        """FeedError を全フィールドで作成できる."""
+        from news.models import FeedError
+
+        timestamp = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+
+        error = FeedError(
+            feed_url="https://example.com/feed.xml",
+            feed_name="Example Feed",
+            error="Connection timeout",
+            error_type="fetch",
+            timestamp=timestamp,
+        )
+
+        assert error.feed_url == "https://example.com/feed.xml"
+        assert error.feed_name == "Example Feed"
+        assert error.error == "Connection timeout"
+        assert error.error_type == "fetch"
+        assert error.timestamp == timestamp
+
+    def test_正常系_fetchエラータイプで作成できる(self) -> None:
+        """FeedError を error_type='fetch' で作成できる."""
+        from news.models import FeedError
+
+        error = FeedError(
+            feed_url="https://example.com/feed.xml",
+            feed_name="Example Feed",
+            error="HTTP 500",
+            error_type="fetch",
+            timestamp=datetime.now(tz=timezone.utc),
+        )
+
+        assert error.error_type == "fetch"
+
+    def test_正常系_parseエラータイプで作成できる(self) -> None:
+        """FeedError を error_type='parse' で作成できる."""
+        from news.models import FeedError
+
+        error = FeedError(
+            feed_url="https://example.com/feed.xml",
+            feed_name="Example Feed",
+            error="Invalid XML",
+            error_type="parse",
+            timestamp=datetime.now(tz=timezone.utc),
+        )
+
+        assert error.error_type == "parse"
+
+    def test_正常系_validationエラータイプで作成できる(self) -> None:
+        """FeedError を error_type='validation' で作成できる."""
+        from news.models import FeedError
+
+        error = FeedError(
+            feed_url="https://example.com/feed.xml",
+            feed_name="Example Feed",
+            error="Missing required field",
+            error_type="validation",
+            timestamp=datetime.now(tz=timezone.utc),
+        )
+
+        assert error.error_type == "validation"
+
+    def test_異常系_feed_urlが必須(self) -> None:
+        """feed_url がない場合は ValidationError."""
+        from news.models import FeedError
+
+        with pytest.raises(ValidationError) as exc_info:
+            FeedError(
+                feed_name="Example Feed",
+                error="Error",
+                error_type="fetch",
+                timestamp=datetime.now(tz=timezone.utc),
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("feed_url",) for e in errors)
+
+    def test_異常系_feed_nameが必須(self) -> None:
+        """feed_name がない場合は ValidationError."""
+        from news.models import FeedError
+
+        with pytest.raises(ValidationError) as exc_info:
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                error="Error",
+                error_type="fetch",
+                timestamp=datetime.now(tz=timezone.utc),
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("feed_name",) for e in errors)
+
+    def test_異常系_errorが必須(self) -> None:
+        """error がない場合は ValidationError."""
+        from news.models import FeedError
+
+        with pytest.raises(ValidationError) as exc_info:
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                feed_name="Example Feed",
+                error_type="fetch",
+                timestamp=datetime.now(tz=timezone.utc),
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("error",) for e in errors)
+
+    def test_異常系_error_typeが必須(self) -> None:
+        """error_type がない場合は ValidationError."""
+        from news.models import FeedError
+
+        with pytest.raises(ValidationError) as exc_info:
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                feed_name="Example Feed",
+                error="Error",
+                timestamp=datetime.now(tz=timezone.utc),
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("error_type",) for e in errors)
+
+    def test_異常系_timestampが必須(self) -> None:
+        """timestamp がない場合は ValidationError."""
+        from news.models import FeedError
+
+        with pytest.raises(ValidationError) as exc_info:
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                feed_name="Example Feed",
+                error="Error",
+                error_type="fetch",
+            )
+
+        errors = exc_info.value.errors()
+        assert any(e["loc"] == ("timestamp",) for e in errors)
+
+    def test_正常系_モデルをdictに変換できる(self) -> None:
+        """FeedError は model_dump() で dict に変換可能."""
+        from news.models import FeedError
+
+        timestamp = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+
+        error = FeedError(
+            feed_url="https://example.com/feed.xml",
+            feed_name="Example Feed",
+            error="Connection timeout",
+            error_type="fetch",
+            timestamp=timestamp,
+        )
+
+        data = error.model_dump()
+
+        assert data["feed_url"] == "https://example.com/feed.xml"
+        assert data["feed_name"] == "Example Feed"
+        assert data["error"] == "Connection timeout"
+        assert data["error_type"] == "fetch"
+        assert data["timestamp"] == timestamp
+
+    def test_正常系_dictからモデルを作成できる(self) -> None:
+        """dict から FeedError を作成可能."""
+        from news.models import FeedError
+
+        data = {
+            "feed_url": "https://example.com/feed.xml",
+            "feed_name": "Example Feed",
+            "error": "Connection timeout",
+            "error_type": "fetch",
+            "timestamp": "2025-01-15T10:00:00Z",
+        }
+
+        error = FeedError.model_validate(data)
+
+        assert error.feed_url == "https://example.com/feed.xml"
+        assert error.error_type == "fetch"
+
+    def test_正常系_JSONシリアライズ可能(self) -> None:
+        """FeedError は JSON シリアライズ可能."""
+        from news.models import FeedError
+
+        timestamp = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+
+        error = FeedError(
+            feed_url="https://example.com/feed.xml",
+            feed_name="Example Feed",
+            error="Connection timeout",
+            error_type="fetch",
+            timestamp=timestamp,
+        )
+
+        json_str = error.model_dump_json()
+
+        assert '"feed_url":"https://example.com/feed.xml"' in json_str
+        assert '"feed_name":"Example Feed"' in json_str
+        assert '"error":"Connection timeout"' in json_str
+        assert '"error_type":"fetch"' in json_str
