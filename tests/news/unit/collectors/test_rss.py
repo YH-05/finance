@@ -819,3 +819,320 @@ def sample_presets_config() -> PresetsConfig:
             ),
         ],
     )
+
+
+class TestRSSCollectorDomainFiltering:
+    """Tests for RSSCollector domain filtering functionality."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ブロックドメインの記事が収集結果から除外される(
+        self,
+        mock_config_with_domain_filter: NewsWorkflowConfig,
+        sample_feed_items: list[FeedItem],
+    ) -> None:
+        """Articles from blocked domains should be excluded from collection results."""
+        # Create articles with blocked and non-blocked domains
+        now = datetime.now(timezone.utc)
+        mixed_domain_items = [
+            FeedItem(
+                item_id="blocked-item",
+                title="Blocked Article",
+                link="https://seekingalpha.com/article/123",
+                published=now.isoformat(),
+                summary="Article from blocked domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+            FeedItem(
+                item_id="allowed-item",
+                title="Allowed Article",
+                link="https://cnbc.com/article/456",
+                published=now.isoformat(),
+                summary="Article from allowed domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_domain_filter)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = mixed_domain_items
+
+                result = await collector.collect()
+
+                assert len(result) == 1
+                assert "cnbc.com" in str(result[0].url)
+                assert "seekingalpha.com" not in str(result[0].url)
+
+    @pytest.mark.asyncio
+    async def test_正常系_フィルタリング無効時は全て収集される(
+        self,
+        mock_config_with_domain_filter_disabled: NewsWorkflowConfig,
+    ) -> None:
+        """All articles should be collected when domain filtering is disabled."""
+        now = datetime.now(timezone.utc)
+        blocked_domain_items = [
+            FeedItem(
+                item_id="blocked-item",
+                title="Article from Blocked Domain",
+                link="https://seekingalpha.com/article/123",
+                published=now.isoformat(),
+                summary="Article from blocked domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_domain_filter_disabled)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = blocked_domain_items
+
+                result = await collector.collect()
+
+                # All articles should pass through when filtering is disabled
+                assert len(result) == 1
+                assert "seekingalpha.com" in str(result[0].url)
+
+    @pytest.mark.asyncio
+    async def test_正常系_サブドメインもブロックされる(
+        self,
+        mock_config_with_domain_filter: NewsWorkflowConfig,
+    ) -> None:
+        """Subdomains of blocked domains should also be blocked."""
+        now = datetime.now(timezone.utc)
+        subdomain_items = [
+            FeedItem(
+                item_id="subdomain-item",
+                title="Subdomain Article",
+                link="https://www.seekingalpha.com/article/123",
+                published=now.isoformat(),
+                summary="Article from subdomain of blocked domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_domain_filter)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = subdomain_items
+
+                result = await collector.collect()
+
+                # Subdomain should also be blocked
+                assert len(result) == 0
+
+    def test_正常系_filter_blocked_domainsで除外数が正しく返される(
+        self,
+        mock_config_with_domain_filter: NewsWorkflowConfig,
+    ) -> None:
+        """_filter_blocked_domains should correctly count blocked articles."""
+        from news.models import CollectedArticle
+
+        now = datetime.now(timezone.utc)
+        articles = [
+            CollectedArticle(
+                url="https://seekingalpha.com/article/1",  # type: ignore[arg-type]
+                title="Blocked 1",
+                published=now,
+                raw_summary="Summary 1",
+                source=ArticleSource(
+                    source_type=SourceType.RSS,
+                    source_name="Test",
+                    category="market",
+                ),
+                collected_at=now,
+            ),
+            CollectedArticle(
+                url="https://investorplace.com/article/2",  # type: ignore[arg-type]
+                title="Blocked 2",
+                published=now,
+                raw_summary="Summary 2",
+                source=ArticleSource(
+                    source_type=SourceType.RSS,
+                    source_name="Test",
+                    category="market",
+                ),
+                collected_at=now,
+            ),
+            CollectedArticle(
+                url="https://cnbc.com/article/3",  # type: ignore[arg-type]
+                title="Allowed",
+                published=now,
+                raw_summary="Summary 3",
+                source=ArticleSource(
+                    source_type=SourceType.RSS,
+                    source_name="Test",
+                    category="market",
+                ),
+                collected_at=now,
+            ),
+        ]
+
+        collector = RSSCollector(config=mock_config_with_domain_filter)
+        filtered = collector._filter_blocked_domains(articles)
+
+        assert len(filtered) == 1
+        assert filtered[0].title == "Allowed"
+
+
+@pytest.fixture
+def mock_config_with_domain_filter() -> NewsWorkflowConfig:
+    """Create a mock NewsWorkflowConfig with domain filtering enabled."""
+    from news.config import (
+        DomainFilteringConfig,
+        ExtractionConfig,
+        FilteringConfig,
+        GitHubConfig,
+        OutputConfig,
+        SummarizationConfig,
+    )
+
+    return NewsWorkflowConfig(
+        version="1.0",
+        status_mapping={"market": "index", "tech": "ai"},
+        github_status_ids={"index": "abc123", "ai": "def456"},
+        rss=RssConfig(presets_file="data/config/rss-presets.json"),
+        extraction=ExtractionConfig(),
+        summarization=SummarizationConfig(prompt_template="Summarize: {body}"),
+        github=GitHubConfig(
+            project_number=15,
+            project_id="PVT_test",
+            status_field_id="PVTSSF_test",
+            published_date_field_id="PVTF_test",
+            repository="owner/repo",
+        ),
+        filtering=FilteringConfig(),
+        output=OutputConfig(result_dir="data/exports/news-workflow"),
+        domain_filtering=DomainFilteringConfig(
+            enabled=True,
+            log_blocked=True,
+            blocked_domains=["seekingalpha.com", "investorplace.com"],
+        ),
+    )
+
+
+@pytest.fixture
+def mock_config_with_domain_filter_disabled() -> NewsWorkflowConfig:
+    """Create a mock NewsWorkflowConfig with domain filtering disabled."""
+    from news.config import (
+        DomainFilteringConfig,
+        ExtractionConfig,
+        FilteringConfig,
+        GitHubConfig,
+        OutputConfig,
+        SummarizationConfig,
+    )
+
+    return NewsWorkflowConfig(
+        version="1.0",
+        status_mapping={"market": "index", "tech": "ai"},
+        github_status_ids={"index": "abc123", "ai": "def456"},
+        rss=RssConfig(presets_file="data/config/rss-presets.json"),
+        extraction=ExtractionConfig(),
+        summarization=SummarizationConfig(prompt_template="Summarize: {body}"),
+        github=GitHubConfig(
+            project_number=15,
+            project_id="PVT_test",
+            status_field_id="PVTSSF_test",
+            published_date_field_id="PVTF_test",
+            repository="owner/repo",
+        ),
+        filtering=FilteringConfig(),
+        output=OutputConfig(result_dir="data/exports/news-workflow"),
+        domain_filtering=DomainFilteringConfig(
+            enabled=False,
+            log_blocked=False,
+            blocked_domains=["seekingalpha.com"],
+        ),
+    )

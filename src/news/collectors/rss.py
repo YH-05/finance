@@ -69,6 +69,7 @@ class RSSCollector(BaseCollector):
         """
         self._config = config
         self._parser = FeedParser()
+        self._domain_filter = config.domain_filtering
         logger.debug(
             "RSSCollector initialized",
             presets_file=config.rss.presets_file,
@@ -157,13 +158,16 @@ class RSSCollector(BaseCollector):
                     )
                     continue
 
+        # Apply domain filtering
+        filtered_articles = self._filter_blocked_domains(all_articles)
+
         logger.info(
             "RSS collection completed",
-            total_articles=len(all_articles),
+            total_articles=len(filtered_articles),
             feeds_processed=len(enabled_presets),
         )
 
-        return all_articles
+        return filtered_articles
 
     def _load_presets(self) -> list[PresetFeed]:
         """Load RSS feed presets from configuration file.
@@ -316,6 +320,50 @@ class RSSCollector(BaseCollector):
             source=source,
             collected_at=collected_at,
         )
+
+    def _filter_blocked_domains(
+        self,
+        articles: list[CollectedArticle],
+    ) -> list[CollectedArticle]:
+        """Filter out articles from blocked domains.
+
+        Parameters
+        ----------
+        articles : list[CollectedArticle]
+            List of articles to filter.
+
+        Returns
+        -------
+        list[CollectedArticle]
+            List of articles with blocked domains removed.
+        """
+        if not self._domain_filter.enabled:
+            return articles
+
+        filtered: list[CollectedArticle] = []
+        blocked_count = 0
+
+        for article in articles:
+            url = str(article.url)
+            if self._domain_filter.is_blocked(url):
+                blocked_count += 1
+                if self._domain_filter.log_blocked:
+                    logger.debug(
+                        "Blocked domain article skipped",
+                        url=url,
+                        title=article.title[:50] if article.title else "",
+                    )
+            else:
+                filtered.append(article)
+
+        if blocked_count > 0:
+            logger.info(
+                "Filtered blocked domain articles",
+                blocked_count=blocked_count,
+                remaining_count=len(filtered),
+            )
+
+        return filtered
 
 
 __all__ = ["RSSCollector"]
