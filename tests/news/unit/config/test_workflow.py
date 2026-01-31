@@ -451,3 +451,311 @@ version: "1.0"
         # Act & Assert
         with pytest.raises(ValidationError):
             load_config(config_file)
+
+
+class TestDomainFilteringConfig:
+    """Test DomainFilteringConfig Pydantic model."""
+
+    def test_正常系_デフォルト値で作成できる(self) -> None:
+        """DomainFilteringConfigをデフォルト値で作成できることを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig()
+
+        assert config.enabled is True
+        assert config.log_blocked is True
+        assert config.blocked_domains == []
+
+    def test_正常系_ブロックドメインがTrueを返す(self) -> None:
+        """ブロックドメインに対してis_blockedがTrueを返すことを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(blocked_domains=["seekingalpha.com"])
+
+        assert config.is_blocked("https://seekingalpha.com/article/123")
+
+    def test_正常系_サブドメインもブロックされる(self) -> None:
+        """サブドメインもブロックされることを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(blocked_domains=["seekingalpha.com"])
+
+        assert config.is_blocked("https://www.seekingalpha.com/article/123")
+        assert config.is_blocked("https://api.seekingalpha.com/v1/data")
+
+    def test_正常系_許可ドメインはFalseを返す(self) -> None:
+        """許可ドメインに対してis_blockedがFalseを返すことを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(blocked_domains=["seekingalpha.com"])
+
+        assert not config.is_blocked("https://cnbc.com/article/123")
+        assert not config.is_blocked("https://www.cnbc.com/article/123")
+
+    def test_正常系_無効時は全て許可(self) -> None:
+        """enabled=Falseの時は全てのドメインが許可されることを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(
+            enabled=False,
+            blocked_domains=["seekingalpha.com"],
+        )
+
+        assert not config.is_blocked("https://seekingalpha.com/article/123")
+        assert not config.is_blocked("https://www.seekingalpha.com/article/123")
+
+    def test_正常系_大文字小文字を区別しない(self) -> None:
+        """ドメインの大文字小文字を区別しないことを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(blocked_domains=["SeekingAlpha.com"])
+
+        assert config.is_blocked("https://seekingalpha.com/article/123")
+        assert config.is_blocked("https://SEEKINGALPHA.COM/article/123")
+
+    def test_正常系_複数ドメインをブロックできる(self) -> None:
+        """複数のドメインをブロックできることを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(
+            blocked_domains=["seekingalpha.com", "example.com", "test.org"]
+        )
+
+        assert config.is_blocked("https://seekingalpha.com/article/123")
+        assert config.is_blocked("https://example.com/page")
+        assert config.is_blocked("https://test.org/")
+        assert not config.is_blocked("https://cnbc.com/")
+
+    def test_正常系_空リストで全て許可(self) -> None:
+        """空のブロックリストで全てのドメインが許可されることを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(blocked_domains=[])
+
+        assert not config.is_blocked("https://seekingalpha.com/article/123")
+        assert not config.is_blocked("https://cnbc.com/article/123")
+
+    def test_エッジケース_類似ドメイン名は許可される(self) -> None:
+        """類似しているが異なるドメインは許可されることを確認。"""
+        from news.config.workflow import DomainFilteringConfig
+
+        config = DomainFilteringConfig(blocked_domains=["example.com"])
+
+        # notexample.com は example.com のサブドメインではない
+        assert not config.is_blocked("https://notexample.com/page")
+        # myexample.com も許可
+        assert not config.is_blocked("https://myexample.com/page")
+
+
+class TestNewsWorkflowConfigWithDomainFiltering:
+    """Test NewsWorkflowConfig with domain_filtering field."""
+
+    def test_正常系_domain_filteringがデフォルト値で作成される(self) -> None:
+        """domain_filteringがデフォルト値で作成されることを確認。"""
+        from news.config.workflow import (
+            DomainFilteringConfig,
+            ExtractionConfig,
+            FilteringConfig,
+            GitHubConfig,
+            NewsWorkflowConfig,
+            OutputConfig,
+            RssConfig,
+            SummarizationConfig,
+        )
+
+        config = NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"tech": "ai"},
+            github_status_ids={"ai": "6fbb43d0"},
+            rss=RssConfig(presets_file="data/config/rss-presets.json"),
+            extraction=ExtractionConfig(),
+            summarization=SummarizationConfig(prompt_template="test"),
+            github=GitHubConfig(
+                project_number=15,
+                project_id="PVT_test",
+                status_field_id="PVTSSF_test",
+                published_date_field_id="PVTF_test",
+                repository="owner/repo",
+            ),
+            filtering=FilteringConfig(),
+            output=OutputConfig(result_dir="data/exports"),
+        )
+
+        assert isinstance(config.domain_filtering, DomainFilteringConfig)
+        assert config.domain_filtering.enabled is True
+        assert config.domain_filtering.blocked_domains == []
+
+    def test_正常系_domain_filteringをカスタム値で作成できる(self) -> None:
+        """domain_filteringをカスタム値で作成できることを確認。"""
+        from news.config.workflow import (
+            DomainFilteringConfig,
+            ExtractionConfig,
+            FilteringConfig,
+            GitHubConfig,
+            NewsWorkflowConfig,
+            OutputConfig,
+            RssConfig,
+            SummarizationConfig,
+        )
+
+        config = NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"tech": "ai"},
+            github_status_ids={"ai": "6fbb43d0"},
+            rss=RssConfig(presets_file="data/config/rss-presets.json"),
+            extraction=ExtractionConfig(),
+            summarization=SummarizationConfig(prompt_template="test"),
+            github=GitHubConfig(
+                project_number=15,
+                project_id="PVT_test",
+                status_field_id="PVTSSF_test",
+                published_date_field_id="PVTF_test",
+                repository="owner/repo",
+            ),
+            filtering=FilteringConfig(),
+            output=OutputConfig(result_dir="data/exports"),
+            domain_filtering=DomainFilteringConfig(
+                enabled=True,
+                log_blocked=False,
+                blocked_domains=["seekingalpha.com", "example.com"],
+            ),
+        )
+
+        assert config.domain_filtering.enabled is True
+        assert config.domain_filtering.log_blocked is False
+        assert config.domain_filtering.blocked_domains == [
+            "seekingalpha.com",
+            "example.com",
+        ]
+
+
+class TestLoadConfigWithDomainFiltering:
+    """Test load_config function with domain_filtering."""
+
+    def test_正常系_domain_filteringセクションを読み込める(
+        self, tmp_path: Path
+    ) -> None:
+        """load_configがdomain_filteringセクションを読み込めることを確認。"""
+        from news.config.workflow import load_config
+
+        # Arrange
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            """
+version: "1.0"
+status_mapping:
+  tech: "ai"
+github_status_ids:
+  ai: "6fbb43d0"
+rss:
+  presets_file: "data/config/rss-presets.json"
+summarization:
+  prompt_template: "test"
+github:
+  project_number: 15
+  project_id: "PVT_test"
+  status_field_id: "PVTSSF_test"
+  published_date_field_id: "PVTF_test"
+  repository: "owner/repo"
+output:
+  result_dir: "data/exports"
+domain_filtering:
+  enabled: true
+  log_blocked: false
+  blocked_domains:
+    - "seekingalpha.com"
+    - "example.com"
+"""
+        )
+
+        # Act
+        config = load_config(config_file)
+
+        # Assert
+        assert config.domain_filtering.enabled is True
+        assert config.domain_filtering.log_blocked is False
+        assert config.domain_filtering.blocked_domains == [
+            "seekingalpha.com",
+            "example.com",
+        ]
+
+    def test_正常系_トップレベルblocked_domainsを変換できる(
+        self, tmp_path: Path
+    ) -> None:
+        """load_configがトップレベルのblocked_domainsをdomain_filteringに変換することを確認。"""
+        from news.config.workflow import load_config
+
+        # Arrange: トップレベルに blocked_domains を配置
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            """
+version: "1.0"
+status_mapping:
+  tech: "ai"
+github_status_ids:
+  ai: "6fbb43d0"
+rss:
+  presets_file: "data/config/rss-presets.json"
+summarization:
+  prompt_template: "test"
+github:
+  project_number: 15
+  project_id: "PVT_test"
+  status_field_id: "PVTSSF_test"
+  published_date_field_id: "PVTF_test"
+  repository: "owner/repo"
+output:
+  result_dir: "data/exports"
+blocked_domains:
+  - "seekingalpha.com"
+  - "example.com"
+"""
+        )
+
+        # Act
+        config = load_config(config_file)
+
+        # Assert
+        assert config.domain_filtering.blocked_domains == [
+            "seekingalpha.com",
+            "example.com",
+        ]
+        assert config.domain_filtering.enabled is True  # デフォルト値
+
+    def test_正常系_domain_filteringなしでデフォルト値が設定される(
+        self, tmp_path: Path
+    ) -> None:
+        """load_configでdomain_filteringがない場合、デフォルト値が設定されることを確認。"""
+        from news.config.workflow import load_config
+
+        # Arrange
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            """
+version: "1.0"
+status_mapping:
+  tech: "ai"
+github_status_ids:
+  ai: "6fbb43d0"
+rss:
+  presets_file: "data/config/rss-presets.json"
+summarization:
+  prompt_template: "test"
+github:
+  project_number: 15
+  project_id: "PVT_test"
+  status_field_id: "PVTSSF_test"
+  published_date_field_id: "PVTF_test"
+  repository: "owner/repo"
+output:
+  result_dir: "data/exports"
+"""
+        )
+
+        # Act
+        config = load_config(config_file)
+
+        # Assert
+        assert config.domain_filtering.enabled is True
+        assert config.domain_filtering.log_blocked is True
+        assert config.domain_filtering.blocked_domains == []

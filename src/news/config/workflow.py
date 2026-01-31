@@ -259,6 +259,91 @@ class OutputConfig(BaseModel):
     )
 
 
+class DomainFilteringConfig(BaseModel):
+    """Domain filtering configuration for blocking specific news sources.
+
+    This configuration allows blocking articles from specific domains,
+    including subdomains.
+
+    Parameters
+    ----------
+    enabled : bool
+        Whether domain filtering is enabled (default: True).
+    log_blocked : bool
+        Whether to log blocked domains (default: True).
+    blocked_domains : list[str]
+        List of domains to block. Subdomains are also blocked.
+        For example, "seekingalpha.com" blocks both "seekingalpha.com"
+        and "www.seekingalpha.com".
+
+    Examples
+    --------
+    >>> config = DomainFilteringConfig(
+    ...     blocked_domains=["seekingalpha.com", "example.com"]
+    ... )
+    >>> config.is_blocked("https://seekingalpha.com/article/123")
+    True
+    >>> config.is_blocked("https://www.seekingalpha.com/article/123")
+    True
+    >>> config.is_blocked("https://cnbc.com/article/123")
+    False
+    """
+
+    enabled: bool = Field(
+        default=True,
+        description="Whether domain filtering is enabled",
+    )
+    log_blocked: bool = Field(
+        default=True,
+        description="Whether to log blocked domains",
+    )
+    blocked_domains: list[str] = Field(
+        default_factory=list,
+        description="List of domains to block (subdomains also blocked)",
+    )
+
+    def is_blocked(self, url: str) -> bool:
+        """Check if a URL is blocked based on domain filtering rules.
+
+        Parameters
+        ----------
+        url : str
+            The URL to check.
+
+        Returns
+        -------
+        bool
+            True if the URL is blocked, False otherwise.
+
+        Examples
+        --------
+        >>> config = DomainFilteringConfig(
+        ...     blocked_domains=["seekingalpha.com"]
+        ... )
+        >>> config.is_blocked("https://seekingalpha.com/article/123")
+        True
+        >>> config.is_blocked("https://www.seekingalpha.com/article/123")
+        True
+        >>> config.is_blocked("https://cnbc.com/article/123")
+        False
+        """
+        if not self.enabled:
+            return False
+
+        from urllib.parse import urlparse
+
+        parsed = urlparse(url)
+        domain = parsed.netloc.lower()
+
+        # Check both exact match and subdomain match
+        for blocked in self.blocked_domains:
+            blocked_lower = blocked.lower()
+            if domain == blocked_lower or domain.endswith(f".{blocked_lower}"):
+                return True
+
+        return False
+
+
 class NewsWorkflowConfig(BaseModel):
     """Root configuration model for news collection workflow.
 
@@ -285,6 +370,8 @@ class NewsWorkflowConfig(BaseModel):
         Article filtering configuration.
     output : OutputConfig
         Output file configuration.
+    domain_filtering : DomainFilteringConfig
+        Domain filtering configuration for blocking specific sources.
 
     Examples
     --------
@@ -355,6 +442,10 @@ class NewsWorkflowConfig(BaseModel):
         ...,
         description="Output file configuration",
     )
+    domain_filtering: DomainFilteringConfig = Field(
+        default_factory=DomainFilteringConfig,
+        description="Domain filtering configuration for blocking specific sources",
+    )
 
 
 def load_config(path: Path | str) -> NewsWorkflowConfig:
@@ -398,6 +489,15 @@ def load_config(path: Path | str) -> NewsWorkflowConfig:
     content = file_path.read_text(encoding="utf-8")
     data = yaml.safe_load(content)
 
+    # Convert top-level blocked_domains to domain_filtering config
+    if "blocked_domains" in data:
+        blocked_domains = data.pop("blocked_domains")
+        existing_domain_filtering = data.get("domain_filtering", {})
+        data["domain_filtering"] = {
+            "blocked_domains": blocked_domains,
+            **existing_domain_filtering,
+        }
+
     config = NewsWorkflowConfig.model_validate(data)
 
     logger.info(
@@ -411,6 +511,7 @@ def load_config(path: Path | str) -> NewsWorkflowConfig:
 
 # Export all public symbols
 __all__ = [
+    "DomainFilteringConfig",
     "ExtractionConfig",
     "FilteringConfig",
     "GitHubConfig",
