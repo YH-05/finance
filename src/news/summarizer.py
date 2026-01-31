@@ -212,6 +212,21 @@ class Summarizer:
                     error_message=error_message,
                 )
 
+            except RuntimeError as e:
+                # SDK未インストール - リトライしない
+                error_message = str(e)
+                logger.error(
+                    "SDK not installed",
+                    article_url=str(article.collected.url),
+                    error=error_message,
+                )
+                return SummarizedArticle(
+                    extracted=article,
+                    summary=None,
+                    summarization_status=SummarizationStatus.FAILED,
+                    error_message=error_message,
+                )
+
             except asyncio.TimeoutError:
                 last_error = asyncio.TimeoutError(
                     f"Timeout after {self._timeout_seconds}s"
@@ -224,6 +239,10 @@ class Summarizer:
                 )
 
             except Exception as e:
+                # CLINotFoundError は CLI未インストールで持続的なエラー
+                # ただし、_call_claude_sdk でログ出力済みなので、
+                # ここでは汎用的なリトライ処理を行う
+                # ProcessError, CLIConnectionError, ClaudeSDKError はリトライ対象
                 last_error = e
                 logger.warning(
                     "Summarization failed",
@@ -231,6 +250,7 @@ class Summarizer:
                     attempt=attempt + 1,
                     max_retries=self._max_retries,
                     error=str(e),
+                    error_type=type(e).__name__,
                 )
 
             # 指数バックオフ（1s, 2s, 4s）- 最後の試行後はスリープしない
@@ -307,6 +327,16 @@ JSONのみを出力し、他のテキストは含めないでください。"""
         ------
         RuntimeError
             claude-agent-sdk がインストールされていない場合。
+        CLINotFoundError
+            Claude Code CLI がインストールされていない場合。
+            リトライ不可。
+        ProcessError
+            CLI プロセスがエラー終了した場合。
+            exit_code と stderr 属性を持つ。リトライ対象。
+        CLIConnectionError
+            CLI との通信エラーが発生した場合。リトライ対象。
+        ClaudeSDKError
+            その他の SDK エラー（基底クラス）。リトライ対象。
 
         Notes
         -----
@@ -315,11 +345,16 @@ JSONのみを出力し、他のテキストは含めないでください。"""
         - AssistantMessage の TextBlock からテキストを抽出して結合
         - allowed_tools=[] でツール使用を無効化（テキスト生成のみ）
         - max_turns=1 で1ターンのみの対話
+        - SDK固有の例外は適切にログ出力後、呼び出し元に再送出する
         """
         try:
             from claude_agent_sdk import (
                 AssistantMessage,
                 ClaudeAgentOptions,
+                ClaudeSDKError,
+                CLIConnectionError,
+                CLINotFoundError,
+                ProcessError,
                 TextBlock,
                 query,
             )
@@ -344,20 +379,44 @@ JSONのみを出力し、他のテキストは含めないでください。"""
             prompt_length=len(prompt),
         )
 
-        response_parts: list[str] = []
-        async for message in query(prompt=prompt, options=options):
-            if isinstance(message, AssistantMessage):
-                for block in message.content:
-                    if isinstance(block, TextBlock):
-                        response_parts.append(block.text)
+        try:
+            response_parts: list[str] = []
+            async for message in query(prompt=prompt, options=options):
+                if isinstance(message, AssistantMessage):
+                    for block in message.content:
+                        if isinstance(block, TextBlock):
+                            response_parts.append(block.text)
 
-        result = "".join(response_parts)
-        logger.debug(
-            "Claude Agent SDK response received",
-            response_length=len(result),
-        )
+            result = "".join(response_parts)
+            logger.debug(
+                "Claude Agent SDK response received",
+                response_length=len(result),
+            )
 
-        return result
+            return result
+
+        except CLINotFoundError:
+            logger.error(
+                "Claude Code CLI not found",
+                hint="Install with: curl -fsSL https://claude.ai/install.sh | bash",
+            )
+            raise
+
+        except ProcessError as e:
+            logger.error(
+                "CLI process error",
+                exit_code=e.exit_code,
+                stderr=e.stderr[:200] if e.stderr else None,
+            )
+            raise
+
+        except CLIConnectionError as e:
+            logger.error("CLI connection error", error=str(e))
+            raise
+
+        except ClaudeSDKError as e:
+            logger.error("SDK error", error=str(e))
+            raise
 
     def _parse_response(self, response_text: str) -> StructuredSummary:
         """Claude のレスポンスを StructuredSummary にパースする。

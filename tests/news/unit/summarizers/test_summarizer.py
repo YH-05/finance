@@ -1301,11 +1301,28 @@ class TestCallClaudeSdk:
         """_call_claude_sdk should propagate exceptions from query()."""
         from news.summarizer import Summarizer
 
+        # Create a custom exception that is not an SDK error
+        class CustomError(Exception):
+            pass
+
         async def mock_query_with_error(
             *args: Any, **kwargs: Any
         ) -> "AsyncIterator[Any]":
-            raise Exception("SDK Error")
+            raise CustomError("SDK Error")
             yield  # Make this an async generator
+
+        # Create mock exception hierarchy
+        class MockClaudeSDKError(Exception):
+            pass
+
+        class MockCLIConnectionError(MockClaudeSDKError):
+            pass
+
+        class MockCLINotFoundError(MockCLIConnectionError):
+            pass
+
+        class MockProcessError(MockClaudeSDKError):
+            pass
 
         with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
             import sys
@@ -1315,10 +1332,14 @@ class TestCallClaudeSdk:
             mock_sdk.ClaudeAgentOptions = MagicMock()
             mock_sdk.AssistantMessage = MagicMock
             mock_sdk.TextBlock = MagicMock
+            mock_sdk.CLINotFoundError = MockCLINotFoundError
+            mock_sdk.ProcessError = MockProcessError
+            mock_sdk.CLIConnectionError = MockCLIConnectionError
+            mock_sdk.ClaudeSDKError = MockClaudeSDKError
 
             summarizer = Summarizer(config=summarizer_config)
 
-            with pytest.raises(Exception, match="SDK Error"):
+            with pytest.raises(CustomError, match="SDK Error"):
                 await summarizer._call_claude_sdk("テスト")
 
     @pytest.mark.asyncio
@@ -1397,3 +1418,408 @@ class TestCallClaudeSdk:
 
             # Only TextBlock should be processed
             assert result == "テキスト"
+
+
+class TestSDKErrorHandling:
+    """Tests for SDK error handling (P9-004).
+
+    Tests for:
+    - CLINotFoundError handling (non-retryable)
+    - ProcessError handling (retryable) with exit_code and stderr logging
+    - CLIConnectionError handling (retryable)
+    - ClaudeSDKError handling (retryable)
+    - RuntimeError handling for SDK not installed (non-retryable)
+    """
+
+    @pytest.fixture
+    def error_config(self) -> NewsWorkflowConfig:
+        """Create a config for error handling tests."""
+        return NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"market": "index"},
+            github_status_ids={"index": "test-id"},
+            rss={"presets_file": "test.json"},  # type: ignore[arg-type]
+            summarization=SummarizationConfig(
+                prompt_template="Summarize: {body}",
+                max_retries=3,
+                timeout_seconds=60,
+            ),
+            github={  # type: ignore[arg-type]
+                "project_number": 15,
+                "project_id": "PVT_test",
+                "status_field_id": "PVTSSF_test",
+                "published_date_field_id": "PVTF_test",
+                "repository": "owner/repo",
+            },
+            output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        )
+
+    @pytest.mark.asyncio
+    async def test_異常系_CLINotFoundErrorで適切なログが出力される(
+        self,
+        error_config: NewsWorkflowConfig,
+    ) -> None:
+        """CLINotFoundError should be logged with installation hint."""
+        from news.summarizer import Summarizer
+
+        # Create mock exception hierarchy that matches the real SDK
+        class MockClaudeSDKError(Exception):
+            pass
+
+        class MockCLIConnectionError(MockClaudeSDKError):
+            pass
+
+        class MockCLINotFoundError(MockCLIConnectionError):
+            pass
+
+        class MockProcessError(MockClaudeSDKError):
+            pass
+
+        async def mock_query_with_cli_not_found(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            raise MockCLINotFoundError("CLI not found")
+            yield  # Make this an async generator
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_with_cli_not_found
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MagicMock
+            mock_sdk.TextBlock = MagicMock
+            mock_sdk.CLINotFoundError = MockCLINotFoundError
+            mock_sdk.ProcessError = MockProcessError
+            mock_sdk.CLIConnectionError = MockCLIConnectionError
+            mock_sdk.ClaudeSDKError = MockClaudeSDKError
+
+            summarizer = Summarizer(config=error_config)
+
+            with (
+                patch("news.summarizer.logger") as mock_logger,
+                pytest.raises(MockCLINotFoundError),
+            ):
+                await summarizer._call_claude_sdk("テスト")
+
+            # Verify error log was called
+            mock_logger.error.assert_called_once()
+            call_args = mock_logger.error.call_args
+            assert "CLI not found" in call_args[0][0]
+            assert "hint" in call_args[1]
+
+    @pytest.mark.asyncio
+    async def test_異常系_ProcessErrorでexit_codeとstderrがログ出力される(
+        self,
+        error_config: NewsWorkflowConfig,
+    ) -> None:
+        """ProcessError should be logged with exit_code and stderr."""
+        from news.summarizer import Summarizer
+
+        # Create mock exception hierarchy that matches the real SDK
+        # ClaudeSDKError is the base
+        class MockClaudeSDKError(Exception):
+            pass
+
+        class MockCLIConnectionError(MockClaudeSDKError):
+            pass
+
+        class MockCLINotFoundError(MockCLIConnectionError):
+            pass
+
+        class MockProcessError(MockClaudeSDKError):
+            def __init__(self, exit_code: int, stderr: str | None) -> None:
+                super().__init__(f"Process exited with code {exit_code}")
+                self.exit_code = exit_code
+                self.stderr = stderr
+
+        async def mock_query_with_process_error(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            raise MockProcessError(exit_code=1, stderr="Error: API rate limit exceeded")
+            yield  # Make this an async generator
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_with_process_error
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MagicMock
+            mock_sdk.TextBlock = MagicMock
+            mock_sdk.CLINotFoundError = MockCLINotFoundError
+            mock_sdk.ProcessError = MockProcessError
+            mock_sdk.CLIConnectionError = MockCLIConnectionError
+            mock_sdk.ClaudeSDKError = MockClaudeSDKError
+
+            summarizer = Summarizer(config=error_config)
+
+            with (
+                patch("news.summarizer.logger") as mock_logger,
+                pytest.raises(MockProcessError),
+            ):
+                await summarizer._call_claude_sdk("テスト")
+
+            # Verify error log was called with exit_code and stderr
+            mock_logger.error.assert_called_once()
+            call_args = mock_logger.error.call_args
+            assert "process error" in call_args[0][0].lower()
+            assert call_args[1]["exit_code"] == 1
+            assert "API rate limit" in call_args[1]["stderr"]
+
+    @pytest.mark.asyncio
+    async def test_異常系_CLIConnectionErrorで適切なログが出力される(
+        self,
+        error_config: NewsWorkflowConfig,
+    ) -> None:
+        """CLIConnectionError should be logged."""
+        from news.summarizer import Summarizer
+
+        # Create mock exception hierarchy that matches the real SDK
+        class MockClaudeSDKError(Exception):
+            pass
+
+        class MockCLIConnectionError(MockClaudeSDKError):
+            pass
+
+        class MockCLINotFoundError(MockCLIConnectionError):
+            pass
+
+        class MockProcessError(MockClaudeSDKError):
+            pass
+
+        async def mock_query_with_connection_error(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            raise MockCLIConnectionError("Connection refused")
+            yield  # Make this an async generator
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_with_connection_error
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MagicMock
+            mock_sdk.TextBlock = MagicMock
+            mock_sdk.CLINotFoundError = MockCLINotFoundError
+            mock_sdk.ProcessError = MockProcessError
+            mock_sdk.CLIConnectionError = MockCLIConnectionError
+            mock_sdk.ClaudeSDKError = MockClaudeSDKError
+
+            summarizer = Summarizer(config=error_config)
+
+            with (
+                patch("news.summarizer.logger") as mock_logger,
+                pytest.raises(MockCLIConnectionError),
+            ):
+                await summarizer._call_claude_sdk("テスト")
+
+            # Verify error log was called
+            mock_logger.error.assert_called_once()
+            call_args = mock_logger.error.call_args
+            assert "connection error" in call_args[0][0].lower()
+
+    @pytest.mark.asyncio
+    async def test_異常系_ClaudeSDKErrorで適切なログが出力される(
+        self,
+        error_config: NewsWorkflowConfig,
+    ) -> None:
+        """ClaudeSDKError should be logged."""
+        from news.summarizer import Summarizer
+
+        # Create mock exception hierarchy that matches the real SDK
+        # ClaudeSDKError is the base, but we need a concrete subclass to test
+        # the generic ClaudeSDKError handler (which catches errors not caught by specific handlers)
+        class MockClaudeSDKError(Exception):
+            pass
+
+        # These need to be different classes so they don't match MockClaudeSDKError
+        class MockCLIConnectionError(MockClaudeSDKError):
+            pass
+
+        class MockCLINotFoundError(MockCLIConnectionError):
+            pass
+
+        class MockProcessError(MockClaudeSDKError):
+            pass
+
+        # Create a different error that is only ClaudeSDKError (not a subclass)
+        # This simulates an unknown SDK error that should be caught by the base handler
+        class UnknownSDKError(MockClaudeSDKError):
+            """An unknown SDK error that should be caught by ClaudeSDKError handler."""
+
+            pass
+
+        async def mock_query_with_sdk_error(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            raise UnknownSDKError("Unknown SDK error")
+            yield  # Make this an async generator
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_with_sdk_error
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MagicMock
+            mock_sdk.TextBlock = MagicMock
+            mock_sdk.CLINotFoundError = MockCLINotFoundError
+            mock_sdk.ProcessError = MockProcessError
+            mock_sdk.CLIConnectionError = MockCLIConnectionError
+            mock_sdk.ClaudeSDKError = MockClaudeSDKError
+
+            summarizer = Summarizer(config=error_config)
+
+            with (
+                patch("news.summarizer.logger") as mock_logger,
+                pytest.raises(UnknownSDKError),
+            ):
+                await summarizer._call_claude_sdk("テスト")
+
+            # Verify error log was called
+            mock_logger.error.assert_called_once()
+            call_args = mock_logger.error.call_args
+            assert "SDK error" in call_args[0][0]
+
+    @pytest.mark.asyncio
+    async def test_異常系_RuntimeErrorでリトライせずFAILED(
+        self,
+        error_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """RuntimeError (SDK not installed) should return FAILED without retry."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=error_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk_runtime_error(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            raise RuntimeError("claude-agent-sdk is not installed")
+
+        with patch.object(
+            summarizer,
+            "_call_claude_sdk",
+            side_effect=mock_call_claude_sdk_runtime_error,
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.FAILED
+        assert result.summary is None
+        assert "not installed" in str(result.error_message)
+        # Should NOT retry for RuntimeError
+        assert call_count == 1
+
+    @pytest.mark.asyncio
+    async def test_異常系_SDKエラーでリトライ後FAILED(
+        self,
+        error_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """SDK errors (ProcessError, CLIConnectionError) should be retried."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=error_config)
+        call_count = 0
+
+        # Create a mock exception that will be retried
+        class MockProcessError(Exception):
+            def __init__(self) -> None:
+                super().__init__("Process error")
+                self.exit_code = 1
+                self.stderr = "Error"
+
+        async def mock_call_claude_sdk_process_error(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            raise MockProcessError()
+
+        with (
+            patch.object(
+                summarizer,
+                "_call_claude_sdk",
+                side_effect=mock_call_claude_sdk_process_error,
+            ),
+            patch("asyncio.sleep", return_value=None),
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.FAILED
+        assert result.summary is None
+        # Should retry 3 times (max_retries)
+        assert call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_正常系_SDKエラー後リトライで成功(
+        self,
+        error_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """SDK error followed by success should return SUCCESS."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=error_config)
+        call_count = 0
+
+        class MockCLIConnectionError(Exception):
+            pass
+
+        async def mock_call_claude_sdk_then_success(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise MockCLIConnectionError("Connection error")
+            return '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+
+        with (
+            patch.object(
+                summarizer,
+                "_call_claude_sdk",
+                side_effect=mock_call_claude_sdk_then_success,
+            ),
+            patch("asyncio.sleep", return_value=None),
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.SUCCESS
+        assert result.summary is not None
+        assert call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_error_typeがログに含まれる(
+        self,
+        error_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Error type should be included in retry warning logs."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=error_config)
+
+        class MockProcessError(Exception):
+            pass
+
+        async def mock_call_claude_sdk_error(prompt: str) -> str:
+            raise MockProcessError("Process error")
+
+        with (
+            patch.object(
+                summarizer,
+                "_call_claude_sdk",
+                side_effect=mock_call_claude_sdk_error,
+            ),
+            patch("asyncio.sleep", return_value=None),
+            patch("news.summarizer.logger") as mock_logger,
+        ):
+            await summarizer.summarize(extracted_article_with_body)
+
+        # Verify warning logs include error_type
+        warning_calls = mock_logger.warning.call_args_list
+        assert len(warning_calls) == 3  # max_retries=3
+        for call in warning_calls:
+            kwargs = call[1]
+            assert "error_type" in kwargs
+            assert kwargs["error_type"] == "MockProcessError"
