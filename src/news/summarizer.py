@@ -139,7 +139,8 @@ class Summarizer:
         Notes
         -----
         - 非同期メソッドとして実装されており、await が必要
-        - Anthropic SDK を使用して Claude API を呼び出す
+        - Claude Agent SDK を使用して Claude API を呼び出す
+        - asyncio.timeout でタイムアウト処理を実装
 
         Examples
         --------
@@ -168,12 +169,17 @@ class Summarizer:
                 error_message="No body text available",
             )
 
-        # Claude API を呼び出して要約を生成（リトライ付き）
+        # プロンプトを構築
+        prompt = self._build_prompt(article)
+
+        # Claude Agent SDK を呼び出して要約を生成（リトライ付き）
         last_error: Exception | None = None
 
         for attempt in range(self._max_retries):
             try:
-                response_text = self._call_claude(article)
+                async with asyncio.timeout(self._timeout_seconds):
+                    response_text = await self._call_claude_sdk(prompt)
+
                 summary = self._parse_response(response_text)
 
                 logger.info(
@@ -206,8 +212,10 @@ class Summarizer:
                     error_message=error_message,
                 )
 
-            except TimeoutError:
-                last_error = TimeoutError(f"Timeout after {self._timeout_seconds}s")
+            except asyncio.TimeoutError:
+                last_error = asyncio.TimeoutError(
+                    f"Timeout after {self._timeout_seconds}s"
+                )
                 logger.warning(
                     "Summarization timeout",
                     article_url=str(article.collected.url),
@@ -230,7 +238,7 @@ class Summarizer:
                 await asyncio.sleep(2**attempt)
 
         # 全リトライ失敗
-        if isinstance(last_error, TimeoutError):
+        if isinstance(last_error, asyncio.TimeoutError):
             status = SummarizationStatus.TIMEOUT
         else:
             status = SummarizationStatus.FAILED
@@ -243,12 +251,8 @@ class Summarizer:
             error_message=error_message,
         )
 
-    def _call_claude(self, article: ExtractedArticle) -> str:
-        """Claude API を呼び出して要約を生成する。
-
-        .. deprecated::
-            This method uses the legacy Anthropic SDK and will be replaced
-            by ``_call_claude_sdk`` in P9-002 which uses claude-agent-sdk.
+    def _build_prompt(self, article: ExtractedArticle) -> str:
+        """要約プロンプトを構築する。
 
         Parameters
         ----------
@@ -258,26 +262,14 @@ class Summarizer:
         Returns
         -------
         str
-            Claude からの JSON レスポンス。
-
-        Raises
-        ------
-        RuntimeError
-            Anthropic SDK が削除されたため、このメソッドは現在動作しません。
-            P9-002 で _call_claude_sdk に置き換えられます。
-
-        Notes
-        -----
-        - 記事情報（タイトル、ソース、公開日、本文）をプロンプトに含める
-        - レスポンスは JSON 形式の StructuredSummary を期待
+            構築されたプロンプト文字列。
         """
-        # 記事情報をプロンプトに含める
         collected = article.collected
         published_str = (
             collected.published.isoformat() if collected.published else "不明"
         )
 
-        prompt = f"""以下のニュース記事を日本語で要約してください。
+        return f"""以下のニュース記事を日本語で要約してください。
 
 ## 記事情報
 - タイトル: {collected.title}
@@ -297,19 +289,6 @@ class Summarizer:
 }}
 
 JSONのみを出力し、他のテキストは含めないでください。"""
-
-        logger.debug(
-            "Calling Claude API",
-            article_url=str(collected.url),
-            prompt_length=len(prompt),
-        )
-
-        # AIDEV-NOTE: Anthropic SDK removed in P9-001
-        # This method will be replaced by _call_claude_sdk in P9-002
-        raise NotImplementedError(
-            "Anthropic SDK has been removed. "
-            "Use _call_claude_sdk (to be implemented in P9-002) instead."
-        )
 
     async def _call_claude_sdk(self, prompt: str) -> str:
         """Claude Agent SDK を使用して要約を取得。
@@ -338,7 +317,7 @@ JSONのみを出力し、他のテキストは含めないでください。"""
         - max_turns=1 で1ターンのみの対話
         """
         try:
-            from claude_agent_sdk import (  # type: ignore[import-not-found]
+            from claude_agent_sdk import (
                 AssistantMessage,
                 ClaudeAgentOptions,
                 TextBlock,
