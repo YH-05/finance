@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 from collections.abc import Generator
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
@@ -278,6 +279,10 @@ class TestAutoMode:
         """--auto モードで古いデータのみ更新されることを確認。"""
         from market.fred.scripts.sync_historical import parse_args, run_sync
 
+        now = datetime.now(timezone.utc)
+        one_hour_ago = (now - timedelta(hours=1)).isoformat()
+        two_days_ago = (now - timedelta(days=2)).isoformat()
+
         mock_cache = MagicMock()
         # DGS10: 最近更新 (スキップ)
         # GDP: 古いデータ (更新)
@@ -285,12 +290,12 @@ class TestAutoMode:
         mock_cache.get_status.return_value = {
             "DGS10": {
                 "cached": True,
-                "last_fetched": "2026-01-29T09:00:00+00:00",  # 1時間前
+                "last_fetched": one_hour_ago,  # 1時間前
                 "data_points": 100,
             },
             "GDP": {
                 "cached": True,
-                "last_fetched": "2026-01-27T10:00:00+00:00",  # 2日前
+                "last_fetched": two_days_ago,  # 2日前
                 "data_points": 50,
             },
             "UNRATE": {

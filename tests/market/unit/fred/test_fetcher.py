@@ -489,22 +489,22 @@ class TestPresets:
         presets = FREDFetcher.load_presets()
 
         assert presets is not None
-        assert "Treasury Yields" in presets
-        assert "Economic Indicators" in presets
+        assert "Interest Rates" in presets
+        assert "Prices" in presets
 
     def test_正常系_カテゴリ一覧を取得(self) -> None:
         """カテゴリ一覧を取得できることを確認。"""
         FREDFetcher.load_presets()
         categories = FREDFetcher.get_preset_categories()
 
-        assert "Treasury Yields" in categories
-        assert "Credit Spreads" in categories
-        assert "Labor Market" in categories
+        assert "Interest Rates" in categories
+        assert "Yield Spread" in categories
+        assert "Population, Employment, & Labor Force" in categories
 
     def test_正常系_カテゴリ別シンボル取得(self) -> None:
         """カテゴリ別にシンボルを取得できることを確認。"""
         FREDFetcher.load_presets()
-        symbols = FREDFetcher.get_preset_symbols("Treasury Yields")
+        symbols = FREDFetcher.get_preset_symbols("Interest Rates")
 
         assert "DGS10" in symbols
         assert "DGS2" in symbols
@@ -517,7 +517,7 @@ class TestPresets:
 
         assert len(all_symbols) > 10
         assert "DGS10" in all_symbols
-        assert "GDP" in all_symbols
+        assert "GDPC1" in all_symbols  # Real GDP (US)
         assert "UNRATE" in all_symbols
 
     def test_正常系_シリーズ情報取得(self) -> None:
@@ -526,9 +526,10 @@ class TestPresets:
         info = FREDFetcher.get_preset_info("DGS10")
 
         assert info is not None
-        assert info["name_ja"] == "10年国債利回り"
-        assert info["category"] == "interest_rate"
-        assert info["category_name"] == "Treasury Yields"
+        assert info["name_ja"] == "米国債10年物利回り"
+        assert info["category_name"] == "Interest Rates"
+        assert "frequency" in info
+        assert "units" in info
 
     def test_正常系_存在しないシリーズでNone(self) -> None:
         """存在しないシリーズIDでNoneが返ることを確認。"""
