@@ -1,6 +1,6 @@
 """Integration tests for NewsWorkflowOrchestrator.
 
-E2E tests with mocked external dependencies (Anthropic API, gh CLI, HTTP requests).
+E2E tests with mocked external dependencies (Claude Agent SDK, gh CLI, HTTP requests).
 Tests the complete pipeline: Collector -> Extractor -> Summarizer -> Publisher.
 
 Following the test specification from P6-005:
