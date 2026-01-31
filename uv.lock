@@ -996,6 +996,7 @@ scheduler = [
 [package.dev-dependencies]
 dev = [
     { name = "apscheduler" },
+    { name = "claude-agent-sdk" },
     { name = "filelock" },
     { name = "hypothesis" },
     { name = "marimo" },
@@ -1070,6 +1071,7 @@ provides-extras = ["dev", "docs", "scheduler", "mcp", "cli", "automation"]
 [package.metadata.requires-dev]
 dev = [
     { name = "apscheduler", specifier = ">=3.11.2" },
+    { name = "claude-agent-sdk", specifier = ">=0.1.22" },
     { name = "filelock", specifier = ">=3.20.3" },
     { name = "hypothesis", specifier = ">=6.150.2" },
     { name = "marimo", specifier = ">=0.19.2" },
