@@ -378,3 +378,32 @@ class PresetApplyResult:
     skipped: int
     failed: int
     errors: list[str]
+
+
+@dataclass
+class FeedValidationResult:
+    """Result of feed content validation.
+
+    This class represents the result of validating feed content format.
+    Used by FeedParser._validate_feed_content() to return validation status.
+
+    Attributes
+    ----------
+    is_valid : bool
+        True if the content is valid RSS/Atom feed format
+    error : str | None
+        Error message describing why validation failed, None if valid
+
+    Examples
+    --------
+    >>> result = FeedValidationResult(is_valid=True, error=None)
+    >>> result.is_valid
+    True
+
+    >>> result = FeedValidationResult(is_valid=False, error="Empty feed content")
+    >>> result.error
+    'Empty feed content'
+    """
+
+    is_valid: bool
+    error: str | None

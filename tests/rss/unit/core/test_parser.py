@@ -284,3 +284,212 @@ class TestParseLogging:
 
         # Verify the method executed correctly
         assert len(items) == 2
+
+
+# Sample contents for validation testing
+PLAIN_TEXT_CONTENT = b"This is plain text, not XML or RSS/Atom feed."
+JSON_CONTENT = b'{"data": "This is JSON content"}'
+HTML_WITHOUT_FEED = b"""<!DOCTYPE html>
+<html>
+<head><title>Not a Feed</title></head>
+<body><p>This is just HTML, no RSS or Atom elements</p></body>
+</html>
+"""
+
+# XML that looks valid but has no RSS/Atom elements
+XML_NO_FEED_ELEMENTS = b"""<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <title>Just XML</title>
+    <content>This XML has no RSS or Atom elements</content>
+</document>
+"""
+
+
+class TestFeedContentValidation:
+    """Test _validate_feed_content method (P10-014).
+
+    These tests verify the enhanced feed format validation logic
+    that detects invalid feeds early with detailed error messages.
+    """
+
+    def test_正常系_有効なRSSフィードはvalid(self) -> None:
+        """有効なRSS 2.0フィードは検証をパスする。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(RSS_SAMPLE)
+
+        assert result.is_valid is True
+        assert result.error is None
+
+    def test_正常系_有効なAtomフィードはvalid(self) -> None:
+        """有効なAtomフィードは検証をパスする。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(ATOM_SAMPLE)
+
+        assert result.is_valid is True
+        assert result.error is None
+
+    def test_異常系_空コンテンツでinvalid(self) -> None:
+        """空のコンテンツは無効として検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(b"")
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "Empty" in result.error or "empty" in result.error.lower()
+
+    def test_異常系_空白のみコンテンツでinvalid(self) -> None:
+        """空白のみのコンテンツも無効として検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(b"   \n\t  ")
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "Empty" in result.error or "empty" in result.error.lower()
+
+    def test_異常系_プレーンテキストでinvalid(self) -> None:
+        """プレーンテキストは非XMLコンテンツとして検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(PLAIN_TEXT_CONTENT)
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "XML" in result.error
+
+    def test_異常系_JSONコンテンツでinvalid(self) -> None:
+        """JSONコンテンツは非XMLとして検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(JSON_CONTENT)
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "XML" in result.error
+
+    def test_異常系_RSS要素のないHTMLでinvalid(self) -> None:
+        """RSS/Atom要素のないHTMLは無効として検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(HTML_WITHOUT_FEED)
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "RSS" in result.error or "Atom" in result.error
+
+    def test_異常系_RSS要素のないXMLでinvalid(self) -> None:
+        """RSS/Atom要素のないXMLは無効として検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(XML_NO_FEED_ELEMENTS)
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "RSS" in result.error or "Atom" in result.error
+
+
+class TestFeedContentValidationWithContentType:
+    """Test _validate_feed_content with optional content_type parameter."""
+
+    def test_異常系_JSONのContentTypeでinvalid(self) -> None:
+        """application/json Content-Typeは無効として検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(
+            RSS_SAMPLE,
+            content_type="application/json",
+        )
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "Content-Type" in result.error
+
+    def test_正常系_XMLのContentTypeでvalid(self) -> None:
+        """application/xml Content-Typeは有効。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(
+            RSS_SAMPLE,
+            content_type="application/xml",
+        )
+
+        assert result.is_valid is True
+
+    def test_正常系_RSSのContentTypeでvalid(self) -> None:
+        """application/rss+xml Content-Typeは有効。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(
+            RSS_SAMPLE,
+            content_type="application/rss+xml",
+        )
+
+        assert result.is_valid is True
+
+    def test_正常系_AtomのContentTypeでvalid(self) -> None:
+        """application/atom+xml Content-Typeは有効。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(
+            ATOM_SAMPLE,
+            content_type="application/atom+xml",
+        )
+
+        assert result.is_valid is True
+
+    def test_正常系_TextXMLのContentTypeでvalid(self) -> None:
+        """text/xml Content-Typeは有効。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(
+            RSS_SAMPLE,
+            content_type="text/xml",
+        )
+
+        assert result.is_valid is True
+
+    def test_正常系_TextHTMLでRSS要素ありならvalid(self) -> None:
+        """text/html Content-Typeでもフィード要素があれば有効。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(
+            RSS_SAMPLE,
+            content_type="text/html",
+        )
+
+        assert result.is_valid is True
+
+    def test_正常系_ContentType未指定でvalid(self) -> None:
+        """Content-Type未指定の場合はコンテンツのみで判定。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(RSS_SAMPLE)
+
+        assert result.is_valid is True
+
+    def test_異常系_画像のContentTypeでinvalid(self) -> None:
+        """image/png Content-Typeは無効として検出される。"""
+        parser = FeedParser()
+        result = parser._validate_feed_content(
+            RSS_SAMPLE,
+            content_type="image/png",
+        )
+
+        assert result.is_valid is False
+        assert result.error is not None
+        assert "Content-Type" in result.error
+
+
+class TestFeedValidationResultType:
+    """Test FeedValidationResult type structure."""
+
+    def test_FeedValidationResult型が存在する(self) -> None:
+        """FeedValidationResult型がrss.typesからインポートできる。"""
+        from rss.types import FeedValidationResult
+
+        # 型が存在することを確認
+        assert FeedValidationResult is not None
+
+    def test_FeedValidationResultにis_validフィールドがある(self) -> None:
+        """FeedValidationResultにはis_validフィールドがある。"""
+        from rss.types import FeedValidationResult
+
+        result = FeedValidationResult(is_valid=True, error=None)
+        assert hasattr(result, "is_valid")
+        assert result.is_valid is True
+
+    def test_FeedValidationResultにerrorフィールドがある(self) -> None:
+        """FeedValidationResultにはerrorフィールドがある。"""
+        from rss.types import FeedValidationResult
+
+        result = FeedValidationResult(is_valid=False, error="Test error")
+        assert hasattr(result, "error")
+        assert result.error == "Test error"
