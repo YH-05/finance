@@ -4,8 +4,8 @@
 
 ## サマリー
 
-- **総タスク数**: 32
-- **フェーズ数**: 8
+- **総タスク数**: 41
+- **フェーズ数**: 9
 
 ## Phase 1: 基盤（11タスク）
 
@@ -93,6 +93,20 @@
 | P8-002 | CLAUDE.md 更新 | P8-001 | [P8-002](P8-002-claude-md.md) |
 | P8-003 | 既存ワークフローとの並行運用確認 | P8-002 | [P8-003](P8-003-parallel-operation.md) |
 
+## Phase 9: claude-agent-sdk 移行（9タスク）
+
+| ID | タスク | 依存 | ファイル |
+|----|--------|------|----------|
+| P9-001 | claude-agent-sdk インポート変更 | P4-005 | [P9-001](P9-001-sdk-imports.md) |
+| P9-002 | _call_claude_sdk メソッド実装 | P9-001 | [P9-002](P9-002-call-claude-sdk-method.md) |
+| P9-003 | summarize メソッドの更新 | P9-002 | [P9-003](P9-003-summarize-method-update.md) |
+| P9-004 | SDK エラーハンドリング実装 | P9-003 | [P9-004](P9-004-error-handling.md) |
+| P9-005 | Anthropic クライアント削除 | P9-004 | [P9-005](P9-005-remove-anthropic-client.md) |
+| P9-006 | テストのモック更新 | P9-005 | [P9-006](P9-006-test-mock-update.md) |
+| P9-007 | ローカル統合テスト | P9-006 | [P9-007](P9-007-local-integration-test.md) |
+| P9-008 | CI/CD 設定確認と更新 | P9-007 | [P9-008](P9-008-cicd-config.md) |
+| P9-009 | Phase 9 テスト完了確認 | P9-006,P9-007,P9-008 | [P9-009](P9-009-phase9-tests.md) |
+
 ## 依存関係グラフ
 
 ```mermaid
@@ -138,6 +152,12 @@ graph TD
     subgraph Phase8[Phase 8: ドキュメント]
         P7-003 --> P8-001 --> P8-002 --> P8-003
     end
+
+    subgraph Phase9[Phase 9: claude-agent-sdk 移行]
+        P4-005 --> P9-001 --> P9-002 --> P9-003 --> P9-004 --> P9-005 --> P9-006
+        P9-006 --> P9-007 --> P9-008
+        P9-006 & P9-007 & P9-008 --> P9-009
+    end
 ```
 
 ## 並行開発可能なタスク
@@ -150,3 +170,31 @@ Phase 1 完了後、以下のタスクグループは並行開発可能：
 - **グループD**: Phase 5（Publisher）
 
 Phase 6 以降は順次実行が必要。
+
+Phase 9 は Phase 4 の P4-005 完了後に単独で実行可能（Phase 4 の実装を claude-agent-sdk に置き換える）。
+
+## Phase 9 の目的
+
+現在の `src/news/summarizer.py` は Anthropic Python SDK（`from anthropic import Anthropic`）を使用しており、API キーによる従量課金が必要。
+
+Phase 9 では claude-agent-sdk への移行により：
+
+1. **サブスクリプション認証**: Claude Pro/Max サブスクリプションで API キー不要
+2. **ローカル認証**: `claude auth login` でブラウザ認証（従量課金なし）
+3. **CI/CD 対応**: 環境変数 `ANTHROPIC_API_KEY` で認証（従量課金）
+
+### 認証方式
+
+| 環境 | 認証方式 | 設定 | 課金 |
+|---|---|---|---|
+| **ローカル** | サブスクリプション認証 | `claude auth login` | サブスクリプション料金に含まれる |
+| CI/CD | API キー認証 | `ANTHROPIC_API_KEY` 環境変数 | 従量課金 |
+
+**重要**: ローカル環境では `ANTHROPIC_API_KEY` を設定しないこと。設定するとサブスクリプションではなく API キーが優先され、従量課金が発生する。
+
+## 参照
+
+- [Using Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan)
+- [Claude Agent SDK Python リファレンス](https://platform.claude.com/docs/en/agent-sdk/python)
+- [GitHub: anthropics/claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)
+- [PyPI: claude-agent-sdk](https://pypi.org/project/claude-agent-sdk/)

@@ -768,12 +768,18 @@ uv add claude-agent-sdk
 
 - Python 3.10 以上
 - Node.js 18 以上
-- `claude` コマンドで事前認証済み
+- Claude Pro/Max サブスクリプション
 
 #### 認証方法
 
-1. **ローカル実行**: `claude` コマンドで認証（API キー不要）
-2. **CI/CD**: 環境変数 `ANTHROPIC_API_KEY` を設定
+| 環境 | 認証方式 | 設定 | 課金 |
+|---|---|---|---|
+| **ローカル** | サブスクリプション認証 | `claude auth login` | サブスクリプション料金に含まれる |
+| CI/CD | API キー認証 | `ANTHROPIC_API_KEY` 環境変数 | 従量課金 |
+
+**重要**: ローカル環境では `ANTHROPIC_API_KEY` を設定しないこと。設定するとサブスクリプションではなく API キーが優先され、従量課金が発生する。
+
+参照: [Using Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan)
 
 ### 実装計画
 
@@ -990,20 +996,23 @@ JSONのみを出力し、他のテキストは含めないでください。"""
         ...
 ```
 
-### タスクリスト
+### タスクリスト（9タスク）
 
-- [ ] `uv add claude-agent-sdk` で依存関係追加
-- [ ] `src/news/summarizer.py` を上記実装に書き換え
-- [ ] `_parse_response` メソッドは既存実装を流用
-- [ ] `summarize_batch` メソッドは既存実装を流用
-- [ ] テストファイル `tests/news/unit/test_summarizer.py` を更新
-    - [ ] `claude_agent_sdk` のモック追加
-    - [ ] `AssistantMessage`, `TextBlock` のモック
-- [ ] ローカル実行テスト（`claude` コマンドで認証済みの環境）
-- [ ] CI/CD 設定確認（`ANTHROPIC_API_KEY` 環境変数）
+| ID | タスク | 依存 | ファイル |
+|----|--------|------|----------|
+| P9-001 | claude-agent-sdk インポート変更 | P4-005 | [P9-001](tasks/P9-001-sdk-imports.md) |
+| P9-002 | _call_claude_sdk メソッド実装 | P9-001 | [P9-002](tasks/P9-002-call-claude-sdk-method.md) |
+| P9-003 | summarize メソッドの更新 | P9-002 | [P9-003](tasks/P9-003-summarize-method-update.md) |
+| P9-004 | SDK エラーハンドリング実装 | P9-003 | [P9-004](tasks/P9-004-error-handling.md) |
+| P9-005 | Anthropic クライアント削除 | P9-004 | [P9-005](tasks/P9-005-remove-anthropic-client.md) |
+| P9-006 | テストのモック更新 | P9-005 | [P9-006](tasks/P9-006-test-mock-update.md) |
+| P9-007 | ローカル統合テスト | P9-006 | [P9-007](tasks/P9-007-local-integration-test.md) |
+| P9-008 | CI/CD 設定確認と更新 | P9-007 | [P9-008](tasks/P9-008-cicd-config.md) |
+| P9-009 | Phase 9 テスト完了確認 | P9-006,P9-007,P9-008 | [P9-009](tasks/P9-009-phase9-tests.md) |
 
 ### 参考資料
 
-- [Claude Agent SDK クイックスタート](https://platform.claude.com/docs/ja/agent-sdk/quickstart)
-- [Agent SDK Python リファレンス](https://platform.claude.com/docs/ja/agent-sdk/python)
+- [Claude Agent SDK Python リファレンス](https://platform.claude.com/docs/en/agent-sdk/python)
+- [GitHub: anthropics/claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)
+- [PyPI: claude-agent-sdk](https://pypi.org/project/claude-agent-sdk/)
 - 既存実装: `src/news/processors/agent_base.py`
