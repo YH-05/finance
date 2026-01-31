@@ -852,6 +852,77 @@ class TestAddToProject:
             # Should be called only 2 times: item-add, item-edit (status only)
             assert mock_run.call_count == 2
 
+    @pytest.mark.asyncio
+    async def test_異常系_item_id空でフィールド設定をスキップ(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should skip field updates when item_id is empty.
+
+        When gh project item-add returns an empty item_id (e.g., when the issue
+        already exists in the project), the method should:
+        1. Log a warning with issue_number and stderr
+        2. Skip all subsequent field update operations
+        3. Not raise any exception (graceful degradation)
+        """
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            # item-add returns empty stdout (empty item_id)
+            mock_result = MagicMock()
+            mock_result.stdout = ""  # Empty item_id
+            mock_result.stderr = "Already exists"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            # Should not raise any exception
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Should only call item-add, NOT item-edit (no field updates)
+            assert mock_run.call_count == 1
+
+            # Verify it was item-add that was called
+            first_call_args = mock_run.call_args_list[0][0][0]
+            assert first_call_args[0] == "gh"
+            assert first_call_args[1] == "project"
+            assert first_call_args[2] == "item-add"
+
+    @pytest.mark.asyncio
+    async def test_異常系_item_id空で警告ログを出力(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should log warning when item_id is empty."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with (
+            patch("news.publisher.subprocess.run") as mock_run,
+            patch("news.publisher.logger") as mock_logger,
+        ):
+            mock_result = MagicMock()
+            mock_result.stdout = ""  # Empty item_id
+            mock_result.stderr = "Already exists in project"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Verify warning was logged with required information
+            mock_logger.warning.assert_called_once()
+            call_kwargs = mock_logger.warning.call_args[1]
+
+            # Should include issue_number and stderr
+            assert "issue_number" in call_kwargs
+            assert call_kwargs["issue_number"] == 123
+            assert "stderr" in call_kwargs
+            assert call_kwargs["stderr"] == "Already exists in project"
+
 
 class TestPublishWithIssueCreation:
     """Tests for publish() method with Issue creation (P5-004)."""

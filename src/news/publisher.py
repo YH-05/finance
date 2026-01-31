@@ -583,6 +583,16 @@ class Publisher:
 
         item_id = add_result.stdout.strip()
 
+        # item_id が空の場合はフィールド設定をスキップ（graceful degradation）
+        if not item_id:
+            logger.warning(
+                "Empty item_id from project item-add, skipping field updates",
+                issue_number=issue_number,
+                issue_url=issue_url,
+                stderr=add_result.stderr,
+            )
+            return
+
         logger.debug(
             "Added issue to project",
             issue_number=issue_number,
