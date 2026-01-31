@@ -311,6 +311,75 @@ JSONのみを出力し、他のテキストは含めないでください。"""
             "Use _call_claude_sdk (to be implemented in P9-002) instead."
         )
 
+    async def _call_claude_sdk(self, prompt: str) -> str:
+        """Claude Agent SDK を使用して要約を取得。
+
+        Parameters
+        ----------
+        prompt : str
+            要約プロンプト。
+
+        Returns
+        -------
+        str
+            Claude からのレスポンステキスト。
+
+        Raises
+        ------
+        RuntimeError
+            claude-agent-sdk がインストールされていない場合。
+
+        Notes
+        -----
+        - 遅延インポートで claude-agent-sdk を読み込む
+        - query() 関数を使用してストリーミングでレスポンスを受信
+        - AssistantMessage の TextBlock からテキストを抽出して結合
+        - allowed_tools=[] でツール使用を無効化（テキスト生成のみ）
+        - max_turns=1 で1ターンのみの対話
+        """
+        try:
+            from claude_agent_sdk import (  # type: ignore[import-not-found]
+                AssistantMessage,
+                ClaudeAgentOptions,
+                TextBlock,
+                query,
+            )
+        except ImportError as e:
+            logger.error(
+                "Claude Agent SDK not installed",
+                error=str(e),
+                hint="Run: uv add claude-agent-sdk",
+            )
+            raise RuntimeError(
+                "claude-agent-sdk is not installed. "
+                "Install with: uv add claude-agent-sdk"
+            ) from e
+
+        options = ClaudeAgentOptions(
+            allowed_tools=[],  # ツール不要（テキスト生成のみ）
+            max_turns=1,  # 1ターンのみ
+        )
+
+        logger.debug(
+            "Calling Claude Agent SDK",
+            prompt_length=len(prompt),
+        )
+
+        response_parts: list[str] = []
+        async for message in query(prompt=prompt, options=options):
+            if isinstance(message, AssistantMessage):
+                for block in message.content:
+                    if isinstance(block, TextBlock):
+                        response_parts.append(block.text)
+
+        result = "".join(response_parts)
+        logger.debug(
+            "Claude Agent SDK response received",
+            response_length=len(result),
+        )
+
+        return result
+
     def _parse_response(self, response_text: str) -> StructuredSummary:
         """Claude のレスポンスを StructuredSummary にパースする。
 

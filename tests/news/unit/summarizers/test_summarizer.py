@@ -5,12 +5,17 @@ Tests for the basic Summarizer class structure including:
 - summarize() method signature and behavior with no body text
 - summarize_batch() method signature
 - Claude SDK integration (P4-002)
+- Claude Agent SDK integration (P9-002)
 
 Following TDD approach: Red -> Green -> Refactor
 """
 
 from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from typing import TYPE_CHECKING, Any
+from unittest.mock import AsyncMock, MagicMock, patch
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
 
 import pytest
 
@@ -957,3 +962,320 @@ class TestSummarizerRetry:
             assert result.summarization_status == SummarizationStatus.SKIPPED
             # Should not call Claude API at all
             mock_client.messages.create.assert_not_called()
+
+
+class TestCallClaudeSdk:
+    """Tests for _call_claude_sdk method (P9-002).
+
+    Tests for claude-agent-sdk integration:
+    - query() function usage
+    - ClaudeAgentOptions configuration
+    - AssistantMessage and TextBlock text extraction
+    - ImportError handling for SDK not installed
+    - Exception propagation from query()
+    """
+
+    @pytest.fixture
+    def summarizer_config(self) -> NewsWorkflowConfig:
+        """Create a config for _call_claude_sdk tests."""
+        return NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"market": "index"},
+            github_status_ids={"index": "test-id"},
+            rss={"presets_file": "test.json"},  # type: ignore[arg-type]
+            summarization=SummarizationConfig(
+                prompt_template="Summarize: {body}",
+                max_retries=3,
+                timeout_seconds=60,
+            ),
+            github={  # type: ignore[arg-type]
+                "project_number": 15,
+                "project_id": "PVT_test",
+                "status_field_id": "PVTSSF_test",
+                "published_date_field_id": "PVTF_test",
+                "repository": "owner/repo",
+            },
+            output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        )
+
+    @pytest.mark.asyncio
+    async def test_正常系_call_claude_sdkが文字列を返す(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should return string from query()."""
+        from news.summarizer import Summarizer
+
+        # Create mock AssistantMessage and TextBlock
+        mock_text_block = MagicMock()
+        mock_text_block.text = "テスト要約"
+
+        mock_message = MagicMock()
+        mock_message.__class__.__name__ = "AssistantMessage"
+        mock_message.content = [mock_text_block]
+
+        # Create async generator for query()
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = type(mock_message)
+            mock_sdk.TextBlock = type(mock_text_block)
+
+            summarizer = Summarizer(config=summarizer_config)
+            result = await summarizer._call_claude_sdk("テストプロンプト")
+
+            assert result == "テスト要約"
+
+    @pytest.mark.asyncio
+    async def test_正常系_call_claude_sdkでClaudeAgentOptionsが正しく設定される(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should configure ClaudeAgentOptions with allowed_tools=[] and max_turns=1."""
+        from news.summarizer import Summarizer
+
+        mock_text_block = MagicMock()
+        mock_text_block.text = "要約"
+
+        mock_message = MagicMock()
+        mock_message.__class__.__name__ = "AssistantMessage"
+        mock_message.content = [mock_text_block]
+
+        captured_options: list[Any] = []
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            if "options" in kwargs:
+                captured_options.append(kwargs["options"])
+            yield mock_message
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock(return_value=MagicMock())
+            mock_sdk.AssistantMessage = type(mock_message)
+            mock_sdk.TextBlock = type(mock_text_block)
+
+            summarizer = Summarizer(config=summarizer_config)
+            await summarizer._call_claude_sdk("テスト")
+
+            # Verify ClaudeAgentOptions was called with correct arguments
+            mock_sdk.ClaudeAgentOptions.assert_called_once_with(
+                allowed_tools=[],
+                max_turns=1,
+            )
+
+    @pytest.mark.asyncio
+    async def test_正常系_call_claude_sdkで複数TextBlockを結合(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should concatenate text from multiple TextBlocks."""
+        from news.summarizer import Summarizer
+
+        # Create a common base class for TextBlock
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(self, content: list[MockTextBlock]) -> None:
+                self.content = content
+
+        mock_text_block1 = MockTextBlock("最初の")
+        mock_text_block2 = MockTextBlock("テキスト")
+        mock_message = MockAssistantMessage([mock_text_block1, mock_text_block2])
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+
+            summarizer = Summarizer(config=summarizer_config)
+            result = await summarizer._call_claude_sdk("テスト")
+
+            assert result == "最初のテキスト"
+
+    @pytest.mark.asyncio
+    async def test_正常系_call_claude_sdkで複数メッセージを結合(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should concatenate text from multiple AssistantMessages."""
+        from news.summarizer import Summarizer
+
+        # Create common base classes
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(self, content: list[MockTextBlock]) -> None:
+                self.content = content
+
+        mock_text_block1 = MockTextBlock("メッセージ1")
+        mock_text_block2 = MockTextBlock("メッセージ2")
+        mock_message1 = MockAssistantMessage([mock_text_block1])
+        mock_message2 = MockAssistantMessage([mock_text_block2])
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message1
+            yield mock_message2
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+
+            summarizer = Summarizer(config=summarizer_config)
+            result = await summarizer._call_claude_sdk("テスト")
+
+            assert result == "メッセージ1メッセージ2"
+
+    @pytest.mark.asyncio
+    async def test_異常系_call_claude_sdkでSDK未インストール時RuntimeError(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should raise RuntimeError when SDK is not installed."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=summarizer_config)
+
+        # Mock ImportError by removing claude_agent_sdk from sys.modules
+        with (
+            patch.dict("sys.modules", {"claude_agent_sdk": None}),
+            pytest.raises(RuntimeError, match="claude-agent-sdk is not installed"),
+        ):
+            await summarizer._call_claude_sdk("テスト")
+
+    @pytest.mark.asyncio
+    async def test_異常系_call_claude_sdkでquery失敗時例外を伝播(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should propagate exceptions from query()."""
+        from news.summarizer import Summarizer
+
+        async def mock_query_with_error(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            raise Exception("SDK Error")
+            yield  # Make this an async generator
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_with_error
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MagicMock
+            mock_sdk.TextBlock = MagicMock
+
+            summarizer = Summarizer(config=summarizer_config)
+
+            with pytest.raises(Exception, match="SDK Error"):
+                await summarizer._call_claude_sdk("テスト")
+
+    @pytest.mark.asyncio
+    async def test_正常系_call_claude_sdkで非AssistantMessageは無視(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should ignore non-AssistantMessage types."""
+        from news.summarizer import Summarizer
+
+        # Create different message types
+        mock_text_block = MagicMock()
+        mock_text_block.text = "テキスト"
+
+        mock_assistant_message = MagicMock()
+        mock_assistant_message.__class__.__name__ = "AssistantMessage"
+        mock_assistant_message.content = [mock_text_block]
+
+        mock_result_message = MagicMock()
+        mock_result_message.__class__.__name__ = "ResultMessage"
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_result_message  # Should be ignored
+            yield mock_assistant_message  # Should be processed
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = type(mock_assistant_message)
+            mock_sdk.TextBlock = type(mock_text_block)
+
+            summarizer = Summarizer(config=summarizer_config)
+            result = await summarizer._call_claude_sdk("テスト")
+
+            assert result == "テキスト"
+
+    @pytest.mark.asyncio
+    async def test_正常系_call_claude_sdkで非TextBlockは無視(
+        self,
+        summarizer_config: NewsWorkflowConfig,
+    ) -> None:
+        """_call_claude_sdk should ignore non-TextBlock content."""
+        from news.summarizer import Summarizer
+
+        mock_text_block = MagicMock()
+        mock_text_block.text = "テキスト"
+
+        mock_tool_use_block = MagicMock()
+        mock_tool_use_block.__class__.__name__ = "ToolUseBlock"
+
+        mock_message = MagicMock()
+        mock_message.__class__.__name__ = "AssistantMessage"
+        mock_message.content = [mock_tool_use_block, mock_text_block]
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = type(mock_message)
+            mock_sdk.TextBlock = type(mock_text_block)
+
+            summarizer = Summarizer(config=summarizer_config)
+            result = await summarizer._call_claude_sdk("テスト")
+
+            # Only TextBlock should be processed
+            assert result == "テキスト"
