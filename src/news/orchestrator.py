@@ -112,6 +112,27 @@ class NewsWorkflowOrchestrator:
             summarization_concurrency=config.summarization.concurrency,
         )
 
+    def _log_stage_start(self, stage: str, description: str) -> None:
+        """Log the start of a workflow stage with visual separator."""
+        print(f"\n{'=' * 60}")
+        print(f"[{stage}] {description}")
+        print(f"{'=' * 60}")
+
+    def _log_progress(
+        self, current: int, total: int, message: str, *, is_error: bool = False
+    ) -> None:
+        """Log progress with count indicator."""
+        prefix = "  ERROR" if is_error else "  "
+        print(f"{prefix}[{current}/{total}] {message}")
+
+    def _log_stage_complete(
+        self, stage: str, success: int, total: int, *, extra: str = ""
+    ) -> None:
+        """Log stage completion with success rate."""
+        rate = (success / total * 100) if total > 0 else 0
+        extra_str = f" {extra}" if extra else ""
+        print(f"  -> {stage}完了: {success}/{total} ({rate:.0f}%){extra_str}")
+
     async def run(
         self,
         statuses: list[str] | None = None,
@@ -152,74 +173,94 @@ class NewsWorkflowOrchestrator:
         >>> print(f"Would publish: {result.total_summarized} articles")
         """
         started_at = datetime.now(timezone.utc)
-        logger.info(
-            "Workflow started",
-            statuses=statuses,
-            max_articles=max_articles,
-            dry_run=dry_run,
-        )
+
+        # Show workflow configuration
+        mode_str = "[DRY-RUN] " if dry_run else ""
+        status_str = ", ".join(statuses) if statuses else "全て"
+        limit_str = str(max_articles) if max_articles else "無制限"
+        print(f"\n{mode_str}ニュース収集ワークフロー開始")
+        print(f"  対象ステータス: {status_str}")
+        print(f"  最大記事数: {limit_str}")
 
         # 1. Collect articles from RSS feeds
-        logger.info("Collecting articles from RSS feeds...")
+        self._log_stage_start("1/4", "RSSフィードから記事を収集")
         collected = await self._collector.collect(
             max_age_hours=self._config.filtering.max_age_hours
         )
-        logger.info("Collected articles", count=len(collected))
+        print(f"  収集完了: {len(collected)}件")
 
         # Apply status filtering
         if statuses:
+            before_count = len(collected)
             collected = self._filter_by_status(collected, statuses)
-            logger.info("Filtered by status", count=len(collected), statuses=statuses)
+            print(f"  ステータスフィルタ適用: {before_count} -> {len(collected)}件")
 
         # Apply max_articles limit
-        if max_articles:
+        if max_articles and len(collected) > max_articles:
             collected = collected[:max_articles]
-            logger.info("Applied max_articles limit", count=len(collected))
+            print(f"  記事数制限適用: {len(collected)}件")
+
+        if not collected:
+            print("  -> 処理対象の記事がありません")
+            finished_at = datetime.now(timezone.utc)
+            return self._build_empty_result(started_at, finished_at)
 
         # 2. Extract body text from articles
-        logger.info("Extracting article body text...")
-        extracted = await self._extract_batch(collected)
+        self._log_stage_start("2/4", "記事本文を抽出")
+        extracted = await self._extract_batch_with_progress(collected)
         extracted_success = [
             e for e in extracted if e.extraction_status == ExtractionStatus.SUCCESS
         ]
-        logger.info(
-            "Extracted articles",
-            success=len(extracted_success),
-            total=len(extracted),
-        )
+        self._log_stage_complete("抽出", len(extracted_success), len(extracted))
+
+        if not extracted_success:
+            print("  -> 抽出成功した記事がありません")
+            finished_at = datetime.now(timezone.utc)
+            return self._build_result(
+                collected=collected,
+                extracted=extracted,
+                summarized=[],
+                published=[],
+                started_at=started_at,
+                finished_at=finished_at,
+            )
 
         # 3. Summarize articles with AI
-        logger.info("Summarizing articles with AI...")
-        summarized = await self._summarizer.summarize_batch(
-            extracted_success,
-            concurrency=self._config.summarization.concurrency,
-        )
+        self._log_stage_start("3/4", "AI要約を生成")
+        summarized = await self._summarize_batch_with_progress(extracted_success)
         summarized_success = [
             s
             for s in summarized
             if s.summarization_status == SummarizationStatus.SUCCESS
         ]
-        logger.info(
-            "Summarized articles",
-            success=len(summarized_success),
-            total=len(summarized),
-        )
+        self._log_stage_complete("要約", len(summarized_success), len(summarized))
+
+        if not summarized_success:
+            print("  -> 要約成功した記事がありません")
+            finished_at = datetime.now(timezone.utc)
+            return self._build_result(
+                collected=collected,
+                extracted=extracted,
+                summarized=summarized,
+                published=[],
+                started_at=started_at,
+                finished_at=finished_at,
+            )
 
         # 4. Publish articles to GitHub Issues
-        logger.info("Publishing articles to GitHub Issues...")
-        published = await self._publisher.publish_batch(
-            summarized_success,
-            dry_run=dry_run,
+        stage_desc = (
+            "GitHub Issueを作成" if not dry_run else "GitHub Issue作成 (dry-run)"
         )
-        logger.info(
-            "Published articles",
-            success=sum(
-                1
-                for p in published
-                if p.publication_status == PublicationStatus.SUCCESS
-            ),
-            total=len(published),
+        self._log_stage_start("4/4", stage_desc)
+        published = await self._publish_batch_with_progress(summarized_success, dry_run)
+        success_count = sum(
+            1 for p in published if p.publication_status == PublicationStatus.SUCCESS
         )
+        duplicate_count = sum(
+            1 for p in published if p.publication_status == PublicationStatus.DUPLICATE
+        )
+        extra = f"(重複: {duplicate_count}件)" if duplicate_count > 0 else ""
+        self._log_stage_complete("公開", success_count, len(published), extra=extra)
 
         finished_at = datetime.now(timezone.utc)
 
@@ -236,17 +277,134 @@ class NewsWorkflowOrchestrator:
         # Save result to JSON file
         self._save_result(result)
 
-        logger.info(
-            "Workflow completed",
-            total_collected=result.total_collected,
-            total_extracted=result.total_extracted,
-            total_summarized=result.total_summarized,
-            total_published=result.total_published,
-            total_duplicates=result.total_duplicates,
-            elapsed_seconds=result.elapsed_seconds,
-        )
+        # Final summary
+        elapsed = result.elapsed_seconds
+        print(f"\n{'=' * 60}")
+        print("ワークフロー完了")
+        print(f"{'=' * 60}")
+        print(f"  収集: {result.total_collected}件")
+        print(f"  抽出: {result.total_extracted}件")
+        print(f"  要約: {result.total_summarized}件")
+        print(f"  公開: {result.total_published}件")
+        if result.total_duplicates > 0:
+            print(f"  重複: {result.total_duplicates}件")
+        print(f"  処理時間: {elapsed:.1f}秒")
 
         return result
+
+    async def _extract_batch_with_progress(
+        self,
+        articles: list[CollectedArticle],
+    ) -> list[ExtractedArticle]:
+        """Extract body text from articles with progress logging."""
+        results: list[ExtractedArticle] = []
+        total = len(articles)
+        for i, article in enumerate(articles, 1):
+            result = await self._extractor.extract(article)
+            title = (
+                article.title[:40] + "..." if len(article.title) > 40 else article.title
+            )
+            if result.extraction_status == ExtractionStatus.SUCCESS:
+                self._log_progress(i, total, title)
+            else:
+                self._log_progress(
+                    i, total, f"{title} - {result.error_message}", is_error=True
+                )
+                logger.error(
+                    "Extraction failed",
+                    url=str(article.url),
+                    error=result.error_message,
+                )
+            results.append(result)
+        return results
+
+    async def _summarize_batch_with_progress(
+        self,
+        articles: list[ExtractedArticle],
+    ) -> list[SummarizedArticle]:
+        """Summarize articles with progress logging."""
+        results: list[SummarizedArticle] = []
+        total = len(articles)
+        concurrency = self._config.summarization.concurrency
+
+        # Process in batches for concurrency
+        for batch_start in range(0, total, concurrency):
+            batch_end = min(batch_start + concurrency, total)
+            batch = articles[batch_start:batch_end]
+
+            batch_results = await self._summarizer.summarize_batch(
+                batch, concurrency=concurrency
+            )
+
+            for i, result in enumerate(batch_results):
+                idx = batch_start + i + 1
+                title = result.extracted.collected.title
+                title = title[:40] + "..." if len(title) > 40 else title
+                if result.summarization_status == SummarizationStatus.SUCCESS:
+                    self._log_progress(idx, total, title)
+                else:
+                    self._log_progress(
+                        idx, total, f"{title} - {result.error_message}", is_error=True
+                    )
+                    logger.error(
+                        "Summarization failed",
+                        url=str(result.extracted.collected.url),
+                        error=result.error_message,
+                    )
+                results.append(result)
+
+        return results
+
+    async def _publish_batch_with_progress(
+        self,
+        articles: list[SummarizedArticle],
+        dry_run: bool,
+    ) -> list[PublishedArticle]:
+        """Publish articles with progress logging."""
+        published = await self._publisher.publish_batch(articles, dry_run=dry_run)
+        total = len(published)
+
+        for i, result in enumerate(published, 1):
+            title = result.summarized.extracted.collected.title
+            title = title[:40] + "..." if len(title) > 40 else title
+
+            if result.publication_status == PublicationStatus.SUCCESS:
+                issue_info = f"#{result.issue_number}" if result.issue_number else ""
+                self._log_progress(i, total, f"{title} {issue_info}")
+            elif result.publication_status == PublicationStatus.DUPLICATE:
+                self._log_progress(i, total, f"{title} (重複スキップ)")
+            else:
+                self._log_progress(
+                    i, total, f"{title} - {result.error_message}", is_error=True
+                )
+                logger.error(
+                    "Publication failed",
+                    url=str(result.summarized.extracted.collected.url),
+                    error=result.error_message,
+                )
+
+        return published
+
+    def _build_empty_result(
+        self,
+        started_at: datetime,
+        finished_at: datetime,
+    ) -> WorkflowResult:
+        """Build an empty WorkflowResult when no articles to process."""
+        return WorkflowResult(
+            total_collected=0,
+            total_extracted=0,
+            total_summarized=0,
+            total_published=0,
+            total_duplicates=0,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started_at,
+            finished_at=finished_at,
+            elapsed_seconds=(finished_at - started_at).total_seconds(),
+            published_articles=[],
+        )
 
     def _filter_by_status(
         self,
@@ -275,28 +433,6 @@ class NewsWorkflowOrchestrator:
             if status in statuses:
                 result.append(article)
         return result
-
-    async def _extract_batch(
-        self,
-        articles: list[CollectedArticle],
-    ) -> list[ExtractedArticle]:
-        """Extract body text from a batch of articles.
-
-        Parameters
-        ----------
-        articles : list[CollectedArticle]
-            Articles to extract.
-
-        Returns
-        -------
-        list[ExtractedArticle]
-            Extraction results.
-        """
-        results: list[ExtractedArticle] = []
-        for article in articles:
-            result = await self._extractor.extract(article)
-            results.append(result)
-        return results
 
     def _build_result(
         self,

@@ -10,9 +10,49 @@
 ## 主要機能
 
 - **市場データ取得・分析**: Yahoo Finance (yfinance) を使用した株価・為替・指標データの取得と分析
+- **金融ニュース自動収集**: RSSフィードからニュースを収集し、AI要約・GitHub Issue作成まで自動化
 - **チャート・グラフ生成**: 分析結果の可視化と図表作成
 - **記事生成支援**: 分析結果を元に記事下書きを生成
 - **データベースインフラ**: SQLite (OLTP) + DuckDB (OLAP) のデュアルデータベース構成
+
+## 📰 金融ニュース収集 CLI
+
+RSSフィードから金融ニュースを収集し、GitHub Projectに自動投稿するCLIツールです。
+
+### 基本コマンド
+
+```bash
+# 基本実行（全ステータス対象）
+uv run python -m news.scripts.finance_news_workflow
+
+# ドライラン（GitHub Issue作成をスキップ）
+uv run python -m news.scripts.finance_news_workflow --dry-run
+
+# 特定ステータスのみ収集
+uv run python -m news.scripts.finance_news_workflow --status index,stock
+
+# 記事数を制限
+uv run python -m news.scripts.finance_news_workflow --max-articles 10
+
+# 詳細ログ出力
+uv run python -m news.scripts.finance_news_workflow --verbose
+```
+
+### オプション一覧
+
+| オプション | 説明 | デフォルト |
+|-----------|------|-----------|
+| `--config` | 設定ファイルパス | `data/config/news-collection-config.yaml` |
+| `--dry-run` | Issue作成をスキップ | False |
+| `--status` | フィルタ対象ステータス（カンマ区切り） | 全て |
+| `--max-articles` | 処理する最大記事数 | 無制限 |
+| `--verbose`, `-v` | DEBUGレベルログ出力 | False |
+
+### 出力
+
+- **コンソール**: 処理結果サマリー（収集数、抽出数、要約数、公開数、重複数、経過時間）
+- **ログファイル**: `logs/news-workflow-{日付}.log`
+- **GitHub**: Project #15 にIssueとして投稿
 
 ## パッケージ構成
 

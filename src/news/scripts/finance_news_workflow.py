@@ -219,28 +219,53 @@ def parse_statuses(status_str: str | None) -> list[str] | None:
     return [s.strip() for s in status_str.split(",")]
 
 
-def print_result_summary(result: WorkflowResult) -> None:
-    """Print workflow result summary to stdout.
+def print_failure_summary(result: WorkflowResult) -> None:
+    """Print failure summary if any failures occurred.
 
     Parameters
     ----------
     result : WorkflowResult
-        The workflow execution result to print.
-
-    Examples
-    --------
-    >>> print_result_summary(result)
-    === Workflow Result ===
-    Collected: 10
-    ...
+        The workflow execution result.
     """
-    print("\n=== Workflow Result ===")
-    print(f"Collected: {result.total_collected}")
-    print(f"Extracted: {result.total_extracted}")
-    print(f"Summarized: {result.total_summarized}")
-    print(f"Published: {result.total_published}")
-    print(f"Duplicates: {result.total_duplicates}")
-    print(f"Elapsed: {result.elapsed_seconds:.1f}s")
+    total_failures = (
+        len(result.extraction_failures)
+        + len(result.summarization_failures)
+        + len(result.publication_failures)
+    )
+
+    if total_failures == 0:
+        return
+
+    print(f"\n{'=' * 60}")
+    print(f"失敗詳細 ({total_failures}件)")
+    print(f"{'=' * 60}")
+
+    if result.extraction_failures:
+        print(f"\n  [抽出失敗] {len(result.extraction_failures)}件")
+        for f in result.extraction_failures[:5]:  # Show first 5
+            title = f.title[:35] + "..." if len(f.title) > 35 else f.title
+            print(f"    - {title}")
+            print(f"      {f.error}")
+        if len(result.extraction_failures) > 5:
+            print(f"    ... 他 {len(result.extraction_failures) - 5}件")
+
+    if result.summarization_failures:
+        print(f"\n  [要約失敗] {len(result.summarization_failures)}件")
+        for f in result.summarization_failures[:5]:
+            title = f.title[:35] + "..." if len(f.title) > 35 else f.title
+            print(f"    - {title}")
+            print(f"      {f.error}")
+        if len(result.summarization_failures) > 5:
+            print(f"    ... 他 {len(result.summarization_failures) - 5}件")
+
+    if result.publication_failures:
+        print(f"\n  [公開失敗] {len(result.publication_failures)}件")
+        for f in result.publication_failures[:5]:
+            title = f.title[:35] + "..." if len(f.title) > 35 else f.title
+            print(f"    - {title}")
+            print(f"      {f.error}")
+        if len(result.publication_failures) > 5:
+            print(f"    ... 他 {len(result.publication_failures) - 5}件")
 
 
 async def run_workflow(
@@ -285,9 +310,10 @@ async def run_workflow(
             dry_run=dry_run,
         )
 
-        print_result_summary(result)
+        # Show failure details if any
+        print_failure_summary(result)
 
-        logger.info(
+        logger.debug(
             "Workflow completed successfully",
             total_collected=result.total_collected,
             total_published=result.total_published,
@@ -376,7 +402,7 @@ __all__ = [
     "create_parser",
     "main",
     "parse_statuses",
-    "print_result_summary",
+    "print_failure_summary",
     "run_workflow",
     "setup_logging",
 ]

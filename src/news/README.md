@@ -179,14 +179,48 @@ print(f"Published: {result.total_published}/{result.total_collected}")
 
 ### CLI実行
 
-```bash
-# ワークフロー実行
-uv run python -m news.scripts.finance_news_workflow \
-    --config data/config/news-collection-config.yaml \
-    --statuses index \
-    --max-articles 10
+#### ワークフロー実行
 
-# 収集のみ
+```bash
+# 基本実行（全ステータス対象）
+uv run python -m news.scripts.finance_news_workflow
+
+# ドライラン（GitHub Issue作成をスキップ）
+uv run python -m news.scripts.finance_news_workflow --dry-run
+
+# 特定ステータスのみ収集
+uv run python -m news.scripts.finance_news_workflow --status index,stock
+
+# 記事数を制限
+uv run python -m news.scripts.finance_news_workflow --max-articles 10
+
+# 詳細ログ出力
+uv run python -m news.scripts.finance_news_workflow --verbose
+
+# 設定ファイル指定
+uv run python -m news.scripts.finance_news_workflow \
+    --config data/config/news-collection-config.yaml
+```
+
+#### オプション一覧
+
+| オプション | 説明 | デフォルト |
+|-----------|------|-----------|
+| `--config` | 設定ファイルパス | `data/config/news-collection-config.yaml` |
+| `--dry-run` | Issue作成をスキップ | False |
+| `--status` | フィルタ対象ステータス（カンマ区切り） | 全て |
+| `--max-articles` | 処理する最大記事数 | 無制限 |
+| `--verbose`, `-v` | DEBUGレベルログ出力 | False |
+
+#### 出力
+
+- **コンソール**: 処理結果サマリー（収集数、抽出数、要約数、公開数、重複数、経過時間）
+- **ログファイル**: `logs/news-workflow-{日付}.log`
+- **GitHub**: Project #15 にIssueとして投稿
+
+#### 収集のみ
+
+```bash
 uv run python -m news collect --source yfinance --symbols ^GSPC ^DJI
 ```
 
