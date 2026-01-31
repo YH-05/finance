@@ -1,11 +1,21 @@
 """Summarizer for generating structured Japanese summaries of news articles.
 
-This module provides the Summarizer class that uses Anthropic SDK to generate
+This module provides the Summarizer class that uses Claude Agent SDK to generate
 structured 4-section Japanese summaries of news articles.
 
 The Summarizer works with ExtractedArticle inputs (articles that have undergone
 body text extraction) and produces SummarizedArticle outputs with structured
 summaries.
+
+Claude Agent SDK Types
+----------------------
+The following types from claude-agent-sdk are used in this module:
+
+- ``query`` : async function that returns an async iterator for streaming responses
+- ``ClaudeAgentOptions`` : Configuration options (system_prompt, max_turns, allowed_tools)
+- ``AssistantMessage`` : Response message from Claude containing content blocks
+- ``TextBlock`` : Text content block within an AssistantMessage
+- ``ResultMessage`` : Final result message with cost information
 
 Examples
 --------
@@ -25,7 +35,6 @@ import json
 import re
 from typing import TYPE_CHECKING
 
-from anthropic import Anthropic
 from pydantic import ValidationError
 
 from news.models import (
@@ -47,7 +56,7 @@ CLAUDE_MAX_TOKENS = 1024
 
 
 class Summarizer:
-    """Anthropic SDK を使用した構造化要約。
+    """Claude Agent SDK を使用した構造化要約。
 
     記事本文を分析し、4セクション構造の日本語要約を生成する。
 
@@ -63,8 +72,10 @@ class Summarizer:
         ワークフロー設定の参照。
     _prompt_template : str
         AI 要約に使用するプロンプトテンプレート。
-    _client : Anthropic
-        Anthropic API クライアント。
+    _max_retries : int
+        最大リトライ回数。
+    _timeout_seconds : int
+        タイムアウト秒数。
 
     Examples
     --------
@@ -79,7 +90,7 @@ class Summarizer:
     Notes
     -----
     - 本文抽出が失敗している記事（body_text が None）は SKIPPED ステータスで返す
-    - Anthropic SDK を使用して Claude API を呼び出す
+    - Claude Agent SDK を使用して Claude API を呼び出す（P9-002で実装）
     """
 
     def __init__(self, config: NewsWorkflowConfig) -> None:
@@ -94,7 +105,7 @@ class Summarizer:
         self._prompt_template = config.summarization.prompt_template
         self._max_retries = config.summarization.max_retries
         self._timeout_seconds = config.summarization.timeout_seconds
-        self._client = Anthropic()
+        # Note: Anthropic client removed - claude-agent-sdk uses query() function directly
 
         logger.debug(
             "Summarizer initialized",
@@ -235,6 +246,10 @@ class Summarizer:
     def _call_claude(self, article: ExtractedArticle) -> str:
         """Claude API を呼び出して要約を生成する。
 
+        .. deprecated::
+            This method uses the legacy Anthropic SDK and will be replaced
+            by ``_call_claude_sdk`` in P9-002 which uses claude-agent-sdk.
+
         Parameters
         ----------
         article : ExtractedArticle
@@ -244,6 +259,12 @@ class Summarizer:
         -------
         str
             Claude からの JSON レスポンス。
+
+        Raises
+        ------
+        RuntimeError
+            Anthropic SDK が削除されたため、このメソッドは現在動作しません。
+            P9-002 で _call_claude_sdk に置き換えられます。
 
         Notes
         -----
@@ -283,21 +304,12 @@ JSONのみを出力し、他のテキストは含めないでください。"""
             prompt_length=len(prompt),
         )
 
-        response = self._client.messages.create(
-            model=CLAUDE_MODEL,
-            max_tokens=CLAUDE_MAX_TOKENS,
-            messages=[{"role": "user", "content": prompt}],
+        # AIDEV-NOTE: Anthropic SDK removed in P9-001
+        # This method will be replaced by _call_claude_sdk in P9-002
+        raise NotImplementedError(
+            "Anthropic SDK has been removed. "
+            "Use _call_claude_sdk (to be implemented in P9-002) instead."
         )
-
-        response_text = response.content[0].text
-
-        logger.debug(
-            "Claude API response received",
-            article_url=str(collected.url),
-            response_length=len(response_text),
-        )
-
-        return response_text
 
     def _parse_response(self, response_text: str) -> StructuredSummary:
         """Claude のレスポンスを StructuredSummary にパースする。
