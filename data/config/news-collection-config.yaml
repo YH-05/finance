@@ -88,6 +88,14 @@ extraction:
   min_body_length: 200
   max_retries: 3
 
+  # Playwrightフォールバック設定
+  # httpxでコンテンツ取得できない場合にPlaywrightでJS実行後のDOMから抽出
+  playwright_fallback:
+    enabled: true
+    browser: "chromium"  # chromium, firefox, webkit
+    headless: true
+    timeout_seconds: 30
+
   # User-Agent ローテーション
   user_agent_rotation:
     enabled: true

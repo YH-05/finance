@@ -940,7 +940,6 @@ dependencies = [
     { name = "nbformat" },
     { name = "numpy" },
     { name = "pandas" },
-    { name = "playwright" },
     { name = "plotly" },
     { name = "pretty-errors" },
     { name = "protobuf" },
@@ -988,6 +987,9 @@ docs = [
 ]
 mcp = [
     { name = "mcp" },
+]
+playwright = [
+    { name = "playwright" },
 ]
 scheduler = [
     { name = "apscheduler" },
@@ -1037,7 +1039,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26.0" },
     { name = "pandas", specifier = ">=2.0.0,<4.0.0" },
     { name = "pip-audit", marker = "extra == 'dev'", specifier = ">=2.10.0" },
-    { name = "playwright", specifier = ">=1.49.0" },
+    { name = "playwright", marker = "extra == 'playwright'", specifier = ">=1.49.0" },
     { name = "plotly", specifier = ">=5.18.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.5.1" },
     { name = "pretty-errors" },
@@ -1066,7 +1068,7 @@ requires-dist = [
     { name = "utils", editable = "src/utils_core" },
     { name = "yfinance", specifier = ">=0.2.0" },
 ]
-provides-extras = ["dev", "docs", "scheduler", "mcp", "cli", "automation"]
+provides-extras = ["dev", "docs", "scheduler", "mcp", "cli", "playwright", "automation"]
 
 [package.metadata.requires-dev]
 dev = [
