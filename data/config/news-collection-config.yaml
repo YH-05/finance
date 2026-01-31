@@ -83,10 +83,36 @@ yfinance:
 
 # 本文抽出設定
 extraction:
-  concurrency: 5
-  timeout_seconds: 30
-  min_body_length: 200
-  max_retries: 3
+  concurrency: 5           # 並列抽出数（5-10が推奨）
+  timeout_seconds: 30      # 1記事あたりのタイムアウト
+  min_body_length: 200     # 最小本文長（短すぎる場合は失敗扱い）
+  max_retries: 3           # リトライ回数
+
+  # [Phase 10] Playwrightフォールバック設定
+  # trafilaturaでコンテンツ取得できない場合にPlaywrightでJS実行後のDOMから抽出
+  # 動的コンテンツやJavaScript依存のサイトに有効
+  playwright_fallback:
+    enabled: true            # true: フォールバック有効, false: trafilaturaのみ
+    browser: "chromium"      # chromium, firefox, webkit から選択
+    headless: true           # true: ヘッドレスモード（推奨）
+    timeout_seconds: 30      # Playwright固有のタイムアウト
+
+  # [Phase 10] User-Agent ローテーション
+  # ボット検出を回避するため、複数のUser-Agentをランダムに使用
+  # 各リクエストでリストからランダムに1つを選択
+  user_agent_rotation:
+    enabled: true            # true: ローテーション有効, false: デフォルトUA使用
+    user_agents:
+      # Chrome (Windows)
+      - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      # Chrome (macOS)
+      - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      # Firefox (Windows)
+      - "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0"
+      # Safari (macOS)
+      - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"
+      # Chrome (Linux)
+      - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 # 要約設定
 summarization:
@@ -121,6 +147,34 @@ github:
   repository: "YH-05/finance"
   duplicate_check_days: 7  # 重複チェック対象期間
   dry_run: false
+
+# ===========================================
+# [Phase 10] ドメインフィルタリング
+# ===========================================
+# HTTP 401/403エラーやコンテンツ抽出困難なサイトを
+# 事前にブロックすることで処理効率を向上
+
+# ブロックするドメイン（記事収集対象外）
+# サブドメイン（www.wsj.com等）も自動的にブロック対象
+blocked_domains:
+  # ペイウォール（HTTP 401: Unauthorized）
+  - wsj.com           # Wall Street Journal
+  - reuters.com       # Reuters
+  - ft.com            # Financial Times
+  - bloomberg.com     # Bloomberg
+  - barrons.com       # Barron's
+
+  # ボット検出（HTTP 403: Forbidden）
+  - seekingalpha.com  # Seeking Alpha
+
+  # その他（抽出困難なサイト）
+  - twitter.com       # X/Twitter（動的コンテンツ）
+  - x.com             # X（動的コンテンツ）
+
+# ドメインフィルタリング設定
+domain_filtering:
+  enabled: true        # true: フィルタリング有効, false: 全ドメイン許可
+  log_blocked: true    # true: ブロック時にログ出力（デバッグ用）
 
 # フィルタリング
 filtering:

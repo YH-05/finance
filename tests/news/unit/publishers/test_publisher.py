@@ -727,7 +727,10 @@ class TestAddToProject:
 
         publisher = Publisher(config=sample_config)
 
-        with patch("news.publisher.subprocess.run") as mock_run:
+        with (
+            patch.object(publisher, "_get_existing_project_item", return_value=None),
+            patch("news.publisher.subprocess.run") as mock_run,
+        ):
             mock_result = MagicMock()
             mock_result.stdout = "PVTI_test_item_id\n"
             mock_result.returncode = 0
@@ -851,6 +854,80 @@ class TestAddToProject:
 
             # Should be called only 2 times: item-add, item-edit (status only)
             assert mock_run.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_異常系_item_id空でフィールド設定をスキップ(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should skip field updates when item_id is empty.
+
+        When gh project item-add returns an empty item_id (e.g., when the issue
+        already exists in the project), the method should:
+        1. Log a warning with issue_number and stderr
+        2. Skip all subsequent field update operations
+        3. Not raise any exception (graceful degradation)
+        """
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with (
+            patch.object(publisher, "_get_existing_project_item", return_value=None),
+            patch("news.publisher.subprocess.run") as mock_run,
+        ):
+            # item-add returns empty stdout (empty item_id)
+            mock_result = MagicMock()
+            mock_result.stdout = ""  # Empty item_id
+            mock_result.stderr = "Already exists"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            # Should not raise any exception
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Should only call item-add, NOT item-edit (no field updates)
+            assert mock_run.call_count == 1
+
+            # Verify it was item-add that was called
+            first_call_args = mock_run.call_args_list[0][0][0]
+            assert first_call_args[0] == "gh"
+            assert first_call_args[1] == "project"
+            assert first_call_args[2] == "item-add"
+
+    @pytest.mark.asyncio
+    async def test_異常系_item_id空で警告ログを出力(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should log warning when item_id is empty."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with (
+            patch("news.publisher.subprocess.run") as mock_run,
+            patch("news.publisher.logger") as mock_logger,
+        ):
+            mock_result = MagicMock()
+            mock_result.stdout = ""  # Empty item_id
+            mock_result.stderr = "Already exists in project"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Verify warning was logged with required information
+            mock_logger.warning.assert_called_once()
+            call_kwargs = mock_logger.warning.call_args[1]
+
+            # Should include issue_number and stderr
+            assert "issue_number" in call_kwargs
+            assert call_kwargs["issue_number"] == 123
+            assert "stderr" in call_kwargs
+            assert call_kwargs["stderr"] == "Already exists in project"
 
 
 class TestPublishWithIssueCreation:
@@ -1432,3 +1509,263 @@ class TestPublishBatchDryRun:
             # But no Issue numbers
             assert results[0].issue_number is None
             assert results[1].issue_number is None
+
+
+class TestGetExistingProjectItem:
+    """Tests for _get_existing_project_item() method (P10-004).
+
+    This method searches for an existing Project Item by Issue URL
+    and returns its item_id if found.
+    """
+
+    @pytest.mark.asyncio
+    async def test_正常系_既存Itemがある場合item_idを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_project_item should return item_id when Issue exists in Project."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+        issue_url = "https://github.com/YH-05/finance/issues/123"
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.stdout = "PVTI_xxx\n"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            item_id = await publisher._get_existing_project_item(issue_url)
+
+            assert item_id == "PVTI_xxx"
+
+    @pytest.mark.asyncio
+    async def test_正常系_既存Itemがない場合Noneを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_project_item should return None when Issue not in Project."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+        issue_url = "https://github.com/YH-05/finance/issues/999"
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.stdout = ""  # Empty output means no match
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            item_id = await publisher._get_existing_project_item(issue_url)
+
+            assert item_id is None
+
+    @pytest.mark.asyncio
+    async def test_正常系_ghコマンドに正しい引数を渡す(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_project_item should call gh with correct arguments."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+        issue_url = "https://github.com/YH-05/finance/issues/123"
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.stdout = "PVTI_xxx\n"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._get_existing_project_item(issue_url)
+
+            mock_run.assert_called_once()
+            call_args = mock_run.call_args[0][0]
+
+            assert call_args[0] == "gh"
+            assert call_args[1] == "project"
+            assert call_args[2] == "item-list"
+            assert "15" in call_args  # project_number
+            assert "--owner" in call_args
+            assert "YH-05" in call_args
+            assert "--format" in call_args
+            assert "json" in call_args
+            assert "--jq" in call_args
+            # jq filter should select by content.url
+            jq_idx = call_args.index("--jq")
+            jq_filter = call_args[jq_idx + 1]
+            assert ".items[]" in jq_filter
+            assert "select" in jq_filter
+            assert issue_url in jq_filter
+
+    @pytest.mark.asyncio
+    async def test_正常系_コマンドエラーでNoneを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_project_item should return None on command error."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+        issue_url = "https://github.com/YH-05/finance/issues/123"
+
+        with patch("news.publisher.subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.stdout = ""
+            mock_result.returncode = 1  # Non-zero return code
+            mock_run.return_value = mock_result
+
+            item_id = await publisher._get_existing_project_item(issue_url)
+
+            assert item_id is None
+
+
+class TestAddToProjectWithExistingItemCheck:
+    """Tests for _add_to_project() with existing item check (P10-004).
+
+    Modified _add_to_project behavior:
+    - First checks if Issue already exists in Project
+    - If exists: skip item-add, use existing item_id for field updates
+    - If not exists: add to project, then update fields
+    """
+
+    @pytest.mark.asyncio
+    async def test_正常系_新規Issueは通常通り追加される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should add new Issue normally."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with (
+            patch.object(
+                publisher, "_get_existing_project_item", return_value=None
+            ) as mock_check,
+            patch("news.publisher.subprocess.run") as mock_run,
+        ):
+            mock_result = MagicMock()
+            mock_result.stdout = "PVTI_new_item\n"
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Should check for existing item
+            mock_check.assert_called_once_with(
+                "https://github.com/YH-05/finance/issues/123"
+            )
+
+            # Should call item-add (new item)
+            first_call_args = mock_run.call_args_list[0][0][0]
+            assert first_call_args[2] == "item-add"
+
+            # Should also call item-edit for fields (status + date = 2 more calls)
+            assert mock_run.call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_正常系_既存Issueはフィールド更新のみ実行(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should only update fields for existing Issue."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with (
+            patch.object(
+                publisher, "_get_existing_project_item", return_value="PVTI_existing"
+            ) as mock_check,
+            patch("news.publisher.subprocess.run") as mock_run,
+        ):
+            mock_result = MagicMock()
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Should check for existing item
+            mock_check.assert_called_once()
+
+            # Should NOT call item-add (existing item)
+            for call in mock_run.call_args_list:
+                call_args = call[0][0]
+                assert call_args[2] != "item-add", (
+                    "Should not call item-add for existing item"
+                )
+
+            # Should call item-edit for fields only (status + date = 2 calls)
+            assert mock_run.call_count == 2
+
+            # Verify field updates use the existing item_id
+            for call in mock_run.call_args_list:
+                call_args = call[0][0]
+                assert "PVTI_existing" in call_args
+
+    @pytest.mark.asyncio
+    async def test_正常系_既存Issueで既存item_idが正しく使用される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should use correct existing item_id for field updates."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+        existing_item_id = "PVTI_abc123"
+
+        with (
+            patch.object(
+                publisher, "_get_existing_project_item", return_value=existing_item_id
+            ),
+            patch("news.publisher.subprocess.run") as mock_run,
+        ):
+            mock_result = MagicMock()
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Both item-edit calls should use existing item_id
+            for call in mock_run.call_args_list:
+                call_args = call[0][0]
+                assert existing_item_id in call_args
+
+    @pytest.mark.asyncio
+    async def test_正常系_既存Issueでログを出力(
+        self,
+        sample_config: NewsWorkflowConfig,
+        summarized_article_with_summary: SummarizedArticle,
+    ) -> None:
+        """_add_to_project should log when updating existing Issue."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with (
+            patch.object(
+                publisher, "_get_existing_project_item", return_value="PVTI_existing"
+            ),
+            patch("news.publisher.subprocess.run") as mock_run,
+            patch("news.publisher.logger") as mock_logger,
+        ):
+            mock_result = MagicMock()
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            await publisher._add_to_project(123, summarized_article_with_summary)
+
+            # Should log info about existing item
+            info_calls = mock_logger.info.call_args_list
+            existing_logged = any(
+                "already in project" in str(call).lower()
+                or "existing" in str(call).lower()
+                for call in info_calls
+            )
+            assert existing_logged, (
+                f"Expected log about existing item, got: {info_calls}"
+            )

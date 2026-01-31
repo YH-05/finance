@@ -242,12 +242,19 @@ class TestNewsWorkflowOrchestrator:
             mock_extractor_cls.return_value = mock_extractor
 
             # Setup summarizer mock - summarize all articles successfully
+            # Create summarized articles for each extracted article
             summarized_articles = [
                 create_summarized_article(e) for e in extracted_articles
             ]
             mock_summarizer = MagicMock()
+            # summarize_batch is called with batches based on concurrency setting
+            # We need to return the correct subset for each batch call
+            # With concurrency=2 and 4 articles: batch1=[0,1], batch2=[2,3]
             mock_summarizer.summarize_batch = AsyncMock(
-                return_value=summarized_articles
+                side_effect=[
+                    summarized_articles[:2],  # First batch
+                    summarized_articles[2:],  # Second batch
+                ]
             )
             mock_summarizer_cls.return_value = mock_summarizer
 

@@ -819,3 +819,776 @@ def sample_presets_config() -> PresetsConfig:
             ),
         ],
     )
+
+
+class TestRSSCollectorDomainFiltering:
+    """Tests for RSSCollector domain filtering functionality."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ブロックドメインの記事が収集結果から除外される(
+        self,
+        mock_config_with_domain_filter: NewsWorkflowConfig,
+        sample_feed_items: list[FeedItem],
+    ) -> None:
+        """Articles from blocked domains should be excluded from collection results."""
+        # Create articles with blocked and non-blocked domains
+        now = datetime.now(timezone.utc)
+        mixed_domain_items = [
+            FeedItem(
+                item_id="blocked-item",
+                title="Blocked Article",
+                link="https://seekingalpha.com/article/123",
+                published=now.isoformat(),
+                summary="Article from blocked domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+            FeedItem(
+                item_id="allowed-item",
+                title="Allowed Article",
+                link="https://cnbc.com/article/456",
+                published=now.isoformat(),
+                summary="Article from allowed domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_domain_filter)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = mixed_domain_items
+
+                result = await collector.collect()
+
+                assert len(result) == 1
+                assert "cnbc.com" in str(result[0].url)
+                assert "seekingalpha.com" not in str(result[0].url)
+
+    @pytest.mark.asyncio
+    async def test_正常系_フィルタリング無効時は全て収集される(
+        self,
+        mock_config_with_domain_filter_disabled: NewsWorkflowConfig,
+    ) -> None:
+        """All articles should be collected when domain filtering is disabled."""
+        now = datetime.now(timezone.utc)
+        blocked_domain_items = [
+            FeedItem(
+                item_id="blocked-item",
+                title="Article from Blocked Domain",
+                link="https://seekingalpha.com/article/123",
+                published=now.isoformat(),
+                summary="Article from blocked domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_domain_filter_disabled)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = blocked_domain_items
+
+                result = await collector.collect()
+
+                # All articles should pass through when filtering is disabled
+                assert len(result) == 1
+                assert "seekingalpha.com" in str(result[0].url)
+
+    @pytest.mark.asyncio
+    async def test_正常系_サブドメインもブロックされる(
+        self,
+        mock_config_with_domain_filter: NewsWorkflowConfig,
+    ) -> None:
+        """Subdomains of blocked domains should also be blocked."""
+        now = datetime.now(timezone.utc)
+        subdomain_items = [
+            FeedItem(
+                item_id="subdomain-item",
+                title="Subdomain Article",
+                link="https://www.seekingalpha.com/article/123",
+                published=now.isoformat(),
+                summary="Article from subdomain of blocked domain",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_domain_filter)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = subdomain_items
+
+                result = await collector.collect()
+
+                # Subdomain should also be blocked
+                assert len(result) == 0
+
+    def test_正常系_filter_blocked_domainsで除外数が正しく返される(
+        self,
+        mock_config_with_domain_filter: NewsWorkflowConfig,
+    ) -> None:
+        """_filter_blocked_domains should correctly count blocked articles."""
+        from news.models import CollectedArticle
+
+        now = datetime.now(timezone.utc)
+        articles = [
+            CollectedArticle(
+                url="https://seekingalpha.com/article/1",  # type: ignore[arg-type]
+                title="Blocked 1",
+                published=now,
+                raw_summary="Summary 1",
+                source=ArticleSource(
+                    source_type=SourceType.RSS,
+                    source_name="Test",
+                    category="market",
+                ),
+                collected_at=now,
+            ),
+            CollectedArticle(
+                url="https://investorplace.com/article/2",  # type: ignore[arg-type]
+                title="Blocked 2",
+                published=now,
+                raw_summary="Summary 2",
+                source=ArticleSource(
+                    source_type=SourceType.RSS,
+                    source_name="Test",
+                    category="market",
+                ),
+                collected_at=now,
+            ),
+            CollectedArticle(
+                url="https://cnbc.com/article/3",  # type: ignore[arg-type]
+                title="Allowed",
+                published=now,
+                raw_summary="Summary 3",
+                source=ArticleSource(
+                    source_type=SourceType.RSS,
+                    source_name="Test",
+                    category="market",
+                ),
+                collected_at=now,
+            ),
+        ]
+
+        collector = RSSCollector(config=mock_config_with_domain_filter)
+        filtered = collector._filter_blocked_domains(articles)
+
+        assert len(filtered) == 1
+        assert filtered[0].title == "Allowed"
+
+
+@pytest.fixture
+def mock_config_with_domain_filter() -> NewsWorkflowConfig:
+    """Create a mock NewsWorkflowConfig with domain filtering enabled."""
+    from news.config import (
+        DomainFilteringConfig,
+        ExtractionConfig,
+        FilteringConfig,
+        GitHubConfig,
+        OutputConfig,
+        SummarizationConfig,
+    )
+
+    return NewsWorkflowConfig(
+        version="1.0",
+        status_mapping={"market": "index", "tech": "ai"},
+        github_status_ids={"index": "abc123", "ai": "def456"},
+        rss=RssConfig(presets_file="data/config/rss-presets.json"),
+        extraction=ExtractionConfig(),
+        summarization=SummarizationConfig(prompt_template="Summarize: {body}"),
+        github=GitHubConfig(
+            project_number=15,
+            project_id="PVT_test",
+            status_field_id="PVTSSF_test",
+            published_date_field_id="PVTF_test",
+            repository="owner/repo",
+        ),
+        filtering=FilteringConfig(),
+        output=OutputConfig(result_dir="data/exports/news-workflow"),
+        domain_filtering=DomainFilteringConfig(
+            enabled=True,
+            log_blocked=True,
+            blocked_domains=["seekingalpha.com", "investorplace.com"],
+        ),
+    )
+
+
+@pytest.fixture
+def mock_config_with_domain_filter_disabled() -> NewsWorkflowConfig:
+    """Create a mock NewsWorkflowConfig with domain filtering disabled."""
+    from news.config import (
+        DomainFilteringConfig,
+        ExtractionConfig,
+        FilteringConfig,
+        GitHubConfig,
+        OutputConfig,
+        SummarizationConfig,
+    )
+
+    return NewsWorkflowConfig(
+        version="1.0",
+        status_mapping={"market": "index", "tech": "ai"},
+        github_status_ids={"index": "abc123", "ai": "def456"},
+        rss=RssConfig(presets_file="data/config/rss-presets.json"),
+        extraction=ExtractionConfig(),
+        summarization=SummarizationConfig(prompt_template="Summarize: {body}"),
+        github=GitHubConfig(
+            project_number=15,
+            project_id="PVT_test",
+            status_field_id="PVTSSF_test",
+            published_date_field_id="PVTF_test",
+            repository="owner/repo",
+        ),
+        filtering=FilteringConfig(),
+        output=OutputConfig(result_dir="data/exports/news-workflow"),
+        domain_filtering=DomainFilteringConfig(
+            enabled=False,
+            log_blocked=False,
+            blocked_domains=["seekingalpha.com"],
+        ),
+    )
+
+
+class TestInvalidFeedSkip:
+    """Tests for invalid feed skip and error logging functionality."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_無効フィードがスキップされ他のフィード処理が継続される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """Invalid feed should be skipped and processing continues with other feeds."""
+        import httpx
+
+        now = datetime.now(timezone.utc)
+        valid_feed_items = [
+            FeedItem(
+                item_id="valid-item",
+                title="Valid Article",
+                link="https://example.com/valid",
+                published=now.isoformat(),
+                summary="Valid article summary",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://invalid.com/feed.xml",
+                        "title": "Invalid Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                    {
+                        "url": "https://valid.com/feed.xml",
+                        "title": "Valid Feed",
+                        "category": "tech",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                ],
+            }
+
+            # Setup error response for invalid feed
+            error_response = MagicMock()
+            error_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+                "404 Not Found",
+                request=MagicMock(),
+                response=MagicMock(status_code=404),
+            )
+
+            # Setup success response for valid feed
+            success_response = MagicMock()
+            success_response.content = b"<rss></rss>"
+            success_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+
+            async def mock_get(url: str, **kwargs: object) -> MagicMock:
+                if "invalid.com" in url:
+                    return error_response
+                return success_response
+
+            mock_client.get = mock_get
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = valid_feed_items
+
+                articles = await collector.collect()
+
+                # One article from valid feed
+                assert len(articles) == 1
+                # One error from invalid feed
+                assert len(collector.feed_errors) == 1
+                assert (
+                    collector.feed_errors[0].feed_url == "https://invalid.com/feed.xml"
+                )
+                assert collector.feed_errors[0].error_type == "fetch"
+
+    @pytest.mark.asyncio
+    async def test_正常系_エラー情報がfeed_errorsに記録される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """Error information should be recorded in feed_errors."""
+        import httpx
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://error.com/feed.xml",
+                        "title": "Error Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                ],
+            }
+
+            # Setup error response
+            error_response = MagicMock()
+            error_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+                "500 Server Error",
+                request=MagicMock(),
+                response=MagicMock(status_code=500),
+            )
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=error_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+            await collector.collect()
+
+            assert len(collector.feed_errors) == 1
+            feed_error = collector.feed_errors[0]
+            assert feed_error.feed_url == "https://error.com/feed.xml"
+            assert feed_error.feed_name == "Error Feed"
+            assert "500" in feed_error.error
+            assert feed_error.error_type == "fetch"
+            assert feed_error.timestamp is not None
+
+    @pytest.mark.asyncio
+    async def test_正常系_全フィード失敗時は空リストを返す(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """When all feeds fail, should return empty list."""
+        import httpx
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://error1.com/feed.xml",
+                        "title": "Error Feed 1",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                    {
+                        "url": "https://error2.com/feed.xml",
+                        "title": "Error Feed 2",
+                        "category": "tech",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                ],
+            }
+
+            # All feeds fail
+            error_response = MagicMock()
+            error_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+                "Network error",
+                request=MagicMock(),
+                response=MagicMock(status_code=503),
+            )
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=error_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+            articles = await collector.collect()
+
+            assert len(articles) == 0
+            assert len(collector.feed_errors) == 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_feed_errorsプロパティがコピーを返す(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """feed_errors property should return a copy of the list."""
+        import httpx
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://error.com/feed.xml",
+                        "title": "Error Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                ],
+            }
+
+            error_response = MagicMock()
+            error_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+                "Error",
+                request=MagicMock(),
+                response=MagicMock(status_code=500),
+            )
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=error_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+            await collector.collect()
+
+            errors1 = collector.feed_errors
+            errors2 = collector.feed_errors
+
+            # Should be equal content but different objects
+            assert errors1 == errors2
+            assert errors1 is not errors2
+
+    @pytest.mark.asyncio
+    async def test_正常系_collect呼び出しごとにfeed_errorsがクリアされる(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """feed_errors should be cleared on each collect() call."""
+        import httpx
+
+        now = datetime.now(timezone.utc)
+        valid_items = [
+            FeedItem(
+                item_id="item",
+                title="Article",
+                link="https://example.com/article",
+                published=now.isoformat(),
+                summary="Summary",
+                content=None,
+                author=None,
+                fetched_at=now.isoformat(),
+            ),
+        ]
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            # First call: one error
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://error.com/feed.xml",
+                        "title": "Error Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                ],
+            }
+
+            error_response = MagicMock()
+            error_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+                "Error",
+                request=MagicMock(),
+                response=MagicMock(status_code=500),
+            )
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=error_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+            await collector.collect()
+            assert len(collector.feed_errors) == 1
+
+            # Second call: no errors
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://valid.com/feed.xml",
+                        "title": "Valid Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                ],
+            }
+
+            success_response = MagicMock()
+            success_response.content = b"<rss></rss>"
+            success_response.raise_for_status = MagicMock()
+
+            mock_client.get = AsyncMock(return_value=success_response)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = valid_items
+                await collector.collect()
+
+            # feed_errors should be cleared
+            assert len(collector.feed_errors) == 0
+
+
+class TestFeedErrorClassification:
+    """Tests for error classification in RSSCollector."""
+
+    def test_正常系_HTTPエラーがfetchに分類される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """HTTP errors should be classified as 'fetch'."""
+        import httpx
+
+        collector = RSSCollector(config=mock_config)
+
+        # Test HTTP status error
+        http_error = httpx.HTTPStatusError(
+            "500 Error",
+            request=MagicMock(),
+            response=MagicMock(status_code=500),
+        )
+        assert collector._classify_error(http_error) == "fetch"
+
+        # Test timeout error
+        timeout_error = httpx.TimeoutException("Connection timeout")
+        assert collector._classify_error(timeout_error) == "fetch"
+
+    def test_正常系_パース関連エラーがparseに分類される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """Parse-related errors should be classified as 'parse'."""
+        import json
+
+        collector = RSSCollector(config=mock_config)
+
+        # Test JSON decode error
+        json_error = json.JSONDecodeError("Invalid JSON", "", 0)
+        assert collector._classify_error(json_error) == "parse"
+
+        # Test ValueError with parse-related message
+        parse_error = ValueError("Failed to parse XML content")
+        assert collector._classify_error(parse_error) == "parse"
+
+    def test_正常系_ファイル未検出エラーがvalidationに分類される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """FileNotFoundError should be classified as 'validation'."""
+        collector = RSSCollector(config=mock_config)
+
+        file_error = FileNotFoundError("Config file not found")
+        assert collector._classify_error(file_error) == "validation"
+
+    def test_正常系_不明なエラーがfetchに分類される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """Unknown errors should default to 'fetch'."""
+        collector = RSSCollector(config=mock_config)
+
+        unknown_error = RuntimeError("Some unknown error")
+        assert collector._classify_error(unknown_error) == "fetch"
+
+
+class TestFeedErrorCounting:
+    """Tests for error counting in RSSCollector."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_エラータイプ別件数が正しく集計される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """Error counts by type should be correctly aggregated."""
+        import httpx
+
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://error1.com/feed.xml",
+                        "title": "Error Feed 1",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                    {
+                        "url": "https://error2.com/feed.xml",
+                        "title": "Error Feed 2",
+                        "category": "tech",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                    {
+                        "url": "https://error3.com/feed.xml",
+                        "title": "Error Feed 3",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    },
+                ],
+            }
+
+            # All feeds fail with HTTP errors
+            error_response = MagicMock()
+            error_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+                "Error",
+                request=MagicMock(),
+                response=MagicMock(status_code=500),
+            )
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=error_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config)
+            await collector.collect()
+
+            error_counts = collector._count_error_types()
+            assert error_counts == {"fetch": 3}

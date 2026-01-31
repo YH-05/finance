@@ -103,6 +103,7 @@ def add_log_level_upper(_: Any, __: Any, event_dict: dict[str, Any]) -> dict[str
 def setup_logging(
     *,
     level: LogLevel | str = "INFO",
+    file_level: LogLevel | str | None = None,
     format: LogFormat = "console",
     log_file: str | Path | None = None,
     include_timestamp: bool = True,
@@ -114,8 +115,12 @@ def setup_logging(
     Parameters
     ----------
     level : LogLevel | str
-        Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        Logging level for console output (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         Can also be set via LOG_LEVEL environment variable
+    file_level : LogLevel | str | None
+        Logging level for file output. If None, uses the same level as console.
+        Useful for detailed debugging: set level="INFO" and file_level="DEBUG"
+        to keep console clean while capturing DEBUG logs to file.
     format : LogFormat
         Output format: "json", "console", or "plain"
         - json: Structured JSON output (best for production)
@@ -205,8 +210,11 @@ def setup_logging(
         log_path = Path(log_file)
         log_path.parent.mkdir(parents=True, exist_ok=True)
 
+        # file_level が指定されていない場合は level と同じ
+        effective_file_level = file_level if file_level is not None else level
+
         file_handler = logging.FileHandler(log_path, encoding="utf-8")
-        file_handler.setLevel(getattr(logging, level.upper()))
+        file_handler.setLevel(getattr(logging, effective_file_level.upper()))
 
         # ファイルへの出力は既にstructlogで処理済みなので、そのまま出力
         file_handler.setFormatter(logging.Formatter("%(message)s"))

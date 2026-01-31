@@ -203,7 +203,9 @@ class NewsWorkflowOrchestrator:
         if not collected:
             print("  -> 処理対象の記事がありません")
             finished_at = datetime.now(timezone.utc)
-            return self._build_empty_result(started_at, finished_at)
+            result = self._build_empty_result(started_at, finished_at)
+            self._save_result(result)
+            return result
 
         # 2. Extract body text from articles
         self._log_stage_start("2/4", "記事本文を抽出")
@@ -216,7 +218,7 @@ class NewsWorkflowOrchestrator:
         if not extracted_success:
             print("  -> 抽出成功した記事がありません")
             finished_at = datetime.now(timezone.utc)
-            return self._build_result(
+            result = self._build_result(
                 collected=collected,
                 extracted=extracted,
                 summarized=[],
@@ -224,6 +226,8 @@ class NewsWorkflowOrchestrator:
                 started_at=started_at,
                 finished_at=finished_at,
             )
+            self._save_result(result)
+            return result
 
         # 3. Summarize articles with AI
         self._log_stage_start("3/4", "AI要約を生成")
@@ -238,7 +242,7 @@ class NewsWorkflowOrchestrator:
         if not summarized_success:
             print("  -> 要約成功した記事がありません")
             finished_at = datetime.now(timezone.utc)
-            return self._build_result(
+            result = self._build_result(
                 collected=collected,
                 extracted=extracted,
                 summarized=summarized,
@@ -246,6 +250,8 @@ class NewsWorkflowOrchestrator:
                 started_at=started_at,
                 finished_at=finished_at,
             )
+            self._save_result(result)
+            return result
 
         # 4. Publish articles to GitHub Issues
         stage_desc = (

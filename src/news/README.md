@@ -267,6 +267,64 @@ github:
   project_number: 15
 ```
 
+## 信頼性向上機能 (Phase 10)
+
+Phase 10で追加された信頼性向上機能により、ニュース収集の成功率が大幅に向上しました。
+
+### ドメインブロックリスト
+
+ペイウォールやボット検出を行うサイトを自動的にスキップ:
+
+```yaml
+# data/config/news-collection-config.yaml
+blocked_domains:
+  - seekingalpha.com  # ボット検出
+  - wsj.com           # ペイウォール
+  - reuters.com       # ペイウォール
+  - ft.com            # ペイウォール
+  - bloomberg.com     # ペイウォール
+```
+
+### User-Agentローテーション
+
+複数のUser-Agentをランダムに使用してボット検出を回避:
+
+```yaml
+extraction:
+  user_agent_rotation:
+    enabled: true
+    user_agents:
+      - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36..."
+      - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)..."
+```
+
+### Playwrightフォールバック
+
+trafilatura失敗時にPlaywrightでJS実行後のDOMから再取得:
+
+```yaml
+extraction:
+  playwright_fallback:
+    enabled: true
+    browser: chromium  # chromium, firefox, webkit
+    headless: true
+    timeout_seconds: 30
+```
+
+### ログ出力
+
+障害分析のための詳細なログ機能:
+
+- **コンソール**: INFO（`--verbose` でDEBUG）
+- **ファイル**: 常にDEBUG（詳細な障害分析用）
+- **出力先**: `logs/news-workflow-{date}.log`
+
+### 結果JSON保存
+
+ワークフロー実行結果は常にJSON形式で保存されます（処理対象の記事がない場合も含む）:
+
+- **出力先**: `data/exports/news-workflow/workflow-result-{timestamp}.json`
+
 ## 依存関係
 
 ### パッケージ依存
@@ -280,9 +338,11 @@ github:
 - `trafilatura`: 本文抽出
 - `anthropic`: Claude API
 - `httpx`: HTTP クライアント
+- `playwright`: Playwrightフォールバック（オプション）
 
 ## 関連ドキュメント
 
 - `data/config/news-collection-config.yaml` - 設定例
 - `docs/project/project-29/` - 実装仕様
+- `docs/project/project-27/` - Phase 10 ワークフロー信頼性向上計画
 - `.claude/skills/finance-news-workflow/` - ワークフロースキル

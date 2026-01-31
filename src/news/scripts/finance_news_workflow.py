@@ -68,10 +68,13 @@ def setup_logging(
     Sets up logging to both console and file. The log file is named
     with the current date: `logs/news-workflow-{date}.log`.
 
+    - Console: verbose=True -> DEBUG, False -> INFO
+    - File: Always DEBUG (for detailed failure analysis)
+
     Parameters
     ----------
     verbose : bool, optional
-        If True, sets log level to DEBUG. Default is INFO.
+        If True, sets console log level to DEBUG. Default is INFO.
     log_dir : Path | None, optional
         Directory for log files. Default is `logs/`.
 
@@ -90,7 +93,8 @@ def setup_logging(
     >>> logging.root.level == logging.DEBUG
     True
     """
-    log_level = "DEBUG" if verbose else "INFO"
+    console_level = "DEBUG" if verbose else "INFO"
+    file_level = "DEBUG"  # Always DEBUG for detailed failure analysis
 
     # Use default log directory if not specified
     if log_dir is None:
@@ -105,7 +109,8 @@ def setup_logging(
 
     # Setup logging using the news.utils.logging_config module
     _setup_logging(
-        level=log_level,
+        level=console_level,
+        file_level=file_level,
         format="console",
         log_file=log_file,
         include_timestamp=True,
@@ -116,7 +121,8 @@ def setup_logging(
     logger.info(
         "Logging initialized",
         log_file=str(log_file),
-        level=log_level,
+        console_level=console_level,
+        file_level=file_level,
     )
 
     return log_file

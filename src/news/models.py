@@ -635,6 +635,62 @@ class PublishedArticle(BaseModel):
     )
 
 
+class FeedError(BaseModel):
+    """Information about a feed collection error.
+
+    Represents an error that occurred while attempting to collect articles
+    from a specific RSS feed. This is used to track which feeds failed and why.
+
+    Attributes
+    ----------
+    feed_url : str
+        The URL of the feed that failed.
+    feed_name : str
+        The human-readable name of the feed that failed.
+    error : str
+        A description of the error that occurred.
+    error_type : str
+        The type of error (e.g., "validation", "fetch", "parse").
+    timestamp : datetime
+        The time when the error occurred.
+
+    Examples
+    --------
+    >>> from datetime import datetime, timezone
+    >>> from news.models import FeedError
+    >>> error = FeedError(
+    ...     feed_url="https://example.com/feed.xml",
+    ...     feed_name="Example Feed",
+    ...     error="Connection timeout",
+    ...     error_type="fetch",
+    ...     timestamp=datetime.now(tz=timezone.utc),
+    ... )
+    >>> error.error_type
+    'fetch'
+    """
+
+    feed_url: str = Field(
+        ...,
+        description="The URL of the feed that failed",
+    )
+    feed_name: str = Field(
+        ...,
+        description="The human-readable name of the feed that failed",
+    )
+    error: str = Field(
+        ...,
+        description="A description of the error that occurred",
+    )
+    error_type: str = Field(
+        ...,
+        description="The type of error (e.g., 'validation', 'fetch', 'parse')",
+    )
+    timestamp: datetime = Field(
+        ...,
+        description="The time when the error occurred",
+    )
+
+
 class WorkflowResult(BaseModel):
     """The result of a complete news collection workflow execution.
 
@@ -739,6 +795,10 @@ class WorkflowResult(BaseModel):
         ...,
         description="The list of successfully published articles",
     )
+    feed_errors: list[FeedError] = Field(
+        default_factory=list,
+        description="Records of feeds that failed during collection",
+    )
 
 
 __all__ = [
@@ -747,6 +807,7 @@ __all__ = [
     "ExtractedArticle",
     "ExtractionStatus",
     "FailureRecord",
+    "FeedError",
     "PublicationStatus",
     "PublishedArticle",
     "SourceType",

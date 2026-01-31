@@ -22,7 +22,7 @@ import httpx
 
 from news.collectors.base import BaseCollector
 from news.config import NewsWorkflowConfig
-from news.models import ArticleSource, CollectedArticle, SourceType
+from news.models import ArticleSource, CollectedArticle, FeedError, SourceType
 from news.utils.logging_config import get_logger
 from rss.core.parser import FeedParser
 from rss.types import FeedItem, PresetFeed
@@ -69,10 +69,23 @@ class RSSCollector(BaseCollector):
         """
         self._config = config
         self._parser = FeedParser()
+        self._domain_filter = config.domain_filtering
+        self._feed_errors: list[FeedError] = []
         logger.debug(
             "RSSCollector initialized",
             presets_file=config.rss.presets_file,
         )
+
+    @property
+    def feed_errors(self) -> list[FeedError]:
+        """Return a copy of the feed errors that occurred during collection.
+
+        Returns
+        -------
+        list[FeedError]
+            A copy of the list of feed errors.
+        """
+        return self._feed_errors.copy()
 
     @property
     def source_type(self) -> SourceType:
@@ -116,6 +129,9 @@ class RSSCollector(BaseCollector):
             max_age_hours=max_age_hours,
         )
 
+        # Clear previous feed errors
+        self._feed_errors.clear()
+
         # Load presets configuration
         presets = self._load_presets()
         enabled_presets = [p for p in presets if p.enabled]
@@ -149,21 +165,29 @@ class RSSCollector(BaseCollector):
                         articles_count=len(articles),
                     )
                 except Exception as e:
-                    logger.warning(
-                        "Failed to fetch feed, continuing with next",
-                        feed_url=preset.url,
-                        feed_title=preset.title,
-                        error=str(e),
-                    )
+                    self._record_feed_error(preset, e, self._classify_error(e))
                     continue
+
+        # Log summary if there were feed errors
+        if self._feed_errors:
+            logger.warning(
+                "Some feeds failed during collection",
+                total_feeds=len(enabled_presets),
+                failed_feeds=len(self._feed_errors),
+                error_types=self._count_error_types(),
+            )
+
+        # Apply domain filtering
+        filtered_articles = self._filter_blocked_domains(all_articles)
 
         logger.info(
             "RSS collection completed",
-            total_articles=len(all_articles),
-            feeds_processed=len(enabled_presets),
+            total_articles=len(filtered_articles),
+            successful_feeds=len(enabled_presets) - len(self._feed_errors),
+            failed_feeds=len(self._feed_errors),
         )
 
-        return all_articles
+        return filtered_articles
 
     def _load_presets(self) -> list[PresetFeed]:
         """Load RSS feed presets from configuration file.
@@ -316,6 +340,129 @@ class RSSCollector(BaseCollector):
             source=source,
             collected_at=collected_at,
         )
+
+    def _filter_blocked_domains(
+        self,
+        articles: list[CollectedArticle],
+    ) -> list[CollectedArticle]:
+        """Filter out articles from blocked domains.
+
+        Parameters
+        ----------
+        articles : list[CollectedArticle]
+            List of articles to filter.
+
+        Returns
+        -------
+        list[CollectedArticle]
+            List of articles with blocked domains removed.
+        """
+        if not self._domain_filter.enabled:
+            return articles
+
+        filtered: list[CollectedArticle] = []
+        blocked_count = 0
+
+        for article in articles:
+            url = str(article.url)
+            if self._domain_filter.is_blocked(url):
+                blocked_count += 1
+                if self._domain_filter.log_blocked:
+                    logger.debug(
+                        "Blocked domain article skipped",
+                        url=url,
+                        title=article.title[:50] if article.title else "",
+                    )
+            else:
+                filtered.append(article)
+
+        if blocked_count > 0:
+            logger.info(
+                "Filtered blocked domain articles",
+                blocked_count=blocked_count,
+                remaining_count=len(filtered),
+            )
+
+        return filtered
+
+    def _record_feed_error(
+        self,
+        preset: PresetFeed,
+        error: Exception,
+        error_type: str,
+    ) -> None:
+        """Record a feed collection error.
+
+        Parameters
+        ----------
+        preset : PresetFeed
+            The feed that failed.
+        error : Exception
+            The error that occurred.
+        error_type : str
+            The type of error (e.g., "fetch", "parse", "validation").
+        """
+        feed_error = FeedError(
+            feed_url=preset.url,
+            feed_name=preset.title,
+            error=str(error),
+            error_type=error_type,
+            timestamp=datetime.now(timezone.utc),
+        )
+        self._feed_errors.append(feed_error)
+
+        logger.error(
+            "Feed collection failed, skipping",
+            feed_url=preset.url,
+            feed_name=preset.title,
+            error_type=error_type,
+            error=str(error),
+        )
+
+    def _classify_error(self, error: Exception) -> str:
+        """Classify an exception into an error type.
+
+        Parameters
+        ----------
+        error : Exception
+            The exception to classify.
+
+        Returns
+        -------
+        str
+            The error type: "fetch", "parse", or "validation".
+        """
+        import httpx
+
+        # HTTP errors are fetch errors
+        if isinstance(error, (httpx.HTTPError, httpx.TimeoutException)):
+            return "fetch"
+
+        # JSON/XML parsing errors
+        if isinstance(error, (json.JSONDecodeError, ValueError)):
+            error_msg = str(error).lower()
+            if "parse" in error_msg or "xml" in error_msg or "invalid" in error_msg:
+                return "parse"
+
+        # File not found errors for presets file
+        if isinstance(error, FileNotFoundError):
+            return "validation"
+
+        # Default to fetch for unknown errors
+        return "fetch"
+
+    def _count_error_types(self) -> dict[str, int]:
+        """Count the number of errors by type.
+
+        Returns
+        -------
+        dict[str, int]
+            A dictionary mapping error types to their counts.
+        """
+        counts: dict[str, int] = {}
+        for error in self._feed_errors:
+            counts[error.error_type] = counts.get(error.error_type, 0) + 1
+        return counts
 
 
 __all__ = ["RSSCollector"]

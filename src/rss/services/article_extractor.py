@@ -286,7 +286,9 @@ class ArticleExtractor:
         self.timeout = timeout
         self.user_agent = user_agent
 
-    async def extract(self, url: str) -> ExtractedArticle:
+    async def extract(
+        self, url: str, user_agent: str | None = None
+    ) -> ExtractedArticle:
         """Extract article content from a URL.
 
         Uses trafilatura as the primary extraction method. If trafilatura
@@ -296,6 +298,9 @@ class ArticleExtractor:
         ----------
         url : str
             The URL of the article to extract.
+        user_agent : str | None, optional
+            Custom User-Agent header to use for the request. If None,
+            uses the default User-Agent set at initialization.
 
         Returns
         -------
@@ -309,7 +314,15 @@ class ArticleExtractor:
         >>> if result.status == ExtractionStatus.SUCCESS:
         ...     print(result.text)
         """
-        logger.info("Starting article extraction", url=url)
+        # Determine the User-Agent to use
+        effective_user_agent = user_agent or self.user_agent
+        logger.info(
+            "Starting article extraction",
+            url=url,
+            user_agent=effective_user_agent[:50] + "..."
+            if len(effective_user_agent) > 50
+            else effective_user_agent,
+        )
 
         # Try trafilatura first (run in thread pool to avoid blocking)
         loop = asyncio.get_running_loop()
@@ -375,25 +388,30 @@ class ArticleExtractor:
 
         # Fallback to httpx + lxml
         logger.debug("Trying fallback extraction with httpx + lxml", url=url)
-        return await self._extract_with_fallback(url)
+        return await self._extract_with_fallback(url, effective_user_agent)
 
-    async def _extract_with_fallback(self, url: str) -> ExtractedArticle:
+    async def _extract_with_fallback(
+        self, url: str, user_agent: str | None = None
+    ) -> ExtractedArticle:
         """Extract article content using httpx + lxml as fallback.
 
         Parameters
         ----------
         url : str
             The URL of the article to extract.
+        user_agent : str | None, optional
+            Custom User-Agent header to use. If None, uses the default.
 
         Returns
         -------
         ExtractedArticle
             Extraction result.
         """
+        effective_user_agent = user_agent or self.user_agent
         try:
             async with httpx.AsyncClient(
                 timeout=httpx.Timeout(self.timeout),
-                headers={"User-Agent": self.user_agent},
+                headers={"User-Agent": effective_user_agent},
                 follow_redirects=True,
             ) as client:
                 response = await client.get(url)
