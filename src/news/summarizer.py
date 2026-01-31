@@ -50,14 +50,11 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__, module="summarizer")
 
-# Claude model and max tokens configuration
-CLAUDE_MODEL = "claude-sonnet-4-20250514"
-CLAUDE_MAX_TOKENS = 1024
-
 
 class Summarizer:
     """Claude Agent SDK を使用した構造化要約。
 
+    Claude Code サブスクリプション（Pro/Max）を活用して
     記事本文を分析し、4セクション構造の日本語要約を生成する。
 
     Parameters
@@ -77,6 +74,12 @@ class Summarizer:
     _timeout_seconds : int
         タイムアウト秒数。
 
+    Notes
+    -----
+    - 事前に `claude` コマンドで認証が必要
+    - CI/CD では環境変数 ANTHROPIC_API_KEY を設定
+    - 本文抽出が失敗している記事（body_text が None）は SKIPPED ステータスで返す
+
     Examples
     --------
     >>> from news.summarizer import Summarizer
@@ -86,11 +89,6 @@ class Summarizer:
     >>> result = await summarizer.summarize(extracted_article)
     >>> result.summary.overview
     'S&P 500が上昇...'
-
-    Notes
-    -----
-    - 本文抽出が失敗している記事（body_text が None）は SKIPPED ステータスで返す
-    - Claude Agent SDK を使用して Claude API を呼び出す（P9-002で実装）
     """
 
     def __init__(self, config: NewsWorkflowConfig) -> None:
@@ -105,7 +103,6 @@ class Summarizer:
         self._prompt_template = config.summarization.prompt_template
         self._max_retries = config.summarization.max_retries
         self._timeout_seconds = config.summarization.timeout_seconds
-        # Note: Anthropic client removed - claude-agent-sdk uses query() function directly
 
         logger.debug(
             "Summarizer initialized",
