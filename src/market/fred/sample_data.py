@@ -11,10 +11,9 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+from configuration.file_path import Config
 from fredapi import Fred
 from pandas import DataFrame
-
-from configuration.file_path import Config
 
 
 def load_fred_series_id_json(github_url: str | None = None) -> dict:

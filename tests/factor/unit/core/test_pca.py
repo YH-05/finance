@@ -3,7 +3,6 @@
 import numpy as np
 import pandas as pd
 import pytest
-
 from factor.core.pca import PCAResult, YieldCurvePCA
 from factor.errors import InsufficientDataError, ValidationError
 

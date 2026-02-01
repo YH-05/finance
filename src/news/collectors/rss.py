@@ -19,13 +19,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
+from rss.core.parser import FeedParser
+from rss.types import FeedItem, PresetFeed
 
 from news.collectors.base import BaseCollector
 from news.config import NewsWorkflowConfig
 from news.models import ArticleSource, CollectedArticle, FeedError, SourceType
 from news.utils.logging_config import get_logger
-from rss.core.parser import FeedParser
-from rss.types import FeedItem, PresetFeed
 
 logger = get_logger(__name__, module="collectors.rss")
 

@@ -13,7 +13,6 @@ import math
 import numpy as np
 import pandas as pd
 import pytest
-
 from strategy.risk.calculator import RiskCalculator
 
 

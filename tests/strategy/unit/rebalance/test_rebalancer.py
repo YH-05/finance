@@ -9,7 +9,6 @@ Tests for detect_drift:
 """
 
 import pytest
-
 from strategy.errors import ValidationError
 from strategy.portfolio import Portfolio
 from strategy.rebalance.rebalancer import Rebalancer

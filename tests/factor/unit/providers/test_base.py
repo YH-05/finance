@@ -13,7 +13,6 @@ from datetime import datetime
 from typing import Protocol
 
 import pandas as pd
-
 from factor.providers.base import DataProvider
 
 

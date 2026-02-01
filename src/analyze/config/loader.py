@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="config")

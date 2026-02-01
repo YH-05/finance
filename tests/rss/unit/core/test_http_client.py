@@ -6,7 +6,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
-
 from rss.core.http_client import (
     DEFAULT_MAX_RETRIES,
     DEFAULT_TIMEOUT,

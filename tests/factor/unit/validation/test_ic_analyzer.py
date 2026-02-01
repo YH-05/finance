@@ -9,7 +9,6 @@ from typing import Literal
 import numpy as np
 import pandas as pd
 import pytest
-
 from factor.errors import InsufficientDataError, ValidationError
 from factor.validation.ic_analyzer import ICAnalyzer, ICResult
 

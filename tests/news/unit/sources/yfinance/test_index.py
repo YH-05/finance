@@ -10,7 +10,6 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from news.core.article import Article, ArticleSource, ContentType
 from news.core.errors import SourceError
 from news.core.result import FetchResult, RetryConfig

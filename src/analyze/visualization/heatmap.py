@@ -9,9 +9,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from utils_core.logging import get_logger
 
 from analyze.statistics.types import CorrelationResult
-from utils_core.logging import get_logger
 
 from .charts import ChartBuilder, ChartConfig
 

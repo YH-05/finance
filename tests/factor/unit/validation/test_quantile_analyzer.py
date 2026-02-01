@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import pytest
-
 from factor.errors import InsufficientDataError, ValidationError
 from factor.types import QuantileResult
 from factor.validation.quantile_analyzer import QuantileAnalyzer

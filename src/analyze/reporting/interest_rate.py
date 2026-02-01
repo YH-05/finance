@@ -17,10 +17,9 @@ from datetime import datetime
 from typing import Any
 
 import pandas as pd
-from pandas import DataFrame
-
 from market.fred import FREDFetcher
 from market.fred.types import FetchOptions
+from pandas import DataFrame
 from utils_core.logging import get_logger
 
 

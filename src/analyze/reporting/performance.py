@@ -9,11 +9,11 @@ from datetime import datetime, timedelta
 from typing import cast
 
 import pandas as pd
+from market.yfinance import FetchOptions, YFinanceFetcher
 from pandas import DataFrame, Timestamp
+from utils_core.logging import get_logger, setup_logging
 
 from analyze.config import get_return_periods, get_symbol_group, get_symbols
-from market.yfinance import FetchOptions, YFinanceFetcher
-from utils_core.logging import get_logger, setup_logging
 
 
 class PerformanceAnalyzer:

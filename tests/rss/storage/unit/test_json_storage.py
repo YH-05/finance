@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from rss.exceptions import RSSError
 from rss.storage.json_storage import JSONStorage
 from rss.types import (

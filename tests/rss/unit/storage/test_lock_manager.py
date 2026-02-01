@@ -5,7 +5,6 @@ import time
 from pathlib import Path
 
 import pytest
-
 from rss.exceptions import FileLockError
 from rss.storage.lock_manager import LockManager
 

@@ -7,7 +7,6 @@ the common interface for all macroeconomic factor implementations.
 from abc import ABC, abstractmethod
 
 import pandas as pd
-
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)

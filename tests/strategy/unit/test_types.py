@@ -12,7 +12,6 @@ from datetime import date
 from typing import get_args
 
 import pytest
-
 from strategy.types import (
     AssetClass,
     Holding,

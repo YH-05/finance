@@ -1,7 +1,6 @@
 """Unit tests for custom exception classes in the news package."""
 
 import pytest
-
 from news.core.errors import (
     NewsError,
     RateLimitError,

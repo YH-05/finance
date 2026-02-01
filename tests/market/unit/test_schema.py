@@ -88,9 +88,8 @@ class TestStockDataMetadata:
 
     def test_異常系_symbolがない場合ValidationError(self) -> None:
         """symbol がない場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import StockDataMetadata
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             StockDataMetadata(
@@ -102,9 +101,8 @@ class TestStockDataMetadata:
 
     def test_異常系_sourceがない場合ValidationError(self) -> None:
         """source がない場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import StockDataMetadata
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             StockDataMetadata(
@@ -116,9 +114,8 @@ class TestStockDataMetadata:
 
     def test_異常系_fetched_atがない場合ValidationError(self) -> None:
         """fetched_at がない場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import StockDataMetadata
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             StockDataMetadata(
@@ -130,9 +127,8 @@ class TestStockDataMetadata:
 
     def test_異常系_symbolが不正な型の場合ValidationError(self) -> None:
         """symbol が不正な型の場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import StockDataMetadata
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             StockDataMetadata(
@@ -143,9 +139,8 @@ class TestStockDataMetadata:
 
     def test_異常系_record_countが負の値の場合ValidationError(self) -> None:
         """record_count が負の値の場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import StockDataMetadata
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             StockDataMetadata(
@@ -210,18 +205,16 @@ class TestDateRange:
 
     def test_異常系_startがない場合ValidationError(self) -> None:
         """start がない場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import DateRange
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             DateRange(end="2026-01-25")  # type: ignore[call-arg]
 
     def test_異常系_endがない場合ValidationError(self) -> None:
         """end がない場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import DateRange
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             DateRange(start="2025-01-25")  # type: ignore[call-arg]
@@ -292,9 +285,8 @@ class TestEconomicDataMetadata:
 
     def test_異常系_series_idがない場合ValidationError(self) -> None:
         """series_id がない場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import EconomicDataMetadata
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             EconomicDataMetadata(
@@ -353,9 +345,8 @@ class TestDataSourceConfig:
 
     def test_異常系_timeoutが負の値の場合ValidationError(self) -> None:
         """timeout が負の値の場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import DataSourceConfig
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             DataSourceConfig(timeout=-1)
@@ -364,9 +355,8 @@ class TestDataSourceConfig:
 
     def test_異常系_rate_limitが負の値の場合ValidationError(self) -> None:
         """rate_limit が負の値の場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import DataSourceConfig
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             DataSourceConfig(rate_limit=-1)
@@ -412,9 +402,8 @@ class TestCacheConfig:
 
     def test_異常系_ttl_secondsが負の値の場合ValidationError(self) -> None:
         """ttl_seconds が負の値の場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import CacheConfig
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             CacheConfig(ttl_seconds=-1)
@@ -423,9 +412,8 @@ class TestCacheConfig:
 
     def test_異常系_max_size_mbが負の値の場合ValidationError(self) -> None:
         """max_size_mb が負の値の場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import CacheConfig
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             CacheConfig(max_size_mb=-1)
@@ -488,9 +476,8 @@ class TestExportConfig:
 
     def test_異常系_不正なフォーマットでValidationError(self) -> None:
         """不正なフォーマットの場合 ValidationError が発生することを確認。"""
-        from pydantic import ValidationError
-
         from market.schema import ExportConfig
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             ExportConfig(default_format="invalid_format")  # type: ignore[arg-type]

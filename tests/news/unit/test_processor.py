@@ -12,10 +12,9 @@ from enum import Enum
 from typing import Protocol
 
 import pytest
-from pydantic import HttpUrl
-
 from news.core.article import Article, ArticleSource
 from news.core.processor import ProcessorProtocol, ProcessorType
+from pydantic import HttpUrl
 
 
 class TestProcessorTypeEnum:

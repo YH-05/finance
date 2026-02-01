@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 from click.testing import CliRunner
-
 from rss.cli.main import cli
 from rss.services.feed_manager import FeedManager
 from rss.storage.json_storage import JSONStorage

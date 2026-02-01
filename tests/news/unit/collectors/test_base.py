@@ -10,7 +10,6 @@ This module tests the BaseCollector abstract base class to ensure:
 from abc import ABC
 
 import pytest
-
 from news.collectors.base import BaseCollector
 from news.models import CollectedArticle, SourceType
 

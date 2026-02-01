@@ -6,7 +6,6 @@ This module tests the main orchestration class that manages news sources and sin
 from datetime import datetime, timezone
 
 import pytest
-
 from news.core.article import Article, ArticleSource
 from news.core.result import FetchResult
 from news.core.sink import SinkProtocol, SinkType

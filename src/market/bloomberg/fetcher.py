@@ -34,6 +34,7 @@ from pathlib import Path
 
 import blpapi  # type: ignore[import-not-found]
 import pandas as pd
+from utils_core.logging import get_logger
 
 from market.bloomberg.constants import (
     DEFAULT_HOST,
@@ -55,7 +56,6 @@ from market.bloomberg.types import (
     IDType,
     NewsStory,
 )
-from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="market.bloomberg.fetcher")
 

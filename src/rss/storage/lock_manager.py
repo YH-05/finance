@@ -9,7 +9,6 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from filelock import FileLock, Timeout
-
 from utils_core.logging import get_logger
 
 from ..exceptions import FileLockError

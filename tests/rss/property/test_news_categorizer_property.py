@@ -2,7 +2,6 @@
 
 from hypothesis import given, settings
 from hypothesis import strategies as st
-
 from rss.services.news_categorizer import (
     CategorizationResult,
     NewsCategorizer,

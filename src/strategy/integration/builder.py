@@ -24,7 +24,6 @@ from datetime import datetime
 from typing import Any
 
 import pandas as pd
-
 from utils_core.logging import get_logger
 
 from .analyze_integration import TechnicalSignalProvider, create_signal_provider

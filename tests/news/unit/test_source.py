@@ -10,11 +10,10 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Protocol
 
 import pytest
-from pydantic import HttpUrl
-
 from news.core.article import Article, ArticleSource
 from news.core.result import FetchResult
 from news.core.source import SourceProtocol
+from pydantic import HttpUrl
 
 
 class TestSourceProtocolDefinition:

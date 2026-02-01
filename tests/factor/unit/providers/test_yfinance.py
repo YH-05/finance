@@ -20,7 +20,6 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-
 from factor.errors import DataFetchError
 from factor.providers.base import DataProvider
 from factor.providers.yfinance import YFinanceProvider

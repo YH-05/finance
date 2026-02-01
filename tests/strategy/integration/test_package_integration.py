@@ -4,7 +4,6 @@ This module tests the complete data flow from market -> analyze -> factor -> str
 """
 
 import pandas as pd
-
 from strategy.integration import (
     FactorBasedRiskCalculator,
     IntegratedStrategyBuilder,

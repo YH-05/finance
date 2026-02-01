@@ -14,13 +14,12 @@ Issue #951: Parquet/JSON形式間のフォーマット変換ユーティリテ�
 from pathlib import Path
 
 import pytest
-from pydantic import ValidationError
-
 from database.types import (
     ConversionOptions,
     ConversionResult,
     TypeMapping,
 )
+from pydantic import ValidationError
 
 
 class TestTypeMapping:

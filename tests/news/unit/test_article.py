@@ -4,8 +4,6 @@ from datetime import datetime, timezone
 from typing import Any
 
 import pytest
-from pydantic import ValidationError
-
 from news.core.article import (
     Article,
     ArticleSource,
@@ -13,6 +11,7 @@ from news.core.article import (
     Provider,
     Thumbnail,
 )
+from pydantic import ValidationError
 
 
 class TestContentTypeEnum:

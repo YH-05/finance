@@ -10,8 +10,6 @@ from datetime import datetime, timezone
 from typing import Any
 
 import pytest
-from pydantic import HttpUrl
-
 from news.core.article import Article, ArticleSource
 from news.core.processor import ProcessorProtocol, ProcessorType
 from news.core.result import FetchResult
@@ -24,6 +22,7 @@ from news.processors.pipeline import (
     PipelineResult,
     StageError,
 )
+from pydantic import HttpUrl
 
 # === Test Helpers ===
 

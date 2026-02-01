@@ -418,9 +418,8 @@ output:
 
     def test_異常系_不正なYAMLでエラー(self, tmp_path: Path) -> None:
         """不正なYAMLファイルを読み込むとエラーが発生することを確認。"""
-        from yaml import YAMLError
-
         from news.config.workflow import load_config
+        from yaml import YAMLError
 
         # Arrange: 不正なYAMLファイルを作成
         config_file = tmp_path / "invalid.yaml"

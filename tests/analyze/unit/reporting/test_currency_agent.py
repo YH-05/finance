@@ -2,12 +2,11 @@
 
 import pandas as pd
 import pytest
-from pandas import DataFrame
-
 from analyze.reporting.currency_agent import (
     CurrencyAnalyzer4Agent,
     CurrencyResult,
 )
+from pandas import DataFrame
 
 
 class TestCurrencyResult:

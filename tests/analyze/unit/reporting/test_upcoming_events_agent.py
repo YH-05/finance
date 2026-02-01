@@ -12,7 +12,6 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from analyze.reporting.upcoming_events import (
     EarningsDateInfo,
     EconomicReleaseInfo,

@@ -28,7 +28,6 @@ Examples
 from typing import cast
 
 import pandas as pd
-
 from utils_core.logging import get_logger
 
 from .types import DescriptiveStats

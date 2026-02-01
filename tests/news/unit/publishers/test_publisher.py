@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from news.config.workflow import NewsWorkflowConfig, SummarizationConfig
 from news.models import (
     ArticleSource,

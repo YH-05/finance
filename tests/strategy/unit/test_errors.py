@@ -7,7 +7,6 @@ TDDのRedフェーズとして、実装前に失敗するテストを記述。
 import warnings
 
 import pytest
-
 from strategy.errors import (
     ConfigurationError,
     DataProviderError,

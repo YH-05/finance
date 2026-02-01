@@ -6,7 +6,6 @@ This module tests the currencies section added to symbols.yaml for Issue #2414.
 from __future__ import annotations
 
 import pytest
-
 from analyze.config import get_symbol_group, get_symbols, load_symbols_config
 
 

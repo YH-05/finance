@@ -10,7 +10,6 @@ Tests cover:
 from __future__ import annotations
 
 import pytest
-
 from rss.utils.url_normalizer import (
     TITLE_SIMILARITY_THRESHOLD,
     TRACKING_PARAMS,

@@ -7,7 +7,6 @@ with all dependent macro factor components.
 import numpy as np
 import pandas as pd
 import pytest
-
 from factor.factors.macro.flight_to_quality import HY_SPREAD_SERIES, IG_SPREAD_SERIES
 from factor.factors.macro.inflation import INFLATION_SERIES
 from factor.factors.macro.interest_rate import TREASURY_YIELD_SERIES

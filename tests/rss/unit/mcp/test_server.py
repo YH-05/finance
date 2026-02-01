@@ -7,7 +7,6 @@ from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 import pytest
-
 from rss.mcp.server import (
     _feed_to_dict,
     _get_data_dir,

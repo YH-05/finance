@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from rss.services.feed_reader import FeedReader
 from rss.storage.json_storage import JSONStorage
 from rss.types import (

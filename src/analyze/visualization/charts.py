@@ -12,7 +12,6 @@ from typing import Any
 
 import plotly.graph_objects as go
 import plotly.io as pio
-
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)

@@ -29,11 +29,11 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
+from utils_core.logging import get_logger
 
 from factor.core.base import Factor
 from factor.enums import FactorCategory
 from factor.providers.base import DataProvider
-from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

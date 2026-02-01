@@ -5,7 +5,6 @@ from unittest.mock import patch
 
 import plotly.graph_objects as go
 import pytest
-
 from analyze.visualization.charts import (
     DARK_THEME_COLORS,
     DEFAULT_HEIGHT,

@@ -11,7 +11,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
-
 from factor.core.normalizer import Normalizer
 
 # Path to fixtures

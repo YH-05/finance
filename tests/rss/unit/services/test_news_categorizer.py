@@ -3,7 +3,6 @@
 import time
 
 import pytest
-
 from rss.services.news_categorizer import (
     CategorizationResult,
     NewsCategorizer,

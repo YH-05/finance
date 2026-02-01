@@ -17,7 +17,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
-
 from news.core.article import Article, ArticleSource
 from news.core.dedup import DuplicateChecker
 

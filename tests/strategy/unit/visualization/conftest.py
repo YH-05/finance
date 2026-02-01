@@ -5,7 +5,6 @@ including sample portfolios, ticker info, and drift results.
 """
 
 import pytest
-
 from strategy.portfolio import Portfolio
 from strategy.rebalance.types import DriftResult
 from strategy.types import TickerInfo

@@ -12,7 +12,6 @@ from typing import Literal
 
 import numpy as np
 import pandas as pd
-
 from utils_core.logging import get_logger
 
 from ..errors import ValidationError

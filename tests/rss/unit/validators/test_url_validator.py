@@ -1,7 +1,6 @@
 """Unit tests for URL validator."""
 
 import pytest
-
 from rss.exceptions import InvalidURLError
 from rss.validators.url_validator import URLValidator
 

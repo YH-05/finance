@@ -2,7 +2,6 @@
 
 import pandas as pd
 import pytest
-
 from factor.core.normalizer import Normalizer
 from factor.errors import ValidationError
 

@@ -8,12 +8,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+from utils_core.logging import get_logger
+
 from analyze.reporting.upcoming_events import (
     EarningsDateInfo,
     UpcomingEventsAnalyzer,
     get_upcoming_economic_releases,
 )
-from utils_core.logging import get_logger
 
 
 @dataclass

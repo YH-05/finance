@@ -2,12 +2,11 @@
 
 import pandas as pd
 import pytest
-from pandas import DataFrame
-
 from analyze.reporting.performance_agent import (
     PerformanceAnalyzer4Agent,
     PerformanceResult,
 )
+from pandas import DataFrame
 
 
 class TestPerformanceResult:

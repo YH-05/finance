@@ -9,9 +9,8 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-from pandas import DataFrame
-
 from analyze.reporting.interest_rate import InterestRateAnalyzer
+from pandas import DataFrame
 
 
 class TestInterestRateAnalyzerInit:

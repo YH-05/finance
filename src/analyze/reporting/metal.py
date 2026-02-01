@@ -9,11 +9,11 @@ from pathlib import Path
 
 import pandas as pd
 import plotly.graph_objects as go
+from configuration.file_path import Config
+from market.fred.sample_data import FredDataLoader
 from pandas import DataFrame
 
 from analyze.reporting.market_report_utils import MarketPerformanceAnalyzer
-from configuration.file_path import Config
-from market.fred.sample_data import FredDataLoader
 
 
 class DollarsIndexAndMetalsAnalyzer:

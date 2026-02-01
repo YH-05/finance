@@ -37,7 +37,6 @@ import pandas as pd
 import yfinance as yf
 from dotenv import load_dotenv
 from pandas import DataFrame, Timestamp
-
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="upcoming_events")

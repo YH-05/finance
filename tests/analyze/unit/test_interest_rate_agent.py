@@ -9,12 +9,11 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-from pandas import DataFrame
-
 from analyze.reporting.interest_rate_agent import (
     InterestRateAnalyzer4Agent,
     InterestRateResult,
 )
+from pandas import DataFrame
 
 
 class TestInterestRateResult:

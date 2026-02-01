@@ -5,7 +5,6 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-
 from market.yfinance import (
     DataFetchError,
     DataSource,

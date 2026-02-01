@@ -19,7 +19,6 @@ from datetime import datetime
 from pathlib import Path
 
 import pytest
-
 from database.utils.format_converter import (
     json_to_parquet,
     parquet_to_json,

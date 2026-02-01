@@ -19,7 +19,6 @@ if TYPE_CHECKING:
     from collections.abc import AsyncIterator
 
 import pytest
-
 from news.config.workflow import NewsWorkflowConfig, SummarizationConfig
 from news.models import (
     ArticleSource,

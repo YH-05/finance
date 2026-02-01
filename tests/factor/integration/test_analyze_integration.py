@@ -7,7 +7,6 @@ analysis functions and factor calculations.
 import numpy as np
 import pandas as pd
 import pytest
-
 from factor.integration.analyze_integration import (
     EnhancedFactorAnalyzer,
     calculate_factor_with_indicators,

@@ -13,8 +13,6 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-from pandas import DataFrame
-
 from analyze.reporting.upcoming_events import (
     MAJOR_RELEASES,
     EarningsDateInfo,
@@ -22,6 +20,7 @@ from analyze.reporting.upcoming_events import (
     UpcomingEventsAnalyzer,
     get_upcoming_economic_releases,
 )
+from pandas import DataFrame
 
 # =============================================================================
 # Constants for Testing

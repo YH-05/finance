@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+from utils_core.logging import get_logger
 
 from market.errors import ExportError
 from market.types import (
@@ -19,7 +20,6 @@ from market.types import (
     AnalysisResult,
     MarketDataResult,
 )
-from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="export")
 

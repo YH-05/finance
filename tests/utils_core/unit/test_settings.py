@@ -6,7 +6,6 @@ import os
 from typing import TYPE_CHECKING
 
 import pytest
-
 from utils_core.settings import (
     get_fred_api_key,
     get_log_dir,

@@ -18,7 +18,6 @@ import inspect
 from typing import Protocol
 
 import pandas as pd
-
 from strategy.providers.protocol import DataProvider
 from strategy.types import TickerInfo
 

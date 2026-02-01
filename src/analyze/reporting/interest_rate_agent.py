@@ -9,9 +9,9 @@ from datetime import datetime
 from typing import Any
 
 from pandas import DataFrame
+from utils_core.logging import get_logger
 
 from analyze.reporting.interest_rate import InterestRateAnalyzer
-from utils_core.logging import get_logger
 
 
 @dataclass

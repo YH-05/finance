@@ -11,7 +11,6 @@ from pathlib import Path
 
 import pytest
 from pytest_httpserver import HTTPServer  # type: ignore[import-untyped]
-
 from rss import (
     FeedFetcher,
     FeedManager,

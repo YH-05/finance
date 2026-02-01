@@ -11,11 +11,10 @@ from enum import Enum
 from typing import Protocol
 
 import pytest
-from pydantic import HttpUrl
-
 from news.core.article import Article, ArticleSource
 from news.core.result import FetchResult
 from news.core.sink import SinkProtocol, SinkType
+from pydantic import HttpUrl
 
 
 class TestSinkTypeEnum:

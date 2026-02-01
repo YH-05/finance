@@ -13,7 +13,6 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-
 from factor.providers.cache import Cache
 from utils_core.logging import get_logger
 
