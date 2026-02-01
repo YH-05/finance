@@ -15,11 +15,12 @@ from typing import Any
 import numpy as np
 import openpyxl
 import pandas as pd
-import src.database_utils as db_utils
-import src.ROIC_make_data_files_ver2 as roic_utils
 import yaml
 from dotenv import load_dotenv
 from tqdm import tqdm
+
+import src.database_utils as db_utils
+import src.ROIC_make_data_files_ver2 as roic_utils
 
 warnings.simplefilter("ignore")
 
@@ -88,8 +89,12 @@ def load_bpm_and_export_factset_code_file(
 
     # フォルダ
     load_dotenv()
-    BPM_DATA_DIR = Path(os.environ.get("BPM_DATA_DIR"))  # ty:ignore[invalid-argument-type]
-    BPM_SRC_DIR = Path(os.environ.get("BPM_SRC_DIR"))  # ty:ignore[invalid-argument-type]
+    BPM_DATA_DIR = Path(
+        os.environ.get("BPM_DATA_DIR")
+    )  # ty:ignore[invalid-argument-type]
+    BPM_SRC_DIR = Path(
+        os.environ.get("BPM_SRC_DIR")
+    )  # ty:ignore[invalid-argument-type]
     src_dir = Path(os.environ.get("SRC_DIR"))
 
     with open(src_dir / "BPM_Index-code-map.yaml", encoding="utf-8") as f:

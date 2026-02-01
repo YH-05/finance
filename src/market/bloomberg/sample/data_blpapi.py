@@ -466,7 +466,10 @@ class BlpapiFetcher:
                         request.append("securities", sec)  # type: ignore
 
                     request_fields = fields.copy()
-                    if include_announcement_date and "ANNOUNCEMENT_DT" not in request_fields:
+                    if (
+                        include_announcement_date
+                        and "ANNOUNCEMENT_DT" not in request_fields
+                    ):
                         request_fields.append("ANNOUNCEMENT_DT")
 
                     for field in request_fields:

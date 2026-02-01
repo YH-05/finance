@@ -1344,7 +1344,7 @@ def make_roic_label_and_performance_table():
     ]
     df_roic_lr = df_return_and_roic_filled.loc[
         df_return_and_roic_filled["date"].dt.month.isin([3, 6, 9, 12]),
-        ["Quarter", "Symbol"] + roic_cols,
+        ["Quarter", "Symbol", *roic_cols],
     ].drop_duplicates(ignore_index=True)
 
     df_roic_lr["ROIC_Slope_20QForward"] = df_roic_lr.apply(
@@ -1421,8 +1421,10 @@ def make_roic_label_and_performance_table():
             "weight",
             "Rtn_M",
             "Rtn_M_1MForward",
+            *sorted(
+                [col for col in df_return_and_roic_filled.columns if "ROIC" in col]
+            ),
         ]
-        + sorted([col for col in df_return_and_roic_filled.columns if "ROIC" in col])
     )
 
     df_return_and_roic_filled.to_parquet(DATA_DIR / "MSCI KOKUSAI_all data.parquet")

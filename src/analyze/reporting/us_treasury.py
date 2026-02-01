@@ -449,7 +449,11 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
     df_loadings = pd.DataFrame(
         pca.components_[:3, :],  # 上位3成分のみ抽出
         columns=df_yield.columns,
-        index=["PC1 (Level)", "PC2 (Slope)", "PC3 (Curvature)"],  # ty:ignore[invalid-argument-type]
+        index=[
+            "PC1 (Level)",
+            "PC2 (Slope)",
+            "PC3 (Curvature)",
+        ],  # ty:ignore[invalid-argument-type]
     )
 
     # 主成分スコア（time series, top3 components）
