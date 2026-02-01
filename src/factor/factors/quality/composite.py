@@ -32,13 +32,13 @@ Examples
 from datetime import datetime
 
 import pandas as pd
-from utils_core.logging import get_logger
 
 from factor.core.base import Factor
 from factor.core.normalizer import Normalizer
 from factor.enums import FactorCategory
 from factor.errors import ValidationError
 from factor.providers.base import DataProvider
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

@@ -7,6 +7,7 @@ verifying the complete flow from ROIC calculation to transition labeling.
 import numpy as np
 import pandas as pd
 import pytest
+
 from factor.factors.quality.roic import ROICFactor
 from factor.factors.quality.roic_label import ROICTransitionLabeler
 

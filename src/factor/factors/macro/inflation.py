@@ -8,6 +8,7 @@ Inflation Rate (T10YIE).
 from typing import cast
 
 import pandas as pd
+
 from utils_core.logging import get_logger
 
 from ...core.orthogonalization import Orthogonalizer

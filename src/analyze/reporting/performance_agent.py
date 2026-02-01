@@ -10,9 +10,9 @@ from datetime import datetime
 from typing import Any
 
 from pandas import DataFrame
-from utils_core.logging import get_logger
 
 from analyze.reporting.performance import PerformanceAnalyzer
+from utils_core.logging import get_logger
 
 
 @dataclass

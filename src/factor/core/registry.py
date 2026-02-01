@@ -39,10 +39,9 @@ True
 # AIDEV-NOTE: Factor の循環インポートを避けるため TYPE_CHECKING を使用
 from typing import TYPE_CHECKING, TypeVar
 
-from utils_core.logging import get_logger
-
 from factor.enums import FactorCategory
 from factor.errors import FactorError
+from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from factor.core.base import Factor

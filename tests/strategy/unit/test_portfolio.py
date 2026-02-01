@@ -14,6 +14,7 @@ import warnings
 
 import pandas as pd
 import pytest
+
 from strategy.errors import InvalidTickerError, NormalizationWarning, ValidationError
 from strategy.portfolio import Portfolio
 from strategy.providers.protocol import DataProvider

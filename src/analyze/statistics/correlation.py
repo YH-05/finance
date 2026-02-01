@@ -28,6 +28,7 @@ from typing import cast
 
 import numpy as np
 import pandas as pd
+
 from utils_core.logging import get_logger
 
 from .types import CorrelationMethod, CorrelationResult

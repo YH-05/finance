@@ -8,6 +8,7 @@ Tests for DriftResult:
 """
 
 import pytest
+
 from strategy.rebalance.types import DriftResult
 
 # =============================================================================

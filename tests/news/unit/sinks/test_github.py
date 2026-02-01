@@ -12,11 +12,12 @@ from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
+from pydantic import HttpUrl
+
 from news.core.article import Article, ArticleSource, ContentType, Provider
 from news.core.result import FetchResult
 from news.core.sink import SinkProtocol, SinkType
 from news.sinks.github import GitHubSink, GitHubSinkConfig
-from pydantic import HttpUrl
 
 if TYPE_CHECKING:
     from pathlib import Path

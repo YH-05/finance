@@ -11,11 +11,12 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from pydantic import HttpUrl
+
 from news.core.article import Article, ArticleSource, ContentType, Provider
 from news.core.result import FetchResult
 from news.core.sink import SinkProtocol, SinkType
 from news.sinks.file import FileSink, WriteMode
-from pydantic import HttpUrl
 
 
 class TestWriteModeEnum:

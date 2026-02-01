@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
+
 from rss.exceptions import FeedAlreadyExistsError, FeedFetchError, FeedNotFoundError
 from rss.services.feed_manager import FeedManager
 from rss.types import (

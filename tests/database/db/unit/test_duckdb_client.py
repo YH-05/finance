@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pandas as pd
+
 from database.db.duckdb_client import DuckDBClient
 
 

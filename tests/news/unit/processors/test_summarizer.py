@@ -12,9 +12,10 @@ from typing import TYPE_CHECKING, Any
 from unittest.mock import MagicMock, patch
 
 import pytest
+from pydantic import HttpUrl
+
 from news.core.article import Article, ArticleSource
 from news.core.processor import ProcessorProtocol, ProcessorType
-from pydantic import HttpUrl
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator

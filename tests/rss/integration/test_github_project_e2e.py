@@ -12,6 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from pytest_httpserver import HTTPServer  # type: ignore[import-untyped]
+
 from rss import FeedFetcher, FeedManager, FeedReader
 from utils_core.logging import get_logger
 

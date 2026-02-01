@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
+
 from strategy.risk.calculator import RiskCalculator
 
 # Threshold for considering standard deviation as effectively zero

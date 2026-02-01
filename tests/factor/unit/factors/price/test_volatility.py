@@ -22,6 +22,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import pytest
+
 from factor.core.base import Factor
 from factor.enums import FactorCategory
 from factor.errors import ValidationError

@@ -8,11 +8,11 @@ from typing import Any
 
 import pandas as pd
 import yfinance as yf
-from market.yfinance import DataFetchError, FetchOptions, YFinanceFetcher
-from utils_core.logging import get_logger
 
+from market.yfinance import DataFetchError, FetchOptions, YFinanceFetcher
 from strategy.errors import DataProviderError
 from strategy.types import TickerInfo
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="market_analysis_provider")
 

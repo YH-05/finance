@@ -18,6 +18,7 @@ from typing import Any
 
 import pandas as pd
 import pytest
+
 from strategy.output.formatter import ResultFormatter
 from strategy.risk.metrics import RiskMetricsResult
 

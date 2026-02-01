@@ -16,9 +16,9 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from utils_core.logging import get_logger
 
 from market.errors import CacheError
+from utils_core.logging import get_logger
 
 from .types import CacheConfig
 

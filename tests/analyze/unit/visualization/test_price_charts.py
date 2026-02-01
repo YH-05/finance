@@ -7,6 +7,7 @@ from unittest.mock import patch
 import pandas as pd
 import plotly.graph_objects as go
 import pytest
+
 from analyze.visualization.charts import ChartConfig, ChartTheme
 from analyze.visualization.price_charts import (
     CandlestickChart,

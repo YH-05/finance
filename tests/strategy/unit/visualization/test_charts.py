@@ -11,6 +11,7 @@ Tests for chart generation functionality:
 
 import plotly.graph_objects as go
 import pytest
+
 from strategy.portfolio import Portfolio
 from strategy.rebalance.types import DriftResult
 from strategy.types import TickerInfo

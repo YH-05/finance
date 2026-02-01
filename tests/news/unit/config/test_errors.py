@@ -1,6 +1,7 @@
 """Unit tests for configuration error classes."""
 
 import pytest
+
 from news.core.errors import NewsError
 
 

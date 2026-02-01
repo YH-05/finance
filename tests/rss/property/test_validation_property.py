@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 from hypothesis import given
 from hypothesis import strategies as st
+
 from rss.exceptions import InvalidURLError
 from rss.types import Feed, FeedItem, FetchInterval, FetchStatus
 from rss.validators.url_validator import URLValidator

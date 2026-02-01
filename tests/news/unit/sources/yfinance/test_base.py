@@ -11,6 +11,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
+
 from news.core.article import Article, ArticleSource, ContentType
 from news.core.errors import SourceError, ValidationError
 from news.core.result import RetryConfig

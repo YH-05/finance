@@ -18,6 +18,7 @@ import time
 import numpy as np
 import pandas as pd
 import pytest
+
 from factor.core.normalizer import Normalizer
 from factor.core.orthogonalization import Orthogonalizer
 from factor.core.pca import YieldCurvePCA

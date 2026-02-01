@@ -16,6 +16,7 @@ import math
 import numpy as np
 import pandas as pd
 import pytest
+
 from analyze.statistics.correlation import (
     CorrelationAnalyzer,
     CorrelationResult,

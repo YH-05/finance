@@ -7,6 +7,7 @@ Level, Slope, and Curvature factors from yield curve data using PCA.
 from typing import cast
 
 import pandas as pd
+
 from utils_core.logging import get_logger
 
 from ...core.orthogonalization import Orthogonalizer

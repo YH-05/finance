@@ -3,9 +3,8 @@
 import sqlite3
 from pathlib import Path
 
-from utils_core.logging import get_logger
-
 from database.types import MigrationInfo
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

@@ -14,6 +14,7 @@ from datetime import datetime
 
 import pandas as pd
 import pytest
+
 from factor.core.base import Factor, FactorComputeOptions, FactorMetadata
 from factor.enums import FactorCategory
 from factor.errors import ValidationError

@@ -21,10 +21,10 @@ from typing import Any
 
 import pandas as pd
 import yfinance as yf
-from utils_core.logging import get_logger
 
 from factor.errors import DataFetchError
 from factor.providers.cache import Cache
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 

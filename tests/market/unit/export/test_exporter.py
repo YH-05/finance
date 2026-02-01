@@ -14,6 +14,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+
 from market.errors import ExportError
 from market.export.exporter import DataExporter
 from market.types import (

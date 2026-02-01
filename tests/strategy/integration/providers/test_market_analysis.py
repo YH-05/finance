@@ -10,6 +10,7 @@ Note:
 
 import pandas as pd
 import pytest
+
 from strategy.providers.market_analysis import MarketAnalysisProvider
 from strategy.providers.protocol import DataProvider
 from strategy.types import TickerInfo

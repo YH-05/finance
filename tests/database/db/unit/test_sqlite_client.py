@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+
 from database.db.sqlite_client import SQLiteClient
 
 

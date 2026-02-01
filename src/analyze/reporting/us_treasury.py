@@ -17,11 +17,12 @@ import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import seaborn as sns
-from configuration.file_path import Config
 from matplotlib import gridspec
 from matplotlib.ticker import MultipleLocator, PercentFormatter
 from plotly.subplots import make_subplots
 from sklearn.decomposition import PCA
+
+from configuration.file_path import Config
 
 FRED_API = os.getenv("FRED_API_KEY")
 

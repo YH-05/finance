@@ -15,6 +15,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import pytest
+
 from market.types import (
     AnalysisResult,
     DataSource,

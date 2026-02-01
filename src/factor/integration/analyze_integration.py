@@ -25,6 +25,7 @@ Examples
 from typing import TYPE_CHECKING, Any, cast
 
 import pandas as pd
+
 from analyze.statistics.correlation import calculate_correlation
 from analyze.technical.indicators import TechnicalIndicators
 from utils_core.logging import get_logger

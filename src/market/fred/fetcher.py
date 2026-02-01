@@ -14,6 +14,7 @@ from typing import Any, ClassVar
 import pandas as pd
 from dotenv import load_dotenv
 from fredapi import Fred
+
 from utils_core.logging import get_logger
 
 from .base_fetcher import BaseDataFetcher

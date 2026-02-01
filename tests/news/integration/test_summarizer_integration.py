@@ -19,6 +19,7 @@ import re
 from datetime import datetime, timezone
 
 import pytest
+
 from news.config.workflow import load_config
 from news.models import (
     ArticleSource,

@@ -23,6 +23,7 @@ from datetime import datetime
 
 import pandas as pd
 import pytest
+
 from factor.core.base import Factor, FactorMetadata
 
 # AIDEV-NOTE: 以下のインポートは registry.py 実装後に有効になる

@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pandas as pd
 import pytest
+
 from factor.integration.analyze_integration import EnhancedFactorAnalyzer
 from factor.integration.market_integration import MarketDataProvider
 

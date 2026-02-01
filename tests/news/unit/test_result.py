@@ -4,10 +4,11 @@ from datetime import datetime, timezone
 from typing import Any
 
 import pytest
+from pydantic import HttpUrl
+
 from news.core.article import Article, ArticleSource
 from news.core.errors import SourceError
 from news.core.result import FetchResult, RetryConfig
-from pydantic import HttpUrl
 
 
 class TestRetryConfig:

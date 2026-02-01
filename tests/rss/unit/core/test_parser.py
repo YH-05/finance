@@ -3,6 +3,7 @@
 import uuid
 
 import pytest
+
 from rss.core.parser import FeedParser
 from rss.exceptions import FeedParseError
 from rss.types import FeedItem

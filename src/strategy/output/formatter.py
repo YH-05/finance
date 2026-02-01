@@ -7,6 +7,7 @@ RiskMetricsResult to various output formats.
 from typing import Any
 
 import pandas as pd
+
 from utils_core.logging import get_logger
 
 from ..risk.metrics import RiskMetricsResult

@@ -10,6 +10,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Literal
 
 import plotly.graph_objects as go
+
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:

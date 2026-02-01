@@ -9,8 +9,9 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-from analyze.reporting.currency import CurrencyAnalyzer
 from pandas import DataFrame
+
+from analyze.reporting.currency import CurrencyAnalyzer
 
 
 class TestCurrencyAnalyzerInit:

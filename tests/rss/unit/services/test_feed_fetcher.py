@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
+
 from rss.core.diff_detector import DiffDetector
 from rss.core.http_client import HTTPClient
 from rss.core.parser import FeedParser

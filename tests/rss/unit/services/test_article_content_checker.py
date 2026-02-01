@@ -18,6 +18,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
+
 from rss.services.article_content_checker import (
     ARTICLE_SELECTORS,
     MIN_CONTENT_LENGTH,

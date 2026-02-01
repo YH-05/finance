@@ -14,9 +14,10 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import pytest
-from factor.factors.price.momentum import MomentumFactor
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
+
+from factor.factors.price.momentum import MomentumFactor
 
 
 class MockDataProvider:

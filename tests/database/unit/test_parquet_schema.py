@@ -13,6 +13,7 @@ import datetime
 
 import pandas as pd
 import pytest
+
 from database.parquet_schema import (
     EconomicIndicatorSchema,
     StockPriceSchema,

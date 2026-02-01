@@ -2,6 +2,7 @@
 
 import pandas as pd
 import pytest
+
 from factor.core.return_calculator import ReturnCalculator, ReturnConfig
 from factor.errors import ValidationError
 

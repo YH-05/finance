@@ -18,9 +18,8 @@ import yfinance as yf
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-from utils_core.logging import get_logger
-
 from analyze.returns import calculate_return
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="sector")
 

@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+
 from market.cache import (
     DEFAULT_CACHE_DB_PATH,
     PERSISTENT_CACHE_CONFIG,

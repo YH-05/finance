@@ -12,6 +12,7 @@ from abc import ABC
 from datetime import datetime, timezone
 
 import pytest
+
 from news.extractors.base import BaseExtractor
 from news.models import (
     ArticleSource,

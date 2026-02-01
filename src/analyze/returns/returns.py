@@ -14,9 +14,9 @@ from typing import Any
 
 import pandas as pd
 import yfinance as yf
-from utils_core.logging import get_logger
 
 from analyze.config.loader import get_return_periods, get_symbols
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="returns")
 

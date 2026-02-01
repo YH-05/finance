@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
+
 from factor.integration.market_integration import (
     MarketDataProvider,
     create_market_provider,

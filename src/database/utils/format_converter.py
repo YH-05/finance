@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
+
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)

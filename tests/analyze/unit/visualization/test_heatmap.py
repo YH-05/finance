@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import pytest
+
 from analyze.statistics.types import CorrelationResult
 from analyze.visualization.charts import ChartConfig, ChartTheme
 from analyze.visualization.heatmap import HeatmapChart
