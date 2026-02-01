@@ -8,7 +8,7 @@ from typing import Any
 import feedparser
 
 from ..exceptions import FeedParseError
-from ..types import FeedItem
+from ..types import FeedItem, FeedValidationResult
 
 
 # Logger lazy initialization to avoid circular imports
@@ -251,3 +251,110 @@ class FeedParser:
             return None
 
         return None
+
+    def _validate_feed_content(
+        self,
+        content: bytes,
+        content_type: str | None = None,
+    ) -> FeedValidationResult:
+        """Validate feed content format.
+
+        Performs early validation of feed content before parsing.
+        Checks for empty content, invalid Content-Type, non-XML content,
+        and missing RSS/Atom elements.
+
+        Parameters
+        ----------
+        content : bytes
+            Raw feed content as bytes
+        content_type : str | None, optional
+            Content-Type header from HTTP response, by default None
+
+        Returns
+        -------
+        FeedValidationResult
+            Validation result with is_valid flag and error message
+
+        Examples
+        --------
+        >>> parser = FeedParser()
+        >>> result = parser._validate_feed_content(b"<rss>...</rss>")
+        >>> result.is_valid
+        True
+        """
+        # 1. Empty content check
+        if not content or not content.strip():
+            logger.warning(
+                "Feed validation failed: empty content",
+                content_length=len(content) if content else 0,
+            )
+            return FeedValidationResult(
+                is_valid=False,
+                error="Empty feed content",
+            )
+
+        # 2. Content-Type check (if provided)
+        if content_type is not None:
+            valid_content_types = [
+                "application/rss+xml",
+                "application/atom+xml",
+                "application/xml",
+                "text/xml",
+                "text/html",  # Some sites return HTML content type
+            ]
+            content_type_lower = content_type.lower()
+            if not any(ct in content_type_lower for ct in valid_content_types):
+                logger.warning(
+                    "Feed validation failed: invalid Content-Type",
+                    content_type=content_type,
+                    content_preview=content[:100].decode("utf-8", errors="replace"),
+                )
+                return FeedValidationResult(
+                    is_valid=False,
+                    error=f"Invalid Content-Type: {content_type}",
+                )
+
+        # 3. XML signature check
+        try:
+            content_str = content.decode("utf-8", errors="replace").strip()
+        except Exception as e:
+            logger.warning(
+                "Feed validation failed: content decode error",
+                error=str(e),
+            )
+            return FeedValidationResult(
+                is_valid=False,
+                error="Failed to decode content as UTF-8",
+            )
+
+        if not content_str.startswith("<?xml") and not content_str.startswith("<"):
+            logger.warning(
+                "Feed validation failed: content does not appear to be XML",
+                content_preview=content_str[:100],
+            )
+            return FeedValidationResult(
+                is_valid=False,
+                error="Content does not appear to be XML",
+            )
+
+        # 4. RSS/Atom elements check
+        has_rss = "<rss" in content_str or "<channel>" in content_str
+        has_atom = "<feed" in content_str and "xmlns" in content_str
+
+        if not has_rss and not has_atom:
+            logger.warning(
+                "Feed validation failed: no RSS or Atom elements found",
+                content_preview=content_str[:200],
+            )
+            return FeedValidationResult(
+                is_valid=False,
+                error="No RSS or Atom elements found",
+            )
+
+        logger.debug(
+            "Feed validation passed",
+            content_length=len(content),
+            has_rss=has_rss,
+            has_atom=has_atom,
+        )
+        return FeedValidationResult(is_valid=True, error=None)

@@ -535,6 +535,69 @@ class Publisher:
 
         return issue_number, issue_url
 
+    async def _get_existing_project_item(self, issue_url: str) -> str | None:
+        """Project 内の既存 Item を検索し item_id を返す。
+
+        gh project item-list コマンドで Project 内の Item を検索し、
+        指定された Issue URL に一致する Item の ID を取得する。
+
+        Parameters
+        ----------
+        issue_url : str
+            検索する Issue の URL。
+
+        Returns
+        -------
+        str | None
+            既存の item_id、存在しない場合は None。
+
+        Notes
+        -----
+        - gh コマンドが失敗した場合も None を返す（graceful degradation）
+        - --jq フィルタで content.url が一致する Item の id を抽出
+
+        Examples
+        --------
+        >>> item_id = await publisher._get_existing_project_item(
+        ...     "https://github.com/YH-05/finance/issues/123"
+        ... )
+        >>> item_id
+        'PVTI_xxx'
+        """
+        owner = self._repo.split("/")[0]
+
+        # jq フィルタ: Issue URL に一致する Item の ID を取得
+        jq_filter = f'.items[] | select(.content.url == "{issue_url}") | .id'
+
+        result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "project",
+                "item-list",
+                str(self._project_number),
+                "--owner",
+                owner,
+                "--format",
+                "json",
+                "--jq",
+                jq_filter,
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        if result.returncode == 0 and result.stdout.strip():
+            item_id = result.stdout.strip()
+            logger.debug(
+                "Found existing project item",
+                issue_url=issue_url,
+                item_id=item_id,
+            )
+            return item_id
+
+        return None
+
     async def _add_to_project(
         self, issue_number: int, article: SummarizedArticle
     ) -> None:
@@ -542,6 +605,7 @@ class Publisher:
 
         gh project item-add で Issue を追加し、
         gh project item-edit で Status と PublishedDate フィールドを設定する。
+        既に Project に追加済みの場合は、フィールド更新のみを実行する。
 
         Parameters
         ----------
@@ -557,38 +621,60 @@ class Publisher:
 
         Notes
         -----
+        - 既存 Item がある場合は item-add をスキップ
         - Status フィールドは常に設定される
         - PublishedDate フィールドは article.extracted.collected.published が
           存在する場合のみ設定される
         """
-        # 1. Issue を Project に追加
         issue_url = f"https://github.com/{self._repo}/issues/{issue_number}"
         owner = self._repo.split("/")[0]
 
-        add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
-            [
-                "gh",
-                "project",
-                "item-add",
-                str(self._project_number),
-                "--owner",
-                owner,
-                "--url",
-                issue_url,
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+        # 1. 既存 Item を検索
+        item_id = await self._get_existing_project_item(issue_url)
 
-        item_id = add_result.stdout.strip()
+        if item_id is not None:
+            # 既存 Item がある場合はフィールド更新のみ
+            logger.info(
+                "Issue already in project, updating fields only",
+                issue_number=issue_number,
+                item_id=item_id,
+            )
+        else:
+            # 2. 新規 Issue を Project に追加
+            add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
+                [
+                    "gh",
+                    "project",
+                    "item-add",
+                    str(self._project_number),
+                    "--owner",
+                    owner,
+                    "--url",
+                    issue_url,
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
 
-        logger.debug(
-            "Added issue to project",
-            issue_number=issue_number,
-            project_number=self._project_number,
-            item_id=item_id,
-        )
+            item_id = add_result.stdout.strip()
+
+            # item_id が空の場合はフィールド設定をスキップ（graceful degradation）
+            if not item_id:
+                logger.warning(
+                    "Empty item_id from project item-add, skipping field updates",
+                    issue_number=issue_number,
+                    issue_url=issue_url,
+                    stderr=add_result.stderr,
+                )
+                return
+
+            logger.debug(
+                "Added issue to project",
+                issue_number=issue_number,
+                project_number=self._project_number,
+                item_id=item_id,
+            )
 
         # 2. Status フィールドを設定
         _, status_id = self._resolve_status(article)

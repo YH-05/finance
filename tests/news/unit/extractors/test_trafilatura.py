@@ -10,6 +10,7 @@ Tests cover:
 - Error handling and status mapping
 - min_body_length validation
 - Retry functionality with exponential backoff (Issue #2383)
+- User-Agent rotation (Issue #2605)
 """
 
 import asyncio
@@ -18,6 +19,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from news.config.workflow import (
+    ExtractionConfig,
+    PlaywrightFallbackConfig,
+    UserAgentRotationConfig,
+)
 from news.extractors.base import BaseExtractor
 from news.extractors.trafilatura import TrafilaturaExtractor
 from news.models import (
@@ -571,7 +577,9 @@ class TestTrafilaturaExtractorRetry:
         extractor = TrafilaturaExtractor()
         call_count = 0
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             nonlocal call_count
             call_count += 1
             return mock_rss_extracted_article_success
@@ -596,7 +604,9 @@ class TestTrafilaturaExtractorRetry:
         extractor = TrafilaturaExtractor()
         call_count = 0
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -628,7 +638,9 @@ class TestTrafilaturaExtractorRetry:
         extractor = TrafilaturaExtractor()
         call_count = 0
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -661,7 +673,9 @@ class TestTrafilaturaExtractorRetry:
         extractor = TrafilaturaExtractor(max_retries=3)
         call_count = 0
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             nonlocal call_count
             call_count += 1
             raise Exception(f"Attempt {call_count} failed")
@@ -692,7 +706,9 @@ class TestTrafilaturaExtractorRetry:
         extractor = TrafilaturaExtractor(max_retries=4)
         call_count = 0
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             nonlocal call_count
             call_count += 1
             if call_count < 4:
@@ -726,7 +742,9 @@ class TestTrafilaturaExtractorRetry:
         extractor = TrafilaturaExtractor(timeout_seconds=5)
         call_count = 0
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -754,7 +772,9 @@ class TestTrafilaturaExtractorRetry:
         """extract should return TIMEOUT after all timeout retries."""
         extractor = TrafilaturaExtractor(max_retries=3, timeout_seconds=5)
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             raise asyncio.TimeoutError("Timeout")
 
         with (
@@ -779,7 +799,9 @@ class TestTrafilaturaExtractorRetry:
         extractor = TrafilaturaExtractor(max_retries=1)
         call_count = 0
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             nonlocal call_count
             call_count += 1
             raise Exception("Failed")
@@ -823,7 +845,9 @@ class TestTrafilaturaExtractorBatch:
             for i in range(3)
         ]
 
-        async def mock_extract(url: str) -> RssExtractedArticle:
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
             return RssExtractedArticle(
                 url=url,
                 title="Test",
@@ -847,3 +871,535 @@ class TestTrafilaturaExtractorBatch:
         assert len(results) == 3
         assert all(isinstance(r, ExtractedArticle) for r in results)
         assert all(r.extraction_status == ExtractionStatus.SUCCESS for r in results)
+
+
+class TestTrafilaturaExtractorUserAgentRotation:
+    """Tests for TrafilaturaExtractor User-Agent rotation functionality.
+
+    Issue #2605: TrafilaturaExtractorにUser-Agent設定
+    """
+
+    def test_正常系_user_agent_configなしでインスタンス化できる(self) -> None:
+        """user_agent_configなしでインスタンス化できることを確認。"""
+        extractor = TrafilaturaExtractor()
+        assert extractor._user_agent_config is None
+
+    def test_正常系_user_agent_configありでインスタンス化できる(self) -> None:
+        """user_agent_configありでインスタンス化できることを確認。"""
+        ua_config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=["UA1", "UA2"],
+        )
+        extractor = TrafilaturaExtractor(user_agent_config=ua_config)
+        assert extractor._user_agent_config is ua_config
+
+    @pytest.mark.asyncio
+    async def test_正常系_User_Agentが抽出時に使用される(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """User-Agentが抽出時に使用されることを確認。"""
+        ua_config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=["CustomUA1", "CustomUA2"],
+        )
+        extractor = TrafilaturaExtractor(user_agent_config=ua_config)
+
+        captured_user_agents: list[str | None] = []
+
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
+            captured_user_agents.append(user_agent)
+            return mock_rss_extracted_article_success
+
+        with patch.object(
+            extractor._extractor,
+            "extract",
+            side_effect=mock_extract,
+        ):
+            await extractor.extract(sample_collected_article)
+
+        # User-Agentがいずれかの設定値であることを確認
+        assert len(captured_user_agents) == 1
+        assert captured_user_agents[0] in ["CustomUA1", "CustomUA2"]
+
+    @pytest.mark.asyncio
+    async def test_正常系_無効時はデフォルトUser_Agentが使用される(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """User-Agent rotation無効時はNoneが渡されることを確認（デフォルト使用）。"""
+        ua_config = UserAgentRotationConfig(
+            enabled=False,
+            user_agents=["CustomUA1", "CustomUA2"],
+        )
+        extractor = TrafilaturaExtractor(user_agent_config=ua_config)
+
+        captured_user_agents: list[str | None] = []
+
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
+            captured_user_agents.append(user_agent)
+            return mock_rss_extracted_article_success
+
+        with patch.object(
+            extractor._extractor,
+            "extract",
+            side_effect=mock_extract,
+        ):
+            await extractor.extract(sample_collected_article)
+
+        # User-AgentがNone（デフォルト使用）であることを確認
+        assert len(captured_user_agents) == 1
+        assert captured_user_agents[0] is None
+
+    @pytest.mark.asyncio
+    async def test_正常系_User_Agentがリクエスト毎にランダムに選択される(
+        self,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """User-Agentがリクエスト毎にランダムに選択されることを確認。"""
+        ua_config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=["UA1", "UA2", "UA3"],
+        )
+        extractor = TrafilaturaExtractor(user_agent_config=ua_config)
+
+        captured_user_agents: list[str | None] = []
+
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
+            captured_user_agents.append(user_agent)
+            return mock_rss_extracted_article_success
+
+        with patch.object(
+            extractor._extractor,
+            "extract",
+            side_effect=mock_extract,
+        ):
+            # 複数回抽出を実行
+            for i in range(20):
+                article = CollectedArticle(
+                    url=f"https://www.cnbc.com/article/{i}",  # type: ignore[arg-type]
+                    title=f"Test Article {i}",
+                    published=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+                    raw_summary=f"Summary {i}",
+                    source=ArticleSource(
+                        source_type=SourceType.RSS,
+                        source_name="CNBC Markets",
+                        category="market",
+                    ),
+                    collected_at=datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+                )
+                await extractor.extract(article)
+
+        # 複数種類のUser-Agentが使用されることを確認
+        unique_user_agents = set(captured_user_agents)
+        assert len(unique_user_agents) >= 2  # 20回試行で少なくとも2種類は使用される
+
+    @pytest.mark.asyncio
+    async def test_正常系_User_Agentがログに出力される(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """User-Agentがログに出力されることを確認（DEBUGレベル）。"""
+        ua_config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=["TestUserAgent/1.0"],
+        )
+        extractor = TrafilaturaExtractor(user_agent_config=ua_config)
+
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
+            return mock_rss_extracted_article_success
+
+        with (
+            patch.object(
+                extractor._extractor,
+                "extract",
+                side_effect=mock_extract,
+            ),
+            patch("news.extractors.trafilatura.logger") as mock_logger,
+        ):
+            await extractor.extract(sample_collected_article)
+
+        # DEBUGレベルでUser-Agentがログに出力されることを確認
+        mock_logger.debug.assert_called()
+        debug_calls = mock_logger.debug.call_args_list
+        user_agent_logged = any(
+            "Using custom User-Agent" in str(call) or "user_agent" in str(call)
+            for call in debug_calls
+        )
+        assert user_agent_logged
+
+    @pytest.mark.asyncio
+    async def test_正常系_user_agent_configなしでも正常に動作する(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """user_agent_configなしでも正常に動作することを確認。"""
+        extractor = TrafilaturaExtractor()  # user_agent_configなし
+
+        captured_user_agents: list[str | None] = []
+
+        async def mock_extract(
+            url: str, user_agent: str | None = None
+        ) -> RssExtractedArticle:
+            captured_user_agents.append(user_agent)
+            return mock_rss_extracted_article_success
+
+        with patch.object(
+            extractor._extractor,
+            "extract",
+            side_effect=mock_extract,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        # 正常に抽出が完了し、User-AgentはNone（デフォルト）
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+        assert len(captured_user_agents) == 1
+        assert captured_user_agents[0] is None
+
+
+class TestTrafilaturaExtractorPlaywrightFallback:
+    """Tests for TrafilaturaExtractor Playwright fallback functionality.
+
+    Issue #2608: trafilatura→Playwrightフォールバック
+    - trafilatura失敗時にPlaywrightで再試行
+    - フォールバック成功時は extraction_method="trafilatura+playwright"
+    - フォールバック無効時は従来通りtrafilaturaのみ
+    - 非同期コンテキストマネージャでブラウザ管理
+    """
+
+    @pytest.fixture
+    def extraction_config(self) -> ExtractionConfig:
+        """Create an ExtractionConfig with Playwright fallback enabled."""
+        return ExtractionConfig(
+            min_body_length=200,
+            max_retries=1,  # Reduce retries for faster tests
+            timeout_seconds=30,
+            playwright_fallback=PlaywrightFallbackConfig(
+                enabled=True,
+                browser="chromium",
+                headless=True,
+                timeout_seconds=30,
+            ),
+        )
+
+    @pytest.fixture
+    def extraction_config_disabled(self) -> ExtractionConfig:
+        """Create an ExtractionConfig with Playwright fallback disabled."""
+        return ExtractionConfig(
+            min_body_length=200,
+            max_retries=1,
+            timeout_seconds=30,
+            playwright_fallback=PlaywrightFallbackConfig(
+                enabled=False,
+            ),
+        )
+
+    def test_正常系_ExtractionConfigでインスタンス化できる(
+        self,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """TrafilaturaExtractor can be instantiated with ExtractionConfig."""
+        extractor = TrafilaturaExtractor.from_config(extraction_config)
+        assert extractor is not None
+        assert extractor._min_body_length == 200
+        assert extractor._playwright_config is not None
+        assert extractor._playwright_config.enabled is True
+
+    def test_正常系_フォールバック無効時はPlaywrightExtractorがNone(
+        self,
+        extraction_config_disabled: ExtractionConfig,
+    ) -> None:
+        """Playwright fallback disabled should result in None playwright extractor."""
+        extractor = TrafilaturaExtractor.from_config(extraction_config_disabled)
+        assert extractor._playwright_config is not None
+        assert extractor._playwright_config.enabled is False
+        assert extractor._playwright_extractor is None
+
+    @pytest.mark.asyncio
+    async def test_正常系_非同期コンテキストマネージャとして使用できる(
+        self,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """TrafilaturaExtractor can be used as async context manager."""
+        with patch("news.extractors.playwright.PlaywrightExtractor") as MockPlaywright:
+            mock_playwright = MagicMock()
+            mock_playwright.__aenter__ = AsyncMock(return_value=mock_playwright)
+            mock_playwright.__aexit__ = AsyncMock(return_value=None)
+            MockPlaywright.return_value = mock_playwright
+
+            async with TrafilaturaExtractor.from_config(extraction_config) as extractor:
+                assert extractor is not None
+                # Playwright extractor should be initialized
+                assert extractor._playwright_extractor is not None
+
+            # __aexit__ should have been called
+            mock_playwright.__aexit__.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_正常系_フォールバック無効時はPlaywrightが初期化されない(
+        self,
+        extraction_config_disabled: ExtractionConfig,
+    ) -> None:
+        """Playwright should not be initialized when fallback is disabled."""
+        async with TrafilaturaExtractor.from_config(
+            extraction_config_disabled
+        ) as extractor:
+            assert extractor._playwright_extractor is None
+
+    @pytest.mark.asyncio
+    async def test_正常系_trafilatura成功時はフォールバックしない(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """No fallback should occur when trafilatura succeeds."""
+        with patch("news.extractors.playwright.PlaywrightExtractor") as MockPlaywright:
+            mock_playwright = MagicMock()
+            mock_playwright.__aenter__ = AsyncMock(return_value=mock_playwright)
+            mock_playwright.__aexit__ = AsyncMock(return_value=None)
+            mock_playwright.extract = AsyncMock()
+            MockPlaywright.return_value = mock_playwright
+
+            async with TrafilaturaExtractor.from_config(extraction_config) as extractor:
+                with patch.object(
+                    extractor._extractor,
+                    "extract",
+                    new_callable=AsyncMock,
+                    return_value=mock_rss_extracted_article_success,
+                ):
+                    result = await extractor.extract(sample_collected_article)
+
+            assert result.extraction_status == ExtractionStatus.SUCCESS
+            assert result.extraction_method == "trafilatura"
+            # Playwright extract should not have been called
+            mock_playwright.extract.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_正常系_trafilatura失敗時にPlaywrightでフォールバック(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_failed: RssExtractedArticle,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """Fallback to Playwright when trafilatura fails."""
+        playwright_result = ExtractedArticle(
+            collected=sample_collected_article,
+            body_text="Playwright extracted content. " * 20,
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="playwright",
+            error_message=None,
+        )
+
+        with patch("news.extractors.playwright.PlaywrightExtractor") as MockPlaywright:
+            mock_playwright = MagicMock()
+            mock_playwright.__aenter__ = AsyncMock(return_value=mock_playwright)
+            mock_playwright.__aexit__ = AsyncMock(return_value=None)
+            mock_playwright.extract = AsyncMock(return_value=playwright_result)
+            MockPlaywright.return_value = mock_playwright
+
+            async with TrafilaturaExtractor.from_config(extraction_config) as extractor:
+                with patch.object(
+                    extractor._extractor,
+                    "extract",
+                    new_callable=AsyncMock,
+                    return_value=mock_rss_extracted_article_failed,
+                ):
+                    result = await extractor.extract(sample_collected_article)
+
+            assert result.extraction_status == ExtractionStatus.SUCCESS
+            assert result.extraction_method == "trafilatura+playwright"
+            assert result.body_text is not None
+            mock_playwright.extract.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_正常系_本文短すぎ時にPlaywrightでフォールバック(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_short: RssExtractedArticle,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """Fallback to Playwright when body text is too short."""
+        playwright_result = ExtractedArticle(
+            collected=sample_collected_article,
+            body_text="Playwright extracted long content. " * 20,
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="playwright",
+            error_message=None,
+        )
+
+        with patch("news.extractors.playwright.PlaywrightExtractor") as MockPlaywright:
+            mock_playwright = MagicMock()
+            mock_playwright.__aenter__ = AsyncMock(return_value=mock_playwright)
+            mock_playwright.__aexit__ = AsyncMock(return_value=None)
+            mock_playwright.extract = AsyncMock(return_value=playwright_result)
+            MockPlaywright.return_value = mock_playwright
+
+            async with TrafilaturaExtractor.from_config(extraction_config) as extractor:
+                with patch.object(
+                    extractor._extractor,
+                    "extract",
+                    new_callable=AsyncMock,
+                    return_value=mock_rss_extracted_article_short,
+                ):
+                    result = await extractor.extract(sample_collected_article)
+
+            assert result.extraction_status == ExtractionStatus.SUCCESS
+            assert result.extraction_method == "trafilatura+playwright"
+            mock_playwright.extract.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_異常系_フォールバックも失敗時は元のエラーを返す(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_failed: RssExtractedArticle,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """Return original error when both trafilatura and Playwright fail."""
+        playwright_result = ExtractedArticle(
+            collected=sample_collected_article,
+            body_text=None,
+            extraction_status=ExtractionStatus.FAILED,
+            extraction_method="playwright",
+            error_message="Playwright also failed",
+        )
+
+        with patch("news.extractors.playwright.PlaywrightExtractor") as MockPlaywright:
+            mock_playwright = MagicMock()
+            mock_playwright.__aenter__ = AsyncMock(return_value=mock_playwright)
+            mock_playwright.__aexit__ = AsyncMock(return_value=None)
+            mock_playwright.extract = AsyncMock(return_value=playwright_result)
+            MockPlaywright.return_value = mock_playwright
+
+            async with TrafilaturaExtractor.from_config(extraction_config) as extractor:
+                with patch.object(
+                    extractor._extractor,
+                    "extract",
+                    new_callable=AsyncMock,
+                    return_value=mock_rss_extracted_article_failed,
+                ):
+                    result = await extractor.extract(sample_collected_article)
+
+            # 元のtrafilaturaの結果を返す
+            assert result.extraction_status == ExtractionStatus.FAILED
+            assert result.extraction_method == "trafilatura"
+            assert result.error_message == "Failed to fetch"
+
+    @pytest.mark.asyncio
+    async def test_正常系_フォールバック無効時はtrafilaturaのみ(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_failed: RssExtractedArticle,
+        extraction_config_disabled: ExtractionConfig,
+    ) -> None:
+        """Only trafilatura is used when fallback is disabled."""
+        async with TrafilaturaExtractor.from_config(
+            extraction_config_disabled
+        ) as extractor:
+            with patch.object(
+                extractor._extractor,
+                "extract",
+                new_callable=AsyncMock,
+                return_value=mock_rss_extracted_article_failed,
+            ):
+                result = await extractor.extract(sample_collected_article)
+
+        assert result.extraction_status == ExtractionStatus.FAILED
+        assert result.extraction_method == "trafilatura"
+        # Playwright should not have been invoked
+        assert extractor._playwright_extractor is None
+
+    @pytest.mark.asyncio
+    async def test_正常系_PAYWALL時はフォールバックしない(
+        self,
+        sample_collected_article: CollectedArticle,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """No fallback on PAYWALL status (non-retryable)."""
+        paywall_result = RssExtractedArticle(
+            url="https://www.cnbc.com/article/test",
+            title="Test Article",
+            text=None,
+            author=None,
+            date=None,
+            source=None,
+            language=None,
+            status=RssExtractionStatus.PAYWALL,
+            error="Paywall detected",
+            extraction_method="trafilatura",
+        )
+
+        with patch("news.extractors.playwright.PlaywrightExtractor") as MockPlaywright:
+            mock_playwright = MagicMock()
+            mock_playwright.__aenter__ = AsyncMock(return_value=mock_playwright)
+            mock_playwright.__aexit__ = AsyncMock(return_value=None)
+            mock_playwright.extract = AsyncMock()
+            MockPlaywright.return_value = mock_playwright
+
+            async with TrafilaturaExtractor.from_config(extraction_config) as extractor:
+                with patch.object(
+                    extractor._extractor,
+                    "extract",
+                    new_callable=AsyncMock,
+                    return_value=paywall_result,
+                ):
+                    result = await extractor.extract(sample_collected_article)
+
+            assert result.extraction_status == ExtractionStatus.PAYWALL
+            # Playwright should not have been called
+            mock_playwright.extract.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_正常系_コンテキストマネージャ外でも使用できる(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+        extraction_config: ExtractionConfig,
+    ) -> None:
+        """Extractor can be used without context manager (fallback disabled)."""
+        # 通常の使用（コンテキストマネージャなし）でも動作
+        extractor = TrafilaturaExtractor.from_config(extraction_config)
+
+        with patch.object(
+            extractor._extractor,
+            "extract",
+            new_callable=AsyncMock,
+            return_value=mock_rss_extracted_article_success,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+        # フォールバックなしでの成功
+        assert result.extraction_method == "trafilatura"
+
+    @pytest.mark.asyncio
+    async def test_正常系_コンテキストマネージャ外でフォールバック不要時(
+        self,
+        sample_collected_article: CollectedArticle,
+        mock_rss_extracted_article_success: RssExtractedArticle,
+    ) -> None:
+        """Extractor works normally without context manager when fallback not needed."""
+        extractor = TrafilaturaExtractor()  # レガシーインスタンス化
+
+        with patch.object(
+            extractor._extractor,
+            "extract",
+            new_callable=AsyncMock,
+            return_value=mock_rss_extracted_article_success,
+        ):
+            result = await extractor.extract(sample_collected_article)
+
+        assert result.extraction_status == ExtractionStatus.SUCCESS
+        assert result.extraction_method == "trafilatura"

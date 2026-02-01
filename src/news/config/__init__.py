@@ -31,6 +31,7 @@ from .models import (
     YFinanceTickerSourceConfig,
 )
 from .workflow import (
+    DomainFilteringConfig,
     ExtractionConfig,
     FilteringConfig,
     GitHubConfig,
@@ -47,6 +48,7 @@ __all__ = [
     "ConfigLoader",
     "ConfigParseError",
     "ConfigValidationError",
+    "DomainFilteringConfig",
     "ExtractionConfig",
     "FileSinkConfig",
     "FilteringConfig",

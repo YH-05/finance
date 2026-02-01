@@ -42,6 +42,7 @@ coverage.xml
 .env
 .env.local
 *.log
+!logs/news-workflow-*.log
 .mcp.json
 
 # Documentation

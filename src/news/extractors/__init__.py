@@ -11,6 +11,8 @@ BaseExtractor
     Abstract base class for all extractors.
 TrafilaturaExtractor
     Trafilatura-based extractor that wraps ArticleExtractor.
+PlaywrightExtractor
+    Playwright-based extractor for JS-rendered pages (optional dependency).
 
 Examples
 --------
@@ -21,9 +23,15 @@ Examples
 >>> result = await extractor.extract(article)
 >>> result.extraction_status
 <ExtractionStatus.SUCCESS: 'success'>
+
+>>> # For JS-rendered pages (requires playwright optional dependency)
+>>> from news.extractors import PlaywrightExtractor
+>>> async with PlaywrightExtractor(config) as extractor:
+...     result = await extractor.extract(article)
 """
 
 from news.extractors.base import BaseExtractor
+from news.extractors.playwright import PlaywrightExtractor
 from news.extractors.trafilatura import TrafilaturaExtractor
 
-__all__ = ["BaseExtractor", "TrafilaturaExtractor"]
+__all__ = ["BaseExtractor", "PlaywrightExtractor", "TrafilaturaExtractor"]

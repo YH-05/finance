@@ -36,7 +36,6 @@ dependencies = [
     "nbformat>=5.10.4",
     "seaborn>=0.13.2",
     "lxml>=6.0.2",
-    "playwright>=1.49.0",
     "protobuf>=6.33.4",
     "pretty-errors",
     "trafilatura>=2.0.0",
@@ -72,6 +71,11 @@ mcp = [
 ]
 cli = [
     "click>=8.1.0",
+]
+
+# playwright optional dependencies (for JS-rendered page extraction)
+playwright = [
+    "playwright>=1.49.0",
 ]
 
 # automation optional dependencies
@@ -219,6 +223,7 @@ addopts = [
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
+    "playwright: marks tests as requiring playwright (deselect with '-m \"not playwright\"')",
 ]
 
 [tool.uv.workspace]
@@ -232,6 +237,7 @@ utils = { workspace = true }
 [dependency-groups]
 dev = [
     "apscheduler>=3.11.2",
+    "claude-agent-sdk>=0.1.22",
     "filelock>=3.20.3",
     "hypothesis>=6.150.2",
     "marimo>=0.19.2",
