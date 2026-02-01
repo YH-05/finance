@@ -44,7 +44,7 @@ def load_fred_series_id_json() -> dict:
     config = Config.from_env()
     json_path = config.fred_series_id_json
     try:
-        response = requests.get(json_path)
+        response = requests.get(json_path, timeout=30)
         response.raise_for_status()  # HTTPエラーを検出
         series_data = response.json()
     except Exception as e:

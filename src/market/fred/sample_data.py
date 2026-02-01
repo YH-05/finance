@@ -19,7 +19,7 @@ from configuration.file_path import Config
 
 def load_fred_series_id_json(github_url: str | None = None) -> dict:
     github_url = github_url if github_url else Config.from_env().fred_series_id_json
-    data = requests.get(url=github_url, verify=False).json()
+    data = requests.get(url=github_url, timeout=30).json()
     return data
 
 
