@@ -27,11 +27,12 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from dotenv import load_dotenv
 
-from .types import LogFormat, LogLevel
+if TYPE_CHECKING:
+    from .types import LogFormat, LogLevel
 
 # Load .env file once at module import
 load_dotenv(override=True)
@@ -55,16 +56,13 @@ def get_fred_api_key() -> str:
     """
     api_key = os.environ.get("FRED_API_KEY")
     if not api_key:
-        msg = (
-            "FRED_API_KEY is required. "
-            "Set it in .env file or environment variable."
-        )
+        msg = "FRED_API_KEY is required. Set it in .env file or environment variable."
         raise ValueError(msg)
     return api_key
 
 
 @lru_cache(maxsize=1)
-def get_log_level() -> LogLevel:
+def get_log_level() -> str:
     """Get log level from environment variable.
 
     ログレベルを環境変数 LOG_LEVEL から取得する。
@@ -81,20 +79,23 @@ def get_log_level() -> LogLevel:
         不正なログレベルが設定されている場合
     """
     level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    valid_levels: tuple[LogLevel, ...] = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
+    valid_levels: tuple[LogLevel, ...] = (
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "CRITICAL",
+    )
 
     if level_str not in valid_levels:
-        msg = (
-            f"Invalid LOG_LEVEL: {level_str}. "
-            f"Valid values: {', '.join(valid_levels)}"
-        )
+        msg = f"Invalid LOG_LEVEL: {level_str}. Valid values: {', '.join(valid_levels)}"
         raise ValueError(msg)
 
-    return level_str  # type: ignore[return-value]
+    return level_str
 
 
 @lru_cache(maxsize=1)
-def get_log_format() -> LogFormat:
+def get_log_format() -> str:
     """Get log format from environment variable.
 
     ログフォーマットを環境変数 LOG_FORMAT から取得する。
@@ -120,7 +121,7 @@ def get_log_format() -> LogFormat:
         )
         raise ValueError(msg)
 
-    return format_str  # type: ignore[return-value]
+    return format_str
 
 
 @lru_cache(maxsize=1)
