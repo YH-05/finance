@@ -120,9 +120,7 @@ class MarketPerformanceAnalyzer:
         self.performance_table = self._calculate_period_returns()
 
     # -------------------------------------------------------------------------------------
-    def get_eps_historical_data(
-        self, tickers_to_download: list[str]
-    ) -> pd.DataFrame:
+    def get_eps_historical_data(self, tickers_to_download: list[str]) -> pd.DataFrame:
         """
         指定された複数の銘柄の実績EPS（Reported EPS）のヒストリカルデータを取得する。
         年次（annual）と四半期（quarterly）のデータが含まれます。
