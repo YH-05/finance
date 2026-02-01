@@ -1,9 +1,5 @@
-"""
-file_path.py
-"""
-
-import os
 from dataclasses import dataclass
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -51,6 +47,14 @@ class Config:
     # log
     log_dir: Path
 
+    # --- API ---
+    # FRED
+    fred_api_key: str
+
+    # --- Configurations ---
+    # FRED SERIES ID
+    fred_series_id_json: str
+
     @classmethod
     def from_env(cls, env_path: Path | None = None) -> "Config":
         """環境変数から設定を読み込む"""
@@ -86,6 +90,12 @@ class Config:
             "TSA_DIR",
             # log
             "LOG_DIR",
+            # --- API ---
+            # FRED
+            "FRED_API_KEY",
+            # --- Configurations ---
+            # FRED SERIES
+            "FRED_SERIES_ID_JSON",
         ]
 
         # 環境変数の存在チェック
@@ -128,4 +138,10 @@ class Config:
             tsa_dir=Path(os.environ["TSA_DIR"]),
             # log
             log_dir=Path(os.environ["LOG_DIR"]),
+            # --- API ---
+            # FRED
+            fred_api_key=os.environ["FRED_API_KEY"],
+            # --- Configurations ---
+            # FRED SERIES
+            fred_series_id_json=os.environ["FRED_SERIES_ID_JSON"],
         )
