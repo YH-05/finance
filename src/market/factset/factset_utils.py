@@ -2,25 +2,24 @@
 factset_utils.py
 """
 
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
+import contextlib
 import os
-from pathlib import Path
 import sqlite3
 import time
-from typing import Any
 import warnings
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
-from dotenv import load_dotenv
 import numpy as np
 import openpyxl
 import pandas as pd
-from tqdm import tqdm
-import yaml
-
 import src.database_utils as db_utils
 import src.ROIC_make_data_files_ver2 as roic_utils
-
+import yaml
+from dotenv import load_dotenv
+from tqdm import tqdm
 
 warnings.simplefilter("ignore")
 
@@ -650,7 +649,7 @@ def store_to_database(
     df: pd.DataFrame,
     db_path: Path,
     table_name: str,
-    unique_cols: list[str] = ["date", "P_SYMBOL", "variable"],
+    unique_cols: list[str] | None = None,
     verbose: bool = True,
     on_duplicate: str = "skip",  # "skip" または "update"
 ):
@@ -664,6 +663,8 @@ def store_to_database(
         unique_cols ([str]): 一意性をチェックするカラム
         on_duplicate (str): 重複時の動作 - "skip" (スキップ) または "update" (上書き)
     """
+    if unique_cols is None:
+        unique_cols = ["date", "P_SYMBOL", "variable"]
 
     # 必須カラムのチェック
     if not all(col in df.columns for col in unique_cols):
@@ -794,9 +795,8 @@ def enable_wal_mode(db_path: Path, verbose: bool = True) -> None:
 
             if verbose:
                 print(f"ジャーナルモード変更: {current_mode} → {new_mode}")
-        else:
-            if verbose:
-                print("既にWALモードです")
+        elif verbose:
+            print("既にWALモードです")
 
 
 # ============================================================================================
@@ -978,10 +978,8 @@ def store_active_returns_batch_serial_write(
                     print(f"❌ {table_name}: {e}")
 
                 # エラー時はロールバック
-                try:
+                with contextlib.suppress(BaseException):
                     conn.rollback()
-                except:
-                    pass
 
     results["save_time"] = time.time() - save_start
     results["total_time"] = time.time() - start_time
@@ -1168,10 +1166,8 @@ def insert_active_returns_optimized_sqlite(
                     print(f"❌ {table_name}: {e}")
 
                 # エラー時はロールバック
-                try:
+                with contextlib.suppress(BaseException):
                     conn.rollback()
-                except:
-                    pass
 
     results["save_time"] = time.time() - save_start
     results["total_time"] = time.time() - start_time
@@ -1210,7 +1206,7 @@ def insert_active_returns_optimized_sqlite(
 def store_to_database_batch(
     df_dict: dict[str, pd.DataFrame],
     db_path: Path,
-    unique_cols: list[str] = ["date", "P_SYMBOL", "variable"],
+    unique_cols: list[str] | None = None,
     batch_size: int = 10000,
     max_workers: int | None = 1,  # デフォルトを1に変更(ロック回避)
     verbose: bool = True,
@@ -1229,15 +1225,17 @@ def store_to_database_batch(
     :param verbose: 進捗表示フラグ
     :return: 処理結果の統計情報
     """
+    if unique_cols is None:
+        unique_cols = ["date", "P_SYMBOL", "variable"]
+
     if not df_dict:
         if verbose:
             print("⚠️ 保存対象のデータがありません")
         return {"success": 0, "failed": 0, "total_rows": 0, "processing_time": 0}
 
-    if max_workers is not None:
-        if max_workers > 1 and verbose:
-            print("⚠️ max_workers > 1: データベースロックのリスクがあります")
-            print("   推奨: max_workers=1 または事前にWALモードを有効化")
+    if max_workers is not None and max_workers > 1 and verbose:
+        print("⚠️ max_workers > 1: データベースロックのリスクがあります")
+        print("   推奨: max_workers=1 または事前にWALモードを有効化")
 
     if verbose:
         print("=" * 60)
@@ -1690,10 +1688,8 @@ def upsert_financial_data(
         print(f"❌ エラー: {e}")
         conn.rollback()
         # 一時テーブルのクリーンアップ
-        try:
+        with contextlib.suppress(BaseException):
             cursor.execute(f'DROP TABLE IF EXISTS "{temp_table}"')
-        except:
-            pass
         raise
 
 
@@ -2170,7 +2166,7 @@ def check_missing_value_and_fill_by_sector_median(
         print(f"⚠️  {final_missing_total:,}件の欠損が残っています")
         print("\n欠損が残っている銘柄:")
         missing_rows = df[df[factor_list].isna().any(axis=1)]
-        print(missing_rows[["date", "SEDOL", "GICS Sector"] + factor_list])
+        print(missing_rows[["date", "SEDOL", "GICS Sector", *factor_list]])
 
     print("=" * 60)
 

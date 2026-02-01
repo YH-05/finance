@@ -1,15 +1,15 @@
 import datetime
-from pathlib import Path
 import re
 import sqlite3
+from pathlib import Path
 
-from bs4 import BeautifulSoup
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import pandas as pd
 import requests
 import seaborn as sns
+from bs4 import BeautifulSoup
 
 
 class TSAPassengerDataCollector:

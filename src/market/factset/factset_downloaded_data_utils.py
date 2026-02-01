@@ -4,12 +4,13 @@ factset_downloaded_data_utils.py
 Factsetからエクセルでダウンロードしたデータを操作するモジュール
 """
 
-import pandas as pd
-import numpy as np
 import datetime
 import sqlite3
-from pathlib import Path
 import warnings
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 warnings.simplefilter("ignore")
 
@@ -19,7 +20,7 @@ def store_to_database(
     df: pd.DataFrame,
     db_path: Path,
     table_name: str,
-    unique_cols: list[str] = ["date", "P_SYMBOL", "variable"],
+    unique_cols: list[str] | None = None,
     verbose: bool = False,
 ):
     """
@@ -33,6 +34,8 @@ def store_to_database(
         table_name (str): 書き込み先のテーブル名。
         unique_cols ([str]): 一意性をチェックするカラム
     """
+    if unique_cols is None:
+        unique_cols = ["date", "P_SYMBOL", "variable"]
 
     # 必須カラムのチェック
     if not all(col in df.columns for col in unique_cols):

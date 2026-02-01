@@ -345,7 +345,7 @@ class TestIsDuplicate:
                 "number": 100,
             }
         ]
-        is_dup, number, reason = is_duplicate(new_item, existing_issues)
+        is_dup, number, _ = is_duplicate(new_item, existing_issues)
         assert is_dup is True
         assert number == 100
 
@@ -361,7 +361,7 @@ class TestIsDuplicate:
                 "number": 101,
             }
         ]
-        is_dup, number, reason = is_duplicate(new_item, existing_issues)
+        is_dup, _, _ = is_duplicate(new_item, existing_issues)
         assert is_dup is True
 
     def test_正常系_タイトル類似で重複検出(self) -> None:
@@ -421,7 +421,7 @@ class TestIsDuplicate:
                 "number": 300,
             }
         ]
-        is_dup, number, reason = is_duplicate(new_item, existing_issues)
+        is_dup, number, _ = is_duplicate(new_item, existing_issues)
         assert is_dup is True
         assert number == 300
 
@@ -437,7 +437,7 @@ class TestIsDuplicate:
                 "number": 400,
             }
         ]
-        is_dup, number, reason = is_duplicate(new_item, existing_issues)
+        is_dup, _, _ = is_duplicate(new_item, existing_issues)
         assert is_dup is False
 
     def test_正常系_article_urlが空でURLマッチしない(self) -> None:
@@ -452,7 +452,7 @@ class TestIsDuplicate:
                 "number": 500,
             }
         ]
-        is_dup, number, reason = is_duplicate(new_item, existing_issues)
+        is_dup, _, _ = is_duplicate(new_item, existing_issues)
         assert is_dup is False
 
     def test_正常系_カスタム閾値で判定(self) -> None:
@@ -486,7 +486,7 @@ class TestIsDuplicate:
                 "number": 700,
             }
         ]
-        is_dup, number, reason = is_duplicate(new_item, existing_issues)
+        is_dup, _, reason = is_duplicate(new_item, existing_issues)
         assert is_dup is True
         assert reason == "URL一致"
 

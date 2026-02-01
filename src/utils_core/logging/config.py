@@ -11,6 +11,7 @@ Features
 - ProcessorFormatter による logging ハンドラー連携
 """
 
+import contextlib
 import functools
 import inspect
 import logging
@@ -280,23 +281,19 @@ def setup_logging(
 
     # Override with environment variables if set
     if os.environ.get("LOG_LEVEL"):
-        try:
-            level = get_log_level()
-        except ValueError:
+        with contextlib.suppress(ValueError):
             # Invalid level in env var, use default
-            pass
+            level = get_log_level()
 
     if os.environ.get("LOG_FORMAT"):
-        try:
+        with contextlib.suppress(ValueError):
+            # Invalid format in env var, use default
             format_value = get_log_format()
             # Support legacy "plain" format as alias for "console"
             if format_value == "plain":  # type: ignore[comparison-overlap]
                 format = "console"
             else:
                 format = format_value  # type: ignore
-        except ValueError:
-            # Invalid format in env var, use default
-            pass
 
     env_log_dir = get_log_dir()
     log_file_enabled = os.environ.get("LOG_FILE_ENABLED", "true").lower() != "false"
