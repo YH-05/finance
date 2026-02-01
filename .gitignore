@@ -26,6 +26,7 @@ env/
 *.swo
 *~
 .DS_Store
+*.code-workdpace
 
 # Testing
 .coverage
