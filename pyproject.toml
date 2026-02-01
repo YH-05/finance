@@ -155,7 +155,7 @@ ignore = [
 
 [tool.pyright]
 include = ["src", "tests", ".claude/agents"]
-exclude = [".venv", "**/__pycache__", "build", "dist", "tests/skills/finance_news_workflow", "src/**/sample"]
+exclude = [".venv", "**/__pycache__", "build", "dist", "tests/skills/finance_news_workflow", "src/**/sample", "src/preprocess"]
 extraPaths = [".claude/agents"]
 venvPath = "."
 venv = ".venv"

@@ -1942,9 +1942,9 @@ def process_ranking_factor_worker(
         # -------------------------------------------------------------
 
         # 各指標の計算実行
-        _add_metric_to_results("Rank", roic_utils.add_factor_rank_cols)
-        _add_metric_to_results("PctRank", roic_utils.add_factor_pct_rank_cols)
-        _add_metric_to_results("ZScore", roic_utils.add_factor_zscore_cols)
+        _add_metric_to_results("Rank", roic_utils.add_factor_rank_cols)  # type: ignore[name-defined]
+        _add_metric_to_results("PctRank", roic_utils.add_factor_pct_rank_cols)  # type: ignore[name-defined]
+        _add_metric_to_results("ZScore", roic_utils.add_factor_zscore_cols)  # type: ignore[name-defined]
 
         return results
 
@@ -2061,7 +2061,7 @@ def process_rank_calculation_store_to_db(
                 # DB書き込み(直列実行でロック回避)
                 for table_name, df_result in results:
                     # 既存テーブル削除
-                    db_utils.delete_table_from_database(
+                    db_utils.delete_table_from_database(  # type: ignore[name-defined]
                         db_path=financials_db_path, table_name=table_name
                     )
                     # 保存
