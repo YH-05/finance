@@ -11,8 +11,8 @@ from pathlib import Path
 import pandas as pd
 from pandas import DataFrame
 
+from src import factset_utils
 from src.configuration import Config
-import src.factset_utils as factset_utils
 
 
 def load_update_data(file_update: Path) -> DataFrame:
