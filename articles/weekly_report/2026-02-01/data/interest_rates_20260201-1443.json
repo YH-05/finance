@@ -1,0 +1,77 @@
+{
+  "group": "interest_rates",
+  "generated_at": "2026-02-01T14:43:44.893460",
+  "periods": [
+    "1D",
+    "1W",
+    "1M"
+  ],
+  "data": {
+    "DGS2": {
+      "latest": 3.53,
+      "changes": {
+        "1D": -0.03,
+        "1W": -0.08,
+        "1M": 0.08
+      }
+    },
+    "DGS30": {
+      "latest": 4.85,
+      "changes": {
+        "1D": 0.0,
+        "1W": 0.01,
+        "1M": 0.05
+      }
+    },
+    "T10Y2Y": {
+      "latest": 0.74,
+      "changes": {
+        "1D": 0.03,
+        "1W": 0.1,
+        "1M": 0.05
+      }
+    },
+    "FEDFUNDS": {
+      "latest": 3.72,
+      "changes": {
+        "1D": -0.16,
+        "1W": -0.61,
+        "1M": -1.61
+      }
+    },
+    "DGS10": {
+      "latest": 4.24,
+      "changes": {
+        "1D": -0.02,
+        "1W": -0.02,
+        "1M": 0.12
+      }
+    }
+  },
+  "yield_curve": {
+    "is_inverted": false,
+    "spread_10y_2y": 0.74,
+    "slope_status": "normal",
+    "dgs2_latest": 3.53,
+    "dgs10_latest": 4.24,
+    "dgs30_latest": 4.85
+  },
+  "data_freshness": {
+    "newest_date": "2026-01-30",
+    "oldest_date": "2025-12-01",
+    "has_date_gap": true,
+    "series_by_date": {
+      "2026-01-29": [
+        "DGS2",
+        "DGS10",
+        "DGS30"
+      ],
+      "2025-12-01": [
+        "FEDFUNDS"
+      ],
+      "2026-01-30": [
+        "T10Y2Y"
+      ]
+    }
+  }
+}

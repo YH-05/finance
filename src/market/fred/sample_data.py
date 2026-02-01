@@ -5,15 +5,15 @@ fetch_data.py
 import json
 import logging
 import os
-from pathlib import Path
 import re
 import sqlite3
+from pathlib import Path
 
-from fredapi import Fred
 import pandas as pd
 import requests
+from fredapi import Fred
 
-from src.configuration import Config
+from src.configuration.file_path import Config
 
 
 def load_fred_series_id_json(github_url: str | None = None) -> dict:

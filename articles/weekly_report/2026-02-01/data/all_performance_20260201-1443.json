@@ -1,0 +1,1757 @@
+{
+  "generated_at": "2026-02-01T14:44:19.280307",
+  "timestamp": "20260201-1443",
+  "categories": [
+    "indices_us",
+    "indices_global",
+    "mag7",
+    "sectors",
+    "commodities",
+    "interest_rates",
+    "currencies",
+    "upcoming_events"
+  ],
+  "data": {
+    "indices_us": {
+      "group": "indices",
+      "subgroup": "us",
+      "generated_at": "2026-02-01T14:43:26.123336",
+      "periods": [
+        "1D",
+        "WoW",
+        "1W",
+        "MTD",
+        "1M",
+        "3M",
+        "6M",
+        "YTD",
+        "1Y",
+        "3Y",
+        "5Y"
+      ],
+      "symbols": {
+        "^DJI": {
+          "1D": -0.36,
+          "1W": -0.42,
+          "1M": 1.09,
+          "3M": 2.65,
+          "6M": 10.79,
+          "1Y": 9.35,
+          "3Y": 44.89,
+          "5Y": 57.92,
+          "WoW": 0.83,
+          "MTD": 1.05,
+          "YTD": 1.05
+        },
+        "^GSPC": {
+          "1D": -0.43,
+          "1W": 0.34,
+          "1M": 0.62,
+          "3M": 0.7,
+          "6M": 9.46,
+          "1Y": 14.9,
+          "3Y": 72.78,
+          "5Y": 79.98,
+          "WoW": 2.09,
+          "MTD": 1.17,
+          "YTD": 1.17
+        },
+        "^IXIC": {
+          "1D": -0.94,
+          "1W": -0.17,
+          "1M": 0.18,
+          "3M": -2.07,
+          "6M": 11.08,
+          "1Y": 19.51,
+          "3Y": 107.38,
+          "5Y": 72.06,
+          "WoW": 2.21,
+          "MTD": 0.97,
+          "YTD": 0.97
+        },
+        "^NDX": {
+          "1D": -1.28,
+          "1W": -0.21,
+          "1M": 0.35,
+          "3M": -2.17,
+          "6M": 10.05,
+          "1Y": 19.34,
+          "3Y": 116.28,
+          "5Y": 89.51,
+          "WoW": 2.26,
+          "MTD": 1.37,
+          "YTD": 1.37
+        },
+        "^RUA": {
+          "1D": -0.55,
+          "1W": -0.01,
+          "1M": 0.7,
+          "3M": 0.82,
+          "6M": 9.4,
+          "1Y": 13.97,
+          "3Y": 69.17,
+          "5Y": 69.77,
+          "WoW": 1.64,
+          "MTD": 1.17,
+          "YTD": 1.17
+        },
+        "^RUI": {
+          "1D": -0.5,
+          "1W": 0.09,
+          "1M": 0.52,
+          "3M": 0.62,
+          "6M": 9.02,
+          "1Y": 13.96,
+          "3Y": 71.18,
+          "5Y": 73.27,
+          "WoW": 1.78,
+          "MTD": 1.03,
+          "YTD": 1.03
+        },
+        "^RUT": {
+          "1D": -1.55,
+          "1W": -2.08,
+          "1M": 4.52,
+          "3M": 5.19,
+          "6M": 18.18,
+          "1Y": 14.48,
+          "3Y": 38.27,
+          "5Y": 20.82,
+          "WoW": -1.2,
+          "MTD": 4.21,
+          "YTD": 4.21
+        },
+        "^SOX": {
+          "1D": -3.87,
+          "1W": 0.51,
+          "1M": 11.57,
+          "3M": 9.15,
+          "6M": 42.63,
+          "1Y": 62.63,
+          "3Y": 174.01,
+          "5Y": 159.76,
+          "WoW": 2.62,
+          "MTD": 8.56,
+          "YTD": 8.56
+        }
+      },
+      "summary": {
+        "best_performer": {
+          "symbol": "^SOX",
+          "period": "3Y",
+          "return_pct": 174.01
+        },
+        "worst_performer": {
+          "symbol": "^SOX",
+          "period": "1D",
+          "return_pct": -3.87
+        },
+        "period_averages": {
+          "1D": -1.18,
+          "WoW": 1.53,
+          "1W": -0.24,
+          "MTD": 2.44,
+          "1M": 2.44,
+          "3M": 1.86,
+          "6M": 15.08,
+          "YTD": 2.44,
+          "1Y": 21.02,
+          "3Y": 86.74,
+          "5Y": 77.89
+        },
+        "period_best": {
+          "1D": {
+            "symbol": "^DJI",
+            "return_pct": -0.36
+          },
+          "WoW": {
+            "symbol": "^SOX",
+            "return_pct": 2.62
+          },
+          "1W": {
+            "symbol": "^SOX",
+            "return_pct": 0.51
+          },
+          "MTD": {
+            "symbol": "^SOX",
+            "return_pct": 8.56
+          },
+          "1M": {
+            "symbol": "^SOX",
+            "return_pct": 11.57
+          },
+          "3M": {
+            "symbol": "^SOX",
+            "return_pct": 9.15
+          },
+          "6M": {
+            "symbol": "^SOX",
+            "return_pct": 42.63
+          },
+          "YTD": {
+            "symbol": "^SOX",
+            "return_pct": 8.56
+          },
+          "1Y": {
+            "symbol": "^SOX",
+            "return_pct": 62.63
+          },
+          "3Y": {
+            "symbol": "^SOX",
+            "return_pct": 174.01
+          },
+          "5Y": {
+            "symbol": "^SOX",
+            "return_pct": 159.76
+          }
+        },
+        "period_worst": {
+          "1D": {
+            "symbol": "^SOX",
+            "return_pct": -3.87
+          },
+          "WoW": {
+            "symbol": "^RUT",
+            "return_pct": -1.2
+          },
+          "1W": {
+            "symbol": "^RUT",
+            "return_pct": -2.08
+          },
+          "MTD": {
+            "symbol": "^IXIC",
+            "return_pct": 0.97
+          },
+          "1M": {
+            "symbol": "^IXIC",
+            "return_pct": 0.18
+          },
+          "3M": {
+            "symbol": "^NDX",
+            "return_pct": -2.17
+          },
+          "6M": {
+            "symbol": "^RUI",
+            "return_pct": 9.02
+          },
+          "YTD": {
+            "symbol": "^IXIC",
+            "return_pct": 0.97
+          },
+          "1Y": {
+            "symbol": "^DJI",
+            "return_pct": 9.35
+          },
+          "3Y": {
+            "symbol": "^RUT",
+            "return_pct": 38.27
+          },
+          "5Y": {
+            "symbol": "^RUT",
+            "return_pct": 20.82
+          }
+        }
+      },
+      "latest_dates": {
+        "^GSPC": "2026-01-30",
+        "^SOX": "2026-01-30",
+        "^IXIC": "2026-01-30",
+        "^DJI": "2026-01-30",
+        "^RUA": "2026-01-30",
+        "^NDX": "2026-01-30",
+        "^RUT": "2026-01-30",
+        "^RUI": "2026-01-30"
+      },
+      "data_freshness": {
+        "newest_date": "2026-01-30",
+        "oldest_date": "2026-01-30",
+        "has_date_gap": false,
+        "symbols_by_date": {
+          "2026-01-30": [
+            "^GSPC",
+            "^SOX",
+            "^IXIC",
+            "^DJI",
+            "^RUA",
+            "^NDX",
+            "^RUT",
+            "^RUI"
+          ]
+        }
+      }
+    },
+    "indices_global": {
+      "group": "indices",
+      "subgroup": "global",
+      "generated_at": "2026-02-01T14:43:28.053980",
+      "periods": [
+        "1D",
+        "WoW",
+        "1W",
+        "MTD",
+        "1M",
+        "3M",
+        "6M",
+        "YTD",
+        "1Y",
+        "3Y",
+        "5Y"
+      ],
+      "symbols": {
+        "000001.SS": {
+          "1D": -0.96,
+          "1W": -0.44,
+          "1M": 3.85,
+          "3M": 4.13,
+          "6M": 14.45,
+          "1Y": 27.25,
+          "3Y": 32.53,
+          "WoW": 0.1,
+          "MTD": 2.35,
+          "YTD": 2.35
+        },
+        "EEM": {
+          "1D": -2.22,
+          "1W": 0.05,
+          "1M": 7.69,
+          "3M": 7.03,
+          "6M": 23.45,
+          "1Y": 42.45,
+          "3Y": 51.16,
+          "5Y": 18.07,
+          "WoW": 3.12,
+          "MTD": 5.09,
+          "YTD": 5.09
+        },
+        "URTH": {
+          "1D": -0.61,
+          "1W": 0.41,
+          "1M": 1.4,
+          "3M": 2.66,
+          "6M": 11.73,
+          "1Y": 20.09,
+          "3Y": 71.87,
+          "5Y": 77.68,
+          "WoW": 2.15,
+          "MTD": 1.67,
+          "YTD": 1.67
+        },
+        "^AXJO": {
+          "1D": -1.08,
+          "1W": 0.23,
+          "1M": 1.74,
+          "3M": -0.64,
+          "6M": 2.39,
+          "1Y": 3.95,
+          "3Y": 17.35,
+          "5Y": 29.66,
+          "WoW": 0.6,
+          "MTD": 1.62,
+          "YTD": 1.62
+        },
+        "^FCHI": {
+          "1D": 0.68,
+          "1W": -0.2,
+          "1M": -0.28,
+          "3M": -0.38,
+          "6M": 6.48,
+          "1Y": 2.78,
+          "3Y": 12.73,
+          "5Y": 39.88,
+          "WoW": 0.79,
+          "MTD": -0.84,
+          "YTD": -0.84
+        },
+        "^FTSE": {
+          "1D": 0.51,
+          "1W": 0.79,
+          "1M": 2.94,
+          "3M": 4.75,
+          "6M": 12.74,
+          "1Y": 17.86,
+          "3Y": 30.73,
+          "5Y": 56.88,
+          "WoW": 0.95,
+          "MTD": 2.74,
+          "YTD": 2.74
+        },
+        "^GDAXI": {
+          "1D": 0.94,
+          "1W": -1.45,
+          "1M": 0.2,
+          "3M": 1.07,
+          "6M": 1.97,
+          "1Y": 12.92,
+          "3Y": 60.17,
+          "5Y": 75.36,
+          "WoW": -0.67,
+          "MTD": -0.0,
+          "YTD": -0.0
+        },
+        "^HSI": {
+          "1D": -2.08,
+          "1W": 2.38,
+          "1M": 6.85,
+          "3M": 4.2,
+          "6M": 8.78,
+          "1Y": 38.47,
+          "3Y": 38.45,
+          "WoW": 3.4,
+          "MTD": 3.98,
+          "YTD": 3.98
+        },
+        "^KS11": {
+          "1D": 0.06,
+          "1W": 4.7,
+          "1M": 23.97,
+          "3M": 27.83,
+          "6M": 63.46,
+          "1Y": 106.7,
+          "3Y": 125.8,
+          "WoW": 6.93,
+          "MTD": 21.23,
+          "YTD": 21.23
+        },
+        "^N225": {
+          "1D": -0.1,
+          "1W": -0.97,
+          "1M": 5.07,
+          "3M": 5.56,
+          "6M": 27.49,
+          "1Y": 37.07,
+          "3Y": 101.61,
+          "WoW": 0.63,
+          "MTD": 2.87,
+          "YTD": 2.87
+        },
+        "^NSEI": {
+          "1D": -0.39,
+          "1W": 0.12,
+          "1M": -2.38,
+          "3M": -2.81,
+          "6M": 2.59,
+          "1Y": 9.12,
+          "3Y": 40.73,
+          "WoW": 0.35,
+          "MTD": -3.16,
+          "YTD": -3.16
+        },
+        "^STOXX50E": {
+          "1D": 0.95,
+          "1W": -0.01,
+          "1M": 3.41,
+          "3M": 4.15,
+          "6M": 10.57,
+          "1Y": 14.64,
+          "3Y": 44.37,
+          "5Y": 68.19,
+          "WoW": 0.95,
+          "MTD": 0.41,
+          "YTD": 0.41
+        },
+        "^TWII": {
+          "1D": -1.45,
+          "1W": 0.32,
+          "1M": 10.7,
+          "3M": 13.57,
+          "6M": 36.66,
+          "1Y": 38.52,
+          "3Y": 117.62,
+          "WoW": 0.96,
+          "MTD": 9.25,
+          "YTD": 9.25
+        }
+      },
+      "summary": {
+        "best_performer": {
+          "symbol": "^KS11",
+          "period": "3Y",
+          "return_pct": 125.8
+        },
+        "worst_performer": {
+          "symbol": "^NSEI",
+          "period": "MTD",
+          "return_pct": -3.16
+        },
+        "period_averages": {
+          "1D": -0.44,
+          "WoW": 1.56,
+          "1W": 0.46,
+          "MTD": 3.63,
+          "1M": 5.01,
+          "3M": 5.47,
+          "6M": 17.14,
+          "YTD": 3.63,
+          "1Y": 28.6,
+          "3Y": 57.32,
+          "5Y": 52.25
+        },
+        "period_best": {
+          "1D": {
+            "symbol": "^STOXX50E",
+            "return_pct": 0.95
+          },
+          "WoW": {
+            "symbol": "^KS11",
+            "return_pct": 6.93
+          },
+          "1W": {
+            "symbol": "^KS11",
+            "return_pct": 4.7
+          },
+          "MTD": {
+            "symbol": "^KS11",
+            "return_pct": 21.23
+          },
+          "1M": {
+            "symbol": "^KS11",
+            "return_pct": 23.97
+          },
+          "3M": {
+            "symbol": "^KS11",
+            "return_pct": 27.83
+          },
+          "6M": {
+            "symbol": "^KS11",
+            "return_pct": 63.46
+          },
+          "YTD": {
+            "symbol": "^KS11",
+            "return_pct": 21.23
+          },
+          "1Y": {
+            "symbol": "^KS11",
+            "return_pct": 106.7
+          },
+          "3Y": {
+            "symbol": "^KS11",
+            "return_pct": 125.8
+          },
+          "5Y": {
+            "symbol": "URTH",
+            "return_pct": 77.68
+          }
+        },
+        "period_worst": {
+          "1D": {
+            "symbol": "EEM",
+            "return_pct": -2.22
+          },
+          "WoW": {
+            "symbol": "^GDAXI",
+            "return_pct": -0.67
+          },
+          "1W": {
+            "symbol": "^GDAXI",
+            "return_pct": -1.45
+          },
+          "MTD": {
+            "symbol": "^NSEI",
+            "return_pct": -3.16
+          },
+          "1M": {
+            "symbol": "^NSEI",
+            "return_pct": -2.38
+          },
+          "3M": {
+            "symbol": "^NSEI",
+            "return_pct": -2.81
+          },
+          "6M": {
+            "symbol": "^GDAXI",
+            "return_pct": 1.97
+          },
+          "YTD": {
+            "symbol": "^NSEI",
+            "return_pct": -3.16
+          },
+          "1Y": {
+            "symbol": "^FCHI",
+            "return_pct": 2.78
+          },
+          "3Y": {
+            "symbol": "^FCHI",
+            "return_pct": 12.73
+          },
+          "5Y": {
+            "symbol": "EEM",
+            "return_pct": 18.07
+          }
+        }
+      },
+      "latest_dates": {
+        "^N225": "2026-01-30",
+        "000001.SS": "2026-01-30",
+        "^AXJO": "2026-01-30",
+        "^KS11": "2026-01-30",
+        "^FCHI": "2026-01-30",
+        "EEM": "2026-01-30",
+        "^STOXX50E": "2026-01-30",
+        "URTH": "2026-01-30",
+        "^FTSE": "2026-01-30",
+        "^HSI": "2026-01-30",
+        "^NSEI": "2026-01-30",
+        "^GDAXI": "2026-01-30",
+        "^TWII": "2026-01-30"
+      },
+      "data_freshness": {
+        "newest_date": "2026-01-30",
+        "oldest_date": "2026-01-30",
+        "has_date_gap": false,
+        "symbols_by_date": {
+          "2026-01-30": [
+            "^N225",
+            "000001.SS",
+            "^AXJO",
+            "^KS11",
+            "^FCHI",
+            "EEM",
+            "^STOXX50E",
+            "URTH",
+            "^FTSE",
+            "^HSI",
+            "^NSEI",
+            "^GDAXI",
+            "^TWII"
+          ]
+        }
+      }
+    },
+    "mag7": {
+      "group": "mag7",
+      "subgroup": null,
+      "generated_at": "2026-02-01T14:43:29.615173",
+      "periods": [
+        "1D",
+        "WoW",
+        "1W",
+        "MTD",
+        "1M",
+        "3M",
+        "6M",
+        "YTD",
+        "1Y",
+        "3Y",
+        "5Y"
+      ],
+      "symbols": {
+        "AAPL": {
+          "1D": 0.46,
+          "1W": 4.61,
+          "1M": -4.98,
+          "3M": -3.7,
+          "6M": 25.27,
+          "1Y": 8.9,
+          "3Y": 85.67,
+          "5Y": 86.51,
+          "WoW": 5.18,
+          "MTD": -4.25,
+          "YTD": -4.25
+        },
+        "AMZN": {
+          "1D": -1.01,
+          "1W": 0.06,
+          "1M": 2.91,
+          "3M": 3.91,
+          "6M": 2.22,
+          "1Y": 0.94,
+          "3Y": 146.24,
+          "5Y": 45.29,
+          "WoW": 3.59,
+          "MTD": 5.65,
+          "YTD": 5.65
+        },
+        "GOOGL": {
+          "1D": -0.07,
+          "1W": 3.07,
+          "1M": 7.69,
+          "3M": 23.18,
+          "6M": 76.41,
+          "1Y": 73.65,
+          "3Y": 257.65,
+          "5Y": 259.56,
+          "WoW": 4.97,
+          "MTD": 7.25,
+          "YTD": 7.25
+        },
+        "META": {
+          "1D": -2.95,
+          "1W": 8.76,
+          "1M": 7.59,
+          "3M": -4.6,
+          "6M": -7.22,
+          "1Y": 6.25,
+          "3Y": 409.9,
+          "5Y": 159.52,
+          "WoW": 18.6,
+          "MTD": 10.16,
+          "YTD": 10.16
+        },
+        "MSFT": {
+          "1D": -0.74,
+          "1W": -7.65,
+          "1M": -11.73,
+          "3M": -20.4,
+          "6M": -19.06,
+          "1Y": -2.0,
+          "3Y": 83.11,
+          "5Y": 95.37,
+          "WoW": -5.33,
+          "MTD": -9.02,
+          "YTD": -9.02
+        },
+        "NVDA": {
+          "1D": -0.72,
+          "1W": 1.84,
+          "1M": 1.91,
+          "3M": -7.68,
+          "6M": 7.47,
+          "1Y": 54.55,
+          "3Y": 890.12,
+          "5Y": 1303.82,
+          "WoW": 7.33,
+          "MTD": 1.21,
+          "YTD": 1.21
+        },
+        "TSLA": {
+          "1D": 3.32,
+          "1W": -4.15,
+          "1M": -5.29,
+          "3M": -6.74,
+          "6M": 39.62,
+          "1Y": 10.62,
+          "3Y": 198.01,
+          "5Y": 46.6,
+          "WoW": 2.66,
+          "MTD": -1.75,
+          "YTD": -1.75
+        }
+      },
+      "summary": {
+        "best_performer": {
+          "symbol": "NVDA",
+          "period": "5Y",
+          "return_pct": 1303.82
+        },
+        "worst_performer": {
+          "symbol": "MSFT",
+          "period": "3M",
+          "return_pct": -20.4
+        },
+        "period_averages": {
+          "1D": -0.24,
+          "WoW": 5.29,
+          "1W": 0.93,
+          "MTD": 1.32,
+          "1M": -0.27,
+          "3M": -2.29,
+          "6M": 17.82,
+          "YTD": 1.32,
+          "1Y": 21.84,
+          "3Y": 295.81,
+          "5Y": 285.24
+        },
+        "period_best": {
+          "1D": {
+            "symbol": "TSLA",
+            "return_pct": 3.32
+          },
+          "WoW": {
+            "symbol": "META",
+            "return_pct": 18.6
+          },
+          "1W": {
+            "symbol": "META",
+            "return_pct": 8.76
+          },
+          "MTD": {
+            "symbol": "META",
+            "return_pct": 10.16
+          },
+          "1M": {
+            "symbol": "GOOGL",
+            "return_pct": 7.69
+          },
+          "3M": {
+            "symbol": "GOOGL",
+            "return_pct": 23.18
+          },
+          "6M": {
+            "symbol": "GOOGL",
+            "return_pct": 76.41
+          },
+          "YTD": {
+            "symbol": "META",
+            "return_pct": 10.16
+          },
+          "1Y": {
+            "symbol": "GOOGL",
+            "return_pct": 73.65
+          },
+          "3Y": {
+            "symbol": "NVDA",
+            "return_pct": 890.12
+          },
+          "5Y": {
+            "symbol": "NVDA",
+            "return_pct": 1303.82
+          }
+        },
+        "period_worst": {
+          "1D": {
+            "symbol": "META",
+            "return_pct": -2.95
+          },
+          "WoW": {
+            "symbol": "MSFT",
+            "return_pct": -5.33
+          },
+          "1W": {
+            "symbol": "MSFT",
+            "return_pct": -7.65
+          },
+          "MTD": {
+            "symbol": "MSFT",
+            "return_pct": -9.02
+          },
+          "1M": {
+            "symbol": "MSFT",
+            "return_pct": -11.73
+          },
+          "3M": {
+            "symbol": "MSFT",
+            "return_pct": -20.4
+          },
+          "6M": {
+            "symbol": "MSFT",
+            "return_pct": -19.06
+          },
+          "YTD": {
+            "symbol": "MSFT",
+            "return_pct": -9.02
+          },
+          "1Y": {
+            "symbol": "MSFT",
+            "return_pct": -2.0
+          },
+          "3Y": {
+            "symbol": "MSFT",
+            "return_pct": 83.11
+          },
+          "5Y": {
+            "symbol": "AMZN",
+            "return_pct": 45.29
+          }
+        }
+      },
+      "latest_dates": {
+        "AAPL": "2026-01-30",
+        "GOOGL": "2026-01-30",
+        "AMZN": "2026-01-30",
+        "MSFT": "2026-01-30",
+        "TSLA": "2026-01-30",
+        "NVDA": "2026-01-30",
+        "META": "2026-01-30"
+      },
+      "data_freshness": {
+        "newest_date": "2026-01-30",
+        "oldest_date": "2026-01-30",
+        "has_date_gap": false,
+        "symbols_by_date": {
+          "2026-01-30": [
+            "AAPL",
+            "GOOGL",
+            "AMZN",
+            "MSFT",
+            "TSLA",
+            "NVDA",
+            "META"
+          ]
+        }
+      }
+    },
+    "sectors": {
+      "group": "sectors",
+      "subgroup": null,
+      "generated_at": "2026-02-01T14:43:31.149000",
+      "periods": [
+        "1D",
+        "WoW",
+        "1W",
+        "MTD",
+        "1M",
+        "3M",
+        "6M",
+        "YTD",
+        "1Y",
+        "3Y",
+        "5Y"
+      ],
+      "symbols": {
+        "XLB": {
+          "1D": -1.46,
+          "1W": -1.4,
+          "1M": 7.74,
+          "3M": 13.41,
+          "6M": 13.44,
+          "1Y": 13.43,
+          "3Y": 25.49,
+          "5Y": 47.1,
+          "WoW": 2.24,
+          "MTD": 6.83,
+          "YTD": 6.83
+        },
+        "XLC": {
+          "1D": 0.24,
+          "1W": 2.67,
+          "1M": 1.51,
+          "3M": 3.59,
+          "6M": 12.55,
+          "1Y": 19.31,
+          "3Y": 129.39,
+          "5Y": 82.17,
+          "WoW": 5.83,
+          "MTD": 2.72,
+          "YTD": 2.72
+        },
+        "XLE": {
+          "1D": 1.07,
+          "1W": 3.78,
+          "1M": 13.55,
+          "3M": 17.0,
+          "6M": 19.08,
+          "1Y": 17.63,
+          "3Y": 25.21,
+          "5Y": 196.2,
+          "WoW": 7.25,
+          "MTD": 11.83,
+          "YTD": 11.83
+        },
+        "XLF": {
+          "1D": -0.21,
+          "1W": 0.7,
+          "1M": -3.15,
+          "3M": 2.95,
+          "6M": 2.74,
+          "1Y": 5.66,
+          "3Y": 55.52,
+          "5Y": 93.44,
+          "WoW": 0.45,
+          "MTD": -2.71,
+          "YTD": -2.71
+        },
+        "XLI": {
+          "1D": -0.25,
+          "1W": 0.74,
+          "1M": 5.77,
+          "3M": 7.05,
+          "6M": 9.66,
+          "1Y": 21.72,
+          "3Y": 72.94,
+          "5Y": 103.15,
+          "WoW": 1.17,
+          "MTD": 4.72,
+          "YTD": 4.72
+        },
+        "XLK": {
+          "1D": -2.04,
+          "1W": -0.83,
+          "1M": -1.05,
+          "3M": -5.24,
+          "6M": 9.83,
+          "1Y": 24.95,
+          "3Y": 119.47,
+          "5Y": 123.4,
+          "WoW": 1.44,
+          "MTD": -0.29,
+          "YTD": -0.29
+        },
+        "XLP": {
+          "1D": 1.68,
+          "1W": 0.72,
+          "1M": 6.86,
+          "3M": 9.92,
+          "6M": 6.24,
+          "1Y": 8.67,
+          "3Y": 23.47,
+          "5Y": 44.91,
+          "WoW": 1.4,
+          "MTD": 7.49,
+          "YTD": 7.49
+        },
+        "XLRE": {
+          "1D": 0.15,
+          "1W": 0.44,
+          "1M": 1.74,
+          "3M": 3.03,
+          "6M": 1.91,
+          "1Y": 4.61,
+          "3Y": 16.22,
+          "5Y": 31.95,
+          "WoW": 0.07,
+          "MTD": 2.6,
+          "YTD": 2.6
+        },
+        "XLU": {
+          "1D": -0.18,
+          "1W": 1.62,
+          "1M": 0.68,
+          "3M": -3.28,
+          "6M": 2.41,
+          "1Y": 15.94,
+          "3Y": 38.16,
+          "5Y": 57.15,
+          "WoW": 0.68,
+          "MTD": 0.16,
+          "YTD": 0.16
+        },
+        "XLV": {
+          "1D": 0.6,
+          "1W": -1.74,
+          "1M": -0.6,
+          "3M": 7.93,
+          "6M": 19.69,
+          "1Y": 8.1,
+          "3Y": 21.8,
+          "5Y": 41.61,
+          "WoW": -0.42,
+          "MTD": -0.5,
+          "YTD": -0.5
+        },
+        "XLY": {
+          "1D": -0.02,
+          "1W": -1.59,
+          "1M": 0.67,
+          "3M": 1.53,
+          "6M": 9.85,
+          "1Y": 5.84,
+          "3Y": 75.43,
+          "5Y": 47.77,
+          "WoW": 1.72,
+          "MTD": 2.38,
+          "YTD": 2.38
+        }
+      },
+      "summary": {
+        "best_performer": {
+          "symbol": "XLE",
+          "period": "5Y",
+          "return_pct": 196.2
+        },
+        "worst_performer": {
+          "symbol": "XLK",
+          "period": "3M",
+          "return_pct": -5.24
+        },
+        "period_averages": {
+          "1D": -0.04,
+          "WoW": 1.98,
+          "1W": 0.46,
+          "MTD": 3.2,
+          "1M": 3.07,
+          "3M": 5.26,
+          "6M": 9.76,
+          "YTD": 3.2,
+          "1Y": 13.26,
+          "3Y": 54.83,
+          "5Y": 78.99
+        },
+        "period_best": {
+          "1D": {
+            "symbol": "XLP",
+            "return_pct": 1.68
+          },
+          "WoW": {
+            "symbol": "XLE",
+            "return_pct": 7.25
+          },
+          "1W": {
+            "symbol": "XLE",
+            "return_pct": 3.78
+          },
+          "MTD": {
+            "symbol": "XLE",
+            "return_pct": 11.83
+          },
+          "1M": {
+            "symbol": "XLE",
+            "return_pct": 13.55
+          },
+          "3M": {
+            "symbol": "XLE",
+            "return_pct": 17.0
+          },
+          "6M": {
+            "symbol": "XLV",
+            "return_pct": 19.69
+          },
+          "YTD": {
+            "symbol": "XLE",
+            "return_pct": 11.83
+          },
+          "1Y": {
+            "symbol": "XLK",
+            "return_pct": 24.95
+          },
+          "3Y": {
+            "symbol": "XLC",
+            "return_pct": 129.39
+          },
+          "5Y": {
+            "symbol": "XLE",
+            "return_pct": 196.2
+          }
+        },
+        "period_worst": {
+          "1D": {
+            "symbol": "XLK",
+            "return_pct": -2.04
+          },
+          "WoW": {
+            "symbol": "XLV",
+            "return_pct": -0.42
+          },
+          "1W": {
+            "symbol": "XLV",
+            "return_pct": -1.74
+          },
+          "MTD": {
+            "symbol": "XLF",
+            "return_pct": -2.71
+          },
+          "1M": {
+            "symbol": "XLF",
+            "return_pct": -3.15
+          },
+          "3M": {
+            "symbol": "XLK",
+            "return_pct": -5.24
+          },
+          "6M": {
+            "symbol": "XLRE",
+            "return_pct": 1.91
+          },
+          "YTD": {
+            "symbol": "XLF",
+            "return_pct": -2.71
+          },
+          "1Y": {
+            "symbol": "XLRE",
+            "return_pct": 4.61
+          },
+          "3Y": {
+            "symbol": "XLRE",
+            "return_pct": 16.22
+          },
+          "5Y": {
+            "symbol": "XLRE",
+            "return_pct": 31.95
+          }
+        }
+      },
+      "latest_dates": {
+        "XLF": "2026-01-30",
+        "XLY": "2026-01-30",
+        "XLP": "2026-01-30",
+        "XLC": "2026-01-30",
+        "XLK": "2026-01-30",
+        "XLE": "2026-01-30",
+        "XLRE": "2026-01-30",
+        "XLU": "2026-01-30",
+        "XLI": "2026-01-30",
+        "XLB": "2026-01-30",
+        "XLV": "2026-01-30"
+      },
+      "data_freshness": {
+        "newest_date": "2026-01-30",
+        "oldest_date": "2026-01-30",
+        "has_date_gap": false,
+        "symbols_by_date": {
+          "2026-01-30": [
+            "XLF",
+            "XLY",
+            "XLP",
+            "XLC",
+            "XLK",
+            "XLE",
+            "XLRE",
+            "XLU",
+            "XLI",
+            "XLB",
+            "XLV"
+          ]
+        }
+      }
+    },
+    "commodities": {
+      "group": "commodities",
+      "subgroup": null,
+      "generated_at": "2026-02-01T14:43:32.730403",
+      "periods": [
+        "1D",
+        "WoW",
+        "1W",
+        "MTD",
+        "1M",
+        "3M",
+        "6M",
+        "YTD",
+        "1Y",
+        "3Y",
+        "5Y"
+      ],
+      "symbols": {
+        "BZ=F": {
+          "1D": -1.36,
+          "1W": 5.87,
+          "1M": 12.65,
+          "3M": 7.44,
+          "6M": -3.83,
+          "1Y": -9.26,
+          "3Y": -17.84,
+          "5Y": 25.61,
+          "WoW": 7.44,
+          "MTD": 14.81,
+          "YTD": 14.81
+        },
+        "CL=F": {
+          "1D": 0.2,
+          "1W": 7.34,
+          "1M": 13.11,
+          "3M": 8.38,
+          "6M": -5.36,
+          "1Y": -9.87,
+          "3Y": -17.73,
+          "5Y": 24.03,
+          "WoW": 8.63,
+          "MTD": 14.36,
+          "YTD": 14.36
+        },
+        "GC=F": {
+          "1D": -4.72,
+          "1W": 1.83,
+          "1M": 15.96,
+          "3M": 27.21,
+          "6M": 53.88,
+          "1Y": 79.51,
+          "3Y": 162.76,
+          "5Y": 174.68,
+          "WoW": 6.47,
+          "MTD": 17.46,
+          "YTD": 17.46
+        },
+        "HG=F": {
+          "1D": -2.6,
+          "1W": 1.76,
+          "1M": 5.02,
+          "3M": 14.93,
+          "6M": 38.9,
+          "1Y": 40.28,
+          "3Y": 43.1,
+          "5Y": 67.88,
+          "WoW": 4.19,
+          "MTD": 6.65,
+          "YTD": 6.65
+        },
+        "NG=F": {
+          "1D": 4.44,
+          "1W": -22.43,
+          "1M": 3.02,
+          "3M": 21.21,
+          "6M": 31.75,
+          "1Y": 34.3,
+          "3Y": 52.86,
+          "5Y": 53.6,
+          "WoW": 4.74,
+          "MTD": 13.1,
+          "YTD": 13.1
+        },
+        "PL=F": {
+          "1D": -12.6,
+          "1W": -16.61,
+          "1M": 1.69,
+          "3M": 42.65,
+          "6M": 76.46,
+          "1Y": 123.32,
+          "3Y": 125.33,
+          "5Y": 111.06,
+          "WoW": -6.64,
+          "MTD": 6.79,
+          "YTD": 6.79
+        },
+        "SI=F": {
+          "1D": -13.62,
+          "1W": -2.4,
+          "1M": 27.3,
+          "3M": 106.41,
+          "6M": 169.48,
+          "1Y": 204.35,
+          "3Y": 318.67,
+          "5Y": 288.16,
+          "WoW": 4.56,
+          "MTD": 39.61,
+          "YTD": 39.61
+        },
+        "ZC=F": {
+          "1D": -0.81,
+          "1W": -0.75,
+          "1M": -3.01,
+          "3M": -1.56,
+          "6M": 8.44,
+          "1Y": -14.03,
+          "3Y": -37.4,
+          "5Y": -19.73,
+          "WoW": 0.83,
+          "MTD": -2.34,
+          "YTD": -2.34
+        },
+        "ZS=F": {
+          "1D": -0.23,
+          "1W": 0.19,
+          "1M": 2.25,
+          "3M": -0.97,
+          "6M": 11.23,
+          "1Y": 0.87,
+          "3Y": -29.78,
+          "5Y": -21.93,
+          "WoW": 1.59,
+          "MTD": 3.91,
+          "YTD": 3.91
+        },
+        "ZW=F": {
+          "1D": -0.37,
+          "1W": 1.89,
+          "1M": 5.63,
+          "3M": 1.36,
+          "6M": 3.11,
+          "1Y": -4.09,
+          "3Y": -28.31,
+          "5Y": -18.9,
+          "WoW": 5.73,
+          "MTD": 6.52,
+          "YTD": 6.52
+        }
+      },
+      "summary": {
+        "best_performer": {
+          "symbol": "SI=F",
+          "period": "3Y",
+          "return_pct": 318.67
+        },
+        "worst_performer": {
+          "symbol": "ZC=F",
+          "period": "3Y",
+          "return_pct": -37.4
+        },
+        "period_averages": {
+          "1D": -3.17,
+          "WoW": 3.75,
+          "1W": -2.33,
+          "MTD": 12.09,
+          "1M": 8.36,
+          "3M": 22.71,
+          "6M": 38.41,
+          "YTD": 12.09,
+          "1Y": 44.54,
+          "3Y": 57.17,
+          "5Y": 68.45
+        },
+        "period_best": {
+          "1D": {
+            "symbol": "NG=F",
+            "return_pct": 4.44
+          },
+          "WoW": {
+            "symbol": "CL=F",
+            "return_pct": 8.63
+          },
+          "1W": {
+            "symbol": "CL=F",
+            "return_pct": 7.34
+          },
+          "MTD": {
+            "symbol": "SI=F",
+            "return_pct": 39.61
+          },
+          "1M": {
+            "symbol": "SI=F",
+            "return_pct": 27.3
+          },
+          "3M": {
+            "symbol": "SI=F",
+            "return_pct": 106.41
+          },
+          "6M": {
+            "symbol": "SI=F",
+            "return_pct": 169.48
+          },
+          "YTD": {
+            "symbol": "SI=F",
+            "return_pct": 39.61
+          },
+          "1Y": {
+            "symbol": "SI=F",
+            "return_pct": 204.35
+          },
+          "3Y": {
+            "symbol": "SI=F",
+            "return_pct": 318.67
+          },
+          "5Y": {
+            "symbol": "SI=F",
+            "return_pct": 288.16
+          }
+        },
+        "period_worst": {
+          "1D": {
+            "symbol": "SI=F",
+            "return_pct": -13.62
+          },
+          "WoW": {
+            "symbol": "PL=F",
+            "return_pct": -6.64
+          },
+          "1W": {
+            "symbol": "NG=F",
+            "return_pct": -22.43
+          },
+          "MTD": {
+            "symbol": "ZC=F",
+            "return_pct": -2.34
+          },
+          "1M": {
+            "symbol": "ZC=F",
+            "return_pct": -3.01
+          },
+          "3M": {
+            "symbol": "ZC=F",
+            "return_pct": -1.56
+          },
+          "6M": {
+            "symbol": "CL=F",
+            "return_pct": -5.36
+          },
+          "YTD": {
+            "symbol": "ZC=F",
+            "return_pct": -2.34
+          },
+          "1Y": {
+            "symbol": "ZC=F",
+            "return_pct": -14.03
+          },
+          "3Y": {
+            "symbol": "ZC=F",
+            "return_pct": -37.4
+          },
+          "5Y": {
+            "symbol": "ZS=F",
+            "return_pct": -21.93
+          }
+        }
+      },
+      "latest_dates": {
+        "GC=F": "2026-01-30",
+        "BZ=F": "2026-01-30",
+        "SI=F": "2026-01-30",
+        "NG=F": "2026-01-30",
+        "HG=F": "2026-01-30",
+        "PL=F": "2026-01-30",
+        "ZC=F": "2026-01-30",
+        "ZW=F": "2026-01-30",
+        "ZS=F": "2026-01-30",
+        "CL=F": "2026-01-30"
+      },
+      "data_freshness": {
+        "newest_date": "2026-01-30",
+        "oldest_date": "2026-01-30",
+        "has_date_gap": false,
+        "symbols_by_date": {
+          "2026-01-30": [
+            "GC=F",
+            "BZ=F",
+            "SI=F",
+            "NG=F",
+            "HG=F",
+            "PL=F",
+            "ZC=F",
+            "ZW=F",
+            "ZS=F",
+            "CL=F"
+          ]
+        }
+      }
+    },
+    "interest_rates": {
+      "group": "interest_rates",
+      "generated_at": "2026-02-01T14:43:44.893460",
+      "periods": [
+        "1D",
+        "1W",
+        "1M"
+      ],
+      "data": {
+        "DGS2": {
+          "latest": 3.53,
+          "changes": {
+            "1D": -0.03,
+            "1W": -0.08,
+            "1M": 0.08
+          }
+        },
+        "DGS30": {
+          "latest": 4.85,
+          "changes": {
+            "1D": 0.0,
+            "1W": 0.01,
+            "1M": 0.05
+          }
+        },
+        "T10Y2Y": {
+          "latest": 0.74,
+          "changes": {
+            "1D": 0.03,
+            "1W": 0.1,
+            "1M": 0.05
+          }
+        },
+        "FEDFUNDS": {
+          "latest": 3.72,
+          "changes": {
+            "1D": -0.16,
+            "1W": -0.61,
+            "1M": -1.61
+          }
+        },
+        "DGS10": {
+          "latest": 4.24,
+          "changes": {
+            "1D": -0.02,
+            "1W": -0.02,
+            "1M": 0.12
+          }
+        }
+      },
+      "yield_curve": {
+        "is_inverted": false,
+        "spread_10y_2y": 0.74,
+        "slope_status": "normal",
+        "dgs2_latest": 3.53,
+        "dgs10_latest": 4.24,
+        "dgs30_latest": 4.85
+      },
+      "data_freshness": {
+        "newest_date": "2026-01-30",
+        "oldest_date": "2025-12-01",
+        "has_date_gap": true,
+        "series_by_date": {
+          "2026-01-29": [
+            "DGS2",
+            "DGS10",
+            "DGS30"
+          ],
+          "2025-12-01": [
+            "FEDFUNDS"
+          ],
+          "2026-01-30": [
+            "T10Y2Y"
+          ]
+        }
+      }
+    },
+    "currencies": {
+      "group": "currencies",
+      "subgroup": "jpy_crosses",
+      "base_currency": "JPY",
+      "generated_at": "2026-02-01T14:43:45.187007",
+      "periods": [
+        "1D",
+        "1W",
+        "1M"
+      ],
+      "symbols": {
+        "USDJPY=X": {
+          "1D": 1.067,
+          "1W": -2.379,
+          "1M": -1.076
+        },
+        "EURJPY=X": {
+          "1D": 0.308,
+          "1W": -1.27,
+          "1M": 0.111
+        },
+        "GBPJPY=X": {
+          "1D": 0.304,
+          "1W": -0.789,
+          "1M": 0.794
+        },
+        "AUDJPY=X": {
+          "1D": 0.547,
+          "1W": -0.042,
+          "1M": 3.474
+        },
+        "CADJPY=X": {
+          "1D": 1.135,
+          "1W": -0.534,
+          "1M": 0.14
+        },
+        "CHFJPY=X": {
+          "1D": 0.559,
+          "1W": 0.071,
+          "1M": 1.763
+        }
+      },
+      "summary": {
+        "strongest_currency": {
+          "symbol": "AUDJPY=X",
+          "period": "1M",
+          "return_pct": 3.474
+        },
+        "weakest_currency": {
+          "symbol": "USDJPY=X",
+          "period": "1W",
+          "return_pct": -2.379
+        },
+        "period_averages": {
+          "1D": 0.65,
+          "1W": -0.82,
+          "1M": 0.87
+        },
+        "period_best": {
+          "1D": {
+            "symbol": "CADJPY=X",
+            "return_pct": 1.135
+          },
+          "1W": {
+            "symbol": "CHFJPY=X",
+            "return_pct": 0.071
+          },
+          "1M": {
+            "symbol": "AUDJPY=X",
+            "return_pct": 3.474
+          }
+        },
+        "period_worst": {
+          "1D": {
+            "symbol": "GBPJPY=X",
+            "return_pct": 0.304
+          },
+          "1W": {
+            "symbol": "USDJPY=X",
+            "return_pct": -2.379
+          },
+          "1M": {
+            "symbol": "USDJPY=X",
+            "return_pct": -1.076
+          }
+        }
+      },
+      "latest_dates": {
+        "USDJPY=X": "2026-01-30",
+        "EURJPY=X": "2026-01-30",
+        "GBPJPY=X": "2026-01-30",
+        "AUDJPY=X": "2026-01-30",
+        "CADJPY=X": "2026-01-30",
+        "CHFJPY=X": "2026-01-30"
+      },
+      "data_freshness": {
+        "newest_date": "2026-01-30",
+        "oldest_date": "2026-01-30",
+        "has_date_gap": false,
+        "symbols_by_date": {
+          "2026-01-30": [
+            "USDJPY=X",
+            "EURJPY=X",
+            "GBPJPY=X",
+            "AUDJPY=X",
+            "CADJPY=X",
+            "CHFJPY=X"
+          ]
+        }
+      }
+    },
+    "upcoming_events": {
+      "group": "upcoming_events",
+      "generated_at": "2026-02-01T05:44:19.279454+00:00",
+      "period": {
+        "start": "2026-02-02",
+        "end": "2026-02-08"
+      },
+      "earnings": [
+        {
+          "symbol": "MRK",
+          "name": "Merck & Company, Inc.",
+          "earnings_date": "2026-02-03",
+          "source": "earnings_dates"
+        },
+        {
+          "symbol": "LLY",
+          "name": "Eli Lilly and Company",
+          "earnings_date": "2026-02-04",
+          "source": "earnings_dates"
+        },
+        {
+          "symbol": "GOOGL",
+          "name": "Alphabet Inc.",
+          "earnings_date": "2026-02-04",
+          "source": "earnings_dates"
+        },
+        {
+          "symbol": "AMZN",
+          "name": "Amazon.com, Inc.",
+          "earnings_date": "2026-02-05",
+          "source": "earnings_dates"
+        }
+      ],
+      "economic_releases": [
+        {
+          "release_id": 328,
+          "name": "Personal Income and Outlays",
+          "name_ja": "個人所得・支出",
+          "release_date": "2026-02-02",
+          "importance": "medium"
+        },
+        {
+          "release_id": 328,
+          "name": "Personal Income and Outlays",
+          "name_ja": "個人所得・支出",
+          "release_date": "2026-02-03",
+          "importance": "medium"
+        },
+        {
+          "release_id": 328,
+          "name": "Personal Income and Outlays",
+          "name_ja": "個人所得・支出",
+          "release_date": "2026-02-04",
+          "importance": "medium"
+        },
+        {
+          "release_id": 328,
+          "name": "Personal Income and Outlays",
+          "name_ja": "個人所得・支出",
+          "release_date": "2026-02-05",
+          "importance": "medium"
+        },
+        {
+          "release_id": 50,
+          "name": "Gross Domestic Product",
+          "name_ja": "GDP速報",
+          "release_date": "2026-02-06",
+          "importance": "high"
+        },
+        {
+          "release_id": 328,
+          "name": "Personal Income and Outlays",
+          "name_ja": "個人所得・支出",
+          "release_date": "2026-02-06",
+          "importance": "medium"
+        }
+      ],
+      "summary": {
+        "earnings_count": 4,
+        "economic_release_count": 6,
+        "high_importance_count": 1,
+        "busiest_date": "2026-02-04"
+      }
+    }
+  }
+}

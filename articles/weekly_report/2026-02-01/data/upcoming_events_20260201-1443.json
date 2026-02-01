@@ -1,0 +1,84 @@
+{
+  "group": "upcoming_events",
+  "generated_at": "2026-02-01T05:44:19.279454+00:00",
+  "period": {
+    "start": "2026-02-02",
+    "end": "2026-02-08"
+  },
+  "earnings": [
+    {
+      "symbol": "MRK",
+      "name": "Merck & Company, Inc.",
+      "earnings_date": "2026-02-03",
+      "source": "earnings_dates"
+    },
+    {
+      "symbol": "LLY",
+      "name": "Eli Lilly and Company",
+      "earnings_date": "2026-02-04",
+      "source": "earnings_dates"
+    },
+    {
+      "symbol": "GOOGL",
+      "name": "Alphabet Inc.",
+      "earnings_date": "2026-02-04",
+      "source": "earnings_dates"
+    },
+    {
+      "symbol": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "earnings_date": "2026-02-05",
+      "source": "earnings_dates"
+    }
+  ],
+  "economic_releases": [
+    {
+      "release_id": 328,
+      "name": "Personal Income and Outlays",
+      "name_ja": "個人所得・支出",
+      "release_date": "2026-02-02",
+      "importance": "medium"
+    },
+    {
+      "release_id": 328,
+      "name": "Personal Income and Outlays",
+      "name_ja": "個人所得・支出",
+      "release_date": "2026-02-03",
+      "importance": "medium"
+    },
+    {
+      "release_id": 328,
+      "name": "Personal Income and Outlays",
+      "name_ja": "個人所得・支出",
+      "release_date": "2026-02-04",
+      "importance": "medium"
+    },
+    {
+      "release_id": 328,
+      "name": "Personal Income and Outlays",
+      "name_ja": "個人所得・支出",
+      "release_date": "2026-02-05",
+      "importance": "medium"
+    },
+    {
+      "release_id": 50,
+      "name": "Gross Domestic Product",
+      "name_ja": "GDP速報",
+      "release_date": "2026-02-06",
+      "importance": "high"
+    },
+    {
+      "release_id": 328,
+      "name": "Personal Income and Outlays",
+      "name_ja": "個人所得・支出",
+      "release_date": "2026-02-06",
+      "importance": "medium"
+    }
+  ],
+  "summary": {
+    "earnings_count": 4,
+    "economic_release_count": 6,
+    "high_importance_count": 1,
+    "busiest_date": "2026-02-04"
+  }
+}

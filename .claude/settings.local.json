@@ -13,7 +13,8 @@
       "WebFetch(domain:www.nasdaq.com)",
       "WebFetch(domain:finance.yahoo.com)",
       "WebFetch(domain:fred.stlouisfed.org)",
-      "WebFetch(domain:support.claude.com)"
+      "WebFetch(domain:support.claude.com)",
+      "WebSearch"
     ]
   },
   "enableAllProjectMcpServers": true,

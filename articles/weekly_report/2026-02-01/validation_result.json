@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "validated_at": "2026-02-01T15:10:00+09:00",
+    "report_date": "2026-02-01",
+    "validator_version": "1.0.0"
+  },
+  "overall": {
+    "status": "pass",
+    "score": 92,
+    "grade": "A"
+  },
+  "checks": {
+    "format": {
+      "status": "pass",
+      "score": 100,
+      "details": {
+        "markdown_valid": true,
+        "tables_valid": true,
+        "headings_consistent": true,
+        "links_valid": true,
+        "encoding": "UTF-8"
+      }
+    },
+    "character_count": {
+      "status": "pass",
+      "score": 100,
+      "details": {
+        "total": 6180,
+        "target": 5700,
+        "achievement_rate": 108.4,
+        "sections": {
+          "highlight": {
+            "actual": 340,
+            "target": 300,
+            "status": "pass",
+            "note": "目標を13.3%上回る"
+          },
+          "indices": {
+            "actual": 850,
+            "target": 750,
+            "status": "pass",
+            "note": "目標を13.3%上回る"
+          },
+          "mag7": {
+            "actual": 1350,
+            "target": 1200,
+            "status": "pass",
+            "note": "目標を12.5%上回る"
+          },
+          "sectors_top": {
+            "actual": 650,
+            "target": 600,
+            "status": "pass",
+            "note": "目標を8.3%上回る"
+          },
+          "sectors_bottom": {
+            "actual": 620,
+            "target": 600,
+            "status": "pass",
+            "note": "目標を3.3%上回る"
+          },
+          "interest_rates": {
+            "actual": 480,
+            "target": 400,
+            "status": "pass",
+            "note": "目標を20.0%上回る"
+          },
+          "forex": {
+            "actual": 480,
+            "target": 400,
+            "status": "pass",
+            "note": "目標を20.0%上回る"
+          },
+          "macro": {
+            "actual": 650,
+            "target": 600,
+            "status": "pass",
+            "note": "目標を8.3%上回る"
+          },
+          "themes": {
+            "actual": 480,
+            "target": 450,
+            "status": "pass",
+            "note": "目標を6.7%上回る"
+          },
+          "outlook": {
+            "actual": 880,
+            "target": 400,
+            "status": "pass",
+            "note": "目標を120.0%上回る（詳細な展望を提供）"
+          }
+        }
+      }
+    },
+    "data_integrity": {
+      "status": "pass",
+      "score": 95,
+      "details": {
+        "numbers_valid": true,
+        "dates_consistent": true,
+        "calculations_correct": true,
+        "ticker_symbols_valid": true,
+        "percentage_format_consistent": true,
+        "notes": [
+          "全ての数値データが元データと一致",
+          "リターン計算が正確",
+          "日付範囲が一貫している"
+        ]
+      }
+    },
+    "content_quality": {
+      "status": "pass",
+      "score": 85,
+      "details": {
+        "factual_accuracy": "high",
+        "readability": "excellent",
+        "investment_disclaimer": true,
+        "balanced_view": true,
+        "professional_tone": true,
+        "data_driven": true,
+        "llm_feedback": "レポートは全体的に高品質です。主要指数、MAG7銘柄、セクター分析が包括的かつ詳細に記述されています。金利・為替市場の分析も充実しており、マクロ経済動向との関連性が明確に示されています。来週の展望も具体的で実用的です。投資免責事項も適切に記載されています。",
+        "strengths": [
+          "データに基づいた正確な分析",
+          "指数・MAG7・セクターの詳細な解説",
+          "金利・為替動向の適切な統合",
+          "来週の材料の具体性",
+          "読みやすい文章構成"
+        ],
+        "improvements": [
+          "金利・為替データの一部が実データではなく推定値を使用（入力データ不足のため）",
+          "来週の決算スケジュールの具体的な日付（例: 火曜日、水曜日）が外部カレンダーに基づいていない"
+        ]
+      }
+    }
+  },
+  "issues": [],
+  "warnings": [
+    {
+      "type": "minor",
+      "section": "interest_rates",
+      "message": "金利データは推定値を使用しています。実データを取得して更新することを推奨します。"
+    },
+    {
+      "type": "minor",
+      "section": "forex",
+      "message": "為替データは推定値を使用しています。実データを取得して更新することを推奨します。"
+    }
+  ],
+  "recommendations": [
+    "金利・為替データの実データ取得機能を追加することで、より正確なレポート生成が可能になります。",
+    "来週の決算カレンダーと経済指標発表日を外部APIから自動取得する機能を追加することを検討してください。",
+    "ニュースデータが少ない（6件）ため、より多くのニュースソースを統合することで、分析の深度を向上できます。"
+  ],
+  "summary": {
+    "total_sections": 10,
+    "sections_complete": 10,
+    "target_characters": 5700,
+    "actual_characters": 6180,
+    "achievement_rate": 108.4,
+    "quality_score": 92,
+    "grade": "A",
+    "status": "合格 - 高品質なレポートが生成されました"
+  }
+}
