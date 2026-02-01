@@ -1647,7 +1647,7 @@ class TestAddToProjectWithExistingItemCheck:
             patch("news.publisher.subprocess.run") as mock_run,
         ):
             mock_result = MagicMock()
-            mock_result.stdout = "PVTI_new_item\n"
+            mock_result.stdout = '{"id": "PVTI_new_item"}\n'
             mock_result.returncode = 0
             mock_run.return_value = mock_result
 
