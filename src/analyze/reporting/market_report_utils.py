@@ -122,7 +122,7 @@ class MarketPerformanceAnalyzer:
     # -------------------------------------------------------------------------------------
     def get_eps_historical_data(
         self, tickers_to_download: list[str]
-    ) -> dict[str, dict[str, pd.DataFrame]]:
+    ) -> pd.DataFrame:
         """
         指定された複数の銘柄の実績EPS（Reported EPS）のヒストリカルデータを取得する。
         年次（annual）と四半期（quarterly）のデータが含まれます。
@@ -134,9 +134,8 @@ class MarketPerformanceAnalyzer:
 
         Returns
         -------
-        dict[str, dict[str, pd.DataFrame]]
-            キー: 銘柄名 (str)
-            値: 年次と四半期の実績EPSデータを含む辞書。キーは 'annual_eps' と 'quarterly_eps'。
+        pd.DataFrame
+            全銘柄の実績EPSデータを結合したDataFrame。
             データ取得に失敗した銘柄は結果に含まれません。
         """
         all_eps_data = []
@@ -296,7 +295,7 @@ class MarketPerformanceAnalyzer:
                 # データが存在しない場合、直近のデータセットを返却（MTDの場合、現在月全体）
                 return df.loc[
                     str(self.today.year) + "-" + str(self.today.month).zfill(2)
-                ]  # pyright: ignore[reportReturnType]
+                ]
 
         else:
             raise ValueError(
@@ -352,7 +351,7 @@ class MarketPerformanceAnalyzer:
             result.columns = [period_name]
             result = result.rename(index=self.SECTOR_MAP_EN)
         elif return_type == "log":
-            df_log_returns = np.log(df_price / df_price.shift(1)).dropna()  # pyright: ignore[reportAttributeAccessIssue]
+            df_log_returns = np.log(df_price / df_price.shift(1)).dropna()
             result = (
                 np.exp(
                     df_log_returns.sum()
@@ -408,7 +407,7 @@ class MarketPerformanceAnalyzer:
         # Last Tuesday
         last_tuesday_date = self._get_last_tuesday_date()
         price_last_tuesday = self.price_data.loc[
-            self.price_data.index.date >= last_tuesday_date  # pyright: ignore[reportAttributeAccessIssue]
+            self.price_data.index.date >= last_tuesday_date
         ]
         cum_return_last_Tuesday = self.get_final_period_return(
             df_price=price_last_tuesday,
@@ -430,7 +429,7 @@ class MarketPerformanceAnalyzer:
         # ソートキーを週次リターン（last_Tuesday）に設定
         cum_return.sort_values("last_Tuesday", ascending=False, inplace=True)
 
-        return cum_return
+        return cum_return  # type: ignore[return-value]
 
     # -------------------------------------------------------------------------------------
     def get_performance_groups(self) -> dict:
@@ -805,7 +804,7 @@ def calculate_kalman_beta(
         def start_params(self):
             return np.array([1.0, 0.01])
 
-        def update(self, params, **kwargs):
+        def update(self, params, **kwargs):  # type: ignore[override]
             params = super().update(params, **kwargs)
             # パラメータを状態空間モデルに反映
             self["obs_cov", 0, 0] = params[0]  # 観測誤差分散
@@ -850,7 +849,7 @@ def calculate_kalman_beta(
         # または、pykalmanを使用
 
         try:
-            from pykalman import KalmanFilter
+            from pykalman import KalmanFilter  # type: ignore[import-not-found]
 
             # 観測行列を市場リターンに設定（時変）
             observation_matrices = X.reshape(-1, 1, 1)  # (T, 1, 1)
@@ -888,7 +887,7 @@ def calculate_kalman_beta(
     # 結果をDataFrameに変換
     if not beta_results:
         # 空の場合は、rolling_betaと同じ形式の空DataFrameを返す
-        return pd.DataFrame(columns=["Date", "Ticker", "value", "variable"])
+        return pd.DataFrame(columns=["Date", "Ticker", "value", "variable"])  # type: ignore[arg-type]
 
     df_beta = pd.DataFrame(beta_results)
     df_beta["variable"] = f"beta_{freq_label}_kalman_{window_years}years"
@@ -969,7 +968,7 @@ def rolling_beta(
         covariance = rs.cov(rm)
         market_variance = rm.var()
 
-        if market_variance == 0 or pd.isna(market_variance):
+        if market_variance == 0 or pd.isna(market_variance):  # type: ignore[comparison-overlap]
             return np.nan
 
         return covariance / market_variance
