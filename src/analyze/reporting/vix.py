@@ -3,13 +3,36 @@ vix.py
 
 """
 
-from pathlib import Path
-
 import pandas as pd
 import plotly.graph_objects as go
 
-from configuration.file_path import Config
-from market.fred.sample_data import FredDataLoader
+from market.fred import HistoricalCache
+
+
+def _load_multiple_series(series_ids: list[str]) -> pd.DataFrame:
+    """複数のFREDシリーズをロードして結合する。
+
+    Parameters
+    ----------
+    series_ids : list[str]
+        FREDシリーズIDのリスト
+
+    Returns
+    -------
+    pd.DataFrame
+        date, variable, value 列を持つデータフレーム
+    """
+    cache = HistoricalCache()
+    dfs = []
+    for series_id in series_ids:
+        df = cache.get_series_df(series_id)
+        if df is not None:
+            df = df.reset_index()
+            df["variable"] = series_id
+            dfs.append(df)
+    if not dfs:
+        return pd.DataFrame(columns=["date", "variable", "value"])
+    return pd.concat(dfs, ignore_index=True)
 
 
 def plot_vix_and_high_yield_spread():
@@ -19,9 +42,8 @@ def plot_vix_and_high_yield_spread():
 
     # データdownload
     fred_series_list = ["VIXCLS", "BAMLH0A0HYM2"]
-    fred = FredDataLoader()
     df = pd.pivot_table(
-        fred.load_data_from_database(series_id_list=fred_series_list),
+        _load_multiple_series(fred_series_list),
         index="date",
         columns="variable",
         values="value",
@@ -110,9 +132,8 @@ def plot_vix_and_uncertainty_index(ema_span: int = 30):
 
     # データdownload
     fred_series_list = ["VIXCLS", "USEPUINDXD"]
-    fred = FredDataLoader()
     df = pd.pivot_table(
-        fred.load_data_from_database(series_id_list=fred_series_list),
+        _load_multiple_series(fred_series_list),
         index="date",
         columns="variable",
         values="value",

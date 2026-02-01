@@ -4,16 +4,17 @@ metal.py
 金属コモディティ分析モジュール
 """
 
+import os
 import sqlite3
 from pathlib import Path
 
 import pandas as pd
 import plotly.graph_objects as go
+from dotenv import load_dotenv
 from pandas import DataFrame
 
 from analyze.reporting.market_report_utils import MarketPerformanceAnalyzer
-from configuration.file_path import Config
-from market.fred.sample_data import FredDataLoader
+from market.fred import HistoricalCache
 
 
 class DollarsIndexAndMetalsAnalyzer:
@@ -26,9 +27,12 @@ class DollarsIndexAndMetalsAnalyzer:
         DollarsIndexAndMetalsAnalyzerクラスを初期化する。
         必要なデータプロセッサを初期化し、データをロードしてリターンを計算する。
         """
-        self.config = Config.from_env()
-        self.db_path = self.config.fred_dir / "FRED.db"
-        self.fred = FredDataLoader()
+        load_dotenv()
+        fred_dir = os.environ.get("FRED_DIR")
+        if fred_dir is None:
+            raise ValueError("FRED_DIR environment variable not set")
+        self.db_path = Path(fred_dir) / "FRED.db"
+        self.fred_cache = HistoricalCache()
         self.analyzer = MarketPerformanceAnalyzer()
         self.price_metal = self._load_metal_price()
         self.price = self.load_price()

@@ -1790,7 +1790,7 @@ def upsert_financial_data(
         print(f"❌ エラー: {e}")
         conn.rollback()
         # 一時テーブルのクリーンアップ
-with contextlib.suppress(BaseException):
+        with contextlib.suppress(BaseException):
             # nosec B608 - temp_table は table_name から生成された安全な識別子
             cursor.execute(f'DROP TABLE IF EXISTS "{temp_table}"')  # nosec B608
         raise
