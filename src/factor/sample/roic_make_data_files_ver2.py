@@ -996,7 +996,7 @@ def calculate_roic_slope_quarter(row, quarter_period: int = 20):
     if len(y_valid) >= 2:
         # numpy.polyfit を使用して線形回帰 (deg=1 は線形)
         # 戻り値: [傾き, 切片]
-        slope, intercept = np.polyfit(x_valid, y_valid, 1)
+        slope, _ = np.polyfit(x_valid, y_valid, 1)
         return slope
     else:
         # 有効なデータ点が2つ未満の場合は、傾きを計算できないため NaN を返す
@@ -1041,7 +1041,7 @@ def calculate_roic_slope_month(row, month_period: int = 60):
     if len(y_valid) >= 2:
         # numpy.polyfit を使用して線形回帰 (deg=1 は線形)
         # 戻り値: [傾き, 切片]
-        slope, intercept = np.polyfit(x_valid, y_valid, 1)
+        slope, _ = np.polyfit(x_valid, y_valid, 1)
         return slope
     else:
         # 有効なデータ点が2つ未満の場合は、傾きを計算できないため NaN を返す
@@ -1607,7 +1607,7 @@ def plot_period_return(df: pd.DataFrame, period: int, roic_col: str, return_col:
         var_name="ROIC_Label",
     )
 
-    fig, ax = plt.subplots(figsize=(8, 4))
+    _, ax = plt.subplots(figsize=(8, 4))
     ax.set_title("5 years performance(Annualized, %)")
     sns.boxplot(data=g_long, x="value", y="ROIC_Label", ax=ax)
     ax.xaxis.set_major_formatter(
