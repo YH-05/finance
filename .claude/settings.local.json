@@ -14,7 +14,11 @@
       "WebFetch(domain:finance.yahoo.com)",
       "WebFetch(domain:fred.stlouisfed.org)",
       "WebFetch(domain:support.claude.com)",
-      "WebSearch"
+      "WebSearch",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__read_text_file",
+      "mcp__filesystem__read_multiple_files"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -13,7 +13,7 @@ import pandas as pd
 import requests
 from fredapi import Fred
 
-from src.configuration.file_path import Config
+from configuration.file_path import Config
 
 
 def load_fred_series_id_json(github_url: str | None = None) -> dict:
