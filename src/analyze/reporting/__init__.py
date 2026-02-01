@@ -1,5 +1,6 @@
 """reporting - パフォーマンスレポート生成モジュール."""
 
+from analyze.reporting import metal, us_treasury, vix
 from analyze.reporting.currency import CurrencyAnalyzer
 from analyze.reporting.currency_agent import CurrencyAnalyzer4Agent, CurrencyResult
 from analyze.reporting.interest_rate import InterestRateAnalyzer

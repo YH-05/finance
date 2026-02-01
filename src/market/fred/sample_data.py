@@ -12,6 +12,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 from fredapi import Fred
+from pandas import DataFrame
 
 from configuration.file_path import Config
 
@@ -244,9 +245,7 @@ class FredDataLoader:
                 conn.close()
 
     # --------------------------------------------------------------------------------
-    def load_data_from_database(
-        self, db_path=None, series_id_list=None
-    ) -> pd.DataFrame:
+    def load_data_from_database(self, db_path=None, series_id_list=None) -> DataFrame:
         """SQLiteデータベースから複数の時系列データを読み込む関数である。
 
         指定されたSQLiteデータベースに接続し、series_id_listに含まれるIDと
@@ -291,6 +290,6 @@ class FredDataLoader:
             )
 
             dfs.append(df)
-        df = pd.concat(dfs, ignore_index=True)
+        df = pd.concat(dfs, ignore_index=True).drop_duplicates(ignore_index=True)
 
         return df
