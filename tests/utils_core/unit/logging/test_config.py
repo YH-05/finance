@@ -605,3 +605,184 @@ class TestIntegration:
         assert log_file.exists()
         content = log_file.read_text()
         assert "Starting integration test" in content
+
+
+class TestFileLevelParameter:
+    """file_level パラメータのテスト (Issue #2676).
+
+    ファイル出力とコンソール出力で異なるログレベルを設定できる機能のテスト。
+    - コンソール: INFO（クリーンな出力を維持）
+    - ファイル: DEBUG（詳細な分析用ログを保存）
+    """
+
+    def test_正常系_file_levelパラメータが受け付けられる(self, tmp_path: Path) -> None:
+        """setup_logging が file_level パラメータを受け付けることを確認."""
+        from utils_core.logging.config import setup_logging
+
+        log_file = tmp_path / "test.log"
+
+        # 例外が発生しないことを確認
+        setup_logging(
+            level="INFO",
+            file_level="DEBUG",
+            format="console",
+            log_file=log_file,
+            force=True,
+        )
+
+    def test_正常系_file_level指定でファイルハンドラがDEBUGレベルになる(
+        self, tmp_path: Path
+    ) -> None:
+        """file_level 指定時にファイルハンドラが指定レベルになることを確認."""
+        from utils_core.logging.config import setup_logging
+
+        log_file = tmp_path / "test.log"
+
+        # 既存のハンドラーをクリア
+        logging.root.handlers.clear()
+
+        setup_logging(
+            level="INFO",
+            file_level="DEBUG",
+            format="console",
+            log_file=log_file,
+            force=True,
+        )
+
+        # ファイルハンドラーを検索
+        file_handler = None
+        for handler in logging.root.handlers:
+            if isinstance(handler, logging.FileHandler):
+                file_handler = handler
+                break
+
+        assert file_handler is not None, "ファイルハンドラーが追加されている必要がある"
+        assert file_handler.level == logging.DEBUG, (
+            f"ファイルハンドラーは DEBUG レベルである必要がある。実際: {file_handler.level}"
+        )
+
+    def test_正常系_コンソールハンドラはlevelパラメータを使用(
+        self, tmp_path: Path
+    ) -> None:
+        """コンソールハンドラは level パラメータを使用することを確認."""
+        from utils_core.logging.config import setup_logging
+
+        log_file = tmp_path / "test.log"
+
+        # 既存のハンドラーをクリア
+        logging.root.handlers.clear()
+
+        setup_logging(
+            level="INFO",
+            file_level="DEBUG",
+            format="console",
+            log_file=log_file,
+            force=True,
+        )
+
+        # コンソールハンドラを検索（StreamHandler だが FileHandler ではない）
+        console_handler = None
+        for handler in logging.root.handlers:
+            if isinstance(handler, logging.StreamHandler) and not isinstance(
+                handler, logging.FileHandler
+            ):
+                console_handler = handler
+                break
+
+        assert console_handler is not None, (
+            "コンソールハンドラが追加されている必要がある"
+        )
+        assert console_handler.level == logging.INFO, (
+            f"コンソールハンドラは INFO レベルである必要がある。実際: {console_handler.level}"
+        )
+
+    def test_正常系_file_level未指定時はlevelと同じになる(self, tmp_path: Path) -> None:
+        """file_level 未指定時はファイルハンドラも level と同じになることを確認."""
+        from utils_core.logging.config import setup_logging
+
+        log_file = tmp_path / "test.log"
+
+        # 既存のハンドラーをクリア
+        logging.root.handlers.clear()
+
+        setup_logging(
+            level="WARNING",
+            format="console",
+            log_file=log_file,
+            force=True,
+        )
+
+        # ファイルハンドラーを検索
+        file_handler = None
+        for handler in logging.root.handlers:
+            if isinstance(handler, logging.FileHandler):
+                file_handler = handler
+                break
+
+        assert file_handler is not None, "ファイルハンドラーが追加されている必要がある"
+        assert file_handler.level == logging.WARNING, (
+            f"ファイルハンドラーは WARNING レベルである必要がある（file_level 未指定時）。"
+            f"実際: {file_handler.level}"
+        )
+
+    def test_正常系_DEBUGログがファイルに書き込まれる(self, tmp_path: Path) -> None:
+        """file_level=DEBUG 時に DEBUG ログがファイルに書き込まれることを確認."""
+        from utils_core.logging.config import get_logger, setup_logging
+
+        log_file = tmp_path / "test.log"
+
+        # 既存のハンドラーをクリア
+        logging.root.handlers.clear()
+
+        setup_logging(
+            level="INFO",
+            file_level="DEBUG",
+            format="plain",
+            log_file=log_file,
+            force=True,
+        )
+
+        test_logger = get_logger("test_debug_file")
+        test_logger.debug("This is a DEBUG message for file")
+        test_logger.info("This is an INFO message")
+
+        # ハンドラーをフラッシュ
+        for handler in logging.root.handlers:
+            handler.flush()
+
+        # ファイル内容を確認
+        file_content = log_file.read_text()
+
+        # file_level=DEBUG なので DEBUG メッセージがファイルに含まれる
+        assert "DEBUG" in file_content or "debug" in file_content.lower(), (
+            f"DEBUG メッセージがファイルに含まれる必要がある。内容: {file_content}"
+        )
+
+    def test_正常系_全てのログレベルをfile_levelに設定できる(
+        self, tmp_path: Path
+    ) -> None:
+        """全てのログレベルを file_level として設定できることを確認."""
+        from utils_core.logging.config import setup_logging
+
+        for level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+            log_file = tmp_path / f"test_{level.lower()}.log"
+            logging.root.handlers.clear()
+
+            setup_logging(
+                level="INFO",
+                file_level=level,
+                log_file=log_file,
+                force=True,
+            )
+
+            # ファイルハンドラーを検索
+            file_handler = None
+            for handler in logging.root.handlers:
+                if isinstance(handler, logging.FileHandler):
+                    file_handler = handler
+                    break
+
+            assert file_handler is not None
+            assert file_handler.level == getattr(logging, level), (
+                f"file_level={level} でファイルハンドラーレベルが一致する必要がある"
+            )
