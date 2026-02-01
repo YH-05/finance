@@ -1,0 +1,1596 @@
+balance_sheet:
+  assets:
+    - code: FF_ASSETS
+      description: Total Assets
+    - code: FF_ASSETS_CURR
+      description: Total Current Assets
+    - code: FF_ASSETS_CURR_MISC
+      description: Miscellaneous Current Assets
+    - code: FF_ASSETS_CURR_OTH
+      description: Other Current Assets
+    - code: FF_ASSETS_DISC_OPER_CURR
+      description: Current Assets of Discontinued Operations
+    - code: FF_ASSETS_DISC_OPER_LT
+      description: Long-Term Assets of Discontinued Operations
+    - code: FF_ASSETS_NONPERF
+      description: Non-Performing Assets - Total
+    - code: FF_ASSETS_NONPERF_OTH
+      description: Non-Performing Assets - Other
+    - code: FF_BDEBT
+      description: Bad Debt / Doubtful Accounts
+    - code: FF_CASH_DUE_FR_BK
+      description: Cash & Due from Banks
+    - code: FF_CASH_ONLY
+      description: Cash
+    - code: FF_CASH_ST
+      description: Cash & Short-Term Investments
+    - code: FF_DFD_TAX_ASSETS_LT
+      description: Deferred Income Tax - Non- Current Asset
+    - code: FF_DFD_TAX_ASSETS_ST
+      description: Deferred Income Tax - Current Asset
+    - code: FF_GW
+      description: Net Goodwill
+    - code: FF_GW_AMORT
+      description: Accumulated Goodwill Amortization
+    - code: FF_GW_GROSS
+      description: Goodwill, Gross
+    - code: FF_INTANG_OTH
+      description: Net Other Intangibles
+    - code: FF_INTANG_OTH_AMORT
+      description: Accumulated Other Intangible Amortization
+    - code: FF_INTANG_OTH_GROSS
+      description: Other Intangibles, Gross
+    - code: FF_INVEN_FG
+      description: Inventories - Finished Goods
+    - code: FF_INVEN_LIFO
+      description: Inventories - LIFO Reserve
+    - code: FF_INVEN_MATL
+      description: Inventories - Raw Materials
+    - code: FF_INVEN_PROG_PAYMT
+      description: Inventories - Progress Payments & Other
+    - code: FF_INVEN_WIP
+      description: Inventories - Work In Progress
+    - code: FF_INVEST_ADV
+      description: Total Investments and Advances
+    - code: FF_INVEST_AFF
+      description: LT Investment - Affiliate Companies
+    - code: FF_MTGE_SERV_RIGHTS
+      description: Loan/Mortgage Servicing Rights
+    - code: FF_NOTES_RECEIV_LT
+      description: Long-Term Note Receivable
+    - code: FF_PPE_DEP
+      description: PPE - Accumulated Depreciation
+    - code: FF_PPE_DEP_BLDG
+      description: Accumulated Depreciation - Buildings
+    - code: FF_PPE_DEP_CONSTR
+      description: Accumulated Depreciation - Construction in Progress
+    - code: FF_PPE_DEP_EQUIP
+      description: Accumulated Depreciation - Machinery & Equipment
+    - code: FF_PPE_DEP_LAND
+      description: Accumulated Depreciation - Land & Improvements
+    - code: FF_PPE_DEP_LEASED_PROP
+      description: Accumulated Depreciation - Leased Property
+    - code: FF_PPE_DEP_LEASES
+      description: Accumulated Depreciation - Leases
+    - code: FF_PPE_DEP_OTH
+      description: Accumulated Depreciation - Other Property, Plant, & Equip
+    - code: FF_PPE_DEP_SOFT_EQUIP
+      description: Accumulated Depreciation Computer Software and Equipment
+    - code: FF_PPE_DEP_TRANS_EQUIP
+      description: Accumulated Depreciation - Transportation Equipment
+    - code: FF_PPE_GROSS
+      description: Property, Plant, & Equipment - Gross
+    - code: FF_PPE_GROSS_BLDG
+      description: Property, Plant, & Equipment - Buildings
+    - code: FF_PPE_GROSS_CONSTR
+      description: Property, Plant, & Equipment - Construction in Progress
+    - code: FF_PPE_GROSS_EQUIP
+      description: Property, Plant, & Equipment - Machinery & Equipment
+    - code: FF_PPE_GROSS_LAND
+      description: Property, Plant, & Equipment - Land & Improvements
+    - code: FF_PPE_GROSS_LEASED_PROP
+      description: Property, Plant, & Equipment - Leased Property
+    - code: FF_PPE_GROSS_LEASES
+      description: Property, Plant, & Equipment - Leases
+    - code: FF_PPE_GROSS_OTH
+      description: Property, Plant, & Equipment - Other Property, Plant, & Equip
+    - code: FF_PPE_GROSS_SOFT_EQUIP
+      description: Property, Plant, & Equipment - Computer Software and Equipment
+    - code: FF_PPE_GROSS_TRANS_EQUIP
+      description: Property, Plant, & Equipment - Transportation Equipment
+    - code: FF_PPE_NET
+      description: PPE - Net
+    - code: FF_PPE_NET_BLDG
+      description: Net Property, Plant & Equipment - Buildings
+    - code: FF_PPE_NET_CONSTR
+      description: Net Property, Plant & Equipment - Construction in Progress
+    - code: FF_PPE_NET_EQUIP
+      description: Net Property, Plant & Equipment - Machinery & Equipment
+    - code: FF_PPE_NET_LAND
+      description: Net Property, Plant & Equipment - Land & Improvements
+    - code: FF_PPE_NET_LEASED_PROP
+      description: Net Property, Plant & Equipment - Leased Property
+    - code: FF_PPE_NET_LEASES
+      description: Net Property, Plant & Equipment - Leases
+    - code: FF_PPE_NET_OTH
+      description: Net Property, Plant & Equipment - Other Property, Plant, & Equip
+    - code: FF_PPE_NET_SOFT_EQUIP
+      description: Net Property, Plant & Equipment - Computer Software and Equipment
+    - code: FF_PPE_NET_TRANS_EQUIP
+      description: Net Property, Plant & Equipment - Transportation Equipment
+    - code: FF_PREP_EXP
+      description: Prepaid Expenses
+    - code: FF_RECEIV_GROSS
+      description: Accounts Receivable, Gross
+    - code: FF_RECEIV_NET
+      description: Accounts Receivable - Net
+    - code: FF_RECEIV_ST_OTH
+      description: Other Receivables
+
+  liabilities:
+    - code: FF_ACCR_EXP_XPAYR
+      description: Accrued Expenses (Excl. Accrued Payroll)
+    - code: FF_ACCR_PAYR
+      description: Accrued Payroll
+    - code: FF_ARO
+      description: Asset Retirement Obligation
+    - code: FF_LIABS_CURR
+      description: Total Current Liabilities
+    - code: FF_LIABS_CURR_DFD_TAX
+      description: Short Term Deferred Income Tax
+    - code: FF_LIABS_CURR_MISC
+      description: Miscellaneous Current Liabilities
+    - code: FF_LIABS_CURR_OTH
+      description: Other Current Liabilities
+    - code: FF_LIABS_DISC_OPER
+      description: Total Liabilities of Discontinued Operations
+    - code: FF_LIABS_DISC_OPER_CURR
+      description: Current Liabilities of Discontinued Operations
+    - code: FF_LIABS_DISC_OPER_LT
+      description: LT Liabilities of Discontinued Operations
+    - code: FF_LIABS_OTH_XDFD_REV
+      description: Other Liabilities (excluding Deferred Revenue)
+    - code: FF_PAY_ACCT
+      description: Accounts Payable
+    - code: FF_PAY_DIV
+      description: Dividends Payable
+    - code: FF_PAY_TAX
+      description: Income Tax Payable
+    - code: FF_RSRV_NONEQ
+      description: Non-Equity Reserves
+
+  shareholders_equity:
+    - code: FF_COM_EQ
+      description: Common Equity - Total
+    - code: FF_COM_EQ_APIC
+      description: Additional Paid-In Capital / Capital Surplus (incl. Deferred Compensation)
+    - code: FF_COM_EQ_FOR_EXCH
+      description: Cumulative Translation Adjustment/ Unrealized For Exch Gain
+    - code: FF_COM_EQ_GL
+      description: Unrealized Gain/Loss Marketable Securities
+    - code: FF_COM_EQ_HEDG_GL
+      description: Comprehensive Income - Hedging Gain/Loss
+    - code: FF_COM_EQ_OTH_COMPR_ADJ_OTH
+      description: Accum Other Comp Inc - Other Adjustments
+    - code: FF_COM_EQ_PAR
+      description: Common Stock Par/Carry Value
+    - code: FF_COM_EQ_RETAIN_EARN
+      description: Retained Earnings
+    - code: FF_COM_EQ_UNEARN_COMP
+      description: Comprehensive Income - Unearned Compensation
+    - code: FF_COM_STK_ESOP
+      description: ESOP Debt Guarantee
+    - code: FF_EQ_TOT
+      description: Total Equity
+    - code: FF_LIABS_SHLDRS_EQ
+      description: Liabilities & Stockholders' Equity - Total
+    - code: FF_PFD_STK
+      description: Preferred Stock - Carrying Value
+    - code: FF_PFD_STK_ESOP
+      description: Preferred Stock Issues for ESOP
+    - code: FF_PFD_STK_ESOP_GTD
+      description: ESOP Guarantees - Preferred Stock
+    - code: FF_PFD_STK_EXCESS
+      description: Preferred Liquidation Excess
+    - code: FF_PFD_STK_LIQ
+      description: Preferred Liquidation Value
+    - code: FF_PFD_STK_NRED
+      description: Non Redeemable Preferred Stock
+    - code: FF_PFD_STK_RED
+      description: Redeemable Preferred Stock
+    - code: FF_RSRV_APPR_OTH
+      description: Other Appropriated Reserves
+    - code: FF_RSRV_REVAL
+      description: Revaluation Reserves
+    - code: FF_RSRV_UNAPPR
+      description: Unappropriated (Free) Reserves
+    - code: FF_SHLDRS_EQ
+      description: Total Shareholders' Equity
+    - code: FF_TREAS_STK
+      description: Treasury Stock - Common (incl. ESOP)
+
+  per_share:
+    - code: FF_BPS
+      description: Book Value Per Share
+    - code: FF_BPS_TANG
+      description: Book Value Per Share - Tangible
+    - code: FF_LIABS_PS
+      description: Liabilities - Long Term - Per Share
+    - code: FF_PAR_PS
+      description: Par Value - Security
+    - code: FF_WKCAP_PS
+      description: Working Capital Per Share
+
+  supplemental:
+    - code: FF_ASSETS_DISC_OPER
+      description: Total Assets of Discontinued Operations
+    - code: FF_ASSETS_DOM
+      description: Domestic Assets
+    - code: FF_ASSETS_GEO_SEG
+      description: Total Geographic Segment Assets
+    - code: FF_ASSETS_INTL
+      description: International Assets
+    - code: FF_ASSETS_RISK_WGHT
+      description: Risk Weighted Assets - Basel III
+    - code: FF_BONDS_BELOW_INVGR
+      description: Bonds Below Investment Grade - Amount
+    - code: FF_CAP_RATIO_TIER1
+      description: Tier 1 Capital Ratio
+    - code: FF_CAP_RATIO_TOT
+      description: Total Capital Ratio
+    - code: FF_COMP_SOFT
+      description: Computer Software
+    - code: FF_DEBT
+      description: Total Debt
+    - code: FF_FOR_EXCH_BS
+      description: Exchange Rate used for Translating Balance Sheet
+    - code: FF_INVEST_CAP
+      description: Invested Capital - Total
+    - code: FF_OPER_LEASE_COMMIT_2YR_5YR
+      description: Operating Lease Commitments 2-5 Years
+    - code: FF_OPER_LEASE_COMMIT_5YR
+      description: Operating Lease Commitments - Over 5 Years
+    - code: FF_OPER_LEASE_COMMIT_TOT
+      description: Total Operating Lease Commitments
+    - code: FF_OPER_LEASE_COMMIT_YR1
+      description: Operating Lease Commitments - Year 1
+    - code: FF_OPER_LEASE_COMMIT_YR2
+      description: Operating Lease Commitments - Year 2
+    - code: FF_OPER_LEASE_COMMIT_YR3
+      description: Operating Lease Commitments - Year 3
+    - code: FF_OPER_LEASE_COMMIT_YR4
+      description: Operating Lease Commitments - Year 4
+    - code: FF_OPER_LEASE_COMMIT_YR5
+      description: Operating Lease Commitments - Year 5
+    - code: FF_TCAP
+      description: Total Capital incl.Short-Term Debt
+    - code: FF_TIER1_CAP
+      description: Total Tier 1 Capital
+    - code: FF_TIER2_CAP
+      description: Total Tier 2 Capital
+
+  other_items:
+    - code: FF_CASH_DEPS
+      description: Cash & Deposits
+    - code: FF_COMPR_INC_ACCUM
+      description: Comprehensive Income - Accumulated
+    - code: FF_COMPR_INC_PENS_LIABS
+      description: Comprehensive Income - Pension Liability
+    - code: FF_DEBT_BONDS_SECURE_LIEN1
+      description: DCS - Bonds - Sec. 1st Lien
+    - code: FF_DEBT_BONDS_SECURE_LIEN2
+      description: DCS - Bonds - Sec. 2nd Lien
+    - code: FF_DEBT_BONDS_SECURE_LIEN3
+      description: DCS - Bonds - Sec. 3rd Lien
+    - code: FF_DEBT_LOAN_SECURE_LIEN1
+      description: DCS - Term Loans - Sec. 1st Lien
+    - code: FF_DEBT_LOAN_SECURE_LIEN2
+      description: DCS - Term Loans - Sec. 2nd Lien
+    - code: FF_DEBT_LOAN_SECURE_LIEN3
+      description: DCS - Term Loans - Sec. 3rd Lien
+    - code: FF_DEBT_LT_NET
+      description: DCS - Net Long Term Debt
+    - code: FF_DEPS
+      description: Total Deposits
+    - code: FF_INS_EQ_POL
+      description: Policyholders' Equity
+    - code: FF_INT_PAY
+      description: Interest Payable
+    - code: FF_ORDER_BACKLOG
+      description: Order Backlog
+    - code: FF_ST_NOTES_INVEST
+      description: Short Term Notes & Bills
+income_statement:
+  main_items:
+    - code: FF_ACTG_CHG
+      description: Cumulative Effect of Accounting Change
+    - code: FF_ADJ_NET_OTH
+      description: Other After Tax Income (Expense)
+    - code: FF_AMORT_DFD_CHRG
+      description: Amortization of Deferred Charges
+    - code: FF_AMORT_INTANG
+      description: Amortization of Intangibles
+    - code: FF_COGS
+      description: COGS incl. Depreciation & Amortization
+    - code: FF_COGS_XDEP
+      description: COGS excl. Depreciation & Amortization
+    - code: FF_CONSOL_NET_INC
+      description: Net Income - Consolidated
+    - code: FF_DEP_EXP
+      description: Depreciation
+    - code: FF_DIL_ADJ
+      description: Dilution Adjustment
+    - code: FF_DISC_OPER
+      description: Discontinued Operations
+    - code: FF_DISC_OPER_INC
+      description: Disposal Gain/Loss on Discontinued Operations
+    - code: FF_DIV_PFD
+      description: Preferred Dividends
+    - code: FF_EARN_PERST
+      description: Earnings Persistence
+    - code: FF_EBIT_OPER
+      description: EBIT
+    - code: FF_EBITDA_OPER
+      description: EBITDA
+    - code: FF_EQ_AFF_INC
+      description: Equity In Affiliates
+    - code: FF_FOR_CURN_ADJ
+      description: Foreign Currency Adjustment (Net)
+    - code: FF_FOR_EXCH_IS
+      description: Exchange Rate used for Translating Inc Stmt & Cash Fl
+    - code: FF_GAIN_SALE_ASSETS_NET
+      description: Gain (Loss) on Sale of Assets (Net)
+    - code: FF_GROSS_INC
+      description: Gross Income
+    - code: FF_GW_IMPAIR
+      description: Goodwill - Impairment
+    - code: FF_INC_ADJ
+      description: Income Adjustment
+    - code: FF_INC_TAX
+      description: Income Taxes
+    - code: FF_INC_TAX_CURR
+      description: Income Tax - Current - Total
+    - code: FF_INC_TAX_CURR_DOM
+      description: Income Tax - Current - Domestic
+    - code: FF_INC_TAX_CURR_FOR
+      description: Income Tax - Current - Foreign
+    - code: FF_INC_TAX_DFD
+      description: Income Tax - Deferred - Total
+    - code: FF_INC_TAX_DFD_DOM
+      description: Income Tax - Deferred - Domestic (incl. local)
+    - code: FF_INC_TAX_DFD_FOR
+      description: Income Tax - Deferred - Foreign
+    - code: FF_INT_EXP_NET
+      description: Interest Expense, Net of Interest Capitalized
+    - code: FF_INT_EXP_TOT
+      description: Total Interest Expense - Banks
+    - code: FF_INT_INC
+      description: Interest Income
+    - code: FF_INT_INC_AFT_PROV
+      description: Net Interest Income after Loan Loss Provision
+    - code: FF_INT_INC_NET
+      description: Net Interest Income
+    - code: FF_ITC
+      description: Investment Tax Credits
+    - code: FF_LOAN_LOSS_NET
+      description: Net Loan Losses
+    - code: FF_LOSS_CLAIM_RSRV
+      description: Losses, Claims & Reserves
+    - code: FF_MATL_EXP
+      description: Material Expense
+    - code: FF_MIN_INT_EXP
+      description: Minority Interest
+    - code: FF_NET_INC
+      description: Net Income
+    - code: FF_NET_INC_AFT_PFD
+      description: Net Income After Preferred Dividends
+    - code: FF_NET_INC_AFT_XORD
+      description: Net Income - After Extraordinary Items
+    - code: FF_NET_INC_BASIC
+      description: Net Income Avail to Common - Basic
+    - code: FF_NET_INC_BASIC_AFT_XORD
+      description: Net Income Avail to Common - Basic - After Extraordinaries
+    - code: FF_NET_INC_BASIC_BEFT_XORD
+      description: Income Before Extraordinary Items
+    - code: FF_NET_INC_DIL
+      description: Net Income Avail to Common - Fully Diluted
+    - code: FF_NET_INC_DIL_AFT_XORD
+      description: Net Income Avail to Common - Fully Diluted - After Extraordinaries
+    - code: FF_NET_INCOME
+      description: Net Income incl. Discontinued Operations
+    - code: FF_NON_OPER_INC
+      description: Nonoperating Income (Net) - Total
+    - code: FF_OPER_EXP
+      description: Operating Expenses
+    - code: FF_OPER_INC
+      description: Operating Inc Before Unusual Items
+    - code: FF_OPER_INC_AFT_INT
+      description: Operating Income after Interest Expense
+    - code: FF_OPER_INC_AFT_UNUSUAL
+      description: Operating Income After Unusual Items
+    - code: FF_OPER_INC_BEF_DEP
+      description: Operating Inc Before Depreciation
+    - code: FF_OPER_INC_DOM
+      description: Domestic Operating Income
+    - code: FF_OPER_INC_GEO_SEG
+      description: Total Geographic Segment Operating Income
+    - code: FF_OPER_INC_INTL
+      description: International Operating Income
+    - code: FF_OPER_LEASE_EXP
+      description: Rental/Operating Lease Expense
+    - code: FF_ORDINARY_INC
+      description: Ordinary Income - Japan
+    - code: FF_OTH_UNUSUAL_EXP
+      description: Other Unusual Expense
+    - code: FF_RD_EXP
+      description: Research & Development
+    - code: FF_RESTRUCT_EXP
+      description: Restructuring Charge
+    - code: FF_SALES
+      description: Net Sales or Revenue
+    - code: FF_SALES_DOM
+      description: Domestic Sales
+    - code: FF_STK_OPT_EXP
+      description: Stock Option Compensation Expense - Net of Tax
+    - code: FF_STK_OPT_EXP_ADJ
+      description: Stock Option Comp Expense - Adjustment to Net Income - Net of Tax
+    - code: FF_STK_OPT_EXP_COGS
+      description: Stock-Based Compensation Included in COGS
+    - code: FF_STK_OPT_EXP_OTH
+      description: Stock-Based Compensation Included in Other Expense
+    - code: FF_STK_OPT_EXP_RD
+      description: Stock-Based Compensation Included in R&D
+    - code: FF_STK_OPT_EXP_SGA
+      description: Stock-Based Compensation Included in SG&A
+    - code: FF_US_GAAP_ADJ
+      description: U.S. GAAP Adjustment
+    - code: FF_XORD
+      description: Extraordinary Items (incl Accounting Change)
+    - code: FF_XORD_DISC
+      description: Extraordinaries & Discontinued Operations
+    - code: FF_XORD_ITEMS
+      description: Extraordinary Gains/Losses from Sale of Asset
+
+  per_share:
+    - code: FF_ACTG_CHG_PS
+      description: Accounting Change Per Share - Cum Effect - Fiscal
+    - code: FF_EBIT_OPER_PS
+      description: EBIT (Operating Income) Per Share
+    - code: FF_EPS
+      description: Earnings Per Share
+    - code: FF_EPS_AFT_XORD
+      description: Earnings Per Share After Extraordinary Items
+    - code: FF_EPS_BASIC
+      description: EPS - Basic - Before Extraordinaries
+    - code: FF_EPS_CONTIN_OPER
+      description: EPS from Continuing Operations
+    - code: FF_EPS_DIL
+      description: EPS - Fully Diluted
+    - code: FF_EPS_DIL_AFT_XORD
+      description: EPS - Diluted - After Extraordinaries
+    - code: FF_EPS_DIL_BEF_UNUSUAL
+      description: EPS - Diluted - Before Unusual Expense
+    - code: FF_EPS_HEADLINE_UK
+      description: Headline EPS - CFAUK Methodology
+    - code: FF_EPS_HEADLINE_UK_DIL
+      description: Headline Diluted EPS - CFAUK Methodology
+    - code: FF_EPS_REPORTED
+      description: Earnings Per Share - As Reported
+    - code: FF_EPS_SECS
+      description: Earnings Per Share - Security
+    - code: FF_EPS_XORD
+      description: Earnings Per Share incl. Extraordinary Items - Fiscal
+    - code: FF_OPER_INC_PS
+      description: Operating Income Per Share
+    - code: FF_RESTRUCT_PS
+      description: Restructuring Exp Per Share - Net of Tax - Fiscal Yr
+    - code: FF_RESTRUCT_PS_PTAX
+      description: Restructuring Exp Per Share - Pretax
+    - code: FF_SALES_PS
+      description: Sales Per Share
+    - code: FF_XORD_PS
+      description: Extraordinary Credit/Charge Per Share
+    - code: FF_XORD_PS_PTAX
+      description: Extraordinary Credit/Charge Per Share - Pretax
+
+  supplemental:
+    - code: FF_UNREAL_GL_BIO_ASSETS
+      description: Unrealized Gain/Loss - Biological Assets
+    - code: FF_UNREAL_GL_DERIV
+      description: Unrealized Gain/Loss - Hedges/Derivatives
+    - code: FF_UNREAL_GL_INVEST
+      description: Unrealized Gain/Loss - Investment Securities
+    - code: FF_UNREAL_GL_OTH
+      description: Unrealized Gain/Loss - Other
+    - code: FF_UNREAL_GL_PROP
+      description: Unrealized Gain/Loss - Investment Property
+
+cash_flow:
+  operating:
+    - code: FF_ACCR_EXP_CF
+      description: Accrued Expenses (Cash Flow)
+    - code: FF_AMORT_CF
+      description: Amortization
+    - code: FF_DEP_EXP_CF
+      description: Depreciation & Amortization - Cash Flow
+    - code: FF_DEP_EXP_XAMORT_CF
+      description: Depreciation/Depletion (excl. Amortization)
+    - code: FF_DFD_TAX_CF
+      description: Deferred Taxes (Cash Flow)
+    - code: FF_DFD_TAX_XITC_CF
+      description: Deferred Taxes (excl. Investment Tax Credits)
+    - code: FF_FUNDS_OPER_GROSS
+      description: Funds from Operations
+    - code: FF_INVEN_CF
+      description: Inventories (Cash Flow)
+    - code: FF_ITC_CF
+      description: Investment Tax Credits
+    - code: FF_NET_INC_CF
+      description: Net Income (Cash Flow)
+    - code: FF_NON_CASH
+      description: Non-Cash Items
+    - code: FF_OPER_CF
+      description: Net Cash from Operating Activities
+    - code: FF_PAY_ACCT_CF
+      description: Accounts Payable (Cash Flow)
+    - code: FF_PAY_TAX_CF
+      description: Taxes Payable
+    - code: FF_RECEIV_CF
+      description: Accounts Receivable
+    - code: FF_WKCAP_ASSETS_OTH
+      description: Other Asset/Liabilities
+    - code: FF_XORD_CF
+      description: Extraordinary Item
+
+  investing:
+    - code: FF_ACQ_BUS_CF
+      description: Acquisition of Business
+    - code: FF_CAPEX
+      description: Capital Expenditures - Total
+    - code: FF_CAPEX_FIX
+      description: Capital Expenditures - Fixed Assets
+    - code: FF_CAPEX_OTH
+      description: Capital Expenditures (Other Assets)
+    - code: FF_INCR_FED_HOME_ADV_CF
+      description: Federal Home Loan Advances Increase (Decrease)
+    - code: FF_INVEST_ACTIV_CF
+      description: Investing Activities - Other Uses
+    - code: FF_INVEST_CF
+      description: Net Cash from Investing Activities
+    - code: FF_INVEST_PURCH_CF
+      description: Purchase of Investments
+    - code: FF_INVEST_PURCH_SALE_CF
+      description: Purchase/Sale of Investments
+    - code: FF_INVEST_SALE_CF
+      description: Sale/Maturity of Investments
+    - code: FF_INVEST_SOURCES_CF
+      description: Investing Activities - Other Sources
+    - code: FF_INVEST_USES_CF
+      description: Other Uses
+    - code: FF_SALE_ASSETS_BUS_CF
+      description: Sale of Fixed Assets & Businesses
+
+  financing:
+    - code: FF_DEBT_CF
+      description: Issuance/Reduction of Debt - Net
+    - code: FF_DEBT_LT_CF
+      description: Long Term Debt, Net
+    - code: FF_DEBT_LT_ISS_CF
+      description: Issuance of LT Debt
+    - code: FF_DEBT_LT_REDUCT_CF
+      description: Reduction of LT Debt
+    - code: FF_DEBT_ST_CF
+      description: Short Term Debt, Net
+    - code: FF_DIV_CF
+      description: Cash Dividends Paid
+    - code: FF_DIV_COM_CF
+      description: Common Dividends
+    - code: FF_DIV_PFD_CF
+      description: Preferred Dividends (Cash Flow)
+    - code: FF_FIN_ACTIV_OTH_CF
+      description: Other Financing Activities, Net
+    - code: FF_FIN_CF
+      description: Net Cash from Financing Activities
+    - code: FF_FIN_SOURCES_CF
+      description: Other Financing Activities (Sources)
+    - code: FF_FIN_USES_CF
+      description: Other Financing Activities (Uses)
+    - code: FF_OPT_WRNT_CF
+      description: Options and Warrants Converted
+    - code: FF_STK_CHG_CF
+      description: Sale/Repurchase of Stock - Net
+    - code: FF_STK_OPT_CF
+      description: Stock Based Compensation (Cash Flow)
+    - code: FF_STK_PURCH_CF
+      description: Stock Repurchase
+    - code: FF_STK_SALE_CF
+      description: Sale of Common & Pref Stock
+    - code: FF_STK_SALE_XOPT_CF
+      description: Sale of Common & Pref Stock (excl Options)
+
+  per_share:
+    - code: FF_CAPEX_PS_CF
+      description: Capital Expenditures Per Share
+    - code: FF_CURR_PS_CF
+      description: Cash Flow Per Share - Current
+    - code: FF_FREE_PS_CF
+      description: Free Cash Flow Per Share
+    - code: FF_OPER_PS_NET_CF
+      description: Cash Flow from Oper Per Share - Net
+
+  change_in_cash:
+    - code: FF_CHG_CASH_CF
+      description: Net Change in Cash
+    - code: FF_FOR_EXCH_CF
+      description: Foreign Exchange Effects
+    - code: FF_MISC_FUNDS_CF
+      description: Miscellaneous Funds
+
+  supplemental:
+    - code: FF_DEP_CHG_CF
+      description: Change in Deposits
+    - code: FF_DPS
+      description: Dividends Per Share
+    - code: FF_DPS_SECS
+      description: Dividends Per Share - Security
+    - code: FF_FREE_CF
+      description: Free Cash Flow
+    - code: FF_INT_CF
+      description: Cash Interest Paid
+    - code: FF_INVEST_ACTIV_OTH
+      description: Other Funds
+    - code: FF_LOAN_CHG_CF
+      description: Proceeds from Loans
+    - code: FF_TAX_CF
+      description: Cash Taxes Paid
+
+ratios:
+  financial:
+    - code: FF_ASSETS_COM_EQ
+      description: Assets to Common Equity
+    - code: FF_ASSETS_EQ
+      description: Assets to Equity (End of Period)
+    - code: FF_CAPEX_ASSETS
+      description: Capital Exp (Total) % Total Assets
+    - code: FF_CAPEX_FIX_ASSETS
+      description: Capital Exp (Total) % Gross Fixed Assets
+    - code: FF_CAPEX_SALES
+      description: Capital Expense % Sales
+    - code: FF_COM_EQ_ASSETS
+      description: Common Equity % Total Assets
+    - code: FF_COM_EQ_DEPS
+      description: Common Equity % Total Deposits
+    - code: FF_COM_EQ_TCAP
+      description: Common Equity % Total Capital
+    - code: FF_DEBT_ASSETS
+      description: Total Debt % Total Assets
+    - code: FF_DEBT_COM_EQ
+      description: Debt % Common Equity
+    - code: FF_DEBT_EQ
+      description: Total Debt % Equity
+    - code: FF_DEP_ACCUM_FIX_ASSETS
+      description: Deprec (Accum) % Gross Fixed Assets
+    - code: FF_DOM_ASSETS_PCT
+      description: Domestic Assets % Total Geographic Segment Assets
+    - code: FF_EARN_ASSETS_AVAIL_FUNDS
+      description: Earning Assets % Total Available Funds
+    - code: FF_EBIT_OPER_FIX_CHRG_COVG
+      description: EBIT to Fixed Charge Coverage
+    - code: FF_FIX_ASSETS_COM_EQ
+      description: Fixed Assets % Common Equity
+    - code: FF_FOR_ASSETS_PCT
+      description: Foreign Assets % Total Geographic Segment Assets
+    - code: FF_INVEST_ASSETS_DEPS
+      description: Invested Assets % Total Deposits
+    - code: FF_INVEST_ASSETS_LIABS
+      description: Invested Assets % Liabilities
+    - code: FF_INVEST_ASSETS_LOAN_DEPS
+      description: Invested Assets + Loans % Total Deposits
+    - code: FF_INVEST_ASSETS_PCT
+      description: Investments (Total) % Total Assets
+    - code: FF_INVEST_TCAP
+      description: Investments (Total) % Total Capital
+    - code: FF_LIFE_INS
+      description: Life Insurance in Force
+    - code: FF_LOAN_ASSETS
+      description: Loans (Total) % Total Assets
+    - code: FF_LOAN_DEPS
+      description: Loans (Total) % Total Deposits
+    - code: FF_LOAN_LOSS_RSRV_ASSETS
+      description: Loan Loss Reserves % Total Assets
+    - code: FF_LOAN_LOSS_RSRV_TCAP
+      description: Loan Loss Reserves % Total Capital
+    - code: FF_LOAN_TCAP
+      description: Loans (Total) / Total Capital
+    - code: FF_LTD_COM_EQ
+      description: Long Term Debt % Common Equity
+    - code: FF_LTD_TCAP
+      description: Long Term Debt % Total Capital
+    - code: FF_MIN_INT_TCAP
+      description: Accumulated Minority Interest % Total Capital
+    - code: FF_NET_CAP_REQUIRE
+      description: Net Capital Requirement
+    - code: FF_PAY_OUT_RATIO
+      description: Dividend Payout Ratio
+    - code: FF_PFD_STK_TCAP
+      description: Preferred Stock % Total Capital
+    - code: FF_RD_SALES
+      description: Research & Development % Sales
+    - code: FF_REINVEST_RATE
+      description: Reinvestment Rate
+    - code: FF_SALES_FIX_ASSETS
+      description: Sales (Net) / Gross Fixed Assets
+    - code: FF_SALES_WKCAP
+      description: Sales (Net ) / Working Capital
+    - code: FF_SAV_DEPS_PCT
+      description: Savings Deposits % Total Deposits
+    - code: FF_SECS_RE_CAP
+      description: Equity Securities & Real Estate % Capital
+    - code: FF_SECS_RE_INVEST_ASSETS
+      description: Equity Securities & Real Estate % Invested Assets
+    - code: FF_STD_DEBT
+      description: Short Term Debt % Total Debt
+    - code: FF_TANG_ASSETS_DEBT
+      description: Tangible Assets to Total Debt
+    - code: FF_TCAP_DEPS
+      description: Capital (Total) % Total Deposits
+    - code: FF_TOT_DEBT_TCAP_STD
+      description: Total Debt % Total Capital
+    - code: FF_WKCAP_PCT
+      description: Working Capital % Total Capital
+    - code: FF_ZSCORE
+      description: Altman's Z Score
+
+  growth_rate:
+    - code: FF_ASSETS_GR
+      description: Assets - Total - 1 Year Growth
+    - code: FF_BPS_GR
+      description: Book Value Per Share - 1 Yr Growth
+    - code: FF_CAPEX_5YGR
+      description: Capital Spending - 5Yr Growth Rate
+    - code: FF_CF_PS_GR
+      description: Cash Flow Per Share - 1 Year Growth
+    - code: FF_COM_EQ_GR
+      description: Common Equity - 1 Yr Growth
+    - code: FF_DPS_GR
+      description: Dividends Per Share - 1 Year Growth
+    - code: FF_EMP_GR
+      description: Employees - Total - 1 Yr Growth
+    - code: FF_EPS_BASIC_GR
+      description: EPS - Basic - Before Extras - 1 Yr Growth
+    - code: FF_EPS_DIL_GR
+      description: EPS - Diluted - Before Extras - % Change
+    - code: FF_INS_RSRV_GR
+      description: Insurance Reserves - 1 Yr Growth
+    - code: FF_LOAN_GR
+      description: Loans - Total - 1 Yr Growth
+    - code: FF_MKT_VAL_GR
+      description: Market Value - 1 Yr Growth
+    - code: FF_NET_INC_BEF_XORD_GR
+      description: Net Income - Before Extras - 1 Yr Growth
+    - code: FF_NET_MGN_GR
+      description: Net Income Margin - 1 Yr Growth
+    - code: FF_OPER_INC_GR
+      description: Operating Income - 1 Yr Growth
+    - code: FF_SALES_GR
+      description: Sales - Net - 1 Yr Growth
+    - code: FF_SALES_PS_GR
+      description: Sales Per Share - 1 Year Growth
+
+  liquidity:
+    - code: FF_BNFIT_LOSS_RSRV_TCAP
+      description: Benefit & Loss Reserve % Total Capital
+    - code: FF_CASH_CONV_CYCLE
+      description: Cash Conversion Cycle
+    - code: FF_CASH_CURR_ASSETS
+      description: Cash & Equiv % Current Assets
+    - code: FF_CASH_DIV_CF
+      description: Cash Dividends/Cash Flow
+    - code: FF_CASH_DIV_COVG_RATIO
+      description: Cash Dividend Coverage Ratio
+    - code: FF_CASH_SECS_DEPS
+      description: Cash & Secs % Total Deposits
+    - code: FF_COST_DEBT
+      description: Weighted Cost of Debt
+    - code: FF_CURR_RATIO
+      description: Current Ratio
+    - code: FF_DEBT_EBITDA_OPER
+      description: Total Debt / EBITDA
+    - code: FF_DEBT_SERV
+      description: Debt Service Ratio - Incl ST Debt - Pretax
+    - code: FF_DEMAND_DEPS_PCT
+      description: Demand Deposits % Total Deposits
+    - code: FF_EBIT_OPER_INT_COVG
+      description: EBIT Interest Coverage
+    - code: FF_FOR_DEPS_PCT
+      description: Foreign Office Deposits % Total Deposits
+    - code: FF_GROSS_CF_DEBT
+      description: Gross Cash Flow % Total Debt
+    - code: FF_INVEN_CURR_ASSETS
+      description: Inventories % Current Assets
+    - code: FF_INVEN_DAYS
+      description: Inventories - Days Held
+    - code: FF_LOAN_LOSS_ACTUAL_RSRV
+      description: Loan Losses (Actual) % Loan Loss Reserve
+    - code: FF_LOAN_LOSS_COVG
+      description: Loan Loss Coverage
+    - code: FF_LOAN_LOSS_PCT
+      description: Loan Losses (Net) % Total Loans
+    - code: FF_LOAN_LOSS_PROV_PCT
+      description: Loan Losses Provision % Total Loans
+    - code: FF_LOAN_LOSS_RSRV_PCT
+      description: Loan Losses Reserves % Total Loans
+    - code: FF_NET_CF_DEBT
+      description: Cash Flow (Net) % Total Debt
+    - code: FF_NET_DEBT_EBITDA_OPER
+      description: Net Debt / EBITDA
+    - code: FF_NONPERF_LOAN_COM_EQ
+      description: Non-Performing Loans % Common Equity
+    - code: FF_NONPERF_LOAN_LOSS_RSRV
+      description: Non-Performing Loans % Loan Loss Reserves
+    - code: FF_NONPERF_LOAN_PCT
+      description: Non-Performing Loans % Total Loans
+    - code: FF_OPER_CF_FIX_CHRG
+      description: Operating Cash Flow to Fixed Charges (Interest & Dividend)
+    - code: FF_PAY_TURN
+      description: Payables Turnover
+    - code: FF_PAY_TURN_DAYS
+      description: Days of Payables Outstanding
+    - code: FF_QUICK_RATIO
+      description: Quick Ratio
+    - code: FF_RECEIV_CURR_ASSETS
+      description: Receivables % Current Assets
+    - code: FF_RECEIV_TURN
+      description: Receivables Turnover
+    - code: FF_RECEIV_TURN_DAYS
+      description: Receivables Days
+    - code: FF_UNEARN_PREM_TCAP
+      description: Unearned Premium % Total Capital
+
+  profitability:
+    - code: FF_ASSET_TURN
+      description: Asset Turnover
+    - code: FF_ASSETS_PER_EMP
+      description: Assets Per Employee
+    - code: FF_CASH_ROCE
+      description: Cash Earnings Return on Common Equity
+    - code: FF_CF_ROIC
+      description: Cash Flow Return on Average Invested Capital
+    - code: FF_CF_SALES
+      description: Cash Flow to Sales
+    - code: FF_CLAIMS_NET_PREM
+      description: Claims & Claim Exp % Total Premium Written
+    - code: FF_COGS_SALES
+      description: Cost of Goods Sold % Sales
+    - code: FF_DOM_INC_PCT
+      description: Domestic Income % Total Geographic Segment Income
+    - code: FF_DOM_SALES_PCT
+      description: Domestic Sales % Total Geographic Segment Sales
+    - code: FF_EARN_ASSETS_EFF
+      description: Earning Assets - Efficiency of
+    - code: FF_EARN_ASSETS_PCT
+      description: Earning Assets % Total Assets
+    - code: FF_EBIT_OPER_MGN
+      description: EBIT Margin
+    - code: FF_EBIT_OPER_ROA
+      description: Return on Average Assets (EBIT)
+    - code: FF_EBITDA_OPER_MGN
+      description: EBITDA Margin
+    - code: FF_EFF_INT_RATE
+      description: Interest Rate - Effective
+    - code: FF_ENTRPR_VAL_FCF
+      description: Enterprise Value - Free Cash Flow
+    - code: FF_EXP_RATIO
+      description: Expense Ratio
+    - code: FF_EXP_RATIO_STAT
+      description: Statutory Expense Ratio
+    - code: FF_FOR_ASSET_TURN
+      description: Foreign Asset Turnover
+    - code: FF_FOR_INC_PCT
+      description: Foreign Income % Total Geographic Segment Income
+    - code: FF_FOR_NET_MGN
+      description: Foreign Income Margin
+    - code: FF_FOR_ROA
+      description: Foreign Return on Assets
+    - code: FF_FOR_SALES_PCT
+      description: Foreign Sales % Total Geographic Segment Sales
+    - code: FF_GROSS_MGN
+      description: Gross Income Margin
+    - code: FF_INT_EXP_IB_LIABS
+      description: Interest Exp (Total) % Interest Bearing Liabs
+    - code: FF_INT_INC_AVG_DEPS
+      description: Interest Income (Net) % Average Deposits
+    - code: FF_INT_INC_EARN_ASSETS
+      description: Interest Income (Total) % Earning Assets
+    - code: FF_INT_MGN
+      description: Net Interest Margin
+    - code: FF_INVEN_TURN
+      description: Inventory Turnover
+    - code: FF_INVEST_INC_INVEST_ASSETS
+      description: Investment Income % Invested Assets
+    - code: FF_INVEST_YLD
+      description: Yield on Investment
+    - code: FF_LOSS_EXP_RATIO
+      description: Loss & Expense Ratios Combined
+    - code: FF_LOSS_EXP_RATIO_STAT
+      description: Statutory Loss & Expense Ratios Combined
+    - code: FF_LOSS_RATIO
+      description: Loss Ratio
+    - code: FF_NET_INC_PER_EMP
+      description: Net Income/Employee - Most Recent FY
+    - code: FF_NET_INT_INC_EARN_ASSETS
+      description: Interest Income (Net) % Earn Assets
+    - code: FF_NON_INT_INC_REV
+      description: Non-Interest Income % Total Revs
+    - code: FF_OPER_INC_PREM_EARN
+      description: Operating Income % Premiums Earned
+    - code: FF_OPER_INC_PREM_WRITTEN
+      description: Operating Income % Total Premiums Written
+    - code: FF_OPER_INC_TCAP
+      description: Operating Income % Total Capital
+    - code: FF_OPER_MGN
+      description: Operating Margin
+    - code: FF_PAY_ACCT_SALES
+      description: Accounts Payable to Sales
+    - code: FF_PREM_WRITTEN_COM_EQ
+      description: Total Premiums Written % Common Equity
+    - code: FF_PTX_MGN
+      description: Pretax Margin
+    - code: FF_ROA
+      description: Return on Average Assets
+    - code: FF_ROA_PTX
+      description: Return on Average Assets - Pretax
+    - code: FF_ROCE
+      description: Return on Common Equity
+    - code: FF_ROE
+      description: Return on Average Total Equity
+    - code: FF_ROEA
+      description: Return on Earning Assets
+    - code: FF_ROIC
+      description: Return on Average Invested Capital
+    - code: FF_ROTC
+      description: Return on Average Total Capital
+    - code: FF_SALES_INVEN_TURN
+      description: Sales to Inventory Turnover
+    - code: FF_SALES_PER_EMP
+      description: Sales Per Employee
+    - code: FF_SGA_SALES
+      description: Selling, General & Admin Exp % Sales
+    - code: FF_TAX_RATE
+      description: Tax Rate
+
+  size:
+    - code: FF_ENTRPR_VAL
+      description: Enterprise Value
+    - code: FF_MKT_VAL
+      description: Market Value - using Period End Price
+    - code: FF_MKT_VAL_PUBLIC
+      description: Market Capitalization - Public
+    - code: FF_MKT_VAL_SECS
+      description: Market Value - using Period End Price - Security
+
+  valuation:
+    - code: FF_DEBT_ENTRPR_VAL_DAILY
+      description: Debt to Enterprise Value - Daily
+    - code: FF_DIV_YLD
+      description: Dividend Yield
+    - code: FF_DIV_YLD_SECS
+      description: Dividend Yield - Security
+    - code: FF_EARN_YLD
+      description: Earnings Yield
+    - code: FF_ENTRPR_VAL_DAILY
+      description: Enterprise Value - Daily
+    - code: FF_ENTRPR_VAL_EBIT_OPER
+      description: Enterprise Value to EBIT
+    - code: FF_ENTRPR_VAL_EBIT_OPER_DAILY
+      description: Enterprise Value to EBIT - Daily
+    - code: FF_ENTRPR_VAL_EBITDA_OPER
+      description: Enterprise Value to EBITDA
+    - code: FF_ENTRPR_VAL_EBITDA_OPER_DAILY
+      description: Enterprise Value to EBITDA - Daily
+    - code: FF_ENTRPR_VAL_SALES
+      description: Enterprise Value to Sales
+    - code: FF_ENTRPR_VAL_SALES_DAILY
+      description: Enterprise Value to Sales - Daily
+    - code: FF_PBK
+      description: Price to Book
+    - code: FF_PBK_TANG
+      description: Price to Tangible Book Value
+    - code: FF_PCF
+      description: Price to Cash Flow Ratio - Closing Price as of Fiscal Period End
+    - code: FF_PE
+      description: Price to Earnings
+    - code: FF_PE_DIL
+      description: Price to Earnings - Diluted
+    - code: FF_PFCF
+      description: Price to Free Cash Flow
+    - code: FF_PSALES
+      description: Price to Sales
+    - code: FF_PSALES_DIL
+      description: Price to Sales - Diluted
+    - code: FF_WKCAP
+      description: Working Capital
+
+corporate_data_and_classifications:
+  - code: FF_ADDRESS
+    description: Address
+
+  - code: FF_ADDRESS_INVEST_REL
+    description: Address - Investor Relations
+
+  - code: FF_ADDRESS2
+    description: Address - Line 2
+
+  - code: FF_CITY
+    description: City
+
+  - code: FF_CO_NAME
+    description: Company Name
+
+  - code: FF_COMPANY_RELATIONSHIP
+    description: Related Company Data
+
+  - code: FF_COUNTRY
+    description: Country Name
+
+  - code: FF_COUNTRY_NUM
+    description: Country Number - Domicile
+
+  - code: FF_EMAIL_INVEST_REL
+    description: E-Mail - Investor Relations
+
+  - code: FF_EMP_NUM
+    description: Employees - Number
+
+  - code: FF_GEN_IND
+    description: General Industry Classification
+
+  - code: FF_MAJOR_IND
+    description: Industry Category - Major - Number
+
+  - code: FF_MAJOR_IND_NAME
+    description: Industry Category - Major - Name
+
+  - code: FF_MAJOR_SUBIND
+    description: Industry Category - Sub - Number
+
+  - code: FF_MAJOR_SUBIND_NAME
+    description: Industry Category - Sub - Name
+
+  - code: FF_NAME_INVEST_REL
+    description: Name - Investor Relations
+
+  - code: FF_PHONE
+    description: Phone Number
+
+  - code: FF_PHONE_INVEST_REL
+    description: Phone or Fax - Investor Relations
+
+  - code: FF_POBOX
+    description: Post Office Box
+
+  - code: FF_RELATED_COMPANY
+    description: Related Company Identifiers and Names
+
+  - code: FF_SIC_CODE
+    description: SIC Code
+
+  - code: FF_SIC_IND_DESC
+    description: SIC Description
+
+  - code: FF_STATE_PROVINCE
+    description: State/Province - Current
+
+  - code: FF_URL
+    description: Internet Address
+
+dates:
+  - code: FF_COM_SHS_OUT_CURR_DATE
+    description: Common Shares Outstanding - Date of Current YYYYMMDD
+
+  - code: FF_DPS_DDATE
+    description: Interim Dividends Per Share - Declaration Date YYYYMMDD
+
+  - code: FF_DPS_EXDATE
+    description: Dividends Per Share - Exdate
+
+  - code: FF_EPS_RPT_DATE
+    description: Earnings Per Share - Report Date
+
+  - code: FF_FISCAL_DATE
+    description: Fiscal Period End Date
+
+  - code: FF_NUM_SHRHLDRS_DATE
+    description: Date of Common Shareholders MM/DD/YYYY
+
+  - code: FF_SOURCE_BS_DATE
+    description: Source Document Filing Date - BS
+
+  - code: FF_SOURCE_CF_DATE
+    description: Source Document Filing Date - CF
+
+  - code: FF_SOURCE_IS_DATE
+    description: Source Document Filing Date - IS
+
+financial_records:
+  - code: FF_ACTG_STANDARD
+    description: Accounting - Standards Followed
+
+  - code: FF_ADD_DATE
+    description: Company Added Date
+
+  - code: FF_AUD_FEES
+    description: Audit Fees
+
+  - code: FF_AUD_OPINION
+    description: Auditor's Opinion
+
+  - code: FF_COVERAGE
+    description: Full/Limited Coverage
+
+  - code: FF_CURN_DOC
+    description: Currency - Document - ISO Code
+
+  - code: FF_CURN_ISO
+    description: Currency - ISO Code - Local
+
+  - code: FF_DEPS_BK
+    description: Depository Banks
+
+  - code: FF_FREQ_CODE
+    description: Earnings Report Frequency Code
+
+  - code: FF_FY_LENGTH_DAYS
+    description: Fiscal Year Length - Days
+
+  - code: FF_LTD_DATA_IND
+    description: Limited Data Set Company - Indicator
+
+  - code: FF_PAR_AUD1
+    description: Parent Auditor 1
+
+  - code: FF_PAR_AUD2
+    description: Parent Auditor 2
+
+  - code: FF_PAR_AUD3
+    description: Parent Auditor 3
+
+identifiers:
+  - code: FF_ACRONYM
+    description: Acronym
+
+  - code: FF_COMPACT
+    description: Company is Active
+
+  - code: FF_CUSIP
+    description: CUSIP Number
+
+  - code: FF_CUSIP_SECS
+    description: CUSIP - Security
+
+  - code: FF_DISCL_ID
+    description: Disclosure Company Identifier
+
+  - code: FF_FP_IND
+    description: Fiscal Period Indicator (Interim)
+
+  - code: FF_ISCOMP
+    description: Security is Primary Issue
+
+  - code: FF_ISIN
+    description: ISIN Number
+
+  - code: FF_ISIN_SECS
+    description: ISIN Number - Security
+
+  - code: FF_SECACT
+    description: Security is Active
+
+  - code: FF_SEDOL
+    description: SEDOL Number - Company
+
+  - code: FF_SEDOL_CHK
+    description: SEDOL Number - Company - with Check Digit
+
+  - code: FF_TICKER
+    description: Ticker Symbol - Local
+
+market_data:
+  - code: FF_ACQ_DATE
+    description: Date of Acquisition YYYYMMDD
+
+  - code: FF_ADR_CUSIP
+    description: ADR CUSIP 1
+
+  - code: FF_ADR_CUSIP2
+    description: ADR CUSIP 2
+
+  - code: FF_ADR_CUSIP3
+    description: ADR CUSIP 3
+
+  - code: FF_ADR_EXCH_FACTOR
+    description: ADR Exchange Factor
+
+  - code: FF_ADR_NON_US_CO_ID
+    description: ADR Non-US Company Identifier
+
+  - code: FF_ADR_NON_US_SECS_ID
+    description: ADR Non-US Security Identifier
+
+  - code: FF_ADS_EXCH_RATE
+    description: ADS Exchange Rate
+
+  - code: FF_COM_SHS_AUTH
+    description: Common Shares Authorized
+
+  - code: FF_COM_SHS_OUT
+    description: Common Shares Outstanding
+
+  - code: FF_COM_SHS_OUT_EPS
+    description: Common Shares Used to Calc EPS
+
+  - code: FF_COM_SHS_OUT_EPS_BASIC
+    description: Common Shares Used to Calc EPS - Basic
+
+  - code: FF_COM_SHS_OUT_EPS_DIL
+    description: Common Shares Used to Calc EPS - Fully Diluted
+
+  - code: FF_COM_SHS_OUT_SECS
+    description: Common Shares Outstanding - Security
+
+  - code: FF_COM_SHS_TRADE
+    description: Shares - Total Common Traded
+
+  - code: FF_DISC_OPER_PS
+    description: Discontinued Operations Per Share - Total
+
+  - code: FF_DIV_RATE
+    description: Dividend - Indicated Annual Rate - Current
+
+  - code: FF_DIV_RPT_FREQ
+    description: Dividend Report Frequency Code
+
+  - code: FF_DPS_GROSS
+    description: Dividends Per Share - Gross
+
+  - code: FF_DPS_LTM
+    description: Dividends Per Share - LTM - Current
+
+  - code: FF_DPS_LTM_SECS
+    description: Dividends Per Share - Current LTM - Security
+
+  - code: FF_ENTITY_TYPE
+    description: Entity Type
+
+  - code: FF_FSCORE
+    description: Piotroski F-Score
+
+  - code: FF_IS_ADR
+    description: Security is ADR
+
+  - code: FF_IS_MULTI_SHARE
+    description: Indicator - Multi-Share Company
+
+  - code: FF_MON_CORRECT
+    description: Monetary Correction
+
+  - code: FF_NUM_SHRHLDRS
+    description: Number of Shareholders
+
+  - code: FF_PRICE_CLOSE_CP
+    description: Price - Close for Calendar Period End
+
+  - code: FF_PRICE_CLOSE_FP
+    description: Price - Close
+
+  - code: FF_PRICE_HIGH_52WK
+    description: Price - 52 Week High - Local Currency
+
+  - code: FF_PRICE_HIGH_CLOSE_CP
+    description: Price - High
+
+  - code: FF_PRICE_HIGH_YTD
+    description: Price - High - Year to Date - Local Currency
+
+  - code: FF_PRICE_LOW_52WK
+    description: Price - 52 Week Low - Local Currency
+
+  - code: FF_PRICE_LOW_CLOSE_CP
+    description: Price - Low
+
+  - code: FF_PRICE_LOW_YTD
+    description: Price - Low - Year to Date - Local Currency
+
+  - code: FF_RESTATE_IND
+    description: Restated Indicator
+
+  - code: FF_RESTATE_REASON
+    description: Restated Reason
+
+  - code: FF_SHARE_TYPE
+    description: Share - Type of
+
+  - code: FF_SHARE_TYPE_SECS
+    description: Share - Type of - Security
+
+  - code: FF_SHS_CLOSELY_HELD
+    description: Shares - Number of Closely Held
+
+  - code: FF_SHS_CLOSELY_HELD_DATE
+    description: Shares - Curr Date of Num Closely Held:MMDDYY
+
+  - code: FF_SHS_CLOSELY_HELD_PCT
+    description: Shares - Closely Held - Percent
+
+  - code: FF_SHS_FLOAT
+    description: Float Shares
+
+  - code: FF_SHS_REPURCH
+    description: Share Repurchase - U.S. Companies - History starts in 2005
+
+  - code: FF_STK_SPLIT_RATIO
+    description: Stock Split/Dividend Ratio
+
+  - code: FF_TOT_INVEST_RET
+    description: Total Investment Return
+
+  - code: FF_TREAS_SHS
+    description: Treasury Shares - Number of Common Reacquired
+
+  - code: FF_VOLUME_TRADE
+    description: Volume Trading (Shares - Price)
+
+options_warrants:
+  - code: FF_OW_AVG_TERM_HIGH
+    description: Options/Warrants - Life Expectancy for Awards Granted (Years and Months) - High
+
+  - code: FF_OW_AVG_TERM_LOW
+    description: Options/Warrants - Life Expectancy for Awards Granted (Years and Months) - Low
+
+  - code: FF_OW_AVG_TERM_VEST
+    description: Options/Warrants - Life Remaining on Vested Awards (Years and Months) - Avg
+
+  - code: FF_OW_CONTRACT_TERM_OUT
+    description: Options/Warrants - Contractual Life Remaining on Awards Outstanding (Years and Months)
+
+  - code: FF_OW_DIV_YLD_HIGH
+    description: Options/Warrants - Dividend Yield for Award Granted (Percentage) - High
+
+  - code: FF_OW_DIV_YLD_LOW
+    description: Options/Warrants - Dividend Yield for Award Granted (Percentage) - Low
+
+  - code: FF_OW_FLG_TREAS
+    description: Options/Warrants - Indicates Interest Rate of award is tied to US Treasury Rate (Flag)
+
+  - code: FF_OW_INT_RATE_HIGH
+    description: Options/Warrants - Risk Free Interest Rate for Award Granted (Percentage) - High
+
+  - code: FF_OW_INT_RATE_LOW
+    description: Options/Warrants - Risk Free Interest Rate for Award Granted (Percentage) - Low
+
+  - code: FF_OW_INTRVAL_EXE_RPT_DATE
+    description: Options/Warrants - Intrinsic Value of Awards Exercisable (Millions)
+
+  - code: FF_OW_INTRVAL_MONEY_EXE
+    description: Options/Warrants - Intrinsic Value of Options (Millions)
+
+  - code: FF_OW_INTRVAL_OUT
+    description: Options/Warrants - Intrinsic Value of Awards Outstanding (Millions)
+
+  - code: FF_OW_INTRVAL_VEST
+    description: Options/Warrants - Intrinsic Value of Awards Vested (Millions)
+
+  - code: FF_OW_NUM_CANCEL
+    description: Options/Warrants - Number of Awards Canceled (Millions)
+
+  - code: FF_OW_NUM_END
+    description: Options/Warrants - Number of Awards Outstanding as of Fiscal Period End (Millions)
+
+  - code: FF_OW_NUM_EXE
+    description: Options/Warrants - Number of Awards Exercised (Millions)
+
+  - code: FF_OW_NUM_EXE_AWRD
+    description: Options/Warrants - Number of Awards Exercisable (Millions)
+
+  - code: FF_OW_NUM_EXE_LIFE_TERM
+    description: Options/Warrants - Life Remaining on Exercisable Awards (Years and Months) - Avg
+
+  - code: FF_OW_NUM_EXPIRE
+    description: Options/Warrants - Number of Awards Expired (Millions)
+
+  - code: FF_OW_NUM_FORFEIT
+    description: Options/Warrants - Number of Awards Forfeited (Millions)
+
+  - code: FF_OW_NUM_GRANT
+    description: Options/Warrants - Number of Awards Issued (Millions)
+
+  - code: FF_OW_NUM_ISSUE_EXCH
+    description: Options/Warrants - Number of Awards Issued or Exchanged (Millions)
+
+  - code: FF_OW_NUM_START
+    description: Options/Warrants - Number of Awards Outstanding as of Beginning of Fiscal Period (Millions)
+
+  - code: FF_OW_NUM_VEST
+    description: Options/Warrants - Number of Awards Vested (Millions)
+
+  - code: FF_OW_PRICE
+    description: Options/Warrants - Per Share Fair Value Price for Awards Granted (Actual)
+
+  - code: FF_OW_PRICE_CANCEL_HIGH
+    description: Options/Warrants - Price Per Share Canceled (Actual) - High
+
+  - code: FF_OW_PRICE_CANCEL_LOW
+    description: Options/Warrants - Price Per Share Canceled (Actual) - Low
+
+  - code: FF_OW_PRICE_END_HIGH
+    description: Options/Warrants - Price Per Share Out End (Actual) - High
+
+  - code: FF_OW_PRICE_END_LOW
+    description: Options/Warrants - Price Per Share Out End (Actual) - Low
+
+  - code: FF_OW_PRICE_EXE
+    description: Options/Warrants - Price Per Share at Report Date (Actual)
+
+  - code: FF_OW_PRICE_EXE_HIGH
+    description: Options/Warrants - Price Per Share Exercised (Actual) - High
+
+  - code: FF_OW_PRICE_EXE_LOW
+    description: Options/Warrants - Price Per Share Exercised (Actual) - Low
+
+  - code: FF_OW_PRICE_EXPIRE_HIGH
+    description: Options/Warrants - Price Per Share Expired (Actual) - High
+
+  - code: FF_OW_PRICE_EXPIRE_LOW
+    description: Options/Warrants - Price Per Share Expired (Actual) - Low
+
+  - code: FF_OW_PRICE_FORFEIT_HIGH
+    description: Options/Warrants - Price Per Share Forfeit (Actual) - High
+
+  - code: FF_OW_PRICE_FORFEIT_LOW
+    description: Options/Warrants - Price Per Share Forfeit (Actual) - Low
+
+  - code: FF_OW_PRICE_GRANT_HIGH
+    description: Options/Warrants - Price Per Share Granted (Actual) - High
+
+  - code: FF_OW_PRICE_GRANT_LOW
+    description: Options/Warrants - Price Per Share Granted (Actual) - Low
+
+  - code: FF_OW_PRICE_MISC_HIGH
+    description: Options/Warrants - Price Per Share Other (Actual) - High
+
+  - code: FF_OW_PRICE_MISC_LOW
+    description: Options/Warrants - Price Per Share Other (Actual) - Low
+
+  - code: FF_OW_PRICE_MODEL
+    description: Options/Warrants - Pricing Model (Number)
+
+  - code: FF_OW_PRICE_MONEY
+    description: Options/Warrants - Exercise Price of Options (Actual) - Avg
+
+  - code: FF_OW_PRICE_START_HIGH
+    description: Options/Warrants - Price Per Share Out Beginning (Actual) - High
+
+  - code: FF_OW_PRICE_START_LOW
+    description: Options/Warrants - Price Per Share Out End (Actual) - Low
+
+  - code: FF_OW_PRICE_WAVG_EXE
+    description: Options/Warrants - Price Per Share of Awards Vested (Actual)
+
+  - code: FF_OW_VAL_FVAL_GRANT
+    description: Options/Warrants - Total Fair Value Granted (Millions)
+
+  - code: FF_OW_VAL_FVAL_VEST
+    description: Options/Warrants - Total Fair Value Vested (Millions)
+
+  - code: FF_OW_VAL_INTRVAL_EXE
+    description: Options/Warrants - Intrinsic Value of Awards Exercised (Millions)
+
+pension_postretirement:
+  - code: FF_PENS_ABO
+    description: Pension - Accumulated Benefit Obligation
+
+  - code: FF_PENS_ASSETS_ACQ_DVST
+    description: Pension - Acquisition/Divestiture
+
+  - code: FF_PENS_ASSETS_ACT_RET
+    description: Pension - Actual Return on Assets
+
+  - code: FF_PENS_ASSETS_ACTRL_GL
+    description: Pension - Actuarial Gain/Loss
+
+  - code: FF_PENS_ASSETS_AMEND
+    description: Pension - Curtailment/Settlement/Amendment
+
+  - code: FF_PENS_ASSETS_BEG_BAL
+    description: Pension - Beginning Balance Of Plan Assets
+
+  - code: FF_PENS_ASSETS_BNFIT_PAID
+    description: Pension - Benefits Paid
+
+  - code: FF_PENS_ASSETS_BONDS
+    description: Pension - Asset Allocation % Bonds
+
+  - code: FF_PENS_ASSETS_CCE
+    description: Pension - Asset Allocation - (%) CCE
+
+  - code: FF_PENS_ASSETS_CONTR
+    description: Pension - Contributions
+
+  - code: FF_PENS_ASSETS_EMPLR_CONTR
+    description: Pension - Employer Contributions
+
+  - code: FF_PENS_ASSETS_EQ
+    description: Pension - Asset Allocation % Equities
+
+  - code: FF_PENS_ASSETS_INT_INC
+    description: Pension - Interest Income/Expected Return on Assets
+
+  - code: FF_PENS_ASSETS_LT
+    description: Pension - Long Term Assets
+
+  - code: FF_PENS_ASSETS_PROP
+    description: Pension - Asset Allocation % Property
+
+  - code: FF_PENS_ASSETS_PTCP_CONTR
+    description: Pension - Participant Contributions
+
+  - code: FF_PENS_ASSETS_TOTAL
+    description: Pension - Asset Allocation - (%) Total
+
+  - code: FF_PENS_ASSETS_VAL
+    description: Pension - Fair Value of Plan Assets
+
+  - code: FF_PENS_BNFIT_OBLIG_PROJ
+    description: Pension - Projected Benefit Obligation
+
+  - code: FF_PENS_BNFIT_RETIR_POST
+    description: Pension - Pension & Post Retirement Benefits
+
+  - code: FF_PENS_COST_INT
+    description: Pension - Interest Cost
+
+  - code: FF_PENS_COST_SERV
+    description: Pension - Pension Service Costs
+
+  - code: FF_PENS_COST_SERV_PRIOR
+    description: Pension - Prior Service Costs
+
+  - code: FF_PENS_COST_SERV_PRIOR_UNREC
+    description: Pension - Unrecognized Prior Service Costs
+
+  - code: FF_PENS_DISCOUNT_RATE
+    description: Pension - Discount Rate
+
+  - code: FF_PENS_EXP_NPP_NET
+    description: Pension - Net Periodic Pension Expense
+
+  - code: FF_PENS_EXP_NPP_NET_OTH
+    description: Pension - Net Periodic Pension Expense, Other
+
+  - code: FF_PENS_FUND_ADJ_OTH
+    description: Pension - Other Adjustments to Funded Status
+
+  - code: FF_PENS_FUNDED_STATUS
+    description: Pension - Funded Status
+
+  - code: FF_PENS_GAIN_SETTLE
+    description: Pension - Gain/(Loss) from Settlements
+
+  - code: FF_PENS_GAIN_UNREC
+    description: Pension - Unrecognized Actuarial Gain/(Loss)
+
+  - code: FF_PENS_LIABS_NET
+    description: Pension - Net Liability/(Asset)
+
+  - code: FF_PENS_LIABS_UNFUNDED
+    description: Pension - Unfunded Liabilities
+
+  - code: FF_PENS_ROA
+    description: Pension - Expected Return on Plan Assets
+
+  - code: FF_PENS_ROA_ACT
+    description: Pension - Actual Return on Plan Assets
+
+  - code: FF_PENS_ROA_LT
+    description: Pension - Expected Long-Term Return Rate on Pension Assets
+
