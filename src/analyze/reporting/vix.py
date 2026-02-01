@@ -31,7 +31,7 @@ def _load_multiple_series(series_ids: list[str]) -> pd.DataFrame:
             df["variable"] = series_id
             dfs.append(df)
     if not dfs:
-        return pd.DataFrame(columns=["date", "variable", "value"])
+        return pd.DataFrame({"date": [], "variable": [], "value": []})
     return pd.concat(dfs, ignore_index=True)
 
 
