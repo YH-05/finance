@@ -29,7 +29,6 @@ from dotenv import load_dotenv
 from structlog import BoundLogger
 from structlog.contextvars import bind_contextvars, unbind_contextvars
 
-from ..settings import _reset_cache as _reset_settings_cache
 from ..settings import get_log_dir, get_log_format, get_log_level, get_project_env
 from ..types import LogFormat, LogLevel
 
@@ -58,8 +57,8 @@ def _ensure_basic_config() -> None:
 
     load_dotenv(override=True)
 
-    # settings のキャッシュをリセットして環境変数の変更を反映
-    _reset_settings_cache()
+    # Clear cached environment variables to reflect any changes
+    get_log_level.cache_clear()
 
     try:
         default_level = get_log_level()
@@ -279,24 +278,29 @@ def setup_logging(
 
     load_dotenv(override=True)
 
-    # settings のキャッシュをリセットして環境変数の変更を反映
-    _reset_settings_cache()
+    # Clear cached environment variables to reflect any changes
+    get_log_level.cache_clear()
+    get_log_format.cache_clear()
+    get_log_dir.cache_clear()
+    get_project_env.cache_clear()
 
-    # 環境変数が明示的に設定されている場合のみ、パラメータを上書き
-    if os.environ.get("LOG_LEVEL", ""):
-        try:
-            level = get_log_level()
-        except ValueError:
-            level = "INFO"
-
-    if os.environ.get("LOG_FORMAT", ""):
+    # Override with environment variables if set
+    if os.environ.get("LOG_LEVEL"):
         with contextlib.suppress(ValueError):
-            format = get_log_format()
+            # Invalid level in env var, use default
+            level = get_log_level()
 
-    # LOG_DIR が明示的に設定されている場合のみファイル出力を有効にする
-    # get_log_dir() はデフォルト値を返すが、元の動作を維持するため環境変数の存在を確認
-    env_log_dir_raw = os.environ.get("LOG_DIR", "")
-    env_log_dir = get_log_dir() if env_log_dir_raw else ""
+    if os.environ.get("LOG_FORMAT"):
+        with contextlib.suppress(ValueError):
+            # Invalid format in env var, use default
+            format_value = get_log_format()
+            # Support legacy "plain" format as alias for "console"
+            if format_value == "plain":  # type: ignore[comparison-overlap]
+                format = "console"
+            else:
+                format = format_value  # type: ignore
+
+    env_log_dir = get_log_dir()
     log_file_enabled = os.environ.get("LOG_FILE_ENABLED", "true").lower() != "false"
 
     final_log_file: Path | None = None

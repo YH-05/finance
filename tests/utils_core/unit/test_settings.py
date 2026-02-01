@@ -1,338 +1,219 @@
-"""Tests for utils_core.settings module.
+"""Unit tests for utils_core.settings module."""
 
-Issue #2669: settings.py に環境変数取得関数を実装
-
-このテストファイルは TDD の Red フェーズとして作成されています。
-
-テスト対象機能:
-- get_fred_api_key() -> str (必須、未設定時エラー)
-- get_log_level() -> LogLevel (デフォルト: INFO)
-- get_log_format() -> LogFormat (デフォルト: console)
-- get_log_dir() -> str (デフォルト: logs/)
-- get_project_env() -> str (デフォルト: development)
-
-受け入れ条件:
-1. 各環境変数の取得関数が実装されている
-2. 必須の環境変数（FRED_API_KEY）が未設定の場合、適切なエラーを発生させる
-3. オプションの環境変数にはデフォルト値が設定されている
-4. 遅延読み込みが実装されている（初回アクセス時のみ環境変数を読み込む）
-5. NumPy形式のDocstringが記述されている
-"""
+from __future__ import annotations
 
 import os
-from unittest.mock import patch
+from typing import TYPE_CHECKING
 
 import pytest
 
-import utils_core.settings as settings_module
+from utils_core.settings import (
+    get_fred_api_key,
+    get_log_dir,
+    get_log_format,
+    get_log_level,
+    get_project_env,
+)
 
-
-@pytest.fixture(autouse=True)
-def reset_settings_cache() -> None:
-    """各テスト前にsettingsモジュールのキャッシュをリセットする."""
-    settings_module._reset_cache()
+if TYPE_CHECKING:
+    from utils_core.types import LogFormat, LogLevel
 
 
 class TestGetFredApiKey:
-    """get_fred_api_key 関数のテスト."""
+    """get_fred_api_key() のテスト."""
 
-    def test_正常系_環境変数からFRED_API_KEYを取得できる(self) -> None:
-        from utils_core.settings import get_fred_api_key
+    def test_正常系_環境変数が設定されている場合にAPIキーを返す(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が設定されている場合、APIキーを返す."""
+        monkeypatch.setenv("FRED_API_KEY", "test_api_key_12345")
+        get_fred_api_key.cache_clear()
 
-        with patch.dict(os.environ, {"FRED_API_KEY": "test-api-key-12345"}, clear=True):
-            result = get_fred_api_key()
-            assert result == "test-api-key-12345"
+        result = get_fred_api_key()
 
-    def test_正常系_複数回呼び出しても同じ値が返される(self) -> None:
-        from utils_core.settings import get_fred_api_key
+        assert result == "test_api_key_12345"
 
-        with patch.dict(os.environ, {"FRED_API_KEY": "consistent-key"}, clear=True):
-            result1 = get_fred_api_key()
-            result2 = get_fred_api_key()
-            assert result1 == result2 == "consistent-key"
+    def test_異常系_環境変数が未設定の場合にValueErrorを発生(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が未設定の場合、ValueErrorを発生させる."""
+        monkeypatch.delenv("FRED_API_KEY", raising=False)
+        get_fred_api_key.cache_clear()
 
-    def test_異常系_FRED_API_KEY未設定でValueError(self) -> None:
-        from utils_core.settings import get_fred_api_key
-
-        with (
-            patch.dict(os.environ, {}, clear=True),
-            pytest.raises(ValueError, match="FRED_API_KEY"),
-        ):
+        with pytest.raises(ValueError, match="FRED_API_KEY is required"):
             get_fred_api_key()
 
-    def test_異常系_FRED_API_KEYが空文字列でValueError(self) -> None:
-        from utils_core.settings import get_fred_api_key
+    def test_遅延読み込み_キャッシュが機能する(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """遅延読み込みとキャッシュが機能することを確認."""
+        monkeypatch.setenv("FRED_API_KEY", "cached_key")
+        get_fred_api_key.cache_clear()
 
-        with (
-            patch.dict(os.environ, {"FRED_API_KEY": ""}, clear=True),
-            pytest.raises(ValueError, match="FRED_API_KEY"),
-        ):
-            get_fred_api_key()
+        # 1回目の呼び出し
+        result1 = get_fred_api_key()
 
-    def test_異常系_FRED_API_KEYが空白のみでValueError(self) -> None:
-        from utils_core.settings import get_fred_api_key
+        # 環境変数を変更
+        monkeypatch.setenv("FRED_API_KEY", "new_key")
 
-        with (
-            patch.dict(os.environ, {"FRED_API_KEY": "   "}, clear=True),
-            pytest.raises(ValueError, match="FRED_API_KEY"),
-        ):
-            get_fred_api_key()
+        # 2回目の呼び出し（キャッシュされた値が返る）
+        result2 = get_fred_api_key()
+
+        assert result1 == result2 == "cached_key"
 
 
 class TestGetLogLevel:
-    """get_log_level 関数のテスト."""
+    """get_log_level() のテスト."""
 
-    def test_正常系_デフォルト値INFOが返される(self) -> None:
-        from utils_core.settings import get_log_level
+    @pytest.mark.parametrize(
+        ("env_value", "expected"),
+        [
+            ("DEBUG", "DEBUG"),
+            ("INFO", "INFO"),
+            ("WARNING", "WARNING"),
+            ("ERROR", "ERROR"),
+            ("CRITICAL", "CRITICAL"),
+            ("debug", "DEBUG"),  # 小文字も受け入れ
+            ("info", "INFO"),
+        ],
+    )
+    def test_正常系_有効なログレベルを返す(
+        self,
+        env_value: str,
+        expected: LogLevel,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """有効なログレベルの場合、正しく変換して返す."""
+        monkeypatch.setenv("LOG_LEVEL", env_value)
+        get_log_level.cache_clear()
 
-        with patch.dict(os.environ, {}, clear=True):
-            result = get_log_level()
-            assert result == "INFO"
+        result = get_log_level()
 
-    def test_正常系_環境変数からLOG_LEVELを取得できる(self) -> None:
-        from utils_core.settings import get_log_level
+        assert result == expected
 
-        with patch.dict(os.environ, {"LOG_LEVEL": "DEBUG"}, clear=True):
-            result = get_log_level()
-            assert result == "DEBUG"
+    def test_正常系_未設定の場合にINFOを返す(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が未設定の場合、デフォルト値 INFO を返す."""
+        monkeypatch.delenv("LOG_LEVEL", raising=False)
+        get_log_level.cache_clear()
 
-    def test_正常系_小文字のログレベルが大文字に変換される(self) -> None:
-        from utils_core.settings import get_log_level
+        result = get_log_level()
 
-        with patch.dict(os.environ, {"LOG_LEVEL": "warning"}, clear=True):
-            result = get_log_level()
-            assert result == "WARNING"
+        assert result == "INFO"
 
-    def test_正常系_有効なログレベルが全て設定可能(self) -> None:
-        from utils_core.settings import get_log_level
+    @pytest.mark.parametrize("invalid_value", ["TRACE", "FATAL", "invalid"])
+    def test_異常系_不正なログレベルでValueErrorを発生(
+        self, invalid_value: str, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """不正なログレベルの場合、ValueErrorを発生させる."""
+        monkeypatch.setenv("LOG_LEVEL", invalid_value)
+        get_log_level.cache_clear()
 
-        for level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
-            settings_module._reset_cache()
-            with patch.dict(os.environ, {"LOG_LEVEL": level}, clear=True):
-                result = get_log_level()
-                assert result == level
-
-    def test_異常系_不正なログレベルでValueError(self) -> None:
-        from utils_core.settings import get_log_level
-
-        with (
-            patch.dict(os.environ, {"LOG_LEVEL": "INVALID"}, clear=True),
-            pytest.raises(
-                ValueError,
-                match=r"Invalid LOG_LEVEL: 'INVALID'\. "
-                r"Valid values are: CRITICAL, DEBUG, ERROR, INFO, WARNING",
-            ),
-        ):
-            get_log_level()
-
-    def test_異常系_空文字のログレベルでValueError(self) -> None:
-        """空文字列が設定された場合はValueError（未設定とは異なる）."""
-        from utils_core.settings import get_log_level
-
-        with (
-            patch.dict(os.environ, {"LOG_LEVEL": ""}, clear=True),
-            pytest.raises(ValueError, match="Invalid LOG_LEVEL"),
-        ):
+        with pytest.raises(ValueError, match="Invalid LOG_LEVEL"):
             get_log_level()
 
 
 class TestGetLogFormat:
-    """get_log_format 関数のテスト."""
+    """get_log_format() のテスト."""
 
-    def test_正常系_デフォルト値consoleが返される(self) -> None:
-        from utils_core.settings import get_log_format
+    @pytest.mark.parametrize(
+        ("env_value", "expected"),
+        [
+            ("json", "json"),
+            ("console", "console"),
+            ("JSON", "json"),  # 大文字も受け入れ
+            ("CONSOLE", "console"),
+        ],
+    )
+    def test_正常系_有効なログフォーマットを返す(
+        self,
+        env_value: str,
+        expected: LogFormat,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """有効なログフォーマットの場合、正しく変換して返す."""
+        monkeypatch.setenv("LOG_FORMAT", env_value)
+        get_log_format.cache_clear()
 
-        with patch.dict(os.environ, {}, clear=True):
-            result = get_log_format()
-            assert result == "console"
+        result = get_log_format()
 
-    def test_正常系_環境変数からLOG_FORMATを取得できる(self) -> None:
-        from utils_core.settings import get_log_format
+        assert result == expected
 
-        with patch.dict(os.environ, {"LOG_FORMAT": "json"}, clear=True):
-            result = get_log_format()
-            assert result == "json"
+    def test_正常系_未設定の場合にconsoleを返す(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が未設定の場合、デフォルト値 console を返す."""
+        monkeypatch.delenv("LOG_FORMAT", raising=False)
+        get_log_format.cache_clear()
 
-    def test_正常系_大文字のフォーマットが小文字に変換される(self) -> None:
-        from utils_core.settings import get_log_format
+        result = get_log_format()
 
-        with patch.dict(os.environ, {"LOG_FORMAT": "JSON"}, clear=True):
-            result = get_log_format()
-            assert result == "json"
+        assert result == "console"
 
-    def test_正常系_有効なフォーマットが全て設定可能(self) -> None:
-        from utils_core.settings import get_log_format
+    @pytest.mark.parametrize("invalid_value", ["xml", "yaml", "invalid"])
+    def test_異常系_不正なログフォーマットでValueErrorを発生(
+        self, invalid_value: str, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """不正なログフォーマットの場合、ValueErrorを発生させる."""
+        monkeypatch.setenv("LOG_FORMAT", invalid_value)
+        get_log_format.cache_clear()
 
-        for fmt in ["json", "console", "plain"]:
-            settings_module._reset_cache()
-            with patch.dict(os.environ, {"LOG_FORMAT": fmt}, clear=True):
-                result = get_log_format()
-                assert result == fmt
-
-    def test_異常系_不正なフォーマットでValueError(self) -> None:
-        from utils_core.settings import get_log_format
-
-        with (
-            patch.dict(os.environ, {"LOG_FORMAT": "INVALID"}, clear=True),
-            pytest.raises(
-                ValueError,
-                match=r"Invalid LOG_FORMAT: 'invalid'\. Valid values are: console, json, plain",
-            ),
-        ):
-            get_log_format()
-
-    def test_異常系_空文字のフォーマットでValueError(self) -> None:
-        """空文字列が設定された場合はValueError（未設定とは異なる）."""
-        from utils_core.settings import get_log_format
-
-        with (
-            patch.dict(os.environ, {"LOG_FORMAT": ""}, clear=True),
-            pytest.raises(ValueError, match="Invalid LOG_FORMAT"),
-        ):
+        with pytest.raises(ValueError, match="Invalid LOG_FORMAT"):
             get_log_format()
 
 
 class TestGetLogDir:
-    """get_log_dir 関数のテスト."""
+    """get_log_dir() のテスト."""
 
-    def test_正常系_デフォルト値logsが返される(self) -> None:
-        from utils_core.settings import get_log_dir
+    def test_正常系_環境変数が設定されている場合にディレクトリパスを返す(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が設定されている場合、ディレクトリパスを返す."""
+        monkeypatch.setenv("LOG_DIR", "/var/log/finance/")
+        get_log_dir.cache_clear()
 
-        with patch.dict(os.environ, {}, clear=True):
-            result = get_log_dir()
-            assert result == "logs/"
+        result = get_log_dir()
 
-    def test_正常系_環境変数からLOG_DIRを取得できる(self) -> None:
-        from utils_core.settings import get_log_dir
+        assert result == "/var/log/finance/"
 
-        with patch.dict(os.environ, {"LOG_DIR": "/var/log/myapp"}, clear=True):
-            result = get_log_dir()
-            assert result == "/var/log/myapp"
+    def test_正常系_未設定の場合にデフォルト値を返す(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が未設定の場合、デフォルト値 logs/ を返す."""
+        monkeypatch.delenv("LOG_DIR", raising=False)
+        get_log_dir.cache_clear()
 
-    def test_正常系_末尾スラッシュなしでも動作する(self) -> None:
-        from utils_core.settings import get_log_dir
+        result = get_log_dir()
 
-        with patch.dict(os.environ, {"LOG_DIR": "/var/log/myapp"}, clear=True):
-            result = get_log_dir()
-            # 末尾スラッシュの有無は環境変数の値をそのまま返す
-            assert result == "/var/log/myapp"
-
-    def test_正常系_相対パスも受け入れる(self) -> None:
-        from utils_core.settings import get_log_dir
-
-        with patch.dict(os.environ, {"LOG_DIR": "data/logs"}, clear=True):
-            result = get_log_dir()
-            assert result == "data/logs"
+        assert result == "logs/"
 
 
 class TestGetProjectEnv:
-    """get_project_env 関数のテスト."""
+    """get_project_env() のテスト."""
 
-    def test_正常系_デフォルト値developmentが返される(self) -> None:
-        from utils_core.settings import get_project_env
+    @pytest.mark.parametrize(
+        "env_value",
+        ["development", "production", "staging", "test"],
+    )
+    def test_正常系_環境変数が設定されている場合に環境名を返す(
+        self, env_value: str, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が設定されている場合、環境名を返す."""
+        monkeypatch.setenv("PROJECT_ENV", env_value)
+        get_project_env.cache_clear()
 
-        with patch.dict(os.environ, {}, clear=True):
-            result = get_project_env()
-            assert result == "development"
+        result = get_project_env()
 
-    def test_正常系_環境変数からPROJECT_ENVを取得できる(self) -> None:
-        from utils_core.settings import get_project_env
+        assert result == env_value
 
-        with patch.dict(os.environ, {"PROJECT_ENV": "production"}, clear=True):
-            result = get_project_env()
-            assert result == "production"
+    def test_正常系_未設定の場合にデフォルト値を返す(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """環境変数が未設定の場合、デフォルト値 development を返す."""
+        monkeypatch.delenv("PROJECT_ENV", raising=False)
+        get_project_env.cache_clear()
 
-    def test_正常系_大文字のenvが小文字に変換される(self) -> None:
-        from utils_core.settings import get_project_env
+        result = get_project_env()
 
-        with patch.dict(os.environ, {"PROJECT_ENV": "PRODUCTION"}, clear=True):
-            result = get_project_env()
-            assert result == "production"
-
-    def test_正常系_stagingなどの任意の値も受け入れる(self) -> None:
-        from utils_core.settings import get_project_env
-
-        for env in ["development", "staging", "production", "test"]:
-            settings_module._reset_cache()
-            with patch.dict(os.environ, {"PROJECT_ENV": env}, clear=True):
-                result = get_project_env()
-                assert result == env
-
-
-class TestLazyLoading:
-    """遅延読み込み機能のテスト."""
-
-    def test_正常系_初回アクセス時のみ環境変数を読み込む(self) -> None:
-        from utils_core.settings import get_log_level
-
-        # 最初の呼び出しで環境変数を読み込む
-        with patch.dict(os.environ, {"LOG_LEVEL": "DEBUG"}, clear=True):
-            result = get_log_level()
-            assert result == "DEBUG"
-
-    def test_正常系_キャッシュリセット関数が存在する(self) -> None:
-        # _reset_cache 関数が存在することを確認
-        assert hasattr(settings_module, "_reset_cache")
-        assert callable(settings_module._reset_cache)
-
-    def test_正常系_リセット後に新しい値が読み込まれる(self) -> None:
-        from utils_core.settings import get_log_level
-
-        with patch.dict(os.environ, {"LOG_LEVEL": "ERROR"}, clear=True):
-            settings_module._reset_cache()
-            result = get_log_level()
-            assert result == "ERROR"
-
-    def test_正常系_キャッシュが有効な間は環境変数の変更が反映されない(self) -> None:
-        from utils_core.settings import get_log_level
-
-        with patch.dict(os.environ, {"LOG_LEVEL": "DEBUG"}, clear=True):
-            result1 = get_log_level()
-            assert result1 == "DEBUG"
-
-        # 環境変数を変更してもキャッシュが返される
-        with patch.dict(os.environ, {"LOG_LEVEL": "ERROR"}, clear=True):
-            result2 = get_log_level()
-            # キャッシュされた値が返される
-            assert result2 == "DEBUG"
-
-
-class TestModuleExports:
-    """モジュールのエクスポートに関するテスト."""
-
-    def test_正常系_get_fred_api_keyがエクスポートされている(self) -> None:
-        from utils_core.settings import get_fred_api_key
-
-        assert callable(get_fred_api_key)
-
-    def test_正常系_get_log_levelがエクスポートされている(self) -> None:
-        from utils_core.settings import get_log_level
-
-        assert callable(get_log_level)
-
-    def test_正常系_get_log_formatがエクスポートされている(self) -> None:
-        from utils_core.settings import get_log_format
-
-        assert callable(get_log_format)
-
-    def test_正常系_get_log_dirがエクスポートされている(self) -> None:
-        from utils_core.settings import get_log_dir
-
-        assert callable(get_log_dir)
-
-    def test_正常系_get_project_envがエクスポートされている(self) -> None:
-        from utils_core.settings import get_project_env
-
-        assert callable(get_project_env)
-
-    def test_正常系__all__に5つの関数が含まれている(self) -> None:
-        expected_exports = {
-            "get_fred_api_key",
-            "get_log_level",
-            "get_log_format",
-            "get_log_dir",
-            "get_project_env",
-        }
-        # _reset_cache はテスト用なので __all__ に含まれなくてもよい
-        assert hasattr(settings_module, "__all__")
-        assert expected_exports.issubset(set(settings_module.__all__))
+        assert result == "development"

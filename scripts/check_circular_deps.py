@@ -154,7 +154,7 @@ def find_cycles(graph: dict[str, set[str]]) -> list[list[str]]:
             elif neighbor in rec_stack:
                 # 循環を検出
                 cycle_start = path.index(neighbor)
-                cycle = path[cycle_start:] + [neighbor]
+                cycle = [*path[cycle_start:], neighbor]
                 cycle_set = frozenset(cycle)
                 if cycle_set not in reported_cycles:
                     cycles.append(cycle)

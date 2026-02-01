@@ -471,7 +471,7 @@ class TestUrlNormalizerWithContentChecker:
             }
         ]
 
-        is_dup, number, reason = is_duplicate(new_item, existing_issues)
+        is_dup, _, _ = is_duplicate(new_item, existing_issues)
         assert is_dup is False
 
 

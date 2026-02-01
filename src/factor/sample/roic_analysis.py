@@ -9,8 +9,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-import src.factset_utils as factset_utils
 import src.ROIC_make_data_files_ver2 as roic_utils
+from src import factset_utils
 
 
 # ==========================================================

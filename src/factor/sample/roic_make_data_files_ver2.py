@@ -5,18 +5,17 @@ ROIC関連のデータファイルを作成する関数群を定義するスク�
 
 """
 
-from pathlib import Path
 import sqlite3
 import warnings
+from pathlib import Path
 
-from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import seaborn as sns
-
+from dotenv import load_dotenv
 
 warnings.simplefilter("ignore")
 load_dotenv()
@@ -997,7 +996,7 @@ def calculate_roic_slope_quarter(row, quarter_period: int = 20):
     if len(y_valid) >= 2:
         # numpy.polyfit を使用して線形回帰 (deg=1 は線形)
         # 戻り値: [傾き, 切片]
-        slope, intercept = np.polyfit(x_valid, y_valid, 1)
+        slope, _ = np.polyfit(x_valid, y_valid, 1)
         return slope
     else:
         # 有効なデータ点が2つ未満の場合は、傾きを計算できないため NaN を返す
@@ -1042,7 +1041,7 @@ def calculate_roic_slope_month(row, month_period: int = 60):
     if len(y_valid) >= 2:
         # numpy.polyfit を使用して線形回帰 (deg=1 は線形)
         # 戻り値: [傾き, 切片]
-        slope, intercept = np.polyfit(x_valid, y_valid, 1)
+        slope, _ = np.polyfit(x_valid, y_valid, 1)
         return slope
     else:
         # 有効なデータ点が2つ未満の場合は、傾きを計算できないため NaN を返す
@@ -1345,7 +1344,7 @@ def make_roic_label_and_performance_table():
     ]
     df_roic_lr = df_return_and_roic_filled.loc[
         df_return_and_roic_filled["date"].dt.month.isin([3, 6, 9, 12]),
-        ["Quarter", "Symbol"] + roic_cols,
+        ["Quarter", "Symbol", *roic_cols],
     ].drop_duplicates(ignore_index=True)
 
     df_roic_lr["ROIC_Slope_20QForward"] = df_roic_lr.apply(
@@ -1422,8 +1421,10 @@ def make_roic_label_and_performance_table():
             "weight",
             "Rtn_M",
             "Rtn_M_1MForward",
+            *sorted(
+                [col for col in df_return_and_roic_filled.columns if "ROIC" in col]
+            ),
         ]
-        + sorted([col for col in df_return_and_roic_filled.columns if "ROIC" in col])
     )
 
     df_return_and_roic_filled.to_parquet(DATA_DIR / "MSCI KOKUSAI_all data.parquet")
@@ -1606,7 +1607,7 @@ def plot_period_return(df: pd.DataFrame, period: int, roic_col: str, return_col:
         var_name="ROIC_Label",
     )
 
-    fig, ax = plt.subplots(figsize=(8, 4))
+    _, ax = plt.subplots(figsize=(8, 4))
     ax.set_title("5 years performance(Annualized, %)")
     sns.boxplot(data=g_long, x="value", y="ROIC_Label", ax=ax)
     ax.xaxis.set_major_formatter(

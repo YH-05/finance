@@ -2,6 +2,7 @@
 factset_utils.py
 """
 
+import contextlib
 import os
 import re
 import sqlite3
@@ -10,16 +11,18 @@ import warnings
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 import openpyxl
 import pandas as pd
-import src.database_utils as db_utils
-import src.ROIC_make_data_files_ver2 as roic_utils
 import yaml
 from dotenv import load_dotenv
 from tqdm import tqdm
+
+# Legacy imports - these modules have been moved/removed
+# import src.database_utils as db_utils
+# import src.ROIC_make_data_files_ver2 as roic_utils
 
 warnings.simplefilter("ignore")
 
@@ -151,13 +154,20 @@ def load_bpm_and_export_factset_code_file(
 
     # フォルダ
     load_dotenv()
-    BPM_DATA_DIR = Path(
-        os.environ.get("BPM_DATA_DIR")
-    )  # ty:ignore[invalid-argument-type]
-    BPM_SRC_DIR = Path(
-        os.environ.get("BPM_SRC_DIR")
-    )  # ty:ignore[invalid-argument-type]
-    src_dir = Path(os.environ.get("SRC_DIR"))
+    bpm_data_dir = os.environ.get("BPM_DATA_DIR")
+    if bpm_data_dir is None:
+        raise ValueError("BPM_DATA_DIR environment variable not set")
+    BPM_DATA_DIR = Path(bpm_data_dir)
+
+    bpm_src_dir = os.environ.get("BPM_SRC_DIR")
+    if bpm_src_dir is None:
+        raise ValueError("BPM_SRC_DIR environment variable not set")
+    BPM_SRC_DIR = Path(bpm_src_dir)
+
+    src_dir_str = os.environ.get("SRC_DIR")
+    if src_dir_str is None:
+        raise ValueError("SRC_DIR environment variable not set")
+    src_dir = Path(src_dir_str)
 
     with open(src_dir / "BPM_Index-code-map.yaml", encoding="utf-8") as f:
         bpm_code_map = yaml.safe_load(f)
@@ -341,13 +351,13 @@ def unify_factset_code_data(split_save_mode: bool = False):
 
         df_code_jp_missing["P_SYMBOL"] = (
             df_code_jp_missing["P_SYMBOL_SEDOL"]
-            .fillna(df_code_jp_missing["P_SYMBOL_CUSIP"])
-            .fillna(df_code_jp_missing["P_SYMBOL_ISIN"])
+            .fillna(df_code_jp_missing["P_SYMBOL_CUSIP"])  # type: ignore[arg-type]
+            .fillna(df_code_jp_missing["P_SYMBOL_ISIN"])  # type: ignore[arg-type]
         )
         df_code_jp_missing["FG_COMPANY_NAME"] = (
             df_code_jp_missing["FG_COMPANY_NAME_SEDOL"]
-            .fillna(df_code_jp_missing["FG_COMPANY_NAME_CUSIP"])
-            .fillna(df_code_jp_missing["FG_COMPANY_NAME_ISIN"])
+            .fillna(df_code_jp_missing["FG_COMPANY_NAME_CUSIP"])  # type: ignore[arg-type]
+            .fillna(df_code_jp_missing["FG_COMPANY_NAME_ISIN"])  # type: ignore[arg-type]
         )
 
         # concat
@@ -716,7 +726,7 @@ def store_to_database(
     df: pd.DataFrame,
     db_path: Path,
     table_name: str,
-    unique_cols: list[str] = ["date", "P_SYMBOL", "variable"],
+    unique_cols: list[str] | None = None,
     verbose: bool = True,
     on_duplicate: str = "skip",  # "skip" または "update"
 ):
@@ -730,6 +740,8 @@ def store_to_database(
         unique_cols ([str]): 一意性をチェックするカラム
         on_duplicate (str): 重複時の動作 - "skip" (スキップ) または "update" (上書き)
     """
+    if unique_cols is None:
+        unique_cols = ["date", "P_SYMBOL", "variable"]
 
     # 必須カラムのチェック
     if not all(col in df.columns for col in unique_cols):
@@ -884,7 +896,7 @@ def store_active_returns_batch_serial_write(
     benchmark_ticker: str,
     batch_size: int = 10000,
     verbose: bool = True,
-) -> dict[str, any]:
+) -> dict[str, Any]:
     """
     アクティブリターンをバッチ保存(直列書き込み版・ロック完全回避)
 
@@ -1055,10 +1067,8 @@ def store_active_returns_batch_serial_write(
                     print(f"❌ {table_name}: {e}")
 
                 # エラー時はロールバック
-                try:
+                with contextlib.suppress(BaseException):
                     conn.rollback()
-                except Exception:  # nosec B110
-                    pass  # ロールバック失敗は無視（接続が閉じている可能性）
 
     results["save_time"] = time.time() - save_start
     results["total_time"] = time.time() - start_time
@@ -1245,10 +1255,8 @@ def insert_active_returns_optimized_sqlite(
                     print(f"❌ {table_name}: {e}")
 
                 # エラー時はロールバック
-                try:
+                with contextlib.suppress(BaseException):
                     conn.rollback()
-                except Exception:  # nosec B110
-                    pass  # ロールバック失敗は無視（接続が閉じている可能性）
 
     results["save_time"] = time.time() - save_start
     results["total_time"] = time.time() - start_time
@@ -1287,7 +1295,7 @@ def insert_active_returns_optimized_sqlite(
 def store_to_database_batch(
     df_dict: dict[str, pd.DataFrame],
     db_path: Path,
-    unique_cols: list[str] = ["date", "P_SYMBOL", "variable"],
+    unique_cols: list[str] | None = None,
     batch_size: int = 10000,
     max_workers: int | None = 1,  # デフォルトを1に変更(ロック回避)
     verbose: bool = True,
@@ -1306,6 +1314,9 @@ def store_to_database_batch(
     :param verbose: 進捗表示フラグ
     :return: 処理結果の統計情報
     """
+    if unique_cols is None:
+        unique_cols = ["date", "P_SYMBOL", "variable"]
+
     if not df_dict:
         if verbose:
             print("⚠️ 保存対象のデータがありません")
@@ -1317,10 +1328,9 @@ def store_to_database_batch(
     for col in unique_cols:
         _validate_sql_identifier(col)
 
-    if max_workers is not None:
-        if max_workers > 1 and verbose:
-            print("⚠️ max_workers > 1: データベースロックのリスクがあります")
-            print("   推奨: max_workers=1 または事前にWALモードを有効化")
+    if max_workers is not None and max_workers > 1 and verbose:
+        print("⚠️ max_workers > 1: データベースロックのリスクがあります")
+        print("   推奨: max_workers=1 または事前にWALモードを有効化")
 
     if verbose:
         print("=" * 60)
@@ -1557,7 +1567,7 @@ def store_active_returns_batch(
     batch_size: int = 10000,
     max_workers: int | None = None,
     verbose: bool = True,
-) -> dict[str, any]:
+) -> dict[str, Any]:
     """
     アクティブリターンをバッチ保存(最適化版)
 
@@ -1780,11 +1790,9 @@ def upsert_financial_data(
         print(f"❌ エラー: {e}")
         conn.rollback()
         # 一時テーブルのクリーンアップ
-        try:
+with contextlib.suppress(BaseException):
             # nosec B608 - temp_table は table_name から生成された安全な識別子
-            cursor.execute(f'DROP TABLE IF EXISTS "{temp_table}"')
-        except Exception:  # nosec B110
-            pass  # クリーンアップ失敗は無視（元の例外を優先）
+            cursor.execute(f'DROP TABLE IF EXISTS "{temp_table}"')  # nosec B608
         raise
 
 
@@ -1983,7 +1991,7 @@ def process_ranking_factor_worker(
         # 内部関数で処理を共通化
         def _add_metric_to_results(
             metric_type: str,
-            calculation_func: callable,
+            calculation_func: Callable[..., Any],
         ):
             """計算を実行し、結果リストに追加するヘルパー関数。"""
             # 🔧 修正箇所: 関数のシグネチャを検査
@@ -2037,9 +2045,9 @@ def process_ranking_factor_worker(
         # -------------------------------------------------------------
 
         # 各指標の計算実行
-        _add_metric_to_results("Rank", roic_utils.add_factor_rank_cols)
-        _add_metric_to_results("PctRank", roic_utils.add_factor_pct_rank_cols)
-        _add_metric_to_results("ZScore", roic_utils.add_factor_zscore_cols)
+        _add_metric_to_results("Rank", roic_utils.add_factor_rank_cols)  # type: ignore[name-defined]
+        _add_metric_to_results("PctRank", roic_utils.add_factor_pct_rank_cols)  # type: ignore[name-defined]
+        _add_metric_to_results("ZScore", roic_utils.add_factor_zscore_cols)  # type: ignore[name-defined]
 
         return results
 
@@ -2156,7 +2164,7 @@ def process_rank_calculation_store_to_db(
                 # DB書き込み(直列実行でロック回避)
                 for table_name, df_result in results:
                     # 既存テーブル削除
-                    db_utils.delete_table_from_database(
+                    db_utils.delete_table_from_database(  # type: ignore[name-defined]
                         db_path=financials_db_path, table_name=table_name
                     )
                     # 保存
@@ -2274,7 +2282,7 @@ def check_missing_value_and_fill_by_sector_median(
         print(f"⚠️  {final_missing_total:,}件の欠損が残っています")
         print("\n欠損が残っている銘柄:")
         missing_rows = df[df[factor_list].isna().any(axis=1)]
-        print(missing_rows[["date", "SEDOL", "GICS Sector"] + factor_list])
+        print(missing_rows[["date", "SEDOL", "GICS Sector", *factor_list]])
 
     print("=" * 60)
 

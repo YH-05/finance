@@ -114,6 +114,11 @@ Task ツールを使わずに直接実装した場合、そのワークフロー
 │ PR作成（--skip-pr でない場合のみ）                          │
 │    └─ gh pr create ...                                      │
 │                                                             │
+│ Phase 6.5: PR設計レビュー（PR作成時のみ、--skip-pr 時は省略）│
+│    ├─ Task(pr-design) でSOLID原則・DRY・抽象化を検証        │
+│    ├─ 重大な問題あり: 警告を出力（CI前に修正推奨）          │
+│    └─ 問題なし: Phase 7 へ進む                              │
+│                                                             │
 │ 🚨 Phase 7: CIチェック検証（PR作成時のみ、--skip-pr 時は省略）│
 │    ├─ gh pr checks --watch --fail-fast で完了待ち           │
 │    ├─ 全パス: 作業完了                                      │
@@ -316,6 +321,89 @@ make check-all
 
 ---
 
+## Phase 6.5: PR設計レビュー（PR作成時のみ）
+
+**PR作成後（`--skip-pr` でない場合）、CIチェック前にコード設計品質を検証する。**
+
+`--skip-pr` の場合は、親スキル（issue-implementation-serial）がPR作成後に検証するため、このPhaseはスキップする。
+
+### 実行手順
+
+#### 6.5.1 pr-design サブエージェントの呼び出し
+
+```yaml
+subagent_type: "pr-design"
+description: "PR design review"
+prompt: |
+  PR #{pr_number} のコード設計品質を検証してください。
+
+  ## 検証対象PR
+  - PR番号: {pr_number}
+  - Issue: #{issue_number}
+
+  ## 検証観点
+  - SOLID原則（単一責任・開放閉鎖・リスコフ置換・IF分離・依存性逆転）
+  - DRY原則（重複コード検出）
+  - 抽象化レベルの一貫性
+```
+
+#### 6.5.2 レビュー結果の確認
+
+pr-design の出力を確認し、重大な問題がある場合は警告を出力:
+
+```yaml
+design_review:
+  score: 85  # 0-100
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "WARN"  # ← 警告あり
+    ...
+  issues:
+    - severity: "HIGH"
+      category: "solid"
+      description: "if文の連鎖が検出されました"
+      recommendation: "Strategy パターンへの置き換えを検討してください"
+```
+
+**判定基準**:
+
+| スコア | 判定 | アクション |
+|--------|------|-----------|
+| 90-100 | 優秀 | Phase 7 へ進む |
+| 70-89 | 良好 | 警告を出力、Phase 7 へ進む |
+| 50-69 | 要改善 | **警告を出力、修正推奨（Phase 7 前に修正可能）** |
+| 0-49 | 問題あり | **重大な警告を出力、修正推奨（Phase 7 前に修正可能）** |
+
+#### 6.5.3 問題ありの場合
+
+重大な問題（スコア50未満、または CRITICAL/HIGH の issue）がある場合:
+
+1. **警告を出力**
+   ```
+   ⚠️ Phase 6.5: PR設計レビューで問題を検出
+
+   スコア: 45/100
+
+   重大な問題:
+   - [HIGH] SOLID: if文の連鎖が検出されました
+     → Strategy パターンへの置き換えを検討してください
+
+   推奨: CIチェック前にこれらの問題を修正してください。
+   修正しない場合は、そのままCIチェックに進みます。
+   ```
+
+2. **ユーザーに確認**（オプション）
+   - 修正してから CI へ進む
+   - そのまま CI へ進む（レビュー指摘事項として記録）
+
+3. **Phase 7 へ進む**
+
+#### 重要: レビュー結果は CI ブロックしない
+
+pr-design のレビュー結果は**警告のみ**で、CI チェックはブロックしません。設計品質の問題は PR レビュー時にコメントとして残すことで、継続的な改善を促します。
+
+---
+
 ## 🚨 Phase 7: CIチェック検証（PR作成時のみ）
 
 **PR作成後（`--skip-pr` でない場合）、GitHub Actions の CIチェックが全てパスするまで作業を完了としない。**
@@ -408,6 +496,15 @@ commit:
 pr:
   number: 456  # --skip-pr の場合は null
   url: "https://github.com/YH-05/finance/pull/456"
+design_review:  # Phase 6.5 の結果（PR作成時のみ、--skip-pr の場合は null）
+  score: 85
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "PASS"
+    liskov_substitution: "PASS"
+    interface_segregation: "PASS"
+    dependency_inversion: "PASS"
+  issues_found: 0
 ci_checks:  # Phase 7 の結果（PR作成時のみ、--skip-pr の場合は null）
   status: passed
   checks:
@@ -489,6 +586,7 @@ partial_commit:
 - [ ] Phase 5: Task(quality-checker) で品質自動修正が完了
 - [ ] **Phase 6: `make check-all` が成功（コミット前検証）**
 - [ ] コミットが作成されている（Phase 6 成功後のみ）
+- [ ] **Phase 6.5: Task(pr-design) でPR設計レビューが完了（`--skip-pr` でない場合のみ）**
 - [ ] **Phase 7: PR作成後のCIチェックが全てパス（`--skip-pr` でない場合のみ）**
 - [ ] サマリーが出力されている
 
@@ -498,6 +596,7 @@ partial_commit:
 - [ ] Task(xxx-creator/expert) で開発が完了
 - [ ] **`make check-all` が成功（コミット前検証）**
 - [ ] コミットが作成されている（検証成功後のみ）
+- [ ] **Task(pr-design) でPR設計レビューが完了（`--skip-pr` でない場合のみ）**
 - [ ] **PR作成後のCIチェックが全てパス（`--skip-pr` でない場合のみ）**
 - [ ] サマリーが出力されている
 
