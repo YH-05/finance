@@ -28,6 +28,7 @@ from dotenv import load_dotenv
 from structlog import BoundLogger
 from structlog.contextvars import bind_contextvars, unbind_contextvars
 
+from ..settings import get_log_dir, get_log_format, get_log_level, get_project_env
 from ..types import LogFormat, LogLevel
 
 _initialized = False
@@ -55,8 +56,12 @@ def _ensure_basic_config() -> None:
 
     load_dotenv(override=True)
 
-    default_level = os.environ.get("LOG_LEVEL", "INFO").upper()
-    if default_level not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+    # Clear cached environment variables to reflect any changes
+    get_log_level.cache_clear()
+
+    try:
+        default_level = get_log_level()
+    except ValueError:
         default_level = "INFO"
 
     # 共有プロセッサー
@@ -267,23 +272,33 @@ def setup_logging(
 
     load_dotenv(override=True)
 
-    env_level = os.environ.get("LOG_LEVEL", "").upper()
-    if env_level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
-        level = env_level
-    elif env_level and env_level not in [
-        "DEBUG",
-        "INFO",
-        "WARNING",
-        "ERROR",
-        "CRITICAL",
-    ]:
-        level = "INFO"
+    # Clear cached environment variables to reflect any changes
+    get_log_level.cache_clear()
+    get_log_format.cache_clear()
+    get_log_dir.cache_clear()
+    get_project_env.cache_clear()
 
-    env_format = os.environ.get("LOG_FORMAT", "").lower()
-    if env_format in ["json", "console", "plain"]:
-        format = env_format  # type: ignore
+    # Override with environment variables if set
+    if os.environ.get("LOG_LEVEL"):
+        try:
+            level = get_log_level()
+        except ValueError:
+            # Invalid level in env var, use default
+            pass
 
-    env_log_dir = os.environ.get("LOG_DIR", "")
+    if os.environ.get("LOG_FORMAT"):
+        try:
+            format_value = get_log_format()
+            # Support legacy "plain" format as alias for "console"
+            if format_value == "plain":  # type: ignore[comparison-overlap]
+                format = "console"
+            else:
+                format = format_value  # type: ignore
+        except ValueError:
+            # Invalid format in env var, use default
+            pass
+
+    env_log_dir = get_log_dir()
     log_file_enabled = os.environ.get("LOG_FILE_ENABLED", "true").lower() != "false"
 
     final_log_file: Path | None = None
@@ -321,9 +336,7 @@ def setup_logging(
     )
 
     # フォーマットに応じたレンダラーを選択
-    is_development = (
-        os.environ.get("PROJECT_ENV") == "development" or format == "console"
-    )
+    is_development = get_project_env() == "development" or format == "console"
 
     if format == "json":
         console_renderer: Any = structlog.processors.JSONRenderer()
