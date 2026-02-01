@@ -11,6 +11,7 @@ Features
 - ProcessorFormatter による logging ハンドラー連携
 """
 
+import contextlib
 import functools
 import inspect
 import logging
@@ -28,6 +29,8 @@ from dotenv import load_dotenv
 from structlog import BoundLogger
 from structlog.contextvars import bind_contextvars, unbind_contextvars
 
+from ..settings import _reset_cache as _reset_settings_cache
+from ..settings import get_log_dir, get_log_format, get_log_level, get_project_env
 from ..types import LogFormat, LogLevel
 
 _initialized = False
@@ -55,8 +58,12 @@ def _ensure_basic_config() -> None:
 
     load_dotenv(override=True)
 
-    default_level = os.environ.get("LOG_LEVEL", "INFO").upper()
-    if default_level not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+    # settings のキャッシュをリセットして環境変数の変更を反映
+    _reset_settings_cache()
+
+    try:
+        default_level = get_log_level()
+    except ValueError:
         default_level = "INFO"
 
     # 共有プロセッサー
@@ -267,23 +274,24 @@ def setup_logging(
 
     load_dotenv(override=True)
 
-    env_level = os.environ.get("LOG_LEVEL", "").upper()
-    if env_level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
-        level = env_level
-    elif env_level and env_level not in [
-        "DEBUG",
-        "INFO",
-        "WARNING",
-        "ERROR",
-        "CRITICAL",
-    ]:
-        level = "INFO"
+    # settings のキャッシュをリセットして環境変数の変更を反映
+    _reset_settings_cache()
 
-    env_format = os.environ.get("LOG_FORMAT", "").lower()
-    if env_format in ["json", "console", "plain"]:
-        format = env_format  # type: ignore
+    # 環境変数が明示的に設定されている場合のみ、パラメータを上書き
+    if os.environ.get("LOG_LEVEL", ""):
+        try:
+            level = get_log_level()
+        except ValueError:
+            level = "INFO"
 
-    env_log_dir = os.environ.get("LOG_DIR", "")
+    if os.environ.get("LOG_FORMAT", ""):
+        with contextlib.suppress(ValueError):
+            format = get_log_format()
+
+    # LOG_DIR が明示的に設定されている場合のみファイル出力を有効にする
+    # get_log_dir() はデフォルト値を返すが、元の動作を維持するため環境変数の存在を確認
+    env_log_dir_raw = os.environ.get("LOG_DIR", "")
+    env_log_dir = get_log_dir() if env_log_dir_raw else ""
     log_file_enabled = os.environ.get("LOG_FILE_ENABLED", "true").lower() != "false"
 
     final_log_file: Path | None = None
@@ -321,9 +329,7 @@ def setup_logging(
     )
 
     # フォーマットに応じたレンダラーを選択
-    is_development = (
-        os.environ.get("PROJECT_ENV") == "development" or format == "console"
-    )
+    is_development = get_project_env() == "development" or format == "console"
 
     if format == "json":
         console_renderer: Any = structlog.processors.JSONRenderer()
