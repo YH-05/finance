@@ -641,6 +641,7 @@ class Publisher:
             )
         else:
             # 2. 新規 Issue を Project に追加
+            # --format json を使用して item_id を取得
             add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
                 [
                     "gh",
@@ -651,13 +652,20 @@ class Publisher:
                     owner,
                     "--url",
                     issue_url,
+                    "--format",
+                    "json",
                 ],
                 capture_output=True,
                 text=True,
                 check=True,
             )
 
-            item_id = add_result.stdout.strip()
+            # JSON出力からitem_idを抽出
+            try:
+                add_data = json.loads(add_result.stdout)
+                item_id = add_data.get("id", "")
+            except json.JSONDecodeError:
+                item_id = ""
 
             # item_id が空の場合はフィールド設定をスキップ（graceful degradation）
             if not item_id:
@@ -666,6 +674,7 @@ class Publisher:
                     issue_number=issue_number,
                     issue_url=issue_url,
                     stderr=add_result.stderr,
+                    stdout=add_result.stdout,
                 )
                 return
 
@@ -679,7 +688,7 @@ class Publisher:
         # 2. Status フィールドを設定
         _, status_id = self._resolve_status(article)
 
-        subprocess.run(  # nosec B603 - gh CLI with safe args
+        status_result = subprocess.run(  # nosec B603 - gh CLI with safe args
             [
                 "gh",
                 "project",
@@ -693,6 +702,8 @@ class Publisher:
                 "--single-select-option-id",
                 status_id,
             ],
+            capture_output=True,
+            text=True,
             check=True,
         )
 
@@ -700,13 +711,14 @@ class Publisher:
             "Set status field",
             item_id=item_id,
             status_id=status_id,
+            stdout=status_result.stdout,
         )
 
         # 3. PublishedDate フィールドを設定（公開日がある場合のみ）
         published = article.extracted.collected.published
         if published:
             date_str = published.strftime("%Y-%m-%d")
-            subprocess.run(  # nosec B603 - gh CLI with safe args
+            date_result = subprocess.run(  # nosec B603 - gh CLI with safe args
                 [
                     "gh",
                     "project",
@@ -720,6 +732,8 @@ class Publisher:
                     "--date",
                     date_str,
                 ],
+                capture_output=True,
+                text=True,
                 check=True,
             )
 
@@ -727,6 +741,7 @@ class Publisher:
                 "Set published date field",
                 item_id=item_id,
                 date=date_str,
+                stdout=date_result.stdout,
             )
 
     async def _get_existing_issues(self, days: int = 7) -> set[str]:
