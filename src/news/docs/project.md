@@ -815,6 +815,253 @@ news/
 
 ## 技術的考慮事項
 
+### GitHub API レート制限対策
+
+GitHub CLI (`gh`) を使用する際のレート制限対策。3つのレベルから選択。
+
+#### レート制限の概要
+
+| API種別 | 制限 | 消費ポイント |
+|--------|------|-------------|
+| REST API | 5,000 リクエスト/時間 | 1 リクエスト = 1 ポイント |
+| GraphQL API | 5,000 ポイント/時間 | クエリの複雑さで変動（1-100+ポイント） |
+
+**現状の問題点**:
+- `gh issue view`, `gh project item-list` などはGraphQL APIを使用
+- Issue 1件あたり複数のAPIコール（view, item-add, item-edit）
+- 100件のIssue処理で500+ポイント消費の可能性
+
+---
+
+#### レベル1: 簡易対策（スリープ追加）
+
+**実装工数**: 低（1-2時間）
+
+**内容**:
+```python
+import time
+
+for issue_number in issues:
+    process_issue(issue_number)
+    time.sleep(1.0)  # 1秒待機
+```
+
+**メリット**:
+- 実装が非常に簡単
+- 既存コードへの影響最小
+- すぐに導入可能
+
+**デメリット**:
+- 処理時間が大幅に増加（100件で100秒追加）
+- レート制限に達すると対処できない
+- 非効率（レート制限に余裕があっても遅い）
+
+**推奨ケース**:
+- 少量のIssue処理（10件以下/回）
+- 開発・テスト環境
+- 緊急の暫定対応
+
+---
+
+#### レベル2: 中級対策（バッチ+リトライ）
+
+**実装工数**: 中（4-8時間）
+
+**内容**:
+1. **一括取得**: 個別APIコールを減らす
+2. **指数バックオフ**: レート制限時に適応的に待機
+3. **レート制限監視**: 残りポイントを確認して調整
+
+```python
+import subprocess
+import json
+import time
+
+def get_rate_limit() -> dict:
+    """現在のレート制限状況を取得"""
+    result = subprocess.run(
+        ["gh", "api", "rate_limit"],
+        capture_output=True, text=True, check=True
+    )
+    return json.loads(result.stdout)
+
+def execute_with_backoff(func, max_retries=3):
+    """指数バックオフでリトライ"""
+    for attempt in range(max_retries):
+        try:
+            return func()
+        except subprocess.CalledProcessError as e:
+            if "rate limit" in str(e.stderr).lower():
+                wait_time = 2 ** attempt * 30  # 30s, 60s, 120s
+                time.sleep(wait_time)
+            else:
+                raise
+    raise Exception("Max retries exceeded")
+
+# 一括取得の例
+def get_issues_batch(limit=100):
+    """一括でIssue情報を取得（個別取得を避ける）"""
+    result = subprocess.run(
+        ["gh", "issue", "list", "--repo", "owner/repo",
+         "--limit", str(limit), "--json", "number,title,body,projectItems"],
+        capture_output=True, text=True, check=True
+    )
+    return json.loads(result.stdout)
+```
+
+**メリット**:
+- APIコール数を大幅に削減（10分の1程度）
+- レート制限に達しても自動復旧
+- 処理速度と安定性のバランスが良い
+
+**デメリット**:
+- 実装がやや複雑
+- レート制限リセットまで待機が必要な場合がある
+- キャッシュがないため再実行時に再取得
+
+**推奨ケース**:
+- 中規模のIssue処理（10-100件/回）
+- 定期実行ワークフロー
+- 本番環境での日次処理
+
+---
+
+#### レベル3: 本格対策（キャッシュ+最適化）
+
+**実装工数**: 高（1-2日）
+
+**内容**:
+1. **ローカルキャッシュ**: 取得済みデータを永続化
+2. **差分取得**: 前回からの差分のみ取得
+3. **バッチリクエスト**: GraphQL mutationをまとめる
+4. **TTL管理**: キャッシュの有効期限管理
+
+```python
+import json
+from pathlib import Path
+from datetime import datetime, timedelta
+
+class GitHubCache:
+    """GitHub API結果のローカルキャッシュ"""
+
+    def __init__(self, cache_dir: Path = Path("data/cache/github")):
+        self.cache_dir = cache_dir
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+    def get_existing_issues(self, max_age_hours: int = 24) -> dict[int, dict]:
+        """キャッシュからIssue情報を取得"""
+        cache_file = self.cache_dir / "issues.json"
+        if not cache_file.exists():
+            return {}
+
+        data = json.loads(cache_file.read_text())
+        cached_at = datetime.fromisoformat(data["cached_at"])
+
+        # キャッシュの有効期限チェック
+        if datetime.now() - cached_at > timedelta(hours=max_age_hours):
+            return {}
+
+        return {issue["number"]: issue for issue in data["issues"]}
+
+    def update_cache(self, issues: list[dict]) -> None:
+        """Issue情報をキャッシュに保存"""
+        cache_file = self.cache_dir / "issues.json"
+        data = {
+            "cached_at": datetime.now().isoformat(),
+            "issues": issues
+        }
+        cache_file.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+
+    def get_project_items(self, project_number: int) -> dict[str, dict]:
+        """Project item情報をキャッシュから取得"""
+        cache_file = self.cache_dir / f"project_{project_number}_items.json"
+        if not cache_file.exists():
+            return {}
+
+        data = json.loads(cache_file.read_text())
+        return {item["id"]: item for item in data.get("items", [])}
+
+class OptimizedPublisher:
+    """最適化されたGitHub Publisher"""
+
+    def __init__(self, cache: GitHubCache):
+        self.cache = cache
+        self._project_items_cache: dict[str, str] = {}
+
+    def publish_batch(self, articles: list, dry_run: bool = False):
+        # 1. キャッシュから既存Issue情報を取得
+        existing_issues = self.cache.get_existing_issues()
+
+        # 2. キャッシュにないものだけAPIで取得
+        missing_numbers = [a.issue_number for a in articles
+                          if a.issue_number not in existing_issues]
+        if missing_numbers:
+            new_issues = self._fetch_issues(missing_numbers)
+            existing_issues.update(new_issues)
+            self.cache.update_cache(list(existing_issues.values()))
+
+        # 3. Project item情報もキャッシュ優先
+        project_items = self.cache.get_project_items(15)
+
+        # 4. 処理実行
+        for article in articles:
+            # キャッシュされたitem_idを使用
+            issue_url = f"https://github.com/owner/repo/issues/{article.issue_number}"
+            if issue_url in project_items:
+                item_id = project_items[issue_url]["id"]
+            else:
+                # 新規追加が必要な場合のみAPIコール
+                item_id = self._add_to_project(issue_url)
+
+            self._set_status(item_id, article.status)
+```
+
+**メリット**:
+- APIコール数を最小化（キャッシュヒット時は0）
+- 再実行時に高速（差分のみ処理）
+- 大量処理でも安定
+- レート制限に達するリスクが極めて低い
+
+**デメリット**:
+- 実装が複雑
+- キャッシュの整合性管理が必要
+- ディスク容量を消費
+- キャッシュ無効化のロジックが必要
+
+**推奨ケース**:
+- 大規模のIssue処理（100件以上/回）
+- 頻繁な再実行が必要な場合
+- 本番環境での信頼性重視
+
+---
+
+#### 対策レベル比較表
+
+| 項目 | レベル1 (簡易) | レベル2 (中級) | レベル3 (本格) |
+|------|---------------|---------------|---------------|
+| 実装工数 | 1-2時間 | 4-8時間 | 1-2日 |
+| APIコール削減 | なし | 50-90% | 90-99% |
+| レート制限回避 | 低 | 中 | 高 |
+| 処理速度 | 遅い | 中 | 速い |
+| 再実行耐性 | なし | 低 | 高 |
+| 保守コスト | 低 | 中 | 高 |
+| 推奨Issue数/回 | 〜10件 | 10-100件 | 100件以上 |
+
+---
+
+#### 現在の実装状況
+
+| 対策 | 状態 | 備考 |
+|------|------|------|
+| APIコール間のスリープ | ❌ 未実装 | レベル1対策 |
+| 指数バックオフリトライ | ✅ 実装済み | TrafilaturaExtractorで使用 |
+| 一括取得 | ⚠️ 部分的 | `gh issue list` は使用、`gh project item-list` は未最適化 |
+| レート制限監視 | ❌ 未実装 | レベル2対策 |
+| ローカルキャッシュ | ❌ 未実装 | レベル3対策 |
+| 差分取得 | ❌ 未実装 | レベル3対策 |
+
+---
+
 ### 依存関係
 
 | パッケージ | 用途 | Phase |

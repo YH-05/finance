@@ -302,27 +302,58 @@ class NewsWorkflowOrchestrator:
         self,
         articles: list[CollectedArticle],
     ) -> list[ExtractedArticle]:
-        """Extract body text from articles with progress logging."""
-        results: list[ExtractedArticle] = []
+        """Extract body text from articles with progress logging.
+
+        Uses asyncio.Semaphore to limit concurrent extractions based on
+        config.extraction.concurrency setting.
+        """
+        import asyncio
+
         total = len(articles)
-        for i, article in enumerate(articles, 1):
-            result = await self._extractor.extract(article)
-            title = (
-                article.title[:40] + "..." if len(article.title) > 40 else article.title
-            )
-            if result.extraction_status == ExtractionStatus.SUCCESS:
-                self._log_progress(i, total, title)
-            else:
-                self._log_progress(
-                    i, total, f"{title} - {result.error_message}", is_error=True
+        concurrency = self._config.extraction.concurrency
+        semaphore = asyncio.Semaphore(concurrency)
+
+        # Counter for progress logging (protected by lock for thread safety)
+        progress_lock = asyncio.Lock()
+        progress_counter = {"count": 0}
+
+        async def extract_with_semaphore(
+            article: CollectedArticle,
+        ) -> ExtractedArticle:
+            async with semaphore:
+                result = await self._extractor.extract(article)
+
+                # Update progress with lock
+                async with progress_lock:
+                    progress_counter["count"] += 1
+                    current = progress_counter["count"]
+
+                title = (
+                    article.title[:40] + "..."
+                    if len(article.title) > 40
+                    else article.title
                 )
-                logger.error(
-                    "Extraction failed",
-                    url=str(article.url),
-                    error=result.error_message,
-                )
-            results.append(result)
-        return results
+                if result.extraction_status == ExtractionStatus.SUCCESS:
+                    self._log_progress(current, total, title)
+                else:
+                    self._log_progress(
+                        current,
+                        total,
+                        f"{title} - {result.error_message}",
+                        is_error=True,
+                    )
+                    logger.error(
+                        "Extraction failed",
+                        url=str(article.url),
+                        error=result.error_message,
+                    )
+                return result
+
+        # Execute all extractions concurrently with semaphore limiting
+        tasks = [extract_with_semaphore(article) for article in articles]
+        results = await asyncio.gather(*tasks)
+
+        return list(results)
 
     async def _summarize_batch_with_progress(
         self,
