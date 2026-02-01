@@ -117,12 +117,17 @@ def get_log_level() -> LogLevel:
 
     環境変数 LOG_LEVEL からログレベルを取得します。
     未設定の場合は INFO を返します。
-    無効な値が設定されている場合もデフォルトの INFO を返します。
+    無効な値が設定されている場合は ValueError を発生させます。
 
     Returns
     -------
     LogLevel
         ログレベル（DEBUG, INFO, WARNING, ERROR, CRITICAL のいずれか）
+
+    Raises
+    ------
+    ValueError
+        LOG_LEVEL に無効な値が設定されている場合
 
     Examples
     --------
@@ -138,15 +143,29 @@ def get_log_level() -> LogLevel:
     >>> # LOG_LEVEL=warning を設定
     >>> get_log_level()
     'WARNING'
+
+    >>> # 無効な値の場合
+    >>> # LOG_LEVEL=INVALID を設定
+    >>> get_log_level()  # doctest: +SKIP
+    ValueError: Invalid LOG_LEVEL: 'INVALID'. Valid values are: DEBUG, INFO, WARNING, ERROR, CRITICAL
     """
     _ensure_initialized()
 
     if "log_level" not in _cache:
-        value = os.environ.get("LOG_LEVEL", "").upper()
-        if value in VALID_LOG_LEVELS:
-            _cache["log_level"] = value
-        else:
+        raw_value = os.environ.get("LOG_LEVEL")
+        if raw_value is None:
+            # 環境変数が未設定の場合はデフォルト値を使用
             _cache["log_level"] = DEFAULT_LOG_LEVEL
+        else:
+            # 環境変数が設定されている場合は検証
+            value = raw_value.upper()
+            if value not in VALID_LOG_LEVELS:
+                valid_values = ", ".join(sorted(VALID_LOG_LEVELS))
+                raise ValueError(
+                    f"Invalid LOG_LEVEL: '{raw_value.upper()}'. "
+                    f"Valid values are: {valid_values}"
+                )
+            _cache["log_level"] = value
 
     return _cache["log_level"]  # type: ignore[return-value]
 
@@ -156,12 +175,17 @@ def get_log_format() -> LogFormat:
 
     環境変数 LOG_FORMAT からログフォーマットを取得します。
     未設定の場合は console を返します。
-    無効な値が設定されている場合もデフォルトの console を返します。
+    無効な値が設定されている場合は ValueError を発生させます。
 
     Returns
     -------
     LogFormat
         ログフォーマット（json, console, plain のいずれか）
+
+    Raises
+    ------
+    ValueError
+        LOG_FORMAT に無効な値が設定されている場合
 
     Examples
     --------
@@ -177,15 +201,28 @@ def get_log_format() -> LogFormat:
     >>> # LOG_FORMAT=JSON を設定
     >>> get_log_format()
     'json'
+
+    >>> # 無効な値の場合
+    >>> # LOG_FORMAT=INVALID を設定
+    >>> get_log_format()  # doctest: +SKIP
+    ValueError: Invalid LOG_FORMAT: 'invalid'. Valid values are: console, json, plain
     """
     _ensure_initialized()
 
     if "log_format" not in _cache:
-        value = os.environ.get("LOG_FORMAT", "").lower()
-        if value in VALID_LOG_FORMATS:
-            _cache["log_format"] = value
-        else:
+        raw_value = os.environ.get("LOG_FORMAT")
+        if raw_value is None:
+            # 環境変数が未設定の場合はデフォルト値を使用
             _cache["log_format"] = DEFAULT_LOG_FORMAT
+        else:
+            # 環境変数が設定されている場合は検証
+            value = raw_value.lower()
+            if value not in VALID_LOG_FORMATS:
+                valid_values = ", ".join(sorted(VALID_LOG_FORMATS))
+                raise ValueError(
+                    f"Invalid LOG_FORMAT: '{value}'. Valid values are: {valid_values}"
+                )
+            _cache["log_format"] = value
 
     return _cache["log_format"]  # type: ignore[return-value]
 

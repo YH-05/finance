@@ -112,12 +112,28 @@ class TestGetLogLevel:
                 result = get_log_level()
                 assert result == level
 
-    def test_正常系_不正なログレベルはデフォルトINFOになる(self) -> None:
+    def test_異常系_不正なログレベルでValueError(self) -> None:
         from utils_core.settings import get_log_level
 
-        with patch.dict(os.environ, {"LOG_LEVEL": "INVALID"}, clear=True):
-            result = get_log_level()
-            assert result == "INFO"
+        with (
+            patch.dict(os.environ, {"LOG_LEVEL": "INVALID"}, clear=True),
+            pytest.raises(
+                ValueError,
+                match=r"Invalid LOG_LEVEL: 'INVALID'\. "
+                r"Valid values are: CRITICAL, DEBUG, ERROR, INFO, WARNING",
+            ),
+        ):
+            get_log_level()
+
+    def test_異常系_空文字のログレベルでValueError(self) -> None:
+        """空文字列が設定された場合はValueError（未設定とは異なる）."""
+        from utils_core.settings import get_log_level
+
+        with (
+            patch.dict(os.environ, {"LOG_LEVEL": ""}, clear=True),
+            pytest.raises(ValueError, match="Invalid LOG_LEVEL"),
+        ):
+            get_log_level()
 
 
 class TestGetLogFormat:
@@ -153,12 +169,27 @@ class TestGetLogFormat:
                 result = get_log_format()
                 assert result == fmt
 
-    def test_正常系_不正なフォーマットはデフォルトconsoleになる(self) -> None:
+    def test_異常系_不正なフォーマットでValueError(self) -> None:
         from utils_core.settings import get_log_format
 
-        with patch.dict(os.environ, {"LOG_FORMAT": "INVALID"}, clear=True):
-            result = get_log_format()
-            assert result == "console"
+        with (
+            patch.dict(os.environ, {"LOG_FORMAT": "INVALID"}, clear=True),
+            pytest.raises(
+                ValueError,
+                match=r"Invalid LOG_FORMAT: 'invalid'\. Valid values are: console, json, plain",
+            ),
+        ):
+            get_log_format()
+
+    def test_異常系_空文字のフォーマットでValueError(self) -> None:
+        """空文字列が設定された場合はValueError（未設定とは異なる）."""
+        from utils_core.settings import get_log_format
+
+        with (
+            patch.dict(os.environ, {"LOG_FORMAT": ""}, clear=True),
+            pytest.raises(ValueError, match="Invalid LOG_FORMAT"),
+        ):
+            get_log_format()
 
 
 class TestGetLogDir:
