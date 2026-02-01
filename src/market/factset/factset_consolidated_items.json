@@ -1,0 +1,859 @@
+{
+    "consolidated_fundamental_data_items": {
+        "balance_sheet": {
+            "assets": [
+                { "code": "FF_ASSETS", "description": "Total Assets" },
+                {
+                    "code": "FF_ASSETS_CURR",
+                    "description": "Total Current Assets"
+                },
+                {
+                    "code": "FF_ASSETS_CURR_MISC",
+                    "description": "Miscellaneous Current Assets"
+                },
+                {
+                    "code": "FF_ASSETS_CURR_OTH",
+                    "description": "Other Current Assets"
+                },
+                {
+                    "code": "FF_ASSETS_DISC_OPER_CURR",
+                    "description": "Current Assets of Discontinued Operations"
+                },
+                {
+                    "code": "FF_ASSETS_DISC_OPER_LT",
+                    "description": "Long-Term Assets of Discontinued Operations"
+                },
+                {
+                    "code": "FF_ASSETS_NONPERF",
+                    "description": "Non-Performing Assets - Total"
+                },
+                {
+                    "code": "FF_ASSETS_NONPERF_OTH",
+                    "description": "Non-Performing Assets - Other"
+                },
+                {
+                    "code": "FF_BDEBT",
+                    "description": "Bad Debt / Doubtful Accounts"
+                },
+                {
+                    "code": "FF_CASH_DUE_FR_BK",
+                    "description": "Cash & Due from Banks"
+                },
+                { "code": "FF_CASH_ONLY", "description": "Cash" },
+                {
+                    "code": "FF_CASH_ST",
+                    "description": "Cash & Short-Term Investments"
+                },
+                {
+                    "code": "FF_DFD_TAX_ASSETS_LT",
+                    "description": "Deferred Income Tax - Non-Current Asset"
+                },
+                {
+                    "code": "FF_DFD_TAX_ASSETS_ST",
+                    "description": "Deferred Income Tax - Current Asset"
+                },
+                { "code": "FF_GW", "description": "Net Goodwill" },
+                {
+                    "code": "FF_GW_AMORT",
+                    "description": "Accumulated Goodwill Amortization"
+                },
+                { "code": "FF_GW_GROSS", "description": "Goodwill, Gross" },
+                {
+                    "code": "FF_INTANG_OTH",
+                    "description": "Net Other Intangibles"
+                },
+                {
+                    "code": "FF_INTANG_OTH_AMORT",
+                    "description": "Accumulated Other Intangible Amortization"
+                },
+                {
+                    "code": "FF_INTANG_OTH_GROSS",
+                    "description": "Other Intangibles, Gross"
+                },
+                {
+                    "code": "FF_INVEN_FG",
+                    "description": "Inventories - Finished Goods"
+                },
+                {
+                    "code": "FF_INVEN_LIFO",
+                    "description": "Inventories - LIFO Reserve"
+                },
+                {
+                    "code": "FF_INVEN_MATL",
+                    "description": "Inventories - Raw Materials"
+                },
+                {
+                    "code": "FF_INVEN_PROG_PAYMT",
+                    "description": "Inventories - Progress Payments & Other"
+                },
+                {
+                    "code": "FF_INVEN_WIP",
+                    "description": "Inventories - Work In Progress"
+                },
+                {
+                    "code": "FF_INVEST_ADV",
+                    "description": "Total Investments and Advances"
+                },
+                {
+                    "code": "FF_INVEST_AFF",
+                    "description": "LT Investment - Affiliate Companies"
+                },
+                {
+                    "code": "FF_MTGE_SERV_RIGHTS",
+                    "description": "Loan/Mortgage Servicing Rights"
+                },
+                {
+                    "code": "FF_NOTES_RECEIV_LT",
+                    "description": "Long-Term Note Receivable"
+                },
+                {
+                    "code": "FF_PPE_DEP",
+                    "description": "PPE - Accumulated Depreciation"
+                },
+                {
+                    "code": "FF_PPE_DEP_BLDG",
+                    "description": "Accumulated Depreciation - Buildings"
+                },
+                {
+                    "code": "FF_PPE_DEP_CONSTR",
+                    "description": "Accumulated Depreciation - Construction in Progress"
+                },
+                {
+                    "code": "FF_PPE_DEP_EQUIP",
+                    "description": "Accumulated Depreciation - Machinery & Equipment"
+                },
+                {
+                    "code": "FF_PPE_DEP_LAND",
+                    "description": "Accumulated Depreciation - Land & Improvements"
+                },
+                {
+                    "code": "FF_PPE_DEP_LEASED_PROP",
+                    "description": "Accumulated Depreciation - Leased Property"
+                },
+                {
+                    "code": "FF_PPE_DEP_LEASES",
+                    "description": "Accumulated Depreciation - Leases"
+                },
+                {
+                    "code": "FF_PPE_DEP_OTH",
+                    "description": "Accumulated Depreciation - Other Property, Plant, & Equip"
+                },
+                {
+                    "code": "FF_PPE_DEP_SOFT_EQUIP",
+                    "description": "Accumulated Depreciation Computer Software and Equipment"
+                },
+                {
+                    "code": "FF_PPE_DEP_TRANS_EQUIP",
+                    "description": "Accumulated Depreciation - Transportation Equipment"
+                },
+                {
+                    "code": "FF_PPE_GROSS",
+                    "description": "Property, Plant, & Equipment - Gross"
+                },
+                {
+                    "code": "FF_PPE_GROSS_BLDG",
+                    "description": "Property, Plant, & Equipment - Buildings"
+                },
+                {
+                    "code": "FF_PPE_GROSS_CONSTR",
+                    "description": "Property, Plant, & Equipment - Construction in Progress"
+                },
+                {
+                    "code": "FF_PPE_GROSS_EQUIP",
+                    "description": "Property, Plant, & Equipment - Machinery & Equipment"
+                },
+                {
+                    "code": "FF_PPE_GROSS_LAND",
+                    "description": "Property, Plant, & Equipment - Land & Improvements"
+                },
+                {
+                    "code": "FF_PPE_GROSS_LEASED_PROP",
+                    "description": "Property, Plant, & Equipment - Leased Property"
+                },
+                {
+                    "code": "FF_PPE_GROSS_LEASES",
+                    "description": "Property, Plant, & Equipment - Leases"
+                },
+                {
+                    "code": "FF_PPE_GROSS_OTH",
+                    "description": "Property, Plant, & Equipment - Other Property, Plant, & Equip"
+                },
+                {
+                    "code": "FF_PPE_GROSS_SOFT_EQUIP",
+                    "description": "Property, Plant, & Equipment - Computer Software and Equipment"
+                },
+                {
+                    "code": "FF_PPE_GROSS_TRANS_EQUIP",
+                    "description": "Property, Plant, & Equipment - Transportation Equipment"
+                },
+                { "code": "FF_PPE_NET", "description": "PPE - Net" },
+                {
+                    "code": "FF_PPE_NET_BLDG",
+                    "description": "Net Property, Plant & Equipment - Buildings"
+                },
+                {
+                    "code": "FF_PPE_NET_CONSTR",
+                    "description": "Net Property, Plant & Equipment - Construction in Progress"
+                },
+                {
+                    "code": "FF_PPE_NET_EQUIP",
+                    "description": "Net Property, Plant & Equipment - Machinery & Equipment"
+                },
+                {
+                    "code": "FF_PPE_NET_LAND",
+                    "description": "Net Property, Plant & Equipment - Land & Improvements"
+                },
+                {
+                    "code": "FF_PPE_NET_LEASED_PROP",
+                    "description": "Net Property, Plant & Equipment - Leased Property"
+                },
+                {
+                    "code": "FF_PPE_NET_LEASES",
+                    "description": "Net Property, Plant & Equipment - Leases"
+                },
+                {
+                    "code": "FF_PPE_NET_OTH",
+                    "description": "Net Property, Plant & Equipment - Other Property, Plant, & Equip"
+                },
+                {
+                    "code": "FF_PPE_NET_SOFT_EQUIP",
+                    "description": "Net Property, Plant & Equipment - Computer Software and Equipment"
+                },
+                {
+                    "code": "FF_PPE_NET_TRANS_EQUIP",
+                    "description": "Net Property, Plant & Equipment - Transportation Equipment"
+                },
+                { "code": "FF_PREP_EXP", "description": "Prepaid Expenses" },
+                {
+                    "code": "FF_RECEIV_GROSS",
+                    "description": "Accounts Receivable, Gross"
+                },
+                {
+                    "code": "FF_RECEIV_NET",
+                    "description": "Accounts Receivable - Net"
+                },
+                {
+                    "code": "FF_RECEIV_ST_OTH",
+                    "description": "Other Receivables"
+                }
+            ],
+            "liabilities": [
+                {
+                    "code": "FF_ACCR_EXP_XPAYR",
+                    "description": "Accrued Expenses (Excl. Accrued Payroll)"
+                },
+                { "code": "FF_ACCR_PAYR", "description": "Accrued Payroll" },
+                {
+                    "code": "FF_ARO",
+                    "description": "Asset Retirement Obligation"
+                },
+                {
+                    "code": "FF_LIABS_CURR",
+                    "description": "Total Current Liabilities"
+                },
+                {
+                    "code": "FF_LIABS_CURR_DFD_TAX",
+                    "description": "Short Term Deferred Income Tax"
+                },
+                {
+                    "code": "FF_LIABS_CURR_MISC",
+                    "description": "Miscellaneous Current Liabilities"
+                },
+                {
+                    "code": "FF_LIABS_CURR_OTH",
+                    "description": "Other Current Liabilities"
+                },
+                {
+                    "code": "FF_LIABS_DISC_OPER",
+                    "description": "Total Liabilities of Discontinued Operations"
+                },
+                {
+                    "code": "FF_LIABS_DISC_OPER_CURR",
+                    "description": "Current Liabilities of Discontinued Operations"
+                },
+                {
+                    "code": "FF_LIABS_DISC_OPER_LT",
+                    "description": "LT Liabilities of Discontinued Operations"
+                },
+                {
+                    "code": "FF_LIABS_OTH_XDFD_REV",
+                    "description": "Other Liabilities (excluding Deferred Revenue)"
+                },
+                { "code": "FF_PAY_ACCT", "description": "Accounts Payable" },
+                { "code": "FF_PAY_DIV", "description": "Dividends Payable" },
+                { "code": "FF_PAY_TAX", "description": "Income Tax Payable" },
+                {
+                    "code": "FF_RSRV_NONEQ",
+                    "description": "Non-Equity Reserves"
+                }
+            ],
+            "shareholders_equity": [
+                { "code": "FF_COM_EQ", "description": "Common Equity - Total" },
+                {
+                    "code": "FF_COM_EQ_APIC",
+                    "description": "Additional Paid-In Capital / Capital Surplus (incl. Deferred Compensation)"
+                },
+                {
+                    "code": "FF_COM_EQ_FOR_EXCH",
+                    "description": "Cumulative Translation Adjustment/ Unrealized For Exch Gain"
+                },
+                {
+                    "code": "FF_COM_EQ_GL",
+                    "description": "Unrealized Gain/Loss Marketable Securities"
+                },
+                {
+                    "code": "FF_COM_EQ_HEDG_GL",
+                    "description": "Comprehensive Income - Hedging Gain/Loss"
+                },
+                {
+                    "code": "FF_COM_EQ_OTH_COMPR_ADJ_OTH",
+                    "description": "Accum Other Comp Inc - Other Adjustments"
+                },
+                {
+                    "code": "FF_COM_EQ_PAR",
+                    "description": "Common Stock Par/Carry Value"
+                },
+                {
+                    "code": "FF_COM_EQ_RETAIN_EARN",
+                    "description": "Retained Earnings"
+                },
+                {
+                    "code": "FF_COM_EQ_UNEARN_COMP",
+                    "description": "Comprehensive Income - Unearned Compensation"
+                },
+                {
+                    "code": "FF_COM_STK_ESOP",
+                    "description": "ESOP Debt Guarantee"
+                },
+                { "code": "FF_EQ_TOT", "description": "Total Equity" },
+                {
+                    "code": "FF_LIABS_SHLDRS_EQ",
+                    "description": "Liabilities & Stockholders' Equity - Total"
+                },
+                {
+                    "code": "FF_PFD_STK",
+                    "description": "Preferred Stock - Carrying Value"
+                },
+                {
+                    "code": "FF_PFD_STK_ESOP",
+                    "description": "Preferred Stock Issues for ESOP"
+                },
+                {
+                    "code": "FF_PFD_STK_ESOP_GTD",
+                    "description": "ESOP Guarantees - Preferred Stock"
+                },
+                {
+                    "code": "FF_PFD_STK_EXCESS",
+                    "description": "Preferred Liquidation Excess"
+                },
+                {
+                    "code": "FF_PFD_STK_LIQ",
+                    "description": "Preferred Liquidation Value"
+                },
+                {
+                    "code": "FF_PFD_STK_NRED",
+                    "description": "Non Redeemable Preferred Stock"
+                },
+                {
+                    "code": "FF_PFD_STK_RED",
+                    "description": "Redeemable Preferred Stock"
+                },
+                {
+                    "code": "FF_RSRV_APPR_OTH",
+                    "description": "Other Appropriated Reserves"
+                },
+                {
+                    "code": "FF_RSRV_REVAL",
+                    "description": "Revaluation Reserves"
+                },
+                {
+                    "code": "FF_RSRV_UNAPPR",
+                    "description": "Unappropriated (Free) Reserves"
+                },
+                {
+                    "code": "FF_SHLDRS_EQ",
+                    "description": "Total Shareholders' Equity"
+                },
+                {
+                    "code": "FF_TREAS_STK",
+                    "description": "Treasury Stock - Common (incl. ESOP)"
+                }
+            ],
+            "per_share": [
+                { "code": "FF_BPS", "description": "Book Value Per Share" },
+                {
+                    "code": "FF_BPS_TANG",
+                    "description": "Book Value Per Share - Tangible"
+                },
+                {
+                    "code": "FF_LIABS_PS",
+                    "description": "Liabilities - Long Term - Per Share"
+                },
+                { "code": "FF_PAR_PS", "description": "Par Value - Security" },
+                {
+                    "code": "FF_WKCAP_PS",
+                    "description": "Working Capital Per Share"
+                }
+            ],
+            "supplemental": [
+                {
+                    "code": "FF_ASSETS_DISC_OPER",
+                    "description": "Total Assets of Discontinued Operations"
+                },
+                { "code": "FF_ASSETS_DOM", "description": "Domestic Assets" },
+                {
+                    "code": "FF_ASSETS_GEO_SEG",
+                    "description": "Total Geographic Segment Assets"
+                },
+                {
+                    "code": "FF_ASSETS_INTL",
+                    "description": "International Assets"
+                },
+                {
+                    "code": "FF_ASSETS_RISK_WGHT",
+                    "description": "Risk Weighted Assets - Basel III"
+                },
+                {
+                    "code": "FF_BONDS_BELOW_INVGR",
+                    "description": "Bonds Below Investment Grade - Amount"
+                },
+                {
+                    "code": "FF_CAP_RATIO_TIER1",
+                    "description": "Tier 1 Capital Ratio"
+                },
+                {
+                    "code": "FF_CAP_RATIO_TOT",
+                    "description": "Total Capital Ratio"
+                },
+                { "code": "FF_COMP_SOFT", "description": "Computer Software" },
+                { "code": "FF_DEBT", "description": "Total Debt" },
+                {
+                    "code": "FF_FOR_EXCH_BS",
+                    "description": "Exchange Rate used for Translating Balance Sheet"
+                },
+                {
+                    "code": "FF_INVEST_CAP",
+                    "description": "Invested Capital - Total"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_2YR_5YR",
+                    "description": "Operating Lease Commitments 2-5 Years"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_5YR",
+                    "description": "Operating Lease Commitments - Over 5 Years"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_TOT",
+                    "description": "Total Operating Lease Commitments"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_YR1",
+                    "description": "Operating Lease Commitments - Year 1"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_YR2",
+                    "description": "Operating Lease Commitments - Year 2"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_YR3",
+                    "description": "Operating Lease Commitments - Year 3"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_YR4",
+                    "description": "Operating Lease Commitments - Year 4"
+                },
+                {
+                    "code": "FF_OPER_LEASE_COMMIT_YR5",
+                    "description": "Operating Lease Commitments - Year 5"
+                },
+                {
+                    "code": "FF_TCAP",
+                    "description": "Total Capital incl.Short-Term Debt"
+                },
+                {
+                    "code": "FF_TIER1_CAP",
+                    "description": "Total Tier 1 Capital"
+                },
+                {
+                    "code": "FF_TIER2_CAP",
+                    "description": "Total Tier 2 Capital"
+                }
+            ],
+            "other_items": [
+                { "code": "FF_CASH_DEPS", "description": "Cash & Deposits" },
+                {
+                    "code": "FF_COMPR_INC_ACCUM",
+                    "description": "Comprehensive Income - Accumulated"
+                },
+                {
+                    "code": "FF_COMPR_INC_PENS_LIABS",
+                    "description": "Comprehensive Income - Pension Liability"
+                },
+                {
+                    "code": "FF_DEBT_BONDS_SECURE_LIEN1",
+                    "description": "DCS - Bonds - Sec. 1st Lien"
+                },
+                {
+                    "code": "FF_DEBT_BONDS_SECURE_LIEN2",
+                    "description": "DCS - Bonds - Sec. 2nd Lien"
+                },
+                {
+                    "code": "FF_DEBT_BONDS_SECURE_LIEN3",
+                    "description": "DCS - Bonds - Sec. 3rd Lien"
+                },
+                {
+                    "code": "FF_DEBT_LOAN_SECURE_LIEN1",
+                    "description": "DCS - Term Loans - Sec. 1st Lien"
+                },
+                {
+                    "code": "FF_DEBT_LOAN_SECURE_LIEN2",
+                    "description": "DCS - Term Loans - Sec. 2nd Lien"
+                },
+                {
+                    "code": "FF_DEBT_LOAN_SECURE_LIEN3",
+                    "description": "DCS - Term Loans - Sec. 3rd Lien"
+                },
+                {
+                    "code": "FF_DEBT_LT_NET",
+                    "description": "DCS - Net Long Term Debt"
+                },
+                { "code": "FF_DEPS", "description": "Total Deposits" },
+                {
+                    "code": "FF_INS_EQ_POL",
+                    "description": "Policyholders' Equity"
+                },
+                { "code": "FF_INT_PAY", "description": "Interest Payable" },
+                { "code": "FF_ORDER_BACKLOG", "description": "Order Backlog" },
+                {
+                    "code": "FF_ST_NOTES_INVEST",
+                    "description": "Short Term Notes & Bills"
+                }
+            ]
+        },
+        "income_statement": [
+            {
+                "code": "FF_ACTG_CHG",
+                "description": "Cumulative Effect of Accounting Change"
+            },
+            {
+                "code": "FF_ADJ_NET_OTH",
+                "description": "Other After Tax Income (Expense)"
+            },
+            {
+                "code": "FF_AMORT_DFD_CHRG",
+                "description": "Amortization of Deferred Charges"
+            },
+            {
+                "code": "FF_AMORT_INTANG",
+                "description": "Amortization of Intangibles"
+            },
+            {
+                "code": "FF_COGS",
+                "description": "COGS incl. Depreciation & Amortization"
+            },
+            {
+                "code": "FF_COGS_XDEP",
+                "description": "COGS excl. Depreciation & Amortization"
+            },
+            {
+                "code": "FF_CONSOL_NET_INC",
+                "description": "Net Income - Consolidated"
+            },
+            { "code": "FF_DEP_EXP", "description": "Depreciation" },
+            { "code": "FF_DIL_ADJ", "description": "Dilution Adjustment" },
+            {
+                "code": "FF_DISC_OPER",
+                "description": "Discontinued Operations"
+            },
+            {
+                "code": "FF_DISC_OPER_INC",
+                "description": "Disposal Gain/Loss on Discontinued Operations"
+            },
+            { "code": "FF_DIV_PFD", "description": "Preferred Dividends" },
+            { "code": "FF_EARN_PERST", "description": "Earnings Persistence" },
+            { "code": "FF_EBIT_OPER", "description": "EBIT" },
+            { "code": "FF_EBITDA_OPER", "description": "EBITDA" },
+            { "code": "FF_EQ_AFF_INC", "description": "Equity In Affiliates" },
+            {
+                "code": "FF_FOR_CURN_ADJ",
+                "description": "Foreign Currency Adjustment (Net)"
+            },
+            {
+                "code": "FF_FOR_EXCH_IS",
+                "description": "Exchange Rate used for Translating Inc Stmt & Cash Fl"
+            },
+            {
+                "code": "FF_GAIN_SALE_ASSETS_NET",
+                "description": "Gain (Loss) on Sale of Assets (Net)"
+            },
+            { "code": "FF_GROSS_INC", "description": "Gross Income" },
+            { "code": "FF_GW_IMPAIR", "description": "Goodwill - Impairment" },
+            { "code": "FF_INC_ADJ", "description": "Income Adjustment" },
+            { "code": "FF_INC_TAX", "description": "Income Taxes" },
+            {
+                "code": "FF_INC_TAX_CURR",
+                "description": "Income Tax - Current - Total"
+            },
+            {
+                "code": "FF_INC_TAX_CURR_DOM",
+                "description": "Income Tax - Current - Domestic"
+            },
+            {
+                "code": "FF_INC_TAX_CURR_FOR",
+                "description": "Income Tax - Current - Foreign"
+            },
+            {
+                "code": "FF_INC_TAX_DFD",
+                "description": "Income Tax - Deferred - Total"
+            },
+            {
+                "code": "FF_INC_TAX_DFD_DOM",
+                "description": "Income Tax - Deferred - Domestic (incl. local)"
+            },
+            {
+                "code": "FF_INC_TAX_DFD_FOR",
+                "description": "Income Tax - Deferred - Foreign"
+            },
+            {
+                "code": "FF_INT_EXP_NET",
+                "description": "Interest Expense, Net of Interest Capitalized"
+            },
+            {
+                "code": "FF_INT_EXP_TOT",
+                "description": "Total Interest Expense - Banks"
+            },
+            { "code": "FF_INT_INC", "description": "Interest Income" },
+            {
+                "code": "FF_INT_INC_AFT_PROV",
+                "description": "Net Interest Income after Loan Loss Provision"
+            },
+            { "code": "FF_INT_INC_NET", "description": "Net Interest Income" },
+            { "code": "FF_ITC", "description": "Investment Tax Credits" },
+            { "code": "FF_LOAN_LOSS_NET", "description": "Net Loan Losses" },
+            {
+                "code": "FF_LOSS_CLAIM_RSRV",
+                "description": "Losses, Claims & Reserves"
+            },
+            { "code": "FF_MATL_EXP", "description": "Material Expense" },
+            { "code": "FF_MIN_INT_EXP", "description": "Minority Interest" },
+            { "code": "FF_NET_INC", "description": "Net Income" },
+            {
+                "code": "FF_NET_INC_AFT_PFD",
+                "description": "Net Income After Preferred Dividends"
+            },
+            {
+                "code": "FF_NET_INC_AFT_XORD",
+                "description": "Net Income - After Extraordinary Items"
+            },
+            {
+                "code": "FF_NET_INC_BASIC",
+                "description": "Net Income Avail to Common - Basic"
+            },
+            {
+                "code": "FF_NET_INC_BASIC_AFT_XORD",
+                "description": "Net Income Avail to Common - Basic - After Extraordinaries"
+            },
+            {
+                "code": "FF_NET_INC_BASIC_BEFT_XORD",
+                "description": "Income Before Extraordinary Items"
+            },
+            {
+                "code": "FF_NET_INC_DIL",
+                "description": "Net Income Avail to Common - Fully Diluted"
+            },
+            {
+                "code": "FF_NET_INC_DIL_AFT_XORD",
+                "description": "Net Income Avail to Common - Fully Diluted - After Extraordinaries"
+            },
+            {
+                "code": "FF_NET_INCOME",
+                "description": "Net Income incl. Discontinued Operations"
+            },
+            {
+                "code": "FF_NON_OPER_INC",
+                "description": "Nonoperating Income (Net) - Total"
+            },
+            { "code": "FF_OPER_EXP", "description": "Operating Expenses" },
+            {
+                "code": "FF_OPER_INC",
+                "description": "Operating Inc Before Unusual Items"
+            },
+            {
+                "code": "FF_OPER_INC_AFT_INT",
+                "description": "Operating Income after Interest Expense"
+            },
+            {
+                "code": "FF_OPER_INC_AFT_UNUSUAL",
+                "description": "Operating Income After Unusual Items"
+            },
+            {
+                "code": "FF_OPER_INC_BEF_DEP",
+                "description": "Operating Inc Before Depreciation"
+            },
+            {
+                "code": "FF_OPER_INC_DOM",
+                "description": "Domestic Operating Income"
+            },
+            {
+                "code": "FF_OPER_INC_GEO_SEG",
+                "description": "Total Geographic Segment Operating Income"
+            },
+            {
+                "code": "FF_OPER_INC_INTL",
+                "description": "International Operating Income"
+            },
+            {
+                "code": "FF_OPER_LEASE_EXP",
+                "description": "Rental/Operating Lease Expense"
+            },
+            {
+                "code": "FF_ORDINARY_INC",
+                "description": "Ordinary Income - Japan"
+            },
+            {
+                "code": "FF_OTH_UNUSUAL_EXP",
+                "description": "Other Unusual Expense"
+            },
+            { "code": "FF_RD_EXP", "description": "Research & Development" },
+            {
+                "code": "FF_RESTRUCT_EXP",
+                "description": "Restructuring Charge"
+            },
+            { "code": "FF_SALES", "description": "Net Sales or Revenue" },
+            { "code": "FF_SALES_DOM", "description": "Domestic Sales" },
+            {
+                "code": "FF_STK_OPT_EXP",
+                "description": "Stock Option Compensation Expense - Net of Tax"
+            },
+            {
+                "code": "FF_STK_OPT_EXP_ADJ",
+                "description": "Stock Option Comp Expense - Adjustment to Net Income - Net of Tax"
+            },
+            {
+                "code": "FF_STK_OPT_EXP_COGS",
+                "description": "Stock-Based Compensation Included in COGS"
+            },
+            {
+                "code": "FF_STK_OPT_EXP_OTH",
+                "description": "Stock-Based Compensation Included in Other Expense"
+            },
+            {
+                "code": "FF_STK_OPT_EXP_RD",
+                "description": "Stock-Based Compensation Included in R&D"
+            },
+            {
+                "code": "FF_STK_OPT_EXP_SGA",
+                "description": "Stock-Based Compensation Included in SG&A"
+            },
+            { "code": "FF_US_GAAP_ADJ", "description": "U.S. GAAP Adjustment" },
+            {
+                "code": "FF_XORD",
+                "description": "Extraordinary Items (incl Accounting Change)"
+            },
+            {
+                "code": "FF_XORD_DISC",
+                "description": "Extraordinaries & Discontinued Operations"
+            },
+            {
+                "code": "FF_XORD_ITEMS",
+                "description": "Extraordinary Gains/Losses from Sale of Asset"
+            }
+        ],
+        "income_statement_per_share": [
+            {
+                "code": "FF_ACTG_CHG_PS",
+                "description": "Accounting Change Per Share - Cum Effect - Fiscal"
+            },
+            {
+                "code": "FF_EBIT_OPER_PS",
+                "description": "EBIT (Operating Income) Per Share"
+            },
+            { "code": "FF_EPS", "description": "Earnings Per Share" },
+            {
+                "code": "FF_EPS_AFT_XORD",
+                "description": "Earnings Per Share After Extraordinary Items"
+            },
+            {
+                "code": "FF_EPS_BASIC",
+                "description": "EPS - Basic - Before Extraordinaries"
+            },
+            {
+                "code": "FF_EPS_CONTIN_OPER",
+                "description": "EPS from Continuing Operations"
+            },
+            { "code": "FF_EPS_DIL", "description": "EPS - Fully Diluted" },
+            {
+                "code": "FF_EPS_DIL_AFT_XORD",
+                "description": "EPS - Diluted - After Extraordinaries"
+            },
+            {
+                "code": "FF_EPS_DIL_BEF_UNUSUAL",
+                "description": "EPS - Diluted - Before Unusual Expense"
+            },
+            {
+                "code": "FF_EPS_HEADLINE_UK",
+                "description": "Headline EPS - CFAUK Methodology"
+            },
+            {
+                "code": "FF_EPS_HEADLINE_UK_DIL",
+                "description": "Headline Diluted EPS - CFAUK Methodology"
+            },
+            {
+                "code": "FF_EPS_REPORTED",
+                "description": "Earnings Per Share - As Reported"
+            },
+            {
+                "code": "FF_EPS_SECS",
+                "description": "Earnings Per Share - Security"
+            },
+            {
+                "code": "FF_EPS_XORD",
+                "description": "Earnings Per Share incl. Extraordinary Items - Fiscal"
+            },
+            {
+                "code": "FF_OPER_INC_PS",
+                "description": "Operating Income Per Share"
+            },
+            {
+                "code": "FF_RESTRUCT_PS",
+                "description": "Restructuring Exp Per Share - Net of Tax - Fiscal Yr"
+            },
+            {
+                "code": "FF_RESTRUCT_PS_PTAX",
+                "description": "Restructuring Exp Per Share - Pretax"
+            },
+            { "code": "FF_SALES_PS", "description": "Sales Per Share" },
+            {
+                "code": "FF_XORD_PS",
+                "description": "Extraordinary Credit/Charge Per Share"
+            },
+            {
+                "code": "FF_XORD_PS_PTAX",
+                "description": "Extraordinary Credit/Charge Per Share - Pretax"
+            }
+        ],
+        "income_statement_supplemental": [
+            {
+                "code": "FF_UNREAL_GL_BIO_ASSETS",
+                "description": "Unrealized Gain/Loss - Biological Assets"
+            },
+            {
+                "code": "FF_UNREAL_GL_DERIV",
+                "description": "Unrealized Gain/Loss - Hedges/Derivatives"
+            },
+            {
+                "code": "FF_UNREAL_GL_INVEST",
+                "description": "Unrealized Gain/Loss - Investment Securities"
+            },
+            {
+                "code": "FF_UNREAL_GL_OTH",
+                "description": "Unrealized Gain/Loss - Other"
+            },
+            {
+                "code": "FF_UNREAL_GL_PROP",
+                "description": "Unrealized Gain/Loss - Investment Property"
+            }
+        ]
+    }
+}
