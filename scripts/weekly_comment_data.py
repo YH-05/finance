@@ -41,7 +41,6 @@ from typing import Any
 
 import pandas as pd
 import yfinance as yf
-
 from database.utils import (
     calculate_weekly_comment_period,
     format_date_japanese,

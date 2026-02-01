@@ -33,7 +33,6 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from pydantic import BaseModel, Field
-
 from rss.services.feed_reader import FeedReader
 from rss.utils.url_normalizer import normalize_url
 
