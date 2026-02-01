@@ -114,3 +114,24 @@ class SQLiteClient:
         """
         with self.connection() as conn:
             conn.executescript(script)
+
+    def get_tables(self) -> list[str]:
+        """Get list of table names in the database.
+
+        Returns
+        -------
+        list[str]
+            List of table names, sorted alphabetically
+
+        Examples
+        --------
+        >>> from database.db import SQLiteClient, get_db_path
+        >>> client = SQLiteClient(get_db_path("sqlite", "market"))
+        >>> tables = client.get_tables()
+        >>> print(tables)
+        ['daily_prices', 'stocks']
+        """
+        results = self.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+        )
+        return [row["name"] for row in results]

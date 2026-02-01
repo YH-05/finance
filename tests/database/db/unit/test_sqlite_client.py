@@ -93,3 +93,20 @@ class TestSQLiteClient:
         # Only the first insert should remain
         results = client.execute("SELECT COUNT(*) as cnt FROM test")
         assert results[0]["cnt"] == 1
+
+    def test_get_tables(self, sqlite_path: Path) -> None:
+        """Test get_tables method returns sorted table names."""
+        client = SQLiteClient(sqlite_path)
+        with client.connection() as conn:
+            conn.execute("CREATE TABLE zebra (id INTEGER)")
+            conn.execute("CREATE TABLE apple (id INTEGER)")
+            conn.execute("CREATE TABLE banana (id INTEGER)")
+
+        tables = client.get_tables()
+        assert tables == ["apple", "banana", "zebra"]
+
+    def test_get_tables_empty_database(self, sqlite_path: Path) -> None:
+        """Test get_tables returns empty list for empty database."""
+        client = SQLiteClient(sqlite_path)
+        tables = client.get_tables()
+        assert tables == []
