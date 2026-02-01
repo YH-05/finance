@@ -16,8 +16,9 @@ Examples
 >>> raise ConfigValidationError("Invalid value", field="timeout", value=-1)
 """
 
+from utils_core.logging import get_logger
+
 from ..core.errors import NewsError
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__, module="config.errors")
 

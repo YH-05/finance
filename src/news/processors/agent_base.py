@@ -28,10 +28,11 @@ import asyncio
 from abc import ABC, abstractmethod
 from typing import Any
 
+from utils_core.logging import get_logger
+
 from ..core.article import Article  # noqa: TC001
 from ..core.errors import NewsError
 from ..core.processor import ProcessorType  # noqa: TC001
-from ..utils.logging_config import get_logger
 
 # AIDEV-NOTE: Lazy import for claude_agent_sdk to allow mocking in tests
 # Import at module level for easier patching

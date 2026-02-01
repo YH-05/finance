@@ -476,7 +476,7 @@ class TestSetupLogging:
         setup_logging(verbose=False, log_dir=log_dir)
 
         # Get a logger and log a message
-        from news.utils.logging_config import get_logger
+        from utils_core.logging import get_logger
 
         test_logger = get_logger("test_console_output")
         test_logger.info("Test console message")
@@ -501,14 +501,20 @@ class TestSetupLogging:
     def test_正常系_verbose未指定でINFOレベルログが出力される(
         self, tmp_path: Path
     ) -> None:
-        """Verify default log level is INFO without --verbose."""
+        """Verify default log level is DEBUG without --verbose.
+
+        Note: The centralized utils_core.logging module sets root logger to DEBUG
+        to allow file output to capture all levels. Console handler level controls
+        what appears on the console (INFO when not verbose).
+        """
         from news.scripts.finance_news_workflow import setup_logging
 
         log_dir = tmp_path / "logs"
         setup_logging(verbose=False, log_dir=log_dir)
 
-        # Verify root logger level is INFO
-        assert logging.root.level == logging.INFO
+        # Root logger is set to DEBUG to allow file output to capture all levels
+        # Console handler level controls what appears on the console
+        assert logging.root.level == logging.DEBUG
 
     def test_正常系_ログディレクトリが存在しなくても作成される(
         self, tmp_path: Path

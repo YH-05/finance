@@ -18,7 +18,7 @@ Examples
 >>> raise RateLimitError(source="yfinance", retry_after=60.0)
 """
 
-from ..utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="errors")
 

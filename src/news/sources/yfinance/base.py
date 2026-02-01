@@ -37,6 +37,8 @@ from typing import Any, TypeVar
 from pydantic import HttpUrl
 from pydantic import ValidationError as PydanticValidationError
 
+from utils_core.logging import get_logger
+
 from ...core.article import (
     Article,
     ArticleSource,
@@ -46,7 +48,6 @@ from ...core.article import (
 )
 from ...core.errors import SourceError, ValidationError
 from ...core.result import RetryConfig
-from ...utils.logging_config import get_logger
 
 logger = get_logger(__name__, module="yfinance.base")
 

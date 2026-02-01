@@ -32,8 +32,9 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
+from utils_core.logging import get_logger
+
 from ..core.article import Article  # noqa: TC001 - needed at runtime for Pydantic
-from ..utils.logging_config import get_logger
 
 if TYPE_CHECKING:
     from ..core.processor import ProcessorProtocol

@@ -43,8 +43,8 @@ from typing import TYPE_CHECKING
 
 from news.config.workflow import load_config
 from news.orchestrator import NewsWorkflowOrchestrator
-from news.utils.logging_config import get_logger
-from news.utils.logging_config import setup_logging as _setup_logging
+from utils_core.logging import get_logger
+from utils_core.logging import setup_logging as _setup_logging
 
 if TYPE_CHECKING:
     from news.models import WorkflowResult
@@ -107,7 +107,7 @@ def setup_logging(
     date_str = datetime.now().strftime("%Y-%m-%d")
     log_file = log_dir / f"news-workflow-{date_str}.log"
 
-    # Setup logging using the news.utils.logging_config module
+    # Setup logging using the utils_core.logging module
     _setup_logging(
         level=console_level,
         file_level=file_level,
