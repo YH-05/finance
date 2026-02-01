@@ -22,7 +22,7 @@ repos:
     rev: v0.9.9
     hooks:
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix, --config=pyproject.toml]
+        args: [--fix, --config=pyproject.toml]
         exclude: ^(notebook_sample|src_sample)/
       - id: ruff-format
         exclude: ^(notebook_sample|src_sample)/
