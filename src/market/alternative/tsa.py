@@ -177,7 +177,7 @@ class TSAPassengerDataCollector:
                 )
                 # 新しいデータのうち、DBに存在しない日付の行のみを抽出
                 df["Date_str"] = df["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
-                df_to_add = df[~df["Date_str"].isin(existing_dates)].drop(
+                df_to_add = df[~df["Date_str"].isin(list(existing_dates))].drop(
                     columns=["Date_str"]
                 )
             else:
@@ -248,8 +248,9 @@ class TSAPassengerDataCollector:
         handler2, label2 = ax_sub.get_legend_handles_labels()
         ax.legend(handler1 + handler2, label1 + label2, loc="lower right")
         # 服軸に自動で作成された判例を削除
-        if ax_sub.get_legend() is not None:
-            ax_sub.get_legend().remove()  # ty:ignore[possibly-missing-attribute]
+        legend = ax_sub.get_legend()
+        if legend is not None:
+            legend.remove()
 
         ax_sub.set_ylim(-100, 100)
         ax_sub.set_ylabel("YOY (%)")

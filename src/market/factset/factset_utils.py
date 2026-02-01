@@ -10,7 +10,7 @@ import warnings
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 import openpyxl
@@ -19,8 +19,9 @@ import yaml
 from dotenv import load_dotenv
 from tqdm import tqdm
 
-import src.database_utils as db_utils
-import src.ROIC_make_data_files_ver2 as roic_utils
+# Legacy imports - these modules have been moved/removed
+# import src.database_utils as db_utils
+# import src.ROIC_make_data_files_ver2 as roic_utils
 
 warnings.simplefilter("ignore")
 
@@ -89,13 +90,20 @@ def load_bpm_and_export_factset_code_file(
 
     # フォルダ
     load_dotenv()
-    BPM_DATA_DIR = Path(
-        os.environ.get("BPM_DATA_DIR")
-    )  # ty:ignore[invalid-argument-type]
-    BPM_SRC_DIR = Path(
-        os.environ.get("BPM_SRC_DIR")
-    )  # ty:ignore[invalid-argument-type]
-    src_dir = Path(os.environ.get("SRC_DIR"))
+    bpm_data_dir = os.environ.get("BPM_DATA_DIR")
+    if bpm_data_dir is None:
+        raise ValueError("BPM_DATA_DIR environment variable not set")
+    BPM_DATA_DIR = Path(bpm_data_dir)
+
+    bpm_src_dir = os.environ.get("BPM_SRC_DIR")
+    if bpm_src_dir is None:
+        raise ValueError("BPM_SRC_DIR environment variable not set")
+    BPM_SRC_DIR = Path(bpm_src_dir)
+
+    src_dir_str = os.environ.get("SRC_DIR")
+    if src_dir_str is None:
+        raise ValueError("SRC_DIR environment variable not set")
+    src_dir = Path(src_dir_str)
 
     with open(src_dir / "BPM_Index-code-map.yaml", encoding="utf-8") as f:
         bpm_code_map = yaml.safe_load(f)
@@ -279,13 +287,13 @@ def unify_factset_code_data(split_save_mode: bool = False):
 
         df_code_jp_missing["P_SYMBOL"] = (
             df_code_jp_missing["P_SYMBOL_SEDOL"]
-            .fillna(df_code_jp_missing["P_SYMBOL_CUSIP"])
-            .fillna(df_code_jp_missing["P_SYMBOL_ISIN"])
+            .fillna(df_code_jp_missing["P_SYMBOL_CUSIP"])  # type: ignore[arg-type]
+            .fillna(df_code_jp_missing["P_SYMBOL_ISIN"])  # type: ignore[arg-type]
         )
         df_code_jp_missing["FG_COMPANY_NAME"] = (
             df_code_jp_missing["FG_COMPANY_NAME_SEDOL"]
-            .fillna(df_code_jp_missing["FG_COMPANY_NAME_CUSIP"])
-            .fillna(df_code_jp_missing["FG_COMPANY_NAME_ISIN"])
+            .fillna(df_code_jp_missing["FG_COMPANY_NAME_CUSIP"])  # type: ignore[arg-type]
+            .fillna(df_code_jp_missing["FG_COMPANY_NAME_ISIN"])  # type: ignore[arg-type]
         )
 
         # concat
@@ -816,7 +824,7 @@ def store_active_returns_batch_serial_write(
     benchmark_ticker: str,
     batch_size: int = 10000,
     verbose: bool = True,
-) -> dict[str, any]:
+) -> dict[str, Any]:
     """
     アクティブリターンをバッチ保存(直列書き込み版・ロック完全回避)
 
@@ -1476,7 +1484,7 @@ def store_active_returns_batch(
     batch_size: int = 10000,
     max_workers: int | None = None,
     verbose: bool = True,
-) -> dict[str, any]:
+) -> dict[str, Any]:
     """
     アクティブリターンをバッチ保存(最適化版)
 
@@ -1880,7 +1888,7 @@ def process_ranking_factor_worker(
         # 内部関数で処理を共通化
         def _add_metric_to_results(
             metric_type: str,
-            calculation_func: callable,
+            calculation_func: Callable[..., Any],
         ):
             """計算を実行し、結果リストに追加するヘルパー関数。"""
             # 🔧 修正箇所: 関数のシグネチャを検査

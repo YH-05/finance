@@ -211,8 +211,8 @@ class FredDataLoader:
                 # 新規データが存在する場合のみ処理を実行
                 if not series.empty:
                     df = pd.DataFrame(
-                        series, columns=["value"]
-                    ).reset_index()  # ty:ignore[invalid-argument-type]
+                        series, columns=["value"]  # type: ignore[arg-type]
+                    ).reset_index()
                     df.columns = ["date", series_id]
                     df["date"] = pd.to_datetime(df["date"])
 
