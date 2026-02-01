@@ -77,7 +77,13 @@ def get_task(task_id: TaskId) -> Nullable[Task]:
 
 ## 関数設計
 
-### 単一責務の原則
+### SOLID原則
+
+Python 3.12+ では、SOLID原則を以下のパターンで実装します。
+
+#### S - 単一責任の原則 (Single Responsibility Principle)
+
+**原則**: 1つのクラス/関数は1つの責務のみを持つべき。
 
 ```python
 # 良い例: 単一の責務
@@ -102,6 +108,232 @@ def calculate_and_format_price_with_discount(
     total = sum(item.price * item.quantity for item in items)
     discounted = total * (1 - discount_rate)
     return f"¥{discounted:,.0f}"
+```
+
+**関数の長さガイドライン**:
+
+| 長さ | 評価 | アクション |
+|------|------|-----------|
+| ~20行 | 理想的 | そのまま |
+| 20-50行 | 許容 | 可能なら分割検討 |
+| 50-100行 | 要注意 | 分割を推奨 |
+| 100行~ | 問題あり | 必ず分割 |
+
+#### O - 開放閉鎖の原則 (Open-Closed Principle)
+
+**原則**: 拡張に対して開き、修正に対して閉じる。
+
+```python
+# 悪い例: 新しい支払い方法を追加するたびに修正が必要
+def process_payment(payment_type: str, amount: float) -> None:
+    if payment_type == "credit_card":
+        # クレジットカード処理
+        ...
+    elif payment_type == "bank_transfer":
+        # 銀行振込処理
+        ...
+    # 新しい支払い方法を追加するたびに elif を追加（修正が必要）
+
+# 良い例: Strategy パターンで拡張に開く
+from typing import Protocol
+
+class PaymentProcessor(Protocol):
+    """支払い処理のインターフェース。"""
+    def process(self, amount: float) -> None: ...
+
+class CreditCardProcessor:
+    def process(self, amount: float) -> None:
+        # クレジットカード処理
+        ...
+
+class BankTransferProcessor:
+    def process(self, amount: float) -> None:
+        # 銀行振込処理
+        ...
+
+def process_payment(processor: PaymentProcessor, amount: float) -> None:
+    """支払いを処理する（新しい支払い方法の追加は修正不要）。"""
+    processor.process(amount)
+```
+
+#### L - リスコフの置換原則 (Liskov Substitution Principle)
+
+**原則**: サブクラスは基底クラスを安全に置換できるべき。
+
+```python
+# 悪い例: サブクラスが基底クラスの契約を破る
+class Rectangle:
+    def __init__(self, width: float, height: float) -> None:
+        self.width = width
+        self.height = height
+
+    def set_width(self, width: float) -> None:
+        self.width = width
+
+    def area(self) -> float:
+        return self.width * self.height
+
+class Square(Rectangle):
+    """正方形（縦横が同じ）だが、set_width で契約を破る。"""
+    def set_width(self, width: float) -> None:
+        self.width = width
+        self.height = width  # 予期しない副作用
+
+# 良い例: 基底クラスの契約を保つ
+from typing import Protocol
+
+class Shape(Protocol):
+    """図形のインターフェース。"""
+    def area(self) -> float: ...
+
+class Rectangle:
+    def __init__(self, width: float, height: float) -> None:
+        self._width = width
+        self._height = height
+
+    def area(self) -> float:
+        return self._width * self._height
+
+class Square:
+    def __init__(self, side: float) -> None:
+        self._side = side
+
+    def area(self) -> float:
+        return self._side ** 2
+
+# どちらも Shape として扱えるが、異なる実装
+```
+
+#### I - インターフェース分離の原則 (Interface Segregation Principle)
+
+**原則**: クライアントに不要なメソッドを強制しない。
+
+```python
+# 悪い例: 不要なメソッドを実装させられる
+from typing import Protocol
+
+class Worker(Protocol):
+    def work(self) -> None: ...
+    def eat(self) -> None: ...
+    def sleep(self) -> None: ...
+
+class Robot:
+    """ロボットは eat() や sleep() を実装できない。"""
+    def work(self) -> None:
+        ...
+
+    def eat(self) -> None:
+        raise NotImplementedError("Robot can't eat")  # 不要なメソッド
+
+    def sleep(self) -> None:
+        raise NotImplementedError("Robot can't sleep")  # 不要なメソッド
+
+# 良い例: インターフェースを分割
+class Workable(Protocol):
+    def work(self) -> None: ...
+
+class Eatable(Protocol):
+    def eat(self) -> None: ...
+
+class Sleepable(Protocol):
+    def sleep(self) -> None: ...
+
+class Robot:
+    """ロボットは Workable のみ実装。"""
+    def work(self) -> None:
+        ...
+
+class Human:
+    """人間は全て実装。"""
+    def work(self) -> None:
+        ...
+
+    def eat(self) -> None:
+        ...
+
+    def sleep(self) -> None:
+        ...
+```
+
+#### D - 依存性逆転の原則 (Dependency Inversion Principle)
+
+**原則**: 高レベルモジュールは低レベルモジュールに依存せず、抽象に依存すべき。
+
+```python
+# 悪い例: 具体的な実装に依存
+class MySQLDatabase:
+    def save(self, data: str) -> None:
+        # MySQL固有の実装
+        ...
+
+class UserService:
+    def __init__(self) -> None:
+        self.db = MySQLDatabase()  # 具体的な実装に依存
+
+    def create_user(self, name: str) -> None:
+        self.db.save(name)
+
+# 良い例: 抽象（Protocol）に依存
+from typing import Protocol
+
+class Database(Protocol):
+    """データベースのインターフェース。"""
+    def save(self, data: str) -> None: ...
+
+class MySQLDatabase:
+    def save(self, data: str) -> None:
+        # MySQL固有の実装
+        ...
+
+class PostgreSQLDatabase:
+    def save(self, data: str) -> None:
+        # PostgreSQL固有の実装
+        ...
+
+class UserService:
+    def __init__(self, db: Database) -> None:
+        self.db = db  # 抽象に依存（DI: Dependency Injection）
+
+    def create_user(self, name: str) -> None:
+        self.db.save(name)
+
+# 使用時に具体的な実装を注入
+user_service = UserService(MySQLDatabase())  # または PostgreSQLDatabase()
+```
+
+### DRY原則 (Don't Repeat Yourself)
+
+**原則**: 同じコードを繰り返さない。
+
+```python
+# 悪い例: コードの重複
+def format_user_name(user: User) -> str:
+    if user.middle_name:
+        return f"{user.first_name} {user.middle_name} {user.last_name}"
+    return f"{user.first_name} {user.last_name}"
+
+def format_author_name(author: Author) -> str:
+    if author.middle_name:
+        return f"{author.first_name} {author.middle_name} {author.last_name}"
+    return f"{author.first_name} {author.last_name}"
+
+# 良い例: 共通化
+from typing import Protocol
+
+class NamedEntity(Protocol):
+    first_name: str
+    middle_name: str | None
+    last_name: str
+
+def format_full_name(entity: NamedEntity) -> str:
+    """フルネームをフォーマットする。"""
+    if entity.middle_name:
+        return f"{entity.first_name} {entity.middle_name} {entity.last_name}"
+    return f"{entity.first_name} {entity.last_name}"
+
+# User, Author どちらも使用可能
+format_full_name(user)
+format_full_name(author)
 ```
 
 ### パラメータ数の管理

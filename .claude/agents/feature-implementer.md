@@ -115,7 +115,33 @@ class MyDataStructure:
 
 #### 🔵 Refactor: 整理
 
-**quality-checker サブエージェント（--quick モード）** を使用:
+**SOLID原則に基づくリファクタリング**を実施し、**quality-checker サブエージェント（--quick モード）** で検証:
+
+##### SOLID原則ガイド
+
+実装コードを以下の観点で整理してください:
+
+| 原則 | チェック項目 | 悪い例 → 良い例 |
+|------|-------------|----------------|
+| **S - 単一責任** | 1関数=1責務、関数長20行以内を推奨 | `calculate_and_save()` → `calculate()` + `save()` |
+| **O - 開放閉鎖** | 拡張に開き、修正に閉じる | if文の連鎖 → Strategy/Factory パターン |
+| **L - リスコフ置換** | 基底クラスを安全に置換可能 | サブクラスが基底の契約を破らない |
+| **I - IF分離** | 必要なメソッドだけ実装 | 使わないメソッドを強制しない |
+| **D - 依存性逆転** | 抽象に依存、具体に依存しない | `Protocol` や抽象基底クラスを活用 |
+
+**api_research 活用による SOLID 原則適用**:
+
+`api_research` の project_patterns を参照し、既存実装のパターンに従ってください:
+
+```yaml
+# api_research から参照すべき項目
+project_patterns:
+  existing_usage_files: プロジェクト内の既存実装パターン
+  error_handling: カスタム例外クラス（DIP: 抽象に依存）
+  naming_conventions: 命名規則（SRP: 責務の明確化）
+```
+
+##### quality-checker 実行
 
 ```yaml
 subagent_type: "quality-checker"
@@ -127,8 +153,9 @@ prompt: |
 ```
 
 **ポイント**:
-- 重複コードの除去
-- 命名の改善
+- 重複コードの除去（DRY原則）
+- 命名の改善（SRP: 責務の明確化）
+- 関数分割（SRP: 1関数=1責務）
 - quality-checker(--quick) でパスを確認
 
 ### ステップ 3: Issue のチェックボックス更新
