@@ -5,8 +5,8 @@ Tickerだけでなく、SEDOL, CUSIP, ISIN, FIGIなどの様々な識別子に�
 
 import datetime
 import logging
-from pathlib import Path
 import sqlite3
+from pathlib import Path
 from typing import Any
 
 import blpapi
@@ -15,7 +15,6 @@ import pandas as pd
 import yaml
 
 from src.configuration import Config
-
 
 # ロギング設定
 logging.basicConfig(
@@ -467,9 +466,11 @@ class BlpapiFetcher:
                         request.append("securities", sec)  # type: ignore
 
                     request_fields = fields.copy()
-                    if include_announcement_date:
-                        if "ANNOUNCEMENT_DT" not in request_fields:
-                            request_fields.append("ANNOUNCEMENT_DT")
+                    if (
+                        include_announcement_date
+                        and "ANNOUNCEMENT_DT" not in request_fields
+                    ):
+                        request_fields.append("ANNOUNCEMENT_DT")
 
                     for field in request_fields:
                         request.append("fields", field)  # type: ignore

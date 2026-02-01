@@ -68,3 +68,4 @@ notebook/__marimo__/
 
 # RSS feed data (exclude UUID directories, keep feeds.json)
 data/raw/rss/*/
+articles/

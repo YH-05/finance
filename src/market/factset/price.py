@@ -5,8 +5,8 @@ Factsetデータのprice系データ
 """
 
 import logging
-from pathlib import Path
 import sqlite3
+from pathlib import Path
 
 import pandas as pd
 from pandas import DataFrame

@@ -44,7 +44,7 @@ def load_fred_series_id_json() -> dict:
     config = Config.from_env()
     json_path = config.fred_series_id_json
     try:
-        response = requests.get(json_path)
+        response = requests.get(json_path, timeout=30)
         response.raise_for_status()  # HTTPエラーを検出
         series_data = response.json()
     except Exception as e:
@@ -230,7 +230,7 @@ def plot_us_interest_rates_and_spread(
             row=2,
             col=1,
         )
-        fig.add_hline(y=0, line=dict(color="black", width=1, dash="dash"), row=2, col=1)
+        fig.add_hline(y=0, line=dict(color="black", width=1, dash="dash"), row=2, col=1)  # type: ignore[arg-type]
 
     # 6. サブプロット3: 10Y-2Y スプレッド
     if "T10Y2Y" in series_id_spread:
@@ -249,7 +249,7 @@ def plot_us_interest_rates_and_spread(
             row=3,
             col=1,
         )
-        fig.add_hline(y=0, line=dict(color="black", width=1, dash="dash"), row=3, col=1)
+        fig.add_hline(y=0, line=dict(color="black", width=1, dash="dash"), row=3, col=1)  # type: ignore[arg-type]
 
     # 7. レイアウトの更新
     fig.update_layout(
@@ -424,7 +424,7 @@ def analyze_yield_curve_pca(df_yield: pd.DataFrame, n_components: int = 3):
     df_pca = pd.DataFrame(
         principal_components_aligned,
         index=df_yield_diff.index,
-        columns=cols,  # ty:ignore[invalid-argument-type]
+        columns=cols,  # type: ignore[arg-type]
     )
 
     return df_pca, pca
@@ -448,8 +448,12 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
     # loadings(top3)
     df_loadings = pd.DataFrame(
         pca.components_[:3, :],  # 上位3成分のみ抽出
-        columns=df_yield.columns,
-        index=["PC1 (Level)", "PC2 (Slope)", "PC3 (Curvature)"],  # ty:ignore[invalid-argument-type]
+        columns=df_yield.columns,  # type: ignore[arg-type]
+        index=[  # type: ignore[arg-type]
+            "PC1 (Level)",
+            "PC2 (Slope)",
+            "PC3 (Curvature)",
+        ],
     )
 
     # 主成分スコア（time series, top3 components）
@@ -457,7 +461,7 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
     pc_scores = pca.transform(df_yield_diff)[:, :3]
     df_pca = pd.DataFrame(
         pc_scores,
-        columns=[f"PC{i + 1}" for i in range(3)],  # ty:ignore[invalid-argument-type]
+        columns=[f"PC{i + 1}" for i in range(3)],  # type: ignore[arg-type]
         index=df_yield_diff.index,
     )
 

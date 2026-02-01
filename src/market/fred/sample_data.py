@@ -19,7 +19,7 @@ from configuration.file_path import Config
 
 def load_fred_series_id_json(github_url: str | None = None) -> dict:
     github_url = github_url if github_url else Config.from_env().fred_series_id_json
-    data = requests.get(url=github_url, verify=False).json()
+    data = requests.get(url=github_url, timeout=30).json()
     return data
 
 
@@ -210,7 +210,10 @@ class FredDataLoader:
 
                 # 新規データが存在する場合のみ処理を実行
                 if not series.empty:
-                    df = pd.DataFrame(series, columns=["value"]).reset_index()  # ty:ignore[invalid-argument-type]
+                    df = pd.DataFrame(
+                        series,
+                        columns=["value"],  # type: ignore[arg-type]
+                    ).reset_index()
                     df.columns = ["date", series_id]
                     df["date"] = pd.to_datetime(df["date"])
 

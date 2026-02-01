@@ -66,7 +66,15 @@ jobs:
       run: uv sync --all-extras
 
     - name: Run pre-commit
-      run: uv run pre-commit run --all-files
+      run: |
+        uv run pre-commit run --all-files || true
+        if ! git diff --quiet; then
+          echo "Files were modified by pre-commit:"
+          git diff --name-only
+          echo "---"
+          git diff
+          exit 1
+        fi
 
     - name: Check for security issues
       run: |

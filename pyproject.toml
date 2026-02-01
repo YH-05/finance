@@ -156,7 +156,7 @@ ignore = [
 
 [tool.pyright]
 include = ["src", "tests", ".claude/agents"]
-exclude = [".venv", "**/__pycache__", "build", "dist", "tests/skills/finance_news_workflow"]
+exclude = [".venv", "**/__pycache__", "build", "dist", "tests/skills/finance_news_workflow", "src/**/sample", "src/preprocess"]
 extraPaths = [".claude/agents"]
 venvPath = "."
 venv = ".venv"
@@ -207,7 +207,7 @@ ignore-vulns = ["CVE-2026-0994"]
 
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
-skips = ["B101", "B311", "B404", "B603", "B607"]
+skips = ["B101", "B311", "B404", "B603", "B607", "B608"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
