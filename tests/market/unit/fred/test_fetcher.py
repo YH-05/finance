@@ -5,6 +5,7 @@ FRED (Federal Reserve Economic Data) API との連携機能をテストする。
 """
 
 from datetime import datetime
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
@@ -566,3 +567,103 @@ class TestPresets:
         # 内容は同じだが、force_reloadで再読み込みされる
         assert presets1 is not presets2
         assert presets1 == presets2
+
+
+# =============================================================================
+# _get_default_presets_path のテスト
+# =============================================================================
+
+
+class TestGetDefaultPresetsPath:
+    """_get_default_presets_path 関数のテスト。"""
+
+    @pytest.fixture(autouse=True)
+    def setup_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """各テスト前に環境変数をクリア。"""
+        monkeypatch.delenv("FRED_SERIES_ID_JSON", raising=False)
+
+    def test_正常系_環境変数が設定されている場合はその値を返す(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """FRED_SERIES_ID_JSON 環境変数が設定されている場合、その値を返すことを確認。"""
+        from market.fred.fetcher import _get_default_presets_path
+
+        # 環境変数に一時ファイルのパスを設定
+        env_path = tmp_path / "custom_fred_series.json"
+        env_path.write_text('{"test": {}}', encoding="utf-8")
+        monkeypatch.setenv("FRED_SERIES_ID_JSON", str(env_path))
+
+        result = _get_default_presets_path()
+
+        assert result == env_path
+
+    def test_正常系_カレントディレクトリに設定ファイルがある場合はそのパスを返す(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """カレントディレクトリからの相対パスに設定ファイルがある場合、そのパスを返すことを確認。"""
+        from market.fred.fetcher import _get_default_presets_path
+
+        # カレントディレクトリを一時ディレクトリに変更
+        monkeypatch.chdir(tmp_path)
+
+        # カレントディレクトリに設定ファイルを作成
+        config_dir = tmp_path / "data" / "config"
+        config_dir.mkdir(parents=True)
+        config_file = config_dir / "fred_series.json"
+        config_file.write_text('{"test": {}}', encoding="utf-8")
+
+        result = _get_default_presets_path()
+
+        assert result == config_file
+
+    def test_正常系_フォールバックとしてファイルベースのパスを返す(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """環境変数もカレントディレクトリの設定もない場合、__file__ ベースのパスを返すことを確認。"""
+        from market.fred.fetcher import DEFAULT_PRESETS_PATH, _get_default_presets_path
+
+        # カレントディレクトリを設定ファイルがない一時ディレクトリに変更
+        monkeypatch.chdir(tmp_path)
+
+        result = _get_default_presets_path()
+
+        # __file__ ベースのパスを返す
+        assert result == DEFAULT_PRESETS_PATH
+
+    def test_正常系_環境変数が優先される(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """環境変数とカレントディレクトリの両方に設定がある場合、環境変数が優先されることを確認。"""
+        from market.fred.fetcher import _get_default_presets_path
+
+        # カレントディレクトリを一時ディレクトリに変更
+        monkeypatch.chdir(tmp_path)
+
+        # カレントディレクトリに設定ファイルを作成
+        config_dir = tmp_path / "data" / "config"
+        config_dir.mkdir(parents=True)
+        cwd_config_file = config_dir / "fred_series.json"
+        cwd_config_file.write_text('{"cwd": {}}', encoding="utf-8")
+
+        # 環境変数に別のパスを設定
+        env_path = tmp_path / "env_fred_series.json"
+        env_path.write_text('{"env": {}}', encoding="utf-8")
+        monkeypatch.setenv("FRED_SERIES_ID_JSON", str(env_path))
+
+        result = _get_default_presets_path()
+
+        # 環境変数の値が優先される
+        assert result == env_path
+
+    def test_正常系_戻り値はPathオブジェクト(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """戻り値が Path オブジェクトであることを確認。"""
+        from market.fred.fetcher import _get_default_presets_path
+
+        # カレントディレクトリを設定ファイルがない一時ディレクトリに変更
+        monkeypatch.chdir(tmp_path)
+
+        result = _get_default_presets_path()
+
+        assert isinstance(result, Path)
