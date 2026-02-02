@@ -13,11 +13,11 @@ from typing import Any, ClassVar
 
 import pandas as pd
 import requests
-from dotenv import load_dotenv
 from fredapi import Fred
 
 from market.errors import FREDFetchError, FREDValidationError
 from utils_core.logging import get_logger
+from utils_core.settings import load_project_env
 
 from .base_fetcher import BaseDataFetcher
 from .cache import SQLiteCache, generate_cache_key
@@ -104,7 +104,7 @@ class FREDFetcher(BaseDataFetcher):
     ) -> None:
         # Load .env from project root before reading environment variables
         # Use override=False so explicit environment variables take precedence
-        load_dotenv()
+        load_project_env()
 
         self._api_key = api_key or os.environ.get(FRED_API_KEY_ENV)
         self._cache = cache
@@ -655,7 +655,7 @@ class FREDFetcher(BaseDataFetcher):
         >>> FREDFetcher.load_presets("/custom/path/fred_series.json")
         >>> FREDFetcher.load_presets("https://example.com/fred_series.json")
         """
-        load_dotenv()
+        load_project_env()
 
         # Determine source: argument > env var > local default > URL default
         source = config_path

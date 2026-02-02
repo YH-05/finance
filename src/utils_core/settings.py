@@ -8,6 +8,7 @@ Features
 - 型変換とバリデーション
 - デフォルト値の提供
 - 必須環境変数のチェック
+- プロジェクトルートの .env ファイルを明示的に読み込み
 
 Environment Variables
 ---------------------
@@ -27,15 +28,51 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import TYPE_CHECKING, Literal
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 from dotenv import load_dotenv
 
 if TYPE_CHECKING:
     from .types import LogFormat, LogLevel
 
+# Project root directory (finance/)
+PROJECT_ROOT: Path = Path(__file__).parent.parent.parent
+
+# Path to .env file at project root
+ENV_FILE_PATH: Path = PROJECT_ROOT / ".env"
+
+
+def load_project_env(*, override: bool = False) -> bool:
+    """Load environment variables from project root .env file.
+
+    プロジェクトルート（finance/）の .env ファイルから環境変数を読み込む。
+    カレントディレクトリに依存しない明示的なパス指定を行う。
+
+    Parameters
+    ----------
+    override : bool
+        True の場合、既存の環境変数を上書きする。
+        デフォルトは False（既存の環境変数を優先）。
+
+    Returns
+    -------
+    bool
+        .env ファイルが見つかり読み込まれた場合は True、
+        ファイルが存在しない場合は False。
+
+    Examples
+    --------
+    >>> load_project_env()
+    True
+    >>> load_project_env(override=True)  # 既存の環境変数を上書き
+    True
+    """
+    return load_dotenv(dotenv_path=ENV_FILE_PATH, override=override)
+
+
 # Load .env file once at module import
-load_dotenv(override=True)
+load_project_env(override=True)
 
 
 @lru_cache(maxsize=1)
@@ -152,3 +189,15 @@ def get_project_env() -> str:
         プロジェクト環境 (development, production など)
     """
     return os.environ.get("PROJECT_ENV", "development")
+
+
+__all__ = [
+    "ENV_FILE_PATH",
+    "PROJECT_ROOT",
+    "get_fred_api_key",
+    "get_log_dir",
+    "get_log_format",
+    "get_log_level",
+    "get_project_env",
+    "load_project_env",
+]

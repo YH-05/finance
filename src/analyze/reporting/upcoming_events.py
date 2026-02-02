@@ -35,10 +35,10 @@ from typing import Any, Literal
 import httpx
 import pandas as pd
 import yfinance as yf
-from dotenv import load_dotenv
 from pandas import DataFrame, Timestamp
 
 from utils_core.logging import get_logger
+from utils_core.settings import load_project_env
 
 logger = get_logger(__name__, module="upcoming_events")
 
@@ -661,7 +661,7 @@ def get_upcoming_economic_releases(
     FRED API キーは環境変数 FRED_API_KEY から取得する。
     API キーがない場合やエラー時は空リストを返す。
     """
-    load_dotenv()
+    load_project_env()
     api_key = os.environ.get(FRED_API_KEY_ENV)
 
     if not api_key:

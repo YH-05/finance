@@ -10,11 +10,11 @@ from pathlib import Path
 
 import pandas as pd
 import plotly.graph_objects as go
-from dotenv import load_dotenv
 from pandas import DataFrame
 
 from analyze.reporting.market_report_utils import MarketPerformanceAnalyzer
 from market.fred import HistoricalCache
+from utils_core.settings import load_project_env
 
 
 class DollarsIndexAndMetalsAnalyzer:
@@ -27,7 +27,7 @@ class DollarsIndexAndMetalsAnalyzer:
         DollarsIndexAndMetalsAnalyzerクラスを初期化する。
         必要なデータプロセッサを初期化し、データをロードしてリターンを計算する。
         """
-        load_dotenv()
+        load_project_env()
         fred_dir = os.environ.get("FRED_DIR")
         if fred_dir is None:
             raise ValueError("FRED_DIR environment variable not set")

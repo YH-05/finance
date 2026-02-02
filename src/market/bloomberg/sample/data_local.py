@@ -6,9 +6,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import yaml
-from dotenv import load_dotenv
 
 from src.configuration import Config
+from utils_core.settings import load_project_env
 
 
 class BloombergTickers:
@@ -45,7 +45,7 @@ class BloombergDataProcessor:
         BloombergDataProcessorクラスを初期化する。
         環境変数からディレクトリパスを読み込み、必要なファイルやデータベースの存在を確認する。
         """
-        load_dotenv()
+        load_project_env()
         self.config = Config.from_env()
         self.data_dir = self.config.bloomberg_root_dir
         self.sp_price_excel = self.data_dir / "SP500-Indices.xlsx"

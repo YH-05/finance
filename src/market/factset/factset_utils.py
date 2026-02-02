@@ -17,8 +17,9 @@ import numpy as np
 import openpyxl
 import pandas as pd
 import yaml
-from dotenv import load_dotenv
 from tqdm import tqdm
+
+from utils_core.settings import load_project_env
 
 # Legacy imports - these modules have been moved/removed
 # import src.database_utils as db_utils
@@ -153,7 +154,7 @@ def load_bpm_and_export_factset_code_file(
     """
 
     # フォルダ
-    load_dotenv()
+    load_project_env()
     bpm_data_dir = os.environ.get("BPM_DATA_DIR")
     if bpm_data_dir is None:
         raise ValueError("BPM_DATA_DIR environment variable not set")
@@ -261,7 +262,7 @@ def unify_factset_code_data(split_save_mode: bool = False):
     """
 
     # フォルダ
-    load_dotenv()
+    load_project_env()
     BPM_DATA_DIR = Path(os.environ.get("BPM_DATA_DIR"))  # type: ignore
     FACTSET_ROOT_DIR = Path(os.environ.get("FACTSET_ROOT_DIR"))  # type: ignore
 
@@ -430,7 +431,7 @@ def create_factset_symbol_list_function(universe_code: str) -> str:
     universe_code: BPMのインデックスコード
     """
 
-    load_dotenv()
+    load_project_env()
     factset_root_dir = Path(os.environ.get("FACTSET_ROOT_DIR"))  # type: ignore
     symbol_list = (
         pd.read_parquet(
@@ -479,7 +480,7 @@ def implement_factset_formulas(universe_code: str, year_range: str = "20AY") -> 
     """
 
     # フォルダ
-    load_dotenv()
+    load_project_env()
     FACTSET_ROOT_DIR = Path(os.environ.get("FACTSET_ROOT_DIR"))  # type: ignore
     FACTSET_FINANCIALS_DIR = Path(os.environ.get("FACTSET_FINANCIALS_DIR"))  # type: ignore
     #  read factset formula items

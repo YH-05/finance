@@ -16,16 +16,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import seaborn as sns
-from dotenv import load_dotenv
 from matplotlib import gridspec
 from matplotlib.ticker import MultipleLocator, PercentFormatter
 from plotly.subplots import make_subplots
 from sklearn.decomposition import PCA
 
-from utils_core.settings import get_fred_api_key
+from utils_core.settings import get_fred_api_key, load_project_env
 
 # 環境変数を読み込み
-load_dotenv()
+load_project_env()
 FRED_API = os.getenv("FRED_API_KEY")
 
 

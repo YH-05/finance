@@ -12,10 +12,10 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from dotenv import load_dotenv
 
 from market.errors import FREDFetchError
 from utils_core.logging import get_logger
+from utils_core.settings import load_project_env
 
 from .fetcher import FREDFetcher
 from .types import FetchOptions
@@ -40,7 +40,7 @@ def get_default_cache_path() -> Path:
     Path
         Default cache directory path
     """
-    load_dotenv()
+    load_project_env()
     env_path = os.environ.get(FRED_HISTORICAL_CACHE_DIR_ENV)
     if env_path:
         return Path(env_path)

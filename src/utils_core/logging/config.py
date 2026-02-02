@@ -25,11 +25,16 @@ from pathlib import Path
 from typing import Any, Protocol
 
 import structlog
-from dotenv import load_dotenv
 from structlog import BoundLogger
 from structlog.contextvars import bind_contextvars, unbind_contextvars
 
-from ..settings import get_log_dir, get_log_format, get_log_level, get_project_env
+from ..settings import (
+    get_log_dir,
+    get_log_format,
+    get_log_level,
+    get_project_env,
+    load_project_env,
+)
 from ..types import LogFormat, LogLevel
 
 _initialized = False
@@ -55,7 +60,7 @@ def _ensure_basic_config() -> None:
         return
     _initialized = True
 
-    load_dotenv(override=True)
+    load_project_env(override=True)
 
     # Clear cached environment variables to reflect any changes
     get_log_level.cache_clear()
@@ -276,7 +281,7 @@ def setup_logging(
     """
     global _initialized
 
-    load_dotenv(override=True)
+    load_project_env(override=True)
 
     # Clear cached environment variables to reflect any changes
     get_log_level.cache_clear()
