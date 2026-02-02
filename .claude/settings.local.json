@@ -18,7 +18,9 @@
       "mcp__filesystem__list_directory",
       "mcp__filesystem__directory_tree",
       "mcp__filesystem__read_text_file",
-      "mcp__filesystem__read_multiple_files"
+      "mcp__filesystem__read_multiple_files",
+      "WebFetch(domain:feeds.content.dowjones.io)",
+      "WebFetch(domain:www.federalreserve.gov)"
     ]
   },
   "enableAllProjectMcpServers": true,

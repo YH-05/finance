@@ -30,7 +30,7 @@
             "enabled": true
         },
         {
-            "url": "https://feeds.marketwatch.com/marketwatch/topstories/",
+            "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
             "title": "MarketWatch Top Stories",
             "category": "market",
             "fetch_interval": "daily",

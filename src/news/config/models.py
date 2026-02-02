@@ -471,6 +471,57 @@ class NewsConfig(BaseModel):
 # =============================================================================
 
 
+class RssRetryConfig(BaseModel):
+    """Retry configuration for RSS feed collection.
+
+    Parameters
+    ----------
+    max_attempts : int
+        Maximum number of retry attempts (default: 3).
+    initial_delay_seconds : float
+        Initial delay in seconds before first retry (default: 2.0).
+    max_delay_seconds : float
+        Maximum delay in seconds between retries (default: 30.0).
+    exponential_base : float
+        Base for exponential backoff calculation (default: 2.0).
+    jitter : bool
+        Whether to add random jitter to delays (default: True).
+
+    Examples
+    --------
+    >>> config = RssRetryConfig()
+    >>> config.max_attempts
+    3
+    >>> config.initial_delay_seconds
+    2.0
+    """
+
+    max_attempts: int = Field(
+        default=3,
+        ge=1,
+        description="Maximum number of retry attempts",
+    )
+    initial_delay_seconds: float = Field(
+        default=2.0,
+        gt=0,
+        description="Initial delay in seconds before first retry",
+    )
+    max_delay_seconds: float = Field(
+        default=30.0,
+        gt=0,
+        description="Maximum delay in seconds between retries",
+    )
+    exponential_base: float = Field(
+        default=2.0,
+        gt=1,
+        description="Base for exponential backoff calculation",
+    )
+    jitter: bool = Field(
+        default=True,
+        description="Whether to add random jitter to delays",
+    )
+
+
 class RssConfig(BaseModel):
     """RSS feed configuration.
 
@@ -478,17 +529,25 @@ class RssConfig(BaseModel):
     ----------
     presets_file : str
         Path to the RSS presets JSON file containing feed definitions.
+    retry : RssRetryConfig
+        Retry configuration for feed collection.
 
     Examples
     --------
     >>> config = RssConfig(presets_file="data/config/rss-presets.json")
     >>> config.presets_file
     'data/config/rss-presets.json'
+    >>> config.retry.max_attempts
+    3
     """
 
     presets_file: str = Field(
         ...,
         description="Path to the RSS presets JSON file",
+    )
+    retry: RssRetryConfig = Field(
+        default_factory=RssRetryConfig,
+        description="Retry configuration for feed collection",
     )
 
 
@@ -1453,6 +1512,7 @@ __all__ = [
     "PlaywrightFallbackConfig",
     "RetryConfig",
     "RssConfig",
+    "RssRetryConfig",
     "SettingsConfig",
     "SinksConfig",
     "SourcesConfig",
