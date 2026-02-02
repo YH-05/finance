@@ -29,6 +29,7 @@ PROJECT_ENV : str
 
 from __future__ import annotations
 
+import logging
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -39,10 +40,20 @@ from dotenv import load_dotenv
 if TYPE_CHECKING:
     from .types import LogFormat, LogLevel
 
+# Module-level logger
+# Note: 基本的な logging.getLogger を使用（循環インポート回避のため）
+logger = logging.getLogger(__name__)
+
+# AIDEV-NOTE: PROJECT_ROOT と ENV_FILE_PATH は後方互換性のため残しているが、
+# site-packages 環境では正しく動作しない可能性がある。
+# 新しいコードでは _find_env_file() を使用すること。
+
 # Project root directory (finance/)
+# Deprecated: Use _find_env_file() instead for .env file discovery
 PROJECT_ROOT: Path = Path(__file__).parent.parent.parent
 
 # Path to .env file at project root
+# Deprecated: Use _find_env_file() instead for .env file discovery
 ENV_FILE_PATH: Path = PROJECT_ROOT / ".env"
 
 # Maximum number of parent directory levels to search for .env file
@@ -96,10 +107,12 @@ def _find_env_file() -> Path | None:
 
 
 def load_project_env(*, override: bool = False) -> bool:
-    """Load environment variables from project root .env file.
+    """Load environment variables from .env file.
 
-    プロジェクトルート（finance/）の .env ファイルから環境変数を読み込む。
-    カレントディレクトリに依存しない明示的なパス指定を行う。
+    以下の優先順位で .env ファイルを探索し、環境変数を読み込む:
+    1. DOTENV_PATH 環境変数で明示的に指定されたパス
+    2. カレントディレクトリの .env
+    3. 親ディレクトリを遡って探索（最大5レベル）
 
     Parameters
     ----------
@@ -120,7 +133,16 @@ def load_project_env(*, override: bool = False) -> bool:
     >>> load_project_env(override=True)  # 既存の環境変数を上書き
     True
     """
-    return load_dotenv(dotenv_path=ENV_FILE_PATH, override=override)
+    env_file = _find_env_file()
+
+    if env_file is None:
+        logger.debug("No .env file found")
+        return False
+
+    logger.debug("Loading .env file", extra={"env_file": str(env_file)})
+    load_dotenv(dotenv_path=env_file, override=override)
+    logger.info("Loaded .env file", extra={"env_file": str(env_file)})
+    return True
 
 
 # Load .env file once at module import

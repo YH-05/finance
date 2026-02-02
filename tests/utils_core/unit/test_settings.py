@@ -13,6 +13,7 @@ from utils_core.settings import (
     get_log_format,
     get_log_level,
     get_project_env,
+    load_project_env,
 )
 
 if TYPE_CHECKING:
@@ -338,3 +339,103 @@ class TestFindEnvFile:
         result = _find_env_file()
 
         assert result == child_env
+
+
+class TestLoadProjectEnv:
+    """load_project_env() のテスト."""
+
+    def test_正常系_envファイルが見つかった場合にTrueを返す(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """.env ファイルが見つかった場合、True を返す."""
+        env_file = tmp_path / ".env"
+        env_file.write_text("TEST_VAR=test_value")
+        monkeypatch.delenv("DOTENV_PATH", raising=False)
+        monkeypatch.chdir(tmp_path)
+
+        result = load_project_env()
+
+        assert result is True
+
+    def test_正常系_envファイルが見つからない場合にFalseを返す(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """.env ファイルが見つからない場合、False を返す."""
+        empty_dir = tmp_path / "empty"
+        empty_dir.mkdir()
+        monkeypatch.delenv("DOTENV_PATH", raising=False)
+        monkeypatch.chdir(empty_dir)
+
+        result = load_project_env()
+
+        assert result is False
+
+    def test_正常系_DOTENV_PATHで指定されたファイルを読み込む(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """DOTENV_PATH で指定された .env ファイルを読み込む."""
+        env_file = tmp_path / "custom.env"
+        env_file.write_text("CUSTOM_VAR=custom_value")
+        monkeypatch.setenv("DOTENV_PATH", str(env_file))
+        # テスト前に変数をクリア
+        monkeypatch.delenv("CUSTOM_VAR", raising=False)
+
+        result = load_project_env()
+
+        assert result is True
+        import os
+
+        assert os.environ.get("CUSTOM_VAR") == "custom_value"
+
+    def test_正常系_親ディレクトリのenvファイルを読み込む(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """親ディレクトリの .env ファイルを読み込む."""
+        env_file = tmp_path / ".env"
+        env_file.write_text("PARENT_VAR=parent_value")
+        child_dir = tmp_path / "child"
+        child_dir.mkdir()
+        monkeypatch.delenv("DOTENV_PATH", raising=False)
+        monkeypatch.delenv("PARENT_VAR", raising=False)
+        monkeypatch.chdir(child_dir)
+
+        result = load_project_env()
+
+        assert result is True
+        import os
+
+        assert os.environ.get("PARENT_VAR") == "parent_value"
+
+    def test_正常系_overrideがTrueの場合に既存の環境変数を上書き(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """override=True の場合、既存の環境変数を上書きする."""
+        env_file = tmp_path / ".env"
+        env_file.write_text("OVERRIDE_VAR=new_value")
+        monkeypatch.delenv("DOTENV_PATH", raising=False)
+        monkeypatch.setenv("OVERRIDE_VAR", "old_value")
+        monkeypatch.chdir(tmp_path)
+
+        result = load_project_env(override=True)
+
+        assert result is True
+        import os
+
+        assert os.environ.get("OVERRIDE_VAR") == "new_value"
+
+    def test_正常系_overrideがFalseの場合に既存の環境変数を保持(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """override=False の場合、既存の環境変数を保持する."""
+        env_file = tmp_path / ".env"
+        env_file.write_text("PRESERVE_VAR=new_value")
+        monkeypatch.delenv("DOTENV_PATH", raising=False)
+        monkeypatch.setenv("PRESERVE_VAR", "old_value")
+        monkeypatch.chdir(tmp_path)
+
+        result = load_project_env(override=False)
+
+        assert result is True
+        import os
+
+        assert os.environ.get("PRESERVE_VAR") == "old_value"
