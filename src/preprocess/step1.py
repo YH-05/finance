@@ -18,8 +18,8 @@ import numpy as np
 import pandas as pd
 from debugpy.common.log import log_dir
 from pandas import DataFrame
-
 from src.configuration import Config, log
+
 from src.database import sqlite_utils
 
 

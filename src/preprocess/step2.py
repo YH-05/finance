@@ -10,9 +10,9 @@ from pathlib import Path
 
 import pandas as pd
 from pandas import DataFrame
+from src.configuration import Config
 
 from src import factset_utils
-from src.configuration import Config
 
 
 def load_update_data(file_update: Path) -> DataFrame:

@@ -19,6 +19,7 @@ MarketError (base)
     FREDError (FRED operations)
         FREDValidationError (FRED input validation)
         FREDFetchError (FRED data fetching)
+            FREDCacheNotFoundError (FRED cache data not found)
     BloombergError (Bloomberg operations)
         BloombergConnectionError (connection failures)
         BloombergSessionError (session management)
@@ -455,6 +456,40 @@ class FREDFetchError(FREDError):
     """
 
 
+class FREDCacheNotFoundError(FREDFetchError):
+    """FRED series data not found in local cache.
+
+    This exception is raised when requested FRED series data
+    is not available in the local cache and needs to be synced.
+
+    Parameters
+    ----------
+    series_ids : list[str]
+        Missing series IDs that were not found in cache
+
+    Attributes
+    ----------
+    series_ids : list[str]
+        The series IDs that were not found
+
+    Examples
+    --------
+    >>> raise FREDCacheNotFoundError(series_ids=["GDP", "CPIAUCSL"])
+    >>> # To recover, sync the missing data:
+    >>> # HistoricalCache().sync_series("GDP")
+    """
+
+    def __init__(self, series_ids: list[str]) -> None:
+        self.series_ids = series_ids
+        series_str = ", ".join(series_ids)
+        first_series = series_ids[0] if series_ids else ""
+        message = (
+            f"FRED series not found in cache: {series_str}. "
+            f'Sync data using: HistoricalCache().sync_series("{first_series}")'
+        )
+        super().__init__(message)
+
+
 # =============================================================================
 # Bloomberg Errors
 # =============================================================================
@@ -755,6 +790,7 @@ __all__ = [
     "DataFetchError",
     "ErrorCode",
     "ExportError",
+    "FREDCacheNotFoundError",
     "FREDError",
     "FREDFetchError",
     "FREDValidationError",
