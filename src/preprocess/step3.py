@@ -13,13 +13,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-
-from src import factset_utils
 from src.analysis.returns import calculate_return_multi_periods
 from src.bloomberg import data_blpapi, data_local
 from src.configuration import Config
-from src.database import sqlite_utils
 from src.factset.price import load_fg_price
+
+from src import factset_utils
+from src.database import sqlite_utils
 
 
 def get_financials_db_path(universe_code: str) -> Path:

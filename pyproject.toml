@@ -117,7 +117,12 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-exclude = [".venv", "src/*/docs/.steering"]
+exclude = [
+    ".venv",
+    "src/*/docs/.steering",
+    "src/*/sample/",   # レガシーコード
+    "src/preprocess/", # レガシーコード
+]
 select = [
     "E",      # pycodestyle errors
     "W",      # pycodestyle warnings
