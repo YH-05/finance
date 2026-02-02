@@ -9,14 +9,23 @@ TDD Green phase complete: All tests pass with the improved implementation.
 - [x] test_エッジケース_部分欠損で警告つき成功 テスト
 - [x] HistoricalCache をモック化
 - [x] テストが通ることを確認（Green）
+
+Issue #2837 追加テスト:
+- [ ] TestPlotVixAndHighYieldSpread クラス作成
+- [ ] test_正常系_データがある場合にFigureを返す
+- [ ] test_異常系_FREDCacheNotFoundErrorが再発生する
+- [ ] test_異常系_pivot前にカラムが不足でValueError
+- [ ] test_エッジケース_pivot後にシリーズが不足でNoneを返す
+- [ ] test_正常系_関数開始時に情報ログが出力される
 """
 
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
+import plotly.graph_objects as go
 import pytest
 
-from analyze.reporting.vix import _load_multiple_series
+from analyze.reporting.vix import _load_multiple_series, plot_vix_and_high_yield_spread
 from market.errors import FREDCacheNotFoundError
 
 
@@ -228,3 +237,173 @@ class TestLoadMultipleSeries:
 
         # Assert
         assert list(result.columns) == ["date", "variable", "value"]
+
+
+class TestPlotVixAndHighYieldSpread:
+    """Tests for plot_vix_and_high_yield_spread function.
+
+    Issue #2837: plot_vix_and_high_yield_spread 関数改修
+
+    受け入れ条件:
+    1. 関数開始時の情報ログ
+    2. FREDCacheNotFoundError の catch & re-raise
+    3. pivot 前のカラム検証（date, variable, value）
+    4. pivot 後のシリーズ検証
+    5. 戻り値の型ヒントを go.Figure | None に変更
+    6. Docstring に Raises セクション追加
+    """
+
+    @patch("analyze.reporting.vix._load_multiple_series")
+    def test_正常系_データがある場合にFigureを返す(self, mock_load: MagicMock) -> None:
+        """正常なデータがある場合、go.Figureを返すことを確認.
+
+        改修後の関数は fig.show() を呼ばず、Figureを返すように変更される。
+        """
+        # Arrange: 正常なモックデータ
+        dates = pd.date_range("2026-01-01", periods=5, freq="D")
+        mock_data = pd.DataFrame(
+            {
+                "date": list(dates) * 2,
+                "variable": ["VIXCLS"] * 5 + ["BAMLH0A0HYM2"] * 5,
+                "value": [15.0, 16.0, 17.0, 18.0, 19.0, 3.5, 3.6, 3.7, 3.8, 3.9],
+            }
+        )
+        mock_load.return_value = mock_data
+
+        # Act
+        result = plot_vix_and_high_yield_spread()
+
+        # Assert
+        assert isinstance(result, go.Figure), "戻り値はgo.Figureであるべき"
+        mock_load.assert_called_once_with(["VIXCLS", "BAMLH0A0HYM2"])
+
+    @patch("analyze.reporting.vix._load_multiple_series")
+    def test_異常系_FREDCacheNotFoundErrorが再発生する(
+        self, mock_load: MagicMock
+    ) -> None:
+        """_load_multiple_seriesがFREDCacheNotFoundErrorを発生させた場合、再発生させる.
+
+        改修後の関数はFREDCacheNotFoundErrorをcatchしてre-raiseする。
+        """
+        # Arrange: FREDCacheNotFoundErrorを発生させる
+        mock_load.side_effect = FREDCacheNotFoundError(["VIXCLS", "BAMLH0A0HYM2"])
+
+        # Act & Assert
+        with pytest.raises(FREDCacheNotFoundError) as exc_info:
+            plot_vix_and_high_yield_spread()
+
+        assert "VIXCLS" in exc_info.value.series_ids
+        assert "BAMLH0A0HYM2" in exc_info.value.series_ids
+
+    @patch("analyze.reporting.vix._load_multiple_series")
+    def test_異常系_pivot前にカラムが不足でValueError(
+        self, mock_load: MagicMock
+    ) -> None:
+        """_load_multiple_seriesの戻り値に必須カラムが不足している場合、ValueErrorを発生させる.
+
+        改修後の関数はpivot前にカラム検証を行う。
+        必須カラム: date, variable, value
+        """
+        # Arrange: 必須カラムが不足したデータ（variableがない）
+        mock_data = pd.DataFrame(
+            {
+                "date": pd.date_range("2026-01-01", periods=3, freq="D"),
+                "value": [15.0, 16.0, 17.0],
+                # "variable" カラムがない
+            }
+        )
+        mock_load.return_value = mock_data
+
+        # Act & Assert
+        with pytest.raises(ValueError, match="Missing columns"):
+            plot_vix_and_high_yield_spread()
+
+    @patch("analyze.reporting.vix._load_multiple_series")
+    def test_エッジケース_pivot後にシリーズが不足でNoneを返す(
+        self, mock_load: MagicMock
+    ) -> None:
+        """pivot後に必要なシリーズ（VIXCLS, BAMLH0A0HYM2）が不足している場合、Noneを返す.
+
+        改修後の関数はpivot後にシリーズ検証を行い、データ不足時はNoneを返す。
+        """
+        # Arrange: VIXCLSのみのデータ（BAMLH0A0HYM2がない）
+        dates = pd.date_range("2026-01-01", periods=3, freq="D")
+        mock_data = pd.DataFrame(
+            {
+                "date": list(dates),
+                "variable": ["VIXCLS"] * 3,
+                "value": [15.0, 16.0, 17.0],
+            }
+        )
+        mock_load.return_value = mock_data
+
+        # Act
+        result = plot_vix_and_high_yield_spread()
+
+        # Assert
+        assert result is None, "データ不足時はNoneを返すべき"
+
+    @patch("analyze.reporting.vix._load_multiple_series")
+    def test_正常系_関数開始時に情報ログが出力される(
+        self, mock_load: MagicMock, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """関数開始時に情報ログが出力されることを確認.
+
+        改修後の関数は logger.info() で開始ログを出力する。
+        """
+        # Arrange
+        dates = pd.date_range("2026-01-01", periods=5, freq="D")
+        mock_data = pd.DataFrame(
+            {
+                "date": list(dates) * 2,
+                "variable": ["VIXCLS"] * 5 + ["BAMLH0A0HYM2"] * 5,
+                "value": [15.0, 16.0, 17.0, 18.0, 19.0, 3.5, 3.6, 3.7, 3.8, 3.9],
+            }
+        )
+        mock_load.return_value = mock_data
+
+        # Act
+        with caplog.at_level("INFO"):
+            plot_vix_and_high_yield_spread()
+
+        # Assert
+        info_messages = [
+            record.message for record in caplog.records if record.levelname == "INFO"
+        ]
+        assert any("VIX" in msg and "High Yield" in msg for msg in info_messages), (
+            "関数開始時の情報ログが出力されるべき"
+        )
+
+    @patch("analyze.reporting.vix._load_multiple_series")
+    def test_正常系_Figureに正しいトレースが含まれる(
+        self, mock_load: MagicMock
+    ) -> None:
+        """返されるFigureに必要なトレースが含まれることを確認.
+
+        改修後の関数は以下のトレースを含むFigureを返す:
+        - VIX
+        - VIX mean
+        - US High Yield Index Option-Adjusted Spread
+        - Spread mean
+        """
+        # Arrange
+        dates = pd.date_range("2026-01-01", periods=5, freq="D")
+        mock_data = pd.DataFrame(
+            {
+                "date": list(dates) * 2,
+                "variable": ["VIXCLS"] * 5 + ["BAMLH0A0HYM2"] * 5,
+                "value": [15.0, 16.0, 17.0, 18.0, 19.0, 3.5, 3.6, 3.7, 3.8, 3.9],
+            }
+        )
+        mock_load.return_value = mock_data
+
+        # Act
+        result = plot_vix_and_high_yield_spread()
+
+        # Assert
+        assert result is not None
+        trace_names = [trace.name for trace in result.data]
+        assert any("VIX" in name for name in trace_names), "VIXトレースが必要"
+        assert any("mean" in name.lower() for name in trace_names), (
+            "平均線トレースが必要"
+        )

@@ -72,20 +72,59 @@ def _load_multiple_series(series_ids: list[str]) -> pd.DataFrame:
     return result
 
 
-def plot_vix_and_high_yield_spread():
-    """
-    VIXと米国ハイイールドスプレッドの推移をプロットする関数。
-    """
+def plot_vix_and_high_yield_spread() -> go.Figure | None:
+    """VIXと米国ハイイールドスプレッドをプロット。
 
-    # データdownload
+    Returns
+    -------
+    go.Figure | None
+        プロット図。データ不足時はNone。
+
+    Raises
+    ------
+    FREDCacheNotFoundError
+        全シリーズの取得に失敗した場合
+    ValueError
+        必須カラム（date, variable, value）が不足している場合
+    """
+    logger.info("Creating VIX and High Yield Spread plot")
+
     fred_series_list = ["VIXCLS", "BAMLH0A0HYM2"]
+
+    try:
+        raw_data = _load_multiple_series(fred_series_list)
+    except FREDCacheNotFoundError:
+        logger.error("Cannot create plot: no data available")
+        raise
+
+    # pivot前にカラム検証
+    required = {"date", "variable", "value"}
+    if not required.issubset(raw_data.columns):
+        missing_cols = required - set(raw_data.columns)
+        raise ValueError(f"Missing columns: {missing_cols}")
+
+    # pivot処理
     df = pd.pivot_table(
-        _load_multiple_series(fred_series_list),
+        raw_data,
         index="date",
         columns="variable",
         values="value",
         aggfunc="first",  # 重複がある場合は最初の値を使用
-    ).assign(
+    )
+
+    # pivot後にシリーズ検証
+    required_series = {"VIXCLS", "BAMLH0A0HYM2"}
+    if not required_series.issubset(df.columns):
+        missing_series = required_series - set(df.columns)
+        logger.warning(
+            "Required series missing after pivot",
+            missing=list(missing_series),
+            available=list(df.columns),
+        )
+        return None
+
+    # 平均値を計算
+    df = df.assign(
         VIX_mean=lambda x: x["VIXCLS"].mean(),
         Spread_mean=lambda x: x["BAMLH0A0HYM2"].mean(),
     )
@@ -96,7 +135,7 @@ def plot_vix_and_high_yield_spread():
             x=df.index,
             y=df["VIXCLS"],
             name="VIX",
-            line=dict(width=0.8, color="orange"),
+            line={"width": 0.8, "color": "orange"},
             connectgaps=True,
         )
     )
@@ -106,7 +145,7 @@ def plot_vix_and_high_yield_spread():
             x=df.index,
             y=df["VIX_mean"],
             name=f"VIX mean: {df['VIX_mean'].iloc[-1]:.2f}",
-            line=dict(width=0.8, dash="dot", color="orange"),
+            line={"width": 0.8, "dash": "dot", "color": "orange"},
             connectgaps=True,
         )
     )
@@ -116,7 +155,7 @@ def plot_vix_and_high_yield_spread():
             x=df.index,
             y=df["BAMLH0A0HYM2"],
             name="US High Yield Index Option-Adjusted Spread",
-            line=dict(width=0.8, color="#00ffee"),
+            line={"width": 0.8, "color": "#00ffee"},
             connectgaps=True,
             yaxis="y2",
         )
@@ -127,7 +166,7 @@ def plot_vix_and_high_yield_spread():
             x=df.index,
             y=df["Spread_mean"],
             name=f"Spread_mean: {df['Spread_mean'].iloc[-1]:.2f}",
-            line=dict(width=0.8, dash="dash", color="#00ffee"),
+            line={"width": 0.8, "dash": "dash", "color": "#00ffee"},
             connectgaps=True,
             yaxis="y2",
         )
@@ -137,23 +176,31 @@ def plot_vix_and_high_yield_spread():
         width=1000,
         height=450,
         template="plotly_dark",
-        yaxis=dict(
-            title="VIX",
-            rangemode="tozero",
-            showgrid=True,
-        ),
-        yaxis2=dict(
-            title="US High Yield Index<br>Option-Adjusted Spread (bps)",
-            overlaying="y",
-            side="right",
-            rangemode="tozero",
-            showgrid=False,
-        ),
+        yaxis={
+            "title": "VIX",
+            "rangemode": "tozero",
+            "showgrid": True,
+        },
+        yaxis2={
+            "title": "US High Yield Index<br>Option-Adjusted Spread (bps)",
+            "overlaying": "y",
+            "side": "right",
+            "rangemode": "tozero",
+            "showgrid": False,
+        },
         hovermode="x",
-        legend=dict(yanchor="top", y=-0.1, xanchor="center", x=0.5, orientation="h"),
-        margin=dict(l=30, r=30, t=50, b=30),
+        legend={
+            "yanchor": "top",
+            "y": -0.1,
+            "xanchor": "center",
+            "x": 0.5,
+            "orientation": "h",
+        },
+        margin={"l": 30, "r": 30, "t": 50, "b": 30},
     )
-    fig.show()
+
+    logger.info("VIX and High Yield Spread plot created successfully")
+    return fig
 
 
 # =========================================================================================
