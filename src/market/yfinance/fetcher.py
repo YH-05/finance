@@ -447,6 +447,8 @@ class YFinanceFetcher:
         )
 
         # Use yf.download for bulk fetching
+        # Pass the raw_session to yfinance which requires the underlying
+        # curl_cffi.requests.Session object, not our wrapper class
         result = yf.download(
             tickers=options.symbols,
             start=start,
@@ -455,7 +457,7 @@ class YFinanceFetcher:
             auto_adjust=True,
             actions=False,
             progress=False,
-            session=session,
+            session=session.raw_session,
             threads=True,  # Enable multi-threading for faster downloads
         )
 
@@ -667,7 +669,9 @@ class YFinanceFetcher:
             If the symbol is invalid or no data is returned
         """
         session = self._get_session()
-        ticker = yf.Ticker(symbol, session=session)
+        # Pass the raw_session to yfinance which requires the underlying
+        # curl_cffi.requests.Session object, not our wrapper class
+        ticker = yf.Ticker(symbol, session=session.raw_session)
 
         # Convert dates to string format for yfinance
         start = self._format_date(options.start_date)

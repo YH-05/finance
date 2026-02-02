@@ -25,6 +25,9 @@ class TestHttpSessionProtocol:
     Required methods:
     - get(url: str, **kwargs) -> Any
     - close() -> None
+
+    Required properties:
+    - raw_session -> Any
     """
 
     def test_正常系_プロトコルが定義されている(self) -> None:
@@ -33,6 +36,7 @@ class TestHttpSessionProtocol:
 
         assert hasattr(HttpSessionProtocol, "get")
         assert hasattr(HttpSessionProtocol, "close")
+        assert hasattr(HttpSessionProtocol, "raw_session")
 
     def test_正常系_getメソッドのシグネチャが正しい(self) -> None:
         """get メソッドが url と **kwargs を受け取ることを確認。"""
@@ -76,6 +80,13 @@ class TestHttpSessionProtocol:
         class ConcreteSession:
             """A concrete implementation that satisfies HttpSessionProtocol."""
 
+            def __init__(self) -> None:
+                self._internal_session = object()
+
+            @property
+            def raw_session(self) -> Any:
+                return self._internal_session
+
             def get(self, url: str, **kwargs: Any) -> Any:
                 return {"status": 200}
 
@@ -88,6 +99,10 @@ class TestHttpSessionProtocol:
         # メソッドが呼び出せることを確認
         result = session.get("https://example.com")
         assert result == {"status": 200}
+
+        # raw_session が呼び出せることを確認
+        raw = session.raw_session
+        assert raw is not None
 
         # close が呼び出せることを確認（例外が出なければ成功）
         session.close()
@@ -121,10 +136,17 @@ class TestHttpSessionProtocolCompliance:
     """
 
     def test_正常系_両メソッドを持つクラスはプロトコルを満たす(self) -> None:
-        """get と close の両方を持つクラスがプロトコルを満たすことを確認。"""
+        """get, close, raw_session を持つクラスがプロトコルを満たすことを確認。"""
         from market.yfinance.session import HttpSessionProtocol
 
         class ValidSession:
+            def __init__(self) -> None:
+                self._internal = object()
+
+            @property
+            def raw_session(self) -> Any:
+                return self._internal
+
             def get(self, url: str, **kwargs: Any) -> Any:
                 return None
 
@@ -134,6 +156,7 @@ class TestHttpSessionProtocolCompliance:
         # 型ヒントとして使用可能（コンパイル時チェック）
         def use_session(session: HttpSessionProtocol) -> None:
             session.get("https://example.com")
+            _ = session.raw_session
             session.close()
 
         # 呼び出しが成功することを確認
@@ -193,3 +216,64 @@ class TestHttpSessionProtocolDocstring:
 
         assert HttpSessionProtocol.close.__doc__ is not None
         assert len(HttpSessionProtocol.close.__doc__) > 0
+
+    def test_正常系_raw_sessionプロパティにDocstringがある(self) -> None:
+        """raw_session プロパティにDocstringがあることを確認。"""
+        from market.yfinance.session import HttpSessionProtocol
+
+        assert HttpSessionProtocol.raw_session.__doc__ is not None
+        assert len(HttpSessionProtocol.raw_session.__doc__) > 0
+
+
+class TestCurlCffiSessionRawSession:
+    """Tests for CurlCffiSession.raw_session property."""
+
+    def test_正常系_raw_sessionがcurl_cffiセッションを返す(self) -> None:
+        """raw_session が curl_cffi.requests.Session を返すことを確認。"""
+        from curl_cffi import requests as curl_requests
+
+        from market.yfinance.session import CurlCffiSession
+
+        session = CurlCffiSession()
+        try:
+            raw = session.raw_session
+            assert isinstance(raw, curl_requests.Session)
+        finally:
+            session.close()
+
+    def test_正常系_raw_sessionが内部セッションと同一(self) -> None:
+        """raw_session が内部の _session と同じオブジェクトを返すことを確認。"""
+        from market.yfinance.session import CurlCffiSession
+
+        session = CurlCffiSession()
+        try:
+            assert session.raw_session is session._session
+        finally:
+            session.close()
+
+
+class TestStandardRequestsSessionRawSession:
+    """Tests for StandardRequestsSession.raw_session property."""
+
+    def test_正常系_raw_sessionがrequestsセッションを返す(self) -> None:
+        """raw_session が requests.Session を返すことを確認。"""
+        import requests
+
+        from market.yfinance.session import StandardRequestsSession
+
+        session = StandardRequestsSession()
+        try:
+            raw = session.raw_session
+            assert isinstance(raw, requests.Session)
+        finally:
+            session.close()
+
+    def test_正常系_raw_sessionが内部セッションと同一(self) -> None:
+        """raw_session が内部の _session と同じオブジェクトを返すことを確認。"""
+        from market.yfinance.session import StandardRequestsSession
+
+        session = StandardRequestsSession()
+        try:
+            assert session.raw_session is session._session
+        finally:
+            session.close()

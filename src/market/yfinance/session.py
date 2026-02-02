@@ -34,8 +34,8 @@ class HttpSessionProtocol(Protocol):
 
     This protocol defines the minimal interface required for HTTP session
     objects used by the yfinance module. Any class that implements the
-    `get` and `close` methods with the correct signatures will satisfy
-    this protocol.
+    `get`, `close`, and `raw_session` methods/properties with the correct
+    signatures will satisfy this protocol.
 
     The protocol is designed to be compatible with common HTTP libraries
     such as `requests`, `httpx`, and `curl_cffi`.
@@ -46,6 +46,12 @@ class HttpSessionProtocol(Protocol):
         Send a GET request to the specified URL.
     close() -> None
         Close the session and release resources.
+
+    Properties
+    ----------
+    raw_session : Any
+        Return the underlying session object for libraries that require
+        direct access (e.g., yfinance requires curl_cffi.requests.Session).
 
     Notes
     -----
@@ -62,6 +68,10 @@ class HttpSessionProtocol(Protocol):
     ...     def __init__(self):
     ...         self._session = requests.Session()
     ...
+    ...     @property
+    ...     def raw_session(self) -> Any:
+    ...         return self._session
+    ...
     ...     def get(self, url: str, **kwargs) -> Any:
     ...         return self._session.get(url, **kwargs)
     ...
@@ -77,6 +87,10 @@ class HttpSessionProtocol(Protocol):
     ...     def __init__(self):
     ...         self._session = curl_requests.Session()
     ...
+    ...     @property
+    ...     def raw_session(self) -> Any:
+    ...         return self._session
+    ...
     ...     def get(self, url: str, **kwargs) -> Any:
     ...         return self._session.get(url, **kwargs)
     ...
@@ -85,6 +99,28 @@ class HttpSessionProtocol(Protocol):
     ...
     >>> session: HttpSessionProtocol = CurlAdapter()
     """
+
+    @property
+    def raw_session(self) -> Any:
+        """Return the underlying session object.
+
+        This property provides access to the underlying session object
+        for libraries that require direct access to specific session types.
+        For example, yfinance requires a curl_cffi.requests.Session object.
+
+        Returns
+        -------
+        Any
+            The underlying session object.
+
+        Examples
+        --------
+        >>> session = CurlCffiSession()
+        >>> raw = session.raw_session
+        >>> isinstance(raw, curl_requests.Session)
+        True
+        """
+        ...
 
     def get(self, url: str, **kwargs: Any) -> Any:
         """Send a GET request to the specified URL.
@@ -206,6 +242,27 @@ class CurlCffiSession:
             impersonate=impersonate
         )
 
+    @property
+    def raw_session(self) -> curl_requests.Session:
+        """Return the underlying curl_cffi session.
+
+        This property provides access to the underlying curl_cffi.requests.Session
+        object for libraries that require direct access (e.g., yfinance).
+
+        Returns
+        -------
+        curl_requests.Session
+            The underlying curl_cffi session.
+
+        Examples
+        --------
+        >>> session = CurlCffiSession()
+        >>> raw = session.raw_session
+        >>> isinstance(raw, curl_requests.Session)
+        True
+        """
+        return self._session
+
     def get(self, url: str, **kwargs: Any) -> Any:
         """Send a GET request to the specified URL.
 
@@ -311,6 +368,27 @@ class StandardRequestsSession:
         Creates a new requests.Session instance for making HTTP requests.
         """
         self._session: requests.Session = requests.Session()
+
+    @property
+    def raw_session(self) -> requests.Session:
+        """Return the underlying requests session.
+
+        This property provides access to the underlying requests.Session
+        object for libraries that require direct access.
+
+        Returns
+        -------
+        requests.Session
+            The underlying requests session.
+
+        Examples
+        --------
+        >>> session = StandardRequestsSession()
+        >>> raw = session.raw_session
+        >>> isinstance(raw, requests.Session)
+        True
+        """
+        return self._session
 
     def get(self, url: str, **kwargs: Any) -> Any:
         """Send a GET request to the specified URL.

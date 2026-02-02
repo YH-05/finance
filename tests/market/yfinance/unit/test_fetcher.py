@@ -501,11 +501,15 @@ class TestYFinanceFetcherHttpSessionInjection:
         assert session.get is mock_session.get
 
     @patch("market.yfinance.fetcher.yf.download")
-    def test_正常系_fetchで注入されたセッションが使用される(
+    def test_正常系_fetchで注入されたセッションのraw_sessionが使用される(
         self,
         mock_download: MagicMock,
     ) -> None:
-        """fetch メソッドで注入されたセッションが使用されることを確認。"""
+        """fetch メソッドで注入されたセッションの raw_session が使用されることを確認。
+
+        yfinance は curl_cffi.requests.Session を直接要求するため、
+        HttpSessionProtocol 実装の raw_session プロパティを渡す必要がある。
+        """
         # Create sample data
         sample_data = pd.DataFrame(
             {
@@ -520,19 +524,23 @@ class TestYFinanceFetcherHttpSessionInjection:
         sample_data.columns = pd.MultiIndex.from_tuples(sample_data.columns)
         mock_download.return_value = sample_data
 
+        # Create mock for the underlying raw session
+        mock_raw_session = MagicMock()
+
         mock_session = MagicMock()
         mock_session.get = MagicMock()
         mock_session.close = MagicMock()
+        mock_session.raw_session = mock_raw_session
 
         fetcher = YFinanceFetcher(http_session=mock_session)
         options = FetchOptions(symbols=["AAPL"])
 
         fetcher.fetch(options)
 
-        # Verify download was called with our session
+        # Verify download was called with the raw_session, not the wrapper
         mock_download.assert_called_once()
         call_kwargs = mock_download.call_args.kwargs
-        assert call_kwargs["session"] is mock_session
+        assert call_kwargs["session"] is mock_raw_session
 
     def test_正常系_closeで注入されたセッションがクローズされる(self) -> None:
         """close メソッドで注入されたセッションがクローズされることを確認。"""
