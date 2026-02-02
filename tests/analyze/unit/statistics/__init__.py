@@ -1,1 +1,1 @@
-"""Unit tests for analyze.statistics module."""
+"""Tests for the statistics module."""

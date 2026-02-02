@@ -24,13 +24,14 @@ Examples
 1.0
 """
 
-from typing import cast
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
 
 from utils_core.logging import get_logger
 
+from .base import StatisticalAnalyzer
 from .types import CorrelationMethod, CorrelationResult
 
 logger = get_logger(__name__)
@@ -660,9 +661,257 @@ class CorrelationAnalyzer:
         return result
 
 
+class RollingCorrelationAnalyzer(StatisticalAnalyzer):
+    """Analyzer for calculating rolling correlation between columns.
+
+    This class inherits from StatisticalAnalyzer and provides functionality
+    to calculate rolling correlation coefficients between a target column
+    and other columns in a DataFrame.
+
+    Rolling correlation is useful for analyzing how the relationship between
+    assets changes over time, which is important for portfolio management
+    and risk assessment.
+
+    Parameters
+    ----------
+    window : int, default=252
+        Rolling window size in observations. Default is 252, representing
+        approximately one trading year.
+    min_periods : int, default=30
+        Minimum number of observations required to calculate correlation.
+        Default is 30 observations.
+
+    Attributes
+    ----------
+    window : int
+        The rolling window size.
+    min_periods : int
+        The minimum number of observations required.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> df = pd.DataFrame({
+    ...     "AAPL": [100, 101, 102, 103, 104, 105],
+    ...     "MSFT": [200, 202, 204, 206, 208, 210],
+    ...     "SPY": [400, 402, 404, 406, 408, 410],
+    ... })
+    >>> analyzer = RollingCorrelationAnalyzer(window=5, min_periods=3)
+    >>> result = analyzer.analyze(df, target_column="SPY")
+    >>> result.columns.tolist()
+    ['AAPL', 'MSFT']
+    """
+
+    def __init__(self, window: int = 252, min_periods: int = 30) -> None:
+        """Initialize RollingCorrelationAnalyzer.
+
+        Parameters
+        ----------
+        window : int, default=252
+            Rolling window size in observations.
+        min_periods : int, default=30
+            Minimum number of observations required to calculate correlation.
+
+        Examples
+        --------
+        >>> analyzer = RollingCorrelationAnalyzer()
+        >>> analyzer.window
+        252
+        >>> analyzer.min_periods
+        30
+        >>> analyzer = RollingCorrelationAnalyzer(window=60, min_periods=10)
+        >>> analyzer.window
+        60
+        """
+        self._window = window
+        self._min_periods = min_periods
+        logger.debug(
+            "RollingCorrelationAnalyzer initialized",
+            window=window,
+            min_periods=min_periods,
+        )
+
+    @property
+    def window(self) -> int:
+        """Return the rolling window size.
+
+        Returns
+        -------
+        int
+            The rolling window size in observations.
+        """
+        return self._window
+
+    @property
+    def min_periods(self) -> int:
+        """Return the minimum number of periods.
+
+        Returns
+        -------
+        int
+            The minimum number of observations required.
+        """
+        return self._min_periods
+
+    def validate_input(self, df: pd.DataFrame) -> bool:
+        """Validate the input DataFrame for rolling correlation calculation.
+
+        This method checks that the DataFrame meets the requirements for
+        rolling correlation calculation:
+        - DataFrame is not empty
+        - Has at least 2 numeric columns
+        - Has enough rows for min_periods
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The DataFrame to validate.
+
+        Returns
+        -------
+        bool
+            True if the data is valid for calculation, False otherwise.
+
+        Examples
+        --------
+        >>> analyzer = RollingCorrelationAnalyzer(window=5, min_periods=3)
+        >>> df = pd.DataFrame({"A": [1, 2, 3, 4, 5], "B": [2, 4, 6, 8, 10]})
+        >>> analyzer.validate_input(df)
+        True
+        >>> analyzer.validate_input(pd.DataFrame())
+        False
+        """
+        logger.debug(
+            "Validating input for rolling correlation",
+            rows=len(df) if not df.empty else 0,
+            columns=list(df.columns) if not df.empty else [],
+        )
+
+        # Check if DataFrame is empty
+        if df.empty:
+            logger.warning("Empty DataFrame provided")
+            return False
+
+        # Check for at least 2 numeric columns
+        numeric_cols = df.select_dtypes(include=["number"]).columns
+        if len(numeric_cols) < 2:
+            logger.warning(
+                "Insufficient numeric columns for correlation",
+                numeric_columns=len(numeric_cols),
+            )
+            return False
+
+        # Check for sufficient rows
+        if len(df) < self._min_periods:
+            logger.warning(
+                "Insufficient rows for min_periods",
+                rows=len(df),
+                min_periods=self._min_periods,
+            )
+            return False
+
+        logger.debug("Input validation passed")
+        return True
+
+    def calculate(self, df: pd.DataFrame, **kwargs: Any) -> pd.DataFrame:
+        """Calculate rolling correlation with a target column.
+
+        This method calculates the rolling correlation coefficient between
+        each numeric column in the DataFrame and the specified target column.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The input DataFrame with time series data. Each column represents
+            a different asset or series.
+        **kwargs : Any
+            Additional keyword arguments. Required:
+            - target_column (str): The column name to calculate correlations against.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame containing rolling correlation values for each column
+            against the target column. The target column is excluded from results.
+            Earlier values will be NaN until min_periods is reached.
+
+        Raises
+        ------
+        ValueError
+            If target_column is not provided or not found in the DataFrame.
+
+        Examples
+        --------
+        >>> import pandas as pd
+        >>> df = pd.DataFrame({
+        ...     "AAPL": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        ...     "SPY": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
+        ... })
+        >>> analyzer = RollingCorrelationAnalyzer(window=5, min_periods=3)
+        >>> result = analyzer.calculate(df, target_column="SPY")
+        >>> result["AAPL"].iloc[-1]  # Perfect correlation
+        1.0
+        """
+        target_column = kwargs.get("target_column")
+
+        if target_column is None:
+            msg = "target_column is required"
+            logger.error(msg)
+            raise ValueError(msg)
+
+        if target_column not in df.columns:
+            msg = f"target_column '{target_column}' not found in DataFrame"
+            logger.error(msg, available_columns=list(df.columns))
+            raise ValueError(msg)
+
+        logger.info(
+            "Calculating rolling correlation",
+            target_column=target_column,
+            window=self._window,
+            min_periods=self._min_periods,
+            input_rows=len(df),
+            input_columns=len(df.columns),
+        )
+
+        # Get target series
+        target = df[target_column]
+
+        # Get numeric columns excluding target
+        numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
+        other_cols = [col for col in numeric_cols if col != target_column]
+
+        # Calculate rolling correlation for each column
+        result_data: dict[str, pd.Series] = {}
+        for col in other_cols:
+            rolling_corr = cast(
+                "pd.Series",
+                df[col]
+                .rolling(window=self._window, min_periods=self._min_periods)
+                .corr(target),
+            )
+            result_data[col] = rolling_corr
+            logger.debug(
+                "Rolling correlation calculated",
+                column=col,
+                target_column=target_column,
+                valid_values=rolling_corr.notna().sum(),
+            )
+
+        result = pd.DataFrame(result_data, index=df.index)
+
+        logger.info(
+            "Rolling correlation calculation completed",
+            output_columns=list(result.columns),
+            output_rows=len(result),
+        )
+
+        return result
+
+
 __all__ = [
     "CorrelationAnalyzer",
     "CorrelationResult",
+    "RollingCorrelationAnalyzer",
     "calculate_beta",
     "calculate_correlation",
     "calculate_correlation_matrix",

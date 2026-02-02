@@ -41,12 +41,6 @@ from market.bloomberg.constants import (
     NEWS_SERVICE,
     REF_DATA_SERVICE,
 )
-from market.bloomberg.errors import (
-    BloombergConnectionError,
-    BloombergSessionError,
-    BloombergValidationError,
-    ErrorCode,
-)
 from market.bloomberg.types import (
     BloombergDataResult,
     BloombergFetchOptions,
@@ -54,6 +48,12 @@ from market.bloomberg.types import (
     FieldInfo,
     IDType,
     NewsStory,
+)
+from market.errors import (
+    BloombergConnectionError,
+    BloombergSessionError,
+    BloombergValidationError,
+    ErrorCode,
 )
 from utils_core.logging import get_logger
 

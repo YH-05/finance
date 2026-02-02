@@ -1,64 +1,19 @@
-"""Statistics module for statistical analysis functions.
+"""Statistical analysis module for financial data.
 
-This module provides:
-- Descriptive statistics functions
-- Correlation analysis functions
-- Statistical data models
+This module provides abstract base classes and concrete implementations
+for various statistical analyses including correlation, beta, and
+Kalman filtering.
 
 Examples
 --------
->>> import pandas as pd
->>> from analyze.statistics import calculate_mean, describe
->>> series = pd.Series([1.0, 2.0, 3.0, 4.0, 5.0])
->>> calculate_mean(series)
-3.0
->>> stats = describe(series)
->>> stats.count
-5
+>>> from analyze.statistics import StatisticalAnalyzer
+>>> class MyAnalyzer(StatisticalAnalyzer):
+...     def calculate(self, df: pd.DataFrame, **kwargs) -> pd.DataFrame:
+...         return df.describe()
+...     def validate_input(self, df: pd.DataFrame) -> bool:
+...         return not df.empty
 """
 
-from analyze.statistics.correlation import (
-    CorrelationAnalyzer,
-    calculate_beta,
-    calculate_correlation,
-    calculate_correlation_matrix,
-    calculate_rolling_beta,
-    calculate_rolling_correlation,
-)
-from analyze.statistics.descriptive import (
-    calculate_kurtosis,
-    calculate_mean,
-    calculate_median,
-    calculate_percentile_rank,
-    calculate_quantile,
-    calculate_skewness,
-    calculate_std,
-    calculate_var,
-    describe,
-)
-from analyze.statistics.types import (
-    CorrelationMethod,
-    CorrelationResult,
-    DescriptiveStats,
-)
+from .base import StatisticalAnalyzer
 
-__all__ = [
-    "CorrelationAnalyzer",
-    "CorrelationMethod",
-    "CorrelationResult",
-    "DescriptiveStats",
-    "calculate_beta",
-    "calculate_correlation",
-    "calculate_correlation_matrix",
-    "calculate_kurtosis",
-    "calculate_mean",
-    "calculate_median",
-    "calculate_percentile_rank",
-    "calculate_quantile",
-    "calculate_rolling_beta",
-    "calculate_rolling_correlation",
-    "calculate_skewness",
-    "calculate_std",
-    "calculate_var",
-    "describe",
-]
+__all__ = ["StatisticalAnalyzer"]

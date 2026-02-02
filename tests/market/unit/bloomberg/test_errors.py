@@ -19,7 +19,7 @@ class TestErrorCode:
 
     def test_正常系_主要なエラーコードが定義されている(self) -> None:
         """必要なエラーコードが全て定義されていることを確認。"""
-        from market.bloomberg.errors import ErrorCode
+        from market.errors import ErrorCode
 
         # Connection related
         assert hasattr(ErrorCode, "CONNECTION_FAILED")
@@ -37,7 +37,7 @@ class TestErrorCode:
 
     def test_正常系_str型を継承(self) -> None:
         """ErrorCode が str を継承していることを確認。"""
-        from market.bloomberg.errors import ErrorCode
+        from market.errors import ErrorCode
 
         assert isinstance(ErrorCode.CONNECTION_FAILED, str)
 
@@ -47,7 +47,7 @@ class TestBloombergError:
 
     def test_正常系_基本的な初期化(self) -> None:
         """BloombergError が基本パラメータで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergError
+        from market.errors import BloombergError
 
         error = BloombergError("Test error")
         assert error.message == "Test error"
@@ -55,14 +55,14 @@ class TestBloombergError:
 
     def test_正常系_エラーコード付きで初期化(self) -> None:
         """BloombergError がエラーコード付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergError, ErrorCode
+        from market.errors import BloombergError, ErrorCode
 
         error = BloombergError("Connection failed", code=ErrorCode.CONNECTION_FAILED)
         assert error.code == ErrorCode.CONNECTION_FAILED
 
     def test_正常系_詳細情報付きで初期化(self) -> None:
         """BloombergError が詳細情報付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergError
+        from market.errors import BloombergError
 
         error = BloombergError(
             "Test error",
@@ -73,7 +73,7 @@ class TestBloombergError:
 
     def test_正常系_原因例外付きで初期化(self) -> None:
         """BloombergError が原因例外付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergError
+        from market.errors import BloombergError
 
         cause = ConnectionError("Network unreachable")
         error = BloombergError("Connection failed", cause=cause)
@@ -81,7 +81,7 @@ class TestBloombergError:
 
     def test_正常系_to_dictメソッド(self) -> None:
         """BloombergError.to_dict() が正しく動作することを確認。"""
-        from market.bloomberg.errors import BloombergError, ErrorCode
+        from market.errors import BloombergError, ErrorCode
 
         error = BloombergError(
             "Test error",
@@ -100,14 +100,14 @@ class TestBloombergConnectionError:
 
     def test_正常系_基本的な初期化(self) -> None:
         """BloombergConnectionError が初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergConnectionError
+        from market.errors import BloombergConnectionError
 
         error = BloombergConnectionError("Failed to connect to Bloomberg Terminal")
         assert "Failed to connect" in str(error)
 
     def test_正常系_ホストポート情報付きで初期化(self) -> None:
         """BloombergConnectionError がホスト・ポート情報付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergConnectionError, ErrorCode
+        from market.errors import BloombergConnectionError, ErrorCode
 
         error = BloombergConnectionError(
             "Connection refused",
@@ -120,7 +120,7 @@ class TestBloombergConnectionError:
 
     def test_正常系_BloombergErrorを継承(self) -> None:
         """BloombergConnectionError が BloombergError を継承していることを確認。"""
-        from market.bloomberg.errors import BloombergConnectionError, BloombergError
+        from market.errors import BloombergConnectionError, BloombergError
 
         error = BloombergConnectionError("Test")
         assert isinstance(error, BloombergError)
@@ -131,14 +131,14 @@ class TestBloombergSessionError:
 
     def test_正常系_基本的な初期化(self) -> None:
         """BloombergSessionError が初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergSessionError
+        from market.errors import BloombergSessionError
 
         error = BloombergSessionError("Session start failed")
         assert "Session start failed" in str(error)
 
     def test_正常系_セッション状態付きで初期化(self) -> None:
         """BloombergSessionError がセッション状態付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergSessionError, ErrorCode
+        from market.errors import BloombergSessionError, ErrorCode
 
         error = BloombergSessionError(
             "Service not available",
@@ -149,7 +149,7 @@ class TestBloombergSessionError:
 
     def test_正常系_BloombergErrorを継承(self) -> None:
         """BloombergSessionError が BloombergError を継承していることを確認。"""
-        from market.bloomberg.errors import BloombergError, BloombergSessionError
+        from market.errors import BloombergError, BloombergSessionError
 
         error = BloombergSessionError("Test")
         assert isinstance(error, BloombergError)
@@ -160,14 +160,14 @@ class TestBloombergDataError:
 
     def test_正常系_基本的な初期化(self) -> None:
         """BloombergDataError が初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergDataError
+        from market.errors import BloombergDataError
 
         error = BloombergDataError("Failed to fetch data")
         assert "Failed to fetch data" in str(error)
 
     def test_正常系_セキュリティ情報付きで初期化(self) -> None:
         """BloombergDataError がセキュリティ情報付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergDataError
+        from market.errors import BloombergDataError
 
         error = BloombergDataError(
             "No data for security",
@@ -178,7 +178,7 @@ class TestBloombergDataError:
 
     def test_正常系_フィールド情報付きで初期化(self) -> None:
         """BloombergDataError がフィールド情報付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergDataError
+        from market.errors import BloombergDataError
 
         error = BloombergDataError(
             "Invalid field",
@@ -190,7 +190,7 @@ class TestBloombergDataError:
 
     def test_正常系_BloombergErrorを継承(self) -> None:
         """BloombergDataError が BloombergError を継承していることを確認。"""
-        from market.bloomberg.errors import BloombergDataError, BloombergError
+        from market.errors import BloombergDataError, BloombergError
 
         error = BloombergDataError("Test")
         assert isinstance(error, BloombergError)
@@ -201,14 +201,14 @@ class TestBloombergValidationError:
 
     def test_正常系_基本的な初期化(self) -> None:
         """BloombergValidationError が初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergValidationError
+        from market.errors import BloombergValidationError
 
         error = BloombergValidationError("Invalid input")
         assert "Invalid input" in str(error)
 
     def test_正常系_フィールド情報付きで初期化(self) -> None:
         """BloombergValidationError がフィールド情報付きで初期化されることを確認。"""
-        from market.bloomberg.errors import BloombergValidationError
+        from market.errors import BloombergValidationError
 
         error = BloombergValidationError(
             "Invalid date format",
@@ -220,14 +220,14 @@ class TestBloombergValidationError:
 
     def test_正常系_デフォルトエラーコードがINVALID_PARAMETER(self) -> None:
         """BloombergValidationError のデフォルトエラーコードが INVALID_PARAMETER であることを確認。"""
-        from market.bloomberg.errors import BloombergValidationError, ErrorCode
+        from market.errors import BloombergValidationError, ErrorCode
 
         error = BloombergValidationError("Invalid value")
         assert error.code == ErrorCode.INVALID_PARAMETER
 
     def test_正常系_BloombergErrorを継承(self) -> None:
         """BloombergValidationError が BloombergError を継承していることを確認。"""
-        from market.bloomberg.errors import BloombergError, BloombergValidationError
+        from market.errors import BloombergError, BloombergValidationError
 
         error = BloombergValidationError("Test")
         assert isinstance(error, BloombergError)
@@ -238,7 +238,7 @@ class TestExceptionHierarchy:
 
     def test_正常系_例外階層が正しい(self) -> None:
         """例外クラスの継承関係が正しいことを確認。"""
-        from market.bloomberg.errors import (
+        from market.errors import (
             BloombergConnectionError,
             BloombergDataError,
             BloombergError,
@@ -261,7 +261,7 @@ class TestExceptionUsagePatterns:
 
     def test_正常系_try_exceptでキャッチできる(self) -> None:
         """例外がtry-exceptでキャッチできることを確認。"""
-        from market.bloomberg.errors import BloombergConnectionError, BloombergError
+        from market.errors import BloombergConnectionError, BloombergError
 
         def raise_connection_error() -> None:
             raise BloombergConnectionError("Test")
@@ -276,7 +276,7 @@ class TestExceptionUsagePatterns:
 
     def test_正常系_原因チェーンが機能する(self) -> None:
         """例外の原因チェーンが正しく機能することを確認。"""
-        from market.bloomberg.errors import BloombergConnectionError
+        from market.errors import BloombergConnectionError
 
         original = OSError("Network error")
         error = BloombergConnectionError("Connection failed", cause=original)

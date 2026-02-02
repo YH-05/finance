@@ -10,11 +10,12 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
+from market.errors import FREDFetchError, FREDValidationError
+
 # 新パッケージからのインポート（Red フェーズ: まだ実装なし）
 from market.fred import FREDFetcher
 from market.fred.cache import SQLiteCache
 from market.fred.constants import FRED_API_KEY_ENV, FRED_SERIES_PATTERN
-from market.fred.errors import FREDFetchError, FREDValidationError
 from market.fred.types import (
     DataSource,
     FetchOptions,

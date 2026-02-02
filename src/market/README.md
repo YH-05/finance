@@ -1062,7 +1062,7 @@ for result in results:
 ```python
 from market.fred import FREDFetcher
 from market.fred.types import FetchOptions
-from market.fred.errors import FREDFetchError, FREDValidationError
+from market.errors import FREDFetchError, FREDValidationError
 
 try:
     fetcher = FREDFetcher()

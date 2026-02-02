@@ -12,6 +12,18 @@ from typing import Any
 
 import yaml
 
+from analyze.config.models import (
+    CommoditySymbol,
+    CurrencyPairSymbol,
+    IndexSymbol,
+    IndicesConfig,
+    Mag7Symbol,
+    ReturnPeriodsConfig,
+    SectorStocksConfig,
+    SectorStockSymbol,
+    SectorSymbol,
+    SymbolsConfig,
+)
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="config")
@@ -83,30 +95,8 @@ def get_symbols(group: str, subgroup: str | None = None) -> list[str]:
     >>> get_symbols("indices", "us")
     ['^GSPC', '^DJI', '^IXIC', '^RUT']
     """
-    config = load_symbols_config()
-
-    if group not in config:
-        logger.warning("Symbol group not found", group=group)
-        return []
-
-    group_data = config[group]
-
-    # Handle nested groups (like indices.us, indices.global)
-    if subgroup is not None:
-        if not isinstance(group_data, dict) or subgroup not in group_data:
-            logger.warning(
-                "Symbol subgroup not found",
-                group=group,
-                subgroup=subgroup,
-            )
-            return []
-        group_data = group_data[subgroup]
-
-    # Extract symbols from list of dicts
-    if isinstance(group_data, list):
-        return [item["symbol"] for item in group_data if "symbol" in item]
-
-    return []
+    config = _load_symbols_config()
+    return config.get_symbols(group, subgroup)
 
 
 def get_symbol_group(
@@ -132,29 +122,8 @@ def get_symbol_group(
     >>> get_symbol_group("mag7")[0]
     {'symbol': 'AAPL', 'name': 'Apple'}
     """
-    config = load_symbols_config()
-
-    if group not in config:
-        logger.warning("Symbol group not found", group=group)
-        return []
-
-    group_data = config[group]
-
-    # Handle nested groups
-    if subgroup is not None:
-        if not isinstance(group_data, dict) or subgroup not in group_data:
-            logger.warning(
-                "Symbol subgroup not found",
-                group=group,
-                subgroup=subgroup,
-            )
-            return []
-        group_data = group_data[subgroup]
-
-    if isinstance(group_data, list):
-        return group_data
-
-    return []
+    config = _load_symbols_config()
+    return config.get_symbol_group(group, subgroup)
 
 
 def get_return_periods() -> dict[str, int | str]:
@@ -173,5 +142,123 @@ def get_return_periods() -> dict[str, int | str]:
     >>> periods["YTD"]
     'ytd'
     """
-    config = load_symbols_config()
-    return config.get("return_periods", {})
+    config = _load_symbols_config()
+    return config.get_return_periods_dict()
+
+
+@lru_cache(maxsize=1)
+def _load_symbols_config() -> SymbolsConfig:
+    """Load symbols configuration as a Pydantic model.
+
+    This function loads the YAML configuration file and parses it into a
+    type-safe SymbolsConfig Pydantic model. The result is cached using
+    @lru_cache to ensure the file is only read once.
+
+    Returns
+    -------
+    SymbolsConfig
+        Parsed configuration as a Pydantic model with type-safe access.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the configuration file does not exist.
+    yaml.YAMLError
+        If the YAML file is malformed.
+    pydantic.ValidationError
+        If the YAML data does not match the expected schema.
+
+    Examples
+    --------
+    >>> config = _load_symbols_config()
+    >>> config.get_symbols("mag7")
+    ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA']
+
+    >>> config.get_symbols("indices", "us")
+    ['^GSPC', '^DJI', '^IXIC', ...]
+    """
+    logger.debug(
+        "Loading symbols config as Pydantic model", path=str(SYMBOLS_CONFIG_PATH)
+    )
+
+    if not SYMBOLS_CONFIG_PATH.exists():
+        msg = f"Symbols config file not found: {SYMBOLS_CONFIG_PATH}"
+        raise FileNotFoundError(msg)
+
+    with SYMBOLS_CONFIG_PATH.open(encoding="utf-8") as f:
+        raw_data = yaml.safe_load(f)
+
+    if raw_data is None:
+        raw_data = {}
+
+    # Parse indices config
+    indices_data = raw_data.get("indices", {})
+    indices_config = IndicesConfig(
+        us=[IndexSymbol(**item) for item in indices_data.get("us", [])],
+        global_=[IndexSymbol(**item) for item in indices_data.get("global", [])],
+    )
+
+    # Parse mag7
+    mag7 = [Mag7Symbol(**item) for item in raw_data.get("mag7", [])]
+
+    # Parse commodities
+    commodities = [CommoditySymbol(**item) for item in raw_data.get("commodities", [])]
+
+    # Parse currencies
+    currencies_data = raw_data.get("currencies", {})
+    currencies: dict[str, list[CurrencyPairSymbol]] = {}
+    for subgroup, pairs in currencies_data.items():
+        currencies[subgroup] = [CurrencyPairSymbol(**item) for item in pairs]
+
+    # Parse sectors
+    sectors = [SectorSymbol(**item) for item in raw_data.get("sectors", [])]
+
+    # Parse sector_stocks
+    sector_stocks_data = raw_data.get("sector_stocks", {})
+    sector_stocks_kwargs: dict[str, list[SectorStockSymbol]] = {}
+    for sector_key, stocks in sector_stocks_data.items():
+        sector_stocks_kwargs[sector_key] = [
+            SectorStockSymbol(**item) for item in stocks
+        ]
+    sector_stocks = SectorStocksConfig(**sector_stocks_kwargs)
+
+    # Parse return_periods
+    return_periods_data = raw_data.get("return_periods", {})
+    return_periods = ReturnPeriodsConfig(
+        d1=return_periods_data.get("1D", 1),
+        wow=return_periods_data.get("WoW", "prev_tue"),
+        w1=return_periods_data.get("1W", 5),
+        mtd=return_periods_data.get("MTD", "mtd"),
+        m1=return_periods_data.get("1M", 21),
+        m3=return_periods_data.get("3M", 63),
+        m6=return_periods_data.get("6M", 126),
+        ytd=return_periods_data.get("YTD", "ytd"),
+        y1=return_periods_data.get("1Y", 252),
+        y3=return_periods_data.get("3Y", 756),
+        y5=return_periods_data.get("5Y", 1260),
+    )
+
+    config = SymbolsConfig(
+        indices=indices_config,
+        mag7=mag7,
+        commodities=commodities,
+        currencies=currencies,
+        sectors=sectors,
+        sector_stocks=sector_stocks,
+        return_periods=return_periods,
+    )
+
+    logger.info(
+        "Symbols config loaded as Pydantic model",
+        groups=[
+            "indices",
+            "mag7",
+            "commodities",
+            "currencies",
+            "sectors",
+            "sector_stocks",
+            "return_periods",
+        ],
+    )
+
+    return config

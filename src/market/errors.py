@@ -1,12 +1,29 @@
 """Custom exception classes for the market package.
 
-This module provides a hierarchy of exception classes for handling
-various error conditions in market data handling and export operations.
+This module provides a unified hierarchy of exception classes for handling
+various error conditions across all market data sources (yfinance, Bloomberg,
+FRED, etc.).
 
-All exceptions inherit from MarketError and include:
+All exceptions include:
 - Error codes for programmatic handling
 - Detailed error messages with context
 - Optional cause chaining
+
+Exception Hierarchy
+-------------------
+MarketError (base)
+    ExportError (export operations)
+    CacheError (cache operations)
+    DataFetchError (data fetching - yfinance)
+    ValidationError (input validation - yfinance)
+    FREDError (FRED operations)
+        FREDValidationError (FRED input validation)
+        FREDFetchError (FRED data fetching)
+    BloombergError (Bloomberg operations)
+        BloombergConnectionError (connection failures)
+        BloombergSessionError (session management)
+        BloombergDataError (data fetching)
+        BloombergValidationError (input validation)
 """
 
 from enum import Enum
@@ -16,20 +33,63 @@ from typing import Any
 class ErrorCode(str, Enum):
     """Error codes for categorizing exceptions.
 
+    Unified error codes for all market data sources.
+
     Attributes
     ----------
     UNKNOWN : str
         Unknown or unclassified error
-    EXPORT_ERROR : str
-        Error during export
+    NETWORK_ERROR : str
+        Network connectivity issues
+    API_ERROR : str
+        External API errors
+    RATE_LIMIT : str
+        API rate limit exceeded
+    INVALID_SYMBOL : str
+        Invalid ticker symbol
+    INVALID_DATE : str
+        Invalid date format or range
     INVALID_PARAMETER : str
         Invalid function parameter
+    DATA_NOT_FOUND : str
+        Requested data not found
+    CACHE_ERROR : str
+        Cache read/write errors
+    TIMEOUT : str
+        Operation timeout
+    EXPORT_ERROR : str
+        Error during export
+    CONNECTION_FAILED : str
+        Failed to connect (Bloomberg)
+    SESSION_ERROR : str
+        Session management error (Bloomberg)
+    SERVICE_ERROR : str
+        Service startup error (Bloomberg)
+    INVALID_SECURITY : str
+        Invalid or unknown security identifier (Bloomberg)
+    INVALID_FIELD : str
+        Invalid Bloomberg field
+    INVALID_DATE_RANGE : str
+        Invalid date range specified
     """
 
     UNKNOWN = "UNKNOWN"
-    EXPORT_ERROR = "EXPORT_ERROR"
+    NETWORK_ERROR = "NETWORK_ERROR"
+    API_ERROR = "API_ERROR"
+    RATE_LIMIT = "RATE_LIMIT"
+    INVALID_SYMBOL = "INVALID_SYMBOL"
+    INVALID_DATE = "INVALID_DATE"
     INVALID_PARAMETER = "INVALID_PARAMETER"
+    DATA_NOT_FOUND = "DATA_NOT_FOUND"
     CACHE_ERROR = "CACHE_ERROR"
+    TIMEOUT = "TIMEOUT"
+    EXPORT_ERROR = "EXPORT_ERROR"
+    CONNECTION_FAILED = "CONNECTION_FAILED"
+    SESSION_ERROR = "SESSION_ERROR"
+    SERVICE_ERROR = "SERVICE_ERROR"
+    INVALID_SECURITY = "INVALID_SECURITY"
+    INVALID_FIELD = "INVALID_FIELD"
+    INVALID_DATE_RANGE = "INVALID_DATE_RANGE"
 
 
 class MarketError(Exception):
@@ -232,9 +292,472 @@ class CacheError(MarketError):
         self.key = key
 
 
+# =============================================================================
+# YFinance Errors
+# =============================================================================
+
+
+class DataFetchError(MarketError):
+    """Exception raised when data fetching fails (yfinance).
+
+    This exception is raised for errors during data retrieval from
+    external sources (yfinance, etc.).
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message
+    symbol : str | None
+        The symbol that failed to fetch
+    source : str | None
+        The data source that was used
+    code : ErrorCode
+        Error code (defaults to API_ERROR)
+    details : dict[str, Any] | None
+        Additional context
+    cause : Exception | None
+        The underlying exception
+
+    Examples
+    --------
+    >>> raise DataFetchError(
+    ...     "Failed to fetch price data for AAPL",
+    ...     symbol="AAPL",
+    ...     source="yfinance",
+    ... )
+    """
+
+    def __init__(
+        self,
+        message: str,
+        symbol: str | None = None,
+        source: str | None = None,
+        code: ErrorCode = ErrorCode.API_ERROR,
+        details: dict[str, Any] | None = None,
+        cause: Exception | None = None,
+    ) -> None:
+        details = details or {}
+        if symbol:
+            details["symbol"] = symbol
+        if source:
+            details["source"] = source
+
+        super().__init__(message, code=code, details=details, cause=cause)
+        self.symbol = symbol
+        self.source = source
+
+
+class ValidationError(MarketError):
+    """Exception raised when input validation fails (yfinance).
+
+    This exception is raised when function parameters or input data
+    fail validation checks.
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message
+    field : str | None
+        The field that failed validation
+    value : Any
+        The invalid value
+    code : ErrorCode
+        Error code (defaults to INVALID_PARAMETER)
+    details : dict[str, Any] | None
+        Additional context
+    cause : Exception | None
+        The underlying exception
+
+    Examples
+    --------
+    >>> raise ValidationError(
+    ...     "Start date must be before end date",
+    ...     field="start_date",
+    ...     value="2024-12-31",
+    ... )
+    """
+
+    def __init__(
+        self,
+        message: str,
+        field: str | None = None,
+        value: Any = None,
+        code: ErrorCode = ErrorCode.INVALID_PARAMETER,
+        details: dict[str, Any] | None = None,
+        cause: Exception | None = None,
+    ) -> None:
+        details = details or {}
+        if field:
+            details["field"] = field
+        if value is not None:
+            details["value"] = repr(value)
+
+        super().__init__(message, code=code, details=details, cause=cause)
+        self.field = field
+        self.value = value
+
+
+# =============================================================================
+# FRED Errors
+# =============================================================================
+
+
+class FREDError(Exception):
+    """Base exception for FRED operations.
+
+    All FRED-specific exceptions inherit from this class.
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message
+    """
+
+
+class FREDValidationError(FREDError):
+    """Exception raised when FRED input validation fails.
+
+    This exception is raised when:
+    - API key is not provided or invalid
+    - Series ID format is invalid
+    - Required parameters are missing or malformed
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message describing the validation failure
+
+    Examples
+    --------
+    >>> raise FREDValidationError("FRED API key not provided")
+    >>> raise FREDValidationError("Invalid series ID: gdp (must be uppercase)")
+    """
+
+
+class FREDFetchError(FREDError):
+    """Exception raised when FRED data fetching fails.
+
+    This exception is raised when:
+    - FRED API returns an error
+    - Network connectivity issues occur
+    - Requested data is not found
+    - API rate limits are exceeded
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message describing the fetch failure
+
+    Examples
+    --------
+    >>> raise FREDFetchError("Failed to fetch FRED series GDP: API Error")
+    >>> raise FREDFetchError("No data found for FRED series: INVALID")
+    """
+
+
+# =============================================================================
+# Bloomberg Errors
+# =============================================================================
+
+
+class BloombergError(Exception):
+    """Base exception for Bloomberg operations.
+
+    Parameters
+    ----------
+    message : str
+        Error message
+    code : ErrorCode
+        Error code (default: INVALID_PARAMETER)
+    details : dict[str, Any] | None
+        Additional error details
+    cause : Exception | None
+        Original exception that caused this error
+
+    Attributes
+    ----------
+    message : str
+        Error message
+    code : ErrorCode
+        Error code
+    details : dict[str, Any]
+        Additional error details
+    cause : Exception | None
+        Original exception
+
+    Examples
+    --------
+    >>> error = BloombergError("Connection failed", code=ErrorCode.CONNECTION_FAILED)
+    >>> error.code
+    <ErrorCode.CONNECTION_FAILED: 'CONNECTION_FAILED'>
+    """
+
+    def __init__(
+        self,
+        message: str,
+        code: ErrorCode = ErrorCode.INVALID_PARAMETER,
+        details: dict[str, Any] | None = None,
+        cause: Exception | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.message = message
+        self.code = code
+        self.details = details or {}
+        self.cause = cause
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert error to dictionary representation.
+
+        Returns
+        -------
+        dict[str, Any]
+            Dictionary containing error information
+
+        Examples
+        --------
+        >>> error = BloombergError("Test", code=ErrorCode.CONNECTION_FAILED)
+        >>> error.to_dict()
+        {'message': 'Test', 'code': 'CONNECTION_FAILED', 'details': {}}
+        """
+        result = {
+            "message": self.message,
+            "code": self.code.value,
+            "details": self.details,
+        }
+        if self.cause is not None:
+            result["cause"] = str(self.cause)
+        return result
+
+
+class BloombergConnectionError(BloombergError):
+    """Exception for Bloomberg connection failures.
+
+    Parameters
+    ----------
+    message : str
+        Error message
+    host : str | None
+        Host that connection was attempted to
+    port : int | None
+        Port that connection was attempted to
+    cause : Exception | None
+        Original exception
+
+    Attributes
+    ----------
+    host : str | None
+        Host that connection was attempted to
+    port : int | None
+        Port that connection was attempted to
+
+    Examples
+    --------
+    >>> error = BloombergConnectionError(
+    ...     "Connection refused",
+    ...     host="localhost",
+    ...     port=8194,
+    ... )
+    >>> error.host
+    'localhost'
+    """
+
+    def __init__(
+        self,
+        message: str,
+        host: str | None = None,
+        port: int | None = None,
+        cause: Exception | None = None,
+    ) -> None:
+        details: dict[str, Any] = {}
+        if host is not None:
+            details["host"] = host
+        if port is not None:
+            details["port"] = port
+
+        super().__init__(
+            message,
+            code=ErrorCode.CONNECTION_FAILED,
+            details=details,
+            cause=cause,
+        )
+        self.host = host
+        self.port = port
+
+
+class BloombergSessionError(BloombergError):
+    """Exception for Bloomberg session management failures.
+
+    Parameters
+    ----------
+    message : str
+        Error message
+    service : str | None
+        Bloomberg service that failed
+    cause : Exception | None
+        Original exception
+
+    Attributes
+    ----------
+    service : str | None
+        Bloomberg service that failed
+
+    Examples
+    --------
+    >>> error = BloombergSessionError(
+    ...     "Service not available",
+    ...     service="//blp/refdata",
+    ... )
+    >>> error.service
+    '//blp/refdata'
+    """
+
+    def __init__(
+        self,
+        message: str,
+        service: str | None = None,
+        cause: Exception | None = None,
+    ) -> None:
+        details: dict[str, Any] = {}
+        if service is not None:
+            details["service"] = service
+
+        super().__init__(
+            message,
+            code=ErrorCode.SESSION_ERROR,
+            details=details,
+            cause=cause,
+        )
+        self.service = service
+
+
+class BloombergDataError(BloombergError):
+    """Exception for Bloomberg data fetching failures.
+
+    Parameters
+    ----------
+    message : str
+        Error message
+    security : str | None
+        Security that caused the error
+    fields : list[str] | None
+        Fields that caused the error
+    code : ErrorCode
+        Error code (default: INVALID_SECURITY)
+    cause : Exception | None
+        Original exception
+
+    Attributes
+    ----------
+    security : str | None
+        Security that caused the error
+    fields : list[str] | None
+        Fields that caused the error
+
+    Examples
+    --------
+    >>> error = BloombergDataError(
+    ...     "Invalid security",
+    ...     security="INVALID US Equity",
+    ... )
+    >>> error.security
+    'INVALID US Equity'
+    """
+
+    def __init__(
+        self,
+        message: str,
+        security: str | None = None,
+        fields: list[str] | None = None,
+        code: ErrorCode = ErrorCode.INVALID_SECURITY,
+        cause: Exception | None = None,
+    ) -> None:
+        details: dict[str, Any] = {}
+        if security is not None:
+            details["security"] = security
+        if fields is not None:
+            details["fields"] = fields
+
+        super().__init__(
+            message,
+            code=code,
+            details=details,
+            cause=cause,
+        )
+        self.security = security
+        self.fields = fields
+
+
+class BloombergValidationError(BloombergError):
+    """Exception for Bloomberg input validation failures.
+
+    Parameters
+    ----------
+    message : str
+        Error message
+    field : str | None
+        Field that failed validation
+    value : Any
+        Invalid value
+    code : ErrorCode
+        Error code (default: INVALID_PARAMETER)
+    cause : Exception | None
+        Original exception
+
+    Attributes
+    ----------
+    field : str | None
+        Field that failed validation
+    value : Any
+        Invalid value
+
+    Examples
+    --------
+    >>> error = BloombergValidationError(
+    ...     "Invalid date format",
+    ...     field="start_date",
+    ...     value="not-a-date",
+    ... )
+    >>> error.field
+    'start_date'
+    """
+
+    def __init__(
+        self,
+        message: str,
+        field: str | None = None,
+        value: Any = None,
+        code: ErrorCode = ErrorCode.INVALID_PARAMETER,
+        cause: Exception | None = None,
+    ) -> None:
+        details: dict[str, Any] = {}
+        if field is not None:
+            details["field"] = field
+        if value is not None:
+            details["value"] = value
+
+        super().__init__(
+            message,
+            code=code,
+            details=details,
+            cause=cause,
+        )
+        self.field = field
+        self.value = value
+
+
 __all__ = [
+    "BloombergConnectionError",
+    "BloombergDataError",
+    "BloombergError",
+    "BloombergSessionError",
+    "BloombergValidationError",
     "CacheError",
+    "DataFetchError",
     "ErrorCode",
     "ExportError",
+    "FREDError",
+    "FREDFetchError",
+    "FREDValidationError",
     "MarketError",
+    "ValidationError",
 ]

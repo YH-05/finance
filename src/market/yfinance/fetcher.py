@@ -18,7 +18,8 @@ import yfinance as yf
 from curl_cffi import requests as curl_requests
 from curl_cffi.requests import BrowserTypeLiteral
 
-from market.yfinance.errors import DataFetchError, ErrorCode, ValidationError
+from market.errors import DataFetchError, ErrorCode, ValidationError
+from market.yfinance.session import CurlCffiSession, HttpSessionProtocol
 from market.yfinance.types import (
     CacheConfig,
     DataSource,
@@ -78,6 +79,11 @@ class YFinanceFetcher:
         Browser to impersonate for TLS fingerprinting.
         Options: "chrome", "chrome110", "chrome120", "edge99", "safari15_3".
         If None, randomly selects from available options.
+    http_session : HttpSessionProtocol | None
+        HTTP session for making requests.
+        If None, defaults to CurlCffiSession() with the specified impersonate.
+        Use this parameter to inject custom session implementations for testing
+        or to use alternative HTTP clients.
 
     Attributes
     ----------
@@ -95,6 +101,12 @@ class YFinanceFetcher:
     >>> results = fetcher.fetch(options)
     >>> len(results)
     2
+
+    With custom session injection:
+
+    >>> from market.yfinance.session import StandardRequestsSession
+    >>> custom_session = StandardRequestsSession()
+    >>> fetcher = YFinanceFetcher(http_session=custom_session)
     """
 
     def __init__(
@@ -102,6 +114,7 @@ class YFinanceFetcher:
         cache_config: CacheConfig | None = None,
         retry_config: RetryConfig | None = None,
         impersonate: BrowserTypeLiteral | None = None,
+        http_session: HttpSessionProtocol | None = None,
     ) -> None:
         self._cache_config = cache_config
         self._retry_config = retry_config or DEFAULT_RETRY_CONFIG
@@ -110,13 +123,18 @@ class YFinanceFetcher:
             if impersonate is not None
             else random.choice(BROWSER_IMPERSONATE_TARGETS)  # nosec B311
         )
-        self._session: curl_requests.Session | None = None
+        # Use injected session or create default CurlCffiSession
+        self._http_session: HttpSessionProtocol | None = http_session
+        self._owns_session: bool = http_session is None
+        # Internally created session (when http_session is not provided)
+        self._session: CurlCffiSession | None = None
 
         logger.debug(
             "Initializing YFinanceFetcher",
             cache_enabled=cache_config is not None,
             retry_enabled=retry_config is not None,
             impersonate=self._impersonate,
+            session_injected=http_session is not None,
         )
 
     @property
@@ -141,24 +159,42 @@ class YFinanceFetcher:
         """
         return Interval.DAILY
 
-    def _get_session(self) -> curl_requests.Session:
-        """Get or create a curl_cffi session with browser impersonation.
+    def _get_session(self) -> HttpSessionProtocol:
+        """Get or create an HTTP session.
+
+        Returns an injected session if provided, otherwise creates a
+        CurlCffiSession with browser impersonation.
 
         Returns
         -------
-        curl_requests.Session
-            Session configured with browser TLS fingerprint
+        HttpSessionProtocol
+            HTTP session for making requests
         """
+        if self._http_session is not None:
+            return self._http_session
+
+        # Create default CurlCffiSession if not injected
         if self._session is None:
-            self._session = curl_requests.Session(impersonate=self._impersonate)
+            self._session = CurlCffiSession(impersonate=self._impersonate)
             logger.debug(
-                "Created curl_cffi session",
+                "Created CurlCffiSession",
                 impersonate=self._impersonate,
             )
         return self._session
 
     def _rotate_session(self) -> None:
-        """Rotate to a new browser impersonation to avoid detection."""
+        """Rotate to a new browser impersonation to avoid detection.
+
+        Only rotates sessions that are owned by this fetcher (not injected).
+        Injected sessions are managed externally and should not be rotated.
+        """
+        # Do not rotate injected sessions
+        if self._http_session is not None:
+            logger.debug(
+                "Skipping session rotation for injected session",
+            )
+            return
+
         if self._session is not None:
             self._session.close()
             self._session = None
@@ -411,6 +447,8 @@ class YFinanceFetcher:
         )
 
         # Use yf.download for bulk fetching
+        # Pass the raw_session to yfinance which requires the underlying
+        # curl_cffi.requests.Session object, not our wrapper class
         result = yf.download(
             tickers=options.symbols,
             start=start,
@@ -419,7 +457,7 @@ class YFinanceFetcher:
             auto_adjust=True,
             actions=False,
             progress=False,
-            session=session,
+            session=session.raw_session,
             threads=True,  # Enable multi-threading for faster downloads
         )
 
@@ -631,7 +669,9 @@ class YFinanceFetcher:
             If the symbol is invalid or no data is returned
         """
         session = self._get_session()
-        ticker = yf.Ticker(symbol, session=session)
+        # Pass the raw_session to yfinance which requires the underlying
+        # curl_cffi.requests.Session object, not our wrapper class
+        ticker = yf.Ticker(symbol, session=session.raw_session)
 
         # Convert dates to string format for yfinance
         start = self._format_date(options.start_date)
@@ -916,14 +956,22 @@ class YFinanceFetcher:
         return result
 
     def close(self) -> None:
-        """Close the curl_cffi session and release resources.
+        """Close the HTTP session and release resources.
 
         Should be called when the fetcher is no longer needed.
+        Closes both injected sessions and internally created sessions.
         """
+        # Close injected session
+        if self._http_session is not None:
+            self._http_session.close()
+            self._http_session = None
+            logger.debug("Closed injected HTTP session")
+
+        # Close internally created session
         if self._session is not None:
             self._session.close()
             self._session = None
-            logger.debug("Closed curl_cffi session")
+            logger.debug("Closed CurlCffiSession")
 
     def __enter__(self) -> "YFinanceFetcher":
         """Support context manager protocol."""

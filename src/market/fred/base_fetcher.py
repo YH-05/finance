@@ -11,9 +11,9 @@ from typing import Any
 
 import pandas as pd
 
+from market.errors import FREDFetchError, FREDValidationError
 from utils_core.logging import get_logger
 
-from .errors import FREDFetchError, FREDValidationError
 from .types import DataSource, FetchOptions, Interval, MarketDataResult
 
 logger = get_logger(__name__)

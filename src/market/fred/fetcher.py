@@ -15,12 +15,12 @@ import pandas as pd
 from dotenv import load_dotenv
 from fredapi import Fred
 
+from market.errors import FREDFetchError, FREDValidationError
 from utils_core.logging import get_logger
 
 from .base_fetcher import BaseDataFetcher
 from .cache import SQLiteCache, generate_cache_key
 from .constants import FRED_API_KEY_ENV, FRED_SERIES_PATTERN
-from .errors import FREDFetchError, FREDValidationError
 from .types import (
     CacheConfig,
     DataSource,

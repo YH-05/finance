@@ -450,3 +450,128 @@ class TestYFinanceFetcherSession:
 
         fetcher = YFinanceFetcher()
         assert fetcher._impersonate in BROWSER_IMPERSONATE_TARGETS
+
+
+class TestYFinanceFetcherHttpSessionInjection:
+    """Tests for http_session dependency injection in YFinanceFetcher."""
+
+    def test_正常系_http_sessionパラメータが追加されている(self) -> None:
+        """コンストラクタに http_session パラメータが存在することを確認。"""
+        import inspect
+
+        sig = inspect.signature(YFinanceFetcher.__init__)
+        params = list(sig.parameters.keys())
+        assert "http_session" in params
+
+    def test_正常系_http_session未指定でCurlCffiSessionがデフォルト(self) -> None:
+        """http_session 未指定時に CurlCffiSession がデフォルトで使用されることを確認。"""
+        from market.yfinance.session import CurlCffiSession
+
+        fetcher = YFinanceFetcher()
+        session = fetcher._get_session()
+
+        # Session should be an instance of CurlCffiSession (or compatible)
+        assert session is not None
+        assert hasattr(session, "get")
+        assert hasattr(session, "close")
+
+    def test_正常系_http_sessionを注入できる(self) -> None:
+        """http_session パラメータでカスタムセッションを注入できることを確認。"""
+        mock_session = MagicMock()
+        mock_session.get = MagicMock(return_value=MagicMock())
+        mock_session.close = MagicMock()
+
+        fetcher = YFinanceFetcher(http_session=mock_session)
+        session = fetcher._get_session()
+
+        # Should return the injected session
+        assert session is mock_session
+
+    def test_正常系_注入されたセッションのgetメソッドが呼び出される(self) -> None:
+        """注入されたセッションの get メソッドが正しく呼び出されることを確認。"""
+        mock_session = MagicMock()
+        mock_response = MagicMock()
+        mock_session.get.return_value = mock_response
+
+        fetcher = YFinanceFetcher(http_session=mock_session)
+        session = fetcher._get_session()
+
+        # Verify we got the mock session
+        assert session is mock_session
+        assert session.get is mock_session.get
+
+    @patch("market.yfinance.fetcher.yf.download")
+    def test_正常系_fetchで注入されたセッションのraw_sessionが使用される(
+        self,
+        mock_download: MagicMock,
+    ) -> None:
+        """fetch メソッドで注入されたセッションの raw_session が使用されることを確認。
+
+        yfinance は curl_cffi.requests.Session を直接要求するため、
+        HttpSessionProtocol 実装の raw_session プロパティを渡す必要がある。
+        """
+        # Create sample data
+        sample_data = pd.DataFrame(
+            {
+                ("Close", "AAPL"): [154.0],
+                ("High", "AAPL"): [155.0],
+                ("Low", "AAPL"): [149.0],
+                ("Open", "AAPL"): [150.0],
+                ("Volume", "AAPL"): [1000000],
+            },
+            index=pd.to_datetime(["2024-01-01"]),
+        )
+        sample_data.columns = pd.MultiIndex.from_tuples(sample_data.columns)
+        mock_download.return_value = sample_data
+
+        # Create mock for the underlying raw session
+        mock_raw_session = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.get = MagicMock()
+        mock_session.close = MagicMock()
+        mock_session.raw_session = mock_raw_session
+
+        fetcher = YFinanceFetcher(http_session=mock_session)
+        options = FetchOptions(symbols=["AAPL"])
+
+        fetcher.fetch(options)
+
+        # Verify download was called with the raw_session, not the wrapper
+        mock_download.assert_called_once()
+        call_kwargs = mock_download.call_args.kwargs
+        assert call_kwargs["session"] is mock_raw_session
+
+    def test_正常系_closeで注入されたセッションがクローズされる(self) -> None:
+        """close メソッドで注入されたセッションがクローズされることを確認。"""
+        mock_session = MagicMock()
+        mock_session.close = MagicMock()
+
+        fetcher = YFinanceFetcher(http_session=mock_session)
+        fetcher.close()
+
+        mock_session.close.assert_called_once()
+
+    def test_正常系_コンテキストマネージャーで注入されたセッションがクローズされる(
+        self,
+    ) -> None:
+        """コンテキストマネージャー終了時に注入されたセッションがクローズされることを確認。"""
+        mock_session = MagicMock()
+        mock_session.close = MagicMock()
+
+        with YFinanceFetcher(http_session=mock_session):
+            pass
+
+        mock_session.close.assert_called_once()
+
+    def test_正常系_HttpSessionProtocol互換のオブジェクトが使用できる(self) -> None:
+        """HttpSessionProtocol に準拠したオブジェクトが使用できることを確認。"""
+        from market.yfinance.session import StandardRequestsSession
+
+        # StandardRequestsSession also implements HttpSessionProtocol
+        with patch("market.yfinance.session.requests.Session"):
+            session = StandardRequestsSession()
+            fetcher = YFinanceFetcher(http_session=session)
+
+            # Should be able to get the session
+            assert fetcher._get_session() is session
