@@ -51,8 +51,8 @@
             "enabled": true
         },
         {
-            "url": "https://www.ft.com/?format=rss",
-            "title": "Financial Times",
+            "url": "https://www.ft.com/markets?format=rss",
+            "title": "Financial Times - Markets",
             "category": "finance",
             "fetch_interval": "daily",
             "enabled": true
