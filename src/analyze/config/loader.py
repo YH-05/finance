@@ -95,30 +95,8 @@ def get_symbols(group: str, subgroup: str | None = None) -> list[str]:
     >>> get_symbols("indices", "us")
     ['^GSPC', '^DJI', '^IXIC', '^RUT']
     """
-    config = load_symbols_config()
-
-    if group not in config:
-        logger.warning("Symbol group not found", group=group)
-        return []
-
-    group_data = config[group]
-
-    # Handle nested groups (like indices.us, indices.global)
-    if subgroup is not None:
-        if not isinstance(group_data, dict) or subgroup not in group_data:
-            logger.warning(
-                "Symbol subgroup not found",
-                group=group,
-                subgroup=subgroup,
-            )
-            return []
-        group_data = group_data[subgroup]
-
-    # Extract symbols from list of dicts
-    if isinstance(group_data, list):
-        return [item["symbol"] for item in group_data if "symbol" in item]
-
-    return []
+    config = _load_symbols_config()
+    return config.get_symbols(group, subgroup)
 
 
 def get_symbol_group(
@@ -144,29 +122,8 @@ def get_symbol_group(
     >>> get_symbol_group("mag7")[0]
     {'symbol': 'AAPL', 'name': 'Apple'}
     """
-    config = load_symbols_config()
-
-    if group not in config:
-        logger.warning("Symbol group not found", group=group)
-        return []
-
-    group_data = config[group]
-
-    # Handle nested groups
-    if subgroup is not None:
-        if not isinstance(group_data, dict) or subgroup not in group_data:
-            logger.warning(
-                "Symbol subgroup not found",
-                group=group,
-                subgroup=subgroup,
-            )
-            return []
-        group_data = group_data[subgroup]
-
-    if isinstance(group_data, list):
-        return group_data
-
-    return []
+    config = _load_symbols_config()
+    return config.get_symbol_group(group, subgroup)
 
 
 def get_return_periods() -> dict[str, int | str]:
@@ -185,8 +142,8 @@ def get_return_periods() -> dict[str, int | str]:
     >>> periods["YTD"]
     'ytd'
     """
-    config = load_symbols_config()
-    return config.get("return_periods", {})
+    config = _load_symbols_config()
+    return config.get_return_periods_dict()
 
 
 @lru_cache(maxsize=1)

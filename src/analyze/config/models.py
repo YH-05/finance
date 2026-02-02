@@ -551,6 +551,182 @@ class SymbolsConfig(BaseModel):
         )
         return []
 
+    def get_symbol_group(
+        self,
+        group: str,
+        subgroup: str | None = None,
+    ) -> list[dict[str, str]]:
+        """Get full symbol group data including names.
+
+        Parameters
+        ----------
+        group : str
+            Group name (e.g., "mag7", "sectors", "indices").
+        subgroup : str | None, optional
+            Subgroup name for nested groups.
+
+        Returns
+        -------
+        list[dict[str, str]]
+            List of symbol dictionaries with 'symbol' and 'name' keys.
+
+        Examples
+        --------
+        >>> config.get_symbol_group("mag7")[0]
+        {'symbol': 'AAPL', 'name': 'Apple'}
+        """
+        match group:
+            case "indices":
+                return self._get_indices_group(subgroup)
+            case "mag7":
+                return [{"symbol": s.symbol, "name": s.name} for s in self.mag7]
+            case "commodities":
+                return [{"symbol": s.symbol, "name": s.name} for s in self.commodities]
+            case "currencies":
+                return self._get_currency_group(subgroup)
+            case "sectors":
+                return [{"symbol": s.symbol, "name": s.name} for s in self.sectors]
+            case "sector_stocks":
+                return self._get_sector_stock_group(subgroup)
+            case _:
+                logger.warning("Symbol group not found", group=group)
+                return []
+
+    def _get_indices_group(self, subgroup: str | None) -> list[dict[str, str]]:
+        """Get indices group data for a subgroup.
+
+        Parameters
+        ----------
+        subgroup : str | None
+            Subgroup name ("us" or "global").
+
+        Returns
+        -------
+        list[dict[str, str]]
+            List of index dictionaries.
+        """
+        if subgroup is None:
+            # Return all indices
+            return [
+                {"symbol": s.symbol, "name": s.name}
+                for s in self.indices.us + self.indices.global_
+            ]
+        if subgroup == "us":
+            return [{"symbol": s.symbol, "name": s.name} for s in self.indices.us]
+        if subgroup == "global":
+            return [{"symbol": s.symbol, "name": s.name} for s in self.indices.global_]
+        logger.warning(
+            "Symbol subgroup not found",
+            group="indices",
+            subgroup=subgroup,
+        )
+        return []
+
+    def _get_currency_group(self, subgroup: str | None) -> list[dict[str, str]]:
+        """Get currency group data for a subgroup.
+
+        Parameters
+        ----------
+        subgroup : str | None
+            Subgroup name (e.g., "jpy_crosses").
+
+        Returns
+        -------
+        list[dict[str, str]]
+            List of currency pair dictionaries.
+        """
+        if subgroup is None:
+            # Return all currencies
+            return [
+                {"symbol": s.symbol, "name": s.name}
+                for pairs in self.currencies.values()
+                for s in pairs
+            ]
+        if subgroup in self.currencies:
+            return [
+                {"symbol": s.symbol, "name": s.name} for s in self.currencies[subgroup]
+            ]
+        logger.warning(
+            "Symbol subgroup not found",
+            group="currencies",
+            subgroup=subgroup,
+        )
+        return []
+
+    def _get_sector_stock_group(self, subgroup: str | None) -> list[dict[str, str]]:
+        """Get sector stock group data for a subgroup.
+
+        Parameters
+        ----------
+        subgroup : str | None
+            Sector ETF symbol (e.g., "XLF", "XLK").
+
+        Returns
+        -------
+        list[dict[str, str]]
+            List of stock dictionaries.
+        """
+        if subgroup is None:
+            # Return all sector stocks
+            result: list[dict[str, str]] = []
+            for sector_name in [
+                "XLF",
+                "XLK",
+                "XLV",
+                "XLE",
+                "XLI",
+                "XLY",
+                "XLP",
+                "XLB",
+                "XLU",
+                "XLRE",
+                "XLC",
+            ]:
+                stocks = getattr(self.sector_stocks, sector_name, [])
+                result.extend([{"symbol": s.symbol, "name": s.name} for s in stocks])
+            return result
+
+        if hasattr(self.sector_stocks, subgroup):
+            stocks = getattr(self.sector_stocks, subgroup)
+            return [{"symbol": s.symbol, "name": s.name} for s in stocks]
+
+        logger.warning(
+            "Symbol subgroup not found",
+            group="sector_stocks",
+            subgroup=subgroup,
+        )
+        return []
+
+    def get_return_periods_dict(self) -> dict[str, int | str]:
+        """Get return period definitions as a dictionary.
+
+        Returns
+        -------
+        dict[str, int | str]
+            Dictionary mapping period names to number of days or special strings.
+
+        Examples
+        --------
+        >>> periods = config.get_return_periods_dict()
+        >>> periods["1W"]
+        5
+        >>> periods["YTD"]
+        'ytd'
+        """
+        return {
+            "1D": self.return_periods.d1,
+            "WoW": self.return_periods.wow,
+            "1W": self.return_periods.w1,
+            "MTD": self.return_periods.mtd,
+            "1M": self.return_periods.m1,
+            "3M": self.return_periods.m3,
+            "6M": self.return_periods.m6,
+            "YTD": self.return_periods.ytd,
+            "1Y": self.return_periods.y1,
+            "3Y": self.return_periods.y3,
+            "5Y": self.return_periods.y5,
+        }
+
 
 # Export all public symbols
 __all__ = [
