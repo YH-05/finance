@@ -565,7 +565,7 @@ class KalmanBetaAnalyzer(StatisticalAnalyzer):
 
         # Import pykalman (optional dependency)
         try:
-            from pykalman import KalmanFilter
+            from pykalman import KalmanFilter  # type: ignore[import-not-found]
         except ImportError as e:
             msg = (
                 "pykalman is required for KalmanBetaAnalyzer. "
