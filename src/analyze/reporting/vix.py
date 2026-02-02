@@ -6,7 +6,11 @@ vix.py
 import pandas as pd
 import plotly.graph_objects as go
 
+from market.errors import FREDCacheNotFoundError
 from market.fred import HistoricalCache
+from utils_core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 def _load_multiple_series(series_ids: list[str]) -> pd.DataFrame:
@@ -21,18 +25,51 @@ def _load_multiple_series(series_ids: list[str]) -> pd.DataFrame:
     -------
     pd.DataFrame
         date, variable, value 列を持つデータフレーム
+
+    Raises
+    ------
+    FREDCacheNotFoundError
+        全シリーズの取得に失敗した場合
     """
+    # 空リストの場合は空のDataFrameを返す
+    if not series_ids:
+        return pd.DataFrame({"date": [], "variable": [], "value": []})
+
+    logger.debug("Loading FRED series", series_ids=series_ids)
+
     cache = HistoricalCache()
     dfs = []
+    missing = []
+
     for series_id in series_ids:
         df = cache.get_series_df(series_id)
-        if df is not None:
-            df = df.reset_index()
-            df["variable"] = series_id
-            dfs.append(df)
+        if df is None or df.empty:
+            logger.warning("Series not found in cache", series_id=series_id)
+            missing.append(series_id)
+            continue
+
+        df = df.reset_index()
+        df.columns = ["date", "value"]  # カラム名を明示的に設定
+        df["variable"] = series_id
+        # 列順序を [date, variable, value] に並べ替え
+        df = df[["date", "variable", "value"]]
+        dfs.append(df)
+        logger.debug("Series loaded", series_id=series_id, rows=len(df))
+
     if not dfs:
-        return pd.DataFrame({"date": [], "variable": [], "value": []})
-    return pd.concat(dfs, ignore_index=True)
+        logger.error("All series failed to load", missing=missing)
+        raise FREDCacheNotFoundError(missing)
+
+    if missing:
+        logger.warning(
+            "Some series missing",
+            loaded=[s for s in series_ids if s not in missing],
+            missing=missing,
+        )
+
+    result = pd.concat(dfs, ignore_index=True)
+    logger.info("Series loading complete", total_rows=len(result))
+    return result
 
 
 def plot_vix_and_high_yield_spread():

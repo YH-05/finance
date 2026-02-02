@@ -1,15 +1,14 @@
 """Tests for VIX reporting module.
 
-TDD Red phase: Tests written first to define expected behavior.
-Current implementation will fail these tests until improved error handling is added.
+TDD Green phase complete: All tests pass with the improved implementation.
 
 受け入れ条件:
 - [x] TestLoadMultipleSeries クラス作成
-- [ ] test_正常系_複数シリーズを結合できる テスト
-- [ ] test_異常系_全シリーズ失敗でエラー テスト
-- [ ] test_エッジケース_部分欠損で警告つき成功 テスト
+- [x] test_正常系_複数シリーズを結合できる テスト
+- [x] test_異常系_全シリーズ失敗でエラー テスト
+- [x] test_エッジケース_部分欠損で警告つき成功 テスト
 - [x] HistoricalCache をモック化
-- [ ] テストが失敗することを確認（Red）
+- [x] テストが通ることを確認（Green）
 """
 
 from unittest.mock import MagicMock, patch
