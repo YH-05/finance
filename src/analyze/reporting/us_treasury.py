@@ -4,7 +4,6 @@ us_treasury.py
 
 import logging
 import os
-import sqlite3
 from pathlib import Path
 from typing import Optional
 
@@ -551,20 +550,18 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
 
 # ================================================================================
 def plot_us_corporate_bond_spreads(
-    db_path: Path,
     fred_series_id: list[str] | None = None,
     template: str = "plotly_dark",
 ):
     """
-    FREDの社債スプレッドデータをDBから読み込み、Plotlyでプロットする。
+    FREDの社債スプレッドデータをHistoricalCacheから読み込み、Plotlyでプロットする。
 
     Parameters
     ----------
-    db_path : Path
-        SQLiteデータベースへのパス。
-    json_config_path : Path
-        "Corporate Bonds" のシリーズIDが定義された
-        'fred_series.json' ファイルへのフルパス。
+    fred_series_id : list[str] | None
+        FREDシリーズIDのリスト。Noneの場合はデフォルトの社債スプレッド系列を使用。
+    template : str
+        Plotlyテンプレート名。デフォルトは "plotly_dark"。
     """
     fred_series_id = (
         fred_series_id
@@ -572,20 +569,19 @@ def plot_us_corporate_bond_spreads(
         else load_fred_series_id_json()["Corporate Bond Yield Spread"]
     )
     # 1. データの読み込み
-    conn = sqlite3.connect(db_path)
+    cache = HistoricalCache()
 
     # { "ID": "Full Name" } の辞書を作成
     spread_dict = {k: v["name_en"] for k, v in fred_series_id.items()}
 
-    # データベースからデータを読み込む
-    dfs = [
-        pd.read_sql(f"SELECT * FROM '{series_id}'", con=conn, parse_dates=["date"])
-        .rename(columns={series_id: "value"})
-        .assign(variable=series_id)
-        for series_id in spread_dict  # .keys() を明示
-    ]
-
-    conn.close()  # 読み込み後に接続を閉じる
+    # キャッシュからデータを読み込む
+    dfs = []
+    for series_id in spread_dict:
+        df = cache.get_series_df(series_id)
+        if df is not None:
+            df = df.reset_index().rename(columns={"index": "date"})
+            df["variable"] = series_id
+            dfs.append(df)
 
     # 2. データの整形
     df = pd.concat(dfs, ignore_index=True).replace(spread_dict)
