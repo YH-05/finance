@@ -28,10 +28,6 @@ class DollarsIndexAndMetalsAnalyzer:
         必要なデータプロセッサを初期化し、データをロードしてリターンを計算する。
         """
         load_project_env()
-        fred_dir = os.environ.get("FRED_DIR")
-        if fred_dir is None:
-            raise ValueError("FRED_DIR environment variable not set")
-        self.db_path = Path(fred_dir) / "FRED.db"
         self.fred_cache = HistoricalCache()
         self.analyzer = MarketPerformanceAnalyzer()
         self.price_metal = self._load_metal_price()
@@ -56,6 +52,28 @@ class DollarsIndexAndMetalsAnalyzer:
             .pivot(index="Date", columns="Ticker", values="value")
         )
         return df_metals
+
+    # -------------------------------------------------------------------------------------
+    def _load_dollars_index(self) -> pd.DataFrame:
+        """ドル指数データをキャッシュから読み込む。
+
+        Returns
+        -------
+        pd.DataFrame
+            DTWEXAFEGS（ドル指数）データ
+
+        Raises
+        ------
+        ValueError
+            キャッシュにデータがない場合
+        """
+        df = self.fred_cache.get_series_df("DTWEXAFEGS")
+        if df is None:
+            raise ValueError(
+                "DTWEXAFEGS not found in cache. "
+                "Run: HistoricalCache().sync_series('DTWEXAFEGS')"
+            )
+        return df.rename_axis("Date")
 
     # -------------------------------------------------------------------------------------
     def load_price(self):
