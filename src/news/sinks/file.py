@@ -27,8 +27,9 @@ from enum import Enum
 from pathlib import Path  # noqa: TC003 - used at runtime for Path operations
 from typing import TYPE_CHECKING, Any
 
+from utils_core.logging import get_logger
+
 from ..core.sink import SinkType
-from ..utils.logging_config import get_logger
 
 if TYPE_CHECKING:
     from ..core.article import Article

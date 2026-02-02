@@ -23,7 +23,8 @@ True
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
-from ..utils.logging_config import get_logger
+from utils_core.logging import get_logger
+
 from .article import Article
 from .errors import SourceError
 

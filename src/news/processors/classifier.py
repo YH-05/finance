@@ -19,9 +19,10 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from utils_core.logging import get_logger
+
 from ..core.article import Article  # noqa: TC001
 from ..core.processor import ProcessorType
-from ..utils.logging_config import get_logger
 from .agent_base import AgentProcessor, AgentProcessorError
 
 logger = get_logger(__name__, module="classifier")

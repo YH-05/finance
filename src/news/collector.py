@@ -21,10 +21,11 @@ from datetime import datetime, timezone
 
 from pydantic import BaseModel, Field
 
+from utils_core.logging import get_logger
+
 from .core.result import FetchResult
 from .core.sink import SinkProtocol
 from .core.source import SourceProtocol
-from .utils.logging_config import get_logger
 
 logger = get_logger(__name__, module="collector")
 

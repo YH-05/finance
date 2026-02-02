@@ -23,9 +23,9 @@ import httpx
 from news.collectors.base import BaseCollector
 from news.config import NewsWorkflowConfig
 from news.models import ArticleSource, CollectedArticle, FeedError, SourceType
-from news.utils.logging_config import get_logger
 from rss.core.parser import FeedParser
 from rss.types import FeedItem, PresetFeed
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="collectors.rss")
 

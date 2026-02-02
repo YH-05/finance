@@ -22,11 +22,12 @@ from typing import Any
 
 import yfinance as yf
 
+from utils_core.logging import get_logger
+
 from ...config.loader import ConfigLoader
 from ...core.article import ArticleSource
 from ...core.errors import SourceError
 from ...core.result import FetchResult, RetryConfig
-from ...utils.logging_config import get_logger
 from .base import fetch_with_retry, ticker_news_to_article, validate_ticker
 
 logger = get_logger(__name__, module="yfinance.sector")

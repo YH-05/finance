@@ -38,7 +38,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator
 
-from ..utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="history")
 

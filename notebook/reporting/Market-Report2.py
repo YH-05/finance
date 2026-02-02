@@ -36,7 +36,9 @@ def _():
     import numpy as np
     import pandas as pd
     import seaborn as sns
-    from src.market_analysis.dev import market_report_utils
+
+    import src.analyze.reporting.market_report_utils as mru
+    from src.market.alternative import tsa
 
     pd.options.display.precision = 2
     from pathlib import Path
@@ -53,25 +55,23 @@ def _():
     BLOOMBERG_ROOT_DIR = Path(os.environ.get("BLOOMBERG_ROOT_DIR"))
     TSA_DIR = Path(os.environ.get("TSA_DIR"))
     sys.path.insert(0, str(QUANTS_DIR))
-    import src.fred_database_utils as fred_utils
-    import src.market_report_utils as mru
-
     from src import us_treasury
+    from src.market.fred import HistoricalCache
 
-    fred_db_path = FRED_DIR / "FRED.db"  # type: ignore
+    fred_db_path = FRED_DIR / "FRED.db"
     tsa_db_path = TSA_DIR / "TSA.db"  # type: ignore
     sp_price_db_path = BLOOMBERG_ROOT_DIR / "SP_Indices_Price.db"  # type: ignore
-    fred = fred_utils.FredDataProcessor()  # type: ignore
-    fred.store_fred_database()  # type: ignore
-    bbg = mru.BloombergDataProcessor()
-    # sys.path.append(str(ROOT_DIR))
-    bbg.store_sp_indices_price_to_database()
-    sp500_tickers = [re.split(" ", s)[0] for s in bbg.get_current_sp_members()]
-    tsa_data_collector = mru.TSAPassengerDataCollector()
+    cache = HistoricalCache()  # type: ignore
+    cache.sync_all_presets()  # type: ignore
+    tsa_data_collector = tsa.TSAPassengerDataCollector()  # type: ignore
     _df = tsa_data_collector.scrape_tsa_passenger_data()
+    # sys.path.append(str(ROOT_DIR))
     tsa_data_collector.store_to_tsa_database(df=_df, db_path=tsa_db_path)
     # daily data collect
+    # bbg = mru.BloombergDataProcessor()
     # bbg.delete_table_from_db(db_path=bbg.sp_price_db, table_name="Members")
+    # bbg.store_sp_indices_price_to_database()
+    # sp500_tickers = [re.split(" ", s)[0] for s in bbg.get_current_sp_members()]
     # display(sp500_tickers)
     analyzer = mru.MarketPerformanceAnalyzer()
     return (

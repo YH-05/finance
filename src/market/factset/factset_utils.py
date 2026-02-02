@@ -4,6 +4,7 @@ factset_utils.py
 
 import contextlib
 import os
+import re
 import sqlite3
 import time
 import warnings
@@ -24,6 +25,69 @@ from tqdm import tqdm
 # import src.ROIC_make_data_files_ver2 as roic_utils
 
 warnings.simplefilter("ignore")
+
+
+# ============================================================================================
+# SQLインジェクション対策用ヘルパー関数
+# ============================================================================================
+def _validate_sql_identifier(name: str) -> str:
+    """
+    SQL識別子（テーブル名・カラム名）が安全であることを検証する。
+
+    SQLiteでは識別子をパラメータ化できないため、
+    この関数で識別子が安全な形式であることを保証する。
+
+    Parameters
+    ----------
+    name : str
+        検証するSQL識別子
+
+    Returns
+    -------
+    str
+        検証済みの識別子（入力と同じ値）
+
+    Raises
+    ------
+    ValueError
+        識別子が不正な形式の場合
+    """
+    # 空文字列チェック
+    if not name or not name.strip():
+        raise ValueError("SQL識別子は空にできません")
+
+    # 許可するパターン: 英数字、アンダースコア、ハイフン、ドット
+    # （FactSetのテーブル名・カラム名で使用される文字）
+    pattern = r"^[a-zA-Z_][a-zA-Z0-9_\-\.]*$"
+    if not re.match(pattern, name):
+        raise ValueError(
+            f"SQL識別子に不正な文字が含まれています: {name!r}. "
+            f"許可される形式: 英字で始まり、英数字・アンダースコア・ハイフン・ドットのみ"
+        )
+
+    # SQLキーワードとの衝突チェック（主要なものだけ）
+    sql_keywords = {
+        "SELECT",
+        "INSERT",
+        "UPDATE",
+        "DELETE",
+        "DROP",
+        "CREATE",
+        "ALTER",
+        "TABLE",
+        "FROM",
+        "WHERE",
+        "AND",
+        "OR",
+        "NOT",
+        "NULL",
+        "TRUE",
+        "FALSE",
+    }
+    if name.upper() in sql_keywords:
+        raise ValueError(f"SQL識別子がSQLキーワードと衝突しています: {name}")
+
+    return name
 
 
 # ============================================================================================
@@ -685,8 +749,14 @@ def store_to_database(
             f"データフレームには必須のカラム {unique_cols} の全てが含まれている必要があります。"
         )
 
+    # テーブル名とカラム名のバリデーション（SQLインジェクション対策）
+    _validate_sql_identifier(table_name)
+    for col in unique_cols:
+        _validate_sql_identifier(col)
+
     # 1. データベースに接続
     conn = sqlite3.connect(db_path)
+    # nosec B608 - table_name, unique_cols は _validate_sql_identifier() で検証済み
     conn.execute(
         f"""
             CREATE TABLE IF NOT EXISTS {table_name} (
@@ -702,8 +772,9 @@ def store_to_database(
     # 2. 既存のテーブルから一意性チェックに必要なデータを取得し、重複行を除外
     try:
         # テーブルが存在する場合、既存の複合キーデータを取得
+        # table_name, unique_cols は _validate_sql_identifier() で検証済み
         select_cols = ", ".join(unique_cols)
-        existing_df = pd.read_sql(f"SELECT {select_cols} FROM {table_name}", conn)
+        existing_df = pd.read_sql(f"SELECT {select_cols} FROM {table_name}", conn)  # nosec B608
 
         # 既存データの 'date' カラムも datetime 型に変換する
         if "date" in unique_cols and "date" in existing_df.columns:
@@ -726,6 +797,7 @@ def store_to_database(
 
         if on_duplicate == "update" and not df_to_update.empty:
             # 重複データを削除してから追加（上書き）
+            # table_name, unique_cols は _validate_sql_identifier() で検証済み
             delete_count = 0
             for _, row in df_to_update.iterrows():
                 conditions = " AND ".join([f"{col} = ?" for col in unique_cols])
@@ -733,7 +805,7 @@ def store_to_database(
                     str(row[col]) if isinstance(row[col], pd.Timestamp) else row[col]
                     for col in unique_cols
                 )
-                conn.execute(f"DELETE FROM {table_name} WHERE {conditions}", values)
+                conn.execute(f"DELETE FROM {table_name} WHERE {conditions}", values)  # nosec B608
                 delete_count += 1
 
             conn.commit()  # DELETEを確定
@@ -919,7 +991,11 @@ def store_active_returns_batch_serial_write(
 
         for table_name, df in iterator:
             try:
+                # テーブル名のバリデーション（SQLインジェクション対策）
+                _validate_sql_identifier(table_name)
+
                 # テーブル作成(存在しない場合)
+                # nosec B608 - table_name は _validate_sql_identifier() で検証済み
                 cursor.execute(
                     f"""
                     CREATE TABLE IF NOT EXISTS "{table_name}" (
@@ -935,9 +1011,9 @@ def store_active_returns_batch_serial_write(
                 # 既存データとの重複チェック
                 try:
                     select_cols = ", ".join(["date", "P_SYMBOL", "variable"])
-                    existing_df = pd.read_sql(
-                        f'SELECT {select_cols} FROM "{table_name}"', conn
-                    )
+                    # table_name は _validate_sql_identifier() で検証済み
+                    query = f'SELECT {select_cols} FROM "{table_name}"'  # nosec B608
+                    existing_df = pd.read_sql(query, conn)
 
                     # 既存データのdate列も変換
                     if "date" in existing_df.columns:
@@ -1246,6 +1322,12 @@ def store_to_database_batch(
             print("⚠️ 保存対象のデータがありません")
         return {"success": 0, "failed": 0, "total_rows": 0, "processing_time": 0}
 
+    # テーブル名とカラム名のバリデーション（SQLインジェクション対策）
+    for table_name in df_dict:
+        _validate_sql_identifier(table_name)
+    for col in unique_cols:
+        _validate_sql_identifier(col)
+
     if max_workers is not None and max_workers > 1 and verbose:
         print("⚠️ max_workers > 1: データベースロックのリスクがあります")
         print("   推奨: max_workers=1 または事前にWALモードを有効化")
@@ -1312,6 +1394,7 @@ def store_to_database_batch(
                 cursor = conn.cursor()
 
                 # テーブル作成
+                # table_name, unique_cols は関数先頭で _validate_sql_identifier() 検証済み
                 cursor.execute(
                     f"""
                     CREATE TABLE IF NOT EXISTS "{table_name}" (
@@ -1321,15 +1404,15 @@ def store_to_database_batch(
                         value REAL,
                         PRIMARY KEY ({",".join(unique_cols)})
                     )
-                    """
+                    """  # nosec B608
                 )
 
                 # 重複チェック
                 try:
                     select_cols = ", ".join(unique_cols)
-                    existing_df = pd.read_sql(
-                        f'SELECT {select_cols} FROM "{table_name}"', conn
-                    )
+                    # table_name, unique_cols は関数先頭で検証済み
+                    query = f'SELECT {select_cols} FROM "{table_name}"'  # nosec B608
+                    existing_df = pd.read_sql(query, conn)
 
                     if "date" in unique_cols and "date" in existing_df.columns:
                         existing_df["date"] = pd.to_datetime(existing_df["date"])
@@ -1611,6 +1694,9 @@ def upsert_financial_data(
         print("⚠️  更新データが空です")
         return 0
 
+    # テーブル名のバリデーション（SQLインジェクション対策）
+    _validate_sql_identifier(table_name)
+
     # SQLiteバージョンをチェック
     sqlite_version = tuple(map(int, sqlite3.sqlite_version.split(".")))
     supports_upsert = sqlite_version >= (3, 24, 0)
@@ -1649,18 +1735,20 @@ def upsert_financial_data(
 
         if method == "upsert":
             # UPSERT方式(SQLite 3.24.0以降)
+            # table_name, temp_table は _validate_sql_identifier() で検証済み
             upsert_query = f"""
                 INSERT INTO "{table_name}" (date, P_SYMBOL, variable, value)
                 SELECT date, P_SYMBOL, variable, value
                 FROM "{temp_table}"
                 ON CONFLICT(date, P_SYMBOL, variable)
                 DO UPDATE SET value = excluded.value
-            """
+            """  # nosec B608 - table_name は検証済み
             cursor.execute(upsert_query)
             rows_affected = cursor.rowcount
 
         elif method == "delete_insert":
             # DELETE + INSERT方式(古いSQLiteでも動作)
+            # table_name, temp_table は _validate_sql_identifier() で検証済み
             # 1. 該当行を削除
             delete_query = f"""
                 DELETE FROM "{table_name}"
@@ -1668,7 +1756,7 @@ def upsert_financial_data(
                     SELECT date, P_SYMBOL, variable
                     FROM "{temp_table}"
                 )
-            """
+            """  # nosec B608 - table_name は検証済み
             cursor.execute(delete_query)
             deleted = cursor.rowcount
 
@@ -1677,7 +1765,7 @@ def upsert_financial_data(
                 INSERT INTO "{table_name}" (date, P_SYMBOL, variable, value)
                 SELECT date, P_SYMBOL, variable, value
                 FROM "{temp_table}"
-            """
+            """  # nosec B608 - table_name は検証済み
             cursor.execute(insert_query)
             inserted = cursor.rowcount
 
@@ -1689,6 +1777,7 @@ def upsert_financial_data(
             raise ValueError(f"不正なmethod: {method}")
 
         # 一時テーブル削除
+        # nosec B608 - temp_table は table_name から生成された安全な識別子
         cursor.execute(f'DROP TABLE IF EXISTS "{temp_table}"')
 
         conn.commit()
@@ -1702,7 +1791,8 @@ def upsert_financial_data(
         conn.rollback()
         # 一時テーブルのクリーンアップ
         with contextlib.suppress(BaseException):
-            cursor.execute(f'DROP TABLE IF EXISTS "{temp_table}"')
+            # nosec B608 - temp_table は table_name から生成された安全な識別子
+            cursor.execute(f'DROP TABLE IF EXISTS "{temp_table}"')  # nosec B608
         raise
 
 
@@ -1714,16 +1804,21 @@ def load_index_constituents(
     BPMとFactsetのコードをマージした、インデックス構成銘柄のデータベースから
     必要なカラムをロードする関数
     """
+    # テーブル名のバリデーション（SQLインジェクション対策）
+    _validate_sql_identifier(UNIVERSE_CODE)
+
     with sqlite3.connect(factset_index_db_path) as conn:
-        df_weight = pd.read_sql(
-            f"""
+        # UNIVERSE_CODE は _validate_sql_identifier() で検証済み
+        query = f"""
             SELECT
                 `date`, `P_SYMBOL`, `SEDOL`, `Asset ID`, `FG_COMPANY_NAME`,
                 `GICS Sector`, `GICS Industry Group`,
                 `Weight (%)`
             FROM
                 {UNIVERSE_CODE}
-            """,
+            """  # nosec B608
+        df_weight = pd.read_sql(
+            query,
             con=conn,
             parse_dates=["date"],
         )
@@ -1754,11 +1849,15 @@ def load_financial_data(
             "Active_Return_5Y_annlzd",
         ]
     """
+    # テーブル名のバリデーション（SQLインジェクション対策）
+    for factor in factor_list:
+        _validate_sql_identifier(factor)
 
     # join()を使用してクエリをUNION ALLする
+    # factor_list の各要素は _validate_sql_identifier() で検証済み
     query = """
         SELECT `date`, `P_SYMBOL`, `variable`, `value` FROM {}
-    """.format(
+    """.format(  # nosec B608
         "\n    UNION ALL\n    SELECT `date`, `P_SYMBOL`, `variable`, `value` FROM ".join(
             factor_list
         )
@@ -1846,7 +1945,10 @@ def process_ranking_factor_worker(
             エラーが発生した場合や該当データがない場合は空リストを返します。
     """
     # ターゲット名(テーブル名・カラム名)の決定
+    # ファクター名とピリオドをバリデーション（SQLインジェクション対策）
+    _validate_sql_identifier(job_args.factor)
     if job_args.period:
+        _validate_sql_identifier(job_args.period)
         target_factor_name = f"{job_args.factor}_{job_args.period}"
     else:
         target_factor_name = job_args.factor
@@ -1855,7 +1957,8 @@ def process_ranking_factor_worker(
 
     try:
         # 1. データベース読み込み
-        query = f"SELECT `date`, `P_SYMBOL`, `value` FROM '{target_factor_name}'"
+        # target_factor_name は _validate_sql_identifier() で検証済み
+        query = f"SELECT `date`, `P_SYMBOL`, `value` FROM '{target_factor_name}'"  # nosec B608
 
         with sqlite3.connect(job_args.db_path) as conn:
             df = pd.read_sql(query, con=conn, parse_dates=["date"])

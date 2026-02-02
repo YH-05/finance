@@ -30,7 +30,8 @@ Examples
 from enum import Enum
 from typing import Protocol, runtime_checkable
 
-from ..utils.logging_config import get_logger
+from utils_core.logging import get_logger
+
 from .article import Article
 from .result import FetchResult
 

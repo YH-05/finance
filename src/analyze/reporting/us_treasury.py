@@ -2,7 +2,6 @@
 us_treasury.py
 """
 
-import json
 import logging
 import os
 import sqlite3
@@ -17,38 +16,44 @@ import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import seaborn as sns
+from dotenv import load_dotenv
 from matplotlib import gridspec
 from matplotlib.ticker import MultipleLocator, PercentFormatter
 from plotly.subplots import make_subplots
 from sklearn.decomposition import PCA
 
-from configuration.file_path import Config
+from utils_core.settings import get_fred_api_key
 
+# 環境変数を読み込み
+load_dotenv()
 FRED_API = os.getenv("FRED_API_KEY")
 
 
 def load_fred_api_key() -> str:
     """環境変数からFRED APIキーを読み込む"""
-    config = Config.from_env()
-    return config.fred_api_key
+    return get_fred_api_key()
 
 
 def load_fred_db_path() -> Path:
     """FREDのSQLiteデータベースファイルのパスを取得する"""
-    config = Config.from_env()
-    return config.fred_dir / "FRED.db"
+    fred_dir = os.environ.get("FRED_DIR")
+    if fred_dir is None:
+        raise ValueError("FRED_DIR environment variable not set")
+    return Path(fred_dir) / "FRED.db"
 
 
 def load_fred_series_id_json() -> dict:
     """FREDのシリーズIDが定義されたJSONファイルを読み込む(Githubから)"""
-    config = Config.from_env()
-    json_path = config.fred_series_id_json
+    json_url = os.environ.get("FRED_SERIES_ID_JSON")
+    if json_url is None:
+        logging.warning("FRED_SERIES_ID_JSON environment variable not set")
+        return {}
     try:
-        response = requests.get(json_path, timeout=30)
+        response = requests.get(json_url, timeout=30)
         response.raise_for_status()  # HTTPエラーを検出
         series_data = response.json()
     except Exception as e:
-        logging.error(f"Error loading FRED series ID JSON from {json_path}: {e}")
+        logging.error(f"Error loading FRED series ID JSON from {json_url}: {e}")
         series_data = {}
     return series_data
 

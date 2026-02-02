@@ -36,11 +36,11 @@ from typing import TYPE_CHECKING, Any, Self
 
 from news.extractors.base import BaseExtractor
 from news.models import CollectedArticle, ExtractedArticle, ExtractionStatus
-from news.utils.logging_config import get_logger
 from rss.services.article_extractor import ArticleExtractor
 from rss.services.article_extractor import (
     ExtractionStatus as RssExtractionStatus,
 )
+from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from news.config.workflow import (

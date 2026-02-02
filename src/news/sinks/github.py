@@ -28,8 +28,9 @@ from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, Field, field_validator
 
+from utils_core.logging import get_logger
+
 from ..core.sink import SinkType
-from ..utils.logging_config import get_logger
 
 if TYPE_CHECKING:
     from ..core.article import Article

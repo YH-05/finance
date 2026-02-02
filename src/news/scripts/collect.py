@@ -44,10 +44,11 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
+from utils_core.logging import get_logger, setup_logging
+
 from ..config.loader import ConfigLoader
 from ..processors.pipeline import Pipeline, PipelineConfig
 from ..sinks.file import FileSink
-from ..utils.logging_config import get_logger, setup_logging
 
 if TYPE_CHECKING:
     from ..config.models import NewsConfig

@@ -242,6 +242,7 @@ def _get_date_based_log_file(log_dir: Path) -> Path:
 def setup_logging(
     *,
     level: LogLevel | str = "INFO",
+    file_level: LogLevel | str | None = None,
     format: LogFormat = "console",
     log_file: str | Path | None = None,
     include_timestamp: bool = True,
@@ -253,8 +254,12 @@ def setup_logging(
     Parameters
     ----------
     level : LogLevel | str
-        ログレベル（DEBUG, INFO, WARNING, ERROR, CRITICAL）。
+        コンソール出力のログレベル（DEBUG, INFO, WARNING, ERROR, CRITICAL）。
         LOG_LEVEL 環境変数でも設定可能。
+    file_level : LogLevel | str | None
+        ファイル出力のログレベル。None の場合は level と同じ。
+        コンソールはクリーンに保ちつつ、ファイルに詳細ログを保存する場合に有用。
+        例: level="INFO", file_level="DEBUG" でコンソールは INFO、ファイルは DEBUG。
     format : LogFormat
         出力フォーマット: "json", "console", "plain"
         - json: 構造化 JSON 出力（本番環境向け）
@@ -309,6 +314,13 @@ def setup_logging(
     level_str = level.upper()
     level_value = getattr(logging, level_str)
 
+    # file_level が指定されている場合は別のレベル値を使用
+    if file_level is not None:
+        file_level_str = file_level.upper()
+        file_level_value = getattr(logging, file_level_str)
+    else:
+        file_level_value = level_value
+
     # 共有プロセッサーを構築
     shared_processors: list[Any] = [
         structlog.contextvars.merge_contextvars,
@@ -352,7 +364,10 @@ def setup_logging(
         root_logger.handlers.clear()
         _initialized = False
 
-    root_logger.setLevel(level_value)
+    # ルートロガーのレベルは最も寛容なレベルに設定
+    # （file_level が DEBUG で level が INFO の場合、DEBUG ログを通す必要がある）
+    root_logger_level = min(level_value, file_level_value)
+    root_logger.setLevel(root_logger_level)
 
     # コンソールハンドラーを追加（重複チェック）
     has_console_handler = any(
@@ -394,7 +409,7 @@ def setup_logging(
             )
             file_handler = logging.FileHandler(final_log_file, encoding="utf-8")
             file_handler.setFormatter(file_formatter)
-            file_handler.setLevel(level_value)
+            file_handler.setLevel(file_level_value)
             root_logger.addHandler(file_handler)
 
     # structlog を設定（ProcessorFormatter 用）

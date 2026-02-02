@@ -10,7 +10,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field, HttpUrl
 
-from ..utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="article")
 

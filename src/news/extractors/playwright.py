@@ -35,7 +35,7 @@ from news.models import (
     ExtractedArticle,
     ExtractionStatus,
 )
-from news.utils.logging_config import get_logger
+from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from news.config.workflow import ExtractionConfig

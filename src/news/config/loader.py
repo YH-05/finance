@@ -22,7 +22,8 @@ from typing import Any
 import yaml
 from pydantic import ValidationError as PydanticValidationError
 
-from ..utils.logging_config import get_logger
+from utils_core.logging import get_logger
+
 from .errors import ConfigParseError
 from .models import NewsConfig
 
