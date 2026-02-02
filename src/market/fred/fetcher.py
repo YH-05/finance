@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 import pandas as pd
+import requests
 from dotenv import load_dotenv
 from fredapi import Fred
 
@@ -35,6 +36,14 @@ logger = get_logger(__name__, module="fred_fetcher")
 # Default path for FRED series presets configuration
 DEFAULT_PRESETS_PATH = (
     Path(__file__).parents[3] / "data" / "config" / "fred_series.json"
+)
+
+# Environment variable for FRED series JSON source (URL or local path)
+FRED_SERIES_JSON_ENV = "FRED_SERIES_ID_JSON"
+
+# Default URL for FRED series presets (used when env var not set and local file not found)
+DEFAULT_PRESETS_URL = (
+    "https://raw.githubusercontent.com/YH-05/finance/main/data/config/fred_series.json"
 )
 
 
@@ -84,7 +93,7 @@ class FREDFetcher(BaseDataFetcher):
 
     # Class-level cache for presets data
     _presets: ClassVar[dict[str, dict[str, Any]] | None] = None
-    _presets_path: ClassVar[Path | None] = None
+    _presets_path: ClassVar[str | None] = None  # Can be file path or URL
 
     def __init__(
         self,
@@ -615,13 +624,14 @@ class FREDFetcher(BaseDataFetcher):
         *,
         force_reload: bool = False,
     ) -> dict[str, dict[str, Any]]:
-        """Load FRED series presets from JSON configuration file.
+        """Load FRED series presets from JSON configuration file or URL.
 
         Parameters
         ----------
         config_path : str | Path | None
-            Path to the JSON configuration file.
-            If None, uses default path: data/config/fred_series.json
+            Path or URL to the JSON configuration.
+            If None, checks FRED_SERIES_ID_JSON environment variable first,
+            then falls back to local file or default GitHub URL.
         force_reload : bool
             If True, reload presets even if already loaded.
 
@@ -633,34 +643,57 @@ class FREDFetcher(BaseDataFetcher):
         Raises
         ------
         FileNotFoundError
-            If the configuration file does not exist.
+            If the configuration file does not exist (for local paths).
         ValueError
-            If the configuration file is not valid JSON.
+            If the configuration is not valid JSON.
+        requests.RequestException
+            If URL fetch fails.
 
         Examples
         --------
         >>> FREDFetcher.load_presets()
         >>> FREDFetcher.load_presets("/custom/path/fred_series.json")
+        >>> FREDFetcher.load_presets("https://example.com/fred_series.json")
         """
-        path = Path(config_path) if config_path else DEFAULT_PRESETS_PATH
+        load_dotenv()
 
-        # Return cached presets if already loaded from same path
-        if not force_reload and cls._presets is not None and cls._presets_path == path:
-            logger.debug("Using cached presets", path=str(path))
+        # Determine source: argument > env var > local default > URL default
+        source = config_path
+        if source is None:
+            source = os.environ.get(FRED_SERIES_JSON_ENV)
+        if source is None:
+            # Try local file first, fall back to URL
+            if DEFAULT_PRESETS_PATH.exists():
+                source = str(DEFAULT_PRESETS_PATH)
+            else:
+                source = DEFAULT_PRESETS_URL
+
+        source_str = str(source)
+
+        # Return cached presets if already loaded from same source
+        if (
+            not force_reload
+            and cls._presets is not None
+            and cls._presets_path == source_str
+        ):
+            logger.debug("Using cached presets", source=source_str)
             return cls._presets
 
-        if not path.exists():
-            logger.error("Presets file not found", path=str(path))
-            raise FileNotFoundError(f"FRED presets file not found: {path}")
+        # Determine if source is URL or local path
+        is_url = source_str.startswith("http://") or source_str.startswith("https://")
 
         try:
-            with open(path, encoding="utf-8") as f:
-                cls._presets = json.load(f)
-                cls._presets_path = path
+            if is_url:
+                cls._presets = cls._load_presets_from_url(source_str)
+            else:
+                cls._presets = cls._load_presets_from_file(Path(source_str))
+
+            cls._presets_path = source_str
 
             logger.info(
                 "FRED presets loaded",
-                path=str(path),
+                source=source_str,
+                is_url=is_url,
                 categories=list(cls._presets.keys()) if cls._presets else [],
                 total_series=sum(len(series) for series in cls._presets.values())
                 if cls._presets
@@ -670,8 +703,66 @@ class FREDFetcher(BaseDataFetcher):
             return cls._presets or {}
 
         except json.JSONDecodeError as e:
-            logger.error("Invalid JSON in presets file", path=str(path), error=str(e))
-            raise ValueError(f"Invalid JSON in presets file {path}: {e}") from e
+            logger.error("Invalid JSON in presets", source=source_str, error=str(e))
+            raise ValueError(f"Invalid JSON in presets {source_str}: {e}") from e
+
+    @classmethod
+    def _load_presets_from_file(cls, path: Path) -> dict[str, dict[str, Any]]:
+        """Load presets from a local file.
+
+        Parameters
+        ----------
+        path : Path
+            Path to the JSON file.
+
+        Returns
+        -------
+        dict[str, dict[str, Any]]
+            Loaded presets data.
+
+        Raises
+        ------
+        FileNotFoundError
+            If the file does not exist.
+        """
+        if not path.exists():
+            logger.error("Presets file not found", path=str(path))
+            raise FileNotFoundError(f"FRED presets file not found: {path}")
+
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+
+    @classmethod
+    def _load_presets_from_url(
+        cls,
+        url: str,
+        timeout: int = 30,
+    ) -> dict[str, dict[str, Any]]:
+        """Load presets from a URL.
+
+        Parameters
+        ----------
+        url : str
+            URL to the JSON file.
+        timeout : int
+            Request timeout in seconds.
+
+        Returns
+        -------
+        dict[str, dict[str, Any]]
+            Loaded presets data.
+
+        Raises
+        ------
+        requests.RequestException
+            If the request fails.
+        """
+        logger.debug("Fetching presets from URL", url=url)
+
+        response = requests.get(url, timeout=timeout)
+        response.raise_for_status()
+
+        return response.json()
 
     @classmethod
     def get_preset_categories(cls) -> list[str]:
@@ -851,5 +942,7 @@ class FREDFetcher(BaseDataFetcher):
 
 __all__ = [
     "DEFAULT_PRESETS_PATH",
+    "DEFAULT_PRESETS_URL",
+    "FRED_SERIES_JSON_ENV",
     "FREDFetcher",
 ]
