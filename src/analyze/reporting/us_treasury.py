@@ -4,7 +4,6 @@ us_treasury.py
 
 import logging
 import os
-import sqlite3
 from pathlib import Path
 from typing import Optional
 
@@ -21,6 +20,7 @@ from matplotlib.ticker import MultipleLocator, PercentFormatter
 from plotly.subplots import make_subplots
 from sklearn.decomposition import PCA
 
+from market.fred.historical_cache import HistoricalCache
 from utils_core.settings import get_fred_api_key, load_project_env
 
 # 環境変数を読み込み
@@ -31,14 +31,6 @@ FRED_API = os.getenv("FRED_API_KEY")
 def load_fred_api_key() -> str:
     """環境変数からFRED APIキーを読み込む"""
     return get_fred_api_key()
-
-
-def load_fred_db_path() -> Path:
-    """FREDのSQLiteデータベースファイルのパスを取得する"""
-    fred_dir = os.environ.get("FRED_DIR")
-    if fred_dir is None:
-        raise ValueError("FRED_DIR environment variable not set")
-    return Path(fred_dir) / "FRED.db"
 
 
 def load_fred_series_id_json() -> dict:
@@ -58,27 +50,26 @@ def load_fred_series_id_json() -> dict:
 
 
 def plot_us_interest_rates_and_spread(
-    db_path: Path | None = None,
     start_date: str = "2000-01-01",
     end_date: Optional[str] = None,
     template: str = "plotly_dark",
 ):
     """米国金利とイールドスプレッドの時系列データをPlotlyでプロットする。
 
-    指定されたSQLiteデータベースからFREDの時系列データを読み込み、
+    HistoricalCacheからFREDの時系列データを読み込み、
     複数のサブプロットに分けて視覚化する。プロットには主要な米国債利回り、
     FF金利、および長短金利差（T10Y3M, T10Y2Y）が含まれる。
 
     Parameters
     ----------
-    db_path : pathlib.Path
-        FREDの時系列データが格納されたSQLiteデータベースファイルへのパス。
     start_date : str, optional
         プロットを描画する期間の開始日。'YYYY-MM-DD'形式。
         デフォルトは "2000-01-01"。
     end_date : str, optional
         プロットを描画する期間の終了日。'YYYY-MM-DD'形式。
         デフォルトは None で、データセットの最終日までを描画する。
+    template : str, optional
+        Plotlyテンプレート名。デフォルトは "plotly_dark"。
 
     Returns
     -------
@@ -103,24 +94,19 @@ def plot_us_interest_rates_and_spread(
         "DGS30",
     ]
 
-    db_path = db_path if db_path else load_fred_db_path()
-    conn = sqlite3.connect(db_path)
     # 1. データの読み込みと整形
+    cache = HistoricalCache()
     dfs = []
     for series_id in series_id_interest_rates + series_id_spread:
-        try:
-            df_temp = (
-                pd.read_sql(sql=f"SELECT * FROM '{series_id}'", con=conn)
-                .rename(columns={series_id: "value"})
-                .assign(variable=series_id)
-            )
+        df_temp = cache.get_series_df(series_id)
+        if df_temp is not None:
+            df_temp = df_temp.reset_index().rename(columns={"index": "date"})
+            df_temp["variable"] = series_id
             dfs.append(df_temp)
-        except pd.io.sql.DatabaseError:  # ty:ignore[possibly-missing-attribute]
+        else:
             print(
-                f"Warning: シリーズ '{series_id}' がデータベースに見つかりません。スキップします。"
+                f"Warning: シリーズ '{series_id}' がキャッシュに見つかりません。スキップします。"
             )
-
-    conn.close()
 
     if not dfs:
         print("Error: データベースからデータを読み込めませんでした。")
@@ -289,23 +275,17 @@ def plot_us_interest_rates_and_spread(
 
 
 # ================================================================================
-def load_yield_data_from_database(db_path: Path | None = None) -> pd.DataFrame:
-    """
-    データベースからイールドデータを読み込む。
+def load_yield_data_from_cache() -> pd.DataFrame:
+    """キャッシュからイールドデータを読み込む。
 
-    Parameters
-    ----------
-    db_path : Path
-        データベースファイルのパス。
+    HistoricalCacheを使用して米国債イールドデータを取得する。
 
     Returns
     -------
     pd.DataFrame
         イールドデータを含むデータフレーム。
+        インデックスは日付、カラムは各テナー（DGS1MO, DGS3MO, ...）。
     """
-
-    db_path = db_path if db_path else load_fred_db_path()
-
     table_list = [
         "DGS1MO",
         "DGS3MO",
@@ -320,18 +300,14 @@ def load_yield_data_from_database(db_path: Path | None = None) -> pd.DataFrame:
         "DGS30",
     ]
 
+    cache = HistoricalCache()
     dfs_yield = []
-    for table in table_list:
-        df = (
-            pd.read_sql(
-                f"SELECT * FROM {table} ORDER BY date",
-                sqlite3.connect(db_path),
-                parse_dates=["date"],
-            )
-            .assign(tenor=table)
-            .rename(columns={table: "value"})
-        )
-        dfs_yield.append(df)
+    for series_id in table_list:
+        df = cache.get_series_df(series_id)
+        if df is not None:
+            df = df.reset_index().rename(columns={"index": "date"})
+            df["tenor"] = series_id
+            dfs_yield.append(df)
 
     df_yield = (
         pd.pivot(
@@ -574,43 +550,38 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
 
 # ================================================================================
 def plot_us_corporate_bond_spreads(
-    db_path: Path | None = None,
     fred_series_id: list[str] | None = None,
     template: str = "plotly_dark",
 ):
     """
-    FREDの社債スプレッドデータをDBから読み込み、Plotlyでプロットする。
+    FREDの社債スプレッドデータをHistoricalCacheから読み込み、Plotlyでプロットする。
 
     Parameters
     ----------
-    db_path : Path
-        SQLiteデータベースへのパス。
-    json_config_path : Path
-        "Corporate Bonds" のシリーズIDが定義された
-        'fred_series.json' ファイルへのフルパス。
+    fred_series_id : list[str] | None
+        FREDシリーズIDのリスト。Noneの場合はデフォルトの社債スプレッド系列を使用。
+    template : str
+        Plotlyテンプレート名。デフォルトは "plotly_dark"。
     """
-
-    db_path = db_path if db_path else load_fred_db_path()
     fred_series_id = (
         fred_series_id
         if fred_series_id
         else load_fred_series_id_json()["Corporate Bond Yield Spread"]
     )
     # 1. データの読み込み
-    conn = sqlite3.connect(db_path)
+    cache = HistoricalCache()
 
     # { "ID": "Full Name" } の辞書を作成
     spread_dict = {k: v["name_en"] for k, v in fred_series_id.items()}
 
-    # データベースからデータを読み込む
-    dfs = [
-        pd.read_sql(f"SELECT * FROM '{series_id}'", con=conn, parse_dates=["date"])
-        .rename(columns={series_id: "value"})
-        .assign(variable=series_id)
-        for series_id in spread_dict  # .keys() を明示
-    ]
-
-    conn.close()  # 読み込み後に接続を閉じる
+    # キャッシュからデータを読み込む
+    dfs = []
+    for series_id in spread_dict:
+        df = cache.get_series_df(series_id)
+        if df is not None:
+            df = df.reset_index().rename(columns={"index": "date"})
+            df["variable"] = series_id
+            dfs.append(df)
 
     # 2. データの整形
     df = pd.concat(dfs, ignore_index=True).replace(spread_dict)

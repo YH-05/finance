@@ -8,12 +8,12 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
-def mock_load_dotenv() -> Generator[None]:
-    """Disable load_dotenv during tests to ensure env var mocking works.
+def mock_load_project_env() -> Generator[None]:
+    """Disable load_project_env during tests to ensure env var mocking works.
 
-    Note: load_dotenv is now in utils_core.settings, not market.fred.fetcher.
+    Note: load_project_env is now in utils_core.settings, not market.fred.fetcher.
     """
-    with patch("utils_core.settings.load_dotenv"):
+    with patch("utils_core.settings.load_project_env"):
         yield
 
 

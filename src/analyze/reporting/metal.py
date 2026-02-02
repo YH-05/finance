@@ -4,10 +4,6 @@ metal.py
 金属コモディティ分析モジュール
 """
 
-import os
-import sqlite3
-from pathlib import Path
-
 import pandas as pd
 import plotly.graph_objects as go
 from pandas import DataFrame
@@ -28,10 +24,6 @@ class DollarsIndexAndMetalsAnalyzer:
         必要なデータプロセッサを初期化し、データをロードしてリターンを計算する。
         """
         load_project_env()
-        fred_dir = os.environ.get("FRED_DIR")
-        if fred_dir is None:
-            raise ValueError("FRED_DIR environment variable not set")
-        self.db_path = Path(fred_dir) / "FRED.db"
         self.fred_cache = HistoricalCache()
         self.analyzer = MarketPerformanceAnalyzer()
         self.price_metal = self._load_metal_price()
@@ -58,6 +50,28 @@ class DollarsIndexAndMetalsAnalyzer:
         return df_metals
 
     # -------------------------------------------------------------------------------------
+    def _load_dollars_index(self) -> pd.DataFrame:
+        """ドル指数データをキャッシュから読み込む。
+
+        Returns
+        -------
+        pd.DataFrame
+            DTWEXAFEGS（ドル指数）データ
+
+        Raises
+        ------
+        ValueError
+            キャッシュにデータがない場合
+        """
+        df = self.fred_cache.get_series_df("DTWEXAFEGS")
+        if df is None:
+            raise ValueError(
+                "DTWEXAFEGS not found in cache. "
+                "Run: HistoricalCache().sync_series('DTWEXAFEGS')"
+            )
+        return df.rename_axis("Date")
+
+    # -------------------------------------------------------------------------------------
     def load_price(self):
         """
         ドル指数と金属価格データを結合したデータフレームを返す。
@@ -67,12 +81,7 @@ class DollarsIndexAndMetalsAnalyzer:
         pd.DataFrame
             ドル指数と金属価格を含むデータフレーム（ロング形式）。
         """
-        conn = sqlite3.connect(self.db_path)
-        df_dollars = (
-            pd.read_sql("SELECT * from DTWEXAFEGS", con=conn, parse_dates="date")
-            .rename(columns={"date": "Date"})
-            .set_index("Date")
-        )
+        df_dollars = self._load_dollars_index().rename(columns={"value": "DTWEXAFEGS"})
 
         df_price = pd.melt(
             pd.merge(
@@ -106,12 +115,7 @@ class DollarsIndexAndMetalsAnalyzer:
         pd.DataFrame
             累積リターンを含むデータフレーム。
         """
-        conn = sqlite3.connect(self.db_path)
-        df_dollars = (
-            pd.read_sql("SELECT * from DTWEXAFEGS", con=conn, parse_dates="date")
-            .rename(columns={"date": "Date"})
-            .set_index("Date")
-        )
+        df_dollars = self._load_dollars_index()
 
         df_metals_return = self.price_metal.loc[start_date:, :]
         df_metals_return = df_metals_return.div(df_metals_return.iloc[0])
