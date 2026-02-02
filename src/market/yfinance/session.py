@@ -24,6 +24,9 @@ Examples
 
 from typing import Any, Protocol
 
+from curl_cffi import requests as curl_requests
+from curl_cffi.requests import BrowserTypeLiteral
+
 
 class HttpSessionProtocol(Protocol):
     """Protocol defining the interface for HTTP session objects.
@@ -144,4 +147,135 @@ class HttpSessionProtocol(Protocol):
         ...
 
 
-__all__ = ["HttpSessionProtocol"]
+class CurlCffiSession:
+    """High-performance HTTP session using curl_cffi with browser impersonation.
+
+    This class wraps curl_cffi.Session to provide a fast HTTP client that
+    impersonates real browser TLS fingerprints, helping to bypass rate
+    limiting on services like Yahoo Finance.
+
+    Implements HttpSessionProtocol for compatibility with code expecting
+    a standard HTTP session interface.
+
+    Parameters
+    ----------
+    impersonate : BrowserTypeLiteral, optional
+        Browser to impersonate for TLS fingerprinting. Options include:
+        "chrome", "chrome110", "chrome120", "edge99", "safari15_3".
+        Defaults to "chrome".
+
+    Attributes
+    ----------
+    _session : curl_requests.Session
+        The underlying curl_cffi session instance.
+    _impersonate : BrowserTypeLiteral
+        The browser type being impersonated.
+
+    Examples
+    --------
+    Basic usage:
+
+    >>> session = CurlCffiSession()
+    >>> response = session.get("https://api.example.com/data")
+    >>> session.close()
+
+    With custom impersonation:
+
+    >>> session = CurlCffiSession(impersonate="safari15_3")
+    >>> response = session.get("https://api.example.com/data")
+    >>> session.close()
+
+    Using as a context manager:
+
+    >>> with CurlCffiSession() as session:
+    ...     response = session.get("https://api.example.com/data")
+    """
+
+    def __init__(self, impersonate: BrowserTypeLiteral = "chrome") -> None:
+        """Initialize a new CurlCffiSession.
+
+        Parameters
+        ----------
+        impersonate : BrowserTypeLiteral, optional
+            Browser to impersonate for TLS fingerprinting.
+            Defaults to "chrome".
+        """
+        self._impersonate: BrowserTypeLiteral = impersonate
+        self._session: curl_requests.Session = curl_requests.Session(
+            impersonate=impersonate
+        )
+
+    def get(self, url: str, **kwargs: Any) -> Any:
+        """Send a GET request to the specified URL.
+
+        Parameters
+        ----------
+        url : str
+            The URL to send the GET request to.
+        **kwargs : Any
+            Additional keyword arguments passed to the underlying HTTP client.
+            Common options include:
+            - headers: dict[str, str] - HTTP headers
+            - params: dict[str, Any] - URL query parameters
+            - timeout: float | tuple[float, float] - Request timeout
+            - verify: bool - SSL certificate verification
+
+        Returns
+        -------
+        Any
+            The response object from curl_cffi.
+
+        Examples
+        --------
+        >>> response = session.get("https://api.example.com/data")
+        >>> response = session.get(
+        ...     "https://api.example.com/data",
+        ...     headers={"User-Agent": "MyApp/1.0"},
+        ...     timeout=30.0,
+        ... )
+        """
+        return self._session.get(url, **kwargs)
+
+    def close(self) -> None:
+        """Close the session and release resources.
+
+        This method should be called when the session is no longer needed
+        to properly release any held resources such as network connections.
+
+        Examples
+        --------
+        >>> session.close()
+        """
+        self._session.close()
+
+    def __enter__(self) -> "CurlCffiSession":
+        """Support context manager protocol.
+
+        Returns
+        -------
+        CurlCffiSession
+            Self for use in with statement.
+        """
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: Any,
+    ) -> None:
+        """Close session on context exit.
+
+        Parameters
+        ----------
+        exc_type : type[BaseException] | None
+            Exception type if an exception was raised.
+        exc_val : BaseException | None
+            Exception instance if an exception was raised.
+        exc_tb : Any
+            Traceback if an exception was raised.
+        """
+        self.close()
+
+
+__all__ = ["CurlCffiSession", "HttpSessionProtocol"]
