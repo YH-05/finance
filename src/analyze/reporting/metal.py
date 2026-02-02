@@ -4,8 +4,6 @@ metal.py
 金属コモディティ分析モジュール
 """
 
-import sqlite3
-
 import pandas as pd
 import plotly.graph_objects as go
 from pandas import DataFrame
@@ -117,12 +115,7 @@ class DollarsIndexAndMetalsAnalyzer:
         pd.DataFrame
             累積リターンを含むデータフレーム。
         """
-        conn = sqlite3.connect(self.db_path)
-        df_dollars = (
-            pd.read_sql("SELECT * from DTWEXAFEGS", con=conn, parse_dates="date")
-            .rename(columns={"date": "Date"})
-            .set_index("Date")
-        )
+        df_dollars = self._load_dollars_index()
 
         df_metals_return = self.price_metal.loc[start_date:, :]
         df_metals_return = df_metals_return.div(df_metals_return.iloc[0])
