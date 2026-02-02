@@ -88,6 +88,11 @@ market = [
     "openpyxl>=3.1.5",
 ]
 
+# analyze optional dependencies (Kalman filter for beta estimation)
+kalman = [
+    "pykalman>=0.9.7",
+]
+
 [project.scripts]
 rss-mcp = "rss.mcp.server:main"
 rss-cli = "rss.cli.main:cli"
