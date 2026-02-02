@@ -84,6 +84,9 @@ automation = [
     "claude-agent-sdk>=0.1.22",
     "anyio>=4.0.0",
 ]
+market = [
+    "openpyxl>=3.1.5",
+]
 
 [project.scripts]
 rss-mcp = "rss.mcp.server:main"
