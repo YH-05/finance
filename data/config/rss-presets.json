@@ -95,7 +95,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
             "title": "CNBC - Economy",
-            "category": "finance",
+            "category": "macro",
             "fetch_interval": "daily",
             "enabled": true
         },
@@ -137,7 +137,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839135",
             "title": "CNBC - Earnings",
-            "category": "market",
+            "category": "stock",
             "fetch_interval": "daily",
             "enabled": true
         },
@@ -151,7 +151,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000108",
             "title": "CNBC - Health Care",
-            "category": "finance",
+            "category": "sector",
             "fetch_interval": "daily",
             "enabled": true
         },
@@ -179,7 +179,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19836768",
             "title": "CNBC - Energy",
-            "category": "finance",
+            "category": "sector",
             "fetch_interval": "daily",
             "enabled": true
         },
