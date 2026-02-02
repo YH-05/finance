@@ -51,27 +51,26 @@ def load_fred_series_id_json() -> dict:
 
 
 def plot_us_interest_rates_and_spread(
-    db_path: Path,
     start_date: str = "2000-01-01",
     end_date: Optional[str] = None,
     template: str = "plotly_dark",
 ):
     """米国金利とイールドスプレッドの時系列データをPlotlyでプロットする。
 
-    指定されたSQLiteデータベースからFREDの時系列データを読み込み、
+    HistoricalCacheからFREDの時系列データを読み込み、
     複数のサブプロットに分けて視覚化する。プロットには主要な米国債利回り、
     FF金利、および長短金利差（T10Y3M, T10Y2Y）が含まれる。
 
     Parameters
     ----------
-    db_path : pathlib.Path
-        FREDの時系列データが格納されたSQLiteデータベースファイルへのパス。
     start_date : str, optional
         プロットを描画する期間の開始日。'YYYY-MM-DD'形式。
         デフォルトは "2000-01-01"。
     end_date : str, optional
         プロットを描画する期間の終了日。'YYYY-MM-DD'形式。
         デフォルトは None で、データセットの最終日までを描画する。
+    template : str, optional
+        Plotlyテンプレート名。デフォルトは "plotly_dark"。
 
     Returns
     -------
@@ -96,23 +95,19 @@ def plot_us_interest_rates_and_spread(
         "DGS30",
     ]
 
-    conn = sqlite3.connect(db_path)
     # 1. データの読み込みと整形
+    cache = HistoricalCache()
     dfs = []
     for series_id in series_id_interest_rates + series_id_spread:
-        try:
-            df_temp = (
-                pd.read_sql(sql=f"SELECT * FROM '{series_id}'", con=conn)
-                .rename(columns={series_id: "value"})
-                .assign(variable=series_id)
-            )
+        df_temp = cache.get_series_df(series_id)
+        if df_temp is not None:
+            df_temp = df_temp.reset_index().rename(columns={"index": "date"})
+            df_temp["variable"] = series_id
             dfs.append(df_temp)
-        except pd.io.sql.DatabaseError:  # ty:ignore[possibly-missing-attribute]
+        else:
             print(
-                f"Warning: シリーズ '{series_id}' がデータベースに見つかりません。スキップします。"
+                f"Warning: シリーズ '{series_id}' がキャッシュに見つかりません。スキップします。"
             )
-
-    conn.close()
 
     if not dfs:
         print("Error: データベースからデータを読み込めませんでした。")
