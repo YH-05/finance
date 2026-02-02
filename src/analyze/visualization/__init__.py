@@ -22,6 +22,9 @@ Examples
 
 >>> from analyze.visualization import plot_vix_and_high_yield_spread
 >>> fig = plot_vix_and_high_yield_spread(volatility_df)
+
+>>> from analyze.visualization import plot_rolling_correlation
+>>> fig = plot_rolling_correlation(df_corr, ticker="AAPL", target_index="S&P 500")
 """
 
 from .charts import (
@@ -37,6 +40,7 @@ from .charts import (
     ThemeColors,
     get_theme_colors,
 )
+from .correlation import plot_rolling_correlation
 from .heatmap import HeatmapChart
 from .performance import apply_df_style, plot_cumulative_returns
 from .price_charts import (
@@ -68,6 +72,7 @@ __all__ = [
     "apply_df_style",
     "get_theme_colors",
     "plot_cumulative_returns",
+    "plot_rolling_correlation",
     "plot_vix_and_high_yield_spread",
     "plot_vix_and_uncertainty_index",
 ]
