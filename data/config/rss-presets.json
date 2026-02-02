@@ -51,8 +51,8 @@
             "enabled": true
         },
         {
-            "url": "https://www.ft.com/?format=rss",
-            "title": "Financial Times",
+            "url": "https://www.ft.com/markets?format=rss",
+            "title": "Financial Times - Markets",
             "category": "finance",
             "fetch_interval": "daily",
             "enabled": true
@@ -83,7 +83,7 @@
             "title": "CNBC - Markets",
             "category": "market",
             "fetch_interval": "daily",
-            "enabled": true
+            "enabled": false
         },
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069",
@@ -95,7 +95,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
             "title": "CNBC - Economy",
-            "category": "finance",
+            "category": "macro",
             "fetch_interval": "daily",
             "enabled": true
         },
@@ -137,7 +137,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839135",
             "title": "CNBC - Earnings",
-            "category": "market",
+            "category": "stock",
             "fetch_interval": "daily",
             "enabled": true
         },
@@ -151,7 +151,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000108",
             "title": "CNBC - Health Care",
-            "category": "finance",
+            "category": "sector",
             "fetch_interval": "daily",
             "enabled": true
         },
@@ -179,7 +179,7 @@
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19836768",
             "title": "CNBC - Energy",
-            "category": "finance",
+            "category": "sector",
             "fetch_interval": "daily",
             "enabled": true
         },
@@ -201,6 +201,41 @@
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000739",
             "title": "CNBC - Travel",
             "category": "finance",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.nasdaq.com/feed/rssoutbound?category=stocks",
+            "title": "Nasdaq Stock News",
+            "category": "stock",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.nasdaq.com/feed/rssoutbound?category=etfs",
+            "title": "Nasdaq ETFs",
+            "category": "sector",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.nasdaq.com/feed/rssoutbound?category=markets",
+            "title": "Nasdaq Markets",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.investing.com/rss/news_25.rss",
+            "title": "Investing.com",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+            "title": "Federal Reserve Press",
+            "category": "macro",
             "fetch_interval": "daily",
             "enabled": true
         }

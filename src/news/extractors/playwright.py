@@ -94,6 +94,11 @@ class PlaywrightExtractor(BaseExtractor):
 
     # CSS selectors to try in order of priority
     _selectors: list[str] = [
+        # CNBC専用（優先度高）
+        ".ArticleBody-articleBody",
+        ".RenderKeyPoints-list",
+        "[data-module='ArticleBody']",
+        # 汎用セレクタ
         "article",
         "main",
         "[role='main']",
@@ -286,13 +291,16 @@ class PlaywrightExtractor(BaseExtractor):
         """ページから本文テキストを抽出。
 
         記事本文のセレクタを優先度順に試行:
-        1. article要素
-        2. main要素
-        3. [role="main"]
-        4. .article-body
-        5. .post-content
-        6. #content
-        7. body全体
+        1. .ArticleBody-articleBody (CNBC専用)
+        2. .RenderKeyPoints-list (CNBC専用)
+        3. [data-module='ArticleBody'] (CNBC専用)
+        4. article要素
+        5. main要素
+        6. [role="main"]
+        7. .article-body
+        8. .post-content
+        9. #content
+        10. body全体
 
         Parameters
         ----------

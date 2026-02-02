@@ -16,6 +16,14 @@ status_mapping:
   market: "index"
   finance: "finance"
 
+  # 新規追加（RSSカテゴリ用）
+  stock: "stock"
+  sector: "sector"
+  macro: "macro"
+  economy: "macro"      # economyカテゴリもmacroにマップ
+  earnings: "stock"     # 決算ニュースはstockにマップ
+  etfs: "sector"        # ETFニュースはsectorにマップ
+
   # yfinanceカテゴリ
   yf_index: "index"       # ^GSPC, ^DJI 等の指数
   yf_stock: "stock"       # 一般的な個別株
