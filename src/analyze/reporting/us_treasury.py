@@ -21,6 +21,7 @@ from matplotlib.ticker import MultipleLocator, PercentFormatter
 from plotly.subplots import make_subplots
 from sklearn.decomposition import PCA
 
+from market.fred.historical_cache import HistoricalCache
 from utils_core.settings import get_fred_api_key, load_project_env
 
 # 環境変数を読み込み
