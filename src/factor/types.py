@@ -119,6 +119,22 @@ type LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 # =============================================================================
+# Type Aliases for Factor Metadata
+# =============================================================================
+
+# Category classification for factors
+type CategoryLiteral = Literal[
+    "price", "value", "quality", "size", "macro", "alternative"
+]
+
+# Data frequency for factors
+type FrequencyLiteral = Literal["daily", "weekly", "monthly", "quarterly"]
+
+# Missing data handling strategy
+type MissingHandleLiteral = Literal["drop", "fill_zero", "fill_mean"]
+
+
+# =============================================================================
 # Configuration Dataclasses
 # =============================================================================
 
@@ -162,6 +178,72 @@ class FactorConfig:
     min_periods: int = 20
     winsorize_limits: tuple[float, float] | None = None
     lag: int = 0
+
+
+@dataclass(frozen=True)
+class FactorMetadata:
+    """Immutable metadata for a factor.
+
+    This dataclass holds descriptive information about a factor including
+    its name, category, data requirements, and default parameters.
+
+    Parameters
+    ----------
+    name : str
+        Unique identifier for the factor.
+    description : str
+        Human-readable description of the factor.
+    category : {"price", "value", "quality", "size", "macro", "alternative"}
+        Category classification for the factor.
+    required_data : list[str]
+        List of data types required for factor calculation
+        (e.g., ["price", "volume"]).
+    frequency : {"daily", "weekly", "monthly", "quarterly"}
+        Data frequency for the factor.
+    lookback_period : int | None, default=None
+        Number of periods to look back for calculation.
+    higher_is_better : bool, default=True
+        Whether higher factor values indicate better quality.
+    default_parameters : dict[str, int | float], default={}
+        Default parameter values for factor calculation.
+
+    Attributes
+    ----------
+    name : str
+    description : str
+    category : str
+    required_data : list[str]
+    frequency : str
+    lookback_period : int | None
+    higher_is_better : bool
+    default_parameters : dict[str, int | float]
+
+    Examples
+    --------
+    >>> metadata = FactorMetadata(
+    ...     name="momentum_12m",
+    ...     description="12-month price momentum",
+    ...     category="price",
+    ...     required_data=["price"],
+    ...     frequency="daily",
+    ...     lookback_period=252,
+    ...     higher_is_better=True,
+    ...     default_parameters={"lookback": 252, "skip_recent": 21},
+    ... )
+    >>> metadata.name
+    'momentum_12m'
+    >>> metadata.category
+    'price'
+    """
+
+    name: str
+    description: str
+    category: CategoryLiteral
+    required_data: list[str]
+    frequency: FrequencyLiteral
+    lookback_period: int | None = None
+    higher_is_better: bool = True
+    default_parameters: dict[str, int | float] = field(default_factory=dict)
 
 
 @dataclass
@@ -319,31 +401,150 @@ class OrthogonalizationResult:
         return self.orthogonalized_data.empty
 
 
+@dataclass
+class FactorScore:
+    """Normalized factor scores for portfolio construction.
+
+    This dataclass holds normalized factor scores that can be used directly
+    for portfolio construction, ranking, or further analysis.
+
+    Parameters
+    ----------
+    name : str
+        Factor score name identifier.
+    scores : pd.DataFrame
+        Normalized factor scores with datetime index and symbol columns.
+        Values typically range based on normalization method:
+        - ZSCORE: approximately -3 to +3 (standard deviations)
+        - RANK: 0 to 1 (percentile rank)
+        - PERCENTILE: 0 to 100 (percentile)
+        - QUINTILE: 1 to 5 (quintile groups)
+    normalization_method : NormalizationMethod
+        Method used for normalizing the scores.
+    raw_values : pd.DataFrame | None, default=None
+        Original raw values before normalization (optional).
+    higher_is_better : bool, default=True
+        Whether higher scores indicate better quality.
+        If False, lower scores are preferred (e.g., for P/E ratio).
+    calculated_at : datetime
+        Timestamp when scores were calculated.
+
+    Attributes
+    ----------
+    name : str
+    scores : pd.DataFrame
+    normalization_method : NormalizationMethod
+    raw_values : pd.DataFrame | None
+    higher_is_better : bool
+    calculated_at : datetime
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from factor.enums import NormalizationMethod
+    >>> scores = pd.DataFrame(
+    ...     {"AAPL": [0.5, 0.8], "GOOGL": [0.6, 0.7]},
+    ...     index=pd.date_range("2024-01-01", periods=2, freq="D"),
+    ... )
+    >>> factor_score = FactorScore(
+    ...     name="momentum_score",
+    ...     scores=scores,
+    ...     normalization_method=NormalizationMethod.ZSCORE,
+    ... )
+    >>> factor_score.symbols
+    ['AAPL', 'GOOGL']
+    >>> factor_score.is_empty
+    False
+    """
+
+    name: str
+    scores: pd.DataFrame
+    normalization_method: NormalizationMethod
+    raw_values: pd.DataFrame | None = None
+    higher_is_better: bool = True
+    calculated_at: datetime = field(default_factory=datetime.now)
+
+    @property
+    def is_empty(self) -> bool:
+        """Check if the scores contain no data.
+
+        Returns
+        -------
+        bool
+            True if the scores DataFrame is empty, False otherwise.
+        """
+        return self.scores.empty
+
+    @property
+    def symbols(self) -> list[str]:
+        """Get list of symbols in the scores.
+
+        Returns
+        -------
+        list[str]
+            List of symbol names (column names from scores DataFrame).
+        """
+        return list(self.scores.columns)
+
+    @property
+    def date_range(self) -> tuple[datetime, datetime] | None:
+        """Get the date range of the factor scores.
+
+        Returns
+        -------
+        tuple[datetime, datetime] | None
+            Tuple of (start_date, end_date) or None if scores are empty.
+        """
+        if self.is_empty:
+            return None
+        min_ts = self.scores.index.min()
+        max_ts = self.scores.index.max()
+        # Convert pandas Timestamp to datetime, casting to satisfy type checker
+        start = cast("datetime", min_ts.to_pydatetime())
+        end = cast("datetime", max_ts.to_pydatetime())
+        return (start, end)
+
+
 # =============================================================================
 # __all__ Export
 # =============================================================================
 
 __all__ = [
+    # Type aliases
+    "CategoryLiteral",
+    # TypedDicts
     "ConfigDict",
     "ErrorInfo",
+    # Enums (re-exported)
     "FactorCategory",
+    # Configuration dataclasses
     "FactorConfig",
+    "FactorMetadata",
+    # Result dataclasses
     "FactorResult",
+    "FactorScore",
+    # File types
     "FileFormat",
     "FileOperation",
+    # Sorting and filtering
     "FilterOperator",
+    "FrequencyLiteral",
     "ItemDict",
     "ItemDictWithStatus",
+    # JSON types
     "JSONObject",
     "JSONPrimitive",
     "JSONValue",
     "LogContext",
     "LogEvent",
+    # Logging types
     "LogFormat",
     "LogLevel",
+    "MissingHandleLiteral",
     "NormalizationMethod",
     "OrthogonalizationResult",
     "ProcessingResult",
+    # Status types
     "ProcessorStatus",
     "QuantileResult",
     "SortOrder",

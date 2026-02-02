@@ -28,90 +28,22 @@ Examples
 """
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal
 
 import pandas as pd
 
 from factor.enums import FactorCategory
 from factor.errors import ValidationError
 from factor.providers.base import DataProvider
+from factor.types import (
+    CategoryLiteral,
+    FactorMetadata,
+    MissingHandleLiteral,
+)
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
-
-
-# Type aliases for better readability
-CategoryLiteral = Literal["price", "value", "quality", "size", "macro", "alternative"]
-FrequencyLiteral = Literal["daily", "weekly", "monthly", "quarterly"]
-MissingHandleLiteral = Literal["drop", "fill_zero", "fill_mean"]
-
-
-@dataclass(frozen=True)
-class FactorMetadata:
-    """Immutable metadata for a factor.
-
-    This dataclass holds descriptive information about a factor including
-    its name, category, data requirements, and default parameters.
-
-    Parameters
-    ----------
-    name : str
-        Unique identifier for the factor.
-    description : str
-        Human-readable description of the factor.
-    category : {"price", "value", "quality", "size", "macro", "alternative"}
-        Category classification for the factor.
-    required_data : list[str]
-        List of data types required for factor calculation
-        (e.g., ["price", "volume"]).
-    frequency : {"daily", "weekly", "monthly", "quarterly"}
-        Data frequency for the factor.
-    lookback_period : int | None, default=None
-        Number of periods to look back for calculation.
-    higher_is_better : bool, default=True
-        Whether higher factor values indicate better quality.
-    default_parameters : dict[str, int | float], default={}
-        Default parameter values for factor calculation.
-
-    Attributes
-    ----------
-    name : str
-    description : str
-    category : str
-    required_data : list[str]
-    frequency : str
-    lookback_period : int | None
-    higher_is_better : bool
-    default_parameters : dict[str, int | float]
-
-    Examples
-    --------
-    >>> metadata = FactorMetadata(
-    ...     name="momentum_12m",
-    ...     description="12-month price momentum",
-    ...     category="price",
-    ...     required_data=["price"],
-    ...     frequency="daily",
-    ...     lookback_period=252,
-    ...     higher_is_better=True,
-    ...     default_parameters={"lookback": 252, "skip_recent": 21},
-    ... )
-    >>> metadata.name
-    'momentum_12m'
-    >>> metadata.category
-    'price'
-    """
-
-    name: str
-    description: str
-    category: CategoryLiteral
-    required_data: list[str]
-    frequency: FrequencyLiteral
-    lookback_period: int | None = None
-    higher_is_better: bool = True
-    default_parameters: dict[str, int | float] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
