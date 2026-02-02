@@ -24,6 +24,7 @@ Examples
 
 from typing import Any, Protocol
 
+import requests
 from curl_cffi import requests as curl_requests
 from curl_cffi.requests import BrowserTypeLiteral
 
@@ -278,4 +279,110 @@ class CurlCffiSession:
         self.close()
 
 
-__all__ = ["CurlCffiSession", "HttpSessionProtocol"]
+class StandardRequestsSession:
+    """Standard HTTP session using the requests library.
+
+    This class wraps requests.Session to provide a standard HTTP client
+    for making HTTP requests. It implements HttpSessionProtocol for
+    compatibility with code expecting a common HTTP session interface.
+
+    Attributes
+    ----------
+    _session : requests.Session
+        The underlying requests session instance.
+
+    Examples
+    --------
+    Basic usage:
+
+    >>> session = StandardRequestsSession()
+    >>> response = session.get("https://api.example.com/data")
+    >>> session.close()
+
+    Using as a context manager:
+
+    >>> with StandardRequestsSession() as session:
+    ...     response = session.get("https://api.example.com/data")
+    """
+
+    def __init__(self) -> None:
+        """Initialize a new StandardRequestsSession.
+
+        Creates a new requests.Session instance for making HTTP requests.
+        """
+        self._session: requests.Session = requests.Session()
+
+    def get(self, url: str, **kwargs: Any) -> Any:
+        """Send a GET request to the specified URL.
+
+        Parameters
+        ----------
+        url : str
+            The URL to send the GET request to.
+        **kwargs : Any
+            Additional keyword arguments passed to the underlying HTTP client.
+            Common options include:
+            - headers: dict[str, str] - HTTP headers
+            - params: dict[str, Any] - URL query parameters
+            - timeout: float | tuple[float, float] - Request timeout
+            - verify: bool - SSL certificate verification
+
+        Returns
+        -------
+        Any
+            The response object from requests.
+
+        Examples
+        --------
+        >>> response = session.get("https://api.example.com/data")
+        >>> response = session.get(
+        ...     "https://api.example.com/data",
+        ...     headers={"User-Agent": "MyApp/1.0"},
+        ...     timeout=30.0,
+        ... )
+        """
+        return self._session.get(url, **kwargs)
+
+    def close(self) -> None:
+        """Close the session and release resources.
+
+        This method should be called when the session is no longer needed
+        to properly release any held resources such as network connections.
+
+        Examples
+        --------
+        >>> session.close()
+        """
+        self._session.close()
+
+    def __enter__(self) -> "StandardRequestsSession":
+        """Support context manager protocol.
+
+        Returns
+        -------
+        StandardRequestsSession
+            Self for use in with statement.
+        """
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: Any,
+    ) -> None:
+        """Close session on context exit.
+
+        Parameters
+        ----------
+        exc_type : type[BaseException] | None
+            Exception type if an exception was raised.
+        exc_val : BaseException | None
+            Exception instance if an exception was raised.
+        exc_tb : Any
+            Traceback if an exception was raised.
+        """
+        self.close()
+
+
+__all__ = ["CurlCffiSession", "HttpSessionProtocol", "StandardRequestsSession"]
