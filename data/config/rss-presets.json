@@ -83,7 +83,7 @@
             "title": "CNBC - Markets",
             "category": "market",
             "fetch_interval": "daily",
-            "enabled": true
+            "enabled": false
         },
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069",
