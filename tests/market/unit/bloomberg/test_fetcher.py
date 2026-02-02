@@ -90,8 +90,8 @@ class TestBloombergFetcherValidation:
         self, fetcher: "BloombergFetcher"
     ) -> None:
         """空の securities リストで BloombergValidationError が発生することを確認。"""
-        from market.bloomberg.errors import BloombergValidationError
         from market.bloomberg.types import BloombergFetchOptions
+        from market.errors import BloombergValidationError
 
         options = BloombergFetchOptions(
             securities=[],
@@ -105,8 +105,8 @@ class TestBloombergFetcherValidation:
         self, fetcher: "BloombergFetcher"
     ) -> None:
         """空の fields リストで BloombergValidationError が発生することを確認。"""
-        from market.bloomberg.errors import BloombergValidationError
         from market.bloomberg.types import BloombergFetchOptions
+        from market.errors import BloombergValidationError
 
         options = BloombergFetchOptions(
             securities=["AAPL US Equity"],
@@ -120,8 +120,8 @@ class TestBloombergFetcherValidation:
         self, fetcher: "BloombergFetcher"
     ) -> None:
         """開始日が終了日より後の場合 BloombergValidationError が発生することを確認。"""
-        from market.bloomberg.errors import BloombergValidationError
         from market.bloomberg.types import BloombergFetchOptions
+        from market.errors import BloombergValidationError
 
         options = BloombergFetchOptions(
             securities=["AAPL US Equity"],
@@ -497,8 +497,8 @@ class TestBloombergFetcherConnectionErrors:
         fetcher: "BloombergFetcher",
     ) -> None:
         """Bloomberg Terminal への接続失敗時に BloombergConnectionError が発生することを確認。"""
-        from market.bloomberg.errors import BloombergConnectionError
         from market.bloomberg.types import BloombergFetchOptions
+        from market.errors import BloombergConnectionError
 
         # Mock setup - connection fails
         mock_session = MagicMock()
@@ -520,8 +520,8 @@ class TestBloombergFetcherConnectionErrors:
         fetcher: "BloombergFetcher",
     ) -> None:
         """サービス開始失敗時に BloombergSessionError が発生することを確認。"""
-        from market.bloomberg.errors import BloombergSessionError
         from market.bloomberg.types import BloombergFetchOptions
+        from market.errors import BloombergSessionError
 
         # Mock setup - session starts but service fails
         mock_session = MagicMock()
@@ -584,8 +584,8 @@ class TestBloombergFetcherDataErrors:
         fetcher: "BloombergFetcher",
     ) -> None:
         """無効なセキュリティで BloombergDataError が発生することを確認。"""
-        from market.bloomberg.errors import BloombergDataError
         from market.bloomberg.types import BloombergFetchOptions
+        from market.errors import BloombergDataError
 
         # Mock setup
         mock_session = MagicMock()

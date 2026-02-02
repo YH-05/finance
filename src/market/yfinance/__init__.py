@@ -15,7 +15,7 @@ Examples
 >>> results = fetcher.fetch(FetchOptions(symbols=["AAPL"]))
 """
 
-from market.yfinance.errors import DataFetchError, ErrorCode, ValidationError
+from market.errors import DataFetchError, ErrorCode, ValidationError
 from market.yfinance.fetcher import YFinanceFetcher
 from market.yfinance.types import (
     CacheConfig,

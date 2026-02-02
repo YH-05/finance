@@ -328,7 +328,7 @@ class TestAPIErrorHandling:
         mock_fetcher_class: MagicMock,
     ) -> None:
         """API エラー発生時に DataFetchError がスローされることを確認."""
-        from market.yfinance.errors import DataFetchError
+        from market.errors import DataFetchError
 
         # モックの設定: fetchが例外をスロー
         mock_fetcher = MagicMock()

@@ -18,7 +18,7 @@ import yfinance as yf
 from curl_cffi import requests as curl_requests
 from curl_cffi.requests import BrowserTypeLiteral
 
-from market.yfinance.errors import DataFetchError, ErrorCode, ValidationError
+from market.errors import DataFetchError, ErrorCode, ValidationError
 from market.yfinance.session import CurlCffiSession, HttpSessionProtocol
 from market.yfinance.types import (
     CacheConfig,

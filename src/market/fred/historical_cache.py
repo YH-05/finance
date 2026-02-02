@@ -14,9 +14,9 @@ from typing import Any
 import pandas as pd
 from dotenv import load_dotenv
 
+from market.errors import FREDFetchError
 from utils_core.logging import get_logger
 
-from .errors import FREDFetchError
 from .fetcher import FREDFetcher
 from .types import FetchOptions
 

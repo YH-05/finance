@@ -22,14 +22,6 @@ Example
 >>> results = fetcher.get_historical_data(options)
 """
 
-from market.bloomberg.errors import (
-    BloombergConnectionError,
-    BloombergDataError,
-    BloombergError,
-    BloombergSessionError,
-    BloombergValidationError,
-    ErrorCode,
-)
 from market.bloomberg.fetcher import BloombergFetcher
 from market.bloomberg.types import (
     BloombergDataResult,
@@ -40,6 +32,14 @@ from market.bloomberg.types import (
     NewsStory,
     OverrideOption,
     Periodicity,
+)
+from market.errors import (
+    BloombergConnectionError,
+    BloombergDataError,
+    BloombergError,
+    BloombergSessionError,
+    BloombergValidationError,
+    ErrorCode,
 )
 
 __all__ = [

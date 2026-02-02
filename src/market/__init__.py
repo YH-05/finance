@@ -44,7 +44,22 @@ MarketConfig
     Complete market data configuration
 """
 
-from .errors import CacheError, ErrorCode, ExportError, MarketError
+from .errors import (
+    BloombergConnectionError,
+    BloombergDataError,
+    BloombergError,
+    BloombergSessionError,
+    BloombergValidationError,
+    CacheError,
+    DataFetchError,
+    ErrorCode,
+    ExportError,
+    FREDError,
+    FREDFetchError,
+    FREDValidationError,
+    MarketError,
+    ValidationError,
+)
 from .export import DataExporter
 from .schema import (
     CacheConfig,
@@ -70,9 +85,17 @@ __all__ = [
     "AgentOutput",
     "AgentOutputMetadata",
     "AnalysisResult",
+    # Bloomberg errors
+    "BloombergConnectionError",
+    "BloombergDataError",
+    "BloombergError",
+    "BloombergSessionError",
+    "BloombergValidationError",
+    # Core
     "CacheConfig",
     "CacheError",
     "DataExporter",
+    "DataFetchError",
     "DataSource",
     "DataSourceConfig",
     "DateRange",
@@ -80,10 +103,15 @@ __all__ = [
     "ErrorCode",
     "ExportConfig",
     "ExportError",
+    # FRED errors
+    "FREDError",
+    "FREDFetchError",
+    "FREDValidationError",
     "MarketConfig",
     "MarketDataResult",
     "MarketError",
     "StockDataMetadata",
+    "ValidationError",
     "validate_config",
     "validate_economic_metadata",
     "validate_stock_metadata",

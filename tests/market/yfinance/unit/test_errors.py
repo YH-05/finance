@@ -6,7 +6,7 @@ class TestErrorCode:
 
     def test_正常系_主要なエラーコードが定義されている(self) -> None:
         """必要なエラーコードが全て定義されていることを確認。"""
-        from market.yfinance.errors import ErrorCode
+        from market.errors import ErrorCode
 
         assert hasattr(ErrorCode, "UNKNOWN")
         assert hasattr(ErrorCode, "API_ERROR")
@@ -16,7 +16,7 @@ class TestErrorCode:
 
     def test_正常系_str型を継承(self) -> None:
         """ErrorCode が str を継承していることを確認。"""
-        from market.yfinance.errors import ErrorCode
+        from market.errors import ErrorCode
 
         assert isinstance(ErrorCode.API_ERROR, str)
 
@@ -26,7 +26,7 @@ class TestMarketError:
 
     def test_正常系_基本的な初期化(self) -> None:
         """MarketError が基本パラメータで初期化されることを確認。"""
-        from market.yfinance.errors import ErrorCode, MarketError
+        from market.errors import ErrorCode, MarketError
 
         error = MarketError("Test error")
         assert error.message == "Test error"
@@ -34,21 +34,21 @@ class TestMarketError:
 
     def test_正常系_エラーコード付きで初期化(self) -> None:
         """MarketError がエラーコード付きで初期化されることを確認。"""
-        from market.yfinance.errors import ErrorCode, MarketError
+        from market.errors import ErrorCode, MarketError
 
         error = MarketError("Test error", code=ErrorCode.API_ERROR)
         assert error.code == ErrorCode.API_ERROR
 
     def test_正常系_詳細情報付きで初期化(self) -> None:
         """MarketError が詳細情報付きで初期化されることを確認。"""
-        from market.yfinance.errors import MarketError
+        from market.errors import MarketError
 
         error = MarketError("Test error", details={"key": "value"})
         assert error.details == {"key": "value"}
 
     def test_正常系_原因例外付きで初期化(self) -> None:
         """MarketError が原因例外付きで初期化されることを確認。"""
-        from market.yfinance.errors import MarketError
+        from market.errors import MarketError
 
         cause = ValueError("Original error")
         error = MarketError("Test error", cause=cause)
@@ -56,7 +56,7 @@ class TestMarketError:
 
     def test_正常系_to_dictメソッド(self) -> None:
         """MarketError.to_dict() が正しく動作することを確認。"""
-        from market.yfinance.errors import ErrorCode, MarketError
+        from market.errors import ErrorCode, MarketError
 
         error = MarketError("Test error", code=ErrorCode.API_ERROR)
         result = error.to_dict()
@@ -70,7 +70,7 @@ class TestDataFetchError:
 
     def test_正常系_シンボル付きで初期化(self) -> None:
         """DataFetchError がシンボル情報付きで初期化されることを確認。"""
-        from market.yfinance.errors import DataFetchError
+        from market.errors import DataFetchError
 
         error = DataFetchError("Fetch failed", symbol="AAPL")
         assert error.symbol == "AAPL"
@@ -78,14 +78,14 @@ class TestDataFetchError:
 
     def test_正常系_ソース付きで初期化(self) -> None:
         """DataFetchError がソース情報付きで初期化されることを確認。"""
-        from market.yfinance.errors import DataFetchError
+        from market.errors import DataFetchError
 
         error = DataFetchError("Fetch failed", source="yfinance")
         assert error.source == "yfinance"
 
     def test_正常系_フル情報で初期化(self) -> None:
         """DataFetchError が全情報付きで初期化されることを確認。"""
-        from market.yfinance.errors import DataFetchError, ErrorCode
+        from market.errors import DataFetchError, ErrorCode
 
         cause = Exception("API timeout")
         error = DataFetchError(
@@ -107,21 +107,21 @@ class TestValidationError:
 
     def test_正常系_フィールド情報付きで初期化(self) -> None:
         """ValidationError がフィールド情報付きで初期化されることを確認。"""
-        from market.yfinance.errors import ValidationError
+        from market.errors import ValidationError
 
         error = ValidationError("Invalid value", field="symbols")
         assert error.field == "symbols"
 
     def test_正常系_値付きで初期化(self) -> None:
         """ValidationError が値付きで初期化されることを確認。"""
-        from market.yfinance.errors import ValidationError
+        from market.errors import ValidationError
 
         error = ValidationError("Invalid value", field="symbols", value=[])
         assert error.value == []
 
     def test_正常系_デフォルトエラーコードがINVALID_PARAMETER(self) -> None:
         """ValidationError のデフォルトエラーコードが INVALID_PARAMETER であることを確認。"""
-        from market.yfinance.errors import ErrorCode, ValidationError
+        from market.errors import ErrorCode, ValidationError
 
         error = ValidationError("Invalid value")
         assert error.code == ErrorCode.INVALID_PARAMETER

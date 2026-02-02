@@ -325,7 +325,7 @@ class TestAPIErrorHandling:
         mock_fetcher_class: MagicMock,
     ) -> None:
         """API エラー発生時に FREDFetchError がスローされることを確認."""
-        from market.fred.errors import FREDFetchError
+        from market.errors import FREDFetchError
 
         # モックの設定: fetchが例外をスロー
         mock_fetcher = MagicMock()
@@ -343,7 +343,7 @@ class TestAPIErrorHandling:
         mock_fetcher_class: MagicMock,
     ) -> None:
         """ネットワークエラー発生時に FREDFetchError がスローされることを確認."""
-        from market.fred.errors import FREDFetchError
+        from market.errors import FREDFetchError
 
         # モックの設定: ネットワークエラーをシミュレート
         mock_fetcher = MagicMock()
