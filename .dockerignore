@@ -1,0 +1,53 @@
+# ===== Python =====
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# ===== Node =====
+node_modules/
+
+# ===== Git =====
+.git/
+.gitignore
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== Logs & Temp =====
+logs/
+*.log
+trash/
+.tmp/
+
+# ===== Data（必要に応じてコメントアウト）=====
+# data/raw/
+# data/processed/
+# data/exports/
+
+# ===== Secrets（絶対に含めない）=====
+.env
+.env.*
+*.pem
+*.key
+.mcp.json
+
+# ===== Documentation =====
+docs/pr-review/
+docs/code-analysis-report/
+
+# ===== Sample/Test data =====
+src_sample/
+notebook_sample/
+notebook/

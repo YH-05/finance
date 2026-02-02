@@ -1,0 +1,47 @@
+# ===== 改行コードの統一（LF）=====
+# Windows/macOS/Linux 間での互換性を確保
+
+* text=auto eol=lf
+
+# ===== ソースコード =====
+*.py text eol=lf
+*.pyi text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+
+# ===== シェルスクリプト =====
+*.sh text eol=lf
+*.bash text eol=lf
+Makefile text eol=lf
+
+# ===== ドキュメント =====
+*.md text eol=lf
+*.txt text eol=lf
+*.rst text eol=lf
+
+# ===== 設定ファイル =====
+*.ini text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.dockerignore text eol=lf
+Dockerfile text eol=lf
+
+# ===== バイナリファイル（変換しない）=====
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.parquet binary
+*.db binary
+*.sqlite binary
+*.duckdb binary

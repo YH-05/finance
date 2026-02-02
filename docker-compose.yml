@@ -1,0 +1,45 @@
+# finance - Docker Compose 開発環境設定
+# 使い方: docker compose run --rm dev claude
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: finance-dev
+    stdin_open: true  # インタラクティブ入力（-i）
+    tty: true         # ターミナル割り当て（-t）
+    volumes:
+      # プロジェクトソース（リアルタイム編集可能）
+      - .:/app
+
+      # Claude Code 設定・履歴の永続化
+      - claude-config:/root/.claude
+
+      # Git 設定の共有（ホストから読み取り専用）
+      - ~/.gitconfig:/root/.gitconfig:ro
+
+      # SSH 鍵の共有（GitHub push/pull 用）
+      - ~/.ssh:/root/.ssh:ro
+
+      # GitHub CLI 認証の共有
+      - ~/.config/gh:/root/.config/gh
+
+      # Python .venv をコンテナ内に隔離（パフォーマンス向上）
+      - venv:/app/.venv
+
+    environment:
+      # API キー（.env ファイルから読み込み）
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - FRED_API_KEY=${FRED_API_KEY:-}
+      - GH_TOKEN=${GH_TOKEN:-}
+      # アプリケーション設定
+      - LOG_LEVEL=INFO
+      - PROJECT_ENV=development
+      - TERM=xterm-256color
+
+    working_dir: /app
+
+volumes:
+  claude-config:  # Claude Code 設定の永続化
+  venv:           # Python 仮想環境の隔離
