@@ -15,6 +15,10 @@ Examples
 
 >>> from analyze.visualization import HeatmapChart
 >>> chart = HeatmapChart(correlation_matrix).build().save("heatmap.png")
+
+>>> from analyze.visualization import apply_df_style, plot_cumulative_returns
+>>> styled = apply_df_style(returns_df)
+>>> fig = plot_cumulative_returns(price_df, ["AAPL", "MSFT"], "Performance")
 """
 
 from .charts import (
@@ -31,6 +35,7 @@ from .charts import (
     get_theme_colors,
 )
 from .heatmap import HeatmapChart
+from .performance import apply_df_style, plot_cumulative_returns
 from .price_charts import (
     CandlestickChart,
     IndicatorOverlay,
@@ -56,5 +61,7 @@ __all__ = [
     "PriceChartBuilder",
     "PriceChartData",
     "ThemeColors",
+    "apply_df_style",
     "get_theme_colors",
+    "plot_cumulative_returns",
 ]
