@@ -15,7 +15,7 @@ Features
 Examples
 --------
 >>> from news.extractors.playwright import PlaywrightExtractor
->>> from news.config.workflow import ExtractionConfig
+>>> from news.config.models import ExtractionConfig
 >>>
 >>> config = ExtractionConfig()
 >>> async with PlaywrightExtractor(config) as extractor:
@@ -38,7 +38,7 @@ from news.models import (
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
-    from news.config.workflow import ExtractionConfig
+    from news.config.models import ExtractionConfig
 
 logger = get_logger(__name__, module="extractors.playwright")
 

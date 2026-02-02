@@ -20,7 +20,7 @@ The following types from claude-agent-sdk are used in this module:
 Examples
 --------
 >>> from news.summarizer import Summarizer
->>> from news.config.workflow import load_config
+>>> from news.config.models import load_config
 >>> config = load_config("data/config/news-collection-config.yaml")
 >>> summarizer = Summarizer(config=config)
 >>> result = await summarizer.summarize(extracted_article)
@@ -46,7 +46,7 @@ from news.models import (
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
-    from news.config.workflow import NewsWorkflowConfig
+    from news.config.models import NewsWorkflowConfig
 
 logger = get_logger(__name__, module="summarizer")
 
@@ -83,7 +83,7 @@ class Summarizer:
     Examples
     --------
     >>> from news.summarizer import Summarizer
-    >>> from news.config.workflow import load_config
+    >>> from news.config.models import load_config
     >>> config = load_config("config.yaml")
     >>> summarizer = Summarizer(config=config)
     >>> result = await summarizer.summarize(extracted_article)

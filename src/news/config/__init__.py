@@ -17,28 +17,35 @@ Examples
 '1.0'
 """
 
-from .errors import ConfigError, ConfigParseError, ConfigValidationError
-from .loader import DEFAULT_CONFIG_PATH, ConfigLoader
 from .models import (
+    DEFAULT_CONFIG_PATH,
+    # Exception classes
+    ConfigError,
+    # Loader
+    ConfigLoader,
+    ConfigParseError,
+    ConfigValidationError,
+    # Workflow configuration models
+    DomainFilteringConfig,
+    ExtractionConfig,
+    # Basic configuration models
     FileSinkConfig,
+    FilteringConfig,
+    GitHubConfig,
     GitHubSinkConfig,
     NewsConfig,
+    NewsWorkflowConfig,
+    OutputConfig,
+    PlaywrightFallbackConfig,
     RetryConfig,
+    RssConfig,
     SettingsConfig,
     SinksConfig,
     SourcesConfig,
+    SummarizationConfig,
+    UserAgentRotationConfig,
     YFinanceSearchSourceConfig,
     YFinanceTickerSourceConfig,
-)
-from .workflow import (
-    DomainFilteringConfig,
-    ExtractionConfig,
-    FilteringConfig,
-    GitHubConfig,
-    NewsWorkflowConfig,
-    OutputConfig,
-    RssConfig,
-    SummarizationConfig,
     load_config,
 )
 
@@ -57,12 +64,14 @@ __all__ = [
     "NewsConfig",
     "NewsWorkflowConfig",
     "OutputConfig",
+    "PlaywrightFallbackConfig",
     "RetryConfig",
     "RssConfig",
     "SettingsConfig",
     "SinksConfig",
     "SourcesConfig",
     "SummarizationConfig",
+    "UserAgentRotationConfig",
     "YFinanceSearchSourceConfig",
     "YFinanceTickerSourceConfig",
     "load_config",

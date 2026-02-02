@@ -23,7 +23,7 @@ Examples
 <ExtractionStatus.SUCCESS: 'success'>
 
 >>> # With Playwright fallback (requires async context manager)
->>> from news.config.workflow import ExtractionConfig
+>>> from news.config.models import ExtractionConfig
 >>> config = ExtractionConfig()
 >>> async with TrafilaturaExtractor.from_config(config) as extractor:
 ...     result = await extractor.extract(article)
@@ -43,7 +43,7 @@ from rss.services.article_extractor import (
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
-    from news.config.workflow import (
+    from news.config.models import (
         ExtractionConfig,
         PlaywrightFallbackConfig,
         UserAgentRotationConfig,
@@ -131,7 +131,7 @@ class TrafilaturaExtractor(BaseExtractor):
     <ExtractionStatus.SUCCESS: 'success'>
 
     >>> # With Playwright fallback
-    >>> from news.config.workflow import ExtractionConfig
+    >>> from news.config.models import ExtractionConfig
     >>> config = ExtractionConfig()
     >>> async with TrafilaturaExtractor.from_config(config) as extractor:
     ...     result = await extractor.extract(article)
@@ -188,7 +188,7 @@ class TrafilaturaExtractor(BaseExtractor):
 
         Examples
         --------
-        >>> from news.config.workflow import ExtractionConfig
+        >>> from news.config.models import ExtractionConfig
         >>> config = ExtractionConfig()
         >>> extractor = TrafilaturaExtractor.from_config(config)
         """

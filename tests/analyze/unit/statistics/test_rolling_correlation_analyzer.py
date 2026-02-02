@@ -296,3 +296,97 @@ class TestRollingCorrelationAnalyzerExports:
         from analyze.statistics.correlation import __all__
 
         assert "RollingCorrelationAnalyzer" in __all__
+
+
+class TestRollingCorrelationAnalyzerParametrized:
+    """Parametrized tests for window and min_periods combinations."""
+
+    @pytest.mark.parametrize(
+        "window,min_periods",
+        [
+            (5, 3),
+            (10, 5),
+            (20, 10),
+            (60, 30),
+            (252, 30),
+        ],
+    )
+    def test_パラメトライズ_様々なwindowとmin_periodsの組み合わせで計算できる(
+        self, window: int, min_periods: int
+    ) -> None:
+        """様々なwindowとmin_periodsの組み合わせで相関が計算されることを確認。"""
+        analyzer = RollingCorrelationAnalyzer(window=window, min_periods=min_periods)
+
+        # 十分なデータを生成（windowの2倍）
+        n = max(window * 2, 60)
+        df = pd.DataFrame(
+            {
+                "AAPL": [1.0 + i * 0.1 for i in range(n)],
+                "SPY": [2.0 + i * 0.2 for i in range(n)],
+            }
+        )
+
+        result = analyzer.calculate(df, target_column="SPY")
+
+        # 結果がDataFrameであることを確認
+        assert isinstance(result, pd.DataFrame)
+        # 先頭のNaN数がmin_periods-1であることを確認
+        nan_count = result["AAPL"].iloc[: min_periods - 1].isna().sum()
+        assert nan_count == min_periods - 1
+        # min_periods以降は有効な値
+        assert pd.notna(result["AAPL"].iloc[min_periods - 1])
+
+    @pytest.mark.parametrize(
+        "window,min_periods,expected_nan_count",
+        [
+            (5, 3, 2),
+            (10, 5, 4),
+            (20, 10, 9),
+        ],
+    )
+    def test_パラメトライズ_先頭のNaN数がmin_periodsから1を引いた数(
+        self, window: int, min_periods: int, expected_nan_count: int
+    ) -> None:
+        """先頭のNaN数がmin_periods-1であることを確認。"""
+        analyzer = RollingCorrelationAnalyzer(window=window, min_periods=min_periods)
+
+        n = window * 2
+        df = pd.DataFrame(
+            {
+                "AAPL": [1.0 + i * 0.1 for i in range(n)],
+                "SPY": [2.0 + i * 0.2 for i in range(n)],
+            }
+        )
+
+        result = analyzer.calculate(df, target_column="SPY")
+
+        nan_count = result["AAPL"].iloc[:expected_nan_count].isna().sum()
+        assert nan_count == expected_nan_count
+
+    @pytest.mark.parametrize(
+        "window,min_periods",
+        [
+            (5, 5),
+            (10, 10),
+            (20, 20),
+        ],
+    )
+    def test_パラメトライズ_windowとmin_periodsが同じ場合も動作(
+        self, window: int, min_periods: int
+    ) -> None:
+        """windowとmin_periodsが同じ場合も正しく動作することを確認。"""
+        analyzer = RollingCorrelationAnalyzer(window=window, min_periods=min_periods)
+
+        n = window * 2
+        df = pd.DataFrame(
+            {
+                "AAPL": [1.0 + i * 0.1 for i in range(n)],
+                "SPY": [2.0 + i * 0.2 for i in range(n)],
+            }
+        )
+
+        result = analyzer.calculate(df, target_column="SPY")
+
+        # min_periods-1 = window-1 がNaN
+        nan_count = result["AAPL"].iloc[: window - 1].isna().sum()
+        assert nan_count == window - 1

@@ -10,14 +10,14 @@ class TestConfigError:
 
     def test_正常系_メッセージで作成できる(self) -> None:
         """ConfigErrorをメッセージで作成できることを確認。"""
-        from news.config.errors import ConfigError
+        from news.config.models import ConfigError
 
         error = ConfigError("Configuration error occurred")
         assert str(error) == "Configuration error occurred"
 
     def test_正常系_NewsErrorを継承している(self) -> None:
         """ConfigErrorがNewsErrorを継承していることを確認。"""
-        from news.config.errors import ConfigError
+        from news.config.models import ConfigError
 
         error = ConfigError("Test error")
         assert isinstance(error, NewsError)
@@ -29,7 +29,7 @@ class TestConfigParseError:
 
     def test_正常系_メッセージとファイルパスで作成できる(self) -> None:
         """ConfigParseErrorをメッセージとファイルパスで作成できることを確認。"""
-        from news.config.errors import ConfigParseError
+        from news.config.models import ConfigParseError
 
         error = ConfigParseError(
             message="Invalid YAML syntax",
@@ -41,7 +41,7 @@ class TestConfigParseError:
 
     def test_正常系_causeを指定できる(self) -> None:
         """ConfigParseErrorにcauseを指定できることを確認。"""
-        from news.config.errors import ConfigParseError
+        from news.config.models import ConfigParseError
 
         original_error = ValueError("Invalid value")
         error = ConfigParseError(
@@ -54,7 +54,7 @@ class TestConfigParseError:
 
     def test_正常系_ConfigErrorを継承している(self) -> None:
         """ConfigParseErrorがConfigErrorを継承していることを確認。"""
-        from news.config.errors import ConfigError, ConfigParseError
+        from news.config.models import ConfigError, ConfigParseError
 
         error = ConfigParseError(message="Test", file_path="/test")
         assert isinstance(error, ConfigError)
@@ -66,7 +66,7 @@ class TestConfigValidationError:
 
     def test_正常系_メッセージとフィールドで作成できる(self) -> None:
         """ConfigValidationErrorをメッセージとフィールドで作成できることを確認。"""
-        from news.config.errors import ConfigValidationError
+        from news.config.models import ConfigValidationError
 
         error = ConfigValidationError(
             message="Invalid value for max_articles",
@@ -80,7 +80,7 @@ class TestConfigValidationError:
 
     def test_正常系_ConfigErrorを継承している(self) -> None:
         """ConfigValidationErrorがConfigErrorを継承していることを確認。"""
-        from news.config.errors import ConfigError, ConfigValidationError
+        from news.config.models import ConfigError, ConfigValidationError
 
         error = ConfigValidationError(message="Test", field="test", value=None)
         assert isinstance(error, ConfigError)
@@ -92,7 +92,7 @@ class TestExceptionHierarchy:
 
     def test_正常系_例外階層が正しい(self) -> None:
         """例外クラスの継承階層が正しいことを確認。"""
-        from news.config.errors import (
+        from news.config.models import (
             ConfigError,
             ConfigParseError,
             ConfigValidationError,
@@ -109,7 +109,7 @@ class TestExceptionHierarchy:
 
     def test_正常系_ConfigErrorでキャッチできる(self) -> None:
         """派生例外をConfigErrorでキャッチできることを確認。"""
-        from news.config.errors import (
+        from news.config.models import (
             ConfigError,
             ConfigParseError,
             ConfigValidationError,

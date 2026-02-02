@@ -10,7 +10,7 @@ class TestConfigLoader:
 
     def test_正常系_YAML設定ファイルを読み込める(self, tmp_path: Path) -> None:
         """ConfigLoaderがYAML設定ファイルを読み込めることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange: YAML設定ファイルを作成
         config_file = tmp_path / "config.yaml"
@@ -48,7 +48,7 @@ settings:
 
     def test_正常系_JSON設定ファイルを読み込める(self, tmp_path: Path) -> None:
         """ConfigLoaderがJSON設定ファイルを読み込めることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange: JSON設定ファイルを作成
         config_file = tmp_path / "config.json"
@@ -86,7 +86,7 @@ settings:
 
     def test_異常系_存在しないファイルでFileNotFoundError(self) -> None:
         """存在しないファイルを読み込むとFileNotFoundErrorが発生することを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         loader = ConfigLoader()
 
@@ -95,8 +95,7 @@ settings:
 
     def test_異常系_不正なYAMLでConfigParseError(self, tmp_path: Path) -> None:
         """不正なYAMLファイルを読み込むとConfigParseErrorが発生することを確認。"""
-        from news.config.errors import ConfigParseError
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader, ConfigParseError
 
         # Arrange: 不正なYAMLファイルを作成
         config_file = tmp_path / "invalid.yaml"
@@ -115,8 +114,7 @@ sources:
 
     def test_異常系_不正なJSONでConfigParseError(self, tmp_path: Path) -> None:
         """不正なJSONファイルを読み込むとConfigParseErrorが発生することを確認。"""
-        from news.config.errors import ConfigParseError
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader, ConfigParseError
 
         # Arrange: 不正なJSONファイルを作成
         config_file = tmp_path / "invalid.json"
@@ -139,8 +137,7 @@ sources:
 
     def test_異常系_未対応の拡張子でConfigParseError(self, tmp_path: Path) -> None:
         """未対応の拡張子を読み込むとConfigParseErrorが発生することを確認。"""
-        from news.config.errors import ConfigParseError
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader, ConfigParseError
 
         # Arrange: 未対応の拡張子でファイルを作成
         config_file = tmp_path / "config.txt"
@@ -155,7 +152,7 @@ sources:
         self, tmp_path: Path
     ) -> None:
         """空のYAMLファイルを読み込むとデフォルト設定が適用されることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange: 空のYAMLファイルを作成
         config_file = tmp_path / "empty.yaml"
@@ -173,7 +170,7 @@ sources:
 
     def test_正常系_文字列パスで読み込める(self, tmp_path: Path) -> None:
         """ConfigLoaderが文字列パスでも読み込めることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange
         config_file = tmp_path / "config.yaml"
@@ -197,7 +194,7 @@ class TestConfigLoaderLoadSymbols:
 
     def test_正常系_symbols_yamlを読み込める(self, tmp_path: Path) -> None:
         """ConfigLoaderがsymbols.yamlを読み込めることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange: symbols.yamlを作成
         symbols_file = tmp_path / "symbols.yaml"
@@ -235,7 +232,7 @@ sectors:
 
     def test_正常系_カテゴリを指定して読み込める(self, tmp_path: Path) -> None:
         """ConfigLoaderがカテゴリを指定してsymbols.yamlを読み込めることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange
         symbols_file = tmp_path / "symbols.yaml"
@@ -267,7 +264,7 @@ sectors:
 
     def test_正常系_ティッカーシンボルのみ取得できる(self, tmp_path: Path) -> None:
         """ConfigLoaderがティッカーシンボルのみを取得できることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange
         symbols_file = tmp_path / "symbols.yaml"
@@ -292,7 +289,7 @@ mag7:
 
     def test_エッジケース_存在しないカテゴリは空で返す(self, tmp_path: Path) -> None:
         """存在しないカテゴリを指定すると空の結果が返されることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange
         symbols_file = tmp_path / "symbols.yaml"
@@ -313,7 +310,7 @@ mag7:
 
     def test_異常系_存在しないファイルでFileNotFoundError(self) -> None:
         """存在しないsymbolsファイルを読み込むとFileNotFoundErrorが発生することを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         loader = ConfigLoader()
 
@@ -328,7 +325,7 @@ class TestConfigLoaderLoadFromDefault:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """ConfigLoaderがデフォルトパスから設定を読み込めることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # Arrange: デフォルト設定ファイルを作成
         config_dir = tmp_path / "data" / "config"
@@ -343,7 +340,7 @@ settings:
 
         # デフォルトパスをモック
         monkeypatch.setattr(
-            "news.config.loader.DEFAULT_CONFIG_PATH",
+            "news.config.models.DEFAULT_CONFIG_PATH",
             config_file,
         )
 
@@ -358,11 +355,11 @@ settings:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """デフォルトファイルがない場合、デフォルト設定が返されることを確認。"""
-        from news.config.loader import ConfigLoader
+        from news.config.models import ConfigLoader
 
         # デフォルトパスを存在しないパスに設定
         monkeypatch.setattr(
-            "news.config.loader.DEFAULT_CONFIG_PATH",
+            "news.config.models.DEFAULT_CONFIG_PATH",
             tmp_path / "nonexistent" / "config.yaml",
         )
 

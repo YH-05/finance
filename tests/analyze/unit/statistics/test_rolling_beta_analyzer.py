@@ -423,3 +423,132 @@ class TestRollingBetaAnalyzerExports:
         from analyze.statistics.beta import __all__
 
         assert "RollingBetaAnalyzer" in __all__
+
+
+class TestRollingBetaAnalyzerParametrized:
+    """Parametrized tests for window, freq, and window_years combinations."""
+
+    @pytest.mark.parametrize(
+        "window,freq,window_years",
+        [
+            (60, "M", 3),
+            (120, "M", 5),
+            (36, "M", 3),
+            (60, "W", 3),
+            (156, "W", 3),
+            (260, "W", 5),
+        ],
+    )
+    def test_パラメトライズ_様々なパラメータの組み合わせで初期化できる(
+        self, window: int, freq: Literal["W", "M"], window_years: Literal[3, 5]
+    ) -> None:
+        """様々なwindow, freq, window_yearsの組み合わせで初期化されることを確認。"""
+        analyzer = RollingBetaAnalyzer(
+            window=window, freq=freq, window_years=window_years
+        )
+
+        assert analyzer.window == window
+        assert analyzer.freq == freq
+        assert analyzer.window_years == window_years
+
+    @pytest.mark.parametrize(
+        "window",
+        [5, 10, 20, 60, 120],
+    )
+    def test_パラメトライズ_様々なwindowサイズでベータが計算できる(
+        self, window: int
+    ) -> None:
+        """様々なwindowサイズでベータが計算されることを確認。"""
+        analyzer = RollingBetaAnalyzer(window=window)
+
+        # 十分なデータを生成（windowの2倍）
+        n = window * 2
+        # Asset moves 2x the benchmark
+        df = pd.DataFrame(
+            {
+                "AAPL": [0.02, 0.04, -0.02, 0.06, 0.02] * (n // 5 + 1),
+                "SPY": [0.01, 0.02, -0.01, 0.03, 0.01] * (n // 5 + 1),
+            }
+        ).iloc[:n]
+
+        result = analyzer.calculate(df, target_column="SPY")
+
+        # 結果がDataFrameであることを確認
+        assert isinstance(result, pd.DataFrame)
+        # 先頭のNaN数がwindow-1であることを確認
+        nan_count = result["AAPL"].iloc[: window - 1].isna().sum()
+        assert nan_count == window - 1
+        # window以降は有効な値
+        assert pd.notna(result["AAPL"].iloc[window - 1])
+
+    @pytest.mark.parametrize(
+        "window,expected_nan_count",
+        [
+            (5, 4),
+            (10, 9),
+            (20, 19),
+            (60, 59),
+        ],
+    )
+    def test_パラメトライズ_先頭のNaN数がwindowから1を引いた数(
+        self, window: int, expected_nan_count: int
+    ) -> None:
+        """先頭のNaN数がwindow-1であることを確認。"""
+        analyzer = RollingBetaAnalyzer(window=window)
+
+        n = window * 2
+        df = pd.DataFrame(
+            {
+                "AAPL": [0.02, 0.04, -0.02, 0.06, 0.02] * (n // 5 + 1),
+                "SPY": [0.01, 0.02, -0.01, 0.03, 0.01] * (n // 5 + 1),
+            }
+        ).iloc[:n]
+
+        result = analyzer.calculate(df, target_column="SPY")
+
+        nan_count = result["AAPL"].iloc[:expected_nan_count].isna().sum()
+        assert nan_count == expected_nan_count
+
+    @pytest.mark.parametrize(
+        "freq",
+        ["W", "M"],
+    )
+    def test_パラメトライズ_全freqオプションが有効(
+        self, freq: Literal["W", "M"]
+    ) -> None:
+        """全てのfreqオプションが正しく動作することを確認。"""
+        analyzer = RollingBetaAnalyzer(window=5, freq=freq)
+
+        df = pd.DataFrame(
+            {
+                "AAPL": [0.02, 0.04, -0.02, 0.06, 0.02, 0.04, -0.02, 0.06, 0.02, 0.04],
+                "SPY": [0.01, 0.02, -0.01, 0.03, 0.01, 0.02, -0.01, 0.03, 0.01, 0.02],
+            }
+        )
+
+        result = analyzer.calculate(df, target_column="SPY")
+
+        assert isinstance(result, pd.DataFrame)
+        assert analyzer.freq == freq
+
+    @pytest.mark.parametrize(
+        "window_years",
+        [3, 5],
+    )
+    def test_パラメトライズ_全window_yearsオプションが有効(
+        self, window_years: Literal[3, 5]
+    ) -> None:
+        """全てのwindow_yearsオプションが正しく動作することを確認。"""
+        analyzer = RollingBetaAnalyzer(window=5, window_years=window_years)
+
+        df = pd.DataFrame(
+            {
+                "AAPL": [0.02, 0.04, -0.02, 0.06, 0.02, 0.04, -0.02, 0.06, 0.02, 0.04],
+                "SPY": [0.01, 0.02, -0.01, 0.03, 0.01, 0.02, -0.01, 0.03, 0.01, 0.02],
+            }
+        )
+
+        result = analyzer.calculate(df, target_column="SPY")
+
+        assert isinstance(result, pd.DataFrame)
+        assert analyzer.window_years == window_years

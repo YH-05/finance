@@ -17,7 +17,7 @@ class TestRssConfig:
 
     def test_正常系_必須パラメータで作成できる(self) -> None:
         """RssConfigを必須パラメータで作成できることを確認。"""
-        from news.config.workflow import RssConfig
+        from news.config.models import RssConfig
 
         config = RssConfig(presets_file="data/config/rss-presets.json")
 
@@ -25,7 +25,7 @@ class TestRssConfig:
 
     def test_異常系_presets_file未指定でValidationError(self) -> None:
         """presets_fileが未指定の場合、ValidationErrorが発生することを確認。"""
-        from news.config.workflow import RssConfig
+        from news.config.models import RssConfig
 
         with pytest.raises(ValidationError):
             RssConfig()
@@ -36,7 +36,7 @@ class TestExtractionConfig:
 
     def test_正常系_デフォルト値で作成できる(self) -> None:
         """ExtractionConfigをデフォルト値で作成できることを確認。"""
-        from news.config.workflow import ExtractionConfig
+        from news.config.models import ExtractionConfig
 
         config = ExtractionConfig()
 
@@ -47,7 +47,7 @@ class TestExtractionConfig:
 
     def test_正常系_カスタム値で作成できる(self) -> None:
         """ExtractionConfigをカスタム値で作成できることを確認。"""
-        from news.config.workflow import ExtractionConfig
+        from news.config.models import ExtractionConfig
 
         config = ExtractionConfig(
             concurrency=10,
@@ -63,7 +63,7 @@ class TestExtractionConfig:
 
     def test_異常系_負のconcurrencyでValidationError(self) -> None:
         """concurrencyが負の値の場合、ValidationErrorが発生することを確認。"""
-        from news.config.workflow import ExtractionConfig
+        from news.config.models import ExtractionConfig
 
         with pytest.raises(ValidationError):
             ExtractionConfig(concurrency=-1)
@@ -74,7 +74,7 @@ class TestSummarizationConfig:
 
     def test_正常系_デフォルト値で作成できる(self) -> None:
         """SummarizationConfigをデフォルト値で作成できることを確認。"""
-        from news.config.workflow import SummarizationConfig
+        from news.config.models import SummarizationConfig
 
         config = SummarizationConfig(prompt_template="test template")
 
@@ -85,7 +85,7 @@ class TestSummarizationConfig:
 
     def test_異常系_prompt_template未指定でValidationError(self) -> None:
         """prompt_templateが未指定の場合、ValidationErrorが発生することを確認。"""
-        from news.config.workflow import SummarizationConfig
+        from news.config.models import SummarizationConfig
 
         with pytest.raises(ValidationError):
             SummarizationConfig()
@@ -96,7 +96,7 @@ class TestGitHubConfig:
 
     def test_正常系_必須パラメータで作成できる(self) -> None:
         """GitHubConfigを必須パラメータで作成できることを確認。"""
-        from news.config.workflow import GitHubConfig
+        from news.config.models import GitHubConfig
 
         config = GitHubConfig(
             project_number=15,
@@ -116,7 +116,7 @@ class TestGitHubConfig:
 
     def test_正常系_全パラメータで作成できる(self) -> None:
         """GitHubConfigを全パラメータで作成できることを確認。"""
-        from news.config.workflow import GitHubConfig
+        from news.config.models import GitHubConfig
 
         config = GitHubConfig(
             project_number=15,
@@ -133,7 +133,7 @@ class TestGitHubConfig:
 
     def test_異常系_project_number未指定でValidationError(self) -> None:
         """project_numberが未指定の場合、ValidationErrorが発生することを確認。"""
-        from news.config.workflow import GitHubConfig
+        from news.config.models import GitHubConfig
 
         with pytest.raises(ValidationError):
             GitHubConfig(
@@ -149,7 +149,7 @@ class TestFilteringConfig:
 
     def test_正常系_デフォルト値で作成できる(self) -> None:
         """FilteringConfigをデフォルト値で作成できることを確認。"""
-        from news.config.workflow import FilteringConfig
+        from news.config.models import FilteringConfig
 
         config = FilteringConfig()
 
@@ -157,7 +157,7 @@ class TestFilteringConfig:
 
     def test_正常系_カスタム値で作成できる(self) -> None:
         """FilteringConfigをカスタム値で作成できることを確認。"""
-        from news.config.workflow import FilteringConfig
+        from news.config.models import FilteringConfig
 
         config = FilteringConfig(max_age_hours=24)
 
@@ -169,7 +169,7 @@ class TestOutputConfig:
 
     def test_正常系_必須パラメータで作成できる(self) -> None:
         """OutputConfigを必須パラメータで作成できることを確認。"""
-        from news.config.workflow import OutputConfig
+        from news.config.models import OutputConfig
 
         config = OutputConfig(result_dir="data/exports/news-workflow")
 
@@ -177,7 +177,7 @@ class TestOutputConfig:
 
     def test_異常系_result_dir未指定でValidationError(self) -> None:
         """result_dirが未指定の場合、ValidationErrorが発生することを確認。"""
-        from news.config.workflow import OutputConfig
+        from news.config.models import OutputConfig
 
         with pytest.raises(ValidationError):
             OutputConfig()
@@ -188,7 +188,7 @@ class TestNewsWorkflowConfig:
 
     def test_正常系_必須パラメータで作成できる(self) -> None:
         """NewsWorkflowConfigを必須パラメータで作成できることを確認。"""
-        from news.config.workflow import (
+        from news.config.models import (
             ExtractionConfig,
             FilteringConfig,
             GitHubConfig,
@@ -228,7 +228,7 @@ class TestNewsWorkflowConfig:
 
     def test_正常系_status_mappingでカテゴリからStatusを解決できる(self) -> None:
         """status_mappingでカテゴリからGitHub Statusを解決できることを確認。"""
-        from news.config.workflow import (
+        from news.config.models import (
             ExtractionConfig,
             FilteringConfig,
             GitHubConfig,
@@ -277,7 +277,7 @@ class TestNewsWorkflowConfig:
 
     def test_正常系_dictから作成できる(self) -> None:
         """NewsWorkflowConfigを辞書から作成できることを確認。"""
-        from news.config.workflow import NewsWorkflowConfig
+        from news.config.models import NewsWorkflowConfig
 
         data = {
             "version": "1.0",
@@ -309,7 +309,7 @@ class TestLoadConfig:
 
     def test_正常系_YAML設定ファイルを読み込める(self, tmp_path: Path) -> None:
         """load_configがYAML設定ファイルを読み込めることを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange: YAML設定ファイルを作成
         config_file = tmp_path / "config.yaml"
@@ -375,7 +375,7 @@ output:
 
     def test_正常系_文字列パスで読み込める(self, tmp_path: Path) -> None:
         """load_configが文字列パスでも読み込めることを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange
         config_file = tmp_path / "config.yaml"
@@ -411,7 +411,7 @@ output:
 
     def test_異常系_存在しないファイルでFileNotFoundError(self) -> None:
         """存在しないファイルを読み込むとFileNotFoundErrorが発生することを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         with pytest.raises(FileNotFoundError):
             load_config(Path("/nonexistent/config.yaml"))
@@ -420,7 +420,7 @@ output:
         """不正なYAMLファイルを読み込むとエラーが発生することを確認。"""
         from yaml import YAMLError
 
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange: 不正なYAMLファイルを作成
         config_file = tmp_path / "invalid.yaml"
@@ -437,7 +437,7 @@ version: "1.0"
 
     def test_異常系_バリデーションエラー(self, tmp_path: Path) -> None:
         """必須フィールドがない場合、ValidationErrorが発生することを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange: 必須フィールドがないYAMLファイルを作成
         config_file = tmp_path / "incomplete.yaml"
@@ -458,7 +458,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_デフォルト値で作成できる(self) -> None:
         """DomainFilteringConfigをデフォルト値で作成できることを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig()
 
@@ -468,7 +468,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_ブロックドメインがTrueを返す(self) -> None:
         """ブロックドメインに対してis_blockedがTrueを返すことを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(blocked_domains=["seekingalpha.com"])
 
@@ -476,7 +476,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_サブドメインもブロックされる(self) -> None:
         """サブドメインもブロックされることを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(blocked_domains=["seekingalpha.com"])
 
@@ -485,7 +485,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_許可ドメインはFalseを返す(self) -> None:
         """許可ドメインに対してis_blockedがFalseを返すことを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(blocked_domains=["seekingalpha.com"])
 
@@ -494,7 +494,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_無効時は全て許可(self) -> None:
         """enabled=Falseの時は全てのドメインが許可されることを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(
             enabled=False,
@@ -506,7 +506,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_大文字小文字を区別しない(self) -> None:
         """ドメインの大文字小文字を区別しないことを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(blocked_domains=["SeekingAlpha.com"])
 
@@ -515,7 +515,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_複数ドメインをブロックできる(self) -> None:
         """複数のドメインをブロックできることを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(
             blocked_domains=["seekingalpha.com", "example.com", "test.org"]
@@ -528,7 +528,7 @@ class TestDomainFilteringConfig:
 
     def test_正常系_空リストで全て許可(self) -> None:
         """空のブロックリストで全てのドメインが許可されることを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(blocked_domains=[])
 
@@ -537,7 +537,7 @@ class TestDomainFilteringConfig:
 
     def test_エッジケース_類似ドメイン名は許可される(self) -> None:
         """類似しているが異なるドメインは許可されることを確認。"""
-        from news.config.workflow import DomainFilteringConfig
+        from news.config.models import DomainFilteringConfig
 
         config = DomainFilteringConfig(blocked_domains=["example.com"])
 
@@ -552,7 +552,7 @@ class TestNewsWorkflowConfigWithDomainFiltering:
 
     def test_正常系_domain_filteringがデフォルト値で作成される(self) -> None:
         """domain_filteringがデフォルト値で作成されることを確認。"""
-        from news.config.workflow import (
+        from news.config.models import (
             DomainFilteringConfig,
             ExtractionConfig,
             FilteringConfig,
@@ -587,7 +587,7 @@ class TestNewsWorkflowConfigWithDomainFiltering:
 
     def test_正常系_domain_filteringをカスタム値で作成できる(self) -> None:
         """domain_filteringをカスタム値で作成できることを確認。"""
-        from news.config.workflow import (
+        from news.config.models import (
             DomainFilteringConfig,
             ExtractionConfig,
             FilteringConfig,
@@ -636,7 +636,7 @@ class TestLoadConfigWithDomainFiltering:
         self, tmp_path: Path
     ) -> None:
         """load_configがdomain_filteringセクションを読み込めることを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange
         config_file = tmp_path / "config.yaml"
@@ -683,7 +683,7 @@ domain_filtering:
         self, tmp_path: Path
     ) -> None:
         """load_configがトップレベルのblocked_domainsをdomain_filteringに変換することを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange: トップレベルに blocked_domains を配置
         config_file = tmp_path / "config.yaml"
@@ -726,7 +726,7 @@ blocked_domains:
         self, tmp_path: Path
     ) -> None:
         """load_configでdomain_filteringがない場合、デフォルト値が設定されることを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange
         config_file = tmp_path / "config.yaml"
@@ -766,7 +766,7 @@ class TestUserAgentRotationConfig:
 
     def test_正常系_デフォルト値で作成できる(self) -> None:
         """UserAgentRotationConfigをデフォルト値で作成できることを確認。"""
-        from news.config.workflow import UserAgentRotationConfig
+        from news.config.models import UserAgentRotationConfig
 
         config = UserAgentRotationConfig()
 
@@ -775,7 +775,7 @@ class TestUserAgentRotationConfig:
 
     def test_正常系_カスタム値で作成できる(self) -> None:
         """UserAgentRotationConfigをカスタム値で作成できることを確認。"""
-        from news.config.workflow import UserAgentRotationConfig
+        from news.config.models import UserAgentRotationConfig
 
         user_agents = [
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
@@ -791,7 +791,7 @@ class TestUserAgentRotationConfig:
 
     def test_正常系_User_Agentがランダムに選択される(self) -> None:
         """User-Agentがランダムに選択されることを確認。"""
-        from news.config.workflow import UserAgentRotationConfig
+        from news.config.models import UserAgentRotationConfig
 
         config = UserAgentRotationConfig(
             user_agents=["UA1", "UA2", "UA3"],
@@ -804,7 +804,7 @@ class TestUserAgentRotationConfig:
 
     def test_正常系_無効時はNoneを返す(self) -> None:
         """enabled=Falseの時はNoneを返すことを確認。"""
-        from news.config.workflow import UserAgentRotationConfig
+        from news.config.models import UserAgentRotationConfig
 
         config = UserAgentRotationConfig(
             enabled=False,
@@ -815,7 +815,7 @@ class TestUserAgentRotationConfig:
 
     def test_正常系_空リストでNoneを返す(self) -> None:
         """user_agentsが空の時はNoneを返すことを確認。"""
-        from news.config.workflow import UserAgentRotationConfig
+        from news.config.models import UserAgentRotationConfig
 
         config = UserAgentRotationConfig(
             enabled=True,
@@ -826,7 +826,7 @@ class TestUserAgentRotationConfig:
 
     def test_正常系_1つのUser_Agentで常に同じものを返す(self) -> None:
         """user_agentsが1つの場合、常にそれを返すことを確認。"""
-        from news.config.workflow import UserAgentRotationConfig
+        from news.config.models import UserAgentRotationConfig
 
         config = UserAgentRotationConfig(
             user_agents=["SingleUA"],
@@ -841,7 +841,7 @@ class TestExtractionConfigWithUserAgentRotation:
 
     def test_正常系_user_agent_rotationがデフォルト値で作成される(self) -> None:
         """user_agent_rotationがデフォルト値で作成されることを確認。"""
-        from news.config.workflow import ExtractionConfig, UserAgentRotationConfig
+        from news.config.models import ExtractionConfig, UserAgentRotationConfig
 
         config = ExtractionConfig()
 
@@ -851,7 +851,7 @@ class TestExtractionConfigWithUserAgentRotation:
 
     def test_正常系_user_agent_rotationをカスタム値で作成できる(self) -> None:
         """user_agent_rotationをカスタム値で作成できることを確認。"""
-        from news.config.workflow import ExtractionConfig, UserAgentRotationConfig
+        from news.config.models import ExtractionConfig, UserAgentRotationConfig
 
         ua_config = UserAgentRotationConfig(
             enabled=True,
@@ -870,7 +870,7 @@ class TestLoadConfigWithUserAgentRotation:
         self, tmp_path: Path
     ) -> None:
         """load_configがuser_agent_rotationセクションを読み込めることを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange
         config_file = tmp_path / "config.yaml"
@@ -917,7 +917,7 @@ output:
         self, tmp_path: Path
     ) -> None:
         """load_configでuser_agent_rotationがない場合、デフォルト値が設定されることを確認。"""
-        from news.config.workflow import load_config
+        from news.config.models import load_config
 
         # Arrange
         config_file = tmp_path / "config.yaml"
