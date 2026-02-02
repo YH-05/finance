@@ -25,7 +25,7 @@ import yfinance as yf
 
 from utils_core.logging import get_logger
 
-from ...config.loader import ConfigLoader
+from ...config.models import ConfigLoader
 from ...core.article import ArticleSource
 from ...core.errors import SourceError
 from ...core.result import FetchResult, RetryConfig

@@ -9,7 +9,7 @@ articles at each stage, and constructing comprehensive WorkflowResult.
 Examples
 --------
 >>> from news.orchestrator import NewsWorkflowOrchestrator
->>> from news.config.workflow import load_config
+>>> from news.config.models import load_config
 >>> config = load_config("data/config/news-collection-config.yaml")
 >>> orchestrator = NewsWorkflowOrchestrator(config=config)
 >>> result = await orchestrator.run(statuses=["index"], max_articles=10, dry_run=True)
@@ -41,7 +41,7 @@ from news.summarizer import Summarizer
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
-    from news.config.workflow import NewsWorkflowConfig
+    from news.config.models import NewsWorkflowConfig
 
 logger = get_logger(__name__, module="orchestrator")
 
@@ -73,7 +73,7 @@ class NewsWorkflowOrchestrator:
     Examples
     --------
     >>> from news.orchestrator import NewsWorkflowOrchestrator
-    >>> from news.config.workflow import load_config
+    >>> from news.config.models import load_config
     >>> config = load_config("config.yaml")
     >>> orchestrator = NewsWorkflowOrchestrator(config=config)
     >>> result = await orchestrator.run(dry_run=True)

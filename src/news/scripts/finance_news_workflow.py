@@ -41,7 +41,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from news.config.workflow import load_config
+from news.config.models import load_config
 from news.orchestrator import NewsWorkflowOrchestrator
 from utils_core.logging import get_logger
 from utils_core.logging import setup_logging as _setup_logging

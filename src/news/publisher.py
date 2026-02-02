@@ -9,7 +9,7 @@ AI summarization) and produces PublishedArticle outputs with Issue information.
 Examples
 --------
 >>> from news.publisher import Publisher
->>> from news.config.workflow import load_config
+>>> from news.config.models import load_config
 >>> config = load_config("data/config/news-collection-config.yaml")
 >>> publisher = Publisher(config=config)
 >>> result = await publisher.publish(summarized_article)
@@ -32,7 +32,7 @@ from news.models import (
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
-    from news.config.workflow import NewsWorkflowConfig
+    from news.config.models import NewsWorkflowConfig
 
 logger = get_logger(__name__, module="publisher")
 
@@ -71,7 +71,7 @@ class Publisher:
     Examples
     --------
     >>> from news.publisher import Publisher
-    >>> from news.config.workflow import load_config
+    >>> from news.config.models import load_config
     >>> config = load_config("config.yaml")
     >>> publisher = Publisher(config=config)
     >>> result = await publisher.publish(summarized_article)

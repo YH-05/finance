@@ -319,7 +319,9 @@ async def _fetch_with_playwright(url: str) -> str:
     """
     logger.debug("Tier 2: Fetching with Playwright", url=url)
     try:
-        from playwright.async_api import async_playwright
+        from playwright.async_api import (  # type: ignore[import-not-found]
+            async_playwright,
+        )
     except ImportError:
         logger.warning("Playwright not installed, skipping Tier 2")
         return ""

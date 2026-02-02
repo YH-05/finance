@@ -272,6 +272,297 @@ class TestSymbolsConfig:
         assert symbols == []
 
 
+class TestSymbolsConfigGetSymbolGroup:
+    """Tests for SymbolsConfig.get_symbol_group method."""
+
+    def _create_test_config(self) -> SymbolsConfig:
+        """テスト用の SymbolsConfig を作成."""
+        return SymbolsConfig(
+            indices=IndicesConfig(
+                us=[
+                    IndexSymbol(symbol="^GSPC", name="S&P 500"),
+                    IndexSymbol(symbol="^DJI", name="Dow Jones"),
+                ],
+                global_=[IndexSymbol(symbol="^N225", name="日経225")],
+            ),
+            mag7=[
+                Mag7Symbol(symbol="AAPL", name="Apple"),
+                Mag7Symbol(symbol="MSFT", name="Microsoft"),
+            ],
+            commodities=[CommoditySymbol(symbol="GC=F", name="Gold Futures")],
+            currencies={
+                "jpy_crosses": [
+                    CurrencyPairSymbol(symbol="USDJPY=X", name="米ドル/円")
+                ],
+            },
+            sectors=[SectorSymbol(symbol="XLF", name="Financial Select Sector SPDR")],
+            sector_stocks=SectorStocksConfig(
+                XLF=[
+                    SectorStockSymbol(
+                        symbol="JPM", name="JPMorgan Chase", sector="Financial"
+                    ),
+                ],
+            ),
+            return_periods=ReturnPeriodsConfig(
+                d1=1,
+                wow="prev_tue",
+                w1=5,
+                mtd="mtd",
+                m1=21,
+                m3=63,
+                m6=126,
+                ytd="ytd",
+                y1=252,
+                y3=756,
+                y5=1260,
+            ),
+        )
+
+    def test_正常系_mag7グループを取得(self) -> None:
+        """get_symbol_group で mag7 グループを取得できることを確認."""
+        config = self._create_test_config()
+
+        group = config.get_symbol_group("mag7")
+
+        assert len(group) == 2
+        assert group[0] == {"symbol": "AAPL", "name": "Apple"}
+        assert group[1] == {"symbol": "MSFT", "name": "Microsoft"}
+
+    def test_正常系_indicesグループを取得(self) -> None:
+        """get_symbol_group で indices グループを取得できることを確認."""
+        config = self._create_test_config()
+
+        # サブグループなしで全て取得
+        group = config.get_symbol_group("indices")
+        assert len(group) == 3
+
+        # US サブグループ
+        us_group = config.get_symbol_group("indices", "us")
+        assert len(us_group) == 2
+        assert us_group[0] == {"symbol": "^GSPC", "name": "S&P 500"}
+
+        # Global サブグループ
+        global_group = config.get_symbol_group("indices", "global")
+        assert len(global_group) == 1
+        assert global_group[0] == {"symbol": "^N225", "name": "日経225"}
+
+    def test_正常系_commoditiesグループを取得(self) -> None:
+        """get_symbol_group で commodities グループを取得できることを確認."""
+        config = self._create_test_config()
+
+        group = config.get_symbol_group("commodities")
+
+        assert len(group) == 1
+        assert group[0] == {"symbol": "GC=F", "name": "Gold Futures"}
+
+    def test_正常系_currenciesグループを取得(self) -> None:
+        """get_symbol_group で currencies グループを取得できることを確認."""
+        config = self._create_test_config()
+
+        # サブグループなしで全て取得
+        group = config.get_symbol_group("currencies")
+        assert len(group) == 1
+
+        # jpy_crosses サブグループ
+        jpy_group = config.get_symbol_group("currencies", "jpy_crosses")
+        assert len(jpy_group) == 1
+        assert jpy_group[0] == {"symbol": "USDJPY=X", "name": "米ドル/円"}
+
+    def test_正常系_sectorsグループを取得(self) -> None:
+        """get_symbol_group で sectors グループを取得できることを確認."""
+        config = self._create_test_config()
+
+        group = config.get_symbol_group("sectors")
+
+        assert len(group) == 1
+        assert group[0] == {"symbol": "XLF", "name": "Financial Select Sector SPDR"}
+
+    def test_正常系_sector_stocksグループを取得(self) -> None:
+        """get_symbol_group で sector_stocks グループを取得できることを確認."""
+        config = self._create_test_config()
+
+        # XLF サブグループ
+        xlf_group = config.get_symbol_group("sector_stocks", "XLF")
+        assert len(xlf_group) == 1
+        assert xlf_group[0] == {"symbol": "JPM", "name": "JPMorgan Chase"}
+
+    def test_正常系_存在しないグループで空リストを返す(self) -> None:
+        """存在しないグループ名で空リストを返すことを確認."""
+        config = self._create_test_config()
+
+        group = config.get_symbol_group("nonexistent")
+
+        assert group == []
+
+    def test_正常系_存在しないサブグループで空リストを返す(self) -> None:
+        """存在しないサブグループ名で空リストを返すことを確認."""
+        config = self._create_test_config()
+
+        group = config.get_symbol_group("indices", "nonexistent")
+
+        assert group == []
+
+
+class TestSymbolsConfigGetReturnPeriodsDict:
+    """Tests for SymbolsConfig.get_return_periods_dict method."""
+
+    def test_正常系_全ての期間定義を取得(self) -> None:
+        """get_return_periods_dict で全ての期間定義を取得できることを確認."""
+        config = SymbolsConfig(
+            indices=IndicesConfig(us=[], global_=[]),
+            mag7=[],
+            commodities=[],
+            currencies={},
+            sectors=[],
+            sector_stocks=SectorStocksConfig(),
+            return_periods=ReturnPeriodsConfig(
+                d1=1,
+                wow="prev_tue",
+                w1=5,
+                mtd="mtd",
+                m1=21,
+                m3=63,
+                m6=126,
+                ytd="ytd",
+                y1=252,
+                y3=756,
+                y5=1260,
+            ),
+        )
+
+        periods = config.get_return_periods_dict()
+
+        assert periods["1D"] == 1
+        assert periods["WoW"] == "prev_tue"
+        assert periods["1W"] == 5
+        assert periods["MTD"] == "mtd"
+        assert periods["1M"] == 21
+        assert periods["3M"] == 63
+        assert periods["6M"] == 126
+        assert periods["YTD"] == "ytd"
+        assert periods["1Y"] == 252
+        assert periods["3Y"] == 756
+        assert periods["5Y"] == 1260
+
+
+class TestSymbolsConfigEdgeCases:
+    """Edge case tests for SymbolsConfig."""
+
+    def test_エッジケース_全インデックスをサブグループなしで取得(self) -> None:
+        """サブグループ未指定で全インデックスを取得できることを確認."""
+        config = SymbolsConfig(
+            indices=IndicesConfig(
+                us=[IndexSymbol(symbol="^GSPC", name="S&P 500")],
+                global_=[IndexSymbol(symbol="^N225", name="日経225")],
+            ),
+            mag7=[],
+            commodities=[],
+            currencies={},
+            sectors=[],
+            sector_stocks=SectorStocksConfig(),
+            return_periods=ReturnPeriodsConfig(
+                d1=1,
+                wow="prev_tue",
+                w1=5,
+                mtd="mtd",
+                m1=21,
+                m3=63,
+                m6=126,
+                ytd="ytd",
+                y1=252,
+                y3=756,
+                y5=1260,
+            ),
+        )
+
+        # サブグループなしで全インデックスを取得
+        all_indices = config.get_symbols("indices")
+
+        assert "^GSPC" in all_indices
+        assert "^N225" in all_indices
+        assert len(all_indices) == 2
+
+    def test_エッジケース_全通貨ペアをサブグループなしで取得(self) -> None:
+        """サブグループ未指定で全通貨ペアを取得できることを確認."""
+        config = SymbolsConfig(
+            indices=IndicesConfig(us=[], global_=[]),
+            mag7=[],
+            commodities=[],
+            currencies={
+                "jpy_crosses": [
+                    CurrencyPairSymbol(symbol="USDJPY=X", name="米ドル/円"),
+                ],
+                "usd_crosses": [
+                    CurrencyPairSymbol(symbol="EURUSD=X", name="ユーロ/ドル"),
+                ],
+            },
+            sectors=[],
+            sector_stocks=SectorStocksConfig(),
+            return_periods=ReturnPeriodsConfig(
+                d1=1,
+                wow="prev_tue",
+                w1=5,
+                mtd="mtd",
+                m1=21,
+                m3=63,
+                m6=126,
+                ytd="ytd",
+                y1=252,
+                y3=756,
+                y5=1260,
+            ),
+        )
+
+        # サブグループなしで全通貨ペアを取得
+        all_currencies = config.get_symbols("currencies")
+
+        assert "USDJPY=X" in all_currencies
+        assert "EURUSD=X" in all_currencies
+        assert len(all_currencies) == 2
+
+    def test_エッジケース_全セクター株をサブグループなしで取得(self) -> None:
+        """サブグループ未指定で全セクター株を取得できることを確認."""
+        config = SymbolsConfig(
+            indices=IndicesConfig(us=[], global_=[]),
+            mag7=[],
+            commodities=[],
+            currencies={},
+            sectors=[],
+            sector_stocks=SectorStocksConfig(
+                XLF=[
+                    SectorStockSymbol(
+                        symbol="JPM", name="JPMorgan Chase", sector="Financial"
+                    ),
+                ],
+                XLK=[
+                    SectorStockSymbol(
+                        symbol="CRM", name="Salesforce", sector="Technology"
+                    ),
+                ],
+            ),
+            return_periods=ReturnPeriodsConfig(
+                d1=1,
+                wow="prev_tue",
+                w1=5,
+                mtd="mtd",
+                m1=21,
+                m3=63,
+                m6=126,
+                ytd="ytd",
+                y1=252,
+                y3=756,
+                y5=1260,
+            ),
+        )
+
+        # サブグループなしで全セクター株を取得
+        all_sector_stocks = config.get_symbols("sector_stocks")
+
+        assert "JPM" in all_sector_stocks
+        assert "CRM" in all_sector_stocks
+        assert len(all_sector_stocks) == 2
+
+
 class TestSymbolsConfigIntegration:
     """Integration tests with symbols.yaml structure."""
 

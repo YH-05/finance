@@ -46,7 +46,7 @@ from pydantic import BaseModel, Field
 
 from utils_core.logging import get_logger, setup_logging
 
-from ..config.loader import ConfigLoader
+from ..config.models import ConfigLoader
 from ..processors.pipeline import Pipeline, PipelineConfig
 from ..sinks.file import FileSink
 

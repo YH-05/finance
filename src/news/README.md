@@ -65,10 +65,8 @@ news/
 │   └── github.py            # GitHubSink（Issue作成）
 │
 ├── config/                  # 設定管理
-│   ├── models.py            # 設定モデル
-│   ├── loader.py            # YAMLローダー
-│   ├── workflow.py          # ワークフロー設定
-│   └── errors.py            # 設定エラー
+│   ├── __init__.py          # 公開API定義
+│   └── models.py            # 全設定モデル（NewsConfig, NewsWorkflowConfig, ConfigLoader, エラークラス）
 │
 ├── collector.py             # Collector（ソース→シンク統合）
 ├── orchestrator.py          # NewsWorkflowOrchestrator
@@ -159,7 +157,7 @@ print(f"Collected {result.total_articles} articles")
 
 ```python
 from news.orchestrator import NewsWorkflowOrchestrator
-from news.config.workflow import load_config
+from news.config.models import load_config
 
 # 設定ロード
 config = load_config("data/config/news-collection-config.yaml")

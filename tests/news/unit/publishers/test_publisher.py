@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from news.config.workflow import NewsWorkflowConfig, SummarizationConfig
+from news.config.models import NewsWorkflowConfig, SummarizationConfig
 from news.models import (
     ArticleSource,
     CollectedArticle,
