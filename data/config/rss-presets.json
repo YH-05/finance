@@ -203,6 +203,41 @@
             "category": "finance",
             "fetch_interval": "daily",
             "enabled": true
+        },
+        {
+            "url": "https://www.nasdaq.com/feed/rssoutbound?category=stocks",
+            "title": "Nasdaq Stock News",
+            "category": "stock",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.nasdaq.com/feed/rssoutbound?category=etfs",
+            "title": "Nasdaq ETFs",
+            "category": "sector",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.nasdaq.com/feed/rssoutbound?category=markets",
+            "title": "Nasdaq Markets",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.investing.com/rss/news_25.rss",
+            "title": "Investing.com",
+            "category": "market",
+            "fetch_interval": "daily",
+            "enabled": true
+        },
+        {
+            "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+            "title": "Federal Reserve Press",
+            "category": "macro",
+            "fetch_interval": "daily",
+            "enabled": true
         }
     ]
 }
