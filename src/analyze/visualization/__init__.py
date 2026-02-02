@@ -19,6 +19,9 @@ Examples
 >>> from analyze.visualization import apply_df_style, plot_cumulative_returns
 >>> styled = apply_df_style(returns_df)
 >>> fig = plot_cumulative_returns(price_df, ["AAPL", "MSFT"], "Performance")
+
+>>> from analyze.visualization import plot_vix_and_high_yield_spread
+>>> fig = plot_vix_and_high_yield_spread(volatility_df)
 """
 
 from .charts import (
@@ -43,6 +46,7 @@ from .price_charts import (
     PriceChartBuilder,
     PriceChartData,
 )
+from .volatility import plot_vix_and_high_yield_spread, plot_vix_and_uncertainty_index
 
 __all__ = [
     "DARK_THEME_COLORS",
@@ -64,4 +68,6 @@ __all__ = [
     "apply_df_style",
     "get_theme_colors",
     "plot_cumulative_returns",
+    "plot_vix_and_high_yield_spread",
+    "plot_vix_and_uncertainty_index",
 ]
