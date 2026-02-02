@@ -4,6 +4,37 @@
 
 `docs/news-workflow-analysis-2026-02-02.md` の分析結果に基づき、ニュースワークフローの改善を実施する。
 
+## 調査結果サマリー（2026-02-02 追加調査）
+
+### 重要な発見
+
+**curlとPythonライブラリの挙動差異**:
+
+| フィード | curl結果 | feedparser結果 | 結論 |
+|----------|----------|---------------|------|
+| CNBC（14/15本） | 403 Forbidden | **200 OK, 30件取得** | ✅ 問題なし |
+| Yahoo Finance | 429 Too Many Requests | **200 OK, 48件取得** | ✅ 問題なし |
+| Financial Times | 301 Redirect | **200 OK, 25件取得**（新URL） | ✅ URL更新で解決 |
+| CNBC Markets | 403 | 200だが**0件** | ❌ フィードID無効 |
+
+**結論**: ワークフローはPython（feedparser/trafilatura）で本文取得→Claude Code要約の順序で実装されているため、curlの403/429は問題にならない。
+
+### ワークフロー実装確認
+
+```
+RSS Feed (feedparser)
+  ↓ [Python]
+Tier 1: trafilatura で本文取得
+  ↓ [失敗時]
+Tier 2: MCP Playwright で本文取得
+  ↓ [失敗時]
+Tier 3: RSS Summary フォールバック
+  ↓ [成功時]
+Claude Code: 本文をPromptに含めて要約生成
+  ↓
+GitHub Issue: 要約を本文に含める
+```
+
 ## 現状分析
 
 ### カテゴリ分布（rss-presets.json）
@@ -16,91 +47,73 @@
 | **sector** | **0** | - |
 | **macro** | **0** | - |
 
-### 問題のサマリー
+### 問題のサマリー（優先度再評価）
 
-| 問題 | 影響 | 優先度 |
-|------|------|--------|
-| MarketWatch URL変更（301エラー） | marketフィード1件失敗 | 高 |
-| Seeking Alpha ブロックドメイン | marketフィード1件スキップ | 情報 |
-| CNBC - Markets フォーマットエラー | marketフィード1件失敗 | 高 |
-| stock/sector/macroカテゴリ不在 | 該当Status投稿0件 | 中 |
-| RSS収集層にリトライ設定なし | Yahoo Finance 429エラー | 中 |
-| CNBCコンテンツ抽出44%失敗 | 抽出成功率低下 | 低 |
+| 問題 | 影響 | 優先度 | 備考 |
+|------|------|--------|------|
+| ~~MarketWatch URL変更~~ | ~~marketフィード1件失敗~~ | ~~高~~ | ✅ **解決済み** |
+| Seeking Alpha ブロックドメイン | marketフィード1件スキップ | 情報 | 意図的なブロック |
+| CNBC - Markets フィードID無効 | marketフィード1件失敗 | **高** | 0件を返す |
+| Financial Times URL変更 | financeフィード1件失敗 | **高** | 新URLに更新必要 |
+| stock/sector/macroカテゴリ不在 | 該当Status投稿0件 | 中 | 新規フィード追加 |
+| ~~RSS収集層にリトライ設定なし~~ | ~~Yahoo Finance 429エラー~~ | ~~中~~ | ✅ **feedparserで動作** |
+| CNBCコンテンツ抽出44%失敗 | 抽出成功率低下 | 低 | Playwright強化で対応 |
 
 ---
 
 ## Phase 1: 即時対応（優先度: 高）
 
-### 1.1 MarketWatch URL更新
+### 1.1 CNBC - Markets フィード無効化
 
-**ファイル**: `data/config/rss-presets.json` (行32-38)
+**ファイル**: `data/config/rss-presets.json` (行82-87)
+
+フィードID `20907743` は無効（0件を返す）。無効化する。
 
 ```json
 // 変更前
 {
-  "url": "https://feeds.marketwatch.com/marketwatch/topstories/",
-  "title": "MarketWatch Top Stories",
-  "category": "market"
+  "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20907743",
+  "title": "CNBC - Markets",
+  "category": "market",
+  "fetch_interval": "daily",
+  "enabled": true
 }
 
 // 変更後
 {
-  "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
-  "title": "MarketWatch Top Stories",
-  "category": "market"
+  "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20907743",
+  "title": "CNBC - Markets",
+  "category": "market",
+  "fetch_interval": "daily",
+  "enabled": false  // フィードID無効のため
 }
 ```
 
-**検証**: `curl -sI "https://feeds.content.dowjones.io/public/rss/mw_topstories" | head -1`
+### 1.2 Financial Times URL更新
 
-### 1.2 RSS収集層へのリトライ機構追加
+**ファイル**: `data/config/rss-presets.json` (行53-59)
 
-**ファイル**: `src/news/collectors/rss.py`
+```json
+// 変更前
+{
+  "url": "https://www.ft.com/?format=rss",
+  "title": "Financial Times",
+  "category": "finance",
+  "fetch_interval": "daily",
+  "enabled": true
+}
 
-現在の実装では RSS フィード取得失敗時にスキップするのみ。指数バックオフリトライを追加する。
-
-```python
-# 既存の RetryConfig を活用
-from news.core.result import RetryConfig
-
-class RSSCollector:
-    def __init__(self, config: RSSConfig) -> None:
-        self._retry_config = RetryConfig(
-            max_attempts=3,
-            initial_delay=2.0,  # Yahoo Finance対策で2秒に
-            exponential_base=2.0,
-            jitter=True,
-        )
+// 変更後
+{
+  "url": "https://www.ft.com/markets?format=rss",
+  "title": "Financial Times - Markets",
+  "category": "finance",
+  "fetch_interval": "daily",
+  "enabled": true
+}
 ```
 
-### 1.3 news-collection-config.yaml にリトライ設定追加
-
-**ファイル**: `data/config/news-collection-config.yaml` (行40-42の後に追加)
-
-```yaml
-# RSS設定
-rss:
-  presets_file: "data/config/rss-presets.json"
-  # 新規追加: リトライ設定
-  retry:
-    max_attempts: 3
-    initial_delay_seconds: 2.0  # Yahoo Finance 429対策で2秒に
-    max_delay_seconds: 30.0
-    exponential_base: 2.0
-    jitter: true
-```
-
-**設定モデル追加**: `src/news/config/models.py`
-
-```python
-@dataclass
-class RSSRetryConfig:
-    max_attempts: int = 3
-    initial_delay_seconds: float = 2.0
-    max_delay_seconds: float = 30.0
-    exponential_base: float = 2.0
-    jitter: bool = True
-```
+**検証結果**: feedparserで200 OK, 25件取得確認済み
 
 ---
 
@@ -110,15 +123,21 @@ class RSSRetryConfig:
 
 **ファイル**: `data/config/rss-presets.json`
 
-以下のフィードを追加：
+以下のフィードを追加（検証済み）：
 
-| カテゴリ | フィード | URL |
-|----------|----------|-----|
-| stock | Nasdaq Stock News | `https://www.nasdaq.com/feed/rssoutbound?category=stocks` |
-| stock | Investopedia Stock News | `https://www.investopedia.com/feedbuilder/feed/getfeed?feedName=rss_headline` |
-| macro | Federal Reserve Press | `https://www.federalreserve.gov/feeds/press_all.xml` |
-| macro | CNBC Economy | `https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258` |
-| sector | ETF.com News | `https://www.etf.com/rss/news.xml` |
+| カテゴリ | フィード | URL | 検証結果 |
+|----------|----------|-----|----------|
+| stock | Nasdaq Stock News | `https://www.nasdaq.com/feed/rssoutbound?category=stocks` | ✅ 動作確認 |
+| sector | Nasdaq ETFs | `https://www.nasdaq.com/feed/rssoutbound?category=etfs` | ✅ 動作確認 |
+| market | Nasdaq Markets | `https://www.nasdaq.com/feed/rssoutbound?category=markets` | ✅ 動作確認 |
+| market | Investing.com | `https://www.investing.com/rss/news_25.rss` | ✅ 動作確認 |
+| macro | Federal Reserve Press | `https://www.federalreserve.gov/feeds/press_all.xml` | ✅ 動作確認 |
+
+**除外したフィード（検証で失敗）**:
+| フィード | URL | 理由 |
+|----------|-----|------|
+| ~~Investopedia~~ | `investopedia.com/feedbuilder/...` | 404 Not Found |
+| ~~ETF.com~~ | `etf.com/rss/news.xml` | 403 Cloudflareブロック |
 
 ### 2.2 status_mapping 拡張
 
@@ -131,81 +150,77 @@ status_mapping:
   market: "index"
   finance: "finance"
 
-  # 新規追加
+  # 新規追加（RSSカテゴリ用）
   stock: "stock"
   sector: "sector"
   macro: "macro"
   economy: "macro"      # economyカテゴリもmacroにマップ
   earnings: "stock"     # 決算ニュースはstockにマップ
+  etfs: "sector"        # ETFニュースはsectorにマップ
 ```
 
 ### 2.3 rss-presets.json の既存フィードカテゴリ再分類
 
 一部のフィードを適切なカテゴリに再分類：
 
-| フィード | 現在 | 変更後 | 行番号 |
-|----------|------|--------|--------|
-| CNBC - Economy | finance | macro | 96-101 |
-| CNBC - Earnings | market | stock | 137-143 |
-| CNBC - Energy | finance | sector | 180-185 |
-| CNBC - Health Care | finance | sector | 151-157 |
-
-**変更例**（CNBC - Economy）:
-```json
-{
-  "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
-  "title": "CNBC - Economy",
-  "category": "macro",  // finance → macro に変更
-  "fetch_interval": "daily",
-  "enabled": true
-}
-```
+| フィード | 現在 | 変更後 | 行番号 | 理由 |
+|----------|------|--------|--------|------|
+| CNBC - Economy | finance | macro | 96-101 | 経済指標・金融政策 |
+| CNBC - Earnings | market | stock | 137-143 | 企業決算 |
+| CNBC - Energy | finance | sector | 180-185 | エネルギーセクター |
+| CNBC - Health Care | finance | sector | 151-157 | ヘルスケアセクター |
 
 ---
 
 ## Phase 3: 技術的改善（優先度: 低）
 
-### 3.1 CNBC抽出失敗対策
+### 3.1 CNBC抽出失敗対策（Playwrightセレクタ強化）
 
-**オプション A**: CNBC専用抽出ロジック追加
-- `src/news/extractors/cnbc.py` を新規作成
-- CNBC特有のDOM構造に対応したセレクタ
+**ファイル**: `src/news/extractors/playwright.py`
 
-**オプション B**: Playwright フォールバックの強化
-- 現在のPlaywrightフォールバックは実装済みだが、CNBC用の追加セレクタを定義
-- `.ArticleBody-articleBody` などのCNBC固有クラスを追加
-
-**推奨**: オプション B（既存実装の拡張で対応可能）
-
-### 3.2 フィード健全性監視
-
-**ファイル**: `src/news/monitoring.py` (新規)
+現在のセレクタ（L96-104）に CNBC 用セレクタを追加：
 
 ```python
-@dataclass
-class FeedHealthMetrics:
-    feed_url: str
-    success_rate: float
-    last_success: datetime | None
-    consecutive_failures: int
-    last_error: str | None
+_selectors: list[str] = [
+    # CNBC専用（優先度高）
+    ".ArticleBody-articleBody",
+    ".RenderKeyPoints-list",
+    "[data-module='ArticleBody']",
+    # 既存
+    "article",
+    "main",
+    "[role='main']",
+    ".article-body",
+    ".post-content",
+    "#content",
+    "body",
+]
 ```
 
-- 連続失敗カウントの追跡
-- 失敗率の定期レポート
-- 自動アラート（連続5回失敗でログ警告）
+### 3.2 リトライ機構追加（オプション）
+
+**状態**: 設定モデルは実装済み、ロジック未実装
+
+feedparser では 429/403 エラーが発生しないため、**優先度を「低」に変更**。
+ただし、将来的な安定性向上のため実装を推奨。
+
+**実装済み**:
+- `RssRetryConfig` モデル（`config/models.py`）
+- `RssConfig.retry` フィールド
+
+**未実装**:
+- `_fetch_feed` メソッドへのリトライロジック
+- `news-collection-config.yaml` へのリトライ設定
 
 ---
 
 ## 変更対象ファイル
 
-| ファイル | 変更内容 |
-|----------|----------|
-| `data/config/rss-presets.json` | URL更新、新規フィード追加、カテゴリ再分類 |
-| `data/config/news-collection-config.yaml` | リトライ設定追加、status_mapping拡張 |
-| `src/news/collectors/rss.py` | リトライ機構追加 |
-| `src/news/config/models.py` | RSSRetryConfig モデル追加 |
-| `src/news/extractors/playwright.py` | CNBC用セレクタ追加（Phase 3） |
+| ファイル | 変更内容 | Phase |
+|----------|----------|-------|
+| `data/config/rss-presets.json` | CNBC Markets無効化、FT URL更新、新規フィード追加、カテゴリ再分類 | 1, 2 |
+| `data/config/news-collection-config.yaml` | status_mapping拡張 | 2 |
+| `src/news/extractors/playwright.py` | CNBC用セレクタ追加 | 3 |
 
 ---
 
@@ -214,36 +229,44 @@ class FeedHealthMetrics:
 ### Phase 1 検証
 
 ```bash
-# 1. MarketWatch フィードのテスト
-curl -I "https://feeds.content.dowjones.io/public/rss/mw_topstories"
+# 1. 変更後のフィード動作確認
+uv run python -c "
+import feedparser
 
-# 2. ワークフロー実行（dry-run）
-python -m news.scripts.finance_news_workflow --dry-run --verbose
+# CNBC Markets（無効化確認）
+feed1 = feedparser.parse('https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20907743')
+print(f'CNBC Markets: {len(feed1.entries)} entries (should be 0)')
 
-# 3. ログでリトライ動作を確認
-grep -E "retry|Retrying" logs/news-workflow-*.log
+# Financial Times（新URL）
+feed2 = feedparser.parse('https://www.ft.com/markets?format=rss')
+print(f'FT Markets: {len(feed2.entries)} entries')
+"
 ```
 
 ### Phase 2 検証
 
 ```bash
 # 1. 新規フィードの疎通確認
-python -c "
+uv run python -c "
 import feedparser
+
 feeds = [
-    'https://www.nasdaq.com/feed/rssoutbound?category=stocks',
-    'https://www.federalreserve.gov/feeds/press_all.xml',
+    ('Nasdaq Stocks', 'https://www.nasdaq.com/feed/rssoutbound?category=stocks'),
+    ('Nasdaq ETFs', 'https://www.nasdaq.com/feed/rssoutbound?category=etfs'),
+    ('Nasdaq Markets', 'https://www.nasdaq.com/feed/rssoutbound?category=markets'),
+    ('Investing.com', 'https://www.investing.com/rss/news_25.rss'),
+    ('Federal Reserve', 'https://www.federalreserve.gov/feeds/press_all.xml'),
 ]
-for url in feeds:
+for name, url in feeds:
     d = feedparser.parse(url)
-    print(f'{url}: {len(d.entries)} entries')
+    print(f'{name}: {len(d.entries)} entries')
 "
 
-# 2. status_mappingの動作確認
-python -m news.scripts.finance_news_workflow --dry-run --status stock,macro
-
-# 3. カテゴリ分布の確認
+# 2. カテゴリ分布の確認
 grep -o '"category": "[^"]*"' data/config/rss-presets.json | sort | uniq -c
+
+# 3. ワークフロー実行（dry-run）
+python -m news.scripts.finance_news_workflow --dry-run --verbose
 ```
 
 ### 全体検証
@@ -260,11 +283,12 @@ uv run pytest tests/news/integration/ -v
 
 ## 実装順序
 
-1. **Phase 1.1**: MarketWatch URL更新（5分）
-2. **Phase 1.2-1.3**: リトライ機構追加（30分）
-3. **Phase 2.1**: 新規フィード追加（15分）
-4. **Phase 2.2-2.3**: status_mapping拡張 + カテゴリ再分類（15分）
-5. **Phase 3**: CNBC対策（オプション、必要に応じて）
+1. **Phase 1.1**: CNBC Markets 無効化
+2. **Phase 1.2**: Financial Times URL更新
+3. **Phase 2.1**: 新規フィード追加（5本）
+4. **Phase 2.2**: status_mapping 拡張
+5. **Phase 2.3**: 既存フィードカテゴリ再分類
+6. **Phase 3.1**: CNBC用Playwrightセレクタ追加（オプション）
 
 ---
 
@@ -272,151 +296,9 @@ uv run pytest tests/news/integration/ -v
 
 | リスク | 対策 |
 |--------|------|
-| 新規フィードURLが無効 | 事前にcurlでHTTPステータス確認 |
-| リトライによる処理時間増加 | max_attemptsを3に制限、タイムアウト設定 |
+| 新規フィードが将来無効化される | フィード健全性の定期確認（手動） |
 | CNBC抽出率が改善しない | ブロックリストへの追加を検討 |
-
----
-
-## 情報収集結果（実装前調査）
-
-### 既存の監視・統計パターン
-
-`src/news/core/history.py` に既存の統計収集フレームワークがある：
-
-```python
-# 使用可能なクラス
-- SourceStats: success_count, error_count, article_count, success_rate
-- SinkResult: success, error_message, metadata
-- CollectionRun: started_at, completed_at, sources, sinks, duration_seconds
-- CollectionHistory: runs管理、save/load、get_statistics()
-```
-
-**Phase 3.2の実装方針**:
-- 新規 `monitoring.py` ではなく、既存の `history.py` パターンを拡張
-- `FeedHealthMetrics` を `SourceStats` の拡張として実装検討
-
-### FeedError モデル（既存）
-
-`src/news/models.py:638-692` に既存の `FeedError` モデル：
-- `feed_url`, `feed_name`, `error`, `error_type`, `timestamp`
-- `WorkflowResult.feed_errors` として集約済み
-
-### Playwright Extractor セレクタ
-
-`src/news/extractors/playwright.py:96-104` の現在のセレクタ：
-
-```python
-_selectors: list[str] = [
-    "article",
-    "main",
-    "[role='main']",
-    ".article-body",
-    ".post-content",
-    "#content",
-    "body",
-]
-```
-
-**CNBC用に追加すべきセレクタ（Phase 3.1）**:
-- `.ArticleBody-articleBody`
-- `.RenderKeyPoints-list`
-- `[data-module="ArticleBody"]`
-
-### RSSリトライ機構の実装状況
-
-**実装済み（途中で中断）**:
-1. `RssRetryConfig` モデルを `config/models.py` に追加済み
-2. `RssConfig.retry` フィールド追加済み
-3. `rss.py` に `asyncio`, `random` インポート追加済み
-
-**未実装**:
-- `_fetch_feed` メソッドへのリトライロジック追加
-- `news-collection-config.yaml` へのリトライ設定追加
-
-### 変更済みファイル（要ロールバック確認）
-
-| ファイル | 変更内容 |
-|----------|----------|
-| `data/config/rss-presets.json` | MarketWatch URL更新 |
-| `src/news/config/models.py` | RssRetryConfig追加、RssConfig.retry追加 |
-| `src/news/collectors/rss.py` | import追加（asyncio, random） |
-
-### テストへの影響
-
-**`tests/news/unit/collectors/test_rss.py`**:
-- リトライ機構のテストは存在しない → **新規テスト追加が必要**
-- 既存のfixtureは `RssConfig(presets_file=...)` のみでデフォルト値使用
-- リトライ機能追加後も既存テストは通る（後方互換性あり）
-- 追加が必要なテスト:
-  - `test_正常系_リトライで成功する`
-  - `test_正常系_最大リトライ回数で失敗する`
-  - `test_正常系_指数バックオフが適用される`
-
-**`tests/news/unit/config/test_models.py`**:
-- `RssRetryConfig` のテストは存在しない → **新規テスト追加が必要**
-- 追加が必要なテスト:
-  - `test_正常系_デフォルト値で作成できる`
-  - `test_正常系_カスタム値で作成できる`
-  - `test_異常系_無効値でValidationError`
-
-**`tests/news/unit/extractors/test_playwright.py`**:
-- 現在のテストはセレクタ変更に影響なし（モックを使用）
-- CNBC用セレクタ追加後もテストは通る
-
-### status_mapping の現状
-
-**`data/config/news-collection-config.yaml` (行9-24)**:
-
-```yaml
-status_mapping:
-  # 現在のRSSカテゴリマッピング
-  tech: "ai"
-  market: "index"
-  finance: "finance"
-
-  # yfinanceカテゴリ（存在するが直接使用されない）
-  yf_index: "index"
-  yf_stock: "stock"
-  yf_ai_stock: "ai"
-  yf_sector_etf: "sector"
-  yf_macro: "macro"
-```
-
-**問題点**: RSSの `category` フィールドから `stock`, `sector`, `macro` へ直接マップできるエントリがない。
-
-**Phase 2.2で追加が必要**:
-```yaml
-# RSSカテゴリ追加
-stock: "stock"       # 個別銘柄ニュース
-sector: "sector"     # セクター分析
-macro: "macro"       # マクロ経済
-economy: "macro"     # 経済ニュースもmacroへ
-earnings: "stock"    # 決算ニュースはstockへ
-```
-
-### カテゴリ再分類の詳細（Phase 2.3）
-
-提案された4件の再分類:
-
-| フィード | 現在行 | 変更前 | 変更後 | 理由 |
-|----------|--------|--------|--------|------|
-| CNBC - Economy | 96-101 | finance | macro | 経済指標・金融政策ニュース |
-| CNBC - Earnings | 137-143 | market | stock | 企業決算ニュース |
-| CNBC - Energy | 180-185 | finance | sector | エネルギーセクターETF関連 |
-| CNBC - Health Care | 151-157 | finance | sector | ヘルスケアセクターETF関連 |
-
-### 新規フィードURL検証状況
-
-| フィード | URL | 検証結果 |
-|----------|-----|----------|
-| Nasdaq Stock News | `https://www.nasdaq.com/feed/rssoutbound?category=stocks` | **未検証** |
-| Investopedia | `https://www.investopedia.com/feedbuilder/feed/getfeed?feedName=rss_headline` | **未検証** |
-| Federal Reserve Press | `https://www.federalreserve.gov/feeds/press_all.xml` | ✅ 確認済み |
-| CNBC Economy | `https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258` | ✅ 既存利用中 |
-| ETF.com News | `https://www.etf.com/rss/news.xml` | **未検証** |
-
-**実装前に検証が必要なURL**: Nasdaq, Investopedia, ETF.com
+| Nasdaq が User-Agent 制限を強化 | feedparser のデフォルト User-Agent で動作確認済み |
 
 ---
 
@@ -431,9 +313,37 @@ earnings: "stock"    # 決算ニュースはstockへ
 
 ---
 
+## 補足: 調査で判明した事項
+
+### feedparser vs curl の挙動差異
+
+- **curl**: ブラウザ検出で 403/429 を返すサイトが多い
+- **feedparser**: 適切な User-Agent を使用し、正常に取得可能
+- **trafilatura**: 同様に適切なヘッダーで本文取得可能
+
+### ワークフロー実装の確認結果
+
+1. **RSS収集**: `src/news/collectors/rss.py` で feedparser 使用 ✅
+2. **本文抽出**: `src/news/extractors/trafilatura.py` で3段階フォールバック ✅
+3. **要約生成**: `src/news/processors/summarizer.py` で Claude Agent SDK 使用 ✅
+4. **Issue作成**: `src/news/publisher.py` で gh CLI 使用 ✅
+
+**結論**: Python本文取得 → Claude Code要約 の順序で正しく実装されている。
+
+### 実装済み項目（変更不要）
+
+| 項目 | 状態 |
+|------|------|
+| MarketWatch URL | ✅ 更新済み |
+| RssRetryConfig モデル | ✅ 実装済み（ロジック未使用） |
+| ドメインフィルタリング | ✅ 動作中 |
+| Playwright フォールバック | ✅ 動作中 |
+| User-Agent ローテーション | ✅ 設定済み |
+
+---
+
 ## 実装時の注意事項
 
-1. **リトライ機構**: `_fetch_feed` メソッド内で `self._config.rss.retry` を参照
-2. **テスト追加**: Phase 1 完了後に `RssRetryConfig` と リトライ動作のテストを追加
-3. **CNBC セレクタ**: 優先度順にリストに追加（`article` より前か後かで動作が変わる）
-4. **status_mapping**: 既存のyfinance用マッピングとの重複に注意
+1. **feedparser検証**: 新規フィードは必ず feedparser で動作確認（curl不可）
+2. **カテゴリ一貫性**: status_mapping と rss-presets.json のカテゴリ名を一致させる
+3. **CNBC セレクタ順序**: 優先度の高いセレクタを先頭に配置
