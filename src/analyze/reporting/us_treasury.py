@@ -34,14 +34,6 @@ def load_fred_api_key() -> str:
     return get_fred_api_key()
 
 
-def load_fred_db_path() -> Path:
-    """FREDのSQLiteデータベースファイルのパスを取得する"""
-    fred_dir = os.environ.get("FRED_DIR")
-    if fred_dir is None:
-        raise ValueError("FRED_DIR environment variable not set")
-    return Path(fred_dir) / "FRED.db"
-
-
 def load_fred_series_id_json() -> dict:
     """FREDのシリーズIDが定義されたJSONファイルを読み込む(Githubから)"""
     json_url = os.environ.get("FRED_SERIES_ID_JSON")
@@ -59,7 +51,7 @@ def load_fred_series_id_json() -> dict:
 
 
 def plot_us_interest_rates_and_spread(
-    db_path: Path | None = None,
+    db_path: Path,
     start_date: str = "2000-01-01",
     end_date: Optional[str] = None,
     template: str = "plotly_dark",
@@ -104,7 +96,6 @@ def plot_us_interest_rates_and_spread(
         "DGS30",
     ]
 
-    db_path = db_path if db_path else load_fred_db_path()
     conn = sqlite3.connect(db_path)
     # 1. データの読み込みと整形
     dfs = []
@@ -290,7 +281,7 @@ def plot_us_interest_rates_and_spread(
 
 
 # ================================================================================
-def load_yield_data_from_database(db_path: Path | None = None) -> pd.DataFrame:
+def load_yield_data_from_database(db_path: Path) -> pd.DataFrame:
     """
     データベースからイールドデータを読み込む。
 
@@ -304,9 +295,6 @@ def load_yield_data_from_database(db_path: Path | None = None) -> pd.DataFrame:
     pd.DataFrame
         イールドデータを含むデータフレーム。
     """
-
-    db_path = db_path if db_path else load_fred_db_path()
-
     table_list = [
         "DGS1MO",
         "DGS3MO",
@@ -575,7 +563,7 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
 
 # ================================================================================
 def plot_us_corporate_bond_spreads(
-    db_path: Path | None = None,
+    db_path: Path,
     fred_series_id: list[str] | None = None,
     template: str = "plotly_dark",
 ):
@@ -590,8 +578,6 @@ def plot_us_corporate_bond_spreads(
         "Corporate Bonds" のシリーズIDが定義された
         'fred_series.json' ファイルへのフルパス。
     """
-
-    db_path = db_path if db_path else load_fred_db_path()
     fred_series_id = (
         fred_series_id
         if fred_series_id
