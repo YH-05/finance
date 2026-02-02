@@ -34,7 +34,8 @@
             "title": "MarketWatch Top Stories",
             "category": "market",
             "fetch_interval": "daily",
-            "enabled": true
+            "enabled": false,
+            "note": "Bot検知により本文抽出不可のため無効化"
         },
         {
             "url": "https://seekingalpha.com/feed.xml",
