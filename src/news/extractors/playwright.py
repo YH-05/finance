@@ -57,7 +57,9 @@ def async_playwright() -> Any:
         If playwright is not installed.
     """
     try:
-        from playwright.async_api import async_playwright as _async_playwright
+        from playwright.async_api import (  # type: ignore[import-not-found]
+            async_playwright as _async_playwright,
+        )
 
         return _async_playwright()
     except ImportError as e:

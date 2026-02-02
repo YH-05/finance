@@ -40,7 +40,7 @@ def playwright_available() -> bool:
         True if playwright can be imported, False otherwise.
     """
     try:
-        import playwright
+        import playwright  # type: ignore[import-not-found]
 
         return True
     except ImportError:
@@ -59,7 +59,9 @@ def chromium_installed() -> bool:
         return False
 
     try:
-        from playwright.sync_api import sync_playwright
+        from playwright.sync_api import (  # type: ignore[import-not-found]
+            sync_playwright,
+        )
 
         with sync_playwright() as p:
             # Try to get the executable path
