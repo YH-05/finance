@@ -276,19 +276,16 @@ def plot_us_interest_rates_and_spread(
 
 
 # ================================================================================
-def load_yield_data_from_database(db_path: Path) -> pd.DataFrame:
-    """
-    データベースからイールドデータを読み込む。
+def load_yield_data_from_cache() -> pd.DataFrame:
+    """キャッシュからイールドデータを読み込む。
 
-    Parameters
-    ----------
-    db_path : Path
-        データベースファイルのパス。
+    HistoricalCacheを使用して米国債イールドデータを取得する。
 
     Returns
     -------
     pd.DataFrame
         イールドデータを含むデータフレーム。
+        インデックスは日付、カラムは各テナー（DGS1MO, DGS3MO, ...）。
     """
     table_list = [
         "DGS1MO",
@@ -304,18 +301,14 @@ def load_yield_data_from_database(db_path: Path) -> pd.DataFrame:
         "DGS30",
     ]
 
+    cache = HistoricalCache()
     dfs_yield = []
-    for table in table_list:
-        df = (
-            pd.read_sql(
-                f"SELECT * FROM {table} ORDER BY date",
-                sqlite3.connect(db_path),
-                parse_dates=["date"],
-            )
-            .assign(tenor=table)
-            .rename(columns={table: "value"})
-        )
-        dfs_yield.append(df)
+    for series_id in table_list:
+        df = cache.get_series_df(series_id)
+        if df is not None:
+            df = df.reset_index().rename(columns={"index": "date"})
+            df["tenor"] = series_id
+            dfs_yield.append(df)
 
     df_yield = (
         pd.pivot(
