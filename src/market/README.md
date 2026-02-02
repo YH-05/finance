@@ -141,16 +141,17 @@ print(agent_output)
 
 | モジュール | 状態 | ファイル数 | 実装行数 |
 |-----------|------|----------|---------|
-| `yfinance/` | ✅ 実装済み | 4 | 1,204 |
-| `fred/` | ✅ 実装済み | 7 | 1,488 |
-| `bloomberg/` | ✅ 実装済み | 5 | 1,451 |
-| `cache/` | ✅ 実装済み | 3 | 640 |
-| `export/` | ✅ 実装済み | 2 | 582 |
-| `schema.py` | ✅ 実装済み | 1 | 297 |
-| `types.py` | ✅ 実装済み | 1 | 162 |
-| `errors.py` | ✅ 実装済み | 1 | 201 |
-| `factset/` | ⏳ 未実装 | 1 | 19 |
-| `alternative/` | ⏳ 未実装 | 1 | 21 |
+| `yfinance/` | ✅ 実装済み | 4 | 661 |
+| `fred/` | ✅ 実装済み | 9 | 1,301 |
+| `bloomberg/` | ✅ 実装済み | 6 | 895 |
+| `factset/` | 🚧 開発中 | 4 | 1,218 |
+| `cache/` | ✅ 実装済み | 3 | 326 |
+| `export/` | ✅ 実装済み | 2 | 218 |
+| `alternative/` | 🚧 開発中 | 2 | 171 |
+| `schema.py` | ✅ 実装済み | 1 | 211 |
+| `types.py` | ✅ 実装済み | 1 | 120 |
+| `errors.py` | ✅ 実装済み | 1 | 248 |
+| `utils/` | ✅ 実装済み | 1 | 0 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -159,15 +160,16 @@ print(agent_output)
 | モジュール | 説明 | 状態 |
 |-----------|------|------|
 | `market.yfinance` | Yahoo Finance データ取得（OHLCV、財務指標、指数、為替） | ✅ 実装済み |
-| `market.fred` | FRED 経済指標データ取得（GDP、金利、CPI、失業率など） | ✅ 実装済み |
+| `market.fred` | FRED 経済指標データ取得（GDP、金利、CPI、失業率など）、履歴キャッシュ機能 | ✅ 実装済み |
 | `market.bloomberg` | Bloomberg Terminal API 連携（履歴データ、リファレンスデータ、ニュース） | ✅ 実装済み |
+| `market.factset` | FactSet データ取得・処理ユーティリティ | 🚧 開発中 |
+| `market.alternative` | オルタナティブデータソース、時系列分析 | 🚧 開発中 |
 | `market.export` | データエクスポート（JSON、CSV、SQLite、AI エージェント向け JSON） | ✅ 実装済み |
 | `market.cache` | SQLite ベースのキャッシュ機能（TTL 対応、UPSERT サポート） | ✅ 実装済み |
 | `market.schema` | Pydantic V2 スキーマ定義（MarketConfig、DateRange、メタデータ検証） | ✅ 実装済み |
 | `market.types` | 共通型定義（MarketDataResult、DataSource、AnalysisResult） | ✅ 実装済み |
-| `market.errors` | 共通エラークラス（MarketError、ExportError、CacheError） | ✅ 実装済み |
-| `market.factset` | FactSet データ取得（計画中） | ⏳ 未実装 |
-| `market.alternative` | オルタナティブデータソース（計画中） | ⏳ 未実装 |
+| `market.errors` | 共通エラークラス（MarketError、ExportError、CacheError、各データソース固有エラー） | ✅ 実装済み |
+| `market.utils` | 共通ユーティリティ | ✅ 実装済み |
 
 <!-- AUTO-GENERATED: API -->
 
@@ -1115,11 +1117,11 @@ agent_output = exporter.to_agent_json(data)
 
 | 項目 | 値 |
 |------|-----|
-| Python ファイル数 | 28 |
-| 総行数（実装コード） | 5,407 |
+| Python ファイル数 | 39 |
+| 総行数（実装コード） | 4,511 |
 | サブモジュール数 | 8 |
-| テストファイル数 | 12 |
-| テストカバレッジ | 主要モジュール（yfinance, fred, bloomberg, export）で実装済み |
+| テストファイル数 | 20 |
+| テストカバレッジ | 主要モジュール（yfinance, fred, bloomberg, export, cache）で実装済み |
 
 <!-- END: STATS -->
 
@@ -1134,43 +1136,55 @@ market/
 ├── types.py                 # 共通型定義（MarketDataResult, DataSource 等）
 ├── errors.py                # 共通エラークラス（MarketError, ExportError 等）
 ├── schema.py                # Pydantic V2 スキーマ（MarketConfig, DateRange 等）
+├── base_collector.py        # 基底データコレクタークラス
+├── bloomberg_processor.py   # Bloomberg データ処理ユーティリティ
+├── tsa.py                   # 時系列分析ユーティリティ
 │
 ├── yfinance/                # Yahoo Finance データ取得
 │   ├── __init__.py
-│   ├── fetcher.py           # YFinanceFetcher
-│   ├── types.py             # FetchOptions, Interval, MarketDataResult
-│   └── errors.py            # DataFetchError, ValidationError
+│   ├── fetcher.py           # YFinanceFetcher（主要実装: 528行）
+│   ├── session.py           # セッション管理
+│   └── types.py             # FetchOptions, Interval
 │
 ├── fred/                    # FRED 経済指標データ取得
 │   ├── __init__.py
-│   ├── fetcher.py           # FREDFetcher
+│   ├── fetcher.py           # FREDFetcher（主要実装: 303行）
 │   ├── base_fetcher.py      # 基底フェッチャークラス
-│   ├── cache.py             # SQLite キャッシュ実装
+│   ├── cache.py             # SQLite キャッシュ実装（248行）
+│   ├── historical_cache.py  # 履歴データキャッシュ（337行）
 │   ├── constants.py         # FRED 定数（API キー環境変数名等）
 │   ├── types.py             # FetchOptions, CacheConfig, RetryConfig
-│   └── errors.py            # FREDFetchError, FREDValidationError
+│   └── scripts/             # ユーティリティスクリプト
+│       ├── __init__.py
+│       └── sync_historical.py  # 履歴データ同期スクリプト
 │
 ├── bloomberg/               # Bloomberg Terminal API 連携
 │   ├── __init__.py
-│   ├── fetcher.py           # BloombergFetcher
+│   ├── fetcher.py           # BloombergFetcher（主要実装: 390行）
 │   ├── types.py             # BloombergFetchOptions, Periodicity, IDType
-│   ├── errors.py            # BloombergError, BloombergConnectionError
-│   └── constants.py         # Bloomberg 定数
+│   ├── constants.py         # Bloomberg 定数
+│   └── sample/              # サンプルデータ・実装
+│       ├── data_blpapi.py   # blpapi サンプル実装（146行）
+│       └── data_local.py    # ローカルデータアクセス（227行）
+│
+├── factset/                 # FactSet データ取得（開発中）
+│   ├── __init__.py
+│   ├── factset_utils.py     # FactSet ユーティリティ（1,111行）
+│   ├── factset_downloaded_data_utils.py  # ダウンロードデータ処理（74行）
+│   └── price.py             # 価格データ処理（32行）
 │
 ├── cache/                   # キャッシュ機能
 │   ├── __init__.py
-│   ├── cache.py             # SQLite キャッシュ実装
+│   ├── cache.py             # SQLite キャッシュ実装（289行）
 │   └── types.py             # CacheEntry, CacheConfig
 │
 ├── export/                  # データエクスポート
 │   ├── __init__.py
-│   └── exporter.py          # DataExporter（JSON/CSV/SQLite/AgentJSON）
+│   └── exporter.py          # DataExporter（JSON/CSV/SQLite/AgentJSON: 214行）
 │
-├── factset/                 # FactSet データ取得（計画中）
-│   └── __init__.py
-│
-├── alternative/             # オルタナティブデータ（計画中）
-│   └── __init__.py
+├── alternative/             # オルタナティブデータ（開発中）
+│   ├── __init__.py
+│   └── tsa.py               # 時系列分析（170行）
 │
 └── utils/                   # ユーティリティ
     └── __init__.py

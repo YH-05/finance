@@ -6,15 +6,20 @@
 
 analyze パッケージは以下の分析機能を提供します:
 
+- **reporting**: 包括的なマーケットレポート生成（週次レポート向けAIエージェント対応）
+  - パフォーマンス分析（指数・個別銘柄・セクター）
+  - 通貨分析（USD/JPY、EUR/USD 等）
+  - 金利分析（10年債利回り、FF金利 等）
+  - 経済イベント・決算カレンダー
+  - 貴金属・米国債・VIX 分析
+- **visualization**: 多様な金融チャート（ローソク足、ヒートマップ、相関、ボラティリティ等）
+- **statistics**: 統計分析（記述統計、相関分析、ベータ計算、カルマンフィルタ）
 - **technical**: テクニカル分析（移動平均、RSI、MACD、ボリンジャーバンド）
-- **statistics**: 統計分析（記述統計、相関分析、ベータ計算）
+- **returns**: リターン計算（複数期間リターン、MTD、YTD）
 - **sector**: セクター分析（ETF リターン、セクターランキング）
 - **earnings**: 決算分析（決算カレンダー、決算データ取得）
-- **returns**: リターン計算（複数期間リターン、MTD、YTD）
-- **visualization**: 可視化（チャート、ヒートマップ、ローソク足）
-- **integration**: market パッケージとの統合
+- **integration**: market パッケージとの統合（データ取得→分析の一括実行）
 - **config**: 設定管理（シンボルグループ、期間設定の読み込み）
-- **reporting**: レポート生成（パフォーマンス分析、AIエージェント連携）
 
 ## インストール
 
@@ -85,6 +90,54 @@ macd = TechnicalIndicators.calculate_macd(prices)
 bands = TechnicalIndicators.calculate_bollinger_bands(prices, window=20)
 ```
 
+#### 週次マーケットレポート生成（AIエージェント向け）
+
+```python
+from analyze.reporting import (
+    PerformanceAnalyzer4Agent,
+    CurrencyAnalyzer4Agent,
+    InterestRateAnalyzer4Agent,
+    UpcomingEvents4Agent,
+)
+
+# パフォーマンス分析（指数、MAG7、セクター等）
+perf_analyzer = PerformanceAnalyzer4Agent()
+perf_result = perf_analyzer.analyze_cross_section(
+    data=df,
+    group="MAG7",
+    periods=["1d", "1w", "1mo", "ytd"],
+)
+
+# 通貨分析（USD/JPY, EUR/USD等）
+currency_analyzer = CurrencyAnalyzer4Agent()
+currency_result = currency_analyzer.analyze()
+
+# 金利分析（10年債利回り、FF金利等）
+interest_analyzer = InterestRateAnalyzer4Agent()
+interest_result = interest_analyzer.analyze()
+
+# 今後の経済イベント・決算
+events_analyzer = UpcomingEvents4Agent()
+events_result = events_analyzer.analyze(days_ahead=14)
+```
+
+#### 可視化
+
+```python
+from analyze.visualization import CandlestickChart, HeatmapChart
+
+# ローソク足チャート
+chart = CandlestickChart(price_data)
+chart.add_sma(20)
+chart.add_volume()
+fig = chart.build()
+fig.write_image("chart.png")
+
+# 相関ヒートマップ
+heatmap = HeatmapChart(correlation_matrix)
+fig = heatmap.build()
+```
+
 <!-- END: QUICKSTART -->
 
 <!-- AUTO-GENERATED: IMPLEMENTATION -->
@@ -93,15 +146,15 @@ bands = TechnicalIndicators.calculate_bollinger_bands(prices, window=20)
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|-----------|------|
-| `visualization/` | ✅ 実装済み | 4 | 881 |
-| `statistics/` | ✅ 実装済み | 4 | 647 |
-| `reporting/` | 🚧 開発中 | 3 | 518 |
-| `sector/` | ✅ 実装済み | 2 | 406 |
-| `technical/` | 🚧 開発中 | 3 | 379 |
-| `returns/` | ✅ 実装済み | 2 | 278 |
-| `earnings/` | ✅ 実装済み | 3 | 198 |
-| `integration/` | ✅ 実装済み | 2 | 166 |
-| `config/` | 🚧 開発中 | 2 | 76 |
+| `reporting/` | ✅ 実装済み | 13 | 5,703 |
+| `visualization/` | ✅ 実装済み | 9 | 3,428 |
+| `statistics/` | ✅ 実装済み | 6 | 2,603 |
+| `technical/` | ✅ 実装済み | 3 | 1,137 |
+| `config/` | ✅ 実装済み | 3 | 1,047 |
+| `returns/` | ✅ 実装済み | 3 | 788 |
+| `sector/` | ✅ 実装済み | 2 | 731 |
+| `earnings/` | ✅ 実装済み | 3 | 553 |
+| `integration/` | ✅ 実装済み | 2 | 395 |
 
 <!-- END: IMPLEMENTATION -->
 
@@ -252,6 +305,34 @@ rolling_corr = calculate_rolling_correlation(series_a, series_b, window=20)
 # CorrelationAnalyzer クラス
 analyzer = CorrelationAnalyzer(df)
 result = analyzer.analyze(method=CorrelationMethod.PEARSON)
+```
+
+### ベータ値計算
+
+```python
+from analyze.statistics import beta
+
+# ベータ値を計算（市場感応度）
+beta_value = beta.calculate_beta(stock_returns, market_returns)
+
+# ローリングベータ
+rolling_beta = beta.calculate_rolling_beta(stock_returns, market_returns, window=60)
+```
+
+### 統計分析ベースクラス
+
+```python
+from analyze.statistics import StatisticalAnalyzer
+
+# カスタム統計分析クラスを作成
+class MyAnalyzer(StatisticalAnalyzer):
+    def calculate(self, df: pd.DataFrame, **kwargs) -> pd.DataFrame:
+        # 分析ロジックを実装
+        return df.describe()
+
+    def validate_input(self, df: pd.DataFrame) -> bool:
+        # 入力検証
+        return not df.empty
 ```
 
 ### 型定義
@@ -475,6 +556,27 @@ print(colors.positive)  # 上昇色
 print(colors.negative)  # 下落色
 ```
 
+### 特化チャート
+
+```python
+from analyze.visualization import beta, correlation, currency, performance, volatility
+
+# ベータ値チャート
+beta_chart = beta.create_chart(beta_data)
+
+# 相関チャート
+corr_chart = correlation.create_chart(correlation_data)
+
+# 通貨チャート
+currency_chart = currency.create_chart(currency_data)
+
+# パフォーマンスチャート
+perf_chart = performance.create_chart(performance_data)
+
+# ボラティリティチャート
+vol_chart = volatility.create_chart(volatility_data)
+```
+
 ---
 
 ## config モジュール
@@ -508,7 +610,7 @@ periods = get_return_periods()
 
 ## reporting モジュール
 
-パフォーマンス分析レポートの生成機能を提供します。
+包括的な市場レポート生成機能を提供します。週次マーケットレポート作成に最適化された AIエージェント向け分析機能を中心に、パフォーマンス・通貨・金利・イベント分析を統合。
 
 ### パフォーマンス分析（AIエージェント向け）
 
@@ -532,19 +634,76 @@ result = analyzer.analyze_cross_section(
 performance_json = result.to_dict()
 ```
 
-### パフォーマンス分析（汎用）
+### 通貨分析（AIエージェント向け）
 
 ```python
-from analyze.reporting import PerformanceAnalyzer
-
-# 汎用パフォーマンス分析
-analyzer = PerformanceAnalyzer()
-
-# グループごとの分析
-result = analyzer.analyze(
-    data=df,
-    group_by="symbol",
+from analyze.reporting import (
+    CurrencyAnalyzer4Agent,
+    CurrencyResult,
 )
+
+# 通貨ペア分析（USD/JPY, EUR/USD等）
+analyzer = CurrencyAnalyzer4Agent()
+result = analyzer.analyze()
+
+# 分析結果
+print(result.currencies)  # 通貨ペアごとの情報
+print(result.summary)     # サマリー
+```
+
+### 金利分析（AIエージェント向け）
+
+```python
+from analyze.reporting import (
+    InterestRateAnalyzer4Agent,
+    InterestRateResult,
+)
+
+# 金利データ分析（10年債利回り、FF金利等）
+analyzer = InterestRateAnalyzer4Agent()
+result = analyzer.analyze()
+
+# 分析結果
+print(result.rates)       # 金利データ
+print(result.summary)     # サマリー
+```
+
+### 今後の経済イベント・決算（AIエージェント向け）
+
+```python
+from analyze.reporting import (
+    UpcomingEvents4Agent,
+    UpcomingEventsResult,
+    get_upcoming_earnings,
+    get_upcoming_economic_releases,
+    MAJOR_RELEASES,
+)
+
+# 今後14日間のイベントを取得
+analyzer = UpcomingEvents4Agent()
+result = analyzer.analyze(days_ahead=14)
+
+# 便利関数
+earnings = get_upcoming_earnings(days_ahead=7)
+releases = get_upcoming_economic_releases()
+
+# 主要経済指標リスト
+print(MAJOR_RELEASES)
+```
+
+### その他の分析
+
+```python
+from analyze.reporting import metal, us_treasury, vix
+
+# 貴金属分析（金、銀、プラチナ等）
+metal_data = metal.analyze()
+
+# 米国債分析
+treasury_data = us_treasury.analyze()
+
+# VIX（恐怖指数）分析
+vix_data = vix.analyze()
 ```
 
 ---
@@ -641,6 +800,87 @@ upcoming = calendar.get_upcoming_earnings(days_ahead=14)
 
 # 方法2: 便利関数を使用
 earnings_json = get_upcoming_earnings(days_ahead=7, format="json")
+```
+
+---
+
+#### `PerformanceAnalyzer4Agent` (reporting モジュール)
+
+**説明**: AIエージェント向けパフォーマンス分析。週次マーケットレポート生成に最適化
+
+**基本的な使い方**:
+
+```python
+from analyze.reporting import PerformanceAnalyzer4Agent
+
+analyzer = PerformanceAnalyzer4Agent()
+
+# 複数銘柄・複数期間のパフォーマンス分析
+result = analyzer.analyze_cross_section(
+    data=df,
+    group="MAG7",
+    periods=["1d", "1w", "1mo", "ytd"],
+)
+
+# JSON形式でエクスポート
+report_json = result.to_dict()
+```
+
+---
+
+#### `CurrencyAnalyzer4Agent` (reporting モジュール)
+
+**説明**: AIエージェント向け通貨分析。主要通貨ペアのレート・変動率を取得
+
+**基本的な使い方**:
+
+```python
+from analyze.reporting import CurrencyAnalyzer4Agent
+
+analyzer = CurrencyAnalyzer4Agent()
+result = analyzer.analyze()
+
+# 通貨ペア情報
+for currency in result.currencies:
+    print(f"{currency.pair}: {currency.rate}")
+```
+
+---
+
+#### `InterestRateAnalyzer4Agent` (reporting モジュール)
+
+**説明**: AIエージェント向け金利分析。米国債利回り・FF金利等を取得
+
+**基本的な使い方**:
+
+```python
+from analyze.reporting import InterestRateAnalyzer4Agent
+
+analyzer = InterestRateAnalyzer4Agent()
+result = analyzer.analyze()
+
+# 金利情報
+for rate in result.rates:
+    print(f"{rate.name}: {rate.value:.2f}%")
+```
+
+---
+
+#### `UpcomingEvents4Agent` (reporting モジュール)
+
+**説明**: AIエージェント向けイベント分析。今後の経済指標発表・決算日程を取得
+
+**基本的な使い方**:
+
+```python
+from analyze.reporting import UpcomingEvents4Agent
+
+analyzer = UpcomingEvents4Agent()
+result = analyzer.analyze(days_ahead=14)
+
+# 今後14日間のイベント
+print(result.earnings)   # 決算予定
+print(result.economic)   # 経済指標発表
 ```
 
 ---
@@ -768,13 +1008,63 @@ from analyze.config import (
 )
 ```
 
-**reporting モジュール**: パフォーマンス分析レポート
+**reporting モジュール**: 包括的な市場レポート生成（週次マーケットレポート等）
 
 ```python
 from analyze.reporting import (
+    # パフォーマンス分析
     PerformanceAnalyzer,
     PerformanceAnalyzer4Agent,
     PerformanceResult,
+    # 通貨分析
+    CurrencyAnalyzer,
+    CurrencyAnalyzer4Agent,
+    CurrencyResult,
+    # 金利分析
+    InterestRateAnalyzer,
+    InterestRateAnalyzer4Agent,
+    InterestRateResult,
+    # 今後のイベント
+    UpcomingEventsAnalyzer,
+    UpcomingEvents4Agent,
+    UpcomingEventsResult,
+    get_upcoming_earnings,
+    get_upcoming_economic_releases,
+    MAJOR_RELEASES,
+    # 追加モジュール
+    metal,      # 貴金属分析
+    us_treasury,  # 米国債分析
+    vix,        # VIX分析
+)
+```
+
+**visualization モジュール**: 拡張された可視化機能
+
+```python
+from analyze.visualization import (
+    # 基本チャート
+    ChartBuilder,
+    CandlestickChart,
+    LineChart,
+    HeatmapChart,
+    # 特化チャート
+    beta,        # ベータ値チャート
+    correlation, # 相関チャート
+    currency,    # 通貨チャート
+    performance, # パフォーマンスチャート
+    volatility,  # ボラティリティチャート
+)
+```
+
+**statistics モジュール**: 拡張された統計分析
+
+```python
+from analyze.statistics import (
+    StatisticalAnalyzer,  # 統計分析ベースクラス
+    # 個別モジュール
+    beta,        # ベータ値計算
+    correlation, # 相関分析
+    descriptive, # 記述統計
 )
 ```
 
@@ -788,42 +1078,62 @@ from analyze.reporting import (
 
 ```
 analyze/
-├── __init__.py           # 公開 API
-├── py.typed
-├── technical/            # テクニカル分析
+├── __init__.py                    # 公開 API
+├── py.typed                       # 型チェック対応マーカー
+├── currency.py                    # 通貨関連ユーティリティ
+├── reporting/                     # レポート生成（週次マーケットレポート等）
 │   ├── __init__.py
-│   ├── indicators.py
-│   └── types.py
-├── statistics/           # 統計分析
+│   ├── currency.py                # 通貨分析
+│   ├── currency_agent.py          # 通貨分析（AIエージェント向け）
+│   ├── interest_rate.py           # 金利分析
+│   ├── interest_rate_agent.py     # 金利分析（AIエージェント向け）
+│   ├── market_report_utils.py     # レポート生成ユーティリティ
+│   ├── metal.py                   # 貴金属分析
+│   ├── performance.py             # パフォーマンス分析
+│   ├── performance_agent.py       # パフォーマンス分析（AIエージェント向け）
+│   ├── upcoming_events.py         # 今後の経済イベント・決算
+│   ├── upcoming_events_agent.py   # イベント分析（AIエージェント向け）
+│   ├── us_treasury.py             # 米国債分析
+│   └── vix.py                     # VIX（恐怖指数）分析
+├── visualization/                 # 可視化
 │   ├── __init__.py
-│   ├── descriptive.py
-│   ├── correlation.py
-│   └── types.py
-├── sector/               # セクター分析
+│   ├── beta.py                    # ベータ値可視化
+│   ├── charts.py                  # 汎用チャート
+│   ├── correlation.py             # 相関可視化
+│   ├── currency.py                # 通貨チャート
+│   ├── heatmap.py                 # ヒートマップ
+│   ├── performance.py             # パフォーマンスチャート
+│   ├── price_charts.py            # 価格チャート（ローソク足等）
+│   └── volatility.py              # ボラティリティチャート
+├── statistics/                    # 統計分析
 │   ├── __init__.py
-│   └── sector.py
-├── earnings/             # 決算分析
+│   ├── base.py                    # 統計分析ベースクラス
+│   ├── beta.py                    # ベータ値計算
+│   ├── correlation.py             # 相関分析
+│   ├── descriptive.py             # 記述統計
+│   └── types.py                   # 統計型定義
+├── technical/                     # テクニカル分析
 │   ├── __init__.py
-│   ├── earnings.py
-│   └── types.py
-├── returns/              # リターン計算
+│   ├── indicators.py              # テクニカル指標（SMA, EMA, RSI, MACD等）
+│   └── types.py                   # テクニカル型定義
+├── config/                        # 設定管理
 │   ├── __init__.py
-│   └── returns.py
-├── visualization/        # 可視化
+│   ├── loader.py                  # 設定ローダー
+│   └── models.py                  # 設定モデル
+├── returns/                       # リターン計算
 │   ├── __init__.py
-│   ├── charts.py
-│   ├── heatmap.py
-│   └── price_charts.py
-├── integration/          # market パッケージ統合
+│   ├── returns.py                 # リターン計算関数
+│   └── returns_proto.py           # リターンプロトタイプ
+├── sector/                        # セクター分析
 │   ├── __init__.py
-│   └── market_integration.py
-├── config/               # 設定管理
+│   └── sector.py                  # セクターパフォーマンス分析
+├── earnings/                      # 決算分析
 │   ├── __init__.py
-│   └── loader.py
-└── reporting/            # レポート生成
+│   ├── earnings.py                # 決算カレンダー・決算データ
+│   └── types.py                   # 決算型定義
+└── integration/                   # market パッケージ統合
     ├── __init__.py
-    ├── performance.py
-    └── performance_agent.py
+    └── market_integration.py      # 市場データ取得と分析の統合
 ```
 
 <!-- END: STRUCTURE -->
@@ -836,10 +1146,10 @@ analyze/
 
 | 項目 | 値 |
 |------|-----|
-| Python ファイル数 | 25 |
-| 総行数（実装コード） | 3,549 |
+| Python ファイル数 | 46 |
+| 総行数（実装コード） | 16,970 |
 | モジュール数 | 9 |
-| テストファイル数 | 13 |
+| テストファイル数 | 32 |
 
 <!-- END: STATS -->
 

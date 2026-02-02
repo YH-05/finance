@@ -124,37 +124,37 @@ print(f"構築された戦略: {strategy}")
 ```
 strategy/
 ├── __init__.py          # パッケージエントリポイント
-├── py.typed            # 型情報マーカー
-├── types.py            # 型定義（Holding, Period, TickerInfo等）
-├── errors.py           # カスタム例外クラス
-├── portfolio.py        # Portfolioクラス（保有銘柄・資産配分管理）
-├── core/               # コアロジック（未実装）
+├── py.typed             # 型情報マーカー
+├── types.py             # 型定義（Holding, Period, TickerInfo等）
+├── errors.py            # カスタム例外クラス
+├── portfolio.py         # Portfolioクラス（保有銘柄・資産配分管理）
+├── core/                # コアロジック
 │   └── __init__.py
-├── risk/               # リスク計算モジュール
+├── risk/                # リスク計算モジュール
 │   ├── __init__.py
-│   ├── calculator.py   # RiskCalculator（ボラティリティ、Sharpe比等）
-│   └── metrics.py      # RiskMetricsResult（リスク指標結果）
-├── output/             # 結果フォーマットモジュール
+│   ├── calculator.py    # RiskCalculator（ボラティリティ、Sharpe比等）
+│   └── metrics.py       # RiskMetricsResult（リスク指標結果）
+├── output/              # 結果フォーマットモジュール
 │   ├── __init__.py
-│   └── formatter.py    # ResultFormatter（DataFrame、Markdown等）
-├── visualization/      # 可視化モジュール
+│   └── formatter.py     # ResultFormatter（DataFrame、Markdown等）
+├── visualization/       # 可視化モジュール
 │   ├── __init__.py
-│   └── charts.py       # ChartGenerator（Plotlyチャート生成）
-├── rebalance/          # リバランス分析モジュール
+│   └── charts.py        # ChartGenerator（Plotlyチャート生成）
+├── rebalance/           # リバランス分析モジュール
 │   ├── __init__.py
-│   ├── rebalancer.py   # Rebalancer（ドリフト検出・リバランス推奨）
-│   └── types.py        # DriftResult（ドリフト検出結果）
-├── providers/          # データプロバイダーモジュール
+│   ├── rebalancer.py    # Rebalancer（ドリフト検出・リバランス推奨）
+│   └── types.py         # DriftResult（ドリフト検出結果）
+├── providers/           # データプロバイダーモジュール
 │   ├── __init__.py
-│   ├── protocol.py     # MarketDataProviderプロトコル
+│   ├── protocol.py      # MarketDataProviderプロトコル
 │   └── market_analysis.py  # market_analysis連携プロバイダー
-├── integration/        # パッケージ統合モジュール
+├── integration/         # パッケージ統合モジュール
 │   ├── __init__.py
-│   ├── builder.py      # IntegratedStrategyBuilder（統合戦略構築）
+│   ├── builder.py       # IntegratedStrategyBuilder（統合戦略構築）
 │   ├── market_integration.py   # market連携
 │   ├── analyze_integration.py  # analyze連携（テクニカル指標）
 │   └── factor_integration.py   # factor連携（ファクター分析）
-└── utils/              # ユーティリティ
+└── utils/               # ユーティリティ
     └── __init__.py
 ```
 <!-- END: STRUCTURE -->
@@ -164,17 +164,17 @@ strategy/
 
 | モジュール       | 状態        | ファイル数 | 行数  |
 | ---------------- | ----------- | ---------- | ----- |
-| `types.py`       | ✅ 実装済み | 1          | 277   |
-| `errors.py`      | ✅ 実装済み | 1          | 303   |
-| `portfolio.py`   | ✅ 実装済み | 1          | 394   |
-| `risk/`          | ✅ 実装済み | 3          | 990   |
-| `output/`        | ✅ 実装済み | 2          | 448   |
-| `visualization/` | ✅ 実装済み | 2          | 424   |
-| `rebalance/`     | ✅ 実装済み | 3          | 297   |
-| `providers/`     | ✅ 実装済み | 3          | 482   |
-| `integration/`   | ✅ 実装済み | 5          | 1,404 |
-| `utils/`         | ⏳ 未実装   | 1          | 8     |
-| `core/`          | ⏳ 未実装   | 1          | 3     |
+| `types.py`       | ✅ 実装済み | 1          | 199   |
+| `errors.py`      | ✅ 実装済み | 1          | 240   |
+| `portfolio.py`   | ✅ 実装済み | 1          | 320   |
+| `risk/`          | ✅ 実装済み | 3          | 806   |
+| `output/`        | ✅ 実装済み | 2          | 381   |
+| `visualization/` | ✅ 実装済み | 2          | 339   |
+| `rebalance/`     | ✅ 実装済み | 3          | 234   |
+| `providers/`     | ✅ 実装済み | 3          | 389   |
+| `integration/`   | ✅ 実装済み | 5          | 1,108 |
+| `utils/`         | ⏳ 未実装   | 1          | 5     |
+| `core/`          | ⏳ 未実装   | 1          | 2     |
 <!-- END: IMPLEMENTATION -->
 
 <!-- AUTO-GENERATED: API -->
@@ -669,8 +669,8 @@ from strategy.errors import (
 | 項目                 | 値     |
 | -------------------- | ------ |
 | Python ファイル数    | 24     |
-| 総行数（実装コード） | 5,076  |
-| モジュール数         | 11     |
+| 総行数（実装コード） | 4,061  |
+| モジュール数         | 9      |
 | テストファイル数     | 28     |
 | テストカバレッジ     | N/A    |
 <!-- END: STATS -->

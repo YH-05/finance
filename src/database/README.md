@@ -308,26 +308,24 @@ from database.types import (
 
 ```
 database/
-├── __init__.py              # get_logger をエクスポート
-├── py.typed                 # PEP 561 型情報マーカー
-├── types.py                 # 型定義（TypedDict、Literal、Enum）
-├── parquet_schema.py        # Parquet スキーマ定義（Pydantic モデル）
-│
-├── db/                      # データベース接続・クライアント
-│   ├── __init__.py          # SQLiteClient, DuckDBClient, get_db_path エクスポート
-│   ├── connection.py        # get_db_path(), DATA_DIR, PROJECT_ROOT
-│   ├── sqlite_client.py     # SQLiteClient (OLTP用トランザクション処理)
-│   ├── duckdb_client.py     # DuckDBClient (OLAP用分析クエリ)
-│   └── migrations/          # スキーママイグレーション
+├── __init__.py
+├── py.typed
+├── types.py
+├── parquet_schema.py
+├── db/
+│   ├── __init__.py
+│   ├── connection.py
+│   ├── sqlite_client.py
+│   ├── duckdb_client.py
+│   └── migrations/
 │       ├── __init__.py
-│       ├── runner.py        # マイグレーション実行エンジン
-│       └── versions/        # バージョン管理された SQLスクリプト
+│       ├── runner.py
+│       └── versions/
 │           └── 001_initial_schema.sql
-│
-└── utils/                   # ユーティリティ関数
+└── utils/
     ├── __init__.py
-    ├── date_utils.py        # 日付計算、フォーマット、取引日判定
-    └── format_converter.py  # Parquet ⇄ JSON 変換（Pydantic 活用）
+    ├── date_utils.py
+    └── format_converter.py
 ```
 
 <!-- END: STRUCTURE -->
@@ -340,11 +338,12 @@ database/
 
 | モジュール | 状態 | ファイル数 | 行数 |
 |-----------|------|----------|------|
-| `types.py` | ✅ 実装済み | 1 | 324 |
-| `parquet_schema.py` | ✅ 実装済み | 1 | 441 |
-| `db/` | ✅ 実装済み | 6 | 342 |
-| `utils/` | ✅ 実装済み | 3 | 601 |
-| **合計** | **✅** | **12** | **1,712** |
+| `types.py` | ✅ 実装済み | 1 | 381 |
+| `parquet_schema.py` | ✅ 実装済み | 1 | 542 |
+| `db/` | ✅ 実装済み | 4 | 315 |
+| `db/migrations/` | ✅ 実装済み | 3 | 3 |
+| `utils/` | ✅ 実装済み | 3 | 741 |
+| **合計** | **✅** | **12** | **1,982** |
 
 **テスト**:
 - テストファイル数: 7
@@ -381,10 +380,10 @@ database/
 | 項目 | 値 |
 |------|-----|
 | Python ファイル数 | 12 |
-| 総行数（実装コード） | 1,712 |
-| モジュール数 | 3 |
+| 総行数（実装コード） | 1,982 |
+| モジュール数 | 4 |
 | テストファイル数 | 7 |
-| マイグレーションファイル | 1 |
+| マイグレーションファイル | 3 |
 | 実装状態 | ✅ 完全実装 |
 
 <!-- END: STATS -->

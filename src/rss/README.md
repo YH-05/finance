@@ -145,50 +145,41 @@ uv sync --extra scheduler
 
 ```
 rss/
-├── __init__.py              # Public API exports (108 lines)
-├── py.typed                 # PEP 561 type marker
-├── types.py                 # Type definitions (380 lines)
-├── exceptions.py            # Custom exceptions (161 lines)
-├── cli/                     # Command-line interface (2 files, 727 lines)
-│   ├── __init__.py          # (8 lines)
-│   └── main.py              # CLI commands (add/list/fetch/remove/search) (719 lines)
-├── core/                    # Core functionality (4 files, 722 lines)
-│   ├── __init__.py          # (6 lines)
-│   ├── diff_detector.py     # Duplicate detection (92 lines)
-│   ├── http_client.py       # HTTP client with httpx (371 lines)
-│   └── parser.py            # RSS/Atom parser with feedparser (253 lines)
-├── docs/                    # Library documentation (8 files)
-│   ├── architecture.md
-│   ├── development-guidelines.md
-│   ├── functional-design.md
-│   ├── glossary.md
-│   ├── library-requirements.md
-│   ├── project.md
-│   ├── repository-structure.md
-│   └── tasks.md
-├── mcp/                     # MCP server integration (2 files, 654 lines)
-│   ├── __init__.py          # (9 lines)
-│   └── server.py            # MCP tools (9 tools provided) (645 lines)
-├── services/                # Service layer (7 files, 2,991 lines)
-│   ├── __init__.py          # (29 lines)
-│   ├── article_content_checker.py  # Article content validation (582 lines)
-│   ├── article_extractor.py        # Web page content extraction (555 lines)
-│   ├── article_extractor_cli.py    # CLI for article extraction (111 lines)
-│   ├── batch_scheduler.py          # Batch scheduling with APScheduler (342 lines)
-│   ├── feed_fetcher.py             # Feed fetching orchestration (497 lines)
-│   ├── feed_manager.py             # Feed CRUD operations (677 lines)
-│   ├── feed_reader.py              # Feed reading/searching (296 lines)
-│   └── news_categorizer.py         # News categorization (399 lines)
-├── storage/                 # Persistence layer (3 files, 669 lines)
-│   ├── __init__.py          # (0 lines)
-│   ├── json_storage.py      # JSON file operations (429 lines)
-│   └── lock_manager.py      # File-based locking (240 lines)
-├── utils/                   # Utilities (3 files, 345 lines)
-│   ├── __init__.py          # (17 lines)
-│   ├── url_normalizer.py    # URL normalization (328 lines)
-├── validators/              # Validation layer (2 files, 235 lines)
-│   ├── __init__.py          # (5 lines)
-│   └── url_validator.py     # URL/title/category validation (230 lines)
+├── __init__.py              # 公開API定義
+├── py.typed                 # PEP 561型マーカー
+├── types.py                 # 型定義（Feed, FeedItem, FetchResult等）
+├── exceptions.py            # カスタム例外（7種類）
+├── cli/                     # CLIインターフェース
+│   ├── __init__.py
+│   └── main.py              # 7コマンド（add/list/fetch/remove/search/show/update）
+├── core/                    # コア機能
+│   ├── __init__.py
+│   ├── diff_detector.py     # 差分検出
+│   ├── http_client.py       # HTTP通信（httpx）
+│   └── parser.py            # RSS/Atomパーサー（feedparser）
+├── mcp/                     # MCP統合
+│   ├── __init__.py
+│   └── server.py            # MCPサーバー（9ツール提供）
+├── services/                # サービス層
+│   ├── __init__.py
+│   ├── article_content_checker.py    # 記事コンテンツ検証
+│   ├── article_extractor.py          # 記事本文抽出
+│   ├── article_extractor_cli.py      # 抽出CLI
+│   ├── batch_scheduler.py            # バッチスケジューリング
+│   ├── feed_fetcher.py               # フィード取得
+│   ├── feed_manager.py               # フィード管理
+│   ├── feed_reader.py                # フィード読込・検索
+│   └── news_categorizer.py           # ニュース分類
+├── storage/                 # 永続化層
+│   ├── __init__.py
+│   ├── json_storage.py      # JSONストレージ
+│   └── lock_manager.py      # ファイルロック
+├── utils/                   # ユーティリティ
+│   ├── __init__.py
+│   └── url_normalizer.py    # URL正規化
+└── validators/              # バリデーション層
+    ├── __init__.py
+    └── url_validator.py     # URL/タイトル/カテゴリ検証
 ```
 
 <!-- END: STRUCTURE -->
@@ -199,17 +190,17 @@ rss/
 
 | モジュール        | 状態        | ファイル数 | 行数  | 説明                                             |
 | ----------------- | ----------- | ---------- | ----- | ------------------------------------------------ |
-| `types.py`        | ✅ 実装済み | 1          | 380   | 型定義（Feed, FeedItem, BatchStats, ExtractedArticle 等） |
+| `types.py`        | ✅ 実装済み | 1          | 409   | 型定義（Feed, FeedItem, BatchStats, ExtractedArticle等） |
 | `exceptions.py`   | ✅ 実装済み | 1          | 161   | カスタム例外（7種類）                            |
-| `cli/`            | ✅ 実装済み | 2          | 727   | CLI インターフェース（7コマンド: add/list/fetch/remove/search/show/update） |
-| `core/`           | ✅ 実装済み | 4          | 722   | コア機能（HTTP/パース/差分検出）                 |
-| `mcp/`            | ✅ 実装済み | 2          | 654   | MCP サーバー統合（9 ツール提供）                 |
-| `services/`       | ✅ 実装済み | 7          | 2,991 | サービス層（Manager/Fetcher/Reader/Scheduler/ArticleExtractor/ContentChecker/Categorizer） |
-| `storage/`        | ✅ 実装済み | 3          | 669   | 永続化層（JSON ストレージ・ロック管理）          |
+| `cli/`            | ✅ 実装済み | 2          | 727   | CLIインターフェース（7コマンド）                 |
+| `core/`           | ✅ 実装済み | 4          | 829   | コア機能（HTTP/パース/差分検出）                 |
+| `mcp/`            | ✅ 実装済み | 2          | 654   | MCPサーバー統合（9ツール提供）                   |
+| `services/`       | ✅ 実装済み | 8          | 3,535 | サービス層（Manager/Fetcher/Reader/Scheduler/ArticleExtractor/ContentChecker/Categorizer） |
+| `storage/`        | ✅ 実装済み | 3          | 669   | 永続化層（JSONストレージ・ロック管理）           |
 | `utils/`          | ✅ 実装済み | 3          | 345   | ユーティリティ（URL正規化）                      |
 | `validators/`     | ✅ 実装済み | 2          | 235   | バリデーション（URL/タイトル/カテゴリ）          |
 
-**テストカバレッジ**: 全モジュールにテストが存在（unit: 15 ファイル, integration: 3 ファイル, property: 2 ファイル）
+**テストカバレッジ**: 全モジュールにテストが存在（unit: 15ファイル, integration: 3ファイル, property: 2ファイル）
 
 <!-- END: IMPLEMENTATION -->
 
@@ -507,20 +498,20 @@ except FeedNotFoundError as e:
 
 | 項目                     | 値     |
 | ------------------------ | ------ |
-| Python ファイル数        | 27     |
-| 総行数（実装コード）     | 7,489  |
+| Pythonファイル数         | 27     |
+| 総行数（実装コード）     | 7,672  |
 | モジュール数             | 9      |
-| テストファイル数         | 20     |
+| テストファイル数         | 35     |
 | 実装カバレッジ           | 100% (全モジュールにテストあり) |
 
 **主要コンポーネント**:
-- サービスクラス: 7 (Manager/Fetcher/Reader/Scheduler/ArticleExtractor/ArticleContentChecker/Categorizer)
+- サービスクラス: 8 (Manager/Fetcher/Reader/Scheduler/ArticleExtractor/ArticleContentChecker/Categorizer/ArticleExtractorCLI)
 - コアモジュール: 3 (HTTP/Parser/DiffDetector)
 - データモデル: 8 (Feed/FeedItem/FetchResult/BatchStats/ExtractedArticle/FetchInterval/FetchStatus/ExtractionStatus)
-- 例外クラス: 7 (基底 + 6 種類の専用例外)
-- ユーティリティ: 2 (URL正規化/バリデーション/ストレージ)
-- MCP統合: 9 ツール (フィード管理・取得・検索)
-- CLI統合: 7 コマンド (add/list/fetch/remove/search/show/update)
+- 例外クラス: 7 (基底 + 6種類の専用例外)
+- ユーティリティ: 2 (URL正規化/バリデーション)
+- MCP統合: 9ツール (フィード管理・取得・検索)
+- CLI統合: 7コマンド (add/list/fetch/remove/search/show/update)
 
 <!-- END: STATS -->
 
