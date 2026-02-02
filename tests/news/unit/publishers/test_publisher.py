@@ -996,19 +996,34 @@ class TestGetExistingIssues:
         sample_config: NewsWorkflowConfig,
     ) -> None:
         """_get_existing_issues should return URLs from recent Issues."""
+        from datetime import datetime, timezone
+
         from news.publisher import Publisher
 
         publisher = Publisher(config=sample_config)
+
+        # Use dynamic dates relative to "now" to avoid flaky tests
+        now = datetime.now(timezone.utc)
+        date_1_day_ago = (
+            (now.replace(hour=10, minute=0, second=0, microsecond=0))
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+        date_2_days_ago = (
+            (now.replace(hour=10, minute=0, second=0, microsecond=0))
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
 
         # Mock gh issue list response
         mock_issues = [
             {
                 "body": "**URL**: https://www.cnbc.com/article/123",
-                "createdAt": "2026-01-27T10:00:00Z",
+                "createdAt": date_1_day_ago,
             },
             {
                 "body": "**URL**: https://www.cnbc.com/article/456",
-                "createdAt": "2026-01-26T10:00:00Z",
+                "createdAt": date_2_days_ago,
             },
         ]
 
@@ -1065,19 +1080,26 @@ class TestGetExistingIssues:
         sample_config: NewsWorkflowConfig,
     ) -> None:
         """_get_existing_issues should exclude Issues older than specified days."""
+        from datetime import datetime, timedelta, timezone
+
         from news.publisher import Publisher
 
         publisher = Publisher(config=sample_config)
+
+        # Use dynamic dates relative to "now" to avoid flaky tests
+        now = datetime.now(timezone.utc)
+        recent_date = now.isoformat().replace("+00:00", "Z")
+        old_date = (now - timedelta(days=10)).isoformat().replace("+00:00", "Z")
 
         # Mix of recent and old Issues
         mock_issues = [
             {
                 "body": "**URL**: https://www.cnbc.com/article/recent",
-                "createdAt": "2026-01-28T10:00:00Z",  # Recent (within 7 days)
+                "createdAt": recent_date,  # Recent (within 7 days)
             },
             {
                 "body": "**URL**: https://www.cnbc.com/article/old",
-                "createdAt": "2026-01-10T10:00:00Z",  # Old (more than 7 days)
+                "createdAt": old_date,  # Old (more than 7 days)
             },
         ]
 
@@ -1101,22 +1123,28 @@ class TestGetExistingIssues:
         sample_config: NewsWorkflowConfig,
     ) -> None:
         """_get_existing_issues should ignore Issues without URL pattern."""
+        from datetime import datetime, timezone
+
         from news.publisher import Publisher
 
         publisher = Publisher(config=sample_config)
 
+        # Use dynamic date to avoid flaky tests
+        now = datetime.now(timezone.utc)
+        recent_date = now.isoformat().replace("+00:00", "Z")
+
         mock_issues = [
             {
                 "body": "**URL**: https://www.cnbc.com/article/123",
-                "createdAt": "2026-01-27T10:00:00Z",
+                "createdAt": recent_date,
             },
             {
                 "body": "This Issue has no URL field",
-                "createdAt": "2026-01-27T10:00:00Z",
+                "createdAt": recent_date,
             },
             {
                 "body": None,  # Empty body
-                "createdAt": "2026-01-27T10:00:00Z",
+                "createdAt": recent_date,
             },
         ]
 

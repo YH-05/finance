@@ -25,15 +25,21 @@ logger = get_logger(__name__, module="fred_historical_cache")
 # Environment variable for cache directory
 FRED_HISTORICAL_CACHE_DIR_ENV = "FRED_HISTORICAL_CACHE_DIR"
 
-# Default path for cached FRED data (used if env var not set)
-_DEFAULT_CACHE_PATH = Path(__file__).parents[3] / "data" / "raw" / "fred" / "indicators"
+# Fallback path for cached FRED data (used if env var and cwd paths not available)
+# DEPRECATED: This will be removed in a future version. Use FRED_HISTORICAL_CACHE_DIR
+# environment variable or ensure ./data/raw/fred/indicators exists in your working directory.
+_FALLBACK_CACHE_PATH = (
+    Path(__file__).parents[3] / "data" / "raw" / "fred" / "indicators"
+)
 
 
 def get_default_cache_path() -> Path:
-    """Get the default cache path from environment or fallback.
+    """Get the default cache path with priority-based resolution.
 
-    Checks FRED_HISTORICAL_CACHE_DIR environment variable first,
-    then falls back to data/raw/fred/indicators/.
+    Resolution priority:
+    1. FRED_HISTORICAL_CACHE_DIR environment variable
+    2. Current working directory relative path (./data/raw/fred/indicators)
+    3. Fallback: __file__ based path (for backwards compatibility)
 
     Returns
     -------
@@ -41,14 +47,37 @@ def get_default_cache_path() -> Path:
         Default cache directory path
     """
     load_project_env()
+
+    # Priority 1: Environment variable
     env_path = os.environ.get(FRED_HISTORICAL_CACHE_DIR_ENV)
     if env_path:
+        logger.debug(
+            "Using cache path from environment variable",
+            env_var=FRED_HISTORICAL_CACHE_DIR_ENV,
+            path=env_path,
+        )
         return Path(env_path)
-    return _DEFAULT_CACHE_PATH
+
+    # Priority 2: Current working directory relative path
+    cwd_path = Path.cwd() / "data" / "raw" / "fred" / "indicators"
+    if cwd_path.exists():
+        logger.debug(
+            "Using cache path from current working directory",
+            path=str(cwd_path),
+        )
+        return cwd_path
+
+    # Priority 3: Fallback to __file__ based path (backwards compatibility)
+    logger.debug(
+        "Using fallback cache path (deprecated)",
+        path=str(_FALLBACK_CACHE_PATH),
+    )
+    return _FALLBACK_CACHE_PATH
 
 
-# For backwards compatibility
-DEFAULT_CACHE_PATH = _DEFAULT_CACHE_PATH
+# For backwards compatibility (DEPRECATED)
+# Use get_default_cache_path() instead
+DEFAULT_CACHE_PATH = _FALLBACK_CACHE_PATH
 
 # Cache file version
 CACHE_VERSION = 1

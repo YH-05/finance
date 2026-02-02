@@ -33,13 +33,57 @@ from .types import (
 
 logger = get_logger(__name__, module="fred_fetcher")
 
-# Default path for FRED series presets configuration
+# Default path for FRED series presets configuration (fallback based on __file__)
 DEFAULT_PRESETS_PATH = (
     Path(__file__).parents[3] / "data" / "config" / "fred_series.json"
 )
 
 # Environment variable for FRED series JSON source (URL or local path)
 FRED_SERIES_JSON_ENV = "FRED_SERIES_ID_JSON"
+
+# Relative path from current working directory
+_CWD_RELATIVE_PRESETS_PATH = Path("data") / "config" / "fred_series.json"
+
+
+def _get_default_presets_path() -> Path:
+    """Get the default path for FRED series presets configuration.
+
+    Priority order:
+    1. FRED_SERIES_ID_JSON environment variable
+    2. Relative path from current working directory (./data/config/fred_series.json)
+    3. Fallback: __file__ based path (for backward compatibility)
+
+    Returns
+    -------
+    Path
+        Path to the FRED series presets configuration file.
+
+    Examples
+    --------
+    >>> path = _get_default_presets_path()
+    >>> path.suffix
+    '.json'
+    """
+    # 1. Check environment variable first
+    env_path = os.environ.get(FRED_SERIES_JSON_ENV)
+    if env_path:
+        logger.debug("Using FRED presets path from environment variable", path=env_path)
+        return Path(env_path)
+
+    # 2. Check current working directory relative path
+    cwd_path = Path.cwd() / _CWD_RELATIVE_PRESETS_PATH
+    if cwd_path.exists():
+        logger.debug(
+            "Using FRED presets path from current directory", path=str(cwd_path)
+        )
+        return cwd_path
+
+    # 3. Fallback to __file__ based path
+    logger.debug(
+        "Using fallback FRED presets path from __file__", path=str(DEFAULT_PRESETS_PATH)
+    )
+    return DEFAULT_PRESETS_PATH
+
 
 # Default URL for FRED series presets (used when env var not set and local file not found)
 DEFAULT_PRESETS_URL = (
@@ -657,14 +701,14 @@ class FREDFetcher(BaseDataFetcher):
         """
         load_project_env()
 
-        # Determine source: argument > env var > local default > URL default
+        # Determine source: argument > _get_default_presets_path > URL default
         source = config_path
         if source is None:
-            source = os.environ.get(FRED_SERIES_JSON_ENV)
-        if source is None:
-            # Try local file first, fall back to URL
-            if DEFAULT_PRESETS_PATH.exists():
-                source = str(DEFAULT_PRESETS_PATH)
+            # Use _get_default_presets_path for local file resolution
+            # (env var > cwd relative > __file__ based)
+            default_path = _get_default_presets_path()
+            if default_path.exists():
+                source = str(default_path)
             else:
                 source = DEFAULT_PRESETS_URL
 

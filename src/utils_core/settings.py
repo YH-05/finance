@@ -9,9 +9,12 @@ Features
 - デフォルト値の提供
 - 必須環境変数のチェック
 - プロジェクトルートの .env ファイルを明示的に読み込み
+- .env ファイルの柔軟な探索（DOTENV_PATH、カレントディレクトリ、親ディレクトリ）
 
 Environment Variables
 ---------------------
+DOTENV_PATH : str, optional
+    .env ファイルへの明示的なパス。設定されている場合、他の探索をスキップ。
 FRED_API_KEY : str
     FRED API Key (required)
 LOG_LEVEL : LogLevel
@@ -26,6 +29,7 @@ PROJECT_ENV : str
 
 from __future__ import annotations
 
+import logging
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -36,18 +40,79 @@ from dotenv import load_dotenv
 if TYPE_CHECKING:
     from .types import LogFormat, LogLevel
 
+# Module-level logger
+# Note: 基本的な logging.getLogger を使用（循環インポート回避のため）
+logger = logging.getLogger(__name__)
+
+# AIDEV-NOTE: PROJECT_ROOT と ENV_FILE_PATH は後方互換性のため残しているが、
+# site-packages 環境では正しく動作しない可能性がある。
+# 新しいコードでは _find_env_file() を使用すること。
+
 # Project root directory (finance/)
+# Deprecated: Use _find_env_file() instead for .env file discovery
 PROJECT_ROOT: Path = Path(__file__).parent.parent.parent
 
 # Path to .env file at project root
+# Deprecated: Use _find_env_file() instead for .env file discovery
 ENV_FILE_PATH: Path = PROJECT_ROOT / ".env"
+
+# Maximum number of parent directory levels to search for .env file
+_MAX_PARENT_LEVELS: int = 5
+
+
+def _find_env_file() -> Path | None:
+    """Find .env file using multiple search strategies.
+
+    以下の優先順位で .env ファイルを探索する:
+    1. DOTENV_PATH 環境変数で明示的に指定されたパス
+    2. カレントディレクトリの .env
+    3. 親ディレクトリを遡って探索（最大5レベル）
+
+    Returns
+    -------
+    Path | None
+        見つかった .env ファイルのパス。見つからない場合は None。
+
+    Examples
+    --------
+    >>> # DOTENV_PATH が設定されている場合
+    >>> os.environ["DOTENV_PATH"] = "/path/to/.env"
+    >>> _find_env_file()
+    PosixPath('/path/to/.env')
+
+    >>> # カレントディレクトリに .env がある場合
+    >>> _find_env_file()
+    PosixPath('/current/dir/.env')
+    """
+    # 1. DOTENV_PATH 環境変数による明示的な指定
+    dotenv_path = os.environ.get("DOTENV_PATH")
+    if dotenv_path:
+        path = Path(dotenv_path)
+        if path.is_file():
+            return path
+        return None
+
+    # 2. カレントディレクトリから親ディレクトリを遡って探索
+    current = Path.cwd()
+    for _ in range(_MAX_PARENT_LEVELS + 1):  # +1 はカレントディレクトリ自身を含む
+        env_file = current / ".env"
+        if env_file.is_file():
+            return env_file
+        parent = current.parent
+        if parent == current:  # ルートディレクトリに到達
+            break
+        current = parent
+
+    return None
 
 
 def load_project_env(*, override: bool = False) -> bool:
-    """Load environment variables from project root .env file.
+    """Load environment variables from .env file.
 
-    プロジェクトルート（finance/）の .env ファイルから環境変数を読み込む。
-    カレントディレクトリに依存しない明示的なパス指定を行う。
+    以下の優先順位で .env ファイルを探索し、環境変数を読み込む:
+    1. DOTENV_PATH 環境変数で明示的に指定されたパス
+    2. カレントディレクトリの .env
+    3. 親ディレクトリを遡って探索（最大5レベル）
 
     Parameters
     ----------
@@ -68,7 +133,16 @@ def load_project_env(*, override: bool = False) -> bool:
     >>> load_project_env(override=True)  # 既存の環境変数を上書き
     True
     """
-    return load_dotenv(dotenv_path=ENV_FILE_PATH, override=override)
+    env_file = _find_env_file()
+
+    if env_file is None:
+        logger.debug("No .env file found")
+        return False
+
+    logger.debug("Loading .env file", extra={"env_file": str(env_file)})
+    load_dotenv(dotenv_path=env_file, override=override)
+    logger.info("Loaded .env file", extra={"env_file": str(env_file)})
+    return True
 
 
 # Load .env file once at module import
@@ -194,6 +268,7 @@ def get_project_env() -> str:
 __all__ = [
     "ENV_FILE_PATH",
     "PROJECT_ROOT",
+    "_find_env_file",
     "get_fred_api_key",
     "get_log_dir",
     "get_log_format",
