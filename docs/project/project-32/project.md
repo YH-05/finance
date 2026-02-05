@@ -216,16 +216,29 @@ rss:
 | `test_正常系_UA無効時はデフォルトUAで送信` | `enabled: false` 時に UA ヘッダーが設定されないことを検証 |
 | `test_正常系_AcceptヘッダーにRSS形式が含まれる` | Accept ヘッダーに `application/rss+xml` が含まれることを検証 |
 
+**テスト方法**: 既存テストと一貫して `patch("httpx.AsyncClient")` を使用し、コンストラクタに渡された `headers` 引数を検証する。
+
+```python
+# 検証例
+mock_client_class.assert_called_once_with(
+    timeout=30.0,
+    headers={
+        "Accept": "application/rss+xml, application/xml, text/xml, */*",
+        "User-Agent": ANY,  # ランダム選択のため ANY で検証
+    },
+)
+```
+
 ---
 
 ## 実装チェックリスト
 
-- [ ] `src/news/config/models.py`: `RssConfig` に `user_agent_rotation: UserAgentRotationConfig` フィールド追加
-- [ ] `src/news/collectors/rss.py`: `__init__` に `self._ua_config` 追加
-- [ ] `src/news/collectors/rss.py`: `_build_headers()` メソッド追加
-- [ ] `src/news/collectors/rss.py`: `httpx.AsyncClient` に `headers` 引数追加
-- [ ] `data/config/news-collection-config.yaml`: `rss.user_agent_rotation` セクション追加
-- [ ] `tests/news/unit/collectors/test_rss.py`: UA ヘッダー検証テスト追加
+- [ ] `src/news/config/models.py`: `RssConfig` に `user_agent_rotation: UserAgentRotationConfig` フィールド追加 → [#3075](https://github.com/YH-05/finance/issues/3075)
+- [ ] `src/news/collectors/rss.py`: `__init__` に `self._ua_config` 追加 → [#3076](https://github.com/YH-05/finance/issues/3076)
+- [ ] `src/news/collectors/rss.py`: `_build_headers()` メソッド追加 → [#3076](https://github.com/YH-05/finance/issues/3076)
+- [ ] `src/news/collectors/rss.py`: `httpx.AsyncClient` に `headers` 引数追加 → [#3076](https://github.com/YH-05/finance/issues/3076)
+- [ ] `data/config/news-collection-config.yaml`: `rss.user_agent_rotation` セクション追加 → [#3077](https://github.com/YH-05/finance/issues/3077)
+- [ ] `tests/news/unit/collectors/test_rss.py`: UA ヘッダー検証テスト追加 → [#3078](https://github.com/YH-05/finance/issues/3078)
 - [ ] `make check-all` が成功することを確認
 - [ ] Yahoo Finance フィード（`https://finance.yahoo.com/news/rssindex`）で 429 が解消されることを確認
 - [ ] Nasdaq フィード（3 件）で接続拒否が解消されることを確認
@@ -294,16 +307,66 @@ rss:
 |----------|----------|
 | `src/news/orchestrator.py` | フェーズ 1 後に重複チェックステップを追加 |
 | `src/news/publisher.py` | `_get_existing_issues()` と `_is_duplicate()` を外部から呼び出し可能にする |
-| `tests/news/unit/test_orchestrator.py` | 重複チェック前倒しの検証テスト追加 |
+| `src/news/publisher.py` | `_get_existing_issues()` を `asyncio.create_subprocess_exec` で非同期化 |
+| `src/news/publisher.py` | `--limit 500` 制限を撤廃し、対象期間の全 Issue を取得（ページネーション対応） |
+| `src/news/models.py` | `WorkflowResult` に `total_early_duplicates` フィールド追加 |
+| `tests/news/unit/test_orchestrator.py` | 重複チェック前倒しの検証テスト追加（新規作成） |
 
 ### 修正内容
 
-#### 1. `src/news/publisher.py` — 重複チェックメソッドの公開
+#### 1. `src/news/publisher.py` — 重複チェックメソッドの公開 + 非同期化 + ページネーション
 
 `_get_existing_issues()` を外部から呼び出せるよう公開メソッド化する。`_is_duplicate()` も URL ベースの判定を `CollectedArticle` で使えるよう汎用化する。
 
+##### 1.1 非同期化: `subprocess.run` → `asyncio.create_subprocess_exec`
+
+現在の `_get_existing_issues()` は `subprocess.run`（同期呼出）を使用しており、`async` コンテキストでイベントループをブロックする。`asyncio.create_subprocess_exec` に置き換えて完全な非同期化を行う。
+
 ```python
-# 既存の _get_existing_issues を公開化
+async def _get_existing_issues(self, days: int = 7) -> set[str]:
+    since_date = datetime.now(timezone.utc) - timedelta(days=days)
+
+    proc = await asyncio.create_subprocess_exec(
+        "gh", "issue", "list",
+        "--repo", self._repo,
+        "--state", "all",
+        "--limit", "1000",  # ページあたりの取得件数
+        "--json", "body,createdAt",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+
+    if proc.returncode != 0:
+        logger.error("Failed to fetch issues", stderr=stderr.decode())
+        return set()
+
+    issues = json.loads(stdout.decode())
+    # ... URL 抽出処理（既存ロジック）
+```
+
+##### 1.2 ページネーション: `--limit 500` 制限の撤廃
+
+`gh issue list` の `--limit` を十分大きな値にするか、`--paginate` オプションと `gh api` を使用して対象期間の全 Issue を取得する。
+
+```python
+# gh api を使用したページネーション対応
+proc = await asyncio.create_subprocess_exec(
+    "gh", "api",
+    "--paginate",
+    f"/repos/{self._repo}/issues",
+    "--jq", ".[].body",
+    "-q", f".[] | select(.created_at >= \"{since_date.isoformat()}\")",
+    stdout=asyncio.subprocess.PIPE,
+    stderr=asyncio.subprocess.PIPE,
+)
+```
+
+**注意**: 具体的なページネーション実装は `gh issue list --limit` の上限引き上げか `gh api --paginate` のいずれかを実装時に選定する。
+
+##### 1.3 公開メソッドの追加
+
+```python
 async def get_existing_urls(self, days: int | None = None) -> set[str]:
     """直近N日の既存 Issue から記事 URL を取得する。
 
@@ -317,7 +380,7 @@ async def get_existing_urls(self, days: int | None = None) -> set[str]:
     set[str]
         既存 Issue に含まれる記事 URL のセット。
     """
-    check_days = days or self._config.github.duplicate_check_days
+    check_days = days or self._config.duplicate_check_days
     return await self._get_existing_issues(days=check_days)
 ```
 
@@ -375,7 +438,42 @@ if self._is_duplicate(article, existing_urls):
 
 重複チェックの前倒しにより `total_duplicates` の計上位置が変わる。現状は `PublishedArticle` の `DUPLICATE` ステータスから計上しているが、改善後はフェーズ 1 の段階で除外されるため `published` リストに含まれなくなる。
 
-対応方法: `_build_result()` に `total_duplicates_early` パラメータを追加するか、`run()` 内で直接カウントして `WorkflowResult` に反映する。
+**対応方法**: `WorkflowResult` モデルに `total_early_duplicates` フィールドを新設し、`_build_result()` で受け取って設定する。既存の `total_duplicates`（フェーズ 4 での重複検出）とは分離する。
+
+##### `src/news/models.py` — `WorkflowResult` にフィールド追加
+
+```python
+class WorkflowResult(BaseModel):
+    # ... 既存フィールド ...
+    total_duplicates: int  # フェーズ 4 での重複検出数（安全策として残存）
+    # ---- 追加 ----
+    total_early_duplicates: int = Field(
+        default=0,
+        description="Number of articles excluded by early duplicate check (before extraction)",
+    )
+```
+
+##### `src/news/orchestrator.py` — `_build_result()` のシグネチャ変更
+
+```python
+def _build_result(
+    self,
+    collected: list[CollectedArticle],
+    extracted: list[ExtractedArticle],
+    summarized: list[SummarizedArticle],
+    published: list[PublishedArticle],
+    started_at: datetime,
+    finished_at: datetime,
+    early_duplicates: int = 0,  # 追加
+) -> WorkflowResult:
+    # ... 既存の集計ロジック ...
+    return WorkflowResult(
+        # ... 既存フィールド ...
+        total_early_duplicates=early_duplicates,
+    )
+```
+
+##### `run()` 内での呼び出し
 
 ```python
 result = self._build_result(
@@ -385,8 +483,17 @@ result = self._build_result(
     published=published,
     started_at=started_at,
     finished_at=finished_at,
-    early_duplicates=dedup_count,  # 追加
+    early_duplicates=dedup_count,
 )
+```
+
+##### 最終サマリーの表示更新
+
+```python
+if result.total_early_duplicates > 0:
+    print(f"  重複除外（早期）: {result.total_early_duplicates}件")
+if result.total_duplicates > 0:
+    print(f"  重複（公開時）: {result.total_duplicates}件")
 ```
 
 ### テスト追加
@@ -395,16 +502,20 @@ result = self._build_result(
 |---------|---------|
 | `test_正常系_重複記事がフェーズ2前に除外される` | 既存 URL と一致する記事が抽出対象から除外されることを検証 |
 | `test_正常系_重複除外後に記事が0件で早期リターン` | 全記事が重複の場合に空の `WorkflowResult` が返ることを検証 |
-| `test_正常系_重複件数がWorkflowResultに反映される` | `total_duplicates` に前倒しチェックの除外数が含まれることを検証 |
+| `test_正常系_重複件数がWorkflowResultに反映される` | `total_early_duplicates` に前倒しチェックの除外数が含まれることを検証 |
 
 ### 実装チェックリスト
 
-- [ ] `src/news/publisher.py`: `get_existing_urls()` 公開メソッド追加
-- [ ] `src/news/publisher.py`: `is_duplicate_url()` 公開メソッド追加
-- [ ] `src/news/orchestrator.py`: フェーズ 1 後に重複チェックステップを挿入
-- [ ] `src/news/orchestrator.py`: `_build_result()` に `early_duplicates` 対応追加
-- [ ] `src/news/publisher.py`: `publish_batch()` 内の重複チェックログレベルを `debug` に変更
-- [ ] `tests/news/unit/test_orchestrator.py`: 重複チェック前倒しのテスト追加
+- [ ] `src/news/publisher.py`: `_get_existing_issues()` を `asyncio.create_subprocess_exec` で非同期化 → [#3079](https://github.com/YH-05/finance/issues/3079)
+- [ ] `src/news/publisher.py`: `--limit 500` 制限を撤廃し、対象期間の全 Issue を取得（ページネーション対応） → [#3079](https://github.com/YH-05/finance/issues/3079)
+- [ ] `src/news/publisher.py`: `get_existing_urls()` 公開メソッド追加 → [#3079](https://github.com/YH-05/finance/issues/3079)
+- [ ] `src/news/publisher.py`: `is_duplicate_url()` 公開メソッド追加 → [#3079](https://github.com/YH-05/finance/issues/3079)
+- [ ] `src/news/models.py`: `WorkflowResult` に `total_early_duplicates` フィールド追加 → [#3080](https://github.com/YH-05/finance/issues/3080)
+- [ ] `src/news/orchestrator.py`: フェーズ 1 後に重複チェックステップを挿入 → [#3081](https://github.com/YH-05/finance/issues/3081)
+- [ ] `src/news/orchestrator.py`: `_build_result()` に `early_duplicates` パラメータ追加 → [#3081](https://github.com/YH-05/finance/issues/3081)
+- [ ] `src/news/orchestrator.py`: 最終サマリーに早期重複除外件数を表示 → [#3081](https://github.com/YH-05/finance/issues/3081)
+- [ ] `src/news/publisher.py`: `publish_batch()` 内の重複チェックログレベルを `debug` に変更 → [#3079](https://github.com/YH-05/finance/issues/3079)
+- [ ] `tests/news/unit/test_orchestrator.py`: 重複チェック前倒しのテスト追加（新規作成） → [#3082](https://github.com/YH-05/finance/issues/3082)
 - [ ] `make check-all` が成功することを確認
 
 ---
@@ -566,7 +677,8 @@ class ResultMessage:
 | ファイル | 変更内容 |
 |----------|----------|
 | `src/news/summarizer.py` | 空レスポンス検出、`AssistantMessage.error` チェック、リトライ判定改善 |
-| `tests/news/unit/test_summarizer.py` | 空レスポンス・レート制限エラーのテスト追加 |
+| `src/news/summarizer.py` | `ResultMessage` のインポート追加 |
+| `tests/news/unit/summarizers/test_summarizer.py` | 空レスポンス・レート制限エラーのテスト追加 |
 
 ---
 
@@ -607,7 +719,15 @@ class EmptyResponseError(Exception):
         super().__init__(f"Empty response from Claude SDK (reason: {reason})")
 ```
 
-#### 2. `src/news/summarizer.py` — `_call_claude_sdk()` の改善
+#### 2. `src/news/summarizer.py` — `ResultMessage` のインポート追加
+
+現在のインポート（`AssistantMessage`, `TextBlock` のみ）に `ResultMessage` を追加する。
+
+```python
+from claude_agent_sdk.types import AssistantMessage, ResultMessage, TextBlock
+```
+
+#### 3. `src/news/summarizer.py` — `_call_claude_sdk()` の改善
 
 **変更前**（380-393行目）:
 ```python
@@ -671,7 +791,7 @@ return result
 - 空レスポンスの原因を `EmptyResponseError.reason` に記録し、ログで追跡可能にする
 - `EmptyResponseError` は `ValueError` とは異なる例外型のため、リトライ判定で区別できる
 
-#### 3. `src/news/summarizer.py` — `_parse_response()` に空文字列の早期チェック追加
+#### 4. `src/news/summarizer.py` — `_parse_response()` に空文字列の早期チェック追加
 
 **変更前**（436行目付近）:
 ```python
@@ -688,7 +808,7 @@ json_match = re.search(r"```json\s*(.*?)\s*```", response_text, re.DOTALL)
 
 防御的チェック。通常は `_call_claude_sdk()` で `EmptyResponseError` が送出されるが、万が一到達した場合の安全策。
 
-#### 4. `src/news/summarizer.py` — `summarize()` のリトライ判定改善
+#### 5. `src/news/summarizer.py` — `summarize()` のリトライ判定改善
 
 **変更前**（197-210行目）:
 ```python
@@ -731,7 +851,7 @@ except ValueError as e:
 - レート制限時は通常より長いバックオフ（4s, 8s, 16s）を適用する
 - 不正な JSON 形式（`ValueError`）は従来通りリトライしない
 
-#### 5. バックオフ戦略の整理
+#### 6. バックオフ戦略の整理
 
 | 例外 | リトライ | バックオフ | 理由 |
 |------|---------|-----------|------|
@@ -742,11 +862,26 @@ except ValueError as e:
 | `ProcessError` 等 | する | 1s, 2s, 4s（通常） | CLI プロセスの一時障害 |
 | `RuntimeError`（SDK未インストール） | しない | — | 永続的エラー |
 
+**注意: バックオフと `asyncio.timeout` の関係**
+
+`summarize()` メソッドでは `asyncio.timeout(self._timeout_seconds)` が `_call_claude_sdk()` 呼出を囲んでいる。レート制限時のバックオフ `await asyncio.sleep(backoff)` は `except EmptyResponseError` ブロック内で実行されるため、`asyncio.timeout` のスコープ外となり競合しない。
+
+```
+for attempt in range(self._max_retries):
+    try:
+        async with asyncio.timeout(self._timeout_seconds):  # ← timeout のスコープ
+            response_text = await self._call_claude_sdk(prompt)  # EmptyResponseError はここで発生
+        summary = self._parse_response(response_text)
+        ...
+    except EmptyResponseError as e:
+        await asyncio.sleep(backoff)  # ← timeout の外側で実行（競合なし）
+```
+
 ---
 
 ### テスト追加
 
-`tests/news/unit/test_summarizer.py` に以下のテストケースを追加:
+`tests/news/unit/summarizers/test_summarizer.py` に以下のテストケースを追加:
 
 | テスト名 | 検証内容 |
 |---------|---------|
@@ -761,14 +896,15 @@ except ValueError as e:
 
 ### 実装チェックリスト
 
-- [ ] `src/news/summarizer.py`: `EmptyResponseError` 例外クラス追加
-- [ ] `src/news/summarizer.py`: `_call_claude_sdk()` に `AssistantMessage.error` チェック追加
-- [ ] `src/news/summarizer.py`: `_call_claude_sdk()` に `ResultMessage` チェック追加
-- [ ] `src/news/summarizer.py`: `_call_claude_sdk()` に空レスポンス検出と `EmptyResponseError` 送出追加
-- [ ] `src/news/summarizer.py`: `_parse_response()` に空文字列の早期チェック追加
-- [ ] `src/news/summarizer.py`: `summarize()` に `EmptyResponseError` の `except` ブロック追加（`ValueError` の前に配置）
-- [ ] `src/news/summarizer.py`: レート制限時の強化バックオフ（4s, 8s, 16s）追加
-- [ ] `tests/news/unit/test_summarizer.py`: 空レスポンス・レート制限・リトライのテスト追加
+- [ ] `src/news/summarizer.py`: `ResultMessage` のインポート追加 → [#3083](https://github.com/YH-05/finance/issues/3083)
+- [ ] `src/news/summarizer.py`: `EmptyResponseError` 例外クラス追加 → [#3083](https://github.com/YH-05/finance/issues/3083)
+- [ ] `src/news/summarizer.py`: `_call_claude_sdk()` に `AssistantMessage.error` チェック追加 → [#3084](https://github.com/YH-05/finance/issues/3084)
+- [ ] `src/news/summarizer.py`: `_call_claude_sdk()` に `ResultMessage` チェック追加 → [#3084](https://github.com/YH-05/finance/issues/3084)
+- [ ] `src/news/summarizer.py`: `_call_claude_sdk()` に空レスポンス検出と `EmptyResponseError` 送出追加 → [#3084](https://github.com/YH-05/finance/issues/3084)
+- [ ] `src/news/summarizer.py`: `_parse_response()` に空文字列の早期チェック追加 → [#3085](https://github.com/YH-05/finance/issues/3085)
+- [ ] `src/news/summarizer.py`: `summarize()` に `EmptyResponseError` の `except` ブロック追加（`ValueError` の前に配置） → [#3086](https://github.com/YH-05/finance/issues/3086)
+- [ ] `src/news/summarizer.py`: レート制限時の強化バックオフ（4s, 8s, 16s）追加 → [#3086](https://github.com/YH-05/finance/issues/3086)
+- [ ] `tests/news/unit/summarizers/test_summarizer.py`: 空レスポンス・レート制限・リトライのテスト追加 → [#3087](https://github.com/YH-05/finance/issues/3087)
 - [ ] `make check-all` が成功することを確認
 
 ---
@@ -782,3 +918,46 @@ except ValueError as e:
 3. **エラー検出の信頼性**: `ResultMessage.is_error` はクエリ全体の成否を示すフラグとして使用する方が適切
 
 `ResultMessage` はエラー検出とコスト・時間のログ出力のみに使用する。
+
+---
+
+## 追加改善: フィードエラーの最終サマリー表示
+
+### 問題概要
+
+フィードエラー（`WorkflowResult.feed_errors`）は記録されるが、最終サマリー（`orchestrator.py:286-298`）には含まれていない。ユーザーがフィード収集の失敗に気付くにはログ出力を確認する必要がある。
+
+### 変更対象ファイル
+
+| ファイル | 変更内容 |
+|----------|----------|
+| `src/news/orchestrator.py` | 最終サマリーにフィードエラー件数を表示 |
+
+### 修正内容
+
+`run()` メソッドの最終サマリー表示（`orchestrator.py:286-298`）に `feed_errors` の件数を追加する。
+
+```python
+# Final summary
+print(f"\n{'=' * 60}")
+print("ワークフロー完了")
+print(f"{'=' * 60}")
+print(f"  収集: {result.total_collected}件")
+# ---- 追加 ----
+if result.feed_errors:
+    print(f"  フィードエラー: {len(result.feed_errors)}件")
+# ---- ここまで ----
+if result.total_early_duplicates > 0:
+    print(f"  重複除外（早期）: {result.total_early_duplicates}件")
+print(f"  抽出: {result.total_extracted}件")
+print(f"  要約: {result.total_summarized}件")
+print(f"  公開: {result.total_published}件")
+if result.total_duplicates > 0:
+    print(f"  重複（公開時）: {result.total_duplicates}件")
+print(f"  処理時間: {elapsed:.1f}秒")
+```
+
+### 実装チェックリスト
+
+- [ ] `src/news/orchestrator.py`: 最終サマリーにフィードエラー件数の表示を追加 → [#3088](https://github.com/YH-05/finance/issues/3088)
+- [ ] `src/news/orchestrator.py`: `_build_result()` で `feed_errors` が正しく `WorkflowResult` に設定されていることを確認 → [#3088](https://github.com/YH-05/finance/issues/3088)

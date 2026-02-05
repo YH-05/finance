@@ -1,7 +1,8 @@
 {
     "plansDirectory": "docs/plan",
     "env": {
-        "ENABLE_TOOL_SEARCH": "true"
+        "ENABLE_TOOL_SEARCH": "1",
+        "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
     },
     "permissions": {
         "allow": [
