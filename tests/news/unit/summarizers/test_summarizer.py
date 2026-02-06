@@ -522,6 +522,30 @@ Thank you!"""
         error_message = str(exc_info.value)
         assert "Validation error" in error_message
 
+    def test_異常系_空文字列でValueError(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Empty string should raise ValueError with descriptive message."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=sample_config)
+
+        with pytest.raises(ValueError, match="Empty response text"):
+            summarizer._parse_response("")
+
+    def test_異常系_空白文字のみでValueError(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """Whitespace-only string should raise ValueError."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=sample_config)
+
+        with pytest.raises(ValueError, match="Empty response text"):
+            summarizer._parse_response("   \n\t  ")
+
     @pytest.mark.asyncio
     async def test_正常系_summarizeでマークダウンJSONが処理される(
         self,

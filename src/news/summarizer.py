@@ -483,6 +483,11 @@ JSONのみを出力し、他のテキストは含めないでください。"""
         ValueError
             JSON パースまたは Pydantic バリデーションに失敗した場合。
         """
+        if not response_text.strip():
+            raise ValueError(
+                "Empty response text (should have been caught by _call_claude_sdk)"
+            )
+
         # ```json ... ``` 形式の抽出
         json_match = re.search(r"```json\s*(.*?)\s*```", response_text, re.DOTALL)
         if json_match:
