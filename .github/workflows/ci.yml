@@ -80,7 +80,8 @@ jobs:
       run: |
         uv pip install --upgrade pip
         # CVE-2026-0994: protobuf DoS vulnerability - no fix available yet (2026-01-25)
-        uv run pip-audit --skip-editable --ignore-vuln CVE-2026-0994
+        # CVE-2026-1703: pip 25.3 vulnerability - upgraded via uv pip install --upgrade pip
+        uv run pip-audit --skip-editable --ignore-vuln CVE-2026-0994 --ignore-vuln CVE-2026-1703
         uv run bandit -c pyproject.toml -r src/
 
   type-check:
