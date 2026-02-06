@@ -211,8 +211,28 @@ class Summarizer:
                     error_message=None,
                 )
 
+            except EmptyResponseError as e:
+                # 空レスポンス（レート制限等） → リトライする
+                last_error = e
+                logger.warning(
+                    "Empty response from Claude SDK",
+                    article_url=str(article.collected.url),
+                    reason=e.reason,
+                    attempt=attempt + 1,
+                    max_retries=self._max_retries,
+                )
+                # レート制限の場合は長めのバックオフ
+                if e.reason == "rate_limit" and attempt < self._max_retries - 1:
+                    backoff = 2 ** (attempt + 2)  # 4s, 8s, 16s
+                    logger.info(
+                        "Rate limit detected, extended backoff",
+                        backoff_seconds=backoff,
+                    )
+                    await asyncio.sleep(backoff)
+                    continue
+
             except ValueError as e:
-                # JSON parse error or Pydantic validation error - don't retry
+                # 不正な JSON 形式 → リトライしない（永続的エラー）
                 error_message = str(e)
                 logger.error(
                     "Parse/validation error",

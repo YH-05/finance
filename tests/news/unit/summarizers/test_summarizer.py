@@ -2498,3 +2498,297 @@ class TestCallClaudeSdkErrorCheckAndEmptyResponse:
             result = await summarizer._call_claude_sdk("テスト")
 
             assert result == "有効なテキスト"
+
+
+class TestEmptyResponseErrorRetry:
+    """Tests for EmptyResponseError retry improvements (P32-012).
+
+    Tests for:
+    - EmptyResponseError except block is placed before ValueError
+    - EmptyResponseError triggers retry loop continuation
+    - Rate limit backoff is 4s, 8s, 16s (enhanced exponential backoff)
+    - Other empty responses use normal backoff (1s, 2s, 4s)
+    - ValueError (invalid JSON) still does not retry
+    """
+
+    @pytest.fixture
+    def retry_config(self) -> NewsWorkflowConfig:
+        """Create a config with explicit retry settings."""
+        return NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"market": "index"},
+            github_status_ids={"index": "test-id"},
+            rss={"presets_file": "test.json"},  # type: ignore[arg-type]
+            summarization=SummarizationConfig(
+                prompt_template="Summarize: {body}",
+                max_retries=3,
+                timeout_seconds=60,
+            ),
+            github={  # type: ignore[arg-type]
+                "project_number": 15,
+                "project_id": "PVT_test",
+                "status_field_id": "PVTSSF_test",
+                "published_date_field_id": "PVTF_test",
+                "repository": "owner/repo",
+            },
+            output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        )
+
+    @pytest.mark.asyncio
+    async def test_正常系_EmptyResponseErrorでリトライされ2回目で成功(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """EmptyResponseError should trigger retry and succeed on second attempt."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise EmptyResponseError(reason="no_text_block")
+            return '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("news.summarizer.asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.SUCCESS
+        assert call_count == 2
+        # Normal backoff for non-rate-limit EmptyResponseError: 2^0=1s
+        mock_sleep.assert_called_once_with(1)
+
+    @pytest.mark.asyncio
+    async def test_正常系_レート制限EmptyResponseErrorで強化バックオフが適用される(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Rate limit EmptyResponseError should use enhanced backoff (4s, 8s, 16s)."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            raise EmptyResponseError(reason="rate_limit")
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("news.summarizer.asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.FAILED
+        assert call_count == 3
+        # Enhanced backoff for rate_limit: 4s, 8s (no sleep after last attempt)
+        assert mock_sleep.call_count == 2
+        calls = [call[0][0] for call in mock_sleep.call_args_list]
+        assert calls == [4, 8]
+
+    @pytest.mark.asyncio
+    async def test_正常系_非レート制限EmptyResponseErrorで通常バックオフが適用される(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Non-rate-limit EmptyResponseError should use normal backoff (1s, 2s, 4s)."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            raise EmptyResponseError(reason="no_text_block")
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("news.summarizer.asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.FAILED
+        assert call_count == 3
+        # Normal backoff: 2^0=1, 2^1=2 (no sleep after last attempt)
+        assert mock_sleep.call_count == 2
+        calls = [call[0][0] for call in mock_sleep.call_args_list]
+        assert calls == [1, 2]
+
+    @pytest.mark.asyncio
+    async def test_正常系_レート制限で2回目に成功すると強化バックオフ1回のみ(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Rate limit success on second attempt should have only one enhanced backoff."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise EmptyResponseError(reason="rate_limit")
+            return '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("news.summarizer.asyncio.sleep", return_value=None) as mock_sleep,
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.SUCCESS
+        assert call_count == 2
+        # Enhanced backoff: 2^(0+2)=4s
+        mock_sleep.assert_called_once_with(4)
+
+    @pytest.mark.asyncio
+    async def test_異常系_ValueErrorはEmptyResponseErrorより後に判定されリトライしない(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """ValueError should still not retry (placed after EmptyResponseError catch)."""
+        from news.summarizer import Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            return "not valid json at all"
+
+        with patch.object(
+            summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.FAILED
+        assert call_count == 1  # No retry for ValueError
+
+    @pytest.mark.asyncio
+    async def test_正常系_EmptyResponseErrorのログにreasonが含まれる(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """EmptyResponseError retry should log with reason field."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            raise EmptyResponseError(reason="rate_limit")
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("news.summarizer.asyncio.sleep", return_value=None),
+            patch("news.summarizer.logger") as mock_logger,
+        ):
+            await summarizer.summarize(extracted_article_with_body)
+
+        # Verify warning logs contain reason
+        warning_calls = mock_logger.warning.call_args_list
+        # Should have EmptyResponseError warning logs
+        empty_response_warnings = [
+            call
+            for call in warning_calls
+            if call[0][0] == "Empty response from Claude SDK"
+        ]
+        assert len(empty_response_warnings) == 3
+        for call in empty_response_warnings:
+            assert call[1].get("reason") == "rate_limit"
+
+    @pytest.mark.asyncio
+    async def test_正常系_レート制限検出時にinfo_logが出力される(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """Rate limit detection should output info log with backoff seconds."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            raise EmptyResponseError(reason="rate_limit")
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("news.summarizer.asyncio.sleep", return_value=None),
+            patch("news.summarizer.logger") as mock_logger,
+        ):
+            await summarizer.summarize(extracted_article_with_body)
+
+        # Verify info logs for rate limit backoff
+        info_calls = mock_logger.info.call_args_list
+        rate_limit_logs = [
+            call
+            for call in info_calls
+            if call[0][0] == "Rate limit detected, extended backoff"
+        ]
+        # 2 rate limit info logs (attempts 0 and 1, not the last attempt)
+        assert len(rate_limit_logs) == 2
+        assert rate_limit_logs[0][1].get("backoff_seconds") == 4
+        assert rate_limit_logs[1][1].get("backoff_seconds") == 8
+
+    @pytest.mark.asyncio
+    async def test_正常系_EmptyResponseErrorのexceptブロックがValueErrorより前にある(
+        self,
+        retry_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """EmptyResponseError should be caught before ValueError in the except chain.
+
+        This test verifies that EmptyResponseError (which may inherit from or
+        be caught before ValueError) is handled with retry logic, not the
+        no-retry ValueError path.
+        """
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=retry_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            if call_count <= 2:
+                raise EmptyResponseError(reason="no_text_block")
+            return '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("news.summarizer.asyncio.sleep", return_value=None),
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        # EmptyResponseError should be retried (not treated as ValueError)
+        assert result.summarization_status == SummarizationStatus.SUCCESS
+        assert call_count == 3
