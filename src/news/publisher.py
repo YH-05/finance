@@ -19,6 +19,7 @@ Examples
 
 from __future__ import annotations
 
+import asyncio
 import json
 import subprocess  # nosec B404 - gh CLI is trusted
 from datetime import datetime, timedelta, timezone
@@ -338,6 +339,74 @@ class Publisher:
         )
 
         return results
+
+    async def get_existing_urls(self, days: int | None = None) -> set[str]:
+        """直近N日の既存 Issue から記事 URL を取得する。
+
+        指定された期間内の GitHub Issue を検索し、Issue 本文に含まれる
+        記事 URL を抽出して返す。重複チェックの前処理として使用する。
+
+        Parameters
+        ----------
+        days : int | None, optional
+            取得対象期間（日数）。None の場合は設定ファイルの
+            github.duplicate_check_days の値を使用する（デフォルト: 7日）。
+
+        Returns
+        -------
+        set[str]
+            既存 Issue の記事 URL セット。
+
+        Examples
+        --------
+        >>> urls = await publisher.get_existing_urls()
+        >>> "https://www.cnbc.com/article/123" in urls
+        True
+
+        >>> urls = await publisher.get_existing_urls(days=14)
+        >>> len(urls)
+        42
+        """
+        check_days = (
+            days if days is not None else self._config.github.duplicate_check_days
+        )
+        return await self._get_existing_issues(days=check_days)
+
+    def is_duplicate_url(self, url: str, existing_urls: set[str]) -> bool:
+        """URL が既存 Issue に含まれるか判定する。
+
+        指定された URL が既存 Issue の URL セットに含まれているか確認する。
+        重複チェックに使用する。
+
+        Parameters
+        ----------
+        url : str
+            チェック対象の記事 URL。
+        existing_urls : set[str]
+            既存 Issue の URL セット。get_existing_urls() で取得する。
+
+        Returns
+        -------
+        bool
+            URL が既存 Issue に含まれる場合 True、そうでない場合 False。
+
+        Examples
+        --------
+        >>> existing = await publisher.get_existing_urls()
+        >>> publisher.is_duplicate_url("https://www.cnbc.com/article/123", existing)
+        True
+        >>> publisher.is_duplicate_url("https://www.cnbc.com/article/new", existing)
+        False
+        """
+        is_dup = url in existing_urls
+
+        if is_dup:
+            logger.debug(
+                "Duplicate URL detected",
+                url=url,
+            )
+
+        return is_dup
 
     def _generate_issue_body(self, article: SummarizedArticle) -> str:
         """Issue本文を生成。
@@ -747,7 +816,7 @@ class Publisher:
     async def _get_existing_issues(self, days: int = 7) -> set[str]:
         """直近N日のIssue URLを取得。
 
-        GitHub Issue 一覧を取得し、Issue 本文から記事 URL を抽出する。
+        GitHub Issue 一覧を非同期で取得し、Issue 本文から記事 URL を抽出する。
         重複チェックに使用する。
 
         Parameters
@@ -763,9 +832,11 @@ class Publisher:
 
         Notes
         -----
+        - asyncio.create_subprocess_exec を使用してイベントループをブロックしない
         - Issue 本文から "**URL**: https://..." の形式で URL を抽出する
         - 指定期間より古い Issue は除外される
         - URL パターンが見つからない Issue は無視される
+        - gh コマンドが失敗した場合は空のセットを返す（graceful degradation）
 
         Examples
         --------
@@ -781,26 +852,32 @@ class Publisher:
             days=days,
         )
 
-        result = subprocess.run(  # nosec B603 - gh CLI with safe args
-            [
-                "gh",
-                "issue",
-                "list",
-                "--repo",
-                self._repo,
-                "--state",
-                "all",
-                "--limit",
-                "500",
-                "--json",
-                "body,createdAt",
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
+        proc = await asyncio.create_subprocess_exec(
+            "gh",
+            "issue",
+            "list",
+            "--repo",
+            self._repo,
+            "--state",
+            "all",
+            "--limit",
+            "1000",
+            "--json",
+            "body,createdAt",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
+        stdout, stderr = await proc.communicate()
 
-        issues = json.loads(result.stdout)
+        if proc.returncode != 0:
+            logger.error(
+                "Failed to fetch issues",
+                stderr=stderr.decode(),
+                returncode=proc.returncode,
+            )
+            return set()
+
+        issues = json.loads(stdout.decode())
         urls: set[str] = set()
 
         for issue in issues:

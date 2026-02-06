@@ -19,6 +19,7 @@ from news.models import (
     ExtractedArticle,
     ExtractionStatus,
     FailureRecord,
+    FeedError,
     PublicationStatus,
     PublishedArticle,
     SourceType,
@@ -262,6 +263,8 @@ class TestOrchestratorRun:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -306,6 +309,8 @@ class TestOrchestratorRun:
             mock_publisher.publish_batch = AsyncMock(
                 return_value=[sample_published_article]
             )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -364,6 +369,8 @@ class TestOrchestratorStatusFilter:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -414,6 +421,8 @@ class TestOrchestratorMaxArticles:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -461,6 +470,8 @@ class TestOrchestratorDryRun:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -536,6 +547,8 @@ class TestOrchestratorSuccessFiltering:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -611,6 +624,8 @@ class TestOrchestratorSuccessFiltering:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -688,6 +703,8 @@ class TestOrchestratorWorkflowResult:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[published])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -746,6 +763,8 @@ class TestOrchestratorWorkflowResult:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -816,6 +835,8 @@ class TestOrchestratorWorkflowResult:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[published_dup])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -853,6 +874,8 @@ class TestOrchestratorWorkflowResult:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -906,6 +929,8 @@ class TestOrchestratorLogging:
             mock_publisher.publish_batch = AsyncMock(
                 return_value=[sample_published_article]
             )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -949,6 +974,8 @@ class TestOrchestratorLogging:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -1248,6 +1275,443 @@ class TestOrchestratorSaveResult:
             assert isinstance(output_path, Path)
 
 
+class TestOrchestratorEarlyDuplicateCheck:
+    """Tests for early duplicate check after phase 1 collection."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_フェーズ1後にget_existing_urlsが呼ばれる(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+    ) -> None:
+        """run() should call get_existing_urls() after collection phase."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[sample_collected_article])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=sample_extracted_article)
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(
+                return_value=[sample_summarized_article]
+            )
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(
+                return_value=[sample_published_article]
+            )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            await orchestrator.run()
+
+            mock_publisher.get_existing_urls.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_正常系_重複記事がフェーズ2前に除外される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_source_market: ArticleSource,
+    ) -> None:
+        """Duplicate articles should be excluded before extraction phase."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        collected1 = CollectedArticle(
+            url="https://www.cnbc.com/article/1",  # type: ignore[arg-type]
+            title="Article 1",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        collected2 = CollectedArticle(
+            url="https://www.cnbc.com/article/2",  # type: ignore[arg-type]
+            title="Article 2 (duplicate)",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[collected1, collected2])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(
+                side_effect=lambda a: ExtractedArticle(
+                    collected=a,
+                    body_text="Content",
+                    extraction_status=ExtractionStatus.SUCCESS,
+                    extraction_method="trafilatura",
+                )
+            )
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(return_value=[])
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(return_value=[])
+            # article/2 is a duplicate
+            existing_urls = {"https://www.cnbc.com/article/2"}
+            mock_publisher.get_existing_urls = AsyncMock(return_value=existing_urls)
+            mock_publisher.is_duplicate_url = MagicMock(
+                side_effect=lambda url, urls: url in urls
+            )
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            await orchestrator.run()
+
+            # Only non-duplicate article should reach extraction
+            assert mock_extractor.extract.call_count == 1
+
+    @pytest.mark.asyncio
+    async def test_正常系_重複除外件数がコンソールに表示される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_source_market: ArticleSource,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Early duplicate count should be printed to console."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        collected1 = CollectedArticle(
+            url="https://www.cnbc.com/article/1",  # type: ignore[arg-type]
+            title="Article 1",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        collected2 = CollectedArticle(
+            url="https://www.cnbc.com/article/2",  # type: ignore[arg-type]
+            title="Article 2 (duplicate)",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[collected1, collected2])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(
+                side_effect=lambda a: ExtractedArticle(
+                    collected=a,
+                    body_text="Content",
+                    extraction_status=ExtractionStatus.SUCCESS,
+                    extraction_method="trafilatura",
+                )
+            )
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(return_value=[])
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(return_value=[])
+            existing_urls = {"https://www.cnbc.com/article/2"}
+            mock_publisher.get_existing_urls = AsyncMock(return_value=existing_urls)
+            mock_publisher.is_duplicate_url = MagicMock(
+                side_effect=lambda url, urls: url in urls
+            )
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            await orchestrator.run()
+
+            captured = capsys.readouterr()
+            assert "重複除外" in captured.out
+            assert "2 -> 1件" in captured.out
+
+    @pytest.mark.asyncio
+    async def test_正常系_全記事が重複の場合に空のWorkflowResultが返される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_source_market: ArticleSource,
+    ) -> None:
+        """When all articles are duplicates, empty WorkflowResult should be returned."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        collected1 = CollectedArticle(
+            url="https://www.cnbc.com/article/1",  # type: ignore[arg-type]
+            title="Article 1",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[collected1])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            existing_urls = {"https://www.cnbc.com/article/1"}
+            mock_publisher.get_existing_urls = AsyncMock(return_value=existing_urls)
+            mock_publisher.is_duplicate_url = MagicMock(
+                side_effect=lambda url, urls: url in urls
+            )
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            result = await orchestrator.run()
+
+            assert isinstance(result, WorkflowResult)
+            assert result.total_collected == 0
+            assert result.total_extracted == 0
+            # Extractor should not be called at all
+            mock_extractor.extract = AsyncMock()
+            assert not mock_extractor.extract.called
+
+    @pytest.mark.asyncio
+    async def test_正常系_WorkflowResultにtotal_early_duplicatesが設定される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_source_market: ArticleSource,
+    ) -> None:
+        """WorkflowResult.total_early_duplicates should be set correctly."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        collected1 = CollectedArticle(
+            url="https://www.cnbc.com/article/1",  # type: ignore[arg-type]
+            title="Article 1",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        collected2 = CollectedArticle(
+            url="https://www.cnbc.com/article/2",  # type: ignore[arg-type]
+            title="Article 2 (duplicate)",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[collected1, collected2])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(
+                side_effect=lambda a: ExtractedArticle(
+                    collected=a,
+                    body_text="Content",
+                    extraction_status=ExtractionStatus.SUCCESS,
+                    extraction_method="trafilatura",
+                )
+            )
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(return_value=[])
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(return_value=[])
+            existing_urls = {"https://www.cnbc.com/article/2"}
+            mock_publisher.get_existing_urls = AsyncMock(return_value=existing_urls)
+            mock_publisher.is_duplicate_url = MagicMock(
+                side_effect=lambda url, urls: url in urls
+            )
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            result = await orchestrator.run()
+
+            assert result.total_early_duplicates == 1
+
+    @pytest.mark.asyncio
+    async def test_正常系_最終サマリーに早期重複除外件数が表示される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_source_market: ArticleSource,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Final summary should display early duplicate count."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        collected1 = CollectedArticle(
+            url="https://www.cnbc.com/article/1",  # type: ignore[arg-type]
+            title="Article 1",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        collected2 = CollectedArticle(
+            url="https://www.cnbc.com/article/2",  # type: ignore[arg-type]
+            title="Article 2 (duplicate)",
+            source=sample_source_market,
+            collected_at=datetime.now(tz=timezone.utc),
+        )
+        extracted = ExtractedArticle(
+            collected=collected1,
+            body_text="Content",
+            extraction_status=ExtractionStatus.SUCCESS,
+            extraction_method="trafilatura",
+        )
+        summary = StructuredSummary(
+            overview="Test",
+            key_points=["Point"],
+            market_impact="Impact",
+        )
+        summarized = SummarizedArticle(
+            extracted=extracted,
+            summary=summary,
+            summarization_status=SummarizationStatus.SUCCESS,
+        )
+        published = PublishedArticle(
+            summarized=summarized,
+            issue_number=123,
+            issue_url="https://github.com/YH-05/finance/issues/123",
+            publication_status=PublicationStatus.SUCCESS,
+        )
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[collected1, collected2])
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=extracted)
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(return_value=[summarized])
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(return_value=[published])
+            existing_urls = {"https://www.cnbc.com/article/2"}
+            mock_publisher.get_existing_urls = AsyncMock(return_value=existing_urls)
+            mock_publisher.is_duplicate_url = MagicMock(
+                side_effect=lambda url, urls: url in urls
+            )
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            await orchestrator.run()
+
+            captured = capsys.readouterr()
+            assert "重複除外（早期）" in captured.out
+            assert "1件" in captured.out
+
+
+class TestOrchestratorBuildResultEarlyDuplicates:
+    """Tests for _build_result() with early_duplicates parameter."""
+
+    def test_正常系_build_resultにearly_duplicatesパラメータが追加されている(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+    ) -> None:
+        """_build_result should accept early_duplicates parameter."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            started_at = datetime.now(tz=timezone.utc)
+            finished_at = datetime.now(tz=timezone.utc)
+
+            result = orchestrator._build_result(
+                collected=[sample_collected_article],
+                extracted=[sample_extracted_article],
+                summarized=[sample_summarized_article],
+                published=[sample_published_article],
+                started_at=started_at,
+                finished_at=finished_at,
+                early_duplicates=5,
+            )
+
+            assert result.total_early_duplicates == 5
+
+    def test_正常系_early_duplicatesのデフォルトは0(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+    ) -> None:
+        """_build_result should default early_duplicates to 0."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            started_at = datetime.now(tz=timezone.utc)
+            finished_at = datetime.now(tz=timezone.utc)
+
+            result = orchestrator._build_result(
+                collected=[sample_collected_article],
+                extracted=[sample_extracted_article],
+                summarized=[sample_summarized_article],
+                published=[sample_published_article],
+                started_at=started_at,
+                finished_at=finished_at,
+            )
+
+            assert result.total_early_duplicates == 0
+
+
 class TestOrchestratorRunSavesResult:
     """Tests for run() calling _save_result."""
 
@@ -1291,6 +1755,8 @@ class TestOrchestratorRunSavesResult:
             mock_publisher.publish_batch = AsyncMock(
                 return_value=[sample_published_article]
             )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=sample_config)
@@ -1299,3 +1765,331 @@ class TestOrchestratorRunSavesResult:
             # Verify JSON file was created
             json_files = list(tmp_path.glob("workflow-result-*.json"))
             assert len(json_files) == 1
+
+
+class TestOrchestratorFeedErrors:
+    """Tests for feed error count display in final summary."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_フィードエラーがある場合にサマリーに表示される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Final summary should display feed error count when errors exist."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        feed_errors = [
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                feed_name="Example Feed",
+                error="Connection timeout",
+                error_type="fetch",
+                timestamp=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ),
+            FeedError(
+                feed_url="https://example.com/feed2.xml",
+                feed_name="Example Feed 2",
+                error="Parse error",
+                error_type="parse",
+                timestamp=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ),
+        ]
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[sample_collected_article])
+            mock_collector.feed_errors = feed_errors
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=sample_extracted_article)
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(
+                return_value=[sample_summarized_article]
+            )
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(
+                return_value=[sample_published_article]
+            )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            result = await orchestrator.run()
+
+            captured = capsys.readouterr()
+            assert "フィードエラー: 2件" in captured.out
+
+    @pytest.mark.asyncio
+    async def test_正常系_フィードエラーがない場合はサマリーに表示されない(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Final summary should NOT display feed error line when no errors."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[sample_collected_article])
+            mock_collector.feed_errors = []
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=sample_extracted_article)
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(
+                return_value=[sample_summarized_article]
+            )
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(
+                return_value=[sample_published_article]
+            )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            result = await orchestrator.run()
+
+            captured = capsys.readouterr()
+            assert "フィードエラー" not in captured.out
+
+    @pytest.mark.asyncio
+    async def test_正常系_フィードエラーの表示位置が収集の直後(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Feed error line should appear between collection and extraction lines."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        feed_errors = [
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                feed_name="Example Feed",
+                error="Connection timeout",
+                error_type="fetch",
+                timestamp=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ),
+        ]
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[sample_collected_article])
+            mock_collector.feed_errors = feed_errors
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=sample_extracted_article)
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(
+                return_value=[sample_summarized_article]
+            )
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(
+                return_value=[sample_published_article]
+            )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            await orchestrator.run()
+
+            captured = capsys.readouterr()
+            lines = captured.out.split("\n")
+
+            # Find the indices of relevant lines in the final summary
+            collection_line_idx = None
+            feed_error_line_idx = None
+            extraction_line_idx = None
+            for i, line in enumerate(lines):
+                if "収集:" in line and "件" in line:
+                    collection_line_idx = i
+                if "フィードエラー:" in line:
+                    feed_error_line_idx = i
+                if "抽出:" in line and "件" in line:
+                    extraction_line_idx = i
+
+            assert collection_line_idx is not None, "収集 line not found"
+            assert feed_error_line_idx is not None, "フィードエラー line not found"
+            assert extraction_line_idx is not None, "抽出 line not found"
+            assert collection_line_idx < feed_error_line_idx < extraction_line_idx
+
+    @pytest.mark.asyncio
+    async def test_正常系_WorkflowResultにfeed_errorsが正しく設定される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+    ) -> None:
+        """WorkflowResult.feed_errors should be set from collector."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        feed_errors = [
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                feed_name="Example Feed",
+                error="Connection timeout",
+                error_type="fetch",
+                timestamp=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ),
+        ]
+
+        with (
+            patch("news.orchestrator.RSSCollector") as mock_collector_cls,
+            patch("news.orchestrator.TrafilaturaExtractor") as mock_extractor_cls,
+            patch("news.orchestrator.Summarizer") as mock_summarizer_cls,
+            patch("news.orchestrator.Publisher") as mock_publisher_cls,
+        ):
+            mock_collector = MagicMock()
+            mock_collector.collect = AsyncMock(return_value=[sample_collected_article])
+            mock_collector.feed_errors = feed_errors
+            mock_collector_cls.return_value = mock_collector
+
+            mock_extractor = MagicMock()
+            mock_extractor.extract = AsyncMock(return_value=sample_extracted_article)
+            mock_extractor_cls.return_value = mock_extractor
+
+            mock_summarizer = MagicMock()
+            mock_summarizer.summarize_batch = AsyncMock(
+                return_value=[sample_summarized_article]
+            )
+            mock_summarizer_cls.return_value = mock_summarizer
+
+            mock_publisher = MagicMock()
+            mock_publisher.publish_batch = AsyncMock(
+                return_value=[sample_published_article]
+            )
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
+            mock_publisher_cls.return_value = mock_publisher
+
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+            result = await orchestrator.run()
+
+            assert len(result.feed_errors) == 1
+            assert result.feed_errors[0].feed_url == "https://example.com/feed.xml"
+            assert result.feed_errors[0].error_type == "fetch"
+
+    def test_正常系_build_resultにfeed_errorsが渡される(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+    ) -> None:
+        """_build_result should accept and pass feed_errors to WorkflowResult."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        feed_errors = [
+            FeedError(
+                feed_url="https://example.com/feed.xml",
+                feed_name="Example Feed",
+                error="Connection timeout",
+                error_type="fetch",
+                timestamp=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ),
+        ]
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            started_at = datetime.now(tz=timezone.utc)
+            finished_at = datetime.now(tz=timezone.utc)
+
+            result = orchestrator._build_result(
+                collected=[sample_collected_article],
+                extracted=[sample_extracted_article],
+                summarized=[sample_summarized_article],
+                published=[sample_published_article],
+                started_at=started_at,
+                finished_at=finished_at,
+                feed_errors=feed_errors,
+            )
+
+            assert len(result.feed_errors) == 1
+            assert result.feed_errors[0].feed_name == "Example Feed"
+
+    def test_正常系_build_resultのfeed_errorsデフォルトは空リスト(
+        self,
+        sample_config: NewsWorkflowConfig,
+        sample_collected_article: CollectedArticle,
+        sample_extracted_article: ExtractedArticle,
+        sample_summarized_article: SummarizedArticle,
+        sample_published_article: PublishedArticle,
+    ) -> None:
+        """_build_result should default feed_errors to empty list."""
+        from news.orchestrator import NewsWorkflowOrchestrator
+
+        with (
+            patch("news.orchestrator.RSSCollector"),
+            patch("news.orchestrator.TrafilaturaExtractor"),
+            patch("news.orchestrator.Summarizer"),
+            patch("news.orchestrator.Publisher"),
+        ):
+            orchestrator = NewsWorkflowOrchestrator(config=sample_config)
+
+            started_at = datetime.now(tz=timezone.utc)
+            finished_at = datetime.now(tz=timezone.utc)
+
+            result = orchestrator._build_result(
+                collected=[sample_collected_article],
+                extracted=[sample_extracted_article],
+                summarized=[sample_summarized_article],
+                published=[sample_published_article],
+                started_at=started_at,
+                finished_at=finished_at,
+            )
+
+            assert result.feed_errors == []

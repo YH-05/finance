@@ -18,6 +18,7 @@ Configuration Hierarchy
 
 - NewsWorkflowConfig (root for news collection workflow)
   - RssConfig
+    - UserAgentRotationConfig
   - ExtractionConfig
     - UserAgentRotationConfig
     - PlaywrightFallbackConfig
@@ -522,35 +523,6 @@ class RssRetryConfig(BaseModel):
     )
 
 
-class RssConfig(BaseModel):
-    """RSS feed configuration.
-
-    Parameters
-    ----------
-    presets_file : str
-        Path to the RSS presets JSON file containing feed definitions.
-    retry : RssRetryConfig
-        Retry configuration for feed collection.
-
-    Examples
-    --------
-    >>> config = RssConfig(presets_file="data/config/rss-presets.json")
-    >>> config.presets_file
-    'data/config/rss-presets.json'
-    >>> config.retry.max_attempts
-    3
-    """
-
-    presets_file: str = Field(
-        ...,
-        description="Path to the RSS presets JSON file",
-    )
-    retry: RssRetryConfig = Field(
-        default_factory=RssRetryConfig,
-        description="Retry configuration for feed collection",
-    )
-
-
 class UserAgentRotationConfig(BaseModel):
     """User-Agent rotation configuration.
 
@@ -609,6 +581,43 @@ class UserAgentRotationConfig(BaseModel):
         import random
 
         return random.choice(self.user_agents)
+
+
+class RssConfig(BaseModel):
+    """RSS feed configuration.
+
+    Parameters
+    ----------
+    presets_file : str
+        Path to the RSS presets JSON file containing feed definitions.
+    retry : RssRetryConfig
+        Retry configuration for feed collection.
+    user_agent_rotation : UserAgentRotationConfig
+        User-Agent rotation configuration for RSS feed fetching.
+
+    Examples
+    --------
+    >>> config = RssConfig(presets_file="data/config/rss-presets.json")
+    >>> config.presets_file
+    'data/config/rss-presets.json'
+    >>> config.retry.max_attempts
+    3
+    >>> config.user_agent_rotation.enabled
+    True
+    """
+
+    presets_file: str = Field(
+        ...,
+        description="Path to the RSS presets JSON file",
+    )
+    retry: RssRetryConfig = Field(
+        default_factory=RssRetryConfig,
+        description="Retry configuration for feed collection",
+    )
+    user_agent_rotation: UserAgentRotationConfig = Field(
+        default_factory=UserAgentRotationConfig,
+        description="User-Agent rotation configuration for RSS feed fetching",
+    )
 
 
 class PlaywrightFallbackConfig(BaseModel):

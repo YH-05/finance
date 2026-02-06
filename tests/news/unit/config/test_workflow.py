@@ -31,6 +31,68 @@ class TestRssConfig:
             RssConfig()
 
 
+class TestRssConfigWithUserAgentRotation:
+    """Test RssConfig with user_agent_rotation field."""
+
+    def test_正常系_user_agent_rotationがデフォルト値で作成される(self) -> None:
+        """RssConfigのuser_agent_rotationがデフォルト値で作成されることを確認。"""
+        from news.config.models import RssConfig, UserAgentRotationConfig
+
+        config = RssConfig(presets_file="data/config/rss-presets.json")
+
+        assert isinstance(config.user_agent_rotation, UserAgentRotationConfig)
+        assert config.user_agent_rotation.enabled is True
+        assert config.user_agent_rotation.user_agents == []
+
+    def test_正常系_user_agent_rotationをカスタム値で作成できる(self) -> None:
+        """RssConfigのuser_agent_rotationをカスタム値で作成できることを確認。"""
+        from news.config.models import RssConfig, UserAgentRotationConfig
+
+        ua_config = UserAgentRotationConfig(
+            enabled=True,
+            user_agents=["UA1", "UA2"],
+        )
+        config = RssConfig(
+            presets_file="data/config/rss-presets.json",
+            user_agent_rotation=ua_config,
+        )
+
+        assert config.user_agent_rotation.enabled is True
+        assert config.user_agent_rotation.user_agents == ["UA1", "UA2"]
+
+    def test_正常系_dictからuser_agent_rotationを含めて作成できる(self) -> None:
+        """RssConfigを辞書からuser_agent_rotationを含めて作成できることを確認。"""
+        from news.config.models import RssConfig
+
+        data = {
+            "presets_file": "data/config/rss-presets.json",
+            "user_agent_rotation": {
+                "enabled": True,
+                "user_agents": ["Mozilla/5.0 (Windows)", "Mozilla/5.0 (Mac)"],
+            },
+        }
+        config = RssConfig.model_validate(data)
+
+        assert config.user_agent_rotation.enabled is True
+        assert len(config.user_agent_rotation.user_agents) == 2
+
+    def test_正常系_user_agent_rotation無効化できる(self) -> None:
+        """RssConfigのuser_agent_rotationをenabled=Falseで作成できることを確認。"""
+        from news.config.models import RssConfig, UserAgentRotationConfig
+
+        ua_config = UserAgentRotationConfig(
+            enabled=False,
+            user_agents=["UA1"],
+        )
+        config = RssConfig(
+            presets_file="data/config/rss-presets.json",
+            user_agent_rotation=ua_config,
+        )
+
+        assert config.user_agent_rotation.enabled is False
+        assert config.user_agent_rotation.get_random_user_agent() is None
+
+
 class TestExtractionConfig:
     """Test ExtractionConfig Pydantic model."""
 
@@ -861,6 +923,93 @@ class TestExtractionConfigWithUserAgentRotation:
 
         assert config.user_agent_rotation.enabled is True
         assert config.user_agent_rotation.user_agents == ["UA1", "UA2"]
+
+
+class TestLoadConfigWithRssUserAgentRotation:
+    """Test load_config function with rss.user_agent_rotation."""
+
+    def test_正常系_rssのuser_agent_rotationセクションを読み込める(
+        self, tmp_path: Path
+    ) -> None:
+        """load_configがrss.user_agent_rotationセクションを読み込めることを確認。"""
+        from news.config.models import load_config
+
+        # Arrange
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            """
+version: "1.0"
+status_mapping:
+  tech: "ai"
+github_status_ids:
+  ai: "6fbb43d0"
+rss:
+  presets_file: "data/config/rss-presets.json"
+  user_agent_rotation:
+    enabled: true
+    user_agents:
+      - "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+      - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+summarization:
+  prompt_template: "test"
+github:
+  project_number: 15
+  project_id: "PVT_test"
+  status_field_id: "PVTSSF_test"
+  published_date_field_id: "PVTF_test"
+  repository: "owner/repo"
+output:
+  result_dir: "data/exports"
+"""
+        )
+
+        # Act
+        config = load_config(config_file)
+
+        # Assert
+        assert config.rss.user_agent_rotation.enabled is True
+        assert len(config.rss.user_agent_rotation.user_agents) == 2
+        assert (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            in config.rss.user_agent_rotation.user_agents
+        )
+
+    def test_正常系_rssのuser_agent_rotationなしでデフォルト値が設定される(
+        self, tmp_path: Path
+    ) -> None:
+        """load_configでrss.user_agent_rotationがない場合、デフォルト値が設定されることを確認。"""
+        from news.config.models import load_config
+
+        # Arrange
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(
+            """
+version: "1.0"
+status_mapping:
+  tech: "ai"
+github_status_ids:
+  ai: "6fbb43d0"
+rss:
+  presets_file: "data/config/rss-presets.json"
+summarization:
+  prompt_template: "test"
+github:
+  project_number: 15
+  project_id: "PVT_test"
+  status_field_id: "PVTSSF_test"
+  published_date_field_id: "PVTF_test"
+  repository: "owner/repo"
+output:
+  result_dir: "data/exports"
+"""
+        )
+
+        # Act
+        config = load_config(config_file)
+
+        # Assert
+        assert config.rss.user_agent_rotation.enabled is True
+        assert config.rss.user_agent_rotation.user_agents == []
 
 
 class TestLoadConfigWithUserAgentRotation:

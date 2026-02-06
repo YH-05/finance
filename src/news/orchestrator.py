@@ -30,6 +30,7 @@ from news.models import (
     ExtractedArticle,
     ExtractionStatus,
     FailureRecord,
+    FeedError,
     PublicationStatus,
     PublishedArticle,
     SummarizationStatus,
@@ -187,6 +188,7 @@ class NewsWorkflowOrchestrator:
         collected = await self._collector.collect(
             max_age_hours=self._config.filtering.max_age_hours
         )
+        feed_errors = self._collector.feed_errors
         print(f"  収集完了: {len(collected)}件")
 
         # Apply status filtering
@@ -200,10 +202,27 @@ class NewsWorkflowOrchestrator:
             collected = collected[:max_articles]
             print(f"  記事数制限適用: {len(collected)}件")
 
+        # Early duplicate check (before extraction)
+        existing_urls = await self._publisher.get_existing_urls()
+        before_dedup = len(collected)
+        collected = [
+            a
+            for a in collected
+            if not self._publisher.is_duplicate_url(str(a.url), existing_urls)
+        ]
+        early_dedup_count = before_dedup - len(collected)
+        if early_dedup_count > 0:
+            print(
+                f"  重複除外: {before_dedup} -> {len(collected)}件"
+                f" (重複: {early_dedup_count}件)"
+            )
+
         if not collected:
             print("  -> 処理対象の記事がありません")
             finished_at = datetime.now(timezone.utc)
-            result = self._build_empty_result(started_at, finished_at)
+            result = self._build_empty_result(
+                started_at, finished_at, feed_errors=feed_errors
+            )
             self._save_result(result)
             return result
 
@@ -225,6 +244,8 @@ class NewsWorkflowOrchestrator:
                 published=[],
                 started_at=started_at,
                 finished_at=finished_at,
+                early_duplicates=early_dedup_count,
+                feed_errors=feed_errors,
             )
             self._save_result(result)
             return result
@@ -249,6 +270,8 @@ class NewsWorkflowOrchestrator:
                 published=[],
                 started_at=started_at,
                 finished_at=finished_at,
+                early_duplicates=early_dedup_count,
+                feed_errors=feed_errors,
             )
             self._save_result(result)
             return result
@@ -278,6 +301,8 @@ class NewsWorkflowOrchestrator:
             published=published,
             started_at=started_at,
             finished_at=finished_at,
+            early_duplicates=early_dedup_count,
+            feed_errors=feed_errors,
         )
 
         # Save result to JSON file
@@ -289,11 +314,15 @@ class NewsWorkflowOrchestrator:
         print("ワークフロー完了")
         print(f"{'=' * 60}")
         print(f"  収集: {result.total_collected}件")
+        if result.feed_errors:
+            print(f"  フィードエラー: {len(result.feed_errors)}件")
         print(f"  抽出: {result.total_extracted}件")
         print(f"  要約: {result.total_summarized}件")
         print(f"  公開: {result.total_published}件")
+        if result.total_early_duplicates > 0:
+            print(f"  重複除外（早期）: {result.total_early_duplicates}件")
         if result.total_duplicates > 0:
-            print(f"  重複: {result.total_duplicates}件")
+            print(f"  重複（公開時）: {result.total_duplicates}件")
         print(f"  処理時間: {elapsed:.1f}秒")
 
         return result
@@ -426,6 +455,7 @@ class NewsWorkflowOrchestrator:
         self,
         started_at: datetime,
         finished_at: datetime,
+        feed_errors: list[FeedError] | None = None,
     ) -> WorkflowResult:
         """Build an empty WorkflowResult when no articles to process."""
         return WorkflowResult(
@@ -441,6 +471,7 @@ class NewsWorkflowOrchestrator:
             finished_at=finished_at,
             elapsed_seconds=(finished_at - started_at).total_seconds(),
             published_articles=[],
+            feed_errors=feed_errors or [],
         )
 
     def _filter_by_status(
@@ -479,6 +510,8 @@ class NewsWorkflowOrchestrator:
         published: list[PublishedArticle],
         started_at: datetime,
         finished_at: datetime,
+        early_duplicates: int = 0,
+        feed_errors: list[FeedError] | None = None,
     ) -> WorkflowResult:
         """Build WorkflowResult from pipeline outputs.
 
@@ -496,6 +529,12 @@ class NewsWorkflowOrchestrator:
             Workflow start timestamp.
         finished_at : datetime
             Workflow end timestamp.
+        early_duplicates : int, optional
+            Number of articles excluded by early duplicate check
+            (before extraction). Defaults to 0.
+        feed_errors : list[FeedError] | None, optional
+            Feed errors that occurred during collection.
+            Defaults to None (empty list).
 
         Returns
         -------
@@ -565,6 +604,7 @@ class NewsWorkflowOrchestrator:
             total_summarized=total_summarized,
             total_published=total_published,
             total_duplicates=total_duplicates,
+            total_early_duplicates=early_duplicates,
             extraction_failures=extraction_failures,
             summarization_failures=summarization_failures,
             publication_failures=publication_failures,
@@ -572,6 +612,7 @@ class NewsWorkflowOrchestrator:
             finished_at=finished_at,
             elapsed_seconds=elapsed_seconds,
             published_articles=published_articles,
+            feed_errors=feed_errors or [],
         )
 
     def _save_result(self, result: WorkflowResult) -> Path:

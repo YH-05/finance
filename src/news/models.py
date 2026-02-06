@@ -710,6 +710,9 @@ class WorkflowResult(BaseModel):
         The number of articles successfully published as GitHub Issues.
     total_duplicates : int
         The number of articles skipped due to duplicate detection.
+    total_early_duplicates : int
+        The number of articles excluded by early duplicate check (before extraction).
+        Defaults to 0 for backward compatibility.
     extraction_failures : list[FailureRecord]
         Records of articles that failed during the extraction stage.
     summarization_failures : list[FailureRecord]
@@ -766,6 +769,10 @@ class WorkflowResult(BaseModel):
     total_duplicates: int = Field(
         ...,
         description="The number of articles skipped due to duplicate detection",
+    )
+    total_early_duplicates: int = Field(
+        default=0,
+        description="Number of articles excluded by early duplicate check (before extraction)",
     )
     extraction_failures: list[FailureRecord] = Field(
         ...,

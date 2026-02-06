@@ -51,6 +51,23 @@ if TYPE_CHECKING:
 logger = get_logger(__name__, module="summarizer")
 
 
+class EmptyResponseError(Exception):
+    """Claude Agent SDK が空レスポンスを返した場合の例外。
+
+    レート制限やAPIエラーなど一時的な原因で発生するため、
+    リトライ対象として扱う。
+
+    Parameters
+    ----------
+    reason : str
+        空レスポンスの推定原因。
+    """
+
+    def __init__(self, reason: str = "unknown") -> None:
+        self.reason = reason
+        super().__init__(f"Empty response from Claude SDK (reason: {reason})")
+
+
 class Summarizer:
     """Claude Agent SDK を使用した構造化要約。
 
@@ -194,8 +211,28 @@ class Summarizer:
                     error_message=None,
                 )
 
+            except EmptyResponseError as e:
+                # 空レスポンス（レート制限等） → リトライする
+                last_error = e
+                logger.warning(
+                    "Empty response from Claude SDK",
+                    article_url=str(article.collected.url),
+                    reason=e.reason,
+                    attempt=attempt + 1,
+                    max_retries=self._max_retries,
+                )
+                # レート制限の場合は長めのバックオフ
+                if e.reason == "rate_limit" and attempt < self._max_retries - 1:
+                    backoff = 2 ** (attempt + 2)  # 4s, 8s, 16s
+                    logger.info(
+                        "Rate limit detected, extended backoff",
+                        backoff_seconds=backoff,
+                    )
+                    await asyncio.sleep(backoff)
+                    continue
+
             except ValueError as e:
-                # JSON parse error or Pydantic validation error - don't retry
+                # 不正な JSON 形式 → リトライしない（永続的エラー）
                 error_message = str(e)
                 logger.error(
                     "Parse/validation error",
@@ -352,6 +389,7 @@ JSONのみを出力し、他のテキストは含めないでください。"""
                 CLIConnectionError,
                 CLINotFoundError,
                 ProcessError,
+                ResultMessage,
                 TextBlock,
                 query,
             )
@@ -378,13 +416,45 @@ JSONのみを出力し、他のテキストは含めないでください。"""
 
         try:
             response_parts: list[str] = []
+            assistant_error: str | None = None
+            result_message: ResultMessage | None = None
+
             async for message in query(prompt=prompt, options=options):
                 if isinstance(message, AssistantMessage):
+                    # AssistantMessage.error のチェック
+                    if message.error is not None:
+                        assistant_error = str(message.error)
+                        logger.warning(
+                            "AssistantMessage contains error",
+                            error=assistant_error,
+                        )
                     for block in message.content:
                         if isinstance(block, TextBlock):
                             response_parts.append(block.text)
+                elif isinstance(message, ResultMessage):
+                    result_message = message
 
             result = "".join(response_parts)
+
+            # ResultMessage のエラーチェック
+            if result_message and result_message.is_error:
+                logger.warning(
+                    "ResultMessage indicates error",
+                    is_error=result_message.is_error,
+                    result=result_message.result[:100]
+                    if result_message.result
+                    else None,
+                )
+
+            # 空レスポンスの検出と原因特定
+            if not result.strip():
+                if assistant_error:
+                    raise EmptyResponseError(reason=assistant_error)
+                elif result_message and result_message.is_error:
+                    raise EmptyResponseError(reason="result_message_error")
+                else:
+                    raise EmptyResponseError(reason="no_text_block")
+
             logger.debug(
                 "Claude Agent SDK response received",
                 response_length=len(result),
@@ -433,6 +503,11 @@ JSONのみを出力し、他のテキストは含めないでください。"""
         ValueError
             JSON パースまたは Pydantic バリデーションに失敗した場合。
         """
+        if not response_text.strip():
+            raise ValueError(
+                "Empty response text (should have been caught by _call_claude_sdk)"
+            )
+
         # ```json ... ``` 形式の抽出
         json_match = re.search(r"```json\s*(.*?)\s*```", response_text, re.DOTALL)
         if json_match:
@@ -534,5 +609,6 @@ JSONのみを出力し、他のテキストは含めないでください。"""
 
 
 __all__ = [
+    "EmptyResponseError",
     "Summarizer",
 ]

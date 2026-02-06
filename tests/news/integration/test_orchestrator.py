@@ -265,6 +265,8 @@ class TestNewsWorkflowOrchestrator:
             ]
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=published_articles)
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             # Run the orchestrator
@@ -316,6 +318,8 @@ class TestNewsWorkflowOrchestrator:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -359,6 +363,8 @@ class TestNewsWorkflowOrchestrator:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -403,6 +409,8 @@ class TestNewsWorkflowOrchestrator:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -439,6 +447,8 @@ class TestNewsWorkflowOrchestrator:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -499,6 +509,8 @@ class TestNewsWorkflowOrchestrator:
             ]
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=published)
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -555,6 +567,8 @@ class TestNewsWorkflowOrchestrator:
             published = create_published_article(summarized, 100)
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[published])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -609,6 +623,8 @@ class TestNewsWorkflowOrchestrator:
             published = create_published_article(summarized_success, 100)
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[published])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -870,6 +886,8 @@ class TestStatusFilteringIntegration:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -908,6 +926,8 @@ class TestStatusFilteringIntegration:
 
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
@@ -966,6 +986,8 @@ class TestDuplicateHandlingIntegration:
             )
             mock_publisher = MagicMock()
             mock_publisher.publish_batch = AsyncMock(return_value=[published_dup])
+            mock_publisher.get_existing_urls = AsyncMock(return_value=set())
+            mock_publisher.is_duplicate_url = MagicMock(return_value=False)
             mock_publisher_cls.return_value = mock_publisher
 
             orchestrator = NewsWorkflowOrchestrator(config=integration_config)
