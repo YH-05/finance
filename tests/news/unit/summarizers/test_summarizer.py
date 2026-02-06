@@ -1208,8 +1208,15 @@ class TestCallClaudeSdk:
                 self.text = text
 
         class MockAssistantMessage:
-            def __init__(self, content: list[MockTextBlock]) -> None:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
                 self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            is_error: bool = False
+            result: str | None = None
 
         mock_text_block1 = MockTextBlock("最初の")
         mock_text_block2 = MockTextBlock("テキスト")
@@ -1228,6 +1235,11 @@ class TestCallClaudeSdk:
             mock_sdk.ClaudeAgentOptions = MagicMock()
             mock_sdk.AssistantMessage = MockAssistantMessage
             mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
 
             summarizer = Summarizer(config=summarizer_config)
             result = await summarizer._call_claude_sdk("テスト")
@@ -1248,8 +1260,15 @@ class TestCallClaudeSdk:
                 self.text = text
 
         class MockAssistantMessage:
-            def __init__(self, content: list[MockTextBlock]) -> None:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
                 self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            is_error: bool = False
+            result: str | None = None
 
         mock_text_block1 = MockTextBlock("メッセージ1")
         mock_text_block2 = MockTextBlock("メッセージ2")
@@ -1270,6 +1289,11 @@ class TestCallClaudeSdk:
             mock_sdk.ClaudeAgentOptions = MagicMock()
             mock_sdk.AssistantMessage = MockAssistantMessage
             mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
 
             summarizer = Summarizer(config=summarizer_config)
             result = await summarizer._call_claude_sdk("テスト")
@@ -1350,21 +1374,40 @@ class TestCallClaudeSdk:
         """_call_claude_sdk should ignore non-AssistantMessage types."""
         from news.summarizer import Summarizer
 
-        # Create different message types
-        mock_text_block = MagicMock()
-        mock_text_block.text = "テキスト"
+        # Create proper mock classes to avoid MagicMock isinstance issues
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
 
-        mock_assistant_message = MagicMock()
-        mock_assistant_message.__class__.__name__ = "AssistantMessage"
-        mock_assistant_message.content = [mock_text_block]
+        class MockAssistantMessage:
+            def __init__(
+                self,
+                content: list[MockTextBlock],
+                error: str | None = None,
+            ) -> None:
+                self.content = content
+                self.error = error
 
-        mock_result_message = MagicMock()
-        mock_result_message.__class__.__name__ = "ResultMessage"
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        class MockOtherMessage:
+            """Non-AssistantMessage, non-ResultMessage type."""
+
+            pass
+
+        mock_text_block = MockTextBlock("テキスト")
+        mock_assistant_message = MockAssistantMessage(content=[mock_text_block])
+        mock_other_message = MockOtherMessage()
 
         async def mock_query_generator(
             *args: Any, **kwargs: Any
         ) -> "AsyncIterator[Any]":
-            yield mock_result_message  # Should be ignored
+            yield mock_other_message  # Should be ignored
             yield mock_assistant_message  # Should be processed
 
         with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
@@ -1373,8 +1416,13 @@ class TestCallClaudeSdk:
             mock_sdk = sys.modules["claude_agent_sdk"]
             mock_sdk.query = mock_query_generator
             mock_sdk.ClaudeAgentOptions = MagicMock()
-            mock_sdk.AssistantMessage = type(mock_assistant_message)
-            mock_sdk.TextBlock = type(mock_text_block)
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
 
             summarizer = Summarizer(config=summarizer_config)
             result = await summarizer._call_claude_sdk("テスト")
@@ -1884,3 +1932,545 @@ class TestEmptyResponseError:
 
         with pytest.raises(EmptyResponseError):
             raise EmptyResponseError(reason="test")
+
+
+class TestCallClaudeSdkErrorCheckAndEmptyResponse:
+    """Tests for _call_claude_sdk AssistantMessage.error check, ResultMessage handling,
+    and empty response detection (P32-010).
+
+    Tests for:
+    - AssistantMessage.error is checked and logged when not None
+    - ResultMessage is captured from the stream
+    - ResultMessage.is_error is checked and logged when True
+    - Empty response raises EmptyResponseError with correct reason
+    - EmptyResponseError.reason priority: assistant_error > result_message_error > no_text_block
+    """
+
+    @pytest.fixture
+    def sdk_config(self) -> NewsWorkflowConfig:
+        """Create a config for _call_claude_sdk tests."""
+        return NewsWorkflowConfig(
+            version="1.0",
+            status_mapping={"market": "index"},
+            github_status_ids={"index": "test-id"},
+            rss={"presets_file": "test.json"},  # type: ignore[arg-type]
+            summarization=SummarizationConfig(
+                prompt_template="Summarize: {body}",
+                max_retries=3,
+                timeout_seconds=60,
+            ),
+            github={  # type: ignore[arg-type]
+                "project_number": 15,
+                "project_id": "PVT_test",
+                "status_field_id": "PVTSSF_test",
+                "published_date_field_id": "PVTF_test",
+                "repository": "owner/repo",
+            },
+            output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        )
+
+    @pytest.mark.asyncio
+    async def test_正常系_AssistantMessageエラーがNoneでない場合にログ出力される(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """AssistantMessage.error should be logged when not None."""
+        from news.summarizer import Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        mock_message = MockAssistantMessage(
+            content=[MockTextBlock("テキスト")],
+            error="Rate limit exceeded",
+        )
+        mock_result = MockResultMessage(is_error=False)
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+
+            with patch("news.summarizer.logger") as mock_logger:
+                result = await summarizer._call_claude_sdk("テスト")
+
+            # Should still return text
+            assert result == "テキスト"
+            # Should log warning about AssistantMessage.error
+            mock_logger.warning.assert_any_call(
+                "AssistantMessage contains error",
+                error="Rate limit exceeded",
+            )
+
+    @pytest.mark.asyncio
+    async def test_正常系_ResultMessageが取得保持される(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """ResultMessage should be captured from the stream."""
+        from news.summarizer import Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        mock_message = MockAssistantMessage(
+            content=[MockTextBlock("テキスト")],
+            error=None,
+        )
+        mock_result = MockResultMessage(is_error=False, result="success")
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+            result = await summarizer._call_claude_sdk("テスト")
+
+            # Should return text normally
+            assert result == "テキスト"
+
+    @pytest.mark.asyncio
+    async def test_正常系_ResultMessage_is_errorがTrueの場合にログ出力される(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """ResultMessage.is_error should be logged when True."""
+        from news.summarizer import Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        mock_message = MockAssistantMessage(
+            content=[MockTextBlock("テキスト")],
+            error=None,
+        )
+        mock_result = MockResultMessage(is_error=True, result="Error occurred in query")
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+
+            with patch("news.summarizer.logger") as mock_logger:
+                result = await summarizer._call_claude_sdk("テスト")
+
+            assert result == "テキスト"
+            mock_logger.warning.assert_any_call(
+                "ResultMessage indicates error",
+                is_error=True,
+                result="Error occurred in query"[:100],
+            )
+
+    @pytest.mark.asyncio
+    async def test_異常系_空レスポンスでEmptyResponseError_no_text_block(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """Empty response with no error should raise EmptyResponseError(reason='no_text_block')."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        # Empty content - no TextBlocks
+        mock_message = MockAssistantMessage(content=[], error=None)
+        mock_result = MockResultMessage(is_error=False)
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+
+            with pytest.raises(EmptyResponseError) as exc_info:
+                await summarizer._call_claude_sdk("テスト")
+
+            assert exc_info.value.reason == "no_text_block"
+
+    @pytest.mark.asyncio
+    async def test_異常系_空レスポンスでassistant_errorが優先される(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """Empty response with AssistantMessage.error should use that as reason."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        # Empty content with AssistantMessage.error AND ResultMessage.is_error
+        mock_message = MockAssistantMessage(content=[], error="Rate limit exceeded")
+        mock_result = MockResultMessage(is_error=True, result="Error")
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+
+            with pytest.raises(EmptyResponseError) as exc_info:
+                await summarizer._call_claude_sdk("テスト")
+
+            # assistant_error should take priority
+            assert exc_info.value.reason == "Rate limit exceeded"
+
+    @pytest.mark.asyncio
+    async def test_異常系_空レスポンスでresult_message_errorが二番目に優先される(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """Empty response with ResultMessage.is_error but no AssistantMessage.error
+        should use 'result_message_error' as reason."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        # Empty content with ResultMessage.is_error but no AssistantMessage.error
+        mock_message = MockAssistantMessage(content=[], error=None)
+        mock_result = MockResultMessage(is_error=True, result="Query failed")
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+
+            with pytest.raises(EmptyResponseError) as exc_info:
+                await summarizer._call_claude_sdk("テスト")
+
+            assert exc_info.value.reason == "result_message_error"
+
+    @pytest.mark.asyncio
+    async def test_正常系_空白のみのレスポンスでもEmptyResponseErrorが送出される(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """Whitespace-only response should also raise EmptyResponseError."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        # Content with only whitespace
+        mock_message = MockAssistantMessage(
+            content=[MockTextBlock("   \n  \t  ")], error=None
+        )
+        mock_result = MockResultMessage(is_error=False)
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+
+            with pytest.raises(EmptyResponseError) as exc_info:
+                await summarizer._call_claude_sdk("テスト")
+
+            assert exc_info.value.reason == "no_text_block"
+
+    @pytest.mark.asyncio
+    async def test_正常系_EmptyResponseErrorがsummarizeでリトライされる(
+        self,
+        sdk_config: NewsWorkflowConfig,
+        extracted_article_with_body: ExtractedArticle,
+    ) -> None:
+        """EmptyResponseError should be retried by summarize() method."""
+        from news.summarizer import EmptyResponseError, Summarizer
+
+        summarizer = Summarizer(config=sdk_config)
+        call_count = 0
+
+        async def mock_call_claude_sdk(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise EmptyResponseError(reason="no_text_block")
+            return '{"overview": "成功", "key_points": ["p1"], "market_impact": "影響", "related_info": null}'
+
+        with (
+            patch.object(
+                summarizer, "_call_claude_sdk", side_effect=mock_call_claude_sdk
+            ),
+            patch("asyncio.sleep", return_value=None),
+        ):
+            result = await summarizer.summarize(extracted_article_with_body)
+
+        assert result.summarization_status == SummarizationStatus.SUCCESS
+        assert call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_有効なレスポンスではEmptyResponseErrorが送出されない(
+        self,
+        sdk_config: NewsWorkflowConfig,
+    ) -> None:
+        """Valid non-empty response should not raise EmptyResponseError."""
+        from news.summarizer import Summarizer
+
+        class MockTextBlock:
+            def __init__(self, text: str) -> None:
+                self.text = text
+
+        class MockAssistantMessage:
+            def __init__(
+                self, content: list[MockTextBlock], error: str | None = None
+            ) -> None:
+                self.content = content
+                self.error = error
+
+        class MockResultMessage:
+            def __init__(
+                self, is_error: bool = False, result: str | None = None
+            ) -> None:
+                self.is_error = is_error
+                self.result = result
+
+        mock_message = MockAssistantMessage(
+            content=[MockTextBlock("有効なテキスト")],
+            error=None,
+        )
+        mock_result = MockResultMessage(is_error=False)
+
+        async def mock_query_generator(
+            *args: Any, **kwargs: Any
+        ) -> "AsyncIterator[Any]":
+            yield mock_message
+            yield mock_result
+
+        with patch.dict("sys.modules", {"claude_agent_sdk": MagicMock()}):
+            import sys
+
+            mock_sdk = sys.modules["claude_agent_sdk"]
+            mock_sdk.query = mock_query_generator
+            mock_sdk.ClaudeAgentOptions = MagicMock()
+            mock_sdk.AssistantMessage = MockAssistantMessage
+            mock_sdk.TextBlock = MockTextBlock
+            mock_sdk.ResultMessage = MockResultMessage
+            mock_sdk.CLINotFoundError = type("CLINotFoundError", (Exception,), {})
+            mock_sdk.ProcessError = type("ProcessError", (Exception,), {})
+            mock_sdk.CLIConnectionError = type("CLIConnectionError", (Exception,), {})
+            mock_sdk.ClaudeSDKError = type("ClaudeSDKError", (Exception,), {})
+
+            summarizer = Summarizer(config=sdk_config)
+            result = await summarizer._call_claude_sdk("テスト")
+
+            assert result == "有効なテキスト"

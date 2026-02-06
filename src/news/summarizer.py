@@ -396,13 +396,45 @@ JSONのみを出力し、他のテキストは含めないでください。"""
 
         try:
             response_parts: list[str] = []
+            assistant_error: str | None = None
+            result_message: ResultMessage | None = None
+
             async for message in query(prompt=prompt, options=options):
                 if isinstance(message, AssistantMessage):
+                    # AssistantMessage.error のチェック
+                    if message.error is not None:
+                        assistant_error = str(message.error)
+                        logger.warning(
+                            "AssistantMessage contains error",
+                            error=assistant_error,
+                        )
                     for block in message.content:
                         if isinstance(block, TextBlock):
                             response_parts.append(block.text)
+                elif isinstance(message, ResultMessage):
+                    result_message = message
 
             result = "".join(response_parts)
+
+            # ResultMessage のエラーチェック
+            if result_message and result_message.is_error:
+                logger.warning(
+                    "ResultMessage indicates error",
+                    is_error=result_message.is_error,
+                    result=result_message.result[:100]
+                    if result_message.result
+                    else None,
+                )
+
+            # 空レスポンスの検出と原因特定
+            if not result.strip():
+                if assistant_error:
+                    raise EmptyResponseError(reason=assistant_error)
+                elif result_message and result_message.is_error:
+                    raise EmptyResponseError(reason="result_message_error")
+                else:
+                    raise EmptyResponseError(reason="no_text_block")
+
             logger.debug(
                 "Claude Agent SDK response received",
                 response_length=len(result),
