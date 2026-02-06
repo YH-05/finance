@@ -9,7 +9,7 @@ Following TDD approach: Red -> Green -> Refactor
 """
 
 from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -987,8 +987,34 @@ class TestPublishWithIssueCreation:
             assert result.error_message is not None
 
 
+def _make_mock_process(stdout: str, returncode: int = 0, stderr: str = "") -> AsyncMock:
+    """Create a mock asyncio subprocess process.
+
+    Parameters
+    ----------
+    stdout : str
+        The stdout output to return.
+    returncode : int
+        The process return code.
+    stderr : str
+        The stderr output to return.
+
+    Returns
+    -------
+    AsyncMock
+        A mock process object with communicate() method.
+    """
+    mock_proc = AsyncMock()
+    mock_proc.returncode = returncode
+    mock_proc.communicate = AsyncMock(return_value=(stdout.encode(), stderr.encode()))
+    return mock_proc
+
+
 class TestGetExistingIssues:
-    """Tests for _get_existing_issues() method (P5-005)."""
+    """Tests for _get_existing_issues() method (P32-005).
+
+    Now uses asyncio.create_subprocess_exec instead of subprocess.run.
+    """
 
     @pytest.mark.asyncio
     async def test_正常系_直近7日のIssueからURLを取得(
@@ -1027,14 +1053,13 @@ class TestGetExistingIssues:
             },
         ]
 
-        with patch("news.publisher.subprocess.run") as mock_run:
-            import json
+        import json
 
-            mock_result = MagicMock()
-            mock_result.stdout = json.dumps(mock_issues)
-            mock_result.returncode = 0
-            mock_run.return_value = mock_result
+        mock_proc = _make_mock_process(json.dumps(mock_issues))
 
+        with patch(
+            "news.publisher.asyncio.create_subprocess_exec", return_value=mock_proc
+        ):
             urls = await publisher._get_existing_issues(days=7)
 
             assert "https://www.cnbc.com/article/123" in urls
@@ -1042,25 +1067,25 @@ class TestGetExistingIssues:
             assert len(urls) == 2
 
     @pytest.mark.asyncio
-    async def test_正常系_ghコマンドに正しい引数を渡す(
+    async def test_正常系_asyncio_create_subprocess_execを使用(
         self,
         sample_config: NewsWorkflowConfig,
     ) -> None:
-        """_get_existing_issues should call gh with correct arguments."""
+        """_get_existing_issues should use asyncio.create_subprocess_exec."""
         from news.publisher import Publisher
 
         publisher = Publisher(config=sample_config)
 
-        with patch("news.publisher.subprocess.run") as mock_run:
-            mock_result = MagicMock()
-            mock_result.stdout = "[]"
-            mock_result.returncode = 0
-            mock_run.return_value = mock_result
+        mock_proc = _make_mock_process("[]")
 
+        with patch(
+            "news.publisher.asyncio.create_subprocess_exec",
+            return_value=mock_proc,
+        ) as mock_exec:
             await publisher._get_existing_issues(days=7)
 
-            mock_run.assert_called_once()
-            call_args = mock_run.call_args[0][0]
+            mock_exec.assert_called_once()
+            call_args = mock_exec.call_args[0]
 
             assert call_args[0] == "gh"
             assert call_args[1] == "issue"
@@ -1070,9 +1095,32 @@ class TestGetExistingIssues:
             assert "--state" in call_args
             assert "all" in call_args
             assert "--limit" in call_args
-            assert "500" in call_args
+            assert "1000" in call_args
             assert "--json" in call_args
             assert "body,createdAt" in call_args
+
+    @pytest.mark.asyncio
+    async def test_正常系_limit1000でページネーション対応(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_issues should use --limit 1000 (not 500)."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        mock_proc = _make_mock_process("[]")
+
+        with patch(
+            "news.publisher.asyncio.create_subprocess_exec",
+            return_value=mock_proc,
+        ) as mock_exec:
+            await publisher._get_existing_issues(days=7)
+
+            call_args = mock_exec.call_args[0]
+            # Find the --limit argument and verify it's 1000
+            limit_idx = list(call_args).index("--limit")
+            assert call_args[limit_idx + 1] == "1000"
 
     @pytest.mark.asyncio
     async def test_正常系_古いIssueは除外(
@@ -1103,14 +1151,13 @@ class TestGetExistingIssues:
             },
         ]
 
-        with patch("news.publisher.subprocess.run") as mock_run:
-            import json
+        import json
 
-            mock_result = MagicMock()
-            mock_result.stdout = json.dumps(mock_issues)
-            mock_result.returncode = 0
-            mock_run.return_value = mock_result
+        mock_proc = _make_mock_process(json.dumps(mock_issues))
 
+        with patch(
+            "news.publisher.asyncio.create_subprocess_exec", return_value=mock_proc
+        ):
             urls = await publisher._get_existing_issues(days=7)
 
             assert "https://www.cnbc.com/article/recent" in urls
@@ -1148,14 +1195,13 @@ class TestGetExistingIssues:
             },
         ]
 
-        with patch("news.publisher.subprocess.run") as mock_run:
-            import json
+        import json
 
-            mock_result = MagicMock()
-            mock_result.stdout = json.dumps(mock_issues)
-            mock_result.returncode = 0
-            mock_run.return_value = mock_result
+        mock_proc = _make_mock_process(json.dumps(mock_issues))
 
+        with patch(
+            "news.publisher.asyncio.create_subprocess_exec", return_value=mock_proc
+        ):
             urls = await publisher._get_existing_issues(days=7)
 
             assert len(urls) == 1
@@ -1171,12 +1217,32 @@ class TestGetExistingIssues:
 
         publisher = Publisher(config=sample_config)
 
-        with patch("news.publisher.subprocess.run") as mock_run:
-            mock_result = MagicMock()
-            mock_result.stdout = "[]"
-            mock_result.returncode = 0
-            mock_run.return_value = mock_result
+        mock_proc = _make_mock_process("[]")
 
+        with patch(
+            "news.publisher.asyncio.create_subprocess_exec", return_value=mock_proc
+        ):
+            urls = await publisher._get_existing_issues(days=7)
+
+            assert urls == set()
+
+    @pytest.mark.asyncio
+    async def test_異常系_ghコマンド失敗で空のセットを返す(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """_get_existing_issues should return empty set when gh command fails."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        mock_proc = _make_mock_process(
+            "", returncode=1, stderr="Error: gh auth required"
+        )
+
+        with patch(
+            "news.publisher.asyncio.create_subprocess_exec", return_value=mock_proc
+        ):
             urls = await publisher._get_existing_issues(days=7)
 
             assert urls == set()
@@ -1797,3 +1863,148 @@ class TestAddToProjectWithExistingItemCheck:
             assert existing_logged, (
                 f"Expected log about existing item, got: {info_calls}"
             )
+
+
+class TestGetExistingUrls:
+    """Tests for get_existing_urls() public method (P32-005)."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_デフォルトでconfig値を使用(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """get_existing_urls should use config.github.duplicate_check_days as default."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value={"https://www.cnbc.com/article/123"},
+        ) as mock_get:
+            urls = await publisher.get_existing_urls()
+
+            # Should use config default (7 days)
+            mock_get.assert_called_once_with(
+                days=sample_config.github.duplicate_check_days
+            )
+            assert "https://www.cnbc.com/article/123" in urls
+
+    @pytest.mark.asyncio
+    async def test_正常系_days指定で指定値を使用(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """get_existing_urls should use specified days parameter."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value=set(),
+        ) as mock_get:
+            await publisher.get_existing_urls(days=14)
+
+            mock_get.assert_called_once_with(days=14)
+
+    @pytest.mark.asyncio
+    async def test_正常系_戻り値がセット(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """get_existing_urls should return a set of URL strings."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        expected_urls = {
+            "https://www.cnbc.com/article/1",
+            "https://www.cnbc.com/article/2",
+        }
+
+        with patch.object(
+            publisher,
+            "_get_existing_issues",
+            return_value=expected_urls,
+        ):
+            urls = await publisher.get_existing_urls()
+
+            assert isinstance(urls, set)
+            assert urls == expected_urls
+
+
+class TestIsDuplicateUrl:
+    """Tests for is_duplicate_url() public method (P32-005)."""
+
+    def test_正常系_重複URLでTrue(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """is_duplicate_url should return True when URL exists in set."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        existing_urls = {"https://www.cnbc.com/article/123"}
+
+        assert (
+            publisher.is_duplicate_url(
+                "https://www.cnbc.com/article/123", existing_urls
+            )
+            is True
+        )
+
+    def test_正常系_非重複URLでFalse(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """is_duplicate_url should return False when URL not in set."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        existing_urls = {"https://www.cnbc.com/article/different"}
+
+        assert (
+            publisher.is_duplicate_url(
+                "https://www.cnbc.com/article/123", existing_urls
+            )
+            is False
+        )
+
+    def test_正常系_空のセットでFalse(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """is_duplicate_url should return False for empty set."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        assert (
+            publisher.is_duplicate_url("https://www.cnbc.com/article/123", set())
+            is False
+        )
+
+    def test_正常系_重複検出時にdebugログを出力(
+        self,
+        sample_config: NewsWorkflowConfig,
+    ) -> None:
+        """is_duplicate_url should log at debug level when duplicate detected."""
+        from news.publisher import Publisher
+
+        publisher = Publisher(config=sample_config)
+
+        existing_urls = {"https://www.cnbc.com/article/123"}
+
+        with patch("news.publisher.logger") as mock_logger:
+            publisher.is_duplicate_url(
+                "https://www.cnbc.com/article/123", existing_urls
+            )
+
+            mock_logger.debug.assert_called()
+            call_kwargs = mock_logger.debug.call_args[1]
+            assert "url" in call_kwargs

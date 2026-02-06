@@ -13,7 +13,7 @@ Test categories:
 
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -1708,6 +1708,153 @@ class TestRSSCollectorUserAgentHeaders:
             passed_headers = call_kwargs.kwargs["headers"]
             assert "Accept" in passed_headers
             assert "User-Agent" in passed_headers
+
+    @pytest.mark.asyncio
+    async def test_正常系_ブラウザUAでリクエストを送信(
+        self,
+        mock_config_with_ua: NewsWorkflowConfig,
+    ) -> None:
+        """httpx.AsyncClient should be called with User-Agent header from UA rotation config."""
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss><channel></channel></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_ua)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = []
+                await collector.collect()
+
+            mock_client_class.assert_called_once_with(
+                timeout=30.0,
+                headers={
+                    "Accept": "application/rss+xml, application/xml, text/xml, */*",
+                    "User-Agent": ANY,  # Random selection, so use ANY
+                },
+            )
+
+    @pytest.mark.asyncio
+    async def test_正常系_UA無効時はデフォルトUAで送信(
+        self,
+        mock_config_with_ua_disabled: NewsWorkflowConfig,
+    ) -> None:
+        """httpx.AsyncClient should not include User-Agent header when UA rotation is disabled."""
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss><channel></channel></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_ua_disabled)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = []
+                await collector.collect()
+
+            mock_client_class.assert_called_once_with(
+                timeout=30.0,
+                headers={
+                    "Accept": "application/rss+xml, application/xml, text/xml, */*",
+                },
+            )
+            # Verify User-Agent is NOT in the headers
+            call_kwargs = mock_client_class.call_args
+            passed_headers = call_kwargs.kwargs["headers"]
+            assert "User-Agent" not in passed_headers
+
+    @pytest.mark.asyncio
+    async def test_正常系_AcceptヘッダーにRSS形式が含まれる(
+        self,
+        mock_config_with_ua: NewsWorkflowConfig,
+    ) -> None:
+        """httpx.AsyncClient should receive Accept header containing application/rss+xml."""
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss><channel></channel></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_ua)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = []
+                await collector.collect()
+
+            mock_client_class.assert_called_once()
+            call_kwargs = mock_client_class.call_args
+            passed_headers = call_kwargs.kwargs["headers"]
+            assert "Accept" in passed_headers
+            assert "application/rss+xml" in passed_headers["Accept"]
+            assert "application/xml" in passed_headers["Accept"]
+            assert "text/xml" in passed_headers["Accept"]
 
 
 @pytest.fixture
