@@ -1823,3 +1823,64 @@ class TestSDKErrorHandling:
             kwargs = call[1]
             assert "error_type" in kwargs
             assert kwargs["error_type"] == "MockProcessError"
+
+
+class TestEmptyResponseError:
+    """Tests for EmptyResponseError exception class (P32-009).
+
+    Tests for:
+    - EmptyResponseError is defined in summarizer module
+    - reason attribute with default "unknown"
+    - Custom reason can be provided
+    - Error message format
+    - Inherits from Exception
+    """
+
+    def test_正常系_EmptyResponseErrorが定義されている(self) -> None:
+        """EmptyResponseError should be importable from news.summarizer."""
+        from news.summarizer import EmptyResponseError
+
+        assert EmptyResponseError is not None
+        assert issubclass(EmptyResponseError, Exception)
+
+    def test_正常系_デフォルトreasonがunknown(self) -> None:
+        """EmptyResponseError should have default reason='unknown'."""
+        from news.summarizer import EmptyResponseError
+
+        error = EmptyResponseError()
+        assert error.reason == "unknown"
+
+    def test_正常系_カスタムreasonを設定できる(self) -> None:
+        """EmptyResponseError should accept custom reason."""
+        from news.summarizer import EmptyResponseError
+
+        error = EmptyResponseError(reason="rate_limit")
+        assert error.reason == "rate_limit"
+
+    def test_正常系_エラーメッセージフォーマットが正しい(self) -> None:
+        """EmptyResponseError message should include reason."""
+        from news.summarizer import EmptyResponseError
+
+        error = EmptyResponseError(reason="api_error")
+        assert str(error) == "Empty response from Claude SDK (reason: api_error)"
+
+    def test_正常系_デフォルトエラーメッセージフォーマット(self) -> None:
+        """EmptyResponseError default message should use 'unknown' reason."""
+        from news.summarizer import EmptyResponseError
+
+        error = EmptyResponseError()
+        assert str(error) == "Empty response from Claude SDK (reason: unknown)"
+
+    def test_正常系_Exceptionを継承している(self) -> None:
+        """EmptyResponseError should inherit from Exception."""
+        from news.summarizer import EmptyResponseError
+
+        error = EmptyResponseError(reason="test")
+        assert isinstance(error, Exception)
+
+    def test_正常系_EmptyResponseErrorとしてキャッチできる(self) -> None:
+        """EmptyResponseError should be catchable by its own type."""
+        from news.summarizer import EmptyResponseError
+
+        with pytest.raises(EmptyResponseError):
+            raise EmptyResponseError(reason="test")

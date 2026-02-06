@@ -51,6 +51,23 @@ if TYPE_CHECKING:
 logger = get_logger(__name__, module="summarizer")
 
 
+class EmptyResponseError(Exception):
+    """Claude Agent SDK が空レスポンスを返した場合の例外。
+
+    レート制限やAPIエラーなど一時的な原因で発生するため、
+    リトライ対象として扱う。
+
+    Parameters
+    ----------
+    reason : str
+        空レスポンスの推定原因。
+    """
+
+    def __init__(self, reason: str = "unknown") -> None:
+        self.reason = reason
+        super().__init__(f"Empty response from Claude SDK (reason: {reason})")
+
+
 class Summarizer:
     """Claude Agent SDK を使用した構造化要約。
 
@@ -352,6 +369,7 @@ JSONのみを出力し、他のテキストは含めないでください。"""
                 CLIConnectionError,
                 CLINotFoundError,
                 ProcessError,
+                ResultMessage,
                 TextBlock,
                 query,
             )
@@ -534,5 +552,6 @@ JSONのみを出力し、他のテキストは含めないでください。"""
 
 
 __all__ = [
+    "EmptyResponseError",
     "Summarizer",
 ]
