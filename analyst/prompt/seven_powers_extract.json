@@ -1,0 +1,693 @@
+{
+    "extraction_metadata": {
+        "ticker": "必須",
+        "company_name": "必須",
+        "sector": "セクター名 or null",
+        "report_coverage_period": "対象期間 or null",
+        "data_completeness": {
+            "business_overview": "0-100%",
+            "seven_powers_analysis": "0-100%",
+            "overall": "0-100%"
+        }
+    },
+
+    "business_overview": {
+        "_completeness": "0-100%",
+
+        "core_business": {
+            "description": "事業概要（200-300字）",
+            "value_proposition": "顧客への価値提供の本質",
+            "business_model": "ビジネスモデルの説明",
+            "revenue_model": {
+                "primary_model": "Transaction/Subscription/Equipment+Service/License/Other",
+                "description": "収益モデルの詳細",
+                "recurring_ratio": "経常収益比率（%）or null"
+            }
+        },
+
+        "business_segments": {
+            "available": "True/False",
+            "segments": [
+                {
+                    "name": "セグメント名",
+                    "revenue_contribution": "売上構成比（%）or null",
+                    "operating_margin": "営業利益率（%）or null",
+                    "description": "セグメント説明",
+                    "growth_rate": "成長率 or null",
+                    "strategic_importance": "HIGH/MEDIUM/LOW"
+                }
+            ]
+        },
+
+        "geographic_breakdown": {
+            "available": "True/False",
+            "regions": [
+                {
+                    "region": "地域名",
+                    "revenue_contribution": "売上構成比（%）or null",
+                    "growth_characteristics": "成長特性 or null"
+                }
+            ]
+        },
+
+        "customer_characteristics": {
+            "primary_customers": "主要顧客タイプ（B2B/B2C/etc）",
+            "customer_concentration": "顧客集中度評価 or null",
+            "top_customers": "上位顧客比率 or null",
+            "sales_model": "直販/代理店/混合/オンライン/etc"
+        },
+
+        "market_context": {
+            "market_size": {
+                "value": "市場規模 or null",
+                "currency": "通貨単位 or null",
+                "description": "TAM/SAM/SOMの説明 or null"
+            },
+            "market_growth_rate": "市場成長率 or 評価",
+            "market_maturity": "成長期/成熟期/衰退期/不明",
+            "market_position": {
+                "rank": "市場順位 or null",
+                "market_share": "市場シェア（%）or null",
+                "description": "市場でのポジション説明"
+            }
+        }
+    },
+
+    "seven_powers_analysis": {
+        "_framework_version": "Hamilton Helmer 7 Powers",
+        "_overall_assessment": {
+            "powers_identified": "該当するPower数（0-7）",
+            "dominant_powers": ["最も強力なPower1", "Power2", "..."],
+            "overall_strength": "STRONG/MODERATE/WEAK/NONE",
+            "confidence_level": "HIGH/MEDIUM/LOW"
+        },
+
+        "powers": {
+            "1_scale_economies": {
+                "applicable": "True/False/Uncertain",
+                "confidence": "HIGH/MEDIUM/LOW",
+
+                "assessment": {
+                    "strength": "STRONG/MODERATE/WEAK/NONE/UNKNOWN",
+                    "duration_outlook": "持続期間見通し（年数 or 短期/中期/長期）",
+                    "trend": "IMPROVING/STABLE/DETERIORATING/UNKNOWN"
+                },
+
+                "evidence": {
+                    "quantitative": [
+                        {
+                            "metric": "指標名（例：市場シェア、売上規模対競合比等）",
+                            "value": "値",
+                            "source": "レポート記載箇所の引用 or 要約",
+                            "interpretation": "この数値が示す意味"
+                        }
+                    ],
+                    "qualitative": [
+                        {
+                            "description": "定性的根拠の説明",
+                            "source": "レポート記載箇所の引用 or 要約",
+                            "relevance": "規模の経済との関連性説明"
+                        }
+                    ]
+                },
+
+                "mechanism": {
+                    "how_it_works": "規模の経済が機能するメカニズム or null",
+                    "cost_areas_affected": [
+                        "影響を受けるコスト領域（製造/R&D/販売/調達等）"
+                    ],
+                    "unit_cost_relationship": "単位コストと規模の関係説明 or null",
+                    "minimum_efficient_scale": "最小効率規模の推定 or null"
+                },
+
+                "competitive_position": {
+                    "vs_largest_competitor": "最大競合との規模比較 or null",
+                    "vs_industry_average": "業界平均との比較 or null",
+                    "scale_advantage_magnitude": "規模優位性の大きさ評価"
+                },
+
+                "impact_on_financials": {
+                    "gross_margin_impact": "粗利率への影響（+X% or 評価）or null",
+                    "operating_leverage": "営業レバレッジ効果 or null",
+                    "pricing_power_contribution": "価格支配力への寄与度"
+                },
+
+                "sustainability": {
+                    "barriers_to_replication": "競合が同規模に達する障壁",
+                    "time_to_replicate": "競合が追いつくのに要する時間推定 or null",
+                    "risks": ["規模優位性を脅かすリスク1", "..."]
+                },
+
+                "missing_data": {
+                    "critical_gaps": ["重要な欠損情報1", "..."],
+                    "impact_on_assessment": "欠損が評価に与える影響"
+                }
+            },
+
+            "2_network_effects": {
+                "applicable": "True/False/Uncertain",
+                "confidence": "HIGH/MEDIUM/LOW",
+
+                "assessment": {
+                    "strength": "STRONG/MODERATE/WEAK/NONE/UNKNOWN",
+                    "duration_outlook": "持続期間見通し",
+                    "trend": "IMPROVING/STABLE/DETERIORATING/UNKNOWN"
+                },
+
+                "network_characteristics": {
+                    "network_type": "Direct/Indirect/Two-sided/Multi-sided/Data/None",
+                    "description": "ネットワーク構造の説明",
+                    "scale": {
+                        "current_network_size": "ネットワーク規模（ユーザー数等）or null",
+                        "growth_trend": "成長トレンド",
+                        "critical_mass_status": "臨界点到達状況"
+                    }
+                },
+
+                "evidence": {
+                    "quantitative": [
+                        {
+                            "metric": "指標名（例：登録者数、取引量、流動性指標等）",
+                            "value": "値",
+                            "source": "レポート記載箇所",
+                            "interpretation": "ネットワーク効果の証拠としての意味"
+                        }
+                    ],
+                    "qualitative": [
+                        {
+                            "description": "定性的根拠（例：買い手増→売り手増のループ）",
+                            "source": "レポート記載箇所",
+                            "mechanism": "効果が働くメカニズム"
+                        }
+                    ]
+                },
+
+                "mechanism": {
+                    "value_increase_pattern": "ユーザー/ノード増加による価値増大パターン",
+                    "reinforcing_loops": ["自己強化ループ1", "..."] or null,
+                    "cross_side_effects": "両面市場の場合の相互効果 or null",
+                    "data_network_effects": "データ蓄積による効果 or null"
+                },
+
+                "competitive_position": {
+                    "vs_competitors": "競合のネットワーク規模比較 or null",
+                    "multi_homing_cost": "複数サービス併用コスト or null",
+                    "winner_take_all_dynamics": "Winner-takes-all性の評価"
+                },
+
+                "impact_on_financials": {
+                    "monetization_improvement": "収益化改善効果",
+                    "customer_acquisition_efficiency": "顧客獲得効率への影響",
+                    "pricing_power_contribution": "価格支配力への寄与"
+                },
+
+                "sustainability": {
+                    "tipping_point_passed": "Tipping Point通過済みか",
+                    "barriers_to_competing_network": "競合ネットワーク構築の障壁",
+                    "risks": ["ネットワーク効果を脅かすリスク1", "..."]
+                },
+
+                "missing_data": {
+                    "critical_gaps": ["重要な欠損情報1", "..."],
+                    "impact_on_assessment": "欠損が評価に与える影響"
+                }
+            },
+
+            "3_counter_positioning": {
+                "applicable": "True/False/Uncertain",
+                "confidence": "HIGH/MEDIUM/LOW",
+
+                "assessment": {
+                    "strength": "STRONG/MODERATE/WEAK/NONE/UNKNOWN",
+                    "duration_outlook": "持続期間見通し",
+                    "trend": "IMPROVING/STABLE/DETERIORATING/UNKNOWN"
+                },
+
+                "positioning_characteristics": {
+                    "new_business_model": "新ビジネスモデルの説明 or null",
+                    "incumbent_dilemma": "既存大手が模倣できない理由",
+                    "disruption_type": "Disruptive/Sustaining/New Market/None"
+                },
+
+                "evidence": {
+                    "quantitative": [
+                        {
+                            "metric": "指標名（例：既存企業の既存事業売上比率等）",
+                            "value": "値",
+                            "source": "レポート記載箇所",
+                            "interpretation": "対抗配置の証拠としての意味"
+                        }
+                    ],
+                    "qualitative": [
+                        {
+                            "description": "定性的根拠（例：既存企業が模倣すると収益減）",
+                            "source": "レポート記載箇所",
+                            "cannibalization_risk": "既存企業のカニバリリスク評価"
+                        }
+                    ]
+                },
+
+                "mechanism": {
+                    "conflict_with_incumbent": "既存企業との利益相反の説明 or null",
+                    "asymmetric_motivation": "非対称的な動機づけ or null",
+                    "incumbent_inertia": "既存企業の慣性 or null"
+                },
+
+                "sustainability": {
+                    "incumbent_response": "既存企業の対抗策 or 反応 or null",
+                    "duration_estimate": "優位性の持続期間推定 or null",
+                    "risks": ["対抗配置を脅かすリスク1", "..."]
+                },
+
+                "missing_data": {
+                    "critical_gaps": ["重要な欠損情報1", "..."],
+                    "impact_on_assessment": "欠損が評価に与える影響"
+                }
+            },
+
+            "4_switching_costs": {
+                "applicable": "True/False/Uncertain",
+                "confidence": "HIGH/MEDIUM/LOW",
+
+                "assessment": {
+                    "strength": "STRONG/MODERATE/WEAK/NONE/UNKNOWN",
+                    "duration_outlook": "持続期間見通し",
+                    "trend": "IMPROVING/STABLE/DETERIORATING/UNKNOWN"
+                },
+
+                "switching_cost_types": [
+                    {
+                        "type": "Financial/Procedural/Relational/Brand/Data/Learning/Contractual/Other",
+                        "strength": "HIGH/MEDIUM/LOW",
+                        "description": "スイッチングコストの内容",
+                        "affected_customer_segment": "影響を受ける顧客セグメント or null"
+                    }
+                ],
+
+                "evidence": {
+                    "quantitative": [
+                        {
+                            "metric": "指標名（例：顧客維持率、契約期間、Churn Rate等）",
+                            "value": "値",
+                            "source": "レポート記載箇所",
+                            "interpretation": "スイッチングコストの証拠としての意味"
+                        }
+                    ],
+                    "qualitative": [
+                        {
+                            "description": "定性的根拠（例：業務プロセス統合、Mission Critical性等）",
+                            "source": "レポート記載箇所",
+                            "customer_pain_point": "顧客がスイッチできない理由"
+                        }
+                    ]
+                },
+
+                "mechanism": {
+                    "cost_components": [
+                        {
+                            "component": "コスト要素（例：システム統合コスト）",
+                            "magnitude": "大きさ評価",
+                            "description": "詳細"
+                        }
+                    ],
+                    "integration_depth": "顧客業務への統合深度評価",
+                    "mission_criticality": "ミッションクリティカル性（HIGH/MEDIUM/LOW）or null",
+                    "customization_level": "カスタマイゼーション度合い"
+                },
+
+                "customer_retention": {
+                    "retention_rate": "顧客維持率（%）or null",
+                    "churn_rate": "解約率（%）or null",
+                    "contract_length": "平均契約期間 or null",
+                    "renewal_rate": "更新率（%）or null",
+                    "customer_lifetime": "平均顧客関係期間 or null"
+                },
+
+                "competitive_implications": {
+                    "ease_of_customer_poaching": "競合による顧客奪取の難易度",
+                    "defensive_strength": "防御力の評価",
+                    "pricing_power_contribution": "価格支配力への寄与"
+                },
+
+                "impact_on_financials": {
+                    "revenue_predictability": "収益予見性への影響",
+                    "margin_stability": "マージン安定性への影響",
+                    "ltv_impact": "LTV（顧客生涯価値）への影響評価 or null"
+                },
+
+                "sustainability": {
+                    "factors_reinforcing": [
+                        "スイッチングコストを強化する要因1",
+                        "..."
+                    ],
+                    "factors_eroding": ["低下させる要因1", "..."],
+                    "competitive_response": "競合の対抗策 or null"
+                },
+
+                "missing_data": {
+                    "critical_gaps": ["重要な欠損情報1", "..."],
+                    "impact_on_assessment": "欠損が評価に与える影響"
+                }
+            },
+
+            "5_branding": {
+                "applicable": "True/False/Uncertain",
+                "confidence": "HIGH/MEDIUM/LOW",
+
+                "assessment": {
+                    "strength": "STRONG/MODERATE/WEAK/NONE/UNKNOWN",
+                    "duration_outlook": "持続期間見通し",
+                    "trend": "IMPROVING/STABLE/DETERIORATING/UNKNOWN"
+                },
+
+                "brand_characteristics": {
+                    "brand_awareness": "認知度評価 or null",
+                    "brand_reputation": "評判評価 or null",
+                    "brand_loyalty": "ロイヤルティ評価 or null",
+                    "brand_associations": ["ブランド連想1", "..."] or null
+                },
+
+                "evidence": {
+                    "quantitative": [
+                        {
+                            "metric": "指標名（例：ブランド価値、NPS、リピート率等）",
+                            "value": "値",
+                            "source": "レポート記載箇所",
+                            "interpretation": "ブランド力の証拠としての意味"
+                        }
+                    ],
+                    "qualitative": [
+                        {
+                            "description": "定性的根拠（例：業界スタンダード、品質への信頼等）",
+                            "source": "レポート記載箇所",
+                            "affective_value": "感情的価値の説明"
+                        }
+                    ]
+                },
+
+                "mechanism": {
+                    "objective_vs_perceived_value": "客観的価値と知覚価値の差 or null",
+                    "brand_building_factors": ["ブランド構築要因1", "..."],
+                    "brand_equity_sources": ["ブランド資産の源泉1", "..."]
+                },
+
+                "competitive_position": {
+                    "brand_ranking": "ブランドランキング or 評価 or null",
+                    "vs_competitors": "競合ブランドとの比較 or null",
+                    "differentiation": "差別化ポイント"
+                },
+
+                "impact_on_financials": {
+                    "price_premium": "プライスプレミアム（%）or 評価 or null",
+                    "customer_acquisition_cost": "CAC効率化への影響",
+                    "pricing_power_contribution": "価格支配力への寄与"
+                },
+
+                "sustainability": {
+                    "brand_investment": "ブランド投資状況 or null",
+                    "reputation_risks": ["評判リスク1", "..."],
+                    "competitive_threats": ["競合ブランドの脅威1", "..."]
+                },
+
+                "missing_data": {
+                    "critical_gaps": ["重要な欠損情報1", "..."],
+                    "impact_on_assessment": "欠損が評価に与える影響"
+                }
+            },
+
+            "6_cornered_resource": {
+                "applicable": "True/False/Uncertain",
+                "confidence": "HIGH/MEDIUM/LOW",
+
+                "assessment": {
+                    "strength": "STRONG/MODERATE/WEAK/NONE/UNKNOWN",
+                    "duration_outlook": "持続期間見通し",
+                    "trend": "IMPROVING/STABLE/DETERIORATING/UNKNOWN"
+                },
+
+                "cornered_resources": [
+                    {
+                        "resource_type": "物理的資産/人材/技術/データ/ライセンス/立地/その他",
+                        "resource_name": "資源名（例：NIMBY立地、特許、独自データ等）",
+                        "description": "資源の詳細説明",
+
+                        "rarity": {
+                            "scarcity_level": "UNIQUE/RARE/UNCOMMON/COMMON",
+                            "competitor_access": "競合のアクセス可能性",
+                            "description": "希少性の説明"
+                        },
+
+                        "control": {
+                            "ownership_status": "保有/独占契約/優先アクセス/その他",
+                            "lock_in_mechanism": "確保メカニズムの説明",
+                            "duration": "確保期間 or 契約期間 or null"
+                        },
+
+                        "value_contribution": {
+                            "criticality": "事業への重要性（CRITICAL/HIGH/MEDIUM/LOW）",
+                            "revenue_contribution": "収益貢献度評価 or null",
+                            "cost_advantage": "コスト優位性への寄与 or null"
+                        }
+                    }
+                ],
+
+                "evidence": {
+                    "quantitative": [
+                        {
+                            "metric": "指標名（例：保有特許数、Yard数、独自データ量等）",
+                            "value": "値",
+                            "source": "レポート記載箇所",
+                            "interpretation": "希少資源確保の証拠としての意味"
+                        }
+                    ],
+                    "qualitative": [
+                        {
+                            "description": "定性的根拠（例：NIMBY施設で新規取得困難等）",
+                            "source": "レポート記載箇所",
+                            "barrier_description": "競合が同資源を得られない理由"
+                        }
+                    ]
+                },
+
+                "competitive_position": {
+                    "exclusivity": "独占性の程度",
+                    "vs_competitors": "競合の資源保有状況 or null",
+                    "switching_barrier": "資源を理由とした切替障壁"
+                },
+
+                "impact_on_financials": {
+                    "margin_contribution": "マージンへの寄与 or null",
+                    "revenue_protection": "収益防衛効果",
+                    "pricing_power_contribution": "価格支配力への寄与"
+                },
+
+                "sustainability": {
+                    "resource_depletion_risk": "資源枯渇リスク or null",
+                    "alternative_emergence": "代替資源出現リスク",
+                    "contract_renewal_risk": "契約更新リスク（該当する場合）or null",
+                    "competitive_response": "競合の対抗策 or null"
+                },
+
+                "missing_data": {
+                    "critical_gaps": ["重要な欠損情報1", "..."],
+                    "impact_on_assessment": "欠損が評価に与える影響"
+                }
+            },
+
+            "7_process_power": {
+                "applicable": "True/False/Uncertain",
+                "confidence": "HIGH/MEDIUM/LOW",
+
+                "assessment": {
+                    "strength": "STRONG/MODERATE/WEAK/NONE/UNKNOWN",
+                    "duration_outlook": "持続期間見通し",
+                    "trend": "IMPROVING/STABLE/DETERIORATING/UNKNOWN"
+                },
+
+                "process_characteristics": {
+                    "process_types": [
+                        {
+                            "type": "Manufacturing/R&D/Sales/M&A Integration/Customer Service/Other",
+                            "description": "プロセスの説明",
+                            "maturity": "成熟度評価",
+                            "embeddedness": "組織への埋め込み度（HIGH/MEDIUM/LOW）"
+                        }
+                    ],
+                    "organizational_learning": "組織学習の蓄積評価",
+                    "tacit_knowledge": "暗黙知の重要性評価"
+                },
+
+                "evidence": {
+                    "quantitative": [
+                        {
+                            "metric": "指標名（例：リードタイム、品質指標、統合成功率等）",
+                            "value": "値",
+                            "source": "レポート記載箇所",
+                            "interpretation": "プロセス優位性の証拠としての意味"
+                        }
+                    ],
+                    "qualitative": [
+                        {
+                            "description": "定性的根拠（例：PMI Playbook、分散型組織等）",
+                            "source": "レポート記載箇所",
+                            "process_excellence": "プロセス卓越性の説明"
+                        }
+                    ]
+                },
+
+                "mechanism": {
+                    "how_process_creates_advantage": "プロセスが優位性を生むメカニズム",
+                    "learning_curve_effects": "学習曲線効果 or null",
+                    "continuous_improvement": "継続的改善の仕組み or null",
+                    "knowledge_accumulation": "ノウハウ蓄積のプロセス"
+                },
+
+                "competitive_position": {
+                    "time_advantage": "競合に対する時間的優位性 or null",
+                    "quality_advantage": "品質優位性 or null",
+                    "efficiency_advantage": "効率性優位性 or null",
+                    "vs_competitors": "競合のプロセス能力比較 or null"
+                },
+
+                "impact_on_financials": {
+                    "cost_efficiency": "コスト効率への影響",
+                    "time_to_market": "市場投入スピード優位 or null",
+                    "margin_contribution": "マージンへの寄与評価",
+                    "scalability": "スケーラビリティ"
+                },
+
+                "organizational_elements": {
+                    "culture": "企業文化の特徴 or null",
+                    "incentive_systems": "インセンティブ設計 or null",
+                    "decision_making": "意思決定プロセス特徴 or null",
+                    "knowledge_management": "ナレッジマネジメント or null"
+                },
+
+                "sustainability": {
+                    "codification_difficulty": "形式知化の難易度",
+                    "time_to_replicate": "競合が習得するのに要する時間",
+                    "key_person_dependency": "キーパーソン依存度 or null",
+                    "risks": ["プロセスパワーを脅かすリスク1", "..."]
+                },
+
+                "missing_data": {
+                    "critical_gaps": ["重要な欠損情報1", "..."],
+                    "impact_on_assessment": "欠損が評価に与える影響"
+                }
+            }
+        }
+    },
+
+    "competitive_landscape": {
+        "_completeness": "0-100%",
+
+        "market_structure": {
+            "structure_type": "寡占/競争的/独占的競争/その他",
+            "concentration": {
+                "description": "市場集中度の説明",
+                "top3_share": "上位3社シェア（%）or null",
+                "hhi_estimate": "HHI推定値 or 評価 or null"
+            }
+        },
+
+        "company_position": {
+            "rank": "市場順位 or null",
+            "market_share": {
+                "value": "シェア（%）or null",
+                "trend": "トレンド（上昇/安定/低下）",
+                "source": "データ出典"
+            },
+            "positioning_statement": "市場でのポジション説明"
+        },
+
+        "key_competitors": [
+            {
+                "name": "競合企業名",
+                "ticker": "ティッカー or null",
+                "market_share": "シェア（%）or null",
+                "relative_strengths": ["強み1", "..."] or null,
+                "relative_weaknesses": ["弱み1", "..."] or null,
+                "competitive_relationship": "競合関係の説明"
+            }
+        ],
+
+        "competitive_dynamics": {
+            "intensity": "HIGH/MEDIUM/LOW",
+            "basis_of_competition": [
+                "競争要因1（価格/品質/サービス等）",
+                "..."
+            ],
+            "share_stability": "シェアの安定性評価",
+            "entry_exit_activity": "新規参入・退出の動向 or null"
+        }
+    },
+
+    "synthesis": {
+        "dominant_powers_summary": {
+            "primary_power": {
+                "power": "最も強力なPower名",
+                "strength": "STRONG/MODERATE/WEAK",
+                "rationale": "選定理由（150字程度）",
+                "financial_impact": "財務への影響（マージン/成長率等）"
+            },
+            "secondary_powers": [
+                {
+                    "power": "Power名",
+                    "strength": "STRONG/MODERATE/WEAK",
+                    "rationale": "簡潔な理由"
+                }
+            ]
+        },
+
+        "overall_competitive_advantage": {
+            "verdict": "STRONG/MODERATE/WEAK/NONE",
+            "confidence": "HIGH/MEDIUM/LOW",
+            "time_horizon": "優位性の持続期間（X年 or 短期/中期/長期）",
+            "summary": "総合評価（300字程度）"
+        },
+
+        "investment_implications": {
+            "cagr_justification": {
+                "supported_cagr_range": "正当化されるCAGRレンジ（X-Y%）or null",
+                "rationale": "競争優位性がCAGRを支える理由",
+                "key_assumptions": ["前提1", "..."]
+            },
+
+            "margin_sustainability": {
+                "assessment": "マージン持続性評価",
+                "powers_supporting_margins": ["マージンを支えるPower1", "..."],
+                "margin_risk_factors": ["マージンリスク1", "..."]
+            },
+
+            "valuation_implications": {
+                "justified_premium": "正当化されるバリュエーションプレミアム評価 or null",
+                "quality_rating": "Quality（収益の質）評価：HIGH/MEDIUM/LOW",
+                "moat_rating": "経済的堀：WIDE/NARROW/NONE"
+            },
+
+            "key_monitoring_metrics": [
+                {
+                    "metric": "モニタリング指標名",
+                    "relevance": "競争優位性との関連",
+                    "threshold": "注視すべき閾値 or 変化の方向"
+                }
+            ]
+        },
+
+        "risks_to_competitive_advantage": [
+            {
+                "risk": "リスク名",
+                "affected_powers": ["影響を受けるPower1", "..."],
+                "severity": "HIGH/MEDIUM/LOW",
+                "timeframe": "顕在化時期",
+                "mitigation": "軽減要因 or null"
+            }
+        ],
+
+        "data_quality_note": {
+            "overall_confidence": "HIGH/MEDIUM/LOW",
+            "key_limitations": ["分析の限界1", "..."],
+            "recommended_follow_up": ["追加調査項目1", "..."]
+        }
+    }
+}
