@@ -19,7 +19,7 @@ import pytest
 
 from news.collectors.base import BaseCollector
 from news.collectors.rss import RSSCollector
-from news.config import NewsWorkflowConfig, RssConfig
+from news.config import NewsWorkflowConfig, RssConfig, UserAgentRotationConfig
 from news.models import ArticleSource, CollectedArticle, SourceType
 from rss.types import FeedItem, PresetFeed, PresetsConfig
 
@@ -1592,3 +1592,196 @@ class TestFeedErrorCounting:
 
             error_counts = collector._count_error_types()
             assert error_counts == {"fetch": 3}
+
+
+class TestRSSCollectorUserAgentHeaders:
+    """Tests for RSSCollector User-Agent header configuration."""
+
+    def test_正常系_initでua_configが設定される(
+        self,
+        mock_config_with_ua: NewsWorkflowConfig,
+    ) -> None:
+        """__init__ should store _ua_config from config.rss.user_agent_rotation."""
+        collector = RSSCollector(config=mock_config_with_ua)
+        assert collector._ua_config is not None
+        assert collector._ua_config == mock_config_with_ua.rss.user_agent_rotation
+
+    def test_正常系_ua_config無効時もNoneでなくオブジェクトが設定される(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """_ua_config should be set even when UA rotation is disabled (default config)."""
+        collector = RSSCollector(config=mock_config)
+        assert collector._ua_config is not None
+        assert isinstance(collector._ua_config, UserAgentRotationConfig)
+
+    def test_正常系_build_headersがAcceptヘッダーを含む(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """_build_headers should always include Accept header for RSS/XML."""
+        collector = RSSCollector(config=mock_config)
+        headers = collector._build_headers()
+        assert "Accept" in headers
+        assert "application/rss+xml" in headers["Accept"]
+        assert "application/xml" in headers["Accept"]
+        assert "text/xml" in headers["Accept"]
+
+    def test_正常系_ua有効時にUserAgentヘッダーが設定される(
+        self,
+        mock_config_with_ua: NewsWorkflowConfig,
+    ) -> None:
+        """_build_headers should include User-Agent when UA rotation is enabled."""
+        collector = RSSCollector(config=mock_config_with_ua)
+        headers = collector._build_headers()
+        assert "User-Agent" in headers
+        assert (
+            headers["User-Agent"]
+            in mock_config_with_ua.rss.user_agent_rotation.user_agents
+        )
+
+    def test_正常系_ua無効時にUserAgentヘッダーが含まれない(
+        self,
+        mock_config: NewsWorkflowConfig,
+    ) -> None:
+        """_build_headers should not include User-Agent when UA rotation is disabled."""
+        # Default mock_config has default UserAgentRotationConfig (enabled=True but empty list)
+        collector = RSSCollector(config=mock_config)
+        headers = collector._build_headers()
+        # Default config has enabled=True but empty user_agents list, so no User-Agent
+        assert "User-Agent" not in headers
+
+    def test_正常系_ua明示的無効時にUserAgentヘッダーが含まれない(
+        self,
+        mock_config_with_ua_disabled: NewsWorkflowConfig,
+    ) -> None:
+        """_build_headers should not include User-Agent when explicitly disabled."""
+        collector = RSSCollector(config=mock_config_with_ua_disabled)
+        headers = collector._build_headers()
+        assert "User-Agent" not in headers
+
+    @pytest.mark.asyncio
+    async def test_正常系_httpxAsyncClientにheadersが渡される(
+        self,
+        mock_config_with_ua: NewsWorkflowConfig,
+    ) -> None:
+        """httpx.AsyncClient should receive headers argument from _build_headers."""
+        with (
+            patch.object(Path, "read_text"),
+            patch("json.loads") as mock_loads,
+            patch("httpx.AsyncClient") as mock_client_class,
+        ):
+            # Need at least one enabled preset so collect() reaches AsyncClient
+            mock_loads.return_value = {
+                "version": "1.0",
+                "presets": [
+                    {
+                        "url": "https://example.com/feed.xml",
+                        "title": "Test Feed",
+                        "category": "market",
+                        "fetch_interval": "daily",
+                        "enabled": True,
+                    }
+                ],
+            }
+
+            mock_response = MagicMock()
+            mock_response.content = b"<rss></rss>"
+            mock_response.raise_for_status = MagicMock()
+
+            mock_client = AsyncMock()
+            mock_client.get = AsyncMock(return_value=mock_response)
+            mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = AsyncMock(return_value=None)
+            mock_client_class.return_value = mock_client
+
+            collector = RSSCollector(config=mock_config_with_ua)
+
+            with patch.object(collector._parser, "parse") as mock_parse:
+                mock_parse.return_value = []
+                await collector.collect()
+
+            # Verify httpx.AsyncClient was called with headers argument
+            mock_client_class.assert_called_once()
+            call_kwargs = mock_client_class.call_args
+            assert "headers" in call_kwargs.kwargs
+            passed_headers = call_kwargs.kwargs["headers"]
+            assert "Accept" in passed_headers
+            assert "User-Agent" in passed_headers
+
+
+@pytest.fixture
+def mock_config_with_ua() -> NewsWorkflowConfig:
+    """Create a mock NewsWorkflowConfig with UA rotation enabled."""
+    from news.config import (
+        ExtractionConfig,
+        FilteringConfig,
+        GitHubConfig,
+        OutputConfig,
+        SummarizationConfig,
+    )
+
+    return NewsWorkflowConfig(
+        version="1.0",
+        status_mapping={"market": "index", "tech": "ai"},
+        github_status_ids={"index": "abc123", "ai": "def456"},
+        rss=RssConfig(
+            presets_file="data/config/rss-presets.json",
+            user_agent_rotation=UserAgentRotationConfig(
+                enabled=True,
+                user_agents=[
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+                ],
+            ),
+        ),
+        extraction=ExtractionConfig(),
+        summarization=SummarizationConfig(prompt_template="Summarize: {body}"),
+        github=GitHubConfig(
+            project_number=15,
+            project_id="PVT_test",
+            status_field_id="PVTSSF_test",
+            published_date_field_id="PVTF_test",
+            repository="owner/repo",
+        ),
+        filtering=FilteringConfig(),
+        output=OutputConfig(result_dir="data/exports/news-workflow"),
+    )
+
+
+@pytest.fixture
+def mock_config_with_ua_disabled() -> NewsWorkflowConfig:
+    """Create a mock NewsWorkflowConfig with UA rotation explicitly disabled."""
+    from news.config import (
+        ExtractionConfig,
+        FilteringConfig,
+        GitHubConfig,
+        OutputConfig,
+        SummarizationConfig,
+    )
+
+    return NewsWorkflowConfig(
+        version="1.0",
+        status_mapping={"market": "index", "tech": "ai"},
+        github_status_ids={"index": "abc123", "ai": "def456"},
+        rss=RssConfig(
+            presets_file="data/config/rss-presets.json",
+            user_agent_rotation=UserAgentRotationConfig(
+                enabled=False,
+                user_agents=[
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                ],
+            ),
+        ),
+        extraction=ExtractionConfig(),
+        summarization=SummarizationConfig(prompt_template="Summarize: {body}"),
+        github=GitHubConfig(
+            project_number=15,
+            project_id="PVT_test",
+            status_field_id="PVTSSF_test",
+            published_date_field_id="PVTF_test",
+            repository="owner/repo",
+        ),
+        filtering=FilteringConfig(),
+        output=OutputConfig(result_dir="data/exports/news-workflow"),
+    )

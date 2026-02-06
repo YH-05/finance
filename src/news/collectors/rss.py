@@ -73,6 +73,7 @@ class RSSCollector(BaseCollector):
         self._parser = FeedParser()
         self._domain_filter = config.domain_filtering
         self._feed_errors: list[FeedError] = []
+        self._ua_config = config.rss.user_agent_rotation
         logger.debug(
             "RSSCollector initialized",
             presets_file=config.rss.presets_file,
@@ -99,6 +100,27 @@ class RSSCollector(BaseCollector):
             Always returns SourceType.RSS.
         """
         return SourceType.RSS
+
+    def _build_headers(self) -> dict[str, str]:
+        """Build HTTP headers with User-Agent for RSS feed requests.
+
+        Returns
+        -------
+        dict[str, str]
+            HTTP headers including Accept and optionally User-Agent.
+        """
+        headers: dict[str, str] = {
+            "Accept": "application/rss+xml, application/xml, text/xml, */*",
+        }
+        if self._ua_config:
+            ua = self._ua_config.get_random_user_agent()
+            if ua:
+                headers["User-Agent"] = ua
+                logger.debug(
+                    "Using custom User-Agent for RSS collection",
+                    user_agent=ua[:50] + "..." if len(ua) > 50 else ua,
+                )
+        return headers
 
     async def collect(
         self,
@@ -152,7 +174,8 @@ class RSSCollector(BaseCollector):
         all_articles: list[CollectedArticle] = []
         cutoff_time = self._calculate_cutoff_time(max_age_hours)
 
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        headers = self._build_headers()
+        async with httpx.AsyncClient(timeout=30.0, headers=headers) as client:
             for preset in enabled_presets:
                 try:
                     articles = await self._fetch_feed(
