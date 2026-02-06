@@ -75,3 +75,6 @@ logs/*.log
 
 # FRED indicator cache data (large JSON files)
 data/raw/fred/indicators/*.json
+
+# Workflow result exports (large JSON files)
+data/exports/news-workflow/workflow-result-*.json
