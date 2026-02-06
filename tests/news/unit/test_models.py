@@ -2770,6 +2770,55 @@ class TestWorkflowResult:
         assert result.publication_failures[0].url == "https://example.com/fail3"
         assert result.publication_failures[0].stage == "publication"
 
+    def test_正常系_total_early_duplicatesがデフォルトで0(self) -> None:
+        """total_early_duplicates should default to 0."""
+        from news.models import WorkflowResult
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[],
+        )
+
+        assert result.total_early_duplicates == 0
+
+    def test_正常系_total_early_duplicatesを指定して作成できる(self) -> None:
+        """total_early_duplicates can be specified when creating WorkflowResult."""
+        from news.models import WorkflowResult
+
+        started = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        finished = datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+
+        result = WorkflowResult(
+            total_collected=10,
+            total_extracted=8,
+            total_summarized=7,
+            total_published=5,
+            total_duplicates=2,
+            total_early_duplicates=3,
+            extraction_failures=[],
+            summarization_failures=[],
+            publication_failures=[],
+            started_at=started,
+            finished_at=finished,
+            elapsed_seconds=300.0,
+            published_articles=[],
+        )
+
+        assert result.total_early_duplicates == 3
+
     def test_正常系_feed_errorsがデフォルトで空リスト(self) -> None:
         """feed_errors should default to empty list."""
         from news.models import WorkflowResult
