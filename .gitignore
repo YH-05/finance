@@ -70,8 +70,8 @@ notebook/__marimo__/
 data/raw/rss/*/
 articles/
 
-# Large log files
-logs/*.log
+# Large log files (logs/ directory is tracked)
+!logs/**
 
 # FRED indicator cache data (large JSON files)
 data/raw/fred/indicators/*.json
