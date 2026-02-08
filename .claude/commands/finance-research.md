@@ -1,9 +1,48 @@
 ---
 description: 金融記事のリサーチワークフローを実行します。データ収集→分析→検証→可視化の一連の処理を自動化します。
-argument-hint: --article <article_id> [--depth auto|shallow|deep] [--parallel]
+argument-hint: --article <article_id> [--depth auto|shallow|deep] [--parallel] [--use-teams]
 ---
 
 金融記事のリサーチワークフローを実行します。
+
+## 実装切り替え（--use-teams）
+
+| フラグ | 実装 | エージェント | 説明 |
+|--------|------|-------------|------|
+| なし（デフォルト） | 旧実装 | Task ベース（12エージェント逐次/並列起動） | コマンド内で Phase 1〜5 を制御 |
+| `--use-teams` | 新実装 | `research-lead` + Agent Teams | 12チームメイトを依存関係グラフで管理 |
+
+### ルーティングロジック
+
+```
+引数に --use-teams が含まれる？
+├── Yes → research-lead（Agent Teams）を起動
+│         └── TeamCreate → 12タスク登録 → チームメイト起動 → 監視 → シャットダウン
+└── No  → 旧実装で実行（以下の Phase 1〜5 を従来通り実行）
+```
+
+### --use-teams 使用時
+
+`--use-teams` が指定された場合、パラメータをパースした後に `research-lead` エージェントに制御を委譲します。
+
+```yaml
+委譲先: research-lead
+渡すパラメータ:
+  - article_id: 記事ID
+  - depth: リサーチ深度（auto/shallow/deep）
+  - force: 強制再実行フラグ
+
+委譲方法: |
+  research-lead エージェントに以下を伝えて起動:
+
+  ## パラメータ
+  - article_id: {article_id}
+  - depth: {depth}
+  - force: {force}
+
+  research-lead が Agent Teams ワークフローを実行します。
+  詳細は .claude/agents/research-lead.md を参照。
+```
 
 ## 入力パラメータ
 
@@ -13,8 +52,11 @@ argument-hint: --article <article_id> [--depth auto|shallow|deep] [--parallel]
 | --depth | - | auto | リサーチ深度（auto/shallow/deep） |
 | --parallel | - | true | 並列処理モード |
 | --force | - | false | 強制再実行（既存データを上書き） |
+| --use-teams | - | false | Agent Teams 版で実行。research-lead + 12チームメイトによる依存関係ベースのワークフロー |
 
-## 処理フロー
+## 処理フロー（旧実装、デフォルト）
+
+`--use-teams` が指定されていない場合、以下の処理フローを実行します。
 
 ```
 Phase 1: クエリ生成
@@ -46,7 +88,7 @@ Phase 5: 可視化
 └── [HF4] チャート確認（任意）
 ```
 
-## 実行手順
+## 実行手順（旧実装）
 
 ### Phase 1: クエリ生成
 
@@ -303,4 +345,111 @@ Phase 5: 可視化
 
 - **前提コマンド**: `/new-finance-article`
 - **次のコマンド**: `/finance-edit`
-- **使用エージェント**: finance-query-generator, finance-market-data, finance-web, finance-wiki, finance-sec-filings, finance-source, finance-claims, finance-sentiment-analyzer, finance-claims-analyzer, finance-fact-checker, finance-decisions, finance-visualize
+
+### 旧実装（デフォルト）使用エージェント
+
+| エージェント | 説明 |
+|-------------|------|
+| `finance-query-generator` | クエリ生成（Phase 1） |
+| `finance-market-data` | 市場データ取得（Phase 2） |
+| `finance-web` | Web検索（Phase 2） |
+| `finance-wiki` | Wikipedia検索（Phase 2） |
+| `finance-sec-filings` | SEC開示情報取得（Phase 2） |
+| `finance-source` | ソース抽出（Phase 3） |
+| `finance-claims` | 主張抽出（Phase 3） |
+| `finance-sentiment-analyzer` | センチメント分析（Phase 3.5） |
+| `finance-claims-analyzer` | 主張分析（Phase 4） |
+| `finance-fact-checker` | ファクトチェック（Phase 4） |
+| `finance-decisions` | 採用判定（Phase 4） |
+| `finance-visualize` | 可視化（Phase 5） |
+
+### --use-teams モード使用エージェント
+
+| エージェント | 説明 | タスク |
+|-------------|------|--------|
+| `research-lead` | リーダーエージェント（ワークフロー制御） | - |
+| `finance-query-generator` | クエリ生成 | task-1 |
+| `finance-market-data` | 市場データ取得 | task-2 |
+| `finance-web` | Web検索 | task-3 |
+| `finance-wiki` | Wikipedia検索 | task-4 |
+| `finance-sec-filings` | SEC開示情報取得 | task-5 |
+| `finance-source` | ソース抽出 | task-6 |
+| `finance-claims` | 主張抽出 | task-7 |
+| `finance-sentiment-analyzer` | センチメント分析 | task-8 |
+| `finance-claims-analyzer` | 主張分析 | task-9 |
+| `finance-fact-checker` | ファクトチェック | task-10 |
+| `finance-decisions` | 採用判定 | task-11 |
+| `finance-visualize` | 可視化 | task-12 |
+
+---
+
+# Agent Teams 版（--use-teams）
+
+`--use-teams` を指定すると、`research-lead` エージェントに制御が移譲され、Agent Teams API を使用してリサーチワークフローを実行します。
+
+## --use-teams 処理フロー
+
+```
+Phase 1: パラメータ解析（コマンド側で実行）
+├── article_id, depth, force の解析
+├── 記事フォルダの存在確認
+└── research-lead に委譲
+    │
+    ↓
+research-lead（Agent Teams ワークフロー）
+├── Phase 1: TeamCreate（research-team）
+├── Phase 1.5: 初期化 + [HF1] リサーチ方針確認（必須）
+├── Phase 2: タスク登録・依存関係設定
+│   ├── 深度に応じた条件付きタスク登録
+│   │   ├── shallow: task-1〜7, task-12（8タスク）
+│   │   └── deep/auto: task-1〜12（12タスク）
+│   └── addBlockedBy で依存関係を宣言的に設定
+├── Phase 3: チームメイト起動・タスク割り当て
+│   ├── query-generator → market-data & web & wiki & sec-filings（4並列）
+│   ├── source-extractor → claims-extractor → sentiment-analyzer
+│   ├── claims-analyzer & fact-checker（2並列）
+│   └── decision-maker → visualizer
+├── Phase 4: 実行監視
+│   ├── [HF2] データ確認（任意）
+│   ├── [HF3] 主張採用確認（推奨、shallow時スキップ）
+│   ├── [HF4] チャート確認（任意）
+│   └── auto 深度: gap_score による動的タスク追加判定
+└── Phase 5: シャットダウン・クリーンアップ
+    ├── 全チームメイトに shutdown_request 送信
+    ├── article-meta.json の workflow 更新
+    └── TeamDelete でクリーンアップ
+```
+
+## --use-teams 使用例
+
+```bash
+# Agent Teams 版でリサーチ実行（深度auto）
+/finance-research --article market_report_001_us-market-weekly --use-teams
+
+# Agent Teams 版 + shallow モード
+/finance-research --article market_report_001_us-market-weekly --depth shallow --use-teams
+
+# Agent Teams 版 + deep モード
+/finance-research --article market_report_001_us-market-weekly --depth deep --use-teams
+
+# Agent Teams 版 + 強制再実行
+/finance-research --article market_report_001_us-market-weekly --use-teams --force
+```
+
+## 旧実装との比較
+
+| 項目 | 旧実装（デフォルト） | 新実装（--use-teams） |
+|------|---------------------|----------------------|
+| アーキテクチャ | コマンド内で Task ツール逐次/並列呼び出し | Agent Teams（リーダー + 12チームメイト） |
+| エージェント | 12エージェントを直接制御 | `research-lead` + 同12エージェント |
+| データ受け渡し | Task ツール間の暗黙的な共有 | ファイルベース（research_dir 内、並列書き込み競合対策済み） |
+| 並列制御 | Task ツールの同時呼び出し | addBlockedBy による宣言的な依存関係管理 |
+| エラーハンドリング | コマンド内で個別処理 | 依存関係マトリックスによる自動制御（必須/任意依存） |
+| 深度対応 | コマンド内で条件分岐 | タスク登録の条件分岐 + auto 深度の動的タスク追加 |
+| HF ポイント | コマンド内で直接表示 | リーダーがメイン会話でユーザーに提示 |
+
+## 関連ファイル
+
+- **リーダーエージェント**: `.claude/agents/research-lead.md`
+- **旧オーケストレーター**: `.claude/agents/deep-research/dr-orchestrator.md`
+- **共通パターン**: `docs/agent-teams-patterns.md`
