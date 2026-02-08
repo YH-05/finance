@@ -21,54 +21,10 @@ TDD の詳細なガイドラインとテンプレートは以下のスキルを�
 - **詳細ガイド**: `.claude/skills/tdd-development/guide.md`
 - **テンプレート**: `.claude/skills/tdd-development/templates/`
 
-## 実装の切り替え（--use-teams）
-
-`--use-teams` フラグにより、旧実装と新実装（Agent Teams）を切り替えられます。
-
-```yaml
-使用方法:
-  デフォルト（フラグなし）: 旧実装（test-orchestrator-legacy 経由）
-  --use-teams 指定時:     Agent Teams 版（test-lead 経由）
-
-例:
-  /write-tests                      # 旧実装を使用
-  /write-tests --use-teams           # Agent Teams 版を使用
-```
-
-### 判定ロジック
-
-ユーザー入力に `--use-teams` が含まれるかで分岐:
-
-```
---use-teams あり → test-orchestrator に --use-teams 付きで委譲
-                   → test-orchestrator が test-lead に委譲
-
---use-teams なし → test-orchestrator にそのまま委譲（デフォルト）
-                   → test-orchestrator が test-orchestrator-legacy に委譲
-```
-
 ## アーキテクチャ
 
-### 旧実装（デフォルト）
-
 ```
-test-orchestrator (ルーター)
-    └── test-orchestrator-legacy (オーケストレーター)
-        │
-        ├── [Phase 1] test-planner (設計)
-        │       ↓ テスト設計が完了
-        ├── [Phase 2] 並列実行
-        │   ├── test-unit-writer ────┐
-        │   │                        ├── 並列実行（50%高速化）
-        │   └── test-property-writer ┘
-        │       ↓ 単体・プロパティテストが完了
-        └── [Phase 3] test-integration-writer (依存実行)
-```
-
-### Agent Teams 版（--use-teams）
-
-```
-test-orchestrator (ルーター)
+test-orchestrator (ラッパー)
     └── test-lead (リーダー)
         │
         ├── [task-1] test-planner (テスト設計)
@@ -98,29 +54,6 @@ test-orchestrator (ルーター)
 subagent_type: "test-orchestrator"
 description: "Create tests with TDD"
 prompt: |
-  以下の機能のテストを作成してください。
-
-  ## 対象
-  {target_description}
-
-  ## ライブラリ
-  {library_name}
-
-  ## 要件
-  - TDDサイクル (Red→Green→Refactor)
-  - 単体テスト、プロパティテスト、統合テストの作成
-```
-
-### Agent Teams 版を使用する場合
-
-プロンプトに `--use-teams` を含めます:
-
-```yaml
-subagent_type: "test-orchestrator"
-description: "Create tests with TDD (Agent Teams)"
-prompt: |
-  --use-teams
-
   以下の機能のテストを作成してください。
 
   ## 対象
@@ -279,8 +212,7 @@ uv run pytest tests/unit/test_example.py::TestClass::test_method -v
 
 | エージェント | 役割 |
 |-------------|------|
-| test-orchestrator | テスト作成のルーター（旧実装/Agent Teams 版の切り替え） |
-| test-orchestrator-legacy | テスト作成の並列実行制御（旧実装） |
+| test-orchestrator | テスト作成のラッパー（test-lead に委譲） |
 | test-lead | テスト作成のリーダー（Agent Teams 版） |
 | test-planner | テスト設計・TODOリスト作成 |
 | test-unit-writer | 単体テスト作成 |

@@ -35,19 +35,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task, WebSearch
 |--------|------|-------------------|-----------|-----------|
 | 基本モード | 指定日のレポート生成 | なし | なし | - |
 | `--weekly-comment` | 火曜〜火曜の週次コメント（旧形式） | **あり** | **自動** | 3000字以上 |
-| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 3200字以上 |
-| `--weekly --use-teams` | **Agent Teams 版フル週次レポート** | **あり** | **自動** | 5700字以上 |
-
-## 実装切り替え（--use-teams）
-
-`--weekly` モードで `--use-teams` を指定すると、Agent Teams 版の新実装に切り替わります。
-
-| フラグ | 実装 | エージェント |
-|--------|------|-------------|
-| なし（デフォルト） | 旧実装 | `weekly-report-writer` + 4スキル |
-| `--use-teams` | 新実装 | `weekly-report-lead` + Agent Teams（6チームメイト） |
-
-**注意**: `--use-teams` は `--weekly` モードでのみ有効です。基本モードや `--weekly-comment` モードでは無視されます。
+| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 5700字以上 |
 
 ## 処理フロー
 
@@ -122,7 +110,6 @@ Phase 8: 完了処理
 | `--weekly-comment` | false | 週次コメント生成（旧形式） |
 | `--project` | 15 | GitHub Project 番号（--weekly時） |
 | `--no-search` | false | 追加検索を無効化（--weekly時） |
-| `--use-teams` | false | **Agent Teams 版で実行（--weekly 時のみ有効）。weekly-report-lead + 6チームメイトによる直列パイプライン** |
 
 **注意**: `--weekly` および `--weekly-comment` モードでは、レポート生成後に自動的に GitHub Issue が作成され、`report` ラベルが付与されて Project #15 に「Weekly Report」ステータスで登録されます。
 
@@ -211,37 +198,20 @@ articles/weekly_report/{YYYY-MM-DD}/
 
 ## 関連リソース
 
-### サブエージェント
+### サブエージェント（--weekly モード用）
 
-#### 旧実装（デフォルト）
 | エージェント | 説明 | 使用モード |
 |-------------|------|-----------|
-| `weekly-report-news-aggregator` | GitHub Project からニュース集約 | --weekly |
-| `weekly-report-writer` | 4つのスキルでレポート生成 | --weekly |
-| `weekly-report-publisher` | GitHub Issue として投稿（`report` ラベル + Project #15 登録） | 自動実行 |
+| `weekly-report-lead` | リーダーエージェント（ワークフロー制御） | --weekly |
+| `wr-news-aggregator` | GitHub Project からニュース集約 | --weekly |
+| `wr-data-aggregator` | 入力データの統合・正規化 | --weekly |
+| `wr-comment-generator` | セクション別コメント生成 | --weekly |
+| `wr-template-renderer` | テンプレートへのデータ埋め込み | --weekly |
+| `wr-report-validator` | レポート品質検証 | --weekly |
+| `wr-report-publisher` | GitHub Issue 作成 & Project 追加 | --weekly |
 | `weekly-comment-indices-fetcher` | 指数ニュース収集 | --weekly-comment |
 | `weekly-comment-mag7-fetcher` | MAG7 ニュース収集 | --weekly-comment |
 | `weekly-comment-sectors-fetcher` | セクターニュース収集 | --weekly-comment |
-
-#### Agent Teams 新実装（--use-teams）
-| エージェント | 説明 | 使用モード |
-|-------------|------|-----------|
-| `weekly-report-lead` | リーダーエージェント（ワークフロー制御） | --weekly --use-teams |
-| `wr-news-aggregator` | GitHub Project からニュース集約 | --weekly --use-teams |
-| `wr-data-aggregator` | 入力データの統合・正規化 | --weekly --use-teams |
-| `wr-comment-generator` | セクション別コメント生成 | --weekly --use-teams |
-| `wr-template-renderer` | テンプレートへのデータ埋め込み | --weekly --use-teams |
-| `wr-report-validator` | レポート品質検証 | --weekly --use-teams |
-| `wr-report-publisher` | GitHub Issue 作成 & Project 追加 | --weekly --use-teams |
-
-### スキル
-
-| スキル | 説明 |
-|--------|------|
-| `weekly-data-aggregation` | 入力データの集約・正規化 |
-| `weekly-comment-generation` | セクション別コメント生成 |
-| `weekly-template-rendering` | テンプレートへのデータ埋め込み |
-| `weekly-report-validation` | 品質検証 |
 
 ### テンプレート
 
