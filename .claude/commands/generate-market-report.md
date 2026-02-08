@@ -1,11 +1,30 @@
 ---
 description: 週次マーケットレポートを自動生成します（データ収集→ニュース検索→レポート作成→Issue投稿）
-argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] [--no-search]
+argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] [--no-search] [--use-teams]
 ---
 
 # /generate-market-report - マーケットレポート生成
 
 週次マーケットレポートを自動生成するコマンドです。
+
+## 実装切り替え（--use-teams）
+
+| フラグ | 実装 | エージェント | 説明 |
+|--------|------|-------------|------|
+| なし（デフォルト） | 旧実装 | `weekly-report-writer` + 4スキル | 単一エージェントがスキルをロードして実行 |
+| `--use-teams` | 新実装 | `weekly-report-lead` + Agent Teams | 6つのチームメイトを起動し直列パイプラインで実行 |
+
+### ルーティングロジック
+
+```
+引数に --use-teams が含まれる？
+├── Yes → weekly-report-lead（Agent Teams）を起動
+│         └── TeamCreate → 6 タスク登録 → チームメイト起動 → 監視 → シャットダウン
+└── No  → 旧実装で実行（weekly-report-writer + 4 スキル）
+          └── Phase 1〜8 を従来通り実行
+```
+
+**注意**: `--use-teams` は `--weekly` モードでのみ有効です。基本モードや `--weekly-comment` モードでは無視されます。
 
 ## モード比較
 
@@ -14,6 +33,7 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 | 基本モード | 指定日のレポート生成 | なし | なし | 簡易レポート |
 | `--weekly-comment` | 火曜〜火曜の週次コメント | **あり** | **自動** | 3000字以上のコメント |
 | `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 3200字以上の詳細レポート |
+| `--weekly --use-teams` | **Agent Teams版フル週次レポート** | **あり** | **自動** | 5700字以上の詳細レポート |
 
 `--weekly` は `--weekly-comment` の上位互換であり、GitHub Project からのニュース集約機能が追加されています。
 
@@ -49,6 +69,17 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 # GitHub Project のみ使用（追加検索なし）
 /generate-market-report --weekly --no-search
 
+# ========== Agent Teams 版（新実装） ==========
+
+# Agent Teams 版でフル週次レポート生成
+/generate-market-report --weekly --use-teams
+
+# Agent Teams 版 + 特定日付
+/generate-market-report --weekly --use-teams --date 2026-01-20
+
+# Agent Teams 版 + 別の GitHub Project
+/generate-market-report --weekly --use-teams --project 20
+
 # ========== 出力先指定 ==========
 
 # 出力先を指定
@@ -73,6 +104,7 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 | --weekly-comment | - | false | 週次コメント生成モード（Issue 自動投稿、旧形式） |
 | --project | - | 15 | GitHub Project 番号（--weekly モード時のみ有効） |
 | --no-search | - | false | 追加検索を無効化（--weekly モード時のみ有効、GitHub Project のニュースのみ使用） |
+| --use-teams | - | false | **Agent Teams 版で実行（--weekly モード時のみ有効）。weekly-report-lead + 6チームメイトによる直列パイプライン** |
 
 ### 日付と期間の計算
 
@@ -121,6 +153,10 @@ Phase 5: 完了処理
 
 ### --weekly モード（フル週次レポート）
 
+**--use-teams 指定時は Agent Teams 版にルーティングされます。**
+
+`--use-teams` が指定された場合、Phase 1（初期化）完了後に `weekly-report-lead` エージェント（Agent Teams 版）に制御を移譲します。詳細は「[Agent Teams 版 --weekly モード（--use-teams）](#agent-teams-版-weekly-モードuse-teams)」を参照してください。
+
 ```
 Phase 1: 初期化
 ├── 対象期間の計算（--date から7日前 〜 --date）
@@ -128,8 +164,11 @@ Phase 1: 初期化
 ├── 出力ディレクトリ作成
 │   └── articles/weekly_report/{YYYY-MM-DD}/
 ├── 必要ツール確認（gh CLI）
-└── テンプレート確認
-    └── template/market_report/weekly_market_report_template.md
+├── テンプレート確認
+│   └── template/market_report/weekly_market_report_template.md
+└── --use-teams チェック
+    ├── Yes → weekly-report-lead に委譲（Agent Teams 版処理フローへ）
+    └── No  → 以下の Phase 2〜8 を従来通り実行
 
 Phase 2: 市場データ収集（★PerformanceAnalyzer4Agent使用）
 ├── Pythonスクリプト実行（collect_market_performance.py）
@@ -1597,6 +1636,73 @@ project_number: 15
 
 ---
 
+# Agent Teams 版 --weekly モード（--use-teams）
+
+`--weekly --use-teams` を指定すると、`weekly-report-lead` エージェントに制御が移譲され、Agent Teams API を使用してレポート生成ワークフローを実行します。
+
+## --use-teams 処理フロー
+
+```
+Phase 1: 初期化（コマンド側で実行）
+├── 対象期間の計算
+├── 出力ディレクトリ作成
+├── 市場データ収集（collect_market_performance.py）
+└── weekly-report-lead に委譲
+    │
+    ↓
+weekly-report-lead（Agent Teams ワークフロー）
+├── TeamCreate: weekly-report-team を作成
+├── TaskCreate: 6タスクを登録（直列依存関係）
+│   ├── task-1: wr-news-aggregator（ニュース集約）
+│   ├── task-2: wr-data-aggregator（データ集約）← blockedBy: task-1
+│   ├── task-3: wr-comment-generator（コメント生成）← blockedBy: task-2
+│   ├── task-4: wr-template-renderer（テンプレート埋め込み）← blockedBy: task-3
+│   ├── task-5: wr-report-validator（品質検証）← blockedBy: task-4
+│   └── task-6: wr-report-publisher（Issue投稿）← blockedBy: task-5
+├── 各チームメイトを起動・タスク割り当て
+├── 実行監視（SendMessage 受信）
+├── 全タスク完了後シャットダウン
+└── TeamDelete でクリーンアップ
+```
+
+## --use-teams 使用例
+
+```bash
+# Agent Teams 版でフル週次レポート生成
+/generate-market-report --weekly --use-teams
+
+# Agent Teams 版 + 特定日付
+/generate-market-report --weekly --use-teams --date 2026-01-20
+
+# Agent Teams 版 + 別の Project
+/generate-market-report --weekly --use-teams --project 20
+```
+
+## --use-teams サブエージェント一覧
+
+| エージェント | 説明 | タスク |
+|-------------|------|--------|
+| `weekly-report-lead` | リーダーエージェント（ワークフロー制御） | - |
+| `wr-news-aggregator` | GitHub Project からニュース集約 | task-1 |
+| `wr-data-aggregator` | 入力データの統合・正規化 | task-2 |
+| `wr-comment-generator` | セクション別コメント生成（5700字以上） | task-3 |
+| `wr-template-renderer` | テンプレートへのデータ埋め込み | task-4 |
+| `wr-report-validator` | レポート品質検証 | task-5 |
+| `wr-report-publisher` | GitHub Issue 作成 & Project 追加 | task-6 |
+
+## 旧実装との比較
+
+| 項目 | 旧実装（デフォルト） | 新実装（--use-teams） |
+|------|---------------------|----------------------|
+| アーキテクチャ | 単一エージェント + スキルロード | Agent Teams（リーダー + 6チームメイト） |
+| エージェント | `weekly-report-writer` | `weekly-report-lead` + `wr-*` 6体 |
+| データ受け渡し | スキル内変数 | ファイルベース（report_dir 内） |
+| エラーハンドリング | スキル内処理 | タスク依存関係による自動スキップ |
+| 目標文字数 | 3200字以上 | 5700字以上 |
+| 並行性 | 逐次実行 | タスク依存関係による直列パイプライン |
+
+---
+
 ## 関連リソース
 
 ### Pythonスクリプト
@@ -1612,12 +1718,23 @@ project_number: 15
 
 ### サブエージェント
 
-#### --weekly モード用
+#### --weekly モード用（旧実装、デフォルト）
 | エージェント | 説明 |
 |-------------|------|
 | `weekly-report-news-aggregator` | GitHub Project からニュース集約 |
 | `weekly-report-writer` | 4つのスキルでレポート生成 |
 | `weekly-report-publisher` | GitHub Issue として投稿 |
+
+#### --weekly --use-teams モード用（Agent Teams 新実装）
+| エージェント | 説明 |
+|-------------|------|
+| `weekly-report-lead` | リーダーエージェント（ワークフロー制御） |
+| `wr-news-aggregator` | GitHub Project からニュース集約 |
+| `wr-data-aggregator` | 入力データの統合・正規化 |
+| `wr-comment-generator` | セクション別コメント生成 |
+| `wr-template-renderer` | テンプレートへのデータ埋め込み |
+| `wr-report-validator` | レポート品質検証 |
+| `wr-report-publisher` | GitHub Issue 作成 & Project 追加 |
 
 #### --weekly-comment モード用（互換性維持）
 | エージェント | 説明 |
