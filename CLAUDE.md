@@ -80,7 +80,8 @@ updated_at: 2026-01-30
 ### プロジェクト管理
 - Issue作成 → `/issue`
 - Issue改善 → `/issue-refine <番号>`
-- プロジェクト作成 → `/new-project`
+- プロジェクト計画 → `/plan-project`
+- プロジェクト作成 → `/new-project`（非推奨、`/plan-project` を使用）
 - 並行開発計画 → `/plan-worktrees <project_number>`
 - worktree作成 → `/worktree <branch_name>`
 
@@ -144,7 +145,8 @@ updated_at: 2026-01-30
 | `/issue-refine <番号>` | Issueの内容をブラッシュアップ | `issue-refinement` |
 | `/issue-implement <番号>` | GitHub Issueの自動実装とPR作成 | `issue-implementation-serial` |
 | `/sync-issue <番号>` | Issueコメントから進捗・タスク・仕様変更を同期 | `issue-sync` |
-| `/new-project` | プロジェクト作成（GitHub Project連携） | `project-management` |
+| `/plan-project` | リサーチベースのプロジェクト計画（リサーチ→設計→タスク分解→GitHub登録） | `plan-project` |
+| `/new-project` | プロジェクト作成（非推奨、`/plan-project` を使用） | `project-management` |
 | `/task` | 複雑なタスクの管理 | `task-decomposition` |
 
 ### 金融コンテンツ作成
@@ -199,7 +201,8 @@ updated_at: 2026-01-30
 | `issue-implement-single` | 単一Issue実装（context: forkで分離実行） | `issue-implementation-serial`から呼出 |
 | `project-implementation` | Project内のTodo/In Progress Issueを依存関係順に自動実装 | `/project-implement` |
 | `issue-sync` | Issueコメントから進捗・タスク・仕様変更の同期 | `/sync-issue` |
-| `new-project` | 新規プロジェクト作成（パッケージ/軽量の2モード） | `/new-project` |
+| `plan-project` | リサーチベースのプロジェクト計画ワークフロー（全タイプ対応） | `/plan-project` |
+| `new-project` | 新規プロジェクト作成（非推奨、`/plan-project` を使用） | `/new-project` |
 | `project-management` | GitHub Projectとproject.mdの作成・管理・同期 | `/new-project` |
 | `task-decomposition` | タスク分解、依存関係解析、類似タスク判定 | `/task` |
 
@@ -397,6 +400,9 @@ updated_at: 2026-01-30
 | `workflow-designer` | ワークフロー設計とマルチエージェント連携 |
 | `pydantic-model-designer` | Pydanticモデルを設計・作成（テスト作成後、実装前にデータ構造を定義） |
 | `package-readme-updater` | パッケージREADMEを自動更新（構成・API・使用例） |
+| `project-researcher` | プロジェクト計画のためのコードベース調査（パターン識別・ギャップ分析） |
+| `project-planner` | プロジェクト計画の実装設計（アーキテクチャ・ファイルマップ・リスク評価） |
+| `project-decomposer` | プロジェクト計画のタスク分解（依存関係・Waveグルーピング・Issue準備） |
 
 ---
 
@@ -431,7 +437,8 @@ updated_at: 2026-01-30
 - `/finance-news-workflow` → `finance-news-workflow` → `finance-news-orchestrator` → 6テーマ別エージェント
 - `/finance-research` → `deep-research` → 14リサーチエージェント
 - `/issue-implement <番号>` → `issue-implement-single` → `api-usage-researcher`(条件付き), `test-writer`, `pydantic-model-designer`, `feature-implementer`, `code-simplifier`, `quality-checker`
-- `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`
+- `/plan-project` → `plan-project` → `project-researcher`, `project-planner`, `project-decomposer`
+- `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`（非推奨）
 - `/write-tests` → `tdd-development` → `test-orchestrator` → 5テストエージェント
 - `/index` → `index` → `Explore`, `package-readme-updater`
 

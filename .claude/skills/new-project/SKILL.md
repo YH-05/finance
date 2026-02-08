@@ -7,6 +7,10 @@ description: |
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, TodoWrite, Task
 ---
 
+> **非推奨**: このスキルは `/plan-project` に置き換えられました。
+> `/plan-project` はリサーチベースの計画ワークフロー（リサーチ→設計→タスク分解→GitHub登録）を提供し、Python パッケージだけでなくエージェント、スキル、コマンド等あらゆるプロジェクトタイプに対応します。
+> 新規プロジェクトには `/plan-project` を使用してください。
+
 # New Project
 
 新規プロジェクトを作成するスキルです。
