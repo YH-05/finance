@@ -25,10 +25,21 @@ MarketError (base)
         BloombergSessionError (session management)
         BloombergDataError (data fetching)
         BloombergValidationError (input validation)
+    ETFComError (ETF.com scraping operations)
+        ETFComScrapingError (HTML parse failure)
+        ETFComTimeoutError (page load / navigation timeout)
+        ETFComBlockedError (bot-blocking detection)
 """
 
 from enum import Enum
 from typing import Any
+
+from market.etfcom.errors import (
+    ETFComBlockedError,
+    ETFComError,
+    ETFComScrapingError,
+    ETFComTimeoutError,
+)
 
 
 class ErrorCode(str, Enum):
@@ -72,6 +83,10 @@ class ErrorCode(str, Enum):
         Invalid Bloomberg field
     INVALID_DATE_RANGE : str
         Invalid date range specified
+    SCRAPING_ERROR : str
+        HTML scraping / parsing failure (ETF.com)
+    PAGE_LOAD_TIMEOUT : str
+        Page load or navigation timeout (ETF.com)
     """
 
     UNKNOWN = "UNKNOWN"
@@ -91,6 +106,8 @@ class ErrorCode(str, Enum):
     INVALID_SECURITY = "INVALID_SECURITY"
     INVALID_FIELD = "INVALID_FIELD"
     INVALID_DATE_RANGE = "INVALID_DATE_RANGE"
+    SCRAPING_ERROR = "SCRAPING_ERROR"
+    PAGE_LOAD_TIMEOUT = "PAGE_LOAD_TIMEOUT"
 
 
 class MarketError(Exception):
@@ -780,6 +797,12 @@ class BloombergValidationError(BloombergError):
         self.value = value
 
 
+# =============================================================================
+# ETFCom Errors (re-exported from market.etfcom.errors)
+# =============================================================================
+# ETFComBlockedError, ETFComError, ETFComScrapingError, ETFComTimeoutError
+# are imported at the top of this file and included in __all__.
+
 __all__ = [
     "BloombergConnectionError",
     "BloombergDataError",
@@ -788,6 +811,10 @@ __all__ = [
     "BloombergValidationError",
     "CacheError",
     "DataFetchError",
+    "ETFComBlockedError",
+    "ETFComError",
+    "ETFComScrapingError",
+    "ETFComTimeoutError",
     "ErrorCode",
     "ExportError",
     "FREDCacheNotFoundError",
