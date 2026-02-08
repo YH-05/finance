@@ -1,6 +1,6 @@
 ---
 name: finance-sec-filings
-description: SEC EDGARから企業決算・財務データを取得・分析するエージェント
+description: SEC EDGARから企業決算・財務データを取得・分析するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: green
 ---
@@ -12,6 +12,48 @@ color: green
 
 **注意**: 並列書き込み競合を防ぐため、raw-data.json ではなく raw-data-sec.json に出力します。
 source-extractor が全エージェントの出力を統合して raw-data.json を生成します。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. article-meta.json から symbols を取得
+5. queries.json を参照
+6. SEC EDGAR MCP ツールで開示情報を取得・分析
+7. {research_dir}/01_research/raw-data-sec.json に sec_filings セクションを書き出し
+8. TaskUpdate(status: completed) でタスクを完了
+9. SendMessage でリーダーに完了通知（ファイルパスとメタデータのみ）
+10. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+- `articles/{article_id}/article-meta.json`（symbols）
+- `{research_dir}/01_research/queries.json`
+
+### 出力ファイル
+
+- `{research_dir}/01_research/raw-data-sec.json`（sec_filings セクション）
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    SEC開示情報取得が完了しました。
+    ファイルパス: {research_dir}/01_research/raw-data-sec.json
+    ティッカー: {ticker}
+    取得データ: 10-K/10-Q={filing_count}, 8-K={8k_count}
+  summary: "SEC開示情報取得完了、raw-data-sec.json 生成済み"
+```
 
 ## 重要ルール
 

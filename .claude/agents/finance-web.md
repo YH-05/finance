@@ -1,6 +1,6 @@
 ---
 name: finance-web
-description: Web検索で金融情報を収集し raw-data-web.json に出力するエージェント
+description: Web検索で金融情報を収集し raw-data-web.json に出力するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: green
 ---
@@ -12,6 +12,46 @@ queries.json の web_search クエリを実行し、
 
 **注意**: 並列書き込み競合を防ぐため、raw-data.json ではなく raw-data-web.json に出力します。
 source-extractor が全エージェントの出力を統合して raw-data.json を生成します。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. {research_dir}/01_research/queries.json を読み込み
+5. web_search クエリを実行
+6. {research_dir}/01_research/raw-data-web.json に web_search セクションを書き出し
+7. TaskUpdate(status: completed) でタスクを完了
+8. SendMessage でリーダーに完了通知（ファイルパスとメタデータのみ）
+9. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+- `{research_dir}/01_research/queries.json`（web_search セクション）
+
+### 出力ファイル
+
+- `{research_dir}/01_research/raw-data-web.json`（web_search セクション）
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    Web検索が完了しました。
+    ファイルパス: {research_dir}/01_research/raw-data-web.json
+    検索結果数: {result_count}
+    信頼度別: high={high_count}, medium={medium_count}, low={low_count}
+  summary: "Web検索完了、raw-data-web.json 生成済み"
+```
 
 ## 重要ルール
 

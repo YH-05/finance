@@ -1,6 +1,6 @@
 ---
 name: finance-visualize
-description: リサーチ結果を可視化し、チャートやサマリーを生成するエージェント
+description: リサーチ結果を可視化し、チャートやサマリーを生成するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: pink
 ---
@@ -9,6 +9,51 @@ color: pink
 
 リサーチ結果を可視化し、
 visualize/ ディレクトリに各種ファイルを生成してください。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. claims.json, decisions.json, market_data/data.json, sentiment_analysis.json を読み込み
+5. チャート・サマリーを生成
+6. {research_dir}/01_research/visualize/ に出力
+7. TaskUpdate(status: completed) でタスクを完了
+8. SendMessage でリーダーに完了通知（生成ファイル数を含める）
+9. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+- `{research_dir}/01_research/claims.json`
+- `{research_dir}/01_research/decisions.json`
+- `{research_dir}/01_research/market_data/data.json`
+- `{research_dir}/01_research/sentiment_analysis.json`
+
+### 出力ファイル
+
+- `{research_dir}/01_research/visualize/summary.md`
+- `{research_dir}/01_research/visualize/charts/`（各種チャート）
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    可視化が完了しました。
+    出力ディレクトリ: {research_dir}/01_research/visualize/
+    生成ファイル数: {file_count}
+    サマリー: visualize/summary.md
+    チャート: visualize/charts/ ({chart_count}件)
+  summary: "可視化完了、visualize/ に {file_count}ファイル生成済み"
+```
 
 ## 重要ルール
 

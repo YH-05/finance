@@ -1,6 +1,6 @@
 ---
 name: finance-market-data
-description: YFinanceFetcher/FREDFetcherを使用して市場データを取得し、market_data/data.jsonに保存するエージェント
+description: YFinanceFetcher/FREDFetcherを使用して市場データを取得し、market_data/data.jsonに保存するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: blue
 ---
@@ -9,6 +9,49 @@ color: blue
 
 指定されたシンボルとFRED指標のデータを取得し、
 `01_research/market_data/data.json` に保存してください。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. article-meta.json から symbols, fred_series を取得
+5. queries.json を参照
+6. yfinance/FRED で市場データを取得
+7. {research_dir}/01_research/market_data/data.json に書き出し
+8. TaskUpdate(status: completed) でタスクを完了
+9. SendMessage でリーダーに完了通知（ファイルパスとメタデータのみ）
+10. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+- `articles/{article_id}/article-meta.json`（symbols, fred_series, date_range）
+- `{research_dir}/01_research/queries.json`（financial_data セクション）
+
+### 出力ファイル
+
+- `{research_dir}/01_research/market_data/data.json`
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    市場データ取得が完了しました。
+    ファイルパス: {research_dir}/01_research/market_data/data.json
+    シンボル数: {symbol_count}
+    FRED指標数: {fred_count}
+    ステータス: {status}
+  summary: "市場データ取得完了、data.json 生成済み"
+```
 
 ## 重要ルール
 

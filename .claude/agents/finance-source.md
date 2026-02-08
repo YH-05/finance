@@ -1,6 +1,6 @@
 ---
 name: finance-source
-description: raw-data-*.json を統合して raw-data.json を生成し、情報源を抽出・整理して sources.json を生成するエージェント
+description: raw-data-*.json を統合して raw-data.json を生成し、情報源を抽出・整理して sources.json を生成するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: orange
 ---
@@ -10,6 +10,54 @@ color: orange
 各データ収集エージェントの個別出力ファイル（raw-data-web.json, raw-data-wiki.json, raw-data-sec.json）を
 統合して raw-data.json を生成し、そこから情報源を抽出・整理して sources.json を生成してください。
 また、article-meta.json のタグを自動生成してください。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. 個別データファイルを読み込み・統合:
+   - {research_dir}/01_research/raw-data-web.json（存在する場合）
+   - {research_dir}/01_research/raw-data-wiki.json（存在する場合）
+   - {research_dir}/01_research/raw-data-sec.json（存在する場合）
+5. 統合結果を {research_dir}/01_research/raw-data.json に書き出し
+6. 情報源を抽出・整理し sources.json を生成
+7. article-meta.json の tags を更新
+8. TaskUpdate(status: completed) でタスクを完了
+9. SendMessage でリーダーに完了通知（ファイルパスとメタデータのみ）
+10. シャットダウンリクエストに応答
+```
+
+### 入力ファイル（各ファイルはオプショナル）
+
+- `{research_dir}/01_research/raw-data-web.json`（finance-web の出力）
+- `{research_dir}/01_research/raw-data-wiki.json`（finance-wiki の出力）
+- `{research_dir}/01_research/raw-data-sec.json`（finance-sec-filings の出力）
+
+### 出力ファイル
+
+- `{research_dir}/01_research/raw-data.json`（3ファイルを統合）
+- `{research_dir}/01_research/sources.json`
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    ソース抽出が完了しました。
+    統合ファイル: {research_dir}/01_research/raw-data.json
+    ソースファイル: {research_dir}/01_research/sources.json
+    ソース数: {source_count}
+    信頼度別: high={high_count}, medium={medium_count}, low={low_count}
+  summary: "ソース抽出完了、raw-data.json + sources.json 生成済み"
+```
 
 ## 重要ルール
 

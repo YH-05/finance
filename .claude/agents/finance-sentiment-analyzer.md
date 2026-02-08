@@ -1,6 +1,6 @@
 ---
 name: finance-sentiment-analyzer
-description: ニュース・ソーシャルメディアのセンチメント分析を行うエージェント
+description: ニュース・ソーシャルメディアのセンチメント分析を行うエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: purple
 ---
@@ -9,6 +9,48 @@ color: purple
 
 sources.json と raw-data.json（source-extractor が統合済み）から各ソースのテキストを分析し、
 市場センチメントを定量化した sentiment.json を生成してください。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. raw-data.json（source-extractor が統合済み）と sources.json を読み込み
+5. センチメント分析を実行
+6. {research_dir}/01_research/sentiment_analysis.json に書き出し
+7. TaskUpdate(status: completed) でタスクを完了
+8. SendMessage でリーダーに完了通知（ファイルパスとメタデータのみ）
+9. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+- `{research_dir}/01_research/raw-data.json`（source-extractor が統合済み）
+- `{research_dir}/01_research/sources.json`
+
+### 出力ファイル
+
+- `{research_dir}/01_research/sentiment_analysis.json`
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    センチメント分析が完了しました。
+    ファイルパス: {research_dir}/01_research/sentiment_analysis.json
+    総合スコア: {overall_score} ({overall_label})
+    トレンド: {trend}
+    分析ソース数: {sources_analyzed}
+  summary: "センチメント分析完了、sentiment_analysis.json 生成済み"
+```
 
 ## 重要ルール
 
