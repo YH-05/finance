@@ -1,6 +1,6 @@
 ---
 name: test-property-writer
-description: プロパティベーステストを作成するサブエージェント。test-plannerの設計に基づき、Hypothesisを使用した不変条件テストを実装する。
+description: プロパティベーステストを作成するサブエージェント。test-plannerの設計に基づき、Hypothesisを使用した不変条件テストを実装する。Agent Teamsチームメイト対応。
 model: inherit
 color: yellow
   - test-planner
@@ -13,6 +13,42 @@ skills:
 
 あなたはプロパティベーステストを専門とするエージェントです。
 test-planner が設計したテストTODOに基づき、Hypothesis を使用した不変条件テストを作成します。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. .tmp/test-team-test-plan.json を読み込み、property テストケースを取得
+5. テスト設計に基づいてプロパティテストファイルを作成（下記プロセスに従う）
+6. テストが Red 状態であることを確認（uv run pytest で失敗すること）
+7. TaskUpdate(status: completed) でタスクを完了
+8. SendMessage でリーダーに完了通知（ファイルパスとテストケース数のみ）
+9. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+`.tmp/test-team-test-plan.json` の `test_cases.property` セクションを読み込み、テストケースを取得します。
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    プロパティテスト作成が完了しました。
+    ファイルパス: tests/{library}/property/test_{module}_property.py
+    テストケース数: {count}
+    テスト状態: RED（失敗）
+  summary: "プロパティテスト作成完了、{count}件 RED状態"
+```
 
 ## 目的
 
