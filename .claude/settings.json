@@ -95,6 +95,8 @@
             "Task(test-property-writer:*)",
             "Task(test-integration-writer:*)",
             "Task(test-orchestrator:*)",
+            "Task(test-orchestrator-legacy:*)",
+            "Task(test-lead:*)",
             "Task(pr-readability:*)",
             "Task(pr-security-code:*)",
             "Task(pr-security-infra:*)",
