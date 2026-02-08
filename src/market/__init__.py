@@ -13,6 +13,8 @@ yfinance
     Yahoo Finance data fetcher
 fred
     Federal Reserve Economic Data (FRED) API integration
+etfcom
+    ETF.com scraper (ticker, fundamentals, fund flows)
 factset
     FactSet API integration (planned)
 export
@@ -60,6 +62,15 @@ from .errors import (
     MarketError,
     ValidationError,
 )
+from .etfcom import (
+    ETFComBlockedError,
+    ETFComError,
+    ETFComScrapingError,
+    ETFComTimeoutError,
+    FundamentalsCollector,
+    FundFlowsCollector,
+    TickerCollector,
+)
 from .export import DataExporter
 from .schema import (
     CacheConfig,
@@ -99,6 +110,11 @@ __all__ = [
     "DataSource",
     "DataSourceConfig",
     "DateRange",
+    # ETF.com
+    "ETFComBlockedError",
+    "ETFComError",
+    "ETFComScrapingError",
+    "ETFComTimeoutError",
     "EconomicDataMetadata",
     "ErrorCode",
     "ExportConfig",
@@ -107,10 +123,13 @@ __all__ = [
     "FREDError",
     "FREDFetchError",
     "FREDValidationError",
+    "FundFlowsCollector",
+    "FundamentalsCollector",
     "MarketConfig",
     "MarketDataResult",
     "MarketError",
     "StockDataMetadata",
+    "TickerCollector",
     "ValidationError",
     "validate_config",
     "validate_economic_metadata",
