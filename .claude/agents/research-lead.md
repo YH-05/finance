@@ -84,36 +84,381 @@ research-lead (リーダー)
 
 ## 深度オプション
 
-| 深度 | 説明 | Phase 2 クエリ数 | Phase 4 検証レベル |
-|------|------|-----------------|-------------------|
-| shallow | 基本的な情報収集。クエリ数を制限 | 最大5件/ソース | 基本検証のみ |
-| deep | 詳細な情報収集。追加クエリ生成、複数回の検証 | 最大15件/ソース | 徹底検証 |
-| auto | claims-analyzer の判定に基づいて自動で deep に移行 | 初回5件、必要に応じて追加 | 自動判定 |
+| 深度 | 説明 | Phase 2 クエリ数 | Phase 3.5 | Phase 4 | 用途 |
+|------|------|-----------------|-----------|---------|------|
+| shallow | 基本的な情報収集 | 最大5件/ソース | スキップ | スキップ | 素早いスクリーニング |
+| deep | 詳細な情報収集 | 最大15件/ソース | 実行 | 徹底検証 | 本格的な投資分析 |
+| auto | データ量に応じて動的判断 | 初回5件 | 条件付き | 条件付き | バランス重視 |
+
+### shallow モードの詳細
+
+shallow モードでは、基本的なデータ収集と処理のみを行い、検証・分析フェーズを省略します。
+
+```yaml
+shallow_mode:
+  # 実行するタスク（8タスク）
+  executed_tasks:
+    - task-1: クエリ生成（クエリ数制限: 最大5件/ソース）
+    - task-2: 市場データ取得
+    - task-3: Web検索
+    - task-4: Wikipedia検索
+    - task-5: SEC開示情報取得
+    - task-6: ソース抽出
+    - task-7: 主張抽出
+    - task-12: 可視化（task-7 に直接依存）
+
+  # スキップするタスク（4タスク）
+  skipped_tasks:
+    - task-8: センチメント分析（Phase 3.5 省略）
+    - task-9: 主張分析（Phase 4 省略）
+    - task-10: ファクトチェック（Phase 4 省略）
+    - task-11: 採用判定 → 簡易判定に置き換え（後述）
+
+  # 簡易判定ロジック
+  # task-11（採用判定）の代わりに、リーダーが直接 decisions.json を生成
+  # claims.json の主張をそのまま全件 accept として扱う
+  simplified_decisions:
+    logic: |
+      claims.json を読み込み、全主張を accept とした decisions.json を生成。
+      信頼度スコアは sources.json のソース信頼度をそのまま使用。
+    output: "{research_dir}/01_research/decisions.json"
+
+  # HF ポイント
+  hf_points:
+    HF1: 必須
+    HF2: 表示
+    HF3: スキップ（Phase 4 省略のため）
+    HF4: 表示
+
+  # 依存関係の変更
+  dependency_override:
+    # task-12（可視化）は task-7 と task-2 に直接依存
+    # （task-8, task-9, task-10, task-11 をバイパス）
+    task-12:
+      blockedBy: [task-7, task-2]  # claims.json + market_data のみ
+```
+
+### deep モードの詳細
+
+deep モードでは、全フェーズを完全に実行し、詳細な検証と分析を行います。
+
+```yaml
+deep_mode:
+  # 全12タスクを実行
+  executed_tasks: [task-1 ~ task-12]  # 全タスク
+
+  # Phase 2 の強化
+  phase_2_enhancement:
+    max_queries_per_source: 15
+    additional_sources: true  # 追加のデータソースを検索
+
+  # Phase 4 の強化
+  phase_4_enhancement:
+    fact_check_depth: "thorough"  # 各主張に対して複数ソースで検証
+    cross_validation: true        # クロスバリデーション実施
+
+  # HF ポイント
+  hf_points:
+    HF1: 必須
+    HF2: 表示
+    HF3: 表示（推奨）
+    HF4: 表示
+```
+
+### auto モードの詳細
+
+auto モードは shallow パラメータで開始し、データ量と品質に基づいてリーダーが動的に深度を判断します。
+
+```yaml
+auto_mode:
+  # 初期設定: shallow と同じパラメータで開始
+  initial_parameters:
+    max_queries_per_source: 5
+    phase_3_5: true   # センチメント分析は実行
+    phase_4: true     # 分析・検証も実行
+
+  # Phase 4 完了後の深度判断
+  depth_decision:
+    trigger: "Phase 4 完了時（task-9 の claims-analyzer 結果受信後）"
+    input: "analysis.json の gap_analysis セクション"
+    decision_criteria:
+      - metric: gap_score
+        threshold: 0.5
+        action_above: "deep モードに移行（追加タスク作成）"
+        action_below: "Phase 5 へ進む（追加タスクなし）"
+      - metric: low_confidence_ratio
+        threshold: 0.3
+        note: "低信頼度主張が30%超の場合、追加検証を推奨"
+
+  # 動的タスク追加（gap_score > 0.5 の場合）
+  dynamic_task_addition:
+    description: "情報ギャップを埋めるための追加データ収集・再分析サイクル"
+    tasks: "後述の「auto 深度の動的タスク追加」セクションを参照"
+
+  # HF ポイント
+  hf_points:
+    HF1: 必須
+    HF2: 表示
+    HF3: 表示（gap_score の判断結果も提示）
+    HF4: 表示
+```
+
+### 深度に応じた条件付きタスク登録
+
+Phase 2（タスク登録）で、深度に応じてタスクの登録方法を変更します。
+
+```yaml
+# Phase 2: 深度に応じた条件分岐
+conditional_task_creation:
+  # 共通タスク（全深度で登録）: task-1 ~ task-7, task-12
+  common_tasks:
+    - task-1: クエリ生成
+    - task-2: 市場データ取得
+    - task-3: Web検索
+    - task-4: Wikipedia検索
+    - task-5: SEC開示情報取得
+    - task-6: ソース抽出
+    - task-7: 主張抽出
+    - task-12: 可視化
+
+  # 条件付きタスク（shallow では登録しない）
+  conditional_tasks:
+    - task-8: センチメント分析   # shallow: 未登録, deep/auto: 登録
+    - task-9: 主張分析           # shallow: 未登録, deep/auto: 登録
+    - task-10: ファクトチェック   # shallow: 未登録, deep/auto: 登録
+    - task-11: 採用判定           # shallow: 未登録, deep/auto: 登録
+
+  # shallow モードの依存関係変更
+  shallow_dependency:
+    # task-12 の blockedBy を変更
+    task-12:
+      normal: [task-11]        # deep/auto: task-11 完了後
+      shallow: [task-7, task-2] # shallow: task-7 + task-2 完了後
+
+  # クエリ生成の深度パラメータ
+  query_depth:
+    shallow: "max_queries=5"
+    deep: "max_queries=15"
+    auto: "max_queries=5"  # 初回は shallow と同じ
+```
 
 ### auto 深度の動的タスク追加
 
-depth=auto の場合、Phase 4 完了後に claims-analyzer の結果を確認し、情報ギャップが検出された場合に追加データ収集タスクを動的に追加します。
+depth=auto の場合、Phase 4 完了後にリーダーが gap_score を確認し、追加タスクを動的に作成します。
 
 ```yaml
-auto_depth_logic:
-  1. Phase 4 完了後、analysis.json の gap_analysis を確認
-  2. gap_score > 0.5 の場合:
-     - 追加クエリ生成タスク（task-13）を作成
-     - 追加データ収集タスク（task-14〜17）を作成
-     - Phase 3〜4 を再実行するタスク（task-18〜22）を作成
-     - blockedBy で依存関係を設定
-  3. gap_score <= 0.5 の場合:
-     - Phase 5 へ進む（追加タスクなし）
+auto_depth_dynamic_tasks:
+  trigger: "claims-analyzer（task-9）完了後の gap_score 確認"
+
+  # Step 1: analysis.json の gap_score を確認
+  check_gap_score:
+    file: "{research_dir}/01_research/analysis.json"
+    field: "gap_analysis.gap_score"
+
+  # Step 2: gap_score > 0.5 の場合、追加タスクを作成
+  if_gap_score_above_threshold:
+    threshold: 0.5
+    action: |
+      以下の追加タスクを TaskCreate で動的に登録:
+
+      task-13: 追加クエリ生成
+        description: "gap_analysis で特定されたギャップを埋めるクエリを生成"
+        blockedBy: [task-9]  # claims-analyzer 完了後
+        output: "{research_dir}/01_research/additional_queries.json"
+
+      task-14: 追加Web検索
+        description: "additional_queries.json のクエリで追加Web検索"
+        blockedBy: [task-13]
+        output: "{research_dir}/01_research/raw-data-web-additional.json"
+
+      task-15: 追加Wikipedia検索
+        description: "additional_queries.json のクエリで追加Wikipedia検索"
+        blockedBy: [task-13]
+        output: "{research_dir}/01_research/raw-data-wiki-additional.json"
+
+      task-16: 追加ソース抽出
+        description: "追加収集データを統合しソース抽出"
+        blockedBy: [task-14, task-15]
+        output: "{research_dir}/01_research/sources-additional.json"
+
+      task-17: 追加主張抽出
+        description: "追加ソースから主張を抽出し claims.json にマージ"
+        blockedBy: [task-16]
+        output: "{research_dir}/01_research/claims-additional.json"
+
+      task-18: 再ファクトチェック
+        description: "統合された claims に対して再度ファクトチェック"
+        blockedBy: [task-17]
+        output: "{research_dir}/01_research/fact-checks-merged.json"
+
+      task-19: 再採用判定
+        description: "追加データを含めた最終的な採用判定"
+        blockedBy: [task-18, task-8]  # 再ファクトチェック + センチメント
+        output: "{research_dir}/01_research/decisions.json"（上書き）
+
+    # task-12（可視化）の依存関係を更新
+    update_task_12:
+      addBlockedBy: [task-19]  # 再採用判定の完了を待つ
+
+    # 追加チームメイトの起動
+    additional_teammates:
+      - name: "web-researcher-2"
+        subagent_type: "finance-web"
+        task: task-14
+      - name: "wiki-researcher-2"
+        subagent_type: "finance-wiki"
+        task: task-15
+      # task-16〜19 は既存チームメイトに再割り当て
+      # （source-extractor, claims-extractor, fact-checker, decision-maker）
+
+  # Step 3: gap_score <= 0.5 の場合
+  if_gap_score_below_threshold:
+    action: "追加タスクなし、Phase 5 へ進む"
+    note: "HF3 でユーザーに gap_score が低い（十分なデータ）であることを報告"
 ```
+
+## HF（Human Feedback）ポイント
+
+リーダーはワークフローの要所でユーザーに確認を求め、応答に基づいてフローを制御します。リーダーは親コンテキスト（メイン会話）内で実行されるため、テキスト出力でユーザーに情報を提示し、応答を待つことができます。
+
+### HF ポイント一覧
+
+| ID | タイミング | 種別 | 目的 |
+|----|-----------|------|------|
+| HF1 | Phase 1.5 完了後 | 必須 | リサーチ方針の承認（深度・対象・スコープ） |
+| HF2 | Phase 2 データ収集完了後 | 任意 | 収集データの確認・追加収集の要否判断 |
+| HF3 | Phase 4 分析完了後 | 推奨 | 主張採用判定の確認・修正 |
+| HF4 | Phase 5 可視化完了後 | 任意 | 生成チャート・サマリーの確認 |
+
+### HF1: リサーチ方針確認（必須）
+
+Phase 1.5（初期化）完了後、リサーチの設定内容をユーザーに提示し承認を得ます。
+
+```yaml
+# リーダーがユーザーに直接テキスト出力
+output: |
+  リサーチ方針を確認してください。
+
+  ## 設定内容
+  - **記事ID**: {article_id}
+  - **深度**: {depth}
+  - **カテゴリ**: {category}
+  - **対象シンボル**: {symbols}
+  - **期間**: {date_range}
+
+  ## 実行予定タスク
+  - クエリ生成 → データ収集（{data_collection_mode}）→ データ処理
+    → {analysis_mode} → 可視化
+
+  この方針でリサーチを開始しますか？
+  - 「はい」→ Phase 2 へ進む
+  - 「修正」→ パラメータ修正後に再確認
+  - 「中止」→ ワークフロー中止
+
+# ユーザー応答を待つ（リーダーのターン終了→ユーザー入力→再開）
+# 承認後: Phase 2（タスク登録）へ進む
+# 修正要求: パラメータを更新し HF1 を再実行
+# 中止: TeamDelete でクリーンアップし終了
+```
+
+### HF2: データ確認（任意）
+
+Phase 2（データ収集）の全タスク完了後、収集結果をユーザーに提示します。
+
+```yaml
+# 全データ収集タスク完了時にリーダーが出力
+output: |
+  データ収集が完了しました。
+
+  ## 収集結果
+  - 市場データ: {market_data_count}件（{market_data_file}）
+  - Web検索: {web_count}件（{web_file}）
+  - Wikipedia: {wiki_count}件（{wiki_file}）
+  - SEC開示情報: {sec_count}件（{sec_file}）
+  {partial_failure_note}
+
+  データを確認しますか？ (y/n)
+  確認する場合は各ファイルの内容を表示します。
+
+# ユーザー応答に基づく処理:
+# - 「y」→ 各ファイルの概要を表示し、追加収集の要否を確認
+# - 「n」→ Phase 3 へ進む
+# - 追加収集要求 → 追加クエリを生成し、Phase 2 を部分的に再実行
+```
+
+### HF3: 主張採用確認（推奨）
+
+Phase 4（分析・検証）完了後、採用判定結果をユーザーに提示します。
+
+```yaml
+# Phase 4 の全タスク完了時にリーダーが出力
+output: |
+  分析が完了しました。
+
+  ## 主張の採用判定結果
+  - 採用 (accept): {accept_count}件
+  - 不採用 (reject): {reject_count}件
+  - 保留 (hold): {hold_count}件
+
+  ## 信頼度分布
+  - 高信頼度（≥0.8）: {high_count}件
+  - 中信頼度（0.5-0.8）: {mid_count}件
+  - 低信頼度（<0.5）: {low_count}件
+
+  {gap_analysis_note}
+
+  採用判定を確認・修正しますか？ (y/n)
+  確認する場合は decisions.json の詳細を表示します。
+
+# ユーザー応答に基づく処理:
+# - 「y」→ decisions.json を表示し、個別の修正を受け付ける
+# - 「n」→ Phase 5 へ進む
+# - 修正要求 → decisions.json を更新し、Phase 5 へ進む
+```
+
+### HF4: チャート確認（任意）
+
+Phase 5（可視化）完了後、生成物をユーザーに提示します。
+
+```yaml
+# Phase 5 完了時にリーダーが出力
+output: |
+  可視化が完了しました。
+
+  ## 生成されたファイル
+  - visualize/summary.md
+  - visualize/charts/ ({chart_count}件)
+    {chart_list}
+
+  チャートを確認しますか？ (y/n)
+
+# ユーザー応答に基づく処理:
+# - 「y」→ summary.md を表示し、チャート一覧を提示
+# - 「n」→ ワークフロー完了サマリーを出力
+```
+
+### HF ポイントのスキップ条件
+
+| 条件 | HF1 | HF2 | HF3 | HF4 |
+|------|-----|-----|-----|-----|
+| 通常実行 | 必須 | 表示 | 表示 | 表示 |
+| depth=shallow | 必須 | 表示 | スキップ（Phase 4 省略時） | 表示 |
+| --force フラグ | 必須 | 表示 | 表示 | 表示 |
+
+**注意**: HF1 は常に必須です。ユーザーの承認なしにリサーチを開始してはいけません。
 
 ## 処理フロー
 
 ```
 Phase 1: チーム作成（TeamCreate）
+Phase 1.5: 初期化 + [HF1] リサーチ方針確認（必須）
 Phase 2: タスク登録・依存関係設定（TaskCreate / TaskUpdate）
+  └── 深度に応じた条件付きタスク登録
 Phase 3: チームメイト起動・タスク割り当て（Task / TaskUpdate）
 Phase 4: 実行監視（TaskList / SendMessage 受信）
-  ├── HF ポイントでのユーザー確認
+  ├── [HF2] データ確認（任意）
+  ├── [HF3] 主張採用確認（推奨、shallow時スキップ）
+  ├── [HF4] チャート確認（任意）
   └── auto 深度の動的タスク追加判定
 Phase 5: シャットダウン・クリーンアップ（SendMessage / TeamDelete）
 ```
@@ -150,7 +495,17 @@ TeamCreate:
 
 ### Phase 2: タスク登録・依存関係設定
 
-12 のタスクを登録し、依存関係を設定します。
+深度に応じてタスクを登録し、依存関係を設定します。
+
+**タスク登録の深度別ルール**:
+
+| 深度 | 登録タスク | スキップタスク | 備考 |
+|------|-----------|--------------|------|
+| shallow | task-1〜7, task-12 | task-8〜11 | task-12 は task-7+task-2 に依存 |
+| deep | task-1〜12 | なし | 全タスク登録 |
+| auto | task-1〜12 | なし | 全タスク登録（動的追加の可能性あり） |
+
+**shallow モードの場合**: task-8〜11 は TaskCreate で登録しません。task-12（可視化）の blockedBy を `[task-7, task-2]` に変更します。リーダーが Phase 3 完了後に claims.json から簡易 decisions.json を直接生成します。
 
 ```yaml
 # ============================================================
@@ -297,8 +652,15 @@ TaskCreate:
     - 裏付けソースの紐付け
   activeForm: "主張を抽出中"
 
-# task-8: センチメント分析（task-7 に依存）
-TaskCreate:
+# ============================================================
+# Phase 3.5 / Phase 4: 条件付きタスク（shallow ではスキップ）
+# ============================================================
+# 以下の task-8〜11 は depth=deep または depth=auto の場合のみ登録する。
+# depth=shallow の場合は TaskCreate を実行せず、リーダーが直接
+# 簡易 decisions.json を生成して task-12 に進む。
+
+# task-8: センチメント分析（task-7 に依存）【deep/auto のみ】
+TaskCreate:  # ← depth=shallow の場合はスキップ
   subject: "センチメント分析: raw-data.json + sources → sentiment"
   description: |
     ニュース・ソーシャルメディアのセンチメント分析を実行する。
@@ -316,12 +678,8 @@ TaskCreate:
     - 全体的なセンチメントサマリー生成
   activeForm: "センチメント分析を実行中"
 
-# ============================================================
-# Phase 4: 分析・検証（2並列）
-# ============================================================
-
-# task-9: 主張分析（task-7 に依存）
-TaskCreate:
+# task-9: 主張分析（task-7 に依存）【deep/auto のみ】
+TaskCreate:  # ← depth=shallow の場合はスキップ
   subject: "主張分析: claims.json → analysis.json"
   description: |
     claims.json を分析し情報ギャップと追加調査の必要性を判定する。
@@ -340,8 +698,8 @@ TaskCreate:
     - gap_score の算出（auto 深度で使用）
   activeForm: "主張を分析中"
 
-# task-10: ファクトチェック（task-7 に依存）
-TaskCreate:
+# task-10: ファクトチェック（task-7 に依存）【deep/auto のみ】
+TaskCreate:  # ← depth=shallow の場合はスキップ
   subject: "ファクトチェック: claims.json → fact-checks.json"
   description: |
     claims.json の各主張を検証し信頼度を判定する。
@@ -363,8 +721,8 @@ TaskCreate:
 # Phase 5: 意思決定・可視化（直列）
 # ============================================================
 
-# task-11: 採用判定（task-8,9,10 に依存）
-TaskCreate:
+# task-11: 採用判定（task-8,9,10 に依存）【deep/auto のみ】
+TaskCreate:  # ← depth=shallow の場合はスキップ
   subject: "採用判定: claims + fact-checks → decisions.json"
   description: |
     各主張の採用可否を判定する。
@@ -384,7 +742,9 @@ TaskCreate:
     - 採用主張のランキング
   activeForm: "主張の採用判定を実行中"
 
-# task-12: 可視化（task-11 に依存）
+# task-12: 可視化（依存関係は深度に応じて変更）
+# - deep/auto: task-11 に依存
+# - shallow: task-7 + task-2 に依存（task-8〜11 をバイパス）
 TaskCreate:
   subject: "可視化: リサーチ結果のチャート・サマリー生成"
   description: |
@@ -394,7 +754,7 @@ TaskCreate:
     - {research_dir}/01_research/claims.json
     - {research_dir}/01_research/decisions.json
     - {research_dir}/01_research/market_data/data.json
-    - {research_dir}/01_research/sentiment_analysis.json
+    - {research_dir}/01_research/sentiment_analysis.json（shallow では存在しない場合あり）
 
     ## 出力ディレクトリ
     {research_dir}/01_research/visualize/
@@ -405,7 +765,7 @@ TaskCreate:
 
     ## 処理内容
     - 価格チャート生成
-    - センチメントチャート生成
+    - センチメントチャート生成（データがある場合のみ）
     - サマリーレポート生成
   activeForm: "リサーチ結果を可視化中"
 ```
@@ -440,12 +800,14 @@ TaskUpdate:
   taskId: "<task-7-id>"
   addBlockedBy: ["<task-6-id>"]
 
-# task-8 は task-7 の完了を待つ
+# --- 以下は depth=deep または depth=auto の場合のみ設定 ---
+
+# task-8 は task-7 の完了を待つ【deep/auto のみ】
 TaskUpdate:
   taskId: "<task-8-id>"
   addBlockedBy: ["<task-7-id>"]
 
-# Phase 4: task-9, task-10 は task-7 の完了を待つ（並列）
+# Phase 4: task-9, task-10 は task-7 の完了を待つ（並列）【deep/auto のみ】
 TaskUpdate:
   taskId: "<task-9-id>"
   addBlockedBy: ["<task-7-id>"]
@@ -454,18 +816,24 @@ TaskUpdate:
   taskId: "<task-10-id>"
   addBlockedBy: ["<task-7-id>"]
 
-# Phase 5: task-11 は task-8, task-9, task-10 の完了を待つ
+# Phase 5: task-11 は task-8, task-9, task-10 の完了を待つ【deep/auto のみ】
 TaskUpdate:
   taskId: "<task-11-id>"
   addBlockedBy: ["<task-8-id>", "<task-9-id>", "<task-10-id>"]
 
-# task-12 は task-11 の完了を待つ
+# task-12 の依存関係（深度に応じて変更）
+# deep/auto: task-11 の完了を待つ
 TaskUpdate:
   taskId: "<task-12-id>"
   addBlockedBy: ["<task-11-id>"]
+
+# shallow: task-7 と task-2 の完了を待つ（task-8〜11 をバイパス）
+# TaskUpdate:
+#   taskId: "<task-12-id>"
+#   addBlockedBy: ["<task-7-id>", "<task-2-id>"]
 ```
 
-**チェックポイント**:
+**チェックポイント（deep/auto）**:
 - [ ] 12 タスクが全て登録された
 - [ ] Phase 2 の 4 タスクが task-1 にブロックされている
 - [ ] task-6 が Phase 2 の全 4 タスクにブロックされている
@@ -474,6 +842,14 @@ TaskUpdate:
 - [ ] Phase 4 の 2 タスク（task-9, task-10）が task-7 にブロックされている
 - [ ] task-11 が task-8, task-9, task-10 にブロックされている
 - [ ] task-12 が task-11 にブロックされている
+
+**チェックポイント（shallow）**:
+- [ ] 8 タスク（task-1〜7, task-12）が登録された
+- [ ] task-8〜11 は未登録（TaskCreate を実行しない）
+- [ ] Phase 2 の 4 タスクが task-1 にブロックされている
+- [ ] task-6 が Phase 2 の全 4 タスクにブロックされている
+- [ ] task-7 が task-6 にブロックされている
+- [ ] task-12 が task-7 と task-2 にブロックされている（task-11 をバイパス）
 
 ### Phase 3: チームメイト起動・タスク割り当て
 
@@ -728,7 +1104,36 @@ TaskUpdate:
   owner: "claims-extractor"
 ```
 
-#### 3.8 finance-sentiment-analyzer の起動
+#### 3.8〜3.11 条件付きチームメイト起動（deep/auto のみ）
+
+depth=shallow の場合、3.8〜3.11 のチームメイト起動はスキップします。
+代わりに、リーダーが Phase 3 完了後（task-7 完了後）に以下の処理を直接実行します：
+
+```yaml
+# shallow モード: リーダーによる簡易 decisions.json 生成
+shallow_direct_processing:
+  trigger: "task-7（主張抽出）完了後"
+  steps:
+    1. claims.json を読み込む
+    2. 全主張を accept として decisions.json を生成
+    3. decisions.json を {research_dir}/01_research/decisions.json に書き出し
+    4. task-12 のブロックが解除される（task-7 + task-2 完了済み）
+  output_format: |
+    {
+      "decisions": [
+        {
+          "claim_id": "<claims.json の各主張ID>",
+          "decision": "accept",
+          "confidence": "<sources.json のソース信頼度を使用>",
+          "rationale": "shallow モード: 検証省略、全主張を仮採用"
+        }
+      ],
+      "mode": "shallow",
+      "note": "Phase 4 省略のため、ファクトチェック・センチメント分析は未実施"
+    }
+```
+
+#### 3.8 finance-sentiment-analyzer の起動（deep/auto のみ）
 
 ```yaml
 Task:
@@ -765,7 +1170,7 @@ TaskUpdate:
   owner: "sentiment-analyzer"
 ```
 
-#### 3.9 finance-claims-analyzer の起動
+#### 3.9 finance-claims-analyzer の起動（deep/auto のみ）
 
 ```yaml
 Task:
@@ -803,7 +1208,7 @@ TaskUpdate:
   owner: "claims-analyzer"
 ```
 
-#### 3.10 finance-fact-checker の起動
+#### 3.10 finance-fact-checker の起動（deep/auto のみ）
 
 ```yaml
 Task:
@@ -841,7 +1246,7 @@ TaskUpdate:
   owner: "fact-checker"
 ```
 
-#### 3.11 finance-decisions の起動
+#### 3.11 finance-decisions の起動（deep/auto のみ）
 
 ```yaml
 Task:
@@ -926,8 +1331,9 @@ TaskUpdate:
 ### Phase 4: 実行監視
 
 チームメイトからの SendMessage を受信しながら、タスクの進行を監視します。
+深度に応じて監視フローが異なります。
 
-**監視手順**:
+**監視手順（deep/auto）**:
 
 1. **Phase 1 監視**: query-generator からの完了通知を待つ
    - queries.json の生成を確認
@@ -937,18 +1343,7 @@ TaskUpdate:
    - market-data, web-researcher, wiki-researcher, sec-filings の完了通知を順次受信
    - 全 4 タスク完了時に task-6 のブロックが解除されたことを確認
 
-3. **[HF2] データ確認（任意）**
-   ```
-   データ収集が完了しました。
-
-   収集結果:
-   - 市場データ: {count}件
-   - Web検索: {count}件
-   - Wikipedia: {count}件
-   - SEC開示情報: {count}件
-
-   データを確認しますか？ (y/n)
-   ```
+3. **[HF2] データ確認（任意）** → HF ポイントセクション参照
 
 4. **Phase 3 監視**: source-extractor → claims-extractor → sentiment-analyzer の順次完了を待つ
    - 各タスクの完了通知を順次受信
@@ -958,46 +1353,57 @@ TaskUpdate:
    - 両方の完了通知を待つ
    - 全完了時に task-11 のブロックが解除されたことを確認
 
-6. **[HF3] 主張採用確認（推奨）**
-   ```
-   分析が完了しました。
+6. **[HF3] 主張採用確認（推奨）** → HF ポイントセクション参照
 
-   主張の採用判定結果:
-   - 採用 (accept): {count}件
-   - 不採用 (reject): {count}件
-   - 保留 (hold): {count}件
+7. **auto 深度の動的タスク追加判定**（depth=auto の場合のみ）
 
-   採用判定を確認・修正しますか？ (y/n)
-   ```
-
-7. **auto 深度の動的タスク追加判定**
-
-   depth=auto の場合、Phase 4 完了後に analysis.json の gap_score を確認:
+   claims-analyzer（task-9）完了後に analysis.json の gap_score を確認:
    ```yaml
+   # Step 1: gap_score を読み込み
+   Read: {research_dir}/01_research/analysis.json
+   gap_score = analysis.gap_analysis.gap_score
+
+   # Step 2: 判定
    if gap_score > 0.5:
-     # 追加データ収集サイクルのタスクを動的に追加
-     # task-13〜22 を作成し、依存関係を設定
-     # Phase 2〜5 を部分的に再実行
+     # 情報ギャップが大きい → 追加データ収集サイクル
+     # 「auto 深度の動的タスク追加」セクションに従い task-13〜19 を作成
+     # ユーザーに追加収集の旨を通知
+     output: |
+       情報ギャップが検出されました（gap_score: {gap_score}）。
+       追加データ収集を実行します。
+       追加タスク: task-13〜19
+
+   elif gap_score > 0.3:
+     # 中程度のギャップ → ユーザーに判断を委ねる
+     output: |
+       軽度の情報ギャップが検出されました（gap_score: {gap_score}）。
+       追加データ収集を実行しますか？ (y/n)
+
    else:
-     # Phase 5 へ進む（追加なし）
+     # ギャップなし → Phase 5 へ進む
+     # 追加タスクなし
    ```
 
 8. **Phase 5 監視**: decision-maker → visualizer の順次完了を待つ
 
-9. **[HF4] チャート確認（任意）**
-   ```
-   可視化が完了しました。
+9. **[HF4] チャート確認（任意）** → HF ポイントセクション参照
 
-   生成されたファイル:
-   - visualize/summary.md
-   - visualize/charts/ ({count}件)
+**監視手順（shallow）**:
 
-   チャートを確認しますか？ (y/n)
-   ```
+1. **Phase 1 監視**: query-generator からの完了通知を待つ
+2. **Phase 2 監視**: 4 つのデータ収集エージェントの完了を待つ
+3. **[HF2] データ確認（任意）** → HF ポイントセクション参照
+4. **Phase 3 監視**: source-extractor → claims-extractor の順次完了を待つ
+   - **注意**: sentiment-analyzer はスキップ
+5. **リーダー直接処理**: claims.json から簡易 decisions.json を生成
+   - task-12 のブロックが解除される
+6. **Phase 5 監視**: visualizer の完了を待つ
+   - **注意**: decision-maker はスキップ（リーダーが直接生成済み）
+7. **[HF4] チャート確認（任意）** → HF ポイントセクション参照
 
 **エラーハンドリング**:
 
-依存関係マトリックス:
+依存関係マトリックス（deep/auto）:
 
 ```yaml
 dependency_matrix:
@@ -1039,6 +1445,39 @@ dependency_matrix:
   # task-12 は task-11 に必須依存
   task-12:
     task-11: required
+```
+
+依存関係マトリックス（shallow）:
+
+```yaml
+dependency_matrix_shallow:
+  # Phase 2: 全て task-1 に必須依存（deep/auto と同じ）
+  task-2:
+    task-1: required
+  task-3:
+    task-1: required
+  task-4:
+    task-1: required
+  task-5:
+    task-1: required
+
+  # Phase 3: task-6 は Phase 2 に混合依存（deep/auto と同じ）
+  task-6:
+    task-2: required
+    task-3: optional
+    task-4: optional
+    task-5: optional
+
+  # task-7 は task-6 に必須依存
+  task-7:
+    task-6: required
+
+  # task-8〜11 は未登録（スキップ）
+
+  # task-12 は task-7 + task-2 に必須依存
+  task-12:
+    task-7: required   # 主張データ（claims.json）
+    task-2: required   # 市場データ（market_data/data.json）
 ```
 
 **Phase 2 部分障害時の特別処理**:
@@ -1140,6 +1579,8 @@ TeamDelete: {}
 
 ## データフロー
 
+### deep/auto モード（全タスク実行）
+
 ```
 finance-query-generator
     │
@@ -1174,6 +1615,32 @@ finance-decisions
 finance-visualize
     │
     └── visualize/summary.md, visualize/charts/
+```
+
+### shallow モード（Phase 3.5/4 省略）
+
+```
+finance-query-generator
+    │
+    └── queries.json
+           │
+           ├── finance-market-data → market_data/data.json ─────────┐
+           ├── finance-web → raw-data-web.json                     │
+           ├── finance-wiki → raw-data-wiki.json                   │
+           └── finance-sec-filings → raw-data-sec.json             │
+                  │                                                │
+                  ↓                                                │
+finance-source → raw-data.json + sources.json                     │
+                  │                                                │
+                  ↓                                                │
+finance-claims → claims.json                                      │
+                  │                                                │
+                  ↓                                                │
+research-lead（直接生成）→ decisions.json（全件 accept）          │
+                  │                                                │
+                  ↓  ←─────────────────────────────────────────────┘
+finance-visualize → visualize/
+    ※ task-8〜11（センチメント/主張分析/ファクトチェック/採用判定）はスキップ
 ```
 
 ## 出力フォーマット
@@ -1272,6 +1739,80 @@ research_team_result:
     - "記事執筆: /finance-edit --article {article_id}"
 ```
 
+### 成功時（shallow モード）
+
+```yaml
+research_team_result:
+  team_name: "research-team"
+  execution_time: "{duration}"
+  status: "success"
+  article_id: "{article_id}"
+  depth: "shallow"
+
+  task_results:
+    task-1 (クエリ生成):
+      status: "SUCCESS"
+      owner: "query-generator"
+      output: "{research_dir}/01_research/queries.json"
+
+    task-2 (市場データ):
+      status: "SUCCESS"
+      owner: "market-data"
+      output: "{research_dir}/01_research/market_data/data.json"
+
+    task-3 (Web検索):
+      status: "SUCCESS"
+      owner: "web-researcher"
+      output: "{research_dir}/01_research/raw-data-web.json"
+
+    task-4 (Wikipedia):
+      status: "SUCCESS"
+      owner: "wiki-researcher"
+      output: "{research_dir}/01_research/raw-data-wiki.json"
+
+    task-5 (SEC開示情報):
+      status: "SUCCESS"
+      owner: "sec-filings"
+      output: "{research_dir}/01_research/raw-data-sec.json"
+
+    task-6 (ソース抽出):
+      status: "SUCCESS"
+      owner: "source-extractor"
+      output: "{research_dir}/01_research/sources.json"
+
+    task-7 (主張抽出):
+      status: "SUCCESS"
+      owner: "claims-extractor"
+      output: "{research_dir}/01_research/claims.json"
+
+    task-8〜11:
+      status: "SKIPPED"
+      reason: "depth=shallow のため省略"
+
+    decisions (リーダー直接生成):
+      status: "SUCCESS"
+      owner: "research-lead"  # リーダーが直接生成
+      output: "{research_dir}/01_research/decisions.json"
+      mode: "simplified"
+      note: "全主張を仮採用（ファクトチェック・センチメント分析は未実施）"
+
+    task-12 (可視化):
+      status: "SUCCESS"
+      owner: "visualizer"
+      output: "{research_dir}/01_research/visualize/"
+
+  summary:
+    total_tasks: 8  # shallow: 8タスク（task-8〜11 はスキップ）
+    completed: 8
+    failed: 0
+    skipped: 4  # task-8〜11
+    dynamic_tasks_added: 0
+
+  next_steps:
+    - "記事執筆: /finance-edit --article {article_id}"
+    - "詳細分析が必要な場合: /finance-research --article {article_id} --depth deep"
+```
+
 ### 部分障害時
 
 ```yaml
@@ -1279,6 +1820,7 @@ research_team_result:
   team_name: "research-team"
   status: "partial_failure"
   article_id: "{article_id}"
+  depth: "{depth}"
 
   task_results:
     task-1 (クエリ生成):
@@ -1331,10 +1873,10 @@ research_team_result:
 | 4 | task-5 (SEC開示情報) | 失敗 | 任意依存、task-6 以降は部分結果で続行 |
 | 4 | task-6 (ソース抽出) | 失敗 | 全後続タスクをスキップ |
 | 4 | task-7 (主張抽出) | 失敗 | 全後続タスクをスキップ |
-| 4 | task-8 (センチメント) | 失敗 | task-11 は部分結果で続行可能（要検討） |
-| 4 | task-9 (主張分析) | 失敗 | 全後続タスクをスキップ（必須） |
-| 4 | task-10 (ファクトチェック) | 失敗 | 任意依存、task-11 は部分結果で続行 |
-| 4 | task-11 (採用判定) | 失敗 | task-12 をスキップ |
+| 4 | task-8 (センチメント) | 失敗 | deep/auto: task-11 は部分結果で続行可能。shallow: 未登録 |
+| 4 | task-9 (主張分析) | 失敗 | deep/auto: 全後続タスクをスキップ（必須）。shallow: 未登録 |
+| 4 | task-10 (ファクトチェック) | 失敗 | deep/auto: 任意依存、task-11 は部分結果で続行。shallow: 未登録 |
+| 4 | task-11 (採用判定) | 失敗 | deep/auto: task-12 をスキップ。shallow: 未登録（リーダー直接生成） |
 | 4 | task-12 (可視化) | 失敗 | 最大3回リトライ |
 | 5 | シャットダウン | 拒否 | タスク完了待ち後に再送（最大3回） |
 
@@ -1343,9 +1885,13 @@ research_team_result:
 ### MUST（必須）
 
 - [ ] TeamCreate でチームを作成してからタスクを登録する
-- [ ] addBlockedBy で 12 タスクの依存関係を明示的に設定する
-- [ ] Phase 2（4並列）と Phase 4（2並列）の並列実行を正しく制御する
-- [ ] HF ポイント（HF2, HF3, HF4）でユーザー確認を実施する
+- [ ] 深度に応じたタスク登録を行う（shallow: 8タスク, deep/auto: 12タスク）
+- [ ] addBlockedBy でタスクの依存関係を明示的に設定する
+- [ ] Phase 2（4並列）と Phase 4（2並列、deep/auto のみ）の並列実行を正しく制御する
+- [ ] HF1（リサーチ方針確認）は常に実行する
+- [ ] HF2, HF3, HF4 を深度に応じて適切に実行する（HF ポイントセクション参照）
+- [ ] shallow モードで task-8〜11 を登録しない
+- [ ] shallow モードでリーダーが直接 decisions.json を生成する
 - [ ] 全タスク完了後に shutdown_request を送信する
 - [ ] ファイルベースでデータを受け渡す（research_dir 内）
 - [ ] SendMessage にはメタデータのみ（データ本体は禁止）
@@ -1357,7 +1903,9 @@ research_team_result:
 - [ ] SendMessage でデータ本体（JSON等）を送信する
 - [ ] チームメイトのシャットダウンを確認せずにチームを削除する
 - [ ] 依存関係を無視してブロック中のタスクを実行する
-- [ ] HF ポイントをスキップする（任意の HF も必ずユーザーに提示する）
+- [ ] HF1（リサーチ方針確認）をスキップする
+- [ ] shallow モードで task-8〜11 のチームメイトを起動する
+- [ ] auto モードで gap_score の確認を省略する
 
 ### SHOULD（推奨）
 
@@ -1365,18 +1913,44 @@ research_team_result:
 - TaskList でタスク状態の変化を定期的に確認する
 - エラー発生時は詳細な原因を記録する
 - auto 深度の動的タスク追加判定を適切に実行する
+- HF2, HF3, HF4 でユーザーに有用な統計情報を提示する
 
 ## 完了条件
 
+### 共通（全深度）
+
 - [ ] TeamCreate でチームが正常に作成された
-- [ ] 12 タスクが登録され、依存関係が正しく設定された
+- [ ] HF1（リサーチ方針確認）でユーザーの承認を得た
+- [ ] 深度に応じたタスクが登録され、依存関係が正しく設定された
 - [ ] Phase 2 で 4 タスクが並列実行された
-- [ ] Phase 4 で 2 タスクが並列実行された
-- [ ] HF ポイントでユーザー確認が実施された
-- [ ] 全チームメイトがタスクを完了した（または適切にスキップされた）
+- [ ] HF2（データ確認）がユーザーに提示された
 - [ ] article-meta.json の workflow が更新された
 - [ ] 全チームメイトが正常にシャットダウンした
 - [ ] 検証結果サマリーが出力された
+
+### deep モード追加条件
+
+- [ ] 12 タスク全てが登録され実行された
+- [ ] Phase 4 で 2 タスク（task-9, task-10）が並列実行された
+- [ ] HF3（主張採用確認）がユーザーに提示された
+- [ ] HF4（チャート確認）がユーザーに提示された
+
+### shallow モード追加条件
+
+- [ ] 8 タスク（task-1〜7, task-12）のみが登録された
+- [ ] task-8〜11 は登録されていない
+- [ ] リーダーが claims.json から簡易 decisions.json を直接生成した
+- [ ] task-12 が task-7 + task-2 に依存して実行された
+- [ ] HF4（チャート確認）がユーザーに提示された
+
+### auto モード追加条件
+
+- [ ] 12 タスク全てが登録され実行された
+- [ ] Phase 4 完了後に gap_score が確認された
+- [ ] gap_score > 0.5 の場合: 追加タスク（task-13〜19）が動的に作成された
+- [ ] gap_score <= 0.5 の場合: 追加タスクなしで Phase 5 に進んだ
+- [ ] HF3（主張採用確認）がユーザーに提示された（gap_score 情報を含む）
+- [ ] HF4（チャート確認）がユーザーに提示された
 
 ## 関連エージェント
 
