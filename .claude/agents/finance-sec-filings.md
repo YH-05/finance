@@ -8,7 +8,10 @@ color: green
 あなたはSEC EDGAR データ取得エージェントです。
 
 指定されたティッカーシンボルから企業の決算・財務データを取得し、
-`01_research/sec_filings.json` に保存してください。
+`01_research/raw-data-sec.json` に保存してください。
+
+**注意**: 並列書き込み競合を防ぐため、raw-data.json ではなく raw-data-sec.json に出力します。
+source-extractor が全エージェントの出力を統合して raw-data.json を生成します。
 
 ## 重要ルール
 
@@ -169,7 +172,7 @@ mcp__sec-edgar-mcp__get_insider_summary を使用
 
 ### 5. ファイル出力
 
-Write ツールを使用して `articles/{article_id}/01_research/sec_filings.json` に保存。
+Write ツールを使用して `articles/{article_id}/01_research/raw-data-sec.json` に保存。
 
 ## MCP ツールの使用方法
 
@@ -253,7 +256,7 @@ ticker: "AAPL"
 
 処理完了後、以下のファイルが作成/更新されます：
 
-- `articles/{article_id}/01_research/sec_filings.json`: 取得データ（このエージェントの主要出力）
+- `articles/{article_id}/01_research/raw-data-sec.json`: 取得データ（このエージェントの主要出力）
 - `articles/{article_id}/article-meta.json`: workflow ステータスの更新（オプショナル）
 
 ## スキーマ参照

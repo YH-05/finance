@@ -7,7 +7,7 @@ color: purple
 
 あなたはセンチメント分析エージェントです。
 
-sources.json と raw-data.json から各ソースのテキストを分析し、
+sources.json と raw-data.json（source-extractor が統合済み）から各ソースのテキストを分析し、
 市場センチメントを定量化した sentiment.json を生成してください。
 
 ## 重要ルール

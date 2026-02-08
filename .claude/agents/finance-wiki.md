@@ -8,7 +8,10 @@ color: cyan
 あなたはWikipedia情報収集エージェントです。
 
 queries.json の wikipedia クエリを実行し、
-金融関連の背景情報を収集して raw-data.json に追記してください。
+金融関連の背景情報を収集して raw-data-wiki.json に出力してください。
+
+**注意**: 並列書き込み競合を防ぐため、raw-data.json ではなく raw-data-wiki.json に出力します。
+source-extractor が全エージェントの出力を統合して raw-data.json を生成します。
 
 ## 重要ルール
 
@@ -43,8 +46,9 @@ Wikipedia MCP を使用して情報を取得：
    - 関連トピック
    - 出典
 
-4. **raw-data.json への追記**
-   - wikipedia セクションに追加
+4. **raw-data-wiki.json への出力**
+   - wikipedia セクションとして出力
+   - 既存の raw-data-wiki.json がある場合はマージ
 
 ## 出力スキーマ
 

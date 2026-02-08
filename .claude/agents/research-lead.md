@@ -38,7 +38,7 @@ research-lead (リーダー)
     │       blockedBy: [task-1]           │
     ├── [task-5] finance-sec-filings ─────┘
     │       blockedBy: [task-1]
-    │       ↓ market_data/data.json, raw-data.json
+    │       ↓ market_data/data.json, raw-data-web.json, raw-data-wiki.json, raw-data-sec.json
     │
     │  Phase 3: データ処理（直列）
     ├── [task-6] finance-source
@@ -207,12 +207,12 @@ TaskCreate:
     {research_dir}/01_research/queries.json
 
     ## 出力ファイル
-    {research_dir}/01_research/raw-data.json（web_search セクション）
+    {research_dir}/01_research/raw-data-web.json（web_search セクション）
 
     ## 処理内容
     - 各クエリの Web 検索実行
     - 結果のフィルタリング・重複除去
-    - raw-data.json への追記
+    - raw-data-web.json への出力（並列書き込み競合対策）
   activeForm: "Web検索を実行中"
 
 # task-4: Wikipedia検索（task-1 に依存）
@@ -225,12 +225,12 @@ TaskCreate:
     {research_dir}/01_research/queries.json
 
     ## 出力ファイル
-    {research_dir}/01_research/raw-data.json（wikipedia セクション）
+    {research_dir}/01_research/raw-data-wiki.json（wikipedia セクション）
 
     ## 処理内容
     - 各クエリの Wikipedia 検索実行
     - 関連セクションの抽出
-    - raw-data.json への追記
+    - raw-data-wiki.json への出力（並列書き込み競合対策）
   activeForm: "Wikipedia検索を実行中"
 
 # task-5: SEC開示情報取得（task-1 に依存）
@@ -244,12 +244,12 @@ TaskCreate:
     - {research_dir}/01_research/queries.json
 
     ## 出力ファイル
-    {research_dir}/01_research/raw-data.json（sec_filings セクション）
+    {research_dir}/01_research/raw-data-sec.json（sec_filings セクション）
 
     ## 処理内容
     - 10-K, 10-Q, 8-K の取得
     - 決算データの抽出
-    - raw-data.json への追記
+    - raw-data-sec.json への出力（並列書き込み競合対策）
   activeForm: "SEC開示情報を取得中"
 
 # ============================================================
@@ -258,17 +258,22 @@ TaskCreate:
 
 # task-6: ソース抽出（task-2,3,4,5 に依存）
 TaskCreate:
-  subject: "ソース抽出: raw-data.json → sources.json"
+  subject: "ソース抽出: raw-data-*.json → raw-data.json → sources.json"
   description: |
-    raw-data.json から情報源を抽出・整理する。
+    個別データファイルを統合して raw-data.json を生成し、情報源を抽出・整理する。
 
-    ## 入力ファイル
-    {research_dir}/01_research/raw-data.json
+    ## 入力ファイル（個別出力、各ファイルはオプショナル）
+    - {research_dir}/01_research/raw-data-web.json（finance-web の出力）
+    - {research_dir}/01_research/raw-data-wiki.json（finance-wiki の出力）
+    - {research_dir}/01_research/raw-data-sec.json（finance-sec-filings の出力）
 
     ## 出力ファイル
-    {research_dir}/01_research/sources.json
+    - {research_dir}/01_research/raw-data.json（3ファイルを統合）
+    - {research_dir}/01_research/sources.json
 
     ## 処理内容
+    - 個別ファイルの読み込み・統合（存在しないファイルはスキップ）
+    - raw-data.json の生成
     - 情報源の分類・構造化
     - 信頼度の初期評価
     - article-meta.json の tags 更新
@@ -294,12 +299,12 @@ TaskCreate:
 
 # task-8: センチメント分析（task-7 に依存）
 TaskCreate:
-  subject: "センチメント分析: raw-data + sources → sentiment"
+  subject: "センチメント分析: raw-data.json + sources → sentiment"
   description: |
     ニュース・ソーシャルメディアのセンチメント分析を実行する。
 
     ## 入力ファイル
-    - {research_dir}/01_research/raw-data.json（web_search, sec_filings）
+    - {research_dir}/01_research/raw-data.json（source-extractor が統合済み）
     - {research_dir}/01_research/sources.json
 
     ## 出力ファイル
@@ -563,7 +568,7 @@ Task:
     3. TaskUpdate(status: in_progress) でタスクを開始
     4. {research_dir}/01_research/queries.json を読み込み
     5. web_search クエリを実行
-    6. {research_dir}/01_research/raw-data.json に web_search セクションを書き出し
+    6. {research_dir}/01_research/raw-data-web.json に web_search セクションを書き出し
     7. TaskUpdate(status: completed) でタスクを完了
     8. リーダーに SendMessage で完了通知
 
@@ -571,7 +576,7 @@ Task:
     {research_dir}
 
     ## 出力先
-    {research_dir}/01_research/raw-data.json（web_search セクション）
+    {research_dir}/01_research/raw-data-web.json（web_search セクション）
 
 TaskUpdate:
   taskId: "<task-3-id>"
@@ -596,7 +601,7 @@ Task:
     3. TaskUpdate(status: in_progress) でタスクを開始
     4. {research_dir}/01_research/queries.json を読み込み
     5. wikipedia クエリを実行
-    6. {research_dir}/01_research/raw-data.json に wikipedia セクションを書き出し
+    6. {research_dir}/01_research/raw-data-wiki.json に wikipedia セクションを書き出し
     7. TaskUpdate(status: completed) でタスクを完了
     8. リーダーに SendMessage で完了通知
 
@@ -604,7 +609,7 @@ Task:
     {research_dir}
 
     ## 出力先
-    {research_dir}/01_research/raw-data.json（wikipedia セクション）
+    {research_dir}/01_research/raw-data-wiki.json（wikipedia セクション）
 
 TaskUpdate:
   taskId: "<task-4-id>"
@@ -630,7 +635,7 @@ Task:
     4. article-meta.json から symbols を取得
     5. queries.json を参照
     6. SEC EDGAR から開示情報を取得・分析
-    7. {research_dir}/01_research/raw-data.json に sec_filings セクションを書き出し
+    7. {research_dir}/01_research/raw-data-sec.json に sec_filings セクションを書き出し
     8. TaskUpdate(status: completed) でタスクを完了
     9. リーダーに SendMessage で完了通知
 
@@ -638,7 +643,7 @@ Task:
     {research_dir}
 
     ## 出力先
-    {research_dir}/01_research/raw-data.json（sec_filings セクション）
+    {research_dir}/01_research/raw-data-sec.json（sec_filings セクション）
 
 TaskUpdate:
   taskId: "<task-5-id>"
@@ -661,20 +666,27 @@ Task:
     1. TaskList で割り当てタスクを確認
     2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
     3. TaskUpdate(status: in_progress) でタスクを開始
-    4. {research_dir}/01_research/raw-data.json を読み込み
-    5. 情報源を抽出・整理し sources.json を生成
-    6. article-meta.json の tags を更新
-    7. TaskUpdate(status: completed) でタスクを完了
-    8. リーダーに SendMessage で完了通知
+    4. 個別データファイルを読み込み・統合:
+       - {research_dir}/01_research/raw-data-web.json（存在する場合）
+       - {research_dir}/01_research/raw-data-wiki.json（存在する場合）
+       - {research_dir}/01_research/raw-data-sec.json（存在する場合）
+    5. 統合結果を {research_dir}/01_research/raw-data.json に書き出し
+    6. 情報源を抽出・整理し sources.json を生成
+    7. article-meta.json の tags を更新
+    8. TaskUpdate(status: completed) でタスクを完了
+    9. リーダーに SendMessage で完了通知
 
     ## リサーチディレクトリ
     {research_dir}
 
-    ## 入力ファイル
-    {research_dir}/01_research/raw-data.json
+    ## 入力ファイル（各ファイルはオプショナル）
+    - {research_dir}/01_research/raw-data-web.json
+    - {research_dir}/01_research/raw-data-wiki.json
+    - {research_dir}/01_research/raw-data-sec.json
 
     ## 出力先
-    {research_dir}/01_research/sources.json
+    - {research_dir}/01_research/raw-data.json（統合ファイル）
+    - {research_dir}/01_research/sources.json
 
 TaskUpdate:
   taskId: "<task-6-id>"
@@ -732,7 +744,7 @@ Task:
     1. TaskList で割り当てタスクを確認
     2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
     3. TaskUpdate(status: in_progress) でタスクを開始
-    4. raw-data.json と sources.json を読み込み
+    4. raw-data.json（source-extractor が統合済み）と sources.json を読み込み
     5. センチメント分析を実行
     6. {research_dir}/01_research/sentiment_analysis.json に書き出し
     7. TaskUpdate(status: completed) でタスクを完了
@@ -742,7 +754,7 @@ Task:
     {research_dir}
 
     ## 入力ファイル
-    - {research_dir}/01_research/raw-data.json（web_search, sec_filings）
+    - {research_dir}/01_research/raw-data.json（source-extractor が統合済み）
     - {research_dir}/01_research/sources.json
 
     ## 出力先
@@ -1134,13 +1146,14 @@ finance-query-generator
     └── {research_dir}/01_research/queries.json
            │
            ├── finance-market-data → market_data/data.json
-           ├── finance-web → raw-data.json (web_search)
-           ├── finance-wiki → raw-data.json (wikipedia)
-           └── finance-sec-filings → raw-data.json (sec_filings)
+           ├── finance-web → raw-data-web.json (web_search)
+           ├── finance-wiki → raw-data-wiki.json (wikipedia)
+           └── finance-sec-filings → raw-data-sec.json (sec_filings)
                   │
-                  ↓
+                  ↓  ※ 並列書き込み競合なし（個別ファイル）
 finance-source
-    │
+    │  ← raw-data-web.json + raw-data-wiki.json + raw-data-sec.json を統合
+    ├── raw-data.json（統合ファイル）
     └── sources.json
            │
            ↓
@@ -1190,19 +1203,19 @@ research_team_result:
     task-3 (Web検索):
       status: "SUCCESS"
       owner: "web-researcher"
-      output: "{research_dir}/01_research/raw-data.json (web_search)"
+      output: "{research_dir}/01_research/raw-data-web.json"
       result_count: {count}
 
     task-4 (Wikipedia):
       status: "SUCCESS"
       owner: "wiki-researcher"
-      output: "{research_dir}/01_research/raw-data.json (wikipedia)"
+      output: "{research_dir}/01_research/raw-data-wiki.json"
       result_count: {count}
 
     task-5 (SEC開示情報):
       status: "SUCCESS"
       owner: "sec-filings"
-      output: "{research_dir}/01_research/raw-data.json (sec_filings)"
+      output: "{research_dir}/01_research/raw-data-sec.json"
       result_count: {count}
 
     task-6 (ソース抽出):

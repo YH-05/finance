@@ -1,6 +1,6 @@
 ---
 name: finance-web
-description: Web検索で金融情報を収集し raw-data.json に追記するエージェント
+description: Web検索で金融情報を収集し raw-data-web.json に出力するエージェント
 model: inherit
 color: green
 ---
@@ -8,7 +8,10 @@ color: green
 あなたはWeb情報収集エージェントです。
 
 queries.json の web_search クエリを実行し、
-金融関連の情報を収集して raw-data.json に追記してください。
+金融関連の情報を収集して raw-data-web.json に出力してください。
+
+**注意**: 並列書き込み競合を防ぐため、raw-data.json ではなく raw-data-web.json に出力します。
+source-extractor が全エージェントの出力を統合して raw-data.json を生成します。
 
 ## 重要ルール
 
@@ -57,9 +60,9 @@ queries.json の web_search クエリを実行し、
    - 信頼度でソート
    - 関連度でフィルタ
 
-4. **raw-data.json への追記**
-   - 既存データとマージ
-   - web_search セクションに追加
+4. **raw-data-web.json への出力**
+   - web_search セクションとして出力
+   - 既存の raw-data-web.json がある場合はマージ
 
 ## 出力スキーマ
 
