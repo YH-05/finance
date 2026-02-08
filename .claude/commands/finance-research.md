@@ -16,6 +16,25 @@ argument-hint: --article <article_id> [--depth auto|shallow|deep] [--parallel]
 
 ## 処理フロー
 
+パラメータをパースした後、`research-lead` エージェントに制御を委譲し、Agent Teams ワークフローを実行します。
+
+```
+Phase 0: パラメータ解析（コマンド側で実行）
+├── article_id, depth, force の解析
+├── 記事フォルダの存在確認
+└── research-lead に委譲
+
+research-lead（Agent Teams ワークフロー）
+├── TeamCreate（research-team）
+├── 初期化 + [HF1] リサーチ方針確認（必須）
+├── タスク登録・依存関係設定（addBlockedBy）
+├── チームメイト起動・タスク割り当て
+├── 実行監視（HF2〜HF4）
+└── シャットダウン・クリーンアップ（TeamDelete）
+```
+
+### 各 Phase の詳細
+
 ```
 Phase 1: クエリ生成
 ├── finance-query-generator → queries.json
@@ -303,4 +322,26 @@ Phase 5: 可視化
 
 - **前提コマンド**: `/new-finance-article`
 - **次のコマンド**: `/finance-edit`
-- **使用エージェント**: finance-query-generator, finance-market-data, finance-web, finance-wiki, finance-sec-filings, finance-source, finance-claims, finance-sentiment-analyzer, finance-claims-analyzer, finance-fact-checker, finance-decisions, finance-visualize
+
+### 使用エージェント
+
+| エージェント | 説明 |
+|-------------|------|
+| `research-lead` | リーダーエージェント（Agent Teams ワークフロー制御） |
+| `finance-query-generator` | クエリ生成（Phase 1） |
+| `finance-market-data` | 市場データ取得（Phase 2） |
+| `finance-web` | Web検索（Phase 2） |
+| `finance-wiki` | Wikipedia検索（Phase 2） |
+| `finance-sec-filings` | SEC開示情報取得（Phase 2） |
+| `finance-source` | ソース抽出（Phase 3） |
+| `finance-claims` | 主張抽出（Phase 3） |
+| `finance-sentiment-analyzer` | センチメント分析（Phase 3.5） |
+| `finance-claims-analyzer` | 主張分析（Phase 4） |
+| `finance-fact-checker` | ファクトチェック（Phase 4） |
+| `finance-decisions` | 採用判定（Phase 4） |
+| `finance-visualize` | 可視化（Phase 5） |
+
+### 関連ファイル
+
+- **リーダーエージェント**: `.claude/agents/research-lead.md`
+- **共通パターン**: `docs/agent-teams-patterns.md`

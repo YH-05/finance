@@ -283,7 +283,8 @@ updated_at: 2026-01-30
 
 | エージェント | 説明 |
 |--------------|------|
-| `test-orchestrator` | テスト作成の並列実行を制御するオーケストレーター |
+| `test-lead` | テスト作成ワークフローのAgent Teamsリーダー（test-planner→unit/property並列→integration） |
+| `test-orchestrator` | テスト作成のルーター（test-leadに委譲する薄いラッパー） |
 | `test-planner` | テスト設計（TODOリスト作成、テストケース分類、優先度付け） |
 | `test-unit-writer` | 単体テスト作成（関数・クラス単位） |
 | `test-property-writer` | Hypothesisを使用したプロパティベーステスト作成 |
@@ -313,26 +314,13 @@ updated_at: 2026-01-30
 
 ### 金融ニュース収集エージェント
 
-| エージェント | 説明 |
-|--------------|------|
-| `finance-news-orchestrator` | テーマ別ニュース収集の並列実行を制御 |
-| `finance-news-collector` | RSSフィードから金融ニュースを収集しGitHub Projectに投稿 |
-| `finance-news-index` | Index（株価指数）関連ニュース収集 |
-| `finance-news-stock` | Stock（個別銘柄）関連ニュース収集 |
-| `finance-news-sector` | Sector（セクター分析）関連ニュース収集 |
-| `finance-news-macro-cnbc` | Macro Economics（CNBC系フィード）関連ニュース収集 |
-| `finance-news-macro-other` | Macro Economics（経済指標・中央銀行）関連ニュース収集 |
-| `finance-news-finance-cnbc` | Finance（CNBC系フィード）関連ニュース収集 |
-| `finance-news-finance-nasdaq` | Finance（NASDAQ系フィード）関連ニュース収集 |
-| `finance-news-finance-other` | Finance（金融メディア）関連ニュース収集 |
-| `finance-news-ai-cnbc` | AI（CNBC Technology）関連ニュース収集 |
-| `finance-news-ai-nasdaq` | AI（NASDAQ系フィード）関連ニュース収集 |
-| `finance-news-ai-tech` | AI（テック系メディア）関連ニュース収集 |
+> 金融ニュース収集の旧オーケストレーター（`finance-news-orchestrator` 等13エージェント）は Agent Teams 移行に伴い廃止済み。現在は `news-article-fetcher` を直接使用。
 
 ### 金融リサーチエージェント
 
 | エージェント | 説明 |
 |--------------|------|
+| `research-lead` | finance-researchワークフローのAgent Teamsリーダー（5フェーズ12エージェントの依存グラフを制御） |
 | `finance-query-generator` | 金融トピックから検索クエリを生成 |
 | `finance-web` | Web検索で金融情報を収集しraw-data.jsonに追記 |
 | `finance-wiki` | Wikipediaから金融関連の背景情報を収集 |
@@ -367,9 +355,15 @@ updated_at: 2026-01-30
 
 | エージェント | 説明 |
 |--------------|------|
-| `weekly-report-news-aggregator` | GitHub Project からニュースを集約し週次レポート用データを生成 |
-| `weekly-report-writer` | 4つのスキルをロードして週次マーケットレポートを生成 |
-| `weekly-report-publisher` | 週次レポートを GitHub Issue として投稿し Project #15 に追加 |
+| `weekly-report-lead` | 週次レポート生成ワークフローのAgent Teamsリーダー（6チームメイトを直列制御） |
+| `wr-news-aggregator` | GitHub Projectからニュースを集約し週次レポート用データを生成 |
+| `wr-data-aggregator` | 入力データの統合・正規化（リターン変換、ティッカー正規化、欠損補完） |
+| `wr-comment-generator` | 集約データとニュースから全10セクションのコメント文を生成 |
+| `wr-template-renderer` | 集約データとコメントをテンプレートに埋め込みMarkdownレポートを生成 |
+| `wr-report-validator` | 生成レポートのフォーマット・文字数・データ整合性・内容品質を検証 |
+| `wr-report-publisher` | 検証済みレポートをGitHub Issueとして投稿しProject #15に追加 |
+| `weekly-report-news-aggregator` | GitHub Projectからニュースを集約（旧実装、`wr-news-aggregator`に移行済み） |
+| `weekly-report-publisher` | 週次レポートをGitHub Issueとして投稿（旧実装、`wr-report-publisher`に移行済み） |
 | `weekly-comment-indices-fetcher` | 週次コメント用の指数関連ニュースを収集 |
 | `weekly-comment-mag7-fetcher` | 週次コメント用のMAG7関連ニュースを収集 |
 | `weekly-comment-sectors-fetcher` | 週次コメント用のセクター関連ニュースを収集 |
@@ -434,12 +428,12 @@ updated_at: 2026-01-30
 ### コマンド → スキル → エージェント
 
 - `/commit-and-pr` → `commit-and-pr` → `quality-checker`, `code-simplifier`
-- `/finance-news-workflow` → `finance-news-workflow` → `finance-news-orchestrator` → 6テーマ別エージェント
-- `/finance-research` → `deep-research` → 14リサーチエージェント
+- `/finance-research` → `deep-research` → `research-lead`（Agent Teams）→ 12リサーチエージェント
+- `/generate-market-report` → `generate-market-report` → `weekly-report-lead`（Agent Teams）→ 6チームメイト
 - `/issue-implement <番号>` → `issue-implement-single` → `api-usage-researcher`(条件付き), `test-writer`, `pydantic-model-designer`, `feature-implementer`, `code-simplifier`, `quality-checker`
 - `/plan-project` → `plan-project` → `project-researcher`, `project-planner`, `project-decomposer`
 - `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`（非推奨）
-- `/write-tests` → `tdd-development` → `test-orchestrator` → 5テストエージェント
+- `/write-tests` → `tdd-development` → `test-orchestrator` → `test-lead`（Agent Teams）→ 4テストエージェント
 - `/index` → `index` → `Explore`, `package-readme-updater`
 
 詳細なMermaid図は [README.md](README.md#-依存関係図) を参照。
@@ -465,11 +459,11 @@ updated_at: 2026-01-30
 ```
 finance/
 ├── .claude/                    # Claude Code 設定
-│   ├── agents/                 # サブエージェント定義（79個）
+│   ├── agents/                 # サブエージェント定義（100個）
 │   │   └── deep-research/      # ディープリサーチエージェント群（11個）
-│   ├── commands/               # スラッシュコマンド（19個）
+│   ├── commands/               # スラッシュコマンド（20個）
 │   ├── rules/                  # 共有ルール（規約詳細）
-│   └── skills/                 # スキル定義（48個）
+│   └── skills/                 # スキル定義（52個）
 │
 ├── src/                        # ソースコード
 │   ├── database/               # コアインフラ（DB, utils, logging）

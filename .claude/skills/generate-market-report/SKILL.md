@@ -35,7 +35,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task, WebSearch
 |--------|------|-------------------|-----------|-----------|
 | 基本モード | 指定日のレポート生成 | なし | なし | - |
 | `--weekly-comment` | 火曜〜火曜の週次コメント（旧形式） | **あり** | **自動** | 3000字以上 |
-| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 3200字以上 |
+| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 5700字以上 |
 
 ## 処理フロー
 
@@ -198,25 +198,20 @@ articles/weekly_report/{YYYY-MM-DD}/
 
 ## 関連リソース
 
-### サブエージェント
+### サブエージェント（--weekly モード用）
 
 | エージェント | 説明 | 使用モード |
 |-------------|------|-----------|
-| `weekly-report-news-aggregator` | GitHub Project からニュース集約 | --weekly |
-| `weekly-report-writer` | 4つのスキルでレポート生成 | --weekly |
-| `weekly-report-publisher` | GitHub Issue として投稿（`report` ラベル + Project #15 登録） | 自動実行 |
+| `weekly-report-lead` | リーダーエージェント（ワークフロー制御） | --weekly |
+| `wr-news-aggregator` | GitHub Project からニュース集約 | --weekly |
+| `wr-data-aggregator` | 入力データの統合・正規化 | --weekly |
+| `wr-comment-generator` | セクション別コメント生成 | --weekly |
+| `wr-template-renderer` | テンプレートへのデータ埋め込み | --weekly |
+| `wr-report-validator` | レポート品質検証 | --weekly |
+| `wr-report-publisher` | GitHub Issue 作成 & Project 追加 | --weekly |
 | `weekly-comment-indices-fetcher` | 指数ニュース収集 | --weekly-comment |
 | `weekly-comment-mag7-fetcher` | MAG7 ニュース収集 | --weekly-comment |
 | `weekly-comment-sectors-fetcher` | セクターニュース収集 | --weekly-comment |
-
-### スキル
-
-| スキル | 説明 |
-|--------|------|
-| `weekly-data-aggregation` | 入力データの集約・正規化 |
-| `weekly-comment-generation` | セクション別コメント生成 |
-| `weekly-template-rendering` | テンプレートへのデータ埋め込み |
-| `weekly-report-validation` | 品質検証 |
 
 ### テンプレート
 

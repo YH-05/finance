@@ -13,7 +13,7 @@ argument-hint: [--date YYYY-MM-DD] [--weekly] [--weekly-comment] [--project 15] 
 |--------|------|-------------------|-----------|---------|
 | 基本モード | 指定日のレポート生成 | なし | なし | 簡易レポート |
 | `--weekly-comment` | 火曜〜火曜の週次コメント | **あり** | **自動** | 3000字以上のコメント |
-| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 3200字以上の詳細レポート |
+| `--weekly` | **フル週次レポート（推奨）** | **あり** | **自動** | 5700字以上の詳細レポート |
 
 `--weekly` は `--weekly-comment` の上位互換であり、GitHub Project からのニュース集約機能が追加されています。
 
@@ -128,8 +128,9 @@ Phase 1: 初期化
 ├── 出力ディレクトリ作成
 │   └── articles/weekly_report/{YYYY-MM-DD}/
 ├── 必要ツール確認（gh CLI）
-└── テンプレート確認
-    └── template/market_report/weekly_market_report_template.md
+├── テンプレート確認
+│   └── template/market_report/weekly_market_report_template.md
+└── weekly-report-lead に委譲（Agent Teams ワークフロー）
 
 Phase 2: 市場データ収集（★PerformanceAnalyzer4Agent使用）
 ├── Pythonスクリプト実行（collect_market_performance.py）
@@ -906,52 +907,24 @@ if not no_search:
 }
 ```
 
-### Phase 5: レポート生成
+### Phase 5: レポート生成（Agent Teams）
 
-```python
-# weekly-report-writer サブエージェントを呼び出し
-Task(
-    subagent_type="weekly-report-writer",
-    description="週次レポート生成",
-    prompt=f"""
-入力データから週次マーケットレポートを生成してください。
+Phase 1（初期化）完了後に `weekly-report-lead` エージェントに制御を委譲し、Agent Teams ワークフローでレポートを生成します。
 
-## 入力パラメータ
-
-report_dir: {OUTPUT_DIR}
-
-## 期待される処理
-
-1. データ集約（weekly-data-aggregation スキル）
-   - 入力: {OUTPUT_DIR}/data/ 内の全 JSON
-   - 出力: {OUTPUT_DIR}/data/aggregated_data.json
-
-2. コメント生成（weekly-comment-generation スキル）
-   - 入力: aggregated_data.json
-   - 出力: {OUTPUT_DIR}/data/comments.json
-
-3. テンプレート埋め込み（weekly-template-rendering スキル）
-   - テンプレート: template/market_report/weekly_market_report_template.md
-   - 出力: {OUTPUT_DIR}/02_edit/weekly_report.md
-
-4. 品質検証（weekly-report-validation スキル）
-   - 出力: {OUTPUT_DIR}/validation_result.json
-
-## 文字数目標
-
-| セクション | 目標文字数 |
-|-----------|-----------|
-| ハイライト | 200字 |
-| 指数コメント | 500字 |
-| MAG7コメント | 800字 |
-| 上位セクターコメント | 400字 |
-| 下位セクターコメント | 400字 |
-| マクロ経済コメント | 400字 |
-| 投資テーマコメント | 300字 |
-| 来週の材料 | 200字 |
-| **合計** | **3200字以上** |
-"""
-)
+```
+weekly-report-lead（Agent Teams ワークフロー）
+├── TeamCreate: weekly-report-team を作成
+├── TaskCreate: 6タスクを登録（直列依存関係）
+│   ├── task-1: wr-news-aggregator（ニュース集約）
+│   ├── task-2: wr-data-aggregator（データ集約）← blockedBy: task-1
+│   ├── task-3: wr-comment-generator（コメント生成）← blockedBy: task-2
+│   ├── task-4: wr-template-renderer（テンプレート埋め込み）← blockedBy: task-3
+│   ├── task-5: wr-report-validator（品質検証）← blockedBy: task-4
+│   └── task-6: wr-report-publisher（Issue投稿）← blockedBy: task-5
+├── 各チームメイトを起動・タスク割り当て
+├── 実行監視（SendMessage 受信）
+├── 全タスク完了後シャットダウン
+└── TeamDelete でクリーンアップ
 ```
 
 ### Phase 6: 品質検証
@@ -1597,6 +1570,8 @@ project_number: 15
 
 ---
 
+---
+
 ## 関連リソース
 
 ### Pythonスクリプト
@@ -1610,14 +1585,17 @@ project_number: 15
 - **基本レポート**: `template/market_report/02_edit/first_draft.md`
 - **サンプルレポート**: `template/market_report/sample/`
 
-### サブエージェント
+### サブエージェント（--weekly モード用）
 
-#### --weekly モード用
-| エージェント | 説明 |
-|-------------|------|
-| `weekly-report-news-aggregator` | GitHub Project からニュース集約 |
-| `weekly-report-writer` | 4つのスキルでレポート生成 |
-| `weekly-report-publisher` | GitHub Issue として投稿 |
+| エージェント | 説明 | タスク |
+|-------------|------|--------|
+| `weekly-report-lead` | リーダーエージェント（ワークフロー制御） | - |
+| `wr-news-aggregator` | GitHub Project からニュース集約 | task-1 |
+| `wr-data-aggregator` | 入力データの統合・正規化 | task-2 |
+| `wr-comment-generator` | セクション別コメント生成（5700字以上） | task-3 |
+| `wr-template-renderer` | テンプレートへのデータ埋め込み | task-4 |
+| `wr-report-validator` | レポート品質検証 | task-5 |
+| `wr-report-publisher` | GitHub Issue 作成 & Project 追加 | task-6 |
 
 #### --weekly-comment モード用（互換性維持）
 | エージェント | 説明 |
@@ -1625,14 +1603,6 @@ project_number: 15
 | `weekly-comment-indices-fetcher` | 指数ニュース収集 |
 | `weekly-comment-mag7-fetcher` | MAG7 ニュース収集 |
 | `weekly-comment-sectors-fetcher` | セクターニュース収集 |
-
-### スキル（--weekly モードで使用）
-| スキル | 説明 |
-|--------|------|
-| `weekly-data-aggregation` | 入力データの集約・正規化 |
-| `weekly-comment-generation` | セクション別コメント生成 |
-| `weekly-template-rendering` | テンプレートへのデータ埋め込み |
-| `weekly-report-validation` | 品質検証（フォーマット・文字数・整合性） |
 
 ### GitHub Project
 - **Finance News Collection**: [Project #15](https://github.com/users/YH-05/projects/15)

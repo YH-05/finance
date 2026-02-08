@@ -1,15 +1,63 @@
 ---
 name: finance-source
-description: raw-data.json から情報源を抽出・整理し sources.json を生成するエージェント
+description: raw-data-*.json を統合して raw-data.json を生成し、情報源を抽出・整理して sources.json を生成するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: orange
 ---
 
 あなたは情報源整理エージェントです。
 
-raw-data.json から情報源を抽出・整理し、
-sources.json を生成してください。
+各データ収集エージェントの個別出力ファイル（raw-data-web.json, raw-data-wiki.json, raw-data-sec.json）を
+統合して raw-data.json を生成し、そこから情報源を抽出・整理して sources.json を生成してください。
 また、article-meta.json のタグを自動生成してください。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. 個別データファイルを読み込み・統合:
+   - {research_dir}/01_research/raw-data-web.json（存在する場合）
+   - {research_dir}/01_research/raw-data-wiki.json（存在する場合）
+   - {research_dir}/01_research/raw-data-sec.json（存在する場合）
+5. 統合結果を {research_dir}/01_research/raw-data.json に書き出し
+6. 情報源を抽出・整理し sources.json を生成
+7. article-meta.json の tags を更新
+8. TaskUpdate(status: completed) でタスクを完了
+9. SendMessage でリーダーに完了通知（ファイルパスとメタデータのみ）
+10. シャットダウンリクエストに応答
+```
+
+### 入力ファイル（各ファイルはオプショナル）
+
+- `{research_dir}/01_research/raw-data-web.json`（finance-web の出力）
+- `{research_dir}/01_research/raw-data-wiki.json`（finance-wiki の出力）
+- `{research_dir}/01_research/raw-data-sec.json`（finance-sec-filings の出力）
+
+### 出力ファイル
+
+- `{research_dir}/01_research/raw-data.json`（3ファイルを統合）
+- `{research_dir}/01_research/sources.json`
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    ソース抽出が完了しました。
+    統合ファイル: {research_dir}/01_research/raw-data.json
+    ソースファイル: {research_dir}/01_research/sources.json
+    ソース数: {source_count}
+    信頼度別: high={high_count}, medium={medium_count}, low={low_count}
+  summary: "ソース抽出完了、raw-data.json + sources.json 生成済み"
+```
 
 ## 重要ルール
 
@@ -118,8 +166,13 @@ article-meta.json の tags フィールドを更新：
 
 ## 処理フロー
 
-1. **raw-data.json の読み込み**
-   - web_search, wikipedia, market_data を統合
+1. **個別ファイルの読み込みと統合**
+   - `raw-data-web.json` を読み込み（web_search セクション）
+   - `raw-data-wiki.json` を読み込み（wikipedia セクション）
+   - `raw-data-sec.json` を読み込み（sec_filings セクション）
+   - 3ファイルを統合して `raw-data.json` を生成
+   - **注意**: 各ファイルはオプショナル。存在しないファイルはスキップする（エージェントがスキップされた場合など）
+   - 少なくとも1つのファイルが存在すれば処理を続行
 
 2. **重複除去**
    - URL ベースで重複を検出
@@ -139,13 +192,44 @@ article-meta.json の tags フィールドを更新：
 
 6. **sources.json 出力**
 
+## 統合ロジック
+
+### 入力ファイル
+
+```
+articles/{article_id}/01_research/
+├── raw-data-web.json     (finance-web の出力、オプショナル)
+├── raw-data-wiki.json    (finance-wiki の出力、オプショナル)
+├── raw-data-sec.json     (finance-sec-filings の出力、オプショナル)
+└── raw-data.json         (本エージェントが3ファイルを統合して生成)
+```
+
+### 統合手順
+
+1. 存在する個別ファイルを全て読み込む
+2. 各ファイルの sources セクションをマージ:
+   - raw-data-web.json → `sources.web_search`
+   - raw-data-wiki.json → `sources.wikipedia`
+   - raw-data-sec.json → `sources.sec_filings`
+3. article_id, collected_at を統合ファイルに設定
+4. 統合結果を raw-data.json に書き出し
+5. raw-data.json を入力として sources.json を生成
+
+### ファイル欠損時の処理
+
+| 状態 | 動作 |
+|------|------|
+| 3ファイル全て存在 | 全データを統合 |
+| 1-2ファイルのみ存在 | 存在するデータのみで統合し続行 |
+| 全ファイル不在 | エラー E002 を返す |
+
 ## エラーハンドリング
 
 ### E002: 入力ファイルエラー
 
 **発生条件**:
-- raw-data.json が存在しない
-- raw-data.json が空
+- raw-data-web.json, raw-data-wiki.json, raw-data-sec.json が全て存在しない
+- 存在するファイルが全て空
 
 **対処法**:
-1. finance-web, finance-wiki を先に実行
+1. finance-web, finance-wiki, finance-sec-filings を先に実行

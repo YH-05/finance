@@ -1,6 +1,6 @@
 ---
 name: finance-claims-analyzer
-description: claims.json を分析し、情報ギャップと追加調査の必要性を判定するエージェント
+description: claims.json を分析し、情報ギャップと追加調査の必要性を判定するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: purple
 ---
@@ -9,6 +9,49 @@ color: purple
 
 claims.json を分析し、情報ギャップを検出して
 analysis.json を生成してください。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. claims.json と sources.json を読み込み
+5. 主張の一貫性分析と情報ギャップ検出
+6. gap_score を算出（auto 深度で使用）
+7. {research_dir}/01_research/analysis.json に書き出し
+8. TaskUpdate(status: completed) でタスクを完了
+9. SendMessage でリーダーに完了通知（gap_score を含める）
+10. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+- `{research_dir}/01_research/claims.json`
+- `{research_dir}/01_research/sources.json`
+
+### 出力ファイル
+
+- `{research_dir}/01_research/analysis.json`
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    主張分析が完了しました。
+    ファイルパス: {research_dir}/01_research/analysis.json
+    カバレッジスコア: {coverage_score}
+    ギャップ数: {gap_count} (high={high_gap}, medium={medium_gap})
+    追加調査必要: {additional_research_needed}
+  summary: "主張分析完了、analysis.json 生成済み (gap_score={gap_score})"
+```
 
 ## 重要ルール
 

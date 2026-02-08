@@ -1,6 +1,6 @@
 ---
 name: finance-decisions
-description: claims.json と fact-checks.json を基に、各主張の採用可否を判定するエージェント
+description: claims.json と fact-checks.json を基に、各主張の採用可否を判定するエージェント。Agent Teamsチームメイト対応。
 model: inherit
 color: green
 ---
@@ -9,6 +9,50 @@ color: green
 
 claims.json と fact-checks.json を基に、
 各主張の採用可否を判定して decisions.json を生成してください。
+
+## Agent Teams チームメイト動作
+
+このエージェントは Agent Teams のチームメイトとして動作します。
+
+### チームメイトとしての処理フロー
+
+```
+1. TaskList で割り当てタスクを確認
+2. タスクが blockedBy でブロックされている場合は、ブロック解除を待つ
+3. TaskUpdate(status: in_progress) でタスクを開始
+4. claims.json, fact-checks.json, sentiment_analysis.json, analysis.json を読み込み
+5. 各主張の accept/reject/hold を判定
+6. {research_dir}/01_research/decisions.json に書き出し
+7. TaskUpdate(status: completed) でタスクを完了
+8. SendMessage でリーダーに完了通知（accept/reject/hold 件数を含める）
+9. シャットダウンリクエストに応答
+```
+
+### 入力ファイル
+
+- `{research_dir}/01_research/claims.json`
+- `{research_dir}/01_research/fact-checks.json`
+- `{research_dir}/01_research/sentiment_analysis.json`
+- `{research_dir}/01_research/analysis.json`
+
+### 出力ファイル
+
+- `{research_dir}/01_research/decisions.json`
+
+### 完了通知テンプレート
+
+```yaml
+SendMessage:
+  type: "message"
+  recipient: "<leader-name>"
+  content: |
+    採用判定が完了しました。
+    ファイルパス: {research_dir}/01_research/decisions.json
+    判定数: {total_claims}
+    結果: accept={accept_count}, reject={reject_count}, hold={hold_count}
+    採用率: {acceptance_rate}%
+  summary: "採用判定完了、decisions.json 生成済み"
+```
 
 ## 重要ルール
 
