@@ -169,11 +169,12 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: [changes, test]
-    # Run integration tests only on main branch push (to control API costs)
-    # and only when unit tests pass
+    # Run integration tests on main branch push (with Python changes),
+    # scheduled runs, or manual workflow_dispatch (to control API costs)
     if: |
-      (needs.changes.outputs.python == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
-      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      (needs.changes.outputs.python == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch'
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
