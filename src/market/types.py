@@ -30,6 +30,8 @@ class DataSource(str, Enum):
         Bloomberg Terminal data source
     FACTSET : str
         FactSet data source
+    ETF_COM : str
+        ETF.com data source
     """
 
     YFINANCE = "yfinance"
@@ -37,6 +39,7 @@ class DataSource(str, Enum):
     LOCAL = "local"
     BLOOMBERG = "bloomberg"
     FACTSET = "factset"
+    ETF_COM = "etfcom"
 
 
 @dataclass
