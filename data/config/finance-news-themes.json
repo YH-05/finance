@@ -152,9 +152,11 @@
   },
   "execution": {
     "batch_size": 10,
-    "max_articles_per_theme": 20,
-    "concurrency": 3,
-    "timeout_minutes": 10,
+    "max_articles_per_theme": 10,
+    "top_n_default": 10,
+    "concurrency": 11,
+    "timeout_minutes": 5,
+    "processing_mode": "rss_summary",
     "checkpoint_enabled": true,
     "checkpoint_dir": ".tmp/checkpoints"
   }

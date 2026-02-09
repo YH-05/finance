@@ -47,6 +47,9 @@ DEFAULT_DAYS = 7
 DEFAULT_THEMES = "all"
 """Default theme filter (all themes)."""
 
+DEFAULT_TOP_N = 10
+"""Default number of top articles per theme (sorted by published date, newest first)."""
+
 DEFAULT_DATA_DIR = Path("data/raw/rss")
 """Default RSS data directory."""
 
@@ -272,6 +275,12 @@ def parse_args(args: list[str] | None = None) -> argparse.Namespace:
         type=str,
         default=DEFAULT_THEMES,
         help="Comma-separated theme keys or 'all' (default: all)",
+    )
+    parser.add_argument(
+        "--top-n",
+        type=int,
+        default=DEFAULT_TOP_N,
+        help=f"Max articles per theme, newest first (default: {DEFAULT_TOP_N})",
     )
     parser.add_argument(
         "--output",
@@ -564,6 +573,51 @@ def filter_by_date(
 
 
 # ---------------------------------------------------------------------------
+# Top-N Selection
+# ---------------------------------------------------------------------------
+
+
+def select_top_n(
+    items: list[dict[str, Any]],
+    top_n: int,
+) -> list[dict[str, Any]]:
+    """Select top N articles sorted by published date (newest first).
+
+    Parameters
+    ----------
+    items : list[dict[str, Any]]
+        List of RSS items.
+    top_n : int
+        Maximum number of articles to return.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Top N articles sorted by newest first.
+    """
+    if top_n <= 0:
+        return items
+
+    # Sort by published date descending (newest first)
+    sorted_items = sorted(
+        items,
+        key=lambda x: x.get("published", ""),
+        reverse=True,
+    )
+
+    selected = sorted_items[:top_n]
+
+    logger.debug(
+        "Top-N selection: %d -> %d items (top %d)",
+        len(items),
+        len(selected),
+        top_n,
+    )
+
+    return selected
+
+
+# ---------------------------------------------------------------------------
 # Duplicate Checking
 # ---------------------------------------------------------------------------
 
@@ -780,6 +834,7 @@ async def run_async(
     days: int,
     themes_filter: list[str] | None,
     output_path: Path,
+    top_n: int = DEFAULT_TOP_N,
 ) -> int:
     """Run the main async processing.
 
@@ -791,6 +846,8 @@ async def run_async(
         List of theme keys to process.
     output_path : Path
         Output file path.
+    top_n : int
+        Maximum number of articles per theme (newest first).
 
     Returns
     -------
@@ -836,16 +893,21 @@ async def run_async(
         unique, duplicates = check_duplicates(date_filtered, existing_urls)
         total_duplicates += len(duplicates)
 
+        # Select top N articles (newest first)
+        selected = select_top_n(unique, top_n)
+
         theme_results[theme_key] = {
-            "articles": unique,
+            "articles": selected,
             "blocked": [],
         }
 
         logger.info(
-            "Theme %s: %d articles, %d duplicates",
+            "Theme %s: %d articles (%d duplicates, top %d of %d unique)",
             theme_key,
-            len(unique),
+            len(selected),
             len(duplicates),
+            top_n,
+            len(unique),
         )
 
     # Calculate stats
@@ -908,6 +970,7 @@ def main(args: list[str] | None = None) -> int:
             days=parsed.days,
             themes_filter=themes_filter,
             output_path=output_path,
+            top_n=parsed.top_n,
         )
     )
 

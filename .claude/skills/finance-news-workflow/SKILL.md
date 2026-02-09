@@ -1,6 +1,6 @@
 ---
 name: finance-news-workflow
-description: 金融ニュース収集の3フェーズワークフロー。Python CLI前処理→テーマ別news-article-fetcher並列呼び出し→結果報告。
+description: 金融ニュース収集の簡素化ワークフロー。Python CLI前処理→RSS要約ベースIssue一括作成→結果報告。全テーマ5分以内完了。
 allowed-tools: Read, Bash, Task
 ---
 
@@ -8,44 +8,66 @@ allowed-tools: Read, Bash, Task
 
 RSSフィードから金融ニュースを自動収集し、GitHub Project #15に投稿するワークフロースキル。
 
+## 処理時間目標
+
+| 指標 | 目標 | 根拠 |
+|------|------|------|
+| 全テーマ合計 | 5分以内 | Issue #1855 受け入れ条件 |
+| Phase 1（Python前処理） | 30秒以内 | 決定論的処理のみ、ネットワークI/Oなし |
+| Phase 2（Issue一括作成） | 4分以内 | 11テーマ並列、各テーマ最大10件 |
+| Phase 3（結果報告） | 30秒以内 | 集約・表示のみ |
+
 ## アーキテクチャ
 
 ```
 /finance-news-workflow (このスキル = オーケストレーター)
   │
-  ├── Phase 1: Python CLI前処理
+  ├── Phase 1: Python CLI前処理（30秒以内）
   │     └── prepare_news_session.py
   │           ├── 既存Issue取得・URL抽出
-  │           ├── RSS取得（全テーマ一括）
+  │           ├── RSS取得（全テーマ一括、ローカルデータから）
   │           ├── 公開日時フィルタリング
   │           ├── 重複チェック
+  │           ├── 上位N件選択（--top-n、デフォルト10件/テーマ）
   │           └── テーマ別JSONファイル出力（.tmp/news-batches/）
   │
-  ├── Phase 2: news-article-fetcher 並列呼び出し（11テーマ）
-  │     ├── Task(news-article-fetcher, index.json)
-  │     ├── Task(news-article-fetcher, stock.json)
-  │     ├── Task(news-article-fetcher, sector.json)
-  │     ├── Task(news-article-fetcher, macro_cnbc.json)
-  │     ├── Task(news-article-fetcher, macro_other.json)
-  │     ├── Task(news-article-fetcher, ai_cnbc.json)
-  │     ├── Task(news-article-fetcher, ai_nasdaq.json)
-  │     ├── Task(news-article-fetcher, ai_tech.json)
-  │     ├── Task(news-article-fetcher, finance_cnbc.json)
-  │     ├── Task(news-article-fetcher, finance_nasdaq.json)
-  │     └── Task(news-article-fetcher, finance_other.json)
+  ├── Phase 2: news-article-fetcher 並列呼び出し（4分以内）
+  │     ├── RSS要約ベースでIssue作成（本文取得スキップ）
+  │     ├── 11テーマを1メッセージで並列呼び出し
+  │     └── 各テーマ最大10件（Phase 1で制限済み）
   │
-  └── Phase 3: 結果集約・報告
+  └── Phase 3: 結果集約・報告（30秒以内）
         └── 各エージェントの完了を待ち、統計を報告
 ```
+
+### 旧アーキテクチャとの比較
+
+| 項目 | 旧フロー（6段階） | 新フロー（3段階） |
+|------|-------------------|-------------------|
+| 処理段階数 | 6段階 | 3段階 |
+| テーマ判定 | AI判定（遅い） | フィード割当で代替（不要） |
+| コンテンツ取得 | 3-tier フォールバック（遅い） | RSS要約を直接使用（高速） |
+| 処理時間 | 10-30分 | 5分以内 |
+| Issue品質 | 本文ベース要約 | RSS要約ベース（needs-review付き） |
+| 記事数/テーマ | 最大20件 | 最大10件（--top-n） |
+
+### 簡素化の根拠
+
+1. **テーマ判定の廃止**: `finance-news-themes.json` でフィードがテーマ別に割当済み。AI判定は冗長
+2. **コンテンツ取得の遅延**: 本文取得（trafilatura/Playwright）は1記事5-30秒。RSS要約で先にIssue作成し、本文検証は後から実行可能
+3. **上位N件制限**: 各テーマ最新10件に制限することで処理量を大幅削減
 
 ## 使用方法
 
 ```bash
-# 標準実行（デフォルト: 過去7日間）
+# 標準実行（デフォルト: 過去7日間、各テーマ最新10件）
 /finance-news-workflow
 
 # オプション付き
-/finance-news-workflow --days 3 --themes "index,macro_cnbc"
+/finance-news-workflow --days 3 --themes "index,macro_cnbc" --top-n 5
+
+# 本文検証モード（後から実行、needs-review ラベルの記事を検証）
+/finance-news-workflow --verify-content
 ```
 
 ## Phase 1: Python CLI前処理
@@ -63,15 +85,18 @@ gh auth status
 ### ステップ1.2: Python CLI実行 + テーマ別JSON出力
 
 ```bash
-# 1. セッションファイル作成
-uv run python scripts/prepare_news_session.py --days ${days}
+# 1. セッションファイル作成（--top-n で各テーマの記事数を制限）
+uv run python scripts/prepare_news_session.py --days ${days} --top-n ${top_n}
 
 # 2. テーマ別JSONファイル作成
 python3 << 'EOF'
 import json
 from pathlib import Path
 
-session_file = Path(".tmp/news-YYYYMMDD-HHMMSS.json")  # 最新のセッションファイル
+# 最新のセッションファイルを取得
+tmp_dir = Path(".tmp")
+session_files = sorted(tmp_dir.glob("news-*.json"), reverse=True)
+session_file = session_files[0]
 session = json.load(open(session_file))
 
 output_dir = Path(".tmp/news-batches")
@@ -133,7 +158,7 @@ EOF
 }
 ```
 
-## Phase 2: news-article-fetcher 並列呼び出し
+## Phase 2: news-article-fetcher 並列呼び出し（RSS要約モード）
 
 ### ステップ2.1: 全テーマを並列で呼び出し
 
@@ -153,20 +178,24 @@ for theme in themes:
     json_file = f".tmp/news-batches/{theme}.json"
     data = json.load(open(json_file))
 
+    if not data["articles"]:
+        # 記事が0件のテーマはスキップ
+        continue
+
     Task(
         subagent_type="news-article-fetcher",
         description=f"{theme}: {len(data['articles'])}件の記事処理",
-        prompt=f"""以下の記事データを処理してください。
+        prompt=f"""以下の記事データをRSS要約モードで処理してください。
 
 ```json
 {json.dumps(data, ensure_ascii=False, indent=2)}
 ```
 
-各記事に対して:
-1. 3段階フォールバックで本文取得
-2. 日本語要約生成
-3. Issue作成・close
-4. Project追加・Status/Date設定
+RSS要約モード:
+1. 本文取得（trafilatura/Playwright）をスキップ
+2. RSS要約をそのまま使用してIssue作成
+3. 全Issueに needs-review ラベルを付与
+4. Issue作成・close → Project追加 → Status/Date設定
 
 JSON形式で結果を返してください。""",
         run_in_background=True  # バックグラウンド実行
@@ -181,7 +210,7 @@ JSON形式で結果を返してください。""",
 # TaskOutputで各エージェントの結果を取得
 results = {}
 for theme in themes:
-    result = TaskOutput(task_id=agent_ids[theme], block=True, timeout=600000)
+    result = TaskOutput(task_id=agent_ids[theme], block=True, timeout=300000)
     results[theme] = parse_result(result)
 ```
 
@@ -204,16 +233,17 @@ for theme in themes:
 
 ### テーマ別統計
 
-| テーマ | 対象 | 作成 | 失敗 | 抽出方法 |
-|--------|------|------|------|----------|
-| Index（株価指数） | {n} | {created} | {failed} | Tier1/2/3 |
-| Stock（個別銘柄） | {n} | {created} | {failed} | Tier1/2/3 |
-| ... | ... | ... | ... | ... |
+| テーマ | 対象 | 作成 | 失敗 |
+|--------|------|------|------|
+| Index（株価指数） | {n} | {created} | {failed} |
+| Stock（個別銘柄） | {n} | {created} | {failed} |
+| ... | ... | ... | ... |
 
 ### セッション情報
 
 - **実行時刻**: {timestamp}
 - **セッションファイル**: {session_file}
+- **処理モード**: RSS要約モード（needs-review付き）
 ```
 
 ## パラメータ一覧
@@ -222,6 +252,8 @@ for theme in themes:
 |-----------|-----------|------|
 | --days | 7 | 過去何日分のニュースを対象とするか |
 | --themes | all | 対象テーマ（index,stock,... / all） |
+| --top-n | 10 | 各テーマの最大記事数（公開日時の新しい順） |
+| --verify-content | false | 本文検証モード（needs-review記事を後から検証） |
 
 ## テーマ一覧
 
@@ -259,6 +291,17 @@ for theme in themes:
 
 ## 変更履歴
 
+### 2026-02-09: ワークフロー処理の簡素化（Issue #1855）
+
+- **処理フロー簡素化**: 6段階 → 3段階に削減
+  - テーマ判定（AI）を廃止（フィード割当で代替）
+  - コンテンツ取得（3-tier）を遅延実行に変更
+  - RSS要約ベースでIssue作成（高速）
+- **処理時間目標設定**: 全テーマ5分以内
+- **上位N件制限**: `--top-n` パラメータ追加（デフォルト10件/テーマ）
+- **RSS要約モード**: 本文取得をスキップ、needs-reviewラベル付与
+- **本文検証モード**: `--verify-content` で後から本文検証可能
+
 ### 2026-01-29: テーマエージェント廃止
 
 - **テーマエージェント廃止**: 11個のテーマエージェントを `trash/agents/` に移動
@@ -275,6 +318,7 @@ for theme in themes:
 ## 制約事項
 
 - **GitHub API**: 1時間あたり5000リクエスト
-- **RSS取得**: フィードの保持件数に依存（通常10〜50件）
+- **RSS取得**: フィードの保持件数に依存（通常10-50件）
 - **重複チェック**: Python CLIで事前実行
 - **実行頻度**: 1日1回を推奨
+- **処理時間**: 全テーマ5分以内（目標）
