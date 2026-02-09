@@ -11,6 +11,8 @@ FundamentalsCollector
     Scrapes individual ETF profile pages for key-value fundamental data.
 FundFlowsCollector
     Scrapes the fund flows page for daily flow data.
+HistoricalFundFlowsCollector
+    Fetches historical fund flow data via the ETF.com REST API.
 ETFComSession
     curl_cffi-based HTTP session with bot-blocking countermeasures.
 
@@ -56,6 +58,7 @@ Examples
 from market.etfcom.collectors import (
     FundamentalsCollector,
     FundFlowsCollector,
+    HistoricalFundFlowsCollector,
     TickerCollector,
 )
 from market.etfcom.errors import (
@@ -84,6 +87,7 @@ __all__ = [
     "FundFlowsCollector",
     "FundamentalsCollector",
     "FundamentalsRecord",
+    "HistoricalFundFlowsCollector",
     "RetryConfig",
     "ScrapingConfig",
     "TickerCollector",
