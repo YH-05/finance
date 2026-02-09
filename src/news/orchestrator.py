@@ -23,9 +23,12 @@ Examples
 
 from __future__ import annotations
 
+import time
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
+from urllib.parse import urlparse
 
 from news.collectors.rss import RSSCollector
 from news.extractors.trafilatura import TrafilaturaExtractor
@@ -34,12 +37,14 @@ from news.markdown_generator import MarkdownExporter
 from news.models import (
     CategoryPublishResult,
     CollectedArticle,
+    DomainExtractionRate,
     ExtractedArticle,
     ExtractionStatus,
     FailureRecord,
     FeedError,
     PublicationStatus,
     PublishedArticle,
+    StageMetrics,
     SummarizationStatus,
     SummarizedArticle,
     WorkflowResult,
@@ -210,6 +215,7 @@ class NewsWorkflowOrchestrator:
         total_stages = 6 if is_per_category else 4
 
         started_at = datetime.now(timezone.utc)
+        stage_metrics_list: list[StageMetrics] = []
 
         # Show workflow configuration
         mode_parts: list[str] = []
@@ -228,11 +234,26 @@ class NewsWorkflowOrchestrator:
 
         # 1. Collect articles from RSS feeds
         self._log_stage_start(f"1/{total_stages}", "RSSフィードから記事を収集")
+        stage_start = time.monotonic()
         collected = await self._collector.collect(
             max_age_hours=self._config.filtering.max_age_hours
         )
         feed_errors = self._collector.feed_errors
-        print(f"  収集完了: {len(collected)}件")
+        stage_elapsed = time.monotonic() - stage_start
+        stage_metrics_list.append(
+            StageMetrics(
+                stage="collection",
+                elapsed_seconds=round(stage_elapsed, 2),
+                item_count=len(collected),
+            )
+        )
+        logger.info(
+            "Stage completed",
+            stage="collection",
+            elapsed_seconds=round(stage_elapsed, 2),
+            item_count=len(collected),
+        )
+        print(f"  収集完了: {len(collected)}件 ({stage_elapsed:.1f}秒)")
 
         # Apply status filtering
         if statuses:
@@ -264,18 +285,45 @@ class NewsWorkflowOrchestrator:
             print("  -> 処理対象の記事がありません")
             finished_at = datetime.now(timezone.utc)
             result = self._build_empty_result(
-                started_at, finished_at, feed_errors=feed_errors
+                started_at,
+                finished_at,
+                feed_errors=feed_errors,
+                stage_metrics=stage_metrics_list,
             )
             self._save_result(result)
             return result
 
         # 2. Extract body text from articles
         self._log_stage_start(f"2/{total_stages}", "記事本文を抽出")
+        stage_start = time.monotonic()
         extracted = await self._extract_batch_with_progress(collected)
+        stage_elapsed = time.monotonic() - stage_start
         extracted_success = [
             e for e in extracted if e.extraction_status == ExtractionStatus.SUCCESS
         ]
-        self._log_stage_complete("抽出", len(extracted_success), len(extracted))
+        stage_metrics_list.append(
+            StageMetrics(
+                stage="extraction",
+                elapsed_seconds=round(stage_elapsed, 2),
+                item_count=len(extracted),
+            )
+        )
+        logger.info(
+            "Stage completed",
+            stage="extraction",
+            elapsed_seconds=round(stage_elapsed, 2),
+            item_count=len(extracted),
+            success_count=len(extracted_success),
+        )
+        self._log_stage_complete(
+            "抽出",
+            len(extracted_success),
+            len(extracted),
+            extra=f"({stage_elapsed:.1f}秒)",
+        )
+
+        # Compute domain extraction rates
+        domain_rates = self._compute_domain_extraction_rates(extracted)
 
         if not extracted_success:
             print("  -> 抽出成功した記事がありません")
@@ -289,19 +337,42 @@ class NewsWorkflowOrchestrator:
                 finished_at=finished_at,
                 early_duplicates=early_dedup_count,
                 feed_errors=feed_errors,
+                stage_metrics=stage_metrics_list,
+                domain_extraction_rates=domain_rates,
             )
             self._save_result(result)
             return result
 
         # 3. Summarize articles with AI
         self._log_stage_start(f"3/{total_stages}", "AI要約を生成")
+        stage_start = time.monotonic()
         summarized = await self._summarize_batch_with_progress(extracted_success)
+        stage_elapsed = time.monotonic() - stage_start
         summarized_success = [
             s
             for s in summarized
             if s.summarization_status == SummarizationStatus.SUCCESS
         ]
-        self._log_stage_complete("要約", len(summarized_success), len(summarized))
+        stage_metrics_list.append(
+            StageMetrics(
+                stage="summarization",
+                elapsed_seconds=round(stage_elapsed, 2),
+                item_count=len(summarized),
+            )
+        )
+        logger.info(
+            "Stage completed",
+            stage="summarization",
+            elapsed_seconds=round(stage_elapsed, 2),
+            item_count=len(summarized),
+            success_count=len(summarized_success),
+        )
+        self._log_stage_complete(
+            "要約",
+            len(summarized_success),
+            len(summarized),
+            extra=f"({stage_elapsed:.1f}秒)",
+        )
 
         if not summarized_success:
             print("  -> 要約成功した記事がありません")
@@ -315,6 +386,8 @@ class NewsWorkflowOrchestrator:
                 finished_at=finished_at,
                 early_duplicates=early_dedup_count,
                 feed_errors=feed_errors,
+                stage_metrics=stage_metrics_list,
+                domain_extraction_rates=domain_rates,
             )
             self._save_result(result)
             return result
@@ -326,8 +399,23 @@ class NewsWorkflowOrchestrator:
         if is_per_category:
             # 4. Group articles by category
             self._log_stage_start(f"4/{total_stages}", "カテゴリ別にグループ化")
+            stage_start = time.monotonic()
             groups = self._grouper.group(summarized_success)
-            print(f"  グループ数: {len(groups)}件")
+            stage_elapsed = time.monotonic() - stage_start
+            stage_metrics_list.append(
+                StageMetrics(
+                    stage="grouping",
+                    elapsed_seconds=round(stage_elapsed, 2),
+                    item_count=len(groups),
+                )
+            )
+            logger.info(
+                "Stage completed",
+                stage="grouping",
+                elapsed_seconds=round(stage_elapsed, 2),
+                item_count=len(groups),
+            )
+            print(f"  グループ数: {len(groups)}件 ({stage_elapsed:.1f}秒)")
             for group in groups:
                 print(
                     f"    [{group.category_label}] {group.date}: "
@@ -339,10 +427,25 @@ class NewsWorkflowOrchestrator:
                 self._log_stage_start(
                     f"5/{total_stages}", "Markdownファイルをエクスポート"
                 )
+                stage_start = time.monotonic()
                 export_dir = Path(self._config.publishing.export_dir)
                 for group in groups:
                     export_path = self._exporter.export(group, export_dir=export_dir)
                     print(f"  -> {export_path}")
+                stage_elapsed = time.monotonic() - stage_start
+                stage_metrics_list.append(
+                    StageMetrics(
+                        stage="export",
+                        elapsed_seconds=round(stage_elapsed, 2),
+                        item_count=len(groups),
+                    )
+                )
+                logger.info(
+                    "Stage completed",
+                    stage="export",
+                    elapsed_seconds=round(stage_elapsed, 2),
+                    item_count=len(groups),
+                )
             else:
                 self._log_stage_start(
                     f"5/{total_stages}", "Markdownエクスポート (スキップ)"
@@ -363,8 +466,23 @@ class NewsWorkflowOrchestrator:
                     else "カテゴリ別GitHub Issue作成 (dry-run)"
                 )
                 self._log_stage_start(f"6/{total_stages}", stage_desc)
+                stage_start = time.monotonic()
                 category_results = await self._publisher.publish_category_batch(
                     groups, dry_run=dry_run
+                )
+                stage_elapsed = time.monotonic() - stage_start
+                stage_metrics_list.append(
+                    StageMetrics(
+                        stage="publishing",
+                        elapsed_seconds=round(stage_elapsed, 2),
+                        item_count=len(category_results),
+                    )
+                )
+                logger.info(
+                    "Stage completed",
+                    stage="publishing",
+                    elapsed_seconds=round(stage_elapsed, 2),
+                    item_count=len(category_results),
                 )
                 success_count = sum(
                     1 for r in category_results if r.status == PublicationStatus.SUCCESS
@@ -374,7 +492,11 @@ class NewsWorkflowOrchestrator:
                     for r in category_results
                     if r.status == PublicationStatus.DUPLICATE
                 )
-                extra = f"(重複: {duplicate_count}件)" if duplicate_count > 0 else ""
+                extra_parts: list[str] = []
+                if duplicate_count > 0:
+                    extra_parts.append(f"重複: {duplicate_count}件")
+                extra_parts.append(f"{stage_elapsed:.1f}秒")
+                extra = f"({', '.join(extra_parts)})"
                 self._log_stage_complete(
                     "公開", success_count, len(category_results), extra=extra
                 )
@@ -385,8 +507,23 @@ class NewsWorkflowOrchestrator:
                 "GitHub Issueを作成" if not dry_run else "GitHub Issue作成 (dry-run)"
             )
             self._log_stage_start(f"4/{total_stages}", stage_desc)
+            stage_start = time.monotonic()
             published = await self._publish_batch_with_progress(
                 summarized_success, dry_run
+            )
+            stage_elapsed = time.monotonic() - stage_start
+            stage_metrics_list.append(
+                StageMetrics(
+                    stage="publishing",
+                    elapsed_seconds=round(stage_elapsed, 2),
+                    item_count=len(published),
+                )
+            )
+            logger.info(
+                "Stage completed",
+                stage="publishing",
+                elapsed_seconds=round(stage_elapsed, 2),
+                item_count=len(published),
             )
             success_count = sum(
                 1
@@ -398,7 +535,11 @@ class NewsWorkflowOrchestrator:
                 for p in published
                 if p.publication_status == PublicationStatus.DUPLICATE
             )
-            extra = f"(重複: {duplicate_count}件)" if duplicate_count > 0 else ""
+            extra_parts_pub: list[str] = []
+            if duplicate_count > 0:
+                extra_parts_pub.append(f"重複: {duplicate_count}件")
+            extra_parts_pub.append(f"{stage_elapsed:.1f}秒")
+            extra = f"({', '.join(extra_parts_pub)})"
             self._log_stage_complete("公開", success_count, len(published), extra=extra)
 
         finished_at = datetime.now(timezone.utc)
@@ -414,6 +555,8 @@ class NewsWorkflowOrchestrator:
             early_duplicates=early_dedup_count,
             feed_errors=feed_errors,
             category_results=category_results,
+            stage_metrics=stage_metrics_list,
+            domain_extraction_rates=domain_rates,
         )
 
         # Save result to JSON file
@@ -441,6 +584,23 @@ class NewsWorkflowOrchestrator:
         if result.total_duplicates > 0:
             print(f"  重複（公開時）: {result.total_duplicates}件")
         print(f"  処理時間: {elapsed:.1f}秒")
+
+        # Stage timing summary
+        if result.stage_metrics:
+            print("\n  ステージ別処理時間:")
+            for sm in result.stage_metrics:
+                print(f"    {sm.stage}: {sm.elapsed_seconds:.1f}秒 ({sm.item_count}件)")
+
+        # Domain extraction rate summary
+        if result.domain_extraction_rates:
+            print("\n  ドメイン別抽出成功率:")
+            for dr in sorted(
+                result.domain_extraction_rates,
+                key=lambda x: x.success_rate,
+            ):
+                print(
+                    f"    {dr.domain}: {dr.success}/{dr.total} ({dr.success_rate:.0f}%)"
+                )
 
         return result
 
@@ -568,11 +728,70 @@ class NewsWorkflowOrchestrator:
 
         return published
 
+    def _compute_domain_extraction_rates(
+        self,
+        extracted: list[ExtractedArticle],
+    ) -> list[DomainExtractionRate]:
+        """Compute extraction success rate per domain.
+
+        Parameters
+        ----------
+        extracted : list[ExtractedArticle]
+            List of extracted articles to analyze.
+
+        Returns
+        -------
+        list[DomainExtractionRate]
+            Extraction success rates grouped by domain.
+        """
+        domain_stats: dict[str, dict[str, int]] = defaultdict(
+            lambda: {"total": 0, "success": 0, "failed": 0}
+        )
+
+        for article in extracted:
+            url_str = str(article.collected.url)
+            parsed = urlparse(url_str)
+            domain = parsed.netloc.lower()
+            # Strip www. prefix for cleaner grouping
+            if domain.startswith("www."):
+                domain = domain[4:]
+
+            domain_stats[domain]["total"] += 1
+            if article.extraction_status == ExtractionStatus.SUCCESS:
+                domain_stats[domain]["success"] += 1
+            else:
+                domain_stats[domain]["failed"] += 1
+
+        rates: list[DomainExtractionRate] = []
+        for domain, stats in sorted(domain_stats.items()):
+            total = stats["total"]
+            success = stats["success"]
+            failed = stats["failed"]
+            success_rate = (success / total * 100) if total > 0 else 0.0
+            rates.append(
+                DomainExtractionRate(
+                    domain=domain,
+                    total=total,
+                    success=success,
+                    failed=failed,
+                    success_rate=round(success_rate, 1),
+                )
+            )
+
+        logger.info(
+            "Domain extraction rates computed",
+            domain_count=len(rates),
+            domains={r.domain: f"{r.success_rate}%" for r in rates},
+        )
+
+        return rates
+
     def _build_empty_result(
         self,
         started_at: datetime,
         finished_at: datetime,
         feed_errors: list[FeedError] | None = None,
+        stage_metrics: list[StageMetrics] | None = None,
     ) -> WorkflowResult:
         """Build an empty WorkflowResult when no articles to process."""
         return WorkflowResult(
@@ -589,6 +808,7 @@ class NewsWorkflowOrchestrator:
             elapsed_seconds=(finished_at - started_at).total_seconds(),
             published_articles=[],
             feed_errors=feed_errors or [],
+            stage_metrics=stage_metrics or [],
         )
 
     def _filter_by_status(
@@ -630,6 +850,8 @@ class NewsWorkflowOrchestrator:
         early_duplicates: int = 0,
         feed_errors: list[FeedError] | None = None,
         category_results: list[CategoryPublishResult] | None = None,
+        stage_metrics: list[StageMetrics] | None = None,
+        domain_extraction_rates: list[DomainExtractionRate] | None = None,
     ) -> WorkflowResult:
         """Build WorkflowResult from pipeline outputs.
 
@@ -655,6 +877,12 @@ class NewsWorkflowOrchestrator:
             Defaults to None (empty list).
         category_results : list[CategoryPublishResult] | None, optional
             Results of category-based Issue publishing.
+            Defaults to None (empty list).
+        stage_metrics : list[StageMetrics] | None, optional
+            Processing time metrics for each workflow stage.
+            Defaults to None (empty list).
+        domain_extraction_rates : list[DomainExtractionRate] | None, optional
+            Extraction success rate per domain.
             Defaults to None (empty list).
 
         Returns
@@ -735,6 +963,8 @@ class NewsWorkflowOrchestrator:
             published_articles=published_articles,
             feed_errors=feed_errors or [],
             category_results=category_results or [],
+            stage_metrics=stage_metrics or [],
+            domain_extraction_rates=domain_extraction_rates or [],
         )
 
     def _save_result(self, result: WorkflowResult) -> Path:

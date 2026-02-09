@@ -815,6 +815,106 @@ class FeedError(BaseModel):
     )
 
 
+class StageMetrics(BaseModel):
+    """Processing time metrics for a single workflow stage.
+
+    Represents timing information for one stage of the news collection
+    workflow pipeline (e.g., collection, extraction, summarization, publishing).
+
+    Attributes
+    ----------
+    stage : str
+        Name of the workflow stage (e.g., "collection", "extraction",
+        "summarization", "grouping", "export", "publishing").
+    elapsed_seconds : float
+        Total elapsed time for this stage in seconds.
+    item_count : int
+        Number of items processed in this stage.
+
+    Examples
+    --------
+    >>> from news.models import StageMetrics
+    >>> metrics = StageMetrics(
+    ...     stage="extraction",
+    ...     elapsed_seconds=12.5,
+    ...     item_count=20,
+    ... )
+    >>> metrics.stage
+    'extraction'
+    >>> metrics.elapsed_seconds
+    12.5
+    """
+
+    stage: str = Field(
+        ...,
+        description="Name of the workflow stage (e.g., 'collection', 'extraction')",
+    )
+    elapsed_seconds: float = Field(
+        ...,
+        description="Total elapsed time for this stage in seconds",
+    )
+    item_count: int = Field(
+        ...,
+        description="Number of items processed in this stage",
+    )
+
+
+class DomainExtractionRate(BaseModel):
+    """Extraction success rate for a specific domain.
+
+    Represents how many articles from a particular domain were
+    successfully extracted versus failed, providing visibility into
+    which sources are reliable for content extraction.
+
+    Attributes
+    ----------
+    domain : str
+        The domain name (e.g., "cnbc.com", "reuters.com").
+    total : int
+        Total number of extraction attempts for this domain.
+    success : int
+        Number of successful extractions.
+    failed : int
+        Number of failed extractions.
+    success_rate : float
+        Success rate as a percentage (0.0 to 100.0).
+
+    Examples
+    --------
+    >>> from news.models import DomainExtractionRate
+    >>> rate = DomainExtractionRate(
+    ...     domain="cnbc.com",
+    ...     total=10,
+    ...     success=8,
+    ...     failed=2,
+    ...     success_rate=80.0,
+    ... )
+    >>> rate.success_rate
+    80.0
+    """
+
+    domain: str = Field(
+        ...,
+        description="The domain name (e.g., 'cnbc.com')",
+    )
+    total: int = Field(
+        ...,
+        description="Total number of extraction attempts for this domain",
+    )
+    success: int = Field(
+        ...,
+        description="Number of successful extractions",
+    )
+    failed: int = Field(
+        ...,
+        description="Number of failed extractions",
+    )
+    success_rate: float = Field(
+        ...,
+        description="Success rate as a percentage (0.0 to 100.0)",
+    )
+
+
 class WorkflowResult(BaseModel):
     """The result of a complete news collection workflow execution.
 
@@ -934,6 +1034,14 @@ class WorkflowResult(BaseModel):
         default_factory=list,
         description="Results of category-based Issue publishing",
     )
+    stage_metrics: list[StageMetrics] = Field(
+        default_factory=list,
+        description="Processing time metrics for each workflow stage",
+    )
+    domain_extraction_rates: list[DomainExtractionRate] = Field(
+        default_factory=list,
+        description="Extraction success rate per domain",
+    )
 
 
 __all__ = [
@@ -941,6 +1049,7 @@ __all__ = [
     "CategoryGroup",
     "CategoryPublishResult",
     "CollectedArticle",
+    "DomainExtractionRate",
     "ExtractedArticle",
     "ExtractionStatus",
     "FailureRecord",
@@ -948,6 +1057,7 @@ __all__ = [
     "PublicationStatus",
     "PublishedArticle",
     "SourceType",
+    "StageMetrics",
     "StructuredSummary",
     "SummarizationStatus",
     "SummarizedArticle",

@@ -140,7 +140,7 @@ extraction:
 
 # 要約設定
 summarization:
-  concurrency: 3
+  concurrency: 5
   timeout_seconds: 60
   max_retries: 3
   prompt_template: |
