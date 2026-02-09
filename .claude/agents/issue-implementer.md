@@ -1,6 +1,6 @@
 ---
 name: issue-implementer
-description: issue-implement-single スキルをロードして単一の GitHub Issue を実装する専門エージェント。Python/Agent/Command/Skill の4タイプに対応。context: fork により分離されたコンテキストで実行される。
+description: "issue-implement-single スキルをロードして単一の GitHub Issue を実装する専門エージェント。Python/Agent/Command/Skill の4タイプに対応。context: fork により分離されたコンテキストで実行される。"
 model: inherit
 color: green
 tools:

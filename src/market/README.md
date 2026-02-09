@@ -109,7 +109,26 @@ for result in results:
     print(f"{result.security}: {result.row_count} data points")
 ```
 
-#### 4. データのエクスポート
+#### 4. ETF.com から ETF データを取得
+
+```python
+from market.etfcom import TickerCollector, FundamentalsCollector
+
+# ETF ティッカーリストを取得
+ticker_collector = TickerCollector()
+ticker_df = ticker_collector.fetch()
+print(f"全 ETF 数: {len(ticker_df)}")
+
+# 上位10 ETF のティッカーを取得
+top_tickers = ticker_df.nlargest(10, "aum")["ticker"].tolist()
+
+# ファンダメンタルズ情報を取得
+fundamentals_collector = FundamentalsCollector()
+fundamentals_df = fundamentals_collector.fetch(tickers=top_tickers)
+print(fundamentals_df[["ticker", "expense_ratio", "aum", "dividend_yield"]])
+```
+
+#### 5. データのエクスポート
 
 ```python
 from market import DataExporter
@@ -141,13 +160,14 @@ print(agent_output)
 
 | モジュール | 状態 | ファイル数 | 実装行数 |
 |-----------|------|----------|---------|
-| `yfinance/` | ✅ 実装済み | 4 | 661 |
-| `fred/` | ✅ 実装済み | 9 | 1,301 |
-| `bloomberg/` | ✅ 実装済み | 6 | 895 |
-| `factset/` | 🚧 開発中 | 4 | 1,218 |
-| `cache/` | ✅ 実装済み | 3 | 326 |
-| `export/` | ✅ 実装済み | 2 | 218 |
-| `alternative/` | 🚧 開発中 | 2 | 171 |
+| `yfinance/` | ✅ 実装済み | 4 | 1,443 |
+| `fred/` | ✅ 実装済み | 9 | 2,724 |
+| `bloomberg/` | ✅ 実装済み | 6 | 2,937 |
+| `etfcom/` | ✅ 実装済み | 7 | 2,541 |
+| `factset/` | 🚧 開発中 | 4 | 2,179 |
+| `cache/` | ✅ 実装済み | 3 | 648 |
+| `export/` | ✅ 実装済み | 2 | 586 |
+| `alternative/` | 🚧 開発中 | 2 | 252 |
 | `schema.py` | ✅ 実装済み | 1 | 211 |
 | `types.py` | ✅ 実装済み | 1 | 120 |
 | `errors.py` | ✅ 実装済み | 1 | 248 |
@@ -162,6 +182,7 @@ print(agent_output)
 | `market.yfinance` | Yahoo Finance データ取得（OHLCV、財務指標、指数、為替） | ✅ 実装済み |
 | `market.fred` | FRED 経済指標データ取得（GDP、金利、CPI、失業率など）、履歴キャッシュ機能 | ✅ 実装済み |
 | `market.bloomberg` | Bloomberg Terminal API 連携（履歴データ、リファレンスデータ、ニュース） | ✅ 実装済み |
+| `market.etfcom` | ETF.com スクレイピング（ティッカーリスト、ファンダメンタルズ、資金フロー） | ✅ 実装済み |
 | `market.factset` | FactSet データ取得・処理ユーティリティ | 🚧 開発中 |
 | `market.alternative` | オルタナティブデータソース、時系列分析 | 🚧 開発中 |
 | `market.export` | データエクスポート（JSON、CSV、SQLite、AI エージェント向け JSON） | ✅ 実装済み |
@@ -273,6 +294,89 @@ options = BloombergFetchOptions(
 
 results = fetcher.get_historical_data(options)
 ```
+
+---
+
+#### TickerCollector
+
+ETF.com のスクリーナーページから ETF ティッカーリストを取得します。
+
+**説明**: ETF.com のスクリーナーをスクレイピングし、全 ETF のティッカーシンボルと基本情報を取得します。curl_cffi を使用したブラウザ偽装でボット検出を回避します。
+
+**基本的な使い方**:
+
+```python
+from market.etfcom import TickerCollector
+
+# ティッカーリストを取得
+collector = TickerCollector()
+df = collector.fetch()
+
+# 結果を確認（pandas DataFrame）
+print(f"取得した ETF 数: {len(df)}")
+print(df[["ticker", "name", "aum"]].head())
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|----------|------|--------|
+| `fetch()` | ETF.com スクリーナーから全 ETF データを取得 | `pd.DataFrame` |
+
+---
+
+#### FundamentalsCollector
+
+ETF.com の個別 ETF プロファイルページからファンダメンタルズデータを取得します。
+
+**説明**: 指定した ETF のプロファイルページをスクレイピングし、経費率、資産規模、配当利回りなどのファンダメンタルズ情報を取得します。
+
+**基本的な使い方**:
+
+```python
+from market.etfcom import FundamentalsCollector
+
+# 特定の ETF のファンダメンタルズを取得
+collector = FundamentalsCollector()
+df = collector.fetch(tickers=["SPY", "VOO", "IVV"])
+
+# 結果を確認
+print(df[["ticker", "expense_ratio", "aum", "dividend_yield"]].head())
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|----------|------|--------|
+| `fetch(tickers)` | 指定した ETF のファンダメンタルズを取得 | `pd.DataFrame` |
+
+---
+
+#### FundFlowsCollector
+
+ETF.com のファンドフローページから日次資金フローデータを取得します。
+
+**説明**: ETF への資金流入・流出の日次データを取得します。マーケットセンチメントや ETF の人気動向を分析できます。
+
+**基本的な使い方**:
+
+```python
+from market.etfcom import FundFlowsCollector
+
+# ファンドフローデータを取得
+collector = FundFlowsCollector()
+df = collector.fetch()
+
+# 結果を確認
+print(f"取得した ETF 数: {len(df['ticker'].unique())}")
+print(df[["ticker", "date", "flow_amount"]].head())
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|----------|------|--------|
+| `fetch()` | 全 ETF の日次ファンドフローを取得 | `pd.DataFrame` |
 
 ---
 
@@ -417,8 +521,25 @@ except ValueError as e:
 
 キャッシュ処理中のエラー。キャッシュの読み書き失敗時に発生します。
 
+#### ETFComError
+
+ETF.com スクレイピング処理中のエラー。基底エラークラスです。
+
+#### ETFComBlockedError
+
+ボット検出によりアクセスがブロックされた際に発生します。
+
+#### ETFComScrapingError
+
+HTML パース・データ抽出に失敗した際に発生します。
+
+#### ETFComTimeoutError
+
+ページロードやナビゲーションがタイムアウトした際に発生します。
+
 ```python
 from market import ExportError, CacheError
+from market.etfcom import ETFComError, ETFComBlockedError
 
 try:
     exporter.to_json(data, "output.json")
@@ -429,6 +550,13 @@ try:
     cache.get(key)
 except CacheError as e:
     print(f"キャッシュエラー: {e}")
+
+try:
+    collector.fetch()
+except ETFComBlockedError as e:
+    print(f"ETF.com からブロックされました: {e}")
+except ETFComError as e:
+    print(f"ETF.com スクレイピングエラー: {e}")
 ```
 
 <!-- END: API -->
@@ -1087,6 +1215,192 @@ print(FRED_API_KEY_ENV)      # "FRED_API_KEY"
 print(FRED_SERIES_PATTERN)   # FRED シリーズ ID の正規表現パターン
 ```
 
+## etfcom モジュール
+
+ETF.com から ETF データをスクレイピングで取得します。curl_cffi によるブラウザ偽装でボット検出を回避します。
+
+### 主要機能
+
+| 機能 | クラス | 説明 |
+|------|--------|------|
+| ティッカーリスト取得 | `TickerCollector` | スクリーナーから全 ETF のティッカーと基本情報を取得 |
+| ファンダメンタルズ取得 | `FundamentalsCollector` | 個別 ETF の詳細情報（経費率、資産規模、配当など）を取得 |
+| ファンドフロー取得 | `FundFlowsCollector` | 日次の資金流入・流出データを取得 |
+| セッション管理 | `ETFComSession` | リトライ・タイムアウト・ボット検出回避を統合 |
+
+### 基本的な使い方
+
+#### ティッカーリストの取得
+
+```python
+from market.etfcom import TickerCollector
+
+# 全 ETF のティッカーリストを取得
+collector = TickerCollector()
+df = collector.fetch()
+
+# DataFrame の構造
+# columns: ['ticker', 'name', 'aum', 'expense_ratio', 'category', ...]
+print(f"取得した ETF 数: {len(df)}")
+print(df.head())
+
+# 資産規模でソート
+top_etfs = df.nlargest(10, "aum")
+print(top_etfs[["ticker", "name", "aum"]])
+```
+
+#### ファンダメンタルズの取得
+
+```python
+from market.etfcom import FundamentalsCollector
+
+# 特定の ETF の詳細情報を取得
+collector = FundamentalsCollector()
+tickers = ["SPY", "VOO", "IVV", "QQQ", "VTI"]
+df = collector.fetch(tickers=tickers)
+
+# 取得できる情報
+# - expense_ratio: 経費率
+# - aum: 資産規模
+# - dividend_yield: 配当利回り
+# - inception_date: 設定日
+# - avg_volume: 平均出来高
+# - holdings_count: 保有銘柄数
+# など
+
+print(df[["ticker", "expense_ratio", "aum", "dividend_yield"]])
+```
+
+#### ファンドフローの取得
+
+```python
+from market.etfcom import FundFlowsCollector
+
+# 日次のファンドフローデータを取得
+collector = FundFlowsCollector()
+df = collector.fetch()
+
+# DataFrame の構造
+# columns: ['ticker', 'date', 'flow_amount', 'aum', ...]
+print(f"取得した ETF 数: {len(df['ticker'].unique())}")
+print(f"データ期間: {df['date'].min()} 〜 {df['date'].max()}")
+
+# 直近の大口流入を確認
+recent_flows = df.sort_values("flow_amount", ascending=False).head(10)
+print(recent_flows[["ticker", "date", "flow_amount"]])
+```
+
+### リトライとタイムアウト設定
+
+```python
+from market.etfcom import TickerCollector, RetryConfig, ScrapingConfig
+
+# リトライ設定
+retry_config = RetryConfig(
+    max_attempts=5,         # 最大リトライ回数
+    initial_delay=1.0,      # 初回リトライ待機時間（秒）
+    max_delay=60.0,         # 最大待機時間（秒）
+    exponential_base=2.0,   # 指数バックオフの基数
+)
+
+# スクレイピング設定
+scraping_config = ScrapingConfig(
+    timeout=30.0,           # ページロードタイムアウト（秒）
+    user_agent="...",       # カスタム User-Agent
+)
+
+# 設定を適用
+collector = TickerCollector(
+    retry_config=retry_config,
+    scraping_config=scraping_config,
+)
+```
+
+### エラーハンドリング
+
+```python
+from market.etfcom import (
+    TickerCollector,
+    ETFComError,
+    ETFComBlockedError,
+    ETFComScrapingError,
+    ETFComTimeoutError,
+)
+
+collector = TickerCollector()
+
+try:
+    df = collector.fetch()
+except ETFComBlockedError as e:
+    print(f"ボット検出でブロックされました: {e}")
+    # User-Agent を変更するか、待機時間を延ばす
+except ETFComTimeoutError as e:
+    print(f"ページロードがタイムアウトしました: {e}")
+    # タイムアウト設定を延長
+except ETFComScrapingError as e:
+    print(f"HTML パース・データ抽出に失敗: {e}")
+    # ETF.com のページ構造が変更された可能性
+except ETFComError as e:
+    print(f"ETF.com スクレイピングエラー: {e}")
+```
+
+### セッション管理
+
+複数のコレクターで同じセッションを共有できます。
+
+```python
+from market.etfcom import ETFComSession, TickerCollector, FundamentalsCollector
+
+# セッションを共有
+with ETFComSession() as session:
+    # ティッカーリスト取得
+    ticker_collector = TickerCollector(session=session)
+    ticker_df = ticker_collector.fetch()
+
+    # 上位10 ETF のファンダメンタルズ取得
+    top_tickers = ticker_df.nlargest(10, "aum")["ticker"].tolist()
+    fundamentals_collector = FundamentalsCollector(session=session)
+    fundamentals_df = fundamentals_collector.fetch(tickers=top_tickers)
+# セッションが自動的にクローズされる
+```
+
+### 利用上の注意
+
+1. **レート制限**: ETF.com への過剰なリクエストは避けてください。リトライ間隔を適切に設定してください。
+2. **ボット検出**: curl_cffi によるブラウザ偽装を使用していますが、短時間に大量のリクエストを送るとブロックされる可能性があります。
+3. **HTML 構造変更**: ETF.com のページ構造が変更されると、スクレイピングが失敗する可能性があります。
+
+### データ型
+
+```python
+from market.etfcom import ETFRecord, FundamentalsRecord, FundFlowRecord
+
+# ETFRecord: TickerCollector の結果
+etf_record = ETFRecord(
+    ticker="SPY",
+    name="SPDR S&P 500 ETF Trust",
+    aum=450000000000.0,  # 4500億ドル
+    expense_ratio=0.0945,
+)
+
+# FundamentalsRecord: FundamentalsCollector の結果
+fundamentals = FundamentalsRecord(
+    ticker="SPY",
+    expense_ratio=0.0945,
+    aum=450000000000.0,
+    dividend_yield=1.35,
+    inception_date="1993-01-22",
+)
+
+# FundFlowRecord: FundFlowsCollector の結果
+flow = FundFlowRecord(
+    ticker="SPY",
+    date="2024-12-31",
+    flow_amount=1500000000.0,  # 15億ドルの流入
+    aum=450000000000.0,
+)
+```
+
 ## export モジュール
 
 データを各種フォーマットでエクスポートします。
@@ -1117,11 +1431,11 @@ agent_output = exporter.to_agent_json(data)
 
 | 項目 | 値 |
 |------|-----|
-| Python ファイル数 | 39 |
-| 総行数（実装コード） | 4,511 |
-| サブモジュール数 | 8 |
-| テストファイル数 | 20 |
-| テストカバレッジ | 主要モジュール（yfinance, fred, bloomberg, export, cache）で実装済み |
+| Python ファイル数 | 45 |
+| 総行数（実装コード） | 15,278 |
+| サブモジュール数 | 9 |
+| テストファイル数 | 28 |
+| テストカバレッジ | 主要モジュール（yfinance, fred, bloomberg, etfcom, export, cache）で実装済み |
 
 <!-- END: STATS -->
 
@@ -1166,6 +1480,15 @@ market/
 │   └── sample/              # サンプルデータ・実装
 │       ├── data_blpapi.py   # blpapi サンプル実装（146行）
 │       └── data_local.py    # ローカルデータアクセス（227行）
+│
+├── etfcom/                  # ETF.com スクレイピング
+│   ├── __init__.py
+│   ├── collectors.py        # TickerCollector, FundamentalsCollector, FundFlowsCollector
+│   ├── session.py           # ETFComSession（curl_cffi ベースのセッション管理）
+│   ├── browser.py           # ブラウザ偽装・ボット検出回避
+│   ├── types.py             # ETFRecord, FundamentalsRecord, FundFlowRecord
+│   ├── errors.py            # ETFComError, ETFComBlockedError 等
+│   └── constants.py         # ETF.com URL・設定定数
 │
 ├── factset/                 # FactSet データ取得（開発中）
 │   ├── __init__.py

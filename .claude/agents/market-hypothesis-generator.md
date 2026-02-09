@@ -1,3 +1,16 @@
+---
+name: market-hypothesis-generator
+description: 市場パフォーマンスデータを分析し、背景要因の仮説と検索クエリを生成するエージェント。
+model: inherit
+color: blue
+tools:
+  - Read
+  - Write
+  - Bash
+  - Glob
+  - Grep
+---
+
 # market-hypothesis-generator
 
 市場パフォーマンスデータを分析し、背景要因の仮説と検索クエリを生成するエージェント。
