@@ -21,6 +21,21 @@ Test TODO List:
 - [x] close(): セッションを閉じる
 - [x] structlog ロガーの使用
 - [x] __all__ エクスポート
+- [x] _request(): 共通処理（polite delay, UA rotation, header merge, block detection）
+- [x] _request(): GET メソッドで正常動作
+- [x] _request(): POST メソッドで正常動作
+- [x] _request(): カスタムヘッダーのマージ
+- [x] post(): API_HEADERS をデフォルト設定して動作
+- [x] post(): 追加ヘッダーが API_HEADERS とマージされる
+- [x] post(): JSON データを送信できる
+- [x] post(): 403 レスポンスで ETFComBlockedError
+- [x] post_with_retry(): 成功時はリトライなし
+- [x] post_with_retry(): 失敗後リトライで成功
+- [x] post_with_retry(): 全リトライ失敗で ETFComBlockedError
+- [x] post_with_retry(): リトライ時に rotate_session() を呼び出す
+- [x] get() 後方互換性: リファクタリング後も既存テストが全てパス
+- [x] get_with_retry() 後方互換性: リファクタリング後も既存テストが全てパス
+- [x] _request_with_retry(): GET/POST 共通リトライロジック
 """
 
 from unittest.mock import MagicMock, patch
@@ -28,6 +43,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from market.etfcom.constants import (
+    API_HEADERS,
     BROWSER_IMPERSONATE_TARGETS,
     DEFAULT_HEADERS,
     ETFCOM_BASE_URL,
@@ -133,7 +149,7 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
@@ -150,7 +166,7 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with (
@@ -170,7 +186,7 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with (
@@ -183,7 +199,7 @@ class TestETFComSessionGet:
                 session = ETFComSession()
                 session.get("https://www.etf.com/SPY")
 
-                call_kwargs = mock_session.get.call_args
+                call_kwargs = mock_session.request.call_args
                 headers = call_kwargs[1]["headers"]
                 assert headers["User-Agent"] == "MockUserAgent/1.0"
 
@@ -193,14 +209,14 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
                 session = ETFComSession()
                 session.get("https://www.etf.com/SPY")
 
-                call_kwargs = mock_session.get.call_args
+                call_kwargs = mock_session.request.call_args
                 headers = call_kwargs[1]["headers"]
                 assert headers["Referer"] == ETFCOM_BASE_URL
 
@@ -210,14 +226,14 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
                 session = ETFComSession()
                 session.get("https://www.etf.com/SPY")
 
-                call_kwargs = mock_session.get.call_args
+                call_kwargs = mock_session.request.call_args
                 headers = call_kwargs[1]["headers"]
                 for key, value in DEFAULT_HEADERS.items():
                     assert headers[key] == value
@@ -228,7 +244,7 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 403
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
@@ -246,7 +262,7 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 429
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
@@ -265,30 +281,30 @@ class TestETFComSessionGet:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
                 session = ETFComSession(config=config)
                 session.get("https://www.etf.com/SPY")
 
-                call_kwargs = mock_session.get.call_args
+                call_kwargs = mock_session.request.call_args
                 assert call_kwargs[1]["timeout"] == 15.0
 
     def test_正常系_追加のkwargsが渡される(self) -> None:
-        """追加の kwargs が curl_cffi.get に渡されること。"""
+        """追加の kwargs が curl_cffi.request に渡されること。"""
         with patch("market.etfcom.session.curl_requests") as mock_curl:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
                 session = ETFComSession()
                 session.get("https://www.etf.com/SPY", params={"key": "value"})
 
-                call_kwargs = mock_session.get.call_args
+                call_kwargs = mock_session.request.call_args
                 assert call_kwargs[1]["params"] == {"key": "value"}
 
 
@@ -306,7 +322,7 @@ class TestETFComSessionGetWithRetry:
             mock_session = MagicMock()
             mock_response = MagicMock()
             mock_response.status_code = 200
-            mock_session.get.return_value = mock_response
+            mock_session.request.return_value = mock_response
             mock_curl.Session.return_value = mock_session
 
             with patch("market.etfcom.session.time.sleep"):
@@ -314,8 +330,8 @@ class TestETFComSessionGetWithRetry:
                 response = session.get_with_retry("https://www.etf.com/SPY")
 
             assert response.status_code == 200
-            # get() は1回だけ呼ばれる
-            assert mock_session.get.call_count == 1
+            # _request() 経由で request() は1回だけ呼ばれる
+            assert mock_session.request.call_count == 1
 
     def test_正常系_失敗後リトライで成功(self) -> None:
         """失敗後にリトライで成功すること。"""
@@ -325,7 +341,10 @@ class TestETFComSessionGetWithRetry:
             mock_response_blocked.status_code = 403
             mock_response_ok = MagicMock()
             mock_response_ok.status_code = 200
-            mock_session.get.side_effect = [mock_response_blocked, mock_response_ok]
+            mock_session.request.side_effect = [
+                mock_response_blocked,
+                mock_response_ok,
+            ]
             mock_curl.Session.return_value = mock_session
 
             retry_config = RetryConfig(max_attempts=3, initial_delay=0.01)
@@ -344,7 +363,10 @@ class TestETFComSessionGetWithRetry:
             mock_response_blocked.status_code = 403
             mock_response_ok = MagicMock()
             mock_response_ok.status_code = 200
-            mock_session.get.side_effect = [mock_response_blocked, mock_response_ok]
+            mock_session.request.side_effect = [
+                mock_response_blocked,
+                mock_response_ok,
+            ]
             mock_curl.Session.return_value = mock_session
 
             retry_config = RetryConfig(max_attempts=3, initial_delay=0.01)
@@ -361,7 +383,7 @@ class TestETFComSessionGetWithRetry:
             mock_session = MagicMock()
             mock_response_blocked = MagicMock()
             mock_response_blocked.status_code = 403
-            mock_session.get.return_value = mock_response_blocked
+            mock_session.request.return_value = mock_response_blocked
             mock_curl.Session.return_value = mock_session
 
             retry_config = RetryConfig(max_attempts=2, initial_delay=0.01)
@@ -378,7 +400,7 @@ class TestETFComSessionGetWithRetry:
             mock_session = MagicMock()
             mock_response_blocked = MagicMock()
             mock_response_blocked.status_code = 403
-            mock_session.get.return_value = mock_response_blocked
+            mock_session.request.return_value = mock_response_blocked
             mock_curl.Session.return_value = mock_session
 
             retry_config = RetryConfig(
@@ -496,3 +518,530 @@ class TestModuleExports:
         from market.etfcom.session import __all__
 
         assert "ETFComSession" in __all__
+
+
+# =============================================================================
+# _request() tests
+# =============================================================================
+
+
+class TestRequest:
+    """ETFComSession._request() の共通処理テスト。"""
+
+    def test_正常系_GETメソッドで正常動作する(self) -> None:
+        """_request('GET', url) が正常にレスポンスを返すこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                response = session._request("GET", "https://www.etf.com/SPY")
+
+            assert response.status_code == 200
+
+    def test_正常系_POSTメソッドで正常動作する(self) -> None:
+        """_request('POST', url) が正常にレスポンスを返すこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                response = session._request("POST", "https://api-prod.etf.com/test")
+
+            assert response.status_code == 200
+
+    def test_正常系_ポライトディレイが適用される(self) -> None:
+        """_request() でポライトディレイが適用されること。"""
+        config = ScrapingConfig(polite_delay=2.0, delay_jitter=1.0)
+
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with (
+                patch("market.etfcom.session.time.sleep") as mock_sleep,
+                patch("market.etfcom.session.random.uniform", return_value=0.5),
+            ):
+                session = ETFComSession(config=config)
+                session._request("GET", "https://www.etf.com/SPY")
+
+                mock_sleep.assert_called_once()
+                actual_delay = mock_sleep.call_args[0][0]
+                assert actual_delay == pytest.approx(2.5, abs=0.01)
+
+    def test_正常系_User_Agentヘッダーが設定される(self) -> None:
+        """_request() でランダム User-Agent がヘッダーに設定されること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with (
+                patch("market.etfcom.session.time.sleep"),
+                patch(
+                    "market.etfcom.session.random.choice",
+                    return_value="MockUA/1.0",
+                ),
+            ):
+                session = ETFComSession()
+                session._request("GET", "https://www.etf.com/SPY")
+
+                call_kwargs = mock_session.request.call_args
+                headers = call_kwargs[1]["headers"]
+                assert headers["User-Agent"] == "MockUA/1.0"
+
+    def test_正常系_カスタムヘッダーがマージされる(self) -> None:
+        """_request() で caller 提供のヘッダーが DEFAULT_HEADERS にマージされること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                custom_headers = {"X-Custom": "test-value"}
+                session._request(
+                    "POST",
+                    "https://api-prod.etf.com/test",
+                    headers=custom_headers,
+                )
+
+                call_kwargs = mock_session.request.call_args
+                headers = call_kwargs[1]["headers"]
+                assert headers["X-Custom"] == "test-value"
+                # DEFAULT_HEADERS もまだ含まれること
+                for key, value in DEFAULT_HEADERS.items():
+                    assert headers[key] == value
+
+    def test_異常系_403レスポンスでETFComBlockedError(self) -> None:
+        """_request() で 403 レスポンスが ETFComBlockedError を発生させること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 403
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+
+                with pytest.raises(ETFComBlockedError) as exc_info:
+                    session._request("GET", "https://www.etf.com/SPY")
+
+                assert exc_info.value.status_code == 403
+                assert exc_info.value.url == "https://www.etf.com/SPY"
+
+    def test_異常系_429レスポンスでETFComBlockedError(self) -> None:
+        """_request() で 429 レスポンスが ETFComBlockedError を発生させること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 429
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+
+                with pytest.raises(ETFComBlockedError) as exc_info:
+                    session._request("POST", "https://api-prod.etf.com/test")
+
+                assert exc_info.value.status_code == 429
+
+    def test_正常系_メソッド名がcurl_cffiのrequestに渡される(self) -> None:
+        """_request() が method 引数を curl_cffi session.request() に渡すこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                session._request("POST", "https://api-prod.etf.com/test")
+
+                call_args = mock_session.request.call_args
+                assert call_args[0][0] == "POST"
+                assert call_args[0][1] == "https://api-prod.etf.com/test"
+
+
+# =============================================================================
+# post() tests
+# =============================================================================
+
+
+class TestPost:
+    """ETFComSession.post() のテスト。"""
+
+    def test_正常系_API_HEADERSがデフォルトで設定される(self) -> None:
+        """post() が API_HEADERS をデフォルトヘッダーとして設定すること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                session.post("https://api-prod.etf.com/test")
+
+                call_kwargs = mock_session.request.call_args
+                headers = call_kwargs[1]["headers"]
+                # API_HEADERS の各フィールドが含まれること
+                for key, value in API_HEADERS.items():
+                    assert headers[key] == value
+
+    def test_正常系_追加ヘッダーがAPI_HEADERSとマージされる(self) -> None:
+        """post() で caller 提供のヘッダーが API_HEADERS にマージされること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                session.post(
+                    "https://api-prod.etf.com/test",
+                    headers={"X-Extra": "extra-value"},
+                )
+
+                call_kwargs = mock_session.request.call_args
+                headers = call_kwargs[1]["headers"]
+                assert headers["X-Extra"] == "extra-value"
+                # API_HEADERS もまだ含まれること
+                assert headers["Content-Type"] == "application/json"
+
+    def test_正常系_JSONデータを送信できる(self) -> None:
+        """post() が JSON データを kwargs 経由で送信できること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                payload = {"fundId": 1, "startDate": "2020-01-01"}
+                session.post(
+                    "https://api-prod.etf.com/test",
+                    json=payload,
+                )
+
+                call_kwargs = mock_session.request.call_args
+                assert call_kwargs[1]["json"] == payload
+
+    def test_異常系_403レスポンスでETFComBlockedError(self) -> None:
+        """post() で 403 レスポンスが ETFComBlockedError を発生させること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 403
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+
+                with pytest.raises(ETFComBlockedError) as exc_info:
+                    session.post("https://api-prod.etf.com/test")
+
+                assert exc_info.value.status_code == 403
+
+    def test_正常系_POSTメソッドでrequestが呼ばれる(self) -> None:
+        """post() が内部で _request('POST', ...) を呼ぶこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                session.post("https://api-prod.etf.com/test")
+
+                call_args = mock_session.request.call_args
+                assert call_args[0][0] == "POST"
+
+
+# =============================================================================
+# post_with_retry() tests
+# =============================================================================
+
+
+class TestPostWithRetry:
+    """ETFComSession.post_with_retry() のテスト。"""
+
+    def test_正常系_成功時はリトライなし(self) -> None:
+        """最初の試行で成功した場合リトライしないこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                response = session.post_with_retry(
+                    "https://api-prod.etf.com/test",
+                )
+
+            assert response.status_code == 200
+            assert mock_session.request.call_count == 1
+
+    def test_正常系_失敗後リトライで成功(self) -> None:
+        """失敗後にリトライで成功すること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response_blocked = MagicMock()
+            mock_response_blocked.status_code = 403
+            mock_response_ok = MagicMock()
+            mock_response_ok.status_code = 200
+            mock_session.request.side_effect = [
+                mock_response_blocked,
+                mock_response_ok,
+            ]
+            mock_curl.Session.return_value = mock_session
+
+            retry_config = RetryConfig(max_attempts=3, initial_delay=0.01)
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession(retry_config=retry_config)
+                response = session.post_with_retry(
+                    "https://api-prod.etf.com/test",
+                )
+
+            assert response.status_code == 200
+
+    def test_異常系_全リトライ失敗でETFComBlockedError(self) -> None:
+        """全リトライが失敗した場合 ETFComBlockedError が発生すること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response_blocked = MagicMock()
+            mock_response_blocked.status_code = 403
+            mock_session.request.return_value = mock_response_blocked
+            mock_curl.Session.return_value = mock_session
+
+            retry_config = RetryConfig(max_attempts=2, initial_delay=0.01)
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession(retry_config=retry_config)
+
+                with pytest.raises(ETFComBlockedError):
+                    session.post_with_retry("https://api-prod.etf.com/test")
+
+    def test_正常系_リトライ時にrotate_sessionが呼ばれる(self) -> None:
+        """リトライ時に rotate_session() が呼ばれること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response_blocked = MagicMock()
+            mock_response_blocked.status_code = 403
+            mock_response_ok = MagicMock()
+            mock_response_ok.status_code = 200
+            mock_session.request.side_effect = [
+                mock_response_blocked,
+                mock_response_ok,
+            ]
+            mock_curl.Session.return_value = mock_session
+
+            retry_config = RetryConfig(max_attempts=3, initial_delay=0.01)
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession(retry_config=retry_config)
+                with patch.object(session, "rotate_session") as mock_rotate:
+                    session.post_with_retry("https://api-prod.etf.com/test")
+                    mock_rotate.assert_called_once()
+
+    def test_正常系_API_HEADERSがリトライ時も保持される(self) -> None:
+        """リトライ時も API_HEADERS が保持されること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response_blocked = MagicMock()
+            mock_response_blocked.status_code = 403
+            mock_response_ok = MagicMock()
+            mock_response_ok.status_code = 200
+            mock_session.request.side_effect = [
+                mock_response_blocked,
+                mock_response_ok,
+            ]
+            mock_curl.Session.return_value = mock_session
+
+            retry_config = RetryConfig(max_attempts=3, initial_delay=0.01)
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession(retry_config=retry_config)
+                session.post_with_retry("https://api-prod.etf.com/test")
+
+                # 2回目（成功時）のリクエストヘッダーを確認
+                last_call_kwargs = mock_session.request.call_args
+                headers = last_call_kwargs[1]["headers"]
+                assert headers["Content-Type"] == "application/json"
+
+
+# =============================================================================
+# _request_with_retry() tests
+# =============================================================================
+
+
+class TestRequestWithRetry:
+    """ETFComSession._request_with_retry() の共通リトライロジックテスト。"""
+
+    def test_正常系_GETメソッドで動作する(self) -> None:
+        """_request_with_retry('GET', ...) が正常にレスポンスを返すこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                response = session._request_with_retry("GET", "https://www.etf.com/SPY")
+
+            assert response.status_code == 200
+
+    def test_正常系_POSTメソッドで動作する(self) -> None:
+        """_request_with_retry('POST', ...) が正常にレスポンスを返すこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                response = session._request_with_retry(
+                    "POST", "https://api-prod.etf.com/test"
+                )
+
+            assert response.status_code == 200
+
+    def test_正常系_指数バックオフでディレイが増加する(self) -> None:
+        """リトライ間のディレイが指数バックオフで増加すること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response_blocked = MagicMock()
+            mock_response_blocked.status_code = 403
+            mock_session.request.return_value = mock_response_blocked
+            mock_curl.Session.return_value = mock_session
+
+            retry_config = RetryConfig(
+                max_attempts=3,
+                initial_delay=1.0,
+                exponential_base=2.0,
+                jitter=False,
+            )
+
+            sleep_calls: list[float] = []
+
+            def track_sleep(duration: float) -> None:
+                sleep_calls.append(duration)
+
+            with patch("market.etfcom.session.time.sleep", side_effect=track_sleep):
+                session = ETFComSession(retry_config=retry_config)
+
+                with pytest.raises(ETFComBlockedError):
+                    session._request_with_retry("POST", "https://api-prod.etf.com/test")
+
+            # リトライディレイが2回あること（max_attempts=3, 最後の失敗後はなし）
+            retry_delays = [d for d in sleep_calls if d >= 1.0]
+            assert len(retry_delays) >= 2
+
+
+# =============================================================================
+# get() backward compatibility tests
+# =============================================================================
+
+
+class TestGetBackwardCompatibility:
+    """get() のリファクタリング後の後方互換性テスト。"""
+
+    def test_正常系_getが_requestに委譲しても同じ結果を返す(self) -> None:
+        """get() が _request('GET', ...) に委譲した後も同じ結果を返すこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                response = session.get("https://www.etf.com/SPY")
+
+            assert response.status_code == 200
+
+    def test_正常系_getのヘッダーにDEFAULT_HEADERSが含まれる(self) -> None:
+        """get() が DEFAULT_HEADERS を引き続き使用すること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                session.get("https://www.etf.com/SPY")
+
+                call_kwargs = mock_session.request.call_args
+                headers = call_kwargs[1]["headers"]
+                for key, value in DEFAULT_HEADERS.items():
+                    assert headers[key] == value
+
+    def test_正常系_getのヘッダーにRefererが設定される(self) -> None:
+        """get() が Referer ヘッダーに ETFCOM_BASE_URL を設定し続けること。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                session.get("https://www.etf.com/SPY")
+
+                call_kwargs = mock_session.request.call_args
+                headers = call_kwargs[1]["headers"]
+                assert headers["Referer"] == ETFCOM_BASE_URL
+
+    def test_正常系_get_with_retryが_request_with_retryに委譲しても同じ結果(
+        self,
+    ) -> None:
+        """get_with_retry() が _request_with_retry に委譲しても同じ結果を返すこと。"""
+        with patch("market.etfcom.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.etfcom.session.time.sleep"):
+                session = ETFComSession()
+                response = session.get_with_retry("https://www.etf.com/SPY")
+
+            assert response.status_code == 200
