@@ -5,6 +5,7 @@ This module provides dataclass definitions for ETF.com scraping including:
 - Scraping configuration (bot-blocking countermeasures)
 - Retry configuration (exponential backoff)
 - Data record types (fundamentals, fund flows, ETF metadata)
+- REST API record types (historical fund flows, ticker info)
 
 All configuration dataclasses use ``frozen=True`` to ensure immutability.
 Field names use snake_case following project convention; raw ETF.com column
@@ -294,6 +295,115 @@ class ETFRecord:
 
 
 # =============================================================================
+# REST API Data Record Dataclasses
+# =============================================================================
+
+
+@dataclass(frozen=True)
+class HistoricalFundFlowRecord:
+    """A single daily historical fund flow record from the ETF.com REST API.
+
+    Contains the 9 fields returned by the ``fund-flows-query`` API endpoint
+    for a given fund. All numeric fields are ``float | None`` because the
+    API may return ``null`` for dates where data is unavailable.
+
+    Parameters
+    ----------
+    ticker : str
+        ETF ticker symbol (e.g. ``"SPY"``).
+    nav_date : date
+        Date of the observation.
+    nav : float | None
+        Net asset value per share on the given date.
+    nav_change : float | None
+        Absolute change in NAV from the previous trading day.
+    nav_change_percent : float | None
+        Percentage change in NAV from the previous trading day.
+    premium_discount : float | None
+        Premium or discount to NAV (positive = premium, negative = discount).
+    fund_flows : float | None
+        Net fund flows for the day in USD (positive = inflows,
+        negative = outflows).
+    shares_outstanding : float | None
+        Total shares outstanding on the given date.
+    aum : float | None
+        Assets under management in USD on the given date.
+
+    Examples
+    --------
+    >>> from datetime import date
+    >>> record = HistoricalFundFlowRecord(
+    ...     ticker="SPY",
+    ...     nav_date=date(2025, 9, 10),
+    ...     nav=450.25,
+    ...     nav_change=2.15,
+    ...     nav_change_percent=0.48,
+    ...     premium_discount=-0.02,
+    ...     fund_flows=2787590000.0,
+    ...     shares_outstanding=920000000.0,
+    ...     aum=414230000000.0,
+    ... )
+    >>> record.ticker
+    'SPY'
+    """
+
+    ticker: str
+    nav_date: date
+    nav: float | None
+    nav_change: float | None
+    nav_change_percent: float | None
+    premium_discount: float | None
+    fund_flows: float | None
+    shares_outstanding: float | None
+    aum: float | None
+
+
+@dataclass(frozen=True)
+class TickerInfo:
+    """Ticker information from the ETF.com tickers API endpoint.
+
+    Contains the 6 fields returned by the ``tickers`` API endpoint for
+    each ETF. Used primarily to resolve ticker symbols to fund IDs
+    required by the ``fund-flows-query`` endpoint.
+
+    Parameters
+    ----------
+    ticker : str
+        ETF ticker symbol (e.g. ``"SPY"``).
+    fund_id : int
+        Unique fund identifier used by the ETF.com API.
+    name : str
+        Full fund name (e.g. ``"SPDR S&P 500 ETF Trust"``).
+    issuer : str | None
+        Fund issuer name (e.g. ``"State Street"``).
+    asset_class : str | None
+        Asset class (e.g. ``"Equity"``, ``"Fixed Income"``).
+    inception_date : str | None
+        Fund inception date as returned by the API (e.g. ``"1993-01-22"``).
+
+    Examples
+    --------
+    >>> info = TickerInfo(
+    ...     ticker="SPY",
+    ...     fund_id=1,
+    ...     name="SPDR S&P 500 ETF Trust",
+    ...     issuer="State Street",
+    ...     asset_class="Equity",
+    ...     inception_date="1993-01-22",
+    ... )
+    >>> info.fund_id
+    1
+    """
+
+    ticker: str
+    fund_id: int
+    name: str
+    issuer: str | None
+    asset_class: str | None
+    inception_date: str | None
+
+
+# =============================================================================
 # Module exports
 # =============================================================================
 
@@ -301,6 +411,8 @@ __all__ = [
     "ETFRecord",
     "FundFlowRecord",
     "FundamentalsRecord",
+    "HistoricalFundFlowRecord",
     "RetryConfig",
     "ScrapingConfig",
+    "TickerInfo",
 ]

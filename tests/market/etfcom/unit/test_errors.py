@@ -1,14 +1,15 @@
 """Unit tests for market.etfcom.errors module.
 
 ETF.com エラークラスのテストスイート。
-4つのエラークラス（ETFComError, ETFComScrapingError,
-ETFComTimeoutError, ETFComBlockedError）の動作を検証する。
+5つのエラークラス（ETFComError, ETFComScrapingError,
+ETFComTimeoutError, ETFComBlockedError, ETFComAPIError）の動作を検証する。
 
 Test TODO List:
 - [x] ETFComError: base exception with message attribute
 - [x] ETFComScrapingError: HTML parse failure with url, selector
 - [x] ETFComTimeoutError: timeout with url, timeout_seconds
 - [x] ETFComBlockedError: bot blocking with url, status_code
+- [x] ETFComAPIError: REST API error with url, status_code, response_body, ticker, fund_id
 - [x] Exception hierarchy validation
 - [x] Common usage patterns (try-except, raise, cause chaining)
 """
@@ -16,6 +17,7 @@ Test TODO List:
 import pytest
 
 from market.etfcom.errors import (
+    ETFComAPIError,
     ETFComBlockedError,
     ETFComError,
     ETFComScrapingError,
@@ -256,6 +258,89 @@ class TestETFComBlockedError:
 
 
 # =============================================================================
+# ETFComAPIError
+# =============================================================================
+
+
+class TestETFComAPIError:
+    """ETFComAPIError (REST APIエラー) のテスト。"""
+
+    def test_正常系_全パラメータで初期化(self) -> None:
+        """ETFComAPIError が全パラメータで初期化されること。"""
+        error = ETFComAPIError(
+            "API returned HTTP 403",
+            url="https://api-prod.etf.com/private/apps/fundflows/fund-flows-query",
+            status_code=403,
+            response_body='{"error": "Forbidden"}',
+            ticker="SPY",
+            fund_id=1,
+        )
+
+        assert error.message == "API returned HTTP 403"
+        assert (
+            error.url
+            == "https://api-prod.etf.com/private/apps/fundflows/fund-flows-query"
+        )
+        assert error.status_code == 403
+        assert error.response_body == '{"error": "Forbidden"}'
+        assert error.ticker == "SPY"
+        assert error.fund_id == 1
+
+    def test_正常系_ETFComErrorを継承している(self) -> None:
+        """ETFComAPIError が ETFComError を継承していること。"""
+        assert issubclass(ETFComAPIError, ETFComError)
+
+        error = ETFComAPIError("api error")
+        assert isinstance(error, ETFComError)
+        assert isinstance(error, Exception)
+
+    def test_正常系_デフォルト値でNoneが設定される(self) -> None:
+        """ETFComAPIError のオプションパラメータがデフォルトで None であること。"""
+        error = ETFComAPIError("api error")
+
+        assert error.message == "api error"
+        assert error.url is None
+        assert error.status_code is None
+        assert error.response_body is None
+        assert error.ticker is None
+        assert error.fund_id is None
+
+    def test_正常系_ETFComErrorでキャッチできる(self) -> None:
+        """ETFComError でキャッチできること。"""
+        with pytest.raises(ETFComError):
+            raise ETFComAPIError(
+                "API error",
+                url="https://api-prod.etf.com/test",
+                status_code=500,
+            )
+
+    def test_正常系_strでメッセージが表示される(self) -> None:
+        """str() でエラーメッセージが表示されること。"""
+        error = ETFComAPIError(
+            "API returned HTTP 500",
+            url="https://api-prod.etf.com/test",
+            status_code=500,
+        )
+
+        assert "API returned HTTP 500" in str(error)
+
+    def test_正常系_部分的なパラメータで初期化可能(self) -> None:
+        """ETFComAPIError が一部のオプションパラメータのみで初期化できること。"""
+        error = ETFComAPIError(
+            "Ticker resolution failed",
+            url="https://api-prod.etf.com/private/apps/fundflows/tickers",
+            status_code=429,
+            ticker="SPY",
+        )
+
+        assert error.url is not None
+        assert error.status_code == 429
+        assert error.response_body is None
+        assert error.ticker == "SPY"
+        assert error.fund_id is None
+
+
+# =============================================================================
 # Exception Hierarchy
 # =============================================================================
 
@@ -268,6 +353,7 @@ class TestExceptionHierarchy:
         assert issubclass(ETFComScrapingError, ETFComError)
         assert issubclass(ETFComTimeoutError, ETFComError)
         assert issubclass(ETFComBlockedError, ETFComError)
+        assert issubclass(ETFComAPIError, ETFComError)
 
     def test_正常系_ETFComErrorがExceptionを直接継承(self) -> None:
         """ETFComError が Exception を直接継承していること。"""
@@ -296,6 +382,13 @@ class TestExceptionHierarchy:
             status_code=403,
         )
         assert isinstance(blocked_err, Exception)
+
+        api_err = ETFComAPIError(
+            "test",
+            url="https://api-prod.etf.com/test",
+            status_code=500,
+        )
+        assert isinstance(api_err, Exception)
 
 
 # =============================================================================
@@ -345,11 +438,12 @@ class TestModuleExports:
     """__all__ エクスポートのテスト。"""
 
     def test_正常系_全クラスがエクスポートされている(self) -> None:
-        """__all__ に全4クラスが含まれていること。"""
+        """__all__ に全5クラスが含まれていること。"""
         from market.etfcom import errors
 
         assert hasattr(errors, "__all__")
         expected = {
+            "ETFComAPIError",
             "ETFComError",
             "ETFComScrapingError",
             "ETFComTimeoutError",

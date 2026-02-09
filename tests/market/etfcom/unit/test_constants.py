@@ -2,7 +2,7 @@
 
 Tests verify all constant definitions for the ETF.com scraping module,
 including bot-blocking countermeasure constants, URL patterns, CSS selectors,
-and Playwright stealth settings.
+Playwright stealth settings, and REST API constants.
 
 Test TODO List:
 - [x] Module exports: __all__ completeness and importability
@@ -14,24 +14,35 @@ Test TODO List:
 - [x] CSS selectors: all selectors non-empty
 - [x] Default settings: stability wait and max retries
 - [x] Final annotations: all constants annotated with typing.Final
+- [x] REST API: ETFCOM_API_BASE_URL, TICKERS_API_URL, FUND_DETAILS_API_URL
+- [x] REST API: FUND_FLOWS_QUERY, API_HEADERS
+- [x] REST API: DEFAULT_TICKER_CACHE_TTL_HOURS, DEFAULT_TICKER_CACHE_DIR
+- [x] REST API: DEFAULT_MAX_CONCURRENCY
 """
 
 from typing import get_type_hints
 
 from market.etfcom.constants import (
+    API_HEADERS,
     BROWSER_IMPERSONATE_TARGETS,
     CLASSIFICATION_DATA_ID,
     COOKIE_CONSENT_SELECTOR,
     DEFAULT_DELAY_JITTER,
     DEFAULT_HEADERS,
+    DEFAULT_MAX_CONCURRENCY,
     DEFAULT_MAX_RETRIES,
     DEFAULT_POLITE_DELAY,
     DEFAULT_STABILITY_WAIT,
+    DEFAULT_TICKER_CACHE_DIR,
+    DEFAULT_TICKER_CACHE_TTL_HOURS,
     DEFAULT_TIMEOUT,
     DEFAULT_USER_AGENTS,
     DISPLAY_100_SELECTOR,
+    ETFCOM_API_BASE_URL,
     ETFCOM_BASE_URL,
     FLOW_TABLE_ID,
+    FUND_DETAILS_API_URL,
+    FUND_FLOWS_QUERY,
     FUND_FLOWS_URL_TEMPLATE,
     NEXT_PAGE_SELECTOR,
     PROFILE_URL_TEMPLATE,
@@ -39,6 +50,7 @@ from market.etfcom.constants import (
     STEALTH_INIT_SCRIPT,
     STEALTH_VIEWPORT,
     SUMMARY_DATA_ID,
+    TICKERS_API_URL,
     __all__,
 )
 
@@ -70,9 +82,9 @@ class TestModuleExports:
                 f"{name} is not defined in constants module"
             )
 
-    def test_正常系_allが20項目を含む(self) -> None:
-        """__all__ が全20定数をエクスポートしていること。"""
-        assert len(__all__) == 20
+    def test_正常系_allが28項目を含む(self) -> None:
+        """__all__ が全28定数をエクスポートしていること。"""
+        assert len(__all__) == 28
 
     def test_正常系_モジュールDocstringが存在する(self) -> None:
         """モジュールの docstring が存在すること。"""
@@ -334,6 +346,92 @@ class TestDefaultSettings:
         assert isinstance(DEFAULT_MAX_RETRIES, int)
         assert DEFAULT_MAX_RETRIES > 0
         assert DEFAULT_MAX_RETRIES == 3
+
+
+# =============================================================================
+# REST API constants
+# =============================================================================
+
+
+class TestRESTAPIConstants:
+    """Test REST API constants for ETF.com API access."""
+
+    def test_正常系_ETFCOM_API_BASE_URLがhttpsで始まる(self) -> None:
+        """ETFCOM_API_BASE_URL が https:// で始まること。"""
+        assert isinstance(ETFCOM_API_BASE_URL, str)
+        assert ETFCOM_API_BASE_URL.startswith("https://")
+
+    def test_正常系_ETFCOM_API_BASE_URLがapi_prodドメインを含む(self) -> None:
+        """ETFCOM_API_BASE_URL が api-prod.etf.com ドメインを含むこと。"""
+        assert "api-prod.etf.com" in ETFCOM_API_BASE_URL
+
+    def test_正常系_TICKERS_API_URLがAPI_BASE_URLから始まる(self) -> None:
+        """TICKERS_API_URL が ETFCOM_API_BASE_URL を基にしていること。"""
+        assert isinstance(TICKERS_API_URL, str)
+        assert TICKERS_API_URL.startswith(ETFCOM_API_BASE_URL)
+
+    def test_正常系_TICKERS_API_URLにtickersパスが含まれる(self) -> None:
+        """TICKERS_API_URL に tickers パスが含まれること。"""
+        assert "tickers" in TICKERS_API_URL
+
+    def test_正常系_FUND_DETAILS_API_URLがAPI_BASE_URLから始まる(self) -> None:
+        """FUND_DETAILS_API_URL が ETFCOM_API_BASE_URL を基にしていること。"""
+        assert isinstance(FUND_DETAILS_API_URL, str)
+        assert FUND_DETAILS_API_URL.startswith(ETFCOM_API_BASE_URL)
+
+    def test_正常系_FUND_DETAILS_API_URLにfund_detailsパスが含まれる(self) -> None:
+        """FUND_DETAILS_API_URL に fund-details パスが含まれること。"""
+        assert "fund-details" in FUND_DETAILS_API_URL
+
+    def test_正常系_FUND_FLOWS_QUERYがAPI_BASE_URLから始まる(self) -> None:
+        """FUND_FLOWS_QUERY が ETFCOM_API_BASE_URL を基にしていること。"""
+        assert isinstance(FUND_FLOWS_QUERY, str)
+        assert FUND_FLOWS_QUERY.startswith(ETFCOM_API_BASE_URL)
+
+    def test_正常系_FUND_FLOWS_QUERYにfund_flows_queryパスが含まれる(self) -> None:
+        """FUND_FLOWS_QUERY に fund-flows-query パスが含まれること。"""
+        assert "fund-flows-query" in FUND_FLOWS_QUERY
+
+    def test_正常系_API_HEADERSがJSON_Content_Typeを含む(self) -> None:
+        """API_HEADERS が application/json の Content-Type を含むこと。"""
+        assert isinstance(API_HEADERS, dict)
+        assert "Content-Type" in API_HEADERS
+        assert "application/json" in API_HEADERS["Content-Type"]
+
+    def test_正常系_API_HEADERSがOriginとRefererを含む(self) -> None:
+        """API_HEADERS が Origin と Referer ヘッダーを含むこと（CORS対策）。"""
+        assert "Origin" in API_HEADERS
+        assert "Referer" in API_HEADERS
+        assert "etf.com" in API_HEADERS["Origin"]
+        assert "etf.com" in API_HEADERS["Referer"]
+
+    def test_正常系_API_HEADERSの値が空でない(self) -> None:
+        """API_HEADERS の各値が空文字列でないこと。"""
+        for key, value in API_HEADERS.items():
+            assert isinstance(key, str)
+            assert isinstance(value, str)
+            assert len(value.strip()) > 0, f"Header {key} has empty value"
+
+    def test_正常系_DEFAULT_TICKER_CACHE_TTL_HOURSが正の整数(self) -> None:
+        """DEFAULT_TICKER_CACHE_TTL_HOURS が正の整数 (24) であること。"""
+        assert isinstance(DEFAULT_TICKER_CACHE_TTL_HOURS, int)
+        assert DEFAULT_TICKER_CACHE_TTL_HOURS > 0
+        assert DEFAULT_TICKER_CACHE_TTL_HOURS == 24
+
+    def test_正常系_DEFAULT_TICKER_CACHE_DIRが空でない文字列(self) -> None:
+        """DEFAULT_TICKER_CACHE_DIR が空でない文字列であること。"""
+        assert isinstance(DEFAULT_TICKER_CACHE_DIR, str)
+        assert len(DEFAULT_TICKER_CACHE_DIR.strip()) > 0
+
+    def test_正常系_DEFAULT_TICKER_CACHE_DIRがdata_rawを含む(self) -> None:
+        """DEFAULT_TICKER_CACHE_DIR が data/raw パスを含むこと。"""
+        assert "data/raw" in DEFAULT_TICKER_CACHE_DIR
+
+    def test_正常系_DEFAULT_MAX_CONCURRENCYが正の整数(self) -> None:
+        """DEFAULT_MAX_CONCURRENCY が正の整数 (5) であること。"""
+        assert isinstance(DEFAULT_MAX_CONCURRENCY, int)
+        assert DEFAULT_MAX_CONCURRENCY > 0
+        assert DEFAULT_MAX_CONCURRENCY == 5
 
 
 # =============================================================================
