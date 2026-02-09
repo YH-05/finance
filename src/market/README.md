@@ -380,6 +380,80 @@ print(df[["ticker", "date", "flow_amount"]].head())
 
 ---
 
+#### HistoricalFundFlowsCollector
+
+ETF.com の REST API からヒストリカルファンドフローデータを取得します。
+
+**説明**: ETF.com の JSON REST API（`api-prod.etf.com`）を使用して、個別 ETF の日次ファンドフロー履歴データ（NAV、NAV変動、プレミアム/ディスカウント、資金フロー、発行済株式数、AUM）を取得します。HTML スクレイピングではなく REST API を直接呼び出すため、ブラウザは不要です。
+
+**基本的な使い方**:
+
+```python
+from market.etfcom import HistoricalFundFlowsCollector
+
+# 単一 ETF のファンドフロー履歴を取得
+collector = HistoricalFundFlowsCollector()
+df = collector.fetch(ticker="SPY")
+
+# 結果を確認
+# columns: ticker, nav_date, nav, nav_change, nav_change_percent,
+#          premium_discount, fund_flows, shares_outstanding, aum
+print(f"データ件数: {len(df)}")
+print(df[["ticker", "nav_date", "fund_flows", "aum"]].head())
+
+# 日付範囲を指定して取得
+df = collector.fetch(ticker="SPY", start_date="2024-01-01", end_date="2024-12-31")
+
+# 複数 ETF の一括取得（並列実行）
+df = collector.fetch_multiple(tickers=["SPY", "VOO", "QQQ"], max_concurrency=3)
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|----------|------|--------|
+| `fetch(ticker, start_date, end_date)` | 単一 ETF のファンドフロー履歴を取得 | `pd.DataFrame` |
+| `fetch_multiple(tickers, max_concurrency)` | 複数 ETF のファンドフローを並列取得 | `pd.DataFrame` |
+| `fetch_tickers()` | 全 ETF のティッカーリストと fund ID を取得 | `pd.DataFrame` |
+
+**API 仕様**:
+
+| 項目 | 詳細 |
+|------|------|
+| ベース URL | `https://api-prod.etf.com` |
+| ティッカー一覧 | `GET /private/apps/fundflows/tickers` |
+| ファンドフロー取得 | `POST /private/apps/fundflows/fund-flows-query` |
+| リクエスト形式 | JSON (`{"fundId": <int>}`) |
+| レスポンス形式 | JSON (`{"results": [<record>, ...]}`) |
+
+**レスポンスフィールド**:
+
+| フィールド（API） | フィールド（DataFrame） | 型 | 説明 |
+|-------------------|------------------------|-----|------|
+| `navDate` | `nav_date` | `date` | 観測日 |
+| `nav` | `nav` | `float \| None` | 基準価額 |
+| `navChange` | `nav_change` | `float \| None` | NAV 変動額 |
+| `navChangePercent` | `nav_change_percent` | `float \| None` | NAV 変動率（%） |
+| `premiumDiscount` | `premium_discount` | `float \| None` | プレミアム/ディスカウント |
+| `fundFlows` | `fund_flows` | `float \| None` | 純資金フロー（USD） |
+| `sharesOutstanding` | `shares_outstanding` | `float \| None` | 発行済株式数 |
+| `aum` | `aum` | `float \| None` | 運用資産総額（USD） |
+
+**FundFlowsCollector との比較**:
+
+| 項目 | FundFlowsCollector | HistoricalFundFlowsCollector |
+|------|-------------------|------------------------------|
+| データソース | HTML スクレイピング | REST API（JSON） |
+| ブラウザ要否 | 不要（curl_cffi） | 不要（curl_cffi） |
+| 取得単位 | 全 ETF 一括 | 個別 ETF 指定 |
+| 並列取得 | 非対応 | 対応（`fetch_multiple`） |
+| 日付フィルタ | 非対応 | 対応（`start_date` / `end_date`） |
+| データフィールド | ticker, date, flow_amount, aum | ticker, nav_date, nav, nav_change, nav_change_percent, premium_discount, fund_flows, shares_outstanding, aum |
+| ティッカーキャッシュ | なし | 3層キャッシュ（メモリ/ファイル/API） |
+| 主な用途 | 市場全体の資金フロー概況 | 個別 ETF の詳細なファンドフロー履歴分析 |
+
+---
+
 #### DataExporter
 
 取得したデータを複数のフォーマットでエクスポートします。
@@ -524,6 +598,10 @@ except ValueError as e:
 #### ETFComError
 
 ETF.com スクレイピング処理中のエラー。基底エラークラスです。
+
+#### ETFComAPIError
+
+ETF.com REST API がエラーレスポンスを返した際に発生します。`url`、`status_code`、`response_body`、`ticker`、`fund_id` 属性を持ちます。
 
 #### ETFComBlockedError
 
@@ -1225,7 +1303,8 @@ ETF.com から ETF データをスクレイピングで取得します。curl_cf
 |------|--------|------|
 | ティッカーリスト取得 | `TickerCollector` | スクリーナーから全 ETF のティッカーと基本情報を取得 |
 | ファンダメンタルズ取得 | `FundamentalsCollector` | 個別 ETF の詳細情報（経費率、資産規模、配当など）を取得 |
-| ファンドフロー取得 | `FundFlowsCollector` | 日次の資金流入・流出データを取得 |
+| ファンドフロー取得 | `FundFlowsCollector` | 日次の資金流入・流出データを取得（HTML スクレイピング） |
+| ヒストリカルファンドフロー取得 | `HistoricalFundFlowsCollector` | 個別 ETF の日次ファンドフロー履歴を取得（REST API） |
 | セッション管理 | `ETFComSession` | リトライ・タイムアウト・ボット検出回避を統合 |
 
 ### 基本的な使い方
@@ -1290,6 +1369,57 @@ recent_flows = df.sort_values("flow_amount", ascending=False).head(10)
 print(recent_flows[["ticker", "date", "flow_amount"]])
 ```
 
+#### ヒストリカルファンドフローの取得
+
+```python
+from market.etfcom import HistoricalFundFlowsCollector
+
+# 単一 ETF のファンドフロー履歴を取得
+collector = HistoricalFundFlowsCollector()
+df = collector.fetch(ticker="SPY")
+
+# DataFrame の構造
+# columns: ['ticker', 'nav_date', 'nav', 'nav_change', 'nav_change_percent',
+#           'premium_discount', 'fund_flows', 'shares_outstanding', 'aum']
+print(f"データ件数: {len(df)}")
+print(df.head())
+
+# 日付範囲を指定
+df = collector.fetch(ticker="SPY", start_date="2024-01-01", end_date="2024-12-31")
+print(f"2024年のデータ件数: {len(df)}")
+
+# 複数 ETF を並列取得
+df = collector.fetch_multiple(tickers=["SPY", "VOO", "QQQ"], max_concurrency=3)
+print(f"取得した ETF 数: {len(df['ticker'].unique())}")
+
+# 全 ETF のティッカーリストと fund ID を取得
+tickers_df = collector.fetch_tickers()
+print(f"全 ETF 数: {len(tickers_df)}")
+print(tickers_df[["ticker", "fund_id", "name"]].head())
+```
+
+#### ヒストリカルファンドフローのエラーハンドリング
+
+```python
+from market.etfcom import (
+    HistoricalFundFlowsCollector,
+    ETFComAPIError,
+    ETFComError,
+)
+
+collector = HistoricalFundFlowsCollector()
+
+try:
+    df = collector.fetch(ticker="INVALID_TICKER")
+except ETFComAPIError as e:
+    print(f"REST API エラー: {e}")
+    print(f"URL: {e.url}")
+    print(f"ステータスコード: {e.status_code}")
+    print(f"ティッカー: {e.ticker}")
+except ETFComError as e:
+    print(f"ETF.com エラー: {e}")
+```
+
 ### リトライとタイムアウト設定
 
 ```python
@@ -1322,6 +1452,7 @@ collector = TickerCollector(
 from market.etfcom import (
     TickerCollector,
     ETFComError,
+    ETFComAPIError,
     ETFComBlockedError,
     ETFComScrapingError,
     ETFComTimeoutError,
@@ -1340,8 +1471,11 @@ except ETFComTimeoutError as e:
 except ETFComScrapingError as e:
     print(f"HTML パース・データ抽出に失敗: {e}")
     # ETF.com のページ構造が変更された可能性
+except ETFComAPIError as e:
+    print(f"REST API エラー: {e}")
+    # API のステータスコードやレスポンスを確認
 except ETFComError as e:
-    print(f"ETF.com スクレイピングエラー: {e}")
+    print(f"ETF.com エラー: {e}")
 ```
 
 ### セッション管理
@@ -1373,7 +1507,14 @@ with ETFComSession() as session:
 ### データ型
 
 ```python
-from market.etfcom import ETFRecord, FundamentalsRecord, FundFlowRecord
+from market.etfcom import (
+    ETFRecord,
+    FundamentalsRecord,
+    FundFlowRecord,
+    HistoricalFundFlowRecord,
+    TickerInfo,
+)
+from datetime import date
 
 # ETFRecord: TickerCollector の結果
 etf_record = ETFRecord(
@@ -1398,6 +1539,29 @@ flow = FundFlowRecord(
     date="2024-12-31",
     flow_amount=1500000000.0,  # 15億ドルの流入
     aum=450000000000.0,
+)
+
+# HistoricalFundFlowRecord: HistoricalFundFlowsCollector の結果
+historical_flow = HistoricalFundFlowRecord(
+    ticker="SPY",
+    nav_date=date(2025, 9, 10),
+    nav=450.25,
+    nav_change=2.15,
+    nav_change_percent=0.48,
+    premium_discount=-0.02,
+    fund_flows=2787590000.0,  # 約28億ドルの流入
+    shares_outstanding=920000000.0,
+    aum=414230000000.0,
+)
+
+# TickerInfo: HistoricalFundFlowsCollector.fetch_tickers() の結果
+ticker_info = TickerInfo(
+    ticker="SPY",
+    fund_id=1,
+    name="SPDR S&P 500 ETF Trust",
+    issuer="State Street",
+    asset_class="Equity",
+    inception_date="1993-01-22",
 )
 ```
 

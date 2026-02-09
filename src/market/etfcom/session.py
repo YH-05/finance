@@ -4,23 +4,36 @@ This module provides the ``ETFComSession`` class, a curl_cffi-based HTTP session
 with TLS fingerprint impersonation, User-Agent rotation, polite delays,
 bot-block detection, and exponential backoff retry logic.
 
-The session is designed for use with ETF.com pages that do not require
-JavaScript rendering (e.g., profile pages used by FundamentalsCollector
-and FundFlowsCollector).
+The session supports both GET requests (for HTML scraping) and POST requests
+(for REST API access). Common request logic is unified in ``_request()`` and
+``_request_with_retry()`` to avoid duplication.
 
 Examples
 --------
-Basic usage:
+Basic GET usage:
 
 >>> with ETFComSession() as session:
 ...     response = session.get("https://www.etf.com/SPY")
 ...     print(response.status_code)
 200
 
+POST to REST API:
+
+>>> with ETFComSession() as session:
+...     response = session.post(
+...         "https://api-prod.etf.com/private/apps/fundflows/fund-flows-query",
+...         json={"fundId": 1},
+...     )
+...     print(response.status_code)
+200
+
 With retry:
 
 >>> with ETFComSession() as session:
-...     response = session.get_with_retry("https://www.etf.com/SPY")
+...     response = session.post_with_retry(
+...         "https://api-prod.etf.com/private/apps/fundflows/fund-flows-query",
+...         json={"fundId": 1},
+...     )
 ...     print(response.status_code)
 200
 
@@ -28,7 +41,7 @@ See Also
 --------
 market.yfinance.session : Similar session pattern for yfinance module.
 market.yfinance.fetcher : Session rotation reference implementation.
-market.etfcom.constants : Default values and impersonation targets.
+market.etfcom.constants : Default values, impersonation targets, and API headers.
 market.etfcom.types : ScrapingConfig and RetryConfig dataclasses.
 market.etfcom.errors : ETFComBlockedError for bot-block detection.
 """
@@ -38,9 +51,10 @@ import time
 from typing import Any, cast
 
 from curl_cffi import requests as curl_requests
-from curl_cffi.requests import BrowserTypeLiteral
+from curl_cffi.requests import BrowserTypeLiteral, HttpMethod
 
 from market.etfcom.constants import (
+    API_HEADERS,
     BROWSER_IMPERSONATE_TARGETS,
     DEFAULT_HEADERS,
     DEFAULT_USER_AGENTS,
@@ -130,9 +144,12 @@ class ETFComSession:
             max_retry_attempts=self._retry_config.max_attempts,
         )
 
-    def get(self, url: str, **kwargs: Any) -> curl_requests.Response:
-        """Send a GET request with polite delay, header rotation, and block detection.
+    def _request(
+        self, method: HttpMethod, url: str, **kwargs: Any
+    ) -> curl_requests.Response:
+        """Send an HTTP request with polite delay, header rotation, and block detection.
 
+        This is the shared implementation for ``get()`` and ``post()``.
         Applies the following before each request:
 
         1. Polite delay (``config.polite_delay`` + random jitter)
@@ -145,10 +162,13 @@ class ETFComSession:
 
         Parameters
         ----------
+        method : HttpMethod
+            The HTTP method (e.g. ``'GET'``, ``'POST'``).
         url : str
-            The URL to send the GET request to.
+            The URL to send the request to.
         **kwargs : Any
-            Additional keyword arguments passed to ``curl_cffi.Session.get()``.
+            Additional keyword arguments passed to
+            ``curl_cffi.Session.request()``.
 
         Returns
         -------
@@ -159,12 +179,6 @@ class ETFComSession:
         ------
         ETFComBlockedError
             If the response status code is 403 or 429.
-
-        Examples
-        --------
-        >>> response = session.get("https://www.etf.com/SPY")
-        >>> response.status_code
-        200
         """
         # 1. Apply polite delay
         delay = self._config.polite_delay + random.uniform(  # nosec B311
@@ -186,13 +200,15 @@ class ETFComSession:
             headers.update(kwargs.pop("headers"))
 
         logger.debug(
-            "Sending GET request",
+            "Sending request",
+            method=method,
             url=url,
             user_agent=user_agent[:50],
         )
 
         # 3. Execute request
-        response: curl_requests.Response = self._session.get(
+        response: curl_requests.Response = self._session.request(
+            method,
             url,
             headers=headers,
             timeout=self._config.timeout,
@@ -203,6 +219,7 @@ class ETFComSession:
         if response.status_code in _BLOCKED_STATUS_CODES:
             logger.warning(
                 "Bot block detected",
+                method=method,
                 url=url,
                 status_code=response.status_code,
             )
@@ -213,25 +230,111 @@ class ETFComSession:
             )
 
         logger.debug(
-            "GET request completed",
+            "Request completed",
+            method=method,
             url=url,
             status_code=response.status_code,
         )
         return response
 
-    def get_with_retry(self, url: str, **kwargs: Any) -> curl_requests.Response:
-        """Send a GET request with exponential backoff retry and session rotation.
+    def get(self, url: str, **kwargs: Any) -> curl_requests.Response:
+        """Send a GET request with polite delay, header rotation, and block detection.
 
-        On each failed attempt (``ETFComBlockedError``), the session is
-        rotated to a new TLS fingerprint via ``rotate_session()`` and the
-        request is retried after an exponentially increasing delay.
+        Delegates to ``_request('GET', ...)`` with all shared logic
+        (polite delay, User-Agent rotation, Referer header, block detection).
 
         Parameters
         ----------
         url : str
             The URL to send the GET request to.
         **kwargs : Any
-            Additional keyword arguments passed to ``get()``.
+            Additional keyword arguments passed to
+            ``curl_cffi.Session.request()``.
+
+        Returns
+        -------
+        curl_requests.Response
+            The HTTP response object.
+
+        Raises
+        ------
+        ETFComBlockedError
+            If the response status code is 403 or 429.
+
+        Examples
+        --------
+        >>> response = session.get("https://www.etf.com/SPY")
+        >>> response.status_code
+        200
+        """
+        return self._request("GET", url, **kwargs)
+
+    def post(self, url: str, **kwargs: Any) -> curl_requests.Response:
+        """Send a POST request with API headers, polite delay, and block detection.
+
+        Merges ``API_HEADERS`` into the kwargs headers before delegating to
+        ``_request('POST', ...)``. The ``API_HEADERS`` include
+        ``Content-Type: application/json``, ``Origin``, and ``Referer``
+        headers required by the ETF.com REST API.
+
+        Caller-provided headers in ``kwargs`` take precedence over
+        ``API_HEADERS`` values.
+
+        Parameters
+        ----------
+        url : str
+            The URL to send the POST request to.
+        **kwargs : Any
+            Additional keyword arguments passed to
+            ``curl_cffi.Session.request()``. Common kwargs include
+            ``json`` for JSON payloads and ``headers`` for additional
+            headers.
+
+        Returns
+        -------
+        curl_requests.Response
+            The HTTP response object.
+
+        Raises
+        ------
+        ETFComBlockedError
+            If the response status code is 403 or 429.
+
+        Examples
+        --------
+        >>> response = session.post(
+        ...     "https://api-prod.etf.com/private/apps/fundflows/fund-flows-query",
+        ...     json={"fundId": 1},
+        ... )
+        >>> response.status_code
+        200
+        """
+        # Merge API_HEADERS with caller-provided headers
+        caller_headers: dict[str, str] = kwargs.pop("headers", {})
+        merged_headers: dict[str, str] = {**API_HEADERS, **caller_headers}
+        kwargs["headers"] = merged_headers
+
+        return self._request("POST", url, **kwargs)
+
+    def _request_with_retry(
+        self, method: HttpMethod, url: str, **kwargs: Any
+    ) -> curl_requests.Response:
+        """Send an HTTP request with exponential backoff retry and session rotation.
+
+        This is the shared implementation for ``get_with_retry()`` and
+        ``post_with_retry()``. On each failed attempt
+        (``ETFComBlockedError``), the session is rotated to a new TLS
+        fingerprint via ``rotate_session()`` and the request is retried
+        after an exponentially increasing delay.
+
+        Parameters
+        ----------
+        method : HttpMethod
+            The HTTP method (e.g. ``'GET'``, ``'POST'``).
+        url : str
+            The URL to send the request to.
+        **kwargs : Any
+            Additional keyword arguments passed to ``_request()``.
 
         Returns
         -------
@@ -242,21 +345,22 @@ class ETFComSession:
         ------
         ETFComBlockedError
             If all retry attempts fail due to bot-blocking.
-
-        Examples
-        --------
-        >>> response = session.get_with_retry("https://www.etf.com/SPY")
-        >>> response.status_code
-        200
         """
         last_error: ETFComBlockedError | None = None
 
         for attempt in range(self._retry_config.max_attempts):
             try:
-                response = self.get(url, **kwargs)
+                # Use the public method for correct header setup (e.g. post()
+                # merges API_HEADERS before calling _request()).
+                if method == "POST":
+                    response = self.post(url, **kwargs)
+                else:
+                    response = self._request(method, url, **kwargs)
+
                 if attempt > 0:
                     logger.info(
                         "Request succeeded after retry",
+                        method=method,
                         url=url,
                         attempt=attempt + 1,
                     )
@@ -266,6 +370,7 @@ class ETFComSession:
                 last_error = e
                 logger.warning(
                     "Request blocked, will retry",
+                    method=method,
                     url=url,
                     attempt=attempt + 1,
                     max_attempts=self._retry_config.max_attempts,
@@ -298,11 +403,80 @@ class ETFComSession:
         # All attempts exhausted
         logger.error(
             "All retry attempts failed",
+            method=method,
             url=url,
             max_attempts=self._retry_config.max_attempts,
         )
         assert last_error is not None
         raise last_error
+
+    def get_with_retry(self, url: str, **kwargs: Any) -> curl_requests.Response:
+        """Send a GET request with exponential backoff retry and session rotation.
+
+        Delegates to ``_request_with_retry('GET', ...)`` with all shared
+        retry logic (exponential backoff, session rotation).
+
+        Parameters
+        ----------
+        url : str
+            The URL to send the GET request to.
+        **kwargs : Any
+            Additional keyword arguments passed to ``_request()``.
+
+        Returns
+        -------
+        curl_requests.Response
+            The HTTP response object.
+
+        Raises
+        ------
+        ETFComBlockedError
+            If all retry attempts fail due to bot-blocking.
+
+        Examples
+        --------
+        >>> response = session.get_with_retry("https://www.etf.com/SPY")
+        >>> response.status_code
+        200
+        """
+        return self._request_with_retry("GET", url, **kwargs)
+
+    def post_with_retry(self, url: str, **kwargs: Any) -> curl_requests.Response:
+        """Send a POST request with exponential backoff retry and session rotation.
+
+        Delegates to ``_request_with_retry('POST', ...)`` with all shared
+        retry logic. The ``API_HEADERS`` are applied on each attempt via
+        ``post()``.
+
+        Parameters
+        ----------
+        url : str
+            The URL to send the POST request to.
+        **kwargs : Any
+            Additional keyword arguments passed to ``post()``. Common
+            kwargs include ``json`` for JSON payloads and ``headers``
+            for additional headers.
+
+        Returns
+        -------
+        curl_requests.Response
+            The HTTP response object.
+
+        Raises
+        ------
+        ETFComBlockedError
+            If all retry attempts fail due to bot-blocking.
+
+        Examples
+        --------
+        >>> response = session.post_with_retry(
+        ...     "https://api-prod.etf.com/private/apps/fundflows/fund-flows-query",
+        ...     json={"fundId": 1},
+        ... )
+        >>> response.status_code
+        200
+        """
+        return self._request_with_retry("POST", url, **kwargs)
 
     def rotate_session(self) -> None:
         """Rotate to a new browser impersonation target.

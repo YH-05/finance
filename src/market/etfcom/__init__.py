@@ -11,6 +11,8 @@ FundamentalsCollector
     Scrapes individual ETF profile pages for key-value fundamental data.
 FundFlowsCollector
     Scrapes the fund flows page for daily flow data.
+HistoricalFundFlowsCollector
+    Fetches historical fund flow data via the ETF.com REST API.
 ETFComSession
     curl_cffi-based HTTP session with bot-blocking countermeasures.
 
@@ -18,6 +20,8 @@ Error Classes
 -------------
 ETFComError
     Base exception for all ETF.com scraping operations.
+ETFComAPIError
+    Exception raised when the ETF.com REST API returns an error response.
 ETFComBlockedError
     Exception raised when bot-blocking is detected.
 ETFComScrapingError
@@ -33,10 +37,14 @@ FundFlowRecord
     A single daily fund flow record for an ETF.
 FundamentalsRecord
     A single ETF fundamentals record from an ETF.com profile page.
+HistoricalFundFlowRecord
+    A single daily historical fund flow record from the ETF.com REST API.
 RetryConfig
     Configuration for retry behaviour with exponential backoff.
 ScrapingConfig
     Configuration for ETF.com scraping behaviour.
+TickerInfo
+    Ticker information from the ETF.com tickers API endpoint.
 
 Examples
 --------
@@ -56,9 +64,11 @@ Examples
 from market.etfcom.collectors import (
     FundamentalsCollector,
     FundFlowsCollector,
+    HistoricalFundFlowsCollector,
     TickerCollector,
 )
 from market.etfcom.errors import (
+    ETFComAPIError,
     ETFComBlockedError,
     ETFComError,
     ETFComScrapingError,
@@ -69,11 +79,14 @@ from market.etfcom.types import (
     ETFRecord,
     FundamentalsRecord,
     FundFlowRecord,
+    HistoricalFundFlowRecord,
     RetryConfig,
     ScrapingConfig,
+    TickerInfo,
 )
 
 __all__ = [
+    "ETFComAPIError",
     "ETFComBlockedError",
     "ETFComError",
     "ETFComScrapingError",
@@ -84,7 +97,10 @@ __all__ = [
     "FundFlowsCollector",
     "FundamentalsCollector",
     "FundamentalsRecord",
+    "HistoricalFundFlowRecord",
+    "HistoricalFundFlowsCollector",
     "RetryConfig",
     "ScrapingConfig",
     "TickerCollector",
+    "TickerInfo",
 ]

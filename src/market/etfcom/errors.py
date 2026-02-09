@@ -2,8 +2,8 @@
 
 This module provides a hierarchy of exception classes for handling
 various error conditions specific to ETF.com scraping operations,
-including HTML parse failures, page load timeouts, and bot-blocking
-detection (HTTP 403/429, CAPTCHA redirects).
+including HTML parse failures, page load timeouts, bot-blocking
+detection (HTTP 403/429, CAPTCHA redirects), and REST API errors.
 
 Exception Hierarchy
 -------------------
@@ -11,6 +11,7 @@ ETFComError (base, inherits Exception)
     ETFComScrapingError (HTML parse failure)
     ETFComTimeoutError (page load / navigation timeout)
     ETFComBlockedError (bot-blocking detection)
+    ETFComAPIError (REST API error response)
 
 Notes
 -----
@@ -194,7 +195,78 @@ class ETFComBlockedError(ETFComError):
         self.status_code = status_code
 
 
+class ETFComAPIError(ETFComError):
+    """Exception raised when the ETF.com REST API returns an error response.
+
+    This exception is raised when a request to the ETF.com REST API
+    (``api-prod.etf.com``) returns a non-success HTTP status code or
+    an unexpected response body. It provides contextual attributes
+    to aid debugging and error handling.
+
+    Parameters
+    ----------
+    message : str
+        Human-readable error message describing the API failure.
+    url : str | None
+        The API endpoint URL that returned the error.
+    status_code : int | None
+        The HTTP status code returned by the API (e.g. 400, 403, 500).
+    response_body : str | None
+        The raw response body returned by the API, useful for
+        diagnosing unexpected response formats.
+    ticker : str | None
+        The ETF ticker symbol associated with the failed request,
+        if applicable (e.g. during fund flow queries).
+    fund_id : int | None
+        The fund ID associated with the failed request, if applicable
+        (e.g. during fund flow queries after ticker resolution).
+
+    Attributes
+    ----------
+    message : str
+        The error message.
+    url : str | None
+        The API endpoint URL.
+    status_code : int | None
+        The HTTP status code.
+    response_body : str | None
+        The raw response body.
+    ticker : str | None
+        The ETF ticker symbol.
+    fund_id : int | None
+        The fund ID.
+
+    Examples
+    --------
+    >>> raise ETFComAPIError(
+    ...     "API returned HTTP 403",
+    ...     url="https://api-prod.etf.com/private/apps/fundflows/fund-flows-query",
+    ...     status_code=403,
+    ...     response_body='{"error": "Forbidden"}',
+    ...     ticker="SPY",
+    ...     fund_id=1,
+    ... )
+    """
+
+    def __init__(
+        self,
+        message: str,
+        url: str | None = None,
+        status_code: int | None = None,
+        response_body: str | None = None,
+        ticker: str | None = None,
+        fund_id: int | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.url = url
+        self.status_code = status_code
+        self.response_body = response_body
+        self.ticker = ticker
+        self.fund_id = fund_id
+
+
 __all__ = [
+    "ETFComAPIError",
     "ETFComBlockedError",
     "ETFComError",
     "ETFComScrapingError",

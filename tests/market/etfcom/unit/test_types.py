@@ -331,6 +331,177 @@ class TestETFRecord:
 
 
 # ---------------------------------------------------------------------------
+# HistoricalFundFlowRecord tests
+# ---------------------------------------------------------------------------
+
+
+class TestHistoricalFundFlowRecord:
+    """Tests for HistoricalFundFlowRecord dataclass."""
+
+    def test_正常系_全フィールドで初期化(self) -> None:
+        """HistoricalFundFlowRecord が全9フィールドで初期化されることを確認。"""
+        from market.etfcom.types import HistoricalFundFlowRecord
+
+        record = HistoricalFundFlowRecord(
+            ticker="SPY",
+            nav_date=date(2025, 9, 10),
+            nav=450.25,
+            nav_change=2.15,
+            nav_change_percent=0.48,
+            premium_discount=-0.02,
+            fund_flows=2787590000.0,
+            shares_outstanding=920000000.0,
+            aum=414230000000.0,
+        )
+        assert record.ticker == "SPY"
+        assert record.nav_date == date(2025, 9, 10)
+        assert record.nav == 450.25
+        assert record.nav_change == 2.15
+        assert record.nav_change_percent == 0.48
+        assert record.premium_discount == -0.02
+        assert record.fund_flows == 2787590000.0
+        assert record.shares_outstanding == 920000000.0
+        assert record.aum == 414230000000.0
+
+    def test_正常系_frozenであること(self) -> None:
+        """HistoricalFundFlowRecord が frozen であり属性の変更が禁止されることを確認。"""
+        from market.etfcom.types import HistoricalFundFlowRecord
+
+        record = HistoricalFundFlowRecord(
+            ticker="SPY",
+            nav_date=date(2025, 9, 10),
+            nav=450.25,
+            nav_change=2.15,
+            nav_change_percent=0.48,
+            premium_discount=-0.02,
+            fund_flows=2787590000.0,
+            shares_outstanding=920000000.0,
+            aum=414230000000.0,
+        )
+        with pytest.raises(AttributeError):
+            record.ticker = "VOO"
+
+    def test_正常系_フィールド数が9であること(self) -> None:
+        """HistoricalFundFlowRecord のフィールド数が9であることを確認。"""
+        import dataclasses
+
+        from market.etfcom.types import HistoricalFundFlowRecord
+
+        fields = dataclasses.fields(HistoricalFundFlowRecord)
+        assert len(fields) == 9
+
+    def test_正常系_Noneフィールドで初期化可能(self) -> None:
+        """HistoricalFundFlowRecord が None フィールドで初期化可能であることを確認。
+
+        API がデータ欠損時に null を返すため、数値フィールドは None 許容。
+        """
+        from market.etfcom.types import HistoricalFundFlowRecord
+
+        record = HistoricalFundFlowRecord(
+            ticker="UNKNOWN",
+            nav_date=date(2025, 1, 1),
+            nav=None,
+            nav_change=None,
+            nav_change_percent=None,
+            premium_discount=None,
+            fund_flows=None,
+            shares_outstanding=None,
+            aum=None,
+        )
+        assert record.ticker == "UNKNOWN"
+        assert record.nav is None
+        assert record.fund_flows is None
+
+    def test_正常系_負のfund_flowsで初期化可能(self) -> None:
+        """HistoricalFundFlowRecord が負の fund_flows で初期化可能であることを確認。"""
+        from market.etfcom.types import HistoricalFundFlowRecord
+
+        record = HistoricalFundFlowRecord(
+            ticker="SPY",
+            nav_date=date(2025, 9, 8),
+            nav=448.10,
+            nav_change=-2.15,
+            nav_change_percent=-0.48,
+            premium_discount=0.01,
+            fund_flows=-1500000000.0,
+            shares_outstanding=920000000.0,
+            aum=412000000000.0,
+        )
+        assert record.fund_flows == -1500000000.0
+        assert record.nav_change == -2.15
+
+
+# ---------------------------------------------------------------------------
+# TickerInfo tests
+# ---------------------------------------------------------------------------
+
+
+class TestTickerInfo:
+    """Tests for TickerInfo dataclass."""
+
+    def test_正常系_全フィールドで初期化(self) -> None:
+        """TickerInfo が全6フィールドで初期化されることを確認。"""
+        from market.etfcom.types import TickerInfo
+
+        info = TickerInfo(
+            ticker="SPY",
+            fund_id=1,
+            name="SPDR S&P 500 ETF Trust",
+            issuer="State Street",
+            asset_class="Equity",
+            inception_date="1993-01-22",
+        )
+        assert info.ticker == "SPY"
+        assert info.fund_id == 1
+        assert info.name == "SPDR S&P 500 ETF Trust"
+        assert info.issuer == "State Street"
+        assert info.asset_class == "Equity"
+        assert info.inception_date == "1993-01-22"
+
+    def test_正常系_frozenであること(self) -> None:
+        """TickerInfo が frozen であり属性の変更が禁止されることを確認。"""
+        from market.etfcom.types import TickerInfo
+
+        info = TickerInfo(
+            ticker="SPY",
+            fund_id=1,
+            name="SPDR S&P 500 ETF Trust",
+            issuer="State Street",
+            asset_class="Equity",
+            inception_date="1993-01-22",
+        )
+        with pytest.raises(AttributeError):
+            info.ticker = "VOO"
+
+    def test_正常系_フィールド数が6であること(self) -> None:
+        """TickerInfo のフィールド数が6であることを確認。"""
+        import dataclasses
+
+        from market.etfcom.types import TickerInfo
+
+        fields = dataclasses.fields(TickerInfo)
+        assert len(fields) == 6
+
+    def test_正常系_Optionalフィールドで初期化可能(self) -> None:
+        """TickerInfo が Optional フィールドを None で初期化可能であることを確認。"""
+        from market.etfcom.types import TickerInfo
+
+        info = TickerInfo(
+            ticker="UNKNOWN",
+            fund_id=99999,
+            name="Unknown ETF",
+            issuer=None,
+            asset_class=None,
+            inception_date=None,
+        )
+        assert info.ticker == "UNKNOWN"
+        assert info.fund_id == 99999
+        assert info.issuer is None
+        assert info.asset_class is None
+        assert info.inception_date is None
+
+
+# ---------------------------------------------------------------------------
 # __all__ export tests
 # ---------------------------------------------------------------------------
 
@@ -339,7 +510,7 @@ class TestModuleExports:
     """Tests for module-level __all__ exports."""
 
     def test_正常系_allに全クラスが含まれる(self) -> None:
-        """__all__ に全5クラスがエクスポートされていることを確認。"""
+        """__all__ に全7クラスがエクスポートされていることを確認。"""
         from market.etfcom.types import __all__
 
         expected = {
@@ -348,6 +519,8 @@ class TestModuleExports:
             "FundamentalsRecord",
             "FundFlowRecord",
             "ETFRecord",
+            "HistoricalFundFlowRecord",
+            "TickerInfo",
         }
         assert set(__all__) == expected
 
@@ -357,8 +530,10 @@ class TestModuleExports:
             ETFRecord,
             FundamentalsRecord,
             FundFlowRecord,
+            HistoricalFundFlowRecord,
             RetryConfig,
             ScrapingConfig,
+            TickerInfo,
         )
 
         assert ScrapingConfig is not None
@@ -366,3 +541,5 @@ class TestModuleExports:
         assert FundamentalsRecord is not None
         assert FundFlowRecord is not None
         assert ETFRecord is not None
+        assert HistoricalFundFlowRecord is not None
+        assert TickerInfo is not None

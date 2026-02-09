@@ -325,6 +325,8 @@ def mock_session(
     session._retry_config = sample_retry_config
     session.get.return_value = mock_curl_response
     session.get_with_retry.return_value = mock_curl_response
+    session.post.return_value = mock_curl_response
+    session.post_with_retry.return_value = mock_curl_response
     session.rotate_session.return_value = None
     session.close.return_value = None
     session.__enter__ = MagicMock(return_value=session)
@@ -381,3 +383,147 @@ def mock_browser(
     browser.__aexit__ = AsyncMock(return_value=False)
 
     return browser
+
+
+# =============================================================================
+# REST API response fixtures
+# =============================================================================
+
+
+@pytest.fixture
+def sample_tickers_api_response() -> list[dict[str, object]]:
+    """Create a mock tickers API response JSON.
+
+    Simulates the response from the ``/private/apps/fundflows/tickers``
+    endpoint containing a list of ticker objects with fund IDs.
+
+    Returns
+    -------
+    list[dict[str, object]]
+        A list of ticker dictionaries with fund_id, ticker, name, etc.
+    """
+    return [
+        {
+            "fundId": 1,
+            "ticker": "SPY",
+            "fundName": "SPDR S&P 500 ETF Trust",
+            "issuer": "State Street",
+            "assetClass": "Equity",
+            "inceptionDate": "1993-01-22",
+        },
+        {
+            "fundId": 2,
+            "ticker": "VOO",
+            "fundName": "Vanguard S&P 500 ETF",
+            "issuer": "Vanguard",
+            "assetClass": "Equity",
+            "inceptionDate": "2010-09-07",
+        },
+        {
+            "fundId": 3,
+            "ticker": "QQQ",
+            "fundName": "Invesco QQQ Trust",
+            "issuer": "Invesco",
+            "assetClass": "Equity",
+            "inceptionDate": "1999-03-10",
+        },
+    ]
+
+
+@pytest.fixture
+def sample_fund_flows_api_response() -> dict[str, object]:
+    """Create a mock fund flows query API response JSON.
+
+    Simulates the response from the ``/private/apps/fundflows/fund-flows-query``
+    endpoint for a single fund.
+
+    Returns
+    -------
+    dict[str, object]
+        A dictionary containing a ``results`` key with daily flow records.
+    """
+    return {
+        "results": [
+            {
+                "navDate": "2025-09-10",
+                "nav": 450.25,
+                "navChange": 2.15,
+                "navChangePercent": 0.48,
+                "premiumDiscount": -0.02,
+                "fundFlows": 2787590000.0,
+                "sharesOutstanding": 920000000.0,
+                "aum": 414230000000.0,
+            },
+            {
+                "navDate": "2025-09-09",
+                "nav": 448.10,
+                "navChange": -1.30,
+                "navChangePercent": -0.29,
+                "premiumDiscount": 0.01,
+                "fundFlows": -1234560000.0,
+                "sharesOutstanding": 919500000.0,
+                "aum": 411950000000.0,
+            },
+        ],
+    }
+
+
+@pytest.fixture
+def sample_fund_details_api_response() -> dict[str, object]:
+    """Create a mock fund details API response JSON.
+
+    Simulates the response from the ``/private/apps/fundflows/fund-details``
+    endpoint for a single fund.
+
+    Returns
+    -------
+    dict[str, object]
+        A dictionary with fund detail fields.
+    """
+    return {
+        "fundId": 1,
+        "ticker": "SPY",
+        "fundName": "SPDR S&P 500 ETF Trust",
+        "issuer": "State Street",
+        "assetClass": "Equity",
+        "expenseRatio": 0.0945,
+        "aum": 500000000000.0,
+    }
+
+
+@pytest.fixture
+def sample_api_error_response() -> dict[str, object]:
+    """Create a mock API error response JSON.
+
+    Simulates a typical error response from the ETF.com REST API.
+
+    Returns
+    -------
+    dict[str, object]
+        A dictionary with error information.
+    """
+    return {
+        "error": "Forbidden",
+        "message": "Access denied",
+        "statusCode": 403,
+    }
+
+
+@pytest.fixture
+def tmp_cache_dir(tmp_path: object) -> object:
+    """Create a temporary directory for ticker cache file storage.
+
+    Uses pytest's ``tmp_path`` fixture to provide an isolated directory
+    for file cache tests.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Pytest-provided temporary directory.
+
+    Returns
+    -------
+    Path
+        A temporary directory path for cache file testing.
+    """
+    return tmp_path
