@@ -184,7 +184,7 @@
 
                 "mechanism": {
                     "value_increase_pattern": "ユーザー/ノード増加による価値増大パターン",
-                    "reinforcing_loops": ["自己強化ループ1", "..."] or null,
+                    "reinforcing_loops": ["自己強化ループ1", "..."],
                     "cross_side_effects": "両面市場の場合の相互効果 or null",
                     "data_network_effects": "データ蓄積による効果 or null"
                 },
@@ -364,7 +364,7 @@
                     "brand_awareness": "認知度評価 or null",
                     "brand_reputation": "評判評価 or null",
                     "brand_loyalty": "ロイヤルティ評価 or null",
-                    "brand_associations": ["ブランド連想1", "..."] or null
+                    "brand_associations": ["ブランド連想1", "..."]
                 },
 
                 "evidence": {
@@ -605,8 +605,8 @@
                 "name": "競合企業名",
                 "ticker": "ティッカー or null",
                 "market_share": "シェア（%）or null",
-                "relative_strengths": ["強み1", "..."] or null,
-                "relative_weaknesses": ["弱み1", "..."] or null,
+                "relative_strengths": ["強み1", "..."],
+                "relative_weaknesses": ["弱み1", "..."],
                 "competitive_relationship": "競合関係の説明"
             }
         ],

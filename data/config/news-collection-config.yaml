@@ -140,7 +140,7 @@ extraction:
 
 # 要約設定
 summarization:
-  concurrency: 3
+  concurrency: 5
   timeout_seconds: 60
   max_retries: 3
   prompt_template: |
@@ -209,3 +209,22 @@ output:
   # 結果JSONの出力先（デフォルト）
   result_dir: "data/exports/news-workflow"
   # ファイル名パターン: workflow-result-{timestamp}.json
+
+# ===========================================
+# カテゴリ別Issue発行設定
+# ===========================================
+
+# 発行形式設定
+publishing:
+  format: "per_category"                    # "per_category": カテゴリ別, "per_article": 記事別
+  export_markdown: true                     # カテゴリ別Markdownエクスポート
+  export_dir: "data/exports/news-workflow"  # エクスポート先ディレクトリ
+
+# カテゴリラベル（日本語表示名）
+category_labels:
+  index: "株価指数"
+  stock: "個別銘柄"
+  sector: "セクター"
+  macro: "マクロ経済"
+  ai: "AI関連"
+  finance: "金融"

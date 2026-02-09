@@ -149,6 +149,8 @@ news/
 ├── orchestrator.py          # ワークフローオーケストレーター
 ├── summarizer.py            # AI要約（Claude API）
 ├── publisher.py             # GitHub Issue公開
+├── grouper.py               # カテゴリ別記事グルーピング
+├── markdown_generator.py    # カテゴリ別Markdown生成・エクスポート
 │
 ├── core/                    # コアコンポーネント
 │   ├── article.py           # 統一記事モデル
@@ -243,9 +245,11 @@ news/
 - **github.py**: GitHub Issue作成・Project追加
 
 #### ワークフロー統合
-- **orchestrator.py**: 完全ワークフロー統合（収集→抽出→要約→公開）
+- **orchestrator.py**: 完全ワークフロー統合（per_category: 収集→抽出→要約→グループ化→エクスポート→公開、per_article: 収集→抽出→要約→公開）
 - **summarizer.py**: Claude AI要約
-- **publisher.py**: GitHub Issue/Project管理
+- **publisher.py**: GitHub Issue/Project管理（記事別・カテゴリ別の両方に対応）
+- **grouper.py**: カテゴリ別記事グルーピング（ステータスマッピングに基づく分類）
+- **markdown_generator.py**: カテゴリ別Markdownファイル生成・エクスポート
 
 <!-- END: IMPLEMENTATION -->
 
@@ -299,7 +303,16 @@ result = await orchestrator.run(
 
 | メソッド | 説明 | 戻り値 |
 |---------|------|--------|
-| `run(statuses, max_articles, dry_run)` | ワークフロー全体を実行 | `WorkflowResult` |
+| `run(statuses, max_articles, dry_run, export_only)` | ワークフロー全体を実行 | `WorkflowResult` |
+
+**`run()` パラメータ**:
+
+| パラメータ | 型 | 説明 | デフォルト |
+|-----------|-----|------|-----------|
+| `statuses` | `list[str] \| None` | フィルタ対象ステータス | `None`（全て） |
+| `max_articles` | `int \| None` | 最大処理記事数 | `None`（無制限） |
+| `dry_run` | `bool` | Issue作成をスキップ | `False` |
+| `export_only` | `bool` | Markdownエクスポートのみ（per_category時） | `False` |
 
 ---
 
@@ -468,9 +481,13 @@ from news.models import (
     CollectedArticle,        # 収集済み記事
     ExtractedArticle,        # 本文抽出済み記事
     SummarizedArticle,       # 要約済み記事
-    PublishedArticle,        # 公開済み記事
+    PublishedArticle,        # 公開済み記事（per_article形式）
+    CategoryGroup,           # カテゴリ別グループ（per_category形式）
+    CategoryPublishResult,   # カテゴリ別公開結果（per_category形式）
     WorkflowResult,          # ワークフロー全体結果
     StructuredSummary,       # 構造化要約（4セクション）
+    StageMetrics,            # ステージ別処理時間
+    DomainExtractionRate,    # ドメイン別抽出成功率
 )
 ```
 
@@ -697,6 +714,38 @@ asyncio.run(batch_summarize())
 
 ## ワークフローパイプライン
 
+2つの公開形式に対応しています。
+
+### per_category 形式（デフォルト・推奨）
+
+カテゴリ別にグループ化し、1つのGitHub Issueにまとめて公開します。
+
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  Collector   │ -> │  Extractor   │ -> │  Summarizer  │
+│  (RSS収集)   │    │  (本文抽出)  │    │  (AI要約)    │
+└──────────────┘    └──────────────┘    └──────────────┘
+     |                    |                    |
+     v                    v                    v
+ CollectedArticle   ExtractedArticle   SummarizedArticle
+                                             |
+                    ┌────────────────────────┘
+                    v
+            ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+            │   Grouper    │ -> │   Exporter   │ -> │  Publisher   │
+            │ (カテゴリ分類)│    │ (Markdown出力)│    │ (Issue作成)  │
+            └──────────────┘    └──────────────┘    └──────────────┘
+                    |                    |                    |
+                    v                    v                    v
+             CategoryGroup        Markdownファイル    CategoryPublishResult
+```
+
+**ステージ構成**: 収集 -> 抽出 -> 要約 -> グループ化 -> エクスポート -> 公開（6ステージ）
+
+### per_article 形式（レガシー）
+
+記事単位で個別にGitHub Issueを作成します。
+
 ```
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
 │  Collector   │ -> │  Extractor   │ -> │  Summarizer  │ -> │  Publisher   │
@@ -705,6 +754,54 @@ asyncio.run(batch_summarize())
      |                    |                    |                    |
      v                    v                    v                    v
  CollectedArticle   ExtractedArticle   SummarizedArticle   PublishedArticle
+```
+
+**ステージ構成**: 収集 -> 抽出 -> 要約 -> 公開（4ステージ）
+
+### 公開形式の選択
+
+```yaml
+# data/config/news-collection-config.yaml
+publishing:
+  format: "per_category"   # "per_category"（推奨）または "per_article"
+  export_markdown: true     # Markdownファイルのエクスポート（per_categoryのみ）
+  export_dir: "data/exports/news-workflow"  # エクスポート先ディレクトリ
+```
+
+### 実行モード
+
+| モード | 説明 | 対象形式 |
+|--------|------|----------|
+| 通常 | 全パイプラインを実行しIssueを作成 | 両方 |
+| `dry_run=True` | Issue作成をスキップ（確認用） | 両方 |
+| `export_only=True` | Markdownエクスポートのみ、Issue作成なし | per_category |
+
+### カテゴリラベル設定
+
+per_category形式で使用するカテゴリの日本語ラベルを設定できます。
+
+```yaml
+# data/config/news-collection-config.yaml
+category_labels:
+  index: "株価指数"    # デフォルト
+  stock: "個別銘柄"
+  sector: "セクター"
+  macro: "マクロ経済"
+  ai: "AI関連"
+  finance: "金融"
+```
+
+### ステータスマッピング
+
+RSS記事のカテゴリからGitHub Projectのステータスに変換するマッピング:
+
+```yaml
+# data/config/news-collection-config.yaml
+status_mapping:
+  market: "index"     # market カテゴリ -> index ステータス
+  tech: "ai"          # tech カテゴリ -> ai ステータス
+  finance: "finance"
+  sector: "sector"
 ```
 
 ## 設定ファイル

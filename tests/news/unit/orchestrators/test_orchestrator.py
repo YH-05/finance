@@ -12,7 +12,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from news.config.models import NewsWorkflowConfig, SummarizationConfig
+from news.config.models import NewsWorkflowConfig, PublishingConfig, SummarizationConfig
 from news.models import (
     ArticleSource,
     CollectedArticle,
@@ -34,7 +34,11 @@ from news.models import (
 
 @pytest.fixture
 def sample_config() -> NewsWorkflowConfig:
-    """Create a sample NewsWorkflowConfig for testing."""
+    """Create a sample NewsWorkflowConfig for testing.
+
+    Uses per_article format to test legacy per-article publishing pipeline.
+    For per_category tests, see test_orchestrator_integration.py.
+    """
     return NewsWorkflowConfig(
         version="1.0",
         status_mapping={"market": "index", "tech": "ai", "finance": "finance"},
@@ -55,6 +59,7 @@ def sample_config() -> NewsWorkflowConfig:
             "repository": "YH-05/finance",
         },
         output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        publishing=PublishingConfig(format="per_article"),
     )
 
 

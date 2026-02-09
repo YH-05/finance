@@ -495,6 +495,130 @@ class SummarizedArticle(BaseModel):
     )
 
 
+class CategoryGroup(BaseModel):
+    """A group of articles belonging to the same category.
+
+    Represents a collection of summarized articles grouped by category,
+    used for category-based Issue publishing where one Issue is created
+    per category instead of per article.
+
+    Attributes
+    ----------
+    category : str
+        Category key (e.g., "index", "stock", "sector").
+    category_label : str
+        Human-readable category label in Japanese (e.g., "株価指数", "個別銘柄").
+    date : str
+        Date string for the group (e.g., "2026-02-09").
+    articles : list[SummarizedArticle]
+        List of summarized articles belonging to this category.
+
+    Examples
+    --------
+    >>> from news.models import CategoryGroup
+    >>> group = CategoryGroup(
+    ...     category="index",
+    ...     category_label="株価指数",
+    ...     date="2026-02-09",
+    ...     articles=[],
+    ... )
+    >>> group.category
+    'index'
+    """
+
+    category: str = Field(
+        ...,
+        description="Category key (e.g., 'index', 'stock', 'sector')",
+    )
+    category_label: str = Field(
+        ...,
+        description="Human-readable category label in Japanese (e.g., '株価指数')",
+    )
+    date: str = Field(
+        ...,
+        description="Date string for the group (e.g., '2026-02-09')",
+    )
+    articles: list["SummarizedArticle"] = Field(
+        ...,
+        description="List of summarized articles belonging to this category",
+    )
+
+
+class CategoryPublishResult(BaseModel):
+    """Result of publishing a category group as a GitHub Issue.
+
+    Represents the outcome of attempting to publish a category-based Issue,
+    including the Issue number and URL if successful, or error details if failed.
+
+    Attributes
+    ----------
+    category : str
+        Category key (e.g., "index", "stock").
+    category_label : str
+        Human-readable category label in Japanese (e.g., "株価指数").
+    date : str
+        Date string for the published group (e.g., "2026-02-09").
+    issue_number : int | None
+        The GitHub Issue number if publication succeeded, or None if failed.
+    issue_url : str | None
+        The GitHub Issue URL if publication succeeded, or None if failed.
+    article_count : int
+        The number of articles included in this category group.
+    status : PublicationStatus
+        The status of the publication attempt.
+    error_message : str | None
+        Error message if publication failed, or None if successful.
+
+    Examples
+    --------
+    >>> from news.models import CategoryPublishResult, PublicationStatus
+    >>> result = CategoryPublishResult(
+    ...     category="index",
+    ...     category_label="株価指数",
+    ...     date="2026-02-09",
+    ...     issue_number=100,
+    ...     issue_url="https://github.com/YH-05/finance/issues/100",
+    ...     article_count=5,
+    ...     status=PublicationStatus.SUCCESS,
+    ... )
+    >>> result.status
+    <PublicationStatus.SUCCESS: 'success'>
+    """
+
+    category: str = Field(
+        ...,
+        description="Category key (e.g., 'index', 'stock')",
+    )
+    category_label: str = Field(
+        ...,
+        description="Human-readable category label in Japanese (e.g., '株価指数')",
+    )
+    date: str = Field(
+        ...,
+        description="Date string for the published group (e.g., '2026-02-09')",
+    )
+    issue_number: int | None = Field(
+        ...,
+        description="The GitHub Issue number if publication succeeded, or None if failed",
+    )
+    issue_url: str | None = Field(
+        ...,
+        description="The GitHub Issue URL if publication succeeded, or None if failed",
+    )
+    article_count: int = Field(
+        ...,
+        description="The number of articles included in this category group",
+    )
+    status: PublicationStatus = Field(
+        ...,
+        description="The status of the publication attempt",
+    )
+    error_message: str | None = Field(
+        default=None,
+        description="Error message if publication failed, or None if successful",
+    )
+
+
 class FailureRecord(BaseModel):
     """A record of a failed processing step in the workflow.
 
@@ -691,6 +815,106 @@ class FeedError(BaseModel):
     )
 
 
+class StageMetrics(BaseModel):
+    """Processing time metrics for a single workflow stage.
+
+    Represents timing information for one stage of the news collection
+    workflow pipeline (e.g., collection, extraction, summarization, publishing).
+
+    Attributes
+    ----------
+    stage : str
+        Name of the workflow stage (e.g., "collection", "extraction",
+        "summarization", "grouping", "export", "publishing").
+    elapsed_seconds : float
+        Total elapsed time for this stage in seconds.
+    item_count : int
+        Number of items processed in this stage.
+
+    Examples
+    --------
+    >>> from news.models import StageMetrics
+    >>> metrics = StageMetrics(
+    ...     stage="extraction",
+    ...     elapsed_seconds=12.5,
+    ...     item_count=20,
+    ... )
+    >>> metrics.stage
+    'extraction'
+    >>> metrics.elapsed_seconds
+    12.5
+    """
+
+    stage: str = Field(
+        ...,
+        description="Name of the workflow stage (e.g., 'collection', 'extraction')",
+    )
+    elapsed_seconds: float = Field(
+        ...,
+        description="Total elapsed time for this stage in seconds",
+    )
+    item_count: int = Field(
+        ...,
+        description="Number of items processed in this stage",
+    )
+
+
+class DomainExtractionRate(BaseModel):
+    """Extraction success rate for a specific domain.
+
+    Represents how many articles from a particular domain were
+    successfully extracted versus failed, providing visibility into
+    which sources are reliable for content extraction.
+
+    Attributes
+    ----------
+    domain : str
+        The domain name (e.g., "cnbc.com", "reuters.com").
+    total : int
+        Total number of extraction attempts for this domain.
+    success : int
+        Number of successful extractions.
+    failed : int
+        Number of failed extractions.
+    success_rate : float
+        Success rate as a percentage (0.0 to 100.0).
+
+    Examples
+    --------
+    >>> from news.models import DomainExtractionRate
+    >>> rate = DomainExtractionRate(
+    ...     domain="cnbc.com",
+    ...     total=10,
+    ...     success=8,
+    ...     failed=2,
+    ...     success_rate=80.0,
+    ... )
+    >>> rate.success_rate
+    80.0
+    """
+
+    domain: str = Field(
+        ...,
+        description="The domain name (e.g., 'cnbc.com')",
+    )
+    total: int = Field(
+        ...,
+        description="Total number of extraction attempts for this domain",
+    )
+    success: int = Field(
+        ...,
+        description="Number of successful extractions",
+    )
+    failed: int = Field(
+        ...,
+        description="Number of failed extractions",
+    )
+    success_rate: float = Field(
+        ...,
+        description="Success rate as a percentage (0.0 to 100.0)",
+    )
+
+
 class WorkflowResult(BaseModel):
     """The result of a complete news collection workflow execution.
 
@@ -806,11 +1030,26 @@ class WorkflowResult(BaseModel):
         default_factory=list,
         description="Records of feeds that failed during collection",
     )
+    category_results: list[CategoryPublishResult] = Field(
+        default_factory=list,
+        description="Results of category-based Issue publishing",
+    )
+    stage_metrics: list[StageMetrics] = Field(
+        default_factory=list,
+        description="Processing time metrics for each workflow stage",
+    )
+    domain_extraction_rates: list[DomainExtractionRate] = Field(
+        default_factory=list,
+        description="Extraction success rate per domain",
+    )
 
 
 __all__ = [
     "ArticleSource",
+    "CategoryGroup",
+    "CategoryPublishResult",
     "CollectedArticle",
+    "DomainExtractionRate",
     "ExtractedArticle",
     "ExtractionStatus",
     "FailureRecord",
@@ -818,6 +1057,7 @@ __all__ = [
     "PublicationStatus",
     "PublishedArticle",
     "SourceType",
+    "StageMetrics",
     "StructuredSummary",
     "SummarizationStatus",
     "SummarizedArticle",

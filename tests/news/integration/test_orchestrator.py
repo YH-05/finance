@@ -18,7 +18,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from news.config.models import NewsWorkflowConfig, SummarizationConfig
+from news.config.models import NewsWorkflowConfig, PublishingConfig, SummarizationConfig
 from news.models import (
     ArticleSource,
     CollectedArticle,
@@ -37,7 +37,11 @@ from news.orchestrator import NewsWorkflowOrchestrator
 
 @pytest.fixture
 def integration_config() -> NewsWorkflowConfig:
-    """Create a NewsWorkflowConfig for integration testing."""
+    """Create a NewsWorkflowConfig for integration testing.
+
+    Uses per_article format to test legacy per-article publishing pipeline.
+    For per_category integration tests, see test_orchestrator_integration.py.
+    """
     return NewsWorkflowConfig(
         version="1.0",
         status_mapping={
@@ -65,6 +69,7 @@ def integration_config() -> NewsWorkflowConfig:
             "repository": "YH-05/finance",
         },
         output={"result_dir": "data/exports"},  # type: ignore[arg-type]
+        publishing=PublishingConfig(format="per_article"),
     )
 
 

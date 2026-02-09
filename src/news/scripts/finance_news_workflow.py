@@ -2,13 +2,24 @@
 """Finance news collection workflow CLI.
 
 This module provides the CLI entry point for the news collection workflow,
-orchestrating the complete pipeline: Collector -> Extractor -> Summarizer -> Publisher.
+orchestrating the complete pipeline:
+
+- per-category (default): Collect -> Extract -> Summarize -> Group -> Export -> Publish
+- per-article (legacy): Collect -> Extract -> Summarize -> Publish
 
 Usage
 -----
-Run with default configuration:
+Run with default configuration (per-category format):
 
     python -m news.scripts.finance_news_workflow
+
+Run with legacy per-article format:
+
+    python -m news.scripts.finance_news_workflow --format per-article
+
+Export Markdown only (skip Issue creation):
+
+    python -m news.scripts.finance_news_workflow --export-only
 
 Run in dry-run mode (skip Issue creation):
 
@@ -151,8 +162,10 @@ def create_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""\
 examples:
-  %(prog)s                                Run with default config
+  %(prog)s                                Run with default config (per-category)
   %(prog)s --dry-run                      Run without creating Issues
+  %(prog)s --format per-article           Use legacy per-article publishing
+  %(prog)s --export-only                  Export Markdown only, skip Issue creation
   %(prog)s --status index,stock           Filter by status
   %(prog)s --max-articles 10              Limit to 10 articles
   %(prog)s --config config.yaml           Use specific config file
@@ -185,6 +198,21 @@ examples:
         type=int,
         default=None,
         help="Maximum number of articles to process",
+    )
+
+    parser.add_argument(
+        "--format",
+        type=str,
+        choices=["per-category", "per-article"],
+        default="per-category",
+        help="Publishing format: per-category (default) or per-article (legacy)",
+    )
+
+    parser.add_argument(
+        "--export-only",
+        action="store_true",
+        default=False,
+        help="Export Markdown files only, skip GitHub Issue creation",
     )
 
     parser.add_argument(
@@ -279,6 +307,8 @@ async def run_workflow(
     dry_run: bool = False,
     statuses: list[str] | None = None,
     max_articles: int | None = None,
+    publish_format: str = "per-category",
+    export_only: bool = False,
 ) -> int:
     """Run the workflow asynchronously.
 
@@ -292,6 +322,10 @@ async def run_workflow(
         Filter articles by status. None means no filtering.
     max_articles : int | None, optional
         Maximum number of articles to process. None means no limit.
+    publish_format : str, optional
+        Publishing format: "per-category" (default) or "per-article" (legacy).
+    export_only : bool, optional
+        If True, export Markdown only without creating Issues. Default is False.
 
     Returns
     -------
@@ -304,16 +338,25 @@ async def run_workflow(
         dry_run=dry_run,
         statuses=statuses,
         max_articles=max_articles,
+        publish_format=publish_format,
+        export_only=export_only,
     )
 
     try:
         config = load_config(config_path)
+
+        # Override publishing format from CLI argument
+        # Convert CLI format ("per-category") to config format ("per_category")
+        config_format = publish_format.replace("-", "_")
+        config.publishing.format = config_format
+
         orchestrator = NewsWorkflowOrchestrator(config)
 
         result = await orchestrator.run(
             statuses=statuses,
             max_articles=max_articles,
             dry_run=dry_run,
+            export_only=export_only,
         )
 
         # Show failure details if any
@@ -378,6 +421,8 @@ def main(argv: list[str] | None = None) -> int:
         status=args.status,
         max_articles=args.max_articles,
         verbose=args.verbose,
+        format=args.format,
+        export_only=args.export_only,
     )
 
     # Determine config path
@@ -393,6 +438,8 @@ def main(argv: list[str] | None = None) -> int:
             dry_run=args.dry_run,
             statuses=statuses,
             max_articles=args.max_articles,
+            publish_format=args.format,
+            export_only=args.export_only,
         )
     )
 
