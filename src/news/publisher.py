@@ -6,6 +6,10 @@ summarized news articles and adds them to a GitHub Project.
 The Publisher works with SummarizedArticle inputs (articles that have undergone
 AI summarization) and produces PublishedArticle outputs with Issue information.
 
+It also supports category-based publishing via publish_category_batch(), which
+creates one Issue per CategoryGroup instead of per article, reducing GitHub API
+calls by up to 98%.
+
 Examples
 --------
 >>> from news.publisher import Publisher
@@ -14,6 +18,12 @@ Examples
 >>> publisher = Publisher(config=config)
 >>> result = await publisher.publish(summarized_article)
 >>> result.publication_status
+<PublicationStatus.SUCCESS: 'success'>
+
+>>> # Category-based publishing
+>>> groups = grouper.group(summarized_articles)
+>>> category_results = await publisher.publish_category_batch(groups)
+>>> category_results[0].status
 <PublicationStatus.SUCCESS: 'success'>
 """
 
@@ -25,7 +35,9 @@ import subprocess  # nosec B404 - gh CLI is trusted
 from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 
+from news.markdown_generator import CategoryMarkdownGenerator
 from news.models import (
+    CategoryPublishResult,
     PublicationStatus,
     PublishedArticle,
     SummarizedArticle,
@@ -34,6 +46,7 @@ from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from news.config.models import NewsWorkflowConfig
+    from news.models import CategoryGroup
 
 logger = get_logger(__name__, module="publisher")
 
@@ -339,6 +352,496 @@ class Publisher:
         )
 
         return results
+
+    async def publish_category_batch(
+        self,
+        groups: list[CategoryGroup],
+        dry_run: bool = False,
+    ) -> list[CategoryPublishResult]:
+        """カテゴリ別にIssueを作成。
+
+        CategoryGroup のリストを受け取り、各カテゴリにつき1つの Issue を作成する。
+        タイトルベースの重複チェックを行い、既に同じカテゴリ・日付の Issue が
+        存在する場合はスキップする。
+
+        Parameters
+        ----------
+        groups : list[CategoryGroup]
+            カテゴリグループのリスト。空リストの場合は空リストを返す。
+        dry_run : bool, optional
+            True の場合、実際の Issue 作成をスキップする。
+            デフォルトは False。
+
+        Returns
+        -------
+        list[CategoryPublishResult]
+            各カテゴリの公開結果のリスト。入力と同じ順序を保持する。
+
+        Notes
+        -----
+        - 個々のカテゴリの公開が失敗しても他のカテゴリは継続する
+        - Markdown 生成は CategoryMarkdownGenerator を使用する
+        - Project 追加・Status/Date フィールド設定は _add_category_to_project() で行う
+
+        Examples
+        --------
+        >>> groups = grouper.group(summarized_articles)
+        >>> results = await publisher.publish_category_batch(groups)
+        >>> results[0].status
+        <PublicationStatus.SUCCESS: 'success'>
+        """
+        if not groups:
+            logger.debug("publish_category_batch called with empty list")
+            return []
+
+        logger.info(
+            "Starting category batch publish",
+            group_count=len(groups),
+            dry_run=dry_run,
+        )
+
+        results: list[CategoryPublishResult] = []
+        duplicate_count = 0
+        success_count = 0
+        failed_count = 0
+
+        for group in groups:
+            # 重複チェック
+            existing_issue = await self._check_category_issue_exists(
+                group.category_label, group.date
+            )
+
+            if existing_issue is not None:
+                duplicate_count += 1
+                logger.info(
+                    "Category issue already exists, skipping",
+                    category=group.category,
+                    date=group.date,
+                    existing_issue=existing_issue,
+                )
+                results.append(
+                    CategoryPublishResult(
+                        category=group.category,
+                        category_label=group.category_label,
+                        date=group.date,
+                        issue_number=None,
+                        issue_url=None,
+                        article_count=len(group.articles),
+                        status=PublicationStatus.DUPLICATE,
+                        error_message=f"Duplicate: Issue #{existing_issue} already exists",
+                    )
+                )
+                continue
+
+            # ドライランの場合は Issue 作成をスキップ
+            if dry_run:
+                logger.info(
+                    "[DRY RUN] Would create category issue",
+                    category=group.category,
+                    category_label=group.category_label,
+                    date=group.date,
+                    article_count=len(group.articles),
+                )
+                results.append(
+                    CategoryPublishResult(
+                        category=group.category,
+                        category_label=group.category_label,
+                        date=group.date,
+                        issue_number=None,
+                        issue_url=None,
+                        article_count=len(group.articles),
+                        status=PublicationStatus.SUCCESS,
+                    )
+                )
+                continue
+
+            # Issue 作成
+            try:
+                issue_number, issue_url = await self._create_category_issue(group)
+
+                # Project に追加してフィールドを設定
+                await self._add_category_to_project(issue_number, group)
+
+                success_count += 1
+                logger.info(
+                    "Category issue created successfully",
+                    issue_number=issue_number,
+                    issue_url=issue_url,
+                    category=group.category,
+                    date=group.date,
+                    article_count=len(group.articles),
+                )
+
+                results.append(
+                    CategoryPublishResult(
+                        category=group.category,
+                        category_label=group.category_label,
+                        date=group.date,
+                        issue_number=issue_number,
+                        issue_url=issue_url,
+                        article_count=len(group.articles),
+                        status=PublicationStatus.SUCCESS,
+                    )
+                )
+
+            except subprocess.CalledProcessError as e:
+                failed_count += 1
+                error_msg = f"gh command failed: {e.stderr if e.stderr else str(e)}"
+                logger.error(
+                    "Category issue creation failed",
+                    error=error_msg,
+                    category=group.category,
+                    date=group.date,
+                )
+                results.append(
+                    CategoryPublishResult(
+                        category=group.category,
+                        category_label=group.category_label,
+                        date=group.date,
+                        issue_number=None,
+                        issue_url=None,
+                        article_count=len(group.articles),
+                        status=PublicationStatus.FAILED,
+                        error_message=error_msg,
+                    )
+                )
+
+            except Exception as e:
+                failed_count += 1
+                error_msg = f"Unexpected error: {e}"
+                logger.error(
+                    "Category issue creation failed unexpectedly",
+                    error=error_msg,
+                    error_type=type(e).__name__,
+                    category=group.category,
+                    date=group.date,
+                )
+                results.append(
+                    CategoryPublishResult(
+                        category=group.category,
+                        category_label=group.category_label,
+                        date=group.date,
+                        issue_number=None,
+                        issue_url=None,
+                        article_count=len(group.articles),
+                        status=PublicationStatus.FAILED,
+                        error_message=error_msg,
+                    )
+                )
+
+        logger.info(
+            "Category batch publish completed",
+            total=len(results),
+            success=success_count,
+            duplicates=duplicate_count,
+            failed=failed_count,
+        )
+
+        return results
+
+    async def _check_category_issue_exists(
+        self, category_label: str, date: str
+    ) -> int | None:
+        """カテゴリ別Issueの重複チェック。
+
+        タイトルベースの検索で、同じカテゴリラベル・日付の Issue が
+        既に存在するかチェックする。
+
+        Parameters
+        ----------
+        category_label : str
+            カテゴリの日本語ラベル（例: "株価指数"）。
+        date : str
+            日付文字列（例: "2026-02-09"）。
+
+        Returns
+        -------
+        int | None
+            既存 Issue の番号。存在しない場合は None。
+
+        Notes
+        -----
+        - タイトル "[{category_label}] ニュースまとめ - {date}" で検索
+        - gh issue list --search を使用（非同期）
+        - gh コマンドが失敗した場合は None を返す（graceful degradation）
+
+        Examples
+        --------
+        >>> issue_num = await publisher._check_category_issue_exists(
+        ...     "株価指数", "2026-02-09"
+        ... )
+        >>> issue_num
+        50
+        """
+        search_query = f"[{category_label}] ニュースまとめ - {date}"
+
+        logger.debug(
+            "Checking for existing category issue",
+            category_label=category_label,
+            date=date,
+            search_query=search_query,
+        )
+
+        proc = await asyncio.create_subprocess_exec(
+            "gh",
+            "issue",
+            "list",
+            "--repo",
+            self._repo,
+            "--search",
+            search_query,
+            "--state",
+            "all",
+            "--limit",
+            "5",
+            "--json",
+            "number,title",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await proc.communicate()
+
+        if proc.returncode != 0:
+            logger.error(
+                "Failed to search for existing category issues",
+                stderr=stderr.decode(),
+                returncode=proc.returncode,
+            )
+            return None
+
+        issues = json.loads(stdout.decode())
+
+        # タイトルが完全一致する Issue を探す
+        expected_title = f"[{category_label}] ニュースまとめ - {date}"
+        for issue in issues:
+            if issue.get("title") == expected_title:
+                issue_number = issue["number"]
+                logger.info(
+                    "Found existing category issue",
+                    issue_number=issue_number,
+                    category_label=category_label,
+                    date=date,
+                )
+                return issue_number
+
+        logger.debug(
+            "No existing category issue found",
+            category_label=category_label,
+            date=date,
+        )
+        return None
+
+    async def _create_category_issue(self, group: CategoryGroup) -> tuple[int, str]:
+        """カテゴリ別 Issue を作成。
+
+        CategoryMarkdownGenerator を使用してタイトルと本文を生成し、
+        gh issue create コマンドで Issue を作成する。
+
+        Parameters
+        ----------
+        group : CategoryGroup
+            カテゴリグループ。
+
+        Returns
+        -------
+        tuple[int, str]
+            (Issue番号, Issue URL) のタプル。
+
+        Raises
+        ------
+        subprocess.CalledProcessError
+            gh コマンドの実行に失敗した場合。
+
+        Examples
+        --------
+        >>> issue_number, issue_url = await publisher._create_category_issue(group)
+        >>> issue_number
+        100
+        """
+        generator = CategoryMarkdownGenerator()
+        title = generator.generate_issue_title(group)
+        body = generator.generate_issue_body(group)
+
+        logger.debug(
+            "Creating category issue",
+            category=group.category,
+            date=group.date,
+            title_length=len(title),
+            body_length=len(body),
+            article_count=len(group.articles),
+        )
+
+        result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "issue",
+                "create",
+                "--repo",
+                self._repo,
+                "--title",
+                title,
+                "--body",
+                body,
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        # gh issue create は Issue URL を返す
+        issue_url = result.stdout.strip()
+        issue_number = int(issue_url.split("/")[-1])
+
+        logger.debug(
+            "Created category issue via gh CLI",
+            issue_number=issue_number,
+            issue_url=issue_url,
+            category=group.category,
+        )
+
+        return issue_number, issue_url
+
+    async def _add_category_to_project(
+        self, issue_number: int, group: CategoryGroup
+    ) -> None:
+        """カテゴリ Issue を Project に追加し、フィールドを設定。
+
+        gh project item-add で Issue を追加し、
+        gh project item-edit で Status と PublishedDate フィールドを設定する。
+
+        Parameters
+        ----------
+        issue_number : int
+            追加する Issue 番号。
+        group : CategoryGroup
+            カテゴリグループ。Status 解決と日付設定に使用する。
+
+        Raises
+        ------
+        subprocess.CalledProcessError
+            gh コマンドの実行に失敗した場合。
+
+        Notes
+        -----
+        - カテゴリの status_ids から Status ID を解決する
+        - group.date から PublishedDate フィールドを設定する
+        """
+        issue_url = f"https://github.com/{self._repo}/issues/{issue_number}"
+        owner = self._repo.split("/")[0]
+
+        # 1. 既存 Item を検索
+        item_id = await self._get_existing_project_item(issue_url)
+
+        if item_id is not None:
+            logger.info(
+                "Category issue already in project, updating fields only",
+                issue_number=issue_number,
+                item_id=item_id,
+            )
+        else:
+            # 2. 新規 Issue を Project に追加
+            add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
+                [
+                    "gh",
+                    "project",
+                    "item-add",
+                    str(self._project_number),
+                    "--owner",
+                    owner,
+                    "--url",
+                    issue_url,
+                    "--format",
+                    "json",
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
+            # JSON出力からitem_idを抽出
+            try:
+                add_data = json.loads(add_result.stdout)
+                item_id = add_data.get("id", "")
+            except json.JSONDecodeError:
+                item_id = ""
+
+            if not item_id:
+                logger.warning(
+                    "Empty item_id from project item-add, skipping field updates",
+                    issue_number=issue_number,
+                    issue_url=issue_url,
+                    stderr=add_result.stderr,
+                    stdout=add_result.stdout,
+                )
+                return
+
+            logger.debug(
+                "Added category issue to project",
+                issue_number=issue_number,
+                project_number=self._project_number,
+                item_id=item_id,
+            )
+
+        # 3. Status フィールドを設定
+        # カテゴリキーから Status ID を解決
+        status_name = group.category
+        status_id = self._status_ids.get(
+            status_name, self._status_ids.get("finance", "")
+        )
+
+        status_result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "project",
+                "item-edit",
+                "--project-id",
+                self._project_id,
+                "--id",
+                item_id,
+                "--field-id",
+                self._status_field_id,
+                "--single-select-option-id",
+                status_id,
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        logger.debug(
+            "Set status field for category issue",
+            item_id=item_id,
+            status_name=status_name,
+            status_id=status_id,
+            stdout=status_result.stdout,
+        )
+
+        # 4. PublishedDate フィールドを設定
+        date_result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "project",
+                "item-edit",
+                "--project-id",
+                self._project_id,
+                "--id",
+                item_id,
+                "--field-id",
+                self._published_date_field_id,
+                "--date",
+                group.date,
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        logger.debug(
+            "Set published date field for category issue",
+            item_id=item_id,
+            date=group.date,
+            stdout=date_result.stdout,
+        )
 
     async def get_existing_urls(self, days: int | None = None) -> set[str]:
         """直近N日の既存 Issue から記事 URL を取得する。

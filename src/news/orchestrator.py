@@ -1,7 +1,11 @@
 """Workflow orchestrator for news collection pipeline.
 
 This module provides the NewsWorkflowOrchestrator class that integrates
-all pipeline components: Collector -> Extractor -> Summarizer -> Publisher.
+all pipeline components into a unified workflow.
+
+Pipeline formats:
+- per_category (default): Collect -> Extract -> Summarize -> Group -> Export -> Publish
+- per_article (legacy): Collect -> Extract -> Summarize -> Publish
 
 The orchestrator manages the workflow execution, filtering only successful
 articles at each stage, and constructing comprehensive WorkflowResult.
@@ -25,7 +29,10 @@ from typing import TYPE_CHECKING
 
 from news.collectors.rss import RSSCollector
 from news.extractors.trafilatura import TrafilaturaExtractor
+from news.grouper import ArticleGrouper
+from news.markdown_generator import MarkdownExporter
 from news.models import (
+    CategoryPublishResult,
     CollectedArticle,
     ExtractedArticle,
     ExtractionStatus,
@@ -50,8 +57,11 @@ logger = get_logger(__name__, module="orchestrator")
 class NewsWorkflowOrchestrator:
     """Orchestrator for the news collection workflow pipeline.
 
-    Integrates Collector -> Extractor -> Summarizer -> Publisher components
-    into a unified workflow that processes articles through each stage.
+    Integrates all pipeline components into a unified workflow.
+
+    Pipeline formats:
+    - per_category: Collect -> Extract -> Summarize -> Group -> Export -> Publish
+    - per_article: Collect -> Extract -> Summarize -> Publish (legacy)
 
     Parameters
     ----------
@@ -70,6 +80,12 @@ class NewsWorkflowOrchestrator:
         AI summarization component.
     _publisher : Publisher
         GitHub Issue publisher component.
+    _grouper : ArticleGrouper
+        Article grouper for category-based publishing.
+    _exporter : MarkdownExporter
+        Markdown exporter for category-based content.
+    _publish_format : str
+        Publishing format: "per_category" or "per_article".
 
     Examples
     --------
@@ -87,6 +103,7 @@ class NewsWorkflowOrchestrator:
     - Failures are tracked in WorkflowResult failure records
     - Supports status filtering and max_articles limit
     - dry_run mode skips actual Issue creation
+    - export_only mode exports Markdown without creating Issues
     """
 
     def __init__(self, config: NewsWorkflowConfig) -> None:
@@ -106,11 +123,18 @@ class NewsWorkflowOrchestrator:
         )
         self._summarizer = Summarizer(config)
         self._publisher = Publisher(config)
+        self._grouper = ArticleGrouper(
+            status_mapping=config.status_mapping,
+            category_labels=config.category_labels,
+        )
+        self._exporter = MarkdownExporter()
+        self._publish_format = config.publishing.format
 
         logger.debug(
             "NewsWorkflowOrchestrator initialized",
             extraction_concurrency=config.extraction.concurrency,
             summarization_concurrency=config.summarization.concurrency,
+            publish_format=self._publish_format,
         )
 
     def _log_stage_start(self, stage: str, description: str) -> None:
@@ -139,11 +163,13 @@ class NewsWorkflowOrchestrator:
         statuses: list[str] | None = None,
         max_articles: int | None = None,
         dry_run: bool = False,
+        export_only: bool = False,
     ) -> WorkflowResult:
         """Execute the workflow pipeline.
 
-        Runs the complete workflow: collect -> extract -> summarize -> publish.
-        Each stage filters only successful articles to the next stage.
+        Runs the complete workflow based on the configured publishing format:
+        - per_category: collect -> extract -> summarize -> group -> export -> publish
+        - per_article: collect -> extract -> summarize -> publish (legacy)
 
         Parameters
         ----------
@@ -158,12 +184,16 @@ class NewsWorkflowOrchestrator:
         dry_run : bool, optional
             If True, skip actual Issue creation.
             Default is False.
+        export_only : bool, optional
+            If True, export Markdown only without creating Issues.
+            Only effective when format is "per_category".
+            Default is False.
 
         Returns
         -------
         WorkflowResult
             Comprehensive result containing statistics, failure records,
-            timestamps, and published articles.
+            timestamps, published articles, and category results.
 
         Examples
         --------
@@ -172,19 +202,32 @@ class NewsWorkflowOrchestrator:
 
         >>> result = await orchestrator.run(dry_run=True)
         >>> print(f"Would publish: {result.total_summarized} articles")
+
+        >>> result = await orchestrator.run(export_only=True)
+        >>> print(f"Exported {len(result.category_results)} categories")
         """
+        is_per_category = self._publish_format == "per_category"
+        total_stages = 6 if is_per_category else 4
+
         started_at = datetime.now(timezone.utc)
 
         # Show workflow configuration
-        mode_str = "[DRY-RUN] " if dry_run else ""
+        mode_parts: list[str] = []
+        if dry_run:
+            mode_parts.append("DRY-RUN")
+        if export_only:
+            mode_parts.append("EXPORT-ONLY")
+        mode_str = f"[{', '.join(mode_parts)}] " if mode_parts else ""
         status_str = ", ".join(statuses) if statuses else "全て"
         limit_str = str(max_articles) if max_articles else "無制限"
+        format_str = "カテゴリ別" if is_per_category else "記事別（レガシー）"
         print(f"\n{mode_str}ニュース収集ワークフロー開始")
         print(f"  対象ステータス: {status_str}")
         print(f"  最大記事数: {limit_str}")
+        print(f"  公開形式: {format_str}")
 
         # 1. Collect articles from RSS feeds
-        self._log_stage_start("1/4", "RSSフィードから記事を収集")
+        self._log_stage_start(f"1/{total_stages}", "RSSフィードから記事を収集")
         collected = await self._collector.collect(
             max_age_hours=self._config.filtering.max_age_hours
         )
@@ -227,7 +270,7 @@ class NewsWorkflowOrchestrator:
             return result
 
         # 2. Extract body text from articles
-        self._log_stage_start("2/4", "記事本文を抽出")
+        self._log_stage_start(f"2/{total_stages}", "記事本文を抽出")
         extracted = await self._extract_batch_with_progress(collected)
         extracted_success = [
             e for e in extracted if e.extraction_status == ExtractionStatus.SUCCESS
@@ -251,7 +294,7 @@ class NewsWorkflowOrchestrator:
             return result
 
         # 3. Summarize articles with AI
-        self._log_stage_start("3/4", "AI要約を生成")
+        self._log_stage_start(f"3/{total_stages}", "AI要約を生成")
         summarized = await self._summarize_batch_with_progress(extracted_success)
         summarized_success = [
             s
@@ -276,20 +319,87 @@ class NewsWorkflowOrchestrator:
             self._save_result(result)
             return result
 
-        # 4. Publish articles to GitHub Issues
-        stage_desc = (
-            "GitHub Issueを作成" if not dry_run else "GitHub Issue作成 (dry-run)"
-        )
-        self._log_stage_start("4/4", stage_desc)
-        published = await self._publish_batch_with_progress(summarized_success, dry_run)
-        success_count = sum(
-            1 for p in published if p.publication_status == PublicationStatus.SUCCESS
-        )
-        duplicate_count = sum(
-            1 for p in published if p.publication_status == PublicationStatus.DUPLICATE
-        )
-        extra = f"(重複: {duplicate_count}件)" if duplicate_count > 0 else ""
-        self._log_stage_complete("公開", success_count, len(published), extra=extra)
+        # Branch based on publishing format
+        published: list[PublishedArticle] = []
+        category_results: list[CategoryPublishResult] = []
+
+        if is_per_category:
+            # 4. Group articles by category
+            self._log_stage_start(f"4/{total_stages}", "カテゴリ別にグループ化")
+            groups = self._grouper.group(summarized_success)
+            print(f"  グループ数: {len(groups)}件")
+            for group in groups:
+                print(
+                    f"    [{group.category_label}] {group.date}: "
+                    f"{len(group.articles)}件"
+                )
+
+            # 5. Export Markdown files (if enabled)
+            if self._config.publishing.export_markdown:
+                self._log_stage_start(
+                    f"5/{total_stages}", "Markdownファイルをエクスポート"
+                )
+                export_dir = Path(self._config.publishing.export_dir)
+                for group in groups:
+                    export_path = self._exporter.export(group, export_dir=export_dir)
+                    print(f"  -> {export_path}")
+            else:
+                self._log_stage_start(
+                    f"5/{total_stages}", "Markdownエクスポート (スキップ)"
+                )
+                print("  -> export_markdown=False のためスキップ")
+
+            # 6. Publish category Issues (unless export_only)
+            if export_only:
+                self._log_stage_start(
+                    f"6/{total_stages}",
+                    "GitHub Issue作成 (export-only: スキップ)",
+                )
+                print("  -> export-only モードのためスキップ")
+            else:
+                stage_desc = (
+                    "カテゴリ別GitHub Issueを作成"
+                    if not dry_run
+                    else "カテゴリ別GitHub Issue作成 (dry-run)"
+                )
+                self._log_stage_start(f"6/{total_stages}", stage_desc)
+                category_results = await self._publisher.publish_category_batch(
+                    groups, dry_run=dry_run
+                )
+                success_count = sum(
+                    1 for r in category_results if r.status == PublicationStatus.SUCCESS
+                )
+                duplicate_count = sum(
+                    1
+                    for r in category_results
+                    if r.status == PublicationStatus.DUPLICATE
+                )
+                extra = f"(重複: {duplicate_count}件)" if duplicate_count > 0 else ""
+                self._log_stage_complete(
+                    "公開", success_count, len(category_results), extra=extra
+                )
+
+        else:
+            # Legacy per-article publishing (4 stages)
+            stage_desc = (
+                "GitHub Issueを作成" if not dry_run else "GitHub Issue作成 (dry-run)"
+            )
+            self._log_stage_start(f"4/{total_stages}", stage_desc)
+            published = await self._publish_batch_with_progress(
+                summarized_success, dry_run
+            )
+            success_count = sum(
+                1
+                for p in published
+                if p.publication_status == PublicationStatus.SUCCESS
+            )
+            duplicate_count = sum(
+                1
+                for p in published
+                if p.publication_status == PublicationStatus.DUPLICATE
+            )
+            extra = f"(重複: {duplicate_count}件)" if duplicate_count > 0 else ""
+            self._log_stage_complete("公開", success_count, len(published), extra=extra)
 
         finished_at = datetime.now(timezone.utc)
 
@@ -303,6 +413,7 @@ class NewsWorkflowOrchestrator:
             finished_at=finished_at,
             early_duplicates=early_dedup_count,
             feed_errors=feed_errors,
+            category_results=category_results,
         )
 
         # Save result to JSON file
@@ -318,7 +429,13 @@ class NewsWorkflowOrchestrator:
             print(f"  フィードエラー: {len(result.feed_errors)}件")
         print(f"  抽出: {result.total_extracted}件")
         print(f"  要約: {result.total_summarized}件")
-        print(f"  公開: {result.total_published}件")
+        if is_per_category and category_results:
+            cat_published = sum(
+                1 for r in category_results if r.status == PublicationStatus.SUCCESS
+            )
+            print(f"  カテゴリ別公開: {cat_published}/{len(category_results)}件")
+        else:
+            print(f"  公開: {result.total_published}件")
         if result.total_early_duplicates > 0:
             print(f"  重複除外（早期）: {result.total_early_duplicates}件")
         if result.total_duplicates > 0:
@@ -512,6 +629,7 @@ class NewsWorkflowOrchestrator:
         finished_at: datetime,
         early_duplicates: int = 0,
         feed_errors: list[FeedError] | None = None,
+        category_results: list[CategoryPublishResult] | None = None,
     ) -> WorkflowResult:
         """Build WorkflowResult from pipeline outputs.
 
@@ -524,7 +642,7 @@ class NewsWorkflowOrchestrator:
         summarized : list[SummarizedArticle]
             Summarization results.
         published : list[PublishedArticle]
-            Publication results.
+            Publication results (per-article format).
         started_at : datetime
             Workflow start timestamp.
         finished_at : datetime
@@ -534,6 +652,9 @@ class NewsWorkflowOrchestrator:
             (before extraction). Defaults to 0.
         feed_errors : list[FeedError] | None, optional
             Feed errors that occurred during collection.
+            Defaults to None (empty list).
+        category_results : list[CategoryPublishResult] | None, optional
+            Results of category-based Issue publishing.
             Defaults to None (empty list).
 
         Returns
@@ -613,6 +734,7 @@ class NewsWorkflowOrchestrator:
             elapsed_seconds=elapsed_seconds,
             published_articles=published_articles,
             feed_errors=feed_errors or [],
+            category_results=category_results or [],
         )
 
     def _save_result(self, result: WorkflowResult) -> Path:
