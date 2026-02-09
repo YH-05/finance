@@ -53,9 +53,11 @@ market.tsa : TSAPassengerDataCollector (similar DataCollector pattern).
 from __future__ import annotations
 
 import asyncio
+import json
 import math
 import re
-from datetime import date
+from datetime import date, datetime, timezone
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -65,6 +67,9 @@ from market.base_collector import DataCollector
 from market.etfcom.browser import ETFComBrowserMixin
 from market.etfcom.constants import (
     CLASSIFICATION_DATA_ID,
+    DEFAULT_MAX_CONCURRENCY,
+    DEFAULT_TICKER_CACHE_DIR,
+    DEFAULT_TICKER_CACHE_TTL_HOURS,
     FLOW_TABLE_ID,
     FUND_FLOWS_QUERY,
     FUND_FLOWS_URL_TEMPLATE,
@@ -1336,6 +1341,12 @@ class HistoricalFundFlowsCollector(DataCollector):
         Scraping configuration (delays, timeout). Defaults to ``ScrapingConfig()``.
     retry_config : RetryConfig | None
         Retry configuration. Defaults to ``RetryConfig()``.
+    cache_dir : str | None
+        Directory for ticker list file cache. Defaults to
+        ``DEFAULT_TICKER_CACHE_DIR`` (``data/raw/etfcom``).
+    cache_ttl_hours : int | None
+        TTL for ticker list file cache in hours. Defaults to
+        ``DEFAULT_TICKER_CACHE_TTL_HOURS`` (24).
 
     Attributes
     ----------
@@ -1347,6 +1358,10 @@ class HistoricalFundFlowsCollector(DataCollector):
         The retry configuration.
     _fund_id_cache : dict[str, int]
         In-memory cache mapping ticker symbols to fund IDs.
+    _cache_dir : str
+        Directory for ticker list file cache.
+    _cache_ttl_hours : int
+        TTL for ticker list file cache in hours.
 
     Examples
     --------
@@ -1355,7 +1370,7 @@ class HistoricalFundFlowsCollector(DataCollector):
     >>> print(df.columns.tolist())
     ['ticker', 'nav_date', 'nav', 'nav_change', ...]
 
-    >>> # Fetch multiple tickers
+    >>> # Fetch multiple tickers with parallel execution
     >>> df = collector.fetch_multiple(tickers=["SPY", "VOO", "QQQ"])
 
     See Also
@@ -1370,6 +1385,8 @@ class HistoricalFundFlowsCollector(DataCollector):
         session: ETFComSession | None = None,
         config: ScrapingConfig | None = None,
         retry_config: RetryConfig | None = None,
+        cache_dir: str | None = None,
+        cache_ttl_hours: int | None = None,
     ) -> None:
         """Initialize HistoricalFundFlowsCollector.
 
@@ -1382,15 +1399,25 @@ class HistoricalFundFlowsCollector(DataCollector):
             Scraping configuration. Defaults to ``ScrapingConfig()``.
         retry_config : RetryConfig | None
             Retry configuration. Defaults to ``RetryConfig()``.
+        cache_dir : str | None
+            Directory for ticker list file cache. Defaults to
+            ``DEFAULT_TICKER_CACHE_DIR`` (``data/raw/etfcom``).
+        cache_ttl_hours : int | None
+            TTL for ticker list file cache in hours. Defaults to
+            ``DEFAULT_TICKER_CACHE_TTL_HOURS`` (24).
         """
         self._session_instance: ETFComSession | None = session
         self._config: ScrapingConfig = config or ScrapingConfig()
         self._retry_config: RetryConfig = retry_config or RetryConfig()
         self._fund_id_cache: dict[str, int] = {}
+        self._cache_dir: str = cache_dir or DEFAULT_TICKER_CACHE_DIR
+        self._cache_ttl_hours: int = cache_ttl_hours or DEFAULT_TICKER_CACHE_TTL_HOURS
 
         logger.info(
             "HistoricalFundFlowsCollector initialized",
             session_injected=session is not None,
+            cache_dir=self._cache_dir,
+            cache_ttl_hours=self._cache_ttl_hours,
         )
 
     def _get_session(self) -> tuple[ETFComSession, bool]:
@@ -1405,6 +1432,129 @@ class HistoricalFundFlowsCollector(DataCollector):
         if self._session_instance is not None:
             return self._session_instance, False
         return ETFComSession(config=self._config, retry_config=self._retry_config), True
+
+    # -----------------------------------------------------------------
+    # File cache methods
+    # -----------------------------------------------------------------
+
+    def _get_cache_path(self) -> Path:
+        """Return the path to the ticker cache JSON file.
+
+        Returns
+        -------
+        Path
+            The full path to ``tickers.json`` within ``_cache_dir``.
+        """
+        return Path(self._cache_dir) / "tickers.json"
+
+    def _load_ticker_cache(self) -> dict[str, Any]:
+        """Load the ticker cache from a JSON file.
+
+        Returns an empty dict if the file does not exist or cannot be
+        parsed.
+
+        Returns
+        -------
+        dict[str, Any]
+            The cached data with ``cached_at`` (ISO timestamp) and
+            ``tickers`` (dict mapping ticker to fund_id) keys, or an
+            empty dict if no valid cache is found.
+        """
+        cache_path = self._get_cache_path()
+
+        if not cache_path.exists():
+            logger.debug("Ticker cache file not found", path=str(cache_path))
+            return {}
+
+        try:
+            data: dict[str, Any] = json.loads(cache_path.read_text(encoding="utf-8"))
+            logger.debug(
+                "Ticker cache loaded from file",
+                path=str(cache_path),
+                ticker_count=len(data.get("tickers", {})),
+            )
+            return data
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning(
+                "Failed to load ticker cache file",
+                path=str(cache_path),
+                error=str(e),
+            )
+            return {}
+
+    def _save_ticker_cache(self) -> None:
+        """Save the in-memory ticker cache to a JSON file.
+
+        Creates the cache directory if it does not exist. The JSON file
+        includes a ``cached_at`` ISO timestamp for TTL validation.
+        """
+        cache_path = self._get_cache_path()
+
+        # Ensure directory exists
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+
+        cache_data: dict[str, Any] = {
+            "cached_at": datetime.now(tz=timezone.utc).isoformat(),
+            "tickers": self._fund_id_cache,
+        }
+
+        try:
+            cache_path.write_text(
+                json.dumps(cache_data, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            logger.info(
+                "Ticker cache saved to file",
+                path=str(cache_path),
+                ticker_count=len(self._fund_id_cache),
+            )
+        except OSError as e:
+            logger.warning(
+                "Failed to save ticker cache file",
+                path=str(cache_path),
+                error=str(e),
+            )
+
+    def _is_cache_valid(self, cache_data: dict[str, Any]) -> bool:
+        """Check whether the cached data is within the TTL.
+
+        Parameters
+        ----------
+        cache_data : dict[str, Any]
+            The cache data dict, expected to contain a ``cached_at``
+            ISO timestamp string.
+
+        Returns
+        -------
+        bool
+            True if the cache is within the TTL, False otherwise.
+        """
+        cached_at_str = cache_data.get("cached_at")
+        if cached_at_str is None:
+            logger.debug("Cache data missing 'cached_at' field")
+            return False
+
+        try:
+            cached_at = datetime.fromisoformat(str(cached_at_str))
+            age_hours = (
+                datetime.now(tz=timezone.utc) - cached_at
+            ).total_seconds() / 3600
+
+            is_valid = age_hours < self._cache_ttl_hours
+            logger.debug(
+                "Cache validity check",
+                age_hours=round(age_hours, 2),
+                ttl_hours=self._cache_ttl_hours,
+                is_valid=is_valid,
+            )
+            return is_valid
+        except (ValueError, TypeError) as e:
+            logger.warning(
+                "Failed to parse cache timestamp",
+                cached_at=cached_at_str,
+                error=str(e),
+            )
+            return False
 
     def fetch(self, **kwargs: Any) -> pd.DataFrame:
         """Fetch historical fund flow data for a single ETF ticker.
@@ -1538,11 +1688,13 @@ class HistoricalFundFlowsCollector(DataCollector):
                 session.close()
 
     def _resolve_fund_id(self, ticker: str) -> int:
-        """Resolve a ticker symbol to a fund ID.
+        """Resolve a ticker symbol to a fund ID via 3-tier cache.
 
-        Uses an in-memory cache to avoid repeated API calls for the
-        same ticker. On cache miss, fetches the full ticker list from
-        the API and populates the cache.
+        Resolution order:
+
+        1. **In-memory cache**: fastest, populated during session.
+        2. **File cache**: ``data/raw/etfcom/tickers.json`` with TTL check.
+        3. **API call**: ``GET /v2/fund/tickers``, populates both caches.
 
         Parameters
         ----------
@@ -1566,13 +1718,27 @@ class HistoricalFundFlowsCollector(DataCollector):
         >>> fund_id
         1
         """
-        # Check cache first
+        # Tier 1: In-memory cache
         if ticker in self._fund_id_cache:
-            logger.debug("Fund ID resolved from cache", ticker=ticker)
+            logger.debug("Fund ID resolved from in-memory cache", ticker=ticker)
             return self._fund_id_cache[ticker]
 
-        # Fetch ticker list and populate cache
-        logger.debug("Fund ID cache miss, fetching ticker list", ticker=ticker)
+        # Tier 2: File cache
+        cache_data = self._load_ticker_cache()
+        if cache_data and self._is_cache_valid(cache_data):
+            tickers_map: dict[str, int] = cache_data.get("tickers", {})
+            if ticker in tickers_map:
+                # Populate in-memory cache from file cache
+                self._fund_id_cache.update({k: int(v) for k, v in tickers_map.items()})
+                logger.debug(
+                    "Fund ID resolved from file cache",
+                    ticker=ticker,
+                    fund_id=tickers_map[ticker],
+                )
+                return int(tickers_map[ticker])
+
+        # Tier 3: API call
+        logger.debug("Fund ID cache miss, fetching ticker list from API", ticker=ticker)
 
         session, should_close = self._get_session()
         try:
@@ -1588,6 +1754,9 @@ class HistoricalFundFlowsCollector(DataCollector):
             if should_close:
                 session.close()
 
+        # Save to file cache after API fetch
+        self._save_ticker_cache()
+
         if ticker not in self._fund_id_cache:
             msg = f"Ticker not found in ETF.com API: {ticker}"
             logger.error("Fund ID resolution failed", ticker=ticker)
@@ -1599,7 +1768,7 @@ class HistoricalFundFlowsCollector(DataCollector):
 
         fund_id = self._fund_id_cache[ticker]
         logger.debug(
-            "Fund ID resolved",
+            "Fund ID resolved from API",
             ticker=ticker,
             fund_id=fund_id,
         )
@@ -1764,17 +1933,23 @@ class HistoricalFundFlowsCollector(DataCollector):
     def fetch_multiple(
         self,
         tickers: list[str] | None = None,
+        *,
+        max_concurrency: int | None = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
-        """Fetch historical fund flow data for multiple tickers sequentially.
+        """Fetch historical fund flow data for multiple tickers in parallel.
 
-        This is a simple sequential implementation. Parallel fetching
-        will be added in a future wave (task-4).
+        Uses ``asyncio.Semaphore`` to limit the number of concurrent
+        API requests. The public interface is synchronous (uses
+        ``asyncio.run()`` internally).
 
         Parameters
         ----------
         tickers : list[str] | None
             List of ETF ticker symbols to fetch.
+        max_concurrency : int | None
+            Maximum number of concurrent API requests. Defaults to
+            ``DEFAULT_MAX_CONCURRENCY`` (5).
         **kwargs : Any
             Additional keyword arguments passed to ``fetch()``.
 
@@ -1788,29 +1963,79 @@ class HistoricalFundFlowsCollector(DataCollector):
         --------
         >>> collector = HistoricalFundFlowsCollector()
         >>> df = collector.fetch_multiple(tickers=["SPY", "VOO"])
+
+        >>> # With custom concurrency limit
+        >>> df = collector.fetch_multiple(
+        ...     tickers=["SPY", "VOO", "QQQ"],
+        ...     max_concurrency=2,
+        ... )
         """
         if not tickers:
             logger.info("No tickers provided, returning empty DataFrame")
             return pd.DataFrame()
 
+        concurrency = max_concurrency or DEFAULT_MAX_CONCURRENCY
+
         logger.info(
             "Starting multi-ticker fund flow collection",
             ticker_count=len(tickers),
+            max_concurrency=concurrency,
         )
 
-        all_dfs: list[pd.DataFrame] = []
+        return asyncio.run(
+            self._async_fetch_multiple(
+                tickers=tickers,
+                max_concurrency=concurrency,
+                **kwargs,
+            )
+        )
 
-        for ticker in tickers:
-            try:
-                df = self.fetch(ticker=ticker, **kwargs)
-                if not df.empty:
-                    all_dfs.append(df)
-            except ETFComAPIError as e:
-                logger.warning(
-                    "Failed to fetch fund flows for ticker",
-                    ticker=ticker,
-                    error=str(e),
-                )
+    async def _async_fetch_multiple(
+        self,
+        tickers: list[str],
+        max_concurrency: int,
+        **kwargs: Any,
+    ) -> pd.DataFrame:
+        """Asynchronously fetch fund flows for multiple tickers with concurrency limit.
+
+        Parameters
+        ----------
+        tickers : list[str]
+            List of ETF ticker symbols to fetch.
+        max_concurrency : int
+            Maximum number of concurrent fetches.
+        **kwargs : Any
+            Additional keyword arguments passed to ``fetch()``.
+
+        Returns
+        -------
+        pd.DataFrame
+            Combined DataFrame with fund flow data for all tickers.
+        """
+        semaphore = asyncio.Semaphore(max_concurrency)
+
+        async def _fetch_one(ticker: str) -> pd.DataFrame | None:
+            async with semaphore:
+                try:
+                    loop = asyncio.get_running_loop()
+                    df = await loop.run_in_executor(
+                        None,
+                        lambda: self.fetch(ticker=ticker, **kwargs),
+                    )
+                    if not df.empty:
+                        return df
+                except ETFComAPIError as e:
+                    logger.warning(
+                        "Failed to fetch fund flows for ticker",
+                        ticker=ticker,
+                        error=str(e),
+                    )
+                return None
+
+        tasks = [_fetch_one(ticker) for ticker in tickers]
+        results = await asyncio.gather(*tasks)
+
+        all_dfs: list[pd.DataFrame] = [df for df in results if df is not None]
 
         if not all_dfs:
             logger.warning("No fund flow data collected for any ticker")

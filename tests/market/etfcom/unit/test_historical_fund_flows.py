@@ -403,13 +403,18 @@ class TestResolveFundId:
 
         assert fund_id == 1
 
-    def test_正常系_インメモリキャッシュが機能すること(self) -> None:
+    def test_正常系_インメモリキャッシュが機能すること(self, tmp_path: object) -> None:
         """2回目の呼び出しでキャッシュを使用し、API を再呼び出ししないこと。"""
         from market.etfcom.collectors import HistoricalFundFlowsCollector
 
         mock_session = _make_mock_session()
         config = ScrapingConfig(polite_delay=0.0, delay_jitter=0.0)
-        collector = HistoricalFundFlowsCollector(session=mock_session, config=config)
+        # Use tmp_path to avoid interference from pre-existing file cache
+        collector = HistoricalFundFlowsCollector(
+            session=mock_session,
+            config=config,
+            cache_dir=str(tmp_path),
+        )
 
         # 1st call: should hit API
         fund_id_1 = collector._resolve_fund_id("SPY")
