@@ -43,6 +43,10 @@ Y（吉沢）が AI 出力を批評 → feedback.md（定性フィードバッ�
 | フォーマット例 | feedback.md 内の MSFT/TSMC セクション | AI が参照するフォーマット規範 |
 | 7 Powers テンプレート | `analyst/prompt/seven_powers_extract.md` | Hamilton Helmer の7 Powers に基づく JSON 抽出テンプレート |
 | Phase 1 サンプル | `analyst/phase1/ANET_phase1.md` | AI生成レポートのサンプル |
+| **Y の判断パターン横断分析** | `analyst/Competitive_Advantage/analyst_YK/judgment_patterns.md` | **Phase 2 全5銘柄の横断分析（12ルール抽出済み）** |
+| **Y 版 Dogma（運用版）** | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | **Critique Agent 参照用の清書版** |
+| **Y 版 Dogma（検証用）** | `analyst/Competitive_Advantage/analyst_YK/dogma_draft.md` | **Y に ○/×/△ で検証してもらうための版** |
+| **Critique Agent** | `.claude/agents/competitive-advantage-critique.md` | **Y の判断軸で競争優位性を批評するエージェント** |
 
 ---
 
@@ -222,39 +226,32 @@ FM Agent (Y's Philosophy)
 
 ## 即座に着手すべきアクション
 
-### Action 1: Y の判断パターン横断分析レポート【実行中】
+### Action 1: Y の判断パターン横断分析レポート【完了】
 
 **出力先**: `analyst/Competitive_Advantage/analyst_YK/judgment_patterns.md`
 
-**実装内容:**
+**実装内容:** 全5銘柄34項目の優位性スコア + 36項目のCAGR接続スコアを横断分析。12の判断ルール、7つの却下パターン、5つの高評価パターン、ブランド力評価4類型を抽出。
 
-1. **全5銘柄の全スコア一覧表**（35項目: CHD 7 + COST 9 + LLY 6 + MNST 6 + ORLY 6 + CAGR接続評価）
-2. **スコア分布分析**（かなり〜却下の分布）
-3. **却下/低評価パターンの体系化**（具体例付き）
-4. **高評価パターンの体系化**（具体例付き）
-5. **CAGR接続の評価パターン**（優位性スコアとCAGRスコアの乖離分析）
-6. **Y の判断ルール形式化**（各ルールに良い例/悪い例）
+### Action 2: Y 版 Dogma 作成【完了】
 
-**データ取得済み:**
+| ファイル | 用途 |
+|----------|------|
+| `analyst/Competitive_Advantage/analyst_YK/dogma_draft.md` | Y への検証用（○/×/△ チェックリスト + 追加質問 Q1-Q6） |
+| `analyst/Competitive_Advantage/analyst_YK/dogma.md` | 運用版（Critique Agent のシステムプロンプト参照用） |
 
-- CHD: 7項目（70%×2, 50%×3, 30%×2）
-- COST: 9項目（90%×1, 70%×3, 50%×3, 20%×2, 10%×1）+ CAGR接続評価
-- LLY: 6項目（70%×1, 50%×3, 30%×2）
-- MNST: 6項目（70%×1, 50%×2, 30%×2, 10%×1）
-- ORLY: 6項目（90%×2, 70%×1, 50%×2, 30%×1）
+### Action 3: Critique Agent プロトタイプ【完了】
 
-### Action 2: Y 版 Dogma ドラフト作成
+- **エージェント定義**: `.claude/agents/competitive-advantage-critique.md`
+- Dogma を読み込み、Phase 1 出力に対して Phase 2 形式の批評を生成
+- 既存 Phase 2 データとの照合による精度検証モードを内蔵
+- 目標: Y のスコアとの平均乖離 ±10% 以内
 
-- Action 1 のパターン分析を基に Y の投資哲学を文書化
-- K の Dogma.md のフォーマットを参考にしつつ、Y 固有の内容を記載
-- Y に検証してもらうための ○/×/△ チェックリスト形式を併記
-- 出力先: `analyst/Competitive_Advantage/analyst_YK/dogma_draft.md`
+### Action 4: Critique Agent 検証【次のステップ】
 
-### Action 3: Critique Agent プロトタイプ
-
-- Y の判断軸 + 却下パターンをシステムプロンプトに組み込んだ批評エージェント
-- 既存の Phase 2 評価を入力として、Y のスコアをどれだけ再現できるかテスト
-- まずは CHD or MNST で検証（Y のコメントが最も詳細なため）
+- CHD または MNST の Phase 1 相当データを入力として Critique Agent を実行
+- AI 生成スコアと Y の実スコアの乖離分析レポートを出力
+- 乖離が大きい項目の原因分析 → Dogma の改善ポイント特定
+- 検証結果を Y への Dogma 検証依頼と合わせて提示
 
 ---
 
@@ -285,3 +282,18 @@ FM Agent (Y's Philosophy)
 - Y のブランド力評価フレームワーク（4類型）を MNST コメントから抽出
 - **課題の再定義**: 6つの課題を特定（推論不安定性、コンテキスト理解、CAGR一貫性、無批判的受容、結果vs原因の混同、Y哲学未文書化）
 - **即座のアクション**: ① Y の判断パターン横断分析 → ② Y 版 Dogma ドラフト → ③ Critique Agent プロトタイプ
+
+### Session 2（2026-02-09）
+
+**環境情報:** 会社の Dify 環境で同様の競争優位性評価ワークフローを並行構築中。Claude Code 側の Dogma / Agent 設計は Dify ワークフローの設計資産としても活用される。
+
+**Phase 4: Dogma 清書版作成 + Critique Agent 構築**
+
+- プランファイルを `docs/plan/` → `analyst/` に移動（プロジェクト関連ファイルの集約）
+- `dogma_draft.md`（検証用）と `dogma.md`（運用版）を分離
+  - 運用版: ○/×/△ を除去し、LLM が参照しやすい構造に清書
+  - 7セクション構成: 基本哲学 / 評価体系 / CAGR接続基準 / ブランド評価 / 情報ソース優先順位 / 12判断ルール / スコア分布参考値
+- Critique Agent（`competitive-advantage-critique`）を `.claude/agents/` に作成
+  - 5ステップ処理: Dogma読込 → 入力読込 → 各仮説批評 → スコア決定 → 警鐘機能
+  - Phase 2 形式の出力テーブル + 検証モード内蔵
+- **次のステップ**: Action 4（CHD or MNST での検証実行）
