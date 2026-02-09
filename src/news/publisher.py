@@ -671,125 +671,93 @@ class Publisher:
             article_count=len(group.articles),
         )
 
-        result = subprocess.run(  # nosec B603 - gh CLI with safe args
+        return self._execute_gh_issue_create(title, body)
+
+    async def _ensure_project_item(self, issue_number: int) -> str | None:
+        """Issue を Project に追加し、item_id を返す。
+
+        既に Project に存在する場合はその item_id を返し、
+        存在しない場合は新規追加して item_id を返す。
+
+        Parameters
+        ----------
+        issue_number : int
+            追加する Issue 番号。
+
+        Returns
+        -------
+        str | None
+            Project item の ID。取得できない場合は None。
+        """
+        issue_url = f"https://github.com/{self._repo}/issues/{issue_number}"
+        owner = self._repo.split("/")[0]
+
+        item_id = await self._get_existing_project_item(issue_url)
+        if item_id is not None:
+            logger.info(
+                "Issue already in project, updating fields only",
+                issue_number=issue_number,
+                item_id=item_id,
+            )
+            return item_id
+
+        add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
             [
                 "gh",
-                "issue",
-                "create",
-                "--repo",
-                self._repo,
-                "--title",
-                title,
-                "--body",
-                body,
+                "project",
+                "item-add",
+                str(self._project_number),
+                "--owner",
+                owner,
+                "--url",
+                issue_url,
+                "--format",
+                "json",
             ],
             capture_output=True,
             text=True,
             check=True,
         )
 
-        # gh issue create は Issue URL を返す
-        issue_url = result.stdout.strip()
-        issue_number = int(issue_url.split("/")[-1])
+        try:
+            add_data = json.loads(add_result.stdout)
+            item_id = add_data.get("id", "")
+        except json.JSONDecodeError:
+            item_id = ""
+
+        if not item_id:
+            logger.warning(
+                "Empty item_id from project item-add, skipping field updates",
+                issue_number=issue_number,
+                issue_url=issue_url,
+                stderr=add_result.stderr,
+                stdout=add_result.stdout,
+            )
+            return None
 
         logger.debug(
-            "Created category issue via gh CLI",
+            "Added issue to project",
             issue_number=issue_number,
-            issue_url=issue_url,
-            category=group.category,
+            project_number=self._project_number,
+            item_id=item_id,
         )
+        return item_id
 
-        return issue_number, issue_url
-
-    async def _add_category_to_project(
-        self, issue_number: int, group: CategoryGroup
+    def _set_project_fields(
+        self, item_id: str, status_id: str, date_str: str | None
     ) -> None:
-        """カテゴリ Issue を Project に追加し、フィールドを設定。
-
-        gh project item-add で Issue を追加し、
-        gh project item-edit で Status と PublishedDate フィールドを設定する。
+        """Project item の Status と PublishedDate フィールドを設定する。
 
         Parameters
         ----------
-        issue_number : int
-            追加する Issue 番号。
-        group : CategoryGroup
-            カテゴリグループ。Status 解決と日付設定に使用する。
-
-        Raises
-        ------
-        subprocess.CalledProcessError
-            gh コマンドの実行に失敗した場合。
-
-        Notes
-        -----
-        - カテゴリの status_ids から Status ID を解決する
-        - group.date から PublishedDate フィールドを設定する
+        item_id : str
+            Project item の ID。
+        status_id : str
+            設定する Status Option ID。
+        date_str : str | None
+            設定する日付文字列（YYYY-MM-DD 形式）。None の場合は日付設定をスキップ。
         """
-        issue_url = f"https://github.com/{self._repo}/issues/{issue_number}"
-        owner = self._repo.split("/")[0]
-
-        # 1. 既存 Item を検索
-        item_id = await self._get_existing_project_item(issue_url)
-
-        if item_id is not None:
-            logger.info(
-                "Category issue already in project, updating fields only",
-                issue_number=issue_number,
-                item_id=item_id,
-            )
-        else:
-            # 2. 新規 Issue を Project に追加
-            add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
-                [
-                    "gh",
-                    "project",
-                    "item-add",
-                    str(self._project_number),
-                    "--owner",
-                    owner,
-                    "--url",
-                    issue_url,
-                    "--format",
-                    "json",
-                ],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-
-            # JSON出力からitem_idを抽出
-            try:
-                add_data = json.loads(add_result.stdout)
-                item_id = add_data.get("id", "")
-            except json.JSONDecodeError:
-                item_id = ""
-
-            if not item_id:
-                logger.warning(
-                    "Empty item_id from project item-add, skipping field updates",
-                    issue_number=issue_number,
-                    issue_url=issue_url,
-                    stderr=add_result.stderr,
-                    stdout=add_result.stdout,
-                )
-                return
-
-            logger.debug(
-                "Added category issue to project",
-                issue_number=issue_number,
-                project_number=self._project_number,
-                item_id=item_id,
-            )
-
-        # 3. Status フィールドを設定
-        # カテゴリキーから Status ID を解決
-        status_name = group.category
-        status_id = self._status_ids.get(
-            status_name, self._status_ids.get("finance", "")
-        )
-
-        status_result = subprocess.run(  # nosec B603 - gh CLI with safe args
+        subprocess.run(  # nosec B603 - gh CLI with safe args
             [
                 "gh",
                 "project",
@@ -807,41 +775,55 @@ class Publisher:
             text=True,
             check=True,
         )
+        logger.debug("Set status field", item_id=item_id, status_id=status_id)
 
-        logger.debug(
-            "Set status field for category issue",
-            item_id=item_id,
-            status_name=status_name,
-            status_id=status_id,
-            stdout=status_result.stdout,
-        )
+        if date_str:
+            subprocess.run(  # nosec B603 - gh CLI with safe args
+                [
+                    "gh",
+                    "project",
+                    "item-edit",
+                    "--project-id",
+                    self._project_id,
+                    "--id",
+                    item_id,
+                    "--field-id",
+                    self._published_date_field_id,
+                    "--date",
+                    date_str,
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            logger.debug("Set published date field", item_id=item_id, date=date_str)
 
-        # 4. PublishedDate フィールドを設定
-        date_result = subprocess.run(  # nosec B603 - gh CLI with safe args
-            [
-                "gh",
-                "project",
-                "item-edit",
-                "--project-id",
-                self._project_id,
-                "--id",
-                item_id,
-                "--field-id",
-                self._published_date_field_id,
-                "--date",
-                group.date,
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+    async def _add_category_to_project(
+        self, issue_number: int, group: CategoryGroup
+    ) -> None:
+        """カテゴリ Issue を Project に追加し、フィールドを設定。
 
-        logger.debug(
-            "Set published date field for category issue",
-            item_id=item_id,
-            date=group.date,
-            stdout=date_result.stdout,
+        Parameters
+        ----------
+        issue_number : int
+            追加する Issue 番号。
+        group : CategoryGroup
+            カテゴリグループ。Status 解決と日付設定に使用する。
+
+        Raises
+        ------
+        subprocess.CalledProcessError
+            gh コマンドの実行に失敗した場合。
+        """
+        item_id = await self._ensure_project_item(issue_number)
+        if item_id is None:
+            return
+
+        status_name = group.category
+        status_id = self._status_ids.get(
+            status_name, self._status_ids.get("finance", "")
         )
+        self._set_project_fields(item_id, status_id, group.date)
 
     async def get_existing_urls(self, days: int | None = None) -> set[str]:
         """直近N日の既存 Issue から記事 URL を取得する。
@@ -1047,6 +1029,54 @@ class Publisher:
 
         return status_name, status_id
 
+    def _execute_gh_issue_create(self, title: str, body: str) -> tuple[int, str]:
+        """gh issue create を実行し Issue 番号と URL を返す。
+
+        Parameters
+        ----------
+        title : str
+            Issue タイトル。
+        body : str
+            Issue 本文（Markdown形式）。
+
+        Returns
+        -------
+        tuple[int, str]
+            (Issue番号, Issue URL) のタプル。
+
+        Raises
+        ------
+        subprocess.CalledProcessError
+            gh コマンドの実行に失敗した場合。
+        """
+        result = subprocess.run(  # nosec B603 - gh CLI with safe args
+            [
+                "gh",
+                "issue",
+                "create",
+                "--repo",
+                self._repo,
+                "--title",
+                title,
+                "--body",
+                body,
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        issue_url = result.stdout.strip()
+        issue_number = int(issue_url.split("/")[-1])
+
+        logger.debug(
+            "Created issue via gh CLI",
+            issue_number=issue_number,
+            issue_url=issue_url,
+        )
+
+        return issue_number, issue_url
+
     async def _create_issue(self, article: SummarizedArticle) -> tuple[int, str]:
         """Issue を作成。
 
@@ -1077,35 +1107,7 @@ class Publisher:
         """
         title = self._generate_issue_title(article)
         body = self._generate_issue_body(article)
-
-        result = subprocess.run(  # nosec B603 - gh CLI with safe args
-            [
-                "gh",
-                "issue",
-                "create",
-                "--repo",
-                self._repo,
-                "--title",
-                title,
-                "--body",
-                body,
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-
-        # gh issue create は Issue URL を返す
-        issue_url = result.stdout.strip()
-        issue_number = int(issue_url.split("/")[-1])
-
-        logger.debug(
-            "Created issue via gh CLI",
-            issue_number=issue_number,
-            issue_url=issue_url,
-        )
-
-        return issue_number, issue_url
+        return self._execute_gh_issue_create(title, body)
 
     async def _get_existing_project_item(self, issue_url: str) -> str | None:
         """Project 内の既存 Item を検索し item_id を返す。
@@ -1175,10 +1177,6 @@ class Publisher:
     ) -> None:
         """Issue を Project に追加し、フィールドを設定。
 
-        gh project item-add で Issue を追加し、
-        gh project item-edit で Status と PublishedDate フィールドを設定する。
-        既に Project に追加済みの場合は、フィールド更新のみを実行する。
-
         Parameters
         ----------
         issue_number : int
@@ -1190,131 +1188,15 @@ class Publisher:
         ------
         subprocess.CalledProcessError
             gh コマンドの実行に失敗した場合。
-
-        Notes
-        -----
-        - 既存 Item がある場合は item-add をスキップ
-        - Status フィールドは常に設定される
-        - PublishedDate フィールドは article.extracted.collected.published が
-          存在する場合のみ設定される
         """
-        issue_url = f"https://github.com/{self._repo}/issues/{issue_number}"
-        owner = self._repo.split("/")[0]
+        item_id = await self._ensure_project_item(issue_number)
+        if item_id is None:
+            return
 
-        # 1. 既存 Item を検索
-        item_id = await self._get_existing_project_item(issue_url)
-
-        if item_id is not None:
-            # 既存 Item がある場合はフィールド更新のみ
-            logger.info(
-                "Issue already in project, updating fields only",
-                issue_number=issue_number,
-                item_id=item_id,
-            )
-        else:
-            # 2. 新規 Issue を Project に追加
-            # --format json を使用して item_id を取得
-            add_result = subprocess.run(  # nosec B603 - gh CLI with safe args
-                [
-                    "gh",
-                    "project",
-                    "item-add",
-                    str(self._project_number),
-                    "--owner",
-                    owner,
-                    "--url",
-                    issue_url,
-                    "--format",
-                    "json",
-                ],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-
-            # JSON出力からitem_idを抽出
-            try:
-                add_data = json.loads(add_result.stdout)
-                item_id = add_data.get("id", "")
-            except json.JSONDecodeError:
-                item_id = ""
-
-            # item_id が空の場合はフィールド設定をスキップ（graceful degradation）
-            if not item_id:
-                logger.warning(
-                    "Empty item_id from project item-add, skipping field updates",
-                    issue_number=issue_number,
-                    issue_url=issue_url,
-                    stderr=add_result.stderr,
-                    stdout=add_result.stdout,
-                )
-                return
-
-            logger.debug(
-                "Added issue to project",
-                issue_number=issue_number,
-                project_number=self._project_number,
-                item_id=item_id,
-            )
-
-        # 2. Status フィールドを設定
         _, status_id = self._resolve_status(article)
-
-        status_result = subprocess.run(  # nosec B603 - gh CLI with safe args
-            [
-                "gh",
-                "project",
-                "item-edit",
-                "--project-id",
-                self._project_id,
-                "--id",
-                item_id,
-                "--field-id",
-                self._status_field_id,
-                "--single-select-option-id",
-                status_id,
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-
-        logger.debug(
-            "Set status field",
-            item_id=item_id,
-            status_id=status_id,
-            stdout=status_result.stdout,
-        )
-
-        # 3. PublishedDate フィールドを設定（公開日がある場合のみ）
         published = article.extracted.collected.published
-        if published:
-            date_str = published.strftime("%Y-%m-%d")
-            date_result = subprocess.run(  # nosec B603 - gh CLI with safe args
-                [
-                    "gh",
-                    "project",
-                    "item-edit",
-                    "--project-id",
-                    self._project_id,
-                    "--id",
-                    item_id,
-                    "--field-id",
-                    self._published_date_field_id,
-                    "--date",
-                    date_str,
-                ],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-
-            logger.debug(
-                "Set published date field",
-                item_id=item_id,
-                date=date_str,
-                stdout=date_result.stdout,
-            )
+        date_str = published.strftime("%Y-%m-%d") if published else None
+        self._set_project_fields(item_id, status_id, date_str)
 
     async def _get_existing_issues(self, days: int = 7) -> set[str]:
         """直近N日のIssue URLを取得。
