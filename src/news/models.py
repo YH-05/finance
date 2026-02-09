@@ -495,6 +495,130 @@ class SummarizedArticle(BaseModel):
     )
 
 
+class CategoryGroup(BaseModel):
+    """A group of articles belonging to the same category.
+
+    Represents a collection of summarized articles grouped by category,
+    used for category-based Issue publishing where one Issue is created
+    per category instead of per article.
+
+    Attributes
+    ----------
+    category : str
+        Category key (e.g., "index", "stock", "sector").
+    category_label : str
+        Human-readable category label in Japanese (e.g., "株価指数", "個別銘柄").
+    date : str
+        Date string for the group (e.g., "2026-02-09").
+    articles : list[SummarizedArticle]
+        List of summarized articles belonging to this category.
+
+    Examples
+    --------
+    >>> from news.models import CategoryGroup
+    >>> group = CategoryGroup(
+    ...     category="index",
+    ...     category_label="株価指数",
+    ...     date="2026-02-09",
+    ...     articles=[],
+    ... )
+    >>> group.category
+    'index'
+    """
+
+    category: str = Field(
+        ...,
+        description="Category key (e.g., 'index', 'stock', 'sector')",
+    )
+    category_label: str = Field(
+        ...,
+        description="Human-readable category label in Japanese (e.g., '株価指数')",
+    )
+    date: str = Field(
+        ...,
+        description="Date string for the group (e.g., '2026-02-09')",
+    )
+    articles: list["SummarizedArticle"] = Field(
+        ...,
+        description="List of summarized articles belonging to this category",
+    )
+
+
+class CategoryPublishResult(BaseModel):
+    """Result of publishing a category group as a GitHub Issue.
+
+    Represents the outcome of attempting to publish a category-based Issue,
+    including the Issue number and URL if successful, or error details if failed.
+
+    Attributes
+    ----------
+    category : str
+        Category key (e.g., "index", "stock").
+    category_label : str
+        Human-readable category label in Japanese (e.g., "株価指数").
+    date : str
+        Date string for the published group (e.g., "2026-02-09").
+    issue_number : int | None
+        The GitHub Issue number if publication succeeded, or None if failed.
+    issue_url : str | None
+        The GitHub Issue URL if publication succeeded, or None if failed.
+    article_count : int
+        The number of articles included in this category group.
+    status : PublicationStatus
+        The status of the publication attempt.
+    error_message : str | None
+        Error message if publication failed, or None if successful.
+
+    Examples
+    --------
+    >>> from news.models import CategoryPublishResult, PublicationStatus
+    >>> result = CategoryPublishResult(
+    ...     category="index",
+    ...     category_label="株価指数",
+    ...     date="2026-02-09",
+    ...     issue_number=100,
+    ...     issue_url="https://github.com/YH-05/finance/issues/100",
+    ...     article_count=5,
+    ...     status=PublicationStatus.SUCCESS,
+    ... )
+    >>> result.status
+    <PublicationStatus.SUCCESS: 'success'>
+    """
+
+    category: str = Field(
+        ...,
+        description="Category key (e.g., 'index', 'stock')",
+    )
+    category_label: str = Field(
+        ...,
+        description="Human-readable category label in Japanese (e.g., '株価指数')",
+    )
+    date: str = Field(
+        ...,
+        description="Date string for the published group (e.g., '2026-02-09')",
+    )
+    issue_number: int | None = Field(
+        ...,
+        description="The GitHub Issue number if publication succeeded, or None if failed",
+    )
+    issue_url: str | None = Field(
+        ...,
+        description="The GitHub Issue URL if publication succeeded, or None if failed",
+    )
+    article_count: int = Field(
+        ...,
+        description="The number of articles included in this category group",
+    )
+    status: PublicationStatus = Field(
+        ...,
+        description="The status of the publication attempt",
+    )
+    error_message: str | None = Field(
+        default=None,
+        description="Error message if publication failed, or None if successful",
+    )
+
+
 class FailureRecord(BaseModel):
     """A record of a failed processing step in the workflow.
 
@@ -806,10 +930,16 @@ class WorkflowResult(BaseModel):
         default_factory=list,
         description="Records of feeds that failed during collection",
     )
+    category_results: list[CategoryPublishResult] = Field(
+        default_factory=list,
+        description="Results of category-based Issue publishing",
+    )
 
 
 __all__ = [
     "ArticleSource",
+    "CategoryGroup",
+    "CategoryPublishResult",
     "CollectedArticle",
     "ExtractedArticle",
     "ExtractionStatus",

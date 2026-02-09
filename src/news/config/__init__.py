@@ -19,6 +19,8 @@ Examples
 
 from .models import (
     DEFAULT_CONFIG_PATH,
+    # Category configuration models
+    CategoryLabelsConfig,
     # Exception classes
     ConfigError,
     # Loader
@@ -37,6 +39,7 @@ from .models import (
     NewsWorkflowConfig,
     OutputConfig,
     PlaywrightFallbackConfig,
+    PublishingConfig,
     RetryConfig,
     RssConfig,
     SettingsConfig,
@@ -51,6 +54,7 @@ from .models import (
 
 __all__ = [
     "DEFAULT_CONFIG_PATH",
+    "CategoryLabelsConfig",
     "ConfigError",
     "ConfigLoader",
     "ConfigParseError",
@@ -65,6 +69,7 @@ __all__ = [
     "NewsWorkflowConfig",
     "OutputConfig",
     "PlaywrightFallbackConfig",
+    "PublishingConfig",
     "RetryConfig",
     "RssConfig",
     "SettingsConfig",

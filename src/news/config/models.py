@@ -973,6 +973,126 @@ class DomainFilteringConfig(BaseModel):
         return False
 
 
+class PublishingConfig(BaseModel):
+    """Publishing format configuration for the news workflow.
+
+    Controls how articles are published to GitHub Issues, including
+    the publishing format (per-category vs per-article) and export settings.
+
+    Parameters
+    ----------
+    format : str
+        Publishing format: "per_category" or "per_article" (default: "per_category").
+    export_markdown : bool
+        Whether to export markdown files for each category (default: True).
+    export_dir : str
+        Directory for exported markdown files (default: "data/exports/news-workflow").
+
+    Examples
+    --------
+    >>> config = PublishingConfig()
+    >>> config.format
+    'per_category'
+    >>> config.export_markdown
+    True
+    """
+
+    format: str = Field(
+        default="per_category",
+        description='Publishing format: "per_category" or "per_article"',
+    )
+    export_markdown: bool = Field(
+        default=True,
+        description="Whether to export markdown files for each category",
+    )
+    export_dir: str = Field(
+        default="data/exports/news-workflow",
+        description="Directory for exported markdown files",
+    )
+
+
+class CategoryLabelsConfig(BaseModel):
+    """Category label mapping configuration.
+
+    Maps category keys to human-readable Japanese labels used in
+    GitHub Issue titles and content.
+
+    Parameters
+    ----------
+    index : str
+        Label for index category (default: "株価指数").
+    stock : str
+        Label for stock category (default: "個別銘柄").
+    sector : str
+        Label for sector category (default: "セクター").
+    macro : str
+        Label for macro category (default: "マクロ経済").
+    ai : str
+        Label for AI category (default: "AI関連").
+    finance : str
+        Label for finance category (default: "金融").
+
+    Examples
+    --------
+    >>> config = CategoryLabelsConfig()
+    >>> config.index
+    '株価指数'
+    >>> config.get_label("stock")
+    '個別銘柄'
+    >>> config.get_label("unknown")
+    'unknown'
+    """
+
+    index: str = Field(
+        default="株価指数",
+        description="Label for index category",
+    )
+    stock: str = Field(
+        default="個別銘柄",
+        description="Label for stock category",
+    )
+    sector: str = Field(
+        default="セクター",
+        description="Label for sector category",
+    )
+    macro: str = Field(
+        default="マクロ経済",
+        description="Label for macro category",
+    )
+    ai: str = Field(
+        default="AI関連",
+        description="Label for AI category",
+    )
+    finance: str = Field(
+        default="金融",
+        description="Label for finance category",
+    )
+
+    def get_label(self, category: str) -> str:
+        """Get the human-readable label for a category key.
+
+        Parameters
+        ----------
+        category : str
+            The category key to look up (e.g., "index", "stock").
+
+        Returns
+        -------
+        str
+            The human-readable label if the category is known,
+            otherwise returns the category key as-is.
+
+        Examples
+        --------
+        >>> config = CategoryLabelsConfig()
+        >>> config.get_label("index")
+        '株価指数'
+        >>> config.get_label("unknown")
+        'unknown'
+        """
+        return getattr(self, category, category)
+
+
 class NewsWorkflowConfig(BaseModel):
     """Root configuration model for news collection workflow.
 
@@ -1074,6 +1194,14 @@ class NewsWorkflowConfig(BaseModel):
     domain_filtering: DomainFilteringConfig = Field(
         default_factory=DomainFilteringConfig,
         description="Domain filtering configuration for blocking specific sources",
+    )
+    publishing: PublishingConfig = Field(
+        default_factory=PublishingConfig,
+        description="Publishing format configuration",
+    )
+    category_labels: CategoryLabelsConfig = Field(
+        default_factory=CategoryLabelsConfig,
+        description="Category label mapping configuration",
     )
 
 
@@ -1505,6 +1633,7 @@ def load_config(path: Path | str) -> NewsWorkflowConfig:
 # Export all public symbols (sorted alphabetically per RUF022)
 __all__ = [
     "DEFAULT_CONFIG_PATH",
+    "CategoryLabelsConfig",
     "ConfigError",
     "ConfigLoader",
     "ConfigParseError",
@@ -1519,6 +1648,7 @@ __all__ = [
     "NewsWorkflowConfig",
     "OutputConfig",
     "PlaywrightFallbackConfig",
+    "PublishingConfig",
     "RetryConfig",
     "RssConfig",
     "RssRetryConfig",
