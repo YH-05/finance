@@ -10,6 +10,8 @@ Features
 - Automatic retry on failure with exponential backoff (1s, 2s, 4s)
 - Configurable maximum retries and timeout
 - User-Agent rotation for avoiding rate limiting
+- Session-fixed User-Agent per domain (Issue #3403)
+- Domain-based rate limiting with jitter (Issue #3403)
 - Graceful error handling with status classification
 - Playwright fallback for JS-rendered pages (Issue #2608)
 
@@ -35,6 +37,7 @@ import asyncio
 from typing import TYPE_CHECKING, Any, Self
 
 from news.extractors.base import BaseExtractor
+from news.extractors.rate_limiter import DomainRateLimiter
 from news.models import CollectedArticle, ExtractedArticle, ExtractionStatus
 from rss.services.article_extractor import ArticleExtractor
 from rss.services.article_extractor import (
@@ -145,6 +148,7 @@ class TrafilaturaExtractor(BaseExtractor):
         user_agent_config: UserAgentRotationConfig | None = None,
         playwright_config: PlaywrightFallbackConfig | None = None,
         extraction_config: ExtractionConfig | None = None,
+        rate_limiter: DomainRateLimiter | None = None,
     ) -> None:
         """Initialize the TrafilaturaExtractor.
 
@@ -162,6 +166,9 @@ class TrafilaturaExtractor(BaseExtractor):
             Playwright fallback configuration. Default is None.
         extraction_config : ExtractionConfig | None, optional
             Full extraction configuration for Playwright. Default is None.
+        rate_limiter : DomainRateLimiter | None, optional
+            Domain-based rate limiter. If provided, enforces per-domain
+            rate limiting and session-fixed User-Agent. Default is None.
         """
         self._extractor = ArticleExtractor()
         self._min_body_length = min_body_length
@@ -170,6 +177,7 @@ class TrafilaturaExtractor(BaseExtractor):
         self._user_agent_config = user_agent_config
         self._playwright_config = playwright_config
         self._extraction_config = extraction_config
+        self._rate_limiter = rate_limiter
         self._playwright_extractor: PlaywrightExtractor | None = None
 
     @classmethod
@@ -199,6 +207,7 @@ class TrafilaturaExtractor(BaseExtractor):
             user_agent_config=config.user_agent_rotation,
             playwright_config=config.playwright_fallback,
             extraction_config=config,
+            rate_limiter=DomainRateLimiter(),
         )
 
     async def __aenter__(self) -> Self:
@@ -491,6 +500,35 @@ class TrafilaturaExtractor(BaseExtractor):
 
         return result
 
+    def _select_user_agent(self, url: str) -> str | None:
+        """Select a User-Agent for the given URL.
+
+        When a rate limiter is configured, uses session-fixed UA per domain
+        to avoid detection by servers that track UA changes. Otherwise,
+        falls back to random rotation from the configured UA list.
+
+        Parameters
+        ----------
+        url : str
+            The URL to select a User-Agent for.
+
+        Returns
+        -------
+        str | None
+            The selected User-Agent, or None if no UA config is set.
+        """
+        if self._rate_limiter and self._user_agent_config:
+            domain = self._rate_limiter._extract_domain(url)
+            ua_list = self._user_agent_config.user_agents
+            if self._user_agent_config.enabled and ua_list:
+                return self._rate_limiter.get_session_user_agent(domain, ua_list)
+            return None
+
+        if self._user_agent_config:
+            return self._user_agent_config.get_random_user_agent()
+
+        return None
+
     async def _extract_impl(self, article: CollectedArticle) -> ExtractedArticle:
         """Perform the actual extraction without retry logic.
 
@@ -505,20 +543,25 @@ class TrafilaturaExtractor(BaseExtractor):
             The extraction result.
         """
         try:
-            # Get random User-Agent if rotation is enabled
-            user_agent: str | None = None
-            if self._user_agent_config:
-                user_agent = self._user_agent_config.get_random_user_agent()
-                if user_agent:
-                    logger.debug(
-                        "Using custom User-Agent",
-                        url=str(article.url),
-                        user_agent=user_agent[:50] + "..."
-                        if len(user_agent) > 50
-                        else user_agent,
-                    )
+            url_str = str(article.url)
 
-            result = await self._extractor.extract(str(article.url), user_agent)
+            # Apply rate limiting if configured
+            if self._rate_limiter:
+                await self._rate_limiter.wait(url_str)
+
+            # Select User-Agent (session-fixed or random rotation)
+            user_agent = self._select_user_agent(url_str)
+
+            if user_agent:
+                logger.debug(
+                    "Using custom User-Agent",
+                    url=url_str,
+                    user_agent=user_agent[:50] + "..."
+                    if len(user_agent) > 50
+                    else user_agent,
+                )
+
+            result = await self._extractor.extract(url_str, user_agent)
 
             # Map the RSS extraction status to news pipeline status
             status = self._map_status(result.status)

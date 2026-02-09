@@ -49,14 +49,16 @@
             "title": "Yahoo Finance",
             "category": "finance",
             "fetch_interval": "daily",
-            "enabled": true
+            "enabled": false,
+            "note": "HTTP 429 (Too Many Requests) エラーのため無効化"
         },
         {
             "url": "https://www.ft.com/markets?format=rss",
             "title": "Financial Times - Markets",
             "category": "finance",
             "fetch_interval": "daily",
-            "enabled": true
+            "enabled": false,
+            "note": "HTTP 301 リダイレクトによりフィード取得不可のため無効化"
         },
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114",
@@ -84,7 +86,8 @@
             "title": "CNBC - Markets",
             "category": "market",
             "fetch_interval": "daily",
-            "enabled": false
+            "enabled": false,
+            "note": "フィードフォーマットが無効のため無効化"
         },
         {
             "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069",

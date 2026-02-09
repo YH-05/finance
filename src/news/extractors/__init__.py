@@ -13,6 +13,8 @@ TrafilaturaExtractor
     Trafilatura-based extractor that wraps ArticleExtractor.
 PlaywrightExtractor
     Playwright-based extractor for JS-rendered pages (optional dependency).
+DomainRateLimiter
+    Per-domain rate limiter with jitter and session-fixed User-Agent.
 
 Examples
 --------
@@ -32,6 +34,12 @@ Examples
 
 from news.extractors.base import BaseExtractor
 from news.extractors.playwright import PlaywrightExtractor
+from news.extractors.rate_limiter import DomainRateLimiter
 from news.extractors.trafilatura import TrafilaturaExtractor
 
-__all__ = ["BaseExtractor", "PlaywrightExtractor", "TrafilaturaExtractor"]
+__all__ = [
+    "BaseExtractor",
+    "DomainRateLimiter",
+    "PlaywrightExtractor",
+    "TrafilaturaExtractor",
+]
