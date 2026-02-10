@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING, Any
 from utils_core.logging import get_logger
 
 from ..types import SectionKey
+from ._helpers import get_accession_number, get_filing_text
 
 if TYPE_CHECKING:
     from ..cache import CacheManager
@@ -60,100 +61,6 @@ _ORDERED_SECTION_KEYS: list[str] = [
     SectionKey.ITEM_7.value,
     SectionKey.ITEM_8.value,
 ]
-
-
-def _get_filing_text(filing: Any) -> str | None:
-    """Extract full text content from a filing object.
-
-    Attempts multiple methods to obtain the filing text, handling
-    various edgartools API versions and object structures.
-
-    Parameters
-    ----------
-    filing : Any
-        An edgartools Filing object or similar
-
-    Returns
-    -------
-    str | None
-        The full text content of the filing, or None if extraction fails
-    """
-    # AIDEV-NOTE: edgartools Filing objects may expose text via different
-    # methods depending on the version. We try multiple approaches.
-    try:
-        # Method 1: filing.text() method
-        if hasattr(filing, "text") and callable(filing.text):
-            raw_text = filing.text()
-            if raw_text:
-                result = str(raw_text)
-                logger.debug(
-                    "Extracted filing text via text() method",
-                    text_length=len(result),
-                )
-                return result
-
-        # Method 2: filing.full_text attribute
-        if hasattr(filing, "full_text"):
-            raw_text = filing.full_text
-            if raw_text:
-                result = str(raw_text)
-                logger.debug(
-                    "Extracted filing text via full_text attribute",
-                    text_length=len(result),
-                )
-                return result
-
-        # Method 3: str(filing.obj()) for parsed HTML content
-        if hasattr(filing, "obj") and callable(filing.obj):
-            obj = filing.obj()
-            if obj:
-                text = str(obj)
-                logger.debug(
-                    "Extracted filing text via obj() method",
-                    text_length=len(text),
-                )
-                return text
-
-        logger.warning(
-            "Could not extract text from filing: no compatible method found",
-        )
-        return None
-
-    except Exception as e:
-        logger.warning(
-            "Failed to extract text from filing",
-            error=str(e),
-            error_type=type(e).__name__,
-        )
-        return None
-
-
-def _get_accession_number(filing: Any) -> str | None:
-    """Extract the accession number from a filing object.
-
-    Parameters
-    ----------
-    filing : Any
-        An edgartools Filing object or similar
-
-    Returns
-    -------
-    str | None
-        The accession number, or None if not available
-    """
-    try:
-        if hasattr(filing, "accession_number"):
-            return str(filing.accession_number)
-        if hasattr(filing, "accession_no"):
-            return str(filing.accession_no)
-        logger.debug("Filing object has no accession number attribute")
-        return None
-    except Exception as e:
-        logger.warning(
-            "Failed to get accession number",
-            error=str(e),
-        )
-        return None
 
 
 def _build_cache_key(accession_number: str, section_key: str) -> str:
@@ -337,7 +244,7 @@ class SectionExtractor:
             return None
 
         # Check cache
-        accession_number = _get_accession_number(filing)
+        accession_number = get_accession_number(filing)
         if self._cache is not None and accession_number is not None:
             cache_key = _build_cache_key(accession_number, section_key)
             cached = self._cache.get_cached_text(cache_key)
@@ -351,7 +258,7 @@ class SectionExtractor:
                 return cached
 
         # Extract full text from filing
-        text = _get_filing_text(filing)
+        text = get_filing_text(filing)
         if text is None:
             logger.warning(
                 "Could not extract text from filing for section extraction",
@@ -424,7 +331,7 @@ class SectionExtractor:
         """
         logger.info("Listing sections in filing")
 
-        text = _get_filing_text(filing)
+        text = get_filing_text(filing)
         if text is None:
             logger.warning(
                 "Could not extract text from filing for section listing",

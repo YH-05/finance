@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING, Any
 import tiktoken
 
 from edgar.errors import EdgarError
+from edgar.extractors._helpers import get_accession_number
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
@@ -313,8 +314,12 @@ class TextExtractor:
         """
         return len(self._encoding.encode(text))
 
-    def _get_accession_number(self, filing: Any) -> str:
+    @staticmethod
+    def _get_accession_number(filing: Any) -> str:
         """Extract the accession number from a Filing object.
+
+        Delegates to the shared ``get_accession_number`` helper and
+        raises ``EdgarError`` when the attribute is absent.
 
         Parameters
         ----------
@@ -329,14 +334,14 @@ class TextExtractor:
         Raises
         ------
         EdgarError
-            If the filing does not have an ``accession_number`` attribute
+            If the filing does not have an accession number attribute
         """
-        accession_number = getattr(filing, "accession_number", None)
+        accession_number = get_accession_number(filing)
         if accession_number is None:
             raise EdgarError(
                 "Filing object does not have an 'accession_number' attribute",
             )
-        return str(accession_number)
+        return accession_number
 
     def _get_from_cache(self, cache_key: str) -> str | None:
         """Retrieve text from cache if available.

@@ -10,14 +10,13 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from edgar.extractors._helpers import get_accession_number, get_filing_text
 from edgar.extractors.section import (
     SECTION_PATTERNS,
     SectionExtractor,
     _build_cache_key,
     _extract_section_text,
     _find_section_positions,
-    _get_accession_number,
-    _get_filing_text,
 )
 
 # Sample filing text that mimics a real 10-K filing structure.
@@ -35,91 +34,91 @@ SAMPLE_FILING_TEXT = (
 
 
 class TestGetFilingText:
-    """Tests for _get_filing_text helper function."""
+    """Tests for get_filing_text helper function."""
 
     def test_正常系_text_methodでテキスト取得(self) -> None:
-        """_get_filing_text should use text() method first."""
+        """get_filing_text should use text() method first."""
         filing = MagicMock()
         filing.text.return_value = "Filing text from text()"
 
-        result = _get_filing_text(filing)
+        result = get_filing_text(filing)
 
         assert result == "Filing text from text()"
 
     def test_正常系_full_text属性でテキスト取得(self) -> None:
-        """_get_filing_text should fall back to full_text attribute."""
+        """get_filing_text should fall back to full_text attribute."""
         filing = MagicMock(spec=["full_text"])
         filing.full_text = "Filing text from full_text"
 
-        result = _get_filing_text(filing)
+        result = get_filing_text(filing)
 
         assert result == "Filing text from full_text"
 
     def test_正常系_obj_methodでテキスト取得(self) -> None:
-        """_get_filing_text should fall back to obj() method."""
+        """get_filing_text should fall back to obj() method."""
         filing = MagicMock(spec=["obj"])
         filing.obj.return_value = "Filing text from obj()"
 
-        result = _get_filing_text(filing)
+        result = get_filing_text(filing)
 
         assert result == "Filing text from obj()"
 
     def test_エッジケース_テキスト取得不可でNone(self) -> None:
-        """_get_filing_text should return None when no method is available."""
+        """get_filing_text should return None when no method is available."""
         filing = MagicMock(spec=[])
 
-        result = _get_filing_text(filing)
+        result = get_filing_text(filing)
 
         assert result is None
 
     def test_エッジケース_text_methodが空文字列の場合fallback(self) -> None:
-        """_get_filing_text should fall back when text() returns empty string."""
+        """get_filing_text should fall back when text() returns empty string."""
         filing = MagicMock()
         filing.text.return_value = ""
         filing.full_text = "Fallback text"
 
-        result = _get_filing_text(filing)
+        result = get_filing_text(filing)
 
         assert result == "Fallback text"
 
     def test_エッジケース_例外発生時にNone(self) -> None:
-        """_get_filing_text should return None when an exception occurs."""
+        """get_filing_text should return None when an exception occurs."""
         filing = MagicMock()
         filing.text.side_effect = RuntimeError("Unexpected error")
         # Make hasattr return True for text, but the call raises
         # MagicMock hasattr returns True by default, text is callable
 
-        result = _get_filing_text(filing)
+        result = get_filing_text(filing)
 
         assert result is None
 
 
 class TestGetAccessionNumber:
-    """Tests for _get_accession_number helper function."""
+    """Tests for get_accession_number helper function."""
 
     def test_正常系_accession_numberから取得(self) -> None:
-        """_get_accession_number should return accession_number attribute."""
+        """get_accession_number should return accession_number attribute."""
         filing = MagicMock()
         filing.accession_number = "0001234567-24-000001"
 
-        result = _get_accession_number(filing)
+        result = get_accession_number(filing)
 
         assert result == "0001234567-24-000001"
 
     def test_正常系_accession_noから取得(self) -> None:
-        """_get_accession_number should fall back to accession_no attribute."""
+        """get_accession_number should fall back to accession_no attribute."""
         filing = MagicMock(spec=["accession_no"])
         filing.accession_no = "0001234567-24-000001"
 
-        result = _get_accession_number(filing)
+        result = get_accession_number(filing)
 
         assert result == "0001234567-24-000001"
 
     def test_エッジケース_属性なしでNone(self) -> None:
-        """_get_accession_number should return None when no attribute exists."""
+        """get_accession_number should return None when no attribute exists."""
         filing = MagicMock(spec=[])
 
-        result = _get_accession_number(filing)
+        result = get_accession_number(filing)
 
         assert result is None
 
