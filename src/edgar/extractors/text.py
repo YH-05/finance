@@ -43,6 +43,10 @@ _TIKTOKEN_ENCODING = "cl100k_base"
 _CACHE_KEY_TEXT = "text"
 _CACHE_KEY_MARKDOWN = "markdown"
 
+# Pre-compiled regex patterns for _clean_text (avoids re-compilation per call)
+_RE_CONSECUTIVE_WHITESPACE = re.compile(r"[^\S\n]+")
+_RE_EXCESSIVE_NEWLINES = re.compile(r"\n{3,}")
+
 
 def _clean_text(text: str) -> str:
     """Clean extracted text by normalizing whitespace and newlines.
@@ -63,10 +67,10 @@ def _clean_text(text: str) -> str:
         Cleaned text with normalized whitespace
     """
     # Collapse consecutive spaces (excluding newlines) to a single space
-    cleaned = re.sub(r"[^\S\n]+", " ", text)
+    cleaned = _RE_CONSECUTIVE_WHITESPACE.sub(" ", text)
 
     # Collapse 3+ consecutive newlines to exactly 2 newlines
-    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+    cleaned = _RE_EXCESSIVE_NEWLINES.sub("\n\n", cleaned)
 
     # Strip leading/trailing whitespace
     return cleaned.strip()

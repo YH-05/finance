@@ -20,13 +20,15 @@ to import the edgartools ``Company`` class from the correct location.
 
 from __future__ import annotations
 
+import functools
 import importlib.machinery
 import importlib.util
 import sys
 from typing import TYPE_CHECKING, Any
 
-from edgar.config import load_config
+from edgar.config import DEFAULT_RATE_LIMIT_PER_SECOND, load_config
 from edgar.errors import EdgarError, FilingNotFoundError
+from edgar.rate_limiter import RateLimiter
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
@@ -35,6 +37,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+@functools.lru_cache(maxsize=1)
 def _import_edgartools_company() -> Any:
     """Import the Company class from the edgartools site-packages module.
 
@@ -99,13 +102,37 @@ class EdgarFetcher:
     >>> latest = fetcher.fetch_latest("AAPL", FilingType.FORM_10K)
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        rate_limiter: RateLimiter | None = None,
+        rate_limit_per_second: int | None = None,
+    ) -> None:
         """Initialize EdgarFetcher.
 
         The edgartools Company class is lazily loaded on first use.
+
+        Parameters
+        ----------
+        rate_limiter : RateLimiter | None
+            An existing RateLimiter instance. If None, a new instance is
+            created with the default or specified rate limit.
+        rate_limit_per_second : int | None
+            Maximum requests per second. Only used when rate_limiter is None.
+            Defaults to DEFAULT_RATE_LIMIT_PER_SECOND (10).
         """
         logger.debug("Initializing EdgarFetcher")
         self._company_cls: Any | None = None
+
+        if rate_limiter is not None:
+            self._rate_limiter = rate_limiter
+        else:
+            rate = rate_limit_per_second or DEFAULT_RATE_LIMIT_PER_SECOND
+            self._rate_limiter = RateLimiter(max_requests_per_second=rate)
+
+        logger.debug(
+            "EdgarFetcher rate limiter configured",
+            max_requests_per_second=self._rate_limiter.max_requests_per_second,
+        )
 
     def _get_company_cls(self) -> Any:
         """Get the edgartools Company class, loading it if necessary.
@@ -186,6 +213,8 @@ class EdgarFetcher:
             form=form.value,
             limit=limit,
         )
+
+        self._rate_limiter.acquire()
 
         try:
             company_cls = self._get_company_cls()
