@@ -1,4 +1,4 @@
-"""Shared test fixtures for edgar integration tests.
+"""Shared test fixtures and helpers for edgar integration tests.
 
 Provides mock Filing and Company objects used across E2E test modules,
 particularly for batch extraction tests that require multi-company mock setups.
@@ -9,6 +9,33 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+
+def get_accession_number(filing: object) -> str | None:
+    """Extract accession number from an edgartools Filing object.
+
+    edgartools versions differ in attribute naming: some use ``accession_no``
+    while others use ``accession_number``.  This helper tries both to keep
+    test assertions portable across versions.
+
+    Parameters
+    ----------
+    filing : object
+        An edgartools Filing object (or mock thereof).
+
+    Returns
+    -------
+    str | None
+        The accession number string, or ``None`` if neither attribute exists.
+    """
+    return getattr(filing, "accession_no", None) or getattr(
+        filing, "accession_number", None
+    )
+
 
 # ---------------------------------------------------------------------------
 # Sample filing text constants
