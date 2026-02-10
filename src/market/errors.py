@@ -2,7 +2,7 @@
 
 This module provides a unified hierarchy of exception classes for handling
 various error conditions across all market data sources (yfinance, Bloomberg,
-FRED, etc.).
+FRED, NASDAQ, etc.).
 
 All exceptions include:
 - Error codes for programmatic handling
@@ -29,6 +29,10 @@ MarketError (base)
         ETFComScrapingError (HTML parse failure)
         ETFComTimeoutError (page load / navigation timeout)
         ETFComBlockedError (bot-blocking detection)
+    NasdaqError (NASDAQ API operations)
+        NasdaqAPIError (API response error - 4xx, 5xx)
+        NasdaqRateLimitError (rate limit exceeded)
+        NasdaqParseError (response parse failure)
 """
 
 from enum import Enum
@@ -39,6 +43,12 @@ from market.etfcom.errors import (
     ETFComError,
     ETFComScrapingError,
     ETFComTimeoutError,
+)
+from market.nasdaq.errors import (
+    NasdaqAPIError,
+    NasdaqError,
+    NasdaqParseError,
+    NasdaqRateLimitError,
 )
 
 
@@ -87,6 +97,12 @@ class ErrorCode(str, Enum):
         HTML scraping / parsing failure (ETF.com)
     PAGE_LOAD_TIMEOUT : str
         Page load or navigation timeout (ETF.com)
+    NASDAQ_API_ERROR : str
+        NASDAQ API response error (4xx, 5xx)
+    NASDAQ_RATE_LIMIT : str
+        NASDAQ API rate limit exceeded
+    NASDAQ_PARSE_ERROR : str
+        NASDAQ API response parse failure
     """
 
     UNKNOWN = "UNKNOWN"
@@ -108,6 +124,9 @@ class ErrorCode(str, Enum):
     INVALID_DATE_RANGE = "INVALID_DATE_RANGE"
     SCRAPING_ERROR = "SCRAPING_ERROR"
     PAGE_LOAD_TIMEOUT = "PAGE_LOAD_TIMEOUT"
+    NASDAQ_API_ERROR = "NASDAQ_API_ERROR"
+    NASDAQ_RATE_LIMIT = "NASDAQ_RATE_LIMIT"
+    NASDAQ_PARSE_ERROR = "NASDAQ_PARSE_ERROR"
 
 
 class MarketError(Exception):
@@ -822,5 +841,9 @@ __all__ = [
     "FREDFetchError",
     "FREDValidationError",
     "MarketError",
+    "NasdaqAPIError",
+    "NasdaqError",
+    "NasdaqParseError",
+    "NasdaqRateLimitError",
     "ValidationError",
 ]
