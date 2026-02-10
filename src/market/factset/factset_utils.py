@@ -1086,9 +1086,7 @@ def store_active_returns_batch_serial_write(
 
             except Exception as e:
                 results["failed"].append({"table": table_name, "error": str(e)})
-                logger.error(
-                    "Table save failed", table=table_name, error=str(e), exc_info=True
-                )
+                logger.error("Table save failed", table=table_name, exc_info=True)
 
                 # エラー時はロールバック
                 with contextlib.suppress(BaseException):
@@ -1282,9 +1280,7 @@ def insert_active_returns_optimized_sqlite(
 
             except Exception as e:
                 results["failed"].append({"table": table_name, "error": str(e)})
-                logger.error(
-                    "Table save failed", table=table_name, error=str(e), exc_info=True
-                )
+                logger.error("Table save failed", table=table_name, exc_info=True)
 
                 # エラー時はロールバック
                 with contextlib.suppress(BaseException):
@@ -1854,7 +1850,7 @@ def upsert_financial_data(
         return rows_affected
 
     except Exception as e:
-        logger.error("Upsert failed", table=table_name, error=str(e), exc_info=True)
+        logger.error("Upsert failed", table=table_name, exc_info=True)
         conn.rollback()
         # 一時テーブルのクリーンアップ
         with contextlib.suppress(BaseException):

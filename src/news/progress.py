@@ -124,7 +124,7 @@ class ConsoleProgressCallback:
         """Print stage completion with success rate."""
         rate = (success / total * 100) if total > 0 else 0
         extra_str = f" {extra}" if extra else ""
-        print(f"  -> {stage}\u5b8c\u4e86: {success}/{total} ({rate:.0f}%){extra_str}")
+        print(f"  -> {stage}完了: {success}/{total} ({rate:.0f}%){extra_str}")
 
     def on_info(self, message: str) -> None:
         """Print informational message."""
