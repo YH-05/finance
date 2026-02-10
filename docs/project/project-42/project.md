@@ -1,8 +1,21 @@
 # 構造化ログ・エラーハンドリング統一リファクタリング
 
 **Project**: #42
-**Status**: Todo
+**Status**: Done
+**Completed**: 2026-02-10
+**Commit**: `84b88ef`
 **Created**: 2026-02-10
+**GitHub Project**: https://github.com/users/YH-05/projects/42
+
+### Issue 一覧
+
+| Issue | Phase | タイトル | ステータス |
+|-------|-------|---------|-----------|
+| #3442 | Phase 1 | edgar パッケージの構造化ログ改善 | Done |
+| #3443 | Phase 2 | news/orchestrator.py に ProgressCallback パターン導入 | Done |
+| #3444 | Phase 3 | market/factset/ の print() 全面修正 | Done |
+| #3445 | Phase 4 | market/alternative/tsa.py の構造化ログ導入 | Done |
+| #3446 | Phase 5 | analyze/reporting/ の構造化ログ導入 | Done |
 
 ## 背景と目的
 
