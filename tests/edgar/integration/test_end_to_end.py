@@ -1,6 +1,7 @@
 """End-to-end integration tests for the edgar package.
 
 Tests the full flow: Fetcher -> TextExtractor -> SectionExtractor -> CacheManager.
+Also tests: Fetcher -> BatchExtractor for batch processing.
 Uses mock edgartools objects but real edgar package components.
 """
 
@@ -11,6 +12,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from edgar.batch import BatchExtractor
 from edgar.cache.manager import CacheManager
 from edgar.config import SEC_EDGAR_IDENTITY_ENV
 from edgar.extractors.section import SectionExtractor
@@ -39,6 +41,23 @@ SAMPLE_10K_TEXT = (
     "consolidated financial statements.\n\n"
     "Item 8. Financial Statements and Supplementary Data\n\n"
     "See the consolidated financial statements and notes thereto.\n"
+)
+
+SAMPLE_10Q_TEXT = (
+    "UNITED STATES SECURITIES AND EXCHANGE COMMISSION\n"
+    "Washington, D.C. 20549\n\n"
+    "FORM 10-Q\n\n"
+    "Item 1. Business\n\n"
+    "Microsoft Corporation develops, licenses, and supports software, "
+    "services, devices, and solutions worldwide.\n\n"
+    "Item 1A. Risk Factors\n\n"
+    "We operate in a rapidly changing environment that involves a number "
+    "of risks, some of which are beyond our control.\n\n"
+    "Item 7. Management's Discussion and Analysis of Financial "
+    "Condition and Results of Operations\n\n"
+    "Revenue was $56.2 billion and increased 16%.\n\n"
+    "Item 8. Financial Statements and Supplementary Data\n\n"
+    "Refer to the financial statements and notes included herein.\n"
 )
 
 
@@ -227,3 +246,149 @@ class TestEndToEndMarkdownExtraction:
         assert cached_text == text
         assert cached_markdown == markdown
         assert cached_text != cached_markdown
+
+
+@pytest.mark.integration
+class TestEndToEndBatchExtraction:
+    """E2E tests for batch extraction pipeline (Fetcher -> BatchExtractor)."""
+
+    def test_E2E_複数Filing取得からバッチテキスト抽出まで(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+        tmp_path: Path,
+    ) -> None:
+        """Full flow: EdgarFetcher.fetch() -> BatchExtractor.extract_text_batch().
+
+        Verifies that filings fetched via EdgarFetcher can be processed
+        in batch by BatchExtractor, with results aggregated correctly.
+        """
+        monkeypatch.setenv(SEC_EDGAR_IDENTITY_ENV, "Test User test@example.com")
+
+        # Setup mock filings for two companies
+        mock_filing_aapl = MagicMock()
+        mock_filing_aapl.accession_number = "0000320193-24-000001"
+        mock_filing_aapl.text.return_value = SAMPLE_10K_TEXT
+
+        mock_filing_msft = MagicMock()
+        mock_filing_msft.accession_number = "0000789019-24-000001"
+        mock_filing_msft.text.return_value = SAMPLE_10Q_TEXT
+
+        # Setup mock edgartools company class that returns different filings
+        mock_filings_aapl = MagicMock()
+        mock_filings_aapl.latest.return_value = [mock_filing_aapl]
+        mock_company_aapl = MagicMock()
+        mock_company_aapl.get_filings.return_value = mock_filings_aapl
+
+        mock_filings_msft = MagicMock()
+        mock_filings_msft.latest.return_value = [mock_filing_msft]
+        mock_company_msft = MagicMock()
+        mock_company_msft.get_filings.return_value = mock_filings_msft
+
+        mock_company_cls = MagicMock(
+            side_effect=[mock_company_aapl, mock_company_msft],
+        )
+
+        # Phase 1: Fetch filings via EdgarFetcher
+        fetcher = EdgarFetcher()
+        fetcher._company_cls = mock_company_cls
+
+        filings_aapl = fetcher.fetch("AAPL", FilingType.FORM_10K, limit=1)
+        fetcher._company_cls = MagicMock(return_value=mock_company_msft)
+        filings_msft = fetcher.fetch("MSFT", FilingType.FORM_10Q, limit=1)
+
+        all_filings = filings_aapl + filings_msft
+        assert len(all_filings) == 2
+
+        # Phase 2: Batch extract text via BatchExtractor
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=90)
+        text_extractor = TextExtractor(cache=cache)
+        batch_extractor = BatchExtractor(text_extractor=text_extractor)
+
+        results = batch_extractor.extract_text_batch(all_filings, max_workers=2)
+
+        # Verify results
+        assert len(results) == 2
+        for acc_no, text_or_error in results.items():
+            assert not isinstance(text_or_error, Exception), (
+                f"Extraction failed for {acc_no}: {text_or_error}"
+            )
+            assert isinstance(text_or_error, str)
+            assert len(text_or_error) > 0
+
+        # Verify Apple text
+        aapl_text = results.get("0000320193-24-000001")
+        assert isinstance(aapl_text, str)
+        assert "Apple Inc." in aapl_text
+
+        # Verify Microsoft text
+        msft_text = results.get("0000789019-24-000001")
+        assert isinstance(msft_text, str)
+        assert "Microsoft Corporation" in msft_text
+
+    def test_E2E_複数Filing取得からバッチセクション抽出まで(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+        tmp_path: Path,
+    ) -> None:
+        """Full flow: EdgarFetcher.fetch() -> BatchExtractor.extract_sections_batch().
+
+        Verifies that section extraction works correctly in batch mode
+        across multiple filings from different companies.
+        """
+        monkeypatch.setenv(SEC_EDGAR_IDENTITY_ENV, "Test User test@example.com")
+
+        # Setup mock filings
+        mock_filing_aapl = MagicMock()
+        mock_filing_aapl.accession_number = "0000320193-24-000001"
+        mock_filing_aapl.text.return_value = SAMPLE_10K_TEXT
+
+        mock_filing_msft = MagicMock()
+        mock_filing_msft.accession_number = "0000789019-24-000001"
+        mock_filing_msft.text.return_value = SAMPLE_10Q_TEXT
+
+        mock_filings_aapl = MagicMock()
+        mock_filings_aapl.latest.return_value = [mock_filing_aapl]
+        mock_company_aapl = MagicMock()
+        mock_company_aapl.get_filings.return_value = mock_filings_aapl
+
+        mock_company_cls = MagicMock(return_value=mock_company_aapl)
+
+        # Fetch filings
+        fetcher = EdgarFetcher()
+        fetcher._company_cls = mock_company_cls
+        filings_aapl = fetcher.fetch("AAPL", FilingType.FORM_10K, limit=1)
+        all_filings = [*filings_aapl, mock_filing_msft]
+
+        # Batch section extraction
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=90)
+        section_extractor = SectionExtractor(cache=cache)
+        batch_extractor = BatchExtractor(section_extractor=section_extractor)
+
+        results = batch_extractor.extract_sections_batch(
+            all_filings,
+            ["item_1", "item_1a"],
+            max_workers=2,
+        )
+
+        # Verify results
+        assert len(results) == 2
+        for acc_no, sections_or_error in results.items():
+            assert not isinstance(sections_or_error, Exception), (
+                f"Section extraction failed for {acc_no}: {sections_or_error}"
+            )
+            assert isinstance(sections_or_error, dict)
+            assert "item_1" in sections_or_error
+            assert sections_or_error["item_1"] is not None
+
+        # Verify cache was populated for each filing's sections
+        cached_aapl = cache.get_cached_text(
+            "section_0000320193-24-000001_item_1",
+        )
+        assert cached_aapl is not None
+        assert "Apple Inc." in cached_aapl
+
+        cached_msft = cache.get_cached_text(
+            "section_0000789019-24-000001_item_1",
+        )
+        assert cached_msft is not None
+        assert "Microsoft Corporation" in cached_msft

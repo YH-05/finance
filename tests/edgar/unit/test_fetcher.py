@@ -356,3 +356,127 @@ class TestEdgarFetcherRateLimit:
         """
         fetcher = EdgarFetcher(rate_limit_per_second=3)
         assert fetcher._rate_limiter.max_requests_per_second == 3
+
+
+class TestImportEdgartoolsCompany:
+    """Tests for _import_edgartools_company() function."""
+
+    def test_異常系_edgartoolsが未インストールでEdgarError(self) -> None:
+        """_import_edgartools_company should raise EdgarError when edgartools not found.
+
+        Verify that when PathFinder.find_spec returns None,
+        an EdgarError is raised with an install instruction.
+        """
+        from edgar.fetcher import _import_edgartools_company
+
+        # Clear the lru_cache before testing
+        _import_edgartools_company.cache_clear()
+
+        with (
+            patch(
+                "edgar.fetcher.importlib.machinery.PathFinder.find_spec",
+                return_value=None,
+            ),
+            pytest.raises(EdgarError, match="edgartools is not installed"),
+        ):
+            _import_edgartools_company()
+
+        # Clear the cache after test to avoid side effects
+        _import_edgartools_company.cache_clear()
+
+    def test_異常系_loaderがNoneでEdgarError(self) -> None:
+        """_import_edgartools_company should raise EdgarError when loader is None.
+
+        Verify that when the module spec has a None loader,
+        an EdgarError is raised.
+        """
+        from edgar.fetcher import _import_edgartools_company
+
+        _import_edgartools_company.cache_clear()
+
+        mock_spec = MagicMock()
+        mock_spec.origin = "/some/path/edgar/__init__.py"
+        mock_spec.loader = None
+
+        with (
+            patch(
+                "edgar.fetcher.importlib.machinery.PathFinder.find_spec",
+                return_value=mock_spec,
+            ),
+            patch(
+                "edgar.fetcher.importlib.util.module_from_spec",
+                return_value=MagicMock(),
+            ),
+            pytest.raises(EdgarError, match="loader is None"),
+        ):
+            _import_edgartools_company()
+
+        _import_edgartools_company.cache_clear()
+
+    def test_異常系_CompanyクラスなしでEdgarError(self) -> None:
+        """_import_edgartools_company should raise EdgarError when Company not exported.
+
+        Verify that when the edgartools module does not export a Company
+        class, an EdgarError is raised.
+        """
+        from edgar.fetcher import _import_edgartools_company
+
+        _import_edgartools_company.cache_clear()
+
+        mock_spec = MagicMock()
+        mock_spec.origin = "/some/path/edgar/__init__.py"
+        mock_loader = MagicMock()
+        mock_spec.loader = mock_loader
+
+        mock_module = MagicMock(spec=[])  # Module without 'Company' attribute
+
+        with (
+            patch(
+                "edgar.fetcher.importlib.machinery.PathFinder.find_spec",
+                return_value=mock_spec,
+            ),
+            patch(
+                "edgar.fetcher.importlib.util.module_from_spec",
+                return_value=mock_module,
+            ),
+            pytest.raises(EdgarError, match="does not export 'Company'"),
+        ):
+            _import_edgartools_company()
+
+        _import_edgartools_company.cache_clear()
+
+    def test_正常系_edgartoolsのCompanyクラスを正常にインポート(self) -> None:
+        """_import_edgartools_company should return Company class on success.
+
+        Verify that when edgartools is properly installed and the Company
+        class is exported, it is returned successfully.
+        """
+        from edgar.fetcher import _import_edgartools_company
+
+        _import_edgartools_company.cache_clear()
+
+        mock_spec = MagicMock()
+        mock_spec.origin = "/some/path/edgar/__init__.py"
+        mock_loader = MagicMock()
+        mock_spec.loader = mock_loader
+
+        mock_company_cls = MagicMock()
+        mock_module = MagicMock()
+        mock_module.Company = mock_company_cls
+
+        with (
+            patch(
+                "edgar.fetcher.importlib.machinery.PathFinder.find_spec",
+                return_value=mock_spec,
+            ),
+            patch(
+                "edgar.fetcher.importlib.util.module_from_spec",
+                return_value=mock_module,
+            ),
+        ):
+            result = _import_edgartools_company()
+
+        assert result is mock_company_cls
+        mock_loader.exec_module.assert_called_once_with(mock_module)
+
+        _import_edgartools_company.cache_clear()
