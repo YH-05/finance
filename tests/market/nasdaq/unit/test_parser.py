@@ -22,6 +22,13 @@ Test TODO List:
 - [x] clean_ipo_year: empty string returns None
 - [x] clean_ipo_year: non-numeric returns None
 - [x] _camel_to_snake: camelCase to snake_case
+- [x] _create_cleaner: factory produces working cleaning function
+- [x] _create_cleaner: factory-created function handles missing values
+- [x] _create_cleaner: factory-created function handles conversion errors
+- [x] _COLUMN_CLEANERS: mapping contains all expected columns
+- [x] _COLUMN_CLEANERS: each cleaner is callable
+- [x] _apply_numeric_cleaning: applies cleaners to DataFrame columns
+- [x] _apply_numeric_cleaning: skips columns not present in DataFrame
 - [x] parse_screener_response: valid response with one row
 - [x] parse_screener_response: valid response with multiple rows
 - [x] parse_screener_response: empty rows list
@@ -33,12 +40,16 @@ Test TODO List:
 - [x] Module exports: __all__ completeness
 """
 
+import pandas as pd
 import pytest
 
 from market.nasdaq.errors import NasdaqParseError
 from market.nasdaq.parser import (
+    _COLUMN_CLEANERS,
     __all__,
+    _apply_numeric_cleaning,
     _camel_to_snake,
+    _create_cleaner,
     clean_ipo_year,
     clean_market_cap,
     clean_percentage,
@@ -500,3 +511,220 @@ class TestParseScreenerResponse:
             "url",
         }
         assert set(df.columns) == expected_columns
+
+
+# =============================================================================
+# _create_cleaner (factory function)
+# =============================================================================
+
+
+class TestCreateCleaner:
+    """_create_cleaner ファクトリ関数のテスト。"""
+
+    def test_正常系_ファクトリで生成した関数が正しく変換する(self) -> None:
+        """ファクトリで float コンバータを持つ関数を生成し正しく動作すること。"""
+        cleaner = _create_cleaner(
+            converter=float,
+            name="test_value",
+            strip_chars="$,",
+        )
+        assert cleaner("$1,234.56") == pytest.approx(1234.56)
+
+    def test_正常系_ファクトリで生成した関数がint変換できる(self) -> None:
+        """ファクトリで int コンバータを持つ関数を生成し正しく動作すること。"""
+        cleaner = _create_cleaner(
+            converter=int,
+            name="test_int",
+            strip_chars=",",
+        )
+        assert cleaner("1,000") == 1000
+
+    def test_エッジケース_ファクトリ関数が空文字でNoneを返す(self) -> None:
+        """ファクトリで生成した関数が空文字で None を返すこと。"""
+        cleaner = _create_cleaner(
+            converter=float,
+            name="test_value",
+            strip_chars="$,",
+        )
+        assert cleaner("") is None
+
+    def test_エッジケース_ファクトリ関数がNAでNoneを返す(self) -> None:
+        """ファクトリで生成した関数が N/A で None を返すこと。"""
+        cleaner = _create_cleaner(
+            converter=float,
+            name="test_value",
+            strip_chars="$,",
+        )
+        assert cleaner("N/A") is None
+
+    def test_異常系_ファクトリ関数が不正値でNoneを返す(self) -> None:
+        """ファクトリで生成した関数がパース不可の値で None を返すこと。"""
+        cleaner = _create_cleaner(
+            converter=float,
+            name="test_value",
+            strip_chars="$,",
+        )
+        assert cleaner("abc") is None
+
+    def test_正常系_finiteチェックが有効な場合infでNoneを返す(self) -> None:
+        """finite_check=True の場合 inf で None を返すこと。"""
+        cleaner = _create_cleaner(
+            converter=float,
+            name="test_value",
+            strip_chars="",
+            finite_check=True,
+        )
+        assert cleaner("inf") is None
+
+    def test_正常系_strip_charsで指定した文字が除去される(self) -> None:
+        """strip_chars で指定した文字がすべて除去されること。"""
+        cleaner = _create_cleaner(
+            converter=float,
+            name="test_value",
+            strip_chars="$%,",
+        )
+        assert cleaner("$1,234.56%") == pytest.approx(1234.56)
+
+
+# =============================================================================
+# _COLUMN_CLEANERS mapping
+# =============================================================================
+
+
+class TestColumnCleaners:
+    """_COLUMN_CLEANERS マッピングのテスト。"""
+
+    def test_正常系_6カラムのクリーナーが定義されている(self) -> None:
+        """6つのカラムクリーナーが定義されていること。"""
+        expected_columns = {
+            "last_sale",
+            "net_change",
+            "pct_change",
+            "market_cap",
+            "volume",
+            "ipo_year",
+        }
+        assert set(_COLUMN_CLEANERS.keys()) == expected_columns
+
+    def test_正常系_各クリーナーがcallableである(self) -> None:
+        """各クリーナーが呼び出し可能であること。"""
+        for column, cleaner in _COLUMN_CLEANERS.items():
+            assert callable(cleaner), f"Cleaner for '{column}' is not callable"
+
+    def test_正常系_last_saleクリーナーがclean_priceと同じ結果を返す(self) -> None:
+        """last_sale のクリーナーが clean_price と同じ結果を返すこと。"""
+        assert _COLUMN_CLEANERS["last_sale"]("$227.63") == clean_price("$227.63")
+
+    def test_正常系_pct_changeクリーナーがclean_percentageと同じ結果を返す(
+        self,
+    ) -> None:
+        """pct_change のクリーナーが clean_percentage と同じ結果を返すこと。"""
+        assert _COLUMN_CLEANERS["pct_change"]("-0.849%") == clean_percentage("-0.849%")
+
+    def test_正常系_market_capクリーナーがclean_market_capと同じ結果を返す(
+        self,
+    ) -> None:
+        """market_cap のクリーナーが clean_market_cap と同じ結果を返すこと。"""
+        assert _COLUMN_CLEANERS["market_cap"]("3,435,123,456,789") == clean_market_cap(
+            "3,435,123,456,789"
+        )
+
+    def test_正常系_volumeクリーナーがclean_volumeと同じ結果を返す(self) -> None:
+        """volume のクリーナーが clean_volume と同じ結果を返すこと。"""
+        assert _COLUMN_CLEANERS["volume"]("48,123,456") == clean_volume("48,123,456")
+
+    def test_正常系_ipo_yearクリーナーがclean_ipo_yearと同じ結果を返す(
+        self,
+    ) -> None:
+        """ipo_year のクリーナーが clean_ipo_year と同じ結果を返すこと。"""
+        assert _COLUMN_CLEANERS["ipo_year"]("1980") == clean_ipo_year("1980")
+
+
+# =============================================================================
+# _apply_numeric_cleaning
+# =============================================================================
+
+
+class TestApplyNumericCleaning:
+    """_apply_numeric_cleaning 共通関数のテスト。"""
+
+    def test_正常系_全カラムが正しくクリーニングされる(self) -> None:
+        """全数値カラムが正しくクリーニングされること。"""
+        df = pd.DataFrame(
+            [
+                {
+                    "symbol": "AAPL",
+                    "last_sale": "$227.63",
+                    "net_change": "-1.95",
+                    "pct_change": "-0.849%",
+                    "market_cap": "3,435,123,456,789",
+                    "volume": "48,123,456",
+                    "ipo_year": "1980",
+                }
+            ]
+        )
+        result = _apply_numeric_cleaning(df)
+
+        assert result["last_sale"].iloc[0] == pytest.approx(227.63)
+        assert result["net_change"].iloc[0] == pytest.approx(-1.95)
+        assert result["pct_change"].iloc[0] == pytest.approx(-0.849)
+        assert result["market_cap"].iloc[0] == 3435123456789
+        assert result["volume"].iloc[0] == 48123456
+        assert result["ipo_year"].iloc[0] == 1980
+
+    def test_エッジケース_存在しないカラムはスキップされる(self) -> None:
+        """DataFrame に存在しないカラムはスキップされること。"""
+        df = pd.DataFrame(
+            [
+                {
+                    "symbol": "AAPL",
+                    "last_sale": "$227.63",
+                }
+            ]
+        )
+        result = _apply_numeric_cleaning(df)
+
+        assert result["last_sale"].iloc[0] == pytest.approx(227.63)
+        assert "volume" not in result.columns
+
+    def test_エッジケース_NAフィールドがNoneに変換される(self) -> None:
+        """N/A フィールドが None に変換されること。"""
+        df = pd.DataFrame(
+            [
+                {
+                    "last_sale": "N/A",
+                    "net_change": "N/A",
+                    "pct_change": "N/A",
+                    "market_cap": "N/A",
+                    "volume": "N/A",
+                    "ipo_year": "N/A",
+                }
+            ]
+        )
+        result = _apply_numeric_cleaning(df)
+
+        for col in [
+            "last_sale",
+            "net_change",
+            "pct_change",
+            "market_cap",
+            "volume",
+            "ipo_year",
+        ]:
+            assert result[col].iloc[0] is None
+
+    def test_正常系_文字列カラムは変更されない(self) -> None:
+        """クリーニング対象外のカラムは変更されないこと。"""
+        df = pd.DataFrame(
+            [
+                {
+                    "symbol": "AAPL",
+                    "name": "Apple Inc.",
+                    "last_sale": "$227.63",
+                }
+            ]
+        )
+        result = _apply_numeric_cleaning(df)
+
+        assert result["symbol"].iloc[0] == "AAPL"
+        assert result["name"].iloc[0] == "Apple Inc."

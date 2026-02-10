@@ -3,10 +3,14 @@
 This module converts raw JSON responses from the NASDAQ Stock Screener API
 into pandas DataFrames with properly typed numeric columns.  It provides:
 
+- **Cleaner factory**: ``_create_cleaner`` for generating type-safe cleaning
+  functions with consistent missing-data and error handling.
 - **Cleaning functions**: ``clean_price``, ``clean_percentage``,
   ``clean_market_cap``, ``clean_volume``, ``clean_ipo_year`` for converting
   formatted string values (e.g. ``"$1,234.56"``, ``"-0.849%"``) to native
   Python numeric types.
+- **Column cleaners**: ``_COLUMN_CLEANERS`` mapping and
+  ``_apply_numeric_cleaning`` for DRY application of cleaners to DataFrames.
 - **Column name conversion**: ``_camel_to_snake`` for normalising API
   camelCase keys to snake_case.
 - **Response parser**: ``parse_screener_response`` for end-to-end
@@ -28,7 +32,10 @@ from __future__ import annotations
 
 import math
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 import pandas as pd
 
@@ -100,237 +107,292 @@ def _camel_to_snake(name: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Cleaning functions
+# Cleaner factory (Wave 2)
 # ---------------------------------------------------------------------------
 
 
-def clean_price(value: str) -> float | None:
-    """Convert a price string to a float.
+def _create_cleaner[T: (int, float)](
+    *,
+    converter: Callable[[str], T],
+    name: str,
+    strip_chars: str = "",
+    finite_check: bool = False,
+) -> Callable[[str], T | None]:
+    """Create a cleaning function that converts string values to numeric types.
 
-    Strips leading ``$`` signs and commas before conversion.
+    Consolidates the common pattern of missing-value check, character
+    stripping, type conversion, optional finiteness check, and error
+    handling with warning logging into a single factory.
 
     Parameters
     ----------
-    value : str
-        Price string such as ``"$1,234.56"`` or ``"-1.95"``.
+    converter : Callable[[str], T]
+        The conversion function (e.g. ``float``, ``int``).
+    name : str
+        Human-readable name for log messages (e.g. ``"price"``).
+    strip_chars : str
+        Characters to remove from the raw value before conversion.
+        Uses a single ``re.sub`` pass for efficiency (Wave 3).
+    finite_check : bool
+        If ``True``, reject non-finite float results (inf, -inf, nan).
 
     Returns
     -------
-    float | None
-        The numeric price, or ``None`` if the value is missing or
-        cannot be parsed.
-
-    Examples
-    --------
-    >>> clean_price("$1,234.56")
-    1234.56
-    >>> clean_price("-1.95")
-    -1.95
-    >>> clean_price("")
-    >>> clean_price("N/A")
+    Callable[[str], T | None]
+        A cleaning function that accepts a raw string and returns
+        the converted value or ``None``.
     """
-    if _is_missing(value):
-        return None
+    # Pre-compile regex for strip_chars if any are specified (Wave 3)
+    strip_re: re.Pattern[str] | None = None
+    if strip_chars:
+        escaped = re.escape(strip_chars)
+        strip_re = re.compile(f"[{escaped}]")
 
-    try:
-        cleaned = value.replace("$", "").replace(",", "").strip()
-        if not cleaned:
+    def _clean(value: str) -> T | None:
+        if _is_missing(value):
             return None
-        result = float(cleaned)
-        if not math.isfinite(result):
+
+        try:
+            cleaned = strip_re.sub("", value).strip() if strip_re else value.strip()
+            if not cleaned:
+                return None
+
+            if finite_check:
+                # For converters that produce float intermediates, check finiteness
+                float_result = float(cleaned)
+                if not math.isfinite(float_result):
+                    logger.warning(
+                        f"Failed to parse {name} value",
+                        raw_value=value,
+                    )
+                    return None
+                return converter(str(float_result))
+
+            return converter(cleaned)
+        except (ValueError, TypeError, OverflowError):
             logger.warning(
-                "Failed to parse price value",
+                f"Failed to parse {name} value",
                 raw_value=value,
             )
             return None
-        return result
-    except (ValueError, TypeError):
-        logger.warning(
-            "Failed to parse price value",
-            raw_value=value,
-        )
-        return None
+
+    return _clean
 
 
-def clean_percentage(value: str) -> float | None:
-    """Convert a percentage string to a float.
+# ---------------------------------------------------------------------------
+# Cleaning functions (generated via factory)
+# ---------------------------------------------------------------------------
 
-    Strips trailing ``%`` signs before conversion.  The returned value
-    is the raw percentage number (e.g. ``-0.849``), **not** divided by 100.
+
+clean_price: Callable[[str], float | None] = _create_cleaner(
+    converter=float,
+    name="price",
+    strip_chars="$,",
+    finite_check=True,
+)
+"""Convert a price string to a float.
+
+Strips leading ``$`` signs and commas before conversion.
+
+Parameters
+----------
+value : str
+    Price string such as ``"$1,234.56"`` or ``"-1.95"``.
+
+Returns
+-------
+float | None
+    The numeric price, or ``None`` if the value is missing or
+    cannot be parsed.
+
+Examples
+--------
+>>> clean_price("$1,234.56")
+1234.56
+>>> clean_price("-1.95")
+-1.95
+>>> clean_price("")
+>>> clean_price("N/A")
+"""
+
+clean_percentage: Callable[[str], float | None] = _create_cleaner(
+    converter=float,
+    name="percentage",
+    strip_chars="%,",
+    finite_check=True,
+)
+"""Convert a percentage string to a float.
+
+Strips trailing ``%`` signs before conversion.  The returned value
+is the raw percentage number (e.g. ``-0.849``), **not** divided by 100.
+
+Parameters
+----------
+value : str
+    Percentage string such as ``"-0.849%"`` or ``"1.23%"``.
+
+Returns
+-------
+float | None
+    The numeric percentage, or ``None`` if the value is missing or
+    cannot be parsed.
+
+Examples
+--------
+>>> clean_percentage("-0.849%")
+-0.849
+>>> clean_percentage("1.23%")
+1.23
+>>> clean_percentage("")
+>>> clean_percentage("N/A")
+"""
+
+
+def _float_to_int(value: str) -> int:
+    """Convert a string to int via float to handle decimal values.
 
     Parameters
     ----------
     value : str
-        Percentage string such as ``"-0.849%"`` or ``"1.23%"``.
+        Numeric string, possibly with a decimal point.
 
     Returns
     -------
-    float | None
-        The numeric percentage, or ``None`` if the value is missing or
-        cannot be parsed.
-
-    Examples
-    --------
-    >>> clean_percentage("-0.849%")
-    -0.849
-    >>> clean_percentage("1.23%")
-    1.23
-    >>> clean_percentage("")
-    >>> clean_percentage("N/A")
+    int
+        The integer value.
     """
-    if _is_missing(value):
-        return None
+    return int(float(value))
 
-    try:
-        cleaned = value.replace("%", "").replace(",", "").strip()
-        if not cleaned:
-            return None
-        result = float(cleaned)
-        if not math.isfinite(result):
-            logger.warning(
-                "Failed to parse percentage value",
-                raw_value=value,
+
+clean_market_cap: Callable[[str], int | None] = _create_cleaner(
+    converter=_float_to_int,
+    name="market cap",
+    strip_chars="$,",
+    finite_check=True,
+)
+"""Convert a market capitalisation string to an integer.
+
+Strips commas and leading ``$`` signs.  The NASDAQ API typically
+returns market cap as a comma-separated integer string
+(e.g. ``"3,435,123,456,789"``).
+
+Parameters
+----------
+value : str
+    Market cap string such as ``"3,435,123,456,789"``.
+
+Returns
+-------
+int | None
+    The numeric market cap, or ``None`` if the value is missing or
+    cannot be parsed.
+
+Examples
+--------
+>>> clean_market_cap("3,435,123,456,789")
+3435123456789
+>>> clean_market_cap("")
+>>> clean_market_cap("N/A")
+"""
+
+clean_volume: Callable[[str], int | None] = _create_cleaner(
+    converter=_float_to_int,
+    name="volume",
+    strip_chars=",",
+    finite_check=True,
+)
+"""Convert a trading volume string to an integer.
+
+Strips commas from the formatted number string.
+
+Parameters
+----------
+value : str
+    Volume string such as ``"48,123,456"``.
+
+Returns
+-------
+int | None
+    The numeric volume, or ``None`` if the value is missing or
+    cannot be parsed.
+
+Examples
+--------
+>>> clean_volume("48,123,456")
+48123456
+>>> clean_volume("")
+>>> clean_volume("N/A")
+"""
+
+clean_ipo_year: Callable[[str], int | None] = _create_cleaner(
+    converter=int,
+    name="IPO year",
+    strip_chars="",
+    finite_check=False,
+)
+"""Convert an IPO year string to an integer.
+
+Parameters
+----------
+value : str
+    Year string such as ``"1980"``.
+
+Returns
+-------
+int | None
+    The numeric year, or ``None`` if the value is missing or
+    cannot be parsed.
+
+Examples
+--------
+>>> clean_ipo_year("1980")
+1980
+>>> clean_ipo_year("")
+>>> clean_ipo_year("N/A")
+"""
+
+# ---------------------------------------------------------------------------
+# Column cleaner mapping (Wave 1)
+# ---------------------------------------------------------------------------
+
+_COLUMN_CLEANERS: dict[str, Callable[[str], int | float | None]] = {
+    "last_sale": clean_price,
+    "net_change": clean_price,
+    "pct_change": clean_percentage,
+    "market_cap": clean_market_cap,
+    "volume": clean_volume,
+    "ipo_year": clean_ipo_year,
+}
+"""Mapping from snake_case column names to their cleaning functions.
+
+Used by ``_apply_numeric_cleaning`` to apply the correct cleaner
+to each numeric column in a single loop iteration.
+"""
+
+
+def _apply_numeric_cleaning(df: pd.DataFrame) -> pd.DataFrame:
+    """Apply numeric cleaning to all known numeric columns in a DataFrame.
+
+    Iterates over ``_COLUMN_CLEANERS`` and applies each cleaner to its
+    corresponding column if present in the DataFrame.  Columns not in
+    the DataFrame are silently skipped.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The DataFrame with string-valued numeric columns.
+
+    Returns
+    -------
+    pd.DataFrame
+        The same DataFrame with numeric columns cleaned in-place.
+    """
+    for column, cleaner in _COLUMN_CLEANERS.items():
+        if column in df.columns:
+            df[column] = df[column].apply(
+                lambda v, c=cleaner: c(str(v)) if pd.notna(v) else None,
             )
-            return None
-        return result
-    except (ValueError, TypeError):
-        logger.warning(
-            "Failed to parse percentage value",
-            raw_value=value,
-        )
-        return None
-
-
-def clean_market_cap(value: str) -> int | None:
-    """Convert a market capitalisation string to an integer.
-
-    Strips commas and leading ``$`` signs.  The NASDAQ API typically
-    returns market cap as a comma-separated integer string
-    (e.g. ``"3,435,123,456,789"``).
-
-    Parameters
-    ----------
-    value : str
-        Market cap string such as ``"3,435,123,456,789"``.
-
-    Returns
-    -------
-    int | None
-        The numeric market cap, or ``None`` if the value is missing or
-        cannot be parsed.
-
-    Examples
-    --------
-    >>> clean_market_cap("3,435,123,456,789")
-    3435123456789
-    >>> clean_market_cap("")
-    >>> clean_market_cap("N/A")
-    """
-    if _is_missing(value):
-        return None
-
-    try:
-        cleaned = value.replace("$", "").replace(",", "").strip()
-        if not cleaned:
-            return None
-        # Handle floating point market cap values (e.g. "3435123456789.0")
-        result = float(cleaned)
-        if not math.isfinite(result):
-            logger.warning(
-                "Failed to parse market cap value",
-                raw_value=value,
-            )
-            return None
-        return int(result)
-    except (ValueError, TypeError, OverflowError):
-        logger.warning(
-            "Failed to parse market cap value",
-            raw_value=value,
-        )
-        return None
-
-
-def clean_volume(value: str) -> int | None:
-    """Convert a trading volume string to an integer.
-
-    Strips commas from the formatted number string.
-
-    Parameters
-    ----------
-    value : str
-        Volume string such as ``"48,123,456"``.
-
-    Returns
-    -------
-    int | None
-        The numeric volume, or ``None`` if the value is missing or
-        cannot be parsed.
-
-    Examples
-    --------
-    >>> clean_volume("48,123,456")
-    48123456
-    >>> clean_volume("")
-    >>> clean_volume("N/A")
-    """
-    if _is_missing(value):
-        return None
-
-    try:
-        cleaned = value.replace(",", "").strip()
-        if not cleaned:
-            return None
-        result = float(cleaned)
-        if not math.isfinite(result):
-            logger.warning(
-                "Failed to parse volume value",
-                raw_value=value,
-            )
-            return None
-        return int(result)
-    except (ValueError, TypeError, OverflowError):
-        logger.warning(
-            "Failed to parse volume value",
-            raw_value=value,
-        )
-        return None
-
-
-def clean_ipo_year(value: str) -> int | None:
-    """Convert an IPO year string to an integer.
-
-    Parameters
-    ----------
-    value : str
-        Year string such as ``"1980"``.
-
-    Returns
-    -------
-    int | None
-        The numeric year, or ``None`` if the value is missing or
-        cannot be parsed.
-
-    Examples
-    --------
-    >>> clean_ipo_year("1980")
-    1980
-    >>> clean_ipo_year("")
-    >>> clean_ipo_year("N/A")
-    """
-    if _is_missing(value):
-        return None
-
-    try:
-        cleaned = value.strip()
-        if not cleaned:
-            return None
-        return int(cleaned)
-    except (ValueError, TypeError):
-        logger.warning(
-            "Failed to parse IPO year value",
-            raw_value=value,
-        )
-        return None
+    return df
 
 
 # ---------------------------------------------------------------------------
@@ -455,36 +517,8 @@ def parse_screener_response(response: dict[str, Any]) -> pd.DataFrame:
 
     df = df.rename(columns=rename_map)
 
-    # --- Apply numeric cleaning ---
-    if "last_sale" in df.columns:
-        df["last_sale"] = df["last_sale"].apply(
-            lambda v: clean_price(str(v)) if pd.notna(v) else None,
-        )
-
-    if "net_change" in df.columns:
-        df["net_change"] = df["net_change"].apply(
-            lambda v: clean_price(str(v)) if pd.notna(v) else None,
-        )
-
-    if "pct_change" in df.columns:
-        df["pct_change"] = df["pct_change"].apply(
-            lambda v: clean_percentage(str(v)) if pd.notna(v) else None,
-        )
-
-    if "market_cap" in df.columns:
-        df["market_cap"] = df["market_cap"].apply(
-            lambda v: clean_market_cap(str(v)) if pd.notna(v) else None,
-        )
-
-    if "volume" in df.columns:
-        df["volume"] = df["volume"].apply(
-            lambda v: clean_volume(str(v)) if pd.notna(v) else None,
-        )
-
-    if "ipo_year" in df.columns:
-        df["ipo_year"] = df["ipo_year"].apply(
-            lambda v: clean_ipo_year(str(v)) if pd.notna(v) else None,
-        )
+    # --- Apply numeric cleaning (Wave 1: DRY) ---
+    df = _apply_numeric_cleaning(df)
 
     logger.info(
         "Screener response parsed",
