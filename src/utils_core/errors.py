@@ -90,12 +90,11 @@ def log_and_reraise(
 class _ReturnContext[T]:
     """log_and_return で使用する値コンテナ."""
 
-    value: T
     _default: T = field(repr=False)
+    value: T = field(init=False)
 
-    def __init__(self, default: T) -> None:
-        self._default = default
-        self.value = default
+    def __post_init__(self) -> None:
+        self.value = self._default
 
 
 @contextmanager
