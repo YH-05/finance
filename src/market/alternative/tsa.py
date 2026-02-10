@@ -242,7 +242,7 @@ class TSAPassengerDataCollector:
                 )
                 # 新しいデータのうち、DBに存在しない日付の行のみを抽出
                 df["Date_str"] = df["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
-                df_to_add = df[~df["Date_str"].isin(list(existing_dates))].drop(
+                df_to_add = df[~df["Date_str"].isin(existing_dates)].drop(  # pyright: ignore[reportArgumentType]  # pandas isin() accepts set
                     columns=["Date_str"]
                 )
             else:
