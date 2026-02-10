@@ -6,9 +6,13 @@ with mocked edgartools Company class and configuration.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 from edgar.config import DEFAULT_RATE_LIMIT_PER_SECOND
 from edgar.errors import EdgarError, FilingNotFoundError
@@ -361,6 +365,15 @@ class TestEdgarFetcherRateLimit:
 class TestImportEdgartoolsCompany:
     """Tests for _import_edgartools_company() function."""
 
+    @pytest.fixture(autouse=True)
+    def _clear_import_cache(self) -> Generator[None, None, None]:
+        """Clear _import_edgartools_company lru_cache before/after each test."""
+        from edgar.fetcher import _import_edgartools_company
+
+        _import_edgartools_company.cache_clear()
+        yield
+        _import_edgartools_company.cache_clear()
+
     def test_異常系_edgartoolsが未インストールでEdgarError(self) -> None:
         """_import_edgartools_company should raise EdgarError when edgartools not found.
 
@@ -368,9 +381,6 @@ class TestImportEdgartoolsCompany:
         an EdgarError is raised with an install instruction.
         """
         from edgar.fetcher import _import_edgartools_company
-
-        # Clear the lru_cache before testing
-        _import_edgartools_company.cache_clear()
 
         with (
             patch(
@@ -381,9 +391,6 @@ class TestImportEdgartoolsCompany:
         ):
             _import_edgartools_company()
 
-        # Clear the cache after test to avoid side effects
-        _import_edgartools_company.cache_clear()
-
     def test_異常系_loaderがNoneでEdgarError(self) -> None:
         """_import_edgartools_company should raise EdgarError when loader is None.
 
@@ -391,8 +398,6 @@ class TestImportEdgartoolsCompany:
         an EdgarError is raised.
         """
         from edgar.fetcher import _import_edgartools_company
-
-        _import_edgartools_company.cache_clear()
 
         mock_spec = MagicMock()
         mock_spec.origin = "/some/path/edgar/__init__.py"
@@ -411,8 +416,6 @@ class TestImportEdgartoolsCompany:
         ):
             _import_edgartools_company()
 
-        _import_edgartools_company.cache_clear()
-
     def test_異常系_CompanyクラスなしでEdgarError(self) -> None:
         """_import_edgartools_company should raise EdgarError when Company not exported.
 
@@ -420,8 +423,6 @@ class TestImportEdgartoolsCompany:
         class, an EdgarError is raised.
         """
         from edgar.fetcher import _import_edgartools_company
-
-        _import_edgartools_company.cache_clear()
 
         mock_spec = MagicMock()
         mock_spec.origin = "/some/path/edgar/__init__.py"
@@ -443,8 +444,6 @@ class TestImportEdgartoolsCompany:
         ):
             _import_edgartools_company()
 
-        _import_edgartools_company.cache_clear()
-
     def test_正常系_edgartoolsのCompanyクラスを正常にインポート(self) -> None:
         """_import_edgartools_company should return Company class on success.
 
@@ -452,8 +451,6 @@ class TestImportEdgartoolsCompany:
         class is exported, it is returned successfully.
         """
         from edgar.fetcher import _import_edgartools_company
-
-        _import_edgartools_company.cache_clear()
 
         mock_spec = MagicMock()
         mock_spec.origin = "/some/path/edgar/__init__.py"
@@ -478,5 +475,3 @@ class TestImportEdgartoolsCompany:
 
         assert result is mock_company_cls
         mock_loader.exec_module.assert_called_once_with(mock_module)
-
-        _import_edgartools_company.cache_clear()
