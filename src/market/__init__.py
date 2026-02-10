@@ -1,7 +1,7 @@
 """Market package for financial market data analysis.
 
 This package provides core infrastructure for market data handling including:
-- Data fetching (Yahoo Finance, FRED, etc.)
+- Data fetching (Yahoo Finance, FRED, NASDAQ, etc.)
 - Data export (JSON, CSV, SQLite, Agent-optimized JSON)
 - Type definitions for market data
 - JSON schema definitions for validation
@@ -15,6 +15,8 @@ fred
     Federal Reserve Economic Data (FRED) API integration
 etfcom
     ETF.com scraper (ticker, fundamentals, fund flows)
+nasdaq
+    NASDAQ Stock Screener API (stock screening data)
 factset
     FactSet API integration (planned)
 export
@@ -29,7 +31,7 @@ Public API
 DataExporter
     Export market data to various formats
 DataSource
-    Data source enum (YFINANCE, FRED, LOCAL, BLOOMBERG, FACTSET)
+    Data source enum (YFINANCE, FRED, LOCAL, BLOOMBERG, FACTSET, ETF_COM, NASDAQ)
 MarketDataResult
     Result of market data fetch operation
 AnalysisResult
@@ -44,6 +46,10 @@ EconomicDataMetadata
     Metadata for economic indicator data
 MarketConfig
     Complete market data configuration
+ScreenerCollector
+    NASDAQ Stock Screener data collector
+ScreenerFilter
+    Filter conditions for the NASDAQ Stock Screener API
 """
 
 from .errors import (
@@ -60,6 +66,10 @@ from .errors import (
     FREDFetchError,
     FREDValidationError,
     MarketError,
+    NasdaqAPIError,
+    NasdaqError,
+    NasdaqParseError,
+    NasdaqRateLimitError,
     ValidationError,
 )
 from .etfcom import (
@@ -72,6 +82,10 @@ from .etfcom import (
     TickerCollector,
 )
 from .export import DataExporter
+from .nasdaq import (
+    ScreenerCollector,
+    ScreenerFilter,
+)
 from .schema import (
     CacheConfig,
     DataSourceConfig,
@@ -128,6 +142,13 @@ __all__ = [
     "MarketConfig",
     "MarketDataResult",
     "MarketError",
+    # NASDAQ
+    "NasdaqAPIError",
+    "NasdaqError",
+    "NasdaqParseError",
+    "NasdaqRateLimitError",
+    "ScreenerCollector",
+    "ScreenerFilter",
     "StockDataMetadata",
     "TickerCollector",
     "ValidationError",
