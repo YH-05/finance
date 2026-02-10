@@ -6,12 +6,14 @@ section-level text extraction from SEC EDGAR filings.
 
 from __future__ import annotations
 
+import re
 from unittest.mock import MagicMock
 
 import pytest
 
 from edgar.extractors._helpers import get_accession_number, get_filing_text
 from edgar.extractors.section import (
+    DEFAULT_SECTION_PATTERNS,
     SECTION_PATTERNS,
     SectionExtractor,
     _build_cache_key,
@@ -421,3 +423,132 @@ class TestSectionExtractorSizeCheck:
         """SectionExtractor should accept custom max_filing_size_bytes."""
         extractor = SectionExtractor(max_filing_size_bytes=5 * 1024 * 1024)
         assert extractor._max_filing_size_bytes == 5 * 1024 * 1024
+
+
+# Sample filing text for custom pattern tests (10-Q style).
+SAMPLE_10Q_TEXT = (
+    "HEADER CONTENT\n\n"
+    "Part I. Financial Information\n\n"
+    "Condensed financial statements here.\n\n"
+    "Part II. Other Information\n\n"
+    "Legal proceedings and other details.\n\n"
+    "Part III. Exhibits\n\n"
+    "List of exhibits.\n"
+)
+
+
+class TestSectionExtractorCustomPatterns:
+    """Tests for SectionExtractor custom pattern registration (OCP)."""
+
+    def test_正常系_デフォルトパターンは既存4セクション(self) -> None:
+        """SectionExtractor with no custom_patterns uses default 4-section patterns."""
+        extractor = SectionExtractor()
+
+        assert extractor._patterns == DEFAULT_SECTION_PATTERNS
+
+    def test_正常系_カスタムパターンで初期化(self) -> None:
+        """SectionExtractor should accept custom_patterns in __init__."""
+        custom_patterns: dict[str, re.Pattern[str]] = {
+            "part_1": re.compile(r"(?i)part\s+i[\.\s]+financial\s+information"),
+            "part_2": re.compile(r"(?i)part\s+ii[\.\s]+other\s+information"),
+        }
+        extractor = SectionExtractor(custom_patterns=custom_patterns)
+
+        assert extractor._patterns == custom_patterns
+
+    def test_正常系_カスタムパターンでセクション抽出(self) -> None:
+        """SectionExtractor with custom patterns should extract matching sections."""
+        custom_patterns: dict[str, re.Pattern[str]] = {
+            "part_1": re.compile(r"(?i)part\s+i[\.\s]+financial\s+information"),
+            "part_2": re.compile(r"(?i)part\s+ii[\.\s]+other\s+information"),
+            "part_3": re.compile(r"(?i)part\s+iii[\.\s]+exhibits"),
+        }
+
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.text.return_value = SAMPLE_10Q_TEXT
+
+        extractor = SectionExtractor(custom_patterns=custom_patterns)
+        result = extractor.extract_section(filing, "part_1")
+
+        assert result is not None
+        assert "financial statements" in result
+
+    def test_正常系_カスタムパターンでlist_sections(self) -> None:
+        """list_sections should return custom section keys found in filing."""
+        custom_patterns: dict[str, re.Pattern[str]] = {
+            "part_1": re.compile(r"(?i)part\s+i[\.\s]+financial\s+information"),
+            "part_2": re.compile(r"(?i)part\s+ii[\.\s]+other\s+information"),
+            "part_3": re.compile(r"(?i)part\s+iii[\.\s]+exhibits"),
+        }
+
+        filing = MagicMock()
+        filing.text.return_value = SAMPLE_10Q_TEXT
+
+        extractor = SectionExtractor(custom_patterns=custom_patterns)
+        sections = extractor.list_sections(filing)
+
+        assert "part_1" in sections
+        assert "part_2" in sections
+        assert "part_3" in sections
+
+    def test_正常系_カスタムパターンはデフォルトセクションを認識しない(self) -> None:
+        """Custom patterns should not recognize default section keys."""
+        custom_patterns: dict[str, re.Pattern[str]] = {
+            "part_1": re.compile(r"(?i)part\s+i[\.\s]+financial\s+information"),
+        }
+
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.text.return_value = SAMPLE_FILING_TEXT
+
+        extractor = SectionExtractor(custom_patterns=custom_patterns)
+        result = extractor.extract_section(filing, "item_1")
+
+        assert result is None
+
+    def test_正常系_空のカスタムパターンでセクション検出なし(self) -> None:
+        """SectionExtractor with empty custom_patterns should find no sections."""
+        filing = MagicMock()
+        filing.text.return_value = SAMPLE_FILING_TEXT
+
+        extractor = SectionExtractor(custom_patterns={})
+        sections = extractor.list_sections(filing)
+
+        assert sections == []
+
+    def test_正常系_DEFAULT_SECTION_PATTERNSはSECTION_PATTERNSと一致(self) -> None:
+        """DEFAULT_SECTION_PATTERNS should equal the module-level SECTION_PATTERNS."""
+        assert DEFAULT_SECTION_PATTERNS == SECTION_PATTERNS
+
+    def test_正常系_カスタムパターンとキャッシュの併用(self) -> None:
+        """Custom patterns should work with cache integration."""
+        custom_patterns: dict[str, re.Pattern[str]] = {
+            "part_1": re.compile(r"(?i)part\s+i[\.\s]+financial\s+information"),
+            "part_2": re.compile(r"(?i)part\s+ii[\.\s]+other\s+information"),
+        }
+
+        mock_cache = MagicMock()
+        mock_cache.get_cached_text.return_value = None
+
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.text.return_value = SAMPLE_10Q_TEXT
+
+        extractor = SectionExtractor(
+            cache=mock_cache,
+            custom_patterns=custom_patterns,
+        )
+        result = extractor.extract_section(filing, "part_1")
+
+        assert result is not None
+        mock_cache.save_text.assert_called_once()
+
+    def test_正常系_カスタムパターンでreprは変わらない(self) -> None:
+        """__repr__ should still show cache status with custom patterns."""
+        custom_patterns: dict[str, re.Pattern[str]] = {
+            "part_1": re.compile(r"(?i)part\s+i[\.\s]+financial\s+information"),
+        }
+        extractor = SectionExtractor(custom_patterns=custom_patterns)
+
+        assert "cache_enabled=False" in repr(extractor)

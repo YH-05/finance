@@ -36,10 +36,13 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
-# Regex patterns for identifying section boundaries in SEC filings.
+# Default regex patterns for identifying section boundaries in SEC filings.
 # Each pattern matches a section header line (e.g., "Item 1. Business").
 # Patterns are case-insensitive and allow for flexible whitespace/punctuation.
-SECTION_PATTERNS: dict[str, re.Pattern[str]] = {
+# AIDEV-NOTE: These are the default 4-section patterns for 10-K filings.
+# Custom patterns can be passed to SectionExtractor.__init__ to support
+# additional filing types (10-Q, etc.) without modifying this module.
+DEFAULT_SECTION_PATTERNS: dict[str, re.Pattern[str]] = {
     SectionKey.ITEM_1.value: re.compile(
         r"(?i)item\s+1[\.\s]+business",
     ),
@@ -54,9 +57,12 @@ SECTION_PATTERNS: dict[str, re.Pattern[str]] = {
     ),
 }
 
-# Ordered list of all known section keys, used to determine section boundaries.
+# Backward-compatible alias for the default patterns.
+SECTION_PATTERNS = DEFAULT_SECTION_PATTERNS
+
+# Ordered list of default section keys, used to determine section boundaries.
 # The order matches the typical 10-K filing structure.
-_ORDERED_SECTION_KEYS: list[str] = [
+_DEFAULT_ORDERED_SECTION_KEYS: list[str] = [
     SectionKey.ITEM_1.value,
     SectionKey.ITEM_1A.value,
     SectionKey.ITEM_7.value,
@@ -82,21 +88,28 @@ def _build_cache_key(accession_number: str, section_key: str) -> str:
     return f"section_{accession_number}_{section_key}"
 
 
-def _find_section_positions(text: str) -> dict[str, int]:
+def _find_section_positions(
+    text: str,
+    patterns: dict[str, re.Pattern[str]] | None = None,
+) -> dict[str, int]:
     """Find the start positions of all recognized sections in the text.
 
     Parameters
     ----------
     text : str
         The full filing text content
+    patterns : dict[str, re.Pattern[str]] | None
+        Section patterns to use. If None, defaults to
+        ``DEFAULT_SECTION_PATTERNS``.
 
     Returns
     -------
     dict[str, int]
         Mapping of section key to start position in the text
     """
+    active_patterns = patterns if patterns is not None else DEFAULT_SECTION_PATTERNS
     positions: dict[str, int] = {}
-    for key, pattern in SECTION_PATTERNS.items():
+    for key, pattern in active_patterns.items():
         match = pattern.search(text)
         if match:
             positions[key] = match.start()
@@ -166,7 +179,11 @@ class SectionExtractor:
     """Extractor for section-level text from SEC EDGAR filings.
 
     Uses regex-based pattern matching to identify and extract sections
-    (Item 1, Item 1A, Item 7, Item 8) from filing full text content.
+    from filing full text content. By default, recognises the standard
+    10-K sections (Item 1, Item 1A, Item 7, Item 8). Custom section
+    patterns can be supplied to support additional filing types (10-Q,
+    etc.) without modifying this class (Open/Closed Principle).
+
     Optionally integrates with CacheManager for caching extracted sections.
 
     Parameters
@@ -179,6 +196,11 @@ class SectionExtractor:
         Filings exceeding this size will still be processed but a
         warning log will be emitted. Defaults to
         ``DEFAULT_MAX_FILING_SIZE_BYTES`` (10 MB).
+    custom_patterns : dict[str, re.Pattern[str]] | None
+        Optional custom section patterns mapping section key strings
+        to compiled regex patterns. When provided, these patterns
+        **replace** the defaults entirely. Pass ``None`` (default)
+        to use the built-in 10-K section patterns.
 
     Attributes
     ----------
@@ -186,18 +208,30 @@ class SectionExtractor:
         The cache manager instance, or None if caching is disabled
     _max_filing_size_bytes : int
         The maximum filing size threshold for warning logs
+    _patterns : dict[str, re.Pattern[str]]
+        The active section patterns used for extraction
 
     Examples
     --------
     >>> extractor = SectionExtractor()
     >>> text = extractor.extract_section(filing, "item_1")
     >>> sections = extractor.list_sections(filing)
+
+    Using custom patterns for 10-Q filings:
+
+    >>> import re
+    >>> custom = {
+    ...     "part_1": re.compile(r"(?i)part\\s+i[\\.\\ s]+financial"),
+    ...     "part_2": re.compile(r"(?i)part\\s+ii[\\.\\ s]+other"),
+    ... }
+    >>> extractor = SectionExtractor(custom_patterns=custom)
     """
 
     def __init__(
         self,
         cache: CacheManager | None = None,
         max_filing_size_bytes: int = DEFAULT_MAX_FILING_SIZE_BYTES,
+        custom_patterns: dict[str, re.Pattern[str]] | None = None,
     ) -> None:
         """Initialize SectionExtractor.
 
@@ -208,13 +242,21 @@ class SectionExtractor:
         max_filing_size_bytes : int
             Maximum filing text size in bytes before warning.
             Defaults to ``DEFAULT_MAX_FILING_SIZE_BYTES`` (10 MB).
+        custom_patterns : dict[str, re.Pattern[str]] | None
+            Custom section patterns. When provided, replaces the
+            default patterns. Pass ``None`` to use defaults.
         """
         self._cache = cache
         self._max_filing_size_bytes = max_filing_size_bytes
+        self._patterns: dict[str, re.Pattern[str]] = (
+            custom_patterns if custom_patterns is not None else DEFAULT_SECTION_PATTERNS
+        )
         logger.debug(
             "Initializing SectionExtractor",
             cache_enabled=cache is not None,
             max_filing_size_bytes=max_filing_size_bytes,
+            pattern_count=len(self._patterns),
+            pattern_keys=list(self._patterns.keys()),
         )
 
     def extract_section(self, filing: Any, section_key: str) -> str | None:
@@ -251,12 +293,12 @@ class SectionExtractor:
             section_key=section_key,
         )
 
-        # Validate section key
-        if section_key not in SECTION_PATTERNS:
+        # Validate section key against active patterns
+        if section_key not in self._patterns:
             logger.warning(
                 "Unknown section key",
                 section_key=section_key,
-                valid_keys=list(SECTION_PATTERNS.keys()),
+                valid_keys=list(self._patterns.keys()),
             )
             return None
 
@@ -287,7 +329,7 @@ class SectionExtractor:
         self._check_filing_size(text)
 
         # Find section positions and extract target section
-        positions = _find_section_positions(text)
+        positions = _find_section_positions(text, self._patterns)
         section_text = _extract_section_text(text, section_key, positions)
 
         if section_text is None:
@@ -361,10 +403,13 @@ class SectionExtractor:
         # Check filing size and warn if exceeding limit
         self._check_filing_size(text)
 
-        positions = _find_section_positions(text)
+        positions = _find_section_positions(text, self._patterns)
 
-        # Return keys in the canonical order defined by _ORDERED_SECTION_KEYS
-        found_keys = [key for key in _ORDERED_SECTION_KEYS if key in positions]
+        # Return keys in the order defined by the active patterns.
+        # For default patterns this matches the canonical 10-K order;
+        # for custom patterns the insertion order of the dict is used.
+        ordered_keys = list(self._patterns.keys())
+        found_keys = [key for key in ordered_keys if key in positions]
 
         logger.info(
             "Sections listed",
@@ -400,6 +445,7 @@ class SectionExtractor:
 
 
 __all__ = [
+    "DEFAULT_SECTION_PATTERNS",
     "SECTION_PATTERNS",
     "SectionExtractor",
 ]
