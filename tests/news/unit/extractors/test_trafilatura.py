@@ -1030,14 +1030,25 @@ class TestTrafilaturaExtractorUserAgentRotation:
         ):
             await extractor.extract(sample_collected_article)
 
-        # DEBUGレベルでUser-Agentがログに出力されることを確認
+        # DEBUGレベルでUser-Agentが構造化ログのkwargsに出力されることを確認
         mock_logger.debug.assert_called()
         debug_calls = mock_logger.debug.call_args_list
-        user_agent_logged = any(
-            "Using custom User-Agent" in str(call) or "user_agent" in str(call)
-            for call in debug_calls
+        # Find the call that logs the custom User-Agent
+        ua_call = next(
+            (
+                call
+                for call in debug_calls
+                if call.args and "Using custom User-Agent" in str(call.args[0])
+            ),
+            None,
         )
-        assert user_agent_logged
+        assert ua_call is not None, (
+            "Expected a debug log call with 'Using custom User-Agent' message"
+        )
+        assert "user_agent" in ua_call.kwargs, (
+            "Expected 'user_agent' key in structured log kwargs"
+        )
+        assert "url" in ua_call.kwargs, "Expected 'url' key in structured log kwargs"
 
     @pytest.mark.asyncio
     async def test_正常系_user_agent_configなしでも正常に動作する(

@@ -98,7 +98,13 @@ class TestGetDataSummary:
     ) -> None:
         with patch("market.alternative.tsa.logger") as mock_logger:
             collector.get_data_summary(sample_df)
-            assert mock_logger.info.called
+            # Verify structured log context: summary kwargs must be present
+            mock_logger.info.assert_called()
+            info_kwargs = mock_logger.info.call_args.kwargs
+            assert "row_count" in info_kwargs, (
+                "Expected 'row_count' in structured log kwargs"
+            )
+            assert info_kwargs["row_count"] == len(sample_df)
 
     def test_異常系_Noneを渡すとValueError(
         self, collector: TSAPassengerDataCollector
