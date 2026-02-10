@@ -23,7 +23,8 @@
       "WebFetch(domain:www.federalreserve.gov)",
       "WebFetch(domain:brightdata.com)",
       "WebFetch(domain:gist.github.com)",
-      "WebFetch(domain:decodo.com)"
+      "WebFetch(domain:decodo.com)",
+      "mcp__tavily__tavily_research"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -1,56 +1,260 @@
-# AI先端研究トラッキング体制
+# AI投資バリューチェーン・トラッキング体制
 
 **Project**: TBD（GitHub Project未作成）
 **Status**: Planning
 **Created**: 2026-02-10
-**Type**: workflow
+**Updated**: 2026-02-10
+**Type**: workflow（Deep Research拡張）
 
 ## 背景と目的
 
 ### 背景
 
-- **種類**: ワークフロー（新規構築）
-- **課題**: AI研究の進展が投資判断に大きな影響を持つが、論文・企業リリースを体系的にトラッキングする仕組みがない
+- **種類**: ワークフロー（Deep Research機能の拡張）
+- **課題**: AI技術の進展が投資判断に大きな影響を持つが、**AIバリューチェーン全体**（LLM開発、演算チップ、データセンター、電力、ロボティクス、SaaS）を金融市場の文脈で体系的にトラッキングする仕組みがない
+- **位置付け**: 既存の `/deep-research --type theme` のデータ収集フェーズを自動化・定期実行化するもの
 - **参照**: 既存の金融ニュース収集体制（`/finance-news-workflow`）の3フェーズアーキテクチャを踏襲
 
 ### 目的
 
-1. arXiv論文 + AI企業ブログ/リリースを自動収集し、GitHub Issueとして登録する
-2. 堅牢なWebスクレイピング基盤（RobustScraper）をbot検知対策・レートリミット対策込みで構築する
-3. Python側で決定論的処理を完結させ、AI側は要約・重要度判定のみに限定する
+1. AIバリューチェーン全体（70社以上）の企業ブログ/リリースを自動収集し、**金融市場・株式・AI投資環境との関連性**を付与してGitHub Issueとして登録する
+2. **ティアベース**のスクレイピング基盤を構築し、RSS/汎用スクレイパー/企業別アダプタの3段階で効率的にカバーする
+3. Python側で決定論的処理を完結させ、AI側は投資視点での要約・重要度判定のみに限定する
+4. Deep Researchワークフローのデータソースとして統合可能にする
 
 ### ユーザー要件
 
 | 項目 | 決定 |
 |------|------|
-| スコープ | コアのみ（論文 + 企業リリース） |
+| スコープ | AIバリューチェーン全体（LLM〜電力・核融合まで） |
+| 対象企業数 | 70社以上（10カテゴリ） |
 | GitHub Project | 完全に独立した新Project |
-| arXiv取得方法 | arXiv API（専用Pythonスクリプト） |
+| スクレイピング | ティアベース（RSS → 汎用 → 企業別アダプタ） |
 | MVP優先機能 | データ収集パイプライン |
-| 企業ブログ取得 | RSS対応→FeedReader、非対応→RobustScraper |
-| OSS追跡 | Phase 2以降 |
+| arXiv論文 | Phase 2以降 |
 | レポート頻度 | 週次（MVP後に日次検討） |
 | 記事読者 | 投資家向け |
+| ログ基盤 | `utils_core.logging`（structlog） |
+| 情報の観点 | 金融市場・株式・AI投資環境との関連性 |
+
+---
+
+## モニタリング対象企業（全70社以上）
+
+### カテゴリ1: AI/LLM開発（11社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| OpenAI | — (MSFT関連) | openai.com/news/ | Tier 2: 汎用 | ChatGPT収益、MSFT27%持分、評価3000億ドル |
+| Google DeepMind | GOOGL | deepmind.google/blog | Tier 1: RSS | Alphabet傘下、Gemini、TPU |
+| Meta AI | META | ai.meta.com/blog | Tier 2: 汎用 | Llama OSS、Reality Labs |
+| Anthropic | — (AMZN/GOOGL) | anthropic.com/research | Tier 2: 汎用 | Claude、AWS Bedrock、50億ドル+調達 |
+| Microsoft AI | MSFT | microsoft.com/en-us/ai/blog | Tier 1: RSS | Copilot、Azure AI、OpenAI提携 |
+| xAI | — | x.ai/news | Tier 2: 汎用 | Grok、200億ドル調達(2026-01) |
+| Mistral AI | — | mistral.ai/news | Tier 2: 汎用 | 欧州AI代表、€17億調達 |
+| Cohere | — | cohere.com/blog | Tier 2: 汎用 | エンタープライズAI、70億ドル評価 |
+| Stability AI | — | stability.ai/news | Tier 2: 汎用 | Stable Diffusion、画像生成AI |
+| Perplexity AI | — | perplexity.ai/hub | Tier 3: アダプタ | 検索型AI、急成長 |
+| Inflection AI | — | inflection.ai/blog | Tier 2: 汎用 | MSFT/NVDA支援、13億ドル調達 |
+
+### カテゴリ2: GPU・演算チップ（10社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| NVIDIA | NVDA | blogs.nvidia.com | Tier 1: RSS | AI GPU独占、H100/Blackwell |
+| AMD | AMD | amd.com/en/blogs.html | Tier 2: 汎用 | MI300X、NVIDIA競合 |
+| Intel | INTC | intc.com/news-events/press-releases | Tier 2: 汎用 | Xeon、AI推論転換 |
+| Broadcom | AVGO | news.broadcom.com/releases | Tier 2: 汎用 | AI接続チップ、カスタムASIC |
+| Qualcomm | QCOM | qualcomm.com/news/releases | Tier 2: 汎用 | エッジAI、Snapdragon |
+| ARM Holdings | ARM | newsroom.arm.com/blog | Tier 2: 汎用 | AIエッジチップ設計IP |
+| Marvell Technology | MRVL | marvell.com/blogs.html | Tier 2: 汎用 | DC接続チップ、カスタムシリコン |
+| Cerebras Systems | — | cerebras.ai/blog | Tier 3: アダプタ | ウェーハスケールプロセッサ、評価230億ドル |
+| SambaNova | — | sambanova.ai/blog | Tier 3: アダプタ | RDU、エネルギー効率型推論 |
+| Tenstorrent | — | tenstorrent.com/vision | Tier 2: 汎用 | RISC-V + AI、Jim Keller率いる |
+
+### カテゴリ3: 半導体製造装置（6社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| TSMC | TSM | pr.tsmc.com/english/latest-news | Tier 2: 汎用 | AI半導体製造独占、3nm/2nm |
+| ASML | ASML | asml.com/news | Tier 2: 汎用 | EUVリソグラフィ独占 |
+| Applied Materials | AMAT | appliedmaterials.com/us/en/newsroom.html | Tier 2: 汎用 | CVD/エッチング装置 |
+| Lam Research | LRCX | newsroom.lamresearch.com | Tier 2: 汎用 | エッチング、先端パッケージ |
+| KLA Corporation | KLAC | kla.com/advance | Tier 2: 汎用 | プロセス制御、歩留まり最適化 |
+| Tokyo Electron | 8035.T | tel.co.jp/news | Tier 2: 汎用 | 前後工程装置、ボンディング |
+
+### カテゴリ4: データセンター・クラウドインフラ（7社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| Equinix | EQIX | newsroom.equinix.com | Tier 2: 汎用 | グローバルDC、AI需要拡張 |
+| Digital Realty | DLR | digitalrealty.com/about/newsroom | Tier 2: 汎用 | DC・接続、CapEx急増 |
+| CoreWeave | CRWV | coreweave.com/newsroom | Tier 2: 汎用 | AI専用クラウド、NVIDIA GPU |
+| Lambda Labs | — | lambda.ai/blog | Tier 3: アダプタ | AI向けクラウド、$1.5B調達 |
+| Arista Networks | ANET | arista.com/en/company/news | Tier 2: 汎用 | DCネットワーキング |
+| Vertiv | VRT | vertiv.com/en-us/about/news-and-insights | Tier 2: 汎用 | DC冷却・電力管理、液冷 |
+| Super Micro Computer | SMCI | — (PR Newswire経由) | Tier 2: 汎用 | AIサーバー、Blackwell対応 |
+
+### カテゴリ5: ネットワーキング（3社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| Cisco | CSCO | newsroom.cisco.com | Tier 1: RSS | ネットワークセキュリティ × AI |
+| Juniper Networks | JNPR | newsroom.juniper.net | Tier 2: 汎用 | AI-native networking |
+| Arista Networks | ANET | (カテゴリ4と同一) | — | — |
+
+### カテゴリ6: 電力・エネルギーインフラ（7社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| Constellation Energy | CEG | constellationenergy.com/newsroom.html | Tier 2: 汎用 | 原子力発電、DC向け電力 |
+| NextEra Energy | NEE | investor.nexteraenergy.com/news-releases | Tier 2: 汎用 | 米国最大再エネ、DC需要増 |
+| Vistra Energy | VST | investor.vistracorp.com/news | Tier 2: 汎用 | Meta等AI企業向け電力契約 |
+| Bloom Energy | BE | bloomenergy.com/newsroom | Tier 1: RSS | SOFC燃料電池、DC電源 |
+| Eaton Corporation | ETN | eaton.com/.../news-releases.html | Tier 2: 汎用 | 電力管理・配電、DC向け |
+| Schneider Electric | SU | blog.se.com | Tier 1: RSS | DC冷却・電力管理 |
+| nVent Electric | NVT | blog.nvent.com | Tier 1: RSS | DC電気保護・配電 |
+
+### カテゴリ7: 原子力・核融合（8社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| Oklo | OKLO | oklo.com/newsroom/news | Tier 2: 汎用 | 先進炉、Meta電力供給契約 |
+| NuScale Power | SMR | nuscalepower.com/press-releases | Tier 2: 汎用 | SMR、DC向け電力 |
+| Cameco | CCJ | cameco.com/media/news | Tier 2: 汎用 | ウラン採掘・精製、核燃料 |
+| Centrus Energy | LEU | centrusenergy.com/news | Tier 2: 汎用 | LEU/HALEU供給、$900M拡張 |
+| Commonwealth Fusion | — | cfs.energy/news-and-media | Tier 2: 汎用 | 核融合、Google/NVIDIA提携 |
+| TAE Technologies | — | tae.com/category/press-releases | Tier 2: 汎用 | 核融合、Trump Media合併予定 |
+| Helion Energy | — | helionenergy.com/news | Tier 2: 汎用 | 商用核融合発電所建設中 |
+| General Fusion | — | generalfusion.com/post/category/press-releases | Tier 2: 汎用 | LM26プロトタイプ、NASDAQ上場予定 |
+
+### カテゴリ8: フィジカルAI・ロボティクス（9社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| Tesla (Optimus) | TSLA | tesla.com/blog | Tier 2: 汎用 | Optimus、自社製造統合 |
+| Intuitive Surgical | ISRG | investor.intuitivesurgical.com | Tier 1: RSS | da Vinci、医療ロボット |
+| Fanuc | 6954.T | fanuc.co.jp | Tier 3: アダプタ | 産業ロボット・CNC |
+| ABB | ABB | new.abb.com/news | Tier 2: 汎用 | ロボティクス・電化統合 |
+| Boston Dynamics | — (Hyundai) | bostondynamics.com/blog | Tier 2: 汎用 | Atlas humanoid |
+| Figure AI | — | figure.ai/news | Tier 2: 汎用 | Helix humanoid、物流向け |
+| Physical Intelligence | — | physicalintelligence.company | Tier 2: 汎用 | 汎用ロボット基盤モデル |
+| Agility Robotics | — | agilityrobotics.com/about/press | Tier 2: 汎用 | Digit humanoid、倉庫自動化 |
+| Symbotic | SYM | symbotic.com/innovation-insights/blog | Tier 2: 汎用 | AI倉庫自動化 |
+
+### カテゴリ9: SaaS・AI活用ソフトウェア（10社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| Salesforce | CRM | salesforce.com/blog | Tier 2: 汎用 | Einstein AI、Agentforce |
+| ServiceNow | NOW | servicenow.com/community/.../blog | Tier 2: 汎用 | ワークフロー自動化 × AI |
+| Palantir | PLTR | blog.palantir.com | Tier 2: 汎用 | データ分析、政府AI |
+| Snowflake | SNOW | snowflake.com/en/engineering-blog | Tier 2: 汎用 | AI data cloud |
+| Datadog | DDOG | datadoghq.com/blog | Tier 2: 汎用 | AI observability |
+| CrowdStrike | CRWD | crowdstrike.com/en-us/blog | Tier 2: 汎用 | AI脅威検出 |
+| MongoDB | MDB | mongodb.com/company/blog | Tier 2: 汎用 | Vector search |
+| UiPath | PATH | uipath.com/newsroom | Tier 2: 汎用 | Agentic automation |
+| C3.ai | AI | c3.ai/blog | Tier 2: 汎用 | エンタープライズAI |
+| Databricks | — | databricks.com/blog | Tier 2: 汎用 | Unified AI governance |
+
+### カテゴリ10: AI基盤・MLOps（7社）
+
+| 企業 | ティッカー | ブログ/ニュースURL | 取得ティア | 投資関連性 |
+|------|----------|------------------|----------|-----------|
+| HuggingFace | — | huggingface.co/blog | Tier 2: 汎用 | OSS model hub、評価45億ドル |
+| Scale AI | — | scale.com/blog | Tier 2: 汎用 | データラベリング、agentic AI |
+| Weights & Biases | — | wandb.ai/fully-connected/blog | Tier 2: 汎用 | ML実験管理 |
+| Together AI | — | together.ai/blog | Tier 2: 汎用 | OSS推論、Refuel.ai買収 |
+| Anyscale | — | anyscale.com/blog | Tier 2: 汎用 | Ray framework |
+| Replicate | — | replicate.com/blog | Tier 2: 汎用 | モデルホスティング |
+| Elastic | ESTC | elastic.co/blog | Tier 2: 汎用 | Search × AI agent |
+
+### 集計
+
+| カテゴリ | 社数 | Tier 1 (RSS) | Tier 2 (汎用) | Tier 3 (アダプタ) |
+|---------|------|-------------|-------------|----------------|
+| AI/LLM開発 | 11 | 2 | 8 | 1 |
+| GPU・演算チップ | 10 | 1 | 7 | 2 |
+| 半導体製造装置 | 6 | 0 | 6 | 0 |
+| DC・クラウドインフラ | 7 | 0 | 6 | 1 |
+| ネットワーキング | 2 | 1 | 1 | 0 |
+| 電力・エネルギー | 7 | 3 | 4 | 0 |
+| 原子力・核融合 | 8 | 0 | 8 | 0 |
+| フィジカルAI | 9 | 1 | 7 | 1 |
+| SaaS | 10 | 0 | 10 | 0 |
+| AI基盤・MLOps | 7 | 0 | 7 | 0 |
+| **合計** | **77** | **8** | **64** | **5** |
+
+---
+
+## Deep Research との統合
+
+### 位置付け
+
+```
+Deep Research エコシステム
+├── /deep-research --type stock    → 個別銘柄分析
+├── /deep-research --type sector   → セクター分析
+├── /deep-research --type macro    → マクロ経済分析
+├── /deep-research --type theme    → テーマ投資分析
+│   └── AI投資テーマ分析時のデータソースとして活用
+│
+└── /ai-research-collect           → 【本プロジェクト】
+    └── AIバリューチェーン全体の定期収集 → GitHub Issue蓄積
+        ├── 10カテゴリ × 77社をカバー
+        └── Deep Research の theme/stock/sector 分析で参照可能
+```
+
+### データ連携
+
+- 本ワークフローで収集したIssueは、`/deep-research --type theme --topic "AI"` 実行時に参照データとして利用
+- `dr-source-aggregator` がGitHub IssueからAI企業動向を取得可能
+- `dr-sector-analyzer` がカテゴリ別の動向を分析可能
+- 蓄積されたIssueを基に、週次AI投資レポート生成（Phase 2）
 
 ---
 
 ## アーキテクチャ
 
+### ティアベース・スクレイピング戦略
+
+70社以上をカバーするため、**全企業に個別アダプタを書かない**。3ティアで効率的に処理する。
+
+```
+Tier 1: RSS（8社）
+  └── FeedReader で取得。アダプタ不要。最も安定・高速。
+      例: NVIDIA, Microsoft AI, Bloom Energy, Schneider Electric
+
+Tier 2: 汎用スクレイパー（64社）
+  └── RobustScraper + trafilatura で本文抽出。
+      標準的なブログ/ニュースルーム構造に対応。
+      bot対策（UA/レートリミット/429リトライ）込み。
+      例: OpenAI, AMD, TSMC, Constellation Energy
+
+Tier 3: 企業別アダプタ（5社）
+  └── SPA/JS-heavy等、汎用では取得困難なサイト専用。
+      BaseCompanyScraper を継承した個別実装。
+      例: Perplexity AI, Cerebras, SambaNova, Lambda Labs, Fanuc
+```
+
 ### 全体構成
 
 ```
 /ai-research-collect
-  → ai-research-workflow スキル
+  → ai-research-workflow スキル（Deep Researchスキルの拡張）
     → Phase 1: Python CLI (prepare_ai_research_session.py)
-        ├── arXiv API（feedparserでAtom解析）
-        ├── 企業ブログRSS（FeedReader）
-        └── RSS非対応サイト（RobustScraper）
-            ├── 7種UAローテーション（直前UA回避）
-            ├── ドメイン別レートリミット（asyncio.Lock排他制御）
-            ├── 429リトライ（Retry-After対応、指数バックオフ2→4→8秒）
-            └── 3段階フォールバック: trafilatura → Playwright → lxml
-    → Phase 2: AI（ai-research-article-fetcher × 並列）
-        └── 要約生成 + 重要度判定 + Issue作成のみ
+        ├── Tier 1: FeedReader → RSS対応企業（8社）
+        ├── Tier 2: RobustScraper → 汎用スクレイピング（64社）
+        │   ├── 共通bot対策基盤
+        │   │   ├── 7種UAローテーション（直前UA回避）
+        │   │   ├── ドメイン別レートリミット（asyncio.Lock排他制御）
+        │   │   ├── 429リトライ（Retry-After対応、指数バックオフ2→4→8秒）
+        │   │   └── 3段階フォールバック: trafilatura → Playwright → lxml
+        │   └── 構造化ログ（utils_core.logging）+ エラーハンドリング
+        └── Tier 3: CompanyScraper → 企業別アダプタ（5社）
+            └── BaseCompanyScraper 継承、ページ構造特化の抽出ロジック
+    → Phase 2: AI（ai-research-article-fetcher × カテゴリ並列）
+        └── 投資視点での要約生成 + 市場影響度判定 + Issue作成
     → Phase 3: 結果集約 + スクレイピング統計レポート
 ```
 
@@ -58,359 +262,363 @@
 
 | Python側（決定論的） | AI側（高度判断） |
 |---------------------|-----------------|
-| arXiv API呼び出し | タイトル翻訳（英→日） |
-| RSSフィード取得 | 4セクション要約生成 |
-| Webスクレイピング（RobustScraper） | 重要度判定（low/medium/high） |
-| 日付フィルタリング | Issue本文の文章構成 |
-| URL + arXiv IDベース重複チェック | |
-| Top-N選択（公開日時降順） | |
-| テーマ別JSON出力 | |
+| RSS/Webスクレイピング（77社） | タイトル翻訳（英→日） |
+| ティア別取得ルーティング | 投資視点4セクション要約生成 |
+| 日付フィルタリング | 市場影響度判定（low/medium/high） |
+| URLベース重複チェック | 関連銘柄・セクターの特定 |
+| Top-N選択（公開日時降順） | Issue本文の文章構成 |
+| カテゴリ別JSON出力 | |
 | スクレイピング統計レポート | |
+| 構造化ログ出力 | |
 
 ### データフロー
 
 ```
-ユーザー: /ai-research-collect --days 7 --themes all --top-n 10
+ユーザー: /ai-research-collect --days 7 --categories all --top-n 10
   │
   ▼ Phase 1 (Python)
   prepare_ai_research_session.py
-    ├── arXiv API → 論文メタデータ+アブストラクト
-    ├── FeedReader → 企業ブログRSS記事
-    ├── RobustScraper → RSS非対応企業ブログ記事（本文含む）
+    ├── ai-research-companies.json 読み込み（77社の定義）
+    ├── カテゴリ別・ティア別にデータ収集:
+    │   ├── Tier 1: FeedReader → RSS記事
+    │   ├── Tier 2: RobustScraper → 汎用スクレイピング
+    │   └── Tier 3: CompanyScraperRegistry → 企業別アダプタ
     ├── → ArticleData統一形式に変換
     ├── → 既存Issue URL抽出（重複チェック用）
     ├── → 日付フィルタ → 重複チェック → Top-N選択
-    └── → .tmp/ai-research-batches/{theme_key}.json 出力
+    └── → .tmp/ai-research-batches/{category_key}.json 出力
   │
   ▼ Phase 2 (AI)
-  ai-research-article-fetcher × テーマ数（並列）
+  ai-research-article-fetcher × カテゴリ数（並列）
     ├── タイトル翻訳
-    ├── 4セクション要約生成（概要/手法/結果/意義）
-    ├── 重要度判定
+    ├── 投資視点4セクション要約（概要/技術的意義/市場影響/投資示唆）
+    ├── 市場影響度判定 + 関連銘柄タグ付け
     ├── Issue作成（gh issue create + close）
-    ├── ラベル付与（ai-research + needs-review）
+    ├── ラベル付与（ai-research + カテゴリラベル + needs-review）
     └── GitHub Project追加 + Status/Date設定
   │
   ▼ Phase 3 (集約)
-  テーマ別統計 + スクレイピング統計（ScrapeStats）サマリー
+  カテゴリ別統計 + ティア別成功率 + スクレイピング統計サマリー
 ```
 
 ---
 
 ## コンポーネント詳細
 
-### 1. RobustScraper クラス
+### 1. ティアベース取得システム
 
-**パス**: `src/rss/services/robust_scraper.py`
+#### Tier 1: RSS取得（FeedReader）
 
-既存の `ArticleExtractor` をコンポジションでラップし、bot検知対策・レートリミット対策・テキスト抽出対策を統合する堅牢なWebスクレイピングモジュール。
+既存の `src/rss/services/feed_reader.py` をそのまま利用。新規コード不要。
 
-#### インターフェース
+**対象8社**: NVIDIA, Microsoft AI, Google DeepMind, Cisco, Bloom Energy, Schneider Electric, nVent Electric, Intuitive Surgical
+
+#### Tier 2: 汎用スクレイパー（RobustScraper）
+
+**パス**: `src/rss/services/company_scrapers/robust_scraper.py`
+
+64社の標準的なブログ/ニュースルームからテキスト抽出。trafilatura ベースで大半のサイトに対応。
 
 ```python
 class RobustScraper:
-    async def scrape(self, url: str) -> ScrapedArticle: ...
-    async def scrape_batch(self, urls: list[str]) -> list[ScrapedArticle]: ...
-    def get_stats(self) -> ScrapeStats: ...
+    def __init__(
+        self,
+        domain_rate_limits: dict[str, float],
+        user_agents: list[str] | None = None,
+        max_retries: int = 3,
+        use_playwright: bool = True,
+    ) -> None:
+        self._logger = get_logger(__name__, component="robust_scraper")
+        ...
+
+    async def fetch_page(self, url: str) -> str:
+        """URLからHTMLを取得（bot対策込み）."""
+        ...
+
+    async def scrape(self, url: str) -> ScrapedArticle:
+        """URLからテキスト抽出まで実行."""
+        ...
+
+    async def scrape_batch(self, urls: list[str]) -> list[ScrapedArticle]:
+        """複数URL一括スクレイピング."""
+        ...
+
+    def get_stats(self) -> ScrapeStats:
+        """スクレイピング統計を返す."""
+        ...
 ```
 
-#### 設定
+**bot対策**: UA ローテーション（7種）、ドメイン別レートリミット、429リトライ（指数バックオフ）、3段階フォールバック（trafilatura → Playwright → lxml）
+
+#### Tier 3: 企業別アダプタ（CompanyScraper）
+
+**パス**: `src/rss/services/company_scrapers/adapters/`
+
+SPA/JS-heavy 等の特殊サイト向け。`BaseCompanyScraper` を継承。
+
+**対象5社**: Perplexity AI, Cerebras, SambaNova, Lambda Labs, Fanuc
 
 ```python
-RobustScraper(
-    domain_rate_limits: dict[str, float],  # ドメイン別レートリミット（秒）
-    user_agents: list[str],                 # UAプール
-    max_retries: int = 3,                   # 最大リトライ回数
-    use_playwright: bool = True,            # Playwrightフォールバック有効化
-)
+class BaseCompanyScraper(ABC):
+    """企業別スクレイパーの基底クラス."""
+
+    def __init__(self, robust_scraper: RobustScraper) -> None:
+        self._scraper = robust_scraper
+        self._logger = get_logger(f"{__name__}.{self.company_key}", company=self.company_key)
+
+    @property
+    @abstractmethod
+    def company_key(self) -> str: ...
+
+    @property
+    @abstractmethod
+    def blog_url(self) -> str: ...
+
+    @abstractmethod
+    async def extract_article_list(self, html: str) -> list[ArticleMetadata]: ...
+
+    @abstractmethod
+    async def extract_article_content(self, html: str, url: str) -> ArticleContent: ...
+
+    async def scrape_latest(self, max_articles: int = 10) -> list[ScrapedArticle]:
+        """最新記事を取得（共通フロー）."""
+        ...
 ```
 
-#### UA ローテーション
+### 2. ai-research-companies.json（企業定義マスタ）
 
-7種類のリアルブラウザUA（Chrome 3 + Firefox 2 + Safari 1 + Edge 1）をリクエストごとにランダム選択。直前UAを記録して回避。
+**パス**: `data/config/ai-research-companies.json`
 
-| # | ブラウザ | OS |
-|---|---------|------|
-| 1 | Chrome 120 | macOS |
-| 2 | Chrome 121 | Windows |
-| 3 | Chrome 119 | Linux |
-| 4 | Firefox 121 | macOS |
-| 5 | Firefox 122 | Windows |
-| 6 | Safari 17.2 | macOS |
-| 7 | Edge 120 | Windows |
-
-#### ドメイン別レートリミット
-
-`asyncio.Lock` + `last_access_time` 辞書でドメイン別排他制御。
-
-| ドメイン | 間隔（秒） |
-|---------|-----------|
-| arxiv.org | 3.0 |
-| openai.com | 5.0 |
-| blog.google | 5.0 |
-| ai.meta.com | 5.0 |
-| anthropic.com | 5.0 |
-| huggingface.co | 3.0 |
-| www.microsoft.com | 5.0 |
-| `__default__` | 2.0 |
-
-#### 429リトライ戦略
-
-- **Retry-Afterヘッダ**: あればその値（秒）をwait
-- **指数バックオフ**: なければ 2秒 → 4秒 → 8秒
-- **最大リトライ**: 3回
-- **超過時**: `ScrapeStatus.RATE_LIMITED` で返却
-- **その他リトライ対象**: 5xx、ConnectionError、TimeoutException
-
-#### 3段階テキスト抽出フォールバック
-
-| Stage | 手法 | 特徴 | 所要時間 |
-|-------|------|------|---------|
-| 1 | trafilatura | 高速・軽量、多くのサイトに対応 | 0.5-2秒 |
-| 2 | Playwright headless | JS-heavy SPA対応 | 3-5秒 |
-| 3 | lxml直接解析 | 最終手段、JS非対応 | 0.5-1秒 |
-
-- 成功条件: テキスト長 >= 100文字
-- Stage 2はオプショナル（`use_playwright=False` でスキップ）
-- Playwright未インストール時は自動スキップ
-
-#### リクエストヘッダ
-
-```
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.9,ja;q=0.8
-Accept-Encoding: gzip, deflate, br
-Referer: https://www.google.com/
-DNT: 1
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: document
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-User-Agent: <ローテーション>
-```
-
-#### データ型
-
-```python
-@dataclass
-class ScrapedArticle:
-    url: str
-    title: str | None
-    text: str | None
-    author: str | None
-    date: str | None
-    source: str | None
-    language: str | None
-    status: ScrapeStatus
-    error: str | None
-    extraction_method: str          # trafilatura / playwright / lxml
-    retry_count: int
-    user_agent_used: str
-
-class ScrapeStatus(Enum):
-    SUCCESS = "SUCCESS"
-    FAILED = "FAILED"
-    RATE_LIMITED = "RATE_LIMITED"
-    TIMEOUT = "TIMEOUT"
-    PAYWALL = "PAYWALL"
-    PLAYWRIGHT_REQUIRED = "PLAYWRIGHT_REQUIRED"
-
-@dataclass
-class ScrapeStats:
-    total_requests: int
-    success_count: int
-    failed_count: int
-    rate_limited_count: int
-    timeout_count: int
-    paywall_count: int
-    domain_stats: dict[str, DomainStats]
-    fallback_stats: dict[str, int]      # trafilatura/playwright/lxml 使用回数
-    avg_response_time_ms: float
-    total_retries: int
-
-@dataclass
-class DomainStats:
-    domain: str
-    requests: int
-    success: int
-    failed: int
-    rate_limited: int
-    avg_response_time_ms: float
-```
-
-### 2. prepare_ai_research_session.py
-
-**パス**: `scripts/prepare_ai_research_session.py`
-
-`prepare_news_session.py` をフォーク・拡張。3種類のデータソースを統一処理。
-
-**引数**: `--days <int>` `--themes <string>` `--top-n <int>` `--output <path>`
-
-**処理フロー**:
-1. `ai-research-themes.json` 読み込み
-2. テーマ別にデータ収集:
-   - `arxiv_categories[]` → arXiv API呼び出し（feedparser）
-   - `feeds[]` → FeedReader
-   - `scrape_urls[]` → RobustScraper.scrape_batch()
-3. 全データを ArticleData 統一形式に変換
-4. 既存GitHub Issue URL抽出（重複チェック用）
-5. 日付フィルタリング → URL + arXiv ID 重複チェック → Top-N選択
-6. テーマ別JSON出力（`.tmp/ai-research-batches/`）
-7. スクレイピング統計出力（RobustScraper.get_stats()）
-
-### 3. ai-research-themes.json
-
-**パス**: `data/config/ai-research-themes.json`
+77社全ての定義を一元管理。ティア、URL、投資コンテキストを含む。
 
 ```json
 {
-  "themes": {
-    "papers_llm": {
-      "label": "LLM論文",
-      "arxiv_categories": ["cs.CL"],
-      "feeds": [],
-      "scrape_urls": []
+  "categories": {
+    "ai_llm": {
+      "label": "AI/LLM開発",
+      "github_label": "ai-llm",
+      "companies": [
+        {
+          "key": "openai",
+          "name": "OpenAI",
+          "tier": 2,
+          "urls": {
+            "blog": "https://openai.com/news/",
+            "newsroom": null,
+            "rss": null
+          },
+          "playwright_required": false,
+          "investment_context": {
+            "tickers": ["MSFT"],
+            "sectors": ["Software", "Cloud"],
+            "keywords": ["ChatGPT", "GPT", "API pricing", "enterprise"]
+          }
+        },
+        {
+          "key": "nvidia_ai",
+          "name": "NVIDIA",
+          "tier": 1,
+          "urls": {
+            "blog": "https://blogs.nvidia.com/",
+            "newsroom": "https://nvidianews.nvidia.com/news",
+            "rss": "https://nvidianews.nvidia.com/rss"
+          },
+          "playwright_required": false,
+          "investment_context": {
+            "tickers": ["NVDA"],
+            "sectors": ["Semiconductor", "Data Center"],
+            "keywords": ["GPU", "CUDA", "H100", "Blackwell", "inference"]
+          }
+        }
+      ]
     },
-    "papers_ml": {
-      "label": "ML論文",
-      "arxiv_categories": ["cs.AI", "cs.LG"],
-      "feeds": [],
-      "scrape_urls": []
+    "gpu_chips": {
+      "label": "GPU・演算チップ",
+      "github_label": "ai-chips",
+      "companies": ["..."]
     },
-    "company_openai": {
-      "label": "OpenAI",
-      "arxiv_categories": [],
-      "feeds": ["openai-blog"],
-      "scrape_urls": [],
-      "scraper_overrides": { "use_playwright": true }
+    "semiconductor_equipment": {
+      "label": "半導体製造装置",
+      "github_label": "ai-semicon",
+      "companies": ["..."]
     },
-    "company_google": {
-      "label": "Google AI",
-      "arxiv_categories": [],
-      "feeds": ["google-ai-blog"],
-      "scrape_urls": []
+    "data_center": {
+      "label": "データセンター・クラウド",
+      "github_label": "ai-datacenter",
+      "companies": ["..."]
     },
-    "company_meta": {
-      "label": "Meta AI",
-      "arxiv_categories": [],
-      "feeds": [],
-      "scrape_urls": ["https://ai.meta.com/blog/"]
+    "networking": {
+      "label": "ネットワーキング",
+      "github_label": "ai-network",
+      "companies": ["..."]
     },
-    "company_anthropic": {
-      "label": "Anthropic",
-      "arxiv_categories": [],
-      "feeds": ["anthropic-blog"],
-      "scrape_urls": []
+    "power_energy": {
+      "label": "電力・エネルギー",
+      "github_label": "ai-power",
+      "companies": ["..."]
+    },
+    "nuclear_fusion": {
+      "label": "原子力・核融合",
+      "github_label": "ai-nuclear",
+      "companies": ["..."]
+    },
+    "physical_ai": {
+      "label": "フィジカルAI・ロボティクス",
+      "github_label": "ai-robotics",
+      "companies": ["..."]
+    },
+    "saas": {
+      "label": "SaaS・AI活用ソフトウェア",
+      "github_label": "ai-saas",
+      "companies": ["..."]
+    },
+    "ai_infra": {
+      "label": "AI基盤・MLOps",
+      "github_label": "ai-infra",
+      "companies": ["..."]
     }
   },
   "default_scraper_config": {
     "domain_rate_limits": {
-      "arxiv.org": 3.0,
       "openai.com": 5.0,
       "blog.google": 5.0,
       "ai.meta.com": 5.0,
       "anthropic.com": 5.0,
-      "__default__": 2.0
+      "blogs.microsoft.com": 5.0,
+      "developer.nvidia.com": 5.0,
+      "huggingface.co": 3.0,
+      "__default__": 3.0
     },
     "max_retries": 3,
     "use_playwright": true
   },
   "project": { "...": "GitHub Project設定（ID, フィールドID等）" },
   "execution": {
-    "batch_size": 5,
-    "max_articles_per_theme": 10
+    "batch_size": 10,
+    "max_articles_per_company": 5,
+    "max_articles_per_category": 20,
+    "concurrent_categories": 3
   }
 }
+```
+
+### 3. ログ・エラーハンドリング設計
+
+**ログ基盤**: `utils_core.logging`（structlog ベース）
+
+#### ログ出力方針
+
+```python
+from utils_core.logging import get_logger, log_context, log_performance
+
+logger = get_logger(__name__, component="ai_research")
+
+# カテゴリ・企業レベルのコンテキスト
+with log_context(phase="data_collection", category="gpu_chips", company="nvidia"):
+    logger.info("Scraping started", tier=1, url="https://blogs.nvidia.com/")
+
+# パフォーマンス計測
+@log_performance(logger)
+async def scrape_category(category_key: str) -> list[ScrapedArticle]:
+    ...
+```
+
+#### ログレベル使い分け
+
+| レベル | 用途 |
+|--------|------|
+| DEBUG | HTTP応答詳細、HTMLパース中間結果、フォールバック遷移 |
+| INFO | カテゴリ開始/完了、企業別取得成功、Issue作成成功 |
+| WARNING | 429レートリミット、Playwright未インストール、部分失敗 |
+| ERROR | スクレイピング完全失敗、Issue作成失敗、アダプタエラー |
+| CRITICAL | 全カテゴリ失敗、設定ファイル読み込み不可 |
+
+#### エラーハンドリングパターン
+
+```python
+class ScrapingError(Exception):
+    """スクレイピング基盤の基底例外."""
+    def __init__(self, message: str, domain: str, url: str) -> None:
+        super().__init__(message)
+        self.domain = domain
+        self.url = url
+
+class RateLimitError(ScrapingError):
+    """レートリミット超過."""
+
+class AdapterError(ScrapingError):
+    """企業別アダプタの抽出エラー."""
+
+class BotDetectionError(ScrapingError):
+    """bot検知によるブロック."""
 ```
 
 ### 4. ai-research-article-fetcher エージェント
 
 **パス**: `.claude/agents/ai-research-article-fetcher.md`
 
-データ収集済みの記事データを受け取り、AI判断処理のみを実行。
+**入力**: `{articles: [ArticleData], issue_config: {...}, investment_context: {...}}`
 
-**入力**: `{articles: [ArticleData], issue_config: {...}}`
+**投資視点4セクション要約**:
+1. **概要**: 発表内容の要約
+2. **技術的意義**: 技術的なブレークスルーの評価
+3. **市場影響**: 関連銘柄・セクターへの影響分析
+4. **投資示唆**: 投資家にとっての意味合い
 
-**処理**:
-1. タイトル翻訳（英→日）
-2. 4セクション要約生成（概要 / 手法・アプローチ / 主要結果 / 意義・影響）
-3. 重要度判定（low / medium / high）
-4. Issue本文生成 + 作成（`gh issue create` + close）
-5. ラベル付与（`ai-research` + `needs-review`）
-6. GitHub Project追加 + Status/Date設定
-
-**出力**: `{created_issues: [...], skipped: [...], stats: {...}}`
-
-### 5. ai-research-workflow スキル
-
-**パス**: `.claude/skills/ai-research-workflow/`
-
-3フェーズワークフローのオーケストレーション定義。
-
-### 6. /ai-research-collect コマンド
-
-**パス**: `.claude/commands/ai-research-collect.md`
-
-```
-/ai-research-collect [--days 7] [--themes all] [--top-n 10]
-```
+**カテゴリ別ラベル**: `ai-llm`, `ai-chips`, `ai-semicon`, `ai-datacenter`, `ai-network`, `ai-power`, `ai-nuclear`, `ai-robotics`, `ai-saas`, `ai-infra`
 
 ---
 
 ## ファイルマップ
 
-### Wave 0: RobustScraper（TDD実装）
+### Wave 0: 共通基盤 + データ型（TDD実装）
 
 | 操作 | ファイル | サイズ |
 |------|---------|--------|
-| 新規 | `src/rss/services/robust_scraper.py` | 15KB |
-| 新規 | `tests/rss/unit/services/test_robust_scraper.py` | 18KB |
+| 新規 | `src/rss/services/company_scrapers/__init__.py` | 2KB |
+| 新規 | `src/rss/services/company_scrapers/types.py` | 5KB |
+| 新規 | `src/rss/services/company_scrapers/robust_scraper.py` | 15KB |
+| 新規 | `tests/rss/unit/services/company_scrapers/test_types.py` | 5KB |
+| 新規 | `tests/rss/unit/services/company_scrapers/test_robust_scraper.py` | 18KB |
 | 修正 | `src/rss/services/__init__.py` | - |
 
-**TDD計画**（12ステップ）:
-
-1. Red: ScrapedArticle/ScrapeStatus/ScrapeStats データクラスのテスト → Green: データクラス実装
-2. Red: RobustScraper初期化テスト（デフォルト値、カスタム値） → Green: `__init__` 実装
-3. Red: `scrape()` で trafilatura 成功時のテスト → Green: `scrape()` Stage 1 実装
-4. Red: UAローテーションテスト（ランダム選択、直前UA回避） → Green: `_select_user_agent()` 実装
-5. Red: リクエストヘッダテスト（必須ヘッダ存在確認） → Green: `_build_headers()` 実装
-6. Red: ドメイン別レートリミットテスト（待機時間検証） → Green: `_wait_for_rate_limit()` 実装
-7. Red: 429リトライテスト（Retry-After有無、指数バックオフ） → Green: `_handle_429()` 実装
-8. Red: Stage 2（Playwright）フォールバックテスト → Green: `_try_playwright()` 実装
-9. Red: Stage 3（lxml）フォールバックテスト → Green: Stage 3 実装
-10. Red: `scrape_batch()` テスト（複数URL、ドメイン混在） → Green: `scrape_batch()` 実装
-11. Red: `get_stats()` 統計テスト → Green: 統計追跡・レポート実装
-12. Refactor: 全テスト通過確認後、コード整理
-
-### Wave 1: 基盤ファイル（Wave 0 完了後）
+### Wave 1: 企業別アダプタ（Tier 3: 5社分、Wave 0完了後）
 
 | 操作 | ファイル | サイズ |
 |------|---------|--------|
-| 新規 | `data/config/ai-research-themes.json` | 5KB |
-| 新規 | `scripts/prepare_ai_research_session.py` | 22KB |
-| 新規 | `.claude/agents/ai-research-article-fetcher.md` | 7KB |
-| 修正 | `data/raw/rss/feeds.json` | - |
+| 新規 | `src/rss/services/company_scrapers/base.py` | 8KB |
+| 新規 | `src/rss/services/company_scrapers/adapters/__init__.py` | 1KB |
+| 新規 | `src/rss/services/company_scrapers/adapters/perplexity.py` | 5KB |
+| 新規 | `src/rss/services/company_scrapers/adapters/cerebras.py` | 5KB |
+| 新規 | `src/rss/services/company_scrapers/adapters/sambanova.py` | 5KB |
+| 新規 | `src/rss/services/company_scrapers/adapters/lambda_labs.py` | 5KB |
+| 新規 | `src/rss/services/company_scrapers/adapters/fanuc.py` | 5KB |
+| 新規 | `tests/rss/unit/services/company_scrapers/test_base.py` | 10KB |
+| 新規 | `tests/rss/unit/services/company_scrapers/adapters/test_*.py` | 各5KB |
 
-### Wave 2: スキル定義・テンプレート（Wave 1 完了後）
+### Wave 2: 企業定義マスタ + セッションスクリプト（Wave 0,1完了後）
+
+| 操作 | ファイル | サイズ |
+|------|---------|--------|
+| 新規 | `data/config/ai-research-companies.json` | 25KB |
+| 新規 | `scripts/prepare_ai_research_session.py` | 25KB |
+| 新規 | `.claude/agents/ai-research-article-fetcher.md` | 7KB |
+| 修正 | `data/raw/rss/feeds.json`（Tier 1企業のRSS追加） | - |
+
+### Wave 3: スキル定義・テンプレート（Wave 2完了後）
 
 | 操作 | ファイル | サイズ |
 |------|---------|--------|
 | 新規 | `.claude/skills/ai-research-workflow/SKILL.md` | 8KB |
-| 新規 | `.claude/skills/ai-research-workflow/guide.md` | 8KB |
+| 新規 | `.claude/skills/ai-research-workflow/guide.md` | 10KB |
 | 新規 | `.claude/skills/ai-research-workflow/templates/issue-template.md` | 4KB |
 | 新規 | `.claude/skills/ai-research-workflow/templates/summary-template.md` | 4KB |
 
-### Wave 3: コマンド定義（Wave 2 完了後）
-
-| 操作 | ファイル | サイズ |
-|------|---------|--------|
-| 新規 | `.claude/commands/ai-research-collect.md` | 1KB |
-
-### Wave 4: ドキュメント更新（全完了後）
+### Wave 4: コマンド定義 + ドキュメント更新（全完了後）
 
 | 操作 | ファイル |
 |------|---------|
+| 新規 | `.claude/commands/ai-research-collect.md` |
 | 修正 | `CLAUDE.md`（コマンド/スキル/エージェント一覧に追加） |
 
 ---
@@ -419,13 +627,13 @@ class DomainStats:
 
 | Wave | 内容 | 見積もり |
 |------|------|---------|
-| Wave 0 | RobustScraper TDD実装 + テスト | 3-4時間 |
-| Wave 1 | 基盤ファイル（themes.json, スクリプト, エージェント, RSS） | 4-5時間 |
-| Wave 2 | スキル定義 + テンプレート | 2-3時間 |
-| Wave 3 | コマンド定義 | 30分 |
-| Wave 4 | CLAUDE.md更新 | 30分 |
-| その他 | RSSフィード存在確認 + GitHub Project作成 | 1-2時間 |
-| **合計** | | **11-14時間** |
+| Wave 0 | RobustScraper TDD実装 + テスト | 4-5時間 |
+| Wave 1 | BaseCompanyScraper + 5社アダプタ TDD | 5-7時間 |
+| Wave 2 | 企業定義マスタ(77社) + セッションスクリプト + エージェント | 6-8時間 |
+| Wave 3 | スキル定義 + テンプレート | 2-3時間 |
+| Wave 4 | コマンド + CLAUDE.md更新 | 1時間 |
+| その他 | 企業ブログ構造調査 + RSS確認 + GitHub Project作成 | 3-4時間 |
+| **合計** | | **21-28時間** |
 
 ---
 
@@ -433,15 +641,14 @@ class DomainStats:
 
 | リスク | レベル | 軽減策 |
 |--------|--------|--------|
+| 77社のURL変更・構造変更 | **高** | ティアベースで影響を局所化、Tier 2汎用で大半をカバー |
+| bot検知・WAF強化（特にBigTech） | **高** | 多層防御（UA+ヘッダ+レート+Playwright）+ 構造化ログで早期検知 |
 | RobustScraperの非同期制御の複雑さ | **高** | TDDで各機能を個別テスト、独立メソッド切り出し |
+| 企業定義マスタの保守コスト | 中 | JSON一元管理、企業追加は定義追加のみ |
+| Tier 2で取得できないサイトの増加 | 中 | 定期的にTier 2成功率を監視、必要に応じてTier 3昇格 |
 | Playwright統合の安定性 | 中 | オプショナル化 + timeout設定 + 未インストール時スキップ |
-| 企業ブログのWAF強化 | 中 | 多層防御（UA+ヘッダ+レート+Playwright）+ 運用フォールバック |
-| テストのモック複雑さ | 中 | 独立メソッド切り出し + conftest.pyフィクスチャ |
-| arXiv APIレート制限/形式変更 | 中 | domain_rate_limits遵守 + パーステスト |
-| 企業ブログRSS廃止 | 中 | 2段構え（RSS → scrape_urlsフォールバック） |
-| Wave 0がWave 1のブロッカー | 中 | 段階的実装（最低限のscrape()でWave 1並行開始可） |
+| 大量リクエストによるIP制限 | 中 | ドメイン別レートリミット厳守、カテゴリ間の間隔確保 |
 | 既存ワークフローへの影響 | 低 | コンポジション（既存変更なし）+ カテゴリ分離 |
-| GitHub Project作成 | 低 | 手動作成 + ID後置換 |
 
 ---
 
@@ -452,26 +659,29 @@ class DomainStats:
 - `src/rss/services/article_extractor.py` - RobustScraperのStage 1として
 - `src/rss/services/article_content_checker.py` - Playwrightロジック参照
 - `src/rss/core/http_client.py` - バックオフ計算パターン
-- `src/rss/services/feed_reader.py` - RSSフィード読み込み
+- `src/rss/services/feed_reader.py` - Tier 1 RSS取得
 - `src/rss/utils/url_normalizer.py` - URL正規化
 - `scripts/prepare_news_session.py` - フィルタリング/重複チェック関数
+- `src/utils_core/logging/` - 構造化ログ基盤
 
 ### フォーク＆修正
 
 - `prepare_news_session.py` → `prepare_ai_research_session.py`
 - `news-article-fetcher.md` → `ai-research-article-fetcher.md`
 - `finance-news-workflow/SKILL.md` → `ai-research-workflow/SKILL.md`
-- `finance-news-themes.json` → `ai-research-themes.json`
+- `finance-news-themes.json` → `ai-research-companies.json`
 
 ### 新規実装
 
-- **RobustScraper** クラス全体（UA+レートリミット+429+フォールバック+統計）
-- **データクラス**: ScrapedArticle, ScrapeStatus, ScrapeStats, DomainStats
-- **arXiv API** 呼び出し + Atom解析
-- **ArticleData統一変換**: arXiv/RSS/RobustScraper → 共通形式
-- **arXiv IDベース重複チェック**
-- **AI研究向け4セクション要約**（概要/手法/結果/意義）
-- **重要度判定ロジック**
+- **RobustScraper**: UA+レートリミット+429+bot検知+フォールバック+統計
+- **BaseCompanyScraper + CompanyScraperRegistry**: Tier 3基盤
+- **企業別アダプタ**: 5社分の個別パーシングロジック
+- **企業定義マスタ**: 77社のJSON定義
+- **ティアルーティング**: Tier 1/2/3の自動振り分け
+- **データクラス**: ScrapedArticle, ArticleMetadata, ArticleContent 等
+- **カスタム例外**: ScrapingError → RateLimitError / AdapterError / BotDetectionError
+- **投資視点4セクション要約**（概要/技術的意義/市場影響/投資示唆）
+- **カテゴリ別ラベリング + 関連銘柄タグ付け**
 
 ---
 
@@ -479,15 +689,26 @@ class DomainStats:
 
 ```bash
 # 1. Project作成
-gh project create --owner YH-05 --title 'AI Research Tracking'
+gh project create --owner YH-05 --title 'AI Investment Value Chain Tracking'
 
 # 2. Statusフィールドにオプション追加
-#    - Paper
 #    - Company Release
+#    - Product Update
+#    - Partnership
+#    - Earnings Impact
+#    - Infrastructure
 
-# 3. Published Dateカスタムフィールド追加
+# 3. Categoryカスタムフィールド追加（Single Select）
+#    ai-llm / ai-chips / ai-semicon / ai-datacenter / ai-network
+#    ai-power / ai-nuclear / ai-robotics / ai-saas / ai-infra
 
-# 4. 取得したIDを ai-research-themes.json に反映
+# 4. Published Dateカスタムフィールド追加
+
+# 5. Tickersカスタムフィールド追加（テキスト）
+
+# 6. Impact Levelカスタムフィールド追加（Single Select: low/medium/high）
+
+# 7. 取得したIDを ai-research-companies.json に反映
 ```
 
 ---
@@ -496,35 +717,49 @@ gh project create --owner YH-05 --title 'AI Research Tracking'
 
 ### 含む
 
-- RobustScraperクラス（UA+レートリミット+429+フォールバック+統計）
-- RobustScraperの単体テスト（80%以上カバレッジ）
-- arXiv API論文取得（cs.AI, cs.CL, cs.LG）
-- 企業ブログRSS取得
-- RSS非対応企業ブログのWebスクレイピング（RobustScraperベース）
+- RobustScraper（UA+レートリミット+429+bot検知+フォールバック+統計）
+- BaseCompanyScraper + CompanyScraperRegistry（Tier 3基盤）
+- 企業別アダプタ 5社分（Perplexity, Cerebras, SambaNova, Lambda Labs, Fanuc）
+- 企業定義マスタ 77社分（10カテゴリ）
+- ティアベース取得ルーティング（Tier 1/2/3自動振り分け）
+- 単体テスト（80%以上カバレッジ）
+- Tier 1: RSS取得（8社）
+- Tier 2: 汎用スクレイピング（64社）
 - ArticleData統一形式変換
 - 日付フィルタリング + 重複チェック + Top-N選択
-- AI要約生成 + Issue作成
+- **投資視点**AI要約生成 + Issue作成
+- カテゴリ別ラベリング + 関連銘柄タグ付け
 - GitHub Project連携
 - `/ai-research-collect` コマンド
-- スクレイピング統計レポート
+- スクレイピング統計レポート（ティア別成功率含む）
+- `utils_core.logging` によるstructlogベースの構造化ログ
+- カスタム例外階層（ScrapingError系）
 
 ### Phase 2以降（除外）
 
-- OSSリリース・ベンチマーク追跡
-- Semantic Scholar API連携
-- GitHub Trending / HuggingFace Model Hub
-- AI研究ディープリサーチ（`/ai-research-deep`）
-- 週次AI研究レポート（`/ai-research-report`）
+- **arXiv論文取得**（arXiv API + feedparser）
+- OSSリリース・ベンチマーク追跡（GitHub Trending / HuggingFace Model Hub）
+- AI投資ディープリサーチ（`/deep-research --type theme --topic "AI"` との完全統合）
+- 週次AI投資レポート（`/ai-research-report`）
 - note記事作成パイプライン（`/ai-research-full`）
 - 日次ダイジェスト
 - プロキシローテーション
+- Semantic Scholar API連携
+- 企業追加の自動提案（新興AI企業の検出）
 
 ---
 
 ## 決定事項
 
+- **ティアベースアーキテクチャ**: RSS(8社) → 汎用(64社) → アダプタ(5社)で77社をカバー
+- **全企業に個別アダプタを書かない**: Tier 2汎用スクレイパーで大半をカバー
+- **企業定義はJSONマスタで一元管理**: 企業追加はJSON追記のみ
+- **10カテゴリで投資バリューチェーン全体をカバー**: LLM〜核融合まで
 - **既存ArticleExtractorは変更しない**: RobustScraperがコンポジションでラップ
-- **RSSフィードが確認できたブログのみfeeds.json登録**: 非対応ブログはscrape_urlsで管理
 - **Playwrightはオプショナル**: 未インストール環境でも動作可能
 - **GitHub Projectは完全独立**: 金融ニュースProject #15とは分離
-- **テーマ設定はJSON**: ai-research-themes.json でデータソース+スクレイピング設定を一元管理
+- **Deep Researchの拡張として位置付け**: `/deep-research --type theme` のデータソース自動化
+- **投資家視点の要約**: 4セクション（概要/技術的意義/市場影響/投資示唆）
+- **arXivはPhase 2以降**: MVPでは企業ブログ・リリースに集中
+- **ログは utils_core.logging**: structlogベースの構造化ログを全コンポーネントで使用
+- **エラーは階層的カスタム例外**: ScrapingError → RateLimitError / AdapterError / BotDetectionError
