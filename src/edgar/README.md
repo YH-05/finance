@@ -116,6 +116,7 @@ if cached_text is not None:
 | `errors.py` | ✅ 実装済み | エラークラス階層（EdgarError 他 4 種） |
 | `config.py` | ✅ 実装済み | 設定管理（EdgarConfig, identity 管理） |
 | `fetcher.py` | ✅ 実装済み | Filing 取得（EdgarFetcher） |
+| `rate_limiter.py` | ✅ 実装済み | レート制限（RateLimiter）SEC EDGAR 10req/sec 制限準拠 |
 | `extractors/` | ✅ 実装済み | テキスト・セクション抽出（TextExtractor, SectionExtractor） |
 | `batch.py` | ✅ 実装済み | バッチ処理（BatchFetcher, BatchExtractor） |
 | `cache/` | ✅ 実装済み | SQLite キャッシュ（CacheManager） |
@@ -130,6 +131,7 @@ if cached_text is not None:
 | `edgar.errors` | EdgarError 基底クラスとドメイン固有の例外 4 種 | ✅ 実装済み |
 | `edgar.config` | SEC EDGAR identity 管理、キャッシュ・レート制限設定 | ✅ 実装済み |
 | `edgar.fetcher` | edgartools ラッパー、CIK/ティッカーでの Filing 取得 | ✅ 実装済み |
+| `edgar.rate_limiter` | スレッドセーフなレート制限器（トークンバケット方式） | ✅ 実装済み |
 | `edgar.extractors` | テキスト抽出（TextExtractor）、セクション分割（SectionExtractor） | ✅ 実装済み |
 | `edgar.batch` | 並列バッチ取得（BatchFetcher）、並列バッチ抽出（BatchExtractor） | ✅ 実装済み |
 | `edgar.cache` | SQLite ベースの TTL 付きキャッシュ（CacheManager） | ✅ 実装済み |
@@ -295,6 +297,36 @@ text = cache.get("0001234567-24-000001")
 
 ---
 
+#### RateLimiter
+
+SEC EDGAR の Fair Access Policy（10 requests/second）を遵守するためのスレッドセーフなレート制限器。
+
+**基本的な使い方**:
+
+```python
+from edgar.rate_limiter import RateLimiter
+
+# デフォルト（10 requests/second）
+limiter = RateLimiter()
+
+# カスタム設定
+limiter = RateLimiter(max_requests_per_second=5)
+
+# リクエスト前に呼び出す（必要に応じて自動でスリープ）
+limiter.acquire()
+# ... API リクエストを実行
+```
+
+**主なメソッド**:
+
+| メソッド | 説明 | 戻り値 |
+|----------|------|--------|
+| `acquire()` | リクエスト許可を取得（必要に応じてブロック） | `None` |
+
+**注意**: EdgarFetcher は内部で RateLimiter を自動使用するため、通常は明示的に使用する必要はありません。
+
+---
+
 ### データ型
 
 #### FilingType
@@ -397,10 +429,12 @@ edgar/
 ├── errors.py                # エラークラス階層
 ├── config.py                # 設定管理（EdgarConfig, set_identity）
 ├── fetcher.py               # EdgarFetcher（edgartools ラッパー）
+├── rate_limiter.py          # RateLimiter（SEC EDGAR レート制限）
 ├── batch.py                 # BatchFetcher, BatchExtractor（並列処理）
 │
 ├── extractors/              # テキスト・セクション抽出
 │   ├── __init__.py
+│   ├── _helpers.py          # 共通ヘルパー関数（accession_number/text 取得）
 │   ├── text.py              # TextExtractor（テキスト抽出）
 │   └── section.py           # SectionExtractor（セクション分割）
 │
