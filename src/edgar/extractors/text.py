@@ -1,0 +1,450 @@
+"""Text extraction from SEC EDGAR Filing objects.
+
+This module provides the TextExtractor class for extracting and cleaning
+text content from Filing objects returned by the edgartools library.
+
+Features
+--------
+- Extract clean plain text from Filing objects
+- Extract Markdown-formatted text from Filing objects
+- Token counting using tiktoken (cl100k_base encoding)
+- CacheManager integration for avoiding redundant extractions
+- Text cleaning (whitespace normalization, newline consolidation)
+
+Notes
+-----
+Filing objects are typed as ``Any`` because the edgartools library installs
+as ``edgar`` in site-packages, which conflicts with our ``src/edgar`` package.
+The Filing objects are expected to have ``.text()`` and ``.markdown()`` methods,
+as well as an ``accession_number`` attribute.
+"""
+
+from __future__ import annotations
+
+import re
+from typing import TYPE_CHECKING, Any
+
+import tiktoken
+
+from edgar.config import DEFAULT_MAX_FILING_SIZE_BYTES
+from edgar.errors import EdgarError
+from edgar.extractors._helpers import get_accession_number
+from utils_core.logging import get_logger
+
+if TYPE_CHECKING:
+    from edgar.cache import CacheManager
+
+logger = get_logger(__name__)
+
+# tiktoken encoding for token counting (GPT-4 / Claude compatible)
+_TIKTOKEN_ENCODING = "cl100k_base"
+
+# Cache key prefixes
+_CACHE_KEY_TEXT = "text"
+_CACHE_KEY_MARKDOWN = "markdown"
+
+# Pre-compiled regex patterns for _clean_text (avoids re-compilation per call)
+_RE_CONSECUTIVE_WHITESPACE = re.compile(r"[^\S\n]+")
+_RE_EXCESSIVE_NEWLINES = re.compile(r"\n{3,}")
+
+
+def _clean_text(text: str) -> str:
+    """Clean extracted text by normalizing whitespace and newlines.
+
+    Applies the following transformations:
+    1. Consecutive spaces (not newlines) are collapsed to a single space
+    2. Three or more consecutive newlines are collapsed to two newlines
+    3. Leading and trailing whitespace is stripped
+
+    Parameters
+    ----------
+    text : str
+        Raw text to clean
+
+    Returns
+    -------
+    str
+        Cleaned text with normalized whitespace
+    """
+    # Collapse consecutive spaces (excluding newlines) to a single space
+    cleaned = _RE_CONSECUTIVE_WHITESPACE.sub(" ", text)
+
+    # Collapse 3+ consecutive newlines to exactly 2 newlines
+    cleaned = _RE_EXCESSIVE_NEWLINES.sub("\n\n", cleaned)
+
+    # Strip leading/trailing whitespace
+    return cleaned.strip()
+
+
+def _build_cache_key(prefix: str, accession_number: str) -> str:
+    """Build a cache key from a prefix and accession number.
+
+    Parameters
+    ----------
+    prefix : str
+        Cache key prefix (e.g., "text", "markdown")
+    accession_number : str
+        Filing accession number
+
+    Returns
+    -------
+    str
+        Formatted cache key
+    """
+    return f"{prefix}_{accession_number}"
+
+
+class TextExtractor:
+    """Extractor for clean text content from SEC EDGAR Filing objects.
+
+    Wraps the edgartools Filing ``.text()`` and ``.markdown()`` methods
+    to provide cleaned, normalized text output with optional caching
+    and token counting.
+
+    Parameters
+    ----------
+    cache : CacheManager | None
+        Optional cache manager for caching extracted text.
+        When provided, extracted text is cached using the filing's
+        accession number as the key. Cache is checked before extraction
+        to avoid redundant API calls.
+    max_filing_size_bytes : int
+        Maximum filing text size in bytes before emitting a warning.
+        Filings exceeding this size will still be processed but a
+        warning log will be emitted. Defaults to
+        ``DEFAULT_MAX_FILING_SIZE_BYTES`` (10 MB).
+
+    Attributes
+    ----------
+    _cache : CacheManager | None
+        The cache manager instance, or None if caching is disabled
+    _encoding : tiktoken.Encoding
+        The tiktoken encoding used for token counting
+    _max_filing_size_bytes : int
+        The maximum filing size threshold for warning logs
+
+    Examples
+    --------
+    >>> extractor = TextExtractor()
+    >>> text = extractor.extract_text(filing)
+    >>> token_count = extractor.count_tokens(text)
+
+    >>> # With caching
+    >>> from edgar.cache import CacheManager
+    >>> cache = CacheManager()
+    >>> extractor = TextExtractor(cache=cache)
+    >>> text = extractor.extract_text(filing)  # cached on first call
+    """
+
+    def __init__(
+        self,
+        cache: CacheManager | None = None,
+        max_filing_size_bytes: int = DEFAULT_MAX_FILING_SIZE_BYTES,
+    ) -> None:
+        self._cache = cache
+        self._encoding = tiktoken.get_encoding(_TIKTOKEN_ENCODING)
+        self._max_filing_size_bytes = max_filing_size_bytes
+
+        logger.debug(
+            "Initializing TextExtractor",
+            cache_enabled=cache is not None,
+            encoding=_TIKTOKEN_ENCODING,
+            max_filing_size_bytes=max_filing_size_bytes,
+        )
+
+    def extract_text(self, filing: Any) -> str:
+        """Extract clean plain text from a Filing object.
+
+        Calls ``filing.text()`` and applies text cleaning to normalize
+        whitespace and newlines. If a cache manager is configured,
+        checks the cache first and stores the result after extraction.
+
+        Parameters
+        ----------
+        filing : Any
+            An edgartools Filing object with a ``.text()`` method
+            and ``accession_number`` attribute
+
+        Returns
+        -------
+        str
+            Cleaned plain text content of the filing
+
+        Raises
+        ------
+        EdgarError
+            If the filing does not have a ``.text()`` method,
+            or if text extraction fails
+
+        Examples
+        --------
+        >>> extractor = TextExtractor()
+        >>> text = extractor.extract_text(filing)
+        >>> len(text) > 0
+        True
+        """
+        accession_number = self._get_accession_number(filing)
+        cache_key = _build_cache_key(_CACHE_KEY_TEXT, accession_number)
+
+        logger.info(
+            "Extracting text from filing",
+            accession_number=accession_number,
+        )
+
+        # Check cache
+        cached = self._get_from_cache(cache_key)
+        if cached is not None:
+            logger.info(
+                "Text extraction cache hit",
+                accession_number=accession_number,
+                text_length=len(cached),
+            )
+            return cached
+
+        # Extract text
+        try:
+            raw_text = filing.text()
+        except AttributeError as e:
+            raise EdgarError(
+                "Filing object does not have a .text() method",
+                context={"accession_number": accession_number},
+            ) from e
+        except Exception as e:
+            raise EdgarError(
+                f"Failed to extract text from filing '{accession_number}': {e}",
+                context={"accession_number": accession_number},
+            ) from e
+
+        # Check filing size and warn if exceeding limit
+        self._check_filing_size(raw_text, accession_number)
+
+        cleaned = _clean_text(raw_text)
+        token_count = self.count_tokens(cleaned)
+
+        logger.info(
+            "Text extraction completed",
+            accession_number=accession_number,
+            text_length=len(cleaned),
+            token_count=token_count,
+        )
+
+        # Save to cache
+        self._save_to_cache(cache_key, cleaned)
+
+        return cleaned
+
+    def extract_markdown(self, filing: Any) -> str:
+        """Extract Markdown-formatted text from a Filing object.
+
+        Calls ``filing.markdown()`` and applies text cleaning to normalize
+        whitespace and newlines. If a cache manager is configured,
+        checks the cache first and stores the result after extraction.
+
+        Parameters
+        ----------
+        filing : Any
+            An edgartools Filing object with a ``.markdown()`` method
+            and ``accession_number`` attribute
+
+        Returns
+        -------
+        str
+            Cleaned Markdown-formatted text content of the filing
+
+        Raises
+        ------
+        EdgarError
+            If the filing does not have a ``.markdown()`` method,
+            or if text extraction fails
+
+        Examples
+        --------
+        >>> extractor = TextExtractor()
+        >>> markdown = extractor.extract_markdown(filing)
+        >>> "# " in markdown or len(markdown) > 0
+        True
+        """
+        accession_number = self._get_accession_number(filing)
+        cache_key = _build_cache_key(_CACHE_KEY_MARKDOWN, accession_number)
+
+        logger.info(
+            "Extracting markdown from filing",
+            accession_number=accession_number,
+        )
+
+        # Check cache
+        cached = self._get_from_cache(cache_key)
+        if cached is not None:
+            logger.info(
+                "Markdown extraction cache hit",
+                accession_number=accession_number,
+                text_length=len(cached),
+            )
+            return cached
+
+        # Extract markdown
+        try:
+            raw_markdown = filing.markdown()
+        except AttributeError as e:
+            raise EdgarError(
+                "Filing object does not have a .markdown() method",
+                context={"accession_number": accession_number},
+            ) from e
+        except Exception as e:
+            raise EdgarError(
+                f"Failed to extract markdown from filing '{accession_number}': {e}",
+                context={"accession_number": accession_number},
+            ) from e
+
+        # Check filing size and warn if exceeding limit
+        self._check_filing_size(raw_markdown, accession_number)
+
+        cleaned = _clean_text(raw_markdown)
+        token_count = self.count_tokens(cleaned)
+
+        logger.info(
+            "Markdown extraction completed",
+            accession_number=accession_number,
+            text_length=len(cleaned),
+            token_count=token_count,
+        )
+
+        # Save to cache
+        self._save_to_cache(cache_key, cleaned)
+
+        return cleaned
+
+    def count_tokens(self, text: str) -> int:
+        """Count the number of tokens in the given text.
+
+        Uses the cl100k_base tiktoken encoding, which is compatible
+        with GPT-4 and similar LLM tokenizers.
+
+        Parameters
+        ----------
+        text : str
+            Text to count tokens for
+
+        Returns
+        -------
+        int
+            Number of tokens in the text
+
+        Examples
+        --------
+        >>> extractor = TextExtractor()
+        >>> extractor.count_tokens("Hello, world!")
+        4
+        """
+        return len(self._encoding.encode(text))
+
+    def _check_filing_size(self, text: str, accession_number: str) -> None:
+        """Check if filing text exceeds the configured size limit.
+
+        Emits a warning log when the text size exceeds
+        ``_max_filing_size_bytes``. The text is still processed
+        regardless of size.
+
+        Parameters
+        ----------
+        text : str
+            The raw filing text to check
+        accession_number : str
+            The filing's accession number for log context
+        """
+        text_size = len(text.encode("utf-8"))
+        if text_size > self._max_filing_size_bytes:
+            logger.warning(
+                "Filing text exceeds size limit",
+                accession_number=accession_number,
+                text_size_bytes=text_size,
+                max_filing_size_bytes=self._max_filing_size_bytes,
+                text_size_mb=round(text_size / (1024 * 1024), 2),
+            )
+
+    @staticmethod
+    def _get_accession_number(filing: Any) -> str:
+        """Extract the accession number from a Filing object.
+
+        Delegates to the shared ``get_accession_number`` helper and
+        raises ``EdgarError`` when the attribute is absent.
+
+        Parameters
+        ----------
+        filing : Any
+            An edgartools Filing object
+
+        Returns
+        -------
+        str
+            The filing's accession number
+
+        Raises
+        ------
+        EdgarError
+            If the filing does not have an accession number attribute
+        """
+        accession_number = get_accession_number(filing)
+        if accession_number is None:
+            raise EdgarError(
+                "Filing object does not have an 'accession_number' attribute",
+            )
+        return accession_number
+
+    def _get_from_cache(self, cache_key: str) -> str | None:
+        """Retrieve text from cache if available.
+
+        Parameters
+        ----------
+        cache_key : str
+            The cache key to look up
+
+        Returns
+        -------
+        str | None
+            Cached text, or None if not found or caching is disabled
+        """
+        if self._cache is None:
+            return None
+
+        try:
+            return self._cache.get_cached_text(cache_key)
+        except Exception:
+            logger.warning(
+                "Failed to read from cache, proceeding without cache",
+                cache_key=cache_key,
+                exc_info=True,
+            )
+            return None
+
+    def _save_to_cache(self, cache_key: str, text: str) -> None:
+        """Save extracted text to cache.
+
+        Parameters
+        ----------
+        cache_key : str
+            The cache key to save under
+        text : str
+            The text content to cache
+        """
+        if self._cache is None:
+            return
+
+        try:
+            self._cache.save_text(cache_key, text)
+            logger.debug("Text saved to cache", cache_key=cache_key)
+        except Exception:
+            logger.warning(
+                "Failed to save to cache, continuing without caching",
+                cache_key=cache_key,
+                exc_info=True,
+            )
+
+    def __repr__(self) -> str:
+        """Return string representation."""
+        return f"TextExtractor(cache_enabled={self._cache is not None})"
+
+
+__all__ = [
+    "TextExtractor",
+]

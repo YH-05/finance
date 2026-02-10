@@ -406,6 +406,7 @@ updated_at: 2026-01-30
 |------------|------|----------|
 | `database` | コアインフラパッケージ | SQLite/DuckDB接続、構造化ロギング、日付ユーティリティ |
 | `market` | 市場データ取得パッケージ | yfinance連携、FRED連携、Bloomberg連携、キャッシュ機能 |
+| `edgar` | SEC Filings抽出パッケージ | edgartoolsラッパー、テキスト・セクション抽出、並列処理、キャッシュ |
 | `analyze` | 市場データ分析パッケージ | テクニカル分析、統計分析、セクター分析、可視化 |
 | `rss` | RSSフィード管理パッケージ | フィード監視、記事抽出、MCP統合、キーワード検索 |
 | `factor` | ファクター投資・分析パッケージ | バリュー/モメンタム/クオリティ/サイズ/マクロファクター |
@@ -420,8 +421,9 @@ updated_at: 2026-01-30
 
 ### Pythonパッケージ
 
-- `database` (コア) → `market`, `analyze`, `rss`
+- `database` (コア) → `market`, `edgar`, `analyze`, `rss`
 - `market` → `analyze`, `factor`, `strategy`
+- `edgar` → `analyze`
 - `analyze` → `strategy`
 - `factor` → `strategy`
 
@@ -468,6 +470,7 @@ finance/
 ├── src/                        # ソースコード
 │   ├── database/               # コアインフラ（DB, utils, logging）
 │   ├── market/                 # 市場データ取得（yfinance, FRED, Bloomberg）
+│   ├── edgar/                  # SEC Filings抽出（edgartools, テキスト抽出）
 │   ├── analyze/                # 市場分析（テクニカル、統計、セクター）
 │   ├── rss/                    # RSSフィード監視・記事抽出
 │   ├── factor/                 # ファクター分析（バリュー、モメンタム等）
