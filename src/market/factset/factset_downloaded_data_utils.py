@@ -5,6 +5,7 @@ Factsetからエクセルでダウンロードしたデータを操作するモ�
 """
 
 import datetime
+import re
 import sqlite3
 import warnings
 from pathlib import Path
@@ -17,6 +18,46 @@ from utils_core.logging import get_logger
 logger = get_logger(__name__)
 
 warnings.simplefilter("ignore")
+
+
+# =====================================================================
+# SQLインジェクション対策用ヘルパー関数
+# =====================================================================
+def _validate_sql_identifier(name: str) -> str:
+    """SQL識別子（テーブル名・カラム名）が安全であることを検証する。
+
+    SQLiteでは識別子をパラメータ化できないため、
+    この関数で識別子が安全な形式であることを保証する。
+
+    Parameters
+    ----------
+    name : str
+        検証するSQL識別子
+
+    Returns
+    -------
+    str
+        検証済みの識別子（入力と同じ値）
+
+    Raises
+    ------
+    ValueError
+        識別子が不正な形式の場合
+    """
+    # 空文字列チェック
+    if not name or not name.strip():
+        raise ValueError("SQL識別子は空にできません")
+
+    # 許可するパターン: 英数字、アンダースコア、ハイフン、ドット
+    # （FactSetのテーブル名・カラム名で使用される文字）
+    pattern = r"^[a-zA-Z_][a-zA-Z0-9_\-\.]*$"
+    if not re.match(pattern, name):
+        raise ValueError(
+            f"SQL識別子に不正な文字が含まれています: {name!r}. "
+            f"許可される形式: 英字で始まり、英数字・アンダースコア・ハイフン・ドットのみ"
+        )
+
+    return name
 
 
 # =====================================================================
@@ -41,6 +82,11 @@ def store_to_database(
     if unique_cols is None:
         unique_cols = ["date", "P_SYMBOL", "variable"]
 
+    # SQL識別子バリデーション（CWE-89 対策）
+    _validate_sql_identifier(table_name)
+    for col in unique_cols:
+        _validate_sql_identifier(col)
+
     # 必須カラムのチェック
     if not all(col in df.columns for col in unique_cols):
         raise ValueError(
@@ -54,6 +100,7 @@ def store_to_database(
     # 2. 既存のテーブルから一意性チェックに必要なデータを取得し、重複行を除外
     try:
         # テーブルが存在する場合、既存の複合キーデータを取得
+        # nosec B608 - table_name, unique_cols は _validate_sql_identifier() で検証済み
         select_cols = ", ".join(unique_cols)
         existing_df = pd.read_sql(f"SELECT {select_cols} FROM {table_name}", conn)
 
@@ -119,6 +166,9 @@ def delete_table_from_database(db_path: Path, table_name: str, verbose: bool = F
         db_path (Path): 接続するSQLiteデータベースのファイルパス。
         table_name (str): 削除するテーブル名。
     """
+    # SQL識別子バリデーション（CWE-89 対策）
+    _validate_sql_identifier(table_name)
+
     conn = None
     try:
         # 1. データベースに接続
@@ -128,8 +178,7 @@ def delete_table_from_database(db_path: Path, table_name: str, verbose: bool = F
         cur = conn.cursor()
 
         # 3. DROP TABLE IF EXISTS クエリを実行
-        #    f-stringはSQLインジェクションのリスクがあるが、
-        #    この関数の用途（内部的なDB管理）を考慮し、許可する。
+        # nosec B608 - table_name は _validate_sql_identifier() で検証済み
         query = f"DROP TABLE IF EXISTS {table_name}"
         cur.execute(query)
 
