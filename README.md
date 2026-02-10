@@ -60,6 +60,7 @@ uv run python -m news.scripts.finance_news_workflow --verbose
 |-----------|------|
 | `database` | 共通データベースインフラ（SQLite/DuckDB）、ユーティリティ、ロギング |
 | `market` | 市場データ取得機能（yfinance, FRED, Bloomberg）、キャッシュ、エクスポート |
+| `edgar` | SEC Filings抽出パッケージ（edgartoolsラッパー、テキスト・セクション抽出、並列処理） |
 | `analyze` | 市場データ分析機能（テクニカル、統計、セクター分析、可視化） |
 | `rss` | RSSフィード管理・監視・記事抽出・MCP統合 |
 | `factor` | ファクター投資・分析（バリュー、モメンタム、クオリティ等） |
@@ -348,6 +349,7 @@ graph TB
 
     subgraph "Data Layer"
         market["market<br/>(市場データ取得)"]
+        edgar["edgar<br/>(SEC Filings抽出)"]
         rss["rss<br/>(RSS管理)"]
     end
 
@@ -361,8 +363,10 @@ graph TB
     end
 
     database --> market
+    database --> edgar
     database --> rss
     market --> analyze
+    edgar --> analyze
     analyze --> factor
     factor --> strategy
     market --> strategy
