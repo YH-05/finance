@@ -33,9 +33,72 @@ from edgar.fetcher import EdgarFetcher
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from edgar.types import FilingType
 
 logger = get_logger(__name__)
+
+
+def _run_batch[T, R](
+    items: list[T],
+    key_fn: Callable[[T], str],
+    task_fn: Callable[[T], R],
+    desc: str,
+    max_workers: int,
+) -> dict[str, R | Exception]:
+    """Execute tasks in parallel using ThreadPoolExecutor with progress tracking.
+
+    This is the common batch execution helper that encapsulates the
+    ThreadPoolExecutor + tqdm + partial-failure-tolerance pattern used
+    throughout this module.
+
+    Parameters
+    ----------
+    items : list[T]
+        The input items to process in parallel
+    key_fn : Callable[[T], str]
+        Function to extract a string key from each item for the result dict
+    task_fn : Callable[[T], R]
+        Function to execute for each item. Receives the item and returns
+        the result value. If it raises, the exception is stored in the
+        result dict under the item's key.
+    desc : str
+        Description shown in the tqdm progress bar
+    max_workers : int
+        Maximum number of concurrent threads
+
+    Returns
+    -------
+    dict[str, R | Exception]
+        Mapping of item keys to results on success, or Exception on failure
+    """
+    results: dict[str, R | Exception] = {}
+
+    if not items:
+        return results
+
+    total = len(items)
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_key = {executor.submit(task_fn, item): key_fn(item) for item in items}
+
+        with tqdm(total=total, desc=desc) as pbar:
+            for future in as_completed(future_to_key):
+                key = future_to_key[future]
+                try:
+                    results[key] = future.result()
+                except Exception as exc:
+                    results[key] = exc
+                    logger.warning(
+                        "Batch task failed",
+                        key=key,
+                        error=str(exc),
+                        error_type=type(exc).__name__,
+                    )
+                pbar.update(1)
+
+    return results
 
 
 class BatchFetcher:
@@ -114,55 +177,28 @@ class BatchFetcher:
         ...     ["AAPL", "MSFT"], FilingType.FORM_10K, limit=3
         ... )
         """
-        total = len(cik_or_tickers)
         logger.info(
             "Starting batch fetch",
-            total=total,
+            total=len(cik_or_tickers),
             form=form.value,
             limit=limit,
             max_workers=max_workers,
         )
 
-        results: dict[str, list[Any] | Exception] = {}
-
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_ticker = {
-                executor.submit(
-                    self._fetcher.fetch,
-                    cik_or_ticker,
-                    form,
-                    limit,
-                ): cik_or_ticker
-                for cik_or_ticker in cik_or_tickers
-            }
-
-            with tqdm(total=total, desc="Fetching filings") as pbar:
-                for future in as_completed(future_to_ticker):
-                    ticker = future_to_ticker[future]
-                    try:
-                        filings = future.result()
-                        results[ticker] = filings
-                        logger.debug(
-                            "Batch fetch succeeded",
-                            cik_or_ticker=ticker,
-                            filing_count=len(filings),
-                        )
-                    except Exception as exc:
-                        results[ticker] = exc
-                        logger.warning(
-                            "Batch fetch failed for item",
-                            cik_or_ticker=ticker,
-                            error=str(exc),
-                            error_type=type(exc).__name__,
-                        )
-                    pbar.update(1)
+        results = _run_batch(
+            items=cik_or_tickers,
+            key_fn=lambda ticker: ticker,
+            task_fn=lambda ticker: self._fetcher.fetch(ticker, form, limit),
+            desc="Fetching filings",
+            max_workers=max_workers,
+        )
 
         success_count = sum(1 for v in results.values() if not isinstance(v, Exception))
-        failure_count = total - success_count
+        failure_count = len(cik_or_tickers) - success_count
 
         logger.info(
             "Batch fetch completed",
-            total=total,
+            total=len(cik_or_tickers),
             success_count=success_count,
             failure_count=failure_count,
         )
@@ -203,53 +239,27 @@ class BatchFetcher:
         ...     ["AAPL", "MSFT"], FilingType.FORM_10K
         ... )
         """
-        total = len(cik_or_tickers)
         logger.info(
             "Starting batch fetch latest",
-            total=total,
+            total=len(cik_or_tickers),
             form=form.value,
             max_workers=max_workers,
         )
 
-        results: dict[str, Any | None | Exception] = {}
-
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_ticker = {
-                executor.submit(
-                    self._fetcher.fetch_latest,
-                    cik_or_ticker,
-                    form,
-                ): cik_or_ticker
-                for cik_or_ticker in cik_or_tickers
-            }
-
-            with tqdm(total=total, desc="Fetching latest filings") as pbar:
-                for future in as_completed(future_to_ticker):
-                    ticker = future_to_ticker[future]
-                    try:
-                        filing = future.result()
-                        results[ticker] = filing
-                        logger.debug(
-                            "Batch fetch latest succeeded",
-                            cik_or_ticker=ticker,
-                            found=filing is not None,
-                        )
-                    except Exception as exc:
-                        results[ticker] = exc
-                        logger.warning(
-                            "Batch fetch latest failed for item",
-                            cik_or_ticker=ticker,
-                            error=str(exc),
-                            error_type=type(exc).__name__,
-                        )
-                    pbar.update(1)
+        results = _run_batch(
+            items=cik_or_tickers,
+            key_fn=lambda ticker: ticker,
+            task_fn=lambda ticker: self._fetcher.fetch_latest(ticker, form),
+            desc="Fetching latest filings",
+            max_workers=max_workers,
+        )
 
         success_count = sum(1 for v in results.values() if not isinstance(v, Exception))
-        failure_count = total - success_count
+        failure_count = len(cik_or_tickers) - success_count
 
         logger.info(
             "Batch fetch latest completed",
-            total=total,
+            total=len(cik_or_tickers),
             success_count=success_count,
             failure_count=failure_count,
         )
@@ -349,69 +359,28 @@ class BatchExtractor:
         ...     else:
         ...         print(f"{acc_no}: {len(text_or_error)} chars")
         """
-        total = len(filings)
         logger.info(
             "Starting batch text extraction",
-            total=total,
+            total=len(filings),
             max_workers=max_workers,
         )
 
-        results: dict[str, str | Exception] = {}
+        indexed_filings = list(enumerate(filings))
 
-        def _extract_single(filing: Any, index: int) -> tuple[str, str]:
-            """Extract text from a single filing.
-
-            Parameters
-            ----------
-            filing : Any
-                The filing object to extract text from
-            index : int
-                Fallback index for key if accession_number is not available
-
-            Returns
-            -------
-            tuple[str, str]
-                Tuple of (accession_number, extracted_text)
-            """
-            return (
-                getattr(filing, "accession_number", str(index)),
-                self._text_extractor.extract_text(filing),
-            )
-
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_key = {}
-            for i, filing in enumerate(filings):
-                key = getattr(filing, "accession_number", str(i))
-                future = executor.submit(_extract_single, filing, i)
-                future_to_key[future] = key
-
-            with tqdm(total=total, desc="Extracting text") as pbar:
-                for future in as_completed(future_to_key):
-                    key = future_to_key[future]
-                    try:
-                        acc_no, text = future.result()
-                        results[acc_no] = text
-                        logger.debug(
-                            "Batch text extraction succeeded",
-                            accession_number=acc_no,
-                            text_length=len(text),
-                        )
-                    except Exception as exc:
-                        results[key] = exc
-                        logger.warning(
-                            "Batch text extraction failed for filing",
-                            accession_number=key,
-                            error=str(exc),
-                            error_type=type(exc).__name__,
-                        )
-                    pbar.update(1)
+        results = _run_batch(
+            items=indexed_filings,
+            key_fn=lambda item: getattr(item[1], "accession_number", str(item[0])),
+            task_fn=lambda item: self._text_extractor.extract_text(item[1]),
+            desc="Extracting text",
+            max_workers=max_workers,
+        )
 
         success_count = sum(1 for v in results.values() if not isinstance(v, Exception))
-        failure_count = total - success_count
+        failure_count = len(filings) - success_count
 
         logger.info(
             "Batch text extraction completed",
-            total=total,
+            total=len(filings),
             success_count=success_count,
             failure_count=failure_count,
         )
@@ -455,78 +424,39 @@ class BatchExtractor:
         ...     filings, ["item_1", "item_7"]
         ... )
         """
-        total = len(filings)
         logger.info(
             "Starting batch section extraction",
-            total=total,
+            total=len(filings),
             section_keys=section_keys,
             max_workers=max_workers,
         )
 
-        results: dict[str, dict[str, str | None] | Exception] = {}
+        indexed_filings = list(enumerate(filings))
 
-        def _extract_sections_single(
-            filing: Any,
-            index: int,
-        ) -> tuple[str, dict[str, str | None]]:
-            """Extract sections from a single filing.
-
-            Parameters
-            ----------
-            filing : Any
-                The filing object to extract sections from
-            index : int
-                Fallback index for key if accession_number is not available
-
-            Returns
-            -------
-            tuple[str, dict[str, str | None]]
-                Tuple of (accession_number, sections_dict)
-            """
-            acc_no = getattr(filing, "accession_number", str(index))
+        def _extract_sections(item: tuple[int, Any]) -> dict[str, str | None]:
+            """Extract all requested sections from a single filing."""
+            _index, filing = item
             sections: dict[str, str | None] = {}
             for section_key in section_keys:
                 sections[section_key] = self._section_extractor.extract_section(
                     filing, section_key
                 )
-            return acc_no, sections
+            return sections
 
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_key = {}
-            for i, filing in enumerate(filings):
-                key = getattr(filing, "accession_number", str(i))
-                future = executor.submit(_extract_sections_single, filing, i)
-                future_to_key[future] = key
-
-            with tqdm(total=total, desc="Extracting sections") as pbar:
-                for future in as_completed(future_to_key):
-                    key = future_to_key[future]
-                    try:
-                        acc_no, sections = future.result()
-                        results[acc_no] = sections
-                        found_count = sum(1 for v in sections.values() if v is not None)
-                        logger.debug(
-                            "Batch section extraction succeeded",
-                            accession_number=acc_no,
-                            requested_sections=len(section_keys),
-                            found_sections=found_count,
-                        )
-                    except Exception as exc:
-                        results[key] = exc
-                        logger.warning(
-                            "Batch section extraction failed for filing",
-                            accession_number=key,
-                            error=str(exc),
-                            error_type=type(exc).__name__,
-                        )
-                    pbar.update(1)
+        results = _run_batch(
+            items=indexed_filings,
+            key_fn=lambda item: getattr(item[1], "accession_number", str(item[0])),
+            task_fn=_extract_sections,
+            desc="Extracting sections",
+            max_workers=max_workers,
+        )
 
         success_count = sum(1 for v in results.values() if not isinstance(v, Exception))
-        failure_count = total - success_count
+        failure_count = len(filings) - success_count
 
         logger.info(
             "Batch section extraction completed",
-            total=total,
+            total=len(filings),
             success_count=success_count,
             failure_count=failure_count,
         )
@@ -545,4 +475,5 @@ class BatchExtractor:
 __all__ = [
     "BatchExtractor",
     "BatchFetcher",
+    "_run_batch",
 ]

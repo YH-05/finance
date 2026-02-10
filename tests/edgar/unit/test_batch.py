@@ -1,7 +1,7 @@
 """Unit tests for edgar.batch module.
 
-Tests for BatchFetcher and BatchExtractor classes, including parallel
-fetch/extraction, partial failure handling, and edge cases.
+Tests for BatchFetcher, BatchExtractor classes, and _run_batch helper,
+including parallel fetch/extraction, partial failure handling, and edge cases.
 """
 
 from __future__ import annotations
@@ -10,8 +10,120 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from edgar.batch import BatchExtractor, BatchFetcher
+from edgar.batch import BatchExtractor, BatchFetcher, _run_batch
+from edgar.fetcher import EdgarFetcher
+from edgar.rate_limiter import RateLimiter
 from edgar.types import FilingType
+
+
+class TestRunBatch:
+    """Tests for _run_batch helper function."""
+
+    def test_正常系_複数アイテムを並列処理し結果をdict返却(self) -> None:
+        """_run_batch should process items in parallel and return results dict."""
+
+        def task_fn(item: str) -> str:
+            return f"result_{item}"
+
+        results = _run_batch(
+            items=["a", "b", "c"],
+            key_fn=lambda item: item,
+            task_fn=task_fn,
+            desc="Testing",
+            max_workers=2,
+        )
+
+        assert len(results) == 3
+        assert results["a"] == "result_a"
+        assert results["b"] == "result_b"
+        assert results["c"] == "result_c"
+
+    def test_正常系_key_fnでカスタムキーを使用(self) -> None:
+        """_run_batch should use key_fn to determine result dict keys."""
+        items = [{"id": "x", "val": 1}, {"id": "y", "val": 2}]
+
+        def task_fn(item: dict) -> int:
+            return item["val"] * 10
+
+        results = _run_batch(
+            items=items,
+            key_fn=lambda item: item["id"],
+            task_fn=task_fn,
+            desc="Testing",
+            max_workers=2,
+        )
+
+        assert results["x"] == 10
+        assert results["y"] == 20
+
+    def test_異常系_一部失敗時にExceptionを格納し他は続行(self) -> None:
+        """_run_batch should store Exception for failed items, continue others."""
+
+        def task_fn(item: str) -> str:
+            if item == "fail":
+                msg = "Intentional error"
+                raise RuntimeError(msg)
+            return f"ok_{item}"
+
+        results = _run_batch(
+            items=["good", "fail"],
+            key_fn=lambda item: item,
+            task_fn=task_fn,
+            desc="Testing",
+            max_workers=2,
+        )
+
+        assert len(results) == 2
+        assert results["good"] == "ok_good"
+        assert isinstance(results["fail"], Exception)
+
+    def test_異常系_全アイテム失敗でも全Exceptionを保持(self) -> None:
+        """_run_batch should store all Exceptions when all items fail."""
+
+        def task_fn(item: str) -> str:
+            msg = "All fail"
+            raise RuntimeError(msg)
+
+        results = _run_batch(
+            items=["a", "b"],
+            key_fn=lambda item: item,
+            task_fn=task_fn,
+            desc="Testing",
+            max_workers=2,
+        )
+
+        assert len(results) == 2
+        for value in results.values():
+            assert isinstance(value, Exception)
+
+    def test_エッジケース_空リストで空dict返却(self) -> None:
+        """_run_batch should return empty dict for empty input."""
+        results: dict[str, str | Exception] = _run_batch(
+            items=[],
+            key_fn=lambda item: str(item),
+            task_fn=lambda item: str(item),
+            desc="Testing",
+            max_workers=2,
+        )
+        assert results == {}
+
+    def test_エッジケース_max_workers_1でも正常動作(self) -> None:
+        """_run_batch should work correctly with max_workers=1."""
+
+        def task_fn(item: str) -> str:
+            return f"result_{item}"
+
+        results = _run_batch(
+            items=["a", "b"],
+            key_fn=lambda item: item,
+            task_fn=task_fn,
+            desc="Testing",
+            max_workers=1,
+        )
+
+        assert len(results) == 2
+        assert results["a"] == "result_a"
+        assert results["b"] == "result_b"
 
 
 class TestBatchFetcher:
@@ -224,3 +336,54 @@ class TestBatchExtractor:
         batch = BatchExtractor()
         assert batch._text_extractor is not None
         assert batch._section_extractor is not None
+
+
+class TestBatchFetcherRateLimit:
+    """Tests for BatchFetcher rate limiting compliance."""
+
+    def test_正常系_BatchFetcherがEdgarFetcherのレートリミッターを使用(self) -> None:
+        """BatchFetcher should use EdgarFetcher's rate limiter.
+
+        Verify that BatchFetcher delegates rate limiting to the underlying
+        EdgarFetcher, which has its own RateLimiter instance.
+        """
+        custom_limiter = RateLimiter(max_requests_per_second=5)
+        fetcher = EdgarFetcher(rate_limiter=custom_limiter)
+        batch = BatchFetcher(fetcher=fetcher)
+
+        # BatchFetcher uses the EdgarFetcher which has the rate limiter
+        assert batch._fetcher._rate_limiter is custom_limiter
+
+    def test_正常系_fetch_batch時にレートリミッターが呼ばれる(self) -> None:
+        """fetch_batch should trigger rate limiter via EdgarFetcher.fetch().
+
+        Verify that each call to EdgarFetcher.fetch() within fetch_batch
+        goes through the rate limiter.
+        """
+        mock_limiter = MagicMock(spec=RateLimiter)
+        mock_limiter.max_requests_per_second = 10
+
+        mock_filings = MagicMock()
+        mock_filings.latest.return_value = [MagicMock()]
+        mock_company = MagicMock()
+        mock_company.get_filings.return_value = mock_filings
+        mock_company_cls = MagicMock(return_value=mock_company)
+
+        from unittest.mock import patch
+
+        fetcher = EdgarFetcher(rate_limiter=mock_limiter)
+        fetcher._company_cls = mock_company_cls
+
+        batch = BatchFetcher(fetcher=fetcher)
+
+        with patch("edgar.fetcher.load_config") as mock_config:
+            mock_config.return_value = MagicMock(is_identity_configured=True)
+            batch.fetch_batch(
+                ["AAPL", "MSFT"],
+                FilingType.FORM_10K,
+                limit=1,
+                max_workers=2,
+            )
+
+        # Rate limiter acquire() should be called once per ticker
+        assert mock_limiter.acquire.call_count == 2
