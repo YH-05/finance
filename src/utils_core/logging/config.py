@@ -44,24 +44,24 @@ _initialized = False
 def _create_secure_log_file(log_file: Path) -> None:
     """Create log file atomically with secure permissions (CWE-732, TOCTOU).
 
-    For new files, uses os.open() to atomically create with 0o600 permissions,
-    eliminating the TOCTOU window between file creation and chmod.
-    For existing files, corrects permissions to 0o600 via chmod.
+    Uses os.open() with O_EXCL flag for atomic exclusive creation at 0o600,
+    completely eliminating the TOCTOU window. If the file already exists,
+    catches FileExistsError and corrects permissions via chmod.
 
     Parameters
     ----------
     log_file : Path
         Path to the log file to create or secure
     """
-    if not log_file.exists():
-        log_file.parent.mkdir(parents=True, exist_ok=True)
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    try:
         fd = os.open(
             log_file,
-            os.O_CREAT | os.O_WRONLY | os.O_APPEND,
+            os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_APPEND,
             stat.S_IRUSR | stat.S_IWUSR,  # 0o600
         )
         os.close(fd)
-    else:
+    except FileExistsError:
         log_file.chmod(0o600)
 
 

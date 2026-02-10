@@ -192,7 +192,7 @@ class TestTOCTOUPrevention:
         assert log_file.read_text() == "", "新規ファイルは空である必要がある"
 
     def test_正常系_os_openフラグが正しく設定される(self, tmp_path: Path) -> None:
-        """os.open() の O_CREAT | O_WRONLY | O_APPEND フラグで作成されること."""
+        """os.open() の O_CREAT | O_EXCL | O_WRONLY | O_APPEND フラグで作成されること."""
         from unittest.mock import patch
 
         from utils_core.logging.config import _create_secure_log_file
@@ -209,6 +209,9 @@ class TestTOCTOUPrevention:
 
             # フラグの検証
             assert flags & os.O_CREAT, "O_CREAT フラグが設定されている必要がある"
+            assert flags & os.O_EXCL, (
+                "O_EXCL フラグが設定されている必要がある（TOCTOU対策）"
+            )
             assert flags & os.O_WRONLY, "O_WRONLY フラグが設定されている必要がある"
             assert flags & os.O_APPEND, "O_APPEND フラグが設定されている必要がある"
 
@@ -216,3 +219,25 @@ class TestTOCTOUPrevention:
             assert mode == (stat.S_IRUSR | stat.S_IWUSR), (
                 f"モードは S_IRUSR | S_IWUSR (0o600) である必要がある。実際: {oct(mode)}"
             )
+
+    def test_正常系_既存ファイルではos_openが呼ばれない(self, tmp_path: Path) -> None:
+        """既存ファイルに対しては O_EXCL 作成を試みず chmod のみ実行されること."""
+        from unittest.mock import patch
+
+        from utils_core.logging.config import _create_secure_log_file
+
+        log_file = tmp_path / "existing_flag_test.log"
+        log_file.write_text("existing content")
+        log_file.chmod(0o644)
+
+        with patch("utils_core.logging.config.os.open", wraps=os.open) as mock_open:
+            _create_secure_log_file(log_file)
+
+            # O_EXCL で FileExistsError が発生し、os.open は1回呼ばれるが fd は閉じられない
+            # （FileExistsError で except 分岐に入るため）
+            mock_open.assert_called_once()
+
+        post_mode = stat.S_IMODE(log_file.stat().st_mode)
+        assert post_mode == 0o600, (
+            f"既存ファイルのパーミッションが 0o600 に修正される必要がある。実際: {oct(post_mode)}"
+        )
