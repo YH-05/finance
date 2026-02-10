@@ -48,6 +48,7 @@ def get_accession_number(filing: Any) -> str | None:
         logger.warning(
             "Failed to get accession number",
             error=str(e),
+            exc_info=True,
         )
         return None
 
@@ -119,6 +120,7 @@ def get_filing_text(filing: Any) -> str | None:
             "Failed to extract text from filing",
             error=str(e),
             error_type=type(e).__name__,
+            exc_info=True,
         )
         return None
 

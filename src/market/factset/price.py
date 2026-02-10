@@ -4,12 +4,15 @@ price.py
 Factsetデータのprice系データ
 """
 
-import logging
 import sqlite3
 from pathlib import Path
 
 import pandas as pd
 from pandas import DataFrame
+
+from utils_core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 def load_fg_price(
@@ -71,8 +74,9 @@ def load_fg_price(
             df = pd.read_sql(
                 query, con=conn, params=params, parse_dates=["date"], index_col="date"
             )
-        logging.info(f"Price Data was successfully loaded: {db_path}.")
+        logger.info("Price data loaded", db_path=str(db_path))
     except Exception as e:
-        logging.error(f"An error occured: {e}.")
+        logger.error("Price data load failed", error=str(e), exc_info=True)
+        raise
 
     return df

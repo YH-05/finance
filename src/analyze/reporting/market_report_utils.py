@@ -16,6 +16,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 import yfinance as yf
 
+from utils_core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 # =========================================================================================
 class MarketPerformanceAnalyzer:
@@ -148,9 +152,11 @@ class MarketPerformanceAnalyzer:
                 earnings_data.index = pd.to_datetime(earnings_data.index)
                 all_eps_data.append(earnings_data)
 
-            except Exception as e:
-                print(
-                    f"エラー: 銘柄 {ticker} のEPSデータ取得中に例外が発生しました: {e}"
+            except Exception:
+                logger.error(
+                    "Failed to fetch EPS data",
+                    ticker=ticker,
+                    exc_info=True,
                 )
 
         all_eps_data = pd.concat(all_eps_data)
@@ -262,8 +268,9 @@ class MarketPerformanceAnalyzer:
                 # 前年のデータに絞り込み、その中の最大の日付（最終営業日）を特定
                 start_date = df.loc[str(previous_year)].index.max()
             except KeyError:
-                print(
-                    f"警告: {previous_year}年のデータが見つかりませんでした。全データを返します。"
+                logger.warning(
+                    "Previous year data not found, returning all data",
+                    year=previous_year,
                 )
                 return df
 
@@ -875,9 +882,10 @@ def calculate_kalman_beta(
                 )
 
         except ImportError:
-            # pykalmanがインストールされていない場合は警告
-            print(f"Warning: pykalman is not installed. Skipping ticker {ticker}")
-            print("Install with: pip install pykalman")
+            logger.warning(
+                "pykalman not installed, skipping Kalman beta",
+                ticker=ticker,
+            )
             continue
 
     # 結果をDataFrameに変換

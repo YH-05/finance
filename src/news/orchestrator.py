@@ -50,6 +50,7 @@ from news.models import (
     SummarizedArticle,
     WorkflowResult,
 )
+from news.progress import ConsoleProgressCallback, ProgressCallback
 from news.publisher import Publisher
 from news.summarizer import Summarizer
 from utils_core.logging import get_logger
@@ -90,6 +91,8 @@ class NewsWorkflowOrchestrator:
         Article grouper for category-based publishing.
     _exporter : MarkdownExporter
         Markdown exporter for category-based content.
+    _callback : ProgressCallback
+        Callback for progress notifications.
     _publish_format : str
         Publishing format: "per_category" or "per_article".
 
@@ -112,15 +115,23 @@ class NewsWorkflowOrchestrator:
     - export_only mode exports Markdown without creating Issues
     """
 
-    def __init__(self, config: NewsWorkflowConfig) -> None:
+    def __init__(
+        self,
+        config: NewsWorkflowConfig,
+        progress_callback: ProgressCallback | None = None,
+    ) -> None:
         """Initialize the orchestrator with configuration.
 
         Parameters
         ----------
         config : NewsWorkflowConfig
             Workflow configuration for all components.
+        progress_callback : ProgressCallback | None, optional
+            Callback for progress notifications.
+            Defaults to ConsoleProgressCallback.
         """
         self._config = config
+        self._callback = progress_callback or ConsoleProgressCallback()
         self._collector = RSSCollector(config)
         self._extractor = TrafilaturaExtractor(
             min_body_length=config.extraction.min_body_length,
@@ -145,24 +156,27 @@ class NewsWorkflowOrchestrator:
 
     def _log_stage_start(self, stage: str, description: str) -> None:
         """Log the start of a workflow stage with visual separator."""
-        print(f"\n{'=' * 60}")
-        print(f"[{stage}] {description}")
-        print(f"{'=' * 60}")
+        logger.info("Stage started", stage=stage, description=description)
+        self._callback.on_stage_start(stage, description)
 
     def _log_progress(
         self, current: int, total: int, message: str, *, is_error: bool = False
     ) -> None:
         """Log progress with count indicator."""
-        prefix = "  ERROR" if is_error else "  "
-        print(f"{prefix}[{current}/{total}] {message}")
+        if is_error:
+            logger.error(
+                "Progress item failed", current=current, total=total, message=message
+            )
+        else:
+            logger.debug("Progress", current=current, total=total, message=message)
+        self._callback.on_progress(current, total, message, is_error=is_error)
 
     def _log_stage_complete(
         self, stage: str, success: int, total: int, *, extra: str = ""
     ) -> None:
         """Log stage completion with success rate."""
-        rate = (success / total * 100) if total > 0 else 0
-        extra_str = f" {extra}" if extra else ""
-        print(f"  -> {stage}完了: {success}/{total} ({rate:.0f}%){extra_str}")
+        logger.info("Stage completed", stage=stage, success=success, total=total)
+        self._callback.on_stage_complete(stage, success, total, extra=extra)
 
     @contextmanager
     def _timed_stage(
@@ -245,9 +259,7 @@ class NewsWorkflowOrchestrator:
         started_at = datetime.now(timezone.utc)
         stage_metrics_list: list[StageMetrics] = []
 
-        self._print_config(
-            statuses, max_articles, dry_run, export_only, is_per_category
-        )
+        self._log_config(statuses, max_articles, dry_run, export_only, is_per_category)
 
         # Stage 1: Collection
         collected, feed_errors, early_dedup_count = await self._run_collection(
@@ -316,10 +328,10 @@ class NewsWorkflowOrchestrator:
             domain_extraction_rates=domain_rates,
         )
         self._save_result(result)
-        self._print_final_summary(result, is_per_category, category_results)
+        self._log_final_summary(result)
         return result
 
-    def _print_config(
+    def _log_config(
         self,
         statuses: list[str] | None,
         max_articles: int | None,
@@ -327,19 +339,29 @@ class NewsWorkflowOrchestrator:
         export_only: bool,
         is_per_category: bool,
     ) -> None:
-        """Show workflow configuration at startup."""
+        """Log workflow configuration at startup."""
         mode_parts: list[str] = []
         if dry_run:
             mode_parts.append("DRY-RUN")
         if export_only:
             mode_parts.append("EXPORT-ONLY")
         mode_str = f"[{', '.join(mode_parts)}] " if mode_parts else ""
-        print(f"\n{mode_str}ニュース収集ワークフロー開始")
-        print(f"  対象ステータス: {', '.join(statuses) if statuses else '全て'}")
-        print(f"  最大記事数: {max_articles if max_articles else '無制限'}")
-        print(
-            f"  公開形式: {'カテゴリ別' if is_per_category else '記事別（レガシー）'}"
+        status_str = ", ".join(statuses) if statuses else "全て"
+        max_str = str(max_articles) if max_articles else "無制限"
+        format_str = "カテゴリ別" if is_per_category else "記事別（レガシー）"
+
+        logger.info(
+            "Workflow config",
+            statuses=statuses,
+            max_articles=max_articles,
+            dry_run=dry_run,
+            export_only=export_only,
+            publish_format="per_category" if is_per_category else "per_article",
         )
+        self._callback.on_info(f"\n{mode_str}ニュース収集ワークフロー開始")
+        self._callback.on_info(f"  対象ステータス: {status_str}")
+        self._callback.on_info(f"  最大記事数: {max_str}")
+        self._callback.on_info(f"  公開形式: {format_str}")
 
     async def _run_collection(
         self,
@@ -359,18 +381,25 @@ class NewsWorkflowOrchestrator:
 
         feed_errors = self._collector.feed_errors
         elapsed = stage_metrics_list[-1].elapsed_seconds
-        print(f"  収集完了: {len(collected)}件 ({elapsed:.1f}秒)")
+        logger.info("Collection completed", count=len(collected), elapsed=elapsed)
+        self._callback.on_info(f"  収集完了: {len(collected)}件 ({elapsed:.1f}秒)")
 
         # Apply status filtering
         if statuses:
             before_count = len(collected)
             collected = self._filter_by_status(collected, statuses)
-            print(f"  ステータスフィルタ適用: {before_count} -> {len(collected)}件")
+            logger.info(
+                "Status filter applied", before=before_count, after=len(collected)
+            )
+            self._callback.on_info(
+                f"  ステータスフィルタ適用: {before_count} -> {len(collected)}件"
+            )
 
         # Apply max_articles limit
         if max_articles and len(collected) > max_articles:
             collected = collected[:max_articles]
-            print(f"  記事数制限適用: {len(collected)}件")
+            logger.info("Article limit applied", limit=max_articles)
+            self._callback.on_info(f"  記事数制限適用: {len(collected)}件")
 
         # Early duplicate check (before extraction)
         existing_urls = await self._publisher.get_existing_urls()
@@ -382,13 +411,20 @@ class NewsWorkflowOrchestrator:
         ]
         early_dedup_count = before_dedup - len(collected)
         if early_dedup_count > 0:
-            print(
+            logger.info(
+                "Early duplicates removed",
+                before=before_dedup,
+                after=len(collected),
+                duplicates=early_dedup_count,
+            )
+            self._callback.on_info(
                 f"  重複除外: {before_dedup} -> {len(collected)}件"
                 f" (重複: {early_dedup_count}件)"
             )
 
         if not collected:
-            print("  -> 処理対象の記事がありません")
+            logger.info("No articles to process after filtering")
+            self._callback.on_info("  -> 処理対象の記事がありません")
 
         return collected, feed_errors, early_dedup_count
 
@@ -418,7 +454,8 @@ class NewsWorkflowOrchestrator:
         domain_rates = self._compute_domain_extraction_rates(extracted)
 
         if not extracted_success:
-            print("  -> 抽出成功した記事がありません")
+            logger.warning("No articles extracted successfully")
+            self._callback.on_info("  -> 抽出成功した記事がありません")
 
         return extracted, extracted_success, domain_rates
 
@@ -446,7 +483,8 @@ class NewsWorkflowOrchestrator:
         )
 
         if not summarized_success:
-            print("  -> 要約成功した記事がありません")
+            logger.warning("No articles summarized successfully")
+            self._callback.on_info("  -> 要約成功した記事がありません")
 
         return summarized, summarized_success
 
@@ -497,9 +535,12 @@ class NewsWorkflowOrchestrator:
             ctx["item_count"] = len(groups)
 
         elapsed = stage_metrics_list[-1].elapsed_seconds
-        print(f"  グループ数: {len(groups)}件 ({elapsed:.1f}秒)")
+        logger.info("Grouping completed", groups=len(groups), elapsed=elapsed)
+        self._callback.on_info(f"  グループ数: {len(groups)}件 ({elapsed:.1f}秒)")
         for group in groups:
-            print(f"    [{group.category_label}] {group.date}: {len(group.articles)}件")
+            self._callback.on_info(
+                f"    [{group.category_label}] {group.date}: {len(group.articles)}件"
+            )
 
         # Stage 5: Export Markdown files
         if self._config.publishing.export_markdown:
@@ -508,20 +549,23 @@ class NewsWorkflowOrchestrator:
                 export_dir = Path(self._config.publishing.export_dir)
                 for group in groups:
                     export_path = self._exporter.export(group, export_dir=export_dir)
-                    print(f"  -> {export_path}")
+                    logger.info("Markdown exported", path=str(export_path))
+                    self._callback.on_info(f"  -> {export_path}")
                 ctx["item_count"] = len(groups)
         else:
             self._log_stage_start(
                 f"5/{total_stages}", "Markdownエクスポート (スキップ)"
             )
-            print("  -> export_markdown=False のためスキップ")
+            logger.info("Markdown export skipped", reason="export_markdown=False")
+            self._callback.on_info("  -> export_markdown=False のためスキップ")
 
         # Stage 6: Publish category Issues
         if export_only:
             self._log_stage_start(
                 f"6/{total_stages}", "GitHub Issue作成 (export-only: スキップ)"
             )
-            print("  -> export-only モードのためスキップ")
+            logger.info("Publishing skipped", reason="export-only mode")
+            self._callback.on_info("  -> export-only モードのためスキップ")
             return []
 
         stage_desc = (
@@ -654,47 +698,21 @@ class NewsWorkflowOrchestrator:
         self._save_result(result)
         return result
 
-    def _print_final_summary(
+    def _log_final_summary(
         self,
         result: WorkflowResult,
-        is_per_category: bool,
-        category_results: list[CategoryPublishResult],
     ) -> None:
-        """Print final workflow summary with stage timing and domain rates."""
-        print(f"\n{'=' * 60}")
-        print("ワークフロー完了")
-        print(f"{'=' * 60}")
-        print(f"  収集: {result.total_collected}件")
-        if result.feed_errors:
-            print(f"  フィードエラー: {len(result.feed_errors)}件")
-        print(f"  抽出: {result.total_extracted}件")
-        print(f"  要約: {result.total_summarized}件")
-        if is_per_category and category_results:
-            cat_published = sum(
-                1 for r in category_results if r.status == PublicationStatus.SUCCESS
-            )
-            print(f"  カテゴリ別公開: {cat_published}/{len(category_results)}件")
-        else:
-            print(f"  公開: {result.total_published}件")
-        if result.total_early_duplicates > 0:
-            print(f"  重複除外（早期）: {result.total_early_duplicates}件")
-        if result.total_duplicates > 0:
-            print(f"  重複（公開時）: {result.total_duplicates}件")
-        print(f"  処理時間: {result.elapsed_seconds:.1f}秒")
-
-        if result.stage_metrics:
-            print("\n  ステージ別処理時間:")
-            for sm in result.stage_metrics:
-                print(f"    {sm.stage}: {sm.elapsed_seconds:.1f}秒 ({sm.item_count}件)")
-
-        if result.domain_extraction_rates:
-            print("\n  ドメイン別抽出成功率:")
-            for dr in sorted(
-                result.domain_extraction_rates, key=lambda x: x.success_rate
-            ):
-                print(
-                    f"    {dr.domain}: {dr.success}/{dr.total} ({dr.success_rate:.0f}%)"
-                )
+        """Log final workflow summary with stage timing and domain rates."""
+        logger.info(
+            "Workflow completed",
+            total_collected=result.total_collected,
+            total_extracted=result.total_extracted,
+            total_summarized=result.total_summarized,
+            total_published=result.total_published,
+            total_duplicates=result.total_duplicates,
+            elapsed_seconds=result.elapsed_seconds,
+        )
+        self._callback.on_workflow_complete(result)
 
     async def _extract_batch_with_progress(
         self,

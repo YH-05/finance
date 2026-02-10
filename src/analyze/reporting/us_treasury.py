@@ -2,7 +2,6 @@
 us_treasury.py
 """
 
-import logging
 import os
 from pathlib import Path
 from typing import Optional
@@ -21,7 +20,10 @@ from plotly.subplots import make_subplots
 from sklearn.decomposition import PCA
 
 from market.fred.historical_cache import HistoricalCache
+from utils_core.logging import get_logger
 from utils_core.settings import get_fred_api_key, load_project_env
+
+logger = get_logger(__name__)
 
 # 環境変数を読み込み
 load_project_env()
@@ -37,14 +39,18 @@ def load_fred_series_id_json() -> dict:
     """FREDのシリーズIDが定義されたJSONファイルを読み込む(Githubから)"""
     json_url = os.environ.get("FRED_SERIES_ID_JSON")
     if json_url is None:
-        logging.warning("FRED_SERIES_ID_JSON environment variable not set")
+        logger.warning("FRED_SERIES_ID_JSON environment variable not set")
         return {}
     try:
         response = requests.get(json_url, timeout=30)
-        response.raise_for_status()  # HTTPエラーを検出
+        response.raise_for_status()
         series_data = response.json()
-    except Exception as e:
-        logging.error(f"Error loading FRED series ID JSON from {json_url}: {e}")
+    except Exception:
+        logger.error(
+            "Failed to load FRED series ID JSON",
+            url=json_url,
+            exc_info=True,
+        )
         series_data = {}
     return series_data
 
@@ -104,12 +110,10 @@ def plot_us_interest_rates_and_spread(
             df_temp["variable"] = series_id
             dfs.append(df_temp)
         else:
-            print(
-                f"Warning: シリーズ '{series_id}' がキャッシュに見つかりません。スキップします。"
-            )
+            logger.warning("Series not found in cache", series_id=series_id)
 
     if not dfs:
-        print("Error: データベースからデータを読み込めませんでした。")
+        logger.error("No data loaded from cache for interest rates plot")
         return
 
     df = pd.concat(dfs, ignore_index=True)

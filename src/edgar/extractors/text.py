@@ -66,6 +66,7 @@ def _clean_text(text: str) -> str:
     str
         Cleaned text with normalized whitespace
     """
+    input_length = len(text)
     # Collapse consecutive spaces (excluding newlines) to a single space
     cleaned = _RE_CONSECUTIVE_WHITESPACE.sub(" ", text)
 
@@ -73,7 +74,9 @@ def _clean_text(text: str) -> str:
     cleaned = _RE_EXCESSIVE_NEWLINES.sub("\n\n", cleaned)
 
     # Strip leading/trailing whitespace
-    return cleaned.strip()
+    result = cleaned.strip()
+    logger.debug("Text cleaned", input_length=input_length, output_length=len(result))
+    return result
 
 
 def _build_cache_key(prefix: str, accession_number: str) -> str:

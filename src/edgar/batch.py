@@ -79,6 +79,9 @@ def _run_batch[T, R](
         return results
 
     total = len(items)
+    logger.debug(
+        "Batch run started", item_count=total, desc=desc, max_workers=max_workers
+    )
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_key = {executor.submit(task_fn, item): key_fn(item) for item in items}
@@ -95,8 +98,13 @@ def _run_batch[T, R](
                         key=key,
                         error=str(exc),
                         error_type=type(exc).__name__,
+                        exc_info=True,
                     )
                 pbar.update(1)
+
+    success_count = sum(1 for v in results.values() if not isinstance(v, Exception))
+    failed_count = total - success_count
+    logger.debug("Batch run completed", success=success_count, failed=failed_count)
 
     return results
 

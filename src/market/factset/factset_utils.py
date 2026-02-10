@@ -19,11 +19,14 @@ import pandas as pd
 import yaml
 from tqdm import tqdm
 
+from utils_core.logging import get_logger
 from utils_core.settings import load_project_env
 
 # Legacy imports - these modules have been moved/removed
 # import src.database_utils as db_utils
 # import src.ROIC_make_data_files_ver2 as roic_utils
+
+logger = get_logger(__name__)
 
 warnings.simplefilter("ignore")
 
@@ -135,8 +138,11 @@ def split_and_save_dataframe(
         # Parquet形式で保存
         df_split.to_parquet(file_path, **kwargs)
         saved_files.append(file_path)
-        print(
-            f"[{i + 1}/{n_splits}] {file_name} に {len(df_split)} 行のデータを保存しました。"
+        logger.info(
+            "Split file saved",
+            progress=f"{i + 1}/{n_splits}",
+            file=file_name,
+            rows=len(df_split),
         )
 
     return saved_files
@@ -197,9 +203,7 @@ def load_bpm_and_export_factset_code_file(
         output_path,
         index=False,
     )
-    print(
-        f"BPMから取得した全構成銘柄のエクスポート:\n\t A file has been exported. -> {output_path}"
-    )
+    logger.info("BPM constituents exported", path=str(output_path))
 
     # Factsetコードダウンロード用Excelのエクスポート
     df_slice = (
@@ -248,9 +252,7 @@ def load_bpm_and_export_factset_code_file(
     )
 
     df_slice.to_excel(output_excel_path, index=False)
-    print(
-        f"Factset銘柄コードダウンロード用のExcel file:\n\t A file has been exported -> {output_excel_path}"
-    )
+    logger.info("Factset code download Excel exported", path=str(output_excel_path))
 
 
 # ============================================================================================
@@ -375,8 +377,10 @@ def unify_factset_code_data(split_save_mode: bool = False):
             index=False,
         )
         df_all.append(df_final)
-        print(
-            f"{universe_code}_Index_Constituents_with_Factset_code.parquet has been exported."
+        logger.info(
+            "Universe constituents exported",
+            universe=universe_code,
+            file=f"{universe_code}_Index_Constituents_with_Factset_code.parquet",
         )
         del df_final
 
@@ -387,7 +391,10 @@ def unify_factset_code_data(split_save_mode: bool = False):
         / "Index_Constituents/Index_Constituents_with_Factset_code.parquet",
         index=False,
     )
-    print("Index_Constituents_with_Factset_code.parquet has been exported.")
+    logger.info(
+        "Combined constituents exported",
+        file="Index_Constituents_with_Factset_code.parquet",
+    )
 
     if split_save_mode:
         # データフレームが大きいため分割して圧縮
@@ -414,12 +421,10 @@ def unify_factset_code_data(split_save_mode: bool = False):
         ]
         df_all.to_parquet(saved_paths[0], index=False, compression="zstd")
 
-    print("\n保存完了パス:\n")
-    for p in saved_paths:
-        print(p)
+    logger.info("All split files saved", paths=[str(p) for p in saved_paths])
 
     del df_all
-    print("Universe別・全Universeの構成銘柄のエクスポートが完了")
+    logger.info("Universe constituents export completed")
 
 
 # ============================================================================================
@@ -491,10 +496,13 @@ def implement_factset_formulas(universe_code: str, year_range: str = "20AY") -> 
         universe_code=universe_code
     )
 
-    print(f"--- {universe_code}: Factset関数埋め込み開始 ---")
+    logger.info(
+        "Factset formula embedding started",
+        universe=universe_code,
+        category_count=len(df["Category"].unique()),
+    )
     category_list = df["Category"].unique().tolist()
-    print(f"\tカテゴリー：計{len(category_list)}件")
-    print(f"\tcategory_list: {(', ').join(category_list)}")
+    logger.debug("Categories", categories=", ".join(category_list))
     for category in category_list:
         df_cat = df.loc[
             df["Category"] == category,
@@ -523,7 +531,7 @@ def implement_factset_formulas(universe_code: str, year_range: str = "20AY") -> 
         wb.save(excel_file)
         wb.close()
 
-    print(f"=== {universe_code}: Factset関数埋め込み完了 ===")
+    logger.info("Factset formula embedding completed", universe=universe_code)
 
 
 # ============================================================================================
@@ -599,11 +607,11 @@ def format_factset_downloaded_data(
             df_all.to_parquet(
                 already_exsiting_compressed_file, index=False, compression="zstd"
             )
-            print(f"A file has been exported -> {already_exsiting_compressed_file}")
+            logger.info("File exported", path=str(already_exsiting_compressed_file))
         else:
             output_path = output_folder / "Financials_and_Price.parquet"
             df_all.to_parquet(output_path, index=False, compression="zstd")
-            print(f"A file has been exported -> {output_path}")
+            logger.info("File exported", path=str(output_path))
 
         # 分割してexport
         start_year_list = np.arange(pd.to_datetime(df_all["date"]).min().year, 2025, 3)
@@ -615,7 +623,7 @@ def format_factset_downloaded_data(
                 output_folder / f"Financials_and_Price-compressed-{start}-{end}.parquet"
             )
             df_slice.to_parquet(output_path, index=False, compression="zstd")
-            print(f"A file has been exported -> {output_path}")
+            logger.info("File exported", path=str(output_path))
 
     else:
         start_date = df_all["date"].min().strftime("%Y%m%d")
@@ -625,7 +633,7 @@ def format_factset_downloaded_data(
             / f"Financials_and_Price-compressed-{start_date}_{end_date}.parquet"
         )
         df_all.to_parquet(output_path, index=False, compression="zstd")
-        print(f"A file has been exported -> {output_path}")
+        logger.info("File exported", path=str(output_path))
 
 
 # ============================================================================================
@@ -812,34 +820,42 @@ def store_to_database(
             conn.commit()  # DELETEを確定
 
             if verbose:
-                print(f"既存の {delete_count} 行を削除し、新しいデータで上書きします。")
+                logger.debug(
+                    "Duplicate rows deleted for overwrite", delete_count=delete_count
+                )
 
             # 重複データを追加対象に含める
             df_to_add = pd.concat([df_to_add, df_to_update], ignore_index=True)
 
         if df_to_add.empty:
-            print(
-                f"テーブル '{table_name}' に追加すべき新しいデータはありませんでした。スキップします。"
-            )
+            logger.info("No new data to add, skipping", table=table_name)
             conn.close()
             return
 
         if verbose:
             if on_duplicate == "update":
-                print(
-                    f"{len(df_to_add)} 行を追加します（うち {len(df_to_update)} 行は上書き）。"
+                logger.debug(
+                    "Rows to add",
+                    table=table_name,
+                    total=len(df_to_add),
+                    overwritten=len(df_to_update),
                 )
             else:
-                print(
-                    f"既存の {len(existing_df)} 行との重複をチェックしました。{len(df_to_add)} 行を新たに追加します。"
+                logger.debug(
+                    "Deduplication check completed",
+                    table=table_name,
+                    existing_rows=len(existing_df),
+                    new_rows=len(df_to_add),
                 )
 
     except pd.io.sql.DatabaseError:  # type: ignore
         # テーブルがまだ存在しない場合、全ての行を追加
         df_to_add = df.drop_duplicates(subset=unique_cols)
         if verbose:
-            print(
-                f"テーブル '{table_name}' は存在しません。新しいテーブルとして、すべての {len(df_to_add)} 行を追加します。"
+            logger.debug(
+                "Table does not exist, creating new",
+                table=table_name,
+                rows=len(df_to_add),
             )
 
     # 3. ユニークな行だけをデータベースに書き込み
@@ -849,11 +865,11 @@ def store_to_database(
     # 4. 接続を閉じる
     conn.close()
     if verbose:
-        print(f"  -> {table_name}: データの書き込みが完了しました。")
+        logger.info("Data written to database", table=table_name)
 
 
 # ============================================================================================
-# 🆕 WALモード有効化関数
+# WALモード有効化関数
 # ============================================================================================
 
 
@@ -880,9 +896,11 @@ def enable_wal_mode(db_path: Path, verbose: bool = True) -> None:
             new_mode = cursor.fetchone()[0]
 
             if verbose:
-                print(f"ジャーナルモード変更: {current_mode} → {new_mode}")
+                logger.info(
+                    "Journal mode changed", from_mode=current_mode, to_mode=new_mode
+                )
         elif verbose:
-            print("既にWALモードです")
+            logger.debug("Already in WAL mode")
 
 
 # ============================================================================================
@@ -915,12 +933,12 @@ def store_active_returns_batch_serial_write(
     :return: 処理結果の統計情報
     """
     if verbose:
-        print("=" * 60)
-        print("⚡ アクティブリターン最適化バッチ保存(直列書き込み版)")
-        print(f"   処理列数: {len(return_cols)}列")
-        print(f"   データ行数: {len(df_active_returns):,}行")
-        print(f"   バッチサイズ: {batch_size:,}行")
-        print("=" * 60)
+        logger.info(
+            "Active returns batch save started (serial write)",
+            columns=len(return_cols),
+            rows=len(df_active_returns),
+            batch_size=batch_size,
+        )
 
     import time
 
@@ -930,7 +948,7 @@ def store_active_returns_batch_serial_write(
     # ステップ1: データ前処理(型変換、グループ化)
     # --------------------------------------------------------------------------
     if verbose:
-        print("⏳ データ前処理中...")
+        logger.debug("Data preprocessing started")
 
     prep_start = time.time()
 
@@ -963,9 +981,11 @@ def store_active_returns_batch_serial_write(
     prep_time = time.time() - prep_start
 
     if verbose:
-        print(f"✅ 前処理完了 ({prep_time:.2f}秒)")
-        print(f"   処理対象: {len(df_dict)}テーブル")
-        print("=" * 60)
+        logger.info(
+            "Preprocessing completed",
+            elapsed_sec=round(prep_time, 2),
+            tables=len(df_dict),
+        )
 
     # --------------------------------------------------------------------------
     # ステップ2: データベース書き込み(直列化でロック回避)
@@ -1035,7 +1055,9 @@ def store_active_returns_batch_serial_write(
 
                     if df_to_add.empty:
                         if verbose:
-                            print(f"⏭️  {table_name}: 重複データのみ(スキップ)")
+                            logger.debug(
+                                "Duplicate data only, skipping", table=table_name
+                            )
                         continue
 
                 except pd.io.sql.DatabaseError:  # type: ignore
@@ -1060,12 +1082,13 @@ def store_active_returns_batch_serial_write(
                 results["total_rows"] += row_count
 
                 if verbose:
-                    print(f"✅ {table_name}: {row_count:,}件保存")
+                    logger.debug("Table saved", table=table_name, rows=row_count)
 
             except Exception as e:
                 results["failed"].append({"table": table_name, "error": str(e)})
-                if verbose:
-                    print(f"❌ {table_name}: {e}")
+                logger.error(
+                    "Table save failed", table=table_name, error=str(e), exc_info=True
+                )
 
                 # エラー時はロールバック
                 with contextlib.suppress(BaseException):
@@ -1078,27 +1101,30 @@ def store_active_returns_batch_serial_write(
     # ステップ3: 統計情報表示
     # --------------------------------------------------------------------------
     if verbose:
-        print("=" * 60)
-        print("📊 バッチ保存完了統計")
-        print(f"   成功: {len(results['success'])}/{len(df_dict)}テーブル")
-        print(f"   失敗: {len(results['failed'])}テーブル")
-        print(f"   総保存件数: {results['total_rows']:,}件")
-        print(f"   前処理時間: {results['prep_time']:.2f}秒")
-        print(f"   保存時間: {results['save_time']:.2f}秒")
-        print(f"   合計時間: {results['total_time']:.2f}秒")
-
-        if results["total_time"] > 0:
-            throughput = results["total_rows"] / results["total_time"]
-            print(f"   スループット: {throughput:,.0f}件/秒")
-
         success_rate = (len(results["success"]) / len(df_dict) * 100) if df_dict else 0
-        print(f"   成功率: {success_rate:.1f}%")
+        throughput = (
+            results["total_rows"] / results["total_time"]
+            if results["total_time"] > 0
+            else 0
+        )
+        logger.info(
+            "Batch save completed",
+            success_count=len(results["success"]),
+            total_tables=len(df_dict),
+            failed_count=len(results["failed"]),
+            total_rows=results["total_rows"],
+            prep_time_sec=round(results["prep_time"], 2),
+            save_time_sec=round(results["save_time"], 2),
+            total_time_sec=round(results["total_time"], 2),
+            throughput_per_sec=round(throughput),
+            success_rate_pct=round(success_rate, 1),
+        )
 
         if results["failed"]:
-            print("\n⚠️ 失敗したテーブル:")
             for failed in results["failed"]:
-                print(f"   - {failed['table']}: {failed['error']}")
-        print("=" * 60)
+                logger.warning(
+                    "Failed table", table=failed["table"], error=failed["error"]
+                )
 
     return results
 
@@ -1121,12 +1147,12 @@ def insert_active_returns_optimized_sqlite(
     - 書き込み速度向上のため、INSERT OR IGNOREとexecutemanyを使用
     """
     if verbose:
-        print("=" * 60)
-        print("⚡ アクティブリターン最適化バッチ保存(SQLite機能活用版)")
-        print(f"   処理列数: {len(return_cols)}列")
-        print(f"   データ行数: {len(df_active_returns):,}行")
-        print(f"   バッチサイズ (executemany): {batch_size:,}行")  # 説明を変更
-        print("=" * 60)
+        logger.info(
+            "Active returns optimized batch save started (SQLite)",
+            columns=len(return_cols),
+            rows=len(df_active_returns),
+            batch_size=batch_size,
+        )
 
     start_time = time.time()
 
@@ -1134,7 +1160,7 @@ def insert_active_returns_optimized_sqlite(
     # ステップ1: データ前処理(型変換、グループ化)- 変更なし
     # --------------------------------------------------------------------------
     if verbose:
-        print("⏳ データ前処理中...")
+        logger.debug("Data preprocessing started")
 
     prep_start = time.time()
 
@@ -1169,9 +1195,11 @@ def insert_active_returns_optimized_sqlite(
     prep_time = time.time() - prep_start
 
     if verbose:
-        print(f"✅ 前処理完了 ({prep_time:.2f}秒)")
-        print(f"   処理対象: {len(df_dict)}テーブル")
-        print("=" * 60)
+        logger.info(
+            "Preprocessing completed",
+            elapsed_sec=round(prep_time, 2),
+            tables=len(df_dict),
+        )
 
     # --------------------------------------------------------------------------
     # ステップ2: データベース書き込み(SQLite最適化)
@@ -1248,12 +1276,15 @@ def insert_active_returns_optimized_sqlite(
                 )
 
                 if verbose:
-                    print(f"✅ {table_name}: {row_count:,}件(挿入試行)")
+                    logger.debug(
+                        "Table insert attempted", table=table_name, rows=row_count
+                    )
 
             except Exception as e:
                 results["failed"].append({"table": table_name, "error": str(e)})
-                if verbose:
-                    print(f"❌ {table_name}: {e}")
+                logger.error(
+                    "Table save failed", table=table_name, error=str(e), exc_info=True
+                )
 
                 # エラー時はロールバック
                 with contextlib.suppress(BaseException):
@@ -1263,31 +1294,33 @@ def insert_active_returns_optimized_sqlite(
     results["total_time"] = time.time() - start_time
 
     # --------------------------------------------------------------------------
-    # ステップ3: 統計情報表示 - 変更なし
+    # ステップ3: 統計情報表示
     # --------------------------------------------------------------------------
     if verbose:
-        print("=" * 60)
-        print("📊 バッチ保存完了統計")
-        print(f"  成功: {len(results['success'])}/{len(df_dict)}テーブル")
-        print(f"  失敗: {len(results['failed'])}テーブル")
-        # INSERT OR IGNOREを使う場合、このtotal_rowsは「挿入を試行した行数」となる点に注意
-        print(f"  総試行件数: {results['total_rows']:,}件")
-        print(f"  前処理時間: {results['prep_time']:.2f}秒")
-        print(f"  保存時間: {results['save_time']:.2f}秒")
-        print(f"  合計時間: {results['total_time']:.2f}秒")
-
-        if results["total_time"] > 0:
-            throughput = results["total_rows"] / results["total_time"]
-            print(f"  スループット (試行件数ベース): {throughput:,.0f}件/秒")
-
         success_rate = (len(results["success"]) / len(df_dict) * 100) if df_dict else 0
-        print(f"  成功率: {success_rate:.1f}%")
+        throughput = (
+            results["total_rows"] / results["total_time"]
+            if results["total_time"] > 0
+            else 0
+        )
+        logger.info(
+            "Batch save completed",
+            success_count=len(results["success"]),
+            total_tables=len(df_dict),
+            failed_count=len(results["failed"]),
+            total_attempted_rows=results["total_rows"],
+            prep_time_sec=round(results["prep_time"], 2),
+            save_time_sec=round(results["save_time"], 2),
+            total_time_sec=round(results["total_time"], 2),
+            throughput_per_sec=round(throughput),
+            success_rate_pct=round(success_rate, 1),
+        )
 
         if results["failed"]:
-            print("\n⚠️ 失敗したテーブル:")
             for failed in results["failed"]:
-                print(f"   - {failed['table']}: {failed['error']}")
-        print("=" * 60)
+                logger.warning(
+                    "Failed table", table=failed["table"], error=failed["error"]
+                )
 
     return results
 
@@ -1320,7 +1353,7 @@ def store_to_database_batch(
 
     if not df_dict:
         if verbose:
-            print("⚠️ 保存対象のデータがありません")
+            logger.warning("No data to save")
         return {"success": 0, "failed": 0, "total_rows": 0, "processing_time": 0}
 
     # テーブル名とカラム名のバリデーション（SQLインジェクション対策）
@@ -1330,17 +1363,19 @@ def store_to_database_batch(
         _validate_sql_identifier(col)
 
     if max_workers is not None and max_workers > 1 and verbose:
-        print("⚠️ max_workers > 1: データベースロックのリスクがあります")
-        print("   推奨: max_workers=1 または事前にWALモードを有効化")
+        logger.warning(
+            "max_workers > 1 risks database locks",
+            max_workers=max_workers,
+        )
 
     if verbose:
-        print("=" * 60)
-        print("💾 バッチ保存モード")
-        print(f"   テーブル数: {len(df_dict)}個")
-        print(f"   バッチサイズ: {batch_size:,}行")
-        print(f"   並列度: {max_workers}")
-        print(f"   データベース: {Path(db_path).name}")
-        print("=" * 60)
+        logger.info(
+            "Batch save mode started",
+            tables=len(df_dict),
+            batch_size=batch_size,
+            max_workers=max_workers,
+            database=Path(db_path).name,
+        )
 
     import time
 
@@ -1350,7 +1385,7 @@ def store_to_database_batch(
     # ステップ1: 事前にデータ型を一括変換(全DataFrameに対して)
     # --------------------------------------------------------------------------
     if verbose:
-        print("⏳ データ型を一括変換中...")
+        logger.debug("Data type conversion started")
 
     optimized_dict = {}
     prep_start = time.time()
@@ -1361,7 +1396,9 @@ def store_to_database_batch(
         # 必須カラムのチェック
         if not all(col in df_opt.columns for col in unique_cols):
             if verbose:
-                print(f"⚠️ スキップ: {table_name} (必須カラム不足)")
+                logger.warning(
+                    "Skipping table, missing required columns", table=table_name
+                )
             continue
 
         # データ型変換
@@ -1379,9 +1416,11 @@ def store_to_database_batch(
     prep_time = time.time() - prep_start
 
     if verbose:
-        print(f"✅ 事前処理完了 ({prep_time:.2f}秒)")
-        print(f"   処理対象: {len(optimized_dict)}テーブル")
-        print("=" * 60)
+        logger.info(
+            "Preprocessing completed",
+            elapsed_sec=round(prep_time, 2),
+            tables=len(optimized_dict),
+        )
 
     # --------------------------------------------------------------------------
     # ステップ2: ワーカー関数
@@ -1482,13 +1521,12 @@ def store_to_database_batch(
                 results["total_rows"] += row_count
 
                 if verbose and row_count > 0:
-                    print(f"✅ {table_name}: {row_count:,}件保存")
+                    logger.debug("Table saved", table=table_name, rows=row_count)
                 elif verbose:
-                    print(f"⏭️  {table_name}: {error_msg}")
+                    logger.debug("Table skipped", table=table_name, reason=error_msg)
             else:
                 results["failed"].append({"table": table_name, "error": error_msg})
-                if verbose:
-                    print(f"❌ {table_name}: {error_msg}")
+                logger.error("Table save failed", table=table_name, error=error_msg)
 
     else:
         # 並列処理(WALモード推奨)
@@ -1499,7 +1537,7 @@ def store_to_database_batch(
 
             if verbose:
                 futures_iterator = tqdm(
-                    as_completed(futures), total=len(futures), desc="💾 保存中"
+                    as_completed(futures), total=len(futures), desc="Saving"
                 )
             else:
                 futures_iterator = as_completed(futures)
@@ -1515,20 +1553,33 @@ def store_to_database_batch(
                         results["total_rows"] += row_count
 
                         if verbose and row_count > 0:
-                            print(f"✅ {table_name_result}: {row_count:,}件保存")
+                            logger.debug(
+                                "Table saved", table=table_name_result, rows=row_count
+                            )
                         elif verbose:
-                            print(f"⏭️  {table_name_result}: {error_msg}")
+                            logger.debug(
+                                "Table skipped",
+                                table=table_name_result,
+                                reason=error_msg,
+                            )
                     else:
                         results["failed"].append(
                             {"table": table_name_result, "error": error_msg}
                         )
-                        if verbose:
-                            print(f"❌ {table_name_result}: {error_msg}")
+                        logger.error(
+                            "Table save failed",
+                            table=table_name_result,
+                            error=error_msg,
+                        )
 
                 except Exception as e:
                     results["failed"].append({"table": table_name, "error": str(e)})
-                    if verbose:
-                        print(f"❌ {table_name}: {e}")
+                    logger.error(
+                        "Table save failed",
+                        table=table_name,
+                        error=str(e),
+                        exc_info=True,
+                    )
 
     results["save_time"] = time.time() - save_start
     results["total_time"] = time.time() - start_time
@@ -1537,24 +1588,28 @@ def store_to_database_batch(
     # 統計情報
     # --------------------------------------------------------------------------
     if verbose:
-        print("=" * 60)
-        print("📊 バッチ保存完了統計")
-        print(f"   成功: {len(results['success'])}/{len(df_dict)}テーブル")
-        print(f"   失敗: {len(results['failed'])}テーブル")
-        print(f"   総保存件数: {results['total_rows']:,}件")
-        print(f"   前処理時間: {results['prep_time']:.2f}秒")
-        print(f"   保存時間: {results['save_time']:.2f}秒")
-        print(f"   合計時間: {results['total_time']:.2f}秒")
-
-        if results["total_time"] > 0:
-            throughput = results["total_rows"] / results["total_time"]
-            print(f"   スループット: {throughput:,.0f}件/秒")
+        throughput = (
+            results["total_rows"] / results["total_time"]
+            if results["total_time"] > 0
+            else 0
+        )
+        logger.info(
+            "Batch save completed",
+            success_count=len(results["success"]),
+            total_tables=len(df_dict),
+            failed_count=len(results["failed"]),
+            total_rows=results["total_rows"],
+            prep_time_sec=round(results["prep_time"], 2),
+            save_time_sec=round(results["save_time"], 2),
+            total_time_sec=round(results["total_time"], 2),
+            throughput_per_sec=round(throughput),
+        )
 
         if results["failed"]:
-            print("\n⚠️ 失敗したテーブル:")
             for failed in results["failed"]:
-                print(f"   - {failed['table']}: {failed['error']}")
-        print("=" * 60)
+                logger.warning(
+                    "Failed table", table=failed["table"], error=failed["error"]
+                )
 
     return results
 
@@ -1585,11 +1640,11 @@ def store_active_returns_batch(
     :return: 処理結果
     """
     if verbose:
-        print("=" * 60)
-        print("⚡ アクティブリターン最適化バッチ保存")
-        print(f"   処理列数: {len(return_cols)}列")
-        print(f"   データ行数: {len(df_active_returns):,}行")
-        print("=" * 60)
+        logger.info(
+            "Active returns optimized batch save started",
+            columns=len(return_cols),
+            rows=len(df_active_returns),
+        )
 
     # データ型変換とリネーム
     df_opt = df_active_returns.copy()
@@ -1601,7 +1656,7 @@ def store_active_returns_batch(
     df_opt = df_opt[df_opt["P_SYMBOL"] != benchmark_ticker]
 
     if verbose:
-        print("⏳ データを事前分割中...")
+        logger.debug("Pre-splitting data")
 
     # variable列でグループ化して辞書化
     df_dict = {}
@@ -1617,7 +1672,7 @@ def store_active_returns_batch(
             df_dict[active_return_col] = df_slice
 
     if verbose:
-        print(f"✅ 分割完了: {len(df_dict)}テーブル")
+        logger.info("Split completed", tables=len(df_dict))
 
     # バッチ保存実行
     results = store_to_database_batch(
@@ -1659,8 +1714,7 @@ def ensure_unique_constraint(conn: sqlite3.Connection, table_name: str):
             break
 
     if not has_constraint:
-        print(f"⚠️  テーブル '{table_name}' にUNIQUE制約がありません")
-        print("   制約を追加するには、テーブルを再作成する必要があります")
+        logger.warning("Table missing UNIQUE constraint", table=table_name)
         return False
 
     return True
@@ -1692,7 +1746,7 @@ def upsert_financial_data(
     """
 
     if df.empty:
-        print("⚠️  更新データが空です")
+        logger.warning("Empty update data", table=table_name)
         return 0
 
     # テーブル名のバリデーション（SQLインジェクション対策）
@@ -1705,7 +1759,11 @@ def upsert_financial_data(
     # methodが"auto"の場合、バージョンに応じて自動選択
     if method == "auto":
         method = "upsert" if supports_upsert else "delete_insert"
-        print(f"ℹ️  SQLite {sqlite3.sqlite_version}: {method}方式を使用します")
+        logger.info(
+            "Auto-selected upsert method",
+            sqlite_version=sqlite3.sqlite_version,
+            method=method,
+        )
 
     # 日付を文字列に変換
     df_copy = df.copy()
@@ -1725,13 +1783,16 @@ def upsert_financial_data(
 
         if method == "upsert":
             if not supports_upsert:
-                print(
-                    f"⚠️  SQLite {sqlite3.sqlite_version}はUPSERTをサポートしていません"
+                logger.warning(
+                    "UPSERT not supported, falling back to delete_insert",
+                    sqlite_version=sqlite3.sqlite_version,
                 )
-                print("   delete_insert方式に切り替えます")
                 method = "delete_insert"
             elif not ensure_unique_constraint(conn, table_name):
-                print("⚠️  UPSERT方式を使用できません。delete_insert方式に切り替えます")
+                logger.warning(
+                    "UPSERT unavailable, falling back to delete_insert",
+                    table=table_name,
+                )
                 method = "delete_insert"
 
         if method == "upsert":
@@ -1772,7 +1833,12 @@ def upsert_financial_data(
 
             rows_affected = inserted
 
-            print(f"  削除: {deleted}行, 挿入: {inserted}行")
+            logger.info(
+                "Delete-insert completed",
+                table=table_name,
+                deleted=deleted,
+                inserted=inserted,
+            )
 
         else:
             raise ValueError(f"不正なmethod: {method}")
@@ -1783,12 +1849,12 @@ def upsert_financial_data(
 
         conn.commit()
 
-        print(f"✅ {rows_affected}行を処理しました")
+        logger.info("Upsert completed", table=table_name, rows_affected=rows_affected)
 
         return rows_affected
 
     except Exception as e:
-        print(f"❌ エラー: {e}")
+        logger.error("Upsert failed", table=table_name, error=str(e), exc_info=True)
         conn.rollback()
         # 一時テーブルのクリーンアップ
         with contextlib.suppress(BaseException):
@@ -2054,7 +2120,12 @@ def process_ranking_factor_worker(
 
     except Exception as e:
         # 並列処理中のエラーはログに出力し、プロセスを落とさずに空リストを返す
-        print(f"❌ Error processing {target_factor_name}: {e}")
+        logger.error(
+            "Factor processing failed",
+            factor=target_factor_name,
+            error=str(e),
+            exc_info=True,
+        )
         return []
 
 
@@ -2123,7 +2194,7 @@ def process_rank_calculation_store_to_db(
             tasks.append(args)
 
     total_iterations = len(tasks)
-    print(f"🚀 処理開始: {total_iterations} 件のタスク ({mode_desc})")
+    logger.info("Rank calculation started", tasks=total_iterations, mode=mode_desc)
 
     # ---------------------------------------------------------
     # 2. DB設定と並列実行の準備
@@ -2179,9 +2250,14 @@ def process_rank_calculation_store_to_db(
                 del results
 
             except Exception as e:
-                print(f"❌ Critical Error in main loop ({task_label}): {e}")
+                logger.critical(
+                    "Rank calculation critical error",
+                    task=task_label,
+                    error=str(e),
+                    exc_info=True,
+                )
 
-        print("🎉 全てのランク計算・保存が完了しました")
+        logger.info("All rank calculations and saves completed")
 
 
 # ============================================================================================
@@ -2191,21 +2267,21 @@ def check_missing_value_and_fill_by_sector_median(
     # -----------------------------------
     # 欠損状況の確認(補完前)
     # -----------------------------------
-    print("=" * 60)
-    print("📋 欠損値の状況(補完前)")
-    print("=" * 60)
     missing_before = {}
     for factor in factor_list:
         missing_count = df[factor].isna().sum()
-        missing_pct = missing_count / len(df) * 100
         missing_before[factor] = missing_count
-        print(f"{factor:45s}: {missing_count:6,}件 ({missing_pct:5.1f}%)")
-    print("=" * 60)
+
+    logger.info(
+        "Missing value analysis (before fill)",
+        stats={f: int(missing_before[f]) for f in factor_list},
+        total_rows=len(df),
+    )
 
     # -----------------------------------
     # 各ファクターの欠損値をセクター中央値で補完
     # -----------------------------------
-    print("\n⏳ セクター中央値で補完中...")
+    logger.debug("Filling missing values with sector median")
     df[factor_list] = df.groupby(["date", "GICS Sector"])[factor_list].transform(
         lambda x: x.fillna(x.median())
     )
@@ -2213,35 +2289,28 @@ def check_missing_value_and_fill_by_sector_median(
     # -----------------------------------
     # 補完後の欠損状況を確認
     # -----------------------------------
-    print("\n" + "=" * 60)
-    print("📋 欠損値の状況(セクター中央値補完後)")
-    print("=" * 60)
     missing_after_sector = {}
     remaining_missing = False
 
     for factor in factor_list:
         missing_count = df[factor].isna().sum()
-        missing_pct = missing_count / len(df) * 100
         missing_after_sector[factor] = missing_count
-
-        filled_count = missing_before[factor] - missing_count
-        status = "✅" if missing_count == 0 else "⚠️"
-
-        print(
-            f"{status} {factor:45s}: {missing_count:6,}件 ({missing_pct:5.1f}%) | 補完: {filled_count:,}件"
-        )
-
         if missing_count > 0:
             remaining_missing = True
 
-    print("=" * 60)
+    logger.info(
+        "Missing value analysis (after sector median fill)",
+        stats={f: int(missing_after_sector[f]) for f in factor_list},
+        filled={
+            f: int(missing_before[f] - missing_after_sector[f]) for f in factor_list
+        },
+    )
 
     # -----------------------------------
     # セクター補完で埋まらなかった欠損を全体中央値で再補完
     # -----------------------------------
     if remaining_missing:
-        print("\n⚠️  セクター補完で埋まらない欠損値を全体中央値で再補完...")
-        print("-" * 60)
+        logger.info("Re-filling remaining missing values with overall median")
 
         for factor in factor_list:
             if df[factor].isna().sum() > 0:
@@ -2253,39 +2322,31 @@ def check_missing_value_and_fill_by_sector_median(
                 # それでも埋まらない場合(全体が欠損)は0.5(中立値)
                 overall_missing = df[factor].isna().sum()
                 if overall_missing > 0:
-                    print(f"⚠️  {factor}: 全体でも欠損 → 0.5(中立値)で補完")
+                    logger.warning(
+                        "Factor still missing after all fills, using neutral value 0.5",
+                        factor=factor,
+                        remaining=int(overall_missing),
+                    )
                     df[factor] = df[factor].fillna(0.5)
-
-        print("-" * 60)
 
     # -----------------------------------
     # 最終確認
     # -----------------------------------
-    print("\n" + "=" * 60)
-    print("✅ 最終欠損値チェック")
-    print("=" * 60)
-
     final_missing_total = 0
+    final_stats = {}
     for factor in factor_list:
         missing_count = df[factor].isna().sum()
         final_missing_total += missing_count
-
-        if missing_count == 0:
-            print(f"✅ {factor:45s}: 欠損なし")
-        else:
-            print(f"❌ {factor:45s}: {missing_count:,}件")
-
-    print("=" * 60)
+        final_stats[factor] = int(missing_count)
 
     if final_missing_total == 0:
-        print("🎉 すべての欠損値が補完されました！")
+        logger.info("All missing values filled successfully")
     else:
-        print(f"⚠️  {final_missing_total:,}件の欠損が残っています")
-        print("\n欠損が残っている銘柄:")
-        missing_rows = df[df[factor_list].isna().any(axis=1)]
-        print(missing_rows[["date", "SEDOL", "GICS Sector", *factor_list]])
-
-    print("=" * 60)
+        logger.warning(
+            "Remaining missing values after all fills",
+            total_remaining=final_missing_total,
+            stats=final_stats,
+        )
 
     return df
 
@@ -2294,25 +2355,26 @@ def check_missing_value_and_fill_by_sector_median(
 def create_factor(
     df: pd.DataFrame, factor_name: str, blend_weight: dict
 ) -> pd.DataFrame:
-    print("\n" + "=" * 60)
-    print("📊 Factor 計算")
-    print("=" * 60)
-    print("ウェイト設定:")
-    for indicator, weight in blend_weight.items():
-        print(f"  {indicator:45s}: {weight:.1%}")
-    print("=" * 60)
+    logger.info(
+        "Factor calculation started",
+        factor=factor_name,
+        weights={k: round(v, 4) for k, v in blend_weight.items()},
+    )
 
     # 加重平均でComposite Scoreを計算
     df[f"{factor_name}_Score"] = sum(
         df[indicator] * weight for indicator, weight in blend_weight.items()
     )
 
-    # 統計情報
-    print("\n✅ Score 計算完了")
-    print(f"   平均: {df[f'{factor_name}_Score'].mean():.4f}")
-    print(f"   標準偏差: {df[f'{factor_name}_Score'].std():.4f}")
-    print(f"   最小値: {df[f'{factor_name}_Score'].min():.4f}")
-    print(f"   最大値: {df[f'{factor_name}_Score'].max():.4f}")
+    score_col = f"{factor_name}_Score"
+    logger.info(
+        "Score calculation completed",
+        factor=factor_name,
+        mean=round(df[score_col].mean(), 4),
+        std=round(df[score_col].std(), 4),
+        min=round(df[score_col].min(), 4),
+        max=round(df[score_col].max(), 4),
+    )
 
     # -----------------------------------
     # ランク化
@@ -2329,40 +2391,11 @@ def create_factor(
     )
 
     # ランク分布
-    print("\n📊 Rank 分布:")
     rank_dist = df[f"{factor_name}_Score_Rank"].value_counts().sort_index()
-    for rank, count in rank_dist.items():
-        pct = count / len(df) * 100
-        print(f"  {rank}: {count:6,}件 ({pct:5.1f}%)")
-
-    print("=" * 60)
-
-    # -----------------------------------
-    # 結果の確認
-    # -----------------------------------
-    print("\n🎯 最終データサンプル:")
-    print(
-        df[
-            [
-                "date",
-                "P_SYMBOL",
-                "SEDOL",
-                "GICS Sector",
-                f"{factor_name}_Score",
-                f"{factor_name}_Score_Rank",
-            ]
-        ].tail(20)
+    logger.info(
+        "Rank distribution",
+        factor=factor_name,
+        distribution={str(k): int(v) for k, v in rank_dist.items()},
     )
-
-    # セクター別の平均スコア
-    print("\n📊 セクター別の平均Score(最新日付):")
-    latest_date = df["date"].max()
-    sector_scores = (
-        df[df["date"] == latest_date]
-        .groupby("GICS Sector")[f"{factor_name}_Score"]
-        .mean()
-        .sort_values(ascending=False)
-    )
-    print(sector_scores.tail(10))
 
     return df

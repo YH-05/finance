@@ -108,6 +108,7 @@ def _find_section_positions(
         Mapping of section key to start position in the text
     """
     active_patterns = patterns if patterns is not None else DEFAULT_SECTION_PATTERNS
+    logger.debug("Finding section positions", pattern_count=len(active_patterns))
     positions: dict[str, int] = {}
     for key, pattern in active_patterns.items():
         match = pattern.search(text)
@@ -118,6 +119,7 @@ def _find_section_positions(
                 section_key=key,
                 position=match.start(),
             )
+    logger.debug("Section positions found", found_count=len(positions))
     return positions
 
 
@@ -355,6 +357,7 @@ class SectionExtractor:
                     "Failed to save section text to cache",
                     section_key=section_key,
                     error=str(e),
+                    exc_info=True,
                 )
 
         logger.info(

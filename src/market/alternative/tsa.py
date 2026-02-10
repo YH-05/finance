@@ -11,6 +11,10 @@ import requests
 import seaborn as sns
 from bs4 import BeautifulSoup
 
+from utils_core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class TSAPassengerDataCollector:
     """
@@ -54,7 +58,7 @@ class TSAPassengerDataCollector:
             table = soup.find("table")
 
             if not table:
-                print("テーブルが見つかりませんでした")
+                logger.warning("Table not found on TSA page", url=url)
                 return None
 
             # データを格納するリスト
@@ -82,7 +86,12 @@ class TSAPassengerDataCollector:
                         numbers.append(int(number_clean))
 
                     except (ValueError, TypeError) as e:
-                        print(f"データ変換エラー: {date_text}, {number_text} - {e}")
+                        logger.warning(
+                            "Data conversion error",
+                            date_text=date_text,
+                            number_text=number_text,
+                            error=str(e),
+                        )
                         continue
 
             # DataFrameを作成
@@ -96,11 +105,11 @@ class TSAPassengerDataCollector:
             return df
 
         except requests.exceptions.RequestException as e:
-            print(f"ウェブページの取得に失敗しました: {e}")
+            logger.error("Failed to fetch TSA page", url=url, error=str(e))
             return None
-        except Exception as e:
-            print(f"予期しないエラーが発生しました: {e}")
-            return None
+        except Exception:
+            logger.error("Unexpected error during TSA scraping", url=url, exc_info=True)
+            raise
 
     def display_data_info(self, df: pd.DataFrame):
         """
@@ -112,6 +121,12 @@ class TSAPassengerDataCollector:
             情報を表示するデータフレーム。
         """
         if df is not None:
+            logger.debug(
+                "TSA passenger data summary",
+                rows=len(df),
+                date_min=df["Date"].min().strftime("%Y/%m/%d"),
+                date_max=df["Date"].max().strftime("%Y/%m/%d"),
+            )
             print("=== TSA旅客数データ ===")
             print(
                 f"データ期間: {df['Date'].min().strftime('%Y/%m/%d')} - {df['Date'].max().strftime('%Y/%m/%d')}"
@@ -141,9 +156,10 @@ class TSAPassengerDataCollector:
         """
         try:
             df.to_csv(filename, index=False)
-            print(f"\nデータを '{filename}' に保存しました")
-        except Exception as e:
-            print(f"CSVファイルの保存に失敗しました: {e}")
+            logger.info("Data saved to CSV", filename=filename, rows=len(df))
+        except Exception:
+            logger.error("Failed to save CSV", filename=filename, exc_info=True)
+            raise
 
     def store_to_tsa_database(
         self, df: pd.DataFrame, db_path: str | Path, table_name: str = "tsa_passenger"
@@ -184,17 +200,25 @@ class TSAPassengerDataCollector:
                 # テーブルが存在しない場合は全データを追加対象とする
                 df_to_add = df
 
-            print(f"{'-' * 20} + TSA Passenger Data + {'-' * 20}")
             if not df_to_add.empty:
-                print(
-                    f"{len(df_to_add)}件の新規データをテーブル '{table_name}' に追加します。"
+                logger.info(
+                    "Inserting new TSA data",
+                    table=table_name,
+                    rows=len(df_to_add),
                 )
                 df_to_add.to_sql(table_name, conn, if_exists="append", index=False)
             else:
-                print("追加する新規データはありませんでした。")
+                logger.info("No new TSA data to insert", table=table_name)
 
-        except sqlite3.Error as e:
-            print(f"データベースエラーが発生しました: {e}")
+        except sqlite3.Error:
+            if conn:
+                conn.rollback()
+            logger.error(
+                "Database error during TSA data storage",
+                db_path=str(db_path),
+                table=table_name,
+                exc_info=True,
+            )
         finally:
             if conn:
                 conn.close()

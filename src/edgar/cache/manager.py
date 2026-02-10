@@ -119,6 +119,7 @@ class CacheManager:
         CacheError
             If schema initialization fails.
         """
+        logger.debug("Initializing cache database schema", db_path=str(self.db_path))
         try:
             with self._connection() as conn:
                 conn.execute("""
@@ -134,11 +135,14 @@ class CacheManager:
                     ON edgar_cache (expires_at)
                 """)
 
-            logger.debug("Cache database initialized", db_path=str(self.db_path))
+            logger.debug("Cache database schema initialized", db_path=str(self.db_path))
 
         except CacheError:
             raise
         except Exception as e:
+            logger.warning(
+                "Failed to initialize cache database", error=str(e), exc_info=True
+            )
             raise CacheError(
                 f"Failed to initialize cache database: {e}",
                 context={"operation": "init_db", "db_path": str(self.db_path)},
@@ -212,6 +216,9 @@ class CacheManager:
         except CacheError:
             raise
         except Exception as e:
+            logger.warning(
+                "Failed to get cached text", filing_id=filing_id, exc_info=True
+            )
             raise CacheError(
                 f"Failed to get cached text for filing '{filing_id}': {e}",
                 context={"operation": "get_cached_text", "filing_id": filing_id},
@@ -280,6 +287,9 @@ class CacheManager:
         except CacheError:
             raise
         except Exception as e:
+            logger.warning(
+                "Failed to save text to cache", filing_id=filing_id, exc_info=True
+            )
             raise CacheError(
                 f"Failed to save text for filing '{filing_id}': {e}",
                 context={
@@ -336,6 +346,7 @@ class CacheManager:
         except CacheError:
             raise
         except Exception as e:
+            logger.warning("Failed to clear expired cache entries", exc_info=True)
             raise CacheError(
                 f"Failed to clear expired cache entries: {e}",
                 context={"operation": "clear_expired"},

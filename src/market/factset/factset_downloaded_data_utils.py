@@ -12,6 +12,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from utils_core.logging import get_logger
+
+logger = get_logger(__name__)
+
 warnings.simplefilter("ignore")
 
 
@@ -75,23 +79,26 @@ def store_to_database(
         )
 
         if df_to_add.empty:
-            print(
-                f"テーブル '{table_name}' に追加すべき新しいデータはありませんでした。スキップします。"
-            )
+            logger.info("No new data to add, skipping", table=table_name)
             conn.close()
             return
 
         if verbose:
-            print(
-                f"既存の {len(existing_df)} 行との重複をチェックしました。{len(df_to_add)} 行を新たに追加します。"
+            logger.debug(
+                "Deduplication check completed",
+                table=table_name,
+                existing_rows=len(existing_df),
+                new_rows=len(df_to_add),
             )
 
     except pd.io.sql.DatabaseError:  # type: ignore
         # テーブルがまだ存在しない場合、全ての行を追加
         df_to_add = df.drop_duplicates(subset=unique_cols)  # 自身の重複は除去
         if verbose:
-            print(
-                f"テーブル '{table_name}' は存在しません。新しいテーブルとして、すべての {len(df_to_add)} 行を追加します。"
+            logger.debug(
+                "Table does not exist, creating new",
+                table=table_name,
+                rows=len(df_to_add),
             )
 
     # 3. ユニークな行だけをデータベースに書き込み
@@ -99,7 +106,7 @@ def store_to_database(
 
     # 4. 接続を閉じる
     conn.close()
-    print(f"  -> {table_name}: データの書き込みが完了しました。")
+    logger.info("Data written to database", table=table_name)
 
 
 # =====================================================================
@@ -130,12 +137,19 @@ def delete_table_from_database(db_path: Path, table_name: str, verbose: bool = F
         conn.commit()
 
         if verbose:
-            print(
-                f"データベース '{db_path.name}' からテーブル '{table_name}' を削除しました（または存在しませんでした）。"
+            logger.debug(
+                "Table dropped",
+                database=db_path.name,
+                table=table_name,
             )
 
     except sqlite3.Error as e:
-        print(f"データベース '{db_path.name}' の操作中にエラーが発生しました: {e}")
+        logger.error(
+            "Database operation failed",
+            database=db_path.name,
+            error=str(e),
+            exc_info=True,
+        )
         if conn:
             conn.rollback()  # エラー時はロールバック
 
