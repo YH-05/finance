@@ -91,7 +91,7 @@ class TestEdgarResult:
         Verify that EdgarResult dataclass can be instantiated with
         filing_id, text, sections, and metadata fields.
         """
-        fetched_at = datetime.now()
+        fetched_at = datetime(2024, 1, 15, 12, 0, 0)
         result = EdgarResult(
             filing_id="0001234567-24-000001",
             text="Full filing text content",

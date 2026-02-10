@@ -10,105 +10,95 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from edgar.config import DEFAULT_RATE_LIMIT_PER_SECOND
 from edgar.errors import EdgarError, FilingNotFoundError
 from edgar.fetcher import EdgarFetcher
+from edgar.rate_limiter import RateLimiter
 from edgar.types import FilingType
 
 
 class TestEdgarFetcherFetch:
     """Tests for EdgarFetcher.fetch() method."""
 
-    def test_正常系_有効なCIKで10K取得成功(self) -> None:
+    def test_正常系_有効なCIKで10K取得成功(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should return filings for a valid CIK.
 
         Verify that fetch() calls Company(cik), get_filings(form=),
         and latest(limit) in the correct order.
         """
+        mock_company_cls, mock_company, mock_filings = mock_filings_chain
         mock_filing_list = [MagicMock(), MagicMock()]
-        mock_filings = MagicMock()
         mock_filings.latest.return_value = mock_filing_list
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-
-        mock_company_cls = MagicMock(return_value=mock_company)
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            result = fetcher.fetch("0000320193", FilingType.FORM_10K, limit=5)
+        result = fetcher.fetch("0000320193", FilingType.FORM_10K, limit=5)
 
         assert len(result) == 2
         mock_company_cls.assert_called_once_with("0000320193")
         mock_company.get_filings.assert_called_once_with(form="10-K")
         mock_filings.latest.assert_called_once_with(5)
 
-    def test_正常系_有効なTickerで10Q取得成功(self) -> None:
+    def test_正常系_有効なTickerで10Q取得成功(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should return filings for a valid ticker symbol.
 
         Verify that fetch() passes the ticker string directly to Company().
         """
-        mock_filing_list = [MagicMock()]
-        mock_filings = MagicMock()
-        mock_filings.latest.return_value = mock_filing_list
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-        mock_company_cls = MagicMock(return_value=mock_company)
+        mock_company_cls, mock_company, mock_filings = mock_filings_chain
+        mock_filings.latest.return_value = [MagicMock()]
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            result = fetcher.fetch("AAPL", FilingType.FORM_10Q, limit=3)
+        result = fetcher.fetch("AAPL", FilingType.FORM_10Q, limit=3)
 
         assert len(result) == 1
         mock_company_cls.assert_called_once_with("AAPL")
         mock_company.get_filings.assert_called_once_with(form="10-Q")
 
-    def test_正常系_limitで取得件数制限(self) -> None:
+    def test_正常系_limitで取得件数制限(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should pass limit to filings.latest().
 
         Verify that the limit parameter is forwarded correctly
         to the edgartools latest() method.
         """
-        mock_filings = MagicMock()
-        mock_filings.latest.return_value = []
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-        mock_company_cls = MagicMock(return_value=mock_company)
+        mock_company_cls, _mock_company, mock_filings = mock_filings_chain
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            fetcher.fetch("AAPL", FilingType.FORM_10K, limit=20)
+        fetcher.fetch("AAPL", FilingType.FORM_10K, limit=20)
 
         mock_filings.latest.assert_called_once_with(20)
 
-    def test_正常系_デフォルトlimitは10件(self) -> None:
+    def test_正常系_デフォルトlimitは10件(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should use default limit of 10 when not specified.
 
         Verify that the default limit parameter value is 10.
         """
-        mock_filings = MagicMock()
-        mock_filings.latest.return_value = []
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-        mock_company_cls = MagicMock(return_value=mock_company)
+        mock_company_cls, _mock_company, mock_filings = mock_filings_chain
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            fetcher.fetch("AAPL", FilingType.FORM_10K)
+        fetcher.fetch("AAPL", FilingType.FORM_10K)
 
         mock_filings.latest.assert_called_once_with(10)
 
@@ -125,7 +115,10 @@ class TestEdgarFetcherFetch:
             with pytest.raises(EdgarError, match="identity is not configured"):
                 fetcher.fetch("AAPL", FilingType.FORM_10K)
 
-    def test_異常系_not_foundエラーでFilingNotFoundError(self) -> None:
+    def test_異常系_not_foundエラーでFilingNotFoundError(
+        self,
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should raise FilingNotFoundError for 'not found' errors.
 
         Verify that ValueError containing 'not found' from edgartools
@@ -138,12 +131,13 @@ class TestEdgarFetcherFetch:
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            with pytest.raises(FilingNotFoundError):
-                fetcher.fetch("INVALID", FilingType.FORM_10K)
+        with pytest.raises(FilingNotFoundError):
+            fetcher.fetch("INVALID", FilingType.FORM_10K)
 
-    def test_異常系_no_cikエラーでFilingNotFoundError(self) -> None:
+    def test_異常系_no_cikエラーでFilingNotFoundError(
+        self,
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should raise FilingNotFoundError for 'no cik' errors.
 
         Verify that errors containing 'no cik' from edgartools
@@ -154,12 +148,13 @@ class TestEdgarFetcherFetch:
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            with pytest.raises(FilingNotFoundError):
-                fetcher.fetch("ZZZZZ", FilingType.FORM_10K)
+        with pytest.raises(FilingNotFoundError):
+            fetcher.fetch("ZZZZZ", FilingType.FORM_10K)
 
-    def test_異常系_予期しないエラーでEdgarError(self) -> None:
+    def test_異常系_予期しないエラーでEdgarError(
+        self,
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should wrap unexpected errors in EdgarError.
 
         Verify that non-domain errors (e.g., network timeouts) are
@@ -170,12 +165,13 @@ class TestEdgarFetcherFetch:
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            with pytest.raises(EdgarError, match="Failed to fetch filings"):
-                fetcher.fetch("AAPL", FilingType.FORM_10K)
+        with pytest.raises(EdgarError, match="Failed to fetch filings"):
+            fetcher.fetch("AAPL", FilingType.FORM_10K)
 
-    def test_異常系_EdgarErrorはそのまま再送出される(self) -> None:
+    def test_異常系_EdgarErrorはそのまま再送出される(
+        self,
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should re-raise EdgarError without wrapping.
 
         Verify that EdgarError raised during fetching is propagated
@@ -187,54 +183,47 @@ class TestEdgarFetcherFetch:
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            with pytest.raises(EdgarError) as exc_info:
-                fetcher.fetch("AAPL", FilingType.FORM_10K)
+        with pytest.raises(EdgarError) as exc_info:
+            fetcher.fetch("AAPL", FilingType.FORM_10K)
 
         assert exc_info.value is original_error
 
-    def test_エッジケース_Filingが0件で空リスト(self) -> None:
+    def test_エッジケース_Filingが0件で空リスト(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should return empty list when no filings found.
 
         Verify that fetch() returns an empty list when the company
         has no filings matching the specified form type.
         """
-        mock_filings = MagicMock()
-        mock_filings.latest.return_value = []
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-        mock_company_cls = MagicMock(return_value=mock_company)
+        mock_company_cls, _mock_company, _mock_filings = mock_filings_chain
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            result = fetcher.fetch("AAPL", FilingType.FORM_10K)
+        result = fetcher.fetch("AAPL", FilingType.FORM_10K)
 
         assert result == []
 
-    def test_エッジケース_13Fフォームタイプで取得成功(self) -> None:
+    def test_エッジケース_13Fフォームタイプで取得成功(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch() should correctly pass 13F form type value.
 
         Verify that fetch() handles all supported FilingType values
         including FORM_13F.
         """
-        mock_filings = MagicMock()
+        mock_company_cls, mock_company, mock_filings = mock_filings_chain
         mock_filings.latest.return_value = [MagicMock()]
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-        mock_company_cls = MagicMock(return_value=mock_company)
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            result = fetcher.fetch("AAPL", FilingType.FORM_13F, limit=1)
+        result = fetcher.fetch("AAPL", FilingType.FORM_13F, limit=1)
 
         assert len(result) == 1
         mock_company.get_filings.assert_called_once_with(form="13F")
@@ -243,49 +232,44 @@ class TestEdgarFetcherFetch:
 class TestEdgarFetcherFetchLatest:
     """Tests for EdgarFetcher.fetch_latest() method."""
 
-    def test_正常系_fetch_latestで最新Filing取得成功(self) -> None:
+    def test_正常系_fetch_latestで最新Filing取得成功(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch_latest() should return the first filing from fetch().
 
         Verify that fetch_latest() calls fetch(limit=1) and returns
         the first element.
         """
-        mock_filing = MagicMock()
-        mock_filings = MagicMock()
-        mock_filings.latest.return_value = [mock_filing]
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-        mock_company_cls = MagicMock(return_value=mock_company)
+        mock_company_cls, _mock_company, mock_filings = mock_filings_chain
+        single_filing = MagicMock()
+        mock_filings.latest.return_value = [single_filing]
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            result = fetcher.fetch_latest("AAPL", FilingType.FORM_10K)
+        result = fetcher.fetch_latest("AAPL", FilingType.FORM_10K)
 
-        assert result is mock_filing
+        assert result is single_filing
         mock_filings.latest.assert_called_once_with(1)
 
-    def test_エッジケース_fetch_latestでFiling0件でNone(self) -> None:
+    def test_エッジケース_fetch_latestでFiling0件でNone(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
         """fetch_latest() should return None when no filings found.
 
         Verify that fetch_latest() returns None instead of raising
         an error when the company has no filings.
         """
-        mock_filings = MagicMock()
-        mock_filings.latest.return_value = []
-
-        mock_company = MagicMock()
-        mock_company.get_filings.return_value = mock_filings
-        mock_company_cls = MagicMock(return_value=mock_company)
+        mock_company_cls, _mock_company, _mock_filings = mock_filings_chain
 
         fetcher = EdgarFetcher()
         fetcher._company_cls = mock_company_cls
 
-        with patch("edgar.fetcher.load_config") as mock_config:
-            mock_config.return_value = MagicMock(is_identity_configured=True)
-            result = fetcher.fetch_latest("AAPL", FilingType.FORM_10K)
+        result = fetcher.fetch_latest("AAPL", FilingType.FORM_10K)
 
         assert result is None
 
@@ -316,3 +300,59 @@ class TestEdgarFetcherInit:
 
         assert result1 is mock_cls
         assert result2 is mock_cls
+
+
+class TestEdgarFetcherRateLimit:
+    """Tests for EdgarFetcher rate limiting integration."""
+
+    def test_正常系_デフォルトでレートリミッターが設定される(self) -> None:
+        """EdgarFetcher should have a rate limiter with default config.
+
+        Verify that EdgarFetcher creates a RateLimiter with the default
+        rate of DEFAULT_RATE_LIMIT_PER_SECOND.
+        """
+        fetcher = EdgarFetcher()
+        assert isinstance(fetcher._rate_limiter, RateLimiter)
+        assert (
+            fetcher._rate_limiter.max_requests_per_second
+            == DEFAULT_RATE_LIMIT_PER_SECOND
+        )
+
+    def test_正常系_カスタムレートリミッターで初期化(self) -> None:
+        """EdgarFetcher should accept a custom rate limiter.
+
+        Verify that a custom RateLimiter instance can be injected.
+        """
+        custom_limiter = RateLimiter(max_requests_per_second=5)
+        fetcher = EdgarFetcher(rate_limiter=custom_limiter)
+        assert fetcher._rate_limiter is custom_limiter
+
+    def test_正常系_fetch時にacquireが呼ばれる(
+        self,
+        mock_filings_chain: tuple[MagicMock, MagicMock, MagicMock],
+        patched_identity_config: MagicMock,
+    ) -> None:
+        """fetch() should call rate_limiter.acquire() before making request.
+
+        Verify that the rate limiter is consulted before each fetch request.
+        """
+        mock_company_cls, _mock_company, mock_filings = mock_filings_chain
+        mock_filings.latest.return_value = [MagicMock()]
+
+        mock_limiter = MagicMock(spec=RateLimiter)
+        mock_limiter.max_requests_per_second = 10
+
+        fetcher = EdgarFetcher(rate_limiter=mock_limiter)
+        fetcher._company_cls = mock_company_cls
+
+        fetcher.fetch("AAPL", FilingType.FORM_10K, limit=1)
+
+        mock_limiter.acquire.assert_called_once()
+
+    def test_正常系_rate_limit_per_secondパラメータで初期化(self) -> None:
+        """EdgarFetcher should accept rate_limit_per_second parameter.
+
+        Verify that an integer rate limit can be passed directly.
+        """
+        fetcher = EdgarFetcher(rate_limit_per_second=3)
+        assert fetcher._rate_limiter.max_requests_per_second == 3

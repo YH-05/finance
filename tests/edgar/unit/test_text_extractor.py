@@ -83,29 +83,29 @@ class TestBuildCacheKey:
 class TestTextExtractor:
     """Tests for TextExtractor class."""
 
-    def test_正常系_filing_textからクリーンテキスト抽出(self) -> None:
+    def test_正常系_filing_textからクリーンテキスト抽出(
+        self, mock_filing: MagicMock
+    ) -> None:
         """extract_text should return cleaned text from filing.text()."""
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.return_value = "Hello    world\n\n\n\nfoo"
+        mock_filing.text.return_value = "Hello    world\n\n\n\nfoo"
 
         extractor = TextExtractor()
-        result = extractor.extract_text(filing)
+        result = extractor.extract_text(mock_filing)
 
         assert result == "Hello world\n\nfoo"
-        filing.text.assert_called_once()
+        mock_filing.text.assert_called_once()
 
-    def test_正常系_filing_markdownからMarkdown抽出(self) -> None:
+    def test_正常系_filing_markdownからMarkdown抽出(
+        self, mock_filing: MagicMock
+    ) -> None:
         """extract_markdown should return cleaned markdown from filing.markdown()."""
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.markdown.return_value = "# Title\n\n\n\nContent"
+        mock_filing.markdown.return_value = "# Title\n\n\n\nContent"
 
         extractor = TextExtractor()
-        result = extractor.extract_markdown(filing)
+        result = extractor.extract_markdown(mock_filing)
 
         assert result == "# Title\n\nContent"
-        filing.markdown.assert_called_once()
+        mock_filing.markdown.assert_called_once()
 
     def test_正常系_count_tokensでトークン数カウント(self) -> None:
         """count_tokens should return a positive integer for non-empty text."""
@@ -122,67 +122,56 @@ class TestTextExtractor:
 
         assert count == 0
 
-    def test_正常系_キャッシュヒット時は再抽出しない(self) -> None:
+    def test_正常系_キャッシュヒット時は再抽出しない(
+        self, mock_filing: MagicMock, mock_cache_hit: MagicMock
+    ) -> None:
         """extract_text should return cached text without calling filing.text()."""
-        mock_cache = MagicMock()
-        mock_cache.get_cached_text.return_value = "Cached text"
-
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-
-        extractor = TextExtractor(cache=mock_cache)
-        result = extractor.extract_text(filing)
+        extractor = TextExtractor(cache=mock_cache_hit)
+        result = extractor.extract_text(mock_filing)
 
         assert result == "Cached text"
-        filing.text.assert_not_called()
+        mock_filing.text.assert_not_called()
 
-    def test_正常系_キャッシュミス時はキャッシュに保存(self) -> None:
+    def test_正常系_キャッシュミス時はキャッシュに保存(
+        self, mock_filing: MagicMock, mock_cache_miss: MagicMock
+    ) -> None:
         """extract_text should save to cache on cache miss."""
-        mock_cache = MagicMock()
-        mock_cache.get_cached_text.return_value = None
+        mock_filing.text.return_value = "Filing text"
 
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.return_value = "Filing text"
+        extractor = TextExtractor(cache=mock_cache_miss)
+        extractor.extract_text(mock_filing)
 
-        extractor = TextExtractor(cache=mock_cache)
-        extractor.extract_text(filing)
+        mock_cache_miss.save_text.assert_called_once()
 
-        mock_cache.save_text.assert_called_once()
-
-    def test_正常系_markdownもキャッシュから取得(self) -> None:
+    def test_正常系_markdownもキャッシュから取得(
+        self, mock_filing: MagicMock, mock_cache_hit: MagicMock
+    ) -> None:
         """extract_markdown should return cached markdown on cache hit."""
-        mock_cache = MagicMock()
-        mock_cache.get_cached_text.return_value = "Cached markdown"
+        mock_cache_hit.get_cached_text.return_value = "Cached markdown"
 
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-
-        extractor = TextExtractor(cache=mock_cache)
-        result = extractor.extract_markdown(filing)
+        extractor = TextExtractor(cache=mock_cache_hit)
+        result = extractor.extract_markdown(mock_filing)
 
         assert result == "Cached markdown"
-        filing.markdown.assert_not_called()
+        mock_filing.markdown.assert_not_called()
 
-    def test_異常系_filing_textエラーでEdgarError(self) -> None:
+    def test_異常系_filing_textエラーでEdgarError(self, mock_filing: MagicMock) -> None:
         """extract_text should raise EdgarError when filing.text() fails."""
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.side_effect = RuntimeError("Network error")
+        mock_filing.text.side_effect = RuntimeError("Network error")
 
         extractor = TextExtractor()
         with pytest.raises(EdgarError, match="Failed to extract text"):
-            extractor.extract_text(filing)
+            extractor.extract_text(mock_filing)
 
-    def test_異常系_filing_markdownエラーでEdgarError(self) -> None:
+    def test_異常系_filing_markdownエラーでEdgarError(
+        self, mock_filing: MagicMock
+    ) -> None:
         """extract_markdown should raise EdgarError when filing.markdown() fails."""
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.markdown.side_effect = RuntimeError("Network error")
+        mock_filing.markdown.side_effect = RuntimeError("Network error")
 
         extractor = TextExtractor()
         with pytest.raises(EdgarError, match="Failed to extract markdown"):
-            extractor.extract_markdown(filing)
+            extractor.extract_markdown(mock_filing)
 
     def test_異常系_accession_number欠落でEdgarError(self) -> None:
         """extract_text should raise EdgarError when accession_number is missing."""
@@ -192,44 +181,42 @@ class TestTextExtractor:
         with pytest.raises(EdgarError, match="accession_number"):
             extractor.extract_text(filing)
 
-    def test_エッジケース_空テキストで空文字列返却(self) -> None:
+    def test_エッジケース_空テキストで空文字列返却(
+        self, mock_filing: MagicMock
+    ) -> None:
         """extract_text should return empty string for empty filing text."""
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.return_value = ""
+        mock_filing.text.return_value = ""
 
         extractor = TextExtractor()
-        result = extractor.extract_text(filing)
+        result = extractor.extract_text(mock_filing)
 
         assert result == ""
 
-    def test_エッジケース_キャッシュ読み取りエラーは無視(self) -> None:
+    def test_エッジケース_キャッシュ読み取りエラーは無視(
+        self, mock_filing: MagicMock
+    ) -> None:
         """extract_text should proceed without cache if cache read fails."""
         mock_cache = MagicMock()
         mock_cache.get_cached_text.side_effect = RuntimeError("Cache read error")
 
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.return_value = "Filing text"
+        mock_filing.text.return_value = "Filing text"
 
         extractor = TextExtractor(cache=mock_cache)
-        result = extractor.extract_text(filing)
+        result = extractor.extract_text(mock_filing)
 
         assert result == "Filing text"
-        filing.text.assert_called_once()
+        mock_filing.text.assert_called_once()
 
-    def test_エッジケース_キャッシュ書き込みエラーは無視(self) -> None:
+    def test_エッジケース_キャッシュ書き込みエラーは無視(
+        self, mock_filing: MagicMock, mock_cache_miss: MagicMock
+    ) -> None:
         """extract_text should succeed even if cache write fails."""
-        mock_cache = MagicMock()
-        mock_cache.get_cached_text.return_value = None
-        mock_cache.save_text.side_effect = RuntimeError("Cache write error")
+        mock_cache_miss.save_text.side_effect = RuntimeError("Cache write error")
 
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.return_value = "Filing text"
+        mock_filing.text.return_value = "Filing text"
 
-        extractor = TextExtractor(cache=mock_cache)
-        result = extractor.extract_text(filing)
+        extractor = TextExtractor(cache=mock_cache_miss)
+        result = extractor.extract_text(mock_filing)
 
         assert result == "Filing text"
 
@@ -245,44 +232,40 @@ class TestTextExtractor:
 class TestTextExtractorSizeCheck:
     """Tests for TextExtractor filing size check."""
 
-    def test_正常系_上限以下のテキストはそのまま抽出(self) -> None:
+    def test_正常系_上限以下のテキストはそのまま抽出(
+        self, mock_filing: MagicMock
+    ) -> None:
         """extract_text should return text normally when within size limit."""
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.return_value = "Small filing text"
+        mock_filing.text.return_value = "Small filing text"
 
         extractor = TextExtractor(max_filing_size_bytes=1024)
-        result = extractor.extract_text(filing)
+        result = extractor.extract_text(mock_filing)
 
         assert result == "Small filing text"
 
     def test_正常系_上限超過時にテキストを返却し警告ログ出力(
-        self, caplog: pytest.LogCaptureFixture
+        self, mock_filing: MagicMock, caplog: pytest.LogCaptureFixture
     ) -> None:
         """extract_text should return text and emit warning when exceeding size limit."""
         large_text = "x" * 2000  # 2000 bytes
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.text.return_value = large_text
+        mock_filing.text.return_value = large_text
 
         extractor = TextExtractor(max_filing_size_bytes=1000)
-        result = extractor.extract_text(filing)
+        result = extractor.extract_text(mock_filing)
 
         # Text should still be returned (not blocked)
         assert len(result) > 0
         assert "x" in result
 
     def test_正常系_markdownでも上限超過時に警告ログ出力(
-        self, caplog: pytest.LogCaptureFixture
+        self, mock_filing: MagicMock, caplog: pytest.LogCaptureFixture
     ) -> None:
         """extract_markdown should emit warning when exceeding size limit."""
         large_markdown = "# Title\n\n" + "x" * 2000
-        filing = MagicMock()
-        filing.accession_number = "0001234567-24-000001"
-        filing.markdown.return_value = large_markdown
+        mock_filing.markdown.return_value = large_markdown
 
         extractor = TextExtractor(max_filing_size_bytes=1000)
-        result = extractor.extract_markdown(filing)
+        result = extractor.extract_markdown(mock_filing)
 
         # Markdown should still be returned (not blocked)
         assert len(result) > 0
