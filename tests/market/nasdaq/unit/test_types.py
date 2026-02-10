@@ -15,7 +15,9 @@ Test TODO List:
 - [x] Region Enum: values, str inheritance, member count (8)
 - [x] Country Enum: values, str inheritance, subset verification
 - [x] NasdaqConfig: frozen, defaults from constants, field types
+- [x] NasdaqConfig: timeout/polite_delay/delay_jitter 範囲検証
 - [x] RetryConfig: frozen, defaults, field types
+- [x] RetryConfig: max_attempts 範囲検証
 - [x] ScreenerFilter: frozen, defaults, to_params() method
 - [x] StockRecord: frozen, all fields, field types
 - [x] FilterCategory: type alias exists
@@ -347,6 +349,56 @@ class TestNasdaqConfig:
         assert hasattr(config, "impersonate")
         assert hasattr(config, "timeout")
 
+    def test_正常系_境界値でtimeoutが受け入れられる(self) -> None:
+        """timeout の境界値（1.0, 300.0）が受け入れられること。"""
+        config_min = NasdaqConfig(timeout=1.0)
+        assert config_min.timeout == 1.0
+        config_max = NasdaqConfig(timeout=300.0)
+        assert config_max.timeout == 300.0
+
+    def test_異常系_timeoutが範囲外でValueError(self) -> None:
+        """timeout が範囲外の場合 ValueError が発生すること。"""
+        with pytest.raises(ValueError, match="timeout must be between 1.0 and 300.0"):
+            NasdaqConfig(timeout=0.5)
+        with pytest.raises(ValueError, match="timeout must be between 1.0 and 300.0"):
+            NasdaqConfig(timeout=301.0)
+
+    def test_正常系_境界値でpolite_delayが受け入れられる(self) -> None:
+        """polite_delay の境界値（0.0, 60.0）が受け入れられること。"""
+        config_min = NasdaqConfig(polite_delay=0.0)
+        assert config_min.polite_delay == 0.0
+        config_max = NasdaqConfig(polite_delay=60.0)
+        assert config_max.polite_delay == 60.0
+
+    def test_異常系_polite_delayが範囲外でValueError(self) -> None:
+        """polite_delay が範囲外の場合 ValueError が発生すること。"""
+        with pytest.raises(
+            ValueError, match="polite_delay must be between 0.0 and 60.0"
+        ):
+            NasdaqConfig(polite_delay=-0.1)
+        with pytest.raises(
+            ValueError, match="polite_delay must be between 0.0 and 60.0"
+        ):
+            NasdaqConfig(polite_delay=61.0)
+
+    def test_正常系_境界値でdelay_jitterが受け入れられる(self) -> None:
+        """delay_jitter の境界値（0.0, 30.0）が受け入れられること。"""
+        config_min = NasdaqConfig(delay_jitter=0.0)
+        assert config_min.delay_jitter == 0.0
+        config_max = NasdaqConfig(delay_jitter=30.0)
+        assert config_max.delay_jitter == 30.0
+
+    def test_異常系_delay_jitterが範囲外でValueError(self) -> None:
+        """delay_jitter が範囲外の場合 ValueError が発生すること。"""
+        with pytest.raises(
+            ValueError, match="delay_jitter must be between 0.0 and 30.0"
+        ):
+            NasdaqConfig(delay_jitter=-0.1)
+        with pytest.raises(
+            ValueError, match="delay_jitter must be between 0.0 and 30.0"
+        ):
+            NasdaqConfig(delay_jitter=31.0)
+
 
 # =============================================================================
 # RetryConfig dataclass
@@ -394,6 +446,20 @@ class TestRetryConfig:
         assert hasattr(config, "max_delay")
         assert hasattr(config, "exponential_base")
         assert hasattr(config, "jitter")
+
+    def test_正常系_境界値でmax_attemptsが受け入れられる(self) -> None:
+        """max_attempts の境界値（1, 10）が受け入れられること。"""
+        config_min = RetryConfig(max_attempts=1)
+        assert config_min.max_attempts == 1
+        config_max = RetryConfig(max_attempts=10)
+        assert config_max.max_attempts == 10
+
+    def test_異常系_max_attemptsが範囲外でValueError(self) -> None:
+        """max_attempts が範囲外の場合 ValueError が発生すること。"""
+        with pytest.raises(ValueError, match="max_attempts must be between 1 and 10"):
+            RetryConfig(max_attempts=0)
+        with pytest.raises(ValueError, match="max_attempts must be between 1 and 10"):
+            RetryConfig(max_attempts=11)
 
 
 # =============================================================================

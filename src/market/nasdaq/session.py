@@ -36,11 +36,13 @@ market.nasdaq.errors : NasdaqRateLimitError for rate limit detection.
 import random
 import time
 from typing import Any, cast
+from urllib.parse import urlparse
 
 from curl_cffi import requests as curl_requests
 from curl_cffi.requests import BrowserTypeLiteral
 
 from market.nasdaq.constants import (
+    ALLOWED_HOSTS,
     BROWSER_IMPERSONATE_TARGETS,
     DEFAULT_HEADERS,
     DEFAULT_USER_AGENTS,
@@ -167,6 +169,8 @@ class NasdaqSession:
 
         Raises
         ------
+        ValueError
+            If the URL host is not in the allowed hosts whitelist (SSRF prevention).
         NasdaqRateLimitError
             If the response status code is 403 or 429.
 
@@ -179,15 +183,28 @@ class NasdaqSession:
         >>> response.status_code
         200
         """
+        # 0. URL whitelist validation (SSRF prevention, CWE-918)
+        parsed_host = urlparse(url).netloc
+        if parsed_host not in ALLOWED_HOSTS:
+            logger.warning(
+                "Request blocked: host not in allowed hosts",
+                url=url,
+                host=parsed_host,
+                allowed_hosts=list(ALLOWED_HOSTS),
+            )
+            raise ValueError(
+                f"Host '{parsed_host}' is not in allowed hosts: {sorted(ALLOWED_HOSTS)}"
+            )
+
         # 1. Apply polite delay
-        delay = self._config.polite_delay + random.uniform(  # nosec B311
+        delay = self._config.polite_delay + random.uniform(  # nosec B311 (cryptographic randomness not required for delay jitter)
             0, self._config.delay_jitter
         )
         time.sleep(delay)
         logger.debug("Polite delay applied", delay_seconds=delay, url=url)
 
         # 2. Build headers with User-Agent rotation and Referer
-        user_agent = random.choice(self._user_agents)  # nosec B311
+        user_agent = random.choice(self._user_agents)  # nosec B311 (cryptographic randomness not required for User-Agent rotation)
         headers: dict[str, str] = {
             **DEFAULT_HEADERS,
             "User-Agent": user_agent,
@@ -305,7 +322,7 @@ class NasdaqSession:
 
                     # Add jitter if configured
                     if self._retry_config.jitter:
-                        delay *= 0.5 + random.random()  # nosec B311
+                        delay *= 0.5 + random.random()  # nosec B311 (cryptographic randomness not required for retry backoff jitter)
 
                     logger.debug(
                         "Backoff before retry",
@@ -339,7 +356,7 @@ class NasdaqSession:
         """
         self._session.close()
 
-        new_target: str = random.choice(BROWSER_IMPERSONATE_TARGETS)  # nosec B311
+        new_target: str = random.choice(BROWSER_IMPERSONATE_TARGETS)  # nosec B311 (cryptographic randomness not required for browser fingerprint rotation)
         self._session = curl_requests.Session(
             impersonate=cast("BrowserTypeLiteral", new_target),
         )

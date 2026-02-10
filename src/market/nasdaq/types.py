@@ -245,6 +245,27 @@ class NasdaqConfig:
     impersonate: str = "chrome"
     timeout: float = DEFAULT_TIMEOUT
 
+    def __post_init__(self) -> None:
+        """Validate configuration value ranges.
+
+        Raises
+        ------
+        ValueError
+            If any configuration value is outside its valid range.
+        """
+        if not (1.0 <= self.timeout <= 300.0):
+            raise ValueError(
+                f"timeout must be between 1.0 and 300.0, got {self.timeout}"
+            )
+        if not (0.0 <= self.polite_delay <= 60.0):
+            raise ValueError(
+                f"polite_delay must be between 0.0 and 60.0, got {self.polite_delay}"
+            )
+        if not (0.0 <= self.delay_jitter <= 30.0):
+            raise ValueError(
+                f"delay_jitter must be between 0.0 and 30.0, got {self.delay_jitter}"
+            )
+
 
 @dataclass(frozen=True)
 class RetryConfig:
@@ -275,6 +296,19 @@ class RetryConfig:
     max_delay: float = 30.0
     exponential_base: float = 2.0
     jitter: bool = True
+
+    def __post_init__(self) -> None:
+        """Validate retry configuration value ranges.
+
+        Raises
+        ------
+        ValueError
+            If max_attempts is outside its valid range.
+        """
+        if not (1 <= self.max_attempts <= 10):
+            raise ValueError(
+                f"max_attempts must be between 1 and 10, got {self.max_attempts}"
+            )
 
 
 # =============================================================================

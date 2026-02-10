@@ -115,6 +115,13 @@ Adds randomness to request timing to appear more human-like.
 The actual delay is ``DEFAULT_POLITE_DELAY + random(0, DEFAULT_DELAY_JITTER)``.
 """
 
+ALLOWED_HOSTS: Final[frozenset[str]] = frozenset({"api.nasdaq.com"})
+"""Whitelist of allowed hostnames for SSRF prevention (CWE-918).
+
+Only requests to these hosts are permitted by ``NasdaqSession.get()``.
+Requests to any other host will raise ``ValueError``.
+"""
+
 # ---------------------------------------------------------------------------
 # 3. Default HTTP headers
 # ---------------------------------------------------------------------------
@@ -184,6 +191,7 @@ Examples
 # ---------------------------------------------------------------------------
 
 __all__ = [
+    "ALLOWED_HOSTS",
     "BROWSER_IMPERSONATE_TARGETS",
     "COLUMN_NAME_MAP",
     "DEFAULT_DELAY_JITTER",

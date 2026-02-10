@@ -27,6 +27,9 @@ Test TODO List:
 - [x] close(): セッションが閉じられる
 - [x] structlog ロガーの使用
 - [x] __all__ エクスポート
+- [x] get(): 許可されたホストへのリクエストが成功する
+- [x] get(): 不正なホストへのリクエストがValueErrorで拒否される
+- [x] get(): ホストなしURLがValueErrorで拒否される
 """
 
 from unittest.mock import MagicMock, patch
@@ -34,6 +37,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from market.nasdaq.constants import (
+    ALLOWED_HOSTS,
     BROWSER_IMPERSONATE_TARGETS,
     DEFAULT_HEADERS,
     NASDAQ_SCREENER_URL,
@@ -290,6 +294,58 @@ class TestNasdaqSessionGet:
 
                 with pytest.raises(NasdaqRateLimitError):
                     session.get(NASDAQ_SCREENER_URL)
+
+
+# =============================================================================
+# URL whitelist validation tests
+# =============================================================================
+
+
+class TestNasdaqSessionURLWhitelist:
+    """NasdaqSession URL ホワイトリスト検証のテスト。"""
+
+    def test_正常系_許可されたホストへのリクエストが成功する(self) -> None:
+        """ALLOWED_HOSTS に含まれるホストへのリクエストが成功すること。"""
+        with patch("market.nasdaq.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.nasdaq.session.time.sleep"):
+                session = NasdaqSession()
+                response = session.get(NASDAQ_SCREENER_URL)
+
+            assert response.status_code == 200
+
+    def test_異常系_不正なホストへのリクエストがValueErrorで拒否される(self) -> None:
+        """ALLOWED_HOSTS に含まれないホストへのリクエストが ValueError で拒否されること。"""
+        with patch("market.nasdaq.session.curl_requests") as mock_curl:
+            mock_curl.Session.return_value = MagicMock()
+
+            session = NasdaqSession()
+
+            with pytest.raises(ValueError, match="not in allowed hosts"):
+                session.get("https://evil.example.com/api/data")
+
+    def test_異常系_ホストなしURLがValueErrorで拒否される(self) -> None:
+        """ホストが空のURLが ValueError で拒否されること。"""
+        with patch("market.nasdaq.session.curl_requests") as mock_curl:
+            mock_curl.Session.return_value = MagicMock()
+
+            session = NasdaqSession()
+
+            with pytest.raises(ValueError, match="not in allowed hosts"):
+                session.get("/relative/path/only")
+
+    def test_正常系_ALLOWED_HOSTSにapi_nasdaq_comが含まれる(self) -> None:
+        """ALLOWED_HOSTS に api.nasdaq.com が含まれていること。"""
+        assert "api.nasdaq.com" in ALLOWED_HOSTS
+
+    def test_正常系_ALLOWED_HOSTSがfrozensetである(self) -> None:
+        """ALLOWED_HOSTS が frozenset であること。"""
+        assert isinstance(ALLOWED_HOSTS, frozenset)
 
 
 # =============================================================================
