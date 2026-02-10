@@ -31,8 +31,11 @@ CacheError
     Exception for cache operation failures
 RateLimitError
     Exception for rate limiting
+CacheManager
+    SQLite-based cache manager for filing text
 """
 
+from .cache import CacheManager
 from .config import (
     EdgarConfig,
     load_config,
@@ -45,6 +48,7 @@ from .errors import (
     RateLimitError,
     SectionNotFoundError,
 )
+from .fetcher import EdgarFetcher
 from .types import (
     EdgarResult,
     FilingType,
@@ -53,8 +57,10 @@ from .types import (
 
 __all__ = [
     "CacheError",
+    "CacheManager",
     "EdgarConfig",
     "EdgarError",
+    "EdgarFetcher",
     "EdgarResult",
     "FilingNotFoundError",
     "FilingType",
