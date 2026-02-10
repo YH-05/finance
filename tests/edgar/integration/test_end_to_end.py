@@ -20,45 +20,10 @@ from edgar.extractors.text import TextExtractor
 from edgar.fetcher import EdgarFetcher
 from edgar.types import FilingType
 
+from .conftest import SAMPLE_10K_TEXT, SAMPLE_10Q_TEXT
+
 if TYPE_CHECKING:
     from pathlib import Path
-
-
-SAMPLE_10K_TEXT = (
-    "UNITED STATES SECURITIES AND EXCHANGE COMMISSION\n"
-    "Washington, D.C. 20549\n\n"
-    "FORM 10-K\n\n"
-    "Item 1. Business\n\n"
-    "Apple Inc. designs, manufactures, and markets smartphones, "
-    "personal computers, tablets, wearables, and accessories worldwide.\n\n"
-    "Item 1A. Risk Factors\n\n"
-    "The Company's business, reputation, results of operations, "
-    "financial condition, and stock price can be affected by a number "
-    "of factors.\n\n"
-    "Item 7. Management's Discussion and Analysis of Financial "
-    "Condition and Results of Operations\n\n"
-    "The following discussion should be read in conjunction with the "
-    "consolidated financial statements.\n\n"
-    "Item 8. Financial Statements and Supplementary Data\n\n"
-    "See the consolidated financial statements and notes thereto.\n"
-)
-
-SAMPLE_10Q_TEXT = (
-    "UNITED STATES SECURITIES AND EXCHANGE COMMISSION\n"
-    "Washington, D.C. 20549\n\n"
-    "FORM 10-Q\n\n"
-    "Item 1. Business\n\n"
-    "Microsoft Corporation develops, licenses, and supports software, "
-    "services, devices, and solutions worldwide.\n\n"
-    "Item 1A. Risk Factors\n\n"
-    "We operate in a rapidly changing environment that involves a number "
-    "of risks, some of which are beyond our control.\n\n"
-    "Item 7. Management's Discussion and Analysis of Financial "
-    "Condition and Results of Operations\n\n"
-    "Revenue was $56.2 billion and increased 16%.\n\n"
-    "Item 8. Financial Statements and Supplementary Data\n\n"
-    "Refer to the financial statements and notes included herein.\n"
-)
 
 
 @pytest.mark.integration
@@ -256,6 +221,7 @@ class TestEndToEndBatchExtraction:
         self,
         monkeypatch: pytest.MonkeyPatch,
         tmp_path: Path,
+        mock_batch_filings: dict[str, MagicMock],
     ) -> None:
         """Full flow: EdgarFetcher.fetch() -> BatchExtractor.extract_text_batch().
 
@@ -264,36 +230,14 @@ class TestEndToEndBatchExtraction:
         """
         monkeypatch.setenv(SEC_EDGAR_IDENTITY_ENV, "Test User test@example.com")
 
-        # Setup mock filings for two companies
-        mock_filing_aapl = MagicMock()
-        mock_filing_aapl.accession_number = "0000320193-24-000001"
-        mock_filing_aapl.text.return_value = SAMPLE_10K_TEXT
-
-        mock_filing_msft = MagicMock()
-        mock_filing_msft.accession_number = "0000789019-24-000001"
-        mock_filing_msft.text.return_value = SAMPLE_10Q_TEXT
-
-        # Setup mock edgartools company class that returns different filings
-        mock_filings_aapl = MagicMock()
-        mock_filings_aapl.latest.return_value = [mock_filing_aapl]
-        mock_company_aapl = MagicMock()
-        mock_company_aapl.get_filings.return_value = mock_filings_aapl
-
-        mock_filings_msft = MagicMock()
-        mock_filings_msft.latest.return_value = [mock_filing_msft]
-        mock_company_msft = MagicMock()
-        mock_company_msft.get_filings.return_value = mock_filings_msft
-
-        mock_company_cls = MagicMock(
-            side_effect=[mock_company_aapl, mock_company_msft],
-        )
-
         # Phase 1: Fetch filings via EdgarFetcher
         fetcher = EdgarFetcher()
-        fetcher._company_cls = mock_company_cls
+        fetcher._company_cls = mock_batch_filings["company_cls"]
 
         filings_aapl = fetcher.fetch("AAPL", FilingType.FORM_10K, limit=1)
-        fetcher._company_cls = MagicMock(return_value=mock_company_msft)
+        fetcher._company_cls = MagicMock(
+            return_value=mock_batch_filings["company_msft"],
+        )
         filings_msft = fetcher.fetch("MSFT", FilingType.FORM_10Q, limit=1)
 
         all_filings = filings_aapl + filings_msft
@@ -329,6 +273,8 @@ class TestEndToEndBatchExtraction:
         self,
         monkeypatch: pytest.MonkeyPatch,
         tmp_path: Path,
+        mock_filing_aapl: MagicMock,
+        mock_filing_msft: MagicMock,
     ) -> None:
         """Full flow: EdgarFetcher.fetch() -> BatchExtractor.extract_sections_batch().
 
@@ -337,15 +283,7 @@ class TestEndToEndBatchExtraction:
         """
         monkeypatch.setenv(SEC_EDGAR_IDENTITY_ENV, "Test User test@example.com")
 
-        # Setup mock filings
-        mock_filing_aapl = MagicMock()
-        mock_filing_aapl.accession_number = "0000320193-24-000001"
-        mock_filing_aapl.text.return_value = SAMPLE_10K_TEXT
-
-        mock_filing_msft = MagicMock()
-        mock_filing_msft.accession_number = "0000789019-24-000001"
-        mock_filing_msft.text.return_value = SAMPLE_10Q_TEXT
-
+        # Build company chain for AAPL only (MSFT filing used directly)
         mock_filings_aapl = MagicMock()
         mock_filings_aapl.latest.return_value = [mock_filing_aapl]
         mock_company_aapl = MagicMock()
