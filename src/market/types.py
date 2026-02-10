@@ -32,6 +32,8 @@ class DataSource(str, Enum):
         FactSet data source
     ETF_COM : str
         ETF.com data source
+    NASDAQ : str
+        NASDAQ Stock Screener data source
     """
 
     YFINANCE = "yfinance"
@@ -40,6 +42,7 @@ class DataSource(str, Enum):
     BLOOMBERG = "bloomberg"
     FACTSET = "factset"
     ETF_COM = "etfcom"
+    NASDAQ = "nasdaq"
 
 
 @dataclass
