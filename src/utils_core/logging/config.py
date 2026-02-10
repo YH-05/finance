@@ -16,6 +16,7 @@ import functools
 import inspect
 import logging
 import os
+import stat
 import sys
 import time
 from collections.abc import Iterator
@@ -40,15 +41,27 @@ from ..types import LogFormat, LogLevel
 _initialized = False
 
 
-def _secure_log_file(log_file: Path) -> None:
-    """Set log file permissions to owner-only read/write (CWE-732).
+def _create_secure_log_file(log_file: Path) -> None:
+    """Create log file atomically with secure permissions (CWE-732, TOCTOU).
+
+    For new files, uses os.open() to atomically create with 0o600 permissions,
+    eliminating the TOCTOU window between file creation and chmod.
+    For existing files, corrects permissions to 0o600 via chmod.
 
     Parameters
     ----------
     log_file : Path
-        Path to the log file to secure
+        Path to the log file to create or secure
     """
-    if log_file.exists():
+    if not log_file.exists():
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        fd = os.open(
+            log_file,
+            os.O_CREAT | os.O_WRONLY | os.O_APPEND,
+            stat.S_IRUSR | stat.S_IWUSR,  # 0o600
+        )
+        os.close(fd)
+    else:
         log_file.chmod(0o600)
 
 
@@ -407,8 +420,8 @@ def setup_logging(
 
     # ファイルハンドラーを追加（指定された場合）
     if final_log_file:
-        final_log_file.parent.mkdir(parents=True, exist_ok=True)
-        _secure_log_file(final_log_file)  # 既存ファイルのパーミッション修正（CWE-732）
+        # TOCTOU対策: FileHandler作成前に安全なパーミッションでファイルを作成（CWE-732）
+        _create_secure_log_file(final_log_file)
 
         existing_file_handlers = [
             h
@@ -426,9 +439,6 @@ def setup_logging(
                 ],
             )
             file_handler = logging.FileHandler(final_log_file, encoding="utf-8")
-            _secure_log_file(
-                final_log_file
-            )  # 新規ファイルのパーミッション設定（CWE-732）
             file_handler.setFormatter(file_formatter)
             file_handler.setLevel(file_level_value)
             root_logger.addHandler(file_handler)
