@@ -377,20 +377,34 @@ class ScreenerFilter:
 
         >>> ScreenerFilter(exchange=Exchange.NYSE, limit=100).to_params()
         {'exchange': 'nyse', 'limit': '100'}
+
+        >>> ScreenerFilter(
+        ...     exchange=Exchange.NASDAQ,
+        ...     marketcap=MarketCap.MEGA,
+        ...     sector=Sector.TECHNOLOGY,
+        ...     recommendation=Recommendation.STRONG_BUY,
+        ...     region=Region.NORTH_AMERICA,
+        ...     country="united_states",
+        ...     limit=100,
+        ... ).to_params()
+        {'exchange': 'nasdaq', 'marketcap': 'mega', 'sector': 'technology', 'recommendation': 'strong_buy', 'region': 'north_america', 'country': 'united_states', 'limit': '100'}
         """
-        params: dict[str, str] = {"limit": str(self.limit)}
-        if self.exchange is not None:
-            params["exchange"] = self.exchange.value
-        if self.marketcap is not None:
-            params["marketcap"] = self.marketcap.value
-        if self.sector is not None:
-            params["sector"] = self.sector.value
-        if self.recommendation is not None:
-            params["recommendation"] = self.recommendation.value
-        if self.region is not None:
-            params["region"] = self.region.value
-        if self.country is not None:
-            params["country"] = self.country
+        fields: dict[
+            str, Exchange | MarketCap | Sector | Recommendation | Region | str | None
+        ] = {
+            "exchange": self.exchange,
+            "marketcap": self.marketcap,
+            "sector": self.sector,
+            "recommendation": self.recommendation,
+            "region": self.region,
+            "country": self.country,
+        }
+        params: dict[str, str] = {
+            k: (v.value if isinstance(v, Enum) else str(v))
+            for k, v in fields.items()
+            if v is not None
+        }
+        params["limit"] = str(self.limit)
         return params
 
 
