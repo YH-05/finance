@@ -40,6 +40,18 @@ from ..types import LogFormat, LogLevel
 _initialized = False
 
 
+def _secure_log_file(log_file: Path) -> None:
+    """Set log file permissions to owner-only read/write (CWE-732).
+
+    Parameters
+    ----------
+    log_file : Path
+        Path to the log file to secure
+    """
+    if log_file.exists():
+        log_file.chmod(0o600)
+
+
 def _get_shared_processors() -> list[Any]:
     """structlog と logging ハンドラーで共有するプロセッサーを返す."""
     return [
@@ -396,6 +408,7 @@ def setup_logging(
     # ファイルハンドラーを追加（指定された場合）
     if final_log_file:
         final_log_file.parent.mkdir(parents=True, exist_ok=True)
+        _secure_log_file(final_log_file)  # 既存ファイルのパーミッション修正（CWE-732）
 
         existing_file_handlers = [
             h
@@ -413,6 +426,9 @@ def setup_logging(
                 ],
             )
             file_handler = logging.FileHandler(final_log_file, encoding="utf-8")
+            _secure_log_file(
+                final_log_file
+            )  # 新規ファイルのパーミッション設定（CWE-732）
             file_handler.setFormatter(file_formatter)
             file_handler.setLevel(file_level_value)
             root_logger.addHandler(file_handler)
