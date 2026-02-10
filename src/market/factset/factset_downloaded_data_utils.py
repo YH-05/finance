@@ -23,11 +23,32 @@ warnings.simplefilter("ignore")
 # =====================================================================
 # SQLインジェクション対策用ヘルパー関数
 # =====================================================================
+
+# SQLキーワードブロックリスト（CWE-89 対策）
+_SQL_KEYWORDS: frozenset[str] = frozenset(
+    {
+        "ALTER",
+        "CREATE",
+        "DELETE",
+        "DROP",
+        "EXEC",
+        "EXECUTE",
+        "INSERT",
+        "SELECT",
+        "UNION",
+        "UPDATE",
+    }
+)
+
+
 def _validate_sql_identifier(name: str) -> str:
     """SQL識別子（テーブル名・カラム名）が安全であることを検証する。
 
     SQLiteでは識別子をパラメータ化できないため、
     この関数で識別子が安全な形式であることを保証する。
+
+    ハイフン（``-``）はSQLiteコメント開始（``--``）、
+    ドット（``.``）はスキーマ区切りとして特殊な意味を持つため許可しない。
 
     Parameters
     ----------
@@ -42,20 +63,25 @@ def _validate_sql_identifier(name: str) -> str:
     Raises
     ------
     ValueError
-        識別子が不正な形式の場合
+        識別子が不正な形式の場合、またはSQLキーワードの場合
     """
     # 空文字列チェック
     if not name or not name.strip():
         raise ValueError("SQL識別子は空にできません")
 
-    # 許可するパターン: 英数字、アンダースコア、ハイフン、ドット
-    # （FactSetのテーブル名・カラム名で使用される文字）
-    pattern = r"^[a-zA-Z_][a-zA-Z0-9_\-\.]*$"
+    # 許可するパターン: 英字またはアンダースコアで始まり、英数字・アンダースコアのみ
+    # ハイフン(-): SQLiteコメント開始(--)として悪用可能
+    # ドット(.): SQLiteスキーマ区切りとして悪用可能
+    pattern = r"^[a-zA-Z_][a-zA-Z0-9_]*$"
     if not re.match(pattern, name):
         raise ValueError(
             f"SQL識別子に不正な文字が含まれています: {name!r}. "
-            f"許可される形式: 英字で始まり、英数字・アンダースコア・ハイフン・ドットのみ"
+            f"許可される形式: 英字またはアンダースコアで始まり、英数字・アンダースコアのみ"
         )
+
+    # SQLキーワードチェック（大文字小文字を無視して完全一致）
+    if name.upper() in _SQL_KEYWORDS:
+        raise ValueError(f"SQLキーワードは識別子に使用できません: {name!r}")
 
     return name
 

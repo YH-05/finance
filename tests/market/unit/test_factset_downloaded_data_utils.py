@@ -13,6 +13,7 @@ import pandas as pd
 import pytest
 
 from market.factset.factset_downloaded_data_utils import (
+    _validate_sql_identifier,
     delete_table_from_database,
     store_to_database,
 )
@@ -89,6 +90,24 @@ class TestStoreToDatabase:
                 unique_cols=["date", "col; DROP TABLE--"],
             )
 
+    def test_異常系_ハイフンを含むテーブル名でValueError(
+        self, temp_db: Path, sample_df: pd.DataFrame
+    ) -> None:
+        with pytest.raises(ValueError, match="SQL識別子に不正な文字が含まれています"):
+            store_to_database(sample_df, temp_db, "table-name")
+
+    def test_異常系_ドットを含むテーブル名でValueError(
+        self, temp_db: Path, sample_df: pd.DataFrame
+    ) -> None:
+        with pytest.raises(ValueError, match="SQL識別子に不正な文字が含まれています"):
+            store_to_database(sample_df, temp_db, "schema.table")
+
+    def test_異常系_SQLキーワードのテーブル名でValueError(
+        self, temp_db: Path, sample_df: pd.DataFrame
+    ) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            store_to_database(sample_df, temp_db, "DROP")
+
 
 class TestDeleteTableFromDatabase:
     """delete_table_from_database の SQL識別子バリデーション検証。"""
@@ -133,3 +152,79 @@ class TestDeleteTableFromDatabase:
                 ValueError, match="SQL識別子に不正な文字が含まれています"
             ):
                 delete_table_from_database(temp_db, name)
+
+    def test_異常系_ハイフンを含むテーブル名でValueError(self, temp_db: Path) -> None:
+        with pytest.raises(ValueError, match="SQL識別子に不正な文字が含まれています"):
+            delete_table_from_database(temp_db, "my-table")
+
+    def test_異常系_ドットを含むテーブル名でValueError(self, temp_db: Path) -> None:
+        with pytest.raises(ValueError, match="SQL識別子に不正な文字が含まれています"):
+            delete_table_from_database(temp_db, "schema.table")
+
+    def test_異常系_SQLキーワードのテーブル名でValueError(self, temp_db: Path) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            delete_table_from_database(temp_db, "SELECT")
+
+
+class TestValidateSqlIdentifier:
+    """_validate_sql_identifier の直接テスト。"""
+
+    def test_正常系_有効な識別子がそのまま返される(self) -> None:
+        assert _validate_sql_identifier("valid_table") == "valid_table"
+        assert _validate_sql_identifier("_private") == "_private"
+        assert _validate_sql_identifier("Table123") == "Table123"
+        assert _validate_sql_identifier("a") == "a"
+
+    def test_異常系_ハイフンを含む識別子でValueError(self) -> None:
+        with pytest.raises(ValueError, match="SQL識別子に不正な文字が含まれています"):
+            _validate_sql_identifier("my-table")
+
+    def test_異常系_ドットを含む識別子でValueError(self) -> None:
+        with pytest.raises(ValueError, match="SQL識別子に不正な文字が含まれています"):
+            _validate_sql_identifier("schema.table")
+
+    def test_異常系_ダブルハイフンコメント攻撃を拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQL識別子に不正な文字が含まれています"):
+            _validate_sql_identifier("table--comment")
+
+    def test_異常系_SQLキーワードDROPを拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            _validate_sql_identifier("DROP")
+
+    def test_異常系_SQLキーワードSELECTを拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            _validate_sql_identifier("SELECT")
+
+    def test_異常系_SQLキーワードINSERTを拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            _validate_sql_identifier("INSERT")
+
+    def test_異常系_SQLキーワードDELETEを拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            _validate_sql_identifier("DELETE")
+
+    def test_異常系_SQLキーワードUNIONを拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            _validate_sql_identifier("UNION")
+
+    def test_異常系_SQLキーワード小文字でも拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            _validate_sql_identifier("drop")
+
+    def test_異常系_SQLキーワード大文字小文字混在でも拒否(self) -> None:
+        with pytest.raises(ValueError, match="SQLキーワードは識別子に使用できません"):
+            _validate_sql_identifier("Select")
+
+    def test_正常系_SQLキーワードを含むが完全一致でない識別子は許可(self) -> None:
+        # "drop_table" は "DROP" の完全一致ではないので許可
+        assert _validate_sql_identifier("drop_table") == "drop_table"
+        assert _validate_sql_identifier("select_all") == "select_all"
+        assert _validate_sql_identifier("union_data") == "union_data"
+
+    def test_異常系_空文字列でValueError(self) -> None:
+        with pytest.raises(ValueError, match="SQL識別子は空にできません"):
+            _validate_sql_identifier("")
+
+    def test_異常系_空白のみでValueError(self) -> None:
+        with pytest.raises(ValueError, match="SQL識別子は空にできません"):
+            _validate_sql_identifier("   ")
