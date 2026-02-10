@@ -1233,14 +1233,27 @@ class TestOrchestratorSaveResult:
 
             output_path = orchestrator._save_result(result)
 
-            # Verify logging was called with path
+            # Verify structured log: "Result saved" message with path kwarg
             mock_logger.info.assert_called()
             call_args_list = mock_logger.info.call_args_list
-            path_logged = any(
-                "Result saved" in str(call) and str(output_path) in str(call)
-                for call in call_args_list
+            save_call = next(
+                (
+                    call
+                    for call in call_args_list
+                    if call.args and "Result saved" in str(call.args[0])
+                ),
+                None,
             )
-            assert path_logged, "Output path should be logged"
+            assert save_call is not None, (
+                "Expected an info log call with 'Result saved' message"
+            )
+            assert "path" in save_call.kwargs, (
+                "Expected 'path' key in structured log kwargs"
+            )
+            assert str(output_path) == save_call.kwargs["path"], (
+                f"Expected path '{output_path}' in log kwargs, "
+                f"got '{save_call.kwargs['path']}'"
+            )
 
     def test_正常系_save_resultがPathを返す(
         self,

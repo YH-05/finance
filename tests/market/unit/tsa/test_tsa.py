@@ -284,8 +284,18 @@ class TestTSAPassengerDataCollectorLogging:
             collector = TSAPassengerDataCollector()
             collector.fetch()
 
-            # Verify logger was called
-            assert mock_logger.debug.called or mock_logger.info.called
+            # Verify structured log context: url kwarg in debug, row_count in info
+            mock_logger.debug.assert_called()
+            first_debug_kwargs = mock_logger.debug.call_args_list[0].kwargs
+            assert "url" in first_debug_kwargs, (
+                "Expected 'url' key in structured log kwargs for fetch"
+            )
+            # After successful fetch, info log should contain row_count
+            mock_logger.info.assert_called()
+            info_kwargs = mock_logger.info.call_args_list[0].kwargs
+            assert "row_count" in info_kwargs, (
+                "Expected 'row_count' key in structured log kwargs for fetch result"
+            )
 
 
 class TestTSAPassengerDataCollectorExports:

@@ -19,6 +19,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Generator
 
+from utils_core.errors import log_and_reraise
 from utils_core.logging import get_logger
 
 from ..config import DEFAULT_CACHE_DIR
@@ -120,7 +121,14 @@ class CacheManager:
             If schema initialization fails.
         """
         logger.debug("Initializing cache database schema", db_path=str(self.db_path))
-        try:
+        with log_and_reraise(
+            logger,
+            "initialize cache database",
+            context={"operation": "init_db", "db_path": str(self.db_path)},
+            reraise_as=CacheError,
+            skip_types=(CacheError,),
+            log_level="warning",
+        ):
             with self._connection() as conn:
                 conn.execute("""
                     CREATE TABLE IF NOT EXISTS edgar_cache (
@@ -136,17 +144,6 @@ class CacheManager:
                 """)
 
             logger.debug("Cache database schema initialized", db_path=str(self.db_path))
-
-        except CacheError:
-            raise
-        except Exception as e:
-            logger.warning(
-                "Failed to initialize cache database", error=str(e), exc_info=True
-            )
-            raise CacheError(
-                f"Failed to initialize cache database: {e}",
-                context={"operation": "init_db", "db_path": str(self.db_path)},
-            ) from e
 
     def get_cached_text(self, filing_id: str) -> str | None:
         """Retrieve cached text for a filing.
@@ -179,7 +176,14 @@ class CacheManager:
         """
         logger.debug("Cache get", filing_id=filing_id)
 
-        try:
+        with log_and_reraise(
+            logger,
+            f"get cached text for filing '{filing_id}'",
+            context={"operation": "get_cached_text", "filing_id": filing_id},
+            reraise_as=CacheError,
+            skip_types=(CacheError,),
+            log_level="warning",
+        ):
             now = int(time.time())
 
             with self._connection() as conn:
@@ -212,17 +216,6 @@ class CacheManager:
 
                 logger.debug("Cache hit", filing_id=filing_id)
                 return row["text"]
-
-        except CacheError:
-            raise
-        except Exception as e:
-            logger.warning(
-                "Failed to get cached text", filing_id=filing_id, exc_info=True
-            )
-            raise CacheError(
-                f"Failed to get cached text for filing '{filing_id}': {e}",
-                context={"operation": "get_cached_text", "filing_id": filing_id},
-            ) from e
 
     def save_text(
         self,
@@ -266,7 +259,18 @@ class CacheManager:
             expires_at=expires_at,
         )
 
-        try:
+        with log_and_reraise(
+            logger,
+            f"save text for filing '{filing_id}'",
+            context={
+                "operation": "save_text",
+                "filing_id": filing_id,
+                "text_length": len(text),
+            },
+            reraise_as=CacheError,
+            skip_types=(CacheError,),
+            log_level="warning",
+        ):
             with self._lock, self._connection() as conn:
                 conn.execute(
                     """
@@ -283,21 +287,6 @@ class CacheManager:
                 text_length=len(text),
                 ttl_days=effective_ttl,
             )
-
-        except CacheError:
-            raise
-        except Exception as e:
-            logger.warning(
-                "Failed to save text to cache", filing_id=filing_id, exc_info=True
-            )
-            raise CacheError(
-                f"Failed to save text for filing '{filing_id}': {e}",
-                context={
-                    "operation": "save_text",
-                    "filing_id": filing_id,
-                    "text_length": len(text),
-                },
-            ) from e
 
     def clear_expired(self) -> int:
         """Remove all expired entries from the cache.
@@ -321,7 +310,14 @@ class CacheManager:
         """
         logger.debug("Clearing expired cache entries")
 
-        try:
+        with log_and_reraise(
+            logger,
+            "clear expired cache entries",
+            context={"operation": "clear_expired"},
+            reraise_as=CacheError,
+            skip_types=(CacheError,),
+            log_level="warning",
+        ):
             now = int(time.time())
 
             with self._lock, self._connection() as conn:
@@ -342,15 +338,6 @@ class CacheManager:
                 removed_count=expired_count,
             )
             return expired_count
-
-        except CacheError:
-            raise
-        except Exception as e:
-            logger.warning("Failed to clear expired cache entries", exc_info=True)
-            raise CacheError(
-                f"Failed to clear expired cache entries: {e}",
-                context={"operation": "clear_expired"},
-            ) from e
 
     def __repr__(self) -> str:
         """Return string representation."""

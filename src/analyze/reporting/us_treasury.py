@@ -27,7 +27,6 @@ logger = get_logger(__name__)
 
 # 環境変数を読み込み
 load_project_env()
-FRED_API = os.getenv("FRED_API_KEY")
 
 
 def load_fred_api_key() -> str:

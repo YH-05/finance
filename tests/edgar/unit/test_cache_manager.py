@@ -332,7 +332,7 @@ class TestCacheManagerErrorHandling:
 
         with (
             patch.object(cache, "_connection", side_effect=RuntimeError("DB error")),
-            pytest.raises(CacheError, match="Failed to get cached text"),
+            pytest.raises(CacheError, match="get cached text for filing.*failed"),
         ):
             cache.get_cached_text("filing-001")
 
@@ -346,7 +346,7 @@ class TestCacheManagerErrorHandling:
 
         with (
             patch.object(cache, "_connection", side_effect=RuntimeError("DB error")),
-            pytest.raises(CacheError, match="Failed to save text"),
+            pytest.raises(CacheError, match="save text for filing.*failed"),
         ):
             cache.save_text("filing-001", "Some text")
 
@@ -362,7 +362,7 @@ class TestCacheManagerErrorHandling:
 
         with (
             patch.object(cache, "_connection", side_effect=RuntimeError("DB error")),
-            pytest.raises(CacheError, match="Failed to clear expired"),
+            pytest.raises(CacheError, match="clear expired cache entries failed"),
         ):
             cache.clear_expired()
 
@@ -405,7 +405,7 @@ class TestCacheManagerErrorHandling:
                 "edgar.cache.manager.CacheManager._connection",
                 side_effect=RuntimeError("Unexpected init error"),
             ),
-            pytest.raises(CacheError, match="Failed to initialize cache database"),
+            pytest.raises(CacheError, match="initialize cache database failed"),
         ):
             CacheManager(cache_dir=tmp_path, ttl_days=90)
 

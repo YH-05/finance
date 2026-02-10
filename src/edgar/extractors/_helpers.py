@@ -44,10 +44,9 @@ def get_accession_number(filing: Any) -> str | None:
             return str(filing.accession_no)
         logger.debug("Filing object has no accession number attribute")
         return None
-    except Exception as e:
+    except Exception:
         logger.warning(
             "Failed to get accession number",
-            error=str(e),
             exc_info=True,
         )
         return None
@@ -115,11 +114,9 @@ def get_filing_text(filing: Any) -> str | None:
         )
         return None
 
-    except Exception as e:
+    except Exception:
         logger.warning(
             "Failed to extract text from filing",
-            error=str(e),
-            error_type=type(e).__name__,
             exc_info=True,
         )
         return None
