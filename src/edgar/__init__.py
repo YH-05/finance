@@ -7,6 +7,8 @@ Features
 --------
 - Filing type classification (10-K, 10-Q, 13F)
 - Section extraction from filings (Item 1, Item 1A, Item 7, Item 8)
+- Text extraction with caching and token counting
+- Batch processing for parallel fetching and extraction
 - Configuration management with SEC EDGAR identity
 - Caching for downloaded filings
 - Error handling with detailed context
@@ -21,6 +23,16 @@ EdgarResult
     Dataclass for filing extraction results
 EdgarConfig
     Configuration for SEC EDGAR access
+EdgarFetcher
+    Fetcher for SEC EDGAR filing data
+TextExtractor
+    Extractor for clean text content from Filing objects
+SectionExtractor
+    Extractor for section-level text from filings
+BatchFetcher
+    Batch fetcher for parallel filing retrieval
+BatchExtractor
+    Batch extractor for parallel text and section extraction
 EdgarError
     Base exception for edgar operations
 FilingNotFoundError
@@ -35,6 +47,7 @@ CacheManager
     SQLite-based cache manager for filing text
 """
 
+from .batch import BatchExtractor, BatchFetcher
 from .cache import CacheManager
 from .config import (
     EdgarConfig,
@@ -48,6 +61,7 @@ from .errors import (
     RateLimitError,
     SectionNotFoundError,
 )
+from .extractors import SectionExtractor, TextExtractor
 from .fetcher import EdgarFetcher
 from .types import (
     EdgarResult,
@@ -56,6 +70,8 @@ from .types import (
 )
 
 __all__ = [
+    "BatchExtractor",
+    "BatchFetcher",
     "CacheError",
     "CacheManager",
     "EdgarConfig",
@@ -65,8 +81,10 @@ __all__ = [
     "FilingNotFoundError",
     "FilingType",
     "RateLimitError",
+    "SectionExtractor",
     "SectionKey",
     "SectionNotFoundError",
+    "TextExtractor",
     "load_config",
     "set_identity",
 ]
