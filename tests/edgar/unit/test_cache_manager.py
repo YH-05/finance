@@ -10,8 +10,11 @@ import sqlite3
 import threading
 import time
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
 import pytest
+
+from edgar.errors import CacheError
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -297,3 +300,130 @@ class TestCacheManagerConcurrency:
         for i in range(10):
             result = cache.get_cached_text(f"filing-{i:03d}")
             assert result == f"Text {i}"
+
+
+class TestCacheManagerRepr:
+    """Tests for CacheManager.__repr__() method."""
+
+    def test_正常系_reprで文字列表現を取得(self, tmp_path: Path) -> None:
+        """__repr__ should return a human-readable string representation.
+
+        Verify that __repr__ includes the cache_dir and ttl_days values.
+        """
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=30)
+        result = repr(cache)
+        assert "CacheManager" in result
+        assert str(tmp_path) in result
+        assert "30" in result
+
+
+class TestCacheManagerErrorHandling:
+    """Tests for CacheManager error handling paths."""
+
+    def test_異常系_get_cached_textでDB例外がCacheErrorに変換(
+        self, tmp_path: Path
+    ) -> None:
+        """get_cached_text should wrap unexpected exceptions in CacheError.
+
+        Verify that non-sqlite3 exceptions raised during get_cached_text
+        are caught and re-raised as CacheError.
+        """
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=90)
+
+        with (
+            patch.object(cache, "_connection", side_effect=RuntimeError("DB error")),
+            pytest.raises(CacheError, match="Failed to get cached text"),
+        ):
+            cache.get_cached_text("filing-001")
+
+    def test_異常系_save_textでDB例外がCacheErrorに変換(self, tmp_path: Path) -> None:
+        """save_text should wrap unexpected exceptions in CacheError.
+
+        Verify that non-sqlite3 exceptions raised during save_text
+        are caught and re-raised as CacheError.
+        """
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=90)
+
+        with (
+            patch.object(cache, "_connection", side_effect=RuntimeError("DB error")),
+            pytest.raises(CacheError, match="Failed to save text"),
+        ):
+            cache.save_text("filing-001", "Some text")
+
+    def test_異常系_clear_expiredでDB例外がCacheErrorに変換(
+        self, tmp_path: Path
+    ) -> None:
+        """clear_expired should wrap unexpected exceptions in CacheError.
+
+        Verify that non-sqlite3 exceptions raised during clear_expired
+        are caught and re-raised as CacheError.
+        """
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=90)
+
+        with (
+            patch.object(cache, "_connection", side_effect=RuntimeError("DB error")),
+            pytest.raises(CacheError, match="Failed to clear expired"),
+        ):
+            cache.clear_expired()
+
+    def test_異常系_connectionでsqlite3Errorがロールバックされる(
+        self, tmp_path: Path
+    ) -> None:
+        """_connection should rollback and raise CacheError on sqlite3.Error.
+
+        Verify that a sqlite3.Error during a transaction triggers
+        a rollback and is wrapped in CacheError.
+        """
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=90)
+
+        # Save initial data
+        cache.save_text("filing-001", "Original text")
+
+        # Manually trigger sqlite3.Error within a transaction
+        with (
+            pytest.raises(CacheError, match="Database transaction failed"),
+            cache._connection() as conn,
+        ):
+            conn.execute(
+                "INSERT INTO edgar_cache (filing_id, text, cached_at, expires_at) "
+                "VALUES (?, ?, ?, ?)",
+                ("filing-001", "Conflict", 0, 0),
+            )
+            # Force a sqlite3 error by querying a nonexistent table
+            conn.execute("INSERT INTO nonexistent_table VALUES (1)")
+
+    def test_異常系_init_dbで非CacheError例外がCacheErrorに変換(
+        self, tmp_path: Path
+    ) -> None:
+        """_init_db should wrap non-CacheError exceptions in CacheError.
+
+        Verify that unexpected errors during schema initialization are
+        caught and re-raised as CacheError.
+        """
+        with (
+            patch(
+                "edgar.cache.manager.CacheManager._connection",
+                side_effect=RuntimeError("Unexpected init error"),
+            ),
+            pytest.raises(CacheError, match="Failed to initialize cache database"),
+        ):
+            CacheManager(cache_dir=tmp_path, ttl_days=90)
+
+    def test_異常系_get_cached_textでCacheErrorはそのまま再送出(
+        self, tmp_path: Path
+    ) -> None:
+        """get_cached_text should re-raise CacheError without wrapping.
+
+        Verify that CacheError raised within get_cached_text is propagated
+        directly without being wrapped in another CacheError.
+        """
+        cache = CacheManager(cache_dir=tmp_path, ttl_days=90)
+        original_error = CacheError("Original cache error")
+
+        with (
+            patch.object(cache, "_connection", side_effect=original_error),
+            pytest.raises(CacheError) as exc_info,
+        ):
+            cache.get_cached_text("filing-001")
+
+        assert exc_info.value is original_error
