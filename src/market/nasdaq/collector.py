@@ -55,13 +55,31 @@ from market.base_collector import DataCollector
 from market.nasdaq.constants import DEFAULT_OUTPUT_DIR, NASDAQ_SCREENER_URL
 from market.nasdaq.parser import parse_screener_response
 from market.nasdaq.session import NasdaqSession
-from market.nasdaq.types import FilterCategory, ScreenerFilter
+from market.nasdaq.types import (
+    Exchange,
+    FilterCategory,
+    MarketCap,
+    Recommendation,
+    Region,
+    ScreenerFilter,
+    Sector,
+)
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 
 # Required columns for validation
 _REQUIRED_COLUMNS: frozenset[str] = frozenset({"symbol", "name"})
+
+# Declarative mapping from filter category Enum type to ScreenerFilter field name.
+# Used by _build_category_filter() to avoid repetitive if/elif chains.
+_CATEGORY_FIELD_MAP: dict[type, str] = {
+    Exchange: "exchange",
+    MarketCap: "marketcap",
+    Sector: "sector",
+    Recommendation: "recommendation",
+    Region: "region",
+}
 
 
 class ScreenerCollector(DataCollector):
@@ -333,6 +351,10 @@ class ScreenerCollector(DataCollector):
     ) -> ScreenerFilter:
         """Build a ScreenerFilter with a specific category value.
 
+        Uses the module-level ``_CATEGORY_FIELD_MAP`` to resolve the
+        ScreenerFilter field name from the category Enum type, replacing
+        repetitive if/elif chains with a declarative lookup.
+
         Parameters
         ----------
         category : FilterCategory
@@ -346,35 +368,24 @@ class ScreenerCollector(DataCollector):
         -------
         ScreenerFilter
             A new ScreenerFilter with the category value set.
+
+        Raises
+        ------
+        ValueError
+            If the category type is not in ``_CATEGORY_FIELD_MAP``.
         """
-        from market.nasdaq.types import (
-            Exchange,
-            MarketCap,
-            Recommendation,
-            Region,
-            Sector,
-        )
+        from dataclasses import asdict
 
         # Start from base_filter or empty
         base = base_filter or ScreenerFilter()
 
-        # Determine which field to set based on category type
-        field_map: dict[type, str] = {
-            Exchange: "exchange",
-            MarketCap: "marketcap",
-            Sector: "sector",
-            Recommendation: "recommendation",
-            Region: "region",
-        }
-
-        field_name = field_map.get(category)
+        # Declarative lookup via module-level _CATEGORY_FIELD_MAP
+        field_name = _CATEGORY_FIELD_MAP.get(category)
         if field_name is None:
             msg = f"Unsupported category type: {category}"
             raise ValueError(msg)
 
         # Create new filter with the category field set
-        from dataclasses import asdict
-
         kwargs = asdict(base)
         kwargs[field_name] = member
         return ScreenerFilter(**kwargs)
@@ -411,7 +422,15 @@ class ScreenerCollector(DataCollector):
         """
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = output_dir / filename
+        output_path = (output_dir / filename).resolve()
+
+        # Path traversal protection (CWE-22): ensure output stays within output_dir
+        if not output_path.is_relative_to(output_dir.resolve()):
+            msg = (
+                f"Output path {output_path} is outside the output directory "
+                f"{output_dir.resolve()}"
+            )
+            raise ValueError(msg)
 
         logger.info(
             "Downloading screener data to CSV",
@@ -474,12 +493,22 @@ class ScreenerCollector(DataCollector):
             output_dir=str(output_dir),
         )
 
+        resolved_output_dir = output_dir.resolve()
         results = self.fetch_by_category(category, base_filter=base_filter)
         paths: list[Path] = []
 
         for value, df in results.items():
             filename = f"{category_name}_{value}_{today_str}.csv"
-            output_path = output_dir / filename
+            output_path = (output_dir / filename).resolve()
+
+            # Path traversal protection (CWE-22)
+            if not output_path.is_relative_to(resolved_output_dir):
+                msg = (
+                    f"Output path {output_path} is outside the output "
+                    f"directory {resolved_output_dir}"
+                )
+                raise ValueError(msg)
+
             df.to_csv(output_path, index=False, encoding="utf-8-sig")
             paths.append(output_path)
 
@@ -498,4 +527,4 @@ class ScreenerCollector(DataCollector):
         return paths
 
 
-__all__ = ["ScreenerCollector"]
+__all__ = ["_CATEGORY_FIELD_MAP", "ScreenerCollector"]
