@@ -29,6 +29,12 @@ DEFAULT_CACHE_DIR = Path("data") / "cache" / "edgar"
 DEFAULT_CACHE_TTL_HOURS = 24
 DEFAULT_RATE_LIMIT_PER_SECOND = 10
 
+# Default maximum filing size in bytes (10 MB)
+# AIDEV-NOTE: 10-K filings can be several MB in size. This limit provides
+# a safety check and warning for unusually large filings that may cause
+# high memory usage.
+DEFAULT_MAX_FILING_SIZE_BYTES = 10 * 1024 * 1024
+
 
 @dataclass
 class EdgarConfig:
@@ -45,6 +51,10 @@ class EdgarConfig:
         Time-to-live for cached data in hours
     rate_limit_per_second : int
         Maximum requests per second to SEC EDGAR
+    max_filing_size_bytes : int
+        Maximum filing text size in bytes before emitting a warning.
+        Filings exceeding this size will still be processed but a
+        warning log will be emitted. Default is 10 MB.
 
     Examples
     --------
@@ -60,6 +70,7 @@ class EdgarConfig:
     cache_dir: Path = field(default_factory=lambda: DEFAULT_CACHE_DIR)
     cache_ttl_hours: int = DEFAULT_CACHE_TTL_HOURS
     rate_limit_per_second: int = DEFAULT_RATE_LIMIT_PER_SECOND
+    max_filing_size_bytes: int = DEFAULT_MAX_FILING_SIZE_BYTES
 
     @property
     def is_identity_configured(self) -> bool:
@@ -193,6 +204,7 @@ def _configure_edgartools(identity: str) -> None:
 __all__ = [
     "DEFAULT_CACHE_DIR",
     "DEFAULT_CACHE_TTL_HOURS",
+    "DEFAULT_MAX_FILING_SIZE_BYTES",
     "DEFAULT_RATE_LIMIT_PER_SECOND",
     "SEC_EDGAR_IDENTITY_ENV",
     "EdgarConfig",

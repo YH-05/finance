@@ -363,3 +363,61 @@ class TestSectionExtractor:
 
         extractor_with_cache = SectionExtractor(cache=MagicMock())
         assert "cache_enabled=True" in repr(extractor_with_cache)
+
+
+class TestSectionExtractorSizeCheck:
+    """Tests for SectionExtractor filing size check."""
+
+    def test_正常系_上限以下のテキストはそのまま抽出(self) -> None:
+        """extract_section should return section text normally when within size limit."""
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.text.return_value = SAMPLE_FILING_TEXT
+
+        extractor = SectionExtractor(max_filing_size_bytes=1024 * 1024)
+        result = extractor.extract_section(filing, "item_1")
+
+        assert result is not None
+        assert "technology company" in result
+
+    def test_正常系_上限超過時にテキストを返却し警告ログ出力(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """extract_section should return text and emit warning when exceeding size limit."""
+        # Create a filing text that exceeds the small size limit
+        large_filing = SAMPLE_FILING_TEXT + ("x" * 2000)
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.text.return_value = large_filing
+
+        extractor = SectionExtractor(max_filing_size_bytes=100)
+        result = extractor.extract_section(filing, "item_1")
+
+        # Section should still be returned (not blocked)
+        assert result is not None
+
+    def test_正常系_list_sectionsでも上限超過時に警告ログ出力(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """list_sections should emit warning when filing text exceeds size limit."""
+        large_filing = SAMPLE_FILING_TEXT + ("x" * 2000)
+        filing = MagicMock()
+        filing.text.return_value = large_filing
+
+        extractor = SectionExtractor(max_filing_size_bytes=100)
+        sections = extractor.list_sections(filing)
+
+        # Sections should still be returned (not blocked)
+        assert len(sections) > 0
+
+    def test_正常系_デフォルトmax_filing_size_bytesはconfig値(self) -> None:
+        """SectionExtractor should use DEFAULT_MAX_FILING_SIZE_BYTES when not specified."""
+        from edgar.config import DEFAULT_MAX_FILING_SIZE_BYTES
+
+        extractor = SectionExtractor()
+        assert extractor._max_filing_size_bytes == DEFAULT_MAX_FILING_SIZE_BYTES
+
+    def test_正常系_カスタムmax_filing_size_bytes指定(self) -> None:
+        """SectionExtractor should accept custom max_filing_size_bytes."""
+        extractor = SectionExtractor(max_filing_size_bytes=5 * 1024 * 1024)
+        assert extractor._max_filing_size_bytes == 5 * 1024 * 1024

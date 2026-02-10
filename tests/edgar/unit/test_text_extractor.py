@@ -240,3 +240,61 @@ class TestTextExtractor:
 
         extractor_with_cache = TextExtractor(cache=MagicMock())
         assert "cache_enabled=True" in repr(extractor_with_cache)
+
+
+class TestTextExtractorSizeCheck:
+    """Tests for TextExtractor filing size check."""
+
+    def test_正常系_上限以下のテキストはそのまま抽出(self) -> None:
+        """extract_text should return text normally when within size limit."""
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.text.return_value = "Small filing text"
+
+        extractor = TextExtractor(max_filing_size_bytes=1024)
+        result = extractor.extract_text(filing)
+
+        assert result == "Small filing text"
+
+    def test_正常系_上限超過時にテキストを返却し警告ログ出力(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """extract_text should return text and emit warning when exceeding size limit."""
+        large_text = "x" * 2000  # 2000 bytes
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.text.return_value = large_text
+
+        extractor = TextExtractor(max_filing_size_bytes=1000)
+        result = extractor.extract_text(filing)
+
+        # Text should still be returned (not blocked)
+        assert len(result) > 0
+        assert "x" in result
+
+    def test_正常系_markdownでも上限超過時に警告ログ出力(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """extract_markdown should emit warning when exceeding size limit."""
+        large_markdown = "# Title\n\n" + "x" * 2000
+        filing = MagicMock()
+        filing.accession_number = "0001234567-24-000001"
+        filing.markdown.return_value = large_markdown
+
+        extractor = TextExtractor(max_filing_size_bytes=1000)
+        result = extractor.extract_markdown(filing)
+
+        # Markdown should still be returned (not blocked)
+        assert len(result) > 0
+
+    def test_正常系_デフォルトmax_filing_size_bytesはconfig値(self) -> None:
+        """TextExtractor should use DEFAULT_MAX_FILING_SIZE_BYTES when not specified."""
+        from edgar.config import DEFAULT_MAX_FILING_SIZE_BYTES
+
+        extractor = TextExtractor()
+        assert extractor._max_filing_size_bytes == DEFAULT_MAX_FILING_SIZE_BYTES
+
+    def test_正常系_カスタムmax_filing_size_bytes指定(self) -> None:
+        """TextExtractor should accept custom max_filing_size_bytes."""
+        extractor = TextExtractor(max_filing_size_bytes=5 * 1024 * 1024)
+        assert extractor._max_filing_size_bytes == 5 * 1024 * 1024

@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING, Any
 
 from utils_core.logging import get_logger
 
+from ..config import DEFAULT_MAX_FILING_SIZE_BYTES
 from ..types import SectionKey
 from ._helpers import get_accession_number, get_filing_text
 
@@ -173,11 +174,18 @@ class SectionExtractor:
     cache : CacheManager | None
         Optional cache manager for caching extracted section text.
         If None, caching is disabled.
+    max_filing_size_bytes : int
+        Maximum filing text size in bytes before emitting a warning.
+        Filings exceeding this size will still be processed but a
+        warning log will be emitted. Defaults to
+        ``DEFAULT_MAX_FILING_SIZE_BYTES`` (10 MB).
 
     Attributes
     ----------
     _cache : CacheManager | None
         The cache manager instance, or None if caching is disabled
+    _max_filing_size_bytes : int
+        The maximum filing size threshold for warning logs
 
     Examples
     --------
@@ -186,18 +194,27 @@ class SectionExtractor:
     >>> sections = extractor.list_sections(filing)
     """
 
-    def __init__(self, cache: CacheManager | None = None) -> None:
+    def __init__(
+        self,
+        cache: CacheManager | None = None,
+        max_filing_size_bytes: int = DEFAULT_MAX_FILING_SIZE_BYTES,
+    ) -> None:
         """Initialize SectionExtractor.
 
         Parameters
         ----------
         cache : CacheManager | None
             Optional cache manager for section-level caching
+        max_filing_size_bytes : int
+            Maximum filing text size in bytes before warning.
+            Defaults to ``DEFAULT_MAX_FILING_SIZE_BYTES`` (10 MB).
         """
         self._cache = cache
+        self._max_filing_size_bytes = max_filing_size_bytes
         logger.debug(
             "Initializing SectionExtractor",
             cache_enabled=cache is not None,
+            max_filing_size_bytes=max_filing_size_bytes,
         )
 
     def extract_section(self, filing: Any, section_key: str) -> str | None:
@@ -265,6 +282,9 @@ class SectionExtractor:
                 section_key=section_key,
             )
             return None
+
+        # Check filing size and warn if exceeding limit
+        self._check_filing_size(text)
 
         # Find section positions and extract target section
         positions = _find_section_positions(text)
@@ -338,6 +358,9 @@ class SectionExtractor:
             )
             return []
 
+        # Check filing size and warn if exceeding limit
+        self._check_filing_size(text)
+
         positions = _find_section_positions(text)
 
         # Return keys in the canonical order defined by _ORDERED_SECTION_KEYS
@@ -349,6 +372,27 @@ class SectionExtractor:
             found_count=len(found_keys),
         )
         return found_keys
+
+    def _check_filing_size(self, text: str) -> None:
+        """Check if filing text exceeds the configured size limit.
+
+        Emits a warning log when the text size exceeds
+        ``_max_filing_size_bytes``. The text is still processed
+        regardless of size.
+
+        Parameters
+        ----------
+        text : str
+            The raw filing text to check
+        """
+        text_size = len(text.encode("utf-8"))
+        if text_size > self._max_filing_size_bytes:
+            logger.warning(
+                "Filing text exceeds size limit",
+                text_size_bytes=text_size,
+                max_filing_size_bytes=self._max_filing_size_bytes,
+                text_size_mb=round(text_size / (1024 * 1024), 2),
+            )
 
     def __repr__(self) -> str:
         """Return string representation."""

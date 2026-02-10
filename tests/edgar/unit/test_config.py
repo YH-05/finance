@@ -11,6 +11,7 @@ import pytest
 from edgar.config import (
     DEFAULT_CACHE_DIR,
     DEFAULT_CACHE_TTL_HOURS,
+    DEFAULT_MAX_FILING_SIZE_BYTES,
     DEFAULT_RATE_LIMIT_PER_SECOND,
     SEC_EDGAR_IDENTITY_ENV,
     EdgarConfig,
@@ -34,6 +35,7 @@ class TestEdgarConfig:
         assert config.cache_dir == DEFAULT_CACHE_DIR
         assert config.cache_ttl_hours == DEFAULT_CACHE_TTL_HOURS
         assert config.rate_limit_per_second == DEFAULT_RATE_LIMIT_PER_SECOND
+        assert config.max_filing_size_bytes == DEFAULT_MAX_FILING_SIZE_BYTES
 
     def test_正常系_EdgarConfigはカスタム値を受け付ける(self) -> None:
         """EdgarConfig should accept custom values.
@@ -76,6 +78,26 @@ class TestEdgarConfig:
         """
         config = EdgarConfig(identity="   ")
         assert config.is_identity_configured is False
+
+
+class TestMaxFilingSizeBytes:
+    """Tests for MAX_FILING_SIZE_BYTES configuration."""
+
+    def test_正常系_デフォルト値は10MB(self) -> None:
+        """DEFAULT_MAX_FILING_SIZE_BYTES should be 10MB (10 * 1024 * 1024)."""
+        assert DEFAULT_MAX_FILING_SIZE_BYTES == 10 * 1024 * 1024
+
+    def test_正常系_EdgarConfigにmax_filing_size_bytesフィールドがある(self) -> None:
+        """EdgarConfig should have a max_filing_size_bytes field."""
+        config = EdgarConfig()
+        assert hasattr(config, "max_filing_size_bytes")
+        assert config.max_filing_size_bytes == DEFAULT_MAX_FILING_SIZE_BYTES
+
+    def test_正常系_カスタムmax_filing_size_bytesを設定できる(self) -> None:
+        """EdgarConfig should accept custom max_filing_size_bytes."""
+        custom_size = 5 * 1024 * 1024  # 5MB
+        config = EdgarConfig(max_filing_size_bytes=custom_size)
+        assert config.max_filing_size_bytes == custom_size
 
 
 class TestLoadConfig:

@@ -26,6 +26,7 @@ from typing import TYPE_CHECKING, Any
 
 import tiktoken
 
+from edgar.config import DEFAULT_MAX_FILING_SIZE_BYTES
 from edgar.errors import EdgarError
 from edgar.extractors._helpers import get_accession_number
 from utils_core.logging import get_logger
@@ -103,6 +104,11 @@ class TextExtractor:
         When provided, extracted text is cached using the filing's
         accession number as the key. Cache is checked before extraction
         to avoid redundant API calls.
+    max_filing_size_bytes : int
+        Maximum filing text size in bytes before emitting a warning.
+        Filings exceeding this size will still be processed but a
+        warning log will be emitted. Defaults to
+        ``DEFAULT_MAX_FILING_SIZE_BYTES`` (10 MB).
 
     Attributes
     ----------
@@ -110,6 +116,8 @@ class TextExtractor:
         The cache manager instance, or None if caching is disabled
     _encoding : tiktoken.Encoding
         The tiktoken encoding used for token counting
+    _max_filing_size_bytes : int
+        The maximum filing size threshold for warning logs
 
     Examples
     --------
@@ -124,14 +132,20 @@ class TextExtractor:
     >>> text = extractor.extract_text(filing)  # cached on first call
     """
 
-    def __init__(self, cache: CacheManager | None = None) -> None:
+    def __init__(
+        self,
+        cache: CacheManager | None = None,
+        max_filing_size_bytes: int = DEFAULT_MAX_FILING_SIZE_BYTES,
+    ) -> None:
         self._cache = cache
         self._encoding = tiktoken.get_encoding(_TIKTOKEN_ENCODING)
+        self._max_filing_size_bytes = max_filing_size_bytes
 
         logger.debug(
             "Initializing TextExtractor",
             cache_enabled=cache is not None,
             encoding=_TIKTOKEN_ENCODING,
+            max_filing_size_bytes=max_filing_size_bytes,
         )
 
     def extract_text(self, filing: Any) -> str:
@@ -196,6 +210,9 @@ class TextExtractor:
                 f"Failed to extract text from filing '{accession_number}': {e}",
                 context={"accession_number": accession_number},
             ) from e
+
+        # Check filing size and warn if exceeding limit
+        self._check_filing_size(raw_text, accession_number)
 
         cleaned = _clean_text(raw_text)
         token_count = self.count_tokens(cleaned)
@@ -275,6 +292,9 @@ class TextExtractor:
                 context={"accession_number": accession_number},
             ) from e
 
+        # Check filing size and warn if exceeding limit
+        self._check_filing_size(raw_markdown, accession_number)
+
         cleaned = _clean_text(raw_markdown)
         token_count = self.count_tokens(cleaned)
 
@@ -313,6 +333,30 @@ class TextExtractor:
         4
         """
         return len(self._encoding.encode(text))
+
+    def _check_filing_size(self, text: str, accession_number: str) -> None:
+        """Check if filing text exceeds the configured size limit.
+
+        Emits a warning log when the text size exceeds
+        ``_max_filing_size_bytes``. The text is still processed
+        regardless of size.
+
+        Parameters
+        ----------
+        text : str
+            The raw filing text to check
+        accession_number : str
+            The filing's accession number for log context
+        """
+        text_size = len(text.encode("utf-8"))
+        if text_size > self._max_filing_size_bytes:
+            logger.warning(
+                "Filing text exceeds size limit",
+                accession_number=accession_number,
+                text_size_bytes=text_size,
+                max_filing_size_bytes=self._max_filing_size_bytes,
+                text_size_mb=round(text_size / (1024 * 1024), 2),
+            )
 
     @staticmethod
     def _get_accession_number(filing: Any) -> str:
