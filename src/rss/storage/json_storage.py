@@ -8,6 +8,7 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from utils_core.errors import log_and_reraise
 from utils_core.logging import get_logger
 
 from ..exceptions import RSSError
@@ -122,7 +123,12 @@ class JSONStorage:
         # Ensure data directory exists
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
-        try:
+        with log_and_reraise(
+            logger,
+            f"save feeds to {feeds_file}",
+            context={"feeds_file": str(feeds_file)},
+            reraise_as=RSSError,
+        ):
             with self.lock_manager.lock_feeds():
                 # Convert dataclass to dict and handle Enum serialization
                 data_dict = asdict(data)
@@ -144,15 +150,6 @@ class JSONStorage:
                 feeds_file=str(feeds_file),
                 feeds_count=len(data.feeds),
             )
-
-        except Exception as e:
-            logger.error(
-                "Failed to save feeds",
-                feeds_file=str(feeds_file),
-                error=str(e),
-                exc_info=True,
-            )
-            raise RSSError(f"Failed to save feeds to {feeds_file}: {e}") from e
 
     def load_feeds(self) -> FeedsData:
         """Load feed registry from feeds.json.
@@ -193,7 +190,12 @@ class JSONStorage:
             )
             return FeedsData(version="1.0", feeds=[])
 
-        try:
+        with log_and_reraise(
+            logger,
+            f"load feeds from {feeds_file}",
+            context={"feeds_file": str(feeds_file)},
+            reraise_as=RSSError,
+        ):
             with self.lock_manager.lock_feeds():
                 content = feeds_file.read_text(encoding="utf-8")
                 data_dict = json.loads(content)
@@ -222,15 +224,6 @@ class JSONStorage:
             )
 
             return feeds_data
-
-        except Exception as e:
-            logger.error(
-                "Failed to load feeds",
-                feeds_file=str(feeds_file),
-                error=str(e),
-                exc_info=True,
-            )
-            raise RSSError(f"Failed to load feeds from {feeds_file}: {e}") from e
 
     def save_items(self, feed_id: str, data: FeedItemsData) -> None:
         """Save feed items to {feed_id}/items.json.
@@ -303,7 +296,12 @@ class JSONStorage:
         # Ensure feed directory exists
         feed_dir.mkdir(parents=True, exist_ok=True)
 
-        try:
+        with log_and_reraise(
+            logger,
+            f"save items for feed {feed_id}",
+            context={"feed_id": feed_id, "items_file": str(items_file)},
+            reraise_as=RSSError,
+        ):
             with self.lock_manager.lock_items(feed_id):
                 # Convert dataclass to dict
                 data_dict = asdict(data)
@@ -320,18 +318,6 @@ class JSONStorage:
                 items_file=str(items_file),
                 items_count=len(data.items),
             )
-
-        except Exception as e:
-            logger.error(
-                "Failed to save items",
-                feed_id=feed_id,
-                items_file=str(items_file),
-                error=str(e),
-                exc_info=True,
-            )
-            raise RSSError(
-                f"Failed to save items for feed {feed_id} to {items_file}: {e}"
-            ) from e
 
     def load_items(self, feed_id: str) -> FeedItemsData:
         """Load feed items from {feed_id}/items.json.
@@ -388,7 +374,12 @@ class JSONStorage:
             )
             return FeedItemsData(version="1.0", feed_id=feed_id, items=[])
 
-        try:
+        with log_and_reraise(
+            logger,
+            f"load items for feed {feed_id}",
+            context={"feed_id": feed_id, "items_file": str(items_file)},
+            reraise_as=RSSError,
+        ):
             with self.lock_manager.lock_items(feed_id):
                 content = items_file.read_text(encoding="utf-8")
                 data_dict = json.loads(content)
@@ -415,15 +406,3 @@ class JSONStorage:
             )
 
             return items_data
-
-        except Exception as e:
-            logger.error(
-                "Failed to load items",
-                feed_id=feed_id,
-                items_file=str(items_file),
-                error=str(e),
-                exc_info=True,
-            )
-            raise RSSError(
-                f"Failed to load items for feed {feed_id} from {items_file}: {e}"
-            ) from e

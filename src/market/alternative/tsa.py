@@ -11,6 +11,7 @@ import requests
 import seaborn as sns
 from bs4 import BeautifulSoup
 
+from utils_core.errors import log_and_reraise
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -205,12 +206,9 @@ class TSAPassengerDataCollector:
         filename : str, default "tsa_passenger_data.csv"
             保存するファイル名。
         """
-        try:
+        with log_and_reraise(logger, "save CSV", context={"filename": filename}):
             df.to_csv(filename, index=False)
             logger.info("Data saved to CSV", filename=filename, rows=len(df))
-        except Exception:
-            logger.error("Failed to save CSV", filename=filename, exc_info=True)
-            raise
 
     def store_to_tsa_database(
         self, df: pd.DataFrame, db_path: str | Path, table_name: str = "tsa_passenger"
