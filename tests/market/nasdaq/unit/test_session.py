@@ -30,6 +30,8 @@ Test TODO List:
 - [x] get(): 許可されたホストへのリクエストが成功する
 - [x] get(): 不正なホストへのリクエストがValueErrorで拒否される
 - [x] get(): ホストなしURLがValueErrorで拒否される
+- [x] get(): カスタムヘッダーがデフォルトとマージされる
+- [x] get_with_retry(): max_delay上限でバックオフがクリップされる
 """
 
 from unittest.mock import MagicMock, patch
@@ -295,6 +297,30 @@ class TestNasdaqSessionGet:
                 with pytest.raises(NasdaqRateLimitError):
                     session.get(NASDAQ_SCREENER_URL)
 
+    def test_正常系_カスタムヘッダーがマージされる(self) -> None:
+        """kwargs['headers'] でカスタムヘッダーを渡した場合にデフォルトとマージされること。"""
+        with patch("market.nasdaq.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_session.request.return_value = mock_response
+            mock_curl.Session.return_value = mock_session
+
+            with patch("market.nasdaq.session.time.sleep"):
+                session = NasdaqSession()
+                session.get(
+                    NASDAQ_SCREENER_URL,
+                    headers={"X-Custom-Header": "test-value"},
+                )
+
+                call_kwargs = mock_session.request.call_args
+                headers = call_kwargs[1]["headers"]
+                # カスタムヘッダーがマージされていること
+                assert headers["X-Custom-Header"] == "test-value"
+                # デフォルトヘッダーも保持されていること
+                assert "Accept" in headers
+                assert "User-Agent" in headers
+
 
 # =============================================================================
 # URL whitelist validation tests
@@ -432,6 +458,42 @@ class TestNasdaqSessionGetWithRetry:
 
                 with pytest.raises(NasdaqRateLimitError):
                     session.get_with_retry(NASDAQ_SCREENER_URL)
+
+    def test_正常系_max_delay上限でクリップされる(self) -> None:
+        """max_delay が指数バックオフの上限としてクリップされること。"""
+        with patch("market.nasdaq.session.curl_requests") as mock_curl:
+            mock_session = MagicMock()
+            mock_response_blocked = MagicMock()
+            mock_response_blocked.status_code = 403
+            mock_session.request.return_value = mock_response_blocked
+            mock_curl.Session.return_value = mock_session
+
+            # exponential_base=10.0 なので attempt=1 で 1.0*10^1=10.0 だが
+            # max_delay=5.0 でクリップされるはず
+            retry_config = RetryConfig(
+                max_attempts=3,
+                initial_delay=1.0,
+                max_delay=5.0,
+                exponential_base=10.0,
+                jitter=False,
+            )
+
+            sleep_calls: list[float] = []
+
+            def track_sleep(duration: float) -> None:
+                sleep_calls.append(duration)
+
+            with patch("market.nasdaq.session.time.sleep", side_effect=track_sleep):
+                session = NasdaqSession(retry_config=retry_config)
+
+                with pytest.raises(NasdaqRateLimitError):
+                    session.get_with_retry(NASDAQ_SCREENER_URL)
+
+            # リトライディレイは max_delay=5.0 を超えないこと
+            retry_delays = [d for d in sleep_calls if d >= 1.0]
+            assert len(retry_delays) >= 2
+            for delay in retry_delays:
+                assert delay <= 5.0 + 0.01  # max_delay 以下であること
 
     def test_正常系_指数バックオフでディレイが増加する(self) -> None:
         """リトライ間のディレイが指数バックオフで増加すること。"""

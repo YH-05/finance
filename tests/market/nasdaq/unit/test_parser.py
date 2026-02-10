@@ -38,6 +38,9 @@ Test TODO List:
 - [x] parse_screener_response: rows is not list raises NasdaqParseError
 - [x] parse_screener_response: rows with N/A fields
 - [x] Module exports: __all__ completeness
+- [x] clean_price: infinity strings return None (inf, -inf, nan)
+- [x] clean_price: NA lowercase variations return None (na, NA, n/a)
+- [x] parse_screener_response: unknown columns fallback to _camel_to_snake
 """
 
 import pandas as pd
@@ -182,6 +185,18 @@ class TestCleanPrice:
     def test_エッジケース_スペースのみでNoneを返す(self) -> None:
         """空白文字のみで None を返すこと。"""
         assert clean_price("   ") is None
+
+    def test_エッジケース_無限大文字列でNoneを返す(self) -> None:
+        """'inf', '-inf', 'nan' で None を返すこと（finite_check による）。"""
+        assert clean_price("inf") is None
+        assert clean_price("-inf") is None
+        assert clean_price("nan") is None
+
+    def test_エッジケース_na小文字バリエーション(self) -> None:
+        """'na', 'NA', 'n/a' の全バリエーションで None を返すこと。"""
+        assert clean_price("na") is None
+        assert clean_price("NA") is None
+        assert clean_price("n/a") is None
 
 
 # =============================================================================
@@ -511,6 +526,31 @@ class TestParseScreenerResponse:
             "url",
         }
         assert set(df.columns) == expected_columns
+
+    def test_エッジケース_不明カラムは_camel_to_snakeでフォールバック(self) -> None:
+        """COLUMN_NAME_MAP に存在しないカラムが _camel_to_snake で変換されること。"""
+        response = {
+            "data": {
+                "table": {
+                    "rows": [
+                        {
+                            "symbol": "AAPL",
+                            "name": "Apple Inc.",
+                            "lastsale": "$227.63",
+                            "unknownField": "test_value",
+                            "anotherCamelCase": "42",
+                        }
+                    ]
+                }
+            }
+        }
+        df = parse_screener_response(response)
+
+        # COLUMN_NAME_MAP にない camelCase カラムは _camel_to_snake で snake_case に変換される
+        assert "unknown_field" in df.columns
+        assert df["unknown_field"].iloc[0] == "test_value"
+        assert "another_camel_case" in df.columns
+        assert df["another_camel_case"].iloc[0] == "42"
 
 
 # =============================================================================
