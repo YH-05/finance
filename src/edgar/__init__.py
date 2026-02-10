@@ -63,6 +63,7 @@ from .errors import (
 )
 from .extractors import SectionExtractor, TextExtractor
 from .fetcher import EdgarFetcher
+from .rate_limiter import RateLimiter
 from .types import (
     EdgarResult,
     FilingType,
@@ -81,6 +82,7 @@ __all__ = [
     "FilingNotFoundError",
     "FilingType",
     "RateLimitError",
+    "RateLimiter",
     "SectionExtractor",
     "SectionKey",
     "SectionNotFoundError",
