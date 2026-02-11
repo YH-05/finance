@@ -6,6 +6,7 @@ category-specific lists (e.g., AI_LLM_COMPANIES) and the combined
 ALL_COMPANIES list.
 """
 
+from .ai_infra import AI_INFRA_COMPANIES
 from .ai_llm import AI_LLM_COMPANIES
 from .data_center import DATA_CENTER_COMPANIES
 from .gpu_chips import GPU_CHIPS_COMPANIES
@@ -17,6 +18,7 @@ from .saas import SAAS_COMPANIES
 from .semiconductor import SEMICONDUCTOR_COMPANIES
 
 __all__ = [
+    "AI_INFRA_COMPANIES",
     "AI_LLM_COMPANIES",
     "DATA_CENTER_COMPANIES",
     "GPU_CHIPS_COMPANIES",
