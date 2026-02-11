@@ -24,14 +24,14 @@ research-meta.json の設定に基づき、複数のデータソースから
 | ソース | ツール | 用途 |
 |--------|--------|------|
 | SEC EDGAR | MCP (sec-edgar-mcp) | 10-K, 10-Q, 8-K, Form 4 |
-| FRED | market_analysis | 経済指標 |
+| FRED | market.fred (FREDFetcher) | 経済指標 |
 | 公式IR | WebFetch | 企業発表 |
 
 ### Tier 2（高信頼度）
 
 | ソース | ツール | 用途 |
 |--------|--------|------|
-| Yahoo Finance | market_analysis (yfinance) | 株価、財務データ |
+| Yahoo Finance | market.yfinance (YFinanceFetcher) | 株価、財務データ |
 | Reuters | WebFetch | ニュース |
 | Bloomberg | WebFetch | 分析記事 |
 
@@ -54,7 +54,7 @@ research-meta.json の設定に基づき、複数のデータソースから
    - MCPSearch: select:mcp__sec-edgar-mcp__get_insider_summary
    → 10-K/10-Q 財務データ、8-K イベント、Form 4 インサイダー
 
-2. market_analysis（必須）
+2. market.yfinance（必須）
    - 株価データ（日足、週足）
    - 財務指標（P/E, P/B, etc）
    - ヒストリカルデータ
@@ -68,7 +68,7 @@ research-meta.json の設定に基づき、複数のデータソースから
 ### Sector（セクター分析）
 
 ```
-1. market_analysis（必須）
+1. market.yfinance（必須）
    - セクター構成銘柄
    - セクターパフォーマンス
    - 相対強度
@@ -94,7 +94,7 @@ research-meta.json の設定に基づき、複数のデータソースから
    - Fed発言、政策動向
    - 経済予測
 
-3. market_analysis（補完）
+3. market.yfinance / market.fred（補完）
    - 指数データ
    - 債券利回り
 ```
@@ -111,7 +111,7 @@ research-meta.json の設定に基づき、複数のデータソースから
    - ピュアプレイ企業の財務
    - リスク要因
 
-3. market_analysis（補完）
+3. market.yfinance（補完）
    - 関連ETF
    - 銘柄パフォーマンス
 ```
@@ -139,16 +139,22 @@ research-meta.json の設定に基づき、複数のデータソースから
    count: 10
 ```
 
-### market_analysis
+### market パッケージ
 
-```
-from market_analysis import fetch_stock, fetch_fred
+```python
+from market.yfinance import YFinanceFetcher, FetchOptions, Interval
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions as FREDFetchOptions
 
 # 株価データ
-data = fetch_stock(["AAPL"], period="1y")
+fetcher = YFinanceFetcher()
+options = FetchOptions(symbols=["AAPL"], interval=Interval.DAILY)
+results = fetcher.fetch(options)
 
 # FRED経済指標
-indicators = fetch_fred(["GDP", "UNRATE", "CPIAUCSL"])
+fred = FREDFetcher()
+fred_options = FREDFetchOptions(symbols=["GDP", "UNRATE", "CPIAUCSL"])
+indicators = fred.fetch(fred_options)
 ```
 
 ## 出力スキーマ
