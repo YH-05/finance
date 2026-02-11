@@ -5,6 +5,7 @@ for collecting corporate blog/news articles from 70+ companies across
 the AI value chain.
 """
 
+from .structure_validator import StructureValidator
 from .types import (
     ArticleMetadata,
     CompanyConfig,
@@ -24,5 +25,7 @@ __all__ = [
     "PdfMetadata",
     "ScrapedArticle",
     "StructureReport",
+    # Services
+    "StructureValidator",
     # Exceptions are accessed via company_scrapers.types or directly
 ]
