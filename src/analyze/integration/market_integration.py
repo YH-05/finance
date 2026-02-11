@@ -33,9 +33,12 @@ from datetime import datetime
 from typing import Any, cast
 
 import pandas as pd
+import yfinance as yf
 
 from analyze.statistics.descriptive import describe
 from analyze.technical.indicators import TechnicalIndicators
+from analyze.types import TickerInfo, map_quote_type_to_asset_class
+from market.errors import DataFetchError, ErrorCode
 from market.yfinance import FetchOptions, YFinanceFetcher
 from market.yfinance.types import Interval
 from utils_core.logging import get_logger
@@ -201,6 +204,140 @@ class MarketDataAnalyzer:
         )
 
         return analysis_results
+
+    def get_ticker_info(self, ticker: str) -> TickerInfo:
+        """Get metadata information for a single ticker.
+
+        Fetches basic information about a financial instrument using
+        the yfinance API, including name, sector, industry, and asset class.
+
+        Parameters
+        ----------
+        ticker : str
+            Ticker symbol to look up (e.g., "AAPL", "VOO", "^GSPC").
+
+        Returns
+        -------
+        TickerInfo
+            Metadata about the ticker.
+
+        Raises
+        ------
+        DataFetchError
+            If the ticker info cannot be fetched or is empty.
+
+        Examples
+        --------
+        >>> analyzer = MarketDataAnalyzer()
+        >>> info = analyzer.get_ticker_info("AAPL")
+        >>> info.ticker
+        'AAPL'
+        >>> info.sector
+        'Technology'
+        """
+        logger.debug("Fetching ticker info", ticker=ticker)
+
+        try:
+            yf_ticker = yf.Ticker(ticker)
+            info: dict[str, Any] = yf_ticker.info
+
+            if not info:
+                logger.error("Empty info returned for ticker", ticker=ticker)
+                raise DataFetchError(
+                    f"No info available for ticker: {ticker}",
+                    symbol=ticker,
+                    source="yfinance",
+                    code=ErrorCode.DATA_NOT_FOUND,
+                )
+
+            name = info.get("shortName") or info.get("longName") or ticker
+            sector = info.get("sector")
+            industry = info.get("industry")
+            quote_type = info.get("quoteType")
+            asset_class = map_quote_type_to_asset_class(quote_type)
+
+            ticker_info = TickerInfo(
+                ticker=ticker,
+                name=str(name),
+                sector=str(sector) if sector else None,
+                industry=str(industry) if industry else None,
+                asset_class=asset_class,
+            )
+
+            logger.debug(
+                "Ticker info fetched",
+                ticker=ticker,
+                name=ticker_info.name,
+                sector=ticker_info.sector,
+                asset_class=ticker_info.asset_class,
+            )
+
+            return ticker_info
+
+        except DataFetchError:
+            raise
+        except Exception as e:
+            logger.error(
+                "Failed to fetch ticker info",
+                ticker=ticker,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            raise DataFetchError(
+                f"Failed to fetch ticker info for {ticker}: {e}",
+                symbol=ticker,
+                source="yfinance",
+                code=ErrorCode.API_ERROR,
+                cause=e,
+            ) from e
+
+    def get_ticker_infos(self, tickers: list[str]) -> dict[str, TickerInfo]:
+        """Get metadata information for multiple tickers.
+
+        Fetches basic information for each ticker in the provided list.
+
+        Parameters
+        ----------
+        tickers : list[str]
+            List of ticker symbols to look up.
+
+        Returns
+        -------
+        dict[str, TickerInfo]
+            Dictionary mapping ticker symbols to their TickerInfo.
+
+        Raises
+        ------
+        ValueError
+            If tickers list is empty.
+        DataFetchError
+            If fetching info fails for any ticker.
+
+        Examples
+        --------
+        >>> analyzer = MarketDataAnalyzer()
+        >>> infos = analyzer.get_ticker_infos(["AAPL", "GOOGL"])
+        >>> infos["AAPL"].name
+        'Apple Inc.'
+        """
+        logger.info("Fetching ticker infos", tickers=tickers, count=len(tickers))
+
+        if not tickers:
+            logger.error("Empty tickers list provided")
+            raise ValueError("tickers must not be empty")
+
+        result: dict[str, TickerInfo] = {}
+
+        for ticker in tickers:
+            result[ticker] = self.get_ticker_info(ticker)
+
+        logger.info(
+            "Ticker infos fetched",
+            tickers=tickers,
+            count=len(result),
+        )
+
+        return result
 
 
 def analyze_market_data(
