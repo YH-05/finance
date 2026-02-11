@@ -1,7 +1,8 @@
-"""Industry report scraping module for market data retrieval.
+"""Industry report scraping and competitive analysis module.
 
 This package provides tools for scraping industry reports from consulting
-firms, investment banks, and government statistical APIs.
+firms, investment banks, and government statistical APIs, as well as
+competitive advantage analysis based on the dogma.md evaluation framework.
 
 Modules
 -------
@@ -14,6 +15,8 @@ api_clients.bls : BLS API v2.0 client for employment/wage/productivity data.
 api_clients.census : Census Bureau API client for international trade data.
 downloaders.pdf_downloader : PDF download with size limiting and deduplication.
 downloaders.report_parser : PDF/HTML text extraction and metadata extraction.
+peer_groups : Peer group definition and retrieval (preset + dynamic via yfinance).
+competitive_analysis : Competitive advantage analysis (dogma.md 12 rules, moat scoring, Porter's 5 Forces).
 
 Public API
 ----------
@@ -39,6 +42,8 @@ PDFDownloader
     Async PDF downloader with size limits and hash-based deduplication.
 ReportParser
     Parser for extracting text and metadata from PDF and HTML documents.
+CompetitiveAnalyzer
+    Orchestrator for competitive advantage assessment.
 
 Configuration
 -------------
@@ -66,6 +71,12 @@ market.etfcom : ETF.com scraping module (reference implementation for scraping p
 
 from market.industry.api_clients.bls import BLSClient
 from market.industry.api_clients.census import CensusClient
+from market.industry.competitive_analysis import (
+    CompetitiveAnalyzer,
+    evaluate_advantage_claim,
+    evaluate_porter_forces,
+    score_moat,
+)
 from market.industry.config import (
     IndustryPreset,
     IndustryPresetsConfig,
@@ -74,6 +85,11 @@ from market.industry.config import (
 )
 from market.industry.downloaders.pdf_downloader import PDFDownloader
 from market.industry.downloaders.report_parser import ReportParser
+from market.industry.peer_groups import (
+    get_dynamic_peer_group,
+    get_peer_group,
+    get_preset_peer_group,
+)
 from market.industry.scrapers.base import BaseScraper
 from market.industry.scrapers.consulting import (
     BCGScraper,
@@ -89,10 +105,20 @@ from market.industry.scrapers.investment_bank import (
     MorganStanleyScraper,
 )
 from market.industry.types import (
+    AdvantageAssessment,
+    AdvantageClaim,
+    ConfidenceLevel,
+    DogmaRuleResult,
     DownloadResult,
     IndustryReport,
+    MoatScore,
+    MoatStrength,
+    MoatType,
     ParsedContent,
     PeerGroup,
+    PorterForce,
+    PorterForcesAssessment,
+    PorterForceStrength,
     ReportMetadata,
     RetryConfig,
     ScrapingConfig,
@@ -101,12 +127,17 @@ from market.industry.types import (
 )
 
 __all__ = [
+    "AdvantageAssessment",
+    "AdvantageClaim",
     "BCGScraper",
     "BLSClient",
     "BaseScraper",
     "CensusClient",
+    "CompetitiveAnalyzer",
+    "ConfidenceLevel",
     "ConsultingScraper",
     "DeloitteScraper",
+    "DogmaRuleResult",
     "DownloadResult",
     "GoldmanSachsScraper",
     "IndustryPreset",
@@ -115,10 +146,16 @@ __all__ = [
     "InvestmentBankScraper",
     "JPMorganScraper",
     "McKinseyScraper",
+    "MoatScore",
+    "MoatStrength",
+    "MoatType",
     "MorganStanleyScraper",
     "PDFDownloader",
     "ParsedContent",
     "PeerGroup",
+    "PorterForce",
+    "PorterForceStrength",
+    "PorterForcesAssessment",
     "PwCScraper",
     "ReportMetadata",
     "ReportParser",
@@ -127,5 +164,11 @@ __all__ = [
     "ScrapingResult",
     "SourceConfig",
     "SourceTier",
+    "evaluate_advantage_claim",
+    "evaluate_porter_forces",
+    "get_dynamic_peer_group",
+    "get_peer_group",
+    "get_preset_peer_group",
     "load_presets",
+    "score_moat",
 ]

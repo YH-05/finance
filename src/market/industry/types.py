@@ -1,7 +1,7 @@
 """Type definitions for the market.industry module.
 
 This module provides Pydantic model definitions for industry report scraping
-including:
+and competitive analysis including:
 
 - Source tier classification (API, Scraping, Media)
 - Industry report data model (IndustryReport)
@@ -12,6 +12,9 @@ including:
 - Download result container (DownloadResult)
 - Report metadata (ReportMetadata)
 - Parsed content container (ParsedContent)
+- Competitive analysis types (MoatType, MoatStrength, ConfidenceLevel, etc.)
+- Porter's 5 Forces types (PorterForce, PorterForceStrength, etc.)
+- Advantage claim and assessment types (AdvantageClaim, AdvantageAssessment, etc.)
 
 All model classes use ``frozen=True`` to ensure immutability, following the
 same pattern as ``market.etfcom.types`` and ``market.nasdaq.types``.
@@ -23,7 +26,7 @@ market.nasdaq.types : Similar type-definition pattern for the NASDAQ module.
 """
 
 from datetime import datetime
-from enum import Enum
+from enum import Enum, IntEnum
 
 from pydantic import BaseModel, Field
 
@@ -395,14 +398,371 @@ class ParsedContent(BaseModel, frozen=True):
 
 
 # =============================================================================
+# Competitive Analysis Enums
+# =============================================================================
+
+
+class ConfidenceLevel(IntEnum):
+    """Confidence level for competitive advantage assessment.
+
+    Based on the dogma.md 5-level scale from analyst_YK's evaluation framework.
+
+    Parameters
+    ----------
+    value : int
+        Percentage confidence value.
+
+    Examples
+    --------
+    >>> ConfidenceLevel.HIGHLY_CONVINCED
+    <ConfidenceLevel.HIGHLY_CONVINCED: 90>
+    >>> ConfidenceLevel.HIGHLY_CONVINCED.value
+    90
+    """
+
+    HIGHLY_CONVINCED = 90
+    """Structural advantage + clear CAGR connection + quantitative evidence."""
+
+    MOSTLY_CONVINCED = 70
+    """Reasonable hypothesis + some evidence (competitor comparison or data)."""
+
+    SOMEWHAT_CONVINCED = 50
+    """Direction acknowledged but insufficient evidence."""
+
+    NOT_CONVINCED = 30
+    """Logical leap, causal inversion, or insufficient differentiation."""
+
+    REJECTED = 10
+    """Factual error, does not qualify as competitive advantage."""
+
+
+class MoatType(str, Enum):
+    """Classification of economic moat types.
+
+    Parameters
+    ----------
+    value : str
+        The moat type identifier string.
+
+    Examples
+    --------
+    >>> MoatType.BRAND_POWER
+    <MoatType.BRAND_POWER: 'brand_power'>
+    """
+
+    BRAND_POWER = "brand_power"
+    """Brand recognition, loyalty, and pricing power."""
+
+    SWITCHING_COST = "switching_cost"
+    """Cost or friction for customers to switch to competitors."""
+
+    NETWORK_EFFECT = "network_effect"
+    """Value increases as more users join the network."""
+
+    COST_ADVANTAGE = "cost_advantage"
+    """Structural cost advantages (scale, location, assets)."""
+
+    INTANGIBLE_ASSETS = "intangible_assets"
+    """Patents, licenses, regulatory approvals, trade secrets."""
+
+    EFFICIENT_SCALE = "efficient_scale"
+    """Market too small to support multiple competitors profitably."""
+
+    NONE = "none"
+    """No identifiable economic moat."""
+
+
+class MoatStrength(str, Enum):
+    """Strength classification for economic moat.
+
+    Parameters
+    ----------
+    value : str
+        The moat strength identifier string.
+
+    Examples
+    --------
+    >>> MoatStrength.WIDE
+    <MoatStrength.WIDE: 'wide'>
+    """
+
+    WIDE = "wide"
+    """Strong, durable competitive advantages (score >= 70)."""
+
+    NARROW = "narrow"
+    """Moderate competitive advantages (score 40-69)."""
+
+    NONE = "none"
+    """No significant competitive advantage (score < 40)."""
+
+
+class PorterForceStrength(str, Enum):
+    """Strength level for Porter's 5 Forces assessment.
+
+    Parameters
+    ----------
+    value : str
+        The force strength identifier string.
+
+    Examples
+    --------
+    >>> PorterForceStrength.HIGH
+    <PorterForceStrength.HIGH: 'high'>
+    """
+
+    HIGH = "high"
+    """Strong competitive force (unfavorable for incumbents)."""
+
+    MEDIUM = "medium"
+    """Moderate competitive force."""
+
+    LOW = "low"
+    """Weak competitive force (favorable for incumbents)."""
+
+
+# =============================================================================
+# Competitive Analysis Models
+# =============================================================================
+
+
+class AdvantageClaim(BaseModel, frozen=True):
+    """A competitive advantage claim to be evaluated.
+
+    Represents a hypothesis about a company's competitive advantage
+    that will be evaluated against the dogma.md 12 rules framework.
+
+    Parameters
+    ----------
+    claim : str
+        The competitive advantage claim (e.g. "買収ターゲットの選定能力").
+    evidence : str
+        Supporting evidence for the claim.
+    ticker : str
+        The company ticker symbol.
+    is_quantitative : bool
+        Whether quantitative data supports the claim. Defaults to ``False``.
+    has_competitor_comparison : bool
+        Whether specific competitor comparison is provided.
+        Defaults to ``False``.
+    is_structural : bool
+        Whether the claim describes a structural capability/mechanism
+        rather than a result. Defaults to ``False``.
+    is_industry_common : bool
+        Whether the claimed advantage is common across the industry.
+        Defaults to ``False``.
+
+    Examples
+    --------
+    >>> claim = AdvantageClaim(
+    ...     claim="買収ターゲットの選定能力",
+    ...     evidence="買収基準の明確化、人員投入プロセス",
+    ...     ticker="CHD",
+    ...     is_structural=True,
+    ...     is_quantitative=True,
+    ... )
+    >>> claim.is_structural
+    True
+    """
+
+    claim: str
+    evidence: str
+    ticker: str
+    is_quantitative: bool = False
+    has_competitor_comparison: bool = False
+    is_structural: bool = False
+    is_industry_common: bool = False
+
+
+class DogmaRuleResult(BaseModel, frozen=True):
+    """Result of applying a single dogma rule to an advantage claim.
+
+    Each rule from the dogma.md 12-rule framework is evaluated
+    independently against a claim.
+
+    Parameters
+    ----------
+    rule_number : int
+        The dogma rule number (1-12).
+    rule_name : str
+        Short name of the rule.
+    passed : bool
+        Whether the claim passes this rule.
+    adjustment : int
+        Score adjustment from this rule (-30 to +30 percentage points).
+    reasoning : str
+        Explanation of why the rule passed or failed.
+
+    Examples
+    --------
+    >>> result = DogmaRuleResult(
+    ...     rule_number=1,
+    ...     rule_name="能力・仕組み vs 結果・実績",
+    ...     passed=True,
+    ...     adjustment=0,
+    ...     reasoning="クレームは構造的能力を記述している",
+    ... )
+    >>> result.passed
+    True
+    """
+
+    rule_number: int = Field(ge=1, le=12)
+    rule_name: str
+    passed: bool
+    adjustment: int = Field(ge=-30, le=30)
+    reasoning: str
+
+
+class AdvantageAssessment(BaseModel, frozen=True):
+    """Assessment result of a competitive advantage claim.
+
+    Aggregates the results of all 12 dogma rules and provides
+    an overall confidence level and moat type classification.
+
+    Parameters
+    ----------
+    claim : str
+        The original claim text.
+    confidence : ConfidenceLevel
+        Overall confidence level after applying all rules.
+    rule_results : list[DogmaRuleResult]
+        Results from each of the 12 dogma rules.
+    moat_type : MoatType
+        Classified moat type. Defaults to ``MoatType.NONE``.
+    adjustment_factors : list[str]
+        List of factors that adjusted the score up or down.
+
+    Examples
+    --------
+    >>> assessment = AdvantageAssessment(
+    ...     claim="買収ターゲットの選定能力",
+    ...     confidence=ConfidenceLevel.MOSTLY_CONVINCED,
+    ...     rule_results=[],
+    ...     moat_type=MoatType.INTANGIBLE_ASSETS,
+    ...     adjustment_factors=["定量的裏付け: +20%"],
+    ... )
+    >>> assessment.confidence.value
+    70
+    """
+
+    claim: str
+    confidence: ConfidenceLevel
+    rule_results: list[DogmaRuleResult]
+    moat_type: MoatType = MoatType.NONE
+    adjustment_factors: list[str] = Field(default_factory=list)
+
+
+class MoatScore(BaseModel, frozen=True):
+    """Aggregated moat score from multiple advantage assessments.
+
+    Parameters
+    ----------
+    overall_score : int
+        Overall moat score (0-100).
+    strength : MoatStrength
+        Classified moat strength.
+    moat_type_scores : dict[MoatType, int]
+        Scores broken down by moat type.
+    dominant_moat : MoatType
+        The moat type with the highest score. Defaults to ``MoatType.NONE``.
+    summary : str
+        Human-readable summary of the moat assessment.
+        Defaults to empty string.
+
+    Examples
+    --------
+    >>> score = MoatScore(
+    ...     overall_score=75,
+    ...     strength=MoatStrength.WIDE,
+    ...     moat_type_scores={MoatType.BRAND_POWER: 70},
+    ...     dominant_moat=MoatType.BRAND_POWER,
+    ...     summary="Strong brand-driven moat",
+    ... )
+    >>> score.strength
+    <MoatStrength.WIDE: 'wide'>
+    """
+
+    overall_score: int = Field(ge=0, le=100)
+    strength: MoatStrength
+    moat_type_scores: dict[MoatType, int] = Field(default_factory=dict)
+    dominant_moat: MoatType = MoatType.NONE
+    summary: str = ""
+
+
+class PorterForce(BaseModel, frozen=True):
+    """Assessment of a single Porter's force.
+
+    Parameters
+    ----------
+    name : str
+        Name of the force (e.g. "Competitive Rivalry").
+    strength : PorterForceStrength
+        Assessed strength of this force.
+    reasoning : str
+        Explanation of the assessment. Defaults to empty string.
+
+    Examples
+    --------
+    >>> force = PorterForce(
+    ...     name="Competitive Rivalry",
+    ...     strength=PorterForceStrength.HIGH,
+    ...     reasoning="Fragmented market with many competitors",
+    ... )
+    >>> force.strength
+    <PorterForceStrength.HIGH: 'high'>
+    """
+
+    name: str
+    strength: PorterForceStrength
+    reasoning: str = ""
+
+
+class PorterForcesAssessment(BaseModel, frozen=True):
+    """Complete Porter's 5 Forces assessment.
+
+    Parameters
+    ----------
+    forces : list[PorterForce]
+        List of 5 force assessments.
+    overall_intensity : str
+        Overall competitive intensity ("low", "medium", "high").
+    summary : str
+        Human-readable summary. Defaults to empty string.
+
+    Examples
+    --------
+    >>> assessment = PorterForcesAssessment(
+    ...     forces=[],
+    ...     overall_intensity="medium",
+    ...     summary="Moderate competitive environment",
+    ... )
+    >>> assessment.overall_intensity
+    'medium'
+    """
+
+    forces: list[PorterForce] = Field(default_factory=list)
+    overall_intensity: str = "medium"
+    summary: str = ""
+
+
+# =============================================================================
 # Module exports
 # =============================================================================
 
 __all__ = [
+    "AdvantageAssessment",
+    "AdvantageClaim",
+    "ConfidenceLevel",
+    "DogmaRuleResult",
     "DownloadResult",
     "IndustryReport",
+    "MoatScore",
+    "MoatStrength",
+    "MoatType",
     "ParsedContent",
     "PeerGroup",
+    "PorterForce",
+    "PorterForceStrength",
+    "PorterForcesAssessment",
     "ReportMetadata",
     "RetryConfig",
     "ScrapingConfig",
