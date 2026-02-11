@@ -1,0 +1,110 @@
+{
+    "version": "1.0",
+    "presets": [
+        {
+            "sector": "Technology",
+            "sub_sectors": ["Semiconductors", "Software_Infrastructure"],
+            "sources": [
+                {
+                    "name": "McKinsey Insights",
+                    "url": "https://www.mckinsey.com/featured-insights",
+                    "tier": "scraping",
+                    "difficulty": "medium",
+                    "enabled": true
+                },
+                {
+                    "name": "BCG Publications",
+                    "url": "https://www.bcg.com/publications",
+                    "tier": "scraping",
+                    "difficulty": "medium",
+                    "enabled": true
+                },
+                {
+                    "name": "Goldman Sachs Insights",
+                    "url": "https://www.goldmansachs.com/insights",
+                    "tier": "scraping",
+                    "difficulty": "easy",
+                    "enabled": true
+                }
+            ],
+            "peer_tickers": ["NVDA", "AMD", "INTC", "TSM", "AVGO", "MSFT", "ORCL", "CRM"]
+        },
+        {
+            "sector": "Healthcare",
+            "sub_sectors": ["Pharmaceuticals"],
+            "sources": [
+                {
+                    "name": "Deloitte Insights",
+                    "url": "https://www2.deloitte.com/insights",
+                    "tier": "scraping",
+                    "difficulty": "medium",
+                    "enabled": true
+                },
+                {
+                    "name": "McKinsey Insights",
+                    "url": "https://www.mckinsey.com/featured-insights",
+                    "tier": "scraping",
+                    "difficulty": "medium",
+                    "enabled": true
+                }
+            ],
+            "peer_tickers": ["JNJ", "PFE", "MRK", "ABBV", "LLY", "UNH"]
+        },
+        {
+            "sector": "Financials",
+            "sub_sectors": ["Banks"],
+            "sources": [
+                {
+                    "name": "Morgan Stanley Ideas",
+                    "url": "https://www.morganstanley.com/ideas",
+                    "tier": "scraping",
+                    "difficulty": "easy",
+                    "enabled": true
+                },
+                {
+                    "name": "JP Morgan Insights",
+                    "url": "https://www.jpmorgan.com/insights/research",
+                    "tier": "scraping",
+                    "difficulty": "easy",
+                    "enabled": true
+                }
+            ],
+            "peer_tickers": ["JPM", "BAC", "GS", "MS", "C", "WFC"]
+        },
+        {
+            "sector": "Consumer_Discretionary",
+            "sub_sectors": ["Retail"],
+            "sources": [
+                {
+                    "name": "PwC Strategy&",
+                    "url": "https://www.strategyand.pwc.com",
+                    "tier": "scraping",
+                    "difficulty": "medium",
+                    "enabled": true
+                }
+            ],
+            "peer_tickers": ["AMZN", "WMT", "TGT", "COST", "HD"]
+        },
+        {
+            "sector": "Energy",
+            "sub_sectors": ["Oil_Gas"],
+            "sources": [
+                {
+                    "name": "Deloitte Insights",
+                    "url": "https://www2.deloitte.com/insights",
+                    "tier": "scraping",
+                    "difficulty": "medium",
+                    "enabled": true
+                },
+                {
+                    "name": "BLS API",
+                    "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/",
+                    "tier": "api",
+                    "difficulty": null,
+                    "enabled": true
+                }
+            ],
+            "peer_tickers": ["XOM", "CVX", "COP", "SLB", "EOG"]
+        }
+    ]
+}
