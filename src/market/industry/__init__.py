@@ -8,6 +8,7 @@ Modules
 types : Pydantic data models (IndustryReport, ScrapingResult, PeerGroup, etc.).
 config : Preset configuration loader for industry-research-presets.json.
 scrapers.base : BaseScraper abstract base class with 2-layer fallback.
+scrapers.consulting : Consulting firm scrapers (McKinsey, BCG, Deloitte, PwC).
 
 Public API
 ----------
@@ -57,6 +58,13 @@ from market.industry.config import (
     load_presets,
 )
 from market.industry.scrapers.base import BaseScraper
+from market.industry.scrapers.consulting import (
+    BCGScraper,
+    ConsultingScraper,
+    DeloitteScraper,
+    McKinseyScraper,
+    PwCScraper,
+)
 from market.industry.types import (
     IndustryReport,
     PeerGroup,
@@ -67,11 +75,16 @@ from market.industry.types import (
 )
 
 __all__ = [
+    "BCGScraper",
     "BaseScraper",
+    "ConsultingScraper",
+    "DeloitteScraper",
     "IndustryPreset",
     "IndustryPresetsConfig",
     "IndustryReport",
+    "McKinseyScraper",
     "PeerGroup",
+    "PwCScraper",
     "RetryConfig",
     "ScrapingConfig",
     "ScrapingResult",

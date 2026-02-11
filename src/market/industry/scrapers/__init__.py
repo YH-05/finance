@@ -3,6 +3,21 @@
 This sub-package provides the ``BaseScraper`` abstract base class
 and source-specific scraper implementations.
 
+Scrapers
+--------
+BaseScraper
+    Abstract base class with 2-layer fallback (curl_cffi -> Playwright).
+ConsultingScraper
+    Base class for consulting firm report scrapers.
+McKinseyScraper
+    Scraper for McKinsey Insights.
+BCGScraper
+    Scraper for BCG Publications.
+DeloitteScraper
+    Scraper for Deloitte Insights.
+PwCScraper
+    Scraper for PwC Strategy&.
+
 See Also
 --------
 market.etfcom.browser : ETFComBrowserMixin (reference implementation).
