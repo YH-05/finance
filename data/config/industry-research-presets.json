@@ -27,11 +27,111 @@
                     "enabled": true
                 }
             ],
-            "peer_tickers": ["NVDA", "AMD", "INTC", "TSM", "AVGO", "MSFT", "ORCL", "CRM"]
+            "peer_tickers": ["NVDA", "AMD", "INTC", "TSM", "AVGO", "MSFT", "ORCL", "CRM"],
+            "peer_groups": [
+                {
+                    "sub_sector": "Semiconductors",
+                    "companies": ["NVDA", "AMD", "INTC", "TSM", "AVGO", "QCOM", "MRVL"],
+                    "description": "Major semiconductor manufacturers and designers"
+                },
+                {
+                    "sub_sector": "Software_Infrastructure",
+                    "companies": ["MSFT", "ORCL", "CRM", "ADBE", "NOW", "INTU", "PANW"],
+                    "description": "Enterprise software and cloud infrastructure leaders"
+                }
+            ],
+            "scraping_queries": [
+                {
+                    "query": "semiconductor industry outlook 2026",
+                    "target_sources": ["McKinsey", "BCG"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "AI chip market analysis GPU demand",
+                    "target_sources": ["Goldman Sachs", "Morgan Stanley"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "cloud infrastructure market trends SaaS growth",
+                    "target_sources": ["McKinsey", "Deloitte"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "semiconductor supply chain geopolitical risk",
+                    "target_sources": ["BCG", "PwC"],
+                    "sector_specific": true
+                }
+            ],
+            "competitive_factors": [
+                {
+                    "factor_name": "R&D Investment",
+                    "description": "Annual R&D spending as percentage of revenue, reflecting innovation capacity",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Process Node Leadership",
+                    "description": "Ability to manufacture at leading-edge process nodes (3nm, 2nm)",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "IP Portfolio",
+                    "description": "Patent portfolio breadth and licensing revenue potential",
+                    "importance": "medium"
+                },
+                {
+                    "factor_name": "Customer Concentration",
+                    "description": "Revenue dependency on top customers (hyperscalers, OEMs)",
+                    "importance": "medium"
+                }
+            ],
+            "industry_media": [
+                {
+                    "name": "SemiWiki",
+                    "url": "https://semiwiki.com",
+                    "focus_areas": ["semiconductors", "EDA", "foundry"]
+                },
+                {
+                    "name": "Tom's Hardware",
+                    "url": "https://www.tomshardware.com",
+                    "focus_areas": ["semiconductors", "hardware", "benchmarks"]
+                },
+                {
+                    "name": "The Register",
+                    "url": "https://www.theregister.com",
+                    "focus_areas": ["enterprise IT", "cloud", "semiconductors"]
+                }
+            ],
+            "key_metrics": [
+                {
+                    "name": "Gross Margin",
+                    "description": "Revenue minus cost of goods sold divided by revenue",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "R&D as % of Revenue",
+                    "description": "Research and development expense divided by total revenue",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Revenue Growth YoY",
+                    "description": "Year-over-year revenue growth rate",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Free Cash Flow Margin",
+                    "description": "Free cash flow divided by total revenue",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "TAM Penetration",
+                    "description": "Company revenue as percentage of total addressable market",
+                    "data_source": "Industry reports"
+                }
+            ]
         },
         {
             "sector": "Healthcare",
-            "sub_sectors": ["Pharmaceuticals"],
+            "sub_sectors": ["Pharmaceuticals", "Biotechnology", "Medical_Devices"],
             "sources": [
                 {
                     "name": "Deloitte Insights",
@@ -48,11 +148,111 @@
                     "enabled": true
                 }
             ],
-            "peer_tickers": ["JNJ", "PFE", "MRK", "ABBV", "LLY", "UNH"]
+            "peer_tickers": ["JNJ", "PFE", "MRK", "ABBV", "LLY", "UNH", "TMO", "ABT"],
+            "peer_groups": [
+                {
+                    "sub_sector": "Pharmaceuticals",
+                    "companies": ["JNJ", "PFE", "MRK", "ABBV", "LLY", "BMY", "AZN"],
+                    "description": "Major pharmaceutical companies with diversified drug portfolios"
+                },
+                {
+                    "sub_sector": "Biotechnology",
+                    "companies": ["AMGN", "GILD", "VRTX", "REGN", "BIIB"],
+                    "description": "Leading biotechnology firms focused on innovative therapies"
+                },
+                {
+                    "sub_sector": "Medical_Devices",
+                    "companies": ["TMO", "ABT", "MDT", "SYK", "ISRG"],
+                    "description": "Medical devices and diagnostics manufacturers"
+                }
+            ],
+            "scraping_queries": [
+                {
+                    "query": "pharmaceutical industry pipeline analysis 2026",
+                    "target_sources": ["McKinsey", "Deloitte"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "drug pricing regulation impact US healthcare",
+                    "target_sources": ["PwC", "BCG"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "biotech M&A trends acquisition targets",
+                    "target_sources": ["Goldman Sachs", "JP Morgan"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "GLP-1 obesity drug market opportunity",
+                    "target_sources": ["Morgan Stanley"],
+                    "sector_specific": true
+                }
+            ],
+            "competitive_factors": [
+                {
+                    "factor_name": "Pipeline Depth",
+                    "description": "Number and quality of drugs in Phase II/III clinical trials",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Patent Cliff Exposure",
+                    "description": "Revenue at risk from upcoming patent expirations",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "FDA Approval Track Record",
+                    "description": "Historical success rate of FDA submissions and approvals",
+                    "importance": "medium"
+                },
+                {
+                    "factor_name": "Pricing Power",
+                    "description": "Ability to maintain or increase drug prices in regulated markets",
+                    "importance": "medium"
+                }
+            ],
+            "industry_media": [
+                {
+                    "name": "STAT News",
+                    "url": "https://www.statnews.com",
+                    "focus_areas": ["pharma", "biotech", "FDA", "clinical trials"]
+                },
+                {
+                    "name": "FiercePharma",
+                    "url": "https://www.fiercepharma.com",
+                    "focus_areas": ["pharma", "drug launches", "M&A"]
+                },
+                {
+                    "name": "Endpoints News",
+                    "url": "https://endpts.com",
+                    "focus_areas": ["biotech", "clinical trials", "drug development"]
+                }
+            ],
+            "key_metrics": [
+                {
+                    "name": "R&D as % of Revenue",
+                    "description": "Research and development spending relative to revenue",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Pipeline Value",
+                    "description": "Estimated NPV of drugs in development pipeline",
+                    "data_source": "Industry reports"
+                },
+                {
+                    "name": "Patent Expiry Revenue %",
+                    "description": "Percentage of revenue from drugs losing patent protection within 5 years",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Operating Margin",
+                    "description": "Operating income divided by total revenue",
+                    "data_source": "SEC filings"
+                }
+            ]
         },
         {
             "sector": "Financials",
-            "sub_sectors": ["Banks"],
+            "sub_sectors": ["Banks", "Insurance", "Capital_Markets"],
             "sources": [
                 {
                     "name": "Morgan Stanley Ideas",
@@ -69,11 +269,116 @@
                     "enabled": true
                 }
             ],
-            "peer_tickers": ["JPM", "BAC", "GS", "MS", "C", "WFC"]
+            "peer_tickers": ["JPM", "BAC", "GS", "MS", "C", "WFC", "BLK", "SCHW"],
+            "peer_groups": [
+                {
+                    "sub_sector": "Banks",
+                    "companies": ["JPM", "BAC", "C", "WFC", "USB", "PNC", "TFC"],
+                    "description": "Major US commercial and investment banks"
+                },
+                {
+                    "sub_sector": "Insurance",
+                    "companies": ["BRK.B", "PGR", "ALL", "MET", "AIG"],
+                    "description": "Large-cap insurance companies"
+                },
+                {
+                    "sub_sector": "Capital_Markets",
+                    "companies": ["GS", "MS", "SCHW", "BLK", "ICE"],
+                    "description": "Investment banks and asset management firms"
+                }
+            ],
+            "scraping_queries": [
+                {
+                    "query": "banking sector outlook interest rate impact 2026",
+                    "target_sources": ["Morgan Stanley", "Goldman Sachs"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "fintech disruption traditional banking analysis",
+                    "target_sources": ["McKinsey", "BCG"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "bank capital requirements Basel III regulation",
+                    "target_sources": ["Deloitte", "PwC"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "commercial real estate loan exposure risk",
+                    "target_sources": ["JP Morgan", "Goldman Sachs"],
+                    "sector_specific": true
+                }
+            ],
+            "competitive_factors": [
+                {
+                    "factor_name": "Net Interest Margin",
+                    "description": "Spread between interest earned and paid, key profitability driver",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Credit Quality",
+                    "description": "Loan loss provision rate and non-performing asset ratio",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Digital Adoption",
+                    "description": "Mobile/digital banking penetration and tech investment ratio",
+                    "importance": "medium"
+                },
+                {
+                    "factor_name": "Capital Adequacy",
+                    "description": "CET1 ratio and stress test performance",
+                    "importance": "high"
+                }
+            ],
+            "industry_media": [
+                {
+                    "name": "American Banker",
+                    "url": "https://www.americanbanker.com",
+                    "focus_areas": ["banking", "regulation", "fintech"]
+                },
+                {
+                    "name": "Risk.net",
+                    "url": "https://www.risk.net",
+                    "focus_areas": ["risk management", "derivatives", "regulation"]
+                },
+                {
+                    "name": "Financial Times - Banking",
+                    "url": "https://www.ft.com/banking-finance",
+                    "focus_areas": ["banking", "capital markets", "regulation"]
+                }
+            ],
+            "key_metrics": [
+                {
+                    "name": "Net Interest Margin",
+                    "description": "Net interest income divided by average interest-earning assets",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Return on Equity",
+                    "description": "Net income divided by average shareholders' equity",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "CET1 Ratio",
+                    "description": "Common Equity Tier 1 capital as percentage of risk-weighted assets",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Efficiency Ratio",
+                    "description": "Non-interest expense divided by total revenue (lower is better)",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Loan-to-Deposit Ratio",
+                    "description": "Total loans outstanding divided by total deposits",
+                    "data_source": "SEC filings"
+                }
+            ]
         },
         {
             "sector": "Consumer_Discretionary",
-            "sub_sectors": ["Retail"],
+            "sub_sectors": ["Retail", "E_Commerce", "Restaurants"],
             "sources": [
                 {
                     "name": "PwC Strategy&",
@@ -81,13 +386,120 @@
                     "tier": "scraping",
                     "difficulty": "medium",
                     "enabled": true
+                },
+                {
+                    "name": "McKinsey Insights",
+                    "url": "https://www.mckinsey.com/featured-insights",
+                    "tier": "scraping",
+                    "difficulty": "medium",
+                    "enabled": true
                 }
             ],
-            "peer_tickers": ["AMZN", "WMT", "TGT", "COST", "HD"]
+            "peer_tickers": ["AMZN", "WMT", "TGT", "COST", "HD", "LOW", "NKE", "SBUX"],
+            "peer_groups": [
+                {
+                    "sub_sector": "Retail",
+                    "companies": ["WMT", "TGT", "COST", "HD", "LOW", "TJX", "ROST"],
+                    "description": "Major US brick-and-mortar and omnichannel retailers"
+                },
+                {
+                    "sub_sector": "E_Commerce",
+                    "companies": ["AMZN", "EBAY", "ETSY", "W", "CHWY"],
+                    "description": "Leading e-commerce and online marketplace platforms"
+                },
+                {
+                    "sub_sector": "Restaurants",
+                    "companies": ["MCD", "SBUX", "CMG", "YUM", "DPZ"],
+                    "description": "Quick-service and fast-casual restaurant chains"
+                }
+            ],
+            "scraping_queries": [
+                {
+                    "query": "retail industry trends consumer spending 2026",
+                    "target_sources": ["McKinsey", "PwC"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "e-commerce market analysis omnichannel strategy",
+                    "target_sources": ["BCG", "Deloitte"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "consumer discretionary sector inflation impact",
+                    "target_sources": ["Goldman Sachs", "Morgan Stanley"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "retail supply chain optimization logistics",
+                    "target_sources": ["McKinsey"],
+                    "sector_specific": true
+                }
+            ],
+            "competitive_factors": [
+                {
+                    "factor_name": "Brand Loyalty",
+                    "description": "Customer retention rate and brand preference scores",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Supply Chain Efficiency",
+                    "description": "Inventory turnover and days sales of inventory",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Digital Penetration",
+                    "description": "E-commerce revenue as percentage of total sales",
+                    "importance": "medium"
+                },
+                {
+                    "factor_name": "Store Productivity",
+                    "description": "Revenue per square foot and same-store sales growth",
+                    "importance": "medium"
+                }
+            ],
+            "industry_media": [
+                {
+                    "name": "Retail Dive",
+                    "url": "https://www.retaildive.com",
+                    "focus_areas": ["retail", "e-commerce", "consumer trends"]
+                },
+                {
+                    "name": "Modern Retail",
+                    "url": "https://www.modernretail.co",
+                    "focus_areas": ["DTC", "e-commerce", "retail technology"]
+                },
+                {
+                    "name": "NRF - National Retail Federation",
+                    "url": "https://nrf.com",
+                    "focus_areas": ["retail", "consumer spending", "industry data"]
+                }
+            ],
+            "key_metrics": [
+                {
+                    "name": "Same-Store Sales Growth",
+                    "description": "Year-over-year revenue growth for stores open at least 12 months",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Inventory Turnover",
+                    "description": "Cost of goods sold divided by average inventory",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Gross Margin",
+                    "description": "Revenue minus cost of goods sold divided by revenue",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "E-Commerce Revenue %",
+                    "description": "Online sales as percentage of total revenue",
+                    "data_source": "SEC filings"
+                }
+            ]
         },
         {
             "sector": "Energy",
-            "sub_sectors": ["Oil_Gas"],
+            "sub_sectors": ["Oil_Gas", "Renewable_Energy", "Energy_Services"],
             "sources": [
                 {
                     "name": "Deloitte Insights",
@@ -104,7 +516,112 @@
                     "enabled": true
                 }
             ],
-            "peer_tickers": ["XOM", "CVX", "COP", "SLB", "EOG"]
+            "peer_tickers": ["XOM", "CVX", "COP", "SLB", "EOG", "OXY", "PSX", "VLO"],
+            "peer_groups": [
+                {
+                    "sub_sector": "Oil_Gas",
+                    "companies": ["XOM", "CVX", "COP", "EOG", "OXY", "DVN", "PXD"],
+                    "description": "Integrated and independent oil and gas exploration/production companies"
+                },
+                {
+                    "sub_sector": "Renewable_Energy",
+                    "companies": ["NEE", "ENPH", "SEDG", "FSLR", "RUN"],
+                    "description": "Renewable energy producers and solar equipment manufacturers"
+                },
+                {
+                    "sub_sector": "Energy_Services",
+                    "companies": ["SLB", "HAL", "BKR", "FTI", "NOV"],
+                    "description": "Oilfield services and energy infrastructure companies"
+                }
+            ],
+            "scraping_queries": [
+                {
+                    "query": "oil and gas industry outlook OPEC production 2026",
+                    "target_sources": ["Goldman Sachs", "Morgan Stanley"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "energy transition renewable investment analysis",
+                    "target_sources": ["McKinsey", "BCG"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "oil price forecast supply demand balance",
+                    "target_sources": ["JP Morgan", "Goldman Sachs"],
+                    "sector_specific": true
+                },
+                {
+                    "query": "upstream capital expenditure drilling activity",
+                    "target_sources": ["Deloitte"],
+                    "sector_specific": true
+                }
+            ],
+            "competitive_factors": [
+                {
+                    "factor_name": "Reserve Replacement Ratio",
+                    "description": "Proved reserves added relative to production, indicating resource sustainability",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Break-Even Oil Price",
+                    "description": "Oil price needed to cover operating and capital costs",
+                    "importance": "high"
+                },
+                {
+                    "factor_name": "Refining Complexity",
+                    "description": "Nelson Complexity Index measuring refinery capability to process heavier crudes",
+                    "importance": "medium"
+                },
+                {
+                    "factor_name": "ESG Transition Readiness",
+                    "description": "Investment in low-carbon technologies and emissions reduction targets",
+                    "importance": "medium"
+                }
+            ],
+            "industry_media": [
+                {
+                    "name": "Oil & Gas Journal",
+                    "url": "https://www.ogj.com",
+                    "focus_areas": ["upstream", "downstream", "midstream"]
+                },
+                {
+                    "name": "S&P Global Commodity Insights",
+                    "url": "https://www.spglobal.com/commodityinsights",
+                    "focus_areas": ["oil pricing", "refining", "LNG"]
+                },
+                {
+                    "name": "Rigzone",
+                    "url": "https://www.rigzone.com",
+                    "focus_areas": ["drilling", "oilfield services", "offshore"]
+                }
+            ],
+            "key_metrics": [
+                {
+                    "name": "Production Growth",
+                    "description": "Year-over-year oil and gas production volume growth (BOE/d)",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Finding & Development Cost",
+                    "description": "Cost per barrel of oil equivalent to find and develop new reserves",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Free Cash Flow Yield",
+                    "description": "Free cash flow divided by market capitalization",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Debt-to-EBITDA",
+                    "description": "Total debt divided by EBITDA, measuring leverage",
+                    "data_source": "SEC filings"
+                },
+                {
+                    "name": "Upstream Margin",
+                    "description": "Revenue per BOE minus cash operating costs per BOE",
+                    "data_source": "SEC filings"
+                }
+            ]
         }
     ]
 }

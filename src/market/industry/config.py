@@ -8,7 +8,11 @@ The preset file defines per-sector settings including:
 
 - Sub-sector classifications
 - Data source configurations (URLs, tiers, difficulty levels)
-- Peer group ticker symbols
+- Peer group ticker symbols and structured peer group definitions
+- Sector-specific scraping queries for report collection
+- Competitive factors for industry analysis
+- Industry-specific media sources
+- Key financial and operational metrics
 
 Functions
 ---------
@@ -81,6 +85,167 @@ class SourceConfig(BaseModel, frozen=True):
     enabled: bool = True
 
 
+class PeerGroupConfig(BaseModel, frozen=True):
+    """Configuration for a peer group within a sector.
+
+    Defines a group of companies within a specific sub-sector for
+    competitive comparison and industry analysis.
+
+    Parameters
+    ----------
+    sub_sector : str
+        Sub-sector classification (e.g. ``"Semiconductors"``).
+    companies : list[str]
+        List of ticker symbols in the peer group.
+    description : str | None
+        Optional description of the peer group.
+        Defaults to ``None``.
+
+    Examples
+    --------
+    >>> group = PeerGroupConfig(
+    ...     sub_sector="Semiconductors",
+    ...     companies=["NVDA", "AMD", "INTC", "TSM", "AVGO"],
+    ...     description="Major semiconductor manufacturers",
+    ... )
+    >>> group.sub_sector
+    'Semiconductors'
+    """
+
+    sub_sector: str
+    companies: list[str]
+    description: str | None = None
+
+
+class ScrapingQueryConfig(BaseModel, frozen=True):
+    """Configuration for a sector-specific scraping query.
+
+    Defines a search query to be used when scraping industry reports
+    from consulting firms and investment banks.
+
+    Parameters
+    ----------
+    query : str
+        The search query string (e.g. ``"semiconductor industry outlook 2026"``).
+    target_sources : list[str]
+        List of source names to target with this query.
+        Defaults to empty list (all sources).
+    sector_specific : bool
+        Whether this query is sector-specific.
+        Defaults to ``False``.
+
+    Examples
+    --------
+    >>> q = ScrapingQueryConfig(
+    ...     query="semiconductor industry outlook 2026",
+    ...     target_sources=["McKinsey", "BCG"],
+    ...     sector_specific=True,
+    ... )
+    >>> q.query
+    'semiconductor industry outlook 2026'
+    """
+
+    query: str
+    target_sources: list[str] = Field(default_factory=list)
+    sector_specific: bool = False
+
+
+class CompetitiveFactorConfig(BaseModel, frozen=True):
+    """Configuration for a competitive factor within a sector.
+
+    Defines an industry-specific factor used for competitive
+    analysis and positioning assessment.
+
+    Parameters
+    ----------
+    factor_name : str
+        Name of the competitive factor (e.g. ``"R&D Investment"``).
+    description : str
+        Description of what the factor measures.
+    importance : str
+        Importance level: ``"high"``, ``"medium"``, or ``"low"``.
+        Defaults to ``"medium"``.
+
+    Examples
+    --------
+    >>> factor = CompetitiveFactorConfig(
+    ...     factor_name="R&D Investment",
+    ...     description="Annual R&D spending as % of revenue",
+    ...     importance="high",
+    ... )
+    >>> factor.factor_name
+    'R&D Investment'
+    """
+
+    factor_name: str
+    description: str
+    importance: str = "medium"
+
+
+class IndustryMediaConfig(BaseModel, frozen=True):
+    """Configuration for an industry-specific media source.
+
+    Defines a sector-specific publication or website for
+    targeted news and analysis collection.
+
+    Parameters
+    ----------
+    name : str
+        Name of the media source (e.g. ``"SemiWiki"``).
+    url : str
+        Base URL of the media source.
+    focus_areas : list[str]
+        List of topic areas covered by this source.
+        Defaults to empty list.
+
+    Examples
+    --------
+    >>> media = IndustryMediaConfig(
+    ...     name="SemiWiki",
+    ...     url="https://semiwiki.com",
+    ...     focus_areas=["semiconductors", "EDA"],
+    ... )
+    >>> media.name
+    'SemiWiki'
+    """
+
+    name: str
+    url: str
+    focus_areas: list[str] = Field(default_factory=list)
+
+
+class KeyMetricConfig(BaseModel, frozen=True):
+    """Configuration for a key industry metric.
+
+    Defines an important financial or operational metric
+    for tracking sector performance and competitive positioning.
+
+    Parameters
+    ----------
+    name : str
+        Metric name (e.g. ``"Gross Margin"``).
+    description : str
+        Description of the metric and how it is calculated.
+    data_source : str | None
+        Where to obtain the metric data (e.g. ``"SEC filings"``).
+        Defaults to ``None``.
+
+    Examples
+    --------
+    >>> metric = KeyMetricConfig(
+    ...     name="Gross Margin",
+    ...     description="Revenue minus COGS divided by revenue",
+    ...     data_source="SEC filings",
+    ... )
+    >>> metric.name
+    'Gross Margin'
+    """
+
+    name: str
+    description: str
+    data_source: str | None = None
+
+
 class IndustryPreset(BaseModel, frozen=True):
     """Preset configuration for a single industry sector.
 
@@ -95,6 +260,21 @@ class IndustryPreset(BaseModel, frozen=True):
         Data sources configured for this sector.
     peer_tickers : list[str]
         Default peer group ticker symbols for competitive analysis.
+        Defaults to empty list.
+    peer_groups : list[PeerGroupConfig]
+        Structured peer group definitions per sub-sector.
+        Defaults to empty list.
+    scraping_queries : list[ScrapingQueryConfig]
+        Sector-specific scraping queries for report collection.
+        Defaults to empty list.
+    competitive_factors : list[CompetitiveFactorConfig]
+        Key competitive factors for the sector.
+        Defaults to empty list.
+    industry_media : list[IndustryMediaConfig]
+        Sector-specific media sources.
+        Defaults to empty list.
+    key_metrics : list[KeyMetricConfig]
+        Key financial/operational metrics for the sector.
         Defaults to empty list.
 
     Examples
@@ -113,6 +293,11 @@ class IndustryPreset(BaseModel, frozen=True):
     sub_sectors: list[str]
     sources: list[SourceConfig]
     peer_tickers: list[str] = Field(default_factory=list)
+    peer_groups: list[PeerGroupConfig] = Field(default_factory=list)
+    scraping_queries: list[ScrapingQueryConfig] = Field(default_factory=list)
+    competitive_factors: list[CompetitiveFactorConfig] = Field(default_factory=list)
+    industry_media: list[IndustryMediaConfig] = Field(default_factory=list)
+    key_metrics: list[KeyMetricConfig] = Field(default_factory=list)
 
 
 class IndustryPresetsConfig(BaseModel, frozen=True):
@@ -265,8 +450,13 @@ def load_presets(path: Path | None = None) -> IndustryPresetsConfig:
 
 __all__ = [
     "DEFAULT_PRESETS_PATH",
+    "CompetitiveFactorConfig",
+    "IndustryMediaConfig",
     "IndustryPreset",
     "IndustryPresetsConfig",
+    "KeyMetricConfig",
+    "PeerGroupConfig",
+    "ScrapingQueryConfig",
     "SourceConfig",
     "load_presets",
 ]
