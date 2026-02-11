@@ -87,6 +87,7 @@ updated_at: 2026-01-30
 
 ### 金融コンテンツ作成
 - ニュース収集 → `/finance-news-workflow`
+- AI投資バリューチェーン収集 → `/ai-research-collect`
 - トピック提案 → `/finance-suggest-topics`
 - 記事フォルダ作成 → `/new-finance-article`
 - リサーチ実行 → `/finance-research`
@@ -159,6 +160,7 @@ updated_at: 2026-01-30
 | `/finance-edit` | 金融記事の編集ワークフロー（初稿作成→批評→修正） | - |
 | `/finance-full` | 記事作成の全工程を一括実行 | - |
 | `/generate-market-report` | 週次マーケットレポートを自動生成（`--weekly` で週次レポート生成モード） | `generate-market-report` |
+| `/ai-research-collect` | AI投資バリューチェーン収集（77社・10カテゴリ、投資視点要約→Project #44投稿） | `ai-research-workflow` |
 
 ### ドキュメント・その他
 
@@ -247,6 +249,7 @@ updated_at: 2026-01-30
 | `agent-memory` | 会話をまたいで知識を保存・参照 | `remember this`等 |
 | `deep-research` | 金融市場・投資テーマのディープリサーチ | `/finance-research` |
 | `finance-news-workflow` | 金融ニュース収集の4フェーズワークフロー | `/finance-news-workflow` |
+| `ai-research-workflow` | AI投資バリューチェーン収集ワークフロー（Python前処理→投資視点要約→結果集約、10カテゴリ77社対応） | `/ai-research-collect` |
 | `generate-market-report` | 週次マーケットレポート自動生成（データ収集→ニュース検索→レポート作成） | `/generate-market-report` |
 | `index` | CLAUDE.md/README.mdの自動更新 | `/index` |
 | `gemini-search` | Gemini CLIを使用したWeb検索 | `/gemini-search` |
@@ -315,6 +318,12 @@ updated_at: 2026-01-30
 ### 金融ニュース収集エージェント
 
 > 金融ニュース収集の旧オーケストレーター（`finance-news-orchestrator` 等13エージェント）は Agent Teams 移行に伴い廃止済み。現在は `news-article-fetcher` を直接使用。
+
+### AI投資バリューチェーン・トラッキングエージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `ai-research-article-fetcher` | AI企業ブログ/リリースから投資視点4セクション要約を生成しGitHub Issue作成・Project #44登録 |
 
 ### 金融リサーチエージェント
 
@@ -432,6 +441,7 @@ updated_at: 2026-01-30
 - `/commit-and-pr` → `commit-and-pr` → `quality-checker`, `code-simplifier`
 - `/finance-research` → `deep-research` → `research-lead`（Agent Teams）→ 12リサーチエージェント
 - `/generate-market-report` → `generate-market-report` → `weekly-report-lead`（Agent Teams）→ 6チームメイト
+- `/ai-research-collect` → `ai-research-workflow` → `ai-research-article-fetcher`（10カテゴリ並列）
 - `/issue-implement <番号>` → `issue-implement-single` → `api-usage-researcher`(条件付き), `test-writer`, `pydantic-model-designer`, `feature-implementer`, `code-simplifier`, `quality-checker`
 - `/plan-project` → `plan-project` → `project-researcher`, `project-planner`, `project-decomposer`
 - `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`（非推奨）
