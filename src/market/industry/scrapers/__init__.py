@@ -17,6 +17,14 @@ DeloitteScraper
     Scraper for Deloitte Insights.
 PwCScraper
     Scraper for PwC Strategy&.
+InvestmentBankScraper
+    Base class for investment bank report scrapers.
+GoldmanSachsScraper
+    Scraper for Goldman Sachs Insights.
+MorganStanleyScraper
+    Scraper for Morgan Stanley Ideas.
+JPMorganScraper
+    Scraper for JP Morgan Research.
 
 See Also
 --------

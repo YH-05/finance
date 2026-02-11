@@ -9,6 +9,7 @@ types : Pydantic data models (IndustryReport, ScrapingResult, PeerGroup, etc.).
 config : Preset configuration loader for industry-research-presets.json.
 scrapers.base : BaseScraper abstract base class with 2-layer fallback.
 scrapers.consulting : Consulting firm scrapers (McKinsey, BCG, Deloitte, PwC).
+scrapers.investment_bank : Investment bank scrapers (Goldman Sachs, Morgan Stanley, JP Morgan).
 
 Public API
 ----------
@@ -65,6 +66,12 @@ from market.industry.scrapers.consulting import (
     McKinseyScraper,
     PwCScraper,
 )
+from market.industry.scrapers.investment_bank import (
+    GoldmanSachsScraper,
+    InvestmentBankScraper,
+    JPMorganScraper,
+    MorganStanleyScraper,
+)
 from market.industry.types import (
     IndustryReport,
     PeerGroup,
@@ -79,10 +86,14 @@ __all__ = [
     "BaseScraper",
     "ConsultingScraper",
     "DeloitteScraper",
+    "GoldmanSachsScraper",
     "IndustryPreset",
     "IndustryPresetsConfig",
     "IndustryReport",
+    "InvestmentBankScraper",
+    "JPMorganScraper",
     "McKinseyScraper",
+    "MorganStanleyScraper",
     "PeerGroup",
     "PwCScraper",
     "RetryConfig",
