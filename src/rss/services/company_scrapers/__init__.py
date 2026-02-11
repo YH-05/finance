@@ -5,6 +5,7 @@ for collecting corporate blog/news articles from 70+ companies across
 the AI value chain.
 """
 
+from .engine import CompanyScraperEngine
 from .pdf_handler import PdfHandler, find_pdf_links, is_pdf_url
 from .structure_validator import StructureValidator
 from .types import (
@@ -21,6 +22,7 @@ __all__ = [
     "ArticleMetadata",
     "CompanyConfig",
     "CompanyScrapeResult",
+    "CompanyScraperEngine",
     "InvestmentContext",
     "PdfHandler",
     "PdfMetadata",
