@@ -17,6 +17,8 @@ downloaders.pdf_downloader : PDF download with size limiting and deduplication.
 downloaders.report_parser : PDF/HTML text extraction and metadata extraction.
 peer_groups : Peer group definition and retrieval (preset + dynamic via yfinance).
 competitive_analysis : Competitive advantage analysis (dogma.md 12 rules, moat scoring, Porter's 5 Forces).
+collector : Integrated CLI collector for all industry report sources.
+scheduler : APScheduler weekly execution for automated collection.
 
 Public API
 ----------
@@ -44,6 +46,10 @@ ReportParser
     Parser for extracting text and metadata from PDF and HTML documents.
 CompetitiveAnalyzer
     Orchestrator for competitive advantage assessment.
+IndustryCollector
+    CLI orchestrator for collecting industry reports from all sources.
+IndustryScheduler
+    APScheduler-based weekly scheduler for automated collection.
 
 Configuration
 -------------
@@ -71,6 +77,11 @@ market.etfcom : ETF.com scraping module (reference implementation for scraping p
 
 from market.industry.api_clients.bls import BLSClient
 from market.industry.api_clients.census import CensusClient
+from market.industry.collector import (
+    CollectionResult,
+    CollectionStats,
+    IndustryCollector,
+)
 from market.industry.competitive_analysis import (
     CompetitiveAnalyzer,
     evaluate_advantage_claim,
@@ -90,6 +101,7 @@ from market.industry.peer_groups import (
     get_peer_group,
     get_preset_peer_group,
 )
+from market.industry.scheduler import IndustryScheduler
 from market.industry.scrapers.base import BaseScraper
 from market.industry.scrapers.consulting import (
     BCGScraper,
@@ -133,6 +145,8 @@ __all__ = [
     "BLSClient",
     "BaseScraper",
     "CensusClient",
+    "CollectionResult",
+    "CollectionStats",
     "CompetitiveAnalyzer",
     "ConfidenceLevel",
     "ConsultingScraper",
@@ -140,9 +154,11 @@ __all__ = [
     "DogmaRuleResult",
     "DownloadResult",
     "GoldmanSachsScraper",
+    "IndustryCollector",
     "IndustryPreset",
     "IndustryPresetsConfig",
     "IndustryReport",
+    "IndustryScheduler",
     "InvestmentBankScraper",
     "JPMorganScraper",
     "McKinseyScraper",
