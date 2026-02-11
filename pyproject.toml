@@ -45,6 +45,7 @@ dependencies = [
     "edgartools>=3.0.0",
     "tiktoken>=0.7.0",
     "pymupdf>=1.26.7",
+    "cssselect>=1.4.0",
 ]
 [project.optional-dependencies]
 dev = [
