@@ -10,6 +10,8 @@ config : Preset configuration loader for industry-research-presets.json.
 scrapers.base : BaseScraper abstract base class with 2-layer fallback.
 scrapers.consulting : Consulting firm scrapers (McKinsey, BCG, Deloitte, PwC).
 scrapers.investment_bank : Investment bank scrapers (Goldman Sachs, Morgan Stanley, JP Morgan).
+api_clients.bls : BLS API v2.0 client for employment/wage/productivity data.
+api_clients.census : Census Bureau API client for international trade data.
 
 Public API
 ----------
@@ -27,6 +29,10 @@ SourceTier
     Classification tier for industry report sources.
 BaseScraper
     Abstract base class for industry report scrapers.
+BLSClient
+    Async client for the BLS Public Data API v2.0.
+CensusClient
+    Async client for the Census Bureau International Trade API.
 
 Configuration
 -------------
@@ -52,6 +58,8 @@ See Also
 market.etfcom : ETF.com scraping module (reference implementation for scraping patterns).
 """
 
+from market.industry.api_clients.bls import BLSClient
+from market.industry.api_clients.census import CensusClient
 from market.industry.config import (
     IndustryPreset,
     IndustryPresetsConfig,
@@ -83,7 +91,9 @@ from market.industry.types import (
 
 __all__ = [
     "BCGScraper",
+    "BLSClient",
     "BaseScraper",
+    "CensusClient",
     "ConsultingScraper",
     "DeloitteScraper",
     "GoldmanSachsScraper",
