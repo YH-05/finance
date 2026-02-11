@@ -9,6 +9,9 @@ including:
 - Peer group definition (PeerGroup)
 - Scraping configuration (ScrapingConfig)
 - Retry configuration (RetryConfig)
+- Download result container (DownloadResult)
+- Report metadata (ReportMetadata)
+- Parsed content container (ParsedContent)
 
 All model classes use ``frozen=True`` to ensure immutability, following the
 same pattern as ``market.etfcom.types`` and ``market.nasdaq.types``.
@@ -272,12 +275,135 @@ class RetryConfig(BaseModel, frozen=True):
 
 
 # =============================================================================
+# Download & Parsing Models
+# =============================================================================
+
+
+class DownloadResult(BaseModel, frozen=True):
+    """Result of a PDF download operation.
+
+    Encapsulates the outcome of downloading a PDF file, including
+    file location, content hash for deduplication, and size information.
+
+    Parameters
+    ----------
+    success : bool
+        Whether the download succeeded.
+    url : str
+        The URL that was downloaded.
+    file_path : str | None
+        Local file path where the PDF was saved.
+        ``None`` if the download failed.
+    content_hash : str | None
+        SHA-256 hex digest of the downloaded content.
+        Used for deduplication. ``None`` if the download failed.
+    file_size : int | None
+        Size of the downloaded file in bytes. ``None`` if the download failed.
+    is_duplicate : bool
+        Whether this content was already downloaded (hash match).
+        Defaults to ``False``.
+    error_message : str | None
+        Error description if the download failed. Defaults to ``None``.
+
+    Examples
+    --------
+    >>> result = DownloadResult(
+    ...     success=True,
+    ...     url="https://example.com/report.pdf",
+    ...     file_path="/data/raw/industry_reports/report.pdf",
+    ...     content_hash="a1b2c3...",
+    ...     file_size=1048576,
+    ... )
+    >>> result.success
+    True
+    """
+
+    success: bool
+    url: str
+    file_path: str | None = None
+    content_hash: str | None = None
+    file_size: int | None = None
+    is_duplicate: bool = False
+    error_message: str | None = None
+
+
+class ReportMetadata(BaseModel, frozen=True):
+    """Metadata extracted from a report document.
+
+    Holds document-level metadata such as title, author, and publication
+    date. Fields are optional since not all documents provide metadata.
+
+    Parameters
+    ----------
+    title : str | None
+        Document title. Defaults to ``None``.
+    author : str | None
+        Document author or organisation. Defaults to ``None``.
+    date : datetime | None
+        Publication or creation date. Defaults to ``None``.
+
+    Examples
+    --------
+    >>> from datetime import datetime, timezone
+    >>> meta = ReportMetadata(
+    ...     title="Semiconductor Outlook",
+    ...     author="McKinsey",
+    ...     date=datetime(2026, 1, 15, tzinfo=timezone.utc),
+    ... )
+    >>> meta.title
+    'Semiconductor Outlook'
+    """
+
+    title: str | None = None
+    author: str | None = None
+    date: datetime | None = None
+
+
+class ParsedContent(BaseModel, frozen=True):
+    """Container for parsed report content.
+
+    Holds extracted text, metadata, and parsing information from a
+    PDF or HTML document.
+
+    Parameters
+    ----------
+    text : str
+        Extracted text content. Empty string if extraction yielded
+        no text.
+    source_format : str
+        Format of the source document (``"pdf"`` or ``"html"``).
+    metadata : ReportMetadata | None
+        Extracted document metadata. Defaults to ``None``.
+    page_count : int | None
+        Number of pages (PDF only). Defaults to ``None``.
+
+    Examples
+    --------
+    >>> content = ParsedContent(
+    ...     text="The semiconductor industry...",
+    ...     source_format="pdf",
+    ...     page_count=42,
+    ... )
+    >>> content.source_format
+    'pdf'
+    """
+
+    text: str
+    source_format: str
+    metadata: ReportMetadata | None = None
+    page_count: int | None = None
+
+
+# =============================================================================
 # Module exports
 # =============================================================================
 
 __all__ = [
+    "DownloadResult",
     "IndustryReport",
+    "ParsedContent",
     "PeerGroup",
+    "ReportMetadata",
     "RetryConfig",
     "ScrapingConfig",
     "ScrapingResult",

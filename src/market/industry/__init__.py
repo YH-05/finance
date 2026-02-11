@@ -12,6 +12,8 @@ scrapers.consulting : Consulting firm scrapers (McKinsey, BCG, Deloitte, PwC).
 scrapers.investment_bank : Investment bank scrapers (Goldman Sachs, Morgan Stanley, JP Morgan).
 api_clients.bls : BLS API v2.0 client for employment/wage/productivity data.
 api_clients.census : Census Bureau API client for international trade data.
+downloaders.pdf_downloader : PDF download with size limiting and deduplication.
+downloaders.report_parser : PDF/HTML text extraction and metadata extraction.
 
 Public API
 ----------
@@ -33,6 +35,10 @@ BLSClient
     Async client for the BLS Public Data API v2.0.
 CensusClient
     Async client for the Census Bureau International Trade API.
+PDFDownloader
+    Async PDF downloader with size limits and hash-based deduplication.
+ReportParser
+    Parser for extracting text and metadata from PDF and HTML documents.
 
 Configuration
 -------------
@@ -66,6 +72,8 @@ from market.industry.config import (
     SourceConfig,
     load_presets,
 )
+from market.industry.downloaders.pdf_downloader import PDFDownloader
+from market.industry.downloaders.report_parser import ReportParser
 from market.industry.scrapers.base import BaseScraper
 from market.industry.scrapers.consulting import (
     BCGScraper,
@@ -81,8 +89,11 @@ from market.industry.scrapers.investment_bank import (
     MorganStanleyScraper,
 )
 from market.industry.types import (
+    DownloadResult,
     IndustryReport,
+    ParsedContent,
     PeerGroup,
+    ReportMetadata,
     RetryConfig,
     ScrapingConfig,
     ScrapingResult,
@@ -96,6 +107,7 @@ __all__ = [
     "CensusClient",
     "ConsultingScraper",
     "DeloitteScraper",
+    "DownloadResult",
     "GoldmanSachsScraper",
     "IndustryPreset",
     "IndustryPresetsConfig",
@@ -104,8 +116,12 @@ __all__ = [
     "JPMorganScraper",
     "McKinseyScraper",
     "MorganStanleyScraper",
+    "PDFDownloader",
+    "ParsedContent",
     "PeerGroup",
     "PwCScraper",
+    "ReportMetadata",
+    "ReportParser",
     "RetryConfig",
     "ScrapingConfig",
     "ScrapingResult",
