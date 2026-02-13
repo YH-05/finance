@@ -11,6 +11,7 @@ import requests
 import seaborn as sns
 from bs4 import BeautifulSoup
 
+from utils_core.errors import log_and_reraise
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -111,37 +112,88 @@ class TSAPassengerDataCollector:
             logger.error("Unexpected error during TSA scraping", url=url, exc_info=True)
             raise
 
-    def display_data_info(self, df: pd.DataFrame):
-        """
-        データフレームの基本情報を表示する。
+    def get_data_summary(self, df: pd.DataFrame | None) -> dict[str, str | int | float]:
+        """データフレームのサマリーを辞書として返す。
 
         Parameters
         ----------
-        df : pd.DataFrame
-            情報を表示するデータフレーム。
-        """
-        if df is not None:
-            logger.debug(
-                "TSA passenger data summary",
-                rows=len(df),
-                date_min=df["Date"].min().strftime("%Y/%m/%d"),
-                date_max=df["Date"].max().strftime("%Y/%m/%d"),
-            )
-            print("=== TSA旅客数データ ===")
-            print(
-                f"データ期間: {df['Date'].min().strftime('%Y/%m/%d')} - {df['Date'].max().strftime('%Y/%m/%d')}"
-            )
-            print(f"データ件数: {len(df)}件")
-            print(
-                f"最大旅客数: {df['Numbers'].max():,}人 ({df.loc[df['Numbers'].idxmax(), 'Date'].strftime('%Y/%m/%d')})"
-            )
+        df : pd.DataFrame | None
+            サマリーを生成するデータフレーム。
+            ``Date`` (datetime) と ``Numbers`` (int) カラムが必須。
 
-            print(
-                f"最小旅客数: {df['Numbers'].min():,}人 ({df.loc[df['Numbers'].idxmin(), 'Date'].strftime('%Y/%m/%d')})"
-            )
-            print(f"平均旅客数: {df['Numbers'].mean():.0f}人")
-            print("\n=== 最新10件のデータ ===")
-            print(df.head(10).to_string(index=False))
+        Returns
+        -------
+        dict[str, str | int | float]
+            以下のキーを含むサマリー辞書:
+            - date_min: 最小日付 (YYYY/MM/DD)
+            - date_max: 最大日付 (YYYY/MM/DD)
+            - row_count: データ件数
+            - max_passengers: 最大旅客数
+            - max_passengers_date: 最大旅客数の日付 (YYYY/MM/DD)
+            - min_passengers: 最小旅客数
+            - min_passengers_date: 最小旅客数の日付 (YYYY/MM/DD)
+            - avg_passengers: 平均旅客数
+
+        Raises
+        ------
+        TypeError
+            df が None の場合。
+        ValueError
+            df が空、または必須カラムが不足している場合。
+        """
+        if df is None:
+            msg = "DataFrame must not be None"
+            raise TypeError(msg)
+
+        if df.empty:
+            msg = "DataFrame must not be empty"
+            raise ValueError(msg)
+
+        date_min = df["Date"].min().strftime("%Y/%m/%d")
+        date_max = df["Date"].max().strftime("%Y/%m/%d")
+        max_idx = df["Numbers"].idxmax()
+        min_idx = df["Numbers"].idxmin()
+
+        summary: dict[str, str | int | float] = {
+            "date_min": date_min,
+            "date_max": date_max,
+            "row_count": len(df),
+            "max_passengers": int(df["Numbers"].max()),
+            "max_passengers_date": df.loc[max_idx, "Date"].strftime("%Y/%m/%d"),
+            "min_passengers": int(df["Numbers"].min()),
+            "min_passengers_date": df.loc[min_idx, "Date"].strftime("%Y/%m/%d"),
+            "avg_passengers": float(df["Numbers"].mean()),
+        }
+
+        logger.info(
+            "TSA passenger data summary",
+            **{k: v for k, v in summary.items()},
+        )
+
+        return summary
+
+    def format_summary(self, summary: dict[str, str | int | float]) -> str:
+        """サマリー辞書を整形された文字列に変換する。
+
+        Parameters
+        ----------
+        summary : dict[str, object]
+            ``get_data_summary`` で生成されたサマリー辞書。
+
+        Returns
+        -------
+        str
+            整形されたサマリー文字列。
+        """
+        lines = [
+            "=== TSA旅客数データ ===",
+            f"データ期間: {summary['date_min']} - {summary['date_max']}",
+            f"データ件数: {summary['row_count']}件",
+            f"最大旅客数: {int(summary['max_passengers']):,}人 ({summary['max_passengers_date']})",
+            f"最小旅客数: {int(summary['min_passengers']):,}人 ({summary['min_passengers_date']})",
+            f"平均旅客数: {int(summary['avg_passengers'])}人",
+        ]
+        return "\n".join(lines)
 
     def save_to_csv(self, df: pd.DataFrame, filename: str = "tsa_passenger_data.csv"):
         """
@@ -154,12 +206,9 @@ class TSAPassengerDataCollector:
         filename : str, default "tsa_passenger_data.csv"
             保存するファイル名。
         """
-        try:
+        with log_and_reraise(logger, "save CSV", context={"filename": filename}):
             df.to_csv(filename, index=False)
             logger.info("Data saved to CSV", filename=filename, rows=len(df))
-        except Exception:
-            logger.error("Failed to save CSV", filename=filename, exc_info=True)
-            raise
 
     def store_to_tsa_database(
         self, df: pd.DataFrame, db_path: str | Path, table_name: str = "tsa_passenger"
@@ -193,7 +242,7 @@ class TSAPassengerDataCollector:
                 )
                 # 新しいデータのうち、DBに存在しない日付の行のみを抽出
                 df["Date_str"] = df["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
-                df_to_add = df[~df["Date_str"].isin(list(existing_dates))].drop(
+                df_to_add = df[~df["Date_str"].isin(existing_dates)].drop(  # pyright: ignore[reportArgumentType]  # pandas isin() accepts set
                     columns=["Date_str"]
                 )
             else:

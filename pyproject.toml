@@ -36,7 +36,7 @@ dependencies = [
     "nbformat>=5.10.4",
     "seaborn>=0.13.2",
     "lxml>=6.0.2",
-    "protobuf>=6.33.4",
+    "protobuf>=6.33.5",
     "pretty-errors",
     "trafilatura>=2.0.0",
     "anthropic>=0.76.0",
@@ -44,6 +44,8 @@ dependencies = [
     # SEC EDGAR
     "edgartools>=3.0.0",
     "tiktoken>=0.7.0",
+    "pymupdf>=1.26.7",
+    "cssselect>=1.4.0",
 ]
 [project.optional-dependencies]
 dev = [
@@ -216,11 +218,6 @@ reportInvalidStubStatement = "none"
 reportIncompleteStub = "none"
 reportUnsupportedDunderAll = "none"
 
-[tool.pip-audit]
-# protobuf CVE-2026-0994: yfinanceの依存関係で修正バージョンが未リリース
-# 対象: protobuf 6.33.4
-ignore-vulns = ["CVE-2026-0994"]
-
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
 skips = ["B101", "B311", "B404", "B603", "B607", "B608"]
@@ -258,6 +255,7 @@ dev = [
     "filelock>=3.20.3",
     "hypothesis>=6.150.2",
     "marimo>=0.19.2",
+    "pip>=26.0",
     "pip-audit>=2.10.0",
     "pre-commit>=4.5.1",
     "pyright>=1.1.403",

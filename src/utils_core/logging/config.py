@@ -16,6 +16,7 @@ import functools
 import inspect
 import logging
 import os
+import stat
 import sys
 import time
 from collections.abc import Iterator
@@ -38,6 +39,30 @@ from ..settings import (
 from ..types import LogFormat, LogLevel
 
 _initialized = False
+
+
+def _create_secure_log_file(log_file: Path) -> None:
+    """Create log file atomically with secure permissions (CWE-732, TOCTOU).
+
+    Uses os.open() with O_EXCL flag for atomic exclusive creation at 0o600,
+    completely eliminating the TOCTOU window. If the file already exists,
+    catches FileExistsError and corrects permissions via chmod.
+
+    Parameters
+    ----------
+    log_file : Path
+        Path to the log file to create or secure
+    """
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        fd = os.open(
+            log_file,
+            os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_APPEND,
+            stat.S_IRUSR | stat.S_IWUSR,  # 0o600
+        )
+        os.close(fd)
+    except FileExistsError:
+        log_file.chmod(0o600)
 
 
 def _get_shared_processors() -> list[Any]:
@@ -395,7 +420,8 @@ def setup_logging(
 
     # ファイルハンドラーを追加（指定された場合）
     if final_log_file:
-        final_log_file.parent.mkdir(parents=True, exist_ok=True)
+        # TOCTOU対策: FileHandler作成前に安全なパーミッションでファイルを作成（CWE-732）
+        _create_secure_log_file(final_log_file)
 
         existing_file_handlers = [
             h

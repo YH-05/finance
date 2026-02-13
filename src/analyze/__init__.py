@@ -63,6 +63,7 @@ from analyze.technical import (
     SMAParams,
     VolatilityParams,
 )
+from analyze.types import TickerInfo
 
 __all__ = [
     "RETURN_PERIODS",
@@ -84,6 +85,7 @@ __all__ = [
     "RSIParams",
     "ReturnParams",
     "SMAParams",
+    "TickerInfo",
     "VolatilityParams",
     "analyze_market_data",
     "calculate_multi_period_returns",

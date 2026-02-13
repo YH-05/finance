@@ -352,11 +352,10 @@ class SectionExtractor:
                     cache_key=cache_key,
                     text_length=len(section_text),
                 )
-            except Exception as e:
+            except Exception:
                 logger.warning(
                     "Failed to save section text to cache",
                     section_key=section_key,
-                    error=str(e),
                     exc_info=True,
                 )
 

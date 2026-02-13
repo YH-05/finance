@@ -26,6 +26,7 @@ from edgar.config import SEC_EDGAR_IDENTITY_ENV
 from edgar.errors import EdgarError, FilingNotFoundError
 from edgar.fetcher import EdgarFetcher
 from edgar.types import FilingType
+from tests.edgar.integration.conftest import get_accession_number
 
 # Apple CIK for real API tests
 APPLE_CIK = "0000320193"
@@ -260,10 +261,7 @@ class TestFetcherRealAPI:
         assert len(filings) <= 2, f"Expected at most 2 filings, got {len(filings)}"
 
         for filing in filings:
-            # edgartools Filing objects have an accession_no or accession_number attr
-            accession = getattr(filing, "accession_no", None) or getattr(
-                filing, "accession_number", None
-            )
+            accession = get_accession_number(filing)
             assert accession is not None, "Filing should have an accession number"
             assert len(str(accession)) > 0, "Accession number should be non-empty"
 
@@ -282,9 +280,7 @@ class TestFetcherRealAPI:
         assert len(filings) <= 2, f"Expected at most 2 filings, got {len(filings)}"
 
         for filing in filings:
-            accession = getattr(filing, "accession_no", None) or getattr(
-                filing, "accession_number", None
-            )
+            accession = get_accession_number(filing)
             assert accession is not None, "Filing should have an accession number"
 
     @requires_real_api
@@ -301,9 +297,7 @@ class TestFetcherRealAPI:
         assert latest is not None, "Expected a latest 10-K filing for Apple"
 
         # The filing should have an accession number
-        accession = getattr(latest, "accession_no", None) or getattr(
-            latest, "accession_number", None
-        )
+        accession = get_accession_number(latest)
         assert accession is not None, "Latest filing should have an accession number"
 
         # The filing should have a form type attribute

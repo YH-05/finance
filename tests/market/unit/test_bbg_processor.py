@@ -221,8 +221,11 @@ class TestBloombergDataProcessorLogging:
 
         with patch("market.bloomberg_processor.logger") as mock_logger:
             processor.fetch(symbols=["AAPL"])
-            # Verify logging was called
-            assert mock_logger.debug.called or mock_logger.info.called
+            # Verify structured log context: symbols kwarg must be present
+            mock_logger.debug.assert_called()
+            first_call_kwargs = mock_logger.debug.call_args_list[0].kwargs
+            assert "symbols" in first_call_kwargs
+            assert first_call_kwargs["symbols"] == ["AAPL"]
 
     def test_正常系_validateでログが出力される(self) -> None:
         processor = BloombergDataProcessor()
@@ -232,8 +235,13 @@ class TestBloombergDataProcessorLogging:
 
         with patch("market.bloomberg_processor.logger") as mock_logger:
             processor.validate(df)
-            # Verify logging was called
-            assert mock_logger.debug.called or mock_logger.info.called
+            # Verify structured log context: row_count and columns kwargs must be present
+            mock_logger.debug.assert_called()
+            first_call_kwargs = mock_logger.debug.call_args_list[0].kwargs
+            assert "row_count" in first_call_kwargs
+            assert first_call_kwargs["row_count"] == 1
+            assert "columns" in first_call_kwargs
+            assert set(first_call_kwargs["columns"]) == {"symbol", "date", "price"}
 
 
 class TestBloombergDataProcessorCollectMethod:

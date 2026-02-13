@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-01-30
+updated_at: 2026-02-11
 ---
 
 # finance - 金融市場分析・コンテンツ発信支援ライブラリ
@@ -87,9 +87,11 @@ updated_at: 2026-01-30
 
 ### 金融コンテンツ作成
 - ニュース収集 → `/finance-news-workflow`
+- AI投資バリューチェーン収集 → `/ai-research-collect`
 - トピック提案 → `/finance-suggest-topics`
 - 記事フォルダ作成 → `/new-finance-article`
 - リサーチ実行 → `/finance-research`
+- 個別銘柄分析 → `/dr-stock`
 - 全工程一括 → `/finance-full`
 
 ### 分析・改善
@@ -158,7 +160,9 @@ updated_at: 2026-01-30
 | `/finance-research` | 金融記事のリサーチワークフロー（データ収集→分析→検証→可視化） | `deep-research` |
 | `/finance-edit` | 金融記事の編集ワークフロー（初稿作成→批評→修正） | - |
 | `/finance-full` | 記事作成の全工程を一括実行 | - |
+| `/dr-stock` | 個別銘柄の包括的分析（株価・財務・SEC Filings・業界データ収集→クロス検証→レポート生成） | `dr-stock` |
 | `/generate-market-report` | 週次マーケットレポートを自動生成（`--weekly` で週次レポート生成モード） | `generate-market-report` |
+| `/ai-research-collect` | AI投資バリューチェーン収集（77社・10カテゴリ、投資視点要約→Project #44投稿） | `ai-research-workflow` |
 
 ### ドキュメント・その他
 
@@ -246,7 +250,9 @@ updated_at: 2026-01-30
 | `workflow-expert` | ワークフロー設計とマルチエージェント連携 | プロアクティブ |
 | `agent-memory` | 会話をまたいで知識を保存・参照 | `remember this`等 |
 | `deep-research` | 金融市場・投資テーマのディープリサーチ | `/finance-research` |
+| `dr-stock` | 個別銘柄の包括的分析（4並列データ収集→クロス検証→深掘り分析→レポート生成） | `/dr-stock` |
 | `finance-news-workflow` | 金融ニュース収集の4フェーズワークフロー | `/finance-news-workflow` |
+| `ai-research-workflow` | AI投資バリューチェーン収集ワークフロー（Python前処理→投資視点要約→結果集約、10カテゴリ77社対応） | `/ai-research-collect` |
 | `generate-market-report` | 週次マーケットレポート自動生成（データ収集→ニュース検索→レポート作成） | `/generate-market-report` |
 | `index` | CLAUDE.md/README.mdの自動更新 | `/index` |
 | `gemini-search` | Gemini CLIを使用したWeb検索 | `/gemini-search` |
@@ -316,6 +322,12 @@ updated_at: 2026-01-30
 
 > 金融ニュース収集の旧オーケストレーター（`finance-news-orchestrator` 等13エージェント）は Agent Teams 移行に伴い廃止済み。現在は `news-article-fetcher` を直接使用。
 
+### AI投資バリューチェーン・トラッキングエージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `ai-research-article-fetcher` | AI企業ブログ/リリースから投資視点4セクション要約を生成しGitHub Issue作成・Project #44登録 |
+
 ### 金融リサーチエージェント
 
 | エージェント | 説明 |
@@ -374,15 +386,16 @@ updated_at: 2026-01-30
 |--------------|------|
 | `dr-orchestrator` | ディープリサーチワークフローの全体制御を行うオーケストレーター |
 | `dr-macro-analyzer` | マクロ経済分析（経済指標・金融政策・市場影響） |
+| `dr-stock-lead` | dr-stockワークフローのAgent Teamsリーダー（8チームメイトを5フェーズで制御） |
 | `dr-stock-analyzer` | 個別銘柄の深掘り分析（財務・バリュエーション・カタリスト） |
 | `dr-sector-analyzer` | セクター比較分析（ローテーション・銘柄選定） |
 | `dr-theme-analyzer` | テーマ投資分析（バリューチェーン・投資機会） |
-| `dr-source-aggregator` | マルチソースからデータを並列収集し統合 |
-| `dr-cross-validator` | 複数ソースのデータを照合し主張の一貫性を検証 |
+| `dr-source-aggregator` | Phase 1で収集済みの4ファイルを統合しraw-data.jsonを生成 |
+| `dr-cross-validator` | 複数ソースのデータを照合し主張の一貫性を検証、信頼度スコアを付与 |
 | `dr-bias-detector` | データソースとコンテンツのバイアスを検出・分析 |
-| `dr-confidence-scorer` | データポイントと主張の信頼度スコアを算出 |
 | `dr-report-generator` | 分析結果から形式別レポートを生成 |
 | `dr-visualizer` | 分析結果を可視化しチャート・図表を生成 |
+| `industry-researcher` | 業界ポジション・競争優位性調査（プリセット収集・dogma.md評価） |
 
 ### 設計・作成支援エージェント
 
@@ -405,14 +418,13 @@ updated_at: 2026-01-30
 | パッケージ | 説明 | 主な機能 |
 |------------|------|----------|
 | `database` | コアインフラパッケージ | SQLite/DuckDB接続、構造化ロギング、日付ユーティリティ |
-| `market` | 市場データ取得パッケージ | yfinance連携、FRED連携、Bloomberg連携、キャッシュ機能 |
+| `market` | 市場データ取得パッケージ | yfinance連携、FRED連携、Bloomberg連携、キャッシュ機能、業界データ収集（market.industry） |
 | `edgar` | SEC Filings抽出パッケージ | edgartoolsラッパー、テキスト・セクション抽出、並列処理、キャッシュ |
 | `analyze` | 市場データ分析パッケージ | テクニカル分析、統計分析、セクター分析、可視化 |
 | `rss` | RSSフィード管理パッケージ | フィード監視、記事抽出、MCP統合、キーワード検索 |
 | `factor` | ファクター投資・分析パッケージ | バリュー/モメンタム/クオリティ/サイズ/マクロファクター |
 | `strategy` | 投資戦略パッケージ | リスク計算、ポートフォリオ管理、リバランス分析 |
 | `news` | ニュース処理パイプライン | ニュース収集、フィルタリング、GitHub投稿 |
-| `market_analysis` | 市場分析統合モジュール | 分析API、エクスポート、可視化 |
 | `utils_core` | 共通ユーティリティ | ロギング設定 |
 
 ---
@@ -430,8 +442,10 @@ updated_at: 2026-01-30
 ### コマンド → スキル → エージェント
 
 - `/commit-and-pr` → `commit-and-pr` → `quality-checker`, `code-simplifier`
+- `/dr-stock` → `dr-stock` → `dr-stock-lead`（Agent Teams）→ 8チームメイト（market-data, sec-filings, web, industry-researcher, source-aggregator, cross-validator, stock-analyzer, report-generator）
 - `/finance-research` → `deep-research` → `research-lead`（Agent Teams）→ 12リサーチエージェント
 - `/generate-market-report` → `generate-market-report` → `weekly-report-lead`（Agent Teams）→ 6チームメイト
+- `/ai-research-collect` → `ai-research-workflow` → `ai-research-article-fetcher`（10カテゴリ並列）
 - `/issue-implement <番号>` → `issue-implement-single` → `api-usage-researcher`(条件付き), `test-writer`, `pydantic-model-designer`, `feature-implementer`, `code-simplifier`, `quality-checker`
 - `/plan-project` → `plan-project` → `project-researcher`, `project-planner`, `project-decomposer`
 - `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`（非推奨）
@@ -462,21 +476,20 @@ updated_at: 2026-01-30
 finance/
 ├── .claude/                    # Claude Code 設定
 │   ├── agents/                 # サブエージェント定義（100個）
-│   │   └── deep-research/      # ディープリサーチエージェント群（11個）
+│   │   └── deep-research/      # ディープリサーチエージェント群（13個）
 │   ├── commands/               # スラッシュコマンド（20個）
 │   ├── rules/                  # 共有ルール（規約詳細）
 │   └── skills/                 # スキル定義（52個）
 │
 ├── src/                        # ソースコード
 │   ├── database/               # コアインフラ（DB, utils, logging）
-│   ├── market/                 # 市場データ取得（yfinance, FRED, Bloomberg）
+│   ├── market/                 # 市場データ取得（yfinance, FRED, Bloomberg, 業界データ）
 │   ├── edgar/                  # SEC Filings抽出（edgartools, テキスト抽出）
 │   ├── analyze/                # 市場分析（テクニカル、統計、セクター）
 │   ├── rss/                    # RSSフィード監視・記事抽出
 │   ├── factor/                 # ファクター分析（バリュー、モメンタム等）
 │   ├── strategy/               # 投資戦略・リスク管理
 │   ├── news/                   # ニュース処理パイプライン
-│   ├── market_analysis/        # 市場分析統合モジュール
 │   └── utils_core/             # 共通ユーティリティ
 │
 ├── tests/                      # テストスイート

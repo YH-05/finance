@@ -70,8 +70,7 @@ Bash ツールを使用して Python コードを実行：
 
 ```bash
 python -c "
-from market_analysis.core.yfinance_fetcher import YFinanceFetcher
-from market_analysis.types import FetchOptions, Interval
+from market.yfinance import YFinanceFetcher, FetchOptions, Interval
 import json
 from datetime import datetime
 
@@ -116,8 +115,8 @@ print(json.dumps(output, indent=2))
 
 ```bash
 python -c "
-from market_analysis.core.fred_fetcher import FREDFetcher
-from market_analysis.types import FetchOptions, Interval
+from market.fred import FREDFetcher
+from market.fred.types import FetchOptions
 import json
 
 fetcher = FREDFetcher()
@@ -125,8 +124,6 @@ options = FetchOptions(
     symbols=['GDP', 'CPIAUCSL'],  # 入力パラメータから置換
     start_date='2024-01-01',
     end_date='2025-01-11',
-    interval=Interval.DAILY,
-    use_cache=True
 )
 results = fetcher.fetch(options)
 
