@@ -261,9 +261,108 @@ Start
                   End
 ```
 
+### 3.4 ワークフロー全体図
+
+```mermaid
+graph TD
+    Start["Start<br/>analyst_report, ticker, company_name"]
+
+    KR1["知識検索①<br/>KB4（10-K）"]
+    LLM1["LLM①<br/>主張抽出"]
+
+    KR2["知識検索②<br/>KB1 + KB3"]
+    LLM2["LLM②<br/>ルール適用"]
+
+    KR3["知識検索③<br/>KB4（10-K）"]
+    LLM3["LLM③<br/>ファクトチェック"]
+
+    KR4["知識検索④<br/>KB2（パターン集）"]
+    LLM4["LLM④<br/>検証（JSON）"]
+
+    LLM5["LLM⑤<br/>レポート生成"]
+    LLM6["LLM⑥<br/>レポート検証"]
+
+    End["End<br/>final_report, structured_json"]
+
+    Start -->|company_name| KR1
+    Start -->|analyst_report, ticker, company_name| LLM1
+    KR1 -->|10-K参考情報| LLM1
+
+    LLM1 -->|主張JSON| KR2
+    LLM1 -->|主張JSON| LLM2
+    KR2 -->|ルール+評価例| LLM2
+
+    LLM2 -->|評価済みJSON| KR3
+    LLM2 -->|評価済みJSON| LLM3
+    KR3 -->|10-K参考情報| LLM3
+
+    LLM3 -->|検証済みJSON| KR4
+    LLM3 -->|検証済みJSON| LLM4
+    KR4 -->|パターン| LLM4
+
+    LLM4 -->|確定JSON| LLM5
+    LLM4 -->|確定JSON| LLM6
+    LLM4 -->|structured_json| End
+
+    LLM5 -->|レポート| LLM6
+    LLM6 -->|final_report| End
+```
+
 ---
 
 ## 4. ノード接続
+
+### 4.0 接続パターンの概要
+
+各ステップは共通の接続パターンに従う。
+
+#### パターン1: 知識検索 → LLMノード（横の接続）
+
+知識検索の結果をLLMの**コンテキスト変数**として渡す。
+
+```mermaid
+graph LR
+    KR["知識検索"] -->|結果をプロンプト内の変数に渡す| LLM["LLMノード"]
+```
+
+| 知識検索 | 渡し先 | プロンプト内の変数 |
+|---------|--------|-------------------|
+| 知識検索① | LLM① User Prompt | `{{知識検索①の結果}}` |
+| 知識検索② | LLM② System Prompt | `{{知識検索②の結果}}` |
+| 知識検索③ | LLM③ System Prompt | `{{知識検索③の結果}}` |
+| 知識検索④ | LLM④ System Prompt | `{{知識検索④の結果}}` |
+
+#### パターン2: LLM → 次のLLM（縦の接続）
+
+前のLLMの出力を次のLLMの**User Prompt**に変数として渡す。
+
+```mermaid
+graph TD
+    LLM_prev["前のLLM"] -->|出力をUser Promptの変数に渡す| LLM_next["次のLLM"]
+```
+
+| 出力元 | 渡し先 | User Prompt内の変数 |
+|-------|--------|-------------------|
+| LLM① | LLM② | `{{LLM①の出力}}` |
+| LLM② | LLM③ | `{{LLM②の出力}}` |
+| LLM③ | LLM④ | `{{LLM③の出力}}` |
+| LLM④ | LLM⑤ | `{{LLM④の出力}}` |
+| LLM④ + LLM⑤ | LLM⑥ | `{{LLM④の出力}}` + `{{LLM⑤の出力}}` |
+
+#### パターン3: LLM → 知識検索のクエリ（縦の接続）
+
+前のLLMの出力を次の知識検索の**クエリ変数**に渡す。
+
+```mermaid
+graph TD
+    LLM_prev["前のLLM"] -->|出力をクエリ変数に渡す| KR_next["次の知識検索"]
+```
+
+| 出力元 | 渡し先 | クエリ変数 |
+|-------|--------|----------|
+| LLM① | 知識検索② | 各claimテキスト |
+| LLM② | 知識検索③ | factual_claimのテキスト |
+| LLM③ | 知識検索④ | 各claimのテキスト |
 
 ### 4.1 知識検索①＋LLM①: 主張抽出
 
@@ -650,26 +749,78 @@ KYのフィードバックを受けてKBを更新する場合:
 
 ## 補足: ワークフロー変数の接続まとめ
 
+```mermaid
+graph TD
+    subgraph 入力
+        Start["Start"]
+    end
+
+    subgraph "ステップ1: 主張抽出"
+        KR1["知識検索①<br/>KB4"]
+        LLM1["LLM①"]
+    end
+
+    subgraph "ステップ2: ルール適用"
+        KR2["知識検索②<br/>KB1+KB3"]
+        LLM2["LLM②"]
+    end
+
+    subgraph "ステップ3: ファクトチェック"
+        KR3["知識検索③<br/>KB4"]
+        LLM3["LLM③"]
+    end
+
+    subgraph "ステップ4: 検証"
+        KR4["知識検索④<br/>KB2"]
+        LLM4["LLM④"]
+    end
+
+    subgraph "ステップ5-6: レポート"
+        LLM5["LLM⑤"]
+        LLM6["LLM⑥"]
+    end
+
+    subgraph 出力
+        End["End"]
+    end
+
+    Start -->|analyst_report, ticker, company_name| LLM1
+    Start -->|company_name| KR1
+    KR1 --> LLM1
+
+    LLM1 --> KR2
+    LLM1 --> LLM2
+    KR2 --> LLM2
+
+    LLM2 --> KR3
+    LLM2 --> LLM3
+    KR3 --> LLM3
+
+    LLM3 --> KR4
+    LLM3 --> LLM4
+    KR4 --> LLM4
+
+    LLM4 --> LLM5
+    LLM4 -->|structured_json| End
+
+    LLM5 --> LLM6
+    LLM4 --> LLM6
+
+    LLM6 -->|final_report| End
 ```
-Start
-  ├── analyst_report → LLM①
-  ├── ticker → LLM①, LLM②
-  └── company_name → 知識検索①, LLM①
 
-知識検索① (KB4) → LLM①
-LLM① → 知識検索②, LLM②
+### 変数の流れ一覧
 
-知識検索② (KB1+KB3) → LLM②
-LLM② → 知識検索③, LLM③
-
-知識検索③ (KB4) → LLM③
-LLM③ → 知識検索④, LLM④
-
-知識検索④ (KB2) → LLM④
-LLM④ → LLM⑤, LLM⑥
-
-LLM⑤ → LLM⑥
-
-LLM⑥ → End (final_report)
-LLM④ → End (structured_json)
-```
+| 出力元 | 渡し先 | 渡すデータ |
+|-------|--------|----------|
+| Start | 知識検索①, LLM① | company_name, analyst_report, ticker |
+| 知識検索① | LLM① | 10-K参考情報 |
+| LLM① | 知識検索②, LLM② | 主張JSON |
+| 知識検索② | LLM② | ルール+評価例 |
+| LLM② | 知識検索③, LLM③ | 評価済みJSON |
+| 知識検索③ | LLM③ | 10-K参考情報 |
+| LLM③ | 知識検索④, LLM④ | 検証済みJSON |
+| 知識検索④ | LLM④ | パターン |
+| LLM④ | LLM⑤, LLM⑥, End | 確定JSON / structured_json |
+| LLM⑤ | LLM⑥ | 生成レポート |
+| LLM⑥ | End | final_report |
