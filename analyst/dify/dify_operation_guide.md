@@ -198,7 +198,8 @@ Difyの高品質モードでは3種類の検索方式が利用可能:
 #### ワークフロー内の知識検索ノードとの対応
 
 ```
-知識検索① → KB4（10-K）  → ハイブリッド検索、Top-K: 10、Rerank有効
+テンプレート変換 → 検索クエリ構築（company_name + ticker + 事業キーワード）
+知識検索① → KB4（10-K）  → ハイブリッド検索、Top-K: 10、Rerank有効、クエリ: テンプレート変換の出力
 知識検索② → KB1 + KB3    → ベクトル検索、Top-K: 5、Rerankなし
 知識検索③ → KB4（10-K）  → ハイブリッド検索、Top-K: 5、Rerank有効
 知識検索④ → KB2          → ベクトル検索、Top-K: 4、Rerankなし
@@ -239,12 +240,14 @@ Startノードに以下の変数を追加:
 | `ticker` | テキスト入力 | Yes | 銘柄ティッカー（例: `ANET`） |
 | `company_name` | テキスト入力 | Yes | 企業名（例: `Arista Networks`） |
 
-### 3.3 ノード一覧（10ノード）
+### 3.3 ノード一覧（11ノード）
 
 以下の順序でノードを追加する:
 
 ```
 Start
+  ↓
+[テンプレート変換: 検索クエリ構築]
   ↓
 [知識検索①] → [LLM① ステップ1: 主張抽出]
                     ↓
@@ -267,6 +270,7 @@ Start
 graph TD
     Start["Start<br/>analyst_report, ticker, company_name"]
 
+    TT1["テンプレート変換<br/>検索クエリ構築"]
     KR1["知識検索①<br/>KB4（10-K）"]
     LLM1["LLM①<br/>主張抽出"]
 
@@ -284,7 +288,8 @@ graph TD
 
     End["End<br/>final_report, structured_json"]
 
-    Start -->|company_name| KR1
+    Start -->|company_name, ticker| TT1
+    TT1 -->|検索クエリ| KR1
     Start -->|analyst_report, ticker, company_name| LLM1
     KR1 -->|10-K参考情報| LLM1
 
@@ -364,7 +369,24 @@ graph TD
 | LLM② | 知識検索③ | factual_claimのテキスト |
 | LLM③ | 知識検索④ | 各claimのテキスト |
 
-### 4.1 知識検索①＋LLM①: 主張抽出
+### 4.1 テンプレート変換＋知識検索①＋LLM①: 主張抽出
+
+#### テンプレート変換ノードの設定（検索クエリ構築）
+
+Start と 知識検索① の間にテンプレート変換ノードを挿入し、10-Kの主要セクション（Item 1: Business, Item 7: MD&A）にヒットしやすい検索クエリを構築する。
+
+> **背景**: 10-Kの本文では企業名の代わりに "the Company"、"we"、"our" と表記されることが多く、`company_name` 単体ではベクトル/全文検索でヒットしにくい。企業の事業内容・競争優位性に関連するキーワードを付加することで、主張抽出に有用なチャンクを上位に取得する。
+
+| 設定項目 | 値 |
+|---------|-----|
+| ノード名 | `検索クエリ構築` |
+| 入力変数 | `company_name`, `ticker` |
+
+**テンプレート（Jinja2）**:
+
+```
+{{ company_name }} ({{ ticker }}) business overview competitive advantages market position products services revenue drivers industry structure risks
+```
 
 #### 知識検索①の設定
 
@@ -372,7 +394,7 @@ graph TD
 |---------|-----|
 | ナレッジベース | `KB4_[ティッカー]_10K` |
 | 検索方式 | ハイブリッド検索 |
-| クエリ変数 | `{{company_name}}` |
+| クエリ変数 | `{{検索クエリ構築の出力}}` |
 | Top-K | 10（10-Kの主要セクションを広く取得） |
 | スコア閾値 | 0.5 |
 | Rerank | 有効 |
@@ -756,6 +778,7 @@ graph TD
     end
 
     subgraph "ステップ1: 主張抽出"
+        TT1["テンプレート変換<br/>検索クエリ構築"]
         KR1["知識検索①<br/>KB4"]
         LLM1["LLM①"]
     end
@@ -784,8 +807,9 @@ graph TD
         End["End"]
     end
 
+    Start -->|company_name, ticker| TT1
+    TT1 -->|検索クエリ| KR1
     Start -->|analyst_report, ticker, company_name| LLM1
-    Start -->|company_name| KR1
     KR1 --> LLM1
 
     LLM1 --> KR2
@@ -813,7 +837,8 @@ graph TD
 
 | 出力元 | 渡し先 | 渡すデータ |
 |-------|--------|----------|
-| Start | 知識検索①, LLM① | company_name, analyst_report, ticker |
+| Start | テンプレート変換, LLM① | company_name, ticker, analyst_report |
+| テンプレート変換 | 知識検索① | 検索クエリ（企業名+事業キーワード） |
 | 知識検索① | LLM① | 10-K参考情報 |
 | LLM① | 知識検索②, LLM② | 主張JSON |
 | 知識検索② | LLM② | ルール+評価例 |
