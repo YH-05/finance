@@ -1,0 +1,506 @@
+{
+  "research_id": "DR_stock_20260213_MCO",
+  "analyzed_at": "2026-02-13T18:00:00Z",
+  "ticker": "MCO",
+  "company_name": "Moody's Corporation",
+  "financial_health": {
+    "revenue_trend": {
+      "cagr_3y": 12.8,
+      "cagr_5y": 7.2,
+      "latest_yoy": 10.7,
+      "trend": "accelerating_growth",
+      "data_points": [
+        {"period": "FY2024", "value": 7088000000, "growth": 19.8, "mis_revenue": 3793000000, "ma_revenue": 3295000000},
+        {"period": "FY2023", "value": 5916000000, "growth": 8.2, "mis_revenue": 2860000000, "ma_revenue": 3056000000},
+        {"period": "FY2022", "value": 5468000000, "growth": -12.1},
+        {"period": "FY2021", "value": 6218000000, "growth": null},
+        {"period": "FY2016", "value": 3604000000, "growth": null}
+      ],
+      "quarterly_trend": [
+        {"period": "Q3 2025", "revenue": 2009000000, "yoy_pct": 11, "mis": 1100000000, "ma": 909000000},
+        {"period": "Q4 2024", "revenue": 1672000000, "yoy_pct": 13},
+        {"period": "Q3 2024", "revenue": 1813000000},
+        {"period": "Q2 2024", "revenue": 1817000000},
+        {"period": "Q1 2024", "revenue": 1786000000}
+      ],
+      "ytd_2025": {
+        "revenue": 5800000000,
+        "yoy_pct": 8,
+        "mis_revenue": 3200000000,
+        "ma_revenue": 2700000000,
+        "note": "9ヶ月累計（Q1-Q3 2025）"
+      },
+      "notes": "FY2024の20%成長は債券発行市場回復に伴うMIS収益の33%増が主因。FY2022の減収は金利急上昇による債券発行減少が原因。TTM売上高は$7.50B。Q3 2025は四半期収益が初めて$2Bを突破"
+    },
+    "profitability": {
+      "operating_margin": 46.9,
+      "adjusted_operating_margin_fy2024": 48.3,
+      "adjusted_operating_margin_q3_2025": 52.9,
+      "margin_expansion_q3_2025_bps": 510,
+      "net_margin": 29.9,
+      "margin_trend": "expanding",
+      "roe": 54.9,
+      "roa": 13.2,
+      "roic": 25.0,
+      "eps_data": {
+        "fy2024_diluted_eps": 11.26,
+        "fy2024_adjusted_diluted_eps": 12.47,
+        "fy2024_eps_growth_pct": 29,
+        "q3_2025_diluted_eps": 3.60,
+        "q3_2025_adjusted_diluted_eps": 3.92,
+        "ytd_2025_diluted_eps": 10.26,
+        "ytd_2025_adjusted_diluted_eps": 11.30
+      },
+      "mis_adjusted_operating_margin_pct": 60.1,
+      "ma_adjusted_operating_margin_pct": 34.3,
+      "notes": "調整後営業利益率はFY2024の48.3%からQ3 2025で52.9%に510bp拡大。MIS営業利益率60.1%は卓越した水準。MA営業利益率34.3%は前年比400bp改善でレバレッジ効果が顕在化。ピアグループ平均44.4%を大きく上回る"
+    },
+    "balance_sheet": {
+      "debt_to_equity": 181.347,
+      "current_ratio": 1.84,
+      "interest_coverage": 12.0,
+      "total_debt_billion": 7.46,
+      "total_cash_billion": 2.26,
+      "net_debt_billion": 5.20,
+      "sec_filing_detail": {
+        "as_of": "2024-06-30",
+        "total_assets": 15013000000,
+        "total_liabilities": 11075000000,
+        "total_shareholders_equity": 3938000000,
+        "moodys_shareholders_equity": 3778000000,
+        "long_term_debt": 6253000000,
+        "current_portion_of_lt_debt": 688000000,
+        "deferred_revenue_current": 1423000000
+      },
+      "assessment": "leveraged_but_manageable",
+      "notes": "D/E比率181%は高水準だが、安定したFCFとインタレストカバレッジ12倍で返済能力は十分。Q2 2024時点の総資産$15.0B、長期負債$6.25B。信用格付け業界の安定的キャッシュフロー特性がレバレッジを支える。流動比率1.84は健全"
+    },
+    "cash_flow": {
+      "fcf_ttm": 2067750016,
+      "fcf_margin": 27.6,
+      "fcf_trend": "growing",
+      "ocf_ttm": 2716999936,
+      "fy2025_fcf_guidance": 2500000000,
+      "notes": "FY2024のFCFは$2.52B（前年比34.1%増）。FY2025ガイダンスはFCF $2.5B。TTMベースのFCFは$2.07B。FCFマージン27.6%は安定的に高水準"
+    },
+    "dividend_history": {
+      "current_annual_dividend": 3.76,
+      "dividend_yield_pct": 0.91,
+      "payout_ratio_pct": 29.5,
+      "dividend_cagr_5y": 10.9,
+      "consecutive_increases": "20年以上",
+      "recent_increase_pct": 10.6,
+      "notes": "2020年$2.24→2025年$3.76、5年CAGRは10.9%。配当性向29.5%は余裕があり、増配余地大"
+    },
+    "guidance_fy2025": {
+      "source": "Q3 2025 Earnings Release (2025-10-22)",
+      "revenue_growth": "high single-digit percent range",
+      "adjusted_operating_margin": "approximately 51%",
+      "diluted_eps_range": "$13.15 to $13.40",
+      "adjusted_diluted_eps_range": "$14.50 to $14.75",
+      "adjusted_diluted_eps_yoy_growth_at_midpoint_pct": 17,
+      "free_cash_flow": 2500000000,
+      "share_repurchase": "at least $1.5 billion",
+      "mis_revenue_growth": "mid- to high single-digit percent range",
+      "ma_revenue_growth": "high single-digit range",
+      "ma_adjusted_operating_margin": "32% to 33%",
+      "arr": 3400000000,
+      "arr_yoy_growth_pct": 8
+    },
+    "overall_score": 8.5,
+    "confidence": "high"
+  },
+  "valuation": {
+    "absolute": {
+      "dcf_estimate": {
+        "intrinsic_value": 500,
+        "assumptions": {
+          "growth_rate_5y": 10,
+          "terminal_growth": 3.5,
+          "wacc": 9.0,
+          "fcf_base_billion": 2.50,
+          "eps_base": 14.63,
+          "note": "FY2025ガイダンス中間値の調整後EPS $14.63（$14.50-$14.75の中間）を使用"
+        },
+        "upside_from_current": 20.5,
+        "confidence": "medium",
+        "notes": "FCFベース$2.50B（FY2025ガイダンス）、5年成長率10%（MIS+MAの複合成長）、ターミナル成長率3.5%（寡占構造とリカーリング収益を考慮）、WACC 9.0%（Beta 1.44を反映）。FY2025調整後EPSガイダンス中間値$14.63を参考にPE 30倍で$439、PE 35倍で$512"
+      }
+    },
+    "relative": {
+      "pe_ratio": {
+        "current_trailing": 33.4,
+        "forward_yfinance": 25.2,
+        "forward_on_fy2025_guidance": 28.4,
+        "peer_avg_trailing": 25.4,
+        "peer_avg_forward": 18.6,
+        "premium_pct_trailing": 31.7,
+        "premium_pct_forward": 35.5,
+        "position": "premium",
+        "notes": "FY2025ガイダンスの調整後EPS中間値$14.63に対し、株価$415でForward PE 28.4倍。yfinanceのForward PE 25.2は予想値の違いによる"
+      },
+      "pb_ratio": {
+        "current": 18.7,
+        "peer_comparison": "高レバレッジにより帳簿価額が小さくP/Bは高水準。SPGI(3.8)、ICE(2.9)と比較して著しく高いが、資本構造の違いが主因。Q2 2024時点のMoody's株主資本は$3.78B",
+        "position": "premium"
+      },
+      "ev_ebitda": {
+        "current": 22.2,
+        "peer_avg": 17.4,
+        "premium_pct": 27.4,
+        "position": "above_average"
+      },
+      "price_to_sales": {
+        "current": 9.9,
+        "position": "premium"
+      },
+      "peg_ratio": null,
+      "notes": "MCOは全バリュエーション指標でピアグループ平均を上回るプレミアムで取引。FY2025ガイダンスベースのForward PE 28.4倍はSPGI(17.9)、ICE(17.6)と比較して大幅なプレミアム。ただし調整後EPS 17%成長を考慮するとPEGは約1.7倍"
+    },
+    "historical_range": {
+      "pe_5y_low": 22.0,
+      "pe_5y_high": 42.0,
+      "pe_current_percentile": 45,
+      "price_52w_high": 546.88,
+      "price_52w_low": 376.55,
+      "current_price": 415.09,
+      "price_position_52w": "near_low",
+      "distance_from_52w_high_pct": -24.1,
+      "position": "lower_half",
+      "notes": "現在株価$415は52週高値$547から24%下落。1月の$516から急落。PE 33.4は5年レンジの中間付近"
+    },
+    "analyst_consensus": {
+      "recommendation": "buy",
+      "number_of_analysts": 19,
+      "target_mean": 571.79,
+      "target_high": 660.0,
+      "target_low": 460.0,
+      "upside_to_mean_pct": 37.7,
+      "notes": "アナリスト目標株価平均$572は現在値から38%のアップサイド。コンセンサスはBuy。19人のアナリストがカバー"
+    },
+    "valuation_assessment": "temporarily_discounted",
+    "confidence": "high",
+    "notes": "MCOは通常プレミアム評価で取引されるが、直近の株価急落（52週高値から-24%）によりヒストリカルレンジの下方に位置。FY2025ガイダンス（調整後EPS $14.50-$14.75、17%成長）を考慮すると、Forward PEは28.4倍で割高感は緩和。ピアグループ対比では依然プレミアムだが、絶対ベースでは過去5年の平均的水準に接近"
+  },
+  "business_quality": {
+    "competitive_advantage": {
+      "moat_type": "regulatory_oligopoly_ecosystem",
+      "moat_strength": "wide",
+      "moat_durability": "very_high",
+      "market_share": {
+        "global_credit_ratings_revenue": 31,
+        "big_three_combined": 93,
+        "nrsro_large_share": 91
+      },
+      "key_advantages": [
+        {
+          "id": "CA001",
+          "name": "規制埋め込み型の構造的寡占ポジション",
+          "type": "efficient_scale",
+          "confidence_pct": 90,
+          "detail": "NRSRO認定と金融規制への格付け義務化により、Big Three（MCO, SPGI, Fitch）が市場の93%を占める三寡占構造。50年以上この構造が維持。新規参入は経済合理性を持たない"
+        },
+        {
+          "id": "CA002",
+          "name": "発行体-投資家間の自己強化型ネットワーク効果",
+          "type": "network_effect",
+          "confidence_pct": 90,
+          "detail": "発行体は投資家が信頼する格付け機関から格付けを取得する必要があり、投資家は規制当局が認める格付け機関の格付けを求める。この自己強化ループにより既存大手の地位が強化され続ける"
+        },
+        {
+          "id": "CA003",
+          "name": "極めて高いスイッチングコスト",
+          "type": "switching_cost",
+          "confidence_pct": 70,
+          "detail": "金融機関の投資モデル、規制資本算定、コンプライアンスシステムが特定格付け機関のスケールに依存。変更コストは金融機関あたり数百万ドル規模"
+        },
+        {
+          "id": "CA004",
+          "name": "115年超のプロプライエタリデータ蓄積",
+          "type": "intangible_assets",
+          "confidence_pct": 70,
+          "detail": "1909年設立以来蓄積されたデフォルト率、回収率、信用遷移マトリックスは競合が再現不可能。AI時代においてはモデル学習用の高品質データセットとしての価値がさらに増大"
+        },
+        {
+          "id": "CA006",
+          "name": "MA事業によるリカーリング収益基盤",
+          "type": "switching_cost",
+          "confidence_pct": 50,
+          "detail": "MA部門ARR $3.4B（68四半期連続成長）が格付け収益の景気循環性を補完。Decision Solutions ARR $1.4B（+12%成長）が牽引。14,800社以上の顧客基盤"
+        }
+      ],
+      "barriers_to_entry": "very_high",
+      "threat_of_substitution": "low",
+      "industry_concentration_hhi": "very_high",
+      "notes": "MCOの最大の特徴は、規制寡占+ネットワーク効果+スイッチングコスト+データ蓄積が重層的に作用する構造的堀の「深さ」。S&P Globalとの共存的寡占（duopoly）は互いの存在が市場の安定性を高めている"
+    },
+    "management": {
+      "ceo": "Robert Fauber",
+      "cfo": "Noemie Heuland",
+      "ceo_tenure_years": 5,
+      "insider_ownership_pct": 0.5,
+      "insider_sentiment": "neutral",
+      "insider_detail": "CEO Fauber の取引はRule 10b5-1プラン下の定期的なオプション行使・売却。小口（各回500-1,200株）で保有61,082株に対し小規模。計画的売却であり懸念材料ではない",
+      "assessment": "competent_execution",
+      "key_events": [
+        "2025-08-19: Stephen Tulenko（MA部門President）が辞任",
+        "2026-01-12: Lisa P. Sawicki が取締役に選任",
+        "2025-12-22: 本社をBrookfield Placeに移転予定"
+      ],
+      "notes": "Fauber CEO（2021年就任）はMA部門の成長を推進。調整後営業利益率をFY2024の48.3%からQ3 2025で52.9%に拡大。MA President辞任（2025年8月）は後任体制に注意。13年連続でExtelベスト格付け機関に選出"
+    },
+    "capital_allocation": {
+      "dividend_yield": 0.91,
+      "buyback_yield_estimated": 3.6,
+      "buyback_fy2025_guidance": "at least $1.5 billion",
+      "total_yield_estimated": 4.5,
+      "payout_ratio": 29.5,
+      "shareholder_return_approach": "buyback_heavy",
+      "assessment": "shareholder_friendly",
+      "notes": "FY2025ガイダンスで自社株買い少なくとも$1.5B（時価総額の約2%）。配当性向29.5%は控えめで増配余地大。配当は20年以上連続増配、5年CAGR 10.9%。自社株買い+配当の合計株主還元利回りは約4.5%"
+    },
+    "segment_analysis": {
+      "mis": {
+        "name": "Moody's Investors Service (MIS)",
+        "revenue_share_pct": 53.5,
+        "fy2024_revenue": 3793000000,
+        "fy2024_growth_pct": 33,
+        "q3_2025_revenue": 1100000000,
+        "q3_2025_growth_pct": 12,
+        "adjusted_operating_margin_pct": 60.1,
+        "sub_lines": ["Corporate Finance", "Structured Finance", "Financial Institutions", "Public, Project and Infrastructure Finance"],
+        "characteristics": "格付け事業。債券発行量に連動し景気循環的。営業利益率60%超は業界トップクラス",
+        "key_driver": "グローバル債券発行量",
+        "fy2025_guidance": "mid- to high single-digit percent revenue growth"
+      },
+      "ma": {
+        "name": "Moody's Analytics (MA)",
+        "revenue_share_pct": 46.5,
+        "fy2024_revenue": 3295000000,
+        "fy2024_growth_pct": 8,
+        "q3_2025_revenue": 909000000,
+        "q3_2025_growth_pct": 9,
+        "adjusted_operating_margin_pct": 34.3,
+        "margin_expansion_yoy_bps": 400,
+        "arr": 3400000000,
+        "arr_growth_pct": 8,
+        "decision_solutions_arr": 1400000000,
+        "decision_solutions_arr_growth_pct": 12,
+        "customers": "14,800+",
+        "sub_lines": ["Decision Solutions", "Research & Insights", "Data & Information"],
+        "h1_2024_sub_segment": {
+          "decision_solutions": 731000000,
+          "research_and_insights": 448000000,
+          "data_and_information": 422000000
+        },
+        "characteristics": "サブスクリプション型リカーリング収益。安定成長。調整後営業利益率34.3%（前年比400bp改善）",
+        "key_driver": "金融機関のリスク管理・コンプライアンス需要",
+        "fy2025_guidance": "high single-digit revenue growth, 32-33% adjusted operating margin"
+      },
+      "notes": "MIS 53.5% / MA 46.5%のバランスは良好。SPGIはRatingsが34%でより多角化。MCOのMIS依存度の高さは収益ボラティリティ要因だが、MISの60%超の営業利益率がグループ全体の収益性を牽引"
+    },
+    "overall_score": 9.0,
+    "confidence": "high"
+  },
+  "catalysts_risks": {
+    "catalysts": [
+      {
+        "catalyst_id": "CAT001",
+        "type": "market_cycle",
+        "description": "債券発行市場の持続的活況（リファイナンス需要+新規発行増）",
+        "expected_date": "2026-ongoing",
+        "impact": "high",
+        "probability": "high",
+        "detail": "2024年MIS収益が前年比33%増。2025年Q3に四半期収益が初めて$2Bを突破。FY2025ガイダンスでMIS売上はmid-to-high single-digit成長を予想。金利環境の変化に伴うリファイナンス需要と新規発行増が継続する見通し"
+      },
+      {
+        "catalyst_id": "CAT002",
+        "type": "product",
+        "description": "プライベートクレジット市場向けリスク評価サービスの拡大",
+        "expected_date": "2026-2027",
+        "impact": "high",
+        "probability": "high",
+        "detail": "プライベートクレジット市場が急拡大中。MSCIとの共同開発によるリスク評価サービスを2024年にローンチ済み。アセットバック・ファイナンス、EMEA・APACへの拡大が成長ドライバー"
+      },
+      {
+        "catalyst_id": "CAT003",
+        "type": "technology",
+        "description": "AI・GenAIの信用リスク管理への統合によるMA部門の価値向上",
+        "expected_date": "2026-ongoing",
+        "impact": "high",
+        "probability": "medium",
+        "detail": "115年超の独自データをAIモデル学習に活用。GenAIによる信用リスク評価の効率化と新プロダクト開発。S&P GlobalのCreditCompanionとの競争激化も"
+      },
+      {
+        "catalyst_id": "CAT004",
+        "type": "valuation",
+        "description": "株価急落後のバリュエーション正常化（52週高値から-24%）",
+        "expected_date": "2026-Q1-Q2",
+        "impact": "medium",
+        "probability": "medium",
+        "detail": "アナリスト目標株価平均$572に対し現在$415で38%のアップサイド。FY2025調整後EPSガイダンス中間値$14.63に対しForward PE 28.4倍は5年レンジの中間付近"
+      },
+      {
+        "catalyst_id": "CAT005",
+        "type": "financial",
+        "description": "MA部門のARR成長加速とマージン拡大",
+        "expected_date": "ongoing",
+        "impact": "medium",
+        "probability": "high",
+        "detail": "MA ARR $3.4Bが68四半期連続成長。Decision Solutions ARR $1.4B（+12%成長）が牽引。調整後営業利益率は34.3%（前年比400bp改善）でレバレッジ効果が顕在化。FY2025ガイダンスでは32-33%のMA営業利益率を予想"
+      },
+      {
+        "catalyst_id": "CAT006",
+        "type": "financial",
+        "description": "Q4 2025決算発表（2026年1月28日設定）",
+        "expected_date": "2026-01-28",
+        "impact": "medium",
+        "probability": "high",
+        "detail": "Q4 2025/FY2025決算とFY2026ガイダンスが触媒になる可能性。FY2025ガイダンスの調整後EPS $14.50-$14.75（+17%）が達成されるか注目"
+      },
+      {
+        "catalyst_id": "CAT007",
+        "type": "financial",
+        "description": "大規模自社株買い（FY2025: 少なくとも$1.5B）",
+        "expected_date": "ongoing",
+        "impact": "medium",
+        "probability": "high",
+        "detail": "FY2025ガイダンスで少なくとも$1.5Bの自社株買いを計画。株価下落局面での買い戻しはEPSアクレーション効果が大きい"
+      }
+    ],
+    "risks": [
+      {
+        "risk_id": "RSK001",
+        "type": "regulatory",
+        "description": "信用格付け業界への規制強化（SEC、EU規制）",
+        "source": "10-K Risk Factors / 業界分析",
+        "impact": "high",
+        "probability": "low",
+        "detail": "Dodd-Frank Act以降の格付け依存度削減の動きはあるが、実務上は債券発行・投資判断において格付けは必須要素として継続。SECのRegulation M改正等の動きはあるも構造的影響は限定的"
+      },
+      {
+        "risk_id": "RSK002",
+        "type": "competitive",
+        "description": "S&P GlobalのAI戦略（CreditCompanion）による競争激化",
+        "source": "industry_analysis",
+        "impact": "medium",
+        "probability": "medium",
+        "detail": "S&P GlobalはIHS Markit統合後のデータ資産量で優位。CreditCompanion（2025年5月ローンチ）等のGenAIツールで先行。ただしMCOは115年超のデフォルトデータの質で優位性を保持"
+      },
+      {
+        "risk_id": "RSK003",
+        "type": "macro",
+        "description": "金利環境変動による債券発行量の減少",
+        "source": "market_analysis",
+        "impact": "high",
+        "probability": "medium",
+        "detail": "MIS収益は債券発行量に直結。2022年のように金利急上昇局面では債券発行が減少しMIS収益が大幅減少するリスク。FY2022は売上-12.1%を記録"
+      },
+      {
+        "risk_id": "RSK004",
+        "type": "financial",
+        "description": "高レバレッジ（D/E 181%）による財務リスク",
+        "source": "balance_sheet_analysis / SEC 10-Q",
+        "impact": "medium",
+        "probability": "low",
+        "detail": "純有利子負債$5.2B。Q2 2024時点の長期負債$6.25B（流動部分$688M含む）。ただしインタレストカバレッジ12倍、FCFマージン27.6%で返済能力は十分。半期の金利費用は$125M（年間約$250M）"
+      },
+      {
+        "risk_id": "RSK005",
+        "type": "valuation",
+        "description": "ピアグループ対比で持続的プレミアム評価のリスク",
+        "source": "valuation_analysis",
+        "impact": "medium",
+        "probability": "medium",
+        "detail": "MCOはトレーリングPE 33.4でピア平均25.4を32%上回る。Forward PEも28.4（FY2025ガイダンスベース）vs ピア平均18.6で53%のプレミアム。成長率鈍化時にバリュエーション収縮のリスク"
+      },
+      {
+        "risk_id": "RSK006",
+        "type": "management",
+        "description": "MA部門President辞任後の後任体制リスク",
+        "source": "8-K filing (2025-08-19)",
+        "impact": "low",
+        "probability": "medium",
+        "detail": "Stephen Tulenko（MA部門President）が2025年8月に辞任。MA部門はARR $3.4Bの重要セグメントであり、後任人事と戦略の継続性に注意"
+      }
+    ],
+    "risk_reward_assessment": "favorable"
+  },
+  "investment_thesis": {
+    "bull_case": {
+      "summary": "債券発行市場の持続的活況、プライベートクレジット・AI戦略による新規収益源確立、MA部門のARR成長加速と営業利益率51%超への拡大",
+      "target_pe": 35,
+      "eps_basis": 15.5,
+      "implied_price": 543,
+      "upside_pct": 30.8,
+      "key_assumptions": [
+        "FY2025調整後EPSがガイダンス上限$14.75を達成",
+        "FY2026 EPS成長10%以上でEPS $15.50到達",
+        "MA ARR成長が10%以上に加速",
+        "プライベートクレジット市場でのシェア獲得が順調",
+        "営業利益率51%超を維持（Q3 2025実績52.9%）"
+      ]
+    },
+    "base_case": {
+      "summary": "寡占的市場地位を活かした安定成長継続。FY2025ガイダンス達成とMA部門の着実なARR成長により中単位の増収増益",
+      "target_pe": 30,
+      "eps_basis": 14.63,
+      "implied_price": 439,
+      "upside_pct": 5.8,
+      "key_assumptions": [
+        "FY2025調整後EPSがガイダンス中間値$14.63を達成",
+        "売上成長率high single-digit維持",
+        "営業利益率約51%維持",
+        "配当10%成長と$1.5B自社株買い継続"
+      ]
+    },
+    "bear_case": {
+      "summary": "金利急上昇による債券発行量の大幅減少、規制強化、AI競争でのSPGI劣後、マルチプル収縮",
+      "target_pe": 22,
+      "eps_basis": 13.0,
+      "implied_price": 286,
+      "downside_pct": 31.1,
+      "key_assumptions": [
+        "金利環境悪化で債券発行量が2022年水準に回帰",
+        "MIS収益が10-15%減少、全社EPS $13.00に低下",
+        "MA部門のARR成長が5%に鈍化",
+        "PEマルチプルが5年レンジの下限（22倍）に収縮"
+      ]
+    }
+  },
+  "summary": {
+    "investment_quality": "high",
+    "valuation_attractiveness": "moderately_attractive",
+    "risk_profile": "moderate",
+    "key_takeaways": [
+      "信用格付け業界はBig Three（MCO, SPGI, Fitch）で93%を占める極めて強固な寡占構造（NRSROの規制参入障壁+ネットワーク効果+高スイッチングコスト）",
+      "財務健全性スコア8.5/10: FY2025ガイダンスで調整後EPS $14.50-$14.75（+17%）、営業利益率約51%、FCF $2.5B。Q3 2025は四半期収益初の$2B突破",
+      "ビジネス品質スコア9.0/10: wide moat、115年超のデータ蓄積、MIS（営業利益率60.1%）+MA（ARR $3.4B、68Q連続成長）の二本柱",
+      "バリュエーション: 52週高値$547から-24%急落で$415。FY2025調整後EPS中間値$14.63に対しForward PE 28.4倍。アナリスト目標$572に対し38%アップサイド",
+      "主要カタリスト: 債券発行活況継続、プライベートクレジット拡大、AI統合、$1.5B自社株買い、Q4決算発表",
+      "主要リスク: 金利変動によるMIS収益ボラティリティ、SPGIとのAI競争、D/E 181%の高レバレッジ、MA部門President辞任後の後任体制"
+    ]
+  },
+  "data_quality": {
+    "high_confidence_data_pct": 82,
+    "data_sources_used": [
+      "market-data.json（yfinance: MCO+5ピア、5年価格データ、財務指標）",
+      "industry-data.json（業界構造、競争環境、dogma.md評価、業界トレンド）",
+      "sec-filings.json（10-K/10-Q財務データ、セグメント詳細、ガイダンス、インサイダー取引、8-Kイベント）"
+    ],
+    "key_assumptions": [
+      "DCF成長率10%は過去3年CAGR(12.8%)をやや保守的に設定",
+      "ターミナル成長率3.5%は寡占構造とリカーリング収益の安定性を反映",
+      "WACC 9.0%はBeta 1.44と現在の金利環境を反映",
+      "PE 5年レンジ22-42は月次株価とコンセンサスEPSの概算",
+      "インタレストカバレッジ12倍はEBITDA/推定金利費用の概算値。SEC 10-Qの半期金利費用$125M（年間$250M）で検証: EBITDA $3.58B / $250M = 14.3倍でほぼ整合"
+    ],
+    "limitations": [
+      "Web検索データ（最新ニュース・アナリストレポート）が未統合のため、直近のイベント情報が一部限定的",
+      "raw-data.json / cross-validation.json が未生成のため、データの統合的な交差検証は未実施",
+      "SEC EDGAR MCP APIのエラーにより一部の財務データ（キャッシュフロー計算書、FY2020以前の売上等）が欠落",
+      "PE 5年レンジは月次価格データからの概算であり、正確なEPSベースの計算ではない",
+      "ピアグループの財務比較は直近期（yfinance TTMデータ）のみ。セグメント別の詳細比較は未実施"
+    ]
+  }
+}

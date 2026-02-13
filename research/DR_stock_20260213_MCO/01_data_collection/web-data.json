@@ -1,0 +1,304 @@
+{
+  "research_id": "DR_stock_20260213_MCO",
+  "collected_at": "2026-02-13T08:20:00Z",
+  "ticker": "MCO",
+  "company_name": "Moody's Corporation",
+  "total_results": 18,
+  "sources": {
+    "web_search": [
+      {
+        "source_id": "W001",
+        "query": "Moody's Corporation MCO latest news 2026",
+        "url": "https://finance.yahoo.com/quote/MCO/news/",
+        "title": "Moody's Corporation (MCO) Latest Stock News & Headlines",
+        "snippet": "Moody's will release Q4 and full year 2025 results before NYSE trading on Wednesday, February 18, 2026. Analysts expect strong earnings growth. MCO named #1 in 2026 Chartis RiskTech100 for fourth consecutive year.",
+        "source_name": "Yahoo Finance",
+        "published_date": "2026-02-13",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W002",
+        "query": "Moody's Corporation MCO latest news 2026",
+        "url": "https://www.investing.com/news/stock-market-news/moodys-and-factset-stocks-slide-on-sp-globals-weak-2026-outlook-4496367",
+        "title": "Moody's and FactSet stocks slide on S&P Global's weak 2026 outlook",
+        "snippet": "Moody's Corporation faces challenges following S&P Global's weak 2026 outlook, resulting in a 5% stock drop. The stock fell 5% alongside other financial data companies as investors reacted to disappointing guidance from industry peer S&P Global.",
+        "source_name": "Investing.com",
+        "published_date": "2026-02-10",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W003",
+        "query": "Moody's Corporation MCO latest news 2026",
+        "url": "https://www.marketbeat.com/instant-alerts/filing-moodys-corporation-mco-shares-bought-by-principal-financial-group-inc-2026-02-02/",
+        "title": "Moody's Corporation $MCO Shares Bought by Principal Financial Group Inc.",
+        "snippet": "Principal Financial Group Inc. acquired shares of Moody's Corporation. Institutional buying activity signals confidence in MCO's long-term prospects.",
+        "source_name": "MarketBeat",
+        "published_date": "2026-02-02",
+        "reliability": "medium",
+        "relevance": "medium"
+      },
+      {
+        "source_id": "W004",
+        "query": "Moody's MCO analyst rating target price 2026",
+        "url": "https://stockanalysis.com/stocks/mco/forecast/",
+        "title": "Moody's (MCO) Stock Forecast & Analyst Price Targets",
+        "snippet": "Based on 19 analysts, the average 12-month price target is $571.79 (high: $660, low: $460). Consensus rating: Buy from 17 analysts. 1 Strong Buy, 13 Buy, 5 Hold ratings. Average target price $558.56 representing 34.5% upside.",
+        "source_name": "Stock Analysis",
+        "published_date": "2026-02-13",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W005",
+        "query": "Moody's MCO analyst rating target price 2026",
+        "url": "https://www.themarketsdaily.com/2026/02/10/moodys-nysemco-shares-gap-down-whats-next.html",
+        "title": "Moody's (NYSE:MCO) Shares Gap Down - What's Next?",
+        "snippet": "MCO shares gapped down amid sector-wide pressure. Short-term price targets from 18 analysts average $503.17, ranging from $385 to $570.",
+        "source_name": "The Markets Daily",
+        "published_date": "2026-02-10",
+        "reliability": "medium",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W006",
+        "query": "Moody's MCO analyst rating target price 2026",
+        "url": "https://www.tipranks.com/stocks/mco/forecast",
+        "title": "Moody's Corp. (MCO) Stock Forecast, Price Targets and Analysts Predictions",
+        "snippet": "TipRanks analyst consensus on MCO with detailed price target forecasts and rating history.",
+        "source_name": "TipRanks",
+        "published_date": "2026-02-13",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W007",
+        "query": "Moody's MCO earnings review Q4 2025",
+        "url": "https://www.nasdaq.com/market-activity/stocks/mco/earnings",
+        "title": "Moody's Corporation Common Stock (MCO) Earnings Report Dates & Earnings Forecasts",
+        "snippet": "Q4 2025 EPS forecast: $3.44. Analysts expect diluted EPS of $3.41, up 30.2% from $2.62 in year-ago quarter. Earnings release scheduled for February 18, 2026 before NYSE open.",
+        "source_name": "Nasdaq",
+        "published_date": "2026-02-13",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W008",
+        "query": "Moody's MCO earnings review Q4 2025",
+        "url": "https://finance.yahoo.com/news/expect-moodys-next-quarterly-earnings-122253553.html",
+        "title": "What to Expect From Moody's Next Quarterly Earnings Report",
+        "snippet": "Moody's will release fourth-quarter earnings soon. Analysts anticipate double-digit bottom-line growth. Q3 2025 saw record quarterly revenue exceeding $2 billion with adjusted diluted EPS of $3.92, a 22% increase YoY.",
+        "source_name": "Yahoo Finance / Barchart",
+        "published_date": "2026-01-15",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W009",
+        "query": "Moody's MCO earnings review Q4 2025",
+        "url": "https://ir.moodys.com/press-releases/news-details/2025/Moodys-Corporation-Reports-Results-for-Fourth-Quarter-and-Full-Year-2024-Sets-Outlook-for-2025/default.aspx",
+        "title": "Moody's Corporation Reports Results for Fourth Quarter and Full Year 2024; Sets Outlook for 2025",
+        "snippet": "Official Moody's IR press release for Q4 and FY2024 results with 2025 outlook guidance. Key reference for year-over-year comparison.",
+        "source_name": "Moody's IR",
+        "published_date": "2025-02-12",
+        "reliability": "high",
+        "relevance": "medium"
+      },
+      {
+        "source_id": "W010",
+        "query": "Moody's vs S&P Global SPGI credit rating market share",
+        "url": "https://en.wikipedia.org/wiki/Big_Three_(credit_rating_agencies)",
+        "title": "Big Three (credit rating agencies) - Wikipedia",
+        "snippet": "S&P Global, Moody's, and Fitch Ratings are the Big Three credit rating agencies. Combined S&P and Moody's hold ~80% market share of ~$12 trillion in annual global rated debt issuance. Fitch holds ~20%.",
+        "source_name": "Wikipedia",
+        "published_date": "2026-01-01",
+        "reliability": "medium",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W011",
+        "query": "Moody's vs S&P Global SPGI credit rating market share",
+        "url": "https://www.nasdaq.com/articles/better-buy:-moodys-vs.-sp-global",
+        "title": "Better Buy: Moody's vs. S&P Global",
+        "snippet": "Comparison of MCO vs SPGI as investments. S&P Global has ~50% credit rating market share vs Moody's ~31%. SPGI has diversified into broad data business while MCO doubled down on credit and risk analytics.",
+        "source_name": "Nasdaq",
+        "published_date": "2025-12-15",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W012",
+        "query": "Moody's vs S&P Global SPGI credit rating market share",
+        "url": "https://finance.yahoo.com/news/comparing-2-big-ratings-agencies-224759646.html",
+        "title": "Comparing the 2 Big Ratings Agencies: Moody's and S&P Global",
+        "snippet": "Detailed comparison of the two dominant credit rating agencies including business models, revenue mix, and competitive positioning.",
+        "source_name": "Yahoo Finance",
+        "published_date": "2025-11-20",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W013",
+        "query": "Moody's CEO Rob Fauber management strategy",
+        "url": "https://www.moodys.com/web/en/us/about-us/leadership/robert-fauber.html",
+        "title": "Robert Fauber - CEO, Moody's Corporation",
+        "snippet": "Rob Fauber has served as CEO since 2021. 19-year career at Moody's. Responsible for establishing Analytics business (now >50% of revenues). Focus: enterprise-wide technology-enabled innovation, risk assessment evolution, customer expansion.",
+        "source_name": "Moody's Official",
+        "published_date": "2026-01-01",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W014",
+        "query": "Moody's CEO Rob Fauber management strategy",
+        "url": "https://www.cfr.org/event/ceo-speaker-series-rob-fauber-moodys",
+        "title": "CEO Speaker Series With Rob Fauber of Moody's - Council on Foreign Relations",
+        "snippet": "Fauber discusses evolution of risk management and how economic instability, geopolitical uncertainty, extreme weather events intersect to create increasingly interconnected and complex risk environment.",
+        "source_name": "Council on Foreign Relations",
+        "published_date": "2025-10-01",
+        "reliability": "high",
+        "relevance": "medium"
+      },
+      {
+        "source_id": "W015",
+        "query": "MCO credit rating industry outlook regulation 2026",
+        "url": "https://www.moodys.com/web/en/us/insights/credit-risk/outlooks/mco-15-september-2025.html",
+        "title": "Moody's Credit Outlook: 15 September 2025",
+        "snippet": "Moody's expects sector earnings in 2026 will expand around rate of inflation. 7 of 17 industry sector outlooks are negative, just 2 positive (aerospace/defense and tech). MCO and SPGI face AI-driven fears with MCO favored for cleaner outlook and regulatory moat.",
+        "source_name": "Moody's",
+        "published_date": "2025-09-15",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W016",
+        "query": "MCO credit rating industry outlook regulation 2026",
+        "url": "https://www.womblebonddickinson.com/uk/insights/articles-and-briefings/10-financial-regulatory-changes-2026",
+        "title": "10 financial regulatory changes for 2026",
+        "snippet": "Financial regulatory landscape changes expected in 2026 including anti-money laundering regime updates and Senior Managers Certification Regime changes. Looser regulatory regime looming per Fitch's 2026 outlook.",
+        "source_name": "Womble Bond Dickinson",
+        "published_date": "2026-01-10",
+        "reliability": "high",
+        "relevance": "medium"
+      },
+      {
+        "source_id": "W017",
+        "query": "Moody's Analytics growth data analytics revenue 2026",
+        "url": "https://stockanalysis.com/stocks/mco/metrics/moodys-analytics-revenue-breakdown/",
+        "title": "Moody's (MCO) Moodys Analytics Revenue Breakdown",
+        "snippet": "MA segment ~$3.5B TTM revenue (Q3 2025). Decision Solutions: $1.64B TTM (+10.7% YoY). Research and Insights: $976M TTM (+7.4%). Data and Information: $895M TTM (+6.5%). Decision Solutions nearly doubled from $314M (Q4 2021) to $424M (Q3 2025) quarterly.",
+        "source_name": "Stock Analysis",
+        "published_date": "2026-02-13",
+        "reliability": "high",
+        "relevance": "high"
+      },
+      {
+        "source_id": "W018",
+        "query": "Moody's Analytics growth data analytics revenue 2026",
+        "url": "https://finance.yahoo.com/news/moodys-q3-earnings-beat-estimates-161400973.html",
+        "title": "Moody's Q3 Earnings Beat Estimates on Y/Y Revenue Growth",
+        "snippet": "MA revenues rose 9.4% YoY to $909M in Q3, driven by 11% Decision Solutions growth, 7% Research and Insights rise, and 9% Data & Information rise. Moody's projects revenues to increase in high-single-digit % range for 2026 with MA adjusted operating margin of 33%.",
+        "source_name": "Yahoo Finance",
+        "published_date": "2025-10-23",
+        "reliability": "high",
+        "relevance": "high"
+      }
+    ]
+  },
+  "key_financials": {
+    "stock_price": 415.09,
+    "market_cap_billion": 74.05,
+    "pe_ratio": 33.43,
+    "forward_pe": 25.74,
+    "beta": 1.44,
+    "revenue_ttm_billion": 7.50,
+    "revenue_growth_pct": 8.8,
+    "net_income_billion": 2.24,
+    "eps": 12.42,
+    "eps_growth_pct": 13.5,
+    "dividend_yield_pct": 0.91,
+    "52_week_high": 546.88,
+    "52_week_low": 378.71,
+    "employees": 15838
+  },
+  "analyst_consensus": {
+    "rating": "Buy",
+    "analyst_count": 17,
+    "avg_price_target": 558.44,
+    "high_target": 660.0,
+    "low_target": 385.0,
+    "upside_pct": 34.5,
+    "rating_breakdown": {
+      "strong_buy": 1,
+      "buy": 13,
+      "hold": 5,
+      "sell": 0,
+      "strong_sell": 0
+    }
+  },
+  "upcoming_events": {
+    "q4_2025_earnings": {
+      "date": "2026-02-18",
+      "eps_estimate": 3.44,
+      "eps_year_ago": 2.62,
+      "expected_growth_pct": 30.2
+    },
+    "board_election": {
+      "date": "2026-03-16",
+      "details": "Lisa P. Sawicki elected to Board of Directors"
+    }
+  },
+  "competitive_landscape": {
+    "market_share": {
+      "sp_global": "50%",
+      "moodys": "31%",
+      "fitch": "12%",
+      "others": "7%"
+    },
+    "combined_sp_moodys_share": "~80%",
+    "global_rated_debt_issuance": "$12 trillion annually",
+    "key_differentiator": "SPGI diversified into broad data business; MCO doubled down on credit and risk analytics"
+  },
+  "management": {
+    "ceo": "Rob Fauber",
+    "tenure_since": 2021,
+    "years_at_company": 19,
+    "strategic_focus": [
+      "Analytics business expansion (now >50% of revenues)",
+      "Enterprise-wide technology-enabled innovation",
+      "Risk assessment evolution",
+      "Customer base expansion"
+    ]
+  },
+  "moodys_analytics_breakdown": {
+    "total_ttm_revenue_billion": 3.5,
+    "segments": {
+      "decision_solutions": {
+        "ttm_revenue_billion": 1.64,
+        "yoy_growth_pct": 10.7
+      },
+      "research_and_insights": {
+        "ttm_revenue_billion": 0.976,
+        "yoy_growth_pct": 7.4
+      },
+      "data_and_information": {
+        "ttm_revenue_billion": 0.895,
+        "yoy_growth_pct": 6.5
+      }
+    },
+    "fy2026_guidance": {
+      "revenue_growth": "high-single-digit percent",
+      "adjusted_operating_margin": "33%"
+    }
+  },
+  "industry_outlook_2026": {
+    "sector_earnings_growth": "around rate of inflation",
+    "negative_sectors": 7,
+    "positive_sectors": 2,
+    "positive_sector_names": ["aerospace and defense", "tech"],
+    "regulatory_environment": "looser regulatory regime expected",
+    "ai_impact": "MCO favored for cleaner outlook and regulatory moat amid AI-driven fears",
+    "risktech_ranking": "#1 in 2026 Chartis RiskTech100 (4th consecutive year)"
+  }
+}

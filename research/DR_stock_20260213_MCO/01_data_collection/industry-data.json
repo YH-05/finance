@@ -1,0 +1,483 @@
+{
+  "research_id": "DR_stock_20260213_MCO",
+  "collected_at": "2026-02-13T10:30:00Z",
+  "industry_preset_used": "Financials/Capital_Markets",
+  "preset_match": "estimated",
+  "preset_match_rationale": "industry-research-presets.json に Financials/Capital_Markets プリセットは存在するが、信用格付け業界に特化した設定はないため、Capital_Markets プリセットをベースに信用格付け業界固有の情報を WebSearch で補完",
+  "data_collection_summary": {
+    "sources_attempted": 5,
+    "sources_succeeded": 4,
+    "sources_reused": 0,
+    "sources_failed": 1,
+    "details": [
+      {
+        "source": "industry_collect_script",
+        "status": "failed",
+        "error_message": "data/raw/industry_reports/ 配下に蓄積データなし。スクレイピングスクリプト未実装のため WebSearch で補完",
+        "age_days": null
+      },
+      {
+        "source": "web_search",
+        "status": "collected",
+        "data_date": "2026-02-13",
+        "age_days": 0,
+        "article_count": 15
+      },
+      {
+        "source": "sec_10k_sections",
+        "status": "collected",
+        "data_date": "2026-02-13",
+        "age_days": 0,
+        "sections_extracted": ["competition", "risk_factors"],
+        "note": "sec-filings.json 未生成のため WebSearch で 10-K Competition/Risk Factors を補完"
+      },
+      {
+        "source": "industry_media",
+        "status": "collected",
+        "data_date": "2026-02-13",
+        "age_days": 0,
+        "article_count": 8
+      },
+      {
+        "source": "dogma_framework",
+        "status": "collected",
+        "data_date": "2026-02-13",
+        "age_days": 0,
+        "framework_file": "analyst/Competitive_Advantage/analyst_YK/dogma.md"
+      }
+    ]
+  },
+  "industry_position": {
+    "market_share": {
+      "metric_name": "global_credit_ratings_revenue",
+      "value_pct": 31,
+      "source": "industry_analysis",
+      "source_tier": 2,
+      "date": "2025",
+      "confidence": "high",
+      "note": "S&P Global が 50%、Moody's が 31%、Fitch が 12%、その他 7%。Big Three で約 93% を占める寡占構造"
+    },
+    "market_rank": 2,
+    "trend": "stable",
+    "trend_rationale": "過去10年以上にわたり Big Three の寡占構造は変化なし。規制要件（NRSRO認定）と高いスイッチングコストにより新規参入が極めて困難。Moody's は MIS（格付け）と MA（アナリティクス）の二本柱で安定成長を継続"
+  },
+  "competitive_landscape": {
+    "top_competitors": [
+      {
+        "ticker": "SPGI",
+        "company_name": "S&P Global Inc.",
+        "overlap_areas": ["信用格付け", "金融データ・アナリティクス", "リスク管理ソリューション", "ESG評価"],
+        "relative_strength": "やや優位",
+        "key_differentiator": "IHS Markit 統合後の圧倒的なデータ資産。インデックス事業（S&P 500等）による非格付け収益の多角化。売上規模は Moody's の約2倍（$14B vs $7B）。格付けセグメントのグローバルシェアは 50% で Moody's の 31% を上回る"
+      },
+      {
+        "ticker": null,
+        "company_name": "Fitch Ratings (Hearst Corporation子会社, 非上場)",
+        "overlap_areas": ["信用格付け", "リサーチ"],
+        "relative_strength": "劣位",
+        "key_differentiator": "Big Three の第三極。グローバルシェア約12%。Moody's・S&P が意見が分かれた際のタイブレーカー的役割。非上場のため財務詳細は限定的"
+      },
+      {
+        "ticker": "MSCI",
+        "company_name": "MSCI Inc.",
+        "overlap_areas": ["ESG評価・データ", "リスク分析", "金融データ"],
+        "relative_strength": "部分的競合",
+        "key_differentiator": "ESG評価・インデックス分野で強み。Moody's Analytics と ESG/気候リスクデータ領域で競合。直接的な信用格付けでは非競合"
+      },
+      {
+        "ticker": "ICE",
+        "company_name": "Intercontinental Exchange Inc.",
+        "overlap_areas": ["債券データ・アナリティクス", "リスク管理"],
+        "relative_strength": "部分的競合",
+        "key_differentiator": "取引所・クリアリングの基盤インフラ。ICE Data Services による債券価格・データ提供で MA と競合"
+      },
+      {
+        "ticker": "VRSK",
+        "company_name": "Verisk Analytics Inc.",
+        "overlap_areas": ["データ・アナリティクス", "リスク評価"],
+        "relative_strength": "部分的競合",
+        "key_differentiator": "保険業界特化のデータ・アナリティクス。Moody's Analytics の保険向けソリューションと一部競合"
+      }
+    ],
+    "barriers_to_entry": {
+      "level": "very_high",
+      "factors": [
+        "NRSRO 認定の取得困難性（SEC による厳格な審査、数年単位の監査実績と信頼性の蓄積が必要）",
+        "115年以上にわたる信用サイクル・デフォルトデータの蓄積（新規参入者には再現不可能）",
+        "規制による格付け義務化（機関投資家・銀行・保険会社は NRSRO 格付け取得証券の保有が義務付け）",
+        "発行体・投資家間の自己強化型ネットワーク効果（発行体は投資家が信頼する格付け機関を選び、投資家は規制当局が認める格付け機関を求める）",
+        "金融機関の投資モデル・リスク管理・コンプライアンスシステムが特定格付け機関のスケールに依存（極めて高いスイッチングコスト）",
+        "グローバルなブランド認知とデファクトスタンダードとしての地位（MCO/SPGI の格付けなしに大型起債は事実上不可能）"
+      ]
+    },
+    "threat_of_substitution": {
+      "level": "low",
+      "rationale": "信用格付けは規制要件に組み込まれており、代替手段による完全な置換は極めて困難。Dodd-Frank Act 以降、格付け依存度削減の動きはあるものの、実務上は依然として格付けが債券発行・投資判断の必須要素。AI・フィンテックによる代替信用評価手法の台頭はあるが、規制フレームワーク内での地位は揺るがない"
+    },
+    "industry_concentration": {
+      "hhi_estimate": "very_high",
+      "top3_share_pct": 93,
+      "fragmentation": "tight_oligopoly",
+      "note": "NRSRO は10社存在するが、大手3社（S&P, Moody's, Fitch）で NRSRO 全体の収益の 91% を占める。残り7社は「中規模」3社・「小規模」4社で合計9%。事実上の三寡占"
+    }
+  },
+  "industry_trends": [
+    {
+      "trend_id": "IT001",
+      "trend": "プライベートクレジット市場の急拡大",
+      "category": "market_expansion",
+      "impact_on_company": "positive",
+      "impact_magnitude": "high",
+      "timeframe": "1-3 years",
+      "source": "Fitch Ratings / KBRA Research",
+      "source_tier": 2,
+      "collected_at": "2026-02-13T00:00:00Z",
+      "confidence": "high",
+      "detail": "プライベートクレジット市場が米国直接貸付を超え、アセットバック・ファイナンス、EMEA・APACへ拡大中。2026年はプライベートクレジットにとって転換点。Moody's はプライベートクレジット・リスク評価サービス（MSCI との共同開発）を2024年にローンチし、この成長市場への対応を強化"
+    },
+    {
+      "trend_id": "IT002",
+      "trend": "AI・GenAI の信用リスク管理への統合",
+      "category": "technology",
+      "impact_on_company": "positive",
+      "impact_magnitude": "high",
+      "timeframe": "1-3 years",
+      "source": "Klover.ai / Consulting Research",
+      "source_tier": 2,
+      "collected_at": "2026-02-13T00:00:00Z",
+      "confidence": "high",
+      "detail": "AI が信用リスクプロセス全般（予測モデル、リスクモデル管理、意思決定の高速化）に浸透。Moody's は 115年超の独自データを AI モデル学習に活用し、S&P Global の CreditCompanion（2025年5月ローンチ）と競合。データ資産の深度が AI 時代の差別化要因"
+    },
+    {
+      "trend_id": "IT003",
+      "trend": "ESG・気候リスクの信用評価への統合",
+      "category": "regulatory_and_market",
+      "impact_on_company": "positive",
+      "impact_magnitude": "medium",
+      "timeframe": "2-5 years",
+      "source": "Web検索 / 業界レポート",
+      "source_tier": 3,
+      "collected_at": "2026-02-13T00:00:00Z",
+      "confidence": "medium",
+      "detail": "ESG 統合がデューデリジェンス・スクリーニング段階を超え、投資家が変化を促す領域へ移行。気候リスクが信用評価に直接組み込まれる動き。Moody's は ESG データ・気候リスク分析ツールを MA 部門で提供し、この潮流に対応"
+    },
+    {
+      "trend_id": "IT004",
+      "trend": "規制環境の変化（格付け依存度削減 vs 実務上の継続依存）",
+      "category": "regulatory",
+      "impact_on_company": "neutral",
+      "impact_magnitude": "low",
+      "timeframe": "3-5 years",
+      "source": "SEC / Brookings / 学術論文",
+      "source_tier": 2,
+      "collected_at": "2026-02-13T00:00:00Z",
+      "confidence": "medium",
+      "detail": "Dodd-Frank Act 以降、規制上の格付け依存度削減が進むも、実務上は債券発行・投資判断において格付けは必須要素として継続。SEC は Regulation M から信用格付け参照を削除する動きがあるが、市場慣行としての格付け需要は不変。構造的影響は限定的"
+    },
+    {
+      "trend_id": "IT005",
+      "trend": "GenAI による競争激化（S&P Global の AI 戦略）",
+      "category": "competitive",
+      "impact_on_company": "negative",
+      "impact_magnitude": "medium",
+      "timeframe": "1-3 years",
+      "source": "Klover.ai / Seeking Alpha",
+      "source_tier": 3,
+      "collected_at": "2026-02-13T00:00:00Z",
+      "confidence": "medium",
+      "detail": "S&P Global が CreditCompanion（GenAI ツール、2025年5月ローンチ）で積極的な AI 戦略を展開。IHS Markit 統合後のデータ資産量では S&P Global が優位。ただし Moody's も AI 投資を加速中であり、115年超のデフォルトデータの質では優位性を保持"
+    },
+    {
+      "trend_id": "IT006",
+      "trend": "債券発行市場の回復・活況",
+      "category": "market_cycle",
+      "impact_on_company": "positive",
+      "impact_magnitude": "high",
+      "timeframe": "0-1 year",
+      "source": "Moody's Q3 2025 Earnings / Investing.com",
+      "source_tier": 2,
+      "collected_at": "2026-02-13T00:00:00Z",
+      "confidence": "high",
+      "detail": "2024年 MIS 収益が前年比33%増。2025年Q3に四半期収益が初めて$2Bを突破。金利環境の変化に伴うリファイナンス需要増と新規発行増が格付け収益を押し上げ。2026年も高水準の発行市場が継続する見通し"
+    }
+  ],
+  "competitive_advantage_evaluation": {
+    "framework": "dogma.md 12判断ルール",
+    "framework_version": "analyst_YK",
+    "moat_type": "brand_ecosystem",
+    "moat_strength": "wide",
+    "overall_confidence": "high",
+    "advantages": [
+      {
+        "advantage_id": "CA001",
+        "name": "規制埋め込み型の構造的寡占ポジション",
+        "type": "efficient_scale",
+        "description": "NRSRO 認定と金融規制への格付け義務化により、Big Three（MCO, SPGI, Fitch）が市場の 93% を占める三寡占構造が形成されている。市場規模に対して3社が効率的規模を構成しており、新規参入が経済合理性を持たない。この構造は1975年のNRSRO制度発足以来50年以上持続しており、Dodd-Frank 後も実質的に変化していない",
+        "dogma_rules_applied": [
+          {
+            "rule_number": 11,
+            "rule_name": "業界構造と企業ポジションの合致を最高評価",
+            "assessment": "三寡占市場において、2番手かつ全債券市場での必須インフラとしてのポジションが業界構造と完全に合致。フラグメント市場 × 規模のORLYパターンに匹敵する、寡占市場 × 規制参入障壁の最強パターン"
+          },
+          {
+            "rule_number": 3,
+            "rule_name": "相対的優位性を要求",
+            "assessment": "新規参入者（残り7 NRSRO で合計9%シェア）に対して圧倒的な差別化。DBRS、KBRA 等は存在するが、大型起債では事実上 MCO/SPGI の二択"
+          },
+          {
+            "rule_number": 4,
+            "rule_name": "定量的裏付けで納得度向上",
+            "assessment": "Big Three で NRSRO 収益の 91%。MCO 単体で 31%。10社中3社で 91% は定量的に明確な寡占"
+          }
+        ],
+        "confidence_pct": 90,
+        "confidence_rank": "かなり納得",
+        "quantitative_evidence": "NRSRO 10社中、大手3社で収益の 91%。MCO のグローバル格付けシェアは 31%（S&P 50%、Fitch 12%）。50年以上この構造が維持されている",
+        "negative_case_evidence": "2008年金融危機後、格付け機関への批判が高まり、Dodd-Frank で規制強化と格付け依存度削減が図られたが、結果として市場構造は変化せず。新興格付け機関（KBRA等）の市場浸透は極めて限定的（合計9%に留まる）"
+      },
+      {
+        "advantage_id": "CA002",
+        "name": "発行体-投資家間の自己強化型ネットワーク効果",
+        "type": "network_effect",
+        "description": "発行体は投資家が信頼する格付け機関から格付けを取得する必要があり、投資家は規制当局が認める格付け機関の格付けを求める。この自己強化ループにより、既存の大手格付け機関の地位が強化され続け、新規参入者は凍結される（winner-takes-most 構造）",
+        "dogma_rules_applied": [
+          {
+            "rule_number": 1,
+            "rule_name": "優位性は能力・仕組みであり結果ではない",
+            "assessment": "ネットワーク効果は「仕組み」であり、高シェアという「結果」ではない。発行体→投資家→規制当局の三角形が自己強化する構造メカニズムそのもの"
+          },
+          {
+            "rule_number": 2,
+            "rule_name": "優位性は名詞で表現される属性",
+            "assessment": "「ネットワーク効果」は名詞属性として適切"
+          },
+          {
+            "rule_number": 5,
+            "rule_name": "CAGR接続は直接的メカニズムを要求",
+            "assessment": "ネットワーク効果→格付け依頼の継続的流入→MIS収益の安定・成長。1-2ステップの直接的メカニズム"
+          }
+        ],
+        "confidence_pct": 90,
+        "confidence_rank": "かなり納得",
+        "quantitative_evidence": "事実上全ての投資適格債券が MCO または SPGI（多くは両方）の格付けを取得。大型起債では MCO/SPGI のダブル格付けが市場慣行。Fitch はタイブレーカーとして第三の格付けを提供",
+        "negative_case_evidence": "中国市場では国内格付け機関（CCXI等）が優位だが、これは規制による市場分断の結果であり、自由市場でのネットワーク効果の崩壊例ではない"
+      },
+      {
+        "advantage_id": "CA003",
+        "name": "極めて高いスイッチングコスト",
+        "type": "switching_cost",
+        "description": "金融機関の投資モデル、規制資本算定、コンプライアンスシステム、リスク管理フレームワークが特定格付け機関のレーティングスケールに依存して構築されている。格付け機関の変更は、これらシステム全体の再構築を要する",
+        "dogma_rules_applied": [
+          {
+            "rule_number": 1,
+            "rule_name": "優位性は能力・仕組みであり結果ではない",
+            "assessment": "スイッチングコストは顧客側のシステム構築に起因する「仕組み」であり、MCO の実績ではない"
+          },
+          {
+            "rule_number": 6,
+            "rule_name": "構造的要素と補完的要素を区別",
+            "assessment": "スイッチングコストは構造的要素。格付けスケールが金融インフラに深く組み込まれた結果として生じる不可逆的な依存構造"
+          }
+        ],
+        "confidence_pct": 70,
+        "confidence_rank": "おおむね納得",
+        "quantitative_evidence": "金融機関は投資方針書、ALM モデル、ストレステスト、バーゼル規制準拠のリスク加重計算に MCO/SPGI の格付けスケールを直接参照。変更コストは金融機関あたり数百万ドル規模と推定",
+        "negative_case_evidence": null
+      },
+      {
+        "advantage_id": "CA004",
+        "name": "115年超のデフォルト・信用サイクルデータ蓄積",
+        "type": "intangible_assets",
+        "description": "1909年設立以来蓄積されたプロプライエタリな信用データ（デフォルト率、回収率、信用遷移マトリックス、信用サイクルデータ）は、競合が再現不可能な無形資産。AI時代においてはモデル学習用の高品質データセットとしての価値がさらに増大",
+        "dogma_rules_applied": [
+          {
+            "rule_number": 3,
+            "rule_name": "相対的優位性を要求",
+            "assessment": "S&P Global も同等の歴史を持つが、新規参入者はこの 115年分のデータを新たに構築することは物理的に不可能。中小 NRSRO との差は圧倒的"
+          },
+          {
+            "rule_number": 4,
+            "rule_name": "定量的裏付けで納得度向上",
+            "assessment": "115年超の縦断的データ、複数の信用サイクル（大恐慌、2008年金融危機等）を網羅"
+          }
+        ],
+        "confidence_pct": 70,
+        "confidence_rank": "おおむね納得",
+        "quantitative_evidence": "1909年設立以来115年超のデータ蓄積。大恐慌、第二次世界大戦、石油危機、ドットコムバブル、2008年金融危機、COVID-19等の信用サイクルデータを保有",
+        "negative_case_evidence": null
+      },
+      {
+        "advantage_id": "CA005",
+        "name": "デファクトスタンダードとしてのブランド認知",
+        "type": "intangible_assets",
+        "description": "Moody's の格付けスケール（Aaa, Aa, A, Baa等）は金融市場のデファクトスタンダードとして機能。投資適格/非投資適格の境界（Baa3/Ba1）は市場参加者の共通言語。このブランド認知は格付け業界固有のもので、業界共通能力ではない",
+        "dogma_rules_applied": [
+          {
+            "rule_number": 2,
+            "rule_name": "優位性は名詞で表現される属性",
+            "assessment": "「ブランド認知」「デファクトスタンダード」は名詞属性として適切"
+          },
+          {
+            "rule_number": 7,
+            "rule_name": "純粋競合に対する差別化を要求",
+            "assessment": "SPGI も同等のブランド力を持つため、MCO 固有の差別化としては限定的。ただし Big Three 以外の格付け機関に対しては圧倒的な差別化。dogma.md の類型2（MSCI/MCO/S&P のデファクト事例）に該当"
+          }
+        ],
+        "confidence_pct": 50,
+        "confidence_rank": "まあ納得",
+        "quantitative_evidence": "dogma.md 類型2 に MCO が「デファクト」として明示的に言及。ただし SPGI も同等の位置づけのため、MCO 固有の差別化としての評価は控えめ",
+        "negative_case_evidence": null
+      },
+      {
+        "advantage_id": "CA006",
+        "name": "Moody's Analytics（MA）によるリカーリング収益基盤",
+        "type": "switching_cost",
+        "description": "MA 部門の ARR（年間経常収益）$3.4B（2025年Q3時点、前年比8%成長）は、格付け収益の景気循環性を補完するリカーリング収益基盤。68四半期連続成長。Decision Solutions、Research & Insights、Data & Information の3事業で構成",
+        "dogma_rules_applied": [
+          {
+            "rule_number": 1,
+            "rule_name": "優位性は能力・仕組みであり結果ではない",
+            "assessment": "ARR 成長は結果。しかし MA のサブスクリプション型ビジネスモデル自体は「仕組み」であり、顧客のワークフロー統合によるスイッチングコストが構造的優位性"
+          },
+          {
+            "rule_number": 6,
+            "rule_name": "構造的要素と補完的要素を区別",
+            "assessment": "MA は MIS の格付け事業を補完する要素であり、それ自体が独立した構造的優位性とは言いにくい。ただし MIS + MA の組み合わせはエコシステムとしての強みを形成"
+          }
+        ],
+        "confidence_pct": 50,
+        "confidence_rank": "まあ納得",
+        "quantitative_evidence": "MA ARR $3.4B（2025年Q3）、68四半期連続成長、調整後営業利益率 34.3%（前年比400bp改善）。Decision Solutions ARR は前年比10%成長",
+        "negative_case_evidence": null
+      }
+    ],
+    "rejected_claims": [
+      {
+        "claim": "Moody's の高い ROE（63.9%、過去5年平均）は競争優位性の証拠",
+        "rejection_reason": "高 ROE は寡占構造と価格支配力の「結果」であり、優位性そのものではない（ルール1違反）。優位性は ROE を生み出す「仕組み」（寡占構造、ネットワーク効果、スイッチングコスト）の側に存在する",
+        "dogma_rule": 1,
+        "assigned_confidence_pct": 30
+      },
+      {
+        "claim": "MIS 収益の 33% 成長（2024年）は競争優位性の証拠",
+        "rejection_reason": "収益成長は債券発行市場の回復という外部環境要因と格付け独占構造の「結果」。成長率自体は優位性ではない（ルール1違反）",
+        "dogma_rule": 1,
+        "assigned_confidence_pct": 30
+      },
+      {
+        "claim": "AI・GenAI への積極投資は競争優位性",
+        "rejection_reason": "AI 投資は「戦略」であり「優位性」ではない（ルール8違反）。優位性は AI の基盤となるデータ資産（CA004）の側に存在する。S&P Global も同等以上の AI 投資を実施中",
+        "dogma_rule": 8,
+        "assigned_confidence_pct": 30
+      },
+      {
+        "claim": "グローバルな営業ネットワークと地域プレゼンス",
+        "rejection_reason": "SPGI も同等のグローバルプレゼンスを持ち、Big Three 共通の能力。MCO 固有の差別化ではない（ルール3違反）",
+        "dogma_rule": 3,
+        "assigned_confidence_pct": 30
+      }
+    ],
+    "evaluation_notes": "dogma.md の分布傾向に従い、90% 評価は業界構造との合致（CA001）とネットワーク効果（CA002）の2件に限定。CA001 は寡占市場 × 規制参入障壁の構造的合致であり、ORLY#2（フラグメント市場 × 規模・密度）と同等の最高評価パターン。大半の優位性は 50-70% 帯で評価。MCO の最大の特徴は、個々の優位性の強さよりも、規制寡占 + ネットワーク効果 + スイッチングコスト + データ蓄積が重層的に作用する構造的堀の「深さ」にある。S&P Global（SPGI）が最も直接的な競合だが、両社は共存的寡占（duopoly）を形成しており、互いの存在が市場の安定性を高めている点も特筆すべき"
+  },
+  "key_metrics_comparison": {
+    "metrics": [
+      {
+        "metric_name": "Operating Margin (Adjusted)",
+        "company_value": 48.1,
+        "peer_average": null,
+        "peer_median": null,
+        "percentile_rank": null,
+        "assessment": "above_average",
+        "source": "Moody's FY2024 Earnings Release",
+        "note": "調整後営業利益率。SPGI Ratings セグメントの営業利益率は 63% でさらに高い"
+      },
+      {
+        "metric_name": "Gross Margin",
+        "company_value": 66.4,
+        "peer_average": null,
+        "peer_median": null,
+        "percentile_rank": null,
+        "assessment": "above_average",
+        "source": "SEC filings / MacroTrends"
+      },
+      {
+        "metric_name": "Free Cash Flow (FY2024)",
+        "company_value": 2521,
+        "unit": "million_usd",
+        "yoy_growth_pct": 34.1,
+        "assessment": "strong_growth",
+        "source": "Moody's FY2024 Earnings Release"
+      },
+      {
+        "metric_name": "Revenue (FY2024)",
+        "company_value": 7088,
+        "unit": "million_usd",
+        "yoy_growth_pct": 20.0,
+        "assessment": "strong_growth",
+        "source": "Moody's 10-K 2024"
+      },
+      {
+        "metric_name": "MIS Revenue Share",
+        "company_value": 53.5,
+        "unit": "pct_of_total",
+        "assessment": "balanced",
+        "source": "Segment Analysis",
+        "note": "MIS 53.5%, MA 46.5%。SPGI は Ratings が 34% で、より多角化されている"
+      },
+      {
+        "metric_name": "MA ARR",
+        "company_value": 3400,
+        "unit": "million_usd",
+        "yoy_growth_pct": 8.0,
+        "assessment": "steady_growth",
+        "source": "Moody's Q3 2025 Earnings"
+      },
+      {
+        "metric_name": "ROE (5Y Average)",
+        "company_value": 63.9,
+        "unit": "pct",
+        "assessment": "exceptional",
+        "source": "GuruFocus / StockStory",
+        "note": "寡占構造と価格支配力の結果。負債レバレッジの影響も含む"
+      }
+    ],
+    "peer_group_used": "Credit_Rating_Agencies",
+    "comparison_date": "2026-02-13"
+  },
+  "government_data": {
+    "bls": null,
+    "census": null,
+    "eia": null,
+    "sec_nrsro": {
+      "total_nrsros": 10,
+      "large_nrsros": ["S&P Global Ratings", "Moody's Investors Service", "Fitch Ratings"],
+      "large_nrsro_revenue_share_pct": 91,
+      "data_source": "SEC Office of Credit Ratings (March 2024)",
+      "status": "collected"
+    }
+  },
+  "data_freshness": {
+    "consulting_reports": null,
+    "government_data": "2024-03",
+    "web_search": "2026-02-13",
+    "sec_filings": "2026-02-13",
+    "industry_media": "2026-02-13"
+  },
+  "data_quality": {
+    "high_confidence_data_pct": 70,
+    "limitations": [
+      "industry-research-presets.json に信用格付け業界の専用プリセットがないため、Financials/Capital_Markets を推定適用",
+      "data/raw/industry_reports/ に蓄積データなし。スクレイピングスクリプトが信用格付け業界に未対応",
+      "sec-filings.json が未生成のため、10-K Competition/Risk Factors セクションは WebSearch で補完",
+      "コンサルレポート（McKinsey, BCG等）の信用格付け業界固有データは公開部分が限定的",
+      "Fitch Ratings は非上場のため、詳細な財務データ・市場シェアデータが限定的",
+      "市場シェアデータは複数ソースで 31-40% と幅があり、推定値を含む",
+      "ピアグループの財務比較データ（peer_average, peer_median）は未取得"
+    ],
+    "recommendations": [
+      "10-K の Item 1（Business）と Item 1A（Risk Factors）の詳細確認を推奨（sec-filings.json 生成後）",
+      "SPGI の 10-K との比較分析により、競争ポジションの検証精度が向上",
+      "SEC OCR の年次レポート（NRSROの詳細統計）の参照を推奨"
+    ]
+  }
+}

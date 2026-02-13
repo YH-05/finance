@@ -1,0 +1,490 @@
+{
+  "metadata": {
+    "ticker": "MCO",
+    "company_name": "MOODYS CORP /DE/",
+    "cik": "0001059556",
+    "sic": "7320",
+    "fiscal_year_end": "1231",
+    "exchange": "NYSE",
+    "collected_at": "2026-02-13T10:30:00Z",
+    "data_sources": {
+      "sec_edgar_mcp": true,
+      "sec_edgar_web": true,
+      "tavily_search": true,
+      "notes": "SEC EDGAR MCP API partially unavailable due to EDGAR_IDENTITY errors; financial data supplemented via Tavily search of SEC filings and earnings releases"
+    }
+  },
+  "annual_financials": {
+    "FY2024": {
+      "period": "2024-01-01 to 2024-12-31",
+      "filing_type": "10-K",
+      "filing_date": "2025-02-14",
+      "accession_number": "0001059556-25-000025",
+      "income_statement": {
+        "revenue": 7088000000,
+        "revenue_yoy_change_pct": 19.8,
+        "ma_revenue": 3295000000,
+        "mis_revenue": 3793000000,
+        "operating_income": null,
+        "operating_margin_adjusted_pct": 48.3,
+        "mis_adjusted_operating_margin_pct": 60.1,
+        "net_income": null,
+        "diluted_eps": 11.26,
+        "adjusted_diluted_eps": 12.47,
+        "diluted_eps_yoy_change_pct": 29,
+        "adjusted_diluted_eps_yoy_change_pct": 26
+      },
+      "balance_sheet": {
+        "total_assets": null,
+        "total_liabilities": null,
+        "total_shareholders_equity": null,
+        "long_term_debt": null,
+        "notes": "Detailed balance sheet data not extractable via available APIs"
+      },
+      "cash_flow": {
+        "operating_cash_flow": null,
+        "free_cash_flow": null,
+        "notes": "Cash flow data not extractable via available APIs"
+      }
+    },
+    "FY2023": {
+      "period": "2023-01-01 to 2023-12-31",
+      "filing_type": "10-K",
+      "income_statement": {
+        "revenue": 5916000000,
+        "ma_revenue": 3056000000,
+        "mis_revenue": 2860000000,
+        "diluted_eps": 8.73,
+        "adjusted_diluted_eps": 9.90
+      }
+    },
+    "FY2022": {
+      "period": "2022-01-01 to 2022-12-31",
+      "filing_type": "10-K",
+      "income_statement": {
+        "revenue": 5468000000
+      }
+    },
+    "FY2021": {
+      "period": "2021-01-01 to 2021-12-31",
+      "filing_type": "10-K",
+      "income_statement": {
+        "revenue": 6218000000
+      }
+    }
+  },
+  "quarterly_financials": {
+    "Q3_2025": {
+      "period": "2025-07-01 to 2025-09-30",
+      "filing_type": "10-Q",
+      "filing_date": "2025-10-23",
+      "accession_number": "0001628280-25-046118",
+      "income_statement": {
+        "revenue": 2009000000,
+        "revenue_yoy_change_pct": 11,
+        "ma_revenue": 909000000,
+        "ma_revenue_yoy_change_pct": 9,
+        "mis_revenue": 1100000000,
+        "mis_revenue_yoy_change_pct": 12,
+        "adjusted_operating_margin_pct": 52.9,
+        "adjusted_operating_margin_expansion_bps": 510,
+        "net_income": 646000000,
+        "diluted_eps": 3.60,
+        "diluted_eps_yoy_change_pct": 23,
+        "adjusted_diluted_eps": 3.92,
+        "adjusted_diluted_eps_yoy_change_pct": 22
+      },
+      "ytd_metrics": {
+        "revenue": 5800000000,
+        "revenue_yoy_change_pct": 8,
+        "ma_revenue": 2700000000,
+        "ma_revenue_yoy_change_pct": 9,
+        "mis_revenue": 3200000000,
+        "mis_revenue_yoy_change_pct": 6,
+        "diluted_eps": 10.26,
+        "diluted_eps_yoy_change_pct": 13,
+        "adjusted_diluted_eps": 11.30,
+        "adjusted_diluted_eps_yoy_change_pct": 15
+      }
+    },
+    "Q4_2024": {
+      "period": "2024-10-01 to 2024-12-31",
+      "filing_type": "10-Q",
+      "income_statement": {
+        "revenue": 1672000000,
+        "revenue_yoy_change_pct": 13,
+        "ma_revenue": 863000000,
+        "ma_revenue_yoy_change_pct": 8,
+        "mis_revenue": 809000000,
+        "mis_revenue_yoy_change_pct": 18,
+        "diluted_eps": 2.17,
+        "diluted_eps_yoy_change_pct": 17,
+        "adjusted_diluted_eps": 2.62,
+        "adjusted_diluted_eps_yoy_change_pct": 20
+      }
+    },
+    "Q3_2024": {
+      "period": "2024-07-01 to 2024-09-30",
+      "income_statement": {
+        "revenue": 1813000000
+      }
+    },
+    "Q2_2024": {
+      "period": "2024-04-01 to 2024-06-30",
+      "filing_type": "10-Q",
+      "accession_number": "0001059556-24-000123",
+      "income_statement": {
+        "revenue": 1817000000,
+        "operating_income": 775000000,
+        "interest_expense_net": -63000000,
+        "diluted_eps": 3.02,
+        "diluted_eps_yoy_change_pct": 47,
+        "adjusted_diluted_eps": 3.28,
+        "adjusted_diluted_eps_yoy_change_pct": 43
+      },
+      "balance_sheet_as_of_2024_06_30": {
+        "total_assets": 15013000000,
+        "current_portion_of_long_term_debt": 688000000,
+        "deferred_revenue_current": 1423000000,
+        "total_current_liabilities": 3219000000,
+        "long_term_debt": 6253000000,
+        "deferred_tax_liabilities_net": 465000000,
+        "operating_lease_liabilities": 254000000,
+        "total_liabilities": 11075000000,
+        "total_moodys_shareholders_equity": 3778000000,
+        "noncontrolling_interests": 160000000,
+        "total_shareholders_equity": 3938000000,
+        "total_liabilities_and_equity": 15013000000
+      },
+      "balance_sheet_as_of_2023_12_31": {
+        "total_assets": 14622000000,
+        "total_current_liabilities": 2500000000,
+        "long_term_debt": 7001000000,
+        "total_liabilities": 11146000000,
+        "total_moodys_shareholders_equity": 3318000000,
+        "noncontrolling_interests": 158000000,
+        "total_shareholders_equity": 3476000000,
+        "total_liabilities_and_equity": 14622000000
+      },
+      "ytd_income_statement": {
+        "revenue_h1_2024": 3603000000,
+        "revenue_h1_2023": 2964000000,
+        "operating_income_h1_2024": 1576000000,
+        "operating_income_h1_2023": 1104000000,
+        "total_expenses_h1_2024": 2027000000,
+        "total_expenses_h1_2023": 1860000000,
+        "interest_expense_net_h1_2024": -125000000,
+        "interest_expense_net_h1_2023": -119000000
+      },
+      "segment_revenue_h1_2024": {
+        "ma_transaction_revenue": 81000000,
+        "ma_recurring_revenue": 1520000000,
+        "ma_total": 1601000000,
+        "mis_transaction_revenue": 731000000,
+        "mis_recurring_revenue": 1086000000,
+        "mis_total": 1817000000,
+        "total_mco_transaction": 731000000,
+        "total_mco_recurring": 1086000000
+      },
+      "ma_sub_segment_revenue_h1_2024": {
+        "decision_solutions": 731000000,
+        "research_and_insights": 448000000,
+        "data_and_information": 422000000
+      }
+    },
+    "Q1_2024": {
+      "period": "2024-01-01 to 2024-03-31",
+      "income_statement": {
+        "revenue": 1786000000
+      }
+    }
+  },
+  "guidance": {
+    "FY2025_latest": {
+      "as_of": "2025-10-22",
+      "source": "Q3 2025 Earnings Release",
+      "revenue_growth": "high single-digit percent range",
+      "adjusted_operating_margin": "approximately 51%",
+      "diluted_eps_range": "$13.15 to $13.40",
+      "adjusted_diluted_eps_range": "$14.50 to $14.75",
+      "adjusted_diluted_eps_yoy_growth_at_midpoint_pct": 17,
+      "free_cash_flow_expected": 2500000000,
+      "share_repurchase_guidance": "at least $1.5 billion",
+      "mis_revenue_growth": "mid- to high single-digit percent range",
+      "ma_revenue_growth": "high single-digit range",
+      "ma_adjusted_operating_margin": "32% to 33%",
+      "annual_recurring_revenue_arr": 3400000000,
+      "arr_yoy_growth_pct": 8
+    },
+    "FY2025_initial": {
+      "as_of": "2025-02-13",
+      "source": "Q4 2024 Earnings Release",
+      "revenue_growth": "high single-digit range",
+      "adjusted_operating_margin": "approximately 50%",
+      "diluted_eps_range": "$12.75 to $13.25",
+      "adjusted_diluted_eps_range": "$14.00 to $14.50"
+    }
+  },
+  "recent_filings": {
+    "annual_reports_10K": [
+      {
+        "period_end": "2024-12-31",
+        "filing_date": "2025-02-14",
+        "accession_number": "0001059556-25-000025",
+        "form_type": "10-K"
+      }
+    ],
+    "quarterly_reports_10Q": [
+      {
+        "period_end": "2025-09-30",
+        "filing_date": "2025-10-23",
+        "accession_number": "0001628280-25-046118",
+        "form_type": "10-Q"
+      },
+      {
+        "period_end": "2025-06-30",
+        "filing_date": "2025-07-24",
+        "form_type": "10-Q"
+      },
+      {
+        "period_end": "2025-03-31",
+        "filing_date": "2025-04-23",
+        "form_type": "10-Q"
+      }
+    ],
+    "current_reports_8K": [
+      {
+        "filing_date": "2026-01-12",
+        "description": "Moody's Corporation Elects Lisa P. Sawicki to Board of Directors",
+        "form_type": "8-K"
+      },
+      {
+        "filing_date": "2025-10-22",
+        "description": "Announcement of Q3 2025 financial results",
+        "sec_url": "https://www.sec.gov/Archives/edgar/data/1059556/000162828025045770/mco-20251022.htm",
+        "form_type": "8-K"
+      },
+      {
+        "filing_date": "2025-10-14",
+        "description": "2025 Annual Meeting of Stockholders related filing",
+        "sec_url": "https://www.sec.gov/Archives/edgar/data/1059556/000105955625000193/mco-20251014.htm",
+        "form_type": "8-K"
+      },
+      {
+        "filing_date": "2025-08-19",
+        "description": "Stephen Tulenko, President of Moody's Analytics, resignation notification",
+        "sec_url": "https://www.sec.gov/Archives/edgar/data/1059556/000119312525185346/d926227d8k.htm",
+        "form_type": "8-K"
+      }
+    ]
+  },
+  "insider_transactions": {
+    "period": "Last 180 days",
+    "total_form4_filings": 28,
+    "form_3_count": 0,
+    "form_4_count": 28,
+    "form_5_count": 0,
+    "notable_transactions": [
+      {
+        "insider": "Robert Fauber",
+        "title": "President and CEO",
+        "transaction_date": "2026-02-02",
+        "transaction_type": "Option exercise + Sale",
+        "shares_exercised": 592,
+        "exercise_price": 113.34,
+        "shares_sold": 592,
+        "sale_price": 516.15,
+        "shares_owned_after": 61081.984,
+        "trading_plan": "Rule 10b5-1 plan adopted 2025-07-30",
+        "accession_number": "0001481153-26-000002"
+      },
+      {
+        "insider": "Robert Fauber",
+        "title": "President and CEO",
+        "transaction_date": "2026-02-03",
+        "transaction_type": "Option exercise + Sale",
+        "shares_exercised": 575,
+        "exercise_price": 167.50,
+        "shares_sold": 575,
+        "sale_price": 498.90,
+        "shares_owned_after": 61081.984,
+        "trading_plan": "Rule 10b5-1 plan adopted 2025-07-30",
+        "accession_number": "0001481153-26-000002"
+      },
+      {
+        "insider": "Robert Fauber",
+        "title": "President and CEO",
+        "transaction_date": "2026-01-02",
+        "transaction_type": "Sale (Rule 144)",
+        "shares_sold": 592,
+        "gross_proceeds": 301292.48
+      },
+      {
+        "insider": "Robert Fauber",
+        "title": "President and CEO",
+        "transaction_date": "2026-01-05",
+        "transaction_type": "Sale (Rule 144)",
+        "shares_sold": 575,
+        "gross_proceeds": 288949.00
+      },
+      {
+        "insider": "Robert Fauber",
+        "title": "President and CEO",
+        "transaction_date": "2025-12-01",
+        "transaction_type": "Sale (Rule 144)",
+        "shares_sold": 592,
+        "gross_proceeds": 287765.28
+      },
+      {
+        "insider": "Robert Fauber",
+        "title": "President and CEO",
+        "transaction_date": "2025-12-03",
+        "transaction_type": "Sale (Rule 144)",
+        "shares_sold": 575,
+        "gross_proceeds": 280525.25
+      },
+      {
+        "insider": "Robert Fauber",
+        "title": "President and CEO",
+        "transaction_date": "2025-11-03",
+        "transaction_type": "Sale (Rule 144)",
+        "shares_sold": 1167,
+        "gross_proceeds": 558934.65
+      }
+    ],
+    "insider_sentiment_assessment": "neutral - CEO transactions are routine, pre-planned under 10b5-1 trading plans with small share quantities relative to total holdings (61,082 shares retained)",
+    "recent_form4_accessions": [
+      "0001481153-26-000002",
+      "0001628280-26-000889",
+      "0001628280-26-000634",
+      "0001628280-25-058745",
+      "0001628280-25-057425",
+      "0001628280-25-057423",
+      "0001628280-25-057418",
+      "0001628280-25-057415",
+      "0001628280-25-057413",
+      "0001628280-25-055574"
+    ]
+  },
+  "key_business_metrics": {
+    "segments": {
+      "moodys_investors_service_mis": {
+        "description": "Global provider of credit ratings, research, and risk analysis",
+        "fy2024_revenue": 3793000000,
+        "fy2024_revenue_growth_pct": 33,
+        "q4_2024_adjusted_operating_margin_pct": 60.1,
+        "q3_2025_revenue": 1100000000,
+        "q3_2025_revenue_growth_pct": 12,
+        "sub_lines": ["Corporate Finance", "Structured Finance", "Financial Institutions", "Public, Project and Infrastructure Finance"]
+      },
+      "moodys_analytics_ma": {
+        "description": "Data, analytics and cloud-based software tools for risk management",
+        "fy2024_revenue": 3295000000,
+        "fy2024_revenue_growth_pct": 8,
+        "q3_2025_revenue": 909000000,
+        "q3_2025_revenue_growth_pct": 9,
+        "q3_2025_adjusted_operating_margin_pct": 34.3,
+        "annual_recurring_revenue_arr": 3400000000,
+        "arr_growth_pct": 8,
+        "decision_solutions_arr": 1400000000,
+        "decision_solutions_arr_growth_pct": 12,
+        "ma_recurring_revenue_growth_q4_2024_pct": 10,
+        "sub_lines": ["Decision Solutions", "Research & Insights", "Data & Information"],
+        "customers": "14,800+"
+      }
+    },
+    "corporate": {
+      "headquarters": "7 World Trade Center, 250 Greenwich Street, New York, NY 10007",
+      "ceo": "Rob Fauber",
+      "cfo": "Noemie Heuland",
+      "auditor": "KPMG LLP",
+      "countries_served": "165+",
+      "notable_recognition": "Named best rating agency for 13th consecutive year by Extel",
+      "key_strategic_themes": [
+        "Integrated risk assessment platform",
+        "Data, analytics, and AI-driven solutions",
+        "Strong recurring revenue base with high retention",
+        "Operational leverage driving margin expansion"
+      ]
+    }
+  },
+  "key_events": [
+    {
+      "date": "2026-01-28",
+      "event": "Date set for Moody's Q4 2025 earnings release and investor teleconference"
+    },
+    {
+      "date": "2026-01-12",
+      "event": "Lisa P. Sawicki elected to Board of Directors (8-K filed)"
+    },
+    {
+      "date": "2025-12-22",
+      "event": "Moody's to move global headquarters to Brookfield Place"
+    },
+    {
+      "date": "2025-11-24",
+      "event": "Entegra to integrate Moody's data for structured-credit markets"
+    },
+    {
+      "date": "2025-10-22",
+      "event": "Q3 2025 earnings release - record quarterly revenue exceeding $2 billion"
+    },
+    {
+      "date": "2025-08-19",
+      "event": "Stephen Tulenko, President of Moody's Analytics, resignation"
+    }
+  ],
+  "revenue_history": {
+    "annual": {
+      "FY2024": 7088000000,
+      "FY2023": 5916000000,
+      "FY2022": 5468000000,
+      "FY2021": 6218000000,
+      "FY2020": null,
+      "FY2019": null,
+      "FY2018": null,
+      "FY2017": null,
+      "FY2016": 3604000000
+    },
+    "quarterly": {
+      "Q3_2025": 2009000000,
+      "Q2_2025": null,
+      "Q1_2025": null,
+      "Q4_2024": 1672000000,
+      "Q3_2024": 1813000000,
+      "Q2_2024": 1817000000,
+      "Q1_2024": 1786000000,
+      "Q4_2023": 1480000000,
+      "Q3_2023": 1472000000,
+      "Q2_2023": 1490000000,
+      "Q1_2023": 1474000000,
+      "Q4_2022": 1290000000,
+      "Q3_2022": 1280000000,
+      "Q2_2022": 1378000000,
+      "Q1_2022": 1520000000
+    }
+  },
+  "data_quality_notes": {
+    "completeness": "partial",
+    "limitations": [
+      "SEC EDGAR MCP API returned EDGAR_IDENTITY errors for most endpoints (get_recent_filings, get_xbrl_concepts, get_filing_sections, get_form4_details)",
+      "XBRL financial statement extraction failed for MCO",
+      "Balance sheet data only available from Q2 2024 10-Q filing",
+      "Cash flow statement data not directly available",
+      "FY2020, FY2019, FY2018, FY2017 revenue data not captured",
+      "Some quarterly revenue figures for 2025 (Q1, Q2) not captured"
+    ],
+    "successful_apis": [
+      "get_company_info (via CIK 1059556)",
+      "get_insider_summary (28 Form 4 filings in 180 days)",
+      "get_segment_data (returned empty segments)"
+    ],
+    "supplementary_sources": [
+      "Tavily search of SEC EDGAR filings and earnings releases",
+      "Q4/FY2024 earnings release PDF",
+      "Q3 2025 earnings release PDF",
+      "Q2 2024 earnings release on SEC.gov",
+      "Seeking Alpha, MarketWatch, Yahoo Finance, Nasdaq.com filing summaries"
+    ]
+  }
+}

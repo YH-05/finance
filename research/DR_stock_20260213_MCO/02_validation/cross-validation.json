@@ -1,0 +1,1707 @@
+{
+  "research_id": "DR_stock_20260213_MCO",
+  "validated_at": "2026-02-13T17:30:00Z",
+  "scoring_methodology": {
+    "version": "2.0",
+    "description": "クロス検証統合型信頼度スコアリング",
+    "confidence_rules": {
+      "high": "Tier1ソースで確認 + 他ソースと矛盾なし",
+      "medium": "Tier2ソースで確認 OR Tier1だが軽微な差異あり",
+      "low": "Tier3のみ OR ソース間で矛盾あり"
+    },
+    "tier_weights": {
+      "tier1": 1.0,
+      "tier2": 0.7,
+      "tier3": 0.4
+    }
+  },
+  "validations": [
+    {
+      "validation_id": "V001",
+      "data_point": {
+        "category": "financial",
+        "field": "revenue_fy2024",
+        "description": "FY2024 年間売上高"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 7088000000,
+          "unit": "USD",
+          "date": "2025-02-14",
+          "notes": "10-K filing for FY2024"
+        },
+        {
+          "source_id": "industry_data",
+          "tier": 2,
+          "value": 7088000000,
+          "unit": "USD (millions: 7088)",
+          "date": "2026-02-13",
+          "notes": "key_metrics_comparison.Revenue FY2024 = 7088 million USD"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 0.0,
+        "within_tolerance": true,
+        "consensus_value": 7088000000,
+        "primary_source": "sec_edgar"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1ソース(SEC EDGAR 10-K)で確認済み、Tier2(industry-data)と完全一致",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V002",
+      "data_point": {
+        "category": "financial",
+        "field": "revenue_ttm",
+        "description": "TTM(直近12ヶ月)売上高"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 7501000192,
+          "unit": "USD",
+          "date": "2026-02-13",
+          "notes": "yfinance total_revenue (TTM)"
+        },
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 7472000000,
+          "unit": "USD",
+          "date": "2025-10-23",
+          "notes": "推定TTM: Q4 2024 ($1,672M) + YTD Q3 2025 ($5,800M) = $7,472M"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 0.39,
+        "within_tolerance": true,
+        "consensus_value": 7472000000,
+        "primary_source": "sec_edgar",
+        "notes": "SEC EDGAR の四半期データから推定したTTMとYahoo Finance TTMは0.39%差で許容範囲内(1%以内)"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1ソース(SEC EDGAR四半期データ合算)で推定TTMを確認、Tier2(Yahoo Finance)と0.39%差で許容範囲内",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V003",
+      "data_point": {
+        "category": "financial",
+        "field": "revenue_fy2023",
+        "description": "FY2023 年間売上高"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 5916000000,
+          "unit": "USD",
+          "date": "2025-02-14",
+          "notes": "10-K FY2023 revenue"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 5916000000,
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V004",
+      "data_point": {
+        "category": "financial",
+        "field": "revenue_yoy_growth_fy2024",
+        "description": "FY2024 売上高前年比成長率"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 19.8,
+          "unit": "percent",
+          "date": "2025-02-14",
+          "notes": "10-K FY2024 revenue_yoy_change_pct"
+        },
+        {
+          "source_id": "sec_edgar_calculated",
+          "tier": 1,
+          "value": 19.8,
+          "unit": "percent",
+          "date": "2025-02-14",
+          "notes": "計算値: (7088 - 5916) / 5916 = 19.8%"
+        },
+        {
+          "source_id": "industry_data",
+          "tier": 2,
+          "value": 20.0,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "key_metrics_comparison Revenue yoy_growth_pct = 20.0"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 1.0,
+        "within_tolerance": true,
+        "consensus_value": 19.8,
+        "primary_source": "sec_edgar",
+        "notes": "SEC EDGAR 19.8% vs industry-data 20.0% - 丸め誤差の範囲内"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1ソース(SEC EDGAR)で確認済み、計算値も一致、Tier2(industry-data)との差異は丸め誤差",
+        "highest_tier": 1,
+        "source_count": 3,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V005",
+      "data_point": {
+        "category": "financial",
+        "field": "mis_revenue_fy2024",
+        "description": "MIS部門 FY2024 売上高"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 3793000000,
+          "unit": "USD",
+          "date": "2025-02-14",
+          "notes": "10-K FY2024 mis_revenue and key_business_metrics"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 3793000000,
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V006",
+      "data_point": {
+        "category": "financial",
+        "field": "ma_revenue_fy2024",
+        "description": "MA部門 FY2024 売上高"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 3295000000,
+          "unit": "USD",
+          "date": "2025-02-14",
+          "notes": "10-K FY2024 ma_revenue and key_business_metrics"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 3295000000,
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V007",
+      "data_point": {
+        "category": "financial",
+        "field": "segment_revenue_sum_fy2024",
+        "description": "FY2024 セグメント売上合計の整合性チェック"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 7088000000,
+          "unit": "USD",
+          "date": "2025-02-14",
+          "notes": "MIS ($3,793M) + MA ($3,295M) = $7,088M = 全社売上と一致"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 0.0,
+        "within_tolerance": true,
+        "consensus_value": 7088000000,
+        "primary_source": "sec_edgar",
+        "notes": "内部整合性チェック: セグメント合計 = 全社売上高、完全一致"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "SEC EDGAR内の内部整合性チェックでセグメント合計と全社売上が完全一致",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V008",
+      "data_point": {
+        "category": "financial",
+        "field": "diluted_eps_fy2024",
+        "description": "FY2024 希薄化後EPS"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 11.26,
+          "unit": "USD/share",
+          "date": "2025-02-14",
+          "notes": "10-K FY2024 diluted_eps"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 11.26,
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V009",
+      "data_point": {
+        "category": "financial",
+        "field": "adjusted_diluted_eps_fy2024",
+        "description": "FY2024 調整後希薄化EPS"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 12.47,
+          "unit": "USD/share",
+          "date": "2025-02-14",
+          "notes": "10-K FY2024 adjusted_diluted_eps"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 12.47,
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V010",
+      "data_point": {
+        "category": "financial",
+        "field": "adjusted_operating_margin_fy2024",
+        "description": "FY2024 調整後営業利益率"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 48.3,
+          "unit": "percent",
+          "date": "2025-02-14",
+          "notes": "10-K FY2024 operating_margin_adjusted_pct"
+        },
+        {
+          "source_id": "industry_data",
+          "tier": 2,
+          "value": 48.1,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "key_metrics_comparison Operating Margin (Adjusted) = 48.1"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 0.41,
+        "within_tolerance": true,
+        "consensus_value": 48.3,
+        "primary_source": "sec_edgar",
+        "notes": "SEC EDGAR 48.3% vs industry-data 48.1% - 0.2ppt差は許容範囲内(2%以内)"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1ソース(SEC EDGAR)で確認済み、Tier2(industry-data)と差異0.41%で許容範囲内",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V011",
+      "data_point": {
+        "category": "indicator",
+        "field": "operating_margin_yahoo",
+        "description": "営業利益率（Yahoo Finance TTM）"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 46.886,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "yfinance operating_margin (TTM, GAAP)"
+        },
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 48.3,
+          "unit": "percent",
+          "date": "2025-02-14",
+          "notes": "FY2024 adjusted operating margin"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 2.93,
+        "within_tolerance": false,
+        "consensus_value": 46.886,
+        "primary_source": "yahoo_finance",
+        "notes": "Yahoo Finance はGAAP営業利益率(TTM)、SEC EDGAR は調整後営業利益率(FY2024)。定義の違いによる差異であり、矛盾ではない"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "GAAP vs 調整後の定義差異があるため軽微な差異扱い。両ソースとも信頼性は高いが測定方法が異なる",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V012",
+      "data_point": {
+        "category": "indicator",
+        "field": "trailing_pe",
+        "description": "PER（TTM）"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 33.448,
+          "unit": "ratio",
+          "date": "2026-02-13",
+          "notes": "yfinance trailing_pe"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 33.448,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V013",
+      "data_point": {
+        "category": "indicator",
+        "field": "forward_pe",
+        "description": "予想PER"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 25.235,
+          "unit": "ratio",
+          "date": "2026-02-13",
+          "notes": "yfinance forward_pe"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 25.235,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V014",
+      "data_point": {
+        "category": "indicator",
+        "field": "price_to_book",
+        "description": "PBR"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 18.714,
+          "unit": "ratio",
+          "date": "2026-02-13",
+          "notes": "yfinance price_to_book"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 18.714,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V015",
+      "data_point": {
+        "category": "indicator",
+        "field": "return_on_equity",
+        "description": "ROE"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 54.914,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "yfinance return_on_equity (TTM)"
+        },
+        {
+          "source_id": "industry_data",
+          "tier": 3,
+          "value": 63.9,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "key_metrics_comparison ROE (5Y Average) = 63.9%。注: 5年平均値であり、TTMとは期間が異なる"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 54.914,
+        "primary_source": "yahoo_finance",
+        "notes": "Yahoo Finance はTTM ROE (54.9%)、industry-data は5年平均ROE (63.9%)。測定期間が異なるため直接比較不可。矛盾ではなく異なる指標"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier2(Yahoo Finance)のTTM値とTier3(industry-data)の5年平均値は異なる指標。TTM値を採用",
+        "highest_tier": 2,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V016",
+      "data_point": {
+        "category": "indicator",
+        "field": "debt_to_equity",
+        "description": "負債資本比率"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 181.347,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "yfinance debt_to_equity"
+        },
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 189.36,
+          "unit": "percent",
+          "date": "2024-06-30",
+          "notes": "計算値: total_debt($7,457M est) / total_moodys_shareholders_equity($3,778M from Q2 2024) ≈ 197%。ただし直近BSは不完全"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 181.347,
+        "primary_source": "yahoo_finance",
+        "notes": "SEC EDGAR BSデータはQ2 2024時点のみ利用可能。Yahoo Finance の直近値を採用。高レバレッジは両ソースで一致"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier2(Yahoo Finance)のみ直近データあり。SEC EDGARはQ2 2024 BSのみで時点が異なる",
+        "highest_tier": 2,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V017",
+      "data_point": {
+        "category": "financial",
+        "field": "free_cash_flow",
+        "description": "フリーキャッシュフロー"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 2067750016,
+          "unit": "USD",
+          "date": "2026-02-13",
+          "notes": "yfinance free_cash_flow (TTM)"
+        },
+        {
+          "source_id": "industry_data",
+          "tier": 2,
+          "value": 2521000000,
+          "unit": "USD",
+          "date": "2026-02-13",
+          "notes": "key_metrics_comparison Free Cash Flow (FY2024) = $2,521M"
+        },
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 2500000000,
+          "unit": "USD",
+          "date": "2025-10-22",
+          "notes": "FY2025 guidance: FCF expected ~$2.5B"
+        }
+      ],
+      "validation_result": {
+        "status": "discrepancy",
+        "discrepancy_pct": 17.98,
+        "within_tolerance": false,
+        "consensus_value": 2521000000,
+        "primary_source": "industry_data",
+        "notes": "Yahoo Finance TTM FCF ($2,068M) vs industry-data FY2024 FCF ($2,521M)。18%差は許容範囲超過。Yahoo FinanceのTTMは直近4四半期で期間が異なる可能性。FY2024 FCF $2,521Mはindustry-dataの値を採用（FY2025ガイダンス$2.5Bとも整合）"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "ソース間で17.98%の大幅乖離(>10%)。TTM vs FY2024の期間差異が原因の可能性があるが、Tier1確定値なしのためlow",
+        "highest_tier": 2,
+        "source_count": 3,
+        "downgrade_applied": true,
+        "downgrade_reason": "大幅乖離(>10%)によりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V018",
+      "data_point": {
+        "category": "financial",
+        "field": "q3_2025_revenue",
+        "description": "2025年Q3 四半期売上高"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 2009000000,
+          "unit": "USD",
+          "date": "2025-10-23",
+          "notes": "10-Q Q3 2025 revenue"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 2009000000,
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR 10-Q)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V019",
+      "data_point": {
+        "category": "financial",
+        "field": "q3_2025_adjusted_eps",
+        "description": "2025年Q3 調整後希薄化EPS"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 3.92,
+          "unit": "USD/share",
+          "date": "2025-10-23",
+          "notes": "Q3 2025 adjusted_diluted_eps"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 3.92,
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V020",
+      "data_point": {
+        "category": "price",
+        "field": "close_20260212",
+        "description": "2026/2/12 終値"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 415.09,
+          "unit": "USD",
+          "date": "2026-02-12",
+          "notes": "yfinance close price"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 415.09,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可。web-data.json 未取得のためニュースソースとの照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V021",
+      "data_point": {
+        "category": "price",
+        "field": "52w_high",
+        "description": "52週高値"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 546.88,
+          "unit": "USD",
+          "date": "2026-02-13",
+          "notes": "yfinance high_52w"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 546.88,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V022",
+      "data_point": {
+        "category": "price",
+        "field": "market_cap",
+        "description": "時価総額"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 74449977344,
+          "unit": "USD",
+          "date": "2026-02-13",
+          "notes": "yfinance market_cap"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 74449977344,
+        "primary_source": "yahoo_finance",
+        "notes": "計算検証: shares_outstanding(178.4M) x close($415.09) = $74.05B。yfinance値$74.45Bとの差0.54%は許容範囲"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier2(Yahoo Finance)の単一ソースだが、内部整合性チェック(株数x株価)で概算検証済み(0.54%差)",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V023",
+      "data_point": {
+        "category": "qualitative",
+        "field": "company_name",
+        "description": "正式社名"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": "MOODYS CORP /DE/",
+          "unit": "text",
+          "date": "2026-02-13",
+          "notes": "SEC EDGAR company_name (法的名称)"
+        },
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": "Moody's Corporation",
+          "unit": "text",
+          "date": "2026-02-13",
+          "notes": "yfinance company_name (一般名称)"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": null,
+        "within_tolerance": true,
+        "consensus_value": "Moody's Corporation",
+        "primary_source": "sec_edgar",
+        "notes": "SEC EDGAR の法的名称(MOODYS CORP /DE/)とYahoo Financeの一般名称(Moody's Corporation)は同一企業。表記差異のみ"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1(SEC EDGAR)とTier2(Yahoo Finance)の両方で確認。法的名称と一般名称の表記差異のみ",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V024",
+      "data_point": {
+        "category": "qualitative",
+        "field": "sector",
+        "description": "セクター分類"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": "Financial Services",
+          "unit": "text",
+          "date": "2026-02-13",
+          "notes": "yfinance sector"
+        },
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": "SIC 7320 - Services-Miscellaneous Business Services",
+          "unit": "text",
+          "date": "2026-02-13",
+          "notes": "SEC EDGAR SIC code classification"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": null,
+        "within_tolerance": true,
+        "consensus_value": "Financial Services",
+        "primary_source": "yahoo_finance",
+        "notes": "SEC EDGAR のSIC 7320(ビジネスサービス)とYahoo Financeの'Financial Services'は分類体系が異なるが矛盾なし。信用格付け事業は金融サービスに分類されるのが一般的"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "分類体系の差異があるが方向性は一致。SIC分類とGICS分類の違い",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V025",
+      "data_point": {
+        "category": "qualitative",
+        "field": "ceo",
+        "description": "CEO"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": "Rob Fauber",
+          "unit": "text",
+          "date": "2026-02-13",
+          "notes": "key_business_metrics.corporate.ceo"
+        },
+        {
+          "source_id": "sec_edgar_form4",
+          "tier": 1,
+          "value": "Robert Fauber",
+          "unit": "text",
+          "date": "2026-02-02",
+          "notes": "Form 4 insider transactions - 'Robert Fauber, President and CEO'"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": null,
+        "within_tolerance": true,
+        "consensus_value": "Rob Fauber (Robert Fauber)",
+        "primary_source": "sec_edgar",
+        "notes": "'Rob' は 'Robert' の略称。同一人物で確認済み"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1ソース(SEC EDGAR)内の複数箇所で確認。Rob/Robert は略称/正式名の差異のみ",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V026",
+      "data_point": {
+        "category": "qualitative",
+        "field": "cfo",
+        "description": "CFO"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": "Noemie Heuland",
+          "unit": "text",
+          "date": "2026-02-13",
+          "notes": "key_business_metrics.corporate.cfo"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": "Noemie Heuland",
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V027",
+      "data_point": {
+        "category": "qualitative",
+        "field": "market_share",
+        "description": "信用格付け市場シェア"
+      },
+      "sources_checked": [
+        {
+          "source_id": "industry_data",
+          "tier": 3,
+          "value": "31%",
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "industry_position.market_share_pct = 31, market_rank = 2"
+        },
+        {
+          "source_id": "industry_data_note",
+          "tier": 3,
+          "value": "31-40%",
+          "unit": "percent range",
+          "date": "2026-02-13",
+          "notes": "data_quality.limitations: '市場シェアデータは複数ソースで31-40%と幅がある'"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": "31%",
+        "primary_source": "industry_data",
+        "notes": "31%を採用。ただし複数ソースで31-40%と幅があり推定値を含む。Big Three合計93%は広く引用される数値"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "Tier3ソースのみ。市場シェアデータは31-40%と幅があり精度が限定的",
+        "highest_tier": 3,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V028",
+      "data_point": {
+        "category": "qualitative",
+        "field": "big_three_market_share",
+        "description": "Big Three(MCO, SPGI, Fitch)合計市場シェア"
+      },
+      "sources_checked": [
+        {
+          "source_id": "industry_data",
+          "tier": 3,
+          "value": "93%",
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "competitive_landscape.market_concentration"
+        },
+        {
+          "source_id": "industry_data_sec",
+          "tier": 1,
+          "value": "91%",
+          "unit": "percent",
+          "date": "2024-03",
+          "notes": "SEC Office of Credit Ratings (March 2024) large_nrsro_revenue_share_pct = 91"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 2.20,
+        "within_tolerance": true,
+        "consensus_value": "91%",
+        "primary_source": "sec_ocr",
+        "notes": "SEC Office of Credit Ratings公式データ(91%)とindustry-data(93%)の差は2.2%。SEC公式値を採用。2pptの差は四捨五入・測定時点の差異"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1ソース(SEC Office of Credit Ratings)の公式統計で確認済み。Tier3(industry-data)との差異は軽微",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V029",
+      "data_point": {
+        "category": "qualitative",
+        "field": "nrsro_count",
+        "description": "NRSRO登録格付け機関数"
+      },
+      "sources_checked": [
+        {
+          "source_id": "industry_data",
+          "tier": 1,
+          "value": 10,
+          "unit": "count",
+          "date": "2024-03",
+          "notes": "government_data.sec_nrsro.total_nrsros = 10, source: SEC Office of Credit Ratings (March 2024)"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 10,
+        "primary_source": "sec_ocr",
+        "notes": "SEC Office of Credit Ratingsの公式データだが単一ソース"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC公式)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V030",
+      "data_point": {
+        "category": "financial",
+        "field": "fy2025_guidance_adjusted_eps",
+        "description": "FY2025 調整後EPS ガイダンス"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": "$14.50 - $14.75",
+          "unit": "USD/share range",
+          "date": "2025-10-22",
+          "notes": "Q3 2025 Earnings Release - FY2025 latest guidance"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": "$14.50 - $14.75",
+        "primary_source": "sec_edgar",
+        "notes": "単一ソースのため照合不可。web-data.json未取得のためアナリスト推定値との照合不可"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC EDGAR Earnings Release)だが単一ソースのためダウングレード",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V031",
+      "data_point": {
+        "category": "financial",
+        "field": "shares_outstanding",
+        "description": "発行済み株式数"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 178400000,
+          "unit": "shares",
+          "date": "2026-02-13",
+          "notes": "yfinance shares_outstanding"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 178400000,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V032",
+      "data_point": {
+        "category": "qualitative",
+        "field": "insider_sentiment",
+        "description": "インサイダー取引センチメント"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": "neutral",
+          "unit": "assessment",
+          "date": "2026-02-13",
+          "notes": "28 Form 4 filings in 180 days. CEO transactions are routine 10b5-1 plan sales. Small quantities relative to holdings (61,082 shares retained)"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": "neutral",
+        "primary_source": "sec_edgar",
+        "notes": "センチメント評価は解釈を含む。ただし10b5-1事前計画に基づく定期売却であることはTier1で確認済み"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "Tier1ソース(SEC Form 4)の生データから導出された評価。10b5-1計画による定期売却は客観的事実",
+        "highest_tier": 1,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "定性的評価のためhighからmediumにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V033",
+      "data_point": {
+        "category": "indicator",
+        "field": "ev_to_ebitda",
+        "description": "EV/EBITDA"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 22.186,
+          "unit": "ratio",
+          "date": "2026-02-13",
+          "notes": "yfinance ev_to_ebitda"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 22.186,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V034",
+      "data_point": {
+        "category": "financial",
+        "field": "ma_arr",
+        "description": "Moody's Analytics 年間経常収益（ARR）"
+      },
+      "sources_checked": [
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 3400000000,
+          "unit": "USD",
+          "date": "2025-10-22",
+          "notes": "Q3 2025 Earnings Release - MA ARR"
+        },
+        {
+          "source_id": "industry_data",
+          "tier": 2,
+          "value": 3400000000,
+          "unit": "USD",
+          "date": "2026-02-13",
+          "notes": "key_metrics_comparison MA ARR = $3,400M"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 0.0,
+        "within_tolerance": true,
+        "consensus_value": 3400000000,
+        "primary_source": "sec_edgar"
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "Tier1(SEC EDGAR)とTier2(industry-data)で完全一致",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V035",
+      "data_point": {
+        "category": "qualitative",
+        "field": "barriers_to_entry",
+        "description": "参入障壁の評価"
+      },
+      "sources_checked": [
+        {
+          "source_id": "industry_data",
+          "tier": 3,
+          "value": "very_high",
+          "unit": "assessment",
+          "date": "2026-02-13",
+          "notes": "NRSRO certification requirement, 115+ years of data, high regulatory requirements"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": "very_high",
+        "primary_source": "industry_data",
+        "notes": "定性的評価。NRSRO認定要件は客観的事実だが、'very_high'の評価は解釈を含む"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "Tier3ソースのみ。定性的評価で主観を含む",
+        "highest_tier": 3,
+        "source_count": 1,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V036",
+      "data_point": {
+        "category": "qualitative",
+        "field": "moat_assessment",
+        "description": "経済的堀の評価"
+      },
+      "sources_checked": [
+        {
+          "source_id": "industry_data",
+          "tier": 3,
+          "value": "wide",
+          "unit": "assessment",
+          "date": "2026-02-13",
+          "notes": "moat_assessment.moat_width = 'wide', moat_type = 'brand_ecosystem', durability = 'durable'"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": "wide",
+        "primary_source": "industry_data",
+        "notes": "定性的評価。dogma.md フレームワークに基づく分析だが単一ソース"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "Tier3ソースのみ。定性的評価で主観を含む",
+        "highest_tier": 3,
+        "source_count": 1,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V037",
+      "data_point": {
+        "category": "financial",
+        "field": "revenue_growth_yahoo",
+        "description": "売上高成長率（Yahoo Finance TTM）"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 10.7,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "yfinance revenue_growth (TTM)"
+        },
+        {
+          "source_id": "sec_edgar",
+          "tier": 1,
+          "value": 11.0,
+          "unit": "percent",
+          "date": "2025-10-23",
+          "notes": "Q3 2025 revenue_yoy_change_pct = 11%"
+        }
+      ],
+      "validation_result": {
+        "status": "confirmed",
+        "discrepancy_pct": 2.73,
+        "within_tolerance": true,
+        "consensus_value": 10.7,
+        "primary_source": "yahoo_finance",
+        "notes": "Yahoo Finance TTM成長率10.7%とSEC Q3 YoY成長率11%は測定期間が異なるが方向性一致。差異は2.73%で許容範囲内"
+      },
+      "confidence": {
+        "level": "medium",
+        "reason": "TTM vs 四半期YoY で期間が異なるが方向性は一致。Tier2とTier1の両方で確認",
+        "highest_tier": 1,
+        "source_count": 2,
+        "downgrade_applied": false
+      }
+    },
+    {
+      "validation_id": "V038",
+      "data_point": {
+        "category": "indicator",
+        "field": "profit_margin",
+        "description": "純利益率"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": 29.916,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "yfinance profit_margin (TTM)"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 29.916,
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V039",
+      "data_point": {
+        "category": "qualitative",
+        "field": "analyst_recommendation",
+        "description": "アナリスト推奨"
+      },
+      "sources_checked": [
+        {
+          "source_id": "yahoo_finance",
+          "tier": 2,
+          "value": "buy",
+          "unit": "rating",
+          "date": "2026-02-13",
+          "notes": "yfinance analyst_recommendation, 19 analysts, target mean $571.79"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": "buy",
+        "primary_source": "yahoo_finance",
+        "notes": "単一ソースのため照合不可。web-data.json未取得のためニュースソースとの照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    },
+    {
+      "validation_id": "V040",
+      "data_point": {
+        "category": "financial",
+        "field": "gross_margin",
+        "description": "粗利益率"
+      },
+      "sources_checked": [
+        {
+          "source_id": "industry_data",
+          "tier": 2,
+          "value": 66.4,
+          "unit": "percent",
+          "date": "2026-02-13",
+          "notes": "key_metrics_comparison Gross Margin = 66.4%. Source: SEC filings / MacroTrends"
+        }
+      ],
+      "validation_result": {
+        "status": "unverifiable",
+        "discrepancy_pct": null,
+        "within_tolerance": null,
+        "consensus_value": 66.4,
+        "primary_source": "industry_data",
+        "notes": "単一ソースのため照合不可"
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "単一ソースのみ(Tier2-3混合)、照合不可のためダウングレード",
+        "highest_tier": 2,
+        "source_count": 1,
+        "downgrade_applied": true,
+        "downgrade_reason": "単一ソースによりmediumからlowにダウングレード"
+      }
+    }
+  ],
+  "claims_validation": [
+    {
+      "validation_id": "VC001",
+      "claim": "MCO FY2024 売上高は前年比約20%成長",
+      "sources": ["sec_edgar", "industry_data"],
+      "cross_reference": {
+        "fy2024_revenue": 7088000000,
+        "fy2023_revenue": 5916000000,
+        "calculated_growth_pct": 19.8
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "high",
+        "reason": "裏付けデータポイント(V001: high, V004: high)により確認済み",
+        "supporting_validations": ["V001", "V004"],
+        "supporting_confidence_levels": ["high", "high"]
+      }
+    },
+    {
+      "validation_id": "VC002",
+      "claim": "信用格付け市場はBig Three(MCO, SPGI, Fitch)が90%超の寡占構造",
+      "sources": ["industry_data", "sec_ocr"],
+      "cross_reference": {
+        "sec_ocr_large_nrsro_share": 91,
+        "industry_data_big_three_share": 93,
+        "total_nrsros": 10
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "high",
+        "reason": "SEC Office of Credit Ratings公式データ(91%)で裏付け。V028: high",
+        "supporting_validations": ["V028", "V029"],
+        "supporting_confidence_levels": ["high", "medium"]
+      }
+    },
+    {
+      "validation_id": "VC003",
+      "claim": "MCOの調整後営業利益率は約48%(FY2024)で、改善トレンド",
+      "sources": ["sec_edgar", "industry_data"],
+      "cross_reference": {
+        "fy2024_adjusted_opm": 48.3,
+        "q3_2025_adjusted_opm": 52.9,
+        "fy2025_guidance_opm": "approximately 51%"
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "high",
+        "reason": "SEC EDGAR(V010: high)とQ3 2025実績からトレンド改善を確認",
+        "supporting_validations": ["V010"],
+        "supporting_confidence_levels": ["high"]
+      }
+    },
+    {
+      "validation_id": "VC004",
+      "claim": "Moody's Analyticsの年間経常収益(ARR)は$3.4Bで堅調に成長",
+      "sources": ["sec_edgar", "industry_data"],
+      "cross_reference": {
+        "ma_arr": 3400000000,
+        "ma_arr_growth_pct": 8,
+        "consecutive_growth_quarters": 68
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "high",
+        "reason": "SEC EDGAR(V034: high)とindustry-dataの両方で完全一致",
+        "supporting_validations": ["V034"],
+        "supporting_confidence_levels": ["high"]
+      }
+    },
+    {
+      "validation_id": "VC005",
+      "claim": "MCOは参入障壁が極めて高い市場でwide moatを持つ",
+      "sources": ["industry_data"],
+      "cross_reference": {
+        "barriers_to_entry": "very_high",
+        "moat_assessment": "wide",
+        "nrsro_count": 10,
+        "big_three_share": "91-93%"
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "medium",
+        "reason": "定性的評価だがNRSRO寡占構造(V028: high)の定量データで間接的に裏付け。ただし'wide moat'自体はTier3の定性評価",
+        "supporting_validations": ["V028", "V035", "V036"],
+        "supporting_confidence_levels": ["high", "low", "low"]
+      }
+    },
+    {
+      "validation_id": "VC006",
+      "claim": "CEO Robert Fauberのインサイダー取引は10b5-1計画に基づく定期売却でニュートラル",
+      "sources": ["sec_edgar"],
+      "cross_reference": {
+        "total_form4_filings": 28,
+        "shares_retained": 61082,
+        "trading_plan": "Rule 10b5-1 adopted 2025-07-30"
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "medium",
+        "reason": "SEC Form 4データ(V032: medium)で取引事実は確認済み。センチメント'neutral'は解釈を含む",
+        "supporting_validations": ["V032"],
+        "supporting_confidence_levels": ["medium"]
+      }
+    },
+    {
+      "validation_id": "VC007",
+      "claim": "Yahoo Finance TTM売上高($7.5B)はFY2024売上高($7.1B)より高い（成長を反映）",
+      "sources": ["yahoo_finance", "sec_edgar"],
+      "cross_reference": {
+        "yahoo_ttm_revenue": 7501000192,
+        "sec_fy2024_revenue": 7088000000,
+        "ttm_vs_fy2024_diff_pct": 5.83,
+        "sec_estimated_ttm": 7472000000
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "high",
+        "reason": "TTM期間の違いを考慮すると整合的。SEC四半期データから推定したTTMとYahoo TTMは0.39%差(V002: high)",
+        "supporting_validations": ["V001", "V002"],
+        "supporting_confidence_levels": ["high", "high"]
+      }
+    },
+    {
+      "validation_id": "VC008",
+      "claim": "MCOのFY2025 EPS ガイダンスは$14.50-$14.75（調整後）で前年比約17%成長",
+      "sources": ["sec_edgar"],
+      "cross_reference": {
+        "fy2025_adj_eps_range": "$14.50 - $14.75",
+        "fy2024_adj_eps": 12.47,
+        "implied_growth_midpoint_pct": 17.2
+      },
+      "status": "confirmed",
+      "confidence": {
+        "level": "medium",
+        "reason": "SEC EDGAR(V030: medium)で確認。単一ソースのためmedium。計算検証: ($14.625 / $12.47 - 1) = 17.3%で概ね一致",
+        "supporting_validations": ["V030", "V009"],
+        "supporting_confidence_levels": ["medium", "medium"]
+      }
+    }
+  ],
+  "confidence_distribution": {
+    "high": {
+      "count": 10,
+      "percentage": 25
+    },
+    "medium": {
+      "count": 14,
+      "percentage": 35
+    },
+    "low": {
+      "count": 16,
+      "percentage": 40
+    }
+  },
+  "summary": {
+    "total_validations": 40,
+    "confirmed": 17,
+    "discrepancies": 1,
+    "unverifiable": 22,
+    "confirmation_rate": 94,
+    "high_confidence": 10,
+    "medium_confidence": 14,
+    "low_confidence": 16,
+    "average_source_count": 1.5,
+    "data_quality_grade": "poor",
+    "notes": "web-data.json が未取得のため、多くのデータポイントが単一ソースで照合不可（unverifiable）。財務データのコアはSEC EDGAR（Tier1）で高信頼度だが、バリュエーション指標やアナリスト評価はYahoo Finance（Tier2）のみで低信頼度。確認済みデータポイント（confirmed + discrepancy）の中では矛盾率は低い（discrepancy 1/18 = 5.6%）"
+  },
+  "quality_alerts": [
+    {
+      "alert_type": "missing_data_source",
+      "severity": "warning",
+      "message": "web-data.json が未取得のため、ニュース・アナリスト情報との照合ができません",
+      "affected_validations": ["V020", "V021", "V030", "V039"],
+      "recommendation": "web-data.json 取得後にアナリスト推奨・ターゲットプライス・ニュース情報の照合を追加推奨"
+    },
+    {
+      "alert_type": "low_confidence_cluster",
+      "severity": "warning",
+      "message": "バリュエーション指標（PE, PB, EV/EBITDA等）が全て低信頼度です",
+      "affected_validations": ["V012", "V013", "V014", "V033"],
+      "recommendation": "複数の金融データソース（Bloomberg, Reuters等）との照合でバリュエーション指標の信頼度向上を推奨"
+    },
+    {
+      "alert_type": "low_confidence_cluster",
+      "severity": "info",
+      "message": "株価データがYahoo Finance単一ソースのため低信頼度です",
+      "affected_validations": ["V020", "V021"],
+      "recommendation": "取引所公式データまたは複数データプロバイダーとの照合を推奨"
+    },
+    {
+      "alert_type": "data_freshness",
+      "severity": "info",
+      "message": "SEC Office of Credit Ratings データは2024年3月時点のもので、約11ヶ月前のデータです",
+      "affected_validations": ["V028", "V029"],
+      "recommendation": "最新のSEC OCRレポートが発行されていれば更新を推奨"
+    },
+    {
+      "alert_type": "fcf_discrepancy",
+      "severity": "warning",
+      "message": "フリーキャッシュフローでYahoo Finance TTM($2.07B)とindustry-data FY2024($2.52B)間に18%の乖離が検出されました",
+      "affected_validations": ["V017"],
+      "recommendation": "SEC EDGAR 10-K/10-Q のキャッシュフロー計算書から直接FCFを確認推奨"
+    },
+    {
+      "alert_type": "sec_api_limitations",
+      "severity": "info",
+      "message": "SEC EDGAR MCP APIのEDGAR_IDENTITYエラーにより一部データ（BS、CF）がTavilyで補完されています",
+      "affected_validations": ["V008", "V009", "V016"],
+      "recommendation": "API復旧後にXBRL直接抽出で財務データの網羅性を向上推奨"
+    }
+  ]
+}

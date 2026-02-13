@@ -1,0 +1,712 @@
+{
+  "research_id": "DR_stock_20260213_MCO",
+  "collected_at": "2026-02-13T17:15:00Z",
+  "sources": {
+    "sec_filings": {
+      "status": "success",
+      "tier": 1,
+      "data": {
+        "financials": {
+          "annual": {
+            "FY2024": {
+              "period": "2024-01-01 to 2024-12-31",
+              "filing_type": "10-K",
+              "filing_date": "2025-02-14",
+              "accession_number": "0001059556-25-000025",
+              "income_statement": {
+                "revenue": 7088000000,
+                "revenue_yoy_change_pct": 19.8,
+                "ma_revenue": 3295000000,
+                "mis_revenue": 3793000000,
+                "operating_margin_adjusted_pct": 48.3,
+                "mis_adjusted_operating_margin_pct": 60.1,
+                "diluted_eps": 11.26,
+                "adjusted_diluted_eps": 12.47,
+                "diluted_eps_yoy_change_pct": 29,
+                "adjusted_diluted_eps_yoy_change_pct": 26
+              }
+            },
+            "FY2023": {
+              "period": "2023-01-01 to 2023-12-31",
+              "filing_type": "10-K",
+              "income_statement": {
+                "revenue": 5916000000,
+                "ma_revenue": 3056000000,
+                "mis_revenue": 2860000000,
+                "diluted_eps": 8.73,
+                "adjusted_diluted_eps": 9.90
+              }
+            },
+            "FY2022": {
+              "period": "2022-01-01 to 2022-12-31",
+              "filing_type": "10-K",
+              "income_statement": {
+                "revenue": 5468000000
+              }
+            },
+            "FY2021": {
+              "period": "2021-01-01 to 2021-12-31",
+              "filing_type": "10-K",
+              "income_statement": {
+                "revenue": 6218000000
+              }
+            }
+          },
+          "quarterly": {
+            "Q3_2025": {
+              "period": "2025-07-01 to 2025-09-30",
+              "filing_type": "10-Q",
+              "filing_date": "2025-10-23",
+              "accession_number": "0001628280-25-046118",
+              "income_statement": {
+                "revenue": 2009000000,
+                "revenue_yoy_change_pct": 11,
+                "ma_revenue": 909000000,
+                "mis_revenue": 1100000000,
+                "adjusted_operating_margin_pct": 52.9,
+                "net_income": 646000000,
+                "diluted_eps": 3.60,
+                "adjusted_diluted_eps": 3.92
+              },
+              "ytd_metrics": {
+                "revenue": 5800000000,
+                "revenue_yoy_change_pct": 8,
+                "diluted_eps": 10.26,
+                "adjusted_diluted_eps": 11.30
+              }
+            },
+            "Q4_2024": {
+              "period": "2024-10-01 to 2024-12-31",
+              "income_statement": {
+                "revenue": 1672000000,
+                "revenue_yoy_change_pct": 13,
+                "diluted_eps": 2.17,
+                "adjusted_diluted_eps": 2.62
+              }
+            },
+            "Q3_2024": {
+              "period": "2024-07-01 to 2024-09-30",
+              "income_statement": {
+                "revenue": 1813000000
+              }
+            },
+            "Q2_2024": {
+              "period": "2024-04-01 to 2024-06-30",
+              "filing_type": "10-Q",
+              "income_statement": {
+                "revenue": 1817000000,
+                "operating_income": 775000000,
+                "diluted_eps": 3.02,
+                "adjusted_diluted_eps": 3.28
+              },
+              "balance_sheet_as_of_2024_06_30": {
+                "total_assets": 15013000000,
+                "long_term_debt": 6253000000,
+                "total_liabilities": 11075000000,
+                "total_moodys_shareholders_equity": 3778000000,
+                "total_shareholders_equity": 3938000000
+              },
+              "balance_sheet_as_of_2023_12_31": {
+                "total_assets": 14622000000,
+                "long_term_debt": 7001000000,
+                "total_liabilities": 11146000000,
+                "total_shareholders_equity": 3476000000
+              },
+              "segment_revenue_h1_2024": {
+                "ma_total": 1601000000,
+                "mis_total": 1817000000,
+                "ma_sub_segments": {
+                  "decision_solutions": 731000000,
+                  "research_and_insights": 448000000,
+                  "data_and_information": 422000000
+                }
+              }
+            },
+            "Q1_2024": {
+              "period": "2024-01-01 to 2024-03-31",
+              "income_statement": {
+                "revenue": 1786000000
+              }
+            }
+          },
+          "revenue_history": {
+            "annual": {
+              "FY2024": 7088000000,
+              "FY2023": 5916000000,
+              "FY2022": 5468000000,
+              "FY2021": 6218000000,
+              "FY2016": 3604000000
+            },
+            "quarterly": {
+              "Q3_2025": 2009000000,
+              "Q4_2024": 1672000000,
+              "Q3_2024": 1813000000,
+              "Q2_2024": 1817000000,
+              "Q1_2024": 1786000000,
+              "Q4_2023": 1480000000,
+              "Q3_2023": 1472000000,
+              "Q2_2023": 1490000000,
+              "Q1_2023": 1474000000,
+              "Q4_2022": 1290000000,
+              "Q3_2022": 1280000000,
+              "Q2_2022": 1378000000,
+              "Q1_2022": 1520000000
+            }
+          }
+        },
+        "filings": {
+          "annual_reports_10K": [
+            {
+              "period_end": "2024-12-31",
+              "filing_date": "2025-02-14",
+              "accession_number": "0001059556-25-000025",
+              "form_type": "10-K"
+            }
+          ],
+          "quarterly_reports_10Q": [
+            {
+              "period_end": "2025-09-30",
+              "filing_date": "2025-10-23",
+              "accession_number": "0001628280-25-046118",
+              "form_type": "10-Q"
+            },
+            {
+              "period_end": "2025-06-30",
+              "filing_date": "2025-07-24",
+              "form_type": "10-Q"
+            },
+            {
+              "period_end": "2025-03-31",
+              "filing_date": "2025-04-23",
+              "form_type": "10-Q"
+            }
+          ],
+          "current_reports_8K": [
+            {
+              "filing_date": "2026-01-12",
+              "description": "Moody's Corporation Elects Lisa P. Sawicki to Board of Directors",
+              "form_type": "8-K"
+            },
+            {
+              "filing_date": "2025-10-22",
+              "description": "Announcement of Q3 2025 financial results",
+              "form_type": "8-K"
+            },
+            {
+              "filing_date": "2025-10-14",
+              "description": "2025 Annual Meeting of Stockholders related filing",
+              "form_type": "8-K"
+            },
+            {
+              "filing_date": "2025-08-19",
+              "description": "Stephen Tulenko, President of Moody's Analytics, resignation",
+              "form_type": "8-K"
+            }
+          ]
+        },
+        "insider": {
+          "period": "Last 180 days",
+          "total_form4_filings": 28,
+          "notable_transactions": [
+            {
+              "insider": "Robert Fauber",
+              "title": "President and CEO",
+              "transaction_date": "2026-02-02",
+              "transaction_type": "Option exercise + Sale",
+              "shares_exercised": 592,
+              "shares_sold": 592,
+              "sale_price": 516.15,
+              "shares_owned_after": 61081.984,
+              "trading_plan": "Rule 10b5-1 plan adopted 2025-07-30"
+            },
+            {
+              "insider": "Robert Fauber",
+              "title": "President and CEO",
+              "transaction_date": "2026-02-03",
+              "transaction_type": "Option exercise + Sale",
+              "shares_exercised": 575,
+              "shares_sold": 575,
+              "sale_price": 498.90,
+              "shares_owned_after": 61081.984,
+              "trading_plan": "Rule 10b5-1 plan adopted 2025-07-30"
+            }
+          ],
+          "insider_sentiment_assessment": "neutral - CEO transactions are routine, pre-planned under 10b5-1 trading plans with small share quantities relative to total holdings (61,082 shares retained)"
+        },
+        "guidance": {
+          "FY2025_latest": {
+            "as_of": "2025-10-22",
+            "source": "Q3 2025 Earnings Release",
+            "revenue_growth": "high single-digit percent range",
+            "adjusted_operating_margin": "approximately 51%",
+            "diluted_eps_range": "$13.15 to $13.40",
+            "adjusted_diluted_eps_range": "$14.50 to $14.75",
+            "free_cash_flow_expected": 2500000000,
+            "share_repurchase_guidance": "at least $1.5 billion"
+          }
+        },
+        "key_business_metrics": {
+          "segments": {
+            "moodys_investors_service_mis": {
+              "description": "Global provider of credit ratings, research, and risk analysis",
+              "fy2024_revenue": 3793000000,
+              "fy2024_revenue_growth_pct": 33,
+              "q3_2025_revenue": 1100000000,
+              "q3_2025_revenue_growth_pct": 12
+            },
+            "moodys_analytics_ma": {
+              "description": "Data, analytics and cloud-based software tools for risk management",
+              "fy2024_revenue": 3295000000,
+              "fy2024_revenue_growth_pct": 8,
+              "q3_2025_revenue": 909000000,
+              "q3_2025_revenue_growth_pct": 9,
+              "annual_recurring_revenue_arr": 3400000000,
+              "arr_growth_pct": 8,
+              "customers": "14,800+"
+            }
+          },
+          "corporate": {
+            "headquarters": "7 World Trade Center, 250 Greenwich Street, New York, NY 10007",
+            "ceo": "Rob Fauber",
+            "cfo": "Noemie Heuland",
+            "countries_served": "165+"
+          }
+        },
+        "key_events": [
+          {
+            "date": "2026-01-28",
+            "event": "Date set for Moody's Q4 2025 earnings release and investor teleconference"
+          },
+          {
+            "date": "2026-01-12",
+            "event": "Lisa P. Sawicki elected to Board of Directors"
+          },
+          {
+            "date": "2025-12-22",
+            "event": "Moody's to move global headquarters to Brookfield Place"
+          },
+          {
+            "date": "2025-10-22",
+            "event": "Q3 2025 earnings release - record quarterly revenue exceeding $2 billion"
+          },
+          {
+            "date": "2025-08-19",
+            "event": "Stephen Tulenko, President of Moody's Analytics, resignation"
+          }
+        ]
+      },
+      "data_quality_notes": {
+        "completeness": "partial",
+        "limitations": [
+          "SEC EDGAR MCP API returned EDGAR_IDENTITY errors for most endpoints",
+          "Balance sheet data only available from Q2 2024 10-Q filing",
+          "Cash flow statement data not directly available",
+          "FY2020-FY2017 revenue data not captured"
+        ],
+        "supplementary_sources": [
+          "Tavily search of SEC EDGAR filings and earnings releases",
+          "Q4/FY2024 earnings release PDF",
+          "Q3 2025 earnings release PDF"
+        ]
+      },
+      "error": null
+    },
+    "market_data": {
+      "status": "success",
+      "tier": 2,
+      "data": {
+        "prices": {
+          "MCO": {
+            "current": {
+              "date": "2026-02-12",
+              "open": 413.14,
+              "high": 417.73,
+              "low": 402.28,
+              "close": 415.09,
+              "volume": 2082700
+            },
+            "period_stats": {
+              "start_date": "2021-02-16",
+              "end_date": "2026-02-12",
+              "total_days": 1255,
+              "high_52w": 546.88,
+              "low_52w": 376.55,
+              "high_5y": 546.88,
+              "low_5y": 223.92,
+              "avg_volume_30d": 1185410,
+              "avg_volume_90d": 954970
+            },
+            "returns": {
+              "1m": -22.4,
+              "3m": -14.77,
+              "6m": -20.07,
+              "1y": -17.25,
+              "3y": 36.43,
+              "5y": 54.38
+            },
+            "monthly_closes": {
+              "2021-02": 264.23,
+              "2022-02": 311.84,
+              "2023-02": 283.7,
+              "2024-02": 374.42,
+              "2025-02": 501.07,
+              "2026-02": 415.09
+            }
+          },
+          "peers": {
+            "SPGI": {
+              "current_close": 397.2,
+              "returns": { "1m": -26.74, "3m": -19.83, "6m": -29.33, "1y": -24.72, "3y": 11.29, "5y": 22.38 }
+            },
+            "MSCI": {
+              "current_close": 522.22,
+              "returns": { "1m": -11.1, "3m": -10.12, "6m": -7.1, "1y": -7.63, "3y": -2.9, "5y": 24.67 }
+            },
+            "ICE": {
+              "current_close": 149.83,
+              "returns": { "1m": -10.11, "3m": 0.86, "6m": -17.51, "1y": -9.03, "3y": 42.58, "5y": 42.1 }
+            },
+            "VRSK": {
+              "current_close": 179.0,
+              "returns": { "1m": -19.4, "3m": -16.44, "6m": -32.88, "1y": -38.5, "3y": 2.65, "5y": -1.88 }
+            },
+            "FDS": {
+              "current_close": 201.95,
+              "returns": { "1m": -30.78, "3m": -22.79, "6m": -45.77, "1y": -55.02, "3y": -51.81, "5y": -32.26 }
+            }
+          }
+        },
+        "fundamentals": {
+          "MCO": {
+            "company_name": "Moody's Corporation",
+            "sector": "Financial Services",
+            "industry": "Financial Data & Stock Exchanges",
+            "market_cap": 74449977344,
+            "enterprise_value": 79403073536,
+            "trailing_pe": 33.448025,
+            "forward_pe": 25.235367,
+            "price_to_book": 18.713764,
+            "price_to_sales": 9.92534,
+            "ev_to_revenue": 10.586,
+            "ev_to_ebitda": 22.186,
+            "profit_margin": 0.29916,
+            "operating_margin": 0.46886003,
+            "return_on_equity": 0.54914004,
+            "return_on_assets": 0.13188,
+            "revenue_growth": 0.107,
+            "earnings_growth": 0.229,
+            "debt_to_equity": 181.347,
+            "current_ratio": 1.84,
+            "free_cash_flow": 2067750016,
+            "total_revenue": 7501000192,
+            "total_debt": 7456999936,
+            "beta": 1.439,
+            "dividend_yield": 0.91,
+            "payout_ratio": 0.2953,
+            "analyst_target_mean": 571.7895,
+            "analyst_recommendation": "buy",
+            "number_of_analysts": 19
+          },
+          "SPGI": {
+            "company_name": "S&P Global Inc.",
+            "sector": "Financial Services",
+            "industry": "Financial Data & Stock Exchanges",
+            "market_cap": 120272166912,
+            "trailing_pe": 27.094135,
+            "forward_pe": 17.9249,
+            "price_to_book": 3.8128884,
+            "ev_to_ebitda": 17.741,
+            "profit_margin": 0.29154,
+            "operating_margin": 0.38252997,
+            "return_on_equity": 0.13087,
+            "revenue_growth": 0.09,
+            "beta": 1.201,
+            "analyst_recommendation": "strong_buy"
+          },
+          "MSCI": {
+            "company_name": "MSCI Inc.",
+            "sector": "Financial Services",
+            "industry": "Financial Data & Stock Exchanges",
+            "market_cap": 39239364608,
+            "trailing_pe": 33.3261,
+            "forward_pe": 23.707033,
+            "ev_to_ebitda": 24.229,
+            "profit_margin": 0.38358003,
+            "operating_margin": 0.55942,
+            "revenue_growth": 0.106,
+            "beta": 1.281,
+            "analyst_recommendation": "buy"
+          },
+          "ICE": {
+            "company_name": "Intercontinental Exchange, Inc.",
+            "sector": "Financial Services",
+            "industry": "Financial Data & Stock Exchanges",
+            "market_cap": 85429854208,
+            "trailing_pe": 25.967072,
+            "forward_pe": 17.573986,
+            "ev_to_ebitda": 16.943,
+            "profit_margin": 0.33380002,
+            "operating_margin": 0.49561,
+            "revenue_growth": 0.078,
+            "beta": 1.033,
+            "analyst_recommendation": "buy"
+          },
+          "VRSK": {
+            "company_name": "Verisk Analytics, Inc.",
+            "sector": "Industrials",
+            "industry": "Consulting Services",
+            "market_cap": 25008979968,
+            "trailing_pe": 27.538462,
+            "forward_pe": 23.184786,
+            "ev_to_ebitda": 18.614,
+            "profit_margin": 0.30418,
+            "operating_margin": 0.45529,
+            "revenue_growth": 0.059,
+            "beta": 0.804,
+            "analyst_recommendation": "buy"
+          },
+          "FDS": {
+            "company_name": "FactSet Research Systems Inc.",
+            "sector": "Financial Services",
+            "industry": "Financial Data & Stock Exchanges",
+            "market_cap": 7556956160,
+            "trailing_pe": 12.854869,
+            "forward_pe": 10.626072,
+            "ev_to_ebitda": 9.504,
+            "profit_margin": 0.25399,
+            "operating_margin": 0.32629,
+            "revenue_growth": 0.068,
+            "beta": 0.726,
+            "analyst_recommendation": "hold"
+          }
+        },
+        "dividends": {
+          "MCO": {
+            "current_rate": 3.76,
+            "yield_pct": 0.91,
+            "payout_ratio": 0.2953,
+            "recent_increases": [
+              { "date": "2025-02-25", "amount": 0.94 },
+              { "date": "2024-02-22", "amount": 0.85 },
+              { "date": "2023-02-23", "amount": 0.77 },
+              { "date": "2022-02-24", "amount": 0.70 },
+              { "date": "2021-02-24", "amount": 0.62 }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    "industry": {
+      "status": "success",
+      "tier": 2,
+      "data": {
+        "position": {
+          "market_share": {
+            "metric_name": "global_credit_ratings_revenue",
+            "value_pct": 31,
+            "source": "industry_analysis",
+            "source_tier": 2,
+            "date": "2025",
+            "confidence": "high",
+            "note": "S&P Global 50%, Moody's 31%, Fitch 12%, others 7%. Big Three hold ~93% in tight oligopoly"
+          },
+          "market_rank": 2,
+          "trend": "stable",
+          "trend_rationale": "Big Three oligopoly structure unchanged for 10+ years. NRSRO certification requirements and high switching costs make new entry extremely difficult"
+        },
+        "competitive": {
+          "top_competitors": [
+            {
+              "ticker": "SPGI",
+              "company_name": "S&P Global Inc.",
+              "overlap_areas": ["credit_ratings", "financial_data_analytics", "risk_management", "esg_ratings"],
+              "relative_strength": "slightly_superior",
+              "key_differentiator": "Post-IHS Markit integration data assets; S&P 500 index business; ~$14B revenue vs MCO $7B; 50% global ratings share vs MCO 31%"
+            },
+            {
+              "ticker": null,
+              "company_name": "Fitch Ratings (Hearst, private)",
+              "overlap_areas": ["credit_ratings", "research"],
+              "relative_strength": "inferior",
+              "key_differentiator": "Third of Big Three, ~12% global share, tiebreaker role"
+            },
+            {
+              "ticker": "MSCI",
+              "company_name": "MSCI Inc.",
+              "overlap_areas": ["esg_data", "risk_analytics"],
+              "relative_strength": "partial_competitor"
+            },
+            {
+              "ticker": "ICE",
+              "company_name": "Intercontinental Exchange Inc.",
+              "overlap_areas": ["bond_data_analytics", "risk_management"],
+              "relative_strength": "partial_competitor"
+            },
+            {
+              "ticker": "VRSK",
+              "company_name": "Verisk Analytics Inc.",
+              "overlap_areas": ["data_analytics", "risk_assessment"],
+              "relative_strength": "partial_competitor"
+            }
+          ],
+          "barriers_to_entry": "very_high",
+          "threat_of_substitution": "low",
+          "industry_concentration": {
+            "hhi_estimate": "very_high",
+            "top3_share_pct": 93,
+            "fragmentation": "tight_oligopoly"
+          }
+        },
+        "trends": [
+          {
+            "trend_id": "IT001",
+            "trend": "Private credit market rapid expansion",
+            "category": "market_expansion",
+            "impact_on_company": "positive",
+            "impact_magnitude": "high",
+            "timeframe": "1-3 years",
+            "confidence": "high"
+          },
+          {
+            "trend_id": "IT002",
+            "trend": "AI/GenAI integration into credit risk management",
+            "category": "technology",
+            "impact_on_company": "positive",
+            "impact_magnitude": "high",
+            "timeframe": "1-3 years",
+            "confidence": "high"
+          },
+          {
+            "trend_id": "IT003",
+            "trend": "ESG/climate risk integration into credit assessment",
+            "category": "regulatory_and_market",
+            "impact_on_company": "positive",
+            "impact_magnitude": "medium",
+            "timeframe": "2-5 years",
+            "confidence": "medium"
+          },
+          {
+            "trend_id": "IT004",
+            "trend": "Regulatory environment changes (rating dependence reduction vs practical continued reliance)",
+            "category": "regulatory",
+            "impact_on_company": "neutral",
+            "impact_magnitude": "low",
+            "timeframe": "3-5 years",
+            "confidence": "medium"
+          },
+          {
+            "trend_id": "IT005",
+            "trend": "GenAI competitive intensification (S&P Global AI strategy)",
+            "category": "competitive",
+            "impact_on_company": "negative",
+            "impact_magnitude": "medium",
+            "timeframe": "1-3 years",
+            "confidence": "medium"
+          },
+          {
+            "trend_id": "IT006",
+            "trend": "Bond issuance market recovery/boom",
+            "category": "market_cycle",
+            "impact_on_company": "positive",
+            "impact_magnitude": "high",
+            "timeframe": "0-1 year",
+            "confidence": "high"
+          }
+        ],
+        "moat": {
+          "moat_type": "brand_ecosystem",
+          "moat_strength": "wide",
+          "confidence": "high",
+          "framework": "dogma.md 12 rules",
+          "key_advantages": [
+            {
+              "id": "CA001",
+              "name": "Regulatory-embedded structural oligopoly position",
+              "type": "efficient_scale",
+              "confidence_pct": 90
+            },
+            {
+              "id": "CA002",
+              "name": "Issuer-investor self-reinforcing network effect",
+              "type": "network_effect",
+              "confidence_pct": 90
+            },
+            {
+              "id": "CA003",
+              "name": "Extremely high switching costs",
+              "type": "switching_cost",
+              "confidence_pct": 70
+            },
+            {
+              "id": "CA004",
+              "name": "115+ years of default and credit cycle data accumulation",
+              "type": "intangible_assets",
+              "confidence_pct": 70
+            },
+            {
+              "id": "CA005",
+              "name": "De facto standard brand recognition",
+              "type": "intangible_assets",
+              "confidence_pct": 50
+            },
+            {
+              "id": "CA006",
+              "name": "Moody's Analytics recurring revenue base",
+              "type": "switching_cost",
+              "confidence_pct": 50
+            }
+          ],
+          "rejected_claims": [
+            {
+              "claim": "High ROE as evidence of competitive advantage",
+              "rejection_reason": "ROE is a result, not a capability (Rule 1 violation)"
+            },
+            {
+              "claim": "MIS 33% revenue growth as evidence of advantage",
+              "rejection_reason": "Revenue growth is a result of market recovery and monopoly structure (Rule 1)"
+            },
+            {
+              "claim": "AI/GenAI investment as competitive advantage",
+              "rejection_reason": "AI investment is strategy, not advantage (Rule 8 violation)"
+            }
+          ]
+        },
+        "government": {
+          "bls": null,
+          "census": null,
+          "sec_nrsro": {
+            "total_nrsros": 10,
+            "large_nrsros": ["S&P Global Ratings", "Moody's Investors Service", "Fitch Ratings"],
+            "large_nrsro_revenue_share_pct": 91,
+            "data_source": "SEC Office of Credit Ratings (March 2024)"
+          }
+        }
+      },
+      "error": null
+    },
+    "web_search": {
+      "status": "missing",
+      "tier": 3,
+      "data": null,
+      "error": "web-data.json file not found - web search task (#3) did not complete in time"
+    }
+  },
+  "summary": {
+    "total_sources": 4,
+    "successful": 3,
+    "failed": 0,
+    "missing": 1,
+    "tier_distribution": {
+      "tier1": 1,
+      "tier2": 2,
+      "tier3": 0
+    },
+    "data_quality": {
+      "sec_filings": "partial - EDGAR MCP API errors, supplemented via Tavily search",
+      "market_data": "complete - all 6 tickers (MCO + 5 peers) with price and fundamental data",
+      "industry": "complete - competitive landscape, moat analysis, 6 industry trends identified",
+      "web_search": "missing - file not generated"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "research_id": "DR_stock_20260213_MCO",
+  "type": "stock",
+  "ticker": "MCO",
+  "company_name": "Moody's Corporation",
+  "created_at": "2026-02-13T10:00:00Z",
+  "parameters": {
+    "ticker": "MCO",
+    "peer_tickers": ["SPGI", "MSCI", "ICE", "VRSK", "FDS"],
+    "analysis_period": "5y",
+    "industry_preset": "Financials/Capital_Markets",
+    "output_format": "report"
+  },
+  "status": "completed",
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  }
+}
