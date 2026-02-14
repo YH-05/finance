@@ -28,21 +28,21 @@ from ...config.models import ConfigLoader
 from ...core.article import ArticleSource
 from ...core.errors import SourceError
 from ...core.result import FetchResult, RetryConfig
-from .base import fetch_with_retry, ticker_news_to_article, validate_ticker
+from .base import (
+    DEFAULT_YFINANCE_RETRY_CONFIG,
+    fetch_all_with_polite_delay,
+    fetch_with_retry,
+    ticker_news_to_article,
+    validate_ticker,
+)
 
 logger = get_logger(__name__, module="yfinance.stock")
 
 # Default symbols file path
 DEFAULT_SYMBOLS_FILE = Path("src/analyze/config/symbols.yaml")
 
-# Default retry configuration
-DEFAULT_RETRY_CONFIG = RetryConfig(
-    max_attempts=3,
-    initial_delay=1.0,
-    max_delay=60.0,
-    exponential_base=2.0,
-    jitter=True,
-)
+# Default retry configuration (shared across all yfinance sources)
+DEFAULT_RETRY_CONFIG = DEFAULT_YFINANCE_RETRY_CONFIG
 
 
 class StockNewsSource:
@@ -302,30 +302,7 @@ class StockNewsSource:
         >>> len(results)
         2
         """
-        if not identifiers:
-            logger.debug("Empty identifiers list, returning empty results")
-            return []
-
-        logger.info(
-            "Fetching news for multiple stocks",
-            ticker_count=len(identifiers),
-            count=count,
-        )
-
-        results: list[FetchResult] = []
-        for ticker in identifiers:
-            result = self.fetch(ticker, count)
-            results.append(result)
-
-        success_count = sum(1 for r in results if r.success)
-        logger.info(
-            "Completed fetching news for multiple stocks",
-            total=len(results),
-            success=success_count,
-            failed=len(results) - success_count,
-        )
-
-        return results
+        return fetch_all_with_polite_delay(identifiers, self.fetch, count)
 
     def _load_symbols(self) -> None:
         """Load stock symbols from the symbols data.
