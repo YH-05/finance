@@ -136,3 +136,16 @@ make check-all
 ```
 
 テスト内では `time.sleep` と `apply_polite_delay` をモックし、実行速度に影響しないようにする。
+
+## タスク一覧
+
+| Wave | # | タイトル | ステータス |
+|------|---|---------|----------|
+| 1 | [#3517](https://github.com/YH-05/finance/issues/3517) | base.py に apply_polite_delay 関数と RateLimitError 処理を追加 | Todo |
+| 1 | [#3518](https://github.com/YH-05/finance/issues/3518) | __init__.py に新シンボルをエクスポート | Todo |
+| 2 | [#3519](https://github.com/YH-05/finance/issues/3519) | 6ソースの DEFAULT_RETRY_CONFIG に YFRateLimitError を追加 | Todo |
+| 2 | [#3520](https://github.com/YH-05/finance/issues/3520) | 6ソースの fetch_all にポライトディレイを挿入 | Todo |
+| 3 | [#3521](https://github.com/YH-05/finance/issues/3521) | test_base.py に apply_polite_delay と YFRateLimitError リトライのテストを追加 | Todo |
+| 3 | [#3522](https://github.com/YH-05/finance/issues/3522) | 6ソーステストに fetch_all ポライトディレイのテストを追加 | Todo |
+| 3 | [#3523](https://github.com/YH-05/finance/issues/3523) | 全体検証: make check-all 実行 | Todo |
+| 3 | [#3524](https://github.com/YH-05/finance/issues/3524) | project.md に Issue リンクを反映 | Todo |
