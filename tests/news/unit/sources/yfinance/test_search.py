@@ -9,6 +9,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
+from yfinance.exceptions import YFRateLimitError
 
 from news.core.article import Article, ArticleSource
 from news.core.errors import SourceError
@@ -143,8 +144,10 @@ class TestSearchNewsSourceDirect:
         assert all(isinstance(a, Article) for a in result.articles)
         assert result.articles[0].source == ArticleSource.YFINANCE_SEARCH
 
+    @patch("news.sources.yfinance.search.apply_polite_delay")
     def test_正常系_複数クエリでニュース取得(
         self,
+        _mock_delay: MagicMock,
         sample_search_news_data: list[dict[str, Any]],
     ) -> None:
         """Test fetching news for multiple search queries."""
@@ -183,8 +186,10 @@ class TestSearchNewsSourceDirect:
         assert result.is_empty is True
         assert result.query == "AI stocks"
 
+    @patch("news.sources.yfinance.search.apply_polite_delay")
     def test_正常系_エラー時は次のクエリへ継続(
         self,
+        _mock_delay: MagicMock,
         sample_search_news_data: list[dict[str, Any]],
     ) -> None:
         """Test that fetch_all continues to next query on error."""
@@ -260,7 +265,8 @@ class TestSearchNewsSourceDirect:
         """Test that default retry config is used when not specified."""
         source = SearchNewsSource(keywords=["AI stocks"])
         assert source._retry_config.max_attempts == 3
-        assert source._retry_config.initial_delay == 1.0
+        assert source._retry_config.initial_delay == 2.0
+        assert YFRateLimitError in source._retry_config.retryable_exceptions
 
     def test_正常系_get_keywordsはコピーを返す(self) -> None:
         """Test that get_keywords returns a copy of the keywords list."""
@@ -276,6 +282,53 @@ class TestSearchNewsSourceDirect:
         """Test initialization with empty keyword list."""
         source = SearchNewsSource(keywords=[])
         assert source.get_keywords() == []
+
+
+class TestFetchAllPoliteDelay:
+    """Tests for polite delay behavior in SearchNewsSource.fetch_all."""
+
+    @patch("news.sources.yfinance.search.apply_polite_delay")
+    def test_正常系_複数クエリで2回目以降にディレイが適用される(
+        self,
+        mock_delay: MagicMock,
+        sample_search_news_data: list[dict[str, Any]],
+    ) -> None:
+        """Test that polite delay is applied before 2nd and subsequent requests."""
+        source = SearchNewsSource(
+            keywords=["AI stocks", "semiconductor shortage", "cloud computing"]
+        )
+
+        mock_search = MagicMock()
+        mock_search.news = sample_search_news_data
+
+        with patch("news.sources.yfinance.search.yf") as mock_yf:
+            mock_yf.Search.return_value = mock_search
+            source.fetch_all(
+                ["AI stocks", "semiconductor shortage", "cloud computing"],
+                count=5,
+            )
+
+        # apply_polite_delay should be called 2 times (before 2nd and 3rd requests)
+        assert mock_delay.call_count == 2
+
+    @patch("news.sources.yfinance.search.apply_polite_delay")
+    def test_正常系_単一クエリでディレイが適用されない(
+        self,
+        mock_delay: MagicMock,
+        sample_search_news_data: list[dict[str, Any]],
+    ) -> None:
+        """Test that polite delay is not applied for a single query."""
+        source = SearchNewsSource(keywords=["AI stocks"])
+
+        mock_search = MagicMock()
+        mock_search.news = sample_search_news_data
+
+        with patch("news.sources.yfinance.search.yf") as mock_yf:
+            mock_yf.Search.return_value = mock_search
+            source.fetch_all(["AI stocks"], count=5)
+
+        # apply_polite_delay should not be called for a single query
+        mock_delay.assert_not_called()
 
 
 # ============================================================================

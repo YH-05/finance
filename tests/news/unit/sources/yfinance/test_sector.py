@@ -9,6 +9,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
+from yfinance.exceptions import YFRateLimitError
 
 from news.core.article import Article, ArticleSource
 from news.core.errors import SourceError
@@ -163,8 +164,12 @@ class TestSectorNewsSource:
         assert all(isinstance(a, Article) for a in result.articles)
         assert result.articles[0].source == ArticleSource.YFINANCE_TICKER
 
+    @patch("news.sources.yfinance.sector.apply_polite_delay")
     def test_正常系_複数ティッカーでニュース取得(
-        self, sample_symbols_file: Path, sample_sector_news_data: list[dict[str, Any]]
+        self,
+        _mock_delay: MagicMock,
+        sample_symbols_file: Path,
+        sample_sector_news_data: list[dict[str, Any]],
     ) -> None:
         """Test fetching news for multiple sector ETF tickers."""
         source = SectorNewsSource(symbols_file=sample_symbols_file)
@@ -212,8 +217,12 @@ class TestSectorNewsSource:
         assert result.is_empty is True
         assert result.ticker == "XLK"
 
+    @patch("news.sources.yfinance.sector.apply_polite_delay")
     def test_正常系_エラー時は次のティッカーへ継続(
-        self, sample_symbols_file: Path, sample_sector_news_data: list[dict[str, Any]]
+        self,
+        _mock_delay: MagicMock,
+        sample_symbols_file: Path,
+        sample_sector_news_data: list[dict[str, Any]],
     ) -> None:
         """Test that fetch_all continues to next ticker on error."""
         source = SectorNewsSource(symbols_file=sample_symbols_file)
@@ -277,7 +286,8 @@ class TestSectorNewsSource:
         source = SectorNewsSource(symbols_file=sample_symbols_file)
 
         assert source._retry_config.max_attempts == 3
-        assert source._retry_config.initial_delay == 1.0
+        assert source._retry_config.initial_delay == 2.0
+        assert YFRateLimitError in source._retry_config.retryable_exceptions
 
     def test_正常系_fetchでエラー時はsuccess_falseの結果を返す(
         self, sample_symbols_file: Path
@@ -307,8 +317,9 @@ class TestSectorNewsSource:
             assert result.success is False
             assert result.error is not None
 
+    @patch("news.sources.yfinance.sector.apply_polite_delay")
     def test_正常系_fetch_allは各ティッカーの結果を順番に返す(
-        self, sample_symbols_file: Path
+        self, _mock_delay: MagicMock, sample_symbols_file: Path
     ) -> None:
         """Test that fetch_all returns results in order."""
         source = SectorNewsSource(symbols_file=sample_symbols_file)
@@ -353,6 +364,50 @@ class TestSectorNewsSource:
 
             # Verify get_news was called with the count
             # (or verify news property access depending on implementation)
+
+
+class TestFetchAllPoliteDelay:
+    """Tests for polite delay behavior in SectorNewsSource.fetch_all."""
+
+    @patch("news.sources.yfinance.sector.apply_polite_delay")
+    def test_正常系_複数ティッカーで2回目以降にディレイが適用される(
+        self,
+        mock_delay: MagicMock,
+        sample_symbols_file: Path,
+        sample_sector_news_data: list[dict[str, Any]],
+    ) -> None:
+        """Test that polite delay is applied before 2nd and subsequent requests."""
+        source = SectorNewsSource(symbols_file=sample_symbols_file)
+
+        mock_instance = MagicMock()
+        mock_instance.news = sample_sector_news_data
+
+        with patch("news.sources.yfinance.sector.yf") as mock_yf:
+            mock_yf.Ticker.return_value = mock_instance
+            source.fetch_all(["XLK", "XLF", "XLV"], count=5)
+
+        # apply_polite_delay should be called 2 times (before 2nd and 3rd requests)
+        assert mock_delay.call_count == 2
+
+    @patch("news.sources.yfinance.sector.apply_polite_delay")
+    def test_正常系_単一ティッカーでディレイが適用されない(
+        self,
+        mock_delay: MagicMock,
+        sample_symbols_file: Path,
+        sample_sector_news_data: list[dict[str, Any]],
+    ) -> None:
+        """Test that polite delay is not applied for a single ticker."""
+        source = SectorNewsSource(symbols_file=sample_symbols_file)
+
+        mock_instance = MagicMock()
+        mock_instance.news = sample_sector_news_data
+
+        with patch("news.sources.yfinance.sector.yf") as mock_yf:
+            mock_yf.Ticker.return_value = mock_instance
+            source.fetch_all(["XLK"], count=5)
+
+        # apply_polite_delay should not be called for a single ticker
+        mock_delay.assert_not_called()
 
 
 class TestSectorNewsSourceProtocol:

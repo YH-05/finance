@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 import yfinance as yf
+from yfinance.exceptions import YFRateLimitError
 
 from utils_core.logging import get_logger
 
@@ -29,7 +30,12 @@ from ...config.models import ConfigLoader
 from ...core.article import ArticleSource
 from ...core.errors import SourceError
 from ...core.result import FetchResult, RetryConfig
-from .base import fetch_with_retry, search_news_to_article, validate_query
+from .base import (
+    apply_polite_delay,
+    fetch_with_retry,
+    search_news_to_article,
+    validate_query,
+)
 
 logger = get_logger(__name__, module="yfinance.macro")
 
@@ -39,10 +45,15 @@ DEFAULT_KEYWORDS_FILE = Path("data/config/news_search_keywords.yaml")
 # Default retry configuration
 DEFAULT_RETRY_CONFIG = RetryConfig(
     max_attempts=3,
-    initial_delay=1.0,
+    initial_delay=2.0,
     max_delay=60.0,
     exponential_base=2.0,
     jitter=True,
+    retryable_exceptions=(
+        ConnectionError,
+        TimeoutError,
+        YFRateLimitError,
+    ),
 )
 
 
@@ -323,7 +334,9 @@ class MacroNewsSource:
         )
 
         results: list[FetchResult] = []
-        for query in identifiers:
+        for i, query in enumerate(identifiers):
+            if i > 0:
+                apply_polite_delay()
             result = self.fetch(query, count)
             results.append(result)
 

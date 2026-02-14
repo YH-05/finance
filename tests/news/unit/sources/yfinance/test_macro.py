@@ -9,6 +9,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
+from yfinance.exceptions import YFRateLimitError
 
 from news.core.article import Article, ArticleSource
 from news.core.errors import SourceError
@@ -211,8 +212,10 @@ class TestMacroNewsSource:
         assert all(isinstance(a, Article) for a in result.articles)
         assert result.articles[0].source == ArticleSource.YFINANCE_SEARCH
 
+    @patch("news.sources.yfinance.macro.apply_polite_delay")
     def test_正常系_複数クエリでニュース取得(
         self,
+        _mock_delay: MagicMock,
         sample_keywords_file: Path,
         sample_search_news_data: list[dict[str, Any]],
     ) -> None:
@@ -263,8 +266,10 @@ class TestMacroNewsSource:
         assert result.is_empty is True
         assert result.query == "Federal Reserve"
 
+    @patch("news.sources.yfinance.macro.apply_polite_delay")
     def test_正常系_エラー時は次のクエリへ継続(
         self,
+        _mock_delay: MagicMock,
         sample_keywords_file: Path,
         sample_search_news_data: list[dict[str, Any]],
     ) -> None:
@@ -329,7 +334,8 @@ class TestMacroNewsSource:
         source = MacroNewsSource(keywords_file=sample_keywords_file)
 
         assert source._retry_config.max_attempts == 3
-        assert source._retry_config.initial_delay == 1.0
+        assert source._retry_config.initial_delay == 2.0
+        assert YFRateLimitError in source._retry_config.retryable_exceptions
 
     def test_正常系_fetchでエラー時はsuccess_falseの結果を返す(
         self, sample_keywords_file: Path
@@ -346,8 +352,9 @@ class TestMacroNewsSource:
         assert result.success is False
         assert result.error is not None
 
+    @patch("news.sources.yfinance.macro.apply_polite_delay")
     def test_正常系_fetch_allは各クエリの結果を順番に返す(
-        self, sample_keywords_file: Path
+        self, _mock_delay: MagicMock, sample_keywords_file: Path
     ) -> None:
         """Test that fetch_all returns results in order."""
         source = MacroNewsSource(keywords_file=sample_keywords_file)
@@ -383,6 +390,50 @@ class TestMacroNewsSource:
 
             # Verify Search was called with news_count
             mock_yf.Search.assert_called_once_with("Federal Reserve", news_count=5)
+
+
+class TestFetchAllPoliteDelay:
+    """Tests for polite delay behavior in MacroNewsSource.fetch_all."""
+
+    @patch("news.sources.yfinance.macro.apply_polite_delay")
+    def test_正常系_複数クエリで2回目以降にディレイが適用される(
+        self,
+        mock_delay: MagicMock,
+        sample_keywords_file: Path,
+        sample_search_news_data: list[dict[str, Any]],
+    ) -> None:
+        """Test that polite delay is applied before 2nd and subsequent requests."""
+        source = MacroNewsSource(keywords_file=sample_keywords_file)
+
+        mock_search = MagicMock()
+        mock_search.news = sample_search_news_data
+
+        with patch("news.sources.yfinance.macro.yf") as mock_yf:
+            mock_yf.Search.return_value = mock_search
+            source.fetch_all(["Federal Reserve", "GDP growth", "trade war"], count=5)
+
+        # apply_polite_delay should be called 2 times (before 2nd and 3rd requests)
+        assert mock_delay.call_count == 2
+
+    @patch("news.sources.yfinance.macro.apply_polite_delay")
+    def test_正常系_単一クエリでディレイが適用されない(
+        self,
+        mock_delay: MagicMock,
+        sample_keywords_file: Path,
+        sample_search_news_data: list[dict[str, Any]],
+    ) -> None:
+        """Test that polite delay is not applied for a single query."""
+        source = MacroNewsSource(keywords_file=sample_keywords_file)
+
+        mock_search = MagicMock()
+        mock_search.news = sample_search_news_data
+
+        with patch("news.sources.yfinance.macro.yf") as mock_yf:
+            mock_yf.Search.return_value = mock_search
+            source.fetch_all(["Federal Reserve"], count=5)
+
+        # apply_polite_delay should not be called for a single query
+        mock_delay.assert_not_called()
 
 
 class TestMacroNewsSourceProtocol:
