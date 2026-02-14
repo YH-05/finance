@@ -137,15 +137,61 @@ make check-all
 
 テスト内では `time.sleep` と `apply_polite_delay` をモックし、実行速度に影響しないようにする。
 
+## GitHub Project
+
+- **Project #45**: [yfinance ニュース収集のレートリミット対策](https://github.com/users/YH-05/projects/45)
+- **見積もり**: 3-4時間（Wave1: 1時間、Wave2: 1時間、Wave3: 1.5-2時間、検証: 0.5時間）
+
 ## タスク一覧
 
-| Wave | # | タイトル | ステータス |
-|------|---|---------|----------|
-| 1 | [#3517](https://github.com/YH-05/finance/issues/3517) | base.py に apply_polite_delay 関数と RateLimitError 処理を追加 | Todo |
-| 1 | [#3518](https://github.com/YH-05/finance/issues/3518) | __init__.py に新シンボルをエクスポート | Todo |
-| 2 | [#3519](https://github.com/YH-05/finance/issues/3519) | 6ソースの DEFAULT_RETRY_CONFIG に YFRateLimitError を追加 | Todo |
-| 2 | [#3520](https://github.com/YH-05/finance/issues/3520) | 6ソースの fetch_all にポライトディレイを挿入 | Todo |
-| 3 | [#3521](https://github.com/YH-05/finance/issues/3521) | test_base.py に apply_polite_delay と YFRateLimitError リトライのテストを追加 | Todo |
-| 3 | [#3522](https://github.com/YH-05/finance/issues/3522) | 6ソーステストに fetch_all ポライトディレイのテストを追加 | Todo |
-| 3 | [#3523](https://github.com/YH-05/finance/issues/3523) | 全体検証: make check-all 実行 | Todo |
-| 3 | [#3524](https://github.com/YH-05/finance/issues/3524) | project.md に Issue リンクを反映 | Todo |
+| Wave | # | タイトル | 見積もり | ステータス |
+|------|---|---------|---------|-----------|
+| 1 | [#3517](https://github.com/YH-05/finance/issues/3517) | base.py に apply_polite_delay 関数と RateLimitError 処理を追加 | 0.5h | Todo |
+| 1 | [#3518](https://github.com/YH-05/finance/issues/3518) | __init__.py に新シンボルをエクスポート | 0.1h | Todo |
+| 2 | [#3519](https://github.com/YH-05/finance/issues/3519) | 6ソースの DEFAULT_RETRY_CONFIG に YFRateLimitError を追加 | 0.5h | Todo |
+| 2 | [#3520](https://github.com/YH-05/finance/issues/3520) | 6ソースの fetch_all にポライトディレイを挿入 | 0.5h | Todo |
+| 3 | [#3521](https://github.com/YH-05/finance/issues/3521) | test_base.py に apply_polite_delay と YFRateLimitError リトライのテストを追加 | 0.5h | Todo |
+| 3 | [#3522](https://github.com/YH-05/finance/issues/3522) | 6ソーステストに fetch_all ポライトディレイのテストを追加 | 1.0h | Todo |
+| 3 | [#3523](https://github.com/YH-05/finance/issues/3523) | 全体検証: make check-all 実行 | 0.5h | Todo |
+| 3 | [#3524](https://github.com/YH-05/finance/issues/3524) | project.md に Issue リンクを反映 | 0.1h | Todo |
+
+## 依存関係図
+
+```mermaid
+graph TD
+    task-1["#3517: base.py 基盤実装"]
+    task-2["#3518: __init__.py エクスポート"]
+    task-3["#3519: 6ソース DEFAULT_RETRY_CONFIG"]
+    task-4["#3520: 6ソース fetch_all"]
+    task-5["#3521: test_base.py テスト"]
+    task-6["#3522: 6ソーステスト"]
+    task-7["#3523: make check-all"]
+    task-8["#3524: project.md 更新"]
+
+    task-1 --> task-2
+    task-1 --> task-3
+    task-1 --> task-4
+    task-2 --> task-3
+    task-2 --> task-4
+    task-1 --> task-5
+    task-3 --> task-5
+    task-4 --> task-6
+    task-5 --> task-6
+    task-5 --> task-7
+    task-6 --> task-7
+    task-7 --> task-8
+
+    classDef wave1 fill:#e1f5dd
+    classDef wave2 fill:#fff4dd
+    classDef wave3 fill:#fde2e2
+
+    class task-1,task-2 wave1
+    class task-3,task-4 wave2
+    class task-5,task-6,task-7,task-8 wave3
+```
+
+## 次のステップ
+
+1. 並列開発計画を確認: `/plan-worktrees 45`
+2. タスクを実装: `/issue-implement 3517`（または順次実装）
+3. 実装完了後、Issue #3524 で project.md のステータスを更新
