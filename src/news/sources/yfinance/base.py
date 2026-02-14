@@ -2,16 +2,19 @@
 
 This module provides the foundational functionality for the yfinance news source,
 including data conversion functions, retry logic with exponential backoff,
-and input validation.
+polite delay between requests, and input validation.
 
 Functions
 ---------
+apply_polite_delay
+    Apply a polite delay between requests (NasdaqSession pattern).
 ticker_news_to_article
     Convert yfinance Ticker.news data to Article model.
 search_news_to_article
     Convert yfinance Search.news data to Article model.
 fetch_with_retry
     Execute a fetch operation with retry logic and exponential backoff.
+    Converts YFRateLimitError to RateLimitError on exhaustion.
 validate_ticker
     Validate a ticker symbol.
 validate_query
@@ -46,7 +49,7 @@ from ...core.article import (
     Provider,
     Thumbnail,
 )
-from ...core.errors import SourceError, ValidationError
+from ...core.errors import RateLimitError, SourceError, ValidationError
 from ...core.result import RetryConfig
 
 logger = get_logger(__name__, module="yfinance.base")
@@ -69,6 +72,46 @@ _MAX_TICKER_LENGTH = 15
 
 # Maximum query length
 _MAX_QUERY_LENGTH = 200
+
+# Polite delay constants (following NasdaqSession pattern)
+DEFAULT_POLITE_DELAY: float = 1.0
+DEFAULT_DELAY_JITTER: float = 0.5
+
+
+def apply_polite_delay(
+    polite_delay: float = DEFAULT_POLITE_DELAY,
+    jitter: float = DEFAULT_DELAY_JITTER,
+) -> float:
+    """Apply a polite delay between requests.
+
+    Follows the NasdaqSession pattern for rate-limiting courtesy.
+    The actual delay is ``polite_delay + random.uniform(0, jitter)``.
+
+    Parameters
+    ----------
+    polite_delay : float
+        Base delay in seconds (default: ``DEFAULT_POLITE_DELAY`` = 1.0).
+    jitter : float
+        Random jitter in seconds added to the base delay
+        (default: ``DEFAULT_DELAY_JITTER`` = 0.5).
+
+    Returns
+    -------
+    float
+        Actual wait time in seconds.
+
+    Examples
+    --------
+    >>> from unittest.mock import patch
+    >>> with patch("news.sources.yfinance.base.time.sleep"):
+    ...     delay = apply_polite_delay(polite_delay=1.0, jitter=0.0)
+    >>> delay
+    1.0
+    """
+    actual_delay = polite_delay + random.uniform(0, jitter)  # nosec B311 - not used for security/crypto
+    time.sleep(actual_delay)
+    logger.debug("Polite delay applied", delay_seconds=actual_delay)
+    return actual_delay
 
 
 def ticker_news_to_article(raw: dict[str, Any], ticker: str) -> Article:
@@ -240,6 +283,10 @@ def fetch_with_retry(
 ) -> T:
     """Execute a fetch operation with retry logic and exponential backoff.
 
+    When all retries are exhausted and the last exception is a
+    ``yfinance.exceptions.YFRateLimitError``, it is converted to
+    ``RateLimitError`` so callers can handle rate-limiting uniformly.
+
     Parameters
     ----------
     fetch_func : Callable[[], T]
@@ -254,8 +301,10 @@ def fetch_with_retry(
 
     Raises
     ------
+    RateLimitError
+        If all retry attempts fail due to YFRateLimitError.
     SourceError
-        If all retry attempts fail.
+        If all retry attempts fail for other reasons.
     Exception
         If a non-retryable exception occurs.
 
@@ -306,7 +355,9 @@ def fetch_with_retry(
             )
             raise
 
-    # All retries exhausted
+    # All retries exhausted — check for YFRateLimitError before raising generic SourceError
+    _try_raise_rate_limit_error(last_exception)
+
     error_msg = f"Max retries exceeded ({config.max_attempts} attempts)"
     logger.error(
         error_msg,
@@ -600,6 +651,36 @@ def _build_metadata(
     return metadata
 
 
+def _try_raise_rate_limit_error(last_exception: Exception | None) -> None:
+    """Raise RateLimitError if the last exception is YFRateLimitError.
+
+    This converts yfinance's native rate-limit exception into the news
+    package's ``RateLimitError`` so callers can handle it uniformly.
+
+    Parameters
+    ----------
+    last_exception : Exception | None
+        The last exception from retry attempts.
+
+    Raises
+    ------
+    RateLimitError
+        If ``last_exception`` is an instance of ``YFRateLimitError``.
+    """
+    # Lazy import to avoid hard dependency on yfinance at module level
+    try:
+        from yfinance.exceptions import YFRateLimitError
+    except ImportError:
+        return
+
+    if isinstance(last_exception, YFRateLimitError):
+        logger.warning(
+            "YFRateLimitError detected, converting to RateLimitError",
+            error=str(last_exception),
+        )
+        raise RateLimitError(source="yfinance") from last_exception
+
+
 def _calculate_delay(attempt: int, config: RetryConfig) -> float:
     """Calculate delay for retry with exponential backoff and optional jitter."""
     # Exponential backoff: initial_delay * base^(attempt-1)
@@ -619,6 +700,9 @@ def _calculate_delay(attempt: int, config: RetryConfig) -> float:
 
 # Export all public symbols
 __all__ = [
+    "DEFAULT_DELAY_JITTER",
+    "DEFAULT_POLITE_DELAY",
+    "apply_polite_delay",
     "fetch_with_retry",
     "search_news_to_article",
     "ticker_news_to_article",

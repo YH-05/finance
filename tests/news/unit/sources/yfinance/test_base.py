@@ -13,9 +13,12 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from news.core.article import Article, ArticleSource, ContentType
-from news.core.errors import SourceError, ValidationError
+from news.core.errors import RateLimitError, SourceError, ValidationError
 from news.core.result import RetryConfig
 from news.sources.yfinance.base import (
+    DEFAULT_DELAY_JITTER,
+    DEFAULT_POLITE_DELAY,
+    apply_polite_delay,
     fetch_with_retry,
     search_news_to_article,
     ticker_news_to_article,
@@ -572,3 +575,110 @@ class TestFetchWithRetry:
             fetch_with_retry(mock_func, config)
 
         assert mock_func.call_count == 1
+
+    def test_異常系_YFRateLimitErrorがRateLimitErrorに変換される(self) -> None:
+        """Test that YFRateLimitError is converted to RateLimitError."""
+        from yfinance.exceptions import YFRateLimitError
+
+        mock_func = MagicMock(side_effect=YFRateLimitError())
+        config = RetryConfig(
+            max_attempts=2,
+            initial_delay=0.01,
+            retryable_exceptions=(YFRateLimitError, ConnectionError),
+        )
+
+        with pytest.raises(RateLimitError) as exc_info:
+            fetch_with_retry(mock_func, config)
+
+        assert exc_info.value.source == "yfinance"
+        assert exc_info.value.retryable is True
+        assert isinstance(exc_info.value.__cause__, YFRateLimitError)
+
+    def test_異常系_YFRateLimitError以外はSourceErrorのまま(self) -> None:
+        """Test that non-YFRateLimitError still raises SourceError."""
+        mock_func = MagicMock(side_effect=ConnectionError("Network error"))
+        config = RetryConfig(max_attempts=2, initial_delay=0.01)
+
+        with pytest.raises(SourceError) as exc_info:
+            fetch_with_retry(mock_func, config)
+
+        assert not isinstance(exc_info.value, RateLimitError)
+
+
+# ============================================================================
+# Tests for apply_polite_delay
+# ============================================================================
+
+
+class TestApplyPoliteDelay:
+    """Tests for apply_polite_delay function."""
+
+    def test_正常系_デフォルト値でディレイが適用される(self) -> None:
+        """Test that polite delay is applied with default values."""
+        with patch("news.sources.yfinance.base.time.sleep") as mock_sleep:
+            actual_delay = apply_polite_delay()
+
+            mock_sleep.assert_called_once()
+            slept_value = mock_sleep.call_args[0][0]
+            assert slept_value == actual_delay
+            assert (
+                DEFAULT_POLITE_DELAY
+                <= actual_delay
+                <= DEFAULT_POLITE_DELAY + DEFAULT_DELAY_JITTER
+            )
+
+    def test_正常系_カスタム値でディレイが適用される(self) -> None:
+        """Test that polite delay is applied with custom values."""
+        with patch("news.sources.yfinance.base.time.sleep") as mock_sleep:
+            actual_delay = apply_polite_delay(polite_delay=2.0, jitter=1.0)
+
+            mock_sleep.assert_called_once()
+            assert 2.0 <= actual_delay <= 3.0
+
+    def test_正常系_jitterが0のとき固定ディレイ(self) -> None:
+        """Test that delay is fixed when jitter is 0."""
+        with patch("news.sources.yfinance.base.time.sleep") as mock_sleep:
+            actual_delay = apply_polite_delay(polite_delay=1.5, jitter=0.0)
+
+            mock_sleep.assert_called_once()
+            assert actual_delay == pytest.approx(1.5, abs=0.01)
+
+    def test_正常系_戻り値が実際の待機時間(self) -> None:
+        """Test that return value matches the actual sleep time."""
+        with patch("news.sources.yfinance.base.time.sleep") as mock_sleep:
+            actual_delay = apply_polite_delay(polite_delay=1.0, jitter=0.5)
+
+            slept_value = mock_sleep.call_args[0][0]
+            assert actual_delay == slept_value
+
+    @given(
+        polite_delay=st.floats(min_value=0.0, max_value=10.0),
+        jitter=st.floats(min_value=0.0, max_value=5.0),
+    )
+    @settings(max_examples=50)
+    def test_プロパティ_戻り値がdelay以上delay_plus_jitter以下(
+        self, polite_delay: float, jitter: float
+    ) -> None:
+        """Property test: return value is within expected range."""
+        with patch("news.sources.yfinance.base.time.sleep"):
+            actual_delay = apply_polite_delay(polite_delay=polite_delay, jitter=jitter)
+
+            assert actual_delay >= polite_delay
+            assert actual_delay <= polite_delay + jitter
+
+
+# ============================================================================
+# Tests for constants
+# ============================================================================
+
+
+class TestConstants:
+    """Tests for module-level constants."""
+
+    def test_正常系_DEFAULT_POLITE_DELAYが1秒(self) -> None:
+        """Test that DEFAULT_POLITE_DELAY is 1.0 seconds."""
+        assert DEFAULT_POLITE_DELAY == 1.0
+
+    def test_正常系_DEFAULT_DELAY_JITTERが0_5秒(self) -> None:
+        """Test that DEFAULT_DELAY_JITTER is 0.5 seconds."""
+        assert DEFAULT_DELAY_JITTER == 0.5
