@@ -22,6 +22,9 @@ stock
 """
 
 from .base import (
+    DEFAULT_DELAY_JITTER,
+    DEFAULT_POLITE_DELAY,
+    apply_polite_delay,
     fetch_with_retry,
     search_news_to_article,
     ticker_news_to_article,
@@ -36,12 +39,15 @@ from .sector import SectorNewsSource
 from .stock import StockNewsSource
 
 __all__ = [
+    "DEFAULT_DELAY_JITTER",
+    "DEFAULT_POLITE_DELAY",
     "CommodityNewsSource",
     "IndexNewsSource",
     "MacroNewsSource",
     "SearchNewsSource",
     "SectorNewsSource",
     "StockNewsSource",
+    "apply_polite_delay",
     "fetch_with_retry",
     "search_news_to_article",
     "ticker_news_to_article",
