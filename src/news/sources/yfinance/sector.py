@@ -21,7 +21,6 @@ from pathlib import Path
 from typing import Any
 
 import yfinance as yf
-from yfinance.exceptions import YFRateLimitError
 
 from utils_core.logging import get_logger
 
@@ -30,7 +29,8 @@ from ...core.article import ArticleSource
 from ...core.errors import SourceError
 from ...core.result import FetchResult, RetryConfig
 from .base import (
-    apply_polite_delay,
+    DEFAULT_YFINANCE_RETRY_CONFIG,
+    fetch_all_with_polite_delay,
     fetch_with_retry,
     ticker_news_to_article,
     validate_ticker,
@@ -41,19 +41,8 @@ logger = get_logger(__name__, module="yfinance.sector")
 # Default symbols file path
 DEFAULT_SYMBOLS_FILE = Path("src/analyze/config/symbols.yaml")
 
-# Default retry configuration
-DEFAULT_RETRY_CONFIG = RetryConfig(
-    max_attempts=3,
-    initial_delay=2.0,
-    max_delay=60.0,
-    exponential_base=2.0,
-    jitter=True,
-    retryable_exceptions=(
-        ConnectionError,
-        TimeoutError,
-        YFRateLimitError,
-    ),
-)
+# Default retry configuration (shared across all yfinance sources)
+DEFAULT_RETRY_CONFIG = DEFAULT_YFINANCE_RETRY_CONFIG
 
 
 class SectorNewsSource:
@@ -308,32 +297,7 @@ class SectorNewsSource:
         >>> len(results)
         2
         """
-        if not identifiers:
-            logger.debug("Empty identifiers list, returning empty results")
-            return []
-
-        logger.info(
-            "Fetching news for multiple sector ETFs",
-            ticker_count=len(identifiers),
-            count=count,
-        )
-
-        results: list[FetchResult] = []
-        for i, ticker in enumerate(identifiers):
-            if i > 0:
-                apply_polite_delay()
-            result = self.fetch(ticker, count)
-            results.append(result)
-
-        success_count = sum(1 for r in results if r.success)
-        logger.info(
-            "Completed fetching news for multiple sector ETFs",
-            total=len(results),
-            success=success_count,
-            failed=len(results) - success_count,
-        )
-
-        return results
+        return fetch_all_with_polite_delay(identifiers, self.fetch, count)
 
     def _load_symbols(self) -> None:
         """Load sector ETF symbols from the symbols data.

@@ -186,7 +186,7 @@ class TestCommodityNewsSource:
         assert all(isinstance(a, Article) for a in result.articles)
         assert result.articles[0].source == ArticleSource.YFINANCE_TICKER
 
-    @patch("news.sources.yfinance.commodity.apply_polite_delay")
+    @patch("news.sources.yfinance.base.apply_polite_delay")
     def test_正常系_複数ティッカーでニュース取得(
         self,
         _mock_delay: MagicMock,
@@ -241,7 +241,7 @@ class TestCommodityNewsSource:
         assert result.is_empty is True
         assert result.ticker == "GC=F"
 
-    @patch("news.sources.yfinance.commodity.apply_polite_delay")
+    @patch("news.sources.yfinance.base.apply_polite_delay")
     def test_正常系_エラー時は次のティッカーへ継続(
         self,
         _mock_delay: MagicMock,
@@ -341,7 +341,7 @@ class TestCommodityNewsSource:
             assert result.success is False
             assert result.error is not None
 
-    @patch("news.sources.yfinance.commodity.apply_polite_delay")
+    @patch("news.sources.yfinance.base.apply_polite_delay")
     def test_正常系_fetch_allは各ティッカーの結果を順番に返す(
         self, _mock_delay: MagicMock, sample_symbols_file: Path
     ) -> None:
@@ -395,7 +395,7 @@ class TestCommodityNewsSource:
 class TestFetchAllPoliteDelay:
     """Tests for polite delay behavior in CommodityNewsSource.fetch_all."""
 
-    @patch("news.sources.yfinance.commodity.apply_polite_delay")
+    @patch("news.sources.yfinance.base.apply_polite_delay")
     def test_正常系_複数ティッカーで2回目以降にディレイが適用される(
         self,
         mock_delay: MagicMock,
@@ -415,7 +415,7 @@ class TestFetchAllPoliteDelay:
         # apply_polite_delay should be called 2 times (before 2nd and 3rd requests)
         assert mock_delay.call_count == 2
 
-    @patch("news.sources.yfinance.commodity.apply_polite_delay")
+    @patch("news.sources.yfinance.base.apply_polite_delay")
     def test_正常系_単一ティッカーでディレイが適用されない(
         self,
         mock_delay: MagicMock,

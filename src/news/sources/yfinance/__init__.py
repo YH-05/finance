@@ -24,7 +24,9 @@ stock
 from .base import (
     DEFAULT_DELAY_JITTER,
     DEFAULT_POLITE_DELAY,
+    DEFAULT_YFINANCE_RETRY_CONFIG,
     apply_polite_delay,
+    fetch_all_with_polite_delay,
     fetch_with_retry,
     search_news_to_article,
     ticker_news_to_article,
@@ -41,6 +43,7 @@ from .stock import StockNewsSource
 __all__ = [
     "DEFAULT_DELAY_JITTER",
     "DEFAULT_POLITE_DELAY",
+    "DEFAULT_YFINANCE_RETRY_CONFIG",
     "CommodityNewsSource",
     "IndexNewsSource",
     "MacroNewsSource",
@@ -48,6 +51,7 @@ __all__ = [
     "SectorNewsSource",
     "StockNewsSource",
     "apply_polite_delay",
+    "fetch_all_with_polite_delay",
     "fetch_with_retry",
     "search_news_to_article",
     "ticker_news_to_article",

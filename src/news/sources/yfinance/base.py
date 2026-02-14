@@ -50,7 +50,7 @@ from ...core.article import (
     Thumbnail,
 )
 from ...core.errors import RateLimitError, SourceError, ValidationError
-from ...core.result import RetryConfig
+from ...core.result import FetchResult, RetryConfig
 
 logger = get_logger(__name__, module="yfinance.base")
 
@@ -76,6 +76,37 @@ _MAX_QUERY_LENGTH = 200
 # Polite delay constants (following NasdaqSession pattern)
 DEFAULT_POLITE_DELAY: float = 1.0
 DEFAULT_DELAY_JITTER: float = 0.5
+
+
+def _get_yfinance_retry_config() -> RetryConfig:
+    """Build the default retry configuration for yfinance sources.
+
+    Lazy-imports ``YFRateLimitError`` so the module can be imported even
+    when *yfinance* is not installed.
+
+    Returns
+    -------
+    RetryConfig
+        Retry configuration with YFRateLimitError as a retryable exception.
+    """
+    retryable: tuple[type[Exception], ...] = (ConnectionError, TimeoutError)
+    try:
+        from yfinance.exceptions import YFRateLimitError
+
+        retryable = (*retryable, YFRateLimitError)
+    except ImportError:
+        pass
+    return RetryConfig(
+        max_attempts=3,
+        initial_delay=2.0,
+        max_delay=60.0,
+        exponential_base=2.0,
+        jitter=True,
+        retryable_exceptions=retryable,
+    )
+
+
+DEFAULT_YFINANCE_RETRY_CONFIG: RetryConfig = _get_yfinance_retry_config()
 
 
 def apply_polite_delay(
@@ -485,6 +516,53 @@ def validate_query(query: str) -> str:
     return query
 
 
+def fetch_all_with_polite_delay(
+    identifiers: list[str],
+    fetch_func: Callable[[str, int], FetchResult],
+    count: int = 10,
+) -> list[FetchResult]:
+    """Fetch multiple identifiers with polite delays between requests.
+
+    This is the common implementation for all yfinance source ``fetch_all``
+    methods.  A polite delay is inserted between each request to avoid
+    triggering Yahoo Finance rate limits.
+
+    Parameters
+    ----------
+    identifiers : list[str]
+        List of ticker symbols or search queries.
+    fetch_func : Callable[[str, int], FetchResult]
+        The fetch function to call for each identifier (typically
+        ``self.fetch``).
+    count : int, optional
+        Maximum number of articles to fetch per identifier (default: 10).
+
+    Returns
+    -------
+    list[FetchResult]
+        List of FetchResult objects, one per identifier.
+    """
+    if not identifiers:
+        logger.debug("Empty identifiers list, returning empty results")
+        return []
+
+    results: list[FetchResult] = []
+    for i, identifier in enumerate(identifiers):
+        if i > 0:
+            apply_polite_delay()
+        result = fetch_func(identifier, count)
+        results.append(result)
+
+    success_count = sum(1 for r in results if r.success)
+    logger.info(
+        "Completed fetching news for multiple identifiers",
+        total=len(results),
+        success=success_count,
+        failed=len(results) - success_count,
+    )
+    return results
+
+
 # ============================================================================
 # Private helper functions
 # ============================================================================
@@ -702,7 +780,9 @@ def _calculate_delay(attempt: int, config: RetryConfig) -> float:
 __all__ = [
     "DEFAULT_DELAY_JITTER",
     "DEFAULT_POLITE_DELAY",
+    "DEFAULT_YFINANCE_RETRY_CONFIG",
     "apply_polite_delay",
+    "fetch_all_with_polite_delay",
     "fetch_with_retry",
     "search_news_to_article",
     "ticker_news_to_article",

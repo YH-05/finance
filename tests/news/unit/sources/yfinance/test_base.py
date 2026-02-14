@@ -14,11 +14,14 @@ from hypothesis import strategies as st
 
 from news.core.article import Article, ArticleSource, ContentType
 from news.core.errors import RateLimitError, SourceError, ValidationError
-from news.core.result import RetryConfig
+from news.core.result import FetchResult, RetryConfig
 from news.sources.yfinance.base import (
     DEFAULT_DELAY_JITTER,
     DEFAULT_POLITE_DELAY,
+    DEFAULT_YFINANCE_RETRY_CONFIG,
+    _try_raise_rate_limit_error,
     apply_polite_delay,
+    fetch_all_with_polite_delay,
     fetch_with_retry,
     search_news_to_article,
     ticker_news_to_article,
@@ -682,3 +685,140 @@ class TestConstants:
     def test_正常系_DEFAULT_DELAY_JITTERが0_5秒(self) -> None:
         """Test that DEFAULT_DELAY_JITTER is 0.5 seconds."""
         assert DEFAULT_DELAY_JITTER == 0.5
+
+    def test_正常系_DEFAULT_YFINANCE_RETRY_CONFIGが正しく構成される(self) -> None:
+        """Test that DEFAULT_YFINANCE_RETRY_CONFIG has correct defaults."""
+        config = DEFAULT_YFINANCE_RETRY_CONFIG
+        assert config.max_attempts == 3
+        assert config.initial_delay == 2.0
+        assert config.max_delay == 60.0
+        assert config.exponential_base == 2.0
+        assert config.jitter is True
+        assert ConnectionError in config.retryable_exceptions
+        assert TimeoutError in config.retryable_exceptions
+
+
+# ============================================================================
+# Tests for _try_raise_rate_limit_error
+# ============================================================================
+
+
+class TestTryRaiseRateLimitError:
+    """Tests for _try_raise_rate_limit_error helper function."""
+
+    def test_正常系_Noneで何も起きない(self) -> None:
+        """Test that None input does nothing."""
+        _try_raise_rate_limit_error(None)
+
+    def test_正常系_通常の例外で何も起きない(self) -> None:
+        """Test that a non-YFRateLimitError exception does nothing."""
+        _try_raise_rate_limit_error(ValueError("test"))
+
+    def test_異常系_ImportError時に早期リターン(self) -> None:
+        """Test early return when yfinance.exceptions is not importable."""
+        with patch.dict("sys.modules", {"yfinance.exceptions": None}):
+            # Should not raise even though last_exception is set
+            _try_raise_rate_limit_error(ConnectionError("test"))
+
+
+# ============================================================================
+# Tests for apply_polite_delay edge cases
+# ============================================================================
+
+
+class TestApplyPoliteDelayEdgeCases:
+    """Edge case tests for apply_polite_delay function."""
+
+    def test_エッジケース_負のpolite_delayでも動作する(self) -> None:
+        """Test that negative polite_delay still works (jitter makes it positive)."""
+        with patch("news.sources.yfinance.base.time.sleep") as mock_sleep:
+            actual_delay = apply_polite_delay(polite_delay=-0.5, jitter=1.0)
+
+            mock_sleep.assert_called_once()
+            # -0.5 + uniform(0, 1.0) → range: -0.5 to 0.5
+            assert -0.5 <= actual_delay <= 0.5
+
+    def test_エッジケース_負のjitterでも動作する(self) -> None:
+        """Test that negative jitter still works (uniform handles negative range)."""
+        with patch("news.sources.yfinance.base.time.sleep") as mock_sleep:
+            actual_delay = apply_polite_delay(polite_delay=1.0, jitter=-0.5)
+
+            mock_sleep.assert_called_once()
+            # 1.0 + uniform(0, -0.5) → range: 0.5 to 1.0
+            assert 0.5 <= actual_delay <= 1.0
+
+
+# ============================================================================
+# Tests for fetch_all_with_polite_delay
+# ============================================================================
+
+
+class TestFetchAllWithPoliteDelay:
+    """Tests for fetch_all_with_polite_delay function."""
+
+    def test_正常系_空リストで空結果(self) -> None:
+        """Test that empty identifiers returns empty results."""
+        mock_fetch = MagicMock()
+        results = fetch_all_with_polite_delay([], mock_fetch, count=5)
+
+        assert results == []
+        mock_fetch.assert_not_called()
+
+    @patch("news.sources.yfinance.base.apply_polite_delay")
+    def test_正常系_単一識別子ではディレイなし(self, mock_delay: MagicMock) -> None:
+        """Test that single identifier does not trigger polite delay."""
+        mock_fetch = MagicMock(
+            return_value=FetchResult(articles=[], success=True, ticker="AAPL")
+        )
+        results = fetch_all_with_polite_delay(["AAPL"], mock_fetch, count=5)
+
+        assert len(results) == 1
+        mock_delay.assert_not_called()
+
+    @patch("news.sources.yfinance.base.apply_polite_delay")
+    def test_正常系_複数識別子でディレイが挿入される(
+        self, mock_delay: MagicMock
+    ) -> None:
+        """Test that polite delay is inserted between multiple identifiers."""
+        mock_fetch = MagicMock(
+            return_value=FetchResult(articles=[], success=True, ticker="TEST")
+        )
+        results = fetch_all_with_polite_delay(
+            ["AAPL", "MSFT", "GOOGL"], mock_fetch, count=5
+        )
+
+        assert len(results) == 3
+        assert mock_fetch.call_count == 3
+        # Delay is called between requests (2 times for 3 identifiers)
+        assert mock_delay.call_count == 2
+
+    @patch("news.sources.yfinance.base.apply_polite_delay")
+    def test_正常系_エラーでも次の識別子に進む(self, mock_delay: MagicMock) -> None:
+        """Test that processing continues on error."""
+        success_result = FetchResult(articles=[], success=True, ticker="OK")
+        fail_result = FetchResult(
+            articles=[],
+            success=False,
+            ticker="FAIL",
+            error=SourceError(message="test", source="yfinance"),
+        )
+        mock_fetch = MagicMock(
+            side_effect=[success_result, fail_result, success_result]
+        )
+
+        results = fetch_all_with_polite_delay(["A", "B", "C"], mock_fetch, count=5)
+
+        assert len(results) == 3
+        assert results[0].success is True
+        assert results[1].success is False
+        assert results[2].success is True
+
+    @patch("news.sources.yfinance.base.apply_polite_delay")
+    def test_正常系_countが正しく渡される(self, mock_delay: MagicMock) -> None:
+        """Test that count parameter is passed to fetch function."""
+        mock_fetch = MagicMock(
+            return_value=FetchResult(articles=[], success=True, ticker="TEST")
+        )
+        fetch_all_with_polite_delay(["AAPL"], mock_fetch, count=20)
+
+        mock_fetch.assert_called_once_with("AAPL", 20)
