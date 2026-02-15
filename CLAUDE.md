@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-02-11
+updated_at: 2026-02-15
 ---
 
 # finance - 金融市場分析・コンテンツ発信支援ライブラリ
@@ -92,6 +92,7 @@ updated_at: 2026-02-11
 - 記事フォルダ作成 → `/new-finance-article`
 - リサーチ実行 → `/finance-research`
 - 個別銘柄分析 → `/dr-stock`
+- 業界・セクター分析 → `/dr-industry`
 - 全工程一括 → `/finance-full`
 
 ### 分析・改善
@@ -163,6 +164,7 @@ updated_at: 2026-02-11
 | `/dr-stock` | 個別銘柄の包括的分析（株価・財務・SEC Filings・業界データ収集→クロス検証→レポート生成） | `dr-stock` |
 | `/generate-market-report` | 週次マーケットレポートを自動生成（`--weekly` で週次レポート生成モード） | `generate-market-report` |
 | `/ai-research-collect` | AI投資バリューチェーン収集（77社・10カテゴリ、投資視点要約→Project #44投稿） | `ai-research-workflow` |
+| `/dr-industry` | 業界・セクター分析（セクターETF・構成銘柄データ収集→クロス検証→セクター分析→レポート生成） | `dr-industry` |
 
 ### ドキュメント・その他
 
@@ -251,6 +253,7 @@ updated_at: 2026-02-11
 | `agent-memory` | 会話をまたいで知識を保存・参照 | `remember this`等 |
 | `deep-research` | 金融市場・投資テーマのディープリサーチ | `/finance-research` |
 | `dr-stock` | 個別銘柄の包括的分析（4並列データ収集→クロス検証→深掘り分析→レポート生成） | `/dr-stock` |
+| `dr-industry` | 業界・セクター分析（5並列データ収集→クロス検証→5ピラー分析→レポート生成） | `/dr-industry` |
 | `finance-news-workflow` | 金融ニュース収集の4フェーズワークフロー | `/finance-news-workflow` |
 | `ai-research-workflow` | AI投資バリューチェーン収集ワークフロー（Python前処理→投資視点要約→結果集約、10カテゴリ77社対応） | `/ai-research-collect` |
 | `generate-market-report` | 週次マーケットレポート自動生成（データ収集→ニュース検索→レポート作成） | `/generate-market-report` |
@@ -396,6 +399,7 @@ updated_at: 2026-02-11
 | `dr-report-generator` | 分析結果から形式別レポートを生成 |
 | `dr-visualizer` | 分析結果を可視化しチャート・図表を生成 |
 | `industry-researcher` | 業界ポジション・競争優位性調査（プリセット収集・dogma.md評価） |
+| `dr-industry-lead` | dr-industryワークフローのAgent Teamsリーダー（9チームメイトを5フェーズで制御） |
 
 ### 設計・作成支援エージェント
 
@@ -443,6 +447,7 @@ updated_at: 2026-02-11
 
 - `/commit-and-pr` → `commit-and-pr` → `quality-checker`, `code-simplifier`
 - `/dr-stock` → `dr-stock` → `dr-stock-lead`（Agent Teams）→ 8チームメイト（market-data, sec-filings, web, industry-researcher, source-aggregator, cross-validator, stock-analyzer, report-generator）
+- `/dr-industry` → `dr-industry` → `dr-industry-lead`（Agent Teams）→ 9チームメイト
 - `/finance-research` → `deep-research` → `research-lead`（Agent Teams）→ 12リサーチエージェント
 - `/generate-market-report` → `generate-market-report` → `weekly-report-lead`（Agent Teams）→ 6チームメイト
 - `/ai-research-collect` → `ai-research-workflow` → `ai-research-article-fetcher`（10カテゴリ並列）
