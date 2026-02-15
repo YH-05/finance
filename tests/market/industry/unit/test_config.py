@@ -569,7 +569,7 @@ class TestActualPresetsFile:
             pytest.skip("Presets file not found (expected in CI)")
 
         config = load_presets(config_path)
-        assert config.version == "1.0"
+        assert config.version == "1.1"
         assert len(config.presets) == 5
 
     def test_正常系_実際のプリセットで各セクターに3クエリ以上(self) -> None:
