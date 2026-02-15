@@ -13,18 +13,19 @@ research-meta.json とプリセット設定に基づき、対象企業の業界�
 ## 重要ルール
 
 - JSON 以外を一切出力しない
-- プリセット設定に基づいて効率的にデータ収集する
+- プリセット設定に基づいて効率的にデータ収集する（7カテゴリソース対応）
 - 蓄積データが7日以内なら再利用する（不要な再収集を避ける）
 - dogma.md の12判断ルールに厳密に従い競争優位性を評価する
 - 「結果・実績」を「優位性」と混同しない（dogma ルール1）
 - 投資判断ではなく分析結果を提示する
+- ペイウォール対応: 市場調査会社のデータは paywall_bypass 戦略に従い WebSearch で取得する
 
 ## 入力
 
 | ファイル | パス | 説明 |
 |---------|------|------|
 | research-meta.json | `{research_dir}/00_meta/research-meta.json` | リサーチメタ情報（ticker, industry_preset 等） |
-| プリセット設定 | `data/config/industry-research-presets.json` | セクター別の収集設定・ピアグループ・競争要因 |
+| プリセット設定 | `data/config/industry-research-presets.json` | セクター別の収集設定・ピアグループ・競争要因・市場調査会社・専門リサーチ・業界団体 |
 | 競争優位性フレームワーク | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | Y の12判断ルール |
 
 ## 出力
@@ -33,7 +34,19 @@ research-meta.json とプリセット設定に基づき、対象企業の業界�
 
 ---
 
-## 収集フロー
+## 収集フロー（7カテゴリソース対応）
+
+### 収集カテゴリ一覧
+
+| # | カテゴリ | ソース数 | 取得方法 |
+|---|---------|---------|---------|
+| 1 | 戦略コンサル | 8社（McKinsey, BCG, Bain, Accenture 等） | market.industry.collect |
+| 2 | 市場調査会社 | 3社（Gartner, IDC, Forrester） | WebSearch（ペイウォール対応PR検索） |
+| 3 | 投資銀行 | 3社（Goldman Sachs, Morgan Stanley, JP Morgan） | market.industry.collect |
+| 4 | 専門リサーチ | 2社（CB Insights, PitchBook） | WebSearch |
+| 5 | 業界団体 | セクター固有（2-4団体） | WebSearch + WebFetch |
+| 6 | 政府統計 API | BLS, Census, EIA 等 | market.industry.collect |
+| 7 | 業界メディア | セクター固有（3社） | WebSearch + WebFetch |
 
 ### Step 1: プリセット取得
 
@@ -41,11 +54,14 @@ research-meta.json とプリセット設定に基づき、対象企業の業界�
 1. research-meta.json から industry_preset を取得
    例: "Technology/Software_Infrastructure"
 2. data/config/industry-research-presets.json から該当セクターの設定を読み込み
-   - sources: 収集対象のデータソース一覧
+   - sources: 収集対象のデータソース一覧（カテゴリ1, 3）
+   - market_research_sources: 市場調査会社（カテゴリ2）
+   - specialized_research_sources: 専門リサーチ会社（カテゴリ4）
+   - industry_associations: 業界団体（カテゴリ5）
    - peer_groups: ピアグループ定義
    - scraping_queries: 検索クエリ一覧
    - competitive_factors: 評価すべき競争要因
-   - industry_media: 業界専門メディア
+   - industry_media: 業界専門メディア（カテゴリ7）
    - key_metrics: 重点指標
 3. industry_preset が見つからない場合:
    - ticker のセクター情報から最も近いプリセットを推定
@@ -91,6 +107,54 @@ uv run python -m market.industry.collect --source {source_key}
 - 失敗時はエラーメッセージを記録し、利用可能なデータで続行
 - 出力先: `data/raw/industry_reports/` 配下
 
+### Step 3.5: 市場調査会社データ収集（カテゴリ2 - ペイウォール対応）
+
+プリセットの `market_research_sources` に基づき、ペイウォール対応 WebSearch でデータを収集する。
+
+```
+ペイウォール対応戦略:
+1. Gartner: WebSearch で "site:gartner.com/en/newsroom {sector} {year}" を検索
+   → Magic Quadrant 要約、プレスリリースから市場データを抽出
+2. IDC: WebSearch で "site:idc.com/getdoc.jsp {sector} market share" を検索
+   → 市場シェアデータ、支出予測を抽出
+3. Forrester: WebSearch で "site:forrester.com/blogs {sector} Wave" を検索
+   → Wave 評価要約、市場予測を抽出
+
+各ソースの paywall_bypass フィールドをクエリプレフィックスとして使用。
+プレスリリース・ブログなど無料公開部分のみを対象とする。
+```
+
+### Step 3.6: 専門リサーチ会社データ収集（カテゴリ4）
+
+プリセットの `specialized_research_sources` に基づき、WebSearch でデータを収集する。
+
+```
+収集戦略:
+1. CB Insights: WebSearch で "site:cbinsights.com/research {sector}" を検索
+   → 無料レポート、市場マップ、競争分析を抽出
+2. PitchBook: WebSearch で "site:pitchbook.com/news {sector}" を検索
+   → ニュース記事、VC/PE ファンディングデータを抽出
+```
+
+### Step 3.7: 業界団体データ収集（カテゴリ5）
+
+プリセットの `industry_associations` に基づき、WebSearch + WebFetch でセクター固有の業界データを収集する。
+
+```
+収集戦略:
+1. 各業界団体について:
+   a. WebSearch で "{association_name} {public_data_items} {year}" を検索
+   b. 関連ページを WebFetch で取得し公開統計データを抽出
+   c. sub_sectors フィールドでフィルタリング（対象サブセクターの団体のみ収集）
+
+2. セクター別の主な収集対象:
+   - Technology: SIA（出荷統計）、SEMI（設備投資）、BSA（市場規模）、CompTIA（人材統計）
+   - Healthcare: PhRMA（パイプライン統計）、BIO（臨床試験成功率）、AdvaMed（規制動向）
+   - Financials: ABA（融資統計）、SIFMA（取引量データ）
+   - Consumer: NRF（消費支出）、FMI（食品業界データ）
+   - Energy: API（生産統計）、IRENA（再エネ容量・コスト推移）
+```
+
 ### Step 4: WebSearch で最新動向を補完
 
 プリセットの `scraping_queries` に基づき、WebSearch で最新の業界情報を収集する。
@@ -98,11 +162,11 @@ uv run python -m market.industry.collect --source {source_key}
 ```
 検索クエリ戦略:
 1. プリセットの scraping_queries を実行（セクター固有クエリ）
-2. 業界専門メディア（industry_media）の最新記事を検索
+2. 業界専門メディア（industry_media）の最新記事を検索（カテゴリ7）
 3. 競合動向クエリ: "{ticker} vs {peer_tickers} competition market share"
 4. 市場規模クエリ: "{industry} market size TAM growth forecast"
 
-最大15件の記事を WebFetch で本文取得。
+最大20件の記事を WebFetch で本文取得。
 ```
 
 ### Step 5: 10-K の Competition/Risk Factors セクション参照
@@ -182,20 +246,50 @@ sec-filings.json がまだ存在しない場合（T2 と並列実行のため）
   "industry_preset_used": "Technology/Software_Infrastructure",
   "preset_match": "exact",
   "data_collection_summary": {
-    "sources_attempted": 5,
-    "sources_succeeded": 4,
+    "sources_attempted": 8,
+    "sources_succeeded": 7,
     "sources_reused": 2,
     "sources_failed": 1,
+    "categories_covered": 7,
     "details": [
       {
         "source": "industry_collect_script",
+        "category": "consulting_and_investment_banks",
         "status": "reused",
         "data_date": "2026-02-09",
         "age_days": 2,
         "report_count": 5
       },
       {
+        "source": "market_research_firms",
+        "category": "market_research",
+        "status": "collected",
+        "data_date": "2026-02-11",
+        "age_days": 0,
+        "firms_queried": ["Gartner", "IDC", "Forrester"],
+        "data_points_collected": 8
+      },
+      {
+        "source": "specialized_research",
+        "category": "specialized_research",
+        "status": "collected",
+        "data_date": "2026-02-11",
+        "age_days": 0,
+        "firms_queried": ["CB Insights", "PitchBook"],
+        "data_points_collected": 5
+      },
+      {
+        "source": "industry_associations",
+        "category": "industry_associations",
+        "status": "collected",
+        "data_date": "2026-02-11",
+        "age_days": 0,
+        "associations_queried": ["SIA", "SEMI"],
+        "data_points_collected": 4
+      },
+      {
         "source": "web_search",
+        "category": "general_web",
         "status": "collected",
         "data_date": "2026-02-11",
         "age_days": 0,
@@ -203,6 +297,7 @@ sec-filings.json がまだ存在しない場合（T2 と並列実行のため）
       },
       {
         "source": "sec_10k_sections",
+        "category": "sec_filings",
         "status": "collected",
         "data_date": "2026-02-11",
         "age_days": 0,
@@ -210,6 +305,7 @@ sec-filings.json がまだ存在しない場合（T2 と並列実行のため）
       },
       {
         "source": "industry_media",
+        "category": "industry_media",
         "status": "collected",
         "data_date": "2026-02-11",
         "age_days": 0,
@@ -217,6 +313,7 @@ sec-filings.json がまだ存在しない場合（T2 と並列実行のため）
       },
       {
         "source": "government_api",
+        "category": "government_statistics",
         "status": "failed",
         "error_message": "BLS API rate limit exceeded",
         "age_days": null
@@ -374,6 +471,55 @@ sec-filings.json がまだ存在しない場合（T2 と並列実行のため）
     "peer_group_used": "Software_Infrastructure",
     "comparison_date": "2026-02-11"
   },
+  "market_research_data": {
+    "market_research_firms": [
+      {
+        "source": "Gartner",
+        "data_type": "Magic Quadrant",
+        "title": "Magic Quadrant for Cloud Infrastructure and Platform Services",
+        "key_findings": [
+          "AWS and Azure lead the market",
+          "Market growing at 20% CAGR"
+        ],
+        "market_size_estimate": null,
+        "market_share_data": null,
+        "collected_via": "websearch_press_release",
+        "collected_at": "2026-02-11T00:00:00Z",
+        "confidence": "medium"
+      }
+    ],
+    "specialized_research": [
+      {
+        "source": "CB Insights",
+        "data_type": "market_map",
+        "title": "AI Chip Market Map",
+        "key_findings": [
+          "50+ companies competing in custom AI chips"
+        ],
+        "collected_via": "websearch_free_report",
+        "collected_at": "2026-02-11T00:00:00Z",
+        "confidence": "medium"
+      }
+    ],
+    "industry_associations": [
+      {
+        "source": "SIA",
+        "data_type": "shipment_statistics",
+        "title": "Global Semiconductor Sales Report",
+        "key_data_points": [
+          {
+            "metric": "global_semiconductor_sales",
+            "value": 574.0,
+            "unit": "billion_usd",
+            "period": "2025"
+          }
+        ],
+        "collected_via": "websearch_and_webfetch",
+        "collected_at": "2026-02-11T00:00:00Z",
+        "confidence": "high"
+      }
+    ]
+  },
   "government_data": {
     "bls": {
       "series_id": "CES3133440001",
@@ -386,6 +532,9 @@ sec-filings.json がまだ存在しない場合（T2 と並列実行のため）
   },
   "data_freshness": {
     "consulting_reports": "2026-02-09",
+    "market_research_firms": "2026-02-11",
+    "specialized_research": "2026-02-11",
+    "industry_associations": "2026-02-11",
     "government_data": "2026-01-15",
     "web_search": "2026-02-11",
     "sec_filings": "2026-02-11",
@@ -462,7 +611,29 @@ sec-filings.json がまだ存在しない場合（T2 と並列実行のため）
 3. 未収集クエリを data_quality.limitations に記録
 ```
 
-### E006: dogma.md ファイル不在
+### E006: 市場調査会社ペイウォール回避失敗
+
+```
+発生条件: paywall_bypass 戦略でも有用なデータが取得できない
+対処法:
+1. 代替クエリを試行: "{firm_name} {sector} market report press release {year}"
+2. 一般的な検索クエリで同等データを探索
+3. 収集できなかったソースを data_quality.limitations に記録
+4. market_research_data.market_research_firms に status: "paywall_blocked" として記録
+```
+
+### E007: 業界団体データ不在
+
+```
+発生条件: 業界団体のウェブサイトに公開データがない、またはアクセス不可
+対処法:
+1. WebSearch で "{association_name} annual report statistics" を検索
+2. ニュース記事から間接的にデータを収集
+3. 収集できなかった団体を data_quality.limitations に記録
+4. market_research_data.industry_associations に status: "unavailable" として記録
+```
+
+### E008: dogma.md ファイル不在
 
 ```
 発生条件: analyst/Competitive_Advantage/analyst_YK/dogma.md が存在しない

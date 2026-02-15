@@ -1,5 +1,5 @@
 {
-    "version": "1.0",
+    "version": "1.1",
     "presets": [
         {
             "sector": "Technology",
@@ -25,6 +25,78 @@
                     "tier": "scraping",
                     "difficulty": "easy",
                     "enabled": true
+                }
+            ],
+            "market_research_sources": [
+                {
+                    "name": "Gartner",
+                    "url": "https://www.gartner.com/en/newsroom",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:gartner.com/en/newsroom",
+                    "key_outputs": ["Magic Quadrant", "Market Guide", "Hype Cycle"],
+                    "enabled": true
+                },
+                {
+                    "name": "IDC",
+                    "url": "https://www.idc.com",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:idc.com/getdoc.jsp",
+                    "key_outputs": ["MarketScape", "market share data", "spending forecast"],
+                    "enabled": true
+                },
+                {
+                    "name": "Forrester",
+                    "url": "https://www.forrester.com/blogs",
+                    "strategy": "blog_search",
+                    "paywall_bypass": "site:forrester.com/blogs",
+                    "key_outputs": ["Wave evaluation", "TEI study", "market forecast"],
+                    "enabled": true
+                }
+            ],
+            "specialized_research_sources": [
+                {
+                    "name": "CB Insights",
+                    "url": "https://www.cbinsights.com/research",
+                    "strategy": "free_report_and_blog",
+                    "key_outputs": ["market map", "competitive landscape", "funding trends"],
+                    "enabled": true
+                },
+                {
+                    "name": "PitchBook",
+                    "url": "https://pitchbook.com/news",
+                    "strategy": "news_search",
+                    "key_outputs": ["VC funding data", "M&A analysis", "market sizing"],
+                    "enabled": true
+                }
+            ],
+            "industry_associations": [
+                {
+                    "name": "SIA (Semiconductor Industry Association)",
+                    "url": "https://www.semiconductors.org",
+                    "sub_sectors": ["Semiconductors"],
+                    "public_data": ["shipment statistics", "market forecast", "trade data"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "SEMI",
+                    "url": "https://www.semi.org",
+                    "sub_sectors": ["Semiconductors"],
+                    "public_data": ["equipment spending", "fab construction", "market forecast"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "BSA (The Software Alliance)",
+                    "url": "https://www.bsa.org",
+                    "sub_sectors": ["Software_Infrastructure"],
+                    "public_data": ["market size", "piracy statistics", "policy reports"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "CompTIA",
+                    "url": "https://www.comptia.org",
+                    "sub_sectors": ["Software_Infrastructure"],
+                    "public_data": ["workforce statistics", "IT spending forecast", "certification data"],
+                    "strategy": "websearch_and_webfetch"
                 }
             ],
             "peer_tickers": ["NVDA", "AMD", "INTC", "TSM", "AVGO", "MSFT", "ORCL", "CRM"],
@@ -148,6 +220,71 @@
                     "enabled": true
                 }
             ],
+            "market_research_sources": [
+                {
+                    "name": "Gartner",
+                    "url": "https://www.gartner.com/en/newsroom",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:gartner.com/en/newsroom",
+                    "key_outputs": ["Magic Quadrant", "Market Guide", "Hype Cycle"],
+                    "enabled": true
+                },
+                {
+                    "name": "IDC",
+                    "url": "https://www.idc.com",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:idc.com/getdoc.jsp",
+                    "key_outputs": ["MarketScape", "market share data", "spending forecast"],
+                    "enabled": true
+                },
+                {
+                    "name": "Forrester",
+                    "url": "https://www.forrester.com/blogs",
+                    "strategy": "blog_search",
+                    "paywall_bypass": "site:forrester.com/blogs",
+                    "key_outputs": ["Wave evaluation", "TEI study", "market forecast"],
+                    "enabled": true
+                }
+            ],
+            "specialized_research_sources": [
+                {
+                    "name": "CB Insights",
+                    "url": "https://www.cbinsights.com/research",
+                    "strategy": "free_report_and_blog",
+                    "key_outputs": ["market map", "competitive landscape", "funding trends"],
+                    "enabled": true
+                },
+                {
+                    "name": "PitchBook",
+                    "url": "https://pitchbook.com/news",
+                    "strategy": "news_search",
+                    "key_outputs": ["VC funding data", "M&A analysis", "market sizing"],
+                    "enabled": true
+                }
+            ],
+            "industry_associations": [
+                {
+                    "name": "PhRMA (Pharmaceutical Research and Manufacturers of America)",
+                    "url": "https://www.phrma.org",
+                    "sub_sectors": ["Pharmaceuticals"],
+                    "public_data": ["pipeline statistics", "R&D investment data", "drug approval data"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "BIO (Biotechnology Innovation Organization)",
+                    "url": "https://www.bio.org",
+                    "sub_sectors": ["Biotechnology"],
+                    "public_data": ["pipeline statistics", "clinical trial success rates", "industry reports"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "AdvaMed (Advanced Medical Technology Association)",
+                    "url": "https://www.advamed.org",
+                    "sub_sectors": ["Medical_Devices"],
+                    "public_data": ["regulatory trends", "device approval data", "market access reports"],
+                    "strategy": "websearch_and_webfetch"
+                }
+            ],
             "peer_tickers": ["JNJ", "PFE", "MRK", "ABBV", "LLY", "UNH", "TMO", "ABT"],
             "peer_groups": [
                 {
@@ -267,6 +404,64 @@
                     "tier": "scraping",
                     "difficulty": "easy",
                     "enabled": true
+                }
+            ],
+            "market_research_sources": [
+                {
+                    "name": "Gartner",
+                    "url": "https://www.gartner.com/en/newsroom",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:gartner.com/en/newsroom",
+                    "key_outputs": ["Magic Quadrant", "Market Guide", "Hype Cycle"],
+                    "enabled": true
+                },
+                {
+                    "name": "IDC",
+                    "url": "https://www.idc.com",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:idc.com/getdoc.jsp",
+                    "key_outputs": ["MarketScape", "market share data", "spending forecast"],
+                    "enabled": true
+                },
+                {
+                    "name": "Forrester",
+                    "url": "https://www.forrester.com/blogs",
+                    "strategy": "blog_search",
+                    "paywall_bypass": "site:forrester.com/blogs",
+                    "key_outputs": ["Wave evaluation", "TEI study", "market forecast"],
+                    "enabled": true
+                }
+            ],
+            "specialized_research_sources": [
+                {
+                    "name": "CB Insights",
+                    "url": "https://www.cbinsights.com/research",
+                    "strategy": "free_report_and_blog",
+                    "key_outputs": ["market map", "competitive landscape", "funding trends"],
+                    "enabled": true
+                },
+                {
+                    "name": "PitchBook",
+                    "url": "https://pitchbook.com/news",
+                    "strategy": "news_search",
+                    "key_outputs": ["VC funding data", "M&A analysis", "market sizing"],
+                    "enabled": true
+                }
+            ],
+            "industry_associations": [
+                {
+                    "name": "ABA (American Bankers Association)",
+                    "url": "https://www.aba.com",
+                    "sub_sectors": ["Banks"],
+                    "public_data": ["lending statistics", "deposit trends", "regulatory updates"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "SIFMA (Securities Industry and Financial Markets Association)",
+                    "url": "https://www.sifma.org",
+                    "sub_sectors": ["Capital_Markets", "Banks"],
+                    "public_data": ["trading volume data", "capital markets statistics", "research reports"],
+                    "strategy": "websearch_and_webfetch"
                 }
             ],
             "peer_tickers": ["JPM", "BAC", "GS", "MS", "C", "WFC", "BLK", "SCHW"],
@@ -395,6 +590,64 @@
                     "enabled": true
                 }
             ],
+            "market_research_sources": [
+                {
+                    "name": "Gartner",
+                    "url": "https://www.gartner.com/en/newsroom",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:gartner.com/en/newsroom",
+                    "key_outputs": ["Magic Quadrant", "Market Guide", "Hype Cycle"],
+                    "enabled": true
+                },
+                {
+                    "name": "IDC",
+                    "url": "https://www.idc.com",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:idc.com/getdoc.jsp",
+                    "key_outputs": ["MarketScape", "market share data", "spending forecast"],
+                    "enabled": true
+                },
+                {
+                    "name": "Forrester",
+                    "url": "https://www.forrester.com/blogs",
+                    "strategy": "blog_search",
+                    "paywall_bypass": "site:forrester.com/blogs",
+                    "key_outputs": ["Wave evaluation", "TEI study", "market forecast"],
+                    "enabled": true
+                }
+            ],
+            "specialized_research_sources": [
+                {
+                    "name": "CB Insights",
+                    "url": "https://www.cbinsights.com/research",
+                    "strategy": "free_report_and_blog",
+                    "key_outputs": ["market map", "competitive landscape", "funding trends"],
+                    "enabled": true
+                },
+                {
+                    "name": "PitchBook",
+                    "url": "https://pitchbook.com/news",
+                    "strategy": "news_search",
+                    "key_outputs": ["VC funding data", "M&A analysis", "market sizing"],
+                    "enabled": true
+                }
+            ],
+            "industry_associations": [
+                {
+                    "name": "NRF (National Retail Federation)",
+                    "url": "https://nrf.com",
+                    "sub_sectors": ["Retail", "E_Commerce"],
+                    "public_data": ["consumer spending data", "retail sales forecast", "holiday spending reports"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "FMI (Food Marketing Institute)",
+                    "url": "https://www.fmi.org",
+                    "sub_sectors": ["Retail"],
+                    "public_data": ["grocery industry data", "consumer trends", "supply chain reports"],
+                    "strategy": "websearch_and_webfetch"
+                }
+            ],
             "peer_tickers": ["AMZN", "WMT", "TGT", "COST", "HD", "LOW", "NKE", "SBUX"],
             "peer_groups": [
                 {
@@ -514,6 +767,64 @@
                     "tier": "api",
                     "difficulty": null,
                     "enabled": true
+                }
+            ],
+            "market_research_sources": [
+                {
+                    "name": "Gartner",
+                    "url": "https://www.gartner.com/en/newsroom",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:gartner.com/en/newsroom",
+                    "key_outputs": ["Magic Quadrant", "Market Guide", "Hype Cycle"],
+                    "enabled": true
+                },
+                {
+                    "name": "IDC",
+                    "url": "https://www.idc.com",
+                    "strategy": "press_release_search",
+                    "paywall_bypass": "site:idc.com/getdoc.jsp",
+                    "key_outputs": ["MarketScape", "market share data", "spending forecast"],
+                    "enabled": true
+                },
+                {
+                    "name": "Forrester",
+                    "url": "https://www.forrester.com/blogs",
+                    "strategy": "blog_search",
+                    "paywall_bypass": "site:forrester.com/blogs",
+                    "key_outputs": ["Wave evaluation", "TEI study", "market forecast"],
+                    "enabled": true
+                }
+            ],
+            "specialized_research_sources": [
+                {
+                    "name": "CB Insights",
+                    "url": "https://www.cbinsights.com/research",
+                    "strategy": "free_report_and_blog",
+                    "key_outputs": ["market map", "competitive landscape", "funding trends"],
+                    "enabled": true
+                },
+                {
+                    "name": "PitchBook",
+                    "url": "https://pitchbook.com/news",
+                    "strategy": "news_search",
+                    "key_outputs": ["VC funding data", "M&A analysis", "market sizing"],
+                    "enabled": true
+                }
+            ],
+            "industry_associations": [
+                {
+                    "name": "API (American Petroleum Institute)",
+                    "url": "https://www.api.org",
+                    "sub_sectors": ["Oil_Gas"],
+                    "public_data": ["production statistics", "inventory data", "safety reports"],
+                    "strategy": "websearch_and_webfetch"
+                },
+                {
+                    "name": "IRENA (International Renewable Energy Agency)",
+                    "url": "https://www.irena.org",
+                    "sub_sectors": ["Renewable_Energy"],
+                    "public_data": ["renewable capacity data", "cost trends", "investment statistics"],
+                    "strategy": "websearch_and_webfetch"
                 }
             ],
             "peer_tickers": ["XOM", "CVX", "COP", "SLB", "EOG", "OXY", "PSX", "VLO"],
