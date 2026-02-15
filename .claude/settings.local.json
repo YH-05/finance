@@ -44,7 +44,11 @@
       "WebFetch(domain:artificall.com)",
       "WebFetch(domain:arbalistmoney.com)",
       "WebFetch(domain:www.moodys.com)",
-      "WebFetch(domain:www.womblebonddickinson.com)"
+      "WebFetch(domain:www.womblebonddickinson.com)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_run_code"
     ]
   },
   "enableAllProjectMcpServers": true,
