@@ -19,6 +19,18 @@ Source tools:
 - ``notebooklm_add_text_source``: Add pasted text as a source.
 - ``notebooklm_list_sources``: List all sources in a notebook.
 
+Phase 2 Chat Tools (5 total)
+-----------------------------
+- ``notebooklm_chat``: Send a question and get an AI response.
+- ``notebooklm_get_chat_history``: Get chat conversation history.
+- ``notebooklm_clear_chat_history``: Clear chat history.
+- ``notebooklm_configure_chat``: Configure chat settings.
+- ``notebooklm_save_chat_to_note``: Send a question and save response to note.
+
+Phase 3 Audio Tools (1 total)
+------------------------------
+- ``notebooklm_generate_audio_overview``: Generate Audio Overview (podcast).
+
 Usage
 -----
 Run as a command::
@@ -109,11 +121,17 @@ mcp = FastMCP(
 )
 
 # Register Phase 1 tools
+# Register Phase 2 tools
+# Register Phase 3 tools
+from notebooklm.mcp.tools.audio_tools import register_audio_tools  # noqa: E402
+from notebooklm.mcp.tools.chat_tools import register_chat_tools  # noqa: E402
 from notebooklm.mcp.tools.notebook_tools import register_notebook_tools  # noqa: E402
 from notebooklm.mcp.tools.source_tools import register_source_tools  # noqa: E402
 
 register_notebook_tools(mcp)
 register_source_tools(mcp)
+register_chat_tools(mcp)
+register_audio_tools(mcp)
 
 
 def serve() -> None:
