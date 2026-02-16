@@ -58,6 +58,10 @@ _SOURCE_REGISTRY: dict[str, str] = {
     "bcg": "BCGScraper",
     "deloitte": "DeloitteScraper",
     "pwc": "PwCScraper",
+    "bain": "BainScraper",
+    "accenture": "AccentureScraper",
+    "ey": "EYScraper",
+    "kpmg": "KPMGScraper",
     "goldman": "GoldmanSachsScraper",
     "morgan_stanley": "MorganStanleyScraper",
     "jpmorgan": "JPMorganScraper",
@@ -209,8 +213,12 @@ class IndustryCollector:
             List of scraper instances (subclasses of BaseScraper).
         """
         from market.industry.scrapers.consulting import (
+            AccentureScraper,
+            BainScraper,
             BCGScraper,
             DeloitteScraper,
+            EYScraper,
+            KPMGScraper,
             McKinseyScraper,
             PwCScraper,
         )
@@ -236,6 +244,22 @@ class IndustryCollector:
             "pwc": lambda: PwCScraper(
                 sector=self.sector,
                 output_dir=self.output_dir / "pwc",
+            ),
+            "bain": lambda: BainScraper(
+                sector=self.sector,
+                output_dir=self.output_dir / "bain",
+            ),
+            "accenture": lambda: AccentureScraper(
+                sector=self.sector,
+                output_dir=self.output_dir / "accenture",
+            ),
+            "ey": lambda: EYScraper(
+                sector=self.sector,
+                output_dir=self.output_dir / "ey",
+            ),
+            "kpmg": lambda: KPMGScraper(
+                sector=self.sector,
+                output_dir=self.output_dir / "kpmg",
             ),
             "goldman": lambda: GoldmanSachsScraper(
                 sector=self.sector,
@@ -414,7 +438,8 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help=(
             "Specific source to run "
-            "(mckinsey, bcg, deloitte, pwc, goldman, morgan_stanley, jpmorgan)"
+            "(mckinsey, bcg, deloitte, pwc, bain, accenture, ey, kpmg, "
+            "goldman, morgan_stanley, jpmorgan)"
         ),
     )
     parser.add_argument(

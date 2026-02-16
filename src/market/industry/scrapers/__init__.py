@@ -17,6 +17,14 @@ DeloitteScraper
     Scraper for Deloitte Insights.
 PwCScraper
     Scraper for PwC Strategy&.
+BainScraper
+    Scraper for Bain Insights.
+AccentureScraper
+    Scraper for Accenture Insights.
+EYScraper
+    Scraper for EY Insights.
+KPMGScraper
+    Scraper for KPMG Insights.
 InvestmentBankScraper
     Base class for investment bank report scrapers.
 GoldmanSachsScraper

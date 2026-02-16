@@ -1,12 +1,16 @@
-"""Consulting firm report scrapers (McKinsey, BCG, Deloitte, PwC).
+"""Consulting firm report scrapers.
 
 This module provides scrapers for extracting published insights and reports
-from the four major consulting firms:
+from major consulting firms:
 
 - **McKinsey Insights** (``mckinsey.com/featured-insights``)
 - **BCG Publications** (``bcg.com/publications``)
 - **Deloitte Insights** (``deloitte.com/insights``)
 - **PwC Strategy&** (``strategyand.pwc.com``)
+- **Bain Insights** (``bain.com/insights``)
+- **Accenture Insights** (``accenture.com/us-en/insights``)
+- **EY Insights** (``ey.com/en_us/insights``)
+- **KPMG Insights** (``kpmg.com/us/en/insights.html``)
 
 Each scraper inherits from ``ConsultingScraper`` (which extends ``BaseScraper``)
 and implements site-specific HTML parsing logic. The 2-layer fallback
@@ -1033,13 +1037,579 @@ class PwCScraper(ConsultingScraper):
 
 
 # =============================================================================
+# Bain Scraper
+# =============================================================================
+
+
+class BainScraper(ConsultingScraper):
+    """Scraper for Bain Insights (bain.com/insights).
+
+    Extracts articles from Bain's insights page, parsing article
+    titles, URLs, publication dates, and descriptions.
+
+    Parameters
+    ----------
+    sector : str
+        Target sector to filter reports. Defaults to ``"all"``.
+    output_dir : Path | None
+        Output directory for saved reports.
+    config : ScrapingConfig | None
+        Scraping configuration.
+    retry_config : RetryConfig | None
+        Retry configuration.
+
+    Examples
+    --------
+    >>> async with BainScraper() as scraper:
+    ...     result = await scraper.scrape()
+    """
+
+    def __init__(
+        self,
+        sector: str = "all",
+        output_dir: Path | None = None,
+        config: ScrapingConfig | None = None,
+        retry_config: RetryConfig | None = None,
+    ) -> None:
+        super().__init__(
+            source_name="Bain",
+            base_url="https://www.bain.com/insights/",
+            source_key="bain",
+            sector=sector,
+            output_dir=output_dir,
+            config=config,
+            retry_config=retry_config,
+        )
+
+    async def parse_html(self, html: str) -> list[IndustryReport]:
+        """Parse Bain Insights HTML and extract reports.
+
+        Looks for insight cards with the following CSS selectors:
+
+        - Card container: ``div.insight-card`` or
+          ``[data-component="insight-card"]``
+        - Title: ``.insight-card__title`` or ``h3``
+        - Link: ``.insight-card__link`` or ``a[href]``
+        - Date: ``.insight-card__date``
+        - Description: ``.insight-card__description``
+
+        Parameters
+        ----------
+        html : str
+            Raw HTML from Bain's insights page.
+
+        Returns
+        -------
+        list[IndustryReport]
+            List of extracted Bain reports.
+        """
+        soup = _parse_html_with_bs4(html)
+        reports: list[IndustryReport] = []
+
+        # Find insight cards
+        articles = soup.find_all(
+            ["div", "article"],
+            attrs={"data-component": "insight-card"},
+        )
+        if not articles:
+            articles = soup.find_all(
+                ["div", "article"],
+                class_=re.compile(r"insight-card"),
+            )
+
+        for article in articles:
+            try:
+                # Extract title
+                title_tag = article.find(
+                    class_=re.compile(r"insight-card__title")
+                ) or article.find(["h2", "h3", "h4"])
+                if not title_tag:
+                    continue
+                title = title_tag.get_text(strip=True)
+
+                # Extract URL
+                link_tag = article.find(
+                    "a", class_=re.compile(r"insight-card__link")
+                ) or article.find("a", href=True)
+                if not link_tag or not link_tag.get("href"):
+                    continue
+                href = link_tag["href"]
+                url = href if href.startswith("http") else f"https://www.bain.com{href}"
+
+                # Extract date
+                date_tag = article.find(class_=re.compile(r"insight-card__date"))
+                published_at = (
+                    _parse_date(date_tag.get_text(strip=True)) if date_tag else None
+                )
+                if published_at is None:
+                    published_at = datetime.now(tz=timezone.utc)
+
+                # Extract description
+                desc_tag = article.find(class_=re.compile(r"insight-card__description"))
+                summary = desc_tag.get_text(strip=True) if desc_tag else None
+
+                reports.append(
+                    IndustryReport(
+                        source="Bain",
+                        title=title,
+                        url=url,
+                        published_at=published_at,
+                        sector=self.sector,
+                        summary=summary,
+                        tier=SourceTier.SCRAPING,
+                    )
+                )
+
+            except Exception as e:
+                logger.warning(
+                    "Failed to parse Bain article",
+                    error=str(e),
+                )
+                continue
+
+        logger.debug(
+            "Bain HTML parsed",
+            article_count=len(reports),
+        )
+
+        return reports
+
+
+# =============================================================================
+# Accenture Scraper
+# =============================================================================
+
+
+class AccentureScraper(ConsultingScraper):
+    """Scraper for Accenture Insights (accenture.com/us-en/insights).
+
+    Extracts articles from Accenture's insights page, parsing article
+    titles, URLs, publication dates, and descriptions.
+
+    Parameters
+    ----------
+    sector : str
+        Target sector to filter reports. Defaults to ``"all"``.
+    output_dir : Path | None
+        Output directory for saved reports.
+    config : ScrapingConfig | None
+        Scraping configuration.
+    retry_config : RetryConfig | None
+        Retry configuration.
+
+    Examples
+    --------
+    >>> async with AccentureScraper() as scraper:
+    ...     result = await scraper.scrape()
+    """
+
+    def __init__(
+        self,
+        sector: str = "all",
+        output_dir: Path | None = None,
+        config: ScrapingConfig | None = None,
+        retry_config: RetryConfig | None = None,
+    ) -> None:
+        super().__init__(
+            source_name="Accenture",
+            base_url="https://www.accenture.com/us-en/insights",
+            source_key="accenture",
+            sector=sector,
+            output_dir=output_dir,
+            config=config,
+            retry_config=retry_config,
+        )
+
+    async def parse_html(self, html: str) -> list[IndustryReport]:
+        """Parse Accenture Insights HTML and extract reports.
+
+        Looks for rad-card elements with the following CSS selectors:
+
+        - Card container: ``div.rad-card`` or
+          ``[data-component="rad-card"]``
+        - Title: ``.rad-card__title`` or ``h3`` / ``h4``
+        - Link: ``.rad-card__link`` or ``a[href]``
+        - Date: ``.rad-card__date``
+        - Description: ``.rad-card__description``
+
+        Parameters
+        ----------
+        html : str
+            Raw HTML from Accenture's insights page.
+
+        Returns
+        -------
+        list[IndustryReport]
+            List of extracted Accenture reports.
+        """
+        soup = _parse_html_with_bs4(html)
+        reports: list[IndustryReport] = []
+
+        # Find rad-card elements
+        articles = soup.find_all(
+            ["div", "article"],
+            attrs={"data-component": "rad-card"},
+        )
+        if not articles:
+            articles = soup.find_all(
+                ["div", "article"],
+                class_=re.compile(r"rad-card"),
+            )
+
+        for article in articles:
+            try:
+                # Extract title
+                title_tag = article.find(
+                    class_=re.compile(r"rad-card__title")
+                ) or article.find(["h2", "h3", "h4"])
+                if not title_tag:
+                    continue
+                title = title_tag.get_text(strip=True)
+
+                # Extract URL
+                link_tag = article.find(
+                    "a", class_=re.compile(r"rad-card__link")
+                ) or article.find("a", href=True)
+                if not link_tag or not link_tag.get("href"):
+                    continue
+                href = link_tag["href"]
+                url = (
+                    href
+                    if href.startswith("http")
+                    else f"https://www.accenture.com{href}"
+                )
+
+                # Extract date
+                date_tag = article.find(class_=re.compile(r"rad-card__date"))
+                published_at = (
+                    _parse_date(date_tag.get_text(strip=True)) if date_tag else None
+                )
+                if published_at is None:
+                    published_at = datetime.now(tz=timezone.utc)
+
+                # Extract description
+                desc_tag = article.find(class_=re.compile(r"rad-card__description"))
+                summary = desc_tag.get_text(strip=True) if desc_tag else None
+
+                reports.append(
+                    IndustryReport(
+                        source="Accenture",
+                        title=title,
+                        url=url,
+                        published_at=published_at,
+                        sector=self.sector,
+                        summary=summary,
+                        tier=SourceTier.SCRAPING,
+                    )
+                )
+
+            except Exception as e:
+                logger.warning(
+                    "Failed to parse Accenture article",
+                    error=str(e),
+                )
+                continue
+
+        logger.debug(
+            "Accenture HTML parsed",
+            article_count=len(reports),
+        )
+
+        return reports
+
+
+# =============================================================================
+# EY Scraper
+# =============================================================================
+
+
+class EYScraper(ConsultingScraper):
+    """Scraper for EY Insights (ey.com/en_us/insights).
+
+    Extracts articles from EY's insights page, parsing article
+    titles, URLs, publication dates, and descriptions.
+
+    Parameters
+    ----------
+    sector : str
+        Target sector to filter reports. Defaults to ``"all"``.
+    output_dir : Path | None
+        Output directory for saved reports.
+    config : ScrapingConfig | None
+        Scraping configuration.
+    retry_config : RetryConfig | None
+        Retry configuration.
+
+    Examples
+    --------
+    >>> async with EYScraper() as scraper:
+    ...     result = await scraper.scrape()
+    """
+
+    def __init__(
+        self,
+        sector: str = "all",
+        output_dir: Path | None = None,
+        config: ScrapingConfig | None = None,
+        retry_config: RetryConfig | None = None,
+    ) -> None:
+        super().__init__(
+            source_name="EY",
+            base_url="https://www.ey.com/en_us/insights",
+            source_key="ey",
+            sector=sector,
+            output_dir=output_dir,
+            config=config,
+            retry_config=retry_config,
+        )
+
+    async def parse_html(self, html: str) -> list[IndustryReport]:
+        """Parse EY Insights HTML and extract reports.
+
+        Looks for insight-article elements with the following CSS selectors:
+
+        - Article container: ``article.insight-article`` or
+          ``[data-component="insight-article"]``
+        - Title: ``.insight-article__title`` or ``h3``
+        - Link: ``.insight-article__link`` or ``a[href]``
+        - Date: ``.insight-article__date``
+        - Description: ``.insight-article__description``
+
+        Parameters
+        ----------
+        html : str
+            Raw HTML from EY's insights page.
+
+        Returns
+        -------
+        list[IndustryReport]
+            List of extracted EY reports.
+        """
+        soup = _parse_html_with_bs4(html)
+        reports: list[IndustryReport] = []
+
+        # Find insight-article elements
+        articles = soup.find_all(
+            ["div", "article"],
+            attrs={"data-component": "insight-article"},
+        )
+        if not articles:
+            articles = soup.find_all(
+                ["div", "article"],
+                class_=re.compile(r"insight-article"),
+            )
+
+        for article in articles:
+            try:
+                # Extract title
+                title_tag = article.find(
+                    class_=re.compile(r"insight-article__title")
+                ) or article.find(["h2", "h3", "h4"])
+                if not title_tag:
+                    continue
+                title = title_tag.get_text(strip=True)
+
+                # Extract URL
+                link_tag = article.find(
+                    "a", class_=re.compile(r"insight-article__link")
+                ) or article.find("a", href=True)
+                if not link_tag or not link_tag.get("href"):
+                    continue
+                href = link_tag["href"]
+                url = href if href.startswith("http") else f"https://www.ey.com{href}"
+
+                # Extract date
+                date_tag = article.find(class_=re.compile(r"insight-article__date"))
+                published_at = (
+                    _parse_date(date_tag.get_text(strip=True)) if date_tag else None
+                )
+                if published_at is None:
+                    published_at = datetime.now(tz=timezone.utc)
+
+                # Extract description
+                desc_tag = article.find(
+                    class_=re.compile(r"insight-article__description")
+                )
+                summary = desc_tag.get_text(strip=True) if desc_tag else None
+
+                reports.append(
+                    IndustryReport(
+                        source="EY",
+                        title=title,
+                        url=url,
+                        published_at=published_at,
+                        sector=self.sector,
+                        summary=summary,
+                        tier=SourceTier.SCRAPING,
+                    )
+                )
+
+            except Exception as e:
+                logger.warning(
+                    "Failed to parse EY article",
+                    error=str(e),
+                )
+                continue
+
+        logger.debug(
+            "EY HTML parsed",
+            article_count=len(reports),
+        )
+
+        return reports
+
+
+# =============================================================================
+# KPMG Scraper
+# =============================================================================
+
+
+class KPMGScraper(ConsultingScraper):
+    """Scraper for KPMG Insights (kpmg.com/us/en/insights.html).
+
+    Extracts articles from KPMG's insights page, parsing article
+    titles, URLs, publication dates, and descriptions.
+
+    Parameters
+    ----------
+    sector : str
+        Target sector to filter reports. Defaults to ``"all"``.
+    output_dir : Path | None
+        Output directory for saved reports.
+    config : ScrapingConfig | None
+        Scraping configuration.
+    retry_config : RetryConfig | None
+        Retry configuration.
+
+    Examples
+    --------
+    >>> async with KPMGScraper() as scraper:
+    ...     result = await scraper.scrape()
+    """
+
+    def __init__(
+        self,
+        sector: str = "all",
+        output_dir: Path | None = None,
+        config: ScrapingConfig | None = None,
+        retry_config: RetryConfig | None = None,
+    ) -> None:
+        super().__init__(
+            source_name="KPMG",
+            base_url="https://kpmg.com/us/en/insights.html",
+            source_key="kpmg",
+            sector=sector,
+            output_dir=output_dir,
+            config=config,
+            retry_config=retry_config,
+        )
+
+    async def parse_html(self, html: str) -> list[IndustryReport]:
+        """Parse KPMG Insights HTML and extract reports.
+
+        Looks for kpmg-card elements with the following CSS selectors:
+
+        - Card container: ``div.kpmg-card`` or
+          ``[data-component="kpmg-card"]``
+        - Title: ``.kpmg-card__title`` or ``h3``
+        - Link: ``.kpmg-card__link`` or ``a[href]``
+        - Date: ``.kpmg-card__date``
+        - Description: ``.kpmg-card__description``
+
+        Parameters
+        ----------
+        html : str
+            Raw HTML from KPMG's insights page.
+
+        Returns
+        -------
+        list[IndustryReport]
+            List of extracted KPMG reports.
+        """
+        soup = _parse_html_with_bs4(html)
+        reports: list[IndustryReport] = []
+
+        # Find kpmg-card elements
+        articles = soup.find_all(
+            ["div", "article"],
+            attrs={"data-component": "kpmg-card"},
+        )
+        if not articles:
+            articles = soup.find_all(
+                ["div", "article"],
+                class_=re.compile(r"kpmg-card"),
+            )
+
+        for article in articles:
+            try:
+                # Extract title
+                title_tag = article.find(
+                    class_=re.compile(r"kpmg-card__title")
+                ) or article.find(["h2", "h3", "h4"])
+                if not title_tag:
+                    continue
+                title = title_tag.get_text(strip=True)
+
+                # Extract URL
+                link_tag = article.find(
+                    "a", class_=re.compile(r"kpmg-card__link")
+                ) or article.find("a", href=True)
+                if not link_tag or not link_tag.get("href"):
+                    continue
+                href = link_tag["href"]
+                url = href if href.startswith("http") else f"https://kpmg.com{href}"
+
+                # Extract date
+                date_tag = article.find(class_=re.compile(r"kpmg-card__date"))
+                published_at = (
+                    _parse_date(date_tag.get_text(strip=True)) if date_tag else None
+                )
+                if published_at is None:
+                    published_at = datetime.now(tz=timezone.utc)
+
+                # Extract description
+                desc_tag = article.find(class_=re.compile(r"kpmg-card__description"))
+                summary = desc_tag.get_text(strip=True) if desc_tag else None
+
+                reports.append(
+                    IndustryReport(
+                        source="KPMG",
+                        title=title,
+                        url=url,
+                        published_at=published_at,
+                        sector=self.sector,
+                        summary=summary,
+                        tier=SourceTier.SCRAPING,
+                    )
+                )
+
+            except Exception as e:
+                logger.warning(
+                    "Failed to parse KPMG article",
+                    error=str(e),
+                )
+                continue
+
+        logger.debug(
+            "KPMG HTML parsed",
+            article_count=len(reports),
+        )
+
+        return reports
+
+
+# =============================================================================
 # Module exports
 # =============================================================================
 
 __all__ = [
+    "AccentureScraper",
     "BCGScraper",
+    "BainScraper",
     "ConsultingScraper",
     "DeloitteScraper",
+    "EYScraper",
+    "KPMGScraper",
     "McKinseyScraper",
     "PwCScraper",
 ]
