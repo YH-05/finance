@@ -5,6 +5,8 @@ Tests cover:
 - list_notebooks: Lists all notebooks from the home page.
 - get_notebook_summary: Gets AI-generated summary for a notebook.
 - DI: Service receives BrowserManager via constructor injection.
+- Error paths: empty title, empty notebook_id, invalid URL.
+- Private helpers: _extract_notebook_id, _extract_notebook_id_from_path.
 """
 
 from __future__ import annotations
@@ -138,6 +140,14 @@ class TestCreateNotebook:
     ) -> None:
         with pytest.raises(ValueError, match="title must not be empty"):
             await notebook_service.create_notebook("")
+
+    @pytest.mark.asyncio
+    async def test_異常系_空白のみのタイトルでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="title must not be empty"):
+            await notebook_service.create_notebook("   ")
 
     @pytest.mark.asyncio
     async def test_異常系_ページ作成後にcloseが呼ばれる(
@@ -285,6 +295,14 @@ class TestGetNotebookSummary:
             await notebook_service.get_notebook_summary("")
 
     @pytest.mark.asyncio
+    async def test_異常系_空白のみのnotebook_idでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="notebook_id must not be empty"):
+            await notebook_service.get_notebook_summary("   ")
+
+    @pytest.mark.asyncio
     async def test_正常系_ページがcloseされる(
         self,
         notebook_service: NotebookService,
@@ -317,3 +335,141 @@ class TestGetNotebookSummary:
         await notebook_service.get_notebook_summary("nb-id-123")
 
         mock_page.close.assert_awaited_once()
+
+
+# ---------------------------------------------------------------------------
+# _extract_notebook_id tests
+# ---------------------------------------------------------------------------
+
+
+class TestExtractNotebookId:
+    """Test NotebookService._extract_notebook_id() static method."""
+
+    def test_正常系_URLからnotebook_idを抽出(self) -> None:
+        url = "https://notebooklm.google.com/notebook/abc-123-def"
+        result = NotebookService._extract_notebook_id(url)
+        assert result == "abc-123-def"
+
+    def test_正常系_UUIDを含むURLからnotebook_idを抽出(self) -> None:
+        url = (
+            "https://notebooklm.google.com/notebook/"
+            "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+        )
+        result = NotebookService._extract_notebook_id(url)
+        assert result == "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+
+    def test_正常系_クエリパラメータ付きURLから抽出(self) -> None:
+        url = "https://notebooklm.google.com/notebook/abc-123?tab=sources"
+        result = NotebookService._extract_notebook_id(url)
+        assert result == "abc-123"
+
+    def test_異常系_notebook_idがないURLでValueError(self) -> None:
+        url = "https://notebooklm.google.com/"
+        with pytest.raises(ValueError, match="No notebook ID found in URL"):
+            NotebookService._extract_notebook_id(url)
+
+    def test_異常系_不正なURLでValueError(self) -> None:
+        url = "https://notebooklm.google.com/settings"
+        with pytest.raises(ValueError, match="No notebook ID found in URL"):
+            NotebookService._extract_notebook_id(url)
+
+
+# ---------------------------------------------------------------------------
+# _extract_notebook_id_from_path tests
+# ---------------------------------------------------------------------------
+
+
+class TestExtractNotebookIdFromPath:
+    """Test NotebookService._extract_notebook_id_from_path() static method."""
+
+    def test_正常系_パスからnotebook_idを抽出(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path("/notebook/abc-123")
+        assert result == "abc-123"
+
+    def test_正常系_UUIDパスからnotebook_idを抽出(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path(
+            "/notebook/c9354f3f-f55b-4f90-a5c4-219e582945cf"
+        )
+        assert result == "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+
+    def test_正常系_notebook_idがないパスでNone(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path("/settings")
+        assert result is None
+
+    def test_正常系_空パスでNone(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path("")
+        assert result is None
+
+
+# ---------------------------------------------------------------------------
+# list_notebooks edge cases
+# ---------------------------------------------------------------------------
+
+
+class TestListNotebooksEdgeCases:
+    """Edge case tests for NotebookService.list_notebooks()."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_hrefがNoneのリンクはスキップ(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        link_with_href = AsyncMock()
+        link_with_href.get_attribute = AsyncMock(return_value="/notebook/id-001")
+        link_with_href.inner_text = AsyncMock(return_value="Valid Notebook")
+
+        link_without_href = AsyncMock()
+        link_without_href.get_attribute = AsyncMock(return_value=None)
+
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[link_with_href, link_without_href])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        result = await notebook_service.list_notebooks()
+
+        assert len(result) == 1
+        assert result[0].notebook_id == "id-001"
+
+    @pytest.mark.asyncio
+    async def test_正常系_notebook_idが抽出できないリンクはスキップ(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        valid_link = AsyncMock()
+        valid_link.get_attribute = AsyncMock(return_value="/notebook/id-001")
+        valid_link.inner_text = AsyncMock(return_value="Valid Notebook")
+
+        invalid_link = AsyncMock()
+        invalid_link.get_attribute = AsyncMock(return_value="/settings/general")
+        invalid_link.inner_text = AsyncMock(return_value="Settings")
+
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[valid_link, invalid_link])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        result = await notebook_service.list_notebooks()
+
+        assert len(result) == 1
+        assert result[0].notebook_id == "id-001"
+
+    @pytest.mark.asyncio
+    async def test_正常系_Noneタイトルのノートブックはtitleがデフォルト値になる(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        """When inner_text returns None, title defaults to 'Untitled'."""
+        link = AsyncMock()
+        link.get_attribute = AsyncMock(return_value="/notebook/id-001")
+        link.inner_text = AsyncMock(return_value=None)
+
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[link])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        result = await notebook_service.list_notebooks()
+
+        assert len(result) == 1
+        assert result[0].title == "Untitled"
