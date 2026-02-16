@@ -6,6 +6,7 @@ This package contains tool registration functions organized by domain:
 - ``source_tools``: Source management operations (add text, list sources).
 - ``chat_tools``: AI chat operations (chat, history, settings, save to note).
 - ``audio_tools``: Audio Overview generation operations.
+- ``batch_tools``: Batch operations (batch add sources, batch chat).
 
 Each module provides a ``register_*_tools(mcp)`` function that registers
 tools on the given FastMCP server instance using ``@mcp.tool()`` decorators.

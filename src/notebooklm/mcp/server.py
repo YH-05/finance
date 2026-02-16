@@ -31,6 +31,11 @@ Phase 3 Audio Tools (1 total)
 ------------------------------
 - ``notebooklm_generate_audio_overview``: Generate Audio Overview (podcast).
 
+Batch Tools (2 total)
+---------------------
+- ``notebooklm_batch_add_sources``: Add multiple sources sequentially.
+- ``notebooklm_batch_chat``: Send multiple questions sequentially.
+
 Usage
 -----
 Run as a command::
@@ -124,6 +129,7 @@ mcp = FastMCP(
 # Register Phase 2 tools
 # Register Phase 3 tools
 from notebooklm.mcp.tools.audio_tools import register_audio_tools  # noqa: E402
+from notebooklm.mcp.tools.batch_tools import register_batch_tools  # noqa: E402
 from notebooklm.mcp.tools.chat_tools import register_chat_tools  # noqa: E402
 from notebooklm.mcp.tools.notebook_tools import register_notebook_tools  # noqa: E402
 from notebooklm.mcp.tools.source_tools import register_source_tools  # noqa: E402
@@ -132,6 +138,7 @@ register_notebook_tools(mcp)
 register_source_tools(mcp)
 register_chat_tools(mcp)
 register_audio_tools(mcp)
+register_batch_tools(mcp)
 
 
 def serve() -> None:

@@ -3,7 +3,7 @@
 Tests cover:
 - FastMCP server configuration (name, instructions, lifespan).
 - Lifespan context manager (BrowserManager lifecycle).
-- Tool registration (5 Phase 1 tools).
+- Tool registration (Phase 1: 5 tools, Phase 2 chat: 5 tools).
 - Entry point functions (serve, main).
 """
 
@@ -145,17 +145,18 @@ class TestToolRegistration:
         tool_manager = mcp._tool_manager
         tools = tool_manager._tools
 
+        # Match tools with "notebook" in the suffix (after "notebooklm_")
         notebook_tools = [
             name
             for name in tools
             if name.startswith("notebooklm_")
-            and "notebook" in name
+            and "notebook" in name.removeprefix("notebooklm_")
             and "source" not in name
         ]
         assert len(notebook_tools) == 3
 
-    def test_正常系_ソース管理ツールが2つ登録されている(self) -> None:
-        """ソース管理ツールが 2 つ登録されていること。"""
+    def test_正常系_ソース管理ツールが8つ登録されている(self) -> None:
+        """ソース管理ツールが 8 つ登録されていること（Phase 1: 2 + Phase 2: 6）。"""
         from notebooklm.mcp.server import mcp
 
         tool_manager = mcp._tool_manager
@@ -164,9 +165,11 @@ class TestToolRegistration:
         source_tools = [
             name
             for name in tools
-            if name.startswith("notebooklm_") and "source" in name
+            if name.startswith("notebooklm_")
+            and "source" in name
+            and not name.startswith("notebooklm_batch_")
         ]
-        assert len(source_tools) == 2
+        assert len(source_tools) == 8
 
 
 class TestEntryPoints:
