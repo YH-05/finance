@@ -63,7 +63,10 @@
       "WebFetch(domain:ai-workstyle.com)",
       "WebFetch(domain:note.com)",
       "WebFetch(domain:medium.com)",
-      "mcp__playwright__browser_fill_form"
+      "mcp__playwright__browser_fill_form",
+      "mcp__fetch__fetch",
+      "WebFetch(domain:www.interactivebrokers.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
