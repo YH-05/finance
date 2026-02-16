@@ -1,8 +1,8 @@
 """NotebookService for NotebookLM notebook CRUD operations.
 
 This module provides ``NotebookService``, which orchestrates Playwright
-browser operations for creating, listing, and summarizing NotebookLM
-notebooks.
+browser operations for creating, listing, summarizing, and deleting
+NotebookLM notebooks.
 
 Architecture
 ------------
@@ -51,6 +51,7 @@ from notebooklm.constants import (
     DEFAULT_NAVIGATION_TIMEOUT_MS,
     NOTEBOOKLM_BASE_URL,
 )
+from notebooklm.errors import ElementNotFoundError
 from notebooklm.selectors import SelectorManager
 from notebooklm.types import NotebookInfo, NotebookSummary
 from utils_core.logging import get_logger
@@ -312,6 +313,111 @@ class NotebookService:
                 summary_text=summary_text,
                 suggested_questions=suggested_questions,
             )
+
+        finally:
+            await page.close()
+
+    async def delete_notebook(self, notebook_id: str) -> bool:
+        """Delete a NotebookLM notebook.
+
+        Navigates to the NotebookLM home page, locates the notebook
+        by its ID, opens the settings menu, and clicks the delete option.
+        Handles the confirmation dialog.
+
+        Parameters
+        ----------
+        notebook_id : str
+            UUID of the notebook to delete. Must not be empty.
+
+        Returns
+        -------
+        bool
+            True if the notebook was deleted successfully.
+
+        Raises
+        ------
+        ValueError
+            If ``notebook_id`` is empty.
+        ElementNotFoundError
+            If the notebook or delete menu cannot be found.
+        SessionExpiredError
+            If the browser session has expired.
+
+        Examples
+        --------
+        >>> deleted = await service.delete_notebook("c9354f3f-f55b-4f90-a5c4-219e582945cf")
+        >>> print(deleted)
+        True
+        """
+        if not notebook_id.strip():
+            raise ValueError("notebook_id must not be empty")
+
+        logger.info("Deleting notebook", notebook_id=notebook_id)
+
+        page = await self._browser_manager.new_page()
+        try:
+            # Navigate to NotebookLM home page
+            await page.goto(
+                NOTEBOOKLM_BASE_URL,
+                timeout=DEFAULT_NAVIGATION_TIMEOUT_MS,
+                wait_until="domcontentloaded",
+            )
+            await page.wait_for_load_state("networkidle")
+
+            # Find the notebook link element by its href
+            notebook_link = page.locator(f'a[href*="/notebook/{notebook_id}"]')
+            link_count = await notebook_link.count()
+            if link_count == 0:
+                raise ElementNotFoundError(
+                    f"Notebook not found: {notebook_id}",
+                    context={
+                        "notebook_id": notebook_id,
+                        "page_url": page.url,
+                    },
+                )
+
+            # Hover over the notebook to reveal the settings menu button
+            await notebook_link.first.hover()
+
+            # Click the settings/more menu button
+            settings_selectors = self._selectors.get_selector_strings(
+                "notebook_settings_menu"
+            )
+            await click_with_fallback(
+                page,
+                settings_selectors,
+                timeout_ms=DEFAULT_ELEMENT_TIMEOUT_MS,
+            )
+
+            # Click the delete menu item
+            delete_selectors = self._selectors.get_selector_strings(
+                "notebook_delete_menuitem"
+            )
+            await click_with_fallback(
+                page,
+                delete_selectors,
+                timeout_ms=DEFAULT_ELEMENT_TIMEOUT_MS,
+            )
+
+            # Handle confirmation dialog
+            confirm_selectors = self._selectors.get_selector_strings(
+                "notebook_delete_confirm_button"
+            )
+            await click_with_fallback(
+                page,
+                confirm_selectors,
+                timeout_ms=DEFAULT_ELEMENT_TIMEOUT_MS,
+            )
+
+            # Wait for the page to reflect the deletion
+            await page.wait_for_load_state("networkidle")
+
+            logger.info(
+                "Notebook deleted",
+                notebook_id=notebook_id,
+            )
+
+            return True
 
         finally:
             await page.close()

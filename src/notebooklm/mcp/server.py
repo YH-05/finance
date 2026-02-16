@@ -8,12 +8,13 @@ The server uses a lifespan context manager to manage the
 ``NotebookLMBrowserManager`` lifecycle, ensuring the browser is
 initialized on startup and properly closed on shutdown.
 
-Phase 1 Tools (5 total)
+Phase 1 Tools (6 total)
 -----------------------
 Notebook tools:
 - ``notebooklm_create_notebook``: Create a new notebook.
 - ``notebooklm_list_notebooks``: List all notebooks.
 - ``notebooklm_get_notebook_summary``: Get AI-generated summary.
+- ``notebooklm_delete_notebook``: Delete a notebook.
 
 Source tools:
 - ``notebooklm_add_text_source``: Add pasted text as a source.

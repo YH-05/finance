@@ -378,6 +378,30 @@ def _build_notebook_selectors() -> list[SelectorGroup]:
                 last_verified=_VERIFIED_DATE,
             ),
         ),
+        SelectorGroup(
+            name="notebook_delete_confirm_button",
+            description="Confirmation button for notebook deletion dialog",
+            group="notebook",
+            candidates=[
+                SelectorCandidate(
+                    selector='[role="button"]:has-text("削除")',
+                    method="role+text",
+                    priority=1,
+                    description="Delete confirm button via role and text",
+                ),
+                SelectorCandidate(
+                    selector='button:has-text("削除")',
+                    method="text",
+                    priority=3,
+                    description="Delete confirm button via text",
+                ),
+            ],
+            metadata=SelectorMetadata(
+                stability=StabilityLevel.STABLE,
+                last_verified=_VERIFIED_DATE,
+                notes="Confirmation dialog button for notebook deletion",
+            ),
+        ),
     ]
 
 

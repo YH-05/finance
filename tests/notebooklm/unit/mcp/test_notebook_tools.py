@@ -4,6 +4,7 @@ Tests cover:
 - notebooklm_create_notebook: Success, validation error, NotebookLMError.
 - notebooklm_list_notebooks: Success, NotebookLMError.
 - notebooklm_get_notebook_summary: Success, validation error, NotebookLMError.
+- notebooklm_delete_notebook: Success, validation error, NotebookLMError.
 """
 
 from __future__ import annotations
@@ -258,3 +259,75 @@ class TestGetNotebookSummary:
 
         assert "error" in result
         assert result["error_type"] == "SessionExpiredError"
+
+
+class TestDeleteNotebook:
+    """Tests for notebooklm_delete_notebook tool."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ノートブックを削除してdictを返す(
+        self,
+        mock_ctx: MagicMock,
+    ) -> None:
+        """正常にノートブックを削除し、dict形式で結果を返すこと。"""
+        with patch(
+            "notebooklm.mcp.tools.notebook_tools.NotebookService"
+        ) as mock_service_cls:
+            mock_service = mock_service_cls.return_value
+            mock_service.delete_notebook = AsyncMock(return_value=True)
+
+            from notebooklm.mcp.server import mcp
+
+            tool = mcp._tool_manager._tools["notebooklm_delete_notebook"]
+            result = await tool.fn(notebook_id="abc-123", ctx=mock_ctx)
+
+        assert result["deleted"] is True
+        assert result["notebook_id"] == "abc-123"
+
+    @pytest.mark.asyncio
+    async def test_異常系_空のnotebook_idでエラーdictを返す(
+        self,
+        mock_ctx: MagicMock,
+    ) -> None:
+        """空の notebook_id で ValueError のエラー dict を返すこと。"""
+        with patch(
+            "notebooklm.mcp.tools.notebook_tools.NotebookService"
+        ) as mock_service_cls:
+            mock_service = mock_service_cls.return_value
+            mock_service.delete_notebook = AsyncMock(
+                side_effect=ValueError("notebook_id must not be empty"),
+            )
+
+            from notebooklm.mcp.server import mcp
+
+            tool = mcp._tool_manager._tools["notebooklm_delete_notebook"]
+            result = await tool.fn(notebook_id="", ctx=mock_ctx)
+
+        assert "error" in result
+        assert result["error_type"] == "ValueError"
+
+    @pytest.mark.asyncio
+    async def test_異常系_NotebookLMErrorでエラーdictを返す(
+        self,
+        mock_ctx: MagicMock,
+    ) -> None:
+        """NotebookLMError 発生時にエラー dict を返すこと。"""
+        with patch(
+            "notebooklm.mcp.tools.notebook_tools.NotebookService"
+        ) as mock_service_cls:
+            mock_service = mock_service_cls.return_value
+            mock_service.delete_notebook = AsyncMock(
+                side_effect=ElementNotFoundError(
+                    "Notebook not found",
+                    context={"notebook_id": "abc-123"},
+                ),
+            )
+
+            from notebooklm.mcp.server import mcp
+
+            tool = mcp._tool_manager._tools["notebooklm_delete_notebook"]
+            result = await tool.fn(notebook_id="abc-123", ctx=mock_ctx)
+
+        assert "error" in result
+        assert result["error_type"] == "ElementNotFoundError"
+        assert result["context"] == {"notebook_id": "abc-123"}

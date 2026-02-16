@@ -138,8 +138,8 @@ class TestToolRegistration:
             f"Missing tools: {expected_tools - registered_names}"
         )
 
-    def test_正常系_ノートブック管理ツールが3つ登録されている(self) -> None:
-        """ノートブック管理ツールが 3 つ登録されていること。"""
+    def test_正常系_ノートブック管理ツールが4つ登録されている(self) -> None:
+        """ノートブック管理ツールが 4 つ登録されていること。"""
         from notebooklm.mcp.server import mcp
 
         tool_manager = mcp._tool_manager
@@ -153,7 +153,7 @@ class TestToolRegistration:
             and "notebook" in name.removeprefix("notebooklm_")
             and "source" not in name
         ]
-        assert len(notebook_tools) == 3
+        assert len(notebook_tools) == 4
 
     def test_正常系_ソース管理ツールが8つ登録されている(self) -> None:
         """ソース管理ツールが 8 つ登録されていること（Phase 1: 2 + Phase 2: 6）。"""

@@ -11,6 +11,8 @@ NotebookService
     CRUD operations for NotebookLM notebooks.
 SourceService
     Source management operations (add, list, delete).
+ChatService
+    AI chat operations (chat, history, settings).
 NotebookLMBrowserManager
     Playwright browser lifecycle management.
 SelectorManager
@@ -18,21 +20,24 @@ SelectorManager
 
 Examples
 --------
->>> from notebooklm import NotebookService, SourceService
+>>> from notebooklm import ChatService, NotebookService, SourceService
 >>> from notebooklm.browser import NotebookLMBrowserManager
 >>>
 >>> async with NotebookLMBrowserManager() as manager:
 ...     notebook_svc = NotebookService(manager)
 ...     source_svc = SourceService(manager)
+...     chat_svc = ChatService(manager)
 ...     notebooks = await notebook_svc.list_notebooks()
 """
 
 from notebooklm.browser.manager import NotebookLMBrowserManager
 from notebooklm.selectors import SelectorManager
+from notebooklm.services.chat import ChatService
 from notebooklm.services.notebook import NotebookService
 from notebooklm.services.source import SourceService
 
 __all__ = [
+    "ChatService",
     "NotebookLMBrowserManager",
     "NotebookService",
     "SelectorManager",

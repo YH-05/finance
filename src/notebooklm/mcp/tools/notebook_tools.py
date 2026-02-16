@@ -1,10 +1,11 @@
 """MCP tools for NotebookLM notebook management.
 
-This module provides three MCP tools for notebook operations:
+This module provides four MCP tools for notebook operations:
 
 - ``notebooklm_create_notebook``: Create a new notebook.
 - ``notebooklm_list_notebooks``: List all notebooks.
 - ``notebooklm_get_notebook_summary``: Get AI-generated summary.
+- ``notebooklm_delete_notebook``: Delete a notebook.
 
 Each tool retrieves the ``NotebookLMBrowserManager`` from the lifespan
 context via ``ctx.lifespan_context["browser_manager"]`` and instantiates
@@ -206,6 +207,71 @@ def register_notebook_tools(mcp: FastMCP) -> None:
         except NotebookLMError as e:
             logger.error(
                 "notebooklm_get_notebook_summary failed",
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            return {
+                "error": e.message,
+                "error_type": type(e).__name__,
+                "context": e.context,
+            }
+
+    @mcp.tool()
+    async def notebooklm_delete_notebook(
+        notebook_id: str,
+        ctx: Context,
+    ) -> dict[str, Any]:
+        """Delete a NotebookLM notebook.
+
+        Navigates to the NotebookLM home page, locates the notebook,
+        opens the settings menu, and clicks delete with confirmation.
+
+        Parameters
+        ----------
+        notebook_id : str
+            UUID of the notebook to delete. Must not be empty.
+        ctx : Context
+            MCP context providing access to lifespan resources.
+
+        Returns
+        -------
+        dict
+            JSON object containing:
+            - deleted: Whether the notebook was deleted (bool).
+            - notebook_id: UUID of the deleted notebook.
+        """
+        logger.info(
+            "MCP tool called: notebooklm_delete_notebook",
+            notebook_id=notebook_id,
+        )
+
+        try:
+            browser_manager = ctx.lifespan_context["browser_manager"]
+            service = NotebookService(browser_manager)
+            deleted = await service.delete_notebook(notebook_id)
+
+            result = {
+                "deleted": deleted,
+                "notebook_id": notebook_id,
+            }
+
+            logger.info(
+                "notebooklm_delete_notebook completed",
+                notebook_id=notebook_id,
+                deleted=deleted,
+            )
+            return result
+
+        except ValueError as e:
+            logger.error(
+                "notebooklm_delete_notebook failed: validation error",
+                error=str(e),
+            )
+            return {"error": str(e), "error_type": "ValueError"}
+
+        except NotebookLMError as e:
+            logger.error(
+                "notebooklm_delete_notebook failed",
                 error=str(e),
                 error_type=type(e).__name__,
             )
