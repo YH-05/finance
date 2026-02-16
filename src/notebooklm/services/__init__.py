@@ -2,7 +2,7 @@
 
 This module provides high-level service classes that orchestrate
 Playwright browser operations for NotebookLM notebook, source,
-chat, audio, studio, and batch management.
+chat, audio, studio, note, and batch management.
 
 Services
 --------
@@ -16,6 +16,8 @@ AudioService
     Audio Overview generation operations.
 StudioService
     Studio content generation (reports, infographics, slides, data tables).
+NoteService
+    Note (memo) CRUD operations (create, list, get, delete).
 BatchService
     Batch operations (batch add sources, batch chat).
 
@@ -23,8 +25,8 @@ Examples
 --------
 >>> from notebooklm.browser import NotebookLMBrowserManager
 >>> from notebooklm.services import (
-...     AudioService, BatchService, ChatService, NotebookService,
-...     SourceService, StudioService,
+...     AudioService, BatchService, ChatService, NoteService,
+...     NotebookService, SourceService, StudioService,
 ... )
 >>>
 >>> async with NotebookLMBrowserManager() as manager:
@@ -33,6 +35,7 @@ Examples
 ...     chat_svc = ChatService(manager)
 ...     audio_svc = AudioService(manager)
 ...     studio_svc = StudioService(manager)
+...     note_svc = NoteService(manager)
 ...     batch_svc = BatchService(source_svc, chat_svc)
 ...     notebooks = await notebook_svc.list_notebooks()
 """
@@ -40,6 +43,7 @@ Examples
 from notebooklm.services.audio import AudioService
 from notebooklm.services.batch import BatchService
 from notebooklm.services.chat import ChatService
+from notebooklm.services.note import NoteService
 from notebooklm.services.notebook import NotebookService
 from notebooklm.services.source import SourceService
 from notebooklm.services.studio import StudioService
@@ -48,6 +52,7 @@ __all__ = [
     "AudioService",
     "BatchService",
     "ChatService",
+    "NoteService",
     "NotebookService",
     "SourceService",
     "StudioService",
