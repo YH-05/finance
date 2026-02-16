@@ -6,6 +6,9 @@ This package contains tool registration functions organized by domain:
 - ``source_tools``: Source management operations (add text, list sources).
 - ``chat_tools``: AI chat operations (chat, history, settings, save to note).
 - ``audio_tools``: Audio Overview generation operations.
+- ``studio_tools``: Studio content generation operations (report, infographic,
+  slides, data_table).
+- ``note_tools``: Note CRUD operations (create, list, get, delete).
 - ``batch_tools``: Batch and workflow operations (batch add sources,
   batch chat, workflow research).
 

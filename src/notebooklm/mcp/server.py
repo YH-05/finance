@@ -27,9 +27,18 @@ Phase 2 Chat Tools (5 total)
 - ``notebooklm_configure_chat``: Configure chat settings.
 - ``notebooklm_save_chat_to_note``: Send a question and save response to note.
 
-Phase 3 Audio Tools (1 total)
-------------------------------
+Phase 3 Audio & Studio Tools (2 total)
+---------------------------------------
 - ``notebooklm_generate_audio_overview``: Generate Audio Overview (podcast).
+- ``notebooklm_generate_studio_content``: Generate Studio content
+  (report, infographic, slides, data_table).
+
+Note Tools (4 total)
+---------------------
+- ``notebooklm_create_note``: Create a new plain text note.
+- ``notebooklm_list_notes``: List all notes in a notebook.
+- ``notebooklm_get_note``: Get the full content of a specific note.
+- ``notebooklm_delete_note``: Delete a note from a notebook.
 
 Batch & Workflow Tools (3 total)
 ---------------------------------
@@ -132,13 +141,17 @@ mcp = FastMCP(
 from notebooklm.mcp.tools.audio_tools import register_audio_tools  # noqa: E402
 from notebooklm.mcp.tools.batch_tools import register_batch_tools  # noqa: E402
 from notebooklm.mcp.tools.chat_tools import register_chat_tools  # noqa: E402
+from notebooklm.mcp.tools.note_tools import register_note_tools  # noqa: E402
 from notebooklm.mcp.tools.notebook_tools import register_notebook_tools  # noqa: E402
 from notebooklm.mcp.tools.source_tools import register_source_tools  # noqa: E402
+from notebooklm.mcp.tools.studio_tools import register_studio_tools  # noqa: E402
 
 register_notebook_tools(mcp)
 register_source_tools(mcp)
 register_chat_tools(mcp)
 register_audio_tools(mcp)
+register_studio_tools(mcp)
+register_note_tools(mcp)
 register_batch_tools(mcp)
 
 
