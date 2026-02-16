@@ -93,6 +93,7 @@ updated_at: 2026-02-15
 - リサーチ実行 → `/finance-research`
 - 個別銘柄分析 → `/dr-stock`
 - 業界・セクター分析 → `/dr-industry`
+- 競争優位性評価 → `/ca-eval`
 - 全工程一括 → `/finance-full`
 
 ### 分析・改善
@@ -165,6 +166,7 @@ updated_at: 2026-02-15
 | `/generate-market-report` | 週次マーケットレポートを自動生成（`--weekly` で週次レポート生成モード） | `generate-market-report` |
 | `/ai-research-collect` | AI投資バリューチェーン収集（77社・10カテゴリ、投資視点要約→Project #44投稿） | `ai-research-workflow` |
 | `/dr-industry` | 業界・セクター分析（セクターETF・構成銘柄データ収集→クロス検証→セクター分析→レポート生成） | `dr-industry` |
+| `/ca-eval` | 競争優位性評価（アナリストレポート+SEC EDGAR+業界データ→主張抽出→ルール適用→検証→レポート生成） | `ca-eval` |
 
 ### ドキュメント・その他
 
@@ -257,6 +259,7 @@ updated_at: 2026-02-15
 | `finance-news-workflow` | 金融ニュース収集の4フェーズワークフロー | `/finance-news-workflow` |
 | `ai-research-workflow` | AI投資バリューチェーン収集ワークフロー（Python前処理→投資視点要約→結果集約、10カテゴリ77社対応） | `/ai-research-collect` |
 | `generate-market-report` | 週次マーケットレポート自動生成（データ収集→ニュース検索→レポート作成） | `/generate-market-report` |
+| `ca-eval` | 競争優位性評価（主張抽出→ルール適用→ファクトチェック→パターン検証→レポート生成） | `/ca-eval` |
 | `index` | CLAUDE.md/README.mdの自動更新 | `/index` |
 | `gemini-search` | Gemini CLIを使用したWeb検索 | `/gemini-search` |
 
@@ -401,6 +404,17 @@ updated_at: 2026-02-15
 | `industry-researcher` | 業界ポジション・競争優位性調査（プリセット収集・dogma.md評価） |
 | `dr-industry-lead` | dr-industryワークフローのAgent Teamsリーダー（9チームメイトを5フェーズで制御） |
 
+### 競争優位性評価エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `ca-eval-lead` | ca-evalワークフローのAgent Teamsリーダー（7チームメイトを5フェーズで制御） |
+| `ca-report-parser` | アナリストレポートを構造化（①期初レポート/②四半期レビュー区別、セクション・日付帰属） |
+| `ca-claim-extractor` | KB1ルール+KB3 few-shot+dogma.mdで主張抽出・ルール適用（5-15件、確信度スケール評価） |
+| `ca-fact-checker` | claims.jsonの事実主張をSEC EDGARデータと照合し検証（verified/contradicted/unverifiable） |
+| `ca-pattern-verifier` | KB2パターン集（却下A-G+高評価I-V）と主張を照合し確信度を調整 |
+| `ca-report-generator` | claims.json+検証結果からMarkdownレポートと構造化JSONを生成（評価ロジック統合） |
+
 ### 設計・作成支援エージェント
 
 | エージェント | 説明 |
@@ -455,6 +469,7 @@ updated_at: 2026-02-15
 - `/plan-project` → `plan-project` → `project-researcher`, `project-planner`, `project-decomposer`
 - `/new-project` → `new-project` → 6設計エージェント, `task-decomposer`（非推奨）
 - `/write-tests` → `tdd-development` → `test-orchestrator` → `test-lead`（Agent Teams）→ 4テストエージェント
+- `/ca-eval` → `ca-eval` → `ca-eval-lead`（Agent Teams）→ 7チームメイト（sec-collector, report-parser, industry, extractor, fact-checker, pattern-verifier, reporter）
 - `/index` → `index` → `Explore`, `package-readme-updater`
 
 詳細なMermaid図は [README.md](README.md#-依存関係図) を参照。
