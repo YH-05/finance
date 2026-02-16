@@ -1,13 +1,15 @@
-"""MCP tools for NotebookLM batch operations.
+"""MCP tools for NotebookLM batch and workflow operations.
 
-This module provides two MCP tools for batch operations:
+This module provides three MCP tools:
 
 - ``notebooklm_batch_add_sources``: Add multiple sources sequentially.
 - ``notebooklm_batch_chat``: Send multiple questions sequentially.
+- ``notebooklm_workflow_research``: Orchestrate a complete research workflow
+  (add sources -> chat questions -> generate studio content).
 
 Each tool retrieves the ``NotebookLMBrowserManager`` from the lifespan
 context via ``ctx.lifespan_context["browser_manager"]`` and instantiates
-``SourceService``, ``ChatService``, and ``BatchService`` for the operation.
+the required services for the operation.
 
 See Also
 --------
@@ -26,6 +28,8 @@ from notebooklm.errors import NotebookLMError
 from notebooklm.services.batch import BatchService
 from notebooklm.services.chat import ChatService
 from notebooklm.services.source import SourceService
+from notebooklm.services.studio import StudioService
+from notebooklm.types import StudioContentType  # noqa: TC001  # runtime: FastMCP schema
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -187,6 +191,111 @@ def register_batch_tools(mcp: FastMCP) -> None:
         except NotebookLMError as e:
             logger.error(
                 "notebooklm_batch_chat failed",
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            return {
+                "error": e.message,
+                "error_type": type(e).__name__,
+                "context": e.context,
+            }
+
+    @mcp.tool()
+    async def notebooklm_workflow_research(
+        notebook_id: str,
+        sources: list[dict[str, Any]],
+        questions: list[str],
+        ctx: Context,
+        content_type: StudioContentType = "report",
+    ) -> dict[str, Any]:
+        """Run a complete research workflow on a NotebookLM notebook.
+
+        Orchestrates a 3-step pipeline:
+        1. Add sources (text/URL) to the notebook.
+        2. Send research questions to the AI chat.
+        3. Generate Studio content (report, data table, etc.).
+
+        Each step runs independently; failures in one step do not
+        prevent subsequent steps from executing. The ``status`` field
+        indicates overall success: ``"completed"`` (all steps passed),
+        ``"partial"`` (some steps failed), or ``"failed"`` (all failed).
+
+        Parameters
+        ----------
+        notebook_id : str
+            UUID of the target notebook. Must not be empty.
+        sources : list[dict[str, Any]]
+            List of source definitions. Each must have a ``type`` key:
+            - ``"text"``: requires ``text`` (str), optional ``title`` (str).
+            - ``"url"``: requires ``url`` (str).
+        questions : list[str]
+            List of research questions to ask. Must not be empty.
+        ctx : Context
+            MCP context providing access to lifespan resources.
+        content_type : StudioContentType
+            Type of Studio content to generate. Defaults to ``"report"``.
+            Options: ``"report"``, ``"infographic"``, ``"slides"``,
+            ``"data_table"``.
+
+        Returns
+        -------
+        dict
+            JSON object containing:
+            - workflow_name: Always ``"research"``.
+            - status: ``"completed"``, ``"partial"``, or ``"failed"``.
+            - steps_completed: Number of steps completed (0-3).
+            - steps_total: Always 3.
+            - outputs: Key-value pairs including notebook_id, source/chat
+              counts, content metadata.
+            - errors: List of error messages from failed steps.
+        """
+        logger.info(
+            "MCP tool called: notebooklm_workflow_research",
+            notebook_id=notebook_id,
+            source_count=len(sources),
+            question_count=len(questions),
+            content_type=content_type,
+        )
+
+        try:
+            browser_manager = ctx.lifespan_context["browser_manager"]
+            source_service = SourceService(browser_manager)
+            chat_service = ChatService(browser_manager)
+            studio_service = StudioService(browser_manager)
+            batch_service = BatchService(
+                source_service=source_service,
+                chat_service=chat_service,
+                studio_service=studio_service,
+            )
+
+            result = await batch_service.workflow_research(
+                notebook_id=notebook_id,
+                sources=sources,
+                questions=questions,
+                content_type=content_type,
+            )
+
+            result_dict = result.model_dump()
+
+            logger.info(
+                "notebooklm_workflow_research completed",
+                notebook_id=notebook_id,
+                status=result.status,
+                steps_completed=result.steps_completed,
+                steps_total=result.steps_total,
+            )
+            return result_dict
+
+        except ValueError as e:
+            logger.error(
+                "notebooklm_workflow_research failed: validation error",
+                error=str(e),
+            )
+            return {"error": str(e), "error_type": "ValueError"}
+
+        except NotebookLMError as e:
+            logger.error(
+                "notebooklm_workflow_research failed",
                 error=str(e),
                 error_type=type(e).__name__,
             )

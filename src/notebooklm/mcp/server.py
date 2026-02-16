@@ -31,10 +31,11 @@ Phase 3 Audio Tools (1 total)
 ------------------------------
 - ``notebooklm_generate_audio_overview``: Generate Audio Overview (podcast).
 
-Batch Tools (2 total)
----------------------
+Batch & Workflow Tools (3 total)
+---------------------------------
 - ``notebooklm_batch_add_sources``: Add multiple sources sequentially.
 - ``notebooklm_batch_chat``: Send multiple questions sequentially.
+- ``notebooklm_workflow_research``: Orchestrate a complete research workflow.
 
 Usage
 -----

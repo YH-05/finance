@@ -3,6 +3,7 @@
 Tests cover:
 - batch_add_sources: Adds multiple sources sequentially to a notebook.
 - batch_chat: Sends multiple questions sequentially to a notebook.
+- workflow_research: Orchestrates add sources -> chat -> studio content.
 - DI: Service receives dependent services via constructor injection.
 - Error paths: empty notebook_id, empty sources/questions lists,
   partial failures.
@@ -14,11 +15,18 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from notebooklm.errors import ChatError, SourceAddError
+from notebooklm.errors import ChatError, SourceAddError, StudioGenerationError
 from notebooklm.services.batch import BatchService
 from notebooklm.services.chat import ChatService
 from notebooklm.services.source import SourceService
-from notebooklm.types import BatchResult, ChatResponse, SourceInfo
+from notebooklm.services.studio import StudioService
+from notebooklm.types import (
+    BatchResult,
+    ChatResponse,
+    SourceInfo,
+    StudioContentResult,
+    WorkflowResult,
+)
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -40,14 +48,35 @@ def mock_chat_service() -> MagicMock:
 
 
 @pytest.fixture
+def mock_studio_service() -> MagicMock:
+    """Create a mocked StudioService."""
+    service = MagicMock(spec=StudioService)
+    return service
+
+
+@pytest.fixture
 def batch_service(
     mock_source_service: MagicMock,
     mock_chat_service: MagicMock,
 ) -> BatchService:
-    """Create a BatchService with mocked dependencies."""
+    """Create a BatchService with mocked dependencies (without StudioService)."""
     return BatchService(
         source_service=mock_source_service,
         chat_service=mock_chat_service,
+    )
+
+
+@pytest.fixture
+def batch_service_with_studio(
+    mock_source_service: MagicMock,
+    mock_chat_service: MagicMock,
+    mock_studio_service: MagicMock,
+) -> BatchService:
+    """Create a BatchService with mocked dependencies (with StudioService)."""
+    return BatchService(
+        source_service=mock_source_service,
+        chat_service=mock_chat_service,
+        studio_service=mock_studio_service,
     )
 
 
@@ -80,6 +109,30 @@ class TestBatchServiceInit:
             chat_service=mock_chat_service,
         )
         assert service._chat_service is mock_chat_service
+
+    def test_正常系_StudioServiceをDIで受け取る(
+        self,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        service = BatchService(
+            source_service=mock_source_service,
+            chat_service=mock_chat_service,
+            studio_service=mock_studio_service,
+        )
+        assert service._studio_service is mock_studio_service
+
+    def test_正常系_StudioService省略時はNone(
+        self,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+    ) -> None:
+        service = BatchService(
+            source_service=mock_source_service,
+            chat_service=mock_chat_service,
+        )
+        assert service._studio_service is None
 
 
 # ---------------------------------------------------------------------------
@@ -436,3 +489,415 @@ class TestBatchChat:
         assert result.total == 2
         assert result.succeeded == 0
         assert result.failed == 2
+
+
+# ---------------------------------------------------------------------------
+# workflow_research tests
+# ---------------------------------------------------------------------------
+
+
+class TestWorkflowResearch:
+    """Test BatchService.workflow_research()."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_全ステップ成功でcompletedを返す(
+        self,
+        batch_service_with_studio: BatchService,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        """All steps succeed and status is 'completed'."""
+        sources = [
+            {"type": "text", "text": "Research content", "title": "Source 1"},
+        ]
+        questions = ["What are the key findings?"]
+
+        mock_source_service.add_text_source = AsyncMock(
+            return_value=SourceInfo(
+                source_id="src-001", title="Source 1", source_type="text"
+            ),
+        )
+        mock_chat_service.chat = AsyncMock(
+            return_value=ChatResponse(
+                notebook_id="nb-001",
+                question="What are the key findings?",
+                answer="The key findings are...",
+                citations=[],
+                suggested_followups=[],
+            ),
+        )
+        mock_studio_service.generate_content = AsyncMock(
+            return_value=StudioContentResult(
+                notebook_id="nb-001",
+                content_type="report",
+                title="Research Report",
+                text_content="# Research Report\n\nContent...",
+                generation_time_seconds=10.0,
+            ),
+        )
+
+        result = await batch_service_with_studio.workflow_research(
+            notebook_id="nb-001",
+            sources=sources,
+            questions=questions,
+        )
+
+        assert isinstance(result, WorkflowResult)
+        assert result.workflow_name == "research"
+        assert result.status == "completed"
+        assert result.steps_completed == 3
+        assert result.steps_total == 3
+        assert "notebook_id" in result.outputs
+        assert result.outputs["notebook_id"] == "nb-001"
+        assert len(result.errors) == 0
+
+    @pytest.mark.asyncio
+    async def test_正常系_ソース追加失敗で部分成功(
+        self,
+        batch_service_with_studio: BatchService,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        """Source addition failure results in 'partial' status."""
+        sources = [
+            {"type": "text", "text": "Content", "title": "Source 1"},
+        ]
+        questions = ["What are the key findings?"]
+
+        mock_source_service.add_text_source = AsyncMock(
+            side_effect=SourceAddError(
+                "Failed to add text source",
+                context={"notebook_id": "nb-001"},
+            ),
+        )
+        mock_chat_service.chat = AsyncMock(
+            return_value=ChatResponse(
+                notebook_id="nb-001",
+                question="What are the key findings?",
+                answer="Answer...",
+                citations=[],
+                suggested_followups=[],
+            ),
+        )
+        mock_studio_service.generate_content = AsyncMock(
+            return_value=StudioContentResult(
+                notebook_id="nb-001",
+                content_type="report",
+                title="Report",
+                text_content="# Report",
+                generation_time_seconds=5.0,
+            ),
+        )
+
+        result = await batch_service_with_studio.workflow_research(
+            notebook_id="nb-001",
+            sources=sources,
+            questions=questions,
+        )
+
+        assert result.status == "partial"
+        assert result.steps_completed == 2
+        assert result.steps_total == 3
+        assert len(result.errors) == 1
+
+    @pytest.mark.asyncio
+    async def test_正常系_チャット失敗で部分成功(
+        self,
+        batch_service_with_studio: BatchService,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        """Chat failure results in 'partial' status."""
+        sources = [
+            {"type": "text", "text": "Content", "title": "Source 1"},
+        ]
+        questions = ["What are the key findings?"]
+
+        mock_source_service.add_text_source = AsyncMock(
+            return_value=SourceInfo(
+                source_id="src-001", title="Source 1", source_type="text"
+            ),
+        )
+        mock_chat_service.chat = AsyncMock(
+            side_effect=ChatError(
+                "Chat interaction failed",
+                context={"notebook_id": "nb-001"},
+            ),
+        )
+        mock_studio_service.generate_content = AsyncMock(
+            return_value=StudioContentResult(
+                notebook_id="nb-001",
+                content_type="report",
+                title="Report",
+                text_content="# Report",
+                generation_time_seconds=5.0,
+            ),
+        )
+
+        result = await batch_service_with_studio.workflow_research(
+            notebook_id="nb-001",
+            sources=sources,
+            questions=questions,
+        )
+
+        assert result.status == "partial"
+        assert result.steps_completed == 2
+        assert result.steps_total == 3
+        assert len(result.errors) == 1
+
+    @pytest.mark.asyncio
+    async def test_正常系_Studio生成失敗で部分成功(
+        self,
+        batch_service_with_studio: BatchService,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        """Studio generation failure results in 'partial' status."""
+        sources = [
+            {"type": "text", "text": "Content", "title": "Source 1"},
+        ]
+        questions = ["What are the key findings?"]
+
+        mock_source_service.add_text_source = AsyncMock(
+            return_value=SourceInfo(
+                source_id="src-001", title="Source 1", source_type="text"
+            ),
+        )
+        mock_chat_service.chat = AsyncMock(
+            return_value=ChatResponse(
+                notebook_id="nb-001",
+                question="What are the key findings?",
+                answer="Answer...",
+                citations=[],
+                suggested_followups=[],
+            ),
+        )
+        mock_studio_service.generate_content = AsyncMock(
+            side_effect=StudioGenerationError(
+                "Studio generation failed",
+                context={"notebook_id": "nb-001"},
+            ),
+        )
+
+        result = await batch_service_with_studio.workflow_research(
+            notebook_id="nb-001",
+            sources=sources,
+            questions=questions,
+        )
+
+        assert result.status == "partial"
+        assert result.steps_completed == 2
+        assert result.steps_total == 3
+        assert len(result.errors) == 1
+
+    @pytest.mark.asyncio
+    async def test_正常系_全ステップ失敗でfailedを返す(
+        self,
+        batch_service_with_studio: BatchService,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        """All steps fail and status is 'failed'."""
+        sources = [
+            {"type": "text", "text": "Content", "title": "Source 1"},
+        ]
+        questions = ["What are the key findings?"]
+
+        mock_source_service.add_text_source = AsyncMock(
+            side_effect=SourceAddError(
+                "Failed",
+                context={"notebook_id": "nb-001"},
+            ),
+        )
+        mock_chat_service.chat = AsyncMock(
+            side_effect=ChatError(
+                "Failed",
+                context={"notebook_id": "nb-001"},
+            ),
+        )
+        mock_studio_service.generate_content = AsyncMock(
+            side_effect=StudioGenerationError(
+                "Failed",
+                context={"notebook_id": "nb-001"},
+            ),
+        )
+
+        result = await batch_service_with_studio.workflow_research(
+            notebook_id="nb-001",
+            sources=sources,
+            questions=questions,
+        )
+
+        assert result.status == "failed"
+        assert result.steps_completed == 0
+        assert result.steps_total == 3
+        assert len(result.errors) == 3
+
+    @pytest.mark.asyncio
+    async def test_異常系_空のnotebook_idでValueError(
+        self,
+        batch_service_with_studio: BatchService,
+    ) -> None:
+        with pytest.raises(ValueError, match="notebook_id must not be empty"):
+            await batch_service_with_studio.workflow_research(
+                notebook_id="",
+                sources=[{"type": "text", "text": "content"}],
+                questions=["question"],
+            )
+
+    @pytest.mark.asyncio
+    async def test_異常系_空白のみのnotebook_idでValueError(
+        self,
+        batch_service_with_studio: BatchService,
+    ) -> None:
+        with pytest.raises(ValueError, match="notebook_id must not be empty"):
+            await batch_service_with_studio.workflow_research(
+                notebook_id="   ",
+                sources=[{"type": "text", "text": "content"}],
+                questions=["question"],
+            )
+
+    @pytest.mark.asyncio
+    async def test_異常系_空のソースリストでValueError(
+        self,
+        batch_service_with_studio: BatchService,
+    ) -> None:
+        with pytest.raises(ValueError, match="sources must not be empty"):
+            await batch_service_with_studio.workflow_research(
+                notebook_id="nb-001",
+                sources=[],
+                questions=["question"],
+            )
+
+    @pytest.mark.asyncio
+    async def test_異常系_空の質問リストでValueError(
+        self,
+        batch_service_with_studio: BatchService,
+    ) -> None:
+        with pytest.raises(ValueError, match="questions must not be empty"):
+            await batch_service_with_studio.workflow_research(
+                notebook_id="nb-001",
+                sources=[{"type": "text", "text": "content"}],
+                questions=[],
+            )
+
+    @pytest.mark.asyncio
+    async def test_異常系_StudioService未設定でValueError(
+        self,
+        batch_service: BatchService,
+    ) -> None:
+        """workflow_research requires studio_service to be set."""
+        with pytest.raises(ValueError, match="studio_service is required"):
+            await batch_service.workflow_research(
+                notebook_id="nb-001",
+                sources=[{"type": "text", "text": "content"}],
+                questions=["question"],
+            )
+
+    @pytest.mark.asyncio
+    async def test_正常系_content_typeを指定可能(
+        self,
+        batch_service_with_studio: BatchService,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        """content_type can be specified for studio generation."""
+        sources = [{"type": "text", "text": "Content", "title": "S1"}]
+        questions = ["Q1"]
+
+        mock_source_service.add_text_source = AsyncMock(
+            return_value=SourceInfo(
+                source_id="src-001", title="S1", source_type="text"
+            ),
+        )
+        mock_chat_service.chat = AsyncMock(
+            return_value=ChatResponse(
+                notebook_id="nb-001",
+                question="Q1",
+                answer="A1",
+                citations=[],
+                suggested_followups=[],
+            ),
+        )
+        mock_studio_service.generate_content = AsyncMock(
+            return_value=StudioContentResult(
+                notebook_id="nb-001",
+                content_type="data_table",
+                title="Data Table",
+                table_data=[["A", "B"], ["1", "2"]],
+                generation_time_seconds=5.0,
+            ),
+        )
+
+        result = await batch_service_with_studio.workflow_research(
+            notebook_id="nb-001",
+            sources=sources,
+            questions=questions,
+            content_type="data_table",
+        )
+
+        assert result.status == "completed"
+        mock_studio_service.generate_content.assert_called_once_with(
+            notebook_id="nb-001",
+            content_type="data_table",
+        )
+
+    @pytest.mark.asyncio
+    async def test_正常系_出力にソース数とチャット数が含まれる(
+        self,
+        batch_service_with_studio: BatchService,
+        mock_source_service: MagicMock,
+        mock_chat_service: MagicMock,
+        mock_studio_service: MagicMock,
+    ) -> None:
+        """Outputs contain source and chat counts."""
+        sources = [
+            {"type": "text", "text": "C1", "title": "S1"},
+            {"type": "text", "text": "C2", "title": "S2"},
+        ]
+        questions = ["Q1", "Q2", "Q3"]
+
+        mock_source_service.add_text_source = AsyncMock(
+            side_effect=[
+                SourceInfo(source_id="src-001", title="S1", source_type="text"),
+                SourceInfo(source_id="src-002", title="S2", source_type="text"),
+            ]
+        )
+        mock_chat_service.chat = AsyncMock(
+            side_effect=[
+                ChatResponse(
+                    notebook_id="nb-001",
+                    question=q,
+                    answer=f"Answer to {q}",
+                    citations=[],
+                    suggested_followups=[],
+                )
+                for q in questions
+            ]
+        )
+        mock_studio_service.generate_content = AsyncMock(
+            return_value=StudioContentResult(
+                notebook_id="nb-001",
+                content_type="report",
+                title="Report",
+                text_content="# Report",
+                generation_time_seconds=5.0,
+            ),
+        )
+
+        result = await batch_service_with_studio.workflow_research(
+            notebook_id="nb-001",
+            sources=sources,
+            questions=questions,
+        )
+
+        assert result.outputs["sources_succeeded"] == "2"
+        assert result.outputs["sources_failed"] == "0"
+        assert result.outputs["chat_succeeded"] == "3"
+        assert result.outputs["chat_failed"] == "0"
