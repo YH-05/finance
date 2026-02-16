@@ -2396,8 +2396,235 @@ async def search_and_add_sources(
 
 ---
 
+## ソースメタデータ取得調査結果（2026-02-16）
+
+### 調査概要
+
+NotebookLM のソースに含まれる情報（URL リンク、メタデータ等）を Playwright で実際に操作して調査した。ソースタイプ（Web / PDF / テキスト）ごとに取得可能なメタデータを確認し、URL 取得の実装方法を検証した。
+
+### ソース一覧から取得可能な情報
+
+ソースパネルの一覧表示（クリック不要）で取得できる情報：
+
+| メタデータ | 取得方法 | 例 |
+|-----------|---------|-----|
+| **ソース名（タイトル）** | チェックボックスの `aria-label` | `"Stock Market Outlook 2026: Political Risks Loom \| Morgan Stanley"` |
+| **ソースID（UUID）** | `source-item-more-button-{uuid}` のボタン ID | `"72f3d3a5-6605-458f-aec0-027548342afa"` |
+| **ソースタイプ** | ボタン内 `mat-icon` テキスト | `drive_pdf` / `web` / `description` |
+| **チェック状態** | チェックボックスの `checked` 属性 | `true` / `false` |
+| **ソース総数** | `"N / 300"` テキスト | `"11 / 300"` |
+
+**セレクター**:
+```python
+# ソース一覧を取得
+containers = page.locator('.single-source-container').all()
+for container in containers:
+    # ソースID
+    more_btn = container.locator('[id*="source-item-more-button"]')
+    source_id = more_btn.get_attribute('id').replace('source-item-more-button-', '')
+
+    # ソース名
+    checkbox = container.locator('input[type="checkbox"]')
+    name = checkbox.get_attribute('aria-label')
+
+    # ソースタイプ（アイコンから判定）
+    icon_text = more_btn.text_content()
+    if 'drive_pdf' in icon_text:
+        source_type = 'pdf'
+    elif 'web' in icon_text:
+        source_type = 'web'
+    elif 'description' in icon_text:
+        source_type = 'text'
+```
+
+### ソース詳細ビューから取得可能な情報
+
+ソース名をクリックして詳細ビューを開くと追加情報を取得可能：
+
+| メタデータ | Web | PDF | テキスト | 取得方法 |
+|-----------|-----|-----|---------|---------|
+| **元記事URL** | ✅ | ✅ (元サイトURL) | ❌ なし | `window.open` 傍受（後述） |
+| **ソースガイド（AI要約）** | ✅ | ✅ | ✅ | `heading "ソースガイド"` 配下テキスト |
+| **キートピック** | ✅ | ✅ | ✅ | `listbox > option` のテキスト |
+| **元テキスト全文** | ✅ | ✅ | ✅ | ソースガイド下部のテキスト領域 |
+| **「新しいタブで開く」ボタン** | ✅ | ✅ | ❌ なし | `button "新しいタブで開く"` |
+
+**重要**: テキストソース（`description` タイプ）には URL が関連付けられておらず、「新しいタブで開く」ボタン自体が表示されない。
+
+### URL 取得方法
+
+#### 方法1: `window.open` 傍受（推奨・検証済み）
+
+ソース詳細ビューの「新しいタブで開く」ボタンは `window.open()` を呼び出す。これを傍受することで元 URL をクリーンに取得可能。
+
+```python
+# window.open を傍受してURL取得
+captured_url = await page.evaluate('''() => {
+    const originalOpen = window.open;
+    let capturedUrl = null;
+    window.open = function(url) { capturedUrl = url; return null; };
+    document.querySelector('button[aria-label="新しいタブで開く"]').click();
+    window.open = originalOpen;
+    return capturedUrl;
+}''')
+# → "https://www.morganstanley.com/insights/articles/2026-market-optimism-and-risks"
+```
+
+**利点**: Google リダイレクト URL ではなく、直接の元 URL が取得できる。
+
+#### 方法2: 詳細ビュー内のリンク要素から
+
+詳細ビュー内のテキスト領域にリンク要素が含まれる場合がある。ただし URL は Google リダイレクト形式。
+
+```
+https://www.google.com/url?sa=E&q=https%3A%2F%2Fwww.morganstanley.com%2Finsights%2Farticles%2F2026-market-optimism-and-risks
+```
+
+URL デコードが必要: `q` パラメータから実際の URL を抽出。
+
+### 検証済み URL 取得結果
+
+| ソース名 | タイプ | 取得URL |
+|---------|-------|---------|
+| Stock Market Outlook 2026 - Morgan Stanley | `web` | `https://www.morganstanley.com/insights/articles/2026-market-optimism-and-risks` |
+| FactSet Earnings Insight | `pdf` | `https://www.factset.com/earningsinsight` |
+| 貼り付けたテキスト | `text` | なし（ボタン自体が存在しない） |
+
+### Deep Research 検出ソースのメタデータ
+
+Deep Research 完了後の検出ソース一覧（インポート前）からも豊富なメタデータを取得可能。
+
+#### 取得可能な情報
+
+| メタデータ | 取得可否 | 取得方法 |
+|-----------|---------|---------|
+| **タイトル** | ✅ | `button "ソースのリンクを開く"` の直前の兄弟要素テキスト |
+| **URL** | ✅ | `window.open` 傍受（全件一括取得可能） |
+| **AI関連性要約** | ✅ | 各ソースカードの要約テキスト |
+| **チェック状態** | ✅ | `checkbox` の `checked` 属性 |
+| **検出ソース件数** | ✅ | `"N 件のソースが検出されました"` テキスト |
+| **レポート（Deep Research）** | ✅ | 最上位ソースとして生成される包括的レポート（番号付き参照URL含む） |
+
+#### 検出ソース URL 一括取得（検証済み）
+
+```python
+# 全検出ソースのURLを一括取得
+result = await page.evaluate('''() => {
+    const originalOpen = window.open;
+    const urls = [];
+    window.open = function(url) { urls.push(url); return null; };
+
+    const buttons = document.querySelectorAll('button[aria-label="ソースのリンクを開く"]');
+    buttons.forEach(btn => btn.click());
+
+    window.open = originalOpen;
+    return { count: buttons.length, urls: urls };
+}''')
+# → 56件のURLを一括取得（実測検証済み）
+```
+
+#### 検出ソースのUI構造
+
+```
+検出ソースリスト
+├── 「引用されているソースをすべて選択」チェックボックス
+├── ソースカード（×56件）
+│   ├── タイトル（テキスト）
+│   ├── 「ソースのリンクを開く」ボタン (open_in_new アイコン)
+│   ├── AI要約（関連性の説明テキスト）
+│   └── チェックボックス（選択/解除）
+└── フッター
+    ├── 「高く評価」/ 「低く評価」ボタン
+    └── 「インポート」ボタン
+```
+
+**セレクター**:
+```python
+# 検出ソースの「ソースのリンクを開く」ボタン
+buttons = page.locator('button[aria-label="ソースのリンクを開く"]').all()
+
+# タイトル取得（ボタンの前の兄弟要素）
+title = button.locator('..').locator('div:first-child').text_content()
+
+# AI要約取得
+summary_el = button.locator('..').locator('..').locator('+ div')
+summary = summary_el.text_content()
+```
+
+### Deep Research レポート内の参照URL
+
+Deep Research が生成するレポート（最上位ソースとして追加）には、番号付きの参照URLリストが含まれる。これは DOM 内の `link` 要素として存在し、`/url` 属性から取得可能。
+
+```python
+# レポート内の参照URLを全取得
+links = page.locator('.source-content-view a[href]').all()
+for link in links:
+    url = link.get_attribute('href')  # Google リダイレクト URL
+    title = link.text_content()       # リンクテキスト
+```
+
+実測例（レポート内に24件の参照URL）:
+- `1. J.P. Morgan Global Research`: `https://www.jpmorgan.com/insights/global-research/outlook/market-outlook`
+- `7. Morgan Stanley`: `https://www.morganstanley.com/insights/articles/2026-market-optimism-and-risks`
+- `18. Goldman Sachs`: `https://www.goldmansachs.com/insights/articles/why-ai-companies-may-invest-more-than-500-billion-in-2026`
+
+### MCP ツールへの影響
+
+#### `notebooklm_list_sources` の拡張
+
+元の設計にソースURL取得を追加可能:
+
+```python
+# レスポンス（拡張版）
+{
+    "sources": [
+        {
+            "source_id": "72f3d3a5-6605-458f-aec0-027548342afa",
+            "name": "Stock Market Outlook 2026 | Morgan Stanley",
+            "type": "web",           # "web" | "pdf" | "text"
+            "checked": True,
+            "url": None              # URL取得には詳細ビューへの遷移が必要
+        }
+    ],
+    "total": 11,
+    "max": 300
+}
+```
+
+**注意**: ソース一覧からは URL を直接取得できない。URL 取得には各ソースの詳細ビューを開く必要があるため、`notebooklm_get_source_details` ツールで個別に取得するか、新規ツール `notebooklm_get_all_source_urls` で一括取得する設計が適切。
+
+#### 新規ツール提案: `notebooklm_get_all_source_urls`
+
+```python
+{
+    "notebook_id": str,
+}
+# レスポンス
+{
+    "sources": [
+        {
+            "source_id": "72f3d3a5-...",
+            "name": "Stock Market Outlook 2026 | Morgan Stanley",
+            "type": "web",
+            "url": "https://www.morganstanley.com/insights/articles/2026-market-optimism-and-risks"
+        },
+        {
+            "source_id": "cba1001f-...",
+            "name": "貼り付けたテキスト",
+            "type": "text",
+            "url": null  # テキストソースにはURLなし
+        }
+    ]
+}
+```
+
+**実装**: 各ソースの詳細ビューを順次開き、`window.open` 傍受で URL を取得。テキストソースは「新しいタブで開く」ボタンが存在しないためスキップ。
+
+---
+
 ## 更新履歴
 
+- **2026-02-16**: ソースメタデータ取得調査結果を追記。ソースタイプ別（Web/PDF/テキスト）の取得可能メタデータ一覧、`window.open` 傍受によるURL取得方法（全ソースタイプで検証済み）、Deep Research 検出ソースの一括URL取得（56件）、レポート内参照URLの抽出方法をドキュメント化。新規ツール `notebooklm_get_all_source_urls` を提案
 - **2026-02-16**: Deep Research 実行検証結果を追記。5段階ステップ進行（「ステップ N/5 が完了しました」）、計画フェーズ（「計画を作成しています...」→「計画中...」）、停止ボタン（「ソース検出を停止」）、キャンセル確認ダイアログ（`dialog "Deep Research"`）を実機確認。所要時間は25分以上（ステップ1/5で停滞しキャンセル）。完了時のUIは未確認のため推定値を明示
 - **2026-02-16**: Web Research（Fast Research / Deep Research）詳細調査結果を追記。Playwright で実際にドロップダウン操作・検索実行・結果表示を検証。ソースタイプ（ウェブ/ドライブ）とリサーチモード（Fast/Deep）の切り替えUI、検索中の状態変化、結果プレビュー・全ソースリストの構造を完全にドキュメント化
 - **2026-02-16**: メモパネル Playwright UI 調査完了。2種類のメモ（手動/チャット保存）のDOM構造・セレクターパターン・コンテキストメニュー・削除フローを確認。全ツール (#20-24) の実装ポイントを更新

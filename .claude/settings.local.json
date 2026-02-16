@@ -48,7 +48,22 @@
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_click",
-      "mcp__playwright__browser_run_code"
+      "mcp__playwright__browser_run_code",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_wait_for",
+      "WebFetch(domain:support.google.com)",
+      "WebFetch(domain:www.makeuseof.com)",
+      "WebFetch(domain:tech-noisy.com)",
+      "WebFetch(domain:shift-ai.co.jp)",
+      "WebFetch(domain:blog.google)",
+      "WebFetch(domain:digirise.ai)",
+      "WebFetch(domain:ai-workstyle.com)",
+      "WebFetch(domain:note.com)",
+      "WebFetch(domain:medium.com)",
+      "mcp__playwright__browser_fill_form"
     ]
   },
   "enableAllProjectMcpServers": true,
