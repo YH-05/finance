@@ -1969,7 +1969,7 @@ research_team_result:
 
 ## 参考資料
 
-- **共通パターン**: `docs/agent-teams-patterns.md`
+- **共通パターン**: `.claude/guidelines/agent-teams-patterns.md`
 - **現行コマンド**: `.claude/commands/finance-research.md`
 - **旧オーケストレーター**: `.claude/agents/deep-research/dr-orchestrator.md`
 - **週次レポートリーダー**: `.claude/agents/weekly-report-lead.md`（同規模のリーダー参考実装）

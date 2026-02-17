@@ -128,7 +128,7 @@ PR に付けるラベル：
     **重要: Issue リンク**
     - PR本文に `Fixes #<issue-number>` を含めることで、GitHub ProjectsのワークフローがPRとIssueを関連付けます
     - PRマージ時に自動的にIssueが `Done` に移動します（GitHub Projects自動化設定が必要）
-    - 詳細は `docs/github-projects-automation.md` を参照
+    - 詳細は `docs/guidelines/github-projects-automation.md` を参照
 
 8. **GitHub CI のチェック（自動実行）**
 

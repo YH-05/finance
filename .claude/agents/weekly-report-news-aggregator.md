@@ -511,7 +511,7 @@ SendMessage:
 
 ## 参考資料
 
-- `docs/agent-teams-patterns.md`: Agent Teams 共通実装パターン
+- `.claude/guidelines/agent-teams-patterns.md`: Agent Teams 共通実装パターン
 - `docs/project/project-21/project.md`: 週次レポートプロジェクト計画
 - `.claude/commands/generate-market-report.md`: レポート生成コマンド
 - `.claude/agents/weekly-comment-*-fetcher.md`: 類似エージェント

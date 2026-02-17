@@ -297,4 +297,4 @@ gh project item-edit \
 
 - `CLAUDE.md`: プロジェクト全体のガイドライン
 - `.claude/commands/sync-issue.md`: /sync-issue コマンド定義
-- `docs/github-projects-automation.md`: GitHub Projects 自動化
+- `docs/guidelines/github-projects-automation.md`: GitHub Projects 自動化

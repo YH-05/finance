@@ -2,13 +2,13 @@
 summary: "yfinance開発のベストプラクティス - curl_cffiセッション管理、複数銘柄一括取得、クラス使い分け、エラーハンドリング、並列処理パターン"
 created: 2026-01-21
 tags: [yfinance, curl_cffi, performance, best-practices]
-related: [src/market_analysis/dev/, docs/yfinance-best-practices.md]
+related: [src/market_analysis/dev/, docs/guidelines/yfinance-best-practices.md]
 ---
 
 # yfinance 開発ベストプラクティス
 
 > **ソース**: `src/market_analysis/dev/` の開発コードから抽出
-> **詳細ドキュメント**: `docs/yfinance-best-practices.md`
+> **詳細ドキュメント**: `docs/guidelines/yfinance-best-practices.md`
 
 ## 1. curl_cffi によるセッション管理
 

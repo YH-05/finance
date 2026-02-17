@@ -717,7 +717,7 @@ dependency_matrix:
 
 ## 参考資料
 
-- **Agent Teams パターン**: `docs/agent-teams-patterns.md`
+- **Agent Teams パターン**: `.claude/guidelines/agent-teams-patterns.md`
 - **Issue テンプレート**: `.claude/templates/weekly-report-issue.md`
 - **レポート生成コマンド**: `.claude/commands/generate-market-report.md`
 - **GitHub Project #15**: https://github.com/users/YH-05/projects/15

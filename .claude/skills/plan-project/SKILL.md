@@ -20,6 +20,7 @@ Agent Teams を活用した「リサーチ→設計→タスク分解→GitHub P
 | タイプ | 判定条件 | 主な成果物 |
 |--------|---------|-----------|
 | **package** | `@src/*` 引数 | `src/` 配下の Python パッケージ |
+| **from_plan_file** | `@docs/plan/*` 引数 | プランファイルから推測したタイプ（Phase 4 でプランファイルを `original-plan.md` として移動） |
 | **agent** | `--type agent` | `.claude/agents/` 配下のエージェント定義 |
 | **skill** | `--type skill` | `.claude/skills/` 配下のスキル定義 |
 | **command** | `--type command` | `.claude/commands/` 配下のコマンド定義 |
@@ -41,6 +42,9 @@ Agent Teams を活用した「リサーチ→設計→タスク分解→GitHub P
 
 # パッケージ開発
 /plan-project @src/market_analysis/docs/project.md
+
+# プランファイルから実行（プランファイルは Phase 4 で移動）
+/plan-project @docs/plan/2026-02-15_example.md
 ```
 
 ## ワークフロー
@@ -109,6 +113,7 @@ GitHub Issue 本文テンプレート。
 - [ ] 全 HF ゲートを通過している
 - [ ] `.tmp/plan-project-{session_id}/` に全 JSON ファイルが生成されている
 - [ ] `docs/project/project-{N}/project.md` が作成されている
+- [ ] プランファイルが指定されていた場合、`docs/project/project-{N}/original-plan.md` として移動されている
 - [ ] GitHub Project が作成されている
 - [ ] Issue が登録されている
 - [ ] 完了レポートが表示されている

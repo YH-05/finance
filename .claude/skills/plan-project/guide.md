@@ -43,11 +43,18 @@ Phase 4: GitHub Project・Issue 登録
 # 判定ロジック（擬似コード）
 if args.startswith("@src/"):
     project_type = "package"
+elif args.startswith("@docs/plan/"):
+    project_type = "from_plan_file"
+    source_plan_file = args  # プランファイルパスを記録
 elif "--type" in args:
     project_type = args["--type"]  # agent/skill/command/workflow/docs
 elif args is None or args is str:
     project_type = "general"
 ```
+
+**プランファイル対応**:
+- 引数が `@docs/plan/*.md` の場合、そのファイルを Phase 4 で `original-plan.md` としてプロジェクトフォルダに移動
+- プランファイルからプロジェクト名とタイプを推測（ファイル内容を読み込んで判定）
 
 ### セッションディレクトリ
 
@@ -67,6 +74,7 @@ mkdir -p .tmp/plan-project-{session_id}/
   "project_name": "ニュース分析エージェント",
   "description": "ユーザーの自由記述",
   "arguments": "--type agent \"ニュース分析エージェント\"",
+  "source_plan_file": "@docs/plan/2026-02-15_example.md",
   "workflow_status": {
     "phase_0": "completed",
     "phase_1": "pending",
@@ -76,6 +84,9 @@ mkdir -p .tmp/plan-project-{session_id}/
   }
 }
 ```
+
+**新規フィールド**:
+- `source_plan_file` (string, optional): 引数で指定されたプランファイルパス。Phase 4 で移動対象となる。
 
 ### HF0: 方向確認
 
@@ -464,6 +475,28 @@ ls -d docs/project/project-* | sort -t- -k2 -n | tail -1
 gh project create --title "{プロジェクト名}" --owner @me --format json
 ```
 
+### ステップ 2.5: プランファイルの移動
+
+`session-meta.json` の `source_plan_file` が存在する場合、元のプランファイルをプロジェクトフォルダに移動：
+
+```bash
+# プロジェクトディレクトリ作成
+mkdir -p docs/project/project-{N}/
+
+# プランファイル移動
+if [ -n "$SOURCE_PLAN_FILE" ]; then
+  # @docs/plan/2026-02-15_example.md → docs/project/project-{N}/original-plan.md
+  SOURCE_PATH="${SOURCE_PLAN_FILE#@}"  # @ プレフィックスを削除
+  mv "$SOURCE_PATH" "docs/project/project-{N}/original-plan.md"
+
+  echo "プランファイルを移動しました: $SOURCE_PATH → docs/project/project-{N}/original-plan.md"
+fi
+```
+
+**注意**:
+- プランファイルは `original-plan.md` に統一
+- 元のファイルは移動（コピーではなく `mv`）されるため、元の場所からは削除される
+
 ### ステップ 3: project.md 作成
 
 テンプレート（`templates/project-template.md`）を使用して `docs/project/project-{N}/project.md` を作成。
@@ -511,6 +544,7 @@ gh project item-add {project_number} --owner @me --url "$ISSUE_URL"
   },
   "outputs": {
     "project_md": "docs/project/project-35/project.md",
+    "original_plan_file": "docs/project/project-35/original-plan.md",
     "github_project_number": 35,
     "github_project_url": "https://github.com/users/YH-05/projects/35",
     "issues_created": [
@@ -519,6 +553,9 @@ gh project item-add {project_number} --owner @me --url "$ISSUE_URL"
   }
 }
 ```
+
+**新規フィールド**:
+- `outputs.original_plan_file` (string, optional): 移動したプランファイルのパス。`source_plan_file` が指定されていた場合のみ記録。
 
 ### ステップ 7: 完了レポート
 
@@ -531,6 +568,7 @@ gh project item-add {project_number} --owner @me --url "$ISSUE_URL"
 - **名前**: {project_name}
 - **タイプ**: {project_type}
 - **計画書**: docs/project/project-{N}/project.md
+- **元プラン**: docs/project/project-{N}/original-plan.md（移動済み）
 
 ## GitHub Project
 - **番号**: #{project_number}

@@ -334,4 +334,4 @@ gh auth refresh -s project  # Project スコープ追加
 
 - `CLAUDE.md`: プロジェクト全体のガイドライン
 - `.claude/commands/issue.md`: /issue コマンド定義
-- `docs/github-projects-automation.md`: GitHub Projects 自動化
+- `docs/guidelines/github-projects-automation.md`: GitHub Projects 自動化

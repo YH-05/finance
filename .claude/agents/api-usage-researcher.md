@@ -141,7 +141,7 @@ Read:
 
 ```yaml
 ベストプラクティス:
-  - docs/yfinance-best-practices.md
+  - docs/guidelines/yfinance-best-practices.md
   - docs/architecture/packages.md
 
 コーディング規約:
@@ -224,7 +224,7 @@ gh issue list --search "{library}" --state all --limit 10
   "related_issues": [
     {"number": 100, "title": "類似の実装", "relevance": "同じAPIを使用"}
   ],
-  "project_docs_referenced": ["docs/yfinance-best-practices.md"],
+  "project_docs_referenced": ["docs/guidelines/yfinance-best-practices.md"],
   "recommendations": ["Follow existing YFinanceFetcher pattern"]
 }
 ```

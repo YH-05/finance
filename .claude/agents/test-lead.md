@@ -713,7 +713,7 @@ test_team_result:
 
 ## 参考資料
 
-- **共通パターン**: `docs/agent-teams-patterns.md`
+- **共通パターン**: `.claude/guidelines/agent-teams-patterns.md`
 - **TDDスキル**: `.claude/skills/tdd-development/SKILL.md`
 - **ルーター**: `.claude/agents/test-orchestrator.md`（`--use-teams` フラグでルーティング）
 - **旧オーケストレーター**: `.claude/agents/test-orchestrator-legacy.md`

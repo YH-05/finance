@@ -461,6 +461,6 @@ gh auth refresh -s project
 ## 参考資料
 
 - `CLAUDE.md`: プロジェクト全体のガイドライン
-- `docs/github-projects-automation.md`: GitHub Projects 自動化の詳細
+- `docs/guidelines/github-projects-automation.md`: GitHub Projects 自動化の詳細
 - `.claude/commands/new-project.md`: /new-project コマンドの詳細
 - `.claude/commands/project-refine.md`: /project-refine コマンドの詳細

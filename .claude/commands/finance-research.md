@@ -344,4 +344,4 @@ Phase 5: 可視化
 ### 関連ファイル
 
 - **リーダーエージェント**: `.claude/agents/research-lead.md`
-- **共通パターン**: `docs/agent-teams-patterns.md`
+- **共通パターン**: `.claude/guidelines/agent-teams-patterns.md`

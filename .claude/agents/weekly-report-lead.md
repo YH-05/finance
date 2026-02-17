@@ -793,7 +793,7 @@ weekly_report_team_result:
 
 ## 参考資料
 
-- **共通パターン**: `docs/agent-teams-patterns.md`
+- **共通パターン**: `.claude/guidelines/agent-teams-patterns.md`
 - **旧エージェント**: `.claude/agents/weekly-report-writer.md`
 - **スキル**: `.claude/skills/generate-market-report/SKILL.md`
 - **旧ニュース集約**: `.claude/agents/weekly-report-news-aggregator.md`

@@ -103,7 +103,7 @@ Closes #123
 
 - PR作成時: Issue → In Progress
 - PRマージ時: Issue → Done
-- 詳細: `docs/github-projects-automation.md`
+- 詳細: `docs/guidelines/github-projects-automation.md`
 
 ## 必須コマンド
 

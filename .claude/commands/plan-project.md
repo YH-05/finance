@@ -1,6 +1,6 @@
 ---
 description: リサーチベースのプロジェクト計画ワークフロー。リサーチ→設計→タスク分解→GitHub Project 登録を一貫実行。
-argument-hint: [プロジェクト名] [--type package|agent|skill|command|workflow|docs] [@src/*/docs/project.md]
+argument-hint: [プロジェクト名] [--type package|agent|skill|command|workflow|docs] [@src/*/docs/project.md] [@docs/plan/*.md]
 ---
 
 リサーチベースのプロジェクト計画ワークフローを実行します。
@@ -17,6 +17,11 @@ argument-hint: [プロジェクト名] [--type package|agent|skill|command|workf
 | プロジェクト名 | - | プロジェクト名（テキスト） | `"認証システムの実装"` |
 | --type | - | プロジェクトタイプ | `--type agent` |
 | @src/* | - | パッケージパス | `@src/market_analysis/docs/project.md` |
+| @docs/plan/* | - | プランファイルパス | `@docs/plan/2026-02-15_example.md` |
+
+**プランファイル対応**:
+- `@docs/plan/*.md` を引数に指定すると、Phase 4 で `docs/project/project-{N}/original-plan.md` として移動
+- プランファイルからプロジェクト名とタイプを推測して実行
 
 ## 実行手順
 

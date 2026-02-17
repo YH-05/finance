@@ -441,4 +441,4 @@ gh pr view {pr_number} --web
 - `CLAUDE.md`: プロジェクト全体のガイドライン
 - `.claude/skills/issue-implementation/`: Issue 実装スキル
 - `.claude/skills/plan-worktrees/SKILL.md`: 依存関係解析
-- `docs/github-projects-automation.md`: Project 自動化
+- `docs/guidelines/github-projects-automation.md`: Project 自動化
