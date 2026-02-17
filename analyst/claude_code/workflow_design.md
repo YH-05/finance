@@ -1,6 +1,7 @@
 # CA-Eval ワークフロー詳細設計書
 
 > 作成日: 2026-02-17
+> 最終更新: 2026-02-17（PoC簡素化: 四半期レポート種別区分の省略、全エージェント Sonnet 4.5 固定）
 > 前提: [Dify詳細設計書](../memo/dify_workflow_design.md) | [Dify比較表](dify_comparison.md)
 > 上位文書: [CAGR推定フレームワーク](../memo/cagr_estimation_framework.md)
 > 上位文書: [Dogma](../Competitive_Advantage/analyst_YK/dogma.md)
@@ -24,7 +25,12 @@
 | 全KB直接読み込み | RAG不要。25ファイル（~62KB）を全てコンテキストに含める | **新規**（RAG→直接読み込み） |
 | SECライブデータ | KB4の手動アップロードを SEC EDGAR MCP に置換 | **新規** |
 | 並列実行 | Phase 1: 3並列、Phase 3: 2並列で時間短縮 | **新規** |
-| 自動精度検証 | phase2_KYデータとの数値比較を自動実行 | **新規** |
+| **全ルール明示** | 12ルール全てを適用/不適用の理由とともに記録 | **新規**（KB準拠の透明化） |
+| **AI批判プロセス** | ドラフト→批判→反映の2段階でレポート生成 | **新規**（品質保証の強化） |
+| **フィードバック最優先** | 完璧より高速イテレーション。不合格でもブロックしない | **新規**（暗黙知拡充ループ加速） |
+| 自動精度検証 | phase2_KYデータとの数値比較を自動実行（簡素化版） | **新規** |
+| **全エージェント Sonnet 4.5** | ワークフロー内の全チームメイトエージェントのモデルを `claude-sonnet-4-5-20250929` で固定 | **新規**（PoC: コスト・品質バランス） |
+| **四半期レポート区別の省略** | PoCではレポート種別（①期初/②四半期）の区別を行わない。インプットされたレポートをそのまま処理する | **新規**（PoC簡素化） |
 
 ### プロジェクト全体の位置づけ
 
@@ -165,7 +171,24 @@ Difyの KB4（10-K/10-Q 手動アップロード）を SEC EDGAR MCP ツール�
 
 ## 3. ワークフロー設計
 
-### 3.1 全体構成: 10タスク・5フェーズ
+### 3.1 モデル設定
+
+ワークフロー内の全チームメイトエージェントは **Sonnet 4.5**（`claude-sonnet-4-5-20250929`）で固定する。
+
+| エージェント | モデル | 備考 |
+|-------------|--------|------|
+| ca-eval-lead（Lead） | Sonnet 4.5 | Task tool の `model` パラメータで指定 |
+| finance-sec-filings（T1） | Sonnet 4.5 | 同上 |
+| ca-report-parser（T2） | Sonnet 4.5 | 同上 |
+| industry-researcher（T3） | Sonnet 4.5 | 同上 |
+| ca-claim-extractor（T4） | Sonnet 4.5 | 同上 |
+| ca-fact-checker（T5） | Sonnet 4.5 | 同上 |
+| ca-pattern-verifier（T6） | Sonnet 4.5 | 同上 |
+| ca-report-generator（T7） | Sonnet 4.5 | 同上 |
+
+T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
+
+### 3.2 全体構成: 10タスク・5フェーズ
 
 ```
 /ca-eval ORLY
@@ -189,17 +212,20 @@ Difyの KB4（10-K/10-Q 手動アップロード）を SEC EDGAR MCP ツール�
     |       blockedBy: [T4]
     |       [HF1] 中間品質レポート
     |
-    Phase 4: レポート生成 + 検証 (直列)
-    |-- [T7] reporter (ca-report-generator)
+    Phase 4: レポート生成 + AI批判 + 精度検証 (直列)
+    |-- [T7] reporter (ca-report-generator): ドラフト生成（全12ルール明示）
     |       blockedBy: [T5, T6]
-    |-- [T8] Lead: レポート3層検証
-    |-- [T9] Lead: 精度検証 (常時実行: フル or 簡易モード)
+    |       出力: draft-report.md + structured.json
+    |-- [T8] Lead: AI批判プロセス (Step 1: 批判生成 → Step 2: 反映・修正)
+    |       出力: critique.json + revised-report.md
+    |-- [T9] Lead: 精度検証（簡素化版: 1メトリクス、ブロックなし）
+    |       出力: accuracy-report.json
     |       [HF2] 最終出力
     |
     Phase 5: Cleanup (TeamDelete)
 ```
 
-### 3.2 Difyステップとの対応
+### 3.3 Difyステップとの対応
 
 | Dify ステップ | Claude Code タスク | 改善点 |
 |-------------|-------------------|--------|
@@ -207,10 +233,10 @@ Difyの KB4（10-K/10-Q 手動アップロード）を SEC EDGAR MCP ツール�
 | 知識検索②(KB1+KB3) + LLM②(ルール適用) | **T4に統合** | ステップ分離不要 |
 | 知識検索③(KB4) + LLM③(ファクトチェック) | **T5: ca-fact-checker** | SEC EDGAR MCPで追加検証 |
 | 知識検索④(KB2) + LLM④(検証/JSON) | **T6: ca-pattern-verifier** | 12パターン全て同時参照 |
-| LLM⑤(レポート生成) | **T7: ca-report-generator** | 全検証結果を統合 |
-| 知識検索⑤(KB1+KB2) + LLM⑥(レポート検証) | **T8: Lead直接実行** | 3層検証 |
+| LLM⑤(レポート生成) | **T7: ca-report-generator** | 全12ルール明示のドラフト生成 |
+| 知識検索⑤(KB1+KB2) + LLM⑥(レポート検証) | **T8: Lead直接実行** | AI批判プロセス（批判→反映の2段階） |
 | *(なし)* | **T1: SEC Filings取得** | 新機能: KB4の完全置換 |
-| *(なし)* | **T2: Report Parser** | 新機能: ①/②区別 |
+| *(なし)* | **T2: Report Parser** | 新機能: レポート構造解析（PoC: ①/②区別は省略） |
 | *(なし)* | **T3: Industry Research** | 新機能: 業界データ |
 | *(なし)* | **T9: 精度検証** | 新機能: 自動精度比較 |
 
@@ -283,10 +309,10 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 **エージェント**: `ca-report-parser`（新規）
 
 **処理内容**:
-1. レポート種別の判定（**期初投資仮説レポート** / **四半期継続評価レポート** / 混合）
-2. セクション分割（投資テーゼ、事業概要、競争優位性、財務分析等）
-3. レポート種別の帰属付与
-4. 競争優位性の抽出候補、事実の主張、CAGR参照を識別
+1. セクション分割（投資テーゼ、事業概要、競争優位性、財務分析等）
+2. 競争優位性の抽出候補、事実の主張、CAGR参照を識別
+
+> **PoC簡素化**: レポート種別の判定（期初/四半期/混合）および種別の帰属付与は省略。インプットされたレポートをそのまま処理する。
 
 **出力**: `{research_dir}/01_data_collection/parsed-report.json`
 
@@ -324,7 +350,8 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 1. **主張抽出**: parsed-report.json の `advantage_candidates` から 5-15件を抽出
 2. **ルール適用**: KB1の8ルール + ゲートキーパー（ルール9, 3）を適用
 3. **KB3キャリブレーション**: 5銘柄の評価例を参照し確信度を調整
-4. **①/②区別**: ルール12を適用
+
+> **PoC簡素化**: ①/②区別（ルール12）は省略。レポート種別に関わらず全主張を同等に扱う。
 
 **出力スキーマ**: Dify設計書§6 に準拠した claims.json
 
@@ -374,47 +401,57 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 
 **致命度**: Fatal=No（パターン検証なしでもレポート生成は可能）
 
-### 4.8 T7: Report Generation（ca-report-generator）
+### 4.8 T7: Draft Generation（ca-report-generator）
 
 **エージェント**: `ca-report-generator`（新規）
 
-**Dify対応**: ステップ5
+**Dify対応**: ステップ5（拡張版）
+
+**設計思想**:
+- **全12ルールを明示的に適用・記録**（applied_rules / not_applied_rules）
+- **ドラフト版レポート**として生成（T8のAI批判プロセスで修正される前提）
+- **判断根拠の透明化**（confidence_rationale で5層評価ロジックを明示）
 
 **入力ファイル**:
 - `{research_dir}/02_claims/claims.json`（T4, 必須）
 - `{research_dir}/03_verification/fact-check.json`（T5, 任意）
 - `{research_dir}/03_verification/pattern-verification.json`（T6, 任意）
 - `analyst/Competitive_Advantage/analyst_YK/dogma.md`
+- `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md`（全8ファイル）
 
 **処理内容**:
 1. claims.json にファクトチェック結果とパターン検証結果をマージ
-2. 最終 confidence を算出（5層評価ロジック）
-3. Markdown レポート生成（フィードバックテンプレート埋込）
-4. 構造化 JSON（five_layer_evaluation 含む）生成
+2. **全12ルールを各主張に適用**（適用/不適用の理由を記録）
+3. 最終 confidence を算出（5層評価ロジック + 詳細根拠）
+4. Markdown ドラフトレポート生成（全ルール適用状況を表形式表示）
+5. 構造化 JSON（applied_rules / not_applied_rules / confidence_rationale 含む）生成
 
 **出力**:
-- `{research_dir}/04_output/report.md`
-- `{research_dir}/04_output/structured.json`
+- `{research_dir}/04_output/draft-report.md`（ドラフト版）
+- `{research_dir}/04_output/structured.json`（全ルール記録版）
 
 **致命度**: Fatal=Yes
 
-#### 4.8.1 report.md テンプレート仕様
+#### 4.8.1 draft-report.md テンプレート仕様
 
 **要件**:
+- **ドラフト版**: T8のAI批判プロセスで修正される前提
 - 想定読者: Y + 他のチームメンバー（文脈説明を含む）
 - 分量: 5-8ページ相当
+- **全12ルールの適用状況を明示**（表形式で✅適用、⚠️部分的、❌不適用）
 - フィードバックテンプレートは暗黙知拡充ループ（§14）と整合
+- PoC: レポート種別（①/②）の区別は省略
 
 **セクション構成と分量**:
 
 ```
-report.md（全体 5-8ページ相当）
+draft-report.md（全体 5-8ページ相当）
 ├── 1. ヘッダー情報（~0.3ページ）
 ├── 2. 評価サマリーテーブル（~0.5ページ）
-├── 3. 個別主張セクション x N件（~3-5ページ、各 0.4-0.6ページ）
+├── 3. 個別主張セクション x N件（~3-5ページ、各 0.5-0.7ページ）← 全ルール表追加で増量
 ├── 4. CAGR接続サマリー（~0.5ページ）
 ├── 5. 警鐘セクション（~0.3ページ）
-├── 6. 全体フィードバックセクション（~0.3ページ）
+├── 6. 全体フィードバックセクション（~0.3ページ）← 簡素化
 └── 7. メタデータ・技術情報（折りたたみ、~0.1ページ）
 ```
 
@@ -426,7 +463,7 @@ report.md（全体 5-8ページ相当）
 | 項目 | 値 |
 |------|-----|
 | **対象銘柄** | [TICKER]（[企業名]） |
-| **入力レポート** | [report_source]（①期初 / ②四半期 / 混合） |
+| **入力レポート** | [report_source] |
 | **生成日** | [YYYY-MM-DD] |
 | **リサーチID** | [research_id] |
 | **データソース** | SEC EDGAR (MCP), アナリストレポート, 業界分析 |
@@ -471,15 +508,37 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
 ### #[N]: [主張テキスト]
 
 **分類**: [descriptive_label]
-**レポート種別**: ①期初投資仮説レポート / ②四半期継続評価レポート
-[②の場合のみ表示:]
-> ⚠️ この主張は四半期レビュー（②）から抽出されました。
-> 期初レポート（①）での妥当性を再検討してください。
 
 #### AI評価: [ランク名]（[X]%）
 
 [2-3文のコメント。5層評価に基づく。結論→根拠→改善提案の順。]
 [重要な指摘は<u>下線</u>で強調]
+[AIの判断に「再考の余地」を明示し、T8批判を促す]
+
+#### 根拠（アナリストレポートより）
+
+[evidence_from_report]
+
+#### ルール適用結果（全12ルール）
+
+| ルール | 適用 | 判定 | 根拠 |
+|--------|------|------|------|
+| ルール1（能力vs結果） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール2（名詞テスト） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール3（相対性） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール4（定量的裏付け） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール5（CAGR直接性） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール6（構造的vs補完的） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール7（純粋競合） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール8（戦略vs優位性） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール9（事実誤認） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール10（ネガティブケース） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ルール11（業界構造） | ✅ / ⚠️ / ❌ | [verdict] | [reasoning（1文）] |
+| ~~ルール12（①/②区別）~~ | — | — | PoC省略 |
+
+**凡例**: ✅適用、⚠️部分的、❌不適用（理由を記述）
+
+**AIの判断**: [全ルールを踏まえた総合判断。適用したルールと不適用のルールを明示し、confidence値の妥当性について「再考の余地」を示唆]
 
 #### CAGR接続
 
@@ -487,18 +546,6 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
 |-----------|---------|---------|
 | 売上成長寄与 +X% | [Y]% | [1-2文] |
 | マージン改善寄与 +X% | [Z]% | [1-2文] |
-
-#### 根拠（アナリストレポートより）
-
-[evidence_from_report]
-
-#### ルール適用結果
-
-| ルール | 判定 | 根拠 |
-|--------|------|------|
-| ルール[N] | [verdict] | [reasoning（1文）] |
-
-※ 該当ルールのみ記載。
 
 #### 検証結果
 
@@ -512,29 +559,22 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
 
 **納得度:**  10% / 30% / 50% / 70% / 90%  ← 丸をつける
 
-**該当する質問に一言お願いします（1文で十分です）:**
-- 納得しない場合 → 一番引っかかる点は？
-- どちらとも言えない場合 → 何があれば納得度が上がる？
-- 納得する場合 → 他の企業でも同じことが言えない理由は？
-
-回答:
+**一言コメント（任意、AIの判断で気になる点があれば）:**
 
 
 **この指摘は他の銘柄にも当てはまりますか？（任意）**
 □ はい → KB追加候補として記録
 □ いいえ → この銘柄固有の判断
-□ わからない
-
-**補足（任意）:**
-
 
 ---
 ```
 
 **設計判断**:
-- ルール適用結果は**該当ルールのみ記載**（全ルール列挙は冗長）
+- **全12ルールを表形式で表示**（✅適用、⚠️部分的、❌不適用）
+- **不適用のルールには理由を明記**（例: ルール7「純粋競合比較なし」）
 - コメントは2-3文（dogma.md「コメント記述ルール」5原則準拠）
 - `<u>`下線はYのPhase 2スタイルに合わせて使用
+- **フィードバック欄を簡素化**（4項目 → 2項目に削減、回答負荷を軽減）
 - 「他の銘柄にも当てはまりますか」は暗黙知拡充ループ（§14.3）と整合
 
 **セクション4: CAGR接続サマリー**:
@@ -551,7 +591,7 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
 ### CAGR接続の全体評価
 
 [1-2段落: 因果チェーンの直接性、TAM→シェア→利益率の中間ステップ有無、
- ブレークダウン数値の根拠妥当性、①/②由来の区別]
+ ブレークダウン数値の根拠妥当性]
 ```
 
 **セクション5: 警鐘セクション**:
@@ -559,17 +599,12 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
 ```markdown
 ## 警鐘事項
 
-### ①/②区別の確認
-
-| # | 主張 | ソース | 警戒レベル |
-|---|------|--------|----------|
-| [N] | [主張テキスト] | ②四半期レビュー | ⚠️ 拡大解釈の可能性 |
-
 ### 既存判断への警鐘
 
-[1-2段落: 既存判断への無批判的追従、①の前提の現在の合理性、
-②の積み重ねからの拡大解釈、銘柄間の推論パターン一貫性]
+[1-2段落: 既存判断への無批判的追従、銘柄間の推論パターン一貫性]
 ```
+
+> **PoC簡素化**: ①/②区別の確認テーブルは省略。既存判断への警鐘に集中する。
 
 **セクション6: 全体フィードバックセクション**:
 
@@ -593,9 +628,9 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
 
 `<details>` タグで折りたたみ。KBバージョン、ロード数、データ利用可否、実行時間。
 
-#### 4.8.2 structured.json スキーマ（five_layer_evaluation 追加）
+#### 4.8.2 structured.json スキーマ（全ルール記録版）
 
-既存スキーマに `five_layer_evaluation` フィールドを追加:
+`applied_rules`, `not_applied_rules`, `confidence_rationale` を追加:
 
 ```json
 {
@@ -603,47 +638,76 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
     {
       "id": 1,
       "claim_type": "competitive_advantage",
-      "claim": "主張テキスト",
-      "descriptive_label": "ラベル",
-      "evidence_from_report": "根拠",
-      "report_type_source": "initial | quarterly",
+      "claim": "ローカルな規模の経済による配送・在庫の効率化",
+      "descriptive_label": "配送密度による原価優位",
+      "evidence_from_report": "店舗数5,800超、配送センター30拠点（レポートp.8）",
       "supported_by_facts": [3, 4],
       "cagr_connections": [2],
-      "rule_evaluation": { "...既存..." },
-      "verification": { "...既存..." },
-      "five_layer_evaluation": {
-        "layer_1_prerequisite": {
-          "rule_9_factual_accuracy": "pass | fail",
-          "rule_3_relative_advantage": "pass | fail"
+      "rule_evaluation": {
+        "applied_rules": [
+          {
+            "rule": "rule_1",
+            "verdict": "capability",
+            "reasoning": "配送密度は「結果」ではなく「能力」として記述されている"
+          },
+          {
+            "rule": "rule_6",
+            "verdict": "structural",
+            "reasoning": "店舗網・配送センターは競合が容易に再現できない構造的優位"
+          },
+          {
+            "rule": "rule_11",
+            "verdict": "strong_fit",
+            "reasoning": "専門小売の地域寡占構造とローカル密度が合致"
+          }
+        ],
+        "not_applied_rules": [
+          {
+            "rule": "rule_4",
+            "reason": "定量的裏付けはあるが、純粋競合との比較が不足（ルール7優先）"
+          },
+          {
+            "rule": "rule_7",
+            "reason": "純粋競合（AutoZone）との配送効率の具体的比較がレポートに不在"
+          },
+          {
+            "rule": "rule_10",
+            "reason": "競合の失敗事例の記述なし"
+          }
+        ],
+        "confidence": 90,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0（事実誤認なし、相対性あり）",
+          "layer_2_nature": "+10（能力として記述、名詞テスト合格）",
+          "layer_3_evidence": "+20（ルール11の強い合致）",
+          "layer_4_cagr": "+10（構造的、直接的）",
+          "layer_5_source": "+0（PoC: レポート種別による調整なし）",
+          "final": 90
         },
-        "layer_2_nature": {
-          "rule_1_capability_vs_result": "capability | result",
-          "rule_2_noun_test": "pass | fail",
-          "rule_8_strategy_vs_advantage": "advantage | strategy"
-        },
-        "layer_3_evidence": {
-          "rule_4_quantitative": "present | absent",
-          "rule_7_pure_competitor": "present | absent",
-          "rule_10_negative_case": "present | absent",
-          "rule_11_industry_structure": "strong_fit | weak_fit | absent"
-        },
-        "layer_4_cagr": {
-          "rule_5_directness": "direct | indirect",
-          "rule_6_structural_vs_complementary": "structural | complementary",
-          "verifiability": "high | medium | low"
-        },
-        "layer_5_source": {
-          "rule_12_source_type": "initial | quarterly",
-          "overinterpretation_risk": "low | medium | high"
-        }
+        "overall_reasoning": "構造的優位性（ルール6）と業界構造の合致（ルール11）が明確。ただし純粋競合との比較（ルール7）が不足しているため、90%の確信度は高すぎる可能性"
       },
-      "ai_comment": "2-3文のコメント"
+      "verification": {
+        "fact_check_status": "verified",
+        "pattern_matches": ["IV"],
+        "pattern_rejections": [],
+        "final_confidence": 90,
+        "confidence_delta": 0
+      },
+      "ai_comment": "構造的優位性と業界構造の合致が明確だが、純粋競合比較が不足。90%は再考の余地あり。"
     }
   ],
   "summary": {
-    "...既存...",
+    "ticker": "ORLY",
+    "total_claims": 6,
+    "confidence_distribution": {
+      "90": 1,
+      "70": 2,
+      "50": 2,
+      "30": 1,
+      "10": 0
+    },
     "warning_flags": {
-      "quarterly_derived_claims": 1,
       "overinterpretation_risks": 0,
       "confidence_distribution_anomaly": false
     }
@@ -651,265 +715,219 @@ Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
 }
 ```
 
-### 4.9 T8: Report Verification（Lead直接実行）
+**重要な変更点**:
+- `applied_rules`: 適用したルールとその判定・理由
+- `not_applied_rules`: **適用しなかったルール**とその理由（新規）
+- `confidence_rationale`: 5層評価の加算ロジックを明示（新規）
+- `overall_reasoning`: AIの総合判断（批判の余地を残す）
 
-**Dify対応**: ステップ6
+### 4.9 T8: AI Critique & Revision（Lead直接実行）
 
-**処理**: report.md と structured.json を3層で検証し、問題を自動修正して verified-report.md を生成する。
+**Dify対応**: ステップ6（再設計版）
+
+**設計思想**:
+- **「バグ修正」から「AI批判プロセス」へ**
+- T7のドラフトを**別のAI視点で批判的に読む**
+- KB3実績と照合し、過剰/過小評価を指摘
+- 批判を反映した最終版レポートを生成
+
+**処理フロー**:
+
+```
+T8: AI Critique & Revision（~1.5分）
+├─ Step 1: 批判生成（~45秒）
+│    ├─ draft-report.md と structured.json を読込
+│    ├─ KB1-KB3（全26ファイル）と照合
+│    ├─ 「見落とし」「過剰評価」「論理の飛躍」を指摘
+│    └─ critique.json 生成
+├─ Step 2: 反映・修正（~45秒）
+│    ├─ critique.json の指摘を structured.json に反映
+│    ├─ confidence 調整（上げ/下げ）
+│    ├─ コメント修正（批判を反映）
+│    └─ revised-report.md 生成
+└─ 出力: revised-report.md + critique.json
+```
 
 **出力**:
-- `{research_dir}/04_output/verified-report.md`（自動修正済みレポート）
-- `{research_dir}/04_output/verification-results.json`（検証結果 + 修正履歴）
+- `{research_dir}/04_output/revised-report.md`（批判反映版レポート、Yに渡す最終版）
+- `{research_dir}/04_output/critique.json`（AI批判内容の記録）
 
-#### 4.9.1 重大度分類
+#### 4.9.1 Step 1: 批判生成（~45秒）
 
-| 重大度 | 定義 | 対処 |
-|--------|------|------|
-| **Critical** | Yへの信頼性を損なう問題 | 必ず自動修正 |
-| **Warning** | Yの指摘を予測できる問題 | 自動修正 + `[⚠️ T8修正]` 注釈 |
-| **Info** | 改善提案レベル | verification-results.json に記録のみ |
+**処理内容**:
+1. draft-report.md と structured.json を読込
+2. KB3実績（5銘柄34件の評価）と照合
+3. 各主張の confidence が KB3実績と整合しているかチェック
+4. 「見落とし」「過剰評価」「論理の飛躍」を指摘
+5. 全体的な判断傾向（例: ルール11重視）を分析
+6. critique.json 生成
 
-#### 4.9.2 検証層A: JSON-レポート整合性（7項目）
+**批判の種類**:
 
-| ID | チェック項目 | 重大度 | 自動修正 |
-|----|-------------|--------|---------|
-| A-1 | 主張の網羅性（JSON全件がMDに記載） | Critical | 欠落主張を追記 |
-| A-2 | confidence転記の正確性 | Critical | MD値をJSON値に合わせ修正 |
-| A-3 | confidenceとトーンの一致 | Critical | コメント文を書き換え |
-| A-4 | ルール適用結果の反映 | Warning | 欠落ルールを追記 |
-| A-5 | contradicted事実の明示 | Critical | 事実の記述を追加 |
-| A-6 | パターン照合結果の反映 | Warning | パターン情報を追記 |
-| A-7 | CAGR接続の対応関係 | Warning | リンク修正 |
+| 批判タイプ | 説明 |
+|----------|------|
+| `overconfidence` | confidence が高すぎる（KB3実績と比較） |
+| `underconfidence` | confidence が低すぎる（KB3実績と比較） |
+| `reasoning_gap` | コメント文と confidence 値の矛盾 |
+| `kb_misalignment` | KBの基準と異なる判断 |
 
-**A-3判定ロジック**:
-- confidence <= 30% かつ 肯定的表現（「納得感あり」「優位性として妥当」等） → Critical
-- confidence >= 70% かつ 否定的表現が主論点 → Critical
-- confidence == 50% は中間的表現が適切
+**重大度**:
 
-#### 4.9.3 検証層B: KYルール準拠（9項目）
+| 重大度 | 対処 |
+|--------|------|
+| `critical` | 必ず修正（contradicted → 10% 等） |
+| `minor` | 改善提案（参考情報） |
 
-| ID | チェック項目 | 重大度 | 自動修正 |
-|----|-------------|--------|---------|
-| B-1 | ルール1（能力vs結果）の適用 | Warning | ルール1適用結果を追加 |
-| B-2 | ルール2（名詞テスト）の適用 | Warning | 名詞形への変換提案を追加 |
-| B-3 | ルール3（相対性）の適用 | Warning | 相対性検証コメントを追加 |
-| B-4 | ルール4（定量的裏付け）の反映 | Info | 改善提案として記録 |
-| B-5 | ルール7（純粋競合比較）の反映 | Warning | 競合比較の不足を指摘 |
-| B-6 | ルール8（戦略vs優位性）の適用 | Warning | ルール8適用を追加 |
-| B-7 | ルール9（事実誤認 → 10%）の適用 | Critical | confidence を 10% に強制修正 |
-| B-8 | **ルール11なしの90%排除** | Critical | 90%→70%に引き下げ |
-| B-9 | ルール12（①/②区別）フラグ | Warning | 警戒フラグを追加 |
-
-**B-8は最重要チェック**: KB3実績で90%はORLY#2, #5のみ（全34件中2件）。いずれもパターンIV（構造的市場ポジション）を満たす。業界構造分析なしの90%は許容しない。
-
-#### 4.9.4 検証層C: パターン一貫性（4項目）
-
-| ID | チェック項目 | 重大度 | 自動修正 |
-|----|-------------|--------|---------|
-| C-1 | 却下パターン検出時のconfidence上限 | Critical | 上限値に引き下げ |
-| C-2 | 高評価パターン検出時のconfidence下限 | Warning | 注釈付与 |
-| C-3 | 複数パターン該当時の調整 | Warning | 却下優先で再計算 |
-| C-4 | 銘柄間一貫性 | Info | 参考情報として記録 |
-
-**C-1: 却下パターンのconfidence上限テーブル**:
-
-| 却下パターン | confidence上限 | KB3根拠 |
-|-------------|--------------|---------|
-| A: 結果を原因と取り違え | 50% | CHD#4=30%, MNST#1=50% |
-| B: 業界共通で差別化にならない | 30% | LLY#6=30% |
-| C: 因果関係の飛躍 | 30% | MNST#5=30% |
-| D: 定性的で定量的裏付けなし | 30% | COST#2=10% |
-| E: 事実誤認 | 10% | 強制（ルール9） |
-| F: 戦略を優位性と混同 | 50% | ORLY#2分離後90% |
-| G: 純粋競合に対する優位性不明 | 50% | COST#3=50% |
-
-**C-2: 高評価パターンのconfidence下限テーブル**:
-
-| 高評価パターン | confidence下限 | KB3根拠 |
-|---------------|--------------|---------|
-| I: 定量的裏付けのある差別化 | 50% | COST#1=70% |
-| II: 直接的なCAGR接続メカニズム | 50% | CAGR全般50%+ |
-| III: 能力 > 結果 | 50% | CHD#1=70% |
-| IV: 構造的な市場ポジション | 70% | ORLY#2,#5=90% |
-| V: 競合との具体的比較 | 50% | ORLY#1=70% |
-
-**C-3: 複数パターン該当時の解決ルール**:
-1. パターンE（事実誤認）は全てに優先 → 強制10%
-2. 却下パターン（A-G、E以外）を先に適用
-3. 高評価パターン（I-V）を後に適用
-4. 上限90%、下限10%
-
-#### 4.9.5 自動修正の優先順位
-
-| 順位 | 修正対象 | 対象ファイル |
-|------|---------|------------|
-| 1 | confidence値 | structured.json + report.md |
-| 2 | コメント文 | report.md |
-| 3 | 主張の追記 | report.md |
-| 4 | ルール適用の追記 | report.md |
-| 5 | 注釈の追加 | report.md |
-
-全修正は verification-results.json の `corrections` 配列に記録。
-
-#### 4.9.6 verification-results.json スキーマ
+#### 4.9.2 critique.json スキーマ
 
 ```json
 {
-  "research_id": "...",
+  "research_id": "CA_eval_20260217_ORLY",
   "ticker": "ORLY",
-  "verification_timestamp": "2026-02-17T10:35:00Z",
-  "verification_layers": {
-    "layer_a_json_report_consistency": {
-      "status": "pass | fail | pass_with_warnings",
-      "checks": [
-        {
-          "check_id": "A-3",
-          "name": "confidenceとトーンの一致",
-          "status": "fail",
-          "severity": "critical",
-          "details": "主張#3（confidence 30%）のコメントが肯定的トーン",
-          "affected_claims": [3]
-        }
-      ]
-    },
-    "layer_b_ky_rule_compliance": { "...同構造..." },
-    "layer_c_pattern_consistency": { "...同構造..." }
+  "critique_timestamp": "2026-02-17T10:35:00Z",
+  "overall_assessment": {
+    "kb_alignment": "strong | moderate | weak",
+    "reasoning_quality": "strong | moderate | weak",
+    "critical_issues": 2,
+    "minor_issues": 5
   },
-  "corrections": [
+  "claim_critiques": [
     {
-      "correction_id": 1,
-      "source_check": "A-3",
-      "claim_id": 3,
-      "type": "comment_rewrite | confidence_adjustment | claim_addition | annotation",
-      "before": "ある程度の優位性として認められる",
-      "after": "方向性は認めるが、定量的裏付けが不足しており納得感は限定的",
-      "reason": "confidence 30% に対してトーンが肯定的すぎた"
+      "claim_id": 1,
+      "critique_type": "overconfidence",
+      "severity": "critical",
+      "issue": "90%の確信度はルール7（純粋競合比較）とルール10（ネガティブケース）が不足しているため過剰。KB3実績（ORLY#2, #5）では90%はパターンIV（構造的市場ポジション）+ ルール7の具体的比較が揃ったケースのみ。",
+      "kb_reference": "KB3 ORLY#2: 90%の根拠は「競合（AutoZone）との店舗密度比較（1.8倍）+ 配送時間短縮の定量データ」",
+      "suggested_action": "confidence_adjustment",
+      "suggested_value": 70,
+      "reasoning": "ルール11（業界構造）の合致は強いが、ルール7が不足する場合は70%が妥当（KB3 COST#1と同等）"
+    },
+    {
+      "claim_id": 1,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "コメント文で「90%は高すぎる可能性」と自己批判しているが、confidence値を調整していない。論理の不一致。",
+      "suggested_action": "consistency_fix",
+      "reasoning": "コメント文の批判を confidence 値に反映すべき"
     }
   ],
-  "overall_status": "pass | fail | pass_with_corrections",
-  "statistics": {
-    "total_checks": 20,
-    "passed": 18,
-    "failed_critical": 1,
-    "failed_warning": 1,
-    "info": 0,
-    "corrections_applied": 2
-  }
+  "systematic_issues": [
+    {
+      "pattern": "ルール11重視の傾向",
+      "affected_claims": [1, 3],
+      "description": "業界構造分析（ルール11）を過大評価し、純粋競合比較（ルール7）の不足を軽視している",
+      "kb_lesson": "KB3では90%はルール7+ルール11の両方が揃った場合のみ（ORLY#2, #5）"
+    }
+  ]
 }
 ```
 
-### 4.10 T9: Accuracy Scoring（Lead直接実行、常時実行）
+**重要フィールド**:
+- `claim_critiques`: 各主張への個別批判
+- `systematic_issues`: 全体的な判断傾向の分析
+- `kb_reference`: KB3実績の具体的引用
+
+#### 4.9.3 Step 2: 反映・修正（~45秒）
+
+**処理内容**:
+1. critique.json の指摘を structured.json に反映
+2. confidence 調整（KB3実績ベースで上げ/下げ）
+3. コメント修正（批判を反映した新しいコメント）
+4. revised-report.md 生成（修正箇所を `[⬇️ T8修正]` で明示）
+
+**修正の原則**:
+
+| 批判タイプ | 対処 |
+|----------|------|
+| `overconfidence` | confidence を suggested_value に引き下げ |
+| `underconfidence` | confidence を suggested_value に引き上げ |
+| `reasoning_gap` | コメント文を修正（批判を反映） |
+| `kb_misalignment` | ルール適用結果を修正 |
+
+**修正箇所の表示例**:
+
+```markdown
+#### AI評価: おおむね納得（70%） [⬇️ T8修正: 90% → 70%]
+
+構造的優位性（ルール6）と業界構造の合致（ルール11）が明確であり、店舗網・配送センターは競合が容易に再現できない。<u>ただし純粋競合（AutoZone等）との配送効率の具体的比較が不足</u>しており、KB3実績（ORLY#2, #5）では90%はルール7の具体的比較が揃った場合のみ付与されている。70%が妥当。
+
+**T8批判**: KB3実績と照合した結果、ルール11（業界構造）の合致のみでは90%は過剰。ルール7（純粋競合比較）が不足する場合は70%が適切（COST#1と同等）。
+```
+
+**T8批判セクション**:
+- 各主張に「T8批判」セクションを追加
+- AIの自己批判を記録し、Yに判断材料を提供
+
+### 4.10 T9: Accuracy Scoring（Lead直接実行、簡素化版）
 
 **Difyにない新機能**。
+
+**設計思想**:
+- **フィードバック収集を最優先**（完璧より高速イテレーション）
+- **最小限の精度検証**（1メトリクスのみ）
+- **不合格でもブロックしない**（注釈付きで出力）
 
 #### 4.10.1 モード切り替え
 
 | モード | 対象 | 内容 |
 |--------|------|------|
-| **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の主張単位比較 |
-| **簡易モード** | 上記以外の全銘柄 | confidence分布+ヒューリスティック検証 |
+| **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の平均乖離のみチェック |
+| **簡易モード** | 上記以外の全銘柄 | contradicted → 10% の適用確認のみ |
 
 Phase 2データファイルパターン: `analyst/phase2_KY/*_{TICKER}_phase2.md`
 
-#### 4.10.2 フルモード
+#### 4.10.2 フルモード（1メトリクス）
 
 **主張マッチング**:
-AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング。マッチングできないものは unmatched / missing_in_ai として記録。
+AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング。
 
-**乖離の定量化**:
+**合格基準（簡素化）**:
 
-| 乖離幅 | 分類 |
-|--------|------|
-| 0 | exact_match |
-| 1-10% | within_target |
-| 11-20% | acceptable |
-| 21-30% | significant |
-| 31%+ | critical |
+| メトリクス | 合格基準 | 旧基準 |
+|----------|---------|--------|
+| **平均乖離（優位性のみ）** | ≤ 15% | ≤ 10%（緩和） |
 
-**合格基準**:
+**不合格時**: accuracy-report.json に記録 + revised-report.md に注釈追加。**レポートはブロックせず出力**。
 
-| メトリクス | 合格基準 |
-|----------|---------|
-| 平均乖離（優位性） | mean(abs(AI - Y)) <= 10% |
-| 平均乖離（CAGR接続） | mean(abs(AI - Y)) <= 10% |
-| 最大乖離 | max(abs(AI - Y)) <= 30% |
-| 20%超乖離の主張数 | <= 全主張の25% |
-| 方向性バイアス | mean(AI - Y)の絶対値 <= 5% |
+#### 4.10.3 簡易モード（1チェック）
 
-**不合格時**: accuracy-report.json に不合格理由を記録し報告。レポート自体は出力する（ブロックしない）。
+| ID | チェック項目 | 判定基準 |
+|----|-------------|---------|
+| **S-8** | contradicted → 10% | contradicted の事実があるのに confidence が 10% でない |
 
-#### 4.10.3 簡易モード（8チェック項目）
+**不合格時**: accuracy-report.json に記録 + 注釈追加。**レポートはブロックせず出力**。
 
-| ID | チェック項目 | 重大度 | 判定基準 |
-|----|-------------|--------|---------|
-| S-1 | 90%の出現率 | Warning | 全主張の15%以下（KY基準: 6%） |
-| S-2 | 50%の最頻値確認 | Info | 50%付近が30%以上 |
-| S-3 | 10%の希少性 | Info | 全主張の15%以下（contradicted除く） |
-| S-4 | CAGR > CA平均スコア | Info | 平均CAGR確信度 >= 平均CA確信度 |
-| S-5 | 却下パターンconfidence上限 | Warning | T8 C-1と同一基準 |
-| S-6 | ルール11なしの90%排除 | Critical | 業界構造分析なしに90%不可 |
-| S-7 | 主張数の妥当性 | Warning | 5-15件の範囲内 |
-| S-8 | ルール9自動適用確認 | Critical | contradicted → 10% |
-
-#### 4.10.4 accuracy-report.json スキーマ
+#### 4.10.4 accuracy-report.json スキーマ（簡素化版）
 
 ```json
 {
-  "research_id": "...",
+  "research_id": "CA_eval_20260217_ORLY",
   "ticker": "ORLY",
   "mode": "full | simplified",
   "generated_at": "2026-02-17T10:37:00Z",
   "kb_version": "v1.0.0",
   "full_mode_results": {
     "y_data_source": "analyst/phase2_KY/phase1_ORLY_phase2.md",
-    "claim_matching": {
-      "ai_claims_total": 6,
-      "y_evaluations_total": 6,
-      "matched": 5,
-      "unmatched_ai": 1,
-      "missing_in_ai": 1
-    },
-    "advantage_accuracy": {
-      "comparisons": [
-        {
-          "claim_id": 1,
-          "ai_confidence": 70,
-          "y_confidence": 70,
-          "deviation": 0,
-          "severity": "exact_match",
-          "deviation_analysis": "一致"
-        }
-      ],
-      "mean_abs_deviation": 8.0,
-      "max_abs_deviation": 20,
-      "direction_bias": "slight_underestimate"
-    },
-    "cagr_accuracy": { "...同構造..." },
+    "mean_abs_deviation": 8.0,
     "overall_verdict": "pass | fail",
-    "pass_criteria": {
-      "mean_deviation_within_10": true,
-      "max_deviation_within_30": true,
-      "over_20_percent_under_25_pct": true,
-      "direction_bias_within_5": true
-    },
-    "improvement_suggestions": ["..."]
+    "threshold": 15,
+    "pass": true,
+    "annotation": "平均乖離8.0%は閾値15%以内。精度は良好。"
   },
   "simplified_mode_results": {
-    "checks": [
-      {
-        "check_id": "S-1",
-        "name": "confidence分布の妥当性（90%の出現率）",
-        "status": "pass | warning | fail",
-        "value": "1件 (16.7%)",
-        "threshold": "15%以下"
-      }
-    ],
-    "overall_status": "pass | pass_with_warnings | fail",
-    "warning_count": 1,
-    "critical_count": 0
+    "check_id": "S-8",
+    "contradicted_claims": [],
+    "overall_verdict": "pass | fail",
+    "pass": true,
+    "annotation": "contradicted → 10% の適用を確認。問題なし。"
   }
 }
 ```
+
+**簡素化のポイント**:
+- フルモード: 平均乖離のみ記録（5メトリクス → 1メトリクス）
+- 簡易モード: contradicted → 10% のみチェック（8項目 → 1項目）
+- 不合格でも `overall_verdict: "fail"` + `annotation` 追加でレポート出力
 
 ---
 
@@ -971,7 +989,6 @@ Dify設計書§6 のスキーマを踏襲し、Claude Code 固有フィールド
       "claim": "ローカルな規模の経済による配送・在庫の効率化",
       "descriptive_label": "配送密度による原価優位",
       "evidence_from_report": "店舗数5,800超、配送センター30拠点（レポートp.8）",
-      "report_type_source": "initial",
       "supported_by_facts": [3, 4],
       "cagr_connections": [2],
       "rule_evaluation": {
@@ -1143,10 +1160,10 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | 検証層 | 項目数 | 内容 | 実装方法 |
 |--------|-------|------|----------|
 | **検証A: JSON-レポート整合** | 7 | 主張網羅性、confidence転記、トーン一致（A-3）、ルール反映、contradicted明示 | LLM判定 + ルールベース |
-| **検証B: KYルール準拠** | 9 | 能力vs結果、名詞テスト、相対性、定量裏付け、純粋競合比較、戦略混同、**事実誤認→10%（B-7）**、**ルール11なしの90%排除（B-8、最重要）**、①/②フラグ | ルールベース + LLM判定 |
+| **検証B: KYルール準拠** | 8 | 能力vs結果、名詞テスト、相対性、定量裏付け、純粋競合比較、戦略混同、**事実誤認→10%（B-7）**、**ルール11なしの90%排除（B-8、最重要）** | ルールベース + LLM判定 |
 | **検証C: パターン一貫性** | 4 | 却下パターンconfidence上限（C-1）、高評価パターンconfidence下限（C-2）、複数パターン調整（C-3）、銘柄間一貫性（C-4） | confidence上限/下限テーブルで判定 |
 
-### 9.4 ①/②区別と警鐘機能
+### 9.4 警鐘機能
 
 **プロジェクトの最優先事項**（dogma.md §5.2より）:
 
@@ -1156,11 +1173,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | **高** | 推論段階での批判が最終出力で消えないこと |
 | **高** | 銘柄間での一貫した推論パターンの適用 |
 
-**実装への影響**:
-- **T2（ca-report-parser）**: 期初投資仮説レポート/四半期継続評価レポート/混合の判定アルゴリズム
-- **T4（ca-claim-extractor）**: ②から抽出された優位性には警戒フラグを付与
-- **T7（ca-report-generator）**: ②由来の主張には注意書き追加
-  - 例: 「⚠️ この主張は四半期レビュー（②）から抽出されました。期初レポート（①）での妥当性を再検討してください。」
+> **PoC簡素化**: ①/②区別（レポート種別判定・警戒フラグ・注意書き）は省略。PoCでは上記3つの警鐘機能に集中し、レポート種別による差別化は将来的に実装する。
 
 ---
 
@@ -1221,6 +1234,9 @@ def is_90_percent_qualified(claim: dict) -> bool:
 
 ### 10.6 期初投資仮説レポート vs 四半期継続評価レポート
 
+> **PoC簡素化**: PoCではレポート種別の区別を行わない。インプットされたアナリストレポートをそのまま処理し、優位性抽出→AI評価→Yフィードバック→KB拡充のサイクルに専念する。
+
+**将来実装予定**（PoC完了後）:
 ```markdown
 優先度: ①（主） > ②（従）
 
@@ -1267,11 +1283,11 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 │   ├── fact-check.json         # T5: Fact Check
 │   └── pattern-verification.json # T6: Pattern Verification
 ├── 04_output/                  # Phase 4
-│   ├── report.md               # T7: 初版レポート
-│   ├── structured.json         # T7: 構造化JSON（five_layer_evaluation含む）
-│   ├── verified-report.md      # T8: 3層検証後の自動修正版レポート
-│   ├── verification-results.json # T8: 検証結果（20チェック項目 + 修正履歴）
-│   └── accuracy-report.json    # T9: 精度検証結果（フル or 簡易モード）
+│   ├── draft-report.md         # T7: ドラフト版レポート（全12ルール明示）
+│   ├── structured.json         # T7: 構造化JSON（applied_rules / not_applied_rules / confidence_rationale 含む）
+│   ├── critique.json           # T8: AI批判内容（claim単位の指摘 + 全体傾向）
+│   ├── revised-report.md       # T8: 批判反映版レポート（Yに渡す最終版）
+│   └── accuracy-report.json    # T9: 精度検証結果（簡素化版: 1メトリクス）
 └── 05_feedback/                # 暗黙知拡充ループ
     ├── feedback.json           # ステップ2: Yのフィードバック
     ├── gap-analysis.json       # ステップ3: 乖離分析（支援ツール出力）
@@ -1297,40 +1313,50 @@ analyst/Competitive_Advantage/analyst_YK/
 
 ## 13. 実装前の確認事項
 
-### 13.1 最優先：暗黙知の正確な再現
+### 13.1 最優先：Phase 4設計の3要件
+
+**アナリストYからのフィードバック収集が最優先**。以下の3要件を満たすこと：
+
+| 要件 | 実装タスク | 設計のポイント |
+|------|-----------|--------------|
+| **① KBに沿ったレポート** | **T7: Draft Generation** | 全12ルールを明示的に適用・記録（applied_rules / not_applied_rules / confidence_rationale） |
+| **② ドラフト→批判→反映** | **T8: AI Critique & Revision** | Step 1: 批判生成（KB3実績と照合）→ Step 2: 反映・修正（critique.json → revised-report.md） |
+| **③ 判断根拠の明示** | **T7 + T8** | 全ルール適用状況を表形式表示、「適用/不適用」の理由を詳細記述、T8批判セクションで自己批判を追記 |
+
+**重要な設計転換**:
+- T8は「バグ修正」ではなく「AI批判プロセス」
+- すべてのルールを「適用」「不適用」の理由とともに記録
+- 「どの要素を優位性と判断しなかったか」も明示
+- T9は簡素化（1メトリクス、不合格でもブロックしない）
+
+### 13.2 Phase 2-3の暗黙知再現
 
 | タスク | 決めるべき詳細 | KBからの示唆 |
 |--------|---------------|------------|
 | **T4: ca-claim-extractor** | KB1+KB3の読み込み順序、確信度計算式の詳細 | ルール適用順序（ルール1→2→6→8→11）、KB3のスコア分布でキャリブレーション |
 | **T6: ca-pattern-verifier** | 12パターン同時参照の実装、確信度調整ロジック | 却下パターン（A-G）を先に適用 → 高評価パターン（I-V）で調整 |
-| **T8: 3層検証** | REASONING段階の批判を保持する仕組み | **ルール2の教訓**：REASONING段階での批判を最終出力まで反映 |
-| **T9: 精度検証** | Phase 2 データとの乖離許容範囲（±10%）を超えた場合のアクション | 暗黙知再現の品質保証 |
 
-### 13.2 高優先：レポート種別区別の実装
+### 13.3 ~~高優先：レポート種別区別の実装~~ → PoC省略
 
-| タスク | 決めるべき詳細 |
-|--------|---------------|
-| **T2: ca-report-parser** | 期初投資仮説レポート/四半期継続評価レポート/混合の判定アルゴリズム |
-| **T4: ca-claim-extractor** | 四半期継続評価レポートから抽出された優位性への警戒フラグの付与 |
-| **T7: ca-report-generator** | 四半期継続評価レポート由来の主張への注意書き追加 |
+> **PoC簡素化**: レポート種別区別（①期初/②四半期の判定、警戒フラグ、注意書き）はPoC完了後に実装する。PoCではアナリストレポート→優位性抽出→AIレポート執筆→Yフィードバック→KB拡充のサイクルに専念する。
 
-### 13.3 中優先：検証可能性の確保
+### 13.4 中優先：検証可能性の確保
 
 | タスク | 決めるべき詳細 |
 |--------|---------------|
 | **T5: ca-fact-checker** | SEC MCP による追加検証の範囲 |
-| **T9: 精度検証** | 乖離分析レポートのフォーマット |
+| **T9: 精度検証** | 簡易モード（contradicted → 10% のみ）の確実な実装 |
 
-### 13.4 エージェント設計の推奨順序
+### 13.5 エージェント設計の推奨順序
 
 1. **Phase 0**: T0（Lead直接実行）← 既存パターンで実装可能
-2. **Phase 1**: T2（ca-report-parser）← レポート種別区別が全体に影響
+2. **Phase 1**: T2（ca-report-parser）← レポート構造解析（PoC: ①/②区別は省略）
 3. **Phase 2**: T4（ca-claim-extractor）← 暗黙知再現の核心
 4. **Phase 3**: T6（ca-pattern-verifier）← 一貫性保証
-5. **Phase 4**: T7（ca-report-generator）、T8（3層検証）、T9（精度検証）
+5. **Phase 4**: T7（Draft Generation）、T8（AI Critique）、T9（精度検証）← **フィードバック最優先設計**
 6. **暗黙知拡充ループ**（§14）← Phase 0-4完了後に開始
 
-### 13.5 KB精読の推奨
+### 13.6 KB精読の推奨
 
 実装開始前に以下のKBを精読すること：
 
@@ -1408,7 +1434,7 @@ Phase 0-4（評価レポート生成）の上位に、**Yの暗黙知を継続�
 CA-Eval Phase 0-4（§3〜§4）をそのまま実行する。
 
 **入力**:
-- アナリストレポート（期初投資仮説レポート、四半期継続評価レポート、またはその両方）
+- アナリストレポート
 - KB（現行バージョン）
 
 **出力**:
