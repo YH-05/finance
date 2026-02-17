@@ -3,6 +3,7 @@
 > 作成日: 2026-02-17
 > 前提: [Dify詳細設計書](../memo/dify_workflow_design.md) | [Dify比較表](dify_comparison.md)
 > 上位文書: [CAGR推定フレームワーク](../memo/cagr_estimation_framework.md)
+> 上位文書: [Dogma](../Competitive_Advantage/analyst_YK/dogma.md)
 
 ---
 
@@ -24,6 +25,16 @@
 | SECライブデータ | KB4の手動アップロードを SEC EDGAR MCP に置換 | **新規** |
 | 並列実行 | Phase 1: 3並列、Phase 3: 2並列で時間短縮 | **新規** |
 | 自動精度検証 | phase2_KYデータとの数値比較を自動実行 | **新規** |
+
+### プロジェクト全体の位置づけ
+
+```
+Phase 1-2（完了）: Yの暗黙知を抽出・体系化（12ルール, 12パターン, 5 few-shot）
+    ↓
+Phase 0-4（本設計書）: AIでYの判断をレプリケート（CA-Eval自動評価）
+    ↓
+暗黙知拡充ループ（本設計書 §14）: AI評価 → Yフィードバック → KB更新 → 反復
+```
 
 ---
 
@@ -219,7 +230,8 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 ├── 01_data_collection/
 ├── 02_claims/
 ├── 03_verification/
-└── 04_output/
+├── 04_output/
+└── 05_feedback/
 ```
 
 **レポート検索**:
@@ -376,9 +388,9 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 
 **処理内容**:
 1. claims.json にファクトチェック結果とパターン検証結果をマージ
-2. 最終 confidence を算出
+2. 最終 confidence を算出（5層評価ロジック）
 3. Markdown レポート生成（フィードバックテンプレート埋込）
-4. 構造化 JSON（Dify設計書§6準拠）生成
+4. 構造化 JSON（five_layer_evaluation 含む）生成
 
 **出力**:
 - `{research_dir}/04_output/report.md`
@@ -386,60 +398,518 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 
 **致命度**: Fatal=Yes
 
+#### 4.8.1 report.md テンプレート仕様
+
+**要件**:
+- 想定読者: Y + 他のチームメンバー（文脈説明を含む）
+- 分量: 5-8ページ相当
+- フィードバックテンプレートは暗黙知拡充ループ（§14）と整合
+
+**セクション構成と分量**:
+
+```
+report.md（全体 5-8ページ相当）
+├── 1. ヘッダー情報（~0.3ページ）
+├── 2. 評価サマリーテーブル（~0.5ページ）
+├── 3. 個別主張セクション x N件（~3-5ページ、各 0.4-0.6ページ）
+├── 4. CAGR接続サマリー（~0.5ページ）
+├── 5. 警鐘セクション（~0.3ページ）
+├── 6. 全体フィードバックセクション（~0.3ページ）
+└── 7. メタデータ・技術情報（折りたたみ、~0.1ページ）
+```
+
+**セクション1: ヘッダー情報**:
+
+```markdown
+# [TICKER] 競争優位性評価レポート
+
+| 項目 | 値 |
+|------|-----|
+| **対象銘柄** | [TICKER]（[企業名]） |
+| **入力レポート** | [report_source]（①期初 / ②四半期 / 混合） |
+| **生成日** | [YYYY-MM-DD] |
+| **リサーチID** | [research_id] |
+| **データソース** | SEC EDGAR (MCP), アナリストレポート, 業界分析 |
+| **KBバージョン** | [kb_version] |
+| **主張数** | 競争優位性 [N]件 / CAGR接続 [N]件 / 事実 [N]件 |
+```
+
+**セクション2: 評価サマリーテーブル**:
+
+Phase 2のYの評価テーブル形式（横型テーブル）に合わせる。
+
+```markdown
+## 評価サマリー
+
+| # | 優位性 | AI確信度 | CAGR接続 | CAGR確信度 |
+|---|--------|---------|----------|-----------|
+| 1 | [主張テキスト（30字以内に要約）] | [X]% | [接続先・寄与内容] | [Y]% |
+| 2 | ... | ... | ... | ... |
+
+### 確信度分布
+
+| 確信度 | AI評価 | KY基準値 | 判定 |
+|--------|--------|---------|------|
+| 90%（かなり納得） | [N]件 ([X]%) | 6% | [OK/要確認] |
+| 70%（おおむね納得） | [N]件 ([X]%) | 26% | [OK/要確認] |
+| 50%（まあ納得） | [N]件 ([X]%) | 35% | [OK/要確認] |
+| 30%（あまり納得しない） | [N]件 ([X]%) | 26% | [OK/要確認] |
+| 10%（却下） | [N]件 ([X]%) | 6% | [OK/要確認] |
+
+### ファクトチェック結果サマリー
+
+- verified: [N]件 / contradicted: [N]件 / unverifiable: [N]件 / not_checked: [N]件
+```
+
+**判定ロジック**: AI出現率がKY基準値から15%以上乖離 → 「要確認」。
+
+**セクション3: 個別主張セクション**（テンプレート）:
+
+```markdown
+---
+
+### #[N]: [主張テキスト]
+
+**分類**: [descriptive_label]
+**レポート種別**: ①期初投資仮説レポート / ②四半期継続評価レポート
+[②の場合のみ表示:]
+> ⚠️ この主張は四半期レビュー（②）から抽出されました。
+> 期初レポート（①）での妥当性を再検討してください。
+
+#### AI評価: [ランク名]（[X]%）
+
+[2-3文のコメント。5層評価に基づく。結論→根拠→改善提案の順。]
+[重要な指摘は<u>下線</u>で強調]
+
+#### CAGR接続
+
+| パラメータ | AI確信度 | コメント |
+|-----------|---------|---------|
+| 売上成長寄与 +X% | [Y]% | [1-2文] |
+| マージン改善寄与 +X% | [Z]% | [1-2文] |
+
+#### 根拠（アナリストレポートより）
+
+[evidence_from_report]
+
+#### ルール適用結果
+
+| ルール | 判定 | 根拠 |
+|--------|------|------|
+| ルール[N] | [verdict] | [reasoning（1文）] |
+
+※ 該当ルールのみ記載。
+
+#### 検証結果
+
+- **ファクトチェック**: [verified/contradicted/unverifiable/not_checked]
+  - [検証の詳細（1-2文）]
+- **パターン照合**:
+  - 高評価: [該当パターン名 + 概要] / なし
+  - 却下: [該当パターン名 + 概要] / なし
+
+---
+
+**納得度:**  10% / 30% / 50% / 70% / 90%  ← 丸をつける
+
+**該当する質問に一言お願いします（1文で十分です）:**
+- 納得しない場合 → 一番引っかかる点は？
+- どちらとも言えない場合 → 何があれば納得度が上がる？
+- 納得する場合 → 他の企業でも同じことが言えない理由は？
+
+回答:
+
+
+**この指摘は他の銘柄にも当てはまりますか？（任意）**
+□ はい → KB追加候補として記録
+□ いいえ → この銘柄固有の判断
+□ わからない
+
+**補足（任意）:**
+
+
+---
+```
+
+**設計判断**:
+- ルール適用結果は**該当ルールのみ記載**（全ルール列挙は冗長）
+- コメントは2-3文（dogma.md「コメント記述ルール」5原則準拠）
+- `<u>`下線はYのPhase 2スタイルに合わせて使用
+- 「他の銘柄にも当てはまりますか」は暗黙知拡充ループ（§14.3）と整合
+
+**セクション4: CAGR接続サマリー**:
+
+```markdown
+## CAGR接続サマリー
+
+### 構造的 vs 補完的の区分
+
+| # | CAGR接続 | 区分 | 寄与パラメータ | AI確信度 | ソース優位性 |
+|---|---------|------|-------------|---------|------------|
+| C1 | [接続テキスト] | 構造的 / 補完的 | 売上成長 +X% | [Y]% | #[N] |
+
+### CAGR接続の全体評価
+
+[1-2段落: 因果チェーンの直接性、TAM→シェア→利益率の中間ステップ有無、
+ ブレークダウン数値の根拠妥当性、①/②由来の区別]
+```
+
+**セクション5: 警鐘セクション**:
+
+```markdown
+## 警鐘事項
+
+### ①/②区別の確認
+
+| # | 主張 | ソース | 警戒レベル |
+|---|------|--------|----------|
+| [N] | [主張テキスト] | ②四半期レビュー | ⚠️ 拡大解釈の可能性 |
+
+### 既存判断への警鐘
+
+[1-2段落: 既存判断への無批判的追従、①の前提の現在の合理性、
+②の積み重ねからの拡大解釈、銘柄間の推論パターン一貫性]
+```
+
+**セクション6: 全体フィードバックセクション**:
+
+```markdown
+## 全体フィードバック
+
+**レポート全体として、あなたの考え方に沿った議論ができていますか？**
+□ 概ね沿っている  □ 部分的に沿っている  □ 沿っていない
+
+**最も良かった主張の番号:**  #___
+**最も問題のある主張の番号:**  #___
+
+**全体的な印象（自由記述）:**
+
+
+**AIの評価で最も違和感のある点（1文で十分です）:**
+
+```
+
+**セクション7: メタデータ**:
+
+`<details>` タグで折りたたみ。KBバージョン、ロード数、データ利用可否、実行時間。
+
+#### 4.8.2 structured.json スキーマ（five_layer_evaluation 追加）
+
+既存スキーマに `five_layer_evaluation` フィールドを追加:
+
+```json
+{
+  "claims": [
+    {
+      "id": 1,
+      "claim_type": "competitive_advantage",
+      "claim": "主張テキスト",
+      "descriptive_label": "ラベル",
+      "evidence_from_report": "根拠",
+      "report_type_source": "initial | quarterly",
+      "supported_by_facts": [3, 4],
+      "cagr_connections": [2],
+      "rule_evaluation": { "...既存..." },
+      "verification": { "...既存..." },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {
+          "rule_9_factual_accuracy": "pass | fail",
+          "rule_3_relative_advantage": "pass | fail"
+        },
+        "layer_2_nature": {
+          "rule_1_capability_vs_result": "capability | result",
+          "rule_2_noun_test": "pass | fail",
+          "rule_8_strategy_vs_advantage": "advantage | strategy"
+        },
+        "layer_3_evidence": {
+          "rule_4_quantitative": "present | absent",
+          "rule_7_pure_competitor": "present | absent",
+          "rule_10_negative_case": "present | absent",
+          "rule_11_industry_structure": "strong_fit | weak_fit | absent"
+        },
+        "layer_4_cagr": {
+          "rule_5_directness": "direct | indirect",
+          "rule_6_structural_vs_complementary": "structural | complementary",
+          "verifiability": "high | medium | low"
+        },
+        "layer_5_source": {
+          "rule_12_source_type": "initial | quarterly",
+          "overinterpretation_risk": "low | medium | high"
+        }
+      },
+      "ai_comment": "2-3文のコメント"
+    }
+  ],
+  "summary": {
+    "...既存...",
+    "warning_flags": {
+      "quarterly_derived_claims": 1,
+      "overinterpretation_risks": 0,
+      "confidence_distribution_anomaly": false
+    }
+  }
+}
+```
+
 ### 4.9 T8: Report Verification（Lead直接実行）
 
 **Dify対応**: ステップ6
 
-**重大度分類**:
-- **Critical**: Yへの信頼性を損なう問題 → 必ず自動修正
-- **Warning**: Yの指摘を予測できる問題 → 自動修正 + `[⚠️ T8修正]` 注釈
-- **Info**: 改善提案レベル → verification-results.json に記録のみ
-
-**3層検証（20チェック項目）**:
-
-| 検証層 | チェック項目数 | 主な内容 | 検出する問題 |
-|--------|-------------|---------|-------------|
-| 検証A: JSON-レポート整合 | 7 | 主張網羅性、confidence転記正確性、トーン一致、ルール反映、contradicted明示 | レポート生成時の拡大解釈 |
-| 検証B: KYルール準拠 | 9 | ルール1-12の適用確認、**ルール11なしの90%排除**（最重要）、事実誤認→10%強制 | ルール適用の記述漏れ |
-| 検証C: パターン一貫性 | 4 | 却下パターンconfidence上限、高評価パターンconfidence下限、複数パターン調整 | パターンとconfidenceの不一致 |
-
-**自動修正の優先順位**: confidence値 → コメント文 → 主張追記 → ルール追記 → 注釈追加
+**処理**: report.md と structured.json を3層で検証し、問題を自動修正して verified-report.md を生成する。
 
 **出力**:
 - `{research_dir}/04_output/verified-report.md`（自動修正済みレポート）
 - `{research_dir}/04_output/verification-results.json`（検証結果 + 修正履歴）
 
-> 詳細仕様（チェック項目一覧、confidence上限/下限テーブル、JSONスキーマ）:
-> - `docs/plan/2026-02-17_ca-eval-phase4-report-design.md` §3
-> - `.claude/agents/deep-research/ca-eval-lead.md` T8セクション
+#### 4.9.1 重大度分類
+
+| 重大度 | 定義 | 対処 |
+|--------|------|------|
+| **Critical** | Yへの信頼性を損なう問題 | 必ず自動修正 |
+| **Warning** | Yの指摘を予測できる問題 | 自動修正 + `[⚠️ T8修正]` 注釈 |
+| **Info** | 改善提案レベル | verification-results.json に記録のみ |
+
+#### 4.9.2 検証層A: JSON-レポート整合性（7項目）
+
+| ID | チェック項目 | 重大度 | 自動修正 |
+|----|-------------|--------|---------|
+| A-1 | 主張の網羅性（JSON全件がMDに記載） | Critical | 欠落主張を追記 |
+| A-2 | confidence転記の正確性 | Critical | MD値をJSON値に合わせ修正 |
+| A-3 | confidenceとトーンの一致 | Critical | コメント文を書き換え |
+| A-4 | ルール適用結果の反映 | Warning | 欠落ルールを追記 |
+| A-5 | contradicted事実の明示 | Critical | 事実の記述を追加 |
+| A-6 | パターン照合結果の反映 | Warning | パターン情報を追記 |
+| A-7 | CAGR接続の対応関係 | Warning | リンク修正 |
+
+**A-3判定ロジック**:
+- confidence <= 30% かつ 肯定的表現（「納得感あり」「優位性として妥当」等） → Critical
+- confidence >= 70% かつ 否定的表現が主論点 → Critical
+- confidence == 50% は中間的表現が適切
+
+#### 4.9.3 検証層B: KYルール準拠（9項目）
+
+| ID | チェック項目 | 重大度 | 自動修正 |
+|----|-------------|--------|---------|
+| B-1 | ルール1（能力vs結果）の適用 | Warning | ルール1適用結果を追加 |
+| B-2 | ルール2（名詞テスト）の適用 | Warning | 名詞形への変換提案を追加 |
+| B-3 | ルール3（相対性）の適用 | Warning | 相対性検証コメントを追加 |
+| B-4 | ルール4（定量的裏付け）の反映 | Info | 改善提案として記録 |
+| B-5 | ルール7（純粋競合比較）の反映 | Warning | 競合比較の不足を指摘 |
+| B-6 | ルール8（戦略vs優位性）の適用 | Warning | ルール8適用を追加 |
+| B-7 | ルール9（事実誤認 → 10%）の適用 | Critical | confidence を 10% に強制修正 |
+| B-8 | **ルール11なしの90%排除** | Critical | 90%→70%に引き下げ |
+| B-9 | ルール12（①/②区別）フラグ | Warning | 警戒フラグを追加 |
+
+**B-8は最重要チェック**: KB3実績で90%はORLY#2, #5のみ（全34件中2件）。いずれもパターンIV（構造的市場ポジション）を満たす。業界構造分析なしの90%は許容しない。
+
+#### 4.9.4 検証層C: パターン一貫性（4項目）
+
+| ID | チェック項目 | 重大度 | 自動修正 |
+|----|-------------|--------|---------|
+| C-1 | 却下パターン検出時のconfidence上限 | Critical | 上限値に引き下げ |
+| C-2 | 高評価パターン検出時のconfidence下限 | Warning | 注釈付与 |
+| C-3 | 複数パターン該当時の調整 | Warning | 却下優先で再計算 |
+| C-4 | 銘柄間一貫性 | Info | 参考情報として記録 |
+
+**C-1: 却下パターンのconfidence上限テーブル**:
+
+| 却下パターン | confidence上限 | KB3根拠 |
+|-------------|--------------|---------|
+| A: 結果を原因と取り違え | 50% | CHD#4=30%, MNST#1=50% |
+| B: 業界共通で差別化にならない | 30% | LLY#6=30% |
+| C: 因果関係の飛躍 | 30% | MNST#5=30% |
+| D: 定性的で定量的裏付けなし | 30% | COST#2=10% |
+| E: 事実誤認 | 10% | 強制（ルール9） |
+| F: 戦略を優位性と混同 | 50% | ORLY#2分離後90% |
+| G: 純粋競合に対する優位性不明 | 50% | COST#3=50% |
+
+**C-2: 高評価パターンのconfidence下限テーブル**:
+
+| 高評価パターン | confidence下限 | KB3根拠 |
+|---------------|--------------|---------|
+| I: 定量的裏付けのある差別化 | 50% | COST#1=70% |
+| II: 直接的なCAGR接続メカニズム | 50% | CAGR全般50%+ |
+| III: 能力 > 結果 | 50% | CHD#1=70% |
+| IV: 構造的な市場ポジション | 70% | ORLY#2,#5=90% |
+| V: 競合との具体的比較 | 50% | ORLY#1=70% |
+
+**C-3: 複数パターン該当時の解決ルール**:
+1. パターンE（事実誤認）は全てに優先 → 強制10%
+2. 却下パターン（A-G、E以外）を先に適用
+3. 高評価パターン（I-V）を後に適用
+4. 上限90%、下限10%
+
+#### 4.9.5 自動修正の優先順位
+
+| 順位 | 修正対象 | 対象ファイル |
+|------|---------|------------|
+| 1 | confidence値 | structured.json + report.md |
+| 2 | コメント文 | report.md |
+| 3 | 主張の追記 | report.md |
+| 4 | ルール適用の追記 | report.md |
+| 5 | 注釈の追加 | report.md |
+
+全修正は verification-results.json の `corrections` 配列に記録。
+
+#### 4.9.6 verification-results.json スキーマ
+
+```json
+{
+  "research_id": "...",
+  "ticker": "ORLY",
+  "verification_timestamp": "2026-02-17T10:35:00Z",
+  "verification_layers": {
+    "layer_a_json_report_consistency": {
+      "status": "pass | fail | pass_with_warnings",
+      "checks": [
+        {
+          "check_id": "A-3",
+          "name": "confidenceとトーンの一致",
+          "status": "fail",
+          "severity": "critical",
+          "details": "主張#3（confidence 30%）のコメントが肯定的トーン",
+          "affected_claims": [3]
+        }
+      ]
+    },
+    "layer_b_ky_rule_compliance": { "...同構造..." },
+    "layer_c_pattern_consistency": { "...同構造..." }
+  },
+  "corrections": [
+    {
+      "correction_id": 1,
+      "source_check": "A-3",
+      "claim_id": 3,
+      "type": "comment_rewrite | confidence_adjustment | claim_addition | annotation",
+      "before": "ある程度の優位性として認められる",
+      "after": "方向性は認めるが、定量的裏付けが不足しており納得感は限定的",
+      "reason": "confidence 30% に対してトーンが肯定的すぎた"
+    }
+  ],
+  "overall_status": "pass | fail | pass_with_corrections",
+  "statistics": {
+    "total_checks": 20,
+    "passed": 18,
+    "failed_critical": 1,
+    "failed_warning": 1,
+    "info": 0,
+    "corrections_applied": 2
+  }
+}
+```
 
 ### 4.10 T9: Accuracy Scoring（Lead直接実行、常時実行）
 
 **Difyにない新機能**。
 
-**モード切り替え**:
+#### 4.10.1 モード切り替え
 
 | モード | 対象 | 内容 |
 |--------|------|------|
-| **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の主張単位比較（意味的マッチング） |
-| **簡易モード** | 上記以外の全銘柄（常時実行） | confidence分布 + 8項目ヒューリスティック検証 |
+| **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の主張単位比較 |
+| **簡易モード** | 上記以外の全銘柄 | confidence分布+ヒューリスティック検証 |
 
-**フルモード処理**:
-1. `analyst/phase2_KY/phase1_{TICKER}_phase2.md` を読み込み
-2. AI主張とY評価を意味的類似性で1:1マッチング
-3. 乖離の定量化（exact_match / within_target / acceptable / significant / critical）
-4. 合格基準: 平均乖離≤10%、最大乖離≤30%、方向性バイアス≤5%
+Phase 2データファイルパターン: `analyst/phase2_KY/*_{TICKER}_phase2.md`
 
-**簡易モード（8チェック項目）**: S-1〜S-8
-- S-1: 90%出現率≤15%、S-6: ルール11なしの90%排除（Critical）、S-8: ルール9自動適用確認（Critical）等
+#### 4.10.2 フルモード
 
-**出力**: `{research_dir}/04_output/accuracy-report.json`
+**主張マッチング**:
+AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング。マッチングできないものは unmatched / missing_in_ai として記録。
+
+**乖離の定量化**:
+
+| 乖離幅 | 分類 |
+|--------|------|
+| 0 | exact_match |
+| 1-10% | within_target |
+| 11-20% | acceptable |
+| 21-30% | significant |
+| 31%+ | critical |
+
+**合格基準**:
+
+| メトリクス | 合格基準 |
+|----------|---------|
+| 平均乖離（優位性） | mean(abs(AI - Y)) <= 10% |
+| 平均乖離（CAGR接続） | mean(abs(AI - Y)) <= 10% |
+| 最大乖離 | max(abs(AI - Y)) <= 30% |
+| 20%超乖離の主張数 | <= 全主張の25% |
+| 方向性バイアス | mean(AI - Y)の絶対値 <= 5% |
 
 **不合格時**: accuracy-report.json に不合格理由を記録し報告。レポート自体は出力する（ブロックしない）。
 
-> 詳細仕様（合格基準、簡易モード8項目、JSONスキーマ）:
-> - `docs/plan/2026-02-17_ca-eval-phase4-report-design.md` §4
-> - `.claude/agents/deep-research/ca-eval-lead.md` T9セクション
+#### 4.10.3 簡易モード（8チェック項目）
+
+| ID | チェック項目 | 重大度 | 判定基準 |
+|----|-------------|--------|---------|
+| S-1 | 90%の出現率 | Warning | 全主張の15%以下（KY基準: 6%） |
+| S-2 | 50%の最頻値確認 | Info | 50%付近が30%以上 |
+| S-3 | 10%の希少性 | Info | 全主張の15%以下（contradicted除く） |
+| S-4 | CAGR > CA平均スコア | Info | 平均CAGR確信度 >= 平均CA確信度 |
+| S-5 | 却下パターンconfidence上限 | Warning | T8 C-1と同一基準 |
+| S-6 | ルール11なしの90%排除 | Critical | 業界構造分析なしに90%不可 |
+| S-7 | 主張数の妥当性 | Warning | 5-15件の範囲内 |
+| S-8 | ルール9自動適用確認 | Critical | contradicted → 10% |
+
+#### 4.10.4 accuracy-report.json スキーマ
+
+```json
+{
+  "research_id": "...",
+  "ticker": "ORLY",
+  "mode": "full | simplified",
+  "generated_at": "2026-02-17T10:37:00Z",
+  "kb_version": "v1.0.0",
+  "full_mode_results": {
+    "y_data_source": "analyst/phase2_KY/phase1_ORLY_phase2.md",
+    "claim_matching": {
+      "ai_claims_total": 6,
+      "y_evaluations_total": 6,
+      "matched": 5,
+      "unmatched_ai": 1,
+      "missing_in_ai": 1
+    },
+    "advantage_accuracy": {
+      "comparisons": [
+        {
+          "claim_id": 1,
+          "ai_confidence": 70,
+          "y_confidence": 70,
+          "deviation": 0,
+          "severity": "exact_match",
+          "deviation_analysis": "一致"
+        }
+      ],
+      "mean_abs_deviation": 8.0,
+      "max_abs_deviation": 20,
+      "direction_bias": "slight_underestimate"
+    },
+    "cagr_accuracy": { "...同構造..." },
+    "overall_verdict": "pass | fail",
+    "pass_criteria": {
+      "mean_deviation_within_10": true,
+      "max_deviation_within_30": true,
+      "over_20_percent_under_25_pct": true,
+      "direction_bias_within_5": true
+    },
+    "improvement_suggestions": ["..."]
+  },
+  "simplified_mode_results": {
+    "checks": [
+      {
+        "check_id": "S-1",
+        "name": "confidence分布の妥当性（90%の出現率）",
+        "status": "pass | warning | fail",
+        "value": "1件 (16.7%)",
+        "threshold": "15%以下"
+      }
+    ],
+    "overall_status": "pass | pass_with_warnings | fail",
+    "warning_count": 1,
+    "critical_count": 0
+  }
+}
+```
 
 ---
 
@@ -580,114 +1050,7 @@ Dify設計書§6 のスキーマを踏襲し、Claude Code 固有フィールド
 
 ---
 
-## 7. レポート出力フォーマット
-
-### 7.1 Markdownレポート（report.md）
-
-Dify設計書§5.5 のフォーマットを踏襲:
-
-```markdown
-# [TICKER] 競争優位性評価レポート
-
-## レポート情報
-- 対象銘柄: [TICKER]
-- 入力レポート: [アナリスト名]
-- 生成日: [日付]
-- リサーチID: [research_id]
-- データソース: SEC EDGAR (MCP), アナリストレポート, 業界分析
-
----
-
-## 競争優位性候補
-
-### #1: [主張テキスト]
-
-**分類**: [descriptive_label]
-**確信度**: [X]%
-**レポート種別**: 期初投資仮説レポート / 四半期継続評価レポート
-
-**根拠**:
-[evidence_from_report]
-
-**ルール適用結果**:
-- ルール[N]: [verdict] — [reasoning]
-
-**ファクトチェック**:
-- [verification_status に応じた記述]
-
-**パターン照合**:
-- 高評価: [該当パターン] / 却下: [該当パターン]
-
-**CAGR接続**: [接続先がある場合]
-
----
-
-**納得度:**  10% / 30% / 50% / 70% / 90%  ← 丸をつける
-
-**該当する質問に一言お願いします（1文で十分です）:**
-
-- 納得しない場合 → 一番引っかかる点は？
-- どちらとも言えない場合 → 何があれば納得度が上がる？
-- 納得する場合 → 他の企業でも同じことが言えない理由は？
-
-回答:
-
-
-**補足（任意）:**
-
-
----
-
-[以下、#2〜#N まで同様]
-
----
-
-## 全体フィードバック
-
-**レポート全体として、あなたの考え方に沿った議論ができていますか？**
-
-□ 概ね沿っている  □ 部分的に沿っている  □ 沿っていない
-
-**最も良かった主張の番号:**  #___
-**最も問題のある主張の番号:**  #___
-
-**その他コメント（任意）:**
-
-```
-
-### 7.2 検証結果（verification-results.json）
-
-```json
-{
-  "verification_layers": {
-    "layer_a_json_report_consistency": {
-      "status": "pass",
-      "issues": []
-    },
-    "layer_b_ky_rule_compliance": {
-      "status": "pass",
-      "issues": []
-    },
-    "layer_c_pattern_consistency": {
-      "status": "warning",
-      "issues": [
-        {
-          "claim_id": 3,
-          "issue": "confidence 30% に対してレポート内の記述がやや肯定的",
-          "severity": "minor",
-          "suggestion": "トーンを調整"
-        }
-      ]
-    }
-  },
-  "overall_status": "pass_with_warnings",
-  "corrections_applied": 1
-}
-```
-
----
-
-## 8. 実行時間見積もり
+## 7. 実行時間見積もり
 
 | フェーズ | タスク | 推定時間 | 備考 |
 |---------|--------|---------|------|
@@ -705,30 +1068,23 @@ Dify比較: ~6分 + 手動前処理 → Claude Code: ~10分（全自動、追加
 
 ---
 
-## 9. 関連ファイル
+## 8. エラーハンドリング設計（部分障害時の挙動）
 
-| ファイル | パス |
-|---------|------|
-| リーダーエージェント | `.claude/agents/deep-research/ca-eval-lead.md` |
-| ワーカーエージェント | `.claude/agents/ca-report-parser.md` 他5ファイル |
-| コマンド | `.claude/commands/ca-eval.md` |
-| スキル | `.claude/skills/ca-eval/SKILL.md` |
-| Dify比較表 | `analyst/claude_code/dify_comparison.md` |
-| Dify詳細設計書 | `analyst/memo/dify_workflow_design.md` |
-| Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` |
-| KB1ルール集 | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/` (8ファイル) |
-| KB2パターン集 | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/` (12ファイル) |
-| KB3 few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/` (5ファイル) |
-| Phase 2検証データ | `analyst/phase2_KY/` (5銘柄) |
+| シナリオ | 現在の設計 | 決定事項（KB分析を踏まえて） |
+|---------|-----------|---------------------------|
+| **T3失敗** (industry-researcher) | 縮小版で続行 | industry-context.json がない場合、T4は「業界構造分析なし」として処理。ルール11を適用できず、90%評価は不可能と明記 |
+| **T5失敗** (fact-checker) | 全件 unverifiable | レポート生成時に「ファクトチェック未実施」の警告を追加 |
+| **T6失敗** (pattern-verifier) | パターン検証なし | KB2の12パターン照合なしでレポート生成。検証結果に影響範囲を明記 |
+| **T1失敗** (SEC Filings) | Fatal | 再試行3回、タイムアウト30秒/回 |
 
 ---
 
-## 10. KB分析結果と設計上の洞察
+## 9. KB分析結果と設計上の洞察
 
 > **調査日**: 2026-02-17
 > **調査範囲**: KB1（8ファイル）、KB2（12ファイル）、KB3（5ファイル）、dogma.md の全量確認
 
-### 10.1 確信度計算の2段階方式
+### 9.1 確信度計算の2段階方式
 
 KB分析から、確信度計算は以下の2段階で行うべきことが判明：
 
@@ -750,7 +1106,7 @@ adjusted_confidence = apply_patterns(
 
 **重要**: 却下パターン（A-G）を先に適用し、その後に高評価パターン（I-V）で調整する順序を守ること。
 
-### 10.2 90%評価の厳格化
+### 9.2 90%評価の厳格化
 
 **KB3の重要な発見**:
 - 90%評価は全34件中わずか2件（6%）
@@ -773,7 +1129,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 # 業界構造分析なしに90%を付与してはならない
 ```
 
-### 10.3 REASONING保持の仕組み（T8検証の核心）
+### 9.3 REASONING保持の仕組み（T8検証の核心）
 
 **KB1ルール2の教訓**:
 ```markdown
@@ -790,9 +1146,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | **検証B: KYルール準拠** | 9 | 能力vs結果、名詞テスト、相対性、定量裏付け、純粋競合比較、戦略混同、**事実誤認→10%（B-7）**、**ルール11なしの90%排除（B-8、最重要）**、①/②フラグ | ルールベース + LLM判定 |
 | **検証C: パターン一貫性** | 4 | 却下パターンconfidence上限（C-1）、高評価パターンconfidence下限（C-2）、複数パターン調整（C-3）、銘柄間一貫性（C-4） | confidence上限/下限テーブルで判定 |
 
-> 20チェック項目の全一覧・重大度・自動修正方法: `.claude/agents/deep-research/ca-eval-lead.md` T8セクション参照
-
-### 10.4 ①/②区別と警鐘機能
+### 9.4 ①/②区別と警鐘機能
 
 **プロジェクトの最優先事項**（dogma.md §5.2より）:
 
@@ -808,22 +1162,13 @@ def is_90_percent_qualified(claim: dict) -> bool:
 - **T7（ca-report-generator）**: ②由来の主張には注意書き追加
   - 例: 「⚠️ この主張は四半期レビュー（②）から抽出されました。期初レポート（①）での妥当性を再検討してください。」
 
-### 10.5 エラーハンドリング設計（部分障害時の挙動）
-
-| シナリオ | 現在の設計 | 決定事項（KB分析を踏まえて） |
-|---------|-----------|---------------------------|
-| **T3失敗** (industry-researcher) | 縮小版で続行 | industry-context.json がない場合、T4は「業界構造分析なし」として処理。ルール11を適用できず、90%評価は不可能と明記 |
-| **T5失敗** (fact-checker) | 全件 unverifiable | レポート生成時に「ファクトチェック未実施」の警告を追加 |
-| **T6失敗** (pattern-verifier) | パターン検証なし | KB2の12パターン照合なしでレポート生成。検証結果に影響範囲を明記 |
-| **T1失敗** (SEC Filings) | Fatal | 再試行3回、タイムアウト30秒/回 |
-
 ---
 
-## 11. プロジェクトの目的と設計思想
+## 10. プロジェクトの目的と設計思想
 
 > **出典**: `analyst/Competitive_Advantage/analyst_YK/dogma.md` + `feedback.md`
 
-### 11.1 プロジェクトの核心的な目的
+### 10.1 プロジェクトの核心的な目的
 
 **アナリスト Y（吉沢）の競争優位性判断に関する暗黙知の抽出と体系化**
 
@@ -834,7 +1179,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | **最終アウトプット** | アナリストレポート → Y の判断軸に基づく競争優位性評価レポート自動生成 |
 | **外部フレームワーク** | Seven Powers 等は導入しない。Y の暗黙知のみ注入 |
 
-### 11.2 優位性の定義（5原則）
+### 10.2 優位性の定義（5原則）
 
 | # | 原則 | 根拠 |
 |---|------|------|
@@ -844,7 +1189,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | 4 | **優位性は業界構造・競争環境と密接に関係する** | ORLY#2, #5（フラグメント市場 × 規模・密度 → 90%） |
 | 5 | **定量的裏付けがあると納得度が上がる** | COST#1（退職率9% vs 業界20%+ → 70%） |
 
-### 11.3 優位性と認めないもの（6却下基準）
+### 10.3 優位性と認めないもの（6却下基準）
 
 | # | 却下基準 | 典型例 |
 |---|---------|--------|
@@ -855,7 +1200,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | 5 | **因果関係の飛躍** | MNST#5「低所得→コンビニ→粘着力 は飛躍」→ 30% |
 | 6 | **事実誤認に基づく仮説** | MNST#6「OPMをGPMと誤認」→ 10%（即却下） |
 
-### 11.4 確信度スケール
+### 10.4 確信度スケール
 
 | ランク | 確信度 | 定義 |
 |--------|--------|------|
@@ -865,7 +1210,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | あまり納得しない | 30% | 飛躍的解釈・因果関係の逆転・差別化根拠不十分 |
 | 却下 | 10% | 事実誤認・競争優位性として不成立 |
 
-### 11.5 AI への期待機能（最優先）
+### 10.5 AI への期待機能（最優先）
 
 | 優先度 | 機能 |
 |--------|------|
@@ -874,7 +1219,7 @@ def is_90_percent_qualified(claim: dict) -> bool:
 | **高** | 銘柄間での一貫した推論パターンの適用 |
 | **中** | Few-shot examples の影響を制御した安定的な出力 |
 
-### 11.6 期初投資仮説レポート vs 四半期継続評価レポート
+### 10.6 期初投資仮説レポート vs 四半期継続評価レポート
 
 ```markdown
 優先度: ①（主） > ②（従）
@@ -890,34 +1235,63 @@ def is_90_percent_qualified(claim: dict) -> bool:
 
 ---
 
-## 12. 暗黙知拡充ループ
+## 11. 用語定義
 
-Phase 0-4（評価レポート生成）の上位に、**Yの暗黙知を継続的に拡充するループ**が存在する。
-
-詳細設計: `docs/plan/2026-02-17_ca-eval-phase4-5-knowledge-expansion-loop.md`
-
-### ループ概要
-
-```
-[ステップ1] AI評価実行（CA-Eval Phase 0-4）
-    ↓
-[ステップ2] Yフィードバック収集（構造化テンプレート）
-    ↓
-[ステップ3] フィードバック分析・KB更新判定
-    ↓
-[ステップ4] KB更新・回帰テスト
-    ↓
-[ステップ5] 継続判定（フィードバック量が漸減するまで反復）
-```
-
-### 設計原則
-
-| 原則 | 内容 |
+| 用語 | 定義 |
 |------|------|
-| **Yの判断が正** | AI評価とY評価が乖離した場合、Yが正しい前提で分析する |
-| **フィードバック駆動** | AIの自動分析は補助。KB更新の根拠はYのフィードバックのみ |
-| **汎用性の検証** | 2銘柄以上で再現した指摘のみKB追加候補とする |
-| **回帰テスト必須** | KB更新後、Phase 2の5銘柄で精度が劣化しないことを確認する |
+| **期初投資仮説レポート** | 投資前提の設定。投資判断の根幹となる仮説を記述したアナリストレポート |
+| **四半期継続評価レポート** | 期初仮説の妥当性を追跡検証するフォローアップレポート |
+| **AI評価** | CA-Evalワークフロー（Phase 0-4）で生成されたconfidenceスコア（10-90%） |
+| **Y評価** | Yが実際にフィードバックで付与したconfidenceスコア |
+| **乖離** | AI評価とY評価の差分（deviation = AI評価 - Y評価） |
+| **KB（ナレッジベース）** | KB1（ルール集）、KB2（パターン集）、KB3（few-shot集）、dogma.md の総称 |
+| **拡充サイクル** | 暗黙知拡充ループのステップ1〜5の1回分の実行単位 |
+
+---
+
+## 12. ディレクトリ構造
+
+### 12.1 リサーチディレクトリ
+
+```
+research/CA_eval_{YYYYMMDD}_{TICKER}/
+├── 00_meta/
+│   └── research-meta.json
+├── 01_data_collection/         # Phase 1
+│   ├── sec-data.json           # T1: SEC Filings
+│   ├── parsed-report.json      # T2: Report Parser
+│   └── industry-context.json   # T3: Industry Research
+├── 02_claims/                  # Phase 2
+│   └── claims.json             # T4: Claim Extraction + Rule Application
+├── 03_verification/            # Phase 3
+│   ├── fact-check.json         # T5: Fact Check
+│   └── pattern-verification.json # T6: Pattern Verification
+├── 04_output/                  # Phase 4
+│   ├── report.md               # T7: 初版レポート
+│   ├── structured.json         # T7: 構造化JSON（five_layer_evaluation含む）
+│   ├── verified-report.md      # T8: 3層検証後の自動修正版レポート
+│   ├── verification-results.json # T8: 検証結果（20チェック項目 + 修正履歴）
+│   └── accuracy-report.json    # T9: 精度検証結果（フル or 簡易モード）
+└── 05_feedback/                # 暗黙知拡充ループ
+    ├── feedback.json           # ステップ2: Yのフィードバック
+    ├── gap-analysis.json       # ステップ3: 乖離分析（支援ツール出力）
+    ├── kb-candidates.json      # ステップ3: KB追加候補
+    └── kb-update-log.json      # ステップ4: KB更新ログ
+```
+
+### 12.2 KB関連
+
+```
+analyst/Competitive_Advantage/analyst_YK/
+├── dogma.md                    # 判断軸
+├── kb1_rules/                  # ルール集（更新対象）
+├── kb2_patterns/               # パターン集（更新対象）
+├── kb3_fewshot/                # few-shot集（更新対象）
+├── kb_version.json             # バージョン管理
+└── kb_snapshots/               # 各バージョンのスナップショット
+    ├── v1.0.0/
+    └── v1.1.0/
+```
 
 ---
 
@@ -954,7 +1328,7 @@ Phase 0-4（評価レポート生成）の上位に、**Yの暗黙知を継続�
 3. **Phase 2**: T4（ca-claim-extractor）← 暗黙知再現の核心
 4. **Phase 3**: T6（ca-pattern-verifier）← 一貫性保証
 5. **Phase 4**: T7（ca-report-generator）、T8（3層検証）、T9（精度検証）
-6. **Phase 4-5**: T10-T15（暗黙知拡充ループ）← 詳細設計完了
+6. **暗黙知拡充ループ**（§14）← Phase 0-4完了後に開始
 
 ### 13.5 KB精読の推奨
 
@@ -968,3 +1342,486 @@ Phase 0-4（評価レポート生成）の上位に、**Yの暗黙知を継続�
 | **Dogma** | 1 | 20分 | ★★★ |
 
 **合計**: ~2時間で全KB精読可能
+
+---
+
+## 14. 暗黙知拡充ループ
+
+Phase 0-4（評価レポート生成）の上位に、**Yの暗黙知を継続的に拡充するループ**が存在する。
+
+### 14.1 目的
+
+1. AIが生成した評価レポートを**Yのフィードバックの触媒**として使う
+2. Yのフィードバックから**これまで明文化されていなかった判断基準**を引き出す
+3. 新しい判断基準をKB（ナレッジベース）に追加し、AIの評価精度を向上させる
+4. このサイクルを反復し、Yのフィードバック量が漸減するまで継続する
+
+### 14.2 設計原則
+
+| 原則 | 内容 |
+|------|------|
+| **Yの判断が正** | AIの評価とYの評価が乖離した場合、Yが正しい前提で分析する |
+| **フィードバック駆動** | AIの自動分析は補助。KB更新の根拠はYのフィードバックのみ |
+| **汎用性の検証** | 1銘柄固有の指摘はKBに追加しない。2銘柄以上で再現した指摘のみ追加候補とする |
+| **回帰テスト必須** | KB更新後、過去銘柄の評価精度が劣化しないことを確認する |
+| **バージョン管理** | KB更新履歴を追跡し、いつでも以前のバージョンに戻せるようにする |
+
+### 14.3 ループ全体像
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                   暗黙知拡充ループ                         │
+│                                                          │
+│  [ステップ1] AI評価実行                                    │
+│       入力: アナリストレポート + KB（現行版）                 │
+│       処理: CA-Eval Phase 0-4                             │
+│       出力: 評価レポート（report.md + structured.json）      │
+│            │                                              │
+│            ▼                                              │
+│  [ステップ2] Yフィードバック収集                             │
+│       入力: 評価レポート + フィードバックテンプレート          │
+│       処理: Yが各主張に対して納得度とコメントを記入            │
+│       出力: feedback.json                                  │
+│            │                                              │
+│            ▼                                              │
+│  [ステップ3] フィードバック分析・KB更新判定                   │
+│       入力: feedback.json + structured.json                │
+│       処理: 乖離定量化 → KB追加候補抽出 → 汎用性判定          │
+│       出力: kb-candidates.json                             │
+│            │                                              │
+│            ▼                                              │
+│  [ステップ4] KB更新・回帰テスト                              │
+│       入力: kb-candidates.json（Yが承認した候補のみ）         │
+│       処理: KB1/KB2/KB3更新 → 過去銘柄の再評価               │
+│       出力: 更新されたKB + kb-version.json                  │
+│            │                                              │
+│            ▼                                              │
+│  [ステップ5] 継続判定                                       │
+│       Yのフィードバック量が漸減 → 人間が終了を判断            │
+│       継続する場合 → 次の銘柄でステップ1に戻る                │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+### 14.4 ステップ1: AI評価実行
+
+CA-Eval Phase 0-4（§3〜§4）をそのまま実行する。
+
+**入力**:
+- アナリストレポート（期初投資仮説レポート、四半期継続評価レポート、またはその両方）
+- KB（現行バージョン）
+
+**出力**:
+- `{research_dir}/04_output/report.md`（Markdownレポート）
+- `{research_dir}/04_output/structured.json`（構造化JSON）
+
+このステップに変更はない。Phase 0-4の設計書（§3〜§4）を参照。
+
+### 14.5 ステップ2: Yフィードバック収集
+
+Yに評価レポートを読んでもらい、構造化フィードバックを収集する。
+
+#### フィードバックテンプレート（各主張ごと）
+
+report.md の個別主張セクション（§4.8.1 セクション3）に埋め込まれたフィードバック欄がそのまま feedback.json の入力ソースとなる。
+
+```markdown
+### #1: [主張テキスト]
+
+**AI確信度**: [X]%
+
+**納得度:**  10% / 30% / 50% / 70% / 90%  ← 丸をつける
+
+**該当する質問に一言お願いします（1文で十分です）:**
+
+- 納得しない場合 → 一番引っかかる点は？
+- どちらとも言えない場合 → 何があれば納得度が上がる？
+- 納得する場合 → 他の企業でも同じことが言えない理由は？
+
+回答:
+
+
+**この指摘は他の銘柄にも当てはまりますか？（任意）**
+□ はい → KB追加候補として記録
+□ いいえ → この銘柄固有の判断
+□ わからない
+
+**補足（任意）:**
+
+```
+
+#### フィードバックの構造化（feedback.json）
+
+```json
+{
+  "ticker": "ORLY",
+  "cycle": 3,
+  "kb_version": "v1.0.0",
+  "date": "2026-02-17",
+  "evaluations": [
+    {
+      "claim_id": 1,
+      "ai_confidence": 90,
+      "y_confidence": 50,
+      "deviation": 40,
+      "y_comment": "業界構造の分析は正しいが、競合も同様の戦略を取りつつある点が考慮されていない",
+      "generalizable": true,
+      "generalizable_comment": "「競合の追随可能性」は他銘柄でも見落としやすい"
+    },
+    {
+      "claim_id": 2,
+      "ai_confidence": 70,
+      "y_confidence": 70,
+      "deviation": 0,
+      "y_comment": "",
+      "generalizable": null
+    }
+  ],
+  "overall_feedback": "全体として業界構造の分析に偏りすぎ。競合動向の視点が弱い",
+  "feedback_volume": "medium"
+}
+```
+
+**フィードバック量の定義**:
+
+| 量 | 定義 | ループ継続判断への影響 |
+|------|------|---------------------|
+| **high** | 半数以上の主張にコメントあり | 拡充余地が大きい。継続 |
+| **medium** | 1/4〜1/2の主張にコメントあり | 標準的。継続 |
+| **low** | 1/4未満の主張にコメントあり | 収束傾向。あと1-2サイクルで終了検討 |
+| **none** | コメントなし | 終了 |
+
+### 14.6 ステップ3: フィードバック分析・KB更新判定
+
+Yのフィードバックを分析し、KB追加候補を抽出する。
+
+#### 14.6.1 乖離の定量化
+
+```python
+for eval in feedback["evaluations"]:
+    eval["deviation"] = eval["ai_confidence"] - eval["y_confidence"]
+    if abs(eval["deviation"]) > 20:
+        eval["significant"] = True
+```
+
+#### 14.6.2 KB追加候補の抽出
+
+フィードバックの中からKBに追加すべき指摘を抽出する。
+
+**判定基準**:
+
+| 条件 | KB追加の妥当性 | 追加先 |
+|------|--------------|--------|
+| Yが「他の銘柄にも当てはまる」と回答 + 過去サイクルで類似指摘あり（2銘柄以上） | **KB1に追加**（新ルール） | `kb1_rules/` |
+| Yが繰り返し指摘する「AIの誤りパターン」（2サイクル以上） | **KB2に追加**（新パターン） | `kb2_patterns/` |
+| 新業界の銘柄で、スコア分布が既存few-shotと大きく異なる | **KB3に追加**（新few-shot） | `kb3_fewshot/` |
+| 既存ルールの適用基準が曖昧で乖離が発生 | **既存KB更新**（閾値調整等） | 該当ファイル |
+| 1銘柄固有の指摘 | **追加しない** | - |
+| 表現・文体の好み | **追加しない** | - |
+
+#### 14.6.3 KB追加候補の出力
+
+```json
+{
+  "cycle": 3,
+  "ticker": "ORLY",
+  "kb_version": "v1.0.0",
+  "candidates": [
+    {
+      "id": "candidate_001",
+      "type": "new_rule",
+      "target_kb": "KB1",
+      "name": "競合の追随可能性の評価",
+      "description": "構造的優位性を評価する際、競合が同様の戦略を採用しつつあるかを検討する",
+      "source_feedback": [
+        {"ticker": "ORLY", "cycle": 3, "claim_id": 1},
+        {"ticker": "COST", "cycle": 2, "claim_id": 4}
+      ],
+      "reproduction_count": 2,
+      "y_approval_status": "pending"
+    },
+    {
+      "id": "candidate_002",
+      "type": "threshold_adjustment",
+      "target_kb": "KB1",
+      "rule": "rule_11",
+      "current_threshold": "業界構造×企業ポジション合致 → 90%",
+      "proposed_threshold": "業界構造×企業ポジション合致 + 競合追随困難 → 90%、追随可能 → 70%",
+      "source_feedback": [
+        {"ticker": "ORLY", "cycle": 3, "claim_id": 1}
+      ],
+      "reproduction_count": 1,
+      "y_approval_status": "pending",
+      "note": "再現1件のみ。次サイクルで追加事例を確認後に判定"
+    }
+  ]
+}
+```
+
+#### 14.6.4 支援ツール
+
+ステップ3を人間が手作業で行うことも可能だが、以下のAI支援ツールで効率化できる。
+
+| ツール | 役割 | 実行タイミング |
+|--------|------|-------------|
+| **乖離定量化** | feedback.jsonの各主張のdeviationを算出し、significant gapを検出 | ステップ3開始時 |
+| **パターン検出** | 過去サイクルのフィードバック履歴と突合し、2回以上再現した指摘を自動検出 | ステップ3の中間 |
+| **一貫性チェック** | 銘柄間でのルール適用の揺れを検出 | ステップ3の補助（KB蓄積後に有効） |
+
+これらのツールは判定を自動化するものではなく、**Yとの対話素材を整理する支援ツール**である。
+
+### 14.7 ステップ4: KB更新・回帰テスト
+
+#### 14.7.1 Yの承認
+
+KB追加候補をYに提示し、承認を得る。
+
+```markdown
+## KB更新候補: 「競合の追随可能性の評価」
+
+### 発見経緯
+- ORLY（サイクル3）: 業界構造90%評価に対しY=50%。「競合も同様の戦略を取りつつある」
+- COST（サイクル2）: ベンダー交渉力70%評価に対しY=50%。「SAMS CLUBも同水準」
+
+### 提案
+ルール11に条件を追加: 「構造的優位性の評価時に、競合が同様の戦略を採用・追随する可能性を検討すること」
+
+### 承認
+□ 承認（ルール11に追記）
+□ 修正が必要 → コメント:
+□ 却下 → 理由:
+□ 保留（次サイクルで追加事例を確認）
+```
+
+#### 14.7.2 KB更新の実行
+
+承認された候補のみKBに反映する。
+
+**更新対象の判定**:
+
+| 候補タイプ | 更新先 | ファイル操作 |
+|----------|--------|------------|
+| 新ルール | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/rule{N}_{name}.md` | 新規作成 |
+| 新パターン | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/pattern_{ID}_{name}.md` | 新規作成 |
+| 新few-shot | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/fewshot_{TICKER}.md` | 新規作成 |
+| 既存ルール修正 | 該当する既存ファイル | 編集 |
+| dogma.md修正 | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | 編集 |
+
+**KBファイルの構造**（新規作成時の共通テンプレート）:
+
+```markdown
+# [ルール/パターン名]
+
+## 定義
+[明確な基準]
+
+## 良い例
+- [実銘柄での適用例。スコア付き]
+
+## 悪い例
+- [実銘柄での適用例。スコア付き]
+
+## Yのフィードバック（原文）
+「[feedback.mdからの直接引用]」
+
+## メタデータ
+- 追加日: [YYYY-MM-DD]
+- KBバージョン: [vX.Y.Z]
+- ソース: [どのサイクル・銘柄のフィードバックから抽出されたか]
+- 再現銘柄: [2銘柄以上のリスト]
+```
+
+#### 14.7.3 バージョン管理
+
+```json
+{
+  "current_version": "v1.1.0",
+  "history": [
+    {
+      "version": "v1.0.0",
+      "date": "2026-01-15",
+      "description": "Phase 2完了時点のベースライン",
+      "kb1_rules": 12,
+      "kb2_patterns": 12,
+      "kb3_fewshots": 5,
+      "source": "Phase 2（CHD, COST, LLY, MNST, ORLY）"
+    },
+    {
+      "version": "v1.1.0",
+      "date": "2026-02-17",
+      "description": "サイクル3: ルール11修正 + パターンH追加",
+      "kb1_rules": 12,
+      "kb2_patterns": 13,
+      "kb3_fewshots": 5,
+      "changes": [
+        {
+          "type": "rule_modified",
+          "target": "rule_11",
+          "change": "競合追随可能性の条件追加",
+          "approved_by": "Y"
+        },
+        {
+          "type": "pattern_added",
+          "target": "pattern_H_competitor_replication.md",
+          "approved_by": "Y"
+        }
+      ],
+      "source": "サイクル3（ORLY, COST）"
+    }
+  ]
+}
+```
+
+#### 14.7.4 回帰テスト
+
+KB更新後、Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY）をCA-Evalで再評価し、精度が劣化しないことを確認する。
+
+```
+回帰テスト手順:
+1. 更新後のKBでPhase 2の5銘柄を再評価（CA-Eval Phase 0-4）
+2. 各主張のAI評価を、Phase 2のY評価と比較
+3. 平均乖離・最大乖離を算出
+4. ベースライン（v1.0.0）と比較し、劣化がないことを確認
+```
+
+**回帰テスト合格基準**:
+
+| メトリクス | 基準 |
+|----------|------|
+| 平均乖離 | ベースラインから悪化しない（±2%の許容範囲） |
+| 最大乖離 | 30%を超える主張が増加しない |
+| 特定銘柄への偏り | 1銘柄のみで大幅悪化していないこと |
+
+**回帰テスト不合格時の対応**:
+- KB更新をロールバック（前バージョンに戻す）
+- 不合格の原因を分析し、次サイクルで修正版を再提案
+
+### 14.8 ステップ5: 継続判定
+
+ループの終了は人間が定性的に判断する。以下の指標を参考とする。
+
+| 指標 | 測定方法 | 終了の目安 |
+|------|---------|----------|
+| **フィードバック量** | feedback.jsonの`feedback_volume` | 2サイクル連続で `low` |
+| **乖離の減少傾向** | サイクルごとの平均乖離 | 平均乖離が±10%以内で安定 |
+| **KB追加候補数** | kb-candidates.jsonの`candidates`数 | 2サイクル連続で0件 |
+| **Yの全体評価** | 「概ね沿っている」の回答 | 3サイクル連続 |
+
+**終了は「フィードバックゼロ」を意味しない**。完全にフィードバックがなくなることは実務上不可能であるため、上記指標が安定的に推移した時点で人間が判断する。
+
+### 14.9 銘柄選択戦略
+
+ループの効率はどの銘柄で回すかに依存する。
+
+#### 選択方針
+
+| フェーズ | 銘柄の特徴 | 目的 | 例 |
+|---------|----------|------|-----|
+| **初期**（サイクル1-3） | Phase 2の既知銘柄 | ベースラインの確立、ワークフロー検証 | CHD, COST, ORLY |
+| **中期**（サイクル4-6） | 既存業界の別銘柄 | 既存ルールの精緻化、一貫性検証 | AZO（自動車部品）, BJ（倉庫型小売） |
+| **後期**（サイクル7-） | 新業界の銘柄 | 既存ルールの適用限界の発見、新ルール抽出 | VEEV（ヘルスケアIT）, CDNS（半導体EDA） |
+
+#### 1サイクルあたりの銘柄数
+
+- **推奨: 1銘柄/サイクル**
+- 理由: フィードバックの分析と KB更新を丁寧に行うため
+- 同一サイクルで複数銘柄を処理すると、KB追加候補の汎用性判定が困難になる
+
+### 14.10 メトリクス
+
+#### サイクルごとの追跡指標
+
+| メトリクス | 測定方法 | 目標 |
+|----------|---------|------|
+| **平均乖離** | mean(abs(AI評価 - Y評価)) | サイクルごとに減少し、±10%以内で安定 |
+| **significant gap数** | count(abs(deviation) > 20%) | サイクルごとに減少 |
+| **フィードバック量** | 主張に対するコメント率 | 漸減傾向 |
+| **KB追加候補数** | candidates.length | 漸減傾向 |
+| **回帰テスト合格率** | 合格/不合格 | 常に合格 |
+
+#### KB拡充の履歴
+
+| バージョン | 日付 | KB1 | KB2 | KB3 | 平均乖離 | ソース |
+|----------|------|-----|-----|-----|---------|--------|
+| v1.0.0 | 2026-01-15 | 12ルール | 12パターン | 5銘柄 | ベースライン | Phase 2 |
+| v1.1.0 | (予定) | +0〜2 | +0〜2 | +0〜1 | 改善目標 | サイクル1-3 |
+| v1.2.0 | (予定) | +0〜2 | +0〜2 | +0〜1 | 改善目標 | サイクル4-6 |
+
+### 14.11 全体フロー図
+
+```mermaid
+graph TD
+    A["ステップ1: AI評価実行<br/>CA-Eval Phase 0-4"] --> B["ステップ2: Yフィードバック収集<br/>構造化テンプレート使用"]
+    B --> C["ステップ3: フィードバック分析<br/>乖離定量化 + KB候補抽出"]
+    C --> D{"KB追加候補あり?"}
+    D -->|"あり"| E["Yに候補を提示<br/>承認/修正/却下"]
+    D -->|"なし"| H
+    E --> F{"承認?"}
+    F -->|"承認"| G["ステップ4: KB更新<br/>+ 回帰テスト"]
+    F -->|"却下/保留"| H["ステップ5: 継続判定"]
+    G --> G2{"回帰テスト合格?"}
+    G2 -->|"合格"| H
+    G2 -->|"不合格"| G3["ロールバック<br/>原因分析"]
+    G3 --> H
+    H --> I{"フィードバック量が<br/>漸減し安定?"}
+    I -->|"継続"| J["次の銘柄を選択"]
+    I -->|"終了"| K["ループ終了<br/>KB最終版確定"]
+    J --> A
+```
+
+---
+
+## 15. 検証方法
+
+1. **テンプレート検証**: report.md テンプレートで ORLY の模擬レポートを生成し、Phase 2の Y 評価データと比較して構造の妥当性を確認
+2. **T8検証**: 意図的に問題を含むレポート（confidenceとトーンの不一致、ルール11なしの90%等）を作成し、3層検証が正しく検出・修正することを確認
+3. **T9検証**: ORLY のフルモードで AI 評価と Phase 2 の Y 評価を比較し、乖離メトリクスが合格基準を満たすことを確認
+
+---
+
+## 16. 次のステップ
+
+1. **Phase 0-4（CA-Eval）の実装を完了する**
+   - 暗黙知拡充ループのステップ1に相当
+   - これが動かなければループを開始できない
+
+2. **フィードバックテンプレート（§14.5）の確定**
+   - Yに使いやすい形式かを事前確認
+
+3. **サイクル1の実行**（Phase 2既知銘柄で検証）
+   - 対象: ORLY（Phase 2で最も評価事例が豊富）
+   - 目的: ループの動作確認、所要時間の計測
+
+4. **KB バージョン管理の初期化**
+   - v1.0.0 のスナップショット作成
+   - `kb_version.json` の初期化
+
+---
+
+## 17. 修正対象ファイル一覧
+
+本設計書の内容を実装する際に更新が必要なファイル:
+
+| # | ファイル | 修正内容 | 優先度 |
+|---|---------|---------|--------|
+| 1 | `.claude/agents/ca-report-generator.md` | report.md テンプレートの全面書き換え: セクション1-7構成、個別主張テンプレート、structured.json に five_layer_evaluation 追加 | ★★★ |
+| 2 | `.claude/agents/deep-research/ca-eval-lead.md` | T8: 3層検証の20チェック項目・重大度・自動修正ロジック追記。T9: フルモード/簡易モード切り替え・accuracy-report.json スキーマ追記 | ★★★ |
+| 3 | `.claude/skills/ca-eval/SKILL.md` | 出力ファイルの説明更新（新セクション構成、新JSONスキーマ） | ★★ |
+
+---
+
+## 18. 関連ファイル
+
+| ファイル | パス |
+|---------|------|
+| リーダーエージェント | `.claude/agents/deep-research/ca-eval-lead.md` |
+| ワーカーエージェント | `.claude/agents/ca-report-parser.md` 他5ファイル |
+| コマンド | `.claude/commands/ca-eval.md` |
+| スキル | `.claude/skills/ca-eval/SKILL.md` |
+| Dify比較表 | `analyst/claude_code/dify_comparison.md` |
+| Dify詳細設計書 | `analyst/memo/dify_workflow_design.md` |
+| Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` |
+| KB1ルール集 | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/` (8ファイル) |
+| KB2パターン集 | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/` (12ファイル) |
+| KB3 few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/` (5ファイル) |
+| Phase 2検証データ | `analyst/phase2_KY/` (5銘柄) |
