@@ -8,6 +8,7 @@ KYの投資判断軸に基づいて、アナリストレポートの競争優位
 /ca-eval TICKER
 /ca-eval ORLY
 /ca-eval CHD --report path/to/report.md
+/ca-eval ORLY --skip-industry
 ```
 
 ## パラメータ
@@ -16,6 +17,7 @@ KYの投資判断軸に基づいて、アナリストレポートの競争優位
 |-----------|------|-----------|------|
 | ticker | Yes | - | 評価対象のティッカーシンボル（例: ORLY, COST, CHD） |
 | --report | No | analyst/raw/ 配下を自動検索 | アナリストレポートのパス |
+| --skip-industry | No | false | 業界データ収集をスキップ（PoC用） |
 
 ## スキル
 
