@@ -1,0 +1,213 @@
+# PRレビューレポート
+# 生成日時: 2026-02-17
+# 生成スキル: review-pr
+
+metadata:
+  generated_at: "2026-02-17"
+  pr_number: 3562
+  pr_title: "feat(notebooklm): NotebookLM MCP サーバーの実装（Playwright ブラウザ自動化）"
+  base_branch: "main"
+  head_branch: "feature/notebooklm"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 58
+  additions: 22545
+  deletions: 1
+
+scores:
+  code_quality: 83
+  security: 75
+  test: 79
+  overall: 79
+
+code_quality:
+  readability_score: 88
+  design_score: 82
+  performance_score: 78
+
+  strengths:
+    - "一貫した命名規則（PascalCase/snake_case/UPPER_SNAKE_CASE）"
+    - "型ヒントカバレッジ95%以上、PEP 695構文の活用"
+    - "NumPy形式Docstringの網羅的な記載"
+    - "Pydantic v2 frozen modelによる不変性保証"
+    - "構造化ロギング（structlog）の徹底"
+    - "優れたレイヤードアーキテクチャ（Browser → Services → MCP Tools）"
+    - "依存性注入によるテスタビリティの確保"
+    - "セレクタフォールバックチェーンによるUI変更への耐性"
+    - "カスタム例外クラスの一貫した使用（8クラス）"
+
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "PASS"
+    liskov_substitution: "PASS"
+    interface_segregation: "PASS"
+    dependency_inversion: "WARN"
+
+  issues:
+    critical: []
+    high:
+      - category: "DRY"
+        description: "ページライフサイクルのボイラープレート（~40行）が8サービスに重複"
+        recommendation: "async with self._page_context() as page コンテキストマネージャ抽出"
+      - category: "DRY"
+        description: "MCPツールのエラーハンドリング（~200行）が27+関数に重複"
+        recommendation: "@mcp_tool_handler デコレータの作成"
+    medium:
+      - category: "performance"
+        description: "BatchService の逐次処理（batch_add_sources/batch_chat）"
+        recommendation: "asyncio.gather() で並列化"
+      - category: "performance"
+        description: "_wait_for_source_processing の固定3秒待機"
+        recommendation: "実際の完了検出に置き換え"
+      - category: "performance"
+        description: "wait_for_element のセレクタ逐次待機"
+        recommendation: "Promise.race パターンで並列待機"
+      - category: "naming"
+        description: "STEALTH_INIT_SCRIPT の命名が内容を示していない"
+        recommendation: "STEALTH_INIT_SCRIPT_JS に改名"
+    low:
+      - category: "type_hints"
+        description: "_async_playwright_factory() の戻り値型がAny"
+        recommendation: "具体的な型を明示"
+
+security:
+  code_security_score: 75
+  infra_security_score: 75
+
+  vulnerability_count:
+    critical: 0
+    high: 1
+    medium: 5
+    low: 2
+
+  findings:
+    - id: "SEC-001"
+      severity: "HIGH"
+      category: "A06"
+      location: "pyproject.toml (diskcache dependency)"
+      description: "diskcache 5.6.3 に CVE-2025-69872 (pickle デシリアライズ脆弱性)"
+      recommendation: "影響確認、キャッシュディレクトリのアクセス制限"
+      cwe_id: "CWE-502"
+
+    - id: "SEC-002"
+      severity: "MEDIUM"
+      category: "A03"
+      location: "src/notebooklm/services/source.py:212"
+      description: "テキスト入力のサニタイズ不足（XSSリスク）"
+      recommendation: "入力バリデーション層の追加"
+      cwe_id: "CWE-79"
+
+    - id: "SEC-003"
+      severity: "MEDIUM"
+      category: "A03"
+      location: "src/notebooklm/services/source.py:343"
+      description: "URL入力のバリデーション不足（SSRFリスク）"
+      recommendation: "URLスキーム・ドメインバリデーション"
+      cwe_id: "CWE-918"
+
+    - id: "SEC-004"
+      severity: "MEDIUM"
+      category: "A03"
+      location: "src/notebooklm/services/source.py:436"
+      description: "ファイルパスのバリデーション不足（パストラバーサル）"
+      recommendation: "パス解決・許可ディレクトリチェック"
+      cwe_id: "CWE-22"
+
+    - id: "SEC-005"
+      severity: "MEDIUM"
+      category: "A06"
+      location: "pyproject.toml:84"
+      description: "playwright 依存関係がバージョン未固定"
+      recommendation: ">=1.49.0,<2.0.0 に変更"
+      cwe_id: "CWE-1104"
+
+    - id: "SEC-006"
+      severity: "MEDIUM"
+      category: "A07"
+      location: "src/notebooklm/browser/manager.py:275"
+      description: "セッションファイルが平文保存"
+      recommendation: "chmod 0600 適用、暗号化検討"
+      cwe_id: "CWE-312"
+
+    - id: "SEC-007"
+      severity: "LOW"
+      category: "A05"
+      location: "src/notebooklm/constants.py:153"
+      description: "セッションファイルの.gitignore保護（実装済み）"
+      recommendation: "現状維持"
+
+    - id: "SEC-008"
+      severity: "LOW"
+      category: "A02"
+      location: "src/notebooklm/browser/manager.py:194"
+      description: "セッションファイルの暗号化なし"
+      recommendation: "将来的な暗号化実装を検討"
+
+  positive_findings:
+    - "セッション有効性チェック機構（is_session_valid）の実装"
+    - "構造化ロギングで機密情報漏洩なし"
+    - "URLテンプレートによるSSRF対策"
+    - "安全でないデシリアライズ（pickle/eval/exec）の不使用"
+    - ".gitignoreでセッションファイル保護済み"
+
+test:
+  coverage_score: 80
+  quality_score: 78
+
+  coverage_assessment: "GOOD"
+  edge_cases_covered: true
+  test_count: "518+"
+
+  test_quality:
+    isolation: "PASS"
+    reproducibility: "PASS"
+    readability: "PASS"
+
+  strengths:
+    - "日本語テスト名の一貫した使用（test_正常系_/test_異常系_/test_エッジケース_）"
+    - "Pydanticモデルのバリデーション網羅性が高い"
+    - "AsyncMock/MagicMockの適切な使い分け"
+    - "フィクスチャの階層設計が優秀"
+    - "統合テストがワークフロー全体をカバー"
+    - "リソース解放（page.close）の検証が徹底"
+
+  issues:
+    high:
+      - description: "conftest.py で datetime.now() を使用（再現性低下）"
+        recommendation: "固定日時に変更"
+      - description: "poll_until の指数バックオフ動作の検証不足"
+        recommendation: "明示的なリトライテスト追加"
+    medium:
+      - description: "統合テストでServiceを完全モック化（実統合性の検証不足）"
+        recommendation: "Playwright Pageレベルでのモック化に変更"
+      - description: "locator_dispatch のネストモックが複雑"
+        recommendation: "ヘルパー関数への抽出"
+
+recommended_actions:
+  required:
+    - priority: 1
+      action: "diskcache脆弱性の影響確認と対策"
+    - priority: 2
+      action: "セッションファイルパーミッション（chmod 0600）の追加"
+
+  suggested:
+    - priority: 1
+      action: "ページライフサイクルのコンテキストマネージャ抽出（DRY改善、-240行）"
+    - priority: 2
+      action: "MCPツールのエラーハンドリングデコレータ作成"
+    - priority: 3
+      action: "入力バリデーション層の追加（URL/ファイルパス）"
+    - priority: 4
+      action: "BatchService の並列化（asyncio.gather）"
+    - priority: 5
+      action: "playwright バージョン範囲の固定"
+    - priority: 6
+      action: "conftest.py の datetime 固定化"
+
+summary:
+  verdict: "COMMENT"
+  comment: |
+    全体的に高品質な実装（総合79点）。アーキテクチャ設計、型安全性、テスト網羅性が優秀。
+    セキュリティ面でdiskcache脆弱性と入力バリデーション、DRY改善が主な改善ポイント。
+    マージ前にdiskcache影響確認とセッションファイルパーミッション追加を推奨。
