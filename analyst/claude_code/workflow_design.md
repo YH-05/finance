@@ -33,15 +33,15 @@
 
 | KB | 名称 | ファイルパス | ファイル数 | 合計サイズ | 使用タスク |
 |----|------|------------|-----------|-----------|-----------|
-| KB1 | ルール集 | `analyst/dify/kb1_rules/*.md` | 8 | ~15KB | T4, T8 |
-| KB2 | パターン集 | `analyst/dify/kb2_patterns/*.md` | 12 | ~20KB | T6, T8 |
-| KB3 | few-shot集 | `analyst/dify/kb3_fewshot/*.md` | 5 | ~15KB | T4 |
+| KB1 | ルール集 | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md` | 8 | ~15KB | T4, T8 |
+| KB2 | パターン集 | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/*.md` | 12 | ~20KB | T6, T8 |
+| KB3 | few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/*.md` | 5 | ~15KB | T4 |
 | Dogma | 判断軸 | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | 1 | ~12KB | 全タスク |
 | **合計** | | | **26** | **~62KB** | |
 
 ### 2.2 KB1: ルール集（8ファイル直接読み込み）
 
-**✅ 実体確認済み**: `analyst/claude_code/kb1_rules/` (2026-02-17)
+**✅ 実体確認済み**: `analyst/Competitive_Advantage/analyst_YK/kb1_rules/` (2026-02-17)
 
 | ファイル | ルール | カテゴリ | サイズ | 重要度 |
 |---------|--------|---------|--------|--------|
@@ -68,7 +68,7 @@
 
 ### 2.3 KB2: パターン集（12ファイル直接読み込み）
 
-**✅ 実体確認済み**: `analyst/claude_code/kb2_patterns/` (2026-02-17)
+**✅ 実体確認済み**: `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/` (2026-02-17)
 
 #### 却下パターン（confidence 低下）
 
@@ -106,7 +106,7 @@
 
 ### 2.4 KB3: few-shot集（5ファイル直接読み込み）
 
-**✅ 実体確認済み**: `analyst/claude_code/kb3_fewshot/` (2026-02-17)
+**✅ 実体確認済み**: `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/` (2026-02-17)
 
 | ファイル | 銘柄 | サイズ | 平均優位性スコア | 特徴 | KYが重視した視点 |
 |---------|------|--------|----------------|------|----------------|
@@ -305,8 +305,8 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 - `{research_dir}/01_data_collection/parsed-report.json`（T2, 必須）
 - `{research_dir}/01_data_collection/industry-context.json`（T3, 任意）
 - `analyst/Competitive_Advantage/analyst_YK/dogma.md`
-- `analyst/dify/kb1_rules/` 配下 8ファイル
-- `analyst/dify/kb3_fewshot/` 配下 5ファイル
+- `analyst/Competitive_Advantage/analyst_YK/kb1_rules/` 配下 8ファイル
+- `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/` 配下 5ファイル
 
 **処理内容**:
 1. **主張抽出**: parsed-report.json の `advantage_candidates` から 5-15件を抽出
@@ -349,7 +349,7 @@ research/CA_eval_{YYYYMMDD}_{TICKER}/
 
 **入力ファイル**:
 - `{research_dir}/02_claims/claims.json`（T4, 必須）
-- `analyst/dify/kb2_patterns/` 配下 12ファイル
+- `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/` 配下 12ファイル
 - `analyst/Competitive_Advantage/analyst_YK/dogma.md`
 
 **処理内容**:
@@ -694,9 +694,9 @@ Dify比較: ~6分 + 手動前処理 → Claude Code: ~10分（全自動、追加
 | Dify比較表 | `analyst/claude_code/dify_comparison.md` |
 | Dify詳細設計書 | `analyst/memo/dify_workflow_design.md` |
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` |
-| KB1ルール集 | `analyst/dify/kb1_rules/` (8ファイル) |
-| KB2パターン集 | `analyst/dify/kb2_patterns/` (12ファイル) |
-| KB3 few-shot集 | `analyst/dify/kb3_fewshot/` (5ファイル) |
+| KB1ルール集 | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/` (8ファイル) |
+| KB2パターン集 | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/` (12ファイル) |
+| KB3 few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/` (5ファイル) |
 | Phase 2検証データ | `analyst/phase2_KY/` (5銘柄) |
 
 ---

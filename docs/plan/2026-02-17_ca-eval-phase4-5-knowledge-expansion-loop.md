@@ -285,9 +285,9 @@ KB追加候補をYに提示し、承認を得る。
 
 | 候補タイプ | 更新先 | ファイル操作 |
 |----------|--------|------------|
-| 新ルール | `analyst/claude_code/kb1_rules/rule{N}_{name}.md` | 新規作成 |
-| 新パターン | `analyst/claude_code/kb2_patterns/pattern_{ID}_{name}.md` | 新規作成 |
-| 新few-shot | `analyst/claude_code/kb3_fewshot/fewshot_{TICKER}.md` | 新規作成 |
+| 新ルール | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/rule{N}_{name}.md` | 新規作成 |
+| 新パターン | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/pattern_{ID}_{name}.md` | 新規作成 |
+| 新few-shot | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/fewshot_{TICKER}.md` | 新規作成 |
 | 既存ルール修正 | 該当する既存ファイル | 編集 |
 | dogma.md修正 | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | 編集 |
 
@@ -502,9 +502,9 @@ graph TD
 |---------|------|
 | CA-Eval Phase 0-4設計書 | `analyst/claude_code/workflow_design.md` |
 | Dogma（Yの判断軸） | `analyst/Competitive_Advantage/analyst_YK/dogma.md` |
-| KB1（ルール集） | `analyst/claude_code/kb1_rules/*.md` |
-| KB2（パターン集） | `analyst/claude_code/kb2_patterns/*.md` |
-| KB3（few-shot集） | `analyst/claude_code/kb3_fewshot/*.md` |
+| KB1（ルール集） | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md` |
+| KB2（パターン集） | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/*.md` |
+| KB3（few-shot集） | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/*.md` |
 | Phase 2検証データ | `analyst/phase2_KY/*.md` |
 
 ---
