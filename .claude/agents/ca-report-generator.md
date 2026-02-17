@@ -101,60 +101,97 @@ claims.json の各主張に対して:
 
 ### Step 3: Markdown レポート生成
 
-以下の構成でレポートを生成:
+以下の7セクション構成（5-8ページ相当）でレポートを生成:
 
 ```markdown
 # [TICKER] 競争優位性評価レポート
 
-## レポート情報
-- 対象銘柄: [TICKER]
-- 入力レポート: [report_source]
-- 生成日: [日付]
-- リサーチID: [research_id]
-- データソース: SEC EDGAR (MCP), アナリストレポート, 業界分析
+| 項目 | 値 |
+|------|-----|
+| **対象銘柄** | [TICKER]（[企業名]） |
+| **入力レポート** | [report_source]（①期初 / ②四半期 / 混合） |
+| **生成日** | [YYYY-MM-DD] |
+| **リサーチID** | [research_id] |
+| **データソース** | SEC EDGAR (MCP), アナリストレポート, 業界分析 |
+| **KBバージョン** | [kb_version] |
+| **主張数** | 競争優位性 [N]件 / CAGR接続 [N]件 / 事実 [N]件 |
 
 ---
 
 ## 評価サマリー
 
-| 指標 | 値 |
-|------|-----|
-| 競争優位性候補 | N件 |
-| CAGR接続 | N件 |
-| 事実の主張 | N件（verified: N, contradicted: N, unverifiable: N） |
-| 平均確信度（優位性） | XX% |
-| 確信度分布 | 90%=N, 70%=N, 50%=N, 30%=N, 10%=N |
+| # | 優位性 | AI確信度 | CAGR接続 | CAGR確信度 |
+|---|--------|---------|----------|-----------|
+| 1 | [主張テキスト（30字以内に要約）] | [X]% | [接続先・寄与内容] | [Y]% |
+| 2 | ... | ... | ... | ... |
+
+### 確信度分布
+
+| 確信度 | AI評価 | KY基準値 | 判定 |
+|--------|--------|---------|------|
+| 90%（かなり納得） | [N]件 ([X]%) | 6% | [OK/要確認] |
+| 70%（おおむね納得） | [N]件 ([X]%) | 26% | [OK/要確認] |
+| 50%（まあ納得） | [N]件 ([X]%) | 35% | [OK/要確認] |
+| 30%（あまり納得しない） | [N]件 ([X]%) | 26% | [OK/要確認] |
+| 10%（却下） | [N]件 ([X]%) | 6% | [OK/要確認] |
+
+※ AI出現率がKY基準値から15%以上乖離 → 「要確認」
+
+### ファクトチェック結果サマリー
+
+- verified: [N]件 / contradicted: [N]件 / unverifiable: [N]件 / not_checked: [N]件
 
 ---
 
 ## 競争優位性候補
 
-### #1: [主張テキスト]
-
-**分類**: [descriptive_label]
-**確信度**: [final_confidence]%
-**レポート種別**: ①期初レポート / ②四半期レビュー
-
-**根拠**:
-[evidence_from_report]
-
-**ルール適用結果**:
-- ルール[N]: [verdict] — [reasoning]
-
-**ファクトチェック**:
-- [verification_status に応じた記述]
-
-**パターン照合**:
-- 高評価: [該当パターン] / 却下: [該当パターン]
-
-**CAGR接続**: [接続先がある場合]
-
-**コメント**:
-[Step 2 の評価ロジックに基づく詳細コメント]
+[以下、各主張について繰り返し]
 
 ---
 
-**納得度:**  10% / 30% / 50% / 70% / 90%
+### #[N]: [主張テキスト]
+
+**分類**: [descriptive_label]
+**レポート種別**: ①期初投資仮説レポート / ②四半期継続評価レポート
+[②の場合のみ:]
+> ⚠️ この主張は四半期レビュー（②）から抽出されました。
+> 期初レポート（①）での妥当性を再検討してください。
+
+#### AI評価: [ランク名]（[X]%）
+
+[2-3文のコメント。5層評価に基づく。結論→根拠→改善提案の順。]
+[重要な指摘は<u>下線</u>で強調]
+
+#### CAGR接続
+
+| パラメータ | AI確信度 | コメント |
+|-----------|---------|---------|
+| 売上成長寄与 +X% | [Y]% | [1-2文] |
+| マージン改善寄与 +X% | [Z]% | [1-2文] |
+
+#### 根拠（アナリストレポートより）
+
+[evidence_from_report]
+
+#### ルール適用結果
+
+| ルール | 判定 | 根拠 |
+|--------|------|------|
+| ルール[N] | [verdict] | [reasoning（1文）] |
+
+※ 該当ルールのみ記載。全ルール列挙はしない。
+
+#### 検証結果
+
+- **ファクトチェック**: [verified/contradicted/unverifiable/not_checked]
+  - [検証の詳細（1-2文）]
+- **パターン照合**:
+  - 高評価: [該当パターン名 + 概要] / なし
+  - 却下: [該当パターン名 + 概要] / なし
+
+---
+
+**納得度:**  10% / 30% / 50% / 70% / 90%  ← 丸をつける
 
 **該当する質問に一言お願いします（1文で十分です）:**
 - 納得しない場合 → 一番引っかかる点は？
@@ -163,11 +200,48 @@ claims.json の各主張に対して:
 
 回答:
 
+
+**この指摘は他の銘柄にも当てはまりますか？（任意）**
+□ はい → KB追加候補として記録
+□ いいえ → この銘柄固有の判断
+□ わからない
+
 **補足（任意）:**
+
 
 ---
 
 [以下、#2〜#N まで同様]
+
+---
+
+## CAGR接続サマリー
+
+### 構造的 vs 補完的の区分
+
+| # | CAGR接続 | 区分 | 寄与パラメータ | AI確信度 | ソース優位性 |
+|---|---------|------|-------------|---------|------------|
+| C1 | [接続テキスト] | 構造的 / 補完的 | 売上成長 +X% | [Y]% | #[N] |
+
+### CAGR接続の全体評価
+
+[1-2段落: 因果チェーンの直接性、TAM→シェア→利益率の中間ステップ有無、
+ブレークダウン数値の根拠妥当性、①/②由来の区別]
+
+---
+
+## 警鐘事項
+
+### ①/②区別の確認
+
+| # | 主張 | ソース | 警戒レベル |
+|---|------|--------|----------|
+| [N] | [主張テキスト] | ②四半期レビュー | ⚠️ 拡大解釈の可能性 |
+
+### 既存判断への警鐘
+
+[1-2段落: 既存判断への無批判的追従、①の前提の現在の合理性、
+②の積み重ねからの拡大解釈、銘柄間の推論パターン一貫性]
 
 ---
 
@@ -179,7 +253,29 @@ claims.json の各主張に対して:
 **最も良かった主張の番号:**  #___
 **最も問題のある主張の番号:**  #___
 
-**その他コメント（任意）:**
+**全体的な印象（自由記述）:**
+
+
+**AIの評価で最も違和感のある点（1文で十分です）:**
+
+
+---
+
+<details>
+<summary>技術情報（クリックで展開）</summary>
+
+| 項目 | 値 |
+|------|-----|
+| KBバージョン | [version] |
+| KB1ルール数 | [N] |
+| KB2パターン数 | [N] |
+| KB3 few-shot数 | [N] |
+| SEC データ | [available/unavailable] |
+| 業界データ | [available/unavailable] |
+| ファクトチェック | [executed/skipped] |
+| パターン検証 | [executed/skipped] |
+
+</details>
 ```
 
 ### Step 4: 構造化 JSON 生成
@@ -206,7 +302,7 @@ Dify設計書§6 に準拠した `structured.json` を生成:
       "claim": "...",
       "descriptive_label": "...",
       "evidence_from_report": "...",
-      "report_type_source": "initial",
+      "report_type_source": "initial | quarterly",
       "supported_by_facts": [3, 4],
       "cagr_connections": [2],
       "rule_evaluation": { "..." : "..." },
@@ -216,7 +312,34 @@ Dify設計書§6 に準拠した `structured.json` を生成:
         "pattern_rejections": [],
         "final_confidence": 90,
         "confidence_delta": 0
-      }
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {
+          "rule_9_factual_accuracy": "pass | fail",
+          "rule_3_relative_advantage": "pass | fail"
+        },
+        "layer_2_nature": {
+          "rule_1_capability_vs_result": "capability | result",
+          "rule_2_noun_test": "pass | fail",
+          "rule_8_strategy_vs_advantage": "advantage | strategy"
+        },
+        "layer_3_evidence": {
+          "rule_4_quantitative": "present | absent",
+          "rule_7_pure_competitor": "present | absent",
+          "rule_10_negative_case": "present | absent",
+          "rule_11_industry_structure": "strong_fit | weak_fit | absent"
+        },
+        "layer_4_cagr": {
+          "rule_5_directness": "direct | indirect",
+          "rule_6_structural_vs_complementary": "structural | complementary",
+          "verifiability": "high | medium | low"
+        },
+        "layer_5_source": {
+          "rule_12_source_type": "initial | quarterly",
+          "overinterpretation_risk": "low | medium | high"
+        }
+      },
+      "ai_comment": "2-3文のコメント（結論→根拠→改善提案）"
     }
   ],
   "summary": {
@@ -236,6 +359,11 @@ Dify設計書§6 に準拠した `structured.json` を生成:
       "verified": 3,
       "contradicted": 0,
       "unverifiable": 1
+    },
+    "warning_flags": {
+      "quarterly_derived_claims": 1,
+      "overinterpretation_risks": 0,
+      "confidence_distribution_anomaly": false
     }
   }
 }

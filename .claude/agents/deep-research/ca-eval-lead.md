@@ -56,7 +56,7 @@ ca-eval-lead (リーダー)
     │       ↓ report.md, structured.json
     ├── [T8] Lead: レポート3層検証
     │       ↓ verified-report.md, verification-results.json
-    └── [T9] Lead: 精度検証（phase2_KYデータがある場合）
+    └── [T9] Lead: 精度検証（常時実行: フル or 簡易モード）
             ↓ accuracy-report.json
             [HF2] 最終出力提示
 ```
@@ -87,7 +87,7 @@ ca-eval-lead (リーダー)
 | 6 | pattern-verifier | ca-pattern-verifier | 3 | No |
 | 7 | reporter | ca-report-generator | 4 | Yes |
 
-T0（Setup）、T8（3層検証）、T9（精度検証）は Lead 自身が実行する。
+T0（Setup）、T8（3層検証: 20チェック項目）、T9（精度検証: フル/簡易モード）は Lead 自身が実行する。
 
 ## HF（Human Feedback）ポイント
 
@@ -701,18 +701,253 @@ TaskUpdate:
    - report.md と structured.json の生成を確認
 
 6. **T8: レポート3層検証（Lead 直接実行）**:
-   - report.md と structured.json を Read で読み込み
-   - KB1 ルール集と KB2 パターン集を Read で読み込み
-   - 3層検証を実行:
-     - 検証A: JSON-レポート整合
-     - 検証B: KYルール準拠
-     - 検証C: パターン一貫性
-   - verified-report.md と verification-results.json を Write で出力
 
-7. **T9: 精度検証（Lead 直接実行、該当銘柄のみ）**:
-   - `analyst/phase2_KY/phase1_{TICKER}_phase2.md` が存在するか確認
-   - 存在する場合: KYの実スコアと AI 予測スコアを比較
-   - accuracy-report.json を Write で出力
+   **入力**: report.md, structured.json, KB1ルール集, KB2パターン集, dogma.md
+   **出力**: verified-report.md, verification-results.json
+
+   **重大度分類**:
+   - **Critical**: Yへの信頼性を損なう問題 → 必ず自動修正
+   - **Warning**: Yの指摘を予測できる問題 → 自動修正 + `[⚠️ T8修正]` 注釈
+   - **Info**: 改善提案レベル → verification-results.json に記録のみ
+
+   **検証層A: JSON-レポート整合性（7項目）**:
+
+   | ID | チェック項目 | 重大度 | 自動修正 |
+   |----|-------------|--------|---------|
+   | A-1 | 主張の網羅性（JSON全件がMDに記載） | Critical | 欠落主張を追記 |
+   | A-2 | confidence転記の正確性 | Critical | MD値をJSON値に合わせ修正 |
+   | A-3 | confidenceとトーンの一致 | Critical | コメント文を書き換え |
+   | A-4 | ルール適用結果の反映 | Warning | 欠落ルールを追記 |
+   | A-5 | contradicted事実の明示 | Critical | 事実の記述を追加 |
+   | A-6 | パターン照合結果の反映 | Warning | パターン情報を追記 |
+   | A-7 | CAGR接続の対応関係 | Warning | リンク修正 |
+
+   A-3判定ロジック:
+   - confidence <= 30% かつ 肯定的表現（「納得感あり」「優位性として妥当」等） → Critical
+   - confidence >= 70% かつ 否定的表現が主論点 → Critical
+   - confidence == 50% は中間的表現が適切
+
+   **検証層B: KYルール準拠（9項目）**:
+
+   | ID | チェック項目 | 重大度 | 自動修正 |
+   |----|-------------|--------|---------|
+   | B-1 | ルール1（能力vs結果）の適用 | Warning | ルール1適用結果を追加 |
+   | B-2 | ルール2（名詞テスト）の適用 | Warning | 名詞形への変換提案を追加 |
+   | B-3 | ルール3（相対性）の適用 | Warning | 相対性検証コメントを追加 |
+   | B-4 | ルール4（定量的裏付け）の反映 | Info | 改善提案として記録 |
+   | B-5 | ルール7（純粋競合比較）の反映 | Warning | 競合比較の不足を指摘 |
+   | B-6 | ルール8（戦略vs優位性）の適用 | Warning | ルール8適用を追加 |
+   | B-7 | ルール9（事実誤認 → 10%）の適用 | Critical | confidence を 10% に強制修正 |
+   | B-8 | ルール11なしの90%排除 | Critical | 90%→70%に引き下げ |
+   | B-9 | ルール12（①/②区別）フラグ | Warning | 警戒フラグを追加 |
+
+   **B-8は最重要チェック**: KB3実績で90%はORLY#2, #5のみ（全34件中2件）。
+   いずれもパターンIV（構造的市場ポジション）を満たす。業界構造分析なしの90%は許容しない。
+
+   **検証層C: パターン一貫性（4項目）**:
+
+   | ID | チェック項目 | 重大度 | 自動修正 |
+   |----|-------------|--------|---------|
+   | C-1 | 却下パターン検出時のconfidence上限 | Critical | 上限値に引き下げ |
+   | C-2 | 高評価パターン検出時のconfidence下限 | Warning | 注釈付与 |
+   | C-3 | 複数パターン該当時の調整 | Warning | 却下優先で再計算 |
+   | C-4 | 銘柄間一貫性 | Info | 参考情報として記録 |
+
+   C-1 却下パターンのconfidence上限:
+
+   | 却下パターン | confidence上限 | KB3根拠 |
+   |-------------|--------------|---------|
+   | A: 結果を原因と取り違え | 50% | CHD#4=30%, MNST#1=50% |
+   | B: 業界共通で差別化にならない | 30% | LLY#6=30% |
+   | C: 因果関係の飛躍 | 30% | MNST#5=30% |
+   | D: 定性的で定量的裏付けなし | 30% | COST#2=10% |
+   | E: 事実誤認 | 10% | 強制（ルール9） |
+   | F: 戦略を優位性と混同 | 50% | ORLY#2分離後90% |
+   | G: 純粋競合に対する優位性不明 | 50% | COST#3=50% |
+
+   C-2 高評価パターンのconfidence下限:
+
+   | 高評価パターン | confidence下限 | KB3根拠 |
+   |---------------|--------------|---------|
+   | I: 定量的裏付けのある差別化 | 50% | COST#1=70% |
+   | II: 直接的なCAGR接続メカニズム | 50% | CAGR全般50%+ |
+   | III: 能力 > 結果 | 50% | CHD#1=70% |
+   | IV: 構造的な市場ポジション | 70% | ORLY#2,#5=90% |
+   | V: 競合との具体的比較 | 50% | ORLY#1=70% |
+
+   C-3 複数パターン該当時の解決ルール:
+   1. パターンE（事実誤認）は全てに優先 → 強制10%
+   2. 却下パターン（A-G、E以外）を先に適用
+   3. 高評価パターン（I-V）を後に適用
+   4. 上限90%、下限10%
+
+   **自動修正の優先順位**:
+   1. confidence値（structured.json + report.md）
+   2. コメント文（report.md）
+   3. 主張の追記（report.md）
+   4. ルール適用の追記（report.md）
+   5. 注釈の追加（report.md）
+
+   全修正は verification-results.json の `corrections` 配列に記録。
+
+   **verification-results.json スキーマ**:
+   ```json
+   {
+     "research_id": "...",
+     "ticker": "ORLY",
+     "verification_timestamp": "2026-02-17T10:35:00Z",
+     "verification_layers": {
+       "layer_a_json_report_consistency": {
+         "status": "pass | fail | pass_with_warnings",
+         "checks": [
+           {
+             "check_id": "A-3",
+             "name": "confidenceとトーンの一致",
+             "status": "fail",
+             "severity": "critical",
+             "details": "主張#3（confidence 30%）のコメントが肯定的トーン",
+             "affected_claims": [3]
+           }
+         ]
+       },
+       "layer_b_ky_rule_compliance": { "...同構造..." },
+       "layer_c_pattern_consistency": { "...同構造..." }
+     },
+     "corrections": [
+       {
+         "correction_id": 1,
+         "source_check": "A-3",
+         "claim_id": 3,
+         "type": "comment_rewrite | confidence_adjustment | claim_addition | annotation",
+         "before": "ある程度の優位性として認められる",
+         "after": "方向性は認めるが、定量的裏付けが不足しており納得感は限定的",
+         "reason": "confidence 30% に対してトーンが肯定的すぎた"
+       }
+     ],
+     "overall_status": "pass | fail | pass_with_corrections",
+     "statistics": {
+       "total_checks": 20,
+       "passed": 18,
+       "failed_critical": 1,
+       "failed_warning": 1,
+       "info": 0,
+       "corrections_applied": 2
+     }
+   }
+   ```
+
+7. **T9: 精度検証（Lead 直接実行、常時実行）**:
+
+   **入力**: verified-report.md, structured.json, Phase 2 データ（あれば）
+   **出力**: accuracy-report.json
+
+   **モード切り替え**:
+
+   | モード | 対象 | 内容 |
+   |--------|------|------|
+   | **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の主張単位比較 |
+   | **簡易モード** | 上記以外の全銘柄 | confidence分布 + ヒューリスティック検証 |
+
+   Phase 2データファイルパターン: `analyst/phase2_KY/*_{TICKER}_phase2.md`
+
+   **フルモード（5銘柄のみ）**:
+   - `analyst/phase2_KY/phase1_{TICKER}_phase2.md` を Read で読み込み
+   - AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング
+   - マッチングできないものは unmatched / missing_in_ai として記録
+
+   乖離の定量化:
+
+   | 乖離幅 | 分類 |
+   |--------|------|
+   | 0 | exact_match |
+   | 1-10% | within_target |
+   | 11-20% | acceptable |
+   | 21-30% | significant |
+   | 31%+ | critical |
+
+   合格基準:
+
+   | メトリクス | 合格基準 |
+   |----------|---------|
+   | 平均乖離（優位性） | mean(abs(AI - Y)) <= 10% |
+   | 平均乖離（CAGR接続） | mean(abs(AI - Y)) <= 10% |
+   | 最大乖離 | max(abs(AI - Y)) <= 30% |
+   | 20%超乖離の主張数 | <= 全主張の25% |
+   | 方向性バイアス | mean(AI - Y)の絶対値 <= 5% |
+
+   不合格時: accuracy-report.json に不合格理由を記録し報告。レポート自体は出力する（ブロックしない）。
+
+   **簡易モード（5銘柄以外の全銘柄、常時実行）**:
+
+   | ID | チェック項目 | 重大度 | 判定基準 |
+   |----|-------------|--------|---------|
+   | S-1 | 90%の出現率 | Warning | 全主張の15%以下（KY基準: 6%） |
+   | S-2 | 50%の最頻値確認 | Info | 50%付近が30%以上 |
+   | S-3 | 10%の希少性 | Info | 全主張の15%以下（contradicted除く） |
+   | S-4 | CAGR > CA平均スコア | Info | 平均CAGR確信度 >= 平均CA確信度 |
+   | S-5 | 却下パターンconfidence上限 | Warning | T8 C-1と同一基準 |
+   | S-6 | ルール11なしの90%排除 | Critical | 業界構造分析なしに90%不可 |
+   | S-7 | 主張数の妥当性 | Warning | 5-15件の範囲内 |
+   | S-8 | ルール9自動適用確認 | Critical | contradicted → 10% |
+
+   **accuracy-report.json スキーマ**:
+   ```json
+   {
+     "research_id": "...",
+     "ticker": "ORLY",
+     "mode": "full | simplified",
+     "generated_at": "2026-02-17T10:37:00Z",
+     "kb_version": "v1.0.0",
+     "full_mode_results": {
+       "y_data_source": "analyst/phase2_KY/phase1_ORLY_phase2.md",
+       "claim_matching": {
+         "ai_claims_total": 6,
+         "y_evaluations_total": 6,
+         "matched": 5,
+         "unmatched_ai": 1,
+         "missing_in_ai": 1
+       },
+       "advantage_accuracy": {
+         "comparisons": [
+           {
+             "claim_id": 1,
+             "ai_confidence": 70,
+             "y_confidence": 70,
+             "deviation": 0,
+             "severity": "exact_match",
+             "deviation_analysis": "一致"
+           }
+         ],
+         "mean_abs_deviation": 8.0,
+         "max_abs_deviation": 20,
+         "direction_bias": "slight_underestimate"
+       },
+       "cagr_accuracy": { "...同構造..." },
+       "overall_verdict": "pass | fail",
+       "pass_criteria": {
+         "mean_deviation_within_10": true,
+         "max_deviation_within_30": true,
+         "over_20_percent_under_25_pct": true,
+         "direction_bias_within_5": true
+       },
+       "improvement_suggestions": ["..."]
+     },
+     "simplified_mode_results": {
+       "checks": [
+         {
+           "check_id": "S-1",
+           "name": "confidence分布の妥当性（90%の出現率）",
+           "status": "pass | warning | fail",
+           "value": "1件 (16.7%)",
+           "threshold": "15%以下"
+         }
+       ],
+       "overall_status": "pass | pass_with_warnings | fail",
+       "warning_count": 1,
+       "critical_count": 0
+     }
+   }
+   ```
 
 8. **[HF2] 最終出力提示（任意）** → HF ポイントセクション参照
 
@@ -884,7 +1119,7 @@ ca_eval_result:
 - [ ] Phase 3 で 2 タスク（T5, T6）が並列実行された
 - [ ] T7 が完了し report.md + structured.json が生成された
 - [ ] T8（3層検証）が完了し verified-report.md が生成された
-- [ ] T9（精度検証）が実行された（該当銘柄の場合）
+- [ ] T9（精度検証）が実行された（フルモード or 簡易モード）
 - [ ] research-meta.json の workflow が全フェーズ done に更新された
 - [ ] 全チームメイトが正常にシャットダウンした
 
