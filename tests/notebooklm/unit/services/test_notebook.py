@@ -1,0 +1,626 @@
+"""Unit tests for NotebookService.
+
+Tests cover:
+- create_notebook: Creates a new notebook and returns NotebookInfo.
+- list_notebooks: Lists all notebooks from the home page.
+- get_notebook_summary: Gets AI-generated summary for a notebook.
+- delete_notebook: Deletes a notebook via settings menu and confirmation.
+- DI: Service receives BrowserManager via constructor injection.
+- Error paths: empty title, empty notebook_id, invalid URL.
+- Private helpers: _extract_notebook_id, _extract_notebook_id_from_path.
+"""
+
+from __future__ import annotations
+
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+from typing import Any
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
+from notebooklm.browser.manager import NotebookLMBrowserManager
+from notebooklm.services.notebook import NotebookService
+from notebooklm.types import NotebookInfo, NotebookSummary
+
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def mock_page() -> AsyncMock:
+    """Create a mocked Playwright Page with locator support."""
+    page = AsyncMock()
+    page.url = "https://notebooklm.google.com"
+    page.goto = AsyncMock(return_value=None)
+    page.wait_for_load_state = AsyncMock(return_value=None)
+    page.close = AsyncMock(return_value=None)
+    return page
+
+
+@pytest.fixture
+def mock_manager(mock_page: AsyncMock) -> MagicMock:
+    """Create a mocked NotebookLMBrowserManager."""
+    manager = MagicMock(spec=NotebookLMBrowserManager)
+    manager.new_page = AsyncMock(return_value=mock_page)
+    manager.headless = True
+    manager.session_file = ".notebooklm-session.json"
+
+    @asynccontextmanager
+    async def _managed_page():
+        try:
+            yield mock_page
+        finally:
+            await mock_page.close()
+
+    manager.managed_page = _managed_page
+    return manager
+
+
+@pytest.fixture
+def notebook_service(mock_manager: MagicMock) -> NotebookService:
+    """Create a NotebookService with mocked BrowserManager."""
+    return NotebookService(mock_manager)
+
+
+# ---------------------------------------------------------------------------
+# DI tests
+# ---------------------------------------------------------------------------
+
+
+class TestNotebookServiceInit:
+    """Test NotebookService initialization and DI."""
+
+    def test_正常系_BrowserManagerをDIで受け取る(self, mock_manager: MagicMock) -> None:
+        service = NotebookService(mock_manager)
+        assert service._browser_manager is mock_manager
+
+    def test_正常系_SelectorManagerが初期化される(
+        self, notebook_service: NotebookService
+    ) -> None:
+        assert notebook_service._selectors is not None
+
+
+# ---------------------------------------------------------------------------
+# create_notebook tests
+# ---------------------------------------------------------------------------
+
+
+class TestCreateNotebook:
+    """Test NotebookService.create_notebook()."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ノートブックを作成してNotebookInfoを返す(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        # Arrange: Set up page to simulate notebook creation flow
+        # After clicking create, URL changes to new notebook page
+        mock_page.url = (
+            "https://notebooklm.google.com/notebook/"
+            "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+        )
+
+        # Mock locator for create button
+        mock_locator = AsyncMock()
+        mock_locator.wait_for = AsyncMock(return_value=None)
+        mock_locator.count = AsyncMock(return_value=1)
+        mock_locator.first = mock_locator
+        mock_locator.click = AsyncMock(return_value=None)
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        # Mock wait_for_url for navigation after creation
+        mock_page.wait_for_url = AsyncMock(return_value=None)
+
+        # Act
+        result = await notebook_service.create_notebook("AI Research Notes")
+
+        # Assert
+        assert isinstance(result, NotebookInfo)
+        assert result.title == "AI Research Notes"
+        assert result.notebook_id == "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+        assert result.source_count == 0
+
+    @pytest.mark.asyncio
+    async def test_正常系_タイトルがNotebookInfoに設定される(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        mock_page.url = "https://notebooklm.google.com/notebook/test-id-123"
+
+        mock_locator = AsyncMock()
+        mock_locator.wait_for = AsyncMock(return_value=None)
+        mock_locator.count = AsyncMock(return_value=1)
+        mock_locator.first = mock_locator
+        mock_locator.click = AsyncMock(return_value=None)
+        mock_locator.fill = AsyncMock(return_value=None)
+        mock_page.locator = MagicMock(return_value=mock_locator)
+        mock_page.wait_for_url = AsyncMock(return_value=None)
+
+        result = await notebook_service.create_notebook("My Custom Title")
+
+        assert result.title == "My Custom Title"
+
+    @pytest.mark.asyncio
+    async def test_異常系_空タイトルでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="title must not be empty"):
+            await notebook_service.create_notebook("")
+
+    @pytest.mark.asyncio
+    async def test_異常系_空白のみのタイトルでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="title must not be empty"):
+            await notebook_service.create_notebook("   ")
+
+    @pytest.mark.asyncio
+    async def test_異常系_ページ作成後にcloseが呼ばれる(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        mock_page.url = "https://notebooklm.google.com/notebook/test-id"
+
+        mock_locator = AsyncMock()
+        mock_locator.wait_for = AsyncMock(return_value=None)
+        mock_locator.count = AsyncMock(return_value=1)
+        mock_locator.first = mock_locator
+        mock_locator.click = AsyncMock(return_value=None)
+        mock_page.locator = MagicMock(return_value=mock_locator)
+        mock_page.wait_for_url = AsyncMock(return_value=None)
+
+        await notebook_service.create_notebook("Test")
+
+        mock_page.close.assert_awaited_once()
+
+
+# ---------------------------------------------------------------------------
+# list_notebooks tests
+# ---------------------------------------------------------------------------
+
+
+class TestListNotebooks:
+    """Test NotebookService.list_notebooks()."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ノートブック一覧を取得(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        # Arrange: Simulate notebook list page with links
+        link1 = AsyncMock()
+        link1.get_attribute = AsyncMock(return_value="/notebook/id-001")
+        link1.inner_text = AsyncMock(return_value="Notebook One")
+
+        link2 = AsyncMock()
+        link2.get_attribute = AsyncMock(return_value="/notebook/id-002")
+        link2.inner_text = AsyncMock(return_value="Notebook Two")
+
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[link1, link2])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        # Act
+        result = await notebook_service.list_notebooks()
+
+        # Assert
+        assert len(result) == 2
+        assert all(isinstance(nb, NotebookInfo) for nb in result)
+        assert result[0].notebook_id == "id-001"
+        assert result[0].title == "Notebook One"
+        assert result[1].notebook_id == "id-002"
+        assert result[1].title == "Notebook Two"
+
+    @pytest.mark.asyncio
+    async def test_正常系_ノートブックがない場合は空リスト(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        result = await notebook_service.list_notebooks()
+
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_正常系_ページがcloseされる(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        await notebook_service.list_notebooks()
+
+        mock_page.close.assert_awaited_once()
+
+
+# ---------------------------------------------------------------------------
+# get_notebook_summary tests
+# ---------------------------------------------------------------------------
+
+
+class TestGetNotebookSummary:
+    """Test NotebookService.get_notebook_summary()."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ノートブック概要を取得(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        # Arrange: Navigate to notebook and extract summary
+        mock_page.url = "https://notebooklm.google.com/notebook/nb-id-123"
+
+        # Mock summary text extraction
+        summary_locator = AsyncMock()
+        summary_locator.count = AsyncMock(return_value=1)
+        summary_locator.inner_text = AsyncMock(
+            return_value="This notebook covers AI research topics."
+        )
+
+        # Mock suggested questions
+        question_elements = [
+            AsyncMock(inner_text=AsyncMock(return_value="What are the key findings?")),
+            AsyncMock(inner_text=AsyncMock(return_value="How does this compare?")),
+        ]
+
+        def locator_side_effect(selector: str) -> AsyncMock:
+            if "summary" in selector.lower() or "概要" in selector:
+                return summary_locator
+            mock = AsyncMock()
+            mock.count = AsyncMock(return_value=0)
+            mock.all = AsyncMock(return_value=question_elements)
+            return mock
+
+        mock_page.locator = MagicMock(side_effect=locator_side_effect)
+        mock_page.wait_for_load_state = AsyncMock(return_value=None)
+
+        # Act
+        result = await notebook_service.get_notebook_summary("nb-id-123")
+
+        # Assert
+        assert isinstance(result, NotebookSummary)
+        assert result.notebook_id == "nb-id-123"
+        assert "AI research" in result.summary_text
+
+    @pytest.mark.asyncio
+    async def test_異常系_空のnotebook_idでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="notebook_id must not be empty"):
+            await notebook_service.get_notebook_summary("")
+
+    @pytest.mark.asyncio
+    async def test_異常系_空白のみのnotebook_idでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="notebook_id must not be empty"):
+            await notebook_service.get_notebook_summary("   ")
+
+    @pytest.mark.asyncio
+    async def test_正常系_ページがcloseされる(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        mock_page.url = "https://notebooklm.google.com/notebook/nb-id-123"
+
+        summary_locator = AsyncMock()
+        summary_locator.count = AsyncMock(return_value=1)
+        summary_locator.inner_text = AsyncMock(return_value="Summary text")
+
+        mock_page.locator = MagicMock(return_value=summary_locator)
+        mock_page.wait_for_load_state = AsyncMock(return_value=None)
+
+        # Mock for suggested questions (empty)
+        question_locator = AsyncMock()
+        question_locator.all = AsyncMock(return_value=[])
+
+        call_count = 0
+
+        def locator_dispatch(selector: str) -> AsyncMock:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                return summary_locator
+            return question_locator
+
+        mock_page.locator = MagicMock(side_effect=locator_dispatch)
+
+        await notebook_service.get_notebook_summary("nb-id-123")
+
+        mock_page.close.assert_awaited_once()
+
+
+# ---------------------------------------------------------------------------
+# _extract_notebook_id tests
+# ---------------------------------------------------------------------------
+
+
+class TestExtractNotebookId:
+    """Test NotebookService._extract_notebook_id() static method."""
+
+    def test_正常系_URLからnotebook_idを抽出(self) -> None:
+        url = "https://notebooklm.google.com/notebook/abc-123-def"
+        result = NotebookService._extract_notebook_id(url)
+        assert result == "abc-123-def"
+
+    def test_正常系_UUIDを含むURLからnotebook_idを抽出(self) -> None:
+        url = (
+            "https://notebooklm.google.com/notebook/"
+            "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+        )
+        result = NotebookService._extract_notebook_id(url)
+        assert result == "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+
+    def test_正常系_クエリパラメータ付きURLから抽出(self) -> None:
+        url = "https://notebooklm.google.com/notebook/abc-123?tab=sources"
+        result = NotebookService._extract_notebook_id(url)
+        assert result == "abc-123"
+
+    def test_異常系_notebook_idがないURLでValueError(self) -> None:
+        url = "https://notebooklm.google.com/"
+        with pytest.raises(ValueError, match="No notebook ID found in URL"):
+            NotebookService._extract_notebook_id(url)
+
+    def test_異常系_不正なURLでValueError(self) -> None:
+        url = "https://notebooklm.google.com/settings"
+        with pytest.raises(ValueError, match="No notebook ID found in URL"):
+            NotebookService._extract_notebook_id(url)
+
+
+# ---------------------------------------------------------------------------
+# _extract_notebook_id_from_path tests
+# ---------------------------------------------------------------------------
+
+
+class TestExtractNotebookIdFromPath:
+    """Test NotebookService._extract_notebook_id_from_path() static method."""
+
+    def test_正常系_パスからnotebook_idを抽出(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path("/notebook/abc-123")
+        assert result == "abc-123"
+
+    def test_正常系_UUIDパスからnotebook_idを抽出(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path(
+            "/notebook/c9354f3f-f55b-4f90-a5c4-219e582945cf"
+        )
+        assert result == "c9354f3f-f55b-4f90-a5c4-219e582945cf"
+
+    def test_正常系_notebook_idがないパスでNone(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path("/settings")
+        assert result is None
+
+    def test_正常系_空パスでNone(self) -> None:
+        result = NotebookService._extract_notebook_id_from_path("")
+        assert result is None
+
+
+# ---------------------------------------------------------------------------
+# list_notebooks edge cases
+# ---------------------------------------------------------------------------
+
+
+class TestListNotebooksEdgeCases:
+    """Edge case tests for NotebookService.list_notebooks()."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_hrefがNoneのリンクはスキップ(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        link_with_href = AsyncMock()
+        link_with_href.get_attribute = AsyncMock(return_value="/notebook/id-001")
+        link_with_href.inner_text = AsyncMock(return_value="Valid Notebook")
+
+        link_without_href = AsyncMock()
+        link_without_href.get_attribute = AsyncMock(return_value=None)
+
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[link_with_href, link_without_href])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        result = await notebook_service.list_notebooks()
+
+        assert len(result) == 1
+        assert result[0].notebook_id == "id-001"
+
+    @pytest.mark.asyncio
+    async def test_正常系_notebook_idが抽出できないリンクはスキップ(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        valid_link = AsyncMock()
+        valid_link.get_attribute = AsyncMock(return_value="/notebook/id-001")
+        valid_link.inner_text = AsyncMock(return_value="Valid Notebook")
+
+        invalid_link = AsyncMock()
+        invalid_link.get_attribute = AsyncMock(return_value="/settings/general")
+        invalid_link.inner_text = AsyncMock(return_value="Settings")
+
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[valid_link, invalid_link])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        result = await notebook_service.list_notebooks()
+
+        assert len(result) == 1
+        assert result[0].notebook_id == "id-001"
+
+    @pytest.mark.asyncio
+    async def test_正常系_Noneタイトルのノートブックはtitleがデフォルト値になる(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        """When inner_text returns None, title defaults to 'Untitled'."""
+        link = AsyncMock()
+        link.get_attribute = AsyncMock(return_value="/notebook/id-001")
+        link.inner_text = AsyncMock(return_value=None)
+
+        mock_locator = AsyncMock()
+        mock_locator.all = AsyncMock(return_value=[link])
+        mock_page.locator = MagicMock(return_value=mock_locator)
+
+        result = await notebook_service.list_notebooks()
+
+        assert len(result) == 1
+        assert result[0].title == "Untitled"
+
+
+# ---------------------------------------------------------------------------
+# delete_notebook tests
+# ---------------------------------------------------------------------------
+
+
+class TestDeleteNotebook:
+    """Test NotebookService.delete_notebook()."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ノートブックを削除してTrueを返す(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        # Arrange: Simulate notebook found on home page
+        notebook_link = AsyncMock()
+        notebook_link.count = AsyncMock(return_value=1)
+        notebook_link.first = AsyncMock()
+        notebook_link.first.hover = AsyncMock(return_value=None)
+
+        # Settings menu button
+        settings_locator = AsyncMock()
+        settings_locator.count = AsyncMock(return_value=1)
+        settings_locator.click = AsyncMock(return_value=None)
+
+        # Delete menu item
+        delete_locator = AsyncMock()
+        delete_locator.count = AsyncMock(return_value=1)
+        delete_locator.click = AsyncMock(return_value=None)
+
+        # Confirm button
+        confirm_locator = AsyncMock()
+        confirm_locator.count = AsyncMock(return_value=1)
+        confirm_locator.click = AsyncMock(return_value=None)
+
+        call_count = 0
+
+        def locator_dispatch(selector: str) -> AsyncMock:
+            nonlocal call_count
+            call_count += 1
+            if "/notebook/nb-delete-id" in selector:
+                return notebook_link
+            # Return appropriate mock for each subsequent locator call
+            if call_count <= 2:
+                return settings_locator
+            if call_count <= 3:
+                return delete_locator
+            return confirm_locator
+
+        mock_page.locator = MagicMock(side_effect=locator_dispatch)
+
+        # Act
+        result = await notebook_service.delete_notebook("nb-delete-id")
+
+        # Assert
+        assert result is True
+
+    @pytest.mark.asyncio
+    async def test_異常系_空のnotebook_idでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="notebook_id must not be empty"):
+            await notebook_service.delete_notebook("")
+
+    @pytest.mark.asyncio
+    async def test_異常系_空白のみのnotebook_idでValueError(
+        self,
+        notebook_service: NotebookService,
+    ) -> None:
+        with pytest.raises(ValueError, match="notebook_id must not be empty"):
+            await notebook_service.delete_notebook("   ")
+
+    @pytest.mark.asyncio
+    async def test_異常系_存在しないノートブックでElementNotFoundError(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        from notebooklm.errors import ElementNotFoundError
+
+        # Simulate no notebook found
+        notebook_link = AsyncMock()
+        notebook_link.count = AsyncMock(return_value=0)
+
+        mock_page.locator = MagicMock(return_value=notebook_link)
+
+        with pytest.raises(ElementNotFoundError, match="Notebook not found"):
+            await notebook_service.delete_notebook("non-existent-id")
+
+    @pytest.mark.asyncio
+    async def test_正常系_ページがcloseされる(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        # Arrange: Set up successful delete flow
+        notebook_link = AsyncMock()
+        notebook_link.count = AsyncMock(return_value=1)
+        notebook_link.first = AsyncMock()
+        notebook_link.first.hover = AsyncMock(return_value=None)
+
+        action_locator = AsyncMock()
+        action_locator.count = AsyncMock(return_value=1)
+        action_locator.click = AsyncMock(return_value=None)
+
+        call_count = 0
+
+        def locator_dispatch(selector: str) -> AsyncMock:
+            nonlocal call_count
+            call_count += 1
+            if "/notebook/" in selector:
+                return notebook_link
+            return action_locator
+
+        mock_page.locator = MagicMock(side_effect=locator_dispatch)
+
+        await notebook_service.delete_notebook("nb-close-test")
+
+        mock_page.close.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_異常系_エラー時もページがcloseされる(
+        self,
+        notebook_service: NotebookService,
+        mock_page: AsyncMock,
+    ) -> None:
+        from notebooklm.errors import ElementNotFoundError
+
+        # Simulate notebook not found
+        notebook_link = AsyncMock()
+        notebook_link.count = AsyncMock(return_value=0)
+        mock_page.locator = MagicMock(return_value=notebook_link)
+
+        with pytest.raises(ElementNotFoundError):
+            await notebook_service.delete_notebook("fail-id")
+
+        mock_page.close.assert_awaited_once()

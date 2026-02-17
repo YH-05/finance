@@ -81,3 +81,6 @@ data/raw/etfcom/tickers.json
 
 # Workflow result exports (large JSON files)
 data/exports/news-workflow/workflow-result-*.json
+
+# NotebookLM Playwright session (contains Google auth cookies)
+.notebooklm-session.json
