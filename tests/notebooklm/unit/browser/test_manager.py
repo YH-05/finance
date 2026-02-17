@@ -173,7 +173,8 @@ class TestNotebookLMBrowserManagerSession:
         mock_context.storage_state = AsyncMock(return_value=None)
         manager._context = mock_context
 
-        await manager.save_session()
+        with patch("os.chmod"):
+            await manager.save_session()
 
         mock_context.storage_state.assert_awaited_once_with(path="test-session.json")
 
@@ -348,3 +349,47 @@ class TestNotebookLMBrowserManagerSessionExpiry:
 
         result = await manager.is_session_valid()
         assert result is False
+
+
+class TestNotebookLMBrowserManagerManagedPage:
+    """Tests for managed_page() context manager."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_ページが作成されyield後にcloseされる(self) -> None:
+        from notebooklm.browser.manager import NotebookLMBrowserManager
+
+        manager = NotebookLMBrowserManager()
+        mock_page = AsyncMock()
+        mock_page.close = AsyncMock()
+
+        mock_context = AsyncMock()
+        mock_context.new_page = AsyncMock(return_value=mock_page)
+        manager._context = mock_context
+        manager._browser = AsyncMock()
+        manager._playwright = MagicMock()
+
+        async with manager.managed_page() as page:
+            assert page is mock_page
+            mock_page.close.assert_not_awaited()
+
+        mock_page.close.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_正常系_例外発生時もページがcloseされる(self) -> None:
+        from notebooklm.browser.manager import NotebookLMBrowserManager
+
+        manager = NotebookLMBrowserManager()
+        mock_page = AsyncMock()
+        mock_page.close = AsyncMock()
+
+        mock_context = AsyncMock()
+        mock_context.new_page = AsyncMock(return_value=mock_page)
+        manager._context = mock_context
+        manager._browser = AsyncMock()
+        manager._playwright = MagicMock()
+
+        with pytest.raises(RuntimeError, match="test error"):
+            async with manager.managed_page() as page:
+                raise RuntimeError("test error")
+
+        mock_page.close.assert_awaited_once()

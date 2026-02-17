@@ -63,17 +63,18 @@ async def wait_for_element(
     *,
     timeout_ms: int = DEFAULT_ELEMENT_TIMEOUT_MS,
 ) -> Any:
-    """Wait for an element using a fallback chain of selectors.
+    """Wait for an element using parallel selector matching.
 
-    Tries each selector in order and returns the first match.
-    Uses Playwright's ``locator().wait_for()`` for each candidate.
+    Tries all selectors in parallel and returns the first element found.
+    This significantly reduces wait time when multiple fallback selectors
+    exist, as slow/failing selectors don't block faster ones.
 
     Parameters
     ----------
     page : Any
         Playwright page object.
     selectors : list[str]
-        Ordered list of CSS selectors to try (highest priority first).
+        List of CSS selectors to try in parallel.
     timeout_ms : int
         Timeout per selector attempt in milliseconds.
 
@@ -95,39 +96,71 @@ async def wait_for_element(
     ...     timeout_ms=5000,
     ... )
     """
-    tried_selectors: list[str] = []
 
-    for selector in selectors:
+    async def _try_selector(selector: str) -> tuple[str, Any]:
+        """Try a single selector and return result on success.
+
+        Raises
+        ------
+        ElementNotFoundError
+            If the selector does not match (used as signal for FIRST_COMPLETED).
+        """
         try:
             locator = page.locator(selector)
             await locator.wait_for(timeout=timeout_ms, state="visible")
 
             count = await locator.count()
             if count > 0:
-                logger.debug(
-                    "Element found",
-                    selector=selector,
-                    count=count,
-                )
-                return locator.first
+                return (selector, locator.first)
+        except Exception:  # nosec B110
+            pass  # Intentional: try next selector in fallback chain
 
-        except (TimeoutError, Exception) as e:
-            tried_selectors.append(selector)
-            logger.debug(
-                "Selector did not match",
-                selector=selector,
-                error=str(e),
+        raise ElementNotFoundError(
+            f"Selector did not match: {selector}",
+            context={"selector": selector},
+        )
+
+    # Create tasks for all selectors
+    tasks = [asyncio.create_task(_try_selector(sel)) for sel in selectors]
+
+    try:
+        # Wait for the first successful result
+        while tasks:
+            done, tasks_set = await asyncio.wait(
+                tasks,
+                return_when=asyncio.FIRST_COMPLETED,
             )
-            continue
+            tasks = list(tasks_set)
 
-    raise ElementNotFoundError(
-        f"No element found for any selector: {tried_selectors}",
-        context={
-            "selectors": tried_selectors,
-            "timeout_ms": timeout_ms,
-            "page_url": getattr(page, "url", "unknown"),
-        },
-    )
+            for task in done:
+                exc = task.exception()
+                if exc is None:
+                    # Success - cancel remaining tasks and return
+                    for remaining in tasks:
+                        remaining.cancel()
+                    selector, element = task.result()
+                    logger.debug(
+                        "Element found",
+                        selector=selector,
+                        total_selectors=len(selectors),
+                    )
+                    return element
+
+        # All tasks completed with exceptions
+        raise ElementNotFoundError(
+            f"None of {len(selectors)} selectors matched within {timeout_ms}ms",
+            context={
+                "selectors": selectors,
+                "timeout_ms": timeout_ms,
+                "page_url": getattr(page, "url", "unknown"),
+            },
+        )
+    except ElementNotFoundError:
+        raise
+    finally:
+        # Ensure all tasks are cancelled on exit
+        for task in tasks:
+            task.cancel()
 
 
 async def extract_text(

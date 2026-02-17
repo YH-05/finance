@@ -23,6 +23,7 @@ def mock_ctx() -> MagicMock:
     """Create a mocked FastMCP Context with lifespan_context."""
     ctx = MagicMock()
     ctx.lifespan_context = {"browser_manager": MagicMock()}
+    ctx.report_progress = AsyncMock(return_value=None)
     return ctx
 
 

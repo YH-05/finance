@@ -51,6 +51,7 @@ from notebooklm.constants import (
     DEFAULT_ELEMENT_TIMEOUT_MS,
     GENERATION_POLL_INTERVAL_SECONDS,
 )
+from notebooklm.decorators import handle_browser_operation
 from notebooklm.errors import BrowserTimeoutError
 from notebooklm.selectors import SelectorManager
 from notebooklm.types import AudioOverviewResult
@@ -95,6 +96,7 @@ class AudioService:
 
         logger.debug("AudioService initialized")
 
+    @handle_browser_operation(error_class=BrowserTimeoutError)
     async def generate_audio_overview(
         self,
         notebook_id: str,
@@ -151,8 +153,7 @@ class AudioService:
 
         start_time = time.monotonic()
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -199,19 +200,6 @@ class AudioService:
                 status="completed",
                 generation_time_seconds=round(elapsed, 2),
             )
-
-        except (ValueError, BrowserTimeoutError):
-            raise
-        except Exception as e:
-            raise BrowserTimeoutError(
-                f"Audio Overview generation failed: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
 
     # ---- Private helpers ----
 

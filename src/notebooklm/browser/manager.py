@@ -31,8 +31,12 @@ news.extractors.playwright : Similar Playwright browser pattern.
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
 
 from notebooklm.constants import (
     DEFAULT_NAVIGATION_TIMEOUT_MS,
@@ -253,13 +257,38 @@ class NotebookLMBrowserManager:
         logger.debug("New page created")
         return page
 
+    @asynccontextmanager
+    async def managed_page(self) -> AsyncIterator[Any]:
+        """Context manager for automatic page lifecycle management.
+
+        Creates a new page, yields it for use, and ensures it is closed
+        in the finally block regardless of success or failure.
+
+        Yields
+        ------
+        Any
+            Playwright page instance.
+
+        Examples
+        --------
+        >>> async with browser_manager.managed_page() as page:
+        ...     await page.goto("https://example.com")
+        ...     # Page is automatically closed after this block
+        """
+        page = await self.new_page()
+        try:
+            yield page
+        finally:
+            await page.close()
+
     # ---- Session management ----
 
     async def save_session(self) -> None:
         """Save the current browser session state to disk.
 
         Persists cookies and local storage to the session file
-        for later restoration.
+        for later restoration. On Unix-like systems, the file
+        permissions are restricted to owner-only read/write (0600).
 
         Raises
         ------
@@ -273,7 +302,24 @@ class NotebookLMBrowserManager:
             )
 
         await self._context.storage_state(path=self.session_file)
-        logger.info("Session saved", session_file=self.session_file)
+
+        # SEC-006: Restrict session file to owner-only read/write (0600)
+        import platform
+        import stat
+        from pathlib import Path
+
+        if platform.system() != "Windows":
+            Path(self.session_file).chmod(stat.S_IRUSR | stat.S_IWUSR)
+            logger.info(
+                "Session saved with secure permissions",
+                session_file=self.session_file,
+                permissions="0600",
+            )
+        else:
+            logger.warning(
+                "Session saved (Windows does not support Unix permissions)",
+                session_file=self.session_file,
+            )
 
     def has_session(self) -> bool:
         """Check whether a session file exists on disk.

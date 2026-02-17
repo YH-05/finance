@@ -12,6 +12,7 @@ Tests cover:
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -45,6 +46,15 @@ def mock_manager(mock_page: AsyncMock) -> MagicMock:
     manager.new_page = AsyncMock(return_value=mock_page)
     manager.headless = True
     manager.session_file = ".notebooklm-session.json"
+
+    @asynccontextmanager
+    async def _managed_page():
+        try:
+            yield mock_page
+        finally:
+            await mock_page.close()
+
+    manager.managed_page = _managed_page
     return manager
 
 

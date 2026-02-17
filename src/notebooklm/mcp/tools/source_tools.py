@@ -32,11 +32,8 @@ from typing import Any
 from fastmcp import Context
 from mcp.server.fastmcp import FastMCP
 
-from notebooklm.errors import NotebookLMError
+from notebooklm.decorators import mcp_tool_handler
 from notebooklm.services.source import SourceService
-from utils_core.logging import get_logger
-
-logger = get_logger(__name__)
 
 
 def register_source_tools(mcp: FastMCP) -> None:
@@ -49,6 +46,7 @@ def register_source_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_add_text_source")
     async def notebooklm_add_text_source(
         notebook_id: str,
         text: str,
@@ -79,52 +77,17 @@ def register_source_tools(mcp: FastMCP) -> None:
             - title: Display title of the source.
             - source_type: Type of the source (always "text").
         """
-        logger.info(
-            "MCP tool called: notebooklm_add_text_source",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        source = await service.add_text_source(
             notebook_id=notebook_id,
+            text=text,
             title=title,
-            text_length=len(text),
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            source = await service.add_text_source(
-                notebook_id=notebook_id,
-                text=text,
-                title=title,
-            )
-
-            result = source.model_dump()
-
-            logger.info(
-                "notebooklm_add_text_source completed",
-                notebook_id=notebook_id,
-                source_id=source.source_id,
-                title=source.title,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_add_text_source failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_add_text_source failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return source.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_list_sources")
     async def notebooklm_list_sources(
         notebook_id: str,
         ctx: Context,
@@ -150,53 +113,21 @@ def register_source_tools(mcp: FastMCP) -> None:
             - total: Total number of sources found.
             - notebook_id: The notebook ID queried.
         """
-        logger.info(
-            "MCP tool called: notebooklm_list_sources",
-            notebook_id=notebook_id,
-        )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            sources = await service.list_sources(notebook_id)
-
-            result = {
-                "sources": [src.model_dump() for src in sources],
-                "total": len(sources),
-                "notebook_id": notebook_id,
-            }
-
-            logger.info(
-                "notebooklm_list_sources completed",
-                notebook_id=notebook_id,
-                total=len(sources),
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_list_sources failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_list_sources failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        sources = await service.list_sources(notebook_id)
+        return {
+            "sources": [src.model_dump() for src in sources],
+            "total": len(sources),
+            "notebook_id": notebook_id,
+        }
 
     # ------------------------------------------------------------------
     # Phase 2 tools
     # ------------------------------------------------------------------
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_add_url_source")
     async def notebooklm_add_url_source(
         notebook_id: str,
         url: str,
@@ -221,49 +152,16 @@ def register_source_tools(mcp: FastMCP) -> None:
         dict
             JSON object containing source_id, title, and source_type.
         """
-        logger.info(
-            "MCP tool called: notebooklm_add_url_source",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        source = await service.add_url_source(
             notebook_id=notebook_id,
             url=url,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            source = await service.add_url_source(
-                notebook_id=notebook_id,
-                url=url,
-            )
-
-            result = source.model_dump()
-
-            logger.info(
-                "notebooklm_add_url_source completed",
-                notebook_id=notebook_id,
-                source_id=source.source_id,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_add_url_source failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_add_url_source failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return source.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_add_file_source")
     async def notebooklm_add_file_source(
         notebook_id: str,
         file_path: str,
@@ -288,56 +186,16 @@ def register_source_tools(mcp: FastMCP) -> None:
         dict
             JSON object containing source_id, title, and source_type.
         """
-        logger.info(
-            "MCP tool called: notebooklm_add_file_source",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        source = await service.add_file_source(
             notebook_id=notebook_id,
             file_path=file_path,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            source = await service.add_file_source(
-                notebook_id=notebook_id,
-                file_path=file_path,
-            )
-
-            result = source.model_dump()
-
-            logger.info(
-                "notebooklm_add_file_source completed",
-                notebook_id=notebook_id,
-                source_id=source.source_id,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_add_file_source failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except FileNotFoundError as e:
-            logger.error(
-                "notebooklm_add_file_source failed: file not found",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "FileNotFoundError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_add_file_source failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return source.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_get_source_details")
     async def notebooklm_get_source_details(
         notebook_id: str,
         source_index: int,
@@ -363,49 +221,16 @@ def register_source_tools(mcp: FastMCP) -> None:
             JSON object containing source_id, title, source_type,
             source_url, and content_summary.
         """
-        logger.info(
-            "MCP tool called: notebooklm_get_source_details",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        details = await service.get_source_details(
             notebook_id=notebook_id,
             source_index=source_index,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            details = await service.get_source_details(
-                notebook_id=notebook_id,
-                source_index=source_index,
-            )
-
-            result = details.model_dump()
-
-            logger.info(
-                "notebooklm_get_source_details completed",
-                notebook_id=notebook_id,
-                source_id=details.source_id,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_get_source_details failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_get_source_details failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return details.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_delete_source")
     async def notebooklm_delete_source(
         notebook_id: str,
         source_index: int,
@@ -429,54 +254,20 @@ def register_source_tools(mcp: FastMCP) -> None:
         dict
             JSON object containing deleted (bool) and notebook_id.
         """
-        logger.info(
-            "MCP tool called: notebooklm_delete_source",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        deleted = await service.delete_source(
             notebook_id=notebook_id,
             source_index=source_index,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            deleted = await service.delete_source(
-                notebook_id=notebook_id,
-                source_index=source_index,
-            )
-
-            result = {
-                "deleted": deleted,
-                "notebook_id": notebook_id,
-                "source_index": source_index,
-            }
-
-            logger.info(
-                "notebooklm_delete_source completed",
-                notebook_id=notebook_id,
-                source_index=source_index,
-                deleted=deleted,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_delete_source failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_delete_source failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return {
+            "deleted": deleted,
+            "notebook_id": notebook_id,
+            "source_index": source_index,
+        }
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_rename_source")
     async def notebooklm_rename_source(
         notebook_id: str,
         source_index: int,
@@ -504,52 +295,17 @@ def register_source_tools(mcp: FastMCP) -> None:
         dict
             JSON object containing source_id, title, and source_type.
         """
-        logger.info(
-            "MCP tool called: notebooklm_rename_source",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        source = await service.rename_source(
             notebook_id=notebook_id,
             source_index=source_index,
             new_name=new_name,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            source = await service.rename_source(
-                notebook_id=notebook_id,
-                source_index=source_index,
-                new_name=new_name,
-            )
-
-            result = source.model_dump()
-
-            logger.info(
-                "notebooklm_rename_source completed",
-                notebook_id=notebook_id,
-                source_index=source_index,
-                new_name=new_name,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_rename_source failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_rename_source failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return source.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_toggle_source_selection")
     async def notebooklm_toggle_source_selection(
         notebook_id: str,
         ctx: Context,
@@ -579,56 +335,22 @@ def register_source_tools(mcp: FastMCP) -> None:
             JSON object containing toggled (bool), notebook_id,
             source_index, and select_all.
         """
-        logger.info(
-            "MCP tool called: notebooklm_toggle_source_selection",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        toggled = await service.toggle_source_selection(
             notebook_id=notebook_id,
             source_index=source_index,
             select_all=select_all,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            toggled = await service.toggle_source_selection(
-                notebook_id=notebook_id,
-                source_index=source_index,
-                select_all=select_all,
-            )
-
-            result = {
-                "toggled": toggled,
-                "notebook_id": notebook_id,
-                "source_index": source_index,
-                "select_all": select_all,
-            }
-
-            logger.info(
-                "notebooklm_toggle_source_selection completed",
-                notebook_id=notebook_id,
-                toggled=toggled,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_toggle_source_selection failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_toggle_source_selection failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return {
+            "toggled": toggled,
+            "notebook_id": notebook_id,
+            "source_index": source_index,
+            "select_all": select_all,
+        }
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_web_research")
     async def notebooklm_web_research(
         notebook_id: str,
         query: str,
@@ -658,61 +380,20 @@ def register_source_tools(mcp: FastMCP) -> None:
             JSON object containing results list, total count,
             notebook_id, query, and mode.
         """
-        logger.info(
-            "MCP tool called: notebooklm_web_research",
+        if mode not in ("fast", "deep"):
+            raise ValueError(f"Invalid mode: {mode}. Must be 'fast' or 'deep'.")
+
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = SourceService(browser_manager)
+        results = await service.web_research(
             notebook_id=notebook_id,
             query=query,
-            mode=mode,
+            mode=mode,  # type: ignore[arg-type]
         )
-
-        try:
-            # Validate mode
-            if mode not in ("fast", "deep"):
-                return {
-                    "error": f"Invalid mode: {mode}. Must be 'fast' or 'deep'.",
-                    "error_type": "ValueError",
-                }
-
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = SourceService(browser_manager)
-            results = await service.web_research(
-                notebook_id=notebook_id,
-                query=query,
-                mode=mode,  # type: ignore[arg-type]
-            )
-
-            result = {
-                "results": [r.model_dump() for r in results],
-                "total": len(results),
-                "notebook_id": notebook_id,
-                "query": query,
-                "mode": mode,
-            }
-
-            logger.info(
-                "notebooklm_web_research completed",
-                notebook_id=notebook_id,
-                query=query,
-                mode=mode,
-                total=len(results),
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_web_research failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_web_research failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return {
+            "results": [r.model_dump() for r in results],
+            "total": len(results),
+            "notebook_id": notebook_id,
+            "query": query,
+            "mode": mode,
+        }

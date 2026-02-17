@@ -24,11 +24,8 @@ from typing import Any
 from fastmcp import Context
 from mcp.server.fastmcp import FastMCP
 
-from notebooklm.errors import NotebookLMError
+from notebooklm.decorators import mcp_tool_handler
 from notebooklm.services.note import NoteService
-from utils_core.logging import get_logger
-
-logger = get_logger(__name__)
 
 
 def register_note_tools(mcp: FastMCP) -> None:
@@ -41,6 +38,7 @@ def register_note_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_create_note")
     async def notebooklm_create_note(
         notebook_id: str,
         content: str,
@@ -72,51 +70,17 @@ def register_note_tools(mcp: FastMCP) -> None:
             - note_id: Identifier for the created note.
             - title: Display title of the note.
         """
-        logger.info(
-            "MCP tool called: notebooklm_create_note",
-            notebook_id=notebook_id,
-            content_length=len(content),
-            has_title=title is not None,
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NoteService(browser_manager)
+        note = await service.create_note(
+            notebook_id,
+            content,
+            title=title,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NoteService(browser_manager)
-            note = await service.create_note(
-                notebook_id,
-                content,
-                title=title,
-            )
-
-            result = note.model_dump()
-
-            logger.info(
-                "notebooklm_create_note completed",
-                notebook_id=notebook_id,
-                note_id=note.note_id,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_create_note failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_create_note failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return note.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_list_notes")
     async def notebooklm_list_notes(
         notebook_id: str,
         ctx: Context,
@@ -140,48 +104,16 @@ def register_note_tools(mcp: FastMCP) -> None:
             - notes: List of note objects with note_id and title.
             - total: Total number of notes found.
         """
-        logger.info(
-            "MCP tool called: notebooklm_list_notes",
-            notebook_id=notebook_id,
-        )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NoteService(browser_manager)
-            notes = await service.list_notes(notebook_id)
-
-            result = {
-                "notes": [note.model_dump() for note in notes],
-                "total": len(notes),
-            }
-
-            logger.info(
-                "notebooklm_list_notes completed",
-                notebook_id=notebook_id,
-                total=len(notes),
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_list_notes failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_list_notes failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NoteService(browser_manager)
+        notes = await service.list_notes(notebook_id)
+        return {
+            "notes": [note.model_dump() for note in notes],
+            "total": len(notes),
+        }
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_get_note")
     async def notebooklm_get_note(
         notebook_id: str,
         note_index: int,
@@ -210,47 +142,13 @@ def register_note_tools(mcp: FastMCP) -> None:
             - title: Display title of the note.
             - content: Full text content of the note.
         """
-        logger.info(
-            "MCP tool called: notebooklm_get_note",
-            notebook_id=notebook_id,
-            note_index=note_index,
-        )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NoteService(browser_manager)
-            note = await service.get_note(notebook_id, note_index)
-
-            result = note.model_dump()
-
-            logger.info(
-                "notebooklm_get_note completed",
-                notebook_id=notebook_id,
-                note_id=note.note_id,
-                content_length=len(note.content),
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_get_note failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_get_note failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NoteService(browser_manager)
+        note = await service.get_note(notebook_id, note_index)
+        return note.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_delete_note")
     async def notebooklm_delete_note(
         notebook_id: str,
         note_index: int,
@@ -279,46 +177,11 @@ def register_note_tools(mcp: FastMCP) -> None:
             - note_index: Index of the deleted note.
             - deleted: Whether the note was deleted successfully.
         """
-        logger.info(
-            "MCP tool called: notebooklm_delete_note",
-            notebook_id=notebook_id,
-            note_index=note_index,
-        )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NoteService(browser_manager)
-            deleted = await service.delete_note(notebook_id, note_index)
-
-            result = {
-                "notebook_id": notebook_id,
-                "note_index": note_index,
-                "deleted": deleted,
-            }
-
-            logger.info(
-                "notebooklm_delete_note completed",
-                notebook_id=notebook_id,
-                note_index=note_index,
-                deleted=deleted,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_delete_note failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_delete_note failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NoteService(browser_manager)
+        deleted = await service.delete_note(notebook_id, note_index)
+        return {
+            "notebook_id": notebook_id,
+            "note_index": note_index,
+            "deleted": deleted,
+        }

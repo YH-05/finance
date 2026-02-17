@@ -22,11 +22,8 @@ from typing import Any
 from fastmcp import Context
 from mcp.server.fastmcp import FastMCP
 
-from notebooklm.errors import NotebookLMError
+from notebooklm.decorators import mcp_tool_handler
 from notebooklm.services.audio import AudioService
-from utils_core.logging import get_logger
-
-logger = get_logger(__name__)
 
 
 def register_audio_tools(mcp: FastMCP) -> None:
@@ -39,6 +36,7 @@ def register_audio_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_generate_audio_overview")
     async def notebooklm_generate_audio_overview(
         notebook_id: str,
         ctx: Context,
@@ -73,61 +71,10 @@ def register_audio_tools(mcp: FastMCP) -> None:
             - duration_seconds: Duration of the audio (if available).
             - generation_time_seconds: Time taken for generation.
         """
-        logger.info(
-            "MCP tool called: notebooklm_generate_audio_overview",
-            notebook_id=notebook_id,
-            has_customization=customize_prompt is not None,
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = AudioService(browser_manager)
+        result = await service.generate_audio_overview(
+            notebook_id,
+            customize_prompt=customize_prompt,
         )
-
-        try:
-            await ctx.report_progress(
-                progress=0.0,
-                total=1.0,
-            )
-
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = AudioService(browser_manager)
-
-            await ctx.report_progress(
-                progress=0.1,
-                total=1.0,
-            )
-
-            result = await service.generate_audio_overview(
-                notebook_id,
-                customize_prompt=customize_prompt,
-            )
-
-            await ctx.report_progress(
-                progress=1.0,
-                total=1.0,
-            )
-
-            result_dict = result.model_dump()
-
-            logger.info(
-                "notebooklm_generate_audio_overview completed",
-                notebook_id=notebook_id,
-                status=result.status,
-                generation_time_seconds=result.generation_time_seconds,
-            )
-            return result_dict
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_generate_audio_overview failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_generate_audio_overview failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return result.model_dump()

@@ -17,6 +17,7 @@ Tests cover:
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -50,6 +51,15 @@ def mock_manager(mock_page: AsyncMock) -> MagicMock:
     manager.new_page = AsyncMock(return_value=mock_page)
     manager.headless = True
     manager.session_file = ".notebooklm-session.json"
+
+    @asynccontextmanager
+    async def _managed_page():
+        try:
+            yield mock_page
+        finally:
+            await mock_page.close()
+
+    manager.managed_page = _managed_page
     return manager
 
 
@@ -199,12 +209,12 @@ class TestAddTextSource:
         mock_page.close.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_異常系_ブラウザ操作失敗でSourceAddError(
+    async def test_異常系_ブラウザ操作失敗でElementNotFoundError(
         self,
         source_service: SourceService,
         mock_page: AsyncMock,
     ) -> None:
-        """Non-ValueError exceptions are wrapped as SourceAddError."""
+        """NotebookLMError subclasses pass through the decorator."""
         # Arrange: navigate_to_notebook raises ElementNotFoundError
         with (
             patch(
@@ -214,7 +224,7 @@ class TestAddTextSource:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError, match="Failed to add text source"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await source_service.add_text_source(
                 notebook_id="nb-001",
@@ -236,7 +246,7 @@ class TestAddTextSource:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError),
+            pytest.raises(ElementNotFoundError),
         ):
             await source_service.add_text_source(
                 notebook_id="nb-001",
@@ -546,6 +556,52 @@ class TestWaitForSourceProcessing:
         # Should not raise - timeout is caught internally
         await source_service._wait_for_source_processing(mock_page)
 
+    @pytest.mark.asyncio
+    async def test_正常系_poll_untilで動的にプログレス完了を検出(
+        self,
+        source_service: SourceService,
+    ) -> None:
+        """Dynamic polling detects processing completion via progress indicator disappearance."""
+        mock_page = AsyncMock()
+
+        # Progress bar starts visible, then disappears after 2 checks
+        check_count = 0
+
+        async def mock_count() -> int:
+            nonlocal check_count
+            check_count += 1
+            # First 2 checks: progress bar is visible. 3rd check: gone.
+            return 1 if check_count <= 2 else 0
+
+        progress_locator = AsyncMock()
+        progress_locator.count = mock_count
+        progress_locator.wait_for = AsyncMock(return_value=None)
+        mock_page.locator = MagicMock(return_value=progress_locator)
+
+        with patch("notebooklm.services.source.asyncio.sleep", new_callable=AsyncMock):
+            await source_service._wait_for_source_processing(mock_page)
+
+        # Should have polled multiple times
+        assert check_count >= 2
+
+    @pytest.mark.asyncio
+    async def test_正常系_セレクタが未設定の場合poll_untilフォールバック(
+        self,
+        source_service: SourceService,
+    ) -> None:
+        """When no progress selectors defined, falls back to poll_until with general indicators."""
+        mock_page = AsyncMock()
+
+        # Override selectors to return empty for progress bar
+        source_service._selectors.get_selector_strings = MagicMock(return_value=[])
+
+        progress_locator = AsyncMock()
+        progress_locator.count = AsyncMock(return_value=0)
+        mock_page.locator = MagicMock(return_value=progress_locator)
+
+        with patch("notebooklm.services.source.asyncio.sleep", new_callable=AsyncMock):
+            await source_service._wait_for_source_processing(mock_page)
+
 
 # ---------------------------------------------------------------------------
 # add_url_source tests
@@ -610,7 +666,7 @@ class TestAddUrlSource:
             )
 
     @pytest.mark.asyncio
-    async def test_異常系_ブラウザ操作失敗でSourceAddError(
+    async def test_異常系_ブラウザ操作失敗でElementNotFoundError(
         self,
         source_service: SourceService,
         mock_page: AsyncMock,
@@ -623,7 +679,7 @@ class TestAddUrlSource:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError, match="Failed to add URL source"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await source_service.add_url_source(
                 notebook_id="nb-001",
@@ -683,11 +739,11 @@ class TestAddFileSource:
             )
 
     @pytest.mark.asyncio
-    async def test_異常系_存在しないファイルでFileNotFoundError(
+    async def test_異常系_存在しないファイルでSourceAddError(
         self,
         source_service: SourceService,
     ) -> None:
-        with pytest.raises(FileNotFoundError, match="File not found"):
+        with pytest.raises(SourceAddError, match="File not found"):
             await source_service.add_file_source(
                 notebook_id="nb-001",
                 file_path="/nonexistent/path/file.pdf",
@@ -767,7 +823,7 @@ class TestAddFileSource:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError, match="Failed to add file source"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await source_service.add_file_source(
                 notebook_id="nb-001",
@@ -975,7 +1031,7 @@ class TestDeleteSource:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError, match="Failed to delete source"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await source_service.delete_source(
                 notebook_id="nb-001",
@@ -1080,7 +1136,7 @@ class TestRenameSource:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError, match="Failed to rename source"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await source_service.rename_source(
                 notebook_id="nb-001",
@@ -1278,7 +1334,7 @@ class TestWebResearch:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError, match="Failed to run web research"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await source_service.web_research(
                 notebook_id="nb-001",
@@ -1299,7 +1355,7 @@ class TestWebResearch:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(SourceAddError),
+            pytest.raises(ElementNotFoundError),
         ):
             await source_service.web_research(
                 notebook_id="nb-001",

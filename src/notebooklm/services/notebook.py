@@ -51,7 +51,8 @@ from notebooklm.constants import (
     DEFAULT_NAVIGATION_TIMEOUT_MS,
     NOTEBOOKLM_BASE_URL,
 )
-from notebooklm.errors import ElementNotFoundError
+from notebooklm.decorators import handle_browser_operation
+from notebooklm.errors import ElementNotFoundError, NotebookLMError
 from notebooklm.selectors import SelectorManager
 from notebooklm.types import NotebookInfo, NotebookSummary
 from utils_core.logging import get_logger
@@ -97,6 +98,7 @@ class NotebookService:
 
         logger.debug("NotebookService initialized")
 
+    @handle_browser_operation(error_class=NotebookLMError)
     async def create_notebook(self, title: str) -> NotebookInfo:
         """Create a new NotebookLM notebook.
 
@@ -133,8 +135,7 @@ class NotebookService:
 
         logger.info("Creating notebook", title=title)
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to NotebookLM home page
             await page.goto(
                 NOTEBOOKLM_BASE_URL,
@@ -174,9 +175,7 @@ class NotebookService:
                 source_count=0,
             )
 
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=NotebookLMError)
     async def list_notebooks(self) -> list[NotebookInfo]:
         """List all NotebookLM notebooks.
 
@@ -201,8 +200,7 @@ class NotebookService:
         """
         logger.info("Listing notebooks")
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to NotebookLM home page
             await page.goto(
                 NOTEBOOKLM_BASE_URL,
@@ -247,9 +245,7 @@ class NotebookService:
             logger.info("Notebooks listed", count=len(notebooks))
             return notebooks
 
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=NotebookLMError)
     async def get_notebook_summary(
         self,
         notebook_id: str,
@@ -287,8 +283,7 @@ class NotebookService:
 
         logger.info("Getting notebook summary", notebook_id=notebook_id)
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -314,9 +309,7 @@ class NotebookService:
                 suggested_questions=suggested_questions,
             )
 
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=NotebookLMError)
     async def delete_notebook(self, notebook_id: str) -> bool:
         """Delete a NotebookLM notebook.
 
@@ -354,8 +347,7 @@ class NotebookService:
 
         logger.info("Deleting notebook", notebook_id=notebook_id)
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to NotebookLM home page
             await page.goto(
                 NOTEBOOKLM_BASE_URL,
@@ -418,9 +410,6 @@ class NotebookService:
             )
 
             return True
-
-        finally:
-            await page.close()
 
     # ---- Private helpers ----
 

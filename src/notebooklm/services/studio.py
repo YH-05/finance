@@ -62,6 +62,7 @@ from notebooklm.constants import (
     GENERATION_POLL_INTERVAL_SECONDS,
     STUDIO_GENERATION_TIMEOUT_MS,
 )
+from notebooklm.decorators import handle_browser_operation
 from notebooklm.errors import StudioGenerationError
 from notebooklm.selectors import SelectorManager
 from notebooklm.types import ReportFormat, StudioContentResult, StudioContentType
@@ -133,6 +134,7 @@ class StudioService:
 
         logger.debug("StudioService initialized")
 
+    @handle_browser_operation(error_class=StudioGenerationError)
     async def generate_content(
         self,
         notebook_id: str,
@@ -201,8 +203,7 @@ class StudioService:
 
         start_time = time.monotonic()
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -260,20 +261,6 @@ class StudioService:
                 table_data=table_data,
                 generation_time_seconds=round(elapsed, 2),
             )
-
-        except (ValueError, StudioGenerationError):
-            raise
-        except Exception as e:
-            raise StudioGenerationError(
-                f"Studio content generation failed: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "content_type": content_type,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
 
     # ---- Private helpers ----
 

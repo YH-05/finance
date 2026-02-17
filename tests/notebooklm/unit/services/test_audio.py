@@ -12,6 +12,7 @@ Tests cover:
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -44,6 +45,15 @@ def mock_manager(mock_page: AsyncMock) -> MagicMock:
     manager.new_page = AsyncMock(return_value=mock_page)
     manager.headless = True
     manager.session_file = ".notebooklm-session.json"
+
+    @asynccontextmanager
+    async def _managed_page():
+        try:
+            yield mock_page
+        finally:
+            await mock_page.close()
+
+    manager.managed_page = _managed_page
     return manager
 
 
@@ -208,12 +218,12 @@ class TestGenerateAudioOverview:
             await audio_service.generate_audio_overview("nb-001")
 
     @pytest.mark.asyncio
-    async def test_異常系_要素が見つからない場合BrowserTimeoutError(
+    async def test_異常系_要素が見つからない場合ElementNotFoundError(
         self,
         audio_service: AudioService,
         mock_page: AsyncMock,
     ) -> None:
-        """ElementNotFoundError is wrapped as BrowserTimeoutError."""
+        """ElementNotFoundError passes through the decorator unchanged."""
         with (
             patch(
                 "notebooklm.services.audio.navigate_to_notebook",
@@ -223,8 +233,8 @@ class TestGenerateAudioOverview:
                 ),
             ),
             pytest.raises(
-                BrowserTimeoutError,
-                match="Audio Overview generation failed",
+                ElementNotFoundError,
+                match="Element not found",
             ),
         ):
             await audio_service.generate_audio_overview("nb-001")
@@ -262,7 +272,7 @@ class TestGenerateAudioOverview:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(BrowserTimeoutError),
+            pytest.raises(ElementNotFoundError),
         ):
             await audio_service.generate_audio_overview("nb-001")
 

@@ -16,6 +16,7 @@ Tests cover:
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -49,6 +50,15 @@ def mock_manager(mock_page: AsyncMock) -> MagicMock:
     manager.new_page = AsyncMock(return_value=mock_page)
     manager.headless = True
     manager.session_file = ".notebooklm-session.json"
+
+    @asynccontextmanager
+    async def _managed_page():
+        try:
+            yield mock_page
+        finally:
+            await mock_page.close()
+
+    manager.managed_page = _managed_page
     return manager
 
 
@@ -379,12 +389,12 @@ class TestGenerateContentErrorHandling:
             await studio_service.generate_content("nb-001", "report")
 
     @pytest.mark.asyncio
-    async def test_異常系_要素が見つからない場合StudioGenerationError(
+    async def test_異常系_要素が見つからない場合ElementNotFoundError(
         self,
         studio_service: StudioService,
         mock_page: AsyncMock,
     ) -> None:
-        """ElementNotFoundError is wrapped as StudioGenerationError."""
+        """ElementNotFoundError passes through the decorator unchanged."""
         with (
             patch(
                 "notebooklm.services.studio.navigate_to_notebook",
@@ -394,8 +404,8 @@ class TestGenerateContentErrorHandling:
                 ),
             ),
             pytest.raises(
-                StudioGenerationError,
-                match="Studio content generation failed",
+                ElementNotFoundError,
+                match="Element not found",
             ),
         ):
             await studio_service.generate_content("nb-001", "report")
@@ -442,7 +452,7 @@ class TestGenerateContentPageCleanup:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(StudioGenerationError),
+            pytest.raises(ElementNotFoundError),
         ):
             await studio_service.generate_content("nb-001", "report")
 

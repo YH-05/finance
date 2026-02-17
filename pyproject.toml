@@ -81,7 +81,7 @@ cli = [
 
 # playwright optional dependencies (for JS-rendered page extraction)
 playwright = [
-    "playwright>=1.49.0",
+    "playwright>=1.49.0,<2.0.0",
 ]
 
 # automation optional dependencies

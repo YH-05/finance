@@ -22,15 +22,12 @@ from typing import Any
 from fastmcp import Context
 from mcp.server.fastmcp import FastMCP
 
-from notebooklm.errors import NotebookLMError
+from notebooklm.decorators import mcp_tool_handler
 from notebooklm.services.studio import StudioService
 from notebooklm.types import (  # noqa: TC001  # runtime: FastMCP schema
     ReportFormat,
     StudioContentType,
 )
-from utils_core.logging import get_logger
-
-logger = get_logger(__name__)
 
 
 def register_studio_tools(mcp: FastMCP) -> None:
@@ -43,6 +40,7 @@ def register_studio_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_generate_studio_content")
     async def notebooklm_generate_studio_content(
         notebook_id: str,
         content_type: StudioContentType,
@@ -80,47 +78,11 @@ def register_studio_tools(mcp: FastMCP) -> None:
             - table_data: Structured table data (for data_table, None for others).
             - generation_time_seconds: Time taken for generation.
         """
-        logger.info(
-            "MCP tool called: notebooklm_generate_studio_content",
-            notebook_id=notebook_id,
-            content_type=content_type,
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = StudioService(browser_manager)
+        result = await service.generate_content(
+            notebook_id,
+            content_type,
             report_format=report_format,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = StudioService(browser_manager)
-            result = await service.generate_content(
-                notebook_id,
-                content_type,
-                report_format=report_format,
-            )
-
-            result_dict = result.model_dump()
-
-            logger.info(
-                "notebooklm_generate_studio_content completed",
-                notebook_id=notebook_id,
-                content_type=content_type,
-                generation_time_seconds=result.generation_time_seconds,
-            )
-            return result_dict
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_generate_studio_content failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_generate_studio_content failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return result.model_dump()

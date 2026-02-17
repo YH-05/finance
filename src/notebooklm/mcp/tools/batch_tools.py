@@ -24,15 +24,12 @@ from typing import Any
 from fastmcp import Context
 from mcp.server.fastmcp import FastMCP
 
-from notebooklm.errors import NotebookLMError
+from notebooklm.decorators import mcp_tool_handler
 from notebooklm.services.batch import BatchService
 from notebooklm.services.chat import ChatService
 from notebooklm.services.source import SourceService
 from notebooklm.services.studio import StudioService
 from notebooklm.types import StudioContentType  # noqa: TC001  # runtime: FastMCP schema
-from utils_core.logging import get_logger
-
-logger = get_logger(__name__)
 
 
 def register_batch_tools(mcp: FastMCP) -> None:
@@ -45,6 +42,7 @@ def register_batch_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_batch_add_sources")
     async def notebooklm_batch_add_sources(
         notebook_id: str,
         sources: list[dict[str, Any]],
@@ -77,54 +75,18 @@ def register_batch_tools(mcp: FastMCP) -> None:
             - failed: Number of failed source additions.
             - results: Per-item results with status and source info.
         """
-        logger.info(
-            "MCP tool called: notebooklm_batch_add_sources",
-            notebook_id=notebook_id,
-            source_count=len(sources),
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        source_service = SourceService(browser_manager)
+        chat_service = ChatService(browser_manager)
+        batch_service = BatchService(
+            source_service=source_service,
+            chat_service=chat_service,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            source_service = SourceService(browser_manager)
-            chat_service = ChatService(browser_manager)
-            batch_service = BatchService(
-                source_service=source_service,
-                chat_service=chat_service,
-            )
-
-            result = await batch_service.batch_add_sources(notebook_id, sources)
-
-            result_dict = result.model_dump()
-
-            logger.info(
-                "notebooklm_batch_add_sources completed",
-                notebook_id=notebook_id,
-                total=result.total,
-                succeeded=result.succeeded,
-                failed=result.failed,
-            )
-            return result_dict
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_batch_add_sources failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_batch_add_sources failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        result = await batch_service.batch_add_sources(notebook_id, sources)
+        return result.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_batch_chat")
     async def notebooklm_batch_chat(
         notebook_id: str,
         questions: list[str],
@@ -153,54 +115,18 @@ def register_batch_tools(mcp: FastMCP) -> None:
             - failed: Number of failed questions.
             - results: Per-item results with question, answer, and status.
         """
-        logger.info(
-            "MCP tool called: notebooklm_batch_chat",
-            notebook_id=notebook_id,
-            question_count=len(questions),
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        source_service = SourceService(browser_manager)
+        chat_service = ChatService(browser_manager)
+        batch_service = BatchService(
+            source_service=source_service,
+            chat_service=chat_service,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            source_service = SourceService(browser_manager)
-            chat_service = ChatService(browser_manager)
-            batch_service = BatchService(
-                source_service=source_service,
-                chat_service=chat_service,
-            )
-
-            result = await batch_service.batch_chat(notebook_id, questions)
-
-            result_dict = result.model_dump()
-
-            logger.info(
-                "notebooklm_batch_chat completed",
-                notebook_id=notebook_id,
-                total=result.total,
-                succeeded=result.succeeded,
-                failed=result.failed,
-            )
-            return result_dict
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_batch_chat failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_batch_chat failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        result = await batch_service.batch_chat(notebook_id, questions)
+        return result.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_workflow_research")
     async def notebooklm_workflow_research(
         notebook_id: str,
         sources: list[dict[str, Any]],
@@ -249,58 +175,19 @@ def register_batch_tools(mcp: FastMCP) -> None:
               counts, content metadata.
             - errors: List of error messages from failed steps.
         """
-        logger.info(
-            "MCP tool called: notebooklm_workflow_research",
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        source_service = SourceService(browser_manager)
+        chat_service = ChatService(browser_manager)
+        studio_service = StudioService(browser_manager)
+        batch_service = BatchService(
+            source_service=source_service,
+            chat_service=chat_service,
+            studio_service=studio_service,
+        )
+        result = await batch_service.workflow_research(
             notebook_id=notebook_id,
-            source_count=len(sources),
-            question_count=len(questions),
+            sources=sources,
+            questions=questions,
             content_type=content_type,
         )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            source_service = SourceService(browser_manager)
-            chat_service = ChatService(browser_manager)
-            studio_service = StudioService(browser_manager)
-            batch_service = BatchService(
-                source_service=source_service,
-                chat_service=chat_service,
-                studio_service=studio_service,
-            )
-
-            result = await batch_service.workflow_research(
-                notebook_id=notebook_id,
-                sources=sources,
-                questions=questions,
-                content_type=content_type,
-            )
-
-            result_dict = result.model_dump()
-
-            logger.info(
-                "notebooklm_workflow_research completed",
-                notebook_id=notebook_id,
-                status=result.status,
-                steps_completed=result.steps_completed,
-                steps_total=result.steps_total,
-            )
-            return result_dict
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_workflow_research failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_workflow_research failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        return result.model_dump()

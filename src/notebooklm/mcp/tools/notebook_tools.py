@@ -24,11 +24,8 @@ from typing import Any
 from fastmcp import Context
 from mcp.server.fastmcp import FastMCP
 
-from notebooklm.errors import NotebookLMError
+from notebooklm.decorators import mcp_tool_handler
 from notebooklm.services.notebook import NotebookService
-from utils_core.logging import get_logger
-
-logger = get_logger(__name__)
 
 
 def register_notebook_tools(mcp: FastMCP) -> None:
@@ -41,6 +38,7 @@ def register_notebook_tools(mcp: FastMCP) -> None:
     """
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_create_notebook")
     async def notebooklm_create_notebook(
         title: str,
         ctx: Context,
@@ -65,42 +63,13 @@ def register_notebook_tools(mcp: FastMCP) -> None:
             - title: Display title of the notebook.
             - source_count: Number of sources (always 0 for new notebooks).
         """
-        logger.info("MCP tool called: notebooklm_create_notebook", title=title)
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NotebookService(browser_manager)
-            notebook = await service.create_notebook(title)
-
-            result = notebook.model_dump()
-
-            logger.info(
-                "notebooklm_create_notebook completed",
-                notebook_id=notebook.notebook_id,
-                title=title,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_create_notebook failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_create_notebook failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NotebookService(browser_manager)
+        notebook = await service.create_notebook(title)
+        return notebook.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_list_notebooks")
     async def notebooklm_list_notebooks(
         ctx: Context,
     ) -> dict[str, Any]:
@@ -122,37 +91,16 @@ def register_notebook_tools(mcp: FastMCP) -> None:
               updated_at, and source_count.
             - total: Total number of notebooks found.
         """
-        logger.info("MCP tool called: notebooklm_list_notebooks")
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NotebookService(browser_manager)
-            notebooks = await service.list_notebooks()
-
-            result = {
-                "notebooks": [nb.model_dump() for nb in notebooks],
-                "total": len(notebooks),
-            }
-
-            logger.info(
-                "notebooklm_list_notebooks completed",
-                total=len(notebooks),
-            )
-            return result
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_list_notebooks failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NotebookService(browser_manager)
+        notebooks = await service.list_notebooks()
+        return {
+            "notebooks": [nb.model_dump() for nb in notebooks],
+            "total": len(notebooks),
+        }
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_get_notebook_summary")
     async def notebooklm_get_notebook_summary(
         notebook_id: str,
         ctx: Context,
@@ -177,46 +125,13 @@ def register_notebook_tools(mcp: FastMCP) -> None:
             - summary_text: AI-generated overview of the notebook contents.
             - suggested_questions: List of AI-generated follow-up questions.
         """
-        logger.info(
-            "MCP tool called: notebooklm_get_notebook_summary",
-            notebook_id=notebook_id,
-        )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NotebookService(browser_manager)
-            summary = await service.get_notebook_summary(notebook_id)
-
-            result = summary.model_dump()
-
-            logger.info(
-                "notebooklm_get_notebook_summary completed",
-                notebook_id=notebook_id,
-                summary_length=len(summary.summary_text),
-                question_count=len(summary.suggested_questions),
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_get_notebook_summary failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_get_notebook_summary failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NotebookService(browser_manager)
+        summary = await service.get_notebook_summary(notebook_id)
+        return summary.model_dump()
 
     @mcp.tool()
+    @mcp_tool_handler("notebooklm_delete_notebook")
     async def notebooklm_delete_notebook(
         notebook_id: str,
         ctx: Context,
@@ -240,43 +155,10 @@ def register_notebook_tools(mcp: FastMCP) -> None:
             - deleted: Whether the notebook was deleted (bool).
             - notebook_id: UUID of the deleted notebook.
         """
-        logger.info(
-            "MCP tool called: notebooklm_delete_notebook",
-            notebook_id=notebook_id,
-        )
-
-        try:
-            browser_manager = ctx.lifespan_context["browser_manager"]
-            service = NotebookService(browser_manager)
-            deleted = await service.delete_notebook(notebook_id)
-
-            result = {
-                "deleted": deleted,
-                "notebook_id": notebook_id,
-            }
-
-            logger.info(
-                "notebooklm_delete_notebook completed",
-                notebook_id=notebook_id,
-                deleted=deleted,
-            )
-            return result
-
-        except ValueError as e:
-            logger.error(
-                "notebooklm_delete_notebook failed: validation error",
-                error=str(e),
-            )
-            return {"error": str(e), "error_type": "ValueError"}
-
-        except NotebookLMError as e:
-            logger.error(
-                "notebooklm_delete_notebook failed",
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return {
-                "error": e.message,
-                "error_type": type(e).__name__,
-                "context": e.context,
-            }
+        browser_manager = ctx.lifespan_context["browser_manager"]
+        service = NotebookService(browser_manager)
+        deleted = await service.delete_notebook(notebook_id)
+        return {
+            "deleted": deleted,
+            "notebook_id": notebook_id,
+        }

@@ -111,7 +111,7 @@ class TestWaitForElement:
         )
         mock_page.locator.return_value = mock_locator
 
-        with pytest.raises(ElementNotFoundError, match="No element found"):
+        with pytest.raises(ElementNotFoundError, match="selectors matched"):
             await wait_for_element(
                 mock_page, ['button[aria-label="nonexistent"]'], timeout_ms=1000
             )
@@ -289,6 +289,119 @@ class TestNavigateToNotebook:
 
         with pytest.raises(SessionExpiredError):
             await navigate_to_notebook(mock_page, "abc-123")
+
+
+class TestWaitForElementParallel:
+    """Tests for parallel selector matching in wait_for_element."""
+
+    @pytest.mark.asyncio
+    async def test_正常系_並列実行で最初に見つかったセレクタを返す(self) -> None:
+        """All selectors are tried in parallel; first success is returned."""
+        from notebooklm.browser.helpers import wait_for_element
+
+        mock_page = _make_page_mock()
+
+        # Both locators succeed, but we just want at least one to be returned
+        mock_locator_a = _make_locator_mock(count=1)
+        mock_locator_b = _make_locator_mock(count=1)
+
+        call_order: list[str] = []
+
+        def locator_side_effect(selector: str) -> MagicMock:
+            call_order.append(selector)
+            if selector == "selector-a":
+                return mock_locator_a
+            return mock_locator_b
+
+        mock_page.locator = MagicMock(side_effect=locator_side_effect)
+
+        result = await wait_for_element(
+            mock_page,
+            ["selector-a", "selector-b"],
+            timeout_ms=5000,
+        )
+
+        # Should return a valid element
+        assert result is not None
+
+    @pytest.mark.asyncio
+    async def test_正常系_遅いセレクタと速いセレクタで速い方を返す(self) -> None:
+        """Parallel execution returns faster selector without waiting for slow one."""
+        import asyncio
+
+        from notebooklm.browser.helpers import wait_for_element
+
+        mock_page = _make_page_mock()
+
+        # Slow selector: takes 2 seconds then fails
+        slow_locator = MagicMock()
+
+        async def slow_wait(**kwargs: object) -> None:
+            await asyncio.sleep(2.0)
+            raise TimeoutError("slow")
+
+        slow_locator.wait_for = slow_wait
+        slow_locator.count = AsyncMock(return_value=0)
+        slow_locator.first = slow_locator
+
+        # Fast selector: succeeds immediately
+        fast_locator = _make_locator_mock(count=1)
+
+        def locator_side_effect(selector: str) -> MagicMock:
+            if selector == "slow-selector":
+                return slow_locator
+            return fast_locator
+
+        mock_page.locator = MagicMock(side_effect=locator_side_effect)
+
+        start = asyncio.get_event_loop().time()
+        result = await wait_for_element(
+            mock_page,
+            ["slow-selector", "fast-selector"],
+            timeout_ms=5000,
+        )
+        elapsed = asyncio.get_event_loop().time() - start
+
+        # Parallel: should complete well under 2 seconds
+        assert elapsed < 1.5
+        assert result is not None
+
+    @pytest.mark.asyncio
+    async def test_異常系_全セレクタ失敗で並列実行もElementNotFoundError(self) -> None:
+        """When all parallel selectors fail, ElementNotFoundError is raised."""
+        from notebooklm.browser.helpers import wait_for_element
+        from notebooklm.errors import ElementNotFoundError
+
+        mock_page = _make_page_mock()
+
+        mock_locator = _make_locator_mock(
+            wait_for_side_effect=TimeoutError("not found"),
+        )
+        mock_page.locator.return_value = mock_locator
+
+        with pytest.raises(ElementNotFoundError):
+            await wait_for_element(
+                mock_page,
+                ["selector-a", "selector-b"],
+                timeout_ms=1000,
+            )
+
+    @pytest.mark.asyncio
+    async def test_正常系_単一セレクタでも動作する(self) -> None:
+        """Parallel implementation works correctly with a single selector."""
+        from notebooklm.browser.helpers import wait_for_element
+
+        mock_page = _make_page_mock()
+        mock_locator = _make_locator_mock(count=1)
+        mock_page.locator.return_value = mock_locator
+
+        result = await wait_for_element(
+            mock_page,
+            ["single-selector"],
+            timeout_ms=5000,
+        )
+
+        assert result is not None
 
 
 class TestExtractTableData:

@@ -64,6 +64,7 @@ from notebooklm.constants import (
     FILE_UPLOAD_TIMEOUT_MS,
     SOURCE_ADD_TIMEOUT_MS,
 )
+from notebooklm.decorators import handle_browser_operation
 from notebooklm.errors import SourceAddError
 from notebooklm.selectors import SelectorManager
 from notebooklm.types import (
@@ -72,6 +73,11 @@ from notebooklm.types import (
     SourceDetails,
     SourceInfo,
     SourceType,
+)
+from notebooklm.validation import (
+    validate_file_path,
+    validate_text_input,
+    validate_url_input,
 )
 from utils_core.logging import get_logger
 
@@ -114,6 +120,7 @@ class SourceService:
 
         logger.debug("SourceService initialized")
 
+    @handle_browser_operation(error_class=SourceAddError)
     async def add_text_source(
         self,
         notebook_id: str,
@@ -163,6 +170,9 @@ class SourceService:
         if not text.strip():
             raise ValueError("text must not be empty")
 
+        # SEC-002: Validate text input for XSS and injection attacks
+        validate_text_input(text)
+
         effective_title = title or "Pasted text"
 
         logger.info(
@@ -172,8 +182,7 @@ class SourceService:
             text_length=len(text),
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -240,21 +249,7 @@ class SourceService:
                 source_type="text",
             )
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise SourceAddError(
-                f"Failed to add text source: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "source_type": "text",
-                    "text_length": len(text),
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def add_url_source(
         self,
         notebook_id: str,
@@ -299,14 +294,16 @@ class SourceService:
         if not url.strip():
             raise ValueError("url must not be empty")
 
+        # SEC-003: Validate URL input for SSRF attacks
+        validate_url_input(url)
+
         logger.info(
             "Adding URL source",
             notebook_id=notebook_id,
             url=url,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
 
             # Click "Add source" button
@@ -370,21 +367,7 @@ class SourceService:
                 source_type="url",
             )
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise SourceAddError(
-                f"Failed to add URL source: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "source_type": "url",
-                    "url": url,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def add_file_source(
         self,
         notebook_id: str,
@@ -431,9 +414,8 @@ class SourceService:
         if not file_path.strip():
             raise ValueError("file_path must not be empty")
 
-        resolved_path = Path(file_path)
-        if not resolved_path.exists():
-            raise FileNotFoundError(f"File not found: {file_path}")
+        # SEC-004: Validate file path for path traversal attacks
+        resolved_path = validate_file_path(file_path)
 
         logger.info(
             "Adding file source",
@@ -441,8 +423,7 @@ class SourceService:
             file_path=file_path,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
 
             # Click "Add source" button
@@ -493,21 +474,7 @@ class SourceService:
                 source_type="file",
             )
 
-        except Exception as e:
-            if isinstance(e, (ValueError, FileNotFoundError)):
-                raise
-            raise SourceAddError(
-                f"Failed to add file source: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "source_type": "file",
-                    "file_path": file_path,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def get_source_details(
         self,
         notebook_id: str,
@@ -560,8 +527,7 @@ class SourceService:
             source_index=source_index,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
 
@@ -615,20 +581,7 @@ class SourceService:
                 content_summary=content_summary,
             )
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise SourceAddError(
-                f"Failed to get source details: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "source_index": source_index,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def delete_source(
         self,
         notebook_id: str,
@@ -681,8 +634,7 @@ class SourceService:
             source_index=source_index,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
 
@@ -734,20 +686,7 @@ class SourceService:
 
             return True
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise SourceAddError(
-                f"Failed to delete source: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "source_index": source_index,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def rename_source(
         self,
         notebook_id: str,
@@ -808,8 +747,7 @@ class SourceService:
             new_name=new_name,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
 
@@ -882,21 +820,7 @@ class SourceService:
                 source_type="text",
             )
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise SourceAddError(
-                f"Failed to rename source: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "source_index": source_index,
-                    "new_name": new_name,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def toggle_source_selection(
         self,
         notebook_id: str,
@@ -959,8 +883,7 @@ class SourceService:
             select_all=select_all,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
 
@@ -1010,21 +933,7 @@ class SourceService:
 
             return True
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise SourceAddError(
-                f"Failed to toggle source selection: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "source_index": source_index,
-                    "select_all": select_all,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def web_research(
         self,
         notebook_id: str,
@@ -1083,8 +992,7 @@ class SourceService:
             mode=mode,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
 
             # Click "Add source" button
@@ -1174,21 +1082,7 @@ class SourceService:
 
             return results
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise SourceAddError(
-                f"Failed to run web research: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "query": query,
-                    "mode": mode,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=SourceAddError)
     async def list_sources(
         self,
         notebook_id: str,
@@ -1226,8 +1120,7 @@ class SourceService:
 
         logger.info("Listing sources", notebook_id=notebook_id)
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -1264,16 +1157,13 @@ class SourceService:
             )
             return sources
 
-        finally:
-            await page.close()
-
     # ---- Private helpers ----
 
     async def _wait_for_source_processing(self, page: Any) -> None:
-        """Wait for source processing to complete.
+        """Wait for source processing via UI state polling.
 
-        Monitors the progress bar and waits for it to disappear,
-        indicating that the source has been processed.
+        Polls for progress indicator disappearance instead of fixed sleep.
+        This adapts to actual processing time (typically 0.5-5s).
 
         Parameters
         ----------
@@ -1282,25 +1172,37 @@ class SourceService:
         """
         progress_selectors = self._selectors.get_selector_strings("search_progress_bar")
 
-        if not progress_selectors:
-            # If no progress bar selector, just wait a fixed time
-            await asyncio.sleep(3.0)
-            return
+        # Build the list of selectors to check for active processing
+        poll_selectors = list(progress_selectors) if progress_selectors else []
+        # Add generic progress indicators as fallback
+        poll_selectors.extend(
+            [
+                'div[role="progressbar"]',
+                '[aria-busy="true"]',
+            ]
+        )
+
+        async def _is_processing_complete() -> bool:
+            """Check if all progress indicators have disappeared."""
+            for selector in poll_selectors:
+                try:
+                    locator = page.locator(selector)
+                    count = await locator.count()
+                    if count > 0:
+                        return False
+                except Exception:  # nosec B112
+                    continue  # Intentional: try next selector in fallback chain
+            return True
 
         try:
-            progress_locator = page.locator(progress_selectors[0])
-            # Wait up to SOURCE_ADD_TIMEOUT_MS for progress bar to appear and disappear
-            await asyncio.sleep(1.0)
-
-            # Check if progress bar is present
-            count = await progress_locator.count()
-            if count > 0:
-                # Wait for it to disappear
-                await progress_locator.wait_for(
-                    state="hidden",
-                    timeout=SOURCE_ADD_TIMEOUT_MS,
-                )
-        except (TimeoutError, Exception) as e:
+            await poll_until(
+                _is_processing_complete,
+                timeout_seconds=SOURCE_ADD_TIMEOUT_MS / 1000.0,
+                interval_seconds=0.5,
+                backoff_factor=1.0,
+                operation_name="source_processing",
+            )
+        except Exception as e:
             logger.warning(
                 "Source processing wait timed out or failed",
                 error=str(e),

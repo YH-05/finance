@@ -1,6 +1,6 @@
 """BatchService for NotebookLM batch operations.
 
-This module provides ``BatchService``, which orchestrates sequential
+This module provides ``BatchService``, which orchestrates parallel
 batch operations by delegating to ``SourceService``, ``ChatService``,
 and optionally ``StudioService``.
 
@@ -8,12 +8,13 @@ Architecture
 ------------
 The service receives ``SourceService`` and ``ChatService`` via dependency
 injection (with optional ``StudioService``) and uses them to perform
-sequential batch operations. Each item in the batch is processed
-independently, and failures do not halt the remaining items.
+parallel batch operations via ``asyncio.gather`` with concurrency
+controlled by an ``asyncio.Semaphore``. Each item in the batch is
+processed independently, and failures do not halt the remaining items.
 
 Batch Operations:
-1. ``batch_add_sources``: Add multiple sources sequentially to a notebook.
-2. ``batch_chat``: Send multiple questions sequentially to a notebook.
+1. ``batch_add_sources``: Add multiple sources in parallel to a notebook.
+2. ``batch_chat``: Send multiple questions in parallel to a notebook.
 
 Workflow Operations:
 3. ``workflow_research``: Orchestrate a complete research workflow
@@ -49,6 +50,7 @@ notebooklm.types : BatchResult, WorkflowResult data models.
 
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING, Any
 
 from notebooklm.types import BatchResult, StudioContentType, WorkflowResult
@@ -65,10 +67,11 @@ logger = get_logger(__name__)
 class BatchService:
     """Service for NotebookLM batch operations.
 
-    Provides methods for performing sequential batch operations
+    Provides methods for performing parallel batch operations
     on NotebookLM notebooks, including adding multiple sources,
     sending multiple chat questions, and orchestrating multi-step
-    research workflows.
+    research workflows. Concurrency is controlled via an
+    ``asyncio.Semaphore``.
 
     Parameters
     ----------
@@ -79,6 +82,9 @@ class BatchService:
     studio_service : StudioService | None
         Optional initialized studio service for content generation.
         Required for ``workflow_research()``.
+    max_concurrent : int
+        Maximum number of concurrent operations in batch methods.
+        Defaults to 5.
 
     Attributes
     ----------
@@ -88,6 +94,8 @@ class BatchService:
         The injected chat service.
     _studio_service : StudioService | None
         The optional injected studio service.
+    _semaphore : asyncio.Semaphore
+        Semaphore for limiting concurrent operations.
 
     Examples
     --------
@@ -106,14 +114,17 @@ class BatchService:
         source_service: SourceService,
         chat_service: ChatService,
         studio_service: StudioService | None = None,
+        max_concurrent: int = 5,
     ) -> None:
         self._source_service = source_service
         self._chat_service = chat_service
         self._studio_service = studio_service
+        self._semaphore = asyncio.Semaphore(max_concurrent)
 
         logger.debug(
             "BatchService initialized",
             has_studio_service=studio_service is not None,
+            max_concurrent=max_concurrent,
         )
 
     async def batch_add_sources(
@@ -121,12 +132,12 @@ class BatchService:
         notebook_id: str,
         sources: list[dict[str, Any]],
     ) -> BatchResult:
-        """Add multiple sources sequentially to a notebook.
+        """Add multiple sources in parallel to a notebook.
 
-        Processes each source definition one at a time, delegating
-        to the appropriate ``SourceService`` method based on the
-        source type. Failures on individual sources do not stop
-        the remaining sources from being processed.
+        Processes source definitions concurrently using
+        ``asyncio.gather``, with concurrency limited by the
+        ``_semaphore``. Failures on individual sources do not
+        stop the remaining sources from being processed.
 
         Parameters
         ----------
@@ -134,9 +145,11 @@ class BatchService:
             UUID of the target notebook. Must not be empty.
         sources : list[dict[str, Any]]
             List of source definitions. Each must contain a ``type``
-            key (``"text"`` or ``"url"``) and type-specific fields:
+            key (``"text"``, ``"url"``, or ``"file"``) and type-specific
+            fields:
             - For ``"text"``: ``text`` (str), optional ``title`` (str).
             - For ``"url"``: ``url`` (str).
+            - For ``"file"``: ``file_path`` (str).
 
         Returns
         -------
@@ -172,73 +185,67 @@ class BatchService:
             source_count=len(sources),
         )
 
-        results: list[dict[str, str]] = []
-        succeeded = 0
-        failed = 0
+        async def _add_single_source(
+            idx: int, source_def: dict[str, Any]
+        ) -> dict[str, str]:
+            """Add a single source with semaphore control."""
+            async with self._semaphore:
+                source_type = source_def.get("type", "")
 
-        for idx, source_def in enumerate(sources):
-            source_type = source_def.get("type", "")
-
-            try:
-                if source_type == "text":
-                    source_info = await self._source_service.add_text_source(
-                        notebook_id=notebook_id,
-                        text=source_def.get("text", ""),
-                        title=source_def.get("title"),
-                    )
-                    results.append(
-                        {
-                            "index": str(idx),
-                            "source_id": source_info.source_id,
-                            "title": source_info.title,
-                            "status": "success",
-                        }
-                    )
-                    succeeded += 1
-
-                elif source_type == "url":
-                    source_info = await self._source_service.add_url_source(
-                        notebook_id=notebook_id,
-                        url=source_def.get("url", ""),
-                    )
-                    results.append(
-                        {
-                            "index": str(idx),
-                            "source_id": source_info.source_id,
-                            "title": source_info.title,
-                            "status": "success",
-                        }
-                    )
-                    succeeded += 1
-
-                else:
-                    results.append(
-                        {
+                try:
+                    if source_type == "text":
+                        source_info = await self._source_service.add_text_source(
+                            notebook_id=notebook_id,
+                            text=source_def.get("text", ""),
+                            title=source_def.get("title"),
+                        )
+                    elif source_type == "url":
+                        source_info = await self._source_service.add_url_source(
+                            notebook_id=notebook_id,
+                            url=source_def.get("url", ""),
+                        )
+                    elif source_type == "file":
+                        source_info = await self._source_service.add_file_source(
+                            notebook_id=notebook_id,
+                            file_path=source_def.get("file_path", ""),
+                        )
+                    else:
+                        logger.warning(
+                            "Unsupported source type in batch",
+                            index=idx,
+                            source_type=source_type,
+                        )
+                        return {
                             "index": str(idx),
                             "status": f"failed: unsupported source type '{source_type}'",
                         }
-                    )
-                    failed += 1
-                    logger.warning(
-                        "Unsupported source type in batch",
+
+                    return {
+                        "index": str(idx),
+                        "source_id": source_info.source_id,
+                        "title": source_info.title,
+                        "status": "success",
+                    }
+
+                except Exception as e:
+                    logger.error(
+                        "Batch source addition failed",
                         index=idx,
                         source_type=source_type,
+                        error=str(e),
                     )
-
-            except Exception as e:
-                results.append(
-                    {
+                    return {
                         "index": str(idx),
                         "status": f"failed: {e}",
                     }
-                )
-                failed += 1
-                logger.error(
-                    "Batch source addition failed",
-                    index=idx,
-                    source_type=source_type,
-                    error=str(e),
-                )
+
+        results = await asyncio.gather(
+            *[_add_single_source(idx, src) for idx, src in enumerate(sources)],
+        )
+        results_list: list[dict[str, str]] = list(results)
+
+        succeeded = sum(1 for r in results_list if r["status"] == "success")
+        failed = len(results_list) - succeeded
 
         logger.info(
             "Batch add sources completed",
@@ -252,7 +259,7 @@ class BatchService:
             total=len(sources),
             succeeded=succeeded,
             failed=failed,
-            results=results,
+            results=results_list,
         )
 
     async def batch_chat(
@@ -260,11 +267,12 @@ class BatchService:
         notebook_id: str,
         questions: list[str],
     ) -> BatchResult:
-        """Send multiple chat questions sequentially to a notebook.
+        """Send multiple chat questions in parallel to a notebook.
 
-        Processes each question one at a time, delegating to
-        ``ChatService.chat()``. Failures on individual questions
-        do not stop the remaining questions from being processed.
+        Processes questions concurrently using ``asyncio.gather``,
+        with concurrency limited by the ``_semaphore``. Failures on
+        individual questions do not stop the remaining questions
+        from being processed.
 
         Parameters
         ----------
@@ -304,41 +312,40 @@ class BatchService:
             question_count=len(questions),
         )
 
-        results: list[dict[str, str]] = []
-        succeeded = 0
-        failed = 0
-
-        for idx, question in enumerate(questions):
-            try:
-                response = await self._chat_service.chat(
-                    notebook_id=notebook_id,
-                    question=question,
-                )
-                results.append(
-                    {
+        async def _send_single_question(idx: int, question: str) -> dict[str, str]:
+            """Send a single question with semaphore control."""
+            async with self._semaphore:
+                try:
+                    response = await self._chat_service.chat(
+                        notebook_id=notebook_id,
+                        question=question,
+                    )
+                    return {
                         "index": str(idx),
                         "question": question,
                         "answer": response.answer,
                         "status": "success",
                     }
-                )
-                succeeded += 1
-
-            except Exception as e:
-                results.append(
-                    {
+                except Exception as e:
+                    logger.error(
+                        "Batch chat failed for question",
+                        index=idx,
+                        question_length=len(question),
+                        error=str(e),
+                    )
+                    return {
                         "index": str(idx),
                         "question": question,
                         "status": f"failed: {e}",
                     }
-                )
-                failed += 1
-                logger.error(
-                    "Batch chat failed for question",
-                    index=idx,
-                    question_length=len(question),
-                    error=str(e),
-                )
+
+        results = await asyncio.gather(
+            *[_send_single_question(idx, q) for idx, q in enumerate(questions)],
+        )
+        results_list: list[dict[str, str]] = list(results)
+
+        succeeded = sum(1 for r in results_list if r["status"] == "success")
+        failed = len(results_list) - succeeded
 
         logger.info(
             "Batch chat completed",
@@ -352,7 +359,7 @@ class BatchService:
             total=len(questions),
             succeeded=succeeded,
             failed=failed,
-            results=results,
+            results=results_list,
         )
 
     async def workflow_research(

@@ -13,6 +13,7 @@ Tests cover:
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -47,6 +48,15 @@ def mock_manager(mock_page: AsyncMock) -> MagicMock:
     manager.new_page = AsyncMock(return_value=mock_page)
     manager.headless = True
     manager.session_file = ".notebooklm-session.json"
+
+    @asynccontextmanager
+    async def _managed_page():
+        try:
+            yield mock_page
+        finally:
+            await mock_page.close()
+
+    manager.managed_page = _managed_page
     return manager
 
 
@@ -178,12 +188,12 @@ class TestChat:
             await chat_service.chat("nb-001", "   ")
 
     @pytest.mark.asyncio
-    async def test_異常系_ブラウザ操作失敗でChatError(
+    async def test_異常系_ブラウザ操作失敗でElementNotFoundError(
         self,
         chat_service: ChatService,
         mock_page: AsyncMock,
     ) -> None:
-        """Non-ValueError exceptions are wrapped as ChatError."""
+        """NotebookLMError subclasses pass through the decorator."""
         with (
             patch(
                 "notebooklm.services.chat.navigate_to_notebook",
@@ -192,7 +202,7 @@ class TestChat:
                     context={"selector": "textbox"},
                 ),
             ),
-            pytest.raises(ChatError, match="Chat interaction failed"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await chat_service.chat("nb-001", "What is this?")
 
@@ -225,7 +235,7 @@ class TestChat:
                     context={"selector": "textbox"},
                 ),
             ),
-            pytest.raises(ChatError),
+            pytest.raises(ElementNotFoundError),
         ):
             await chat_service.chat("nb-001", "Question")
 
@@ -304,7 +314,7 @@ class TestGetChatHistory:
         mock_page.close.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_異常系_ブラウザ操作失敗でChatError(
+    async def test_異常系_ブラウザ操作失敗でElementNotFoundError(
         self,
         chat_service: ChatService,
         mock_page: AsyncMock,
@@ -317,7 +327,7 @@ class TestGetChatHistory:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(ChatError, match="Failed to get chat history"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await chat_service.get_chat_history("nb-001")
 
@@ -373,7 +383,7 @@ class TestClearChatHistory:
         mock_page.close.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_異常系_ブラウザ操作失敗でChatError(
+    async def test_異常系_ブラウザ操作失敗でElementNotFoundError(
         self,
         chat_service: ChatService,
         mock_page: AsyncMock,
@@ -386,7 +396,7 @@ class TestClearChatHistory:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(ChatError, match="Failed to clear chat history"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await chat_service.clear_chat_history("nb-001")
 
@@ -460,7 +470,7 @@ class TestConfigureChat:
         mock_page.close.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_異常系_ブラウザ操作失敗でChatError(
+    async def test_異常系_ブラウザ操作失敗でElementNotFoundError(
         self,
         chat_service: ChatService,
         mock_page: AsyncMock,
@@ -473,7 +483,7 @@ class TestConfigureChat:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(ChatError, match="Failed to configure chat"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await chat_service.configure_chat("nb-001", "Some prompt")
 
@@ -569,7 +579,7 @@ class TestSaveResponseToNote:
         mock_page.close.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_異常系_ブラウザ操作失敗でChatError(
+    async def test_異常系_ブラウザ操作失敗でElementNotFoundError(
         self,
         chat_service: ChatService,
         mock_page: AsyncMock,
@@ -582,7 +592,7 @@ class TestSaveResponseToNote:
                     context={"selector": "button"},
                 ),
             ),
-            pytest.raises(ChatError, match="Failed to save response to note"),
+            pytest.raises(ElementNotFoundError, match="Element not found"),
         ):
             await chat_service.save_response_to_note("nb-001", "Question")
 

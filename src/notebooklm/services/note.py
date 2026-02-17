@@ -51,6 +51,7 @@ from notebooklm.browser.helpers import (
     wait_for_element,
 )
 from notebooklm.constants import DEFAULT_ELEMENT_TIMEOUT_MS
+from notebooklm.decorators import handle_browser_operation
 from notebooklm.errors import NotebookLMError
 from notebooklm.selectors import SelectorManager
 from notebooklm.types import NoteContent, NoteInfo
@@ -98,6 +99,7 @@ class NoteService:
 
         logger.debug("NoteService initialized")
 
+    @handle_browser_operation(error_class=NotebookLMError)
     async def create_note(
         self,
         notebook_id: str,
@@ -157,8 +159,7 @@ class NoteService:
             content_length=len(content),
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
@@ -215,20 +216,7 @@ class NoteService:
                 title=effective_title,
             )
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise NotebookLMError(
-                f"Failed to create note: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "content_length": len(content),
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=NotebookLMError)
     async def list_notes(
         self,
         notebook_id: str,
@@ -266,8 +254,7 @@ class NoteService:
 
         logger.info("Listing notes", notebook_id=notebook_id)
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
@@ -296,9 +283,7 @@ class NoteService:
             )
             return notes
 
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=NotebookLMError)
     async def get_note(
         self,
         notebook_id: str,
@@ -349,8 +334,7 @@ class NoteService:
             note_index=note_index,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
 
@@ -390,20 +374,7 @@ class NoteService:
                 content=content,
             )
 
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise NotebookLMError(
-                f"Failed to get note: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "note_index": note_index,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=NotebookLMError)
     async def delete_note(
         self,
         notebook_id: str,
@@ -454,8 +425,7 @@ class NoteService:
             note_index=note_index,
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             await navigate_to_notebook(page, notebook_id)
             await page.wait_for_load_state("networkidle")
 
@@ -504,20 +474,6 @@ class NoteService:
             )
 
             return True
-
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
-            raise NotebookLMError(
-                f"Failed to delete note: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "note_index": note_index,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
 
     # ---- Private helpers ----
 

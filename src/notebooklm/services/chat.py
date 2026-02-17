@@ -57,6 +57,7 @@ from notebooklm.constants import (
     DEFAULT_ELEMENT_TIMEOUT_MS,
     GENERATION_POLL_INTERVAL_SECONDS,
 )
+from notebooklm.decorators import handle_browser_operation
 from notebooklm.errors import ChatError
 from notebooklm.selectors import SelectorManager
 from notebooklm.types import ChatHistory, ChatResponse
@@ -101,6 +102,7 @@ class ChatService:
 
         logger.debug("ChatService initialized")
 
+    @handle_browser_operation(error_class=ChatError)
     async def chat(
         self,
         notebook_id: str,
@@ -150,8 +152,7 @@ class ChatService:
             question_length=len(question),
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -198,22 +199,7 @@ class ChatService:
                 suggested_followups=suggested_followups,
             )
 
-        except ValueError:
-            raise
-        except ChatError:
-            raise
-        except Exception as e:
-            raise ChatError(
-                f"Chat interaction failed: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "question": question,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=ChatError)
     async def get_chat_history(
         self,
         notebook_id: str,
@@ -253,8 +239,7 @@ class ChatService:
 
         logger.info("Getting chat history", notebook_id=notebook_id)
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -284,21 +269,7 @@ class ChatService:
                 total_messages=copy_buttons,
             )
 
-        except ValueError:
-            raise
-        except Exception as e:
-            if isinstance(e, ChatError):
-                raise
-            raise ChatError(
-                f"Failed to get chat history: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=ChatError)
     async def clear_chat_history(
         self,
         notebook_id: str,
@@ -338,8 +309,7 @@ class ChatService:
 
         logger.info("Clearing chat history", notebook_id=notebook_id)
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -375,21 +345,7 @@ class ChatService:
             )
             return True
 
-        except ValueError:
-            raise
-        except Exception as e:
-            if isinstance(e, ChatError):
-                raise
-            raise ChatError(
-                f"Failed to clear chat history: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=ChatError)
     async def configure_chat(
         self,
         notebook_id: str,
@@ -441,8 +397,7 @@ class ChatService:
             prompt_length=len(system_prompt),
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -487,22 +442,7 @@ class ChatService:
             )
             return True
 
-        except ValueError:
-            raise
-        except Exception as e:
-            if isinstance(e, ChatError):
-                raise
-            raise ChatError(
-                f"Failed to configure chat: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "system_prompt_length": len(system_prompt),
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
-
+    @handle_browser_operation(error_class=ChatError)
     async def save_response_to_note(
         self,
         notebook_id: str,
@@ -554,8 +494,7 @@ class ChatService:
             question_length=len(question),
         )
 
-        page = await self._browser_manager.new_page()
-        try:
+        async with self._browser_manager.managed_page() as page:
             # Navigate to the notebook
             await navigate_to_notebook(page, notebook_id)
 
@@ -609,22 +548,6 @@ class ChatService:
                 notebook_id=notebook_id,
             )
             return False
-
-        except ValueError:
-            raise
-        except Exception as e:
-            if isinstance(e, ChatError):
-                raise
-            raise ChatError(
-                f"Failed to save response to note: {e}",
-                context={
-                    "notebook_id": notebook_id,
-                    "question": question,
-                    "error": str(e),
-                },
-            ) from e
-        finally:
-            await page.close()
 
     # ---- Private helpers ----
 
