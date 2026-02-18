@@ -1,0 +1,27 @@
+{
+  "1715651D": {
+    "ticker": "DD",
+    "company_name": "EIDP, Inc.",
+    "note": "DuPont歴史的ティッカー（旧E. I. du Pont de Nemours and Company）"
+  },
+  "1541931D": {
+    "ticker": "ALTR",
+    "company_name": "Altera Corporation",
+    "note": "Intel買収済み(2015年12月)"
+  },
+  "2258717D": {
+    "ticker": "EMC",
+    "company_name": "Dell EMC",
+    "note": "Dell統合済み(2016年9月)"
+  },
+  "2326248D": {
+    "ticker": "CA",
+    "company_name": "CA, Inc.",
+    "note": "Broadcom買収済み(2018年11月)"
+  },
+  "990315D": {
+    "ticker": "CLB",
+    "company_name": "Core Laboratories Inc.",
+    "note": "ティッカー変更（現在はCLB）"
+  }
+}
