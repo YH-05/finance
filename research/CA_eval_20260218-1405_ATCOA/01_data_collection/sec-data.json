@@ -1,0 +1,76 @@
+{
+  "ticker": "ATCOA",
+  "company_name": "Atlas Copco AB (A shares)",
+  "exchange": "Nasdaq Stockholm (Sweden)",
+  "sec_status": "not_found",
+  "sec_note": "ATCOAはスウェーデン証券取引所上場企業。SEC EDGAR上でのCIKは確認できず。20-F/6-K等のSECフォームは提出されていない可能性が高い。以下のデータはアナリストレポート記載の財務・事業情報から抽出。",
+  "data_source": "analyst_report_primary",
+  "company_overview": {
+    "description": "Atlas Copco ABは産業用コンプレッサー、バキューム（真空ポンプ）等で世界最大手のスウェーデン産業機器メーカー。産業用コンプレッサー、半導体・産業用真空ポンプなどで世界トップシェアを誇る。",
+    "major_shareholder": "Wallenberg家（Investor AB経由、約22%保有）",
+    "segments": [
+      "Compressor Technique (CT)",
+      "Vacuum Technique (VT)",
+      "Industrial Technique (IT)",
+      "Power Technique (PT)"
+    ],
+    "revenue_mix": "コンプレッサー事業とバキューム事業で売上高の約75%を占める"
+  },
+  "financials_from_report": {
+    "cagr_target": {
+      "revenue_growth": "8%（会社目標: OG5% + InOG3%）",
+      "op_leverage": "1%",
+      "buyback": "1%",
+      "total_eps_cagr": "10%（+配当1-2%）",
+      "analyst_note_2022": "売上高8% + 営業レバレッジ1% + 自社株買い1% = CAGR10%、ITG対比割安、BUY推奨"
+    },
+    "segment_performance_2025q2": {
+      "revenue_growth_yoy": "-8.0%（FX要因-8%）",
+      "adj_opm": "20.4%",
+      "eps": "1.34",
+      "segment_og": {
+        "Compressor Technique": "+2.0%",
+        "Vacuum Technique": "-5.0%",
+        "Industrial Technique": "-12.0%",
+        "Power Technique": "-1.0%"
+      },
+      "segment_order_og": {
+        "Compressor Technique": "-7.0%",
+        "Vacuum Technique": "+3.0%",
+        "Industrial Technique": "-1.0%",
+        "Power Technique": "+10.0%"
+      },
+      "segment_opm": {
+        "Compressor Technique": "25.0%",
+        "Vacuum Technique": "18.9%",
+        "Industrial Technique": "17.1%",
+        "Power Technique": "17.1%"
+      }
+    },
+    "long_term_opm_guidance": "トップライン8%成長時、ex-FXで20-23%（Low 20s）",
+    "wacc": "約8%",
+    "ct_segment_roic": "84%（非常に高い）",
+    "afterservice_ratio_target": "コンプレッサー: 機器:アフターサービス=1:1まで見込む、バキューム: 40%程度",
+    "outsourcing_ratio": "部品の75%をアウトソース（変動費型収益構造）",
+    "direct_sales_ratio": "売上高の約8割が直販体制（Customer Centers 300以上）",
+    "rd_policy": "好不景気に関わらず一定水準を毎年投下"
+  },
+  "market_position": {
+    "Compressor": "世界シェア約34%（2番手の約1.8倍）。米国では拮抗",
+    "Vacuum_total": "市場全体シェア約50%（業界トップ）",
+    "Vacuum_industrial": "近年買収企業の改革でシェアUP（数年前はマーケットリーダーでなかった）",
+    "Industrial_automotive": "自動車向けトップシェア（2番手の4倍）"
+  },
+  "competitive_notes": {
+    "pricing_power": "LfL 1-2% + イノベーション効果がフォーミュラ。セミコン・自動車向けはLfLでフラット（顧客側がASML等ドミナントのため価格支配力弱い）",
+    "tariff_impact_2025": "価格引き上げや調達修正でボトムライン影響は0-0.1%程度",
+    "ma_activity_2024": "33件実施（4Qで11件）。WACC8%超の投資基準",
+    "restructuring": "欧州工場リストラ（VT事業）が順調に推移"
+  },
+  "risks": {
+    "technology_risk": "コンプレッサーの大きなイノベーション（オイルフリー、VSD等のブレイクスルー）が数十年に一度起きている",
+    "cyclicality": "コンプレッサー・バキュームともにシクリカル性あり。VTビジネスは「今まで経験した中で一番長いダウンサイクル」（CEO コメント）",
+    "customer_concentration": "VT事業で大口顧客（Intel相当）がゴタゴタ。ASML等の大口顧客は交渉力強く価格支配力制約",
+    "management_risk": "大企業病的要素の懸念（リアクティブな面が散見）"
+  }
+}
