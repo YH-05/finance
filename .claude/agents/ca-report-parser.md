@@ -81,63 +81,17 @@ color: cyan
 
 ## 出力スキーマ
 
-> **PoC簡素化**: `report_type` フィールドは任意（省略可）。レポート種別による集計（`from_initial_report` / `from_quarterly_review`）も省略。
+スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
 
-```json
-{
-  "ticker": "ORLY",
-  "report_metadata": {
-    "report_date": "2025-03-15",
-    "analyst": "Analyst Name",
-    "source": "Broker Name",
-    "report_path": "analyst/raw/ORLY_report.md",
-    "total_pages": 25,
-    "report_type": null
-  },
-  "sections": [
-    {
-      "section_id": "S001",
-      "title": "Investment Thesis",
-      "page_ref": "p.3-5",
-      "content_summary": "ORLY の投資テーゼ...",
-      "advantage_candidates": [
-        {
-          "candidate_id": "AC001",
-          "text": "ローカルな規模の経済による配送効率",
-          "section_ref": "S001",
-          "page_ref": "p.4",
-          "type": "competitive_advantage",
-          "evidence_in_report": "店舗数5,800超、配送センター30拠点"
-        }
-      ]
-    }
-  ],
-  "advantage_candidates_summary": {
-    "total": 8
-  },
-  "factual_claims": [
-    {
-      "claim_id": "FC001",
-      "text": "店舗数5,829",
-      "source_section": "S001",
-      "page_ref": "p.4",
-      "data_type": "store_count"
-    }
-  ],
-  "cagr_references": [
-    {
-      "ref_id": "CR001",
-      "text": "売上CAGR +6.0%",
-      "components": ["既存店+4.5%", "新規出店+1.5%"],
-      "source_section": "S003",
-      "page_ref": "p.12"
-    }
-  ],
-  "parsing_notes": [
-    "アナリスト名はレポート表紙から取得"
-  ]
-}
 ```
+.claude/skills/ca-eval/templates/schemas/parsed-report.schema.md
+```
+
+**重要な制約**:
+- フィールド名を変更してはならない
+- 必須フィールドを省略してはならない
+
+> **PoC簡素化**: `report_type` フィールドは任意（省略可）。レポート種別による集計（`from_initial_report` / `from_quarterly_review`）も省略。
 
 ### PoC出力 vs 将来の完全版の差分
 

@@ -117,77 +117,15 @@ KB3の5銘柄のKY評価例を参照し、確信度スケールをキャリブ�
 
 ## 出力スキーマ
 
-Dify設計書§6 のスキーマに準拠:
+スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
 
-```json
-{
-  "ticker": "ORLY",
-  "report_source": "アナリストA",
-  "extraction_metadata": {
-    "kb1_rules_loaded": 8,
-    "kb3_fewshot_loaded": 5,
-    "dogma_loaded": true,
-    "sec_data_available": true,
-    "industry_context_available": true
-  },
-  "claims": [
-    {
-      "id": 1,
-      "claim_type": "competitive_advantage",
-      "claim": "ローカルな規模の経済による配送・在庫の効率化",
-      "descriptive_label": "配送密度による原価優位",
-      "evidence_from_report": "店舗数5,800超、配送センター30拠点（レポートp.8）",
-      "report_type_source": null,
-      "supported_by_facts": [3, 4],
-      "cagr_connections": [2],
-      "rule_evaluation": {
-        "applied_rules": ["rule_6", "rule_11"],
-        "results": [
-          {
-            "rule": "rule_6",
-            "verdict": "structural",
-            "reasoning": "配送密度は競合が容易に再現できない構造的優位"
-          },
-          {
-            "rule": "rule_11",
-            "verdict": "pass",
-            "reasoning": "フラグメント市場における規模・密度の優位が市場構造と合致"
-          }
-        ],
-        "confidence": 90,
-        "confidence_adjustments": [],
-        "overall_reasoning": "市場構造との合致が明確。ルール11の典型的な高評価パターン"
-      }
-    },
-    {
-      "id": 2,
-      "claim_type": "cagr_connection",
-      "claim": "店舗密度の拡大 → 配送効率 → マージン改善 → 営業利益CAGR +2pp",
-      "descriptive_label": "配送密度→マージン改善経路",
-      "source_advantage": 1,
-      "rule_evaluation": {
-        "applied_rules": ["rule_5"],
-        "results": [
-          {
-            "rule": "rule_5",
-            "verdict": "direct",
-            "reasoning": "2ステップの因果。配送効率→マージンは10-Kの費用構造から検証可能"
-          }
-        ],
-        "confidence": 80,
-        "confidence_adjustments": [],
-        "overall_reasoning": "因果メカニズムが直接的で検証可能"
-      }
-    },
-    {
-      "id": 3,
-      "claim_type": "factual_claim",
-      "claim": "店舗数5,829",
-      "affected_claims": [1]
-    }
-  ]
-}
 ```
+.claude/skills/ca-eval/templates/schemas/claims.schema.md
+```
+
+**重要な制約**:
+- フィールド名を変更してはならない
+- 必須フィールドを省略してはならない
 
 ## 重要な注意事項
 
