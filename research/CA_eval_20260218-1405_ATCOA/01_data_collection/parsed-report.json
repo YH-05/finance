@@ -1,0 +1,225 @@
+{
+  "ticker": "ATCOA",
+  "report_path": "analyst/raw/ATCOA SS.md",
+  "report_type": "composite",
+  "report_type_note": "PoC段階: 期初レポート(①)と四半期レビュー(②)の区別はスキップ。本レポートは2021年初期の投資仮説＋四半期フォローアップ＋面談ノートの複合構成",
+  "sections": [
+    {
+      "id": "S1",
+      "title": "ESG評価",
+      "date": "2022-11-04 / 2021-07-21",
+      "summary": "サステナ評価: リスクエクスポージャーは中立、マネジメントは Strong（特に製品ガバナンス・人的資本）。Industrial Machinery内2/387位（2022/11）"
+    },
+    {
+      "id": "S2",
+      "title": "競争優位性・事業概要（コア投資仮説）",
+      "date": "2022-11-04",
+      "summary": "①インストールベースでの高いシェアを基にしたアフターサービス、②顧客接点を基にしたイノベーション（値上げ実施）、③スリムな収益構造（アウトソース・PL意識）が競合対比高い収益性をもたらす"
+    },
+    {
+      "id": "S3",
+      "title": "競争環境詳細",
+      "date": "2022-11-04",
+      "summary": "Compressor世界シェア34%（2番手の1.8倍）、Vacuum全体50%、Industrial自動車向け2番手の4倍のシェア"
+    },
+    {
+      "id": "S4",
+      "title": "CAGR推定",
+      "date": "2022-11-04 / 2021-03-10",
+      "summary": "売上高8%(OG5+InOG3%) + 営業レバレッジ1% + 自社株買い1% = EPS CAGR10%（+配当1-2%）"
+    },
+    {
+      "id": "S5",
+      "title": "2025年2Q決算フォローアップ",
+      "date": "2025-07-25",
+      "summary": "全社売上高-8%(FX-8%), Adj OPM 20.4%。受注はCompressor・Industrialが弱い。Vacuumは安定化。関税影響はボトムラインほぼなし"
+    },
+    {
+      "id": "S6",
+      "title": "IR面談メモ（Atlas Copco VP of IR + BofA Conference）",
+      "date": "2025-04-09",
+      "summary": "VTダウンサイクル長期化。価格支配力はLfL1-2%+イノベーション効果。セミコン・自動車向けはフラット。大企業病的要素の懸念"
+    },
+    {
+      "id": "S7",
+      "title": "CFO面談メモ",
+      "date": "2025-02-14",
+      "summary": "VT事業収益性ダウン（Volume減・R&D・Capex投資）。CT競争環境変化なし。M&A 2024年33件、WACC8%基準。配当性向50%ターゲット"
+    }
+  ],
+  "competitive_advantage_candidates": [
+    {
+      "id": "CA1",
+      "claim": "インストールベース（顧客基盤）に基づく高スイッチングコストとアフターサービス収益",
+      "source_section": "S2",
+      "evidence": "コンプレッサーは工場の電力コスト2-3割、ライフサイクルコストの8割が電気代。工場の心臓部として停止不可能。アフターサービス比率機器:アフター=1:1を目指す。Customer Centers 300以上配置、近年は常時モニタリングサービス提供",
+      "ca_type": "switching_cost",
+      "quantitative_evidence": true
+    },
+    {
+      "id": "CA2",
+      "claim": "顧客接点（直販・Customer Centers）に基づくイノベーション能力と値上げ実施力",
+      "source_section": "S2, S6",
+      "evidence": "直販比率約8割。顧客製造プロセスを熟知し、製品性能とアプリケーション両視点からイノベーション。7-8%の効率性提供でリプレイス促進。LfL1-2%+イノベーション効果のフォーミュラ。アジアで一度も価格競争なし",
+      "ca_type": "innovation_pricing_power",
+      "quantitative_evidence": true
+    },
+    {
+      "id": "CA3",
+      "claim": "変動費型収益構造（75%アウトソース）による景気耐性",
+      "source_section": "S2, S7",
+      "evidence": "コア部品（タービン、スクリュー、ピストン等）25%のみ内製化、75%アウトソース。変動費型構造により景気減速時のクッションあり。アフターサービス比率のバッファーも機能",
+      "ca_type": "cost_structure",
+      "quantitative_evidence": true
+    },
+    {
+      "id": "CA4",
+      "claim": "分散型組織体制（24 BU、400以上のP/L）による事業効率と意思決定スピード",
+      "source_section": "S2, S7",
+      "evidence": "4セグメント・23BU（現在24）・全社400程度のP/L。権限と責任が現場付与。各BUが製品開発・製造・マーケティング&セールスを担当",
+      "ca_type": "organizational_structure",
+      "quantitative_evidence": false
+    },
+    {
+      "id": "CA5",
+      "claim": "コンプレッサー・バキューム事業間の部品共通化とクロスセル（規模の経済）",
+      "source_section": "S2",
+      "evidence": "バキュームVSDの75%の部品がコンプレッサーと同じ。コンプレッサー顧客の半分が真空ポンプも購入（クロスセル）。販売網・倉庫等のロジスティクスコスト共通化",
+      "ca_type": "economies_of_scale",
+      "quantitative_evidence": true
+    },
+    {
+      "id": "CA6",
+      "claim": "M&Aを通じた市場統合能力と流通網コントロール",
+      "source_section": "S2, S7",
+      "evidence": "2024年33件のM&A実施（4Qで11件）。Distributor買収により他ブランドを排除し顧客接点を確保。WACC8%超の厳格な投資基準。多くの案件をインターナルでソーシング",
+      "ca_type": "ma_capability",
+      "quantitative_evidence": true
+    },
+    {
+      "id": "CA7",
+      "claim": "バキューム（真空ポンプ）事業における半導体市場での高シェアとTCO優位性",
+      "source_section": "S3",
+      "evidence": "バキューム市場全体で約50%シェア。半導体製造コストの2%しか占めないため値上げ受容性が高い財。先端領域（EUV・微細化）で重要性増大。Dry Vacuum米国現地生産唯一のプレーヤー予定",
+      "ca_type": "market_position_pricing",
+      "quantitative_evidence": true
+    }
+  ],
+  "factual_claims": [
+    {
+      "id": "FC1",
+      "claim": "コンプレッサー世界シェア約34%（2番手の約1.8倍）",
+      "source": "S2/S3",
+      "verifiable": true,
+      "type": "market_share"
+    },
+    {
+      "id": "FC2",
+      "claim": "バキューム市場全体シェア約50%",
+      "source": "S3",
+      "verifiable": true,
+      "type": "market_share"
+    },
+    {
+      "id": "FC3",
+      "claim": "Industrial自動車向けシェアが2番手の4倍",
+      "source": "S3",
+      "verifiable": false,
+      "type": "market_share"
+    },
+    {
+      "id": "FC4",
+      "claim": "コンプレッサーのライフサイクルコスト: 電気代8割、サービス1割、機器1割",
+      "source": "S2",
+      "verifiable": false,
+      "type": "cost_structure"
+    },
+    {
+      "id": "FC5",
+      "claim": "VSDの75%の部品がコンプレッサーとバキュームで共通",
+      "source": "S2",
+      "verifiable": false,
+      "type": "operational"
+    },
+    {
+      "id": "FC6",
+      "claim": "コンプレッサー顧客の半分が真空ポンプも購入",
+      "source": "S2",
+      "verifiable": false,
+      "type": "operational"
+    },
+    {
+      "id": "FC7",
+      "claim": "売上高の約8割が直販体制（Customer Centers 300以上）",
+      "source": "S2",
+      "verifiable": false,
+      "type": "sales_structure"
+    },
+    {
+      "id": "FC8",
+      "claim": "部品の75%をアウトソース（コア部品25%のみ内製）",
+      "source": "S2/S7",
+      "verifiable": true,
+      "type": "cost_structure",
+      "verified_by_cfo": true
+    },
+    {
+      "id": "FC9",
+      "claim": "2024年M&A 33件実施（4Qで11件）",
+      "source": "S7",
+      "verifiable": true,
+      "type": "ma_activity"
+    },
+    {
+      "id": "FC10",
+      "claim": "2025Q2 Adj OPM 20.4%、EPS 1.34",
+      "source": "S5",
+      "verifiable": true,
+      "type": "financial"
+    },
+    {
+      "id": "FC11",
+      "claim": "CT事業ROIC 84%（非常に高い魅力的なビジネス）",
+      "source": "S4",
+      "verifiable": false,
+      "type": "financial"
+    },
+    {
+      "id": "FC12",
+      "claim": "CAGR目標: 売上8%(OG5+InOG3%) + 営業レバレッジ1% + 自社株1% = EPS CAGR 10%",
+      "source": "S4",
+      "verifiable": false,
+      "type": "cagr_estimate"
+    }
+  ],
+  "cagr_references": [
+    {
+      "id": "CAGR1",
+      "parameter": "売上高成長率",
+      "value": "8%(OG5% + InOG3%)",
+      "note": "Vacuum(8% OG) > Compressor(4% OG)。V: 半導体向け微細化の追い風。C: GDP/IP連動",
+      "source": "S4"
+    },
+    {
+      "id": "CAGR2",
+      "parameter": "営業レバレッジ",
+      "value": "1%/年",
+      "note": "Vacuum事業がアフターサービス比率上昇・規模の経済で年20bp改善を主導。他事業は5bp程度",
+      "source": "S4"
+    },
+    {
+      "id": "CAGR3",
+      "parameter": "自社株買い",
+      "value": "1%",
+      "note": "3-5年に一度実施",
+      "source": "S4"
+    },
+    {
+      "id": "CAGR4",
+      "parameter": "長期OPM目標",
+      "value": "20-23%(Low 20s)",
+      "note": "トップライン8%成長時。ex-FXベース（CFO面談）",
+      "source": "S7"
+    }
+  ]
+}

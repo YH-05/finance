@@ -1,0 +1,240 @@
+# sec-data.schema.md スキーマ
+
+> 生成タスク: T1 | 生成エージェント: finance-sec-filings（または ca-eval-lead が直接実行）
+> 読み込み先: T4_claim_extractor（主張の事実的根拠として参照）、T5_fact_checker（ファクトチェックの照合元）
+
+## JSONスキーマ
+
+```json
+{
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "retrieved_at": "2026-02-18T14:54:00Z",
+  "data_source": "analyst_report_extracted",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "unavailable",
+    "reason": "EDGAR_IDENTITY未設定のためSEC EDGAR MCPへのアクセスが制限。財務データはアナリストレポート（analyst/raw/AME US.md）から抽出した参照値のみ。",
+    "affected_fields": ["financials_detailed", "filing_sections", "recent_filings_full"],
+    "available_fields": ["financials_from_report", "key_metrics_from_report", "insider_summary_partial"]
+  },
+  "financials": {
+    "note": "アナリストレポートからの参照値。正確な財務諸表データはSEC EDGAR直接参照が必要。",
+    "revenue": {
+      "description": "売上高",
+      "latest_annual": {
+        "value_approx": "6500000000",
+        "currency": "USD",
+        "period": "FY2023（概算）",
+        "source": "レポート記載：売上高7bn程度（IR面談2024年6月時点）"
+      },
+      "historical_reference": {
+        "fy2018_approx": "5000000000",
+        "note": "2018年12月レポートに「売上5Bn$」と記載"
+      }
+    },
+    "segment_revenue_mix": {
+      "EIG": {
+        "share": "68%",
+        "description": "電子計器事業（電力・医療・工業・航空宇宙等）",
+        "opm": "25.5%",
+        "latest_quarter_opm": "30.3%（2024Q2）"
+      },
+      "EMG": {
+        "share": "32%",
+        "description": "電気機械事業（精密動作ソリューション・熱管理・電気相互接続・特殊金属）",
+        "opm": "24.5%",
+        "latest_quarter_opm": "21.2%（2024Q2）"
+      }
+    },
+    "income_statement": {
+      "opm_consolidated": {
+        "q2_2024": "25.8%（vs Cons 25.3%）",
+        "long_term_target": "Core EBIT Margin 30bp/年改善"
+      },
+      "eps": {
+        "q2_2024": "1.66（vs Cons 1.64）"
+      },
+      "revenue_growth": {
+        "q2_2024_yoy": "+5.4%（OG▲2%、M&A+8%、FX▲1%）",
+        "fy2024_guidance": "+5~7%（2024Q2時点、前回から▲4%引き下げ）",
+        "long_term_target": "8%（OG4%+M&A4%）"
+      }
+    },
+    "balance_sheet": {
+      "note": "詳細データはSEC EDGAR参照要。以下はレポートからの参照値のみ。",
+      "goodwill_note": "ROIC算出時はgoodwill除外ベースで20%超を維持"
+    },
+    "cash_flow": {
+      "capex_to_revenue": "約2%",
+      "cumulative_capital_deployment_since_2012": {
+        "total": "USD10bn",
+        "breakdown": {
+          "ma": "74%（USD7.4bn）",
+          "dividends": "11%（USD1.1bn）",
+          "buyback": "15%（USD1.5bn）"
+        }
+      },
+      "note": "高いFCF創出力：M&A資金のほとんどを内部資金で賄う"
+    }
+  },
+  "recent_filings": {
+    "note": "SEC EDGAR MCP利用不可のため詳細なフォームデータは取得不可",
+    "10k": {
+      "status": "unavailable",
+      "partial_info": {
+        "filing_date_approx": "2025年2月頃（FY2024 10-K）",
+        "accession_hint": "0000014846-25-XXXXXX"
+      }
+    },
+    "10q": {
+      "status": "partial",
+      "latest": {
+        "form_type": "10-Q",
+        "filing_date": "2025-11-06",
+        "accession_number": "0000014846-25-000037",
+        "note": "XBRL解析エラーにより財務データ抽出不可"
+      }
+    },
+    "8k": {
+      "status": "unavailable"
+    }
+  },
+  "insider_summary": {
+    "status": "unavailable_for_ame",
+    "note": "SEC EDGAR MCPのCIK解決エラーのためAMETEKのインサイダーデータ取得不可",
+    "management_info_from_report": {
+      "ceo": "David Zapico（EIG事業Head出身、当社戦略を熟知）",
+      "cfo": "新CFO（2017年以降在職、Capital Allocation方針不変）",
+      "ma_team": "11名のM&Aチーム（deal sourcing 4名、execution 6名、+1名追加）"
+    }
+  },
+  "key_metrics": {
+    "roic_excl_goodwill": "20%超（M&A中心の成長でも安定維持）",
+    "opm_trend": "過去5年平均65bp/年改善",
+    "opm_long_term_target": "30bp/年改善（2024年面談後修正）",
+    "rd_to_revenue": "5.5%程度（Engineering含むR&D全体）",
+    "direct_sales_ratio": "約80%",
+    "vitality_index": "約29%（直近Q）",
+    "price_cost_spread": {
+      "normal": "50~100bp",
+      "fy2021": "100bp（Pricing6%、コスト5%）",
+      "fy2024_target": "50bp（Pricing3%、コストインフレ2.5%）"
+    },
+    "ma_track_record": {
+      "period": "2002年以降",
+      "total_amount": "USD8.4bn",
+      "total_count": "86件",
+      "avg_per_year": "約4件",
+      "avg_deal_size": "約USD100M",
+      "criteria": {
+        "roic_3yr": "10%以上",
+        "irr": "15%以上",
+        "eps_y1": "EPS Accretive"
+      }
+    },
+    "bu_structure": {
+      "current_bu_count": "42（売上高7bn時点）",
+      "historical_bu_count": "32（売上高2bn時点、約16~17年前）",
+      "avg_bu_revenue": "約USD200M"
+    },
+    "end_market_mix": {
+      "medical": "約21%（Paragon買収後）",
+      "aerospace_defense": "約20%",
+      "general_industries": "約30%",
+      "china_exposure": "約10%（売上高比）"
+    },
+    "manufacturing": {
+      "low_cost_locations": ["上海", "メキシコ", "セルビア", "マレーシア", "チェコ"],
+      "engineer_count_global": "2,900名",
+      "india_engineering_center": "バンガロール、250名のR&Dエンジニア"
+    }
+  },
+  "filing_sections": {
+    "note": "SEC EDGAR MCP利用不可のため直接取得不可。アナリストレポートからの要約のみ。",
+    "business": {
+      "summary": "電子計器（EIG、68%）と電気機械（EMG、32%）の2セグメント。ニッチ領域のミッションクリティカル計測機器・プロセス機器に特化。Tier2サプライヤーとして大手OEMへ納入。直販8割体制。",
+      "key_products": [
+        "電子計器・測定機器（速度、温度、金属構成、密度、流体速度、圧力等の計測）",
+        "プロセス機器（流体制御用機器・部品）",
+        "精密動作ソリューション",
+        "熱管理システム",
+        "電気相互接続製品",
+        "特殊金属"
+      ],
+      "key_customers": [
+        "エマソン（Tier1）へのTier2納入",
+        "GE（Tier1）へのTier2納入",
+        "Honeywell（Tier1）へのTier2納入",
+        "Airbus・Boeing向けTier1（Lockheed Martin、UTX）へのTier2納入"
+      ],
+      "niche_market_size": "USD150~400M（1bn以上の大規模市場は回避）",
+      "market_share": "30~50%（各ニッチ領域）"
+    },
+    "risk_factors": {
+      "summary": "レポートで言及されたリスクファクター",
+      "risks": [
+        "事業規模拡大に伴うM&A対象ニッチビジネスの縮小（値打ちのある買収のハードル上昇）",
+        "大型買収（USD1bn以上）実施時の高値掴み・インテグレーション・競争優位性変化リスク",
+        "ESGスコア（相対スコア58）が閾値付近にあり除外リスク",
+        "中国リスク（売上高比1割弱、サプライチェーン分散で対応済み）",
+        "オートメーション・ヘルスケア向けシクリカルリスク"
+      ]
+    },
+    "mda": {
+      "summary": "2024Q2実績とガイダンス",
+      "revenue_q2_2024": "+5.4% YoY（OG▲2%、M&A+8%、FX▲1%）",
+      "opm_q2_2024": "25.8%",
+      "fy2024_guidance": "+5~7%（前回比▲4%引き下げ）",
+      "key_drivers": [
+        "オートメーション関連：OEM在庫調整が想定より長期化（▲2%影響）",
+        "ヘルスケア：Paragon関連在庫調整（業界全体要因）（▲1%影響）",
+        "EIG：地政学・選挙不透明感によるプロジェクト遅延（▲1%影響）",
+        "Aero/Defense：堅調"
+      ],
+      "pricing": "Price-Costスプレッド1%（Pricing3.5%、コスト2.5%）を維持"
+    }
+  }
+}
+```
+
+## フィールド説明
+
+| フィールド | 型 | 必須 | 説明 |
+|-----------|-----|------|------|
+| `ticker` | string | ✅ | 銘柄ティッカーシンボル |
+| `company_name` | string | ✅ | 企業正式名称 |
+| `retrieved_at` | string (ISO 8601) | ✅ | データ取得時刻 |
+| `data_source` | string | ✅ | データソース種別。`"sec_edgar"` / `"analyst_report_extracted"` / `"mixed"` |
+| `data_limitations` | object | ✅ | データ制限事項（SEC EDGAR非対応時は必須） |
+| `data_limitations.sec_edgar_mcp_status` | string | ✅ | SEC EDGAR MCPの利用状況: `"available"` / `"unavailable"` / `"partial"` |
+| `data_limitations.reason` | string | ✅ | 制限理由の説明 |
+| `data_limitations.affected_fields` | array[string] | ✅ | 利用不可なフィールド一覧 |
+| `data_limitations.available_fields` | array[string] | ✅ | 利用可能なフィールド一覧 |
+| `financials` | object | ✅ | 財務データ |
+| `financials.revenue` | object | ✅ | 売上高データ |
+| `financials.segment_revenue_mix` | object | - | セグメント別売上高構成比（セグメント制企業のみ） |
+| `financials.income_statement` | object | ✅ | 損益計算書の主要指標 |
+| `financials.balance_sheet` | object | ✅ | 貸借対照表の主要指標 |
+| `financials.cash_flow` | object | ✅ | キャッシュフローの主要指標 |
+| `recent_filings` | object | ✅ | 直近SEC提出書類の情報 |
+| `recent_filings.10k` | object | ✅ | 年次報告書（10-K）の情報 |
+| `recent_filings.10k.status` | string | ✅ | 取得状況: `"available"` / `"unavailable"` / `"partial"` |
+| `recent_filings.10q` | object | ✅ | 四半期報告書（10-Q）の情報 |
+| `recent_filings.8k` | object | ✅ | 臨時報告書（8-K）の情報 |
+| `insider_summary` | object | ✅ | インサイダー取引サマリー |
+| `insider_summary.status` | string | ✅ | 取得状況: `"available"` / `"unavailable_for_{ticker}"` / `"partial"` |
+| `key_metrics` | object | ✅ | 主要KPI指標 |
+| `key_metrics.roic_excl_goodwill` | string | ✅ | Goodwill除外ベースROIC |
+| `key_metrics.ma_track_record` | object | ✅ | M&Aトラックレコード（M&A主体企業の場合） |
+| `filing_sections` | object | ✅ | 10-K/10-Qの主要セクション要約 |
+| `filing_sections.business` | object | ✅ | Business Descriptionの要約 |
+| `filing_sections.risk_factors` | object | ✅ | Risk Factorsの要約 |
+| `filing_sections.mda` | object | ✅ | MD&Aの要約 |
+
+## バリデーションルール
+
+- `data_source` が `"analyst_report_extracted"` の場合、`data_limitations` の全フィールドが必須
+- SEC EDGAR MCPが利用不可でも `recent_filings` オブジェクト自体は必須（各フィールドに `"status": "unavailable"` を記載）
+- `financials.revenue.latest_annual` に `value_approx` が含まれる場合、近似値であることを示す `note` フィールドが必須
+- `key_metrics.ma_track_record` の `criteria` は買収規律を検証する主要フィールドであるため、M&A戦略を持つ企業では必須
+- セグメント制企業の場合、`financials.segment_revenue_mix` の各セグメントの `share` の合計が100%になること

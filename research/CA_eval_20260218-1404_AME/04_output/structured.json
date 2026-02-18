@@ -1,0 +1,822 @@
+{
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "evaluation_date": "2026-02-18",
+  "research_id": "CA_eval_20260218-1404_AME",
+  "report_source": "アナリストYKレポート（期初2022年10月 + 四半期2024年8月 + 面談2024年6月）",
+  "extraction_metadata": {
+    "kb1_rules_loaded": 8,
+    "kb2_patterns_loaded": 12,
+    "kb3_fewshot_loaded": 5,
+    "dogma_loaded": true,
+    "sec_data_available": true,
+    "industry_context_available": false,
+    "fact_check_available": true,
+    "pattern_verification_available": true,
+    "sec_xbrl_status": "failed (press release/IR basis)",
+    "claims_generated": 15,
+    "competitive_advantage_count": 12,
+    "cagr_connection_count": 3,
+    "factual_claim_count": 25
+  },
+  "overall_assessment": {
+    "average_ca_confidence": 45.0,
+    "median_ca_confidence": 50.0,
+    "high_confidence_claims_count": 3,
+    "confidence_distribution": {
+      "90": 0,
+      "70": 3,
+      "50": 4,
+      "30": 3,
+      "20": 1,
+      "10": 1
+    },
+    "distribution_vs_ky_baseline": {
+      "90_pct_actual": 0,
+      "90_pct_baseline": 6,
+      "70_pct_actual": 25,
+      "70_pct_baseline": 26,
+      "50_pct_actual": 33,
+      "50_pct_baseline": 35,
+      "30_or_below_pct_actual": 42,
+      "30_or_below_pct_baseline": 32,
+      "anomaly": false,
+      "notes": "30%以下がKY基準より多いのはITW/ROPとの差別化不足が全体のスコアを押し下げているため"
+    },
+    "investment_implication": "AMETEKの競争優位性は「ニッチ市場×スイッチングコスト×M&A実行能力」の3要素を核心とし、業界構造（フラグメント化されたニッチ計測機器市場、Tier構造）との合致は明確。しかし、ITW・ROPという極めて類似したビジネスモデルの純粋競合が存在し、定量的差別化データが体系的に不足しているため、最高評価は70%に留まる。CAGR 10%の前提は、M&A寄与+4-6%とOP Leverage+1-2%が主要ドライバーであり、M&A実行能力の持続性（買収大型化トレンド）とPMI成否がCAGR達成の鍵。",
+    "key_bottleneck": "パターンG（純粋競合ITW/ROPへの差別化不明）が12件中8件で指摘。AME評価の最大のシステマティックな制約要因"
+  },
+  "applied_rules": {
+    "rule_01": {
+      "rule_name": "能力≠結果",
+      "applicable": true,
+      "result": "mixed",
+      "notes": "C003(M&A能力)はpass、C011/C012はfail(結果を優位性とする)。C004/C006/C008は境界的ケース"
+    },
+    "rule_02": {
+      "rule_name": "名詞属性",
+      "applicable": true,
+      "result": "mostly_pass",
+      "notes": "大半の主張は名詞属性を満たす。C009(ローコスト製造)はweak、C011(レジリエンス)はweak"
+    },
+    "rule_03": {
+      "rule_name": "相対的優位性",
+      "applicable": true,
+      "result": "bottleneck",
+      "notes": "ITW/ROPとの差別化不足が系統的に出現。C007は「ITWに類似」とレポート自身が明記"
+    },
+    "rule_04": {
+      "rule_name": "定量的裏付け",
+      "applicable": true,
+      "result": "mixed",
+      "notes": "C003/C006/C008は定量データ豊富。C005/C009は不足。全体的にデータは多いがITW/ROP比較データが欠如"
+    },
+    "rule_05": {
+      "rule_name": "CAGR直接性",
+      "applicable": true,
+      "result": "mostly_pass",
+      "notes": "M&A寄与(C013)は1ステップで直接的。OP Leverage(C014)は2ステップ。OG成長(C015)はVolume寄与が不透明"
+    },
+    "rule_06": {
+      "rule_name": "構造的vs補完的",
+      "applicable": true,
+      "result": "pass",
+      "notes": "C001/C002/C003は構造的。C004/C005/C006はsemi-structural。C009は補完的"
+    },
+    "rule_07": {
+      "rule_name": "純粋競合差別化",
+      "applicable": true,
+      "result": "bottleneck",
+      "notes": "12件中8件でパターンG指摘。ITW/ROPとの定量的差別化データが全般的に不足。AME評価の最大の制約要因"
+    },
+    "rule_08": {
+      "rule_name": "戦略≠優位性",
+      "applicable": true,
+      "result": "mostly_pass",
+      "notes": "C002(Tier2ポジション)はboundary、C008(Capital Allocation)はboundary、C011(市場分散)はstrategy"
+    },
+    "rule_09": {
+      "rule_name": "事実誤認",
+      "applicable": true,
+      "result": "applied_once",
+      "notes": "C010: Vitality Index 29% vs SEC開示27%（2pp乖離）→ 確信度30%→10%に引き下げ"
+    },
+    "rule_10": {
+      "rule_name": "ネガティブケース",
+      "applicable": true,
+      "result": "positive",
+      "notes": "C003に買収断念例あり。C008にも投資断念例。ルール10はプラス要因として機能"
+    },
+    "rule_11": {
+      "rule_name": "業界構造合致",
+      "applicable": true,
+      "result": "pass",
+      "notes": "C001/C002でstrong_fit。ニッチ計測機器市場（フラグメント化・高Cost of Failure・Tier構造）との合致が明確"
+    },
+    "rule_12": {
+      "rule_name": "期初vs四半期",
+      "applicable": false,
+      "result": "n/a",
+      "notes": "PoC省略。期初レポート(2022年10月)が中核。四半期(2024年8月)からの拡大解釈は見られない"
+    }
+  },
+  "claims": [
+    {
+      "id": 1,
+      "claim_id": "C001",
+      "claim_type": "competitive_advantage",
+      "claim": "ニッチ市場におけるスイッチングコスト",
+      "descriptive_label": "Mission Critical計測機器のスイッチングコスト",
+      "evidence_from_report": "Mission Critical且つカスタマイズした財に特化。放射能検知器、潜水艦内コネクタ、高速鉄道fault recorder。Churn Rateほぼゼロ（面談確認）。市場規模USD150-400M、シェア30-50%。",
+      "supported_by_facts": ["FC001", "FC006", "FC007", "FC019", "FC020"],
+      "cagr_connections": ["C013", "C015"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "「スイッチングコスト」は名詞属性として明確"},
+          {"rule": "rule_04", "verdict": "partial", "reasoning": "Churn Rateほぼゼロ（面談）、シェア30-50%は説得力あり。カスタマイズ比率の具体数値なし"},
+          {"rule": "rule_06", "verdict": "structural", "reasoning": "AMETEKビジネスモデルの核心"},
+          {"rule": "rule_11", "verdict": "strong_fit", "reasoning": "ニッチ計測機器市場（フラグメント化・高Cost of Failure）との合致が明確"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_07", "reason": "ITW/ROPとのスイッチングコスト比較データなし。最大のボトルネック"},
+          {"rule": "rule_10", "reason": "該当する断念例の記述なし"}
+        ],
+        "confidence": 70,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0（事実誤認なし、相対性はITW/ROP類似で0加点）",
+          "layer_2_nature": "+0（スイッチングコストは能力/結果の区別対象外）",
+          "layer_3_evidence": "+20（ルール11 strong_fit、定量裏付け部分的あり）",
+          "layer_4_cagr": "+0（CAGR接続は独立評価）",
+          "layer_5_source": "+0（PoC省略）",
+          "final": 70
+        },
+        "overall_reasoning": "構造的優位性（ルール6）と業界構造の合致（ルール11）が明確。ただし純粋競合（ITW/ROP）との差別化データ不足（ルール7）が70%の上限要因。90%にはITW/ROP対比の定量差別化が必要"
+      },
+      "verification": {
+        "fact_check_status": "verified",
+        "fact_check_details": "関連する財務指標は正確。Churn Rate/市場シェアは面談ベースでSEC未開示",
+        "pattern_matches": ["IV", "I"],
+        "pattern_rejections": ["G"],
+        "final_confidence": 70,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {
+          "rule_9_factual_accuracy": "pass",
+          "rule_3_relative_advantage": "partial"
+        },
+        "layer_2_nature": {
+          "rule_1_capability_vs_result": "not_primary_target",
+          "rule_2_noun_test": "pass",
+          "rule_8_strategy_vs_advantage": "advantage"
+        },
+        "layer_3_evidence": {
+          "rule_4_quantitative": "partial",
+          "rule_7_pure_competitor": "absent",
+          "rule_10_negative_case": "absent",
+          "rule_11_industry_structure": "strong_fit"
+        },
+        "layer_4_cagr": {
+          "rule_5_directness": "direct",
+          "rule_6_structural_vs_complementary": "structural",
+          "verifiability": "medium"
+        },
+        "layer_5_source": {
+          "rule_12_source_type": null,
+          "rule_12_note": "PoC省略",
+          "overinterpretation_risk": "low"
+        }
+      },
+      "ai_comment": "構造的優位性と業界構造の合致が明確だが、ITW/ROPとのスイッチングコスト定量比較が不足。70%は再考の余地あり（ITW/ROP比較データがあれば上昇可能）。"
+    },
+    {
+      "id": 2,
+      "claim_id": "C002",
+      "claim_type": "competitive_advantage",
+      "claim": "Tier2サプライヤーとしてのニッチポジション",
+      "descriptive_label": "大手Tier1へのTier2納入ポジション",
+      "evidence_from_report": "Honeywell、Lockheed Martin、Emerson、GE等のTier1に納入。USD150-400Mのニッチ市場に特化し大手参入リスクが低い構造。",
+      "supported_by_facts": ["FC007", "FC020"],
+      "cagr_connections": ["C015"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "「市場ポジション」は名詞属性"},
+          {"rule": "rule_06", "verdict": "structural", "reasoning": "ビジネスモデル全体を規定する構造的要素"},
+          {"rule": "rule_08", "verdict": "boundary", "reasoning": "「ニッチトップ戦略」は戦略だが、確立されたTier2ポジションは構造的"},
+          {"rule": "rule_11", "verdict": "strong_fit", "reasoning": "Tier構造が明確な計測・プロセス機器市場との合致"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_07", "reason": "ITW/ROPとのポジショニング差異の定量データなし"},
+          {"rule": "rule_04", "reason": "市場規模・シェアは面談/推計ベース"}
+        ],
+        "confidence": 70,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0（相対性はITW/ROP類似で限定的）",
+          "layer_2_nature": "+0（ルール8 boundary）",
+          "layer_3_evidence": "+20（ルール11 strong_fit）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 70
+        },
+        "overall_reasoning": "C001と表裏一体。市場構造との合致（ルール11）が明確だがITW/ROP差別化が制約。70%はC001と一貫"
+      },
+      "verification": {
+        "fact_check_status": "not_directly_checked",
+        "pattern_matches": ["IV"],
+        "pattern_rejections": ["G", "F"],
+        "final_confidence": 70,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "partial"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "not_primary_target", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "boundary"},
+        "layer_3_evidence": {"rule_4_quantitative": "partial", "rule_7_pure_competitor": "absent", "rule_10_negative_case": "absent", "rule_11_industry_structure": "strong_fit"},
+        "layer_4_cagr": {"rule_5_directness": "moderate", "rule_6_structural_vs_complementary": "structural", "verifiability": "low"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "C001と同一市場構造に由来。Tier2ポジション自体は構造的だが、ITW/ROPとの差異が定量的に不明。"
+    },
+    {
+      "id": 3,
+      "claim_id": "C003",
+      "claim_type": "competitive_advantage",
+      "claim": "M&A実行能力（ターゲット選定・PMI統合ノウハウ）",
+      "descriptive_label": "規律あるM&A体制と組織的PMI能力",
+      "evidence_from_report": "M&Aチーム11名、買収基準（ROIC10%/IRR15%/1年目EPS Accretive）、累計86件USD8.4bn、PMI Playbook蓄積、断念例あり。",
+      "supported_by_facts": ["FC008", "FC012", "FC013", "FC014", "FC015", "FC016"],
+      "cagr_connections": ["C013"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_01", "verdict": "pass", "reasoning": "選定基準・専門チーム・PMI Playbookは能力・仕組み。CHD#1パターン"},
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "M&A実行能力は名詞属性"},
+          {"rule": "rule_04", "verdict": "strong", "reasoning": "買収基準、チーム人数、累計実績、ROIC20%超と豊富"},
+          {"rule": "rule_07", "verdict": "partial", "reasoning": "ITW/ROPも同様のM&A駆動モデル。AME固有のターゲットサイズ特化はあるが定量比較なし"},
+          {"rule": "rule_10", "verdict": "present", "reasoning": "買収断念例の面談言及あり。Paragon USD1.9bnは規律逸脱懸念"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_11", "reason": "M&A能力と業界構造の直接合致はフラグメント市場でのM&A集約として間接的に該当"}
+        ],
+        "confidence": 70,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0（相対性はITW/ROP類似で限定的）",
+          "layer_2_nature": "+10（ルール1 pass: 能力の具体的説明、ルール10 present: 断念例）",
+          "layer_3_evidence": "+10（ルール4 strong: 定量データ豊富）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 70
+        },
+        "overall_reasoning": "CHD#1（70%）と極めて類似。能力の説明品質と定量データが充実。Paragon（USD1.9bn）の規律逸脱リスクと、ITW/ROP対比のM&A成功率比較データ不足が制約。"
+      },
+      "verification": {
+        "fact_check_status": "mixed",
+        "fact_check_details": "Paragon USD1.9bn verified。累計86件はunverifiable。ROIC 20%超はpartially_verified（incl goodwill 11.28%）",
+        "pattern_matches": ["III", "I"],
+        "pattern_rejections": ["G"],
+        "final_confidence": 70,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "partial"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "capability", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "advantage"},
+        "layer_3_evidence": {"rule_4_quantitative": "strong", "rule_7_pure_competitor": "partial", "rule_10_negative_case": "present", "rule_11_industry_structure": "fit"},
+        "layer_4_cagr": {"rule_5_directness": "direct", "rule_6_structural_vs_complementary": "structural", "verifiability": "high"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "CHD#1と同パターンで70%は妥当。Paragonの規律逸脱とROIC(incl goodwill)11.28%は要注視。"
+    },
+    {
+      "id": 4,
+      "claim_id": "C004",
+      "claim_type": "competitive_advantage",
+      "claim": "買収後コストシナジーによる規模の経済性強化",
+      "descriptive_label": "コーポレート機能統合・集中購買によるスケールメリット",
+      "evidence_from_report": "コーポレート機能統合、販売チャネル統合、Corporate Supply Chain Teamによる集中購買。ROIC20%超維持。",
+      "supported_by_facts": ["FC010"],
+      "cagr_connections": ["C014"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_01", "verdict": "boundary", "reasoning": "コストシナジー実現は結果に近いが、集中購買の仕組みは能力"},
+          {"rule": "rule_06", "verdict": "semi-structural", "reasoning": "C003の帰結としての位置づけ。半構造的"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_07", "reason": "ITW 80/20戦略、ROPの統合モデルと差別化不明"},
+          {"rule": "rule_04", "reason": "コストシナジー固有の定量効果が示されていない"}
+        ],
+        "confidence": 50,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0（産業コングロマリット共通、ルール3違反）",
+          "layer_2_nature": "+0（ルール1 boundary）",
+          "layer_3_evidence": "+0（ルール7 weak、ルール4不足）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 50
+        },
+        "overall_reasoning": "方向性は認めるがITW/ROPとの差別化不明。LLY#1（50%）の業界共通パターンに類似。"
+      },
+      "verification": {
+        "fact_check_status": "verified",
+        "fact_check_details": "OPM推移はverified",
+        "pattern_matches": ["III"],
+        "pattern_rejections": ["B", "G"],
+        "final_confidence": 50,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "weak"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "boundary", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "not_primary"},
+        "layer_3_evidence": {"rule_4_quantitative": "partial", "rule_7_pure_competitor": "absent", "rule_10_negative_case": "absent", "rule_11_industry_structure": "moderate"},
+        "layer_4_cagr": {"rule_5_directness": "direct", "rule_6_structural_vs_complementary": "semi-structural", "verifiability": "high"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "産業コングロマリット共通のコストシナジー追求。C003への依存関係あり。50%が妥当。"
+    },
+    {
+      "id": 5,
+      "claim_id": "C005",
+      "claim_type": "competitive_advantage",
+      "claim": "直販体制によるフライホイール効果",
+      "descriptive_label": "直販→ニーズ把握→M&Aリスト→クロスセルの自己強化サイクル",
+      "evidence_from_report": "直販比率約8割。顧客ニーズ把握→買収リスト選定→クロスセル→固定費削減のフライホイール。",
+      "supported_by_facts": ["FC017"],
+      "cagr_connections": [],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_01", "verdict": "pass", "reasoning": "直販体制は仕組み"},
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "直販体制・フライホイール効果は名詞属性"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_07", "reason": "ITW/ROPとの差別化データなし"},
+          {"rule": "rule_04", "reason": "フライホイール各ステップの定量裏付けなし"}
+        ],
+        "confidence": 50,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0",
+          "layer_2_nature": "+0（ルール1 pass だが独立性弱い）",
+          "layer_3_evidence": "+0（4ステップ因果で飛躍懸念、パターンC）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 50
+        },
+        "overall_reasoning": "4ステップの因果チェーンは飛躍懸念（パターンC）。C003の付随的要素。CHD#7（50%）パターン。"
+      },
+      "verification": {
+        "fact_check_status": "unverifiable",
+        "fact_check_details": "直販比率8割はSEC開示なし",
+        "pattern_matches": ["III"],
+        "pattern_rejections": ["C", "D"],
+        "final_confidence": 50,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "partial"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "capability", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "advantage"},
+        "layer_3_evidence": {"rule_4_quantitative": "partial", "rule_7_pure_competitor": "absent", "rule_10_negative_case": "absent", "rule_11_industry_structure": "not_primary"},
+        "layer_4_cagr": {"rule_5_directness": "indirect", "rule_6_structural_vs_complementary": "semi-structural", "verifiability": "low"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "4ステップのフライホイールは因果飛躍の懸念。C003の補完的要素として独立性が弱い。"
+    },
+    {
+      "id": 6,
+      "claim_id": "C006",
+      "claim_type": "competitive_advantage",
+      "claim": "ニッチ市場でのPricing Power",
+      "descriptive_label": "ニッチトップ×Mission Criticalによる価格決定力",
+      "evidence_from_report": "通常+1%の単価上昇。コストスプレッド50-100bp。インフレ5%下でも6%値上げ。2024年Price3%/Cost2.5%。",
+      "supported_by_facts": ["FC022"],
+      "cagr_connections": ["C015"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "Pricing Powerは名詞属性"},
+          {"rule": "rule_04", "verdict": "strong", "reasoning": "コストスプレッド、インフレ下の価格転嫁実績等、定量データ豊富"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_07", "reason": "ITW/ROPのPricing Power比較データなし"},
+          {"rule": "rule_01", "reason": "C001の帰結であり独立した優位性としての位置づけが弱い"}
+        ],
+        "confidence": 50,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0（ルール3: ニッチトップなら同等のPP保有可能性）",
+          "layer_2_nature": "+0（ルール1 boundary: C001の帰結）",
+          "layer_3_evidence": "+0（ルール4 strong だがルール7 weak で相殺）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 50
+        },
+        "overall_reasoning": "定量データ豊富だがC001の帰結としての独立性弱さとITW/ROP比較不足が制約。50%が妥当。"
+      },
+      "verification": {
+        "fact_check_status": "unverifiable",
+        "fact_check_details": "Price-Cost分解はSEC開示なし",
+        "pattern_matches": ["I"],
+        "pattern_rejections": ["G"],
+        "final_confidence": 50,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "partial"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "boundary", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "advantage"},
+        "layer_3_evidence": {"rule_4_quantitative": "strong", "rule_7_pure_competitor": "absent", "rule_10_negative_case": "absent", "rule_11_industry_structure": "moderate"},
+        "layer_4_cagr": {"rule_5_directness": "direct", "rule_6_structural_vs_complementary": "semi-structural", "verifiability": "medium"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "定量裏付けの質は高いがC001の帰結としての独立性が課題。ITW/ROP比較があれば再考の余地。"
+    },
+    {
+      "id": 7,
+      "claim_id": "C007",
+      "claim_type": "competitive_advantage",
+      "claim": "分散型組織（BU自律経営モデル）",
+      "descriptive_label": "42BU自律経営による現場密着型運営",
+      "evidence_from_report": "42BU（各BU売上高約USD200M）。「ITWに類似するが事業領域は狭い」。",
+      "supported_by_facts": ["FC018"],
+      "cagr_connections": [],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "分散型組織は名詞属性"},
+          {"rule": "rule_06", "verdict": "structural", "reasoning": "M&A後の統合・運営の基盤"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_03", "reason": "レポート自身が「ITWに類似」と明記。業界共通"},
+          {"rule": "rule_07", "reason": "ITW/ROPと基本構造が同じ"}
+        ],
+        "confidence": 30,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "-20（ルール3: 業界共通。レポート自身がITW類似と明記）",
+          "layer_2_nature": "+0",
+          "layer_3_evidence": "+0（ルール7 fail）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 30
+        },
+        "overall_reasoning": "レポート自身のITW類似記述がパターンBの自認。LLY#6（30%）との一貫性で30%。"
+      },
+      "verification": {
+        "fact_check_status": "partially_verified",
+        "fact_check_details": "BU数42はSEC「40+ businesses」と概ね一致",
+        "pattern_matches": [],
+        "pattern_rejections": ["B", "G"],
+        "final_confidence": 30,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "fail"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "not_primary_target", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "not_primary"},
+        "layer_3_evidence": {"rule_4_quantitative": "partial", "rule_7_pure_competitor": "absent", "rule_10_negative_case": "absent", "rule_11_industry_structure": "not_primary"},
+        "layer_4_cagr": {"rule_5_directness": "indirect", "rule_6_structural_vs_complementary": "structural", "verifiability": "low"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "ITWに類似とレポート自身が明記。業界共通の組織形態であり30%が妥当。"
+    },
+    {
+      "id": 8,
+      "claim_id": "C008",
+      "claim_type": "competitive_advantage",
+      "claim": "Capital Allocation規律",
+      "descriptive_label": "規律あるM&A中心の資本配分",
+      "evidence_from_report": "累計USD10bn（M&A74%/Div11%/BB15%）。Capex/売上高2%。FCF USD1.7bn。投資断念例あり。",
+      "supported_by_facts": ["FC005", "FC009", "FC021"],
+      "cagr_connections": ["C013"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "Capital Allocation規律は名詞属性"},
+          {"rule": "rule_04", "verdict": "strong", "reasoning": "累計金額、配分比率、FCF等の定量データ豊富"},
+          {"rule": "rule_10", "verdict": "present", "reasoning": "投資断念例の面談言及あり"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_08", "reason": "Capital Allocationの方針は戦略に近い（boundary）"},
+          {"rule": "rule_07", "reason": "ITW/ROPとのCapital Allocation効率比較なし"}
+        ],
+        "confidence": 50,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0",
+          "layer_2_nature": "+0（ルール8 boundary で相殺）",
+          "layer_3_evidence": "+0（ルール4 strong だがルール7/8で相殺）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 50
+        },
+        "overall_reasoning": "定量データ豊富でルール10もプラスだが、ルール8（戦略境界）とルール7（競合比較不足）が制約。CHD#7（50%）パターン。"
+      },
+      "verification": {
+        "fact_check_status": "mixed",
+        "fact_check_details": "FCF/Capex verified。累計USD10bn投下はunverifiable",
+        "pattern_matches": ["III", "I"],
+        "pattern_rejections": ["F"],
+        "final_confidence": 50,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "partial"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "boundary", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "boundary"},
+        "layer_3_evidence": {"rule_4_quantitative": "strong", "rule_7_pure_competitor": "partial", "rule_10_negative_case": "present", "rule_11_industry_structure": "not_primary"},
+        "layer_4_cagr": {"rule_5_directness": "direct", "rule_6_structural_vs_complementary": "semi-structural", "verifiability": "high"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "定量データ豊富で断念例もプラスだが、戦略/優位性の境界とITW/ROP比較不足が制約。"
+    },
+    {
+      "id": 9,
+      "claim_id": "C009",
+      "claim_type": "competitive_advantage",
+      "claim": "ローコスト地域製造拠点",
+      "descriptive_label": "グローバル製造拠点の低コスト配置",
+      "evidence_from_report": "上海、メキシコ、セルビア、マレーシア、チェコ等に工場保有。",
+      "supported_by_facts": [],
+      "cagr_connections": [],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_02", "verdict": "weak", "reasoning": "ローコスト製造は行動に近い。名詞属性として弱い"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_03", "reason": "グローバル製造業の基本施策"},
+          {"rule": "rule_07", "reason": "ITW/ROP含め殆どの産業コングロマリットが実施"},
+          {"rule": "rule_04", "reason": "コスト削減効果の定量データなし"}
+        ],
+        "confidence": 20,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "-20（ルール3: 業界共通施策）",
+          "layer_2_nature": "-5（ルール2 weak）",
+          "layer_3_evidence": "-5（ルール4/7 不合格）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 20
+        },
+        "overall_reasoning": "業界共通施策。COST#5/COST#6先例（20%）との整合性で20%。パターン検証で30%→20%に調整。"
+      },
+      "verification": {
+        "fact_check_status": "not_checked",
+        "pattern_matches": [],
+        "pattern_rejections": ["B", "D"],
+        "final_confidence": 20,
+        "confidence_delta": -10,
+        "adjustment_source": "pattern_verification"
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "fail"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "not_primary_target", "rule_2_noun_test": "weak", "rule_8_strategy_vs_advantage": "not_primary"},
+        "layer_3_evidence": {"rule_4_quantitative": "absent", "rule_7_pure_competitor": "fail", "rule_10_negative_case": "absent", "rule_11_industry_structure": "not_primary"},
+        "layer_4_cagr": {"rule_5_directness": "moderate", "rule_6_structural_vs_complementary": "complementary", "verifiability": "low"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "業界共通施策であり競争優位性として不成立。COST#5/COST#6（20%）との整合性。"
+    },
+    {
+      "id": 10,
+      "claim_id": "C010",
+      "claim_type": "competitive_advantage",
+      "claim": "R&D体制（India Engineering Center含む）",
+      "descriptive_label": "分散型R&D体制とインド集約拠点",
+      "evidence_from_report": "エンジニア2,900人、R&D比率5.4%、India Center 250人。Vitality Index: 主張29%、SEC開示27%（2pp乖離）。",
+      "supported_by_facts": ["FC006", "FC007", "FC023"],
+      "cagr_connections": ["C015"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_02", "verdict": "pass", "reasoning": "R&D体制は名詞属性"},
+          {"rule": "rule_09", "verdict": "fail", "reasoning": "Vitality Index 29% vs SEC開示27%。2ppの過大表示。事実誤認によりルール9適用"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_07", "reason": "ITW/ROPのR&D体制との比較完全欠如"},
+          {"rule": "rule_03", "reason": "R&D投資は産業コングロマリット標準"}
+        ],
+        "confidence": 10,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "-40（ルール9: 事実誤認→即却下。ルール3: 業界共通）",
+          "layer_2_nature": "+0",
+          "layer_3_evidence": "+0",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 10
+        },
+        "overall_reasoning": "Vitality Index 2pp乖離によりルール9適用。仮にルール9非適用でもルール7不合格・パターンBで30%が上限。"
+      },
+      "verification": {
+        "fact_check_status": "contradicted",
+        "fact_check_details": "Vitality Index 29%はSEC開示27%と矛盾（2pp over-statement）",
+        "pattern_matches": [],
+        "pattern_rejections": ["B", "D", "G"],
+        "final_confidence": 10,
+        "confidence_delta": -20,
+        "adjustment_source": "fact_check_rule_9"
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "fail", "rule_3_relative_advantage": "partial"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "not_primary_target", "rule_2_noun_test": "pass", "rule_8_strategy_vs_advantage": "not_primary"},
+        "layer_3_evidence": {"rule_4_quantitative": "moderate", "rule_7_pure_competitor": "absent", "rule_10_negative_case": "absent", "rule_11_industry_structure": "not_primary"},
+        "layer_4_cagr": {"rule_5_directness": "moderate", "rule_6_structural_vs_complementary": "semi-structural", "verifiability": "medium"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "Vitality Index 2pp乖離によるルール9適用で10%。業界共通R&Dでもあり、仮にルール9非適用でも30%が上限。"
+    },
+    {
+      "id": 11,
+      "claim_id": "C011",
+      "claim_type": "competitive_advantage",
+      "claim": "エンド市場分散によるレジリエンス",
+      "descriptive_label": "M&A結果としてのエンド市場分散",
+      "evidence_from_report": "Medical21%、Aero20%、General Industries30%。agnostic to business domains方針。レポート自身が「opportunisticなM&Aの結果」と記述。",
+      "supported_by_facts": ["FC024"],
+      "cagr_connections": [],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_01", "verdict": "result", "reasoning": "M&Aの結果として形成されたポートフォリオの「状態」であり能力ではない"},
+          {"rule": "rule_08", "verdict": "strategy", "reasoning": "一市場への依存回避は戦略的方針"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_11", "reason": "エンド市場分散は市場構造との合致ではない"},
+          {"rule": "rule_07", "reason": "主に結果/原因の判定で却下"}
+        ],
+        "confidence": 30,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0",
+          "layer_2_nature": "-20（ルール1: 結果。ルール8: 戦略）",
+          "layer_3_evidence": "+0",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 30
+        },
+        "overall_reasoning": "ルール1（結果）とルール8（戦略）の複合ケース。CHD#4（30%）と直接アナロジー。レポートの「opportunistic M&Aの結果」記述がパターンAの証拠。"
+      },
+      "verification": {
+        "fact_check_status": "partially_verified",
+        "fact_check_details": "エンド市場リストはSEC開示と整合。具体的比率はSEC未開示",
+        "pattern_matches": [],
+        "pattern_rejections": ["A", "F"],
+        "final_confidence": 30,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "not_primary"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "result", "rule_2_noun_test": "weak", "rule_8_strategy_vs_advantage": "strategy"},
+        "layer_3_evidence": {"rule_4_quantitative": "partial", "rule_7_pure_competitor": "not_primary", "rule_10_negative_case": "absent", "rule_11_industry_structure": "not_primary"},
+        "layer_4_cagr": {"rule_5_directness": "indirect", "rule_6_structural_vs_complementary": "not_primary", "verifiability": "low"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "結果を原因と取り違え（パターンA）。CHD#4（30%）と同パターン。"
+    },
+    {
+      "id": 12,
+      "claim_id": "C012",
+      "claim_type": "competitive_advantage",
+      "claim": "EIGセグメントの高収益性と最終顧客交渉力",
+      "descriptive_label": "EIG OPM30.6%という結果としての高収益性",
+      "evidence_from_report": "EIG OPM 30.6%（verified）、EMG OPM 20.0%（verified）。10ppの差はポジショニングの違いを示唆。",
+      "supported_by_facts": ["FC003", "FC004"],
+      "cagr_connections": ["C014"],
+      "rule_evaluation": {
+        "applied_rules": [
+          {"rule": "rule_01", "verdict": "result", "reasoning": "OPM 30.6%は結果。MNST#1パターン"},
+          {"rule": "rule_04", "verdict": "strong", "reasoning": "EIG/EMGの具体数値あり"}
+        ],
+        "not_applied_rules": [
+          {"rule": "rule_11", "reason": "OPMの高さは市場構造との合致ではない"},
+          {"rule": "rule_07", "reason": "主に結果/原因の判定で却下"}
+        ],
+        "confidence": 30,
+        "confidence_rationale": {
+          "base": 50,
+          "layer_1_prerequisite": "+0",
+          "layer_2_nature": "-20（ルール1: 結果を優位性とする）",
+          "layer_3_evidence": "+0（ルール4 strong だが結果の数値であり差別化の裏付けではない）",
+          "layer_4_cagr": "+0",
+          "layer_5_source": "+0",
+          "final": 30
+        },
+        "overall_reasoning": "高OPMは結果であり優位性ではない。C001/C002の裏付け証拠としては有用。CHD#4（30%）との一貫性。"
+      },
+      "verification": {
+        "fact_check_status": "verified",
+        "fact_check_details": "EIG OPM 30.6% verified、EMG OPM 20.0% verified",
+        "pattern_matches": ["I"],
+        "pattern_rejections": ["A"],
+        "final_confidence": 30,
+        "confidence_delta": 0
+      },
+      "five_layer_evaluation": {
+        "layer_1_prerequisite": {"rule_9_factual_accuracy": "pass", "rule_3_relative_advantage": "not_primary"},
+        "layer_2_nature": {"rule_1_capability_vs_result": "result", "rule_2_noun_test": "weak", "rule_8_strategy_vs_advantage": "not_primary"},
+        "layer_3_evidence": {"rule_4_quantitative": "strong", "rule_7_pure_competitor": "not_primary", "rule_10_negative_case": "absent", "rule_11_industry_structure": "not_primary"},
+        "layer_4_cagr": {"rule_5_directness": "indirect", "rule_6_structural_vs_complementary": "not_primary", "verifiability": "high"},
+        "layer_5_source": {"rule_12_source_type": null, "rule_12_note": "PoC省略", "overinterpretation_risk": "low"}
+      },
+      "ai_comment": "高OPMは結果であり優位性ではない（ルール1）。C001/C002の裏付け証拠に限定。30%が妥当。"
+    }
+  ],
+  "cagr_connections": [
+    {
+      "id": 13,
+      "claim_id": "C013",
+      "claim_type": "cagr_connection",
+      "title": "M&A寄与による売上成長+4-6%",
+      "source_advantage": "C003",
+      "mechanism": "M&A実行能力→年4件・USD50-200Mの買収→M&A寄与+4-6%の売上成長→PMIによるコストシナジー→OPMの段階的改善",
+      "cagr_confidence": 70,
+      "cagr_rationale": "1ステップで直接的。2010-2019年平均+6.2%との整合性あり。検証可能性高い。CHD#1 CAGR（70%）パターン",
+      "verification": {
+        "pattern_II_match": "strong",
+        "dogma_s3_check": "pass"
+      }
+    },
+    {
+      "id": 14,
+      "claim_id": "C014",
+      "claim_type": "cagr_connection",
+      "title": "OP Leverage（限界利益率32.5%、固定費比率9%）による利益成長+1-2%",
+      "source_advantage": "C001, C004, C006",
+      "mechanism": "売上成長→OP Leverage→利益成長。限界利益率32.5%、固定費比率9%。OPM年30bp改善予想、実績年60bp。",
+      "cagr_confidence": 70,
+      "cagr_rationale": "2ステップで直接的。アナリスト前提が明示。OPM推移で検証可能。実績が予想上回る好材料",
+      "verification": {
+        "pattern_II_match": "moderate",
+        "dogma_s3_check": "pass"
+      }
+    },
+    {
+      "id": 15,
+      "claim_id": "C015",
+      "claim_type": "cagr_connection",
+      "title": "OG成長3-4%（Price+Volume）",
+      "source_advantage": "C001, C006, C010",
+      "mechanism": "Pricing Power→Price寄与+1%。R&D/新製品→Volume寄与+2-3%。OG/InOG比率1:1。",
+      "cagr_confidence": 50,
+      "cagr_rationale": "Price寄与は直接的だがVolume+2-3%の源泉が不明確。OG/InOG定義変更で比較可能性低下",
+      "verification": {
+        "pattern_II_match": "partial",
+        "dogma_s3_check": "partial"
+      }
+    }
+  ],
+  "fact_check_summary": {
+    "total_factual_claims": 25,
+    "verified": 11,
+    "partially_verified": 4,
+    "unverifiable": 9,
+    "contradicted": 1,
+    "contradicted_details": [
+      {
+        "claim": "Vitality Index 29%",
+        "actual": "27%（SEC開示）",
+        "discrepancy": "2pp over-statement",
+        "affected_claims": ["C010"],
+        "rule_9_applied": true
+      }
+    ],
+    "key_verified": [
+      "FY2024 売上高 USD6.94bn",
+      "GAAP OPM 25.6%",
+      "EIG OPM 30.6%",
+      "EMG OPM 20.0%",
+      "FCF USD1.7bn",
+      "Paragon Medical USD1.9bn",
+      "Capex/売上高 1.9%"
+    ],
+    "key_unverifiable": [
+      "M&A累計86件・USD8.4bn（外部ソース依存）",
+      "M&Aチーム構成（組織内部情報）",
+      "直販比率80%（SEC未開示）",
+      "Price-Cost Spread（アーニングコールベース）",
+      "エンジニア2,900人（SEC未開示）"
+    ],
+    "roic_note": "ROIC 20%超（excl goodwill）は直接確認不能。incl goodwillベースでは11.28%（GuruFocus）"
+  },
+  "pattern_summary": {
+    "total_advantages_checked": 12,
+    "most_common_rejection": "G（純粋競合に対する優位性不明）: 12件中8件",
+    "secondary_rejection": "B（業界共通の能力を固有化）: 4件",
+    "high_eval_patterns": {
+      "I_quantitative": 4,
+      "III_capability": 5,
+      "IV_structural_position": 2,
+      "V_competitor_comparison": 0
+    },
+    "confidence_adjustments": [
+      {"claim_id": "C009", "from": 30, "to": 20, "reason": "COST#5/COST#6先例（20%）との整合性"},
+      {"claim_id": "C010", "from": 30, "to": 10, "reason": "ファクトチェック: Vitality Index 2pp乖離→ルール9適用"}
+    ],
+    "key_observation": "パターンV（競合との具体的比較）が全12主張で0件。ITW/ROPとの比較データの欠如を象徴"
+  },
+  "warning_flags": {
+    "overinterpretation_risks": 0,
+    "confidence_distribution_anomaly": false,
+    "paragon_discipline_risk": "Paragon Medical (USD1.9bn)とFARO (USD920M)は従来基準(USD50-200M)からの大幅逸脱。買収大型化トレンドが規律持続性に影響するリスク",
+    "roic_incl_goodwill": "ROIC(incl goodwill)11.28%はM&A駆動型モデルの資本効率に関する重要な注記"
+  },
+  "monitoring_items": [
+    "Paragon Medical統合進捗とEMG OPM回復推移",
+    "FARO Technologies統合コストとEIG OPMへの影響",
+    "ITW/ROPとのhead-to-head定量比較データの収集（ROIC推移、スイッチングコスト指標等）",
+    "M&A大型化トレンドの持続性と買収規律の維持",
+    "OG/InOG定義変更後のOG成長率トラッキング"
+  ]
+}

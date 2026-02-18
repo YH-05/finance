@@ -1,0 +1,60 @@
+{
+  "research_id": "CA_eval_20260218_AME",
+  "ticker": "AME",
+  "mode": "simplified",
+  "generated_at": "2026-02-18T06:00:00Z",
+  "kb_version": "v1.0.0",
+  "executed_by": "ca-eval-lead (T9直接実行)",
+
+  "mode_selection_reason": "AMEはPhase 2ベンチマーク銘柄（CHD, COST, LLY, MNST, ORLY）に含まれないため、簡易モードを適用。analyst/phase2_KY/ 配下にAME関連ファイルなし。",
+
+  "full_mode_results": null,
+
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "description": "contradicted → 10% の自動適用確認（ルール9相当）",
+    "data_source": "research/CA_eval_20260218_AME/03_verification/fact-check.json",
+    "contradicted_claims": [],
+    "contradicted_count": 0,
+    "total_facts_checked": 17,
+    "fact_check_summary": {
+      "verified": 8,
+      "partially_verified": 3,
+      "unverifiable": 5,
+      "contradicted": 0
+    },
+    "rule9_required_applications": [],
+    "rule9_actual_applications": 0,
+    "check_detail": "fact-check.json を確認した結果、contradicted（矛盾する事実）は0件。全17件の事実確認のうち、contradicted は存在しない。ルール9（事実誤認 → confidence 10%）の適用対象がないため、S-8チェックは自動的にpassとなる。",
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "contradicted事実なし。ルール9（contradicted → 10%）の適用ケース0件。精度チェック（S-8）は問題なし。"
+  },
+
+  "cross_check_notes": {
+    "t8_revision_consistency": "T8（AI批判プロセス）での信頼度修正はfact-checkの矛盾ではなくKB3実績との乖離に基づく修正であり、S-8チェックとは独立。T8修正はすべてKB3キャリブレーションによるもの（Claim#7: 50%→70%引き上げ、Claim#3 CAGR: 70%→50%引き下げ）。",
+    "no_contradictions_confirmed": "SEC EDGAR MCP 403エラーのためWebSearch + アナリストレポートによる検証を実施。矛盾するデータは発見されず。MCP利用可能環境での再検証推奨。",
+    "unverifiable_claims": [
+      "fc01: Churn rate ≈ 0%（アナリストのIR面談記録のみ）",
+      "fc05: 買収基準（3年後ROIC10%以上等）（カンファレンスノートのみ）",
+      "fc07: 限界利益率32.5%・固定費比率9%（アナリスト仮定値）",
+      "fc17: ニッチ内市場シェア30-50%（アナリスト推計の可能性）"
+    ],
+    "data_quality_warning": "SEC EDGAR MCP利用不可のため、財務データの一部はWebSearch依存。正式評価時はMCPが利用可能な環境での再実行を推奨。"
+  },
+
+  "overall_summary": {
+    "accuracy_verdict": "pass",
+    "verdict_reason": "簡易モード（S-8チェック）: contradicted事実0件 → ルール9適用なし → pass",
+    "caveats": [
+      "フルモード検証は対象外（Phase 2ベンチマーク銘柄に非該当）",
+      "SEC EDGAR MCP不可のためデータ品質は限定的",
+      "unverifiable項目（4件）は今後の追加調査で補完推奨"
+    ],
+    "next_steps": [
+      "SEC EDGAR MCPが利用可能な環境での再検証（特にROIC・キャッシュフロー詳細）",
+      "競合比較データ収集（Danaher, Roper, ITWとのCapex/ROIC/R&D比率比較）",
+      "業界フラグメント構造の定量分析（ニッチ計測機器市場のTAM・HHI等）"
+    ]
+  }
+}

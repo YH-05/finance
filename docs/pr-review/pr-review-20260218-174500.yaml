@@ -1,0 +1,178 @@
+# PRレビューレポート
+# 生成日時: 2026-02-18 17:45:00
+# 生成スキル: review-pr
+
+metadata:
+  generated_at: "2026-02-18 17:45:00"
+  pr_number: 3591
+  pr_title: "feat(ca-eval): Wave1-2 エージェント定義・SKILL.md を設計書に整合"
+  base_branch: "main"
+  head_branch: "feature/ca-eval"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 6
+  additions: 441
+  deletions: 378
+  changed_files:
+    - path: ".claude/agents/ca-claim-extractor.md"
+      additions: 4
+      deletions: 4
+    - path: ".claude/agents/ca-pattern-verifier.md"
+      additions: 3
+      deletions: 3
+    - path: ".claude/agents/ca-report-generator.md"
+      additions: 106
+      deletions: 58
+    - path: ".claude/agents/ca-report-parser.md"
+      additions: 43
+      deletions: 42
+    - path: ".claude/agents/deep-research/ca-eval-lead.md"
+      additions: 236
+      deletions: 251
+    - path: ".claude/skills/ca-eval/SKILL.md"
+      additions: 49
+      deletions: 20
+
+scores:
+  code_quality: 76
+  security: 90
+  test: 36
+  overall: 71
+
+code_quality:
+  readability_score: 82
+  design_score: 72
+  performance_score: 72
+
+  strengths:
+    - "各エージェントが「ミッション→処理フロー→入力→処理内容→出力→エラーハンドリング→完了通知」の統一構造で記述されている"
+    - "PoC簡素化の範囲が取り消し線（~~）とブロッククォートで明示されており、将来実装との差分が明確"
+    - "T8のAI批判プロセスがStep 1(批判生成)/Step 2(反映・修正)に分離され、SRP準拠の良い設計"
+    - "critique.jsonとrevised-report.mdを別ファイルとして出力し追跡可能性が向上"
+    - "KBパスが全ファイルで analyst/Competitive_Advantage/analyst_YK/ に統一"
+    - "T9の大幅簡素化（5+8メトリクス→1+1）でPoCとして妥当なトレードオフ"
+
+  issues:
+    critical:
+      - location: ".claude/agents/deep-research/ca-eval-lead.md (T2起動プロンプト)"
+        description: "T2起動プロンプトの手順5-6にレポート種別判定・帰属付与が残存。ca-report-parser.mdではPoC省略と明示されており、インターフェース不整合が発生"
+        suggestion: "手順5-6を「PoC: レポート種別判定はスキップ」に修正"
+    high:
+      - location: ".claude/agents/ca-claim-extractor.md"
+        description: "PoC省略の伝播が未反映。入力テーブルに「①/②区別付き」記述が残存、Step 4(①/②区別の反映)が通常ステップのまま、MUSTチェックリストにルール12が残存"
+        suggestion: "ca-report-parserと同様にPoC簡素化マーキングを追加"
+      - location: ".claude/agents/ca-report-generator.md"
+        description: "入力ファイル説明「全12ルール定義（全8ファイル）」が矛盾。KB1は8ルール=8ファイル"
+        suggestion: "「8ルールの詳細定義（全8ファイル）」に修正"
+      - location: ".claude/agents/ca-report-generator.md"
+        description: "T7のKB1追加読込(+8ファイル)がT4と二重読込。claims.jsonに結果が含まれているため冗長の可能性"
+        suggestion: "T7でのKB1参照目的を明確化。claims.jsonからの読み取りで充足可能か検討"
+    medium:
+      - location: ".claude/agents/deep-research/ca-eval-lead.md"
+        description: "research-meta.jsonのworkflowにphase_5が定義されているが、アーキテクチャ図ではPhase 0-4の5フェーズ"
+        suggestion: "phase_5をcleanupとして明示するか、フェーズ定義と整合させる"
+      - location: ".claude/agents/ca-report-generator.md"
+        description: "structured.jsonのlayer_5_sourceにrule_12_source_typeが残存。PoC省略と不整合"
+        suggestion: "PoC簡素化注釈を追加するか、デフォルト値を明記"
+      - location: ".claude/agents/ca-report-generator.md"
+        description: "全12ルール表(12×15=最大180行)が出力されT8入力トークン数が大幅増加"
+        suggestion: "T8はstructured.jsonのapplied_rules/not_applied_rulesから直接読み取る方式を検討"
+      - location: ".claude/agents/ca-report-generator.md"
+        description: "ルール表凡例に「—」(省略)の定義がない"
+        suggestion: "凡例に「—: PoCスコープ外（省略）」を追記"
+    low:
+      - location: ".claude/skills/ca-eval/SKILL.md"
+        description: "KB3の用途が「キャリブレーション（T4）」のみ。T8もKB3を参照する変更が反映漏れ"
+        suggestion: "「キャリブレーション（T4）; AI批判照合（T8）」に更新"
+      - location: ".claude/agents/deep-research/ca-eval-lead.md"
+        description: "revised-report.mdの修正マーカーに絵文字[⬇️ T8修正]使用"
+        suggestion: "[T8修正: 90% → 70%]のようにテキストマーカーに変更"
+
+security:
+  code_security_score: 92
+  infra_security_score: 88
+
+  vulnerability_count:
+    critical: 0
+    high: 1
+    medium: 2
+    low: 4
+
+  findings:
+    - id: "SEC-001"
+      severity: "HIGH"
+      category: "A06 - 脆弱なコンポーネント"
+      location: "pyproject.toml（PR外・既存依存関係）"
+      description: "diskcache 5.6.3にCVE-2025-69872。Pickleシリアライズによる任意コード実行。修正版未リリース"
+      recommendation: "キャッシュディレクトリのパーミッション制限、serializerをjson等に変更"
+      cwe_id: "CWE-502"
+
+    - id: "SEC-002"
+      severity: "MEDIUM"
+      category: "A03 - プロンプトインジェクション"
+      location: ".claude/agents/deep-research/ca-eval-lead.md"
+      description: "T8でアナリストレポート由来テキストがcritique.jsonに記録され、Step 2でプロンプトに注入される経路"
+      recommendation: "アナリストレポートを外部入力として扱う方針をエージェント定義に明記"
+      cwe_id: "CWE-77"
+
+    - id: "SEC-003"
+      severity: "MEDIUM"
+      category: "A04 - 検証バイパス"
+      location: "ca-eval-lead.md, SKILL.md"
+      description: "T9(精度検証)の不合格でもブロックしない設計。ルール9(事実誤認→10%)の強制力低下"
+      recommendation: "S-8(contradicted→10%)のみブロック対象に戻すか、視認性の高い警告ヘッダを追加"
+      cwe_id: "CWE-693"
+
+test:
+  coverage_score: 12
+  quality_score: 60
+  coverage_assessment: "POOR"
+  edge_cases_covered: false
+
+  missing_tests:
+    - "KBパス整合性テスト: 新パスが実在しファイル数が定義通りであることの自動検証"
+    - "PoC省略整合性テスト: ca-claim-extractorのMUST要件とca-report-parserのPoC省略の矛盾検出"
+    - "出力ファイル名整合性テスト: 3ファイル間のファイル名一致確認"
+    - "モデル設定整合性テスト: 全チームメイトのmodel指定が設計書と一致することの確認"
+
+  test_quality:
+    isolation: "PASS"
+    reproducibility: "PASS"
+    readability: "WARN"
+
+  pr_test_plan_issues:
+    - "PR本文の「変更ファイル(4ファイル)」が実際(6ファイル)と不一致"
+    - "テストプランの合格基準が曖昧（手動確認のみ）"
+
+recommended_actions:
+  required:
+    - priority: 1
+      action: "ca-eval-lead.md T2起動プロンプトのレポート種別判定・帰属付与手順をPoC省略に修正"
+      related_issues: ["critical-1"]
+    - priority: 2
+      action: "ca-claim-extractor.mdにPoC簡素化マーキングを追加（Step 4、MUSTチェックリスト、入力テーブル）"
+      related_issues: ["high-1"]
+    - priority: 3
+      action: "ca-report-generator.md入力ファイル説明を「全12ルール定義（全8ファイル）」→「8ルールの詳細定義（全8ファイル）」に修正"
+      related_issues: ["high-2"]
+
+  suggested:
+    - priority: 1
+      action: "structured.jsonのlayer_5_source.rule_12_source_typeにPoC簡素化注釈を追加"
+    - priority: 2
+      action: "SKILL.mdのKB3用途を「T4; T8」に更新"
+    - priority: 3
+      action: "T7でのKB1再読込の必要性を設計レビューで検討"
+    - priority: 4
+      action: "T8の処理時間見積もり(~1.5分)の根拠を記録"
+    - priority: 5
+      action: "PR本文の変更ファイル数を6に修正"
+
+summary:
+  verdict: "REQUEST_CHANGES"
+  comment: |
+    設計変更（T8 AI批判プロセス化、T9簡素化）の方向性は良好だが、
+    PoC省略の伝播が不完全。ca-claim-extractorとca-eval-lead T2プロンプトに
+    旧前提の記述が残存しており、実行時の不整合リスクがある。
+    3件の必須修正を実施後にマージ可能。

@@ -1,6 +1,6 @@
 ---
 name: ca-report-parser
-description: アナリストレポートを構造化し、期初レポート(①)と四半期レビュー(②)を区別して解析するエージェント
+description: アナリストレポートを構造化し、セクション分割・競争優位性候補の抽出を行うエージェント
 model: inherit
 color: cyan
 ---
@@ -9,7 +9,9 @@ color: cyan
 
 ## ミッション
 
-アナリストレポートを構造化し、各セクション・主張に日付と帰属情報（①期初レポート / ②四半期レビュー）を付与します。
+アナリストレポートを構造化し、セクション分割・競争優位性の抽出候補・事実の主張・CAGR参照を識別します。
+
+> **PoC簡素化**: レポート種別の判定（①期初/②四半期/混合）および種別の帰属付与は省略する（設計書 §4.3 準拠）。インプットされたレポートをそのまま処理する。将来的にレポート種別区別を実装予定。
 
 ## Agent Teams チームメイト動作
 
@@ -35,19 +37,14 @@ color: cyan
 
 ## 処理内容
 
-### Step 1: レポート種別の判定
+### ~~Step 1: レポート種別の判定~~ （PoC省略）
 
-```
-レポート内の日付・見出し・構成から判定:
-- ①期初レポート: 投資前提の設定、初期カバレッジ、年次見通し
-- ②四半期レビュー: 決算フォローアップ、アップデート
-- 混合: ①と②が混在する場合
-
-判定基準:
-- "Initiation of Coverage" → ①
-- "Quarterly Review" / "Earnings Update" → ②
-- 上記以外 → レポートの構成・内容から推定
-```
+> **PoC簡素化**: レポート種別の判定（①期初/②四半期/混合）は省略。インプットされたレポートをそのまま処理する。将来実装予定。
+>
+> **将来実装時の判定基準**:
+> - "Initiation of Coverage" → ①期初レポート
+> - "Quarterly Review" / "Earnings Update" → ②四半期レビュー
+> - 上記以外 → レポートの構成・内容から推定
 
 ### Step 2: セクション分割
 
@@ -62,13 +59,17 @@ color: cyan
 - CAGR / 成長見通し / Growth Outlook
 ```
 
-### Step 3: ①/②の帰属付与
+### ~~Step 3: ①/②の帰属付与~~ （PoC省略）
 
-各セクション・段落に対して:
-- **report_type**: "initial" (①) / "quarterly" (②) / "mixed"
-- **date**: レポートの日付
-- **analyst**: アナリスト名（判明する場合）
-- **page_ref**: ページ番号・セクション番号
+> **PoC簡素化**: レポート種別の帰属付与は省略。将来実装予定。
+>
+> **将来実装時の帰属フィールド**:
+> - **report_type**: "initial" (①) / "quarterly" (②) / "mixed"
+>
+> **PoCで付与するメタデータ**:
+> - **date**: レポートの日付
+> - **analyst**: アナリスト名（判明する場合）
+> - **page_ref**: ページ番号・セクション番号
 
 ### Step 4: 競争優位性の抽出候補
 
@@ -80,75 +81,35 @@ color: cyan
 
 ## 出力スキーマ
 
-```json
-{
-  "ticker": "ORLY",
-  "report_metadata": {
-    "report_type": "initial",
-    "report_date": "2025-03-15",
-    "analyst": "Analyst Name",
-    "source": "Broker Name",
-    "report_path": "analyst/raw/ORLY_report.md",
-    "total_pages": 25
-  },
-  "sections": [
-    {
-      "section_id": "S001",
-      "title": "Investment Thesis",
-      "report_type": "initial",
-      "page_ref": "p.3-5",
-      "content_summary": "ORLY の投資テーゼ...",
-      "advantage_candidates": [
-        {
-          "candidate_id": "AC001",
-          "text": "ローカルな規模の経済による配送効率",
-          "section_ref": "S001",
-          "page_ref": "p.4",
-          "type": "competitive_advantage",
-          "evidence_in_report": "店舗数5,800超、配送センター30拠点"
-        }
-      ]
-    }
-  ],
-  "advantage_candidates_summary": {
-    "total": 8,
-    "from_initial_report": 6,
-    "from_quarterly_review": 2
-  },
-  "factual_claims": [
-    {
-      "claim_id": "FC001",
-      "text": "店舗数5,829",
-      "source_section": "S001",
-      "page_ref": "p.4",
-      "data_type": "store_count"
-    }
-  ],
-  "cagr_references": [
-    {
-      "ref_id": "CR001",
-      "text": "売上CAGR +6.0%",
-      "components": ["既存店+4.5%", "新規出店+1.5%"],
-      "source_section": "S003",
-      "page_ref": "p.12"
-    }
-  ],
-  "parsing_notes": [
-    "p.15-20のセクションは四半期レビュー由来と推定",
-    "アナリスト名はレポート表紙から取得"
-  ]
-}
+スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
+
+```
+.claude/skills/ca-eval/templates/schemas/parsed-report.schema.md
 ```
 
-## ルール12 対応
+**重要な制約**:
+- フィールド名を変更してはならない
+- 必須フィールドを省略してはならない
 
-KYのルール12（①主②従の階層）に対応するため:
+> **PoC簡素化**: `report_type` フィールドは任意（省略可）。レポート種別による集計（`from_initial_report` / `from_quarterly_review`）も省略。
 
-1. **①期初レポートの主張を優先的にマーク**
-2. **②四半期レビューの主張には `from_quarterly: true` を付与**
-3. **②から新たな優位性が「発見」されている場合は `quarterly_new_claim: true` で警告**
+### PoC出力 vs 将来の完全版の差分
 
-これにより、後続の T4（Claim Extractor）が①/②の区別に基づいた評価を行える。
+| フィールド | PoC | 将来の完全版 |
+|-----------|-----|-------------|
+| `report_metadata.report_type` | `null`（省略） | `"initial"` / `"quarterly"` / `"mixed"` |
+| `sections[].report_type` | なし | `"initial"` / `"quarterly"` |
+| `advantage_candidates_summary.from_initial_report` | なし | 件数 |
+| `advantage_candidates_summary.from_quarterly_review` | なし | 件数 |
+
+## ~~ルール12 対応~~ （PoC省略）
+
+> **PoC簡素化**: KYのルール12（①主②従の階層）対応は省略（設計書 §4.3 準拠）。レポート種別に関わらず全主張を同等に扱う。
+>
+> **将来実装予定**（PoC完了後）:
+> 1. ①期初レポートの主張を優先的にマーク
+> 2. ②四半期レビューの主張には `from_quarterly: true` を付与
+> 3. ②から新たな優位性が「発見」されている場合は `quarterly_new_claim: true` で警告
 
 ## エラーハンドリング
 
@@ -170,15 +131,10 @@ KYのルール12（①主②従の階層）に対応するため:
 2. 最低限の構造化（セクション分割なし、全文を1セクションとして処理）
 ```
 
-### E003: ①/②判定不能
+### ~~E003: ①/②判定不能~~ （PoC省略）
 
-```
-発生条件: レポート種別を判定できない
-対処法:
-1. report_type: "unknown" として記録
-2. 全主張を "initial" として処理（保守的に①扱い）
-3. parsing_notes に判定不能の理由を記録
-```
+> **PoC簡素化**: レポート種別判定を行わないため、このエラーは発生しない。
+> `report_metadata.report_type` は `null` として出力する。
 
 ## 完了通知テンプレート
 
@@ -189,7 +145,6 @@ SendMessage:
   content: |
     レポート解析が完了しました。
     ファイルパス: {research_dir}/01_data_collection/parsed-report.json
-    レポート種別: {report_type}
     競争優位性候補: {candidate_count}件
     事実の主張: {factual_count}件
     CAGR参照: {cagr_count}件

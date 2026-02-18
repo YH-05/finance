@@ -1,0 +1,175 @@
+{
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "cik": "1037868",
+  "data_source": "WebSearch + アナリストレポート（SEC EDGAR MCP 403エラーのためフォールバック）",
+  "retrieved_at": "2026-02-18T04:00:00Z",
+
+  "financials": {
+    "income_statement": {
+      "currency": "USD millions",
+      "annual": [
+        {
+          "year": 2024,
+          "revenue": 6940,
+          "operating_income": 1780,
+          "operating_margin_pct": 25.6,
+          "adjusted_operating_margin_pct": 26.1,
+          "eps_gaap": 5.93,
+          "eps_adjusted": 6.83,
+          "eps_yoy_growth_pct": 7.0
+        },
+        {
+          "year": 2023,
+          "revenue": 6600,
+          "operating_income": null,
+          "operating_margin_pct": null,
+          "eps_gaap": null,
+          "eps_adjusted": 6.38
+        },
+        {
+          "year": 2022,
+          "revenue": 6150,
+          "operating_income": null,
+          "operating_margin_pct": null,
+          "eps_gaap": null,
+          "eps_adjusted": null
+        },
+        {
+          "year": 2021,
+          "revenue": 5550,
+          "operating_income": null,
+          "operating_margin_pct": null,
+          "eps_gaap": null,
+          "eps_adjusted": null
+        },
+        {
+          "year": 2020,
+          "revenue": 4540,
+          "operating_income": null,
+          "operating_margin_pct": null,
+          "eps_gaap": null,
+          "eps_adjusted": null
+        }
+      ],
+      "segment": {
+        "EIG": {
+          "description": "Electronic Instruments Group（電子計器事業）",
+          "revenue_share_pct": 68,
+          "opm_pct": 25.5,
+          "latest_segment_opm_pct": 30.3,
+          "yoy_growth_2024q2": 1.7,
+          "og_2024q2_pct": 0,
+          "ma_2024q2_pct": 2
+        },
+        "EMG": {
+          "description": "Electromechanical Group（電気機械事業）",
+          "revenue_share_pct": 32,
+          "opm_pct": 24.5,
+          "latest_segment_opm_pct": 21.2,
+          "yoy_growth_2024q2": 13.6,
+          "og_2024q2_pct": -6,
+          "ma_2024q2_pct": 20
+        }
+      }
+    },
+    "balance_sheet": {
+      "currency": "USD millions",
+      "as_of": "2024-12-31",
+      "total_assets": 14630,
+      "total_shareholder_equity": 10000,
+      "total_debt": 1900,
+      "debt_to_equity_pct": 19.4,
+      "total_liabilities": 4900
+    },
+    "cash_flow": {
+      "currency": "USD millions",
+      "year": 2024,
+      "operating_cash_flow": 1829,
+      "operating_cf_yoy_growth_pct": 5,
+      "capex_to_revenue_pct": 2.0,
+      "note": "Record operating cash flow for 2024"
+    }
+  },
+
+  "key_metrics": {
+    "roic_pct": 11.28,
+    "roic_excl_goodwill_pct": 20.0,
+    "market_cap_2021_usd_bn": 34,
+    "direct_sales_ratio_pct": 80,
+    "rd_to_revenue_pct": 5.5,
+    "pricing_spread_bp": 100,
+    "price_cost_spread_2024_bp": 50,
+    "vitality_index_pct": 29,
+    "niche_market_size_usd_m_range": "150-400",
+    "ma_cumulative_since_2002_usd_bn": 8.4,
+    "ma_cumulative_count": 86,
+    "ma_avg_deal_size_usd_m": 100,
+    "ma_criteria_3yr_roic_pct": 10,
+    "ma_criteria_irr_pct": 15,
+    "ma_team_size": 11,
+    "bu_count": 42,
+    "engineers_worldwide": 2900,
+    "china_revenue_ratio_pct": 10
+  },
+
+  "recent_filings": {
+    "10K_2024": {
+      "accession_number": "0001037868-25-000012",
+      "filed_date": "2025-02-20",
+      "period": "2024-12-31",
+      "form_type": "10-K",
+      "url": "https://last10k.com/sec-filings/ame/0001037868-25-000012.htm"
+    },
+    "10K_2023": {
+      "accession_number": "0001037868-24-000XXX",
+      "filed_date": "2024-02-22",
+      "period": "2023-12-31",
+      "form_type": "10-K",
+      "url": "https://investors.ametek.com/static-files/b884fa2f-7105-466c-9298-c654bbc902d1"
+    }
+  },
+
+  "filing_sections_summary": {
+    "business": {
+      "description": "AMETEK is a leading global manufacturer of electronic instruments and electromechanical devices. Operations in North America, Europe, Asia, and South America.",
+      "segments": ["EIG (Electronic Instruments Group)", "EMG (Electromechanical Group)"],
+      "strategy": [
+        "Strategic Acquisitions",
+        "Global & Market Expansion",
+        "New Products",
+        "Operating Excellence"
+      ],
+      "niche_focus": "Mission-critical instruments and process equipment in niche markets (USD 150-400M market size)",
+      "market_share": "Typically 30-50% share in target niches",
+      "customers": "Aerospace/Defense, Medical, General Industries, Process Industries, Power"
+    },
+    "risk_factors": [
+      "Acquisition integration risk (growing deal sizes)",
+      "Cyclical end-market exposure (automation, process industries)",
+      "Geopolitical / supply chain risk (China exposure ~10% of revenue)",
+      "Niche strategy scalability as company grows larger",
+      "Competition from Tier1 players entering niche markets"
+    ],
+    "mda": {
+      "fy2024_highlights": "Record sales $6.94B (+5% YoY), record operating CF $1,829M (+5%), record EPS adj. $6.83 (+7%)",
+      "revenue_growth_drivers": "Organic growth + M&A. 2024: OG approximately flat, M&A contribution strong (Paragon Medical)",
+      "margin_expansion": "Operating margins 25.6% GAAP, 26.1% adjusted. Long-term formula: ~30bp/year core EBIT margin improvement",
+      "capital_allocation": "M&A 74%, Dividends 11%, Buybacks 15% (cumulative since 2012 USD 10B deployed)",
+      "outlook": "Sales guidance 2024 full year +5-7% (lowered from prior); automation and healthcare headwinds in H1"
+    }
+  },
+
+  "insider_summary": {
+    "note": "SEC EDGAR MCP unavailable (403 error). Insider data not retrieved.",
+    "general_observation": "Management historically long-tenured (CEO David Zapico promoted from EIG head). New CFO as of 2024 is internal hire since 2017. Capital allocation philosophy unchanged."
+  },
+
+  "data_quality_notes": [
+    "SEC EDGAR MCP returned 403 Forbidden error. Financial data sourced from WebSearch (MacroTrends, StockAnalysis, press releases).",
+    "Income statement details for 2020-2023 are partial (revenue only for most years).",
+    "Segment OPM figures sourced from analyst report (2024 Q2 earnings commentary).",
+    "ROIC excl. goodwill (>20%) sourced from analyst report commentary.",
+    "Insider transaction details unavailable due to MCP failure."
+  ]
+}

@@ -1,0 +1,591 @@
+{
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "report_metadata": {
+    "report_date_range": {
+      "earliest": "2018-12-20",
+      "latest": "2024-08-09"
+    },
+    "analyst": null,
+    "source": null,
+    "report_path": "analyst/raw/AME US.md",
+    "report_type": null,
+    "notes": "投資判断推移・ESG評価・中長期競争優位・CAGR推定にかかるアナリスト見解をまとめたレポート。期初レポートと四半期フォローアップが混在。"
+  },
+  "sections": [
+    {
+      "section_id": "S001",
+      "title": "ESG評価",
+      "page_ref": "表セクション・ESG列",
+      "content_summary": "ESG相対スコア58（マネジメントスコア28）、Electrical Equipment内24位（54/227）。Corporate Governance（Strong）、Product Governance（Average）。環境・人権面リスクはnegligible。Product Governanceは高くないがリコール歴なくCAGRへの影響は限定的。NIEDCよりも高ランク。2022年10月にESGスコアが閾値近辺ながらも競争優位性を評価しLIST追加。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC001",
+          "text": "ESGリスクが大きくなく、Product Governanceで大規模リコール歴なし",
+          "section_ref": "S001",
+          "page_ref": "ESG列",
+          "type": "other",
+          "evidence_in_report": "相対スコア58、Product Governance Rank 24/75（Electrical Equipment内）、過去に大規模リコールなし"
+        }
+      ]
+    },
+    {
+      "section_id": "S002",
+      "title": "競争優位性 - ニッチトップ戦略（総括）",
+      "page_ref": "Competitive ASPECTS列",
+      "content_summary": "幅広いエンド市場を対象に、主に計測機器・プロセス機器のニッチ且つ市場シェアの高い事業を買収により取り込み、企業価値を増大させるビジネスモデル。需要優位性と供給優位性の両面から競争優位を構築し、それを持続させる仕組みを有する。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC002",
+          "text": "ニッチトップ戦略：大手企業の参入リスクや顧客の内製化リスクの低いニッチ領域に特化",
+          "section_ref": "S002",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "市場規模USD150~400Mの領域に特化、USD1bn以上の市場は回避。ニッチ領域で市場シェア30~50%。"
+        }
+      ]
+    },
+    {
+      "section_id": "S003",
+      "title": "競争優位性 - 需要優位性",
+      "page_ref": "Competitive ASPECTS列",
+      "content_summary": "Mission Critical且つカスタマイズした財に特化することで高いスイッチングコストを実現。ミッションクリティカル性（High Cost of Failure）、ニッチトップ（市場シェア30~50%）、顧客ニーズに合わせたカスタマイズ製品の3つの特徴により、顧客のスイッチングインセンティブが極めて低い。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC003",
+          "text": "Mission Criticalな財によるスイッチングコスト：規制・安全性・品質基準の観点から正確な計測・分析が求められ、間違えたときに甚大な影響がある領域に特化",
+          "section_ref": "S003",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "放射能検知器@関税、潜水艦内コネクタ、高速鉄道のfault recorder、救急医療施設向けITソリューションなどの具体例。Churn Rateはほぼゼロ（2024年6月面談確認）。"
+        },
+        {
+          "candidate_id": "AC004",
+          "text": "カスタマイズ製品による顧客ロックイン：顧客ニーズに合わせたカスタマイズ製品の提供",
+          "section_ref": "S003",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "カスタマイズ製品比率は正確な数値なし。直販比率約8割はカスタマイズの必要性を反映。Vitality Index（新製品比率）直近29%。"
+        },
+        {
+          "candidate_id": "AC005",
+          "text": "Tier2サプライヤーとしてのポジショニング：大手Tier1企業に納入する位置づけで、大手との直接競合を回避",
+          "section_ref": "S003",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "プロセス機器ではエマソン・GE・日立・ABBへのTier2供給、航空宇宙/DefenseではHoneywell・UTX・Lockheed MartinへのTier2供給。"
+        }
+      ]
+    },
+    {
+      "section_id": "S004",
+      "title": "競争優位性 - 供給優位性",
+      "page_ref": "Competitive ASPECTS列",
+      "content_summary": "ニッチ領域で市場シェアの高いビジネスの集合体として、元々高い規模の経済性を有するが、AMETEKグループ入り後のコストシナジー（コーポレート機能・販売チャネルなどの統合、原材料の集中購買によるスケールメリット）により競争優位性を更に強化。ローコスト地域での製造拠点運営も寄与。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC006",
+          "text": "買収後コストシナジーによる規模の経済性強化：コーポレート機能統合、販売チャネル統合、原材料の集中購買によるスケールメリット",
+          "section_ref": "S004",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "Corporate Supply Chain Teamが全社ベースで原材料を集中購買。PMI Playbookが蓄積。ROIC安定且つ20%超（excl goodwill）を維持。"
+        },
+        {
+          "candidate_id": "AC007",
+          "text": "ローコスト地域での製造拠点運営：上海、メキシコ、セルビア、マレーシア、チェコ等のエリアに工場を保有",
+          "section_ref": "S004",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "低い製造コストと顧客近接性のメリット。Capexは売上高対比2%程度。"
+        },
+        {
+          "candidate_id": "AC008",
+          "text": "Pricing Power：ニッチトップとして相応のプライシングパワーを保有",
+          "section_ref": "S004",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "通常の単価上昇は1%程度。値差（価格-コスト）は通常50~100bp。インフレ率5%下でも価格成長6%と100bpのスプレッド維持（21通年、22/1Q、22/2Qとも）。24年はPrice-Costスプレッド50bp（Pricing3%、コストインフレ2.5%）。"
+        }
+      ]
+    },
+    {
+      "section_id": "S005",
+      "title": "競争優位性 - M&A能力",
+      "page_ref": "Competitive ASPECTS列",
+      "content_summary": "社内に10~11名のM&A専門チームを有し、規律あるM&Aを実施。買収基準（3年後ROIC10%以上、IRR15%、1年目からEPS Accretive）に基づき、売上高USD50-200Mの企業をターゲットとして年平均4件の買収を実施。PMI Playbookのノウハウが蓄積しており、被買収企業のValue Driverを特定し改善していく能力を保有。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC009",
+          "text": "規律あるM&A体制：明確な買収基準と専門チーム（10~11名）による組織的なM&A実行能力",
+          "section_ref": "S005",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "買収基準：3年後ROIC10%以上、IRR15%、1年目EPS Accretive。M&Aチーム：4名deal sourcing、6名execution（2024年時点11名）。2002年からの累計：86件、USD8.4bn（年4件、平均USD100M）。"
+        },
+        {
+          "candidate_id": "AC010",
+          "text": "PMI Playbookの蓄積：買収先の収益性・効率性改善のノウハウが組織に蓄積",
+          "section_ref": "S005",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "コストシナジー（人事・経理・生産ライン・販売チャネル統合）、集中購買（Corporate Supply Chain Team）。被買収企業経営陣は半数が残留・半数入替（デューデリ段階で決定）。メリットベースの報酬体制。"
+        },
+        {
+          "candidate_id": "AC011",
+          "text": "豊富な買収パイプライン：各BUが3~4のニッチマーケットにアクセスしており、買収機会が常に豊富",
+          "section_ref": "S005",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "IBまたはBUを通じたソーシング。パイプラインは「very strong」（22/2Q）。面談でも大小問わず豊富とコメント（2024年8月）。"
+        }
+      ]
+    },
+    {
+      "section_id": "S006",
+      "title": "競争優位性 - 組織体制・持続性の仕組み",
+      "page_ref": "Competitive ASPECTS列",
+      "content_summary": "分散型組織（現場に権限を委譲）、売上高の約8割を占める直販体制（顧客接点を活かしたニーズ把握・カスタマイズ提供・クロスセル）、R&D体制（売上高の5%超、世界2,900人のエンジニア）、運転資金管理の徹底による高い利益の質。これらの仕組みが持続的な価値創出を可能にしている。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC012",
+          "text": "直販体制による顧客ニーズ把握とフライホイール効果：直販→ニーズ把握→買収リスト選定→クロスセル→固定費比率低下",
+          "section_ref": "S006",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "売上高の約8割が直販。顧客ニーズ把握⇒買収リスト選定⇒買収先商品をクロスセル⇒既存流通チャネルの固定費比率引き下げ、のサイクルがOPM改善に寄与。"
+        },
+        {
+          "candidate_id": "AC013",
+          "text": "分散型組織によるガバナンス：BU単位での権限委譲と各BUのエンジニアによる現場R&D",
+          "section_ref": "S006",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "売上高2bnの時点で32BU、現在は売上高7bnで42BU。各BUのサイズは売上高200M程度。ITWに類似するが事業領域は狭い。中途採用メイン、Ametek大学などの教育システムあり。"
+        },
+        {
+          "candidate_id": "AC014",
+          "text": "R&D体制：売上高の5%超をR&D投下、India Engineering Center（バンガロール）250人が24/365体制で35BUをサポート",
+          "section_ref": "S006",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "世界で2,900人のエンジニア在籍。R&D（厳密にはResearch, Development, and Engineering）は売上高の5%超、R&Dのみだと3.5%程度。一部がCOGsに含まれる（各BUのエンジニアが現場で開発）。"
+        },
+        {
+          "candidate_id": "AC015",
+          "text": "Capital Allocationの規律：運転資金管理の徹底によりM&A資金のほとんどを事業から捻出",
+          "section_ref": "S006",
+          "page_ref": "Competitive ASPECTS列",
+          "type": "competitive_advantage",
+          "evidence_in_report": "2012年からの累計USD10bn投下：M&A74%、Dividends11%、Buyback15%。Capexは売上高対比2%程度。"
+        }
+      ]
+    },
+    {
+      "section_id": "S007",
+      "title": "事業概要・セグメント",
+      "page_ref": "Competitive ASPECTS列",
+      "content_summary": "EIG（電子計器事業、売上高の68%、OPM25.5%）とEMG（電気機械事業、売上高の32%、OPM24.5%）の2セグメント構成。沿革として、元々ポンプ・バルブ等のベーシック工業製品から付加価値製品へシフト。1990年のCEO Walter Blankley氏が現戦略の4本柱（Strategic Acquisitions、Global & Market Expansion、New Products、Operating Excellence）を確立。現CEO David Zapico氏はEIG Head出身。",
+      "advantage_candidates": []
+    },
+    {
+      "section_id": "S008",
+      "title": "事業ポートフォリオ（2024年6月面談）",
+      "page_ref": "2024年6月21日セクション",
+      "content_summary": "Medical（Paragon買収で21%に拡大、更なる買収見込み）、Semi（CAMECA、ZYGOの技術力で成長）、Aero/Defense（2割）、General Industries（3割）。事業ポートはopportunisticなM&Aの結果として形成。特定領域に拘らず（agnostic to business domains）、分散とシクリカリティを踏まえたバランス運営。大型買収は行わない方針。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC016",
+          "text": "エンド市場の分散によるレジリエンス：Medical2割、Aero2割、General Industries3割でless cyclicalなビジネスの成長を取り込む事業体",
+          "section_ref": "S008",
+          "page_ref": "2024年6月21日セクション",
+          "type": "competitive_advantage",
+          "evidence_in_report": "agnostic to business domainsの方針。一市場への依存・集中を回避する原則。"
+        }
+      ]
+    },
+    {
+      "section_id": "S009",
+      "title": "四半期決算フォローアップ（2024年8月9日・2Q決算）",
+      "page_ref": "2024年8月9日セクション",
+      "content_summary": "Sales YoY+5.4%（OG▲2%、M&A+8%、FX▲1%）。OPM 25.8%。EPS 1.66。通年ガイダンス売上高+5~7%に引き下げ（▲4%）。オートメーション関連の在庫調整、ヘルスケア（Paragon関連）在庫調整、EIGプロジェクト遅延が影響。Aero/Defenseは堅調。コストスプレッド1%維持。",
+      "advantage_candidates": [
+        {
+          "candidate_id": "AC017",
+          "text": "EIGの高収益性：コスト改善プログラムと最終顧客との直接交渉力",
+          "section_ref": "S009",
+          "page_ref": "2024年8月9日セクション",
+          "type": "competitive_advantage",
+          "evidence_in_report": "EIG OPM 30.3%（Cons 29.2%を上回る）。2nd tier supplierであるEMGと異なり、最終顧客との直接交渉が可能。"
+        }
+      ]
+    }
+  ],
+  "advantage_candidates_summary": {
+    "total": 17
+  },
+  "competitive_advantages": [
+    {
+      "section": "需要優位性",
+      "description": "Mission Critical且つカスタマイズした財に特化し、高いスイッチングコストを実現。ニッチ領域（市場規模USD150~400M）で市場シェア30~50%を保持。大手企業の参入リスクや顧客の内製化リスクの低い領域に特化。Churn Rateはほぼゼロ。",
+      "source_quote": "必要不可欠な機能を果たすMission Critical且つカスタマイズした財に特化すること高いスイッチングコストを有している",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "需要優位性",
+      "description": "Tier2サプライヤーとしてのポジショニングにより、大手Tier1との直接競合を回避。ニッチなTier2の位置づけで、安定した受注を確保。",
+      "source_quote": "プロセス機器:エマソン、GE、日立、ABB等のTier1企業と競合しているわけではなく、これら企業へ納入するTier2の位置づけ",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "供給優位性",
+      "description": "ニッチ領域の高シェアビジネスの集合体として相対的に高い規模の経済性を持ち、AMETEKグループ入り後のコストシナジー（コーポレート機能・販売チャネル統合、集中購買によるスケールメリット）により競争優位性を更に強化。",
+      "source_quote": "各ビジネスは元々相対的に高い規模の経済性を有するが、AMETEKの事業の一部になることで買収後のコストシナジーを享受し、競争優位性は更に強化",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "供給優位性",
+      "description": "ローコスト地域（上海、メキシコ、セルビア、マレーシア、チェコ等）での製造拠点運営による低コスト製造と顧客近接性。",
+      "source_quote": "ローコスト地域での製造拠点運営が主。低い製造コストや顧客との近接性のメリットを活かし、高いCF創出力の強化を図っている",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "供給優位性",
+      "description": "ニッチトップとしてのPricing Power。通常1%程度の単価上昇、インフレ環境下でもコストスプレッド50~100bpを維持。",
+      "source_quote": "ニッチトップとしてPricing Powerは相応に持っているものと思われる",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "M&A能力",
+      "description": "10~11名の専門チーム、明確な買収基準（3年後ROIC10%以上、IRR15%、初年度EPS Accretive）、年平均4件・累計86件のトラックレコード、PMI Playbookの蓄積。規律あるM&Aを通じてROIC20%超（excl goodwill）を維持。",
+      "source_quote": "M&A中心の成長でもROICは安定且つ20%超を維持しており、規律あるM&Aを実施",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "組織体制",
+      "description": "売上高の約8割を占める直販体制が、顧客ニーズ把握→買収リスト選定→クロスセル→固定費比率低下のフライホイール効果を生む。分散型組織（42BU、各BU売上高200M程度）による迅速な意思決定とR&D体制（2,900人エンジニア、India Engineering Center）。",
+      "source_quote": "顧客ニーズ把握⇒買収リストの選定⇒買収先の商品をクロスセル⇒既存流通チャネルの固定費比率引き下げ、という形で当社のOPM改善に寄与する販売体制",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "組織体制",
+      "description": "Capital Allocationの規律。2012年からの累計USD10bn投下のうちM&A74%、Dividends11%、Buyback15%。運転資金管理の徹底によりM&A資金のほとんどを事業から捻出。",
+      "source_quote": "運転資金管理の徹底等により利益の質は高く、M&A資金のほとんどを事業によって捻出",
+      "date": "2022-10-21"
+    },
+    {
+      "section": "その他",
+      "description": "エンド市場分散（Medical2割、Aero2割、General Industries3割）によるレジリエンス。less cyclicalなビジネスの成長を取り込む事業体。",
+      "source_quote": "Medical2割、Aero2割、General Industries3割であり、Medicalと Aeroというless cyclicalなビジネスの成長を取り込む事業体として安定感あり",
+      "date": "2024-06-24"
+    }
+  ],
+  "cagr_estimates": [
+    {
+      "date": "2018-12-20",
+      "label": "Old CAGR",
+      "total_cagr": "HSD (8%程度)",
+      "revenue_growth": {
+        "total": "M-HSD",
+        "og": "2-3%",
+        "ma": "7-8%"
+      },
+      "op_leverage": "1%",
+      "buyback": null,
+      "notes": "過去対比外部成長寄与は低下を織り込み。コア事業の限界利益率30-35%。"
+    },
+    {
+      "date": "2022-10-21",
+      "label": "CAGR 10.5%",
+      "total_cagr": 10.5,
+      "revenue_growth": {
+        "total": 9,
+        "og": 3,
+        "ma": 6
+      },
+      "op_leverage": "1~2%",
+      "buyback": "0~1%",
+      "notes": "M&Aによる外部成長はコロナ前2010-2019年で平均6.2%。限界利益率32.5%、固定費比率9%前提。2032のOPMは27.8%（3~10年間、30bp程度改善）。ITG対比割安、BUY推奨。"
+    },
+    {
+      "date": "2024-06-24",
+      "label": "CAGR 10% (改定後)",
+      "total_cagr": 10,
+      "revenue_growth": {
+        "total": 8,
+        "og": 4,
+        "ma": 4
+      },
+      "op_leverage": 1,
+      "buyback": 1,
+      "notes": "面談内容勘案、30bp/年の改善を見込む。OGとInOGの比率が1/3:2/3から1:1に変化（4+4=8%）。Buybackは2014-2023の平均。"
+    }
+  ],
+  "risk_factors": [
+    {
+      "risk_id": "RF001",
+      "category": "ニッチ特化の限界",
+      "description": "事業規模が大きくなるに従い、企業価値向上に意味のある買収のハードルが高くなる可能性。毎年時価総額の4~5%の買収を実施しているが、1件当たりの買収金額は上昇傾向にあり、高値掴み・インテグレーション・競争優位性変化のリスクが存在。",
+      "mitigant": "MarketCap@21/12末(USD34bn)は類似モデルのITW(USD77bn)やROP(USD51bn)対比小さく、ハードルは依然として高くない。",
+      "source_date": "2022-10-21"
+    },
+    {
+      "risk_id": "RF002",
+      "category": "大型買収リスク",
+      "description": "USD1bn以上の買収は当社の買収歴からいって大きい。CEOコメントでbig business（USD1bn以上）の買収可能性が示唆された。Paragonのような大型買収（約USD2bn）が発生した場合のビジネスモデル持続性。",
+      "mitigant": "大型買収はしない方針（2024年6月面談で確認。ただしUSD1bn以上は排除せず）。事業分散と一市場への依存回避が原則。",
+      "source_date": "2024-08-09"
+    },
+    {
+      "risk_id": "RF003",
+      "category": "シクリカリティ",
+      "description": "オートメーション関連のOEM側在庫調整、ヘルスケア（Paragon関連）在庫調整、EIGプロジェクト遅延（選挙・地政学の不透明感）など外部要因のシクリカル性の影響を受ける。",
+      "mitigant": "エンド市場分散（Medical2割、Aero2割、General Industries3割）でless cyclicalなビジネスの成長を取り込み。",
+      "source_date": "2024-08-09"
+    },
+    {
+      "risk_id": "RF004",
+      "category": "事業モデルのキャパシティ",
+      "description": "BU数のキャパシティ水準について依然として判然としない点あり。事業が大きくなると新規参入・大手参入リスクも高まる可能性。",
+      "mitigant": "売上高2bnの時点で32BU、現在7bnで42BUと、売上高3倍でもBU数は3倍になっていない（既存BUへの統合）。各BUサイズ200M程度で当面は問題なし。",
+      "source_date": "2024-06-21"
+    }
+  ],
+  "investment_judgments": [
+    {
+      "date": "2018-12-20",
+      "judgment": "HOLD",
+      "rationale": "CAGR+HSD。過去対比外部成長寄与は低下を織り込み、売上CAGR+M-HSD程度と想定。競争力高い製品取り扱い、10%以上のEPS CAGRを目論む。"
+    },
+    {
+      "date": "2022-10-21",
+      "judgment": "BUY",
+      "rationale": "ESGスコアが閾値近辺ながらも高い競争優位性を評価しLIST追加。CAGR10.5%、ITG対比割安でBUY推奨。"
+    },
+    {
+      "date": "2024-06-24",
+      "judgment": "BUY",
+      "rationale": "CAGR微調整（10.5%→10%）により魅力度は低下するも、Medical・Aeroというless cyclicalなビジネスの安定感を評価しBuy継続。但し入替も視野に同エンド市場での企業分析を進める方針。"
+    },
+    {
+      "date": "2024-08-09",
+      "judgment": "BUY",
+      "rationale": "外部要因のシクリカル性の影響を受けた決算であるが、個別要因や構造要因によるものではなく、競争優位性に変化なし。ITG対比割安でBuy継続。買収大型化の兆候は注視。"
+    }
+  ],
+  "key_metrics_mentioned": {
+    "direct_sales_ratio": "約8割",
+    "rd_ratio": "売上高の5%超（R&Dのみだと3.5%程度）",
+    "capex_ratio": "売上高対比2%程度",
+    "ma_criteria": {
+      "roic_target": "3年後ROIC10%以上",
+      "irr_target": "IRR15%",
+      "eps_accretive": "1年目からEPS増加に寄与",
+      "target_revenue_range": "USD50-200M",
+      "annual_frequency": "年4件",
+      "cumulative_since_2002": {
+        "total_amount": "USD8.4bn",
+        "total_deals": 86
+      }
+    },
+    "pricing_power": {
+      "normal_price_increase": "1%程度",
+      "cost_spread": "通常50~100bp",
+      "volume_growth": "2~3%"
+    },
+    "capital_allocation_since_2012": {
+      "total": "USD10bn",
+      "ma_pct": 74,
+      "dividends_pct": 11,
+      "buyback_pct": 15
+    },
+    "niche_market_size": "USD150~400M",
+    "market_share": "30~50%",
+    "bu_count": 42,
+    "bu_avg_revenue": "USD200M",
+    "engineers_worldwide": 2900,
+    "india_engineering_center_staff": 250,
+    "china_revenue_ratio": "1割弱",
+    "vitality_index": "29%（直近Q）",
+    "eig_share": "68%",
+    "emg_share": "32%",
+    "segments": {
+      "EIG": {
+        "revenue_share": "68%",
+        "opm": "25.5%（2Q: 30.3%）",
+        "description": "電子計器事業。電力、医療、工業、航空宇宙など"
+      },
+      "EMG": {
+        "revenue_share": "32%",
+        "opm": "24.5%（2Q: 21.2%）",
+        "description": "電気機械事業。精密動作ソリューション、熱管理システム、電気相互接続、特殊金属"
+      }
+    },
+    "end_market_exposure": {
+      "medical": "21%",
+      "aero_defense": "20%",
+      "general_industries": "30%",
+      "notes": "Semi（CAMECA、ZYGO）はハイエンドで業界全体よりシクリカルでない"
+    },
+    "comparable_companies": {
+      "ITW": "MarketCap USD77bn、80/20戦略のコングロマリット",
+      "ROP": "MarketCap USD51bn、類似ビジネスモデル"
+    }
+  },
+  "factual_claims": [
+    {
+      "claim_id": "FC001",
+      "text": "2002年からの累計M&A件数86件、M&A金額USD8.4bn（年4件、平均M&A金額USD100M）",
+      "source_section": "S005",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "ma_track_record"
+    },
+    {
+      "claim_id": "FC002",
+      "text": "2012年から累計USD10bnを投下（M&A74%、Dividends11%、Buyback15%）",
+      "source_section": "S006",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "capital_allocation"
+    },
+    {
+      "claim_id": "FC003",
+      "text": "世界で2,900人のエンジニアが在籍、India Engineering Center（バンガロール）で250人が24/365で35BUをサポート",
+      "source_section": "S006",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "rd_capability"
+    },
+    {
+      "claim_id": "FC004",
+      "text": "売上高の約8割が直販",
+      "source_section": "S006",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "sales_channel"
+    },
+    {
+      "claim_id": "FC005",
+      "text": "R&D費は売上高の5%超（R&Dのみだと3.5%程度）",
+      "source_section": "S006",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "rd_investment"
+    },
+    {
+      "claim_id": "FC006",
+      "text": "ニッチ領域で市場シェア30~50%",
+      "source_section": "S003",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "market_share"
+    },
+    {
+      "claim_id": "FC007",
+      "text": "市場規模USD150~400Mの領域に特化",
+      "source_section": "S003",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "market_size"
+    },
+    {
+      "claim_id": "FC008",
+      "text": "ROIC安定且つ20%超（excl goodwill）を維持",
+      "source_section": "S005",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "roic"
+    },
+    {
+      "claim_id": "FC009",
+      "text": "EIG: 売上高の68%、OPM 25.5%（2Q: 30.3%）",
+      "source_section": "S007",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "segment_financials"
+    },
+    {
+      "claim_id": "FC010",
+      "text": "EMG: 売上高の32%、OPM 24.5%（2Q: 21.2%）",
+      "source_section": "S007",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "segment_financials"
+    },
+    {
+      "claim_id": "FC011",
+      "text": "BU数42、各BUのサイズは売上高200M程度（売上高2bnの時点で32BU、現在7bnで42BU）",
+      "source_section": "S006",
+      "page_ref": "2024年6月21日セクション",
+      "data_type": "organizational_structure"
+    },
+    {
+      "claim_id": "FC012",
+      "text": "M&Aチーム11名（4名deal sourcing、6名execution + 2024年時点で1名追加）",
+      "source_section": "S005",
+      "page_ref": "Competitive ASPECTS列・2024年6月面談",
+      "data_type": "organizational_structure"
+    },
+    {
+      "claim_id": "FC013",
+      "text": "2024年2Q決算: Sales YoY+5.4%、OPM 25.8%、EPS 1.66",
+      "source_section": "S009",
+      "page_ref": "2024年8月9日セクション",
+      "data_type": "quarterly_results"
+    },
+    {
+      "claim_id": "FC014",
+      "text": "Capexは売上高対比2%程度",
+      "source_section": "S006",
+      "page_ref": "Competitive ASPECTS列",
+      "data_type": "capex"
+    },
+    {
+      "claim_id": "FC015",
+      "text": "中国の売上高比率は1割弱",
+      "source_section": "S008",
+      "page_ref": "2024年6月21日セクション",
+      "data_type": "geographic_exposure"
+    },
+    {
+      "claim_id": "FC016",
+      "text": "Medical比率: Paragon買収により21%まで拡大",
+      "source_section": "S008",
+      "page_ref": "2024年6月21日セクション",
+      "data_type": "end_market_exposure"
+    }
+  ],
+  "cagr_references": [
+    {
+      "ref_id": "CR001",
+      "text": "CAGR+HSD（2018年12月時点）",
+      "components": [
+        "売上CAGR+M-HSD（OG2-3%+M&A7-8%=+10%）",
+        "利益率改善寄与+1%（限界利益率30-35%）"
+      ],
+      "source_section": "S007",
+      "page_ref": "CAGR列・2018/12/20"
+    },
+    {
+      "ref_id": "CR002",
+      "text": "CAGR 10.5%（2022年10月時点）",
+      "components": [
+        "売上高9%（OG3%+M&A6%）",
+        "OP Leverage 1~2%（限界利益率32.5%、固定費比率9%前提）",
+        "Buyback 0~1%"
+      ],
+      "source_section": "S002",
+      "page_ref": "CAGR列・2022/10/21"
+    },
+    {
+      "ref_id": "CR003",
+      "text": "CAGR 10%（2024年6月改定）",
+      "components": [
+        "売上高8%（OG4%+M&A4%）",
+        "OP Leverage 1%（30bp/年の改善）",
+        "Buyback 1%（2014-2023平均）"
+      ],
+      "source_section": "S002",
+      "page_ref": "CAGR列・2024/6/24"
+    }
+  ],
+  "parsing_notes": [
+    "レポートはMarkdownテーブル形式（ESG・Competitive ASPECTS・CAGRの3列）と四半期フォローアップセクションの2構成。",
+    "アナリスト名は不明（レポート内に明記なし）。",
+    "テーブル内のデータは複数時点のエントリーが混在（2018年12月、2022年10月、2024年6月・8月）。",
+    "ページ番号の概念はなく、セクション・列・日付で参照位置を特定。",
+    "report_typeはPoC簡素化によりnullとした。",
+    "面談（2024年6月21日）の内容が競争優位性の詳細情報源として重要。"
+  ]
+}

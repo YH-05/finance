@@ -21,7 +21,7 @@ Difyワークフローのステップ4（検証/JSON）に相当。**KB2の全12
 3. TaskUpdate(status: in_progress) でタスクを開始
 4. 以下のファイルを全て Read で読み込み:
    a. {research_dir}/02_claims/claims.json (T4)
-   b. analyst/dify/kb2_patterns/ 配下の全12ファイル
+   b. analyst/Competitive_Advantage/analyst_YK/kb2_patterns/ 配下の全12ファイル
    c. analyst/Competitive_Advantage/analyst_YK/dogma.md
 5. 各 competitive_advantage をパターンと照合
 6. {research_dir}/03_verification/pattern-verification.json に出力
@@ -34,7 +34,7 @@ Difyワークフローのステップ4（検証/JSON）に相当。**KB2の全12
 | ファイル | パス | 必須 | 説明 |
 |---------|------|------|------|
 | claims.json | `{research_dir}/02_claims/claims.json` | Yes | T4 出力 |
-| KB2 パターン集 | `analyst/dify/kb2_patterns/*.md` | Yes | 12パターン（却下7 + 高評価5） |
+| KB2 パターン集 | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/*.md` | Yes | 12パターン（却下7 + 高評価5） |
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | Yes | 確信度スケール参照 |
 
 ## パターン一覧
@@ -66,7 +66,7 @@ Difyワークフローのステップ4（検証/JSON）に相当。**KB2の全12
 ### Step 1: 全12パターンの読み込み
 
 ```
-analyst/dify/kb2_patterns/ 配下:
+analyst/Competitive_Advantage/analyst_YK/kb2_patterns/ 配下:
 - pattern_A_result_as_cause.md
 - pattern_B_industry_common.md
 - pattern_C_causal_leap.md
@@ -108,71 +108,15 @@ analyst/dify/kb2_patterns/ 配下:
 
 ## 出力スキーマ
 
-```json
-{
-  "ticker": "ORLY",
-  "pattern_verification_summary": {
-    "total_advantages_checked": 6,
-    "rejection_patterns_found": 2,
-    "high_eval_patterns_found": 3,
-    "confidence_adjustments_made": 4,
-    "consistency_issues": 0
-  },
-  "pattern_matches": [
-    {
-      "claim_id": 1,
-      "claim": "ローカルな規模の経済による配送・在庫の効率化",
-      "matched_patterns": [
-        {
-          "pattern": "IV",
-          "pattern_name": "構造的な市場ポジション",
-          "match_confidence": "high",
-          "reasoning": "フラグメント市場における規模・密度の構造的優位",
-          "confidence_adjustment": "+30%"
-        }
-      ],
-      "rejected_patterns": [],
-      "original_confidence": 90,
-      "adjusted_confidence": 90,
-      "adjustment_note": "T4の評価が既にパターンIVを反映済み。調整なし。"
-    },
-    {
-      "claim_id": 6,
-      "claim": "DIFM・DIY両領域での持続的な価値創造",
-      "matched_patterns": [],
-      "rejected_patterns": [
-        {
-          "pattern": "C",
-          "pattern_name": "因果関係の飛躍",
-          "match_confidence": "medium",
-          "reasoning": "DIFMの優位性がDIYでも同等に適用されるとの飛躍",
-          "confidence_adjustment": "-20%"
-        }
-      ],
-      "original_confidence": 30,
-      "adjusted_confidence": 30,
-      "adjustment_note": "T4の評価が既に低い。追加調整なし。"
-    }
-  ],
-  "consistency_check": {
-    "cross_claim_consistency": "pass",
-    "confidence_distribution": {
-      "90": 2,
-      "70": 1,
-      "50": 2,
-      "30": 1,
-      "10": 0
-    },
-    "distribution_vs_ky_baseline": "within_expected_range",
-    "notes": []
-  },
-  "additional_rule_applications": [],
-  "overall_notes": [
-    "パターンIV（構造的市場ポジション）が#2と#5で確認。KYの高評価パターンに合致。",
-    "パターンA（結果を原因と取り違え）の該当なし。T4の抽出品質が高い。"
-  ]
-}
+スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
+
 ```
+.claude/skills/ca-eval/templates/schemas/pattern-verification.schema.md
+```
+
+**重要な制約**:
+- フィールド名を変更してはならない
+- 必須フィールドを省略してはならない
 
 ## エラーハンドリング
 

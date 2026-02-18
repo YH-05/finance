@@ -1,0 +1,130 @@
+{
+  "ticker": "AME",
+  "critique_date": "2026-02-18",
+  "critique_phase": "T8 AI批判プロセス",
+  "overall_critique": {
+    "quality_assessment": "高品質なドラフト。KB1-KB3の全ルール・パターンが網羅的に適用されており、ITW/ROPとの差別化不足という構造的ボトルネックも明確に識別されている。主要な批判点は3件。",
+    "major_issues": 3,
+    "minor_issues": 4
+  },
+  "claim_level_critiques": [
+    {
+      "claim_id": "C010",
+      "issue_type": "major",
+      "title": "Vitality Index 2pp乖離へのルール9適用の過剰性",
+      "critique": "ドラフトはVitality Index 29%→SEC開示27%の2pp乖離をルール9（事実誤認→即却下→10%）として適用した。しかし、KYのルール9の典型例はMNST#6「OPMをGPMと誤認」という本質的な財務指標の誤読であり、分母・分子を取り違えるほどの誤認ではない。Vitality Indexの2pp差異は：(1)測定期間の差（直近Q vs 年次）、(2)端数処理の差、(3)アナリストレポートの時点差（2022年10月記述 vs 2024年IR開示）の可能性がある。SEC sec-data.jsonには「27% of sales from products introduced in past 3 years」とあり、アナリストレポートには「直近Q は29%」という記述がある。これはQ値（29%）とアニュアル値（27%）の差である可能性が高く、本質的な誤認ではない。KYのルール9は「前提が崩壊する」レベルの誤認を想定しており、2ppの差異は許容範囲内の可能性がある。",
+      "recommendation": "ルール9の適用を取り消し、C010を30%（あまり納得しない）に戻す。理由：(1)業界共通R&D体制（パターンB、ルール7）により30%が適切な上限、(2)Vitality Index 2pp差はQ vs Annual差として説明可能。revised-report.mdではルール9の適用見送りを注記の上、C010=30%に修正する。",
+      "confidence_adjustment": {
+        "draft": 10,
+        "revised": 30,
+        "delta": "+20",
+        "rationale": "ルール9の取り消し。パターンB・ルール7により30%が上限"
+      }
+    },
+    {
+      "claim_id": "C003",
+      "issue_type": "major",
+      "title": "Paragon Medical規律逸脱リスクがC003確信度に十分反映されていない",
+      "critique": "ドラフトはParagon Medical（USD1.9bn）を「懸念材料」として言及しながら、C003（M&A実行能力）を70%で維持している。しかし、以下の観点から批判がある：(1) Paragonは従来の買収基準（USD50-200M）の10倍超であり、CHD#1（70%）の「見合う案件を見送る規律」（ルール10）の逆の事例——見送らずに大型案件を実行——に該当する可能性がある。(2) FARo Technologies（USD920M）も基準の5倍超であり、単発ではなくトレンド化している。(3) ドラフトでは「断念例の言及あり（ルール10）」を70%の根拠としているが、Paragonの実行はルール10の否定的証拠として機能しうる。(4) しかし一方で、2024年6月面談でIR VPが「大型買収はしない方針」を再確認しており、Paragonは例外として位置づけられている。",
+      "recommendation": "C003の確信度を70%から60%相当（ただしKYスケールは5段階なので50%）に引き下げることを検討。ただし、KYスケールが5段階固定（10/30/50/70/90%）の場合、70%→50%の引き下げは過大。Paragonのリスクは「将来の監視事項」として分類し、現時点では70%を維持しながら注記を強化することが適切。revised-report.mdではParagonリスクを「現在の評価を変更するほどではないが、次の大型案件でパターンが確認された場合は50%への引き下げを検討」と明示する。",
+      "confidence_adjustment": {
+        "draft": 70,
+        "revised": 70,
+        "delta": "0（据え置き）",
+        "rationale": "KYの5段階スケールでは70%→50%の引き下げが過大。ただし注記強化"
+      }
+    },
+    {
+      "claim_id": "C001_C002",
+      "issue_type": "major",
+      "title": "C001とC002の独立性の評価——表裏一体の2件に70%×2件は過多か",
+      "critique": "C001（スイッチングコスト）とC002（Tier2ポジション）は実質的に同一の市場構造（ニッチ計測機器市場×Mission Critical×小規模市場）に由来し、表裏一体の関係にある。ORLYでは#2（ローカル規模の経済90%）と#5（フラグメント市場でのM&A実行90%）が独立した90%評価を得られたのは、市場構造との合致が異なる軸で機能しているためだった。AMEのC001とC002は同じ軸（ニッチ×Tier2×高Cost of Failure）に由来しており、独立した70%評価として扱うことへの疑問がある。一方、C001がスイッチングコスト（需要側の優位性）、C002がTier2ポジション（市場構造側の参入障壁）という異なる分析視点を提供しており、完全に重複するわけではない。",
+      "recommendation": "C001（70%）とC002（70%）は異なる視点から同一の市場構造の強みを記述しており、両者を独立して維持することは許容できる。ただし、revised-report.mdでは「C001とC002は表裏一体の関係にあり、独立した優位性というより同一構造の需要側・市場構造側の2面」と明示し、90%評価のORLY#2/#5との質的差異（競合比較の有無）を強調する。",
+      "confidence_adjustment": {
+        "draft": "C001: 70%, C002: 70%",
+        "revised": "C001: 70%, C002: 70%（据え置き）",
+        "delta": "0",
+        "rationale": "異なる視点として維持可能。ただし表裏一体であることを明示"
+      }
+    },
+    {
+      "claim_id": "C005",
+      "issue_type": "minor",
+      "title": "直販フライホイールの「4ステップ因果」批判の妥当性確認",
+      "critique": "ドラフトはC005（直販フライホイール）を4ステップの因果チェーンとしてパターンCの懸念を指摘した。しかし、フライホイールのサイクル（顧客ニーズ→M&Aリスト→クロスセル→固定費削減）は線形の因果ではなく循環的な自己強化サイクルであり、KYのパターンC（3段階以上の線形チェーン）とは質的に異なる可能性がある。ただし、各ステップの定量的裏付けがない（ルール4）という批判は有効であり、50%の評価は維持が妥当。",
+      "recommendation": "修正なし。50%を維持。ただし「フライホイールは循環的な仕組みであり線形の因果飛躍とは異なるが、各ステップの定量裏付けが不足している点でやはり50%が適切」と注記追加。",
+      "confidence_adjustment": {
+        "draft": 50,
+        "revised": 50,
+        "delta": "0",
+        "rationale": "フライホイールの循環的性質を認めつつ定量裏付け不足で50%維持"
+      }
+    },
+    {
+      "claim_id": "C008",
+      "issue_type": "minor",
+      "title": "Capital Allocation規律はルール8（戦略）的な性格が強い",
+      "critique": "ドラフトはC008（Capital Allocation規律）を50%としているが、ルール8の境界として扱っている。KYのドグマでは「資本配分の方針は戦略に近い」という指摘があり、50%は適切。ただし、FCF創出力（USD1.7bn）と低Capex（2%）というアセットライトモデルは「能力・仕組み」として成立する側面もある。現在の50%評価は適切だが、Capital Allocation規律の「仕組み」側面（低Capexを実現するアセットライト製造モデル、運転資金管理の方法論）をより明示すると評価の透明性が高まる。",
+      "recommendation": "50%を維持。ただし「Capital Allocationの仕組み面（アセットライトモデルによる低Capex、運転資金管理）は能力として一定の妥当性があるが、戦略的意思決定の色が強く、ITW/ROPとの差別化も不明」と注記を詳細化。",
+      "confidence_adjustment": {
+        "draft": 50,
+        "revised": 50,
+        "delta": "0",
+        "rationale": "戦略/優位性の境界として50%維持"
+      }
+    },
+    {
+      "claim_id": "C011",
+      "issue_type": "minor",
+      "title": "エンド市場分散の「能力」側面の検討",
+      "critique": "ドラフトはC011（エンド市場分散）を「結果」として30%と評価した。これは適切だが、「一市場への依存回避を可能にするポートフォリオ管理能力」という再定義の可能性も存在する（CHD#3「ポート管理能力50%」パターン）。ただし、AMEのレポート自身が「opportunisticなM&Aの結果」と明記しており、意図的なポート管理能力ではなく結果として形成されたポートフォリオである点が決定的。30%は適切。",
+      "recommendation": "30%を維持。ただし「CHD#3（ポート管理能力50%）への再定義の可能性も検討したが、AMEのレポートが「opportunisticなM&Aの結果」と明記しており、意図的な管理能力の発揮と見なすことができない」と注記追加。",
+      "confidence_adjustment": {
+        "draft": 30,
+        "revised": 30,
+        "delta": "0",
+        "rationale": "「opportunistic M&Aの結果」という記述が決定的。30%維持"
+      }
+    },
+    {
+      "claim_id": "all",
+      "issue_type": "minor",
+      "title": "ROIC（excl goodwill）20%超の主張の検証困難性",
+      "critique": "ドラフトはROIC（excl goodwill）20%超を裏付け指標として複数箇所（C003、C004）で参照しているが、fact-checkではpartially_verifiedであり、incl goodwillベースではROIC 11.28%（GuruFocus）という事実がある。ROIC 20%超（excl goodwill）という主張は、M&A駆動型モデルでgoodwillを除外するという選択自体の妥当性への問いを含む。goodwillが取得の代価として発生するM&A駆動型企業において、excl goodwillのROICは楽観的過ぎる可能性がある。これはC003（M&A実行能力70%）の評価に影響しうるが、アナリストレポートがこの点を明示的に扱っているため、現在の評価は維持する。",
+      "recommendation": "revised-report.mdにROIC（incl vs excl goodwill）の注記を強化し、投資家にとっての実質的な資本効率（incl goodwill 11.28%）を明示する。",
+      "confidence_adjustment": {
+        "draft": "C003: 70%",
+        "revised": "C003: 70%（据え置き）",
+        "delta": "0",
+        "rationale": "ROIC注記の強化のみ。評価は維持"
+      }
+    }
+  ],
+  "pattern_level_critiques": [
+    {
+      "pattern": "パターンG（純粋競合差別化不明）の系統的出現",
+      "critique": "12件中8件でパターンGが指摘されていることは、データ不足の問題ではなくアナリストレポートの構造的特性を反映している。アナリストのYKレポートがITW/ROPとの比較をほぼ行っていないため、この不足はAIが改善できない限界。revised-report.mdではこの点を「評価の構造的制約」として明示し、追加情報収集（ITW/ROP対比のROIC、M&A成功率、スイッチングコスト指標等）をモニタリング事項に追加する。",
+      "recommendation": "追加情報収集項目としてITW/ROP比較データをモニタリング事項の最上位に配置"
+    }
+  ],
+  "cagr_level_critiques": [
+    {
+      "cagr_connection": "C013（M&A寄与+4-6%）",
+      "critique": "2010-2019年の平均+6.2%との整合性は認められるが、Paragon（USD1.9bn）やFARO（USD920M）という大型買収のトレンドが続く場合、M&A寄与の「質」が変化する可能性がある。大型買収は1件で大きなM&A寄与をもたらすが、PMIリスクが高く、EMG OPMのParagon影響（-5pp）のような短期的な逆効果も発生しうる。CAGR接続の確信度70%は適切だが、「買収大型化トレンドが継続した場合の+4-6%の安定性への懸念」を追記すべき。"
+    }
+  ],
+  "overall_recommendation": {
+    "confidence_changes_net": {
+      "C010": "+20（10%→30%: ルール9取り消し）",
+      "others": "変更なし"
+    },
+    "average_ca_confidence_revised": 46.7,
+    "key_revisions_for_report": [
+      "1. C010: ルール9適用取り消し、30%に修正（Vitality Index 2pp差はQ vs Annual差として説明可能）",
+      "2. C003: 70%維持、Paragonリスク注記を強化（次の大型案件確認時は50%引き下げ検討と明示）",
+      "3. C001/C002: 表裏一体である点を明示、ORLYとの質的差異を強調",
+      "4. モニタリング事項にITW/ROP比較データを最上位に追加",
+      "5. ROIC（incl goodwill 11.28% vs excl goodwill 20%超）の注記を強化"
+    ]
+  }
+}
