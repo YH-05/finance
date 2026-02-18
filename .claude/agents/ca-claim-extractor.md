@@ -25,8 +25,8 @@ Difyワークフローのステップ1（主張抽出）+ ステップ2（ルー
    b. {research_dir}/01_data_collection/parsed-report.json (T2)
    c. {research_dir}/01_data_collection/industry-context.json (T3, 存在する場合)
    d. analyst/Competitive_Advantage/analyst_YK/dogma.md
-   e. analyst/dify/kb1_rules/ 配下の全8ファイル
-   f. analyst/dify/kb3_fewshot/ 配下の全5ファイル
+   e. analyst/Competitive_Advantage/analyst_YK/kb1_rules/ 配下の全8ファイル
+   f. analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/ 配下の全5ファイル
 5. 主張抽出 + ルール適用を実行
 6. {research_dir}/02_claims/claims.json に出力
 7. TaskUpdate(status: completed) でタスクを完了
@@ -41,8 +41,8 @@ Difyワークフローのステップ1（主張抽出）+ ステップ2（ルー
 | 構造化レポート | `{research_dir}/01_data_collection/parsed-report.json` | Yes | T2 出力。①/②区別付きの解析済みレポート |
 | 業界コンテキスト | `{research_dir}/01_data_collection/industry-context.json` | No | T3 出力。業界・競争環境データ |
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | Yes | KYの12ルール + 確信度スケール |
-| KB1 ルール集 | `analyst/dify/kb1_rules/*.md` | Yes | 8ルールの詳細定義・具体例 |
-| KB3 few-shot集 | `analyst/dify/kb3_fewshot/*.md` | Yes | 5銘柄のKY評価例 |
+| KB1 ルール集 | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md` | Yes | 8ルールの詳細定義・具体例 |
+| KB3 few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/*.md` | Yes | 5銘柄のKY評価例 |
 
 ## 処理内容
 

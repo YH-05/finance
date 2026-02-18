@@ -311,10 +311,9 @@ TaskCreate:
     {research_dir}/01_data_collection/parsed-report.json
 
     ## 処理内容
-    - レポート種別判定（①期初/②四半期/混合）
     - セクション分割
-    - ①/②帰属付与
     - 競争優位性候補抽出
+    - PoC: レポート種別判定（①/②区別）はスキップ
   activeForm: "レポートを解析中: {ticker}"
 
 # T3: 業界リサーチ
@@ -351,8 +350,8 @@ TaskCreate:
     - {research_dir}/01_data_collection/parsed-report.json（T2, 必須）
     - {research_dir}/01_data_collection/industry-context.json（T3, 任意）
     - analyst/Competitive_Advantage/analyst_YK/dogma.md
-    - analyst/dify/kb1_rules/ 配下の全8ファイル
-    - analyst/dify/kb3_fewshot/ 配下の全5ファイル
+    - analyst/Competitive_Advantage/analyst_YK/kb1_rules/ 配下の全8ファイル
+    - analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/ 配下の全5ファイル
 
     ## 出力ファイル
     {research_dir}/02_claims/claims.json
@@ -361,7 +360,7 @@ TaskCreate:
     - 5-15件の主張抽出
     - KB1 8ルール + ゲートキーパー（ルール9, 3）適用
     - KB3 few-shot キャリブレーション
-    - ①/②区別反映（ルール12）
+    - PoC: ルール12（①/②区別）はスキップ
   activeForm: "主張を抽出・評価中: {ticker}"
 
 # ============================================================
@@ -396,7 +395,7 @@ TaskCreate:
 
     ## 入力ファイル
     - {research_dir}/02_claims/claims.json（T4, 必須）
-    - analyst/dify/kb2_patterns/ 配下の全12ファイル
+    - analyst/Competitive_Advantage/analyst_YK/kb2_patterns/ 配下の全12ファイル
     - analyst/Competitive_Advantage/analyst_YK/dogma.md
 
     ## 出力ファイル
@@ -592,8 +591,8 @@ Task:
        - {research_dir}/01_data_collection/parsed-report.json (必須)
        - {research_dir}/01_data_collection/industry-context.json (任意)
        - analyst/Competitive_Advantage/analyst_YK/dogma.md
-       - analyst/dify/kb1_rules/ 配下の全8ファイル
-       - analyst/dify/kb3_fewshot/ 配下の全5ファイル
+       - analyst/Competitive_Advantage/analyst_YK/kb1_rules/ 配下の全8ファイル
+       - analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/ 配下の全5ファイル
     5. 主張抽出（5-15件）+ ルール適用 + KB3キャリブレーション
     6. {research_dir}/02_claims/claims.json に書き出し
     7. TaskUpdate(status: completed) でタスクを完了
