@@ -11,6 +11,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ADN LN Equity",
       "FIGI": "BBG000BB8XR2"
     }
@@ -27,6 +28,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ARM LN Equity",
       "FIGI": "BBG000C21L21"
     }
@@ -43,6 +45,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SKY LN Equity",
       "FIGI": "BBG000DXH4L2"
     }
@@ -59,6 +62,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CRDA NQ Equity",
       "FIGI": "BBG002LCGPG5"
     }
@@ -75,6 +79,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DGE LN Equity",
       "FIGI": "BBG000BS69D5"
     }
@@ -91,6 +96,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BA/ LN Equity",
       "FIGI": "BBG000BD5TW4"
     }
@@ -107,6 +113,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BATS LN Equity",
       "FIGI": "BBG000BG9N74"
     }
@@ -123,6 +130,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "STAN LN Equity",
       "FIGI": "BBG000BF2QW8"
     }
@@ -139,6 +147,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SAB LN Equity",
       "FIGI": "BBG000BN75Q9"
     }
@@ -155,6 +164,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HWDN LN Equity",
       "FIGI": "BBG000BRYT97"
     }
@@ -171,6 +181,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PSN LN Equity",
       "FIGI": "BBG000BDY6P0"
     }
@@ -187,6 +198,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PRU LN Equity",
       "FIGI": "BBG000BDY322"
     }
@@ -203,6 +215,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CBG LN Equity",
       "FIGI": "BBG000BD9F14"
     }
@@ -219,6 +232,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "STJ LN Equity",
       "FIGI": "BBG000BRMPC4"
     }
@@ -235,6 +249,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GSK NR Equity",
       "FIGI": "BBG000L8Z544"
     }
@@ -251,6 +266,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AZN LN Equity",
       "FIGI": "BBG000C0YGH4"
     }
@@ -267,6 +283,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AMZN US Equity",
       "FIGI": "BBG000BVPV84"
     }
@@ -283,6 +300,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IBM US Equity",
       "FIGI": "BBG000BLNNH6"
     }
@@ -299,6 +317,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ATD/B CN Equity",
       "FIGI": "BBG000CWQ765"
     }
@@ -315,6 +334,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1715651D US Equity",
       "FIGI": "BBG000BH13K9"
     }
@@ -331,6 +351,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HON US Equity",
       "FIGI": "BBG000H556T9"
     }
@@ -347,6 +368,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1541931D US Equity",
       "FIGI": "BBG000BBMSJ6"
     }
@@ -363,6 +385,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AXP US Equity",
       "FIGI": "BBG000BCQZS4"
     }
@@ -379,6 +402,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AFL US Equity",
       "FIGI": "BBG000BBBNC6"
     }
@@ -395,6 +419,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ADI US Equity",
       "FIGI": "BBG000BB6G37"
     }
@@ -411,6 +436,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ALXN US Equity",
       "FIGI": "BBG000G30YX4"
     }
@@ -427,6 +453,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ANSS US Equity",
       "FIGI": "BBG000GXZ4W7"
     }
@@ -443,6 +470,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AAPL US Equity",
       "FIGI": "BBG000B9XRY4"
     }
@@ -459,6 +487,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ADP US Equity",
       "FIGI": "BBG000JG0547"
     }
@@ -475,6 +504,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AZO US Equity",
       "FIGI": "BBG000C7LMS8"
     }
@@ -491,6 +521,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BHI US Equity",
       "FIGI": "BBG000BD4VG8"
     }
@@ -507,6 +538,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BAX US Equity",
       "FIGI": "BBG000BCVJ77"
     }
@@ -523,6 +555,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AME US Equity",
       "FIGI": "BBG000B9XG87"
     }
@@ -539,6 +572,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "YUM US Equity",
       "FIGI": "BBG000BH3GZ2"
     }
@@ -555,6 +589,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HRB US Equity",
       "FIGI": "BBG000BLDV98"
     }
@@ -571,6 +606,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BA US Equity",
       "FIGI": "BBG000BCSST7"
     }
@@ -587,6 +623,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RHI US Equity",
       "FIGI": "BBG000BS5DR2"
     }
@@ -603,6 +640,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BWA US Equity",
       "FIGI": "BBG000BJ49H3"
     }
@@ -619,6 +657,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CHRW US Equity",
       "FIGI": "BBG000BTCH57"
     }
@@ -635,6 +674,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MTD US Equity",
       "FIGI": "BBG000BZCKH3"
     }
@@ -651,6 +691,7 @@
       "Total": 2,
       "Target_Weight": 2.65,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BMY US Equity",
       "FIGI": "BBG000DQLV23"
     }
@@ -667,6 +708,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SRE US Equity",
       "FIGI": "BBG000C2ZCH8"
     }
@@ -683,6 +725,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "VRSN US Equity",
       "FIGI": "BBG000BGKHZ3"
     }
@@ -699,6 +742,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "APH US Equity",
       "FIGI": "BBG000B9YJ35"
     }
@@ -715,6 +759,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BF/B US Equity",
       "FIGI": "BBG000BD2NY8"
     }
@@ -731,6 +776,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CPB US Equity",
       "FIGI": "BBG000BG4202"
     }
@@ -747,6 +793,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "STZ US Equity",
       "FIGI": "BBG000J1QLT0"
     }
@@ -763,6 +810,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CM CN Equity",
       "FIGI": "BBG000BY34Q2"
     }
@@ -779,6 +827,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CNR CN Equity",
       "FIGI": "BBG000GLP2C0"
     }
@@ -795,6 +844,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CELG US Equity",
       "FIGI": "BBG000BFC8J2"
     }
@@ -811,6 +861,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "990315D US Equity",
       "FIGI": "BBG000JKCWS0"
     }
@@ -827,6 +878,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CERN US Equity",
       "FIGI": "BBG000BFDLV8"
     }
@@ -843,6 +895,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "JPM US Equity",
       "FIGI": "BBG000DMBXR2"
     }
@@ -859,6 +912,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CHD US Equity",
       "FIGI": "BBG000BFJT36"
     }
@@ -875,6 +929,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "9999945D US Equity",
       "FIGI": "BBG000BFMBQ6"
     }
@@ -891,6 +946,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KO US Equity",
       "FIGI": "BBG000BMX289"
     }
@@ -907,6 +963,7 @@
       "Total": 2,
       "Target_Weight": 2.65,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CL US Equity",
       "FIGI": "BBG000BFQYY3"
     }
@@ -923,6 +980,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MAR US Equity",
       "FIGI": "BBG000BGD7W6"
     }
@@ -939,6 +997,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AGU CN Equity",
       "FIGI": "BBG000BL5GF3"
     }
@@ -955,6 +1014,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2326248D US Equity",
       "FIGI": "BBG000BDWKC5"
     }
@@ -971,6 +1031,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BAP US Equity",
       "FIGI": "BBG000FKX7Z8"
     }
@@ -987,6 +1048,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CMI US Equity",
       "FIGI": "BBG000BGPTV6"
     }
@@ -1003,6 +1065,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FEMSAUBD MM Equity",
       "FIGI": "BBG000LXW2P6"
     }
@@ -1019,6 +1082,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MCO US Equity",
       "FIGI": "BBG000F86GP6"
     }
@@ -1035,6 +1099,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GIL CN Equity",
       "FIGI": "BBG000BQ5ZN1"
     }
@@ -1051,6 +1116,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DIS US Equity",
       "FIGI": "BBG000BH4R78"
     }
@@ -1067,6 +1133,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DLTR US Equity",
       "FIGI": "BBG000BSC0K9"
     }
@@ -1083,6 +1150,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DOV US Equity",
       "FIGI": "BBG000BHB3M6"
     }
@@ -1099,6 +1167,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "OMC US Equity",
       "FIGI": "BBG000BS9489"
     }
@@ -1115,6 +1184,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2258717D US Equity",
       "FIGI": "BBG000BHVJJ3"
     }
@@ -1131,6 +1201,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "EMR US Equity",
       "FIGI": "BBG000BHX7N2"
     }
@@ -1147,6 +1218,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "EOG US Equity",
       "FIGI": "BBG000BZ9223"
     }
@@ -1163,6 +1235,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "EL US Equity",
       "FIGI": "BBG000FKJRC5"
     }
@@ -1179,6 +1252,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "EXPD US Equity",
       "FIGI": "BBG000BJ5GK2"
     }
@@ -1195,6 +1269,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "XOM US Equity",
       "FIGI": "BBG000GZQ728"
     }
@@ -1211,6 +1286,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FAST US Equity",
       "FIGI": "BBG000BJ8YN7"
     }
@@ -1227,6 +1303,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MTB US Equity",
       "FIGI": "BBG000D9KWL9"
     }
@@ -1243,6 +1320,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "M US Equity",
       "FIGI": "BBG000C46HM9"
     }
@@ -1259,6 +1337,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BEN US Equity",
       "FIGI": "BBG000BD0TF8"
     }
@@ -1275,6 +1354,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GILD US Equity",
       "FIGI": "BBG000CKGBP2"
     }
@@ -1291,6 +1371,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IT US Equity",
       "FIGI": "BBG000BB65D0"
     }
@@ -1307,6 +1388,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GT US Equity",
       "FIGI": "BBG000BKNX95"
     }
@@ -1323,6 +1405,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MCK US Equity",
       "FIGI": "BBG000DYGNW7"
     }
@@ -1339,6 +1422,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GE NR Equity",
       "FIGI": "BBG000RFW1Z0"
     }
@@ -1355,6 +1439,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GWW US Equity",
       "FIGI": "BBG000BKR1D6"
     }
@@ -1371,6 +1456,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HAL US Equity",
       "FIGI": "BBG000BKTFN2"
     }
@@ -1387,6 +1473,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HOG US Equity",
       "FIGI": "BBG000BKZTP3"
     }
@@ -1403,6 +1490,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HSIC US Equity",
       "FIGI": "BBG000BNMMJ3"
     }
@@ -1419,6 +1507,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HSY US Equity",
       "FIGI": "BBG000BLHRS2"
     }
@@ -1435,6 +1524,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FFIV US Equity",
       "FIGI": "BBG000CXYSZ6"
     }
@@ -1451,6 +1541,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CCK US Equity",
       "FIGI": "BBG000BF6756"
     }
@@ -1467,6 +1558,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RAI US Equity",
       "FIGI": "BBG000BBB3K1"
     }
@@ -1483,6 +1575,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -1499,6 +1592,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UTHR US Equity",
       "FIGI": "BBG000BV4XJ1"
     }
@@ -1515,6 +1609,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HD US Equity",
       "FIGI": "BBG000BKZB36"
     }
@@ -1531,6 +1626,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BMRN US Equity",
       "FIGI": "BBG000CZWZ05"
     }
@@ -1547,6 +1643,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HRL US Equity",
       "FIGI": "BBG000BLF8D2"
     }
@@ -1563,6 +1660,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "JBHT US Equity",
       "FIGI": "BBG000BMDBZ1"
     }
@@ -1579,6 +1677,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RHT US Equity",
       "FIGI": "BBG000BWXL85"
     }
@@ -1595,6 +1694,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IMO CN Equity",
       "FIGI": "BBG000D0PTF7"
     }
@@ -1611,6 +1711,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BIIB US Equity",
       "FIGI": "BBG000C17X76"
     }
@@ -1627,6 +1728,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ITW US Equity",
       "FIGI": "BBG000BMBL90"
     }
@@ -1643,6 +1745,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "INTU US Equity",
       "FIGI": "BBG000BH5DV1"
     }
@@ -1659,6 +1762,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IFF US Equity",
       "FIGI": "BBG000BLSL58"
     }
@@ -1675,6 +1779,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IP US Equity",
       "FIGI": "BBG000BM5SR2"
     }
@@ -1691,6 +1796,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ENB CN Equity",
       "FIGI": "BBG000C7P7N2"
     }
@@ -1707,6 +1813,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "JNJ US Equity",
       "FIGI": "BBG000BMHYD1"
     }
@@ -1723,6 +1830,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KLAC US Equity",
       "FIGI": "BBG000BMTFR4"
     }
@@ -1739,6 +1847,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KMB US Equity",
       "FIGI": "BBG000BMW2Z0"
     }
@@ -1755,6 +1864,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KR US Equity",
       "FIGI": "BBG000BMY992"
     }
@@ -1771,6 +1881,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LLY US Equity",
       "FIGI": "BBG000BNBDC2"
     }
@@ -1787,6 +1898,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LLTC US Equity",
       "FIGI": "BBG000BN9WT5"
     }
@@ -1803,6 +1915,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UPS US Equity",
       "FIGI": "BBG000L9CV04"
     }
@@ -1819,6 +1932,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LMT US Equity",
       "FIGI": "BBG000C1BW00"
     }
@@ -1835,6 +1949,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LOW US Equity",
       "FIGI": "BBG000BNDN65"
     }
@@ -1851,6 +1966,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MKC US Equity",
       "FIGI": "BBG000G6Y5W4"
     }
@@ -1867,6 +1983,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MCD US Equity",
       "FIGI": "BBG000BNSZP1"
     }
@@ -1883,6 +2000,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MHFI US Equity",
       "FIGI": null
     }
@@ -1899,6 +2017,7 @@
       "Total": 2,
       "Target_Weight": 2.65,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MRSH US Equity",
       "FIGI": "BBG000BP4MH0"
     }
@@ -1915,6 +2034,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CVS US Equity",
       "FIGI": "BBG000BGRY34"
     }
@@ -1931,6 +2051,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MRU CN Equity",
       "FIGI": "BBG000BZNSD8"
     }
@@ -1947,6 +2068,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MMM US Equity",
       "FIGI": "BBG000BP52R2"
     }
@@ -1963,6 +2085,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NOV NR Equity",
       "FIGI": "BBG000TBDL48"
     }
@@ -1979,6 +2102,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NKE US Equity",
       "FIGI": "BBG000C5HS04"
     }
@@ -1995,6 +2119,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NBL US Equity",
       "FIGI": "BBG000BPT0C6"
     }
@@ -2011,6 +2136,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "JWN US Equity",
       "FIGI": "BBG000G8N9C6"
     }
@@ -2027,6 +2153,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GMEXICOB MM Equity",
       "FIGI": "BBG000BQC9K4"
     }
@@ -2043,6 +2170,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NTRS US Equity",
       "FIGI": "BBG000BQ74K1"
     }
@@ -2059,6 +2187,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NOC US Equity",
       "FIGI": "BBG000BQ2C28"
     }
@@ -2075,6 +2204,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WFC US Equity",
       "FIGI": "BBG000BWQFY7"
     }
@@ -2091,6 +2221,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1856613D US Equity",
       "FIGI": "BBG000BFWKC0"
     }
@@ -2107,6 +2238,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ORCL US Equity",
       "FIGI": "BBG000BQLTW7"
     }
@@ -2123,6 +2255,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -2139,6 +2272,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PCAR US Equity",
       "FIGI": "BBG000BQVTF5"
     }
@@ -2155,6 +2289,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PH US Equity",
       "FIGI": "BBG000BR3KL6"
     }
@@ -2171,6 +2306,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PAYX US Equity",
       "FIGI": "BBG000BQSQ38"
     }
@@ -2187,6 +2323,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PPL US Equity",
       "FIGI": "BBG000BRJL00"
     }
@@ -2203,6 +2340,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PEP US Equity",
       "FIGI": "BBG000DH7JK6"
     }
@@ -2219,6 +2357,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PFE US Equity",
       "FIGI": "BBG000BR2B91"
     }
@@ -2235,6 +2374,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MO US Equity",
       "FIGI": "BBG000BP6LJ8"
     }
@@ -2251,6 +2391,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FLR US Equity",
       "FIGI": "BBG000BB1TH9"
     }
@@ -2267,6 +2408,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PPG US Equity",
       "FIGI": "BBG000BRJ809"
     }
@@ -2283,6 +2425,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1922150D US Equity",
       "FIGI": "BBG000CGQ6M4"
     }
@@ -2299,6 +2442,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PCP US Equity",
       "FIGI": "BBG000C0MF34"
     }
@@ -2315,6 +2459,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "COST US Equity",
       "FIGI": "BBG000F6H8W8"
     }
@@ -2331,6 +2476,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TROW US Equity",
       "FIGI": "BBG000BVMPN3"
     }
@@ -2347,6 +2493,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PG US Equity",
       "FIGI": "BBG000BR2TH3"
     }
@@ -2363,6 +2510,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PGR US Equity",
       "FIGI": "BBG000BR37X2"
     }
@@ -2379,6 +2527,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "REGN US Equity",
       "FIGI": "BBG000C734W3"
     }
@@ -2395,6 +2544,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RMD US Equity",
       "FIGI": "BBG000L4M7F1"
     }
@@ -2411,6 +2561,7 @@
       "Total": 2,
       "Target_Weight": 2.65,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "USB US Equity",
       "FIGI": "BBG000FFDM15"
     }
@@ -2427,6 +2578,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -2443,6 +2595,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ROST US Equity",
       "FIGI": "BBG000BSBZH7"
     }
@@ -2459,6 +2612,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ROK US Equity",
       "FIGI": "BBG000BBCDZ2"
     }
@@ -2475,6 +2629,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RY CN Equity",
       "FIGI": "BBG000BCJG31"
     }
@@ -2491,6 +2646,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RTN US Equity",
       "FIGI": "BBG000BSD7C2"
     }
@@ -2507,6 +2663,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1482276D US Equity",
       "FIGI": "BBG000D1QCF1"
     }
@@ -2523,6 +2680,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "COL US Equity",
       "FIGI": "BBG000BN1XR3"
     }
@@ -2539,6 +2697,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "STJ US Equity",
       "FIGI": "BBG000F15NW9"
     }
@@ -2555,6 +2714,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MRK US Equity",
       "FIGI": "BBG000BPD168"
     }
@@ -2571,6 +2731,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2599840D US Equity",
       "FIGI": null
     }
@@ -2587,6 +2748,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SLB US Equity",
       "FIGI": "BBG000BT41Q8"
     }
@@ -2603,6 +2765,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SCHW US Equity",
       "FIGI": "BBG000BSLZY7"
     }
@@ -2619,6 +2782,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SEIC US Equity",
       "FIGI": "BBG000BSQLT9"
     }
@@ -2635,6 +2799,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SHW US Equity",
       "FIGI": "BBG000BSXQV7"
     }
@@ -2651,6 +2816,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SPG US Equity",
       "FIGI": "BBG000BJ2D31"
     }
@@ -2667,6 +2833,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AYI US Equity",
       "FIGI": "BBG000BJ5HK0"
     }
@@ -2683,6 +2850,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SNA US Equity",
       "FIGI": "BBG000BT7JW9"
     }
@@ -2699,6 +2867,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PRU US Equity",
       "FIGI": "BBG000HCJMF9"
     }
@@ -2715,6 +2884,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AAP US Equity",
       "FIGI": "BBG000F7RCJ1"
     }
@@ -2731,6 +2901,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CVX US Equity",
       "FIGI": "BBG000K4ND22"
     }
@@ -2747,6 +2918,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "STT US Equity",
       "FIGI": "BBG000BKFBD7"
     }
@@ -2763,6 +2935,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SBUX US Equity",
       "FIGI": "BBG000CTQBF3"
     }
@@ -2779,6 +2952,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SYMC US Equity",
       "FIGI": null
     }
@@ -2795,6 +2969,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ISRG US Equity",
       "FIGI": "BBG000BJPDZ1"
     }
@@ -2811,6 +2986,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TXN US Equity",
       "FIGI": "BBG000BVV7G1"
     }
@@ -2827,6 +3003,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TMO US Equity",
       "FIGI": "BBG000BVDLH9"
     }
@@ -2843,6 +3020,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TSCO US Equity",
       "FIGI": "BBG000BLXZN1"
     }
@@ -2859,6 +3037,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UNP US Equity",
       "FIGI": "BBG000BW3299"
     }
@@ -2875,6 +3054,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UTX NR Equity",
       "FIGI": "BBG000RFWTR8"
     }
@@ -2891,6 +3071,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UNH US Equity",
       "FIGI": "BBG000CH5208"
     }
@@ -2907,6 +3088,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "VAR US Equity",
       "FIGI": "BBG000BWBZN1"
     }
@@ -2923,6 +3105,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "VFC US Equity",
       "FIGI": "BBG000BWCKB6"
     }
@@ -2939,6 +3122,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WMT US Equity",
       "FIGI": "BBG000BWXBC2"
     }
@@ -2955,6 +3139,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WAT US Equity",
       "FIGI": "BBG000FQRVM3"
     }
@@ -2971,6 +3156,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WDC US Equity",
       "FIGI": "BBG000BWNFZ9"
     }
@@ -2987,6 +3173,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WAB US Equity",
       "FIGI": "BBG000BDD940"
     }
@@ -3003,6 +3190,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SWKS US Equity",
       "FIGI": "BBG000KLB4Q1"
     }
@@ -3019,6 +3207,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WFM US Equity",
       "FIGI": "BBG000CPQZ77"
     }
@@ -3035,6 +3224,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LKQ US Equity",
       "FIGI": "BBG000PXDL44"
     }
@@ -3051,6 +3241,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FL US Equity",
       "FIGI": "BBG000BX8DC4"
     }
@@ -3067,6 +3258,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "XLNX US Equity",
       "FIGI": "BBG000C0F570"
     }
@@ -3083,6 +3275,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "YHOO US Equity",
       "FIGI": null
     }
@@ -3099,6 +3292,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TJX US Equity",
       "FIGI": "BBG000BV8DN6"
     }
@@ -3115,6 +3309,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GKN LN Equity",
       "FIGI": "BBG000BDK791"
     }
@@ -3131,6 +3326,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BT/A LN Equity",
       "FIGI": "BBG000C05R82"
     }
@@ -3147,6 +3343,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MKS LN Equity",
       "FIGI": "BBG000BDTRV3"
     }
@@ -3163,6 +3360,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ITRK LN Equity",
       "FIGI": "BBG000D9L467"
     }
@@ -3179,6 +3377,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NXT LN Equity",
       "FIGI": "BBG000BDWPY0"
     }
@@ -3195,6 +3394,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ITV LN Equity",
       "FIGI": "BBG000DW76R4"
     }
@@ -3211,6 +3411,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AIR FP Equity",
       "FIGI": "BBG000CSHLR0"
     }
@@ -3227,6 +3428,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "OR FP Equity",
       "FIGI": "BBG000BC98G6"
     }
@@ -3243,6 +3445,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MC FP Equity",
       "FIGI": "BBG000BC7Q05"
     }
@@ -3259,6 +3462,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RENT NA Equity",
       "FIGI": "BBG000BMP509"
     }
@@ -3275,6 +3479,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FRE GR Equity",
       "FIGI": "BBG000BS3BJ7"
     }
@@ -3291,6 +3496,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1912381D GR Equity",
       "FIGI": null
     }
@@ -3307,6 +3513,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SYNN SW Equity",
       "FIGI": "BBG000D9Y1J5"
     }
@@ -3323,6 +3530,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PUB FP Equity",
       "FIGI": "BBG000BCB3M7"
     }
@@ -3339,6 +3547,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KBC BB Equity",
       "FIGI": "BBG000BMVX65"
     }
@@ -3355,6 +3564,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HNR1 GR Equity",
       "FIGI": "BBG000MDN4R3"
     }
@@ -3371,6 +3581,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ML GK Equity",
       "FIGI": "BBG000T80MK9"
     }
@@ -3387,6 +3598,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CON GR Equity",
       "FIGI": "BBG000BBZ9D0"
     }
@@ -3403,6 +3615,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DHL GR Equity",
       "FIGI": "BBG000LW3MC0"
     }
@@ -3419,6 +3632,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RI FP Equity",
       "FIGI": "BBG000BC9MR3"
     }
@@ -3435,6 +3649,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TEL NO Equity",
       "FIGI": "BBG000BBPV51"
     }
@@ -3451,6 +3666,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ABIT BB Equity",
       "FIGI": "BBG000N0B1V4"
     }
@@ -3467,6 +3683,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SIK SW Equity",
       "FIGI": null
     }
@@ -3483,6 +3700,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SGSN NQ Equity",
       "FIGI": "BBG002M4WB84"
     }
@@ -3499,6 +3717,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SAP GR Equity",
       "FIGI": "BBG000BG7DY8"
     }
@@ -3515,6 +3734,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SWEDA SS Equity",
       "FIGI": "BBG000BQXJJ1"
     }
@@ -3531,6 +3751,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HEN GR Equity",
       "FIGI": "BBG000BL4Y74"
     }
@@ -3547,6 +3768,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BAYN GR Equity",
       "FIGI": "BBG000BBWDG1"
     }
@@ -3563,6 +3785,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HEN3 GR Equity",
       "FIGI": "BBG000BC3925"
     }
@@ -3579,6 +3802,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BAS GR Equity",
       "FIGI": "BBG000BBVT77"
     }
@@ -3595,6 +3819,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BEI GR Equity",
       "FIGI": "BBG000BBKL21"
     }
@@ -3611,6 +3836,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RMS FP Equity",
       "FIGI": "BBG000BDYY97"
     }
@@ -3627,6 +3853,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2273854Q LI Equity",
       "FIGI": "BBG002HKDVH1"
     }
@@ -3643,6 +3870,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SCMN SW Equity",
       "FIGI": "BBG000CWDCF8"
     }
@@ -3659,6 +3887,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HMB SS Equity",
       "FIGI": "BBG000BM9JH9"
     }
@@ -3675,6 +3904,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "REE QM Equity",
       "FIGI": "BBG000HYGKF8"
     }
@@ -3691,6 +3921,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "QIA QM Equity",
       "FIGI": "BBG000S7HHC4"
     }
@@ -3707,6 +3938,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LISN SW Equity",
       "FIGI": "BBG000BC5J58"
     }
@@ -3723,6 +3955,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AMC AU Equity",
       "FIGI": "BBG00LNJRW24"
     }
@@ -3739,6 +3972,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TLS AU Equity",
       "FIGI": "BBG019C5W204"
     }
@@ -3755,6 +3989,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BVT SJ Equity",
       "FIGI": "BBG000BFBR74"
     }
@@ -3771,6 +4006,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1044 HK Equity",
       "FIGI": "BBG000CJXNB5"
     }
@@ -3787,6 +4023,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "QNBK QD Equity",
       "FIGI": "BBG000BBDH91"
     }
@@ -3803,6 +4040,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "033780 KS Equity",
       "FIGI": "BBG000C2X255"
     }
@@ -3819,6 +4057,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CSL AU Equity",
       "FIGI": "BBG000BKBN81"
     }
@@ -3835,6 +4074,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "688 HK Equity",
       "FIGI": "BBG000BGD8W4"
     }
@@ -3851,6 +4091,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CBA AU Equity",
       "FIGI": "BBG000BS8L64"
     }
@@ -3867,6 +4108,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RIO AU Equity",
       "FIGI": "BBG000BYLWT7"
     }
@@ -3883,6 +4125,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HUVR IN Equity",
       "FIGI": "BBG000CSMG04"
     }
@@ -3899,6 +4142,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "388 HK Equity",
       "FIGI": "BBG000BGW354"
     }
@@ -3915,6 +4159,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IAG AU Equity",
       "FIGI": "BBG000PBLS20"
     }
@@ -3931,6 +4176,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HCLT IN Equity",
       "FIGI": "BBG000C68V87"
     }
@@ -3947,6 +4193,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CPIN IJ Equity",
       "FIGI": "BBG000BF2H49"
     }
@@ -3963,6 +4210,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "051900 KS Equity",
       "FIGI": "BBG000BB23H5"
     }
@@ -3979,6 +4227,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2454 TT Equity",
       "FIGI": "BBG000JLDX96"
     }
@@ -3995,6 +4244,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "11 HK Equity",
       "FIGI": "BBG000BDWBR9"
     }
@@ -4011,6 +4261,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "6 HK Equity",
       "FIGI": "BBG000BDWNL9"
     }
@@ -4027,6 +4278,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "14 HK Equity",
       "FIGI": "BBG000BDX476"
     }
@@ -4043,6 +4295,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "3008 TT Equity",
       "FIGI": "BBG000HLSVV1"
     }
@@ -4059,6 +4312,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "27 HK Equity",
       "FIGI": "BBG000BG5LL6"
     }
@@ -4075,6 +4329,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "JFC PM Equity",
       "FIGI": "BBG000BKTFZ9"
     }
@@ -4091,6 +4346,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "035420 KS Equity",
       "FIGI": "BBG000PF9ZK9"
     }
@@ -4107,6 +4363,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SUNP IN Equity",
       "FIGI": "BBG000BV5G16"
     }
@@ -4123,6 +4380,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FSR SJ Equity",
       "FIGI": "BBG000BNTS67"
     }
@@ -4139,6 +4397,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SCC TB Equity",
       "FIGI": "BBG000BCLWN1"
     }
@@ -4155,6 +4414,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2328 HK Equity",
       "FIGI": "BBG000BYRGX1"
     }
@@ -4171,6 +4431,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BBRI IJ Equity",
       "FIGI": "BBG000MJGQ35"
     }
@@ -4187,6 +4448,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "005935 KS Equity",
       "FIGI": "BBG000BG4Q36"
     }
@@ -4203,6 +4465,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SOL SJ Equity",
       "FIGI": "BBG000BTZ0H6"
     }
@@ -4219,6 +4482,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SMGR IJ Equity",
       "FIGI": "BBG000BFSZY8"
     }
@@ -4235,6 +4499,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KBANK TB Equity",
       "FIGI": "BBG000BDJMM5"
     }
@@ -4251,6 +4516,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KBANK/F TB Equity",
       "FIGI": "BBG000BDJNG0"
     }
@@ -4267,6 +4533,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2330 TT Equity",
       "FIGI": "BBG000BN2JD8"
     }
@@ -4283,6 +4550,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WPL AU Equity",
       "FIGI": null
     }
@@ -4299,6 +4567,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WOW AU Equity",
       "FIGI": "BBG000BF9Z06"
     }
@@ -4315,6 +4584,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DB1 GR Equity",
       "FIGI": "BBG000D54HT0"
     }
@@ -4331,6 +4601,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LUN DC Equity",
       "FIGI": null
     }
@@ -4347,6 +4618,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NOVN SW Equity",
       "FIGI": "BBG000NQV2C4"
     }
@@ -4363,6 +4635,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ABBN SW Equity",
       "FIGI": "BBG000DM2M32"
     }
@@ -4379,6 +4652,7 @@
       "Total": 2,
       "Target_Weight": 2.65,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ROG SW Equity",
       "FIGI": "BBG000BNV243"
     }
@@ -4395,6 +4669,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NESN SW Equity",
       "FIGI": "BBG000CPBD63"
     }
@@ -4411,6 +4686,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SKAB SS Equity",
       "FIGI": "BBG000BCD9M2"
     }
@@ -4427,6 +4703,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SOON SW Equity",
       "FIGI": "BBG000RSPBY9"
     }
@@ -4443,6 +4720,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UHR SW Equity",
       "FIGI": "BBG000BVQ866"
     }
@@ -4459,6 +4737,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "EL FP Equity",
       "FIGI": "BBG000BC16D1"
     }
@@ -4475,6 +4754,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SRG IM Equity",
       "FIGI": "BBG000FBNMF8"
     }
@@ -4491,6 +4771,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BNP FP Equity",
       "FIGI": "BBG000BBXJ95"
     }
@@ -4507,6 +4788,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BBDC4 BZ Equity",
       "FIGI": "BBG000BBKQT1"
     }
@@ -4523,6 +4805,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SBNY US Equity",
       "FIGI": "BBG000M6TR37"
     }
@@ -4539,6 +4822,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PBK MK Equity",
       "FIGI": "BBG000BB2BD1"
     }
@@ -4555,6 +4839,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MFG AU Equity",
       "FIGI": "BBG000N890K4"
     }
@@ -4571,6 +4856,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AZM IM Equity",
       "FIGI": "BBG000BVTG01"
     }
@@ -4587,6 +4873,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TRN IM Equity",
       "FIGI": "BBG000BBM454"
     }
@@ -4603,6 +4890,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BBCA IJ Equity",
       "FIGI": "BBG000CC3P00"
     }
@@ -4619,6 +4907,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "2318 HK Equity",
       "FIGI": "BBG000GD4N44"
     }
@@ -4635,6 +4924,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -4651,6 +4941,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MDVN US Equity",
       "FIGI": "BBG000H4YVR7"
     }
@@ -4667,6 +4958,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ITUB4 BZ Equity",
       "FIGI": "BBG000BF0HQ7"
     }
@@ -4683,6 +4975,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ARCLK TI Equity",
       "FIGI": "BBG000BVB4P0"
     }
@@ -4699,6 +4992,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IFC CN Equity",
       "FIGI": "BBG000QDQ4F9"
     }
@@ -4715,6 +5009,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CCOLA TI Equity",
       "FIGI": "BBG000BYF2S1"
     }
@@ -4731,6 +5026,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CE US Equity",
       "FIGI": "BBG000JYP7L8"
     }
@@ -4747,6 +5043,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WHL SJ Equity",
       "FIGI": "BBG000BV1BQ4"
     }
@@ -4763,6 +5060,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BNZL LN Equity",
       "FIGI": "BBG000BD7MX6"
     }
@@ -4779,6 +5077,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NG/ QM Equity",
       "FIGI": "BBG000S7H969"
     }
@@ -4795,6 +5094,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IPL SJ Equity",
       "FIGI": "BBG000BFH7D5"
     }
@@ -4811,6 +5111,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KNEBV FH Equity",
       "FIGI": "BBG000C3VY91"
     }
@@ -4827,6 +5128,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MARR IM Equity",
       "FIGI": "BBG000L9KVF9"
     }
@@ -4843,6 +5145,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CF US Equity",
       "FIGI": "BBG000BWJFZ4"
     }
@@ -4859,6 +5162,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ITC IN Equity",
       "FIGI": "BBG000BMYVC9"
     }
@@ -4875,6 +5179,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SLM SJ Equity",
       "FIGI": "BBG000CDQK77"
     }
@@ -4891,6 +5196,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "823 HK Equity",
       "FIGI": "BBG000P9D267"
     }
@@ -4907,6 +5213,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UAA US Equity",
       "FIGI": "BBG000BXM6V2"
     }
@@ -4923,6 +5230,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "VIAB US Equity",
       "FIGI": "BBG000DHSPT0"
     }
@@ -4939,6 +5247,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CBS US Equity",
       "FIGI": null
     }
@@ -4955,6 +5264,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CMG US Equity",
       "FIGI": "BBG000QX74T1"
     }
@@ -4971,6 +5281,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ULVR NQ Equity",
       "FIGI": "BBG002LCGVM5"
     }
@@ -4987,6 +5298,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PGHN SW Equity",
       "FIGI": "BBG000DYF655"
     }
@@ -5003,6 +5315,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SCHP SW Equity",
       "FIGI": "BBG000BC8JQ2"
     }
@@ -5019,6 +5332,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "LR FP Equity",
       "FIGI": "BBG000NH2RJ4"
     }
@@ -5035,6 +5349,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MA US Equity",
       "FIGI": "BBG000F1ZSQ2"
     }
@@ -5051,6 +5366,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HOT US Equity",
       "FIGI": "BBG000BLBXT4"
     }
@@ -5067,6 +5383,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1844030D NA Equity",
       "FIGI": "BBG000JX53J4"
     }
@@ -5083,6 +5400,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KNIN SW Equity",
       "FIGI": "BBG000HXJ2N8"
     }
@@ -5099,6 +5417,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "3988 HK Equity",
       "FIGI": "BBG000NQGF05"
     }
@@ -5115,6 +5434,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CSU CN Equity",
       "FIGI": "BBG000BMZ5P1"
     }
@@ -5131,6 +5451,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "090430 KS Equity",
       "FIGI": "BBG000M38MQ3"
     }
@@ -5147,6 +5468,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SVT LN Equity",
       "FIGI": "BBG000BS5FD2"
     }
@@ -5163,6 +5485,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BXB AU Equity",
       "FIGI": "BBG000Q8XH27"
     }
@@ -5179,6 +5502,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "IPH FP Equity",
       "FIGI": "BBG000Q7GF31"
     }
@@ -5195,6 +5519,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WTB LN Equity",
       "FIGI": "BBG000BRVH05"
     }
@@ -5211,6 +5536,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DAL US Equity",
       "FIGI": "BBG000R7Z112"
     }
@@ -5227,6 +5553,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GEBN SW Equity",
       "FIGI": "BBG000FHLJD6"
     }
@@ -5243,6 +5570,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DSV DC Equity",
       "FIGI": "BBG000BSNXK5"
     }
@@ -5259,6 +5587,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "JMT PL Equity",
       "FIGI": "BBG000BHWX29"
     }
@@ -5275,6 +5604,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ATLN SW Equity",
       "FIGI": "BBG000GP1HQ9"
     }
@@ -5291,6 +5621,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DFS US Equity",
       "FIGI": "BBG000QBR5J5"
     }
@@ -5307,6 +5638,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CPI VX Equity",
       "FIGI": "BBG002GRWV95"
     }
@@ -5323,6 +5655,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RB/ QM Equity",
       "FIGI": "BBG000KC46V8"
     }
@@ -5339,6 +5672,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "REL LN Equity",
       "FIGI": "BBG000D03XD4"
     }
@@ -5355,6 +5689,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PM US Equity",
       "FIGI": "BBG000J2XL74"
     }
@@ -5371,6 +5706,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "V US Equity",
       "FIGI": "BBG000PSKYX7"
     }
@@ -5387,6 +5723,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SHP LN Equity",
       "FIGI": "BBG000BFYQ44"
     }
@@ -5403,6 +5740,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MGNT LI Equity",
       "FIGI": "BBG000VFBQG4"
     }
@@ -5419,6 +5757,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BSDE IJ Equity",
       "FIGI": "BBG000BYFK01"
     }
@@ -5435,6 +5774,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MPC US Equity",
       "FIGI": "BBG001DCCGR8"
     }
@@ -5451,6 +5791,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AMS SM Equity",
       "FIGI": "BBG000QSDXN7"
     }
@@ -5467,6 +5808,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MPLU3 BZ Equity",
       "FIGI": "BBG000Q1Y402"
     }
@@ -5483,6 +5825,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1373183D US Equity",
       "FIGI": "BBG000C4DPX1"
     }
@@ -5499,6 +5842,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "9876641D US Equity",
       "FIGI": "BBG000BF5RY1"
     }
@@ -5515,6 +5859,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HCA US Equity",
       "FIGI": "BBG000QW7VC1"
     }
@@ -5531,6 +5876,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "TBIG IJ Equity",
       "FIGI": "BBG001832143"
     }
@@ -5547,6 +5893,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "VRSK US Equity",
       "FIGI": "BBG000BCZL41"
     }
@@ -5563,6 +5910,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FLT US Equity",
       "FIGI": null
     }
@@ -5579,6 +5927,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DOL CN Equity",
       "FIGI": "BBG000P87B57"
     }
@@ -5595,6 +5944,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "6823 HK Equity",
       "FIGI": "BBG00226B1T3"
     }
@@ -5611,6 +5961,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MJN US Equity",
       "FIGI": "BBG000TWC2V5"
     }
@@ -5627,6 +5978,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "9993232D US Equity",
       "FIGI": "BBG000F0KF42"
     }
@@ -5643,6 +5995,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DG US Equity",
       "FIGI": "BBG000NV1KK7"
     }
@@ -5659,6 +6012,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -5675,6 +6029,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BDO PM Equity",
       "FIGI": "BBG000BCSNK7"
     }
@@ -5691,6 +6046,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1702253D US Equity",
       "FIGI": "BBG000BBLK04"
     }
@@ -5707,6 +6063,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HFC US Equity",
       "FIGI": "BBG000BL9JQ1"
     }
@@ -5723,6 +6080,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CIEL3 BZ Equity",
       "FIGI": "BBG000QVRYS8"
     }
@@ -5739,6 +6097,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "9983490D US Equity",
       "FIGI": "BBG000RGM5P1"
     }
@@ -5755,6 +6114,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RR/ LN Equity",
       "FIGI": "BBG000BTG1B1"
     }
@@ -5771,6 +6131,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ORLY US Equity",
       "FIGI": "BBG000BGYWY6"
     }
@@ -5787,6 +6148,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CLVSQ US Equity",
       "FIGI": "BBG001QSGW81"
     }
@@ -5803,6 +6165,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CBRE US Equity",
       "FIGI": "BBG000C04224"
     }
@@ -5819,6 +6182,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "JMT GK Equity",
       "FIGI": "BBG00165RTQ8"
     }
@@ -5835,6 +6199,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "9991429D US Equity",
       "FIGI": "BBG001QD41M9"
     }
@@ -5851,6 +6216,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AMT US Equity",
       "FIGI": "BBG000B9XYV2"
     }
@@ -5867,6 +6233,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "RADL3 BZ Equity",
       "FIGI": "BBG000BTXK93"
     }
@@ -5883,6 +6250,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BFAM US Equity",
       "FIGI": "BBG003LFWP05"
     }
@@ -5899,6 +6267,7 @@
       "Total": 4,
       "Target_Weight": 1.2,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "META US Equity",
       "FIGI": "BBG000MM2P62"
     }
@@ -5915,6 +6284,7 @@
       "Total": 8,
       "Target_Weight": 0.25,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "DUK US Equity",
       "FIGI": "BBG000BHGDH5"
     }
@@ -5931,6 +6301,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ASII IJ Equity",
       "FIGI": "BBG000BDMXJ1"
     }
@@ -5947,6 +6318,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SGE LN Equity",
       "FIGI": "BBG000BN0PP3"
     }
@@ -5963,6 +6335,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "COLOB DC Equity",
       "FIGI": "BBG000BLV8Z0"
     }
@@ -5979,6 +6352,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ASML NA Equity",
       "FIGI": "BBG000C1HT47"
     }
@@ -5995,6 +6369,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ABBV US Equity",
       "FIGI": "BBG0025Y4RY4"
     }
@@ -6011,6 +6386,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ZTS US Equity",
       "FIGI": "BBG0039320N9"
     }
@@ -6027,6 +6403,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SMLE3 BZ Equity",
       "FIGI": "BBG00470QP90"
     }
@@ -6043,6 +6420,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6059,6 +6437,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6075,6 +6454,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6091,6 +6471,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "1897377D US Equity",
       "FIGI": "BBG004S5X3Y9"
     }
@@ -6107,6 +6488,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CFR SW Equity",
       "FIGI": "BBG000BSJVR7"
     }
@@ -6123,6 +6505,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "PSM GR Equity",
       "FIGI": "BBG000CLKVQ0"
     }
@@ -6139,6 +6522,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ABEV3 BZ Equity",
       "FIGI": "BBG000DCR6J5"
     }
@@ -6155,6 +6539,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KAREX MK Equity",
       "FIGI": "BBG005D6NLN3"
     }
@@ -6171,6 +6556,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "9210611D US Equity",
       "FIGI": "BBG000BT0093"
     }
@@ -6187,6 +6573,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "NOVOB NR Equity",
       "FIGI": "BBG000PR5765"
     }
@@ -6203,6 +6590,7 @@
       "Total": 3,
       "Target_Weight": 1.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BAP AU Equity",
       "FIGI": "BBG0068LJSL6"
     }
@@ -6219,6 +6607,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6235,6 +6624,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "700 HK Equity",
       "FIGI": "BBG000BJ35N5"
     }
@@ -6251,6 +6641,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6267,6 +6658,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "SYF US Equity",
       "FIGI": "BBG00658F3P3"
     }
@@ -6283,6 +6675,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ITX SM Equity",
       "FIGI": "BBG000C1W6R5"
     }
@@ -6299,6 +6692,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "UBSG SW Equity",
       "FIGI": "BBG007936GV2"
     }
@@ -6315,6 +6709,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "CCI US Equity",
       "FIGI": "BBG000FV1Z23"
     }
@@ -6331,6 +6726,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "WALMEX* MM Equity",
       "FIGI": "BBG000BRQ4B8"
     }
@@ -6347,6 +6743,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6363,6 +6760,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6379,6 +6777,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": null,
       "FIGI": null
     }
@@ -6395,6 +6794,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "AGN US Equity",
       "FIGI": "BBG000FH8PX5"
     }
@@ -6411,6 +6811,7 @@
       "Total": 6,
       "Target_Weight": 0.5,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "ASSAB SS Equity",
       "FIGI": "BBG000BGRY70"
     }
@@ -6427,6 +6828,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "KHC US Equity",
       "FIGI": "BBG005CPNTQ2"
     }
@@ -6443,6 +6845,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "FLOWT NA Equity",
       "FIGI": "BBG009F3H7R4"
     }
@@ -6459,6 +6862,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GOOGL US Equity",
       "FIGI": "BBG009S39JX6"
     }
@@ -6475,6 +6879,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "HPQ US Equity",
       "FIGI": "BBG000KHWT55"
     }
@@ -6491,6 +6896,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "MRP SJ Equity",
       "FIGI": "BBG000BTPJN9"
     }
@@ -6507,6 +6913,7 @@
       "Total": 5,
       "Target_Weight": 0.85,
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "GOOG US Equity",
       "FIGI": "BBG009S3NB30"
     }
@@ -6523,6 +6930,7 @@
       "Total": " ",
       "Target_Weight": " ",
       "LIST": "LIST",
+      "date": "2015-12-24T00:00:00.000",
       "Bloomberg_Ticker": "BXLT US Equity",
       "FIGI": "BBG00688QWF5"
     }
