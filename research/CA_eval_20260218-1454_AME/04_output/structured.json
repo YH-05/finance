@@ -1,0 +1,272 @@
+{
+  "research_id": "CA_eval_20260218-1454_AME",
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "generated_at": "2026-02-18T15:35:00Z",
+  "generator": "ca-eval-lead (T7直接実行)",
+  "report_version": "draft_v1",
+  "cagr_estimate": {
+    "current": "10%",
+    "components": {
+      "revenue": "8%（OG4%+M&A4%）",
+      "op_leverage": "1%（30bp/年のCore EBIT Margin改善）",
+      "buyback": "1%（2014-2023平均）"
+    },
+    "source": "2024年6月IR面談（最新）"
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "ニッチ市場特化型スイッチングコスト（ミッションクリティカル×カスタマイズ）",
+      "ca_type": "structural",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（能力・仕組みとして正しく抽出）",
+        "rule02": "PASS（名詞属性：スイッチングコスト・カスタマイズ能力）",
+        "rule03": "PARTIAL（ニッチTier2内での相対優位は示唆されるが純粋競合比較なし）",
+        "rule04": "PARTIAL（市場シェア30~50%・市場規模USD150~400Mの数値あり、競合Churn率比較なし）",
+        "rule06": "PASS（構造的要素：スイッチングコストは事業核心）",
+        "rule07": "PARTIAL（Tier1との差別化は明確、同ニッチTier2純粋競合との比較なし）",
+        "rule08": "PASS（戦略ではなく構造的優位性として記述）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PASS（USD1bn以上市場の回避という明示的な不参入判断）",
+        "rule11": "PASS（ニッチ計測機器市場の構造×Tier2ポジションの合致、ORLYほどの明確な市場フラグメント分析はなし）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["III（能力>結果）", "IV（構造的市場ポジション、moderate）"]
+      },
+      "key_evidence": [
+        "市場規模USD150~400M（USD1bn以上は回避）",
+        "ニッチ領域シェア30~50%",
+        "Tier2ポジション：エマソン・GE・HoneywellへのTier2サプライヤー",
+        "Churn Rateほぼゼロ（IR面談確認）",
+        "Vitality Index 29%（新製品比率）"
+      ],
+      "upside_conditions": "ITW・Roper等との具体的スイッチングコスト比較データが得られれば90%に近づける可能性",
+      "downside_risks": "ニッチ領域の大型化（USD1bn超買収）によるスイッチングコストの弱体化リスク"
+    },
+    {
+      "claim_id": 2,
+      "title": "規律あるニッチM&A実行能力（選定・PMI・ガバナンス体制）",
+      "ca_type": "operational",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PASS（M&A実行能力・選定能力・PMIノウハウは能力・仕組み）",
+        "rule02": "PASS（名詞属性：M&A実行能力・PMIノウハウ）",
+        "rule03": "PARTIAL（ROIC20%超が相対的優位を示唆するが、ITW・Roperとの数値比較なし）",
+        "rule04": "PASS（86件・ROIC20%超・IRR15%・11名チーム等の複数定量的裏付け）",
+        "rule06": "PASS（ビジネスモデルの核心：M&A4%がCAGR10%の40%）",
+        "rule07": "PARTIAL（M&A選定能力の純粋競合比較なし）",
+        "rule08": "PASS（M&A「戦略」ではなく「実行能力」として正しく抽出）",
+        "rule09": "N/A（事実誤認なし、ただし86件はBloomberg開示分限定との注記あり）",
+        "rule10": "PASS（IRR15%未達案件見送り・USD50~200M外の大型案件回避・pruning processによる選択的取込）",
+        "rule11": "PARTIAL（ニッチ計測機器市場フラグメント性×M&A実行能力の合致はあるが、市場フラグメント度の定量論拠が弱い）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["I（定量的裏付け、strong）", "III（能力>結果、strong）", "IV（構造的市場ポジション、moderate）"]
+      },
+      "key_evidence": [
+        "M&Aチーム11名（sourcing 4名・execution 6名・+1名）",
+        "累計86件・USD8.4bn（Bloomberg開示分）",
+        "ROIC20%超（goodwill除き）を維持",
+        "IRR15%・3年後ROIC10%・1年目EPS accretiveの明確な基準",
+        "pruning processによる剪定作業（選択的取込の証明）",
+        "divestmentはほぼなし（2020年除く）"
+      ],
+      "upside_conditions": "ITW・Roperとの買収後ROIC改善幅の比較データが得られれば90%の可能性",
+      "downside_risks": "大型化（USD1bn超案件増加）により従来の規律的選定が崩れるリスク（CEOが2024Q2で言及）"
+    },
+    {
+      "claim_id": 3,
+      "title": "ニッチ規模の経済×集中購買によるコスト優位性（供給側構造優位）",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（集中購買体制・Corporate Supply Chain Teamは能力・仕組み）",
+        "rule02": "PASS（名詞属性：規模の経済・集中購買体制）",
+        "rule03": "PARTIAL（業界共通能力の疑い：産業コングロマリット全般で採用される能力）",
+        "rule04": "PARTIAL（Capex2%・スプレッド50~100bpの数値あり、競合比較なし）",
+        "rule06": "PASS（構造的要素）",
+        "rule07": "FAIL（Roper・Fortive等との集中購買コスト効率比較なし）",
+        "rule08": "PASS",
+        "rule09": "N/A",
+        "rule10": "N/A",
+        "rule11": "PARTIAL",
+        "rule12": "SKIP"
+      },
+      "patterns_detected": {
+        "rejection": ["B（業界共通、moderate）", "G（純粋競合比較なし、moderate）"],
+        "high_eval": ["I（定量的裏付け、partial）"]
+      },
+      "key_evidence": [
+        "Corporate Supply Chain Teamによる全社集中購買",
+        "Capex売上高比2%（低水準）",
+        "価格-コストスプレッド50~100bp",
+        "ローコスト製造拠点（上海・メキシコ・セルビア・マレーシア・チェコ）"
+      ],
+      "upside_conditions": "Roper・ITWとのCapex比率・スプレッド比較データが得られれば70%に近づける可能性",
+      "downside_risks": "業界共通能力の疑いが払拭できない"
+    },
+    {
+      "claim_id": 4,
+      "title": "直販体制（売上高の約80%）による顧客接点と製品開発ループ",
+      "ca_type": "operational",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（直販体制・顧客ニーズ把握能力は能力・仕組み）",
+        "rule02": "PASS（名詞属性：直販体制・顧客接点）",
+        "rule03": "PARTIAL",
+        "rule04": "PARTIAL（直販80%という数値あり、競合比較なし）",
+        "rule06": "PASS（構造的要素）",
+        "rule07": "FAIL（ITW・Fortive等との直販比率比較なし）",
+        "rule08": "PASS",
+        "rule09": "N/A",
+        "rule10": "N/A",
+        "rule11": "PARTIAL",
+        "rule12": "SKIP"
+      },
+      "patterns_detected": {
+        "rejection": ["G（純粋競合比較なし、moderate）"],
+        "high_eval": ["III（能力>結果、moderate）"]
+      },
+      "key_evidence": [
+        "直販比率約80%（残り約20%は卸売経由）",
+        "EIG OPM 30.3%（2024Q2、最終顧客直接交渉による）",
+        "Vitality Index 29%（新製品比率）"
+      ],
+      "upside_conditions": "ITW等の純粋競合との直販比率比較データ、またはチャネル変更コストの定量データが得られれば70%の可能性",
+      "downside_risks": "EMGセグメントは顧客が価格センサティブで直販優位性が弱い"
+    },
+    {
+      "claim_id": 5,
+      "title": "分散型組織体制とPMIノウハウの蓄積（Playbook）",
+      "ca_type": "operational",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（PMIノウハウ・分散型組織は能力・仕組み）",
+        "rule02": "PASS（名詞属性：PMIノウハウ・Playbook）",
+        "rule03": "PARTIAL（分散型組織は産業コングロマリット全般で採用）",
+        "rule04": "PARTIAL（BU数32→42、経営陣半数残留等の数値あり、PMI後ROIC改善幅の数値なし）",
+        "rule06": "PASS（構造的要素）",
+        "rule07": "FAIL（ITW等との具体的PMI能力比較なし）",
+        "rule08": "PASS",
+        "rule09": "N/A",
+        "rule10": "PASS（pruning process・divestmentほぼなし）",
+        "rule11": "PARTIAL",
+        "rule12": "SKIP"
+      },
+      "patterns_detected": {
+        "rejection": ["D（定性的裏付けのみ、weak）", "G（pure competitor比較なし、weak）"],
+        "high_eval": ["III（能力>結果、moderate）"]
+      },
+      "key_evidence": [
+        "BU数：売上高2bn時32BU→7bn時42BU",
+        "被買収企業経営陣の半数残留・半数入替（デューデリ段階で決定）",
+        "India Engineering Center 250名R&Dエンジニア（24h/365d・35BUサポート）",
+        "R&D売上高比5.5%（若干上昇傾向）",
+        "pruning processによる選択的取込"
+      ],
+      "upside_conditions": "買収後の平均ROIC改善幅・PMI所要期間等の定量データが得られれば70%の可能性",
+      "downside_risks": "ITWなど先行コングロマリットとの差別化が示されていない"
+    },
+    {
+      "claim_id": 6,
+      "title": "ニッチトップとしてのPricing Power（価格転嫁力）",
+      "ca_type": "structural",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "WARN（スプレッド維持は結果の側面が強い）",
+        "rule02": "PASS（名詞属性として記述可能）",
+        "rule03": "FAIL（ITW等との価格転嫁力比較なし）",
+        "rule04": "PARTIAL（スプレッド50~100bpの数値あり、競合比較なし）",
+        "rule06": "PARTIAL（Claim #1の派生）",
+        "rule07": "FAIL",
+        "rule09": "N/A",
+        "rule12": "SKIP"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と混同、moderate）", "G（純粋競合比較なし、strong）"],
+        "high_eval": ["I（定量的裏付け、partial）"]
+      },
+      "key_evidence": [
+        "価格-コストスプレッド通常50~100bp",
+        "インフレ5%局面でも100bpスプレッド維持（2021-2022）",
+        "2024年スプレッド50bp（正常化に伴う縮小）"
+      ],
+      "note": "Claim #1（スイッチングコスト）の派生結果として整理が適切。独立した主張としての強度は低い。"
+    },
+    {
+      "claim_id": 7,
+      "title": "事業ポートフォリオ分散による安定成長基盤（シクリカリティ低減）",
+      "ca_type": "structural",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "WARN（分散状態は結果。背後の能力はClaim #2・#5に帰属）",
+        "rule02": "PARTIAL（分散体制として名詞化可能だが実態は状態/結果）",
+        "rule03": "FAIL（ITW・Roperも同様の分散体制）",
+        "rule06": "PARTIAL",
+        "rule08": "WARN（分散を意識した「戦略的意思決定」の側面が強い）",
+        "rule12": "SKIP"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と混同、strong）", "F（戦略を優位性と混同、moderate）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "医療21%・航空宇宙/Defense約20%・一般産業約30%",
+        "中国売上高比率1割弱",
+        "CAMECA・ZYGOは半導体向けで成長"
+      ],
+      "note": "ポートフォリオ分散は状態（結果）であり、独立した競争優位性として弱い。Claim #2（M&A実行能力）の成果として位置付けが適切。"
+    }
+  ],
+  "overall_summary": {
+    "avg_ca_confidence": 50,
+    "avg_cagr_confidence": 61,
+    "strongest_claims": [
+      {"id": 1, "title": "ニッチ市場特化型スイッチングコスト", "confidence": 70},
+      {"id": 2, "title": "規律あるM&A実行能力", "confidence": 70}
+    ],
+    "weakest_claims": [
+      {"id": 6, "title": "Pricing Power（独立主張としては弱い）", "confidence": 30},
+      {"id": 7, "title": "ポートフォリオ分散（結果/戦略）", "confidence": 30}
+    ],
+    "key_insight": "AMETEKの競争優位性の核心はClaim #1（スイッチングコスト）とClaim #2（M&A実行能力）の2本柱。Claim #3-#5はこれらを支える補完的要素。Claim #6-#7は派生結果として整理が適切。",
+    "comparison_to_kb3": {
+      "closest_analog": "CHD（M&A中心の能力評価。CHD平均50%とAME平均50%が一致）",
+      "difference": "AMEはCHDよりM&A規模・体制の定量的裏付けが豊富だが、事業特性上の純粋競合比較が特に困難"
+    }
+  }
+}

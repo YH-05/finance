@@ -1,0 +1,256 @@
+{
+  "ticker": "AME",
+  "verification_date": "2026-02-18",
+  "verification_source": "sec-data.json only (SEC EDGAR MCP XBRL extraction failed)",
+  "verification_summary": {
+    "total_factual_claims": 25,
+    "verified": 11,
+    "partially_verified": 4,
+    "unverifiable": 9,
+    "contradicted": 1,
+    "rule9_applied_count": 1,
+    "affected_advantages": 1
+  },
+  "fact_checks": [
+    {
+      "claim_id": "FC001",
+      "source_claim_id": "C001",
+      "claim_text": "FY2024 売上高 USD6.94bn",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: revenue FY2024 = $6,941,200,000 (USD6.94bn)",
+      "confidence": "high",
+      "notes": "10-K/プレスリリースの数値と完全一致"
+    },
+    {
+      "claim_id": "FC002",
+      "source_claim_id": "C001",
+      "claim_text": "GAAP OPM 25.6%（FY2024）",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: opm FY2024_gaap_pct = 25.6%",
+      "confidence": "high",
+      "notes": "Operating Income $1,780M / Revenue $6,941M = 25.6%。一致"
+    },
+    {
+      "claim_id": "FC003",
+      "source_claim_id": "C012",
+      "claim_text": "EIG OPM 30.6%（FY2024）",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: EIG opm FY2024_pct = 30.6%. EIG Operating Income $1,428M / Revenue $4,660M = 30.6%",
+      "confidence": "high",
+      "notes": "セグメント開示と完全一致"
+    },
+    {
+      "claim_id": "FC004",
+      "source_claim_id": "C012",
+      "claim_text": "EMG OPM 20.0%（FY2024）",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: EMG opm FY2024_pct = 20.0%. EMG Operating Income $456.5M / Revenue $2,281M = 20.0%",
+      "confidence": "high",
+      "notes": "セグメント開示と一致。FY2023 OPM 25.2%からの大幅低下はParagon Medical統合コスト($29.2M)が主因"
+    },
+    {
+      "claim_id": "FC005",
+      "source_claim_id": "C008",
+      "claim_text": "FCF USD1.7bn（FY2024）",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: free_cash_flow FY2024 = $1,700,000,000. Record annual free cash flow",
+      "confidence": "high",
+      "notes": "プレスリリース・IR資料と一致"
+    },
+    {
+      "claim_id": "FC006",
+      "source_claim_id": "C010",
+      "claim_text": "R&D費は売上高の5%超（FY2024: USD371.9M、5.4%）",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: rd_expense FY2024 = $371,900,000, FY2024_pct_of_revenue = 5.4%",
+      "confidence": "high",
+      "notes": "10-K開示と一致。ただしこの数値は 'Research, Development, and Engineering' 費用であり、純粋なR&Dのみだと3.5%程度との注記がclaims.jsonにある。SEC開示上はR&D+Engineeringの合計として5.4%"
+    },
+    {
+      "claim_id": "FC007",
+      "source_claim_id": "C010",
+      "claim_text": "Vitality Index 29%（FY2024）",
+      "verification_status": "contradicted",
+      "sec_data": "sec-data.json: vitality_index = 0.27, note = '27% of sales from products introduced in past 3 years'",
+      "confidence": "high",
+      "notes": "claims.jsonは29%と記載しているが、sec-data.jsonでは27%。2ppの乖離あり。SEC開示/IR資料上は27%が正確な数値。アナリストレポートが古い数値または端数処理の異なる数値を参照した可能性あり。competitive_landscapeセクションでも '27% vitality index' と記載",
+      "actual_value": "27%",
+      "claimed_value": "29%",
+      "discrepancy": "2pp over-statement",
+      "affected_claims": ["C010"]
+    },
+    {
+      "claim_id": "FC008",
+      "source_claim_id": "C003",
+      "claim_text": "Paragon Medical USD1.9bn、2023年12月クローズ",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: ma_activity - target: 'Paragon Medical', value_usd: 1,900,000,000, closing_date: '2023-12', segment: 'EMG'",
+      "confidence": "high",
+      "notes": "10-K開示と完全一致"
+    },
+    {
+      "claim_id": "FC009",
+      "source_claim_id": "C008",
+      "claim_text": "Capexは売上高対比2%程度",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: Operating Cash Flow FY2024 = $1,829M, FCF FY2024 = $1,700M. Implied Capex = $129M. Capex/Revenue = $129M / $6,941M = 1.86%",
+      "confidence": "medium",
+      "notes": "OCF-FCFからの逆算でCapex約$129M、売上高対比1.9%。「2%程度」の主張と概ね一致。アセットライトモデルとして整合的"
+    },
+    {
+      "claim_id": "FC010",
+      "source_claim_id": "C014",
+      "claim_text": "FY2022 OPM 24.4% → FY2024 OPM 25.6%（+120bp、年60bp改善）",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: opm FY2022_gaap_pct = 24.4%, FY2024_gaap_pct = 25.6%",
+      "confidence": "high",
+      "notes": "2年間で+120bp（年60bp）の改善は数値通り。ただしFY2023は25.9%で一時的に高く、FY2024の25.6%は若干低下。Paragon Medical統合コストの影響を考慮するとトレンドは維持"
+    },
+    {
+      "claim_id": "FC011",
+      "source_claim_id": "C008",
+      "claim_text": "FY2025ガイダンス: EPS USD7.02-7.18（成長3-5%）",
+      "verification_status": "verified",
+      "sec_data": "sec-data.json: guidance_fy2025 adjusted_eps_range: low = 7.02, high = 7.18, growth_pct_range = '3% to 5% over FY2024 comparable basis'",
+      "confidence": "high",
+      "notes": "ガイダンスの数値と完全一致"
+    },
+    {
+      "claim_id": "FC012",
+      "source_claim_id": "C003",
+      "claim_text": "ROIC安定且つ20%超（excl goodwill）を維持",
+      "verification_status": "partially_verified",
+      "sec_data": "sec-data.json: ROIC FY2024 = 11.28% (TTM, source: GuruFocus). これはincluding goodwillベースの数値",
+      "confidence": "medium",
+      "notes": "ROIC 11.28%（incl goodwill）は20%を大きく下回る。ただしclaims.jsonは明確に 'excl goodwill' と記載。AMETEKはM&A主導型であり巨額のgoodwillを計上しているため、excl goodwillベースでは20%超は計算上妥当な可能性あり。しかしSEC開示からはexcl goodwillのROICを直接確認できない。incl goodwillでは11.28%という事実は重要な注記"
+    },
+    {
+      "claim_id": "FC013",
+      "source_claim_id": "C003",
+      "claim_text": "2002年から累計86件、USD8.4bnのM&A",
+      "verification_status": "unverifiable",
+      "sec_data": "sec-data.json: ma_activity には2022-2025年の7件のみ記録。累計件数・金額はSEC開示の個別確認が必要",
+      "confidence": "low",
+      "notes": "累計86件・USD8.4bnはBloombergデータ等の外部ソースに基づく可能性。SEC 10-Kには直近数年の買収のみ開示。2002年からの累計はSEC開示のみでは確認不能。主張自体は '注：Bloomberg開示分のみ' との注釈あり"
+    },
+    {
+      "claim_id": "FC014",
+      "source_claim_id": "C003",
+      "claim_text": "年平均4件の買収",
+      "verification_status": "partially_verified",
+      "sec_data": "sec-data.json: 2022年2件、2023年2件、2024年1件、2025年2件（記録時点）。直近4年は年1-2件ペース",
+      "confidence": "medium",
+      "notes": "直近4年は年1-2件で、「年平均4件」を下回る。ただしParagon Medical ($1.9bn)、FARO ($920M) のような大型案件にシフトしている可能性。長期平均（2002年から86件÷23年≈3.7件）であれば概ね一致するが、直近実績は下回っている"
+    },
+    {
+      "claim_id": "FC015",
+      "source_claim_id": "C003",
+      "claim_text": "M&Aチーム10-11名（4名deal sourcing、6名execution）",
+      "verification_status": "unverifiable",
+      "sec_data": "SEC開示にM&Aチームの人員構成に関する開示なし",
+      "confidence": "low",
+      "notes": "組織内部情報。面談等の非公開ソースからの情報と推定。SEC開示では確認不能"
+    },
+    {
+      "claim_id": "FC016",
+      "source_claim_id": "C003",
+      "claim_text": "買収基準: 3年後ROIC10%以上、IRR15%、1年目EPS Accretive",
+      "verification_status": "unverifiable",
+      "sec_data": "SEC開示にM&A基準の定量的閾値の開示なし",
+      "confidence": "low",
+      "notes": "経営陣のIR説明や面談からの情報と推定。SEC 10-Kには定量的なM&A基準の開示はない"
+    },
+    {
+      "claim_id": "FC017",
+      "source_claim_id": "C005",
+      "claim_text": "売上高の約8割が直販",
+      "verification_status": "unverifiable",
+      "sec_data": "sec-data.jsonのcompetitive_landscape/business_modelセクションに直販比率の記載なし",
+      "confidence": "low",
+      "notes": "10-Kの販売チャネル情報に具体的な直販比率の開示がない可能性。アナリストレポートまたは面談ソースと推定"
+    },
+    {
+      "claim_id": "FC018",
+      "source_claim_id": "C007",
+      "claim_text": "BU数42、各BU売上高USD200M程度",
+      "verification_status": "partially_verified",
+      "sec_data": "sec-data.json: competitive_landscape = '40+ businesses in 30+ countries'. Revenue $6.94bn / 42 BU ≈ $165M/BU",
+      "confidence": "medium",
+      "notes": "'40+ businesses' は42BUと概ね一致。ただし売上高を単純除算すると$165M/BUとなり、$200M/BUとは乖離。BU間の規模差が大きい可能性。数値は概算であり、大きな矛盾ではない"
+    },
+    {
+      "claim_id": "FC019",
+      "source_claim_id": "C001",
+      "claim_text": "顧客のChurn Rateはほぼゼロ",
+      "verification_status": "unverifiable",
+      "sec_data": "SEC開示にChurn Rate / 顧客離反率の定量開示なし",
+      "confidence": "low",
+      "notes": "2024年6月面談確認とのこと。SEC開示では確認不能。顧客集中度リスクは10-K Risk Factorsに記載がある可能性あるが、Churn Rate自体の開示はない"
+    },
+    {
+      "claim_id": "FC020",
+      "source_claim_id": "C001",
+      "claim_text": "市場規模USD150-400Mのニッチ領域で市場シェア30-50%",
+      "verification_status": "unverifiable",
+      "sec_data": "SEC開示に各ニッチ市場の規模・シェアの開示なし",
+      "confidence": "low",
+      "notes": "市場規模・シェアは通常SEC開示には含まれない。業界調査レポートやアナリスト推計に基づくと推定"
+    },
+    {
+      "claim_id": "FC021",
+      "source_claim_id": "C008",
+      "claim_text": "2012年から累計USD10bn投下（M&A 74%、Dividends 11%、Buyback 15%）",
+      "verification_status": "unverifiable",
+      "sec_data": "sec-data.jsonには累計Capital Allocationデータなし。個別年度のCFステートメントから再構成が必要",
+      "confidence": "low",
+      "notes": "2012年からの累計配分は10年以上のCFステートメントの集計が必要。IR資料での開示がある可能性あるが、SEC 10-K単体では確認困難"
+    },
+    {
+      "claim_id": "FC022",
+      "source_claim_id": "C006",
+      "claim_text": "Price-Cost Spread 50-100bp、2024年はPrice3%・Cost2.5%でスプレッド50bp",
+      "verification_status": "unverifiable",
+      "sec_data": "SEC開示にPrice/Cost分解のデータなし",
+      "confidence": "low",
+      "notes": "Price-Costの分解はアーニングコール・IR説明での定性コメントに基づくと推定。10-Kには価格・コスト寄与の数値的分解はない"
+    },
+    {
+      "claim_id": "FC023",
+      "source_claim_id": "C010",
+      "claim_text": "エンジニア2,900人在籍、India Engineering Center 250人",
+      "verification_status": "unverifiable",
+      "sec_data": "sec-data.jsonに従業員内訳・エンジニア数の開示なし",
+      "confidence": "low",
+      "notes": "10-Kには総従業員数の開示があるが、エンジニア数や地域別内訳は通常開示されない。IR資料や面談ソースと推定"
+    },
+    {
+      "claim_id": "FC024",
+      "source_claim_id": "C011",
+      "claim_text": "エンド市場構成: Medical 21%、Aero/Defense 20%、General Industries 30%",
+      "verification_status": "partially_verified",
+      "sec_data": "sec-data.json: competitive_landscape.end_markets にAerospace & Defense, Medical & Healthcare等が列挙されているが、具体的な比率は記載なし",
+      "confidence": "medium",
+      "notes": "エンド市場のリストは確認できるが、各市場の売上比率はsec-data.jsonに未記載。Paragon Medical ($1.9bn) のEMG編入によりMedical比率が上昇したことは推論可能。IR資料での比率開示がある可能性"
+    },
+    {
+      "claim_id": "FC025",
+      "source_claim_id": "C013",
+      "claim_text": "2010-2019年の平均M&A寄与は+6.2%",
+      "verification_status": "unverifiable",
+      "sec_data": "sec-data.jsonには過去のOG/InOG分解データなし",
+      "confidence": "low",
+      "notes": "10年間の有機成長/M&A寄与の分解はアナリスト推計に基づくと推定。SEC開示からは再構成困難"
+    }
+  ],
+  "confidence_adjustments_applied": [
+    {
+      "claim_id": "C010",
+      "original_confidence": 30,
+      "adjusted_confidence": 10,
+      "reason": "ルール9自動適用: Vitality Index 29%と主張しているがSEC開示/IR資料では27%。2ppの過大表示。事実の正確性に問題あり",
+      "rule": "rule_9",
+      "triggered_by_factual_claim": "FC007"
+    }
+  ],
+  "overall_notes": "AMETEKの主張に対するファクトチェック結果の概要:\n\n【高い検証度の領域】\n- 財務実績（売上高、OPM、セグメントOPM、FCF、EPS）はSEC開示データと高い整合性を示す。FY2024の主要財務指標は全て検証済み。\n- M&A活動のうちParagon Medical（$1.9bn, 2023年12月クローズ）は確認済み。FY2025ガイダンスも一致。\n- Capex/売上高比率（約1.9%、「2%程度」と整合）、OPM改善トレンド（FY2022→FY2024）も検証済み。\n\n【矛盾が発見された領域】\n- Vitality Index: claims.jsonでは29%と記載されているが、sec-data.json（SEC開示/IR資料ベース）では27%。2ppの乖離。これにより、C010（R&D体制）にルール9を適用し、confidence を30% → 10%に引き下げ。\n\n【検証不能な領域】\n- M&A累計件数・金額（86件、$8.4bn）: Bloomberg等の外部ソースに依存。\n- 定性的な組織能力（M&Aチーム構成、直販比率80%、Churn Rate、Price-Cost Spread等）: SEC開示には含まれない情報。面談やIRプレゼンテーション等の非公開/限定公開ソースに基づく。\n- Capital Allocation累計（$10bn、配分比率）: 長期CFステートメント集計が必要。\n- エンド市場構成比率: 数値の出所はIR資料と推定。\n\n【ROICに関する重要な注記】\n- claims.jsonの「ROIC 20%超（excl goodwill）」について、sec-data.jsonのGuruFocusソースでは11.28%（incl goodwill）。AMETEKはM&A主導型で巨額のgoodwillを計上しており、excl goodwillベースでは20%超は理論上妥当だが、直接確認はできない。投資家向けには両方のROICを提示すべき。\n\n【SEC EDGAR MCPツール状況】\n- XBRL extraction failed（sec-data.jsonの既存注記と一致）。get_filing_sections は EDGAR_IDENTITY設定不備で失敗。\n- 検証は sec-data.json の情報のみで実施。追加のSECデータ取得は不可であった。\n\n【全体評価】\n- 定量的な財務指標（売上高、OPM、FCF等）の正確性は高い。\n- 定性的・組織的な主張（M&A能力、直販体制、Pricing Power等）はSEC開示のみでは検証困難。これらはアナリストレポート固有の分析・面談情報に基づいており、SEC開示ベースのファクトチェックの限界を示す。\n- Vitality Index（29% vs 27%）の矛盾は軽微だが、事実の正確性の観点からルール9適用の要件を満たす。"
+}

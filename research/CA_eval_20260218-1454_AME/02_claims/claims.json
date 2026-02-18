@@ -1,0 +1,398 @@
+{
+  "research_id": "CA_eval_20260218-1454_AME",
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "extracted_at": "2026-02-18T15:10:00Z",
+  "extractor": "ca-eval-lead (T4直接実行)",
+  "kb_applied": {
+    "kb1_rules": ["rule01", "rule02", "rule04", "rule06", "rule07", "rule08", "rule10", "rule11"],
+    "kb3_references": ["CHD#1", "CHD#7", "ORLY#2", "ORLY#5", "COST#1", "MNST#1"],
+    "dogma": "analyst/Competitive_Advantage/analyst_YK/dogma.md"
+  },
+  "cagr_estimate": {
+    "current": "10%（2024年6月面談後）",
+    "breakdown": {
+      "revenue": "8%（OG4%+M&A4%）",
+      "op_leverage": "1%（30bp/年のCore EBIT Margin改善）",
+      "buyback": "1%（2014-2023平均）"
+    }
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "ニッチ市場特化型スイッチングコスト（ミッションクリティカル×カスタマイズ）",
+      "ca_type": "structural",
+      "description": "大手企業参入リスクの低いニッチ領域（市場規模USD150~400M）で市場シェア30~50%を確保。Mission Critical且つカスタマイズした財に特化することにより、顧客は一度使用するとスイッチするインセンティブが起きにくい高いスイッチングコストを構造的に有している。",
+      "source_text": "ニッチトップ戦略を展開。…ミッションクリティカルな財（High Cost of Failure）、ニッチトップ（市場シェア30~50%）、顧客ニーズに合わせたカスタマイズ製品、などの特徴を持つ事業を有しており、顧客は一度使用するとスイッチするインセンティブが起きにくい。",
+      "factual_claims": [
+        "ニッチ領域の市場規模はUSD150~400M（USD1bn以上の大規模市場は回避）",
+        "各ニッチ領域での市場シェア30~50%",
+        "Tier2サプライヤーとして大手（エマソン、GE、Honeywell、Lockheed Martin等）と直接競合しない",
+        "ミッションクリティカルな財：規制・安全性・品質基準から正確な計測・分析が求められ、誤りの影響が甚大な領域"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "スイッチングコスト→高い顧客継続率（Churn Rateほぼゼロ）→OG安定（4%/年）→M&A成長の基盤。Vitality Index 29%が新製品での顧客維持を示す。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「スイッチングコスト」「ミッションクリティカル性」「カスタマイズ能力」はいずれも能力・仕組み（名詞）として正しく表現されている。市場シェア30~50%は結果だが、主張の核心はそれを生み出す構造的特性にある。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "スイッチングコスト、ミッションクリティカル性、カスタマイズ能力—いずれも名詞で表現される属性。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PARTIAL",
+          "comment": "市場シェア30~50%、市場規模USD150~400Mという定量的裏付けあり。ただし競合他社のChurn Rateや顧客更新率との具体的比較数値は不明。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PASS",
+          "comment": "スイッチングコストは事業モデルの核心。ミッションクリティカル性とカスタマイズは補完的要素ではなく構造的要素。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "Tier1企業（エマソン、GE）との差別化は示されているが、同じニッチ領域の純粋競合（他のTier2ニッチプレイヤー）に対する具体的差別化は不明確。市場シェア30~50%がニッチ内での優位を示唆するが、具体的競合名と比較軸が欠如。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "PASS",
+          "comment": "「ニッチトップ戦略」という表現があるが、主張の核心は戦略ではなく「スイッチングコスト」という構造的優位性。戦略と優位性の区別は適切。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "USD1bn以上の大規模市場を回避するという明示的な「参入しない」判断がある。大手競合が参入してこないという市場構造も裏付け。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PASS",
+          "comment": "ニッチ計測・プロセス機器市場は大手企業が参入しにくい構造（市場規模が小さい）であり、AMETEKのTier2ポジションがその構造に合致。ただしORLYほどの「フラグメント市場×密度」の明確な合致ではない。"
+        }
+      },
+      "confidence": {
+        "ca_score": 70,
+        "label": "おおむね納得",
+        "reasoning": "スイッチングコストという構造的優位性は実在し、ミッションクリティカル×カスタマイズという裏付けも明確。ルール11の業界構造合致もある程度示されている。ただし純粋競合（同じニッチTier2プレイヤー）との具体的差別化（ルール7）が不明で、90%には届かない。KB3参照：ORLY#2（90%）はフラグメント市場×規模・密度の合致が明確だったが、AMEは競合比較の具体性に劣る。CHD#1（70%）の買収選定能力と同等の評価が妥当。",
+        "kb3_calibration": "CHD#1類似（能力×定量的裏付け部分あり→70%）"
+      },
+      "cagr_confidence": {
+        "score": 70,
+        "label": "おおむね納得",
+        "reasoning": "スイッチングコスト→低Churn→OG4%→CAGR10%のメカニズムは1-2ステップで直接的。Vitality Index 29%という検証可能指標あり。ただしOG4%の数値根拠（Churn率の定量開示なし）は不完全。"
+      }
+    },
+    {
+      "claim_id": 2,
+      "title": "規律あるニッチM&A実行能力（選定・PMI・ガバナンス体制）",
+      "ca_type": "operational",
+      "description": "11名のM&Aチームと明確な買収基準（3年後ROIC10%以上、IRR15%、1年目EPS accretive）を持つ規律ある選定能力。2002年以来86件（年約4件、平均USD100M）の実績で ROIC20%超（goodwill除き）を維持。買収後のPMIノウハウ（コストシナジー・剪定作業Playbook）が蓄積しており、被買収企業のValve Driverを特定・改善する能力が構造的優位性。",
+      "source_text": "社内に11名のM&Aチームあり。Criteria: 3年後ROICが10%以上、IRR15%、1年目からEPS増加に寄与。…2002年からの累計実績：M&A金額USD8.4bn、M&A件数86件（年4件、平均M&A金額USD100M）。…買収時はどの買収でもpruning process（剪定作業）をしており、いいものだけを取り込むようにしている模様。",
+      "factual_claims": [
+        "M&Aチーム11名（deal sourcing 4名、execution 6名、+1名=11名）",
+        "2002年以来累計86件、USD8.4bn（年4件、平均USD100M）",
+        "ROIC20%超（goodwill除き）を維持",
+        "買収基準：3年後ROIC10%以上、IRR15%、1年目EPS accretive",
+        "買収ターゲットサイズ：売上高USD50~200M（現在は大型化傾向：USD1bn超）",
+        "divestmentは2020年を除きほぼなし（不採算事業は緩やかに縮小）"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "M&A実行能力→M&A貢献4%（=CAGR10%の40%）→コストシナジーによるOPM改善→OP Leverage 1%。2002年以来のトラックレコードが検証可能。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「M&A実行能力」「選定能力」「PMIノウハウ」は能力・仕組み（名詞）として正しい。86件の実績は結果だが、選定基準・チーム構成・Playbookという能力の裏付けとして機能している。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "M&A実行能力、PMIノウハウ、規律あるガバナンス—名詞で表現される属性。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PASS",
+          "comment": "86件、USD8.4bn、ROIC20%超（goodwill除き）、年4件、IRR15%等、複数の定量的裏付けあり。CHD#1（70%）と同等以上の数値根拠。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PASS",
+          "comment": "M&A実行能力はビジネスモデルの核心（売上8%のうちM&A4%を担う）。補完的ではなく構造的要素。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "ITW（類似ビジネスモデル）やROP（類似コングロマリット）との比較があるが、M&A実行能力の具体的差別化（例：ROICの数値比較）は不明確。ただしROIC20%超の維持が相対的優位を示唆。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "PASS",
+          "comment": "「M&A中心の成長戦略」ではなく「M&A実行能力・PMIノウハウ」として正しく優位性を抽出。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "バリュエーション・IRR15%基準未達の案件は見送り。USD1bn以上の大型案件は基本回避（ただし足元で大型化傾向という留意点あり）。不採算事業の緩やかな縮小も規律の証明。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PARTIAL_PASS",
+          "comment": "ニッチ計測・プロセス機器市場は多数の小規模プレイヤーが存在するため、M&A機会は豊富（ORLY#5のDIFM市場フラグメント類似）。ただしORLYほどの明確なフラグメント論拠（具体的なプレイヤー数・構造データ）がない。"
+        }
+      },
+      "confidence": {
+        "ca_score": 70,
+        "label": "おおむね納得",
+        "reasoning": "M&A実行能力は「能力・仕組み」として正しく、定量的裏付け（86件・ROIC20%・11名チーム・IRR15%基準）も豊富。ルール10（断念例）も明示。ORLY#5（90%、フラグメント市場×統合力）に近いが、ニッチ計測機器市場のフラグメント度の明示的裏付けが弱く、純粋競合（ITW、ROPとの数値比較）が不足。CHD#1（70%）と同等評価が妥当。大型化リスク（USD1bn超案件の増加）はルール10の逆作用として留意。",
+        "kb3_calibration": "CHD#1（70%）・ORLY#5（90%）の中間で、ORLY#5より市場フラグメント論拠が弱いため70%"
+      },
+      "cagr_confidence": {
+        "score": 70,
+        "label": "おおむね納得",
+        "reasoning": "M&A4%寄与→CAGR10%の40%を担う。2002年以来のトラックレコード（コロナ前2010-2019年平均M&A寄与6.2%）が検証可能。ただし今後の大型化に伴う買収リスク（高値掴み・インテグレーションリスク）でdownsideあり。"
+      }
+    },
+    {
+      "claim_id": 3,
+      "title": "ニッチ規模の経済×集中購買によるコスト優位性（供給側構造優位）",
+      "ca_type": "structural",
+      "description": "ニッチ領域で市場シェアの高いビジネスの集合体として、各ビジネスが相対的に高い規模の経済を有する。AMETEKグループの一部になることでコーポレート機能・販売チャネルの統合と原材料の集中購買（Corporate Supply Chain Teamによる全社ベース調達）によるスケールメリットを享受し、競争優位性を強化している。",
+      "source_text": "ニッチ領域で市場シェアの高いビジネスの集合体の為、各ビジネスは元々相対的に高い規模の経済性を有するが、AMETEKの事業の一部になることで買収後のコストシナジー（コーポレート機能・販売チャネルなどの統合、原材料の集中購買によるスケールメリットなど）を享受し、競争優位性は更に強化されている。",
+      "factual_claims": [
+        "原材料調達はCorporate Supply Chain Teamが全社ベースで一括実施",
+        "Capex売上高比2%（低水準を維持）",
+        "価格-コストスプレッド通常50~100bp",
+        "ローコスト製造拠点：上海、メキシコ、セルビア、マレーシア、チェコ"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "集中購買→仕入れコスト低減→OPM改善→OP Leverage 1%（30bp/年）。価格-コストスプレッド維持がCAGRの確度を高める。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「集中購買体制」「Corporate Supply Chain Teamの仕組み」は能力・仕組み。低いCapexは結果。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "規模の経済、集中購買体制—名詞で表現される属性。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PARTIAL",
+          "comment": "Capex2%、スプレッド50~100bpという数値あり。ただし集中購買によるコスト削減の絶対額・率の定量データなし。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PASS",
+          "comment": "集中購買と規模の経済はビジネスモデルの核心（コスト競争力の源泉）。構造的要素。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "FAIL",
+          "comment": "同じニッチTier2プレイヤー（例：Roper Technologies、Fortive等）に対する集中購買コスト優位の具体的差別化が不明。業界共通の「スケールメリット」主張に近い。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PARTIAL",
+          "comment": "ニッチ領域の小規模プレイヤーが多い市場構造では、AMETEKの全社集中購買体制は差別化要因になりうる。ただし明示的な市場構造分析なし。"
+        }
+      },
+      "confidence": {
+        "ca_score": 50,
+        "label": "まあ納得",
+        "reasoning": "規模の経済・集中購買は実在する仕組みで定量的裏付けも一部あるが、純粋競合（ITW、Roper Technologies等）との具体的コスト比較がなく、業界共通の主張に近い面もある（ルール7失敗、ルール3懸念）。方向性は認めるが裏付け不十分。KB3：COST#5（業界共通→20%）より強いが、COST#1（退職率9%vs業界20%+→70%）の定量差別化には届かない。",
+        "kb3_calibration": "COST#3（倉庫型モデル、純粋競合対比不明→50%）と類似"
+      },
+      "cagr_confidence": {
+        "score": 70,
+        "label": "おおむね納得",
+        "reasoning": "集中購買コスト削減→OPM改善30bp/年→OP Leverage 1%のメカニズムは比較的直接的。Capex2%という検証可能指標あり。"
+      }
+    },
+    {
+      "claim_id": 4,
+      "title": "直販体制（売上高の約80%）による顧客接点と製品開発ループ",
+      "ca_type": "operational",
+      "description": "売上高の約80%を直販体制で展開。顧客との直接接点を活かしたニーズ把握からカスタマイズ提供、さらに買収リスト選定→買収先商品クロスセル→既存流通チャネル固定費比率引き下げという複合的なOPM改善ループを構成している。EIGセグメントでは最終顧客との直接交渉によるPricing Powerが高OPM（30.3%）を実現。",
+      "source_text": "販売チャネル：約8割が直販、その他は卸売経由。カタログ製品とカスタマイズ商品を提供する中、後者の方が顧客と直接やりとりをする必要性があることから直販比率が高い。この直販体制は、顧客ニーズ把握⇒買収リストの選定⇒買収先の商品をクロスセル⇒既存流通チャネルの固定費比率引き下げ、という形で当社のOPM改善に寄与する販売体制となっている。",
+      "factual_claims": [
+        "直販比率約80%（残り約20%は卸売経由）",
+        "EIGセグメントOPM：30.3%（2024Q2、最終顧客との直接交渉による）",
+        "EMGセグメントは最終顧客より価格センサティブな傾向（OPM21.2%、2024Q2）",
+        "Vitality Index：直近Q29%（新製品比率、コンフォートゾーン20%台後半）"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "直販体制→顧客ニーズ把握→カスタマイズ製品開発・クロスセル→高Pricing Power→OPM改善（EIG：30.3%）→OP Leverage寄与。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「直販体制（仕組み）」「顧客ニーズ把握能力」は能力・仕組み。OPM30.3%は結果。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "直販体制、顧客接点、製品開発ループ—名詞で表現される属性。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PARTIAL",
+          "comment": "直販80%という明確な数値あり。EIG OPM30.3%という結果指標あり。ただし競合の直販比率との比較なし。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "FAIL",
+          "comment": "ITW（同種コングロマリット）やFortiveとの直販比率比較なし。直販80%が業界標準より高いか否か不明。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PARTIAL",
+          "comment": "ミッションクリティカル×カスタマイズ製品の市場では直販は業界構造的に合理的。ただし構造合致の明示的説明は弱い。"
+        }
+      },
+      "confidence": {
+        "ca_score": 50,
+        "label": "まあ納得",
+        "reasoning": "直販体制は実在する仕組みで80%という明確な数値があり方向性は認めるが、純粋競合との差別化比較（ルール7）が欠如。ITWやFortiveの直販比率と比較されていれば70%に近づける。EIG OPM30.3%は結果指標であり、直販体制の能力評価としてはやや間接的。",
+        "kb3_calibration": "CHD#2（粗利25%ボーナス制度→70%）より競合比較が弱いため50%"
+      },
+      "cagr_confidence": {
+        "score": 50,
+        "label": "まあ納得",
+        "reasoning": "直販→OPM改善の接続は示されているが、数値の積み上げ（直販比率1%上昇→OPM何bp改善）は不明。「顧客ニーズ把握→M&Aリスト選定」は中間ステップが多い。"
+      }
+    },
+    {
+      "claim_id": 5,
+      "title": "分散型組織体制とPMIノウハウの蓄積（Playbook）",
+      "ca_type": "operational",
+      "description": "各BUに権限を委譲した分散型組織体制により、買収後のPMIを現場主導で実施。コストシナジー（人事・経理・生産ライン・販売チャネル統合）とBU間の集中購買からなるPlaybookが蓄積。被買収企業経営陣の半数を残留させメリットベース報酬で活性化する人材マネジメントが差別化。売上高2bnで32BUから7bnで42BUへの拡大でも組織機能を維持している実績。",
+      "source_text": "PMI：各ビジネスユニットが実施。買収後に収益性・効率性の改善を実施。①コストシナジー（人事、経理、生産ライン、販売チャネルなどの統合）、②集中購買など買収先のValue Driverを特定し、改善していくPlaybookのノウハウが蓄積している模様。被買収企業が我々を選ぶ理由は、事業成長のPlaybookとメリットベースの報酬体制。",
+      "factual_claims": [
+        "BU数：売上高2bn（16~17年前）で32BU、現在7bnで42BU（売上高3倍でBU数は1.3倍）",
+        "被買収企業経営陣の半数は残留・半数は入替（デューデリ段階で決定）",
+        "R&D：India Engineering Center（バンガロール）250名、24時間365日、35BUをサポート",
+        "R&D売上高対比5.5%（若干上昇傾向）"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "PMIノウハウ→買収後収益性改善の確度向上→M&A4%貢献の実現可能性を高める→CAGR10%の基盤。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「PMIノウハウ」「Playbook蓄積」「分散型組織体制」は能力・仕組み。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PARTIAL",
+          "comment": "BU数（32→42）、経営陣半数残留という数値あり。ただしPMI後のOPM改善幅の具体的数値なし（IRR15%目標は達成基準として存在）。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "FAIL",
+          "comment": "ITW（分散型組織の先行者）やRoper Technologies（同種コングロマリット）との比較なし。分散型組織は同業他社も採用している可能性。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "被買収企業の剪定作業（pruning process）で不採算部分は除外。divestmentはほぼなし（事業規律の証明）。"
+        }
+      },
+      "confidence": {
+        "ca_score": 50,
+        "label": "まあ納得",
+        "reasoning": "PMIノウハウと分散型組織は実在し、BU数拡大の中での機能維持はある程度の能力を示す。しかし純粋競合（ITW、Roper等）との具体的差別化がなく、「多くのコングロマリットが持っている」ものとの差別化が示されていない（ルール7・ルール3への懸念）。CHD#7（規律ある意思決定→50%）と同等評価。",
+        "kb3_calibration": "CHD#7（実行しなかった例で評価→50%）類似"
+      },
+      "cagr_confidence": {
+        "score": 70,
+        "label": "おおむね納得",
+        "reasoning": "PMIノウハウ→M&A買収後収益改善→M&A4%貢献の実現可能性向上。2002年以来のトラックレコードが検証可能。"
+      }
+    },
+    {
+      "claim_id": 6,
+      "title": "ニッチトップとしてのPricing Power（価格転嫁力）",
+      "ca_type": "structural",
+      "description": "ニッチ市場でのシェア30~50%と顧客スイッチングコストを背景に、通常の単価上昇1%程度、価格-コストスプレッド50~100bpを恒常的に維持。インフレ期においても価格成長がコスト上昇を上回るスプレッドを維持している。",
+      "source_text": "Pricing：通常の単価上昇は1%程度。マネージメントによると、値差（価格-コスト）は通常50~100bp。足元では、インフレ率5%の中、価格の成長要因は6%と100bpのスプレッドを維持している。",
+      "factual_claims": [
+        "通常の単価上昇1%程度",
+        "価格-コストスプレッド通常50~100bp",
+        "インフレ5%局面でも価格成長6%（スプレッド100bp）を維持（2021通年・2022Q1Q2）",
+        "2024年Price-Costスプレッド50bp（Pricing3%、コストインフレ2.5%）"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "Pricing Power→価格-コストスプレッド維持→OPM改善30bp/年の一部を構成→OP Leverage 1%。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "WARN",
+          "comment": "「価格転嫁力（能力）」として主張しているが、「スプレッド50~100bpが維持されている（結果）」とも解釈できる。背後にある能力（ニッチトップ×スイッチングコスト）はClaim #1で既に議論済み。",
+          "flag": "partially_result"
+        },
+        "rule03_relative_advantage": {
+          "result": "FAIL",
+          "comment": "ITW、Roper等の同種コングロマリットの価格-コストスプレッドとの比較なし。ニッチ計測機器業界全体のPricing Powerとの比較も不明。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PASS",
+          "comment": "スプレッド50~100bp、インフレ5%下での100bpスプレッド維持という具体的数値あり。"
+        }
+      },
+      "confidence": {
+        "ca_score": 30,
+        "label": "あまり納得しない",
+        "reasoning": "Pricing Powerは実在するが、Claim #1（スイッチングコスト）の派生的な結果として説明可能であり、独立した競争優位性として成立しにくい（ルール1：結果の側面が強い）。また業界共通の能力との差別化が示されていない（ルール3）。単体の主張としては30%が妥当。ただしClaim #1の裏付け証拠として機能する価値はある。",
+        "kb3_calibration": "MNST#1（シェア=結果→50%）より弱く、独立主張としては30%"
+      },
+      "cagr_confidence": {
+        "score": 50,
+        "label": "まあ納得",
+        "reasoning": "スプレッド維持→OPM改善の接続は認められるが、Claim #1・#3で既に説明されており重複部分が大きい。"
+      }
+    },
+    {
+      "claim_id": 7,
+      "title": "事業ポートフォリオ分散による安定成長基盤（シクリカリティ低減）",
+      "ca_type": "structural",
+      "description": "医療（21%）・航空宇宙/Defense（約20%）・一般産業（約30%）等への分散により、シクリカルリスクを低減した安定成長基盤を構築。less cyclicalなビジネス比率が上昇し（医療比率Paragon買収後21%まで拡大）、全エンド市場での分散によりポートフォリオ全体でバランスをとる舵取りを実施。",
+      "source_text": "エンドマーケットは Medical2割、Aero2割、General Industries3割であり、Medical と Aero という less cyclical なビジネスの成長を取り込む事業体として安定感あり。大型買収はしない（事業分散とシクリカリティを踏まえた事業運営はおそらく理想であり、実際は分散を意識しながらその都度魅力的なビジネスを取り込む程度）。",
+      "factual_claims": [
+        "医療比率21%（Paragon買収後）",
+        "航空宇宙/Defense比率約20%",
+        "一般産業比率約30%",
+        "中国売上高比率1割弱"
+      ],
+      "cagr_connected": false,
+      "cagr_mechanism": "分散→シクリカリティ低減→CAGR推定値の確度（分散リスク低減）。ただし直接的な成長メカニズムへの接続は薄い。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "WARN",
+          "comment": "「ポートフォリオ分散（状態・結果）」は優位性の結果に近い。その背後にある「ポートフォリオ管理能力」（Claim #5の一部）が優位性。",
+          "flag": "primarily_result"
+        },
+        "rule03_relative_advantage": {
+          "result": "FAIL",
+          "comment": "ITW・Ropが同様の分散戦略を持つ可能性が高く、業界共通能力の疑い。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "WARN",
+          "comment": "「分散を意識しながらその都度魅力的なビジネスを取り込む」という記述は、戦略的意思決定（戦略）であり優位性（能力）ではない側面が強い。ただしIR自身が「積極的に管理していない」と認めており、設計された優位性ではない。"
+        }
+      },
+      "confidence": {
+        "ca_score": 30,
+        "label": "あまり納得しない",
+        "reasoning": "ポートフォリオ分散は状態（結果）であり優位性（能力）として認定しにくい（ルール1・ルール8の懸念）。背後にある「ポート管理能力」の議論がなく、「業界共通の戦略」との差別化も不明（ルール3）。CAGR接続も直接的でない。CHD#5（戦略的ポートシフト→30%）と同等評価。",
+        "kb3_calibration": "CHD#5（ポートシフト=結果→30%）類似"
+      },
+      "cagr_confidence": {
+        "score": 50,
+        "label": "まあ納得",
+        "reasoning": "分散→シクリカリティ低減→CAGR確度向上という接続は成立するが、直接的な成長ドライバーへの接続が弱い。"
+      }
+    }
+  ],
+  "rule9_gatekeeping": {
+    "applied": false,
+    "reason": "ファクトチェック（T5）によるcontradicted事実確認後に適用判断。現時点では事実誤認は未検出。"
+  },
+  "summary": {
+    "total_claims": 7,
+    "confidence_distribution": {
+      "90_very_convinced": 0,
+      "70_mostly_convinced": 2,
+      "50_somewhat_convinced": 3,
+      "30_not_convinced": 2,
+      "10_rejected": 0
+    },
+    "avg_ca_confidence": 50,
+    "claims_with_cagr_connection": 6,
+    "avg_cagr_confidence": 61,
+    "key_strengths": [
+      "ニッチ市場×ミッションクリティカル×スイッチングコストは構造的優位性として実在（Claim #1: 70%）",
+      "M&A実行能力は定量的裏付け豊富（Claim #2: 70%）",
+      "Rule10（ネガティブケース）がClaim #1・#2で機能"
+    ],
+    "key_weaknesses": [
+      "純粋競合（ITW、Roper等）との具体的差別化比較が全体的に不足（ルール7）",
+      "Claim #6（Pricing Power）・Claim #7（分散）は結果/戦略に近く独立した優位性として弱い",
+      "業界構造（ニッチ計測機器市場のフラグメント度）の定量的裏付けがORLYより弱い"
+    ],
+    "poc_skipped": ["rule12_report_type_distinction"]
+  }
+}

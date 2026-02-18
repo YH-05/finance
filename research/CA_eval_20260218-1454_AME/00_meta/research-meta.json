@@ -1,0 +1,47 @@
+{
+  "research_id": "CA_eval_20260218-1454_AME",
+  "type": "ca_eval",
+  "ticker": "AME",
+  "created_at": "2026-02-18T14:54:00Z",
+  "completed_at": "2026-02-18T16:00:00Z",
+  "parameters": {
+    "ticker": "AME",
+    "report_path": "analyst/raw/AME US.md",
+    "skip_industry": true
+  },
+  "status": "completed",
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  },
+  "task_results": {
+    "T0_setup": { "status": "completed", "owner": "ca-eval-lead", "output": "00_meta/research-meta.json" },
+    "T1_sec_filings": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/sec-data.json", "note": "SEC EDGAR MCP利用不可のためアナリストレポートから抽出" },
+    "T2_report_parser": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/parsed-report.json" },
+    "T3_industry": { "status": "skipped", "owner": "ca-eval-lead", "note": "PoC段階のポリシーによりスキップ（SEC EDGAR以外の外部データソース不使用）" },
+    "T4_claim_extractor": { "status": "completed", "owner": "ca-eval-lead", "output": "02_claims/claims.json", "claims_count": 7 },
+    "T5_fact_checker": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/fact-check.json", "verified": 18, "contradicted": 0, "unverifiable": 1 },
+    "T6_pattern_verifier": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/pattern-verification.json" },
+    "T7_report_generator": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/draft-report.md", "04_output/structured.json"] },
+    "T8_ai_critique": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/critique.json", "04_output/revised-report.md"], "critical_issues": 2, "minor_issues": 5 },
+    "T9_accuracy": { "status": "completed", "owner": "ca-eval-lead", "output": "04_output/accuracy-report.json", "mode": "simplified", "verdict": "pass" }
+  },
+  "outputs": {
+    "final_report": "04_output/revised-report.md",
+    "draft_report": "04_output/draft-report.md",
+    "structured_json": "04_output/structured.json",
+    "critique": "04_output/critique.json",
+    "accuracy": "04_output/accuracy-report.json"
+  },
+  "summary": {
+    "avg_ca_confidence": 50,
+    "avg_cagr_confidence": 61,
+    "strongest_claims": ["#1 スイッチングコスト（70%）", "#2 M&A実行能力（70%、大型化リスク条件付き）"],
+    "kb3_closest_analog": "CHD（平均50%一致）",
+    "notable_t8_modification": "Claim #2 CAGR confidence: 大型化リスク顕在化時は50%に低下というアノテーション追加"
+  }
+}

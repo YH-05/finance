@@ -1,0 +1,18 @@
+{
+  "research_id": "CA_eval_20260218-1404_AME",
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "report_path": "analyst/raw/AME US.md",
+  "created_at": "2026-02-18T14:04:00",
+  "skip_industry": true,
+  "base_dir": "research/CA_eval_20260218-1404_AME",
+  "phases": {
+    "phase0": "setup",
+    "phase1": "data_collection",
+    "phase2": "claim_extraction",
+    "phase3": "verification",
+    "phase4": "report_generation",
+    "phase5": "cleanup"
+  },
+  "status": "in_progress"
+}
