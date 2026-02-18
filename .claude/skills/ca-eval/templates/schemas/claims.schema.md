@@ -178,3 +178,4 @@
 - `summary.confidence_distribution` のキーは `"{スコア}_{ラベル}"` 形式（例: `"70_mostly_convinced"`）
 - `summary.total_claims` は `claims` 配列の実際の要素数と一致すること
 - 主張は5件以上15件以下を目安とすること
+- `claims` 配列が空（0件）の場合は `processing_error` フィールドを必須とし、その理由（レポート言語不対応、抽出失敗等）を記録すること。`processing_error` が存在する場合でも `ticker`、`report_source`、`extraction_metadata` は必須

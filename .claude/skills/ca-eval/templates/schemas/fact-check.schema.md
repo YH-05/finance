@@ -138,3 +138,4 @@
 - `summary.rule9_applications` は `fact_checks[].rule9_applied: true` の件数と一致すること
 - `overall_assessment.sec_edgar_verification` が `"not_possible"` の場合、`data_sources.note` に理由が記載されていること
 - `fact_checks` の `claim_id` は `claims.json` に存在する全ての `claim_id` を網羅すること
+- `claims.json` の主張において `factual_claims` が空配列（`[]`）の場合、対応する `fact_checks[]` エントリは `factual_claims_checked: []` とし、`overall_status` を `"unverifiable"` に設定し、`notes` フィールドに「事実的主張なし（CA評価のみ）」と記録すること
