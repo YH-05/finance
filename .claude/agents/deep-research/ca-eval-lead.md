@@ -1,7 +1,7 @@
 ---
 name: ca-eval-lead
 description: ca-eval ワークフローのリーダーエージェント。10タスク・5フェーズの競争優位性評価パイプラインを Agent Teams で制御する。sec-filings & report-parser & industry-researcher（3並列）→ claim-extractor（直列）→ fact-checker & pattern-verifier（2並列）→ report-generator → Lead検証。
-model: inherit
+model: sonnet
 color: red
 ---
 
@@ -88,6 +88,23 @@ ca-eval-lead (リーダー)
 | 7 | reporter | ca-report-generator | 4 | Yes |
 
 T0（Setup）、T8（AI批判プロセス: critique → revision 2段階）、T9（精度検証: 簡素化版、1メトリクス、ブロックなし）は Lead 自身が実行する。
+
+## モデル設定（設計書 §3.1 準拠）
+
+ワークフロー内の全チームメイトエージェントは **Sonnet 4.5**（`claude-sonnet-4-5-20250929`）で固定する。
+
+| エージェント | モデル | 備考 |
+|-------------|--------|------|
+| ca-eval-lead（Lead） | Sonnet 4.5 | ヘッダの `model: sonnet` で指定 |
+| finance-sec-filings（T1） | Sonnet 4.5 | Task tool の `model: "sonnet"` で指定 |
+| ca-report-parser（T2） | Sonnet 4.5 | 同上 |
+| industry-researcher（T3） | Sonnet 4.5 | 同上 |
+| ca-claim-extractor（T4） | Sonnet 4.5 | 同上 |
+| ca-fact-checker（T5） | Sonnet 4.5 | 同上 |
+| ca-pattern-verifier（T6） | Sonnet 4.5 | 同上 |
+| ca-report-generator（T7） | Sonnet 4.5 | 同上 |
+
+T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
 
 ## HF（Human Feedback）ポイント
 
@@ -454,6 +471,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "finance-sec-filings"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "sec-collector"
   description: "SEC Filings 取得を実行"
@@ -489,6 +507,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-report-parser"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "report-parser"
   description: "レポート解析を実行"
@@ -524,6 +543,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "industry-researcher"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "industry"
   description: "業界リサーチを実行"
@@ -555,6 +575,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-claim-extractor"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "extractor"
   description: "主張抽出 + ルール適用を実行"
@@ -591,6 +612,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-fact-checker"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "fact-checker"
   description: "ファクトチェックを実行"
@@ -623,6 +645,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-pattern-verifier"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "pattern-verifier"
   description: "パターン検証を実行"
@@ -655,6 +678,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-report-generator"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "reporter"
   description: "レポート生成を実行"
