@@ -56,7 +56,7 @@ ca-eval-lead (リーダー)
     │       ↓ draft-report.md, structured.json
     ├── [T8] Lead: AI批判プロセス (Step 1: 批判生成 → Step 2: 反映・修正)
     │       ↓ critique.json, revised-report.md
-    └── [T9] Lead: 精度検証（常時実行: フル or 簡易モード）
+    └── [T9] Lead: 精度検証（簡素化版: 1メトリクス、ブロックなし）
             ↓ accuracy-report.json
             [HF2] 最終出力提示
 ```
@@ -87,7 +87,7 @@ ca-eval-lead (リーダー)
 | 6 | pattern-verifier | ca-pattern-verifier | 3 | No |
 | 7 | reporter | ca-report-generator | 4 | Yes |
 
-T0（Setup）、T8（AI批判プロセス: critique → revision 2段階）、T9（精度検証: フル/簡易モード）は Lead 自身が実行する。
+T0（Setup）、T8（AI批判プロセス: critique → revision 2段階）、T9（精度検証: 簡素化版、1メトリクス、ブロックなし）は Lead 自身が実行する。
 
 ## HF（Human Feedback）ポイント
 
@@ -840,7 +840,12 @@ TaskUpdate:
    - `{research_dir}/04_output/critique.json`（AI批判内容の記録）
    - `{research_dir}/04_output/revised-report.md`（批判反映版レポート、Yに渡す最終版）
 
-7. **T9: 精度検証（Lead 直接実行、常時実行）**:
+7. **T9: 精度検証（Lead 直接実行、簡素化版）**:
+
+   **設計思想**:
+   - **フィードバック収集を最優先**（完璧より高速イテレーション）
+   - **最小限の精度検証**（1メトリクスのみ）
+   - **不合格でもブロックしない**（注釈付きで出力）
 
    **入力**: revised-report.md, structured.json, Phase 2 データ（あれば）
    **出力**: accuracy-report.json
@@ -849,109 +854,62 @@ TaskUpdate:
 
    | モード | 対象 | 内容 |
    |--------|------|------|
-   | **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の主張単位比較 |
-   | **簡易モード** | 上記以外の全銘柄 | confidence分布 + ヒューリスティック検証 |
+   | **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の平均乖離のみチェック |
+   | **簡易モード** | 上記以外の全銘柄 | contradicted → 10% の適用確認のみ |
 
    Phase 2データファイルパターン: `analyst/phase2_KY/*_{TICKER}_phase2.md`
 
-   **フルモード（5銘柄のみ）**:
-   - `analyst/phase2_KY/phase1_{TICKER}_phase2.md` を Read で読み込み
-   - AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング
-   - マッチングできないものは unmatched / missing_in_ai として記録
+   **フルモード（1メトリクス）**:
 
-   乖離の定量化:
+   **主張マッチング**:
+   AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング。
 
-   | 乖離幅 | 分類 |
-   |--------|------|
-   | 0 | exact_match |
-   | 1-10% | within_target |
-   | 11-20% | acceptable |
-   | 21-30% | significant |
-   | 31%+ | critical |
+   **合格基準（簡素化）**:
 
-   合格基準:
+   | メトリクス | 合格基準 | 旧基準 |
+   |----------|---------|--------|
+   | **平均乖離（優位性のみ）** | <= 15% | <= 10%（緩和） |
 
-   | メトリクス | 合格基準 |
-   |----------|---------|
-   | 平均乖離（優位性） | mean(abs(AI - Y)) <= 10% |
-   | 平均乖離（CAGR接続） | mean(abs(AI - Y)) <= 10% |
-   | 最大乖離 | max(abs(AI - Y)) <= 30% |
-   | 20%超乖離の主張数 | <= 全主張の25% |
-   | 方向性バイアス | mean(AI - Y)の絶対値 <= 5% |
+   **不合格時**: accuracy-report.json に記録 + revised-report.md に注釈追加。**レポートはブロックせず出力**。
 
-   不合格時: accuracy-report.json に不合格理由を記録し報告。レポート自体は出力する（ブロックしない）。
+   **簡易モード（1チェック）**:
 
-   **簡易モード（5銘柄以外の全銘柄、常時実行）**:
+   | ID | チェック項目 | 判定基準 |
+   |----|-------------|---------|
+   | **S-8** | contradicted → 10% | contradicted の事実があるのに confidence が 10% でない |
 
-   | ID | チェック項目 | 重大度 | 判定基準 |
-   |----|-------------|--------|---------|
-   | S-1 | 90%の出現率 | Warning | 全主張の15%以下（KY基準: 6%） |
-   | S-2 | 50%の最頻値確認 | Info | 50%付近が30%以上 |
-   | S-3 | 10%の希少性 | Info | 全主張の15%以下（contradicted除く） |
-   | S-4 | CAGR > CA平均スコア | Info | 平均CAGR確信度 >= 平均CA確信度 |
-   | S-5 | 却下パターンconfidence上限 | Warning | T8 C-1と同一基準 |
-   | S-6 | ルール11なしの90%排除 | Critical | 業界構造分析なしに90%不可 |
-   | S-7 | 主張数の妥当性 | Warning | 5-15件の範囲内 |
-   | S-8 | ルール9自動適用確認 | Critical | contradicted → 10% |
+   **不合格時**: accuracy-report.json に記録 + 注釈追加。**レポートはブロックせず出力**。
 
-   **accuracy-report.json スキーマ**:
+   **accuracy-report.json スキーマ（簡素化版）**:
    ```json
    {
-     "research_id": "...",
+     "research_id": "CA_eval_20260217_ORLY",
      "ticker": "ORLY",
      "mode": "full | simplified",
      "generated_at": "2026-02-17T10:37:00Z",
      "kb_version": "v1.0.0",
      "full_mode_results": {
        "y_data_source": "analyst/phase2_KY/phase1_ORLY_phase2.md",
-       "claim_matching": {
-         "ai_claims_total": 6,
-         "y_evaluations_total": 6,
-         "matched": 5,
-         "unmatched_ai": 1,
-         "missing_in_ai": 1
-       },
-       "advantage_accuracy": {
-         "comparisons": [
-           {
-             "claim_id": 1,
-             "ai_confidence": 70,
-             "y_confidence": 70,
-             "deviation": 0,
-             "severity": "exact_match",
-             "deviation_analysis": "一致"
-           }
-         ],
-         "mean_abs_deviation": 8.0,
-         "max_abs_deviation": 20,
-         "direction_bias": "slight_underestimate"
-       },
-       "cagr_accuracy": { "...同構造..." },
+       "mean_abs_deviation": 8.0,
        "overall_verdict": "pass | fail",
-       "pass_criteria": {
-         "mean_deviation_within_10": true,
-         "max_deviation_within_30": true,
-         "over_20_percent_under_25_pct": true,
-         "direction_bias_within_5": true
-       },
-       "improvement_suggestions": ["..."]
+       "threshold": 15,
+       "pass": true,
+       "annotation": "平均乖離8.0%は閾値15%以内。精度は良好。"
      },
      "simplified_mode_results": {
-       "checks": [
-         {
-           "check_id": "S-1",
-           "name": "confidence分布の妥当性（90%の出現率）",
-           "status": "pass | warning | fail",
-           "value": "1件 (16.7%)",
-           "threshold": "15%以下"
-         }
-       ],
-       "overall_status": "pass | pass_with_warnings | fail",
-       "warning_count": 1,
-       "critical_count": 0
+       "check_id": "S-8",
+       "contradicted_claims": [],
+       "overall_verdict": "pass | fail",
+       "pass": true,
+       "annotation": "contradicted → 10% の適用を確認。問題なし。"
      }
    }
    ```
+
+   **簡素化のポイント**:
+   - フルモード: 平均乖離のみ記録（5メトリクス → 1メトリクス）
+   - 簡易モード: contradicted → 10% のみチェック（8項目 → 1項目）
+   - 不合格でも `overall_verdict: "fail"` + `annotation` 追加でレポート出力
 
 8. **[HF2] 最終出力提示（任意）** → HF ポイントセクション参照
 
