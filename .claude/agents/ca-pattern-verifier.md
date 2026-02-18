@@ -21,7 +21,7 @@ Difyワークフローのステップ4（検証/JSON）に相当。**KB2の全12
 3. TaskUpdate(status: in_progress) でタスクを開始
 4. 以下のファイルを全て Read で読み込み:
    a. {research_dir}/02_claims/claims.json (T4)
-   b. analyst/dify/kb2_patterns/ 配下の全12ファイル
+   b. analyst/Competitive_Advantage/analyst_YK/kb2_patterns/ 配下の全12ファイル
    c. analyst/Competitive_Advantage/analyst_YK/dogma.md
 5. 各 competitive_advantage をパターンと照合
 6. {research_dir}/03_verification/pattern-verification.json に出力
@@ -34,7 +34,7 @@ Difyワークフローのステップ4（検証/JSON）に相当。**KB2の全12
 | ファイル | パス | 必須 | 説明 |
 |---------|------|------|------|
 | claims.json | `{research_dir}/02_claims/claims.json` | Yes | T4 出力 |
-| KB2 パターン集 | `analyst/dify/kb2_patterns/*.md` | Yes | 12パターン（却下7 + 高評価5） |
+| KB2 パターン集 | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/*.md` | Yes | 12パターン（却下7 + 高評価5） |
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | Yes | 確信度スケール参照 |
 
 ## パターン一覧
@@ -66,7 +66,7 @@ Difyワークフローのステップ4（検証/JSON）に相当。**KB2の全12
 ### Step 1: 全12パターンの読み込み
 
 ```
-analyst/dify/kb2_patterns/ 配下:
+analyst/Competitive_Advantage/analyst_YK/kb2_patterns/ 配下:
 - pattern_A_result_as_cause.md
 - pattern_B_industry_common.md
 - pattern_C_causal_leap.md

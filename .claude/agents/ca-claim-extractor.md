@@ -25,8 +25,8 @@ Difyワークフローのステップ1（主張抽出）+ ステップ2（ルー
    b. {research_dir}/01_data_collection/parsed-report.json (T2)
    c. {research_dir}/01_data_collection/industry-context.json (T3, 存在する場合)
    d. analyst/Competitive_Advantage/analyst_YK/dogma.md
-   e. analyst/dify/kb1_rules/ 配下の全8ファイル
-   f. analyst/dify/kb3_fewshot/ 配下の全5ファイル
+   e. analyst/Competitive_Advantage/analyst_YK/kb1_rules/ 配下の全8ファイル
+   f. analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/ 配下の全5ファイル
 5. 主張抽出 + ルール適用を実行
 6. {research_dir}/02_claims/claims.json に出力
 7. TaskUpdate(status: completed) でタスクを完了
@@ -38,11 +38,11 @@ Difyワークフローのステップ1（主張抽出）+ ステップ2（ルー
 | ファイル | パス | 必須 | 説明 |
 |---------|------|------|------|
 | SEC データ | `{research_dir}/01_data_collection/sec-data.json` | Yes | T1 出力。財務データ・10-K セクション |
-| 構造化レポート | `{research_dir}/01_data_collection/parsed-report.json` | Yes | T2 出力。①/②区別付きの解析済みレポート |
+| 構造化レポート | `{research_dir}/01_data_collection/parsed-report.json` | Yes | T2 出力。解析済みレポート（PoC: ①/②区別なし） |
 | 業界コンテキスト | `{research_dir}/01_data_collection/industry-context.json` | No | T3 出力。業界・競争環境データ |
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | Yes | KYの12ルール + 確信度スケール |
-| KB1 ルール集 | `analyst/dify/kb1_rules/*.md` | Yes | 8ルールの詳細定義・具体例 |
-| KB3 few-shot集 | `analyst/dify/kb3_fewshot/*.md` | Yes | 5銘柄のKY評価例 |
+| KB1 ルール集 | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md` | Yes | 8ルールの詳細定義・具体例 |
+| KB3 few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/*.md` | Yes | 5銘柄のKY評価例 |
 
 ## 処理内容
 
@@ -92,7 +92,7 @@ parsed-report.json の `advantage_candidates` から競争優位性の主張を�
 
 ```
 ルール5: 直接的メカニズム + 検証可能性
-ルール12: ①主②従の階層
+~~ルール12: ①主②従の階層~~ ← PoC省略
 ```
 
 ### Step 3: KB3 few-shot キャリブレーション
@@ -106,13 +106,14 @@ KB3の5銘柄のKY評価例を参照し、確信度スケールをキャリブ�
 - 同じパターンの仮説には同じロジックを適用（一貫性）。
 ```
 
-### Step 4: ①/② 区別の反映
+### ~~Step 4: ①/② 区別の反映~~ （PoC省略）
 
-parsed-report.json の `report_type` 情報を使用:
-
-- **①期初レポート由来の主張**: 標準評価
-- **②四半期レビュー由来の主張**: ルール12を適用し、拡大解釈を警戒
-- **②から新たな優位性が「発見」された場合**: confidence を -10〜20% 調整
+> **PoC簡素化**: レポート種別の区別（①/②）は ca-report-parser で省略されているため、本ステップもスキップする（設計書 §4.3 準拠）。`report_type_source` フィールドは `null` として出力する。
+>
+> **将来実装予定**（PoC完了後）:
+> - ①期初レポート由来の主張: 標準評価
+> - ②四半期レビュー由来の主張: ルール12を適用し、拡大解釈を警戒
+> - ②から新たな優位性が「発見」された場合: confidence を -10〜20% 調整
 
 ## 出力スキーマ
 
@@ -136,7 +137,7 @@ Dify設計書§6 のスキーマに準拠:
       "claim": "ローカルな規模の経済による配送・在庫の効率化",
       "descriptive_label": "配送密度による原価優位",
       "evidence_from_report": "店舗数5,800超、配送センター30拠点（レポートp.8）",
-      "report_type_source": "initial",
+      "report_type_source": null,
       "supported_by_facts": [3, 4],
       "cagr_connections": [2],
       "rule_evaluation": {
@@ -165,7 +166,7 @@ Dify設計書§6 のスキーマに準拠:
       "descriptive_label": "配送密度→マージン改善経路",
       "source_advantage": 1,
       "rule_evaluation": {
-        "applied_rules": ["rule_5", "rule_12"],
+        "applied_rules": ["rule_5"],
         "results": [
           {
             "rule": "rule_5",
@@ -197,7 +198,7 @@ Dify設計書§6 のスキーマに準拠:
 - [ ] 各主張に最低1つのルールを適用
 - [ ] confidence は KYの過去評価スケール（10/30/50/70/90%）に合わせる
 - [ ] KB3 few-shot を参照してキャリブレーション
-- [ ] ①/②の区別を反映（ルール12）
+- [ ] ~~①/②の区別を反映（ルール12）~~ PoC省略
 - [ ] 主張は破棄しない（低評価でも保持）
 
 ### NEVER（禁止）
@@ -205,7 +206,7 @@ Dify設計書§6 のスキーマに準拠:
 - [ ] KBファイルを読み込まずに評価する
 - [ ] 90% 評価を安易に付ける（全体の6%のみ）
 - [ ] 主張を削除・省略する
-- [ ] ②四半期レビューから新たな優位性を無批判に受容する
+- [ ] ~~②四半期レビューから新たな優位性を無批判に受容する~~ PoC省略
 
 ## エラーハンドリング
 

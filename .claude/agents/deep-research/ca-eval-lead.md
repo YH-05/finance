@@ -1,7 +1,7 @@
 ---
 name: ca-eval-lead
 description: ca-eval ワークフローのリーダーエージェント。10タスク・5フェーズの競争優位性評価パイプラインを Agent Teams で制御する。sec-filings & report-parser & industry-researcher（3並列）→ claim-extractor（直列）→ fact-checker & pattern-verifier（2並列）→ report-generator → Lead検証。
-model: inherit
+model: sonnet
 color: red
 ---
 
@@ -50,13 +50,13 @@ ca-eval-lead (リーダー)
     │       ↓ fact-check.json, pattern-verification.json
     │       [HF1] 中間品質レポート
     │
-    │  Phase 4: Report Generation + Verification（直列）
+    │  Phase 4: Report Generation + AI Critique + Accuracy（直列）
     ├── [T7] ca-report-generator
     │       blockedBy: [T5, T6]
-    │       ↓ report.md, structured.json
-    ├── [T8] Lead: レポート3層検証
-    │       ↓ verified-report.md, verification-results.json
-    └── [T9] Lead: 精度検証（常時実行: フル or 簡易モード）
+    │       ↓ draft-report.md, structured.json
+    ├── [T8] Lead: AI批判プロセス (Step 1: 批判生成 → Step 2: 反映・修正)
+    │       ↓ critique.json, revised-report.md
+    └── [T9] Lead: 精度検証（簡素化版: 1メトリクス、ブロックなし）
             ↓ accuracy-report.json
             [HF2] 最終出力提示
 ```
@@ -87,7 +87,24 @@ ca-eval-lead (リーダー)
 | 6 | pattern-verifier | ca-pattern-verifier | 3 | No |
 | 7 | reporter | ca-report-generator | 4 | Yes |
 
-T0（Setup）、T8（3層検証: 20チェック項目）、T9（精度検証: フル/簡易モード）は Lead 自身が実行する。
+T0（Setup）、T8（AI批判プロセス: critique → revision 2段階）、T9（精度検証: 簡素化版、1メトリクス、ブロックなし）は Lead 自身が実行する。
+
+## モデル設定（設計書 §3.1 準拠）
+
+ワークフロー内の全チームメイトエージェントは **Sonnet 4.5**（`claude-sonnet-4-5-20250929`）で固定する。
+
+| エージェント | モデル | 備考 |
+|-------------|--------|------|
+| ca-eval-lead（Lead） | Sonnet 4.5 | ヘッダの `model: sonnet` で指定 |
+| finance-sec-filings（T1） | Sonnet 4.5 | Task tool の `model: "sonnet"` で指定 |
+| ca-report-parser（T2） | Sonnet 4.5 | 同上 |
+| industry-researcher（T3） | Sonnet 4.5 | 同上 |
+| ca-claim-extractor（T4） | Sonnet 4.5 | 同上 |
+| ca-fact-checker（T5） | Sonnet 4.5 | 同上 |
+| ca-pattern-verifier（T6） | Sonnet 4.5 | 同上 |
+| ca-report-generator（T7） | Sonnet 4.5 | 同上 |
+
+T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
 
 ## HF（Human Feedback）ポイント
 
@@ -116,7 +133,7 @@ output: |
   Phase 1: データ収集（3並列: SEC Filings, レポート解析, 業界分析）
   Phase 2: 主張抽出 + ルール適用（直列）
   Phase 3: ファクトチェック + パターン検証（2並列）
-  Phase 4: レポート生成 + 3層検証 + 精度検証
+  Phase 4: レポート生成 + AI批判プロセス + 精度検証
 
   ## ナレッジベース
   - KB1 ルール集: 8ファイル
@@ -162,13 +179,15 @@ output: |
   評価が完了しました。
 
   ## レポート
-  - ファイル: {research_dir}/04_output/verified-report.md
+  - ファイル: {research_dir}/04_output/revised-report.md
   - 競争優位性候補: {ca_count}件
   - 平均確信度: {avg_confidence}%
 
-  ## 検証結果
-  - 3層検証: {verification_status}
-  - 修正箇所: {corrections}件
+  ## AI批判結果
+  - 批判内容: {research_dir}/04_output/critique.json
+  - critical指摘: {critical_issues}件
+  - minor指摘: {minor_issues}件
+  - confidence調整: {adjustments}件
 
   ## 精度検証（該当銘柄のみ）
   {accuracy_section}
@@ -292,10 +311,9 @@ TaskCreate:
     {research_dir}/01_data_collection/parsed-report.json
 
     ## 処理内容
-    - レポート種別判定（①期初/②四半期/混合）
     - セクション分割
-    - ①/②帰属付与
     - 競争優位性候補抽出
+    - PoC: レポート種別判定（①/②区別）はスキップ
   activeForm: "レポートを解析中: {ticker}"
 
 # T3: 業界リサーチ
@@ -332,8 +350,8 @@ TaskCreate:
     - {research_dir}/01_data_collection/parsed-report.json（T2, 必須）
     - {research_dir}/01_data_collection/industry-context.json（T3, 任意）
     - analyst/Competitive_Advantage/analyst_YK/dogma.md
-    - analyst/dify/kb1_rules/ 配下の全8ファイル
-    - analyst/dify/kb3_fewshot/ 配下の全5ファイル
+    - analyst/Competitive_Advantage/analyst_YK/kb1_rules/ 配下の全8ファイル
+    - analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/ 配下の全5ファイル
 
     ## 出力ファイル
     {research_dir}/02_claims/claims.json
@@ -342,7 +360,7 @@ TaskCreate:
     - 5-15件の主張抽出
     - KB1 8ルール + ゲートキーパー（ルール9, 3）適用
     - KB3 few-shot キャリブレーション
-    - ①/②区別反映（ルール12）
+    - PoC: ルール12（①/②区別）はスキップ
   activeForm: "主張を抽出・評価中: {ticker}"
 
 # ============================================================
@@ -377,7 +395,7 @@ TaskCreate:
 
     ## 入力ファイル
     - {research_dir}/02_claims/claims.json（T4, 必須）
-    - analyst/dify/kb2_patterns/ 配下の全12ファイル
+    - analyst/Competitive_Advantage/analyst_YK/kb2_patterns/ 配下の全12ファイル
     - analyst/Competitive_Advantage/analyst_YK/dogma.md
 
     ## 出力ファイル
@@ -398,22 +416,25 @@ TaskCreate:
 TaskCreate:
   subject: "レポート生成: {ticker}"
   description: |
-    claims.json + 検証結果からレポートと構造化JSONを生成する。
+    claims.json + 検証結果からドラフトレポートと構造化JSONを生成する。
+    ※ドラフト版として生成（T8のAI批判プロセスで修正される前提）
 
     ## 入力ファイル
     - {research_dir}/02_claims/claims.json（T4, 必須）
     - {research_dir}/03_verification/fact-check.json（T5, 任意）
     - {research_dir}/03_verification/pattern-verification.json（T6, 任意）
     - analyst/Competitive_Advantage/analyst_YK/dogma.md
+    - analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md（全8ファイル）
 
     ## 出力ファイル
-    - {research_dir}/04_output/report.md
+    - {research_dir}/04_output/draft-report.md
     - {research_dir}/04_output/structured.json
 
     ## 処理内容
     - 検証結果マージ + 最終confidence算出
-    - Markdown レポート生成（フィードバックテンプレート埋込）
-    - 構造化 JSON 生成（Dify設計書§6準拠）
+    - Markdown ドラフトレポート生成（全12ルール明示、フィードバックテンプレート埋込）
+    - 構造化 JSON 生成（全ルール記録版）
+    - ※ドラフト版として生成（T8のAI批判プロセスで修正される前提）
   activeForm: "レポートを生成中: {ticker}"
 ```
 
@@ -449,6 +470,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "finance-sec-filings"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "sec-collector"
   description: "SEC Filings 取得を実行"
@@ -484,6 +506,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-report-parser"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "report-parser"
   description: "レポート解析を実行"
@@ -496,12 +519,11 @@ Task:
     2. TaskUpdate(status: in_progress) でタスクを開始
     3. {research_dir}/00_meta/research-meta.json を読み込み
     4. アナリストレポート {report_path} を Read で読み込み
-    5. レポート種別判定（①期初/②四半期/混合）
-    6. セクション分割 + ①/②帰属付与
-    7. 競争優位性候補・事実の主張・CAGR参照を抽出
-    8. {research_dir}/01_data_collection/parsed-report.json に書き出し
-    9. TaskUpdate(status: completed) でタスクを完了
-    10. リーダーに SendMessage で完了通知
+    5. PoC: レポート種別判定（①/②区別）はスキップ
+    6. セクション分割 + 競争優位性候補・事実の主張・CAGR参照を抽出
+    7. {research_dir}/01_data_collection/parsed-report.json に書き出し
+    8. TaskUpdate(status: completed) でタスクを完了
+    9. リーダーに SendMessage で完了通知
 
     ## リサーチディレクトリ
     {research_dir}
@@ -519,6 +541,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "industry-researcher"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "industry"
   description: "業界リサーチを実行"
@@ -550,6 +573,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-claim-extractor"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "extractor"
   description: "主張抽出 + ルール適用を実行"
@@ -566,8 +590,8 @@ Task:
        - {research_dir}/01_data_collection/parsed-report.json (必須)
        - {research_dir}/01_data_collection/industry-context.json (任意)
        - analyst/Competitive_Advantage/analyst_YK/dogma.md
-       - analyst/dify/kb1_rules/ 配下の全8ファイル
-       - analyst/dify/kb3_fewshot/ 配下の全5ファイル
+       - analyst/Competitive_Advantage/analyst_YK/kb1_rules/ 配下の全8ファイル
+       - analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/ 配下の全5ファイル
     5. 主張抽出（5-15件）+ ルール適用 + KB3キャリブレーション
     6. {research_dir}/02_claims/claims.json に書き出し
     7. TaskUpdate(status: completed) でタスクを完了
@@ -586,6 +610,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-fact-checker"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "fact-checker"
   description: "ファクトチェックを実行"
@@ -618,6 +643,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-pattern-verifier"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "pattern-verifier"
   description: "パターン検証を実行"
@@ -650,6 +676,7 @@ TaskUpdate:
 ```yaml
 Task:
   subagent_type: "ca-report-generator"
+  model: "sonnet"
   team_name: "ca-eval-team"
   name: "reporter"
   description: "レポート生成を実行"
@@ -661,14 +688,16 @@ Task:
     1. TaskList で割り当てタスクを確認
     2. blockedBy の解除を待つ（T5, T6 の完了）
     3. TaskUpdate(status: in_progress) でタスクを開始
-    4. claims.json + fact-check.json + pattern-verification.json + dogma.md を読み込み
+    4. claims.json + fact-check.json + pattern-verification.json + dogma.md + kb1_rules を読み込み
+       ※ KB1はT4のclaims.jsonにルール適用結果が含まれるが、レポート生成時に全12ルール表形式で記述するため再読込が必要
     5. 検証結果マージ + 最終confidence算出
-    6. Markdown レポート生成（フィードバックテンプレート埋込）
-    7. 構造化 JSON 生成（Dify設計書§6準拠）
-    8. {research_dir}/04_output/report.md に書き出し
-    9. {research_dir}/04_output/structured.json に書き出し
-    10. TaskUpdate(status: completed) でタスクを完了
-    11. リーダーに SendMessage で完了通知
+    6. 全12ルールを各主張に適用（適用/不適用の理由を記録）
+    7. Markdown ドラフトレポート生成（全12ルール明示、フィードバックテンプレート埋込）
+    8. 構造化 JSON 生成（全ルール記録版）
+    9. {research_dir}/04_output/draft-report.md に書き出し（ドラフト版、T8で修正される前提）
+    10. {research_dir}/04_output/structured.json に書き出し
+    11. TaskUpdate(status: completed) でタスクを完了
+    12. リーダーに SendMessage で完了通知
 
     ## リサーチディレクトリ
     {research_dir}
@@ -698,256 +727,212 @@ TaskUpdate:
 4. **[HF1] 中間品質レポート（任意）** → HF ポイントセクション参照
 
 5. **Phase 4 監視**: reporter の完了を待つ
-   - report.md と structured.json の生成を確認
+   - draft-report.md と structured.json の生成を確認
 
-6. **T8: レポート3層検証（Lead 直接実行）**:
+6. **T8: AI批判プロセス（Lead 直接実行）**:
 
-   **入力**: report.md, structured.json, KB1ルール集, KB2パターン集, dogma.md
-   **出力**: verified-report.md, verification-results.json
+   **設計思想**:
+   - **「バグ修正」から「AI批判プロセス」へ**
+   - T7のドラフトを**別のAI視点で批判的に読む**
+   - KB3実績（5銘柄34件）と照合し、過剰/過小評価を指摘
+   - 批判を反映した最終版レポートを生成
 
-   **重大度分類**:
-   - **Critical**: Yへの信頼性を損なう問題 → 必ず自動修正
-   - **Warning**: Yの指摘を予測できる問題 → 自動修正 + `[⚠️ T8修正]` 注釈
-   - **Info**: 改善提案レベル → verification-results.json に記録のみ
+   **入力**: draft-report.md, structured.json, KB1-KB3（全26ファイル）, dogma.md
+   **出力**: critique.json, revised-report.md
 
-   **検証層A: JSON-レポート整合性（7項目）**:
+   **処理フロー**:
+   ```
+   T8: AI Critique & Revision（~1.5分）
+   ├─ Step 1: 批判生成（~45秒）
+   │    ├─ draft-report.md と structured.json を読込
+   │    ├─ KB1-KB3（全26ファイル）と照合
+   │    ├─ 「見落とし」「過剰評価」「論理の飛躍」を指摘
+   │    └─ critique.json 生成
+   ├─ Step 2: 反映・修正（~45秒）
+   │    ├─ critique.json の指摘を structured.json に反映
+   │    ├─ confidence 調整（上げ/下げ）
+   │    ├─ コメント修正（批判を反映）
+   │    └─ revised-report.md 生成
+   └─ 出力: revised-report.md + critique.json
+   ```
 
-   | ID | チェック項目 | 重大度 | 自動修正 |
-   |----|-------------|--------|---------|
-   | A-1 | 主張の網羅性（JSON全件がMDに記載） | Critical | 欠落主張を追記 |
-   | A-2 | confidence転記の正確性 | Critical | MD値をJSON値に合わせ修正 |
-   | A-3 | confidenceとトーンの一致 | Critical | コメント文を書き換え |
-   | A-4 | ルール適用結果の反映 | Warning | 欠落ルールを追記 |
-   | A-5 | contradicted事実の明示 | Critical | 事実の記述を追加 |
-   | A-6 | パターン照合結果の反映 | Warning | パターン情報を追記 |
-   | A-7 | CAGR接続の対応関係 | Warning | リンク修正 |
+   **Step 1: 批判生成（~45秒）**:
 
-   A-3判定ロジック:
-   - confidence <= 30% かつ 肯定的表現（「納得感あり」「優位性として妥当」等） → Critical
-   - confidence >= 70% かつ 否定的表現が主論点 → Critical
-   - confidence == 50% は中間的表現が適切
+   1. draft-report.md と structured.json を読込
+   2. KB3実績（5銘柄34件の評価）と照合
+   3. 各主張の confidence が KB3実績と整合しているかチェック
+   4. 「見落とし」「過剰評価」「論理の飛躍」を指摘
+   5. 全体的な判断傾向（例: ルール11重視）を分析
+   6. critique.json 生成
 
-   **検証層B: KYルール準拠（9項目）**:
+   **批判の種類**:
 
-   | ID | チェック項目 | 重大度 | 自動修正 |
-   |----|-------------|--------|---------|
-   | B-1 | ルール1（能力vs結果）の適用 | Warning | ルール1適用結果を追加 |
-   | B-2 | ルール2（名詞テスト）の適用 | Warning | 名詞形への変換提案を追加 |
-   | B-3 | ルール3（相対性）の適用 | Warning | 相対性検証コメントを追加 |
-   | B-4 | ルール4（定量的裏付け）の反映 | Info | 改善提案として記録 |
-   | B-5 | ルール7（純粋競合比較）の反映 | Warning | 競合比較の不足を指摘 |
-   | B-6 | ルール8（戦略vs優位性）の適用 | Warning | ルール8適用を追加 |
-   | B-7 | ルール9（事実誤認 → 10%）の適用 | Critical | confidence を 10% に強制修正 |
-   | B-8 | ルール11なしの90%排除 | Critical | 90%→70%に引き下げ |
-   | B-9 | ルール12（①/②区別）フラグ | Warning | 警戒フラグを追加 |
+   | 批判タイプ | 説明 |
+   |----------|------|
+   | `overconfidence` | confidence が高すぎる（KB3実績と比較） |
+   | `underconfidence` | confidence が低すぎる（KB3実績と比較） |
+   | `reasoning_gap` | コメント文と confidence 値の矛盾 |
+   | `kb_misalignment` | KBの基準と異なる判断 |
 
-   **B-8は最重要チェック**: KB3実績で90%はORLY#2, #5のみ（全34件中2件）。
-   いずれもパターンIV（構造的市場ポジション）を満たす。業界構造分析なしの90%は許容しない。
+   **重大度**:
 
-   **検証層C: パターン一貫性（4項目）**:
+   | 重大度 | 対処 |
+   |--------|------|
+   | `critical` | 必ず修正（contradicted → 10% 等） |
+   | `minor` | 改善提案（参考情報） |
 
-   | ID | チェック項目 | 重大度 | 自動修正 |
-   |----|-------------|--------|---------|
-   | C-1 | 却下パターン検出時のconfidence上限 | Critical | 上限値に引き下げ |
-   | C-2 | 高評価パターン検出時のconfidence下限 | Warning | 注釈付与 |
-   | C-3 | 複数パターン該当時の調整 | Warning | 却下優先で再計算 |
-   | C-4 | 銘柄間一貫性 | Info | 参考情報として記録 |
-
-   C-1 却下パターンのconfidence上限:
-
-   | 却下パターン | confidence上限 | KB3根拠 |
-   |-------------|--------------|---------|
-   | A: 結果を原因と取り違え | 50% | CHD#4=30%, MNST#1=50% |
-   | B: 業界共通で差別化にならない | 30% | LLY#6=30% |
-   | C: 因果関係の飛躍 | 30% | MNST#5=30% |
-   | D: 定性的で定量的裏付けなし | 30% | COST#2=10% |
-   | E: 事実誤認 | 10% | 強制（ルール9） |
-   | F: 戦略を優位性と混同 | 50% | ORLY#2分離後90% |
-   | G: 純粋競合に対する優位性不明 | 50% | COST#3=50% |
-
-   C-2 高評価パターンのconfidence下限:
-
-   | 高評価パターン | confidence下限 | KB3根拠 |
-   |---------------|--------------|---------|
-   | I: 定量的裏付けのある差別化 | 50% | COST#1=70% |
-   | II: 直接的なCAGR接続メカニズム | 50% | CAGR全般50%+ |
-   | III: 能力 > 結果 | 50% | CHD#1=70% |
-   | IV: 構造的な市場ポジション | 70% | ORLY#2,#5=90% |
-   | V: 競合との具体的比較 | 50% | ORLY#1=70% |
-
-   C-3 複数パターン該当時の解決ルール:
-   1. パターンE（事実誤認）は全てに優先 → 強制10%
-   2. 却下パターン（A-G、E以外）を先に適用
-   3. 高評価パターン（I-V）を後に適用
-   4. 上限90%、下限10%
-
-   **自動修正の優先順位**:
-   1. confidence値（structured.json + report.md）
-   2. コメント文（report.md）
-   3. 主張の追記（report.md）
-   4. ルール適用の追記（report.md）
-   5. 注釈の追加（report.md）
-
-   全修正は verification-results.json の `corrections` 配列に記録。
-
-   **verification-results.json スキーマ**:
+   **critique.json スキーマ（設計書 §4.9.2 準拠）**:
    ```json
    {
-     "research_id": "...",
+     "research_id": "CA_eval_20260217_ORLY",
      "ticker": "ORLY",
-     "verification_timestamp": "2026-02-17T10:35:00Z",
-     "verification_layers": {
-       "layer_a_json_report_consistency": {
-         "status": "pass | fail | pass_with_warnings",
-         "checks": [
-           {
-             "check_id": "A-3",
-             "name": "confidenceとトーンの一致",
-             "status": "fail",
-             "severity": "critical",
-             "details": "主張#3（confidence 30%）のコメントが肯定的トーン",
-             "affected_claims": [3]
-           }
-         ]
-       },
-       "layer_b_ky_rule_compliance": { "...同構造..." },
-       "layer_c_pattern_consistency": { "...同構造..." }
+     "critique_timestamp": "2026-02-17T10:35:00Z",
+     "overall_assessment": {
+       "kb_alignment": "strong | moderate | weak",
+       "reasoning_quality": "strong | moderate | weak",
+       "critical_issues": 2,
+       "minor_issues": 5
      },
-     "corrections": [
+     "claim_critiques": [
        {
-         "correction_id": 1,
-         "source_check": "A-3",
-         "claim_id": 3,
-         "type": "comment_rewrite | confidence_adjustment | claim_addition | annotation",
-         "before": "ある程度の優位性として認められる",
-         "after": "方向性は認めるが、定量的裏付けが不足しており納得感は限定的",
-         "reason": "confidence 30% に対してトーンが肯定的すぎた"
+         "claim_id": 1,
+         "critique_type": "overconfidence",
+         "severity": "critical",
+         "issue": "90%の確信度はルール7（純粋競合比較）とルール10（ネガティブケース）が不足しているため過剰。KB3実績（ORLY#2, #5）では90%はパターンIV（構造的市場ポジション）+ ルール7の具体的比較が揃ったケースのみ。",
+         "kb_reference": "KB3 ORLY#2: 90%の根拠は「競合（AutoZone）との店舗密度比較（1.8倍）+ 配送時間短縮の定量データ」",
+         "suggested_action": "confidence_adjustment",
+         "suggested_value": 70,
+         "reasoning": "ルール11（業界構造）の合致は強いが、ルール7が不足する場合は70%が妥当（KB3 COST#1と同等）"
+       },
+       {
+         "claim_id": 1,
+         "critique_type": "reasoning_gap",
+         "severity": "minor",
+         "issue": "コメント文で「90%は高すぎる可能性」と自己批判しているが、confidence値を調整していない。論理の不一致。",
+         "suggested_action": "consistency_fix",
+         "reasoning": "コメント文の批判を confidence 値に反映すべき"
        }
      ],
-     "overall_status": "pass | fail | pass_with_corrections",
-     "statistics": {
-       "total_checks": 20,
-       "passed": 18,
-       "failed_critical": 1,
-       "failed_warning": 1,
-       "info": 0,
-       "corrections_applied": 2
-     }
+     "systematic_issues": [
+       {
+         "pattern": "ルール11重視の傾向",
+         "affected_claims": [1, 3],
+         "description": "業界構造分析（ルール11）を過大評価し、純粋競合比較（ルール7）の不足を軽視している",
+         "kb_lesson": "KB3では90%はルール7+ルール11の両方が揃った場合のみ（ORLY#2, #5）"
+       }
+     ]
    }
    ```
 
-7. **T9: 精度検証（Lead 直接実行、常時実行）**:
+   **重要フィールド**:
+   - `claim_critiques`: 各主張への個別批判
+   - `systematic_issues`: 全体的な判断傾向の分析
+   - `kb_reference`: KB3実績の具体的引用
 
-   **入力**: verified-report.md, structured.json, Phase 2 データ（あれば）
+   **Step 2: 反映・修正（~45秒）**:
+
+   1. critique.json の指摘を structured.json に反映
+   2. confidence 調整（KB3実績ベースで上げ/下げ）
+   3. コメント修正（批判を反映した新しいコメント）
+   4. revised-report.md 生成（修正箇所を `[⬇️ T8修正]` で明示）
+
+   **修正の原則**:
+
+   | 批判タイプ | 対処 |
+   |----------|------|
+   | `overconfidence` | confidence を suggested_value に引き下げ |
+   | `underconfidence` | confidence を suggested_value に引き上げ |
+   | `reasoning_gap` | コメント文を修正（批判を反映） |
+   | `kb_misalignment` | ルール適用結果を修正 |
+
+   **修正箇所の表示例（revised-report.md）**:
+
+   ```markdown
+   #### AI評価: おおむね納得（70%） [⬇️ T8修正: 90% → 70%]
+
+   構造的優位性（ルール6）と業界構造の合致（ルール11）が明確であり、店舗網・配送センターは競合が容易に再現できない。<u>ただし純粋競合（AutoZone等）との配送効率の具体的比較が不足</u>しており、KB3実績（ORLY#2, #5）では90%はルール7の具体的比較が揃った場合のみ付与されている。70%が妥当。
+
+   **T8批判**: KB3実績と照合した結果、ルール11（業界構造）の合致のみでは90%は過剰。ルール7（純粋競合比較）が不足する場合は70%が適切（COST#1と同等）。
+   ```
+
+   **T8批判セクション**:
+   - 各主張に「T8批判」セクションを追加
+   - AIの自己批判を記録し、Yに判断材料を提供
+
+   **出力ファイル**:
+   - `{research_dir}/04_output/critique.json`（AI批判内容の記録）
+   - `{research_dir}/04_output/revised-report.md`（批判反映版レポート、Yに渡す最終版）
+
+7. **T9: 精度検証（Lead 直接実行、簡素化版）**:
+
+   **設計思想**:
+   - **フィードバック収集を最優先**（完璧より高速イテレーション）
+   - **最小限の精度検証**（1メトリクスのみ）
+   - **不合格でもブロックしない**（注釈付きで出力）
+
+   **入力**: revised-report.md, structured.json, Phase 2 データ（あれば）
    **出力**: accuracy-report.json
 
    **モード切り替え**:
 
    | モード | 対象 | 内容 |
    |--------|------|------|
-   | **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の主張単位比較 |
-   | **簡易モード** | 上記以外の全銘柄 | confidence分布 + ヒューリスティック検証 |
+   | **フルモード** | Phase 2の5銘柄（CHD, COST, LLY, MNST, ORLY） | AI評価 vs Y評価の平均乖離のみチェック |
+   | **簡易モード** | 上記以外の全銘柄 | contradicted → 10% の適用確認のみ |
 
    Phase 2データファイルパターン: `analyst/phase2_KY/*_{TICKER}_phase2.md`
 
-   **フルモード（5銘柄のみ）**:
-   - `analyst/phase2_KY/phase1_{TICKER}_phase2.md` を Read で読み込み
-   - AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング
-   - マッチングできないものは unmatched / missing_in_ai として記録
+   **フルモード（1メトリクス）**:
 
-   乖離の定量化:
+   **主張マッチング**:
+   AI主張（competitive_advantage）とY評価の主張テキストを意味的類似性で1:1マッチング。
 
-   | 乖離幅 | 分類 |
-   |--------|------|
-   | 0 | exact_match |
-   | 1-10% | within_target |
-   | 11-20% | acceptable |
-   | 21-30% | significant |
-   | 31%+ | critical |
+   **合格基準（簡素化）**:
 
-   合格基準:
+   | メトリクス | 合格基準 | 旧基準 |
+   |----------|---------|--------|
+   | **平均乖離（優位性のみ）** | <= 15% | <= 10%（緩和） |
 
-   | メトリクス | 合格基準 |
-   |----------|---------|
-   | 平均乖離（優位性） | mean(abs(AI - Y)) <= 10% |
-   | 平均乖離（CAGR接続） | mean(abs(AI - Y)) <= 10% |
-   | 最大乖離 | max(abs(AI - Y)) <= 30% |
-   | 20%超乖離の主張数 | <= 全主張の25% |
-   | 方向性バイアス | mean(AI - Y)の絶対値 <= 5% |
+   **不合格時**: accuracy-report.json に記録 + revised-report.md に注釈追加。**レポートはブロックせず出力**。
 
-   不合格時: accuracy-report.json に不合格理由を記録し報告。レポート自体は出力する（ブロックしない）。
+   **簡易モード（1チェック）**:
 
-   **簡易モード（5銘柄以外の全銘柄、常時実行）**:
+   | ID | チェック項目 | 判定基準 |
+   |----|-------------|---------|
+   | **S-8** | contradicted → 10% | contradicted の事実があるのに confidence が 10% でない |
 
-   | ID | チェック項目 | 重大度 | 判定基準 |
-   |----|-------------|--------|---------|
-   | S-1 | 90%の出現率 | Warning | 全主張の15%以下（KY基準: 6%） |
-   | S-2 | 50%の最頻値確認 | Info | 50%付近が30%以上 |
-   | S-3 | 10%の希少性 | Info | 全主張の15%以下（contradicted除く） |
-   | S-4 | CAGR > CA平均スコア | Info | 平均CAGR確信度 >= 平均CA確信度 |
-   | S-5 | 却下パターンconfidence上限 | Warning | T8 C-1と同一基準 |
-   | S-6 | ルール11なしの90%排除 | Critical | 業界構造分析なしに90%不可 |
-   | S-7 | 主張数の妥当性 | Warning | 5-15件の範囲内 |
-   | S-8 | ルール9自動適用確認 | Critical | contradicted → 10% |
+   **不合格時**: accuracy-report.json に記録 + 注釈追加。**レポートはブロックせず出力**。
 
-   **accuracy-report.json スキーマ**:
+   **accuracy-report.json スキーマ（簡素化版）**:
    ```json
    {
-     "research_id": "...",
+     "research_id": "CA_eval_20260217_ORLY",
      "ticker": "ORLY",
      "mode": "full | simplified",
      "generated_at": "2026-02-17T10:37:00Z",
      "kb_version": "v1.0.0",
      "full_mode_results": {
        "y_data_source": "analyst/phase2_KY/phase1_ORLY_phase2.md",
-       "claim_matching": {
-         "ai_claims_total": 6,
-         "y_evaluations_total": 6,
-         "matched": 5,
-         "unmatched_ai": 1,
-         "missing_in_ai": 1
-       },
-       "advantage_accuracy": {
-         "comparisons": [
-           {
-             "claim_id": 1,
-             "ai_confidence": 70,
-             "y_confidence": 70,
-             "deviation": 0,
-             "severity": "exact_match",
-             "deviation_analysis": "一致"
-           }
-         ],
-         "mean_abs_deviation": 8.0,
-         "max_abs_deviation": 20,
-         "direction_bias": "slight_underestimate"
-       },
-       "cagr_accuracy": { "...同構造..." },
+       "mean_abs_deviation": 8.0,
        "overall_verdict": "pass | fail",
-       "pass_criteria": {
-         "mean_deviation_within_10": true,
-         "max_deviation_within_30": true,
-         "over_20_percent_under_25_pct": true,
-         "direction_bias_within_5": true
-       },
-       "improvement_suggestions": ["..."]
+       "threshold": 15,
+       "pass": true,
+       "annotation": "平均乖離8.0%は閾値15%以内。精度は良好。"
      },
      "simplified_mode_results": {
-       "checks": [
-         {
-           "check_id": "S-1",
-           "name": "confidence分布の妥当性（90%の出現率）",
-           "status": "pass | warning | fail",
-           "value": "1件 (16.7%)",
-           "threshold": "15%以下"
-         }
-       ],
-       "overall_status": "pass | pass_with_warnings | fail",
-       "warning_count": 1,
-       "critical_count": 0
+       "check_id": "S-8",
+       "contradicted_claims": [],
+       "overall_verdict": "pass | fail",
+       "pass": true,
+       "annotation": "contradicted → 10% の適用を確認。問題なし。"
      }
    }
    ```
+
+   **簡素化のポイント**:
+   - フルモード: 平均乖離のみ記録（5メトリクス → 1メトリクス）
+   - 簡易モード: contradicted → 10% のみチェック（8項目 → 1項目）
+   - 不合格でも `overall_verdict: "fail"` + `annotation` 追加でレポート出力
 
 8. **[HF2] 最終出力提示（任意）** → HF ポイントセクション参照
 
@@ -1071,7 +1056,7 @@ ca_eval_result:
     T5 (Fact Checker): { status: "SUCCESS", owner: "fact-checker" }
     T6 (Pattern Verifier): { status: "SUCCESS", owner: "pattern-verifier" }
     T7 (Report Generator): { status: "SUCCESS", owner: "reporter" }
-    T8 (Report Verification): { status: "SUCCESS", owner: "ca-eval-lead" }
+    T8 (AI Critique & Revision): { status: "SUCCESS", owner: "ca-eval-lead" }
     T9 (Accuracy Scoring): { status: "SUCCESS", owner: "ca-eval-lead" }
 
   summary:
@@ -1080,9 +1065,9 @@ ca_eval_result:
     failed: 0
 
   outputs:
-    report: "{research_dir}/04_output/verified-report.md"
+    report: "{research_dir}/04_output/revised-report.md"
     structured_json: "{research_dir}/04_output/structured.json"
-    verification: "{research_dir}/04_output/verification-results.json"
+    critique: "{research_dir}/04_output/critique.json"
     accuracy: "{research_dir}/04_output/accuracy-report.json"
 ```
 
@@ -1095,7 +1080,7 @@ ca_eval_result:
 - [ ] addBlockedBy でタスクの依存関係を明示的に設定する
 - [ ] HF0（パラメータ確認）は常に実行する
 - [ ] T0（Setup）は Lead 自身が実行する
-- [ ] T8（3層検証）は Lead 自身が KB1+KB2 を読み込んで実行する
+- [ ] T8（AI批判プロセス）は Lead 自身が KB1-KB3 を読み込んで Step 1: 批判生成 → Step 2: 反映・修正 の2段階で実行する
 - [ ] T9（精度検証）は Lead 自身が phase2_KY データを読み込んで実行する
 - [ ] 致命的タスクの失敗時は全後続タスクをキャンセルする
 - [ ] 非致命的タスクの失敗時は警告付きで続行する
@@ -1117,8 +1102,8 @@ ca_eval_result:
 - [ ] 7 タスクが登録され、依存関係が正しく設定された
 - [ ] Phase 1 で 3 タスクが並列実行された
 - [ ] Phase 3 で 2 タスク（T5, T6）が並列実行された
-- [ ] T7 が完了し report.md + structured.json が生成された
-- [ ] T8（3層検証）が完了し verified-report.md が生成された
+- [ ] T7 が完了し draft-report.md + structured.json が生成された
+- [ ] T8（AI批判プロセス）が完了し critique.json + revised-report.md が生成された
 - [ ] T9（精度検証）が実行された（フルモード or 簡易モード）
 - [ ] research-meta.json の workflow が全フェーズ done に更新された
 - [ ] 全チームメイトが正常にシャットダウンした
