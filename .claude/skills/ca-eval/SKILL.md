@@ -164,6 +164,13 @@ T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | 1 | 全フェーズ |
 | Phase 2 検証データ | `analyst/phase2_KY/` | 5 | 精度検証（T9） |
 
+## レポートフォーマットテンプレート
+
+| テンプレート | パス | 用途 |
+|-------------|------|------|
+| draft-report フォーマット | `.claude/skills/ca-eval/templates/draft-report-format.md` | T7（ca-report-generator）がドラフトレポートを生成する際のフォーマット |
+| revised-report フォーマット | `.claude/skills/ca-eval/templates/revised-report-format.md` | T8（Lead直接実行）が批判反映版レポートを生成する際のフォーマット |
+
 ## 出力ディレクトリ構造
 
 > **注意**: 同日・同一銘柄で複数評価する場合のフォルダ名衝突を防ぐため、時刻（HHMM）は省略禁止。`date '+%Y%m%d-%H%M'` で取得。
