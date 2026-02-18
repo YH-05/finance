@@ -29,12 +29,12 @@ ca-eval-lead (リーダー)
     ├── [T0] research-meta.json 生成 + ディレクトリ作成
     │       [HF0] パラメータ確認
     │
-    │  Phase 1: Data Collection（3並列）
+    │  Phase 1: Data Collection（2並列、T3はPoCスキップ）
     ├── [T1] finance-sec-filings ──────────┐
-    │                                      │
-    ├── [T2] ca-report-parser ─────────────┤ 並列実行
-    │                                      │
-    ├── [T3] industry-researcher ──────────┘
+    │                                      │ 並列実行
+    ├── [T2] ca-report-parser ─────────────┘
+    │
+    ├── [T3] industry-researcher ── PoCではスキップ（SEC EDGAR以外の外部データ不使用）
     │       ↓ sec-data.json, parsed-report.json, industry-context.json
     │
     │  Phase 2: Claim Extraction + Rule Application（直列）
@@ -81,7 +81,7 @@ ca-eval-lead (リーダー)
 |---|------|------------|-------|--------|
 | 1 | sec-collector | finance-sec-filings | 1 | Yes |
 | 2 | report-parser | ca-report-parser | 1 | Yes |
-| 3 | industry | industry-researcher | 1 | No |
+| 3 | industry | industry-researcher | 1 | No（PoCではスキップ。SEC EDGAR以外の外部データ不使用） |
 | 4 | extractor | ca-claim-extractor | 2 | Yes |
 | 5 | fact-checker | ca-fact-checker | 3 | No |
 | 6 | pattern-verifier | ca-pattern-verifier | 3 | No |
@@ -536,9 +536,15 @@ TaskUpdate:
   owner: "report-parser"
 ```
 
-#### 2.3 industry-researcher の起動
+#### 2.3 industry-researcher の起動（PoCではスキップ）
+
+**PoC段階では T3 はスキップする。** SEC EDGAR 以外の外部データソース（WebSearch/WebFetch等）を使用しないポリシーに準拠。
+`skip_industry` パラメータが false に設定された場合（将来フェーズ）のみ起動する。
 
 ```yaml
+# PoC段階では以下を実行しない（skip_industry=true がデフォルト）
+# 将来フェーズで業界データ収集を追加する際に有効化する
+
 Task:
   subagent_type: "industry-researcher"
   model: "sonnet"

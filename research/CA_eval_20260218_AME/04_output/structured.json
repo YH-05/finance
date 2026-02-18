@@ -1,0 +1,275 @@
+{
+  "research_id": "CA_eval_20260218_AME",
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "generated_at": "2026-02-18T05:30:00Z",
+  "report_version": "draft_v1",
+  "cagr_estimate": {
+    "value": 10.0,
+    "unit": "%",
+    "source": "analyst/raw/AME US.md（2024年6月更新版）",
+    "components": {
+      "organic_growth": 4.0,
+      "inorganic_growth": 4.0,
+      "op_leverage": 1.0,
+      "buyback": 1.0
+    }
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "ミッションクリティカル製品特化によるスイッチングコスト",
+      "advantage_type": "switching_cost",
+      "confidence_advantage": 70,
+      "confidence_cagr": 70,
+      "verdict": "おおむね納得",
+      "cagr_connection": "スイッチングコスト→Pricing3%/年→OG4%→CAGR10%",
+      "key_evidence": ["Pricing spread 100bp維持（2021-22年）", "Churn rate≈0%（2024年面談確認）"],
+      "missing": ["同Tier2純粋競合との比較", "業界フラグメント構造の詳細分析"],
+      "rule_results": {
+        "rule01": "pass", "rule02": "pass", "rule03": "partial",
+        "rule04": "partial", "rule06": "pass", "rule07": "partial",
+        "rule08": "pass", "rule09": "pass", "rule10": "pass", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": [],
+        "high_eval": ["III", "II"]
+      },
+      "fact_check_result": "partially_verified",
+      "comment_for_feedback": "ミッションクリティカル性×スイッチングコストは論理的に最も説得力が高い主張。純粋競合（同じTier2ニッチプレイヤー）との比較データが加われば80%以上もあり得る。"
+    },
+    {
+      "claim_id": 2,
+      "title": "規律あるM&A実行能力（ターゲット選定・PMI Playbook）",
+      "advantage_type": "ma_capability",
+      "confidence_advantage": 70,
+      "confidence_cagr": 70,
+      "verdict": "おおむね納得",
+      "cagr_connection": "M&A実行能力→外部成長4%→CAGR10%",
+      "key_evidence": [
+        "M&A累計86件・USD8.4bn（2002年以来）",
+        "ROIC20%超（goodwill除く）の安定的維持",
+        "買収基準（3年後ROIC10%以上、IRR15%、1年目EPS Accretive）",
+        "11名のM&Aチーム体制",
+        "PMI Playbookのノウハウ蓄積"
+      ],
+      "missing": ["ITW・Roper等との実行能力の差", "M&A成功率データ"],
+      "rule_results": {
+        "rule01": "pass", "rule02": "pass", "rule03": "partial",
+        "rule04": "pass", "rule06": "pass", "rule07": "partial",
+        "rule08": "pass", "rule09": "pass", "rule10": "pass", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": [],
+        "high_eval": ["I", "II", "III"]
+      },
+      "fact_check_result": "verified_partially",
+      "comment_for_feedback": "CHD#1と同構造。最も裏付けの強い主張の一つ。ルール11の業界構造分析（ニッチ計測機器市場のフラグメント度）が加われば90%（パターンIV）への引き上げ余地あり。"
+    },
+    {
+      "claim_id": 3,
+      "title": "ニッチ領域での規模の経済（コーポレート集中購買・シナジー）",
+      "advantage_type": "scale_economy",
+      "confidence_advantage": 50,
+      "confidence_cagr": 70,
+      "verdict": "まあ納得",
+      "cagr_connection": "規模の経済→OP Leverage1%（30bp/年OPM改善）→CAGR1%",
+      "key_evidence": ["Capex対売上高2%", "限界利益率32.5%・固定費比率9%（アナリスト仮定）", "ROIC20%超（goodwill除く）"],
+      "missing": ["Danaher・Roper等との集中購買規模・Capex比率の直接比較"],
+      "rule_results": {
+        "rule01": "pass", "rule02": "pass", "rule03": "partial",
+        "rule04": "pass", "rule06": "pass", "rule07": "fail",
+        "rule08": "pass", "rule09": "pass", "rule10": "pass", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": ["G"],
+        "high_eval": ["I（部分的）"]
+      },
+      "fact_check_result": "partially_verified",
+      "comment_for_feedback": "COST#3（純粋競合に対する優位性不明、50%）と同様のパターン。競合比較があれば引き上げ余地。"
+    },
+    {
+      "claim_id": 4,
+      "title": "直販体制（売上高80%）による顧客深耕と情報優位",
+      "advantage_type": "direct_sales_customer_intimacy",
+      "confidence_advantage": 50,
+      "confidence_cagr": 50,
+      "verdict": "まあ納得",
+      "cagr_connection": "直販→Vitality Index維持→OG4%支援（間接的）",
+      "key_evidence": ["直販比率80%", "EIG OPM30.3% vs EMG OPM21.2%（直販比率差の間接証拠）"],
+      "missing": ["競合の直販比率との業界平均比較"],
+      "rule_results": {
+        "rule01": "pass", "rule02": "pass", "rule03": "partial",
+        "rule04": "partial", "rule06": "pass", "rule07": "fail",
+        "rule08": "pass", "rule09": "pass", "rule10": "partial", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": ["G"],
+        "high_eval": ["III"]
+      },
+      "fact_check_result": "verified",
+      "comment_for_feedback": "80%という数値はあるが業界比較なし。COST#1（退職率9% vs 業界20%+→70%）と同様の構造で、競合比較があれば70%への引き上げ余地。"
+    },
+    {
+      "claim_id": 5,
+      "title": "R&D投資と技術力によるVitality Index維持（新製品創出能力）",
+      "advantage_type": "rd_innovation",
+      "confidence_advantage": 50,
+      "confidence_cagr": 50,
+      "verdict": "まあ納得",
+      "cagr_connection": "新製品創出→Vitality Index 29%維持→OG4%のVolume/新製品部分",
+      "key_evidence": ["R&D/売上高5.5%", "エンジニア2,900名", "Vitality Index 29%"],
+      "missing": ["競合のR&D比率・Vitality Index比較", "R&D単体（3.5%）vs DE含む（5.5%）の明確化"],
+      "rule_results": {
+        "rule01": "pass", "rule02": "pass", "rule03": "partial",
+        "rule04": "partial", "rule06": "partial", "rule07": "fail",
+        "rule08": "pass", "rule09": "pass", "rule10": "fail", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": ["D", "G"],
+        "high_eval": []
+      },
+      "fact_check_result": "partially_verified",
+      "comment_for_feedback": "CHD#6（50%）と同パターン。Vitality Indexという指標は良いが業界比較なし。"
+    },
+    {
+      "claim_id": 6,
+      "title": "分散型組織とGovernance体制（BU権限委譲×Corporate集中管理）",
+      "advantage_type": "organizational_structure",
+      "confidence_advantage": 50,
+      "confidence_cagr": 50,
+      "verdict": "まあ納得",
+      "cagr_connection": "分散型組織→OPM改善30bp/年→OP Leverage1%（間接的）",
+      "key_evidence": ["BU数32→42（売上高2bn→7bn時）", "メリットベース報酬体制", "被買収企業経営陣半数残留"],
+      "missing": ["ITW・Danaherとのガバナンス比較", "分散型組織→OPM改善の定量的メカニズム"],
+      "rule_results": {
+        "rule01": "pass", "rule02": "pass", "rule03": "fail",
+        "rule04": "partial", "rule06": "pass", "rule07": "fail",
+        "rule08": "pass", "rule09": "pass", "rule10": "partial", "rule11": "fail"
+      },
+      "kb2_patterns": {
+        "rejection": ["C（minor）", "D"],
+        "high_eval": []
+      },
+      "fact_check_result": "partially_verified",
+      "comment_for_feedback": "CHD#7（50%）と同パターン。「言葉でしか説明されない傾向」。競合との組織比較データが加われば評価向上。"
+    },
+    {
+      "claim_id": 7,
+      "title": "Pricing Power（ニッチトップとしての価格設定力）",
+      "advantage_type": "pricing_power",
+      "confidence_advantage": 50,
+      "confidence_cagr": 70,
+      "verdict": "まあ納得",
+      "cagr_connection": "Pricing Power→OG4%のPricing3%部分→CAGR10%（直接的接続）",
+      "key_evidence": ["Pricing spread 100bp（2021-22年）", "Pricing spread 50bp（2024年）", "通常+1%/年の単価上昇"],
+      "missing": ["同Tier2プレイヤーとの価格設定力比較"],
+      "rule_results": {
+        "rule01": "partial", "rule02": "pass", "rule03": "partial",
+        "rule04": "pass", "rule06": "pass", "rule07": "partial",
+        "rule08": "pass", "rule09": "pass", "rule10": "partial", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": ["A（部分的）"],
+        "high_eval": ["I（部分的）"]
+      },
+      "fact_check_result": "verified",
+      "comment_for_feedback": "定量データ（spread）は存在するが「ニッチポジション（結果）に依存する」という点でルール1の境界が曖昧。CAGR接続は最も直接的（70%）。"
+    },
+    {
+      "claim_id": 8,
+      "title": "エンドマーケット分散によるシクリカリティ低減",
+      "advantage_type": "end_market_diversification",
+      "confidence_advantage": 30,
+      "confidence_cagr": 50,
+      "verdict": "あまり納得しない",
+      "cagr_connection": "分散→CAGR達成確度向上（補完的）",
+      "key_evidence": ["Medical 21%・Aero/Defense 約20%・General Industries 約30%"],
+      "rule_results": {
+        "rule01": "fail", "rule02": "partial", "rule03": "fail",
+        "rule04": "partial", "rule06": "partial", "rule07": "fail",
+        "rule08": "fail", "rule09": "pass", "rule10": "fail", "rule11": "fail"
+      },
+      "kb2_patterns": {
+        "rejection": ["A", "B", "F"],
+        "high_eval": []
+      },
+      "fact_check_result": "verified",
+      "comment_for_feedback": "CHD#5（30%）「ポートシフトは結果」パターン。分散は結果・状態であり優位性の根拠ではない。背後の能力は主張#2（M&A実行能力）。"
+    },
+    {
+      "claim_id": 9,
+      "title": "Capital Allocation規律（M&A優先・Capex軽量・ROICの持続）",
+      "advantage_type": "capital_allocation",
+      "confidence_advantage": 50,
+      "confidence_cagr": 70,
+      "verdict": "まあ納得",
+      "cagr_connection": "自社株買い1%（EPS直接寄与）→CAGR10%（検証可能・直接的）",
+      "key_evidence": ["M&A74%・Div11%・BB15%（2012年以来累計USD10bn）", "Capex対売上高2%", "営業CF USD1,829M（2024年、過去最高）"],
+      "rule_results": {
+        "rule01": "partial", "rule02": "pass", "rule03": "partial",
+        "rule04": "pass", "rule06": "pass", "rule07": "partial",
+        "rule08": "pass", "rule09": "pass", "rule10": "partial", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": [],
+        "high_eval": ["I（部分的）", "II（自社株買い部分）"]
+      },
+      "fact_check_result": "verified",
+      "comment_for_feedback": "CHD#7（50%）と類似。定量データあるが競合比較なし。自社株買い1%への接続は最も明確（パターンII）。"
+    },
+    {
+      "claim_id": 10,
+      "title": "ニッチ市場への特化と大手参入バリア（USD1bn以上市場の意図的回避）",
+      "advantage_type": "niche_market_position",
+      "confidence_advantage": 30,
+      "confidence_cagr": 50,
+      "verdict": "あまり納得しない",
+      "cagr_connection": "ニッチ特化→競争強度低減→Pricing維持（補完的）",
+      "key_evidence": ["ターゲット市場規模USD150-400M（USD1bn以上は回避）", "ニッチ内シェア30-50%"],
+      "rule_results": {
+        "rule01": "fail", "rule02": "partial", "rule03": "fail",
+        "rule04": "partial", "rule06": "partial", "rule07": "fail",
+        "rule08": "fail", "rule09": "pass", "rule10": "partial", "rule11": "partial"
+      },
+      "kb2_patterns": {
+        "rejection": ["A", "F"],
+        "high_eval": []
+      },
+      "fact_check_result": "verified",
+      "comment_for_feedback": "戦略と優位性の混同（パターンF）。USD1bn以上回避という「意図的な不実行（ルール10的要素）」は評価できるが、主張#2（M&A実行能力）と重複。"
+    }
+  ],
+
+  "aggregated_scores": {
+    "avg_confidence_advantage": 50.0,
+    "avg_confidence_cagr": 60.0,
+    "distribution_advantage": {
+      "90": 0,
+      "70": 2,
+      "50": 6,
+      "30": 2,
+      "10": 0
+    },
+    "distribution_cagr": {
+      "90": 0,
+      "70": 5,
+      "50": 5,
+      "30": 0,
+      "10": 0
+    }
+  },
+
+  "systematic_issues": [
+    {
+      "issue": "競合比較データの欠如（パターンV・ルール7）",
+      "affected_claims": [3, 4, 5, 6, 7],
+      "impact": "5件が70%→50%に抑制されている主因。Danaher・Roper・ITWとの比較データが収集されれば全体的なスコア向上が期待できる"
+    },
+    {
+      "issue": "業界構造分析の不足（パターンIV・ルール11）",
+      "affected_claims": [1, 2],
+      "impact": "主張#1・#2はパターンIVの潜在性を持つが（ORLYと類似）、ニッチ計測機器市場のフラグメント度の詳細分析なし。90%到達の最大の障壁"
+    }
+  ]
+}

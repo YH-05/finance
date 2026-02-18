@@ -1,0 +1,296 @@
+{
+  "research_id": "CA_eval_20260218_AME",
+  "ticker": "AME",
+  "verified_at": "2026-02-18T05:15:00Z",
+  "verifier": "ca-eval-lead (T6直接実行)",
+
+  "rejection_patterns": [
+    {
+      "pattern_id": "A",
+      "pattern_name": "結果を原因と取り違え",
+      "affected_claims": [8, 10],
+      "confidence_adjustment": "下げ",
+      "details": [
+        {
+          "claim_id": 8,
+          "description": "エンドマーケット分散は「ポートフォリオ構成の結果（状態）」であり、分散を可能にする「能力・仕組み」（ポートフォリオ管理能力、M&A選定能力）が優位性。CHD#5（30%）と同様のパターン。",
+          "severity": "major",
+          "adjusted_confidence_advantage": 30,
+          "original_confidence_advantage": 30,
+          "note": "T4時点で既に30%に設定済み。パターンAの適用を確認"
+        },
+        {
+          "claim_id": 10,
+          "description": "ニッチ市場特化は「市場選択戦略の結果としてのポジション」であり、選択を可能にする「能力（市場評価能力・M&A選定能力）」が優位性。パターンA+Fの複合。",
+          "severity": "major",
+          "adjusted_confidence_advantage": 30,
+          "original_confidence_advantage": 30,
+          "note": "T4時点で既に30%に設定済み。パターンA+Fの適用を確認"
+        }
+      ]
+    },
+    {
+      "pattern_id": "B",
+      "pattern_name": "業界共通で差別化にならない",
+      "affected_claims": [8, 10],
+      "confidence_adjustment": "下げ",
+      "details": [
+        {
+          "claim_id": 8,
+          "description": "エンドマーケット分散はITW・Danaher・Roper・Emersonなど同業のコングロマリット型企業も同様に実施しており、AMETEKに固有の優位性として認めにくい。",
+          "severity": "moderate",
+          "note": "パターンAと複合"
+        },
+        {
+          "claim_id": 10,
+          "description": "ニッチ市場特化はITW・Danaher・Roperも同様の戦略を採用しており、業界共通の傾向の可能性がある。差別化要因はAMETEKのニッチの定義（USD150-400M）の厳格さだが、競合との比較データなし。",
+          "severity": "moderate",
+          "note": "パターンA・Fと複合"
+        }
+      ]
+    },
+    {
+      "pattern_id": "C",
+      "pattern_name": "因果関係の飛躍",
+      "affected_claims": [6],
+      "confidence_adjustment": "軽微",
+      "details": [
+        {
+          "claim_id": 6,
+          "description": "分散型組織→各BUの迅速市場対応→OPM30bp/年改善 の因果チェーンは3ステップ。中間ステップ（分散型組織がOPM改善に寄与するメカニズム）の定量的裏付けが不足。ただし飛躍の程度はMNST#5より軽微（AMEは定性的整合性はある）。",
+          "severity": "minor",
+          "adjusted_confidence_advantage": 50,
+          "note": "T4時点で50%に設定済み。minor調整"
+        }
+      ]
+    },
+    {
+      "pattern_id": "D",
+      "pattern_name": "定性的で定量的裏付けなし",
+      "affected_claims": [6],
+      "confidence_adjustment": "下げ方向",
+      "details": [
+        {
+          "claim_id": 6,
+          "description": "分散型組織の優位性は「定性的な組織原則の説明」にとどまり（BU数・売上高比率データはあるが）、競合との比較数値がない。CHD#7（50%）「言葉でしか説明されない傾向」に類似。",
+          "severity": "moderate",
+          "adjusted_confidence_advantage": 50,
+          "note": "T4時点で50%に設定済み"
+        }
+      ]
+    },
+    {
+      "pattern_id": "E",
+      "pattern_name": "事実誤認",
+      "affected_claims": [],
+      "confidence_adjustment": "なし",
+      "details": [],
+      "note": "ファクトチェック（T5）の結果、contradicted事実は検出されず。パターンEの適用なし。ルール9（事実誤認→10%）適用なし。"
+    },
+    {
+      "pattern_id": "F",
+      "pattern_name": "戦略を優位性と混同",
+      "affected_claims": [10],
+      "confidence_adjustment": "下げ",
+      "details": [
+        {
+          "claim_id": 10,
+          "description": "「ニッチ市場への特化」は市場選択という「戦略（意思決定）」であり、「優位性（構造的な力）」ではない。CHD#5（30%）のパターンFと同様。背後にある優位性はM&A実行能力（請求2）とスイッチングコスト（請求1）。",
+          "severity": "major",
+          "adjusted_confidence_advantage": 30,
+          "note": "T4時点で既に30%に設定済み。パターンA+Fの複合を確認"
+        }
+      ]
+    },
+    {
+      "pattern_id": "G",
+      "pattern_name": "純粋競合に対する優位性不明",
+      "affected_claims": [3, 4, 5, 7],
+      "confidence_adjustment": "下げ方向（既に50%に反映済み）",
+      "details": [
+        {
+          "claim_id": 3,
+          "description": "規模の経済（集中購買）：純粋競合（Danaher, Roper, ITW等のコングロマリット）に対してAMETEKの集中購買規模・Capex比率が優位かは不明。COST#3（50%）と同様のパターン。",
+          "severity": "moderate",
+          "adjusted_confidence_advantage": 50,
+          "note": "T4時点で50%に設定済み"
+        },
+        {
+          "claim_id": 4,
+          "description": "直販体制（80%）：同業競合の直販比率との比較データなし。80%という数値はあるが、業界平均・競合との差分が不明。",
+          "severity": "moderate",
+          "adjusted_confidence_advantage": 50,
+          "note": "T4時点で50%に設定済み"
+        },
+        {
+          "claim_id": 5,
+          "description": "R&D投資・Vitality Index：Danaher・Roper等のVitality IndexやR&D比率との比較なし。R&D5.5%は高いかどうか業界基準不明。",
+          "severity": "moderate",
+          "adjusted_confidence_advantage": 50,
+          "note": "T4時点で50%に設定済み"
+        },
+        {
+          "claim_id": 7,
+          "description": "Pricing Power：Tier1（Emerson, GE）との間接比較は示唆されるが、同じTier2ニッチプレイヤーとの価格設定力比較なし。",
+          "severity": "moderate",
+          "adjusted_confidence_advantage": 50,
+          "note": "T4時点で50%に設定済み"
+        }
+      ]
+    }
+  ],
+
+  "high_eval_patterns": [
+    {
+      "pattern_id": "I",
+      "pattern_name": "定量的裏付けのある差別化",
+      "affected_claims": [2, 7, 9],
+      "confidence_adjustment": "維持・支持",
+      "details": [
+        {
+          "claim_id": 2,
+          "description": "M&A実行能力：ROIC20%超（goodwill除く）・86件・USD8.4bn累計・買収基準（ROIC10%, IRR15%）という定量データが信頼性を高める。CHD#1（70%）と同様のパターン。",
+          "confidence_support": 70
+        },
+        {
+          "claim_id": 7,
+          "description": "Pricing Power：スプレッド100bp（2021-22）→50bp（2024）という時系列データが存在。ただし競合比較がなく70%には達しない。50%支持。",
+          "confidence_support": 50
+        },
+        {
+          "claim_id": 9,
+          "description": "Capital Allocation：M&A74%・Capex2%・ROIC20%超（goodwill除く）・营業CF過去最高という複数の定量データがある。50%支持。",
+          "confidence_support": 50
+        }
+      ]
+    },
+    {
+      "pattern_id": "II",
+      "pattern_name": "直接的なCAGR接続メカニズム",
+      "affected_claims": [1, 2, 9],
+      "confidence_adjustment": "CAGR接続を支持",
+      "details": [
+        {
+          "claim_id": 1,
+          "description": "スイッチングコスト→Pricing Power→OG4%（Pricing3%分）という2ステップの直接的接続。EPS CAGR10%の主要ドライバー。CAGR接続70%を支持。",
+          "cagr_support": 70
+        },
+        {
+          "claim_id": 2,
+          "description": "M&A実行能力→外部成長4%という直接接続。M&A4%はCAGR10%の40%を担う主要ドライバー。CAGR接続70%を支持。",
+          "cagr_support": 70
+        },
+        {
+          "claim_id": 9,
+          "description": "Capital Allocation→自社株買い1%（EPS直接寄与）という検証可能な接続。CAGR接続70%を支持。",
+          "cagr_support": 70
+        }
+      ]
+    },
+    {
+      "pattern_id": "III",
+      "pattern_name": "能力 > 結果（プロセスの評価）",
+      "affected_claims": [1, 2, 4],
+      "confidence_adjustment": "支持",
+      "details": [
+        {
+          "claim_id": 1,
+          "description": "スイッチングコスト：ミッションクリティカル製品という「構造的属性（能力）」として正しく抽出。高いChurn resistanceという「結果」への言及はあるが主張の核心は「能力」。",
+          "confidence_support": 70
+        },
+        {
+          "claim_id": 2,
+          "description": "M&A実行能力：買収基準・PMI Playbook・断念規律という「能力・プロセス」として正しく抽出。86件という「実績（結果）」ではなくプロセス説明が中心。CHD#1（70%）と完全に合致。",
+          "confidence_support": 70
+        },
+        {
+          "claim_id": 4,
+          "description": "直販体制：「顧客深耕・情報優位」という「能力」として抽出。直販80%という数値は裏付けとして機能。ただし競合比較なく50%止まり。",
+          "confidence_support": 50
+        }
+      ]
+    },
+    {
+      "pattern_id": "IV",
+      "pattern_name": "構造的な市場ポジション（90%候補）",
+      "affected_claims": [],
+      "confidence_adjustment": "潜在的可能性あり（現時点では条件不足）",
+      "details": [
+        {
+          "note": "AMEのM&A実行能力（請求2）とニッチ市場構造（フラグメント化・USD150-400M）の組み合わせはパターンIVの条件（市場構造×企業ポジション合致）に近い潜在性を持つ。ORLY#5（フラグメント市場×M&A実行能力→90%）との構造的類似性がある。ただし：①ニッチ計測機器・プロセス機器市場のフラグメント度の詳細分析が不足、②規模・密度・ネットワークという定量的ポジション説明が不足。現時点では70%が上限。業界構造分析の追加があれば80-90%への引き上げ余地あり。"
+        }
+      ]
+    },
+    {
+      "pattern_id": "V",
+      "pattern_name": "競合との具体的比較による差別化確認",
+      "affected_claims": [],
+      "confidence_adjustment": "該当なし（機会損失）",
+      "details": [
+        {
+          "note": "アナリストレポートには純粋競合（Danaher, Roper, ITW等）との具体的比較データが欠如。パターンVの適用条件（具体的競合名×比較軸×数値）は満たされていない。これがスコア上限を全体的に50-70%に留める最大の要因。ITW対比でのROIC差、Danaher対比でのCapex比率差等のデータが追加されれば複数主張で10-20%のスコア引き上げが期待できる。"
+        }
+      ]
+    }
+  ],
+
+  "cagr_pattern_analysis": {
+    "high_confidence_cagr": [
+      {
+        "claim_id": 1,
+        "cagr_confidence": 70,
+        "pattern": "II（直接的接続）",
+        "mechanism": "スイッチングコスト→Pricing Power 3%→OG4%→CAGR10%",
+        "note": "1-2ステップの直接接続。ただしnew products/volume(1%)部分は間接的"
+      },
+      {
+        "claim_id": 2,
+        "cagr_confidence": 70,
+        "pattern": "II（直接的接続）",
+        "mechanism": "M&A実行能力→外部成長4%→EPS CAGR10%の40%を担う",
+        "note": "直接的接続。ただしM&A4%の持続性（年毎のばらつき）は不確実性要因"
+      },
+      {
+        "claim_id": 9,
+        "cagr_confidence": 70,
+        "pattern": "II（直接的接続）",
+        "mechanism": "自社株買い1%（EPS直接寄与）",
+        "note": "最も検証可能で直接的な接続"
+      }
+    ],
+    "moderate_confidence_cagr": [
+      {"claim_id": 3, "cagr_confidence": 70, "pattern": "間接的接続（OP Leverage経由）"},
+      {"claim_id": 4, "cagr_confidence": 50, "pattern": "直販→新製品展開→Organic Growth（間接的）"},
+      {"claim_id": 5, "cagr_confidence": 50, "pattern": "新製品→Volume growth（中間ステップが不明確）"},
+      {"claim_id": 6, "cagr_confidence": 50, "pattern": "組織効率→OPM改善（中間ステップ不明）"},
+      {"claim_id": 7, "cagr_confidence": 70, "pattern": "Pricing→OG直接接続。CAGR確度高い"}
+    ]
+  },
+
+  "consistency_check": {
+    "overall_status": "consistent",
+    "findings": [
+      "全10主張のconfidence値は50-70%の範囲に集中（30%が2件、70%が2件、50%が6件）。KB3実績（Phase2平均50%中心）と整合的",
+      "CAGR接続は優位性評価より全体的に高い（5件が70%）。dogma.md「CAGR接続は優位性評価より全体的に高いスコアが出る」と整合",
+      "claims 1-2（スイッチングコスト・M&A能力）と claims 8・10（エンドマーケット分散・ニッチ特化）で評価の二極化が明確。一貫した論理に基づく差別化",
+      "ルール7（純粋競合比較）が全主張で未達という系統的な問題は、データソース（アナリストレポートが競合比較データを含まない）に起因。個別主張の問題ではなくデータ収集の限界",
+      "「結果vs能力」の区別（ルール1）が全主張で適切に適用されており、評価の一貫性が高い"
+    ],
+    "red_flags": [
+      "競合比較データ（パターンV）が全主張で欠如→系統的なスコア抑制要因",
+      "業界構造の詳細分析（パターンIV）が不十分→パターンIVの適用条件を満たす主張なし"
+    ]
+  },
+
+  "confidence_adjustments_applied": {
+    "adjusted_down": [],
+    "note": "T4時点でのconfidence設定が既にKB2パターンを反映していたため、T6での追加調整は発生しなかった。パターン検証によりT4の判断が適切であることを確認。"
+  },
+
+  "summary": {
+    "rejection_patterns_detected": ["A(claims 8,10)", "B(claims 8,10)", "C(claim 6 minor)", "D(claim 6)", "F(claim 10)", "G(claims 3,4,5,7)"],
+    "high_eval_patterns_detected": ["I(claims 2,7,9)", "II(claims 1,2,9)", "III(claims 1,2,4)", "IV(潜在性あり・現時点条件不足)", "V(該当なし・機会損失)"],
+    "overall_quality": "moderate",
+    "key_insight": "AMEのビジネスモデルは論理的に整合しており、パターンIII（能力>結果）とパターンII（直接CAGR接続）は複数主張で確認。最大の品質向上余地はパターンV（競合比較）とパターンIV（業界構造分析）の追加。現在のスコア分布（50-70%集中）はKB3実績と整合的であり、評価に問題はない。"
+  }
+}

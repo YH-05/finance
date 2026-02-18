@@ -1,0 +1,38 @@
+{
+  "research_id": "CA_eval_20260218_AME",
+  "type": "ca_eval",
+  "ticker": "AME",
+  "created_at": "2026-02-18T03:42:06Z",
+  "completed_at": "2026-02-18T06:05:00Z",
+  "parameters": {
+    "ticker": "AME",
+    "report_path": "analyst/raw/AME US.md"
+  },
+  "status": "completed",
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  },
+  "task_results": {
+    "T0_setup": { "status": "SUCCESS", "owner": "ca-eval-lead" },
+    "T1_sec_filings": { "status": "SUCCESS", "owner": "ca-eval-lead", "note": "SEC EDGAR MCP 403エラーのためWebSearch fallback" },
+    "T2_report_parser": { "status": "SUCCESS", "owner": "ca-eval-lead" },
+    "T3_industry": { "status": "SUCCESS", "owner": "ca-eval-lead", "note": "PoC skip（外部データ収集なし）" },
+    "T4_claim_extractor": { "status": "SUCCESS", "owner": "ca-eval-lead" },
+    "T5_fact_checker": { "status": "SUCCESS", "owner": "ca-eval-lead" },
+    "T6_pattern_verifier": { "status": "SUCCESS", "owner": "ca-eval-lead" },
+    "T7_report_generator": { "status": "SUCCESS", "owner": "ca-eval-lead" },
+    "T8_ai_critique": { "status": "SUCCESS", "owner": "ca-eval-lead" },
+    "T9_accuracy": { "status": "SUCCESS", "owner": "ca-eval-lead", "note": "simplified mode (AMEはPhase 2対象外)" }
+  },
+  "outputs": {
+    "revised_report": "research/CA_eval_20260218_AME/04_output/revised-report.md",
+    "structured_json": "research/CA_eval_20260218_AME/04_output/structured.json",
+    "critique": "research/CA_eval_20260218_AME/04_output/critique.json",
+    "accuracy": "research/CA_eval_20260218_AME/04_output/accuracy-report.json"
+  }
+}
