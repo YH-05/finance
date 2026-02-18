@@ -1,0 +1,227 @@
+{
+  "research_id": "CA_eval_20260218-1405_ATCOA",
+  "ticker": "ATCOA",
+  "company_name": "Atlas Copco AB",
+  "report_version": "draft_v1",
+  "generated_at": "2026-02-18T14:40:00Z",
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "インストールベースに基づく高スイッチングコストとアフターサービス収益構造",
+      "advantage_type": "switching_cost",
+      "structural_type": "structural",
+      "confidence": 70,
+      "confidence_label": "おおむね納得",
+      "cagr_confidence": 70,
+      "rules": {
+        "R1_capability_not_result": "pass",
+        "R2_noun_attribute": "pass",
+        "R3_relative_advantage": "partial",
+        "R4_quantitative_evidence": "partial",
+        "R6_structural_complementary": "structural",
+        "R7_pure_competitor": "fail",
+        "R8_strategy_not_advantage": "pass",
+        "R9_factual_error": "pass",
+        "R10_negative_case": "n/a",
+        "R11_industry_structure": "partial"
+      },
+      "patterns": {
+        "rejection": ["PatternG(moderate)"],
+        "high_eval": ["PatternI", "PatternIII"]
+      },
+      "fact_check_result": "verified(partial)",
+      "comment": "TCO非対称性（電気代8割）に根ざした構造的スイッチングコスト。CC300以上のサービスネットワーク。純粋競合比較の不足で90%には届かないが、能力として正しく抽出されており70%は妥当"
+    },
+    {
+      "claim_id": 2,
+      "title": "直販ネットワークに基づくイノベーション能力とLfL価格引き上げ力",
+      "advantage_type": "customer_intimacy_innovation",
+      "structural_type": "structural_partial",
+      "confidence": 50,
+      "confidence_label": "まあ納得",
+      "cagr_confidence": 50,
+      "rules": {
+        "R1_capability_not_result": "pass",
+        "R2_noun_attribute": "pass",
+        "R3_relative_advantage": "partial",
+        "R4_quantitative_evidence": "partial",
+        "R6_structural_complementary": "structural",
+        "R7_pure_competitor": "fail",
+        "R8_strategy_not_advantage": "partial"
+      },
+      "patterns": {
+        "rejection": ["PatternG(moderate)", "PatternC(moderate)"],
+        "high_eval": ["PatternI(partial)"]
+      },
+      "fact_check_result": "verified_with_constraint",
+      "fact_check_constraint": "セミコン・自動車向けはLfLフラット（IR/CFO確認）",
+      "comment": "直販8割の仕組みは評価できるが、価格支配力の領域依存性（セミコン・自動車ではLfLフラット）が全体的な評価を制約。50%が妥当"
+    },
+    {
+      "claim_id": 3,
+      "title": "75%アウトソース変動費型収益構造による景気サイクル耐性",
+      "advantage_type": "cost_structure",
+      "structural_type": "complementary",
+      "confidence": 30,
+      "confidence_label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "rules": {
+        "R3_relative_advantage": "fail",
+        "R4_quantitative_evidence": "pass",
+        "R6_structural_complementary": "complementary",
+        "R7_pure_competitor": "fail"
+      },
+      "patterns": {
+        "rejection": ["PatternB(high)"],
+        "high_eval": ["PatternI(partial)"]
+      },
+      "fact_check_result": "verified",
+      "comment": "CFO確認済みの定量的ファクトだが業界共通（PatternB）。競合との差異が不明で相対的優位性が主張しにくい"
+    },
+    {
+      "claim_id": 4,
+      "title": "分散型組織体制（24BU・400P/L）による意思決定効率と事業運営力",
+      "advantage_type": "organizational_structure",
+      "structural_type": "complementary",
+      "confidence": 30,
+      "confidence_label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "rules": {
+        "R3_relative_advantage": "fail",
+        "R4_quantitative_evidence": "partial",
+        "R6_structural_complementary": "complementary",
+        "R8_strategy_not_advantage": "fail"
+      },
+      "patterns": {
+        "rejection": ["PatternB(high)", "PatternF(moderate)"],
+        "high_eval": []
+      },
+      "fact_check_result": "unverified",
+      "negative_case": "IR面談で「大企業病的要素の懸念」コメントあり",
+      "comment": "分散型組織は業界共通（PatternB）。大企業病的懸念というIR観察がネガティブケースとして機能し評価を下げる"
+    },
+    {
+      "claim_id": 5,
+      "title": "コンプレッサー・バキューム事業間の部品共通化とクロスセル（スコープの経済）",
+      "advantage_type": "economies_of_scope",
+      "structural_type": "structural",
+      "confidence": 70,
+      "confidence_label": "おおむね納得",
+      "cagr_confidence": 70,
+      "rules": {
+        "R1_capability_not_result": "pass",
+        "R2_noun_attribute": "pass",
+        "R3_relative_advantage": "partial",
+        "R4_quantitative_evidence": "pass",
+        "R6_structural_complementary": "structural",
+        "R7_pure_competitor": "partial"
+      },
+      "patterns": {
+        "rejection": ["PatternG(low)"],
+        "high_eval": ["PatternI", "PatternIII"]
+      },
+      "fact_check_result": "unverifiable_but_technically_consistent",
+      "comment": "75%部品共通・50%クロスセルという定量的数値あり。コンプレッサーとバキュームを同時に高シェアで保有する競合が限定的という固有性あり"
+    },
+    {
+      "claim_id": 6,
+      "title": "精緻なM&A実行能力によるDistributor統合と流通コントロール",
+      "advantage_type": "ma_capability",
+      "structural_type": "structural_partial",
+      "confidence": 50,
+      "confidence_label": "まあ納得",
+      "cagr_confidence": 70,
+      "rules": {
+        "R1_capability_not_result": "pass",
+        "R3_relative_advantage": "partial",
+        "R4_quantitative_evidence": "partial",
+        "R6_structural_complementary": "structural",
+        "R10_negative_case": "partial"
+      },
+      "patterns": {
+        "rejection": ["PatternB(low)"],
+        "high_eval": ["PatternIII(partial)"]
+      },
+      "fact_check_result": "verified",
+      "comment": "WACC8%基準・領域特定プロセスはCHD#1に近い能力評価。断念例の具体的記述不足で70%には届かない"
+    },
+    {
+      "claim_id": 7,
+      "title": "バキューム（真空ポンプ）の半導体市場における高シェアとTCO優位性",
+      "advantage_type": "market_position_pricing",
+      "structural_type": "structural_cyclical_constraint",
+      "confidence": 50,
+      "confidence_label": "まあ納得",
+      "cagr_confidence": 50,
+      "rules": {
+        "R1_capability_not_result": "fail",
+        "R4_quantitative_evidence": "pass",
+        "R7_pure_competitor": "partial",
+        "R11_industry_structure": "partial"
+      },
+      "patterns": {
+        "rejection": ["PatternA(high)", "PatternG(moderate)"],
+        "high_eval": ["PatternI(partial)"]
+      },
+      "fact_check_result": "verified_with_negative_case",
+      "negative_case": "VTは「今まで経験した中で一番長いダウンサイクル」（CEO確認）",
+      "comment": "50%シェアはPatternA（結果）。Dry Vacuum米国現地生産（完工後唯一）は具体的差別化点だが、ダウンサイクルの深さが評価を抑制"
+    },
+    {
+      "claim_id": 8,
+      "title": "コンプレッサーの世界No.1市場ポジション（シェア34%、2番手の1.8倍）によるCAGR下支え",
+      "advantage_type": "market_position",
+      "structural_type": "complementary",
+      "confidence": 50,
+      "confidence_label": "まあ納得",
+      "cagr_confidence": 70,
+      "rules": {
+        "R1_capability_not_result": "fail",
+        "R3_relative_advantage": "pass",
+        "R4_quantitative_evidence": "pass"
+      },
+      "patterns": {
+        "rejection": ["PatternA(high)"],
+        "high_eval": ["PatternI(partial)"]
+      },
+      "fact_check_result": "verified",
+      "comment": "2番手の1.8倍という相対的数値はPatternI部分適用。ただし主張1・2・6の能力主張の下敷きとして機能する補完的役割"
+    },
+    {
+      "claim_id": 9,
+      "title": "CAGR 10%達成の複合的メカニズム（売上8% + 営業レバ1% + 自社株1%）",
+      "advantage_type": "cagr_connection_analysis",
+      "is_cagr_analysis": true,
+      "confidence": null,
+      "cagr_confidence": 70,
+      "cagr_confidence_label": "おおむね納得",
+      "cagr_components": {
+        "revenue_8pct": {"ca_backing": [1, 6], "confidence": 70},
+        "op_leverage_1pct": {"ca_backing": [1, 5], "confidence": 70},
+        "buyback_1pct": {"ca_backing": [3], "confidence": 50}
+      },
+      "fact_check_result": "verified_with_caveat",
+      "caveat": "VTダウンサイクル長期化で短期的に達成困難（2025Q2実績: VT OG -5%）",
+      "comment": "中長期の構造的メカニズムは概ね妥当。短期的なVTダウンサイクルはタイムラインリスク"
+    }
+  ],
+  "summary_statistics": {
+    "total_claims": 8,
+    "cagr_analysis": 1,
+    "confidence_distribution": {
+      "90_pct": 0,
+      "70_pct": 2,
+      "50_pct": 4,
+      "30_pct": 2,
+      "10_pct": 0
+    },
+    "avg_confidence_ca": 51,
+    "avg_cagr_confidence": 63,
+    "structural_claims": 4,
+    "complementary_claims": 3,
+    "partial_claims": 1,
+    "top_claims_by_confidence": [1, 5],
+    "bottom_claims_by_confidence": [3, 4],
+    "rejected_claims": []
+  }
+}

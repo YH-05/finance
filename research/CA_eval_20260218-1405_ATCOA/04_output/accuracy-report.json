@@ -1,0 +1,36 @@
+{
+  "research_id": "CA_eval_20260218-1405_ATCOA",
+  "ticker": "ATCOA",
+  "mode": "simplified",
+  "generated_at": "2026-02-18T14:50:00Z",
+  "kb_version": "v1.0.0",
+  "mode_reason": "ATCOAはPhase 2対象銘柄（CHD, COST, LLY, MNST, ORLY）に含まれないため簡易モードを適用",
+  "full_mode_results": null,
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "check_description": "contradicted事実がある場合にconfidenceが10%になっているかを確認",
+    "contradicted_claims": [],
+    "contradicted_check_detail": "全14件のファクトチェックでcontradicted判定はゼロ。事実誤認に基づく却下（ルール9）も発生せず。ATCOAはSEC EDGARデータなしのため、アナリストレポート内の記述整合性チェックが主な検証手段だったが、CFO・IR面談のダブルソースで確認できたファクト（75%アウトソース、M&A件数等）は一貫して検証済み",
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "contradicted事実なし。S-8チェック通過。簡易モード精度検証完了"
+  },
+  "data_quality_note": {
+    "sec_data_availability": "なし（スウェーデン証券取引所上場、SEC非提出企業）",
+    "primary_source": "アナリストレポート（2021年投資仮説 + 2025年四半期フォロー + 2025年面談メモ）",
+    "verification_method": "内部整合性チェック（複数セクション間の交差確認）+ CFO/IR発言による直接確認",
+    "limitation": "独立した第三者ソース（SEC 10-K/10-Q等）による検証ができないため、アナリストレポート記載の数値（CT ROIC 84%、Industrial自動車向け2番手の4倍等）の一部は検証不能のまま残っている"
+  },
+  "confidence_summary": {
+    "avg_confidence_ca": 51,
+    "avg_confidence_cagr": 63,
+    "top_claims": [
+      {"claim_id": 1, "confidence": 70, "title": "スイッチングコスト"},
+      {"claim_id": 5, "confidence": 70, "title": "スコープの経済"}
+    ],
+    "bottom_claims": [
+      {"claim_id": 3, "confidence": 30, "title": "変動費型構造"},
+      {"claim_id": 4, "confidence": 30, "title": "分散型組織体制"}
+    ]
+  }
+}

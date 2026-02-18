@@ -1,0 +1,7 @@
+{
+  "status": "skipped",
+  "reason": "PoC段階: SEC EDGAR以外の外部データ不使用ポリシーに準拠",
+  "ticker": "ATCOA",
+  "industry": "Industrial Automation / Power Transmission",
+  "note": "業界リサーチはPoC完了後の将来フェーズで実施予定"
+}

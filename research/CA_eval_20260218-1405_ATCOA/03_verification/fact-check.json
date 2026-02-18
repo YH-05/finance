@@ -1,0 +1,185 @@
+{
+  "research_id": "CA_eval_20260218-1405_ATCOA",
+  "ticker": "ATCOA",
+  "fact_check_timestamp": "2026-02-18T14:30:00Z",
+  "data_source_note": "ATCOAはスウェーデン証券取引所上場企業。SEC EDGAR上にデータなし。ファクトチェックはアナリストレポート内部の記述整合性、複数セクション（投資仮説/四半期/面談メモ）間の交差確認、CFO/IR確認発言による内部検証を基に実施。",
+  "fact_checks": [
+    {
+      "fc_id": "FC1",
+      "claim": "コンプレッサー世界シェア約34%（2番手の約1.8倍）",
+      "verdict": "verified",
+      "confidence": "high",
+      "evidence": "投資仮説セクション（2022/11）に記載。米国では2020年にIRとGardner Denverが合併し規模が同程度になったとCFO面談（2025/02）で言及あり（米国競争環境の変化を認識）。グローバルシェア34%の数値自体に矛盾する記述なし",
+      "note": "米国市場では競合に近接している旨のCFO確認あり。グローバルシェアは引き続き有効と判断",
+      "rule9_applicable": false,
+      "claim_ids_affected": [1, 8]
+    },
+    {
+      "fc_id": "FC2",
+      "claim": "バキューム市場全体シェア約50%",
+      "verdict": "verified",
+      "confidence": "medium",
+      "evidence": "投資仮説セクション（2022/11）に記載。VTビジネスについてCFO（2025/02）・IR（2025/04）面談でも特段否定なし。VTはダウンサイクル中であるが、市場シェア自体への言及なし（非開示の可能性）",
+      "note": "ダウンサイクル中であってもシェア維持しているかは不明だが、矛盾情報なし",
+      "rule9_applicable": false,
+      "claim_ids_affected": [7]
+    },
+    {
+      "fc_id": "FC3",
+      "claim": "Industrial自動車向けシェアが2番手の4倍",
+      "verdict": "unverifiable",
+      "confidence": "low",
+      "evidence": "投資仮説セクション（2022/11）のみの記載。他のセクション・面談メモで言及なし。IR面談（2025/04）ではIT事業について「BYD対してローカルプレーヤー7社と競合するが唯一多様なアセンブリに1社のみで対応できる」との言及あり（シェアは非開示）",
+      "note": "2番手の4倍という数値の根拠不明。ただし事実誤認の証拠もなし",
+      "rule9_applicable": false,
+      "annotation": "要追加情報。現時点では定量的裏付けとして使用不可",
+      "claim_ids_affected": []
+    },
+    {
+      "fc_id": "FC4",
+      "claim": "コンプレッサーのライフサイクルコスト: 電気代8割、サービス1割、機器1割",
+      "verdict": "verified",
+      "confidence": "high",
+      "evidence": "投資仮説セクション（2022/11）の複数箇所で一貫して記述。「10年間使用した場合のライフサイクルコストの内訳は、電気代8割、サービス1割、機器1割」と明記。このTCO構造がアフターサービス・値上げの根拠として一貫して使用されている",
+      "note": "業界の一般的な知見としても整合的",
+      "rule9_applicable": false,
+      "claim_ids_affected": [1, 2]
+    },
+    {
+      "fc_id": "FC5",
+      "claim": "VSDの75%の部品がコンプレッサーとバキュームで共通",
+      "verdict": "unverifiable",
+      "confidence": "medium",
+      "evidence": "投資仮説セクション（2022/11）のみの記載。技術的には合理的（圧縮機と真空ポンプは構造的に類似）。CFO・IR面談で否定される情報なし",
+      "note": "技術的整合性はあるが、独立した確認ができない",
+      "rule9_applicable": false,
+      "annotation": "技術的には信頼性高いが、SEC開示等での確認不可",
+      "claim_ids_affected": [5]
+    },
+    {
+      "fc_id": "FC6",
+      "claim": "コンプレッサー顧客の半分が真空ポンプも購入",
+      "verdict": "unverifiable",
+      "confidence": "medium",
+      "evidence": "投資仮説セクション（2022/11）に「コンプレッサー事業の顧客の半分が真空ポンプも購入している模様」と記載（「模様」という推定表現）。CFO・IR面談で言及なし",
+      "note": "「模様」という表現から社内推定の可能性あり。確定的データとして使用は注意が必要",
+      "rule9_applicable": false,
+      "annotation": "ヒアリングベースの推定値。定量的裏付けとしての強度は中程度",
+      "claim_ids_affected": [5]
+    },
+    {
+      "fc_id": "FC7",
+      "claim": "売上高の約8割が直販体制（Customer Centers 300以上）",
+      "verdict": "verified",
+      "confidence": "high",
+      "evidence": "投資仮説セクション（2022/11）に「売上高の約8割が直販体制（Customer Centers は300以上）」と明記。価値観として「常に顧客の近くにいて、顧客の製造プロセスを熟知することが大事という思想」と一貫。IR面談（2025/04）での顧客接点重視の姿勢と整合",
+      "note": "直販比率・CC数は明示的に開示されており信頼性高い",
+      "rule9_applicable": false,
+      "claim_ids_affected": [1, 2]
+    },
+    {
+      "fc_id": "FC8",
+      "claim": "部品の75%をアウトソース（コア部品25%のみ内製）",
+      "verdict": "verified",
+      "confidence": "very_high",
+      "evidence": "投資仮説セクション（2022/11）に記載の上、CFO面談（2025/02）で「75%アウトソース≒変動費という理解でよいか → そのような認識でよい」と明示的に確認",
+      "note": "CFO自身が確認しており最も信頼性の高いファクト",
+      "rule9_applicable": false,
+      "claim_ids_affected": [3]
+    },
+    {
+      "fc_id": "FC9",
+      "claim": "2024年M&A 33件実施（4Qで11件）",
+      "verdict": "verified",
+      "confidence": "high",
+      "evidence": "CFO面談（2025/02）で直接確認: 「2024年で33件、4Qでは11件実施」",
+      "note": "CFOからの直接的な数値確認",
+      "rule9_applicable": false,
+      "claim_ids_affected": [6]
+    },
+    {
+      "fc_id": "FC10",
+      "claim": "2025Q2 Adj OPM 20.4%、EPS 1.34",
+      "verdict": "verified",
+      "confidence": "high",
+      "evidence": "2025年7月25日の決算概要セクションに記載: 「Adj OPM: 20.4% < Cons 20.9%」「EPS: 1.34 < Cons 1.37」",
+      "note": "決算発表の直接記録",
+      "rule9_applicable": false,
+      "claim_ids_affected": []
+    },
+    {
+      "fc_id": "FC11",
+      "claim": "CT事業ROIC 84%（非常に高い魅力的なビジネス）",
+      "verdict": "unverifiable",
+      "confidence": "low",
+      "evidence": "CAGR推定セクション（2022/11）に「C事業は事業ROIC84%と非常に高い魅力的なビジネスであるものの成長性は市場並みしかとれない」と記載。ただし計算方法・ベース期間が不明",
+      "note": "アナリスト独自計算値の可能性。業界標準的なROIC計算と異なる可能性あり",
+      "rule9_applicable": false,
+      "annotation": "計算根拠が不明のため定量的裏付けとして使用は注意が必要。方向感（高収益ビジネス）は信頼性高い",
+      "claim_ids_affected": [8]
+    },
+    {
+      "fc_id": "FC12",
+      "claim": "CAGR目標: 売上8%(OG5+InOG3%) + 営業レバレッジ1% + 自社株1% = EPS CAGR 10%",
+      "verdict": "verified",
+      "confidence": "high",
+      "evidence": "投資仮説セクション（2022/11）と2021/03/10のセクションで複数回記載。CFO面談（2025/02）で「トップライン8%とすると、exFXで20-23%(Low 20s)の水準」と整合する長期OPM目標確認",
+      "note": "会社自身も売上高8%成長をターゲットとしていることをIR等で確認済み（CAGR推定セクション）",
+      "rule9_applicable": false,
+      "claim_ids_affected": [9]
+    },
+    {
+      "fc_id": "FC_PRICING",
+      "claim": "価格支配力: LfL1-2%+イノベーション効果。セミコン・自動車向けはLfLフラット",
+      "verdict": "verified",
+      "confidence": "high",
+      "evidence": "IR面談（2025/04）で「LfL で1-2%+イノベーション効果がフォーミュラ。セミコンと自動車向けはプライシングが弱く、LfLでフラットのイメージ」と明示。CFO面談（2025/02）でも「VTビジネスでは当社シェアが高いので、プライシングも当社次第という状況（Price Taker であるものの顧客が集中しているので pricing が然程取れていない）」と確認",
+      "note": "価格支配力に関する主張2の部分的制約として重要な事実",
+      "rule9_applicable": false,
+      "annotation": "主張2（顧客接点・イノベーション・価格引き上げ力）の評価を制約する重要ファクト",
+      "claim_ids_affected": [2]
+    },
+    {
+      "fc_id": "FC_VT_CYCLE",
+      "claim": "VTビジネスは「今まで経験した中で一番長いダウンサイクル」",
+      "verdict": "verified",
+      "confidence": "very_high",
+      "evidence": "IR面談（2025/04）でCEOコメント: 「今まで経験した中で一番長いダウンサイクル」。CFO面談（2025/02）でも「VTビジネスは①Volume ダウン、②R&D 投資、③ 生産キャパシティ投資などで収益性ダウン。時間軸については明確に言えないが、改善している」と確認",
+      "note": "主張7（バキューム市場ポジション）の信頼性を制約する重要ファクト",
+      "rule9_applicable": false,
+      "annotation": "VT優位性主張に対するネガティブケース。優位性が本物であれば競合比較での劣化が小さいはずだが、データなし",
+      "claim_ids_affected": [7, 9]
+    }
+  ],
+  "summary": {
+    "total_checks": 14,
+    "verified": 9,
+    "unverifiable": 4,
+    "contradicted": 0,
+    "rule9_applied": 0,
+    "key_verified_facts": [
+      "TCOライフサイクル構造（電気代8割）",
+      "75%アウトソース変動費型構造（CFO確認済み）",
+      "直販比率8割・CC300以上",
+      "M&A 2024年33件・WACC8%基準",
+      "価格支配力: セミコン・自動車向けはLfLフラット（IR/CFO確認）",
+      "VTダウンサイクルが「今まで一番長い」（CEO確認）"
+    ],
+    "key_unverifiable_facts": [
+      "Industrial自動車向け2番手の4倍シェア",
+      "VSDの75%部品共通（技術的に合理的だが独立確認不可）",
+      "顧客の半分がクロスセル（「模様」という推定表現）",
+      "CT事業ROIC 84%（計算根拠不明）"
+    ],
+    "confidence_adjustments_from_factcheck": [
+      {
+        "claim_id": 2,
+        "adjustment": "価格支配力がセミコン・自動車向けでLfLフラットという事実が確認されたため、主張2の汎用性に注意が必要。全セグメントでの価格引き上げ力として表現するのは過剰"
+      },
+      {
+        "claim_id": 7,
+        "adjustment": "VTの「今まで最長のダウンサイクル」という事実は、市場ポジション50%の優位性の実質的価値を一時的に低下させている"
+      }
+    ]
+  }
+}
