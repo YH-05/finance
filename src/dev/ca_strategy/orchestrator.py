@@ -166,6 +166,10 @@ class Orchestrator:
         )
 
         # Phase 3: Aggregation + Neutralization
+        # AIDEV-NOTE: CODE-005 - _aggregate_scores() を _execute_phase() 経由で
+        # 呼ぶと戻り値の scores が Phase 5 でも必要なため型安全性が低下する。
+        # 将来は _run_phase3_neutralization() の引数から scores を削除し内部計算化
+        # することで完全統一が可能。
         scores = self._aggregate_scores(scored_claims)
         ranked = self._execute_phase(
             phase=3,
@@ -239,7 +243,7 @@ class Orchestrator:
         if phase <= 2:
             scored_claims = self._execute_phase(2, self._run_phase2_scoring, (claims,))
         if phase <= 3:
-            scores = self._aggregate_scores(scored_claims)
+            scores = self._aggregate_scores(scored_claims)  # AIDEV-NOTE: CODE-005
             ranked = self._execute_phase(
                 3, self._run_phase3_neutralization, (scored_claims, scores)
             )

@@ -68,6 +68,15 @@ class TestTranscriptSection:
                 content="content",
             )
 
+    def test_異常系_speakerが空白のみ文字列でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="speaker"):
+            TranscriptSection(
+                speaker="   ",
+                role="CEO",
+                section_type="prepared_remarks",
+                content="content",
+            )
+
     def test_異常系_contentが空文字でValidationError(self) -> None:
         with pytest.raises(ValidationError, match="content"):
             TranscriptSection(

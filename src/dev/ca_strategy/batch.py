@@ -19,6 +19,14 @@ Notes
 ThreadPoolExecutor is used because the underlying operations are I/O-bound
 (LLM API calls, file reads). ProcessPoolExecutor is avoided due to pickle
 serialization issues with complex objects.
+
+Security
+--------
+SEC-002 / CVE-2025-69872: diskcache 5.6.3 (transitive dependency) contains a
+pickle deserialization vulnerability allowing RCE for attackers with write
+access to the cache directory.  ca_strategy does not use diskcache directly;
+checkpoint state is stored as plain JSON (CheckpointManager).  Upgrade
+diskcache once a patched release is available.
 """
 
 from __future__ import annotations

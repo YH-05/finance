@@ -22,6 +22,7 @@ Writes to::
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -59,6 +60,14 @@ _MAX_TOKENS: int = 8192
 
 _TEMPERATURE: float = 0
 """Temperature for deterministic extraction."""
+
+_MAX_CONTENT_CHARS: int = 50_000
+"""Maximum characters per transcript section for prompt injection mitigation (SEC-003)."""
+
+_DANGEROUS_PATTERN: re.Pattern[str] = re.compile(
+    r"(?i)(ignore\s+previous|system\s*prompt|</?system|</?instruction)"
+)
+"""Pattern matching potentially dangerous prompt injection keywords (SEC-003)."""
 
 
 # ---------------------------------------------------------------------------
@@ -134,6 +143,9 @@ class ClaimExtractor:
         # Cache sorted KB items for prompt construction (PERF-003)
         self._sorted_kb1_rules = sorted(self._kb1_rules.items())
         self._sorted_kb3_examples = sorted(self._kb3_examples.items())
+
+        # Pre-compute system prompt once (CODE-007: cutoff_date is fixed at init)
+        self._system_prompt_built: str = self._build_system_prompt()
 
         logger.info(
             "ClaimExtractor initialized",
@@ -271,13 +283,11 @@ class ClaimExtractor:
             sec_data=sec_data,
         )
 
-        system_prompt = self._build_system_prompt()
-
         try:
             response_text = call_llm(
                 client=self._client,
                 model=self._model,
-                system=system_prompt,
+                system=self._system_prompt_built,
                 user_content=user_prompt,
                 max_tokens=_MAX_TOKENS,
                 temperature=_TEMPERATURE,
@@ -365,13 +375,27 @@ class ClaimExtractor:
             f"- **Truncated**: {meta.is_truncated}\n"
         )
 
-        # 2. Transcript sections
+        # 2. Transcript sections (SEC-003: XML isolation, length limit, pattern detection)
         parts.append("## トランスクリプト内容\n")
         for section in transcript.sections:
             role_str = f" ({section.role})" if section.role else ""
+            content = section.content
+            if len(content) > _MAX_CONTENT_CHARS:
+                logger.warning(
+                    "Transcript content truncated for prompt safety",
+                    speaker=section.speaker,
+                    original_len=len(content),
+                    limit=_MAX_CONTENT_CHARS,
+                )
+                content = content[:_MAX_CONTENT_CHARS]
+            if _DANGEROUS_PATTERN.search(content):
+                logger.warning(
+                    "Potentially dangerous pattern detected in transcript content",
+                    speaker=section.speaker,
+                )
             parts.append(
                 f"### [{section.section_type}] {section.speaker}{role_str}\n\n"
-                f"{section.content}\n"
+                f"<transcript_content>\n{content}\n</transcript_content>\n"
             )
 
         # 3. SEC data (if available)
@@ -524,79 +548,25 @@ class ClaimExtractor:
             Parsed Claim, or None if validation fails.
         """
         try:
-            # Extract rule_evaluation, handling both nested dict and flat formats
             rule_eval_raw = raw.get("rule_evaluation", {})
             confidence = rule_eval_raw.get("confidence", 0.5)
-
-            # Normalize confidence from percentage to 0-1 if needed
             if isinstance(confidence, (int, float)) and confidence > 1.0:
                 confidence = confidence / 100.0
 
-            # Build results dict
-            results_raw = rule_eval_raw.get("results", {})
-            if isinstance(results_raw, list):
-                # Handle list-of-dicts format from LLM
-                results_dict: dict[str, bool] = {}
-                for item in results_raw:
-                    if isinstance(item, dict):
-                        rule_id = item.get("rule", "")
-                        verdict = item.get("verdict", "")
-                        results_dict[rule_id] = verdict in (
-                            "pass",
-                            "structural",
-                            "quantitative",
-                            "direct",
-                            "primary",
-                            True,
-                        )
-                results = results_dict
-            elif isinstance(results_raw, dict):
-                results = {
-                    k: bool(v) if not isinstance(v, bool) else v
-                    for k, v in results_raw.items()
-                }
-            else:
-                results = {}
-
-            # Build adjustments list
-            adjustments_raw = rule_eval_raw.get("adjustments", [])
-            if isinstance(adjustments_raw, list):
-                adjustments = [
-                    str(a) if not isinstance(a, str) else a for a in adjustments_raw
-                ]
-            else:
-                adjustments = []
-
-            # Handle confidence_adjustments (alternative key from LLM)
-            conf_adj_raw = rule_eval_raw.get("confidence_adjustments", [])
-            if isinstance(conf_adj_raw, list):
-                for adj in conf_adj_raw:
-                    if isinstance(adj, dict):
-                        reason = adj.get("reason", "")
-                        adjustment_val = adj.get("adjustment", 0)
-                        adjustments.append(f"{reason} ({adjustment_val})")
-
             rule_evaluation = RuleEvaluation(
                 applied_rules=rule_eval_raw.get("applied_rules", []),
-                results=results,
+                results=self._parse_rule_results(rule_eval_raw),
                 confidence=confidence,
-                adjustments=adjustments,
+                adjustments=self._parse_adjustments(rule_eval_raw),
             )
 
-            # Get evidence, handling both 'evidence' and
-            # 'evidence_from_transcript' keys
-            evidence = raw.get("evidence") or raw.get("evidence_from_transcript", "")
-            if not evidence:
-                evidence = raw.get("claim", "No evidence provided")
-
-            claim = Claim(
+            return Claim(
                 id=raw.get("id", "unknown"),
                 claim_type=raw.get("claim_type", "competitive_advantage"),
                 claim=raw.get("claim", ""),
-                evidence=evidence,
+                evidence=self._parse_evidence(raw),
                 rule_evaluation=rule_evaluation,
             )
-            return claim
 
         except Exception:
             logger.warning(
@@ -605,6 +575,100 @@ class ClaimExtractor:
                 exc_info=True,
             )
             return None
+
+    @staticmethod
+    def _parse_rule_results(rule_eval_raw: dict[str, Any]) -> dict[str, bool]:
+        """Parse rule results from a rule_evaluation dict.
+
+        Handles both list-of-dicts and plain dict formats returned by the LLM.
+
+        Parameters
+        ----------
+        rule_eval_raw : dict[str, Any]
+            Raw rule_evaluation section from LLM response.
+
+        Returns
+        -------
+        dict[str, bool]
+            Mapping of rule ID to pass/fail result.
+        """
+        results_raw = rule_eval_raw.get("results", {})
+        if isinstance(results_raw, list):
+            results: dict[str, bool] = {}
+            for item in results_raw:
+                if isinstance(item, dict):
+                    rule_id = item.get("rule", "")
+                    verdict = item.get("verdict", "")
+                    results[rule_id] = verdict in (
+                        "pass",
+                        "structural",
+                        "quantitative",
+                        "direct",
+                        "primary",
+                        True,
+                    )
+            return results
+        if isinstance(results_raw, dict):
+            return {
+                k: bool(v) if not isinstance(v, bool) else v
+                for k, v in results_raw.items()
+            }
+        return {}
+
+    @staticmethod
+    def _parse_adjustments(rule_eval_raw: dict[str, Any]) -> list[str]:
+        """Parse adjustments from a rule_evaluation dict.
+
+        Merges both the ``adjustments`` and ``confidence_adjustments`` keys
+        that the LLM may produce interchangeably.
+
+        Parameters
+        ----------
+        rule_eval_raw : dict[str, Any]
+            Raw rule_evaluation section from LLM response.
+
+        Returns
+        -------
+        list[str]
+            List of human-readable adjustment descriptions.
+        """
+        adjustments_raw = rule_eval_raw.get("adjustments", [])
+        adjustments: list[str] = (
+            [str(a) if not isinstance(a, str) else a for a in adjustments_raw]
+            if isinstance(adjustments_raw, list)
+            else []
+        )
+
+        conf_adj_raw = rule_eval_raw.get("confidence_adjustments", [])
+        if isinstance(conf_adj_raw, list):
+            for adj in conf_adj_raw:
+                if isinstance(adj, dict):
+                    reason = adj.get("reason", "")
+                    adjustment_val = adj.get("adjustment", 0)
+                    adjustments.append(f"{reason} ({adjustment_val})")
+
+        return adjustments
+
+    @staticmethod
+    def _parse_evidence(raw: dict[str, Any]) -> str:
+        """Extract evidence text, falling back to alternative keys.
+
+        Tries ``evidence``, then ``evidence_from_transcript``, then ``claim``.
+
+        Parameters
+        ----------
+        raw : dict[str, Any]
+            Raw claim dict from LLM response.
+
+        Returns
+        -------
+        str
+            Evidence text, or a fallback string if no evidence is found.
+        """
+        evidence = raw.get("evidence") or raw.get("evidence_from_transcript", "")
+        if not evidence:
+            evidence = raw.get("claim", "No evidence provided")
+        return evidence
 
     # -----------------------------------------------------------------------
     # Internal: file I/O

@@ -75,6 +75,9 @@ class CostTracker:
         self.warning_threshold = warning_threshold
         self._phases: dict[str, _PhaseRecord] = {}
         self._lock = threading.Lock()
+        self._total_cost: float = (
+            0.0  # CODE-008: incremental total to avoid lock re-entry
+        )
 
     def record(self, phase: str, *, tokens_input: int, tokens_output: int) -> None:
         """Record token usage for a pipeline phase.
@@ -115,6 +118,7 @@ class CostTracker:
                 tokens_output * _PRICE_OUTPUT_PER_TOKEN
             )
             record.cost += cost
+            self._total_cost += cost
 
             logger.debug(
                 "Cost recorded",
@@ -125,7 +129,7 @@ class CostTracker:
                 phase_total=round(record.cost, 6),
             )
 
-            total = self.get_total_cost()
+            total = self._total_cost
             if total > self.warning_threshold:
                 logger.warning(
                     "Cost threshold exceeded",
@@ -141,7 +145,7 @@ class CostTracker:
         float
             Total cost in USD.
         """
-        return sum(r.cost for r in self._phases.values())
+        return self._total_cost
 
     def get_phase_cost(self, phase: str) -> float:
         """Get cost for a specific phase.
@@ -253,6 +257,7 @@ class CostTracker:
             record.tokens_output = tokens_output
             record.cost = float(cost)
             tracker._phases[phase_name] = record
+            tracker._total_cost += record.cost
 
         logger.debug(
             "Cost data loaded",

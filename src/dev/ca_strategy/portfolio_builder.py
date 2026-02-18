@@ -34,7 +34,23 @@ from .types import BenchmarkWeight, PortfolioHolding, PortfolioResult, SectorAll
 
 
 class RankedStock(TypedDict):
-    """Type definition for a ranked stock entry from SectorNeutralizer output."""
+    """Type definition for a ranked stock entry from SectorNeutralizer output.
+
+    Attributes
+    ----------
+    ticker : str
+        Ticker symbol (e.g. "AAPL").
+    aggregate_score : float
+        Aggregate score in [0.0, 1.0] computed by ScoreAggregator.
+    gics_sector : str
+        GICS sector classification (e.g. "Information Technology").
+    sector_rank : int
+        Within-sector rank after sector neutralization (1 = highest Z-score).
+    claim_count : int
+        Number of scored claims contributing to aggregate_score. Must be >= 0.
+    structural_weight : float
+        Fraction of competitive_advantage claims in [0.0, 1.0].
+    """
 
     ticker: str
     aggregate_score: float

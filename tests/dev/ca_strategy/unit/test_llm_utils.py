@@ -118,6 +118,29 @@ class TestLoadDirectory:
 
         assert result["japanese"] == content
 
+    def test_異常系_OSErrorが発生したファイルはスキップされる(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """OSError が発生したファイルをスキップし他のファイルは正常読み込みされることを確認。"""
+        (tmp_path / "rule01.md").write_text("OK", encoding="utf-8")
+        (tmp_path / "rule02.md").write_text("OK", encoding="utf-8")
+
+        call_count: list[int] = [0]
+
+        def _raise_on_first(*args: object, **kwargs: object) -> str:
+            call_count[0] += 1
+            if call_count[0] == 1:
+                raise OSError("Permission denied")
+            return "OK"
+
+        monkeypatch.setattr("pathlib.Path.read_text", _raise_on_first)
+
+        result = load_directory(tmp_path)
+
+        # rule02 should still be loaded even though rule01 raised OSError
+        assert isinstance(result, dict)
+        assert len(result) == 1
+
 
 # =============================================================================
 # load_file
@@ -161,6 +184,22 @@ class TestLoadFile:
         """空のファイルで空文字列が返されることを確認。"""
         filepath = tmp_path / "empty.md"
         filepath.write_text("", encoding="utf-8")
+
+        result = load_file(filepath)
+
+        assert result == ""
+
+    def test_異常系_OSErrorが発生した場合空文字が返される(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """存在するファイルで OSError が発生した場合に空文字が返されることを確認。"""
+        filepath = tmp_path / "prompt.md"
+        filepath.write_text("content", encoding="utf-8")
+
+        def _raise_oserror(*args: object, **kwargs: object) -> str:
+            raise OSError("Permission denied")
+
+        monkeypatch.setattr("pathlib.Path.read_text", _raise_oserror)
 
         result = load_file(filepath)
 
@@ -388,7 +427,7 @@ class TestCallLlm:
 
         assert result == "LLM response text"
 
-    def test_正常系_messagescreatが正しいパラメータで呼ばれる(
+    def test_正常系_messages_createが正しいパラメータで呼ばれる(
         self,
         mock_client: MagicMock,
         mock_cost_tracker: MagicMock,

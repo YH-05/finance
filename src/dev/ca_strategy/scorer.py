@@ -364,6 +364,10 @@ class ClaimScorer:
         )
 
         # 3. KB2-T patterns
+        # AIDEV-NOTE: KB2-T は build_kb_section() を使わず手動ループを維持している。
+        # 理由: KB2-T には却下パターン（A〜G）と高評価パターン（I〜V）の2系統を
+        # 区別するヘッダー行が必要であり、build_kb_section() はシングルヘッダーのみ
+        # サポートするため統一すると文脈が失われる。
         parts.append("## KB2-T パターン集\n")
         parts.append("### 却下パターン（pattern_A〜pattern_G）: -10〜-30%\n")
         parts.append("### 高評価パターン（pattern_I〜pattern_V）: +10〜+30%\n\n")
