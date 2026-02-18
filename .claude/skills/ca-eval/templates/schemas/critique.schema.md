@@ -1,6 +1,6 @@
 # critique.schema.md スキーマ
 
-> 生成タスク: T8 | 生成エージェント: ca-report-generator（批評フェーズ）または ca-eval-lead
+> 生成タスク: T8 | 生成エージェント: ca-eval-lead（T8直接実行）
 > 読み込み先: T8後半（revised-report.md生成時に修正事項を参照）、T9_accuracy（overall_assessmentのKB整合性を参照）
 
 ## JSONスキーマ

@@ -1,6 +1,6 @@
 # sec-data.schema.md スキーマ
 
-> 生成タスク: T1 | 生成エージェント: ca-fact-checker（または ca-eval-lead が直接実行）
+> 生成タスク: T1 | 生成エージェント: finance-sec-filings（または ca-eval-lead が直接実行）
 > 読み込み先: T4_claim_extractor（主張の事実的根拠として参照）、T5_fact_checker（ファクトチェックの照合元）
 
 ## JSONスキーマ

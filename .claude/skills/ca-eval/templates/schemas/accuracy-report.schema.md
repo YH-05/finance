@@ -1,6 +1,6 @@
 # accuracy-report.schema.md スキーマ
 
-> 生成タスク: T9 | 生成エージェント: ca-report-generator（精度チェックフェーズ）または ca-eval-lead
+> 生成タスク: T9 | 生成エージェント: ca-eval-lead（T9直接実行）
 > 読み込み先: research-meta.json（T9のtask_results.verdict として記録される）
 
 ## JSONスキーマ
