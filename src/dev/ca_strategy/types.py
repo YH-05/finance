@@ -12,9 +12,23 @@ All models are immutable (frozen=True) with field validators.
 from __future__ import annotations
 
 from datetime import date  # noqa: TC003 - required at runtime by Pydantic
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import AfterValidator, BaseModel, ConfigDict, field_validator
+
+
+# ---------------------------------------------------------------------------
+# Reusable non-empty string validator (DRY-002)
+# ---------------------------------------------------------------------------
+def _validate_non_empty_str(v: str) -> str:
+    """Validate that a string is non-empty after stripping whitespace."""
+    if not v or not v.strip():
+        msg = "value must be non-empty string"
+        raise ValueError(msg)
+    return v
+
+
+NonEmptyStr = Annotated[str, AfterValidator(_validate_non_empty_str)]
 
 # ---------------------------------------------------------------------------
 # Type aliases
@@ -42,26 +56,10 @@ class TranscriptSection(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    speaker: str
+    speaker: NonEmptyStr
     role: str | None
     section_type: str
-    content: str
-
-    @field_validator("speaker")
-    @classmethod
-    def _speaker_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "speaker must be non-empty string"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("content")
-    @classmethod
-    def _content_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "content must be non-empty string"
-            raise ValueError(msg)
-        return v
+    content: NonEmptyStr
 
 
 class TranscriptMetadata(BaseModel):
@@ -81,26 +79,10 @@ class TranscriptMetadata(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    ticker: str
+    ticker: NonEmptyStr
     event_date: date
-    fiscal_quarter: str
+    fiscal_quarter: NonEmptyStr
     is_truncated: bool = False
-
-    @field_validator("ticker")
-    @classmethod
-    def _ticker_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "ticker must be non-empty string"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("fiscal_quarter")
-    @classmethod
-    def _fiscal_quarter_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "fiscal_quarter must be non-empty string"
-            raise ValueError(msg)
-        return v
 
 
 class Transcript(BaseModel):
@@ -184,27 +166,11 @@ class Claim(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    id: str
+    id: NonEmptyStr
     claim_type: ClaimType
-    claim: str
+    claim: NonEmptyStr
     evidence: str
     rule_evaluation: RuleEvaluation
-
-    @field_validator("id")
-    @classmethod
-    def _id_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "id must be non-empty string"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("claim")
-    @classmethod
-    def _claim_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "claim must be non-empty string"
-            raise ValueError(msg)
-        return v
 
 
 # ===========================================================================
@@ -263,29 +229,13 @@ class ScoredClaim(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    id: str
+    id: NonEmptyStr
     claim_type: ClaimType
-    claim: str
+    claim: NonEmptyStr
     evidence: str
     rule_evaluation: RuleEvaluation
     final_confidence: float
     adjustments: list[ConfidenceAdjustment]
-
-    @field_validator("id")
-    @classmethod
-    def _id_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "id must be non-empty string"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("claim")
-    @classmethod
-    def _claim_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "claim must be non-empty string"
-            raise ValueError(msg)
-        return v
 
     @field_validator("final_confidence")
     @classmethod
@@ -316,18 +266,10 @@ class StockScore(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    ticker: str
+    ticker: NonEmptyStr
     aggregate_score: float
     claim_count: int
     structural_weight: float
-
-    @field_validator("ticker")
-    @classmethod
-    def _ticker_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "ticker must be non-empty string"
-            raise ValueError(msg)
-        return v
 
     @field_validator("aggregate_score")
     @classmethod
@@ -373,33 +315,17 @@ class PortfolioHolding(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    ticker: str
+    ticker: NonEmptyStr
     weight: float
-    sector: str
+    sector: NonEmptyStr
     score: float
     rationale_summary: str
-
-    @field_validator("ticker")
-    @classmethod
-    def _ticker_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "ticker must be non-empty string"
-            raise ValueError(msg)
-        return v
 
     @field_validator("weight")
     @classmethod
     def _weight_in_range(cls, v: float) -> float:
         if not 0.0 <= v <= 1.0:
             msg = f"weight must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("sector")
-    @classmethod
-    def _sector_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "sector must be non-empty string"
             raise ValueError(msg)
         return v
 
@@ -429,18 +355,10 @@ class SectorAllocation(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    sector: str
+    sector: NonEmptyStr
     benchmark_weight: float
     actual_weight: float
     stock_count: int
-
-    @field_validator("sector")
-    @classmethod
-    def _sector_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "sector must be non-empty string"
-            raise ValueError(msg)
-        return v
 
     @field_validator("benchmark_weight")
     @classmethod
@@ -467,6 +385,26 @@ class SectorAllocation(BaseModel):
         return v
 
 
+class PortfolioResult(BaseModel):
+    """Complete portfolio construction result.
+
+    Parameters
+    ----------
+    holdings : list[PortfolioHolding]
+        List of portfolio holdings with weights.
+    sector_allocations : list[SectorAllocation]
+        Sector-level allocations.
+    as_of_date : date
+        As-of date for the portfolio.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    holdings: list[PortfolioHolding]
+    sector_allocations: list[SectorAllocation]
+    as_of_date: date
+
+
 # ===========================================================================
 # Configuration models
 # ===========================================================================
@@ -483,24 +421,8 @@ class UniverseTicker(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    ticker: str
-    gics_sector: str
-
-    @field_validator("ticker")
-    @classmethod
-    def _ticker_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "ticker must be non-empty string"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("gics_sector")
-    @classmethod
-    def _gics_sector_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "gics_sector must be non-empty string"
-            raise ValueError(msg)
-        return v
+    ticker: NonEmptyStr
+    gics_sector: NonEmptyStr
 
 
 class UniverseConfig(BaseModel):
@@ -538,16 +460,8 @@ class BenchmarkWeight(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    sector: str
+    sector: NonEmptyStr
     weight: float
-
-    @field_validator("sector")
-    @classmethod
-    def _sector_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            msg = "sector must be non-empty string"
-            raise ValueError(msg)
-        return v
 
     @field_validator("weight")
     @classmethod

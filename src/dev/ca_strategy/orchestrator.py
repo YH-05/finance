@@ -28,12 +28,13 @@ Examples
 from __future__ import annotations
 
 import json
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 
+from dev.ca_strategy._config import ConfigRepository
 from dev.ca_strategy.aggregator import ScoreAggregator
 from dev.ca_strategy.cost import CostTracker
 from dev.ca_strategy.extractor import ClaimExtractor
@@ -46,9 +47,9 @@ from dev.ca_strategy.transcript import TranscriptLoader
 from dev.ca_strategy.types import (
     BenchmarkWeight,
     Claim,
+    PortfolioResult,
     ScoredClaim,
     StockScore,
-    UniverseConfig,
 )
 from utils_core.logging import get_logger
 
@@ -111,9 +112,8 @@ class Orchestrator:
         self._kb_base_dir = Path(kb_base_dir)
         self._workspace_dir = Path(workspace_dir)
 
-        if not self._config_path.exists():
-            msg = f"config_path does not exist: {self._config_path}"
-            raise FileNotFoundError(msg)
+        # ConfigRepository validates config_path existence
+        self._config = ConfigRepository(self._config_path)
 
         # Ensure workspace directory exists
         self._workspace_dir.mkdir(parents=True, exist_ok=True)
@@ -148,8 +148,6 @@ class Orchestrator:
         """
         logger.info("Starting full pipeline execution")
 
-        _universe, benchmark = self._load_config()
-
         # Phase 1: Extraction
         claims = self._execute_phase(
             phase=1,
@@ -175,7 +173,7 @@ class Orchestrator:
         portfolio = self._execute_phase(
             phase=4,
             func=self._run_phase4_portfolio_construction,
-            args=(ranked, benchmark),
+            args=(ranked, self._config.benchmark),
         )
 
         # Phase 5: Output Generation
@@ -218,103 +216,41 @@ class Orchestrator:
 
         logger.info("Resuming from checkpoint", start_phase=phase)
 
-        _universe, benchmark = self._load_config()
-
         # Load checkpoint data for completed phases
-        claims: dict[str, list[Claim]] = {}
-        scored_claims: dict[str, list[ScoredClaim]] = {}
+        claims: dict[str, list[Claim]] = (
+            self._load_checkpoint_claims() if phase > 1 else {}
+        )
+        scored_claims: dict[str, list[ScoredClaim]] = (
+            self._load_checkpoint_scored() if phase > 2 else {}
+        )
         scores: dict[str, StockScore] = {}
         ranked: pd.DataFrame = pd.DataFrame()
-        portfolio: dict[str, Any] = {}
+        portfolio: PortfolioResult | None = None
 
-        if phase > 1:
-            claims = self._load_checkpoint_claims()
-        if phase > 2:
-            scored_claims = self._load_checkpoint_scored()
-
-        # Execute from the specified phase onward
+        # Execute phases sequentially from the start phase
         if phase <= 1:
-            claims = self._execute_phase(
-                phase=1,
-                func=self._run_phase1_extraction,
-            )
-
+            claims = self._execute_phase(1, self._run_phase1_extraction)
         if phase <= 2:
-            scored_claims = self._execute_phase(
-                phase=2,
-                func=self._run_phase2_scoring,
-                args=(claims,),
-            )
-
+            scored_claims = self._execute_phase(2, self._run_phase2_scoring, (claims,))
         if phase <= 3:
             scores = self._aggregate_scores(scored_claims)
             ranked = self._execute_phase(
-                phase=3,
-                func=self._run_phase3_neutralization,
-                args=(scored_claims, scores),
+                3, self._run_phase3_neutralization, (scored_claims, scores)
             )
-
         if phase <= 4:
             portfolio = self._execute_phase(
-                phase=4,
-                func=self._run_phase4_portfolio_construction,
-                args=(ranked, benchmark),
+                4,
+                self._run_phase4_portfolio_construction,
+                (ranked, self._config.benchmark),
             )
-
         if phase <= 5:
             self._execute_phase(
-                phase=5,
-                func=self._run_phase5_output_generation,
-                args=(portfolio, scored_claims, scores),
+                5,
+                self._run_phase5_output_generation,
+                (portfolio, scored_claims, scores),
             )
 
         logger.info("Checkpoint resumption completed", start_phase=phase)
-
-    # -----------------------------------------------------------------------
-    # Config loading
-    # -----------------------------------------------------------------------
-    def _load_config(self) -> tuple[UniverseConfig, list[BenchmarkWeight]]:
-        """Load universe and benchmark configuration from JSON files.
-
-        Returns
-        -------
-        tuple[UniverseConfig, list[BenchmarkWeight]]
-            Parsed universe configuration and benchmark sector weights.
-
-        Raises
-        ------
-        FileNotFoundError
-            If ``universe.json`` or ``benchmark_weights.json`` is missing.
-        """
-        universe_path = self._config_path / "universe.json"
-        if not universe_path.exists():
-            msg = f"universe.json not found: {universe_path}"
-            raise FileNotFoundError(msg)
-
-        benchmark_path = self._config_path / "benchmark_weights.json"
-        if not benchmark_path.exists():
-            msg = f"benchmark_weights.json not found: {benchmark_path}"
-            raise FileNotFoundError(msg)
-
-        # Load universe
-        universe_data = json.loads(universe_path.read_text(encoding="utf-8"))
-        universe = UniverseConfig.model_validate({"tickers": universe_data["tickers"]})
-
-        # Load benchmark weights
-        benchmark_data = json.loads(benchmark_path.read_text(encoding="utf-8"))
-        weights_dict: dict[str, float] = benchmark_data["weights"]
-        benchmark = [
-            BenchmarkWeight(sector=sector, weight=weight)
-            for sector, weight in weights_dict.items()
-        ]
-
-        logger.info(
-            "Config loaded",
-            universe_size=len(universe.tickers),
-            benchmark_sectors=len(benchmark),
-        )
-
-        return universe, benchmark
 
     # -----------------------------------------------------------------------
     # Execution log
@@ -419,7 +355,7 @@ class Orchestrator:
         dict[str, list[Claim]]
             Mapping of ticker to list of extracted claims.
         """
-        universe, _benchmark = self._load_config()
+        universe = self._config.universe
         tickers = [t.ticker for t in universe.tickers]
 
         # Load transcripts
@@ -519,7 +455,7 @@ class Orchestrator:
         pd.DataFrame
             Ranked DataFrame with sector-neutral Z-scores.
         """
-        universe, _benchmark = self._load_config()
+        universe = self._config.universe
 
         # Build scores DataFrame
         scores_data = [
@@ -552,7 +488,7 @@ class Orchestrator:
         self,
         ranked: pd.DataFrame,
         benchmark: list[BenchmarkWeight],
-    ) -> dict[str, Any]:
+    ) -> PortfolioResult:
         """Execute Phase 4: portfolio construction.
 
         Parameters
@@ -564,7 +500,7 @@ class Orchestrator:
 
         Returns
         -------
-        dict
+        PortfolioResult
             Portfolio result with holdings, sector_allocations, as_of_date.
         """
         builder = PortfolioBuilder(target_size=30)
@@ -578,7 +514,7 @@ class Orchestrator:
 
         logger.info(
             "Phase 4 completed",
-            holdings_count=len(portfolio["holdings"]),
+            holdings_count=len(portfolio.holdings),
         )
 
         return portfolio
@@ -588,7 +524,7 @@ class Orchestrator:
     # -----------------------------------------------------------------------
     def _run_phase5_output_generation(
         self,
-        portfolio: dict[str, Any],
+        portfolio: PortfolioResult,
         scored_claims: dict[str, list[ScoredClaim]],
         scores: dict[str, StockScore],
     ) -> None:
@@ -596,7 +532,7 @@ class Orchestrator:
 
         Parameters
         ----------
-        portfolio : dict
+        portfolio : PortfolioResult
             Portfolio result from Phase 4.
         scored_claims : dict[str, list[ScoredClaim]]
             Scored claims from Phase 2.
@@ -637,10 +573,7 @@ class Orchestrator:
             Aggregated stock scores.
         """
         aggregator = ScoreAggregator()
-        all_claims = [
-            claim for claims_list in scored_claims.values() for claim in claims_list
-        ]
-        return aggregator.aggregate(all_claims)
+        return aggregator.aggregate(scored_claims)
 
     # -----------------------------------------------------------------------
     # Checkpoint I/O

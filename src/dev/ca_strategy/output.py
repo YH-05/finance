@@ -24,6 +24,7 @@ from utils_core.logging import get_logger
 if TYPE_CHECKING:
     from .types import (
         PortfolioHolding,
+        PortfolioResult,
         ScoredClaim,
         SectorAllocation,
         StockScore,
@@ -46,7 +47,7 @@ class OutputGenerator:
 
     def generate_all(
         self,
-        portfolio: dict,
+        portfolio: PortfolioResult,
         claims: dict[str, list[ScoredClaim]],
         scores: dict[str, StockScore],
         output_dir: Path,
@@ -55,9 +56,8 @@ class OutputGenerator:
 
         Parameters
         ----------
-        portfolio : dict
-            Portfolio result from PortfolioBuilder.build() with keys:
-            holdings, sector_allocations, as_of_date.
+        portfolio : PortfolioResult
+            Portfolio result from PortfolioBuilder.build().
         claims : dict[str, list[ScoredClaim]]
             Scored claims per ticker from Phase 2.
         scores : dict[str, StockScore]
@@ -68,9 +68,9 @@ class OutputGenerator:
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        holdings: list[PortfolioHolding] = portfolio["holdings"]
-        sector_allocations: list[SectorAllocation] = portfolio["sector_allocations"]
-        as_of_date = portfolio["as_of_date"]
+        holdings: list[PortfolioHolding] = portfolio.holdings
+        sector_allocations: list[SectorAllocation] = portfolio.sector_allocations
+        as_of_date = portfolio.as_of_date
 
         logger.info(
             "Generating output files",

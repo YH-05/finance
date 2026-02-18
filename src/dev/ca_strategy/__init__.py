@@ -12,6 +12,7 @@ from dev.ca_strategy.scorer import ClaimScorer
 from dev.ca_strategy.types import (
     Claim,
     PortfolioHolding,
+    PortfolioResult,
     ScoredClaim,
     StockScore,
     Transcript,
@@ -25,6 +26,7 @@ __all__ = [
     "CostTracker",
     "Orchestrator",
     "PortfolioHolding",
+    "PortfolioResult",
     "ScoredClaim",
     "StockScore",
     "Transcript",

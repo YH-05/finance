@@ -20,12 +20,14 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
+from dev.ca_strategy._config import ConfigRepository
 from dev.ca_strategy.orchestrator import Orchestrator
 from dev.ca_strategy.types import (
     BenchmarkWeight,
     Claim,
     ConfidenceAdjustment,
     PortfolioHolding,
+    PortfolioResult,
     RuleEvaluation,
     ScoredClaim,
     SectorAllocation,
@@ -213,10 +215,10 @@ def _make_ranked_df() -> pd.DataFrame:
     )
 
 
-def _make_portfolio_result() -> dict[str, Any]:
+def _make_portfolio_result() -> PortfolioResult:
     """Create sample portfolio result."""
-    return {
-        "holdings": [
+    return PortfolioResult(
+        holdings=[
             PortfolioHolding(
                 ticker="AAPL",
                 weight=0.6,
@@ -232,7 +234,7 @@ def _make_portfolio_result() -> dict[str, Any]:
                 rationale_summary="Sector rank 1, score 0.70",
             ),
         ],
-        "sector_allocations": [
+        sector_allocations=[
             SectorAllocation(
                 sector="Information Technology",
                 benchmark_weight=0.6,
@@ -246,8 +248,8 @@ def _make_portfolio_result() -> dict[str, Any]:
                 stock_count=1,
             ),
         ],
-        "as_of_date": date(2015, 9, 30),
-    }
+        as_of_date=date(2015, 9, 30),
+    )
 
 
 # ===========================================================================
@@ -297,16 +299,16 @@ class TestOrchestratorInit:
 
 
 # ===========================================================================
-# _load_config
+# ConfigRepository
 # ===========================================================================
-class TestLoadConfig:
-    """Config loading tests."""
+class TestConfigRepository:
+    """ConfigRepository loading tests."""
 
     def test_正常系_universe_jsonを読み込める(
         self,
         orchestrator: Orchestrator,
     ) -> None:
-        universe, _benchmark = orchestrator._load_config()
+        universe = orchestrator._config.universe
         assert isinstance(universe, UniverseConfig)
         assert len(universe.tickers) == 3
 
@@ -314,7 +316,7 @@ class TestLoadConfig:
         self,
         orchestrator: Orchestrator,
     ) -> None:
-        _universe, benchmark = orchestrator._load_config()
+        benchmark = orchestrator._config.benchmark
         assert isinstance(benchmark, list)
         assert len(benchmark) == 2
         assert all(isinstance(bw, BenchmarkWeight) for bw in benchmark)
@@ -323,7 +325,7 @@ class TestLoadConfig:
         self,
         orchestrator: Orchestrator,
     ) -> None:
-        universe, _benchmark = orchestrator._load_config()
+        universe = orchestrator._config.universe
         tickers = {t.ticker for t in universe.tickers}
         assert tickers == {"AAPL", "MSFT", "JPM"}
 
@@ -331,39 +333,27 @@ class TestLoadConfig:
         self,
         orchestrator: Orchestrator,
     ) -> None:
-        _universe, benchmark = orchestrator._load_config()
+        benchmark = orchestrator._config.benchmark
         total = sum(bw.weight for bw in benchmark)
         assert abs(total - 1.0) < 1e-10
 
     def test_異常系_universe_jsonが存在しない場合FileNotFoundError(
         self,
         config_dir: Path,
-        kb_base_dir: Path,
-        workspace_dir: Path,
     ) -> None:
         (config_dir / "universe.json").unlink()
-        orch = Orchestrator(
-            config_path=config_dir,
-            kb_base_dir=kb_base_dir,
-            workspace_dir=workspace_dir,
-        )
+        repo = ConfigRepository(config_dir)
         with pytest.raises(FileNotFoundError, match=r"universe\.json"):
-            orch._load_config()
+            _ = repo.universe
 
     def test_異常系_benchmark_weights_jsonが存在しない場合FileNotFoundError(
         self,
         config_dir: Path,
-        kb_base_dir: Path,
-        workspace_dir: Path,
     ) -> None:
         (config_dir / "benchmark_weights.json").unlink()
-        orch = Orchestrator(
-            config_path=config_dir,
-            kb_base_dir=kb_base_dir,
-            workspace_dir=workspace_dir,
-        )
+        repo = ConfigRepository(config_dir)
         with pytest.raises(FileNotFoundError, match=r"benchmark_weights\.json"):
-            orch._load_config()
+            _ = repo.benchmark
 
 
 # ===========================================================================
@@ -440,10 +430,8 @@ class TestRunFullPipeline:
     @patch.object(Orchestrator, "_run_phase3_neutralization")
     @patch.object(Orchestrator, "_run_phase2_scoring")
     @patch.object(Orchestrator, "_run_phase1_extraction")
-    @patch.object(Orchestrator, "_load_config")
     def test_正常系_Phase1から5が順序通りに実行される(
         self,
-        mock_load_config: MagicMock,
         mock_phase1: MagicMock,
         mock_phase2: MagicMock,
         mock_phase3: MagicMock,
@@ -452,13 +440,6 @@ class TestRunFullPipeline:
         orchestrator: Orchestrator,
     ) -> None:
         # Setup return values
-        universe = UniverseConfig(
-            tickers=[
-                UniverseTicker(ticker="AAPL", gics_sector="Information Technology"),
-            ]
-        )
-        benchmark = [BenchmarkWeight(sector="Information Technology", weight=1.0)]
-        mock_load_config.return_value = (universe, benchmark)
         mock_phase1.return_value = _make_claims()
         mock_phase2.return_value = _make_scored_claims()
         mock_phase3.return_value = _make_ranked_df()
@@ -466,7 +447,6 @@ class TestRunFullPipeline:
 
         orchestrator.run_full_pipeline()
 
-        mock_load_config.assert_called_once()
         mock_phase1.assert_called_once()
         mock_phase2.assert_called_once()
         mock_phase3.assert_called_once()
@@ -478,10 +458,8 @@ class TestRunFullPipeline:
     @patch.object(Orchestrator, "_run_phase3_neutralization")
     @patch.object(Orchestrator, "_run_phase2_scoring")
     @patch.object(Orchestrator, "_run_phase1_extraction")
-    @patch.object(Orchestrator, "_load_config")
     def test_正常系_Phase1の出力がPhase2に渡される(
         self,
-        mock_load_config: MagicMock,
         mock_phase1: MagicMock,
         mock_phase2: MagicMock,
         mock_phase3: MagicMock,
@@ -489,13 +467,6 @@ class TestRunFullPipeline:
         mock_phase5: MagicMock,
         orchestrator: Orchestrator,
     ) -> None:
-        universe = UniverseConfig(
-            tickers=[
-                UniverseTicker(ticker="AAPL", gics_sector="Information Technology"),
-            ]
-        )
-        benchmark = [BenchmarkWeight(sector="Information Technology", weight=1.0)]
-        mock_load_config.return_value = (universe, benchmark)
         claims = _make_claims()
         mock_phase1.return_value = claims
         mock_phase2.return_value = _make_scored_claims()
@@ -508,21 +479,12 @@ class TestRunFullPipeline:
         mock_phase2.assert_called_once_with(claims)
 
     @patch.object(Orchestrator, "_run_phase1_extraction")
-    @patch.object(Orchestrator, "_load_config")
     def test_異常系_Phase1でエラーが発生した場合ログに記録される(
         self,
-        mock_load_config: MagicMock,
         mock_phase1: MagicMock,
         orchestrator: Orchestrator,
         workspace_dir: Path,
     ) -> None:
-        universe = UniverseConfig(
-            tickers=[
-                UniverseTicker(ticker="AAPL", gics_sector="Information Technology"),
-            ]
-        )
-        benchmark = [BenchmarkWeight(sector="Information Technology", weight=1.0)]
-        mock_load_config.return_value = (universe, benchmark)
         mock_phase1.side_effect = RuntimeError("Phase 1 failed")
 
         with pytest.raises(RuntimeError, match="Phase 1 failed"):
@@ -546,10 +508,8 @@ class TestRunFromCheckpoint:
     @patch.object(Orchestrator, "_run_phase3_neutralization")
     @patch.object(Orchestrator, "_run_phase2_scoring")
     @patch.object(Orchestrator, "_run_phase1_extraction")
-    @patch.object(Orchestrator, "_load_config")
     def test_正常系_phase3から再開するとphase1と2はスキップされる(
         self,
-        mock_load_config: MagicMock,
         mock_phase1: MagicMock,
         mock_phase2: MagicMock,
         mock_phase3: MagicMock,
@@ -558,14 +518,6 @@ class TestRunFromCheckpoint:
         orchestrator: Orchestrator,
         workspace_dir: Path,
     ) -> None:
-        universe = UniverseConfig(
-            tickers=[
-                UniverseTicker(ticker="AAPL", gics_sector="Information Technology"),
-            ]
-        )
-        benchmark = [BenchmarkWeight(sector="Information Technology", weight=1.0)]
-        mock_load_config.return_value = (universe, benchmark)
-
         # Write checkpoint data for phase1 and phase2
         checkpoint_dir = workspace_dir / "checkpoints"
         checkpoint_dir.mkdir()
@@ -673,29 +625,9 @@ class TestPhase3Neutralization:
         scored = _make_scored_claims()
         scores = _make_stock_scores()
 
-        with (
-            patch.object(
-                orchestrator,
-                "_load_config",
-                return_value=(
-                    UniverseConfig(
-                        tickers=[
-                            UniverseTicker(
-                                ticker="AAPL", gics_sector="Information Technology"
-                            ),
-                            UniverseTicker(ticker="JPM", gics_sector="Financials"),
-                        ]
-                    ),
-                    [
-                        BenchmarkWeight(sector="Information Technology", weight=0.6),
-                        BenchmarkWeight(sector="Financials", weight=0.4),
-                    ],
-                ),
-            ),
-            patch(
-                "dev.ca_strategy.orchestrator.SectorNeutralizer"
-            ) as mock_neutralizer_cls,
-        ):
+        with patch(
+            "dev.ca_strategy.orchestrator.SectorNeutralizer"
+        ) as mock_neutralizer_cls:
             mock_neutralizer = MagicMock()
             mock_neutralizer.neutralize.return_value = _make_ranked_df()
             mock_neutralizer_cls.return_value = mock_neutralizer
@@ -723,8 +655,8 @@ class TestPhase4PortfolioConstruction:
             mock_builder_cls.return_value = mock_builder
 
             result = orchestrator._run_phase4_portfolio_construction(ranked, benchmark)
-            assert "holdings" in result
-            assert "sector_allocations" in result
+            assert len(result.holdings) > 0
+            assert len(result.sector_allocations) > 0
 
 
 class TestPhase5OutputGeneration:

@@ -20,6 +20,7 @@ from dev.ca_strategy.portfolio_builder import PortfolioBuilder
 from dev.ca_strategy.types import (
     BenchmarkWeight,
     PortfolioHolding,
+    PortfolioResult,
     SectorAllocation,
     StockScore,
 )
@@ -129,9 +130,9 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        assert "holdings" in result
-        assert "sector_allocations" in result
-        assert len(result["holdings"]) > 0
+        assert isinstance(result, PortfolioResult)
+        assert len(result.holdings) > 0
+        assert len(result.sector_allocations) > 0
 
     def test_正常系_holdingsがPortfolioHolding型で返される(self) -> None:
         builder = PortfolioBuilder(target_size=6)
@@ -144,7 +145,7 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        for h in result["holdings"]:
+        for h in result.holdings:
             assert isinstance(h, PortfolioHolding)
 
     def test_正常系_sector_allocationsがSectorAllocation型で返される(self) -> None:
@@ -158,7 +159,7 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        for sa in result["sector_allocations"]:
+        for sa in result.sector_allocations:
             assert isinstance(sa, SectorAllocation)
 
     # -----------------------------------------------------------------------
@@ -175,7 +176,7 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        total_weight = sum(h.weight for h in result["holdings"])
+        total_weight = sum(h.weight for h in result.holdings)
         assert total_weight == pytest.approx(1.0, abs=1e-9)
 
     # -----------------------------------------------------------------------
@@ -193,7 +194,7 @@ class TestPortfolioBuilder:
         )
 
         sector_weights: dict[str, float] = {}
-        for h in result["holdings"]:
+        for h in result.holdings:
             sector_weights[h.sector] = sector_weights.get(h.sector, 0.0) + h.weight
 
         # Each sector's actual weight should approximate the benchmark
@@ -221,7 +222,7 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        tickers = {h.ticker for h in result["holdings"]}
+        tickers = {h.ticker for h in result.holdings}
         # Top IT stocks should be selected (AAPL, MSFT are top-2)
         # At minimum, AAPL should be included as the highest scorer in IT
         assert "AAPL" in tickers
@@ -239,7 +240,7 @@ class TestPortfolioBuilder:
 
         # Within each sector, higher-score stocks should have higher weights
         sector_holdings: dict[str, list[PortfolioHolding]] = {}
-        for h in result["holdings"]:
+        for h in result.holdings:
             sector_holdings.setdefault(h.sector, []).append(h)
 
         for sector, holdings in sector_holdings.items():
@@ -266,8 +267,9 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        assert result["holdings"] == []
-        assert result["sector_allocations"] == []
+        assert isinstance(result, PortfolioResult)
+        assert result.holdings == []
+        assert result.sector_allocations == []
 
     def test_エッジケース_セクターの銘柄数が不足しても動作する(self) -> None:
         builder = PortfolioBuilder(target_size=30)
@@ -287,8 +289,8 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        assert len(result["holdings"]) == 3
-        total_weight = sum(h.weight for h in result["holdings"])
+        assert len(result.holdings) == 3
+        total_weight = sum(h.weight for h in result.holdings)
         assert total_weight == pytest.approx(1.0, abs=1e-9)
 
     def test_エッジケース_ベンチマークに含まれないセクターの銘柄は除外される(
@@ -313,7 +315,7 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        tickers = {h.ticker for h in result["holdings"]}
+        tickers = {h.ticker for h in result.holdings}
         assert "JNJ" not in tickers
 
     def test_正常系_as_of_dateが結果に含まれる(self) -> None:
@@ -327,7 +329,7 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        assert result["as_of_date"] == date(2015, 9, 30)
+        assert result.as_of_date == date(2015, 9, 30)
 
     def test_正常系_holdingsのweight_scoreが0_0から1_0の範囲内(self) -> None:
         builder = PortfolioBuilder(target_size=6)
@@ -340,6 +342,6 @@ class TestPortfolioBuilder:
             as_of_date=date(2015, 9, 30),
         )
 
-        for h in result["holdings"]:
+        for h in result.holdings:
             assert 0.0 <= h.weight <= 1.0, f"{h.ticker}: weight={h.weight}"
             assert 0.0 <= h.score <= 1.0, f"{h.ticker}: score={h.score}"

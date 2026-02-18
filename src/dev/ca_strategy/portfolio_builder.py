@@ -15,7 +15,7 @@ Algorithm
 
 Output
 ------
-Returns a dict with:
+Returns a PortfolioResult with:
 - ``holdings``: list[PortfolioHolding]
 - ``sector_allocations``: list[SectorAllocation]
 - ``as_of_date``: date
@@ -29,7 +29,7 @@ from datetime import date  # noqa: TC003 - required at runtime
 
 from utils_core.logging import get_logger
 
-from .types import BenchmarkWeight, PortfolioHolding, SectorAllocation
+from .types import BenchmarkWeight, PortfolioHolding, PortfolioResult, SectorAllocation
 
 logger = get_logger(__name__)
 
@@ -58,7 +58,7 @@ class PortfolioBuilder:
     --------
     >>> builder = PortfolioBuilder(target_size=30)
     >>> result = builder.build(ranked, benchmark, date(2015, 9, 30))
-    >>> sum(h.weight for h in result["holdings"])
+    >>> sum(h.weight for h in result.holdings)
     1.0
     """
 
@@ -71,7 +71,7 @@ class PortfolioBuilder:
         ranked: list[dict],
         benchmark: list[BenchmarkWeight],
         as_of_date: date,
-    ) -> dict:
+    ) -> PortfolioResult:
         """Construct a portfolio from ranked stocks and benchmark weights.
 
         Parameters
@@ -86,16 +86,16 @@ class PortfolioBuilder:
 
         Returns
         -------
-        dict
-            Dictionary with keys: holdings, sector_allocations, as_of_date.
+        PortfolioResult
+            Portfolio result with holdings, sector_allocations, as_of_date.
         """
         if not ranked:
             logger.info("No ranked stocks provided, returning empty portfolio")
-            return {
-                "holdings": [],
-                "sector_allocations": [],
-                "as_of_date": as_of_date,
-            }
+            return PortfolioResult(
+                holdings=[],
+                sector_allocations=[],
+                as_of_date=as_of_date,
+            )
 
         # Build benchmark weight map
         benchmark_map = {bw.sector: bw.weight for bw in benchmark}
@@ -173,11 +173,11 @@ class PortfolioBuilder:
             total_weight=sum(h.weight for h in holdings),
         )
 
-        return {
-            "holdings": holdings,
-            "sector_allocations": sector_allocations,
-            "as_of_date": as_of_date,
-        }
+        return PortfolioResult(
+            holdings=holdings,
+            sector_allocations=sector_allocations,
+            as_of_date=as_of_date,
+        )
 
     # -----------------------------------------------------------------------
     # Internal methods

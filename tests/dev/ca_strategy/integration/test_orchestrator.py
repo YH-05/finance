@@ -76,7 +76,7 @@ def full_workspace_dir(tmp_path: Path) -> Path:
 # Config loading integration
 # ===========================================================================
 class TestConfigLoadingIntegration:
-    """Config loading from real JSON files."""
+    """Config loading from real JSON files via ConfigRepository."""
 
     def test_正常系_configファイルからuniverseとbenchmarkを読み込める(
         self,
@@ -90,7 +90,8 @@ class TestConfigLoadingIntegration:
             workspace_dir=full_workspace_dir,
         )
 
-        universe, benchmark = orch._load_config()
+        universe = orch._config.universe
+        benchmark = orch._config.benchmark
 
         assert len(universe.tickers) == 3
         assert len(benchmark) == 2

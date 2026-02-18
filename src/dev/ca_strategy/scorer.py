@@ -26,10 +26,17 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import anthropic
 
+from dev.ca_strategy._llm_utils import (
+    extract_text_from_response,
+    load_directory,
+    load_file,
+    strip_code_block,
+)
+from dev.ca_strategy.batch import BatchProcessor
 from dev.ca_strategy.types import (
     ConfidenceAdjustment,
     ScoredClaim,
@@ -90,6 +97,10 @@ class ClaimScorer:
         CostTracker instance for recording token usage.
     model : str, optional
         Claude model ID to use.  Defaults to Sonnet 4.
+    client : anthropic.Anthropic | None, optional
+        Pre-configured Anthropic client instance for dependency injection
+        (DIP-001).  If None, a new client is created using the
+        ``ANTHROPIC_API_KEY`` environment variable.
 
     Examples
     --------
@@ -111,6 +122,7 @@ class ClaimScorer:
         dogma_path: Path | str,
         cost_tracker: CostTracker,
         model: str = _MODEL,
+        client: anthropic.Anthropic | None = None,
     ) -> None:
         self._kb1_dir = Path(kb1_dir)
         self._kb2_dir = Path(kb2_dir)
@@ -118,13 +130,18 @@ class ClaimScorer:
         self._dogma_path = Path(dogma_path)
         self._cost_tracker = cost_tracker
         self._model = model
-        self._client = anthropic.Anthropic()
+        self._client = client or anthropic.Anthropic()
 
         # Load knowledge base files
-        self._kb1_rules = self._load_directory(self._kb1_dir)
-        self._kb2_patterns = self._load_directory(self._kb2_dir)
-        self._kb3_examples = self._load_directory(self._kb3_dir)
-        self._dogma = self._load_file(self._dogma_path)
+        self._kb1_rules = load_directory(self._kb1_dir)
+        self._kb2_patterns = load_directory(self._kb2_dir)
+        self._kb3_examples = load_directory(self._kb3_dir)
+        self._dogma = load_file(self._dogma_path)
+
+        # Cache sorted KB items for prompt construction (PERF-003)
+        self._sorted_kb1_rules = sorted(self._kb1_rules.items())
+        self._sorted_kb2_patterns = sorted(self._kb2_patterns.items())
+        self._sorted_kb3_examples = sorted(self._kb3_examples.items())
 
         logger.info(
             "ClaimScorer initialized",
@@ -169,25 +186,39 @@ class ClaimScorer:
         total_tickers = len(claims)
         logger.info("Batch scoring started", ticker_count=total_tickers)
 
-        for ticker, ticker_claims in claims.items():
+        def _process_ticker(ticker: str) -> list[ScoredClaim]:
             scored = self._score_single_ticker(
-                claims=ticker_claims,
+                claims=claims[ticker],
                 ticker=ticker,
             )
-            result[ticker] = scored
-
             if output_dir is not None:
                 self._save_scored_claims(
                     scored_claims=scored,
                     ticker=ticker,
                     output_dir=output_dir,
                 )
+            return scored
 
-            logger.debug(
-                "Ticker scoring completed",
-                ticker=ticker,
-                scored_count=len(scored),
-            )
+        processor: BatchProcessor[str, list[ScoredClaim]] = BatchProcessor(
+            process_fn=_process_ticker,
+            max_workers=5,
+            max_retries=1,
+        )
+        batch_results = processor.process(
+            items=list(claims.keys()),
+            desc="Scoring claims",
+        )
+
+        for ticker, batch_result in batch_results.items():
+            if isinstance(batch_result, Exception):
+                logger.warning(
+                    "Ticker scoring failed",
+                    ticker=ticker,
+                    error=str(batch_result),
+                )
+                result[ticker] = []
+            else:
+                result[ticker] = batch_result
 
         total_scored = sum(len(v) for v in result.values())
         logger.info(
@@ -256,7 +287,7 @@ class ClaimScorer:
             )
 
             # Extract text from response
-            response_text = self._extract_text_from_response(message)
+            response_text = extract_text_from_response(message)
             if not response_text:
                 logger.warning("Empty LLM response", ticker=ticker)
                 return []
@@ -333,19 +364,19 @@ class ClaimScorer:
 
         # 2. KB1-T rules
         parts.append("## KB1-T ルール集（全ルール）\n")
-        for name, content in sorted(self._kb1_rules.items()):
+        for name, content in self._sorted_kb1_rules:
             parts.append(f"### {name}\n\n{content}\n")
 
         # 3. KB2-T patterns
         parts.append("## KB2-T パターン集\n")
         parts.append("### 却下パターン（pattern_A〜pattern_G）: -10〜-30%\n")
         parts.append("### 高評価パターン（pattern_I〜pattern_V）: +10〜+30%\n\n")
-        for name, content in sorted(self._kb2_patterns.items()):
+        for name, content in self._sorted_kb2_patterns:
             parts.append(f"### {name}\n\n{content}\n")
 
         # 4. KB3-T few-shot examples
         parts.append("## KB3-T few-shot 評価例\n")
-        for name, content in sorted(self._kb3_examples.items()):
+        for name, content in self._sorted_kb3_examples:
             parts.append(f"### {name}\n\n{content}\n")
 
         # 5. Dogma
@@ -448,13 +479,14 @@ class ClaimScorer:
         list[ScoredClaim]
             Parsed ScoredClaim models.
         """
-        cleaned = self._strip_code_block(response_text)
+        cleaned = strip_code_block(response_text)
 
         try:
             data = json.loads(cleaned)
         except json.JSONDecodeError:
-            logger.warning(
-                "Failed to parse scoring response as JSON",
+            logger.warning("Failed to parse scoring response as JSON")
+            logger.debug(
+                "Scoring response preview for debugging",
                 response_preview=response_text[:200],
             )
             return []
@@ -482,14 +514,14 @@ class ClaimScorer:
 
     def _parse_single_scored_claim(
         self,
-        raw: dict,
+        raw: dict[str, Any],
         claim_lookup: dict[str, Claim],
     ) -> ScoredClaim | None:
         """Parse a single raw scored claim dict into a ScoredClaim model.
 
         Parameters
         ----------
-        raw : dict
+        raw : dict[str, Any]
             Raw scored claim data from LLM response.
         claim_lookup : dict[str, Claim]
             Mapping of claim ID to original Claim for fallback data.
@@ -565,111 +597,6 @@ class ClaimScorer:
     # -----------------------------------------------------------------------
     # Internal: file I/O
     # -----------------------------------------------------------------------
-    @staticmethod
-    def _load_directory(directory: Path) -> dict[str, str]:
-        """Load all markdown files from a directory.
-
-        Parameters
-        ----------
-        directory : Path
-            Directory containing .md files.
-
-        Returns
-        -------
-        dict[str, str]
-            Mapping of filename (without extension) to file content.
-        """
-        result: dict[str, str] = {}
-        if not directory.exists():
-            logger.warning("Directory not found", path=str(directory))
-            return result
-
-        for filepath in sorted(directory.glob("*.md")):
-            try:
-                content = filepath.read_text(encoding="utf-8")
-                result[filepath.stem] = content
-                logger.debug(
-                    "KB file loaded",
-                    file=filepath.name,
-                    length=len(content),
-                )
-            except OSError:
-                logger.warning(
-                    "Failed to read KB file",
-                    path=str(filepath),
-                    exc_info=True,
-                )
-
-        return result
-
-    @staticmethod
-    def _load_file(filepath: Path) -> str:
-        """Load a single text file.
-
-        Parameters
-        ----------
-        filepath : Path
-            Path to the file.
-
-        Returns
-        -------
-        str
-            File content, or empty string if the file does not exist.
-        """
-        if not filepath.exists():
-            logger.warning("File not found", path=str(filepath))
-            return ""
-
-        try:
-            return filepath.read_text(encoding="utf-8")
-        except OSError:
-            logger.warning(
-                "Failed to read file",
-                path=str(filepath),
-                exc_info=True,
-            )
-            return ""
-
-    @staticmethod
-    def _extract_text_from_response(message: anthropic.types.Message) -> str:
-        """Extract text content from a Claude API response.
-
-        Parameters
-        ----------
-        message : anthropic.types.Message
-            The API response message.
-
-        Returns
-        -------
-        str
-            Concatenated text content from all TextBlock content blocks.
-        """
-        texts: list[str] = []
-        for block in message.content:
-            if hasattr(block, "text"):
-                texts.append(block.text)
-        return "\n".join(texts)
-
-    @staticmethod
-    def _strip_code_block(text: str) -> str:
-        """Strip markdown code block delimiters from text.
-
-        Parameters
-        ----------
-        text : str
-            Text that may be wrapped in code block markers.
-
-        Returns
-        -------
-        str
-            Text with code block markers removed.
-        """
-        pattern = r"```(?:json)?\s*\n?(.*?)\n?\s*```"
-        match = re.search(pattern, text, re.DOTALL)
-        if match:
-            return match.group(1).strip()
-        return text.strip()
-
     def _save_scored_claims(
         self,
         scored_claims: list[ScoredClaim],

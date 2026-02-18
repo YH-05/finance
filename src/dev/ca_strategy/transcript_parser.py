@@ -61,6 +61,13 @@ SECTION_TYPE_MAP: dict[str, str] = {
 MONTH_FILE_PATTERN = re.compile(r"list_transcript_(\d{4})-(\d{2})\.json$")
 """Pattern for matching monthly transcript filenames."""
 
+_SAFE_TICKER_PATTERN = re.compile(r"^[A-Z0-9./]{1,10}$")
+"""Pattern for validating ticker symbols used in file path construction.
+
+Allows uppercase letters, digits, dots (BRK.B), and forward slashes.
+Rejects path traversal characters like ``..``, ``/..``, or ``~``.
+"""
+
 
 # ---------------------------------------------------------------------------
 # Data classes
@@ -305,9 +312,10 @@ class TranscriptParser:
             )
             return False
 
-        # Extract ticker
+        # Extract and sanitize ticker
         bloomberg_ticker = record.get("Bloomberg_Ticker", "")
         ticker = self._resolve_ticker(bloomberg_ticker)
+        ticker = self._sanitize_ticker(ticker)
 
         # Parse sections
         sections = self._parse_sections(text2, text4)
@@ -396,6 +404,32 @@ class TranscriptParser:
             )
 
         return raw_ticker
+
+    @staticmethod
+    def _sanitize_ticker(ticker: str) -> str:
+        """Sanitize ticker symbol for safe use in file path construction.
+
+        Validates that the ticker matches the expected pattern
+        (uppercase letters, digits, dots, forward slashes, max 10 chars).
+        Returns "INVALID" for tickers that fail validation.
+
+        Parameters
+        ----------
+        ticker : str
+            Ticker symbol to sanitize.
+
+        Returns
+        -------
+        str
+            Sanitized ticker, or "INVALID" if the input is unsafe.
+        """
+        if not ticker or not _SAFE_TICKER_PATTERN.match(ticker):
+            logger.warning(
+                "Ticker failed sanitization, using INVALID placeholder",
+                original_ticker=ticker,
+            )
+            return "INVALID"
+        return ticker
 
     @staticmethod
     def _parse_sections(text2: str, text4: str) -> list[dict[str, str | None]]:

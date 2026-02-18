@@ -217,9 +217,36 @@ class CostTracker:
         phases = data.get("phases", {})
         for phase_name, phase_data in phases.items():
             record = _PhaseRecord()
-            record.tokens_input = phase_data.get("tokens_input", 0)
-            record.tokens_output = phase_data.get("tokens_output", 0)
-            record.cost = phase_data.get("cost", 0.0)
+            tokens_input = phase_data.get("tokens_input", 0)
+            tokens_output = phase_data.get("tokens_output", 0)
+            cost = phase_data.get("cost", 0.0)
+
+            # Validate loaded values
+            if not isinstance(tokens_input, int) or tokens_input < 0:
+                logger.warning(
+                    "Invalid tokens_input in checkpoint, using 0",
+                    phase=phase_name,
+                    value=tokens_input,
+                )
+                tokens_input = 0
+            if not isinstance(tokens_output, int) or tokens_output < 0:
+                logger.warning(
+                    "Invalid tokens_output in checkpoint, using 0",
+                    phase=phase_name,
+                    value=tokens_output,
+                )
+                tokens_output = 0
+            if not isinstance(cost, (int, float)) or cost < 0:
+                logger.warning(
+                    "Invalid cost in checkpoint, using 0.0",
+                    phase=phase_name,
+                    value=cost,
+                )
+                cost = 0.0
+
+            record.tokens_input = tokens_input
+            record.tokens_output = tokens_output
+            record.cost = float(cost)
             tracker._phases[phase_name] = record
 
         logger.debug(

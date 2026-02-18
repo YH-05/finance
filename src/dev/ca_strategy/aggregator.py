@@ -21,8 +21,6 @@ claim_i.  For CAGR-connection claims, the final score receives a
 
 from __future__ import annotations
 
-from collections import defaultdict
-
 from utils_core.logging import get_logger
 
 from .types import ScoredClaim, StockScore
@@ -94,39 +92,37 @@ class ScoreAggregator:
 
     def aggregate(
         self,
-        scored_claims: list[ScoredClaim],
+        scored_claims_by_ticker: dict[str, list[ScoredClaim]],
     ) -> dict[str, StockScore]:
         """Aggregate scored claims into per-stock scores.
 
         Parameters
         ----------
-        scored_claims : list[ScoredClaim]
-            List of scored claims from Phase 2.
+        scored_claims_by_ticker : dict[str, list[ScoredClaim]]
+            Mapping of ticker to list of scored claims from Phase 2.
+            Using explicit ticker keys avoids incorrect extraction from
+            claim IDs containing hyphens (e.g. BRK-B).
 
         Returns
         -------
         dict[str, StockScore]
             Mapping of ticker to aggregated StockScore.
         """
-        if not scored_claims:
+        if not scored_claims_by_ticker:
             logger.info("No scored claims to aggregate")
             return {}
 
-        # Group claims by ticker
-        claims_by_ticker: dict[str, list[ScoredClaim]] = defaultdict(list)
-        for claim in scored_claims:
-            ticker = self._extract_ticker(claim.id)
-            claims_by_ticker[ticker].append(claim)
-
+        total_claims = sum(len(v) for v in scored_claims_by_ticker.values())
         logger.info(
             "Aggregating claims",
-            total_claims=len(scored_claims),
-            unique_tickers=len(claims_by_ticker),
+            total_claims=total_claims,
+            unique_tickers=len(scored_claims_by_ticker),
         )
 
         results: dict[str, StockScore] = {}
-        for ticker, claims in claims_by_ticker.items():
-            results[ticker] = self._aggregate_ticker(ticker, claims)
+        for ticker, claims in scored_claims_by_ticker.items():
+            if claims:
+                results[ticker] = self._aggregate_ticker(ticker, claims)
 
         return results
 
@@ -224,25 +220,23 @@ class ScoreAggregator:
         return max_weight
 
     def _is_structural(self, claim: ScoredClaim) -> bool:
-        """Check if a claim is structural (rule 6 or rule 11)."""
-        return bool(_STRUCTURAL_RULES.intersection(claim.rule_evaluation.applied_rules))
+        """Check if a claim has structural advantage rules applied.
 
-    def _extract_ticker(self, claim_id: str) -> str:
-        """Extract ticker symbol from a claim ID.
-
-        Claim IDs follow the format '{TICKER}-{suffix}'.
+        A claim is considered structural if it has rule 6 (structural
+        advantage) or rule 11 (industry structure match) in its applied
+        rules.
 
         Parameters
         ----------
-        claim_id : str
-            The claim identifier.
+        claim : ScoredClaim
+            The scored claim to check.
 
         Returns
         -------
-        str
-            Extracted ticker symbol.
+        bool
+            True if any structural rule was applied.
         """
-        return claim_id.split("-")[0]
+        return bool(_STRUCTURAL_RULES.intersection(claim.rule_evaluation.applied_rules))
 
 
 __all__ = ["ScoreAggregator"]

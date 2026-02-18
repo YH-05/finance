@@ -205,6 +205,8 @@ class BatchProcessor[T, R]:
         for attempt in range(self._max_retries + 1):
             try:
                 return self._process_fn(item)
+            except (ValueError, TypeError) as exc:
+                raise  # Don't retry validation errors
             except Exception as exc:
                 last_exception = exc
                 if attempt < self._max_retries:

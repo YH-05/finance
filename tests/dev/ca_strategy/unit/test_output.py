@@ -21,6 +21,7 @@ from dev.ca_strategy.types import (
     BenchmarkWeight,
     ConfidenceAdjustment,
     PortfolioHolding,
+    PortfolioResult,
     RuleEvaluation,
     ScoredClaim,
     SectorAllocation,
@@ -184,13 +185,13 @@ def _make_stock_scores() -> dict[str, StockScore]:
     }
 
 
-def _make_portfolio_result() -> dict:
-    """Create a complete portfolio result dict."""
-    return {
-        "holdings": _make_holdings(),
-        "sector_allocations": _make_sector_allocations(),
-        "as_of_date": date(2015, 9, 30),
-    }
+def _make_portfolio_result() -> PortfolioResult:
+    """Create a complete portfolio result."""
+    return PortfolioResult(
+        holdings=_make_holdings(),
+        sector_allocations=_make_sector_allocations(),
+        as_of_date=date(2015, 9, 30),
+    )
 
 
 # ===========================================================================
@@ -410,11 +411,11 @@ class TestOutputGenerator:
     ) -> None:
         gen = OutputGenerator()
         gen.generate_all(
-            portfolio={
-                "holdings": [],
-                "sector_allocations": [],
-                "as_of_date": date(2015, 9, 30),
-            },
+            portfolio=PortfolioResult(
+                holdings=[],
+                sector_allocations=[],
+                as_of_date=date(2015, 9, 30),
+            ),
             claims={},
             scores={},
             output_dir=tmp_path,

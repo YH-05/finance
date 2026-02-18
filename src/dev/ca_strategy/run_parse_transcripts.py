@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re as _re
 import shutil
 import sys
 import tempfile
@@ -49,6 +50,17 @@ DEFAULT_OUTPUT_DIR = Path("research/ca_strategy_poc/transcripts")
 DEFAULT_TICKER_MAPPING = Path("research/ca_strategy_poc/config/ticker_mapping.json")
 DEFAULT_START_MONTH = "2015-01"
 DEFAULT_END_MONTH = "2015-09"
+
+
+_MONTH_FORMAT = _re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
+
+
+def _validate_month(value: str) -> str:
+    """Validate YYYY-MM month format."""
+    if not _MONTH_FORMAT.match(value):
+        msg = f"Invalid month format: {value!r}. Expected YYYY-MM (e.g. 2015-01)"
+        raise argparse.ArgumentTypeError(msg)
+    return value
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -82,13 +94,13 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--start-month",
-        type=str,
+        type=_validate_month,
         default=DEFAULT_START_MONTH,
         help=f"Start month in YYYY-MM format (default: {DEFAULT_START_MONTH})",
     )
     parser.add_argument(
         "--end-month",
-        type=str,
+        type=_validate_month,
         default=DEFAULT_END_MONTH,
         help=f"End month in YYYY-MM format (default: {DEFAULT_END_MONTH})",
     )
