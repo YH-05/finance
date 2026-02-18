@@ -1,0 +1,2428 @@
+{
+  "_metadata": {
+    "description": "投資ユニバース（MSCI Kokusai / ACWI ex Japan準拠、2015年Q3時点）",
+    "as_of_date": "2015-09-30",
+    "benchmark": "MSCI Kokusai (MSCI World ex Japan)",
+    "total_count": 300,
+    "note": "transcript.py、neutralizer.py、portfolio_builder.pyが参照する300銘柄ユニバース。GICSセクター分類は2015年基準（Real EstateはFinancials内、Communication ServicesはTelecommunication Servicesと表記）。",
+    "sector_counts": {
+      "Consumer Discretionary": 36,
+      "Consumer Staples": 27,
+      "Energy": 21,
+      "Financials": 61,
+      "Health Care": 42,
+      "Industrials": 33,
+      "Information Technology": 56,
+      "Materials": 9,
+      "Telecommunication Services": 12,
+      "Utilities": 3
+    }
+  },
+  "tickers": [
+    {
+      "ticker": "AAPL",
+      "company_name": "Apple Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2046251"
+    },
+    {
+      "ticker": "MSFT",
+      "company_name": "Microsoft Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "5032694"
+    },
+    {
+      "ticker": "GOOGL",
+      "company_name": "Alphabet Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "BYVY8G0"
+    },
+    {
+      "ticker": "FB",
+      "company_name": "Facebook, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "B7TL820"
+    },
+    {
+      "ticker": "ORCL",
+      "company_name": "Oracle Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2661568"
+    },
+    {
+      "ticker": "INTC",
+      "company_name": "Intel Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2463247"
+    },
+    {
+      "ticker": "QCOM",
+      "company_name": "Qualcomm Incorporated",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2714923"
+    },
+    {
+      "ticker": "IBM",
+      "company_name": "International Business Machines Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2005973"
+    },
+    {
+      "ticker": "CSCO",
+      "company_name": "Cisco Systems, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2198167"
+    },
+    {
+      "ticker": "SAP",
+      "company_name": "SAP SE",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "DE",
+      "sedol": "5765418"
+    },
+    {
+      "ticker": "ACN",
+      "company_name": "Accenture plc",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "IE",
+      "sedol": "B4BNMY3"
+    },
+    {
+      "ticker": "TXN",
+      "company_name": "Texas Instruments Incorporated",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2895811"
+    },
+    {
+      "ticker": "AVGO",
+      "company_name": "Broadcom Limited",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "SG",
+      "sedol": "B3Z1N60"
+    },
+    {
+      "ticker": "ALTR",
+      "company_name": "Altera Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2024709",
+      "bloomberg_ticker": "1541931D US Equity"
+    },
+    {
+      "ticker": "CA",
+      "company_name": "CA, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2326248",
+      "bloomberg_ticker": "2326248D US Equity"
+    },
+    {
+      "ticker": "APH",
+      "company_name": "Amphenol Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2048812"
+    },
+    {
+      "ticker": "FFIV",
+      "company_name": "F5, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2702893"
+    },
+    {
+      "ticker": "EMC",
+      "company_name": "Dell EMC",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2258717",
+      "bloomberg_ticker": "2258717D US Equity"
+    },
+    {
+      "ticker": "MSI",
+      "company_name": "Motorola Solutions, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "B611BD2"
+    },
+    {
+      "ticker": "STX",
+      "company_name": "Seagate Technology plc",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "IE",
+      "sedol": "B1YW440"
+    },
+    {
+      "ticker": "WDC",
+      "company_name": "Western Digital Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2952765"
+    },
+    {
+      "ticker": "JNPR",
+      "company_name": "Juniper Networks, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2488785"
+    },
+    {
+      "ticker": "ADP",
+      "company_name": "Automatic Data Processing, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2005870"
+    },
+    {
+      "ticker": "CTSH",
+      "company_name": "Cognizant Technology Solutions Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "B17GX83"
+    },
+    {
+      "ticker": "PAYX",
+      "company_name": "Paychex, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2680487"
+    },
+    {
+      "ticker": "FISV",
+      "company_name": "Fiserv, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2340021"
+    },
+    {
+      "ticker": "FIS",
+      "company_name": "Fidelity National Information Services",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "B3NB4H0"
+    },
+    {
+      "ticker": "MU",
+      "company_name": "Micron Technology, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2588184"
+    },
+    {
+      "ticker": "LRCX",
+      "company_name": "Lam Research Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2507872"
+    },
+    {
+      "ticker": "AMAT",
+      "company_name": "Applied Materials, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2006127"
+    },
+    {
+      "ticker": "KLAC",
+      "company_name": "KLA Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2497970"
+    },
+    {
+      "ticker": "NTAP",
+      "company_name": "NetApp, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2635688"
+    },
+    {
+      "ticker": "SYMC",
+      "company_name": "Symantec Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2856781"
+    },
+    {
+      "ticker": "RHT",
+      "company_name": "Red Hat, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2738600"
+    },
+    {
+      "ticker": "INFY",
+      "company_name": "Infosys Limited",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "IN",
+      "sedol": "6205122"
+    },
+    {
+      "ticker": "WIT",
+      "company_name": "Wipro Limited",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "IN",
+      "sedol": "6404504"
+    },
+    {
+      "ticker": "TEL2",
+      "company_name": "TE Connectivity Ltd.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "CH",
+      "sedol": "B3PP2T8"
+    },
+    {
+      "ticker": "ERIC",
+      "company_name": "Telefonaktiebolaget LM Ericsson",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "SE",
+      "sedol": "5765115"
+    },
+    {
+      "ticker": "NOK",
+      "company_name": "Nokia Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "FI",
+      "sedol": "2875696"
+    },
+    {
+      "ticker": "ASML",
+      "company_name": "ASML Holding N.V.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "NL",
+      "sedol": "B291ZK2"
+    },
+    {
+      "ticker": "BRCM",
+      "company_name": "Broadcom Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "B0GFNP8"
+    },
+    {
+      "ticker": "XLNX",
+      "company_name": "Xilinx, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Semiconductors & Semiconductor Equipment",
+      "country": "US",
+      "sedol": "2972694"
+    },
+    {
+      "ticker": "TDC",
+      "company_name": "Teradata Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2871283"
+    },
+    {
+      "ticker": "CTXS",
+      "company_name": "Citrix Systems, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2188553"
+    },
+    {
+      "ticker": "CDNS",
+      "company_name": "Cadence Design Systems, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2169267"
+    },
+    {
+      "ticker": "SNPS",
+      "company_name": "Synopsys, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2870424"
+    },
+    {
+      "ticker": "ANSS",
+      "company_name": "ANSYS, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "2635532"
+    },
+    {
+      "ticker": "SAIC",
+      "company_name": "Science Applications International Corporation",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "BFZ8YZ8"
+    },
+    {
+      "ticker": "ATOS",
+      "company_name": "Atos SE",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "FR",
+      "sedol": "3052685"
+    },
+    {
+      "ticker": "CRTO",
+      "company_name": "Criteo S.A.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "FR",
+      "sedol": "BGCC5H8"
+    },
+    {
+      "ticker": "NOW",
+      "company_name": "ServiceNow, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "B7XBGM2"
+    },
+    {
+      "ticker": "WDAY",
+      "company_name": "Workday, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "B8WK6C1"
+    },
+    {
+      "ticker": "CRM",
+      "company_name": "Salesforce, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "B7TH4K7"
+    },
+    {
+      "ticker": "VMW",
+      "company_name": "VMware, Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Software & Services",
+      "country": "US",
+      "sedol": "B08VF50"
+    },
+    {
+      "ticker": "HPQ",
+      "company_name": "HP Inc.",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "2580645"
+    },
+    {
+      "ticker": "HPE",
+      "company_name": "Hewlett Packard Enterprise Company",
+      "gics_sector": "Information Technology",
+      "gics_industry_group": "Technology Hardware & Equipment",
+      "country": "US",
+      "sedol": "BWT3KH0"
+    },
+    {
+      "ticker": "JPM",
+      "company_name": "JPMorgan Chase & Co.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2190385"
+    },
+    {
+      "ticker": "WFC",
+      "company_name": "Wells Fargo & Company",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2979273"
+    },
+    {
+      "ticker": "BAC",
+      "company_name": "Bank of America Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2597880"
+    },
+    {
+      "ticker": "C",
+      "company_name": "Citigroup Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2297907"
+    },
+    {
+      "ticker": "GS",
+      "company_name": "The Goldman Sachs Group, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2407966"
+    },
+    {
+      "ticker": "MS",
+      "company_name": "Morgan Stanley",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2585194"
+    },
+    {
+      "ticker": "AXP",
+      "company_name": "American Express Company",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2006145"
+    },
+    {
+      "ticker": "BLK",
+      "company_name": "BlackRock, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "B3ZDKY0"
+    },
+    {
+      "ticker": "BEN",
+      "company_name": "Franklin Resources, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2341921"
+    },
+    {
+      "ticker": "MTB",
+      "company_name": "M&T Bank Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2556054"
+    },
+    {
+      "ticker": "HSBC",
+      "company_name": "HSBC Holdings plc",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "GB",
+      "sedol": "0540528"
+    },
+    {
+      "ticker": "LLOY",
+      "company_name": "Lloyds Banking Group plc",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "GB",
+      "sedol": "5765535"
+    },
+    {
+      "ticker": "BARC",
+      "company_name": "Barclays PLC",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "GB",
+      "sedol": "0798059"
+    },
+    {
+      "ticker": "RBS",
+      "company_name": "NatWest Group plc",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "GB",
+      "sedol": "2994093"
+    },
+    {
+      "ticker": "BNP",
+      "company_name": "BNP Paribas SA",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "FR",
+      "sedol": "4849414"
+    },
+    {
+      "ticker": "SAN",
+      "company_name": "Banco Santander, S.A.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "ES",
+      "sedol": "5534580"
+    },
+    {
+      "ticker": "CS",
+      "company_name": "Credit Suisse Group AG",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CH",
+      "sedol": "4812196"
+    },
+    {
+      "ticker": "UBS",
+      "company_name": "UBS Group AG",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CH",
+      "sedol": "B7ZLY43"
+    },
+    {
+      "ticker": "AIG",
+      "company_name": "American International Group, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2071973"
+    },
+    {
+      "ticker": "MET",
+      "company_name": "MetLife, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2578498"
+    },
+    {
+      "ticker": "PRU",
+      "company_name": "Prudential Financial, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2698079"
+    },
+    {
+      "ticker": "AFL",
+      "company_name": "Aflac Incorporated",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2011602"
+    },
+    {
+      "ticker": "ALL",
+      "company_name": "The Allstate Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2005757"
+    },
+    {
+      "ticker": "CB",
+      "company_name": "Chubb Limited",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "CH",
+      "sedol": "B3N1CS2"
+    },
+    {
+      "ticker": "ZFS",
+      "company_name": "Zurich Insurance Group AG",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "CH",
+      "sedol": "3076009"
+    },
+    {
+      "ticker": "AXA",
+      "company_name": "AXA SA",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "FR",
+      "sedol": "4814792"
+    },
+    {
+      "ticker": "V",
+      "company_name": "Visa Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "B2R3SB7"
+    },
+    {
+      "ticker": "MA",
+      "company_name": "Mastercard Incorporated",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "B121557"
+    },
+    {
+      "ticker": "SCHW",
+      "company_name": "The Charles Schwab Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2085583"
+    },
+    {
+      "ticker": "CME",
+      "company_name": "CME Group Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "B0LHMY4"
+    },
+    {
+      "ticker": "ICE",
+      "company_name": "Intercontinental Exchange, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "B5ZN1N7"
+    },
+    {
+      "ticker": "STT",
+      "company_name": "State Street Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2827839"
+    },
+    {
+      "ticker": "BK",
+      "company_name": "The Bank of New York Mellon Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2525516"
+    },
+    {
+      "ticker": "USB",
+      "company_name": "U.S. Bancorp",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2661168"
+    },
+    {
+      "ticker": "PNC",
+      "company_name": "The PNC Financial Services Group, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2678738"
+    },
+    {
+      "ticker": "COF",
+      "company_name": "Capital One Financial Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2188940"
+    },
+    {
+      "ticker": "BRK-B",
+      "company_name": "Berkshire Hathaway Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2073390"
+    },
+    {
+      "ticker": "BBT",
+      "company_name": "Truist Financial Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "US",
+      "sedol": "2094785"
+    },
+    {
+      "ticker": "TROW",
+      "company_name": "T. Rowe Price Group, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2892978"
+    },
+    {
+      "ticker": "NTRS",
+      "company_name": "Northern Trust Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2649031"
+    },
+    {
+      "ticker": "IVZ",
+      "company_name": "Invesco Ltd.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "BM",
+      "sedol": "B2Q3Y75"
+    },
+    {
+      "ticker": "TD",
+      "company_name": "The Toronto-Dominion Bank",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CA",
+      "sedol": "2023534"
+    },
+    {
+      "ticker": "RY",
+      "company_name": "Royal Bank of Canada",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CA",
+      "sedol": "0100701"
+    },
+    {
+      "ticker": "BNS",
+      "company_name": "The Bank of Nova Scotia",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CA",
+      "sedol": "0130139"
+    },
+    {
+      "ticker": "BMO",
+      "company_name": "Bank of Montreal",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CA",
+      "sedol": "0133002"
+    },
+    {
+      "ticker": "CM",
+      "company_name": "Canadian Imperial Bank of Commerce",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CA",
+      "sedol": "0215534"
+    },
+    {
+      "ticker": "NA",
+      "company_name": "National Bank of Canada",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "CA",
+      "sedol": "0645453"
+    },
+    {
+      "ticker": "ING",
+      "company_name": "ING Groep N.V.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "NL",
+      "sedol": "5491981"
+    },
+    {
+      "ticker": "DBK",
+      "company_name": "Deutsche Bank AG",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "DE",
+      "sedol": "0812907"
+    },
+    {
+      "ticker": "GLE",
+      "company_name": "Societe Generale Societe anonyme",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Banks",
+      "country": "FR",
+      "sedol": "4978488"
+    },
+    {
+      "ticker": "MCO",
+      "company_name": "Moody's Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "B89N2M1"
+    },
+    {
+      "ticker": "SPGI",
+      "company_name": "S&P Global Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "2685344"
+    },
+    {
+      "ticker": "MSCI",
+      "company_name": "MSCI Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Diversified Financials",
+      "country": "US",
+      "sedol": "B1N3QM1"
+    },
+    {
+      "ticker": "RE",
+      "company_name": "Everest Group, Ltd.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "BM",
+      "sedol": "B3MJZT3"
+    },
+    {
+      "ticker": "LNC",
+      "company_name": "Lincoln National Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2520161"
+    },
+    {
+      "ticker": "PGR",
+      "company_name": "The Progressive Corporation",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2692552"
+    },
+    {
+      "ticker": "HIG",
+      "company_name": "The Hartford Financial Services Group, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2412624"
+    },
+    {
+      "ticker": "XL",
+      "company_name": "XL Group Ltd",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "IE",
+      "sedol": "B64T1L0"
+    },
+    {
+      "ticker": "SFG",
+      "company_name": "StanCorp Financial Group, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2617034"
+    },
+    {
+      "ticker": "MMC",
+      "company_name": "Marsh & McLennan Companies, Inc.",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "US",
+      "sedol": "2552507"
+    },
+    {
+      "ticker": "AON",
+      "company_name": "Aon plc",
+      "gics_sector": "Financials",
+      "gics_industry_group": "Insurance",
+      "country": "GB",
+      "sedol": "B3N0LK4"
+    },
+    {
+      "ticker": "JNJ",
+      "company_name": "Johnson & Johnson",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2475833"
+    },
+    {
+      "ticker": "NVS",
+      "company_name": "Novartis AG",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "CH",
+      "sedol": "5765135"
+    },
+    {
+      "ticker": "PFE",
+      "company_name": "Pfizer Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2522706"
+    },
+    {
+      "ticker": "MRK",
+      "company_name": "Merck & Co., Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2588173"
+    },
+    {
+      "ticker": "ABT",
+      "company_name": "Abbott Laboratories",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2008411"
+    },
+    {
+      "ticker": "ROG",
+      "company_name": "Roche Holding AG",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "CH",
+      "sedol": "3235681"
+    },
+    {
+      "ticker": "AMGN",
+      "company_name": "Amgen Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2023608"
+    },
+    {
+      "ticker": "BIIB",
+      "company_name": "Biogen Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2069371"
+    },
+    {
+      "ticker": "CELG",
+      "company_name": "Celgene Corporation",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2165745"
+    },
+    {
+      "ticker": "ALXN",
+      "company_name": "Alexion Pharmaceuticals, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2131518"
+    },
+    {
+      "ticker": "GILD",
+      "company_name": "Gilead Sciences, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2680537"
+    },
+    {
+      "ticker": "BMY",
+      "company_name": "Bristol-Myers Squibb Company",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2117557"
+    },
+    {
+      "ticker": "BAX",
+      "company_name": "Baxter International Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2102399"
+    },
+    {
+      "ticker": "MDT",
+      "company_name": "Medtronic plc",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "IE",
+      "sedol": "B8WJPD5"
+    },
+    {
+      "ticker": "SYK",
+      "company_name": "Stryker Corporation",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2837695"
+    },
+    {
+      "ticker": "BSX",
+      "company_name": "Boston Scientific Corporation",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2117521"
+    },
+    {
+      "ticker": "UNH",
+      "company_name": "UnitedHealth Group Incorporated",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2649915"
+    },
+    {
+      "ticker": "CI",
+      "company_name": "Cigna Group",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "B5BT0G2"
+    },
+    {
+      "ticker": "AET",
+      "company_name": "Aetna Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2011560"
+    },
+    {
+      "ticker": "LLY",
+      "company_name": "Eli Lilly and Company",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2582810"
+    },
+    {
+      "ticker": "AZN",
+      "company_name": "AstraZeneca PLC",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "GB",
+      "sedol": "2027636"
+    },
+    {
+      "ticker": "SNY",
+      "company_name": "Sanofi",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "FR",
+      "sedol": "5319406"
+    },
+    {
+      "ticker": "GSK",
+      "company_name": "GSK plc",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "GB",
+      "sedol": "4526173"
+    },
+    {
+      "ticker": "ABBV",
+      "company_name": "AbbVie Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "B8K5QN4"
+    },
+    {
+      "ticker": "AGN",
+      "company_name": "Allergan plc",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "IE",
+      "sedol": "BYMKDR0"
+    },
+    {
+      "ticker": "REGN",
+      "company_name": "Regeneron Pharmaceuticals, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2725360"
+    },
+    {
+      "ticker": "VRTX",
+      "company_name": "Vertex Pharmaceuticals Incorporated",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2938251"
+    },
+    {
+      "ticker": "ILMN",
+      "company_name": "Illumina, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2410714"
+    },
+    {
+      "ticker": "ISRG",
+      "company_name": "Intuitive Surgical, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2520743"
+    },
+    {
+      "ticker": "BDX",
+      "company_name": "Becton, Dickinson and Company",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2099124"
+    },
+    {
+      "ticker": "ANTM",
+      "company_name": "Anthem, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2568878"
+    },
+    {
+      "ticker": "HUM",
+      "company_name": "Humana Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2438479"
+    },
+    {
+      "ticker": "BCR",
+      "company_name": "C. R. Bard, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2135893"
+    },
+    {
+      "ticker": "DVA",
+      "company_name": "DaVita Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "B2RGX65"
+    },
+    {
+      "ticker": "MCK",
+      "company_name": "McKesson Corporation",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2548025"
+    },
+    {
+      "ticker": "CAH",
+      "company_name": "Cardinal Health, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2148673"
+    },
+    {
+      "ticker": "A",
+      "company_name": "Agilent Technologies, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "2090219"
+    },
+    {
+      "ticker": "EW",
+      "company_name": "Edwards Lifesciences Corporation",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2267395"
+    },
+    {
+      "ticker": "TMO",
+      "company_name": "Thermo Fisher Scientific Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "US",
+      "sedol": "B2QKX41"
+    },
+    {
+      "ticker": "DHR",
+      "company_name": "Danaher Corporation",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "2243792"
+    },
+    {
+      "ticker": "ZBH",
+      "company_name": "Zimmer Biomet Holdings, Inc.",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Health Care Equipment & Services",
+      "country": "US",
+      "sedol": "B3BJ4Q4"
+    },
+    {
+      "ticker": "BAYRY",
+      "company_name": "Bayer AG",
+      "gics_sector": "Health Care",
+      "gics_industry_group": "Pharmaceuticals, Biotechnology & Life Sciences",
+      "country": "DE",
+      "sedol": "5765119"
+    },
+    {
+      "ticker": "AMZN",
+      "company_name": "Amazon.com, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2000019"
+    },
+    {
+      "ticker": "HD",
+      "company_name": "The Home Depot, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2404177"
+    },
+    {
+      "ticker": "DIS",
+      "company_name": "The Walt Disney Company",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Media & Entertainment",
+      "country": "US",
+      "sedol": "2423780"
+    },
+    {
+      "ticker": "CMCSA",
+      "company_name": "Comcast Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Media & Entertainment",
+      "country": "US",
+      "sedol": "2237731"
+    },
+    {
+      "ticker": "MCD",
+      "company_name": "McDonald's Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "2288485"
+    },
+    {
+      "ticker": "SBUX",
+      "company_name": "Starbucks Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "2638060"
+    },
+    {
+      "ticker": "NKE",
+      "company_name": "NIKE, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Durables & Apparel",
+      "country": "US",
+      "sedol": "2657547"
+    },
+    {
+      "ticker": "LOW",
+      "company_name": "Lowe's Companies, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2516878"
+    },
+    {
+      "ticker": "TGT",
+      "company_name": "Target Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2759129"
+    },
+    {
+      "ticker": "YUM",
+      "company_name": "Yum! Brands, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "2173066"
+    },
+    {
+      "ticker": "HOG",
+      "company_name": "Harley-Davidson, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Durables & Apparel",
+      "country": "US",
+      "sedol": "2399723"
+    },
+    {
+      "ticker": "M",
+      "company_name": "Macy's, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2139634"
+    },
+    {
+      "ticker": "BBBY",
+      "company_name": "Bed Bath & Beyond Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2158012"
+    },
+    {
+      "ticker": "VFC",
+      "company_name": "VF Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Durables & Apparel",
+      "country": "US",
+      "sedol": "2940982"
+    },
+    {
+      "ticker": "PVH",
+      "company_name": "PVH Corp.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Durables & Apparel",
+      "country": "US",
+      "sedol": "2677570"
+    },
+    {
+      "ticker": "RL",
+      "company_name": "Ralph Lauren Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Durables & Apparel",
+      "country": "US",
+      "sedol": "2738601"
+    },
+    {
+      "ticker": "TIF",
+      "company_name": "Tiffany & Co.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Durables & Apparel",
+      "country": "US",
+      "sedol": "2876668"
+    },
+    {
+      "ticker": "AN",
+      "company_name": "AutoNation, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2022576"
+    },
+    {
+      "ticker": "KMX",
+      "company_name": "CarMax, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "B02PCQ0"
+    },
+    {
+      "ticker": "ORLY",
+      "company_name": "O'Reilly Automotive, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2653680"
+    },
+    {
+      "ticker": "AZO",
+      "company_name": "AutoZone, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Retailing",
+      "country": "US",
+      "sedol": "2035148"
+    },
+    {
+      "ticker": "F",
+      "company_name": "Ford Motor Company",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Automobiles & Components",
+      "country": "US",
+      "sedol": "2340182"
+    },
+    {
+      "ticker": "GM",
+      "company_name": "General Motors Company",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Automobiles & Components",
+      "country": "US",
+      "sedol": "B3VMP98"
+    },
+    {
+      "ticker": "BMW",
+      "company_name": "Bayerische Motoren Werke AG",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Automobiles & Components",
+      "country": "DE",
+      "sedol": "5765130"
+    },
+    {
+      "ticker": "VWAGY",
+      "company_name": "Volkswagen AG",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Automobiles & Components",
+      "country": "DE",
+      "sedol": "5538988"
+    },
+    {
+      "ticker": "MBG",
+      "company_name": "Mercedes-Benz Group AG",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Automobiles & Components",
+      "country": "DE",
+      "sedol": "5765121"
+    },
+    {
+      "ticker": "WYNN",
+      "company_name": "Wynn Resorts, Limited",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "B0VKDQ4"
+    },
+    {
+      "ticker": "LVS",
+      "company_name": "Las Vegas Sands Corp.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "B07T7Z4"
+    },
+    {
+      "ticker": "CCL",
+      "company_name": "Carnival Corporation & plc",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "2119230"
+    },
+    {
+      "ticker": "RCL",
+      "company_name": "Royal Caribbean Cruises Ltd.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "LR",
+      "sedol": "2752527"
+    },
+    {
+      "ticker": "MAR",
+      "company_name": "Marriott International, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "2551528"
+    },
+    {
+      "ticker": "HLT",
+      "company_name": "Hilton Worldwide Holdings Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Services",
+      "country": "US",
+      "sedol": "BM8TG39"
+    },
+    {
+      "ticker": "TWX",
+      "company_name": "Time Warner Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Media & Entertainment",
+      "country": "US",
+      "sedol": "2873637"
+    },
+    {
+      "ticker": "CBS",
+      "company_name": "CBS Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Media & Entertainment",
+      "country": "US",
+      "sedol": "2163038"
+    },
+    {
+      "ticker": "FOXA",
+      "company_name": "Fox Corporation",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Media & Entertainment",
+      "country": "US",
+      "sedol": "BF1G6L9"
+    },
+    {
+      "ticker": "DHI",
+      "company_name": "D.R. Horton, Inc.",
+      "gics_sector": "Consumer Discretionary",
+      "gics_industry_group": "Consumer Durables & Apparel",
+      "country": "US",
+      "sedol": "2247479"
+    },
+    {
+      "ticker": "GE",
+      "company_name": "General Electric Company",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2380156"
+    },
+    {
+      "ticker": "HON",
+      "company_name": "Honeywell International Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2421851"
+    },
+    {
+      "ticker": "BA",
+      "company_name": "The Boeing Company",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2108601"
+    },
+    {
+      "ticker": "LMT",
+      "company_name": "Lockheed Martin Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2519153"
+    },
+    {
+      "ticker": "RTN",
+      "company_name": "Raytheon Company",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2749362"
+    },
+    {
+      "ticker": "NOC",
+      "company_name": "Northrop Grumman Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2644756"
+    },
+    {
+      "ticker": "GD",
+      "company_name": "General Dynamics Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2380398"
+    },
+    {
+      "ticker": "MMM",
+      "company_name": "3M Company",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2592540"
+    },
+    {
+      "ticker": "UPS",
+      "company_name": "United Parcel Service, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "US",
+      "sedol": "2856661"
+    },
+    {
+      "ticker": "FDX",
+      "company_name": "FedEx Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "US",
+      "sedol": "2352246"
+    },
+    {
+      "ticker": "CAT",
+      "company_name": "Caterpillar Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2161894"
+    },
+    {
+      "ticker": "DE",
+      "company_name": "Deere & Company",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2273994"
+    },
+    {
+      "ticker": "EMR",
+      "company_name": "Emerson Electric Co.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2316278"
+    },
+    {
+      "ticker": "ETN",
+      "company_name": "Eaton Corporation plc",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "IE",
+      "sedol": "B5SJVC8"
+    },
+    {
+      "ticker": "ITW",
+      "company_name": "Illinois Tool Works Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2445188"
+    },
+    {
+      "ticker": "AME",
+      "company_name": "AMETEK, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2022597"
+    },
+    {
+      "ticker": "ROK",
+      "company_name": "Rockwell Automation, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2758547"
+    },
+    {
+      "ticker": "PH",
+      "company_name": "Parker-Hannifin Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2671908"
+    },
+    {
+      "ticker": "IR",
+      "company_name": "Ingersoll Rand Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2462857"
+    },
+    {
+      "ticker": "DOV",
+      "company_name": "Dover Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2270803"
+    },
+    {
+      "ticker": "GWW",
+      "company_name": "W.W. Grainger, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2380869"
+    },
+    {
+      "ticker": "FAST",
+      "company_name": "Fastenal Company",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2314006"
+    },
+    {
+      "ticker": "RHI",
+      "company_name": "Robert Half Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Commercial & Professional Services",
+      "country": "US",
+      "sedol": "2742388"
+    },
+    {
+      "ticker": "CNR",
+      "company_name": "Canadian National Railway Company",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "CA",
+      "sedol": "2070785"
+    },
+    {
+      "ticker": "CP",
+      "company_name": "Canadian Pacific Kansas City Limited",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "CA",
+      "sedol": "2070786"
+    },
+    {
+      "ticker": "NSC",
+      "company_name": "Norfolk Southern Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "US",
+      "sedol": "2645029"
+    },
+    {
+      "ticker": "CSX",
+      "company_name": "CSX Corporation",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "US",
+      "sedol": "2237545"
+    },
+    {
+      "ticker": "UAL",
+      "company_name": "United Airlines Holdings, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "US",
+      "sedol": "B3B9QM7"
+    },
+    {
+      "ticker": "DAL",
+      "company_name": "Delta Air Lines, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "US",
+      "sedol": "B0C87M1"
+    },
+    {
+      "ticker": "LUV",
+      "company_name": "Southwest Airlines Co.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Transportation",
+      "country": "US",
+      "sedol": "2638624"
+    },
+    {
+      "ticker": "PCAR",
+      "company_name": "PACCAR Inc",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Capital Goods",
+      "country": "US",
+      "sedol": "2663560"
+    },
+    {
+      "ticker": "WM",
+      "company_name": "Waste Management, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Commercial & Professional Services",
+      "country": "US",
+      "sedol": "2973565"
+    },
+    {
+      "ticker": "RSG",
+      "company_name": "Republic Services, Inc.",
+      "gics_sector": "Industrials",
+      "gics_industry_group": "Commercial & Professional Services",
+      "country": "US",
+      "sedol": "B02NYJ2"
+    },
+    {
+      "ticker": "PG",
+      "company_name": "The Procter & Gamble Company",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "US",
+      "sedol": "2675821"
+    },
+    {
+      "ticker": "KO",
+      "company_name": "The Coca-Cola Company",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2188552"
+    },
+    {
+      "ticker": "PEP",
+      "company_name": "PepsiCo, Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2671728"
+    },
+    {
+      "ticker": "PM",
+      "company_name": "Philip Morris International Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "B2NPL62"
+    },
+    {
+      "ticker": "MO",
+      "company_name": "Altria Group, Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2588832"
+    },
+    {
+      "ticker": "WMT",
+      "company_name": "Walmart Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food & Staples Retailing",
+      "country": "US",
+      "sedol": "2803013"
+    },
+    {
+      "ticker": "COST",
+      "company_name": "Costco Wholesale Corporation",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food & Staples Retailing",
+      "country": "US",
+      "sedol": "2205428"
+    },
+    {
+      "ticker": "CL",
+      "company_name": "Colgate-Palmolive Company",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "US",
+      "sedol": "2184795"
+    },
+    {
+      "ticker": "KMB",
+      "company_name": "Kimberly-Clark Corporation",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "US",
+      "sedol": "2492943"
+    },
+    {
+      "ticker": "CHD",
+      "company_name": "Church & Dwight Co., Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "US",
+      "sedol": "2178416"
+    },
+    {
+      "ticker": "DGE",
+      "company_name": "Diageo plc",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "GB",
+      "sedol": "0237400"
+    },
+    {
+      "ticker": "NESN",
+      "company_name": "Nestle S.A.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "CH",
+      "sedol": "5765112"
+    },
+    {
+      "ticker": "UL",
+      "company_name": "Unilever PLC",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "GB",
+      "sedol": "0022405"
+    },
+    {
+      "ticker": "RKT",
+      "company_name": "Reckitt Benckiser Group PLC",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "GB",
+      "sedol": "5765136"
+    },
+    {
+      "ticker": "BN",
+      "company_name": "Danone S.A.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "FR",
+      "sedol": "5765123"
+    },
+    {
+      "ticker": "ABI",
+      "company_name": "Anheuser-Busch InBev SA/NV",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "BE",
+      "sedol": "B7ZL916"
+    },
+    {
+      "ticker": "GIS",
+      "company_name": "General Mills, Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2380150"
+    },
+    {
+      "ticker": "K",
+      "company_name": "Kellanova",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2469764"
+    },
+    {
+      "ticker": "CAG",
+      "company_name": "ConAgra Brands, Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2196620"
+    },
+    {
+      "ticker": "MKC",
+      "company_name": "McCormick & Company, Incorporated",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2553048"
+    },
+    {
+      "ticker": "CLX",
+      "company_name": "The Clorox Company",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "US",
+      "sedol": "2180862"
+    },
+    {
+      "ticker": "EL",
+      "company_name": "The Estee Lauder Companies Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Household & Personal Products",
+      "country": "US",
+      "sedol": "2311058"
+    },
+    {
+      "ticker": "RAI",
+      "company_name": "Reynolds American Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "B02L1F6"
+    },
+    {
+      "ticker": "MNST",
+      "company_name": "Monster Beverage Corporation",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "B2R65Q0"
+    },
+    {
+      "ticker": "TAP",
+      "company_name": "Molson Coors Beverage Company",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2594186"
+    },
+    {
+      "ticker": "HSY",
+      "company_name": "The Hershey Company",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food, Beverage & Tobacco",
+      "country": "US",
+      "sedol": "2418014"
+    },
+    {
+      "ticker": "WBA",
+      "company_name": "Walgreens Boots Alliance, Inc.",
+      "gics_sector": "Consumer Staples",
+      "gics_industry_group": "Food & Staples Retailing",
+      "country": "US",
+      "sedol": "B86TH01"
+    },
+    {
+      "ticker": "XOM",
+      "company_name": "Exxon Mobil Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2326618"
+    },
+    {
+      "ticker": "CVX",
+      "company_name": "Chevron Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2178222"
+    },
+    {
+      "ticker": "COP",
+      "company_name": "ConocoPhillips",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2210427"
+    },
+    {
+      "ticker": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2659082"
+    },
+    {
+      "ticker": "SLB",
+      "company_name": "Schlumberger Limited",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "CW",
+      "sedol": "2791528"
+    },
+    {
+      "ticker": "HAL",
+      "company_name": "Halliburton Company",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2398978"
+    },
+    {
+      "ticker": "BHI",
+      "company_name": "Baker Hughes Holdings LLC",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2079028"
+    },
+    {
+      "ticker": "CLB",
+      "company_name": "Core Laboratories Inc.",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "NL",
+      "sedol": "990315",
+      "bloomberg_ticker": "990315D US Equity"
+    },
+    {
+      "ticker": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2640979"
+    },
+    {
+      "ticker": "EOG",
+      "company_name": "EOG Resources, Inc.",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2283273"
+    },
+    {
+      "ticker": "PXD",
+      "company_name": "Pioneer Natural Resources Company",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "B3MLX99"
+    },
+    {
+      "ticker": "APC",
+      "company_name": "Anadarko Petroleum Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2025459"
+    },
+    {
+      "ticker": "MRO",
+      "company_name": "Marathon Oil Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2553049"
+    },
+    {
+      "ticker": "HES",
+      "company_name": "Hess Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2410965"
+    },
+    {
+      "ticker": "PSX",
+      "company_name": "Phillips 66",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "B7ZBW03"
+    },
+    {
+      "ticker": "VLO",
+      "company_name": "Valero Energy Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "2862905"
+    },
+    {
+      "ticker": "MPC",
+      "company_name": "Marathon Petroleum Corporation",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "US",
+      "sedol": "B3N1MS2"
+    },
+    {
+      "ticker": "BP",
+      "company_name": "BP p.l.c.",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "GB",
+      "sedol": "0798060"
+    },
+    {
+      "ticker": "RDSA",
+      "company_name": "Shell plc",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "GB",
+      "sedol": "0320248"
+    },
+    {
+      "ticker": "TOT",
+      "company_name": "TotalEnergies SE",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "FR",
+      "sedol": "5765126"
+    },
+    {
+      "ticker": "ENB",
+      "company_name": "Enbridge Inc.",
+      "gics_sector": "Energy",
+      "gics_industry_group": "Energy",
+      "country": "CA",
+      "sedol": "2291748"
+    },
+    {
+      "ticker": "T",
+      "company_name": "AT&T Inc.",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "US",
+      "sedol": "2831811"
+    },
+    {
+      "ticker": "VZ",
+      "company_name": "Verizon Communications Inc.",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "US",
+      "sedol": "2090571"
+    },
+    {
+      "ticker": "TMUS",
+      "company_name": "T-Mobile US, Inc.",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "US",
+      "sedol": "B8HKQY8"
+    },
+    {
+      "ticker": "S",
+      "company_name": "Sprint Corporation",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "US",
+      "sedol": "B2QWKQ2"
+    },
+    {
+      "ticker": "VOD",
+      "company_name": "Vodafone Group Plc",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "GB",
+      "sedol": "B16GWD5"
+    },
+    {
+      "ticker": "BT-A",
+      "company_name": "BT Group plc",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "GB",
+      "sedol": "0853254"
+    },
+    {
+      "ticker": "DT",
+      "company_name": "Deutsche Telekom AG",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "DE",
+      "sedol": "5765439"
+    },
+    {
+      "ticker": "ORA",
+      "company_name": "Orange S.A.",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "FR",
+      "sedol": "5765120"
+    },
+    {
+      "ticker": "TEF",
+      "company_name": "Telefonica, S.A.",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "ES",
+      "sedol": "5765131"
+    },
+    {
+      "ticker": "BCE",
+      "company_name": "BCE Inc.",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "CA",
+      "sedol": "2082266"
+    },
+    {
+      "ticker": "RCI",
+      "company_name": "Rogers Communications Inc.",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "CA",
+      "sedol": "2752636"
+    },
+    {
+      "ticker": "TU",
+      "company_name": "TELUS Corporation",
+      "gics_sector": "Telecommunication Services",
+      "gics_industry_group": "Telecommunication Services",
+      "country": "CA",
+      "sedol": "2760838"
+    },
+    {
+      "ticker": "DD",
+      "company_name": "EIDP, Inc.",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "2018175",
+      "bloomberg_ticker": "1715651D US Equity"
+    },
+    {
+      "ticker": "DOW",
+      "company_name": "Dow Inc.",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "BYXRXJ2"
+    },
+    {
+      "ticker": "LYB",
+      "company_name": "LyondellBasell Industries N.V.",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "NL",
+      "sedol": "B3MVPG7"
+    },
+    {
+      "ticker": "APD",
+      "company_name": "Air Products and Chemicals, Inc.",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "2015606"
+    },
+    {
+      "ticker": "PPG",
+      "company_name": "PPG Industries, Inc.",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "2677857"
+    },
+    {
+      "ticker": "SHW",
+      "company_name": "The Sherwin-Williams Company",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "2799065"
+    },
+    {
+      "ticker": "IP",
+      "company_name": "International Paper Company",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "2445234"
+    },
+    {
+      "ticker": "NEM",
+      "company_name": "Newmont Corporation",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "2644547"
+    },
+    {
+      "ticker": "FCX",
+      "company_name": "Freeport-McMoRan Inc.",
+      "gics_sector": "Materials",
+      "gics_industry_group": "Materials",
+      "country": "US",
+      "sedol": "2351574"
+    },
+    {
+      "ticker": "NEE",
+      "company_name": "NextEra Energy, Inc.",
+      "gics_sector": "Utilities",
+      "gics_industry_group": "Utilities",
+      "country": "US",
+      "sedol": "2552402"
+    },
+    {
+      "ticker": "DUK",
+      "company_name": "Duke Energy Corporation",
+      "gics_sector": "Utilities",
+      "gics_industry_group": "Utilities",
+      "country": "US",
+      "sedol": "B3P6C86"
+    },
+    {
+      "ticker": "SO",
+      "company_name": "The Southern Company",
+      "gics_sector": "Utilities",
+      "gics_industry_group": "Utilities",
+      "country": "US",
+      "sedol": "2628093"
+    }
+  ]
+}

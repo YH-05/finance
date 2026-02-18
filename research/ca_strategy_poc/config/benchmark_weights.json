@@ -1,0 +1,21 @@
+{
+  "_metadata": {
+    "description": "ベンチマークセクター配分ウェイト（MSCI Kokusai / ACWI ex Japan準拠、2015年Q3時点）",
+    "as_of_date": "2015-09-30",
+    "benchmark": "MSCI Kokusai (MSCI World ex Japan)",
+    "total_weight": 1.0,
+    "note": "portfolio_builder.pyがセクター配分の基準として参照する。セクター内ウェイトはスコア比例配分。セクター名はuniverse.jsonのgics_sectorと一致させること。2015年基準のGICS（Real EstateはFinancials内、Telecom ServicesはTelecommunication Servicesと表記）。"
+  },
+  "weights": {
+    "Information Technology": 0.19,
+    "Financials": 0.20,
+    "Health Care": 0.14,
+    "Consumer Discretionary": 0.12,
+    "Industrials": 0.11,
+    "Consumer Staples": 0.09,
+    "Energy": 0.07,
+    "Telecommunication Services": 0.04,
+    "Materials": 0.03,
+    "Utilities": 0.01
+  }
+}

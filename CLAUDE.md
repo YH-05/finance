@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-12-30
-updated_at: 2026-02-15
+updated_at: 2026-02-18
 ---
 
 # finance - 金融市場分析・コンテンツ発信支援ライブラリ
@@ -415,6 +415,19 @@ updated_at: 2026-02-15
 | `ca-pattern-verifier` | KB2パターン集（却下A-G+高評価I-V）と主張を照合し確信度を調整 |
 | `ca-report-generator` | claims.json+検証結果からMarkdownレポートと構造化JSONを生成（評価ロジック統合） |
 
+### CA Strategy エージェント
+
+| エージェント | 説明 |
+|--------------|------|
+| `ca-strategy-lead` | ca_strategy PoCワークフローのAgent Teamsリーダー（7チームメイトを5フェーズで制御、300銘柄x3四半期の競争優位性ベース投資戦略パイプライン） |
+| `transcript-loader` | 投資ユニバース全銘柄のトランスクリプトJSONを読み込み・検証し、PoiT制約を適用 |
+| `transcript-claim-extractor` | Claude Sonnet 4でトランスクリプトから競争優位性の主張を抽出（KB1-T/KB3-T参照） |
+| `transcript-claim-scorer` | KB1-T/KB2-T/KB3-Tとdogma.mdを使用して抽出主張に確信度スコアを付与 |
+| `score-aggregator` | ScoredClaimを銘柄別に集約し構造的重み付きのStockScoreを算出 |
+| `sector-neutralizer` | セクター内Z-scoreを計算しセクター中立化されたランキングを生成 |
+| `portfolio-constructor` | セクター中立化ランキングとベンチマークウェイトから30銘柄ポートフォリオを構築 |
+| `output-generator` | ポートフォリオ結果からJSON/CSV/Markdown/銘柄別rationale出力ファイルを生成 |
+
 ### 設計・作成支援エージェント
 
 | エージェント | 説明 |
@@ -444,6 +457,7 @@ updated_at: 2026-02-15
 | `strategy` | 投資戦略パッケージ | リスク計算、ポートフォリオ管理、リバランス分析 |
 | `news` | ニュース処理パイプライン | ニュース収集、フィルタリング、GitHub投稿 |
 | `utils_core` | 共通ユーティリティ | ロギング設定 |
+| `dev/ca_strategy` | AI駆動の競争優位性ベース投資戦略パッケージ（PoC） | トランスクリプト解析、LLM主張抽出・スコアリング、セクター中立化、ポートフォリオ構築 |
 
 ---
 
@@ -456,6 +470,8 @@ updated_at: 2026-02-15
 - `edgar` → `analyze`
 - `analyze` → `strategy`
 - `factor` → `strategy`
+- `utils_core` → `dev/ca_strategy`
+- `factor` → `dev/ca_strategy`（SectorNeutralizer）
 
 ### コマンド → スキル → エージェント
 
@@ -471,6 +487,7 @@ updated_at: 2026-02-15
 - `/write-tests` → `tdd-development` → `test-orchestrator` → `test-lead`（Agent Teams）→ 4テストエージェント
 - `/ca-eval` → `ca-eval` → `ca-eval-lead`（Agent Teams）→ 7チームメイト（sec-collector, report-parser, industry, extractor, fact-checker, pattern-verifier, reporter）
 - `/index` → `index` → `Explore`, `package-readme-updater`
+- `ca-strategy-lead`（Agent Teams）→ 7チームメイト（transcript-loader → transcript-claim-extractor → transcript-claim-scorer → score-aggregator & sector-neutralizer → portfolio-constructor → output-generator）
 
 詳細なMermaid図は [README.md](README.md#-依存関係図) を参照。
 
@@ -496,7 +513,8 @@ updated_at: 2026-02-15
 finance/
 ├── .claude/                    # Claude Code 設定
 │   ├── agents/                 # サブエージェント定義（100個）
-│   │   └── deep-research/      # ディープリサーチエージェント群（13個）
+│   │   ├── deep-research/      # ディープリサーチエージェント群（13個）
+│   │   └── ca-strategy/        # CA Strategy エージェント群（8個）
 │   ├── commands/               # スラッシュコマンド（20個）
 │   ├── rules/                  # 共有ルール（規約詳細）
 │   └── skills/                 # スキル定義（52個）
@@ -510,7 +528,9 @@ finance/
 │   ├── factor/                 # ファクター分析（バリュー、モメンタム等）
 │   ├── strategy/               # 投資戦略・リスク管理
 │   ├── news/                   # ニュース処理パイプライン
-│   └── utils_core/             # 共通ユーティリティ
+│   ├── utils_core/             # 共通ユーティリティ
+│   └── dev/
+│       └── ca_strategy/        # AI駆動の競争優位性ベース投資戦略（PoC）
 │
 ├── tests/                      # テストスイート
 │   ├── {package}/unit/         # 単体テスト

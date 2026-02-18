@@ -1,0 +1,684 @@
+"""Phase 0-5 pipeline orchestrator for the CA Strategy.
+
+Integrates all pipeline phases in order:
+
+1. **Extraction** (Phase 1): Transcript -> Claims via ClaimExtractor
+2. **Scoring** (Phase 2): Claims -> ScoredClaims via ClaimScorer
+3. **Neutralization** (Phase 3): Scores -> Ranked DataFrame via
+   ScoreAggregator + SectorNeutralizer
+4. **Portfolio Construction** (Phase 4): Ranked -> Portfolio via
+   PortfolioBuilder
+5. **Output Generation** (Phase 5): Portfolio -> Files via OutputGenerator
+
+Supports full pipeline execution and checkpoint-based resumption.
+Logs each phase's execution status to ``execution_log.json``.
+
+Examples
+--------
+>>> orch = Orchestrator(
+...     config_path=Path("research/ca_strategy_poc/config"),
+...     kb_base_dir=Path("analyst/transcript_eval"),
+...     workspace_dir=Path("research/ca_strategy_poc/workspace"),
+... )
+>>> orch.run_full_pipeline()
+>>> # Or resume from a specific phase:
+>>> orch.run_from_checkpoint(phase=3)
+"""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+import pandas as pd
+
+from dev.ca_strategy._config import ConfigRepository
+from dev.ca_strategy.aggregator import ScoreAggregator
+from dev.ca_strategy.cost import CostTracker
+from dev.ca_strategy.extractor import ClaimExtractor
+from dev.ca_strategy.neutralizer import SectorNeutralizer
+from dev.ca_strategy.output import OutputGenerator
+from dev.ca_strategy.pit import CUTOFF_DATE
+from dev.ca_strategy.portfolio_builder import PortfolioBuilder
+from dev.ca_strategy.scorer import ClaimScorer
+from dev.ca_strategy.transcript import TranscriptLoader
+from dev.ca_strategy.types import (
+    BenchmarkWeight,
+    Claim,
+    PortfolioResult,
+    ScoredClaim,
+    StockScore,
+)
+from utils_core.logging import get_logger
+
+logger = get_logger(__name__)
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+_MIN_PHASE: int = 1
+"""Minimum valid phase number."""
+
+_MAX_PHASE: int = 5
+"""Maximum valid phase number."""
+
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+class Orchestrator:
+    """Orchestrate the full CA Strategy pipeline (Phase 1-5).
+
+    Loads configuration, manages pipeline state, and coordinates
+    execution of each phase in order.  Supports checkpoint-based
+    resumption from a specific phase.
+
+    Parameters
+    ----------
+    config_path : Path | str
+        Directory containing ``universe.json`` and
+        ``benchmark_weights.json``.
+    kb_base_dir : Path | str
+        Root directory for knowledge base files (KB1-T, KB2-T,
+        KB3-T, system prompt, dogma.md).
+    workspace_dir : Path | str
+        Working directory for intermediate outputs, checkpoints,
+        and execution logs.
+
+    Raises
+    ------
+    FileNotFoundError
+        If ``config_path`` does not exist.
+
+    Examples
+    --------
+    >>> orch = Orchestrator(
+    ...     config_path=Path("config"),
+    ...     kb_base_dir=Path("kb"),
+    ...     workspace_dir=Path("workspace"),
+    ... )
+    >>> orch.run_full_pipeline()
+    """
+
+    def __init__(
+        self,
+        config_path: Path | str,
+        kb_base_dir: Path | str,
+        workspace_dir: Path | str,
+    ) -> None:
+        self._config_path = Path(config_path)
+        self._kb_base_dir = Path(kb_base_dir)
+        self._workspace_dir = Path(workspace_dir)
+
+        # ConfigRepository validates config_path existence
+        self._config = ConfigRepository(self._config_path)
+
+        # Ensure workspace directory exists
+        self._workspace_dir.mkdir(parents=True, exist_ok=True)
+
+        # Initialize execution log
+        self._execution_log: list[dict[str, Any]] = []
+
+        # Initialize cost tracker
+        self._cost_tracker = CostTracker()
+
+        logger.info(
+            "Orchestrator initialized",
+            config_path=str(self._config_path),
+            kb_base_dir=str(self._kb_base_dir),
+            workspace_dir=str(self._workspace_dir),
+        )
+
+    # -----------------------------------------------------------------------
+    # Public methods
+    # -----------------------------------------------------------------------
+    def run_full_pipeline(self) -> None:
+        """Execute the full pipeline (Phase 1 through 5).
+
+        Loads configuration, then runs each phase sequentially,
+        passing outputs to the next phase.  Each phase's status
+        is logged to ``execution_log.json``.
+
+        Raises
+        ------
+        RuntimeError
+            If any phase fails.  The error is logged before re-raising.
+        """
+        logger.info("Starting full pipeline execution")
+
+        # Phase 1: Extraction
+        claims = self._execute_phase(
+            phase=1,
+            func=self._run_phase1_extraction,
+        )
+
+        # Phase 2: Scoring
+        scored_claims = self._execute_phase(
+            phase=2,
+            func=self._run_phase2_scoring,
+            args=(claims,),
+        )
+
+        # Phase 3: Aggregation + Neutralization
+        scores = self._aggregate_scores(scored_claims)
+        ranked = self._execute_phase(
+            phase=3,
+            func=self._run_phase3_neutralization,
+            args=(scored_claims, scores),
+        )
+
+        # Phase 4: Portfolio Construction
+        portfolio = self._execute_phase(
+            phase=4,
+            func=self._run_phase4_portfolio_construction,
+            args=(ranked, self._config.benchmark),
+        )
+
+        # Phase 5: Output Generation
+        self._execute_phase(
+            phase=5,
+            func=self._run_phase5_output_generation,
+            args=(portfolio, scored_claims, scores),
+        )
+
+        # Save cost tracker
+        cost_path = self._workspace_dir / "cost_tracking.json"
+        self._cost_tracker.save(cost_path)
+
+        logger.info(
+            "Full pipeline completed",
+            total_cost=round(self._cost_tracker.get_total_cost(), 2),
+        )
+
+    def run_from_checkpoint(self, phase: int) -> None:
+        """Resume pipeline from a specific phase.
+
+        Loads checkpoint data for phases prior to the specified
+        phase, then executes from that phase onward.
+
+        Parameters
+        ----------
+        phase : int
+            Phase number to resume from (1-5).
+
+        Raises
+        ------
+        ValueError
+            If phase is not between 1 and 5.
+        FileNotFoundError
+            If required checkpoint files are missing.
+        """
+        if phase < _MIN_PHASE or phase > _MAX_PHASE:
+            msg = f"phase must be between {_MIN_PHASE} and {_MAX_PHASE}, got {phase}"
+            raise ValueError(msg)
+
+        logger.info("Resuming from checkpoint", start_phase=phase)
+
+        # Load checkpoint data for completed phases
+        claims: dict[str, list[Claim]] = (
+            self._load_checkpoint_claims() if phase > 1 else {}
+        )
+        scored_claims: dict[str, list[ScoredClaim]] = (
+            self._load_checkpoint_scored() if phase > 2 else {}
+        )
+        scores: dict[str, StockScore] = {}
+        ranked: pd.DataFrame = pd.DataFrame()
+        portfolio: PortfolioResult | None = None
+
+        # Execute phases sequentially from the start phase
+        if phase <= 1:
+            claims = self._execute_phase(1, self._run_phase1_extraction)
+        if phase <= 2:
+            scored_claims = self._execute_phase(2, self._run_phase2_scoring, (claims,))
+        if phase <= 3:
+            scores = self._aggregate_scores(scored_claims)
+            ranked = self._execute_phase(
+                3, self._run_phase3_neutralization, (scored_claims, scores)
+            )
+        if phase <= 4:
+            portfolio = self._execute_phase(
+                4,
+                self._run_phase4_portfolio_construction,
+                (ranked, self._config.benchmark),
+            )
+        if phase <= 5:
+            self._execute_phase(
+                5,
+                self._run_phase5_output_generation,
+                (portfolio, scored_claims, scores),
+            )
+
+        logger.info("Checkpoint resumption completed", start_phase=phase)
+
+    # -----------------------------------------------------------------------
+    # Execution log
+    # -----------------------------------------------------------------------
+    def _save_execution_log(
+        self,
+        phase: str,
+        status: str,
+        error: str | None,
+    ) -> None:
+        """Record a phase execution result to execution_log.json.
+
+        Appends the entry to the in-memory log and persists the
+        full log to disk.
+
+        Parameters
+        ----------
+        phase : str
+            Phase identifier (e.g. "phase1", "phase2").
+        status : str
+            Execution status ("completed" or "failed").
+        error : str | None
+            Error message if the phase failed, None otherwise.
+        """
+        entry: dict[str, Any] = {
+            "phase": phase,
+            "status": status,
+            "error": error,
+            "timestamp": datetime.now().isoformat(),
+        }
+        self._execution_log.append(entry)
+
+        log_data = {"phases": self._execution_log}
+        log_path = self._workspace_dir / "execution_log.json"
+        log_path.write_text(
+            json.dumps(log_data, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+        logger.debug(
+            "Execution log updated",
+            phase=phase,
+            status=status,
+        )
+
+    # -----------------------------------------------------------------------
+    # Phase execution wrapper
+    # -----------------------------------------------------------------------
+    def _execute_phase(
+        self,
+        phase: int,
+        func: Any,
+        args: tuple[Any, ...] = (),
+    ) -> Any:
+        """Execute a single phase with logging and error handling.
+
+        Parameters
+        ----------
+        phase : int
+            Phase number (1-5).
+        func : callable
+            The phase method to call.
+        args : tuple
+            Arguments to pass to the phase method.
+
+        Returns
+        -------
+        Any
+            The return value of the phase method.
+
+        Raises
+        ------
+        RuntimeError
+            Re-raises any exception after logging it.
+        """
+        phase_name = f"phase{phase}"
+        logger.info("Phase started", phase=phase_name)
+
+        try:
+            result = func(*args)
+            self._save_execution_log(phase_name, "completed", None)
+            logger.info("Phase completed", phase=phase_name)
+            return result
+        except Exception as exc:
+            self._save_execution_log(phase_name, "failed", str(exc))
+            logger.error(
+                "Phase failed",
+                phase=phase_name,
+                error=str(exc),
+                exc_info=True,
+            )
+            raise
+
+    # -----------------------------------------------------------------------
+    # Phase 1: Extraction
+    # -----------------------------------------------------------------------
+    def _run_phase1_extraction(self) -> dict[str, list[Claim]]:
+        """Execute Phase 1: transcript loading and claim extraction.
+
+        Returns
+        -------
+        dict[str, list[Claim]]
+            Mapping of ticker to list of extracted claims.
+        """
+        universe = self._config.universe
+        tickers = [t.ticker for t in universe.tickers]
+
+        # Load transcripts
+        transcript_dir = self._workspace_dir / "transcripts"
+        loader = TranscriptLoader(
+            base_dir=transcript_dir,
+            cutoff_date=CUTOFF_DATE,
+        )
+        transcripts = loader.load_batch(tickers)
+
+        # Extract claims
+        extractor = ClaimExtractor(
+            kb1_dir=self._kb_base_dir / "kb1_rules_transcript",
+            kb3_dir=self._kb_base_dir / "kb3_fewshot_transcript",
+            system_prompt_path=self._kb_base_dir / "system_prompt_transcript.md",
+            dogma_path=self._kb_base_dir / "dogma.md",
+            cost_tracker=self._cost_tracker,
+        )
+
+        output_dir = self._workspace_dir / "phase1_output"
+        claims = extractor.extract_batch(
+            transcripts=transcripts,
+            output_dir=output_dir,
+        )
+
+        # Save checkpoint
+        self._save_checkpoint_claims(claims)
+
+        logger.info(
+            "Phase 1 completed",
+            ticker_count=len(claims),
+            total_claims=sum(len(v) for v in claims.values()),
+        )
+
+        return claims
+
+    # -----------------------------------------------------------------------
+    # Phase 2: Scoring
+    # -----------------------------------------------------------------------
+    def _run_phase2_scoring(
+        self,
+        claims: dict[str, list[Claim]],
+    ) -> dict[str, list[ScoredClaim]]:
+        """Execute Phase 2: claim scoring.
+
+        Parameters
+        ----------
+        claims : dict[str, list[Claim]]
+            Claims from Phase 1.
+
+        Returns
+        -------
+        dict[str, list[ScoredClaim]]
+            Mapping of ticker to list of scored claims.
+        """
+        scorer = ClaimScorer(
+            kb1_dir=self._kb_base_dir / "kb1_rules_transcript",
+            kb2_dir=self._kb_base_dir / "kb2_patterns_transcript",
+            kb3_dir=self._kb_base_dir / "kb3_fewshot_transcript",
+            dogma_path=self._kb_base_dir / "dogma.md",
+            cost_tracker=self._cost_tracker,
+        )
+
+        output_dir = self._workspace_dir / "phase2_output"
+        scored = scorer.score_batch(claims=claims, output_dir=output_dir)
+
+        # Save checkpoint
+        self._save_checkpoint_scored(scored)
+
+        logger.info(
+            "Phase 2 completed",
+            ticker_count=len(scored),
+            total_scored=sum(len(v) for v in scored.values()),
+        )
+
+        return scored
+
+    # -----------------------------------------------------------------------
+    # Phase 3: Aggregation + Neutralization
+    # -----------------------------------------------------------------------
+    def _run_phase3_neutralization(
+        self,
+        scored_claims: dict[str, list[ScoredClaim]],
+        scores: dict[str, StockScore],
+    ) -> pd.DataFrame:
+        """Execute Phase 3: score aggregation and sector neutralization.
+
+        Parameters
+        ----------
+        scored_claims : dict[str, list[ScoredClaim]]
+            Scored claims from Phase 2.
+        scores : dict[str, StockScore]
+            Aggregated stock scores.
+
+        Returns
+        -------
+        pd.DataFrame
+            Ranked DataFrame with sector-neutral Z-scores.
+        """
+        universe = self._config.universe
+
+        # Build scores DataFrame
+        scores_data = [
+            {
+                "ticker": ticker,
+                "aggregate_score": score.aggregate_score,
+                "claim_count": score.claim_count,
+                "structural_weight": score.structural_weight,
+                "as_of_date": CUTOFF_DATE,
+            }
+            for ticker, score in scores.items()
+        ]
+        scores_df = pd.DataFrame(scores_data)
+
+        # Apply sector neutralization
+        neutralizer = SectorNeutralizer(min_samples=2)
+        ranked = neutralizer.neutralize(scores_df, universe)
+
+        logger.info(
+            "Phase 3 completed",
+            ranked_count=len(ranked),
+        )
+
+        return ranked
+
+    # -----------------------------------------------------------------------
+    # Phase 4: Portfolio Construction
+    # -----------------------------------------------------------------------
+    def _run_phase4_portfolio_construction(
+        self,
+        ranked: pd.DataFrame,
+        benchmark: list[BenchmarkWeight],
+    ) -> PortfolioResult:
+        """Execute Phase 4: portfolio construction.
+
+        Parameters
+        ----------
+        ranked : pd.DataFrame
+            Ranked DataFrame from Phase 3.
+        benchmark : list[BenchmarkWeight]
+            Benchmark sector weights.
+
+        Returns
+        -------
+        PortfolioResult
+            Portfolio result with holdings, sector_allocations, as_of_date.
+        """
+        builder = PortfolioBuilder(target_size=30)
+
+        ranked_list = ranked.to_dict("records")
+        portfolio = builder.build(
+            ranked=ranked_list,
+            benchmark=benchmark,
+            as_of_date=CUTOFF_DATE,
+        )
+
+        logger.info(
+            "Phase 4 completed",
+            holdings_count=len(portfolio.holdings),
+        )
+
+        return portfolio
+
+    # -----------------------------------------------------------------------
+    # Phase 5: Output Generation
+    # -----------------------------------------------------------------------
+    def _run_phase5_output_generation(
+        self,
+        portfolio: PortfolioResult,
+        scored_claims: dict[str, list[ScoredClaim]],
+        scores: dict[str, StockScore],
+    ) -> None:
+        """Execute Phase 5: output file generation.
+
+        Parameters
+        ----------
+        portfolio : PortfolioResult
+            Portfolio result from Phase 4.
+        scored_claims : dict[str, list[ScoredClaim]]
+            Scored claims from Phase 2.
+        scores : dict[str, StockScore]
+            Aggregated stock scores.
+        """
+        output_dir = self._workspace_dir / "output"
+        generator = OutputGenerator()
+        generator.generate_all(
+            portfolio=portfolio,
+            claims=scored_claims,
+            scores=scores,
+            output_dir=output_dir,
+        )
+
+        logger.info(
+            "Phase 5 completed",
+            output_dir=str(output_dir),
+        )
+
+    # -----------------------------------------------------------------------
+    # Score aggregation helper
+    # -----------------------------------------------------------------------
+    def _aggregate_scores(
+        self,
+        scored_claims: dict[str, list[ScoredClaim]],
+    ) -> dict[str, StockScore]:
+        """Aggregate scored claims into per-stock scores.
+
+        Parameters
+        ----------
+        scored_claims : dict[str, list[ScoredClaim]]
+            Scored claims from Phase 2.
+
+        Returns
+        -------
+        dict[str, StockScore]
+            Aggregated stock scores.
+        """
+        aggregator = ScoreAggregator()
+        return aggregator.aggregate(scored_claims)
+
+    # -----------------------------------------------------------------------
+    # Checkpoint I/O
+    # -----------------------------------------------------------------------
+    def _save_checkpoint_claims(
+        self,
+        claims: dict[str, list[Claim]],
+    ) -> None:
+        """Save Phase 1 claims to a checkpoint file.
+
+        Parameters
+        ----------
+        claims : dict[str, list[Claim]]
+            Claims to persist.
+        """
+        checkpoint_dir = self._workspace_dir / "checkpoints"
+        checkpoint_dir.mkdir(parents=True, exist_ok=True)
+
+        serialized = {
+            ticker: [c.model_dump() for c in claim_list]
+            for ticker, claim_list in claims.items()
+        }
+
+        path = checkpoint_dir / "phase1_claims.json"
+        path.write_text(
+            json.dumps(serialized, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        logger.debug("Phase 1 checkpoint saved", path=str(path))
+
+    def _save_checkpoint_scored(
+        self,
+        scored: dict[str, list[ScoredClaim]],
+    ) -> None:
+        """Save Phase 2 scored claims to a checkpoint file.
+
+        Parameters
+        ----------
+        scored : dict[str, list[ScoredClaim]]
+            Scored claims to persist.
+        """
+        checkpoint_dir = self._workspace_dir / "checkpoints"
+        checkpoint_dir.mkdir(parents=True, exist_ok=True)
+
+        serialized = {
+            ticker: [c.model_dump() for c in claim_list]
+            for ticker, claim_list in scored.items()
+        }
+
+        path = checkpoint_dir / "phase2_scored.json"
+        path.write_text(
+            json.dumps(serialized, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        logger.debug("Phase 2 checkpoint saved", path=str(path))
+
+    def _load_checkpoint_claims(self) -> dict[str, list[Claim]]:
+        """Load Phase 1 claims from a checkpoint file.
+
+        Returns
+        -------
+        dict[str, list[Claim]]
+            Loaded claims.
+
+        Raises
+        ------
+        FileNotFoundError
+            If the checkpoint file does not exist.
+        """
+        path = self._workspace_dir / "checkpoints" / "phase1_claims.json"
+        if not path.exists():
+            msg = f"Phase 1 checkpoint not found: {path}"
+            raise FileNotFoundError(msg)
+
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return {
+            ticker: [Claim.model_validate(c) for c in claims_data]
+            for ticker, claims_data in data.items()
+        }
+
+    def _load_checkpoint_scored(self) -> dict[str, list[ScoredClaim]]:
+        """Load Phase 2 scored claims from a checkpoint file.
+
+        Returns
+        -------
+        dict[str, list[ScoredClaim]]
+            Loaded scored claims.
+
+        Raises
+        ------
+        FileNotFoundError
+            If the checkpoint file does not exist.
+        """
+        path = self._workspace_dir / "checkpoints" / "phase2_scored.json"
+        if not path.exists():
+            msg = f"Phase 2 checkpoint not found: {path}"
+            raise FileNotFoundError(msg)
+
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return {
+            ticker: [ScoredClaim.model_validate(c) for c in claims_data]
+            for ticker, claims_data in data.items()
+        }
+
+
+__all__ = [
+    "Orchestrator",
+]
