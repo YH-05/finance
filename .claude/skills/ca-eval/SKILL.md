@@ -164,12 +164,28 @@ T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | 1 | 全フェーズ |
 | Phase 2 検証データ | `analyst/phase2_KY/` | 5 | 精度検証（T9） |
 
-## レポートフォーマットテンプレート
+## テンプレートファイル
+
+### レポートフォーマット（Markdown）
 
 | テンプレート | パス | 用途 |
 |-------------|------|------|
 | draft-report フォーマット | `.claude/skills/ca-eval/templates/draft-report-format.md` | T7（ca-report-generator）がドラフトレポートを生成する際のフォーマット |
 | revised-report フォーマット | `.claude/skills/ca-eval/templates/revised-report-format.md` | T8（Lead直接実行）が批判反映版レポートを生成する際のフォーマット |
+
+### 構造化出力スキーマ（JSON）
+
+| スキーマ | 対応出力 | 生成タスク |
+|---------|---------|-----------|
+| `schemas/research-meta.schema.md` | `00_meta/research-meta.json` | T0 |
+| `schemas/sec-data.schema.md` | `01_data_collection/sec-data.json` | T1 |
+| `schemas/parsed-report.schema.md` | `01_data_collection/parsed-report.json` | T2 |
+| `schemas/claims.schema.md` | `02_claims/claims.json` | T4 |
+| `schemas/fact-check.schema.md` | `03_verification/fact-check.json` | T5 |
+| `schemas/pattern-verification.schema.md` | `03_verification/pattern-verification.json` | T6 |
+| `schemas/structured.schema.md` | `04_output/structured.json` | T7 |
+| `schemas/critique.schema.md` | `04_output/critique.json` | T8 |
+| `schemas/accuracy-report.schema.md` | `04_output/accuracy-report.json` | T9 |
 
 ## 出力ディレクトリ構造
 
