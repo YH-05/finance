@@ -560,7 +560,7 @@ class TestExtractSingle:
             )
 
         call_kwargs = mock_create.call_args
-        assert call_kwargs.kwargs.get("temperature") == 0 or (len(call_kwargs.args) > 0)
+        assert call_kwargs.kwargs.get("temperature") == 0
 
     def test_異常系_LLM呼び出しが例外を投げた場合に空リストが返される(
         self,

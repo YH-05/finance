@@ -22,14 +22,14 @@ Writes to::
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import anthropic
 
 from dev.ca_strategy._llm_utils import (
-    extract_text_from_response,
+    build_kb_section,
+    call_llm,
     load_directory,
     load_file,
     strip_code_block,
@@ -274,25 +274,16 @@ class ClaimExtractor:
         system_prompt = self._build_system_prompt()
 
         try:
-            message = self._client.messages.create(
+            response_text = call_llm(
+                client=self._client,
                 model=self._model,
+                system=system_prompt,
+                user_content=user_prompt,
                 max_tokens=_MAX_TOKENS,
                 temperature=_TEMPERATURE,
-                system=system_prompt,
-                messages=[
-                    {"role": "user", "content": user_prompt},
-                ],
-            )
-
-            # Record cost
-            self._cost_tracker.record(
+                cost_tracker=self._cost_tracker,
                 phase="phase1",
-                tokens_input=message.usage.input_tokens,
-                tokens_output=message.usage.output_tokens,
             )
-
-            # Extract text from response
-            response_text = extract_text_from_response(message)
             if not response_text:
                 logger.warning(
                     "Empty LLM response",
@@ -398,14 +389,14 @@ class ClaimExtractor:
         parts.append(f"## PoiT制約\n\n{get_pit_prompt_context()}\n")
 
         # 5. KB1-T rules
-        parts.append("## KB1-T ルール集（全ルール）\n")
-        for name, content in self._sorted_kb1_rules:
-            parts.append(f"### {name}\n\n{content}\n")
+        parts.extend(
+            build_kb_section("## KB1-T ルール集（全ルール）", self._sorted_kb1_rules)
+        )
 
         # 6. KB3-T few-shot examples
-        parts.append("## KB3-T few-shot 評価例\n")
-        for name, content in self._sorted_kb3_examples:
-            parts.append(f"### {name}\n\n{content}\n")
+        parts.extend(
+            build_kb_section("## KB3-T few-shot 評価例", self._sorted_kb3_examples)
+        )
 
         # 7. Dogma
         if self._dogma:

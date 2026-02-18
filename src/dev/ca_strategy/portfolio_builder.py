@@ -26,10 +26,23 @@ from __future__ import annotations
 import math
 from collections import defaultdict
 from datetime import date  # noqa: TC003 - required at runtime
+from typing import TypedDict
 
 from utils_core.logging import get_logger
 
 from .types import BenchmarkWeight, PortfolioHolding, PortfolioResult, SectorAllocation
+
+
+class RankedStock(TypedDict):
+    """Type definition for a ranked stock entry from SectorNeutralizer output."""
+
+    ticker: str
+    aggregate_score: float
+    gics_sector: str
+    sector_rank: int
+    claim_count: int
+    structural_weight: float
+
 
 logger = get_logger(__name__)
 
@@ -68,7 +81,7 @@ class PortfolioBuilder:
 
     def build(
         self,
-        ranked: list[dict],
+        ranked: list[RankedStock],
         benchmark: list[BenchmarkWeight],
         as_of_date: date,
     ) -> PortfolioResult:
@@ -76,7 +89,7 @@ class PortfolioBuilder:
 
         Parameters
         ----------
-        ranked : list[dict]
+        ranked : list[RankedStock]
             Ranked stock data with keys: ticker, aggregate_score,
             gics_sector, sector_rank, claim_count, structural_weight.
         benchmark : list[BenchmarkWeight]
@@ -358,25 +371,24 @@ class PortfolioBuilder:
         list[SectorAllocation]
             Updated sector allocations.
         """
-        sector_data: dict[str, dict] = {}
+        sector_weights: dict[str, float] = defaultdict(float)
+        sector_counts: dict[str, int] = defaultdict(int)
         for h in holdings:
-            if h.sector not in sector_data:
-                sector_data[h.sector] = {"weight": 0.0, "count": 0}
-            sector_data[h.sector]["weight"] += h.weight
-            sector_data[h.sector]["count"] += 1
+            sector_weights[h.sector] += h.weight
+            sector_counts[h.sector] += 1
 
         allocations: list[SectorAllocation] = []
-        for sector, data in sorted(sector_data.items()):
+        for sector in sorted(sector_weights):
             allocations.append(
                 SectorAllocation(
                     sector=sector,
                     benchmark_weight=benchmark_map.get(sector, 0.0),
-                    actual_weight=data["weight"],
-                    stock_count=data["count"],
+                    actual_weight=sector_weights[sector],
+                    stock_count=sector_counts[sector],
                 )
             )
 
         return allocations
 
 
-__all__ = ["PortfolioBuilder"]
+__all__ = ["PortfolioBuilder", "RankedStock"]

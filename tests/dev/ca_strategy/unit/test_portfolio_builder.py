@@ -16,7 +16,7 @@ from datetime import date
 
 import pytest
 
-from dev.ca_strategy.portfolio_builder import PortfolioBuilder
+from dev.ca_strategy.portfolio_builder import PortfolioBuilder, RankedStock
 from dev.ca_strategy.types import (
     BenchmarkWeight,
     PortfolioHolding,
@@ -34,16 +34,16 @@ def _make_stock_score(
     aggregate_score: float = 0.8,
     sector: str = "Information Technology",
     claim_count: int = 3,
-) -> dict:
+) -> RankedStock:
     """Create a ranked stock entry dict (as from neutralizer output)."""
-    return {
-        "ticker": ticker,
-        "aggregate_score": aggregate_score,
-        "gics_sector": sector,
-        "sector_rank": 1,
-        "claim_count": claim_count,
-        "structural_weight": 0.5,
-    }
+    return RankedStock(
+        ticker=ticker,
+        aggregate_score=aggregate_score,
+        gics_sector=sector,
+        sector_rank=1,
+        claim_count=claim_count,
+        structural_weight=0.5,
+    )
 
 
 def _make_benchmark_weights() -> list[BenchmarkWeight]:
@@ -57,7 +57,7 @@ def _make_benchmark_weights() -> list[BenchmarkWeight]:
 
 def _make_ranked_data(
     sectors: dict[str, list[tuple[str, float]]] | None = None,
-) -> list[dict]:
+) -> list[RankedStock]:
     """Create ranked stock data with sector info.
 
     Parameters
@@ -83,18 +83,18 @@ def _make_ranked_data(
                 ("MRK", 0.68),
             ],
         }
-    ranked: list[dict] = []
+    ranked: list[RankedStock] = []
     for sector, stocks in sectors.items():
         for rank, (ticker, score) in enumerate(stocks, 1):
             ranked.append(
-                {
-                    "ticker": ticker,
-                    "aggregate_score": score,
-                    "gics_sector": sector,
-                    "sector_rank": rank,
-                    "claim_count": 3,
-                    "structural_weight": 0.5,
-                }
+                RankedStock(
+                    ticker=ticker,
+                    aggregate_score=score,
+                    gics_sector=sector,
+                    sector_rank=rank,
+                    claim_count=3,
+                    structural_weight=0.5,
+                )
             )
     return ranked
 

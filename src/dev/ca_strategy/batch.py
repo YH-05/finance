@@ -110,7 +110,9 @@ class CheckpointManager:
         """
         self._path.parent.mkdir(parents=True, exist_ok=True)
         data = {"completed": sorted(self._completed)}
-        self._path.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+        self._path.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
         logger.debug(
             "Checkpoint saved",
             path=str(self._path),
@@ -129,7 +131,7 @@ class CheckpointManager:
             )
             return
 
-        data = json.loads(self._path.read_text())
+        data = json.loads(self._path.read_text(encoding="utf-8"))
         self._completed = set(data.get("completed", []))
         logger.debug(
             "Checkpoint loaded",
@@ -205,7 +207,7 @@ class BatchProcessor[T, R]:
         for attempt in range(self._max_retries + 1):
             try:
                 return self._process_fn(item)
-            except (ValueError, TypeError) as exc:
+            except (ValueError, TypeError):
                 raise  # Don't retry validation errors
             except Exception as exc:
                 last_exception = exc
@@ -296,11 +298,13 @@ class BatchProcessor[T, R]:
         key_fn: Callable[[T], str],
         checkpoint_path: Path,
         desc: str = "Processing",
+        checkpoint_interval: int = 10,
     ) -> dict[str, R | Exception]:
         """Process items with checkpoint-based resume.
 
         Loads existing checkpoint, skips already-completed items,
-        processes remaining items, and saves checkpoint after completion.
+        processes remaining items in chunks, and saves checkpoint
+        after each chunk for crash recovery.
 
         Parameters
         ----------
@@ -312,6 +316,10 @@ class BatchProcessor[T, R]:
             Path to the checkpoint JSON file.
         desc : str, default="Processing"
             Description for the tqdm progress bar.
+        checkpoint_interval : int, default=10
+            Number of items to process before saving an intermediate
+            checkpoint.  Smaller values provide better crash recovery
+            at the cost of more disk I/O.
 
         Returns
         -------
@@ -335,17 +343,22 @@ class BatchProcessor[T, R]:
                 pending=len(pending_items),
             )
 
-        # Process only pending items
-        results = self.process(pending_items, key_fn=key_fn, desc=desc)
+        # Process in chunks with intermediate checkpoint saves (PERF-002)
+        all_results: dict[str, R | Exception] = {}
 
-        # Update checkpoint with successful items
-        for key, value in results.items():
-            if not isinstance(value, Exception):
-                checkpoint.mark_completed(key)
+        for chunk_start in range(0, len(pending_items), checkpoint_interval):
+            chunk = pending_items[chunk_start : chunk_start + checkpoint_interval]
+            chunk_results = self.process(chunk, key_fn=key_fn, desc=desc)
+            all_results.update(chunk_results)
 
-        checkpoint.save()
+            # Save intermediate checkpoint after each chunk
+            for key, value in chunk_results.items():
+                if not isinstance(value, Exception):
+                    checkpoint.mark_completed(key)
 
-        return results
+            checkpoint.save()
+
+        return all_results
 
 
 __all__ = [

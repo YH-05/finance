@@ -30,6 +30,42 @@ def _validate_non_empty_str(v: str) -> str:
 
 NonEmptyStr = Annotated[str, AfterValidator(_validate_non_empty_str)]
 
+
+def _validate_unit_range(v: float) -> float:
+    """Validate that a float is in [0.0, 1.0]."""
+    if not 0.0 <= v <= 1.0:
+        msg = f"value must be between 0.0 and 1.0, got {v}"
+        raise ValueError(msg)
+    return v
+
+
+UnitFloat = Annotated[float, AfterValidator(_validate_unit_range)]
+"""Float constrained to [0.0, 1.0]. Used for scores, weights, and confidences."""
+
+
+def _validate_non_negative_int(v: int) -> int:
+    """Validate that an int is >= 0."""
+    if v < 0:
+        msg = f"value must be >= 0, got {v}"
+        raise ValueError(msg)
+    return v
+
+
+NonNegativeInt = Annotated[int, AfterValidator(_validate_non_negative_int)]
+"""Int constrained to >= 0. Used for counts."""
+
+
+def _validate_adjustment_range(v: float) -> float:
+    """Validate that a float is in [-1.0, 1.0]."""
+    if not -1.0 <= v <= 1.0:
+        msg = f"adjustment must be between -1.0 and 1.0, got {v}"
+        raise ValueError(msg)
+    return v
+
+
+AdjustmentFloat = Annotated[float, AfterValidator(_validate_adjustment_range)]
+"""Float constrained to [-1.0, 1.0]. Used for confidence adjustments."""
+
 # ---------------------------------------------------------------------------
 # Type aliases
 # ---------------------------------------------------------------------------
@@ -135,16 +171,8 @@ class RuleEvaluation(BaseModel):
 
     applied_rules: list[str]
     results: dict[str, bool]
-    confidence: float
+    confidence: UnitFloat
     adjustments: list[str]
-
-    @field_validator("confidence")
-    @classmethod
-    def _confidence_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"confidence must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
 
 
 class Claim(BaseModel):
@@ -192,16 +220,8 @@ class ConfidenceAdjustment(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     source: str
-    adjustment: float
+    adjustment: AdjustmentFloat
     reasoning: str
-
-    @field_validator("adjustment")
-    @classmethod
-    def _adjustment_in_range(cls, v: float) -> float:
-        if not -1.0 <= v <= 1.0:
-            msg = f"adjustment must be between -1.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
 
 
 class ScoredClaim(BaseModel):
@@ -234,16 +254,8 @@ class ScoredClaim(BaseModel):
     claim: NonEmptyStr
     evidence: str
     rule_evaluation: RuleEvaluation
-    final_confidence: float
+    final_confidence: UnitFloat
     adjustments: list[ConfidenceAdjustment]
-
-    @field_validator("final_confidence")
-    @classmethod
-    def _final_confidence_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"final_confidence must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
 
 
 # ===========================================================================
@@ -267,33 +279,9 @@ class StockScore(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     ticker: NonEmptyStr
-    aggregate_score: float
-    claim_count: int
-    structural_weight: float
-
-    @field_validator("aggregate_score")
-    @classmethod
-    def _aggregate_score_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"aggregate_score must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("claim_count")
-    @classmethod
-    def _claim_count_non_negative(cls, v: int) -> int:
-        if v < 0:
-            msg = f"claim_count must be >= 0, got {v}"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("structural_weight")
-    @classmethod
-    def _structural_weight_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"structural_weight must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
+    aggregate_score: UnitFloat
+    claim_count: NonNegativeInt
+    structural_weight: UnitFloat
 
 
 class PortfolioHolding(BaseModel):
@@ -316,26 +304,10 @@ class PortfolioHolding(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     ticker: NonEmptyStr
-    weight: float
+    weight: UnitFloat
     sector: NonEmptyStr
-    score: float
+    score: UnitFloat
     rationale_summary: str
-
-    @field_validator("weight")
-    @classmethod
-    def _weight_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"weight must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("score")
-    @classmethod
-    def _score_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"score must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
 
 
 class SectorAllocation(BaseModel):
@@ -356,33 +328,9 @@ class SectorAllocation(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     sector: NonEmptyStr
-    benchmark_weight: float
-    actual_weight: float
-    stock_count: int
-
-    @field_validator("benchmark_weight")
-    @classmethod
-    def _benchmark_weight_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"benchmark_weight must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("actual_weight")
-    @classmethod
-    def _actual_weight_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"actual_weight must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
-
-    @field_validator("stock_count")
-    @classmethod
-    def _stock_count_non_negative(cls, v: int) -> int:
-        if v < 0:
-            msg = f"stock_count must be >= 0, got {v}"
-            raise ValueError(msg)
-        return v
+    benchmark_weight: UnitFloat
+    actual_weight: UnitFloat
+    stock_count: NonNegativeInt
 
 
 class PortfolioResult(BaseModel):
@@ -461,12 +409,4 @@ class BenchmarkWeight(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     sector: NonEmptyStr
-    weight: float
-
-    @field_validator("weight")
-    @classmethod
-    def _weight_in_range(cls, v: float) -> float:
-        if not 0.0 <= v <= 1.0:
-            msg = f"weight must be between 0.0 and 1.0, got {v}"
-            raise ValueError(msg)
-        return v
+    weight: UnitFloat
