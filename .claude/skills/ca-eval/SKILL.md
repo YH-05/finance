@@ -166,8 +166,10 @@ T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
 
 ## 出力ディレクトリ構造
 
+> **注意**: 同日・同一銘柄で複数評価する場合のフォルダ名衝突を防ぐため、時刻（HHMM）は省略禁止。`date '+%Y%m%d-%H%M'` で取得。
+
 ```
-research/CA_eval_{YYYYMMDD}_{TICKER}/
+research/CA_eval_{YYYYMMDD}-{HHMM}_{TICKER}/
 ├── 00_meta/
 │   └── research-meta.json
 ├── 01_data_collection/

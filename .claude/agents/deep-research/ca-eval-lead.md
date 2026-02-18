@@ -218,7 +218,10 @@ Phase 3: シャットダウン・クリーンアップ
 
 ### Phase 0: Setup（Lead 自身が実行）
 
-1. **リサーチID生成**: `CA_eval_{YYYYMMDD}_{TICKER}`
+1. **リサーチID生成**: `CA_eval_{YYYYMMDD}-{HHMM}_{TICKER}`
+   - **必須**: 日付と時刻を必ず含めること。同日に同一銘柄を複数評価した場合にフォルダ名が衝突しないよう、時刻（HHMM）は省略禁止。
+   - Bash で現在時刻を取得: `date '+%Y%m%d-%H%M'`
+   - 例: `CA_eval_20260218-1430_AME`（2026年2月18日14:30のAME評価）
 2. **レポート検索**:
    - `report_path` が指定されていればそれを使用
    - 未指定の場合は `analyst/raw/` 配下で ticker に一致するファイルを Glob 検索
@@ -236,7 +239,7 @@ Phase 3: シャットダウン・クリーンアップ
 4. **research-meta.json 出力**:
    ```json
    {
-     "research_id": "CA_eval_20260217_ORLY",
+     "research_id": "CA_eval_20260217-1000_ORLY",
      "type": "ca_eval",
      "ticker": "ORLY",
      "created_at": "2026-02-17T10:00:00Z",
@@ -790,7 +793,7 @@ TaskUpdate:
    **critique.json スキーマ（設計書 §4.9.2 準拠）**:
    ```json
    {
-     "research_id": "CA_eval_20260217_ORLY",
+     "research_id": "CA_eval_20260217-1000_ORLY",
      "ticker": "ORLY",
      "critique_timestamp": "2026-02-17T10:35:00Z",
      "overall_assessment": {
@@ -912,7 +915,7 @@ TaskUpdate:
    **accuracy-report.json スキーマ（簡素化版）**:
    ```json
    {
-     "research_id": "CA_eval_20260217_ORLY",
+     "research_id": "CA_eval_20260217-1000_ORLY",
      "ticker": "ORLY",
      "mode": "full | simplified",
      "generated_at": "2026-02-17T10:37:00Z",
