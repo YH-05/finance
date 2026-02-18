@@ -17,6 +17,7 @@
 | 05b | `05b_expert-feedback-loop.md` | 専門家フィードバックループ | Analyst Y の判断基準を活用した品質検証サイクルと投資家向けストーリー |
 | 05c | `05c_academic-frameworks.md` | 学術的フレームワーク | 6つの学術的根拠（Kahneman/Tetlock/Mauboussin/SDG/行動ファイナンス/Dalio） |
 | 06 | `06_open-questions.md` | 残された論点 | 規制上の位置づけ、差別化の持続性（モート） |
+| 06a | `06a_moat-strategy.md` | モート戦略 | KDP（Knowledge Discovery Platform）による複合モート戦略 |
 
 ## 議論の流れ
 
