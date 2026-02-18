@@ -110,146 +110,17 @@ claims.json の各主張に対して:
 
 ### Step 4: 構造化 JSON 生成
 
-設計書§4.8.2 に準拠した `structured.json` を生成（全ルール記録版）:
+設計書§4.8.2 に準拠した `structured.json` を生成（全ルール記録版）。
 
-```json
-{
-  "ticker": "ORLY",
-  "report_source": "アナリストA",
-  "extraction_metadata": {
-    "kb1_rules_loaded": 8,
-    "kb3_fewshot_loaded": 5,
-    "dogma_loaded": true,
-    "sec_data_available": true,
-    "industry_context_available": true,
-    "fact_check_available": true,
-    "pattern_verification_available": true
-  },
-  "claims": [
-    {
-      "id": 1,
-      "claim_type": "competitive_advantage",
-      "claim": "ローカルな規模の経済による配送・在庫の効率化",
-      "descriptive_label": "配送密度による原価優位",
-      "evidence_from_report": "店舗数5,800超、配送センター30拠点（レポートp.8）",
-      "supported_by_facts": [3, 4],
-      "cagr_connections": [2],
-      "rule_evaluation": {
-        "applied_rules": [
-          {
-            "rule": "rule_1",
-            "verdict": "capability",
-            "reasoning": "配送密度は「結果」ではなく「能力」として記述されている"
-          },
-          {
-            "rule": "rule_6",
-            "verdict": "structural",
-            "reasoning": "店舗網・配送センターは競合が容易に再現できない構造的優位"
-          },
-          {
-            "rule": "rule_11",
-            "verdict": "strong_fit",
-            "reasoning": "専門小売の地域寡占構造とローカル密度が合致"
-          }
-        ],
-        "not_applied_rules": [
-          {
-            "rule": "rule_4",
-            "reason": "定量的裏付けはあるが、純粋競合との比較が不足（ルール7優先）"
-          },
-          {
-            "rule": "rule_7",
-            "reason": "純粋競合（AutoZone）との配送効率の具体的比較がレポートに不在"
-          },
-          {
-            "rule": "rule_10",
-            "reason": "競合の失敗事例の記述なし"
-          }
-        ],
-        "confidence": 90,
-        "confidence_rationale": {
-          "base": 50,
-          "layer_1_prerequisite": "+0（事実誤認なし、相対性あり）",
-          "layer_2_nature": "+10（能力として記述、名詞テスト合格）",
-          "layer_3_evidence": "+20（ルール11の強い合致）",
-          "layer_4_cagr": "+10（構造的、直接的）",
-          "layer_5_source": "+0（PoC: レポート種別による調整なし）",
-          "final": 90
-        },
-        "overall_reasoning": "構造的優位性（ルール6）と業界構造の合致（ルール11）が明確。ただし純粋競合との比較（ルール7）が不足しているため、90%の確信度は高すぎる可能性"
-      },
-      "verification": {
-        "fact_check_status": "verified",
-        "pattern_matches": ["IV"],
-        "pattern_rejections": [],
-        "final_confidence": 90,
-        "confidence_delta": 0
-      },
-      "five_layer_evaluation": {
-        "layer_1_prerequisite": {
-          "rule_9_factual_accuracy": "pass | fail",
-          "rule_3_relative_advantage": "pass | fail"
-        },
-        "layer_2_nature": {
-          "rule_1_capability_vs_result": "capability | result",
-          "rule_2_noun_test": "pass | fail",
-          "rule_8_strategy_vs_advantage": "advantage | strategy"
-        },
-        "layer_3_evidence": {
-          "rule_4_quantitative": "present | absent",
-          "rule_7_pure_competitor": "present | absent",
-          "rule_10_negative_case": "present | absent",
-          "rule_11_industry_structure": "strong_fit | weak_fit | absent"
-        },
-        "layer_4_cagr": {
-          "rule_5_directness": "direct | indirect",
-          "rule_6_structural_vs_complementary": "structural | complementary",
-          "verifiability": "high | medium | low"
-        },
-        "layer_5_source": {
-          "rule_12_source_type": null,
-          "rule_12_note": "PoC省略: レポート種別区別を行わないため null",
-          "overinterpretation_risk": "low | medium | high"
-        }
-      },
-      "ai_comment": "構造的優位性と業界構造の合致が明確だが、純粋競合比較が不足。90%は再考の余地あり。"
-    }
-  ],
-  "summary": {
-    "ticker": "ORLY",
-    "total_claims": 6,
-    "competitive_advantages": 6,
-    "cagr_connections": 5,
-    "factual_claims": 4,
-    "average_ca_confidence": 52,
-    "confidence_distribution": {
-      "90": 1,
-      "70": 1,
-      "50": 2,
-      "30": 1,
-      "10": 1
-    },
-    "fact_check_summary": {
-      "verified": 3,
-      "contradicted": 0,
-      "unverifiable": 1
-    },
-    "warning_flags": {
-      "overinterpretation_risks": 0,
-      "confidence_distribution_anomaly": false
-    }
-  }
-}
+スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
+
+```
+.claude/skills/ca-eval/templates/schemas/structured.schema.md
 ```
 
-**structured.json の重要フィールド**:
-
-| フィールド | 説明 |
-|-----------|------|
-| `applied_rules` | 適用したルールとその判定・理由（配列） |
-| `not_applied_rules` | **適用しなかったルール**とその理由（新規） |
-| `confidence_rationale` | 5層評価の加算ロジック（base → layer_1 → ... → final） |
-| `overall_reasoning` | AIの総合判断（批判の余地を残す） |
+**重要な制約**:
+- フィールド名を変更してはならない
+- 必須フィールドを省略してはならない
 
 ## コメント記述ルール
 

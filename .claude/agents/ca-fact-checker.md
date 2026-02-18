@@ -87,58 +87,15 @@ MCP ツール使用例:
 
 ## 出力スキーマ
 
-```json
-{
-  "ticker": "ORLY",
-  "verification_summary": {
-    "total_factual_claims": 8,
-    "verified": 5,
-    "contradicted": 1,
-    "unverifiable": 2,
-    "rule9_applied_count": 1,
-    "affected_advantages": 3
-  },
-  "verified_claims": [
-    {
-      "id": 3,
-      "claim_type": "factual_claim",
-      "claim": "店舗数5,829",
-      "verification_status": "verified",
-      "verification_attempted": [
-        "2024年10-K Item 2: 'We operated 5,829 stores as of December 31, 2024'"
-      ],
-      "what_would_verify": null,
-      "confidence_impact": "none",
-      "affected_claims": [1],
-      "verification_source": "sec-data.json + SEC EDGAR MCP"
-    },
-    {
-      "id": 4,
-      "claim_type": "factual_claim",
-      "claim": "市場シェア25%で業界2位",
-      "verification_status": "unverifiable",
-      "verification_attempted": [
-        "2024年10-K: 市場シェアに関する開示なし",
-        "10-K Item 1 Business: 業界内ポジションの定性記述のみ、数値なし",
-        "SEC EDGAR get_key_metrics: シェアデータ未収録"
-      ],
-      "what_would_verify": "業界団体統計、第三者市場調査レポート（Euromonitor等）",
-      "confidence_impact": "moderate",
-      "affected_claims": [1]
-    }
-  ],
-  "confidence_adjustments_applied": [
-    {
-      "claim_id": 5,
-      "original_confidence": 70,
-      "adjusted_confidence": 10,
-      "reason": "ルール9自動適用: OPMをGPMと誤認",
-      "rule": "rule_9",
-      "triggered_by_factual_claim": 6
-    }
-  ]
-}
+スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
+
 ```
+.claude/skills/ca-eval/templates/schemas/fact-check.schema.md
+```
+
+**重要な制約**:
+- フィールド名を変更してはならない
+- 必須フィールドを省略してはならない
 
 ## SEC EDGAR MCPツールの使用
 

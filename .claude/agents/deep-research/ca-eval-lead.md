@@ -237,27 +237,16 @@ Phase 3: シャットダウン・クリーンアップ
    └── 04_output/
    ```
 4. **research-meta.json 出力**:
-   ```json
-   {
-     "research_id": "CA_eval_20260217-1000_ORLY",
-     "type": "ca_eval",
-     "ticker": "ORLY",
-     "created_at": "2026-02-17T10:00:00Z",
-     "parameters": {
-       "ticker": "ORLY",
-       "report_path": "analyst/raw/ORLY_report.md"
-     },
-     "status": "in_progress",
-     "workflow": {
-       "phase_0": "done",
-       "phase_1": "pending",
-       "phase_2": "pending",
-       "phase_3": "pending",
-       "phase_4": "pending",
-       "phase_5": "pending"
-     }
-   }
+
+   スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
+
    ```
+   .claude/skills/ca-eval/templates/schemas/research-meta.schema.md
+   ```
+
+   **重要な制約**:
+   - フィールド名を変更してはならない
+   - 必須フィールドを省略してはならない
 5. **[HF0]** パラメータ確認 → HF ポイントセクション参照
 
 ### Phase 1: チーム作成 + タスク登録
@@ -290,6 +279,8 @@ TaskCreate:
 
     ## 出力ファイル
     {research_dir}/01_data_collection/sec-data.json
+
+    出力スキーマは `.claude/skills/ca-eval/templates/schemas/sec-data.schema.md` を Read で読み込み、フィールドと型に従って出力すること。フィールド名を変更してはならない。必須フィールドを省略してはならない。
 
     ## 処理内容
     - 5年分の財務データ（損益/BS/CF）
@@ -791,47 +782,16 @@ TaskUpdate:
    | `minor` | 改善提案（参考情報） |
 
    **critique.json スキーマ（設計書 §4.9.2 準拠）**:
-   ```json
-   {
-     "research_id": "CA_eval_20260217-1000_ORLY",
-     "ticker": "ORLY",
-     "critique_timestamp": "2026-02-17T10:35:00Z",
-     "overall_assessment": {
-       "kb_alignment": "strong | moderate | weak",
-       "reasoning_quality": "strong | moderate | weak",
-       "critical_issues": 2,
-       "minor_issues": 5
-     },
-     "claim_critiques": [
-       {
-         "claim_id": 1,
-         "critique_type": "overconfidence",
-         "severity": "critical",
-         "issue": "90%の確信度はルール7（純粋競合比較）とルール10（ネガティブケース）が不足しているため過剰。KB3実績（ORLY#2, #5）では90%はパターンIV（構造的市場ポジション）+ ルール7の具体的比較が揃ったケースのみ。",
-         "kb_reference": "KB3 ORLY#2: 90%の根拠は「競合（AutoZone）との店舗密度比較（1.8倍）+ 配送時間短縮の定量データ」",
-         "suggested_action": "confidence_adjustment",
-         "suggested_value": 70,
-         "reasoning": "ルール11（業界構造）の合致は強いが、ルール7が不足する場合は70%が妥当（KB3 COST#1と同等）"
-       },
-       {
-         "claim_id": 1,
-         "critique_type": "reasoning_gap",
-         "severity": "minor",
-         "issue": "コメント文で「90%は高すぎる可能性」と自己批判しているが、confidence値を調整していない。論理の不一致。",
-         "suggested_action": "consistency_fix",
-         "reasoning": "コメント文の批判を confidence 値に反映すべき"
-       }
-     ],
-     "systematic_issues": [
-       {
-         "pattern": "ルール11重視の傾向",
-         "affected_claims": [1, 3],
-         "description": "業界構造分析（ルール11）を過大評価し、純粋競合比較（ルール7）の不足を軽視している",
-         "kb_lesson": "KB3では90%はルール7+ルール11の両方が揃った場合のみ（ORLY#2, #5）"
-       }
-     ]
-   }
+
+   スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
+
    ```
+   .claude/skills/ca-eval/templates/schemas/critique.schema.md
+   ```
+
+   **重要な制約**:
+   - フィールド名を変更してはならない
+   - 必須フィールドを省略してはならない
 
    **重要フィールド**:
    - `claim_critiques`: 各主張への個別批判
@@ -904,30 +864,16 @@ TaskUpdate:
    **不合格時**: accuracy-report.json に記録 + 注釈追加。**レポートはブロックせず出力**。
 
    **accuracy-report.json スキーマ（簡素化版）**:
-   ```json
-   {
-     "research_id": "CA_eval_20260217-1000_ORLY",
-     "ticker": "ORLY",
-     "mode": "full | simplified",
-     "generated_at": "2026-02-17T10:37:00Z",
-     "kb_version": "v1.0.0",
-     "full_mode_results": {
-       "y_data_source": "analyst/phase2_KY/phase1_ORLY_phase2.md",
-       "mean_abs_deviation": 8.0,
-       "overall_verdict": "pass | fail",
-       "threshold": 15,
-       "pass": true,
-       "annotation": "平均乖離8.0%は閾値15%以内。精度は良好。"
-     },
-     "simplified_mode_results": {
-       "check_id": "S-8",
-       "contradicted_claims": [],
-       "overall_verdict": "pass | fail",
-       "pass": true,
-       "annotation": "contradicted → 10% の適用を確認。問題なし。"
-     }
-   }
+
+   スキーマ定義ファイルを Read で読み込み、フィールドと型に従って出力すること:
+
    ```
+   .claude/skills/ca-eval/templates/schemas/accuracy-report.schema.md
+   ```
+
+   **重要な制約**:
+   - フィールド名を変更してはならない
+   - 必須フィールドを省略してはならない
 
    **簡素化のポイント**:
    - フルモード: 平均乖離のみ記録（5メトリクス → 1メトリクス）
