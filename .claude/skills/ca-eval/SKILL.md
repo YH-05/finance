@@ -129,20 +129,20 @@ T0（Setup）、T8（AI批判プロセス: 批判生成→反映・修正の2段
 
 ## モデル設定
 
-ワークフロー内の全チームメイトエージェントは **Sonnet 4.5**（`claude-sonnet-4-5-20250929`）で固定。
+Lead はユーザー選択モデルを継承（`model: inherit`）。チームメイトは Sonnet で固定。
 
 | エージェント | モデル |
 |-------------|--------|
-| ca-eval-lead（Lead） | Sonnet 4.5 |
-| finance-sec-filings（T1） | Sonnet 4.5 |
-| ca-report-parser（T2） | Sonnet 4.5 |
-| industry-researcher（T3） | Sonnet 4.5 |
-| ca-claim-extractor（T4） | Sonnet 4.5 |
-| ca-fact-checker（T5） | Sonnet 4.5 |
-| ca-pattern-verifier（T6） | Sonnet 4.5 |
-| ca-report-generator（T7） | Sonnet 4.5 |
+| ca-eval-lead（Lead） | inherit（ユーザー選択モデルを継承） |
+| finance-sec-filings（T1） | Sonnet |
+| ca-report-parser（T2） | Sonnet |
+| industry-researcher（T3） | Sonnet |
+| ca-claim-extractor（T4） | Sonnet |
+| ca-fact-checker（T5） | Sonnet |
+| ca-pattern-verifier（T6） | Sonnet |
+| ca-report-generator（T7） | Sonnet |
 
-T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
+T8, T9 は Lead 直接実行のため、Lead のモデルに従う。実行時のモデル設定は `research-meta.json` の `model_config` に記録される。
 
 ## PoC簡素化方針
 

@@ -1,7 +1,7 @@
 ---
 name: ca-eval-lead
 description: ca-eval ワークフローのリーダーエージェント。10タスク・5フェーズの競争優位性評価パイプラインを Agent Teams で制御する。sec-filings & report-parser & industry-researcher（3並列）→ claim-extractor（直列）→ fact-checker & pattern-verifier（2並列）→ report-generator → Lead検証。
-model: sonnet
+model: inherit
 color: red
 ---
 
@@ -89,22 +89,24 @@ ca-eval-lead (リーダー)
 
 T0（Setup）、T8（AI批判プロセス: critique → revision 2段階）、T9（精度検証: 簡素化版、1メトリクス、ブロックなし）は Lead 自身が実行する。
 
-## モデル設定（設計書 §3.1 準拠）
+## モデル設定
 
-ワークフロー内の全チームメイトエージェントは **Sonnet 4.5**（`claude-sonnet-4-5-20250929`）で固定する。
+Lead はユーザー選択モデルを継承（`model: inherit`）。チームメイトは Sonnet で固定。
 
 | エージェント | モデル | 備考 |
 |-------------|--------|------|
-| ca-eval-lead（Lead） | Sonnet 4.5 | ヘッダの `model: sonnet` で指定 |
-| finance-sec-filings（T1） | Sonnet 4.5 | Task tool の `model: "sonnet"` で指定 |
-| ca-report-parser（T2） | Sonnet 4.5 | 同上 |
-| industry-researcher（T3） | Sonnet 4.5 | 同上 |
-| ca-claim-extractor（T4） | Sonnet 4.5 | 同上 |
-| ca-fact-checker（T5） | Sonnet 4.5 | 同上 |
-| ca-pattern-verifier（T6） | Sonnet 4.5 | 同上 |
-| ca-report-generator（T7） | Sonnet 4.5 | 同上 |
+| ca-eval-lead（Lead） | inherit | ユーザー選択モデルを継承。複雑なオーケストレーションの信頼性確保のため |
+| finance-sec-filings（T1） | Sonnet | Task tool の `model: "sonnet"` で指定 |
+| ca-report-parser（T2） | Sonnet | 同上 |
+| industry-researcher（T3） | Sonnet | 同上 |
+| ca-claim-extractor（T4） | Sonnet | 同上 |
+| ca-fact-checker（T5） | Sonnet | 同上 |
+| ca-pattern-verifier（T6） | Sonnet | 同上 |
+| ca-report-generator（T7） | Sonnet | 同上 |
 
 T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
+
+**モデル記録**: Phase 0 で research-meta.json に `model_config` を記録し、実行時のモデル設定をトレース可能にすること。
 
 ## HF（Human Feedback）ポイント
 
@@ -1036,6 +1038,7 @@ ca_eval_result:
 
 ### NEVER（禁止）
 
+- [ ] **Bash で `claude` CLI を起動してチームメイトを生成する**（必ず Task tool の `team_name` パラメータを使うこと。Bash 経由の起動はネストセッション禁止エラーを引き起こす）
 - [ ] SendMessage でデータ本体（JSON等）を送信する
 - [ ] チームメイトのシャットダウンを確認せずにチームを削除する
 - [ ] 依存関係を無視してブロック中のタスクを実行する
