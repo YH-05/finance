@@ -11,6 +11,7 @@ All models are immutable (frozen=True) with field validators.
 
 from __future__ import annotations
 
+import re
 from datetime import date  # noqa: TC003 - required at runtime by Pydantic
 from typing import Annotated, Literal
 
@@ -66,6 +67,21 @@ def _validate_adjustment_range(v: float) -> float:
 AdjustmentFloat = Annotated[float, AfterValidator(_validate_adjustment_range)]
 """Float constrained to [-1.0, 1.0]. Used for confidence adjustments."""
 
+
+_SAFE_TICKER_RE: re.Pattern[str] = re.compile(r"^[A-Z0-9./]{1,10}$")
+
+
+def _validate_ticker(v: str) -> str:
+    """Validate ticker symbol format: uppercase alphanumeric with . or / allowed."""
+    if not _SAFE_TICKER_RE.match(v):
+        msg = f"Invalid ticker format: {v!r}. Must match ^[A-Z0-9./]{{1,10}}$"
+        raise ValueError(msg)
+    return v
+
+
+TickerStr = Annotated[str, AfterValidator(_validate_ticker)]
+"""Ticker symbol constrained to uppercase alphanumeric with . or / (1-10 chars)."""
+
 # ---------------------------------------------------------------------------
 # Type aliases
 # ---------------------------------------------------------------------------
@@ -115,7 +131,7 @@ class TranscriptMetadata(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    ticker: NonEmptyStr
+    ticker: TickerStr
     event_date: date
     fiscal_quarter: NonEmptyStr
     is_truncated: bool = False

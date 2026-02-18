@@ -118,7 +118,7 @@ class PortfolioBuilder:
         )
 
         # Group ranked stocks by sector
-        stocks_by_sector: dict[str, list[dict]] = defaultdict(list)
+        stocks_by_sector: dict[str, list[RankedStock]] = defaultdict(list)
         for stock in ranked:
             sector = stock["gics_sector"]
             if sector in benchmark_map:
@@ -198,7 +198,7 @@ class PortfolioBuilder:
     def _compute_sector_counts(
         self,
         benchmark_map: dict[str, float],
-        stocks_by_sector: dict[str, list[dict]],
+        stocks_by_sector: dict[str, list[RankedStock]],
     ) -> dict[str, int]:
         """Compute how many stocks to select from each sector.
 
@@ -206,7 +206,7 @@ class PortfolioBuilder:
         ----------
         benchmark_map : dict[str, float]
             Sector to benchmark weight mapping.
-        stocks_by_sector : dict[str, list[dict]]
+        stocks_by_sector : dict[str, list[RankedStock]]
             Available stocks grouped by sector.
 
         Returns
@@ -275,7 +275,7 @@ class PortfolioBuilder:
 
     def _build_sector_holdings(
         self,
-        selected: list[dict],
+        selected: list[RankedStock],
         sector: str,
         sector_weight: float,
     ) -> list[PortfolioHolding]:
@@ -283,7 +283,7 @@ class PortfolioBuilder:
 
         Parameters
         ----------
-        selected : list[dict]
+        selected : list[RankedStock]
             Selected stocks for this sector (sorted by score desc).
         sector : str
             Sector name.
@@ -311,7 +311,7 @@ class PortfolioBuilder:
                     weight=intra_weight,
                     sector=sector,
                     score=score,
-                    rationale_summary=f"Sector rank {stock.get('sector_rank', 'N/A')}, "
+                    rationale_summary=f"Sector rank {stock['sector_rank']}, "
                     f"score {score:.2f}",
                 )
             )

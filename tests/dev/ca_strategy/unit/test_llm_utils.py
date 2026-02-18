@@ -14,6 +14,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from dev.ca_strategy._llm_utils import (
+    build_kb_section,
     call_llm,
     extract_text_from_response,
     load_directory,
@@ -543,3 +544,55 @@ class TestCallLlm:
 
         call_kwargs = mock_client.messages.create.call_args.kwargs
         assert call_kwargs["temperature"] == 0
+
+
+# =============================================================================
+# build_kb_section
+# =============================================================================
+class TestBuildKbSection:
+    """build_kb_section 関数のテスト。
+
+    ヘッダーとアイテムリストからナレッジベースセクションを構築する。
+    """
+
+    def test_正常系_ヘッダーとアイテムで正しく構築される(self) -> None:
+        result = build_kb_section(
+            header="## KB1 Rules",
+            items=[
+                ("Rule 1", "Content of rule 1"),
+                ("Rule 2", "Content of rule 2"),
+            ],
+        )
+
+        assert isinstance(result, list)
+        assert len(result) == 3
+        assert result[0] == "## KB1 Rules\n"
+        assert result[1] == "### Rule 1\n\nContent of rule 1\n"
+        assert result[2] == "### Rule 2\n\nContent of rule 2\n"
+
+    def test_正常系_アイテムが空の場合はヘッダーのみ返す(self) -> None:
+        result = build_kb_section(
+            header="## Empty Section",
+            items=[],
+        )
+
+        assert len(result) == 1
+        assert result[0] == "## Empty Section\n"
+
+    def test_正常系_単一アイテムで正しく構築される(self) -> None:
+        result = build_kb_section(
+            header="## Single Item",
+            items=[("Only Item", "Only content")],
+        )
+
+        assert len(result) == 2
+        assert result[0] == "## Single Item\n"
+        assert result[1] == "### Only Item\n\nOnly content\n"
+
+    def test_正常系_返り値の型がlist_of_str(self) -> None:
+        result = build_kb_section(
+            header="## Test",
+            items=[("A", "content A")],
+        )
+
+        assert all(isinstance(item, str) for item in result)

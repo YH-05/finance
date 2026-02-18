@@ -8,13 +8,15 @@ from __future__ import annotations
 from datetime import date
 
 import pytest
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from dev.ca_strategy.types import (
+    AdjustmentFloat,
     BenchmarkWeight,
     Claim,
     ClaimType,
     ConfidenceAdjustment,
+    NonNegativeInt,
     PortfolioHolding,
     RuleEvaluation,
     ScoredClaim,
@@ -23,6 +25,7 @@ from dev.ca_strategy.types import (
     Transcript,
     TranscriptMetadata,
     TranscriptSection,
+    UnitFloat,
     UniverseConfig,
     UniverseTicker,
 )
@@ -872,3 +875,132 @@ class TestBenchmarkWeight:
 
         bw1 = BenchmarkWeight(sector="IT", weight=1.0)
         assert bw1.weight == 1.0
+
+
+# =============================================================================
+# UnitFloat 境界値テスト
+# =============================================================================
+class _UnitModel(BaseModel):
+    """UnitFloat テスト用ヘルパーモデル。"""
+
+    v: UnitFloat
+
+
+class TestUnitFloat:
+    """UnitFloat 型エイリアスの境界値テスト（[0.0, 1.0]制約）。"""
+
+    def test_正常系_0_0が有効(self) -> None:
+        assert _UnitModel(v=0.0).v == 0.0
+
+    def test_正常系_1_0が有効(self) -> None:
+        assert _UnitModel(v=1.0).v == 1.0
+
+    def test_正常系_中間値0_5が有効(self) -> None:
+        assert _UnitModel(v=0.5).v == 0.5
+
+    def test_異常系_マイナス0_001でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="v"):
+            _UnitModel(v=-0.001)
+
+    def test_異常系_1_001でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="v"):
+            _UnitModel(v=1.001)
+
+
+# =============================================================================
+# AdjustmentFloat 境界値テスト
+# =============================================================================
+class _AdjustmentModel(BaseModel):
+    """AdjustmentFloat テスト用ヘルパーモデル。"""
+
+    v: AdjustmentFloat
+
+
+class TestAdjustmentFloat:
+    """AdjustmentFloat 型エイリアスの境界値テスト（[-1.0, 1.0]制約）。"""
+
+    def test_正常系_マイナス1_0が有効(self) -> None:
+        assert _AdjustmentModel(v=-1.0).v == -1.0
+
+    def test_正常系_1_0が有効(self) -> None:
+        assert _AdjustmentModel(v=1.0).v == 1.0
+
+    def test_正常系_0_0が有効(self) -> None:
+        assert _AdjustmentModel(v=0.0).v == 0.0
+
+    def test_異常系_マイナス1_001でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="v"):
+            _AdjustmentModel(v=-1.001)
+
+    def test_異常系_1_001でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="v"):
+            _AdjustmentModel(v=1.001)
+
+
+# =============================================================================
+# NonNegativeInt 境界値テスト
+# =============================================================================
+class _NonNegativeIntModel(BaseModel):
+    """NonNegativeInt テスト用ヘルパーモデル。"""
+
+    v: NonNegativeInt
+
+
+class TestNonNegativeInt:
+    """NonNegativeInt 型エイリアスの境界値テスト（>= 0制約）。"""
+
+    def test_正常系_0が有効(self) -> None:
+        assert _NonNegativeIntModel(v=0).v == 0
+
+    def test_正常系_正の整数が有効(self) -> None:
+        assert _NonNegativeIntModel(v=100).v == 100
+
+    def test_異常系_マイナス1でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="v"):
+            _NonNegativeIntModel(v=-1)
+
+
+# =============================================================================
+# TickerStr 境界値テスト
+# =============================================================================
+class TestTickerStr:
+    """TranscriptMetadata.ticker (TickerStr) の形式バリデーションテスト。"""
+
+    def _make_meta(self, ticker: str) -> TranscriptMetadata:
+        return TranscriptMetadata(
+            ticker=ticker,
+            event_date=date(2024, 1, 25),
+            fiscal_quarter="Q1 2024",
+        )
+
+    def test_正常系_大文字アルファベットが有効(self) -> None:
+        meta = self._make_meta("AAPL")
+        assert meta.ticker == "AAPL"
+
+    def test_正常系_ドット付きティッカーが有効(self) -> None:
+        meta = self._make_meta("BRK.A")
+        assert meta.ticker == "BRK.A"
+
+    def test_正常系_スラッシュ付きティッカーが有効(self) -> None:
+        meta = self._make_meta("BRK/B")
+        assert meta.ticker == "BRK/B"
+
+    def test_正常系_数字を含むティッカーが有効(self) -> None:
+        meta = self._make_meta("A1234")
+        assert meta.ticker == "A1234"
+
+    def test_異常系_小文字でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="ticker"):
+            self._make_meta("aapl")
+
+    def test_異常系_10文字超でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="ticker"):
+            self._make_meta("TOOLONGTICKE")
+
+    def test_異常系_空文字でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="ticker"):
+            self._make_meta("")
+
+    def test_異常系_特殊文字でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="ticker"):
+            self._make_meta("AAPL!")
