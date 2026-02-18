@@ -135,7 +135,7 @@ T8, T9 は Lead 直接実行のため、Lead のモデルに従う。
 |----|------|-----------|------|
 | KB1 ルール集 | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md` | 8 | ルール適用（T4, T8） |
 | KB2 パターン集 | `analyst/Competitive_Advantage/analyst_YK/kb2_patterns/*.md` | 12 | パターン検証（T6, T8） |
-| KB3 few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/*.md` | 5 | キャリブレーション（T4） |
+| KB3 few-shot集 | `analyst/Competitive_Advantage/analyst_YK/kb3_fewshot/*.md` | 5 | キャリブレーション（T4; T8） |
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | 1 | 全フェーズ |
 | Phase 2 検証データ | `analyst/phase2_KY/` | 5 | 精度検証（T9） |
 

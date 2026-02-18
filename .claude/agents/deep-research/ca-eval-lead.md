@@ -519,12 +519,11 @@ Task:
     2. TaskUpdate(status: in_progress) でタスクを開始
     3. {research_dir}/00_meta/research-meta.json を読み込み
     4. アナリストレポート {report_path} を Read で読み込み
-    5. レポート種別判定（①期初/②四半期/混合）
-    6. セクション分割 + ①/②帰属付与
-    7. 競争優位性候補・事実の主張・CAGR参照を抽出
-    8. {research_dir}/01_data_collection/parsed-report.json に書き出し
-    9. TaskUpdate(status: completed) でタスクを完了
-    10. リーダーに SendMessage で完了通知
+    5. PoC: レポート種別判定（①/②区別）はスキップ
+    6. セクション分割 + 競争優位性候補・事実の主張・CAGR参照を抽出
+    7. {research_dir}/01_data_collection/parsed-report.json に書き出し
+    8. TaskUpdate(status: completed) でタスクを完了
+    9. リーダーに SendMessage で完了通知
 
     ## リサーチディレクトリ
     {research_dir}
@@ -690,6 +689,7 @@ Task:
     2. blockedBy の解除を待つ（T5, T6 の完了）
     3. TaskUpdate(status: in_progress) でタスクを開始
     4. claims.json + fact-check.json + pattern-verification.json + dogma.md + kb1_rules を読み込み
+       ※ KB1はT4のclaims.jsonにルール適用結果が含まれるが、レポート生成時に全12ルール表形式で記述するため再読込が必要
     5. 検証結果マージ + 最終confidence算出
     6. 全12ルールを各主張に適用（適用/不適用の理由を記録）
     7. Markdown ドラフトレポート生成（全12ルール明示、フィードバックテンプレート埋込）

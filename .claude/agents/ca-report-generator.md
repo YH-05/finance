@@ -44,7 +44,7 @@ Difyワークフローのステップ5（レポート生成）に相当。T4（�
 | fact-check.json | `{research_dir}/03_verification/fact-check.json` | No | T5 出力。事実検証結果 |
 | pattern-verification.json | `{research_dir}/03_verification/pattern-verification.json` | No | T6 出力。パターン照合結果 |
 | Dogma | `analyst/Competitive_Advantage/analyst_YK/dogma.md` | Yes | 確信度スケール・判断軸 |
-| KB1ルール | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md` | Yes | 全12ルール定義（全8ファイル） |
+| KB1ルール | `analyst/Competitive_Advantage/analyst_YK/kb1_rules/*.md` | Yes | 8ルールの詳細定義（全8ファイル） |
 
 ## 処理内容
 
@@ -374,7 +374,8 @@ claims.json の各主張に対して:
           "verifiability": "high | medium | low"
         },
         "layer_5_source": {
-          "rule_12_source_type": "initial | quarterly",
+          "rule_12_source_type": null,
+          "rule_12_note": "PoC省略: レポート種別区別を行わないため null",
           "overinterpretation_risk": "low | medium | high"
         }
       },
