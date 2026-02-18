@@ -1,0 +1,308 @@
+{
+  "ticker": "AME",
+  "company_name": "AMETEK INC",
+  "cik": "0001037868",
+  "sic_code": "3823",
+  "sic_description": "Industrial Instruments for Measurement, Display, Indicating, Recording, Transmitting, and Controlling",
+  "fiscal_year_end": "December 31",
+  "data_source": "SEC EDGAR",
+  "retrieved_at": "2026-02-18",
+  "latest_10k": {
+    "filing_date": "2026-02-17",
+    "accession_number": "0001037868-26-000016",
+    "fiscal_period": "FY2025"
+  },
+  "prior_10k": {
+    "filing_date": "2025-02-20",
+    "fiscal_period": "FY2024"
+  },
+  "financials": {
+    "revenue": {
+      "FY2024": 6941200000,
+      "FY2023": 6597000000,
+      "FY2022": 6150530000,
+      "unit": "USD",
+      "yoy_change": {
+        "FY2024_vs_FY2023_pct": 5.2,
+        "FY2023_vs_FY2022_pct": 7.3
+      }
+    },
+    "operating_income": {
+      "FY2024": 1780000000,
+      "FY2023": 1707000000,
+      "FY2022": 1500692000,
+      "unit": "USD",
+      "note": "GAAP operating income"
+    },
+    "adjusted_operating_income": {
+      "FY2024": 1810000000,
+      "FY2024_margin_pct": 26.1,
+      "note": "Non-GAAP, excludes acquisition-related intangible amortization and one-time items"
+    },
+    "net_income": {
+      "FY2024": 1376000000,
+      "FY2023": 1313000000,
+      "FY2022": 1159542000,
+      "unit": "USD"
+    },
+    "eps_diluted": {
+      "FY2024_gaap": 5.93,
+      "FY2024_adjusted": 6.83,
+      "FY2023_gaap": 5.67,
+      "FY2023_adjusted": 6.38,
+      "FY2022_gaap": 5.01,
+      "FY2022_adjusted": 5.68,
+      "unit": "USD"
+    },
+    "opm": {
+      "FY2024_gaap_pct": 25.6,
+      "FY2024_adjusted_pct": 26.1,
+      "FY2023_gaap_pct": 25.9,
+      "FY2022_gaap_pct": 24.4,
+      "note": "Operating Profit Margin = Operating Income / Revenue"
+    },
+    "operating_cash_flow": {
+      "FY2024": 1829000000,
+      "FY2023": 1743000000,
+      "unit": "USD",
+      "yoy_change_pct": 5.0
+    },
+    "free_cash_flow": {
+      "FY2024": 1700000000,
+      "FY2024_Q4": 498300000,
+      "unit": "USD",
+      "note": "Record annual free cash flow in FY2024"
+    },
+    "roic": {
+      "FY2024_pct": 11.28,
+      "note": "TTM basis, source: GuruFocus"
+    }
+  },
+  "segments": {
+    "EIG": {
+      "name": "Electronic Instruments Group",
+      "description": "Leader in advanced analytical, test and measurement instrumentation for aerospace, medical, power, energy, research and industrial markets",
+      "revenue": {
+        "FY2024": 4660000000,
+        "FY2023": 4624000000,
+        "FY2022": 4229353000,
+        "unit": "USD"
+      },
+      "operating_income": {
+        "FY2024": 1428000000,
+        "FY2023": 1311000000,
+        "FY2022": 1089729000,
+        "unit": "USD"
+      },
+      "opm": {
+        "FY2024_pct": 30.6,
+        "FY2023_pct": 28.3,
+        "FY2022_pct": 25.8
+      },
+      "revenue_share_of_total_pct": {
+        "FY2024": 67.1,
+        "FY2023": 70.1,
+        "FY2022": 68.8
+      }
+    },
+    "EMG": {
+      "name": "Electromechanical Group",
+      "description": "Leader in highly engineered medical components and devices, automation solutions, thermal management systems, specialty metals and electrical interconnects",
+      "revenue": {
+        "FY2024": 2281000000,
+        "FY2023": 1973000000,
+        "FY2022": 1921177000,
+        "unit": "USD"
+      },
+      "operating_income": {
+        "FY2024": 456500000,
+        "FY2023": 496600000,
+        "FY2022": 503593000,
+        "unit": "USD"
+      },
+      "opm": {
+        "FY2024_pct": 20.0,
+        "FY2023_pct": 25.2,
+        "FY2022_pct": 26.2,
+        "note": "FY2024 margin decline due to Paragon Medical integration costs ($29.2M)"
+      },
+      "revenue_share_of_total_pct": {
+        "FY2024": 32.9,
+        "FY2023": 29.9,
+        "FY2022": 31.2
+      }
+    }
+  },
+  "rd_expense": {
+    "FY2024": 371900000,
+    "FY2024_pct_of_revenue": 5.4,
+    "incremental_growth_investment_FY2024": 90000000,
+    "vitality_index": 0.27,
+    "vitality_index_note": "27% of sales from products introduced in past 3 years",
+    "unit": "USD"
+  },
+  "ma_activity": [
+    {
+      "year": 2025,
+      "target": "FARO Technologies",
+      "description": "Developer of 3D scanners for coordinate measurements. Strengthens leadership in 3D metrology and digital reality",
+      "value_usd": 920000000,
+      "segment": "EIG",
+      "closing_date": "2025-05"
+    },
+    {
+      "year": 2025,
+      "target": "Kern Microtechnik",
+      "description": "Precision technology company",
+      "value_usd": null,
+      "segment": null,
+      "closing_date": "2025-02"
+    },
+    {
+      "year": 2024,
+      "target": "Virtek Vision International",
+      "description": "Leading provider of advanced laser-based projection and inspection systems",
+      "value_usd": 117500000,
+      "segment": "EIG",
+      "closing_date": "2024-10"
+    },
+    {
+      "year": 2023,
+      "target": "Paragon Medical",
+      "description": "Leading provider of highly engineered medical components and instruments. All-cash transaction",
+      "value_usd": 1900000000,
+      "segment": "EMG",
+      "closing_date": "2023-12"
+    },
+    {
+      "year": 2023,
+      "target": "United Electronic Industries (UEI)",
+      "description": "Leading provider of data acquisition and control solutions for aerospace, defense, energy and semiconductor industries",
+      "value_usd": null,
+      "segment": "EIG",
+      "closing_date": "2023-09"
+    },
+    {
+      "year": 2022,
+      "target": "Navitar, Inc.",
+      "description": "Part of two acquisitions deploying approximately $430M total, acquiring approximately $100M in annual sales",
+      "value_usd": null,
+      "segment": null,
+      "closing_date": "2022"
+    },
+    {
+      "year": 2022,
+      "target": "RTDS Technologies Inc.",
+      "description": "Part of two acquisitions deploying approximately $430M total",
+      "value_usd": null,
+      "segment": null,
+      "closing_date": "2022"
+    }
+  ],
+  "competitive_landscape": {
+    "market_position": "Global leader in advanced electronic instruments and electromechanical devices. Market-leading positions in niche markets across 40+ businesses in 30+ countries.",
+    "business_model": "Asset-light business model generating strong sales growth and margin expansion with robust cash flows",
+    "competitive_advantages": [
+      "Highly differentiated technology solutions in niche markets",
+      "Strong proprietary technology protected by patents, copyrights, and trade secrets",
+      "Proven acquisition integration platform (AMETEK Growth Model)",
+      "Operational excellence driving consistent margin expansion",
+      "Broad diversification across end markets reducing cyclical exposure",
+      "27% vitality index (sales from new products introduced in past 3 years)"
+    ],
+    "growth_model": {
+      "four_pillars": [
+        "Operational Excellence",
+        "Strategic Acquisitions & Alliances",
+        "Global & Market Expansion",
+        "New Products"
+      ],
+      "description": "AMETEK Growth Model drives consistent execution across all four growth strategies"
+    },
+    "end_markets": [
+      "Aerospace & Defense",
+      "Medical & Healthcare",
+      "Power & Energy",
+      "Research & Laboratory",
+      "Industrial / Process",
+      "Automation",
+      "Semiconductor"
+    ]
+  },
+  "key_products": [
+    {
+      "segment": "EIG",
+      "category": "Advanced Analytical Instruments",
+      "description": "Test and measurement instrumentation for process, aerospace, and power markets"
+    },
+    {
+      "segment": "EIG",
+      "category": "3D Metrology & Digital Reality",
+      "description": "3D scanning and coordinate measurement (enhanced by FARO acquisition)"
+    },
+    {
+      "segment": "EIG",
+      "category": "Data Acquisition & Control",
+      "description": "Solutions for aerospace, defense, energy and semiconductor industries (UEI)"
+    },
+    {
+      "segment": "EIG",
+      "category": "Laser-based Projection & Inspection",
+      "description": "Advanced laser projection and inspection systems (Virtek Vision)"
+    },
+    {
+      "segment": "EMG",
+      "category": "Engineered Medical Components",
+      "description": "Highly engineered medical components and instruments (Paragon Medical)"
+    },
+    {
+      "segment": "EMG",
+      "category": "Automation Solutions",
+      "description": "Industrial automation and motion control systems"
+    },
+    {
+      "segment": "EMG",
+      "category": "Thermal Management Systems",
+      "description": "Thermal management for electronics and industrial applications"
+    },
+    {
+      "segment": "EMG",
+      "category": "Specialty Metals & Electrical Interconnects",
+      "description": "Specialty alloys, precious metals, and electrical interconnect solutions"
+    }
+  ],
+  "guidance_fy2025": {
+    "revenue_growth": "Low single digits percentage increase vs FY2024",
+    "adjusted_eps_range": {
+      "low": 7.02,
+      "high": 7.18,
+      "growth_pct_range": "3% to 5% over FY2024 comparable basis"
+    }
+  },
+  "record_achievements_fy2024": [
+    "Record annual sales ($6.94B)",
+    "Record operating income",
+    "Record EBITDA",
+    "Record operating cash flow ($1.83B)",
+    "Record free cash flow ($1.70B)",
+    "Record GAAP EPS ($5.93)",
+    "Record adjusted EPS ($6.83)"
+  ],
+  "data_quality": {
+    "primary_sources": [
+      "SEC EDGAR 10-K filing (accession: 0001037868-26-000016, filed 2026-02-17)",
+      "SEC EDGAR 10-K filing (filed 2025-02-20, FY2024)",
+      "AMETEK Q4 2024 earnings press release",
+      "AMETEK Q4 2022 earnings press release",
+      "AMETEK Investor Relations website"
+    ],
+    "notes": [
+      "SEC EDGAR MCP XBRL extraction failed; data sourced from press releases and IR filings",
+      "FY2022 operating cash flow and free cash flow not separately disclosed in Q4 2022 press release",
+      "R&D expense for FY2023 and FY2022 not individually confirmed; FY2024 figure from 10-K",
+      "ROIC sourced from GuruFocus (TTM calculation), not directly from SEC filings"
+    ],
+    "confidence_level": "high",
+    "confidence_rationale": "Revenue, operating income, net income, EPS, and segment data confirmed from official AMETEK press releases and SEC filings. Some derived metrics (ROIC, FCF) from third-party sources."
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "report_path": "analyst/raw/AME US.md",
+  "parsed_at": "2026-02-18T14:54:00Z",
+  "report_type": "unknown",
+  "sections": [
+    {
+      "title": "投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "content": "ESGスコア58%でリスト追加。ニッチトップ戦略の概要、競争優位性、M&A体制、CAGRの推定を含む主要セクション",
+      "summary": "2022年10月のリスト追加時の包括的評価。需要優位性（スイッチングコスト）・供給優位性（規模の経済・コストシナジー）の両面から競争優位性を整理。CAGR10%（売上8%+OPレバレッジ1%+自社株買い1%）を推定。"
+    },
+    {
+      "title": "2024年08月09日 四半期決算フォローアップ",
+      "content": "2024年Q2決算：売上YoY+5.4%（OG▲2%、M&A+8%、FX▲1%）、OPM25.8%、EPS1.66。ガイダンス引き下げ（通年+5~7%）。オートメーション在庫調整、ヘルスケアParagon関連調整が要因。競争優位性に変化なし、Buy継続。",
+      "summary": "2024Q2決算：外部要因によるシクリカル影響を受けたが競争優位性に変化なし。M&A大型化の兆候に注視。"
+    },
+    {
+      "title": "2024年06月21日 AMETEK 1x1面談（IR VP）",
+      "content": "Churn Rateはほぼゼロ。医療21%まで拡大。OG/M&A比率が1:1へ変化（4%+4%=8%）。分散型組織体制の詳細。LT Financial Algorithm：EIG・EMGともに8%成長、30bp/年のCore EBIT Margin改善。",
+      "summary": "IR面談を踏まえたCAGR微調整（10.5%→10%）。OG比率上昇でトップライン予見性向上。"
+    },
+    {
+      "title": "事業特性・競争優位性詳細",
+      "content": "ミッションクリティカルな財、ニッチトップ（市場シェア30~50%）、カスタマイズ製品。EIG（売上高68%、OPM25.5%）、EMG（売上高32%、OPM24.5%）。直販8割体制。R&D売上高5%超。2002年以来M&A件数86件。",
+      "summary": "事業の競争優位性の核心：ミッションクリティカル×ニッチトップ×カスタマイズ＝高スイッチングコスト"
+    },
+    {
+      "title": "Capital Allocation・生産体制",
+      "content": "2012年以来累計USD10bn投下：M&A74%、配当11%、自社株買15%。Capex売上高比2%。ローコスト拠点（上海、メキシコ、セルビア、マレーシア、チェコ）。中国リスク対応済み（売上高比1割弱）。",
+      "summary": "資本配分：M&A中心。ローコスト製造で高CF創出力を維持。"
+    }
+  ],
+  "ca_candidates": [
+    {
+      "id": 1,
+      "text": "ニッチトップ戦略：大手企業の参入リスクや顧客の内製化リスクの低いニッチ領域（市場規模USD150~400M）でシェア30~50%を確保。Mission Critical且つカスタマイズした財に特化することで高いスイッチングコストを有している。",
+      "source_section": "投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "ニッチ領域の市場規模はUSD150~400M",
+        "市場シェア30~50%を確保",
+        "USD1bn以上の市場は回避",
+        "Tier2サプライヤーとして大手（エマソン、GE、Honeywell等）とは直接競合しない"
+      ]
+    },
+    {
+      "id": 2,
+      "text": "M&A実行能力と規律ある買収体制：社内11名のM&Aチームを持ち、2002年以来86件（年約4件、平均買収金額USD100M）の買収実績。ROIC20%超（goodwill除き）を維持した規律ある買収。3年後ROIC10%以上、IRR15%、1年目EPS accretiveの基準を満たす案件のみ実施。",
+      "source_section": "投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "M&Aチーム11名（2024年時点）",
+        "2002年以来累計M&A金額USD8.4bn、86件",
+        "年平均4件、平均M&A金額USD100M",
+        "ROIC20%超（goodwill除き）を維持",
+        "買収基準：3年後ROIC10%以上、IRR15%、1年目EPS accretive",
+        "売上高の買収ターゲットサイズ：USD50~200M"
+      ]
+    },
+    {
+      "id": 3,
+      "text": "供給優位性：ニッチ領域でシェアの高いビジネスの集合体として、各ビジネスは相対的に高い規模の経済性を有する。AMETEKの一部となることで買収後のコストシナジー（コーポレート機能・販売チャネル統合、原材料集中購買）を享受し、競争優位性が更に強化される。",
+      "source_section": "投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "原材料調達はCorporate Supply Chain Teamが全社ベースで実施",
+        "Capex売上高比2%",
+        "価格-コストスプレッドは通常50~100bp",
+        "インフレ率5%の中、価格成長6%（100bpスプレッド）を維持（2021通年・2022Q1Q2）"
+      ]
+    },
+    {
+      "id": 4,
+      "text": "直販体制（売上高の約8割）：顧客接点を活かしたニーズ把握・カスタマイズ提供。顧客ニーズ把握→買収リスト選定→買収先商品クロスセル→既存流通チャネル固定費比率引き下げ、というOPM改善に寄与する販売体制。",
+      "source_section": "事業特性・競争優位性詳細",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "直販比率約8割（残り約2割は卸売経由）",
+        "EIGセグメント：最終顧客との直接交渉によりOPM25.5~30.3%を達成",
+        "Vitality Index（新製品比率）は直近Q29%（コンフォートゾーンは20%台後半）"
+      ]
+    },
+    {
+      "id": 5,
+      "text": "分散型組織体制（現場権限委譲）とPMIノウハウ：各BUが独立してPMIを実施。買収後に収益性・効率性改善のPlaybookが蓄積。被買収企業に対するメリットベース報酬体制により経営人材を確保・活性化。",
+      "source_section": "2024年06月21日 AMETEK 1x1面談",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "売上高2bn時点（約16~17年前）で32BU、現在売上高7bnで42BU",
+        "R&D売上高対比5.5%程度（若干上昇傾向）",
+        "India Engineering Center（バンガロール）に250名のR&Dエンジニア、24時間365日稼働"
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Pricing Power：ニッチトップとしての価格交渉力。通常の単価上昇1%程度、価格-コストスプレッドは通常50~100bpを維持。ミッションクリティカル性・カスタマイズ製品・高スイッチングコストが価格設定力を支える。",
+      "source_section": "投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "通常の単価上昇1%程度",
+        "価格-コストスプレッド通常50~100bp",
+        "2024年Price-Costスプレッド50bp（Pricing3%、コストインフレ2.5%）",
+        "Volume成長は2~3%程度"
+      ]
+    },
+    {
+      "id": 7,
+      "text": "事業ポートフォリオの多様性とシクリカリティ低減：医療（21%）・航空宇宙/Defense（約20%）・一般産業（約30%）等に分散。特定市場への集中回避原則。less cyclicalなビジネス比率上昇（医療は更なる買収で比率拡大予定）。",
+      "source_section": "2024年06月21日 AMETEK 1x1面談",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "医療比率21%（Paragon買収後）",
+        "航空宇宙/Defense比率約20%",
+        "一般産業比率約30%",
+        "中国売上高比率1割弱",
+        "CAMECA・ZYGOは半導体向けで成長中"
+      ]
+    },
+    {
+      "id": 8,
+      "text": "運転資金管理と高いキャッシュ創出力：Capex売上高比2%の低水準。M&A資金のほとんどを事業によって捻出。2012年以来累計USD10bn投下の原資を内部資金で賄う。",
+      "source_section": "Capital Allocation・生産体制",
+      "ca_type": "financial",
+      "cagr_connected": false,
+      "factual_claims": [
+        "Capex売上高比2%",
+        "2012年以来累計資本配分USD10bn：M&A74%、配当11%、自社株買15%",
+        "2014-2023平均自社株買い寄与約1%"
+      ]
+    }
+  ],
+  "cagr_references": [
+    {
+      "context": "最新CAGR推定（2024年6月面談後修正）",
+      "value": "10%",
+      "period": "2024年以降（中長期）",
+      "breakdown": {
+        "revenue_growth": "8%（OG4%+M&A4%）",
+        "op_leverage": "1%（30bp/年のCore EBIT Margin改善）",
+        "buyback": "1%（2014-2023平均）"
+      }
+    },
+    {
+      "context": "旧CAGR推定（2022年10月時点）",
+      "value": "10.5%",
+      "period": "2022年以降（中長期）",
+      "breakdown": {
+        "revenue_growth": "9%（OG3%+M&A6%）",
+        "op_leverage": "1~2%",
+        "buyback": "0~1%"
+      }
+    },
+    {
+      "context": "旧CAGR推定（2018年12月時点）",
+      "value": "+HSD（High Single Digit）",
+      "period": "2018年以降",
+      "breakdown": {
+        "revenue_growth": "+M-HSD（Medium to High Single Digit）",
+        "op_leverage": "1%（限界利益率30-35%前提）"
+      }
+    },
+    {
+      "context": "過去実績（2018年時点の言及）",
+      "value": "+10% EPS CAGR",
+      "period": "過去10年（~2018年）",
+      "breakdown": {
+        "organic": "2-3%",
+        "ma_contribution": "7-8%",
+        "margin_improvement": "+3%程度"
+      }
+    }
+  ],
+  "key_themes": [
+    "ニッチトップM&A戦略",
+    "ミッションクリティカル×カスタマイズ→高スイッチングコスト",
+    "規律あるM&A実行能力（ROIC維持）",
+    "分散型組織・PMIノウハウ蓄積",
+    "直販体制によるOPM改善",
+    "医療・航空宇宙向けポートフォリオ拡大",
+    "OG比率上昇（1:1）による安定成長"
+  ],
+  "data_limitations": [
+    "SEC EDGAR MCPがEDGAR_IDENTITY未設定のため財務数値はレポートから抽出した参照値のみ",
+    "レポート種別判定（①期初/②四半期レビュー）はPoC段階のためスキップ"
+  ]
+}

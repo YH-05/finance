@@ -66,7 +66,11 @@
       "mcp__playwright__browser_fill_form",
       "mcp__fetch__fetch",
       "WebFetch(domain:www.interactivebrokers.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__sec-edgar-mcp__get_recommended_tools",
+      "WebFetch(domain:data.sec.gov)",
+      "mcp__sec-edgar-mcp__get_filing_content",
+      "WebFetch(domain:investors.ametek.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
