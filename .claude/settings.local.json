@@ -70,7 +70,15 @@
       "mcp__sec-edgar-mcp__get_recommended_tools",
       "WebFetch(domain:data.sec.gov)",
       "mcp__sec-edgar-mcp__get_filing_content",
-      "WebFetch(domain:investors.ametek.com)"
+      "WebFetch(domain:investors.ametek.com)",
+      "WebFetch(domain:www.etf.com)",
+      "WebFetch(domain:massive.com)",
+      "WebFetch(domain:data.nasdaq.com)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:developer.factset.com)",
+      "mcp__playwright__browser_network_requests",
+      "mcp__filesystem__create_directory",
+      "mcp__filesystem__write_file"
     ]
   },
   "enableAllProjectMcpServers": true,
