@@ -26,10 +26,39 @@ from __future__ import annotations
 import math
 from collections import defaultdict
 from datetime import date  # noqa: TC003 - required at runtime
+from typing import TypedDict
 
 from utils_core.logging import get_logger
 
 from .types import BenchmarkWeight, PortfolioHolding, PortfolioResult, SectorAllocation
+
+
+class RankedStock(TypedDict):
+    """Type definition for a ranked stock entry from SectorNeutralizer output.
+
+    Attributes
+    ----------
+    ticker : str
+        Ticker symbol (e.g. "AAPL").
+    aggregate_score : float
+        Aggregate score in [0.0, 1.0] computed by ScoreAggregator.
+    gics_sector : str
+        GICS sector classification (e.g. "Information Technology").
+    sector_rank : int
+        Within-sector rank after sector neutralization (1 = highest Z-score).
+    claim_count : int
+        Number of scored claims contributing to aggregate_score. Must be >= 0.
+    structural_weight : float
+        Fraction of competitive_advantage claims in [0.0, 1.0].
+    """
+
+    ticker: str
+    aggregate_score: float
+    gics_sector: str
+    sector_rank: int
+    claim_count: int
+    structural_weight: float
+
 
 logger = get_logger(__name__)
 
@@ -68,7 +97,7 @@ class PortfolioBuilder:
 
     def build(
         self,
-        ranked: list[dict],
+        ranked: list[RankedStock],
         benchmark: list[BenchmarkWeight],
         as_of_date: date,
     ) -> PortfolioResult:
@@ -76,7 +105,7 @@ class PortfolioBuilder:
 
         Parameters
         ----------
-        ranked : list[dict]
+        ranked : list[RankedStock]
             Ranked stock data with keys: ticker, aggregate_score,
             gics_sector, sector_rank, claim_count, structural_weight.
         benchmark : list[BenchmarkWeight]
@@ -105,7 +134,7 @@ class PortfolioBuilder:
         )
 
         # Group ranked stocks by sector
-        stocks_by_sector: dict[str, list[dict]] = defaultdict(list)
+        stocks_by_sector: dict[str, list[RankedStock]] = defaultdict(list)
         for stock in ranked:
             sector = stock["gics_sector"]
             if sector in benchmark_map:
@@ -185,7 +214,7 @@ class PortfolioBuilder:
     def _compute_sector_counts(
         self,
         benchmark_map: dict[str, float],
-        stocks_by_sector: dict[str, list[dict]],
+        stocks_by_sector: dict[str, list[RankedStock]],
     ) -> dict[str, int]:
         """Compute how many stocks to select from each sector.
 
@@ -193,7 +222,7 @@ class PortfolioBuilder:
         ----------
         benchmark_map : dict[str, float]
             Sector to benchmark weight mapping.
-        stocks_by_sector : dict[str, list[dict]]
+        stocks_by_sector : dict[str, list[RankedStock]]
             Available stocks grouped by sector.
 
         Returns
@@ -262,7 +291,7 @@ class PortfolioBuilder:
 
     def _build_sector_holdings(
         self,
-        selected: list[dict],
+        selected: list[RankedStock],
         sector: str,
         sector_weight: float,
     ) -> list[PortfolioHolding]:
@@ -270,7 +299,7 @@ class PortfolioBuilder:
 
         Parameters
         ----------
-        selected : list[dict]
+        selected : list[RankedStock]
             Selected stocks for this sector (sorted by score desc).
         sector : str
             Sector name.
@@ -298,7 +327,7 @@ class PortfolioBuilder:
                     weight=intra_weight,
                     sector=sector,
                     score=score,
-                    rationale_summary=f"Sector rank {stock.get('sector_rank', 'N/A')}, "
+                    rationale_summary=f"Sector rank {stock['sector_rank']}, "
                     f"score {score:.2f}",
                 )
             )
@@ -358,25 +387,24 @@ class PortfolioBuilder:
         list[SectorAllocation]
             Updated sector allocations.
         """
-        sector_data: dict[str, dict] = {}
+        sector_weights: dict[str, float] = defaultdict(float)
+        sector_counts: dict[str, int] = defaultdict(int)
         for h in holdings:
-            if h.sector not in sector_data:
-                sector_data[h.sector] = {"weight": 0.0, "count": 0}
-            sector_data[h.sector]["weight"] += h.weight
-            sector_data[h.sector]["count"] += 1
+            sector_weights[h.sector] += h.weight
+            sector_counts[h.sector] += 1
 
         allocations: list[SectorAllocation] = []
-        for sector, data in sorted(sector_data.items()):
+        for sector in sorted(sector_weights):
             allocations.append(
                 SectorAllocation(
                     sector=sector,
                     benchmark_weight=benchmark_map.get(sector, 0.0),
-                    actual_weight=data["weight"],
-                    stock_count=data["count"],
+                    actual_weight=sector_weights[sector],
+                    stock_count=sector_counts[sector],
                 )
             )
 
         return allocations
 
 
-__all__ = ["PortfolioBuilder"]
+__all__ = ["PortfolioBuilder", "RankedStock"]

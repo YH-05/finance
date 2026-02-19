@@ -16,12 +16,15 @@ from __future__ import annotations
 
 import csv
 import json
+import statistics
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
+    from datetime import date
+
     from .types import (
         PortfolioHolding,
         PortfolioResult,
@@ -118,7 +121,7 @@ class OutputGenerator:
         self,
         holdings: list[PortfolioHolding],
         sector_allocations: list[SectorAllocation],
-        as_of_date: object,
+        as_of_date: date,
         output_dir: Path,
     ) -> None:
         """Write portfolio_weights.json.
@@ -212,7 +215,7 @@ class OutputGenerator:
         self,
         holdings: list[PortfolioHolding],
         sector_allocations: list[SectorAllocation],
-        as_of_date: object,
+        as_of_date: date,
         scores: dict[str, StockScore],
         output_dir: Path,
     ) -> None:
@@ -267,7 +270,7 @@ class OutputGenerator:
             lines.append("## Score Distribution")
             lines.append("")
             score_values = [s.aggregate_score for s in scores.values()]
-            lines.append(f"- **Mean**: {_mean(score_values):.4f}")
+            lines.append(f"- **Mean**: {statistics.fmean(score_values):.4f}")
             lines.append(f"- **Min**: {min(score_values):.4f}")
             lines.append(f"- **Max**: {max(score_values):.4f}")
             lines.append(f"- **Count**: {len(score_values)}")
@@ -400,27 +403,6 @@ class OutputGenerator:
             lines.append("")
 
         return "\n".join(lines)
-
-
-# ---------------------------------------------------------------------------
-# Utility functions
-# ---------------------------------------------------------------------------
-def _mean(values: list[float]) -> float:
-    """Compute arithmetic mean.
-
-    Parameters
-    ----------
-    values : list[float]
-        Input values.
-
-    Returns
-    -------
-    float
-        Arithmetic mean, or 0.0 if empty.
-    """
-    if not values:
-        return 0.0
-    return sum(values) / len(values)
 
 
 __all__ = ["OutputGenerator"]

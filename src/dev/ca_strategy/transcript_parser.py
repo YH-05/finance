@@ -35,7 +35,7 @@ logger = get_logger(__name__)
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-TRUNCATION_THRESHOLD = 32767
+TRUNCATION_THRESHOLD: int = 32767
 """Excel cell character limit; text fields at or above this are truncated."""
 
 TAG_PATTERN = re.compile(
@@ -171,60 +171,18 @@ class TranscriptParser:
             source_dir=str(self._source_dir),
         )
 
-        total = 0
-        success = 0
-        error_count = 0
-        errors: list[str] = []
-
-        # Phase 1: Load all records and deduplicate by TRANSCRIPTID
-        all_records: list[tuple[str, str, dict[str, Any]]] = []
-        for filepath in source_files:
-            match = MONTH_FILE_PATTERN.search(filepath.name)
-            if not match:
-                logger.warning("Skipping non-matching file", filename=filepath.name)
-                continue
-            year_month = f"{match.group(1)}{match.group(2)}"
-
-            raw_text = filepath.read_text(encoding="utf-8")
-            data = self._parse_json_with_trailing_comma(raw_text, filepath.name)
-            if data is None:
-                error_count += 1
-                errors.append(f"Failed to parse JSON: {filepath.name}")
-                continue
-
-            for _sedol, records in data.items():
-                if not isinstance(records, list):
-                    continue
-                for record in records:
-                    if not isinstance(record, dict):
-                        continue
-                    all_records.append((year_month, filepath.name, record))
+        # Phase 1: Load all records from source files
+        all_records, load_errors = self._collect_all_records(source_files)
 
         # Phase 2: Deduplicate by TRANSCRIPTID (Audited Copy priority)
         deduped_records = self._deduplicate_records(all_records)
 
-        total = len(deduped_records)
-
         # Phase 3: Parse and write each record
-        for year_month, _filename, record in deduped_records:
-            try:
-                written = self._process_record(record, year_month)
-                if written:
-                    success += 1
-                else:
-                    # Skipped (e.g. empty text)
-                    total -= 1
-            except Exception as exc:
-                error_count += 1
-                transcript_id = record.get("TRANSCRIPTID", "unknown")
-                msg = f"Error processing TRANSCRIPTID={transcript_id}: {exc}"
-                errors.append(msg)
-                logger.error(
-                    "Record processing failed",
-                    transcript_id=transcript_id,
-                    error=str(exc),
-                    exc_info=True,
-                )
+        success, write_errors, skipped = self._write_all_records(deduped_records)
+
+        total = len(deduped_records) - skipped
+        error_count = len(load_errors) + len(write_errors)
+        errors = load_errors + write_errors
 
         logger.info(
             "Transcript parsing completed",
@@ -239,6 +197,88 @@ class TranscriptParser:
             error_count=error_count,
             errors=errors,
         )
+
+    def _collect_all_records(
+        self,
+        source_files: list[Path],
+    ) -> tuple[list[tuple[str, str, dict[str, Any]]], list[str]]:
+        """Load and flatten records from all source files.
+
+        Parameters
+        ----------
+        source_files : list[Path]
+            Sorted list of transcript JSON files.
+
+        Returns
+        -------
+        tuple[list[tuple[str, str, dict[str, Any]]], list[str]]
+            (records, errors) where records is (year_month, filename, record_dict).
+        """
+        all_records: list[tuple[str, str, dict[str, Any]]] = []
+        errors: list[str] = []
+
+        for filepath in source_files:
+            match = MONTH_FILE_PATTERN.search(filepath.name)
+            if not match:
+                logger.warning("Skipping non-matching file", filename=filepath.name)
+                continue
+            year_month = f"{match.group(1)}{match.group(2)}"
+
+            raw_text = filepath.read_text(encoding="utf-8")
+            data = self._parse_json_with_trailing_comma(raw_text, filepath.name)
+            if data is None:
+                errors.append(f"Failed to parse JSON: {filepath.name}")
+                continue
+
+            for _, records in data.items():
+                if not isinstance(records, list):
+                    continue
+                for record in records:
+                    if not isinstance(record, dict):
+                        continue
+                    all_records.append((year_month, filepath.name, record))
+
+        return all_records, errors
+
+    def _write_all_records(
+        self,
+        deduped_records: list[tuple[str, str, dict[str, Any]]],
+    ) -> tuple[int, list[str], int]:
+        """Parse and write each deduplicated record.
+
+        Parameters
+        ----------
+        deduped_records : list[tuple[str, str, dict[str, Any]]]
+            Deduplicated records to process.
+
+        Returns
+        -------
+        tuple[int, list[str], int]
+            (success_count, errors, skipped_count).
+        """
+        success = 0
+        errors: list[str] = []
+        skipped = 0
+
+        for year_month, _filename, record in deduped_records:
+            try:
+                written = self._process_record(record, year_month)
+                if written:
+                    success += 1
+                else:
+                    skipped += 1
+            except Exception as exc:
+                transcript_id = record.get("TRANSCRIPTID", "unknown")
+                msg = f"Error processing TRANSCRIPTID={transcript_id}: {exc}"
+                errors.append(msg)
+                logger.error(
+                    "Record processing failed",
+                    transcript_id=transcript_id,
+                    error=str(exc),
+                    exc_info=True,
+                )
+
+        return success, errors, skipped
 
     def _deduplicate_records(
         self,

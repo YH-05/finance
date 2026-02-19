@@ -30,9 +30,13 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 import pandas as pd
+from pydantic import BaseModel
 
 from dev.ca_strategy._config import ConfigRepository
 from dev.ca_strategy.aggregator import ScoreAggregator
@@ -41,7 +45,7 @@ from dev.ca_strategy.extractor import ClaimExtractor
 from dev.ca_strategy.neutralizer import SectorNeutralizer
 from dev.ca_strategy.output import OutputGenerator
 from dev.ca_strategy.pit import CUTOFF_DATE
-from dev.ca_strategy.portfolio_builder import PortfolioBuilder
+from dev.ca_strategy.portfolio_builder import PortfolioBuilder, RankedStock
 from dev.ca_strategy.scorer import ClaimScorer
 from dev.ca_strategy.transcript import TranscriptLoader
 from dev.ca_strategy.types import (
@@ -162,6 +166,10 @@ class Orchestrator:
         )
 
         # Phase 3: Aggregation + Neutralization
+        # AIDEV-NOTE: CODE-005 - _aggregate_scores() を _execute_phase() 経由で
+        # 呼ぶと戻り値の scores が Phase 5 でも必要なため型安全性が低下する。
+        # 将来は _run_phase3_neutralization() の引数から scores を削除し内部計算化
+        # することで完全統一が可能。
         scores = self._aggregate_scores(scored_claims)
         ranked = self._execute_phase(
             phase=3,
@@ -218,10 +226,12 @@ class Orchestrator:
 
         # Load checkpoint data for completed phases
         claims: dict[str, list[Claim]] = (
-            self._load_checkpoint_claims() if phase > 1 else {}
+            self._load_checkpoint("phase1_claims.json", Claim) if phase > 1 else {}
         )
         scored_claims: dict[str, list[ScoredClaim]] = (
-            self._load_checkpoint_scored() if phase > 2 else {}
+            self._load_checkpoint("phase2_scored.json", ScoredClaim)
+            if phase > 2
+            else {}
         )
         scores: dict[str, StockScore] = {}
         ranked: pd.DataFrame = pd.DataFrame()
@@ -233,7 +243,7 @@ class Orchestrator:
         if phase <= 2:
             scored_claims = self._execute_phase(2, self._run_phase2_scoring, (claims,))
         if phase <= 3:
-            scores = self._aggregate_scores(scored_claims)
+            scores = self._aggregate_scores(scored_claims)  # AIDEV-NOTE: CODE-005
             ranked = self._execute_phase(
                 3, self._run_phase3_neutralization, (scored_claims, scores)
             )
@@ -302,8 +312,8 @@ class Orchestrator:
     def _execute_phase(
         self,
         phase: int,
-        func: Any,
-        args: tuple[Any, ...] = (),
+        func: Callable[..., Any],
+        args: tuple[object, ...] = (),
     ) -> Any:
         """Execute a single phase with logging and error handling.
 
@@ -382,7 +392,7 @@ class Orchestrator:
         )
 
         # Save checkpoint
-        self._save_checkpoint_claims(claims)
+        self._save_checkpoint(claims, "phase1_claims.json")
 
         logger.info(
             "Phase 1 completed",
@@ -423,7 +433,7 @@ class Orchestrator:
         scored = scorer.score_batch(claims=claims, output_dir=output_dir)
 
         # Save checkpoint
-        self._save_checkpoint_scored(scored)
+        self._save_checkpoint(scored, "phase2_scored.json")
 
         logger.info(
             "Phase 2 completed",
@@ -505,7 +515,7 @@ class Orchestrator:
         """
         builder = PortfolioBuilder(target_size=30)
 
-        ranked_list = ranked.to_dict("records")
+        ranked_list = cast("list[RankedStock]", ranked.to_dict("records"))
         portfolio = builder.build(
             ranked=ranked_list,
             benchmark=benchmark,
@@ -578,104 +588,67 @@ class Orchestrator:
     # -----------------------------------------------------------------------
     # Checkpoint I/O
     # -----------------------------------------------------------------------
-    def _save_checkpoint_claims(
+    def _save_checkpoint[M: BaseModel](
         self,
-        claims: dict[str, list[Claim]],
+        data: dict[str, list[M]],
+        filename: str,
     ) -> None:
-        """Save Phase 1 claims to a checkpoint file.
+        """Save a phase checkpoint to a JSON file.
 
         Parameters
         ----------
-        claims : dict[str, list[Claim]]
-            Claims to persist.
+        data : dict[str, list[M]]
+            Per-ticker model data to persist.
+        filename : str
+            Checkpoint filename (e.g. "phase1_claims.json").
         """
         checkpoint_dir = self._workspace_dir / "checkpoints"
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
         serialized = {
-            ticker: [c.model_dump() for c in claim_list]
-            for ticker, claim_list in claims.items()
+            ticker: [c.model_dump() for c in items] for ticker, items in data.items()
         }
 
-        path = checkpoint_dir / "phase1_claims.json"
+        path = checkpoint_dir / filename
         path.write_text(
             json.dumps(serialized, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-        logger.debug("Phase 1 checkpoint saved", path=str(path))
+        logger.debug("Checkpoint saved", path=str(path), filename=filename)
 
-    def _save_checkpoint_scored(
+    def _load_checkpoint[M: BaseModel](
         self,
-        scored: dict[str, list[ScoredClaim]],
-    ) -> None:
-        """Save Phase 2 scored claims to a checkpoint file.
+        filename: str,
+        model_cls: type[M],
+    ) -> dict[str, list[M]]:
+        """Load a phase checkpoint from a JSON file.
 
         Parameters
         ----------
-        scored : dict[str, list[ScoredClaim]]
-            Scored claims to persist.
-        """
-        checkpoint_dir = self._workspace_dir / "checkpoints"
-        checkpoint_dir.mkdir(parents=True, exist_ok=True)
-
-        serialized = {
-            ticker: [c.model_dump() for c in claim_list]
-            for ticker, claim_list in scored.items()
-        }
-
-        path = checkpoint_dir / "phase2_scored.json"
-        path.write_text(
-            json.dumps(serialized, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-        logger.debug("Phase 2 checkpoint saved", path=str(path))
-
-    def _load_checkpoint_claims(self) -> dict[str, list[Claim]]:
-        """Load Phase 1 claims from a checkpoint file.
+        filename : str
+            Checkpoint filename (e.g. "phase1_claims.json").
+        model_cls : type[M]
+            Pydantic model class for deserialization.
 
         Returns
         -------
-        dict[str, list[Claim]]
-            Loaded claims.
+        dict[str, list[M]]
+            Per-ticker model data.
 
         Raises
         ------
         FileNotFoundError
             If the checkpoint file does not exist.
         """
-        path = self._workspace_dir / "checkpoints" / "phase1_claims.json"
+        path = self._workspace_dir / "checkpoints" / filename
         if not path.exists():
-            msg = f"Phase 1 checkpoint not found: {path}"
+            msg = f"Checkpoint not found: {path}"
             raise FileNotFoundError(msg)
 
         data = json.loads(path.read_text(encoding="utf-8"))
         return {
-            ticker: [Claim.model_validate(c) for c in claims_data]
-            for ticker, claims_data in data.items()
-        }
-
-    def _load_checkpoint_scored(self) -> dict[str, list[ScoredClaim]]:
-        """Load Phase 2 scored claims from a checkpoint file.
-
-        Returns
-        -------
-        dict[str, list[ScoredClaim]]
-            Loaded scored claims.
-
-        Raises
-        ------
-        FileNotFoundError
-            If the checkpoint file does not exist.
-        """
-        path = self._workspace_dir / "checkpoints" / "phase2_scored.json"
-        if not path.exists():
-            msg = f"Phase 2 checkpoint not found: {path}"
-            raise FileNotFoundError(msg)
-
-        data = json.loads(path.read_text(encoding="utf-8"))
-        return {
-            ticker: [ScoredClaim.model_validate(c) for c in claims_data]
-            for ticker, claims_data in data.items()
+            ticker: [model_cls.model_validate(c) for c in items]
+            for ticker, items in data.items()
         }
 
 

@@ -16,7 +16,7 @@ from datetime import date
 
 import pytest
 
-from dev.ca_strategy.portfolio_builder import PortfolioBuilder
+from dev.ca_strategy.portfolio_builder import PortfolioBuilder, RankedStock
 from dev.ca_strategy.types import (
     BenchmarkWeight,
     PortfolioHolding,
@@ -34,16 +34,16 @@ def _make_stock_score(
     aggregate_score: float = 0.8,
     sector: str = "Information Technology",
     claim_count: int = 3,
-) -> dict:
+) -> RankedStock:
     """Create a ranked stock entry dict (as from neutralizer output)."""
-    return {
-        "ticker": ticker,
-        "aggregate_score": aggregate_score,
-        "gics_sector": sector,
-        "sector_rank": 1,
-        "claim_count": claim_count,
-        "structural_weight": 0.5,
-    }
+    return RankedStock(
+        ticker=ticker,
+        aggregate_score=aggregate_score,
+        gics_sector=sector,
+        sector_rank=1,
+        claim_count=claim_count,
+        structural_weight=0.5,
+    )
 
 
 def _make_benchmark_weights() -> list[BenchmarkWeight]:
@@ -57,7 +57,7 @@ def _make_benchmark_weights() -> list[BenchmarkWeight]:
 
 def _make_ranked_data(
     sectors: dict[str, list[tuple[str, float]]] | None = None,
-) -> list[dict]:
+) -> list[RankedStock]:
     """Create ranked stock data with sector info.
 
     Parameters
@@ -83,18 +83,18 @@ def _make_ranked_data(
                 ("MRK", 0.68),
             ],
         }
-    ranked: list[dict] = []
+    ranked: list[RankedStock] = []
     for sector, stocks in sectors.items():
         for rank, (ticker, score) in enumerate(stocks, 1):
             ranked.append(
-                {
-                    "ticker": ticker,
-                    "aggregate_score": score,
-                    "gics_sector": sector,
-                    "sector_rank": rank,
-                    "claim_count": 3,
-                    "structural_weight": 0.5,
-                }
+                RankedStock(
+                    ticker=ticker,
+                    aggregate_score=score,
+                    gics_sector=sector,
+                    sector_rank=rank,
+                    claim_count=3,
+                    structural_weight=0.5,
+                )
             )
     return ranked
 
@@ -345,3 +345,39 @@ class TestPortfolioBuilder:
         for h in result.holdings:
             assert 0.0 <= h.weight <= 1.0, f"{h.ticker}: weight={h.weight}"
             assert 0.0 <= h.score <= 1.0, f"{h.ticker}: score={h.score}"
+
+    def test_エッジケース_aggregate_scoreが全て0の場合均等配分される(self) -> None:
+        """全銘柄の aggregate_score=0 のとき均等配分分岐が正しく動作することを確認。"""
+        builder = PortfolioBuilder(target_size=2)
+        benchmark = [BenchmarkWeight(sector="Information Technology", weight=1.0)]
+        ranked = [
+            RankedStock(
+                ticker="AAPL",
+                aggregate_score=0.0,
+                gics_sector="Information Technology",
+                sector_rank=1,
+                claim_count=0,
+                structural_weight=0.0,
+            ),
+            RankedStock(
+                ticker="MSFT",
+                aggregate_score=0.0,
+                gics_sector="Information Technology",
+                sector_rank=2,
+                claim_count=0,
+                structural_weight=0.0,
+            ),
+        ]
+
+        result = builder.build(
+            ranked=ranked,
+            benchmark=benchmark,
+            as_of_date=date(2015, 9, 30),
+        )
+
+        assert len(result.holdings) == 2
+        total_weight = sum(h.weight for h in result.holdings)
+        assert total_weight == pytest.approx(1.0, abs=1e-9)
+        # Both holdings should have equal weight when all scores are 0
+        weights = [h.weight for h in result.holdings]
+        assert weights[0] == pytest.approx(weights[1], abs=1e-9)

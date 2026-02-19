@@ -17,6 +17,8 @@ from utils_core.logging import get_logger
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from dev.ca_strategy.cost import CostTracker
+
 logger = get_logger(__name__)
 
 
@@ -127,7 +129,90 @@ def strip_code_block(text: str) -> str:
     return text.strip()
 
 
+def build_kb_section(header: str, items: list[tuple[str, str]]) -> list[str]:
+    """Build a knowledge base section for a prompt.
+
+    Generates a header line followed by subsections for each item.
+    Used to assemble KB1-T, KB2-T, and KB3-T blocks in prompt construction.
+
+    Parameters
+    ----------
+    header : str
+        Markdown section header (e.g. "## KB1-T ルール集（全ルール）").
+    items : list[tuple[str, str]]
+        Ordered list of (name, content) pairs.
+
+    Returns
+    -------
+    list[str]
+        Parts to extend into the prompt parts list.
+    """
+    parts: list[str] = [header + "\n"]
+    for name, content in items:
+        parts.append(f"### {name}\n\n{content}\n")
+    return parts
+
+
+def call_llm(
+    client: anthropic.Anthropic,
+    *,
+    model: str,
+    system: str,
+    user_content: str,
+    max_tokens: int,
+    temperature: float,
+    cost_tracker: CostTracker,
+    phase: str,
+) -> str:
+    """Call Claude API, record cost, and return extracted text.
+
+    Consolidates the common LLM call pattern used by both
+    ClaimExtractor (Phase 1) and ClaimScorer (Phase 2).
+
+    Parameters
+    ----------
+    client : anthropic.Anthropic
+        Anthropic client instance.
+    model : str
+        Model ID (e.g. ``claude-sonnet-4-20250514``).
+    system : str
+        System prompt.
+    user_content : str
+        User message content.
+    max_tokens : int
+        Maximum output tokens.
+    temperature : float
+        Temperature setting.
+    cost_tracker : CostTracker
+        Cost tracker for recording token usage.
+    phase : str
+        Pipeline phase identifier (e.g. ``"phase1"``).
+
+    Returns
+    -------
+    str
+        Extracted text from LLM response.
+    """
+    message = client.messages.create(
+        model=model,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        system=system,
+        messages=[{"role": "user", "content": user_content}],
+    )
+
+    cost_tracker.record(
+        phase=phase,
+        tokens_input=message.usage.input_tokens,
+        tokens_output=message.usage.output_tokens,
+    )
+
+    return extract_text_from_response(message)
+
+
 __all__ = [
+    "build_kb_section",
+    "call_llm",
     "extract_text_from_response",
     "load_directory",
     "load_file",

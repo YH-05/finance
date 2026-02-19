@@ -21,6 +21,7 @@ preventing runaway costs.
 from __future__ import annotations
 
 import json
+import threading
 from typing import TYPE_CHECKING
 
 from utils_core.logging import get_logger
@@ -73,6 +74,10 @@ class CostTracker:
     def __init__(self, warning_threshold: float = _DEFAULT_WARNING_THRESHOLD) -> None:
         self.warning_threshold = warning_threshold
         self._phases: dict[str, _PhaseRecord] = {}
+        self._lock = threading.Lock()
+        self._total_cost: float = (
+            0.0  # CODE-008: incremental total to avoid lock re-entry
+        )
 
     def record(self, phase: str, *, tokens_input: int, tokens_output: int) -> None:
         """Record token usage for a pipeline phase.
@@ -101,34 +106,36 @@ class CostTracker:
             msg = f"tokens_output must be >= 0, got {tokens_output}"
             raise ValueError(msg)
 
-        if phase not in self._phases:
-            self._phases[phase] = _PhaseRecord()
+        with self._lock:
+            if phase not in self._phases:
+                self._phases[phase] = _PhaseRecord()
 
-        record = self._phases[phase]
-        record.tokens_input += tokens_input
-        record.tokens_output += tokens_output
+            record = self._phases[phase]
+            record.tokens_input += tokens_input
+            record.tokens_output += tokens_output
 
-        cost = (tokens_input * _PRICE_INPUT_PER_TOKEN) + (
-            tokens_output * _PRICE_OUTPUT_PER_TOKEN
-        )
-        record.cost += cost
-
-        logger.debug(
-            "Cost recorded",
-            phase=phase,
-            tokens_input=tokens_input,
-            tokens_output=tokens_output,
-            incremental_cost=round(cost, 6),
-            phase_total=round(record.cost, 6),
-        )
-
-        total = self.get_total_cost()
-        if total > self.warning_threshold:
-            logger.warning(
-                "Cost threshold exceeded",
-                total_cost=round(total, 2),
-                threshold=self.warning_threshold,
+            cost = (tokens_input * _PRICE_INPUT_PER_TOKEN) + (
+                tokens_output * _PRICE_OUTPUT_PER_TOKEN
             )
+            record.cost += cost
+            self._total_cost += cost
+
+            logger.debug(
+                "Cost recorded",
+                phase=phase,
+                tokens_input=tokens_input,
+                tokens_output=tokens_output,
+                incremental_cost=round(cost, 6),
+                phase_total=round(record.cost, 6),
+            )
+
+            total = self._total_cost
+            if total > self.warning_threshold:
+                logger.warning(
+                    "Cost threshold exceeded",
+                    total_cost=round(total, 2),
+                    threshold=self.warning_threshold,
+                )
 
     def get_total_cost(self) -> float:
         """Get total cost across all phases.
@@ -138,7 +145,7 @@ class CostTracker:
         float
             Total cost in USD.
         """
-        return sum(r.cost for r in self._phases.values())
+        return self._total_cost
 
     def get_phase_cost(self, phase: str) -> float:
         """Get cost for a specific phase.
@@ -183,7 +190,9 @@ class CostTracker:
             },
         }
 
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+        path.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
         logger.debug(
             "Cost data saved",
             path=str(path),
@@ -210,7 +219,7 @@ class CostTracker:
             logger.debug("Cost file not found, returning empty tracker", path=str(path))
             return cls()
 
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding="utf-8"))
         threshold = data.get("warning_threshold", _DEFAULT_WARNING_THRESHOLD)
         tracker = cls(warning_threshold=threshold)
 
@@ -248,6 +257,7 @@ class CostTracker:
             record.tokens_output = tokens_output
             record.cost = float(cost)
             tracker._phases[phase_name] = record
+            tracker._total_cost += record.cost
 
         logger.debug(
             "Cost data loaded",
