@@ -39,6 +39,9 @@ from dev.ca_strategy._llm_utils import (
 from dev.ca_strategy.batch import BatchProcessor
 from dev.ca_strategy.types import (
     ConfidenceAdjustment,
+    GatekeeperResult,
+    KB1RuleApplication,
+    KB2PatternMatch,
     RuleEvaluation,
     ScoredClaim,
 )
@@ -401,7 +404,11 @@ class ClaimScorer:
 
     @staticmethod
     def _build_output_instructions(ticker: str) -> str:
-        """Build output format instructions for the LLM.
+        """Build structured output format instructions for the LLM.
+
+        The output includes structured evaluation results for each stage:
+        gatekeeper, KB1-T rule applications, KB2-T pattern matches,
+        and overall reasoning.
 
         Parameters
         ----------
@@ -414,9 +421,14 @@ class ClaimScorer:
             Output instructions section.
         """
         return (
-            "## 出力指示\n\n"
+            "## 出力指示（構造化KB評価）\n\n"
             "以下のJSON形式で scored_claims を出力してください。\n"
             "JSONのみを出力し、他のテキストは含めないでください。\n\n"
+            "各主張の評価結果を4段階すべて構造化して出力すること:\n"
+            "1. **gatekeeper**: ゲートキーパールール結果\n"
+            "2. **kb1_evaluations**: KB1-Tルール個別適用結果\n"
+            "3. **kb2_patterns**: KB2-Tパターン照合結果\n"
+            "4. **overall_reasoning**: 総合判断の説明\n\n"
             "```json\n"
             "{\n"
             '  "scored_claims": [\n'
@@ -425,14 +437,23 @@ class ClaimScorer:
             '      "final_confidence": <10-90の整数>,\n'
             '      "gatekeeper": {\n'
             '        "rule9_factual_error": <bool>,\n'
-            '        "rule3_industry_common": <bool>\n'
+            '        "rule3_industry_common": <bool>,\n'
+            '        "triggered": <bool>,\n'
+            '        "override_confidence": <null or 0.0-1.0>\n'
             "      },\n"
+            '      "kb1_evaluations": [\n'
+            "        {\n"
+            '          "rule_id": "<rule_1_t|rule_2_t|...>",\n'
+            '          "result": <bool>,\n'
+            '          "reasoning": "<このルールの判定理由>"\n'
+            "        }\n"
+            "      ],\n"
             '      "kb2_patterns": [\n'
             "        {\n"
-            '          "pattern": "<pattern_id>",\n'
-            '          "match": <bool>,\n'
+            '          "pattern_id": "<pattern_A|...|pattern_V>",\n'
+            '          "matched": <bool>,\n'
             '          "adjustment": <-0.3 to +0.3>,\n'
-            '          "reasoning": "<理由>"\n'
+            '          "reasoning": "<パターン照合理由>"\n'
             "        }\n"
             "      ],\n"
             '      "confidence_adjustments": [\n'
@@ -442,7 +463,7 @@ class ClaimScorer:
             '          "reasoning": "<理由>"\n'
             "        }\n"
             "      ],\n"
-            '      "overall_reasoning": "<総合評価の説明>"\n'
+            '      "overall_reasoning": "<4段階評価の総合判断の説明>"\n'
             "    }\n"
             "  ]\n"
             "}\n"
@@ -451,7 +472,11 @@ class ClaimScorer:
             "- final_confidence は 10-90 の整数値（10刻み推奨）\n"
             "- ゲートキーパールール違反は最優先で適用\n"
             "- 90% は全体の 6% のみ。極めて稀に付与\n"
-            "- 各主張に必ず gatekeeper と kb2_patterns を含めること\n"
+            "- kb1_evaluations には適用した全ルールの結果を含めること\n"
+            "- kb2_patterns にはマッチしたパターンのみ含めること"
+            "（マッチなしの場合は空配列）\n"
+            "- overall_reasoning には gatekeeper→KB1-T→KB2-T→KB3-T "
+            "キャリブレーションの判断過程を記述すること\n"
         )
 
     # -----------------------------------------------------------------------
@@ -561,6 +586,12 @@ class ClaimScorer:
                         )
                     )
 
+            # Parse structured evaluation fields
+            gatekeeper = self._parse_gatekeeper(raw)
+            kb1_evaluations = self._parse_kb1_evaluations(raw)
+            kb2_patterns = self._parse_kb2_patterns(raw)
+            overall_reasoning = raw.get("overall_reasoning", "")
+
             # Use original claim data as base
             if original is not None:
                 return ScoredClaim(
@@ -571,6 +602,12 @@ class ClaimScorer:
                     rule_evaluation=original.rule_evaluation,
                     final_confidence=final_confidence,
                     adjustments=adjustments,
+                    power_classification=original.power_classification,
+                    evidence_sources=original.evidence_sources,
+                    gatekeeper=gatekeeper,
+                    kb1_evaluations=kb1_evaluations,
+                    kb2_patterns=kb2_patterns,
+                    overall_reasoning=overall_reasoning,
                 )
 
             # Fallback: use raw data if original not found
@@ -582,6 +619,10 @@ class ClaimScorer:
                 rule_evaluation=_default_rule_evaluation(),
                 final_confidence=final_confidence,
                 adjustments=adjustments,
+                gatekeeper=gatekeeper,
+                kb1_evaluations=kb1_evaluations,
+                kb2_patterns=kb2_patterns,
+                overall_reasoning=overall_reasoning,
             )
 
         except Exception:
@@ -591,6 +632,119 @@ class ClaimScorer:
                 exc_info=True,
             )
             return None
+
+    @staticmethod
+    def _parse_gatekeeper(raw: dict[str, Any]) -> GatekeeperResult | None:
+        """Parse gatekeeper results from raw scored claim data.
+
+        Parameters
+        ----------
+        raw : dict[str, Any]
+            Raw scored claim dict from LLM response.
+
+        Returns
+        -------
+        GatekeeperResult | None
+            Parsed gatekeeper result, or None if not present.
+        """
+        gk_raw = raw.get("gatekeeper")
+        if not isinstance(gk_raw, dict):
+            return None
+
+        rule9 = bool(gk_raw.get("rule9_factual_error", False))
+        rule3 = bool(gk_raw.get("rule3_industry_common", False))
+        triggered = bool(gk_raw.get("triggered", rule9 or rule3))
+
+        override = gk_raw.get("override_confidence")
+        if isinstance(override, (int, float)):
+            if override > 1.0:
+                override = override / 100.0
+            override = max(0.0, min(1.0, float(override)))
+        else:
+            override = None
+
+        return GatekeeperResult(
+            rule9_factual_error=rule9,
+            rule3_industry_common=rule3,
+            triggered=triggered,
+            override_confidence=override,
+        )
+
+    @staticmethod
+    def _parse_kb1_evaluations(raw: dict[str, Any]) -> list[KB1RuleApplication]:
+        """Parse KB1-T rule application results from raw scored claim data.
+
+        Parameters
+        ----------
+        raw : dict[str, Any]
+            Raw scored claim dict from LLM response.
+
+        Returns
+        -------
+        list[KB1RuleApplication]
+            Parsed KB1 rule applications. Empty list if not present.
+        """
+        evals_raw = raw.get("kb1_evaluations", [])
+        if not isinstance(evals_raw, list):
+            return []
+
+        evaluations: list[KB1RuleApplication] = []
+        for eval_item in evals_raw:
+            if not isinstance(eval_item, dict):
+                continue
+            rule_id = eval_item.get("rule_id", "")
+            if not rule_id:
+                continue
+            evaluations.append(
+                KB1RuleApplication(
+                    rule_id=rule_id,
+                    result=bool(eval_item.get("result", False)),
+                    reasoning=eval_item.get("reasoning", ""),
+                )
+            )
+        return evaluations
+
+    @staticmethod
+    def _parse_kb2_patterns(raw: dict[str, Any]) -> list[KB2PatternMatch]:
+        """Parse KB2-T pattern match results from raw scored claim data.
+
+        Parameters
+        ----------
+        raw : dict[str, Any]
+            Raw scored claim dict from LLM response.
+
+        Returns
+        -------
+        list[KB2PatternMatch]
+            Parsed KB2 pattern matches. Empty list if not present.
+        """
+        patterns_raw = raw.get("kb2_patterns", [])
+        if not isinstance(patterns_raw, list):
+            return []
+
+        patterns: list[KB2PatternMatch] = []
+        for pat in patterns_raw:
+            if not isinstance(pat, dict):
+                continue
+            pattern_id = pat.get("pattern_id") or pat.get("pattern", "")
+            if not pattern_id:
+                continue
+
+            adj_value = pat.get("adjustment", 0)
+            if isinstance(adj_value, (int, float)):
+                adj_value = max(-1.0, min(1.0, float(adj_value)))
+            else:
+                adj_value = 0.0
+
+            patterns.append(
+                KB2PatternMatch(
+                    pattern_id=pattern_id,
+                    matched=bool(pat.get("matched", pat.get("match", False))),
+                    adjustment=adj_value,
+                    reasoning=pat.get("reasoning", ""),
+                )
+            )
+        return patterns
 
     # -----------------------------------------------------------------------
     # Internal: file I/O

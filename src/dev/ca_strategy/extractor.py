@@ -39,6 +39,8 @@ from dev.ca_strategy.batch import BatchProcessor
 from dev.ca_strategy.pit import CUTOFF_DATE, get_pit_prompt_context
 from dev.ca_strategy.types import (
     Claim,
+    EvidenceSource,
+    PowerClassification,
     RuleEvaluation,
 )
 from utils_core.logging import get_logger
@@ -92,6 +94,9 @@ class ClaimExtractor:
         Path to the dogma.md file.
     cost_tracker : CostTracker
         CostTracker instance for recording token usage.
+    seven_powers_path : Path | str | None, optional
+        Path to the 7 Powers framework KB file.  If provided, extraction
+        uses 7 Powers structured output (power_classification, evidence_sources).
     model : str, optional
         Claude model ID to use.  Defaults to Sonnet 4.
     cutoff_date : str | None, optional
@@ -110,6 +115,7 @@ class ClaimExtractor:
     ...     system_prompt_path=Path("analyst/transcript_eval/system_prompt_transcript.md"),
     ...     dogma_path=Path("analyst/Competitive_Advantage/analyst_YK/dogma.md"),
     ...     cost_tracker=CostTracker(),
+    ...     seven_powers_path=Path("analyst/transcript_eval/seven_powers_framework.md"),
     ... )
     >>> claims = extractor._extract_single(transcript, sec_data)
     """
@@ -121,6 +127,7 @@ class ClaimExtractor:
         system_prompt_path: Path | str,
         dogma_path: Path | str,
         cost_tracker: CostTracker,
+        seven_powers_path: Path | str | None = None,
         model: str = _MODEL,
         cutoff_date: str | None = None,
         client: anthropic.Anthropic | None = None,
@@ -140,6 +147,12 @@ class ClaimExtractor:
         self._system_prompt = load_file(self._system_prompt_path)
         self._dogma = load_file(self._dogma_path)
 
+        # Load 7 Powers framework (optional)
+        self._seven_powers: str | None = None
+        if seven_powers_path is not None:
+            self._seven_powers = load_file(Path(seven_powers_path))
+        self._use_seven_powers: bool = self._seven_powers is not None
+
         # Cache sorted KB items for prompt construction (PERF-003)
         self._sorted_kb1_rules = sorted(self._kb1_rules.items())
         self._sorted_kb3_examples = sorted(self._kb3_examples.items())
@@ -151,6 +164,7 @@ class ClaimExtractor:
             "ClaimExtractor initialized",
             kb1_rules_count=len(self._kb1_rules),
             kb3_examples_count=len(self._kb3_examples),
+            seven_powers_enabled=self._use_seven_powers,
             model=self._model,
             cutoff_date=self._cutoff_date_str,
         )
@@ -412,22 +426,37 @@ class ClaimExtractor:
         # 4. PoiT constraints
         parts.append(f"## PoiT制約\n\n{get_pit_prompt_context()}\n")
 
-        # 5. KB1-T rules
+        # 5. 7 Powers framework (if enabled)
+        if self._use_seven_powers and self._seven_powers:
+            parts.append(
+                f"## 7 Powers フレームワーク（抽出ガイド）\n\n{self._seven_powers}\n"
+            )
+
+        # 6. KB1-T rules
         parts.extend(
             build_kb_section("## KB1-T ルール集（全ルール）", self._sorted_kb1_rules)
         )
 
-        # 6. KB3-T few-shot examples
+        # 7. KB3-T few-shot examples
         parts.extend(
             build_kb_section("## KB3-T few-shot 評価例", self._sorted_kb3_examples)
         )
 
-        # 7. Dogma
+        # 8. Dogma
         if self._dogma:
             parts.append(f"## dogma.md（KYの評価基準）\n\n{self._dogma}\n")
 
-        # 8. Output instructions
-        parts.append(self._build_output_instructions(meta.ticker, meta.fiscal_quarter))
+        # 9. Output instructions
+        if self._use_seven_powers:
+            parts.append(
+                self._build_seven_powers_output_instructions(
+                    meta.ticker, meta.fiscal_quarter
+                )
+            )
+        else:
+            parts.append(
+                self._build_output_instructions(meta.ticker, meta.fiscal_quarter)
+            )
 
         return "\n".join(parts)
 
@@ -482,6 +511,88 @@ class ClaimExtractor:
             "- claim_type は competitive_advantage, cagr_connection, factual_claim のいずれか\n"
             "- 各主張に必ず rule_evaluation を含めること（factual_claim 含む）\n"
             "- 主張は5-15件抽出すること\n"
+        )
+
+    @staticmethod
+    def _build_seven_powers_output_instructions(
+        ticker: str, fiscal_quarter: str
+    ) -> str:
+        """Build 7 Powers structured output format instructions for the LLM.
+
+        Parameters
+        ----------
+        ticker : str
+            Ticker symbol.
+        fiscal_quarter : str
+            Fiscal quarter label.
+
+        Returns
+        -------
+        str
+            Output instructions with 7 Powers structured fields.
+        """
+        return (
+            "## 出力指示（7 Powers 構造化抽出）\n\n"
+            "以下のJSON形式で claims.json を出力してください（5-15件）。\n"
+            "JSONのみを出力し、他のテキストは含めないでください。\n\n"
+            "各主張には以下の構造化フィールドを必ず含めてください:\n"
+            "- **power_classification**: 7 Powersのどれに該当するか、"
+            "Benefit（利益）とBarrier（障壁）を明記\n"
+            "- **evidence_sources**: トランスクリプトの発言元情報"
+            "（誰が、どのセクションで、何を言ったか）\n\n"
+            "```json\n"
+            "{\n"
+            f'  "ticker": "{ticker}",\n'
+            f'  "transcript_source": "{fiscal_quarter} Earnings Call",\n'
+            '  "extraction_metadata": {\n'
+            '    "cutoff_date": "2015-09-30",\n'
+            '    "framework": "seven_powers",\n'
+            '    "kb1_t_rules_loaded": <int>,\n'
+            '    "dogma_loaded": true,\n'
+            '    "sec_data_available": <bool>\n'
+            "  },\n"
+            '  "claims": [\n'
+            "    {\n"
+            '      "id": "<TICKER>-CA-001",\n'
+            '      "claim_type": "competitive_advantage",\n'
+            '      "claim": "<主張テキスト>",\n'
+            '      "evidence": "<証拠テキスト（要約）>",\n'
+            '      "power_classification": {\n'
+            '        "power_type": "<scale_economies|network_economies|'
+            "counter_positioning|switching_costs|branding|"
+            'cornered_resource|process_power>",\n'
+            '        "benefit": "<この Power がもたらす具体的利益>",\n'
+            '        "barrier": "<競合が模倣できない構造的理由>"\n'
+            "      },\n"
+            '      "evidence_sources": [\n'
+            "        {\n"
+            '          "speaker": "<発言者名>",\n'
+            '          "role": "<CEO|CFO|etc.>",\n'
+            '          "section_type": "<prepared_remarks|q_and_a>",\n'
+            f'          "quarter": "{fiscal_quarter}",\n'
+            '          "quote": "<直接引用または要約>"\n'
+            "        }\n"
+            "      ],\n"
+            '      "rule_evaluation": {\n'
+            '        "applied_rules": ["rule_1_t", ...],\n'
+            '        "results": {"rule_1_t": true, ...},\n'
+            '        "confidence": <0.0-1.0>,\n'
+            '        "adjustments": ["<調整理由>"]\n'
+            "      }\n"
+            "    }\n"
+            "  ]\n"
+            "}\n"
+            "```\n\n"
+            "**重要**: \n"
+            "- confidence は 0.0-1.0 の範囲（例: 70% → 0.7）\n"
+            "- claim_type は competitive_advantage, cagr_connection, "
+            "factual_claim のいずれか\n"
+            "- 各主張に必ず power_classification と evidence_sources を含めること\n"
+            "- power_classification では Benefit と Barrier の両方を具体的に記述すること"
+            "（Benefit だけでは Power ではない）\n"
+            "- evidence_sources は複数のトランスクリプト発言を含めてよい\n"
+            "- 主張は5-15件抽出すること\n"
+            "- 7 Powers のいずれにも該当しない場合は無理に分類しないこと\n"
         )
 
     # -----------------------------------------------------------------------
@@ -560,12 +671,18 @@ class ClaimExtractor:
                 adjustments=self._parse_adjustments(rule_eval_raw),
             )
 
+            # Parse 7 Powers structured fields
+            power_classification = self._parse_power_classification(raw)
+            evidence_sources = self._parse_evidence_sources(raw)
+
             return Claim(
                 id=raw.get("id", "unknown"),
                 claim_type=raw.get("claim_type", "competitive_advantage"),
                 claim=raw.get("claim", ""),
                 evidence=self._parse_evidence(raw),
                 rule_evaluation=rule_evaluation,
+                power_classification=power_classification,
+                evidence_sources=evidence_sources,
             )
 
         except Exception:
@@ -575,6 +692,96 @@ class ClaimExtractor:
                 exc_info=True,
             )
             return None
+
+    @staticmethod
+    def _parse_power_classification(
+        raw: dict[str, Any],
+    ) -> PowerClassification | None:
+        """Parse power_classification from raw claim data.
+
+        Parameters
+        ----------
+        raw : dict[str, Any]
+            Raw claim dict from LLM response.
+
+        Returns
+        -------
+        PowerClassification | None
+            Parsed PowerClassification, or None if not present or invalid.
+        """
+        pc_raw = raw.get("power_classification")
+        if not isinstance(pc_raw, dict):
+            return None
+
+        power_type = pc_raw.get("power_type", "")
+        benefit = pc_raw.get("benefit", "")
+        barrier = pc_raw.get("barrier", "")
+
+        if not power_type or not benefit or not barrier:
+            return None
+
+        valid_types = {
+            "scale_economies",
+            "network_economies",
+            "counter_positioning",
+            "switching_costs",
+            "branding",
+            "cornered_resource",
+            "process_power",
+        }
+        if power_type not in valid_types:
+            logger.warning(
+                "Invalid power_type in LLM response",
+                power_type=power_type,
+            )
+            return None
+
+        return PowerClassification(
+            power_type=power_type,
+            benefit=benefit,
+            barrier=barrier,
+        )
+
+    @staticmethod
+    def _parse_evidence_sources(raw: dict[str, Any]) -> list[EvidenceSource]:
+        """Parse evidence_sources from raw claim data.
+
+        Parameters
+        ----------
+        raw : dict[str, Any]
+            Raw claim dict from LLM response.
+
+        Returns
+        -------
+        list[EvidenceSource]
+            Parsed evidence sources. Empty list if not present.
+        """
+        sources_raw = raw.get("evidence_sources", [])
+        if not isinstance(sources_raw, list):
+            return []
+
+        sources: list[EvidenceSource] = []
+        for src in sources_raw:
+            if not isinstance(src, dict):
+                continue
+            speaker = src.get("speaker", "")
+            section_type = src.get("section_type", "")
+            quarter = src.get("quarter", "")
+            quote = src.get("quote", "")
+
+            if not speaker or not section_type or not quarter or not quote:
+                continue
+
+            sources.append(
+                EvidenceSource(
+                    speaker=speaker,
+                    role=src.get("role"),
+                    section_type=section_type,
+                    quarter=quarter,
+                    quote=quote,
+                )
+            )
+        return sources
 
     @staticmethod
     def _parse_rule_results(rule_eval_raw: dict[str, Any]) -> dict[str, bool]:

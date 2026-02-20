@@ -15,7 +15,7 @@ import re
 from datetime import date  # noqa: TC003 - required at runtime by Pydantic
 from typing import Annotated, Literal
 
-from pydantic import AfterValidator, BaseModel, ConfigDict, field_validator
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field, field_validator
 
 
 # ---------------------------------------------------------------------------
@@ -86,6 +86,17 @@ TickerStr = Annotated[str, AfterValidator(_validate_ticker)]
 # Type aliases
 # ---------------------------------------------------------------------------
 type ClaimType = Literal["competitive_advantage", "cagr_connection", "factual_claim"]
+
+type PowerType = Literal[
+    "scale_economies",
+    "network_economies",
+    "counter_positioning",
+    "switching_costs",
+    "branding",
+    "cornered_resource",
+    "process_power",
+]
+"""Hamilton Helmer's 7 Powers classification for competitive advantages."""
 
 
 # ===========================================================================
@@ -166,6 +177,55 @@ class Transcript(BaseModel):
 
 
 # ===========================================================================
+# Phase 1 structured extraction models (7 Powers)
+# ===========================================================================
+class PowerClassification(BaseModel):
+    """7 Powers classification for a competitive advantage claim.
+
+    Parameters
+    ----------
+    power_type : PowerType
+        Which of the 7 Powers this claim maps to.
+    benefit : str
+        The specific benefit this Power provides (e.g. cost advantage, premium pricing).
+    barrier : str
+        The structural barrier preventing competitor imitation.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    power_type: PowerType
+    benefit: NonEmptyStr
+    barrier: NonEmptyStr
+
+
+class EvidenceSource(BaseModel):
+    """Source location and context for a claim within the transcript.
+
+    Parameters
+    ----------
+    speaker : str
+        Name of the speaker who made the statement.
+    role : str | None
+        Role of the speaker (e.g. "CEO", "CFO").
+    section_type : str
+        Transcript section type (e.g. "prepared_remarks", "q_and_a").
+    quarter : str
+        Fiscal quarter of the transcript (e.g. "Q1 2015").
+    quote : str
+        Direct quote or paraphrase from the transcript.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    speaker: NonEmptyStr
+    role: str | None
+    section_type: NonEmptyStr
+    quarter: NonEmptyStr
+    quote: NonEmptyStr
+
+
+# ===========================================================================
 # Phase 1 output models
 # ===========================================================================
 class RuleEvaluation(BaseModel):
@@ -206,6 +266,11 @@ class Claim(BaseModel):
         Supporting evidence for the claim.
     rule_evaluation : RuleEvaluation
         Results of applying KB1 rules.
+    power_classification : PowerClassification | None
+        7 Powers classification (Phase 1 structured extraction).
+        None for claims extracted without 7 Powers framework.
+    evidence_sources : list[EvidenceSource]
+        Transcript source locations for this claim.
     """
 
     model_config = ConfigDict(frozen=True)
@@ -215,6 +280,78 @@ class Claim(BaseModel):
     claim: NonEmptyStr
     evidence: str
     rule_evaluation: RuleEvaluation
+    power_classification: PowerClassification | None = None
+    evidence_sources: list[EvidenceSource] = Field(default_factory=list)
+
+
+# ===========================================================================
+# Phase 2 structured evaluation models
+# ===========================================================================
+class GatekeeperResult(BaseModel):
+    """Result of gatekeeper rule checks (immediate rejection/downgrade).
+
+    Parameters
+    ----------
+    rule9_factual_error : bool
+        True if a factual error was detected (-> confidence 10%).
+    rule3_industry_common : bool
+        True if the claimed advantage is industry-common (-> confidence <= 30%).
+    triggered : bool
+        True if any gatekeeper rule was triggered.
+    override_confidence : float | None
+        If triggered, the overridden confidence value (0.0-1.0).
+        None if no gatekeeper was triggered.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    rule9_factual_error: bool = False
+    rule3_industry_common: bool = False
+    triggered: bool = False
+    override_confidence: UnitFloat | None = None
+
+
+class KB1RuleApplication(BaseModel):
+    """Result of applying a single KB1-T rule to a claim.
+
+    Parameters
+    ----------
+    rule_id : str
+        Rule identifier (e.g. "rule_1_t", "rule_6_t").
+    result : bool
+        Whether the rule passed (True) or failed (False).
+    reasoning : str
+        Explanation for the rule evaluation result.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    rule_id: NonEmptyStr
+    result: bool
+    reasoning: str
+
+
+class KB2PatternMatch(BaseModel):
+    """Result of matching a claim against a KB2-T pattern.
+
+    Parameters
+    ----------
+    pattern_id : str
+        Pattern identifier (e.g. "pattern_A", "pattern_I").
+    matched : bool
+        Whether the pattern was matched.
+    adjustment : float
+        Confidence adjustment value (-0.3 to +0.3).
+    reasoning : str
+        Explanation for the pattern match result.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    pattern_id: NonEmptyStr
+    matched: bool
+    adjustment: AdjustmentFloat
+    reasoning: str
 
 
 # ===========================================================================
@@ -261,6 +398,18 @@ class ScoredClaim(BaseModel):
         Final confidence score between 0.0 and 1.0 after adjustments.
     adjustments : list[ConfidenceAdjustment]
         List of adjustments applied.
+    power_classification : PowerClassification | None
+        7 Powers classification carried from Phase 1.
+    evidence_sources : list[EvidenceSource]
+        Transcript source locations carried from Phase 1.
+    gatekeeper : GatekeeperResult | None
+        Gatekeeper rule check results (Phase 2 structured evaluation).
+    kb1_evaluations : list[KB1RuleApplication]
+        Individual KB1-T rule application results.
+    kb2_patterns : list[KB2PatternMatch]
+        KB2-T pattern matching results.
+    overall_reasoning : str
+        Overall reasoning for the final confidence score.
     """
 
     model_config = ConfigDict(frozen=True)
@@ -272,6 +421,12 @@ class ScoredClaim(BaseModel):
     rule_evaluation: RuleEvaluation
     final_confidence: UnitFloat
     adjustments: list[ConfidenceAdjustment]
+    power_classification: PowerClassification | None = None
+    evidence_sources: list[EvidenceSource] = Field(default_factory=list)
+    gatekeeper: GatekeeperResult | None = None
+    kb1_evaluations: list[KB1RuleApplication] = Field(default_factory=list)
+    kb2_patterns: list[KB2PatternMatch] = Field(default_factory=list)
+    overall_reasoning: str = ""
 
 
 # ===========================================================================
