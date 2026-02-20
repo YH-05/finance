@@ -1,7 +1,8 @@
 # Simple AI Investment Strategy PoC - 残作業実装
 
 **作成日**: 2026-02-20
-**ステータス**: 計画中
+**完了日**: 2026-02-20
+**ステータス**: 完了
 **タイプ**: from_plan_file
 **GitHub Project**: [#52](https://github.com/users/YH-05/projects/52)
 
@@ -10,6 +11,11 @@
 ### 背景
 
 AI駆動の競争優位性ベース投資戦略の簡易 PoC。既存の `src/dev/ca_strategy/` パイプライン（Phase 0-3完了済み）に対して残作業を実装する。フル MAS（Multi-Agent System）の前段として位置づけ。
+
+- **ユニバース**: `data/Transcript/list_portfolio_20151224.json` 準拠（408エントリ → 390ユニーク銘柄）
+- **トランスクリプト**: 320/390銘柄（82.1%）にパース済みトランスクリプトあり
+- **データソース**: 既存 S&P Capital IQ トランスクリプト JSON（2015Q1-Q3）
+- **PoiTカットオフ**: 2015-09-30
 
 ### 目的
 
@@ -20,11 +26,11 @@ AI駆動の競争優位性ベース投資戦略の簡易 PoC。既存の `src/de
 
 ### 成功基準
 
-- [ ] 閾値ベースの等ウェイトポートフォリオが構築できること
-- [ ] ACWI対比パフォーマンス（Sharpe, MaxDD, Beta, IR）が算出できること
-- [ ] KY/AKアナリストスコアとのSpearman順位相関が計算できること
-- [ ] 全テスト（既存+新規）が PASS すること
-- [ ] make check-all が成功すること
+- [x] 閾値ベースの等ウェイトポートフォリオが構築できること
+- [x] ACWI対比パフォーマンス（Sharpe, MaxDD, Beta, IR）が算出できること
+- [x] KY/AKアナリストスコアとのSpearman順位相関が計算できること
+- [x] 全テスト（既存+新規）が PASS すること
+- [x] make check-all が成功すること
 
 ## リサーチ結果
 
@@ -47,9 +53,14 @@ AI駆動の競争優位性ベース投資戦略の簡易 PoC。既存の `src/de
 
 ### 技術的考慮事項
 
-- Bloomberg Ticker→yfinance形式の変換が必要（408銘柄、約15-20種類の取引所コード）
+- Bloomberg Ticker→ベースティッカー変換が必要（390銘柄、約40種類の取引所コード対応）
+  - `TickerConverter`: Bloomberg 取引所コード→yfinance サフィックスのマッピング
+  - `generate_config.py`: ベースティッカー（Bloomberg 先頭トークン）で `universe.json` を生成
+  - `_BLOOMBERG_OVERRIDES`: 曖昧な取引所コード（NR, NQ, GK, LI）のオーバーライド
+  - `ticker_mapping.json`: 数字始まり・歴史的ティッカーの解決（26件）
 - KY/AKアナリストスコアのカバレッジ率は約20%（84/408件）
 - MSCI ACWIセクターウェイトは時価総額近似で代用（有料データベース不要）
+- トランスクリプトカバレッジ: 320/390銘柄（82.1%）、70銘柄はトランスクリプトなしでスキップ
 
 ## 実装計画
 
@@ -97,54 +108,54 @@ AI駆動の競争優位性ベース投資戦略の簡易 PoC。既存の `src/de
 
 ### Wave 1（並行開発可能）
 
-- [ ] TickerConverter モジュールの作成
+- [x] TickerConverter モジュールの作成
   - Issue: [#3604](https://github.com/YH-05/finance/issues/3604)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 1h
 
-- [ ] 評価関連 Pydantic モデルの追加とテスト
+- [x] 評価関連 Pydantic モデルの追加とテスト
   - Issue: [#3605](https://github.com/YH-05/finance/issues/3605)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 1h
 
-- [ ] テスト共通フィクスチャ（conftest.py）の作成
+- [x] テスト共通フィクスチャ（conftest.py）の作成
   - Issue: [#3606](https://github.com/YH-05/finance/issues/3606)
-  - ステータス: todo
+  - ステータス: done
   - 見積もり: 0.5h
 
 ### Wave 2（Wave 1 完了後、並行開発可能）
 
-- [ ] generate_config.py の作成とテスト
+- [x] generate_config.py の作成とテスト
   - Issue: [#3607](https://github.com/YH-05/finance/issues/3607)
-  - ステータス: todo
+  - ステータス: done
   - 依存: #3604
   - 見積もり: 1h
 
-- [ ] StrategyEvaluator モジュールの作成とテスト
+- [x] StrategyEvaluator モジュールの作成とテスト
   - Issue: [#3608](https://github.com/YH-05/finance/issues/3608)
-  - ステータス: todo
+  - ステータス: done
   - 依存: #3605
   - 見積もり: 1.5h
 
-- [ ] PortfolioBuilder 等ウェイトメソッド追加とテスト
+- [x] PortfolioBuilder 等ウェイトメソッド追加とテスト
   - Issue: [#3609](https://github.com/YH-05/finance/issues/3609)
-  - ステータス: todo
+  - ステータス: done
   - 依存: #3605
   - 見積もり: 1h
 
 ### Wave 3（Wave 2 完了後）
 
-- [ ] OutputGenerator 評価セクション追加と Orchestrator 統合
+- [x] OutputGenerator 評価セクション追加と Orchestrator 統合
   - Issue: [#3610](https://github.com/YH-05/finance/issues/3610)
-  - ステータス: todo
+  - ステータス: done
   - 依存: #3608, #3609
   - 見積もり: 1.5h
 
 ### Wave 4（Wave 3 完了後）
 
-- [ ] 評価パイプライン統合テスト
+- [x] 評価パイプライン統合テスト
   - Issue: [#3611](https://github.com/YH-05/finance/issues/3611)
-  - ステータス: todo
+  - ステータス: done
   - 依存: #3606, #3609, #3610
   - 見積もり: 0.5h
 
@@ -182,6 +193,17 @@ graph TD
     T7 --> T8
 ```
 
+## 追加修正
+
+### universe.json のソース修正（2026-02-20）
+
+元計画 (`original-plan.md`) では `data/Transcript/list_portfolio_20151224.json`（408エントリ）をユニバースソースとして指定していたが、初回実装時に MSCI Kokusai 300銘柄で生成されていた。以下を修正:
+
+1. **`ticker_converter.py`**: 不足していた20以上の取引所コード（US, GR, AU, SJ 等）を追加
+2. **`generate_config.py`**: ベースティッカー方式に変更、`_BLOOMBERG_OVERRIDES` 追加、`ticker_mapping` パラメータ対応
+3. **`universe.json`**: `list_portfolio_20151224.json` 準拠で再生成（390ユニーク銘柄、320がトランスクリプト対応）
+4. **`benchmark_weights.json`**: 同ソースから再生成
+
 ---
 
-**最終更新**: 2026-02-20
+**最終更新**: 2026-02-20（universe.json ソース修正・元計画との整合）

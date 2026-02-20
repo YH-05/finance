@@ -189,6 +189,16 @@ class StrategyEvaluator:
         PerformanceMetrics
             Structured performance metrics.
         """
+        if portfolio_returns.empty or benchmark_returns.empty:
+            logger.debug("Empty returns provided, returning NaN performance metrics")
+            return PerformanceMetrics(
+                sharpe_ratio=float("nan"),
+                max_drawdown=0.0,
+                beta=float("nan"),
+                information_ratio=float("nan"),
+                cumulative_return=float("nan"),
+            )
+
         calc = RiskCalculator(
             returns=portfolio_returns,
             risk_free_rate=self._risk_free_rate,

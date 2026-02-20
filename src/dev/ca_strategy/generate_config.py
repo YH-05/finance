@@ -53,6 +53,28 @@ _GICS_SECTORS: frozenset[str] = frozenset(
     }
 )
 
+# ---------------------------------------------------------------------------
+# Bloomberg ticker overrides for ambiguous exchange codes (NR, NQ, GK, LI)
+# ---------------------------------------------------------------------------
+_BLOOMBERG_OVERRIDES: dict[str, str] = {
+    # NR — mixed exchange code (US and non-US)
+    "GSK NR Equity": "GSK.L",  # GlaxoSmithKline (UK)
+    "GE NR Equity": "GE",  # General Electric (US)
+    "NOV NR Equity": "NOV",  # National Oilwell Varco (US)
+    "UTX NR Equity": "UTX",  # United Technologies (US)
+    "NOVOB NR Equity": "NOVO-B.CO",  # Novo Nordisk Class B (Denmark)
+    # NQ — mixed exchange code
+    "CRDA NQ Equity": "CRDA.L",  # Croda International (UK)
+    "SGSN NQ Equity": "SGSN.SW",  # SGS SA (Switzerland)
+    "ULVR NQ Equity": "ULVR.L",  # Unilever PLC (UK)
+    # GK — mixed (France/UK)
+    "ML GK Equity": "ML.PA",  # Michelin (France)
+    "JMT GK Equity": "JMAT.L",  # Johnson Matthey (UK)
+    # LI — mixed (France/Russia)
+    "2273854Q LI Equity": "DSY.PA",  # Dassault Systemes (France)
+    "MGNT LI Equity": "MGNT.ME",  # Magnit (Russia)
+}
+
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -97,73 +119,91 @@ def _flatten_entries(raw: dict[str, list[dict]]) -> list[dict]:
 # ---------------------------------------------------------------------------
 def _write_universe(
     entries: list[dict],
+    source_name: str,
     output_dir: Path,
     overrides: dict[str, str] | None,
+    ticker_mapping: dict[str, dict] | None = None,
 ) -> dict[str, int]:
     """Write universe.json from pre-loaded *entries*.
+
+    The ``ticker`` field stores the **base Bloomberg ticker** (first token
+    of the Bloomberg format, e.g. ``"AAPL"`` from ``"AAPL US Equity"``),
+    with digit-starting tickers resolved via *ticker_mapping*.  This
+    matches the transcript directory naming used by
+    :class:`~dev.ca_strategy.transcript.TranscriptLoader`.
 
     Parameters
     ----------
     entries : list[dict]
         Flattened list of portfolio entries.
+    source_name : str
+        Original source file name (stored in output metadata).
     output_dir : Path
         Directory where ``universe.json`` will be written.
     overrides : dict[str, str] | None
-        Custom Bloomberg→yfinance overrides.
+        Custom Bloomberg→yfinance overrides (kept for future use).
+    ticker_mapping : dict[str, dict] | None, optional
+        Digit-starting ticker resolution map (from ``ticker_mapping.json``).
+        Keys are raw Bloomberg base tickers; values must contain a
+        ``"ticker"`` key with the resolved ticker symbol.
 
     Returns
     -------
     dict[str, int]
-        Conversion statistics with keys ``converted``, ``failed``,
-        ``skipped``.
+        Conversion statistics with keys ``total``, ``skipped``.
     """
-    converter = TickerConverter(overrides=overrides)
+    mapping = ticker_mapping or {}
 
     tickers: list[dict[str, str]] = []
-    converted = 0
-    failed = 0
     skipped = 0
+    sector_counts: dict[str, int] = {}
 
     for entry in entries:
-        bloomberg_ticker: str = entry.get("Bloomberg_Ticker", "")
+        bloomberg_ticker: str = entry.get("Bloomberg_Ticker", "") or ""
         gics_sector: str = entry.get("GICS_Sector", "")
+        company_name: str = entry.get("Name", "")
+        country: str = entry.get("Country", "")
 
-        if not bloomberg_ticker or not bloomberg_ticker.strip():
+        if not bloomberg_ticker.strip():
             logger.warning(
                 "Missing Bloomberg ticker, skipping entry",
-                entry_name=entry.get("Name", "<unknown>"),
+                entry_name=company_name or "<unknown>",
             )
             skipped += 1
             continue
 
-        yf_ticker = converter.convert(bloomberg_ticker)
+        # Extract base ticker (first token of Bloomberg format)
+        base_ticker = bloomberg_ticker.strip().split()[0]
 
-        # Detect failed conversion (converter returns input unchanged on error)
-        if yf_ticker == bloomberg_ticker.strip():
-            # Could be a legitimate no-suffix US ticker *or* a failure;
-            # log as warning only when the exchange code is unrecognised.
-            parts = bloomberg_ticker.strip().split()
-            if len(parts) >= 2 and parts[1].upper() not in {
-                "UW",
-                "UN",
-                "UA",
-                "UR",
-                "UF",
-            }:
-                logger.warning(
-                    "Ticker conversion may have failed",
-                    bloomberg_ticker=bloomberg_ticker,
-                    yf_ticker=yf_ticker,
-                )
-                failed += 1
-            else:
-                converted += 1
-        else:
-            converted += 1
+        # Apply ticker_mapping for digit-starting or historical tickers
+        if base_ticker in mapping:
+            resolved = mapping[base_ticker].get("ticker", base_ticker)
+            logger.debug(
+                "Ticker mapping applied",
+                raw=base_ticker,
+                resolved=resolved,
+            )
+            base_ticker = resolved
 
-        tickers.append({"ticker": yf_ticker, "gics_sector": gics_sector})
+        tickers.append({
+            "ticker": base_ticker,
+            "company_name": company_name,
+            "gics_sector": gics_sector,
+            "country": country,
+        })
+        sector_counts[gics_sector] = sector_counts.get(gics_sector, 0) + 1
 
-    universe_data = {"tickers": tickers}
+    universe_data: dict[str, Any] = {
+        "_metadata": {
+            "description": "投資ユニバース（list_portfolio_20151224.json準拠）",
+            "as_of_date": "2015-12-24",
+            "source_file": source_name,
+            "total_count": len(tickers),
+            "skipped_entries": skipped,
+            "sector_counts": dict(sorted(sector_counts.items())),
+        },
+        "tickers": tickers,
+    }
     output_path = output_dir / "universe.json"
     output_path.write_text(
         json.dumps(universe_data, ensure_ascii=False, indent=2),
@@ -173,12 +213,11 @@ def _write_universe(
     logger.info(
         "universe.json generated",
         output=str(output_path),
-        converted=converted,
-        failed=failed,
+        total=len(tickers),
         skipped=skipped,
     )
 
-    return {"converted": converted, "failed": failed, "skipped": skipped}
+    return {"total": len(tickers), "skipped": skipped}
 
 
 def _write_benchmark_weights(
@@ -271,12 +310,13 @@ def generate_universe(
     source: Path,
     output_dir: Path,
     overrides: dict[str, str] | None = None,
+    ticker_mapping: dict[str, dict] | None = None,
 ) -> dict[str, int]:
     """Generate ``universe.json`` from *source* portfolio file.
 
-    Converts Bloomberg tickers to yfinance format using
-    :class:`~dev.ca_strategy.ticker_converter.TickerConverter` and writes the
-    result to ``output_dir/universe.json``.
+    Extracts base Bloomberg tickers (first token, e.g. ``"AAPL"`` from
+    ``"AAPL US Equity"``) and resolves digit-starting tickers via
+    *ticker_mapping*.
 
     Parameters
     ----------
@@ -285,13 +325,14 @@ def generate_universe(
     output_dir : Path
         Directory where ``universe.json`` will be written.
     overrides : dict[str, str] | None, optional
-        Custom Bloomberg→yfinance overrides passed to :class:`TickerConverter`.
+        Custom Bloomberg→yfinance overrides (reserved for future use).
+    ticker_mapping : dict[str, dict] | None, optional
+        Digit-starting ticker resolution map.
 
     Returns
     -------
     dict[str, int]
-        Conversion statistics with keys ``converted``, ``failed``,
-        ``skipped``.
+        Statistics with keys ``total``, ``skipped``.
 
     Raises
     ------
@@ -299,7 +340,9 @@ def generate_universe(
         If *source* does not exist.
     """
     entries = _flatten_entries(_load_portfolio(source))
-    return _write_universe(entries, output_dir, overrides)
+    return _write_universe(
+        entries, source.name, output_dir, overrides, ticker_mapping
+    )
 
 
 def generate_benchmark_weights(
@@ -339,6 +382,7 @@ def generate_all(
     source: Path,
     output_dir: Path,
     overrides: dict[str, str] | None = None,
+    ticker_mapping: dict[str, dict] | None = None,
 ) -> None:
     """Generate both ``universe.json`` and ``benchmark_weights.json``.
 
@@ -352,7 +396,9 @@ def generate_all(
     output_dir : Path
         Directory where both config files will be written.
     overrides : dict[str, str] | None, optional
-        Custom Bloomberg→yfinance ticker overrides.
+        Custom Bloomberg→yfinance ticker overrides (reserved for future use).
+    ticker_mapping : dict[str, dict] | None, optional
+        Digit-starting ticker resolution map.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -363,13 +409,12 @@ def generate_all(
     # Load portfolio once to avoid reading the same file twice
     entries = _flatten_entries(_load_portfolio(source))
 
-    stats = _write_universe(entries, output_dir, overrides)
+    stats = _write_universe(entries, source.name, output_dir, overrides, ticker_mapping)
     _write_benchmark_weights(entries, source.name, output_dir)
 
     logger.info(
         "Config generation complete",
-        converted=stats["converted"],
-        failed=stats["failed"],
+        total=stats["total"],
         skipped=stats["skipped"],
     )
 

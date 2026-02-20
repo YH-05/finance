@@ -5,15 +5,15 @@ format (e.g. ``AAPL``) using exchange-code suffix mapping and an optional
 override dictionary.
 
 Exchange code mapping covers the most common markets:
-- US equities: UW (NASDAQ), UN (NYSE), UA, UR, UF → no suffix
-- UK: LN → .L
+- US equities: US (composite), UW (NASDAQ), UN (NYSE), UA, UR, UF → no suffix
+- UK: LN → .L, QM (IOB) → .L, VX (VIRT-X) → .L
 - France: FP → .PA
-- Germany: GY → .DE
+- Germany: GY → .DE, GR (Frankfurt) → .DE
 - Japan: JT → .T
 - Canada: CN → .TO, CT → .TO
 - Switzerland: SW → .SW
 - Netherlands: NA → .AS
-- Australia: AT → .AX
+- Australia: AT → .AX, AU → .AX
 - Hong Kong: HK → .HK
 - Italy: IM → .MI
 - Spain: SM → .MC
@@ -24,6 +24,19 @@ Exchange code mapping covers the most common markets:
 - Belgium: BB → .BR
 - Singapore: SP → .SI
 - South Korea: KS → .KS
+- South Africa: SJ → .JO
+- India: IN → .NS
+- Indonesia: IJ → .JK
+- Taiwan: TT → .TW
+- Philippines: PM → .PS
+- Thailand: TB → .BK
+- Brazil: BZ → .SA
+- Mexico: MM → .MX
+- Malaysia: MK → .KL
+- Turkey: TI → .IS
+- Qatar: QD → .QA
+- Portugal: PL → .LS
+- Russia: RM → .ME
 """
 
 from __future__ import annotations
@@ -37,6 +50,7 @@ logger = get_logger(__name__)
 # ---------------------------------------------------------------------------
 _EXCHANGE_SUFFIX_MAP: dict[str, str] = {
     # United States (no suffix)
+    "US": "",  # US Composite
     "UW": "",  # NASDAQ
     "UN": "",  # NYSE
     "UA": "",  # NYSE American
@@ -44,8 +58,11 @@ _EXCHANGE_SUFFIX_MAP: dict[str, str] = {
     "UF": "",  # OTC / Pink Sheets
     # Europe
     "LN": ".L",  # London Stock Exchange
+    "QM": ".L",  # London IOB (International Order Book)
+    "VX": ".L",  # London VIRT-X
     "FP": ".PA",  # Euronext Paris
     "GY": ".DE",  # XETRA (Germany)
+    "GR": ".DE",  # Frankfurt (Germany, alternative)
     "NA": ".AS",  # Euronext Amsterdam
     "SW": ".SW",  # SIX Swiss Exchange
     "IM": ".MI",  # Borsa Italiana (Milan)
@@ -55,15 +72,31 @@ _EXCHANGE_SUFFIX_MAP: dict[str, str] = {
     "NO": ".OL",  # Oslo Bors
     "FH": ".HE",  # Nasdaq Helsinki
     "BB": ".BR",  # Euronext Brussels
+    "PL": ".LS",  # Euronext Lisbon
     # Americas
     "CN": ".TO",  # Toronto Stock Exchange
     "CT": ".TO",  # Toronto (alternative)
+    "BZ": ".SA",  # B3 (Brazil)
+    "MM": ".MX",  # Bolsa Mexicana de Valores
     # Asia Pacific
     "JT": ".T",  # Tokyo Stock Exchange
     "HK": ".HK",  # Hong Kong Stock Exchange
     "AT": ".AX",  # Australian Securities Exchange
+    "AU": ".AX",  # ASX (alternative code)
     "SP": ".SI",  # Singapore Exchange
     "KS": ".KS",  # Korea Stock Exchange
+    "IN": ".NS",  # National Stock Exchange of India
+    "IJ": ".JK",  # Indonesia Stock Exchange (Jakarta)
+    "TT": ".TW",  # Taiwan Stock Exchange
+    "PM": ".PS",  # Philippine Stock Exchange
+    "TB": ".BK",  # Stock Exchange of Thailand (Bangkok)
+    "MK": ".KL",  # Bursa Malaysia (Kuala Lumpur)
+    # Middle East & Africa
+    "SJ": ".JO",  # Johannesburg Stock Exchange
+    "QD": ".QA",  # Qatar Stock Exchange (Doha)
+    "TI": ".IS",  # Borsa Istanbul
+    # Russia
+    "RM": ".ME",  # Moscow Exchange
 }
 
 

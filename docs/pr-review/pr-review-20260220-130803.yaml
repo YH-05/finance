@@ -1,0 +1,246 @@
+# PRレビューレポート
+# 生成日時: 2026-02-20
+# 生成スキル: review-pr
+
+metadata:
+  generated_at: "2026-02-20"
+  pr_number: 3612
+  pr_title: "[Wave1-4] TickerConverter・評価パイプライン・OutputGenerator・Orchestrator実装 (#3604-#3611)"
+  base_branch: "main"
+  head_branch: "feature/issues-3604-3611"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 16
+  additions: 5702
+  deletions: 1
+  changed_files:
+    - path: "src/dev/ca_strategy/evaluator.py"
+      additions: 414
+      deletions: 0
+    - path: "src/dev/ca_strategy/generate_config.py"
+      additions: 367
+      deletions: 0
+    - path: "src/dev/ca_strategy/orchestrator.py"
+      additions: 180
+      deletions: 0
+    - path: "src/dev/ca_strategy/output.py"
+      additions: 147
+      deletions: 1
+    - path: "src/dev/ca_strategy/portfolio_builder.py"
+      additions: 85
+      deletions: 0
+    - path: "src/dev/ca_strategy/ticker_converter.py"
+      additions: 218
+      deletions: 0
+    - path: "src/dev/ca_strategy/types.py"
+      additions: 135
+      deletions: 0
+    - path: "tests/dev/ca_strategy/conftest.py"
+      additions: 211
+      deletions: 0
+    - path: "tests/dev/ca_strategy/integration/test_evaluation_pipeline.py"
+      additions: 876
+      deletions: 0
+    - path: "tests/dev/ca_strategy/unit/test_evaluator.py"
+      additions: 972
+      deletions: 0
+    - path: "tests/dev/ca_strategy/unit/test_generate_config.py"
+      additions: 582
+      deletions: 0
+    - path: "tests/dev/ca_strategy/unit/test_orchestrator.py"
+      additions: 258
+      deletions: 0
+    - path: "tests/dev/ca_strategy/unit/test_output.py"
+      additions: 323
+      deletions: 0
+    - path: "tests/dev/ca_strategy/unit/test_portfolio_builder.py"
+      additions: 327
+      deletions: 0
+    - path: "tests/dev/ca_strategy/unit/test_ticker_converter.py"
+      additions: 222
+      deletions: 0
+    - path: "tests/dev/ca_strategy/unit/test_types.py"
+      additions: 385
+      deletions: 0
+
+agent_scores:
+  pr_readability: 96
+  pr_design: 80
+  pr_performance: 74
+  pr_security_code: 90
+  pr_security_infra: 84
+  pr_test_coverage: 88
+  pr_test_quality: 87
+
+scores:
+  code_quality: 84   # (96×0.35) + (80×0.40) + (74×0.25) = 84.1
+  security: 88       # (90×0.60) + (84×0.40) = 87.6
+  test: 88           # (88×0.50) + (87×0.50) = 87.5
+  overall: 86        # (84×0.40) + (88×0.35) + (88×0.25) = 86.0
+
+code_quality:
+  strengths:
+    - "命名規則100%準拠（PascalCase/snake_case/UPPER_SNAKE、違反ゼロ）"
+    - "型ヒント100%カバレッジ（PEP 695スタイル含む）"
+    - "Docstringカバレッジ92.9%（目標80%超過）"
+    - "Value Objectパターン: 全PydanticモデルがFrozen=True"
+    - "Template Method: _execute_phase()でフェーズ共通処理を抽象化"
+    - "テスト命名規則98.7%準拠"
+
+  issues:
+    critical: []
+    high: []
+    medium:
+      - file: "src/dev/ca_strategy/evaluator.py"
+        line: 282
+        description: "scipy インライン import（関数内遅延インポート）→ モジュールレベルに移動"
+        category: "abstraction/readability"
+      - file: "src/dev/ca_strategy/orchestrator.py"
+        line: 160
+        description: "run_full_pipeline と run_equal_weight_pipeline の Phase 1-3 実行コード24行が95%重複"
+        category: "dry"
+      - file: "src/dev/ca_strategy/orchestrator.py"
+        line: 199
+        description: "cost_tracking.json保存コードが2箇所に完全重複"
+        category: "dry"
+      - file: "src/dev/ca_strategy/generate_config.py"
+        line: 738
+        description: "generate_all() が同一JSONを2回 read_text()+json.loads()している（二重I/O）"
+        category: "performance"
+      - file: "src/dev/ca_strategy/generate_config.py"
+        line: 258
+        description: "benchmark_data: dict → dict[str, Any] に具体化が必要"
+        category: "type_hints"
+    low:
+      - file: "src/dev/ca_strategy/orchestrator.py"
+        line: 476
+        description: "_save_execution_log() がフェーズごとに全ログをフル書き込み（15回以上）"
+        category: "performance"
+      - file: "src/dev/ca_strategy/generate_config.py"
+        line: 581
+        description: "US取引所コードがgenerate_config.pyにハードコード（Leaky Abstraction）"
+        category: "abstraction"
+      - file: "src/dev/ca_strategy/types.py"
+        line: 184
+        description: "_sections_non_empty に1行Docstring追加推奨"
+        category: "docstrings"
+      - file: "src/dev/ca_strategy/types.py"
+        line: 574
+        description: "_tickers_non_empty に1行Docstring追加推奨"
+        category: "docstrings"
+
+  solid_compliance:
+    single_responsibility: "PASS"
+    open_closed: "WARN"       # PortfolioBuilderに複数アルゴリズム
+    liskov_substitution: "PASS"
+    interface_segregation: "PASS"
+    dependency_inversion: "WARN"  # Orchestrator内で直接インスタンス化
+
+security:
+  vulnerability_count:
+    critical: 0
+    high: 0
+    medium: 3
+    low: 3
+
+  findings:
+    - id: "SEC-001"
+      severity: "MEDIUM"
+      category: "A03"
+      location: "src/dev/ca_strategy/generate_config.py:82"
+      description: "CLIの--sourceにパストラバーサル検証なし"
+      recommendation: "source.resolve()でベースディレクトリ検証を追加"
+      cwe_id: "CWE-22"
+    - id: "SEC-002"
+      severity: "MEDIUM"
+      category: "A03"
+      location: "src/dev/ca_strategy/generate_config.py:180"
+      description: "CLIの--output-dirにパストラバーサル検証なし"
+      recommendation: "output_dir.resolve()でベースディレクトリ検証を追加"
+      cwe_id: "CWE-22"
+    - id: "SEC-003"
+      severity: "MEDIUM"
+      category: "A06"
+      location: "pyproject.toml（transitive dependency）"
+      description: "diskcache 5.6.3 に CVE-2025-69872（pickle RCE）。PR由来ではなく既存依存。batch.pyに文書化済み。"
+      recommendation: "修正バージョンリリース次第アップグレード"
+      cwe_id: "CWE-502"
+    - id: "SEC-004"
+      severity: "LOW"
+      category: "A04"
+      location: "src/dev/ca_strategy/evaluator.py:282"
+      description: "scipy 遅延インポートにより ImportError が実行時まで検出されない"
+      cwe_id: "CWE-1126"
+    - id: "SEC-005"
+      severity: "LOW"
+      category: "A03"
+      location: "src/dev/ca_strategy/generate_config.py:659"
+      description: "MSCI_Mkt_Cap_USD_MMに型バリデーションなし（文字列でTypeError発生の可能性）"
+      cwe_id: "CWE-20"
+    - id: "SEC-006"
+      severity: "LOW"
+      category: "A09"
+      location: "src/dev/ca_strategy/generate_config.py:309"
+      description: "INFOログにファイルシステムのフルパスが記録される"
+      cwe_id: "CWE-532"
+
+test:
+  coverage_assessment: "GOOD"
+  edge_cases_covered: true
+  missing_tests:
+    - "generate_benchmark_weights の total_cap==0.0 ブランチ（HIGH）"
+    - "run_equal_weight_pipeline(thresholds=None) のデフォルト値確認（HIGH）"
+    - "_run_equal_weight_threshold の直接単体テスト（MEDIUM）"
+
+  test_quality:
+    isolation: "PASS"
+    reproducibility: "PASS"
+    readability: "PASS"
+  
+  issues:
+    - file: "tests/dev/ca_strategy/unit/test_evaluator.py"
+      line: 298
+      severity: "MEDIUM"
+      description: "NaN検出にx==xイディオムを使用。math.isnan()に変更推奨"
+    - file: "tests/dev/ca_strategy/integration/test_evaluation_pipeline.py"
+      line: 872
+      severity: "MEDIUM"
+      description: "3-way OR アサーション → 個別アサーションに分割推奨"
+    - locations: "test_evaluator.py:150,385 / test_output.py:213 / test_portfolio_builder.py:112 / test_evaluation_pipeline.py:385,457"
+      severity: "LOW"
+      description: "assert X is not None → assert isinstance(X, ExpectedType) に変更推奨"
+
+recommended_actions:
+  required: []  # なし — CI全パス済み
+
+  suggested:
+    - priority: 1
+      action: "scipy インポートをモジュールレベルに移動（evaluator.py:282）"
+      related_issues: ["可読性", "設計", "パフォーマンス", "セキュリティの4エージェントが共通指摘"]
+    - priority: 2
+      action: "Phase 1-3 重複コードを _run_phases_1_to_3() に抽出（orchestrator.py:160,308）"
+      related_issues: ["DRY違反"]
+    - priority: 3
+      action: "NaN検出を math.isnan() に変更（test_evaluator.py:298）"
+      related_issues: ["テスト品質"]
+    - priority: 4
+      action: "3-way OR アサーションを分割（test_evaluation_pipeline.py:872）"
+      related_issues: ["テスト品質"]
+    - priority: 5
+      action: "generate_all() のダブルファイル読み込みを修正（generate_config.py:738）"
+      related_issues: ["パフォーマンス"]
+    - priority: 6
+      action: "generate_benchmark_weights の total_cap==0.0 テスト追加"
+      related_issues: ["テストカバレッジ"]
+    - priority: 7
+      action: "benchmark_data: dict → dict[str, Any]（generate_config.py:258）"
+      related_issues: ["型ヒント"]
+
+summary:
+  verdict: "APPROVE"
+  comment: >
+    全体スコア 86/100 で良好。CIは全チェックパス済み。
+    CRITICAL/HIGH 問題なし。scipy インライン import と Phase 1-3 重複コードは
+    次イテレーションでのリファクタリングを推奨。
+    テストの量と品質（601テスト、E2E統合テスト含む）は非常に高く評価できる。

@@ -521,7 +521,7 @@ class TestConversionStats:
 
         stats = generate_universe(source=sample_portfolio_file, output_dir=output_dir)
 
-        assert stats["converted"] == 3
+        assert stats["total"] == 3
 
     def test_エッジケース_スキップ件数がゼロのエントリで正しく返される(
         self, tmp_path: Path, sample_portfolio_file: Path
@@ -547,8 +547,7 @@ class TestConversionStats:
 
         stats = generate_universe(source=sample_portfolio_file, output_dir=output_dir)
 
-        assert "converted" in stats
-        assert "failed" in stats
+        assert "total" in stats
         assert "skipped" in stats
 
 
