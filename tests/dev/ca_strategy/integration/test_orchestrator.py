@@ -60,7 +60,6 @@ def full_kb_dir(tmp_path: Path) -> Path:
     (kb / "kb2_patterns_transcript").mkdir()
     (kb / "kb3_fewshot_transcript").mkdir()
     (kb / "system_prompt_transcript.md").write_text("system prompt")
-    (kb / "dogma.md").write_text("dogma content")
     return kb
 
 

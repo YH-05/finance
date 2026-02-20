@@ -235,8 +235,8 @@ def scorer(
         kb1_dir=kb1_dir,
         kb2_dir=kb2_dir,
         kb3_dir=kb3_dir,
-        dogma_path=dogma_path,
         cost_tracker=cost_tracker,
+        dogma_path=dogma_path,
     )
 
 
@@ -293,8 +293,8 @@ class TestClaimScorerInit:
             kb1_dir=non_existent,
             kb2_dir=kb2_dir,
             kb3_dir=kb3_dir,
-            dogma_path=dogma_path,
             cost_tracker=cost_tracker,
+            dogma_path=dogma_path,
         )
         assert len(s._kb1_rules) == 0
 
@@ -311,8 +311,8 @@ class TestClaimScorerInit:
             kb1_dir=kb1_dir,
             kb2_dir=non_existent,
             kb3_dir=kb3_dir,
-            dogma_path=dogma_path,
             cost_tracker=cost_tracker,
+            dogma_path=dogma_path,
         )
         assert len(s._kb2_patterns) == 0
 
@@ -329,10 +329,25 @@ class TestClaimScorerInit:
             kb1_dir=kb1_dir,
             kb2_dir=kb2_dir,
             kb3_dir=non_existent,
-            dogma_path=dogma_path,
             cost_tracker=cost_tracker,
+            dogma_path=dogma_path,
         )
         assert len(s._kb3_examples) == 0
+
+    def test_正常系_dogma_pathがNoneでも初期化できる(
+        self,
+        kb1_dir: Path,
+        kb2_dir: Path,
+        kb3_dir: Path,
+        cost_tracker: CostTracker,
+    ) -> None:
+        s = ClaimScorer(
+            kb1_dir=kb1_dir,
+            kb2_dir=kb2_dir,
+            kb3_dir=kb3_dir,
+            cost_tracker=cost_tracker,
+        )
+        assert s._dogma == ""
 
     def test_異常系_dogmaファイルが存在しない場合(
         self,
@@ -347,8 +362,8 @@ class TestClaimScorerInit:
             kb1_dir=kb1_dir,
             kb2_dir=kb2_dir,
             kb3_dir=kb3_dir,
-            dogma_path=non_existent,
             cost_tracker=cost_tracker,
+            dogma_path=non_existent,
         )
         assert s._dogma == ""
 

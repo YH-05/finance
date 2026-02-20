@@ -6,7 +6,7 @@ Tests cover all acceptance criteria from Issue #3576:
 - Non-standard ticker (digit-starting) mapping via ticker_mapping.json
 - TRANSCRIPTID deduplication with Audited Copy priority
 - Trailing comma JSON fix
-- 32767-character truncation detection
+- Truncation detection (always False for JSON-sourced data)
 """
 
 from __future__ import annotations
@@ -502,12 +502,12 @@ class TestTrailingCommaFix:
 
 
 # ===========================================================================
-# 32767 character truncation detection tests
+# Truncation detection tests (JSON data is always complete)
 # ===========================================================================
 class TestTruncationDetection:
-    """32767-character truncation is detected and recorded in metadata."""
+    """Truncation detection always returns False for JSON-sourced data."""
 
-    def test_正常系_32767文字以下はtruncatedがFalse(self, tmp_path: Path) -> None:
+    def test_正常系_短いテキストでtruncatedがFalse(self, tmp_path: Path) -> None:
         record = _make_transcript_record(total_characters=1000.0)
         source_dir = tmp_path / "source"
         output_dir = tmp_path / "output"
@@ -524,10 +524,8 @@ class TestTruncationDetection:
         output_data = json.loads(output_files[0].read_text())
         assert output_data["metadata"]["is_truncated"] is False
 
-    def test_正常系_テキストがちょうど32767文字でtruncatedがTrue(
-        self, tmp_path: Path
-    ) -> None:
-        # Create text that is exactly 32767 chars in text2 or text4
+    def test_正常系_長いテキストでもtruncatedがFalse(self, tmp_path: Path) -> None:
+        # JSON source data provides complete transcripts; no Excel truncation.
         long_content = "x" * 32700
         text2 = f"【プレゼン: CEO (Executives)】\n{long_content}"
         record = _make_transcript_record(
@@ -548,17 +546,19 @@ class TestTruncationDetection:
 
         output_files = list(output_dir.rglob("*.json"))
         output_data = json.loads(output_files[0].read_text())
-        assert output_data["metadata"]["is_truncated"] is True
+        assert output_data["metadata"]["is_truncated"] is False
 
-    def test_正常系_text2が32767文字でtruncated検出(self, tmp_path: Path) -> None:
-        # Build text2 so that total_characters field equals TRUNCATION_THRESHOLD
+    def test_正常系_128K文字の完全テキストでもtruncatedがFalse(
+        self, tmp_path: Path
+    ) -> None:
+        # JSON exports can have text up to ~128K chars; still not truncated.
         tag_prefix = "【プレゼン: CEO (Executives)】\n"
-        filler_len = 32767 - len(tag_prefix)
+        filler_len = 50000
         text2 = f"{tag_prefix}{'a' * filler_len}"
         record = _make_transcript_record(
             text2=text2,
             text4="",
-            total_characters=32767.0,
+            total_characters=50000.0,
         )
         source_dir = tmp_path / "source"
         output_dir = tmp_path / "output"
@@ -573,8 +573,7 @@ class TestTruncationDetection:
 
         output_files = list(output_dir.rglob("*.json"))
         output_data = json.loads(output_files[0].read_text())
-        # Truncation is detected via total_characters field
-        assert output_data["metadata"]["is_truncated"] is True
+        assert output_data["metadata"]["is_truncated"] is False
 
 
 # ===========================================================================

@@ -59,8 +59,8 @@ def scorer(cost_tracker: CostTracker) -> ClaimScorer:
         kb1_dir=_KB1_DIR,
         kb2_dir=_KB2_DIR,
         kb3_dir=_KB3_DIR,
-        dogma_path=_DOGMA_PATH,
         cost_tracker=cost_tracker,
+        dogma_path=_DOGMA_PATH,
     )
 
 

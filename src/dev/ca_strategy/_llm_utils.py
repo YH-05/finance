@@ -11,6 +11,7 @@ import re
 from typing import TYPE_CHECKING
 
 import anthropic
+from anthropic.types import TextBlockParam
 
 from utils_core.logging import get_logger
 
@@ -163,6 +164,8 @@ def call_llm(
     temperature: float,
     cost_tracker: CostTracker,
     phase: str,
+    use_prompt_caching: bool = False,
+    cached_system_prefix: str | None = None,
 ) -> str:
     """Call Claude API, record cost, and return extracted text.
 
@@ -187,19 +190,71 @@ def call_llm(
         Cost tracker for recording token usage.
     phase : str
         Pipeline phase identifier (e.g. ``"phase1"``).
+    use_prompt_caching : bool
+        If True, use Anthropic prompt caching for the system prompt.
+        The static system+KB portion is cached across calls to reduce
+        input token cost by up to 90%.
+    cached_system_prefix : str | None
+        When ``use_prompt_caching`` is True, this is the static portion
+        of the system prompt (system instructions + KB rules) that should
+        be cached.  If None, the entire ``system`` string is cached.
 
     Returns
     -------
     str
         Extracted text from LLM response.
     """
-    message = client.messages.create(
-        model=model,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        system=system,
-        messages=[{"role": "user", "content": user_content}],
-    )
+    if use_prompt_caching:
+        # Build system as a list of content blocks with cache_control.
+        # The cached prefix (system instructions + KB) is marked as ephemeral
+        # so Anthropic caches it across consecutive API calls.
+        system_blocks: list[TextBlockParam] = []
+        if cached_system_prefix:
+            system_blocks.append(
+                TextBlockParam(
+                    type="text",
+                    text=cached_system_prefix,
+                    cache_control={"type": "ephemeral"},
+                )
+            )
+            # Remaining dynamic portion (if any) appended without caching
+            remaining = system[len(cached_system_prefix) :].strip()
+            if remaining:
+                system_blocks.append(TextBlockParam(type="text", text=remaining))
+        else:
+            system_blocks.append(
+                TextBlockParam(
+                    type="text",
+                    text=system,
+                    cache_control={"type": "ephemeral"},
+                )
+            )
+
+        message = client.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system=system_blocks,
+            messages=[{"role": "user", "content": user_content}],
+        )
+        logger.debug(
+            "LLM call with prompt caching",
+            phase=phase,
+            cache_creation_input_tokens=getattr(
+                message.usage, "cache_creation_input_tokens", 0
+            ),
+            cache_read_input_tokens=getattr(
+                message.usage, "cache_read_input_tokens", 0
+            ),
+        )
+    else:
+        message = client.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system=system,
+            messages=[{"role": "user", "content": user_content}],
+        )
 
     cost_tracker.record(
         phase=phase,

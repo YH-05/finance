@@ -215,8 +215,8 @@ def extractor(
         kb1_dir=kb1_dir,
         kb3_dir=kb3_dir,
         system_prompt_path=system_prompt_path,
-        dogma_path=dogma_path,
         cost_tracker=cost_tracker,
+        dogma_path=dogma_path,
     )
 
 
@@ -273,8 +273,8 @@ class TestClaimExtractorInit:
             kb1_dir=non_existent,
             kb3_dir=kb3_dir,
             system_prompt_path=system_prompt_path,
-            dogma_path=dogma_path,
             cost_tracker=cost_tracker,
+            dogma_path=dogma_path,
         )
         assert len(ext._kb1_rules) == 0
 
@@ -291,8 +291,8 @@ class TestClaimExtractorInit:
             kb1_dir=kb1_dir,
             kb3_dir=non_existent,
             system_prompt_path=system_prompt_path,
-            dogma_path=dogma_path,
             cost_tracker=cost_tracker,
+            dogma_path=dogma_path,
         )
         assert len(ext._kb3_examples) == 0
 

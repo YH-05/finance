@@ -10,7 +10,7 @@ Features
 - Bloomberg Ticker to simple ticker conversion (space-split first element)
 - Non-standard ticker mapping via ticker_mapping.json (digit-starting tickers)
 - TRANSCRIPTID deduplication with Audited Copy priority
-- 32767-character truncation detection and metadata recording
+- Truncation metadata recording (always False for JSON-sourced data)
 
 Output
 ------
@@ -35,8 +35,9 @@ logger = get_logger(__name__)
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-TRUNCATION_THRESHOLD: int = 32767
-"""Excel cell character limit; text fields at or above this are truncated."""
+# AIDEV-NOTE: TRUNCATION_THRESHOLD (32767) was removed.
+# The original threshold was Excel-specific (cell character limit). The JSON source
+# data now provides complete, non-truncated transcripts (up to ~128K chars).
 
 TAG_PATTERN = re.compile(
     r"【(プレゼン|質問|回答):\s*(.+?)\s*\(([^)]+)\)】\n(.*?)(?=(?:【(?:プレゼン|質問|回答):)|$)",
@@ -515,7 +516,7 @@ class TranscriptParser:
         text2: str,
         text4: str,
     ) -> bool:
-        """Detect if transcript text was truncated at 32767 characters.
+        """Check if transcript text appears truncated.
 
         Parameters
         ----------
@@ -529,14 +530,12 @@ class TranscriptParser:
         Returns
         -------
         bool
-            True if truncation is detected.
+            Always False for JSON-sourced data. The original 32767-character
+            threshold was Excel-specific; JSON exports contain complete text.
         """
-        total_chars = record.get("total_characters", 0)
-        if total_chars and float(total_chars) >= TRUNCATION_THRESHOLD:
-            return True
-
-        # Also check individual text field lengths
-        return len(text2) >= TRUNCATION_THRESHOLD or len(text4) >= TRUNCATION_THRESHOLD
+        # AIDEV-NOTE: JSON source data provides complete transcripts (up to ~128K
+        # chars). The Excel-specific 32767 truncation heuristic has been removed.
+        return False
 
     @staticmethod
     def _extract_event_date(record: dict[str, Any]) -> str:

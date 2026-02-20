@@ -83,7 +83,8 @@
       "WebFetch(domain:quartr.com)",
       "mcp__sec-edgar-mcp__get_financials",
       "mcp__sec-edgar-mcp__get_key_metrics",
-      "mcp__sec-edgar-mcp__get_recent_filings"
+      "mcp__sec-edgar-mcp__get_recent_filings",
+      "mcp__filesystem__list_directory_with_sizes"
     ]
   },
   "enableAllProjectMcpServers": true,

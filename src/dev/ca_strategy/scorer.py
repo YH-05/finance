@@ -80,10 +80,10 @@ _CALIBRATION_TARGETS: str = (
 # Public API
 # ---------------------------------------------------------------------------
 class ClaimScorer:
-    """Score competitive advantage claims using KB1-T/KB2-T/KB3-T and dogma.md.
+    """Score competitive advantage claims using KB1-T/KB2-T/KB3-T.
 
-    Loads KB1-T rules, KB2-T patterns, KB3-T few-shot examples, and
-    dogma.md at initialization.  For each ticker's claims, builds a
+    Loads KB1-T rules, KB2-T patterns, and KB3-T few-shot examples
+    at initialization.  For each ticker's claims, builds a
     structured prompt and calls the Claude API to produce ScoredClaims
     with confidence adjustments.
 
@@ -95,8 +95,9 @@ class ClaimScorer:
         Directory containing KB2-T pattern markdown files.
     kb3_dir : Path | str
         Directory containing KB3-T few-shot example files.
-    dogma_path : Path | str
-        Path to the dogma.md file.
+    dogma_path : Path | str | None
+        Path to the dogma.md file.  Optional; KB1-3-T already contain
+        the reconstructed dogma content.
     cost_tracker : CostTracker
         CostTracker instance for recording token usage.
     model : str, optional
@@ -112,7 +113,6 @@ class ClaimScorer:
     ...     kb1_dir=Path("analyst/transcript_eval/kb1_rules_transcript"),
     ...     kb2_dir=Path("analyst/transcript_eval/kb2_patterns_transcript"),
     ...     kb3_dir=Path("analyst/transcript_eval/kb3_fewshot_transcript"),
-    ...     dogma_path=Path("analyst/Competitive_Advantage/analyst_YK/dogma.md"),
     ...     cost_tracker=CostTracker(),
     ... )
     >>> scored = scorer.score_batch(claims_by_ticker)
@@ -123,15 +123,14 @@ class ClaimScorer:
         kb1_dir: Path | str,
         kb2_dir: Path | str,
         kb3_dir: Path | str,
-        dogma_path: Path | str,
         cost_tracker: CostTracker,
+        dogma_path: Path | str | None = None,
         model: str = _MODEL,
         client: anthropic.Anthropic | None = None,
     ) -> None:
         self._kb1_dir = Path(kb1_dir)
         self._kb2_dir = Path(kb2_dir)
         self._kb3_dir = Path(kb3_dir)
-        self._dogma_path = Path(dogma_path)
         self._cost_tracker = cost_tracker
         self._model = model
         self._client = client or anthropic.Anthropic()
@@ -140,7 +139,9 @@ class ClaimScorer:
         self._kb1_rules = load_directory(self._kb1_dir)
         self._kb2_patterns = load_directory(self._kb2_dir)
         self._kb3_examples = load_directory(self._kb3_dir)
-        self._dogma = load_file(self._dogma_path)
+        # AIDEV-NOTE: dogma.md is optional; KB1-3-T already contain the
+        # reconstructed dogma content from analyst Y's evaluation philosophy.
+        self._dogma = load_file(Path(dogma_path)) if dogma_path else ""
 
         # Cache sorted KB items for prompt construction (PERF-003)
         self._sorted_kb1_rules = sorted(self._kb1_rules.items())

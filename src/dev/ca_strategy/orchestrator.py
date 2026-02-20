@@ -91,7 +91,7 @@ class Orchestrator:
         ``benchmark_weights.json``.
     kb_base_dir : Path | str
         Root directory for knowledge base files (KB1-T, KB2-T,
-        KB3-T, system prompt, dogma.md).
+        KB3-T, system prompt).
     workspace_dir : Path | str
         Working directory for intermediate outputs, checkpoints,
         and execution logs.
@@ -576,7 +576,6 @@ class Orchestrator:
             kb1_dir=self._kb_base_dir / "kb1_rules_transcript",
             kb3_dir=self._kb_base_dir / "kb3_fewshot_transcript",
             system_prompt_path=self._kb_base_dir / "system_prompt_transcript.md",
-            dogma_path=self._kb_base_dir / "dogma.md",
             cost_tracker=self._cost_tracker,
         )
 
@@ -620,7 +619,6 @@ class Orchestrator:
             kb1_dir=self._kb_base_dir / "kb1_rules_transcript",
             kb2_dir=self._kb_base_dir / "kb2_patterns_transcript",
             kb3_dir=self._kb_base_dir / "kb3_fewshot_transcript",
-            dogma_path=self._kb_base_dir / "dogma.md",
             cost_tracker=self._cost_tracker,
         )
 

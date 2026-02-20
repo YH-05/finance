@@ -7,6 +7,7 @@ pipeline phases with Sonnet 4 pricing.
 from __future__ import annotations
 
 import json
+import logging
 from typing import TYPE_CHECKING
 
 import pytest
@@ -211,12 +212,11 @@ class TestCostTrackerWarning:
 
         # Record enough to exceed $10 threshold
         # 1M output = $15 > $10
-        tracker.record("phase1", tokens_input=0, tokens_output=1_000_000)
+        with caplog.at_level(logging.WARNING):
+            tracker.record("phase1", tokens_input=0, tokens_output=1_000_000)
 
-        assert any("warning" in r.levelname.lower() for r in caplog.records) or any(
-            "cost" in r.message.lower() and "exceed" in r.message.lower()
-            for r in caplog.records
-        )
+        warning_records = [r for r in caplog.records if r.levelno >= logging.WARNING]
+        assert len(warning_records) > 0
 
     def test_正常系_閾値以下ではwarningログなし(
         self, caplog: pytest.LogCaptureFixture
@@ -224,12 +224,13 @@ class TestCostTrackerWarning:
         tracker = CostTracker(warning_threshold=50.0)
 
         # Record small amount: $0.003
-        tracker.record("phase1", tokens_input=1000, tokens_output=0)
+        with caplog.at_level(logging.WARNING):
+            tracker.record("phase1", tokens_input=1000, tokens_output=0)
 
         warning_records = [
             r
             for r in caplog.records
-            if r.levelname == "WARNING" and "cost" in r.message.lower()
+            if r.levelno >= logging.WARNING and "cost" in r.message.lower()
         ]
         assert len(warning_records) == 0
 

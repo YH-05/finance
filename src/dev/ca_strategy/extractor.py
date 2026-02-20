@@ -78,7 +78,7 @@ _DANGEROUS_PATTERN: re.Pattern[str] = re.compile(
 class ClaimExtractor:
     """Extract competitive advantage claims from transcripts using Claude API.
 
-    Loads KB1-T rules, KB3-T few-shot examples, system prompt, and dogma.md
+    Loads KB1-T rules, KB3-T few-shot examples, and system prompt
     at initialization.  For each transcript, builds a structured prompt and
     calls the Claude API to extract 5-15 claims with rule evaluations.
 
@@ -90,8 +90,9 @@ class ClaimExtractor:
         Directory containing KB3-T few-shot example files.
     system_prompt_path : Path | str
         Path to the system prompt template file.
-    dogma_path : Path | str
-        Path to the dogma.md file.
+    dogma_path : Path | str | None
+        Path to the dogma.md file.  Optional; KB1-3-T already contain
+        the reconstructed dogma content.
     cost_tracker : CostTracker
         CostTracker instance for recording token usage.
     seven_powers_path : Path | str | None, optional
@@ -113,7 +114,6 @@ class ClaimExtractor:
     ...     kb1_dir=Path("analyst/transcript_eval/kb1_rules_transcript"),
     ...     kb3_dir=Path("analyst/transcript_eval/kb3_fewshot_transcript"),
     ...     system_prompt_path=Path("analyst/transcript_eval/system_prompt_transcript.md"),
-    ...     dogma_path=Path("analyst/Competitive_Advantage/analyst_YK/dogma.md"),
     ...     cost_tracker=CostTracker(),
     ...     seven_powers_path=Path("analyst/transcript_eval/seven_powers_framework.md"),
     ... )
@@ -125,8 +125,8 @@ class ClaimExtractor:
         kb1_dir: Path | str,
         kb3_dir: Path | str,
         system_prompt_path: Path | str,
-        dogma_path: Path | str,
         cost_tracker: CostTracker,
+        dogma_path: Path | str | None = None,
         seven_powers_path: Path | str | None = None,
         model: str = _MODEL,
         cutoff_date: str | None = None,
@@ -135,7 +135,6 @@ class ClaimExtractor:
         self._kb1_dir = Path(kb1_dir)
         self._kb3_dir = Path(kb3_dir)
         self._system_prompt_path = Path(system_prompt_path)
-        self._dogma_path = Path(dogma_path)
         self._cost_tracker = cost_tracker
         self._model = model
         self._cutoff_date_str = cutoff_date or CUTOFF_DATE.isoformat()
@@ -145,7 +144,9 @@ class ClaimExtractor:
         self._kb1_rules = load_directory(self._kb1_dir)
         self._kb3_examples = load_directory(self._kb3_dir)
         self._system_prompt = load_file(self._system_prompt_path)
-        self._dogma = load_file(self._dogma_path)
+        # AIDEV-NOTE: dogma.md is optional; KB1-3-T already contain the
+        # reconstructed dogma content from analyst Y's evaluation philosophy.
+        self._dogma = load_file(Path(dogma_path)) if dogma_path else ""
 
         # Load 7 Powers framework (optional)
         self._seven_powers: str | None = None

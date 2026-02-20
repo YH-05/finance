@@ -12,6 +12,7 @@ Tests cover all acceptance criteria from Issue #3578:
 from __future__ import annotations
 
 import json
+import logging
 from datetime import date
 from typing import TYPE_CHECKING, Any
 
@@ -123,15 +124,13 @@ class TestLoadSingle:
         self, tmp_path: Path, caplog: pytest.LogCaptureFixture
     ) -> None:
         loader = TranscriptLoader(base_dir=tmp_path, cutoff_date=date(2015, 12, 31))
-        result = loader.load_single("AAPL", "201501")
+
+        with caplog.at_level(logging.WARNING):
+            result = loader.load_single("AAPL", "201501")
 
         assert result is None
-        assert any(
-            "not found" in r.message.lower()
-            or "見つかりません" in r.message
-            or "not found" in str(getattr(r, "msg", ""))
-            for r in caplog.records
-        ) or any(r.levelname.lower() == "warning" for r in caplog.records)
+        warning_records = [r for r in caplog.records if r.levelno >= logging.WARNING]
+        assert len(warning_records) > 0
 
     def test_異常系_Pydanticバリデーションエラーでログ記録しNoneを返す(
         self, tmp_path: Path, caplog: pytest.LogCaptureFixture

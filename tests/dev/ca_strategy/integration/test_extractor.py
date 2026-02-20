@@ -63,8 +63,8 @@ def extractor(cost_tracker: CostTracker) -> ClaimExtractor:
         kb1_dir=_KB1_DIR,
         kb3_dir=_KB3_DIR,
         system_prompt_path=_SYSTEM_PROMPT_PATH,
-        dogma_path=_DOGMA_PATH,
         cost_tracker=cost_tracker,
+        dogma_path=_DOGMA_PATH,
     )
 
 
