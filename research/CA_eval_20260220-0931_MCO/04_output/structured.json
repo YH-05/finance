@@ -1,0 +1,330 @@
+{
+  "research_id": "CA_eval_20260220-0931_MCO",
+  "ticker": "MCO",
+  "company_name": "Moody's Corporation",
+  "generated_at": "2026-02-20T10:15:00Z",
+  "generator": "ca-eval-lead (T7直接実行)",
+  "report_version": "draft_v1",
+  "cagr_estimate": {
+    "current": "EPS +9.5%（2025年8月改定、従前+10%）、売上+6%",
+    "components": {
+      "mis_revenue": "+6%（実質GDP2.5% + 価格効果2.5% + 新興国/プライベートクレジット+1%）",
+      "ma_revenue": "+6.5%（M-HSD、一般データ事業者並み）",
+      "margin_improvement": "+1%（MISとMAのミックス悪化はMA改善で相殺）",
+      "share_reduction": "+1.5%（従前+2%、FCF利回り低下により0.5%引き下げ）",
+      "external_growth": "+1%"
+    },
+    "source": "2025年8月7日付 2Q25レビュー（最新CAGR改定）"
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "格付け市場の寡占構造（MCO+SPGI=80%、20年間不変）",
+      "ca_type": "structural",
+      "final_confidence": 90,
+      "label": "かなり納得",
+      "cagr_confidence": 90,
+      "cagr_label": "かなり納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（寡占構造は「結果」的側面があるが、維持要因は構造的力）",
+        "rule02": "PASS（「寡占構造」「参入障壁」は名詞で表現された構造的属性）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PASS（MCO40%、SPGI40%、Fitch20%弱、その他5%。20年間安定）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PASS（寡占構造は事業モデルの核心。最も構造的な要素）",
+        "rule07": "PARTIAL（SPGIとの差別化は限定的。寡占構造はSPGIと共有される優位性）",
+        "rule08": "PASS（業界の構造的特性であり戦略的意思決定ではない）",
+        "rule09": "N/A（事実誤認なし。T5で27/28 verified）",
+        "rule10": "PASS（20年間の参入失敗例が暗示的に存在）",
+        "rule11": "PASS（NRSRO制度・規制・トラックレコード重視による構造的寡占。ORLY#2に匹敵）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["I（定量的裏付け、strong）", "IV（構造的市場ポジション、strong）"]
+      },
+      "key_evidence": [
+        "MCO+SPGI各40%、Fitch2割弱、その他5%（20年間変化なし）",
+        "信用付与業態のためトラックレコード重視、新規参入困難",
+        "債券投資家にとってMoody/SP2社の格付け獲得は不可欠",
+        "10-K: 「MIS is a leading global provider of credit ratings」（115年の歴史）",
+        "NRSRO制度による規制参入障壁"
+      ],
+      "upside_conditions": "MCO vs SPGI の格付け品質比較データ（変更的中率等）が得られれば、共有優位性内での差別化を定量化可能",
+      "downside_risks": "規制環境の変化（CRA市場の競争促進政策）、テクノロジー企業による信用評価の代替"
+    },
+    {
+      "claim_id": 2,
+      "title": "格付け経路依存性に基づく顧客スイッチングコスト",
+      "ca_type": "structural",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（スイッチングコスト・経路依存性は構造的仕組み）",
+        "rule02": "PASS（名詞属性として記述可能）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PARTIAL（MA維持率93-94%は定量的。MIS側の直接開示なし）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PASS（格付けビジネスモデルの核心的構造要素）",
+        "rule07": "PARTIAL（SPGIも同等のスイッチングコストを享受。MCO固有差別化不明）",
+        "rule08": "PASS（業界構造に起因する優位性）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（直接的なネガティブケースなし）",
+        "rule11": "PASS（信用格付け業界は経路依存性が本質的に高い）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["III（能力>結果、strong）", "IV（構造的市場ポジション、moderate）"]
+      },
+      "key_evidence": [
+        "格付会社変更=市場にネガティブシグナル（経路依存性）",
+        "発行体にとって格付け獲得は調達コスト安に直結",
+        "概ね2社のレーティング取得が一般的（業界慣行）",
+        "MA契約維持率93-94%（四半期レビューで一貫）"
+      ],
+      "upside_conditions": "MIS側の顧客維持率が直接開示され、SPGIとの差別化が定量化されれば90%に近づく可能性",
+      "downside_risks": "デジタル格付けプラットフォームの台頭、規制による格付け依存度の低下"
+    },
+    {
+      "claim_id": 3,
+      "title": "格付け価格交渉力（年間+2-5%の値上げ継続能力）",
+      "ca_type": "structural",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 90,
+      "cagr_label": "かなり納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（値上げ実績は結果的側面。値上げ可能な構造が核心）",
+        "rule02": "PASS（「価格交渉力」は名詞属性）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PASS（+2-3%会社見解、+4-5%CS推定、MA+3-4%、AI+30%）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PASS（Claim#1寡占構造から派生する構造的要素）",
+        "rule07": "PARTIAL（SPGIも同等の価格交渉力。共有優位性）",
+        "rule08": "PASS（値上げ「戦略」ではなく値上げ可能な「構造」）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PASS（CLO保守的方法論で短期案件喪失→長期では適切なプライシング）",
+        "rule11": "PASS（寡占市場×信用付与業態→値上げインセンティブ構造）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因とする転倒、weak）"],
+        "high_eval": ["I（定量的裏付け、strong）", "II（直接的CAGRメカニズム、strong）"]
+      },
+      "key_evidence": [
+        "年間+2-3%の格付け価格引き上げ見込み（会社見解）",
+        "過去10年平均+4-5%（CS証券推定）",
+        "MA側+3-4%値上げ実施中、リテンション93%",
+        "生成AIサービス追加で従来比3割の価格アップ",
+        "手数料値下げで競争しない業界構造"
+      ],
+      "upside_conditions": "SPGIとの値上げ率の直接比較データが得られれば、MCO固有の価格交渉力を定量化可能",
+      "downside_risks": "規制当局による格付け手数料の透明化・制限、景気後退による発行量減少"
+    },
+    {
+      "claim_id": 4,
+      "title": "MAデータ蓄積と顧客粘着性（KYC・非公開企業データ）",
+      "ca_type": "operational",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（データ蓄積・クロスセル能力は仕組み）",
+        "rule02": "PASS（名詞属性として記述可能）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PASS（維持率93%、ARR$3.3bn、クロスセル品数）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PARTIAL（MIS対比では補完的。MA単体では構造的）",
+        "rule07": "PARTIAL（SPGI MI/Bloomberg/MSCI/FactSetとの具体的比較不足）",
+        "rule08": "PASS（データ蓄積は100年の歴史的結果であり戦略ではない）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（直接的なネガティブケースなし）",
+        "rule11": "PARTIAL（金融データ市場はSPGI/Bloomberg/MSCI等と競合。寡占とは言えない）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["G（純粋競合に対する優位性不明、moderate）"],
+        "high_eval": ["I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "115年以上の企業データ蓄積",
+        "MA契約維持率93%（四半期レビューで一貫）",
+        "MA ARR $3.3bn +8% yy成長",
+        "保険顧客上位10社で6-7品のクロスセル",
+        "KYC顧客の8割へのクロスセル余地残存"
+      ],
+      "upside_conditions": "SPGI MI/Bloomberg/FactSetとの具体的維持率・クロスセル率比較が得られれば70%に上昇可能",
+      "downside_risks": "代替データプロバイダーの台頭、Bloomberg/MSCIの買収攻勢による競争激化",
+      "note": "アナリスト自身が「MA事業の競争優位はMISより低い」「課題として残存」と明記。独立した優位性としては中程度。"
+    },
+    {
+      "claim_id": 5,
+      "title": "規制参入障壁（NRSRO制度・グローバル規制体系）",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（規制は外部要因。115年のトラックレコードで要件クリアは能力）",
+        "rule02": "PASS（「参入障壁」「規制コンプライアンス」は名詞属性）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PARTIAL（規制当局数は定量的だが参入コスト等の数値不明）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PASS（業界の構造的基盤）",
+        "rule07": "FAIL（SPGI/Fitchも同等の規制環境下。業界共通の参入障壁）",
+        "rule08": "PASS（規制は外部環境であり戦略ではない）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（直接的なネガティブケースなし）",
+        "rule11": "PASS（規制が寡占構造を維持する機能）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["B（業界共通で差別化にならない、moderate）"],
+        "high_eval": ["IV（構造的市場ポジション、moderate）"]
+      },
+      "key_evidence": [
+        "10-K: 「MIS operates in a highly regulated industry」",
+        "SEC、ESMA、FCA等の国際規制当局による広範な監督",
+        "DORA（EU Digital Operational Resilience Act）への対応義務",
+        "各国で登録・監督要件が異なり参入コスト高い"
+      ],
+      "note": "Claim#1（寡占構造）の背景要因として重要だが、SPGI/Fitchも同等に享受する業界共通の環境要因。"
+    },
+    {
+      "claim_id": 6,
+      "title": "プライベートクレジット市場での成長機会",
+      "ca_type": "operational",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "WARN（取引件数増加は結果。MCO固有の能力の記述不足）",
+        "rule02": "PARTIAL（「成長機会」は名詞だが優位性の属性より市場環境の記述）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PASS（TAM $3tn、取引143件+107%yy、収益寄与20%）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PARTIAL（既存格付け事業の延長だがダイレクトレンディングは格付不要）",
+        "rule07": "PARTIAL（SPGI $140M +21%yy。MCO固有の差別化限定的）",
+        "rule08": "WARN（プライベートクレジット参入は戦略的判断）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PASS（ダイレクトレンディングは格付不要とネガティブ面を明示的に認識）",
+        "rule11": "PARTIAL（格付けリーチはTAMの一部に限定）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因とする転倒、moderate）", "F（戦略の優位性への混同、moderate）"],
+        "high_eval": ["I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "プライベートクレジットTAM $3tn（MCO見解）",
+        "1Q25取引143件（前年69件、+107%）",
+        "新規マンデートの25%がプライベートクレジット",
+        "ただしダイレクトレンディングは格付不要",
+        "アナリスト：MIS CAGR引き上げ見送り、サポート材料程度"
+      ],
+      "downside_risks": "ダイレクトレンディング拡大（格付不要）、規制によるプライベートクレジット市場の変化",
+      "note": "市場成長はMCO/SPGI共通のtailwind。MCO固有の構造的優位性の記述不足。アナリスト自身がCAGR引き上げ見送り。"
+    },
+    {
+      "claim_id": 7,
+      "title": "SPGI対比での格付け事業集中度優位",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（事業構成比は結果的側面。格付け集中自体は戦略/構造）",
+        "rule02": "PARTIAL（「集中度」は名詞だが優位性属性としてはやや抽象的）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PASS（MCO格付け50% vs SPGI格付け30%弱の定量的比較）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PARTIAL（Claim#1-3のレバレッジであり独立した構造要素ではない）",
+        "rule07": "PASS（SPGI対比で明確な定量差別化）",
+        "rule08": "WARN（事業ポートフォリオ構成は経営戦略の結果）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（直接的なネガティブケースなし）",
+        "rule11": "PARTIAL（Claim#1と重複。MCO独自の構造合致は「集中度」）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["F（戦略の優位性への混同、weak）"],
+        "high_eval": ["V（競合との具体的比較、strong）"]
+      },
+      "key_evidence": [
+        "MCO格付け事業比率50%（SPGIは3割弱）",
+        "SPGIはMI/Indices/Commodity Insightsに多角化",
+        "格付け事業OPM 60%超 vs MA OPM 30%台→高集中度が全社利益率に直結"
+      ],
+      "upside_conditions": "格付け集中度がROIC・EPSに与える影響を定量的に示せれば70%に上昇可能",
+      "downside_risks": "MA事業の成長鈍化により格付け依存度がリスク要因に転化する可能性"
+    },
+    {
+      "claim_id": 8,
+      "title": "生成AI活用によるMA事業の価値向上",
+      "ca_type": "operational",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（AI機能追加は能力。価格アップ実現は結果的側面）",
+        "rule02": "PARTIAL（「AI活用能力」は名詞だが多社が同様取組み）",
+        "rule03": "N/A（claims.jsonで未適用）",
+        "rule04": "PASS（+30%価格アップ、40%製品導入、$200M ARR、2倍成長）",
+        "rule05": "N/A（claims.jsonで未適用）",
+        "rule06": "PARTIAL（補完的テクノロジーレイヤー。MCO独自データとの組合せは構造的）",
+        "rule07": "PARTIAL（SPGI等も類似AI戦略推進中）",
+        "rule08": "WARN（AI導入はMicrosoft提携という戦略的判断）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（直接的なネガティブケースなし）",
+        "rule11": "PARTIAL（金融データ市場でのAI活用は業界トレンド）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["B（業界共通で差別化にならない、moderate）", "F（戦略の優位性への混同、moderate）"],
+        "high_eval": ["I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "生成AIサービス追加で従来比30%の価格アップ",
+        "40%のMA製品（ARRベース）で生成AI機能追加",
+        "AI関連プロダクト売上ARRベース$200M",
+        "生成AI利用顧客は非利用顧客の2倍成長"
+      ],
+      "downside_risks": "競合のAI追随による差別化消滅、AI規制リスク、顧客の価格感度変化",
+      "note": "定量データは豊富だがAI活用は業界共通トレンド。MCO固有の構造的優位性の記述不足。"
+    }
+  ],
+  "overall_summary": {
+    "avg_ca_confidence": 55,
+    "avg_cagr_confidence": 69,
+    "strongest_claims": [
+      {"id": 1, "title": "格付け市場の寡占構造", "confidence": 90},
+      {"id": 2, "title": "格付け経路依存性に基づく顧客スイッチングコスト", "confidence": 70},
+      {"id": 3, "title": "格付け価格交渉力", "confidence": 70}
+    ],
+    "weakest_claims": [
+      {"id": 6, "title": "プライベートクレジット市場での成長機会", "confidence": 30},
+      {"id": 8, "title": "生成AI活用によるMA事業の価値向上", "confidence": 30}
+    ],
+    "key_insight": "MCOの競争優位性はMIS格付け事業の寡占構造（Claim#1、90%）に一極集中しており、スイッチングコスト（#2）と価格交渉力（#3）はその派生。MA事業の優位性はアナリスト自身が「課題として残存」と認め、成長機会（#6）やAI活用（#8）は業界共通のtailwindであり構造的優位性としては弱い。全体として「MIS寡占構造に支えられた高確度だが幅の狭い優位性セット」。",
+    "comparison_to_kb3": {
+      "closest_analog": "ORLY（平均63%）: 業界構造×企業ポジション合致が最高評価要因という共通点。MCOの寡占構造=90%はORLY#2のローカル規模=90%に匹敵する構造合致パターン",
+      "difference": "MCO（平均55%）はORLY（63%）より低い。MCOは寡占構造への一極集中が特徴で、MA事業が平均を押し下げている。ORLYは複数の中程度主張で幅広い優位性セットを構成"
+    }
+  }
+}

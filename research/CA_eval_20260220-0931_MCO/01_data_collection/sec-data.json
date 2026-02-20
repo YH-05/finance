@@ -1,0 +1,236 @@
+{
+  "ticker": "MCO",
+  "company_name": "Moody's Corporation",
+  "retrieved_at": "2026-02-20T09:35:00Z",
+  "data_source": "mixed",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "partial",
+    "reason": "SEC EDGAR MCPで10-K XBRL財務データおよびフィリングセクションを取得。一部詳細（Properties、MD&Aセクション）はアナリストレポートから補完。",
+    "affected_fields": ["filing_sections.properties", "filing_sections.mda_detail"],
+    "available_fields": ["financials", "recent_filings", "insider_summary", "key_metrics", "filing_sections.business", "filing_sections.risk_factors"]
+  },
+  "financials": {
+    "note": "FY2025 10-K（2026-02-18提出）のXBRLデータ + アナリストレポートからの四半期実績",
+    "revenue": {
+      "description": "売上高",
+      "latest_annual": {
+        "value": 7718000000,
+        "currency": "USD",
+        "period": "FY2025（2025-12-31期末）",
+        "source": "SEC EDGAR 10-K XBRL: RevenueFromContractWithCustomerExcludingAssessedTax"
+      },
+      "historical_reference": {
+        "fy2024_q3_run_rate": "1Q24 $1.78B, 2Q24 $1.82B, 3Q24 $1.81B",
+        "fy2025_q1": "$1.9B +7.7% yy/cc",
+        "fy2025_q2": "$1.9B +8% yy/cc",
+        "note": "FY2024通期はHigh-Teens成長、FY2025はMSD成長ガイダンス"
+      }
+    },
+    "segment_revenue_mix": {
+      "MIS": {
+        "share": "50%",
+        "description": "Moody's Investors Service（格付け事業）。債券発行毎の手数料（5-12bps）およびモニタリング手数料。経常収入4割、取引ベース6割。",
+        "opm": "64.2%（2Q25）/ 66.0%（1Q25）/ 61-62%（FY25ガイダンス）",
+        "revenue_fy2025_q2": "$1,010M"
+      },
+      "MA": {
+        "share": "50%",
+        "description": "Moody's Analytics（分析・データ事業）。Research & Insights、Data & Information、Decision Solutions（Banking, Insurance, KYC）の3領域。経常収入9割超、契約維持率93%。",
+        "opm": "32.1%（2Q25）/ 30.0%（1Q25）/ 32-33%（FY25ガイダンス）",
+        "revenue_fy2025_q2": "$888M",
+        "arr": "$3.3B +8% yy（2Q25）"
+      }
+    },
+    "income_statement": {
+      "revenue_fy2025": {
+        "value": 7718000000,
+        "source": "SEC EDGAR XBRL"
+      },
+      "operating_income_fy2025": {
+        "value": 3351000000,
+        "opm": "43.4%",
+        "source": "SEC EDGAR XBRL"
+      },
+      "net_income_fy2025": {
+        "value": 2459000000,
+        "source": "SEC EDGAR XBRL"
+      },
+      "eps_basic_fy2025": 13.73,
+      "eps_diluted_fy2025": 13.67,
+      "cost_of_revenue_fy2025": 1973000000,
+      "quarterly_eps": {
+        "1q25": 3.83,
+        "2q25": 3.83,
+        "3q24": 3.21,
+        "2q24": 3.28,
+        "1q24": 3.37
+      }
+    },
+    "balance_sheet": {
+      "total_assets": {
+        "value": 15830000000,
+        "period": "2025-12-31"
+      },
+      "current_assets": {
+        "value": 5186000000
+      },
+      "total_liabilities": {
+        "value": 11625000000
+      },
+      "current_liabilities": {
+        "value": 2981000000
+      },
+      "stockholders_equity": {
+        "value": 4054000000,
+        "note": "積極的自社株買いにより自己資本は過去マイナスとなった時期もある（2015年頃）"
+      },
+      "cash_and_equivalents": {
+        "value": 2384000000
+      },
+      "accounts_receivable": {
+        "value": 2024000000
+      },
+      "ppe_net": {
+        "value": 722000000
+      }
+    },
+    "cash_flow": {
+      "operating_cash_flow_fy2025": {
+        "value": 2901000000,
+        "source": "SEC EDGAR XBRL"
+      },
+      "investing_cash_flow_fy2025": {
+        "value": 2000000,
+        "note": "極めて小さい純投資額、大型M&Aなしを示唆"
+      },
+      "financing_cash_flow_fy2025": {
+        "value": -3063000000,
+        "note": "自社株買い・配当による還元"
+      },
+      "buyback_fy2025_guidance": "$1.3bn以上",
+      "capital_allocation_priority": "オーガニック成長への再投資 > M&A > 自社株買い/配当"
+    }
+  },
+  "recent_filings": {
+    "10k": {
+      "status": "available",
+      "latest": {
+        "form_type": "10-K",
+        "filing_date": "2026-02-18",
+        "accession_number": "0001628280-26-009136",
+        "period_of_report": "2025-12-31",
+        "sec_url": "https://www.sec.gov/Archives/edgar/data/1059556/000162828026009136/0001628280-26-009136.txt"
+      }
+    },
+    "10q": {
+      "status": "available",
+      "note": "10-K提出直後のため最新10-Qは10-Kに包含"
+    },
+    "8k": {
+      "status": "available",
+      "recent": [
+        {
+          "filing_date": "2026-02-18",
+          "accession_number": "0001628280-26-008788",
+          "period": "2026-02-18"
+        },
+        {
+          "filing_date": "2026-01-12",
+          "accession_number": "0001059556-26-000004",
+          "period": "2026-01-08"
+        },
+        {
+          "filing_date": "2025-12-19",
+          "accession_number": "0001059556-25-000197",
+          "period": "2025-12-16"
+        }
+      ]
+    }
+  },
+  "insider_summary": {
+    "status": "available",
+    "period_days": 365,
+    "total_filings": 88,
+    "form_4_count": 86,
+    "form_3_count": 2,
+    "recent_activity": "直近1年で88件のインサイダー提出（Form 4が86件）。定期的な取引パターンを示唆。",
+    "management_info_from_report": {
+      "ceo": "Rob Fauber（2021年就任）",
+      "strategy": "オーガニック成長＋ボルトオンM&A中心。大型M&Aは他社追随のためには行わない方針。"
+    }
+  },
+  "key_metrics": {
+    "market_position": {
+      "mis_market_share": "約40%（SPGIと2社で80%、Fitch 2割弱、その他5%）",
+      "competitive_structure": "寡占（過去20年ほぼ変化なし）",
+      "pricing_power": "年間+2-3%の値上げ可能（会社見解）、過去10年平均では+4-5%（CS証券推定）"
+    },
+    "ma_metrics": {
+      "arr": "$3.3bn（2Q25）",
+      "arr_growth": "+8% yy",
+      "retention_rate": "93%（2Q25）",
+      "pricing": "+3-4%の値上げ実施中",
+      "genai_adoption": "40%のプロダクト（ARRベース）で生成AI機能追加、AI関連プロダクト売上ARRベース$200M"
+    },
+    "mis_metrics": {
+      "opm_range": "59-66%（四半期変動あり）",
+      "fy25_opm_guidance": "61-62%",
+      "transaction_vs_recurring": "取引ベース60%、経常40%"
+    },
+    "growth_drivers": {
+      "private_credit": "TAM $3tn、1Q25取引143件（前年69件）。ファンドファイナンスとABFが主要リーチ対象。",
+      "refinancing_wall": "今後4年の借換え予定金額$5tn（前年比+11%増）",
+      "emerging_markets": "新興国格付け浸透余地あり（ローカル格付けのみ利用中の発行体への浸透）",
+      "genai": "Microsoft提携、3割価格アップも顧客受入急速"
+    },
+    "cagr_estimate": {
+      "revenue": "+6%",
+      "eps": "+9.5%（2025年8月改定、従前+10%）",
+      "breakdown": {
+        "mis_revenue": "+6%（実質GDP2.5% + 価格効果2.5% + 新興国/プライベートクレジット+1%）",
+        "ma_revenue": "+6.5%（M-HSD、一般データ事業者並み）",
+        "margin_improvement": "+1%（MISとMAのミックス悪化はMA改善で相殺）",
+        "share_reduction": "+1.5%（従前+2%、FCF利回り低下により0.5%引き下げ）",
+        "external_growth": "+1%"
+      }
+    }
+  },
+  "filing_sections": {
+    "business": {
+      "summary": "格付け情報を提供するMoody's Investors Service（MIS）とリスク分析・データ・ソフトウェアを提供するMoody's Analytics（MA）の2セグメント。従業員約16,000名、40カ国以上で事業展開。115年以上の格付け業務の歴史。",
+      "mis_description": "MISは信用格付け、リサーチ、リスク分析を提供するグローバルリーダー。企業、金融機関、政府、ストラクチャードファイナンス証券等の幅広い債務に格付けを提供。発行体に格付けを付与し、投資家にグローバル債券市場の包括的な視点を提供。",
+      "ma_description": "MAは金融サービス、企業、公共セクター顧客に対し、キュレーテッドデータとアナリティクスにより意思決定品質のインテリジェンスを提供。Research & Insights、Data & Information、Decision Solutions（Banking, Insurance, KYC）の3領域。AIを活用したクラウドベースのワークフローツールを提供。",
+      "source": "SEC EDGAR 10-K Filing 0001628280-26-009136"
+    },
+    "risk_factors": {
+      "summary": "主要リスクファクター：(1) 格付け業界への規制リスク（SEC、ESMA、FCA等による規制強化）、(2) AI規制を含む新技術リスク、(3) データプライバシー規制、(4) 気候関連リスク、(5) 競争環境変化リスク（NRSROとしての競争激化）、(6) 規制コンプライアンスコスト増加",
+      "key_risks": [
+        "格付け業界規制の強化（Dodd-Frank、EU CRA Regulation等）",
+        "ESMA/FCA等の国際規制当局による監督強化",
+        "AI/生成AI規制の不確実性",
+        "ESG格付け規制（EU ESG Rating Activities Regulation）",
+        "DORA（EU Digital Operational Resilience Act）への対応",
+        "プライベートクレジット市場の規制環境変化"
+      ],
+      "source": "SEC EDGAR 10-K Filing 0001628280-26-009136"
+    },
+    "mda": {
+      "summary": "アナリストレポートからの四半期業績分析",
+      "fy2025_performance": {
+        "q1": "売上$1.9B +7.7% yy/cc、EPS 3.83 +13.7%",
+        "q2": "売上$1.9B +8% yy/cc、EPS 3.83 +14%",
+        "guidance": "売上+MSD、MIS横ばい~MSD OPM61-62%、MA HSD OPM32-33%"
+      },
+      "fy2024_performance": {
+        "full_year": "売上High-Teens成長、格付け事業が好調を牽引",
+        "q3": "売上$1.81B +23% yy/cc、EPS 3.21 +32%、MIS +41% yy",
+        "q2": "売上$1.82B +22% yy/cc、EPS 3.28 +43%、MIS +36% yy"
+      },
+      "margin_targets": {
+        "mis_opm_2027": "低60%台",
+        "ma_opm_2027": "30%台中~後半",
+        "consolidated_opm_target": "約50%（現在46%）"
+      }
+    }
+  }
+}
