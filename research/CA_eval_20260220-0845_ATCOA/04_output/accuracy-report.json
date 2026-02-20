@@ -1,0 +1,37 @@
+{
+  "research_id": "CA_eval_20260220-0845_ATCOA",
+  "ticker": "ATCOA",
+  "mode": "simplified",
+  "generated_at": "2026-02-20T09:30:00Z",
+  "kb_version": "v1.0.0",
+  "mode_determination": {
+    "reason": "ATCOAはPhase 2データ（analyst/phase2_KY/*ATCOA*.md）が存在しないため簡易モードを適用。ATCOAはスウェーデン上場企業（Atlas Copco AB）であり、KYのPhase 2評価対象5社（CHD/COST/LLY/MNST/ORLY）に含まれない。",
+    "phase2_data_searched": "analyst/phase2_KY/*ATCOA*",
+    "phase2_data_found": false,
+    "full_mode_eligible_tickers": ["CHD", "COST", "LLY", "MNST", "ORLY"]
+  },
+  "full_mode_results": null,
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "check_description": "contradicted事実に対するルール9自動適用（confidence → 10%）の確認",
+    "fact_check_source": "research/CA_eval_20260220-0845_ATCOA/03_verification/fact-check.json",
+    "contradicted_claims": [],
+    "contradicted_count": 0,
+    "rule9_applied_count": 0,
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "contradictedと判定された事実の主張は0件。ルール9（事実誤認→confidence 10%）の適用対象なし。簡易モードのS-8チェックは合格。fact-check.jsonの検証結果: verified=10件、verified_with_caveat=9件、unverifiable=0件、contradicted=0件。",
+    "caveats": [
+      "ATCOAはスウェーデン上場企業（NASDAQ OMX）のため、SEC EDGAR MCPが利用不可。ファクトチェックはアナリストレポートおよび2025年4月ヒアリングメモの内部一貫性チェックに限定。外部データソース（SEC EDGAR、Bloomberg、財務データベース等）との照合は実施されていない。",
+      "SEC EDGAR IDENTITYが設定された環境、または欧州証券取引所データが利用可能な環境で再実行した場合、contradicted件数が変化する可能性がある。特にClaim #5（InOG≒3%成長前提のCAGRメカニズム）については実際のInOG実績データとの照合が必要。",
+      "verified_with_caveat（9件）: factual_claimの多くがアナリストのヒアリング推定値に基づく。これらはcontradictedではなく、外部データで未検証（unverifiable相当）であるため、S-8チェックの対象外として扱っているが、実質的な検証精度は低い。",
+      "2025年4月面談情報（大企業病・インセンティブ変容・CT事業依存リスク）はアナリストレポートに含まれ内部一貫性の範囲内で照合済みだが、同面談情報の客観的検証（第三者情報源との照合）は未実施。"
+    ]
+  },
+  "overall_assessment": {
+    "accuracy_verdict": "pass",
+    "confidence_level": "low",
+    "reason": "簡易モードのS-8チェック（contradicted → 10%）のみ実施し合格。ただし、ATCOAはスウェーデン上場企業のためSEC EDGAR MCPが利用不可であり、ファクトチェックの信頼性は低い（外部データ照合なし）。Phase 2データ（Y評価値）が存在しないため、AIのCAGR confidence推定値とYの実際の評価値との比較による定量的精度検証は未実施。",
+    "recommendation": "今後の推奨事項: (1) ATCOAのInOG実績データ（スウェーデン市場データ、決算説明会資料、業界レポート等）を入手してClaim #5のCAGR confidence（現在50%）を再検証すること。T8ではInOGの実績追跡困難性から70%→50%に引き下げたが、欧州市場データが利用可能になれば定量的検証が可能になる。(2) YがATCOAを評価した場合の評価値（CA confidence/CAGR confidence各主張）を収集してPhase 2データとして蓄積し、将来フルモード精度検証を実施すること。(3) 特にClaim #3（分権型組織の持続性）については2025年4月面談で「大企業病」リスクが浮上しており、次回決算・経営陣コメントでの追跡検証を推奨。"
+  }
+}
