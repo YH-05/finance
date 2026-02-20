@@ -402,7 +402,6 @@ class Orchestrator:
         # AIDEV-NOTE: portfolio_returns and benchmark_returns are empty Series
         # in the PoC because yfinance fetching is out of scope here.
         # The StrategyEvaluator handles empty Series gracefully.
-        import pandas as pd
 
         empty_returns: pd.Series = pd.Series([], dtype=float)
         evaluation = evaluator.evaluate(
