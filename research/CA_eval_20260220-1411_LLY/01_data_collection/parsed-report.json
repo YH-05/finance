@@ -1,0 +1,145 @@
+{
+  "ticker": "LLY",
+  "report_path": "analyst/raw/LLY US.md",
+  "parsed_at": "2026-02-20T14:11:00Z",
+  "report_type": "期初投資仮説レポート（メインセクション）+ 四半期フォローアップ（継続更新）",
+  "report_type_note": "PoC段階のため①/②区別はスキップ。メインテーブル（1/19/23 BUY判断）が期初レポートに相当。",
+  "sections": {
+    "investment_judgment": {
+      "current": "BUY（1/19/23〜、直近維持）",
+      "history": [
+        { "date": "2016-02-16", "judgment": "BUY", "reason": "2番煎じの薬が多いが超大型市場・追い上げ可能なプロファイル設計" },
+        { "date": "2018-01-22", "judgment": "SELL", "reason": "がん免疫療法不参入・ADの後継品遅延・NOVOの糖尿病巻き返し" },
+        { "date": "2023-01-19", "judgment": "BUY", "reason": "GLP-1（Mounjaro急拡大）・AD（donanemab P3結果待ち）・Verzenio再加速の3ドライバー収束" }
+      ]
+    },
+    "esg": {
+      "date": "2023-01-19",
+      "sustainalytics_esg_risk_rank": "60パーセンタイル",
+      "sustainalytics_management_rank": "62パーセンタイル",
+      "key_risks": "インスリン薬価の政治問題化（米国）が構造的リスク",
+      "management_improvement": "2022年に情報発信を大幅改善、Management score 37.9→52.9 Strong（業界平均45.7）"
+    },
+    "competitive_aspects": {
+      "date": "2023-01-19（更新継続）",
+      "key_claims": [
+        {
+          "id": "CA-1",
+          "claim": "超大型成長市場への集中的ポートフォリオ展開",
+          "detail": "糖尿病・AD・肥満症・乳がんなど市場成長率が高い分野に重点展開。研究開発投資・マーケティングインフラの投資効率・資産効率が高い",
+          "type": "competitive_advantage"
+        },
+        {
+          "id": "CA-2",
+          "claim": "経口低分子GLP-1作動薬（orforglipron）における技術的差別化",
+          "detail": "NOVOの週1回注射剤Wegovyに対して、食事制限不要・製造スケーラビリティ（低分子製造原価1桁前半%）での優位性。3年以上のリード。P3試験3本成功（2025年）",
+          "type": "competitive_advantage"
+        },
+        {
+          "id": "CA-3",
+          "claim": "アルツハイマー型認知症における長期臨床開発ノウハウ",
+          "detail": "PET診断薬での先行実績、15年以上の開発継続、複数メカニズムの並行開発（AB抗体donanemab：Kisunlaとして承認済み）",
+          "type": "competitive_advantage"
+        },
+        {
+          "id": "CA-4",
+          "claim": "GLP-1市場でのLLY-NOVO デュオポリー構造",
+          "detail": "供給能力が大きな参入障壁。2030年代まで両社のデュオポリーが持続すると想定。orforglipron承認前に5.5億ドルの在庫積み上げ（「ロケット・スタート」戦略）",
+          "type": "competitive_advantage"
+        },
+        {
+          "id": "CA-5",
+          "claim": "多領域にわたる複数成長ドライバーの分散保有",
+          "detail": "GLP-1（Mounjaro/Zepbound/orforglipron）、AD（Kisunla）、乳がん（Verzenio）の3本柱。NOVOが1本柱に対してドライバー分散",
+          "type": "competitive_advantage"
+        },
+        {
+          "id": "CA-6",
+          "claim": "グローバル医療機関ネットワークと医学情報提供体制",
+          "detail": "世界90カ国での販売網、LillyDirectプラットフォーム、MR・デジタルチャネルによる医師エンゲージメント",
+          "type": "competitive_advantage"
+        }
+      ]
+    },
+    "cagr_estimate": {
+      "date": "2023-01-29（期初レポート）",
+      "cagr_target": "High teens（10%台後半）",
+      "topline_growth": "+10〜15%中長期",
+      "key_drivers": [
+        "Mounjaro（糖尿病・抗肥満）：ピーク$10Bn（「そこそこの」大型化）",
+        "donanemab（AD）：成功確率75%として$5〜10Bn",
+        "インスリン：グローバル横這い（米国は価格引き下げで微減）",
+        "Jardiance：26〜27年まで牽引、特許切れで半減以下",
+        "GPM：2〜3%改善余地",
+        "SG&A/S：数%ポイントレバレッジ"
+      ],
+      "upside_scenario": "orforglipron/GLP-1でNASH・CKD適応拡大取れればCAGR想定引き上げ要因",
+      "update_notes": [
+        "2024/01/05: GLP-1急拡大受け、CAGRは下方修正余地あり（モデル外側にある成長が実現）",
+        "2024/04/19: NOVOとLLYのCAGR差は大きくないとの見解（ドライバー3本vs1本も、GLP効果大きく差がつきにくい）",
+        "2025年以降: orforglipron P3成功で上方修正シナリオ現実味"
+      ]
+    }
+  },
+  "quarterly_updates": [
+    {
+      "date": "2025-08-26",
+      "headline": "orforglipron P3 3本目成功（ATTAIN-2）、26年商業化ほぼ確定",
+      "key_facts": [
+        "ATTAIN-2試験成功：体重減少8.3%（対プラセボ調整後、72週）",
+        "Wegovyとほぼ同水準の有効性を確認",
+        "安全性・忍容性は過去試験とほぼ同等"
+      ]
+    },
+    {
+      "date": "2025-05-02",
+      "headline": "1Q決算インライン、CVS formula warにLLY株下落",
+      "key_facts": [
+        "GLP-1作動薬は気持ち上振れ",
+        "CVS最大手PBMがWegovyを優先推奨リストに掲載（LLY Zepbound締め出しではない）",
+        "GLP-1価格低下はコンセンサスモデルに織り込み済みとアナリスト判断"
+      ]
+    },
+    {
+      "date": "2025-04-18",
+      "headline": "orforglipron P3初戦（ACHIEVE-1）成功",
+      "key_facts": [
+        "HbA1c低下1.5%（プラセボ0.1%）：Wegovyと概ね同水準",
+        "体重減少7.9%（対プラセボ4.7%）：勝敗ラインの4〜7%を満たす",
+        "治療中断率8%：市場期待（10%台前半）を下回りポジティブ",
+        "肝毒性なし（競合多数が断念した安全性課題なし）"
+      ]
+    },
+    {
+      "date": "2025-02-27",
+      "headline": "10-Kで未承認薬在庫5.5億ドル開示（ほぼorforglipron）",
+      "key_facts": [
+        "コロナ除く過去に類例のない承認前大型在庫投資",
+        "低分子製造原価1桁前半%として末端換算100億ドル近い在庫確保を示唆",
+        "「ロケット・スタート」戦略の具体化"
+      ]
+    },
+    {
+      "date": "2025-02-07",
+      "headline": "4Q24決算・orforglipronアップデート",
+      "key_facts": [
+        "LLYプリアナウンスメント済みでサプライズなし",
+        "GLP-1需要は旺盛、供給力増強が課題",
+        "FDA品不足公式認定は解消",
+        "糖尿病6本・抗肥満症5本・睡眠時無呼吸・高血圧でP3試験進行中"
+      ]
+    }
+  ],
+  "fact_claims": [
+    { "id": "FC-1", "claim": "2025年12月期売上：$65,179M（SEC 10-K確認済み）", "verifiable": true },
+    { "id": "FC-2", "claim": "2025年12月期純利益：$20,640M", "verifiable": true },
+    { "id": "FC-3", "claim": "orforglipron ACHIEVE-1試験：HbA1c低下1.5%、体重減少7.9%（40週）", "verifiable": true },
+    { "id": "FC-4", "claim": "orforglipron ATTAIN-2試験：体重減少8.3%（72週、36mg群）", "verifiable": true },
+    { "id": "FC-5", "claim": "2024年12月末の未承認薬在庫：約5.5億ドル（主にorforglipron）", "verifiable": true },
+    { "id": "FC-6", "claim": "Verzenio：PFEのIbranceが失敗した術後補助療法で成功（2021年末から急拡大）", "verifiable": true },
+    { "id": "FC-7", "claim": "CVS PBM（市場3割強）がWegovyを優先推奨に（2025年5月）", "verifiable": true },
+    { "id": "FC-8", "claim": "orforglipronの治療中断率8%（Mounjaro1桁半ば%より若干高い）", "verifiable": true },
+    { "id": "FC-9", "claim": "orforglipron肝毒性なし（競合多数が断念した安全性課題なし）", "verifiable": true },
+    { "id": "FC-10", "claim": "Sustainalytics Management score：37.9→52.9に改善（2021→2022年末）", "verifiable": false, "note": "SEC外部データのため未検証" }
+  ]
+}

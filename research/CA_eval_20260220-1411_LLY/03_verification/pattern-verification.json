@@ -1,0 +1,158 @@
+{
+  "ticker": "LLY",
+  "research_id": "CA_eval_20260220-1411_LLY",
+  "verified_at": "2026-02-20T14:45:00Z",
+  "patterns_checked": {
+    "rejection_patterns": ["A", "B", "C", "D", "E", "F", "G"],
+    "high_eval_patterns": ["I", "II", "III", "IV", "V"]
+  },
+  "claim_pattern_results": [
+    {
+      "claim_id": "LLY-CA-1",
+      "title": "経口低分子GLP-1作動薬技術力（orforglipron）",
+      "rejection_patterns_detected": [],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "evidence": "ACHIEVE-1試験：HbA1c低下1.5%（Wegovy同水準）、体重減少7.9%。治療中断率8%（市場期待10%台前半を下回る）。肝毒性なし（競合多数が断念した課題をクリア）。NOVOの経口薬（ペプチド製剤）比での食事制限不要・低分子製造原価率1桁前半%という定量差別化あり",
+          "confidence_adjustment": "+0%（すでに70%で評価済み）"
+        },
+        {
+          "pattern": "V",
+          "name": "競合との具体的比較",
+          "evidence": "NOVO（Wegovy、Ozempic）を具体的競合として特定。食事制限・製造法・原価率という具体的比較軸あり。KB3 fewshot_LLY.md #2（70%）と完全一致",
+          "confidence_adjustment": "+0%（すでに70%で評価済み）"
+        }
+      ],
+      "consistency_check": "pass",
+      "final_confidence_ca": 70,
+      "final_confidence_cagr": 70,
+      "notes": "パターンIとVが重複適用。最も高評価を受けるべき主張。KYの過去判断（fewshot LLY#2=70%）と完全整合。根源要因（中外製薬との独占ライセンス取得経緯）への言及不足が70%の天井となっている"
+    },
+    {
+      "claim_id": "LLY-CA-2",
+      "title": "複数超大型市場ポートフォリオ構築力",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "B",
+          "name": "業界共通で差別化にならない",
+          "evidence": "KB2 pattern_B_industry_common.md：「グローバル大手医薬品であれば売上は複数製品の薬剤ポートから構成されるものであり、大手間の優位性とはなりにくい」（LLY#1の直接引用）。PFE、ABBV、BMY等の他のメガファーマも複数の成長市場に展開",
+          "severity": "moderate",
+          "confidence_adjustment": "-0%（すでに50%で評価済み）"
+        }
+      ],
+      "high_eval_patterns_detected": [],
+      "consistency_check": "pass",
+      "final_confidence_ca": 50,
+      "final_confidence_cagr": 70,
+      "notes": "パターンBが部分的に検出。ただしNOVO対比での「3本柱 vs 1本柱」という相対差は存在するため、完全却下（30%）ではなく50%が適切。CAGR接続は3ドライバーによるリスク分散効果を通じた成長確度向上として評価"
+    },
+    {
+      "claim_id": "LLY-CA-3",
+      "title": "アルツハイマー型認知症臨床開発ノウハウ",
+      "rejection_patterns_detected": [],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "III",
+          "name": "能力が結果より評価される",
+          "evidence": "2018年のSELL判断理由（「AD後期開発品が15-16年に失敗して以降の次世代品への交代が進んでいない」）から2024年のKisunla承認までの継続的な開発能力。失敗からの学習・継続力は能力の証明",
+          "confidence_adjustment": "+0%（部分的適用）"
+        }
+      ],
+      "consistency_check": "pass",
+      "final_confidence_ca": 50,
+      "final_confidence_cagr": 30,
+      "notes": "KB3 fewshot_LLY.md #3/#4（30%/50%）とのキャリブレーション結果として50%。CAGR接続はKisunla承認後の普及リスク（ARIA30%台）・次世代競合（ROG trontinemab）の台頭リスクを考慮して30%"
+    },
+    {
+      "claim_id": "LLY-CA-4",
+      "title": "GLP-1製剤製造スケール・供給能力",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "evidence": "「ロケット・スタート戦略」（承認前在庫積み上げ）は意思決定=戦略。パターンF該当。ただし背後にある製造能力・財務力は能力として評価可能",
+          "severity": "minor",
+          "confidence_adjustment": "-0%（50%評価の根拠として織り込み済み）"
+        }
+      ],
+      "high_eval_patterns_detected": [],
+      "consistency_check": "pass",
+      "final_confidence_ca": 50,
+      "final_confidence_cagr": 70,
+      "notes": "戦略（ロケット・スタート）と能力（製造スケール）の境界で部分的にパターンF検出。NOVO対比での固有差別化が不明確なため50%が上限。CAGR接続は製造→供給→売上の直接メカニズムで70%"
+    },
+    {
+      "claim_id": "LLY-CA-5",
+      "title": "2番手戦略による課題克服型製品・治験設計力",
+      "rejection_patterns_detected": [],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "III",
+          "name": "能力が結果より評価される",
+          "evidence": "PFEのIbranceが失敗した術後補助療法でAbemaciclibが成功という具体的なネガティブケース（競合の失敗例を活かした能力）。「先行品の課題を補う製品プロファイル設計・治験計画」という能力の証明",
+          "confidence_adjustment": "+0%（50%評価の限界は能力の継続性が不透明）"
+        }
+      ],
+      "consistency_check": "pass",
+      "final_confidence_ca": 50,
+      "final_confidence_cagr": 50,
+      "notes": "パターンIIIが部分適用。「2番手戦略」はパターンFの戦略/能力混同のリスクがあるが、治験設計力という能力として切り取れば50%が妥当。治験成功率の業界比較データがあれば70%に上がりうる"
+    },
+    {
+      "claim_id": "LLY-CA-6",
+      "title": "グローバル医療機関ネットワーク",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "B",
+          "name": "業界共通で差別化にならない",
+          "evidence": "KB2 pattern_B_industry_common.md LLY#6（30%）の直接引用：「グローバル大手医薬品であれば売り込み、開発などの情報接点として重要なネットワーク...大手間での優位性とはなりにくい」。dogma.md 却下基準2（業界共通の能力）も同様",
+          "severity": "high",
+          "confidence_adjustment": "-0%（30%評価の根拠として織り込み済み）"
+        }
+      ],
+      "high_eval_patterns_detected": [],
+      "consistency_check": "pass",
+      "final_confidence_ca": 30,
+      "final_confidence_cagr": 50,
+      "notes": "パターンBが強く検出。「メガファーマ共通能力」への批判は明確。LillyDirectのような独自プラットフォームは一定の差別化になりうるが、現時点では30%が適切"
+    },
+    {
+      "claim_id": "LLY-CA-7",
+      "title": "アルツハイマー型認知症多メカニズム並行開発",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "evidence": "「並行開発戦略」は意思決定=戦略。優位性はその戦略を可能にする「R&Dマネジメント能力・財務力」。主張の表現は戦略にフォーカスしすぎている",
+          "severity": "high",
+          "confidence_adjustment": "-0%（30%評価の根拠として織り込み済み）"
+        },
+        {
+          "pattern": "C",
+          "name": "因果関係の飛躍",
+          "evidence": "「GLP-1→脳炎症抑制仮説→AD予防」という因果チェーンは3ステップ以上で各段階の定量的裏付けなし。KB2 pattern_C_causal_leap.mdの基準に該当",
+          "severity": "moderate",
+          "confidence_adjustment": "-0%（30%評価の根拠として織り込み済み）"
+        }
+      ],
+      "high_eval_patterns_detected": [],
+      "consistency_check": "pass",
+      "final_confidence_ca": 30,
+      "final_confidence_cagr": 30,
+      "notes": "パターンFとCが重複検出。KB3 fewshot_LLY.md #3（30%）と完全整合。30%が適切"
+    }
+  ],
+  "consistency_check_overall": {
+    "status": "pass",
+    "notes": [
+      "全7主張の信頼度評価はKB3 fewshot_LLY.mdの実績（平均47%）と整合（今回平均47%）",
+      "最高評価（70%）はLLY-CA-1のみ。KB3実績でも#2（70%）が唯一の70%以上",
+      "業界共通能力批判（パターンB）を2件（LLY-CA-2:50%/LLY-CA-6:30%）に適用",
+      "戦略/能力混同批判（パターンF）を2件（LLY-CA-4:50%/LLY-CA-7:30%）に適用",
+      "因果関係の飛躍（パターンC）を1件（LLY-CA-7）に適用",
+      "CAGR接続は全体的に優位性評価より高め（平均56%）：KB3傾向と整合"
+    ]
+  }
+}

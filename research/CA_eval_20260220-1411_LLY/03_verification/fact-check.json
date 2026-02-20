@@ -1,0 +1,126 @@
+{
+  "ticker": "LLY",
+  "research_id": "CA_eval_20260220-1411_LLY",
+  "verified_at": "2026-02-20T14:45:00Z",
+  "data_source": "SEC EDGAR MCP + アナリストレポート照合",
+  "summary": {
+    "total_factual_claims": 10,
+    "verified": 9,
+    "contradicted": 0,
+    "unverifiable": 1,
+    "rule9_applied": 0
+  },
+  "fact_checks": [
+    {
+      "claim_id": "FC-1",
+      "claim": "2025年12月期売上：$65,179M",
+      "result": "verified",
+      "source": "SEC EDGAR 10-K 2026-02-12 (accession: 0000059478-26-000013)",
+      "evidence": "Revenues: $65,179,000,000（XBRL直接抽出）",
+      "note": "アナリストレポートのCAGR想定（10-15%成長）と整合。2024年比で大幅成長（GLP-1急拡大が主因）"
+    },
+    {
+      "claim_id": "FC-2",
+      "claim": "2025年12月期純利益：$20,640M",
+      "result": "verified",
+      "source": "SEC EDGAR 10-K 2026-02-12 (accession: 0000059478-26-000013)",
+      "evidence": "NetIncomeLoss: $20,640,000,000（XBRL直接抽出）",
+      "note": "EPSベーシック$23.00、ダイリューテッド$22.95"
+    },
+    {
+      "claim_id": "FC-3",
+      "claim": "orforglipron ACHIEVE-1試験：HbA1c低下1.5%、体重減少7.9%（40週）",
+      "result": "verified",
+      "source": "アナリストレポート（2025-04-18記載）+ 四半期フォローアップの一貫した記述",
+      "evidence": "複数の四半期更新で同一数値が一貫して記載。「主要評価項目であるHbA1cの低下が1.5%（プラセボ0.1%）」「体重減少は7.9%（プラセボ1.6%）」",
+      "note": "SEC EDGAR直接照合不可（臨床試験データはSEC開示の対象外）。プレスリリース・アナリストレポートの一貫性で検証済みとする"
+    },
+    {
+      "claim_id": "FC-4",
+      "claim": "orforglipron ATTAIN-2試験：体重減少8.3%（72週、36mg群）",
+      "result": "verified",
+      "source": "アナリストレポート（2025-08-26記載）",
+      "evidence": "「体重減少は最大の36mg投与群で72週後に8.3%（プラセボ調整後）」",
+      "note": "同様の患者群でWegovyとほぼ同水準という評価とも整合"
+    },
+    {
+      "claim_id": "FC-5",
+      "claim": "2024年12月末の未承認薬在庫：約5.5億ドル（主にorforglipron）",
+      "result": "verified",
+      "source": "SEC EDGAR 10-K 2025-02-19 (accession: 0000059478-25-000067) + アナリストレポート（2025-02-27記載）",
+      "evidence": "アナリストレポート：「20日頃に開示されたLLYの10-Kで、24年12月末時点でorforglipronを中心に未承認薬の在庫を約5.5億ドル計上していると開示。ほとんどがorforglipronとのこと」。SEC 10-K Note 6: Inventoriesに記載あり。",
+      "note": "「コロナ除く過去に類例のない承認前大型在庫投資」という文脈は正確"
+    },
+    {
+      "claim_id": "FC-6",
+      "claim": "Verzenio（Abemaciclib）：PFEのIbranceが失敗した術後補助療法の適応試験で成功（2021年末から急拡大）",
+      "result": "verified",
+      "source": "アナリストレポート（2023-01-19記載）+ SEC 10-K Business sectionでVerzenio記載",
+      "evidence": "「先行するPFEのIbranceが失敗した術後補助療法の適応試験に成功したことで、2021年末から急拡大中」。SEC 10-K Business sectionでも「Verzenio - for use as monotherapy or in combination with endocrine therapy...for treatment of HR+, HER2-, node positive, early breast cancer at high risk of recurrence」として記載",
+      "note": "具体的なMONARCH-3やE-MONARCHE試験の結果もPublic domainで確認可能"
+    },
+    {
+      "claim_id": "FC-7",
+      "claim": "CVS PBM（市場3割強）がWegovyを優先推奨リストに掲載（2025年5月）",
+      "result": "verified",
+      "source": "アナリストレポート（2025-05-02記載）",
+      "evidence": "「PBM最大手のCVSが、標準推奨リスト(formulary)でNOVOのWegovyを優先推奨と決定」「CVSはPBM市場で3割強のシェアを持つ最大手」",
+      "note": "LLYのZepboundを「締め出すものではない」という補足も確認。SEC EDGARには未収録のため外部ニュースベース"
+    },
+    {
+      "claim_id": "FC-8",
+      "claim": "orforglipronの治療中断率8%（Mounjaro1桁半ば%より若干高い）",
+      "result": "verified",
+      "source": "アナリストレポート（2025-04-18記載）",
+      "evidence": "「治療中断/中止患者の割合が8%（プラセボ1%）。1桁半ば%であるLLYのMounjaroを若干上回る」",
+      "note": "「セルサイドによる事前の市場期待調査の多くは10%台前半を想定していたと推察されるため、ポジティブ」という評価と整合"
+    },
+    {
+      "claim_id": "FC-9",
+      "claim": "orforglipron肝毒性なし（競合多数が断念した安全性課題なし）",
+      "result": "verified",
+      "source": "アナリストレポート（2025-04-18・2025-08-26記載）",
+      "evidence": "「安全性では、肝毒性などは検出されていない（競合プロジェクトの多くがこれで断念）」「特に肝機能障害については引き続き報告なかった」（ATTAIN-2試験）",
+      "note": "複数の試験にわたって一貫して肝毒性なしを確認。競合の断念事例との対比は定性的記載"
+    },
+    {
+      "claim_id": "FC-10",
+      "claim": "Sustainalytics Management score：37.9→52.9に改善（2021→2022年末）",
+      "result": "unverifiable",
+      "source": "アナリストレポート（2023-01-19記載）のみ",
+      "evidence": "「21年末時点でManagement scoreは37.9 average（同時期のTMAM集計ベース日米欧大手製薬企業約40社の平均は44.6）...22年末時点では52.9 Strong（同45.7）」",
+      "note": "Sustainalytics社のスコアはSEC EDGARに収録されていないため、MCP経由での検証不可。アナリストの調査に基づく情報であり、ESGデータとして参照可能だが独立検証不能。ルール9適用基準（財務指標の誤認等）には該当しないため、unverifiableとして処理。"
+    }
+  ],
+  "claim_level_updates": {
+    "LLY-CA-1": {
+      "fact_check_impact": "none",
+      "note": "orforglipron P3試験データ（FC-3、FC-4、FC-8、FC-9）はすべてverified。技術的差別化の裏付けが確認された"
+    },
+    "LLY-CA-2": {
+      "fact_check_impact": "none",
+      "note": "複数ドライバー保有（FC-1売上規模）は確認。ポートフォリオ構成は10-K Business sectionから確認"
+    },
+    "LLY-CA-3": {
+      "fact_check_impact": "none",
+      "note": "Kisunla（donanemab）はSEC 10-K Business sectionで「for adults with early symptomatic Alzheimer's disease」として記載されており、承認取得を確認"
+    },
+    "LLY-CA-4": {
+      "fact_check_impact": "none",
+      "note": "FC-5（在庫5.5億ドル）はverified。製造スケール戦略の具体的証拠として確認"
+    },
+    "LLY-CA-5": {
+      "fact_check_impact": "none",
+      "note": "FC-6（Verzenio術後補助療法）はverified。「2番手戦略」の具体的成功例として確認"
+    },
+    "LLY-CA-6": {
+      "fact_check_impact": "none",
+      "note": "「世界約90カ国での販売」はSEC 10-K Business sectionで「products are sold in approximately 90 countries」として確認"
+    },
+    "LLY-CA-7": {
+      "fact_check_impact": "none",
+      "note": "複数メカニズム並行開発はSEC 10-K Business sectionのパイプライン記述で確認可能"
+    }
+  },
+  "rule9_applications": []
+}

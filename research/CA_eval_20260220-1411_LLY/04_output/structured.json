@@ -1,0 +1,273 @@
+{
+  "ticker": "LLY",
+  "research_id": "CA_eval_20260220-1411_LLY",
+  "generated_at": "2026-02-20T15:00:00Z",
+  "report_version": "draft",
+  "overall_assessment": {
+    "avg_confidence_ca": 47,
+    "avg_confidence_cagr": 56,
+    "strongest_claim": "LLY-CA-1（経口低分子GLP-1技術力：CA=70%、CAGR=70%）",
+    "total_claims": 7,
+    "distribution": { "90pct": 0, "70pct": 1, "50pct": 3, "30pct": 3, "10pct": 0 },
+    "kb3_analog": "fewshot_LLY.md（平均47%）と完全一致"
+  },
+  "claims": [
+    {
+      "claim_id": "LLY-CA-1",
+      "title": "経口低分子GLP-1作動薬（orforglipron）技術力",
+      "advantage_name": "経口低分子GLP-1製造技術力（中外製薬との独占ライセンス）",
+      "confidence_ca": 70,
+      "confidence_cagr": 70,
+      "rule_results": {
+        "R1_capability_not_result": "pass",
+        "R2_noun_attribute": "pass",
+        "R3_relative_superiority": "pass",
+        "R4_quantitative_evidence": "pass",
+        "R6_structural_vs_complementary": "structural",
+        "R7_pure_competitor": "pass（NOVO対比）",
+        "R8_strategy_not_advantage": "pass",
+        "R9_gatekeeper": "pass",
+        "R10_negative_case": "partial（競合の肝毒性断念例）",
+        "R11_industry_structure": "partial"
+      },
+      "patterns": {
+        "rejection": [],
+        "high_eval": ["I（定量的裏付け）", "V（競合との具体的比較）"]
+      },
+      "key_evidence": [
+        "ACHIEVE-1：HbA1c -1.5%（Wegovy同水準）、体重-7.9%（40週）",
+        "ATTAIN-2：体重-8.3%（72週、36mg群）",
+        "治療中断率8%（市場期待10%台前半を下回る）",
+        "肝毒性なし（競合多数が断念した安全性課題をクリア）",
+        "低分子製造原価率1桁前半%（注射剤より大幅に低い製造コスト）",
+        "3年以上のリード（低分子GLP-1作動薬で最先行）"
+      ],
+      "weaknesses": [
+        "根源要因（なぜLLYが中外製薬との独占ライセンスを取得できたか）の説明不足",
+        "ATTAIN-1試験（糖尿病非伴う肥満症）でWegovyをやや下回るデータ",
+        "承認前不確実性（本稿時点では肥満症申請中）"
+      ],
+      "cagr_mechanism": "経口投与→注射忌避層獲得＋既存患者移行→GLP-1市場シェア維持・拡大→CAGR支援",
+      "fact_check_result": "verified（FC-3,4,8,9）",
+      "pattern_match": "I,V"
+    },
+    {
+      "claim_id": "LLY-CA-2",
+      "title": "複数超大型市場ポートフォリオ構築力",
+      "advantage_name": "超大型成長市場への重点集中ポートフォリオ構築力",
+      "confidence_ca": 50,
+      "confidence_cagr": 70,
+      "rule_results": {
+        "R1_capability_not_result": "partial（結果の側面あり）",
+        "R2_noun_attribute": "pass",
+        "R3_relative_superiority": "partial（NOVO比3本柱だが業界共通の疑い）",
+        "R4_quantitative_evidence": "partial（具体的数値は個別製品の売上が主）",
+        "R6_structural_vs_complementary": "structural",
+        "R7_pure_competitor": "partial",
+        "R8_strategy_not_advantage": "partial",
+        "R9_gatekeeper": "pass",
+        "R10_negative_case": "not applicable",
+        "R11_industry_structure": "fail"
+      },
+      "patterns": {
+        "rejection": ["B（業界共通）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "GLP-1（Mounjaro/Zepbound/orforglipron）＋AD（Kisunla）＋乳がん（Verzenio）の3本柱",
+        "NOVOが実質GLP-1単一ドライバーに対してLLYは3分散",
+        "CAGR High teens（10%台後半）を3ドライバーで支える設計"
+      ],
+      "weaknesses": [
+        "PFE、ABBV、BMY等の他メガファーマも複数成長市場に展開",
+        "能力・仕組みの説明が不足（なぜLLYが複数超大型市場を見極めて投資できたか）",
+        "パターンB（業界共通）の疑い"
+      ],
+      "cagr_mechanism": "3ドライバー分散→リスク低減→高い成長確度→CAGR達成",
+      "fact_check_result": "verified（SEC 10-K）",
+      "pattern_match": "B（部分）"
+    },
+    {
+      "claim_id": "LLY-CA-3",
+      "title": "アルツハイマー型認知症臨床開発ノウハウ",
+      "advantage_name": "アルツハイマー型認知症領域の長期臨床開発ノウハウ（臨床設計力・継続力）",
+      "confidence_ca": 50,
+      "confidence_cagr": 30,
+      "rule_results": {
+        "R1_capability_not_result": "pass",
+        "R2_noun_attribute": "pass",
+        "R3_relative_superiority": "partial（エーザイ/BIIB等も同等のノウハウ）",
+        "R4_quantitative_evidence": "partial（12ヶ月での除去実績 vs Leqembi 18ヶ月）",
+        "R6_structural_vs_complementary": "structural",
+        "R7_pure_competitor": "partial",
+        "R8_strategy_not_advantage": "pass",
+        "R9_gatekeeper": "pass",
+        "R10_negative_case": "pass（2018年SELL→2024年Kisunla承認という失敗からの学習）",
+        "R11_industry_structure": "partial"
+      },
+      "patterns": {
+        "rejection": [],
+        "high_eval": ["III（能力が結果より評価）"]
+      },
+      "key_evidence": [
+        "Kisunla（donanemab）承認済み（2024年）",
+        "PET診断薬での先行実績（15年以上の継続）",
+        "アミロイドβ除去：12ヶ月（Leqembi 18ヶ月より優れる）",
+        "失敗からの継続（2018年SELL判断時点での開発失敗を乗り越え）"
+      ],
+      "weaknesses": [
+        "ARIA（脳浮腫）発症率30%台（Leqembi 20%台）",
+        "エーザイ/BIIBも同等のノウハウを保有",
+        "ROG trontinemabの次世代技術（3ヶ月での完全除去）が台頭中",
+        "普及には診断インフラ（PET/LPアミロイド検査）の整備が必要"
+      ],
+      "cagr_mechanism": "ADノウハウ→Kisunla商業化→AD市場シェア獲得→CAGR+",
+      "fact_check_result": "verified（Kisunlaは10-K Businessセクション記載）",
+      "pattern_match": "III（部分）"
+    },
+    {
+      "claim_id": "LLY-CA-4",
+      "title": "GLP-1製剤製造スケール・供給能力",
+      "advantage_name": "GLP-1製剤製造スケール能力（設備投資の規模と先行性）",
+      "confidence_ca": 50,
+      "confidence_cagr": 70,
+      "rule_results": {
+        "R1_capability_not_result": "partial",
+        "R2_noun_attribute": "pass",
+        "R3_relative_superiority": "partial（NOVOも同等の投資）",
+        "R4_quantitative_evidence": "pass（5.5億ドル在庫：SEC 10-K確認済み）",
+        "R6_structural_vs_complementary": "structural",
+        "R7_pure_competitor": "partial",
+        "R8_strategy_not_advantage": "partial（ロケット・スタートは戦略）",
+        "R9_gatekeeper": "pass",
+        "R10_negative_case": "not applicable",
+        "R11_industry_structure": "partial"
+      },
+      "patterns": {
+        "rejection": ["F（戦略/能力混同・軽度）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "承認前在庫5.5億ドル（末端換算30〜100億ドル規模）：SEC 10-Kで確認",
+        "FDA品不足公式認定が2025年初頭に解消（供給力増強の証拠）",
+        "糖尿病6本・抗肥満症5本のP3試験を同時進行（製造投資先行）"
+      ],
+      "weaknesses": [
+        "NOVOも同規模の製造投資を実施（デュオポリー両者共通）",
+        "LLY固有の製造優位性が不明（vs NOVO）",
+        "ロケット・スタートは戦略（意思決定）であり構造的能力の説明不足"
+      ],
+      "cagr_mechanism": "製造スケール先行→需要増に即応→GLP-1売上成長維持",
+      "fact_check_result": "verified（FC-5）",
+      "pattern_match": "F（軽度）"
+    },
+    {
+      "claim_id": "LLY-CA-5",
+      "title": "2番手戦略による課題克服型治験設計力",
+      "advantage_name": "後発開発における先行品課題克服型製品・治験設計力",
+      "confidence_ca": 50,
+      "confidence_cagr": 50,
+      "rule_results": {
+        "R1_capability_not_result": "pass",
+        "R2_noun_attribute": "pass",
+        "R3_relative_superiority": "pass（PFE比で術後補助療法成功）",
+        "R4_quantitative_evidence": "partial",
+        "R6_structural_vs_complementary": "structural",
+        "R7_pure_competitor": "pass（PFE Ibranceとの直接比較）",
+        "R8_strategy_not_advantage": "partial",
+        "R9_gatekeeper": "pass",
+        "R10_negative_case": "pass（PFEのネガティブケースでLLYが成功）",
+        "R11_industry_structure": "partial"
+      },
+      "patterns": {
+        "rejection": [],
+        "high_eval": ["III（能力評価・部分）"]
+      },
+      "key_evidence": [
+        "PFE Ibranceが失敗した術後補助療法でAbemaciclib（Verzenio）が成功",
+        "Jardiance：競合より先行して心臓血管リスク低下データを取得（2015年）",
+        "Baricitinib：Xeljanzより優れた安全性プロファイル"
+      ],
+      "weaknesses": [
+        "「2番煎じ」という戦略は2016年頃の表現。現在はGLP-1でむしろ先行",
+        "治験設計能力はメガファーマが概ね保有する能力",
+        "継続性が不透明（この能力が今後も発揮されるかが不確実）"
+      ],
+      "cagr_mechanism": "治験設計力→適応拡大成功→売上拡大（Verzenio再加速）",
+      "fact_check_result": "verified（FC-6）",
+      "pattern_match": "III（部分）"
+    },
+    {
+      "claim_id": "LLY-CA-6",
+      "title": "グローバル医療機関ネットワーク",
+      "advantage_name": "グローバル医療機関ネットワーク（販売・情報提供インフラ）",
+      "confidence_ca": 30,
+      "confidence_cagr": 50,
+      "rule_results": {
+        "R1_capability_not_result": "partial",
+        "R2_noun_attribute": "pass",
+        "R3_relative_superiority": "fail（業界共通能力）",
+        "R4_quantitative_evidence": "fail（定量データなし）",
+        "R6_structural_vs_complementary": "complementary",
+        "R7_pure_competitor": "fail",
+        "R8_strategy_not_advantage": "pass",
+        "R9_gatekeeper": "pass",
+        "R10_negative_case": "not applicable",
+        "R11_industry_structure": "fail"
+      },
+      "patterns": {
+        "rejection": ["B（業界共通・高強度）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "世界約90カ国での販売（SEC 10-K確認）",
+        "LillyDirectプラットフォーム（直接患者向けデジタル）",
+        "MR・デジタルチャネルによる医師エンゲージメント"
+      ],
+      "weaknesses": [
+        "KB3 LLY#6（30%）の直接適用：「メガファーマなら誰でも持っているネットワーク」",
+        "LillyDirectの他社比差別化データなし",
+        "補完的要素（ルール6）として位置づけが適切"
+      ],
+      "cagr_mechanism": "グローバル展開→承認後迅速商業化→米国外売上貢献（補完的）",
+      "fact_check_result": "verified（SEC 10-K Business section）",
+      "pattern_match": "B"
+    },
+    {
+      "claim_id": "LLY-CA-7",
+      "title": "アルツハイマー型認知症多メカニズム並行開発",
+      "advantage_name": "アルツハイマー型認知症多メカニズム並行開発ポートフォリオ",
+      "confidence_ca": 30,
+      "confidence_cagr": 30,
+      "rule_results": {
+        "R1_capability_not_result": "partial",
+        "R2_noun_attribute": "fail（「並行開発戦略」は動詞的表現）",
+        "R3_relative_superiority": "fail（エーザイ/BIIBも複数メカニズム）",
+        "R4_quantitative_evidence": "fail",
+        "R6_structural_vs_complementary": "complementary",
+        "R7_pure_competitor": "fail",
+        "R8_strategy_not_advantage": "fail（戦略と混同）",
+        "R9_gatekeeper": "pass",
+        "R10_negative_case": "not applicable",
+        "R11_industry_structure": "fail"
+      },
+      "patterns": {
+        "rejection": ["F（戦略/能力混同・高度）", "C（因果関係の飛躍）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "donanemab（Kisunla）承認後もタウタンパク等の次世代標的で開発継続",
+        "GLP-1のAD予防効果（脳炎症抑制仮説）でP3試験の可能性"
+      ],
+      "weaknesses": [
+        "「並行開発」は戦略（パターンF）",
+        "GLP-1→AD予防の因果チェーンは飛躍（パターンC）",
+        "エーザイ/BIIBも複数メカニズム保有（差別化なし）",
+        "KB3 LLY#3（30%）と完全一致"
+      ],
+      "cagr_mechanism": "複数AD試験成功（仮説）→将来的な追加売上",
+      "fact_check_result": "verified（SEC 10-K パイプライン記述）",
+      "pattern_match": "F,C"
+    }
+  ]
+}
