@@ -1,0 +1,374 @@
+{
+  "ticker": "VRSK",
+  "company_name": "Verisk Analytics, Inc.",
+  "retrieved_at": "2026-02-20T14:11:00Z",
+  "data_source": "mixed",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "partial",
+    "reason": "SEC EDGAR MCPで基本財務データ（FY2025 10-K）および直近filings情報は取得成功。ただしget_key_metricsはVRSKで空応答。filing_sectionsはbusiness/risk_factorsのみ取得（MD&A/Properties未取得）。インサイダー詳細（個人別情報）は未取得。",
+    "affected_fields": ["key_metrics_detailed", "mda_section", "properties_section", "insider_individual_details"],
+    "available_fields": ["financials_fy2025", "recent_filings_list", "business_section", "risk_factors_section", "insider_summary_counts", "financials_from_report_historical"]
+  },
+  "financials": {
+    "note": "FY2025財務データはSEC EDGAR 10-K（提出日2026-02-18, Accession: 0001437749-26-004452）から取得。歴史的データはアナリストレポートから補完。",
+    "revenue": {
+      "description": "売上高（Revenue from Contract with Customer）",
+      "latest_annual": {
+        "value": 3072700000,
+        "value_approx": "3,072.7",
+        "currency": "USD",
+        "period": "FY2025（2025年1月1日〜2025年12月31日）",
+        "source": "SEC EDGAR 10-K FY2025 XBRL直接抽出"
+      },
+      "historical_reference": {
+        "fy2024_guidance_range": "USD 3.03-3.13 bn（OG+6~8%）",
+        "fy2023_actual": "USD 2.59-2.66 bn（レポート記載）",
+        "fy2022_baseline": "USD 2.35 bn程度（22/4Q決算から推計）",
+        "growth_trajectory": "2022年以降一貫してOG+6~10%成長を維持",
+        "note": "歴史的データはアナリストレポートから抽出した参照値"
+      }
+    },
+    "segment_revenue_mix": {
+      "note": "FY2025より単一セグメント（Insurance）。Energy/Financial Services事業は2022-2023年に売却済み。",
+      "Insurance": {
+        "share": "100%",
+        "description": "P&C保険向けデータ分析・アンダーライティング・クレーム処理ソリューション",
+        "subsegments": {
+          "Underwriting_Rating": {
+            "description": "アンダーライティング・保険料率算定支援",
+            "og_fy2025_2q": "+7.9% yoy"
+          },
+          "Claims": {
+            "description": "保険金請求処理・不正請求防止",
+            "og_fy2025_2q": "+8.3% yoy"
+          }
+        },
+        "revenue_mix_by_type": {
+          "subscription": "約80%（1〜5年契約、通常3年）",
+          "non_subscription": "約20%（不動産個別物件評価・修繕見積もり等のTransactional）"
+        }
+      }
+    },
+    "income_statement": {
+      "fy2025": {
+        "revenue": 3072700000,
+        "operating_income": 1343900000,
+        "net_income": 908300000,
+        "cost_of_revenue": 925500000,
+        "operating_margin_pct": 43.7,
+        "eps_basic": 6.50,
+        "eps_diluted": 6.48,
+        "source": "SEC EDGAR 10-K FY2025"
+      },
+      "ebitda_margin_trend": {
+        "fy2025_q2": "57.6%（vs Cons 56.0%）",
+        "fy2025_q1": "55.3%（vs Cons 55.1%）",
+        "fy2024_q2": "55.4%（vs Cons 55.2%）",
+        "fy2024_q1": "54.0%（vs Cons 53.9%）",
+        "fy2023_q3": "53-54%ガイダンス維持",
+        "fy2023_q2": "54.1%",
+        "fy2022_q4": "52.7%",
+        "long_term_target": "FY24目標55-56%（Gen AI・セールスフォース・海外投資勘案）",
+        "improvement_drivers": "Operating Leverage + Global Talent Optimization（ポーランド・ハイデラバード）"
+      },
+      "revenue_growth_quarterly": {
+        "fy2025_q2": "OG +7.9% yoy（Sub +9.3%、Non-Sub +1.8%）",
+        "fy2025_q1": "OG +7.9% yoy（Sub +10.6%、Non-Sub ▲4.0%）",
+        "fy2024_q2": "OG +6.0% yoy（Sub +8.3%、Non-Sub ▲3.0%）",
+        "fy2024_q1": "OG +6.9% yoy（Sub +7.8%、Non-Sub +3.1%）",
+        "fy2023_q3": "OG +9.4% yoy（Sub +9.3%、Non-Sub +10.2%）",
+        "fy2023_q2": "OG +9.8% yoy（Sub +9.1%、Non-Sub +12.4%）",
+        "fy2022_q4": "OG +8.1% yoy（ハリケーンイアン一過性除くと+7.1%）"
+      },
+      "eps_quarterly": {
+        "fy2025_q2": "Adj EPS 1.88（vs Cons 1.77）",
+        "fy2025_q1": "Adj EPS 1.73（vs Cons 1.68）",
+        "fy2024_q2": "Adj EPS 1.74（vs Cons 1.64）",
+        "fy2024_q1": "Adj EPS 1.63（vs Cons 1.52）",
+        "fy2023_q3": "対前年大幅増（ガイダンス：5.50-5.70）",
+        "fy2022_q4": "Adj EPS 1.43（vs Cons 1.18）"
+      },
+      "fy2025_full_year_guidance": {
+        "revenue_range_usd": "3.09-3.13 bn",
+        "og_growth": "+6~8%",
+        "adj_ebitda_margin": "55.0-55.8%",
+        "adj_eps": "6.80-7.00（買収影響でやや低下、FY26末までにEPS Accretive見込み）",
+        "note": "2025Q2時点での開示ガイダンス"
+      }
+    },
+    "balance_sheet": {
+      "fy2025": {
+        "total_assets": 6195500000,
+        "current_assets": 2765400000,
+        "total_liabilities": 5885700000,
+        "current_liabilities": 2300300000,
+        "stockholders_equity": 309000000,
+        "cash_and_equivalents": 2178200000,
+        "accounts_receivable_net": 422200000,
+        "source": "SEC EDGAR 10-K FY2025"
+      },
+      "roic_notes": {
+        "fy2023_roic": "約26%（CEOコメント）",
+        "fy2023_incremental_roic": "約19%",
+        "management_target": "Incremental ROIC維持（経営陣インセンティブ指標に組み込み）"
+      }
+    },
+    "cash_flow": {
+      "fy2025": {
+        "operating_cash_flow": 1436000000,
+        "investing_cash_flow": 358100000,
+        "financing_cash_flow": 795200000,
+        "ending_cash": 2178200000,
+        "source": "SEC EDGAR 10-K FY2025"
+      },
+      "capex_notes": {
+        "capex_to_revenue_target": "5-6%（従来8%から削減）",
+        "current_trajectory": "クラウド移行に伴うCapex削減が進行中",
+        "note": "ソフトウェアの減価償却は基本3年"
+      },
+      "capital_allocation": {
+        "policy": "① 有機的再投資 → ② 選択的戦略M&A → ③ 株主還元（余剰資金）",
+        "buyback_history": "FY2024 1Q: USD 170M実施、4月に追加30M。現状枠1.4bn",
+        "buyback_new_authorization": "FY2023 4Q: USD 1.0bn新規承認、合計1.6bn枠",
+        "buyback_pct_3yr": "過去3年で50%以上の capital を Buyback or Dividends で還元",
+        "dividend": "2019年に初配当開始",
+        "m_and_a_criteria": {
+          "insurance_focus": "Insurance領域内での既存事業との統合によるGrowthとHigh ROICを重視",
+          "bolt_on_strategy": "bolt-on型（小規模・隣接領域）を優先",
+          "guardrails": "OG達成のための買収はしない方針"
+        }
+      }
+    }
+  },
+  "recent_filings": {
+    "10k": {
+      "status": "available",
+      "filings": [
+        {
+          "form_type": "10-K",
+          "filing_date": "2026-02-18",
+          "period_of_report": "2025-12-31",
+          "accession_number": "0001437749-26-004452",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/1442145/000143774926004452/0001437749-26-004452.txt"
+        },
+        {
+          "form_type": "10-K",
+          "filing_date": "2025-02-26",
+          "period_of_report": "2024-12-31",
+          "accession_number": "0001437749-25-005160"
+        },
+        {
+          "form_type": "10-K",
+          "filing_date": "2024-02-21",
+          "period_of_report": "2023-12-31",
+          "accession_number": "0001437749-24-004939"
+        },
+        {
+          "form_type": "10-K",
+          "filing_date": "2023-02-28",
+          "period_of_report": "2022-12-31",
+          "accession_number": "0001437749-23-004945"
+        },
+        {
+          "form_type": "10-K",
+          "filing_date": "2022-02-22",
+          "period_of_report": "2021-12-31",
+          "accession_number": "0001437749-22-004083"
+        }
+      ]
+    },
+    "10q": {
+      "status": "available",
+      "note": "直近10-Qは2025 Q3（2025年10-29提出）"
+    },
+    "8k": {
+      "status": "available",
+      "recent_8k": [
+        {
+          "filing_date": "2026-02-18",
+          "accession_number": "0001437749-26-004451",
+          "note": "FY2025 Q4/通年決算発表"
+        },
+        {
+          "filing_date": "2025-12-29",
+          "accession_number": "0001193125-25-332544",
+          "note": "AccuLynx買収完了（USD 2.35bn大型買収）関連"
+        },
+        {
+          "filing_date": "2025-10-29",
+          "accession_number": "0001437749-25-032072",
+          "note": "25/3Q決算"
+        },
+        {
+          "filing_date": "2025-08-21",
+          "accession_number": "0001193125-25-185078",
+          "note": "25/2Q決算後の追加開示"
+        },
+        {
+          "filing_date": "2025-07-30",
+          "accession_number": "0001437749-25-023861",
+          "note": "25/2Q決算（AccuLynx買収発表含む）"
+        },
+        {
+          "filing_date": "2025-05-07",
+          "accession_number": "0001437749-25-014906",
+          "note": "25/1Q決算"
+        }
+      ]
+    }
+  },
+  "insider_summary": {
+    "status": "partial",
+    "period_days": 180,
+    "summary": {
+      "total_form4_filings": 23,
+      "form3_count": 0,
+      "form4_count": 23,
+      "form5_count": 0,
+      "recent_filings_dates": ["2026-01-23（6件）", "2026-01-06（4件以上）"],
+      "unique_insiders_detail": "個人別詳細データは未取得",
+      "note": "Form 4（23件）のみ。大量のForm 4提出は役員のRSU付与・行使サイクルの可能性。売却/買い増しの方向性は個別確認要。"
+    }
+  },
+  "key_metrics": {
+    "roic": {
+      "fy2023_roic": "約26%",
+      "fy2023_incremental_roic": "約19%",
+      "management_target": "Incremental ROIC継続改善",
+      "proxy_incentive": "Incremental ROICが経営陣インセンティブに組み込み（Proxy Statement確認済）"
+    },
+    "ebitda_margin": {
+      "fy2025_q2": "57.6%（220bp yoy改善）",
+      "fy2025_q1": "55.3%",
+      "fy2024_guidance": "55.0-55.8%",
+      "improvement_source": "FX 120bp + Operating Leverage + コスト削減"
+    },
+    "subscription_metrics": {
+      "subscription_revenue_pct": "約80%以上（FY2025）",
+      "contract_duration": "通常3年（1〜5年の範囲）",
+      "subscription_og_fy2025_q2": "+9.3% yoy",
+      "retention_rate_pc_insurers": "99%（継続率、損保業界全体）",
+      "top100_pc_coverage": "100%（米国P&C保険上位100社）",
+      "us_pc_revenue_share": "約70%（FY2025決算）"
+    },
+    "ai_adoption": {
+      "mozart_ai_tool_penetration": "50%近く（祖業ISO関連事業）",
+      "pricing_impact": "AI Tool導入によりOG好調の一因（価格引上げ要因）",
+      "use_cases": "Discovery Navigator（ヘルスケア保険金請求効率化）他、各サービスにUse Caseあり"
+    },
+    "data_assets": {
+      "statistical_database_records": "297億超（2021年時点）",
+      "annual_data_intake": "26億超の保険取引データ（2021年）",
+      "claim_database": "15億件以上の保険金請求データ、毎日175K以上追加",
+      "field_inspectors": "約520名のフィールド調査員（個別不動産調査）",
+      "annual_property_inspections": "368K件超/年",
+      "property_data_stock": "15.4M件",
+      "actuaries_statisticians": "530名の統計専門家 + 190名のアクチュアリー",
+      "legal_specialists": "約200名の専門弁護士（保険約款管理）"
+    },
+    "cost_structure": {
+      "opex_labor_share": "約60%が人件費",
+      "cost_optimization": "Global Talent Optimization（ポーランド・ハイデラバード）+ Lean Six Sigma",
+      "cloud_migration": "メインフレームのCloud移行でCapex/Revenue比率低下中"
+    },
+    "m_and_a": {
+      "fy2025_acquisitions": [
+        {
+          "name": "AccuLynx",
+          "value_usd": 2350000000,
+          "completed": "2025年12月26日",
+          "description": "Roof修理業者向け業務管理プラットフォーム（ニッチCRM）。Insurance Restoration Ecosystem戦略の一環",
+          "metrics": "売上高150-200M、EBITDA Margin 55%、Sub Revenue 80%超、TAM 2bn（CAGR9%）",
+          "valuation": "PSR 15x、EBITDA 28x（Veriskとほぼ同等マルチプル）"
+        },
+        {
+          "name": "SuranceBay",
+          "value_usd": 163000000,
+          "description": "生命保険/年金プラットフォームFastへの業務管理ソフトウェア追加",
+          "note": "Insurance領域エコシステム拡充"
+        }
+      ],
+      "historical_m_and_a": {
+        "approach": "bolt-on型（Insurance隣接領域）",
+        "frequency": "年複数件のsmall bolt-on",
+        "fy2023_activity": "アクティブな買収を実施せず（バリュエーション高値）",
+        "fy2024_activity": "M&AパイプラインはClaim領域中心に豊富"
+      }
+    }
+  },
+  "filing_sections": {
+    "business": {
+      "source": "SEC EDGAR 10-K FY2025 Item 1（2026-02-18提出）",
+      "summary": "Veriskは米国P&C保険エコシステムに特化したデータ・分析・テクノロジーサービス会社。1971年にISO（保険サービス機構）として設立。保険引受（Forms/Rules/Loss Costs）、リスク選択・価格設定、保険金請求処理、不正検出、カタストロフ・気象リスク定量化等のソリューションを提供。FY2025において米国P&C保険上位100社全社が顧客。単一セグメント（Insurance）で運営。",
+      "competitive_differentiators_from_10k": [
+        "Proprietary Data Assets：独自・貢献型データを基盤とした予測分析モデル",
+        "Deep Insurance Industry Expertise and Focus：保険・リスク管理の専門知識",
+        "Long-standing Industry Relationships：1971年創業来の業界との信頼関係",
+        "Scale to Drive Broad Distribution of Innovation：規模を活かした業界全体へのイノベーション提供"
+      ],
+      "strategy_priorities": [
+        "Drive Consistent & Predictable Growth：保険業界内でのリーチ拡大とAI/クラウド活用",
+        "Drive Operating Efficiency and Profitability：サブスク型モデルによる営業レバレッジ",
+        "Ensure Disciplined Capital Allocation：有機投資 → M&A → 株主還元の優先順位"
+      ],
+      "customer_metrics": {
+        "top100_pc_coverage": "top 100 P&C providers（米国、FY2025）全社が顧客",
+        "us_pc_revenue_share": "約70%がU.S. P&C primary insurers由来（FY2025）",
+        "subscription_pct": "80%超（annual or quarterly prepaid）"
+      },
+      "history_key_events": [
+        "1971年：ISO（Insurance Services Office）設立（損保業界の非営利組織）",
+        "2009年：Nasdaq上場",
+        "2015年：Wood Mackenzie（エネルギーリサーチ）をUSD 2.8bnで買収",
+        "2022年：Energy・Financial Services事業を売却（コア事業Insurance回帰）",
+        "2023年2月：Energy事業売却完了"
+      ]
+    },
+    "risk_factors": {
+      "source": "SEC EDGAR 10-K FY2025 Item 1A（2026-02-18提出）",
+      "key_risks": [
+        {
+          "category": "競合リスク",
+          "description": "多くの市場で競合が存在。大手競合は特定セグメントに多くのリソースを投入可能。新規参入・アライアンス形成により市場シェアが侵食される可能性。"
+        },
+        {
+          "category": "データアクセスリスク",
+          "description": "外部データソース（顧客・政府・公共機関）への依存。データ提供組織の撤退・制限・価格引上げリスク。データ提供者との契約は短期契約が多く、一部は競合でもある。"
+        },
+        {
+          "category": "無償データリスク",
+          "description": "公的機関による無償データ提供の増加により、一部ソリューションへの需要が減少する可能性。"
+        },
+        {
+          "category": "新規ソリューション開発リスク",
+          "description": "新サービスの開発・市場投入失敗リスク。規制承認の遅延。市場受容性の問題。"
+        },
+        {
+          "category": "顧客集中リスク",
+          "description": "U.S. P&C primary insurers（売上の約70%）への集中。保険業界の景気後退・業界変化による業績への直接影響。"
+        },
+        {
+          "category": "M&Aリスク",
+          "description": "買収・統合の失敗リスク。買収後の価値創出が見込み通りでない場合のリスク。大型M&Aによる一時的な収益性低下リスク。"
+        }
+      ]
+    },
+    "mda": {
+      "status": "partial",
+      "note": "SEC EDGAR MCPでMD&Aセクション直接取得は未実行。以下はアナリストレポートからの補完情報。",
+      "revenue_drivers": {
+        "iso_core": "ISO関連事業（祖業）が引き続き安定成長を牽引",
+        "claims_growth": "Claims部門がFY2025 1Q+9.6%、2Q+8.3%と高成長",
+        "subscription_momentum": "Sub OG+9〜10%台が継続（2025年）",
+        "non_sub_volatility": "Non-Sub（Extreme Events・自動車保険関連）は季節性あり",
+        "net_written_premium_lag": "米国損保市場のNet Written Premiumが2年遅れでISO事業に反映（売上高の15-25%程度）",
+        "nwp_fy2022": "Net Written Premium FY2022: +8.4%（FY2024のISO事業成長のドライバー）"
+      },
+      "margin_dynamics": {
+        "ebitda_margin_improvement_fy2025_q2": "+220bp yoy（FX 120bp + Operating Leverage + コスト削減）",
+        "investment_areas": "Gen AI・セールスフォース・国際事業への投資を継続",
+        "talent_optimization": "Global Talent Optimization（ポーランド・ハイデラバード）でコスト効率化中"
+      }
+    }
+  }
+}

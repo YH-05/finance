@@ -1,0 +1,219 @@
+{
+  "ticker": "VRSK",
+  "company_name": "Verisk Analytics, Inc.",
+  "report_path": "analyst/raw/VRSK.md",
+  "parsed_at": "2026-02-20T14:11:00Z",
+  "report_type": "unknown",
+  "sections": [
+    {
+      "title": "2017年12月06日 初期評価：投資判断・競争優位性・CAGR",
+      "content": "CAGR +M-HSD。保険会社向け（売上7割）、エネルギー（2割、Wood Mackenzie）、金融機関（1割）のデータ分析サービス会社。Insurance RAセグメント（売上1/3）とDAセグメント（2/3）。P&C保険向けは査定・不正検出事業で9割シェアとほぼ独占。RELX、CoreLogicが競合。競争優位性：創業1971年来の保険関連蓄積データと分析ソリューション提供能力。8割はインフレ並料金改定+2%/年エスカレータ条項付サブスクリプション契約。顧客にとって収保対比25bpsと微々たるコスト。価格弾性値が低い。",
+      "summary": "初期評価。データ蓄積・独占的地位・サブスク比率の高さによる競争優位性を確認。CAGR M-HSD。"
+    },
+    {
+      "title": "2019年09月26日 SELL判断：バリュエーション過熱",
+      "content": "CAGR想定はHSD維持。競争優位性に問題なし。NTM PEx33、相対PEx2.1ともにヒストリカルハイ。ITG3-4.9%、ITG4-6.9%対比で魅力度小さく（2〜3/4分位）。バリュエーション面でSELL推奨（競争優位性問題なし）。2019年初配当開始（M&Aがうまくいかない時の株主還元強化）。",
+      "summary": "競争優位性は不変のままバリュエーション過熱によるSELL。CAGR HSD維持。"
+    },
+    {
+      "title": "2019年08月09日 CAGR引き上げ（M-HSD→HSD）",
+      "content": "EPS CAGR = 売上成長6%+自社株買い・買収LSD=HSD（8〜9%）。売上は経営陣想定長期7%成長ベースに、Energy・Financialのゼロ成長・ボラ考慮して6%。マージンはレバが効きづらく買収で長期悪化傾向のため寄与見込まず。FCFの半分を自社株買い・残り半分を買収。",
+      "summary": "CAGR M-HSD→HSD（8〜9%）に引き上げ。FCF還元力がEPS成長の補完ドライバー。"
+    },
+    {
+      "title": "2021年08月18日 ESG評価",
+      "content": "データ分析サービスのためサステナスコアのリスクエクスポージャーはLow。ESG開示が優れているわけではないが特段上げられるリスクも少ないためマネジメントスコアもAverage。全体として低リスク。再エネ購入・カーボンオフセット投資によりCO2を100%バランス。ESGはポジネガどちらでもない。",
+      "summary": "ESGリスクエクスポージャーはLow。ESGはニュートラル評価。"
+    },
+    {
+      "title": "2022年09月07日 事業構造詳細・競争優位性・CAGRの背景説明",
+      "content": "当社の競争優位性：①顧客データ（proprietary data）へのアクセス（独占的な情報源へのアクセス）、②ネットワーク効果（収集するデータが多いほどより提供価値が高まる）、③高いスイッチングコスト（数年に及ぶ契約による安定的な revenue stream、サーチコストなど）、④ニッチ領域での規模の経済。保険リスク領域での参入障壁は非常に高いと想定。顧客コストに占める割合はほぼ25bp。インフレ並みに値上げ率を抑え独占状況の維持に努める。Insurance TAM: USD9bn（Underwriting USD3.6bn、Claims USD2.7bn、International USD2.5bn）vs当社Insurance売上高USD2.2bn。新CEO（元CFO）体制でキャピタルアロケーション規律を強化。Energy事業売却（23/1Qまで）発表。過去3年で平均50%以上をbuyback or dividendで還元。",
+      "summary": "①プロプライエタリデータ独占 ②ネットワーク効果 ③スイッチングコスト ④規模の経済の4層競争優位性を詳細説明。新CEO体制でROIC経営へ回帰。"
+    },
+    {
+      "title": "2022年09月06日 ESG再評価・会社説明",
+      "content": "相対スコア44（マネージメントスコア38）、Research & Consulting内19位（12/62）。サステナ評価項目はCorporate Governance、Product Governance、Data Privacy & Security等。リスクエクスポージャー自体がLowであり全体としてリスクは平均並み。会社説明：米国損保会社を顧客とする情報サービス会社。損保会社が共同で設立した非営利組織を前身。ほぼ全ての米国損保会社から保険料・損失額等の保険取引データを収集・蓄積。祖業は保険契約書のひな型作成・予想損失額算出・当局向け報告業務。2009年上場後コア以外に参入するも2022年にほとんどを売却（ROIC低下を招くAsset買収+オーガニック成長力乏しい）。今後原点回帰し規律ある経営実施計画。",
+      "summary": "ESGリスクはLow。会社説明：1971年ISO設立来の損保向けデータ分析。2022年に非保険事業売却し原点回帰。"
+    },
+    {
+      "title": "2022年09月06日 CAGR引き上げ（HSD→LDD）",
+      "content": "CAGR引き上げ：従来の8%からLDD（11%）へ変更。Sales: Organic+7% + bolt on 2%=9%を想定。OPM: 0〜2%（クラウド移行などに伴うCapex/Sales比率低下やコア事業への集中により更なる収益性改善できるが、1%程度をメインに想定）。Buybacks: 1〜2%（近年は株主還元に注力）。",
+      "summary": "Energy・Financial事業売却後、コア回帰に伴いCAGR HSD→LDD（11%）に大幅引き上げ。OG+7%+Bolt-on+2%の合計+9%売上成長を想定。"
+    },
+    {
+      "title": "2023年03月02日 FY22/4Q決算フォローアップ",
+      "content": "Sales +11.9% yoy（売却Energy除くベース）。OG +8.1%（Target OG+7%超、ハリケーンイアン一過性除くと+7.1%）。Adj EBITDA Margin 52.7%（Cons 53.4%を若干下回り）。Adj EPS 1.43（vs Cons 1.18大幅超過）。FY23ガイダンス：Sales USD2.59-2.64bn（yoy+7%）、Adj EBITDA Margin 53-54%（FY24 Target 53-56%）。Fロリダ問題（保険会社の清算/Exit）・自動車保険領域問題（規制承認遅延による保険会社の引き受け縮小）が継続。FY24 EBITDA Marginターゲット（56%）は達成が視野に。Buy継続。",
+      "summary": "FY22は堅調。非コア売却後の原点回帰が成果。一過性ポジティブ要因（ハリケーン）除いても目標超過。FY23 Buy継続。"
+    },
+    {
+      "title": "2023年08月03日 FY23/2Q決算フォローアップ",
+      "content": "Sales +10.1% yoy（OG +9.8%、Target超）。Adj EBITDA Margin 54.1%。Adj EPS 1.51（vs Cons 1.41）。FY23ガイダンス上方修正：Sales→2.63-2.66bn、EPS→5.50-5.70。ISO コア事業も成長けん引。Net Written Premium（NWP）FY2022: +8.4%（2024年のISO事業成長のドライバー）。ISOコアの収益性が最も高い（CFOコメント）。Buy継続。",
+      "summary": "FY23 2Qガイダンス上方修正。ISOコア事業が牽引。NWPの2年ラグ効果でFY24の成長継続に確信。"
+    },
+    {
+      "title": "2023年11月02日 FY23/3Q決算フォローアップ",
+      "content": "Sales +11.1% yoy（OG +9.4%、Target OG+7%を大幅超過）。Claims: OG +12.2%。FY23ガイダンス不変。4Qは4〜5%のtough comp想定（Auto Insuranceのtough comp）だが若干保守的。小粒なM&AでValue Up期間（3年程度）での一時的収益性低下も想定。Buy継続。",
+      "summary": "3Q好調継続。ガイダンス据え置きは保守的（4Qのtough comp）。M&Aによる一時収益性低下リスクを認識。"
+    },
+    {
+      "title": "2024年03月01日 FY23/4Q決算フォローアップ",
+      "content": "Sales +7.4% yoy（OG +6.0%）。Adj EBITDA Margin 53.4%。Adj EPS 1.40（vs Cons 1.44 若干下回り）。FY24ガイダンス：Sales USD2.84-2.90bn（6〜8%）、Adj EBITDA Margin 54-55%、Adj EPS 6.30-6.60。Investor Day発表のターゲット達成。Incremental ROIC約19%（FY2023実績ROIC約26%）。FY24はExtremeEventsとAuto Insuranceのノーマライズが想定されるが、ISOコアが継続成長。自社株買い新規USD1.0bn承認（合計1.6bn枠）。買収パイプラインはあるが現状バリュエーション高値。Buy継続。",
+      "summary": "FY23完結。Incremental ROIC 19%等の指標は堅調。FY24はノーマライズがあるもISOコアが安定成長。"
+    },
+    {
+      "title": "2024年03月01日 CFO面談メモ（Elizabeth Mann）",
+      "content": "2024 Outlook詳細：1HはTough Comp（2Hにグロースシフト）。Pricing：バリューベースプライシング（一定率での値上げではなく付加価値に応じた対応）。AI Use Case：Discovery Navigator（ヘルスケア保険金請求効率化）他。セールスフォース投資：①トップアカウント（上位20%）への販売推進②CRM系プラットフォーム③Compensation引き上げ。Margin：GenAI・SalesForce・海外投資でFY24は54〜55%（投資なし時は56%が上限）。Global Talent Optimization（ポーランド・ハイデラバード）で2〜3年のレンジで効果。M&A：FY23はアクティブ買収せず。Insurance関連性・データベース関連性・ROICの基準でハードル高め。",
+      "summary": "CFO面談によるFY24詳細。Value-based pricing・AI活用・Global Talent Optimizationが収益性改善の柱。M&AはInsurance隣接に限定で規律維持。"
+    },
+    {
+      "title": "2024年05月09日 FY24/1Q決算フォローアップ",
+      "content": "Sales +8.0% yoy（OG +6.9%）。Adj EBITDA Margin 54.0%（vs Cons 53.9%）。Adj EPS 1.63（vs Cons 1.52）。FY24ガイダンス不変（Sales 2.84-2.90bn、EBITDA Margin 54-55%、EPS 6.30-6.60）。ISOビジネス・Anti-fraudビジネスが堅調。バリュエーション高値でM&Aは活発でなし（パイプラインはClaim領域中心）。自社株買い1Q 170M（追加30M実施）。依然ITG対比割安。Buy継続。",
+      "summary": "FY24 1Q堅調。ISOコア・Anti-fraud牽引。M&AはClaim領域でパイプライン検討中。Buy継続。"
+    },
+    {
+      "title": "2024年08月01日 FY24/2Q決算フォローアップ",
+      "content": "Sales +6.2% yoy（OG +6.0%、Cons 6.78%をやや下回り）。Adj EBITDA Margin 55.4%（Cons 55.2%超過）。Adj EPS 1.74（vs Cons 1.64）。FY24ガイダンス不変（Sales 2.84-2.90bn）。Sub OG +8.3% yoy、Non-Sub OG ▲3.0%（Transactional→Sub シフト+災害ノーマライズ）。株価は約8%下落（タフコンプへの過度期待の修正）。ファンダメンタルズ変更なし。Buy継続。",
+      "summary": "FY24 2Qはコンセンサス下回るが想定内。Margin改善順調。競争優位性・CAGR観見方不変。Buy継続。"
+    },
+    {
+      "title": "2025年05月16日 FY25/1Q決算フォローアップ",
+      "content": "Sales +6.9% yoy（OG +7.9%、Cons 7.3%超過）。Claims OG +9.6%（vs Cons 7.9%大幅超）。Sub OG +10.6% yoy、Non-Sub ▲4.0%。Adj EBITDA Margin 55.3%（Cons 55.1%超過）。Adj EPS 1.73（vs Cons 1.68）。FY25ガイダンス：Sales 3.03-3.08bn（6〜8%）、EBITDA 55.0-55.8%、EPS 6.80-7.10。主顧客との対話：①よりよいインサイト（アクチュアリープラットフォーム）②よりよいコネクション（複数領域クロスデータ）③より効率的なエコシステム（規制当局と保険会社の共有データ）。エコシステム構築への有利なポジションを再確認。Proxy Statementの経営陣インセンティブ変更なし（Incremental ROICあり）。ITG対比割安でBuy継続。",
+      "summary": "FY25 1Q堅調。Claims高成長・Sub高成長。エコシステム戦略の着実な収益化を確認。Incremental ROIC指標維持。"
+    },
+    {
+      "title": "2025年08月08日 FY25/2Q決算フォローアップ",
+      "content": "Sales +7.8% yoy（OG +7.9%、Cons 7.8%超過）。U&R: OG +7.9%、Claims: OG +8.3%。Sub OG +9.3%、Non-Sub +1.8%。Adj EBITDA Margin 57.6%（Cons 56.0%超、前年比+220bp改善）。Adj EPS 1.88（vs Cons 1.77）。FY25ガイダンス若干上方修正（Sales→3.09-3.13bn）、EPS若干下方修正（6.80-7.00）。Mozart AI Tool浸透率50%近く。AccuLynx（USD2.35bn）・SuranceBay（USD163M）の2買収発表。2H soft comp可能性への懸念で株価下落（過剰反応と判断）。TMAM：AccuLynx価格はVSRKとほぼ同等マルチプルで許容範囲。買収戦略から逸脱なし。ニュートラル〜ポジティブの印象。",
+      "summary": "FY25 2Q堅調（Margin大幅改善）。AccuLynx大型買収はInsurance Restoration Ecosystem戦略の延長線上。AI Tool浸透が価格引上げに寄与。"
+    }
+  ],
+  "ca_candidates": [
+    {
+      "id": 1,
+      "text": "独占的プロプライエタリデータへのアクセス：1971年創業来の損保業界データ（297億超の統計データ、15億件以上の保険金請求データ）を独占的に保有・蓄積。業界全体から保険料・損失額データを収集しており、他社が再現不可能な参入障壁を形成している。",
+      "source_section": "2022年09月07日 事業構造詳細・競争優位性・CAGRの背景説明",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "297億超の統計データを保有（2021年時点）",
+        "年間26億以上の保険取引データを受領（2021年）",
+        "15億件以上の保険金請求データ、毎日175K以上追加",
+        "530名の統計専門家・190名のアクチュアリーが分析",
+        "200名の専門弁護士が約款管理",
+        "米国損保会社のほぼ全社（90%超、上位100社は100%）から取引データを収集"
+      ]
+    },
+    {
+      "id": 2,
+      "text": "ネットワーク効果：収集するデータが多いほど提供価値が高まる正のフィードバックループ。米国損保会社ほぼ全社（上位100社は100%）が参加することで、業界標準としての地位が強化され、脱退コストが高まり、さらにデータの質・量が向上するスパイラルを形成。",
+      "source_section": "2022年09月07日 事業構造詳細・競争優位性・CAGRの背景説明",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "米国損保業界トップ100社は100%が顧客（FY2025）",
+        "全米国損保会社の90%超が顧客",
+        "保険業界全体への業界標準的地位（ISO標準）",
+        "損保会社向け継続率99%"
+      ]
+    },
+    {
+      "id": 3,
+      "text": "高いスイッチングコスト：数年に及ぶ（通常3年）サブスクリプション契約（売上高の80%超）、顧客ワークフローへの深い組み込み（保険引受・請求処理の必要不可欠なOPEX）、代替サービスのサーチコスト等により、顧客の乗り換えコストが極めて高い。損保会社向け継続率99%がその証左。",
+      "source_section": "2022年09月07日 事業構造詳細・競争優位性・CAGRの背景説明",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "サブスクリプション収入が全売上高の80%超（FY2025）",
+        "契約期間は通常3年（1〜5年の範囲）",
+        "損保会社向け継続率99%",
+        "顧客コストに占める割合は収保対比約25bp（コスト感度が低い）",
+        "FY2025においてtop 100 P&C providers全社が顧客"
+      ]
+    },
+    {
+      "id": 4,
+      "text": "ニッチ領域での規模の経済：保険リスク分析という特定ニッチ領域において、固定費（データ収集・アクチュアリー・法務専門家等）を業界全体に分担させることで、単独の保険会社が内製化するよりも大幅に低コストで高精度のサービスを提供できる。顧客コストに占める割合が収保対比約25bpにとどまる事実がその効率性を示す。",
+      "source_section": "2017年12月06日 初期評価：投資判断・競争優位性・CAGR",
+      "ca_type": "structural",
+      "cagr_connected": false,
+      "factual_claims": [
+        "顧客コストに占める割合は収保対比約25bp",
+        "530名の統計専門家・190名のアクチュアリーを業界全体でシェア",
+        "年間13K法案・8.5K規制措置・2K判例を200名の専門弁護士が追跡"
+      ]
+    },
+    {
+      "id": 5,
+      "text": "バリューベースプライシング能力と価格設定力：顧客にとって欠かせないサービス（OPEX化）かつコスト占有率が低い（25bp）ことで、付加価値に応じた値上げが持続可能。インフレ並みの値上げに加え、AI Tool（Mozart）の導入・新機能追加により付加価値ベースの価格引上げを実現。",
+      "source_section": "2024年03月01日 CFO面談メモ（Elizabeth Mann）",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "インフレ並み料金改定 + エスカレータ条項（+2%/年）でサブスク契約",
+        "Mozart AI Tool浸透率50%近く（FY2025 2Q）",
+        "Value-based pricing（付加価値に応じた価格設定）を採用",
+        "OG+7〜8%の一部は価格要因（AI Tool導入効果含む）"
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Insurance Ecosystemにおける独自ポジション（エコシステムリーダー）：保険引受・請求処理・不正検出・カタストロフリスク定量化等を統合的に提供するエコシステムの中心に位置する。1971年以来の業界との長期的信頼関係を基盤に、新しいワークフロー（生命保険・Specialty・海外）にも拡張中。AccuLynx買収（USD2.35bn、2025年12月完了）によりInsurance Restoration Ecosystemに拡張。",
+      "source_section": "2025年08月08日 FY25/2Q決算フォローアップ",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "AccuLynx買収完了（USD2.35bn、2025年12月26日）",
+        "SuranceBay買収（USD163M）",
+        "生命保険・年金領域にも拡張中（二桁成長推移）",
+        "米国以外にも英国等で展開（買収でローカルデータ取得）"
+      ]
+    }
+  ],
+  "cagr_references": [
+    {
+      "context": "最新CAGR推定（2022年9月改訂・現行）",
+      "value": "LDD（約11%）",
+      "period": "2022年以降（中長期）",
+      "breakdown": {
+        "revenue_growth": "Sales +9%（Organic +7% + Bolt-on M&A +2%）",
+        "op_leverage": "+1%程度（クラウド移行・コア集中によるCapex/Sales比率低下）",
+        "buyback": "+1〜2%（近年は株主還元に注力）"
+      }
+    },
+    {
+      "context": "中期CAGR（2019年改訂）",
+      "value": "HSD（8〜9%）",
+      "period": "2019年以降",
+      "breakdown": {
+        "revenue_growth": "6%（経営陣想定7%からEnergy・Financialのボラ考慮で6%）",
+        "op_leverage": "寄与見込まず（レバが効きづらい）",
+        "buyback": "LSD（FCFの半分を自社株買い）"
+      }
+    },
+    {
+      "context": "初期CAGR（2017年12月）",
+      "value": "+M-HSD",
+      "period": "2017年以降",
+      "breakdown": {
+        "revenue_growth": "単価上昇 + 付加サービス追加（基調HSD）",
+        "op_leverage": "RA部門はEBITDA/S 6割、DA部門は4割",
+        "buyback": "機会的（株価水準に応じた）"
+      }
+    }
+  ],
+  "key_themes": [
+    "独占的プロプライエタリデータ（1971年来の蓄積）による参入障壁",
+    "ネットワーク効果（業界全体参加による正のフィードバックループ）",
+    "高いスイッチングコスト（99%継続率・3年契約・ワークフロー組み込み）",
+    "ニッチ領域での規模の経済（業界全体コストシェア）",
+    "バリューベースプライシング・AI活用による価格設定力",
+    "Insurance Ecosystemリーダーとしての拡張戦略（生命保険・海外・Restoration）",
+    "Non-insurance事業売却後のコア回帰とROIC改善（CFO→CEO体制）",
+    "規律あるキャピタルアロケーション（Incremental ROICを経営インセンティブに組み込み）",
+    "サブスクリプション比率80%超の安定収益モデル"
+  ],
+  "data_limitations": [
+    "レポート種別判定（①期初/②四半期レビュー）はPoC段階のためスキップ",
+    "レポートは2017年から2025年にわたる長期記録であり、事業売却（Energy・Financial）前後で事業構造が大きく変化している",
+    "最新の競争優位性評価は2022年以降のInsurance集中後の体制を基準とする"
+  ]
+}

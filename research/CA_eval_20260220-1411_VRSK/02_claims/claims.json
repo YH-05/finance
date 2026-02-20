@@ -1,0 +1,482 @@
+{
+  "research_id": "CA_eval_20260220-1411_VRSK",
+  "ticker": "VRSK",
+  "company_name": "Verisk Analytics, Inc.",
+  "extracted_at": "2026-02-20T14:25:00Z",
+  "extractor": "ca-eval-lead (T4直接実行)",
+  "kb_applied": {
+    "kb1_rules": ["rule01", "rule02", "rule04", "rule06", "rule07", "rule08", "rule10", "rule11"],
+    "kb3_references": ["ORLY#2", "ORLY#5", "COST#1", "COST#3", "CHD#1", "MNST#1"],
+    "dogma": "analyst/Competitive_Advantage/analyst_YK/dogma.md"
+  },
+  "cagr_estimate": {
+    "current": "LDD（約11%）",
+    "breakdown": {
+      "revenue": "9%（Organic +7% + Bolt-on M&A +2%）",
+      "op_leverage": "1%程度（クラウド移行・コア集中によるCapex/Sales比率低下）",
+      "buyback": "1〜2%（株主還元注力）"
+    },
+    "note": "2022年9月時点の現行CAGR。直近のAccuLynx大型買収（USD2.35bn）によりBolt-on比率が変化する可能性。FY26末までにEPS Accretiveの見込み。"
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "独占的プロプライエタリデータ資産（再現不可能なデータベース）",
+      "ca_type": "structural",
+      "description": "1971年創業来の保険業界全体から収集した297億超の統計データ・15億件超の保険金請求データを独占保有。業界全体が義務的にデータを拠出する構造（非営利組織からの転換）により、競合が時間・資金をかけても再現不可能なデータ資産を形成している。",
+      "source_text": "当社の競争優位性は、①顧客データ（proprietary data）へのアクセス（独占的な情報源へのアクセス）…幾重にも及ぶため保険リスク領域での参入障壁は非常に高いと想定。2021年時点で297億もの統計データからなるデータベースあり（法人関連82億、個人関連215億）。",
+      "factual_claims": [
+        "297億超の統計データを保有（2021年時点：法人関連82億、個人関連215億）",
+        "年間26億以上の保険取引データを受領（2021年）",
+        "15億件以上の保険金請求データ、毎日175K以上追加",
+        "530名の統計専門家・190名のアクチュアリーが分析に従事",
+        "200名の専門弁護士が約款管理（年間13K法案・8.5K規制措置・2K判例を追跡）",
+        "520名のフィールド調査員が個別不動産を年間368K件超調査"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "プロプライエタリデータ→他社が提供できないアクチュアリーサービス・リスク定量化→価格設定力（Value-based pricing）→サブスク契約更新（継続率99%）→売上OG+7%の安定基盤。データ蓄積量の増加は時間とともに参入障壁を高める自己強化型ループ。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「データ資産」「データ収集・蓄積能力」は能力・仕組みとして正しく表現されている。297億件のデータ規模は「結果」だが、主張の核心は他社が参入できない「データ収集の構造」（業界全体の義務的拠出制度）にある。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "プロプライエタリデータ資産、データ収集能力—いずれも名詞で表現される属性。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PASS",
+          "comment": "297億件・15億件・530名・190名・200名・520名・年間368K件等の具体的定量データが豊富。業界標準的地位の数値的裏付けとして有効。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PASS",
+          "comment": "データ資産はVRSKのビジネスモデルの核心的構造的要素。代替不可能な競合優位性の基盤。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "VRSKの保険業界データは事実上独占的であり、直接的な純粋競合が存在しにくい。RELX（UK）・CoreLogicが一部競合するが、VRSKの統計データベースの規模・歴史的蓄積との比較は明示なし。独占的性格がルール7適用を難しくしているが、これはリスクよりもポジティブな特性。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "PASS",
+          "comment": "「データ資産」は戦略ではなく構造的な力として正しく識別されている。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "インフレ並みの値上げに制限するという「値上げを抑制する」というネガティブケースが、独占状況の維持（より大きな優位性保護）のための意思決定として言及されており、能力の裏付けとして機能している。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PASS",
+          "comment": "保険業界は規制業界であり、州ごとの保険料率承認・損害統計報告が義務付けられている。この構造的要件がVRSKのデータ収集・標準化機能を必要不可欠にしており、業界構造×企業ポジションの合致が非常に高い。ORLY#2（フラグメント市場×規模・密度）と同等以上の構造的合致。"
+        }
+      },
+      "confidence": {
+        "ca_score": 90,
+        "label": "かなり納得",
+        "reasoning": "1971年来の蓄積・業界全体からの義務的データ拠出・再現不可能な規模（297億件）という構造的優位性は極めて明確。定量的裏付けが豊富で、業界構造（規制業界での報告義務）との合致も完璧（ルール11）。純粋競合が事実上存在しない点（独占的地位）はルール7の達成困難を説明するが、それ自体が優位性の証。dogma.mdの90%基準（構造的優位性+定量的裏付け+CAGR接続）を満たす。",
+        "kb3_calibration": "ORLY#2（90%）に最も類似。フラグメント市場×規模・密度という構造的合致パターンと、規制業界×独占データという構造的合致パターンは同等の論理構造を持つ。ORLY#2の「ローカルな規模の経済」と同様に業界構造×企業ポジションの合致が90%評価の根拠。"
+      },
+      "cagr_confidence": {
+        "score": 90,
+        "label": "かなり納得",
+        "reasoning": "データ資産→保険リスク定量化サービス→業界全社（継続率99%）→サブスク更新（80%以上）→OG+7%というメカニズムは1-2ステップで直接的かつ開示データで検証可能（top 100 P&C coverage 100%、継続率99%が開示）。Net Written Premiumの2年ラグ効果もISOコア事業のCAGR接続として具体的に説明されている。"
+      }
+    },
+    {
+      "claim_id": 2,
+      "title": "ネットワーク効果（業界全体参加による自己強化ループ）",
+      "ca_type": "structural",
+      "description": "米国損保会社ほぼ全社（上位100社100%）がデータ拠出者かつ顧客である相互依存ループを形成。参加企業が増えるほど統計的精度が向上し、各参加者への提供価値も高まるネットワーク効果が存在する。業界標準としての地位がこのループを自己強化する。",
+      "source_text": "②ネットワーク効果（収集するデータが多いほどより提供価値が高まる）…保険業界の保険料・損失データを収集・蓄積している。顧客である米国損保会社のほぼ全てと取引あり（90%以上、上位100社とは100%）。",
+      "factual_claims": [
+        "米国損保業界トップ100社全社が顧客（FY2025 10-K記載）",
+        "米国損保会社全体の90%超が顧客",
+        "損保会社向け継続率99%",
+        "2021年だけで26億に及ぶ保険料・保険損失関連の取引データを受領"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "ネットワーク効果→業界標準としての地位強化→新規参入者も必然的に参加→TAM拡大（国際・生命保険・Specialty等）→クロスセル機会→Bolt-on M&A（+2%）の基盤提供。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「ネットワーク効果」は能力・仕組みとして正しく表現。参加企業数や継続率は結果だが、自己強化ループという構造的メカニズムが主張の核心。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "ネットワーク効果—名詞で表現される属性として正確。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PASS",
+          "comment": "top 100 P&C coverage 100%、継続率99%、90%超という具体的定量データあり。SEC EDGAR 10-K FY2025で「all top 100 P&C providers」と開示済みで検証可能。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PASS",
+          "comment": "ネットワーク効果は事業モデルの核心的構造的要素。業界全体参加が前提となる構造。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "競合（RELX、CoreLogic等）は部分的にデータ提供するが、VRSKの「業界全体が参加する標準ネットワーク」には参加していない。ただし競合との直接的な数値比較は示されていない。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "PASS",
+          "comment": "ネットワーク効果は戦略ではなく構造的な力として正しく識別。"
+        },
+        "rule10_negative_case": {
+          "result": "N/A",
+          "comment": "ネットワーク効果にはネガティブケースによる裏付けは直接適用しにくいが、競合他社が同等のネットワーク構築に失敗していることが間接的な裏付け。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PASS",
+          "comment": "保険業界は協調的データ共有が法規制上必要（各州への保険統計報告義務）。この構造的要件がVRSKのネットワーク効果を可能にしている。業界構造×企業ポジションの合致が顕著。"
+        }
+      },
+      "confidence": {
+        "ca_score": 70,
+        "label": "おおむね納得",
+        "reasoning": "ネットワーク効果の存在は論理的に明確で、業界全体参加（100%）という定量的裏付けもある。ただしネットワーク効果がCAGRへ及ぼす経路（新規参入者が自動的に参加するメカニズム）と競合との具体的差別化（ルール7）が不明確。Claim #1のデータ資産と実質的に重複する側面があり、独立した優位性としての価値がやや低い。",
+        "kb3_calibration": "ORLY#2（90%→70%に引き下げ）。ORLY#2は地理的フラグメント市場における具体的な競合との差別化（AZO対比）が示されていたが、VRSKは競合との具体的比較がない点で70%止まり。"
+      },
+      "cagr_confidence": {
+        "score": 70,
+        "label": "おおむね納得",
+        "reasoning": "ネットワーク効果→業界標準地位→クロスセル機会→Bolt-on M&A（+2%）の接続は2-3ステップで適度に直接的。ただし「ネットワーク効果がどの程度Bolt-on M&Aに直接貢献するか」の定量的根拠は不明確。"
+      }
+    },
+    {
+      "claim_id": 3,
+      "title": "高スイッチングコスト（ワークフロー組み込み・長期契約・99%継続率）",
+      "ca_type": "structural",
+      "description": "保険会社のコアオペレーション（引受・請求処理・規制当局報告）にVRSKのサービスが深く組み込まれており、乗り換えコストが極めて高い。通常3年のサブスク契約（売上80%超）と99%の継続率がスイッチングコストの高さを証明する。顧客コスト対比25bpという低コスト感もスイッチング検討を妨げる。",
+      "source_text": "③高いスイッチングコスト（数年に及ぶ契約による安定的な revenue stream、サーチコストなど）…顧客のワークフローに組み込まれた必要不可欠なサービスを提供しているため、安定的な成長を志向できる（顧客のCapexではなく、OPEXとなるサービスを提供）。損保会社向けビジネスの継続率は99%。",
+      "factual_claims": [
+        "損保会社向け継続率99%（レポート記載）",
+        "サブスクリプション収入が全売上の80%超（FY2025 10-K）",
+        "契約期間は通常3年（1〜5年の範囲）",
+        "顧客コストに占める割合は収保対比約25bp",
+        "FY2025 top 100 P&C providers全社が顧客（10-K記載）"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "スイッチングコスト→99%継続率→サブスク更新（Sub OG+9〜10%）→安定的なトップライン成長（OG+7%）の直接的接続。サブスク比率80%超が売上予見性を担保し、OG+7%目標の確度を高める。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "スイッチングコストは能力・仕組みとして正しく表現。99%継続率は結果だが、ワークフロー組み込みという構造が主張の核心。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "スイッチングコスト—名詞で表現される属性として正確。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PASS",
+          "comment": "99%継続率・80%超サブスク・25bp・3年契約と複数の具体的定量データあり。10-K開示データで検証可能。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PASS",
+          "comment": "スイッチングコストはVRSKのサービスモデルの核心的構造的要素。ワークフロー組み込みは補完的要素ではない。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "RELX（UK市場でのInsurtech競合）・CoreLogicとの具体的なスイッチングコスト比較は示されていない。ただし99%継続率という実績は競合と比較困難な圧倒的な水準。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "PASS",
+          "comment": "スイッチングコストは戦略ではなく構造的な力として正しく識別。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "インフレ並みの値上げに自制するという「過度な値上げをしない」というネガティブケースが、スイッチングコストの持続的維持（=独占状況の保護）のための規律ある意思決定として機能している。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PASS",
+          "comment": "保険引受・規制報告はVRSKのサービスなしには実行できない（法規制上の必要性）。業界構造×スイッチングコストの合致が高い。"
+        }
+      },
+      "confidence": {
+        "ca_score": 90,
+        "label": "かなり納得",
+        "reasoning": "スイッチングコストの存在が99%継続率・25bp占有率という開示データで明確に裏付けられている。業界構造（規制業界での必要不可欠サービス）との合致も完璧。Claim #1のデータ資産とは異なる独立した優位性として成立（データ資産は存在自体、スイッチングコストは顧客ロックイン機能）。догma.md基準（90%：構造的優位性+定量的裏付け+CAGR接続+業界構造合致）を満たす。",
+        "kb3_calibration": "COST顧客粘着力（会員更新率→90%）に類似。COSTは会員更新率90%超という開示データで検証可能な優位性として90%評価。VRSKは継続率99%という同等以上の開示データを持つ。"
+      },
+      "cagr_confidence": {
+        "score": 90,
+        "label": "かなり納得",
+        "reasoning": "スイッチングコスト→継続率99%→Sub OG+9〜10%→CAGR+7%の直接接続。Sub Revenue比率80%超という開示数値で検証可能。COST顧客粘着力CAGR（90%：会員更新率→ARPU→既存店）と同等の直接性・検証可能性を持つ。"
+      }
+    },
+    {
+      "claim_id": 4,
+      "title": "保険業界ニッチでの規模の経済（固定費の業界全体シェアによる圧倒的コスト優位）",
+      "ca_type": "structural",
+      "description": "保険引受・リスク定量化に必要な固定費（アクチュアリー530名・統計専門家・法務専門家200名・フィールド調査員520名）を米国損保業界全体でシェアすることで、個々の保険会社が内製化するよりも大幅に低コストで高精度のサービスを提供できる。顧客コスト対比25bpというコスト効率がこの規模の経済を示す。",
+      "source_text": "④ニッチ領域での規模の経済…当社からのサービスが顧客のコストに占める割合は、ほぼ25bp程度。…530名の統計専門家、190名のアクチュアリー等が自社開発モデルを用いて解析し、定量化。2021年時点で297億もの統計データ…",
+      "factual_claims": [
+        "530名の統計専門家・190名のアクチュアリーが業界全体のリスク定量化を担当",
+        "200名の専門弁護士が保険約款管理（年間13K法案等を追跡）",
+        "520名のフィールド調査員が個別不動産年間368K件超調査",
+        "顧客コストに占める割合は収保対比約25bp",
+        "OPEXとして提供（顧客のCapexではない）"
+      ],
+      "cagr_connected": false,
+      "cagr_mechanism": null,
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PASS",
+          "comment": "「規模の経済」は能力・仕組みとして正しく表現。固定費シェアというメカニズムが能力の核心。"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "規模の経済—名詞で表現される属性として正確。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PASS",
+          "comment": "人員規模（530名・190名・200名・520名）と顧客コスト占有率（25bp）の具体的定量データあり。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PASS",
+          "comment": "業界全体シェアの固定費構造は事業モデルの核心的構造的要素。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "RELX・CoreLogicは部分的に競合するが、VRSKの規模（アクチュアリー190名・統計専門家530名）との比較は示されていない。「業界全体参加による固定費シェア」は競合が達成困難な規模であることは論理的に明確だが、数値比較なし。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "PASS",
+          "comment": "規模の経済は構造的な力として正しく識別されている。"
+        },
+        "rule10_negative_case": {
+          "result": "N/A",
+          "comment": "ネガティブケースの直接的な言及なし。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PASS",
+          "comment": "保険業界の規制報告・標準化義務が業界全体からの参加を促し、固定費の業界シェアを可能にしている。業界構造との合致が高い。"
+        }
+      },
+      "confidence": {
+        "ca_score": 70,
+        "label": "おおむね納得",
+        "reasoning": "規模の経済の存在は定量的に裏付けられているが、Claim #1（データ資産）およびClaim #3（スイッチングコスト）とやや重複する側面あり。純粋競合との数値比較（ルール7）が不明確な点でやや評価を下げる。また独立したCAGR接続が明示されていない点でClaim #1〜#3より評価が低い。",
+        "kb3_calibration": "COST#3（倉庫型モデル50%）と部分的に類似。COSTはSAMS/BJという純粋競合に対する差別化が不明で50%。VRSKも競合との具体的比較が弱いが、独占的地位があるため70%が適切。"
+      },
+      "cagr_confidence": {
+        "score": 50,
+        "label": "まあ納得",
+        "reasoning": "規模の経済は直接的にはCAGRに接続しにくい（Claim #3のスイッチングコストを通じた間接的接続のみ）。CAGR接続フラグをfalseとしたため、CAGR確信度は補足的評価のみ。"
+      }
+    },
+    {
+      "claim_id": 5,
+      "title": "バリューベースプライシング能力とAI活用による価格設定力",
+      "ca_type": "operational",
+      "description": "顧客コスト対比25bpという低価格感（価格弾性値の低さ）を背景に、AI Tool（Mozart）導入・新機能追加による付加価値に応じた価格設定（Value-based pricing）を実施。Mozart AI Tool浸透率50%近くがAI活用の実績を示す。インフレ並み値上げ＋エスカレータ条項（+2%/年）の安定的価格上昇基盤も持つ。",
+      "source_text": "Pricing：毎年〇%上げるという形ではなくバリューベースで付加価値に応じた対応…Mozart AI Tool は 50%近くの浸透している（価格引き上げをどこまでしているかは不明。但し、OGが好調に推移している要因の一つとして、価格要因はある模様）。",
+      "factual_claims": [
+        "Mozart AI Tool浸透率50%近く（FY2025 2Q時点）",
+        "インフレ並み料金改定＋エスカレータ条項（+2%/年）",
+        "Value-based pricing採用（CFO面談確認）",
+        "Sub OG+9.3%（FY2025 2Q）のうち価格要因あり"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "AI活用による付加価値向上→Value-based pricing→サブスク単価上昇→Sub OG向上（+7〜10%台）→OG+7%の実現。Mozart AI Tool浸透がOG向上の一因として言及済み。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PARTIAL",
+          "comment": "「価格設定力」「AI活用能力」は能力・仕組みとして概ね正しい表現。ただしMozart AI Tool浸透率50%という「結果」から能力を推定している側面あり。",
+          "flag": "partially_result"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "価格設定力、AI活用能力—名詞で表現される属性。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PARTIAL",
+          "comment": "Mozart浸透率50%近く・Sub OG+9.3%等はあるが、「価格要因がどの程度OGに寄与しているか」（価格vs数量）の具体的分解は不開示。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PARTIAL",
+          "comment": "AI活用は現在補完的要素から構造的要素への移行途上。データ資産（Claim #1）を基盤としたAI活用は構造的になりうるが、Mozart AI固有の競合比較は不明。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "AI活用能力の競合との差別化は示されていない。RELXやCoreLogicも類似のAI活用をしている可能性。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "WARN",
+          "comment": "「AI活用を進める」という行動（戦略）と「AI活用によって生まれた価格設定力」（優位性）を区別して主張する必要がある。現状の説明はやや戦略寄り。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "インフレ並みに値上げを抑制する（過剰値上げをしない）という規律ある価格設定が、独占状況維持のための意図的なネガティブケースとして機能。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PARTIAL",
+          "comment": "保険業界でのAI活用ニーズは高まっているが（アクチュアリー自動化・リスク精緻化）、AI活用能力が業界構造と合致する程度の説明が不十分。"
+        }
+      },
+      "confidence": {
+        "ca_score": 50,
+        "label": "まあ納得",
+        "reasoning": "価格設定力の存在は認められるが、独立した競争優位性としてはClaim #1〜#3（データ資産・スイッチングコスト）の結果として現れている側面が強い。AI活用能力は現時点では「方向性は認める」水準。CHD#6（デジタルマーケティング能力・数値裏付けあるが他社対比不明→50%）に類似。",
+        "kb3_calibration": "CHD#6（デジタル・マーケティング能力50%）に類似。根源的要因や他社対比の優位性への言及なく、単一指標（Mozart浸透率）のみで評価しにくい点で50%が適切。"
+      },
+      "cagr_confidence": {
+        "score": 70,
+        "label": "おおむね納得",
+        "reasoning": "AI活用→付加価値向上→Sub OG向上という接続は2ステップで比較的直接的。ただし「価格要因がOGのどの程度を占めるか」の定量的分解が不明（CFOコメント「価格要因はある模様」に留まる）。"
+      }
+    },
+    {
+      "claim_id": 6,
+      "title": "Insurance Ecosystemリーダーとしての拡張性（エコシステム設計能力）",
+      "ca_type": "structural",
+      "description": "1971年以来の業界との長期的信頼関係（保険会社・再保険会社・規制当局）を基盤に、保険引受から請求処理・不正検出・カタストロフリスク・生命保険・Restoration Ecosystem（AccuLynx）まで一貫したエコシステムを構築・拡張する能力。単純なデータ提供を超えた「Insurance Ecosystemのインフラ」としての地位。",
+      "source_text": "祖業（ISOビジネス）で築き上げた関係者とのリレーション（保険、再保険、規制当局など）がある中、当社がエコシステム構築に有利なポジションにあることを再確認。…当社は、保険業界でのよりよいエコシステム構築のために顧客と対話を重ねているが、着実に収益化できている様がみてとれる。",
+      "factual_claims": [
+        "AccuLynx買収完了（USD2.35bn、2025年12月26日、Roof修理業者向け）",
+        "SuranceBay買収（USD163M、生命保険/年金向けFast Platformへの追加）",
+        "生命保険・年金領域は二桁成長で推移",
+        "米国以外の市場（英国等）へも展開（ドイツACTINEO等の買収）"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "エコシステムリーダー地位→隣接領域への拡張（生命保険・海外・Restoration）→TAM拡大（USD9bn→継続拡大）→Bolt-on M&A（+2%）のパイプライン創出。エコシステム設計能力があるからこそInsurance関連のbolt-on M&Aが実行可能になる。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PARTIAL",
+          "comment": "「エコシステム設計能力」は能力・仕組みとして表現できるが、「エコシステムリーダーの地位」は結果に近い側面もある。主張の核心を「設計能力」に絞るべき。",
+          "flag": "partially_result"
+        },
+        "rule02_noun_attribute": {
+          "result": "PARTIAL",
+          "comment": "「エコシステム設計能力」は名詞的だが、「エコシステムリーダー」という表現はポジション（結果）に近い。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PARTIAL",
+          "comment": "AccuLynx（USD2.35bn）・SuranceBay（USD163M）という具体的買収額はあるが、エコシステム設計能力自体の定量的裏付けは乏しい。TAM USD9bnとの比較も2018年時点の古いデータ。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PARTIAL",
+          "comment": "エコシステム設計能力は構造的要素になりえるが、現時点では拡張中（移行過程）。Claim #1〜#3の既存優位性を補完する要素としての側面も強い。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "Insurance Ecosystemリーダーとしての差別化は競合比較なしに主張されている。RELXや特定insurtech企業との具体的比較なし。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "WARN",
+          "comment": "「エコシステム構築を進める」という戦略的行動と「エコシステム設計能力」という優位性の区別が不明確。AccuLynxの大型買収は「意思決定（戦略）」であり、それを可能にする「能力」の説明が必要。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "FY2023はバリュエーション高値を理由にM&Aをアクティブに実施しなかったという「しなかった」例が、規律あるM&A実行能力の裏付けとして機能している。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "PARTIAL",
+          "comment": "保険業界での統合エコシステムへのニーズは確認されているが（顧客の3つのニーズ：インサイト・コネクション・エコシステム効率化）、業界構造との合致の深さがClaim #1〜#3より低い。"
+        }
+      },
+      "confidence": {
+        "ca_score": 50,
+        "label": "まあ納得",
+        "reasoning": "エコシステム設計能力の方向性は認められるが、「戦略（エコシステムを構築する）」と「優位性（エコシステム設計能力）」の区別が不明確（ルール8 WARN）。AccuLynxの大型買収（USD2.35bn）はInsurance Ecosystemの延長として妥当だが、単独の「能力」として評価するには説明が不足。Claim #1〜#3（データ資産・ネットワーク効果・スイッチングコスト）とは異なる独立した優位性としての主張がやや弱い。",
+        "kb3_calibration": "CHD#7（明確で実行性の高い経営戦略・50%）に類似。方向性は認めるが「言葉でしか説明されない傾向」との類似点あり。AccuLynx買収実績はあるが、能力の独立した証明としては弱い。"
+      },
+      "cagr_confidence": {
+        "score": 50,
+        "label": "まあ納得",
+        "reasoning": "エコシステム拡張→TAM拡大→Bolt-on M&A（+2%）の接続は3ステップ以上で間接的。TAM USD9bnは2018年時点の古いデータ。接続の説明は論理的だが検証可能性が低い。"
+      }
+    },
+    {
+      "claim_id": 7,
+      "title": "規律あるキャピタルアロケーション能力（ROIC重視・Incremental ROIC管理）",
+      "ca_type": "financial",
+      "description": "CFO出身CEOの下、Incremental ROICを経営インセンティブに組み込み（Proxy Statement確認）、有機投資→M&A→株主還元の優先順位を明確化。FY2023 ROIC約26%・Incremental ROIC約19%。OG達成のためのM&Aはしない方針（非保険事業売却後の原点回帰）という規律も明示。",
+      "source_text": "Proxy Statementの経営陣のインセンティブにも変更なく（引き続き、Incremental ROICあり）…規律あるキャピタルアロケーション、を大きな柱とすることを強調。収益性：2023のROICは約26%でIncremental ROICは約19%。",
+      "factual_claims": [
+        "FY2023 ROIC約26%（CEOコメント）",
+        "FY2023 Incremental ROIC約19%",
+        "Proxy StatementにIncremental ROICが経営陣インセンティブとして組み込まれている",
+        "OG達成のためのM&Aはしない方針（22/1Qコメント）",
+        "2019年以降の非保険事業売却（Energy・Financial Services）"
+      ],
+      "cagr_connected": true,
+      "cagr_mechanism": "Incremental ROIC管理→規律あるM&A実行（Insurance隣接bolt-on）→CAGR+2%のBolt-on寄与の確度向上。ROICが高い状態での再投資→複利効果。ただし優位性はcapital allocationの「能力」であり、ROICという「結果」ではない。",
+      "rule_applications": {
+        "rule01_capability_not_result": {
+          "result": "PARTIAL",
+          "comment": "「キャピタルアロケーション能力」は能力・仕組みとして表現可能。ただしROIC26%・Incremental ROIC19%という数値は「結果」であり、能力の「証拠」として機能するが主張の核心ではない。Proxy StatementへのIncremental ROIC組み込みが「仕組み」として機能する。",
+          "flag": "partially_result"
+        },
+        "rule02_noun_attribute": {
+          "result": "PASS",
+          "comment": "キャピタルアロケーション能力—名詞で表現される属性。"
+        },
+        "rule04_quantitative_evidence": {
+          "result": "PASS",
+          "comment": "ROIC26%・Incremental ROIC19%・Proxy Statement記載という具体的定量データあり。数値の検証可能性も高い（SEC EDGAR経由）。"
+        },
+        "rule06_structural_vs_complementary": {
+          "result": "PARTIAL",
+          "comment": "キャピタルアロケーション能力は経営管理の核心だが、Insurance Ecosystemへの集中という意味では構造的要素の一部。単独の構造的優位性として成立するかは議論の余地あり。"
+        },
+        "rule07_pure_competitor_differentiation": {
+          "result": "PARTIAL",
+          "comment": "競合（RELX・CoreLogicなど）のROICや資本配分との具体的比較は示されていない。ただしIncremental ROICを明示的にインセンティブ化している点は差別化要因の候補。"
+        },
+        "rule08_strategy_not_advantage": {
+          "result": "PARTIAL",
+          "comment": "「有機投資→M&A→株主還元の優先順位」は戦略的決定であり、「Incremental ROICを維持する仕組み（Proxy Statement組み込み）」が優位性。区別を明確にする必要あり。"
+        },
+        "rule10_negative_case": {
+          "result": "PASS",
+          "comment": "FY2023はバリュエーション高値を理由にM&Aをアクティブに実施しなかったという断念例、OG達成のためのM&Aはしない方針という明示的なネガティブケースが能力の裏付けとして機能している。CHD#1に類似。"
+        },
+        "rule11_industry_structure_fit": {
+          "result": "N/A",
+          "comment": "キャピタルアロケーション能力は業界構造との合致よりも企業固有の経営能力。"
+        }
+      },
+      "confidence": {
+        "ca_score": 50,
+        "label": "まあ納得",
+        "reasoning": "規律あるキャピタルアロケーション能力の方向性は認められる（Incremental ROIC Proxy記載・OG M&A禁止方針・断念例）。ただし「キャピタルアロケーション能力」は多くの優良企業が主張する一般的な要素であり（ルール3：業界共通の能力へのリスク）、VRSKに特有の差別化根拠として独立した優位性と言えるかは疑問。CHD#7（規律ある意思決定・50%）の評価パターンと類似。",
+        "kb3_calibration": "CHD#7（明確で実行性の高い経営戦略・50%）に類似。「実行しなかった例をもって評価している点は納得感あり」とKYが評価したケースと同様のネガティブケースあり。ただし独立した競争優位性として評価するには他社との差別化が不十分。"
+      },
+      "cagr_confidence": {
+        "score": 70,
+        "label": "おおむね納得",
+        "reasoning": "Incremental ROIC管理→規律あるM&A→bolt-on+2%の確度向上という接続は2ステップで比較的直接的。過去の規律ある実績（FY2023バリュエーション高値でM&A見送り）が将来のCAGR+2%の確度を裏付ける。CHD#1のCAGR（70%：「+LSDは過去15年実績と同等」）と類似。"
+      }
+    }
+  ],
+  "rule9_gatekeeping": {
+    "applied": false,
+    "reason": "ファクトチェック（T5）によるcontradicted事実確認前のため、現時点では事実誤認に基づく即却下は適用しない。確認済みの数値（ROIC26%・継続率99%等）に重大な誤認は検出されていない。T5完了後に再確認予定。"
+  },
+  "summary": {
+    "total_claims": 7,
+    "confidence_distribution": {
+      "90_very_convinced": 2,
+      "70_mostly_convinced": 1,
+      "50_somewhat_convinced": 3,
+      "30_not_convinced": 0,
+      "10_rejected": 0
+    },
+    "avg_ca_confidence": 67,
+    "claims_with_cagr_connection": 6,
+    "avg_cagr_confidence": 70,
+    "key_strengths": [
+      "Claim #1（独占的データ資産：90%）：297億件・業界全体参加・再現不可能という構造的優位性が明確。業界構造（規制業界）との合致も完璧（ルール11）。",
+      "Claim #3（スイッチングコスト：90%）：99%継続率・25bp・3年契約という開示データで検証可能な優位性。COST顧客粘着力（90%）と同等の論理構造。",
+      "Claim #2（ネットワーク効果：70%）：業界全体参加の自己強化ループという構造的優位性が明確。top 100 P&C coverage 100%という定量的裏付けあり。",
+      "ルール10（ネガティブケース）：インフレ並みの値上げ抑制・FY23 M&A見送り・OG M&A禁止方針等の「しなかった例」が複数の主張で有効に機能。",
+      "ルール11（業界構造合致）：規制業界×データ義務拠出×業界標準というVRSK固有の構造的合致がClaim #1〜#3で一貫して機能。"
+    ],
+    "key_weaknesses": [
+      "ルール7（純粋競合差別化）：RELX・CoreLogicとの具体的な数値比較が全体的に不足。独占的地位が純粋競合の存在自体を困難にしているが、比較分析の追加で説得力向上可能。",
+      "Claim #5〜#6（AI活用・エコシステム）：ルール8（戦略≠優位性）のWARNが複数。「AI活用を進める戦略」と「AI活用能力という優位性」の区別がやや不明確。",
+      "Claim #7（キャピタルアロケーション）：競合との差別化が不明確で「業界共通能力」（ルール3）のリスクあり。"
+    ],
+    "poc_skipped": ["rule12_report_type_distinction"],
+    "kb3_closest_analog": "ORLY（ルール11業界構造合致でClaim #1〜#2が90%評価のパターン。COST顧客粘着力でClaim #3の90%評価が類似）"
+  }
+}
