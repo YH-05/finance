@@ -1,0 +1,54 @@
+{
+  "research_id": "CA_eval_20260220-1411_POOL",
+  "type": "ca_eval",
+  "ticker": "POOL",
+  "created_at": "2026-02-20T14:11:00Z",
+  "completed_at": "2026-02-20T16:10:00Z",
+  "parameters": {
+    "ticker": "POOL",
+    "report_path": "analyst/raw/POOL.md",
+    "skip_industry": true
+  },
+  "status": "completed",
+  "model_config": {
+    "lead": "claude-sonnet-4-6 (inherit)",
+    "teammates": "claude-sonnet-4-6 (sonnet fixed)"
+  },
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  },
+  "task_results": {
+    "T0_setup": { "status": "completed", "owner": "ca-eval-lead", "output": "00_meta/research-meta.json" },
+    "T1_sec_filings": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/sec-data.json" },
+    "T2_report_parser": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/parsed-report.json" },
+    "T3_industry": { "status": "skipped", "owner": "ca-eval-lead", "note": "PoC段階のポリシーによりスキップ（SEC EDGAR以外の外部データソース不使用）" },
+    "T4_claim_extractor": { "status": "completed", "owner": "ca-eval-lead", "output": "02_claims/claims.json" },
+    "T5_fact_checker": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/fact-check.json", "verified": 16, "contradicted": 0, "unverifiable": 1 },
+    "T6_pattern_verifier": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/pattern-verification.json" },
+    "T7_report_generator": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/draft-report.md", "04_output/structured.json"] },
+    "T8_ai_critique": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/critique.json", "04_output/revised-report.md"], "critical_issues": 1, "minor_issues": 4 },
+    "T9_accuracy": { "status": "completed", "owner": "ca-eval-lead", "output": "04_output/accuracy-report.json", "mode": "simplified", "verdict": "pass" }
+  },
+  "outputs": {
+    "final_report": "04_output/revised-report.md",
+    "draft_report": "04_output/draft-report.md",
+    "structured_json": "04_output/structured.json",
+    "critique": "04_output/critique.json",
+    "accuracy": "04_output/accuracy-report.json"
+  },
+  "summary": {
+    "avg_ca_confidence": 36,
+    "avg_cagr_confidence": 41,
+    "strongest_claims": [
+      { "claim_id": 1, "text": "川中卸売市場における独占的支配力", "ca_confidence": 70, "cagr_confidence": 50 },
+      { "claim_id": 5, "text": "フラグメント市場でのM&Aコンソリデーション能力", "ca_confidence": 50, "cagr_confidence": 70 }
+    ],
+    "kb3_closest_analog": "ORLY",
+    "notable_t8_modification": "Claim #4（メンテ安定性）を「KB3 5銘柄中ユニークな投資判断上の反省ケース（準rule9事案）」として文脈化。アナリスト自身が2025年8月に投資仮説崩壊を認識した唯一の事例。confidence 30%は維持（事実誤認ではないため）だが、今後の評価フレームワーク改善の参考事例として明示的に記録。"
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "research_id": "CA_eval_20260220-1411_POOL",
+  "ticker": "POOL",
+  "company_name": "Pool Corporation",
+  "generated_at": "2026-02-20T15:30:00Z",
+  "generator": "ca-eval-lead (T7直接実行)",
+  "report_version": "draft_v1",
+  "cagr_estimate": {
+    "current": "9.5%（2025年8月修正）",
+    "components": {
+      "market_growth": "4%（Pool Construction1%+Installed Base成長1%+インフレ2%）",
+      "store_share_gain": "1%",
+      "ma": "0.5%",
+      "op_leverage": "1〜2%",
+      "buyback": "2〜3%"
+    },
+    "source": "アナリストレポート8/15/25（SELL推奨時の修正CAGR）",
+    "revision_note": "2022年10月時点の12%（売上8%+OPレバレッジ1〜2%+自社株買い2〜3%）から9.5%に修正。主因はメンテナンス収益安定性の過大評価と新規プール建設の構造的低迷。"
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "川中卸売市場における独占的支配力（40%シェア・448拠点 vs 業界2位30拠点）",
+      "ca_type": "structural",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（「40%シェア」は結果だが、川中の構造的ポジションという能力が主張の核心）",
+        "rule02": "PASS（「川中支配力」「寡占的ポジション」は名詞で表現される属性）",
+        "rule04": "PASS（448 vs 30拠点・40%シェア・12万顧客・上位100社10%未満の複数定量裏付け）",
+        "rule06": "PASS（拠点網・市場シェア・バリューチェーン上のポジションは構造的要素）",
+        "rule07": "PARTIAL（448 vs 30拠点の定量差あり、純粋競合の具体的企業名が不明）",
+        "rule08": "PASS（「拠点展開戦略」ではなくバリューチェーン上の構造的ポジションが主張核心）",
+        "rule09": "N/A（事実誤認なし、全事実confirmed）",
+        "rule10": "N/A（参入しなかった市場のネガティブケース情報なし）",
+        "rule11": "PASS（フラグメント川上・川下×川中寡占という業界構造とPOOLポジションの強い合致）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と取り違え、weak）", "G（純粋競合名称不明、moderate）"],
+        "high_eval": ["I（定量的裏付け：448 vs 30拠点、strong）", "IV（構造的市場ポジション：川中寡占×フラグメント市場、strong）"]
+      },
+      "key_evidence": [
+        "448拠点 vs 業界2位約30拠点（15倍差、SEC EDGAR 10-K Business section直接取得）",
+        "川中のプール用品卸売シェア約40%（SEC EDGAR 10-K Business section直接取得）",
+        "顧客数約12万（フラグメント）、上位100社でも売上10%未満",
+        "サプライヤー2,200以上（バイイングパワーの源泉）",
+        "フラグメント川上・川下に挟まれた川中での寡占構造（バリューチェーン上のユニークなポジション）"
+      ],
+      "upside_conditions": "業界2位との具体的財務比較（荒利率、OPMの比較）が得られれば90%相当の評価が可能。純粋競合の企業名と定量的差別化軸の明示が必要。",
+      "downside_risks": "Eコマースの将来的な浸透（B2B重量物でも徐々に変化する可能性）。拠点増加が実際のシェアゲインに直結しなければOPレバレッジ仮定が崩れる。"
+    },
+    {
+      "claim_id": 2,
+      "title": "大量購買によるサプライヤーへのバーゲニングパワー（荒利率30%安定維持）",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（「荒利率30%維持」は結果、「バーゲニングパワー」は能力として認識可能）",
+        "rule02": "PASS（「バーゲニングパワー」「購買力」は名詞的優位性）",
+        "rule04": "PARTIAL（荒利率30%という数値あり、競合比較なし）",
+        "rule06": "PASS（川中の購買力・バーゲニングパワーは事業モデルの核心）",
+        "rule07": "FAIL（業界2位との荒利率比較なし）",
+        "rule08": "PASS（「集中購買戦略」ではなくバーゲニングパワーとして記述）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（情報なし）",
+        "rule11": "PASS（2,200以上のサプライヤー×川中寡占という構造的合致は強い）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（荒利率30%=結果、weak）", "G（競合荒利率比較なし、moderate）"],
+        "high_eval": ["I（定量的裏付け：荒利率29.57%をSEC EDGAR直接確認、moderate）"]
+      },
+      "key_evidence": [
+        "荒利率29.57%（SEC EDGAR 10-Q 2025Q3 XBRL直接抽出）—「30%近辺」主張と整合",
+        "売上高減少局面でも荒利率30%近辺を維持（FY2022ピーク→2024でも維持）",
+        "4拠点のCSL（Centralized Shipping Locations）による集中購買体制",
+        "サプライヤー2,200以上（交渉力の源泉）"
+      ],
+      "upside_conditions": "業界2位等の競合の荒利率との直接比較データが得られれば70%に向上可能。",
+      "downside_risks": "Top3サプライヤー（Pentair 20%・Hayward 10%・Zodiac 10%）への集中リスク。規模縮小局面では交渉力が弱まる可能性。"
+    },
+    {
+      "claim_id": 3,
+      "title": "フラグメント顧客基盤による価格決定力とスイッチングコスト構造",
+      "ca_type": "structural",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 30,
+      "cagr_label": "あまり納得しない",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "WARN（「フラグメント顧客基盤」は市場の外生的特性、POOL固有の能力ではない）",
+        "rule02": "PARTIAL（「スイッチングコスト」は名詞だが源泉が外生条件依存）",
+        "rule04": "PARTIAL（顧客数12万・上位100社10%未満の数値あり、顧客Churn率等の直接証拠なし）",
+        "rule06": "WARN（フラグメント顧客基盤は外生条件。構造的優位性の帰属が曖昧）",
+        "rule07": "FAIL（競合も同様のフラグメント市場構造の恩恵を受ける）",
+        "rule08": "WARN（「顧客フラグメント活用」と「スイッチングコスト」の区別が曖昧）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（情報なし）",
+        "rule11": "PARTIAL（フラグメント顧客基盤という業界構造はPOOLに有利だが、優位性帰属がPOOL固有でない）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（フラグメント性=外生条件の結果、moderate）", "B（業界共通特性、moderate）", "G（競合も同等の恩恵、strong）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "顧客数約12万（フラグメント）—上位100社でも売上10%未満",
+        "取扱製品数20万点以上、600以上のプロダクトライン（利便性の高さ）"
+      ],
+      "note": "外生的市場構造に依存した主張。2025年8月の顧客節約志向顕在化でスイッチングコストが想定より弱いことが確認された。"
+    },
+    {
+      "claim_id": 4,
+      "title": "Installed Baseに支えられたメンテナンス需要の構造的安定性",
+      "ca_type": "structural",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 30,
+      "cagr_label": "あまり納得しない",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "FAIL（「メンテ需要の安定性」はInstalled Base（外生）からの結果、POOLの能力ではない）",
+        "rule02": "PARTIAL（「Installed Baseの大きさ」は市場全体の属性、POOL固有ではない）",
+        "rule04": "PARTIAL（540万プール・64%メンテ比率の数値あり、POOL固有の競合優位を示す証拠ではない）",
+        "rule06": "FAIL（Installed Baseは外生的市場条件、POOLが構築した優位性ではない）",
+        "rule07": "FAIL（業界内全プレイヤーが同様の恩恵を受ける）",
+        "rule08": "N/A（戦略混同なし、より根本的な問題あり）",
+        "rule09": "WARN（事実誤認ではないが、アナリスト自身が2025年8月に「過大評価していた」と認識—準rule9事案）",
+        "rule10": "N/A（情報なし）",
+        "rule11": "PARTIAL（プール産業のInstalled Baseは有利だが、競合も同等の恩恵）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（メンテ安定性=外生条件の結果、strong）", "B（業界共通恩恵、strong）", "G（競合も同等の恩恵、strong）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "米国内in-groundプール約540万箇所（外生的Installed Base）",
+        "メンテナンス・修繕比率64%（推定値、正式セグメント開示非開示）",
+        "2024年新規建設61,000件（GFC前200,000件比▲70%）"
+      ],
+      "note": "重要警告: アナリスト自身が2025年8月15日のSELL推奨で「メンテナンス収益安定性を過大評価していた」と認識。この評価誤りが投資仮説崩壊の主因となった。外生的市場特性を競争優位性と混同したパターンAの最典型例。",
+      "downside_risks": "2025年顧客節約志向による影響は想定以上。メンテナンス比率64%は推計値であり下方修正の可能性あり。新規建設急減がメンテ市場成長を抑制。"
+    },
+    {
+      "claim_id": 5,
+      "title": "フラグメント市場でのM&Aコンソリデーション能力（小型・確実実行型）",
+      "ca_type": "operational",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PASS（「M&A実行能力」「統合能力」は能力として正しく記述）",
+        "rule02": "PASS（「M&A実行能力」「統合能力」は名詞的優位性）",
+        "rule04": "PARTIAL（M&A予算25〜50M・CAGR寄与0.5%の数値あり、統合成功率・PMI品質データなし）",
+        "rule06": "PASS（M&A実行能力は独立した成長経路として機能）",
+        "rule07": "PARTIAL（フラグメント市場での優位性は認識されるが、競合との実行能力比較なし）",
+        "rule08": "PASS（「M&A戦略」ではなく「M&A実行・統合能力」が主張）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "FAIL（M&A断念例のネガティブケース情報なし。CHD#1=70%が持つ補強材料が欠如）",
+        "rule11": "PASS（フラグメント市場×M&A能力の構造的合致—ORLY#5=90%の論理に類似）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["G（競合との実行能力比較なし、moderate）"],
+        "high_eval": ["III（能力>結果：5ネットワーク統合実績、moderate）", "IV（構造的市場ポジション：フラグメント×M&A能力、moderate）"]
+      },
+      "key_evidence": [
+        "5ディストリビューションネットワーク（SCP・Superior・Horizon・NPT・Sun Wholesale）の統合実績",
+        "M&Aによるネットワーク構築の歴史的実績（M&A由来のNPT・Sun Wholesale等）",
+        "2025年M&A予算25〜50M（会社コメント由来）",
+        "CAGRブレークダウンに明示的に0.5%として組み込まれている"
+      ],
+      "upside_conditions": "M&A断念例（ネガティブケース）が示されれば70%に向上可能。実際のM&A後ROICや統合期間データが得られれば品質評価が可能になる。",
+      "downside_risks": "M&A予算規模（25〜50M/年）は小さく、単独でのCAGR貢献は限定的（0.5%）。統合失敗リスクの定量的評価が不明。"
+    },
+    {
+      "claim_id": 6,
+      "title": "B2B重量物商材特性によるEコマース耐性（構造的防衛壁）",
+      "ca_type": "structural",
+      "final_confidence": 10,
+      "label": "ほぼ納得しない（却下）",
+      "cagr_confidence": 10,
+      "cagr_label": "ほぼ納得しない",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "FAIL（「Eコマース耐性」は商材の外生的物理特性からの防衛効果）",
+        "rule02": "PARTIAL（「Eコマース耐性」は名詞だが源泉が外生条件）",
+        "rule04": "FAIL（定量的証拠なし—オンライン競合シェア変化率等なし）",
+        "rule06": "FAIL（市場特性（外生）、POOL構築の構造的優位性ではない）",
+        "rule07": "FAIL（業界内全プレイヤーが同様の「Eコマース耐性」を持つ）",
+        "rule08": "N/A（戦略混同なし、より根本的な問題あり）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（情報なし）",
+        "rule11": "PARTIAL（B2B重量物という業界構造はEコマース参入を困難にするが、POOL固有の優位性ではない）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（Eコマース耐性=外生条件の防衛効果、strong）", "B（業界共通特性、strong）", "D（定量的裏付けなし、moderate）", "G（競合も同等の耐性、strong）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "10-K Risk Factorsに「e-commerceリスクはB2B・重量物・引火性商品のため限定的」と明示（SEC EDGAR直接取得）"
+      ],
+      "note": "競合差別化不能・定量的裏付けなし・外生条件依存の三拍子。COST#2（劇場的価値、10%却下）と同様の却下理由。独立した競争優位性主張としては認められない。"
+    },
+    {
+      "claim_id": 7,
+      "title": "南部・西部への人口移動とOutdoor Living拡大による市場成長捕捉力",
+      "ca_type": "structural",
+      "final_confidence": 10,
+      "label": "ほぼ納得しない（却下）",
+      "cagr_confidence": 30,
+      "cagr_label": "あまり納得しない",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "FAIL（人口移動・Outdoor Livingトレンドは外生的マクロトレンド、POOLの能力ではない）",
+        "rule02": "FAIL（「市場成長捕捉力」は主体的能力の名詞ではなく外生トレンドの受益表現）",
+        "rule04": "PARTIAL（主要4州55%・新規建設件数の数値あり、POOL固有の優位捕捉の証拠なし）",
+        "rule06": "FAIL（外生的マクロトレンドはPOOLの構造的優位性ではない）",
+        "rule07": "FAIL（競合も同一地域展開で同様の恩恵を受けられる）",
+        "rule08": "N/A（戦略混同なし）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（情報なし）",
+        "rule11": "PARTIAL（南部・西部集中が拠点集中と整合するが、市場トレンドのPOOL固有帰属の根拠なし）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（外生的マクロトレンドを優位性として提示、strong）", "B（業界共通恩恵、strong）", "G（競合も同等の恩恵、strong）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "主要4州（カリフォルニア・フロリダ・テキサス・アリゾナ）で売上高約55%",
+        "2024年新規建設61,000件（ピーク比▲70%）—市場成長捕捉が想定より弱いことを示す反証"
+      ],
+      "note": "外生的マクロトレンドを競争優位性として提示。2024年の新規建設急減（▲15%）は「市場成長捕捉力」の前提が実際には弱かったことの反証。却下（10%）が適切。"
+    }
+  ],
+  "overall_summary": {
+    "avg_ca_confidence": 36,
+    "avg_cagr_confidence": 41,
+    "strongest_claims": [
+      {"id": 1, "title": "川中卸売市場における独占的支配力", "confidence": 70},
+      {"id": 2, "title": "大量購買によるサプライヤーへのバーゲニングパワー", "confidence": 50},
+      {"id": 5, "title": "フラグメント市場でのM&Aコンソリデーション能力", "confidence": 50}
+    ],
+    "weakest_claims": [
+      {"id": 6, "title": "B2B重量物商材特性によるEコマース耐性（却下）", "confidence": 10},
+      {"id": 7, "title": "南部・西部への人口移動・市場成長捕捉力（却下）", "confidence": 10}
+    ],
+    "key_insight": "POOLの競争優位性は「川中卸売市場における独占的支配力（Claim #1: 70%）」に集約される。448 vs 30拠点・40%シェアというバリューチェーン上のユニークなポジションが唯一の真の競争優位性。その他の主張（Claim #2〜7）はこの支配力の派生結果や外生的市場条件であり、独立した競争優位性としての評価は限定的。2025年8月のSELL推奨（メンテ安定性の過大評価認識）は、外生的市場特性を競争優位性と混同したパターンAの典型的投資判断リスクを示した。",
+    "comparison_to_kb3": {
+      "closest_analog": "KB3に最も類似した銘柄はORLY（O'Reilly Automotive）。両社ともフラグメント市場での卸売事業において規模・密度・ネットワークを基盤とした市場支配力を持つ。ただしORLYの平均優位性スコア63%に対してPOOLは36%と大きく低い。",
+      "difference": "ORLYはAZOという純粋競合との具体的な定量比較（DIFM補充頻度等）が示されたが、POOLは業界2位の財務データが不明で競合比較が困難。またORLYの90%主張（#2・#5）は「フラグメント市場×規模×具体的競合対比」の三位一体が成立していたが、POOLにはこれに相当する主張が存在しない。さらにPOOLはアナリスト自身が主要投資仮説（メンテ安定性）を2025年8月に否定した点でKB3の他4銘柄とは異なる投資判断上の特殊な文脈を持つ。"
+    }
+  }
+}
