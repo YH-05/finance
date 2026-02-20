@@ -1,0 +1,60 @@
+{
+  "research_id": "CA_eval_20260220-0845_AME",
+  "type": "ca_eval",
+  "ticker": "AME",
+  "created_at": "2026-02-20T08:45:00Z",
+  "completed_at": "2026-02-20T10:05:00Z",
+  "parameters": {
+    "ticker": "AME",
+    "report_path": "analyst/raw/AME US.md",
+    "skip_industry": true
+  },
+  "status": "completed",
+  "model_config": {
+    "lead": "claude-sonnet-4-6 (inherit)",
+    "teammates": "claude-sonnet-4-6 (sonnet fixed)"
+  },
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  },
+  "task_results": {
+    "T0_setup": { "status": "completed", "owner": "ca-eval-lead", "output": "00_meta/research-meta.json" },
+    "T1_sec_filings": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/sec-data.json", "note": "Lead直接実行（EDGAR_IDENTITY未設定のためアナリストレポートから抽出）" },
+    "T2_report_parser": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/parsed-report.json", "note": "Lead直接実行" },
+    "T3_industry": { "status": "skipped", "owner": "ca-eval-lead", "note": "PoC段階のポリシーによりスキップ（SEC EDGAR以外の外部データソース不使用）" },
+    "T4_claim_extractor": { "status": "completed", "owner": "ca-eval-lead", "output": "02_claims/claims.json", "note": "Lead直接実行（7件の主張抽出、avg_ca=51%）" },
+    "T5_fact_checker": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/fact-check.json", "note": "Lead直接実行（27事実検証：verified=25、verified_with_caveat=2、contradicted=0）" },
+    "T6_pattern_verifier": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/pattern-verification.json", "note": "Lead直接実行（PatternG全7件検出、調整なし）" },
+    "T7_report_generator": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/draft-report.md", "04_output/structured.json"], "note": "Lead直接実行" },
+    "T8_ai_critique": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/critique.json", "04_output/revised-report.md"], "note": "Lead直接実行（critical×1件、minor×6件。Claim #2 CAGR条件付きアノテーション追加）" },
+    "T9_accuracy": { "status": "completed", "owner": "ca-eval-lead", "output": "04_output/accuracy-report.json", "mode": "simplified", "verdict": "pass", "note": "簡易モード（AMEはPhase 2データなし）。S-8チェック合格（contradicted=0件）" }
+  },
+  "outputs": {
+    "final_report": "04_output/revised-report.md",
+    "draft_report": "04_output/draft-report.md",
+    "structured_json": "04_output/structured.json",
+    "critique": "04_output/critique.json",
+    "accuracy": "04_output/accuracy-report.json"
+  },
+  "summary": {
+    "total_claims": 7,
+    "avg_ca_confidence": 51,
+    "avg_cagr_confidence": 64,
+    "strongest_claims": [
+      {"id": 1, "title": "ニッチ市場構造に基づくスイッチングコスト", "confidence": 70},
+      {"id": 2, "title": "規律あるM&A選定・実行能力（Playbook蓄積）", "confidence": 70}
+    ],
+    "weakest_claims": [
+      {"id": 7, "title": "エンドマーケット分散（結果/戦略）", "confidence": 30}
+    ],
+    "kb3_closest_analog": "CHD（M&A中心の能力評価・平均50%が一致）",
+    "notable_t8_modification": "Claim #2 CAGR confidence 70%に大型化リスク（USD1bn以上）顕在化時の条件付きアノテーション追加（50%への低下条件を明示）",
+    "accuracy_mode": "simplified",
+    "accuracy_verdict": "pass"
+  }
+}

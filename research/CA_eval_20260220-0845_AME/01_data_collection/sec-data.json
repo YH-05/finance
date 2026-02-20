@@ -1,0 +1,266 @@
+{
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "retrieved_at": "2026-02-20T08:50:00Z",
+  "data_source": "analyst_report_extracted",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "unavailable",
+    "reason": "EDGAR_IDENTITY未設定のためSEC EDGAR MCPへのアクセスが制限。財務データはアナリストレポート（analyst/raw/AME US.md）から抽出した参照値のみ。",
+    "affected_fields": ["financials_detailed_5yr", "filing_sections_full_text", "8k_events", "insider_transactions_raw"],
+    "available_fields": ["financials_from_report", "key_metrics_from_report", "insider_summary_partial", "segment_data", "ma_track_record"]
+  },
+  "financials": {
+    "note": "アナリストレポートからの参照値。正確な財務諸表データはSEC EDGAR直接参照が必要。",
+    "revenue": {
+      "description": "売上高",
+      "latest_annual": {
+        "value_approx": "7000000000",
+        "currency": "USD",
+        "period": "FY2024概算（IR面談2024年6月時点で7bn規模）",
+        "source": "アナリストレポート：面談時点での現状として「売上高7bn、42BU」と記載"
+      },
+      "historical_reference": {
+        "fy2018_approx": "5000000000",
+        "note": "2018年12月レポートに「売上5Bn$」と記載",
+        "fy_2bn_period_approx": "2008年頃（BU数32の時点。16~17年前）"
+      }
+    },
+    "segment_revenue_mix": {
+      "EIG": {
+        "share": "68%",
+        "description": "電子計器事業（電力・医療・工業・航空宇宙等の領域で使用される計測機器）",
+        "opm": "25.5%",
+        "q2_2024_opm": "30.3%（vs Cons 29.2%）",
+        "q2_2024_revenue_yoy": "+1.7%（OG+0%、M&A+2%、FX▲1%、vs Cons +3.2%）",
+        "customer_type": "最終顧客との直接交渉（2nd tier supplierのEMGと異なる）"
+      },
+      "EMG": {
+        "share": "32%",
+        "description": "電気機械事業（精密動作ソリューション・熱管理・電気相互接続・特殊金属）",
+        "opm": "24.5%",
+        "q2_2024_opm": "21.2%（< Cons 22.8%）",
+        "q2_2024_revenue_yoy": "+13.6%（OG▲6%、M&A+20%、FX▲1%、< Cons +19.6%）",
+        "customer_type": "Tier2サプライヤー寄り（顧客が価格センサティブな傾向）",
+        "legacy_business_note": "モーター等のレガシー事業が売上高の5%程度含まれる"
+      }
+    },
+    "income_statement": {
+      "opm_consolidated": {
+        "q2_2024": "25.8%（vs Cons 25.3%）",
+        "long_term_target": "30bp/年のCore EBIT Margin改善（2024年IR面談後）",
+        "past_5yr_avg_improvement": "65bp/年",
+        "fy2021_2022_price_cost_spread": "100bp（Pricing6%、コスト5%）",
+        "fy2024_price_cost_spread": "50bp（Pricing3%、コストインフレ2.5%）",
+        "q2_2024_price_cost_spread": "1%（Pricing3.5%、コスト2.5%）"
+      },
+      "eps": {
+        "q2_2024": "1.66（vs Cons 1.64）"
+      },
+      "revenue_growth": {
+        "q2_2024_consolidated_yoy": "+5.4%（OG▲2%、M&A+8%、FX▲1%）",
+        "fy2024_guidance": "+5~7%（2024Q2時点、前回から▲4%引き下げ）",
+        "fy2024_q3_guidance": "+MSD",
+        "long_term_target": "8%（EIG・EMG共にOG4%+M&A4%）",
+        "historical_og_ma_mix": {
+          "old_mix": "OG1/3、M&A2/3（OG3%+M&A6%）",
+          "new_mix": "OG1:M&A1（OG4%+M&A4%）"
+        }
+      },
+      "pricing_power": {
+        "normal_unit_price_increase": "1%程度",
+        "volume_growth_rate": "2~3%程度（比較的成熟した領域に特化）",
+        "book_to_bill_note": "2022年時点では全エンド市場で堅調"
+      }
+    },
+    "balance_sheet": {
+      "note": "詳細データはSEC EDGAR参照要。以下はレポートからの参照値のみ。",
+      "roic_excl_goodwill": "20%超（M&A中心の成長でも安定維持。M&A後のIntegrationでも維持水準）",
+      "goodwill_note": "ROIC算出時はgoodwill除外ベースで20%超を維持。セグメント間の差も小さい。",
+      "market_cap_reference": {
+        "dec_2021": "USD34bn",
+        "context_note": "ITW（USD77bn）、ROP（USD51bn）対比小さいとの記載あり（2022年10月時点）"
+      }
+    },
+    "cash_flow": {
+      "capex_to_revenue": "約2%（ガイドライン水準）",
+      "cumulative_capital_deployment_since_2012": {
+        "total": "USD10bn",
+        "breakdown": {
+          "ma": "74%（USD7.4bn）",
+          "dividends": "11%（USD1.1bn）",
+          "buyback": "15%（USD1.5bn）"
+        }
+      },
+      "note": "高いFCF創出力：運転資金管理の徹底等により利益の質は高く、M&A資金のほとんどを事業によって捻出。",
+      "buyback_rate": "2014-2023年平均：1%/年のEPS寄与"
+    }
+  },
+  "recent_filings": {
+    "note": "SEC EDGAR MCP利用不可のため詳細なフォームデータは取得不可",
+    "10k": {
+      "status": "unavailable",
+      "partial_info": {
+        "filing_date_approx": "2025年2月頃（FY2024 10-K予定）",
+        "note": "アナリストレポートからの定性情報のみ利用可能"
+      }
+    },
+    "10q": {
+      "status": "partial",
+      "latest": {
+        "form_type": "10-Q",
+        "period": "2024Q2（2024年8月9日時点の決算コメントあり）",
+        "key_items": [
+          "Sales YoY+5.4%（OG▲2%、M&A+8%、FX▲1%）",
+          "OPM25.8%（vs Cons 25.3%）",
+          "EPS1.66（vs Cons 1.64）",
+          "ガイダンス：通年+5~7%（前回比▲4%引き下げ）"
+        ]
+      }
+    },
+    "8k": {
+      "status": "unavailable",
+      "partial_info": {
+        "note": "アナリストレポートに記載の決算情報・IR面談内容のみ参照可能"
+      }
+    }
+  },
+  "insider_summary": {
+    "status": "unavailable_for_ame",
+    "note": "SEC EDGAR MCPへのアクセス不可のためインサイダー取引データは取得不可",
+    "management_info_from_report": {
+      "ceo": "David Zapico（EIG事業Head出身、当社戦略を熟知）",
+      "cfo": "新CFO（2017年以降在職、Capital Allocation方針不変）",
+      "ma_team": {
+        "size_2022": "10名（deal sourcing 4名、execution 6名）",
+        "size_2024": "11名（2022年から1名追加）",
+        "description": "社内M&A専門チーム。IB又はビジネスユニット経由でソーシング"
+      },
+      "org_philosophy": "分散型組織（現場に権限を委譲）。中途採用メイン。Ametek大学等の文化浸透システムあり。"
+    }
+  },
+  "key_metrics": {
+    "roic_excl_goodwill": "20%超（M&A中心の成長でも安定維持）",
+    "opm_trend": {
+      "past_5yr_avg_improvement": "65bp/年",
+      "long_term_target": "30bp/年（2024年面談後修正）"
+    },
+    "rd_to_revenue": {
+      "total_rde": "5.5%程度（Research, Development, Engineering科目。2024年面談後「若干比率が上昇する程度」との言及あり）",
+      "pure_rd": "3.5%程度"
+    },
+    "direct_sales_ratio": "約80%（残り20%は卸売経由）",
+    "vitality_index": {
+      "latest_q": "約29%",
+      "comfort_zone": "20%台後半"
+    },
+    "churn_rate": "ほぼゼロ（定量値は非開示）",
+    "price_cost_spread": {
+      "normal": "50~100bp",
+      "fy2021_2022": "100bp（Pricing6%、コスト5%）",
+      "fy2024_target": "50bp（Pricing3%、コストインフレ2.5%）",
+      "q2_2024": "100bp（Pricing3.5%、コスト2.5%）"
+    },
+    "ma_track_record": {
+      "period": "2002年以降",
+      "total_amount": "USD8.4bn（Bloomberg開示分に限定）",
+      "total_count": "86件",
+      "avg_per_year": "約4件",
+      "avg_deal_size": "約USD100M",
+      "latest_major_deal": "Paragon Medical（約USD2bn、医療セグメントを21%まで拡大）",
+      "deal_size_trend": "大型化の兆候あり（USD1bn以上の可能性）",
+      "criteria": {
+        "roic_3yr": "3年後ROIC10%以上",
+        "irr": "IRR15%以上",
+        "eps_y1": "1年目からEPS Accretive（EPS増加に寄与）"
+      },
+      "target_size": "売上高USD50~200M",
+      "pipeline": "大小問わず豊富（2024Q2時点でbig business検討の示唆あり）",
+      "pmi_approach": "各ビジネスユニットが実施。コストシナジー（人事・経理・生産ライン・販売チャネル統合）、集中購買（原材料調達はCorporate Supply Chain Teamが全社ベース）。Playbookのノウハウ蓄積。"
+    },
+    "bu_structure": {
+      "current_bu_count": "42（売上高7bn時点）",
+      "historical_bu_count": "32（売上高2bn時点、約16~17年前）",
+      "avg_bu_revenue": "約USD200M",
+      "integration_approach": "M&Aした事業を既存BUに統合するケースが多い（BU数は事業規模に比例せず）"
+    },
+    "end_market_mix": {
+      "medical": "約21%（Paragon買収後）",
+      "aerospace_defense": "約20%",
+      "general_industries": "約30%",
+      "china_exposure": "約10%（売上高比、1割弱）",
+      "semiconductor": "CAMECAとZYGO（技術力があり成長、ハイエンド顧客）",
+      "automation": "OEM在庫調整影響（2024年）"
+    },
+    "market_position": {
+      "niche_market_size": "USD150~400M（USD1bn以上の市場は回避）",
+      "market_share": "各ニッチ領域で30~50%",
+      "tier_position": "基本的にはTier2サプライヤー（Tier1（エマソン、GE、Honeywell、UTX等）へ納入）",
+      "competitor_comparison": "ITW（80/20戦略コングロマリット、MarketCap USD77bn）・ROP（USD51bn）対比AMEは小規模だが同類ビジネスモデル"
+    },
+    "manufacturing": {
+      "low_cost_locations": ["上海", "メキシコ", "セルビア", "マレーシア", "チェコ"],
+      "engineer_count_global": "2,900名",
+      "india_engineering_center": {
+        "location": "バンガロール",
+        "engineers": "250名のR&Dエンジニア",
+        "scope": "35ビジネスユニットのサポート（新商品設計・試験テスト・コンプライアンステスト）、24時間365日稼働"
+      },
+      "china_risk_mitigation": "パンデミック以前からサプライチェーン・工場分散（マレーシア・セルビア・メキシコ工場拡大）"
+    },
+    "esg": {
+      "relative_score": 58,
+      "management_score": 28,
+      "rank": "Electrical Equipment内24位（54/227社）",
+      "threshold_note": "ESGスコア58は閾値付近。リスト追加理由：ESGリスクが大きくない+高い競争優位性"
+    }
+  },
+  "filing_sections": {
+    "note": "SEC EDGAR MCP利用不可のため直接取得不可。アナリストレポートからの要約のみ。",
+    "business": {
+      "summary": "電子計器（EIG、68%）と電気機械（EMG、32%）の2セグメント。ニッチ領域のミッションクリティカル計測機器・プロセス機器に特化。Tier2サプライヤーとして大手OEMへ納入。直販8割体制。分散型組織。",
+      "key_products": [
+        "電子計器・測定機器（スピード・温度・金属構成・密度・流体速度・圧力等の計測）",
+        "プロセス機器（流体制御に用いる機器・部品等）",
+        "精密動作ソリューション",
+        "熱管理システム",
+        "電気相互接続製品",
+        "特殊金属",
+        "救急医療施設向けITソリューション",
+        "放射能検知器・潜水艦コネクタ・高速鉄道fault recorderなどのミッションクリティカル機器"
+      ],
+      "key_customers": [
+        "エマソン・GE・日立・ABB等へのTier2納入（プロセス機器）",
+        "Honeywell・UTX・Lockheed Martin等へのTier2納入（航空宇宙/Defense）",
+        "Airbus・Boeing向けはTier1経由（一部直販あり）"
+      ],
+      "historical_background": "元々ベーシックな工業製品（ポンプ・バルブ等）製造。1990年代にWalter Blankley CEOの下でニッチ領域へシフト（Strategic Acquisitions、Global & Market Expansion、New Products、Operating Excellence戦略）。",
+      "similar_companies": "ITW（80/20戦略コングロマリット）に類似するがAMEはより狭い事業領域（ミッションクリティカルな計測機器・プロセス機器）に特化"
+    },
+    "risk_factors": {
+      "summary": "アナリストレポートに記載のリスクファクター",
+      "risks": [
+        "ニッチ特化の限界：事業規模拡大に伴う意味ある買収のハードル上昇（M&A大型化リスク）",
+        "大型買収（USD1bn以上）時の高値掴み・インテグレーション・競争優位性変化リスク",
+        "ESGスコア（相対スコア58）が閾値付近にあり除外リスク",
+        "中国リスク（売上高比1割弱）",
+        "オートメーション・ヘルスケア向けシクリカルリスク（2024年OEM在庫調整、Paragon在庫調整）",
+        "EIG：地政学・選挙不透明感によるプロジェクト遅延リスク"
+      ]
+    },
+    "mda": {
+      "summary": "2024Q2実績とガイダンス（2024年8月9日時点）",
+      "revenue_q2_2024": "+5.4% YoY（OG▲2%、M&A+8%、FX▲1%）",
+      "opm_q2_2024": "25.8%（vs Cons 25.3%）",
+      "eps_q2_2024": "1.66（vs Cons 1.64）",
+      "fy2024_guidance": "+5~7%（前回比▲4%引き下げ）",
+      "h1_h2_split": "例年52:48（上期偏重）、2024年は50:50を想定",
+      "key_drivers": [
+        "オートメーション関連：OEM在庫調整が想定より長期化（▲2%影響、Rockwellと整合的）",
+        "ヘルスケア：Paragon関連在庫調整（業界全体要因）（▲1%影響）",
+        "EIG：地政学・選挙不透明感によるプロジェクト遅延（▲1%影響、キャンセルはなし）",
+        "Aero/Defense：堅調"
+      ],
+      "pricing": "Price-Costスプレッド1%（Pricing3.5%、コスト2.5%）を維持"
+    }
+  }
+}
