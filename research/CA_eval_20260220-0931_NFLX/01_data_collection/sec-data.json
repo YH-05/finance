@@ -1,0 +1,325 @@
+{
+  "ticker": "NFLX",
+  "company_name": "Netflix, Inc.",
+  "retrieved_at": "2026-02-20T09:31:00Z",
+  "data_source": "mixed",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "partial",
+    "reason": "SEC EDGAR MCPから10-K（FY2025）の財務データ・セクション情報を取得。get_key_metricsは空結果のためアナリストレポートからの補完を併用。",
+    "affected_fields": ["key_metrics_partial", "filing_sections_mda"],
+    "available_fields": ["financials_from_10k", "filing_sections_business_risk", "recent_filings", "insider_summary"]
+  },
+  "financials": {
+    "note": "SEC EDGAR 10-K（FY2025、2026/1/23提出）からのXBRLデータ + アナリストレポートからの補完。",
+    "revenue": {
+      "description": "売上高（動画ストリーミング事業のみ）",
+      "latest_annual": {
+        "value": "45183036000",
+        "currency": "USD",
+        "period": "FY2025（2025-12-31）",
+        "source": "SEC EDGAR 10-K XBRL: Revenues"
+      },
+      "historical_reference": {
+        "fy2024": "38868000000",
+        "fy2024_note": "レポート記載: FY24売上39bn（概算）",
+        "fy2023_growth": "+12.5% yoy（4Q23レビューより）",
+        "10yr_cagr": "19%（レポート記載: 過去10年の売上CAGR）"
+      }
+    },
+    "segment_revenue_mix": {
+      "note": "Netflix は単一セグメント（動画ストリーミング）。地域別売上が開示。",
+      "streaming": {
+        "share": "100%",
+        "description": "動画ストリーミングサブスクリプション + 広告収入",
+        "revenue_model": "（有料会員数）x（会員単価）+ 広告収入"
+      },
+      "geographic_mix_fy24": {
+        "UCAN": {
+          "members_millions": 90,
+          "share_of_members": "29.7%",
+          "note": "ユーザー当たり平均単価が最も高い"
+        },
+        "EMEA": {
+          "members_millions": 101,
+          "share_of_members": "33.5%"
+        },
+        "LATAM": {
+          "members_millions": 53,
+          "share_of_members": "17.7%"
+        },
+        "APAC": {
+          "members_millions": 57,
+          "share_of_members": "19.1%"
+        }
+      }
+    },
+    "income_statement": {
+      "revenue_fy2025": {
+        "value": "45183036000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "operating_income_fy2025": {
+        "value": "13326603000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "net_income_fy2025": {
+        "value": "10981201000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "cost_of_revenue_fy2025": {
+        "value": "23275329000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "eps_basic_fy2025": {
+        "value": "2.58",
+        "source": "SEC EDGAR XBRL"
+      },
+      "eps_diluted_fy2025": {
+        "value": "2.53",
+        "source": "SEC EDGAR XBRL"
+      },
+      "opm_fy2025": "29.5%（13326603/45183036）",
+      "opm_trend": {
+        "fy2018": "10.2%",
+        "fy2020": "21.5%",
+        "fy2021": "20.9%",
+        "fy2022": "17.8%",
+        "fy2023": "20.7%",
+        "fy2024": "26.7%",
+        "fy2025": "29.5%（SEC EDGAR算出）",
+        "source": "レポート記載 + SEC EDGAR XBRL算出"
+      },
+      "quarterly_fy2025": {
+        "1Q25": {
+          "revenue": "$10.54bn",
+          "opm": "31.7%",
+          "eps": "6.61",
+          "yoy_growth": "+13%"
+        },
+        "2Q25": {
+          "revenue": "$11.08bn",
+          "opm": "34.1%",
+          "eps": "7.19",
+          "yoy_growth": "+16%"
+        }
+      }
+    },
+    "balance_sheet": {
+      "total_assets_fy2025": {
+        "value": "55596993000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "current_assets_fy2025": {
+        "value": "13020191000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "total_liabilities_fy2025": {
+        "value": "28981505000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "current_liabilities_fy2025": {
+        "value": "10980930000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "stockholders_equity_fy2025": {
+        "value": "26615488000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "cash_fy2025": {
+        "value": "9033681000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "ppe_net_fy2025": {
+        "value": "2004350000",
+        "source": "SEC EDGAR XBRL"
+      }
+    },
+    "cash_flow": {
+      "operating_cf_fy2025": {
+        "value": "10149273000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "investing_cf_fy2025": {
+        "value": "1041688000",
+        "source": "SEC EDGAR XBRL"
+      },
+      "financing_cf_fy2025": {
+        "value": "-10345623000",
+        "note": "マイナス = 自社株買い・配当等の流出",
+        "source": "SEC EDGAR XBRL"
+      },
+      "fcf_historical": {
+        "fy2021": "$649mil",
+        "fy2022": "なし",
+        "fy2023": "$5,849mil",
+        "fy2024": "$5,439mil",
+        "source": "アナリストレポート"
+      },
+      "buyback": {
+        "fy2024_total": "$5,439mil（FCFの約8割をbuybackに活用）",
+        "quarterly_recent": {
+          "3Q23": "$2,500mil",
+          "4Q23": "$2,500mil",
+          "1Q24": "$2,000mil",
+          "2Q24": "$1,600mil",
+          "3Q24": "$1,700mil"
+        },
+        "allocation_policy": "コンテンツ投資を優先した上でなおFCFに余裕がある（収益の2か月分程度を最低現金水準とする）ときに適宜行う",
+        "source": "アナリストレポート"
+      },
+      "content_investment": {
+        "fy2021": "$17.7bn",
+        "fy2022": "$16.8bn",
+        "fy2023": "$12.5bn（ストライキ影響）",
+        "fy2024": "$17.0bn（計画）",
+        "fy2025": "$18.0bn（計画）",
+        "content_to_revenue_fy2024": "46%（売上39bnに対してコンテンツ支出約18bn）",
+        "historical_ratio": "かつて売上比60-70%の時期もあった",
+        "source": "アナリストレポート"
+      }
+    }
+  },
+  "recent_filings": {
+    "10k": {
+      "status": "available",
+      "latest": {
+        "form_type": "10-K",
+        "filing_date": "2026-01-23",
+        "accession_number": "0001065280-26-000034",
+        "period": "2025-12-31",
+        "sec_url": "https://www.sec.gov/Archives/edgar/data/1065280/000106528026000034/0001065280-26-000034.txt"
+      }
+    },
+    "10q": {
+      "status": "available",
+      "note": "10-K提出済みのため直近10-Qは10-K内に包含"
+    },
+    "8k": {
+      "status": "partial",
+      "note": "直近のフォーム4（インサイダー取引）とDFAN14Aが多数提出（2026年2月）"
+    },
+    "dfan14a": {
+      "note": "2026年2月に複数のDFAN14A提出。プロキシ関連の株主向け書類。",
+      "latest_filing_date": "2026-02-19"
+    }
+  },
+  "insider_summary": {
+    "status": "available",
+    "period_days": 365,
+    "total_form4_filings": 221,
+    "form3_count": 2,
+    "note": "年間221件のForm 4提出。活発なインサイダー取引活動（主にストックオプション行使関連と推測）",
+    "management_info_from_report": {
+      "co_ceo_1": "Ted Sarandos",
+      "co_ceo_2": "Greg Peters",
+      "founder": "Reed Hastings（2023年1月にExecutive Chairmanに移行）",
+      "employees": "約16,000名（FY2025 10-K記載）",
+      "employee_distribution": {
+        "UCAN": "約10,900名（68%）",
+        "EMEA": "約2,500名（16%）",
+        "APAC": "約1,900名（12%）",
+        "LATAM": "約700名（4%）"
+      }
+    }
+  },
+  "key_metrics": {
+    "note": "SEC EDGAR get_key_metricsは空結果のため、10-K XBRL + アナリストレポートから構成",
+    "opm_fy2025": "29.5%（SEC EDGAR算出）",
+    "opm_trend_5yr": "FY20:21.5% → FY24:26.7% → FY25:29.5%",
+    "roe_approx": "41.3%（NI 10.98bn / Equity 26.62bn）",
+    "members_total_fy2024": "3.01億人（2025年1月決算時点、以降非開示）",
+    "members_growth": {
+      "4Q24": "+18.91M（史上最大の四半期増加数）",
+      "note": "1Q25以降、有料会員数は非開示"
+    },
+    "pricing_power": {
+      "description": "米国市場で1-2年おきに+$1ずつ値上げ。値上げ直後こそ解約率は上昇するが長期的な加入者数の伸びに影響なし",
+      "latest_us_pricing": {
+        "ad_supported": "$7.99/月",
+        "standard": "$17.99/月",
+        "premium": "$24.99/月"
+      },
+      "comparison": "ケーブルTV月額平均$100と比較して割安感あり"
+    },
+    "ad_business": {
+      "fy2024_growth": "前期比2倍",
+      "fy2025_target": "さらに2倍",
+      "ad_plan_share_of_new_members": {
+        "1Q24": "40%",
+        "2Q24": "45%",
+        "3Q24": "50%",
+        "4Q24": "55%以上"
+      },
+      "first_party_ad_platform": "2025年4月米国導入、12カ国展開予定"
+    },
+    "content_efficiency": {
+      "content_to_revenue_ratio_fy2024": "46%",
+      "historical_peak": "60-70%",
+      "cost_structure": "コストの大半はコンテンツ償却費用。売上増加がそのまま限界利益率の改善につながりやすい",
+      "awards": "アカデミー賞・ゴールデングローブ賞等を多数受賞。2025年エミー賞44作品ノミネート"
+    },
+    "ma_track_record": {
+      "note": "Netflix はM&Aよりオーガニック成長・コンテンツ投資を優先。M&Aはそう積極的でない。",
+      "recent": "Robloxとの業務提携（ゲーム事業展開）",
+      "wwe_deal": "プロレス団体WWE「RAW」の米国・カナダ等の長期独占放映権（5年/10年、2025年開始）"
+    },
+    "non_official_targets": {
+      "note": "非公式の社内目標（報道で漏洩）",
+      "2030_sales": "売上2倍",
+      "2030_op": "営業利益3倍",
+      "2030_mkt_cap": "$1tn",
+      "implied_sales_cagr_from_fy24": "約+12%",
+      "implied_op_cagr_from_fy24": "約+20%"
+    }
+  },
+  "filing_sections": {
+    "business": {
+      "summary": "世界最大級のエンターテインメントサービス。TVシリーズ、映画、ゲーム、ライブプログラミングを提供。単一セグメント（動画ストリーミング）で運営。月額サブスクリプションモデル（広告付きプランを含む複数プラン提供）。約16,000名のフルタイム従業員（FY2025末時点）。",
+      "key_points": [
+        "コアストラテジー: 営業利益率目標の範囲内でグローバルにビジネスを成長させる",
+        "単一オペレーティングセグメント",
+        "収益源: 月額メンバーシップ料金（ストリーミングサービス）",
+        "広告付きサブスクリプションプランを含む複数の価格帯を提供",
+        "従業員約16,000名（うち68%がUCAN）",
+        "Culture Memo（2024年更新）に基づく独自の企業文化",
+        "トップオブマーケット報酬: 現金とストックオプションの選択制"
+      ],
+      "competition": [
+        "リニアTV、ストリーミングプロバイダー（海賊版含む）、ゲームプロバイダー、オープンコンテンツプラットフォーム（YouTube等）、SNS等と競合",
+        "消費者の余暇時間をめぐる「moments of truth」の獲得が目標"
+      ],
+      "source": "SEC EDGAR 10-K (FY2025) Item 1"
+    },
+    "risk_factors": {
+      "summary": "10-K記載のリスクファクター（Item 1A）",
+      "risks": [
+        "会員獲得・維持の失敗: コンテンツの質、価格、競合の影響で会員数減少リスク",
+        "競争環境の激化: 従来型TV、他ストリーミング、ゲーム、SNS、海賊版との競争",
+        "コンテンツリスク: 制作コスト超過、人気作の失敗、ギルド交渉の影響",
+        "価格改定・プラン変更のリスク: パスワード共有取締り、広告プランへの移行が不評になるリスク",
+        "マクロ経済リスク: インフレによる消費者の支出削減",
+        "海賊版の脅威: 「ほぼ全コンテンツが無料」という圧倒的な消費者提案に対抗する難しさ",
+        "生成AIの台頭: 競合がAI技術をより効果的に活用した場合のリスク",
+        "規制リスク: 各国のコンテンツ規制、投資義務、著作権規制"
+      ],
+      "source": "SEC EDGAR 10-K (FY2025) Item 1A"
+    },
+    "mda": {
+      "summary": "MD&Aセクションは直接取得不可。アナリストレポートからの要約のみ。",
+      "fy2025_guidance_actual": {
+        "revenue": "$44.8-45.2bn（最終ガイダンス）",
+        "opm": "29.5% cc",
+        "revenue_growth_yoy": "+15%",
+        "note": "通期上方修正（売上yy:+12-14%→+15%、OPM:29%→29.5%）"
+      },
+      "key_drivers": [
+        "広告付きプランの成長（新規会員の55%以上が広告付きプランを選択）",
+        "パスワード共有取締りの効果（UCAN地域で3,000万世帯を特定）",
+        "コンテンツ投資の効率化（売上比46%まで低下）",
+        "価格決定力の維持（ケーブルTV$100対比で割安感）",
+        "新興国での会員数拡大（APAC +23% yoy in 1Q25）"
+      ],
+      "source": "アナリストレポート（analyst/raw/NFLX.md）"
+    }
+  }
+}
