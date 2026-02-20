@@ -1,0 +1,53 @@
+{
+  "research_id": "CA_eval_20260220-0931_NFLX",
+  "type": "ca_eval",
+  "ticker": "NFLX",
+  "created_at": "2026-02-20T09:31:00Z",
+  "completed_at": "2026-02-20T10:12:00Z",
+  "parameters": {
+    "ticker": "NFLX",
+    "report_path": "analyst/raw/NFLX.md",
+    "skip_industry": true
+  },
+  "status": "completed",
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  },
+  "model_config": {
+    "lead": "claude-opus-4-6 (inherit)",
+    "teammates": "sonnet (未使用: Lead直接実行)"
+  },
+  "task_results": {
+    "T0_setup": { "status": "completed", "owner": "ca-eval-lead", "output": "00_meta/research-meta.json" },
+    "T1_sec_filings": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/sec-data.json" },
+    "T2_report_parser": { "status": "completed", "owner": "ca-eval-lead", "output": "01_data_collection/parsed-report.json" },
+    "T3_industry": { "status": "skipped", "owner": "ca-eval-lead", "note": "PoC段階のポリシーによりスキップ（SEC EDGAR以外の外部データソース不使用）" },
+    "T4_claim_extractor": { "status": "completed", "owner": "ca-eval-lead", "output": "02_claims/claims.json" },
+    "T5_fact_checker": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/fact-check.json" },
+    "T6_pattern_verifier": { "status": "completed", "owner": "ca-eval-lead", "output": "03_verification/pattern-verification.json" },
+    "T7_report_generator": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/draft-report.md", "04_output/structured.json"] },
+    "T8_ai_critique": { "status": "completed", "owner": "ca-eval-lead", "output": ["04_output/critique.json", "04_output/revised-report.md"], "verdict": { "critical_issues": 1, "minor_issues": 8, "confidence_adjustments": 1 } },
+    "T9_accuracy": { "status": "completed", "owner": "ca-eval-lead", "output": "04_output/accuracy-report.json", "verdict": "pass" }
+  },
+  "outputs": {
+    "final_report": "04_output/revised-report.md",
+    "draft_report": "04_output/draft-report.md",
+    "structured_json": "04_output/structured.json",
+    "critique": "04_output/critique.json",
+    "accuracy": "04_output/accuracy-report.json"
+  },
+  "summary": {
+    "avg_ca_confidence": 46,
+    "avg_cagr_confidence": 64,
+    "strongest_claims": [
+      { "id": 4, "title": "グローバル3億人の加入者基盤がもたらす規模の経済", "confidence": 70, "t8_modified": true }
+    ],
+    "kb3_closest_analog": "MNST（ブランド力×シェアの結果帰属問題。MNST平均40% vs NFLX平均46%）",
+    "notable_t8_modification": "Claim #4のCA confidence 50%→70%（ルール適用結果8件PASSとの矛盾を解消、ORLY#2/COST#1準拠）"
+  }
+}

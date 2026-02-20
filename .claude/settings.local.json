@@ -80,8 +80,9 @@
       "mcp__filesystem__create_directory",
       "mcp__filesystem__write_file",
       "mcp__sec-edgar-mcp__get_financials",
-      "mcp__sec-edgar-mcp__get_key_metrics",
-      "mcp__sec-edgar-mcp__get_recent_filings"
+      "mcp__sec-edgar-mcp__get_recent_filings",
+      "mcp__sec-edgar-mcp__get_company_facts",
+      "mcp__sec-edgar-mcp__get_key_metrics"
     ]
   },
   "enableAllProjectMcpServers": true,

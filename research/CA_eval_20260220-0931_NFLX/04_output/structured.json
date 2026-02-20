@@ -1,0 +1,328 @@
+{
+  "research_id": "CA_eval_20260220-0931_NFLX",
+  "ticker": "NFLX",
+  "company_name": "Netflix, Inc.",
+  "generated_at": "2026-02-20T09:55:00Z",
+  "generator": "ca-eval-lead (T7直接実行)",
+  "report_version": "revised_v1",
+  "cagr_estimate": {
+    "current": "EPS +MDD% (Mid-Double Digit)",
+    "components": {
+      "revenue": "+10% (会員数+5% + 価格+5%)",
+      "margin_improvement": "+3% (コンテンツ投資効率化+スケールメリット)",
+      "buyback_ma": "+LSD% (Low Single Digit, 2025/7/22にMSD→LSD修正)"
+    },
+    "source": "アナリストレポート（NFLX.md）2Q25レビュー時点"
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "オリジナルコンテンツ継続生産を支える独特な人事制度",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（人事制度・クリエイター維持力は能力として正しく表現）",
+        "rule02": "PASS（人事制度、報酬体系、クリエイター維持力は名詞属性）",
+        "rule03": "PARTIAL（Disney/Amazon/Apple等も高額報酬で囲い込み、Netflix固有の差別化は定性的）",
+        "rule04": "PARTIAL（エミー賞44作品の数値あり、業界平均との離職率比較等の定量データなし）",
+        "rule05": "PARTIAL（人事制度→コンテンツ品質→会員獲得は3ステップで間接的）",
+        "rule06": "PASS（コンテンツ制作は事業核心、人事制度はそれを支える構造的要素）",
+        "rule07": "PARTIAL（Culture Memo等の固有要素はあるが競合人事制度との定量比較なし）",
+        "rule08": "PASS（人材プール維持力であり戦略ではない）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PARTIAL（即レイオフのネガティブケースあり、人材流出例の分析なし）",
+        "rule11": "PARTIAL（コンテンツ業界のmoat低さをアナリスト自身が認識）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["III（能力>結果、strong）"]
+      },
+      "key_evidence": [
+        "最高水準報酬×自由度×即レイオフの人事戦略",
+        "2025年エミー賞44作品ノミネート",
+        "Culture Memo（2024年更新）に基づく独自企業文化",
+        "約16,000名フルタイム従業員（SEC EDGAR 10-K確認済み）",
+        "トップオブマーケット報酬（現金/ストックオプション選択制）"
+      ],
+      "upside_conditions": "クリエイター離職率・定着率の業界比較データが得られれば70%に上昇可能",
+      "downside_risks": "競合（Disney、Amazon）の人材投資が同等以上になった場合の差別化消失リスク"
+    },
+    {
+      "claim_id": 2,
+      "title": "ビッグデータ解析・レコメンド最適化による資本効率の高いコンテンツ投資",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（データ解析能力は正しいが、OPM改善は結果の側面）",
+        "rule02": "PASS（データ解析能力、レコメンド最適化技術は名詞属性）",
+        "rule03": "PARTIAL（3億人のデータ規模は差別化要因だがアルゴリズム比較なし）",
+        "rule04": "PASS（コンテンツ売上比60-70%→46%、OPM 10.2%→29.5%の定量裏付け）",
+        "rule05": "PASS（コンテンツ効率化→OPM改善→マージン+3%は直接的）",
+        "rule06": "PASS（データ解析はビジネスモデル核心の構造的要素）",
+        "rule07": "PARTIAL（Amazon/YouTube/Disneyも高いデータ技術を保有）",
+        "rule08": "PASS（データ解析「能力」であり戦略ではない）",
+        "rule09": "N/A（事実誤認なし、OPM 29.5%はSEC EDGAR確認済み）",
+        "rule10": "FAIL（データ解析による失敗回避の具体例示なし）",
+        "rule11": "PARTIAL（スケールメリットが効く構造だがNetflix固有ではない）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と取り違え、moderate）"],
+        "high_eval": ["I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "コンテンツ売上比 60-70% → 46%への改善トラックレコード",
+        "OPM推移: FY18:10.2% → FY25:29.5%（SEC EDGAR確認済み）",
+        "有料会員数3億人超のデータ基盤",
+        "FY25コンテンツ投資計画$18bn",
+        "創業者Reed Hastingsのテクノロジーバックグラウンド"
+      ],
+      "upside_conditions": "レコメンドアルゴリズムの具体的優位性（精度、打率等）が示されれば70%に上昇可能",
+      "downside_risks": "OPM改善がデータ解析固有の寄与か規模拡大効果かの切り分けが不明"
+    },
+    {
+      "claim_id": 3,
+      "title": "サブスクリプション型収益基盤における価格決定力",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PASS（価格決定力は能力として正しく表現）",
+        "rule02": "PASS（Pricing Powerは名詞属性）",
+        "rule03": "PARTIAL（ケーブルTV対比は異業種比較、ストリーミング同業との比較不足）",
+        "rule04": "PASS（ケーブルTV$100 vs Netflix$18の数値比較あり）",
+        "rule05": "PASS（価格決定力→値上げ→価格+5%は直接的）",
+        "rule06": "PASS（サブスクモデルの核心、構造的要素）",
+        "rule07": "PARTIAL（Disney+$7.99-$13.99、Amazon等との価格比較不十分）",
+        "rule08": "PASS（価格決定力は構造的な力）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PARTIAL（2022年の会員数減少→回復実績あり、大量解約シナリオの分析不足）",
+        "rule11": "PARTIAL（ストリーミング業界でのケーブルTV→ストリーミング構造転換と合致するが独占的ではない）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["I（定量的裏付け、moderate）", "III（能力>結果、moderate）"]
+      },
+      "key_evidence": [
+        "ケーブルTV月額$100 vs Netflix Standard$17.99の割安感",
+        "米国市場で1-2年おきに+$1ずつの値上げ実績",
+        "値上げ後も長期的な加入者数の伸びに影響なし",
+        "2025年1月値上げ: 広告$7.99、Standard$17.99、Premium$24.99",
+        "広告付きプランのARPMがStandard ARPMを上回る"
+      ],
+      "upside_conditions": "Disney+/Amazon等の純粋競合との価格弾力性比較データが得られれば70%に上昇可能",
+      "downside_risks": "複数ストリーミング契約の合計コストがケーブルTV水準に近づくリスク"
+    },
+    {
+      "claim_id": 4,
+      "title": "グローバル3億人の加入者基盤がもたらす規模の経済",
+      "ca_type": "structural",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（3億人は結果、規模の経済メカニズムは正しいが背後の維持力不足）",
+        "rule02": "PASS（規模の経済は名詞属性）",
+        "rule03": "PASS（Disney+ ~1.5億、Amazon Prime ~2億対比でNetflix 3億人は突出）",
+        "rule04": "PASS（会員数3億人、OPM推移の定量裏付けあり）",
+        "rule05": "PASS（規模→OPM改善→マージン+3%は直接的）",
+        "rule06": "PASS（サブスク×コンテンツモデルの核心）",
+        "rule07": "PASS（3億人は競合対比で突出）",
+        "rule08": "PASS（構造的な力であり戦略ではない）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PARTIAL（2022年の会員数減少からの回復実績あり）",
+        "rule11": "PASS（固定費型業界で規模の経済が効く構造と合致）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と取り違え、moderate）"],
+        "high_eval": ["I（定量的裏付け、moderate）", "IV（構造的市場ポジション、weak）"]
+      },
+      "key_evidence": [
+        "有料会員数3億人超（4Q24末時点、動画配信サービス世界最大）",
+        "FY25売上$45.2B（SEC EDGAR確認済み）",
+        "コストの大半はコンテンツ償却費用（固定費性が高い）",
+        "OPM推移: FY18:10.2% → FY25:29.5%",
+        "4Q24に+18.91M（史上最大の四半期増加数）"
+      ],
+      "upside_conditions": "業界構造のフラグメント化分析（中小ストリーミングの淘汰トレンド）が示されれば70%に上昇可能",
+      "downside_risks": "Amazon Primeバンドル効果によるストリーミング規模差の縮小リスク"
+    },
+    {
+      "claim_id": 5,
+      "title": "動画ストリーミング一本足によるリソース集中力",
+      "ca_type": "operational",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PARTIAL（リソース集中力を能力と見做せなくはないが、経営判断の結果）",
+        "rule02": "PARTIAL（リソース集中力はやや無理な名詞化）",
+        "rule03": "PASS（ストリーミング専業はNetflix固有）",
+        "rule04": "PARTIAL（コンテンツ投資$18bnの数値はあるが競合比較なし）",
+        "rule05": "PARTIAL（リソース集中→投資最大化→会員増は間接的）",
+        "rule06": "PARTIAL（戦略的選択であり構造的要素とは異なる）",
+        "rule07": "PASS（Disney:テーマパーク、Amazon:AWS、Apple:ハードウェアとの差異明確）",
+        "rule08": "WARN（アナリスト自身が「経営戦略」と表現。ルール8に抵触）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "FAIL（集中戦略が裏目に出た失敗例分析なし）",
+        "rule11": "PARTIAL（Multi-businessが資金力で対抗できる構造）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["F（戦略を優位性と混同、strong）", "A（結果を原因と取り違え、weak）"],
+        "high_eval": ["V（競合との具体的比較、moderate）"]
+      },
+      "key_evidence": [
+        "単一オペレーティングセグメント（SEC EDGAR 10-K確認済み）",
+        "FY25コンテンツ投資計画$18bn",
+        "競合はMulti-business（Disney:テーマパーク、Amazon:AWS）"
+      ],
+      "note": "戦略的選択であり構造的優位性ではない。Claim #2（データ解析能力）に背後の優位性を帰属すべき。"
+    },
+    {
+      "claim_id": 6,
+      "title": "パスワード共有取締り・広告プランによる未開拓需要の収益化能力",
+      "ca_type": "operational",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PARTIAL（取締りの仕組みは説明あるが会員増は結果）",
+        "rule02": "PARTIAL（収益化能力は名詞だが施策の描写に近い）",
+        "rule03": "PARTIAL（Netflixが最大規模で実行した点は差別化だが競合も追随可能）",
+        "rule04": "PASS（3,000万世帯、950万件、55%等の数値あり。ただしBBG推計含む）",
+        "rule05": "PASS（取締り→新規会員→売上+LSD%は直接的）",
+        "rule06": "PARTIAL（一時的施策であり構造的優位性ではない）",
+        "rule07": "PARTIAL（パスワード共有問題は業界共通課題）",
+        "rule08": "WARN（戦略的施策であり優位性ではない。ルール8に抵触）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PARTIAL（2022年の会員減少→取締りで回復の実績あり）",
+        "rule11": "PARTIAL（一時的効果であり持続的業界構造との合致ではない）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["F（戦略を優位性と混同、strong）", "A（結果を原因と取り違え、moderate）"],
+        "high_eval": ["I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "UCAN地域で3,000万世帯の未課金視聴者特定（BBG推計）",
+        "2024年に950万件の新規会員獲得（BBG推計）",
+        "新規会員の55%以上が広告付きプラン選択（4Q24）",
+        "パスワード借用ユーザー約1億世帯（モバイル5億世帯）",
+        "広告収入FY24前期比2倍、FY25さらに2倍見通し"
+      ],
+      "note": "戦略的施策であり構造的優位性ではない。優位性はClaim #4（規模基盤）とClaim #2（データ解析能力）に帰属すべき。"
+    },
+    {
+      "claim_id": 7,
+      "title": "コンテンツの多様性と顧客粘着力（エンゲージメント）",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（エミー賞・視聴時間は結果、多様性維持の仕組みの説明不足）",
+        "rule02": "PASS（コンテンツの多様性、顧客粘着力は名詞属性）",
+        "rule03": "PARTIAL（Disney IP、Amazon MGMとの比較がない）",
+        "rule04": "PASS（エミー賞44作品、視聴時間2時間/日、TVシェア10%の定量データ）",
+        "rule05": "PARTIAL（多様性→エンゲージメント→低Churn→会員維持は2-3ステップ）",
+        "rule06": "PASS（コンテンツの多様性は事業核心の構造的要素）",
+        "rule07": "PARTIAL（Disney/Amazon/YouTubeとのコンテンツ比較データなし）",
+        "rule08": "PASS（構造的な力であり戦略ではない）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PARTIAL（爆死への耐性は示唆されるが具体的失敗例の学習プロセス不明）",
+        "rule11": "PARTIAL（コンテンツ業界での多様性はリスク分散として機能）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と取り違え、moderate）"],
+        "high_eval": ["I（定量的裏付け、moderate）", "III（能力>結果、weak）"]
+      },
+      "key_evidence": [
+        "2025年エミー賞44作品ノミネート",
+        "視聴時間2時間/日（広告有無に関わらず）",
+        "米国TVシェア約10%（ニールセン統計）",
+        "韓国・日本等の非英語圏コンテンツの国際展開",
+        "続編系人気作（ウェンズデー、ストレンジャーシングス等）"
+      ],
+      "upside_conditions": "Churn率の開示とDisney/Amazon対比のコンテンツライブラリ比較があれば70%に上昇可能",
+      "downside_risks": "特定ヒット作への依存度が高まった場合のリスク"
+    },
+    {
+      "claim_id": 8,
+      "title": "先行者優位とグローバルブランド認知",
+      "ca_type": "structural",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（先行者であることは事実であり能力ではない、ブランド認知は結果）",
+        "rule02": "PASS（先行者優位、ブランド認知は名詞属性）",
+        "rule03": "PARTIAL（Disney IP、Amazon Primeとの差別化不明確）",
+        "rule04": "PARTIAL（会員数3億人は間接指標、認知度の定量データなし）",
+        "rule05": "PARTIAL（ブランド認知→会員獲得コスト低減は間接的）",
+        "rule06": "PASS（ブランド認知は事業の重要構成要素）",
+        "rule07": "PARTIAL（Disney/Amazon Primeとのブランド力比較なし）",
+        "rule08": "PASS（ブランド認知は構造的資産）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "FAIL（ブランド力毀損例や認知度逆転の分析なし）",
+        "rule11": "PARTIAL（複数サービス並行利用の業界構造で独占的ブランド力なし）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と取り違え、strong）", "D（定性的で定量裏付けなし、moderate）"],
+        "high_eval": []
+      },
+      "key_evidence": [
+        "1997年創業、2007年ストリーミング開始の先行者",
+        "有料会員数3億人超で動画配信サービス市場支配的地位",
+        "サブスクリプションサービスの先駆者的存在"
+      ],
+      "note": "先行者優位は過去の経緯であり現在の能力ではない。背後要因の分析不足。dogma.md類型2に該当するがKYは「外見的評価が多い」と自己認識。"
+    }
+  ],
+  "overall_summary": {
+    "avg_ca_confidence": 46,
+    "avg_cagr_confidence": 64,
+    "strongest_claims": [
+      {"id": 1, "title": "オリジナルコンテンツ継続生産を支える独特な人事制度", "confidence": 50},
+      {"id": 2, "title": "ビッグデータ解析・レコメンド最適化", "confidence": 50},
+      {"id": 3, "title": "サブスクリプション型収益基盤における価格決定力", "confidence": 50},
+      {"id": 4, "title": "グローバル3億人の加入者基盤がもたらす規模の経済（T8修正: 50→70）", "confidence": 70}
+    ],
+    "weakest_claims": [
+      {"id": 5, "title": "動画ストリーミング一本足によるリソース集中力（戦略混同）", "confidence": 30},
+      {"id": 6, "title": "パスワード共有取締り・広告プラン（戦略施策）", "confidence": 30},
+      {"id": 8, "title": "先行者優位とグローバルブランド認知（背後要因不足）", "confidence": 30}
+    ],
+    "key_insight": "NFLXの競争優位性の核心はClaim #1（人事制度→コンテンツ品質）、#2（データ解析→投資効率）、#3（価格決定力）、#4（規模の経済）の4本柱。ただしいずれも50%に留まるのは、(1)コンテンツ業界のmoatの低さをアナリスト自身が認識していること、(2)純粋競合（Disney+、Amazon、YouTube）との具体的差別化比較が全体的に不足していること、(3)「結果」（OPM改善、会員数、エンゲージメント）を「能力」に転換する議論が薄いこと、の3点が主因。90%評価に必要な「市場構造×企業ポジションの明確な合致」（パターンIV strong）は不在。",
+    "comparison_to_kb3": {
+      "closest_analog": "MNST（ブランド力×シェアの結果帰属問題。MNST平均40%とNFLX平均43%が近似）",
+      "difference": "NFLXはMNSTより定量データが豊富（OPM推移、コンテンツ効率化指標）だが、業界のmoatの低さ（弱小プレイヤーでもヒット作を出せる）がMNSTのエナジードリンク市場より不利。またNFLXは3件が30%評価（戦略混同・結果帰属）でありMNSTの1件（10%: 事実誤認）とは減点パターンが異なる。"
+    }
+  }
+}

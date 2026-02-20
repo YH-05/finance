@@ -1,0 +1,36 @@
+{
+  "research_id": "CA_eval_20260220-0931_NFLX",
+  "ticker": "NFLX",
+  "mode": "simplified",
+  "generated_at": "2026-02-20T10:10:00Z",
+  "kb_version": "v1.0.0",
+  "mode_determination": {
+    "reason": "NFLXはPhase 2データ（analyst/phase2_KY/*NFLX*.md）が存在しないため簡易モードを適用",
+    "phase2_data_searched": "analyst/phase2_KY/*NFLX*",
+    "phase2_data_found": false,
+    "full_mode_eligible_tickers": ["CHD", "COST", "LLY", "MNST", "ORLY"]
+  },
+  "full_mode_results": null,
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "check_description": "contradicted事実に対するルール9自動適用（confidence → 10%）の確認",
+    "fact_check_source": "research/CA_eval_20260220-0931_NFLX/03_verification/fact-check.json",
+    "contradicted_claims": [],
+    "contradicted_count": 0,
+    "rule9_applied_count": 0,
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "contradictedと判定された事実の主張は0件。ルール9（事実誤認→confidence 10%）の適用対象なし。簡易モードのS-8チェックは合格。ファクトチェック結果: verified 31件、verified_with_caveat 3件、unverifiable 2件、contradicted 0件。",
+    "caveats": [
+      "SEC EDGAR MCPツールで主要財務データ（FY2025 Revenue, OI, NI, OPM）を直接検証済み。OPM 29.5%等の数値はSEC EDGAR XBRL確認済み。",
+      "BBG独自推計（パスワード共有取締り3,000万世帯、新規会員950万件）は外部ソースのため検証不可（unverifiable: 2件）。",
+      "verified_with_caveat 3件（リソース集中のFCF全振り表現、広告プランのBBG推計値、パスワード取締りのBBG推計値）はcontradictedではなく留意事項のアノテーションであり、S-8チェックの対象外。"
+    ]
+  },
+  "overall_assessment": {
+    "accuracy_verdict": "pass",
+    "confidence_level": "medium",
+    "reason": "簡易モードのS-8チェックのみ実施。SEC EDGAR MCPツールでFY2025主要財務データを直接検証済みであり、チェックの信頼性は中程度。Phase 2データ（Y評価値）との比較による精度検証は未実施。",
+    "recommendation": "NFLXのPhase 2評価（Y評価値）が蓄積された後、フルモードで再評価することを推奨。特にClaim #4（規模の経済、T8修正で50%→70%に上方修正）についてのY評価との比較が有益。また純粋競合比較データ（Disney+、Amazon）の追加によりCA評価の精度向上が期待される。"
+  }
+}

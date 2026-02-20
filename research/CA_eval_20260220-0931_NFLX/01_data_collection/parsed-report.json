@@ -1,0 +1,365 @@
+{
+  "ticker": "NFLX",
+  "report_path": "analyst/raw/NFLX.md",
+  "parsed_at": "2026-02-20T09:31:00Z",
+  "report_type": "combined",
+  "report_type_note": "PoC段階のためレポート種別判定（期初レポート/四半期レビュー区別）はスキップ",
+
+  "sections": {
+    "esg": {
+      "date": "2025-05-13",
+      "sustainalytics_risk": 15.9,
+      "sustainalytics_risk_category": "Low risk",
+      "management_score": 34.8,
+      "management_category": "Average",
+      "industry_rank": "21/81 (Percentile:26th)",
+      "industry": "Movies and Entertainment",
+      "material_esg_issues": [
+        "Business Ethics",
+        "Corporate Governance",
+        "Data Privacy and Cybersecurity"
+      ],
+      "key_esg_risks": [
+        {
+          "issue": "Corporate Governance",
+          "severity": "最大リスク要因",
+          "detail": "戦略開示を限定。有料会員数の四半期開示がなされなくなり外部からのビジネス進捗が困難。急にCAGR修正を迫られるリスクあり。ただし創業者の書籍等で大まかな戦略は公開済み。不正リスクは低い。",
+          "cagr_impact": true
+        },
+        {
+          "issue": "Data Privacy and Cybersecurity",
+          "severity": "重要リスク",
+          "detail": "有料会員の個人情報と視聴嗜好データを保有。情報漏洩すると解約増・経営危機の可能性。これまでincidentは起きていない。",
+          "cagr_impact": true
+        },
+        {
+          "issue": "Business Ethics",
+          "severity": "低い",
+          "detail": "各国regulation、著作権リスク。ただしオリジナルコンテンツ主軸のため重要度は低い。",
+          "cagr_impact": false
+        }
+      ]
+    },
+
+    "competitive_advantage": {
+      "date": "2025-05-13",
+      "analyst_identified_cas": [
+        {
+          "id": "CA1",
+          "title": "オリジナルコンテンツの制作能力",
+          "subtitle": "優秀なクリエイターの維持確保のための独特な人事戦略",
+          "detail": "最高水準の報酬、自由度の高い労働環境（休暇規定・経費規定なし）がある一方、結果を出せなければ即レイオフというドラスティックな人事戦略。アカデミー賞やゴールデングローブ賞を多数受賞。質の高いオリジナルコンテンツを継続的に生み出す仕組み。",
+          "analyst_assessment": "Netflix の競争優位性の1つと認識",
+          "moat_caveat": "コンテンツビジネス業界自体 Economic moat は低い。弱小プレイヤーでも時にヒット作を出すことはありうる（カメラを止めるな: 製作費300万円、興行収入30億円）。しかし持続的に成長するには『独自のコンテンツを出し続けられる』ことが重要。"
+        },
+        {
+          "id": "CA2",
+          "title": "爆死にも耐えうる投資継続力＋データ解析・配信最適化技術",
+          "subtitle": "資本力 × ビッグデータ × レコメンド最適化",
+          "detail": "MAG7に迫る規模の会社であり十分な資本力を有し数を打てる力がある。ビッグデータ解析及びrecommend最適化を随時機動的に実施。創業者Reed HastingsはPure Software（ソフトウェアのトラブルシューティングツール開発会社）経営者出身で高いテクノロジー技術を有する。",
+          "analyst_assessment": "Netflix の競争優位性の1つと認識",
+          "moat_caveat": "視聴者の好みの細分化が進み、1作品で爆発的にヒットするハードルは非常に高い。数を打つにはある程度の資本力が必要（一定の Economic Moat あり）。"
+        },
+        {
+          "id": "CA3",
+          "title": "動画ストリーミングに全振りしたビジネスモデル",
+          "subtitle": "対ケーブルTV、対Disney、Amazon",
+          "detail": "スタジオ運営やクラウドビジネス等を行わず、オリジナルコンテンツ制作に全振り。リスキーだが他の追随を許さないポジショニングを確立。FCFは近年Buybackにも活用されているが、基本的にコンテンツ投資を最優先。",
+          "analyst_assessment": "他の追随を許さないポジショニングを確立",
+          "moat_caveat": "多くのプレイヤーが乱立する中ではリスキーな経営戦略。Disney化するリスクも指摘。"
+        }
+      ],
+      "historical_ca_assessment_2022": {
+        "date": "2022-10-28",
+        "assessment": "加入数2.2億超で動画配信サービス市場で支配的地位。膨大な視聴データでヒット確率の高い独占タイトル・オリジナルコンテンツの購入・制作に注力。コンテンツの質において業界内で高い評価。ケーブルTV月額$100対比で$15の割安感。価格決定力は強い。"
+      }
+    },
+
+    "description": {
+      "date": "2025-05-13",
+      "summary": "延べ有料会員数3億人超の世界最大の動画ストリーミングサービス企業。1997年創業。事業は動画配信のみ。（有料会員数）x（会員単価）+ 広告収入のビジネス。",
+      "key_facts": [
+        "1997年創業（Reed Hastings + Marc Randolph）",
+        "1998年DVD郵送レンタル開始",
+        "1999年定額制（$15.95/月）サブスクリプション導入",
+        "2007年動画ストリーミング配信開始",
+        "FY24有料会員数: UCAN 90M(29.7%), EMEA 101M(33.5%), LATAM 53M(17.7%), APAC 57M(19.1%)",
+        "米国プラン: Standard $17.99, 広告付き$7.99, Premium $24.99",
+        "広告付きプランが成長ドライバー"
+      ]
+    },
+
+    "risks": {
+      "date": "2025-05-13",
+      "identified_risks": [
+        {
+          "risk": "オリジナルコンテンツ製作力の弱体化",
+          "severity": "大",
+          "detail": "人材マネジメント失敗で優秀なクリエイターが競合に流出するリスク。他社にマネできないものではない。",
+          "ca_impact": "CA1に直接影響"
+        },
+        {
+          "risk": "他の動画ストリーミングサービスとの競争激化",
+          "severity": "中",
+          "detail": "Disney+, Amazon Prime Video, Apple TV等の攻勢。YouTube（可処分時間の奪い合い）。複数プレイヤーの統合でNetflixに資本力で対抗可能（Paravi等）。将来的にわたって安泰な競争優位性を確立することは難しい業界と認識。現状は勝ち抜けると判断。",
+          "ca_impact": "CA2, CA3に影響"
+        },
+        {
+          "risk": "新興国での事業拡大",
+          "severity": "小",
+          "detail": "先進国は浸透済みで今後の売上成長は「新規会員獲得<価格改定」。新興国では値上げによる解約率が先進国より高い。価格戦略のかじ取りが難しい。",
+          "ca_impact": "CAGR見通しに影響"
+        }
+      ]
+    },
+
+    "cagr_estimates": {
+      "latest_date": "2025-07-22",
+      "eps_cagr": "+MDD%（Mid-Double Digit）",
+      "revenue_cagr": "+10%（会員数+5%、価格+5%）",
+      "components": {
+        "revenue_growth": "+10%",
+        "margin_improvement": "+3%",
+        "buyback_ma": "+LSD%（Low Single Digit、7/22/25修正: MSD→LSD）"
+      },
+      "revision_history": [
+        {
+          "date": "2022-10-28",
+          "eps_cagr": "+MDD%",
+          "note": "新規CAGR推定。2030年に会員数3億人、OPM30%の達成は可能と判断。"
+        },
+        {
+          "date": "2025-05-13",
+          "eps_cagr": "+MDD%",
+          "note": "引継ぎアップデート。据え置き。"
+        },
+        {
+          "date": "2025-07-22",
+          "eps_cagr": "+MDD%（維持）",
+          "note": "CAGR内訳を微修正。自社株買い/M&Aパーツを+MSD%→+LSD%に保守的見直し。EPS CAGR +MDD%は維持。"
+        }
+      ],
+      "valuation": {
+        "latest_date": "2025-07-22",
+        "itg3": 9.5,
+        "itg4": 11.7,
+        "assessment": "スプレッドの魅力は低下しているが、競争優位性を揺るがすような事象は生じていない。BUY継続。"
+      }
+    },
+
+    "quarterly_reviews": [
+      {
+        "date": "2025-07-22",
+        "quarter": "2Q25",
+        "revenue": "$11.08bn (+16% yy)",
+        "opm": "34.1%",
+        "eps": "7.19 (+47% yy)",
+        "verdict": "いずれもコンセンサス超過",
+        "key_points": [
+          "エリア別: UCAN+17%, EMEA+17%, LATAM+31%, APAC+14%",
+          "FY25ガイダンス上方修正（売上+15%、OPM 29.5%）",
+          "為替の追い風がドライバーだが既存事業も堅調",
+          "ゲームビジネスに鼻息荒い印象（Roblox提携等）",
+          "CAGR内訳微修正: 自社株買い+MSD→+LSD、EPS CAGR+MDD維持"
+        ]
+      },
+      {
+        "date": "2025-05-13",
+        "quarter": "1Q25",
+        "revenue": "$10.54bn (+13% yy)",
+        "opm": "31.7%",
+        "eps": "6.61 (+25% yy)",
+        "verdict": "コンセンサス超過。利益上振れは費用の期ズレ影響あり。",
+        "key_points": [
+          "1Q25から会員数の開示取りやめ",
+          "景気減速下でも広告付きプラン$7.99のレジリエンス性を強調",
+          "2030年Sales2倍・OP3倍の社内目標が報道で漏洩"
+        ]
+      },
+      {
+        "date": "2025-01-27",
+        "quarter": "4Q24",
+        "revenue": "+16.0% yy",
+        "opm": "22.2%",
+        "eps": "not specified",
+        "verdict": "史上最大の加入者数増加（+1,891万人）。延べ3.01億人。",
+        "key_points": [
+          "広告付きプラン会員YoY+30%増、新規の55%以上が広告付き",
+          "米国値上げ発表（広告$6.99→$7.99、Standard$15.49→$17.99、Premium$22.99→$24.99）",
+          "FY25コンテンツ投資$18bn計画",
+          "FY25ガイダンス上方修正（売上+12-14%、OPM29%）"
+        ]
+      },
+      {
+        "date": "2024-10-23",
+        "quarter": "3Q24",
+        "revenue": "+15.0% yy",
+        "opm": "29.6%",
+        "verdict": "パスワード共有化・広告プラン奏功で好決算",
+        "key_points": [
+          "会員+507万人（予想+454万人）、延べ2.82億人",
+          "広告付きプラン会員YoY+35%、新規の50%が広告プラン",
+          "米国TVシェア約10%（YouTube約10%と合わせてストリーミング市場の約50%）"
+        ]
+      },
+      {
+        "date": "2024-08-01",
+        "quarter": "2Q24",
+        "revenue": "+16.8% yy",
+        "opm": "27.2%",
+        "verdict": "かなり良い決算。会員+805万人（予想+481万人）。",
+        "key_points": [
+          "YoY+16.5%の会員増加（2021年以来過去最高）",
+          "APAC（特にインド）が強い",
+          "ニールセン統計: 英仏で会員視聴率50%超の作品あり"
+        ]
+      },
+      {
+        "date": "2024-04-26",
+        "quarter": "1Q24",
+        "revenue": "+14.8% yy",
+        "opm": "28.1%",
+        "verdict": "かなり良い決算。会員+932万人（予想+459万人）。",
+        "key_points": [
+          "パスワード共有化・広告プラン奏功",
+          "1Q25から有料会員数・ARPU非開示を発表（株価-9%）",
+          "モバイル端末パスワード共有取締り強化（対象5億世帯）"
+        ]
+      },
+      {
+        "date": "2024-01-30",
+        "quarter": "4Q23",
+        "revenue": "+12.5% yy",
+        "opm": "16.9%",
+        "verdict": "好決算。会員+1,312万人（予想+885万人）。",
+        "key_points": [
+          "全地域で増収率加速",
+          "OPM上振れはストライキ影響でコンテンツ支出遅れが主因",
+          "WWE RAW長期独占放映権取得（5年/10年）",
+          "自社株買い$2.5bn実施"
+        ]
+      }
+    ],
+
+    "factual_claims": [
+      {
+        "id": "FC1",
+        "claim": "延べ有料会員数3億人超（世界最大の動画ストリーミングサービス）",
+        "date": "2025-01-27",
+        "source": "4Q24決算",
+        "verifiable": true
+      },
+      {
+        "id": "FC2",
+        "claim": "FY24売上高約$39bn、OPM 26.7%",
+        "date": "2025-05-13",
+        "source": "レポート",
+        "verifiable": true
+      },
+      {
+        "id": "FC3",
+        "claim": "コンテンツ支出は売上比46%（FY24）。かつて60-70%の時期もあった。",
+        "date": "2025-05-13",
+        "source": "レポート",
+        "verifiable": true
+      },
+      {
+        "id": "FC4",
+        "claim": "OPMはFY18:10.2%からFY24:26.7%に改善（CAGR+5%）",
+        "date": "2025-05-13",
+        "source": "レポート",
+        "verifiable": true
+      },
+      {
+        "id": "FC5",
+        "claim": "米国市場で1-2年おきに+$1ずつ値上げ。長期的な加入者数の伸びに影響なし。",
+        "date": "2022-10-28",
+        "source": "レポート",
+        "verifiable": true
+      },
+      {
+        "id": "FC6",
+        "claim": "ケーブルTV月額平均$100と比較して$15-18のストリーミングは割安感あり",
+        "date": "2022-10-28",
+        "source": "レポート",
+        "verifiable": true
+      },
+      {
+        "id": "FC7",
+        "claim": "広告付きプランの1人あたり売上（広告収入含む）はスタンダードプランを上回る",
+        "date": "2023-07-24",
+        "source": "会社コメント",
+        "verifiable": false,
+        "note": "会社開示ベースのコメント。外部検証困難。"
+      },
+      {
+        "id": "FC8",
+        "claim": "米国TVシェアの約10%がNetflix、約10%がYouTube（ニールセン統計）",
+        "date": "2024-08-01",
+        "source": "2Q24決算会社コメント",
+        "verifiable": true
+      },
+      {
+        "id": "FC9",
+        "claim": "2025年エミー賞44作品ノミネート（スケールメリットとハイクオリティの証明）",
+        "date": "2025-07-22",
+        "source": "2Q25決算会社コメント",
+        "verifiable": true
+      },
+      {
+        "id": "FC10",
+        "claim": "FCF: FY21 $649M, FY22 なし, FY23 $5,849M, FY24 $5,439M",
+        "date": "2025-05-13",
+        "source": "レポート",
+        "verifiable": true
+      },
+      {
+        "id": "FC11",
+        "claim": "パスワード共有取締りでUCAN地域の3,000万世帯を特定、2024年に950万件会員増加",
+        "date": "2025-07-25",
+        "source": "BBG調査レポート（2025/7/17）",
+        "verifiable": false,
+        "note": "Bloomberg独自調査。Netflix非公式。"
+      },
+      {
+        "id": "FC12",
+        "claim": "従業員約16,000名（FY2025末）。UCAN 68%, EMEA 16%, APAC 12%, LATAM 4%",
+        "date": "2026-01-23",
+        "source": "SEC EDGAR 10-K",
+        "verifiable": true
+      }
+    ],
+
+    "cagr_references": [
+      {
+        "id": "CAGR1",
+        "type": "revenue_cagr",
+        "value": "+10%",
+        "components": "会員数+5%、価格+5%",
+        "basis": "世界のビデオストリーミング市場CAGR18.5%（fortune business insight）。過去10年の売上CAGR19%。競争環境考慮で長期10%は妥当。",
+        "date": "2025-05-13"
+      },
+      {
+        "id": "CAGR2",
+        "type": "eps_cagr",
+        "value": "+MDD%",
+        "components": "売上+10% + マージン改善+3% + 自社株買い/M&A+LSD%",
+        "date": "2025-07-22"
+      },
+      {
+        "id": "CAGR3",
+        "type": "margin_improvement",
+        "value": "+3%",
+        "basis": "コンテンツ投資効率化。売上比46%（かつて60-70%）。スケールメリット享受。",
+        "date": "2025-05-13"
+      },
+      {
+        "id": "CAGR4",
+        "type": "buyback_ma",
+        "value": "+LSD%（7/22/25にMSD→LSD修正）",
+        "basis": "コンテンツ投資最優先。M&Aもそう積極的でない。FCFに余裕出てきているがflatでもない。",
+        "date": "2025-07-22"
+      }
+    ]
+  }
+}
