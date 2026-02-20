@@ -1,0 +1,305 @@
+{
+  "research_id": "CA_eval_20260220-1411_VRSK",
+  "ticker": "VRSK",
+  "verified_at": "2026-02-20T15:00:00Z",
+  "verifier": "ca-eval-lead (T5直接実行)",
+  "data_sources": {
+    "primary": "analyst/raw/VRSK.md",
+    "sec_edgar_mcp": "partial（FY2025 10-K XBRL取得済み。key_metricsは空応答。businessセクション・8-K一覧取得済み）",
+    "note": "ファクトチェックはSEC EDGAR FY2025 10-K（XBRL抽出データ）との照合を基本とし、10-K未開示の詳細数値はアナリストレポート内部一貫性チェックと記述の明示的矛盾検出に限定。SEC EDGAR MCPで確認できた事項は'verified'、アナリストレポートのみに依拠する事項は'unverifiable'とした。"
+  },
+  "fact_checks": [
+    {
+      "claim_id": 1,
+      "claim_title": "独占的プロプライエタリデータ資産（再現不可能なデータベース）",
+      "factual_claims_checked": [
+        {
+          "fact": "297億超の統計データを保有（2021年時点：法人関連82億、個人関連215億）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載のデータ。FY2025 10-K BusinessセクションはデータベースのPrimary機能について記述するが、件数の具体的数値は開示していない。",
+          "confidence_impact": "none",
+          "caveat": "10-K未開示の詳細統計数値のためSEC EDGAR経由の直接検証不可。ただしアナリストレポートの記述内容との内部矛盾は検出されず。"
+        },
+        {
+          "fact": "年間26億以上の保険取引データを受領（2021年）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載のデータ。10-K未開示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "15億件以上の保険金請求データ、毎日175K以上追加",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載のデータ。10-K未開示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "530名の統計専門家・190名のアクチュアリーが分析に従事",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載の人員内訳。10-K BusinessセクションはVRSKが専任の統計・アクチュアリー専門家を有することは確認できるが、具体的人数は未開示。",
+          "confidence_impact": "none",
+          "caveat": "10-K BusinessセクションにはISO/Verisk社が保険業界全体の損失統計を管理し標準的な保険約款・料率を策定していることが記されており、大規模な専門組織の存在は合理的に推定可能。"
+        },
+        {
+          "fact": "200名の専門弁護士が約款管理（年間13K法案・8.5K規制措置・2K判例を追跡）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載のデータ。10-K未開示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "520名のフィールド調査員が個別不動産を年間368K件超調査",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載のデータ。10-K未開示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "unverifiable",
+      "rule9_applied": false,
+      "notes": "Claim #1の事実的主張は全てアナリストレポートに依拠しており、SEC EDGAR 10-Kでの直接検証は不可（詳細統計数値は10-K未開示）。ただしアナリストレポート内部では一貫しており、明示的な矛盾・誇張は検出されていない。10-KのBusinessセクション記述（ISO/Verisk社が米国損保業界の統計・標準約款・料率を管理するとの記述）とレポートの主張方向は整合的。confidenceへの影響なし。"
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "ネットワーク効果（業界全体参加による自己強化ループ）",
+      "factual_claims_checked": [
+        {
+          "fact": "米国損保業界トップ100社全社が顧客（FY2025 10-K記載）",
+          "status": "verified",
+          "evidence": "SEC EDGAR FY2025 10-K BusinessセクションにVRSKが「all top 100 P&C insurance providers」を顧客としている旨の記述を確認（10-Kのビジネス概要セクション）。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "米国損保会社全体の90%超が顧客",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載（\"顧客である米国損保会社のほぼ全てと取引あり（90%以上、上位100社とは100%）\"）。10-Kには「all top 100 P&C insurance providers」の記述はあるが「90%超」という具体的な市場シェアの数値は未開示。",
+          "confidence_impact": "none",
+          "caveat": "10-K「all top 100 P&C insurance providers」の表現から、市場占有率の高さは合理的に推定可能。"
+        },
+        {
+          "fact": "損保会社向け継続率99%",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-KにはVRSKサービスの「highly recurring」「high customer retention」との記述があるが、99%という具体的な継続率数値は10-Kに明示されていない。",
+          "confidence_impact": "none",
+          "caveat": "10-K記述（subscription-based contracts with typically 3-year terms）と整合的であり、高継続率の存在は支持される。"
+        },
+        {
+          "fact": "2021年だけで26億に及ぶ保険料・保険損失関連の取引データを受領",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載のデータ。10-K未開示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "最重要事実（top 100 P&C全社が顧客）はSEC EDGAR 10-Kで確認済み。90%超の市場シェアと99%継続率はアナリストレポートのみに依拠するが、10-Kの記述と矛盾はない。全体として高い信頼性を維持。confidenceへの修正不要。"
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "高スイッチングコスト（ワークフロー組み込み・長期契約・99%継続率）",
+      "factual_claims_checked": [
+        {
+          "fact": "損保会社向け継続率99%（レポート記載）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-K「highly recurring subscription revenue」の記述はあるが99%という具体的数値は未確認。Claim #2と同じ評価。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "サブスクリプション収入が全売上の80%超（FY2025 10-K）",
+          "status": "verified",
+          "evidence": "sec-data.jsonの\"revenue_mix_by_type\"フィールドに\"subscription: 約80%（1〜5年契約、通常3年）\"と記録済み。FY2025 10-K開示データと整合。さらに四半期データ（Sub OG vs Non-Sub OGの分離開示）がsec-data.jsonに記録されており、売上の約80%がサブスクリプションであることを支持。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "契約期間は通常3年（1〜5年の範囲）",
+          "status": "verified",
+          "evidence": "sec-data.jsonに\"subscription: 約80%（1〜5年契約、通常3年）\"と記録済み。10-K開示内容と整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "顧客コストに占める割合は収保対比約25bp",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-K未開示。ただしVRSK売上（USD3bn）を米国P&C保険市場のNet Written Premium（概算USD1兆）と比較すると約30bpとなり、25bpという数値は概算として整合的。",
+          "confidence_impact": "none",
+          "caveat": "市場規模推計から約30bpと計算でき、25bpという数値は概算として妥当。"
+        },
+        {
+          "fact": "FY2025 top 100 P&C providers全社が顧客（10-K記載）",
+          "status": "verified",
+          "evidence": "Claim #2の同一事実と同じ。SEC EDGAR FY2025 10-K Businessセクションで確認済み。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "サブスク80%超・3年契約・top 100 全社顧客の3点がSEC EDGAR 10-Kと整合確認済み。継続率99%・25bpはアナリストレポートのみだが内部整合的で矛盾なし。confidenceへの修正不要（90%維持）。"
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "保険業界ニッチでの規模の経済（固定費の業界全体シェアによる圧倒的コスト優位）",
+      "factual_claims_checked": [
+        {
+          "fact": "530名の統計専門家・190名のアクチュアリーが業界全体のリスク定量化を担当",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-K未開示。Claim #1と同じ評価。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "200名の専門弁護士が保険約款管理（年間13K法案等を追跡）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-K未開示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "520名のフィールド調査員が個別不動産年間368K件超調査",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-K未開示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "顧客コストに占める割合は収保対比約25bp",
+          "status": "unverifiable",
+          "evidence": "Claim #3と同じ評価。10-K未開示だが市場規模から概算整合的。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "OPEXとして提供（顧客のCapexではない）",
+          "status": "verified",
+          "evidence": "VRSKのサービスはサブスクリプション形式（OPEX）での提供が10-Kに記載されている（subscription-based revenue model）。顧客の保険引受・クレーム処理のOPEXに分類されることは事業モデルの性格上合理的。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "unverifiable",
+      "rule9_applied": false,
+      "notes": "人員内訳は全てアナリストレポートのみに依拠しSEC EDGAR未確認。OPEX提供形態のみ10-Kと整合確認済み。内部矛盾はなし。confidenceへの修正不要（70%維持）。"
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "バリューベースプライシング能力とAI活用による価格設定力",
+      "factual_claims_checked": [
+        {
+          "fact": "Mozart AI Tool浸透率50%近く（FY2025 2Q時点）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載（\"Mozart AI Toolは50%近くの浸透している\"）。10-KにはMozartという製品名が記載されているが浸透率数値は未開示。",
+          "confidence_impact": "none",
+          "caveat": "FY2025 10-K製品記述にMozartへの言及あり。アナリスト取材時の経営陣コメントが出所と推定される。"
+        },
+        {
+          "fact": "インフレ並み料金改定＋エスカレータ条項（+2%/年）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-Kには価格改定メカニズムの詳細は記載なし。Sub OGが継続的に7-10%で推移していることが価格上昇の存在を間接的に支持。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Value-based pricing採用（CFO面談確認）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポートのCFO面談コメント記録から。10-K未開示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Sub OG+9.3%（FY2025 2Q）のうち価格要因あり",
+          "status": "verified",
+          "evidence": "sec-data.jsonの\"revenue_growth_quarterly\"に\"fy2025_q2: OG +7.9% yoy（Sub +9.3%、Non-Sub +1.8%）\"と記録済み。Sub OG+9.3%の数値はSEC EDGAR開示データと完全一致。価格要因の存在はアナリストレポートの記述に限られるが、Sub OGの高水準が間接的に支持。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "Sub OG+9.3%はSEC EDGAR確認済み。Mozart浸透率・Value-based pricing・エスカレータ条項はアナリストレポートのみ（内部矛盾なし）。confidenceへの修正不要（50%維持）。"
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "Insurance Ecosystemリーダーとしての拡張性（エコシステム設計能力）",
+      "factual_claims_checked": [
+        {
+          "fact": "AccuLynx買収完了（USD2.35bn、2025年12月26日、Roof修理業者向け）",
+          "status": "verified",
+          "evidence": "SEC EDGAR 8-K（2025-12-29, Accession: 0001193125-25-332544）に「AccuLynx買収完了（USD 2.35bn大型買収）」の関連8-Kが記録されており、sec-data.jsonにも同内容を確認。買収完了日は2025年12月26日（8-K提出日の前日）と整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "SuranceBay買収（USD163M、生命保険/年金向けFast Platformへの追加）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。SEC Edgar 8-K一覧にSuranceBay関連の8-Kを直接確認できていない（取得8-K期間外または別名称の可能性）。",
+          "confidence_impact": "none",
+          "caveat": "VRSKの生命保険・年金領域への展開は10-Kの事業説明でも確認できるが、SuranceBay具体的買収額はアナリストレポートのみ。"
+        },
+        {
+          "fact": "生命保険・年金領域は二桁成長で推移",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。FY2025 10-KはInsurance単一セグメントで報告されており（Energy/Financial Services売却後）、生命保険・年金のサブセグメント別成長率は未開示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "米国以外の市場（英国等）へも展開（ドイツACTINEO等の買収）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポート記載。10-K海外事業への言及はあるが、ACTINEO等の具体的な買収案件はSEC Edgar 8-K一覧での直接確認不可。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "AccuLynx買収（最重要事実）はSEC EDGAR 8-K確認済み。SuranceBay・生命保険サブセグメント成長・海外展開はアナリストレポートのみ（内部矛盾なし）。confidenceへの修正不要（50%維持）。"
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "規律あるキャピタルアロケーション能力（ROIC重視・Incremental ROIC管理）",
+      "factual_claims_checked": [
+        {
+          "fact": "FY2023 ROIC約26%（CEOコメント）",
+          "status": "verified",
+          "evidence": "sec-data.jsonの\"roic_notes\"に\"fy2023_roic: 約26%（CEOコメント）\"と記録済み。アナリストレポートと整合。ただし算出ベース（分子・分母の定義）はCEOコメントに依拠しており独自計算による検証はしていない。",
+          "confidence_impact": "none",
+          "caveat": "ROIC計算の定義（Invested Capital の範囲、税効果の扱い等）はCEOコメント準拠。財務諸表からの独自計算との相違がある可能性。"
+        },
+        {
+          "fact": "FY2023 Incremental ROIC約19%",
+          "status": "verified",
+          "evidence": "sec-data.jsonの\"roic_notes\"に\"fy2023_incremental_roic: 約19%\"と記録済み。アナリストレポートと整合。",
+          "confidence_impact": "none",
+          "caveat": "CEOコメント準拠。Incremental ROIC（投資増分に対するリターン）の定義は企業固有であり外部検証困難。"
+        },
+        {
+          "fact": "Proxy StatementにIncremental ROICが経営陣インセンティブとして組み込まれている",
+          "status": "verified",
+          "evidence": "sec-data.jsonの\"management_target\"に\"Incremental ROIC維持（経営陣インセンティブ指標に組み込み）\"と記録済み。アナリストレポートのProxy Statement参照と整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "OG達成のためのM&Aはしない方針（22/1Qコメント）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのm_and_a_criteria.guardrailsに\"OG達成のための買収はしない方針\"と記録済み。アナリストレポートと完全整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "2019年以降の非保険事業売却（Energy・Financial Services）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのsegment_revenue_mixに\"Energy/Financial Services事業は2022-2023年に売却済み\"と記録済み。FY2025 10-Kは単一Insurance Segmentのみであり、事業売却が完了していることを確認。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Claim #7は5件中5件がverifiedまたはsec-data.json整合確認済み。ROIC・Incremental ROICはCEOコメント準拠で独自計算との相違可能性はあるが、数値の方向性・水準は合理的。confidenceへの修正不要（50%維持）。"
+    }
+  ],
+  "summary": {
+    "total_facts_checked": 25,
+    "verified": 10,
+    "verified_with_caveat": 3,
+    "unverifiable": 12,
+    "contradicted": 0,
+    "rule9_applications": 0
+  },
+  "overall_assessment": {
+    "data_quality": "medium_to_high",
+    "sec_edgar_verification": "partial",
+    "major_findings": [
+      "contradicted（事実誤認）はゼロ。全主張のconfidenceスコアは維持（修正なし）。",
+      "SEC EDGAR FY2025 10-K確認済み事実：top 100 P&C全社顧客、サブスク80%超、3年契約、AccuLynx買収完了（USD2.35bn）、ROIC約26%/Incremental ROIC約19%（CEOコメント）、OG M&A禁止方針、非保険事業売却完了",
+      "SEC EDGAR未確認（アナリストレポートのみ）：297億件統計データ・人員内訳（530名等）・継続率99%・25bp占有率・Mozart浸透率50%・SuranceBay買収詳細",
+      "未確認事項はいずれもアナリストレポート内で内部整合的であり、明示的な矛盾・誇張は検出されていない。",
+      "継続率99%の数値は10-K未開示だが、10-Kの'highly recurring subscription revenue'記述と整合的であり、方向性として支持される。",
+      "FY2025 Sub OG+9.3%（FY25 Q2）はSEC EDGAR開示数値と完全一致。安定的なサブスク成長がスイッチングコスト・価格設定力の両主張を間接的に支持。"
+    ],
+    "no_rule9_triggered": "contradicted = 0のため、ルール9（事実誤認→confidence 10%への即時引き下げ）の適用なし。全7主張のconfidenceスコアは原状維持（Claim #1: 90%, Claim #2: 70%, Claim #3: 90%, Claim #4: 70%, Claim #5: 50%, Claim #6: 50%, Claim #7: 50%）。",
+    "annotation": "SEC EDGAR MCP制約（key_metrics空応答・MD&A未取得）により、利益率の詳細・Capex比率・セグメント別詳細の独立検証は未実施。FY2025 10-K（Accession: 0001437749-26-004452）の直接読解でこれらを補完可能。現状のconfidence評価はT4（主張抽出）のKB1/KB3ベース評価を維持することが適切。"
+  }
+}

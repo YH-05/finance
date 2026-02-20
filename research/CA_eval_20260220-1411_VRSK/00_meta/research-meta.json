@@ -1,0 +1,116 @@
+{
+  "research_id": "CA_eval_20260220-1411_VRSK",
+  "type": "ca_eval",
+  "ticker": "VRSK",
+  "created_at": "2026-02-20T14:11:00Z",
+  "completed_at": "2026-02-20T15:50:00Z",
+  "parameters": {
+    "ticker": "VRSK",
+    "report_path": "analyst/raw/VRSK.md",
+    "skip_industry": true
+  },
+  "status": "completed",
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  },
+  "model_config": {
+    "lead": "claude-sonnet-4-6 (inherit)",
+    "teammates": "claude-sonnet-4-6 (sonnet)"
+  },
+  "task_results": {
+    "T0_setup": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "00_meta/research-meta.json"
+    },
+    "T1_sec_filings": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "01_data_collection/sec-data.json",
+      "note": "SEC EDGAR MCP（get_financials, get_recent_filings, get_insider_summary, get_key_metrics, get_filing_sections）を直接実行。partial（key_metrics空応答）"
+    },
+    "T2_report_parser": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "01_data_collection/parsed-report.json",
+      "note": "analyst/raw/VRSK.md を構造化解析。レポート種別判定はPoC省略。"
+    },
+    "T3_industry": {
+      "status": "skipped",
+      "owner": "ca-eval-lead",
+      "note": "PoC段階のポリシーによりスキップ（SEC EDGAR以外の外部データソース不使用）"
+    },
+    "T4_claim_extractor": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "02_claims/claims.json",
+      "claims_count": 7,
+      "note": "KB1×8ルール + KB3×5銘柄34件 few-shot キャリブレーション適用。5-15件の目標に対し7件抽出。"
+    },
+    "T5_fact_checker": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "03_verification/fact-check.json",
+      "verified": 10,
+      "verified_with_caveat": 3,
+      "contradicted": 0,
+      "unverifiable": 12,
+      "rule9_applications": 0
+    },
+    "T6_pattern_verifier": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "03_verification/pattern-verification.json",
+      "rejection_patterns_detected": 9,
+      "high_eval_patterns_detected": 17,
+      "confidence_adjustments": 0
+    },
+    "T7_report_generator": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": ["04_output/draft-report.md", "04_output/structured.json"],
+      "avg_ca_confidence_draft": 67,
+      "avg_cagr_confidence_draft": 70
+    },
+    "T8_ai_critique": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": ["04_output/critique.json", "04_output/revised-report.md"],
+      "critical_issues": 2,
+      "minor_issues": 5,
+      "confidence_adjustments": [
+        {"claim_id": 2, "field": "cagr_confidence", "before": 70, "after": 50, "reason": "Claim#1との重複除去 + Bolt-on接続3段階以上"},
+        {"claim_id": 5, "field": "cagr_confidence", "before": 70, "after": 50, "reason": "CA=50%とCAGR整合性（KB3原則: CA>=CAGR）"}
+      ]
+    },
+    "T9_accuracy": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "04_output/accuracy-report.json",
+      "mode": "simplified",
+      "verdict": "pass",
+      "note": "VRSKはPhase 2データ（CHD/COST/LLY/MNST/ORLY）非該当。S-8チェック（contradicted→10%確認）のみ。contradicted=0でpass。"
+    }
+  },
+  "outputs": {
+    "final_report": "04_output/revised-report.md",
+    "draft_report": "04_output/draft-report.md",
+    "structured_json": "04_output/structured.json",
+    "critique": "04_output/critique.json",
+    "accuracy": "04_output/accuracy-report.json"
+  },
+  "summary": {
+    "avg_ca_confidence": 67,
+    "avg_cagr_confidence_revised": 64,
+    "claims_at_90": ["#1 独占的プロプライエタリデータ資産", "#3 高スイッチングコスト（99%継続率）"],
+    "strongest_claims": ["#1 独占的プロプライエタリデータ資産（CA90%・CAGR90%）", "#3 高スイッチングコスト（CA90%・CAGR90%）"],
+    "kb3_closest_analog": "ORLY（業界構造合致×規模の経済）+ COST（顧客粘着力90%）",
+    "notable_t8_modification": "Claim #2・#5のCAGR確信度を各70%→50%に修正（CA>=CAGRの整合性・Bolt-on接続の間接性）。Claim #1・#3・#6・#7には annotation_only を適用。",
+    "key_feedback_requested": "RELXとの定量比較（ルール7補強）・90%評価2件のY判断・AccuLynx保険エコシステム統合論理"
+  }
+}

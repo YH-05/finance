@@ -1,0 +1,361 @@
+{
+  "research_id": "CA_eval_20260220-1411_VRSK",
+  "ticker": "VRSK",
+  "verified_at": "2026-02-20T15:10:00Z",
+  "verifier": "ca-eval-lead (T6直接実行)",
+  "kb2_patterns_applied": {
+    "rejection_patterns": ["A", "B", "C", "D", "E", "F", "G"],
+    "high_eval_patterns": ["I", "II", "III", "IV", "V"]
+  },
+  "pattern_results": [
+    {
+      "claim_id": 1,
+      "claim_title": "独占的プロプライエタリデータ資産（再現不可能なデータベース）",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "G",
+          "name": "純粋競合に対する優位性不明",
+          "match_strength": "weak",
+          "reasoning": "RELX（UK）・CoreLogicが一部競合するが、VRSKの保険業界データは事実上独占的であり、純粋競合（同一の保険統計標準データ機関）が実質的に存在しない。これは「優位性不明」ではなく「独占的地位」の証拠であり、パターンGのデメリットは最小限。COST#3（倉庫型vsSAMS CLUB）のような同業態競合との比較とは性質が異なる。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "297億件の統計データ・15億件の請求データ・530名の統計専門家・190名のアクチュアリー・200名の専門弁護士・520名のフィールド調査員・年間368K件調査という複数の具体的定量データが揃っており、パターンI（定量的差別化確認）の要件を完全に満たす。"
+        },
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "strong",
+          "reasoning": "「データ収集の仕組み」（非営利組織からの転換・業界全体からの義務的拠出制度）を能力として主張。297億件という数値は結果だが、主張の核心は「業界全体が参加せざるを得ない構造」という仕組み。インフレ並みの値上げ自制（「しなかった例」）も能力の規律として機能。パターンIIIの要件を強く満たす。"
+        },
+        {
+          "pattern": "IV",
+          "name": "構造的な市場ポジション",
+          "match_strength": "strong",
+          "reasoning": "規制業界（保険）×義務的データ拠出構造×独占的データ蓄積の合致が極めて明確。ORLY#2（フラグメント市場×密度・規模）と同等の論理構造：「その市場構造においてその企業ポジションが優位である理由」が完全に説明されている。保険業界では州ごとの保険統計報告義務がVRSKのデータ収集を業界全体の必要インフラにしており、市場構造×企業ポジションの合致がKB2で最強レベル。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": true,
+        "severity": "weak",
+        "reasoning": "純粋競合が実質的に存在しないことで純粋競合比較が不可能。ただしこれはパターンGの本来の問題（「同業態競合に対して優位かどうか不明」）ではなく、独占的地位の証拠として解釈すべき。COST#3のSAMS CLUB/BJとの比較問題とは本質的に異なる。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "パターンIV（構造的市場ポジション）が'strong'で検出され、かつパターンI・IIIも'strong'。パターンGは'weak'かつ独占的地位の反映として評価。claims.jsonの90%は既にKB2パターンIVの'strong'検出に相当する水準であり、追加の上方修正は不要（90%が上限）。"
+      },
+      "final_confidence": 90,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "strong",
+        "reasoning": "データ資産→業界唯一のアクチュアリーサービス→継続率99%→Sub OG+9〜10%→OG+7%という接続は1-2ステップで直接的。Net Written Premiumの2年ラグ効果も具体的。検証可能性（top 100 P&C 100%カバー・Sub比率80%開示済み）が高く、パターンII（直接的CAGR接続）の要件を強く満たす。"
+      }
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "ネットワーク効果（業界全体参加による自己強化ループ）",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "G",
+          "name": "純粋競合に対する優位性不明",
+          "match_strength": "moderate",
+          "reasoning": "ネットワーク効果の存在は示されているが、RELX・CoreLogicなどの競合が同様のネットワーク効果を持てない理由の具体的説明が欠如。「業界全体が参加する」という独占的性格が純粋競合との差別化根拠になるが、MNST#2（コカ・コーラ vs ペプシコの対称的パートナーシップ）と同様に、競合も部分的なネットワークを持つ可能性は否定されていない。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "top 100 P&C coverage 100%、90%超の市場シェア（アナリストレポート）、2021年26億件取引データ受領という具体的定量データあり。業界標準ネットワークとしての規模を示す定量的裏付けとして有効。"
+        },
+        {
+          "pattern": "II",
+          "name": "直接的CAGR接続メカニズム",
+          "match_strength": "partial",
+          "reasoning": "ネットワーク効果→業界標準→クロスセル→Bolt-on M&A（+2%）の接続は2-3ステップで概ね直接的。ただし「ネットワーク効果がどの程度直接的に新規参入者増加→TAM拡大に貢献するか」の検証可能性が低く、patternII'partial'が適切。"
+        },
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "moderate",
+          "reasoning": "「自己強化ループ」という仕組みを能力として主張している。top 100 P&C 100%カバーという結果から、参加企業増加→統計精度向上→各社への価値向上という仕組みが能力として抽出されている。Claim #1のデータ資産と実質的に重複するため'moderate'。"
+        }
+      ],
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "高評価パターンI（strong）・II（partial）・III（moderate）が検出。パターンG（moderate）が確認されるが、業界全体参加という独占的性格がその深刻度を和らげる。claims.jsonの70%評価と整合的で調整不要。"
+      },
+      "final_confidence": 70,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "partial",
+        "reasoning": "ネットワーク効果→Bolt-on M&A（+2%）の接続は方向性は正しいが、ネットワーク効果がどの程度直接的にM&A可能性を高めるかの論拠が間接的。Sub OG+9〜10%への貢献も間接的。Claim #1（データ資産）を通じた間接的な接続のため'partial'。"
+      }
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "高スイッチングコスト（ワークフロー組み込み・長期契約・99%継続率）",
+      "rejection_patterns_detected": [],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "99%継続率・Sub比率80%超・3年契約・25bp占有率・top 100 P&C 100%カバーという複数の具体的定量データが揃っている。COST顧客粘着力（会員更新率90%超）と同等の定量的裏付けの水準。"
+        },
+        {
+          "pattern": "II",
+          "name": "直接的CAGR接続メカニズム",
+          "match_strength": "strong",
+          "reasoning": "スイッチングコスト→99%継続率→Sub OG+9〜10%→OG+7%という1-2ステップの直接的接続。Sub比率80%という開示数値で接続の強さが検証可能。COST顧客粘着力CAGR（会員更新率→ARPU→既存店成長の直接接続）と同等の論理構造でpatternII'strong'。"
+        },
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "strong",
+          "reasoning": "「ワークフロー組み込み」という仕組み（保険引受・請求処理・規制報告への必要不可欠な組み込み）を能力として主張。99%継続率は結果だが、能力の核心は「保険会社のオペレーションコアへの組み込み構造」。インフレ並み値上げ自制（「しなかった例」）も能力の規律として機能。"
+        },
+        {
+          "pattern": "IV",
+          "name": "構造的な市場ポジション",
+          "match_strength": "moderate",
+          "reasoning": "規制業界（州ごとの規制報告義務）×保険引受に必要不可欠なサービス×ワークフロー深度組み込みという構造的合致。Claim #1ほど市場構造分析の明示度は高くないが、「規制業界でのミッションクリティカルサービス」という構造的ポジションは明確。"
+        }
+      ],
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "高評価パターンI（strong）・II（strong）・III（strong）・IV（moderate）が揃い、且つ却下パターンは一つも検出されない。claims.jsonの90%は既に正当であり、追加修正不要。VRSKのスイッチングコストはCOST顧客粘着力（90%）と同等の論理強度を持ち、90%維持が適切。"
+      },
+      "final_confidence": 90,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "strong",
+        "reasoning": "スイッチングコスト→Sub継続率99%→Sub OG+9〜10%→CAGR達成確度向上という接続はCOST顧客粘着力CAGR（90%）と同等の直接性。Sub比率80%という開示数値が接続の検証可能性を担保しており、パターンII要件を強く満たす。"
+      }
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "保険業界ニッチでの規模の経済（固定費の業界全体シェアによる圧倒的コスト優位）",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "G",
+          "name": "純粋競合に対する優位性不明",
+          "match_strength": "moderate",
+          "reasoning": "RELX・CoreLogicとの具体的な人員規模・コスト比較が欠如。VRSKが業界全体の固定費をシェアしている点が競合との差別化の根拠だが、競合が何名の専門家を有するか、どの程度の固定費をシェアできるかの比較データがない。独占的地位があるため絶対的な差はあると論理的に推定できるが、明示的比較なし。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "530名統計専門家・190名アクチュアリー・200名専門弁護士・520名フィールド調査員・25bp占有率という人員規模・コスト効率の定量データあり。業界全体でシェアされる固定費規模を示す定量的裏付けとして有効。"
+        },
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "moderate",
+          "reasoning": "「固定費の業界全体シェア」という仕組みを能力として主張。25bp占有率は結果だが、業界全体参加による固定費シェアという仕組みが能力の核心。Claim #1・#2の延長でやや重複感あり。"
+        }
+      ],
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "高評価パターンI（strong）・III（moderate）が検出。パターンG（moderate）が確認されるが、業界全体参加による規模の独占性がその影響を限定。Claim #1・#2・#3との構造的重複により独立した優位性としての評価は70%が適切で調整不要。CAGR非接続はclaims.jsonで正しく設定済み。"
+      },
+      "final_confidence": 70,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "none",
+        "reasoning": "Claim #4はcagr_connected: falseとして設定済みであり、直接的なCAGR接続メカニズムを主張していない。規模の経済はスイッチングコスト（Claim #3）を通じた間接的な接続のみであり、パターンII適用なし。"
+      }
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "バリューベースプライシング能力とAI活用による価格設定力",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "match_strength": "moderate",
+          "reasoning": "「AI活用を進める」「Value-based pricingを採用する」という行動（戦略的意思決定）と「AI活用によって生まれた価格設定力」（構造的な力）の区別がやや不明確。Mozart AI Tool浸透率50%は戦略実行の結果であり、「なぜVRSKがAI活用で競合より優れているか」（能力）の説明が不十分。claims.jsonでもrule08 WARN判定済み。"
+        },
+        {
+          "pattern": "G",
+          "name": "純粋競合に対する優位性不明",
+          "match_strength": "moderate",
+          "reasoning": "RELX・CoreLogicも類似のAI活用を進めている可能性があり、VRSKのMozart AI Toolが競合のAIソリューションより優れている定量的根拠が示されていない。AI活用能力は保険データAI分野での差別化根拠の明示が不足。"
+        },
+        {
+          "pattern": "D",
+          "name": "定性的で定量的裏付けなし",
+          "match_strength": "weak",
+          "reasoning": "「Value-based pricing」「付加価値に応じた価格設定」という定性的説明が主体。Mozart浸透率50%はあるが、「どの程度の価格プレミアムを実現しているか」「Sub OG+9.3%のうち価格要因は何%か」の具体的分解は未開示（「価格要因はある模様」に留まる）。CHD#6（デジタルマーケティング能力・50%）との類似性あり。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "partial",
+          "reasoning": "Sub OG+9.3%（FY25 Q2）という開示数値はあるが、価格要因と数量要因の分離データがなく、AI活用の価格貢献度を単独で定量化できない。Mozartの浸透率50%は定量データとして有効だが差別化の証拠としては限定的。"
+        }
+      ],
+      "confidence_adjustment": {
+        "direction": "slight_downward",
+        "reason": "パターンF（moderate）・G（moderate）・D（weak）が複合検出され、T4のrule08 WARNとも整合的。ただし既にclaims.jsonで50%（「まあ納得」）として慎重評価済み。また非致命的な却下パターン（F/G/D全てmodeられte以下）であり、1段階引き下げは過剰。50%→30%への引き下げは行わず、50%維持が適切（soft_downward圧力として記録のみ）。",
+        "soft_pressure": "slight_downward"
+      },
+      "final_confidence": 50,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "partial",
+        "reasoning": "AI活用→付加価値向上→Sub単価上昇→Sub OG向上という2ステップの接続は方向性として正しい。ただし「価格要因がOGのどの程度を占めるか」の定量的分解が未開示（CFOコメント「価格要因はある模様」に留まる）ため'partial'。CAGR確信度70%はやや高い可能性あるが、Claim全体への寄与が間接的なため現状維持。"
+      }
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "Insurance Ecosystemリーダーとしての拡張性（エコシステム設計能力）",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "match_strength": "strong",
+          "reasoning": "「エコシステムを構築する・拡張する」という行動（戦略）と「エコシステム設計能力」（構造的な力）の区別が不明確。AccuLynx買収（USD2.35bn）はM&A意思決定（戦略）であり、「なぜVRSKがInsurance Ecosystemを構築できるのか」という能力の説明が不足。ORLY#2（ドミナント出店戦略＝戦略は優位性ではない）と類似のパターンFが'strong'で検出。claims.jsonでもrule08 WARN判定済み。"
+        },
+        {
+          "pattern": "A",
+          "name": "結果を原因として使用",
+          "match_strength": "moderate",
+          "reasoning": "「エコシステムリーダーの地位」という結果から「エコシステム設計能力」という能力を推定している側面あり。AccuLynx等の買収実績（結果）が能力の証明として使われているが、その背後にある「なぜ保険エコシステムにフィットするM&Aを実行できるのか」という能力の説明が弱い。"
+        },
+        {
+          "pattern": "G",
+          "name": "純粋競合に対する優位性不明",
+          "match_strength": "moderate",
+          "reasoning": "Insurance Ecosystemリーダーとしての差別化がRELXや特定Insurtech企業との比較なしに主張されている。特にAccuLynx（Restoration/Roof修理業者向け）という隣接領域での競合他社との具体的比較が欠如。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "weak",
+          "reasoning": "FY2023バリュエーション高値でのM&A見送りという「しなかった例」が能力の規律として機能。CHD#7（経営フレームワークの実行力・ネガティブケース評価）と類似。ただしエコシステム設計能力の「仕組み」説明が弱く'weak'。"
+        }
+      ],
+      "confidence_adjustment": {
+        "direction": "slight_downward",
+        "reason": "パターンF（strong）・A（moderate）・G（moderate）が複合検出。パターンFが'strong'で検出されており、T4のrule08 WARN・rule01 PARTIALとも整合的。パターンFは'strong'であるが、claims.jsonの既評価50%（まあ納得）は既に慎重判断を反映済み。50%→30%は過剰下方修正（AccuLynx買収という具体的事実実績が50%維持の根拠）。50%維持が適切。",
+        "soft_pressure": "slight_downward"
+      },
+      "final_confidence": 50,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "partial",
+        "reasoning": "エコシステム拡張→TAM拡大→Bolt-on M&A（+2%）の接続は3ステップ以上で間接的。TAM USD9bnは2018年時点の古いデータ。AccuLynx買収（USD2.35bn）がCAGR+2%に直接貢献するかは「FY26末EPS Accretive見込み」に留まり検証途上。'partial'が適切。"
+      }
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "規律あるキャピタルアロケーション能力（ROIC重視・Incremental ROIC管理）",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "G",
+          "name": "純粋競合に対する優位性不明",
+          "match_strength": "moderate",
+          "reasoning": "競合（RELX・CoreLogicなど）のROICや資本配分との具体的比較は示されていない。ROIC26%・Incremental ROIC19%はVRSK単体では高水準だが、競合比較なしには差別化の明確な根拠にならない。データ・分析企業一般に資本効率の高さが期待される業界でのベンチマーク比較が欠如。"
+        },
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "match_strength": "moderate",
+          "reasoning": "「有機投資→M&A→株主還元の優先順位」という意思決定フレームワーク（戦略）と「Incremental ROICを維持できる仕組み（Proxy Statement組み込み）」（優位性）の区別がやや不明確。claims.jsonでもrule08 PARTIALとして既に識別済み。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "moderate",
+          "reasoning": "ROIC26%・Incremental ROIC19%という具体的数値あり（CEOコメント準拠）。ただし競合比較がなく「差別化の証拠」としての機能は限定的。定量的裏付けとして有効だが比較基準なし（単一数値）のため'moderate'。"
+        },
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "moderate",
+          "reasoning": "Proxy StatementへのIncremental ROIC組み込み（インセンティブ設計という仕組み）・FY2023 M&A見送り（「しなかった例」）・OG M&A禁止方針（規律の明示）が能力の証明として機能。CHD#1（買収ターゲット選定能力・70%）のネガティブケース評価と類似のパターンIII。"
+        }
+      ],
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "高評価パターンI（moderate）・III（moderate）が検出。パターンG（moderate）・F（moderate）も検出されるが、いずれも致命的ではなく、claims.jsonの50%評価は既に両パターンのWARN/PARTIALを反映済み。CHD#7（50%）との類似性から50%維持が適切。"
+      },
+      "final_confidence": 50,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "moderate",
+        "reasoning": "Incremental ROIC管理→規律あるbolt-on M&A（+2%）の確度向上→CAGR+2%の接続は2ステップで比較的直接的。FY2023 M&A見送り実績という検証可能な事例がCAGR+2%の達成確度を裏付ける。CHD#1 CAGR（70%：過去実績から同等の将来）と類似の論理。'moderate'が適切。"
+      }
+    }
+  ],
+  "systematic_pattern_analysis": {
+    "most_common_rejection_pattern": "G（純粋競合対比不明）",
+    "pattern_G_frequency": "5/7主張で検出（Claim #1 weak, #2 moderate, #4 moderate, #5 moderate, #6 moderate, #7 moderate）",
+    "pattern_B_concerns": "パターンB（業界共通能力）は全7主張で未検出。VRSKの主要優位性（プロプライエタリデータ・スイッチングコスト）は業界固有の構造に起因しており、業界共通とは言いにくい。Claim #7（キャピタルアロケーション）はパターンBのリスクがあるが、Incremental ROICのProxy組み込みという制度的差別化がある。",
+    "pattern_B_detected": false,
+    "pattern_C_concerns": "パターンC（因果関係の飛躍）は全7主張で未検出。VRSKの主要CAGR接続（データ→継続率→Sub OG）は1-2ステップで直接的であり、3段階以上の推論チェーンを持つ主張はない。",
+    "pattern_E_concerns": "パターンE（事実誤認）は全7主張で未検出。T5ファクトチェックでcontradicted = 0を確認済み。",
+    "strongest_high_eval_patterns": "パターンIII（能力>結果）が7/7主張で検出（Claim #1〜#3 strong、#4〜#7 moderate/weak）。パターンI（定量的差別化）が5/7主張で検出（Claim #1〜#4 strong/moderate）。パターンIV（構造的市場ポジション）がClaim #1 strong・#2 moderate・#3 moderateで検出（上位3主張）。パターンII（直接的CAGR接続）がClaim #1・#3でstrongを達成。",
+    "overall_assessment": "主張の構造は全体として良好から優秀（Claims #1〜#3）。最大の課題は純粋競合との定量比較欠如（パターンG：5/7主張）。一方でVRSKの独占的地位がパターンGの深刻度を和らげており、事実上の独占市場での競争優位性評価という特殊性を考慮する必要がある。致命的な却下パターン（E事実誤認、B業界共通、C因果飛躍）はゼロ。Claims #1・#3は高評価パターン最強セット（I/II/III/IV全て検出）を持ち、90%評価が完全に正当化される。"
+  },
+  "consistency_check": {
+    "internal_consistency": "good",
+    "cross_claim_consistency": [
+      {
+        "issue": "Claim #1（データ資産）とClaim #4（規模の経済）が重複する可能性",
+        "status": "consistent_with_overlap",
+        "note": "人員規模（530名等）が両主張に登場するが、Claim #1は「データ収集の仕組み」、Claim #4は「固定費シェアによるコスト優位」と主張の核心が異なる。重複はあるが独立した側面として評価可能。"
+      },
+      {
+        "issue": "Claim #1（データ資産）・#2（ネットワーク効果）・#3（スイッチングコスト）の相互補完関係",
+        "status": "consistent",
+        "note": "3主張は相互に強化し合う（データ資産があるからネットワーク効果が生まれ、ネットワーク効果があるからスイッチングコストが高まる）。独立した優位性としても、組み合わせとしても整合的。"
+      },
+      {
+        "issue": "Claim #5（AI/価格設定）はClaim #1（データ資産）の応用として整合",
+        "status": "consistent_but_derivative",
+        "note": "データ資産を基盤としたAI活用という位置づけは論理的。ただし独立した優位性としてはClaim #1の派生であり、重複感は否めない。"
+      },
+      {
+        "issue": "Claim #6（エコシステム）はClaim #1〜#3の延長として整合",
+        "status": "consistent_but_result",
+        "note": "1971年来の関係性蓄積（Claim #1の結果）→エコシステムリーダー地位（Claim #6）という位置づけ。エコシステム設計能力の独立した優位性としての評価はやや弱い。"
+      },
+      {
+        "issue": "Claim #7（資本配分）はClaim #6（エコシステム拡張）の実行手段として整合",
+        "status": "consistent",
+        "note": "規律あるキャピタルアロケーション（Claim #7）があるからこそ、適切なbolt-on M&Aを実行してエコシステム（Claim #6）を拡張できる。補完的かつ整合的。"
+      }
+    ],
+    "cagr_consistency": "CAGR LDD約11%（Organic +7% + Bolt-on M&A +2% + OPレバ+1% + Buyback+1〜2%）の構成要素にClaim #1〜#3（Sub OG+7%の基盤）・Claim #6〜#7（Bolt-on+2%の実行能力）が対応しており整合的。Claim #4（規模の経済）はOPレバ（+1%）への間接的寄与として整合。全体として主張とCAGR構成の整合性は高い。"
+  },
+  "summary": {
+    "rejection_patterns_detected": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "D": 1,
+      "E": 0,
+      "F": 2,
+      "G": 5
+    },
+    "high_eval_patterns_detected": {
+      "I": 5,
+      "II": 2,
+      "III": 7,
+      "IV": 3,
+      "V": 0
+    },
+    "confidence_adjustments_made": 0,
+    "overall_pattern_quality": "good_to_strong",
+    "notes": "Claim #1・#3は高評価パターン最強セット（I/II/III/IV）を持ち90%評価が完全正当化。Claim #2も高評価パターンI/II/IIIで70%は妥当。Claim #4〜#7は50-70%の慎重評価。致命的却下パターン（B/C/E）はゼロ。最大課題はパターンGだが、VRSKの独占的地位がその影響を軽減。confidence_adjustment: 0（全7主張でclaims.jsonのスコアを維持）。"
+  }
+}
