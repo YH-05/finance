@@ -406,5 +406,90 @@ class PortfolioBuilder:
 
         return allocations
 
+    def build_equal_weight(
+        self,
+        ranked: list[RankedStock],
+        threshold: float,
+        as_of_date: date,
+    ) -> PortfolioResult:
+        """Construct an equal-weight portfolio using a score threshold.
+
+        Selects all stocks with ``aggregate_score > threshold`` and assigns
+        equal weight (1/N) to each.  No benchmark sector constraints are
+        applied.
+
+        Parameters
+        ----------
+        ranked : list[RankedStock]
+            Ranked stock data with keys: ticker, aggregate_score,
+            gics_sector, sector_rank, claim_count, structural_weight.
+        threshold : float
+            Minimum aggregate score (exclusive) for inclusion.
+            Stocks with ``aggregate_score <= threshold`` are excluded.
+        as_of_date : date
+            As-of date for the portfolio.
+
+        Returns
+        -------
+        PortfolioResult
+            Portfolio with equal-weight holdings and sector allocations
+            computed from selected holdings.  Empty if no stock passes
+            the threshold.
+
+        Examples
+        --------
+        >>> builder = PortfolioBuilder()
+        >>> result = builder.build_equal_weight(ranked, threshold=0.5, as_of_date=date(2015, 9, 30))
+        >>> sum(h.weight for h in result.holdings)
+        1.0
+        """
+        selected = [s for s in ranked if s["aggregate_score"] > threshold]
+
+        if not selected:
+            logger.info(
+                "No stocks passed threshold for equal-weight portfolio",
+                threshold=threshold,
+            )
+            return PortfolioResult(
+                holdings=[],
+                sector_allocations=[],
+                as_of_date=as_of_date,
+            )
+
+        n = len(selected)
+        equal_weight = 1.0 / n
+
+        holdings: list[PortfolioHolding] = [
+            PortfolioHolding(
+                ticker=s["ticker"],
+                weight=equal_weight,
+                sector=s["gics_sector"],
+                score=s["aggregate_score"],
+                rationale_summary=(
+                    f"Equal-weight selection; score {s['aggregate_score']:.2f} > threshold {threshold:.2f}"
+                ),
+            )
+            for s in selected
+        ]
+
+        # Compute sector allocations from holdings
+        sector_allocations = self._update_sector_allocations(
+            holdings=holdings,
+            benchmark_map={},  # No benchmark for equal-weight
+        )
+
+        logger.info(
+            "Equal-weight portfolio built",
+            threshold=threshold,
+            holdings_count=n,
+            equal_weight=equal_weight,
+        )
+
+        return PortfolioResult(
+            holdings=holdings,
+            sector_allocations=sector_allocations,
+            as_of_date=as_of_date,
+        )
+
 
 __all__ = ["PortfolioBuilder", "RankedStock"]

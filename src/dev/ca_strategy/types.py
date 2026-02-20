@@ -581,3 +581,123 @@ class BenchmarkWeight(BaseModel):
 
     sector: NonEmptyStr
     weight: UnitFloat
+
+
+# ===========================================================================
+# Evaluation models (Phase 6: StrategyEvaluator output)
+# ===========================================================================
+class PerformanceMetrics(BaseModel):
+    """Portfolio performance metrics relative to a benchmark.
+
+    Parameters
+    ----------
+    sharpe_ratio : float
+        Annualized Sharpe ratio of the portfolio.
+    max_drawdown : float
+        Maximum drawdown (negative value, e.g. -0.12 = -12%).
+    beta : float
+        Portfolio beta relative to benchmark.
+    information_ratio : float
+        Information ratio (active return / tracking error).
+    cumulative_return : float
+        Cumulative total return over the evaluation period.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    sharpe_ratio: float
+    max_drawdown: float
+    beta: float
+    information_ratio: float
+    cumulative_return: float
+
+
+class AnalystCorrelation(BaseModel):
+    """Analyst score correlation results.
+
+    Parameters
+    ----------
+    spearman_correlation : float | None
+        Spearman rank correlation between strategy scores and analyst scores.
+        None if sample size < 2.
+    sample_size : int
+        Number of tickers with both strategy and analyst scores.
+    p_value : float | None
+        Two-tailed p-value for the correlation.  None if sample_size < 2.
+    hit_rate : float | None
+        Fraction of top-20% strategy stocks also in top-20% analyst scores.
+        None if sample_size == 0.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    spearman_correlation: float | None
+    sample_size: int
+    p_value: float | None
+    hit_rate: float | None
+
+
+class TransparencyMetrics(BaseModel):
+    """Transparency metrics for portfolio evaluation.
+
+    Parameters
+    ----------
+    mean_claim_count : float
+        Average number of claims per portfolio holding.
+    mean_structural_weight : float
+        Average structural (competitive advantage) claim weight.
+    coverage_rate : float
+        Fraction of holdings with at least one claim.  In [0.0, 1.0].
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    mean_claim_count: float
+    mean_structural_weight: float
+    coverage_rate: UnitFloat
+
+
+class AnalystScore(BaseModel):
+    """Analyst score for a single ticker.
+
+    Parameters
+    ----------
+    ticker : str
+        Ticker symbol.
+    ky_score : float | None
+        KY analyst score.  None if not available.
+    ak_score : float | None
+        AK analyst score.  None if not available.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    ticker: NonEmptyStr
+    ky_score: float | None = None
+    ak_score: float | None = None
+
+
+class EvaluationResult(BaseModel):
+    """Complete strategy evaluation result for a given threshold.
+
+    Parameters
+    ----------
+    threshold : float
+        Score threshold used to construct the equal-weight portfolio.
+    portfolio_size : int
+        Number of holdings in the equal-weight portfolio.
+    performance : PerformanceMetrics
+        Performance metrics relative to benchmark.
+    analyst_correlation : AnalystCorrelation
+        Correlation with analyst scores.
+    transparency : TransparencyMetrics
+        Transparency metrics for portfolio holdings.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    threshold: float
+    portfolio_size: int
+    performance: PerformanceMetrics
+    analyst_correlation: AnalystCorrelation
+    transparency: TransparencyMetrics
