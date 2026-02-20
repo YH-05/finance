@@ -41,6 +41,7 @@ from pydantic import BaseModel
 from dev.ca_strategy._config import ConfigRepository
 from dev.ca_strategy.aggregator import ScoreAggregator
 from dev.ca_strategy.cost import CostTracker
+from dev.ca_strategy.evaluator import StrategyEvaluator
 from dev.ca_strategy.extractor import ClaimExtractor
 from dev.ca_strategy.neutralizer import SectorNeutralizer
 from dev.ca_strategy.output import OutputGenerator
@@ -51,6 +52,7 @@ from dev.ca_strategy.transcript import TranscriptLoader
 from dev.ca_strategy.types import (
     BenchmarkWeight,
     Claim,
+    EvaluationResult,
     PortfolioResult,
     ScoredClaim,
     StockScore,
@@ -67,6 +69,9 @@ _MIN_PHASE: int = 1
 
 _MAX_PHASE: int = 5
 """Maximum valid phase number."""
+
+_DEFAULT_THRESHOLDS: list[float] = [0.3, 0.4, 0.5, 0.6, 0.7]
+"""Default score thresholds for the equal-weight pipeline."""
 
 
 # ---------------------------------------------------------------------------
@@ -261,6 +266,182 @@ class Orchestrator:
             )
 
         logger.info("Checkpoint resumption completed", start_phase=phase)
+
+    def run_equal_weight_pipeline(
+        self,
+        thresholds: list[float] | None = None,
+    ) -> list[tuple[PortfolioResult, EvaluationResult]]:
+        """Execute Phase 1-3 then loop equal-weight + evaluation per threshold.
+
+        Runs Phase 1 (extraction), Phase 2 (scoring), and Phase 3
+        (neutralization) once.  For each threshold in ``thresholds``,
+        constructs an equal-weight portfolio (Phase 4b), evaluates it
+        (Phase 6), and generates output files (Phase 5 extended) under
+        ``{workspace_dir}/output/threshold_{threshold:.2f}/``.
+
+        Parameters
+        ----------
+        thresholds : list[float] | None, optional
+            Score thresholds for equal-weight portfolio construction.
+            If None, uses ``[0.3, 0.4, 0.5, 0.6, 0.7]``.
+
+        Returns
+        -------
+        list[tuple[PortfolioResult, EvaluationResult]]
+            List of (portfolio, evaluation) pairs, one per threshold.
+            Thresholds that produce an empty portfolio are included
+            with an evaluation over zero holdings.
+
+        Raises
+        ------
+        RuntimeError
+            If Phase 1, 2, or 3 fails.
+        """
+        if thresholds is None:
+            thresholds = _DEFAULT_THRESHOLDS
+
+        logger.info(
+            "Starting equal-weight pipeline",
+            thresholds=thresholds,
+        )
+
+        # Phase 1: Extraction
+        claims = self._execute_phase(
+            phase=1,
+            func=self._run_phase1_extraction,
+        )
+
+        # Phase 2: Scoring
+        scored_claims = self._execute_phase(
+            phase=2,
+            func=self._run_phase2_scoring,
+            args=(claims,),
+        )
+
+        # Phase 3: Aggregation + Neutralization
+        # AIDEV-NOTE: CODE-005 same pattern as run_full_pipeline
+        scores = self._aggregate_scores(scored_claims)
+        ranked = self._execute_phase(
+            phase=3,
+            func=self._run_phase3_neutralization,
+            args=(scored_claims, scores),
+        )
+
+        # Phase 4b → Phase 6 → Phase 5 extended (per threshold)
+        results: list[tuple[PortfolioResult, EvaluationResult]] = []
+        ranked_list = ranked.to_dict("records")
+        for threshold in thresholds:
+            portfolio, evaluation = self._run_equal_weight_threshold(
+                ranked_list=ranked_list,
+                scored_claims=scored_claims,
+                scores=scores,
+                threshold=threshold,
+            )
+            results.append((portfolio, evaluation))
+
+        # Save cost tracker
+        cost_path = self._workspace_dir / "cost_tracking.json"
+        self._cost_tracker.save(cost_path)
+
+        logger.info(
+            "Equal-weight pipeline completed",
+            threshold_count=len(thresholds),
+            total_cost=round(self._cost_tracker.get_total_cost(), 2),
+        )
+
+        return results
+
+    def _run_equal_weight_threshold(
+        self,
+        ranked_list: list[dict[str, Any]],
+        scored_claims: dict[str, list[ScoredClaim]],
+        scores: dict[str, StockScore],
+        threshold: float,
+    ) -> tuple[PortfolioResult, EvaluationResult]:
+        """Run Phase 4b, 6, 5-ext for a single threshold.
+
+        Parameters
+        ----------
+        ranked_list : list[dict[str, Any]]
+            Ranked stocks as list of dicts from Phase 3 DataFrame.
+        scored_claims : dict[str, list[ScoredClaim]]
+            Scored claims from Phase 2.
+        scores : dict[str, StockScore]
+            Aggregated stock scores from Phase 3.
+        threshold : float
+            Score threshold for equal-weight portfolio construction.
+
+        Returns
+        -------
+        tuple[PortfolioResult, EvaluationResult]
+            Portfolio and evaluation results for this threshold.
+        """
+        phase_label = f"phase4b_threshold_{threshold:.2f}"
+        logger.info("Phase 4b started", threshold=threshold)
+
+        # Phase 4b: Equal-weight portfolio construction
+        builder = PortfolioBuilder()
+        portfolio = builder.build_equal_weight(
+            ranked=ranked_list,  # type: ignore[arg-type]
+            threshold=threshold,
+            as_of_date=CUTOFF_DATE,
+        )
+        self._save_execution_log(phase_label, "completed", None)
+
+        logger.info(
+            "Phase 4b completed",
+            threshold=threshold,
+            holdings_count=len(portfolio.holdings),
+        )
+
+        # Phase 6: Evaluation
+        phase6_label = f"phase6_threshold_{threshold:.2f}"
+        logger.info("Phase 6 started", threshold=threshold)
+
+        evaluator = StrategyEvaluator()
+        # AIDEV-NOTE: portfolio_returns and benchmark_returns are empty Series
+        # in the PoC because yfinance fetching is out of scope here.
+        # The StrategyEvaluator handles empty Series gracefully.
+        import pandas as pd
+
+        empty_returns: pd.Series = pd.Series([], dtype=float)
+        evaluation = evaluator.evaluate(
+            portfolio=portfolio,
+            scores=scores,
+            portfolio_returns=empty_returns,
+            benchmark_returns=empty_returns,
+            analyst_scores={},
+            threshold=threshold,
+        )
+        self._save_execution_log(phase6_label, "completed", None)
+
+        logger.info(
+            "Phase 6 completed",
+            threshold=threshold,
+            sharpe=evaluation.performance.sharpe_ratio,
+        )
+
+        # Phase 5 extended: Output generation with evaluation
+        output_dir = self._workspace_dir / "output" / f"threshold_{threshold:.2f}"
+        generator = OutputGenerator()
+        generator.generate_all(
+            portfolio=portfolio,
+            claims=scored_claims,
+            scores=scores,
+            output_dir=output_dir,
+            evaluation=evaluation,
+        )
+
+        phase5_label = f"phase5_threshold_{threshold:.2f}"
+        self._save_execution_log(phase5_label, "completed", None)
+
+        logger.info(
+            "Phase 5 (extended) completed",
+            threshold=threshold,
+            output_dir=str(output_dir),
+        )
+
+        return portfolio, evaluation
 
     # -----------------------------------------------------------------------
     # Execution log
