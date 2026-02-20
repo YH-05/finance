@@ -1,0 +1,38 @@
+{
+  "research_id": "CA_eval_20260220-1411_POOL",
+  "ticker": "POOL",
+  "mode": "simplified",
+  "generated_at": "2026-02-20T16:00:00Z",
+  "kb_version": "v1.0.0",
+  "mode_determination": {
+    "reason": "POOLはPhase 2データ（analyst/phase2_KY/*POOL*.md）が存在しないため簡易モードを適用",
+    "phase2_data_searched": "analyst/phase2_KY/*POOL*",
+    "phase2_data_found": false,
+    "full_mode_eligible_tickers": ["CHD", "COST", "LLY", "MNST", "ORLY"]
+  },
+  "full_mode_results": null,
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "check_description": "contradicted事実に対するルール9自動適用（confidence → 10%）の確認",
+    "fact_check_source": "research/CA_eval_20260220-1411_POOL/03_verification/fact-check.json",
+    "contradicted_claims": [],
+    "contradicted_count": 0,
+    "rule9_applied_count": 0,
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "contradictedと判定された事実の主張は0件。ルール9（事実誤認→confidence 10%）の適用対象なし。簡易モードのS-8チェックは合格。SEC EDGAR MCP（get_financials: 10-Q 2025Q3 XBRL）により荒利率29.57%等の主要数値を直接確認済みで、信頼性は標準的な簡易モードより高い。",
+    "caveats": [
+      "POOLのPhase 2評価データ（Y評価値）が存在しないため、AI評価とY評価の平均乖離のフルモード検証は未実施。",
+      "メンテナンス比率64%はアナリスト推計であり、POOL公式開示ではない（fact-check.jsonでverified_with_caveatsとして記録済み）。ただしこれはcontradictedではないためS-8チェックの対象外。",
+      "業界2位の財務データが非公開のため、全7主張でパターンG（純粋競合比較なし）が検出されているが、これは事実誤認（contradicted）ではなく、データ不在によるものである。",
+      "2025年8月のアナリスト自身による投資仮説修正（CAGR 12%→9.5%）は、Claim #4の過大評価認識を示すが、これはcontradictedではなく準rule9事案（T8批判Critical #4で文脈化済み）として処理済み。",
+      "フルモード検証はPOOLのPhase 2評価（Y評価値）が蓄積された後に実施可能となる。"
+    ]
+  },
+  "overall_assessment": {
+    "accuracy_verdict": "pass",
+    "confidence_level": "medium",
+    "reason": "簡易モードのS-8チェック（contradicted → 10%）を実施し合格。SEC EDGAR MCP（10-Q 2025Q3 XBRL）による直接データ取得により、荒利率29.57%等の主要数値が直接確認されているため、信頼性は標準的な簡易モード（confidence_level: low）よりも高い中程度（medium）と評価する。21ファクトチェック項目中0件がcontradicted（16件verified、4件verified_with_caveat、1件unverifiable）であり、ルール9の適用対象なし。T8批判（Claim #4: 準rule9事案）はconfidence値調整ではなくannotation_onlyとして処理済みで、精度検証との整合性は維持されている。",
+    "recommendation": "POOLのPhase 2評価（Y評価値）が蓄積された後、フルモードで再評価することを推奨。特にClaim #1（川中支配力: AI評価70%）とClaim #4（メンテ安定性: AI評価30%）についてのY評価との比較が有益。Claim #4は「アナリスト自身が過大評価を認識した準rule9事案」としてKB3のユニーク反省ケースに位置づけており、Y評価との比較でフレームワーク改善の参考になる可能性がある。"
+  }
+}

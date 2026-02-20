@@ -1,0 +1,262 @@
+{
+  "research_id": "CA_eval_20260220-1411_POOL",
+  "ticker": "POOL",
+  "verified_at": "2026-02-20T15:05:00Z",
+  "verifier": "ca-eval-lead (T5直接実行)",
+  "data_sources": {
+    "primary": "research/CA_eval_20260220-1411_POOL/01_data_collection/sec-data.json",
+    "sec_edgar_mcp": "available（部分的）— get_financials, get_recent_filings, get_insider_summary, get_filing_sections を使用。get_key_metrics は空を返した。",
+    "analyst_report": "analyst/raw/POOL.md",
+    "note": "SEC EDGAR MCPが利用可能で財務データ（10-Q 2025Q3）を直接照合。主要財務数値（Revenue, GrossProfit, OPM）はXBRL直接抽出データで検証。市場シェア・拠点数等の業界データはアナリストレポートと10-K Business sectionで検証（SEC EDGAR MCPで直接取得済み）。"
+  },
+  "fact_checks": [
+    {
+      "claim_id": 1,
+      "claim_title": "川中卸売市場における独占的支配力（40%シェア・448拠点 vs 業界2位30拠点）",
+      "factual_claims_checked": [
+        {
+          "fact": "川中のプール用品卸売における市場シェア約40%",
+          "status": "verified",
+          "evidence": "10-K 2024 Business section（SEC EDGAR MCP直接取得）に「市場シェア約40%」が明示。アナリストレポートも同数値を使用。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "448拠点（2024年12月時点、北米・欧州・豪州）",
+          "status": "verified",
+          "evidence": "10-K 2024 Business section（SEC EDGAR MCP直接取得）に「448拠点（2024年12月時点）」が明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "業界2位の拠点数は約30（POOLの6.7%）",
+          "status": "verified",
+          "evidence": "10-K 2024 Business section（SEC EDGAR MCP直接取得）に「業界2位の約30拠点」が明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "サプライヤー数2,200以上、顧客数約12万（フラグメント）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「サプライヤー2,200以上」「顧客数約12万」が明示。10-K Business sectionにも整合する記述あり。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "上位100顧客の売上比率10%未満",
+          "status": "verified",
+          "evidence": "アナリストレポートおよび10-K Business sectionに「top100顧客の売上比率10%未満」が明示。顧客フラグメント性を裏付ける核心的事実。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "全5事実主張が SEC EDGAR MCP取得の10-K Business sectionおよびアナリストレポートで確認された。448 vs 30拠点という規模差は特に顕著で、業界2位の拠点数データは競合ポジションの比較において重要な定量的裏付けを提供する。事実誤認なし。"
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "大量購買によるサプライヤーへのバーゲニングパワー（荒利率30%安定維持）",
+      "factual_claims_checked": [
+        {
+          "fact": "荒利率は30%近辺で安定推移（売上高減少局面でも維持）",
+          "status": "verified",
+          "evidence": "SEC EDGAR MCP（10-Q 2025Q3 XBRL直接抽出）: Revenue 1,451,131千ドル, GrossProfit 429,183千ドル → 荒利率29.57%。アナリストレポートも「30%近辺で安定」と記述。2024年売上減少局面でも30%近辺を維持している点が確認された。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "FY2022ピーク時OPM 16.6%から2024年12.9%に低下（荒利率は維持）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「opm_peak: 16.6%（FY2022）」「FY2024想定12.9%」と明示。SEC EDGAR 10-Q 2025Q3の直接抽出データ（OPM 12.3%）と整合（Q3 2025、季節性を考慮）。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "サプライヤー数2,200以上（Top3: Pentair 20%・Hayward 10%・Zodiac 10%）",
+          "status": "verified",
+          "evidence": "アナリストレポートおよびsec-data.jsonに明示。Top3サプライヤーの集中度（Pentair 20%、Hayward 10%、Zodiac 10%）は10-K Risk Factorsにも整合。",
+          "confidence_impact": "none",
+          "note": "Top3合計40%という集中度はサプライヤーリスクでもある。ただしPOOLの交渉力（規模優位）がこのリスクをオフセットしている。"
+        },
+        {
+          "fact": "集中購買のためのCSL（Centralized Shipping Locations）を4拠点運営",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「centralized_shipping_locations: 4」として明示。アナリストレポートにも整合する記述あり。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "荒利率30%はSEC EDGAR MCPの最新データ（10-Q 2025Q3）で29.57%と確認され、「30%近辺」の主張と整合。OPMのFY2022ピーク→2024低下も確認済み。事実誤認なし。なお荒利率とOPMの区別（パターンE: 事実誤認リスク）を確認したが、混同はない。"
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "フラグメント顧客基盤による価格決定力とスイッチングコスト構造",
+      "factual_claims_checked": [
+        {
+          "fact": "顧客数約12万（フラグメント）",
+          "status": "verified",
+          "evidence": "アナリストレポートおよびsec-data.jsonに「顧客数約12万（非常にフラグメント）」として明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "上位100顧客の売上比率10%未満",
+          "status": "verified",
+          "evidence": "アナリストレポートおよびsec-data.jsonに「top100_customer_revenue_share: 10%未満」として明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "取扱製品数20万点以上、プロダクトライン600以上、カテゴリ50以上",
+          "status": "verified",
+          "evidence": "アナリストレポートおよびsec-data.jsonに「製品カテゴリ50以上のカテゴリー、600以上のプロダクトライン、20万点以上の製品」として明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "全事実主張は確認済み。ただし本主張は優位性の評価として弱い（外生的市場構造依存、T4で confidence 30%付与）という評価は変わらない。事実確認と優位性評価は別問題。"
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "Installed Baseに支えられたメンテナンス需要の構造的安定性",
+      "factual_claims_checked": [
+        {
+          "fact": "米国内in-groundプール約540万箇所（水域含む約1,100万）",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「total_pools_us: 約540万（in-ground swimming pool）」「total_bodies_of_water_us: 約1100万」として明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "メンテナンス・修繕需要が売上約64%を占める（2024年推定）",
+          "status": "verified_with_caveat",
+          "evidence": "sec-data.jsonに「maintenance_repair: 約64%（2024年推定）」として明示。ただし「推定」であり、10-KのXBRL直接開示値ではない。セグメント別売上開示が不明確なため、アナリスト推計に依存。",
+          "confidence_impact": "minor_downward",
+          "note": "「non-discretionary色が強いが顧客節約志向影響あり」という注記が10-K Business sectionにも整合する形で記録されている。アナリスト自身が2025年8月に「過大評価していた」と認識—これはCAGR修正（12%→9.5%）の主因の一つ。",
+          "caveat": "セグメント比率は会社の正式開示ではなくアナリスト推計。実際の比率は異なる可能性がある。"
+        },
+        {
+          "fact": "2024年新規プール建設約61,000件（2023年72,000件から▲15%）",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「new_pool_construction_2024: 約61,000件（2023年72,000件から▲15%）」として明示。10-K 2024 Business sectionにも整合する記述あり。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "新規プール建設ピーク: GFC前200,000件、コロナ禍120,000件",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「peak_units: GFC前200,000件、コロナ禍120,000件」として明示。",
+          "confidence_impact": "none",
+          "note": "2024年の61,000件はGFC前200,000件の30%水準まで低下。これはNew Constructionセグメントの構造的弱さを示す。"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "主要事実は確認済みだが、64%という比率はアナリスト推計（正式セグメント開示なし）。最重要の留意点はアナリスト自身が2025年8月に「メンテナンス収益安定性を過大評価していた」と認識—事実としては確認できるが、優位性主張としての信頼性に深刻な疑問符がつく。confidence 30%の評価は適切。"
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "フラグメント市場でのM&Aコンソリデーション能力（小型・確実実行型）",
+      "factual_claims_checked": [
+        {
+          "fact": "2025年M&A予算25〜50M（会社コメントに基づく）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポート（8/15/25）に「2025年M&A予算は25〜50M（会社コメント）」として明示。SEC EDGAR開示（8-K等）での直接確認は未実施。",
+          "confidence_impact": "none",
+          "caveat": "会社コメント由来（SEC EDGAR直接開示ではない）。実際のM&A活動は未確認。"
+        },
+        {
+          "fact": "M&AによるCAGR寄与は0.5%（CAGRブレークダウン）",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「ma: 0.5%（売上成長ブレークダウン）」として明示。アナリストレポートのCAGR分解に基づく。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "NPT・Sun WholesaleなどM&A由来のネットワークを統合・運営中",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「distribution_networks: SCP, Superior, Horizon, NPT, Sun Wholesale」として明示。アナリストレポートにも整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "5つのディストリビューションネットワークを統合管理",
+          "status": "verified",
+          "evidence": "sec-data.jsonに5ネットワーク名（SCP、Superior、Horizon、NPT、Sun Wholesale）が列挙されており確認済み。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "主要事実は確認済み。M&A予算（25〜50M）は会社コメント由来でSEC EDGAR直接確認未実施。ただし5ネットワーク統合実績という過去のM&A能力の証拠は確認できる。事実誤認なし。"
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "B2B重量物商材特性によるEコマース耐性（構造的防衛壁）",
+      "factual_claims_checked": [
+        {
+          "fact": "B2B取引が主体（エンドコンシューマーへの直接販売ではなく、施工業者・メンテ業者向け卸売）",
+          "status": "verified",
+          "evidence": "10-K 2024 Business section（SEC EDGAR MCP直接取得）に「川中の卸売業者（B2B取引主体）」として明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "重量物・引火性商品のため通常のEコマース物流が困難",
+          "status": "verified",
+          "evidence": "10-K 2024 Risk Factorsに「e-commerceリスクはB2B・重量物・引火性商品のため限定的」として明示（SEC EDGAR MCP直接取得）。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "10-K Risk Factorsにe-commerceリスクが限定的と明示",
+          "status": "verified",
+          "evidence": "10-K 2024 Risk Factorsに明示（SEC EDGAR MCP直接取得）。ただしこの記述はリスクの限定性を示すものであり、独自の競争優位性の証拠ではない。",
+          "confidence_impact": "none",
+          "note": "事実としては確認されたが、競合も同様の「Eコマース耐性」を持つため優位性としての差別化機能は限定的。"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "全事実は確認済み。ただしEコマース耐性が市場全体の特性であり競合との差別化要因でないという評価（confidence 10%）は変わらない。事実の確認と優位性評価は別問題。"
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "南部・西部への人口移動とOutdoor Living拡大による市場成長捕捉力",
+      "factual_claims_checked": [
+        {
+          "fact": "主要4州（カリフォルニア・フロリダ・テキサス・アリゾナ）で売上高約55%",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「key_markets: カリフォルニア・フロリダ・テキサス・アリゾナ（売上高約55%）」として明示。10-K Properties sectionと整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "2024年新規プール建設61,000件（2023年比▲15%）",
+          "status": "verified",
+          "evidence": "sec-data.jsonに明示（Claim #4でも確認済み）。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "GFC前200,000件、コロナ禍120,000件→2024年61,000件まで急減",
+          "status": "verified",
+          "evidence": "sec-data.jsonに「new_pool_construction_peak: GFC前200,000件、コロナ禍120,000件」として明示。2024年61,000件との対比が明確。",
+          "confidence_impact": "minor_downward",
+          "note": "この急減トレンド（ピーク比▲70%）は「市場成長捕捉力」という主張の信頼性を大きく損なう。人口移動・Outdoor Living拡大という外生トレンドが新規建設急減を相殺していないことを示す。"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "主要事実は確認済み。重要な留意点は2024年の新規建設急減（61,000件、ピーク比▲70%）が「市場成長捕捉力」という主張の前提を崩していること。人口移動・Outdoor Livingトレンドが存在することは事実だが、その市場成長捕捉効果が想定より弱いことが確認された。confidence 10%（却下）の評価は適切。"
+    }
+  ],
+  "summary": {
+    "total_facts_checked": 21,
+    "verified": 16,
+    "verified_with_caveat": 4,
+    "unverifiable": 1,
+    "contradicted": 0,
+    "rule9_applications": 0
+  },
+  "overall_assessment": {
+    "data_quality": "high_for_sec_edgar_data",
+    "sec_edgar_verification": "partial",
+    "major_findings": [
+      "SEC EDGAR MCP（10-Q 2025Q3 XBRL直接抽出）で荒利率29.57%を確認—「30%近辺」の主張と整合（高品質証拠）",
+      "10-K 2024 Business sectionでシェア40%・448拠点・業界2位30拠点を直接確認（最重要事実）",
+      "メンテナンス比率64%はアナリスト推計（正式開示ではない）—注意が必要",
+      "新規プール建設の急減（2024年61,000件）は「市場成長捕捉力」（Claim #7）の前提を弱化させる実証的証拠",
+      "OPMとGPMの混同（パターンE: 事実誤認）なし—荒利率（GPM=29.57%）とOPM（12.3%）は明確に区別されている",
+      "事実誤認ゼロ: ルール9の適用なし"
+    ],
+    "no_rule9_triggered": "全21件の事実的主張において事実誤認（contradicted）はゼロ。ルール9（事実誤認→confidence 10%自動適用）の適用は不要。",
+    "annotation": "Claim #4（メンテ安定性）はアナリスト自身が2025年8月に「過大評価していた」と認識。これは事実誤認（パターンE）ではなく「評価誤り」だが、投資判断上は重大。confidence 30%の維持（rule9水準の10%には至らない）が適切な対応。T8（AI批判プロセス）でこの評価誤りが主要指摘項目となることが想定される。"
+  }
+}

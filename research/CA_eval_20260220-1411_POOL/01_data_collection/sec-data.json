@@ -1,0 +1,282 @@
+{
+  "ticker": "POOL",
+  "company_name": "POOL CORP",
+  "retrieved_at": "2026-02-20T05:16:00Z",
+  "data_source": "mixed",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "partial",
+    "reason": "SEC EDGAR MCPはCIK取得・財務データ・10-K提出情報・インサイダー情報の取得に成功。ただしget_key_metricsは空を返したため財務比率はアナリストレポートから補完。",
+    "affected_fields": ["key_metrics_ratios"],
+    "available_fields": ["financials_income_statement", "financials_balance_sheet", "financials_cash_flow", "recent_filings_10k", "recent_filings_10q", "recent_filings_8k", "insider_summary_partial", "filing_sections_business", "filing_sections_risk_factors"]
+  },
+  "cik": "0000945841",
+  "financials": {
+    "note": "最新10-Q（2025Q3: 2025-09-30期）のXBRL直接抽出データ。",
+    "income_statement": {
+      "latest_quarter": {
+        "period": "2025-09-30（3ヶ月）",
+        "form_type": "10-Q",
+        "filing_date": "2025-10-29",
+        "accession_number": "0001193125-25-255740",
+        "revenue": 1451131000,
+        "gross_profit": 429183000,
+        "cost_of_revenue": 1021948000,
+        "operating_income": 177987000,
+        "net_income": 127013000,
+        "eps_basic": 3.41,
+        "eps_diluted": 3.40,
+        "gross_margin_pct": 29.6,
+        "operating_margin_pct": 12.3
+      },
+      "annual_reference": {
+        "note": "アナリストレポートからの参照値",
+        "fy2022": {
+          "opm": "16.6%（ピーク）"
+        },
+        "fy2024": {
+          "opm": "12.9%（当初想定水準）",
+          "source": "アナリストレポート10/21/22"
+        },
+        "gross_margin_trend": "30%近辺で安定推移（売上高減少局面でも荒利率30%近辺を維持）",
+        "source": "アナリストレポート8/15/25"
+      }
+    },
+    "segment_revenue_mix": {
+      "maintenance_repair": {
+        "share": "約64%（2024年推定）",
+        "description": "プールの化学薬品・ポンプ・フィルター等のメンテナンス・マイナー修繕",
+        "growth_driver": "installed base×価格上昇",
+        "nature": "non-discretionary色が強いが顧客節約志向影響あり",
+        "source": "10-K 2024・アナリストレポート"
+      },
+      "remodel_renovation": {
+        "share": "約22%（2024年推定）",
+        "description": "プールリモデル・リノベーション・アップグレード",
+        "nature": "セミシクリカル（1~2年先延ばし可能）",
+        "source": "10-K 2024・アナリストレポート"
+      },
+      "new_construction": {
+        "share": "約14%（2024年推定）",
+        "description": "新規プール建設向け資材",
+        "driver": "住宅市場・消費者信頼感",
+        "units_2024": "約61,000件（2023年72,000件から▲15%）",
+        "peak_units": "GFC前200,000件、コロナ禍120,000件",
+        "source": "10-K 2024"
+      }
+    },
+    "balance_sheet": {
+      "period": "2025-09-30",
+      "total_assets": 3500671000,
+      "current_assets": 1849039000,
+      "total_liabilities": 2120781000,
+      "current_liabilities": 719511000,
+      "stockholders_equity": 1379890000,
+      "ppe_net": 267408000,
+      "cash_and_equivalents": 128483000
+    },
+    "cash_flow": {
+      "period": "2025-09-30（期間）",
+      "operating_cf": 285743000,
+      "investing_cf": 55747000,
+      "financing_cf": 182372000,
+      "notes": "2025年M&A予算は25~50M（会社コメント、アナリストレポート8/15/25）",
+      "historical_fixed_cost_variable_cost": "Fixed:Variable = 75:25（ヒアリングベース）",
+      "incremental_margin": "約24%（2010~2019平均）",
+      "source": "10-Q XBRL・アナリストレポート"
+    }
+  },
+  "recent_filings": {
+    "10k": {
+      "status": "available",
+      "filings": [
+        {
+          "filing_date": "2025-02-27",
+          "accession_number": "0000945841-25-000032",
+          "form_type": "10-K",
+          "period": "2024-12-31"
+        },
+        {
+          "filing_date": "2024-02-27",
+          "accession_number": "0000945841-24-000021",
+          "form_type": "10-K",
+          "period": "2023-12-31"
+        },
+        {
+          "filing_date": "2023-02-24",
+          "accession_number": "0000945841-23-000015",
+          "form_type": "10-K",
+          "period": "2022-12-31"
+        },
+        {
+          "filing_date": "2022-02-25",
+          "accession_number": "0000945841-22-000023",
+          "form_type": "10-K",
+          "period": "2021-12-31"
+        },
+        {
+          "filing_date": "2021-02-25",
+          "accession_number": "0000945841-21-000022",
+          "form_type": "10-K",
+          "period": "2020-12-31"
+        }
+      ]
+    },
+    "10q": {
+      "status": "available",
+      "latest_filings": [
+        {
+          "filing_date": "2025-10-29",
+          "accession_number": "0001193125-25-255740",
+          "form_type": "10-Q",
+          "period": "2025-09-30"
+        },
+        {
+          "filing_date": "2025-07-30",
+          "accession_number": "0000945841-25-000130",
+          "form_type": "10-Q",
+          "period": "2025-06-30"
+        },
+        {
+          "filing_date": "2025-04-29",
+          "accession_number": "0000945841-25-000072",
+          "form_type": "10-Q",
+          "period": "2025-03-31"
+        }
+      ]
+    },
+    "8k": {
+      "status": "available",
+      "recent_events": [
+        {
+          "filing_date": "2026-02-19",
+          "accession_number": "0001193125-26-058288",
+          "form_type": "8-K",
+          "note": "FY2025決算関連（直近）"
+        },
+        {
+          "filing_date": "2026-02-13",
+          "accession_number": "0001193125-26-051351",
+          "form_type": "8-K"
+        },
+        {
+          "filing_date": "2026-01-12",
+          "accession_number": "0001193125-26-010379",
+          "form_type": "8-K"
+        },
+        {
+          "filing_date": "2025-10-29",
+          "accession_number": "0001193125-25-256309",
+          "form_type": "8-K",
+          "note": "Q3 2025決算"
+        },
+        {
+          "filing_date": "2025-07-30",
+          "accession_number": "0000945841-25-000132",
+          "form_type": "8-K",
+          "note": "Q2 2025決算"
+        }
+      ]
+    }
+  },
+  "insider_summary": {
+    "status": "partial",
+    "period_days": 180,
+    "total_filings": 5,
+    "form_3_count": 1,
+    "form_4_count": 4,
+    "form_5_count": 0,
+    "note": "インサイダーの具体的な売買株数・センチメントはForm 4詳細取得未実施。直近6ヶ月に5件の提出あり。",
+    "management_info_from_report": {
+      "ceo": "Peter D Arvan（GEサプライチェーン領域20年以上、2018年〜CEO）",
+      "founding": "1981年 Frank J. St. Romain と Richard Smith が設立",
+      "notable": "1993年のPE傘下入りが成長の転換点。Manuel Perez de la Mesa（Watsco元VP）が2001〜2018年CEO"
+    }
+  },
+  "key_metrics": {
+    "market_position": {
+      "market_share": "約40%（川中のプール用品卸売）",
+      "sales_centers": "448拠点（2024年12月時点、北米・欧州・豪州）",
+      "second_player_centers": "約30拠点（業界2位、当社448拠点に対して大きく差）",
+      "total_pool_market_us": "約$11B（推定）",
+      "trade_channel_share": "約$7B（Trade channel）",
+      "customer_count": "約12万（非常にフラグメント）",
+      "top100_customer_revenue_share": "10%未満",
+      "source": "アナリストレポート・10-K 2024"
+    },
+    "distribution_structure": {
+      "supplier_count": "2,200以上",
+      "top3_supplier_share": {
+        "pentair": "約20%",
+        "hayward": "約10%",
+        "zodiac": "約10%"
+      },
+      "centralized_shipping_locations": 4,
+      "distribution_networks": ["SCP", "Superior", "Horizon", "NPT", "Sun Wholesale"],
+      "key_markets": "カリフォルニア・フロリダ・テキサス・アリゾナ（売上高約55%）",
+      "product_categories": "50以上のカテゴリー、600以上のプロダクトライン、20万点以上の製品"
+    },
+    "financial_metrics_from_report": {
+      "gross_margin": "約30%（安定水準）",
+      "opm_peak": "16.6%（FY2022）",
+      "opm_trough": "12.9%（FY2024想定）",
+      "roic": "過去3年平均26%（BBG、アナリストレポート2019/9）",
+      "fixed_variable_cost_ratio": "75:25",
+      "incremental_margin": "約24%（2010~2019平均）"
+    },
+    "installed_base": {
+      "total_pools_us": "約540万（in-ground swimming pool）",
+      "total_bodies_of_water_us": "約1100万",
+      "aging_note": "Installed pool年齢は上昇中（現在20年超）",
+      "new_pool_construction_2024": "約61,000件",
+      "new_pool_construction_2023": "約72,000件",
+      "new_pool_construction_peak": "GFC前200,000件、コロナ禍120,000件"
+    }
+  },
+  "filing_sections": {
+    "business": {
+      "summary": "世界最大のプール用品卸売業者。プール建設資材・交換部品・メンテナンス用品・灌漑及び造園用品を取扱。448拠点（2024年末）。5つのディストリビューションネットワーク（SCP、Superior、Horizon、NPT、Sun Wholesale）で展開。川中の市場シェア40%で突出。",
+      "industry_structure": "川上（多数のサプライヤー）・川中（POOL：40%、寡占）・川下（多数の顧客）という構造。川中の寡占度が突出して高い比較的ユニークな構造。バリューチェーン上でバイイングパワーと顧客接点の両方を持つ卸として珍しいポジション。",
+      "competitive_position": "448拠点vs業界2位の30拠点という圧倒的な規模差。大量購買によるサプライヤーへのバーゲニングパワー（割引・有利な返品条件・販売奨励金等）と顧客へのサービス水準（品揃え・利便性）が強み。",
+      "growth_drivers": [
+        "installed base成長（pool construction + aging base）",
+        "メンテナンス需要（non-discretionary色）",
+        "R&R需要（セミシクリカル）",
+        "南部・西部地域への人口移動",
+        "outdoor living space拡大トレンド"
+      ],
+      "source": "10-K 2024（2025-02-27提出）、Business section直接抽出"
+    },
+    "risk_factors": {
+      "summary": "主要リスク要因の概要",
+      "key_risks": [
+        "消費者裁量支出への感応性（特にNew Construction・R&R）",
+        "住宅市場・金利環境への依存（新規プール建設は住宅市場と相関）",
+        "季節性（売上・利益の60-73%がQ2・Q3）",
+        "天候リスク（ハリケーン・干ばつ等の影響）",
+        "e-commerceリスク（ただしB2B・重量物・引火性商品のため限定的）",
+        "顧客フラグメントリスク（顧客統合による購買変化）",
+        "サプライヤー集中リスク（Pentair20%・Hayward10%・Zodiac10%）",
+        "顧客粘着度の低い商品の存在（顧客節約志向時の消費行動変化）"
+      ],
+      "source": "10-K 2024（2025-02-27提出）、Risk Factors section直接抽出"
+    },
+    "mda": {
+      "summary": "2024年の概況：新規プール建設▲15%（61K件）。メンテナンス収益も安定性に疑問符。CAGR修正（12%→9.5%）。荒利率30%近辺は維持。",
+      "cagr_revision": {
+        "old": "12%（売上高8%+OPレバレッジ1~2%+自社株買い2~3%）",
+        "new": "9.5%（売上高5.5%+OPレバレッジ1~2%+自社株買い2~3%）",
+        "revenue_growth_breakdown": {
+          "market_growth": "4%（Pool Construction1%+Installed Base1%+Inflation2%）",
+          "store_share_gain": "1%",
+          "ma": "0.5%"
+        },
+        "source": "アナリストレポート8/15/25"
+      },
+      "sell_decision": "2025年8月15日にSELL推奨。競争優位性は一定程度維持だが、メンテナンス収益安定性を過大評価していたこと・自律的成長の限界・CAGRの不透明感が主因。"
+    },
+    "properties": {
+      "note": "448 sales centers（North America, Europe, Australia）。4 CSLs（Centralized Shipping Locations）で大量集中購買・配送。顧客密度の高い産業用地・商業用地に立地。",
+      "key_states": ["カリフォルニア", "フロリダ", "テキサス", "アリゾナ"]
+    }
+  }
+}
