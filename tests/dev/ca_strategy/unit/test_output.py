@@ -5,6 +5,8 @@ OutputGenerator produces portfolio output files:
 - portfolio_weights.csv: Excel-viewable format
 - portfolio_summary.md: Sector allocation table, selection criteria
 - rationale/{TICKER}_rationale.md: Per-stock rationale files
+- evaluation_summary.md: Performance, analyst correlation, transparency (when evaluation is provided)
+- evaluation_results.json: Structured evaluation data (when evaluation is provided)
 """
 
 from __future__ import annotations
@@ -18,14 +20,18 @@ import pytest
 
 from dev.ca_strategy.output import OutputGenerator
 from dev.ca_strategy.types import (
+    AnalystCorrelation,
     BenchmarkWeight,
     ConfidenceAdjustment,
+    EvaluationResult,
+    PerformanceMetrics,
     PortfolioHolding,
     PortfolioResult,
     RuleEvaluation,
     ScoredClaim,
     SectorAllocation,
     StockScore,
+    TransparencyMetrics,
 )
 
 if TYPE_CHECKING:
@@ -205,7 +211,7 @@ class TestOutputGenerator:
     # -----------------------------------------------------------------------
     def test_正常系_インスタンスを作成できる(self) -> None:
         gen = OutputGenerator()
-        assert gen is not None
+        assert isinstance(gen, OutputGenerator)
 
     # -----------------------------------------------------------------------
     # generate_all – file creation
@@ -457,3 +463,320 @@ class TestOutputGenerator:
         # JNJ rationale should still exist (with limited info)
         jnj_path = tmp_path / "rationale" / "JNJ_rationale.md"
         assert jnj_path.exists()
+
+
+# ---------------------------------------------------------------------------
+# Helpers for evaluation tests
+# ---------------------------------------------------------------------------
+def _make_evaluation_result() -> EvaluationResult:
+    """Create a sample EvaluationResult for testing."""
+    return EvaluationResult(
+        threshold=0.5,
+        portfolio_size=10,
+        performance=PerformanceMetrics(
+            sharpe_ratio=1.2,
+            max_drawdown=-0.15,
+            beta=0.95,
+            information_ratio=0.8,
+            cumulative_return=0.25,
+        ),
+        analyst_correlation=AnalystCorrelation(
+            spearman_correlation=0.6,
+            sample_size=8,
+            p_value=0.05,
+            hit_rate=0.7,
+        ),
+        transparency=TransparencyMetrics(
+            mean_claim_count=3.5,
+            mean_structural_weight=0.65,
+            coverage_rate=0.9,
+        ),
+        as_of_date=date(2015, 9, 30),
+    )
+
+
+def _make_evaluation_result_no_analyst() -> EvaluationResult:
+    """Create an EvaluationResult with insufficient analyst data."""
+    return EvaluationResult(
+        threshold=0.7,
+        portfolio_size=5,
+        performance=PerformanceMetrics(
+            sharpe_ratio=0.8,
+            max_drawdown=-0.10,
+            beta=1.05,
+            information_ratio=0.4,
+            cumulative_return=0.12,
+        ),
+        analyst_correlation=AnalystCorrelation(
+            spearman_correlation=None,
+            sample_size=1,
+            p_value=None,
+            hit_rate=None,
+        ),
+        transparency=TransparencyMetrics(
+            mean_claim_count=2.0,
+            mean_structural_weight=0.5,
+            coverage_rate=1.0,
+        ),
+        as_of_date=date(2015, 9, 30),
+    )
+
+
+# ===========================================================================
+# TestEvaluationOutput
+# ===========================================================================
+class TestEvaluationOutput:
+    """Tests for evaluation output: evaluation_summary.md and evaluation_results.json."""
+
+    # -----------------------------------------------------------------------
+    # evaluation=None の後方互換性
+    # -----------------------------------------------------------------------
+    def test_正常系_evaluationなしで既存4ファイルが生成される(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+        )
+
+        assert (tmp_path / "portfolio_weights.json").exists()
+        assert (tmp_path / "portfolio_weights.csv").exists()
+        assert (tmp_path / "portfolio_summary.md").exists()
+        assert (tmp_path / "rationale").exists()
+
+    def test_正常系_evaluationなしでevaluation_summaryは生成されない(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+        )
+
+        assert not (tmp_path / "evaluation_summary.md").exists()
+
+    def test_正常系_evaluationなしでevaluation_resultsは生成されない(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+        )
+
+        assert not (tmp_path / "evaluation_results.json").exists()
+
+    # -----------------------------------------------------------------------
+    # evaluation_summary.md の生成
+    # -----------------------------------------------------------------------
+    def test_正常系_evaluationありでevaluation_summary_mdが生成される(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result(),
+        )
+
+        assert (tmp_path / "evaluation_summary.md").exists()
+
+    def test_正常系_evaluation_summaryにパフォーマンスセクションが含まれる(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result(),
+        )
+
+        content = (tmp_path / "evaluation_summary.md").read_text()
+        assert "Sharpe Ratio" in content
+        assert "Max Drawdown" in content
+        assert "Beta" in content
+        assert "Information Ratio" in content
+
+    def test_正常系_evaluation_summaryにアナリスト相関セクションが含まれる(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result(),
+        )
+
+        content = (tmp_path / "evaluation_summary.md").read_text()
+        assert "Analyst Correlation" in content
+        assert "Sample Size" in content
+
+    def test_正常系_evaluation_summaryに透明性セクションが含まれる(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result(),
+        )
+
+        content = (tmp_path / "evaluation_summary.md").read_text()
+        assert "Transparency" in content
+        assert "Mean Claim Count" in content
+        assert "Coverage Rate" in content
+
+    def test_正常系_evaluation_summaryにthresholdが含まれる(
+        self, tmp_path: Path
+    ) -> None:
+        eval_result = _make_evaluation_result()
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=eval_result,
+        )
+
+        content = (tmp_path / "evaluation_summary.md").read_text()
+        assert str(eval_result.threshold) in content
+
+    def test_正常系_アナリストデータ不足時にNA表示される(self, tmp_path: Path) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result_no_analyst(),
+        )
+
+        content = (tmp_path / "evaluation_summary.md").read_text()
+        assert "N/A" in content
+
+    # -----------------------------------------------------------------------
+    # evaluation_results.json の生成
+    # -----------------------------------------------------------------------
+    def test_正常系_evaluationありでevaluation_results_jsonが生成される(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result(),
+        )
+
+        assert (tmp_path / "evaluation_results.json").exists()
+
+    def test_正常系_evaluation_resultsのJSON構造が正しい(self, tmp_path: Path) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result(),
+        )
+
+        data = json.loads((tmp_path / "evaluation_results.json").read_text())
+        assert "threshold" in data
+        assert "portfolio_size" in data
+        assert "performance" in data
+        assert "analyst_correlation" in data
+        assert "transparency" in data
+
+    def test_正常系_evaluation_resultsのperformanceフィールドが正しい(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        eval_result = _make_evaluation_result()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=eval_result,
+        )
+
+        data = json.loads((tmp_path / "evaluation_results.json").read_text())
+        perf = data["performance"]
+        assert "sharpe_ratio" in perf
+        assert "max_drawdown" in perf
+        assert "beta" in perf
+        assert "information_ratio" in perf
+        assert "cumulative_return" in perf
+
+    def test_正常系_evaluation_resultsのthresholdが正確に記録される(
+        self, tmp_path: Path
+    ) -> None:
+        eval_result = _make_evaluation_result()
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=eval_result,
+        )
+
+        data = json.loads((tmp_path / "evaluation_results.json").read_text())
+        assert data["threshold"] == eval_result.threshold
+        assert data["portfolio_size"] == eval_result.portfolio_size
+
+    def test_正常系_アナリストデータ不足時にNullが記録される(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result_no_analyst(),
+        )
+
+        data = json.loads((tmp_path / "evaluation_results.json").read_text())
+        corr = data["analyst_correlation"]
+        assert corr["spearman_correlation"] is None
+        assert corr["p_value"] is None
+        assert corr["hit_rate"] is None
+
+    def test_正常系_evaluationありで既存4ファイルも生成される(
+        self, tmp_path: Path
+    ) -> None:
+        gen = OutputGenerator()
+        gen.generate_all(
+            portfolio=_make_portfolio_result(),
+            claims=_make_scored_claims(),
+            scores=_make_stock_scores(),
+            output_dir=tmp_path,
+            evaluation=_make_evaluation_result(),
+        )
+
+        # All standard files must still exist
+        assert (tmp_path / "portfolio_weights.json").exists()
+        assert (tmp_path / "portfolio_weights.csv").exists()
+        assert (tmp_path / "portfolio_summary.md").exists()
+        assert (tmp_path / "rationale").exists()
+        # Plus evaluation files
+        assert (tmp_path / "evaluation_summary.md").exists()
+        assert (tmp_path / "evaluation_results.json").exists()

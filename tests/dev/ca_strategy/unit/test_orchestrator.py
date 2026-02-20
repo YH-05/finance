@@ -23,15 +23,19 @@ import pytest
 from dev.ca_strategy._config import ConfigRepository
 from dev.ca_strategy.orchestrator import Orchestrator
 from dev.ca_strategy.types import (
+    AnalystCorrelation,
     BenchmarkWeight,
     Claim,
     ConfidenceAdjustment,
+    EvaluationResult,
+    PerformanceMetrics,
     PortfolioHolding,
     PortfolioResult,
     RuleEvaluation,
     ScoredClaim,
     SectorAllocation,
     StockScore,
+    TransparencyMetrics,
     UniverseConfig,
     UniverseTicker,
 )
@@ -676,3 +680,257 @@ class TestPhase5OutputGeneration:
 
             orchestrator._run_phase5_output_generation(portfolio, scored, scores)
             mock_gen.generate_all.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# Helpers for equal-weight pipeline tests
+# ---------------------------------------------------------------------------
+def _make_evaluation_result(threshold: float = 0.5) -> EvaluationResult:
+    """Create a sample EvaluationResult."""
+    return EvaluationResult(
+        threshold=threshold,
+        portfolio_size=2,
+        performance=PerformanceMetrics(
+            sharpe_ratio=0.0,
+            max_drawdown=0.0,
+            beta=0.0,
+            information_ratio=0.0,
+            cumulative_return=0.0,
+        ),
+        analyst_correlation=AnalystCorrelation(
+            spearman_correlation=None,
+            sample_size=0,
+            p_value=None,
+            hit_rate=None,
+        ),
+        transparency=TransparencyMetrics(
+            mean_claim_count=1.0,
+            mean_structural_weight=0.5,
+            coverage_rate=1.0,
+        ),
+        as_of_date=date(2015, 9, 30),
+    )
+
+
+# ===========================================================================
+# run_equal_weight_pipeline
+# ===========================================================================
+class TestRunEqualWeightPipeline:
+    """Tests for Orchestrator.run_equal_weight_pipeline()."""
+
+    @patch.object(Orchestrator, "_run_phase3_neutralization")
+    @patch.object(Orchestrator, "_run_phase2_scoring")
+    @patch.object(Orchestrator, "_run_phase1_extraction")
+    def test_正常系_Phase1から3が実行される(
+        self,
+        mock_phase1: MagicMock,
+        mock_phase2: MagicMock,
+        mock_phase3: MagicMock,
+        orchestrator: Orchestrator,
+    ) -> None:
+        mock_phase1.return_value = _make_claims()
+        mock_phase2.return_value = _make_scored_claims()
+        mock_phase3.return_value = _make_ranked_df()
+
+        with (
+            patch("dev.ca_strategy.orchestrator.PortfolioBuilder") as mock_builder_cls,
+            patch("dev.ca_strategy.orchestrator.StrategyEvaluator") as mock_eval_cls,
+            patch("dev.ca_strategy.orchestrator.OutputGenerator"),
+        ):
+            mock_builder = MagicMock()
+            mock_builder.build_equal_weight.return_value = _make_portfolio_result()
+            mock_builder_cls.return_value = mock_builder
+
+            mock_eval = MagicMock()
+            mock_eval.evaluate.return_value = _make_evaluation_result()
+            mock_eval_cls.return_value = mock_eval
+
+            orchestrator.run_equal_weight_pipeline(thresholds=[0.5])
+
+        mock_phase1.assert_called_once()
+        mock_phase2.assert_called_once()
+        mock_phase3.assert_called_once()
+
+    @patch.object(Orchestrator, "_run_phase3_neutralization")
+    @patch.object(Orchestrator, "_run_phase2_scoring")
+    @patch.object(Orchestrator, "_run_phase1_extraction")
+    def test_正常系_複数閾値でPortfolioBuilderが複数回呼ばれる(
+        self,
+        mock_phase1: MagicMock,
+        mock_phase2: MagicMock,
+        mock_phase3: MagicMock,
+        orchestrator: Orchestrator,
+    ) -> None:
+        mock_phase1.return_value = _make_claims()
+        mock_phase2.return_value = _make_scored_claims()
+        mock_phase3.return_value = _make_ranked_df()
+
+        thresholds = [0.3, 0.5, 0.7]
+
+        with (
+            patch("dev.ca_strategy.orchestrator.PortfolioBuilder") as mock_builder_cls,
+            patch("dev.ca_strategy.orchestrator.StrategyEvaluator") as mock_eval_cls,
+            patch("dev.ca_strategy.orchestrator.OutputGenerator"),
+        ):
+            mock_builder = MagicMock()
+            mock_builder.build_equal_weight.return_value = _make_portfolio_result()
+            mock_builder_cls.return_value = mock_builder
+
+            mock_eval = MagicMock()
+            mock_eval.evaluate.return_value = _make_evaluation_result()
+            mock_eval_cls.return_value = mock_eval
+
+            results = orchestrator.run_equal_weight_pipeline(thresholds=thresholds)
+
+        # PortfolioBuilder is instantiated once per threshold
+        assert mock_builder.build_equal_weight.call_count == len(thresholds)
+        assert len(results) == len(thresholds)
+
+    @patch.object(Orchestrator, "_run_phase3_neutralization")
+    @patch.object(Orchestrator, "_run_phase2_scoring")
+    @patch.object(Orchestrator, "_run_phase1_extraction")
+    def test_正常系_戻り値がPortfolioResultとEvaluationResultのペアリスト(
+        self,
+        mock_phase1: MagicMock,
+        mock_phase2: MagicMock,
+        mock_phase3: MagicMock,
+        orchestrator: Orchestrator,
+    ) -> None:
+        mock_phase1.return_value = _make_claims()
+        mock_phase2.return_value = _make_scored_claims()
+        mock_phase3.return_value = _make_ranked_df()
+
+        with (
+            patch("dev.ca_strategy.orchestrator.PortfolioBuilder") as mock_builder_cls,
+            patch("dev.ca_strategy.orchestrator.StrategyEvaluator") as mock_eval_cls,
+            patch("dev.ca_strategy.orchestrator.OutputGenerator"),
+        ):
+            mock_builder = MagicMock()
+            mock_builder.build_equal_weight.return_value = _make_portfolio_result()
+            mock_builder_cls.return_value = mock_builder
+
+            mock_eval = MagicMock()
+            mock_eval.evaluate.return_value = _make_evaluation_result()
+            mock_eval_cls.return_value = mock_eval
+
+            results = orchestrator.run_equal_weight_pipeline(thresholds=[0.5])
+
+        assert len(results) == 1
+        portfolio, evaluation = results[0]
+        assert isinstance(portfolio, PortfolioResult)
+        assert isinstance(evaluation, EvaluationResult)
+
+    @patch.object(Orchestrator, "_run_phase3_neutralization")
+    @patch.object(Orchestrator, "_run_phase2_scoring")
+    @patch.object(Orchestrator, "_run_phase1_extraction")
+    def test_正常系_thresholds省略時はデフォルト5閾値が使用される(
+        self,
+        mock_phase1: MagicMock,
+        mock_phase2: MagicMock,
+        mock_phase3: MagicMock,
+        orchestrator: Orchestrator,
+    ) -> None:
+        mock_phase1.return_value = _make_claims()
+        mock_phase2.return_value = _make_scored_claims()
+        mock_phase3.return_value = _make_ranked_df()
+
+        with (
+            patch("dev.ca_strategy.orchestrator.PortfolioBuilder") as mock_builder_cls,
+            patch("dev.ca_strategy.orchestrator.StrategyEvaluator") as mock_eval_cls,
+            patch("dev.ca_strategy.orchestrator.OutputGenerator"),
+        ):
+            mock_builder = MagicMock()
+            mock_builder.build_equal_weight.return_value = _make_portfolio_result()
+            mock_builder_cls.return_value = mock_builder
+
+            mock_eval = MagicMock()
+            mock_eval.evaluate.return_value = _make_evaluation_result()
+            mock_eval_cls.return_value = mock_eval
+
+            results = orchestrator.run_equal_weight_pipeline()
+
+        # Default is 5 thresholds [0.3, 0.4, 0.5, 0.6, 0.7]
+        assert len(results) == 5
+
+    @patch.object(Orchestrator, "_run_phase3_neutralization")
+    @patch.object(Orchestrator, "_run_phase2_scoring")
+    @patch.object(Orchestrator, "_run_phase1_extraction")
+    def test_正常系_各閾値でOutputGeneratorにevaluationが渡される(
+        self,
+        mock_phase1: MagicMock,
+        mock_phase2: MagicMock,
+        mock_phase3: MagicMock,
+        orchestrator: Orchestrator,
+    ) -> None:
+        mock_phase1.return_value = _make_claims()
+        mock_phase2.return_value = _make_scored_claims()
+        mock_phase3.return_value = _make_ranked_df()
+
+        with (
+            patch("dev.ca_strategy.orchestrator.PortfolioBuilder") as mock_builder_cls,
+            patch("dev.ca_strategy.orchestrator.StrategyEvaluator") as mock_eval_cls,
+            patch("dev.ca_strategy.orchestrator.OutputGenerator") as mock_gen_cls,
+        ):
+            mock_builder = MagicMock()
+            mock_builder.build_equal_weight.return_value = _make_portfolio_result()
+            mock_builder_cls.return_value = mock_builder
+
+            eval_result = _make_evaluation_result()
+            mock_eval = MagicMock()
+            mock_eval.evaluate.return_value = eval_result
+            mock_eval_cls.return_value = mock_eval
+
+            mock_gen = MagicMock()
+            mock_gen_cls.return_value = mock_gen
+
+            orchestrator.run_equal_weight_pipeline(thresholds=[0.5])
+
+        # generate_all must be called with evaluation kwarg
+        call_kwargs = mock_gen.generate_all.call_args
+        assert call_kwargs.kwargs.get("evaluation") == eval_result
+
+    @patch.object(Orchestrator, "_run_phase1_extraction")
+    def test_異常系_Phase1でエラーが発生した場合ログに記録される(
+        self,
+        mock_phase1: MagicMock,
+        orchestrator: Orchestrator,
+        workspace_dir: Path,
+    ) -> None:
+        mock_phase1.side_effect = RuntimeError("Phase 1 failed")
+
+        with pytest.raises(RuntimeError, match="Phase 1 failed"):
+            orchestrator.run_equal_weight_pipeline(thresholds=[0.5])
+
+        log_path = workspace_dir / "execution_log.json"
+        assert log_path.exists()
+        data = json.loads(log_path.read_text())
+        phase_entry = next(e for e in data["phases"] if e["phase"] == "phase1")
+        assert phase_entry["status"] == "failed"
+
+    @patch.object(Orchestrator, "_run_phase3_neutralization")
+    @patch.object(Orchestrator, "_run_phase2_scoring")
+    @patch.object(Orchestrator, "_run_phase1_extraction")
+    def test_正常系_既存のrun_full_pipelineが影響を受けない(
+        self,
+        mock_phase1: MagicMock,
+        mock_phase2: MagicMock,
+        mock_phase3: MagicMock,
+        orchestrator: Orchestrator,
+    ) -> None:
+        """Verify run_full_pipeline still works independently."""
+        mock_phase1.return_value = _make_claims()
+        mock_phase2.return_value = _make_scored_claims()
+        mock_phase3.return_value = _make_ranked_df()
+
+        with (
+            patch.object(Orchestrator, "_run_phase4_portfolio_construction") as mock_p4,
+            patch.object(Orchestrator, "_run_phase5_output_generation") as mock_p5,
+        ):
+            mock_p4.return_value = _make_portfolio_result()
+
+            orchestrator.run_full_pipeline()
+
+        mock_phase1.assert_called_once()
+        mock_phase4 = mock_p4
+        mock_phase4.assert_called_once()
+        mock_p5.assert_called_once()

@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from datetime import date
 
     from .types import (
+        EvaluationResult,
         PortfolioHolding,
         PortfolioResult,
         ScoredClaim,
@@ -54,6 +55,7 @@ class OutputGenerator:
         claims: dict[str, list[ScoredClaim]],
         scores: dict[str, StockScore],
         output_dir: Path,
+        evaluation: EvaluationResult | None = None,
     ) -> None:
         """Generate all output files.
 
@@ -67,6 +69,10 @@ class OutputGenerator:
             Aggregated stock scores from Phase 3.
         output_dir : Path
             Directory to write output files.
+        evaluation : EvaluationResult | None, optional
+            Strategy evaluation result.  When provided, writes
+            ``evaluation_summary.md`` and ``evaluation_results.json``.
+            Default None preserves backward-compatible behavior.
         """
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -79,6 +85,7 @@ class OutputGenerator:
             "Generating output files",
             output_dir=str(output_dir),
             holdings_count=len(holdings),
+            has_evaluation=evaluation is not None,
         )
 
         self._write_json(
@@ -108,10 +115,22 @@ class OutputGenerator:
             output_dir=output_dir,
         )
 
+        files_created = 4
+        if evaluation is not None:
+            self._write_evaluation_summary(
+                evaluation=evaluation,
+                output_dir=output_dir,
+            )
+            self._write_evaluation_results(
+                evaluation=evaluation,
+                output_dir=output_dir,
+            )
+            files_created += 2
+
         logger.info(
             "Output generation completed",
             output_dir=str(output_dir),
-            files_created=4,
+            files_created=files_created,
         )
 
     # -----------------------------------------------------------------------
@@ -403,6 +422,133 @@ class OutputGenerator:
             lines.append("")
 
         return "\n".join(lines)
+
+    # -----------------------------------------------------------------------
+    # Evaluation output
+    # -----------------------------------------------------------------------
+    def _write_evaluation_summary(
+        self,
+        evaluation: EvaluationResult,
+        output_dir: Path,
+    ) -> None:
+        """Write evaluation_summary.md with performance, correlation, and transparency.
+
+        Parameters
+        ----------
+        evaluation : EvaluationResult
+            Strategy evaluation result.
+        output_dir : Path
+            Output directory.
+        """
+        perf = evaluation.performance
+        corr = evaluation.analyst_correlation
+        trans = evaluation.transparency
+
+        lines: list[str] = []
+        lines.append("# Strategy Evaluation Summary")
+        lines.append("")
+        lines.append(f"**Threshold**: {evaluation.threshold:.2f}")
+        lines.append(f"**Portfolio Size**: {evaluation.portfolio_size}")
+        lines.append("")
+
+        # Performance section
+        lines.append("## Performance Metrics")
+        lines.append("")
+        lines.append("| Metric | Value |")
+        lines.append("|--------|-------|")
+        lines.append(f"| Sharpe Ratio | {perf.sharpe_ratio:.4f} |")
+        lines.append(f"| Max Drawdown | {perf.max_drawdown:.2%} |")
+        lines.append(f"| Beta | {perf.beta:.4f} |")
+        lines.append(f"| Information Ratio | {perf.information_ratio:.4f} |")
+        lines.append(f"| Cumulative Return | {perf.cumulative_return:.2%} |")
+        lines.append("")
+
+        # Analyst correlation section
+        lines.append("## Analyst Correlation")
+        lines.append("")
+        lines.append("| Metric | Value |")
+        lines.append("|--------|-------|")
+        lines.append(f"| Sample Size | {corr.sample_size} |")
+        if corr.spearman_correlation is not None:
+            lines.append(f"| Spearman Correlation | {corr.spearman_correlation:.4f} |")
+            lines.append(f"| P-Value | {corr.p_value:.4f} |")
+        else:
+            lines.append("| Spearman Correlation | N/A (insufficient data) |")
+        if corr.hit_rate is not None:
+            lines.append(f"| Hit Rate (Top 20%) | {corr.hit_rate:.2%} |")
+        else:
+            lines.append("| Hit Rate (Top 20%) | N/A |")
+        lines.append("")
+
+        # Transparency section
+        lines.append("## Transparency Metrics")
+        lines.append("")
+        lines.append("| Metric | Value |")
+        lines.append("|--------|-------|")
+        lines.append(f"| Mean Claim Count | {trans.mean_claim_count:.2f} |")
+        lines.append(f"| Mean Structural Weight | {trans.mean_structural_weight:.4f} |")
+        lines.append(f"| Coverage Rate | {trans.coverage_rate:.2%} |")
+        lines.append("")
+
+        output_path = output_dir / "evaluation_summary.md"
+        output_path.write_text("\n".join(lines), encoding="utf-8")
+        logger.debug("Evaluation summary written", path=str(output_path))
+
+    def _write_evaluation_results(
+        self,
+        evaluation: EvaluationResult,
+        output_dir: Path,
+    ) -> None:
+        """Write evaluation_results.json with structured evaluation data.
+
+        Parameters
+        ----------
+        evaluation : EvaluationResult
+            Strategy evaluation result.
+        output_dir : Path
+            Output directory.
+        """
+        perf = evaluation.performance
+        corr = evaluation.analyst_correlation
+        trans = evaluation.transparency
+
+        data = {
+            "threshold": evaluation.threshold,
+            "portfolio_size": evaluation.portfolio_size,
+            "performance": {
+                "sharpe_ratio": round(perf.sharpe_ratio, 6),
+                "max_drawdown": round(perf.max_drawdown, 6),
+                "beta": round(perf.beta, 6),
+                "information_ratio": round(perf.information_ratio, 6),
+                "cumulative_return": round(perf.cumulative_return, 6),
+            },
+            "analyst_correlation": {
+                "spearman_correlation": (
+                    round(corr.spearman_correlation, 6)
+                    if corr.spearman_correlation is not None
+                    else None
+                ),
+                "sample_size": corr.sample_size,
+                "p_value": (
+                    round(corr.p_value, 6) if corr.p_value is not None else None
+                ),
+                "hit_rate": (
+                    round(corr.hit_rate, 6) if corr.hit_rate is not None else None
+                ),
+            },
+            "transparency": {
+                "mean_claim_count": round(trans.mean_claim_count, 4),
+                "mean_structural_weight": round(trans.mean_structural_weight, 4),
+                "coverage_rate": round(trans.coverage_rate, 4),
+            },
+        }
+
+        output_path = output_dir / "evaluation_results.json"
+        output_path.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        logger.debug("Evaluation results written", path=str(output_path))
 
 
 __all__ = ["OutputGenerator"]

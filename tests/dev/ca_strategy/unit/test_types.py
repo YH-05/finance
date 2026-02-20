@@ -12,11 +12,15 @@ from pydantic import BaseModel, ValidationError
 
 from dev.ca_strategy.types import (
     AdjustmentFloat,
+    AnalystCorrelation,
+    AnalystScore,
     BenchmarkWeight,
     Claim,
     ClaimType,
     ConfidenceAdjustment,
+    EvaluationResult,
     NonNegativeInt,
+    PerformanceMetrics,
     PortfolioHolding,
     RuleEvaluation,
     ScoredClaim,
@@ -25,6 +29,7 @@ from dev.ca_strategy.types import (
     Transcript,
     TranscriptMetadata,
     TranscriptSection,
+    TransparencyMetrics,
     UnitFloat,
     UniverseConfig,
     UniverseTicker,
@@ -1013,3 +1018,383 @@ class TestTickerStr:
     def test_異常系_特殊文字でValidationError(self) -> None:
         with pytest.raises(ValidationError, match="ticker"):
             self._make_meta("AAPL!")
+
+
+# =============================================================================
+# PerformanceMetrics
+# =============================================================================
+class TestPerformanceMetrics:
+    """PerformanceMetrics model tests."""
+
+    def test_正常系_有効なデータで作成できる(self) -> None:
+        metrics = PerformanceMetrics(
+            sharpe_ratio=1.2,
+            max_drawdown=-0.15,
+            beta=0.95,
+            information_ratio=0.45,
+            cumulative_return=0.25,
+        )
+        assert metrics.sharpe_ratio == 1.2
+        assert metrics.max_drawdown == -0.15
+        assert metrics.beta == 0.95
+        assert metrics.information_ratio == 0.45
+        assert metrics.cumulative_return == 0.25
+
+    def test_正常系_frozenモデルである(self) -> None:
+        metrics = PerformanceMetrics(
+            sharpe_ratio=1.2,
+            max_drawdown=-0.15,
+            beta=0.95,
+            information_ratio=0.45,
+            cumulative_return=0.25,
+        )
+        with pytest.raises(ValidationError):
+            metrics.sharpe_ratio = 0.5
+
+    def test_正常系_max_drawdownが0_0でも有効(self) -> None:
+        metrics = PerformanceMetrics(
+            sharpe_ratio=0.0,
+            max_drawdown=0.0,
+            beta=1.0,
+            information_ratio=0.0,
+            cumulative_return=0.0,
+        )
+        assert metrics.max_drawdown == 0.0
+
+    def test_正常系_cumulative_returnは制約外の負値も有効(self) -> None:
+        metrics = PerformanceMetrics(
+            sharpe_ratio=-1.5,
+            max_drawdown=-0.50,
+            beta=1.2,
+            information_ratio=-0.3,
+            cumulative_return=-0.30,
+        )
+        assert metrics.cumulative_return == -0.30
+
+    def test_正常系_sharpe_ratioは制約外の大きな値も有効(self) -> None:
+        metrics = PerformanceMetrics(
+            sharpe_ratio=5.0,
+            max_drawdown=-0.05,
+            beta=0.8,
+            information_ratio=2.0,
+            cumulative_return=2.5,
+        )
+        assert metrics.sharpe_ratio == 5.0
+
+    def test_異常系_max_drawdownが正値でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="max_drawdown"):
+            PerformanceMetrics(
+                sharpe_ratio=1.2,
+                max_drawdown=0.01,
+                beta=0.95,
+                information_ratio=0.45,
+                cumulative_return=0.25,
+            )
+
+
+# =============================================================================
+# AnalystCorrelation
+# =============================================================================
+class TestAnalystCorrelation:
+    """AnalystCorrelation model tests."""
+
+    def test_正常系_有効なデータで作成できる(self) -> None:
+        corr = AnalystCorrelation(
+            spearman_correlation=0.65,
+            p_value=0.02,
+            hit_rate=0.60,
+            sample_size=50,
+        )
+        assert corr.spearman_correlation == 0.65
+        assert corr.p_value == 0.02
+        assert corr.hit_rate == 0.60
+        assert corr.sample_size == 50
+
+    def test_正常系_frozenモデルである(self) -> None:
+        corr = AnalystCorrelation(
+            spearman_correlation=0.65,
+            p_value=0.02,
+            hit_rate=0.60,
+            sample_size=50,
+        )
+        with pytest.raises(ValidationError):
+            corr.sample_size = 100
+
+    def test_正常系_NoneフィールドでNullableが有効(self) -> None:
+        corr = AnalystCorrelation(
+            spearman_correlation=None,
+            p_value=None,
+            hit_rate=None,
+            sample_size=0,
+        )
+        assert corr.spearman_correlation is None
+        assert corr.p_value is None
+        assert corr.hit_rate is None
+
+    def test_正常系_spearman_correlationは負値も有効(self) -> None:
+        corr = AnalystCorrelation(
+            spearman_correlation=-0.4,
+            p_value=0.10,
+            hit_rate=0.20,
+            sample_size=30,
+        )
+        assert corr.spearman_correlation == -0.4
+
+    def test_正常系_p_value境界値0_0と1_0が有効(self) -> None:
+        corr_0 = AnalystCorrelation(
+            spearman_correlation=0.0,
+            p_value=0.0,
+            hit_rate=0.0,
+            sample_size=10,
+        )
+        assert corr_0.p_value == 0.0
+
+        corr_1 = AnalystCorrelation(
+            spearman_correlation=0.0,
+            p_value=1.0,
+            hit_rate=1.0,
+            sample_size=10,
+        )
+        assert corr_1.p_value == 1.0
+
+    def test_異常系_p_valueが範囲外でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="p_value"):
+            AnalystCorrelation(
+                spearman_correlation=0.5,
+                p_value=1.1,
+                hit_rate=0.5,
+                sample_size=10,
+            )
+
+        with pytest.raises(ValidationError, match="p_value"):
+            AnalystCorrelation(
+                spearman_correlation=0.5,
+                p_value=-0.01,
+                hit_rate=0.5,
+                sample_size=10,
+            )
+
+    def test_異常系_hit_rateが範囲外でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="hit_rate"):
+            AnalystCorrelation(
+                spearman_correlation=0.5,
+                p_value=0.05,
+                hit_rate=1.1,
+                sample_size=10,
+            )
+
+
+# =============================================================================
+# TransparencyMetrics
+# =============================================================================
+class TestTransparencyMetrics:
+    """TransparencyMetrics model tests."""
+
+    def test_正常系_有効なデータで作成できる(self) -> None:
+        metrics = TransparencyMetrics(
+            mean_claim_count=4.5,
+            mean_structural_weight=0.65,
+            coverage_rate=0.90,
+        )
+        assert metrics.mean_claim_count == 4.5
+        assert metrics.mean_structural_weight == 0.65
+        assert metrics.coverage_rate == 0.90
+
+    def test_正常系_frozenモデルである(self) -> None:
+        metrics = TransparencyMetrics(
+            mean_claim_count=4.5,
+            mean_structural_weight=0.65,
+            coverage_rate=0.90,
+        )
+        with pytest.raises(ValidationError):
+            metrics.coverage_rate = 0.5
+
+    def test_正常系_coverage_rate境界値0_0と1_0が有効(self) -> None:
+        m0 = TransparencyMetrics(
+            mean_claim_count=0.0,
+            mean_structural_weight=0.0,
+            coverage_rate=0.0,
+        )
+        assert m0.coverage_rate == 0.0
+
+        m1 = TransparencyMetrics(
+            mean_claim_count=10.0,
+            mean_structural_weight=1.0,
+            coverage_rate=1.0,
+        )
+        assert m1.coverage_rate == 1.0
+
+    def test_正常系_mean_claim_countは制約外の大きな値も有効(self) -> None:
+        metrics = TransparencyMetrics(
+            mean_claim_count=100.0,
+            mean_structural_weight=0.5,
+            coverage_rate=1.0,
+        )
+        assert metrics.mean_claim_count == 100.0
+
+    def test_異常系_coverage_rateが範囲外でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="coverage_rate"):
+            TransparencyMetrics(
+                mean_claim_count=4.5,
+                mean_structural_weight=0.65,
+                coverage_rate=1.1,
+            )
+
+        with pytest.raises(ValidationError, match="coverage_rate"):
+            TransparencyMetrics(
+                mean_claim_count=4.5,
+                mean_structural_weight=0.65,
+                coverage_rate=-0.01,
+            )
+
+
+# =============================================================================
+# EvaluationResult
+# =============================================================================
+class TestEvaluationResult:
+    """EvaluationResult model tests."""
+
+    def _make_performance(self) -> PerformanceMetrics:
+        return PerformanceMetrics(
+            sharpe_ratio=1.2,
+            max_drawdown=-0.15,
+            beta=0.95,
+            information_ratio=0.45,
+            cumulative_return=0.25,
+        )
+
+    def _make_correlation(self) -> AnalystCorrelation:
+        return AnalystCorrelation(
+            spearman_correlation=0.65,
+            p_value=0.02,
+            hit_rate=0.60,
+            sample_size=50,
+        )
+
+    def _make_transparency(self) -> TransparencyMetrics:
+        return TransparencyMetrics(
+            mean_claim_count=4.5,
+            mean_structural_weight=0.65,
+            coverage_rate=0.90,
+        )
+
+    def test_正常系_有効なデータで作成できる(self) -> None:
+        from datetime import date
+
+        result = EvaluationResult(
+            threshold=0.5,
+            portfolio_size=30,
+            performance=self._make_performance(),
+            analyst_correlation=self._make_correlation(),
+            transparency=self._make_transparency(),
+            as_of_date=date(2025, 12, 31),
+        )
+        assert result.threshold == 0.5
+        assert result.portfolio_size == 30
+        assert result.as_of_date == date(2025, 12, 31)
+        assert isinstance(result.performance, PerformanceMetrics)
+        assert isinstance(result.analyst_correlation, AnalystCorrelation)
+        assert isinstance(result.transparency, TransparencyMetrics)
+
+    def test_正常系_frozenモデルである(self) -> None:
+        from datetime import date
+
+        result = EvaluationResult(
+            threshold=0.5,
+            portfolio_size=30,
+            performance=self._make_performance(),
+            analyst_correlation=self._make_correlation(),
+            transparency=self._make_transparency(),
+            as_of_date=date(2025, 12, 31),
+        )
+        with pytest.raises(ValidationError):
+            result.threshold = 0.7
+
+    def test_正常系_3軸メトリクスが統合されている(self) -> None:
+        from datetime import date
+
+        result = EvaluationResult(
+            threshold=0.3,
+            portfolio_size=15,
+            performance=self._make_performance(),
+            analyst_correlation=self._make_correlation(),
+            transparency=self._make_transparency(),
+            as_of_date=date(2025, 6, 30),
+        )
+        assert result.performance.sharpe_ratio == 1.2
+        assert result.analyst_correlation.sample_size == 50
+        assert result.transparency.coverage_rate == 0.90
+        assert result.as_of_date == date(2025, 6, 30)
+
+    def test_エッジケース_portfolio_sizeが0でも有効(self) -> None:
+        from datetime import date
+
+        result = EvaluationResult(
+            threshold=0.9,
+            portfolio_size=0,
+            performance=self._make_performance(),
+            analyst_correlation=AnalystCorrelation(
+                spearman_correlation=None,
+                p_value=None,
+                hit_rate=None,
+                sample_size=0,
+            ),
+            transparency=TransparencyMetrics(
+                mean_claim_count=0.0,
+                mean_structural_weight=0.0,
+                coverage_rate=0.0,
+            ),
+            as_of_date=date(2025, 1, 1),
+        )
+        assert result.portfolio_size == 0
+
+
+# =============================================================================
+# AnalystScore
+# =============================================================================
+class TestAnalystScore:
+    """AnalystScore model tests."""
+
+    def test_正常系_有効なデータで作成できる(self) -> None:
+        score = AnalystScore(
+            ticker="AAPL",
+            ky=3,
+            ak=2,
+        )
+        assert score.ticker == "AAPL"
+        assert score.ky == 3
+        assert score.ak == 2
+
+    def test_正常系_frozenモデルである(self) -> None:
+        score = AnalystScore(
+            ticker="AAPL",
+            ky=3,
+            ak=2,
+        )
+        with pytest.raises(ValidationError):
+            score.ticker = "MSFT"
+
+    def test_正常系_kyとakのデフォルトはNone(self) -> None:
+        score = AnalystScore(ticker="MSFT")
+        assert score.ky is None
+        assert score.ak is None
+
+    def test_正常系_kyのみ指定で作成できる(self) -> None:
+        score = AnalystScore(ticker="GOOGL", ky=5)
+        assert score.ky == 5
+        assert score.ak is None
+
+    def test_正常系_akのみ指定で作成できる(self) -> None:
+        score = AnalystScore(ticker="AMZN", ak=1)
+        assert score.ky is None
+        assert score.ak == 1
+
+    def test_異常系_tickerが空文字でValidationError(self) -> None:
+        with pytest.raises(ValidationError, match="ticker"):
+            AnalystScore(ticker="", ky=1, ak=2)
+
+    def test_正常系_ky_akが負の整数でも有効(self) -> None:
+        # AnalystScore does not constrain ky/ak to non-negative values
+        score = AnalystScore(ticker="NVDA", ky=-1, ak=-2)
+        assert score.ky == -1
+        assert score.ak == -2
