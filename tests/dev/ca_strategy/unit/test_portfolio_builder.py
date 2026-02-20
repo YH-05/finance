@@ -110,11 +110,11 @@ class TestPortfolioBuilder:
     # -----------------------------------------------------------------------
     def test_正常系_デフォルトパラメータで作成できる(self) -> None:
         builder = PortfolioBuilder()
-        assert builder is not None
+        assert isinstance(builder, PortfolioBuilder)
 
     def test_正常系_カスタムtarget_sizeで作成できる(self) -> None:
         builder = PortfolioBuilder(target_size=50)
-        assert builder is not None
+        assert isinstance(builder, PortfolioBuilder)
 
     # -----------------------------------------------------------------------
     # build – basic portfolio construction

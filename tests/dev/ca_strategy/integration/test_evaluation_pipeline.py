@@ -361,41 +361,6 @@ class TestStrategyEvaluatorMocked:
         import pandas as pd
 
         from dev.ca_strategy.evaluator import StrategyEvaluator
-
-        portfolio_series = pd.Series(pseudo_portfolio_returns)
-        benchmark_series = pd.Series(pseudo_benchmark_returns)
-
-        with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
-            mock_calc = MagicMock()
-            mock_calc.sharpe_ratio.return_value = 0.85
-            mock_calc.max_drawdown.return_value = -0.12
-            mock_calc.beta.return_value = 0.95
-            mock_calc.information_ratio.return_value = 0.40
-            mock_risk_calc_cls.return_value = mock_calc
-
-            evaluator = StrategyEvaluator()
-            result = evaluator.evaluate(
-                portfolio=portfolio_result,
-                scores=stock_scores,
-                portfolio_returns=portfolio_series,
-                benchmark_returns=benchmark_series,
-                analyst_scores={},
-            )
-
-        assert result is not None
-
-    def test_正常系_EvaluationResultがパフォーマンス指標を含む(
-        self,
-        portfolio_result: PortfolioResult,
-        stock_scores: dict[str, StockScore],
-        pseudo_portfolio_returns: "np.ndarray[Any, np.dtype[np.floating[Any]]]",
-        pseudo_benchmark_returns: "np.ndarray[Any, np.dtype[np.floating[Any]]]",
-        tmp_path: Path,
-    ) -> None:
-        """EvaluationResult contains performance metrics."""
-        import pandas as pd
-
-        from dev.ca_strategy.evaluator import StrategyEvaluator
         from dev.ca_strategy.types import EvaluationResult
 
         portfolio_series = pd.Series(pseudo_portfolio_returns)
@@ -419,7 +384,43 @@ class TestStrategyEvaluatorMocked:
             )
 
         assert isinstance(result, EvaluationResult)
-        assert result.performance is not None
+
+    def test_正常系_EvaluationResultがパフォーマンス指標を含む(
+        self,
+        portfolio_result: PortfolioResult,
+        stock_scores: dict[str, StockScore],
+        pseudo_portfolio_returns: "np.ndarray[Any, np.dtype[np.floating[Any]]]",
+        pseudo_benchmark_returns: "np.ndarray[Any, np.dtype[np.floating[Any]]]",
+        tmp_path: Path,
+    ) -> None:
+        """EvaluationResult contains performance metrics."""
+        import pandas as pd
+
+        from dev.ca_strategy.evaluator import StrategyEvaluator
+        from dev.ca_strategy.types import EvaluationResult, PerformanceMetrics
+
+        portfolio_series = pd.Series(pseudo_portfolio_returns)
+        benchmark_series = pd.Series(pseudo_benchmark_returns)
+
+        with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
+            mock_calc = MagicMock()
+            mock_calc.sharpe_ratio.return_value = 0.85
+            mock_calc.max_drawdown.return_value = -0.12
+            mock_calc.beta.return_value = 0.95
+            mock_calc.information_ratio.return_value = 0.40
+            mock_risk_calc_cls.return_value = mock_calc
+
+            evaluator = StrategyEvaluator()
+            result = evaluator.evaluate(
+                portfolio=portfolio_result,
+                scores=stock_scores,
+                portfolio_returns=portfolio_series,
+                benchmark_returns=benchmark_series,
+                analyst_scores={},
+            )
+
+        assert isinstance(result, EvaluationResult)
+        assert isinstance(result.performance, PerformanceMetrics)
 
     def test_正常系_アナリストスコアが全空の場合でもevaluateが成功する(
         self,
@@ -433,6 +434,7 @@ class TestStrategyEvaluatorMocked:
         import pandas as pd
 
         from dev.ca_strategy.evaluator import StrategyEvaluator
+        from dev.ca_strategy.types import EvaluationResult
 
         portfolio_series = pd.Series(pseudo_portfolio_returns)
         benchmark_series = pd.Series(pseudo_benchmark_returns)
@@ -454,7 +456,7 @@ class TestStrategyEvaluatorMocked:
                 analyst_scores={},  # No analyst scores
             )
 
-        assert result is not None
+        assert isinstance(result, EvaluationResult)
 
 
 # ===========================================================================
@@ -868,9 +870,5 @@ class TestFullEvaluationPipeline:
         summary_text = (output_dir / "evaluation_summary.md").read_text(
             encoding="utf-8"
         )
-        # Should contain performance-related content
-        assert (
-            "Performance" in summary_text
-            or "Sharpe" in summary_text
-            or "performance" in summary_text
-        )
+        # Should contain the Performance Metrics section header
+        assert "## Performance Metrics" in summary_text

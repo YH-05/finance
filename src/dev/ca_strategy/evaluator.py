@@ -20,6 +20,7 @@ from datetime import date
 from typing import TYPE_CHECKING
 
 import pandas as pd
+from scipy import stats as scipy_stats
 
 from strategy.risk.calculator import RiskCalculator
 from utils_core.logging import get_logger
@@ -279,8 +280,6 @@ class StrategyEvaluator:
         analyst_scores_list = [p[1] for p in paired]
 
         # Compute Spearman correlation manually using rank approach
-        from scipy import stats as scipy_stats
-
         spearman_result = scipy_stats.spearmanr(
             strategy_scores_list, analyst_scores_list
         )

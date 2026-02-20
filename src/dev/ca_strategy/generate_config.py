@@ -28,7 +28,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from dev.ca_strategy.ticker_converter import TickerConverter
 from utils_core.logging import get_logger
@@ -93,43 +93,30 @@ def _flatten_entries(raw: dict[str, list[dict]]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Public API
+# Private helpers (accept pre-loaded entries, avoid repeated file reads)
 # ---------------------------------------------------------------------------
-def generate_universe(
-    *,
-    source: Path,
+def _write_universe(
+    entries: list[dict],
     output_dir: Path,
-    overrides: dict[str, str] | None = None,
+    overrides: dict[str, str] | None,
 ) -> dict[str, int]:
-    """Generate ``universe.json`` from *source* portfolio file.
-
-    Converts Bloomberg tickers to yfinance format using
-    :class:`~dev.ca_strategy.ticker_converter.TickerConverter` and writes the
-    result to ``output_dir/universe.json``.
+    """Write universe.json from pre-loaded *entries*.
 
     Parameters
     ----------
-    source : Path
-        Path to the MSCI portfolio JSON file.
+    entries : list[dict]
+        Flattened list of portfolio entries.
     output_dir : Path
         Directory where ``universe.json`` will be written.
-    overrides : dict[str, str] | None, optional
-        Custom Bloomberg→yfinance overrides passed to :class:`TickerConverter`.
+    overrides : dict[str, str] | None
+        Custom Bloomberg→yfinance overrides.
 
     Returns
     -------
     dict[str, int]
         Conversion statistics with keys ``converted``, ``failed``,
         ``skipped``.
-
-    Raises
-    ------
-    FileNotFoundError
-        If *source* does not exist.
     """
-    raw = _load_portfolio(source)
-    entries = _flatten_entries(raw)
-
     converter = TickerConverter(overrides=overrides)
 
     tickers: list[dict[str, str]] = []
@@ -194,21 +181,19 @@ def generate_universe(
     return {"converted": converted, "failed": failed, "skipped": skipped}
 
 
-def generate_benchmark_weights(
-    *,
-    source: Path,
+def _write_benchmark_weights(
+    entries: list[dict],
+    source_name: str,
     output_dir: Path,
 ) -> dict[str, float]:
-    """Generate ``benchmark_weights.json`` from *source* portfolio file.
-
-    Aggregates ``MSCI_Mkt_Cap_USD_MM`` by GICS sector to compute approximate
-    market-cap-weighted sector weights.  Entries with zero or ``None``
-    market-cap are silently skipped.
+    """Write benchmark_weights.json from pre-loaded *entries*.
 
     Parameters
     ----------
-    source : Path
-        Path to the MSCI portfolio JSON file.
+    entries : list[dict]
+        Flattened list of portfolio entries.
+    source_name : str
+        Original source file name (stored in output metadata).
     output_dir : Path
         Directory where ``benchmark_weights.json`` will be written.
 
@@ -216,15 +201,7 @@ def generate_benchmark_weights(
     -------
     dict[str, float]
         Mapping of sector name to weight (sums to 1.0).
-
-    Raises
-    ------
-    FileNotFoundError
-        If *source* does not exist.
     """
-    raw = _load_portfolio(source)
-    entries = _flatten_entries(raw)
-
     # Aggregate market cap by GICS sector
     sector_cap: dict[str, float] = {}
     skipped = 0
@@ -255,7 +232,7 @@ def generate_benchmark_weights(
             sector: cap / total_cap for sector, cap in sorted(sector_cap.items())
         }
 
-    benchmark_data: dict = {
+    benchmark_data: dict[str, Any] = {
         "weights": weights,
         "metadata": {
             "note": (
@@ -264,7 +241,7 @@ def generate_benchmark_weights(
             ),
             "is_approximate": True,
             "approximation": "market_cap_weighted",
-            "source_file": source.name,
+            "source_file": source_name,
             "total_market_cap_usd_mm": total_cap,
             "skipped_entries": skipped,
         },
@@ -286,6 +263,77 @@ def generate_benchmark_weights(
     return weights
 
 
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+def generate_universe(
+    *,
+    source: Path,
+    output_dir: Path,
+    overrides: dict[str, str] | None = None,
+) -> dict[str, int]:
+    """Generate ``universe.json`` from *source* portfolio file.
+
+    Converts Bloomberg tickers to yfinance format using
+    :class:`~dev.ca_strategy.ticker_converter.TickerConverter` and writes the
+    result to ``output_dir/universe.json``.
+
+    Parameters
+    ----------
+    source : Path
+        Path to the MSCI portfolio JSON file.
+    output_dir : Path
+        Directory where ``universe.json`` will be written.
+    overrides : dict[str, str] | None, optional
+        Custom Bloomberg→yfinance overrides passed to :class:`TickerConverter`.
+
+    Returns
+    -------
+    dict[str, int]
+        Conversion statistics with keys ``converted``, ``failed``,
+        ``skipped``.
+
+    Raises
+    ------
+    FileNotFoundError
+        If *source* does not exist.
+    """
+    entries = _flatten_entries(_load_portfolio(source))
+    return _write_universe(entries, output_dir, overrides)
+
+
+def generate_benchmark_weights(
+    *,
+    source: Path,
+    output_dir: Path,
+) -> dict[str, float]:
+    """Generate ``benchmark_weights.json`` from *source* portfolio file.
+
+    Aggregates ``MSCI_Mkt_Cap_USD_MM`` by GICS sector to compute approximate
+    market-cap-weighted sector weights.  Entries with zero or ``None``
+    market-cap are silently skipped.
+
+    Parameters
+    ----------
+    source : Path
+        Path to the MSCI portfolio JSON file.
+    output_dir : Path
+        Directory where ``benchmark_weights.json`` will be written.
+
+    Returns
+    -------
+    dict[str, float]
+        Mapping of sector name to weight (sums to 1.0).
+
+    Raises
+    ------
+    FileNotFoundError
+        If *source* does not exist.
+    """
+    entries = _flatten_entries(_load_portfolio(source))
+    return _write_benchmark_weights(entries, source.name, output_dir)
+
+
 def generate_all(
     *,
     source: Path,
@@ -293,6 +341,9 @@ def generate_all(
     overrides: dict[str, str] | None = None,
 ) -> None:
     """Generate both ``universe.json`` and ``benchmark_weights.json``.
+
+    Loads the portfolio file once and writes both output files,
+    avoiding redundant I/O.
 
     Parameters
     ----------
@@ -309,8 +360,11 @@ def generate_all(
         "Starting config generation", source=str(source), output_dir=str(output_dir)
     )
 
-    stats = generate_universe(source=source, output_dir=output_dir, overrides=overrides)
-    generate_benchmark_weights(source=source, output_dir=output_dir)
+    # Load portfolio once to avoid reading the same file twice
+    entries = _flatten_entries(_load_portfolio(source))
+
+    stats = _write_universe(entries, output_dir, overrides)
+    _write_benchmark_weights(entries, source.name, output_dir)
 
     logger.info(
         "Config generation complete",

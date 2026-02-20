@@ -17,6 +17,7 @@ Key behaviors:
 from __future__ import annotations
 
 import logging
+import math
 from datetime import date
 
 import numpy as np
@@ -39,8 +40,6 @@ from dev.ca_strategy.types import (
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-_RNG = np.random.default_rng(42)
-
 _AS_OF_DATE: date = date(2024, 9, 30)
 
 _TICKERS = ["AAPL", "MSFT", "GOOGL", "JPM", "JNJ"]
@@ -147,7 +146,7 @@ class TestStrategyEvaluatorInit:
 
     def test_正常系_デフォルト設定で作成できる(self) -> None:
         evaluator = StrategyEvaluator()
-        assert evaluator is not None
+        assert isinstance(evaluator, StrategyEvaluator)
 
     def test_正常系_カスタムリスクフリーレートで作成できる(self) -> None:
         evaluator = StrategyEvaluator(risk_free_rate=0.05)
@@ -295,9 +294,7 @@ class TestPerformanceMetrics:
 
         # Sharpe ratio should be a finite float
         assert isinstance(result.performance.sharpe_ratio, float)
-        assert (
-            result.performance.sharpe_ratio == result.performance.sharpe_ratio
-        )  # not NaN
+        assert not math.isnan(result.performance.sharpe_ratio)
 
     def test_正常系_MaxDrawdownが非正値である(self) -> None:
         evaluator = _make_evaluator()

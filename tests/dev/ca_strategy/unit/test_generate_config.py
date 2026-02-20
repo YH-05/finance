@@ -459,6 +459,50 @@ class TestGenerateBenchmarkWeights:
         total = sum(b.weight for b in benchmark)
         assert total == pytest.approx(1.0, abs=1e-6)
 
+    def test_エッジケース_全エントリの時価総額が0の場合空のweightsが生成される(
+        self, tmp_path: Path
+    ) -> None:
+        """全エントリの MSCI_Mkt_Cap_USD_MM が 0 の場合、空の weights が生成されることを確認。"""
+        from dev.ca_strategy.generate_config import generate_benchmark_weights
+
+        # 時価総額が 0 のみのデータ
+        all_zero_data = {
+            "0001": [
+                {
+                    "Name": "Zero Corp",
+                    "GICS_Sector": "Energy",
+                    "MSCI_Mkt_Cap_USD_MM": 0,
+                    "Bloomberg_Ticker": "ZERO UW Equity",
+                }
+            ],
+            "0002": [
+                {
+                    "Name": "None Corp",
+                    "GICS_Sector": "Materials",
+                    "MSCI_Mkt_Cap_USD_MM": None,
+                    "Bloomberg_Ticker": "NONE UW Equity",
+                }
+            ],
+        }
+
+        source = tmp_path / "all_zero_portfolio.json"
+        source.write_text(
+            json.dumps(all_zero_data, ensure_ascii=False), encoding="utf-8"
+        )
+
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        result = generate_benchmark_weights(source=source, output_dir=output_dir)
+
+        # total_cap == 0.0 の場合、weights は空であること
+        assert result == {}
+
+        # 生成された JSON も空の weights を持つこと
+        benchmark_path = output_dir / "benchmark_weights.json"
+        data = json.loads(benchmark_path.read_text(encoding="utf-8"))
+        assert data["weights"] == {}
+
 
 # ===========================================================================
 # ConversionStats (変換統計)

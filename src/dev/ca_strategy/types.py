@@ -182,6 +182,7 @@ class Transcript(BaseModel):
     @field_validator("sections")
     @classmethod
     def _sections_non_empty(cls, v: list[TranscriptSection]) -> list[TranscriptSection]:
+        """Validate that sections list contains at least one entry."""
         if not v:
             msg = "sections must contain at least one section"
             raise ValueError(msg)
@@ -572,6 +573,7 @@ class UniverseConfig(BaseModel):
     @field_validator("tickers")
     @classmethod
     def _tickers_non_empty(cls, v: list[UniverseTicker]) -> list[UniverseTicker]:
+        """Validate that tickers list contains at least one entry."""
         if not v:
             msg = "tickers must contain at least one ticker"
             raise ValueError(msg)

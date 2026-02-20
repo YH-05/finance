@@ -211,7 +211,7 @@ class TestOutputGenerator:
     # -----------------------------------------------------------------------
     def test_正常系_インスタンスを作成できる(self) -> None:
         gen = OutputGenerator()
-        assert gen is not None
+        assert isinstance(gen, OutputGenerator)
 
     # -----------------------------------------------------------------------
     # generate_all – file creation
@@ -531,7 +531,7 @@ class TestEvaluationOutput:
     # -----------------------------------------------------------------------
     # evaluation=None の後方互換性
     # -----------------------------------------------------------------------
-    def test_後方互換性_evaluationなしで既存4ファイルが生成される(
+    def test_正常系_evaluationなしで既存4ファイルが生成される(
         self, tmp_path: Path
     ) -> None:
         gen = OutputGenerator()
@@ -547,7 +547,7 @@ class TestEvaluationOutput:
         assert (tmp_path / "portfolio_summary.md").exists()
         assert (tmp_path / "rationale").exists()
 
-    def test_後方互換性_evaluationなしでevaluation_summaryは生成されない(
+    def test_正常系_evaluationなしでevaluation_summaryは生成されない(
         self, tmp_path: Path
     ) -> None:
         gen = OutputGenerator()
@@ -560,7 +560,7 @@ class TestEvaluationOutput:
 
         assert not (tmp_path / "evaluation_summary.md").exists()
 
-    def test_後方互換性_evaluationなしでevaluation_resultsは生成されない(
+    def test_正常系_evaluationなしでevaluation_resultsは生成されない(
         self, tmp_path: Path
     ) -> None:
         gen = OutputGenerator()

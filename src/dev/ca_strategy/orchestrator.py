@@ -157,30 +157,7 @@ class Orchestrator:
         """
         logger.info("Starting full pipeline execution")
 
-        # Phase 1: Extraction
-        claims = self._execute_phase(
-            phase=1,
-            func=self._run_phase1_extraction,
-        )
-
-        # Phase 2: Scoring
-        scored_claims = self._execute_phase(
-            phase=2,
-            func=self._run_phase2_scoring,
-            args=(claims,),
-        )
-
-        # Phase 3: Aggregation + Neutralization
-        # AIDEV-NOTE: CODE-005 - _aggregate_scores() を _execute_phase() 経由で
-        # 呼ぶと戻り値の scores が Phase 5 でも必要なため型安全性が低下する。
-        # 将来は _run_phase3_neutralization() の引数から scores を削除し内部計算化
-        # することで完全統一が可能。
-        scores = self._aggregate_scores(scored_claims)
-        ranked = self._execute_phase(
-            phase=3,
-            func=self._run_phase3_neutralization,
-            args=(scored_claims, scores),
-        )
+        claims, scored_claims, scores, ranked = self._run_phases_1_to_3()
 
         # Phase 4: Portfolio Construction
         portfolio = self._execute_phase(
@@ -196,9 +173,7 @@ class Orchestrator:
             args=(portfolio, scored_claims, scores),
         )
 
-        # Save cost tracker
-        cost_path = self._workspace_dir / "cost_tracking.json"
-        self._cost_tracker.save(cost_path)
+        self._save_cost_tracking()
 
         logger.info(
             "Full pipeline completed",
@@ -305,6 +280,56 @@ class Orchestrator:
             thresholds=thresholds,
         )
 
+        _, scored_claims, scores, ranked = self._run_phases_1_to_3()
+
+        # Phase 4b → Phase 6 → Phase 5 extended (per threshold)
+        results: list[tuple[PortfolioResult, EvaluationResult]] = []
+        ranked_list = ranked.to_dict("records")
+        for threshold in thresholds:
+            portfolio, evaluation = self._run_equal_weight_threshold(
+                ranked_list=ranked_list,
+                scored_claims=scored_claims,
+                scores=scores,
+                threshold=threshold,
+            )
+            results.append((portfolio, evaluation))
+
+        self._save_cost_tracking()
+
+        logger.info(
+            "Equal-weight pipeline completed",
+            threshold_count=len(thresholds),
+            total_cost=round(self._cost_tracker.get_total_cost(), 2),
+        )
+
+        return results
+
+    # -----------------------------------------------------------------------
+    # Private pipeline helpers
+    # -----------------------------------------------------------------------
+    def _run_phases_1_to_3(
+        self,
+    ) -> tuple[
+        dict[str, list[Claim]],
+        dict[str, list[ScoredClaim]],
+        dict[str, StockScore],
+        pd.DataFrame,
+    ]:
+        """Run Phase 1 (Extraction), 2 (Scoring), and 3 (Neutralization).
+
+        Shared by :meth:`run_full_pipeline` and
+        :meth:`run_equal_weight_pipeline` to avoid code duplication.
+
+        Returns
+        -------
+        tuple
+            ``(claims, scored_claims, scores, ranked)`` ready for Phase 4.
+
+        Raises
+        ------
+        RuntimeError
+            If any of Phase 1, 2, or 3 fails.
+        """
         # Phase 1: Extraction
         claims = self._execute_phase(
             phase=1,
@@ -319,7 +344,10 @@ class Orchestrator:
         )
 
         # Phase 3: Aggregation + Neutralization
-        # AIDEV-NOTE: CODE-005 same pattern as run_full_pipeline
+        # AIDEV-NOTE: CODE-005 - _aggregate_scores() を _execute_phase() 経由で
+        # 呼ぶと戻り値の scores が Phase 5 でも必要なため型安全性が低下する。
+        # 将来は _run_phase3_neutralization() の引数から scores を削除し内部計算化
+        # することで完全統一が可能。
         scores = self._aggregate_scores(scored_claims)
         ranked = self._execute_phase(
             phase=3,
@@ -327,29 +355,16 @@ class Orchestrator:
             args=(scored_claims, scores),
         )
 
-        # Phase 4b → Phase 6 → Phase 5 extended (per threshold)
-        results: list[tuple[PortfolioResult, EvaluationResult]] = []
-        ranked_list = ranked.to_dict("records")
-        for threshold in thresholds:
-            portfolio, evaluation = self._run_equal_weight_threshold(
-                ranked_list=ranked_list,
-                scored_claims=scored_claims,
-                scores=scores,
-                threshold=threshold,
-            )
-            results.append((portfolio, evaluation))
+        return claims, scored_claims, scores, ranked
 
-        # Save cost tracker
+    def _save_cost_tracking(self) -> None:
+        """Persist cost tracker data to ``cost_tracking.json``.
+
+        Shared by :meth:`run_full_pipeline` and
+        :meth:`run_equal_weight_pipeline` to avoid code duplication.
+        """
         cost_path = self._workspace_dir / "cost_tracking.json"
         self._cost_tracker.save(cost_path)
-
-        logger.info(
-            "Equal-weight pipeline completed",
-            threshold_count=len(thresholds),
-            total_cost=round(self._cost_tracker.get_total_cost(), 2),
-        )
-
-        return results
 
     def _run_equal_weight_threshold(
         self,
