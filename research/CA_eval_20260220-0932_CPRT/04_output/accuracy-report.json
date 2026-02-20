@@ -1,0 +1,36 @@
+{
+  "research_id": "CA_eval_20260220-0932_CPRT",
+  "ticker": "CPRT",
+  "mode": "simplified",
+  "generated_at": "2026-02-20T10:05:00Z",
+  "kb_version": "v1.0.0",
+  "mode_determination": {
+    "reason": "CPRTはPhase 2データ（analyst/phase2_KY/*CPRT*.md）が存在しないため簡易モードを適用",
+    "phase2_data_searched": "analyst/phase2_KY/*CPRT*",
+    "phase2_data_found": false,
+    "full_mode_eligible_tickers": ["CHD", "COST", "LLY", "MNST", "ORLY"]
+  },
+  "full_mode_results": null,
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "check_description": "contradicted事実に対するルール9自動適用（confidence → 10%）の確認",
+    "fact_check_source": "research/CA_eval_20260220-0932_CPRT/03_verification/fact-check.json",
+    "contradicted_claims": [],
+    "contradicted_count": 0,
+    "rule9_applied_count": 0,
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "contradictedと判定された事実の主張は0件。ルール9（事実誤認→confidence 10%）の適用対象なし。簡易モードのS-8チェックは合格。",
+    "caveats": [
+      "SEC EDGAR MCPはpartial利用（get_key_metricsが空結果）。主要財務データ（10-Q XBRL、10-Kセクション）は取得済みだが、全指標の網羅的検証ではない。",
+      "unverifiable 5件（IAA ASP比較、IAA市場シェア等）はCPRTのSEC開示範囲外であり、これらの事実が将来的にcontradictedと判明する可能性はゼロではない。",
+      "T8のAI批判プロセスでClaim#5のCAGR confidenceを90%→70%に調整済み。この調整はS-8チェック（contradicted→10%）の対象外だが、精度検証の補完情報として記録。"
+    ]
+  },
+  "overall_assessment": {
+    "accuracy_verdict": "pass",
+    "confidence_level": "medium",
+    "reason": "簡易モードのS-8チェックのみ実施。SEC EDGAR MCPで主要財務データ（10-Q XBRL、10-Kセクション）を取得しファクトチェック済み（35件中21件verified、0件contradicted）。Phase 2データ（Y評価値）との比較による精度検証は未実施。",
+    "recommendation": "CPRTのPhase 2評価（Y評価値）が蓄積された後、フルモードで再評価することを推奨。特にClaim#1（90%、ASP検証可能性問題）とClaim#5（CA30%/CAGR70%の乖離）についてのY評価との比較が有益。また50%帯の集中（4/8件）がYの基準値（35%）と比較してどの程度乖離するかの検証が重要。"
+  }
+}

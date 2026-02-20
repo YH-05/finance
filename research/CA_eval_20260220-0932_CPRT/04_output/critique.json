@@ -1,0 +1,107 @@
+{
+  "research_id": "CA_eval_20260220-0932_CPRT",
+  "ticker": "CPRT",
+  "critique_timestamp": "2026-02-20T10:01:14Z",
+  "overall_assessment": {
+    "kb_alignment": "moderate",
+    "reasoning_quality": "high",
+    "critical_issues": 1,
+    "minor_issues": 7
+  },
+  "claim_critiques": [
+    {
+      "claim_id": 1,
+      "critique_type": "kb_misalignment",
+      "severity": "minor",
+      "issue": "Claim#1を90%と評価しているが、KB3でYが90%を付けたのは34件中2件のみ（ORLY#2とORLY#5）であり、いずれも「フラグメント市場x規模・密度xネットワーク」でルール11が完全合致した場合に限られる。CPRTのネットワーク効果は業界構造合致（ルール11 PASS）が評価されているが、最も重要な定量的差別化データ（ASP+5.7% vs IAA+1%）がアナリスト独自データでありSEC開示で検証不可。ORLY#2では「出店可能エリアで飽和未到達」という検証可能なデータが90%の根拠だった。",
+      "kb_reference": "KB3 ORLY#2（90%）:「配送網内の物流管理効率で規模・密度・ネットワークが優位性。出店可能エリアで飽和未到達」。dogma.md 2.2要因4「開示データによる検証可能性→+20%程度」。KB2パターンI「定量的裏付けの検証可能性」。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CA confidence 90%はルール11（2社複占xネットワーク効果x3重障壁）の完全合致とルール7（IAA対比ASP比較）の充足で概ね妥当。ただし90%を支える最重要データ（ASP差）がSEC検証不可である点をレポートに明記すべき。ASPデータがSEC開示で検証可能になれば90%の確度がさらに高まり、検証できない場合は70%の可能性もあることを注記として追加する。"
+    },
+    {
+      "claim_id": 1,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "ルール10（ネガティブケース）がPARTIALと評価されているが、「IAAがRB Global買収後もシェア回復できない」は間接的すぎる。KB3ではルール10が明示的に高評価要因となるケース（CHD#1の断念例、CHD#7のバリュエーション断念）では具体的な「実行しなかった事例」が記述されていた。CPRTの場合、「IAA/RB Globalが参入障壁を超えられない」は業界構造（ルール11）の記述であり、CPRT自身の「実行しなかった事例」ではない。",
+      "kb_reference": "KB1ルール10「断念例が能力の証明」。KB3 CHD#1（70%）:「人員増強、バリュエーションや収益成長持続性による買収断念例などで補足されており、選定能力には納得感あり」。KB3 CHD#7（50%）:「実行しなかった例をもって評価している点に納得感」。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "ルール10のPARTIAL評価は適切だが、ドラフトレポートの記述（「IAAがシェア回復できない」）はルール10の趣旨（自社の断念例）とは異なることを明記すべき。CPRTにはアナリストレポート内で直接的な「断念例」の記述がないため、ルール10は本質的にN/Aに近い。ただし90%への影響は限定的（ルール1-8, 11のPASSで十分に支持されている）。"
+    },
+    {
+      "claim_id": 5,
+      "critique_type": "reasoning_gap",
+      "severity": "critical",
+      "issue": "Claim#5のCAGR confidence 90%は、dogma.md 3.1の原則「優位性が100%あるものとして」CAGR接続を評価するルールに基づいているが、TLF上昇はCA confidence 30%（環境要因であり能力ではない）であり、「優位性が100%あるものとして」という前提自体に論理的な違和感がある。CA30%の主張に対してCAGR90%を付けることは、dogma.mdの精神に反する可能性がある。dogma.md 3.1は「優位性の有無とCAGR接続は独立して評価する」とあるが、TLF上昇はそもそも「CPRTの優位性」ではなく「業界の環境変化」であり、CAGR接続の評価対象として適切かどうかの問題。",
+      "kb_reference": "dogma.md 3.1「優位性とCAGR下支えの評価は独立して行い、優位性が100%あるものとして、CAGR接続への納得度評価とする」。KB3 COST顧客粘着力CAGR（90%）:「会員更新率→ARPU→既存店。開示データで検証可能」。KB3では90%のCAGR接続は「優位性」が明確に存在する主張に対してのみ付与されている。",
+      "suggested_action": "confidence_adjustment",
+      "suggested_value": 70,
+      "reasoning": "TLF→Units+3%/年の接続メカニズム自体は1ステップで極めて直接的（90%相当）だが、TLF上昇は「CPRTの優位性」ではなく「業界環境要因」であるため、CAGR接続の評価対象として特殊なケース。KB3で90%のCAGR接続が付与された事例（COST顧客粘着力、CHD#6マーケティング、CHD#7経営力）はいずれもCA50%以上の「優位性」に対する接続。CA30%（環境要因）に対して90%のCAGR接続は過剰。メカニズムの直接性は認めつつ、「業界環境要因のCAGR接続」として70%に調整する。"
+    },
+    {
+      "claim_id": 4,
+      "critique_type": "kb_misalignment",
+      "severity": "minor",
+      "issue": "Claim#4（複占市場ポジション=50%）はMNST#1（市場シェア=50%）と同構造として正しく評価されているが、ドラフトレポートでは「CPRTは3重障壁がより明確」とMNST#1との差を示唆しているにもかかわらず、最終的に同じ50%に収まっている。3重障壁の存在はClaim#1-3で既に評価済みであり、Claim#4はそれらの「結果」であるというロジックは正しいが、「3重障壁がある分やや有利」という記述と50%維持の間に minor な reasoning gap がある。",
+      "kb_reference": "KB3 MNST#1（50%）:「シェアはあくまで結果であり、どのようにブランド価値を蓄積、維持しているかなどの背後要因が乏しい」。CPRTは背後要因（Claim#1-3）が別途評価済みだが、Claim#4自体は結果記述。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "50%は妥当。ただし「3重障壁がある分やや有利」という記述は削除するか、「背後要因はClaim#1-3で評価済みのため、Claim#4単独では50%」と明確化すべき。"
+    },
+    {
+      "claim_id": 7,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "Claim#7（グローバルバイヤーネットワーク=50%）はClaim#1（ネットワーク効果=90%）との重複が大きいと正しく指摘されているが、CAGR接続70%（価格LSD+ペネトレ2%）はClaim#1のCAGR接続（価格LSD=70%）と部分的に重複している。同一のCAGRパラメータ（価格LSD）に対してClaim#1とClaim#7の両方からCAGR接続を主張しており、ダブルカウントのリスクがある。",
+      "kb_reference": "dogma.md 3.1「構造的要素と補完的要素を明確に区分する」。KB3では同一CAGRパラメータに対する複数主張からの接続は見られない。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CAGR confidence 70%は維持するが、「Claim#1との価格LSDの重複」を明記し、Claim#7固有のCAGR寄与は「ペネトレ2%の国際展開部分」に限定されることを注記すべき。"
+    },
+    {
+      "claim_id": 6,
+      "critique_type": "kb_misalignment",
+      "severity": "minor",
+      "issue": "Claim#6（スケールメリット=50%）のルール適用でPARTIALが6つと最多であるにもかかわらず、50%に留まっている。KB3実績ではPARTIALが複数ある主張は30%寄りになる傾向がある（CHD#4:PARTIAL複数=30%、ORLY#6:PARTIAL複数=30%）。CPRTのClaim#6はPARTIAL6つ（ルール1,3,6,7,8,11）であり、30%との境界にある。",
+      "kb_reference": "KB3 CHD#4（30%）:「成長加速は結果であり背景となる優位性ではない」PARTIAL/WARN複数。KB3 ORLY#6（30%）:「DIFMの優位性をDIYでも同等に提供できるかは不明」PARTIAL複数。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "50%はOPM35%やSGA率低下という定量データの存在で下支えされており（パターンI検出）、CHD#4（定量データなし→30%）とは異なる。50%を維持するが、「PARTIAL6つは30%寄りの評価であり、IAAのOPM/SGA率比較データが得られなければ30%への下方修正の可能性」を注記すべき。"
+    },
+    {
+      "claim_id": 8,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "Claim#8（資本配分規律=50%）はCHD#7（規律ある意思決定=50%）と同構造として適切に評価されているが、CHD#7はCAGR接続90%（「経営力の高さがあれば目標達成への蓋然性高い」）を獲得している一方、CPRT Claim#8はCAGR接続70%に留まっている。CHD#7は「明確で実行性の高い経営戦略」全体を評価しており間接的でも経営力→CAGR全体の蓋然性として90%を獲得。一方、CPRT Claim#8は「自社株買い1%」のみに限定した直接的CAGR接続として70%。この非対称性の説明が不足している。",
+      "kb_reference": "KB3 CHD#7 CAGR（90%）:「経営力の高さがあれば目標達成への蓋然性高い」。CPRT Claim#8 CAGR（70%）:「自社株買い1%→CAGR直接寄与。再投資→成長は間接的」。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CAGR confidence 70%は維持。CHD#7（90%）との差はCAGR接続の範囲の違い（CHD#7は経営力全体→CAGR蓋然性、CPRT#8は自社株買いのみ→直接寄与）に起因する。この非対称性を注記として追加し、「再投資→成長全体の蓋然性」まで範囲を広げれば90%に近づく可能性を記載すべき。"
+    },
+    {
+      "claim_id": 3,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "Claim#3（スイッチングコスト=70%）のExpress Titling効果について、「run rate 1M台/年」は規模感を示すが、これがスイッチングコストの深化にどの程度寄与するかの因果メカニズムが明示されていない。ドラフトレポートでは「Express Titling 1M台/年のrun rateがスイッチングコスト深化のドライバー」と記述しているが、Express Titlingは業務効率化（タイトル処理の高速化）であり、スイッチングコストそのものを高めるメカニズムは「プロセス統合の深化」を経由する間接的なもの。",
+      "kb_reference": "KB2パターンC「3段階以上の推論チェーン」への警戒。Express Titling→プロセス統合深化→スイッチングコスト上昇は2段階で許容範囲だが、「run rate 1M台」が「スイッチングコスト深化のドライバー」という記述は因果関係のステップを省略している。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "70%は維持。Express Titlingの因果メカニズム（タイトル処理高速化→損保会社の業務フロー依存度上昇→スイッチングコスト深化）を明示的に記述すべき。"
+    }
+  ],
+  "systematic_issues": [
+    {
+      "pattern": "50%帯への過度な集中（4/8件=50%、KY基準値35%を15%超過）",
+      "affected_claims": [4, 6, 7, 8],
+      "description": "8主張中4件が50%に集中しており、KYの実績分布（50%=35%）を大幅に上回る。4件のClaim#4（結果）、#6（結果混在）、#7（Claim#1と重複）、#8（戦略混在）はいずれも「方向性は認めるが裏付け不十分」の典型であり、50%の判定自体は個別には妥当だが、全体として50%帯が過剰に膨らんでいる。KYの実績では50%帯は35%（11/34件）であり、CPRTは50%（4/8件）。30%帯が13%（1/8件）でKY基準値26%（8/34件）を大幅に下回っている点は、いくつかの50%が本来30%に近い評価である可能性を示唆する。",
+      "kb_lesson": "KB3全体で30%の評価は26%（8/34件）。CHD#4（30%、結果を原因）、CHD#5（30%、戦略混在）、MNST#5（30%、因果飛躍）、ORLY#6（30%、PARTIAL複数）。CPRTのClaim#6（PARTIAL6つ）やClaim#7（Claim#1と重複）は30%との境界にある。Yへのフィードバック時にこの分布のバイアスを明示すべき。"
+    },
+    {
+      "pattern": "CA confidence低位xCAGR confidence高位の乖離パターン",
+      "affected_claims": [5, 6, 8],
+      "description": "Claim#5（CA30%/CAGR90%）、Claim#6（CA50%/CAGR70%）、Claim#8（CA50%/CAGR70%）の3件でCA confidenceとCAGR confidenceに20-60%の乖離がある。特にClaim#5の60%乖離は極端。dogma.md 3.1は「独立評価」を原則とするが、CA30%（環境要因）に対してCAGR90%は「優位性が100%あるものとして」の前提と環境要因の性質の間に論理的緊張がある。",
+      "kb_lesson": "KB3ではCA-CAGR間の乖離が最大のケースはCHD#6（CA50%/CAGR90%=40%乖離）とCHD#7（CA50%/CAGR90%=40%乖離）。CPRTのClaim#5（CA30%/CAGR90%=60%乖離）はKB3実績を超える最大乖離であり、CAGR confidence 90%の妥当性を再検証すべき。"
+    }
+  ]
+}

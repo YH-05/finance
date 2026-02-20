@@ -1,0 +1,264 @@
+{
+  "ticker": "CPRT",
+  "report_path": "analyst/raw/CPRT US.md",
+  "parsed_at": "2026-02-20T09:38:00Z",
+  "report_type": "mixed",
+  "report_type_note": "PoC段階のため種別区別はスキップ。期初レポート（2020年7月、2022年9月）+ 四半期決算フォローアップ（2023-2025）+ CFO面談メモ（2023年6月）+ 米国出張メモ（2025年10月）の混合",
+  "sections": [
+    {
+      "id": "S1",
+      "title": "ESG評価",
+      "date": "2022-09-09",
+      "type": "esg",
+      "content_summary": "相対スコア28、マネージメントスコア20。Business Support Services内13th。リスクエクスポージャー自体がLowであり全体リスクは平均並み。"
+    },
+    {
+      "id": "S2",
+      "title": "競争優位性分析（CA）",
+      "date": "2022-09-09",
+      "type": "competitive_advantage",
+      "content_summary": "サルベージオークションにおけるバリュープロポジション：損保会社と解体業者をつなげるプラットフォームで廃車の流動性と価格透明性を提供。競争優位性は(1)ネットワーク効果、(2)ヤードの希少性（NIMBY）、(3)高いスイッチングコスト。"
+    },
+    {
+      "id": "S3",
+      "title": "業界構造（101）",
+      "date": "2022-09-09",
+      "type": "industry_overview",
+      "content_summary": "北米廃車数：年間5M台がサルベージ、残り8Mは中古車チャネル。自動車登録約300M台、新車販売約15M台。損保会社が主な売り手、解体業者が主な買い手。免許制、NIMBY産業。"
+    },
+    {
+      "id": "S4",
+      "title": "競争環境（CL）",
+      "date": "2022-09-09",
+      "type": "competitive_landscape",
+      "content_summary": "Salvage Auction：CPRT4割超、IAA4割弱で複占。Whole Car Auction：Manheim5割、ADESA3割弱、CPRT5%強。"
+    },
+    {
+      "id": "S5",
+      "title": "ビジネスモデル（BM）",
+      "date": "2022-09-09",
+      "type": "business_model",
+      "content_summary": "米国売上85%。サルベージオークション（売上75%）：手数料モデル（落札価格連動+固定フィー）。中古車オークション（売上10%）：マージンモデル。海外事業15%。100%オンラインオークション（VB3）。"
+    },
+    {
+      "id": "S6",
+      "title": "沿革（HIST）",
+      "date": "2022-09-09",
+      "type": "history",
+      "content_summary": "1982年創業（Willis J. Johnson）、1994年ナスダック上場、2003年100店舗＋カナダ進出、2004年VB2で完全オンライン化、2007年UK進出、2012年UAE/ブラジル/ドイツ進出、2017年NPA買収。"
+    },
+    {
+      "id": "S7",
+      "title": "事業深掘り分析",
+      "date": "2020-07-15",
+      "type": "deep_dive",
+      "content_summary": "廃車・中古車オンラインオークションプラットフォーム。保険会社は修理代vs保険金+売却価格を比較し全損判定。CPRTはBidder多数で高値売却を実現。2017-2019で保険会社の1台当たり売却価格35%上昇。COGS/売上56-57%安定、SGA10%半ば→9%低下傾向、OPM35%、純利益率29%。"
+    },
+    {
+      "id": "S8",
+      "title": "競争優位性詳細分析（CA詳細）",
+      "date": "2020-07-15",
+      "type": "competitive_advantage_detail",
+      "content_summary": "寡占市場（CPRT+IAA=80%）。ネットワーク効果、自然災害対応キャパシティ、ヤード立地が競争優位。保険会社囲い込み（牽引サービス、前払い、リアルタイムデータ、Supply agreement）。Bidder登録40万超。ML予想価格提供で全損判定促進。土地1万エーカー、200施設。"
+    },
+    {
+      "id": "S9",
+      "title": "CAGR推定",
+      "date": "2022-09-08",
+      "type": "cagr_estimate",
+      "content_summary": "売上HSD-10%（Miles Driven 1%＋事故率0%＋TLF3-5%＋Price3-5%）。OPレバレッジ1%。自社株買い1-2%。EPS CAGR=LDD。リスク：自動運転による事故率低下（2030年までは急激低下想定せず）。"
+    },
+    {
+      "id": "S10",
+      "title": "CAGR推定（修正版）",
+      "date": "2020-07-15",
+      "type": "cagr_estimate_revised",
+      "content_summary": "修正後EPS CAGR=売上8%+営業レバ2%+自社株買い1%=11%（配当ゼロ）。売上=Units4%（走行距離1%+事故率一定+TLF上昇3%）+ペネトレ2%+価格上昇LSD=HSD-10%。営業レバ年率70bps改善、10年でOPM35%→40%超。"
+    },
+    {
+      "id": "S11",
+      "title": "FY24/4Q決算フォロー",
+      "date": "2024-09-11",
+      "type": "earnings_review",
+      "content_summary": "Sales YoY+7.2%（<cons）、OPM33.6%（<cons38.2%）、EPS34c（<cons37c）。Global Unit Sales YoY+8%、US Insurance Volume+6%。全損判定率21.4%まで上昇。Express Titling run rate 1M台。Purple Wave+17%。中長期見方不変、Buy維持。"
+    },
+    {
+      "id": "S12",
+      "title": "FY24/2Q決算フォロー",
+      "date": "2024-02-28",
+      "type": "earnings_review",
+      "content_summary": "Sales YoY+6.6%。GEICO・USAA等大口獲得で競争優位性懸念なし。ハリケーンIan影響控除後は堅調。OPレバレッジ継続。ITGスプレッド縮小、CAGR修正検討。"
+    },
+    {
+      "id": "S13",
+      "title": "CFO面談メモ",
+      "date": "2023-06-23",
+      "type": "management_meeting",
+      "content_summary": "Insurance80%:Non-Insurance20%の比率。Non-Insurance（BlueCar等）の比率は今後も高まる。過去20年のGlobal Customer Baseが競争優位。IAAは買収後うまくいっていない印象。CPRTはsalvaged carでシェアゲイン。配当・自社株買いより既存事業再投資優先。"
+    },
+    {
+      "id": "S14",
+      "title": "FY23/3Q決算フォロー",
+      "date": "2023-05-19",
+      "type": "earnings_review",
+      "content_summary": "Sales YoY+8.7%（>cons）。OPM40.9%（>cons）。EPS73c（>cons64c）。海外も満遍なく成長。CEO「今後50年」発言。ITG対比割安、BUY推奨。"
+    },
+    {
+      "id": "S15",
+      "title": "スイッチングコスト・競争環境Q&A",
+      "date": "2022-09-12",
+      "type": "qa_analysis",
+      "content_summary": "買い手手数料2-8%。損保がCPRTを選ぶ理由はYardの立地（NIMBYでイス取りゲーム）。スイッチングコスト：Yard立地+人材配置+プロセス統合。GEICOがIAAからスイッチした背景はハリケーン対応の不満。Home Depot vs Lowesの関係に類似。"
+    },
+    {
+      "id": "S16",
+      "title": "米国出張メモ（RB Global面談）",
+      "date": "2025-10-03",
+      "type": "field_research",
+      "content_summary": "RB Globalは事実としてシェアを奪っているが、競争優位性を示す話はなくRebateと接待が中心。CPRT ASP+5.7% vs IAA+1%でネットワーク効果の差。RBは50:50のduopolyに戻したい意向（現状35%認識）。シェア拡大に多大なコストはかからないとRB主張。CPRTの優位性に自信あるLO Investorの存在確認。"
+    }
+  ],
+  "competitive_advantage_candidates": [
+    {
+      "id": "CA1",
+      "claim": "ネットワーク効果：多数の売り手（損保会社81%）と買い手（40万超の登録メンバー）のプラットフォーム。買い手が多いほどASPが上がり、売り手を引き付ける好循環。",
+      "source_sections": ["S2", "S7", "S8"],
+      "confidence_hint": "high",
+      "evidence": [
+        "Bidder登録者数40万超（2015年時点、以降も増加推定）",
+        "米国販売車両の38.8%が海外メンバーへの販売（FY2025）",
+        "CPRT ASP+5.7% vs IAA+1%（2025年直近決算）",
+        "2017-2019で保険会社の1台当たり売却価格35%上昇"
+      ]
+    },
+    {
+      "id": "CA2",
+      "claim": "NIMBY産業としてのヤード保有：景観問題で新規取得に長期の行政折衝が必要。土地1万エーカー、200施設。戦略的に大都市近辺のYardを取得してきた先行者優位。",
+      "source_sections": ["S2", "S8", "S15"],
+      "confidence_hint": "high",
+      "evidence": [
+        "土地1万エーカー、200施設以上保有",
+        "ヤードはNIMBY施設であり新規取得には実績・ノウハウが必要",
+        "IAAはリースが多いがCPRTは保有（長期視点のland use）",
+        "イス取りゲームの比喩：競合間でYardが近接することは少ない"
+      ]
+    },
+    {
+      "id": "CA3",
+      "claim": "高いスイッチングコスト：損保会社とのプロセス統合（人材相互配置、Express Titling等）。米国10大保険会社のうち7社と契約、4社と独占契約。",
+      "source_sections": ["S2", "S5", "S15"],
+      "confidence_hint": "high",
+      "evidence": [
+        "損保会社とオークション業者はビジネスプロセスを一部統合（お互いの部署に人材を配置）",
+        "Express Titling run rate 1M台/年（従来損保が行っていた所有権移転をCopartが代行）",
+        "米国10大保険会社のうち7社と契約、4社と独占契約",
+        "スイッチングコストは相応に高い部類（アナリスト見解）"
+      ]
+    },
+    {
+      "id": "CA4",
+      "claim": "寡占市場構造（Duopoly）：CPRT4割超＋IAA35-40%で合計80%のサルベージオークション市場を支配。ネットワーク効果により新規参入障壁が極めて高い。",
+      "source_sections": ["S4", "S8", "S16"],
+      "confidence_hint": "medium-high",
+      "evidence": [
+        "大手2社で複占（CPRT4割超、IAA4割弱）",
+        "RB Global認識でもIAAシェア35%（CPRTが優位）",
+        "免許制・NIMBY・ネットワーク効果で新規参入障壁が高い"
+      ]
+    },
+    {
+      "id": "CA5",
+      "claim": "全損判定率（TLF）の構造的上昇による追い風：車体の電装化・複雑化、修理コスト上昇により、TLFは1981年4%→2024年21.4%に上昇。中長期30%超見込み。",
+      "source_sections": ["S9", "S10", "S11"],
+      "confidence_hint": "medium",
+      "evidence": [
+        "TLF: 1981年4%→2014年14%→2020年20%→2024年21.4%",
+        "中長期的には30%超えてくるとの認識（CFO面談）",
+        "車載カメラやLIDAR等の高度部品付属でTLF上昇を後押し"
+      ]
+    },
+    {
+      "id": "CA6",
+      "claim": "オペレーショナルエクセレンス：100%オンライン化（業界初、2004年）、VB3技術、MLによる予想価格提供。OPM35%・純利益率29%の高収益体質。SGA率6年間で10%半ば→9%に低下。",
+      "source_sections": ["S5", "S7", "S8"],
+      "confidence_hint": "medium",
+      "evidence": [
+        "2004年に業界初で完全オンラインオークション移行",
+        "OPM35%（長期目標40%超）、純利益率29%",
+        "SGA率10%半ば→9%（6年間一貫低下）",
+        "MLによる予想価格提供で損保の全損判定を促進"
+      ]
+    },
+    {
+      "id": "CA7",
+      "claim": "海外展開によるグローバルネットワーク拡大：11か国展開。海外バイヤーの増加（米国販売の38.8%が海外向け）。UK4割トップ。",
+      "source_sections": ["S2", "S7", "S11"],
+      "confidence_hint": "medium",
+      "evidence": [
+        "11か国で事業展開",
+        "米国販売車両の38.8%が海外メンバーへの販売（FY2025）",
+        "UK市場シェア4割トップ",
+        "International Unit Sales FY24Q4 YoY+17%"
+      ]
+    },
+    {
+      "id": "CA8",
+      "claim": "自然災害対応力：Cat Teamによる専門対応。2024年ハリケーンHelene/Milton後の大規模モビライゼーション実績。50%の余剰キャパシティ保有。",
+      "source_sections": ["S8", "S16"],
+      "confidence_hint": "medium-low",
+      "evidence": [
+        "Cat Teamによる専門的災害対応",
+        "2024年ハリケーンHelene/Miltonで数万台の水害車を処理",
+        "50%の余剰キャパシティ保有（RB Global面談時の自社評価）",
+        "NASCARとの提携等による追加キャパシティ確保"
+      ]
+    }
+  ],
+  "factual_claims": [
+    {"id": "F1", "claim": "FY2025売上高$4.6B、営業利益$1.7B", "source": "10-K", "verifiable": true},
+    {"id": "F2", "claim": "米国サルベージオークション市場はCPRT4割超＋IAA4割弱の複占", "source": "S4, S16", "verifiable": true},
+    {"id": "F3", "claim": "Bidder登録者数40万超（2015年時点）", "source": "S2", "verifiable": false, "note": "2015年以降の公式アップデートなし"},
+    {"id": "F4", "claim": "米国10大保険会社のうち7社と契約、4社と独占契約", "source": "S2", "verifiable": false, "note": "具体的な保険会社名の一部のみ判明（GEICO, USAA, Progressive等）"},
+    {"id": "F5", "claim": "TLF: 2024年時点で21.4%（YoY約2%上昇）", "source": "S11", "verifiable": true},
+    {"id": "F6", "claim": "土地1万エーカー、200施設保有", "source": "S8", "verifiable": true},
+    {"id": "F7", "claim": "SGA率が6年間で10%半ば→9%に一貫低下", "source": "S7", "verifiable": true},
+    {"id": "F8", "claim": "OPM35%、純利益率29%", "source": "S7", "verifiable": true},
+    {"id": "F9", "claim": "配当ゼロ、自社株買い年率1%程度", "source": "S10, S13", "verifiable": true},
+    {"id": "F10", "claim": "Express Titling run rate 1M台/年", "source": "S11", "verifiable": false, "note": "決算コメントベース"},
+    {"id": "F11", "claim": "CPRT ASP+5.7% vs IAA+1%（直近決算比較）", "source": "S16", "verifiable": true},
+    {"id": "F12", "claim": "米国販売車両の38.8%が海外メンバーへの販売（FY2025）", "source": "10-K", "verifiable": true},
+    {"id": "F13", "claim": "Purple Wave YoY+17%", "source": "S11", "verifiable": true},
+    {"id": "F14", "claim": "FY24Q4 Global Unit Sales YoY+8%、US+6%超、International+17%", "source": "S11", "verifiable": true},
+    {"id": "F15", "claim": "2004年に業界初で完全オンラインオークション移行", "source": "S6", "verifiable": true},
+    {"id": "F16", "claim": "RB Global（IAA）のシェアは現状35%（RB自社認識）", "source": "S16", "verifiable": false, "note": "RB Global CFO面談での発言"}
+  ],
+  "cagr_references": [
+    {
+      "id": "CAGR1",
+      "date": "2022-09-08",
+      "formula": "EPS CAGR = 売上HSD-10% + OPレバレッジ1% + 自社株買い1-2% = LDD",
+      "components": {
+        "revenue": "HSD-10%（Miles Driven 1% + 事故率0% + TLF3-5% + Price3-5%）",
+        "op_leverage": "1%",
+        "buyback": "1-2%",
+        "dividend": "ゼロ"
+      },
+      "risk_factor": "自動運転による事故率低下（2030年までは急激低下想定せず）"
+    },
+    {
+      "id": "CAGR2",
+      "date": "2020-07-15",
+      "formula": "EPS CAGR = 売上8% + 営業レバ2% + 自社株買い1% = 11%（配当ゼロ）",
+      "components": {
+        "revenue": "8%（Units4% + ペネトレ2% + 価格LSD）",
+        "units_breakdown": "走行距離1% + 事故率一定 + TLF上昇3% = 4%",
+        "penetration": "2%（サルベージオークションペネトレ35%→40%）",
+        "price": "LSD（廃車価格上昇）",
+        "op_leverage": "2%（年率70bps改善、OPM35%→40%超）",
+        "buyback": "1%",
+        "dividend": "ゼロ"
+      },
+      "risk_factor": "事故率▲1%シナリオでは売上8%→selling growth下振れ"
+    }
+  ]
+}
