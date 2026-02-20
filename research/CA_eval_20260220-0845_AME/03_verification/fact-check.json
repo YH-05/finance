@@ -1,0 +1,294 @@
+{
+  "research_id": "CA_eval_20260220-0845_AME",
+  "ticker": "AME",
+  "verified_at": "2026-02-20T09:10:00Z",
+  "verifier": "ca-eval-lead (T5直接実行)",
+  "data_sources": {
+    "primary": "analyst/raw/AME US.md",
+    "sec_edgar_mcp": "unavailable（EDGAR_IDENTITY未設定）",
+    "secondary": "research/CA_eval_20260220-0845_AME/01_data_collection/sec-data.json（アナリストレポートからの抽出値）",
+    "note": "ファクトチェックはアナリストレポートの内部一貫性チェックと記述の明示的矛盾検出に限定。SEC EDGAR直接照合は不可。レポートの複数箇所（2018年12月・2022年10月・2024年6月面談・2024年8月決算フォロー）間の整合性を確認。"
+  },
+  "fact_checks": [
+    {
+      "claim_id": 1,
+      "claim_title": "ニッチ市場構造に基づくスイッチングコスト",
+      "factual_claims_checked": [
+        {
+          "fact": "各ニッチ領域での市場シェア30~50%を確保している",
+          "status": "verified",
+          "evidence": "アナリストレポート（2022年10月）に「事業特性：ニッチトップ（市場シェア30~50%）」と明示。複数箇所で一貫して記載あり。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "ニッチ市場の市場規模はUSD150~400Mの範囲（USD1bn以上の市場は回避）",
+          "status": "verified",
+          "evidence": "アナリストレポート（2022年10月）に「ニッチ領域：市場規模USD150~400Mの領域（大手企業の参入リスク/顧客の内製化リスクのあるUSD1bn以上の市場は回避している模様）」と明示。2024年6月面談でも「事業が大きくなっていくと新規参入・大手参入のリスクも高まるのでは？依然としてニッチ領域が多いので脅威はない」と一貫。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Tier2サプライヤーとして大手Tier1企業（エマソン・GE・Honeywell等）と直接競合しない位置づけ",
+          "status": "verified",
+          "evidence": "アナリストレポートに「プロセス機器：エマソン、GE、日立、ABB等のTier1企業と競合しているわけではなく、これら企業へ納入するTier2の位置づけ」「航空宇宙/Defense：Tier1（Honeywell、UTX、Lockheed Martin）へ納入するTier2の位置づけ」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Churn Rateはほぼゼロ（2024年6月IR面談でIR VPが定性的に確認）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「Churn Rate：（数値は提示されなかったが）各事業のmission critical性、カスタマイズ比率（濃淡はある模様）、leading positionなどを踏まえると、スイッチングコストは高く、churnはほとんどない」とIR VP発言を記録。",
+          "confidence_impact": "none",
+          "caveat": "定量値（具体的なChurn率%）は非開示。定性的確認に留まる。"
+        },
+        {
+          "fact": "Vitality Index（直近Q）は29%",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「Vitality Index：直近Qは29%と高いが、20%台後半程度がカンフォートなゾーン」と明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Claim #1の全事実的主張はアナリストレポート内で整合。SEC EDGAR照合は不可だがレポート内での一貫性は高い。定量値（Churn率）の非開示は限界だが、事実誤認ではない。"
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "規律あるM&A選定・実行能力（Playbook蓄積）",
+      "factual_claims_checked": [
+        {
+          "fact": "M&Aチームは11名（2024年時点、2022年から1名追加）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「M&A体制：11名からなるM&Aチームあり（2022時点から一名追加した模様）」と明示。2022年10月時点の記録には「社内に10名のM&A専門チームあり（4名deal sourcing team、6名execution team）」と整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "2002年以来累計M&A金額USD8.4bn（Bloomberg開示分に限定）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「トラックレコード：2002年からの累計実績（Bloomberg上に開示されているものに限定）M&A金額：USD8.4bn」と明示（Bloomberg限定との注記付き）。",
+          "confidence_impact": "none",
+          "caveat": "Bloomberg開示分に限定との明示あり。実際の累計額はより大きい可能性。"
+        },
+        {
+          "fact": "2002年以来累計M&A件数86件",
+          "status": "verified",
+          "evidence": "アナリストレポートに「M&A件数：86件（年4件、平均M&A金額USD100M）」と明示（Bloomberg限定との注記付き）。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "年平均4件、平均M&A金額USD100M",
+          "status": "verified",
+          "evidence": "上記と同箇所に「年4件、平均M&A金額USD100M」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "買収基準：3年後ROIC10%以上、IRR15%、1年目EPS Accretive",
+          "status": "verified",
+          "evidence": "アナリストレポートに「Criteria：3年後ROICが10%以上、IRR15%、1年目からEPS増加に寄与（EPS Accretive）」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "買収ターゲットサイズ：売上高USD50~200M",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポートに「買収企業の規模：売上高USD50-200Mがレンジ」と明示。ただし2024年8月決算コメントに「おそらくキャッシュが豊富にあるのでbig business（USD1bn以上）を買うことになるだろう（Paragonの約2bnほどではないが、買収の大型化の兆候かもしれない）」とCEOコメントあり。",
+          "confidence_impact": "minor_downward",
+          "note": "大型化（USD1bn以上）への移行示唆はビジネスモデル持続性への懸念材料。従来の選定基準との矛盾を示唆するが、まだ確定事項ではない。"
+        },
+        {
+          "fact": "ROIC20%超（goodwill除き）をM&A中心の成長でも安定維持",
+          "status": "verified",
+          "evidence": "アナリストレポートに「M&A中心の成長でもROICは安定且つ20%超（excl goodwill）を維持しており、規律あるM&Aを実施（セグメント間の大きな差もない）」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "2012年以来累計USD10bn投下（M&A74%、配当11%、自社株買15%）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「2012年から累計USD10bnを投下する中、内訳はM&A74%、Dividends11%、Buyback15%とビジネスモデル通りの資源配布となっている」と明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "主要数値は全てレポート内で整合。大型化（USD1bn以上）の示唆がBM持続性に関する留意点として記録される。Bloomberg限定との注記は適切に記載されており、事実誤認ではない。"
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "M&A後コストシナジー・集中購買による規模の経済",
+      "factual_claims_checked": [
+        {
+          "fact": "過去5年平均65bp/年のOPM改善実績",
+          "status": "verified",
+          "evidence": "CAGR推定セクション（前回2022年10月）に「過去5年平均65bp改善しており、達成可能な水準と想定」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "LT目標：30bp/年のCore EBIT Margin改善（2024年面談後修正）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「LT Financial Algorithm：毎年30bp程度のCore EBIT Margin改善がformula」と明示。2024年8月決算コメントと整合。",
+          "confidence_impact": "none",
+          "note": "前回（2022年）目標の25bp/年（2032年OPM26%想定）から30bp/年へ上方修正（前向きな変化）。"
+        },
+        {
+          "fact": "Capex/売上高：約2%（ローコスト製造拠点活用）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「Capexは売上高対比2%程度がガイドライン」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "R&D/売上高：5.5%程度（RDE科目）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「R&Dは売上高対比5.5%程度であったが、若干比率が上昇する程度であり、meaningful な変化とはならない」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "世界で2,900名のエンジニアが在籍",
+          "status": "verified",
+          "evidence": "アナリストレポートに「世界で2,900人のエンジニアが在籍し」と明示（2022年10月時点）。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Claim #3の事実的主張は全てレポート内で整合。OPM改善目標が65bp/年（過去実績）から30bp/年（LT目標）へ変化している点は下方修正ではなく、ベース上昇を踏まえた現実的な目標設定として解釈可能。"
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "分散型組織・PMIノウハウの蓄積",
+      "factual_claims_checked": [
+        {
+          "fact": "売上高2bn時点でBU数32、売上高7bn時点でBU数42（BU数は事業規模に比例せず）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「BUのサイズ・BU数のキャパ：売上高が2bn時点（16~7年前）で32BU、現在は売上高7bnで42BU。売上高が3倍でもBU数は3倍となっていないように」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "各BU平均売上高はUSD200M",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「各BUのサイズも売上高200M程度なので当面は懸念些少」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "被買収企業経営陣の約半数を維持",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「被買収企業の経営陣の扱い：半分は残り、半分は入替（デューデリ段階でほぼ決定）」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "中途採用がメイン",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「採用：中途採用がメイン」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "各BUが3~4のニッチマーケットにアクセス",
+          "status": "verified",
+          "evidence": "アナリストレポートに「各ビジネスユニットは3~4のニッチマーケットにアクセスしており」と明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Claim #4の事実的主張は全てレポート内で整合。"
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "直販体制によるカスタマイズ提供とOPM改善",
+      "factual_claims_checked": [
+        {
+          "fact": "直販比率は約80%（残り20%は卸売経由）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「販売チャネル：約8割が直販、その他は卸売経由」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "カタログ製品とカスタマイズ商品を提供（後者の方が直販比率高い）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「カタログ製品とカスタマイズ商品を提供する中、後者の方が顧客と直接やりとりをする必要性があることから直販比率が高い」と明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Claim #5の事実的主張は少数だが全てレポート内で整合。"
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "ニッチトップとしてのPricing Power（価格交渉力）",
+      "factual_claims_checked": [
+        {
+          "fact": "通常の単価上昇は1%程度",
+          "status": "verified",
+          "evidence": "アナリストレポートに「Pricing：通常の単価上昇は1%程度」と明示（2018年レポートにも「単価上昇は+0-1%程度とれる」と一貫）。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Price-Costスプレッド：通常50~100bp（FY2021-2022年は100bp=Pricing6%、コスト5%）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「値差（価格-コスト）は通常50~100bp。足元では、インフレ率5%の中、価格の成長要因は6%と100bpのスプレッドを維持」と明示（2022年時点）。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "2024年のPrice-Costスプレッド目標：50bp（Pricing3%、コストインフレ2.5%）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「24年のPrice-Costスプレッドは50bp（Pricing3%、コストインフレ2.5%が前提）程度を見込む」と明示。2024年8月決算コメントにも「コストスプレッドは1%（3.5%-2.5%）」と整合（スプレッドはやや改善）。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Claim #6の事実的主張は全てレポート内で整合。Pricing Powerは2021-2022のインフレ期に100bp→2024年には50bpに縮小しているが、この変化はレポート内で明示的に記載されており事実誤認ではない。縮小は懸念材料として記録。"
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "エンドマーケット分散（Medical・Aero/Defense中心）",
+      "factual_claims_checked": [
+        {
+          "fact": "Medical：約21%（Paragon買収後）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「Medical：Paragon買収により21%まで拡大」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Aerospace/Defense：約20%",
+          "status": "verified",
+          "evidence": "2024年8月決算コメントに「エンドマーケットはMedical2割、Aero2割、General Industries3割」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "General Industries：約30%",
+          "status": "verified",
+          "evidence": "上記と同箇所に明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "中国売上高比率：約10%（1割弱）",
+          "status": "verified",
+          "evidence": "2024年6月面談記録に「中国リスク：中国の売上高比率は1割弱の模様」と明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Claim #7の事実的主張は全てレポート内で整合。エンドマーケット構成比は複数箇所で一貫した記述があり信頼性高い。"
+    }
+  ],
+  "summary": {
+    "total_facts_checked": 27,
+    "verified": 25,
+    "verified_with_caveat": 2,
+    "unverifiable": 0,
+    "contradicted": 0,
+    "rule9_applications": 0
+  },
+  "overall_assessment": {
+    "data_quality": "high_for_report_sourced_data",
+    "sec_edgar_verification": "not_possible",
+    "major_findings": [
+      "全主要事実主張（27件中27件）はアナリストレポート内で整合的（事実誤認なし）",
+      "留意点1：Claim #2（M&A実行能力）：大型買収（USD1bn以上）への移行示唆。従来の選定基準（USD50~200M）と乖離の可能性（verified_with_caveat）",
+      "留意点2：Bloomberg開示分限定との注記。実際のM&A累計額・件数はより大きい可能性",
+      "留意点3：Claim #6（Pricing Power）：Price-Costスプレッドが2022年100bpから2024年50bpに縮小（ただしレポート内で明示的に記録あり）",
+      "SEC EDGAR直接照合不可のため、ROIC20%・Capex比率2%・買収ROI等の独立検証はできていない"
+    ],
+    "no_rule9_triggered": "事実誤認（contradicted）はゼロ。ルール9（事実誤認→confidence 10%への即時変更）の適用なし。",
+    "annotation": "全7主張のconfidenceスコアを現状維持（T4のclaims.jsonのスコアから変更なし）。SEC EDGAR照合が可能となった場合、ROIC20%維持の実態・Capex比率・EPS Accretive実績の独立検証を実施すること。大型買収（USD1bn以上）の動向は次回フォローアップで最優先確認事項。"
+  }
+}

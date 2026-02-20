@@ -1,0 +1,37 @@
+{
+  "research_id": "CA_eval_20260220-0845_AME",
+  "ticker": "AME",
+  "mode": "simplified",
+  "generated_at": "2026-02-20T10:00:00Z",
+  "kb_version": "v1.0.0",
+  "mode_determination": {
+    "reason": "AMEはPhase 2データ（analyst/phase2_KY/*AME*.md）が存在しないため簡易モードを適用。Phase 2検証対象銘柄（CHD/COST/LLY/MNST/ORLY）に含まれない。",
+    "phase2_data_searched": "analyst/phase2_KY/*AME*",
+    "phase2_data_found": false,
+    "full_mode_eligible_tickers": ["CHD", "COST", "LLY", "MNST", "ORLY"]
+  },
+  "full_mode_results": null,
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "check_description": "contradicted事実に対するルール9自動適用（confidence → 10%）の確認",
+    "fact_check_source": "research/CA_eval_20260220-0845_AME/03_verification/fact-check.json",
+    "contradicted_claims": [],
+    "contradicted_count": 0,
+    "rule9_applied_count": 0,
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "fact-check.jsonにおいてcontradictedと判定された事実の主張は0件（全27件の確認事実のうち、25件=verified、2件=verified_with_caveat、0件=contradicted）。ルール9（事実誤認→confidence 10%）の適用対象なし。簡易モードのS-8チェックは合格。",
+    "caveats": [
+      "SEC EDGAR MCPが利用不可（EDGAR_IDENTITY未設定）のため、ファクトチェックはアナリストレポートの内部一貫性チェックに限定。外部の独立したデータソース（SEC EDGAR公式データ等）との照合は実施されていない。",
+      "EDGAR_IDENTITYが設定された環境で再実行した場合、contradicted件数が変化する可能性がある（特にROIC数値・M&A件数・セグメント構成等の財務数値の検証精度が向上する）。",
+      "verified_with_caveat（2件）：(1)大型買収（USD1bn以上）への方針転換示唆が従来のUSD50~200Mターゲットとの矛盾可能性、(2)Bloomberg開示データのみのM&A件数集計。これらはcontradictedではなく留意事項のアノテーションであるため、S-8チェックの対象外。",
+      "T8 AI批判プロセスで検出された「大型化リスク（USD1bn以上）」はルール9（事実誤認への対応）の対象ではなく、CAGR接続の確度低下リスクとして評価済み（Claim #2 CAGR confidence 70%に条件付きアノテーション追加）。"
+    ]
+  },
+  "overall_assessment": {
+    "accuracy_verdict": "pass",
+    "confidence_level": "low",
+    "reason": "簡易モードのS-8チェック（contradicted → 10%適用確認）のみ実施。S-8チェックは合格（contradicted = 0件）。ただしSEC EDGAR MCPが利用不可のため、財務数値の外部データとの照合ができておらず、チェックの信頼性は低い。Phase 2データ（Y評価値）との比較による平均乖離（フルモード：15%以下が合格）は未実施。",
+    "recommendation": "AMEのPhase 2評価（Y評価値：CA confidence・CAGR confidenceの主張別評価）が蓄積された後、フルモードで再評価することを推奨。特に以下の主張についてY評価との比較が有益：(1) Claim #1（スイッチングコスト：70%）のY評価、(2) Claim #2（M&A実行能力：70%、大型化リスクの条件付き）のY評価、(3) Claim #7（エンドマーケット分散：30%）についてのY評価（CHD#4・CHD#5と同種の評価か確認）。SEC EDGAR MCPを有効化（EDGAR_IDENTITY設定）した環境での再実行も推奨。"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "ticker": "AME",
+  "company_name": "AMETEK, Inc.",
+  "report_path": "analyst/raw/AME US.md",
+  "parsed_at": "2026-02-20T08:52:00Z",
+  "report_type": "unknown",
+  "sections": [
+    {
+      "title": "2018年12月20日 初期評価",
+      "content": "AME US: AMETEK。電子計器および電気機械装置メーカー。売上5Bn$、米国5割。航空から一般工業向けなど広範な顧客に計測機器等を提供。競争優位：ニッチ分野で競争力のある製造業を買収し、購買・コーポレート関連事業などを共有化し収益率を高める事業戦略。CAGR推定+HSD（外部成長寄与は低下を織り込み、売上CAGR+M-HSD。限界利益率30-35%を前提として利益率改善+1%を見込む）。",
+      "summary": "2018年の初期評価。ニッチ買収戦略と利益率改善でCAGR+HSD（高一桁台）を推定。"
+    },
+    {
+      "title": "2022年10月21日 LIST追加・投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "content": "ESGスコア58%の閾値近辺だがリスト追加判断。CA：ニッチトップ戦略（市場シェア30~50%、市場規模USD150~400M）、ミッションクリティカル×カスタマイズ→高スイッチングコスト（需要優位性）、M&A後のコストシナジー→規模の経済強化（供給優位性）。持続仕組み：直販8割・分散型組織・M&A体制・ローコスト拠点。CAGR10.5%（売上9%=OG3%+M&A6%、OPL1~2%、BuyBack0~1%）。リスクファクター：ニッチ特化の限界（事業規模拡大）、大型買収リスク、ESG除外リスク。M&A陣容10名（deal sourcing4名、execution6名）。2002年以来累計M&A金額USD8.4bn、86件。買収基準：3年後ROIC10%以上、IRR15%、1年目EPS Accretive。ROIC20%超（goodwill除き）維持。",
+      "summary": "2022年10月の包括的評価でリスト追加。CAGR10.5%推定。スイッチングコスト・M&A実行能力・コストシナジーが競争優位性の核心。"
+    },
+    {
+      "title": "2024年06月21日 AMETEK 1x1面談（Kevin Coleman, IR VP）",
+      "content": "Churn Rate：ほぼゼロ（ミッションクリティカル性・カスタマイズ・leading positionによる高スイッチングコスト）。Vitality Index：直近29%（快適ゾーンは20%台後半）。事業ポートフォリオ：Medical（Paragon買収）21%、Semi（CAMECA/ZYGO）成長、OG:M&A比率=1:1（4%+4%=8%）。BU構造：売上高2bn時32BU→7bn時42BU（BU数は事業規模に比例せず。各BU平均売上高USD200M）。M&A体制11名（2022年から1名追加）。LT Financial Algorithm：EIG/EMG共にトップライン8%(4+4)、30bp/年Core EBIT Margin改善。中国リスク対応済み（売上高比1割弱）。New CFO：Capital Allocation方針不変。",
+      "summary": "2024年6月のIR面談。OG/M&A比率1:1に変化し予見性向上。CAGR微調整（10.5%→10%）。LT Algorithmを確認。"
+    },
+    {
+      "title": "2024年06月24日 CAGR修正",
+      "content": "面談内容と実績を踏まえCAGR微調整。【前回】CAGR10.5%（売上9%=OG3%+M&A6%、OPL1~2%、BuyBack0~1%）→【今回】CAGR10%（売上8%=OG4%+M&A4%、OPL1%（30bp/年）、BuyBack1%（2014-2023年平均））。OG比率高まりは予見性向上の観点でポジティブ。ITG対比割安だがCAGRスプレッドは低下。Buy継続。同エンド市場での企業分析も並行検討。",
+      "summary": "CAGR10%（前回10.5%から微減）。OG比率向上が安定成長を示す。Buy継続。"
+    },
+    {
+      "title": "2024年08月09日 四半期決算フォローアップ（2024Q2）",
+      "content": "Sales YoY+5.4%（OG▲2%、M&A+8%、FX▲1%）>Cons 8.3%。EIG YoY+1.7%<Cons +3.2%。EMG YoY+13.6%<Cons +19.6%。OPM25.8%>Cons 25.3%。EPS1.66>Cons 1.64。ガイダンス：通年+5~7%（前回比▲4%引き下げ）。要因：オートメーション関連OEM在庫調整（▲2%）・ヘルスケアParagon在庫調整（▲1%）・EIG地政学プロジェクト遅延（▲1%）。Aero/Defense堅調。Price-Costスプレッド1%維持。M&A：パイプライン豊富、big business（USD1bn以上）の可能性示唆。投資判断：競争優位性に変化なし、Buy継続。大型買収の動向を注視。",
+      "summary": "2024Q2：外部要因（在庫調整・地政学）によるシクリカル影響。競争優位性に変化なし。大型買収（USD1bn以上）の示唆あり、注視が必要。"
+    }
+  ],
+  "ca_candidates": [
+    {
+      "id": 1,
+      "text": "ミッションクリティカル×カスタマイズによる高スイッチングコスト（需要優位性）：大手企業の参入リスクや顧客の内製化リスクの低いニッチ領域（市場規模USD150~400M）で市場シェア30~50%を確保。必要不可欠な機能を果たすミッションクリティカルかつカスタマイズされた財に特化することで顧客の乗り換えインセンティブが起きにくく、高いスイッチングコストを有している。直販8割体制（顧客ニーズ把握→カスタマイズ提供）がこれを支える。Churn Rateはほぼゼロ（IR面談確認）。",
+      "source_section": "2022年10月21日 LIST追加・投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "ニッチ領域の市場規模はUSD150~400M",
+        "市場シェア30~50%を各ニッチ領域で確保",
+        "USD1bn以上の市場規模の領域は回避している",
+        "Tier2サプライヤーとして大手（エマソン・GE・Honeywell等のTier1）への納入が中心",
+        "直販比率は約80%",
+        "Churn Rateはほぼゼロ（IRVPコメント）",
+        "Vitality Index（直近Q）は29%"
+      ]
+    },
+    {
+      "id": 2,
+      "text": "規律あるM&A実行能力と内部成長（供給優位性・CAGR直結）：社内11名のM&A専門チームを持ち、2002年以来86件（年約4件、平均買収金額USD100M）の買収実績。3年後ROIC10%以上・IRR15%・1年目EPS Accretiveの厳格な基準を維持。M&A後もROIC20%超（goodwill除き）を安定維持。PMI Playbookノウハウ（コストシナジー・集中購買）が蓄積。2024年は大型化（USD1bn以上）の示唆あり、ビジネスモデル持続性への注視が必要。",
+      "source_section": "2022年10月21日 LIST追加・投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "M&Aチーム11名（2024年時点、2022年から1名追加）",
+        "2002年以来累計M&A金額USD8.4bn（Bloomberg開示分に限定）",
+        "2002年以来累計M&A件数86件",
+        "年平均4件、平均M&A金額USD100M",
+        "買収基準：3年後ROIC10%以上、IRR15%、1年目EPS Accretive",
+        "買収ターゲットサイズ：売上高USD50~200M",
+        "ROIC20%超（goodwill除き）をM&A中心の成長でも安定維持",
+        "2012年以来累計USD10bn投下（M&A74%、配当11%、自社株買15%）",
+        "Capex/売上高：約2%"
+      ]
+    },
+    {
+      "id": 3,
+      "text": "ニッチ買収後のコストシナジー・規模の経済（供給優位性）：各ビジネスは元々相対的に高い規模の経済性を有するが、AMETEKの一部になることでコーポレート機能・販売チャネル統合、原材料集中購買（Supply Chain Teamが全社ベース）などのコストシナジーを享受し競争優位性が更に強化される。直販体制がOPM改善に寄与（顧客ニーズ把握→クロスセル→既存流通チャネルの固定費比率引き下げ）。Price-Costスプレッドは通常50~100bp（Pricing Power）を維持。",
+      "source_section": "2022年10月21日 LIST追加・投資判断推移・ESG評価・中長期競争優位・CAGR推定",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "過去5年平均65bp/年のOPM改善実績",
+        "LT目標：30bp/年のCore EBIT Margin改善",
+        "Pricing Power：通常単価上昇1%程度、Price-Costスプレッド50~100bp",
+        "R&D/売上高：5.5%程度（RDE口座、純粋なR&Dは3.5%）",
+        "世界で2,900名のエンジニア在籍",
+        "India Engineering Center（バンガロール）：250名R&Dエンジニア、35BUサポート"
+      ]
+    },
+    {
+      "id": 4,
+      "text": "分散型組織体制とPMIノウハウの蓄積（組織的優位性）：現場への権限委譲（分散型組織）により各ビジネスユニットが独立して顧客対応・PMIを実施。被買収企業経営陣の半数を維持し事業知識を継承。Ametek大学等の文化浸透システム。各BUが3~4のニッチマーケットにアクセスしているため買収機会のパイプラインが常に豊富。",
+      "source_section": "2024年06月21日 AMETEK 1x1面談（Kevin Coleman, IR VP）",
+      "ca_type": "operational",
+      "cagr_connected": false,
+      "factual_claims": [
+        "売上高2bn時32BU→7bn時42BU（BU数は事業規模に比例せず）",
+        "各BU平均売上高USD200M",
+        "被買収企業経営陣の約半数を維持",
+        "中途採用メイン",
+        "各BUが3~4のニッチマーケットにアクセス"
+      ]
+    },
+    {
+      "id": 5,
+      "text": "エンドマーケット分散と業界シクリカリティ耐性：Medical約21%（Paragon買収後）・Aerospace/Defense約20%・General Industries約30%というポートフォリオにより、一つの市場への集中を回避。LessCyclicalなエンドマーケット（医療・航空宇宙）の安定成長を取り込む。中国リスク（売上高比1割弱）にも早期対応済み（製造拠点分散）。",
+      "source_section": "2024年06月21日 AMETEK 1x1面談（Kevin Coleman, IR VP）",
+      "ca_type": "structural",
+      "cagr_connected": false,
+      "factual_claims": [
+        "Medical：約21%（Paragon買収後）",
+        "Aerospace/Defense：約20%",
+        "General Industries：約30%",
+        "中国売上高比率：約10%（1割弱）"
+      ]
+    }
+  ],
+  "cagr_references": [
+    {
+      "context": "最新CAGR推定（2024年6月24日面談後修正）",
+      "value": "10%",
+      "period": "2024年以降（中長期）",
+      "breakdown": {
+        "revenue_growth": "8%（OG4%+M&A4%）",
+        "op_leverage": "1%（30bp/年のCore EBIT Margin改善）",
+        "buyback": "1%（2014-2023年平均）"
+      }
+    },
+    {
+      "context": "前回CAGR推定（2022年10月21日時点）",
+      "value": "10.5%",
+      "period": "2022年以降（中長期）",
+      "breakdown": {
+        "revenue_growth": "9%（OG3%+M&A6%。M&A外部成長はコロナ前2010-2019年平均6.2%）",
+        "op_leverage": "1~2%（限界利益率32.5%、固定費比率9%前提。2032のOPM26%程度）",
+        "buyback": "0~1%"
+      }
+    },
+    {
+      "context": "旧CAGR推定（2018年12月20日時点）",
+      "value": "+HSD（高一桁台）",
+      "period": "2018年以降",
+      "breakdown": {
+        "revenue_growth": "+M-HSD（中～高一桁台、外部成長寄与は低下を織り込み）",
+        "op_leverage": "1%（限界利益率30-35%前提）",
+        "buyback": "不明"
+      }
+    }
+  ],
+  "key_themes": [
+    "ニッチトップM&A戦略（市場規模USD150~400M、シェア30~50%）",
+    "ミッションクリティカル×カスタマイズ→高スイッチングコスト",
+    "規律あるM&A実行能力（ROIC20%超維持、PMI Playbook蓄積）",
+    "分散型組織・現場権限委譲・PMIノウハウ",
+    "直販8割体制によるOPM改善",
+    "Medical・Aerospace/Defense中心のLessCyclicalポートフォリオ",
+    "OG比率上昇（1:1）による安定成長・予見性向上",
+    "大型買収（USD1bn以上）への移行リスク（注視点）"
+  ],
+  "data_limitations": [
+    "SEC EDGAR MCPがEDGAR_IDENTITY未設定のため財務数値はレポートから抽出した参照値のみ",
+    "レポート種別判定（①期初/②四半期レビュー）はPoC段階のためスキップ",
+    "最新の定量データ（FY2025等）はレポートに記載なし"
+  ]
+}
