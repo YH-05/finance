@@ -1,0 +1,408 @@
+{
+  "research_id": "CA_eval_20260220-0932_CPRT",
+  "ticker": "CPRT",
+  "verified_at": "2026-02-20T10:05:00Z",
+  "verifier": "ca-eval-lead (T6直接実行)",
+  "kb2_patterns_applied": {
+    "rejection_patterns": ["A", "B", "C", "D", "E", "F", "G"],
+    "high_eval_patterns": ["I", "II", "III", "IV", "V"]
+  },
+  "pattern_results": [
+    {
+      "claim_id": 1,
+      "claim_title": "プラットフォームのネットワーク効果（買い手×売り手の好循環）",
+      "rejection_patterns_detected": [],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "ASP差（CPRT+5.7% vs IAA+1%）、バイヤー数40万超、損保81%、海外38.8%と複数の定量的裏付け。競合IAAとの直接数値比較が特に強い。"
+        },
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "strong",
+          "reasoning": "ネットワーク効果というプラットフォームの構造的メカニズム（能力）を主張の核心に据えている。ASPやシェアは結果として適切に位置づけ、「なぜASPが高いか」の仕組み説明がある。"
+        },
+        {
+          "pattern": "IV",
+          "name": "構造的な市場ポジション",
+          "match_strength": "strong",
+          "reasoning": "サルベージオークション市場=2社複占×ネットワーク効果が決定的×NIMBY参入障壁の3条件が揃う。CPRTのプラットフォーム規模がこの市場構造に完全合致。ORLY#2（フラグメント市場×規模・密度=90%）に匹敵する構造的合致。"
+        },
+        {
+          "pattern": "V",
+          "name": "競合との具体的比較による差別化確認",
+          "match_strength": "strong",
+          "reasoning": "純粋競合IAA（RB Global）との直接的ASP比較（+5.7% vs +1%）が具体的な差別化を実証。競合名・差別化軸・数値データの3条件を全て満たす。"
+        }
+      ],
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "高評価パターンI・III・IV・Vが全て検出。却下パターンは未検出。claims.jsonの90%評価は全パターンと整合し、ORLY#2相当の構造的合致。調整不要。"
+      },
+      "final_confidence": 90,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "moderate",
+        "reasoning": "ネットワーク効果→ASP上昇→価格LSD寄与は1-2ステップで直接的。ただし「価格LSD」のCAGR式内での具体的数値がなく、検証可能性がやや限定的。パターンII部分適用。CAGR confidence 70%は妥当。"
+      }
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "NIMBY産業としてのヤード保有（物理的参入障壁）",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "match_strength": "weak",
+          "reasoning": "「都市近辺のヤードを戦略的に取得」は戦略的行動の記述を含む。ただし主張の核心は取得された立地資産（ストック）であり、戦略混同は軽微。claims.jsonでもrule08がPARTIALと適切に指摘済み。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "土地1万エーカー、200施設以上、PPE $3.65Bという定量データ。IAA対比での保有vsリースの差異も定性的だが明確。"
+        },
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "strong",
+          "reasoning": "ヤード保有＝物理的参入障壁という「仕組み」を能力として正しく抽出。NIMBY性×免許制×行政折衝実績の3層構造で「なぜ参入できないか」を説明。"
+        },
+        {
+          "pattern": "IV",
+          "name": "構造的な市場ポジション",
+          "match_strength": "moderate",
+          "reasoning": "ヤード立地がサルベージオークション市場の競争力の根幹である市場構造と、CPRTの保有戦略の合致は明確。ただしORLY#2（フラグメント市場×密度）ほどの定量的な構造分析はない。"
+        },
+        {
+          "pattern": "V",
+          "name": "競合との具体的比較による差別化確認",
+          "match_strength": "moderate",
+          "reasoning": "IAA対比での「保有 vs リース」の差異は具体的だが、数値的比較（CPRTの保有比率 vs IAAのリース比率）は不明。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": false,
+        "severity": "none",
+        "reasoning": "純粋競合IAA（RB Global）との比較が具体的に行われている（保有vsリース）。パターンG非該当。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "高評価パターンI・III・IV・Vが検出され、却下パターンFはweak。claims.jsonの70%評価はパターンFのPARTIAL指摘とIV moderate合致を踏まえて妥当。"
+      },
+      "final_confidence": 70,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "moderate",
+        "reasoning": "ヤード保有→損保契約→Volume→Units成長は2-3ステップでやや間接的。50%余剰キャパシティがシェア拡大バッファとして機能するメカニズムは論理的だが、Units4%へのヤード寄与の定量的分離が困難。"
+      }
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "損保会社とのプロセス統合による高スイッチングコスト",
+      "rejection_patterns_detected": [],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "III",
+          "name": "能力>結果（プロセスの評価）",
+          "match_strength": "strong",
+          "reasoning": "スイッチングコストの構築メカニズム（人材相互配置、Express Titling代行、事務プロセス統合）が「能力・仕組み」として詳細に説明されている。GEICOスイッチ事例はネガティブケース（通常はスイッチが起こらない）の裏付け。"
+        },
+        {
+          "pattern": "V",
+          "name": "競合との具体的比較による差別化確認",
+          "match_strength": "strong",
+          "reasoning": "IAA→CPRTへのGEICO・USAAスイッチ事例が具体的。RB GlobalのCFOが「変更手数料は当社が負担する」と発言しており、スイッチコストの存在を競合自身が認証。2025年10月のRB Global面談メモがRebate/接待中心の差別化手法との対比を示す。"
+        },
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "moderate",
+          "reasoning": "契約数（10社中7社、独占4社）、Express Titling 1M台の定量データあり。ただし「スイッチングコスト額」自体の定量化はない（COST#1の退職率9%vs20%のような直接比較データがない）。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": false,
+        "severity": "none",
+        "reasoning": "純粋競合IAA/RB Globalとの比較が複数箇所で具体的に行われている（GEICO/USAAスイッチ、RB Global面談、Rebate vs サービスの差異）。パターンG非該当。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "高評価パターンIII・V（strong）とI（moderate）が検出。却下パターンは未検出。70%評価はスイッチングコスト額の定量不足を踏まえて妥当。"
+      },
+      "final_confidence": 70,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "moderate",
+        "reasoning": "スイッチングコスト→Insurance Volume安定→Units成長は1-2ステップで直接的。Insurance Volume YoY+6-7%の実績データが検証可能。パターンII中程度適用。"
+      }
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "2社複占市場における圧倒的市場ポジション",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "A",
+          "name": "結果を原因と取り違え",
+          "match_strength": "moderate",
+          "reasoning": "市場シェア40%超は「結果」。MNST#1（シェアはあくまで結果=50%）と同構造。複占構造自体は業界の環境要因でCPRTの能力ではない。claims.jsonのrule01 PARTIALフラグと完全整合。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "IV",
+          "name": "構造的な市場ポジション",
+          "match_strength": "moderate",
+          "reasoning": "複占構造×3重障壁（NIMBY・免許制・ネットワーク効果）は構造的市場ポジションの記述。ただしこれは「業界構造そのもの」の記述であり、CPRTの「企業ポジション」との合致説明はClaim#1-3で行われている。"
+        },
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "moderate",
+          "reasoning": "シェア数値（40%超、35-40%、80%）が具体的。ただし「差別化」というよりは「環境記述」。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": true,
+        "severity": "moderate",
+        "reasoning": "IAAとの具体的なシェア比較はあるが、「なぜCPRTがIAAよりシェアが高いか」の能力面の差別化はこの主張自体には含まれない（Claim#1-3に委譲されている）。この主張単独ではパターンGの部分的該当。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "却下パターンA（moderate）とG（moderate）が検出。高評価パターンIVとI（moderate）も検出。claims.jsonの50%評価は適切なバランス。"
+      },
+      "final_confidence": 50,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "partial",
+        "reasoning": "複占構造→価格規律→手数料安定は論理的だが間接的。CAGRパラメータへの直接接続が弱く、パターンII部分適用。"
+      }
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "全損判定率（TLF）上昇による構造的追い風",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "A",
+          "name": "結果を原因と取り違え",
+          "match_strength": "moderate",
+          "reasoning": "TLF上昇はCPRTの「能力」ではなく業界の「外部環境変化」。CPRTが主体的に生み出した優位性ではない。CHD#4（結果を原因と取り違え=30%）と同構造。ただしclaims.jsonのrule01 WARNで適切にフラグ済み。"
+        },
+        {
+          "pattern": "B",
+          "name": "業界共通で差別化にならない",
+          "match_strength": "moderate",
+          "reasoning": "TLF上昇はIAA（RB Global）にも同様に恩恵がある業界共通の追い風。CPRTに固有の差別化要因ではない。claims.jsonのrule07 WARNと整合。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "40年間のTLFトレンド（4%→21.4%）、YoY+2%、30%超見込みと定量データが極めて豊富。ただし「差別化」ではなく「市場成長」の定量裏付け。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": true,
+        "severity": "strong",
+        "reasoning": "TLF上昇はCPRT固有ではなくIAAにも同等に恩恵がある。純粋競合に対する差別化要因として機能しない。パターンG強く該当。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "却下パターンA（moderate）、B（moderate）、G（strong）が検出。claims.jsonの30%は環境要因としての適切な低評価。高評価パターンIの定量裏付けを踏まえても30%が妥当。"
+      },
+      "final_confidence": 30,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "strong",
+        "reasoning": "TLF上昇→Units+3%/年は1ステップの極めて直接的なメカニズム。40年間のトレンドと業界統計で検証可能。CAGR接続としてはパターンIIに強く合致。CA confidenceは低いがCAGR confidenceは高い（90%）。"
+      }
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "オンラインプラットフォームのスケールメリットによるオペレーショナルエクセレンス",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "A",
+          "name": "結果を原因と取り違え",
+          "match_strength": "weak",
+          "reasoning": "OPM35%、SGA率9%は結果。ただし「オンラインプラットフォームのスケールメリット」という仕組み説明が含まれており、純粋なパターンAではない。claims.jsonのrule01 PARTIALと整合。"
+        },
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "match_strength": "weak",
+          "reasoning": "「2004年に業界初でオンライン化」は過去の戦略的決断。現在のスケールメリットは構造的だが、戦略と優位性の境界がやや曖昧。claims.jsonのrule08 PARTIALと整合。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "moderate",
+          "reasoning": "SGA率トレンド（10%半ば→9%）、OPM35%、純利益率29%と定量データあり。ただしIAAとの直接的なコスト構造比較がない。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": true,
+        "severity": "moderate",
+        "reasoning": "IAAも2020年前後にオンライン化完了。「オンラインプラットフォーム」自体はもはやCPRT固有の差別化要因ではない。IAA対比でのスケールメリットの優位性（SGA率、OPM等）の直接比較データがない。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "却下パターンA（weak）、F（weak）、G（moderate）が検出。高評価パターンI（moderate）あり。claims.jsonの50%は両パターンのバランスで妥当。"
+      },
+      "final_confidence": 50,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "moderate",
+        "reasoning": "スケールメリット→SGA率低下→営業レバレッジ2%/年はCAGR式の明確なパラメータ。OPM改善トレンド（年率70bps）の実績データで検証可能。パターンII中程度適用。"
+      }
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "グローバルバイヤーネットワークの拡大",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "A",
+          "name": "結果を原因と取り違え",
+          "match_strength": "weak",
+          "reasoning": "11か国展開、UK4割は結果。「グローバルバイヤーネットワーク」の仕組み説明は含まれるが、結果記述が多い。claims.jsonのrule01 PARTIALと整合。"
+        },
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "match_strength": "moderate",
+          "reasoning": "「国際展開を加速」「グローバル拡大」は戦略的行動の記述。構築済みネットワーク（ストック）と今後の拡大戦略（フロー）の区別が曖昧。claims.jsonのrule08 WARNと整合。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "11か国、38.8%海外比率、UK4割、International+17%と定量データ豊富。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": true,
+        "severity": "moderate",
+        "reasoning": "IAA（RB Global）も国際展開しているが、CPRTとの具体的な海外比率・展開国数比較データがない。CPRTが先行しているという主張はあるがIAAの正確な海外比率は不明。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "却下パターンA（weak）、F（moderate）、G（moderate）が検出。高評価パターンI（strong）あり。claims.jsonの50%は妥当。Claim#1のネットワーク効果の延長線上という位置づけも適切。"
+      },
+      "final_confidence": 50,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "moderate",
+        "reasoning": "海外バイヤー増加→ASP上昇、海外事業成長→Revenue成長は直接的。38.8%海外比率、International+17%で検証可能。パターンII中程度適用。"
+      }
+    },
+    {
+      "claim_id": 8,
+      "claim_title": "資本配分規律と再投資優先の経営思想",
+      "rejection_patterns_detected": [
+        {
+          "pattern": "A",
+          "name": "結果を原因と取り違え",
+          "match_strength": "weak",
+          "reasoning": "USD5.2B現金保有は結果。ただし「再投資優先の経営思想・規律」という能力記述が含まれている。claims.jsonのrule01 PARTIALと整合。"
+        },
+        {
+          "pattern": "D",
+          "name": "定性的で定量的裏付けなし",
+          "match_strength": "weak",
+          "reasoning": "「再投資を優先する」「規律ある」は定性的表現だが、配当ゼロ・自社株買い1%・現金$5.2Bという定量データが裏付けとなっており、純粋なパターンDではない。CHD#7と類似。"
+        },
+        {
+          "pattern": "F",
+          "name": "戦略を優位性と混同",
+          "match_strength": "moderate",
+          "reasoning": "「再投資を優先する」は戦略的意思決定。それを可能にする財務体力（USD5.2B、最小レバレッジ）は構造的だが、「経営思想」自体は戦略。claims.jsonのrule08 WARNと整合。"
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "name": "定量的裏付けのある差別化",
+          "match_strength": "strong",
+          "reasoning": "配当ゼロ、自社株買い1%、現金$5.2B、負債$962M/株主資本$9.6Bと全てSEC開示データで裏付けられた極めて豊富な定量データ。"
+        },
+        {
+          "pattern": "V",
+          "name": "競合との具体的比較による差別化確認",
+          "match_strength": "moderate",
+          "reasoning": "IAA（RB Global）の債務削減優先との対比が具体的。ただしIAAの正確な負債額・投資額との数値比較はない。"
+        }
+      ],
+      "pattern_G_analysis": {
+        "detected": false,
+        "severity": "none",
+        "reasoning": "IAA/RB Globalとの資本配分の差異（再投資 vs 債務削減）が具体的に示されている。"
+      },
+      "confidence_adjustment": {
+        "direction": "none",
+        "reason": "却下パターンA（weak）、D（weak）、F（moderate）が検出。高評価パターンI（strong）、V（moderate）も検出。claims.jsonの50%は戦略混同と結果混在を踏まえて妥当。CHD#7（50%）と同水準。"
+      },
+      "final_confidence": 50,
+      "cagr_pattern_assessment": {
+        "pattern_II_match": "moderate",
+        "reasoning": "自社株買い1%→CAGR直接寄与は1ステップ。再投資→ヤード取得→Volume→Units成長はやや間接的。パターンII中程度適用。"
+      }
+    }
+  ],
+  "systematic_pattern_analysis": {
+    "most_common_rejection_pattern": "A（結果を原因と取り違え）",
+    "pattern_G_frequency": "4/8主張で検出（Claim#4, #5, #6, #7）",
+    "pattern_B_concerns": "Claim#5（TLF上昇）で業界共通の追い風としてmoderate検出",
+    "strongest_high_eval_patterns": "パターンI（定量的裏付け）が7/8主張で検出（CPRTは定量データが豊富）。パターンIII（能力>結果）が3/8主張でstrong検出（Claim#1-3の構造的主張は能力記述が優秀）。パターンIV（構造的市場ポジション）はClaim#1でstrongに適合し90%の根拠。パターンV（具体的競合比較）は3/8主張でIAAとの直接比較あり。",
+    "overall_assessment": "CPRTの主張群は全体として高品質。上位3主張（Claim#1-3: ネットワーク効果、ヤード保有、スイッチングコスト）は高評価パターンIII・Vを満たし70-90%の評価が適切。下位5主張（Claim#4-8）は結果混在・戦略混同・業界共通の問題があり30-50%が妥当。パターンGは4/8で検出されるが、上位3主張はIAA対比の具体的差別化データがあるため非該当。"
+  },
+  "consistency_check": {
+    "internal_consistency": "good",
+    "cross_claim_consistency": [
+      {
+        "issue": "Claim#1（ネットワーク効果）とClaim#7（グローバルバイヤー）は重複関係にある。Claim#7はClaim#1のネットワーク効果の「国際的拡張」という位置づけ。",
+        "status": "consistent_but_redundant"
+      },
+      {
+        "issue": "Claim#2（ヤード保有）とClaim#4（複占市場ポジション）は因果関係にある。ヤード保有が参入障壁を形成し、複占構造の維持に寄与。Claim#4のシェアはClaim#1-3の結果。",
+        "status": "consistent_but_result"
+      },
+      {
+        "issue": "Claim#1-3（ネットワーク効果、ヤード保有、スイッチングコスト）は相互補完的3層構造を形成し、高い整合性あり",
+        "status": "consistent"
+      },
+      {
+        "issue": "Claim#5（TLF）とClaim#6（スケールメリット）は環境要因/結果であり、Claim#1-3の能力を活かす土台という位置づけで整合",
+        "status": "consistent"
+      },
+      {
+        "issue": "Claim#8（資本配分）はClaim#1-3の構造的優位性を維持・強化する手段であり、補完的関係で整合",
+        "status": "consistent"
+      }
+    ],
+    "cagr_consistency": "CAGR LDD（11%）= Revenue8%（Units4%[走行距離1%+事故率0%+TLF3%]+ペネトレ2%+価格LSD）+ OPレバ2% + 自社株買い1%。Claim#1がASP/価格LSDに、Claim#2-3がInsurance Volume/Unitsに、Claim#5がTLF/Units+3%に、Claim#6がOPレバ/SGA低下に、Claim#8が自社株買い1%に各々対応し、CAGRの全パラメータが8つの主張で網羅されており高い整合性。"
+  },
+  "summary": {
+    "rejection_patterns_detected": {
+      "A": 5,
+      "B": 1,
+      "C": 0,
+      "D": 1,
+      "E": 0,
+      "F": 4,
+      "G": 4
+    },
+    "high_eval_patterns_detected": {
+      "I": 7,
+      "II": 0,
+      "III": 3,
+      "IV": 3,
+      "V": 3
+    },
+    "confidence_adjustments_made": 0,
+    "overall_pattern_quality": "good"
+  }
+}

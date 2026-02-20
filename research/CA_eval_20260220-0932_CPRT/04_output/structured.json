@@ -1,0 +1,326 @@
+{
+  "research_id": "CA_eval_20260220-0932_CPRT",
+  "ticker": "CPRT",
+  "company_name": "Copart, Inc.",
+  "generated_at": "2026-02-20T10:15:00Z",
+  "generator": "ca-eval-lead (T7直接実行)",
+  "report_version": "draft_v1",
+  "cagr_estimate": {
+    "current": "LDD（11%）",
+    "components": {
+      "revenue": "8%（Units4%[走行距離1%+事故率0%+TLF上昇3%] + ペネトレ2% + 価格LSD）",
+      "op_leverage": "2%（年率70bps改善、OPM35%→40%超）",
+      "buyback": "1%（年率1%程度）",
+      "dividend": "ゼロ"
+    },
+    "source": "アナリストレポート（2020年7月修正版CAGR推定）"
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "プラットフォームのネットワーク効果（買い手×売り手の好循環）",
+      "ca_type": "structural",
+      "final_confidence": 90,
+      "label": "かなり納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PASS（ネットワーク効果はプラットフォームの構造的メカニズムであり結果ではない）",
+        "rule02": "PASS（「ネットワーク効果」は名詞属性として典型的）",
+        "rule03": "PASS（IAA対比でASP+5.7% vs +1%、40万バイヤー vs IAAは不明だがCPRT優位を示唆）",
+        "rule04": "PASS（ASP差、バイヤー数40万超、海外38.8%、損保81%と豊富な定量裏付け）",
+        "rule05": "PASS（ネットワーク効果→ASP上昇→価格LSD寄与は1-2ステップで直接的）",
+        "rule06": "PASS（ネットワーク効果はオークションプラットフォームの核心的構造要素）",
+        "rule07": "PASS（純粋競合IAAとのASP直接比較が差別化を実証）",
+        "rule08": "PASS（ネットワーク効果は戦略ではなく構造的特性）",
+        "rule09": "N/A（事実誤認なし、ファクトチェックでcontradictedゼロ）",
+        "rule10": "PARTIAL（IAAがRB Global買収後もシェア回復できない間接的裏付け）",
+        "rule11": "PASS（2社複占×ネットワーク効果重要×3重障壁で業界構造と完全合致。ORLY#2相当）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["I（定量的裏付け、strong）", "III（能力>結果、strong）", "IV（構造的市場ポジション、strong）", "V（具体的競合比較、strong）"]
+      },
+      "key_evidence": [
+        "CPRT ASP+5.7% vs IAA ASP+1%（FY24Q4比較）",
+        "Bidder登録者数40万超",
+        "損保会社からの仕入81%（FY2025、10-K確認）",
+        "米国販売車両の38.8%が海外メンバー向け（FY2025、10-K確認）",
+        "2017-2019で保険会社1台当たり売却価格35%上昇"
+      ],
+      "upside_conditions": "IAAのバイヤー数・ASPトレンドの定量比較データが得られれば更に裏付け強化",
+      "downside_risks": "自動運転・ADAS普及による事故率低下がネットワーク効果のVolume基盤を縮小するリスク（2030年以降）"
+    },
+    {
+      "claim_id": 2,
+      "title": "NIMBY産業としてのヤード保有（物理的参入障壁）",
+      "ca_type": "structural",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PASS（ヤード保有・取得能力は仕組みであり結果ではない）",
+        "rule02": "PASS（「ヤード保有」「参入障壁」「立地優位性」は名詞属性）",
+        "rule03": "PASS（IAA対比で保有vsリースの差異が具体的）",
+        "rule04": "PASS（土地1万エーカー、200施設、PPE $3.65B、50%余剰キャパシティ）",
+        "rule05": "PARTIAL（ヤード保有→Volume→Units成長は2-3ステップでやや間接的）",
+        "rule06": "PASS（ヤードはサルベージオークション事業の核心インフラ）",
+        "rule07": "PASS（IAA対比の保有vsリース差異）",
+        "rule08": "PARTIAL（「都市近辺のヤードを戦略的に取得」は戦略要素含む。核心は取得済み立地資産）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PASS（NIMBYにより新規参入者がヤード取得不可。IAAも買収後ヤード不足）",
+        "rule11": "PASS（ヤード立地がサルベージ市場の競争力根幹。NIMBY×免許制と合致）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["F（戦略混同、weak）"],
+        "high_eval": ["I（定量的裏付け、strong）", "III（能力>結果、strong）", "IV（構造的市場ポジション、moderate）", "V（具体的競合比較、moderate）"]
+      },
+      "key_evidence": [
+        "土地1万エーカー、200施設以上（10-K確認）",
+        "PPE Net $3.65B（10-Q FY25Q1確認）",
+        "IAA対比: 保有vsリース（CFO面談確認）",
+        "NIMBY施設×免許制×行政折衝の3重障壁",
+        "50%余剰キャパシティ（災害時・シェア拡大バッファ）"
+      ],
+      "upside_conditions": "ヤード保有比率のIAA対比定量データ（CPRTの保有率 vs IAAのリース率）が得られれば90%に近づく可能性",
+      "downside_risks": "IAAが長期的にリースから保有へ転換した場合、差別化が縮小するリスク"
+    },
+    {
+      "claim_id": 3,
+      "title": "損保会社とのプロセス統合による高スイッチングコスト",
+      "ca_type": "structural",
+      "final_confidence": 70,
+      "label": "おおむね納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PASS（スイッチングコストはプロセス統合という仕組みに由来）",
+        "rule02": "PASS（「スイッチングコスト」は名詞属性として典型的）",
+        "rule03": "PASS（10大損保7社契約・4社独占がIAA対比の相対的優位を示す）",
+        "rule04": "PARTIAL（契約数、Express Titling 1M台あるが、スイッチングコスト額の定量化なし）",
+        "rule05": "PASS（スイッチングコスト→Insurance Volume安定→Units成長は1-2ステップ）",
+        "rule06": "PASS（オークション事業の構造的核心。損保契約なくして事業成立不可）",
+        "rule07": "PASS（GEICO/USAAスイッチ事例、RB Global面談メモが差別化を具体的に示す）",
+        "rule08": "PASS（Express Titling展開は戦略だが、構築されたスイッチングコストは構造的優位性）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PASS（GEICOスイッチの背景=ハリケーン対応不良。通常はスイッチしない=高スイッチングコストの裏付け）",
+        "rule11": "PASS（プロセス統合が不可避なサルベージ市場構造と合致）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": [],
+        "high_eval": ["III（能力>結果、strong）", "V（具体的競合比較、strong）", "I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "米国10大損保のうち7社と契約、4社と独占契約",
+        "Express Titling run rate 1M台/年（10-K確認）",
+        "損保会社と相互に人材配置（CFO面談確認）",
+        "GEICOとUSAAをIAAから獲得した実例",
+        "RB Global CFO「変更手数料は当社が負担する」発言"
+      ],
+      "upside_conditions": "スイッチングコスト額の定量化（移行期間、移行コスト、品質リスク等）が得られれば90%に近づく",
+      "downside_risks": "RB Globalが大幅なRebate/価格競争でスイッチを誘発するリスク"
+    },
+    {
+      "claim_id": 4,
+      "title": "2社複占市場における圧倒的市場ポジション",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 50,
+      "cagr_label": "まあ納得",
+      "fact_check_status": "verified_with_caveat",
+      "rule_summary": {
+        "rule01": "PARTIAL（市場シェア40%超は結果。複占構造自体は環境要因でCPRTの能力ではない）",
+        "rule02": "PASS（「市場ポジション」「複占構造」は名詞属性）",
+        "rule03": "PARTIAL（IAAとのシェア比較はあるが、差別化の能力根拠は他の主張に委譲）",
+        "rule04": "PASS（シェア40%超、35-40%、80%と具体的数値）",
+        "rule05": "PARTIAL（複占→価格規律→手数料安定は間接的）",
+        "rule06": "PASS（複占構造は業界の構造的特性。ただしCPRT固有の能力ではなく環境）",
+        "rule07": "PARTIAL（IAAとの差別化はClaim#1-3で示される別主張）",
+        "rule08": "PASS（複占は戦略ではなく市場構造の現実）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（該当なし）",
+        "rule11": "PASS（複占構造は業界構造そのもの。CPRTのリーダーポジションが合致）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と取り違え、moderate）"],
+        "high_eval": ["IV（構造的市場ポジション、moderate）", "I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "CPRT市場シェア40%超（直近50%近い可能性）",
+        "IAA市場シェア35-40%（RB Global自社認識35%）",
+        "2社合計シェア80%",
+        "3重参入障壁（ネットワーク効果、NIMBY、免許制）"
+      ],
+      "note": "この主張の核心はClaim#1-3の「結果」として位置づけるのが適切。独立した優位性としてはMNST#1（50%）と同構造。"
+    },
+    {
+      "claim_id": 5,
+      "title": "全損判定率（TLF）上昇による構造的追い風",
+      "ca_type": "structural",
+      "final_confidence": 30,
+      "label": "あまり納得しない",
+      "cagr_confidence": 90,
+      "cagr_label": "かなり納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "WARN（TLF上昇はCPRTの能力ではなく外部環境変化）",
+        "rule02": "PARTIAL（「全損判定率の上昇」は変化の記述。属性は「市場拡大の受益者ポジション」）",
+        "rule03": "WARN（TLF上昇はIAAにも同様に恩恵。CPRT固有の差別化なし）",
+        "rule04": "PASS（TLF 4%→21.4%、YoY+2%、30%超見込みと豊富な定量データ）",
+        "rule05": "PASS（TLF→Units+3%/年は1ステップで極めて直接的）",
+        "rule06": "PARTIAL（市場拡大は環境要因。複占構造でほぼ独占的に享受できる点は構造的）",
+        "rule07": "WARN（IAAにも同様に恩恵がある。差別化要因ではない）",
+        "rule08": "PASS（TLF上昇は戦略ではなく外部環境変化）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（該当なし）",
+        "rule11": "PASS（電装化→修理コスト上昇→TLF上昇は業界構造的メガトレンド）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因と取り違え、moderate）", "B（業界共通、moderate）"],
+        "high_eval": ["I（定量的裏付け、strong）"]
+      },
+      "key_evidence": [
+        "TLF: 1981年4%→2024年21.4%（40年間トレンド、10-K確認）",
+        "TLF YoY約2%上昇（2024年、10-K確認）",
+        "中長期的にTLF 30%超の見込み（CFO認識）",
+        "CAGR式のUnits4%のうち3%がTLF上昇に起因"
+      ],
+      "note": "CA confidenceは30%（環境要因であり能力ではない）だが、CAGR confidenceは90%（検証可能で直接的）。この乖離はCPRT評価の特徴。"
+    },
+    {
+      "claim_id": 6,
+      "title": "オンラインプラットフォームのスケールメリットによるオペレーショナルエクセレンス",
+      "ca_type": "operational",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（OPM35%、SGA率9%は結果。オンラインプラットフォームのスケールメリットは能力）",
+        "rule02": "PASS（「スケールメリット」「オペレーショナルエクセレンス」は名詞属性）",
+        "rule03": "PARTIAL（IAAもオンライン化完了後スケールメリットを享受可能。差別化は規模差に帰結）",
+        "rule04": "PASS（SGA率10%半ば→9%、OPM35%、純利益率29%と豊富）",
+        "rule05": "PASS（スケールメリット→SGA低下→OPレバ2%/年はCAGR式の明確なパラメータ）",
+        "rule06": "PARTIAL（オンラインプラットフォームのスケールメリットは構造的だが補完的要素も含む）",
+        "rule07": "PARTIAL（IAAもオンライン化完了。先行者優位は縮小傾向）",
+        "rule08": "PARTIAL（2004年のオンライン化は戦略的決断。現在のスケールメリットは構造的）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（該当なし）",
+        "rule11": "PARTIAL（IAAもオンライン化後はスケールメリットを享受。CPRT固有とは言い難い）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因、weak）", "F（戦略混同、weak）"],
+        "high_eval": ["I（定量的裏付け、moderate）"]
+      },
+      "key_evidence": [
+        "2004年に業界初で完全オンラインオークション移行",
+        "SGA率: 10%半ば→9%（6年間一貫低下）",
+        "OPM35%（長期目標40%超）",
+        "純利益率29-30%"
+      ],
+      "upside_conditions": "IAAとのコスト構造直接比較（SGA率、OPM比較）が得られれば70%に引き上げ可能",
+      "downside_risks": "IAAのオンライン化成熟によりスケール差が縮小するリスク"
+    },
+    {
+      "claim_id": 7,
+      "title": "グローバルバイヤーネットワークの拡大",
+      "ca_type": "structural",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（11か国展開やUK4割は結果。グローバルネットワークの仕組みは能力だが結果記述が多い）",
+        "rule02": "PASS（「グローバルバイヤーネットワーク」は名詞属性）",
+        "rule03": "PARTIAL（IAA/RB Globalとの海外比率直接比較データなし）",
+        "rule04": "PASS（11か国、38.8%海外比率、UK4割、International+17%と豊富）",
+        "rule05": "PASS（海外バイヤー増加→ASP上昇→価格LSD、海外事業成長→Revenue成長）",
+        "rule06": "PARTIAL（Claim#1のネットワーク効果の拡張。単独の構造的優位性としては弱い）",
+        "rule07": "PARTIAL（IAA対比での海外比率比較データなし）",
+        "rule08": "WARN（「国際展開を加速」は戦略。構築済みネットワークは資産）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "N/A（該当なし）",
+        "rule11": "PARTIAL（サルベージ市場の国際化トレンドに合致。IAAも追随可能）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因、weak）", "F（戦略混同、moderate）"],
+        "high_eval": ["I（定量的裏付け、strong）"]
+      },
+      "key_evidence": [
+        "11か国で事業展開（10-K確認）",
+        "米国販売車両の38.8%が海外メンバー向け（10-K確認）",
+        "UK市場シェア4割トップ",
+        "International Unit Sales FY24Q4 YoY+17%（10-K確認）"
+      ],
+      "note": "Claim#1（ネットワーク効果）の延長線上にあり、独立した優位性としての独自性は限定的。"
+    },
+    {
+      "claim_id": 8,
+      "title": "資本配分規律と再投資優先の経営思想",
+      "ca_type": "financial",
+      "final_confidence": 50,
+      "label": "まあ納得",
+      "cagr_confidence": 70,
+      "cagr_label": "おおむね納得",
+      "fact_check_status": "verified",
+      "rule_summary": {
+        "rule01": "PARTIAL（USD5.2B現金保有は結果。再投資優先の経営思想は能力/規律）",
+        "rule02": "PARTIAL（「資本配分規律」は名詞属性だが「再投資を優先する」は行動）",
+        "rule03": "PASS（IAA/RB Globalは債務削減が優先。CPRTとの投資規模差は具体的）",
+        "rule04": "PASS（配当ゼロ、自社株買い1%、現金$5.2B、負債$962M/資本$9.6BはSEC確認）",
+        "rule05": "PARTIAL（自社株買い1%→CAGR直接寄与。再投資→成長は間接的）",
+        "rule06": "PARTIAL（資本配分は全投資活動の基盤だがそれ自体は補完的）",
+        "rule07": "PASS（IAA/RB Globalの債務削減優先との対比が具体的）",
+        "rule08": "WARN（「再投資を優先する」は戦略的意思決定。財務体力は構造的）",
+        "rule09": "N/A（事実誤認なし）",
+        "rule10": "PASS（配当ゼロ・自社株買い最小限という「株主還元をしない」選択が再投資規律の裏付け）",
+        "rule11": "PARTIAL（ヤード取得に大規模資本が必要な業界にUSD5.2Bは合致。資本配分規律自体は業界特有ではない）",
+        "rule12": "SKIP（PoC段階）"
+      },
+      "patterns_detected": {
+        "rejection": ["A（結果を原因、weak）", "D（定性的、weak）", "F（戦略混同、moderate）"],
+        "high_eval": ["I（定量的裏付け、strong）", "V（具体的競合比較、moderate）"]
+      },
+      "key_evidence": [
+        "配当ゼロ（10-K/10-Q確認）",
+        "自社株買い年率1%程度（10-K確認）",
+        "現金保有USD5.2B（10-Q FY25Q1: $5,233,590,000）",
+        "負債USD962M vs 株主資本USD9.6B（10-Q確認）",
+        "資本配分: Land→サービス付加→プラットフォーム（10-K MDA確認）"
+      ],
+      "note": "CHD#7（規律ある意思決定=50%）と同構造。言葉での説明が多く、能力の具体的メカニズムが不足。"
+    }
+  ],
+  "overall_summary": {
+    "avg_ca_confidence": 58,
+    "avg_cagr_confidence": 70,
+    "strongest_claims": [
+      {"id": 1, "title": "プラットフォームのネットワーク効果", "confidence": 90},
+      {"id": 2, "title": "NIMBY産業としてのヤード保有", "confidence": 70},
+      {"id": 3, "title": "損保会社とのスイッチングコスト", "confidence": 70}
+    ],
+    "weakest_claims": [
+      {"id": 5, "title": "TLF上昇（環境要因であり能力ではない）", "confidence": 30},
+      {"id": 4, "title": "複占市場ポジション（結果であり能力ではない）", "confidence": 50}
+    ],
+    "key_insight": "CPRTの競争優位性の核心はClaim#1-3の3層構造: ネットワーク効果（プラットフォーム規模）、ヤード保有（物理的参入障壁）、スイッチングコスト（プロセス統合）が相互補完的に機能し、IAA対比での具体的差別化を形成。CAGR LDD（11%）の各パラメータにClaim#1-8が網羅的に対応しており、CAGR接続の整合性が高い。一方、Claim#4-8は環境要因・結果・戦略混在であり、独立した優位性としての評価は限定的。",
+    "comparison_to_kb3": {
+      "closest_analog": "ORLY（フラグメント市場×規模・密度の構造的合致。ORLY平均63%、CPRT平均58%で近い水準）",
+      "difference": "CPRTはORLYと同様に業界構造×企業ポジションの合致が強いが、サルベージ市場は2社複占でありフラグメント市場のORLYとは構造が異なる。CPRTの優位性はネットワーク効果（プラットフォーム型）がORLYの規模の経済（物流型）に対応する。"
+    }
+  }
+}
