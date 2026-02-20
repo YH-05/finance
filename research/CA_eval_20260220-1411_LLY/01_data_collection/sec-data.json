@@ -1,0 +1,79 @@
+{
+  "ticker": "LLY",
+  "company_name": "ELI LILLY & Co",
+  "cik": 59478,
+  "retrieved_at": "2026-02-20T14:11:00Z",
+  "data_source": "SEC EDGAR MCP (直接抽出)",
+  "financials": {
+    "income_statement": {
+      "period": "2025-12-31",
+      "form_type": "10-K",
+      "filing_date": "2026-02-12",
+      "accession_number": "0000059478-26-000013",
+      "revenues": 65179000000,
+      "net_income": 20640000000,
+      "eps_basic": 23.00,
+      "eps_diluted": 22.95
+    },
+    "balance_sheet": {
+      "period": "2025-12-31",
+      "total_assets": 112476000000,
+      "current_assets": 55629000000,
+      "total_liabilities": 2375000000,
+      "current_liabilities": 35228000000,
+      "stockholders_equity": 26535000000,
+      "cash_and_equivalents": 7268000000,
+      "accounts_receivable": 17760000000,
+      "pp_and_e_net": 24675000000
+    },
+    "cash_flow": {
+      "period": "2025-12-31",
+      "operating_cash_flow": 16813000000,
+      "investing_cash_flow": 10972000000,
+      "financing_cash_flow": 2213000000
+    }
+  },
+  "recent_filings": {
+    "10K": [
+      { "filing_date": "2026-02-12", "period": "2025-12-31", "accession": "0000059478-26-000013" },
+      { "filing_date": "2025-02-19", "period": "2024-12-31", "accession": "0000059478-25-000067" },
+      { "filing_date": "2024-02-21", "period": "2023-12-31", "accession": "0000059478-24-000065" },
+      { "filing_date": "2023-02-22", "period": "2022-12-31", "accession": "0000059478-23-000082" },
+      { "filing_date": "2022-02-23", "period": "2021-12-31", "accession": "0000059478-22-000068" }
+    ]
+  },
+  "insider_summary": {
+    "period_days": 180,
+    "total_filings": 106,
+    "form_4_count": 101,
+    "form_3_count": 4,
+    "form_5_count": 0
+  },
+  "business_description": {
+    "summary": "米メガファーマの一角。糖尿病/内分泌代謝系、中枢神経系、抗がん剤、自己免疫疾患領域など市場成長率が高い分野に重点的かつ満遍なく展開。糖尿病ではインスリンのグローバル大手3社、新世代GLP-1作動薬で同2社の1つ。アルツハイマー型認知症分野では後期開発パイプラインに化合物を持つグローバル大手2グループの1社に位置する。",
+    "key_products": [
+      "Mounjaro/Zepbound (GIP/GLP-1受容体作動薬、糖尿病・肥満症)",
+      "Verzenio/Abemaciclib (CDK4/6阻害薬、乳がん)",
+      "Kisunla/donanemab (抗アミロイドβ抗体薬、アルツハイマー型認知症)",
+      "Jardiance (SGLT2阻害薬、糖尿病/心不全/CKD、BI協業)",
+      "Taltz (抗IL-17A抗体、乾癬/関節炎)",
+      "Olumiant/Baricitinib (JAK阻害薬、RA/アトピー、Incyte協業)",
+      "Humalog/Humulin (インスリン製剤)",
+      "orforglipron (経口低分子GLP-1作動薬、開発中)"
+    ],
+    "pipeline_highlights": [
+      "orforglipron: P3試験3本成功（2025年）、25年中に肥満症適応で承認申請、26年グローバル商業化予定",
+      "GLP-1作動薬適応拡大: 睡眠時無呼吸症候群、高血圧、NASH、CKD等でP3試験進行中",
+      "未承認薬在庫: 2024年12月末時点で5.5億ドル計上（主にorforglipron）"
+    ],
+    "risk_factors": [
+      "高い研究開発失敗リスク（新薬候補の多くが市場化に失敗）",
+      "インスリン薬価への政治的プレッシャー（米国）",
+      "競合との激しい競争（NOVO、PFE等）",
+      "Jardiance特許切れ（2020年代後半）",
+      "承認後の副作用リスク・規制リスク"
+    ],
+    "distribution": "約90カ国で販売。米国ではMcKesson、Cencora、Cardinal Health等の卸売業者経由が主。LillyDirect（直接患者向けデジタルプラットフォーム）も展開中。"
+  },
+  "sec_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000013/0000059478-26-000013.txt"
+}

@@ -1,0 +1,87 @@
+{
+  "research_id": "CA_eval_20260220-1411_LLY",
+  "ticker": "LLY",
+  "critique_timestamp": "2026-02-20T15:30:00Z",
+  "overall_assessment": {
+    "kb_alignment": "high",
+    "reasoning_quality": "moderate",
+    "critical_issues": 1,
+    "minor_issues": 5
+  },
+  "claim_critiques": [
+    {
+      "claim_id": 1,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "KB3 fewshot_LLY.md #2の最重要指摘「なぜ低分子製法を選別したのか、また選別し得たのかなどの競争優位性の根源要因への言及は不足」が、draft-report.md の評価コメントで「根源要因（中外製薬との独占ライセンス取得経緯）の説明不足が70%の天井となっている」として記述されているが、フィードバックテンプレート内でのみ確認質問として扱われており、評価コメントの主文に組み込まれていない。根源要因の欠如が70%上限の理由であることを評価本文でより明確に前面に出すべき。",
+      "kb_reference": "KB3 fewshot_LLY.md #2: 「なぜ低分子製法を選別したのか、また選別し得たのかなどの競争優位性の根源要因への言及は不足」。KY重視視点 #4「なぜその能力を持ちえたのか（根源要因）への言及を要求」。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CA confidence 70%は適切（KB3 #2と完全一致）。ただし「根源要因（中外製薬との独占ライセンス取得経緯）が不明であることが70%の上限理由であり、根源要因が明確になれば90%を検討できる」という条件付きアノテーションをrevised-report.mdの評価主文に明示的に追加すべき。confidence は変更しない。"
+    },
+    {
+      "claim_id": 2,
+      "critique_type": "kb_misalignment",
+      "severity": "critical",
+      "issue": "KB3 fewshot_LLY.md #1（50%）では、CAGR接続が「70%。製品ミックス変化がマージン改善を相殺する可能性の指摘は妥当」として70%に設定されているが、その根拠として「製品ミックス変化がマージン改善を相殺する可能性」というリスクが明示されている。draft-report.md でLLY-CA-2のCAGR接続=70%の評価コメント「3ドライバーによるリスク分散→いずれか1本柱の失速時の緩衝→CAGRの確度向上」は肯定的側面のみを記述しており、KB3で明示された「製品ミックス変化がマージン改善を相殺する可能性」というリスクを反映していない。KB3実績に整合させるためにこのリスクを追記すべき。",
+      "kb_reference": "KB3 fewshot_LLY.md #1: 「CAGR接続: 70%。製品ミックス変化がマージン改善を相殺する可能性の指摘は妥当」。KB1ルール4（定量的根拠）：マージン改善の定量的見通しを含む評価が必要。",
+      "suggested_action": "confidence_adjustment",
+      "suggested_value": 70,
+      "reasoning": "CAGR confidence 70%は維持するが、KB3で明示されたリスク「製品ミックス変化がマージン改善を相殺する可能性」を評価コメントに追加することが必須（critical）。revised-report.mdで[⬇️ T8修正]として明示。confidence 値は70%を維持しつつ「orforglipron商業化後の製品ミックス変化によるマージン圧縮リスクを考慮した70%」として再定式化する。"
+    },
+    {
+      "claim_id": 3,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "KB3 fewshot_LLY.md #4「優位性の評価はCAGR数値のみでなく、その数値の達成確度も含めて評価すべき」というKYの重要指摘が、LLY-CA-3のCAGR接続=30%評価には反映されているが（ARIA・次世代競合・診断インフラの3リスクを考慮）、「達成確度の独立評価」という視点が明示的に記述されていない。具体的には「CAGR High teensへの寄与パラメータとしてのKisunlaの役割」と「Kisunla実際の普及確度」の2軸で評価していることを明記すべき。",
+      "kb_reference": "KB3 fewshot_LLY.md #4: 「優位性の評価はCAGR数値のみでなく、その数値の達成確度も含めて評価すべき」「達成確度とCAGRパラメータ寄与の独立評価」。KY重視視点 #3「確度とCAGRパラメータ寄与の独立評価」。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CAGR confidence 30%は適切（KB3 #4のCAGR=30%と整合）。ただし「Kisunlaの売上パラメータ寄与（CAGR High teensへの+X%）」と「Kisunla普及の達成確度（ARIA30%台・診断インフラ）」を分離した評価であることを明記すべき。"
+    },
+    {
+      "claim_id": 4,
+      "critique_type": "kb_misalignment",
+      "severity": "minor",
+      "issue": "KB3 fewshot_LLY.md #5（既承認GLP-1ポジション）はCA=50%/CAGR=70%と今回のLLY-CA-4（製造スケール）とスコアが一致しているが、KB3 #5の評価根拠「慢性疾患での粘着性・注射→経口移行時の粘着性効果」はLLY-CA-4の「製造スケール」とは異なる概念。LLY-CA-4のCA=50%の限界理由として「NOVO対比の固有差別化不明」が記述されているが、「なぜNOVOと同等以上の製造投資をLLYが実施できたか（財務力の根源）」という根源要因への言及が欠如している。",
+      "kb_reference": "KB3 fewshot_LLY.md #5: CA=50%「慢性疾患での粘着性は重要」。KB1ルール8（戦略 vs 優位性）: ロケット・スタートは戦略であり、その背後にある製造能力・財務力が優位性。KY重視視点 #4「なぜその能力を持ちえたのか（根源要因）への言及を要求」。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CA confidence 50%は適切。CAGR confidence 70%も適切（KB3 #5と整合）。ただし「なぜLLYがNOVO対比で同等以上の製造投資を実施できたか（財務力・意思決定能力の根源）」の説明が不足していることをアノテーションとして追加すべき。"
+    },
+    {
+      "claim_id": 5,
+      "critique_type": "reasoning_gap",
+      "severity": "minor",
+      "issue": "LLY-CA-5（2番手治験設計力）はKB3 fewshot_LLY.mdに直接対応する事例がなく（KB3は6件でCA-5に相当する主張がない）、KB3によるキャリブレーションが不十分。50%の根拠は「Verzenio術後補助療法の成功」という単一事例に依存しており、KB3の類似事例（KB3 CHD#1など他社事例）との照合が不十分。治験設計能力をメガファーマ共通能力と区別するための定量的比較（業界平均治験成功率との対比）が必要。",
+      "kb_reference": "KB3 fewshot_LLY.md: CA-5に相当する主張がKB3 LLY事例に存在しない（6件ではカバーされていない）。KB3 CHD#1「断念例などで補足されており、買収ターゲットの選定能力には納得感あり」（類似の能力証明パターン）。KB2パターンB「業界共通で差別化にならない」の確認が必要。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CA confidence 50%は暫定的に適切。ただし「KB3に直接対応する事例がなくキャリブレーションが限定的」であることを明記し、「業界平均治験成功率との対比データが得られれば70%に引き上げを検討できる」という条件を追加すべき。CAGR confidence 50%は維持。"
+    },
+    {
+      "claim_id": 1,
+      "critique_type": "kb_misalignment",
+      "severity": "minor",
+      "issue": "KB3 fewshot_LLY.md #2では「Novo対比で食事制限・製造面での優位性が確認されている。注射剤より差別化が明確」として70%が付与されているが、2025年時点では「P3試験3本成功」という追加の定量証拠が蓄積されている。KB3時点の評価（主にP3試験前の技術的差別化のみ）と比較して、現在の評価で同じ70%を維持している根拠として「P3成功の追加証拠でも90%に引き上げない理由」を明記する必要がある。",
+      "kb_reference": "KB3 fewshot_LLY.md #2（70%）: P3試験前の評価。KB2パターンI「定量的裏付けのある差別化」: P3試験3本成功はパターンIの要件を満たす。KB1ルール9（ゲートキーパー）: 事実誤認がないことを確認。",
+      "suggested_action": "annotation_only",
+      "suggested_value": null,
+      "reasoning": "CA confidence 70%は適切。ただし「KB3時点（P3試験前）の70%に対して、P3試験3本成功後も70%を維持している理由は『根源要因（中外製薬との独占ライセンス取得経緯）の説明不足』であり、この点が解消されれば90%を検討できる」という論理的連鎖を明記すべき。"
+    }
+  ],
+  "systematic_issues": [
+    {
+      "pattern": "根源要因（なぜその能力を持ち得たのか）への言及不足",
+      "affected_claims": [1, 2, 4, 5],
+      "description": "KB3 KY重視視点 #4「なぜその能力を持ちえたのか（根源要因）への言及を要求」に対して、LLY-CA-1（中外製薬との独占ライセンス取得経緯）、LLY-CA-2（複数超大型市場を見極めた投資判断の根源）、LLY-CA-4（NOVO対比で同等以上の製造投資を実施できた財務力・意思決定の根源）、LLY-CA-5（治験設計力が業界共通と異なる根拠）の4主張で根源要因への言及が不足または欠如している。この傾向はKB3でKYが最も重視した評価軸の一つ。",
+      "kb_lesson": "KB3 fewshot_LLY.md KY重視視点 #4: 「なぜその能力を持ちえたのか（根源要因）への言及を要求」。KB3 LLY#2の指摘「なぜ低分子製法を選別したのか、また選別し得たのかなどの競争優位性の根源要因への言及は不足」がCA=70%（90%未満）の主要根拠。根源要因が明確な主張は90%になりうる（KB3 ORLY#2=90%は根源要因が明確）。"
+    },
+    {
+      "pattern": "CAGR達成確度とパラメータ寄与の独立評価の明示不足",
+      "affected_claims": [2, 3, 5],
+      "description": "KB3 fewshot_LLY.md #4のKY重要指摘「優位性の評価はCAGR数値のみでなく、その数値の達成確度も含めて評価すべき」「達成確度とCAGRパラメータ寄与の独立評価」に対して、LLY-CA-2（CAGR=70%: 製品ミックス変化リスク未反映）、LLY-CA-3（CAGR=30%: 達成確度の独立評価が明示的でない）、LLY-CA-5（CAGR=50%: Verzenio再加速の確度評価が不十分）で、CAGR confidence の根拠としての「達成確度」と「パラメータ寄与度」の分離が明示的でない。",
+      "kb_lesson": "KB3 fewshot_LLY.md #4: 「達成確度とCAGRパラメータ寄与の独立評価」。CAGR評価では「この優位性がCAGR High teensに何%寄与するか（パラメータ寄与）」と「その寄与が実際に実現する確度（達成確度）」を別々に評価した上で、総合的なCAGR confidence を設定すべき。revised-report.mdではこの2軸評価を明示的に記述すること。"
+    }
+  ]
+}
