@@ -1,0 +1,37 @@
+{
+  "research_id": "CA_eval_20260220-1411_MSFT",
+  "ticker": "MSFT",
+  "mode": "simplified",
+  "generated_at": "2026-02-20T08:30:00Z",
+  "kb_version": "KB1 v8ルール / KB2 v12パターン / KB3 v5銘柄34件",
+  "mode_determination": {
+    "reason": "MSFTはPhase 2データ（analyst/phase2_KY/*MSFT*.md）が存在しないため簡易モードを適用。フルモード対象はCHD・COST・LLY・MNST・ORLYの5銘柄のみ。",
+    "phase2_data_searched": "analyst/phase2_KY/*MSFT*",
+    "phase2_data_found": false,
+    "full_mode_eligible_tickers": ["CHD", "COST", "LLY", "MNST", "ORLY"]
+  },
+  "full_mode_results": null,
+  "simplified_mode_results": {
+    "check_id": "S-8",
+    "check_description": "contradicted事実に対するルール9自動適用（confidence → 10%）の確認",
+    "fact_check_source": "research/CA_eval_20260220-1411_MSFT/03_verification/fact-check.json",
+    "contradicted_claims": [],
+    "contradicted_count": 0,
+    "rule9_applied_count": 0,
+    "overall_verdict": "pass",
+    "pass": true,
+    "annotation": "T5ファクトチェック（24件検証）でcontradictedと判定された事実の主張は0件。ルール9（事実誤認→confidence 10%）の適用対象なし。簡易モードのS-8チェックは合格。ファクトチェック結果の内訳: verified=14件、verified_with_caveat=9件、unverifiable=1件（「70エリア400以上DC、業界最多」：AWS/GCP比較データなし）、contradicted=0件。",
+    "caveats": [
+      "SEC EDGAR MCPが利用可能な環境で実施したため、主要財務データ（売上高・利益・成長率等）のファクトチェックは実施済み。ただし非公開企業（OpenAI）への投資詳細、経営幹部の発言（IR面談等）については一次情報との照合が困難。",
+      "verified_with_caveat（9件）は技術的に確認できるが一定の留意事項がある事実として記録。S-8チェック（contradicted→10%）の対象外だが、後続の評価では留意事項として参照すること。代表例：Azure AI顧客「60,000社超（FY25時点）」は時点の曖昧さにより2023年データ（2500社）とのギャップが大きいこと。",
+      "T8（AI批判プロセス）修正後の最終confidence値は、T5ファクトチェック結果（contradicted=0）と整合している。T8修正（Claim#2: 70%→50%、Claim#4 CAGR: 70%→50%）はいずれもfact-check.jsonのcontradicted判定ではなくKB3整合性・論理矛盾に基づくものであり、S-8チェックとは独立した修正。",
+      "MSFTのPhase 2評価（Y評価値）が蓄積された後、フルモードで精度検証を実施することを推奨。特にT8修正対象（Claim#2・Claim#4 CAGR）についてのY評価との比較が有益。"
+    ]
+  },
+  "overall_assessment": {
+    "accuracy_verdict": "pass",
+    "confidence_level": "medium",
+    "reason": "簡易モードのS-8チェックのみ実施。ファクトチェック24件中contradicted=0件であり、ルール9（contradiction→10%）の自動適用が不要な状態。SEC EDGAR MCPを利用した主要財務データの照合は実施済みであるため、信頼性はmediumと評価（AME等のSEC非利用ケース<low>より高い）。ただしPhase 2評価（Y評価値）との比較による精度検証は未実施。",
+    "recommendation": "MSFTのPhase 2評価（Y評価との比較フルモード）が実施可能となった場合、以下の点を優先的に検証すること：(1) Claim#2（エコシステム構築力、T8修正: 70%→50%）のYによる評価水準、(2) Claim#5（LinkedIn、CA=70%/CAGR=50%）のYによるCAGR接続評価、(3) Claim#4（Copilot、CAGR T8修正: 70%→50%）のY評価との乖離。また、全主張を通じて純粋競合（AWS/GCP/GoogleWorkspace）との定量比較データが欠如しており、Y評価でパターンGが系統的に指摘される可能性が高い。"
+  }
+}

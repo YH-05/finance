@@ -1,0 +1,205 @@
+{
+  "ticker": "MSFT",
+  "company_name": "Microsoft Corporation",
+  "report_path": "analyst/raw/MSFT US.md",
+  "parsed_at": "2026-02-20T05:22:00Z",
+  "report_type": "unknown",
+  "sections": [
+    {
+      "title": "投資判断推移・ESG評価・中長期競争優位・CAGR推定（総括表）",
+      "content": "リスト採用（2016年8月）以来の投資判断推移、ESGスコア、競争優位性評価、CAGR推定を縦断的にまとめた概要表。最新（2024年6月）：EPS CAGR+14%（売上+11%、マージン+1%、M&A+自社株買い+2%）。競争優位：「圧倒的なWindows＆Officeのブランド力」「成長分野への出資やM&A・業務提携等を駆使した経営戦略の柔軟性」「世界最大規模のエコシステム構築力」。",
+      "summary": "2016年リスト採用以来BUY維持。EPS CAGR+14%（売上+11%+マージン+1%+自社株2%）を長期維持。最大の競争優位はWindows/Officeブランド力と世界最大規模エコシステム。"
+    },
+    {
+      "title": "2025年08月12日 4Q25決算レビュー＆Group meeting（2025/8/12：Teams/Mary Grekstas, Group Finance Manager, IR/大和）",
+      "content": "4Q25：売上$76.44b +18/+17%yy/cc（コンセンサス超過）。OPM45% -1%Pt。EPS3.65 +24/+22%yy/cc。Capex$24.2b過去最高。Azure+39%yy/cc（加速）。FY25通年：売上$281.72b +14%、OPM45.6% +1.0Pt、EPS$13.64 +16%。グループMTG：プラットフォーム企業としての互換性と幅広いAIスタック提供（Azure AI Foundry、1800モデル、14,000社導入）。量子コンピュータ投資開始（Atom Computing提携）。",
+      "summary": "4Q25はAzure+39%加速でコンセンサス大幅超過。FY25通年は売上+14%、EPS+16%。プラットフォーム企業としての競争優位性を再確認。CAGR前提（売上+11%/EPS+14%）は据え置き。ITG3/4 7.4/8.1 BUY継続。"
+    },
+    {
+      "title": "2025年02月25日 2Q25決算レビュー＆1on1MTGメモ（2025/2/19：対面 / Kendra Goodenough, Danielle Criste, IR/Jeff）",
+      "content": "2Q25：売上$69.6b +12/+12%yy/cc。OPM45% +2%Pt。EPS3.23 +10%yy/cc。Capex$22.6b +13/+97%qq/yy（過去最高更新）。Azure+31%（うちAI寄与13pt）。ガイダンス3Q25：各セグメント中央値でコンセンサス未達。1on1MTG：DeepSeekはPositive（AIコモディティ化はMSFTに有利、プラットフォームが重要）。Capex見通し変わらず。OpenAIとOracle移管疑惑は否定。",
+      "summary": "2Q25は売上/EPSコンセンサス超過もAzureガイダンス未達で▲6%下落。DeepSeekはプラットフォーム戦略上ポジティブ。CAGR売上/EPS 11/14%据え置き。ITG3/4 6.1/7.4 BUY継続。"
+    },
+    {
+      "title": "24年11月20日 1Q25決算レビュー＆Group meeting（11/15：Teams / Kendra Goodenough, IR /大和）",
+      "content": "1Q25：売上$65.6b +16%yy/cc。EPS3.30 +10%yy。Capex$20.0b +79%yy（過去最高）。Azure+34%（AI寄与12pt）。生成AIソリューション年間$10b超（FY25）。セグメント変更（PBP拡大）。Microsoft365 Copilotはシートベース$30/月、Copilot chatは従量課金。",
+      "summary": "1Q25実績良好もガイダンスコンセンサス未達で▲6%下落。Azure AI需要は供給制約が継続。生成AI年間売上$10b超はある種のマイルストーン。CAGR据え置き、BUY継続。"
+    },
+    {
+      "title": "2024年09月06日 Group Meeting（2024/08/22：ZOOM / Danielle Criste, IR/CLSA）",
+      "content": "Azure：CC固定通過で+30%超成長中。新規顧客獲得が順調（Microsoft顧客でまだAzure未利用の顧客が多い）。AIリーダーとして認識され、シェア獲得中。Capex：FY24の50%が土地・DC設備、50%がサーバ・GPU・CPU。FY25はFY24より高くなる見込み。ARM PCアーキテクチャへのシフト示唆。Windows10サポート終了（2025年10月）によるPC更新需要創出。",
+      "summary": "Azure成長モメンタム良好。AI需要が新規顧客獲得を牽引。Capex大幅増継続。Windows10サポート終了によるPC更新需要はMPC事業のカタリスト。CAGR据え置き。"
+    },
+    {
+      "title": "2024年08月02日 4Q24決算レビュー",
+      "content": "4Q24：売上$64.7b +15%yy。OPM43% -2%Pt（Azure先行投資、Activision買収コスト）。EPS2.95 +10%yy。Capex$19.0b +78%yy（FY20通年レベルに匹敵）。Azure+30%（AI寄与8pt）。FY24通年：売上$245.1b +16%、OPM45% +3Pt、EPS$11.80 +22%、Capex$55.7b +74%yy。",
+      "summary": "4Q24コンセンサス超過。FY24はEPS+22%と好決算。Azure成長継続もCapex大幅増による収益性への懸念。CAGR売上+11%/EPS+14%維持。BUY継続。"
+    },
+    {
+      "title": "2024年06月13日 3Q24決算レビュー・CAGR更新",
+      "content": "3Q24：売上$61.9b +12%yy。OPM45% +2%Pt。EPS2.94 +20%yy。Azure+31%（AI寄与7pt）。CAGR更新：EPS CAGR+14%（売上CAGR+11%（PBP:+HSD、IC:+MDD→LDD、MPC:+MSD）、マージン改善+1%（OPM FY23:42%→3Q24:45%）、M&A+自社株買い寄与+2%）。",
+      "summary": "3Q24は各セグメント好調。CAGR更新：売上+11%/EPS+14%。ICセグメント成長率をMDDからLDDに修正（クラウド市場成長に合わせ）。Valuation：ITG3/4 6.6/7.8 BUY継続。"
+    },
+    {
+      "title": "競争優位性詳細（2024年6月時点 最新評価）",
+      "content": "「圧倒的なWindows＆Officeのブランド力」「成長分野への出資やM&A・業務提携等を駆使した経営戦略の柔軟性」。FY3 ROE 26.99%。Azureはクラウド市場シェア2位（AWS追随、GCPも成長）。OnPremからクラウドへの移行でWindowsブランドが親和性優位。Office製品との統合もAzureの強み。LinkedInはビジネスSNSとして英語圏でほぼ独占的地位。競合（IBM/Oracle/SAP/Amazon/Google/Apple/Sony）とも積極的にパートナーシップ構築（エコシステム志向）。OpenAIへの積極投資により世界最大規模のAIエコシステム構築。",
+      "summary": "MSFTの競争優位の核心はWindows/Officeブランド力 × エコシステム構築力 × AI（OpenAI）統合。各競合と競争しながらも積極的なパートナーシップ構築が独自の強み。"
+    },
+    {
+      "title": "リスク要因",
+      "content": "①クラウド事業（Azure）の競争激化：AWS2位もトップシェアでない以上環境変化で盤石とは言えない。②既存事業依存によるイノベーション力低下：かつてゲーム・検索・モバイル分野で後塵を拝した歴史。③反トラスト法・規制リスク：2024年6月米当局（司法省・FTC）がAI分野でNvidiaと共に調査開始。エコシステム構築を競争優位とする企業だけに規制の影響大きい。④OpenAIとのパートナーシップ：DeepSeek活用決定でOracleへの移管懸念浮上（否定）。",
+      "summary": "主要リスク：①Azure競争②イノベーション③規制④OpenAI関係。特に反トラスト規制リスクはエコシステム型ビジネスモデルとの相性上、CAGR推定に重大な影響を及ぼす可能性。"
+    },
+    {
+      "title": "ESGスコア推移",
+      "content": "2024年6月：リスク14.2（Low risk）、マネジメント62.4（Strong）、業界内（Enterprise and Infrastructure Software）リスクPercentile: 5th Rank 18/449。主要Material Issue：Data privacy and Cybersecurity、Business Ethics、Human capital。Business Ethicsリスクのみ同業より高い（AI分野における規制当局の監視強化が背景）。2022年5月：リスク8、マネジメント84、業界内4th（1,000社中）。",
+      "summary": "ESGスコアは良好だが「Business Ethics」リスクがやや上昇（2022年8→2024年14）。AI反トラスト調査が背景。CAGR影響が大きいリスクとして注視が必要。"
+    },
+    {
+      "title": "リスト採用経緯（2016年8月）と過去の評価",
+      "content": "2016年8月リスト採用：クラウド事業への移行（年間$12bn / 総売上$90bn）が進む中、収益性一時低下局面（OPM30%台）の終了と3年でOPM30%前半回帰との判断。2014年3月リスト削除：クラウド移行に伴う収益モデル変換リスク・Windows/Office競争優位維持の不透明感。5/9/22 CAGR 9%→14%に引き上げ：Azure成長加速、サブスク移行完了、Linux対応によるエコシステム拡大。",
+      "summary": "2016年クラウド移行完了でリスト復帰。CAGR 9%→14%への引き上げはAzure成長とサブスク移行完了が起点。長期評価の一貫性が高い。"
+    }
+  ],
+  "ca_candidates": [
+    {
+      "id": 1,
+      "text": "Windows＆Officeのビジネススタンダード地位：OS「Windows」およびソフトウェア「Office」は世界中でビジネススタンダードの地位を確立しており、圧倒的なブランド力を有する。高いネットワーク効果（世界規模の普及率）と高いスイッチングコスト（データ互換性・業務プロセス統合）を実現し、顧客粘着力を高めている。",
+      "source_section": "競争優位性詳細（2024年6月時点 最新評価）",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "Office365商業向けは+14-16%yy成長（FY25）",
+        "Microsoft365シート数は継続的に増加（ただし増加モメンタムは鈍化傾向）",
+        "上位パッケージ（E5）へのアップグレードが進行し、ARPUが上昇",
+        "オンプレ販売からサブスクモデルへの移行は完了し収益安定"
+      ]
+    },
+    {
+      "id": 2,
+      "text": "世界最大規模のエコシステム構築力：競合企業（IBM、ソニー、Oracle等）とも必要と判断すれば積極的にパートナーシップを構築し、テクノロジー界において「世界最大規模のエコシステム」を構築している。顧客への提供価値最大化のために周辺企業との関係性を躊躇なく見直す文化がある。",
+      "source_section": "競争優位性詳細（2024年6月時点 最新評価）",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "Azure AI Foundryで1800以上のAIモデルを提供（OpenAI、DeepSeek、Meta、xAI等）",
+        "Azure Marketplaceを通じてSnowflake、Databricks、Oracle DB、SAP、VMwareを提供",
+        "Azure AI Foundryを14,000社が導入（FY25時点）",
+        "IBM・Sony等かつての競合ともクラウドで協業"
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Azureクラウドの高成長とAIリーダーシップ：クラウド市場（CAGR 15-20%程度）でAWSに次ぐシェア2位を維持しながらシェアゲインを継続。Windows/Officeブランドの恩恵（オンプレからクラウドへの移行親和性）、OpenAIとの独占的クラウドパートナーシップ、AIリーダーとしての認知により、新規顧客獲得が加速。",
+      "source_section": "競争優位性詳細（2024年6月時点 最新評価）",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "Azure成長率：4Q FY25で+39%yy/cc（加速傾向）",
+        "Azure AI顧客は60,000社超（FY25時点）",
+        "70エリア400以上のデータセンターを展開（業界最多）",
+        "AI関連Azure寄与：2Q FY25で13pt（全体+31%のうち）",
+        "AzureクラウドシェアはAWS追随2位、GCPも成長中"
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Microsoft365 Copilotによる次世代マネタイズ：Microsoft365 CopilotはAI機能を既存のOffice製品に統合し、ユーザー当たり$30/月のプレミアム課金を実現。既存の強固なエンタープライズ顧客基盤に対して、ARPUを引き上げる強力な手段。顧客はより上位のスタックへ移行するトレンドにあり、E5やCopilotが成長ドライバー。",
+      "source_section": "2025年02月25日 2Q25決算レビュー＆1on1MTGメモ",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "Microsoft365 Copilotはユーザー当たり$30/月（シートベース課金）",
+        "Copilot chatは従量課金モデルも提供",
+        "ARPU成長の最大ドライバーはE5（セキュリティライセンス）とCopilot",
+        "シート数増加モメンタムは鈍化も、ARPU向上で売上成長継続"
+      ]
+    },
+    {
+      "id": 5,
+      "text": "OpenAIとの独占的戦略パートナーシップ：OpenAIへの大規模投資（2019年以降、累計$13bn+）を通じて、MSFTはOpenAIの独占的クラウドインフラパートナーとなっている。GPT系モデルをAzure経由で独占提供し、AI時代の競争優位を確立。ただしOpenAI-Oracle関係懸念が今後のリスク。",
+      "source_section": "2025年02月25日 2Q25決算レビュー＆1on1MTGメモ",
+      "ca_type": "structural",
+      "cagr_connected": true,
+      "factual_claims": [
+        "OpenAIへの累積投資額は$13bn以上",
+        "Azure OpenAI Serviceは2500社以上が採用（2023年時点）",
+        "OpenAIの独占的クラウドパートナーとしてAzure経由でGPTモデルを提供",
+        "2Q FY25でOpenAIとの良好なパートナーシップを継続確認"
+      ]
+    },
+    {
+      "id": 6,
+      "text": "LinkedInのビジネスSNS独占的地位：PBPセグメント内のLinkedInは、英語圏では「LinkedInアカウントがなければビジネス上存在しない」と言われるほどのポジションを確立。履歴書に代わる存在であり、信頼性・ネットワーク効果が重要なため後発参入が困難。",
+      "source_section": "競争優位性詳細（2024年6月時点 最新評価）",
+      "ca_type": "structural",
+      "cagr_connected": false,
+      "factual_claims": [
+        "LinkedInは4Q FY25で+9/+8%yy/cc成長",
+        "Facebookが競合「Workplace」を立ち上げたが存在感なし",
+        "ARPU成長継続（プレミアムサブスク、採用・マーケティングソリューション）"
+      ]
+    },
+    {
+      "id": 7,
+      "text": "経営の戦略的柔軟性：成長分野への出資やM&A（OpenAI、Activision）、業務提携等を駆使した経営戦略の柔軟性。サティア・ナデラCEO就任以降、「Windowsファースト」文化から「クラウド・AIファースト」へのカルチャー変革に成功し、過去に失敗した検索・ゲーム・モバイル分野への対策も積極化。",
+      "source_section": "競争優位性詳細（2024年6月時点 最新評価）",
+      "ca_type": "operational",
+      "cagr_connected": true,
+      "factual_claims": [
+        "Activision買収（$69bn、2023年完了）でゲームコンテンツ事業強化",
+        "OpenAIへの戦略投資（$13bn+）でAI分野のリーダーシップ確保",
+        "Nuance（医療AI）、GitHub（開発者プラットフォーム）買収で垂直市場強化",
+        "サティア・ナデラCEO就任2014年以降、クラウド売上構成比22%→40%超に拡大"
+      ]
+    }
+  ],
+  "cagr_references": [
+    {
+      "context": "最新CAGR推定（2024年8月 4Q25後決算レビュー時点、据え置き）",
+      "value": "+14%（EPS）",
+      "period": "2024年以降（中長期）",
+      "breakdown": {
+        "revenue_growth": "+11%（IC:+LDD、PBP:+HSD、MPC:+MSD、セグメントミックス考慮）",
+        "margin_improvement": "+1%（OPM改善、AI投資回収フェーズへの移行を想定）",
+        "ma_and_buyback": "+2%（FCF利回り3%×自社株買い比率40%=1.2%＋M&A寄与0.8%）"
+      }
+    },
+    {
+      "context": "2022年5月 CAGR引き上げ時点",
+      "value": "+14%（EPS）",
+      "period": "2022年以降（中長期）",
+      "breakdown": {
+        "revenue_growth": "+11%（クラウド関連+MDD、セグメント横断5割）",
+        "margin_improvement": "+1%（当初+2%から修正、固定費増を反映）",
+        "ma_and_buyback": "+2%（過去トレンド並み）"
+      }
+    },
+    {
+      "context": "2022年5月以前（初期推定）",
+      "value": "+9%〜+14%（EPS）",
+      "period": "2016〜2022年",
+      "breakdown": {
+        "revenue_growth": "+8〜11%",
+        "margin_improvement": "+0〜2%",
+        "buyback": "+1〜2%"
+      }
+    }
+  ],
+  "key_themes": [
+    "Windows/Officeビジネススタンダード × 高スイッチングコスト",
+    "Azureクラウド高成長 × AIリーダーシップ（OpenAI独占パートナー）",
+    "世界最大規模エコシステム（競合ともパートナーシップ構築）",
+    "Microsoft365 Copilot × ARPUアップグレードによるマネタイズ加速",
+    "プラットフォーム企業としての互換性・開放性戦略",
+    "反トラスト規制リスク × ビジネス倫理ESGリスク",
+    "大規模Capex（AI・クラウドインフラ）のROI実現",
+    "LinkedInビジネスSNS独占的地位",
+    "Activision買収によるゲーム事業SaaS転換"
+  ],
+  "data_limitations": [
+    "レポート種別判定（①期初/②四半期レビュー）はPoC段階のためスキップ",
+    "レポートは2016年〜2025年8月の四半期フォローアップが主体（複合・混合形式）",
+    "CAGR推定はアナリストYKの主観的見解を含む"
+  ]
+}
