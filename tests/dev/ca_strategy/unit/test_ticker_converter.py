@@ -38,7 +38,9 @@ class TestConvertUSEquities:
         converter = TickerConverter()
         assert converter.convert("SPY UR Equity") == "SPY"
 
-    def test_正常系_NYSE_American_UAティッカーをサフィックスなしに変換できる(self) -> None:
+    def test_正常系_NYSE_American_UAティッカーをサフィックスなしに変換できる(
+        self,
+    ) -> None:
         converter = TickerConverter()
         assert converter.convert("TEST UA Equity") == "TEST"
 

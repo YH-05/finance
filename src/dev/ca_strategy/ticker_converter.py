@@ -43,7 +43,7 @@ _EXCHANGE_SUFFIX_MAP: dict[str, str] = {
     "UR": "",  # NYSE Arca
     "UF": "",  # OTC / Pink Sheets
     # Europe
-    "LN": ".L",   # London Stock Exchange
+    "LN": ".L",  # London Stock Exchange
     "FP": ".PA",  # Euronext Paris
     "GY": ".DE",  # XETRA (Germany)
     "NA": ".AS",  # Euronext Amsterdam
@@ -59,7 +59,7 @@ _EXCHANGE_SUFFIX_MAP: dict[str, str] = {
     "CN": ".TO",  # Toronto Stock Exchange
     "CT": ".TO",  # Toronto (alternative)
     # Asia Pacific
-    "JT": ".T",   # Tokyo Stock Exchange
+    "JT": ".T",  # Tokyo Stock Exchange
     "HK": ".HK",  # Hong Kong Stock Exchange
     "AT": ".AX",  # Australian Securities Exchange
     "SP": ".SI",  # Singapore Exchange

@@ -18,9 +18,11 @@ from __future__ import annotations
 
 import json
 from datetime import date
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from unittest.mock import MagicMock, patch
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 import numpy as np
 import pytest
@@ -35,9 +37,6 @@ from dev.ca_strategy.types import (
     SectorAllocation,
     StockScore,
 )
-
-if TYPE_CHECKING:
-    pass
 
 # ---------------------------------------------------------------------------
 # Constants for pseudo-return generation
@@ -366,16 +365,12 @@ class TestStrategyEvaluatorMocked:
         portfolio_series = pd.Series(pseudo_portfolio_returns)
         benchmark_series = pd.Series(pseudo_benchmark_returns)
 
-        with patch(
-            "dev.ca_strategy.evaluator.RiskCalculator"
-        ) as mock_risk_calc_cls:
+        with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
             mock_calc = MagicMock()
-            mock_calc.calculate.return_value = MagicMock(
-                sharpe_ratio=0.85,
-                max_drawdown=-0.12,
-                beta=0.95,
-                information_ratio=0.40,
-            )
+            mock_calc.sharpe_ratio.return_value = 0.85
+            mock_calc.max_drawdown.return_value = -0.12
+            mock_calc.beta.return_value = 0.95
+            mock_calc.information_ratio.return_value = 0.40
             mock_risk_calc_cls.return_value = mock_calc
 
             evaluator = StrategyEvaluator()
@@ -408,12 +403,10 @@ class TestStrategyEvaluatorMocked:
 
         with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
             mock_calc = MagicMock()
-            mock_calc.calculate.return_value = MagicMock(
-                sharpe_ratio=0.85,
-                max_drawdown=-0.12,
-                beta=0.95,
-                information_ratio=0.40,
-            )
+            mock_calc.sharpe_ratio.return_value = 0.85
+            mock_calc.max_drawdown.return_value = -0.12
+            mock_calc.beta.return_value = 0.95
+            mock_calc.information_ratio.return_value = 0.40
             mock_risk_calc_cls.return_value = mock_calc
 
             evaluator = StrategyEvaluator()
@@ -446,12 +439,10 @@ class TestStrategyEvaluatorMocked:
 
         with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
             mock_calc = MagicMock()
-            mock_calc.calculate.return_value = MagicMock(
-                sharpe_ratio=0.50,
-                max_drawdown=-0.08,
-                beta=1.02,
-                information_ratio=0.20,
-            )
+            mock_calc.sharpe_ratio.return_value = 0.50
+            mock_calc.max_drawdown.return_value = -0.08
+            mock_calc.beta.return_value = 1.02
+            mock_calc.information_ratio.return_value = 0.20
             mock_risk_calc_cls.return_value = mock_calc
 
             evaluator = StrategyEvaluator()
@@ -528,6 +519,7 @@ class TestOutputGeneratorWithEvaluation:
                 mean_structural_weight=0.6,
                 coverage_rate=1.0,
             ),
+            as_of_date=_AS_OF_DATE,
         )
 
         gen = OutputGenerator()
@@ -577,6 +569,7 @@ class TestOutputGeneratorWithEvaluation:
                 mean_structural_weight=0.6,
                 coverage_rate=1.0,
             ),
+            as_of_date=_AS_OF_DATE,
         )
 
         gen = OutputGenerator()
@@ -626,6 +619,7 @@ class TestOutputGeneratorWithEvaluation:
                 mean_structural_weight=0.6,
                 coverage_rate=1.0,
             ),
+            as_of_date=_AS_OF_DATE,
         )
 
         gen = OutputGenerator()
@@ -718,16 +712,12 @@ class TestFullEvaluationPipeline:
             return
 
         # Step 2: evaluate (mocked RiskCalculator)
-        with patch(
-            "dev.ca_strategy.evaluator.RiskCalculator"
-        ) as mock_risk_calc_cls:
+        with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
             mock_calc = MagicMock()
-            mock_calc.calculate.return_value = MagicMock(
-                sharpe_ratio=0.85,
-                max_drawdown=-0.12,
-                beta=0.95,
-                information_ratio=0.40,
-            )
+            mock_calc.sharpe_ratio.return_value = 0.85
+            mock_calc.max_drawdown.return_value = -0.12
+            mock_calc.beta.return_value = 0.95
+            mock_calc.information_ratio.return_value = 0.40
             mock_risk_calc_cls.return_value = mock_calc
 
             evaluator = StrategyEvaluator()
@@ -787,12 +777,10 @@ class TestFullEvaluationPipeline:
 
         with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
             mock_calc = MagicMock()
-            mock_calc.calculate.return_value = MagicMock(
-                sharpe_ratio=0.70,
-                max_drawdown=-0.15,
-                beta=1.00,
-                information_ratio=0.30,
-            )
+            mock_calc.sharpe_ratio.return_value = 0.70
+            mock_calc.max_drawdown.return_value = -0.15
+            mock_calc.beta.return_value = 1.00
+            mock_calc.information_ratio.return_value = 0.30
             mock_risk_calc_cls.return_value = mock_calc
 
             evaluator = StrategyEvaluator()
@@ -852,12 +840,10 @@ class TestFullEvaluationPipeline:
 
         with patch("dev.ca_strategy.evaluator.RiskCalculator") as mock_risk_calc_cls:
             mock_calc = MagicMock()
-            mock_calc.calculate.return_value = MagicMock(
-                sharpe_ratio=0.85,
-                max_drawdown=-0.12,
-                beta=0.95,
-                information_ratio=0.40,
-            )
+            mock_calc.sharpe_ratio.return_value = 0.85
+            mock_calc.max_drawdown.return_value = -0.12
+            mock_calc.beta.return_value = 0.95
+            mock_calc.information_ratio.return_value = 0.40
             mock_risk_calc_cls.return_value = mock_calc
 
             evaluator = StrategyEvaluator()
@@ -883,4 +869,8 @@ class TestFullEvaluationPipeline:
             encoding="utf-8"
         )
         # Should contain performance-related content
-        assert "Performance" in summary_text or "Sharpe" in summary_text or "performance" in summary_text
+        assert (
+            "Performance" in summary_text
+            or "Sharpe" in summary_text
+            or "performance" in summary_text
+        )

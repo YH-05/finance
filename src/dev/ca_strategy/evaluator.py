@@ -16,6 +16,7 @@ handled by the caller (e.g. Orchestrator).
 from __future__ import annotations
 
 import statistics
+from datetime import date
 from typing import TYPE_CHECKING
 
 import pandas as pd
@@ -139,12 +140,21 @@ class StrategyEvaluator:
             scores=scores,
         )
 
+        # Derive as_of_date from the last date in benchmark_returns index
+        as_of_date: date
+        if len(benchmark_returns) > 0:
+            last_idx = benchmark_returns.index[-1]
+            as_of_date = last_idx.date() if hasattr(last_idx, "date") else date.today()
+        else:
+            as_of_date = date.today()
+
         result = EvaluationResult(
             threshold=threshold,
             portfolio_size=len(portfolio.holdings),
             performance=performance,
             analyst_correlation=analyst_correlation,
             transparency=transparency,
+            as_of_date=as_of_date,
         )
 
         logger.info(
@@ -241,9 +251,7 @@ class StrategyEvaluator:
                 continue
             analyst = analyst_scores[ticker]
             # Average KY and AK scores if both available
-            analyst_vals = [
-                v for v in [analyst.ky_score, analyst.ak_score] if v is not None
-            ]
+            analyst_vals = [v for v in [analyst.ky, analyst.ak] if v is not None]
             if not analyst_vals:
                 continue
             analyst_avg = statistics.fmean(analyst_vals)
@@ -273,7 +281,9 @@ class StrategyEvaluator:
         # Compute Spearman correlation manually using rank approach
         from scipy import stats as scipy_stats
 
-        spearman_result = scipy_stats.spearmanr(strategy_scores_list, analyst_scores_list)
+        spearman_result = scipy_stats.spearmanr(
+            strategy_scores_list, analyst_scores_list
+        )
         corr = float(spearman_result.statistic)
         pval = float(spearman_result.pvalue)
 

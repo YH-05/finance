@@ -56,6 +56,18 @@ NonNegativeInt = Annotated[int, AfterValidator(_validate_non_negative_int)]
 """Int constrained to >= 0. Used for counts."""
 
 
+def _validate_non_positive_float(v: float) -> float:
+    """Validate that a float is <= 0.0."""
+    if v > 0.0:
+        msg = f"value must be <= 0.0, got {v}"
+        raise ValueError(msg)
+    return v
+
+
+NonPositiveFloat = Annotated[float, AfterValidator(_validate_non_positive_float)]
+"""Float constrained to <= 0.0. Used for max_drawdown (always negative or zero)."""
+
+
 def _validate_adjustment_range(v: float) -> float:
     """Validate that a float is in [-1.0, 1.0]."""
     if not -1.0 <= v <= 1.0:
@@ -606,7 +618,7 @@ class PerformanceMetrics(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     sharpe_ratio: float
-    max_drawdown: float
+    max_drawdown: NonPositiveFloat
     beta: float
     information_ratio: float
     cumulative_return: float
@@ -633,8 +645,8 @@ class AnalystCorrelation(BaseModel):
 
     spearman_correlation: float | None
     sample_size: int
-    p_value: float | None
-    hit_rate: float | None
+    p_value: UnitFloat | None
+    hit_rate: UnitFloat | None
 
 
 class TransparencyMetrics(BaseModel):
@@ -664,17 +676,17 @@ class AnalystScore(BaseModel):
     ----------
     ticker : str
         Ticker symbol.
-    ky_score : float | None
-        KY analyst score.  None if not available.
-    ak_score : float | None
-        AK analyst score.  None if not available.
+    ky : int | None
+        KY analyst score (integer rank).  None if not available.
+    ak : int | None
+        AK analyst score (integer rank).  None if not available.
     """
 
     model_config = ConfigDict(frozen=True)
 
     ticker: NonEmptyStr
-    ky_score: float | None = None
-    ak_score: float | None = None
+    ky: int | None = None
+    ak: int | None = None
 
 
 class EvaluationResult(BaseModel):
@@ -692,6 +704,8 @@ class EvaluationResult(BaseModel):
         Correlation with analyst scores.
     transparency : TransparencyMetrics
         Transparency metrics for portfolio holdings.
+    as_of_date : date
+        The evaluation as-of date (end of measurement period).
     """
 
     model_config = ConfigDict(frozen=True)
@@ -701,3 +715,4 @@ class EvaluationResult(BaseModel):
     performance: PerformanceMetrics
     analyst_correlation: AnalystCorrelation
     transparency: TransparencyMetrics
+    as_of_date: date
