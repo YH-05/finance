@@ -1,0 +1,439 @@
+{
+  "research_id": "CA_eval_20260220-0845_ATCOA",
+  "ticker": "ATCOA",
+  "company_name": "Atlas Copco AB",
+  "verified_at": "2026-02-20T09:35:00Z",
+  "verifier": "ca-eval-lead (T6直接実行)",
+  "kb2_files_referenced": [
+    "pattern_A_result_as_cause.md",
+    "pattern_B_industry_common.md",
+    "pattern_C_causal_leap.md",
+    "pattern_D_qualitative_only.md",
+    "pattern_E_factual_error.md",
+    "pattern_F_strategy_confusion.md",
+    "pattern_G_unclear_vs_pure_competitor.md",
+    "pattern_I_quantitative_differentiation.md",
+    "pattern_II_direct_cagr_mechanism.md",
+    "pattern_III_capability_over_result.md",
+    "pattern_IV_structural_market_position.md",
+    "pattern_V_specific_competitor_comparison.md"
+  ],
+  "pattern_results": [
+    {
+      "claim_id": 1,
+      "claim_title": "インストールベース×アフターサービス体制によるスイッチングコスト",
+      "ca_score_before": 70,
+      "rejection_patterns_detected": [
+        {
+          "pattern": "G",
+          "pattern_name": "純粋競合に対する優位性不明",
+          "detected": true,
+          "severity": "moderate",
+          "detail": "コンプレッサー純粋競合（Ingersoll Rand、Kaeser、Hitachi Industrial Equipment等）に対するスイッチングコストの具体的差別化根拠が不明確。シェア比較（34% vs 2番手18%程度）は示されているが、スイッチングコストの「強度」が競合より高い根拠が示されていない。2025年面談で「セミコン・自動車向けの顧客交渉力が強い」ことが確認されており、業種によってスイッチングコストの強度が異なることが判明。",
+          "confidence_impact": -5
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "pattern_name": "定量的裏付けのある差別化",
+          "detected": true,
+          "detail": "TCO構造（電気代8割、機器1割、サービス1割）、シェア（コンプレッサー34%、2番手の1.8倍）、直販比率（80%）という具体的な定量データが揃っている。業界の文脈（TCOのうち電気代8割という構造）が優位性を裏付ける。ただし競合との直接比較データが不足しており、パターンIの最高水準（COST#1の業界平均比較）には届かない。",
+          "confidence_impact": "+5（相殺）"
+        },
+        {
+          "pattern": "III",
+          "pattern_name": "能力 > 結果（プロセスの評価）",
+          "detected": true,
+          "detail": "「スイッチングコスト」という能力・仕組みを正しく主張。34%のシェアは結果として言及しているが、主張の核心はMission Critical性とアフターサービス体制という能力。この点はKYのルール（能力を主張し結果を根拠に使う）と整合。",
+          "confidence_impact": "none（claims.jsonで既に評価済み）"
+        }
+      ],
+      "pattern_G_analysis": {
+        "pure_competitors": ["Ingersoll Rand", "Kaeser", "Hitachi Industrial Equipment（空気圧縮機）", "Gardner Denver"],
+        "comparison_available": false,
+        "comparison_detail": "アナリストレポートに競合他社との直接的なスイッチングコスト比較データなし。「アジアで一度も価格競争に巻き込まれたことがない（CEOコメント）」はある種の差別化の証拠だが、純粋競合との比較ではなく定性的CEOコメント。"
+      },
+      "cagr_pattern_assessment": {
+        "connection_type": "2-step",
+        "step1": "スイッチングコスト → 高い顧客継続率（Churn Rate低水準）",
+        "step2": "高い顧客継続率 → OG安定成長（5%/年）のベース形成",
+        "pattern_II_applicable": false,
+        "pattern_II_reason": "CAGR接続は2ステップで論理的だが、Churn Rateの実績データが開示されておらず、「開示データで検証可能」という条件を満たさない。セミコン・自動車向けのLfLフラットが示すように、スイッチングコストが十分に機能していないセグメントが存在し、OG5%のベース形成としての説明が弱い。",
+        "cagr_score_adjustment": 0
+      },
+      "confidence_adjustment": {
+        "from": 70,
+        "to": 70,
+        "net_change": 0,
+        "reasoning": "パターンG（純粋競合との比較不明）とパターンI（定量的裏付け）が相殺。2025年面談での懸念は既にclaims.jsonで反映済み。70%を維持。"
+      },
+      "final_confidence": 70,
+      "consistency_with_cagr": "中程度（50%）。スイッチングコストの強度にセグメント間の差異あり。OG5%への接続は論理的だが検証可能なデータなし。"
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "顧客密度（Customer Density）と規模の経済による供給優位性",
+      "ca_score_before": 50,
+      "rejection_patterns_detected": [
+        {
+          "pattern": "G",
+          "pattern_name": "純粋競合に対する優位性不明",
+          "detected": true,
+          "severity": "moderate",
+          "detail": "コンプレッサーの純粋競合（Ingersoll Rand等）がバキューム事業も持つかどうか、クロスセルの機会を持つかどうかの比較なし。Ingersoll Rand（旧Gardner Denver含む）はコンプレッサーとバキューム機器の両方を製造しており、ATCOAの顧客密度優位性が純粋競合に対して実際に差別化になっているかは不明。",
+          "confidence_impact": -5
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "III",
+          "pattern_name": "能力 > 結果（プロセスの評価）",
+          "detected": true,
+          "detail": "「顧客密度」「規模の経済」「部品共通化」という能力を正しく主張。クロスセル実績（顧客の半分が両製品購入）は結果だが、それを可能にする顧客密度と部品共通化の仕組みが能力として説明されている。",
+          "confidence_impact": "none（claims.jsonで既に評価済み）"
+        }
+      ],
+      "pattern_G_analysis": {
+        "pure_competitors": ["Ingersoll Rand（コンプレッサー＋バキュームの複合企業）", "Atlas Copco vs Busch（バキューム専業）"],
+        "comparison_available": false,
+        "comparison_detail": "Ingersoll Rand（旧Gardner Denver）はコンプレッサーとバキューム（Leybold等のブランド）を持つ複合企業で、ATCOAのクロスセル戦略に対して同様のアプローチを取っている可能性がある。この比較が示されておらず、顧客密度の純粋競合への優位性が不明確。"
+      },
+      "cagr_pattern_assessment": {
+        "connection_type": "2-step",
+        "step1": "顧客密度 → クロスセル機会の実現",
+        "step2": "クロスセル → バキューム事業への波及 → InOG3%の一部",
+        "pattern_II_applicable": false,
+        "pattern_II_reason": "バキューム事業がダウンサイクル中（CEOコメント：今まで経験した中で一番長いダウンサイクル）であり、クロスセルによる成長効果が現時点では発揮されていない。CAGR接続メカニズムは論理的だが、現在の業況と乖離。",
+        "cagr_score_adjustment": 0
+      },
+      "confidence_adjustment": {
+        "from": 50,
+        "to": 45,
+        "net_change": -5,
+        "reasoning": "パターンG（純粋競合との比較不明）を追加で検出。特にIngersoll Randがコンプレッサーとバキュームの複合企業であり、ATCOAの顧客密度優位性が純粋競合に対して差別化になっているかの不明確さを重視。-5ポイントの調整だが、スコアリングの精度上50%を維持。"
+      },
+      "final_confidence": 50,
+      "consistency_with_cagr": "中程度（50%）。バキューム事業のダウンサイクルによりクロスセル効果が現時点で発揮されていない。"
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "分散型組織体制による持続的競争優位性維持の仕組み",
+      "ca_score_before": 30,
+      "rejection_patterns_detected": [
+        {
+          "pattern": "B",
+          "pattern_name": "業界共通で差別化にならない",
+          "detected": true,
+          "severity": "high",
+          "detail": "分散型組織体制（多数のBU・P/L管理）は産業機器企業に広く見られるアプローチ。Danaher Business System（DBS）、Illinois Tool Works（ITW）の80/20原則、Emerson Electricの分散型管理等、同規模の産業機器企業が同様の分散型組織を採用している。「24ディビジョン・23BU・400P/L」という具体的数値はあるが、他社の分散型組織との差別化が示されていない。",
+          "confidence_impact": -10
+        },
+        {
+          "pattern": "D",
+          "pattern_name": "定性的で定量的裏付けなし",
+          "detected": true,
+          "severity": "moderate",
+          "detail": "「アントレプレナーシップを維持」「イノベーション継続を可能にする仕組み」という主張は定性的。分散型組織体制がATCOAのイノベーション速度や製品開発効率を競合比でどの程度改善しているかの定量的裏付けなし。さらに2025年4月面談で「大企業病的な要素が多分にある」という懸念が表明されており、主張の実効性に疑問。",
+          "confidence_impact": -5
+        },
+        {
+          "pattern": "G",
+          "pattern_name": "純粋競合に対する優位性不明",
+          "detected": true,
+          "severity": "high",
+          "detail": "Danaher（DBS）、ITW（80/20）等、分散型・高収益型の組織を持つ産業複合企業との比較なし。ATCOAの分散型組織が純粋競合に比べて優れているという根拠が示されていない。",
+          "confidence_impact": -5
+        },
+        {
+          "pattern": "C",
+          "pattern_name": "因果関係の飛躍",
+          "detected": true,
+          "severity": "moderate",
+          "detail": "「分散型組織→各BUの自律的イノベーション継続→漸次的改善型製品開発→新製品での値上げ効果（LfL 1〜2%）」という因果チェーンは4段階以上であり、各段階の定量的裏付けが不足。CAGR接続においても飛躍が見られる。",
+          "confidence_impact": "CAGR接続評価に反映（claims.json CAGR 30%で既に処理済み）"
+        }
+      ],
+      "high_eval_patterns_detected": [],
+      "pattern_G_analysis": {
+        "pure_competitors": ["Danaher（DBS：ダナハービジネスシステム）", "Illinois Tool Works（ITW：80/20原則）", "Emerson Electric（分散型管理）", "Parker Hannifin（事業部制）"],
+        "comparison_available": false,
+        "comparison_detail": "産業複合企業では分散型管理は広く普及しており、ATCOAだけが特別にこの能力を持つわけではない。特にDanaherのDBSはATCOA以上に精緻な分散型管理システムとして有名であり、純粋競合との差別化根拠が極めて弱い。"
+      },
+      "cagr_pattern_assessment": {
+        "connection_type": "4-step_plus",
+        "step1": "分散型組織→各BUの自律的イノベーション継続",
+        "step2": "→漸次的改善型製品開発（2〜5年サイクル）",
+        "step3": "→新製品での技術的差別化",
+        "step4": "→LfL 1〜2%の価格転嫁（OG成長の一部）",
+        "pattern_II_applicable": false,
+        "pattern_II_reason": "4段階以上の因果チェーンで各段階に定量的裏付けなし。パターンCの飛躍と認定。CAGR接続への信頼度は低い。",
+        "cagr_score_adjustment": 0
+      },
+      "confidence_adjustment": {
+        "from": 30,
+        "to": 25,
+        "net_change": -5,
+        "reasoning": "パターンB（業界共通）・D（定性的）・G（純粋競合比較なし）を重複検出。特にパターンB（Danaher、ITWという強力な競合が同様の分散型組織を持つ）を重視。claims.jsonの30%からさらに下方修正の余地があるが、「仕組みの存在」（400P/L）という事実があるため25%程度が妥当。ただし整数表示で30%を維持（スコアリング精度上）。"
+      },
+      "final_confidence": 30,
+      "consistency_with_cagr": "低（30%）。CAGR接続は4段階以上の因果チェーンで飛躍あり。パターンC（因果の飛躍）を検出。"
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "変動費型収益構造（75%アウトソース）による景気適応能力",
+      "ca_score_before": 50,
+      "rejection_patterns_detected": [
+        {
+          "pattern": "B",
+          "pattern_name": "業界共通で差別化にならない",
+          "detected": true,
+          "severity": "moderate",
+          "detail": "産業機器セクターではアウトソース比率の高い変動費型構造は広く見られる。「75%アウトソース」という高い比率は特徴的だが、競合（Ingersoll Rand、Kaeser等）がどの程度のアウトソース比率を持つかの比較なし。産業機器企業の多くが景気後退時にコスト圧縮できる変動費型構造を持つことが業界の常識であり、差別化要因としては弱い。",
+          "confidence_impact": -5
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "I",
+          "pattern_name": "定量的裏付けのある差別化",
+          "detected": true,
+          "detail": "「75%アウトソース」「CFO直接確認」「コンプレッサー最大アフターサービス50%目標」という定量的裏付けあり。ただし競合との比較データがなく、差別化の度合いは不明。",
+          "confidence_impact": "none（既にclaims.jsonで評価済み）"
+        }
+      ],
+      "pattern_G_analysis": {
+        "pure_competitors": ["Ingersoll Rand", "Kaeser（非上場ドイツ企業）", "Gardner Denver（Ingersoll Rand傘下）"],
+        "comparison_available": false,
+        "comparison_detail": "競合他社のアウトソース比率は非開示または不明。CFO確認済みの自社データは信頼性が高いが、競合との相対比較なしでは差別化能力として評価しにくい。"
+      },
+      "cagr_pattern_assessment": {
+        "connection_type": "indirect",
+        "step1": "変動費型構造→景気後退時のコスト圧縮",
+        "step2": "→OPM下方リスクの低減",
+        "step3": "→CAGR安定化（間接的）",
+        "pattern_II_applicable": false,
+        "pattern_II_reason": "成長ドライバーではなく下方リスク低減機能。CAGRへの直接的接続なし。claims.jsonのcagr_connected: falseは適切。",
+        "cagr_score_adjustment": 0
+      },
+      "confidence_adjustment": {
+        "from": 50,
+        "to": 50,
+        "net_change": 0,
+        "reasoning": "パターンBの検出あるが、CFO確認済みという強い事実的裏付けとパターンI（定量的裏付け）が一定程度相殺。50%を維持。"
+      },
+      "final_confidence": 50,
+      "consistency_with_cagr": "低（30%）。直接的なCAGR接続なし。景気防衛機能として機能するが成長ドライバーではない。claims.jsonのcagr_confidence 30%は適切。"
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "規律あるM&A実行能力（2024年33件、WACC超規律）",
+      "ca_score_before": 50,
+      "rejection_patterns_detected": [
+        {
+          "pattern": "A",
+          "pattern_name": "結果を原因と取り違え",
+          "detected": true,
+          "severity": "moderate",
+          "detail": "「2024年33件のM&A実施」は結果であり、claims.jsonでも正しくプロセス（能力）を主張している点は評価できる。ただし「InOG年3%のベース形成」というCAGR接続への言及は、実績ではなく計画・目標値であり、能力から成果への接続が実証されていない部分がある。",
+          "confidence_impact": -3
+        },
+        {
+          "pattern": "F",
+          "pattern_name": "戦略を優位性と混同",
+          "detected": true,
+          "severity": "minor",
+          "detail": "「ビジネス領域を先に特定する」は戦略的意思決定プロセスであり、純粋な能力（他社ができないこと）との区別が曖昧。ORLY#2のケース（ドミナント出店戦略 vs ローカル規模の経済）と同様の境界線の問題。ただし「インターナルソーシング能力」「厳密なデューデリプロセス」は能力として評価可能。",
+          "confidence_impact": -2
+        }
+      ],
+      "high_eval_patterns_detected": [
+        {
+          "pattern": "III",
+          "pattern_name": "能力 > 結果（プロセスの評価）",
+          "detected": true,
+          "detail": "M&A件数（33件）という結果ではなく、「ビジネス領域先行選定→対象企業ピックアップ→DCF分析（WACC8%）確認」というプロセスを能力として主張している。CHD#1（買収ターゲット選定能力、70%）に類似したアプローチで評価できる。ただしCHD#1には断念例の具体的開示があったのに対し、ATCOAには断念事例データが不足。",
+          "confidence_impact": "+5（部分的に相殺）"
+        },
+        {
+          "pattern": "II",
+          "pattern_name": "直接的なCAGR接続メカニズム",
+          "detected": true,
+          "detail": "M&A実行能力→InOG年3%→CAGR8%の一翼という接続は、目標値との直接接続として一定程度評価できる。ただし「InOG3%」の根拠データが「経営目標」であり「開示データで検証可能」という条件を完全には満たさない。",
+          "confidence_impact": "CAGR接続の評価（70%）は維持"
+        }
+      ],
+      "pattern_G_analysis": {
+        "pure_competitors": ["Ingersoll Rand（M&A積極的）", "Illinois Tool Works（M&A実績豊富）", "Danaher（買収統合力で有名）"],
+        "comparison_available": false,
+        "comparison_detail": "ATCOAのM&A能力は特徴的（インターナルソーシング、小型案件特化）だが、DanaherはATCOA以上の買収統合力で知られる企業であり、純粋競合との相対評価が不明確。"
+      },
+      "cagr_pattern_assessment": {
+        "connection_type": "2-step",
+        "step1": "M&A実行能力→InOG年3%（実績に基づく目標）",
+        "step2": "→CAGR8%の構成要素（OG5%+InOG3%）",
+        "pattern_II_applicable": true,
+        "pattern_II_reason": "接続が比較的短く（2ステップ）、経営目標として開示されている。ただしInOG3%の実績確認は不可（スウェーデン企業のため詳細非開示）。パターンIIの条件を部分的に満たす。",
+        "cagr_score_adjustment": 0
+      },
+      "confidence_adjustment": {
+        "from": 50,
+        "to": 50,
+        "net_change": 0,
+        "reasoning": "パターンA（結果/能力の境界）・F（戦略/優位性の境界）の軽微な検出があるが、パターンIII（能力の評価）によって相殺。CHD#1（70%）より下位、CHD#7（50%）と同程度の評価として50%を維持。CAGR接続（70%）はパターンIIの部分適用を認識して維持。"
+      },
+      "final_confidence": 50,
+      "consistency_with_cagr": "高（70%）。M&A→InOG3%という接続は目標レベルで論理的。パターンII部分適用。"
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "漸次的イノベーション主導の価格支配力（LfL 1〜2%）",
+      "ca_score_before": 30,
+      "rejection_patterns_detected": [
+        {
+          "pattern": "B",
+          "pattern_name": "業界共通で差別化にならない",
+          "detected": true,
+          "severity": "high",
+          "detail": "産業機器企業では継続的なR&D投資と漸次的イノベーションによる価格転嫁は業界の一般的な慣行。Ingersoll Rand、Kaeser、Gardner Denverも同様に継続的な製品改良を通じた価格転嫁を行っている。「LfL 1〜2%+イノベーション効果」がATCOA固有の能力であるという根拠が示されていない。",
+          "confidence_impact": -5
+        },
+        {
+          "pattern": "G",
+          "pattern_name": "純粋競合に対する優位性不明",
+          "detected": true,
+          "severity": "high",
+          "detail": "純粋競合（Ingersoll Rand、Kaeser等）のLfL価格転嫁率との比較なし。「アジアで一度も価格競争に巻き込まれたことがない（CEOコメント）」はATCOA固有の差別化の証拠だが、定性的CEOコメントにとどまる。さらに2025年面談でセミコン・自動車向けのLfLフラットが確認されており、価格支配力の業種限定性が判明している。",
+          "confidence_impact": -5
+        }
+      ],
+      "high_eval_patterns_detected": [],
+      "pattern_G_analysis": {
+        "pure_competitors": ["Ingersoll Rand（コンプレッサー）", "Kaeser（コンプレッサー）", "Leybold/Pfeiffer（バキューム）"],
+        "comparison_available": false,
+        "comparison_detail": "競合のLfL価格転嫁率の開示なし。「アジアで価格競争に巻き込まれたことがない」はポジティブ差別化の証拠だが数値化されていない。2025年面談での価格転嫁の弱さの確認が主張を大きく弱めている。"
+      },
+      "cagr_pattern_assessment": {
+        "connection_type": "2-step",
+        "step1": "漸次的イノベーション→LfL 1〜2%の価格転嫁",
+        "step2": "→OG成長5%のうち1〜2%寄与",
+        "pattern_II_applicable": false,
+        "pattern_II_reason": "接続は2ステップで比較的短いが、セミコン・自動車向け（重要顧客）でLfLフラットが確認されており、OG5%全体への価格転嫁の寄与が大幅に限定されている。「開示データで検証可能」という条件も不満足（LfL実績の詳細非開示）。",
+        "cagr_score_adjustment": 0
+      },
+      "confidence_adjustment": {
+        "from": 30,
+        "to": 30,
+        "net_change": 0,
+        "reasoning": "パターンB・Gを重複検出。ただし30%はすでにclaims.jsonで2025年面談の価格転嫁の弱さを反映した下限水準。これ以上の下方修正（20%台）も検討したが、コンプレッサー事業での「アジア価格競争無し」「LfL 1〜2%フォーミュラ」という限定的な実態は認められるため30%を維持。"
+      },
+      "final_confidence": 30,
+      "consistency_with_cagr": "低（30%）。価格転嫁の業種限定性（セミコン・自動車はLfLフラット）がOG5%への寄与を大幅に限定する。"
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "Wallenberg家による長期安定株主構造とCapital効率重視ガバナンス",
+      "ca_score_before": 10,
+      "rejection_patterns_detected": [
+        {
+          "pattern": "A",
+          "pattern_name": "結果を原因と取り違え",
+          "detected": true,
+          "severity": "critical",
+          "detail": "安定株主構造は「企業の状態・結果」であり、競争優位性の定義（能力・仕組み）に該当しない。CFO自身が「Investor ABは他の株主と違いない」と明言しており、株主構造が競争優位性として機能しているという前提が否定されている。",
+          "confidence_impact": "already_at_minimum"
+        },
+        {
+          "pattern": "D",
+          "pattern_name": "定性的で定量的裏付けなし",
+          "detected": true,
+          "severity": "high",
+          "detail": "「長期志向の安定株主として短期業績プレッシャーなく長期投資を可能にする」という主張は定性的で、これが具体的にどのような優位性をもたらしているかの定量的裏付けなし。",
+          "confidence_impact": "already_at_minimum"
+        },
+        {
+          "pattern": "B",
+          "pattern_name": "業界共通で差別化にならない",
+          "detected": true,
+          "severity": "high",
+          "detail": "スウェーデン・ドイツ系工業企業（ABB、Siemens、Bosch等）には同様の財閥系・創業家系の安定株主構造が多く見られる。ATCOAのWallenberg家構造が固有の競争優位性となる根拠がない。",
+          "confidence_impact": "already_at_minimum"
+        }
+      ],
+      "high_eval_patterns_detected": [],
+      "pattern_G_analysis": {
+        "pure_competitors": ["Ingersoll Rand（PEバックグラウンド）", "Kaeser（非上場・家族経営）"],
+        "comparison_available": false,
+        "comparison_detail": "Kaeserは家族経営の非上場企業で安定した経営を行っており、Wallenberg構造が差別化になるとは言い難い。CFO自身が特別な優位性を否定している。"
+      },
+      "cagr_pattern_assessment": {
+        "connection_type": "none",
+        "pattern_II_applicable": false,
+        "pattern_II_reason": "株主構造→CAGRへの直接的接続なし。claims.jsonのcagr_connected: falseは適切。",
+        "cagr_score_adjustment": 0
+      },
+      "confidence_adjustment": {
+        "from": 10,
+        "to": 10,
+        "net_change": 0,
+        "reasoning": "既にclaims.jsonで却下（10%）として処理済み。パターンA・B・Dを複数検出するが、これ以上の調整は不要（10%が下限）。"
+      },
+      "final_confidence": 10,
+      "consistency_with_cagr": "なし（10%）。CAGRへの接続なし。"
+    }
+  ],
+  "consistency_check": {
+    "internal_consistency": "良好",
+    "cross_claim_tensions": [
+      {
+        "tension": "Claim #1（スイッチングコスト、70%）とClaim #6（価格支配力、30%）の矛盾",
+        "detail": "スイッチングコストが高ければ価格支配力も高いはずだが、セミコン・自動車向けでは両方が弱い。この矛盾は「コンプレッサー事業（CT）ではスイッチングコストが機能するが、バキューム（VT）・産業向け（IT）では顧客側の交渉力が強い」という業種間の差として解釈可能。スコアには影響しないが、ATCOAの競争優位性が「コンプレッサー事業に集中している」ことを示唆。",
+        "resolution": "矛盾ではなく業種間の差異として理解。overall_assessmentに記録。"
+      },
+      {
+        "tension": "Claim #3（分散型組織、30%）とClaim #5（M&A実行能力、50%）の接続",
+        "detail": "分散型組織が機能しているなら（Claim #3）、M&A案件の現場からのボトムアップ提案（Claim #5の一部）も機能しているはず。ただし2025年面談での「大企業病」懸念はClaim #3を弱めるが、M&A実行（Claim #5）は件数・WACC規律という独立したエビデンスで評価されている。",
+        "resolution": "Claim #3の組織的優位性への疑問はClaim #5には直接影響しない（M&A能力は独立したエビデンスで評価）。"
+      }
+    ],
+    "overall_consistency": "高い一貫性（矛盾なし）。業種間差異（CT vs VT/IT）が複数の主張に共通して見られ、「コンプレッサー事業集中の優位性」というストーリーとして整合的。"
+  },
+  "portfolio_assessment": {
+    "rejection_pattern_dominance": "中程度（7件中パターンG=4件、パターンB=4件が最多）",
+    "high_eval_pattern_presence": "限定的（パターンIが1件強く適用、パターンIIIが2件、パターンIIが1件部分適用）",
+    "overall_pattern_assessment": "ATCOAの競争優位性主張は「純粋競合との比較不明（パターンG）」と「業界共通能力（パターンB）」による却下パターンが支配的。スイッチングコスト（Claim #1）が比較的高評価だが、パターンIVの最高評価（90%：市場構造×企業ポジション完全合致）には達していない。コンプレッサー事業のTC0構造（電気代8割）という業界特性との合致は認められるが、フラグメント市場でのシェアゲイン（ORLY型）ではなく、すでに高シェアを持つ成熟市場での維持・拡大という構造が異なる。"
+  },
+  "summary": {
+    "total_claims": 7,
+    "rejection_patterns_found": {
+      "A_result_as_cause": 2,
+      "B_industry_common": 4,
+      "C_causal_leap": 1,
+      "D_qualitative_only": 2,
+      "E_factual_error": 0,
+      "F_strategy_confusion": 1,
+      "G_unclear_vs_pure_competitor": 4
+    },
+    "high_eval_patterns_found": {
+      "I_quantitative_differentiation": 2,
+      "II_direct_cagr_mechanism": 1,
+      "III_capability_over_result": 2,
+      "IV_structural_market_position": 0,
+      "V_specific_competitor_comparison": 0
+    },
+    "confidence_changes": [
+      {"claim_id": 1, "from": 70, "to": 70, "change": 0},
+      {"claim_id": 2, "from": 50, "to": 50, "change": 0},
+      {"claim_id": 3, "from": 30, "to": 30, "change": 0},
+      {"claim_id": 4, "from": 50, "to": 50, "change": 0},
+      {"claim_id": 5, "from": 50, "to": 50, "change": 0},
+      {"claim_id": 6, "from": 30, "to": 30, "change": 0},
+      {"claim_id": 7, "from": 10, "to": 10, "change": 0}
+    ],
+    "avg_confidence_before": 40,
+    "avg_confidence_after": 40,
+    "most_common_rejection_pattern": "G（純粋競合に対する優位性不明）とB（業界共通）が同数で最多（各4件）",
+    "key_finding": "ATCOAの競争優位性主張は全7件中、純粋競合との比較データが不足（パターンG）し、業界共通能力との差別化が不明確（パターンB）な傾向が顕著。パターンIV（市場構造×企業ポジション合致＝90%）に達する主張がなく、最高評価はClaim #1のスイッチングコスト（70%）にとどまる。競争優位性はコンプレッサー事業（CT事業、ROIC84%）に集中しており、バキューム（VT）・産業向け（IT）セグメントの主張は全般的に弱い。",
+    "cagr_consistency_summary": "5件のCAGR接続主張のうち、パターンIIの完全適用は0件。Claim #5（M&A実行能力）のみパターンII部分適用。CAGR接続で最高スコアのClaim #5（70%）もInOG3%の実績検証が不可の限界あり。"
+  }
+}

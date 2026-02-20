@@ -1,0 +1,173 @@
+{
+  "ticker": "ATCOA",
+  "company_name": "Atlas Copco AB",
+  "retrieved_at": "2026-02-20T08:50:00Z",
+  "data_source": "analyst_report_extracted",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "unavailable",
+    "reason": "ATCOAはスウェーデン上場企業（Nasdaq Stockholm）であり、SEC EDGAR（米国証券取引委員会）への10-K/10-Q提出義務がないため、SEC EDGAR MCPでのCIK取得不可。財務データはアナリストレポート（analyst/raw/ATCOA SS.md）から抽出した参照値のみ。",
+    "affected_fields": ["financials_detailed", "filing_sections", "recent_filings_full", "insider_summary"],
+    "available_fields": ["financials_from_report", "key_metrics_from_report", "segment_data", "business_summary"]
+  },
+  "financials": {
+    "note": "アナリストレポートからの参照値。正確な財務諸表データはAtlas Copco IR（スウェーデン語・英語）または欧州取引所データが必要。",
+    "currency": "SEK（スウェーデンクローナ）、一部EURで記載されることあり",
+    "revenue": {
+      "description": "売上高",
+      "latest_annual": {
+        "value_approx": "未開示（レポートより：直接的な売上高数値の記載なし）",
+        "period": "2025年",
+        "note": "25/2Q決算でSales OG▲2.0%、FX要因▲8%と記載。セグメント別OGが主な参照値。"
+      }
+    },
+    "segment_revenue_mix": {
+      "Compressor_Technique": {
+        "description": "産業用コンプレッサー（世界トップシェア34%、2番手の約1.8倍）",
+        "q2_2025_og": "+2.0% (< Cons +2.4%)",
+        "q2_2025_opm": "25.0% (> Cons 24.1%)",
+        "q2_2025_organic_order": "▲7.0% (< Cons +0.5%)",
+        "roic_note": "事業ROIC 84%（コンプレッサー事業は非常に高い魅力的なビジネス）"
+      },
+      "Vacuum_Technique": {
+        "description": "半導体・産業用真空ポンプ（バキューム市場全体で約50%シェア）",
+        "q2_2025_og": "▲5.0% (< Cons ▲1.2%)",
+        "q2_2025_opm": "18.9% (< Cons 20.1%)",
+        "q2_2025_organic_order": "+3.0% (< Cons +4.2%)",
+        "note": "半導体向け6〜7割。EUV微細化追い風。今まで経験した中で一番長いダウンサイクル（CEOコメント）。米国大口先（Intel想定）のゴタゴタが継続。"
+      },
+      "Industrial_Technique": {
+        "description": "自動車向けトップシェア（2番手の4倍のシェア）",
+        "q2_2025_og": "▲12.0% (< Cons ▲4.2%)",
+        "q2_2025_opm": "17.1% (< Cons 19.9%)",
+        "q2_2025_organic_order": "▲1.0% (< Cons +0.3%)",
+        "note": "関税影響などでプロジェクトに影響（主に自動車顧客）。Automation、Quality Assurance領域は堅調。"
+      },
+      "Power_Technique": {
+        "description": "建設業・流体ソリューション（元々建設業界向け→Industrialに商圏拡大中）",
+        "q2_2025_og": "▲1.0% (= Cons ▲1.0%)",
+        "q2_2025_opm": "17.1% (< Cons 18.2%)",
+        "q2_2025_organic_order": "+10.0% (> Cons 5.4%)"
+      }
+    },
+    "income_statement": {
+      "q2_2025_overall": {
+        "sales_growth": "▲8.0%（うちFX要因▲8%）",
+        "adj_opm": "20.4% (< Cons 20.9%)",
+        "eps": "1.34 (< Cons 1.37)"
+      },
+      "long_term_targets": {
+        "revenue_growth": "8%（OG5%+InOG3%のイメージ、当社ターゲットも8%）",
+        "opm_long_term": "20〜23%（ex-FX, Low 20s）- CFO面談コメント",
+        "op_leverage_target": "年1%程度（バキューム事業20bp/年改善を中心に）"
+      },
+      "cagr_estimate_2022": {
+        "eps_cagr": "10%（売上8%+OPレバレッジ1%+自社株買い1%）",
+        "note": "2021年3月10日の初期推定はEPS8%（売上6%+OPレバレッジ1%+自社株買い1%）"
+      }
+    },
+    "balance_sheet": {
+      "note": "詳細データはAtlas Copco IR開示参照要。レポートからの記載なし。",
+      "ma_investment_note": "買収規律：WACC超（約8%）のリターンを投資基準とする。ROICは全社20%超（想定）。"
+    },
+    "cash_flow": {
+      "ma_count_2024": "2024年で33件のM&A実施（4Q11件）",
+      "capex_note": "グループ全体で米国に18工場。Dry Vacuum工場を新設予定（完工後は米国内現地生産唯一プレイヤーになる）",
+      "dividend_policy": "配当性向50%（従前どおり）"
+    }
+  },
+  "recent_filings": {
+    "note": "ATCOA はスウェーデン上場企業のため、SEC EDGAR への提出書類（10-K/10-Q/8-K）は存在しない。スウェーデン金融監督庁（Finansinspektionen）へのÅrsredovisning（年次報告書）等で開示。",
+    "10k": { "status": "unavailable", "reason": "スウェーデン上場企業のためSEC提出不要" },
+    "10q": { "status": "unavailable", "reason": "スウェーデン上場企業のためSEC提出不要" },
+    "8k": { "status": "unavailable", "reason": "スウェーデン上場企業のためSEC提出不要" },
+    "equivalent_filings": {
+      "annual_report": "Årsredovisning（年次報告書、スウェーデン語・英語）",
+      "quarterly_reports": "四半期決算発表（プレスリリース形式）",
+      "most_recent_earnings_date": "2025年7月25日（25/2Q決算）"
+    }
+  },
+  "insider_summary": {
+    "status": "unavailable",
+    "reason": "SEC EDGAR MCPでのCIK取得不可（スウェーデン上場企業）",
+    "management_info_from_report": {
+      "cfo": "Peter Kinnart, Senior VP, CFO（2025年2月13日に面談実施）",
+      "ir_vp": "Daniel Althoff（VP of IR）",
+      "major_shareholder": "Wallenberg家（Investor AB経由で約22%保有。実質的な議決権は保有比率以上）",
+      "investor_ab_note": "長期志向の安定株主として機能。他の株主と異なる特別な介入はなし（CFOコメント）。"
+    }
+  },
+  "key_metrics": {
+    "opm_consolidated_2025q2": "20.4%（アジャストベース）",
+    "opm_long_term_target": "20〜23%（ex-FX）",
+    "revenue_growth_target": "8%（OG5%+InOG3%）",
+    "direct_sales_ratio": "約80%（Customer Centersは300以上）",
+    "outsourcing_ratio": "約75%（コア部品のみ25%内製）",
+    "bu_structure": {
+      "division_count": 24,
+      "bu_count": 23,
+      "pl_count": "全社で約400のP/L"
+    },
+    "ma_track_record": {
+      "period": "2024年",
+      "total_count_2024": "33件",
+      "q4_2024_count": "11件",
+      "financial_criteria": "WACC超（約8%）のリターン",
+      "process": "具体的対象企業考慮前に魅力的なビジネス領域（地理・技術）を特定→対象企業ピックアップ→DCF分析（WACC8%）で健全性確認"
+    },
+    "market_share": {
+      "compressor_global": "34%（2番手の約1.8倍）",
+      "vacuum_global": "約50%（バキューム市場全体）",
+      "industrial_automotive": "2番手の4倍のシェア"
+    },
+    "pricing_power": {
+      "lfl_price_increase": "LfL 1〜2%+イノベーション効果",
+      "semi_auto_pricing": "セミコン・自動車向けはプライシング弱い（LfLフラットイメージ）",
+      "note": "アジアでは一度も価格競争に巻き込まれたことはない（CEOコメント）"
+    },
+    "service_ratio_targets": {
+      "compressor": "機器:アフターセールス = 最大1:1",
+      "vacuum": "約40%のサービス比率見込み（ヒアリングベース）"
+    }
+  },
+  "filing_sections": {
+    "note": "SEC提出書類がないため、アナリストレポートからの事業内容要約のみ",
+    "business": {
+      "summary": "産業用コンプレッサー・バキューム等で世界最大手のスウェーデン産業機器メーカー。4セグメント（Compressor Technique/Vacuum Technique/Industrial Technique/Power Technique）に23のBU（ビジネスユニット）。分散型組織体制（24のディビジョンが製品開発・製造・マーケティングを担当）。",
+      "key_products": [
+        "産業用コンプレッサー（工場の心臓部：圧縮空気を供給）",
+        "半導体・産業用真空ポンプ（VSD部品の75%をコンプレッサーと共通化）",
+        "自動車・製造向けツール（Industrial Technique）",
+        "建設・流体ソリューション（Power Technique）"
+      ],
+      "key_customers": [
+        "半導体：ASML、AMAT、Agilent、TSMC、Samsung、Intel（大口先、足元ゴタゴタ）",
+        "自動車：欧州・中国EV（BYDに対してローカル7社と競合するも唯一多様なアセンブリに1社対応可能）",
+        "工場全体：製造業全般（コンプレッサーは生産フロー全体の責任を担う「工場の心臓部」）"
+      ],
+      "wallenberg_background": "スウェーデンを代表するWallenberg家（スウェーデンのロックフェラー）がInvestor AB経由で約22%保有。ABB・エリクソン・アストラゼネカなども同家が関与。長期志向の安定株主として機能。"
+    },
+    "risk_factors": {
+      "summary": "レポートで言及されたリスクファクター",
+      "risks": [
+        "技術革新リスク：省エネに関するブレイクスルー（オイルフリー、VSDなど）は数十年に一度起きている",
+        "VTビジネスのシクリカルリスク：今まで経験した中で一番長いダウンサイクル（CEOコメント）",
+        "最終顧客交渉力の問題：セミコンと自動車向けではプライシング弱い（LfLフラット）、ASMLのようにドミナントな顧客に対して価格支配力なし",
+        "大企業病リスク：プロアクティブな対応よりリアクティブな面が散見される（2025年4月面談所見）",
+        "関税影響：短期的にはマイナスの影響あり（特に欧州工場のリストラクチャリングを含む）",
+        "Vacuumビジネスの収益性低下：Volume減、R&D投資、生産キャパシティ投資で収益性ダウン",
+        "投資候補としての魅力低下：より魅力的な企業があれば入替を本格的に検討（2025年4月面談所見）"
+      ]
+    },
+    "mda": {
+      "summary": "2025/2Q実績とコメント",
+      "q2_2025_key_points": [
+        "全社OG▲2.0%（FX▲8%）、Adj OPM 20.4%で市場コンセンサス未達",
+        "Compressor受注弱さの半分はGas & Process市場（LNG等）。関税影響で発注躊躇。",
+        "Vacuumは安定化（セミ関連フラット）。顧客層多様化（Science領域等）の効果。",
+        "Industrial：関税影響でプロジェクト遅延（主に自動車）",
+        "関税影響：価格引き上げや調達修正でボトムライン影響ほとんどなし（0〜0.1%程度）"
+      ],
+      "investment_view": "第一印象はニュートラル。ダウンサイクルからの反転期待大きかっただけに株価は反応（▲7.8%下落）。徐々に改善に向かうも、先行きは不透明。他社・顧客決算も踏まえて再度検討する方針。"
+    }
+  }
+}

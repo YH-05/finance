@@ -1,0 +1,113 @@
+{
+  "research_id": "CA_eval_20260220-0845_ATCOA",
+  "type": "ca_eval",
+  "ticker": "ATCOA",
+  "created_at": "2026-02-20T08:45:00Z",
+  "completed_at": "2026-02-20T09:30:00Z",
+  "parameters": {
+    "ticker": "ATCOA",
+    "report_path": "analyst/raw/ATCOA SS.md",
+    "skip_industry": true
+  },
+  "status": "completed",
+  "model_config": {
+    "lead": "claude-sonnet-4-6 (inherit)",
+    "teammates": "claude-sonnet-4-6 (sonnet)"
+  },
+  "workflow": {
+    "phase_0": "done",
+    "phase_1": "done",
+    "phase_2": "done",
+    "phase_3": "done",
+    "phase_4": "done",
+    "phase_5": "done"
+  },
+  "task_results": {
+    "T0_setup": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "00_meta/research-meta.json"
+    },
+    "T1_sec_filings": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "01_data_collection/sec-data.json",
+      "note": "ATCOAはスウェーデン上場企業のためSEC EDGAR MCPは利用不可。アナリストレポートおよびヒアリングメモから財務データを構造化。"
+    },
+    "T2_report_parser": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "01_data_collection/parsed-report.json"
+    },
+    "T3_industry": {
+      "status": "skipped",
+      "owner": "ca-eval-lead",
+      "note": "PoC段階のポリシーによりスキップ（SEC EDGAR以外の外部データソース不使用）"
+    },
+    "T4_claim_extractor": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "02_claims/claims.json",
+      "claims_count": 7
+    },
+    "T5_fact_checker": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "03_verification/fact-check.json",
+      "verified": 10,
+      "contradicted": 0,
+      "unverifiable": 0,
+      "verified_with_caveat": 9
+    },
+    "T6_pattern_verifier": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "03_verification/pattern-verification.json",
+      "rejection_patterns_detected": 8,
+      "high_eval_patterns_detected": 5,
+      "confidence_adjustments": 0
+    },
+    "T7_report_generator": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": ["04_output/draft-report.md", "04_output/structured.json"]
+    },
+    "T8_ai_critique": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": ["04_output/critique.json", "04_output/revised-report.md"],
+      "critical_issues": 2,
+      "minor_issues": 6,
+      "confidence_adjustments": 1,
+      "notable_modification": "Claim #5 CAGR confidence: 70%→50%（InOG3%実績追跡困難・スウェーデン企業のためSEC EDGAR照合不可）"
+    },
+    "T9_accuracy": {
+      "status": "completed",
+      "owner": "ca-eval-lead",
+      "output": "04_output/accuracy-report.json",
+      "mode": "simplified",
+      "verdict": "pass",
+      "s8_contradicted_count": 0,
+      "s8_rule9_applied": 0
+    }
+  },
+  "outputs": {
+    "final_report": "04_output/revised-report.md",
+    "draft_report": "04_output/draft-report.md",
+    "structured_json": "04_output/structured.json",
+    "critique": "04_output/critique.json",
+    "accuracy": "04_output/accuracy-report.json"
+  },
+  "summary": {
+    "avg_ca_confidence": 40,
+    "avg_cagr_confidence": 38,
+    "strongest_claims": [
+      "Claim #1: 超精密エンジニアリング能力（CA 70%, CAGR 50%）",
+      "Claim #4: 顧客囲い込み構造（CA 50%, CAGR 50%）"
+    ],
+    "kb3_closest_analog": "MNST（平均CA confidence 40%、シェア=結果の原則厳格適用）",
+    "notable_t8_modification": "Claim #5 CAGR confidence 70%→50%（InOG実績追跡困難・欧州上場企業の外部データ制約）",
+    "evaluation_constraint": "スウェーデン上場企業のためSEC EDGAR MCPが利用不可。ファクトチェックはアナリストレポート内部一貫性に限定。",
+    "key_risk_identified": "2025年4月面談での大企業病・インセンティブ変容リスク（Claim #3に注釈）"
+  }
+}

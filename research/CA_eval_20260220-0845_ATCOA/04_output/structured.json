@@ -1,0 +1,278 @@
+{
+  "research_id": "CA_eval_20260220-0845_ATCOA",
+  "ticker": "ATCOA",
+  "company_name": "Atlas Copco AB",
+  "generated_at": "2026-02-20T10:00:00Z",
+  "generator": "ca-eval-lead (T7直接実行)",
+  "version": "draft_v1",
+  "cagr_estimate": {
+    "current": "10%",
+    "breakdown": {
+      "og": "5%（OG：スイッチングコスト主導の顧客継続率＋LfL 1〜2%）",
+      "inog": "3%（InOG：M&A実行能力による年33件ペース）",
+      "op_leverage": "1%（バキューム事業の段階的OPM改善が中心、再考中）",
+      "buyback": "1%（自社株買い、3〜5年に一度）"
+    },
+    "downside_risk": "2025年2月CFO面談・4月IR面談でVTダウンサイクルと価格転嫁の弱さが確認されており、下方修正リスクあり（8〜9%への低下が視野に入る）"
+  },
+  "claims": [
+    {
+      "claim_id": 1,
+      "title": "インストールベース×アフターサービス体制によるスイッチングコスト",
+      "ca_type": "structural",
+      "ca_confidence": 70,
+      "ca_label": "おおむね納得",
+      "cagr_connected": true,
+      "cagr_confidence": 50,
+      "rule_applications": {
+        "rule01": "PASS",
+        "rule02": "PASS",
+        "rule03": "PARTIAL",
+        "rule04": "PARTIAL",
+        "rule05": "PARTIAL",
+        "rule06": "PASS",
+        "rule07": "PARTIAL",
+        "rule08": "PASS",
+        "rule09": "PASS",
+        "rule10": "PARTIAL",
+        "rule11": "PARTIAL",
+        "rule12": "N/A（PoC省略）"
+      },
+      "rejection_patterns": ["G（純粋競合との優位性不明）"],
+      "high_eval_patterns": ["I（定量的裏付け）", "III（能力>結果）"],
+      "fact_check_status": "all_verified",
+      "rule9_applied": false,
+      "key_evidence": "TCO構造（電気代8割）・Mission Critical性・34%グローバルシェア（2番手1.8倍）・直販比率80%・300+Customer Centers",
+      "key_concern": "純粋競合との強度比較なし・セミコン/自動車向けのスイッチングコスト弱さ（2025年面談確認）・Churn Rateデータなし",
+      "t8_check_request": "セミコン・自動車向けのスイッチングコスト弱さがCT事業全体の70%評価に与える影響を批判的に検討"
+    },
+    {
+      "claim_id": 2,
+      "title": "顧客密度（Customer Density）と規模の経済による供給優位性",
+      "ca_type": "structural",
+      "ca_confidence": 50,
+      "ca_label": "まあ納得",
+      "cagr_connected": true,
+      "cagr_confidence": 50,
+      "rule_applications": {
+        "rule01": "PASS",
+        "rule02": "PASS",
+        "rule03": "PARTIAL",
+        "rule04": "PARTIAL",
+        "rule05": "PARTIAL",
+        "rule06": "PASS",
+        "rule07": "FAIL",
+        "rule08": "PASS",
+        "rule09": "PASS",
+        "rule10": "N/A",
+        "rule11": "PARTIAL",
+        "rule12": "N/A（PoC省略）"
+      },
+      "rejection_patterns": ["G（純粋競合との優位性不明：Ingersoll Randも複合企業）"],
+      "high_eval_patterns": ["III（能力>結果）"],
+      "fact_check_status": "mostly_verified",
+      "rule9_applied": false,
+      "key_evidence": "顧客の半分が両製品購入（ヒアリングベース推定）・VSD部品75%共通化・300+Customer Centers",
+      "key_concern": "Ingersoll Rand（コンプレッサー+バキューム複合企業）との比較なし・「顧客の半分」は推定値・VTダウンサイクルでクロスセル効果が抑制",
+      "t8_check_request": "純粋競合Ingersoll Randとの比較視点を補強または修正"
+    },
+    {
+      "claim_id": 3,
+      "title": "分散型組織体制による持続的競争優位性維持の仕組み",
+      "ca_type": "operational",
+      "ca_confidence": 30,
+      "ca_label": "あまり納得しない",
+      "cagr_connected": true,
+      "cagr_confidence": 30,
+      "rule_applications": {
+        "rule01": "PARTIAL",
+        "rule02": "PASS",
+        "rule03": "FAIL",
+        "rule04": "PARTIAL",
+        "rule05": "FAIL",
+        "rule06": "PARTIAL",
+        "rule07": "FAIL",
+        "rule08": "PASS",
+        "rule09": "PASS",
+        "rule10": "PARTIAL",
+        "rule11": "PARTIAL",
+        "rule12": "N/A（PoC省略）"
+      },
+      "rejection_patterns": ["B（業界共通：Danaher・ITW等も同様）", "D（定性的）", "G（純粋競合比較なし）", "C（CAGR接続で因果の飛躍：4段階以上）"],
+      "high_eval_patterns": [],
+      "fact_check_status": "verified_with_concerns",
+      "rule9_applied": false,
+      "key_evidence": "24ディビジョン・23BU・約400P/L（CFO確認）・2018年Epicocスピンオフ（ネガティブケース）",
+      "key_concern": "2025年4月面談で「大企業病的要素・リアクティブな面」懸念。Danaher（DBS）・ITW（80/20）等の競合も分散型組織を持つ。CAGR接続が4段階以上の因果チェーン",
+      "t8_check_request": "2025年面談の懸念が30%評価を正当化するか、あるいは20%への下方修正が適切か"
+    },
+    {
+      "claim_id": 4,
+      "title": "変動費型収益構造（75%アウトソース）による景気適応能力",
+      "ca_type": "operational",
+      "ca_confidence": 50,
+      "ca_label": "まあ納得",
+      "cagr_connected": false,
+      "cagr_confidence": 30,
+      "rule_applications": {
+        "rule01": "PASS",
+        "rule02": "PASS",
+        "rule03": "FAIL",
+        "rule04": "PASS",
+        "rule05": "FAIL",
+        "rule06": "PARTIAL",
+        "rule07": "PARTIAL",
+        "rule08": "PASS",
+        "rule09": "PASS",
+        "rule10": "N/A",
+        "rule11": "PARTIAL",
+        "rule12": "N/A（PoC省略）"
+      },
+      "rejection_patterns": ["B（業界共通：産業機器セクターの一般的アプローチ）"],
+      "high_eval_patterns": ["I（定量的裏付け：CFO確認）"],
+      "fact_check_status": "verified",
+      "rule9_applied": false,
+      "key_evidence": "75%アウトソース（CFO直接確認）・コンプレッサー最大50%アフターサービス比率・バキューム40%目標（ヒアリングベース）",
+      "key_concern": "業界共通の能力に近い（パターンB）・競合のアウトソース比率との比較なし・CAGR直接貢献なし（景気防衛機能）",
+      "t8_check_request": "この優位性を独立した競争優位性として評価すべきか、他のClaim（#1・#5）を支える基盤として位置づけるべきかを検討"
+    },
+    {
+      "claim_id": 5,
+      "title": "規律あるM&A実行能力（2024年33件、WACC超規律）",
+      "ca_type": "operational",
+      "ca_confidence": 50,
+      "ca_label": "まあ納得",
+      "cagr_connected": true,
+      "cagr_confidence": 70,
+      "rule_applications": {
+        "rule01": "PASS",
+        "rule02": "PASS",
+        "rule03": "PARTIAL",
+        "rule04": "PARTIAL",
+        "rule05": "PASS",
+        "rule06": "PASS",
+        "rule07": "PARTIAL",
+        "rule08": "PARTIAL",
+        "rule09": "PASS",
+        "rule10": "PARTIAL",
+        "rule11": "PARTIAL",
+        "rule12": "N/A（PoC省略）"
+      },
+      "rejection_patterns": ["A（結果/能力の境界：軽微）", "F（戦略/優位性の境界：軽微）"],
+      "high_eval_patterns": ["III（能力>結果）", "II（CAGR直接接続：部分適用）"],
+      "fact_check_status": "mostly_verified",
+      "rule9_applied": false,
+      "key_evidence": "2024年33件（4Q11件）・WACC8%基準・インターナルソーシング（小型案件特化）・ビジネス領域先行選定プロセス",
+      "key_concern": "買収後ROIC実績なし・断念事例の具体的開示なし・CHD#1（70%）に対してデータ量が少ない",
+      "t8_check_request": "CHD#1と同等の70%が適切か、断念事例データ不足から50%維持が妥当かをKB3実績と照合して判断"
+    },
+    {
+      "claim_id": 6,
+      "title": "漸次的イノベーション主導の価格支配力（LfL 1〜2%）",
+      "ca_type": "operational",
+      "ca_confidence": 30,
+      "ca_label": "あまり納得しない",
+      "cagr_connected": true,
+      "cagr_confidence": 30,
+      "rule_applications": {
+        "rule01": "PARTIAL",
+        "rule02": "PASS",
+        "rule03": "FAIL",
+        "rule04": "PARTIAL",
+        "rule05": "PARTIAL",
+        "rule06": "PARTIAL",
+        "rule07": "FAIL",
+        "rule08": "PARTIAL",
+        "rule09": "PASS",
+        "rule10": "PARTIAL",
+        "rule11": "PARTIAL",
+        "rule12": "N/A（PoC省略）"
+      },
+      "rejection_patterns": ["B（業界共通：産業機器の継続R&D投資は一般的）", "G（純粋競合のLfL比較なし）"],
+      "high_eval_patterns": [],
+      "fact_check_status": "verified_with_critical_limitation",
+      "rule9_applied": false,
+      "key_evidence": "R&D継続投資（GFC・コロナ禍も継続）・コンプレッサー新商品2〜5年サイクル・「アジアで価格競争なし（CEO）」",
+      "key_concern": "2025年面談でセミコン・自動車向けLfLフラットを直接確認（価格支配力の業種限定性）・R&D比率の定量データなし・競合LfL比較なし",
+      "t8_check_request": "2025年面談の価格支配力の弱さが30%評価を正当化するか、さらに下方修正（20%）すべきかを批判的に検討"
+    },
+    {
+      "claim_id": 7,
+      "title": "Wallenberg家による長期安定株主構造とCapital効率重視ガバナンス",
+      "ca_type": "structural",
+      "ca_confidence": 10,
+      "ca_label": "却下",
+      "cagr_connected": false,
+      "cagr_confidence": 10,
+      "rule_applications": {
+        "rule01": "FAIL",
+        "rule02": "PARTIAL",
+        "rule03": "FAIL",
+        "rule04": "PARTIAL",
+        "rule05": "FAIL",
+        "rule06": "FAIL",
+        "rule07": "FAIL",
+        "rule08": "FAIL",
+        "rule09": "PASS",
+        "rule10": "PARTIAL",
+        "rule11": "FAIL",
+        "rule12": "N/A（PoC省略）"
+      },
+      "rejection_patterns": ["A（結果を原因と取り違え）", "D（定性的）", "B（業界共通：スウェーデン・ドイツ系工業企業に同様の構造）"],
+      "high_eval_patterns": [],
+      "fact_check_status": "verified_but_claim_rejected",
+      "rule9_applied": false,
+      "key_evidence": "Wallenberg家22%保有・2018年Epicocスピンオフ",
+      "key_concern": "株主構造は競争優位性の定義（能力・仕組み）に該当しない。CFO自身が「他の株主と違いない」と明言",
+      "t8_check_request": "10%（却下）が適切か確認。Capital効率重視のガバナンス文化を独立した主張として再構成する価値があるかを検討"
+    }
+  ],
+  "summary": {
+    "total_claims": 7,
+    "confidence_distribution": {
+      "90_very_convinced": 0,
+      "70_mostly_convinced": 1,
+      "50_somewhat_convinced": 2,
+      "30_not_convinced": 2,
+      "10_rejected": 2
+    },
+    "avg_ca_confidence": 40,
+    "avg_cagr_confidence": 42,
+    "claims_with_cagr_connection": 5,
+    "most_common_rejection_pattern": "G（純粋競合との優位性不明）とB（業界共通）が各4件",
+    "kb3_comparison": {
+      "ORLY": "63%",
+      "CHD": "50%",
+      "LLY": "47%",
+      "MNST": "40%",
+      "COST": "39%",
+      "ATCOA": "40%（KB3最低水準と同等）"
+    },
+    "strongest_claims": [
+      "Claim #1 スイッチングコスト（CA: 70%、CAGR: 50%）: CT事業のMission Critical性とTCO構造という業界特性との合致が最も明確",
+      "Claim #5 M&A実行能力（CA: 50%、CAGR: 70%）: 2024年33件の実績とWACC8%という財務規律。CAGR接続（InOG3%）は全Claimで最高スコア"
+    ],
+    "weakest_claims": [
+      "Claim #7 Wallenberg家安定株主（10%、却下）: 競争優位性の定義に不該当。CFO自身が否定",
+      "Claim #6 価格支配力（30%）: 2025年面談でセミコン・自動車向けLfLフラットを直接確認。価格転嫁能力の有効範囲が大幅に限定"
+    ],
+    "overall_assessment": "ATCOAの競争優位性はコンプレッサー事業（CT）のスイッチングコスト（70%）に集中しており、バキューム（VT）・産業技術（IT）セグメントの主張は全般的に弱い。2025年4月・2月面談での投資判断の悪化（VTダウンサイクル、価格支配力の弱さ、大企業病懸念）は複数の主張の信頼性を低下させており、全体の競争優位性としての評価は平均40%（KB3最低水準）にとどまる。CAGR推定（10%）の前提となるOG5%の実現可能性に疑問符がついており、下方修正リスクが高まっている。"
+  },
+  "t8_systematic_issues_for_review": [
+    {
+      "issue": "全体的な低評価傾向",
+      "detail": "平均40%はKB3最低水準（COST: 39%、MNST: 40%）と同等であり、ATCOAが産業機器の高シェア企業として実際にこの水準かどうかをT8で批判的に検討すること",
+      "t8_action": "70%（Claim #1）以外に70%以上に引き上げられる主張がないか検討"
+    },
+    {
+      "issue": "2025年面談での投資判断悪化の影響度",
+      "detail": "4月IR面談・2月CFO面談での複数の懸念表明がスコアリングに大きく影響しているが、これらは「PoC時点の最新情報」として適切に反映されているかT8で確認すること",
+      "t8_action": "2025年面談の懸念が「一時的なダウンサイクル」か「構造的な競争力劣化」かの視点を追加"
+    },
+    {
+      "issue": "純粋競合比較データの不足（パターンG）",
+      "detail": "7件中4件でパターンGが検出されており、ATCOAの評価はIngersoll Rand等との比較データが揃えば大幅に改善する可能性がある",
+      "t8_action": "利用可能な情報から純粋競合（Ingersoll Rand）との差別化が推定できる点があれば補足"
+    }
+  ]
+}

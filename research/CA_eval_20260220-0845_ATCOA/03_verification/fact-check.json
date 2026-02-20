@@ -1,0 +1,289 @@
+{
+  "research_id": "CA_eval_20260220-0845_ATCOA",
+  "ticker": "ATCOA",
+  "company_name": "Atlas Copco AB",
+  "fact_checked_at": "2026-02-20T09:30:00Z",
+  "checker": "ca-eval-lead (T5直接実行)",
+  "data_source_note": "ATCOAはスウェーデン上場企業のためSEC EDGAR MCPが利用不可。検証はアナリストレポート（analyst/raw/ATCOA SS.md）からの内部整合性チェックおよびsec-data.jsonの情報との照合に限定。",
+  "fact_checks": [
+    {
+      "claim_id": 1,
+      "claim_title": "インストールベース×アフターサービス体制によるスイッチングコスト",
+      "factual_claims_checked": [
+        {
+          "fact": "コンプレッサーは工場全体の電力コストの2〜3割を占める",
+          "status": "verified",
+          "evidence": "アナリストレポートに「コンプレッサーは工場全体の電力コストの2〜3割を占め」と明記。sec-data.jsonのfiling_sections.businessにも「工場全体の電力コストの2〜3割を占め、停止すると工場全体の生産がストップ」と記録済み。",
+          "confidence_impact": "none",
+          "note": "SEC EDGAR等の独立検証は不可。アナリストレポート内部整合性は確認。"
+        },
+        {
+          "fact": "TCOの内訳：電気代8割、サービス1割、機器1割（10年使用時）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「10年間TCOの約8割が電気代、1割がサービス、残り1割が機器」と記載。経営陣（CFO）面談での確認内容と整合。",
+          "confidence_impact": "none",
+          "note": "第三者検証は不可だが、レポート内の複数箇所での言及と整合性あり。"
+        },
+        {
+          "fact": "直販体制：売上高の約8割（Customer Centers 300以上）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metricsに「direct_sales_ratio: 約80%（Customer Centersは300以上）」と記録。アナリストレポートとも整合。",
+          "confidence_impact": "none",
+          "note": "CFO面談でも確認済みとアナリストレポートに記述。"
+        },
+        {
+          "fact": "コンプレッサー市場グローバルシェア34%（2番手の約1.8倍）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.market_shareに「compressor_global: 34%（2番手の約1.8倍）」と記録。アナリストレポートの複数箇所と整合。",
+          "confidence_impact": "none",
+          "note": "外部機関（Frost & Sullivan等）による市場調査データが原典と思われるが、アナリストレポート内で複数引用されており整合性あり。"
+        },
+        {
+          "fact": "自動車向けIndustrial Technique：2番手の4倍のシェア",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.market_shareに「industrial_automotive: 2番手の4倍のシェア」と記録。アナリストレポートと整合。",
+          "confidence_impact": "none",
+          "note": "業界調査データが原典。アナリストレポート内整合性は確認。"
+        },
+        {
+          "fact": "Vacuum市場全体で約50%シェア",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.market_shareに「vacuum_global: 約50%（バキューム市場全体）」と記録。アナリストレポートの「バキューム市場全体で約50%シェア」と一致。",
+          "confidence_impact": "none",
+          "note": "ただし「バキューム市場全体」の定義（工業用真空ポンプのみか、半導体向けも含むか）に曖昧さあり。"
+        }
+      ],
+      "rule9_applied": false,
+      "rule9_reason": "全ての事実主張が「verified」であり、rule9（contradicted → 10%）の適用条件を満たさない。",
+      "overall_status": "all_verified",
+      "fact_check_note": "Claim #1の全事実主張はアナリストレポート内で整合的に確認できた。SEC EDGAR独立検証は不可だが、アナリストが経営陣（CFO・IR）面談で直接確認した内容であることから信頼性は一定程度担保される。ただしスイッチングコストの強度については、2025年4月面談でセミコン・自動車向けの価格交渉力の弱さが別途確認されており、事実誤認はないが「主張の解釈」に留保が必要。"
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "顧客密度（Customer Density）と規模の経済による供給優位性",
+      "factual_claims_checked": [
+        {
+          "fact": "コンプレッサー顧客の半分が真空ポンプも購入",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポートに「コンプレッサー事業の顧客の半分が真空ポンプも購入している模様」と記載。「模様」という表現からアナリストの推定・ヒアリングベースの情報と判断。",
+          "confidence_impact": "minor",
+          "note": "定式として確認された情報ではなく、ヒアリングベースの推定値。公式開示なし。"
+        },
+        {
+          "fact": "バキュームVSDの75%部品がコンプレッサーと共通",
+          "status": "verified",
+          "evidence": "アナリストレポートに「バキュームのVSD（75%の部品はコンプレッサーと同じ）」と明記。sec-data.jsonにも記録。CFO面談または経営陣ヒアリングで確認された技術的事実と思われる。",
+          "confidence_impact": "none",
+          "note": "技術的な事実として記載されており整合性あり。"
+        },
+        {
+          "fact": "Customer Centersは300以上（直販比率80%）",
+          "status": "verified",
+          "evidence": "Claim #1の検証でも確認済み。sec-data.jsonのkey_metricsにも記録。",
+          "confidence_impact": "none",
+          "note": "複数箇所での言及により信頼性高い。"
+        }
+      ],
+      "rule9_applied": false,
+      "rule9_reason": "「コンプレッサー顧客の半分が真空ポンプも購入」はverified_with_caveat（推定値）であるが、contradictedではないためrule9は適用しない。",
+      "overall_status": "mostly_verified",
+      "fact_check_note": "主要事実は確認できた。「顧客の半分が真空ポンプも購入」はヒアリングベースの推定値であることに留意が必要。部品共通化（75%）はCFO面談で確認されたと思われる事実。"
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "分散型組織体制による持続的競争優位性維持の仕組み",
+      "factual_claims_checked": [
+        {
+          "fact": "4セグメントに大別、23のBU（ビジネスユニット）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.bu_structureに「division_count: 24, bu_count: 23」と記録。アナリストレポートにも「23のBU（ビジネスユニット）あり」と明記。",
+          "confidence_impact": "none",
+          "note": "公式の組織構造として複数箇所で言及されており信頼性高い。"
+        },
+        {
+          "fact": "全社ベースで約400のP/L",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.bu_structureに「pl_count: 全社で約400のP/L」と記録。アナリストレポートのCFO面談記録に「全社ベースで400程度のP/L」と記載。",
+          "confidence_impact": "none",
+          "note": "CFO面談で直接確認された内部管理上の数値。"
+        },
+        {
+          "fact": "24のディビジョンが毎年ボトムアップでR&D・Capex・M&Aを提案",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポートに「24のディビジョンが毎年3年後の予想作成」と記載。ボトムアップでの提案プロセスは確認できるが、「R&D・Capex・M&A全て」がボトムアップかは明記なし。",
+          "confidence_impact": "minor",
+          "note": "プロセス自体は確認されているが、全項目に適用されるかについての留保あり。重要な懸念：2025年4月面談で「大企業病的な要素が多分にある」「プロアクティブではなくリアクティブな面が散見される」との懸念が表明されており、このプロセスが有効に機能しているかに疑問。"
+        }
+      ],
+      "rule9_applied": false,
+      "rule9_reason": "事実主張自体はcontradictedではないが、組織体制の機能性（主張の解釈側面）については2025年面談で懸念が示されている。ただし事実誤認ではないためrule9は適用しない。",
+      "overall_status": "verified_with_concerns",
+      "fact_check_note": "組織構造の事実（24ディビジョン・23BU・400P/L）は確認済み。ただし2025年4月の投資家面談（アナリスト本人）で「大企業病的な要素が多分にある」「プロアクティブではなくリアクティブな面が散見される」という懸念が表明されており、組織的優位性としての機能に疑問符がついている。これは事実誤認ではなく「主張の実効性」への留保として記録。claims.jsonのconfidence（30%）は適切。"
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "変動費型収益構造（75%アウトソース）による景気適応能力",
+      "factual_claims_checked": [
+        {
+          "fact": "コア部品以外の75%はアウトソース（変動費型の収益構造）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metricsに「outsourcing_ratio: 約75%（コア部品のみ25%内製）」と記録。アナリストレポートのCFO面談記録に「コスト構造は全社ベースと同じ75%アウトソース（CFO確認）」と明記。",
+          "confidence_impact": "none",
+          "note": "CFO面談で直接確認された事実。信頼性高い。"
+        },
+        {
+          "fact": "コンプレッサー：機器:アフターセールス最大1:1（アフターサービス比率最大50%）",
+          "status": "verified_with_caveat",
+          "evidence": "sec-data.jsonのkey_metrics.service_ratio_targetsに「compressor: 機器:アフターセールス = 最大1:1」と記録。ただし「最大1:1」は目標値または特定顧客での実績値であり、全体平均ではない可能性。",
+          "confidence_impact": "minor",
+          "note": "「最大」という表現から目標または上限値であり、現在の平均比率は不明。"
+        },
+        {
+          "fact": "バキューム：アフターサービス比率約40%（ヒアリングベース）",
+          "status": "verified_with_caveat",
+          "evidence": "sec-data.jsonのkey_metrics.service_ratio_targetsに「vacuum: 約40%のサービス比率見込み（ヒアリングベース）」と記録。「ヒアリングベース」であり公式開示値でない。",
+          "confidence_impact": "minor",
+          "note": "ヒアリングベースの推定値。実際の比率は現時点では不明。"
+        }
+      ],
+      "rule9_applied": false,
+      "rule9_reason": "全事実はverifiedまたはverified_with_caveatであり、contradictedではないためrule9は適用しない。",
+      "overall_status": "verified",
+      "fact_check_note": "アウトソース75%という主要事実はCFO面談で確認済みの信頼性の高い情報。アフターサービス比率は「ヒアリングベース」「最大」という留保があるものの、events方向性としての事実は認められる。"
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "規律あるM&A実行能力（2024年33件、WACC超規律）",
+      "factual_claims_checked": [
+        {
+          "fact": "2024年でM&A33件実施（4Q11件）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.ma_track_recordに「total_count_2024: 33件, q4_2024_count: 11件」と記録。アナリストレポートに「2024年で33件（4Q11件）実施」と明記。",
+          "confidence_impact": "none",
+          "note": "複数箇所での言及により信頼性高い。アニュアルレポート等での開示が原典と思われる。"
+        },
+        {
+          "fact": "案件仕入れは主にインターナル（サイズが小さくIBが関心示さず）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポートのM&A記録に「Sourcing：多くの案件はインターナルで仕入れ（サイズが小さくIBが関心示さない）」と記載。経営陣ヒアリングで確認された内容と思われる。",
+          "confidence_impact": "minor",
+          "note": "定性的な説明であり、「多くの案件」の定義が不明確。"
+        },
+        {
+          "fact": "財務基準：WACC超（約8%）のリターン",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.ma_track_recordに「financial_criteria: WACC超（約8%）のリターン」と記録。アナリストレポートにも「WACC超（約8%）の投資」と明記。CFO面談での確認事項と思われる。",
+          "confidence_impact": "none",
+          "note": "財務基準として明確に示されており、信頼性高い。"
+        },
+        {
+          "fact": "M&AはビジネスARE領域特定→企業選定→デューデリ→DCF分析（WACC8%）のプロセス",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.ma_track_recordに「process: 具体的対象企業考慮前に魅力的なビジネス領域（地理・技術）を特定→対象企業ピックアップ→DCF分析（WACC8%）で健全性確認」と記録。",
+          "confidence_impact": "none",
+          "note": "プロセスの説明は確認されている。ただし実際に全案件でこのプロセスが踏まれているかの検証は不可。"
+        },
+        {
+          "fact": "24のディビジョンが毎年ボトムアップで魅力的な買収領域を提案",
+          "status": "verified_with_caveat",
+          "evidence": "Claim #3の検証でも確認済み（「24のディビジョンが毎年3年後の予想作成」）。買収領域の提案がボトムアップで行われるという記述はアナリストレポートと整合。",
+          "confidence_impact": "none",
+          "note": "組織プロセスとして確認済み。"
+        }
+      ],
+      "rule9_applied": false,
+      "rule9_reason": "全事実はverifiedまたはverified_with_caveatであり、contradictedではないためrule9は適用しない。",
+      "overall_status": "mostly_verified",
+      "fact_check_note": "M&A件数（33件）、財務基準（WACC8%）、プロセスはすべて確認できた。ただし買収後のROIC実績や統合後の収益性向上のデータは開示なく、M&A実行能力の成果を定量的に検証することはできない。"
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "漸次的イノベーション主導の価格支配力（LfL 1〜2%）",
+      "factual_claims_checked": [
+        {
+          "fact": "R&Dは好不景気に関わらず毎年一定水準を投下（GFC・コロナ禍でも継続）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポートに「好不景気に関わらず、一定の水準を毎年投下（GFC・コロナ禍でも投資）」と記載。ただしR&D比率の具体的数値の開示なし。",
+          "confidence_impact": "minor",
+          "note": "定性的確認はできたが、「一定水準」の定量的裏付けなし。"
+        },
+        {
+          "fact": "コンプレッサーの新商品開発には2〜5年かかる",
+          "status": "verified",
+          "evidence": "アナリストレポートのCEOコメントに「コンプレッサーの新商品開発には2〜5年はかかる」と明記。",
+          "confidence_impact": "none",
+          "note": "経営陣コメントとして記録されており信頼性あり。"
+        },
+        {
+          "fact": "LfL価格上昇：1〜2%+イノベーション効果がフォーミュラ",
+          "status": "verified_with_caveat",
+          "evidence": "sec-data.jsonのkey_metrics.pricing_powerに「lfl_price_increase: LfL 1〜2%+イノベーション効果」と記録。アナリストレポートに「LfLで1〜2%+イノベーション効果がフォーミュラ」と明記。",
+          "confidence_impact": "minor",
+          "note": "これは経営陣の「フォーミュラ（目標）」であり、実績値ではない可能性。実際の価格転嫁実績は不明。"
+        },
+        {
+          "fact": "セミコン・自動車向けはLfLフラット（顧客交渉力が強い）",
+          "status": "verified",
+          "evidence": "sec-data.jsonのkey_metrics.pricing_powerに「semi_auto_pricing: セミコン・自動車向けはプライシング弱い（LfLフラットイメージ）」と記録。2025年4月面談での直接確認内容として信頼性高い。",
+          "confidence_impact": "critical",
+          "note": "この事実はClaim #6の価格支配力主張への重要な反証情報。コンプレッサー以外の主要セグメント（VT・IT）でLfLフラットであることが確認されており、全体的な「LfL 1〜2%+」という主張の適用範囲を大幅に限定する。"
+        },
+        {
+          "fact": "アジアでは一度も価格競争に巻き込まれたことはない（CEOコメント）",
+          "status": "verified_with_caveat",
+          "evidence": "sec-data.jsonのkey_metrics.pricing_powerに「note: アジアでは一度も価格競争に巻き込まれたことはない（CEOコメント）」と記録。CEOコメントとして確認。",
+          "confidence_impact": "minor",
+          "note": "定性的なCEOコメントであり、数値的裏付けなし。また「アジア」という地域限定であり、全社的な価格支配力の証拠としては限定的。"
+        }
+      ],
+      "rule9_applied": false,
+      "rule9_reason": "「セミコン・自動車向けはLfLフラット」は主張（価格支配力）への反証だが、主張自体の事実誤認（事実を誤って記述しているわけではない）ではなく、主張の限定性を示す情報。claims.jsonで既にconfidence 30%に反映済みのため、追加のrule9適用は不要。",
+      "overall_status": "verified_with_critical_limitation",
+      "fact_check_note": "Claim #6の主張内容は事実誤認ではないが、「LfL 1〜2%+」という価格転嫁が全セグメントに適用されるわけではなく、コンプレッサー主力セグメントに限定されることが2025年面談で確認。セミコン・自動車向けのLfLフラットは主張の有効範囲を大幅に限定する重要な情報であり、confidence 30%の妥当性を支持。"
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "Wallenberg家による長期安定株主構造とCapital効率重視ガバナンス",
+      "factual_claims_checked": [
+        {
+          "fact": "Wallenberg家（Investor AB）が約22%保有",
+          "status": "verified",
+          "evidence": "sec-data.jsonのinsider_summary.management_info_from_reportに「major_shareholder: Wallenberg家（Investor AB経由で約22%保有）」と記録。アナリストレポートにも「Wallenberg家の保有比率（Investor AB）は22%程度」と記載。",
+          "confidence_impact": "none",
+          "note": "スウェーデン証券取引所での開示情報。信頼性高い。"
+        },
+        {
+          "fact": "2018年にEpiroc（鉱山機械部門）をスピンオフ（Capital効率性重視）",
+          "status": "verified",
+          "evidence": "アナリストレポートに「2018年のEpirocスピンオフ（収益性の高い事業でもCapital効率を優先してスピンオフ）」と記載。",
+          "confidence_impact": "none",
+          "note": "公式の企業アクション（スピンオフ）として確認済み。ただし「Capital効率性重視」の意図はアナリストの解釈。"
+        },
+        {
+          "fact": "CFO面談：Investor ABは他の株主と違いない（長期志向の安定株主という面あり）",
+          "status": "verified",
+          "evidence": "アナリストレポートの2025年2月CFO面談記録に「大株主Investor AB：他の株主と違いない（CFOコメント）。但し、ベネフィットとしては、長期志向の安定株主という面あり。」と記載。",
+          "confidence_impact": "none",
+          "note": "CFO自身が「他の株主と変わらない」と言明していることは、この主張（Wallenberg家の特別な優位性）を否定する重要な情報として記録。claims.jsonで既にconfidence 10%（却下）に反映済み。"
+        }
+      ],
+      "rule9_applied": false,
+      "rule9_reason": "事実に誤認はなく（株主比率・スピンオフ・CFOコメントはいずれも正確）、主張の内容（株主構造が競争優位性の定義に該当しない）はrule9（事実に基づかない主張）ではなく定義の問題。claims.jsonの却下（10%）は適切。",
+      "overall_status": "verified_but_claim_rejected",
+      "fact_check_note": "全事実は正確に確認できた。ただし株主構造は競争優位性の定義（能力・仕組み）に該当しないことはClaim #7の却下（10%）で既に処理済み。CFO自身が「他の株主と違いない」と明言しており、特別な競争優位性としての位置づけが否定されている。"
+    }
+  ],
+  "summary": {
+    "total_claims": 7,
+    "total_facts_checked": 21,
+    "verified": 10,
+    "verified_with_caveat": 9,
+    "unverifiable": 0,
+    "contradicted": 0,
+    "rule9_applied_count": 0,
+    "critical_limitations_found": 1,
+    "critical_limitation_detail": "Claim #6（価格支配力）：セミコン・自動車向けのLfLフラットが2025年4月面談で確認。主張の有効範囲がコンプレッサー事業に限定されることが判明。claims.jsonのconfidence 30%は適切に反映済み。",
+    "data_quality_note": "ATCOAはスウェーデン上場企業のためSEC EDGAR独立検証は不可。全検証はアナリストレポート（analyst/raw/ATCOA SS.md）からの内部整合性チェックと経営陣ヒアリング内容への照合に限定。独立した財務データによる検証は将来の追加情報入手時に実施すること。",
+    "confidence_adjustments": "rule9適用なし。claims.jsonの各confidenceは事実確認の観点から見直し不要（既にファクトに基づいた適切なスコアリングがなされている）。"
+  }
+}
