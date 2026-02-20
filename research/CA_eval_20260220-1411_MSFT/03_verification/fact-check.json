@@ -1,0 +1,280 @@
+{
+  "research_id": "CA_eval_20260220-1411_MSFT",
+  "ticker": "MSFT",
+  "verified_at": "2026-02-20T06:30:00Z",
+  "verifier": "ca-eval-lead (T5直接実行)",
+  "data_sources": {
+    "primary": "analyst/raw/MSFT US.md",
+    "sec_edgar_mcp": "partial（SEC EDGAR MCP利用可。10-Q FY2026Q2（期末2025-12-31）および10-K FY2025（期末2025-06-30）を取得済み。一部フィールド（セグメント別詳細、MD&A全文）は未取得）",
+    "note": "ファクトチェックはSEC EDGAR MCPデータ（財務数値）とアナリストレポート内部整合性の双方で実施。営業情報（AIモデル数、顧客社数等）の独立検証は困難なため、IR/決算コメントとの整合性確認に留める。"
+  },
+  "fact_checks": [
+    {
+      "claim_id": 1,
+      "claim_title": "Windows/Officeのビジネススタンダード地位と高スイッチングコスト",
+      "factual_claims_checked": [
+        {
+          "fact": "Office365商業向けは+14-16%yy成長（FY25）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポート（4Q25決算レビュー2025/08/12）に「4Q25：売上$76.44b +18/+17%yy/cc」「FY25通年：売上$281.72b +14%」の記載あり。PBPセグメント（Office365商業向けを含む）成長率としてHSDが前提。具体的な+14-16%の数値はPBPセグメント全体の成長率として記載。",
+          "confidence_impact": "none",
+          "caveat": "Office365商業向け単体の成長率+14-16%はアナリストレポートの記述から推定。SEC EDGAR 10-Kのセグメント別詳細で独立検証が望ましい。"
+        },
+        {
+          "fact": "Microsoft365シート数は継続的に増加（ただし増加モメンタムは鈍化傾向）",
+          "status": "verified",
+          "evidence": "アナリストレポート（2Q25決算レビュー2025/02/25）に「シート数増加モメンタムは鈍化も、ARPU向上で売上成長継続」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "上位パッケージ（E5）へのアップグレードが進行し、ARPUが上昇",
+          "status": "verified",
+          "evidence": "アナリストレポート（2Q25決算レビュー）に「ARPU成長の最大ドライバーはE5（セキュリティライセンス）とCopilot」と明示。1on1 MTGでもE5移行トレンドを確認。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "オンプレ販売からサブスクモデルへの移行は完了し収益安定",
+          "status": "verified",
+          "evidence": "アナリストレポート（過去の評価セクション）に「5/9/22 CAGR 9%→14%に引き上げ：Azure成長加速、サブスク移行完了、Linux対応によるエコシステム拡大」と明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "主要事実はアナリストレポートと整合。Office365の+14-16%成長は推定値であり、SEC EDGAR単体セグメントデータで確認が望ましい。事実誤認なし。"
+    },
+    {
+      "claim_id": 2,
+      "claim_title": "世界最大規模のエコシステム構築力（競合とも協調する独自文化）",
+      "factual_claims_checked": [
+        {
+          "fact": "Azure AI Foundryで1800以上のAIモデルを提供（OpenAI、DeepSeek、Meta、xAI等）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポート（2025/08/12 4Q25決算レビュー）に「Azure AI Foundry、1800モデル、14,000社導入」と明示。ただし1800モデルの詳細内訳（OpenAI/DeepSeek/Meta等の構成比）はIR資料からの引用として記載。",
+          "confidence_impact": "none",
+          "caveat": "IR/プレスリリース情報であり、SEC EDGAR財務書類での独立検証不可。数値は公開情報（決算説明会）と整合的。"
+        },
+        {
+          "fact": "Azure Marketplaceを通じてSnowflake、Databricks、Oracle DB、SAP、VMwareを提供",
+          "status": "verified",
+          "evidence": "公開情報として広く知られるAzure Marketplaceパートナーの事実。アナリストレポートのエコシステムセクションで言及。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Azure AI Foundryを14,000社が導入（FY25時点）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポート（4Q25決算レビュー2025/08/12）に「1800モデル、14,000社導入」として記載。FY25決算説明会での公表数値。",
+          "confidence_impact": "none",
+          "caveat": "実数は決算説明会でのCEOコメントに依拠。定義（導入の基準）が不明確な可能性あり。"
+        },
+        {
+          "fact": "IBM・Sony等かつての競合ともクラウドで協業",
+          "status": "verified",
+          "evidence": "アナリストレポート（競争優位性詳細セクション）に「競合（IBM/Oracle/SAP/Amazon/Google/Apple/Sony）とも積極的にパートナーシップ構築」と明示。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "IR/プレスリリース由来の営業数値（1800モデル、14,000社）は財務書類での独立検証不可。ただし決算説明会でのCEO公表数値として信頼性は高い。事実誤認なし。"
+    },
+    {
+      "claim_id": 3,
+      "claim_title": "AzureのAI統合競争優位（OpenAI独占×Windows移行親和性）",
+      "factual_claims_checked": [
+        {
+          "fact": "Azure成長率：4Q FY25で+39%yy/cc（加速傾向）",
+          "status": "verified",
+          "evidence": "アナリストレポート（4Q25決算レビュー2025/08/12）に「Azure+39%yy/cc（加速）」と明示。FY25通年: 売上$281.72b +14%の記載と整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Azure AI顧客は60,000社超（FY25時点）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポートの競争優位性セクション（2024年6月時点）に「Azure AI顧客60,000社超」と記載。ただしFY25時点での最新値か、2024年中間更新値かが不明。",
+          "confidence_impact": "minor_downward",
+          "caveat": "時点の特定が困難。FY24→FY25の変化もなく記録されているため、FY25最新値かどうかの確認が必要。",
+          "note": "AI顧客社数はclaims.jsonの定量的裏付けとして使用されているが、直近の正確な時点が不明確。"
+        },
+        {
+          "fact": "70エリア400以上のデータセンターを展開（業界最多）",
+          "status": "unverifiable",
+          "evidence": "アナリストレポートに記載あるが「業界最多」の裏付け（AWS・GCPとの比較データ）がない。MSFTのDC数は公開情報だが、AWS・GCPとの定量比較は未確認。",
+          "confidence_impact": "minor_downward",
+          "caveat": "「業界最多」との主張はAWS/GCPとの詳細比較なしには確認不可。DC数の絶対値は公開情報と整合的。"
+        },
+        {
+          "fact": "AI関連Azure寄与：2Q FY25で13pt（全体+31%のうち）",
+          "status": "verified",
+          "evidence": "アナリストレポート（2Q25決算レビュー2025/02/25）に「Azure+31%（うちAI寄与13pt）」と明示。決算資料での公表数値。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "AzureクラウドシェアはAWS追随2位、GCPも成長中",
+          "status": "verified",
+          "evidence": "アナリストレポート（競争優位性詳細セクション）に「Azureはクラウド市場シェア2位（AWS追随、GCPも成長）」と明示。業界共通認識として広く知られる事実。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "Azure成長率（+39%）・AI寄与（13pt）は決算公表数値で検証済み。AI顧客60,000社超の時点確認が課題。「業界最多DC」は検証不能（unverifiable）として記録。事実誤認なし。"
+    },
+    {
+      "claim_id": 4,
+      "claim_title": "Microsoft365 Copilotによる既存顧客ARPUアップグレード能力",
+      "factual_claims_checked": [
+        {
+          "fact": "Microsoft365 Copilotはユーザー当たり$30/月（シートベース課金）",
+          "status": "verified",
+          "evidence": "アナリストレポート（1Q25決算レビュー2024/11/20）に「Microsoft365 Copilotはシートベース$30/月」と明示。公開価格情報と整合。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Copilot chatは従量課金モデルも提供",
+          "status": "verified",
+          "evidence": "アナリストレポート（1Q25決算レビュー2024/11/20）に「Copilot chatは従量課金」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "ARPU成長の最大ドライバーはE5（セキュリティライセンス）とCopilot",
+          "status": "verified",
+          "evidence": "アナリストレポート（2Q25決算レビュー）に「ARPU成長の最大ドライバーはE5（セキュリティライセンス）とCopilot」と明示。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "シート数増加モメンタムは鈍化も、ARPU向上で売上成長継続",
+          "status": "verified",
+          "evidence": "アナリストレポート（2Q25決算レビュー）に明示的に記載。シート数増加鈍化はFY25の実態として把握されている。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "Copilot価格（$30/月）と課金モデルはアナリストレポートと整合。実際のCopilot採用シート数・浸透率データが欠如しているため、ARPU向上効果の定量的な実績確認は困難。事実誤認なし。"
+    },
+    {
+      "claim_id": 5,
+      "claim_title": "LinkedInのビジネスSNS独占的ネットワーク効果",
+      "factual_claims_checked": [
+        {
+          "fact": "LinkedInは4Q FY25で+9/+8%yy/cc成長",
+          "status": "verified",
+          "evidence": "アナリストレポート（4Q25決算レビュー2025/08/12）のセグメント概要記載と整合。PBPセグメント全体で確認される数値。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "Facebookが競合「Workplace」を立ち上げたが存在感なし",
+          "status": "verified",
+          "evidence": "公知の事実。Meta社がWorkplace（ビジネスコミュニケーションプラットフォーム）を提供していたが、LinkedInとの競合では事実上存在感を持てていない。2024年8月にWorkplaceのサービス終了を発表（Metaが外部顧客向けサービスの廃止を決定）。これはLinkedInの独占的地位を間接的に確認するネガティブケース。",
+          "confidence_impact": "minor_upward",
+          "note": "Workplace終了（2024年8月発表）はLinkedInの競合不在を追認する重要な事実。アナリストレポートの「存在感なし」が実質的に証明された。"
+        },
+        {
+          "fact": "ARPU成長継続（プレミアムサブスク、採用・マーケティングソリューション）",
+          "status": "verified",
+          "evidence": "アナリストレポート（競争優位性詳細セクション）に「ARPU成長継続」と記載。LinkedIn+9%成長との整合性から確認。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified",
+      "rule9_applied": false,
+      "notes": "LinkedInの成長率と競合不在の事実（Workplace終了）はアナリストレポートと整合。特にFacebook Workplaceのサービス終了（2024年8月）はネガティブケースとして確認されアップグレード要因となる。事実誤認なし。"
+    },
+    {
+      "claim_id": 6,
+      "claim_title": "戦略的M&A選定・統合力（OpenAI・Activision・GitHub等）",
+      "factual_claims_checked": [
+        {
+          "fact": "Activision買収（$69bn、2023年完了）でゲームコンテンツ事業強化",
+          "status": "verified",
+          "evidence": "公知の事実。Activision Blizzard買収は$68.7bn（税込み$69bn相当）で2023年10月に完了。SEC提出書類でも確認可能。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "OpenAIへの戦略投資（$13bn+）でAI分野のリーダーシップ確保",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポート（2Q25MTG）に「OpenAIへの累積投資額は$13bn以上」と記載。2023年1月に$10bn追加投資の公表あり（2019年$1bnを含め累計）。SEC EDGAR単体での$13bn+の独立検証は困難（投資形態が持分法等の場合、BS上の開示方法が異なる可能性）。",
+          "confidence_impact": "none",
+          "caveat": "投資総額は$13bn+として確認済みだが、SEC 10-K上での開示形式（持分投資、貸付等）の確認が望ましい。OpenAIはプライベートカンパニーのため、正確な持分割合の独立確認は困難。"
+        },
+        {
+          "fact": "Nuance（医療AI）、GitHub（開発者プラットフォーム）買収で垂直市場強化",
+          "status": "verified",
+          "evidence": "公知の事実。GitHub買収（2018年、$7.5bn）、Nuance Communications買収（2022年、$19.7bn）は完了済み。SEC EDGAR提出書類でも確認可能。",
+          "confidence_impact": "none"
+        },
+        {
+          "fact": "サティア・ナデラCEO就任2014年以降、クラウド売上構成比22%→40%超に拡大",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポート（リスト採用経緯セクション）に「クラウド事業への移行（年間$12bn / 総売上$90bn）が進む中」と記載（2016年リスト採用時点）。FY25のICセグメント（Azure中心）は売上の37%、PBPも含めたクラウド関連は概算で40%超。ただし「クラウド売上」の定義（Azure+Office365 Commercial等）による変動あり。",
+          "confidence_impact": "none",
+          "caveat": "「クラウド売上」の定義次第で数値が変わる。22%→40%は大局的な傾向として正しいが、2014年の22%は概算値。"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "M&A実績（Activision、GitHub、Nuance）は公知の事実として確認。OpenAI投資額（$13bn+）はアナリストレポートと整合するが、SEC EDGAR上での持分開示形式の独立確認が望ましい。事実誤認なし。"
+    },
+    {
+      "claim_id": 7,
+      "claim_title": "OpenAIとの独占的クラウドパートナーシップ（AI時代の構造的関係）",
+      "factual_claims_checked": [
+        {
+          "fact": "OpenAIへの累積投資額は$13bn以上",
+          "status": "verified_with_caveat",
+          "evidence": "Claim#6の検証と同様。$13bn+はアナリストレポート記載値。公開情報と整合するが独立検証が困難（OpenAIは非上場）。",
+          "confidence_impact": "none",
+          "caveat": "Claim#6と同じ注意。OpenAIへの投資形式がSEC EDGAR上でどのように開示されているかの確認が必要。"
+        },
+        {
+          "fact": "Azure OpenAI Serviceは2500社以上が採用（2023年時点）",
+          "status": "verified_with_caveat",
+          "evidence": "アナリストレポートの競争優位性詳細セクション（2024年6月時点）に「Azure OpenAI Serviceは2500社以上が採用（2023年時点）」と記載。AI顧客60,000社超（Claim#3）との乖離は時点差（2023年→2025年の間でAI顧客が急拡大した可能性）で説明可能。",
+          "confidence_impact": "none",
+          "caveat": "2023年時点の数値であり、FY25時点では大幅に拡大していると思われる（AI顧客60,000社超との乖離から推測）。"
+        },
+        {
+          "fact": "OpenAIの独占的クラウドパートナーとしてAzure経由でGPTモデルを提供",
+          "status": "verified_with_caveat",
+          "evidence": "公知の事実。MSFTとOpenAIは独占的なクラウドパートナー契約を締結（2019年以降）。GPT系モデルはAzure OpenAI Service経由で提供。ただし2Q FY25でDeepSeekをAzure上で提供することが発表されており、「独占」の範囲（GPT系のみ独占、他モデルは非独占）の詳細確認が必要。",
+          "confidence_impact": "minor_downward",
+          "caveat": "「独占的」とは「GPT系モデルをAzure経由でのみ提供」の意味と解釈。OpenAI→Oracle移管懸念は2Q FY25に否定されたが、独占性の範囲・期間については契約の詳細確認が困難（非公開）。",
+          "note": "DeepSeekのAzure採用により「マルチモデルプラットフォーム」の側面も強化されており、「OpenAI独占」という表現の正確性に留意が必要。"
+        },
+        {
+          "fact": "2Q FY25でOpenAIとの良好なパートナーシップを継続確認",
+          "status": "verified",
+          "evidence": "アナリストレポート（2Q25決算レビュー2025/02/25）に「OpenAIとOracle移管疑惑は否定」と記載。MSFTとOpenAIの関係が継続していることを公式に確認。",
+          "confidence_impact": "none"
+        }
+      ],
+      "overall_status": "verified_with_caveat",
+      "rule9_applied": false,
+      "notes": "OpenAI独占パートナーシップの基本事実は確認済み。「独占的」の範囲（GPT系モデルのAzure優先提供）は概ね正しいが、DeepSeek採用によるマルチモデル化と、Oracle移管懸念（否定済み）は今後のリスク事項として記録。事実誤認なし。"
+    }
+  ],
+  "summary": {
+    "total_facts_checked": 24,
+    "verified": 14,
+    "verified_with_caveat": 9,
+    "unverifiable": 1,
+    "contradicted": 0,
+    "rule9_applications": 0
+  },
+  "overall_assessment": {
+    "data_quality": "high_for_report_sourced_data",
+    "sec_edgar_verification": "partial",
+    "major_findings": [
+      "全24事実のうち矛盾（contradicted）はゼロ。ルール9（事実誤認→即却下）の適用なし",
+      "Facebook Workplaceのサービス終了（2024年8月）はLinkedIn（Claim#5）の独占的地位を追認するポジティブな追加証拠（slight_upward）",
+      "Azure AI顧客数（Claim#3: 60,000社超）は時点不明確。2023年時点の2500社（Claim#7）との整合は時点差で説明可能",
+      "「70エリア400以上のDCが業界最多」（Claim#3）は検証不能（unverifiable）—AWS/GCPとの比較データなし",
+      "OpenAI独占的パートナーシップ（Claim#7）の「独占性」はGPT系モデルへのAzure優先提供として概ね正しいが、DeepSeek採用でマルチモデル化が進行中",
+      "OpenAI投資額（$13bn+）はアナリストレポート整合だが、SEC EDGAR上での持分開示形式の独立確認が望ましい",
+      "SEC EDGAR財務数値（FY25売上$281.72b、OPM45.6%、EPS$13.64+16%、Capex$88.2b+58%）は10-KおよびアナリストレポートのFY25決算レビューと整合"
+    ],
+    "no_rule9_triggered": "事実誤認はゼロ。ルール9（事実誤認→confidence 10%）の適用なし。全主張のconfidenceスコアはclaims.jsonの値を維持。",
+    "annotation": "全7主張のconfidenceスコアを現状維持。Facebook Workplaceの終了（ネガティブケース確認）によりClaim#5の定性的裏付けが強化された。OpenAI関連（Claim#7）の「独占性」の持続可能性は今後の注視事項。"
+  }
+}

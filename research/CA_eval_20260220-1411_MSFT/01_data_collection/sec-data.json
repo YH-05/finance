@@ -1,0 +1,314 @@
+{
+  "ticker": "MSFT",
+  "company_name": "MICROSOFT CORP",
+  "retrieved_at": "2026-02-20T05:20:00Z",
+  "data_source": "mixed",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "partial",
+    "reason": "SEC EDGAR MCP利用可能。最新10-Q（FY2026Q2、期末2025-12-31）および10-K（FY2025、期末2025-06-30）のデータを取得。一部フィールド（セグメント別財務詳細、MD&A全文）はアナリストレポートから補完。",
+    "affected_fields": ["segment_financials_detailed", "mda_full_text", "5year_historical_full"],
+    "available_fields": ["income_statement_latest", "balance_sheet_latest", "cash_flow_latest", "recent_filings_10k_10q_8k", "insider_summary", "filing_sections_business_risk"]
+  },
+  "financials": {
+    "note": "最新10-Q（期末2025-12-31、FY2026Q2）のSEC EDGAR XBRLデータ。金額はUSD百万単位から換算。",
+    "revenue": {
+      "description": "売上高",
+      "latest_annual": {
+        "value_approx": "281720000000",
+        "currency": "USD",
+        "period": "FY2025（2024年7月〜2025年6月）",
+        "source": "アナリストレポート記載：売上$281.72b +14%yy (FY25実績)"
+      },
+      "latest_quarter": {
+        "value": "69600000000",
+        "currency": "USD",
+        "period": "2Q25（2024年10月〜12月）",
+        "yoy_growth": "+12%"
+      },
+      "historical_reference": {
+        "fy2024": "245100000000",
+        "fy2024_growth": "+16%",
+        "note": "アナリストレポート：FY24売上$245.1b +16/+15%yy/cc"
+      }
+    },
+    "segment_revenue_mix": {
+      "PBP": {
+        "name": "Productivity and Business Processes",
+        "description": "Office365などのBtoBビジネス",
+        "share_fy25": "42%",
+        "cagr_assumption": "+HSD",
+        "key_products": ["Microsoft365 Commercial", "Office365", "LinkedIn", "Dynamics365", "Microsoft365 Copilot"]
+      },
+      "IC": {
+        "name": "Intelligent Cloud",
+        "description": "Azureを中心としたクラウド事業",
+        "share_fy25": "37%",
+        "cagr_assumption": "+LDD",
+        "key_products": ["Azure", "Azure AI", "Server products"]
+      },
+      "MPC": {
+        "name": "More Personal Computing",
+        "description": "Window OEMなどBtoCビジネス",
+        "share_fy25": "21%",
+        "cagr_assumption": "+MSD",
+        "key_products": ["Windows OEM", "Xbox", "Bing", "Surface", "Search advertising"]
+      }
+    },
+    "income_statement": {
+      "revenue_2q_fy26": {
+        "note": "10-Q XBRL: 2025-12-31期末データ（半期ベース）",
+        "revenue_partial": "16451000000",
+        "gross_profit": "55295000000",
+        "operating_income": "38275000000",
+        "net_income": "38458000000",
+        "eps_basic": "5.18",
+        "eps_diluted": "5.16",
+        "source": "SEC EDGAR 10-Q 2026-01-28 accession 0001193125-26-027207"
+      },
+      "opm": {
+        "fy25": "45.6%",
+        "fy24": "45%",
+        "fy23": "42%",
+        "q4_fy25": "45%",
+        "q2_fy25": "45%",
+        "q1_fy25": "47%"
+      },
+      "eps_growth": {
+        "fy25": "+16%yy ($13.64)",
+        "fy24": "+22%yy ($11.80)"
+      }
+    },
+    "balance_sheet": {
+      "period": "2025-12-31",
+      "total_assets": "665302000000",
+      "current_assets": "180190000000",
+      "total_liabilities": "274427000000",
+      "current_liabilities": "130005000000",
+      "stockholders_equity": "390875000000",
+      "cash_and_equivalents": "24296000000",
+      "accounts_receivable": "56535000000",
+      "ppe_net": "261126000000",
+      "source": "SEC EDGAR 10-Q 2026-01-28 accession 0001193125-26-027207"
+    },
+    "cash_flow": {
+      "period": "2025-12-31",
+      "operating_cf": "35758000000",
+      "investing_cf": "22705000000",
+      "financing_cf": "17617000000",
+      "capex": {
+        "fy25": "88200000000",
+        "fy25_growth": "+58%yy",
+        "fy24": "55700000000",
+        "fy24_growth": "+74%yy",
+        "note": "クラウド・AIインフラ向け大規模投資継続中。土地建物（15年）とサーバ・ネットワーク機器（6年）が主。FY26はFY25比増加も増加率は低下見込み。"
+      },
+      "source": "SEC EDGAR 10-Q 2026-01-28 accession 0001193125-26-027207"
+    }
+  },
+  "recent_filings": {
+    "10k": {
+      "status": "available",
+      "filings": [
+        {
+          "form_type": "10-K",
+          "filing_date": "2025-07-30",
+          "accession_number": "0000950170-25-100235",
+          "period_of_report": "2025-06-30",
+          "fiscal_year": "FY2025"
+        },
+        {
+          "form_type": "10-K",
+          "filing_date": "2024-07-30",
+          "accession_number": "0000950170-24-087843",
+          "period_of_report": "2024-06-30",
+          "fiscal_year": "FY2024"
+        },
+        {
+          "form_type": "10-K",
+          "filing_date": "2023-07-27",
+          "accession_number": "0000950170-23-035122",
+          "period_of_report": "2023-06-30",
+          "fiscal_year": "FY2023"
+        }
+      ]
+    },
+    "10q": {
+      "status": "available",
+      "filings": [
+        {
+          "form_type": "10-Q",
+          "filing_date": "2026-01-28",
+          "accession_number": "0001193125-26-027207",
+          "period_of_report": "2025-12-31",
+          "quarter": "FY2026Q2"
+        },
+        {
+          "form_type": "10-Q",
+          "filing_date": "2025-10-29",
+          "accession_number": "0001193125-25-256321",
+          "period_of_report": "2025-09-30",
+          "quarter": "FY2026Q1"
+        },
+        {
+          "form_type": "10-Q",
+          "filing_date": "2025-04-30",
+          "accession_number": "0000950170-25-061046",
+          "period_of_report": "2025-03-31",
+          "quarter": "FY2025Q3"
+        }
+      ]
+    },
+    "8k": {
+      "status": "available",
+      "filings": [
+        {
+          "form_type": "8-K",
+          "filing_date": "2026-01-28",
+          "accession_number": "0001193125-26-027198",
+          "period_of_report": "2026-01-28",
+          "note": "2Q FY26決算発表関連と推定"
+        },
+        {
+          "form_type": "8-K",
+          "filing_date": "2025-12-08",
+          "accession_number": "0001193125-25-311196",
+          "period_of_report": "2025-12-05"
+        },
+        {
+          "form_type": "8-K",
+          "filing_date": "2025-10-29",
+          "accession_number": "0001193125-25-256310",
+          "period_of_report": "2025-10-28",
+          "note": "1Q FY26決算発表関連と推定"
+        },
+        {
+          "form_type": "8-K",
+          "filing_date": "2025-09-30",
+          "accession_number": "0001193125-25-225125",
+          "period_of_report": "2025-09-24"
+        },
+        {
+          "form_type": "8-K",
+          "filing_date": "2025-07-30",
+          "accession_number": "0000950170-25-100226",
+          "period_of_report": "2025-07-30",
+          "note": "FY2025通年決算発表関連と推定"
+        }
+      ]
+    }
+  },
+  "insider_summary": {
+    "status": "available",
+    "period_days": 365,
+    "total_filings": 124,
+    "form_3_count": 2,
+    "form_4_count": 122,
+    "form_5_count": 0,
+    "recent_transactions": [
+      {"date": "2026-02-18", "form": "4", "accession": "0000789019-26-000028"},
+      {"date": "2026-02-17", "form": "4", "accession": "0000789019-26-000026"},
+      {"date": "2026-02-03", "form": "4", "accession": "0000789019-26-000024"},
+      {"date": "2026-02-03", "form": "4", "accession": "0000789019-26-000023"},
+      {"date": "2026-02-03", "form": "4", "accession": "0000789019-26-000022"}
+    ],
+    "note": "過去365日で122件のForm4（インサイダー取引報告）あり。個別取引詳細（売買種別・株数）はSEC個別Formの追加取得が必要。一般的にMSFT経営陣はRSU行使に伴う売却が主体であり、投資センチメントとしては中立。",
+    "management_info_from_report": {
+      "ceo": "Satya Nadella（2014年就任、クラウド・AI戦略を牽引）",
+      "cfo": "Amy Hood",
+      "strategy": "AI-first、クラウド主導の成長戦略。OpenAIへの戦略的投資（独占的クラウドパートナー）、Activision買収（$69bn）によるゲーム事業強化。"
+    }
+  },
+  "key_metrics": {
+    "opm_latest": "45%（FY2025）",
+    "opm_trend": "FY23:42% → FY24:45% → FY25:45.6%（AI投資コスト増があるも改善基調）",
+    "eps_cagr_analyst": "+14%（売上+11%、マージン改善+1%、自社株買い+2%）",
+    "revenue_cagr_analyst": "+11%（IC:+LDD、PBP:+HSD、MPC:+MSD）",
+    "azure_growth": {
+      "q2_fy26": "+35%yy/cc",
+      "q1_fy26": "+34%yy/cc（うちAI寄与12pt）",
+      "q4_fy25": "+39%yy/cc（加速）",
+      "q2_fy25": "+31%yy/cc（うちAI寄与13pt）"
+    },
+    "capex_to_revenue": "FY25:約31%（$88.2b / $281.7b）",
+    "ai_revenue_fy25": "$10bn超（生成AI関連ソリューション合計）",
+    "azure_customers": "AI顧客60,000社超（FY25時点）、Azure AI Foundry採用14,000社",
+    "data_centers": "70エリア400以上のデータセンター（4Q FY25時点）",
+    "buyback_yield": "FCF利回り約3%、自社株買い比率40-50%",
+    "roe": "26.99%（FY3推定、アナリストレポート記載）",
+    "ma_track_record": {
+      "notable_deals": "OpenAI（戦略的投資・独占クラウドパートナー）、Activision Blizzard（$69bn、2023年完了）、LinkedIn、GitHub、Nuance",
+      "criteria": "長期的な成長市場、適切な価格、規制環境を考慮",
+      "note": "M&Aはゲーム・AI・エンタープライズSaaSが主軸"
+    }
+  },
+  "filing_sections": {
+    "note": "10-K FY2025（accession 0000950170-25-100235）のSEC EDGARから直接取得",
+    "business": {
+      "summary": "MicrosoftはAI・クラウドを軸とした技術企業。3セグメント（PBP:42%、IC:37%、MPC:21%）で世界展開。ミッション：地球上のすべての人とすべての組織がより多くのことを達成できるようにする。AI技術の民主化とResponsible AI設計を推進。",
+      "key_strengths": [
+        "クラウド3大経済性（規模の経済、需要集約効率、マルチテナント運営コスト低減）",
+        "70エリア400以上のデータセンター（業界最多）",
+        "Microsoft365を中心としたプラットフォームエコシステム",
+        "OpenAI独占的クラウドパートナーシップ",
+        "Azure AI Foundryで1800以上のAIモデルを提供",
+        "セキュリティ：統合エンドツーエンドセキュリティソリューション",
+        "企業向け最大規模のエコシステム（エンタープライズ・スタートアップ双方）"
+      ],
+      "segment_description": {
+        "PBP": "Microsoft365商用・コンシューマー、LinkedIn（タレント/マーケティング）、Dynamics365（ERP/CRM）",
+        "IC": "Azure（パブリッククラウド）、サーバー製品、AI基盤",
+        "MPC": "Windows OEM、Xbox、Bing検索広告、Surface、Gaming"
+      },
+      "source_accession": "0000950170-25-100235"
+    },
+    "risk_factors": {
+      "summary": "主要リスクファクターのサマリー",
+      "risks": [
+        "クラウド・AI事業の競争激化（AWS、Google Cloud）",
+        "AI・クラウドへの大規模設備投資リスク（ROI実現の不確実性）",
+        "プラットフォームエコシステム競争（iOS、Android等）",
+        "反トラスト法・規制リスク（米司法省・FTCによるAI分野調査、2024年開始）",
+        "OpenAIとの戦略的パートナーシップの持続性リスク",
+        "サイバーセキュリティ・データプライバシーリスク",
+        "AI安全性・倫理リスク（Responsible AI）",
+        "地政学的リスク（中国規制等）",
+        "既存ライセンスビジネスからクラウドへの移行コスト"
+      ],
+      "source_accession": "0000950170-25-100235"
+    },
+    "mda": {
+      "summary": "FY2025・直近四半期の業績サマリー",
+      "fy25_results": {
+        "revenue": "$281.72b +14%yy",
+        "opm": "45.6% +1.0Pt yy",
+        "eps": "$13.64 +16%yy",
+        "capex": "$88.2b +58%yy"
+      },
+      "4q_fy25_results": {
+        "revenue": "$76.44b +18/+17%yy/cc",
+        "opm": "45% -1%Pt",
+        "eps": "$3.65 +24/+22%yy/cc",
+        "azure_growth": "+39%yy/cc"
+      },
+      "2q_fy25_results": {
+        "revenue": "$69.6b +12/+12%yy/cc",
+        "opm": "45% +2%Pt",
+        "eps": "$3.23 +10/+10%yy/cc",
+        "azure_growth": "+31%yy/cc"
+      },
+      "1q_fy26_guidance": {
+        "pbp": "$32.2-32.5b",
+        "mpc": "$12.4-12.9b",
+        "ic": "$30.1-30.4b",
+        "azure_growth": "+37%yy/cc"
+      },
+      "key_drivers": [
+        "Azure AI需要：供給制約が継続するも着実に解消中（70エリア400DC体制）",
+        "Microsoft365 Copilot：企業への普及拡大、シート数鈍化もARPU向上",
+        "OpenAI独占パートナーシップ：Azure AI Foundry経由で差別化",
+        "Capex拡大：FY25 $88.2b（+58%yy）、FY26は増加継続も増加率低下見込み",
+        "セグメントミックス改善：IC（高成長）・PBP（高成長）へのシフト継続"
+      ]
+    }
+  }
+}
