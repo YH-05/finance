@@ -815,7 +815,6 @@ dependencies = [
     { name = "tqdm" },
     { name = "trafilatura" },
     { name = "urllib3" },
-    { name = "utils" },
     { name = "yfinance" },
 ]
 
@@ -941,7 +940,6 @@ requires-dist = [
     { name = "tqdm", specifier = ">=4.67.2" },
     { name = "trafilatura", specifier = ">=2.0.0" },
     { name = "urllib3", specifier = ">=2.6.3" },
-    { name = "utils", editable = "src/utils_core" },
     { name = "yfinance", specifier = ">=0.2.0" },
 ]
 provides-extras = ["dev", "docs", "scheduler", "mcp", "cli", "playwright", "automation", "market", "kalman"]

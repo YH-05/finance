@@ -185,12 +185,14 @@ def _write_universe(
             )
             base_ticker = resolved
 
-        tickers.append({
-            "ticker": base_ticker,
-            "company_name": company_name,
-            "gics_sector": gics_sector,
-            "country": country,
-        })
+        tickers.append(
+            {
+                "ticker": base_ticker,
+                "company_name": company_name,
+                "gics_sector": gics_sector,
+                "country": country,
+            }
+        )
         sector_counts[gics_sector] = sector_counts.get(gics_sector, 0) + 1
 
     universe_data: dict[str, Any] = {
@@ -340,9 +342,7 @@ def generate_universe(
         If *source* does not exist.
     """
     entries = _flatten_entries(_load_portfolio(source))
-    return _write_universe(
-        entries, source.name, output_dir, overrides, ticker_mapping
-    )
+    return _write_universe(entries, source.name, output_dir, overrides, ticker_mapping)
 
 
 def generate_benchmark_weights(

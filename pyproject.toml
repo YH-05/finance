@@ -5,7 +5,6 @@ description = "金融市場分析・コンテンツ発信支援ライブラリ"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "utils",
     "structlog>=25.4.0",
     "rich>=13.7.0",
     "filelock>=3.20.3",
@@ -109,7 +108,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/analyze", "src/database", "src/edgar", "src/market", "src/rss", "src/quant", "src/factor", "src/strategy", "src/automation", "src/news", "src/utils_core", "src/utils", "src/notebooklm"]
+packages = ["src/analyze", "src/database", "src/edgar", "src/market", "src/rss", "src/factor", "src/strategy", "src/automation", "src/news", "src/utils_core", "src/notebooklm"]
 
 [tool.ruff]
 line-length = 88
@@ -127,7 +126,6 @@ exclude = [
     ".venv",
     "src/*/docs/.steering",
     "src/*/sample/",   # レガシーコード
-    "src/preprocess/", # レガシーコード
 ]
 select = [
     "E",      # pycodestyle errors
@@ -175,7 +173,7 @@ ignore = [
 
 [tool.pyright]
 include = ["src", "tests", ".claude/agents"]
-exclude = [".venv", "**/__pycache__", "build", "dist", "tests/skills/finance_news_workflow", "src/**/sample", "src/preprocess"]
+exclude = [".venv", "**/__pycache__", "build", "dist", "tests/skills/finance_news_workflow", "src/**/sample"]
 extraPaths = [".claude/agents"]
 venvPath = "."
 venv = ".venv"
@@ -245,9 +243,6 @@ markers = [
 members = [
     "src/utils_core",
 ]
-
-[tool.uv.sources]
-utils = { workspace = true }
 
 [dependency-groups]
 dev = [

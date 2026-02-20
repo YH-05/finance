@@ -197,7 +197,7 @@ test:
     isolation: "PASS"
     reproducibility: "PASS"
     readability: "PASS"
-  
+
   issues:
     - file: "tests/dev/ca_strategy/unit/test_evaluator.py"
       line: 298
