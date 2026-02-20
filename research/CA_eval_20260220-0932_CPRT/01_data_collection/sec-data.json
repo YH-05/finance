@@ -1,0 +1,198 @@
+{
+  "ticker": "CPRT",
+  "company_name": "Copart, Inc.",
+  "retrieved_at": "2026-02-20T09:35:00Z",
+  "data_source": "mixed",
+  "data_limitations": {
+    "sec_edgar_mcp_status": "partial",
+    "reason": "SEC EDGAR MCPで財務諸表（10-Q FY25Q1）、10-Kセクション、フィリング一覧、インサイダー取引を取得。get_key_metricsは空結果のため、アナリストレポートからの補完データも併用。",
+    "affected_fields": ["key_metrics_detailed"],
+    "available_fields": ["financials_from_sec", "filing_sections", "recent_filings", "insider_summary", "financials_from_report"]
+  },
+  "financials": {
+    "note": "SEC EDGAR XBRL（10-Q FY2025Q1, period 2025-10-31）+ アナリストレポートからの補完",
+    "revenue": {
+      "description": "売上高",
+      "latest_annual": {
+        "value": "4600000000",
+        "currency": "USD",
+        "period": "FY2025（2025年7月期）",
+        "source": "10-K Business Section: revenues were $4.6 billion"
+      },
+      "historical_reference": {
+        "fy2024_q4_service_yoy": "+7.1%",
+        "fy2024_q4_vehicle_yoy": "+7.7%",
+        "fy2024_total_yoy": "+7.2%",
+        "note": "FY24/4Q決算レポートより"
+      }
+    },
+    "revenue_mix": {
+      "us": {
+        "share": "85%",
+        "description": "米国事業: Service(サルベージオークション75%) + Vehicle Sales(中古車オークション10%)"
+      },
+      "international": {
+        "share": "15%",
+        "description": "海外事業: UK(シェア4割トップ), カナダ, ブラジル, ドイツ, フィンランド, UAE, スペイン等"
+      }
+    },
+    "income_statement": {
+      "from_sec_10q_fy25q1": {
+        "period": "2025-10-31 (Q1 FY2026)",
+        "net_income": 403714000,
+        "operating_income": 430694000,
+        "eps_basic": 0.42,
+        "eps_diluted": 0.41
+      },
+      "from_report": {
+        "opm_fy23_q3": "40.9%",
+        "opm_fy24_q2": "37.2%",
+        "opm_fy24_q4": "33.6%",
+        "opm_trend": "35%前後で推移、長期目標は40%超",
+        "ni_margin_fy24_q4": "30.1%",
+        "sgna_trend": "6年前の10%半ばから足元9%まで一貫して低下",
+        "cogs_to_revenue": "56-57%で安定か少しずつ改善傾向"
+      }
+    },
+    "balance_sheet": {
+      "from_sec_10q_fy25q1": {
+        "period": "2025-10-31",
+        "total_assets": 10581014000,
+        "current_assets": 6202134000,
+        "total_liabilities": 961903000,
+        "current_liabilities": 781196000,
+        "stockholders_equity": 9600157000,
+        "accounts_receivable": 759687000,
+        "ppe_net": 3650424000,
+        "note": "極めて健全なBS。負債USD962M vs 株主資本USD9.6B。レバレッジ極小"
+      }
+    },
+    "cash_flow": {
+      "from_sec_10q_fy25q1": {
+        "period": "Q1 FY2026 (2025-10-31)",
+        "operating_cf": 535253000,
+        "investing_cf": 1916306000,
+        "financing_cf": 450000,
+        "cash_and_equivalents": 5233590000,
+        "note": "現金USD5.2B保有。投資CFは正値（投資有価証券の売却等の可能性）"
+      },
+      "from_report": {
+        "capex_note": "Yard取得・開発への再投資が主要資本配分",
+        "capital_allocation_priority": "事業への再投資（Land、サービス付加、プラットフォーム）。配当ゼロ、自社株買いは年率1%程度"
+      }
+    }
+  },
+  "recent_filings": {
+    "10k": {
+      "status": "available",
+      "latest": {
+        "form_type": "10-K",
+        "filing_date": "2025-09-26",
+        "accession_number": "0001628280-25-042946",
+        "period_of_report": "2025-07-31"
+      },
+      "historical": [
+        {"filing_date": "2024-09-30", "accession_number": "0000900075-24-000024", "period": "2024-07-31"},
+        {"filing_date": "2023-09-28", "accession_number": "0000900075-23-000034", "period": "2023-07-31"},
+        {"filing_date": "2022-09-27", "accession_number": "0000900075-22-000050", "period": "2022-07-31"},
+        {"filing_date": "2021-09-27", "accession_number": "0000900075-21-000022", "period": "2021-07-31"}
+      ]
+    },
+    "10q": {
+      "status": "available",
+      "latest": {
+        "form_type": "10-Q",
+        "filing_date": "2025-11-24",
+        "accession_number": "0001193125-25-291660",
+        "period_of_report": "2025-10-31"
+      }
+    },
+    "8k": {
+      "status": "available",
+      "recent": [
+        {"filing_date": "2026-02-19", "accession_number": "0001193125-26-059440"},
+        {"filing_date": "2026-01-26", "accession_number": "0001193125-26-022730"},
+        {"filing_date": "2025-12-11", "accession_number": "0001193125-25-315830"}
+      ]
+    }
+  },
+  "insider_summary": {
+    "status": "available",
+    "period_days": 365,
+    "total_form4_filings": 22,
+    "note": "直近1年間にForm4が22件提出。詳細なトランザクション内容（売買区分）はget_insider_summaryでは未取得。Form144（売却届出）が2件あり（2025-11-25, 2026-01-15）、一部経営陣の売却あり。",
+    "management_info_from_report": {
+      "founder": "Willis J. Johnson（1982年創業、カリフォルニアでSalvage Yardを開設）",
+      "ceo_note": "CEO発言：今後50年を踏まえて事業投資に注力",
+      "culture": "オーナー企業でスピーディー・柔軟（IAA/RBは官僚的との対比）"
+    }
+  },
+  "key_metrics": {
+    "opm_latest": "33.6%（FY24Q4）、長期平均35%前後、目標40%超",
+    "ni_margin_latest": "30.1%（FY24Q4）",
+    "sgna_ratio_trend": "10%半ば→9%（6年間で一貫して低下）",
+    "cogs_ratio": "56-57%（安定～微改善）",
+    "cash_position": "USD5.2B（2025年10月時点）",
+    "debt_minimal": "総負債USD962M vs 株主資本USD9.6B",
+    "market_share_us_salvage": "40%超（直近シェア50%近い可能性）",
+    "duopoly_structure": "CPRT 40%超 + IAA 35-40% = 80%の寡占市場",
+    "insurance_volume_share": "売り手の81%が損保会社（FY2025）",
+    "international_sales_unit_share": "米国販売車両の38.8%が海外メンバーへの販売（FY2025）",
+    "total_loss_frequency": "21.4%（業界全体、YoY約2%上昇）、中長期的に30%超見込み",
+    "yard_count": "200施設以上、土地1万エーカー",
+    "monthly_pickup_capacity": "25万台",
+    "express_titling_run_rate": "年間1M台",
+    "purple_wave_yoy": "+17%（商用車・農機のオークション）",
+    "global_operations": "米国, UK, ドイツ, ブラジル, カナダ, UAE, スペイン, フィンランド, オマーン, アイルランド, バーレーン"
+  },
+  "filing_sections": {
+    "business": {
+      "summary": "廃車・中古車のオンラインオークションプラットフォームの世界的リーダー。VB3バーチャルオークション技術を使用。売り手は損保会社が81%、買い手は解体業者・修理業者・中古車ディーラー・輸出業者等。FY2025売上高$4.6B、営業利益$1.7B。米国、UK、ドイツ、ブラジル、カナダ、UAE、スペイン、フィンランド、オマーン、アイルランド、バーレーンで事業展開。",
+      "key_products": [
+        "サルベージ（廃車）オンラインオークション（売上の約75%）",
+        "中古車（Whole Car）オークション（売上の約10%）",
+        "付帯サービス（搬送、保管、所有権移転等）",
+        "Purple Wave（商用車・農機オークション、2023年10月買収）",
+        "Green Parts Specialist（UK、解体パーツ販売）"
+      ],
+      "business_model": {
+        "us_canada_brazil": "エージェントモデル（手数料収入）",
+        "uk_germany_spain": "エージェント + プリンシパルモデル（自己勘定取引も実施）",
+        "fee_structure": "落札価格連動手数料 + 固定フィー（Gate Fee $79, Broker Fee $100等）+ 搬送・保管料"
+      },
+      "growth_drivers": [
+        "全損判定率（TLF）の構造的上昇（1981年4%→2024年21.4%、中長期30%超見込み）",
+        "海外バイヤーの増加（米国販売の38.8%が海外向け）",
+        "Non-Insurance Volume拡大（BlueCar、Dealer等）",
+        "Express Titling等の付加価値サービス",
+        "国際展開（11か国）"
+      ]
+    },
+    "risk_factors": {
+      "summary": "10-K記載の主要リスクファクター",
+      "risks": [
+        "少数の大手損保会社への売上集中リスク（個社10%超はないが集合的に大きい）",
+        "海外展開に伴う統合・オペレーションリスク",
+        "オンラインコマースのセキュリティリスク・クレジットカード詐欺",
+        "新市場でのオークションモデル導入が米国・UK同様の成果を生むとは限らない",
+        "為替変動リスク",
+        "自動運転・ADAS普及による事故率低下リスク（ただし2030年まで急激な低下は想定外）",
+        "競合（IAA/RB Global）のシェア回復リスク"
+      ]
+    },
+    "mda": {
+      "summary": "FY2024-FY2025の事業動向",
+      "revenue_fy2025": "$4.6B（10-K記載）",
+      "operating_income_fy2025": "$1.7B（10-K記載）",
+      "key_trends": [
+        "Global Unit Sales FY24Q4 YoY+8%、US+6%超、International+17%",
+        "US Insurance Volume YoY+6%（FY24Q4）",
+        "全損判定率21.4%まで上昇（YoY約2%上昇）",
+        "ASP: Global ▲約5%（中古車価格Manheim Index▲9%対比レジリエント）",
+        "Express Titling run rate 1M台/年",
+        "Purple Wave YoY+17%"
+      ],
+      "capital_allocation": "事業再投資優先（Land, Technology, Platform）、配当ゼロ、自社株買い年率1%程度"
+    }
+  }
+}
