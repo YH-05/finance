@@ -5,12 +5,13 @@
 海外株式運用チームをマルチAIエージェントシステム（MAS）で再現するPoCを構築する。目的は、従来のクオンツオンリーではなく**クオンタメンタル**（定量＋定性）なジャッジメンタル判断を組み込み、投資判断の透明性を高めること。MASの投資判断は人間のファンドマネージャーの参考になることを想定し、全判断を構造化ファイルとして記録する。
 
 ### 決定事項（ユーザー回答）
-| 項目 | 決定 |
-|------|------|
-| ユニバース | S&P 500 |
-| アーキテクチャ | ハイブリッド（バックテストエンジン=Python、投資判断エージェント=Claude Code Agent Teams） |
-| バックテスト期間 | カットオフ前後＋匿名化（2023-01〜現在、カットオフ前はティッカー匿名化） |
-| ポートフォリオ | 15-30銘柄・集中投資型（最大ウェイト5%、セクター上限25%） |
+
+| 項目             | 決定                                                                                      |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| ユニバース       | S&P 500                                                                                   |
+| アーキテクチャ   | ハイブリッド（バックテストエンジン=Python、投資判断エージェント=Claude Code Agent Teams） |
+| バックテスト期間 | カットオフ前後＋匿名化（2023-01〜現在、カットオフ前はティッカー匿名化）                   |
+| ポートフォリオ   | 15-30銘柄・集中投資型（最大ウェイト5%、セクター上限25%）                                  |
 
 ---
 
@@ -62,6 +63,7 @@ MAS Investment Team
 5. **Fund Manager Decision**: 全ディベートを読み、確信度スコア（0-100）とアクション（BUY/PASS）を決定
 
 **全会一致型ではなくマネージャー決定型を採用する理由**:
+
 - 全会一致は安全/凡庸な選択に収束しやすい（リスク回避バイアス）
 - コントラリアンなポジションを取る能力を維持
 - ディベートログが完全な監査トレースを提供（透明性）
@@ -103,18 +105,18 @@ MAS Investment Team
 
 ### 1.4 既存パッケージの再利用
 
-| 既存パッケージ | 再利用対象 | MASでの用途 |
-|--------------|----------|-----------|
-| `market.yfinance` | `YFinanceFetcher` | 株価・財務指標取得（スクリーニング・バリュエーション） |
-| `market.fred` | `FREDFetcher` | マクロ指標（レジーム判定） |
-| `edgar` | `EdgarFetcher`, `SectionExtractor`, `BatchFetcher` | SEC Filings取得・解析（ファンダメンタル分析） |
-| `factor` | `ValueFactor`, `MomentumFactor`, `QualityFactor`, `Normalizer` | スクリーニング用ファクタースコア計算 |
-| `strategy.risk` | `RiskCalculator` | Sharpe, Sortino, MDD, VaR, Beta, IR 計算 |
-| `strategy.portfolio` | `Portfolio` | ポートフォリオ表現 |
-| `strategy.rebalance` | `Rebalancer` | ドリフト検出・リバランス |
-| `analyze.sector` | セクター分析 | セクターエクスポージャー監視 |
-| `analyze.statistics` | 統計分析 | 相関分析・ベータ計算 |
-| MCP `sec-edgar-mcp__*` | SEC EDGAR MCP | リアルタイムSEC データアクセス |
+| 既存パッケージ         | 再利用対象                                                     | MASでの用途                                            |
+| ---------------------- | -------------------------------------------------------------- | ------------------------------------------------------ |
+| `market.yfinance`      | `YFinanceFetcher`                                              | 株価・財務指標取得（スクリーニング・バリュエーション） |
+| `market.fred`          | `FREDFetcher`                                                  | マクロ指標（レジーム判定）                             |
+| `edgar`                | `EdgarFetcher`, `SectionExtractor`, `BatchFetcher`             | SEC Filings取得・解析（ファンダメンタル分析）          |
+| `factor`               | `ValueFactor`, `MomentumFactor`, `QualityFactor`, `Normalizer` | スクリーニング用ファクタースコア計算                   |
+| `strategy.risk`        | `RiskCalculator`                                               | Sharpe, Sortino, MDD, VaR, Beta, IR 計算               |
+| `strategy.portfolio`   | `Portfolio`                                                    | ポートフォリオ表現                                     |
+| `strategy.rebalance`   | `Rebalancer`                                                   | ドリフト検出・リバランス                               |
+| `analyze.sector`       | セクター分析                                                   | セクターエクスポージャー監視                           |
+| `analyze.statistics`   | 統計分析                                                       | 相関分析・ベータ計算                                   |
+| MCP `sec-edgar-mcp__*` | SEC EDGAR MCP                                                  | リアルタイムSEC データアクセス                         |
 
 ---
 
@@ -123,6 +125,7 @@ MAS Investment Team
 ### 2.1 Phase 0: Postmortem（失敗パターン分析）
 
 初回のみ実行（キャッシュ可能）:
+
 - 過去5年間に上場廃止・大幅下落した企業の10K/10Qを分析
 - 共通の警告サイン（売上急減、コンプライアンス違反、インサイダー大量売却等）をパターン化
 - `failure_patterns.json` として保存、Phase 1のフィルタリングに使用
@@ -143,6 +146,7 @@ screening_factors = {
 ### 2.3 Phase 2-3: 分析＋ディベート
 
 **各アナリストの出力フォーマット**:
+
 ```json
 {
   "ticker": "AAPL",
@@ -165,22 +169,23 @@ screening_factors = {
 ```
 
 **ディベートの出力フォーマット**:
+
 ```json
 {
-  "ticker": "AAPL",
-  "rounds": [
-    {
-      "round": 1,
-      "bull": "Services事業の高マージン成長がEPS成長を牽引...",
-      "bear": "iPhone依存度が依然70%超、中国リスクが高い...",
-      "evidence_cited": ["10-K FY2024", "IDC市場シェアレポート"]
-    },
-    {
-      "round": 2,
-      "bull": "中国リスクは織り込み済み、インド展開で分散...",
-      "bear": "バリュエーション（PER 30x）は成長率に対して割高..."
-    }
-  ]
+    "ticker": "AAPL",
+    "rounds": [
+        {
+            "round": 1,
+            "bull": "Services事業の高マージン成長がEPS成長を牽引...",
+            "bear": "iPhone依存度が依然70%超、中国リスクが高い...",
+            "evidence_cited": ["10-K FY2024", "IDC市場シェアレポート"]
+        },
+        {
+            "round": 2,
+            "bull": "中国リスクは織り込み済み、インド展開で分散...",
+            "bear": "バリュエーション（PER 30x）は成長率に対して割高..."
+        }
+    ]
 }
 ```
 
@@ -240,6 +245,7 @@ class PointInTimeDataManager:
 #### 層2: エージェントの時間的制約（プロンプト注入）
 
 各エージェントのシステムプロンプトに以下を注入:
+
 ```
 TEMPORAL CONSTRAINTS (MANDATORY):
 - 現在の日付は {cutoff_date} です。
@@ -251,6 +257,7 @@ TEMPORAL CONSTRAINTS (MANDATORY):
 #### 層3: ティッカー匿名化（カットオフ前期間）
 
 LLMの学習データにはカットオフ前の市場結果が含まれるため:
+
 ```python
 class TickerAnonymizer:
     """LLMの学習データ汚染を防ぐためティッカーを匿名化。"""
@@ -279,25 +286,25 @@ class TickerAnonymizer:
 
 既存 `strategy.risk.calculator.RiskCalculator` を活用:
 
-| 指標 | 目標値 | 既存実装 |
-|------|--------|---------|
-| Sharpe Ratio | > 0.28 | `RiskCalculator.sharpe_ratio()` |
-| Sortino Ratio | > 0.20 | `RiskCalculator.sortino_ratio()` |
-| Max Drawdown | > -15% | `RiskCalculator.max_drawdown()` |
-| Calmar Ratio | > 1.05 | 年率リターン / |MDD| |
-| Information Coefficient (IC) | > 0.02 | `factor.analysis.ic.ICAnalyzer` |
-| Rolling Sharpe (12M) | 安定的に正 | ローリング計算 |
-| Beta | 0.8-1.2 | `RiskCalculator` + ベンチマーク |
-| Hit Rate | > 50% | 月次超過リターン勝率 |
+| 指標                         | 目標値     | 既存実装                         |
+| ---------------------------- | ---------- | -------------------------------- | --- | --- |
+| Sharpe Ratio                 | > 0.28     | `RiskCalculator.sharpe_ratio()`  |
+| Sortino Ratio                | > 0.20     | `RiskCalculator.sortino_ratio()` |
+| Max Drawdown                 | > -15%     | `RiskCalculator.max_drawdown()`  |
+| Calmar Ratio                 | > 1.05     | 年率リターン /                   | MDD |     |
+| Information Coefficient (IC) | > 0.02     | `factor.analysis.ic.ICAnalyzer`  |
+| Rolling Sharpe (12M)         | 安定的に正 | ローリング計算                   |
+| Beta                         | 0.8-1.2    | `RiskCalculator` + ベンチマーク  |
+| Hit Rate                     | > 50%      | 月次超過リターン勝率             |
 
 ### 3.3 ベンチマーク
 
-| ベンチマーク | ティッカー | 用途 |
-|------------|----------|------|
-| S&P 500 | SPY | プライマリ |
-| S&P 500 等加重 | RSP | ウェイト効果の分離 |
-| Russell 1000 Growth | IWF | グロースティルト評価 |
-| Russell 1000 Value | IWD | バリューティルト評価 |
+| ベンチマーク        | ティッカー | 用途                 |
+| ------------------- | ---------- | -------------------- |
+| S&P 500             | SPY        | プライマリ           |
+| S&P 500 等加重      | RSP        | ウェイト効果の分離   |
+| Russell 1000 Growth | IWF        | グロースティルト評価 |
+| Russell 1000 Value  | IWD        | バリューティルト評価 |
 
 ---
 
@@ -351,27 +358,34 @@ research/mas-invest/{backtest_id}/
 # Portfolio Rebalance Report - {date}
 
 ## Executive Summary
+
 {fund_manager_commentary}
 
 ## Key Changes
+
 | Action | Ticker | 前回ウェイト | 新ウェイト | 確信度 | 主な理由 |
-|--------|--------|------------|----------|--------|---------|
+| ------ | ------ | ------------ | ---------- | ------ | -------- |
 
 ## Top Conviction Positions (Score >= 80)
+
 ### {Ticker}: {Score}/100
+
 **Bull Case**: {ディベートからのサマリー}
 **Bear Case**: {ディベートからのサマリー}
 **投資理由**: {FM rationale}
 **主要リスク**: {認識しているリスク}
 
 ## Debate Highlights
+
 {Bull/Bear Advocateの注目すべき論点の対立}
 
 ## Risk Dashboard
+
 | 指標 | 現在値 | 目標 | ステータス |
-|------|--------|------|-----------|
+| ---- | ------ | ---- | ---------- |
 
 ## Factor Exposure
+
 {セクターティルト、ファクターローディング}
 ```
 
@@ -384,6 +398,7 @@ research/mas-invest/{backtest_id}/
 **目標**: 単一四半期のポートフォリオ構築とバックテスト基盤の確立
 
 **スコープ**:
+
 - リバランス: 四半期、4回分（2024Q1-Q4）
 - エージェント: Universe Screener（Python） + Fundamental Analyst + Fund Manager（ディベートなし）
 - 15-20銘柄、確信度加重
@@ -391,19 +406,20 @@ research/mas-invest/{backtest_id}/
 
 **新規実装**:
 
-| コンポーネント | 場所 | 概要 |
-|-------------|------|------|
-| `BacktestEngine` | `src/strategy/backtest/engine.py` | タイムステップ制御 |
-| `PointInTimeDataManager` | `src/strategy/backtest/pit_data.py` | PoiTデータ管理 |
-| `TickerAnonymizer` | `src/strategy/backtest/anonymizer.py` | ティッカー匿名化 |
-| `BacktestConfig`, `TimeStep` 等 | `src/strategy/backtest/types.py` | データ型定義 |
-| `BacktestMetrics` | `src/strategy/backtest/metrics.py` | パフォーマンス計算 |
-| `UniverseScreener` | `src/strategy/screening/screener.py` | ファクターベーススクリーニング |
-| `fundamental-analyst.md` | `.claude/agents/mas-invest/` | ファンダメンタル分析エージェント |
-| `fund-manager.md` | `.claude/agents/mas-invest/` | 投資判断エージェント |
-| `mas-invest-lead.md` | `.claude/agents/mas-invest/` | オーケストレータ |
+| コンポーネント                  | 場所                                  | 概要                             |
+| ------------------------------- | ------------------------------------- | -------------------------------- |
+| `BacktestEngine`                | `src/strategy/backtest/engine.py`     | タイムステップ制御               |
+| `PointInTimeDataManager`        | `src/strategy/backtest/pit_data.py`   | PoiTデータ管理                   |
+| `TickerAnonymizer`              | `src/strategy/backtest/anonymizer.py` | ティッカー匿名化                 |
+| `BacktestConfig`, `TimeStep` 等 | `src/strategy/backtest/types.py`      | データ型定義                     |
+| `BacktestMetrics`               | `src/strategy/backtest/metrics.py`    | パフォーマンス計算               |
+| `UniverseScreener`              | `src/strategy/screening/screener.py`  | ファクターベーススクリーニング   |
+| `fundamental-analyst.md`        | `.claude/agents/mas-invest/`          | ファンダメンタル分析エージェント |
+| `fund-manager.md`               | `.claude/agents/mas-invest/`          | 投資判断エージェント             |
+| `mas-invest-lead.md`            | `.claude/agents/mas-invest/`          | オーケストレータ                 |
 
 **成果物**:
+
 - 4四半期分のポートフォリオ構築結果
 - 基本パフォーマンスレポート（Sharpe, Sortino, MDD）
 - 投資判断ログ（JSON）
@@ -411,6 +427,7 @@ research/mas-invest/{backtest_id}/
 ### Phase 2: フル機能（6-8週間）
 
 **追加**:
+
 - Bull/Bear Advocate ディベートシステム（2ラウンド）
 - Valuation Analyst, Sentiment Analyst, Macro/Regime Analyst
 - Postmortem Analyst（生存者バイアス排除）
@@ -423,6 +440,7 @@ research/mas-invest/{backtest_id}/
 ### Phase 3: 拡張（4-6週間）
 
 **追加**:
+
 - MSCI Kokusai / ACWI ex Japan 対応
 - Earnings Transcript 分析の強化
 - 動的ファクターウェイト調整（レジーム連動）
@@ -434,17 +452,18 @@ research/mas-invest/{backtest_id}/
 
 ## 6. 技術的リスクと対策
 
-| リスク | 影響 | 対策 |
-|-------|------|------|
-| **LLMコスト** | フルパイプライン50銘柄×4アナリスト=200コール/回 | バッチ処理（10銘柄/コール）、ディベートは上位30銘柄のみ、中間結果キャッシュ |
-| **LLMレイテンシ** | 30-60秒/コール、バックテスト全体で数時間 | Phase 2の4エージェント並列（Agent Teams実証済み）、非同期実行 |
-| **学習データ汚染** | カットオフ前のバックテスト結果が過大評価 | ティッカー匿名化＋汚染検出テスト、カットオフ後を主評価期間 |
-| **SEC Filing解析エラー** | 不完全なファンダメンタル分析 | MCP `sec-edgar-mcp` をプライマリ、`edgar.extractors` をフォールバック |
-| **yfinanceデータ欠損** | ファクタースコアのエラー | `edgar` 財務データとのクロスバリデーション |
-| **生存者バイアス** | リターンの過大評価 | Phase 0 Postmortem、上場廃止銘柄をユニバースに含む |
-| **再現性** | LLMの非決定性 | temperature=0、全エージェント出力をログ、プロンプトのバージョン管理 |
+| リスク                   | 影響                                            | 対策                                                                        |
+| ------------------------ | ----------------------------------------------- | --------------------------------------------------------------------------- |
+| **LLMコスト**            | フルパイプライン50銘柄×4アナリスト=200コール/回 | バッチ処理（10銘柄/コール）、ディベートは上位30銘柄のみ、中間結果キャッシュ |
+| **LLMレイテンシ**        | 30-60秒/コール、バックテスト全体で数時間        | Phase 2の4エージェント並列（Agent Teams実証済み）、非同期実行               |
+| **学習データ汚染**       | カットオフ前のバックテスト結果が過大評価        | ティッカー匿名化＋汚染検出テスト、カットオフ後を主評価期間                  |
+| **SEC Filing解析エラー** | 不完全なファンダメンタル分析                    | MCP `sec-edgar-mcp` をプライマリ、`edgar.extractors` をフォールバック       |
+| **yfinanceデータ欠損**   | ファクタースコアのエラー                        | `edgar` 財務データとのクロスバリデーション                                  |
+| **生存者バイアス**       | リターンの過大評価                              | Phase 0 Postmortem、上場廃止銘柄をユニバースに含む                          |
+| **再現性**               | LLMの非決定性                                   | temperature=0、全エージェント出力をログ、プロンプトのバージョン管理         |
 
 **コスト見積もり**:
+
 - Phase 1 MVP 1回実行: ~$10-30（4四半期、基本エージェント）
 - Phase 2 フルバックテスト: ~$200-500（12四半期、フルエージェント+ディベート）
 - 対策: SEC FilingsとマーケットデータをSQLiteキャッシュ、LLM分析はリバランス日のみ実行
@@ -502,17 +521,17 @@ src/strategy/
 
 ## 8. 主要な再利用ファイル
 
-| ファイル | 用途 |
-|---------|------|
-| `src/strategy/risk/calculator.py` | Sharpe, Sortino, MDD, Beta, IR 計算 |
-| `src/factor/core/base.py` | Factor抽象基底クラス（スクリーニング用） |
-| `src/factor/core/normalizer.py` | ファクタースコア正規化（Z-score） |
-| `src/factor/analysis/ic.py` | Information Coefficient 計算 |
-| `src/edgar/batch.py` | 並列SEC Filing取得パターン |
-| `src/edgar/extractors/section_extractor.py` | 10-K セクション抽出 |
-| `src/market/yfinance/fetcher.py` | 株価・財務データ取得 |
-| `src/market/fred/fetcher.py` | マクロ指標取得 |
-| `.claude/agents/deep-research/dr-stock-lead.md` | Agent Teamsオーケストレーションパターン |
+| ファイル                                        | 用途                                     |
+| ----------------------------------------------- | ---------------------------------------- |
+| `src/strategy/risk/calculator.py`               | Sharpe, Sortino, MDD, Beta, IR 計算      |
+| `src/factor/core/base.py`                       | Factor抽象基底クラス（スクリーニング用） |
+| `src/factor/core/normalizer.py`                 | ファクタースコア正規化（Z-score）        |
+| `src/factor/analysis/ic.py`                     | Information Coefficient 計算             |
+| `src/edgar/batch.py`                            | 並列SEC Filing取得パターン               |
+| `src/edgar/extractors/section_extractor.py`     | 10-K セクション抽出                      |
+| `src/market/yfinance/fetcher.py`                | 株価・財務データ取得                     |
+| `src/market/fred/fetcher.py`                    | マクロ指標取得                           |
+| `.claude/agents/deep-research/dr-stock-lead.md` | Agent Teamsオーケストレーションパターン  |
 
 ---
 
