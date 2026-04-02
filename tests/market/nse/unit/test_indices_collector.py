@@ -132,7 +132,9 @@ def _make_mock_session(
     mock_session = MagicMock(spec=NseSession)
     mock_response = MagicMock()
     mock_response.json.return_value = (
-        response_json if response_json is not None else _make_equity_stock_indices_json()
+        response_json
+        if response_json is not None
+        else _make_equity_stock_indices_json()
     )
     mock_response.status_code = 200
     mock_session.get_with_retry.return_value = mock_response

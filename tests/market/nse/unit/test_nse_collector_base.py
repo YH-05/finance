@@ -18,7 +18,6 @@ import pytest
 from market.nse.collectors._base import NseCollectorMixin
 from market.nse.session import NseSession
 
-
 # =============================================================================
 # Concrete subclass for testing the Mixin
 # =============================================================================

@@ -448,7 +448,6 @@ class TestIpGeoBlockDetection:
 
     def test_正常系_NseCookieErrorはNseErrorのサブクラスである(self) -> None:
         """NseCookieError is a subclass of NseError (used for geo-block 403 handling)."""
-        from market.nse.errors import NseCookieError
 
         assert issubclass(NseCookieError, NseError)
 
