@@ -58,6 +58,39 @@ from market.nse.types import (
 )
 from utils_core.logging import get_logger
 
+# ---------------------------------------------------------------------------
+# Module-level pre-computed lookup constants (performance: avoid repeated
+# linear scans of constant dicts inside per-record loops)
+# ---------------------------------------------------------------------------
+
+# FINANCIAL_FIELD_MAP reverse lookups for parse_financial_results()
+# AIDEV-NOTE: Pre-computed once at module load to avoid O(n×m) per-record scans
+_FINANCIAL_FROM_DATE_KEY: str = next(
+    (k for k, v in FINANCIAL_FIELD_MAP.items() if v == "period_from"), "re_from_dt"
+)
+_FINANCIAL_TO_DATE_KEY: str = next(
+    (k for k, v in FINANCIAL_FIELD_MAP.items() if v == "period_to"), "re_to_dt"
+)
+
+# EVENT_CALENDAR_FIELD_MAP reverse lookups for parse_event_calendar()
+_EVT_SYM_KEY: str = next(
+    (k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "symbol"), "symbol"
+)
+_EVT_CO_KEY: str = next(
+    (k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "company_name"),
+    "company_name",
+)
+_EVT_PUR_KEY: str = next(
+    (k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "purpose"), "purpose"
+)
+_EVT_DESC_KEY: str = next(
+    (k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "description"),
+    "description",
+)
+_EVT_DATE_KEY: str = next(
+    (k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "date"), "date"
+)
+
 logger = get_logger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -674,28 +707,8 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
 
         result = FinancialResult(
             symbol=str(item.get("symbol", "")),
-            from_date=_to_str(
-                item.get(
-                    next(
-                        (
-                            k
-                            for k, v in FINANCIAL_FIELD_MAP.items()
-                            if v == "period_from"
-                        ),
-                        "re_from_dt",
-                    ),
-                    "",
-                )
-            ),
-            to_date=_to_str(
-                item.get(
-                    next(
-                        (k for k, v in FINANCIAL_FIELD_MAP.items() if v == "period_to"),
-                        "re_to_dt",
-                    ),
-                    "",
-                )
-            ),
+            from_date=_to_str(item.get(_FINANCIAL_FROM_DATE_KEY, "")),
+            to_date=_to_str(item.get(_FINANCIAL_TO_DATE_KEY, "")),
             income=_to_str(total_income) if total_income is not None else "",
             profit_after_tax=_to_str(item.get("re_net_profit", "")),
             eps=_to_str(item.get("re_basic_eps_for_cont_dic_opr", "")),
@@ -767,26 +780,17 @@ def parse_event_calendar(data: list[dict[str, Any]]) -> list[CorporateEvent]:
         )
 
     events: list[CorporateEvent] = []
-    _sym_key = next(k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "symbol")
-    _co_key = next(
-        k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "company_name"
-    )
-    _pur_key = next(k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "purpose")
-    _desc_key = next(
-        k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "description"
-    )
-    _date_key = next(k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "date")
 
     for item in data:
         if not isinstance(item, dict):
             continue
 
         event = CorporateEvent(
-            symbol=str(item.get(_sym_key, "")),
-            company_name=str(item.get(_co_key, "")),
-            purpose=str(item.get(_pur_key, "")),
-            date=str(item.get(_date_key, "")),
-            description=str(item.get(_desc_key, "")),
+            symbol=str(item.get(_EVT_SYM_KEY, "")),
+            company_name=str(item.get(_EVT_CO_KEY, "")),
+            purpose=str(item.get(_EVT_PUR_KEY, "")),
+            date=str(item.get(_EVT_DATE_KEY, "")),
+            description=str(item.get(_EVT_DESC_KEY, "")),
         )
         events.append(event)
 

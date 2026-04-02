@@ -132,9 +132,13 @@ class TestSecurityConstants:
         """ALLOWED_HOSTS に www.nseindia.com が含まれること。"""
         assert "www.nseindia.com" in ALLOWED_HOSTS
 
-    def test_正常系_ALLOWED_HOSTSが1件含む(self) -> None:
-        """ALLOWED_HOSTS が1つのホストを含むこと。"""
-        assert len(ALLOWED_HOSTS) == 1
+    def test_正常系_ALLOWED_HOSTSにnsearchivesが含まれる(self) -> None:
+        """ALLOWED_HOSTS に nsearchives.nseindia.com が含まれること。"""
+        assert "nsearchives.nseindia.com" in ALLOWED_HOSTS
+
+    def test_正常系_ALLOWED_HOSTSが2件含む(self) -> None:
+        """ALLOWED_HOSTS が2つのホストを含むこと（www + nsearchives）。"""
+        assert len(ALLOWED_HOSTS) == 2
 
 
 # =============================================================================

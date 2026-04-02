@@ -786,6 +786,80 @@ class TestNseSessionGetWithRetry:
             # and then set again after successful cookie refresh
             assert session._cookie_acquired_at > 0.0
 
+    def test_異常系_全リトライ失敗でNseCookieError(self) -> None:
+        """全リトライが NseCookieError で失敗した場合 NseCookieError が発生すること。"""
+        with patch("market.nse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_response_403 = MagicMock()
+            mock_response_403.status_code = 403
+            mock_response_403.text = "Forbidden"
+            mock_response_ok = MagicMock()
+            mock_response_ok.status_code = 200
+            # Flow: API→403 (attempt 1), cookie_refresh→200, API→403 (attempt 2)
+            # Cookie is pre-set as valid, so initial _ensure_cookies is skipped.
+            # On CookieError, _cookie_acquired_at is reset to 0.0 and next
+            # _ensure_cookies call consumes mock_response_ok (cookie refresh).
+            mock_client.get.side_effect = [
+                mock_response_403,  # 1st API attempt → NseCookieError
+                mock_response_ok,  # Cookie refresh before 2nd attempt
+                mock_response_403,  # 2nd API attempt → NseCookieError
+            ]
+            mock_client_cls.return_value = mock_client
+
+            retry_config = RetryConfig(max_attempts=2, initial_delay=0.01)
+
+            with (
+                patch("market.nse.session.time.sleep"),
+                patch("market.nse.session.time.monotonic", return_value=100.0),
+            ):
+                session = NseSession(retry_config=retry_config)
+                # Pre-set cookie as recently acquired to skip initial _ensure_cookies
+                session._cookie_acquired_at = 99.0  # 1 second ago, within TTL
+                with pytest.raises(NseCookieError):
+                    session.get_with_retry(_TEST_URL)
+
+    def test_正常系_jitter有効時にバックオフ遅延がランダム範囲内(self) -> None:
+        """jitter=True（デフォルト）のとき sleep 値が期待範囲内であること。"""
+        with patch("market.nse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_response_429 = MagicMock()
+            mock_response_429.status_code = 429
+            mock_response_429.text = "Too Many Requests"
+            mock_client.get.return_value = mock_response_429
+            mock_client_cls.return_value = mock_client
+
+            initial_delay = 1.0
+            retry_config = RetryConfig(
+                max_attempts=2,
+                initial_delay=initial_delay,
+                exponential_base=2.0,
+                jitter=True,  # AIDEV-NOTE: default; verify random sleep stays in range
+                max_delay=60.0,
+            )
+
+            sleep_calls: list[float] = []
+
+            def track_sleep(duration: float) -> None:
+                sleep_calls.append(duration)
+
+            with (
+                patch("market.nse.session.time.monotonic", return_value=0.0),
+                patch("market.nse.session.time.sleep", side_effect=track_sleep),
+            ):
+                session = NseSession(retry_config=retry_config)
+                with (
+                    patch.object(session, "_ensure_cookies"),
+                    pytest.raises(NseRateLimitError),
+                ):
+                    session.get_with_retry(_TEST_URL)
+
+            # At least one backoff sleep should have occurred
+            retry_delays = [d for d in sleep_calls if d > 0]
+            assert len(retry_delays) >= 1
+            # With jitter, delay should not exceed max_delay
+            for delay in retry_delays:
+                assert delay <= retry_config.max_delay + 0.01
+
 
 # =============================================================================
 # close() tests

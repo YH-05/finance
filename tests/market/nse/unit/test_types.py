@@ -22,6 +22,7 @@ from enum import Enum
 import pytest
 
 from market.nse.constants import (
+    COOKIE_REFRESH_INTERVAL,
     DEFAULT_DELAY_JITTER,
     DEFAULT_POLITE_DELAY,
     DEFAULT_TIMEOUT,
@@ -158,7 +159,9 @@ class TestNseConfig:
         assert config.delay_jitter == DEFAULT_DELAY_JITTER
         assert config.timeout == DEFAULT_TIMEOUT
         assert config.user_agents == ()
-        assert config.cookie_refresh_interval == 300.0
+        assert config.cookie_refresh_interval == pytest.approx(
+            COOKIE_REFRESH_INTERVAL, rel=1e-9
+        )
 
     def test_正常系_カスタム値で初期化できる(self) -> None:
         """NseConfig がカスタム値で初期化されること。"""
@@ -234,26 +237,31 @@ class TestNseConfig:
     def test_正常系_エッジケース_timeout境界値が有効(self) -> None:
         """timeout の境界値 (1.0, 300.0) が有効であること。"""
         config_min = NseConfig(timeout=1.0)
-        assert config_min.timeout == 1.0
+        assert config_min.timeout == pytest.approx(1.0, rel=1e-9)
 
         config_max = NseConfig(timeout=300.0)
-        assert config_max.timeout == 300.0
+        assert config_max.timeout == pytest.approx(300.0, rel=1e-9)
 
     def test_正常系_エッジケース_polite_delay境界値が有効(self) -> None:
         """polite_delay の境界値 (0.0, 60.0) が有効であること。"""
         config_min = NseConfig(polite_delay=0.0)
-        assert config_min.polite_delay == 0.0
+        assert config_min.polite_delay == pytest.approx(0.0, abs=1e-9)
 
         config_max = NseConfig(polite_delay=60.0)
-        assert config_max.polite_delay == 60.0
+        assert config_max.polite_delay == pytest.approx(60.0, rel=1e-9)
 
     def test_正常系_エッジケース_cookie_refresh_interval境界値が有効(self) -> None:
         """cookie_refresh_interval の境界値 (10.0, 3600.0) が有効であること。"""
         config_min = NseConfig(cookie_refresh_interval=10.0)
-        assert config_min.cookie_refresh_interval == 10.0
+        assert config_min.cookie_refresh_interval == pytest.approx(10.0, rel=1e-9)
 
         config_max = NseConfig(cookie_refresh_interval=3600.0)
-        assert config_max.cookie_refresh_interval == 3600.0
+        assert config_max.cookie_refresh_interval == pytest.approx(3600.0, rel=1e-9)
+
+    def test_正常系_エッジケース_delay_jitter上限境界値が有効(self) -> None:
+        """delay_jitter の上限境界値 (30.0) が有効であること。"""
+        config = NseConfig(delay_jitter=30.0)
+        assert config.delay_jitter == pytest.approx(30.0, rel=1e-9)
 
 
 # =============================================================================

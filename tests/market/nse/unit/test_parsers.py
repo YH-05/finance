@@ -383,24 +383,24 @@ class TestCleanPrice:
     def test_正常系_数値floatを変換できる(self) -> None:
         """float 型の数値を正しく変換できること。"""
         result = clean_price(2450.0)
-        assert result == 2450.0
+        assert result == pytest.approx(2450.0, rel=1e-9)
         assert isinstance(result, float)
 
     def test_正常系_整数入力をfloatに変換できる(self) -> None:
         """int 型の数値を float に変換できること。"""
         result = clean_price(2450)
-        assert result == 2450.0
+        assert result == pytest.approx(2450.0, rel=1e-9)
         assert isinstance(result, float)
 
     def test_正常系_カンマ付き文字列を変換できる(self) -> None:
         """カンマ区切りの価格文字列を変換できること。"""
         result = clean_price("2,450.00")
-        assert result == 2450.0
+        assert result == pytest.approx(2450.0, rel=1e-9)
 
     def test_正常系_負の価格を変換できる(self) -> None:
         """負の価格文字列を変換できること。"""
         result = clean_price("-1.95")
-        assert result == -1.95
+        assert result == pytest.approx(-1.95, rel=1e-9)
 
     def test_異常系_空文字列はNoneを返す(self) -> None:
         """空文字列は None を返すこと。"""
@@ -493,22 +493,22 @@ class TestCleanIndianNumber:
     def test_正常系_標準数値を変換できる(self) -> None:
         """標準的な数値文字列を変換できること。"""
         result = clean_indian_number("1234.56")
-        assert result == 1234.56
+        assert result == pytest.approx(1234.56, rel=1e-9)
 
     def test_正常系_インドフォーマット_ラクで変換できる(self) -> None:
         """インド式のラクフォーマットを変換できること。"""
         result = clean_indian_number("1,23,456")
-        assert result == 123456.0
+        assert result == pytest.approx(123456.0, rel=1e-9)
 
     def test_正常系_インドフォーマット_クローレで変換できる(self) -> None:
         """インド式のクローレフォーマットを変換できること。"""
         result = clean_indian_number("12,34,56,789")
-        assert result == 123456789.0
+        assert result == pytest.approx(123456789.0, rel=1e-9)
 
     def test_正常系_float入力を変換できる(self) -> None:
         """float 型の入力を変換できること。"""
         result = clean_indian_number(1234.56)
-        assert result == 1234.56
+        assert result == pytest.approx(1234.56, rel=1e-9)
 
     def test_異常系_空文字列はNoneを返す(self) -> None:
         """空文字列は None を返すこと。"""

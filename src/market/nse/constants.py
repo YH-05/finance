@@ -55,11 +55,19 @@ to this base URL (e.g., ``API_BASE_URL + "/equity-stockIndices?index=NIFTY 50"``
 # 2. Security constants
 # ---------------------------------------------------------------------------
 
-ALLOWED_HOSTS: Final[frozenset[str]] = frozenset({"www.nseindia.com"})
+ALLOWED_HOSTS: Final[frozenset[str]] = frozenset(
+    {
+        "www.nseindia.com",
+        "nsearchives.nseindia.com",
+    }
+)
 """Whitelist of allowed hostnames for SSRF prevention (CWE-918).
 
 Only requests to these hosts are permitted by the NSE session layer.
 Requests to any other host will raise ``ValueError``.
+
+- ``www.nseindia.com``: Main NSE website and JSON API endpoints.
+- ``nsearchives.nseindia.com``: NSE archives server (EQUITY_L.csv stock list).
 """
 
 # ---------------------------------------------------------------------------

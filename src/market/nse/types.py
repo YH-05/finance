@@ -26,6 +26,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from market.nse.constants import (
+    COOKIE_REFRESH_INTERVAL,
     DEFAULT_DELAY_JITTER,
     DEFAULT_POLITE_DELAY,
     DEFAULT_TIMEOUT,
@@ -123,7 +124,7 @@ class NseConfig:
     delay_jitter: float = DEFAULT_DELAY_JITTER
     user_agents: tuple[str, ...] = ()
     timeout: float = DEFAULT_TIMEOUT
-    cookie_refresh_interval: float = 300.0
+    cookie_refresh_interval: float = COOKIE_REFRESH_INTERVAL
 
     def __post_init__(self) -> None:
         """Validate configuration value ranges.

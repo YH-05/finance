@@ -370,7 +370,13 @@ class NseSession:
             url=url,
             max_attempts=self._retry_config.max_attempts,
         )
-        assert last_error is not None
+        if last_error is None:
+            raise NseAPIError(
+                message="All retry attempts failed with no recorded error",
+                url=url,
+                status_code=0,
+                response_body="",
+            )
         raise last_error
 
     # =========================================================================
@@ -440,7 +446,10 @@ class NseSession:
         now = time.monotonic()
         elapsed_since_cookie = now - self._cookie_acquired_at
 
-        if self._cookie_acquired_at > 0.0 and elapsed_since_cookie < self._config.cookie_refresh_interval:
+        if (
+            self._cookie_acquired_at > 0.0
+            and elapsed_since_cookie < self._config.cookie_refresh_interval
+        ):
             # Cookie is still valid; no refresh needed
             logger.debug(
                 "Cookie still valid, skipping refresh",
@@ -454,14 +463,22 @@ class NseSession:
             reason="initial" if self._cookie_acquired_at == 0.0 else "ttl_expired",
         )
 
+        # Apply polite delay before cookie request to avoid rate limiting
+        self._polite_delay()
         response = self._client.get(BASE_URL)
+
+        if response.status_code not in range(200, 300):
+            logger.warning(
+                "Cookie acquisition failed, skipping cookie update",
+                status_code=response.status_code,
+            )
+            return
 
         self._cookie_acquired_at = time.monotonic()
 
         logger.info(
             "NSE session cookies acquired",
             status_code=response.status_code,
-            cookie_acquired_at=self._cookie_acquired_at,
         )
 
     def _validate_url(self, url: str) -> None:

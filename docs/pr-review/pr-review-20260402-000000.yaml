@@ -1,0 +1,258 @@
+# PRレビューレポート
+# 生成日時: 2026-04-02 00:00:00
+# 生成スキル: review-pr
+# PR: #3878 feat(nse): NSE モジュール実装 Wave0-6 (#3870-#3877)
+
+metadata:
+  generated_at: "2026-04-02 00:00:00"
+  pr_number: 3878
+  pr_title: "feat(nse): NSE モジュール実装 Wave0-6 (#3870-#3877)"
+  base_branch: "main"
+  head_branch: "feature/issues-3870-3877"
+  review_mode: "remote"
+
+pr_info:
+  files_changed: 34
+  additions: 10759
+  deletions: 48
+
+scores:
+  code_quality:
+    readability: 93
+    design: 77
+    performance: 72
+    quant: 77
+  security:
+    code: 76
+    infra: 67
+  test:
+    coverage: 88
+    quality: 87
+
+# =========================================================================
+# HIGH 優先度指摘（必須修正）
+# =========================================================================
+high_priority_issues:
+
+  - id: "H-001"
+    severity: "HIGH"
+    sources: ["design", "performance", "security-code", "security-infra"]
+    category: "ssrf_whitelist"
+    file: "src/market/nse/constants.py"
+    line: 58
+    description: >
+      ALLOWED_HOSTS に "nsearchives.nseindia.com" が未登録。
+      StockListCollector.fetch_stock_list() が _validate_url() で必ず ValueError を
+      送出し動作不能状態にある。機能バグかつセキュリティ設計の不整合。
+    recommendation: |
+      ALLOWED_HOSTS: Final[frozenset[str]] = frozenset({
+          "www.nseindia.com",
+          "nsearchives.nseindia.com",
+      })
+    cwe_id: "CWE-918"
+
+  - id: "H-002"
+    severity: "HIGH"
+    sources: ["security-infra"]
+    category: "authentication"
+    file: "src/market/nse/session.py"
+    line: 460
+    description: >
+      _ensure_cookies() がレスポンスのステータスコードを検証していない。
+      NSE ホームページが 5xx/3xx を返しても _cookie_acquired_at がセットされ、
+      Cookie なしで後続 API リクエストが実行される。
+    recommendation: |
+      if response.status_code not in range(200, 300):
+          logger.warning("Cookie acquisition failed", status_code=response.status_code)
+          return
+      self._cookie_acquired_at = time.monotonic()
+    cwe_id: "CWE-287"
+
+# =========================================================================
+# MEDIUM 優先度指摘（推奨修正）
+# =========================================================================
+medium_priority_issues:
+
+  - id: "M-001"
+    severity: "MEDIUM"
+    sources: ["design", "security-code", "security-infra", "readability"]
+    category: "assert_usage"
+    file: "src/market/nse/session.py"
+    line: 373
+    description: >
+      assert last_error is not None が Python -O フラグで無効化される。
+    recommendation: |
+      if last_error is None:
+          raise NseAPIError("All retry attempts failed", url=url, status_code=0, response_body="")
+      raise last_error
+
+  - id: "M-002"
+    severity: "MEDIUM"
+    sources: ["performance", "quant"]
+    category: "algorithm"
+    file: "src/market/nse/parsers.py"
+    line: 678
+    description: >
+      parse_financial_results() のループ内で FINANCIAL_FIELD_MAP を毎回線形走査。
+    recommendation: >
+      ループ前に逆引きマップを事前計算してモジュールレベルに移動。
+
+  - id: "M-003"
+    severity: "MEDIUM"
+    sources: ["performance", "quant"]
+    category: "algorithm"
+    file: "src/market/nse/parsers.py"
+    line: 770
+    description: >
+      parse_event_calendar() 先頭で EVENT_CALENDAR_FIELD_MAP を5回線形走査。
+    recommendation: >
+      モジュールレベル定数として事前計算。
+
+  - id: "M-004"
+    severity: "MEDIUM"
+    sources: ["performance"]
+    category: "io"
+    file: "src/market/nse/session.py"
+    line: 460
+    description: >
+      _ensure_cookies() が _polite_delay() を経由せず直接 GET を実行。
+      Cookie 取得直後の API リクエストがレート制限に引っかかるリスク。
+
+  - id: "M-005"
+    severity: "MEDIUM"
+    sources: ["quant"]
+    category: "numerical_precision"
+    rule_id: "QC-01"
+    file: "tests/market/nse/unit/test_parsers.py"
+    description: >
+      浮動小数点の == 比較が8箇所。pytest.approx に統一すべき。
+
+  - id: "M-006"
+    severity: "MEDIUM"
+    sources: ["quant"]
+    category: "testing"
+    rule_id: "QC-05"
+    file: "tests/market/nse/property/test_parsers_property.py"
+    description: >
+      total_income フォールバック計算と NseConfig 境界値の Hypothesis テスト不足。
+
+  - id: "M-007"
+    severity: "MEDIUM"
+    sources: ["design"]
+    category: "dry"
+    files: ["quote.py", "indices.py", "stock_list.py"]
+    description: >
+      validate() の実装が3クラスで95%以上同一。NseCollectorMixin に抽出すべき。
+
+  - id: "M-008"
+    severity: "MEDIUM"
+    sources: ["security-code"]
+    category: "input_validation"
+    file: "src/market/nse/collectors/corporate.py"
+    line: 239
+    description: >
+      search() の query パラメータに文字種バリデーションがない。
+
+  - id: "M-009"
+    severity: "MEDIUM"
+    sources: ["security-code"]
+    category: "information_exposure"
+    file: "src/market/nse/parsers.py"
+    description: >
+      NseParseError の raw_data トランケート上限が 500 で session.py の 200 と不整合。
+
+  - id: "M-010"
+    severity: "MEDIUM"
+    sources: ["security-infra"]
+    category: "vulnerable_dependencies"
+    description: >
+      pip-audit で6件の CVE 検出: cryptography, fastmcp, requests, pygments, diskcache。
+    recommendation: >
+      uv add cryptography>=46.0.6 fastmcp>=3.2.0 requests>=2.33.0 pygments>=2.20.0
+
+  - id: "M-011"
+    severity: "MEDIUM"
+    sources: ["test-coverage"]
+    category: "missing_test"
+    file: "tests/market/nse/unit/test_session.py"
+    description: >
+      jitter=True（デフォルト）時のバックオフ sleep 値が未検証。
+      NseCookieError 全失敗ケースのテスト欠落。
+
+  - id: "M-012"
+    severity: "MEDIUM"
+    sources: ["test-quality"]
+    category: "isolation"
+    file: "tests/market/nse/integration/test_nse_integration.py"
+    line: 101
+    description: >
+      _nse_api_is_reachable() がモジュールレベルで即時実行され、
+      pytest 収集フェーズで HTTP リクエストが発生する。
+
+# =========================================================================
+# LOW 優先度指摘
+# =========================================================================
+low_priority_issues:
+
+  - id: "L-001"
+    sources: ["readability", "design"]
+    file: "src/market/nse/types.py"
+    line: 126
+    description: >
+      NseConfig.cookie_refresh_interval が COOKIE_REFRESH_INTERVAL 定数を参照せず
+      リテラル 300.0 をハードコードしている。
+
+  - id: "L-002"
+    sources: ["readability", "design"]
+    file: "src/market/nse/parsers.py"
+    line: 292
+    description: >
+      _parse_float/_parse_int が clean_price/clean_volume の1行ラッパーで意義不明瞭。
+
+  - id: "L-003"
+    sources: ["readability"]
+    file: "src/market/nse/collectors/_base.py"
+    description: >
+      __all__ が定義されていない。他モジュールとの一貫性欠如。
+
+  - id: "L-004"
+    sources: ["test-coverage"]
+    file: "tests/market/nse/unit/test_types.py"
+    description: >
+      delay_jitter=30.0（上限境界値）の正常系テストが欠落。
+
+  - id: "L-005"
+    sources: ["test-coverage"]
+    file: "tests/market/nse/unit/test_corporate_collector.py"
+    description: >
+      search() の 100 文字境界値の正常系テストが欠落。
+
+  - id: "L-006"
+    sources: ["test-quality"]
+    file: "tests/market/nse/unit/test_nse_collector_base.py"
+    description: >
+      docstring が省略されているテストメソッド2件。
+
+  - id: "L-007"
+    sources: ["test-quality"]
+    file: "tests/market/nse/unit/test_parsers.py"
+    line: 973
+    description: >
+      test_正常系/異常系 プレフィックスが欠けているテスト2件。
+
+  - id: "L-008"
+    sources: ["security-infra"]
+    file: "src/market/nse/session.py"
+    line: 467
+    description: >
+      _ensure_cookies() の INFO ログに cookie_acquired_at の値を出力している。
+
+summary:
+  verdict: "REQUEST_CHANGES"
+  high_count: 2
+  medium_count: 12
+  low_count: 8
+  comment: >
+    全体的に高品質な実装だが、H-001（SSRF ホワイトリスト欠落による fetch_stock_list() 動作不能）
+    と H-002（Cookie 取得時のステータス未検証）は必須修正。
+    複数のレビュアーが同一問題を指摘しており優先度高。

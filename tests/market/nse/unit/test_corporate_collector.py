@@ -135,9 +135,7 @@ class TestGetFinancialResults:
         assert results[0].symbol == "RELIANCE"
 
     def test_正常系_正しいエンドポイントにリクエスト(self) -> None:
-        mock_session = _make_mock_session(
-            response_json=_make_financial_results_json()
-        )
+        mock_session = _make_mock_session(response_json=_make_financial_results_json())
         collector = CorporateCollector(session=mock_session)
         collector.get_financial_results("RELIANCE")
         call_args = mock_session.get_with_retry.call_args
@@ -145,9 +143,7 @@ class TestGetFinancialResults:
         assert call_args[1]["params"]["symbol"] == "RELIANCE"
 
     def test_正常系_注入セッションはクローズしない(self) -> None:
-        mock_session = _make_mock_session(
-            response_json=_make_financial_results_json()
-        )
+        mock_session = _make_mock_session(response_json=_make_financial_results_json())
         collector = CorporateCollector(session=mock_session)
         collector.get_financial_results("RELIANCE")
         mock_session.close.assert_not_called()
@@ -171,9 +167,7 @@ class TestGetFinancialResults:
 
 class TestGetEventCalendar:
     def test_正常系_イベントカレンダーリストを取得(self) -> None:
-        mock_session = _make_mock_session(
-            response_json=_make_event_calendar_json()
-        )
+        mock_session = _make_mock_session(response_json=_make_event_calendar_json())
         collector = CorporateCollector(session=mock_session)
         events = collector.get_event_calendar()
         assert isinstance(events, list)
@@ -183,9 +177,7 @@ class TestGetEventCalendar:
         assert events[0].purpose == "Dividend"
 
     def test_正常系_正しいエンドポイントにリクエスト(self) -> None:
-        mock_session = _make_mock_session(
-            response_json=_make_event_calendar_json()
-        )
+        mock_session = _make_mock_session(response_json=_make_event_calendar_json())
         collector = CorporateCollector(session=mock_session)
         collector.get_event_calendar()
         call_args = mock_session.get_with_retry.call_args
@@ -230,6 +222,14 @@ class TestSearch:
         collector = CorporateCollector(session=MagicMock(spec=NseSession))
         with pytest.raises(ValueError, match="must not exceed 100 characters"):
             collector.search("A" * 101)
+
+    def test_正常系_100文字境界値クエリが有効(self) -> None:
+        """query が正確に 100 文字の場合 ValueError を送出しないこと（上限境界値）。"""
+        mock_session = _make_mock_session(response_json={"symbols": []})
+        collector = CorporateCollector(session=mock_session)
+        # 100 chars: valid alphanumeric query at the boundary
+        results = collector.search("A" * 100)
+        assert isinstance(results, list)
 
     def test_正常系_空リストレスポンスを処理(self) -> None:
         mock_session = _make_mock_session(response_json={"symbols": []})

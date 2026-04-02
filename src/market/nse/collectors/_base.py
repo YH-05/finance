@@ -12,6 +12,8 @@ from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 
+__all__ = ["NseCollectorMixin"]
+
 
 class NseCollectorMixin:
     """Mixin providing NSE session lifecycle management.

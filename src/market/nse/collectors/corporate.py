@@ -40,6 +40,7 @@ market.bse.collectors.corporate : BSE reference implementation.
 
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Any
 
 from market.nse.collectors._base import NseCollectorMixin
@@ -274,6 +275,11 @@ class CorporateCollector(NseCollectorMixin):
             raise ValueError("query must not be empty")
         if len(query) > 100:
             raise ValueError("query must not exceed 100 characters")
+        if not re.match(r"^[A-Za-z0-9\s\-&.]+$", query):
+            raise ValueError(
+                "query contains invalid characters; "
+                "only alphanumeric, spaces, hyphens, ampersands, and dots are allowed"
+            )
 
         logger.info(
             "Searching symbol",
