@@ -1,7 +1,7 @@
 # Test Patterns Exploration Summary
 
-**Date**: 2026-03-24  
-**Scope**: Market package test suite (NASDAQ, FRED, yfinance, general market)  
+**Date**: 2026-03-24
+**Scope**: Market package test suite (NASDAQ, FRED, yfinance, general market)
 **Files Analyzed**: 15+ test files, 5+ conftest.py files, template patterns
 
 ---
@@ -244,7 +244,7 @@ def test_applies_polite_delay(mock_uniform, mock_sleep, mock_session):
     """Verify delay is applied between requests."""
     mock_uniform.return_value = 0.5
     session.get("https://api.nasdaq.com/api/screener/stocks")
-    
+
     # Verify delay calculation: base_delay (1.0) + jitter (0.5) = 1.5
     mock_sleep.assert_called_with(1.5)
 ```
@@ -257,9 +257,9 @@ def test_rotates_user_agents(mock_choice, mock_session):
     """Verify User-Agent header is randomly rotated."""
     test_ua = "Mozilla/5.0 (Test Browser)"
     mock_choice.return_value = test_ua
-    
+
     session.get("https://api.nasdaq.com/api/screener/stocks")
-    
+
     # Verify User-Agent was selected from configured list
     mock_choice.assert_called_once()
     call_args = mock_choice.call_args[0]
@@ -275,12 +275,12 @@ def test_retries_on_failure_then_succeeds(mock_sleep, mock_session):
     """Verify exponential backoff on transient failures."""
     failure_response = MagicMock(status_code=503)
     success_response = MagicMock(status_code=200)
-    
+
     # Simulate: fail, fail, success
     mock_session.get.side_effect = [failure_response, failure_response, success_response]
-    
+
     result = session.get_with_retry("https://api.nasdaq.com/api/screener/stocks")
-    
+
     # Verify sleep called with exponential backoff: 0.1 → 0.2 → 0.4 (clamped to max_delay)
     assert mock_sleep.call_count == 2
     sleep_calls = [call[0][0] for call in mock_sleep.call_args_list]
@@ -294,10 +294,10 @@ def test_rate_limit_raises_specific_exception(mock_session):
     rate_limit_response = MagicMock()
     rate_limit_response.status_code = 429
     rate_limit_response.headers = {"Retry-After": "60"}
-    
+
     with pytest.raises(NasdaqRateLimitError) as exc_info:
         session.get_with_retry(url)
-    
+
     assert exc_info.value.retry_after == 60
 ```
 
@@ -308,12 +308,12 @@ def test_http_session_protocol_defines_required_methods(self) -> None:
     """HttpSessionProtocol specifies get, close, raw_session."""
     from market.yfinance.session import HttpSessionProtocol
     import inspect
-    
+
     # Verify methods exist
     assert hasattr(HttpSessionProtocol, "get")
     assert hasattr(HttpSessionProtocol, "close")
     assert hasattr(HttpSessionProtocol, "raw_session")
-    
+
     # Verify signatures
     sig = inspect.signature(HttpSessionProtocol.get)
     assert "url" in sig.parameters
@@ -324,17 +324,17 @@ def test_concrete_implementation_satisfies_protocol(self) -> None:
     class ConcreteSession:
         def __init__(self) -> None:
             self._session = object()
-        
+
         @property
         def raw_session(self) -> Any:
             return self._session
-        
+
         def get(self, url: str, **kwargs: Any) -> Any:
             return {}
-        
+
         def close(self) -> None:
             pass
-    
+
     # Type checker accepts this as HttpSessionProtocol
     session: HttpSessionProtocol = ConcreteSession()
     result = session.get("https://example.com")
@@ -350,19 +350,19 @@ def test_concrete_implementation_satisfies_protocol(self) -> None:
 ```python
 class TestExchange:
     """Tests for Exchange enum."""
-    
+
     def test_正常系_Exchange継承元はstr(self) -> None:
         """Exchange enum inherits from str for string compatibility."""
         assert issubclass(Exchange, str)
         assert Exchange.NASDAQ == "nasdaq"
         assert isinstance(Exchange.NYSE, str)
-    
+
     def test_正常系_全メンバーが定義されている(self) -> None:
         """All expected exchanges are present."""
         expected = {"NASDAQ", "NYSE", "AMEX"}
         actual = {member.name for member in Exchange}
         assert actual == expected
-    
+
     def test_正常系_メンバー数は3つ(self) -> None:
         """Exchange has exactly 3 members."""
         assert len(Exchange) == 3
@@ -375,14 +375,14 @@ from dataclasses import FrozenInstanceError
 
 class TestNasdaqConfig:
     """Tests for frozen NasdaqConfig dataclass."""
-    
+
     def test_異常系_プロパティ修正時にエラー(self) -> None:
         """Frozen dataclass prevents attribute modification."""
         config = NasdaqConfig(polite_delay=1.0, timeout=5.0, ...)
-        
+
         with pytest.raises(FrozenInstanceError):
             config.polite_delay = 2.0
-    
+
     def test_正常系_タイムアウト値の範囲検証(self) -> None:
         """Timeout must be positive value."""
         with pytest.raises(ValueError, match="timeout must be positive"):
@@ -394,7 +394,7 @@ class TestNasdaqConfig:
 ```python
 class TestScreenerFilter:
     """Tests for ScreenerFilter dataclass."""
-    
+
     def test_正常系_フィルタをパラメータに変換(self) -> None:
         """ScreenerFilter.to_params() converts to query parameters."""
         filter_obj = ScreenerFilter(
@@ -402,9 +402,9 @@ class TestScreenerFilter:
             sector=Sector.TECHNOLOGY,
             market_cap=MarketCap.MEGA_CAP
         )
-        
+
         params = filter_obj.to_params()
-        
+
         # All values are strings, None values filtered out
         assert params == {
             "exchange": "nasdaq",
@@ -432,13 +432,13 @@ NasdaqError (base exception, message: str)
 ```python
 class TestExceptionHierarchy:
     """Verify exception inheritance structure."""
-    
+
     def test_正常系_全サブクラスがNasdaqErrorを継承(self) -> None:
         """All exception subclasses inherit from NasdaqError."""
         assert issubclass(NasdaqAPIError, NasdaqError)
         assert issubclass(NasdaqRateLimitError, NasdaqError)
         assert issubclass(NasdaqParseError, NasdaqError)
-    
+
     def test_正常系_NasdaqErrorはExceptionを直接継承(self) -> None:
         """NasdaqError directly inherits from Exception."""
         assert Exception in NasdaqError.__bases__
@@ -450,7 +450,7 @@ class TestExceptionHierarchy:
 def test_正常系_例外チェーンが機能する(self) -> None:
     """Exception cause chain preserves original error context."""
     original = ConnectionError("Connection refused")
-    
+
     try:
         raise NasdaqAPIError(
             "API request failed",
@@ -485,25 +485,25 @@ def test_正常系_retry_afterがNoneでも初期化可能(self) -> None:
 ```python
 class TestCleanPrice:
     """Tests for price string cleaning."""
-    
+
     def test_正常系_有効な価格文字列(self) -> None:
         """Valid price strings convert to float."""
         assert clean_price("195.32") == 195.32
         assert clean_price("$100.00") == 100.0
-    
+
     def test_異常系_NAバリエーション(self) -> None:
         """NA, N/A, na, n/a all return None."""
         assert clean_price("N/A") is None
         assert clean_price("NA") is None
         assert clean_price("na") is None
         assert clean_price("n/a") is None
-    
+
     def test_エッジケース_特殊値(self) -> None:
         """inf, -inf, nan strings return None."""
         assert clean_price("inf") is None
         assert clean_price("-inf") is None
         assert clean_price("nan") is None
-    
+
     def test_異常系_不正な形式(self) -> None:
         """Invalid strings raise ValueError or return None."""
         with pytest.raises((ValueError, TypeError)):
@@ -516,15 +516,15 @@ class TestCleanPrice:
 def test_正常系_スクリーナーレスポンスをパース(self) -> None:
     """parse_screener_response converts API dict to cleaned DataFrame."""
     api_response = sample_screener_api_response  # From fixture
-    
+
     df = parse_screener_response(api_response)
-    
+
     # Verify structure
     assert isinstance(df, pd.DataFrame)
     assert df.shape[0] == 5  # 5 stocks
     assert "symbol" in df.columns
     assert "last_sale" in df.columns  # Snake case from camelCase
-    
+
     # Verify cleaning applied
     assert pd.api.types.is_float_dtype(df["last_sale"])
     assert df["last_sale"].notna().all()  # No NaN from cleaning
@@ -536,7 +536,7 @@ def test_正常系_スクリーナーレスポンスをパース(self) -> None:
 def test_異常系_期待されない応答形式(self) -> None:
     """Unexpected API response format raises NasdaqParseError."""
     bad_response = {"invalid_field": [...]}  # Missing required "rows"
-    
+
     with pytest.raises(NasdaqParseError, match="Expected 'rows' field"):
         parse_screener_response(bad_response)
 ```
@@ -553,7 +553,7 @@ from hypothesis import strategies as st
 
 class TestCleanPriceProperty:
     """Property-based tests for numeric cleaning robustness."""
-    
+
     @given(value=st.text(max_size=200))
     @settings(max_examples=500, deadline=None)
     def test_プロパティ_任意の文字列でクラッシュしない(self, value: str) -> None:
@@ -565,7 +565,7 @@ class TestCleanPriceProperty:
         except (ValueError, TypeError):
             # These exceptions are acceptable
             pass
-    
+
     @given(
         num=st.floats(
             min_value=-1e12,
@@ -598,7 +598,7 @@ def test_プロパティ_チャンク化しても全要素保持(
     """Chunking preserves all elements regardless of input size."""
     chunks = chunk_list(items, chunk_size)
     flattened = [item for chunk in chunks for item in chunk]
-    
+
     # Invariant: flattened result equals original
     assert flattened == items
     assert len(flattened) == len(items)
@@ -613,24 +613,24 @@ def test_プロパティ_チャンク化しても全要素保持(
 ```python
 class TestScreenerIntegration:
     """End-to-end screener workflow tests."""
-    
+
     def _make_response(self, data: dict) -> MagicMock:
         """Helper: Create mock response with JSON data."""
         response = MagicMock()
         response.status_code = 200
         response.json.return_value = data
         return response
-    
+
     def test_정상系_fetch_download_workflow(self, mock_session):
         """Complete workflow: fetch → download CSV."""
         # Setup
         api_response = sample_screener_api_response  # From fixture
         mock_session.get_with_retry.return_value = self._make_response(api_response)
-        
+
         # Execute
         collector = ScreenerCollector(session=mock_session)
         csv_path = collector.download_csv("output.csv", exchange=Exchange.NASDAQ)
-        
+
         # Verify
         assert csv_path.exists()
         df = pd.read_csv(csv_path, encoding="utf-8-sig")
@@ -644,7 +644,7 @@ class TestScreenerIntegration:
 def test_異常系_パストラバーサル検出(self, tmp_path):
     """Prevent path traversal attacks in file output."""
     collector = ScreenerCollector()
-    
+
     with pytest.raises(ValueError, match="Path traversal"):
         collector.download_csv("../../../etc/passwd", exchange=Exchange.NASDAQ)
 ```
@@ -856,4 +856,3 @@ When adding tests to market packages:
 - **Integration Tests**: `tests/market/nasdaq/integration/test_screener_integration.py`
 - **Template Patterns**: `template/tests/conftest.py` (103 lines)
 - **Exception Tests**: `tests/market/nasdaq/unit/test_errors.py` (419 lines)
-

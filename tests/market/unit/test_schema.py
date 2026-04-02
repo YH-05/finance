@@ -24,6 +24,8 @@ from datetime import datetime
 
 import pytest
 
+from database.db.connection import get_data_dir
+
 # =============================================================================
 # StockDataMetadata Tests
 # =============================================================================
@@ -452,7 +454,7 @@ class TestExportConfig:
         config = ExportConfig()
 
         assert config.default_format == "parquet"  # デフォルト
-        assert config.output_dir == "data/exports"  # デフォルト
+        assert config.output_dir == str(get_data_dir() / "exports")  # デフォルト
         assert config.compression is None
 
     def test_正常系_全フィールドで作成される(self) -> None:

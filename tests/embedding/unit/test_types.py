@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pytest
 
+from database.db.connection import get_data_dir
 from embedding.types import ArticleRecord, ExtractionResult, PipelineConfig
 
 
@@ -109,8 +110,8 @@ class TestPipelineConfig:
         """デフォルト値で PipelineConfig を作成できることを確認。"""
         config = PipelineConfig()
 
-        assert config.news_dir == Path("data/raw/news")
-        assert config.chromadb_path == Path("data/chromadb")
+        assert config.news_dir == get_data_dir() / "raw" / "news"
+        assert config.chromadb_path == get_data_dir() / "chromadb"
         assert config.collection_name == "gemini-embedding-001"
         assert config.dummy_dim == 768
         assert config.max_concurrency == 3

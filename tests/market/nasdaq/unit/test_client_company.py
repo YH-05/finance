@@ -644,7 +644,9 @@ class TestGetFinancials:
             call_args[1].get("params") if len(call_args) > 1 else None
         )
         assert params is not None
-        assert params.get("frequency") == "2"  # API expects numeric: 1=annual, 2=quarterly
+        assert (
+            params.get("frequency") == "2"
+        )  # API expects numeric: 1=annual, 2=quarterly
 
     def test_正常系_キャッシュヒット時にAPIを呼ばない(
         self,

@@ -203,6 +203,47 @@ from .nasdaq import (
     ScreenerCollector,
     ScreenerFilter,
 )
+from .nse import (
+    CorporateCollector as NseCorporateCollector,
+)
+from .nse import (
+    CorporateEvent as NseCorporateEvent,
+)
+from .nse import (
+    FinancialResult as NseFinancialResult,
+)
+from .nse import (
+    IndexConstituent as NseIndexConstituent,
+)
+from .nse import (
+    IndicesCollector as NseIndicesCollector,
+)
+from .nse import (
+    MarketStatus as NseMarketStatus,
+)
+from .nse import (
+    NseAPIError,
+    NseConfig,
+    NseCookieError,
+    NseError,
+    NseIndex,
+    NseParseError,
+    NseRateLimitError,
+    NseSession,
+    NseValidationError,
+)
+from .nse import (
+    QuoteCollector as NseQuoteCollector,
+)
+from .nse import (
+    RetryConfig as NseRetryConfig,
+)
+from .nse import (
+    StockListCollector as NseStockListCollector,
+)
+from .nse import (
+    StockQuote as NseStockQuote,
+)
 from .polymarket import (
     PolymarketAPIError,
     PolymarketClient,
@@ -368,6 +409,26 @@ __all__ = [
     "NasdaqError",
     "NasdaqParseError",
     "NasdaqRateLimitError",
+    # NSE (National Stock Exchange of India)
+    "NseAPIError",
+    "NseConfig",
+    "NseCookieError",
+    "NseCorporateCollector",
+    "NseCorporateEvent",
+    "NseError",
+    "NseFinancialResult",
+    "NseIndex",
+    "NseIndexConstituent",
+    "NseIndicesCollector",
+    "NseMarketStatus",
+    "NseParseError",
+    "NseQuoteCollector",
+    "NseRateLimitError",
+    "NseRetryConfig",
+    "NseSession",
+    "NseStockListCollector",
+    "NseStockQuote",
+    "NseValidationError",
     # Polymarket
     "PolymarketAPIError",
     "PolymarketClient",
