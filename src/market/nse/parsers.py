@@ -93,6 +93,9 @@ _EVT_DATE_KEY: str = next(
 
 logger = get_logger(__name__)
 
+# Maximum length of raw data stored in NseParseError (CWE-209 mitigation)
+_MAX_RAW_DATA_LOG: int = 500
+
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
@@ -322,42 +325,6 @@ def clean_indian_number(value: Any) -> float | None:
         return None
 
 
-def _parse_float(value: Any) -> float | None:
-    """Parse a value to float, returning None for missing/invalid values.
-
-    Internal helper used by ``parse_financial_results``.
-
-    Parameters
-    ----------
-    value : Any
-        Value from a JSON response field.
-
-    Returns
-    -------
-    float | None
-        The parsed float, or ``None`` if missing or unparseable.
-    """
-    return clean_price(value)
-
-
-def _parse_int(value: Any) -> int | None:
-    """Parse a value to int, returning None for missing/invalid values.
-
-    Internal helper used by parsers.
-
-    Parameters
-    ----------
-    value : Any
-        Value from a JSON response field.
-
-    Returns
-    -------
-    int | None
-        The parsed int, or ``None`` if missing or unparseable.
-    """
-    return clean_volume(value)
-
-
 # ---------------------------------------------------------------------------
 # Quote response parser
 # ---------------------------------------------------------------------------
@@ -445,14 +412,14 @@ def parse_quote_response(raw: dict[str, Any]) -> StockQuote:
     if not isinstance(raw, dict):
         raise NseParseError(
             f"Expected dict for quote response, got {type(raw).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
     if not raw:
         raise NseParseError(
             "Empty NSE quote response",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
@@ -467,7 +434,7 @@ def parse_quote_response(raw: dict[str, Any]) -> StockQuote:
     if missing:
         raise NseParseError(
             f"Missing required sub-objects in quote response: {sorted(missing)}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=", ".join(sorted(missing)),
         )
 
@@ -559,14 +526,14 @@ def parse_index_constituents(raw: dict[str, Any]) -> list[IndexConstituent]:
     if not isinstance(raw, dict):
         raise NseParseError(
             f"Expected dict for index constituents response, got {type(raw).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
     if "data" not in raw:
         raise NseParseError(
             "Missing 'data' key in index constituents response",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="data",
         )
 
@@ -574,7 +541,7 @@ def parse_index_constituents(raw: dict[str, Any]) -> list[IndexConstituent]:
     if not isinstance(data_list, list):
         raise NseParseError(
             f"Expected list for 'data', got {type(data_list).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="data",
         )
 
@@ -670,14 +637,14 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
     if not isinstance(raw, dict):
         raise NseParseError(
             f"Expected dict for financial results response, got {type(raw).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
     if "resCmpData" not in raw:
         raise NseParseError(
             "Missing 'resCmpData' key in financial results response",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="resCmpData",
         )
 
@@ -685,7 +652,7 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
     if not isinstance(data_list, list):
         raise NseParseError(
             f"Expected list for 'resCmpData', got {type(data_list).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="resCmpData",
         )
 
@@ -696,11 +663,11 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
 
         # total_income fallback: try re_total_inc → re_tot_inc → net_sale + other_income
         total_income = (
-            _parse_float(item.get("re_total_inc"))
-            or _parse_float(item.get("re_tot_inc"))
+            clean_price(item.get("re_total_inc"))
+            or clean_price(item.get("re_tot_inc"))
             or (
-                (_parse_float(item.get("re_net_sale")) or 0.0)
-                + (_parse_float(item.get("re_oth_inc_new")) or 0.0)
+                (clean_price(item.get("re_net_sale")) or 0.0)
+                + (clean_price(item.get("re_oth_inc_new")) or 0.0)
             )
             or None
         )
@@ -775,7 +742,7 @@ def parse_event_calendar(data: list[dict[str, Any]]) -> list[CorporateEvent]:
     if not isinstance(data, list):
         raise NseParseError(
             f"Expected list for event calendar response, got {type(data).__name__}",
-            raw_data=str(data)[:500],
+            raw_data=str(data)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
@@ -882,7 +849,9 @@ def parse_stock_list_csv(content: str | bytes) -> pd.DataFrame:
     except Exception as e:
         raise NseParseError(
             f"Failed to parse NSE stock list CSV: {e}",
-            raw_data=content[:500] if len(content) > 500 else content,
+            raw_data=content[:_MAX_RAW_DATA_LOG]
+            if len(content) > _MAX_RAW_DATA_LOG
+            else content,
             field=None,
         ) from e
 
@@ -964,14 +933,14 @@ def parse_preopen_data(raw: dict[str, Any]) -> pd.DataFrame:
     if not isinstance(raw, dict):
         raise NseParseError(
             f"Expected dict for pre-open data, got {type(raw).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
     if "data" not in raw:
         raise NseParseError(
             "Missing 'data' key in pre-open market data response",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="data",
         )
 
@@ -979,7 +948,7 @@ def parse_preopen_data(raw: dict[str, Any]) -> pd.DataFrame:
     if not isinstance(data_list, list):
         raise NseParseError(
             f"Expected list for 'data', got {type(data_list).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="data",
         )
 
@@ -1058,14 +1027,14 @@ def parse_all_indices(raw: dict[str, Any]) -> pd.DataFrame:
     if not isinstance(raw, dict):
         raise NseParseError(
             f"Expected dict for all indices response, got {type(raw).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
     if "data" not in raw:
         raise NseParseError(
             "Missing 'data' key in all indices response",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="data",
         )
 
@@ -1073,7 +1042,7 @@ def parse_all_indices(raw: dict[str, Any]) -> pd.DataFrame:
     if not isinstance(data_list, list):
         raise NseParseError(
             f"Expected list for 'data', got {type(data_list).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="data",
         )
 
@@ -1155,14 +1124,14 @@ def parse_market_status(raw: dict[str, Any]) -> list[MarketStatus]:
     if not isinstance(raw, dict):
         raise NseParseError(
             f"Expected dict for market status response, got {type(raw).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
     if "marketState" not in raw:
         raise NseParseError(
             "Missing 'marketState' key in market status response",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="marketState",
         )
 
@@ -1170,7 +1139,7 @@ def parse_market_status(raw: dict[str, Any]) -> list[MarketStatus]:
     if not isinstance(state_list, list):
         raise NseParseError(
             f"Expected list for 'marketState', got {type(state_list).__name__}",
-            raw_data=str(raw)[:500],
+            raw_data=str(raw)[:_MAX_RAW_DATA_LOG],
             field="marketState",
         )
 

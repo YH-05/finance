@@ -74,7 +74,8 @@ logger = get_logger(__name__)
 _RATE_LIMIT_STATUS_CODE = 429
 
 # Maximum length of response body stored in NseAPIError (CWE-209 mitigation)
-_MAX_RESPONSE_BODY_LOG = 200
+# Aligned with _MAX_RAW_DATA_LOG in parsers.py (both 500 chars)
+_MAX_RESPONSE_BODY_LOG = 500
 
 
 class NseSession:

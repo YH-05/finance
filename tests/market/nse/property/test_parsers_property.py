@@ -15,11 +15,15 @@ Test TODO List:
 - [x] clean_volume: NaN/inf safety (non-finite values return None)
 - [x] clean_price: integer inputs always produce float results
 - [x] clean_volume: integer inputs always produce int results
+- [x] parse_financial_results: total_income fallback calculation is accurate
+- [x] NseConfig: valid range values never raise ValueError
+- [x] NseConfig: invalid timeout range raises ValueError
 """
 
 import math
 
-from hypothesis import given, settings
+import pytest
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 from market.nse.parsers import (
@@ -27,6 +31,7 @@ from market.nse.parsers import (
     clean_indian_number,
     clean_price,
     clean_volume,
+    parse_financial_results,
 )
 
 # =============================================================================
@@ -195,3 +200,190 @@ class TestCleanIndianNumberProperty:
     def test_プロパティ_欠損値センチネルはNoneを返す(self, value: str) -> None:
         """_MISSING_VALUES の全センチネル値で None を返すこと。"""
         assert clean_indian_number(value) is None
+
+
+# =============================================================================
+# parse_financial_results properties
+# =============================================================================
+
+
+class TestParseFinancialResultsTotalIncomeProperty:
+    """Hypothesis property tests for parse_financial_results total_income fallback."""
+
+    @given(
+        net_sale=st.floats(
+            min_value=0, max_value=1e12, allow_nan=False, allow_infinity=False
+        ),
+        other_income=st.floats(
+            min_value=0, max_value=1e12, allow_nan=False, allow_infinity=False
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_total_income_フォールバック計算が正確(
+        self, net_sale: float, other_income: float
+    ) -> None:
+        """re_total_inc がない場合 re_net_sale + re_oth_inc_new になること。
+
+        3段階フォールバックの第3段階 (net_sale + other_income) を検証する。
+        """
+        item = {
+            "re_net_sale": str(net_sale),
+            "re_oth_inc_new": str(other_income),
+        }
+        raw = {"resCmpData": [item]}
+        results = parse_financial_results(raw)
+
+        assert len(results) == 1
+        income_str = results[0].income
+        if income_str:
+            parsed = clean_price(income_str)
+            expected = net_sale + other_income
+            assert parsed is not None
+            assert math.isclose(parsed, expected, rel_tol=1e-6)
+
+    @given(
+        total_inc=st.floats(
+            min_value=0.01, max_value=1e12, allow_nan=False, allow_infinity=False
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_total_income_re_total_incが優先される(
+        self, total_inc: float
+    ) -> None:
+        """re_total_inc が正値の場合はその値が優先されること（フォールバック第1段階）。
+
+        Notes
+        -----
+        フォールバック計算は ``or`` 演算子を使用するため、0.0 は falsy として
+        扱われ次のフォールバックに進む。このテストは非ゼロ正値のみを対象とする。
+        """
+        item = {
+            "re_total_inc": str(total_inc),
+            "re_net_sale": "999999.0",
+            "re_oth_inc_new": "999999.0",
+        }
+        raw = {"resCmpData": [item]}
+        results = parse_financial_results(raw)
+
+        assert len(results) == 1
+        income_str = results[0].income
+        if income_str:
+            parsed = clean_price(income_str)
+            assert parsed is not None
+            assert math.isclose(parsed, total_inc, rel_tol=1e-6)
+
+
+# =============================================================================
+# NseConfig boundary value properties
+# =============================================================================
+
+
+class TestNseConfigBoundaryProperty:
+    """Hypothesis property tests for NseConfig validation boundaries."""
+
+    @given(
+        timeout=st.floats(
+            min_value=1.0, max_value=300.0, allow_nan=False, allow_infinity=False
+        ),
+        polite_delay=st.floats(
+            min_value=0.0, max_value=60.0, allow_nan=False, allow_infinity=False
+        ),
+        delay_jitter=st.floats(
+            min_value=0.0, max_value=30.0, allow_nan=False, allow_infinity=False
+        ),
+        cookie_refresh_interval=st.floats(
+            min_value=10.0, max_value=3600.0, allow_nan=False, allow_infinity=False
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_NseConfig有効範囲内ではValueError不送出(
+        self,
+        timeout: float,
+        polite_delay: float,
+        delay_jitter: float,
+        cookie_refresh_interval: float,
+    ) -> None:
+        """有効範囲内の値で NseConfig が正常に作成されること。"""
+        from market.nse.types import NseConfig
+
+        config = NseConfig(
+            timeout=timeout,
+            polite_delay=polite_delay,
+            delay_jitter=delay_jitter,
+            cookie_refresh_interval=cookie_refresh_interval,
+        )
+        assert config.timeout == pytest.approx(timeout)
+        assert config.polite_delay == pytest.approx(polite_delay)
+        assert config.delay_jitter == pytest.approx(delay_jitter)
+        assert config.cookie_refresh_interval == pytest.approx(cookie_refresh_interval)
+
+    @given(
+        timeout=st.one_of(
+            st.floats(max_value=0.99, allow_nan=False, allow_infinity=False),
+            st.floats(min_value=300.01, allow_nan=False, allow_infinity=False),
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_NseConfig無効timeout範囲でValueError(
+        self, timeout: float
+    ) -> None:
+        """有効範囲外の timeout で ValueError が送出されること。"""
+        assume(not math.isnan(timeout) and not math.isinf(timeout))
+        from market.nse.types import NseConfig
+
+        with pytest.raises(ValueError):
+            NseConfig(timeout=timeout)
+
+    @given(
+        polite_delay=st.one_of(
+            st.floats(max_value=-0.01, allow_nan=False, allow_infinity=False),
+            st.floats(min_value=60.01, allow_nan=False, allow_infinity=False),
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_NseConfig無効polite_delay範囲でValueError(
+        self, polite_delay: float
+    ) -> None:
+        """有効範囲外の polite_delay で ValueError が送出されること。"""
+        assume(not math.isnan(polite_delay) and not math.isinf(polite_delay))
+        from market.nse.types import NseConfig
+
+        with pytest.raises(ValueError):
+            NseConfig(polite_delay=polite_delay)
+
+    @given(
+        delay_jitter=st.one_of(
+            st.floats(max_value=-0.01, allow_nan=False, allow_infinity=False),
+            st.floats(min_value=30.01, allow_nan=False, allow_infinity=False),
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_NseConfig無効delay_jitter範囲でValueError(
+        self, delay_jitter: float
+    ) -> None:
+        """有効範囲外の delay_jitter で ValueError が送出されること。"""
+        assume(not math.isnan(delay_jitter) and not math.isinf(delay_jitter))
+        from market.nse.types import NseConfig
+
+        with pytest.raises(ValueError):
+            NseConfig(delay_jitter=delay_jitter)
+
+    @given(
+        cookie_refresh_interval=st.one_of(
+            st.floats(max_value=9.99, allow_nan=False, allow_infinity=False),
+            st.floats(min_value=3600.01, allow_nan=False, allow_infinity=False),
+        ),
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_NseConfig無効cookie_refresh_interval範囲でValueError(
+        self, cookie_refresh_interval: float
+    ) -> None:
+        """有効範囲外の cookie_refresh_interval で ValueError が送出されること。"""
+        assume(
+            not math.isnan(cookie_refresh_interval)
+            and not math.isinf(cookie_refresh_interval)
+        )
+        from market.nse.types import NseConfig
+
+        with pytest.raises(ValueError):
+            NseConfig(cookie_refresh_interval=cookie_refresh_interval)

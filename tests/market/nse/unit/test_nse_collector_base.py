@@ -36,10 +36,12 @@ class _ConcreteCollector(NseCollectorMixin):
 
 class TestNseCollectorMixinInit:
     def test_正常系_sessionなしで初期化(self) -> None:
+        """session を渡さない場合 _session_instance が None であること。"""
         collector = _ConcreteCollector()
         assert collector._session_instance is None
 
     def test_正常系_session注入で初期化(self) -> None:
+        """session を注入した場合 _session_instance が設定されること。"""
         mock_session = MagicMock(spec=NseSession)
         collector = _ConcreteCollector(session=mock_session)
         assert collector._session_instance is mock_session

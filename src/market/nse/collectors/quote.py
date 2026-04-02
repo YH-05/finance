@@ -53,9 +53,6 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
-# Required columns for validation
-_REQUIRED_COLUMNS: frozenset[str] = frozenset({"symbol", "company_name"})
-
 # NSE API endpoints
 _QUOTE_ENDPOINT: str = f"{API_BASE_URL}/quote-equity"
 
@@ -92,6 +89,8 @@ class QuoteCollector(NseCollectorMixin, DataCollector):
     >>> mock_session = MagicMock(spec=NseSession)
     >>> collector = QuoteCollector(session=mock_session)
     """
+
+    _REQUIRED_COLUMNS: frozenset[str] = frozenset({"symbol", "company_name"})
 
     def __init__(self, session: NseSession | None = None) -> None:
         """Initialize QuoteCollector with optional session injection.
@@ -166,51 +165,6 @@ class QuoteCollector(NseCollectorMixin, DataCollector):
         )
 
         return df
-
-    def validate(self, df: pd.DataFrame) -> bool:
-        """Validate the fetched quote data.
-
-        Checks that the DataFrame:
-        - Is not empty
-        - Contains the required columns (``symbol``, ``company_name``)
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame to validate.
-
-        Returns
-        -------
-        bool
-            True if the data is valid, False otherwise.
-
-        Examples
-        --------
-        >>> collector = QuoteCollector()
-        >>> df = pd.DataFrame({"symbol": ["RELIANCE"], "company_name": ["Reliance Industries Limited"]})
-        >>> collector.validate(df)
-        True
-        >>> collector.validate(pd.DataFrame())
-        False
-        """
-        if df.empty:
-            logger.warning("Validation failed: DataFrame is empty")
-            return False
-
-        missing = _REQUIRED_COLUMNS - set(df.columns)
-        if missing:
-            logger.warning(
-                "Validation failed: missing required columns",
-                missing_columns=sorted(missing),
-                actual_columns=list(df.columns),
-            )
-            return False
-
-        logger.debug(
-            "Validation passed",
-            row_count=len(df),
-        )
-        return True
 
     def fetch_quote(self, symbol: str) -> StockQuote:
         """Fetch a single equity quote from the NSE API.

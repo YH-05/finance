@@ -97,25 +97,29 @@ def _nse_api_is_reachable() -> bool:
         return False
 
 
-# Cache the probe result at module import time so we only call it once
-_NSE_REACHABLE = _nse_api_is_reachable()
-
 # ---------------------------------------------------------------------------
-# Module-level markers: skip all tests if NSE API is not reachable
+# Module-level markers
 # ---------------------------------------------------------------------------
 
-pytestmark = [
-    pytest.mark.integration,
-    pytest.mark.skipif(
-        not _NSE_REACHABLE,
-        reason="NSE API is not reachable (geo-blocked, rate-limited, or network error)",
-    ),
-]
+pytestmark = [pytest.mark.integration]
 
 
 # ---------------------------------------------------------------------------
 # Fixtures (module-scoped to minimise API calls)
 # ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _skip_if_nse_not_reachable() -> None:
+    """モジュール内全テストを NSE 到達不能時にスキップ。
+
+    pytest収集フェーズではなく実行時にチェックすることで、
+    モジュールインポート時のネットワークリクエストを回避する。
+    """
+    if not _nse_api_is_reachable():
+        pytest.skip(
+            "NSE API is not reachable (geo-blocked, rate-limited, or network error)"
+        )
 
 
 @pytest.fixture(scope="module")
@@ -431,20 +435,20 @@ class TestIpGeoBlockDetection:
     NSE blocks non-Indian IP addresses with 403 responses.
     These tests verify the error handling path for IP geo-blocked environments.
 
-    Note: These tests execute only when _NSE_REACHABLE is True (i.e., we are
+    Note: These tests execute only when the NSE API is reachable (i.e., we are
     running from an Indian-IP or VPN environment).  The geo-block scenario
     itself is verified by checking the error class hierarchy and the session's
     403-handling logic via unit tests.  Here we verify the reachability check
     used by this test module accurately reflects the current IP environment.
     """
 
-    def test_正常系_日本IP環境でAPIが到達可能である(self) -> None:
+    def test_正常系_APIが到達可能である(self) -> None:
         """NSE API is reachable from the current network environment.
 
-        If this test is reached (not skipped), _NSE_REACHABLE is True,
-        confirming the API probe succeeded.
+        If this test is reached (not skipped by _skip_if_nse_not_reachable),
+        the API probe succeeded.
         """
-        assert _NSE_REACHABLE is True
+        assert _nse_api_is_reachable() is True
 
     def test_正常系_NseCookieErrorはNseErrorのサブクラスである(self) -> None:
         """NseCookieError is a subclass of NseError (used for geo-block 403 handling)."""

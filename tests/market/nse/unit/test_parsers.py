@@ -970,7 +970,7 @@ class TestParseMarketStatus:
 class TestModuleExports:
     """Tests for module exports completeness."""
 
-    def test_モジュールエクスポートが完全であること(self) -> None:
+    def test_正常系_モジュールエクスポートが完全であること(self) -> None:
         """__all__ に全パブリックシンボルが含まれていること。"""
         expected = {
             "_MISSING_VALUES",
@@ -988,7 +988,7 @@ class TestModuleExports:
         }
         assert expected == set(__all__)
 
-    def test_欠損値センチネルセットが完全であること(self) -> None:
+    def test_正常系_欠損値センチネルセットが完全であること(self) -> None:
         """_MISSING_VALUES が期待されるセンチネル値を全て含むこと。"""
         assert "" in _MISSING_VALUES
         assert "N/A" in _MISSING_VALUES

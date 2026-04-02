@@ -58,9 +58,6 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
-# Required columns for validation
-_REQUIRED_COLUMNS: frozenset[str] = frozenset({"symbol"})
-
 # NSE API endpoints
 _EQUITY_STOCK_INDICES_ENDPOINT: str = f"{API_BASE_URL}/equity-stockIndices"
 _ALL_INDICES_ENDPOINT: str = f"{API_BASE_URL}/allIndices"
@@ -99,6 +96,8 @@ class IndicesCollector(NseCollectorMixin, DataCollector):
     >>> mock_session = MagicMock(spec=NseSession)
     >>> collector = IndicesCollector(session=mock_session)
     """
+
+    _REQUIRED_COLUMNS: frozenset[str] = frozenset({"symbol"})
 
     def __init__(self, session: NseSession | None = None) -> None:
         """Initialize IndicesCollector with optional session injection.
@@ -163,51 +162,6 @@ class IndicesCollector(NseCollectorMixin, DataCollector):
         )
 
         return self.fetch_index(index_name)
-
-    def validate(self, df: pd.DataFrame) -> bool:
-        """Validate the fetched index data.
-
-        Checks that the DataFrame:
-        - Is not empty
-        - Contains the required column (``symbol``)
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame to validate.
-
-        Returns
-        -------
-        bool
-            True if the data is valid, False otherwise.
-
-        Examples
-        --------
-        >>> collector = IndicesCollector()
-        >>> df = pd.DataFrame({"symbol": ["RELIANCE", "INFY"]})
-        >>> collector.validate(df)
-        True
-        >>> collector.validate(pd.DataFrame())
-        False
-        """
-        if df.empty:
-            logger.warning("Validation failed: DataFrame is empty")
-            return False
-
-        missing = _REQUIRED_COLUMNS - set(df.columns)
-        if missing:
-            logger.warning(
-                "Validation failed: missing required columns",
-                missing_columns=sorted(missing),
-                actual_columns=list(df.columns),
-            )
-            return False
-
-        logger.debug(
-            "Validation passed",
-            row_count=len(df),
-        )
-        return True
 
     def fetch_index(self, index_name: str) -> pd.DataFrame:
         """Fetch constituent stocks for an NSE index.
