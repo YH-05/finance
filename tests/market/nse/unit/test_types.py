@@ -62,11 +62,13 @@ class TestModuleExports:
         for name in __all__:
             assert hasattr(types, name), f"{name} is not defined in types module"
 
-    def test_正常系_allが6項目を含む(self) -> None:
-        """__all__ が全6型定義をエクスポートしていること。"""
+    def test_正常系_allが8項目を含む(self) -> None:
+        """__all__ が全8型定義をエクスポートしていること。"""
         expected = {
+            "CorporateEvent",
             "FinancialResult",
             "IndexConstituent",
+            "MarketStatus",
             "NseConfig",
             "NseIndex",
             "RetryConfig",
@@ -160,7 +162,9 @@ class TestNseConfig:
 
     def test_正常系_カスタム値で初期化できる(self) -> None:
         """NseConfig がカスタム値で初期化されること。"""
-        config = NseConfig(polite_delay=1.0, timeout=60.0, cookie_refresh_interval=600.0)
+        config = NseConfig(
+            polite_delay=1.0, timeout=60.0, cookie_refresh_interval=600.0
+        )
 
         assert config.polite_delay == 1.0
         assert config.timeout == 60.0

@@ -65,9 +65,9 @@ class TestModuleExports:
                 f"{name} is not defined in constants module"
             )
 
-    def test_正常系_allが13項目を含む(self) -> None:
-        """__all__ が全13定数をエクスポートしていること。"""
-        assert len(__all__) == 13
+    def test_正常系_allが19項目を含む(self) -> None:
+        """__all__ が全19定数をエクスポートしていること。"""
+        assert len(__all__) == 19
 
     def test_正常系_モジュールDocstringが存在する(self) -> None:
         """モジュールの docstring が存在すること。"""
@@ -382,7 +382,14 @@ class TestFinancialResultColumnNameMap:
 
     def test_正常系_FINANCIAL_RESULT_COLUMN_NAME_MAPが主要カラムを含む(self) -> None:
         """FINANCIAL_RESULT_COLUMN_NAME_MAP が主要カラムをマッピングすること。"""
-        expected_keys = {"symbol", "fromDate", "toDate", "income", "profitAfterTax", "eps"}
+        expected_keys = {
+            "symbol",
+            "fromDate",
+            "toDate",
+            "income",
+            "profitAfterTax",
+            "eps",
+        }
         assert expected_keys.issubset(set(FINANCIAL_RESULT_COLUMN_NAME_MAP.keys()))
 
     def test_正常系_fromDateがfrom_dateにマッピング(self) -> None:

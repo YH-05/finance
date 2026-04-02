@@ -54,6 +54,8 @@ class DataSource(str, Enum):
         PSE API data source (Philippine Stock Exchange)
     EODHD : str
         EODHD API data source (global backup data provider)
+    NSE : str
+        NSE (National Stock Exchange of India) data source
     POLYMARKET : str
         Polymarket prediction market data source
     """
@@ -75,6 +77,7 @@ class DataSource(str, Enum):
     THAIFIN = "thaifin"
     PSE_API = "pse_api"
     EODHD = "eodhd"
+    NSE = "nse"
     POLYMARKET = "polymarket"
 
 
