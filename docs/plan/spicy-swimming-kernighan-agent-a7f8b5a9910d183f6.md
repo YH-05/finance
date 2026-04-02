@@ -1,7 +1,7 @@
 # Market.nasdaq Package Architecture & Extension Patterns
 
-**Status**: COMPLETED EXPLORATION  
-**Date**: 2026-03-24  
+**Status**: COMPLETED EXPLORATION
+**Date**: 2026-03-24
 **Scope**: Full read-only analysis of `/Users/yukihata/Desktop/quants/src/market/nasdaq/`
 
 ---
@@ -63,25 +63,25 @@ pd.DataFrame (12 columns, cleaned numeric values)
 
 ### ScreenerCollector (Main Entry Point)
 
-**Implements**: `DataCollector` ABC  
+**Implements**: `DataCollector` ABC
 **Location**: `collector.py` (lines 1-531)
 
 ```python
 class ScreenerCollector(DataCollector):
     def fetch(self, **kwargs) -> pd.DataFrame:
         """Fetch stock screener data with optional filter"""
-        
+
     def validate(self, df: pd.DataFrame) -> bool:
         """Validate required columns (symbol, name)"""
-        
+
     def fetch_by_category(
-        self, 
+        self,
         category: FilterCategory,
         *,
         base_filter: ScreenerFilter | None = None
     ) -> dict[str, pd.DataFrame]:
         """Bulk fetch across enum members (Exchange, Sector, etc.)"""
-        
+
     def download_csv(
         self,
         filter: ScreenerFilter | None = None,
@@ -90,7 +90,7 @@ class ScreenerCollector(DataCollector):
         filename: str | None = None
     ) -> Path:
         """Save filtered data to CSV (utf-8-sig encoding)"""
-        
+
     def download_by_category(
         self,
         category: FilterCategory,
@@ -146,15 +146,15 @@ class DataCollector(ABC):
     def name(self) -> str:
         """Returns class name for logging"""
         return self.__class__.__name__
-    
+
     @abstractmethod
     def fetch(**kwargs) -> pd.DataFrame:
         """Fetch raw data from external source"""
-    
+
     @abstractmethod
     def validate(df: pd.DataFrame) -> bool:
         """Validate required columns and data quality"""
-    
+
     def collect(**kwargs) -> pd.DataFrame:
         """Convenience: fetch + validate with logging"""
         # Logs "Starting fetch: ScreenerCollector"
@@ -208,7 +208,7 @@ class DataCollector(ABC):
 5. **SSRF Prevention** (Host Whitelist)
    ```python
    ALLOWED_HOSTS = frozenset({"api.nasdaq.com"})
-   
+
    parsed_host = urlparse(url).netloc
    if parsed_host not in ALLOWED_HOSTS:
        raise ValueError(f"Host '{parsed_host}' not allowed")
@@ -289,7 +289,7 @@ class ScreenerFilter:
     recommendation: Recommendation | None = None
     region: Region | None = None
     limit: int | None = 0  # 0 = all records
-    
+
     def to_params(self) -> dict[str, str]:
         """Convert to API query parameters (only non-None fields)"""
         params = {}
@@ -324,28 +324,28 @@ def _create_cleaner[T](
     finite_check: bool = False,
 ) -> Callable[[str], T | None]:
     """Generate type-safe cleaning function with common pattern"""
-    
+
     def _clean(value: str) -> T | None:
         if _is_missing(value):  # "", "N/A", "NA", "n/a"
             return None
-        
+
         try:
             cleaned = strip_re.sub("", value).strip() if strip_re else value.strip()
             if not cleaned:
                 return None
-            
+
             if finite_check:
                 float_result = float(cleaned)
                 if not math.isfinite(float_result):
                     logger.warning(f"Non-finite {name}")
                     return None
                 return converter(str(float_result))
-            
+
             return converter(cleaned)
         except (ValueError, TypeError, OverflowError):
             logger.warning(f"Failed to parse {name}", raw_value=value)
             return None
-    
+
     return _clean
 ```
 
@@ -398,33 +398,33 @@ clean_ipo_year = _create_cleaner(
 ```python
 def parse_screener_response(response: dict[str, Any]) -> pd.DataFrame:
     """Parse JSON → cleaned DataFrame"""
-    
+
     # Validate structure
     data = response.get("data")
     table = data.get("table")
     rows = table.get("rows")
-    
+
     if not isinstance(rows, list):
         raise NasdaqParseError("Invalid rows key", field="data.table.rows")
-    
+
     # Create DataFrame
     df = pd.DataFrame(rows)
-    
+
     # Rename columns (camelCase → snake_case)
     rename_map = {}
     for col in df.columns:
         mapped = COLUMN_NAME_MAP.get(col)
         rename_map[col] = mapped if mapped else _camel_to_snake(col)
-    
+
     df = df.rename(columns=rename_map)
-    
+
     # Apply numeric cleaning
     for column, cleaner in _COLUMN_CLEANERS.items():
         if column in df.columns:
             df[column] = df[column].apply(
                 lambda v, c=cleaner: c(str(v)) if pd.notna(v) else None
             )
-    
+
     return df
 ```
 
@@ -593,7 +593,7 @@ _COLUMN_CLEANERS["earnings_per_share"] = clean_earnings
 class NasdaqTrendingCollector(DataCollector):
     def __init__(self, session: NasdaqSession | None = None):
         self._session = session
-    
+
     def fetch(self, **kwargs) -> pd.DataFrame:
         session, should_close = self._get_session()
         try:
@@ -605,7 +605,7 @@ class NasdaqTrendingCollector(DataCollector):
         finally:
             if should_close:
                 session.close()
-    
+
     def validate(self, df: pd.DataFrame) -> bool:
         return not df.empty and "symbol" in df.columns
 ```

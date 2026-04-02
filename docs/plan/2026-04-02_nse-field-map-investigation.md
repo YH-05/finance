@@ -1,7 +1,7 @@
 # NSE API フィールドマップ調査結果
 
-**調査日**: 2026-04-02  
-**Issue**: #3871  
+**調査日**: 2026-04-02
+**Issue**: #3871
 **対象銘柄**: INFY（Infosys Limited）
 
 ## 調査エンドポイント一覧
@@ -17,8 +17,8 @@
 
 ## 1. FINANCIAL_FIELD_MAP（完全版）
 
-**エンドポイント**: `/api/results-comparision?symbol=INFY`  
-**レスポンス構造**: `{ "resCmpData": [...], "bankNonBnking": "N" }`  
+**エンドポイント**: `/api/results-comparision?symbol=INFY`
+**レスポンス構造**: `{ "resCmpData": [...], "bankNonBnking": "N" }`
 **フラグ**: `bankNonBnking` — `"N"` = 非金融企業, `"B"` = 銀行（銀行用フィールドは異なる）
 
 ### 全フィールド一覧（63フィールド）
@@ -431,8 +431,8 @@ INDEX_METADATA_FIELD_MAP: Final[dict[str, str]] = {
 
 ## 4. EVENT_CALENDAR_FIELD_MAP（event-calendar）
 
-**エンドポイント**: `/api/event-calendar`  
-**レスポンス構造**: フラットな配列（`[{...}, {...}]`）  
+**エンドポイント**: `/api/event-calendar`
+**レスポンス構造**: フラットな配列（`[{...}, {...}]`）
 **件数**: 98件（調査時点）
 
 ### フィールド一覧

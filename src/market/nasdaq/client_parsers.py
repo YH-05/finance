@@ -849,9 +849,7 @@ def parse_analyst_ratings(
             for row in rows
         ]
 
-        logger.info(
-            "Analyst ratings parsed", symbol=symbol, rating_count=len(result)
-        )
+        logger.info("Analyst ratings parsed", symbol=symbol, rating_count=len(result))
         return AnalystRatings(symbol=symbol, ratings=result)
 
     # New structure: extract mean rating info
