@@ -11,9 +11,12 @@ Modules
 constants : API URLs, headers, and configuration defaults.
 errors : Exception hierarchy for NSE API operations.
 types : Configuration dataclasses, Enums, and data record types.
+session : HTTP session with Cookie lifecycle management.
 
 Public API
 ----------
+NseSession
+    httpx-based HTTP session with Cookie lifecycle management.
 NseConfig
     Configuration for NSE API HTTP behaviour.
 RetryConfig
