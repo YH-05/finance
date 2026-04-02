@@ -273,9 +273,7 @@ class TestNseSessionGet:
                 patch("market.nse.session.time.monotonic", return_value=0.0),
             ):
                 session = NseSession()
-                with patch.object(
-                    session, "_ensure_cookies"
-                ) as mock_ensure_cookies:
+                with patch.object(session, "_ensure_cookies") as mock_ensure_cookies:
                     session.get(_TEST_URL)
 
                 mock_ensure_cookies.assert_called_once()
@@ -366,9 +364,7 @@ class TestNseSessionGet:
 
                 # Find the call for the API URL (not BASE_URL cookie fetch)
                 api_calls = [
-                    c
-                    for c in mock_client.get.call_args_list
-                    if c[0][0] == _TEST_URL
+                    c for c in mock_client.get.call_args_list if c[0][0] == _TEST_URL
                 ]
                 assert len(api_calls) >= 1
                 headers = api_calls[-1][1]["headers"]
@@ -392,9 +388,7 @@ class TestNseSessionGet:
                     session.get(_TEST_URL)
 
                 api_calls = [
-                    c
-                    for c in mock_client.get.call_args_list
-                    if c[0][0] == _TEST_URL
+                    c for c in mock_client.get.call_args_list if c[0][0] == _TEST_URL
                 ]
                 assert len(api_calls) >= 1
                 headers = api_calls[-1][1]["headers"]
@@ -422,9 +416,7 @@ class TestNseSessionGet:
                     session.get(_TEST_URL, params={"index": "NIFTY 50"})
 
                 api_calls = [
-                    c
-                    for c in mock_client.get.call_args_list
-                    if c[0][0] == _TEST_URL
+                    c for c in mock_client.get.call_args_list if c[0][0] == _TEST_URL
                 ]
                 assert len(api_calls) >= 1
                 assert api_calls[-1][1]["params"] == {"index": "NIFTY 50"}
@@ -449,9 +441,7 @@ class TestNseSessionGet:
                     session.get(_TEST_URL)
 
                 api_calls = [
-                    c
-                    for c in mock_client.get.call_args_list
-                    if c[0][0] == _TEST_URL
+                    c for c in mock_client.get.call_args_list if c[0][0] == _TEST_URL
                 ]
                 assert len(api_calls) >= 1
                 assert api_calls[-1][1]["timeout"] == 15.0
@@ -470,9 +460,11 @@ class TestNseSessionGet:
                 patch("market.nse.session.time.monotonic", return_value=0.0),
             ):
                 session = NseSession()
-                with patch.object(session, "_ensure_cookies"):
-                    with pytest.raises(NseRateLimitError) as exc_info:
-                        session.get(_TEST_URL)
+                with (
+                    patch.object(session, "_ensure_cookies"),
+                    pytest.raises(NseRateLimitError) as exc_info,
+                ):
+                    session.get(_TEST_URL)
 
                 assert exc_info.value.url == _TEST_URL
 
@@ -490,9 +482,11 @@ class TestNseSessionGet:
                 patch("market.nse.session.time.monotonic", return_value=0.0),
             ):
                 session = NseSession()
-                with patch.object(session, "_ensure_cookies"):
-                    with pytest.raises(NseCookieError) as exc_info:
-                        session.get(_TEST_URL)
+                with (
+                    patch.object(session, "_ensure_cookies"),
+                    pytest.raises(NseCookieError) as exc_info,
+                ):
+                    session.get(_TEST_URL)
 
                 assert exc_info.value.url == _TEST_URL
 
@@ -510,9 +504,11 @@ class TestNseSessionGet:
                 patch("market.nse.session.time.monotonic", return_value=0.0),
             ):
                 session = NseSession()
-                with patch.object(session, "_ensure_cookies"):
-                    with pytest.raises(NseAPIError) as exc_info:
-                        session.get(_TEST_URL)
+                with (
+                    patch.object(session, "_ensure_cookies"),
+                    pytest.raises(NseAPIError) as exc_info,
+                ):
+                    session.get(_TEST_URL)
 
                 assert exc_info.value.status_code == 500
 
@@ -645,9 +641,11 @@ class TestNseSessionGetWithRetry:
                 patch("market.nse.session.time.monotonic", return_value=0.0),
             ):
                 session = NseSession(retry_config=retry_config)
-                with patch.object(session, "_ensure_cookies"):
-                    with pytest.raises(NseRateLimitError):
-                        session.get_with_retry(_TEST_URL)
+                with (
+                    patch.object(session, "_ensure_cookies"),
+                    pytest.raises(NseRateLimitError),
+                ):
+                    session.get_with_retry(_TEST_URL)
 
     def test_正常系_指数バックオフでディレイが増加する(self) -> None:
         """リトライ間のディレイが指数バックオフで増加すること。"""
@@ -676,9 +674,11 @@ class TestNseSessionGetWithRetry:
                 mock_time.sleep.side_effect = track_sleep
 
                 session = NseSession(retry_config=retry_config)
-                with patch.object(session, "_ensure_cookies"):
-                    with pytest.raises(NseRateLimitError):
-                        session.get_with_retry(_TEST_URL)
+                with (
+                    patch.object(session, "_ensure_cookies"),
+                    pytest.raises(NseRateLimitError),
+                ):
+                    session.get_with_retry(_TEST_URL)
 
             retry_delays = [d for d in sleep_calls if d >= 1.0]
             assert len(retry_delays) >= 2
@@ -711,9 +711,11 @@ class TestNseSessionGetWithRetry:
                 mock_time.sleep.side_effect = track_sleep
 
                 session = NseSession(retry_config=retry_config)
-                with patch.object(session, "_ensure_cookies"):
-                    with pytest.raises(NseRateLimitError):
-                        session.get_with_retry(_TEST_URL)
+                with (
+                    patch.object(session, "_ensure_cookies"),
+                    pytest.raises(NseRateLimitError),
+                ):
+                    session.get_with_retry(_TEST_URL)
 
             retry_delays = [d for d in sleep_calls if d >= 1.0]
             assert len(retry_delays) >= 2
@@ -742,9 +744,7 @@ class TestNseSessionGetWithRetry:
                 patch("market.nse.session.time.monotonic", return_value=100.0),
             ):
                 session = NseSession(retry_config=retry_config)
-                with patch.object(
-                    session, "_ensure_cookies"
-                ) as mock_ensure:
+                with patch.object(session, "_ensure_cookies") as mock_ensure:
                     # First call gets 403, second should succeed after cookie refresh
                     response = session.get_with_retry(_TEST_URL)
 
@@ -764,8 +764,8 @@ class TestNseSessionGetWithRetry:
             mock_response_ok.status_code = 200
             mock_client.get.side_effect = [
                 mock_response_403,  # First API call returns 403
-                mock_response_ok,   # Cookie refresh (BASE_URL) returns 200
-                mock_response_ok,   # Retry API call returns 200
+                mock_response_ok,  # Cookie refresh (BASE_URL) returns 200
+                mock_response_ok,  # Retry API call returns 200
             ]
             mock_client_cls.return_value = mock_client
 

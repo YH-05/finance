@@ -301,6 +301,92 @@ class IndexConstituent:
 
 
 @dataclass(frozen=True)
+class CorporateEvent:
+    """A corporate event from the NSE event calendar.
+
+    Stores one entry from the NSE ``/api/event-calendar`` response.
+
+    Parameters
+    ----------
+    symbol : str
+        NSE stock symbol (e.g. ``"RELIANCE"``).
+    company_name : str
+        Company name (e.g. ``"Reliance Industries Limited"``).
+    purpose : str
+        Event purpose / category (e.g. ``"Dividend"``, ``"Board Meeting"``).
+    date : str
+        Event date string as returned by the API (e.g. ``"03-Apr-2026"``).
+    description : str
+        Detailed description of the event (``bm_desc`` field).
+
+    Examples
+    --------
+    >>> event = CorporateEvent(
+    ...     symbol="RELIANCE",
+    ...     company_name="Reliance Industries Limited",
+    ...     purpose="Dividend",
+    ...     date="03-Apr-2026",
+    ...     description="Board Meeting to consider dividend.",
+    ... )
+    >>> event.symbol
+    'RELIANCE'
+    """
+
+    symbol: str
+    company_name: str
+    purpose: str
+    date: str
+    description: str
+
+
+@dataclass(frozen=True)
+class MarketStatus:
+    """Market status for a single market segment from NSE.
+
+    Stores one entry from the NSE ``/api/marketStatus`` response.
+
+    Parameters
+    ----------
+    market : str
+        Market segment name (e.g. ``"Capital Market"``, ``"Derivatives"``).
+    market_status : str
+        Status string (e.g. ``"Open"``, ``"Close"``).
+    trade_date : str
+        Trading date string (e.g. ``"02-Apr-2026"``).
+    index : str
+        Benchmark index name (e.g. ``"NIFTY 50"``).
+    last : str
+        Last traded index value (e.g. ``"22371.80"``).
+    variation : str
+        Change from previous close (e.g. ``"-307.60"``).
+    pct_change : str
+        Percentage change from previous close (e.g. ``"-1.36"``).
+
+    Examples
+    --------
+    >>> ms = MarketStatus(
+    ...     market="Capital Market",
+    ...     market_status="Open",
+    ...     trade_date="02-Apr-2026",
+    ...     index="NIFTY 50",
+    ...     last="22371.80",
+    ...     variation="-307.60",
+    ...     pct_change="-1.36",
+    ... )
+    >>> ms.market
+    'Capital Market'
+    """
+
+    market: str
+    market_status: str
+    trade_date: str
+    index: str
+    last: str
+    variation: str
+    pct_change: str
+
+
+@dataclass(frozen=True)
 class FinancialResult:
     """A financial result record from NSE corporate filings.
 
@@ -357,8 +443,10 @@ class FinancialResult:
 # =============================================================================
 
 __all__ = [
+    "CorporateEvent",
     "FinancialResult",
     "IndexConstituent",
+    "MarketStatus",
     "NseConfig",
     "NseIndex",
     "RetryConfig",

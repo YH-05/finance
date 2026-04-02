@@ -259,11 +259,172 @@ This mapping normalises them to consistent snake_case for use in pandas DataFram
 """
 
 # ---------------------------------------------------------------------------
+# 8. FINANCIAL_FIELD_MAP (results-comparision API)
+# ---------------------------------------------------------------------------
+
+FINANCIAL_FIELD_MAP: Final[dict[str, str]] = {
+    # 期間
+    "re_from_dt": "period_from",
+    "re_to_dt": "period_to",
+    "re_create_dt": "created_date",
+    "re_res_type": "result_type",
+    "re_seq_num": "seq_num",
+    # 収益
+    "re_net_sale": "net_sales",
+    "re_oth_inc_new": "other_income",
+    "re_total_inc": "total_income",
+    # 費用
+    "re_staff_cost": "staff_cost",
+    "re_oth_exp": "other_expenditure",
+    "re_rawmat_consump": "raw_material_consumption",
+    "re_pur_trd_goods": "purchase_traded_goods",
+    "re_inc_dre_sttr": "change_in_stock",
+    "re_int_new": "interest_expense",
+    "re_depr_und_exp": "depreciation",
+    "re_oth_tot_exp": "total_other_expenditure",
+    # 利益
+    "re_pro_loss_bef_tax": "profit_before_tax",
+    "re_curr_tax": "current_tax",
+    "re_deff_tax": "deferred_tax",
+    "re_tax": "tax",
+    "re_net_profit": "net_profit",
+    "re_con_pro_loss": "consolidated_profit_loss",
+    "re_proloss_ord_act": "profit_loss_ordinary",
+    "re_pro_los_frm_dis_opr": "profit_discontinued_ops",
+    "re_prolos_dis_opr_aftr_tax": "profit_discontinued_after_tax",
+    "re_tax_expens_of_dis_opr": "tax_discontinued_ops",
+    # EPS
+    "re_basic_eps_for_cont_dic_opr": "eps_basic",
+    "re_dilut_eps_for_cont_dic_opr": "eps_diluted",
+    # 資本
+    "re_face_val": "face_value",
+    "re_pdup": "paid_up_capital",
+    "re_share_associate": "share_of_associates",
+    "re_excepn_items_new": "exceptional_items",
+    # 注記
+    "re_desc_note_seg": "note_segment",
+    "re_desc_note_fin": "note_financial",
+    "re_notes_to_ac": "notes_to_accounts",
+}
+"""Complete mapping from NSE results-comparision API ``re_*`` keys to snake_case.
+
+Covers 34 core financial fields for non-banking companies.
+Unit: thousands of Indian Rupees (net_sales, profits, costs).
+
+Based on the 2026-04-02 API capture of ``/api/results-comparision?symbol=INFY``.
+
+See Also
+--------
+FINANCIAL_FIELD_MAP_BANK : Additional fields for banking companies.
+"""
+
+FINANCIAL_FIELD_MAP_BANK: Final[dict[str, str]] = {
+    "re_int_earned": "interest_earned",
+    "re_int_expd": "interest_expended",
+    "re_int_dis_adv_bills": "interest_discounted_bills",
+    "re_income_inv": "income_from_investments",
+    "re_grs_npa": "gross_npa",
+    "re_grs_npa_per": "gross_npa_percent",
+    "re_bal_rbi_oth_bnk_funds": "balance_rbi_funds",
+    "re_cap_ade_rat": "capital_adequacy_ratio",
+    "re_cet_1_ret": "cet1_ratio",
+    "re_debt_eqt_rat": "debt_equity_ratio",
+    "re_tot_exp_exc_pro_cont": "total_exp_excl_provisions",
+    "re_oth_pro_cont": "other_provisions",
+}
+"""Additional mapping for banking company financial fields (``bankNonBnking == "B"``).
+
+Only applies when the results-comparision API returns ``bankNonBnking = "B"``.
+These fields are ``null`` for non-banking companies.
+
+See Also
+--------
+FINANCIAL_FIELD_MAP : Core fields applicable to all companies.
+"""
+
+EVENT_CALENDAR_FIELD_MAP: Final[dict[str, str]] = {
+    "symbol": "symbol",
+    "company": "company_name",
+    "purpose": "purpose",
+    "bm_desc": "description",
+    "date": "date",
+}
+"""Mapping from NSE event-calendar API response keys to snake_case.
+
+The NSE event-calendar API returns a flat JSON array where each item
+uses these keys.
+
+See Also
+--------
+market.nse.types.CorporateEvent : Typed dataclass for event-calendar entries.
+"""
+
+STOCK_LIST_COLUMN_MAP: Final[dict[str, str]] = {
+    "SYMBOL": "symbol",
+    "NAME OF COMPANY": "company_name",
+    " NAME OF COMPANY": "company_name",
+    "SERIES": "series",
+    "DATE OF LISTING": "date_of_listing",
+    "PAID UP VALUE": "paid_up_value",
+    "MARKET LOT": "market_lot",
+    "ISIN NUMBER": "isin",
+    "FACE VALUE": "face_value",
+}
+"""Mapping from NSE EQUITY_L.csv column names to snake_case.
+
+The NSE stock list CSV (``https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv``)
+uses uppercase column names with spaces. Some column names include a leading space.
+"""
+
+PREOPEN_COLUMN_MAP: Final[dict[str, str]] = {
+    "symbol": "symbol",
+    "xDt": "ex_date",
+    "caAct": "corporate_action",
+    "iep": "iep",
+    "chn": "change",
+    "perChn": "pct_change",
+    "pCls": "prev_close",
+    "trdQnty": "traded_quantity",
+    "iVal": "traded_value",
+    "sumVal": "sum_value",
+    "sumQnty": "sum_quantity",
+    "finQnty": "final_quantity",
+    "sbrdQnty": "subscribed_quantity",
+}
+"""Mapping from NSE market-data-pre-open API keys to snake_case.
+
+Used by ``parse_preopen_data()`` to normalise pre-open market data.
+"""
+
+ALL_INDICES_COLUMN_MAP: Final[dict[str, str]] = {
+    "indexSymbol": "index_symbol",
+    "current": "current",
+    "variation": "variation",
+    "percentChange": "pct_change",
+    "open": "open",
+    "high": "high",
+    "low": "low",
+    "previousClose": "prev_close",
+    "yearHigh": "year_high",
+    "yearLow": "year_low",
+    "perChange30d": "pct_change_30d",
+    "perChange365d": "pct_change_365d",
+    "indicativeClose": "indicative_close",
+    "key": "key",
+    "index": "index",
+}
+"""Mapping from NSE allIndices API response keys to snake_case.
+
+Used by ``parse_all_indices()`` to normalise all-indices market data.
+"""
+
+# ---------------------------------------------------------------------------
 # Module exports
 # ---------------------------------------------------------------------------
 
 __all__ = [
     "ALLOWED_HOSTS",
+    "ALL_INDICES_COLUMN_MAP",
     "API_BASE_URL",
     "BASE_URL",
     "COOKIE_REFRESH_INTERVAL",
@@ -274,6 +435,11 @@ __all__ = [
     "DEFAULT_TIMEOUT",
     "DEFAULT_USER_AGENTS",
     "EQUITY_QUOTE_COLUMN_NAME_MAP",
+    "EVENT_CALENDAR_FIELD_MAP",
+    "FINANCIAL_FIELD_MAP",
+    "FINANCIAL_FIELD_MAP_BANK",
     "FINANCIAL_RESULT_COLUMN_NAME_MAP",
     "INDEX_CONSTITUENTS_COLUMN_NAME_MAP",
+    "PREOPEN_COLUMN_MAP",
+    "STOCK_LIST_COLUMN_MAP",
 ]
