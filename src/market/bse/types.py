@@ -15,6 +15,7 @@ See Also
 --------
 market.bse.constants : Default values referenced by BseConfig.
 market.nasdaq.types : Similar type-definition pattern for the NASDAQ module.
+market.retry : Shared RetryConfig (canonical definition).
 """
 
 from dataclasses import dataclass
@@ -25,6 +26,7 @@ from market.bse.constants import (
     DEFAULT_POLITE_DELAY,
     DEFAULT_TIMEOUT,
 )
+from market.retry import RetryConfig
 
 # =============================================================================
 # Enum Definitions
@@ -184,54 +186,8 @@ class BseConfig:
             )
 
 
-@dataclass(frozen=True)
-class RetryConfig:
-    """Configuration for retry behaviour with exponential backoff.
-
-    Parameters
-    ----------
-    max_attempts : int
-        Maximum number of retry attempts (default: 3).
-    initial_delay : float
-        Initial delay between retries in seconds (default: 1.0).
-    max_delay : float
-        Maximum delay between retries in seconds (default: 30.0).
-    exponential_base : float
-        Base for exponential backoff calculation (default: 2.0).
-    jitter : bool
-        Whether to add random jitter to delays (default: True).
-
-    Raises
-    ------
-    ValueError
-        If max_attempts is outside its valid range.
-
-    Examples
-    --------
-    >>> config = RetryConfig(max_attempts=5, initial_delay=0.5)
-    >>> config.max_attempts
-    5
-    """
-
-    max_attempts: int = 3
-    initial_delay: float = 1.0
-    max_delay: float = 30.0
-    exponential_base: float = 2.0
-    jitter: bool = True
-
-    def __post_init__(self) -> None:
-        """Validate retry configuration value ranges.
-
-        Raises
-        ------
-        ValueError
-            If max_attempts is outside its valid range.
-        """
-        if not (1 <= self.max_attempts <= 10):
-            raise ValueError(
-                f"max_attempts must be between 1 and 10, got {self.max_attempts}"
-            )
-
+# AIDEV-NOTE: RetryConfig is defined in market.retry and re-exported here for
+# backward compatibility. Do not duplicate the class definition.
 
 # =============================================================================
 # Data Record Dataclasses
