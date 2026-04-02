@@ -586,7 +586,11 @@ def parse_index_constituents(raw: dict[str, Any]) -> list[IndexConstituent]:
 # ---------------------------------------------------------------------------
 
 
-def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
+def parse_financial_results(
+    raw: dict[str, Any],
+    *,
+    symbol: str = "",
+) -> list[FinancialResult]:
     """Parse an NSE results-comparision JSON response into FinancialResults.
 
     The NSE results-comparision API returns a dict with ``"resCmpData"``
@@ -598,6 +602,10 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
     raw : dict[str, Any]
         The raw JSON response from the NSE API's
         ``/api/results-comparision?symbol=X`` endpoint.
+    symbol : str
+        The stock symbol to populate in each result record.  The NSE API
+        does not include the symbol in ``resCmpData`` items, so callers
+        should pass it explicitly.
 
     Returns
     -------
@@ -615,7 +623,6 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
     ...     "bankNonBnking": "N",
     ...     "resCmpData": [
     ...         {
-    ...             "symbol": "INFY",
     ...             "re_from_dt": "01-OCT-2024",
     ...             "re_to_dt": "31-DEC-2024",
     ...             "re_res_type": "A",
@@ -626,7 +633,7 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
     ...         }
     ...     ],
     ... }
-    >>> results = parse_financial_results(raw)
+    >>> results = parse_financial_results(raw, symbol="INFY")
     >>> len(results)
     1
     >>> results[0].symbol
@@ -673,7 +680,7 @@ def parse_financial_results(raw: dict[str, Any]) -> list[FinancialResult]:
         )
 
         result = FinancialResult(
-            symbol=str(item.get("symbol", "")),
+            symbol=str(item.get("symbol", "")) or symbol,
             from_date=_to_str(item.get(_FINANCIAL_FROM_DATE_KEY, "")),
             to_date=_to_str(item.get(_FINANCIAL_TO_DATE_KEY, "")),
             income=_to_str(total_income) if total_income is not None else "",

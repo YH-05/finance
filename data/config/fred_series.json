@@ -294,12 +294,26 @@
             "units": "Percent",
             "description": "景気の健全性を示す重要な指標。景気の遅行指標と見なされる。"
         },
+        "U6RATE": {
+            "name_ja": "U-6 失業率（広義の失業率）",
+            "name_en": "Total Unemployed, Plus All Persons Marginally Attached to the Labor Force, Plus Total Employed Part Time for Economic Reasons",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "公式失業率（U-3）より広義の失業率。縁辺労働者や経済的理由によるパートタイム就労者を含む。労働市場の余剰労働力（スラック）をより正確に把握する指標。"
+        },
         "CES0500000003": {
-            "name_ja": "実質平均時給",
-            "name_en": "Real Average Hourly Earnings of All Employees, Total Private",
+            "name_ja": "平均時給（名目）",
+            "name_en": "Average Hourly Earnings of All Employees, Total Private",
             "frequency": "Monthly",
             "units": "Dollars per Hour, Seasonally Adjusted",
-            "description": "個人消費の最重要先行指標。この指標の変化率（勢い）が景気の転換点を予測する上で最重視される。"
+            "description": "民間全雇用者の名目平均時給。個人消費の最重要先行指標。この指標の変化率（勢い）が景気の転換点を予測する上で最重視される。"
+        },
+        "CIVPART": {
+            "name_ja": "労働参加率",
+            "name_en": "Labor Force Participation Rate",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "生産年齢人口に占める労働力人口の割合。失業率と合わせて労働市場の構造的な変化を把握するために使用。高齢化やコロナ後の労働参加低下が注目される。"
         },
         "PAYEMS": {
             "name_ja": "非農業部門雇用者数",
@@ -307,6 +321,62 @@
             "frequency": "Monthly",
             "units": "Thousands of Persons",
             "description": "雇用の増減を示す指標。「ウォール街流」では景気の結果を示す遅行指標と位置づけられる。"
+        },
+        "USPRIV": {
+            "name_ja": "民間全雇用者数",
+            "name_en": "All Employees, Total Private",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "民間部門の全雇用者数（季節調整済）。PAYEMSから政府雇用者を除いた数値。"
+        },
+        "ADPMNUSNERSA": {
+            "name_ja": "ADP雇用統計（月次）",
+            "name_en": "Total Nonfarm Private Payroll Employment (ADP)",
+            "frequency": "Monthly",
+            "units": "Persons",
+            "description": "ADP社が集計する民間非農業部門雇用者数。公式雇用統計の先行指標として市場が注目。BLS発表の2日前に公開される。"
+        },
+        "USGOVT": {
+            "name_ja": "政府部門雇用者数（合計）",
+            "name_en": "All Employees, Government",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "連邦・州・地方政府の民間雇用者の合計。軍人・情報機関職員は除外、郵便局職員は含む。"
+        },
+        "CES9091000001": {
+            "name_ja": "連邦政府雇用者数",
+            "name_en": "All Employees, Federal",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "連邦政府の民間雇用者数（季節調整済）。DOGE等による連邦政府人員削減の影響を追跡する指標。"
+        },
+        "CES9092000001": {
+            "name_ja": "州政府雇用者数",
+            "name_en": "All Employees, State Government",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "州政府の雇用者数（季節調整済）。州財政の健全性を反映する。"
+        },
+        "CES9093000001": {
+            "name_ja": "地方政府雇用者数",
+            "name_en": "All Employees, Local Government",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "地方政府の雇用者数（季節調整済）。教員・警察・消防等の公共サービス従事者を含む。政府雇用の中で最大のカテゴリ。"
+        },
+        "MANEMP": {
+            "name_ja": "製造業雇用者数",
+            "name_en": "All Employees, Manufacturing",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "製造業セクターの全雇用者数（季節調整済）。関税政策・リショアリング・産業政策の効果を測る指標。"
+        },
+        "TEMPHELPS": {
+            "name_ja": "派遣社員数（人材派遣サービス）",
+            "name_en": "All Employees, Temporary Help Services",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "人材派遣サービス業（NAICS 561320）の雇用者数。景気の先行指標として注目される。企業は景気悪化時にまず派遣を削減し、回復時に最初に派遣を増やすため。"
         },
         "ICSA": {
             "name_ja": "新規失業保険申請件数",
@@ -321,6 +391,85 @@
             "frequency": "Monthly",
             "units": "Thousands of Persons",
             "description": "JOLTS（求人労働異動調査）による、非農業部門の求人総数（季節調整済）。労働市場の需要（人手不足感）を示す指標。"
+        },
+        "JTSHIL": {
+            "name_ja": "JOLTS 採用件数",
+            "name_en": "Hires: Total Nonfarm",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "JOLTS調査による、非農業部門の月間採用件数（季節調整済）。実際の採用ペースを示す。"
+        },
+        "JTSQUL": {
+            "name_ja": "JOLTS 自発的離職件数",
+            "name_en": "Quits: Total Nonfarm",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "JOLTS調査による、自発的離職（自己都合退職）件数。労働者の転職意欲・労働市場への自信を反映する。"
+        },
+        "JTSTSL": {
+            "name_ja": "JOLTS 離職件数（合計）",
+            "name_en": "Total Separations: Total Nonfarm",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "JOLTS調査による、全離職件数（自発的離職＋解雇＋その他）の合計。"
+        },
+        "JTSLDL": {
+            "name_ja": "JOLTS 解雇件数",
+            "name_en": "Layoffs and Discharges: Total Nonfarm",
+            "frequency": "Monthly",
+            "units": "Thousands of Persons",
+            "description": "JOLTS調査による、非自発的離職（解雇・レイオフ）件数。企業側からの人員整理の規模を示す。"
+        },
+        "IHLIDXUS": {
+            "name_ja": "Indeed 求人指数（米国）",
+            "name_en": "Job Postings on Indeed in the United States",
+            "frequency": "Daily, 7-Day",
+            "units": "Index (Feb 1 2020=100)",
+            "description": "Indeed社の求人データに基づく米国の求人動向指数。2020年2月1日=100。求人市場のリアルタイムな動向を反映する高頻度データ。"
+        }
+    },
+    "Unemployment Rate by Age": {
+        "LNS14000012": {
+            "name_ja": "失業率: 16-19歳",
+            "name_en": "Unemployment Rate - 16-19 Yrs.",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "16-19歳の失業率（季節調整済）。若年層は景気変動に最も敏感で、景気後退の初期シグナルとなりやすい。"
+        },
+        "LNS14000036": {
+            "name_ja": "失業率: 20-24歳",
+            "name_en": "Unemployment Rate - 20-24 Yrs.",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "20-24歳の失業率（季節調整済）。新卒・若手労働者の雇用状況を示す。"
+        },
+        "LNS14000089": {
+            "name_ja": "失業率: 25-34歳",
+            "name_en": "Unemployment Rate - 25-34 Yrs.",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "25-34歳の失業率（季節調整済）。主要労働年齢層の前半。"
+        },
+        "LNS14000091": {
+            "name_ja": "失業率: 35-44歳",
+            "name_en": "Unemployment Rate - 35-44 Yrs.",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "35-44歳の失業率（季節調整済）。主要労働年齢層の後半。"
+        },
+        "LNS14000093": {
+            "name_ja": "失業率: 45-54歳",
+            "name_en": "Unemployment Rate - 45-54 Yrs.",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "45-54歳の失業率（季節調整済）。中高年労働者の雇用状況を示す。"
+        },
+        "LNS14024230": {
+            "name_ja": "失業率: 55歳以上",
+            "name_en": "Unemployment Rate - 55 Yrs. & over",
+            "frequency": "Monthly",
+            "units": "Percent",
+            "description": "55歳以上の失業率（季節調整済）。高齢労働者の雇用状況を示す。再就職が困難な層で、長期失業に陥りやすい。"
         }
     },
     "Money, Banking, & Finance": {

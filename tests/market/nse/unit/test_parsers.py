@@ -40,6 +40,8 @@ Test TODO List:
 - [x] parse_financial_results: missing 'resCmpData' raises NseParseError
 - [x] parse_financial_results: empty resCmpData list returns empty list
 - [x] parse_financial_results: non-dict raises NseParseError
+- [x] parse_financial_results: symbol引数でレスポンスにsymbolがない場合に補完
+- [x] parse_financial_results: レスポンスのsymbolが引数より優先
 - [x] parse_event_calendar: valid array
 - [x] parse_event_calendar: empty array returns empty list
 - [x] parse_event_calendar: non-list raises NseParseError
@@ -708,6 +710,30 @@ class TestParseFinancialResults:
         assert len(results) == 1
         # income should fall back to net_sale + other_income = 3591600
         assert results[0].income == "3591600.0"
+
+    def test_正常系_symbol引数でレスポンスにsymbolがない場合に補完(self) -> None:
+        """レスポンスにsymbolが無い場合、引数のsymbolが使われること。"""
+        raw = {
+            "bankNonBnking": "N",
+            "resCmpData": [
+                {
+                    "re_from_dt": "01-OCT-2024",
+                    "re_to_dt": "31-DEC-2024",
+                    "re_res_type": "U",
+                    "re_net_sale": "12826000",
+                    "re_net_profit": "872100",
+                    "re_basic_eps_for_cont_dic_opr": "6.44",
+                }
+            ],
+        }
+        results = parse_financial_results(raw, symbol="RELIANCE")
+        assert results[0].symbol == "RELIANCE"
+
+    def test_正常系_レスポンスのsymbolが引数より優先(self) -> None:
+        """レスポンスにsymbolがある場合、引数よりレスポンスが優先されること。"""
+        raw = _make_financial_response()
+        results = parse_financial_results(raw, symbol="OVERRIDE")
+        assert results[0].symbol == "INFY"
 
 
 # =============================================================================

@@ -466,13 +466,23 @@ class NseSession:
 
         # Apply polite delay before cookie request to avoid rate limiting
         self._polite_delay()
-        response = self._client.get(BASE_URL)
+        try:
+            response = self._client.get(BASE_URL)
+        except httpx.TimeoutException:
+            logger.warning(
+                "Cookie acquisition timed out, proceeding without cookies",
+            )
+            # Mark as acquired to avoid repeated timeout attempts
+            self._cookie_acquired_at = time.monotonic()
+            return
 
         if response.status_code not in range(200, 300):
             logger.warning(
-                "Cookie acquisition failed, skipping cookie update",
+                "Cookie acquisition failed, proceeding without cookies",
                 status_code=response.status_code,
             )
+            # Mark as acquired to avoid repeated failed attempts
+            self._cookie_acquired_at = time.monotonic()
             return
 
         self._cookie_acquired_at = time.monotonic()

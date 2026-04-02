@@ -112,23 +112,13 @@
       "WebFetch(domain:docs.polymarket.com)",
       "WebFetch(domain:beincrypto.com)",
       "WebFetch(domain:help.polymarket.com)",
-      "WebFetch(domain:quantpedia.com)"
+      "WebFetch(domain:quantpedia.com)",
+      "WebFetch(domain:fredaccount.stlouisfed.org)",
+      "WebFetch(domain:www.frbsf.org)"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",
       "/users/yukihata/desktop/note-finance"
-    ]
-  },
-  "hooks": {
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/scripts/sync_nas.sh --push >> /tmp/sync-nas-quants.log 2>&1 &"
-          }
-        ]
-      }
     ]
   },
   "enableAllProjectMcpServers": true,
@@ -150,5 +140,17 @@
     "playwright",
     "drawio",
     "alphaxiv"
-  ]
+  ],
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/scripts/sync_nas.sh --push >> /tmp/sync-nas-quants.log 2>&1 &"
+          }
+        ]
+      }
+    ]
+  }
 }

@@ -71,7 +71,7 @@ KG v2.2 スキーマでは 14 種のノード（Source, Entity, Claim, Fact, Fin
 
 ## 前提条件
 
-1. **Neo4j が起動していること**（quants-neo4j: bolt://localhost:7690）
+1. **Neo4j が起動していること**（quants-neo4j: bolt://localhost:7687）
 2. **初回セットアップが完了していること**（制約・インデックス作成）
 3. **graph-queue JSON が存在すること**（`scripts/emit_graph_queue.py` で生成）
 
@@ -275,7 +275,7 @@ MERGE (c)-[:ABOUT]->(e)
 
 | エラー | 対処 |
 |--------|------|
-| E001: Neo4j 接続失敗 | NEO4J_URI=bolt://localhost:7690, NEO4J_PASSWORD 確認 |
+| E001: Neo4j 接続失敗 | NEO4J_URI=bolt://localhost:7687, NEO4J_PASSWORD 確認 |
 | E002: graph-queue 未検出 | `scripts/emit_graph_queue.py` で JSON 生成 |
 | E003: JSON 検証エラー | schema_version と必須キーを確認 |
 | E004: Cypher 実行エラー | 制約・インデックス未作成の場合は初回セットアップ実行 |
@@ -284,7 +284,7 @@ MERGE (c)-[:ABOUT]->(e)
 
 | 変数名 | デフォルト | 説明 |
 |--------|-----------|------|
-| NEO4J_URI | bolt://localhost:7690 | Neo4j Bolt URI |
+| NEO4J_URI | bolt://localhost:7687 | Neo4j Bolt URI |
 | NEO4J_USER | neo4j | Neo4j ユーザー名 |
 | NEO4J_PASSWORD | (必須) | Neo4j パスワード |
 

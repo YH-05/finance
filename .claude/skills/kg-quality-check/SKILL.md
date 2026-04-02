@@ -1,7 +1,7 @@
 ---
 name: kg-quality-check
 description: |
-  quants KG (bolt://localhost:7690) の品質を計測・評価するスキル。
+  quants KG (bolt://localhost:7687) の品質を計測・評価するスキル。
   KG v2.2 スキーマ（14ノード・31リレーション）に対して
   7カテゴリの定量指標を計測し、LLM-as-Judge による精度・発見性チェックを実行する。
   「KG品質」「ナレッジグラフ品質」「グラフ品質チェック」「Neo4j品質」
@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Bash, Glob, Grep
 
 # kg-quality-check
 
-quants KG (bolt://localhost:7690) のデータ品質を計測し、Claude Code が LLM-as-Judge として
+quants KG (bolt://localhost:7687) のデータ品質を計測し、Claude Code が LLM-as-Judge として
 Claim/Fact の精度と創発的発見ポテンシャルを評価するスキル。
 
 ## 目的

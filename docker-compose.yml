@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: finance-dev
+    container_name: quants-dev
     stdin_open: true  # インタラクティブ入力（-i）
     tty: true         # ターミナル割り当て（-t）
     volumes:
@@ -40,23 +40,42 @@ services:
 
     working_dir: /app
 
-  # Neo4j - quants専用ナレッジグラフ（neo4j-memory MCP用）
+  # Neo4j Enterprise - 全プロジェクト共有インスタンス
+  # データベース: note, research, creator, quants
   neo4j:
-    image: neo4j:5-community
-    container_name: quants-neo4j
+    image: neo4j:5.26-enterprise
+    container_name: neo4j-enterprise
     ports:
-      - "7477:7474"   # HTTP Browser（7474-7476は他プロジェクトが使用）
-      - "7690:7687"   # Bolt プロトコル（7687-7689は他プロジェクトが使用）
-    environment:
-      - NEO4J_AUTH=neo4j/quants2026
-      - NEO4J_PLUGINS=["apoc"]
+      - "7474:7474"   # Browser UI
+      - "7687:7687"   # Bolt protocol
     volumes:
-      - neo4j-data:/data
-      - neo4j-logs:/logs
-    restart: unless-stopped
+      - /Volumes/NeoData/enterprise/data:/data
+      - /Volumes/NeoData/enterprise/logs:/logs
+      - /Volumes/NeoData/enterprise/plugins:/plugins
+      - /Volumes/NeoData/enterprise/import:/var/lib/neo4j/import
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-gomasuke}
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      # 複数データベース有効化
+      - NEO4J_initial_dbms_default__database=neo4j
+      - NEO4J_dbms_max__databases=10
+      # プラグイン
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      # メモリ設定（4DB統合: Community 3台分 + quants）
+      - NEO4J_server_memory_heap_initial__size=512m
+      - NEO4J_server_memory_heap_max__size=2g
+      - NEO4J_server_memory_pagecache_size=1g
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
 volumes:
   claude-config:  # Claude Code 設定の永続化
   venv:           # Python 仮想環境の隔離
-  neo4j-data:     # Neo4j データの永続化
-  neo4j-logs:     # Neo4j ログの永続化

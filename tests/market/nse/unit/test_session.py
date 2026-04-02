@@ -33,6 +33,8 @@ Test TODO List:
 - [x] _ensure_cookies(): Cookie有効期限内は再取得しない
 - [x] _ensure_cookies(): Cookie TTL切れで再取得
 - [x] _ensure_cookies(): Cookie取得後 _cookie_acquired_at が設定される
+- [x] _ensure_cookies(): Cookie取得タイムアウトでフォールバック
+- [x] _ensure_cookies(): Cookie取得403でフォールバック
 - [x] close(): セッションが閉じられる
 - [x] structlog ロガーの使用
 - [x] __all__ エクスポート
@@ -228,6 +230,44 @@ class TestNseSessionEnsureCookies:
             # Should have refreshed cookie
             calls = [c[0][0] for c in mock_client.get.call_args_list]
             assert BASE_URL in calls
+
+    def test_正常系_Cookie取得タイムアウトでフォールバック(self) -> None:
+        """Cookie 取得がタイムアウトしても _cookie_acquired_at が設定されること。"""
+        import httpx
+
+        with patch("market.nse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_client.get.side_effect = httpx.ReadTimeout("timed out")
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.nse.session.time.sleep"),
+                patch("market.nse.session.time.monotonic", return_value=100.0),
+            ):
+                session = NseSession()
+                session._ensure_cookies()
+
+                # Should mark as acquired despite timeout
+                assert session._cookie_acquired_at == 100.0
+
+    def test_正常系_Cookie取得403でフォールバック(self) -> None:
+        """Cookie 取得が 403 でも _cookie_acquired_at が設定されること。"""
+        with patch("market.nse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_response = MagicMock()
+            mock_response.status_code = 403
+            mock_client.get.return_value = mock_response
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.nse.session.time.sleep"),
+                patch("market.nse.session.time.monotonic", return_value=200.0),
+            ):
+                session = NseSession()
+                session._ensure_cookies()
+
+                # Should mark as acquired despite 403
+                assert session._cookie_acquired_at == 200.0
 
 
 # =============================================================================

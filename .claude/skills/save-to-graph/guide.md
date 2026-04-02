@@ -4,13 +4,13 @@
 
 ### 前提: Neo4j 接続
 
-quants プロジェクトでは `quants-neo4j` (bolt://localhost:7690) を使用。
+quants プロジェクトでは `quants-neo4j` (bolt://localhost:7687) を使用。
 
 ```bash
 # 環境変数設定
-export NEO4J_URI="bolt://localhost:7690"
+export NEO4J_URI="bolt://localhost:7687"
 export NEO4J_USER="neo4j"
-export NEO4J_PASSWORD="quants2026"
+export NEO4J_PASSWORD="gomasuke"
 
 # 接続テスト（neo4j-cypher MCP 経由）
 # read_query: "RETURN 'connection_ok' AS status"

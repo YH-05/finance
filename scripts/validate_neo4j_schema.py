@@ -15,7 +15,7 @@ Usage
     python scripts/validate_neo4j_schema.py --output data/processed/schema_validation.json
 
     # 接続先を指定
-    python scripts/validate_neo4j_schema.py --neo4j-uri bolt://localhost:7690
+    python scripts/validate_neo4j_schema.py --neo4j-uri bolt://localhost:7687
 """
 
 from __future__ import annotations
@@ -328,8 +328,8 @@ def main() -> None:
     parser.add_argument("--output", help="Output JSON report path")
     parser.add_argument(
         "--neo4j-uri",
-        default=os.environ.get("NEO4J_URI", "bolt://localhost:7690"),
-        help="Neo4j connection URI (default: bolt://localhost:7690)",
+        default=os.environ.get("NEO4J_URI", "bolt://localhost:7687"),
+        help="Neo4j connection URI (default: bolt://localhost:7687)",
     )
     parser.add_argument(
         "--neo4j-user",

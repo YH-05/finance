@@ -165,7 +165,7 @@ class CorporateCollector(NseCollectorMixin):
             )
 
             json_data: dict[str, Any] = response.json()
-            results = parse_financial_results(json_data)
+            results = parse_financial_results(json_data, symbol=symbol)
 
             logger.info(
                 "Financial results fetched",
