@@ -170,7 +170,7 @@ def _inspect_cf_standard_concept(cf_df: pd.DataFrame) -> None:
         print()
         print("  Sample rows where standard_concept is missing:")
         sample_cols = [c for c in cf_df.columns if c != col][:5]
-        print(cf_df[cf_df[col].isnull()][sample_cols + [col]].head(5).to_string())
+        print(cf_df[cf_df[col].isnull()][[*sample_cols, col]].head(5).to_string())
 
     print()
 
