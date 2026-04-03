@@ -51,15 +51,18 @@ ALPHA_VANTAGE_API_KEY_ENV: Final[str] = "ALPHA_VANTAGE_API_KEY"
 # 4. Rate limit default values
 # ---------------------------------------------------------------------------
 
-DEFAULT_REQUESTS_PER_MINUTE: Final[int] = 25
+DEFAULT_REQUESTS_PER_MINUTE: Final[int] = 5
 """Default maximum number of API requests per minute.
 
-Alpha Vantage free tier allows 25 requests per day, but premium
-plans allow higher limits. This default is suitable for premium plans.
+Alpha Vantage free tier allows 25 requests per day (up to 5/minute).
+This default targets the free tier. Premium plans can raise this value.
 """
 
-DEFAULT_REQUESTS_PER_HOUR: Final[int] = 500
-"""Default maximum number of API requests per hour."""
+DEFAULT_REQUESTS_PER_HOUR: Final[int] = 20
+"""Default maximum number of API requests per hour.
+
+Set to 20 to stay safely within the free tier limit of 25 requests per day.
+"""
 
 # ---------------------------------------------------------------------------
 # 5. HTTP default configuration values
@@ -68,11 +71,12 @@ DEFAULT_REQUESTS_PER_HOUR: Final[int] = 500
 DEFAULT_TIMEOUT: Final[float] = 30.0
 """Default HTTP request timeout in seconds."""
 
-DEFAULT_POLITE_DELAY: Final[float] = 2.5
+DEFAULT_POLITE_DELAY: Final[float] = 12.0
 """Default polite delay between requests in seconds.
 
-Alpha Vantage recommends spacing requests to avoid rate limiting.
-A longer delay than other APIs is appropriate for the free tier.
+12 seconds corresponds to the 5 requests/minute free tier limit
+(60s / 5 = 12s per request). Prevents accidental exhaustion of the
+25 requests/day quota.
 """
 
 DEFAULT_DELAY_JITTER: Final[float] = 0.5

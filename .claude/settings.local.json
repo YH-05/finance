@@ -114,7 +114,8 @@
       "WebFetch(domain:help.polymarket.com)",
       "WebFetch(domain:quantpedia.com)",
       "WebFetch(domain:fredaccount.stlouisfed.org)",
-      "WebFetch(domain:www.frbsf.org)"
+      "WebFetch(domain:www.frbsf.org)",
+      "WebFetch(domain:www.alphavantage.co)"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",
