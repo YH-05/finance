@@ -452,13 +452,13 @@ class EarningsPipeline:
                 try:
                     result: dict[str, Any] = sec_collector.collect_symbol(entry.symbol)
                     records_upserted = int(result.get("records_upserted", 0))
-                    if result.get("status") == "success" and not result.get("errors"):
+                    if not result.get("errors"):
                         self._queue.mark_completed(
                             entry.symbol, entry.earnings_date, entry.source
                         )
                         success_count += 1
                     else:
-                        error_msg = result.get("error", "unknown error")
+                        error_msg = result.get("errors", ["unknown error"])[0]
                         self._queue.mark_failed(
                             entry.symbol,
                             entry.earnings_date,
@@ -541,13 +541,13 @@ class EarningsPipeline:
             for entry in entries:
                 try:
                     result: dict[str, Any] = yf_collector.collect_daily(entry.symbol)
-                    if result.get("status") == "success" and not result.get("errors"):
+                    if not result.get("errors"):
                         self._queue.mark_completed(
                             entry.symbol, entry.earnings_date, entry.source
                         )
                         success_count += 1
                     else:
-                        error_msg = result.get("error", "unknown error")
+                        error_msg = result.get("errors", ["unknown error"])[0]
                         self._queue.mark_failed(
                             entry.symbol,
                             entry.earnings_date,
