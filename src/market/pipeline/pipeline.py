@@ -39,6 +39,7 @@ market.alphavantage.collector : ``AlphaVantageCollector``
 
 from __future__ import annotations
 
+import contextlib
 import time
 from typing import TYPE_CHECKING, Any
 
@@ -345,9 +346,7 @@ class EarningsPipeline:
                             entry.symbol, entry.earnings_date, entry.source, error_msg
                         )
                         fail_count += 1
-                        errors.append(
-                            f"av_earnings/{entry.symbol}: {error_msg}"
-                        )
+                        errors.append(f"av_earnings/{entry.symbol}: {error_msg}")
                 except Exception as exc:
                     error_msg = str(exc)
                     logger.error(
@@ -355,12 +354,10 @@ class EarningsPipeline:
                         symbol=entry.symbol,
                         exc_info=True,
                     )
-                    try:
+                    with contextlib.suppress(Exception):
                         self._queue.mark_failed(
                             entry.symbol, entry.earnings_date, entry.source, error_msg
                         )
-                    except Exception:
-                        pass
                     fail_count += 1
                     errors.append(f"av_earnings/{entry.symbol}: {error_msg}")
 
@@ -379,9 +376,7 @@ class EarningsPipeline:
                             entry.symbol, entry.earnings_date, entry.source, error_msg
                         )
                         fail_count += 1
-                        errors.append(
-                            f"av_overview/{entry.symbol}: {error_msg}"
-                        )
+                        errors.append(f"av_overview/{entry.symbol}: {error_msg}")
                 except Exception as exc:
                     error_msg = str(exc)
                     logger.error(
@@ -389,12 +384,10 @@ class EarningsPipeline:
                         symbol=entry.symbol,
                         exc_info=True,
                     )
-                    try:
+                    with contextlib.suppress(Exception):
                         self._queue.mark_failed(
                             entry.symbol, entry.earnings_date, entry.source, error_msg
                         )
-                    except Exception:
-                        pass
                     fail_count += 1
                     errors.append(f"av_overview/{entry.symbol}: {error_msg}")
 
@@ -467,7 +460,9 @@ class EarningsPipeline:
                     else:
                         error_msg = result.get("error", "unknown error")
                         self._queue.mark_failed(
-                            entry.symbol, entry.earnings_date, entry.source,
+                            entry.symbol,
+                            entry.earnings_date,
+                            entry.source,
                             str(error_msg),
                         )
                         fail_count += 1
@@ -479,12 +474,10 @@ class EarningsPipeline:
                         symbol=entry.symbol,
                         exc_info=True,
                     )
-                    try:
+                    with contextlib.suppress(Exception):
                         self._queue.mark_failed(
                             entry.symbol, entry.earnings_date, entry.source, error_msg
                         )
-                    except Exception:
-                        pass
                     fail_count += 1
                     errors.append(f"sec_edgar/{entry.symbol}: {error_msg}")
 
@@ -556,7 +549,9 @@ class EarningsPipeline:
                     else:
                         error_msg = result.get("error", "unknown error")
                         self._queue.mark_failed(
-                            entry.symbol, entry.earnings_date, entry.source,
+                            entry.symbol,
+                            entry.earnings_date,
+                            entry.source,
                             str(error_msg),
                         )
                         fail_count += 1
@@ -568,12 +563,10 @@ class EarningsPipeline:
                         symbol=entry.symbol,
                         exc_info=True,
                     )
-                    try:
+                    with contextlib.suppress(Exception):
                         self._queue.mark_failed(
                             entry.symbol, entry.earnings_date, entry.source, error_msg
                         )
-                    except Exception:
-                        pass
                     fail_count += 1
                     errors.append(f"yfinance/{entry.symbol}: {error_msg}")
 

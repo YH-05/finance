@@ -16,7 +16,6 @@ from market.pipeline.models import PhaseResult, PipelineResult
 from market.pipeline.pipeline import EarningsPipeline
 from market.pipeline.queue import CollectionQueue
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -120,9 +119,7 @@ class TestRunSkipPhases:
         result = pipeline.run(skip_phases=[1, 2, 3, 4])
         assert isinstance(result, PipelineResult)
 
-    def test_正常系_total_duration_secが非負(
-        self, pipeline: EarningsPipeline
-    ) -> None:
+    def test_正常系_total_duration_secが非負(self, pipeline: EarningsPipeline) -> None:
         result = pipeline.run(skip_phases=[1, 2, 3, 4])
         assert result.total_duration_sec >= 0.0
 
@@ -261,7 +258,9 @@ class TestRunPhaseErrorResilience:
         # Patch the lazy import inside run_phase1 by making the import raise
         mock_module = MagicMock()
         mock_module.NasdaqCalendarCollector.side_effect = RuntimeError("API down")
-        with patch.dict("sys.modules", {"market.pipeline.collector_nasdaq": mock_module}):
+        with patch.dict(
+            "sys.modules", {"market.pipeline.collector_nasdaq": mock_module}
+        ):
             result = pipeline.run_phase1()
 
         assert isinstance(result, PhaseResult)
@@ -302,9 +301,7 @@ class TestGetStatus:
         status = pipeline.get_status()
         assert status["av_daily_budget"] == 10
 
-    def test_正常系_queue_statsがdictを返す(
-        self, pipeline: EarningsPipeline
-    ) -> None:
+    def test_正常系_queue_statsがdictを返す(self, pipeline: EarningsPipeline) -> None:
         status = pipeline.get_status()
         assert isinstance(status["queue_stats"], dict)
 

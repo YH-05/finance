@@ -7,7 +7,7 @@ error paths. All pipeline execution is mocked.
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -15,6 +15,8 @@ import pytest
 from market.pipeline.cli import _build_parser, _resolve_skip_phases, main
 from market.pipeline.models import PhaseResult, PipelineResult
 
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Argument parser
