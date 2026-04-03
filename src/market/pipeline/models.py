@@ -88,28 +88,41 @@ class EarningsCalendarRecord:
 class QueueEntry:
     """Collection task queue entry for ``nc_collection_queue``.
 
+    Each row represents one ``(symbol, earnings_date, source)`` combination.
+    The composite primary key is ``(symbol, earnings_date, source)``.
+
     Parameters
     ----------
     symbol : str
-        Ticker symbol in NASDAQ format.
-    queue_date : str
-        Date (ISO 8601) for which this queue entry was created.
+        Ticker symbol in NASDAQ format (e.g. ``"AAPL"``).
+    earnings_date : str
+        Expected earnings date in ISO 8601 format (e.g. ``"2026-04-30"``).
+    source : str
+        Data source identifier (e.g. ``"nasdaq"``, ``"yfinance"``).
     status : str
-        Current status: ``"pending"``, ``"in_progress"``, ``"completed"``,
-        or ``"failed"``.
-    error_message : str | None
-        Error description when ``status == "failed"``. ``None`` otherwise.
+        Current status: ``"pending"``, ``"completed"``, ``"failed"``,
+        or ``"skipped"``.
+    priority : int
+        Collection priority. Higher values are processed first.
+        Default is ``0``.
+    attempts : int
+        Number of collection attempts made so far. Starts at ``0``.
     created_at : str
         ISO 8601 timestamp of when the entry was added to the queue.
     updated_at : str | None
         ISO 8601 timestamp of the last status update. ``None`` when never updated.
+    error_message : str | None
+        Error description when ``status == "failed"``. ``None`` otherwise.
 
     Examples
     --------
     >>> entry = QueueEntry(
     ...     symbol="AAPL",
-    ...     queue_date="2026-04-03",
+    ...     earnings_date="2026-04-30",
+    ...     source="nasdaq",
     ...     status="pending",
+    ...     priority=0,
+    ...     attempts=0,
     ...     created_at="2026-04-03T09:00:00",
     ... )
     >>> entry.status
@@ -118,13 +131,16 @@ class QueueEntry:
 
     # --- Required key fields ---
     symbol: str
-    queue_date: str
+    earnings_date: str
+    source: str
     status: str
+    priority: int
+    attempts: int
     created_at: str
 
     # --- Optional fields ---
-    error_message: str | None = None
     updated_at: str | None = None
+    error_message: str | None = None
 
 
 # =============================================================================

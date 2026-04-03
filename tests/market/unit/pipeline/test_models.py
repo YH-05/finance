@@ -56,20 +56,30 @@ class TestQueueEntry:
     def test_正常系_必須フィールドで生成できる(self) -> None:
         entry = QueueEntry(
             symbol="AAPL",
-            queue_date="2026-04-03",
+            earnings_date="2026-04-30",
+            source="nasdaq",
             status="pending",
+            priority=0,
+            attempts=0,
             created_at="2026-04-03T09:00:00",
         )
         assert entry.symbol == "AAPL"
+        assert entry.earnings_date == "2026-04-30"
+        assert entry.source == "nasdaq"
         assert entry.status == "pending"
+        assert entry.priority == 0
+        assert entry.attempts == 0
         assert entry.error_message is None
         assert entry.updated_at is None
 
     def test_正常系_frozenでイミュータブルである(self) -> None:
         entry = QueueEntry(
             symbol="AAPL",
-            queue_date="2026-04-03",
+            earnings_date="2026-04-30",
+            source="nasdaq",
             status="pending",
+            priority=0,
+            attempts=0,
             created_at="2026-04-03T09:00:00",
         )
         with pytest.raises(dataclasses.FrozenInstanceError):
@@ -207,6 +217,7 @@ class TestPipelineResult:
             total_duration_sec=5.0,
         )
         assert result.phase1 is p1
+        assert result.phase1 is not None
         assert result.phase1.success_count == 50
 
     def test_正常系_frozenでイミュータブルである(self) -> None:
