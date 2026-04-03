@@ -43,7 +43,9 @@ class TestCollectionQueueInit:
         q = CollectionQueue(db_path=tmp_path / "another.db")
         assert q is not None
 
-    def test_正常系_初期化時にテーブルが作成される(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_初期化時にテーブルが作成される(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         # enqueue が成功すればテーブルは存在する
         count = mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq"])
         assert count == 1
@@ -55,11 +57,15 @@ class TestCollectionQueueInit:
 
 
 class TestEnqueue:
-    def test_正常系_単一ソースでエントリを追加できる(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_単一ソースでエントリを追加できる(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         count = mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq"])
         assert count == 1
 
-    def test_正常系_複数ソースで複数エントリを追加できる(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_複数ソースで複数エントリを追加できる(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         count = mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq", "yfinance"])
         assert count == 2
 
@@ -85,7 +91,9 @@ class TestEnqueue:
         assert len(pending_nasdaq) == 1
         assert len(pending_yf) == 1
 
-    def test_エッジケース_空のsourcesリストでゼロを返す(self, mem_queue: CollectionQueue) -> None:
+    def test_エッジケース_空のsourcesリストでゼロを返す(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         count = mem_queue.enqueue("AAPL", "2026-04-30", [])
         assert count == 0
 
@@ -128,14 +136,18 @@ class TestGetPending:
         entries = mem_queue.get_pending("nasdaq", limit=5)
         assert len(entries) == 5
 
-    def test_正常系_他ソースのエントリを返さない(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_他ソースのエントリを返さない(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq", "yfinance"])
         nasdaq_entries = mem_queue.get_pending("nasdaq")
         yf_entries = mem_queue.get_pending("yfinance")
         assert all(e.source == "nasdaq" for e in nasdaq_entries)
         assert all(e.source == "yfinance" for e in yf_entries)
 
-    def test_正常系_completedエントリを返さない(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_completedエントリを返さない(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq"])
         mem_queue.mark_completed("AAPL", "2026-04-30", "nasdaq")
         entries = mem_queue.get_pending("nasdaq")
@@ -161,7 +173,9 @@ class TestGetPending:
 
 
 class TestMarkCompleted:
-    def test_正常系_pendingからcompletedに変更される(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_pendingからcompletedに変更される(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq"])
         mem_queue.mark_completed("AAPL", "2026-04-30", "nasdaq")
         entries = mem_queue.get_pending("nasdaq")
@@ -184,7 +198,9 @@ class TestMarkCompleted:
 
 
 class TestMarkFailed:
-    def test_正常系_failedステータスに変更される(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_failedステータスに変更される(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq"])
         mem_queue.mark_failed("AAPL", "2026-04-30", "nasdaq", "Connection timeout")
         stats = mem_queue.get_stats()
@@ -205,7 +221,9 @@ class TestMarkFailed:
 
 
 class TestMarkSkipped:
-    def test_正常系_skippedステータスに変更される(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_skippedステータスに変更される(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq"])
         mem_queue.mark_skipped("AAPL", "2026-04-30", "nasdaq")
         stats = mem_queue.get_stats()
@@ -281,7 +299,9 @@ class TestGetStats:
         assert stats["nasdaq"]["pending"] == 1
         assert stats["yfinance"]["pending"] == 1
 
-    def test_正常系_混在した状態のカウントが正しい(self, mem_queue: CollectionQueue) -> None:
+    def test_正常系_混在した状態のカウントが正しい(
+        self, mem_queue: CollectionQueue
+    ) -> None:
         mem_queue.enqueue("AAPL", "2026-04-30", ["nasdaq"])
         mem_queue.enqueue("MSFT", "2026-04-30", ["nasdaq"])
         mem_queue.enqueue("GOOG", "2026-04-30", ["nasdaq"])

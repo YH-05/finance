@@ -286,9 +286,7 @@ class CollectionQueue:
         rows = self._client.execute(sql, params)
         return int(rows[0]["cnt"]) if rows else 0
 
-    def mark_completed(
-        self, symbol: str, earnings_date: str, source: str
-    ) -> None:
+    def mark_completed(self, symbol: str, earnings_date: str, source: str) -> None:
         """Mark a queue entry as completed.
 
         Parameters
@@ -340,11 +338,17 @@ class CollectionQueue:
             " WHERE symbol=? AND earnings_date=? AND source=?"
         )
         try:
-            self._client.execute(sql, (error_message, now, symbol, earnings_date, source))
+            self._client.execute(
+                sql, (error_message, now, symbol, earnings_date, source)
+            )
         except Exception as exc:
             raise QueueError(
                 f"Failed to mark entry as failed: {exc}",
-                context={"symbol": symbol, "earnings_date": earnings_date, "source": source},
+                context={
+                    "symbol": symbol,
+                    "earnings_date": earnings_date,
+                    "source": source,
+                },
             ) from exc
         logger.debug(
             "Queue entry marked failed",
@@ -354,9 +358,7 @@ class CollectionQueue:
             error_message=error_message,
         )
 
-    def mark_skipped(
-        self, symbol: str, earnings_date: str, source: str
-    ) -> None:
+    def mark_skipped(self, symbol: str, earnings_date: str, source: str) -> None:
         """Mark a queue entry as skipped.
 
         Parameters

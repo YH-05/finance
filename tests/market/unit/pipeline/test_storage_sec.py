@@ -9,7 +9,6 @@ import pytest
 from market.pipeline.models import FinancialStatementRecord
 from market.pipeline.storage_sec import SecEdgarStorage
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

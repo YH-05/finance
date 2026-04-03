@@ -16,7 +16,9 @@ class TestNormalizeTickerAlphavantage:
     def test_正常系_BRK_Bが正しく変換される(self) -> None:
         assert normalize_ticker("BRK.B", "alphavantage") == "BRK"
 
-    def test_エッジケース_複数ドットのシンボルは最初のコンポーネントのみ返す(self) -> None:
+    def test_エッジケース_複数ドットのシンボルは最初のコンポーネントのみ返す(
+        self,
+    ) -> None:
         assert normalize_ticker("A.B.C", "alphavantage") == "A"
 
 
@@ -52,7 +54,9 @@ class TestNormalizeTickerSecEdgar:
 
 class TestNormalizeTickerInvalidTarget:
     def test_異常系_不明なターゲットでTickerNormalizationErrorを送出する(self) -> None:
-        with pytest.raises(TickerNormalizationError, match="Unknown normalisation target"):
+        with pytest.raises(
+            TickerNormalizationError, match="Unknown normalisation target"
+        ):
             normalize_ticker("AAPL", "unknown_exchange")  # type: ignore[arg-type]
 
     def test_異常系_エラーのコンテキストにシンボルとターゲットが含まれる(self) -> None:

@@ -9,7 +9,6 @@ import pytest
 from market.pipeline.models import EarningsCalendarRecord
 from market.pipeline.storage_nasdaq import NasdaqCalendarStorage
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

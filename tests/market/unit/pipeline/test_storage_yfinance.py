@@ -9,7 +9,6 @@ import pytest
 from market.pipeline.models import YFDailyPriceRecord
 from market.pipeline.storage_yfinance import YFinanceStorage
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

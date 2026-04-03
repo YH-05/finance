@@ -39,7 +39,13 @@ class TestPipelineError:
 class TestSubclassHierarchy:
     @pytest.mark.parametrize(
         "error_class",
-        [PhaseError, StorageError, CollectorError, QueueError, TickerNormalizationError],
+        [
+            PhaseError,
+            StorageError,
+            CollectorError,
+            QueueError,
+            TickerNormalizationError,
+        ],
     )
     def test_正常系_全サブクラスがPipelineErrorを継承する(
         self, error_class: type[PipelineError]
@@ -50,7 +56,13 @@ class TestSubclassHierarchy:
 
     @pytest.mark.parametrize(
         "error_class",
-        [PhaseError, StorageError, CollectorError, QueueError, TickerNormalizationError],
+        [
+            PhaseError,
+            StorageError,
+            CollectorError,
+            QueueError,
+            TickerNormalizationError,
+        ],
     )
     def test_正常系_全サブクラスがコンテキスト付きで生成できる(
         self, error_class: type[PipelineError]
