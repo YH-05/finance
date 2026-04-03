@@ -89,7 +89,9 @@ class TestNasdaqCalendarStorageUpsert:
         result = storage.upsert([])
         assert result == 0
 
-    def test_正常系_同一レコードの重複upsertは置換される(self, tmp_db_path: Path) -> None:
+    def test_正常系_同一レコードの重複upsertは置換される(
+        self, tmp_db_path: Path
+    ) -> None:
         storage = NasdaqCalendarStorage(db_path=tmp_db_path)
         record1 = _make_record("AAPL", "2026-04-30", eps_estimate=1.55)
         storage.upsert([record1])
@@ -105,7 +107,9 @@ class TestNasdaqCalendarStorageUpsert:
         self, tmp_db_path: Path
     ) -> None:
         storage = NasdaqCalendarStorage(db_path=tmp_db_path)
-        record = _make_record(eps_estimate=None, report_time=None, fiscal_quarter_ending=None)
+        record = _make_record(
+            eps_estimate=None, report_time=None, fiscal_quarter_ending=None
+        )
         result = storage.upsert([record])
         assert result == 1
 
@@ -120,11 +124,13 @@ class TestNasdaqCalendarStorageGetByDateRange:
 
     def test_正常系_日付範囲内のレコードを取得できる(self, tmp_db_path: Path) -> None:
         storage = NasdaqCalendarStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL", "2026-04-28"),
-            _make_record("MSFT", "2026-04-30"),
-            _make_record("GOOGL", "2026-05-02"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL", "2026-04-28"),
+                _make_record("MSFT", "2026-04-30"),
+                _make_record("GOOGL", "2026-05-02"),
+            ]
+        )
         rows = storage.get_by_date_range("2026-04-28", "2026-04-30")
         assert len(rows) == 2
         symbols = {row["symbol"] for row in rows}
@@ -154,10 +160,12 @@ class TestNasdaqCalendarStorageGetLatestFetchedDate:
         self, tmp_db_path: Path
     ) -> None:
         storage = NasdaqCalendarStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record(fetched_at="2026-04-01T10:00:00+00:00"),
-            _make_record("MSFT", fetched_at="2026-04-03T15:00:00+00:00"),
-        ])
+        storage.upsert(
+            [
+                _make_record(fetched_at="2026-04-01T10:00:00+00:00"),
+                _make_record("MSFT", fetched_at="2026-04-03T15:00:00+00:00"),
+            ]
+        )
         latest = storage.get_latest_fetched_date()
         assert latest == "2026-04-03T15:00:00+00:00"
 

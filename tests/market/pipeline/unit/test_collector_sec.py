@@ -51,13 +51,20 @@ class TestDetectStatementType:
     """Tests for _detect_statement_type()."""
 
     def test_正常系_キャッシュフロー関連コンセプトはcash_flow(self) -> None:
-        assert _detect_statement_type("10-K", "NetCashProvidedByUsedInOperatingActivities", "") == "cash_flow"
+        assert (
+            _detect_statement_type(
+                "10-K", "NetCashProvidedByUsedInOperatingActivities", ""
+            )
+            == "cash_flow"
+        )
 
     def test_正常系_資産関連コンセプトはbalance_sheet(self) -> None:
         assert _detect_statement_type("10-K", "total_assets", "") == "balance_sheet"
 
     def test_正常系_負債関連コンセプトはbalance_sheet(self) -> None:
-        assert _detect_statement_type("10-K", "total_liabilities", "") == "balance_sheet"
+        assert (
+            _detect_statement_type("10-K", "total_liabilities", "") == "balance_sheet"
+        )
 
     def test_正常系_不明なコンセプトはincomeにフォールバック(self) -> None:
         assert _detect_statement_type("10-K", "revenue", "") == "income"
@@ -70,7 +77,10 @@ class TestCfLabelFallback:
         assert "NetCashProvidedByUsedInOperatingActivities" in CF_LABEL_FALLBACK
 
     def test_正常系_operating_cashflow_に正しいマッピング(self) -> None:
-        assert CF_LABEL_FALLBACK["NetCashProvidedByUsedInOperatingActivities"] == "operating_cashflow"
+        assert (
+            CF_LABEL_FALLBACK["NetCashProvidedByUsedInOperatingActivities"]
+            == "operating_cashflow"
+        )
 
 
 # =============================================================================
@@ -81,9 +91,7 @@ class TestCfLabelFallback:
 class TestSecEdgarCollectorInit:
     """Tests for SecEdgarCollector initialization."""
 
-    def test_正常系_DI経由で初期化できる(
-        self, mock_sec_storage: MagicMock
-    ) -> None:
+    def test_正常系_DI経由で初期化できる(self, mock_sec_storage: MagicMock) -> None:
         collector = SecEdgarCollector(storage=mock_sec_storage)
         assert collector is not None
 
@@ -124,9 +132,7 @@ class TestSecEdgarCollectorCollectSymbol:
         MockCompany = MagicMock(return_value=mock_company_instance)
         return MockCompany
 
-    def test_正常系_空のDataFrameは0件upsert(
-        self, mock_sec_storage: MagicMock
-    ) -> None:
+    def test_正常系_空のDataFrameは0件upsert(self, mock_sec_storage: MagicMock) -> None:
         MockCompany = self._make_mock_company_class(pd.DataFrame())
         collector = SecEdgarCollector(storage=mock_sec_storage)
 
@@ -140,17 +146,19 @@ class TestSecEdgarCollectorCollectSymbol:
     def test_正常系_収益データを含むDataFrameは変換される(
         self, mock_sec_storage: MagicMock
     ) -> None:
-        df = pd.DataFrame([
-            {
-                "concept": "revenue",
-                "label": "Revenue",
-                "value": 391_035_000_000.0,
-                "standard_concept": "revenue",
-                "period": "2025-09-30",
-                "dimension": False,
-                "abstract": False,
-            }
-        ])
+        df = pd.DataFrame(
+            [
+                {
+                    "concept": "revenue",
+                    "label": "Revenue",
+                    "value": 391_035_000_000.0,
+                    "standard_concept": "revenue",
+                    "period": "2025-09-30",
+                    "dimension": False,
+                    "abstract": False,
+                }
+            ]
+        )
         MockCompany = self._make_mock_company_class(df)
         mock_sec_storage.upsert.return_value = 1
         collector = SecEdgarCollector(storage=mock_sec_storage)
@@ -210,14 +218,16 @@ class TestSecEdgarCollectorDfToRecords:
     def test_正常系_period列のないDataFrameは処理される(
         self, mock_sec_storage: MagicMock
     ) -> None:
-        df = pd.DataFrame([
-            {
-                "concept": "revenue",
-                "label": "Revenue",
-                "value": 100.0,
-                "standard_concept": "revenue",
-            }
-        ])
+        df = pd.DataFrame(
+            [
+                {
+                    "concept": "revenue",
+                    "label": "Revenue",
+                    "value": 100.0,
+                    "standard_concept": "revenue",
+                }
+            ]
+        )
         collector = SecEdgarCollector(storage=mock_sec_storage)
         records = collector._df_to_records(df, "AAPL", "10-K", "annual")
         # period==unknown → fiscal_date="" → skipped
@@ -226,15 +236,17 @@ class TestSecEdgarCollectorDfToRecords:
     def test_正常系_有効なperiodを持つレコードは変換される(
         self, mock_sec_storage: MagicMock
     ) -> None:
-        df = pd.DataFrame([
-            {
-                "concept": "revenue",
-                "label": "Revenue",
-                "value": 391_035_000_000.0,
-                "standard_concept": "revenue",
-                "period": "2025-09-30",
-            }
-        ])
+        df = pd.DataFrame(
+            [
+                {
+                    "concept": "revenue",
+                    "label": "Revenue",
+                    "value": 391_035_000_000.0,
+                    "standard_concept": "revenue",
+                    "period": "2025-09-30",
+                }
+            ]
+        )
         collector = SecEdgarCollector(storage=mock_sec_storage)
         records = collector._df_to_records(df, "AAPL", "10-K", "annual")
         assert len(records) == 1

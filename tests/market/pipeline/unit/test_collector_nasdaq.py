@@ -116,7 +116,9 @@ class TestEarningsRecordToCalendar:
         self,
     ) -> None:
         mock_record = _mock_earnings_record("AAPL", "1.55", "time-after-hours")
-        result = _earnings_record_to_calendar(mock_record, "2026-04-30", "2026-04-03T10:00:00")
+        result = _earnings_record_to_calendar(
+            mock_record, "2026-04-30", "2026-04-03T10:00:00"
+        )
         assert result is not None
         assert isinstance(result, EarningsCalendarRecord)
         assert result.symbol == "AAPL"
@@ -127,12 +129,16 @@ class TestEarningsRecordToCalendar:
     def test_正常系_シンボルなしのレコードはNoneを返す(self) -> None:
         mock_record = MagicMock()
         mock_record.symbol = None
-        result = _earnings_record_to_calendar(mock_record, "2026-04-30", "2026-04-03T10:00:00")
+        result = _earnings_record_to_calendar(
+            mock_record, "2026-04-30", "2026-04-03T10:00:00"
+        )
         assert result is None
 
     def test_正常系_空シンボルのレコードはNoneを返す(self) -> None:
         mock_record = _mock_earnings_record(symbol="")
-        result = _earnings_record_to_calendar(mock_record, "2026-04-30", "2026-04-03T10:00:00")
+        result = _earnings_record_to_calendar(
+            mock_record, "2026-04-30", "2026-04-03T10:00:00"
+        )
         assert result is None
 
 

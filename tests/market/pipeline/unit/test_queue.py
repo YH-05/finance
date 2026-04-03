@@ -244,7 +244,7 @@ class TestCollectionQueueGetStats:
         queue.enqueue("MSFT", "2026-04-30", ["nasdaq"])
         queue.mark_completed("AAPL", "2026-04-30", "nasdaq")
         stats = queue.get_stats()
-        assert stats["nasdaq"]["pending"] == 1   # MSFT is still pending
+        assert stats["nasdaq"]["pending"] == 1  # MSFT is still pending
         assert stats["nasdaq"]["completed"] == 1  # AAPL completed
         assert stats["yfinance"]["pending"] == 1  # AAPL yfinance still pending
 

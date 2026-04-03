@@ -96,9 +96,7 @@ class TestSecEdgarStorageUpsert:
         result = storage.upsert([])
         assert result == 0
 
-    def test_正常系_同一PKの重複upsertはREPLACEされる(
-        self, tmp_db_path: Path
-    ) -> None:
+    def test_正常系_同一PKの重複upsertはREPLACEされる(self, tmp_db_path: Path) -> None:
         """PRIMARY KEY (symbol, fiscal_date_ending, statement_type, report_type) の
         重複レコードは INSERT OR REPLACE で更新されることを確認する。
         """
@@ -145,10 +143,12 @@ class TestSecEdgarStorageGetBySymbol:
 
     def test_正常系_シンボルのレコードを取得できる(self, tmp_db_path: Path) -> None:
         storage = SecEdgarStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL", "2025-09-30"),
-            _make_record("MSFT", "2025-06-30"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL", "2025-09-30"),
+                _make_record("MSFT", "2025-06-30"),
+            ]
+        )
         rows = storage.get_by_symbol("AAPL")
         assert len(rows) == 1
         assert rows[0]["symbol"] == "AAPL"
@@ -173,10 +173,12 @@ class TestSecEdgarStorageGetSymbolsWithData:
         self, tmp_db_path: Path
     ) -> None:
         storage = SecEdgarStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL"),
-            _make_record("MSFT", "2025-06-30"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL"),
+                _make_record("MSFT", "2025-06-30"),
+            ]
+        )
         symbols = storage.get_symbols_with_data()
         assert set(symbols) == {"AAPL", "MSFT"}
 
@@ -195,10 +197,12 @@ class TestSecEdgarStorageGetLatestFilingDate:
 
     def test_正常系_最新のfiscal_date_endingを返す(self, tmp_db_path: Path) -> None:
         storage = SecEdgarStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL", "2024-09-30", report_type="annual"),
-            _make_record("AAPL", "2025-09-30", report_type="annual"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL", "2024-09-30", report_type="annual"),
+                _make_record("AAPL", "2025-09-30", report_type="annual"),
+            ]
+        )
         latest = storage.get_latest_filing_date("AAPL", "annual")
         assert latest == "2025-09-30"
 
@@ -208,10 +212,12 @@ class TestSecEdgarStorageGetLatestFilingDate:
 
     def test_正常系_filing_typeでフィルタされる(self, tmp_db_path: Path) -> None:
         storage = SecEdgarStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL", "2025-09-30", report_type="annual"),
-            _make_record("AAPL", "2025-06-30", report_type="quarterly"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL", "2025-09-30", report_type="annual"),
+                _make_record("AAPL", "2025-06-30", report_type="quarterly"),
+            ]
+        )
         annual = storage.get_latest_filing_date("AAPL", "annual")
         quarterly = storage.get_latest_filing_date("AAPL", "quarterly")
         assert annual == "2025-09-30"

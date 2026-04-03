@@ -389,9 +389,7 @@ class TestEarningsPipelineGetStatus:
     def test_正常系_statusにqueue_statsが含まれる(
         self, mock_collection_queue: MagicMock
     ) -> None:
-        mock_collection_queue.get_stats.return_value = {
-            "nasdaq": {"pending": 5}
-        }
+        mock_collection_queue.get_stats.return_value = {"nasdaq": {"pending": 5}}
         pipeline = EarningsPipeline(queue=mock_collection_queue)
         status = pipeline.get_status()
         assert "queue_stats" in status

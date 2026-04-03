@@ -88,7 +88,9 @@ class TestNormalizeTickerUnknownTarget:
         with pytest.raises(TickerNormalizationError):
             normalize_ticker("AAPL", "")  # type: ignore[arg-type]
 
-    def test_異常系_エラーにはシンボルとターゲットのコンテキストが含まれる(self) -> None:
+    def test_異常系_エラーにはシンボルとターゲットのコンテキストが含まれる(
+        self,
+    ) -> None:
         with pytest.raises(TickerNormalizationError) as exc_info:
             normalize_ticker("AAPL", "bad_target")  # type: ignore[arg-type]
         assert exc_info.value.context["symbol"] == "AAPL"

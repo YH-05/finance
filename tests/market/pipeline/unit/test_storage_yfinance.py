@@ -93,9 +93,7 @@ class TestYFinanceStorageUpsert:
         result = storage.upsert([])
         assert result == 0
 
-    def test_正常系_同一PKの重複upsertはREPLACEされる(
-        self, tmp_db_path: Path
-    ) -> None:
+    def test_正常系_同一PKの重複upsertはREPLACEされる(self, tmp_db_path: Path) -> None:
         storage = YFinanceStorage(db_path=tmp_db_path)
         record1 = _make_record(close=173.0)
         storage.upsert([record1])
@@ -127,20 +125,20 @@ class TestYFinanceStorageGetLatestDate:
         storage = YFinanceStorage(db_path=tmp_db_path)
         assert storage.get_latest_date("AAPL") is None
 
-    def test_正常系_空テーブルは全シンボルでNoneを返す(
-        self, tmp_db_path: Path
-    ) -> None:
+    def test_正常系_空テーブルは全シンボルでNoneを返す(self, tmp_db_path: Path) -> None:
         storage = YFinanceStorage(db_path=tmp_db_path)
         for symbol in ["AAPL", "MSFT", "GOOGL", "NVDA"]:
             assert storage.get_latest_date(symbol) is None
 
     def test_正常系_データがある場合は最新日付を返す(self, tmp_db_path: Path) -> None:
         storage = YFinanceStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL", "2026-04-01"),
-            _make_record("AAPL", "2026-04-03"),
-            _make_record("AAPL", "2026-04-02"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL", "2026-04-01"),
+                _make_record("AAPL", "2026-04-03"),
+                _make_record("AAPL", "2026-04-02"),
+            ]
+        )
         latest = storage.get_latest_date("AAPL")
         assert latest == "2026-04-03"
 
@@ -151,10 +149,12 @@ class TestYFinanceStorageGetLatestDate:
 
     def test_正常系_シンボル別に最新日付が返る(self, tmp_db_path: Path) -> None:
         storage = YFinanceStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL", "2026-04-03"),
-            _make_record("MSFT", "2026-04-10"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL", "2026-04-03"),
+                _make_record("MSFT", "2026-04-10"),
+            ]
+        )
         assert storage.get_latest_date("AAPL") == "2026-04-03"
         assert storage.get_latest_date("MSFT") == "2026-04-10"
 
@@ -169,11 +169,13 @@ class TestYFinanceStorageGetBySymbolDateRange:
 
     def test_正常系_日付範囲内のレコードを取得できる(self, tmp_db_path: Path) -> None:
         storage = YFinanceStorage(db_path=tmp_db_path)
-        storage.upsert([
-            _make_record("AAPL", "2026-04-01"),
-            _make_record("AAPL", "2026-04-03"),
-            _make_record("AAPL", "2026-04-05"),
-        ])
+        storage.upsert(
+            [
+                _make_record("AAPL", "2026-04-01"),
+                _make_record("AAPL", "2026-04-03"),
+                _make_record("AAPL", "2026-04-05"),
+            ]
+        )
         rows = storage.get_by_symbol_date_range("AAPL", "2026-04-01", "2026-04-03")
         assert len(rows) == 2
         dates = [row["date"] for row in rows]

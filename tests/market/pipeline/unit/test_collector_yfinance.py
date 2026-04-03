@@ -64,8 +64,12 @@ class TestToYfDailyRecord:
     def test_正常系_有効な行をYFDailyPriceRecordに変換できる(self) -> None:
         row = MagicMock()
         row.get = lambda k, default=None: {
-            "open": 170.0, "high": 175.0, "low": 169.0, "close": 173.0,
-            "volume": 50_000_000, "adj close": 173.0,
+            "open": 170.0,
+            "high": 175.0,
+            "low": 169.0,
+            "close": 173.0,
+            "volume": 50_000_000,
+            "adj close": 173.0,
         }.get(k, default)
 
         record = _to_yf_daily_record("AAPL", "2026-04-03", row, "2026-04-03T20:00:00")
@@ -77,7 +81,10 @@ class TestToYfDailyRecord:
     def test_正常系_NaNを含む行はNoneを返す(self) -> None:
         row = MagicMock()
         row.get = lambda k, default=None: {
-            "open": float("nan"), "high": 175.0, "low": 169.0, "close": 173.0,
+            "open": float("nan"),
+            "high": 175.0,
+            "low": 169.0,
+            "close": 173.0,
             "volume": 50_000_000,
         }.get(k, default)
 
@@ -95,8 +102,14 @@ class TestResultToRecords:
 
     def test_正常系_有効なデータを持つResultはレコードリストを返す(self) -> None:
         rows = [
-            {"date": "2026-04-01", "open": 170.0, "high": 175.0, "low": 169.0,
-             "close": 173.0, "volume": 50_000_000},
+            {
+                "date": "2026-04-01",
+                "open": 170.0,
+                "high": 175.0,
+                "low": 169.0,
+                "close": 173.0,
+                "volume": 50_000_000,
+            },
         ]
         result = _make_mock_result("AAPL", rows=rows)
         records = _result_to_records(result, "2026-04-03T20:00:00")
@@ -171,8 +184,14 @@ class TestYFinanceCollectorCollectDaily:
     ) -> None:
         mock_yfinance_storage.get_latest_date.return_value = None
         rows = [
-            {"date": "2026-04-01", "open": 170.0, "high": 175.0, "low": 169.0,
-             "close": 173.0, "volume": 50_000_000},
+            {
+                "date": "2026-04-01",
+                "open": 170.0,
+                "high": 175.0,
+                "low": 169.0,
+                "close": 173.0,
+                "volume": 50_000_000,
+            },
         ]
         mock_result = _make_mock_result("AAPL", rows=rows)
         mock_yfinance_fetcher.fetch.return_value = [mock_result]
