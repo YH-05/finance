@@ -126,7 +126,7 @@ class TestYFDailyPriceRecord:
             fetched_at="2026-04-03T20:00:00",
         )
         assert record.symbol == "AAPL"
-        assert record.close == 173.0
+        assert record.close == pytest.approx(173.0)
         assert record.volume == 50_000_000
 
     def test_正常系_adjusted_closeがNoneでも生成できる(self) -> None:

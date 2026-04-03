@@ -43,9 +43,6 @@ from market.pipeline.constants import (
 from market.pipeline.errors import StorageError
 from utils_core.logging import get_logger
 
-if __name__ == "__main__":  # pragma: no cover
-    pass
-
 logger = get_logger(__name__)
 
 # ============================================================================

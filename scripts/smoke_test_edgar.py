@@ -346,7 +346,8 @@ def main() -> None:
                 spec.loader.exec_module(mod)
                 if hasattr(mod, "set_identity"):
                     mod.set_identity(identity)
-                    logger.debug("edgartools identity configured", identity=identity)
+                    masked = (identity.split()[0] + " ***") if identity else ""
+                    logger.debug("edgartools identity configured", identity=masked)
     except Exception:
         logger.debug("Could not configure edgartools identity", exc_info=True)
 

@@ -361,13 +361,13 @@ class SecEdgarCollector:
         records_upserted = 0
         errors: list[str] = []
 
-        Company = self._import_company()
+        company_cls = self._import_company()
 
         for form_type in filing_types:
             report_type = _FORM_TO_REPORT_TYPE.get(form_type, "other")
 
             try:
-                company = Company(symbol)
+                company = company_cls(symbol)
                 filings = company.get_filings(form=form_type)
             except Exception as exc:
                 msg = f"Failed to get {form_type} filings for {symbol}: {exc}"

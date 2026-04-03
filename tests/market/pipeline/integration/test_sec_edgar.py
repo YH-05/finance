@@ -22,9 +22,12 @@ requests. Tests use filing_types=["10-K"] to minimize API calls.
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 from market.pipeline.collector_sec import SecEdgarCollector
 from market.pipeline.storage_sec import SecEdgarStorage
@@ -101,9 +104,11 @@ class TestSecEdgarIntegration:
                 assert rec["fiscal_date_ending"], (
                     "fiscal_date_ending should not be empty"
                 )
-                assert rec["statement_type"] in ("income", "balance_sheet", "cash_flow"), (
-                    f"Unexpected statement_type: {rec['statement_type']}"
-                )
+                assert rec["statement_type"] in (
+                    "income",
+                    "balance_sheet",
+                    "cash_flow",
+                ), f"Unexpected statement_type: {rec['statement_type']}"
                 assert rec["report_type"] in ("annual", "quarterly", "other"), (
                     f"Unexpected report_type: {rec['report_type']}"
                 )

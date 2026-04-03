@@ -26,10 +26,12 @@ temporary SQLite files managed by pytest's ``tmp_path`` fixture.
 from __future__ import annotations
 
 import os
-from pathlib import Path
-from typing import Generator
+from typing import TYPE_CHECKING, Generator
 
 import pytest
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 from market.pipeline.models import PipelineResult
 from market.pipeline.pipeline import EarningsPipeline
