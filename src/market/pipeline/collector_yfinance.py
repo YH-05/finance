@@ -129,9 +129,10 @@ def _result_to_records(
 
     for idx, row in df.iterrows():
         # Index is a DatetimeIndex; convert to ISO date string.
+        # AIDEV-NOTE: Intentional skip for graceful degradation on malformed index values.
         try:
             row_date = pd.Timestamp(str(idx)).date().isoformat()
-        except Exception:
+        except Exception:  # nosec B112
             continue
 
         record = _to_yf_daily_record(symbol, row_date, row, fetched_at)

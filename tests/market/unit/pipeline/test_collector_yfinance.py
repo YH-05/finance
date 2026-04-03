@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 from datetime import date, timedelta
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
 
 from market.pipeline.collector_yfinance import PERIOD_TO_DAYS, YFinanceCollector
-
 
 # ---------------------------------------------------------------------------
 # PERIOD_TO_DAYS
@@ -56,8 +54,12 @@ class TestPeriodToDays:
 class TestYFinanceCollectorInit:
     def test_正常系_デフォルト引数で初期化できる(self) -> None:
         with (
-            patch("market.pipeline.collector_yfinance.YFinanceFetcher") as mock_fetcher_cls,
-            patch("market.pipeline.collector_yfinance.YFinanceStorage") as mock_storage_cls,
+            patch(
+                "market.pipeline.collector_yfinance.YFinanceFetcher"
+            ) as mock_fetcher_cls,
+            patch(
+                "market.pipeline.collector_yfinance.YFinanceStorage"
+            ) as mock_storage_cls,
         ):
             mock_fetcher_cls.return_value = MagicMock()
             mock_storage_cls.return_value = MagicMock()
@@ -114,7 +116,7 @@ class TestCollectDaily:
         return collector, mock_fetcher, mock_storage
 
     def test_正常系_最新日付がNoneのときperiodから開始日を計算する(self) -> None:
-        collector, mock_fetcher, mock_storage = self._make_collector(latest_date=None)
+        collector, mock_fetcher, _mock_storage = self._make_collector(latest_date=None)
 
         collector.collect_daily("AAPL", period="1mo")
 
@@ -125,7 +127,9 @@ class TestCollectDaily:
 
     def test_正常系_最新日付がある場合翌日から取得する(self) -> None:
         latest = "2026-04-01"
-        collector, mock_fetcher, mock_storage = self._make_collector(latest_date=latest)
+        collector, mock_fetcher, _mock_storage = self._make_collector(
+            latest_date=latest
+        )
 
         collector.collect_daily("AAPL", period="1y")
 
@@ -137,7 +141,7 @@ class TestCollectDaily:
         assert expected_start in actual_start
 
     def test_正常系_FetchOptionsにシンボルが含まれる(self) -> None:
-        collector, mock_fetcher, mock_storage = self._make_collector()
+        collector, mock_fetcher, _mock_storage = self._make_collector()
 
         collector.collect_daily("MSFT")
 
@@ -146,7 +150,7 @@ class TestCollectDaily:
         assert "MSFT" in options.symbols
 
     def test_正常系_storageのupsertが呼ばれる(self) -> None:
-        collector, mock_fetcher, mock_storage = self._make_collector()
+        collector, _mock_fetcher, mock_storage = self._make_collector()
 
         collector.collect_daily("AAPL")
 
@@ -169,7 +173,7 @@ class TestCollectDaily:
         mock_storage.upsert.assert_not_called()
 
     def test_正常系_デフォルトperiodは1y(self) -> None:
-        collector, mock_fetcher, mock_storage = self._make_collector(latest_date=None)
+        collector, mock_fetcher, _mock_storage = self._make_collector(latest_date=None)
 
         collector.collect_daily("AAPL")
 
@@ -201,7 +205,7 @@ class TestCollectBatch:
         return collector, mock_fetcher, mock_storage
 
     def test_正常系_複数シンボルをバルク取得する(self) -> None:
-        collector, mock_fetcher, mock_storage = self._make_collector()
+        collector, mock_fetcher, _mock_storage = self._make_collector()
 
         collector.collect_batch(["AAPL", "MSFT"])
 
@@ -211,7 +215,7 @@ class TestCollectBatch:
 
     def test_正常系_fetchが1回呼ばれる(self) -> None:
         """Batch should use a single fetch call, not one per symbol."""
-        collector, mock_fetcher, mock_storage = self._make_collector()
+        collector, mock_fetcher, _mock_storage = self._make_collector()
 
         collector.collect_batch(["AAPL", "MSFT", "GOOGL"])
 
@@ -227,7 +231,7 @@ class TestCollectBatch:
         mock_fetcher.fetch.assert_not_called()
 
     def test_正常系_各シンボルのupsertが呼ばれる(self) -> None:
-        collector, mock_fetcher, mock_storage = self._make_collector()
+        collector, _mock_fetcher, mock_storage = self._make_collector()
 
         collector.collect_batch(["AAPL", "MSFT"])
 

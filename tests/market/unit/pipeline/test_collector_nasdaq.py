@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import date, timedelta
-from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
@@ -12,7 +11,7 @@ import pytest
 from market.pipeline.collector_nasdaq import NasdaqCalendarCollector
 
 if TYPE_CHECKING:
-    pass
+    from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Helpers / stubs
@@ -21,7 +20,9 @@ if TYPE_CHECKING:
 _QUEUE_SOURCES = ["av_earnings", "av_overview", "sec_edgar", "yfinance"]
 
 
-def _make_earnings_record(symbol: str = "AAPL", date_str: str = "01/30/2026") -> MagicMock:
+def _make_earnings_record(
+    symbol: str = "AAPL", date_str: str = "01/30/2026"
+) -> MagicMock:
     """Build a minimal EarningsRecord mock."""
     rec = MagicMock()
     rec.symbol = symbol
@@ -42,7 +43,9 @@ class TestNasdaqCalendarCollectorInit:
         """Collector should initialize without arguments (DI or default)."""
         with (
             patch("market.pipeline.collector_nasdaq.NasdaqClient") as mock_client_cls,
-            patch("market.pipeline.collector_nasdaq.NasdaqCalendarStorage") as mock_storage_cls,
+            patch(
+                "market.pipeline.collector_nasdaq.NasdaqCalendarStorage"
+            ) as mock_storage_cls,
             patch("market.pipeline.collector_nasdaq.CollectionQueue") as mock_queue_cls,
         ):
             mock_client_cls.return_value.__enter__ = lambda s: s
@@ -69,7 +72,9 @@ class TestNasdaqCalendarCollectorInit:
 
 
 class TestCollectDateRange:
-    def _make_collector(self) -> tuple[NasdaqCalendarCollector, MagicMock, MagicMock, MagicMock]:
+    def _make_collector(
+        self,
+    ) -> tuple[NasdaqCalendarCollector, MagicMock, MagicMock, MagicMock]:
         mock_client = MagicMock()
         mock_storage = MagicMock()
         mock_queue = MagicMock()
@@ -83,7 +88,7 @@ class TestCollectDateRange:
         return collector, mock_client, mock_storage, mock_queue
 
     def test_正常系_単一日付でclient呼び出し(self) -> None:
-        collector, mock_client, mock_storage, mock_queue = self._make_collector()
+        collector, mock_client, _mock_storage, _mock_queue = self._make_collector()
         mock_client.get_earnings_calendar.return_value = [_make_earnings_record()]
 
         collector.collect_date_range("2026-01-30", "2026-01-30")
@@ -91,7 +96,7 @@ class TestCollectDateRange:
         mock_client.get_earnings_calendar.assert_called_once_with("2026-01-30")
 
     def test_正常系_複数日付でclientを複数回呼び出し(self) -> None:
-        collector, mock_client, mock_storage, mock_queue = self._make_collector()
+        collector, mock_client, _mock_storage, _mock_queue = self._make_collector()
         mock_client.get_earnings_calendar.return_value = []
 
         collector.collect_date_range("2026-01-30", "2026-02-01")
@@ -109,18 +114,20 @@ class TestCollectDateRange:
         assert mock_queue.enqueue.call_count >= 1
 
     def test_正常系_enqueueに指定ソースを渡す(self) -> None:
-        collector, mock_client, mock_storage, mock_queue = self._make_collector()
+        collector, mock_client, _mock_storage, mock_queue = self._make_collector()
         mock_client.get_earnings_calendar.return_value = [_make_earnings_record("AAPL")]
 
         collector.collect_date_range("2026-01-30", "2026-01-30")
 
         call_args = mock_queue.enqueue.call_args
         # sources is 2nd positional arg or keyword
-        passed_sources = call_args[0][2] if len(call_args[0]) > 2 else call_args[1].get("sources")
+        passed_sources = (
+            call_args[0][2] if len(call_args[0]) > 2 else call_args[1].get("sources")
+        )
         assert set(passed_sources) == set(_QUEUE_SOURCES)
 
     def test_正常系_結果を返す(self) -> None:
-        collector, mock_client, mock_storage, mock_queue = self._make_collector()
+        collector, mock_client, _mock_storage, _mock_queue = self._make_collector()
         mock_client.get_earnings_calendar.return_value = [_make_earnings_record("AAPL")]
 
         result = collector.collect_date_range("2026-01-30", "2026-01-30")
@@ -144,7 +151,9 @@ class TestCollectDateRange:
 
 
 class TestCollectRecent:
-    def _make_collector(self) -> tuple[NasdaqCalendarCollector, MagicMock, MagicMock, MagicMock]:
+    def _make_collector(
+        self,
+    ) -> tuple[NasdaqCalendarCollector, MagicMock, MagicMock, MagicMock]:
         mock_client = MagicMock()
         mock_storage = MagicMock()
         mock_queue = MagicMock()
@@ -159,7 +168,7 @@ class TestCollectRecent:
 
     def test_正常系_デフォルトで14日分呼び出す(self) -> None:
         """days_back=7 + days_forward=7 = 15 days including today."""
-        collector, mock_client, mock_storage, mock_queue = self._make_collector()
+        collector, mock_client, _mock_storage, _mock_queue = self._make_collector()
         mock_client.get_earnings_calendar.return_value = []
 
         collector.collect_recent()
@@ -168,7 +177,7 @@ class TestCollectRecent:
         assert mock_client.get_earnings_calendar.call_count == 15
 
     def test_正常系_days_back_と_days_forward_でウィンドウを制御できる(self) -> None:
-        collector, mock_client, mock_storage, mock_queue = self._make_collector()
+        collector, mock_client, _mock_storage, _mock_queue = self._make_collector()
         mock_client.get_earnings_calendar.return_value = []
 
         collector.collect_recent(days_back=3, days_forward=3)
@@ -177,7 +186,7 @@ class TestCollectRecent:
 
     def test_正常系_collect_date_rangeを内部的に呼び出す(self) -> None:
         """collect_recent delegates to collect_date_range."""
-        collector, mock_client, mock_storage, mock_queue = self._make_collector()
+        collector, mock_client, _mock_storage, _mock_queue = self._make_collector()
         mock_client.get_earnings_calendar.return_value = []
 
         # Should not raise

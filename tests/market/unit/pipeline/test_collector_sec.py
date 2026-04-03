@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from market.pipeline.collector_sec import CF_LABEL_FALLBACK, SecEdgarCollector
-
 
 # ---------------------------------------------------------------------------
 # CF_LABEL_FALLBACK
@@ -125,7 +123,9 @@ class TestCollectSymbol:
 
         collector = SecEdgarCollector(storage=mock_storage)
 
-        with patch.object(collector, "_import_company", return_value=lambda sym: company_mock):
+        with patch.object(
+            collector, "_import_company", return_value=lambda sym: company_mock
+        ):
             collector.collect_symbol("AAPL", filing_types=["10-K"])
 
         mock_storage.upsert.assert_called()
@@ -137,13 +137,17 @@ class TestCollectSymbol:
         company_mock = MagicMock()
         company_mock.get_filings.return_value.__iter__ = lambda s: iter([])
 
-        with patch.object(collector, "_import_company", return_value=lambda sym: company_mock):
+        with patch.object(
+            collector, "_import_company", return_value=lambda sym: company_mock
+        ):
             collector.collect_symbol("AAPL")
 
         # get_filings should be called for both 10-K and 10-Q
         assert company_mock.get_filings.call_count == 2
         call_args_list = company_mock.get_filings.call_args_list
-        form_types_called = {call[1].get("form") or call[0][0] for call in call_args_list}
+        form_types_called = {
+            call[1].get("form") or call[0][0] for call in call_args_list
+        }
         assert "10-K" in form_types_called
         assert "10-Q" in form_types_called
 
@@ -154,7 +158,9 @@ class TestCollectSymbol:
         company_mock = MagicMock()
         company_mock.get_filings.side_effect = Exception("Symbol not found")
 
-        with patch.object(collector, "_import_company", return_value=lambda sym: company_mock):
+        with patch.object(
+            collector, "_import_company", return_value=lambda sym: company_mock
+        ):
             # Should not raise; errors should be caught
             result = collector.collect_symbol("INVALID_SYMBOL_XYZ")
 
