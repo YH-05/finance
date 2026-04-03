@@ -44,7 +44,6 @@ import importlib.util
 import sys
 import time
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -183,21 +182,19 @@ def _import_edgartools_company() -> Any:
 
     Notes
     -----
-    Temporarily prepends the edgartools site-packages parent directory to
-    ``sys.path`` during the import so that ``edgar.config``, ``edgar.core``,
-    and other edgartools submodules resolve to site-packages rather than the
-    project's ``src/edgar`` package.
+    The project has ``src/edgar`` on ``PYTHONPATH``, which collides with
+    the edgartools library that also installs as ``edgar`` in site-packages.
+    In CI, other tests may already have loaded ``edgar.config`` from
+    ``src/edgar/config.py`` into ``sys.modules``.  When edgartools'
+    ``edgar.attachments`` then does ``from edgar.config import SEC_BASE_URL``,
+    Python finds the cached ``src/edgar/config.py`` (which lacks that symbol)
+    and raises ``ImportError``.
 
-    Problem background: ``src/edgar/config.py`` (project) and
-    ``site-packages/edgar/config.py`` (edgartools) share the same dotted
-    module name.  In CI the project's ``src/`` is on ``sys.path`` and
-    ``edgar.config`` resolves to the project file, which lacks ``SEC_BASE_URL``
-    and other edgartools constants.
-
-    Solution: Put the site-packages directory that contains edgartools at the
-    front of ``sys.path`` before calling ``exec_module``.  After the load
-    completes, ``sys.modules`` caches all submodules from the correct source,
-    and ``sys.path`` is restored to its original order.
+    Solution: Temporarily stash all existing ``edgar.*`` entries from
+    ``sys.modules``, register the site-packages ``edgar`` module, execute
+    it (so all sub-imports fill ``sys.modules`` with site-packages versions),
+    extract the Company class, then restore the original ``sys.modules``
+    state.  The Company class object itself is valid after restore.
     """
     global _EDGARTOOLS_COMPANY_CACHE
 
@@ -215,41 +212,41 @@ def _import_edgartools_company() -> Any:
         msg = "Failed to load edgartools module: loader is None"
         raise CollectorError(msg)
 
-    # Identify the site-packages directory that contains edgartools.
-    # spec.origin is ".../site-packages/edgar/__init__.py"
-    # → parent dir is ".../site-packages/edgar"
-    # → grandparent is ".../site-packages"  ← this goes to front of sys.path
-    edgar_site_pkg_dir = str(Path(spec.origin).parent.parent)
+    # AIDEV-NOTE: Two-phase sys.modules swap to prevent namespace collision.
+    #
+    # Step 1: Stash all existing ``edgar.*`` entries (project's src/edgar)
+    # so that edgartools sub-imports don't accidentally find the wrong module.
+    stashed: dict[str, Any] = {
+        k: v for k, v in sys.modules.items() if k == "edgar" or k.startswith("edgar.")
+    }
+    # Remove the stashed entries from sys.modules temporarily.
+    for key in stashed:
+        del sys.modules[key]
 
-    # AIDEV-NOTE: Temporarily prepend the correct site-packages directory so
-    # that all ``edgar.*`` absolute imports inside edgartools resolve to
-    # site-packages rather than the project's ``src/edgar``.  After the load,
-    # ``sys.path`` is restored and ``sys.modules`` caches keep the right versions.
-    original_sys_path = sys.path[:]
-    # Remove any existing edgar-related path entries that conflict, then
-    # prepend the correct site-packages path.
     try:
-        if edgar_site_pkg_dir not in sys.path:
-            sys.path.insert(0, edgar_site_pkg_dir)
-        else:
-            # Move it to the front so it takes priority
-            sys.path.remove(edgar_site_pkg_dir)
-            sys.path.insert(0, edgar_site_pkg_dir)
-
+        # Step 2: Register the site-packages edgar module and execute it.
+        # Sub-imports (edgar.config, edgar._filings, etc.) will now be loaded
+        # from site-packages because sys.modules["edgar"] points there.
         mod = importlib.util.module_from_spec(spec)
-        # Register in sys.modules BEFORE exec_module so that submodule
-        # imports inside edgar.__init__ (e.g. ``edgar._filings``) can find
-        # their parent package correctly.
         sys.modules["edgar"] = mod
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
 
-    finally:
-        sys.path[:] = original_sys_path
+        company_cls = getattr(mod, "Company", None)
+        if company_cls is None:
+            msg = "edgartools module does not export 'Company' class"
+            raise CollectorError(msg)
 
-    company_cls = getattr(mod, "Company", None)
-    if company_cls is None:
-        msg = "edgartools module does not export 'Company' class"
-        raise CollectorError(msg)
+    finally:
+        # Step 3: Restore the original edgar.* entries so that the rest of
+        # the codebase (src/edgar) continues to work normally.
+        # Remove all edgar.* entries that were just created by exec_module.
+        new_edgar_keys = [
+            k for k in sys.modules if k == "edgar" or k.startswith("edgar.")
+        ]
+        for key in new_edgar_keys:
+            del sys.modules[key]
+        # Restore the original project edgar.* entries.
+        sys.modules.update(stashed)
 
     _EDGARTOOLS_COMPANY_CACHE = company_cls
     logger.debug("edgartools Company class loaded from site-packages")
