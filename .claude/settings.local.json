@@ -115,7 +115,8 @@
       "WebFetch(domain:quantpedia.com)",
       "WebFetch(domain:fredaccount.stlouisfed.org)",
       "WebFetch(domain:www.frbsf.org)",
-      "WebFetch(domain:www.alphavantage.co)"
+      "WebFetch(domain:www.alphavantage.co)",
+      "mcp__sequential-thinking__sequentialthinking"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",

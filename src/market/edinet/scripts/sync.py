@@ -287,7 +287,7 @@ def _run_daily(syncer: EdinetSyncer) -> int:
     Returns
     -------
     int
-        Exit code
+        Exit code (0 for success or rate-limit stop, 1 for real failure)
     """
     logger.info("Starting daily sync")
     results = syncer.run_daily()
@@ -302,6 +302,20 @@ def _run_daily(syncer: EdinetSyncer) -> int:
         print(
             f"  [{status_str}] {result.phase}: {result.companies_processed} processed"
         )
+        if result.errors:
+            for error in result.errors:
+                print(f"         Error: {error}")
+        if result.stopped_reason:
+            print(f"         Stopped: {result.stopped_reason}")
+
+    # Rate-limit stop is expected during initial sync (95 calls/day limit).
+    # Treat it as success so launchd doesn't report spurious failures.
+    failed = [r for r in results if not r.success]
+    if failed and all(
+        r.stopped_reason and r.stopped_reason.startswith("rate_limit")
+        for r in failed
+    ):
+        return 0
 
     return 0 if all(r.success for r in results) else 1
 

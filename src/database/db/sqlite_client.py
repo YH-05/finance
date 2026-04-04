@@ -28,10 +28,25 @@ class SQLiteClient:
     ...     result = cursor.fetchone()
     """
 
-    def __init__(self, db_path: Path) -> None:
+    def __init__(self, db_path: Path, *, timeout: float = 30.0) -> None:
         self._db_path = db_path
+        self._timeout = timeout
         self._db_path.parent.mkdir(parents=True, exist_ok=True)
+        self._enable_wal()
         logger.debug("SQLiteClient initialized", db_path=str(db_path))
+
+    def _enable_wal(self) -> None:
+        """Enable WAL journal mode for better concurrency."""
+        try:
+            conn = sqlite3.connect(self._db_path, timeout=self._timeout)
+            current = conn.execute("PRAGMA journal_mode").fetchone()
+            if current and current[0].lower() != "wal":
+                conn.execute("PRAGMA journal_mode=WAL")
+                conn.execute("PRAGMA synchronous=NORMAL")
+                logger.info("WAL mode enabled", db_path=str(self._db_path))
+            conn.close()
+        except sqlite3.Error as e:
+            logger.warning("Failed to enable WAL mode", error=str(e))
 
     @property
     def path(self) -> Path:
@@ -53,7 +68,7 @@ class SQLiteClient:
             If database operation fails
         """
         logger.debug("Opening SQLite connection", db_path=str(self._db_path))
-        conn = sqlite3.connect(self._db_path)
+        conn = sqlite3.connect(self._db_path, timeout=self._timeout)
         conn.row_factory = sqlite3.Row
         try:
             yield conn
