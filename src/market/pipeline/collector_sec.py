@@ -285,10 +285,55 @@ class SecEdgarCollector:
     def __init__(self, storage: SecEdgarStorage | None = None) -> None:
         """Initialize collector with optional DI parameters."""
         self._storage = storage or SecEdgarStorage()
+        self._configure_identity()
         logger.debug(
             "SecEdgarCollector initialized",
             storage_type=type(self._storage).__name__,
         )
+
+    @staticmethod
+    def _configure_identity() -> None:
+        """Configure edgartools identity from ``SEC_EDGAR_IDENTITY`` env var.
+
+        edgartools requires ``set_identity("Name email")`` before making
+        SEC EDGAR API requests. This reads the identity from the environment
+        and applies it via the project's ``edgar.config.set_identity()``.
+        """
+        import os
+
+        identity = os.environ.get("SEC_EDGAR_IDENTITY", "").strip()
+        if not identity:
+            logger.warning("SEC_EDGAR_IDENTITY not set; SEC EDGAR requests will fail")
+            return
+
+        # Use the same PathFinder technique as _import_edgartools_company()
+        # to reach edgartools' set_identity (avoids src/edgar collision).
+        site_packages_paths = [p for p in sys.path if "site-packages" in p]
+        spec = importlib.machinery.PathFinder.find_spec("edgar", site_packages_paths)
+        if spec is None or spec.loader is None:
+            logger.warning("edgartools not found in site-packages")
+            return
+
+        stashed = {
+            k: v for k, v in sys.modules.items()
+            if k == "edgar" or k.startswith("edgar.")
+        }
+        for key in stashed:
+            del sys.modules[key]
+        try:
+            mod = importlib.util.module_from_spec(spec)
+            sys.modules["edgar"] = mod
+            spec.loader.exec_module(mod)
+            if hasattr(mod, "set_identity"):
+                mod.set_identity(identity)
+                logger.debug("SEC EDGAR identity configured via edgartools")
+        finally:
+            new_keys = [
+                k for k in sys.modules if k == "edgar" or k.startswith("edgar.")
+            ]
+            for key in new_keys:
+                del sys.modules[key]
+            sys.modules.update(stashed)
 
     # ------------------------------------------------------------------
     # importlib helper
@@ -323,15 +368,10 @@ class SecEdgarCollector:
     ) -> dict[str, Any]:
         """Collect financial statement data for a single ticker symbol.
 
-        For each filing type in ``filing_types``, fetches filings from
-        edgartools ``Company.get_filings(form=filing_type)``, extracts
-        financials via ``.obj().financials.to_dataframe()``, applies
-        ``dimension==False & abstract==False`` filtering, supplements
-        missing ``standard_concept`` via ``CF_LABEL_FALLBACK``, maps to
+        For each filing type in ``filing_types``, fetches the most recent
+        filing from edgartools, extracts key financial metrics via the
+        ``Financials.get_*()`` helper methods, maps to a single
         ``FinancialStatementRecord``, and upserts via storage.
-
-        Applies ``time.sleep(0.1)`` between filing fetches to respect the
-        SEC 10 req/sec rate limit.
 
         Parameters
         ----------
@@ -347,19 +387,13 @@ class SecEdgarCollector:
             - ``"symbol"``: the ticker symbol
             - ``"records_upserted"``: total records persisted
             - ``"errors"``: list of error strings
-
-        Examples
-        --------
-        >>> collector = SecEdgarCollector(storage=mock_storage)
-        >>> result = collector.collect_symbol("AAPL")
-        >>> result["symbol"]
-        'AAPL'
         """
         if filing_types is None:
             filing_types = _DEFAULT_FILING_TYPES
 
         records_upserted = 0
         errors: list[str] = []
+        fetched_at = datetime.now(UTC).isoformat()
 
         company_cls = self._import_company()
 
@@ -375,38 +409,55 @@ class SecEdgarCollector:
                 errors.append(msg)
                 continue
 
-            for filing in filings:
-                try:
-                    obj = filing.obj()
-                    financials = obj.financials
-                    df: pd.DataFrame = financials.to_dataframe()
+            if not filings:
+                continue
 
-                    if df.empty:
-                        continue
+            # Process the most recent filing only
+            filing = filings[0]
+            try:
+                obj = filing.obj()
+                financials = obj.financials
 
-                    # Apply dimension==False & abstract==False filter
-                    working: pd.DataFrame = df.copy()
-                    if "dimension" in working.columns:
-                        keep = working["dimension"].eq(False)
-                        working = working.loc[keep].reset_index(drop=True)
-                    if "abstract" in working.columns:
-                        keep2 = working["abstract"].eq(False)
-                        working = working.loc[keep2].reset_index(drop=True)
-                    df = working
+                # Extract fiscal date from the filing
+                fiscal_date = str(getattr(filing, "period_of_report", "")
+                                  or getattr(filing, "filing_date", ""))
 
-                    converted = self._df_to_records(df, symbol, form_type, report_type)
-                    if converted:
-                        upserted = self._storage.upsert(converted)
-                        records_upserted += upserted
+                # Use get_* helpers for robust extraction
+                record = FinancialStatementRecord(
+                    symbol=symbol,
+                    fiscal_date_ending=fiscal_date,
+                    statement_type="consolidated",
+                    report_type=report_type,
+                    revenue=_safe_float(financials.get_revenue()),
+                    net_income=_safe_float(financials.get_net_income()),
+                    total_assets=_safe_float(financials.get_total_assets()),
+                    total_liabilities=_safe_float(financials.get_total_liabilities()),
+                    operating_cashflow=_safe_float(financials.get_operating_cash_flow()),
+                    fetched_at=fetched_at,
+                )
 
-                    # Respect SEC 10 req/sec rate limit
-                    time.sleep(_SEC_RATE_LIMIT_SLEEP)
+                # Only upsert if at least one metric was extracted
+                has_data = any(
+                    v is not None
+                    for v in [
+                        record.revenue,
+                        record.net_income,
+                        record.total_assets,
+                        record.total_liabilities,
+                        record.operating_cashflow,
+                    ]
+                )
+                if has_data:
+                    upserted = self._storage.upsert([record])
+                    records_upserted += upserted
 
-                except Exception as exc:
-                    msg = f"Failed to process {form_type} filing for {symbol}: {exc}"
-                    logger.warning(msg, symbol=symbol, form=form_type, error=str(exc))
-                    errors.append(msg)
-                    continue
+                # Respect SEC 10 req/sec rate limit
+                time.sleep(_SEC_RATE_LIMIT_SLEEP)
+
+            except Exception as exc:
+                msg = f"Failed to process {form_type} filing for {symbol}: {exc}"
+                logger.warning(msg, symbol=symbol, form=form_type, error=str(exc))
+                errors.append(msg)
 
         logger.info(
             "SEC EDGAR collection completed",

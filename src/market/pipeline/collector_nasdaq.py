@@ -35,6 +35,9 @@ from __future__ import annotations
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
+# Maximum priority value for earnings happening today.
+_MAX_PRIORITY: int = 30
+
 from market.nasdaq.client import NasdaqClient
 from market.pipeline.errors import CollectorError
 from market.pipeline.models import EarningsCalendarRecord
@@ -79,6 +82,36 @@ def _normalize_report_time(time_str: str | None) -> str | None:
     if time_str is None:
         return None
     return _TIME_MAP.get(time_str)
+
+
+def _compute_priority(report_date: str) -> int:
+    """Compute queue priority based on proximity to today.
+
+    Closer earnings dates get higher priority (max ``_MAX_PRIORITY``).
+    Both future and past dates use absolute distance so that recent
+    actual results are also prioritised.
+
+    Parameters
+    ----------
+    report_date : str
+        ISO 8601 date string (e.g. ``"2026-04-10"``).
+
+    Returns
+    -------
+    int
+        Priority value in ``[0, _MAX_PRIORITY]``.
+
+    Examples
+    --------
+    >>> _compute_priority(date.today().isoformat())
+    30
+    """
+    try:
+        target = date.fromisoformat(report_date)
+    except ValueError:
+        return 0
+    days_away = abs((target - date.today()).days)
+    return max(0, _MAX_PRIORITY - days_away)
 
 
 def _normalize_fiscal_quarter(fq: str | None) -> str | None:
@@ -247,10 +280,12 @@ class NasdaqCalendarCollector:
                 records_upserted += upserted
 
                 for record in calendar_records:
+                    priority = _compute_priority(record.report_date)
                     enqueued = self._queue.enqueue(
                         record.symbol,
                         record.report_date,
                         QUEUE_SOURCES,
+                        priority=priority,
                     )
                     symbols_enqueued += enqueued
 

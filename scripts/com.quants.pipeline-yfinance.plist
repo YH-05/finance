@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+Phase 4: Yahoo Finance 日次株価収集
+====================================
+毎日 2:00 にキューから pending の銘柄の日次 OHLCV を取得する。
+AV/SEC EDGAR とは独立して並列実行される。
+
+インストール:
+  $ cp scripts/com.quants.pipeline-yfinance.plist ~/Library/LaunchAgents/
+  $ launchctl load ~/Library/LaunchAgents/com.quants.pipeline-yfinance.plist
+
+手動実行: $ launchctl start com.quants.pipeline-yfinance
+ログ:     $ tail -f ~/Library/Logs/quants/pipeline-yfinance.log
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quants.pipeline-yfinance</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/yuki/.local/bin/uv</string>
+        <string>run</string>
+        <string>--env-file</string>
+        <string>/Users/yuki/Desktop/quants/.env</string>
+        <string>python</string>
+        <string>-u</string>
+        <string>-m</string>
+        <string>market.pipeline</string>
+        <string>--phase</string>
+        <string>4</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yuki/Desktop/quants</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>2</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/yuki/Library/Logs/quants/pipeline-yfinance.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yuki/Library/Logs/quants/pipeline-yfinance-error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/yuki/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
