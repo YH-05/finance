@@ -111,7 +111,9 @@ class TestAllExports:
         expected = {
             "ALLOWED_HOSTS",
             "ALPHA_VANTAGE_API_KEY_ENV",
+            "ALPHA_VANTAGE_API_KEYS_ENV",
             "BASE_URL",
+            "DEFAULT_DAILY_LIMIT_PER_KEY",
             "DEFAULT_DELAY_JITTER",
             "DEFAULT_POLITE_DELAY",
             "DEFAULT_REQUESTS_PER_HOUR",
