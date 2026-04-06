@@ -29,6 +29,7 @@ from market.alphavantage.errors import (
     AlphaVantageAuthError,
     AlphaVantageRateLimitError,
 )
+from market.alphavantage.key_rotator import KeyRotator
 from market.alphavantage.session import AlphaVantageSession
 from market.alphavantage.types import AlphaVantageConfig, RetryConfig
 
@@ -635,3 +636,107 @@ class TestJSONDecodeFailure:
                 # _handle_response_body should silently return when JSON parsing fails
                 response = session.get(_AV_URL)
                 assert response.status_code == 200
+
+
+# =============================================================================
+# TestKeyRotatorIntegration
+# =============================================================================
+
+
+class TestKeyRotatorIntegration:
+    """Tests for KeyRotator DI in AlphaVantageSession."""
+
+    def test_正常系_key_rotator指定時にnext_keyが呼ばれる(
+        self,
+        zero_delay_config: AlphaVantageConfig,
+    ) -> None:
+        """When key_rotator is provided, next_key() is called to resolve API key."""
+        rotator = KeyRotator(
+            keys=["rotator-key-1", "rotator-key-2"], daily_limit_per_key=100
+        )
+        mock_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}},
+        )
+
+        # Use a config with no api_key to ensure rotator is the only key source
+        config = AlphaVantageConfig(
+            api_key="",
+            polite_delay=0.0,
+            delay_jitter=0.0,
+            timeout=5.0,
+        )
+
+        with AlphaVantageSession(config=config, key_rotator=rotator) as session:  # noqa: SIM117
+            with patch.object(
+                session._client, "get", return_value=mock_response
+            ) as mock_get:
+                session.get(
+                    _AV_URL, params={"function": "TIME_SERIES_DAILY", "symbol": "AAPL"}
+                )
+
+                call_kwargs = mock_get.call_args
+                actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
+                    "params"
+                )
+                # The API key injected into the request must come from the rotator
+                assert actual_params["apikey"] == "rotator-key-1"
+
+    def test_正常系_key_rotatorがNoneで既存動作と完全互換(
+        self,
+        zero_delay_config: AlphaVantageConfig,
+    ) -> None:
+        """When key_rotator=None, session behaves identically to the original implementation."""
+        mock_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}},
+        )
+
+        # key_rotator not passed → should fall back to config.api_key
+        with AlphaVantageSession(config=zero_delay_config, key_rotator=None) as session:  # noqa: SIM117
+            with patch.object(
+                session._client, "get", return_value=mock_response
+            ) as mock_get:
+                session.get(_AV_URL, params={"function": "TIME_SERIES_DAILY"})
+
+                call_kwargs = mock_get.call_args
+                actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
+                    "params"
+                )
+                assert actual_params["apikey"] == "test-api-key"
+
+    def test_正常系_レートリミットエラー時にmark_rate_limitedが呼ばれる(
+        self,
+        zero_delay_config: AlphaVantageConfig,
+        retry_config: RetryConfig,
+    ) -> None:
+        """On AlphaVantageRateLimitError, mark_rate_limited() is called on the rotator."""
+        rotator = MagicMock(spec=KeyRotator)
+        rotator.next_key.return_value = "mock-key"
+
+        rate_limit_response = _make_mock_response(
+            status_code=429,
+            text="Rate limited",
+            headers={"Retry-After": "1"},
+        )
+        ok_response = _make_mock_response(json_data={"Meta Data": {}})
+
+        config = AlphaVantageConfig(
+            api_key="",
+            polite_delay=0.0,
+            delay_jitter=0.0,
+            timeout=5.0,
+        )
+
+        with (
+            AlphaVantageSession(
+                config=config, retry_config=retry_config, key_rotator=rotator
+            ) as session,
+            patch.object(
+                session._client,
+                "get",
+                side_effect=[rate_limit_response, ok_response],
+            ),
+        ):
+            session.get_with_retry(_AV_URL)
+
+            # mark_rate_limited() must have been called exactly once after the 429
+            rotator.mark_rate_limited.assert_called_once()

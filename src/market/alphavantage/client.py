@@ -37,6 +37,8 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from market.alphavantage.key_rotator import KeyRotator
+
 import pandas as pd
 
 from market.alphavantage.cache import (
@@ -116,6 +118,10 @@ class AlphaVantageClient:
         Retry configuration. If ``None``, defaults are used.
     cache : SQLiteCache | None
         Cache instance. If ``None``, a default persistent cache is created.
+    key_rotator : KeyRotator | None
+        Optional key rotator for automatic API key rotation across a pool of
+        free-tier keys.  Passed through to ``AlphaVantageSession``.
+        When ``None`` (default), the single-key behaviour is preserved.
 
     Examples
     --------
@@ -129,11 +135,19 @@ class AlphaVantageClient:
         config: AlphaVantageConfig | None = None,
         retry_config: RetryConfig | None = None,
         cache: SQLiteCache | None = None,
+        key_rotator: KeyRotator | None = None,
     ) -> None:
-        self._session = AlphaVantageSession(config=config, retry_config=retry_config)
+        self._session = AlphaVantageSession(
+            config=config,
+            retry_config=retry_config,
+            key_rotator=key_rotator,
+        )
         self._cache: SQLiteCache = cache or get_alphavantage_cache()
 
-        logger.info("AlphaVantageClient initialized")
+        logger.info(
+            "AlphaVantageClient initialized",
+            key_rotator_enabled=key_rotator is not None,
+        )
 
     # =========================================================================
     # Context Manager
