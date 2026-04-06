@@ -67,6 +67,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from market.alphavantage.client import AlphaVantageClient
+    from market.alphavantage.key_rotator import KeyRotator
     from market.alphavantage.storage import AlphaVantageStorage
 
 logger = get_logger(__name__)
@@ -365,11 +366,12 @@ class AlphaVantageCollector:
         self,
         client: AlphaVantageClient | None = None,
         storage: AlphaVantageStorage | None = None,
+        key_rotator: KeyRotator | None = None,
     ) -> None:
         if client is None:
             from market.alphavantage.client import AlphaVantageClient
 
-            client = AlphaVantageClient()
+            client = AlphaVantageClient(key_rotator=key_rotator)
         if storage is None:
             from market.alphavantage.storage import get_alphavantage_storage
 
@@ -377,7 +379,10 @@ class AlphaVantageCollector:
 
         self._client = client
         self._storage = storage
-        logger.info("AlphaVantageCollector initialized")
+        logger.info(
+            "AlphaVantageCollector initialized",
+            key_rotator_enabled=key_rotator is not None,
+        )
 
     # ------------------------------------------------------------------
     # collect_daily

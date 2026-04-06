@@ -52,6 +52,8 @@ from utils_core.logging import get_logger
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from market.alphavantage.key_rotator import KeyRotator
+
 logger = get_logger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -75,10 +77,17 @@ class EarningsPipeline:
 
     Parameters
     ----------
-    av_daily_budget : int
+    av_daily_budget : int | None
         Total Alpha Vantage API calls allowed per day. Phase 2 splits this
         evenly: ``budget // 2`` calls each for ``av_earnings`` and
-        ``av_overview``. Default: 25 (Alpha Vantage free-tier limit).
+        ``av_overview``. When ``None`` (default), the value is automatically
+        derived from ``key_rotator.total_budget`` if a rotator is provided,
+        otherwise falls back to ``AV_DEFAULT_DAILY_BUDGET`` (25).
+    key_rotator : KeyRotator | None
+        Optional key rotator for automatic API key rotation. When provided,
+        ``av_daily_budget`` is auto-set to ``key_rotator.total_budget`` if
+        ``av_daily_budget`` is ``None``. The rotator is also injected into
+        ``AlphaVantageCollector`` during Phase 2.
     queue : CollectionQueue | None
         Shared collection queue. When ``None``, a default queue is created.
 
@@ -97,15 +106,25 @@ class EarningsPipeline:
 
     def __init__(
         self,
-        av_daily_budget: int = AV_DEFAULT_DAILY_BUDGET,
+        av_daily_budget: int | None = None,
         *,
+        key_rotator: KeyRotator | None = None,
         queue: CollectionQueue | None = None,
     ) -> None:
+        # Auto-compute budget: key_rotator.total_budget > explicit arg > default
+        if av_daily_budget is None:
+            av_daily_budget = (
+                key_rotator.total_budget
+                if key_rotator is not None
+                else AV_DEFAULT_DAILY_BUDGET
+            )
         self._av_daily_budget = av_daily_budget
+        self._key_rotator = key_rotator
         self._queue = queue or CollectionQueue()
         logger.info(
             "EarningsPipeline initialized",
             av_daily_budget=av_daily_budget,
+            key_rotator_enabled=key_rotator is not None,
         )
 
     # ------------------------------------------------------------------
@@ -309,12 +328,16 @@ class EarningsPipeline:
         fail_count = 0
         skip_count = 0
 
+        # Reset failed entries and boost their priority before fetching from queue
+        reset_count = self._queue.reset_failed(priority_boost=10)
+        logger.info("Phase 2 reset_failed completed", reset_count=reset_count)
+
         per_source_limit = max(1, self._av_daily_budget // 2)
 
         try:
             from market.alphavantage.collector import AlphaVantageCollector
 
-            av_collector = AlphaVantageCollector()
+            av_collector = AlphaVantageCollector(key_rotator=self._key_rotator)
 
             # Fetch pending entries for both sources
             earnings_entries = self._queue.get_pending(
