@@ -315,7 +315,8 @@ class SecEdgarCollector:
             return
 
         stashed = {
-            k: v for k, v in sys.modules.items()
+            k: v
+            for k, v in sys.modules.items()
             if k == "edgar" or k.startswith("edgar.")
         }
         for key in stashed:
@@ -419,8 +420,10 @@ class SecEdgarCollector:
                 financials = obj.financials
 
                 # Extract fiscal date from the filing
-                fiscal_date = str(getattr(filing, "period_of_report", "")
-                                  or getattr(filing, "filing_date", ""))
+                fiscal_date = str(
+                    getattr(filing, "period_of_report", "")
+                    or getattr(filing, "filing_date", "")
+                )
 
                 # Use get_* helpers for robust extraction
                 record = FinancialStatementRecord(
@@ -432,7 +435,9 @@ class SecEdgarCollector:
                     net_income=_safe_float(financials.get_net_income()),
                     total_assets=_safe_float(financials.get_total_assets()),
                     total_liabilities=_safe_float(financials.get_total_liabilities()),
-                    operating_cashflow=_safe_float(financials.get_operating_cash_flow()),
+                    operating_cashflow=_safe_float(
+                        financials.get_operating_cash_flow()
+                    ),
                     fetched_at=fetched_at,
                 )
 

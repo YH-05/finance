@@ -35,15 +35,15 @@ from __future__ import annotations
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
-# Maximum priority value for earnings happening today.
-_MAX_PRIORITY: int = 30
-
 from market.nasdaq.client import NasdaqClient
 from market.pipeline.errors import CollectorError
 from market.pipeline.models import EarningsCalendarRecord
 from market.pipeline.queue import CollectionQueue
 from market.pipeline.storage_nasdaq import NasdaqCalendarStorage
 from utils_core.logging import get_logger
+
+# Maximum priority value for earnings happening today.
+_MAX_PRIORITY: int = 30
 
 logger = get_logger(__name__)
 
