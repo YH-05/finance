@@ -255,7 +255,7 @@ class ETFComSession:
         )
 
         # 3. Execute request
-        response: curl_requests.Response = self._session.request(
+        response: curl_requests.Response = self._session.request(  # type: ignore[assignment]
             method,
             url,
             headers=headers,
