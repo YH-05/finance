@@ -245,7 +245,16 @@ def main(argv: list[str] | None = None) -> int:
     # --- --dry-run mode ---
     if args.dry_run:
         effective_phases = [p for p in [1, 2, 3, 4] if p not in (skip_phases or [])]
-        av_budget_display = args.av_budget if args.av_budget is not None else "auto"
+        # Show the resolved budget value (auto-computed from keys when not explicit)
+        if args.av_budget is not None:
+            av_budget_display: int | str = args.av_budget
+        else:
+            try:
+                from market.alphavantage.key_rotator import KeyRotator
+
+                av_budget_display = KeyRotator().total_budget
+            except Exception:
+                av_budget_display = "auto"
         print("Dry-run mode. Would execute:")
         print(f"  phases:       {effective_phases}")
         print(f"  days_back:    {args.days_back}")
