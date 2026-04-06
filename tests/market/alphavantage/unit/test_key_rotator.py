@@ -7,6 +7,7 @@ Unit tests for the KeyRotator class including:
 - Properties: key_count, total_budget, remaining_budget
 - Budget exhaustion raises AlphaVantageRateLimitError
 - Key values are not leaked in logs (only key_index)
+- Session + KeyRotator integration (real instances, HTTP transport patched only)
 
 Test TODO List:
 - [x] 環境変数 ALPHA_VANTAGE_API_KEYS からカンマ区切りで複数キー読み取り
@@ -19,14 +20,23 @@ Test TODO List:
 - [x] remaining_budget がリクエストごとに減少する
 - [x] mark_rate_limited() で即座に次キーへ切替
 - [x] 全キー使い切り時に AlphaVantageRateLimitError
+- [x] Session + KeyRotator 統合: 実インスタンスでキーがリクエストに注入される
+- [x] Session + KeyRotator 統合: 429応答でmark_rate_limitedが呼ばれ次のキーへ切替
+- [x] Session + KeyRotator 統合: 全キー枯渇時にAlphaVantageRateLimitErrorが伝播
+- [x] Session + KeyRotator 統合: キーローテーション後のremaining_budget反映
 """
 
 import os
+from typing import Any
+from unittest.mock import MagicMock, patch
 
+import httpx
 import pytest
 
 from market.alphavantage.errors import AlphaVantageRateLimitError
 from market.alphavantage.key_rotator import KeyRotator
+from market.alphavantage.session import AlphaVantageSession
+from market.alphavantage.types import AlphaVantageConfig, RetryConfig
 
 # =============================================================================
 # KeyRotator initialization tests
@@ -186,3 +196,195 @@ class TestKeyRotatorProperties:
         # remaining = total - k1_exhausted - 0 used on k2
         # k1 used = 25 (exhausted), k2 used = 0
         assert rotator.remaining_budget == 25
+
+
+# =============================================================================
+# KeyRotator + AlphaVantageSession integration tests (mock なし)
+# =============================================================================
+
+_AV_URL = "https://www.alphavantage.co/query"
+
+
+def _make_mock_response(
+    status_code: int = 200,
+    json_data: dict[str, Any] | None = None,
+    text: str = "",
+    headers: dict[str, str] | None = None,
+) -> MagicMock:
+    """Create a mock httpx.Response for session-level tests."""
+    resp = MagicMock(spec=httpx.Response)
+    resp.status_code = status_code
+    resp.json.return_value = json_data or {}
+    resp.text = text or str(json_data or {})
+    resp.headers = headers or {"Content-Type": "application/json"}
+    return resp
+
+
+def _zero_delay_config(api_key: str = "") -> AlphaVantageConfig:
+    """Return an AlphaVantageConfig with zero delays for fast tests."""
+    return AlphaVantageConfig(
+        api_key=api_key,
+        polite_delay=0.0,
+        delay_jitter=0.0,
+        timeout=5.0,
+    )
+
+
+def _zero_retry_config(max_attempts: int = 3) -> RetryConfig:
+    """Return a RetryConfig with zero delays for fast tests."""
+    return RetryConfig(
+        max_attempts=max_attempts,
+        initial_delay=0.0,
+        max_delay=0.0,
+        exponential_base=2.0,
+        jitter=False,
+    )
+
+
+class TestKeyRotatorSessionIntegration:
+    """Session + KeyRotator integration tests using real instances.
+
+    These tests instantiate both ``AlphaVantageSession`` and ``KeyRotator``
+    as real objects.  Only the underlying ``httpx.Client.get`` transport
+    is patched so that no actual network calls are made.
+    """
+
+    def test_正常系_実KeyRotatorのキーがリクエストに注入される(self) -> None:
+        """Real KeyRotator injects its first key into the HTTP request params."""
+        rotator = KeyRotator(keys=["real-key-1", "real-key-2"], daily_limit_per_key=25)
+        ok_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}}
+        )
+
+        with (
+            AlphaVantageSession(
+                config=_zero_delay_config(), key_rotator=rotator
+            ) as session,
+            patch.object(session._client, "get", return_value=ok_response) as mock_get,
+        ):
+            session.get(_AV_URL, params={"function": "TIME_SERIES_DAILY"})
+
+            call_kwargs = mock_get.call_args
+            actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
+                "params"
+            )
+            assert actual_params["apikey"] == "real-key-1"
+
+    def test_正常系_HTTP429後に実KeyRotatorが次のキーへ切替(self) -> None:
+        """After HTTP 429, real KeyRotator rotates to the next key.
+
+        Verifies the end-to-end flow:
+        1. First request returns 429 → mark_rate_limited() called on real rotator
+        2. Second request uses the next key from the rotator
+        """
+        rotator = KeyRotator(keys=["key-a", "key-b"], daily_limit_per_key=25)
+        rate_limit_response = _make_mock_response(
+            status_code=429,
+            text="Rate limited",
+            headers={"Retry-After": "0"},
+        )
+        ok_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}}
+        )
+
+        with (
+            AlphaVantageSession(
+                config=_zero_delay_config(),
+                retry_config=_zero_retry_config(max_attempts=2),
+                key_rotator=rotator,
+            ) as session,
+            patch.object(
+                session._client,
+                "get",
+                side_effect=[rate_limit_response, ok_response],
+            ) as mock_get,
+        ):
+            session.get_with_retry(_AV_URL)
+
+            # Second call must use key-b (rotated after 429)
+            second_call_params = mock_get.call_args_list[1].kwargs.get(
+                "params"
+            ) or mock_get.call_args_list[1][1].get("params")
+            assert second_call_params["apikey"] == "key-b"
+
+        # Rotator's k1 should be exhausted; remaining budget is k2's budget
+        assert rotator.remaining_budget == 24  # k2 used 1 (the successful request)
+
+    def test_異常系_全キー枯渇時にAlphaVantageRateLimitErrorが伝播(self) -> None:
+        """When all KeyRotator keys are exhausted, AlphaVantageRateLimitError propagates."""
+        rotator = KeyRotator(keys=["only-key"], daily_limit_per_key=1)
+
+        ok_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}}
+        )
+        rate_limit_response = _make_mock_response(
+            status_code=429,
+            text="Rate limited",
+            headers={"Retry-After": "0"},
+        )
+
+        with AlphaVantageSession(
+            config=_zero_delay_config(),
+            retry_config=_zero_retry_config(max_attempts=2),
+            key_rotator=rotator,
+        ) as session:
+            # First request succeeds (uses the 1 allowed request)
+            with patch.object(session._client, "get", return_value=ok_response):
+                session.get(_AV_URL)
+
+            # Second request: HTTP 429 → mark_rate_limited() exhausts the only key
+            # → next_key() raises AlphaVantageRateLimitError
+            with (
+                patch.object(
+                    session._client,
+                    "get",
+                    return_value=rate_limit_response,
+                ),
+                pytest.raises(AlphaVantageRateLimitError),
+            ):
+                session.get_with_retry(_AV_URL)
+
+    def test_正常系_キーローテーション後のremaining_budgetが正確(self) -> None:
+        """remaining_budget decreases correctly as keys rotate during session requests."""
+        rotator = KeyRotator(keys=["k1", "k2"], daily_limit_per_key=3)
+        ok_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}}
+        )
+
+        with (
+            AlphaVantageSession(
+                config=_zero_delay_config(), key_rotator=rotator
+            ) as session,
+            patch.object(session._client, "get", return_value=ok_response),
+        ):
+            # 3 requests exhaust k1
+            for _ in range(3):
+                session.get(_AV_URL)
+            assert rotator.remaining_budget == 3  # k2 intact
+
+            # 4th request rotates to k2
+            session.get(_AV_URL)
+            assert rotator.remaining_budget == 2  # k2 used 1
+
+    def test_エッジケース_daily_limit_1でrotatorが即座に次キーへ切替(self) -> None:
+        """With daily_limit_per_key=1, each request rotates to the next key."""
+        rotator = KeyRotator(keys=["key1", "key2", "key3"], daily_limit_per_key=1)
+        ok_response = _make_mock_response(json_data={"Meta Data": {}})
+
+        with (
+            AlphaVantageSession(
+                config=_zero_delay_config(), key_rotator=rotator
+            ) as session,
+            patch.object(session._client, "get", return_value=ok_response) as mock_get,
+        ):
+            session.get(_AV_URL)
+            session.get(_AV_URL)
+            session.get(_AV_URL)
+
+            # Verify each request used a different key
+            keys_used = [
+                (call.kwargs.get("params") or call[1].get("params", {}))["apikey"]
+                for call in mock_get.call_args_list
+            ]
+            assert keys_used == ["key1", "key2", "key3"]
+            assert rotator.remaining_budget == 0
