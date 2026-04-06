@@ -86,6 +86,10 @@ class TestKeyRotatorInit:
         with pytest.raises(ValueError, match="No Alpha Vantage API keys"):
             KeyRotator(keys=[])
 
+    def test_異常系_すべて空白のキーリストでValueError(self) -> None:
+        with pytest.raises(ValueError, match="No Alpha Vantage API keys"):
+            KeyRotator(keys=["", "  ", "\t"])
+
     def test_正常系_空白を含む環境変数キーをトリム(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:

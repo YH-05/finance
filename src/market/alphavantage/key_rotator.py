@@ -111,6 +111,16 @@ class KeyRotator:
     ValueError
         If no keys are available from any source.
 
+    Notes
+    -----
+    API key strings are held in plain text in process memory for the lifetime
+    of this instance.  Treat the ``KeyRotator`` object as a secret:
+
+    - Do not pickle, serialize, or log the instance.
+    - Do not pass it to untrusted code.
+    - Key *values* are never written to log output; only ``key_index`` is
+      recorded (CWE-316 mitigation).
+
     Examples
     --------
     >>> rotator = KeyRotator(keys=["key1", "key2"], daily_limit_per_key=25)

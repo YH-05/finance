@@ -253,8 +253,8 @@ def main(argv: list[str] | None = None) -> int:
                 from market.alphavantage.key_rotator import KeyRotator
 
                 av_budget_display = KeyRotator().total_budget
-            except Exception:
-                av_budget_display = "auto"
+            except ValueError:
+                av_budget_display = "auto (keys not configured)"
         print("Dry-run mode. Would execute:")
         print(f"  phases:       {effective_phases}")
         print(f"  days_back:    {args.days_back}")
