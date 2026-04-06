@@ -50,10 +50,10 @@ class TestRateLimitDefaults:
     """Tests for rate limit default constants."""
 
     def test_正常系_デフォルト毎分リクエスト数(self) -> None:
-        assert DEFAULT_REQUESTS_PER_MINUTE == 25
+        assert DEFAULT_REQUESTS_PER_MINUTE == 5
 
     def test_正常系_デフォルト毎時リクエスト数(self) -> None:
-        assert DEFAULT_REQUESTS_PER_HOUR == 500
+        assert DEFAULT_REQUESTS_PER_HOUR == 20
 
     def test_正常系_毎分リクエスト数は正の値(self) -> None:
         assert DEFAULT_REQUESTS_PER_MINUTE > 0
@@ -72,7 +72,7 @@ class TestHttpDefaults:
         assert DEFAULT_TIMEOUT == 30.0
 
     def test_正常系_デフォルトポライトディレイ(self) -> None:
-        assert DEFAULT_POLITE_DELAY == 2.5
+        assert DEFAULT_POLITE_DELAY == 12.0
 
     def test_正常系_デフォルトディレイジッター(self) -> None:
         assert DEFAULT_DELAY_JITTER == 0.5
