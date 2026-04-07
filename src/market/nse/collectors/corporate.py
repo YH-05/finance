@@ -267,6 +267,9 @@ class CorporateCollector(NseCollectorMixin):
 
         Raises
         ------
+        ValueError
+            If ``symbol`` is empty, exceeds 20 characters, or contains
+            invalid characters.
         NseParseError
             If the JSON response cannot be parsed.
         NseAPIError
@@ -285,6 +288,16 @@ class CorporateCollector(NseCollectorMixin):
         >>> patterns[0].promoter_group
         '50.30'
         """
+        if not symbol or not symbol.strip():
+            raise ValueError("symbol must not be empty")
+        if len(symbol) > 20:
+            raise ValueError("symbol must not exceed 20 characters")
+        if not re.match(r"^[A-Z0-9\-&]+$", symbol):
+            raise ValueError(
+                "symbol contains invalid characters; "
+                "only uppercase alphanumeric, hyphens, and ampersands are allowed"
+            )
+
         logger.info(
             "Fetching shareholding pattern",
             symbol=symbol,

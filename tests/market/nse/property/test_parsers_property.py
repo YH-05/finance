@@ -18,6 +18,9 @@ Test TODO List:
 - [x] parse_financial_results: total_income fallback calculation is accurate
 - [x] NseConfig: valid range values never raise ValueError
 - [x] NseConfig: invalid timeout range raises ValueError
+- [x] parse_shareholding_pattern: arbitrary list of dicts never raises exception
+- [x] parse_shareholding_pattern: all result fields are str type
+- [x] parse_shareholding_pattern: non-list input always raises NseParseError
 """
 
 import math
@@ -26,13 +29,16 @@ import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
+from market.nse.errors import NseParseError
 from market.nse.parsers import (
     _MISSING_VALUES,
     clean_indian_number,
     clean_price,
     clean_volume,
     parse_financial_results,
+    parse_shareholding_pattern,
 )
+from market.nse.types import ShareholdingPattern
 
 # =============================================================================
 # Strategies
@@ -387,3 +393,58 @@ class TestNseConfigBoundaryProperty:
 
         with pytest.raises(ValueError):
             NseConfig(cookie_refresh_interval=cookie_refresh_interval)
+
+
+# =============================================================================
+# parse_shareholding_pattern properties
+# =============================================================================
+
+# Strategy: arbitrary dict with text keys and text values
+_shareholding_item_strategy = st.dictionaries(
+    keys=st.text(max_size=50),
+    values=st.text(max_size=100),
+)
+
+
+class TestParseShareholdingPatternProperty:
+    """Hypothesis property tests for parse_shareholding_pattern."""
+
+    @given(data=st.lists(_shareholding_item_strategy, max_size=20))
+    @settings(max_examples=200)
+    def test_プロパティ_任意dictリストで例外が発生しない(
+        self, data: list[dict[str, str]]
+    ) -> None:
+        """任意の dict リストを渡しても例外を送出しないこと（クラッシュ安全性）。"""
+        result = parse_shareholding_pattern(data)
+        assert isinstance(result, list)
+
+    @given(data=st.lists(_shareholding_item_strategy, min_size=1, max_size=10))
+    @settings(max_examples=100)
+    def test_プロパティ_結果の全フィールドがstr型(
+        self, data: list[dict[str, str]]
+    ) -> None:
+        """結果の ShareholdingPattern 各フィールドが常に str 型であること。"""
+        results = parse_shareholding_pattern(data)
+        for item in results:
+            assert isinstance(item, ShareholdingPattern)
+            assert isinstance(item.symbol, str)
+            assert isinstance(item.date, str)
+            assert isinstance(item.promoter_group, str)
+            assert isinstance(item.fii, str)
+            assert isinstance(item.dii, str)
+            assert isinstance(item.public, str)
+
+    @given(
+        non_list=st.one_of(
+            st.dictionaries(st.text(), st.text()),
+            st.integers(),
+            st.text(),
+            st.none(),
+            st.floats(allow_nan=False, allow_infinity=False),
+        )
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_非リスト入力で常にNseParseError(self, non_list: object) -> None:
+        """リスト以外の入力は常に NseParseError を送出すること。"""
+        with pytest.raises(NseParseError):
+            parse_shareholding_pattern(non_list)  # type: ignore[arg-type]
