@@ -335,3 +335,26 @@ class TestExtractOperatingCashflowFallback:
         mock_financials = self._make_financials_mock(pd.DataFrame())
         result = _extract_operating_cashflow_fallback(mock_financials)
         assert result is None
+
+    def test_正常系_concept列なしDataFrameの場合はNoneを返す(self) -> None:
+        """DataFrame に 'concept' 列が存在しない場合は None。"""
+        df = pd.DataFrame([{"label": "Net Cash", "2024-12-31": 100.0}])
+        mock_financials = self._make_financials_mock(df)
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result is None
+
+    def test_正常系_期間列なしDataFrameの場合はNoneを返す(self) -> None:
+        """DataFrame に期間列（meta列以外の列）が存在しない場合は None。"""
+        df = pd.DataFrame(
+            [{"concept": "NetCashProvidedByUsedInOperatingActivities", "label": "x"}]
+        )
+        mock_financials = self._make_financials_mock(df)
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result is None
+
+    def test_正常系_cashflow_statementが例外を投げた場合はNoneを返す(self) -> None:
+        """cashflow_statement() が例外を投げた場合もクラッシュせず None を返すこと。"""
+        mock_financials = MagicMock()
+        mock_financials.cashflow_statement.side_effect = RuntimeError("db error")
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result is None

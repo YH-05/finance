@@ -111,6 +111,12 @@ _CONCEPT_TO_FIELD: dict[str, str] = {
 # SEC rate limit: 10 requests/sec → 0.1s between requests.
 _SEC_RATE_LIMIT_SLEEP = 0.1
 
+# AIDEV-NOTE: Pre-computed from CF_LABEL_FALLBACK at module load time.
+# Keys of CF_LABEL_FALLBACK that map to "operating_cashflow" (currently 3 concepts).
+_OPERATING_CF_CONCEPTS: frozenset[str] = frozenset(
+    k for k, v in CF_LABEL_FALLBACK.items() if v == "operating_cashflow"
+)
+
 # Default filing types to collect per symbol.
 _DEFAULT_FILING_TYPES: list[str] = ["10-K", "10-Q"]
 
@@ -184,12 +190,6 @@ def _extract_operating_cashflow_fallback(financials: Any) -> float | None:
     matching in ``Financials.get_operating_cash_flow()`` and works directly
     with XBRL taxonomy names.
     """
-    # AIDEV-NOTE: CF_LABEL_FALLBACK maps XBRL concept names → standard_concept.
-    # Here we only care about keys that map to "operating_cashflow".
-    operating_cf_concepts: frozenset[str] = frozenset(
-        k for k, v in CF_LABEL_FALLBACK.items() if v == "operating_cashflow"
-    )
-
     try:
         cf_stmt = financials.cashflow_statement()
         if cf_stmt is None:
@@ -217,24 +217,19 @@ def _extract_operating_cashflow_fallback(financials: Any) -> float | None:
             "dimension",
             "is_breakdown",
         }
-        period_cols = [c for c in df.columns if c not in meta_cols]
-        if not period_cols:
+        recent_col = next((c for c in df.columns if c not in meta_cols), None)
+        if recent_col is None:
             logger.debug("No period columns found in cashflow_statement DataFrame")
             return None
 
-        # Use the most-recent period (first period column)
-        recent_col = period_cols[0]
-
-        for concept in operating_cf_concepts:
-            matches = df[df["concept"] == concept]
-            if matches.empty:
-                continue
-
-            value = _safe_float(matches.iloc[0][recent_col])
+        # Use isin() for vectorized lookup instead of per-concept loop
+        matched = df[df["concept"].isin(_OPERATING_CF_CONCEPTS)]
+        if not matched.empty:
+            value = _safe_float(matched.iloc[0][recent_col])
             if value is not None:
                 logger.info(
                     "operating_cashflow extracted via CF_LABEL_FALLBACK",
-                    concept=concept,
+                    concept=matched.iloc[0]["concept"],
                     value=value,
                 )
                 return value
@@ -519,10 +514,10 @@ class SecEdgarCollector:
                 )
 
                 # Use get_* helpers for robust extraction
-                _primary_ocf = _safe_float(financials.get_operating_cash_flow())
-                _ocf = (
-                    _primary_ocf
-                    if _primary_ocf is not None
+                primary_ocf = _safe_float(financials.get_operating_cash_flow())
+                operating_cashflow = (
+                    primary_ocf
+                    if primary_ocf is not None
                     else _extract_operating_cashflow_fallback(financials)
                 )
                 record = FinancialStatementRecord(
@@ -534,7 +529,7 @@ class SecEdgarCollector:
                     net_income=_safe_float(financials.get_net_income()),
                     total_assets=_safe_float(financials.get_total_assets()),
                     total_liabilities=_safe_float(financials.get_total_liabilities()),
-                    operating_cashflow=_ocf,
+                    operating_cashflow=operating_cashflow,
                     fetched_at=fetched_at,
                 )
 
@@ -691,5 +686,4 @@ class SecEdgarCollector:
 __all__ = [
     "CF_LABEL_FALLBACK",
     "SecEdgarCollector",
-    "_extract_operating_cashflow_fallback",
 ]

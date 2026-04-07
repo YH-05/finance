@@ -28,7 +28,6 @@ from market.nse.parsers import parse_shareholding_pattern
 from market.nse.session import NseSession
 from market.nse.types import ShareholdingPattern
 
-
 # =============================================================================
 # Helper: create mock session and responses
 # =============================================================================
@@ -112,7 +111,11 @@ class TestParseShareholdingPattern:
         assert len(results) == 1
         assert isinstance(results[0], ShareholdingPattern)
         assert results[0].symbol == "RELIANCE"
+        assert results[0].date == "31-Dec-2024"
         assert results[0].promoter_group == "50.30"
+        assert results[0].fii == "23.45"
+        assert results[0].dii == "12.10"
+        assert results[0].public == "14.15"
 
     def test_正常系_空リストで空リストを返す(self) -> None:
         results = parse_shareholding_pattern([])
@@ -219,6 +222,18 @@ class TestGetShareholdingPattern:
         collector = CorporateCollector(session=mock_session)
         results = collector.get_shareholding_pattern("RELIANCE")
         assert results == []
+
+    def test_正常系_dict_wrappedレスポンスを正しく解析する(self) -> None:
+        """NSE APIが {"data": [...]} 形式でラップして返す場合も正しく解析できること。"""
+        from market.nse.collectors.corporate import CorporateCollector
+
+        wrapped = {"data": _make_shareholding_json()}
+        mock_session = _make_mock_session(response_json=wrapped)
+        collector = CorporateCollector(session=mock_session)
+        results = collector.get_shareholding_pattern("RELIANCE")
+        assert len(results) == 1
+        assert results[0].symbol == "RELIANCE"
+        assert results[0].promoter_group == "50.30"
 
 
 # =============================================================================

@@ -324,7 +324,11 @@ class BseSession:
             try:
                 # geo_block_graceful=False (default): response is always httpx.Response
                 response = self.get(url, params=params)
-                assert response is not None  # invariant: geo_block_graceful=False
+                if response is None:
+                    raise RuntimeError(
+                        "get() returned None with geo_block_graceful=False; "
+                        "this is a programming error"
+                    )
 
                 if attempt > 0:
                     logger.info(
@@ -397,7 +401,11 @@ class BseSession:
         """
         # geo_block_graceful=False (default): response is always httpx.Response
         response = self.get(url)
-        assert response is not None  # invariant: geo_block_graceful=False
+        if response is None:
+            raise RuntimeError(
+                "get() returned None with geo_block_graceful=False; "
+                "this is a programming error"
+            )
         logger.info(
             "Download completed",
             url=url,

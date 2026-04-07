@@ -728,15 +728,12 @@ class TestBseSessionGracefulGeoBlock:
                 session = BseSession()
                 session.get(_TEST_URL, geo_block_graceful=True)
 
-            # ロガーの warning が呼ばれ、geo_block 関連のメッセージが含まれること
-            warning_calls = mock_logger.warning.call_args_list
-            assert len(warning_calls) >= 1
-            # いずれかの warning 呼び出しに geo-block 関連情報が含まれること
-            any_geo_block = any(
-                "geo" in str(call).lower() or "block" in str(call).lower()
-                for call in warning_calls
+            # structlog の構造化ログ kwargs を直接検査する
+            mock_logger.warning.assert_called_once_with(
+                "geo-block suspected: HTTP 403 received, returning None",
+                url=_TEST_URL,
+                status_code=403,
             )
-            assert any_geo_block
 
     def test_正常系_graceful_Trueでタイムアウト時にgeo_block検出をログ記録する(
         self,
@@ -755,15 +752,12 @@ class TestBseSessionGracefulGeoBlock:
                 session = BseSession()
                 session.get(_TEST_URL, geo_block_graceful=True)
 
-            warning_calls = mock_logger.warning.call_args_list
-            assert len(warning_calls) >= 1
-            any_geo_block = any(
-                "geo" in str(call).lower()
-                or "block" in str(call).lower()
-                or "timeout" in str(call).lower()
-                for call in warning_calls
+            # structlog の構造化ログ kwargs を直接検査する
+            mock_logger.warning.assert_called_once_with(
+                "geo-block suspected: request timed out, returning None",
+                url=_TEST_URL,
+                exc="Connection timed out",
             )
-            assert any_geo_block
 
     def test_異常系_graceful_Falseで403時にBseAPIErrorを発生させる(
         self, mock_httpx_response_403: MagicMock
