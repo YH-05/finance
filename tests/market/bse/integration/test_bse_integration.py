@@ -81,7 +81,7 @@ def _bse_api_is_reachable() -> bool:
                 f"{BASE_URL}/getScripHeaderData",
                 params={"Ession_id": "", "scripcode": SAMPLE_SCRIP_CODE},
             )
-            return response.status_code == 200
+            return response is not None and response.status_code == 200
     except (BseError, OSError, Exception):
         return False
 

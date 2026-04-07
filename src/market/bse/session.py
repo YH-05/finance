@@ -161,7 +161,9 @@ class BseSession:
         self,
         url: str,
         params: dict[str, str] | None = None,
-    ) -> httpx.Response:
+        *,
+        geo_block_graceful: bool = False,
+    ) -> httpx.Response | None:
         """Send a GET request with polite delay, header rotation, and status handling.
 
         Applies the following before each request:
@@ -174,7 +176,7 @@ class BseSession:
         After receiving a response, checks for error status codes:
 
         - 429 -> ``BseRateLimitError``
-        - 403 -> ``BseAPIError``
+        - 403 -> ``BseAPIError`` (or ``None`` when ``geo_block_graceful=True``)
         - 5xx -> ``BseAPIError``
 
         Parameters
@@ -183,11 +185,18 @@ class BseSession:
             The URL to send the GET request to.
         params : dict[str, str] | None
             Optional query parameters for the request.
+        geo_block_graceful : bool
+            When ``True``, HTTP 403 responses and ``httpx.TimeoutException``
+            are handled gracefully: a warning is logged and ``None`` is
+            returned instead of raising an exception. This is intended for
+            BSE API access from Japanese IP addresses which may be geo-blocked.
+            Defaults to ``False`` to preserve existing behaviour.
 
         Returns
         -------
-        httpx.Response
-            The HTTP response object.
+        httpx.Response | None
+            The HTTP response object, or ``None`` when ``geo_block_graceful=True``
+            and a geo-block condition (403 or timeout) is detected.
 
         Raises
         ------
@@ -196,7 +205,10 @@ class BseSession:
         BseRateLimitError
             If the response status code is 429.
         BseAPIError
-            If the response status code is 403 or 5xx.
+            If the response status code is 403 or 5xx
+            (only when ``geo_block_graceful=False``).
+        httpx.TimeoutException
+            If the request times out (only when ``geo_block_graceful=False``).
 
         Examples
         --------
@@ -206,6 +218,14 @@ class BseSession:
         ... )
         >>> response.status_code
         200
+
+        >>> # Graceful handling for geo-blocked environments (e.g. Japan IP)
+        >>> result = session.get(
+        ...     "https://api.bseindia.com/BseIndiaAPI/api/getScripHeaderData",
+        ...     geo_block_graceful=True,
+        ... )
+        >>> result is None  # returns None on 403 or timeout
+        True
         """
         # 0. URL whitelist validation (SSRF prevention, CWE-918)
         self._validate_url(url)
@@ -226,16 +246,31 @@ class BseSession:
             user_agent=user_agent[:50],
         )
 
-        # 3. Execute request
-        response: httpx.Response = self._client.get(
-            url,
-            headers=headers,
-            params=params,
-            timeout=self._config.timeout,
-        )
+        # 3. Execute request — catch TimeoutException for graceful geo-block handling
+        try:
+            response: httpx.Response = self._client.get(
+                url,
+                headers=headers,
+                params=params,
+                timeout=self._config.timeout,
+            )
+        except httpx.TimeoutException as exc:
+            if geo_block_graceful:
+                logger.warning(
+                    "geo-block suspected: request timed out, returning None",
+                    url=url,
+                    exc=str(exc),
+                )
+                return None
+            raise
 
         # 4. Handle response status
-        self._handle_response(response, url)
+        result = self._handle_response(
+            response, url, geo_block_graceful=geo_block_graceful
+        )
+        if result is None:
+            # geo-block graceful degradation: _handle_response returned None
+            return None
 
         logger.debug(
             "GET request completed",
@@ -253,6 +288,9 @@ class BseSession:
 
         On each failed attempt (``BseRateLimitError``), the request is
         retried after an exponentially increasing delay.
+
+        This method always uses ``geo_block_graceful=False`` (the default),
+        so the response is guaranteed to be a non-None ``httpx.Response``.
 
         Parameters
         ----------
@@ -284,7 +322,9 @@ class BseSession:
 
         for attempt in range(self._retry_config.max_attempts):
             try:
+                # geo_block_graceful=False (default): response is always httpx.Response
                 response = self.get(url, params=params)
+                assert response is not None  # invariant: geo_block_graceful=False
 
                 if attempt > 0:
                     logger.info(
@@ -355,7 +395,9 @@ class BseSession:
         >>> len(content) > 0
         True
         """
+        # geo_block_graceful=False (default): response is always httpx.Response
         response = self.get(url)
+        assert response is not None  # invariant: geo_block_graceful=False
         logger.info(
             "Download completed",
             url=url,
@@ -471,7 +513,13 @@ class BseSession:
         """
         return random.choice(self._user_agents)  # nosec B311 (cryptographic randomness not required for UA rotation)
 
-    def _handle_response(self, response: httpx.Response, url: str) -> None:
+    def _handle_response(
+        self,
+        response: httpx.Response,
+        url: str,
+        *,
+        geo_block_graceful: bool = False,
+    ) -> httpx.Response | None:
         """Check response status and raise appropriate exceptions.
 
         Parameters
@@ -480,13 +528,25 @@ class BseSession:
             The HTTP response to check.
         url : str
             The request URL for error context.
+        geo_block_graceful : bool
+            When ``True``, an HTTP 403 response is treated as a geo-block
+            condition: a warning is logged and ``None`` is returned instead
+            of raising ``BseAPIError``.  All other error codes still raise.
+            Defaults to ``False`` to preserve existing behaviour.
+
+        Returns
+        -------
+        httpx.Response | None
+            ``None`` when a geo-block condition is detected and
+            ``geo_block_graceful=True``; otherwise returns the response
+            (callers may ignore the return value for the non-graceful path).
 
         Raises
         ------
         BseRateLimitError
             If HTTP 429 is returned.
         BseAPIError
-            If HTTP 403 or 5xx is returned.
+            If HTTP 403 (when ``geo_block_graceful=False``) or 5xx is returned.
         """
         status = response.status_code
 
@@ -503,8 +563,15 @@ class BseSession:
                 retry_after=None,
             )
 
-        # 403: forbidden / bot block
+        # 403: forbidden / geo-block
         if status == 403:
+            if geo_block_graceful:
+                logger.warning(
+                    "geo-block suspected: HTTP 403 received, returning None",
+                    url=url,
+                    status_code=status,
+                )
+                return None
             logger.warning(
                 "Access forbidden",
                 url=url,
@@ -530,6 +597,8 @@ class BseSession:
                 status_code=status,
                 response_body=response.text[:_MAX_RESPONSE_BODY_LOG],
             )
+
+        return response
 
     def _calculate_backoff_delay(self, attempt: int) -> float:
         """Calculate exponential backoff delay.
