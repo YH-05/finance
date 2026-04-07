@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import os
 import threading
+from typing import Final
 
 from market.alphavantage.constants import (
     ALPHA_VANTAGE_API_KEY_ENV,
@@ -33,6 +34,34 @@ from market.alphavantage.errors import AlphaVantageRateLimitError
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
+
+# Minimum character length for a valid Alpha Vantage API key.
+# Keys shorter than this are almost certainly truncated or mistyped.
+_MIN_KEY_LENGTH: Final[int] = 10
+
+
+def _check_key_lengths(keys: list[str]) -> None:
+    """Raise ValueError if any key is shorter than _MIN_KEY_LENGTH.
+
+    Parameters
+    ----------
+    keys : list[str]
+        Resolved, non-empty list of API key strings.
+
+    Raises
+    ------
+    ValueError
+        If any key has fewer than ``_MIN_KEY_LENGTH`` characters.
+        Key values are not included in the error message (CWE-312).
+    """
+    short_indices = [i for i, k in enumerate(keys) if len(k) < _MIN_KEY_LENGTH]
+    if short_indices:
+        lengths = [len(keys[i]) for i in short_indices]
+        raise ValueError(
+            f"Alpha Vantage API key(s) at index {short_indices} are too short "
+            f"(lengths: {lengths}, minimum: {_MIN_KEY_LENGTH} characters). "
+            "Verify that the full key value is configured."
+        )
 
 
 def _resolve_keys(keys: list[str] | None) -> list[str]:
@@ -60,6 +89,7 @@ def _resolve_keys(keys: list[str] | None) -> list[str]:
                 "No Alpha Vantage API keys provided. "
                 f"Set {ALPHA_VANTAGE_API_KEYS_ENV} or {ALPHA_VANTAGE_API_KEY_ENV}."
             )
+        _check_key_lengths(resolved)
         return resolved
 
     # Try multi-key env var first
@@ -67,6 +97,7 @@ def _resolve_keys(keys: list[str] | None) -> list[str]:
     if multi:
         resolved = [k.strip() for k in multi.split(",") if k.strip()]
         if resolved:
+            _check_key_lengths(resolved)
             logger.debug(
                 "Resolved API keys from environment",
                 env_var=ALPHA_VANTAGE_API_KEYS_ENV,
@@ -77,6 +108,7 @@ def _resolve_keys(keys: list[str] | None) -> list[str]:
     # Fall back to single-key env var
     single = os.environ.get(ALPHA_VANTAGE_API_KEY_ENV, "").strip()
     if single:
+        _check_key_lengths([single])
         logger.debug(
             "Resolved single API key from environment",
             env_var=ALPHA_VANTAGE_API_KEY_ENV,

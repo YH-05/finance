@@ -50,6 +50,7 @@ from market.pipeline.queue import CollectionQueue
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pathlib import Path
 
     from market.alphavantage.key_rotator import KeyRotator
@@ -302,6 +303,66 @@ class EarningsPipeline:
         )
 
     # ------------------------------------------------------------------
+    # Phase 2 helpers
+    # ------------------------------------------------------------------
+
+    def _process_av_queue(
+        self,
+        entries: list[Any],
+        collect_fn: Callable[[str], Any],
+        source_prefix: str,
+    ) -> tuple[int, int, list[str]]:
+        """Process a list of Alpha Vantage queue entries with a collector function.
+
+        Parameters
+        ----------
+        entries : list[Any]
+            Queue entries fetched from ``CollectionQueue.get_pending()``.
+        collect_fn : Callable[[str], Any]
+            Collector method accepting a symbol string and returning a result
+            with ``.success`` and ``.error_message`` attributes.
+        source_prefix : str
+            Source label used in error messages (e.g. ``"av_earnings"``).
+
+        Returns
+        -------
+        tuple[int, int, list[str]]
+            ``(success_count, fail_count, errors)``
+        """
+        success = 0
+        fail = 0
+        errors: list[str] = []
+        for entry in entries:
+            try:
+                result = collect_fn(entry.symbol)
+                if result.success:
+                    self._queue.mark_completed(
+                        entry.symbol, entry.earnings_date, entry.source
+                    )
+                    success += 1
+                else:
+                    msg = result.error_message or "unknown error"
+                    self._queue.mark_failed(
+                        entry.symbol, entry.earnings_date, entry.source, msg
+                    )
+                    fail += 1
+                    errors.append(f"{source_prefix}/{entry.symbol}: {msg}")
+            except Exception as exc:
+                msg = str(exc)
+                logger.error(
+                    f"Phase 2 {source_prefix} failed",
+                    symbol=entry.symbol,
+                    exc_info=True,
+                )
+                with contextlib.suppress(Exception):
+                    self._queue.mark_failed(
+                        entry.symbol, entry.earnings_date, entry.source, msg
+                    )
+                fail += 1
+                errors.append(f"{source_prefix}/{entry.symbol}: {msg}")
+        return success, fail, errors
+
+    # ------------------------------------------------------------------
     # Phase 2: Alpha Vantage queue processing
     # ------------------------------------------------------------------
 
@@ -354,65 +415,16 @@ class EarningsPipeline:
                 per_source_limit=per_source_limit,
             )
 
-            # Process av_earnings
-            for entry in earnings_entries:
-                try:
-                    collect_result = av_collector.collect_earnings(entry.symbol)
-                    if collect_result.success:
-                        self._queue.mark_completed(
-                            entry.symbol, entry.earnings_date, entry.source
-                        )
-                        success_count += 1
-                    else:
-                        error_msg = collect_result.error_message or "unknown error"
-                        self._queue.mark_failed(
-                            entry.symbol, entry.earnings_date, entry.source, error_msg
-                        )
-                        fail_count += 1
-                        errors.append(f"av_earnings/{entry.symbol}: {error_msg}")
-                except Exception as exc:
-                    error_msg = str(exc)
-                    logger.error(
-                        "Phase 2 av_earnings failed",
-                        symbol=entry.symbol,
-                        exc_info=True,
-                    )
-                    with contextlib.suppress(Exception):
-                        self._queue.mark_failed(
-                            entry.symbol, entry.earnings_date, entry.source, error_msg
-                        )
-                    fail_count += 1
-                    errors.append(f"av_earnings/{entry.symbol}: {error_msg}")
-
-            # Process av_overview
-            for entry in overview_entries:
-                try:
-                    collect_result = av_collector.collect_company_overview(entry.symbol)
-                    if collect_result.success:
-                        self._queue.mark_completed(
-                            entry.symbol, entry.earnings_date, entry.source
-                        )
-                        success_count += 1
-                    else:
-                        error_msg = collect_result.error_message or "unknown error"
-                        self._queue.mark_failed(
-                            entry.symbol, entry.earnings_date, entry.source, error_msg
-                        )
-                        fail_count += 1
-                        errors.append(f"av_overview/{entry.symbol}: {error_msg}")
-                except Exception as exc:
-                    error_msg = str(exc)
-                    logger.error(
-                        "Phase 2 av_overview failed",
-                        symbol=entry.symbol,
-                        exc_info=True,
-                    )
-                    with contextlib.suppress(Exception):
-                        self._queue.mark_failed(
-                            entry.symbol, entry.earnings_date, entry.source, error_msg
-                        )
-                    fail_count += 1
-                    errors.append(f"av_overview/{entry.symbol}: {error_msg}")
+            # Process av_earnings and av_overview via shared helper
+            s1, f1, e1 = self._process_av_queue(
+                earnings_entries, av_collector.collect_earnings, "av_earnings"
+            )
+            s2, f2, e2 = self._process_av_queue(
+                overview_entries, av_collector.collect_company_overview, "av_overview"
+            )
+            success_count += s1 + s2
+            fail_count += f1 + f2
+            errors.extend(e1 + e2)
 
         except Exception as exc:
             logger.error("Phase 2 initialization failed", exc_info=True)

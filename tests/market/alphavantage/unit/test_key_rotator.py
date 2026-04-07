@@ -47,21 +47,25 @@ class TestKeyRotatorInit:
     """Tests for KeyRotator initialization."""
 
     def test_正常系_明示的キーリストで初期化(self) -> None:
-        rotator = KeyRotator(keys=["key1", "key2", "key3"])
+        rotator = KeyRotator(keys=["fake-api-key1", "fake-api-key2", "fake-api-key3"])
         assert rotator.key_count == 3
 
     def test_正常系_daily_limit_per_keyのデフォルト値が25(self) -> None:
-        rotator = KeyRotator(keys=["key1"])
+        rotator = KeyRotator(keys=["fake-api-key1"])
         assert rotator.total_budget == 25
 
     def test_正常系_カスタムdaily_limitで初期化(self) -> None:
-        rotator = KeyRotator(keys=["key1", "key2"], daily_limit_per_key=10)
+        rotator = KeyRotator(
+            keys=["fake-api-key1", "fake-api-key2"], daily_limit_per_key=10
+        )
         assert rotator.total_budget == 20
 
     def test_正常系_環境変数ALPHA_VANTAGE_API_KEYSからカンマ区切りで読み取り(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setenv("ALPHA_VANTAGE_API_KEYS", "keyA,keyB,keyC")
+        monkeypatch.setenv(
+            "ALPHA_VANTAGE_API_KEYS", "fake-api-keyA,fake-api-keyB,fake-api-keyC"
+        )
         monkeypatch.delenv("ALPHA_VANTAGE_API_KEY", raising=False)
         rotator = KeyRotator()
         assert rotator.key_count == 3
@@ -93,7 +97,7 @@ class TestKeyRotatorInit:
     def test_正常系_空白を含む環境変数キーをトリム(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setenv("ALPHA_VANTAGE_API_KEYS", " keyA , keyB ")
+        monkeypatch.setenv("ALPHA_VANTAGE_API_KEYS", " fake-api-keyA , fake-api-keyB ")
         monkeypatch.delenv("ALPHA_VANTAGE_API_KEY", raising=False)
         rotator = KeyRotator()
         assert rotator.key_count == 2
@@ -108,35 +112,41 @@ class TestKeyRotatorNextKey:
     """Tests for KeyRotator.next_key() method."""
 
     def test_正常系_初回呼び出しで最初のキーを返す(self) -> None:
-        rotator = KeyRotator(keys=["key1", "key2"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-api-key1", "fake-api-key2"], daily_limit_per_key=25
+        )
         key = rotator.next_key()
-        assert key == "key1"
+        assert key == "fake-api-key1"
 
     def test_正常系_25回使用後に次のキーへ自動切替(self) -> None:
-        rotator = KeyRotator(keys=["key1", "key2"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-api-key1", "fake-api-key2"], daily_limit_per_key=25
+        )
         # 25回目まで key1 を取得
         for _ in range(25):
             key = rotator.next_key()
-        assert key == "key1"
+        assert key == "fake-api-key1"
         # 26回目は key2 へ切替
         key = rotator.next_key()
-        assert key == "key2"
+        assert key == "fake-api-key2"
 
     def test_正常系_カスタムlimitで切替(self) -> None:
-        rotator = KeyRotator(keys=["key1", "key2"], daily_limit_per_key=3)
+        rotator = KeyRotator(
+            keys=["fake-api-key1", "fake-api-key2"], daily_limit_per_key=3
+        )
         keys_used = [rotator.next_key() for _ in range(4)]
-        assert keys_used[:3] == ["key1", "key1", "key1"]
-        assert keys_used[3] == "key2"
+        assert keys_used[:3] == ["fake-api-key1", "fake-api-key1", "fake-api-key1"]
+        assert keys_used[3] == "fake-api-key2"
 
     def test_異常系_全キー消費時にAlphaVantageRateLimitError(self) -> None:
-        rotator = KeyRotator(keys=["key1"], daily_limit_per_key=2)
+        rotator = KeyRotator(keys=["fake-api-key1"], daily_limit_per_key=2)
         rotator.next_key()
         rotator.next_key()
         with pytest.raises(AlphaVantageRateLimitError):
             rotator.next_key()
 
     def test_異常系_全キー消費後のエラーメッセージに予算情報を含む(self) -> None:
-        rotator = KeyRotator(keys=["key1"], daily_limit_per_key=1)
+        rotator = KeyRotator(keys=["fake-api-key1"], daily_limit_per_key=1)
         rotator.next_key()
         with pytest.raises(AlphaVantageRateLimitError, match="budget"):
             rotator.next_key()
@@ -151,15 +161,17 @@ class TestKeyRotatorMarkRateLimited:
     """Tests for KeyRotator.mark_rate_limited() method."""
 
     def test_正常系_mark_rate_limitedで即座に次キーへ切替(self) -> None:
-        rotator = KeyRotator(keys=["key1", "key2"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-api-key1", "fake-api-key2"], daily_limit_per_key=25
+        )
         # 1回だけ使った後でレートリミット
         rotator.next_key()
         rotator.mark_rate_limited()
         key = rotator.next_key()
-        assert key == "key2"
+        assert key == "fake-api-key2"
 
     def test_異常系_全キーレートリミット時にAlphaVantageRateLimitError(self) -> None:
-        rotator = KeyRotator(keys=["key1"], daily_limit_per_key=25)
+        rotator = KeyRotator(keys=["fake-api-key1"], daily_limit_per_key=25)
         rotator.next_key()
         rotator.mark_rate_limited()
         with pytest.raises(AlphaVantageRateLimitError):
@@ -175,26 +187,34 @@ class TestKeyRotatorProperties:
     """Tests for KeyRotator properties."""
 
     def test_正常系_key_countがキー数を返す(self) -> None:
-        rotator = KeyRotator(keys=["k1", "k2", "k3"])
+        rotator = KeyRotator(keys=["fake-key-k1x", "fake-key-k2x", "fake-key-k3x"])
         assert rotator.key_count == 3
 
     def test_正常系_total_budgetが全キー合計リクエスト数を返す(self) -> None:
-        rotator = KeyRotator(keys=["k1", "k2"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-key-k1x", "fake-key-k2x"], daily_limit_per_key=25
+        )
         assert rotator.total_budget == 50
 
     def test_正常系_remaining_budgetが初期状態でtotal_budgetと等しい(self) -> None:
-        rotator = KeyRotator(keys=["k1", "k2"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-key-k1x", "fake-key-k2x"], daily_limit_per_key=25
+        )
         assert rotator.remaining_budget == 50
 
     def test_正常系_remaining_budgetがリクエストごとに減少する(self) -> None:
-        rotator = KeyRotator(keys=["k1", "k2"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-key-k1x", "fake-key-k2x"], daily_limit_per_key=25
+        )
         rotator.next_key()
         assert rotator.remaining_budget == 49
         rotator.next_key()
         assert rotator.remaining_budget == 48
 
     def test_正常系_remaining_budgetがmark_rate_limited後に更新される(self) -> None:
-        rotator = KeyRotator(keys=["k1", "k2"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-key-k1x", "fake-key-k2x"], daily_limit_per_key=25
+        )
         rotator.next_key()  # k1 count=1
         rotator.mark_rate_limited()  # k1 exhausted (count set to limit)
         # remaining = total - k1_exhausted - 0 used on k2
@@ -281,7 +301,9 @@ class TestKeyRotatorSessionIntegration:
         1. First request returns 429 → mark_rate_limited() called on real rotator
         2. Second request uses the next key from the rotator
         """
-        rotator = KeyRotator(keys=["key-a", "key-b"], daily_limit_per_key=25)
+        rotator = KeyRotator(
+            keys=["fake-key-aaa1", "fake-key-bbb1"], daily_limit_per_key=25
+        )
         rate_limit_response = _make_mock_response(
             status_code=429,
             text="Rate limited",
@@ -309,14 +331,14 @@ class TestKeyRotatorSessionIntegration:
             second_call_params = mock_get.call_args_list[1].kwargs.get(
                 "params"
             ) or mock_get.call_args_list[1][1].get("params")
-            assert second_call_params["apikey"] == "key-b"
+            assert second_call_params["apikey"] == "fake-key-bbb1"
 
         # Rotator's k1 should be exhausted; remaining budget is k2's budget
         assert rotator.remaining_budget == 24  # k2 used 1 (the successful request)
 
     def test_異常系_全キー枯渇時にAlphaVantageRateLimitErrorが伝播(self) -> None:
         """When all KeyRotator keys are exhausted, AlphaVantageRateLimitError propagates."""
-        rotator = KeyRotator(keys=["only-key"], daily_limit_per_key=1)
+        rotator = KeyRotator(keys=["only-api-key1"], daily_limit_per_key=1)
 
         ok_response = _make_mock_response(
             json_data={"Meta Data": {}, "Time Series (Daily)": {}}
@@ -350,7 +372,9 @@ class TestKeyRotatorSessionIntegration:
 
     def test_正常系_キーローテーション後のremaining_budgetが正確(self) -> None:
         """remaining_budget decreases correctly as keys rotate during session requests."""
-        rotator = KeyRotator(keys=["k1", "k2"], daily_limit_per_key=3)
+        rotator = KeyRotator(
+            keys=["fake-key-k1x", "fake-key-k2x"], daily_limit_per_key=3
+        )
         ok_response = _make_mock_response(
             json_data={"Meta Data": {}, "Time Series (Daily)": {}}
         )
@@ -372,7 +396,10 @@ class TestKeyRotatorSessionIntegration:
 
     def test_エッジケース_daily_limit_1でrotatorが即座に次キーへ切替(self) -> None:
         """With daily_limit_per_key=1, each request rotates to the next key."""
-        rotator = KeyRotator(keys=["key1", "key2", "key3"], daily_limit_per_key=1)
+        rotator = KeyRotator(
+            keys=["fake-api-key1", "fake-api-key2", "fake-api-key3"],
+            daily_limit_per_key=1,
+        )
         ok_response = _make_mock_response(json_data={"Meta Data": {}})
 
         with (
@@ -390,5 +417,5 @@ class TestKeyRotatorSessionIntegration:
                 (call.kwargs.get("params") or call[1].get("params", {}))["apikey"]
                 for call in mock_get.call_args_list
             ]
-            assert keys_used == ["key1", "key2", "key3"]
+            assert keys_used == ["fake-api-key1", "fake-api-key2", "fake-api-key3"]
             assert rotator.remaining_budget == 0
