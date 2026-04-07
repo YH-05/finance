@@ -155,6 +155,99 @@ def _safe_float(value: Any) -> float | None:
         return None
 
 
+def _extract_operating_cashflow_fallback(financials: Any) -> float | None:
+    """Extract operating cash flow from XBRL raw data using CF_LABEL_FALLBACK.
+
+    Called when ``financials.get_operating_cash_flow()`` returns ``None``.
+    Iterates through the ``cashflow_statement`` DataFrame and matches concept
+    names against the keys of ``CF_LABEL_FALLBACK`` that map to
+    ``"operating_cashflow"``.
+
+    Parameters
+    ----------
+    financials : Any
+        The edgartools ``Financials`` object with a ``cashflow_statement()``
+        method.
+
+    Returns
+    -------
+    float | None
+        The first non-None operating cash flow value found via XBRL concept
+        matching, or ``None`` if no match is found.
+
+    Notes
+    -----
+    The function uses the ``concept`` column of the cash flow statement
+    DataFrame.  edgartools populates this column with raw XBRL concept names
+    (e.g. ``"NetCashProvidedByUsedInOperatingActivities"``), which are the
+    keys of ``CF_LABEL_FALLBACK``.  This approach bypasses the label-pattern
+    matching in ``Financials.get_operating_cash_flow()`` and works directly
+    with XBRL taxonomy names.
+    """
+    # AIDEV-NOTE: CF_LABEL_FALLBACK maps XBRL concept names → standard_concept.
+    # Here we only care about keys that map to "operating_cashflow".
+    operating_cf_concepts: frozenset[str] = frozenset(
+        k for k, v in CF_LABEL_FALLBACK.items() if v == "operating_cashflow"
+    )
+
+    try:
+        cf_stmt = financials.cashflow_statement()
+        if cf_stmt is None:
+            logger.debug("cashflow_statement() returned None; fallback unavailable")
+            return None
+
+        df = cf_stmt.to_dataframe()
+        if df is None or not hasattr(df, "empty") or df.empty:
+            logger.debug("cashflow_statement DataFrame is empty; fallback unavailable")
+            return None
+
+        if "concept" not in df.columns:
+            logger.debug(
+                "cashflow_statement DataFrame has no 'concept' column",
+                columns=list(df.columns),
+            )
+            return None
+
+        # Period columns are those that are not metadata columns
+        meta_cols = {
+            "concept",
+            "label",
+            "level",
+            "abstract",
+            "dimension",
+            "is_breakdown",
+        }
+        period_cols = [c for c in df.columns if c not in meta_cols]
+        if not period_cols:
+            logger.debug("No period columns found in cashflow_statement DataFrame")
+            return None
+
+        # Use the most-recent period (first period column)
+        recent_col = period_cols[0]
+
+        for concept in operating_cf_concepts:
+            matches = df[df["concept"] == concept]
+            if matches.empty:
+                continue
+
+            value = _safe_float(matches.iloc[0][recent_col])
+            if value is not None:
+                logger.info(
+                    "operating_cashflow extracted via CF_LABEL_FALLBACK",
+                    concept=concept,
+                    value=value,
+                )
+                return value
+
+    except Exception as exc:
+        logger.debug(
+            "CF_LABEL_FALLBACK extraction failed",
+            error=str(exc),
+        )
+
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Module-level cached import for edgartools Company
 # ---------------------------------------------------------------------------
@@ -426,6 +519,12 @@ class SecEdgarCollector:
                 )
 
                 # Use get_* helpers for robust extraction
+                _primary_ocf = _safe_float(financials.get_operating_cash_flow())
+                _ocf = (
+                    _primary_ocf
+                    if _primary_ocf is not None
+                    else _extract_operating_cashflow_fallback(financials)
+                )
                 record = FinancialStatementRecord(
                     symbol=symbol,
                     fiscal_date_ending=fiscal_date,
@@ -435,9 +534,7 @@ class SecEdgarCollector:
                     net_income=_safe_float(financials.get_net_income()),
                     total_assets=_safe_float(financials.get_total_assets()),
                     total_liabilities=_safe_float(financials.get_total_liabilities()),
-                    operating_cashflow=_safe_float(
-                        financials.get_operating_cash_flow()
-                    ),
+                    operating_cashflow=_ocf,
                     fetched_at=fetched_at,
                 )
 
@@ -594,4 +691,5 @@ class SecEdgarCollector:
 __all__ = [
     "CF_LABEL_FALLBACK",
     "SecEdgarCollector",
+    "_extract_operating_cashflow_fallback",
 ]

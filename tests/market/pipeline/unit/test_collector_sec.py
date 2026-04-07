@@ -16,6 +16,7 @@ from market.pipeline.collector_sec import (
     CF_LABEL_FALLBACK,
     SecEdgarCollector,
     _detect_statement_type,
+    _extract_operating_cashflow_fallback,
     _safe_float,
 )
 from market.pipeline.errors import CollectorError
@@ -252,3 +253,85 @@ class TestSecEdgarCollectorDfToRecords:
         assert len(records) == 1
         assert records[0].symbol == "AAPL"
         assert records[0].revenue == pytest.approx(391_035_000_000.0)
+
+
+# =============================================================================
+# _extract_operating_cashflow_fallback tests
+# =============================================================================
+
+
+class TestExtractOperatingCashflowFallback:
+    """Tests for _extract_operating_cashflow_fallback()."""
+
+    def _make_financials_mock(self, cf_df: pd.DataFrame | None) -> MagicMock:
+        """Build a mock Financials object whose cashflow_statement returns a mock."""
+        mock_financials = MagicMock()
+        if cf_df is None:
+            mock_financials.cashflow_statement.return_value = None
+        else:
+            mock_cf_stmt = MagicMock()
+            mock_cf_stmt.to_dataframe.return_value = cf_df
+            mock_financials.cashflow_statement.return_value = mock_cf_stmt
+        return mock_financials
+
+    def test_正常系_プライマリ成功時はフォールバック不要でNoneを返さない(self) -> None:
+        """プライマリ（get_operating_cash_flow）が値を返す場合、
+        collect_symbol は _extract_operating_cashflow_fallback を呼ばない。
+        このテストでは fallback 関数単体を検証: 呼ばれた場合でも有効な値を返す。"""
+        # fallback に valid な CF データを渡した場合は正常に値を返す
+        df = pd.DataFrame(
+            [
+                {
+                    "concept": "NetCashProvidedByUsedInOperatingActivities",
+                    "label": "Net Cash from Operating Activities",
+                    "2025-09-30": 99_000_000_000.0,
+                }
+            ]
+        )
+        mock_financials = self._make_financials_mock(df)
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result == pytest.approx(99_000_000_000.0)
+
+    def test_正常系_フォールバック成功時に値を返す(self) -> None:
+        """CF_LABEL_FALLBACK のキーが cashflow_statement DataFrame の
+        concept 列に存在する場合、該当する float 値を返す。"""
+        expected_value = 12_345_678.0
+        df = pd.DataFrame(
+            [
+                {
+                    "concept": "NetCashProvidedByUsedInOperatingActivities",
+                    "label": "Net Cash from Operating Activities",
+                    "2024-12-31": expected_value,
+                }
+            ]
+        )
+        mock_financials = self._make_financials_mock(df)
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result == pytest.approx(expected_value)
+
+    def test_正常系_フォールバックも一致なしの場合はNoneを返す(self) -> None:
+        """CF_LABEL_FALLBACK のどのキーも concept 列に存在しない場合は None。"""
+        df = pd.DataFrame(
+            [
+                {
+                    "concept": "SomeOtherUnknownConcept",
+                    "label": "Some Other Concept",
+                    "2024-12-31": 100.0,
+                }
+            ]
+        )
+        mock_financials = self._make_financials_mock(df)
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result is None
+
+    def test_正常系_cashflow_statementがNoneの場合はNoneを返す(self) -> None:
+        """cashflow_statement() が None を返す場合は None。"""
+        mock_financials = self._make_financials_mock(None)
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result is None
+
+    def test_正常系_空DataFrameの場合はNoneを返す(self) -> None:
+        """cashflow_statement の DataFrame が空の場合は None。"""
+        mock_financials = self._make_financials_mock(pd.DataFrame())
+        result = _extract_operating_cashflow_fallback(mock_financials)
+        assert result is None
