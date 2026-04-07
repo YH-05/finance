@@ -13,6 +13,7 @@ session : httpx-based HTTP session with rate limiting and retry logic.
 client : High-level API client with caching.
 cache : Cache helper with TTL constants.
 rate_limiter : Dual-window sliding rate limiter (sync and async).
+key_rotator : Usage-based API key rotator for free-tier key pooling.
 parser : JSON response parsing functions.
 
 Public API
@@ -124,6 +125,7 @@ from market.alphavantage.errors import (
     AlphaVantageRateLimitError,
     AlphaVantageValidationError,
 )
+from market.alphavantage.key_rotator import KeyRotator
 from market.alphavantage.models import (
     AnnualEarningsRecord,
     BalanceSheetRecord,
@@ -205,6 +207,7 @@ __all__ = [
     "FundamentalFunction",
     "IncomeStatementRecord",
     "Interval",
+    "KeyRotator",
     "OutputSize",
     "QuarterlyEarningsRecord",
     "RetryConfig",

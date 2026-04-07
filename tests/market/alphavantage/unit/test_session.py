@@ -29,6 +29,7 @@ from market.alphavantage.errors import (
     AlphaVantageAuthError,
     AlphaVantageRateLimitError,
 )
+from market.alphavantage.key_rotator import KeyRotator
 from market.alphavantage.session import AlphaVantageSession
 from market.alphavantage.types import AlphaVantageConfig, RetryConfig
 
@@ -160,21 +161,23 @@ class TestAPIKeyInjection:
             json_data={"Meta Data": {}, "Time Series (Daily)": {}},
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(
                 session._client, "get", return_value=mock_response
-            ) as mock_get:
-                session.get(
-                    _AV_URL,
-                    params={"function": "TIME_SERIES_DAILY", "symbol": "AAPL"},
-                )
+            ) as mock_get,
+        ):
+            session.get(
+                _AV_URL,
+                params={"function": "TIME_SERIES_DAILY", "symbol": "AAPL"},
+            )
 
-                # Verify API key was added to params
-                call_kwargs = mock_get.call_args
-                actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
-                    "params"
-                )
-                assert actual_params["apikey"] == "test-api-key"
+            # Verify API key was added to params
+            call_kwargs = mock_get.call_args
+            actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
+                "params"
+            )
+            assert actual_params["apikey"] == "test-api-key"
 
     def test_正常系_環境変数からAPIキー取得(self) -> None:
         """API key is read from environment variable when not in config."""
@@ -188,23 +191,23 @@ class TestAPIKeyInjection:
             json_data={"Meta Data": {}, "Time Series (Daily)": {}},
         )
 
-        with patch.dict(  # noqa: SIM117
-            "os.environ", {"ALPHA_VANTAGE_API_KEY": "env-api-key"}
+        with (
+            patch.dict("os.environ", {"ALPHA_VANTAGE_API_KEY": "env-api-key"}),
+            AlphaVantageSession(config=config) as session,
+            patch.object(
+                session._client, "get", return_value=mock_response
+            ) as mock_get,
         ):
-            with AlphaVantageSession(config=config) as session:
-                with patch.object(
-                    session._client, "get", return_value=mock_response
-                ) as mock_get:
-                    session.get(
-                        _AV_URL,
-                        params={"function": "TIME_SERIES_DAILY"},
-                    )
+            session.get(
+                _AV_URL,
+                params={"function": "TIME_SERIES_DAILY"},
+            )
 
-                    call_kwargs = mock_get.call_args
-                    actual_params = call_kwargs.kwargs.get("params") or call_kwargs[
-                        1
-                    ].get("params")
-                    assert actual_params["apikey"] == "env-api-key"
+            call_kwargs = mock_get.call_args
+            actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
+                "params"
+            )
+            assert actual_params["apikey"] == "env-api-key"
 
     def test_異常系_APIキー未設定でAuthError(self) -> None:
         """Raises AlphaVantageAuthError when API key is missing."""
@@ -215,13 +218,15 @@ class TestAPIKeyInjection:
             timeout=5.0,
         )
 
-        with patch.dict("os.environ", {}, clear=True):  # noqa: SIM117
-            with AlphaVantageSession(config=config) as session:
-                with pytest.raises(AlphaVantageAuthError, match="API key"):
-                    session.get(
-                        _AV_URL,
-                        params={"function": "TIME_SERIES_DAILY"},
-                    )
+        with (
+            patch.dict("os.environ", {}, clear=True),
+            AlphaVantageSession(config=config) as session,
+            pytest.raises(AlphaVantageAuthError, match="API key"),
+        ):
+            session.get(
+                _AV_URL,
+                params={"function": "TIME_SERIES_DAILY"},
+            )
 
 
 # =============================================================================
@@ -274,10 +279,12 @@ class TestSSRFPrevention:
             json_data={"Meta Data": {}},
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                # Should not raise
-                session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+        ):
+            # Should not raise
+            session.get(_AV_URL)
 
 
 # =============================================================================
@@ -302,10 +309,12 @@ class TestHTTP200ErrorDetection:
             },
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                with pytest.raises(AlphaVantageRateLimitError):
-                    session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+            pytest.raises(AlphaVantageRateLimitError),
+        ):
+            session.get(_AV_URL)
 
     def test_異常系_ErrorMessageキーでAPIError(
         self,
@@ -320,10 +329,12 @@ class TestHTTP200ErrorDetection:
             },
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                with pytest.raises(AlphaVantageAPIError):
-                    session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+            pytest.raises(AlphaVantageAPIError),
+        ):
+            session.get(_AV_URL)
 
     def test_異常系_ErrorMessageにinvalid_api_keyでAuthError(
         self,
@@ -340,10 +351,12 @@ class TestHTTP200ErrorDetection:
             },
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                with pytest.raises(AlphaVantageAuthError):
-                    session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+            pytest.raises(AlphaVantageAuthError),
+        ):
+            session.get(_AV_URL)
 
     def test_異常系_InformationキーでAuthError(
         self,
@@ -358,10 +371,12 @@ class TestHTTP200ErrorDetection:
             },
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                with pytest.raises(AlphaVantageAuthError):
-                    session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+            pytest.raises(AlphaVantageAuthError),
+        ):
+            session.get(_AV_URL)
 
     def test_正常系_エラーキーなしで正常応答(
         self,
@@ -372,10 +387,12 @@ class TestHTTP200ErrorDetection:
             json_data={"Meta Data": {}, "Time Series (Daily)": {}},
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                response = session.get(_AV_URL)
-                assert response.status_code == 200
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+        ):
+            response = session.get(_AV_URL)
+            assert response.status_code == 200
 
 
 # =============================================================================
@@ -397,10 +414,12 @@ class TestHTTPStatusErrorDetection:
             headers={"Retry-After": "60"},
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                with pytest.raises(AlphaVantageRateLimitError):
-                    session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+            pytest.raises(AlphaVantageRateLimitError),
+        ):
+            session.get(_AV_URL)
 
     def test_異常系_HTTP500でAPIError(
         self,
@@ -412,10 +431,12 @@ class TestHTTPStatusErrorDetection:
             text="Internal Server Error",
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                with pytest.raises(AlphaVantageAPIError):
-                    session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+            pytest.raises(AlphaVantageAPIError),
+        ):
+            session.get(_AV_URL)
 
     def test_異常系_HTTP403でAPIError(
         self,
@@ -427,10 +448,12 @@ class TestHTTPStatusErrorDetection:
             text="Forbidden",
         )
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                with pytest.raises(AlphaVantageAPIError):
-                    session.get(_AV_URL)
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+            pytest.raises(AlphaVantageAPIError),
+        ):
+            session.get(_AV_URL)
 
 
 # =============================================================================
@@ -448,13 +471,15 @@ class TestPoliteDelay:
         """First request has no polite delay."""
         mock_response = _make_mock_response(json_data={"Meta Data": {}})
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                start = time.monotonic()
-                session.get(_AV_URL)
-                elapsed = time.monotonic() - start
-                # Should complete quickly with zero delay config
-                assert elapsed < 1.0
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+        ):
+            start = time.monotonic()
+            session.get(_AV_URL)
+            elapsed = time.monotonic() - start
+            # Should complete quickly with zero delay config
+            assert elapsed < 1.0
 
     def test_正常系_ポライトディレイが適用される(self) -> None:
         """Polite delay is applied between consecutive requests."""
@@ -466,14 +491,16 @@ class TestPoliteDelay:
         )
         mock_response = _make_mock_response(json_data={"Meta Data": {}})
 
-        with AlphaVantageSession(config=config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                session.get(_AV_URL)
-                start = time.monotonic()
-                session.get(_AV_URL)
-                elapsed = time.monotonic() - start
-                # Second request should have at least polite_delay
-                assert elapsed >= 0.09  # Allow small tolerance
+        with (
+            AlphaVantageSession(config=config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+        ):
+            session.get(_AV_URL)
+            start = time.monotonic()
+            session.get(_AV_URL)
+            elapsed = time.monotonic() - start
+            # Second request should have at least polite_delay
+            assert elapsed >= 0.09  # Allow small tolerance
 
 
 # =============================================================================
@@ -491,12 +518,14 @@ class TestRateLimiterIntegration:
         """Rate limiter acquire() is called before each request."""
         mock_response = _make_mock_response(json_data={"Meta Data": {}})
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._rate_limiter, "acquire") as mock_acquire:
-                mock_acquire.return_value = 0.0
-                with patch.object(session._client, "get", return_value=mock_response):
-                    session.get(_AV_URL)
-                    mock_acquire.assert_called_once()
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._rate_limiter, "acquire") as mock_acquire,
+            patch.object(session._client, "get", return_value=mock_response),
+        ):
+            mock_acquire.return_value = 0.0
+            session.get(_AV_URL)
+            mock_acquire.assert_called_once()
 
 
 # =============================================================================
@@ -573,16 +602,18 @@ class TestExponentialBackoffRetry:
         """Does not retry on client errors (4xx except 429)."""
         error_response = _make_mock_response(status_code=403, text="Forbidden")
 
-        with AlphaVantageSession(  # noqa: SIM117
-            config=zero_delay_config, retry_config=retry_config
-        ) as session:
-            with patch.object(
+        with (
+            AlphaVantageSession(
+                config=zero_delay_config, retry_config=retry_config
+            ) as session,
+            patch.object(
                 session._client, "get", return_value=error_response
-            ) as mock_get:
-                with pytest.raises(AlphaVantageAPIError):
-                    session.get_with_retry(_AV_URL)
-                # Should only be called once (no retry)
-                assert mock_get.call_count == 1
+            ) as mock_get,
+        ):
+            with pytest.raises(AlphaVantageAPIError):
+                session.get_with_retry(_AV_URL)
+            # Should only be called once (no retry)
+            assert mock_get.call_count == 1
 
     def test_正常系_RateLimitErrorはリトライ対象(
         self,
@@ -630,8 +661,118 @@ class TestJSONDecodeFailure:
         # Make .json() raise ValueError to simulate invalid JSON
         mock_response.json.side_effect = ValueError("Invalid JSON")
 
-        with AlphaVantageSession(config=zero_delay_config) as session:  # noqa: SIM117
-            with patch.object(session._client, "get", return_value=mock_response):
-                # _handle_response_body should silently return when JSON parsing fails
-                response = session.get(_AV_URL)
-                assert response.status_code == 200
+        with (
+            AlphaVantageSession(config=zero_delay_config) as session,
+            patch.object(session._client, "get", return_value=mock_response),
+        ):
+            # _handle_response_body should silently return when JSON parsing fails
+            response = session.get(_AV_URL)
+            assert response.status_code == 200
+
+
+# =============================================================================
+# TestKeyRotatorIntegration
+# =============================================================================
+
+
+class TestKeyRotatorIntegration:
+    """Tests for KeyRotator DI in AlphaVantageSession."""
+
+    def test_正常系_key_rotator指定時にnext_keyが呼ばれる(
+        self,
+        zero_delay_config: AlphaVantageConfig,
+    ) -> None:
+        """When key_rotator is provided, next_key() is called to resolve API key."""
+        rotator = KeyRotator(
+            keys=["rotator-key-1", "rotator-key-2"], daily_limit_per_key=100
+        )
+        mock_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}},
+        )
+
+        # Use a config with no api_key to ensure rotator is the only key source
+        config = AlphaVantageConfig(
+            api_key="",
+            polite_delay=0.0,
+            delay_jitter=0.0,
+            timeout=5.0,
+        )
+
+        with (
+            AlphaVantageSession(config=config, key_rotator=rotator) as session,
+            patch.object(
+                session._client, "get", return_value=mock_response
+            ) as mock_get,
+        ):
+            session.get(
+                _AV_URL, params={"function": "TIME_SERIES_DAILY", "symbol": "AAPL"}
+            )
+
+            call_kwargs = mock_get.call_args
+            actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
+                "params"
+            )
+            # The API key injected into the request must come from the rotator
+            assert actual_params["apikey"] == "rotator-key-1"
+
+    def test_正常系_key_rotatorがNoneで既存動作と完全互換(
+        self,
+        zero_delay_config: AlphaVantageConfig,
+    ) -> None:
+        """When key_rotator=None, session behaves identically to the original implementation."""
+        mock_response = _make_mock_response(
+            json_data={"Meta Data": {}, "Time Series (Daily)": {}},
+        )
+
+        # key_rotator not passed → should fall back to config.api_key
+        with (
+            AlphaVantageSession(config=zero_delay_config, key_rotator=None) as session,
+            patch.object(
+                session._client, "get", return_value=mock_response
+            ) as mock_get,
+        ):
+            session.get(_AV_URL, params={"function": "TIME_SERIES_DAILY"})
+
+            call_kwargs = mock_get.call_args
+            actual_params = call_kwargs.kwargs.get("params") or call_kwargs[1].get(
+                "params"
+            )
+            assert actual_params["apikey"] == "test-api-key"
+
+    def test_正常系_レートリミットエラー時にmark_rate_limitedが呼ばれる(
+        self,
+        zero_delay_config: AlphaVantageConfig,
+        retry_config: RetryConfig,
+    ) -> None:
+        """On AlphaVantageRateLimitError, mark_rate_limited() is called on the rotator."""
+        rotator = MagicMock(spec=KeyRotator)
+        rotator.next_key.return_value = "mock-key"
+
+        rate_limit_response = _make_mock_response(
+            status_code=429,
+            text="Rate limited",
+            headers={"Retry-After": "1"},
+        )
+        ok_response = _make_mock_response(json_data={"Meta Data": {}})
+
+        config = AlphaVantageConfig(
+            api_key="",
+            polite_delay=0.0,
+            delay_jitter=0.0,
+            timeout=5.0,
+        )
+
+        with (
+            AlphaVantageSession(
+                config=config, retry_config=retry_config, key_rotator=rotator
+            ) as session,
+            patch.object(
+                session._client,
+                "get",
+                side_effect=[rate_limit_response, ok_response],
+            ),
+        ):
+            session.get_with_retry(_AV_URL)
+
+            # mark_rate_limited() must have been called exactly once after the 429
+            rotator.mark_rate_limited.assert_called_once()

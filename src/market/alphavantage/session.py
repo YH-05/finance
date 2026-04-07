@@ -25,7 +25,7 @@ from __future__ import annotations
 import os
 import random
 import time
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 import httpx
@@ -44,6 +44,9 @@ from market.alphavantage.errors import (
 from market.alphavantage.rate_limiter import DualWindowRateLimiter
 from market.alphavantage.types import AlphaVantageConfig, RetryConfig
 from utils_core.logging import get_logger
+
+if TYPE_CHECKING:
+    from market.alphavantage.key_rotator import KeyRotator
 
 logger = get_logger(__name__)
 
@@ -84,6 +87,7 @@ class AlphaVantageSession:
         self,
         config: AlphaVantageConfig | None = None,
         retry_config: RetryConfig | None = None,
+        key_rotator: KeyRotator | None = None,
     ) -> None:
         """Initialize AlphaVantageSession with configuration.
 
@@ -93,9 +97,16 @@ class AlphaVantageSession:
             Alpha Vantage configuration. Defaults to ``AlphaVantageConfig()``.
         retry_config : RetryConfig | None
             Retry configuration. Defaults to ``RetryConfig()``.
+        key_rotator : KeyRotator | None
+            Optional key rotator for automatic API key rotation.
+            When provided, ``_resolve_api_key()`` delegates to
+            ``key_rotator.next_key()`` instead of using ``config.api_key``
+            or the environment variable.  If ``None`` (default), existing
+            single-key behaviour is preserved.
         """
         self._config: AlphaVantageConfig = config or AlphaVantageConfig()
         self._retry_config: RetryConfig = retry_config or RetryConfig()
+        self._key_rotator: KeyRotator | None = key_rotator
         self._last_request_time: float = 0.0
 
         # Initialize rate limiter with config values
@@ -117,6 +128,7 @@ class AlphaVantageSession:
             timeout=self._config.timeout,
             max_retry_attempts=self._retry_config.max_attempts,
             base_url=BASE_URL,
+            key_rotator_enabled=key_rotator is not None,
         )
 
     # =========================================================================
@@ -245,6 +257,20 @@ class AlphaVantageSession:
                 if isinstance(e, AlphaVantageAPIError) and e.status_code < 500:
                     raise
                 last_error = e
+
+                # Notify the key rotator about the rate limit so it can rotate
+                # to the next key on the following attempt (CWE-400 mitigation).
+                if (
+                    isinstance(e, AlphaVantageRateLimitError)
+                    and self._key_rotator is not None
+                ):
+                    self._key_rotator.mark_rate_limited()
+                    logger.info(
+                        "Rate limit detected; key rotator notified",
+                        url=url,
+                        attempt=attempt + 1,
+                    )
+
                 logger.warning(
                     "Request failed, will retry",
                     url=url,
@@ -306,7 +332,11 @@ class AlphaVantageSession:
     # =========================================================================
 
     def _resolve_api_key(self) -> str:
-        """Resolve the API key from config or environment variable.
+        """Resolve the API key from key rotator, config, or environment variable.
+
+        When a ``KeyRotator`` is injected, delegates entirely to
+        ``key_rotator.next_key()``.  Otherwise falls back to ``config.api_key``
+        then the ``ALPHA_VANTAGE_API_KEY`` environment variable.
 
         Returns
         -------
@@ -316,8 +346,14 @@ class AlphaVantageSession:
         Raises
         ------
         AlphaVantageAuthError
-            If no API key is available.
+            If no API key is available (rotator is None and no key configured).
+        AlphaVantageRateLimitError
+            Propagated from ``KeyRotator.next_key()`` when all keys are
+            exhausted.
         """
+        if self._key_rotator is not None:
+            return self._key_rotator.next_key()
+
         api_key = self._config.api_key or os.environ.get(ALPHA_VANTAGE_API_KEY_ENV, "")
 
         if not api_key:

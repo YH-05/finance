@@ -29,7 +29,7 @@ class TestBuildParser:
         args = parser.parse_args([])
         assert args.days_back == 7
         assert args.days_forward == 7
-        assert args.av_budget == 25
+        assert args.av_budget is None  # auto-computed from key count when not specified
         assert args.phase is None
         assert args.skip_phases is None
         assert args.status is False

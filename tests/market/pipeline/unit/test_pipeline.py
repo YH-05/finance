@@ -26,6 +26,65 @@ from market.pipeline.models import PhaseResult, PipelineResult
 from market.pipeline.pipeline import EarningsPipeline
 
 # =============================================================================
+# Wave3: KeyRotator自動計算・reset_failed統合テスト (#3892)
+# =============================================================================
+
+
+class TestEarningsPipelineKeyRotatorIntegration:
+    """Tests for KeyRotator auto-injection and budget auto-calculation (Issue #3892)."""
+
+    def test_正常系_4キー設定時にav_daily_budgetが100に自動計算される(
+        self, mock_collection_queue: MagicMock
+    ) -> None:
+        """4 keys * 25 req/key = 100 total budget when key_rotator is injected."""
+        mock_rotator = MagicMock()
+        mock_rotator.total_budget = 100
+
+        pipeline = EarningsPipeline(
+            key_rotator=mock_rotator, queue=mock_collection_queue
+        )
+        status = pipeline.get_status()
+
+        assert status["av_daily_budget"] == 100
+
+    def test_正常系_Phase2開始前にreset_failedがpriority_boost10で呼ばれる(
+        self, mock_collection_queue: MagicMock
+    ) -> None:
+        """reset_failed(priority_boost=10) must be called at the beginning of run_phase2."""
+        mock_collection_queue.get_pending.return_value = []
+        pipeline = EarningsPipeline(queue=mock_collection_queue)
+        mock_av = MagicMock()
+
+        with patch(
+            "market.alphavantage.collector.AlphaVantageCollector",
+        ) as MockCollector:
+            MockCollector.return_value = mock_av
+            pipeline.run_phase2()
+
+        mock_collection_queue.reset_failed.assert_called_once_with(priority_boost=10)
+
+    def test_正常系_key_rotatorがAlphaVantageCollectorに注入される(
+        self, mock_collection_queue: MagicMock
+    ) -> None:
+        """AlphaVantageCollector must receive the key_rotator from EarningsPipeline."""
+        mock_rotator = MagicMock()
+        mock_rotator.total_budget = 50
+        mock_collection_queue.get_pending.return_value = []
+
+        pipeline = EarningsPipeline(
+            key_rotator=mock_rotator, queue=mock_collection_queue
+        )
+
+        with patch(
+            "market.alphavantage.collector.AlphaVantageCollector",
+        ) as MockCollector:
+            MockCollector.return_value = MagicMock()
+            pipeline.run_phase2()
+
+        MockCollector.assert_called_once_with(key_rotator=mock_rotator)
+
+
+# =============================================================================
 # Helper
 # =============================================================================
 

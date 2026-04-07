@@ -222,7 +222,7 @@ class NasdaqSession:
         )
 
         # 3. Execute request
-        response: curl_requests.Response = self._session.request(
+        response: curl_requests.Response = self._session.request(  # type: ignore[assignment]
             "GET",
             url,
             headers=headers,

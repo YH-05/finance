@@ -42,8 +42,8 @@ class TestDualWindowRateLimiterInit:
     def test_正常系_デフォルト値で初期化できる(self) -> None:
         """デフォルトのリクエスト制限で初期化できること。"""
         limiter = DualWindowRateLimiter()
-        assert limiter.available_minute == 25
-        assert limiter.available_hour == 500
+        assert limiter.available_minute == 5
+        assert limiter.available_hour == 20
 
     def test_正常系_カスタム値で初期化できる(self) -> None:
         """カスタムのリクエスト制限で初期化できること。"""
@@ -312,8 +312,8 @@ class TestAsyncDualWindowRateLimiterInit:
     def test_正常系_デフォルト値で初期化できる(self) -> None:
         """デフォルトのリクエスト制限で初期化できること。"""
         limiter = AsyncDualWindowRateLimiter()
-        assert limiter.available_minute == 25
-        assert limiter.available_hour == 500
+        assert limiter.available_minute == 5
+        assert limiter.available_hour == 20
 
     def test_正常系_カスタム値で初期化できる(self) -> None:
         """カスタムのリクエスト制限で初期化できること。"""

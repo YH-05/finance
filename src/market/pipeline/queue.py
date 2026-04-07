@@ -377,7 +377,7 @@ class CollectionQueue:
         """
         self._update_status(symbol, earnings_date, source, "skipped")
 
-    def reset_failed(self, max_attempts: int = 3) -> int:
+    def reset_failed(self, max_attempts: int = 3, priority_boost: int = 0) -> int:
         """Reset failed entries with fewer than ``max_attempts`` back to pending.
 
         Only entries where ``attempts < max_attempts`` are reset; entries
@@ -389,6 +389,12 @@ class CollectionQueue:
             Maximum number of attempts allowed. Entries with
             ``attempts >= max_attempts`` are **not** reset.
             Default is ``3``.
+        priority_boost : int
+            Amount to add to the ``priority`` column of each reset entry.
+            Use a positive value to ensure previously-failed entries are
+            processed before newly-enqueued ones on the next run.
+            Default is ``0`` (no change to priority, preserving existing
+            behaviour).
 
         Returns
         -------
@@ -408,32 +414,39 @@ class CollectionQueue:
         >>> q.mark_failed("AAPL", "2026-04-30", "nasdaq", "timeout")
         >>> q.reset_failed(max_attempts=3)
         1
+        >>> q.mark_failed("AAPL", "2026-04-30", "nasdaq", "timeout")
+        >>> q.reset_failed(max_attempts=3, priority_boost=10)
+        1
         """
+        # Count eligible entries before the update for an accurate reset count
+        count_sql = (
+            f"SELECT COUNT(*) AS cnt FROM {TABLE_NC_COLLECTION_QUEUE}"  # nosec B608
+            " WHERE status='failed' AND attempts < ?"
+        )
+        count_rows = self._client.execute(count_sql, (max_attempts,))
+        reset_count = int(count_rows[0]["cnt"]) if count_rows else 0
+
         now = _now_iso()
         sql = (
             f"UPDATE {TABLE_NC_COLLECTION_QUEUE}"  # nosec B608
-            " SET status='pending', error_message=NULL, updated_at=?"
+            " SET status='pending', priority=priority+?, error_message=NULL, updated_at=?"
             " WHERE status='failed' AND attempts < ?"
         )
         try:
-            self._client.execute(sql, (now, max_attempts))
+            self._client.execute(sql, (priority_boost, now, max_attempts))
         except Exception as exc:
             raise QueueError(
                 f"Failed to reset failed entries: {exc}",
-                context={"max_attempts": max_attempts},
+                context={
+                    "max_attempts": max_attempts,
+                    "priority_boost": priority_boost,
+                },
             ) from exc
-
-        # Count how many pending entries now exist (approximation via re-query)
-        count_sql = (
-            f"SELECT COUNT(*) AS cnt FROM {TABLE_NC_COLLECTION_QUEUE}"  # nosec B608
-            " WHERE status='pending' AND updated_at=?"
-        )
-        rows = self._client.execute(count_sql, (now,))
-        reset_count = int(rows[0]["cnt"]) if rows else 0
         logger.info(
             "Failed queue entries reset to pending",
             reset_count=reset_count,
             max_attempts=max_attempts,
+            priority_boost=priority_boost,
         )
         return reset_count
 

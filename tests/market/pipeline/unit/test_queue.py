@@ -223,6 +223,32 @@ class TestCollectionQueueResetFailed:
         queue = CollectionQueue(db_path=tmp_db_path)
         assert queue.reset_failed() == 0
 
+    def test_正常系_priority_boost指定時にリセット後のpriorityが加算される(
+        self, tmp_db_path: Path
+    ) -> None:
+        """priority_boost=10 指定時、リセットされたエントリの priority が +10."""
+        queue = CollectionQueue(db_path=tmp_db_path)
+        queue.enqueue("AAPL", "2026-04-30", ["nasdaq"], priority=5)
+        queue.mark_failed("AAPL", "2026-04-30", "nasdaq", "timeout")
+        reset_count = queue.reset_failed(max_attempts=3, priority_boost=10)
+        assert reset_count == 1
+        pending = queue.get_pending("nasdaq")
+        assert len(pending) == 1
+        assert pending[0].priority == 15  # 5 + 10
+
+    def test_正常系_priority_boost_0はデフォルト動作と同一(
+        self, tmp_db_path: Path
+    ) -> None:
+        """priority_boost=0（デフォルト）で既存動作と同一."""
+        queue = CollectionQueue(db_path=tmp_db_path)
+        queue.enqueue("AAPL", "2026-04-30", ["nasdaq"], priority=7)
+        queue.mark_failed("AAPL", "2026-04-30", "nasdaq", "timeout")
+        reset_count = queue.reset_failed(max_attempts=3, priority_boost=0)
+        assert reset_count == 1
+        pending = queue.get_pending("nasdaq")
+        assert len(pending) == 1
+        assert pending[0].priority == 7  # 変化なし
+
 
 # =============================================================================
 # get_stats tests

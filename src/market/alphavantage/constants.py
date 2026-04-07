@@ -45,7 +45,23 @@ response body content to this length.
 # ---------------------------------------------------------------------------
 
 ALPHA_VANTAGE_API_KEY_ENV: Final[str] = "ALPHA_VANTAGE_API_KEY"
-"""Environment variable name for Alpha Vantage API key."""
+"""Environment variable name for Alpha Vantage API key (single-key fallback)."""
+
+ALPHA_VANTAGE_API_KEYS_ENV: Final[str] = "ALPHA_VANTAGE_API_KEYS"
+"""Environment variable name for comma-separated Alpha Vantage API keys.
+
+When set, multiple keys are parsed and used for rotation.
+Takes precedence over ``ALPHA_VANTAGE_API_KEY_ENV``.
+
+Example: ``ALPHA_VANTAGE_API_KEYS=key1,key2,key3``
+"""
+
+DEFAULT_DAILY_LIMIT_PER_KEY: Final[int] = 25
+"""Default daily request limit per API key for the free tier.
+
+Alpha Vantage free tier allows 25 requests per day per key.
+With 4 keys, this gives 100 requests/day total.
+"""
 
 # ---------------------------------------------------------------------------
 # 4. Rate limit default values
@@ -88,8 +104,10 @@ DEFAULT_DELAY_JITTER: Final[float] = 0.5
 
 __all__ = [
     "ALLOWED_HOSTS",
+    "ALPHA_VANTAGE_API_KEYS_ENV",
     "ALPHA_VANTAGE_API_KEY_ENV",
     "BASE_URL",
+    "DEFAULT_DAILY_LIMIT_PER_KEY",
     "DEFAULT_DELAY_JITTER",
     "DEFAULT_POLITE_DELAY",
     "DEFAULT_REQUESTS_PER_HOUR",

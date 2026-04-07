@@ -312,8 +312,7 @@ def _run_daily(syncer: EdinetSyncer) -> int:
     # Treat it as success so launchd doesn't report spurious failures.
     failed = [r for r in results if not r.success]
     if failed and all(
-        r.stopped_reason and r.stopped_reason.startswith("rate_limit")
-        for r in failed
+        r.stopped_reason and r.stopped_reason.startswith("rate_limit") for r in failed
     ):
         return 0
 

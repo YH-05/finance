@@ -120,9 +120,13 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--av-budget",
         type=int,
-        default=25,
+        default=None,
         metavar="INT",
-        help="Alpha Vantage daily API-call budget. (default: 25)",
+        help=(
+            "Alpha Vantage daily API-call budget. "
+            "When omitted, automatically computed from the number of configured API keys "
+            "(key_count * 25). (default: auto)"
+        ),
     )
     parser.add_argument(
         "--status",
@@ -212,7 +216,9 @@ def main(argv: list[str] | None = None) -> int:
     # --- --status mode ---
     if args.status:
         try:
-            pipeline = EarningsPipeline(av_daily_budget=args.av_budget)
+            pipeline = EarningsPipeline(
+                av_daily_budget=args.av_budget,
+            )
             status = pipeline.get_status()
             print(json.dumps(status, indent=2, ensure_ascii=False))
             return 0
@@ -225,8 +231,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.reset_failed:
         try:
             queue = CollectionQueue()
-            reset_count = queue.reset_failed()
-            print(f"Reset {reset_count} failed entries to pending.")
+            reset_count = queue.reset_failed(priority_boost=10)
+            print(f"Reset {reset_count} failed entries to pending (priority_boost=10).")
             return 0
         except Exception as exc:
             logger.error("reset-failed failed", exc_info=True)
@@ -239,11 +245,21 @@ def main(argv: list[str] | None = None) -> int:
     # --- --dry-run mode ---
     if args.dry_run:
         effective_phases = [p for p in [1, 2, 3, 4] if p not in (skip_phases or [])]
+        # Show the resolved budget value (auto-computed from keys when not explicit)
+        if args.av_budget is not None:
+            av_budget_display: int | str = args.av_budget
+        else:
+            try:
+                from market.alphavantage.key_rotator import KeyRotator
+
+                av_budget_display = KeyRotator().total_budget
+            except ValueError:
+                av_budget_display = "auto (keys not configured)"
         print("Dry-run mode. Would execute:")
         print(f"  phases:       {effective_phases}")
         print(f"  days_back:    {args.days_back}")
         print(f"  days_forward: {args.days_forward}")
-        print(f"  av_budget:    {args.av_budget}")
+        print(f"  av_budget:    {av_budget_display}")
         return 0
 
     # --- Normal pipeline run ---
