@@ -350,6 +350,24 @@ See Also
 FINANCIAL_FIELD_MAP : Core fields applicable to all companies.
 """
 
+SHAREHOLDING_FIELD_MAP: Final[dict[str, str]] = {
+    "symbol": "symbol",
+    "date": "date",
+    "promoterGroup": "promoter_group",
+    "fii": "fii",
+    "dii": "dii",
+    "public": "public",
+}
+"""Mapping from NSE corporates-shareholding API response keys to snake_case.
+
+The NSE shareholding API (``/api/corporates-shareholding``) returns a JSON
+array where each item contains shareholding breakdown by investor category.
+
+See Also
+--------
+market.nse.types.ShareholdingPattern : Typed dataclass for shareholding entries.
+"""
+
 EVENT_CALENDAR_FIELD_MAP: Final[dict[str, str]] = {
     "symbol": "symbol",
     "company": "company_name",
@@ -449,5 +467,6 @@ __all__ = [
     "FINANCIAL_RESULT_COLUMN_NAME_MAP",
     "INDEX_CONSTITUENTS_COLUMN_NAME_MAP",
     "PREOPEN_COLUMN_MAP",
+    "SHAREHOLDING_FIELD_MAP",
     "STOCK_LIST_COLUMN_MAP",
 ]

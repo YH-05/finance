@@ -63,8 +63,8 @@ class TestModuleExports:
         for name in __all__:
             assert hasattr(types, name), f"{name} is not defined in types module"
 
-    def test_正常系_allが8項目を含む(self) -> None:
-        """__all__ が全8型定義をエクスポートしていること。"""
+    def test_正常系_allが9項目を含む(self) -> None:
+        """__all__ が全9型定義をエクスポートしていること。"""
         expected = {
             "CorporateEvent",
             "FinancialResult",
@@ -73,6 +73,7 @@ class TestModuleExports:
             "NseConfig",
             "NseIndex",
             "RetryConfig",
+            "ShareholdingPattern",
             "StockQuote",
         }
         assert set(__all__) == expected

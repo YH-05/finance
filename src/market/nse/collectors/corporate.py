@@ -45,12 +45,16 @@ from typing import TYPE_CHECKING, Any
 
 from market.nse.collectors._base import NseCollectorMixin
 from market.nse.constants import API_BASE_URL
-from market.nse.parsers import parse_event_calendar, parse_financial_results
+from market.nse.parsers import (
+    parse_event_calendar,
+    parse_financial_results,
+    parse_shareholding_pattern,
+)
 from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from market.nse.session import NseSession
-    from market.nse.types import CorporateEvent, FinancialResult
+    from market.nse.types import CorporateEvent, FinancialResult, ShareholdingPattern
 
 logger = get_logger(__name__)
 
@@ -58,6 +62,7 @@ logger = get_logger(__name__)
 _FINANCIAL_RESULTS_ENDPOINT: str = f"{API_BASE_URL}/results-comparision"
 _EVENT_CALENDAR_ENDPOINT: str = f"{API_BASE_URL}/event-calendar"
 _SEARCH_ENDPOINT: str = f"{API_BASE_URL}/search/autocomplete"
+_SHAREHOLDING_ENDPOINT: str = f"{API_BASE_URL}/corporates-shareholding"
 
 
 class CorporateCollector(NseCollectorMixin):
@@ -233,6 +238,85 @@ class CorporateCollector(NseCollectorMixin):
             )
 
             return events
+        finally:
+            if should_close:
+                session.close()
+
+    def get_shareholding_pattern(
+        self,
+        symbol: str,
+    ) -> list[ShareholdingPattern]:
+        """Fetch shareholding pattern for an NSE symbol.
+
+        Sends a GET request to the NSE corporates-shareholding endpoint
+        and parses the JSON response into a list of ``ShareholdingPattern``
+        dataclasses containing promoter / FII / DII / public holding
+        percentages per quarter.
+
+        Parameters
+        ----------
+        symbol : str
+            NSE stock symbol (e.g., ``"RELIANCE"`` for Reliance Industries).
+
+        Returns
+        -------
+        list[ShareholdingPattern]
+            A list of ``ShareholdingPattern`` frozen dataclasses, one per
+            quarterly reporting period, ordered by the API response order
+            (most recent first).
+
+        Raises
+        ------
+        NseParseError
+            If the JSON response cannot be parsed.
+        NseAPIError
+            If the API returns an error status code.
+        NseRateLimitError
+            If rate limiting is detected.
+        NseCookieError
+            If the NSE session cookie is expired.
+
+        Examples
+        --------
+        >>> collector = CorporateCollector()
+        >>> patterns = collector.get_shareholding_pattern("RELIANCE")
+        >>> patterns[0].symbol
+        'RELIANCE'
+        >>> patterns[0].promoter_group
+        '50.30'
+        """
+        logger.info(
+            "Fetching shareholding pattern",
+            symbol=symbol,
+        )
+
+        session, should_close = self._get_session()
+        try:
+            response = session.get_with_retry(
+                _SHAREHOLDING_ENDPOINT,
+                params={"symbol": symbol},
+            )
+
+            json_data: Any = response.json()
+
+            # NSE may return a list directly or wrap it in a dict
+            data_list: list[dict[str, Any]]
+            if isinstance(json_data, list):
+                data_list = json_data
+            elif isinstance(json_data, dict) and "data" in json_data:
+                data_list = json_data["data"]
+            else:
+                data_list = []
+
+            patterns = parse_shareholding_pattern(data_list)
+
+            logger.info(
+                "Shareholding pattern fetched",
+                symbol=symbol,
+                count=len(patterns),
+            )
+
+            return patterns
         finally:
             if should_close:
                 session.close()

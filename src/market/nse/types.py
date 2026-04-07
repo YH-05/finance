@@ -439,6 +439,52 @@ class FinancialResult:
     broadcast_date: str
 
 
+@dataclass(frozen=True)
+class ShareholdingPattern:
+    """Shareholding pattern record from NSE corporate filings.
+
+    Stores shareholding breakdown by investor category for an
+    NSE-listed company at a specific quarterly date.
+
+    Parameters
+    ----------
+    symbol : str
+        NSE stock symbol (e.g. ``"RELIANCE"``).
+    date : str
+        Reporting date string as returned by the API (e.g. ``"31-Dec-2024"``).
+    promoter_group : str
+        Promoter & promoter group holding percentage (e.g. ``"50.30"``).
+    fii : str
+        Foreign Institutional Investors holding percentage (e.g. ``"23.45"``).
+    dii : str
+        Domestic Institutional Investors holding percentage (e.g. ``"12.10"``).
+    public : str
+        Public / retail holding percentage (e.g. ``"14.15"``).
+
+    Examples
+    --------
+    >>> pattern = ShareholdingPattern(
+    ...     symbol="RELIANCE",
+    ...     date="31-Dec-2024",
+    ...     promoter_group="50.30",
+    ...     fii="23.45",
+    ...     dii="12.10",
+    ...     public="14.15",
+    ... )
+    >>> pattern.symbol
+    'RELIANCE'
+    >>> pattern.promoter_group
+    '50.30'
+    """
+
+    symbol: str
+    date: str
+    promoter_group: str
+    fii: str
+    dii: str
+    public: str
+
+
 # =============================================================================
 # Module exports
 # =============================================================================
@@ -451,5 +497,6 @@ __all__ = [
     "NseConfig",
     "NseIndex",
     "RetryConfig",
+    "ShareholdingPattern",
     "StockQuote",
 ]
