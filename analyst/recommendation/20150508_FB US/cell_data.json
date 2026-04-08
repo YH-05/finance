@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "BUY",
+    "COMPANY_NAME": "Facebook, Inc. Class A",
+    "STOCK_PRICE": 78.77,
+    "Date": 20150501.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B7TL820",
+    "Mkt_Cap_USD_mm": 157661.5,
+    "GICS_Sector": "Software & Services",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 5.523516,
+    "ITG_RIM-2": 5.513419,
+    "ITG_RIM-3": 5.503321,
+    "ITG_rank_RIM-1": 2.0,
+    "ITG_rank_RIM-2": 2.0,
+    "ITG_rank_RIM-3": 2.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.07424986,
+    "Rel_3M": -0.03029811,
+    "Rel_6M": 0.005960703,
+    "Rel_1Y": 0.2883905,
+    "Rel_3Y": null,
+    "Rel_5Y": null,
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.0811812,
+    "RIM-2_Discount": 0.08110335,
+    "RIM-3_Discount": 0.0810255,
+    "Cash_per_Price_%": 1.930051,
+    "PER_N12M": 35.5632
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 29267.99,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.0811812,
+    "RIM-2_Discount": 0.08110335,
+    "RIM-3_Discount": 0.0810255,
+    "Cash_per_Price_%": 1.930051,
+    "PER_N12M": 35.5632
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 5089.0,
+      "FY-1": 7872.0,
+      "FY0": 12466.0,
+      "FY1": 17032.28,
+      "FY2": 22621.12,
+      "FY3": 29267.99
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.5468658,
+      "FY0": 0.5835874,
+      "FY1": 0.3662983,
+      "FY2": 0.3281325,
+      "FY3": 0.2938348
+    },
+    "Net_Income": {
+      "FY-2": 1317.0,
+      "FY-1": 2202.0,
+      "FY0": 4713.0,
+      "FY1": 5680.200000000001,
+      "FY2": 7735.568,
+      "FY3": 10585.159
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.6719818,
+      "FY0": 1.140327,
+      "FY1": 0.2052196,
+      "FY2": 0.3618479,
+      "FY3": 0.3683751
+    },
+    "Net_Margin": {
+      "FY-2": 0.25879347612497544,
+      "FY-1": 0.27972560975609756,
+      "FY0": 0.3780683459008503,
+      "FY1": 0.3334961614064589,
+      "FY2": 0.3419622016946995,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.3368905,
+      "FY-1": 0.4398994,
+      "FY0": 0.3102244,
+      "FY1": 0.3497761,
+      "FY2": 0.3871478,
+      "FY3": 0.4116308
+    },
+    "Asset__Equity": {
+      "FY-2": 1.273875,
+      "FY-1": 1.156758,
+      "FY0": 1.077568,
+      "FY1": 1.081716,
+      "FY2": 1.075734,
+      "FY3": 1.013289
+    },
+    "ROE": {
+      "FY-2": 10.977683,
+      "FY-1": 14.228921,
+      "FY0": 14.620275,
+      "FY1": 13.620448,
+      "FY2": 15.109206,
+      "FY3": 15.352803
+    }
+  },
+  "_meta": {
+    "source_file": "1746_20150508+FB+US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
