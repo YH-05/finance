@@ -119,7 +119,9 @@ class TestExtractOperatingCashflowFallbackProperty:
 class TestSafeFloatProperty:
     """Hypothesis property tests for _safe_float."""
 
-    @given(value=st.one_of(st.text(), st.integers(), st.floats(), st.none(), st.binary()))
+    @given(
+        value=st.one_of(st.text(), st.integers(), st.floats(), st.none(), st.binary())
+    )
     @settings(max_examples=300)
     def test_プロパティ_任意入力で例外が発生しない(self, value: object) -> None:
         """任意の型・値を渡しても例外を送出しないこと（クラッシュ安全性）。"""
