@@ -399,44 +399,56 @@ class TestNseConfigBoundaryProperty:
 # parse_shareholding_pattern properties
 # =============================================================================
 
-# Strategy: arbitrary dict with text keys and text values
-_shareholding_item_strategy = st.dictionaries(
+# Strategy: arbitrary nested dict mimicking NextApi getShareholdingPattern response
+# Each value is a dict with arbitrary text keys/values (simulating record dicts)
+_shareholding_record_strategy = st.dictionaries(
     keys=st.text(max_size=50),
-    values=st.text(max_size=100),
+    values=st.one_of(
+        st.text(max_size=100),
+        st.dictionaries(st.text(max_size=20), st.text(max_size=50), max_size=3),
+        st.none(),
+    ),
+    max_size=10,
+)
+_shareholding_data_strategy = st.dictionaries(
+    keys=st.text(max_size=30),
+    values=_shareholding_record_strategy,
+    max_size=10,
 )
 
 
 class TestParseShareholdingPatternProperty:
     """Hypothesis property tests for parse_shareholding_pattern."""
 
-    @given(data=st.lists(_shareholding_item_strategy, max_size=20))
+    @given(data=_shareholding_data_strategy)
     @settings(max_examples=200)
-    def test_プロパティ_任意dictリストで例外が発生しない(
-        self, data: list[dict[str, str]]
+    def test_プロパティ_任意dictで例外が発生しない(
+        self, data: dict[str, dict[str, object]]
     ) -> None:
-        """任意の dict リストを渡しても例外を送出しないこと（クラッシュ安全性）。"""
-        result = parse_shareholding_pattern(data)
+        """任意の dict[str, dict] を渡しても例外を送出しないこと（クラッシュ安全性）。"""
+        result = parse_shareholding_pattern(data)  # type: ignore[arg-type]
         assert isinstance(result, list)
 
-    @given(data=st.lists(_shareholding_item_strategy, min_size=1, max_size=10))
+    @given(data=_shareholding_data_strategy)
     @settings(max_examples=100)
     def test_プロパティ_結果の全フィールドがstr型(
-        self, data: list[dict[str, str]]
+        self, data: dict[str, dict[str, object]]
     ) -> None:
         """結果の ShareholdingPattern 各フィールドが常に str 型であること。"""
-        results = parse_shareholding_pattern(data)
+        results = parse_shareholding_pattern(data)  # type: ignore[arg-type]
         for item in results:
             assert isinstance(item, ShareholdingPattern)
             assert isinstance(item.symbol, str)
             assert isinstance(item.date, str)
+            assert isinstance(item.ndsid, str)
+            assert isinstance(item.series, str)
+            assert isinstance(item.total, str)
             assert isinstance(item.promoter_group, str)
-            assert isinstance(item.fii, str)
-            assert isinstance(item.dii, str)
             assert isinstance(item.public, str)
 
     @given(
-        non_list=st.one_of(
-            st.dictionaries(st.text(), st.text()),
+        non_dict=st.one_of(
+            st.lists(st.dictionaries(st.text(), st.text()), max_size=5),
             st.integers(),
             st.text(),
             st.none(),
@@ -444,7 +456,7 @@ class TestParseShareholdingPatternProperty:
         )
     )
     @settings(max_examples=100)
-    def test_プロパティ_非リスト入力で常にNseParseError(self, non_list: object) -> None:
-        """リスト以外の入力は常に NseParseError を送出すること。"""
+    def test_プロパティ_非dict入力で常にNseParseError(self, non_dict: object) -> None:
+        """dict 以外の入力は常に NseParseError を送出すること。"""
         with pytest.raises(NseParseError):
-            parse_shareholding_pattern(non_list)  # type: ignore[arg-type]
+            parse_shareholding_pattern(non_dict)  # type: ignore[arg-type]
