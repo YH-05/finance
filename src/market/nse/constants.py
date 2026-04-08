@@ -351,17 +351,21 @@ FINANCIAL_FIELD_MAP : Core fields applicable to all companies.
 """
 
 SHAREHOLDING_FIELD_MAP: Final[dict[str, str]] = {
-    "symbol": "symbol",
-    "date": "date",
-    "promoterGroup": "promoter_group",
-    "fii": "fii",
-    "dii": "dii",
+    "ndsid": "ndsid",
+    "series": "series",
+    "Total": "total",
+    "promoter_group": "promoter_group",
     "public": "public",
 }
-"""Mapping from NSE corporates-shareholding API response keys to snake_case.
+"""Mapping from NSE NextApi getShareholdingPattern response keys to snake_case.
 
-The NSE shareholding API (``/api/corporates-shareholding``) returns a JSON
-array where each item contains shareholding breakdown by investor category.
+The NSE shareholding API
+(``/api/NextApi/apiClient/GetQuoteApi?functionName=getShareholdingPattern``)
+returns a JSON dict keyed by date strings, where each value contains
+``promoter_group`` and ``public`` as nested objects ``{"name": ..., "value": ...}``.
+
+Note that ``promoter_group`` may be absent for companies with no promoter
+holding (e.g. HDFCBANK).
 
 See Also
 --------

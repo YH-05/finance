@@ -51,7 +51,7 @@ IndexConstituent
 MarketStatus
     Market status for a single market segment.
 ShareholdingPattern
-    A shareholding breakdown record (promoter/FII/DII/public) from NSE.
+    A shareholding breakdown record (promoter/public) from NSE.
 StockQuote
     A single stock quote from NSE equity market.
 
@@ -93,7 +93,7 @@ parse_preopen_data
 parse_quote_response
     Parse NSE quote-equity JSON to StockQuote.
 parse_shareholding_pattern
-    Parse NSE corporates-shareholding JSON to list of ShareholdingPattern.
+    Parse NSE NextApi getShareholdingPattern JSON to list of ShareholdingPattern.
 parse_stock_list_csv
     Parse NSE EQUITY_L.csv content to DataFrame.
 """

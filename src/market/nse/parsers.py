@@ -93,27 +93,10 @@ _EVT_DATE_KEY: str = next(
     (k for k, v in EVENT_CALENDAR_FIELD_MAP.items() if v == "date"), "date"
 )
 
-# SHAREHOLDING_FIELD_MAP reverse lookups for parse_shareholding_pattern()
-# AIDEV-NOTE: Pre-computed once at module load to avoid O(n×m) per-record scans
-_SHP_SYM_KEY: str = next(
-    (k for k, v in SHAREHOLDING_FIELD_MAP.items() if v == "symbol"), "symbol"
-)
-_SHP_DATE_KEY: str = next(
-    (k for k, v in SHAREHOLDING_FIELD_MAP.items() if v == "date"), "date"
-)
-_SHP_PROMOTER_KEY: str = next(
-    (k for k, v in SHAREHOLDING_FIELD_MAP.items() if v == "promoter_group"),
-    "promoterGroup",
-)
-_SHP_FII_KEY: str = next(
-    (k for k, v in SHAREHOLDING_FIELD_MAP.items() if v == "fii"), "fii"
-)
-_SHP_DII_KEY: str = next(
-    (k for k, v in SHAREHOLDING_FIELD_MAP.items() if v == "dii"), "dii"
-)
-_SHP_PUBLIC_KEY: str = next(
-    (k for k, v in SHAREHOLDING_FIELD_MAP.items() if v == "public"), "public"
-)
+# AIDEV-NOTE: SHAREHOLDING_FIELD_MAP is imported for public API completeness
+# but the shareholding parser now uses direct key access on the NextApi
+# response structure (dict[str, dict] keyed by date strings), so pre-computed
+# reverse lookups are no longer needed.
 
 logger = get_logger(__name__)
 
@@ -1201,72 +1184,95 @@ def parse_market_status(raw: dict[str, Any]) -> list[MarketStatus]:
 
 
 def parse_shareholding_pattern(
-    data: list[dict[str, Any]],
+    data: dict[str, dict[str, Any]],
+    *,
+    symbol: str = "",
 ) -> list[ShareholdingPattern]:
-    """Parse an NSE corporates-shareholding JSON array into ShareholdingPatterns.
+    """Parse an NSE NextApi getShareholdingPattern response.
 
-    The NSE shareholding API (``/api/corporates-shareholding``) returns a flat
-    JSON array where each item represents one quarterly shareholding record.
-    Each entry contains the promoter, FII, DII, and public holding percentages.
+    The NSE shareholding API
+    (``/api/NextApi/apiClient/GetQuoteApi?functionName=getShareholdingPattern``)
+    returns a JSON dict keyed by date strings (e.g. ``"31-Dec-2025"``).
+    Each value is a dict containing ``ndsid``, ``series``, ``Total``,
+    and nested objects ``promoter_group`` / ``public`` with ``{"name": ...,
+    "value": ...}`` structure.
+
+    ``promoter_group`` may be absent for companies with no promoter holding
+    (e.g. HDFCBANK); in that case an empty string is used.
 
     Parameters
     ----------
-    data : list[dict[str, Any]]
-        The raw JSON array from the NSE API's
-        ``/api/corporates-shareholding?symbol=X`` endpoint.
+    data : dict[str, dict[str, Any]]
+        The raw JSON dict from the NSE NextApi
+        ``getShareholdingPattern`` endpoint.
+    symbol : str, default=""
+        NSE stock symbol to attach to each record (the API response
+        does not include the symbol).
 
     Returns
     -------
     list[ShareholdingPattern]
-        A list of frozen dataclasses, one per quarterly record.
+        A list of frozen dataclasses, one per quarterly record,
+        ordered by the dict iteration order (typically most recent first).
 
     Raises
     ------
     NseParseError
-        If the input is not a list.
+        If the input is not a dict.
 
     Examples
     --------
-    >>> data = [
-    ...     {
-    ...         "symbol": "RELIANCE",
-    ...         "date": "31-Dec-2024",
-    ...         "promoterGroup": "50.30",
-    ...         "fii": "23.45",
-    ...         "dii": "12.10",
-    ...         "public": "14.15",
+    >>> data = {
+    ...     "31-Dec-2025": {
+    ...         "ndsid": "207095",
+    ...         "series": "equity",
+    ...         "Total": "100.00",
+    ...         "promoter_group": {"name": "Promoter & Promoter Group", "value": "50.01"},
+    ...         "public": {"name": "Public", "value": "49.99"},
     ...     }
-    ... ]
-    >>> patterns = parse_shareholding_pattern(data)
+    ... }
+    >>> patterns = parse_shareholding_pattern(data, symbol="RELIANCE")
     >>> len(patterns)
     1
     >>> patterns[0].symbol
     'RELIANCE'
     >>> patterns[0].promoter_group
-    '50.30'
+    '50.01'
     """
     logger.debug("Parsing NSE shareholding pattern response")
 
-    if not isinstance(data, list):
+    if not isinstance(data, dict):
         raise NseParseError(
-            f"Expected list for shareholding pattern response, got {type(data).__name__}",
+            f"Expected dict for shareholding pattern response, got {type(data).__name__}",
             raw_data=str(data)[:_MAX_RAW_DATA_LOG],
             field=None,
         )
 
     patterns: list[ShareholdingPattern] = []
 
-    for item in data:
-        if not isinstance(item, dict):
+    for date_key, record in data.items():
+        if not isinstance(record, dict):
             continue
 
+        # Extract nested object values; promoter_group may be absent
+        promoter_obj = record.get("promoter_group")
+        promoter_value = (
+            str(promoter_obj.get("value", "")) if isinstance(promoter_obj, dict) else ""
+        )
+
+        public_obj = record.get("public")
+        public_value = (
+            str(public_obj.get("value", "")) if isinstance(public_obj, dict) else ""
+        )
+
         pattern = ShareholdingPattern(
-            symbol=str(item.get(_SHP_SYM_KEY, "")),
-            date=str(item.get(_SHP_DATE_KEY, "")),
-            promoter_group=str(item.get(_SHP_PROMOTER_KEY, "")),
-            fii=str(item.get(_SHP_FII_KEY, "")),
-            dii=str(item.get(_SHP_DII_KEY, "")),
-            public=str(item.get(_SHP_PUBLIC_KEY, "")),
+            symbol=symbol,
+            date=str(date_key),
+            ndsid=str(record.get("ndsid", "")),
+            series=str(record.get("series", "equity")),
+            total=str(record.get("Total", "100.00")),
+            promoter_group=promoter_value,
+            public=public_value,
         )
         patterns.append(pattern)
 

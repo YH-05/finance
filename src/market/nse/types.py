@@ -441,48 +441,58 @@ class FinancialResult:
 
 @dataclass(frozen=True)
 class ShareholdingPattern:
-    """Shareholding pattern record from NSE corporate filings.
+    """Shareholding pattern record from NSE NextApi getShareholdingPattern.
 
-    Stores shareholding breakdown by investor category for an
-    NSE-listed company at a specific quarterly date.
+    Stores shareholding breakdown (promoter/public) for an NSE-listed
+    company at a specific quarterly date.  The NSE NextApi only provides
+    promoter and public categories; FII/DII breakdown is not available
+    from this endpoint.
 
     Parameters
     ----------
     symbol : str
-        NSE stock symbol (e.g. ``"RELIANCE"``).
+        NSE stock symbol (e.g. ``"RELIANCE"``).  Not present in the API
+        response; set from the request parameter.
     date : str
-        Reporting date string as returned by the API (e.g. ``"31-Dec-2024"``).
+        Reporting date string used as the dict key in the API response
+        (e.g. ``"31-Dec-2025"``).
+    ndsid : str
+        Internal NSE data-source identifier (e.g. ``"207095"``).
+    series : str
+        Equity series identifier (typically ``"equity"``).
+    total : str
+        Total holding percentage (typically ``"100.00"``).
     promoter_group : str
-        Promoter & promoter group holding percentage (e.g. ``"50.30"``).
-    fii : str
-        Foreign Institutional Investors holding percentage (e.g. ``"23.45"``).
-    dii : str
-        Domestic Institutional Investors holding percentage (e.g. ``"12.10"``).
+        Promoter & promoter group holding percentage (e.g. ``"50.01"``).
+        Empty string when the company has no promoter holding
+        (e.g. HDFCBANK).
     public : str
-        Public / retail holding percentage (e.g. ``"14.15"``).
+        Public / retail holding percentage (e.g. ``"49.99"``).
 
     Examples
     --------
     >>> pattern = ShareholdingPattern(
     ...     symbol="RELIANCE",
-    ...     date="31-Dec-2024",
-    ...     promoter_group="50.30",
-    ...     fii="23.45",
-    ...     dii="12.10",
-    ...     public="14.15",
+    ...     date="31-Dec-2025",
+    ...     ndsid="207095",
+    ...     series="equity",
+    ...     total="100.00",
+    ...     promoter_group="50.01",
+    ...     public="49.99",
     ... )
     >>> pattern.symbol
     'RELIANCE'
     >>> pattern.promoter_group
-    '50.30'
+    '50.01'
     """
 
     symbol: str
     date: str
-    promoter_group: str
-    fii: str
-    dii: str
-    public: str
+    ndsid: str
+    series: str = "equity"
+    total: str = "100.00"
+    promoter_group: str = ""
+    public: str = ""
 
 
 # =============================================================================

@@ -62,7 +62,7 @@ logger = get_logger(__name__)
 _FINANCIAL_RESULTS_ENDPOINT: str = f"{API_BASE_URL}/results-comparision"
 _EVENT_CALENDAR_ENDPOINT: str = f"{API_BASE_URL}/event-calendar"
 _SEARCH_ENDPOINT: str = f"{API_BASE_URL}/search/autocomplete"
-_SHAREHOLDING_ENDPOINT: str = f"{API_BASE_URL}/corporates-shareholding"
+_SHAREHOLDING_ENDPOINT: str = f"{API_BASE_URL}/NextApi/apiClient/GetQuoteApi"
 
 
 class CorporateCollector(NseCollectorMixin):
@@ -248,10 +248,10 @@ class CorporateCollector(NseCollectorMixin):
     ) -> list[ShareholdingPattern]:
         """Fetch shareholding pattern for an NSE symbol.
 
-        Sends a GET request to the NSE corporates-shareholding endpoint
-        and parses the JSON response into a list of ``ShareholdingPattern``
-        dataclasses containing promoter / FII / DII / public holding
-        percentages per quarter.
+        Sends a GET request to the NSE NextApi getShareholdingPattern
+        endpoint and parses the JSON response into a list of
+        ``ShareholdingPattern`` dataclasses containing promoter / public
+        holding percentages per quarter.
 
         Parameters
         ----------
@@ -286,7 +286,7 @@ class CorporateCollector(NseCollectorMixin):
         >>> patterns[0].symbol
         'RELIANCE'
         >>> patterns[0].promoter_group
-        '50.30'
+        '50.01'
         """
         if not symbol or not symbol.strip():
             raise ValueError("symbol must not be empty")
@@ -307,21 +307,20 @@ class CorporateCollector(NseCollectorMixin):
         try:
             response = session.get_with_retry(
                 _SHAREHOLDING_ENDPOINT,
-                params={"symbol": symbol},
+                params={
+                    "functionName": "getShareholdingPattern",
+                    "symbol": symbol,
+                    "noOfRecords": "5",
+                },
             )
 
             json_data: Any = response.json()
 
-            # NSE may return a list directly or wrap it in a dict
-            data_list: list[dict[str, Any]]
-            if isinstance(json_data, list):
-                data_list = json_data
-            elif isinstance(json_data, dict) and "data" in json_data:
-                data_list = json_data["data"]
+            # NextApi returns dict[str, dict] keyed by date strings
+            if isinstance(json_data, dict):
+                patterns = parse_shareholding_pattern(json_data, symbol=symbol)
             else:
-                data_list = []
-
-            patterns = parse_shareholding_pattern(data_list)
+                patterns = []
 
             logger.info(
                 "Shareholding pattern fetched",
