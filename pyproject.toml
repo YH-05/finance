@@ -56,6 +56,10 @@ dependencies = [
     "pygments>=2.20.0",
     "requests>=2.33.0",
     "brotli>=1.2.0",
+    "openpyxl>=3.1.5",
+    "mojimoji>=0.0.13",
+    "pillow>=12.1.1",
+    "xlwings>=0.35.0",
 ]
 [project.optional-dependencies]
 dev = [

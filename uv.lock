@@ -103,6 +103,19 @@ wheels = [
 ]
 
 [[package]]
+name = "appscript"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "lxml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ca/52/2fa70edfd98f0058219ecc2e365a3ba7aabd42db14ff9d7f44bbdcc5400d/appscript-1.4.0.tar.gz", hash = "sha256:b2c6fc770bf822ea45529c7084bc0ee340e67ab260016b01d28e0449ec8723be", size = 295279, upload-time = "2025-10-08T07:56:39.126Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c2/5f/ac82464026fb5b9b63e3f08c935ac0e983ad7723b3959b9d0187f36eed82/appscript-1.4.0-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:ddecaff061f829fcfe5b0452a272f9aa5ac1f61b3929fa18b6f0f100e8eaf306", size = 99623, upload-time = "2025-10-08T07:56:33.199Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/66/a18c2b519efa8f36d03c7e835748f13a2cef8179f6eb4e957d96e3d8c668/appscript-1.4.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:8edab6b8def4862c9582e5d8f5f72c23a3749f2d059f80e4b5ae101a53805116", size = 85545, upload-time = "2025-10-08T07:56:34.27Z" },
+]
+
+[[package]]
 name = "apscheduler"
 version = "3.11.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1846,6 +1859,20 @@ wheels = [
 ]
 
 [[package]]
+name = "mojimoji"
+version = "0.0.13"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/08/fb/ee22357cd7622fb879fac575feaffc54469ed9a0c1d9073355b1ebc62b7f/mojimoji-0.0.13.tar.gz", hash = "sha256:0e6d2fba22cc8bf132a5bdf3a964296d9287a618d09681a12868f0fd518e4230", size = 5010, upload-time = "2024-01-12T10:38:30.532Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/55/51/4f8fb6d6d96ef623d5014b8f5b006c697d045d2df5696194811246570ac9/mojimoji-0.0.13-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:9d8f1618fb9b100bba172f2629df20e6db591ce5912996ac630d215627dd7553", size = 49596, upload-time = "2024-01-12T10:37:59.259Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/12/b21c4ecf2fb5d162c0f6fde9dc401cc9a730dab4f85373ca25c350c204e7/mojimoji-0.0.13-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:ad4a2e1fb2b643ac3166f30be97a95ad1877e4670c6dc656c4ef580681b84c49", size = 46720, upload-time = "2024-01-12T10:38:00.44Z" },
+    { url = "https://files.pythonhosted.org/packages/0d/85/954d806efbead02c87320b96436d2834d7f2f164de3ef4dd7e5f71f92f71/mojimoji-0.0.13-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d001f2042073b194bad071925b7ee36d9f320b79c93b4463df87267fee986e86", size = 204364, upload-time = "2024-01-12T10:38:02.149Z" },
+    { url = "https://files.pythonhosted.org/packages/b8/bc/f262abd0bec2316cbfe972ba2a79c0d5836f0f536877fa59347a76065f80/mojimoji-0.0.13-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3c5fd38d1f4079dc54ac79f93b0e5442c660b297a3868308251ffc37beb1216b", size = 211246, upload-time = "2024-01-12T10:38:03.296Z" },
+    { url = "https://files.pythonhosted.org/packages/51/a4/5ec16d4570a4f64d4abf70d21282d4c59e0665fa0badf2793c14263765bc/mojimoji-0.0.13-cp312-cp312-win32.whl", hash = "sha256:c97ee81e4f7083df13b8ef690366e67afd8170c8f7c259161bae6ed12d41fe5b", size = 38641, upload-time = "2024-01-12T10:38:05.306Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/da/aa46aa90ddeab3a00b8c36d5f3d64b630a0a1fa8ad6468f10365ffbb80a2/mojimoji-0.0.13-cp312-cp312-win_amd64.whl", hash = "sha256:6e442d6dcfb2fc1a08eea86da80ebe71ad63fbc4217fa4faede7023c0b51d055", size = 42280, upload-time = "2024-01-12T10:38:07.045Z" },
+]
+
+[[package]]
 name = "more-itertools"
 version = "10.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3006,10 +3033,13 @@ dependencies = [
     { name = "lxml" },
     { name = "marimo" },
     { name = "matplotlib" },
+    { name = "mojimoji" },
     { name = "nbformat" },
     { name = "numpy" },
+    { name = "openpyxl" },
     { name = "pandas" },
     { name = "pandera" },
+    { name = "pillow" },
     { name = "plotly" },
     { name = "pretty-errors" },
     { name = "protobuf" },
@@ -3030,6 +3060,7 @@ dependencies = [
     { name = "trafilatura" },
     { name = "urllib3" },
     { name = "werkzeug" },
+    { name = "xlwings" },
     { name = "yfinance" },
 ]
 
@@ -3137,12 +3168,15 @@ requires-dist = [
     { name = "marimo", specifier = ">=0.19.4" },
     { name = "matplotlib", specifier = ">=3.8.0" },
     { name = "mcp", marker = "extra == 'mcp'", specifier = ">=1.0.0" },
+    { name = "mojimoji", specifier = ">=0.0.13" },
     { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=2.0.0" },
     { name = "nbformat", specifier = ">=5.10.4" },
     { name = "numpy", specifier = ">=1.26.0" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "openpyxl", marker = "extra == 'market'", specifier = ">=3.1.5" },
     { name = "pandas", specifier = ">=2.0.0,<4.0.0" },
     { name = "pandera", specifier = ">=0.30.1" },
+    { name = "pillow", specifier = ">=12.1.1" },
     { name = "pip-audit", marker = "extra == 'dev'", specifier = ">=2.10.0" },
     { name = "playwright", marker = "extra == 'playwright'", specifier = ">=1.49.0,<2.0.0" },
     { name = "plotly", specifier = ">=5.18.0" },
@@ -3180,6 +3214,7 @@ requires-dist = [
     { name = "trafilatura", specifier = ">=2.0.0" },
     { name = "urllib3", specifier = ">=2.6.3" },
     { name = "werkzeug", specifier = ">=3.1.6" },
+    { name = "xlwings", specifier = ">=0.35.0" },
     { name = "yfinance", specifier = ">=0.2.0" },
 ]
 provides-extras = ["dev", "docs", "scheduler", "mcp", "cli", "playwright", "automation", "market", "bloomberg", "kalman", "embedding", "asean"]
@@ -4233,6 +4268,28 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/61/f1/ee81806690a87dab5f5653c1f146c92bc066d7f4cebc603ef88eb9e13957/werkzeug-3.1.6.tar.gz", hash = "sha256:210c6bede5a420a913956b4791a7f4d6843a43b6fcee4dfa08a65e93007d0d25", size = 864736, upload-time = "2026-02-19T15:17:18.884Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4d/ec/d58832f89ede95652fd01f4f24236af7d32b70cab2196dfcc2d2fd13c5c2/werkzeug-3.1.6-py3-none-any.whl", hash = "sha256:7ddf3357bb9564e407607f988f683d72038551200c704012bb9a4c523d42f131", size = 225166, upload-time = "2026-02-19T15:17:17.475Z" },
+]
+
+[[package]]
+name = "xlwings"
+version = "0.35.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "appscript", marker = "sys_platform == 'darwin'" },
+    { name = "psutil", marker = "sys_platform == 'darwin'" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d9/2b/679c80e23167f7980988e2050c89c93ac5f1218079694ecdbab3770e461a/xlwings-0.35.0.tar.gz", hash = "sha256:f9850a46897228060ee1a0d7d76feb3e19076b468468625edeb1653a59d9c052", size = 2479566, upload-time = "2026-04-05T05:56:29.138Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/ed/21556e50cdb9287ecb7e0f0d63c82cbe3587a73f518108008afa0c2e94d5/xlwings-0.35.0-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:f425f8d60acb6716cf496a2c45e9d5b69dda2996403a009c2ef6cec7254552d0", size = 1357093, upload-time = "2026-04-05T05:56:51.313Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/ef/1cea3e57ad7f6fa2455b9eb8bfd7c35068f689e8ca9ecb7b4fed43b10efd/xlwings-0.35.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:519e8095157e8ac6b5dc7bf764af0bbed511bf55f361e8d1e8f9063887aa81d9", size = 1339774, upload-time = "2026-04-05T05:56:52.845Z" },
+    { url = "https://files.pythonhosted.org/packages/61/de/b05399e40ecb3a96e8e322ef2a7ed56cacdd3939262390924929a3e5562d/xlwings-0.35.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4360ac7a5c19d754d00949faf667881f020713fa9fc71cf72ef403e800d60763", size = 1398510, upload-time = "2026-04-05T05:56:54.266Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/e1/6ec07c37935008bbb47b2816bae5c99ab6be489004c7c74efef0585e4c0f/xlwings-0.35.0-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:375c6f3de3f0bf20f2ee0a9f4e06a4eb78e16610c6608b40d0c52adcd2147674", size = 1404914, upload-time = "2026-04-05T05:56:56.167Z" },
+    { url = "https://files.pythonhosted.org/packages/73/f2/8fc2acf675016dfca10e56b82b482236c1ced61fb1b6c1d4793579a07177/xlwings-0.35.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c16743f0873f3744dd9b1c181d5c869968aac519e1962fde42142e8671767eb4", size = 1409366, upload-time = "2026-04-05T05:56:57.485Z" },
+    { url = "https://files.pythonhosted.org/packages/05/34/618ca7aa54c2c4676b87c1b6808e1860717f2b37fb76a93e6153bebbec1d/xlwings-0.35.0-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:88f1581abca99902b3576583b14a268da6ede1b5555fdaac2a8405f1fd441292", size = 1570635, upload-time = "2026-04-05T05:56:58.582Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/b0/388de462e04a33bd1139b88cf852df64caf32b535af1b585ceb88f5d46ee/xlwings-0.35.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:d9f017ceb9c27edd8e0cc3a5aa6792903e6ecad37c43994b83ba1d6b09e12d93", size = 1614320, upload-time = "2026-04-05T05:56:59.758Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/61/8e13f12c59ad0e35ce4333172c1b73593dc0cac8ecf1334cd7aebd3aee1a/xlwings-0.35.0-cp312-cp312-win_amd64.whl", hash = "sha256:3478fb93022896daa9289ef86947a056efeaba4e1d58d6069b71b5e3bfeafc3c", size = 1557694, upload-time = "2026-04-05T05:57:01.248Z" },
+    { url = "https://files.pythonhosted.org/packages/84/03/9eec7b9b26626fdbcd26417e53e217f1c5cb6e4d952f7f0576e97bf30062/xlwings-0.35.0-py3-none-any.whl", hash = "sha256:297792b5e9c4c338899450bcaf935b73324ae5ef760cf09d4b91319c1f85d8d8", size = 688252, upload-time = "2026-04-05T05:57:28.158Z" },
 ]
 
 [[package]]
