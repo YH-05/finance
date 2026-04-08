@@ -50,6 +50,8 @@ IndexConstituent
     A single constituent stock within an NSE index.
 MarketStatus
     Market status for a single market segment.
+ShareholdingPattern
+    A shareholding breakdown record (promoter/FII/DII/public) from NSE.
 StockQuote
     A single stock quote from NSE equity market.
 
@@ -90,6 +92,8 @@ parse_preopen_data
     Parse NSE pre-open session JSON to DataFrame.
 parse_quote_response
     Parse NSE quote-equity JSON to StockQuote.
+parse_shareholding_pattern
+    Parse NSE corporates-shareholding JSON to list of ShareholdingPattern.
 parse_stock_list_csv
     Parse NSE EQUITY_L.csv content to DataFrame.
 """
@@ -119,6 +123,7 @@ from market.nse.parsers import (
     parse_market_status,
     parse_preopen_data,
     parse_quote_response,
+    parse_shareholding_pattern,
     parse_stock_list_csv,
 )
 from market.nse.session import NseSession
@@ -130,6 +135,7 @@ from market.nse.types import (
     NseConfig,
     NseIndex,
     RetryConfig,
+    ShareholdingPattern,
     StockQuote,
 )
 
@@ -151,6 +157,7 @@ __all__ = [
     "NseValidationError",
     "QuoteCollector",
     "RetryConfig",
+    "ShareholdingPattern",
     "StockListCollector",
     "StockQuote",
     "clean_indian_number",
@@ -163,5 +170,6 @@ __all__ = [
     "parse_market_status",
     "parse_preopen_data",
     "parse_quote_response",
+    "parse_shareholding_pattern",
     "parse_stock_list_csv",
 ]

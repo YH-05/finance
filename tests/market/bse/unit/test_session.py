@@ -31,10 +31,16 @@ Test TODO List:
 - [x] close(): セッションが閉じられる
 - [x] structlog ロガーの使用
 - [x] __all__ エクスポート
+- [x] get(): graceful=True で 403 時に None を返す（クラッシュしない）
+- [x] get(): graceful=True でタイムアウト時に None を返す（クラッシュしない）
+- [x] get(): graceful=True で geo-block 検出を構造化ログに記録する
+- [x] get(): graceful=False（デフォルト）で 403 時に BseAPIError を発生させる
+- [x] get(): graceful=False（デフォルト）でタイムアウト時に例外が伝播する
 """
 
 from unittest.mock import MagicMock, patch
 
+import httpx
 import pytest
 
 from market.bse.constants import ALLOWED_HOSTS, BASE_URL, DEFAULT_HEADERS
@@ -145,6 +151,7 @@ class TestBseSessionGet:
                 session = BseSession()
                 response = session.get(_TEST_URL)
 
+            assert response is not None
             assert response.status_code == 200
 
     def test_正常系_polite_delayがmonotonic制御で適用される(self) -> None:
@@ -386,6 +393,7 @@ class TestBseSessionURLWhitelist:
                 session = BseSession()
                 response = session.get(_TEST_URL)
 
+            assert response is not None
             assert response.status_code == 200
 
     def test_異常系_不正なホストへのリクエストがValueErrorで拒否される(self) -> None:
@@ -659,3 +667,130 @@ class TestModuleExports:
         from market.bse.session import __all__
 
         assert "BseSession" in __all__
+
+
+# =============================================================================
+# Graceful geo-block handling tests (Issue #3898)
+# =============================================================================
+
+
+class TestBseSessionGracefulGeoBlock:
+    """日本IP geo-block グレースフルハンドリングのテスト。"""
+
+    def test_正常系_graceful_Trueで403時にNoneを返す(
+        self, mock_httpx_response_403: MagicMock
+    ) -> None:
+        """geo_block_graceful=True の場合、403 レスポンスで None を返しクラッシュしないこと。"""
+        with patch("market.bse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_client.get.return_value = mock_httpx_response_403
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.bse.session.time.sleep"),
+                patch("market.bse.session.time.monotonic", return_value=0.0),
+            ):
+                session = BseSession()
+                result = session.get(_TEST_URL, geo_block_graceful=True)
+
+            assert result is None
+
+    def test_正常系_graceful_Trueでタイムアウト時にNoneを返す(self) -> None:
+        """geo_block_graceful=True の場合、TimeoutException で None を返しクラッシュしないこと。"""
+        with patch("market.bse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_client.get.side_effect = httpx.TimeoutException("Connection timed out")
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.bse.session.time.sleep"),
+                patch("market.bse.session.time.monotonic", return_value=0.0),
+            ):
+                session = BseSession()
+                result = session.get(_TEST_URL, geo_block_graceful=True)
+
+            assert result is None
+
+    def test_正常系_graceful_Trueで403時にgeo_block検出をログ記録する(
+        self, mock_httpx_response_403: MagicMock
+    ) -> None:
+        """geo_block_graceful=True の場合、403 で geo-block 検出を構造化ログに記録すること。"""
+        with patch("market.bse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_client.get.return_value = mock_httpx_response_403
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.bse.session.time.sleep"),
+                patch("market.bse.session.time.monotonic", return_value=0.0),
+                patch("market.bse.session.logger") as mock_logger,
+            ):
+                session = BseSession()
+                session.get(_TEST_URL, geo_block_graceful=True)
+
+            # structlog の構造化ログ kwargs を直接検査する
+            mock_logger.warning.assert_called_once_with(
+                "geo-block suspected: HTTP 403 received, returning None",
+                url=_TEST_URL,
+                status_code=403,
+            )
+
+    def test_正常系_graceful_Trueでタイムアウト時にgeo_block検出をログ記録する(
+        self,
+    ) -> None:
+        """geo_block_graceful=True の場合、タイムアウトで geo-block 検出を構造化ログに記録すること。"""
+        with patch("market.bse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_client.get.side_effect = httpx.TimeoutException("Connection timed out")
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.bse.session.time.sleep"),
+                patch("market.bse.session.time.monotonic", return_value=0.0),
+                patch("market.bse.session.logger") as mock_logger,
+            ):
+                session = BseSession()
+                session.get(_TEST_URL, geo_block_graceful=True)
+
+            # structlog の構造化ログ kwargs を直接検査する
+            mock_logger.warning.assert_called_once_with(
+                "geo-block suspected: request timed out, returning None",
+                url=_TEST_URL,
+                exc="Connection timed out",
+            )
+
+    def test_異常系_graceful_Falseで403時にBseAPIErrorを発生させる(
+        self, mock_httpx_response_403: MagicMock
+    ) -> None:
+        """geo_block_graceful=False（デフォルト）の場合、403 で BseAPIError が発生すること（既存動作の維持）。"""
+        with patch("market.bse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_client.get.return_value = mock_httpx_response_403
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.bse.session.time.sleep"),
+                patch("market.bse.session.time.monotonic", return_value=0.0),
+            ):
+                session = BseSession()
+
+                with pytest.raises(BseAPIError) as exc_info:
+                    session.get(_TEST_URL)
+
+                assert exc_info.value.status_code == 403
+
+    def test_異常系_graceful_Falseでタイムアウト時に例外が伝播する(self) -> None:
+        """geo_block_graceful=False（デフォルト）の場合、TimeoutException が伝播すること（既存動作の維持）。"""
+        with patch("market.bse.session.httpx.Client") as mock_client_cls:
+            mock_client = MagicMock()
+            mock_client.get.side_effect = httpx.TimeoutException("Connection timed out")
+            mock_client_cls.return_value = mock_client
+
+            with (
+                patch("market.bse.session.time.sleep"),
+                patch("market.bse.session.time.monotonic", return_value=0.0),
+            ):
+                session = BseSession()
+
+                with pytest.raises(httpx.TimeoutException):
+                    session.get(_TEST_URL)

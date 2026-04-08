@@ -1010,6 +1010,7 @@ class TestModuleExports:
             "parse_market_status",
             "parse_preopen_data",
             "parse_quote_response",
+            "parse_shareholding_pattern",
             "parse_stock_list_csv",
         }
         assert expected == set(__all__)
