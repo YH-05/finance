@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "BUY",
+    "COMPANY_NAME": "Google Inc. Class A",
+    "STOCK_PRICE": 548.77,
+    "Date": 20150507.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B020QX2",
+    "Mkt_Cap_USD_mm": 156298.6,
+    "GICS_Sector": "Software & Services",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 3.617639,
+    "ITG_RIM-2": 4.890828,
+    "ITG_RIM-3": 6.138732,
+    "ITG_rank_RIM-1": 1.0,
+    "ITG_rank_RIM-2": 2.0,
+    "ITG_rank_RIM-3": 3.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.0431816,
+    "Rel_3M": -0.04741704,
+    "Rel_6M": -0.08564687,
+    "Rel_1Y": -0.05333531,
+    "Rel_3Y": 0.5600189,
+    "Rel_5Y": 0.5613138999999999,
+    "Rel_10Y": 3.254305,
+    "RIM-1_Discount": 0.0811812,
+    "RIM-2_Discount": 0.08909613,
+    "RIM-3_Discount": 0.09701105,
+    "Cash_per_Price_%": 10.733665,
+    "PER_N12M": 18.42576
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 79314.34,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 3.254305,
+    "RIM-1_Discount": 0.0811812,
+    "RIM-2_Discount": 0.08909613,
+    "RIM-3_Discount": 0.09701105,
+    "Cash_per_Price_%": 10.733665,
+    "PER_N12M": 18.42576
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 40419.0,
+      "FY-1": 47575.0,
+      "FY0": 52511.0,
+      "FY1": 59791.58,
+      "FY2": 69418.37,
+      "FY3": 79314.34
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1770455,
+      "FY0": 0.103752,
+      "FY1": 0.1386487,
+      "FY2": 0.1610057,
+      "FY3": 0.1425556
+    },
+    "Net_Income": {
+      "FY-2": 13386.0,
+      "FY-1": 14871.0,
+      "FY0": 17583.0,
+      "FY1": 19577.09,
+      "FY2": 23038.33,
+      "FY3": 25977.28
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.11093676,
+      "FY0": 0.1823684,
+      "FY1": 0.11341012,
+      "FY2": 0.1768006,
+      "FY3": 0.1275679
+    },
+    "Net_Margin": {
+      "FY-2": 0.33118088027907666,
+      "FY-1": 0.3125801366263794,
+      "FY0": 0.33484412789701207,
+      "FY1": 0.32742218887676156,
+      "FY2": 0.3318765623566212,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.4309154,
+      "FY-1": 0.4312445,
+      "FY0": 0.4008951,
+      "FY1": 0.3983918,
+      "FY2": 0.3974023,
+      "FY3": 0.3884645
+    },
+    "Asset__Equity": {
+      "FY-2": 1.29626,
+      "FY-1": 1.268726,
+      "FY0": 1.255555,
+      "FY1": 1.214696,
+      "FY2": 1.188457,
+      "FY3": 1.1715
+    },
+    "ROE": {
+      "FY-2": 17.95255,
+      "FY-1": 16.92706,
+      "FY0": 16.59291,
+      "FY1": 15.716344,
+      "FY2": 15.537641,
+      "FY3": 16.00876
+    }
+  },
+  "_meta": {
+    "source_file": "1746_20150508+GOOGL+US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
