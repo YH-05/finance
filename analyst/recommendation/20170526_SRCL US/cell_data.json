@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Stericycle, Inc.",
+    "STOCK_PRICE": 82.99,
+    "Date": 20170526.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 2860826.0,
+    "Mkt_Cap_USD_mm": 7061.078,
+    "GICS_Sector": "Commercial & Professional Services",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 5.638567,
+    "ITG_RIM-2": 2.514982,
+    "ITG_RIM-3": -0.7727161,
+    "ITG_rank_RIM-1": 3.0,
+    "ITG_rank_RIM-2": 1.0,
+    "ITG_rank_RIM-3": 1.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.06340021,
+    "Rel_3M": -0.04969221,
+    "Rel_6M": -0.04107333,
+    "Rel_1Y": -0.3562354,
+    "Rel_3Y": -0.4971464,
+    "Rel_5Y": -1.132774,
+    "Rel_10Y": 0.2965639,
+    "RIM-1_Discount": 0.08661,
+    "RIM-2_Discount": 0.06954534,
+    "RIM-3_Discount": 0.0524807,
+    "Cash_per_Price_%": 0.6645054,
+    "PER_N12M": 17.64079
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 3766.537,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 0.2965639,
+    "RIM-1_Discount": 0.08661,
+    "RIM-2_Discount": 0.06954534,
+    "RIM-3_Discount": 0.0524807,
+    "Cash_per_Price_%": 0.6645054,
+    "PER_N12M": 17.64079
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 2555.6,
+      "FY-1": 2985.9,
+      "FY0": 3562.34,
+      "FY1": 3604.021,
+      "FY2": 3685.234,
+      "FY3": 3766.537
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1683753,
+      "FY0": 0.1930541,
+      "FY1": 0.011700392,
+      "FY2": 0.02253413,
+      "FY3": 0.02206171
+    },
+    "Net_Income": {
+      "FY-2": 326.456,
+      "FY-1": 255.287,
+      "FY0": 412.3,
+      "FY1": 419.3135,
+      "FY2": 436.1284,
+      "FY3": 461.7937
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": -0.2180049,
+      "FY0": 0.615045,
+      "FY1": 0.01701069,
+      "FY2": 0.04010093,
+      "FY3": 0.058848
+    },
+    "Net_Margin": {
+      "FY-2": 0.12774143058381596,
+      "FY-1": 0.08549750493988412,
+      "FY0": 0.11573853141474424,
+      "FY1": 0.11634602018134743,
+      "FY2": 0.11834483237699424,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.5980837999999999,
+      "FY-1": 0.4277242,
+      "FY0": 0.5100278,
+      "FY1": 0.5134713,
+      "FY2": 0.5123362,
+      "FY3": null
+    },
+    "Asset__Equity": {
+      "FY-2": 2.244303,
+      "FY-1": 2.545366,
+      "FY0": 2.468765,
+      "FY1": 2.272386,
+      "FY2": 2.095493,
+      "FY3": null
+    },
+    "ROE": {
+      "FY-2": 19.35075,
+      "FY-1": 13.816427,
+      "FY0": 14.204813,
+      "FY1": 13.209697,
+      "FY2": 12.359633,
+      "FY3": 11.033239
+    }
+  },
+  "_meta": {
+    "source_file": "20170526 SRCL US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
