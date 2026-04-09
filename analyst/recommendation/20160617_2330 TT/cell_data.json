@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "BUY",
+    "COMPANY_NAME": "Taiwan Semiconductor Manufacturing Co., Ltd.",
+    "STOCK_PRICE": 161.0,
+    "Date": 20160609.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 6889106.0,
+    "Mkt_Cap_USD_mm": 122454.35,
+    "GICS_Sector": "Semiconductors & Semiconductor Equipment",
+    "Country": "TAIWAN",
+    "ITG_RIM-1": 2.985986,
+    "ITG_RIM-2": 1.4184,
+    "ITG_RIM-3": -0.1830317,
+    "ITG_rank_RIM-1": null,
+    "ITG_rank_RIM-2": null,
+    "ITG_rank_RIM-3": null
+  },
+  "rel_return": {
+    "Rel_1M": 0.05857563,
+    "Rel_3M": 0.009896636,
+    "Rel_6M": 0.12298626,
+    "Rel_1Y": 0.1344627,
+    "Rel_3Y": 0.3097318,
+    "Rel_5Y": 1.050409,
+    "Rel_10Y": 2.260484,
+    "RIM-1_Discount": 0.1018258,
+    "RIM-2_Discount": 0.09269772,
+    "RIM-3_Discount": 0.08356965,
+    "Cash_per_Price_%": 14.802758,
+    "PER_N12M": 12.850368
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 1113740.0,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 2.260484,
+    "RIM-1_Discount": 0.1018258,
+    "RIM-2_Discount": 0.09269772,
+    "RIM-3_Discount": 0.08356965,
+    "Cash_per_Price_%": 14.802758,
+    "PER_N12M": 12.850368
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 597112.8,
+      "FY-1": 762818.1000000001,
+      "FY0": 843497.0,
+      "FY1": 913084.6000000001,
+      "FY2": 1001226.3,
+      "FY3": 1113740.0
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.2775108,
+      "FY0": 0.10576427,
+      "FY1": 0.08249891000000001,
+      "FY2": 0.09653175,
+      "FY3": 0.11237586
+    },
+    "Net_Income": {
+      "FY-2": 188206.4,
+      "FY-1": 264494.8,
+      "FY0": 306500.5,
+      "FY1": 310505.4,
+      "FY2": 344739.6,
+      "FY3": 388784.8000000001
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.4053444,
+      "FY0": 0.1588148,
+      "FY1": 0.01306653,
+      "FY2": 0.1102531,
+      "FY3": 0.1277636
+    },
+    "Net_Margin": {
+      "FY-2": 0.31519404708792037,
+      "FY-1": 0.3467337757192704,
+      "FY0": 0.36336880866203436,
+      "FY1": 0.34006202711117894,
+      "FY2": 0.34431736361699644,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.4812962,
+      "FY-1": 0.5157790999999999,
+      "FY0": 0.5047543999999999,
+      "FY1": 0.4942269,
+      "FY2": 0.4931414,
+      "FY3": 0.4995064
+    },
+    "Asset__Equity": {
+      "FY-2": 1.458688,
+      "FY-1": 1.422186,
+      "FY0": 1.363716,
+      "FY1": 1.334654,
+      "FY2": 1.291805,
+      "FY3": 1.262641
+    },
+    "ROE": {
+      "FY-2": 22.25229,
+      "FY-1": 25.42547,
+      "FY0": 24.92645,
+      "FY1": 22.38786,
+      "FY2": 21.95915,
+      "FY3": 22.0041
+    }
+  },
+  "_meta": {
+    "source_file": "20160617 2330 TT.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
