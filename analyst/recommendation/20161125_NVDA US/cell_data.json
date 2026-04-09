@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "BUY",
+    "COMPANY_NAME": "NVIDIA Corporation",
+    "STOCK_PRICE": 92.98,
+    "Date": 20161122.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 2379504.0,
+    "Mkt_Cap_USD_mm": 49651.32,
+    "GICS_Sector": "Semiconductors & Semiconductor Equipment",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 6.745365,
+    "ITG_RIM-2": 7.311628,
+    "ITG_RIM-3": 7.876436,
+    "ITG_rank_RIM-1": 3.0,
+    "ITG_rank_RIM-2": 4.0,
+    "ITG_rank_RIM-3": 4.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.4028994,
+    "Rel_3M": 0.5661769999999999,
+    "Rel_6M": 1.053626,
+    "Rel_1Y": 1.763641,
+    "Rel_3Y": 5.717512999999999,
+    "Rel_5Y": 7.453535,
+    "Rel_10Y": 2.442071,
+    "RIM-1_Discount": 0.09065079999999999,
+    "RIM-2_Discount": 0.09553031000000001,
+    "RIM-3_Discount": 0.10040982,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 35.40903
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 8572.168,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 2.442071,
+    "RIM-1_Discount": 0.09065079999999999,
+    "RIM-2_Discount": 0.09553031000000001,
+    "RIM-3_Discount": 0.10040982,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 35.40903
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 4130.16,
+      "FY-1": 4681.5,
+      "FY0": 5010.0,
+      "FY1": 6820.082,
+      "FY2": 7815.709,
+      "FY3": 8572.168
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1334912,
+      "FY0": 0.07016981,
+      "FY1": 0.3612938,
+      "FY2": 0.1459846,
+      "FY3": 0.096787
+    },
+    "Net_Income": {
+      "FY-2": 439.99,
+      "FY-1": 630.587,
+      "FY0": 614.0,
+      "FY1": 1523.787,
+      "FY2": 1714.172,
+      "FY3": 1982.0
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.4331849,
+      "FY0": -0.026304,
+      "FY1": 1.481737,
+      "FY2": 0.12494206,
+      "FY3": 0.1562436
+    },
+    "Net_Margin": {
+      "FY-2": 0.10653098185058206,
+      "FY-1": 0.1346976396454128,
+      "FY0": 0.12255489021956088,
+      "FY1": 0.22342649252604294,
+      "FY2": 0.21932392825782024,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.5697449,
+      "FY-1": 0.6501004,
+      "FY0": 0.6797829,
+      "FY1": 0.7146011999999999,
+      "FY2": 0.7496548,
+      "FY3": 0.7521578999999999
+    },
+    "Asset__Equity": {
+      "FY-2": 1.627836,
+      "FY-1": 1.629969,
+      "FY0": 1.631811,
+      "FY1": 1.689606,
+      "FY2": 1.565858,
+      "FY3": 1.44094
+    },
+    "ROE": {
+      "FY-2": 9.7257,
+      "FY-1": 14.227867,
+      "FY0": 14.00594,
+      "FY1": 26.04855,
+      "FY2": 24.00751,
+      "FY3": 24.93231
+    }
+  },
+  "_meta": {
+    "source_file": "20161125 NVDA US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
