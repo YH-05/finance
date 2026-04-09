@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Palantir Technologies Inc. Class A",
+    "STOCK_PRICE": 11.11,
+    "Date": 20220309.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "BN78DQ4",
+    "Mkt_Cap_USD_mm": 18004.88,
+    "GICS_Sector": "Information Technology",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 6.809947999999999,
+    "ITG_RIM-2": 9.656312,
+    "ITG_RIM-3": 36.06747,
+    "ITG_RIM-4": 68.07134,
+    "ITG_rank_RIM-1": 3.0,
+    "ITG_rank_RIM-2": 4.0,
+    "ITG_rank_RIM-3": 5.0,
+    "ITG_rank_RIM-4": 5.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.06562591,
+    "Rel_3M": -0.3240709,
+    "Rel_6M": -0.5024027,
+    "Rel_1Y": -0.6056418,
+    "Rel_3Y": null,
+    "Rel_5Y": null,
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.0835378,
+    "RIM-2_Discount": 0.10845062,
+    "RIM-3_Discount": 0.345959,
+    "RIM-4_Discount": 0.6443300000000001,
+    "Cash_per_Price_%": 10.858383,
+    "PER_N12M": 51.94580000000001,
+    "ESG_Rsik_Rank": 45.0,
+    "ESG_Mgt_Rank": 20.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 3374.545,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.0835378,
+    "RIM-2_Discount": 0.10845062,
+    "RIM-3_Discount": 0.345959,
+    "RIM-4_Discount": 0.6443300000000001,
+    "Cash_per_Price_%": 10.858383,
+    "PER_N12M": 51.94580000000001
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": null,
+      "FY-1": 1092.673,
+      "FY0": 1541.889,
+      "FY1": 1996.524,
+      "FY2": 2571.426,
+      "FY3": 3374.545
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": null,
+      "FY0": 0.4111167,
+      "FY1": 0.2948561,
+      "FY2": 0.2879511,
+      "FY3": 0.3123245
+    },
+    "Net_Income": {
+      "FY-2": null,
+      "FY-1": 197.153,
+      "FY0": 308.082,
+      "FY1": 481.6335,
+      "FY2": 655.2607,
+      "FY3": 867.9276000000001
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": null,
+      "FY0": 0.5626544,
+      "FY1": 0.5633287,
+      "FY2": 0.3604966,
+      "FY3": 0.3245531
+    },
+    "Net_Margin": {
+      "FY-2": "N/A",
+      "FY-1": 0.18043184008390434,
+      "FY0": 0.19980815739654412,
+      "FY1": 0.24123601819963097,
+      "FY2": 0.25482386037941596,
+      "FY3": 0.25719840748900963
+    },
+    "Asset_Turn": {
+      "FY-2": null,
+      "FY-1": null,
+      "FY0": null,
+      "FY1": null,
+      "FY2": null,
+      "FY3": null
+    },
+    "Asset__Equity": {
+      "FY-2": null,
+      "FY-1": null,
+      "FY0": null,
+      "FY1": null,
+      "FY2": null,
+      "FY3": null
+    },
+    "ROE": {
+      "FY-2": null,
+      "FY-1": 22.36314,
+      "FY0": 11.102285,
+      "FY1": 15.053265,
+      "FY2": 16.47989,
+      "FY3": 17.12423
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 45.0,
+    "ESG_Mgt_Rank": 20.0,
+    "Rsik_Rank": 45.0,
+    "Mgt_Rank": 20.0
+  },
+  "_meta": {
+    "source_file": "20220309 PLTR US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

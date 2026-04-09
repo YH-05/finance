@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Okta, Inc. Class A",
+    "STOCK_PRICE": 91.4,
+    "Date": 20220909.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "BDFZSP1",
+    "Mkt_Cap_USD_mm": 13575.611,
+    "GICS_Sector": "Information Technology",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 12.345786,
+    "ITG_RIM-2": 14.978758,
+    "ITG_RIM-3": 14.2041,
+    "ITG_RIM-4": 15.040146,
+    "ITG_rank_RIM-1": 4.0,
+    "ITG_rank_RIM-2": 5.0,
+    "ITG_rank_RIM-3": 5.0,
+    "ITG_rank_RIM-4": 5.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.03584653,
+    "Rel_3M": 0.1681967,
+    "Rel_6M": -0.4710827,
+    "Rel_1Y": -0.6312993,
+    "Rel_3Y": -0.7445455,
+    "Rel_5Y": 2.425435,
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.08149759000000001,
+    "RIM-2_Discount": 0.09988184,
+    "RIM-3_Discount": 0.09444326,
+    "RIM-4_Discount": 0.10031387,
+    "Cash_per_Price_%": 1.571568,
+    "PER_N12M": null,
+    "ESG_Rsik_Rank": 24.0,
+    "ESG_Mgt_Rank": 77.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 3147.311,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.08149759000000001,
+    "RIM-2_Discount": 0.09988184,
+    "RIM-3_Discount": 0.09444326,
+    "RIM-4_Discount": 0.10031387,
+    "Cash_per_Price_%": 1.571568,
+    "PER_N12M": null
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 586.067,
+      "FY-1": 835.424,
+      "FY0": 1300.2,
+      "FY1": 1817.472,
+      "FY2": 2406.652,
+      "FY3": 3147.311
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.4254752,
+      "FY0": 0.5563368,
+      "FY1": 0.397839,
+      "FY2": 0.3241756,
+      "FY3": 0.3077551
+    },
+    "Net_Income": {
+      "FY-2": -36.674,
+      "FY-1": 16.201,
+      "FY0": -68.386,
+      "FY1": -174.9472,
+      "FY2": -93.34073000000001,
+      "FY3": 73.85155
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": -1.441757,
+      "FY0": -5.221096999999999,
+      "FY1": 1.558231,
+      "FY2": -0.4664634,
+      "FY3": -1.791204
+    },
+    "Net_Margin": {
+      "FY-2": -0.06257646310063525,
+      "FY-1": 0.01939254797563872,
+      "FY0": -0.05259652361175203,
+      "FY1": -0.0962585393337559,
+      "FY2": -0.03878447320177575,
+      "FY3": 0.023464967395977074
+    },
+    "Asset_Turn": {
+      "FY-2": 0.2997297,
+      "FY-1": 0.2532454,
+      "FY0": 0.1412372,
+      "FY1": 0.1935907,
+      "FY2": 0.2445659,
+      "FY3": 0.2946058
+    },
+    "Asset__Equity": {
+      "FY-2": 4.82493,
+      "FY-1": 4.753365,
+      "FY0": 1.554529,
+      "FY1": 1.749234,
+      "FY2": 1.8612,
+      "FY3": 1.996907
+    },
+    "ROE": {
+      "FY-2": -9.171597,
+      "FY-1": 2.071778,
+      "FY0": -1.173395,
+      "FY1": -3.298141,
+      "FY2": -1.737613,
+      "FY3": 1.032189
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 24.0,
+    "ESG_Mgt_Rank": 77.0,
+    "Rsik_Rank": 24.0,
+    "Mgt_Rank": 77.0
+  },
+  "_meta": {
+    "source_file": "20220909_OKTA US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

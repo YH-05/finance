@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "First Republic Bank",
+    "STOCK_PRICE": 130.56,
+    "Date": 20221116.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B4WHY15",
+    "Mkt_Cap_USD_mm": 23454.69,
+    "GICS_Sector": "Financials",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 10.683515,
+    "ITG_RIM-2": 8.919753,
+    "ITG_RIM-3": 6.913409,
+    "ITG_RIM-4": 10.479876,
+    "ITG_rank_RIM-1": 4.0,
+    "ITG_rank_RIM-2": 4.0,
+    "ITG_rank_RIM-3": 3.0,
+    "ITG_rank_RIM-4": 4.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.03248918,
+    "Rel_3M": -0.1805457,
+    "Rel_6M": -0.07798439,
+    "Rel_1Y": -0.2959997,
+    "Rel_3Y": -0.00931704,
+    "Rel_5Y": 0.0324949,
+    "Rel_10Y": 3.036672,
+    "RIM-1_Discount": 0.10746519,
+    "RIM-2_Discount": 0.09980212000000001,
+    "RIM-3_Discount": 0.09125295,
+    "RIM-4_Discount": 0.10657336,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 17.84273,
+    "ESG_Rsik_Rank": 57.0,
+    "ESG_Mgt_Rank": 34.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 7029.747,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 3.036672,
+    "RIM-1_Discount": 0.10746519,
+    "RIM-2_Discount": 0.09980212000000001,
+    "RIM-3_Discount": 0.09125295,
+    "RIM-4_Discount": 0.10657336,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 17.84273
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 3300.0,
+      "FY-1": 3900.0,
+      "FY0": 5000.0,
+      "FY1": 5930.368,
+      "FY2": 6049.0,
+      "FY3": 7029.747
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1818181,
+      "FY0": 0.2820513,
+      "FY1": 0.1860737,
+      "FY2": 0.02000427,
+      "FY3": 0.1621335
+    },
+    "Net_Income": {
+      "FY-2": 881.259,
+      "FY-1": 1005.426,
+      "FY0": 1379.0,
+      "FY1": 1519.787,
+      "FY2": 1361.443,
+      "FY3": 1708.925
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1408974,
+      "FY0": 0.371558,
+      "FY1": 0.1020937,
+      "FY2": -0.10418832,
+      "FY3": 0.2552307
+    },
+    "Net_Margin": {
+      "FY-2": 0.2670481818181818,
+      "FY-1": 0.25780153846153847,
+      "FY0": 0.2758,
+      "FY1": 0.2562719547926874,
+      "FY2": 0.2250691023309638,
+      "FY3": 0.24309907596959035
+    },
+    "Asset_Turn": {
+      "FY-2": 0.02838369,
+      "FY-1": 0.02731576,
+      "FY0": 0.02761104,
+      "FY1": 0.02818277,
+      "FY2": 0.02536929,
+      "FY3": 0.02618162
+    },
+    "Asset__Equity": {
+      "FY-2": 13.354465,
+      "FY-1": 13.410233,
+      "FY0": 13.031422,
+      "FY1": 13.683712,
+      "FY2": 14.393456,
+      "FY3": 14.443678
+    },
+    "ROE": {
+      "FY-2": 10.075585,
+      "FY-1": 9.908496999999999,
+      "FY0": 11.559272,
+      "FY1": 10.890443,
+      "FY2": 8.822669,
+      "FY3": 9.750805999999999
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 57.0,
+    "ESG_Mgt_Rank": 34.0,
+    "Rsik_Rank": 57.0,
+    "Mgt_Rank": 34.0
+  },
+  "_meta": {
+    "source_file": "20221019 FRC US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "RELX NV",
+    "STOCK_PRICE": 19.365,
+    "Date": 20171130.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 4148810.0,
+    "Mkt_Cap_USD_mm": 22294.79,
+    "GICS_Sector": "Commercial & Professional Services",
+    "Country": "NETHERLANDS",
+    "ITG_RIM-1": 5.0574,
+    "ITG_RIM-2": 4.934780000000001,
+    "ITG_RIM-3": 4.812091,
+    "ITG_rank_RIM-1": 2.0,
+    "ITG_rank_RIM-2": 2.0,
+    "ITG_rank_RIM-3": 2.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.02534723,
+    "Rel_3M": 0.05802393,
+    "Rel_6M": 0.05003726,
+    "Rel_1Y": 0.2144847,
+    "Rel_3Y": 0.2920356,
+    "Rel_5Y": 1.62831,
+    "Rel_10Y": 1.279756,
+    "RIM-1_Discount": 0.09628199999999999,
+    "RIM-2_Discount": 0.09523265,
+    "RIM-3_Discount": 0.0941833,
+    "Cash_per_Price_%": 0.9254224,
+    "PER_N12M": 19.76167
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 9152.495,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 1.279756,
+    "RIM-1_Discount": 0.09628199999999999,
+    "RIM-2_Discount": 0.09523265,
+    "RIM-3_Discount": 0.0941833,
+    "Cash_per_Price_%": 0.9254224,
+    "PER_N12M": 19.76167
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 7159.0,
+      "FY-1": 8240.0,
+      "FY0": 8412.0,
+      "FY1": 8598.477,
+      "FY2": 8833.649,
+      "FY3": 9152.495
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1509987,
+      "FY0": 0.02087379,
+      "FY1": 0.02216792,
+      "FY2": 0.02735054,
+      "FY3": 0.03609443
+    },
+    "Net_Income": {
+      "FY-2": 1388.678,
+      "FY-1": 1829.966,
+      "FY0": 1791.173,
+      "FY1": 1894.051,
+      "FY2": 1922.963,
+      "FY3": 2063.155
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.3177756,
+      "FY0": -0.02119905,
+      "FY1": 0.05743647,
+      "FY2": 0.01526475,
+      "FY3": 0.072904
+    },
+    "Net_Margin": {
+      "FY-2": 0.19397653303534015,
+      "FY-1": 0.22208325242718446,
+      "FY0": 0.21293069424631478,
+      "FY1": 0.22027749798016552,
+      "FY2": 0.2176861453290707,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.5070951,
+      "FY-1": null,
+      "FY0": 0.5351111,
+      "FY1": 0.5400375,
+      "FY2": 0.5554939999999999,
+      "FY3": 0.5581809999999999
+    },
+    "Asset__Equity": {
+      "FY-2": 5.345253,
+      "FY-1": null,
+      "FY0": 5.929895,
+      "FY1": 6.249505,
+      "FY2": 5.082752999999999,
+      "FY3": 4.647171999999999
+    },
+    "ROE": {
+      "FY-2": 57.42534000000001,
+      "FY-1": 77.98509,
+      "FY0": 64.33643000000001,
+      "FY1": 67.78033,
+      "FY2": 67.83031000000001,
+      "FY3": 47.86138
+    }
+  },
+  "_meta": {
+    "source_file": "20171130 RELX NA.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

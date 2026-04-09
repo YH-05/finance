@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Bunzl plc",
+    "STOCK_PRICE": 23.88,
+    "Date": 20170623.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B0744B3",
+    "Mkt_Cap_USD_mm": 10156.967,
+    "GICS_Sector": "Capital Goods",
+    "Country": "UNITED KINGDOM",
+    "ITG_RIM-1": 14.845591,
+    "ITG_RIM-2": 14.237881,
+    "ITG_RIM-3": 13.627919,
+    "ITG_rank_RIM-1": 5.0,
+    "ITG_rank_RIM-2": 5.0,
+    "ITG_rank_RIM-3": 5.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.04410726,
+    "Rel_3M": 0.03599679,
+    "Rel_6M": 0.07718992,
+    "Rel_1Y": -0.1399859,
+    "Rel_3Y": -0.0331136,
+    "Rel_5Y": 0.41749,
+    "Rel_10Y": 1.102069,
+    "RIM-1_Discount": 0.1644284,
+    "RIM-2_Discount": 0.1594453,
+    "RIM-3_Discount": 0.1544622,
+    "Cash_per_Price_%": 3.521088,
+    "PER_N12M": 20.90685
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 8818.294,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 1.102069,
+    "RIM-1_Discount": 0.1644284,
+    "RIM-2_Discount": 0.1594453,
+    "RIM-3_Discount": 0.1544622,
+    "Cash_per_Price_%": 3.521088,
+    "PER_N12M": 20.90685
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 6156.5,
+      "FY-1": 6489.700000000001,
+      "FY0": 7429.1,
+      "FY1": 8345.523000000001,
+      "FY2": 8606.14,
+      "FY3": 8818.294
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.05412173,
+      "FY0": 0.1447524,
+      "FY1": 0.12335587,
+      "FY2": 0.0312283,
+      "FY3": 0.02465153
+    },
+    "Net_Income": {
+      "FY-2": 281.6,
+      "FY-1": 298.1,
+      "FY0": 349.6,
+      "FY1": 376.7061,
+      "FY2": 393.2703,
+      "FY3": 408.7917
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.05859375,
+      "FY0": 0.1727608,
+      "FY1": 0.07753468,
+      "FY2": 0.04397106,
+      "FY3": 0.03946745
+    },
+    "Net_Margin": {
+      "FY-2": 0.04574027450661902,
+      "FY-1": 0.04593432670231289,
+      "FY0": 0.047058190090320494,
+      "FY1": 0.04513870490800875,
+      "FY2": 0.04569647949022443,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 1.8787,
+      "FY-1": 1.79323,
+      "FY0": 1.648347,
+      "FY1": 1.781709,
+      "FY2": 1.841279,
+      "FY3": 1.898449
+    },
+    "Asset__Equity": {
+      "FY-2": 3.330369,
+      "FY-1": 3.672322,
+      "FY0": 3.495831,
+      "FY1": 3.290092,
+      "FY2": 2.957621,
+      "FY3": 2.6715
+    },
+    "ROE": {
+      "FY-2": 28.53562,
+      "FY-1": 30.05405,
+      "FY0": 27.06214,
+      "FY1": 26.1231,
+      "FY2": 24.3336,
+      "FY3": 22.4861
+    }
+  },
+  "_meta": {
+    "source_file": "20170623 BNZL LN.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "TE Connectivity Ltd.",
+    "STOCK_PRICE": 93.36,
+    "Date": 20171120.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B62B7C3",
+    "Mkt_Cap_USD_mm": 33145.35,
+    "GICS_Sector": "Technology Hardware & Equipment",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 4.775861,
+    "ITG_RIM-2": 5.323468999999999,
+    "ITG_RIM-3": 5.867424,
+    "ITG_rank_RIM-1": 2.0,
+    "ITG_rank_RIM-2": 2.0,
+    "ITG_rank_RIM-3": 3.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.06286383,
+    "Rel_3M": 0.14027,
+    "Rel_6M": 0.1564243,
+    "Rel_1Y": 0.1914761,
+    "Rel_3Y": 0.3469275,
+    "Rel_5Y": 1.824005,
+    "Rel_10Y": 2.0286,
+    "RIM-1_Discount": 0.090013,
+    "RIM-2_Discount": 0.09350975,
+    "RIM-3_Discount": 0.09700648,
+    "Cash_per_Price_%": 3.691812,
+    "PER_N12M": 17.70954
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 15053.26,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 2.0286,
+    "RIM-1_Discount": 0.090013,
+    "RIM-2_Discount": 0.09350975,
+    "RIM-3_Discount": 0.09700648,
+    "Cash_per_Price_%": 3.691812,
+    "PER_N12M": 17.70954
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 12233.0,
+      "FY-1": 12238.0,
+      "FY0": 13113.0,
+      "FY1": 13911.185,
+      "FY2": 14437.175,
+      "FY3": 15053.26
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.0004087687,
+      "FY0": 0.07149863000000001,
+      "FY1": 0.06086969,
+      "FY2": 0.03781056,
+      "FY3": 0.04267347
+    },
+    "Net_Income": {
+      "FY-2": 1478.0,
+      "FY-1": 1505.0,
+      "FY0": 1730.0,
+      "FY1": 1852.475,
+      "FY2": 1952.688,
+      "FY3": 2090.95
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.018268,
+      "FY0": 0.1495017,
+      "FY1": 0.07079458,
+      "FY2": 0.05409682,
+      "FY3": 0.07080626
+    },
+    "Net_Margin": {
+      "FY-2": 0.12082073081010382,
+      "FY-1": 0.122977610720706,
+      "FY0": 0.13193014565698163,
+      "FY1": 0.133164428479673,
+      "FY2": 0.13525416156554174,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.5936043999999999,
+      "FY-1": 0.695025,
+      "FY0": 0.6758233,
+      "FY1": 0.6989316,
+      "FY2": 0.7053604,
+      "FY3": 0.6735842
+    },
+    "Asset__Equity": {
+      "FY-2": 2.150026,
+      "FY-1": 2.075191,
+      "FY0": 1.989847,
+      "FY1": 1.907742,
+      "FY2": 1.816583,
+      "FY3": 1.764548
+    },
+    "ROE": {
+      "FY-2": 15.280871,
+      "FY-1": 17.52828,
+      "FY0": 17.68151,
+      "FY1": 17.39438,
+      "FY2": 16.96975,
+      "FY3": 16.29045
+    }
+  },
+  "_meta": {
+    "source_file": "20171120 TEL US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Signature Bank",
+    "STOCK_PRICE": 147.94,
+    "Date": 20221116.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B00JQL9",
+    "Mkt_Cap_USD_mm": 9309.574,
+    "GICS_Sector": "Financials",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": -22.13956,
+    "ITG_RIM-2": -29.63417,
+    "ITG_RIM-3": -19.06243,
+    "ITG_RIM-4": 9.93187,
+    "ITG_rank_RIM-1": 1.0,
+    "ITG_rank_RIM-2": 1.0,
+    "ITG_rank_RIM-3": 1.0,
+    "ITG_rank_RIM-4": 4.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.09724838,
+    "Rel_3M": -0.2323232,
+    "Rel_6M": -0.2789105,
+    "Rel_1Y": -0.4586203,
+    "Rel_3Y": 0.01888895,
+    "Rel_5Y": -0.2751644,
+    "Rel_10Y": -0.392695,
+    "RIM-1_Discount": 0.10746519,
+    "RIM-2_Discount": 0.09980212000000001,
+    "RIM-3_Discount": 0.11082652,
+    "RIM-4_Discount": 0.1502323,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 6.907356,
+    "ESG_Rsik_Rank": 73.0,
+    "ESG_Mgt_Rank": 28.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 3350.74,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": -0.392695,
+    "RIM-1_Discount": 0.10746519,
+    "RIM-2_Discount": 0.09980212000000001,
+    "RIM-3_Discount": 0.11082652,
+    "RIM-4_Discount": 0.1502323,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 6.907356
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 1339.541,
+      "FY-1": 1594.34,
+      "FY0": 2001.416,
+      "FY1": 2750.814,
+      "FY2": 3085.838,
+      "FY3": 3350.74
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1902137,
+      "FY0": 0.2553258,
+      "FY1": 0.3744338,
+      "FY2": 0.12179112,
+      "FY3": 0.08584416
+    },
+    "Net_Income": {
+      "FY-2": 588.926,
+      "FY-1": 528.359,
+      "FY0": 918.441,
+      "FY1": 1357.986,
+      "FY2": 1354.579,
+      "FY3": 1414.622
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": -0.10284317,
+      "FY0": 0.7382896,
+      "FY1": 0.4785777,
+      "FY2": -0.002509058,
+      "FY3": 0.04432571
+    },
+    "Net_Margin": {
+      "FY-2": 0.4396476106367779,
+      "FY-1": 0.33139669079368267,
+      "FY0": 0.45889560191384504,
+      "FY1": 0.4936669654873067,
+      "FY2": 0.4389663358867186,
+      "FY3": 0.42218196577472444
+    },
+    "Asset_Turn": {
+      "FY-2": 0.02646475,
+      "FY-1": 0.02151711,
+      "FY0": 0.01721348,
+      "FY1": 0.02422404,
+      "FY2": 0.02584593,
+      "FY3": 0.02626636
+    },
+    "Asset__Equity": {
+      "FY-2": 10.611374,
+      "FY-1": 13.373376,
+      "FY0": 15.427296,
+      "FY1": 14.727408,
+      "FY2": 13.341931,
+      "FY3": 12.5217
+    },
+    "ROE": {
+      "FY-2": 12.235579,
+      "FY-1": 9.913288999999999,
+      "FY0": 12.398518,
+      "FY1": 18.09806,
+      "FY2": 15.208992,
+      "FY3": 13.7892
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 73.0,
+    "ESG_Mgt_Rank": 28.0,
+    "Rsik_Rank": 73.0,
+    "Mgt_Rank": 28.0
+  },
+  "_meta": {
+    "source_file": "20221019 SBNY US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

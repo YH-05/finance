@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "S&P Global, Inc.",
+    "STOCK_PRICE": 335.36,
+    "Date": 20220520.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "BYV2325",
+    "Mkt_Cap_USD_mm": 118781.54,
+    "GICS_Sector": "Financials",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 12.873323,
+    "ITG_RIM-2": 8.810241999999999,
+    "ITG_RIM-3": 8.293712,
+    "ITG_RIM-4": 8.810241999999999,
+    "ITG_rank_RIM-1": 5.0,
+    "ITG_rank_RIM-2": 4.0,
+    "ITG_rank_RIM-3": 3.0,
+    "ITG_rank_RIM-4": 3.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.04537755,
+    "Rel_3M": -0.012457192,
+    "Rel_6M": -0.13727,
+    "Rel_1Y": -0.03328872,
+    "Rel_3Y": 0.3192066,
+    "Rel_5Y": 1.121239,
+    "Rel_10Y": 9.616933999999999,
+    "RIM-1_Discount": 0.1303965,
+    "RIM-2_Discount": 0.10136079,
+    "RIM-3_Discount": 0.09770712000000001,
+    "RIM-4_Discount": 0.10136079,
+    "Cash_per_Price_%": 3.78597,
+    "PER_N12M": 24.048,
+    "ESG_Rsik_Rank": 7.0,
+    "ESG_Mgt_Rank": 85.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 14758.363,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 9.616933999999999,
+    "RIM-1_Discount": 0.1303965,
+    "RIM-2_Discount": 0.10136079,
+    "RIM-3_Discount": 0.09770712000000001,
+    "RIM-4_Discount": 0.10136079,
+    "Cash_per_Price_%": 3.78597,
+    "PER_N12M": 24.048
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 6699.0,
+      "FY-1": 7442.0,
+      "FY0": 8297.0,
+      "FY1": 12644.394,
+      "FY2": 13702.781,
+      "FY3": 14758.363
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.11091208,
+      "FY0": 0.11488843,
+      "FY1": 0.5239718,
+      "FY2": 0.08370411,
+      "FY3": 0.07703412
+    },
+    "Net_Income": {
+      "FY-2": 2352.0,
+      "FY-1": 2830.0,
+      "FY0": 3311.0,
+      "FY1": 4452.961,
+      "FY2": 5066.661,
+      "FY3": 5650.916
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.2032313,
+      "FY0": 0.1699647,
+      "FY1": 0.3448991,
+      "FY2": 0.1378185,
+      "FY3": 0.11531353
+    },
+    "Net_Margin": {
+      "FY-2": 0.3510971786833856,
+      "FY-1": 0.3802741198602526,
+      "FY0": 0.3990599011690973,
+      "FY1": 0.35216879511979776,
+      "FY2": 0.3697542126667572,
+      "FY3": 0.38289585369325857
+    },
+    "Asset_Turn": {
+      "FY-2": 0.5903243,
+      "FY-1": 0.593603,
+      "FY0": 0.5546789999999999,
+      "FY1": 0.238889,
+      "FY2": 0.2535965,
+      "FY3": null
+    },
+    "Asset__Equity": {
+      "FY-2": 21.17164,
+      "FY-1": 22.50808,
+      "FY0": 7.098805,
+      "FY1": 1.686942,
+      "FY2": 1.834793,
+      "FY3": null
+    },
+    "ROE": {
+      "FY-2": 403.2834,
+      "FY-1": 515.9128000000001,
+      "FY0": 136.5803,
+      "FY1": 10.893146,
+      "FY2": 12.440367,
+      "FY3": 15.23011
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 7.0,
+    "ESG_Mgt_Rank": 85.0,
+    "Rsik_Rank": 7.0,
+    "Mgt_Rank": 85.0
+  },
+  "_meta": {
+    "source_file": "20220520 SPGI US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

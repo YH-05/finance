@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Beazley Plc",
+    "STOCK_PRICE": 5.79,
+    "Date": 20220824.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "BYQ0JC6",
+    "Mkt_Cap_USD_mm": 4164.766000000001,
+    "GICS_Sector": "Financials",
+    "Country": "UNITED KINGDOM",
+    "ITG_RIM-1": 0.6195902999999999,
+    "ITG_RIM-2": -9.201811,
+    "ITG_RIM-3": -2.553216,
+    "ITG_RIM-4": -6.688504999999999,
+    "ITG_rank_RIM-1": 1.0,
+    "ITG_rank_RIM-2": 1.0,
+    "ITG_rank_RIM-3": 1.0,
+    "ITG_rank_RIM-4": 1.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.0544405,
+    "Rel_3M": 0.1331634,
+    "Rel_6M": 0.12488675,
+    "Rel_1Y": 0.4921678,
+    "Rel_3Y": -0.4641612,
+    "Rel_5Y": -0.523181,
+    "Rel_10Y": 2.56167,
+    "RIM-1_Discount": 0.1379404,
+    "RIM-2_Discount": 0.09961211,
+    "RIM-3_Discount": 0.1251624,
+    "RIM-4_Discount": 0.109078,
+    "Cash_per_Price_%": 14.662656,
+    "PER_N12M": 8.705022999999999,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 5798.16,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 2.56167,
+    "RIM-1_Discount": 0.1379404,
+    "RIM-2_Discount": 0.09961211,
+    "RIM-3_Discount": 0.1251624,
+    "RIM-4_Discount": 0.109078,
+    "Cash_per_Price_%": 14.662656,
+    "PER_N12M": 8.705022999999999
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 2323.2,
+      "FY-1": 2596.481,
+      "FY0": 3392.135,
+      "FY1": 4772.392,
+      "FY2": 5395.885,
+      "FY3": 5798.16
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.11763036,
+      "FY0": 0.3064353,
+      "FY1": 0.4068993,
+      "FY2": 0.1306459,
+      "FY3": 0.07455218
+    },
+    "Net_Income": {
+      "FY-2": 181.0518,
+      "FY-1": -33.58712000000001,
+      "FY0": 226.71,
+      "FY1": 237.3618,
+      "FY2": 505.5775,
+      "FY3": 576.9752
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": -1.185511,
+      "FY0": -7.749916,
+      "FY1": 0.04698312,
+      "FY2": 1.129987,
+      "FY3": 0.14122
+    },
+    "Net_Margin": {
+      "FY-2": 0.07793207644628099,
+      "FY-1": -0.012935630955897622,
+      "FY0": 0.06683401456604764,
+      "FY1": 0.049736442438089744,
+      "FY2": 0.09369686344316085,
+      "FY3": 0.09951005146460257
+    },
+    "Asset_Turn": {
+      "FY-2": 0.3385086,
+      "FY-1": 0.3412762,
+      "FY0": 0.360908,
+      "FY1": 0.3841693,
+      "FY2": 0.3842092,
+      "FY3": 0.3754033
+    },
+    "Asset__Equity": {
+      "FY-2": 5.460500000000001,
+      "FY-1": 5.768206,
+      "FY0": 6.005960000000001,
+      "FY1": 6.543337999999999,
+      "FY2": 6.119218,
+      "FY3": 5.58701
+    },
+    "ROE": {
+      "FY-2": 14.280181,
+      "FY-1": -2.640461,
+      "FY0": 14.53148,
+      "FY1": 12.35225,
+      "FY2": 21.65945,
+      "FY3": 20.21723
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null,
+    "Rsik_Rank": null,
+    "Mgt_Rank": null
+  },
+  "_meta": {
+    "source_file": "20220824 BEZ LN.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

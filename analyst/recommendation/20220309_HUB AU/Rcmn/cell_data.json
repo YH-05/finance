@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "HUB24 Limited",
+    "STOCK_PRICE": 26.77,
+    "Date": 20220309.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "BD4T5X1",
+    "Mkt_Cap_USD_mm": 1570.613,
+    "GICS_Sector": "Financials",
+    "Country": "AUSTRALIA",
+    "ITG_RIM-1": 12.198459,
+    "ITG_RIM-2": 10.179253,
+    "ITG_RIM-3": 6.9297,
+    "ITG_RIM-4": 17.06671,
+    "ITG_rank_RIM-1": 4.0,
+    "ITG_rank_RIM-2": 4.0,
+    "ITG_rank_RIM-3": 3.0,
+    "ITG_rank_RIM-4": 5.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.1274384,
+    "Rel_3M": 0.1333,
+    "Rel_6M": -0.02725535,
+    "Rel_1Y": 0.3058149,
+    "Rel_3Y": 0.8241329,
+    "Rel_5Y": 4.188991,
+    "Rel_10Y": 9.779434,
+    "RIM-1_Discount": 0.1249457,
+    "RIM-2_Discount": 0.10845062,
+    "RIM-3_Discount": 0.08213508,
+    "RIM-4_Discount": 0.1651413,
+    "Cash_per_Price_%": 2.777444,
+    "PER_N12M": 46.54874,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 315.8037,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 9.779434,
+    "RIM-1_Discount": 0.1249457,
+    "RIM-2_Discount": 0.10845062,
+    "RIM-3_Discount": 0.08213508,
+    "RIM-4_Discount": 0.1651413,
+    "Cash_per_Price_%": 2.777444,
+    "PER_N12M": 46.54874
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 96.30000000000001,
+      "FY-1": 110.26507,
+      "FY0": 107.8,
+      "FY1": 190.1819,
+      "FY2": 268.5933,
+      "FY3": 315.8037
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1450162,
+      "FY0": -0.02235579,
+      "FY1": 0.7642100000000001,
+      "FY2": 0.4122971,
+      "FY3": 0.1757692
+    },
+    "Net_Income": {
+      "FY-2": 6.800000000000001,
+      "FY-1": 10.136,
+      "FY0": 15.0,
+      "FY1": 32.68316,
+      "FY2": 51.44045000000001,
+      "FY3": 66.78203
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.4905882,
+      "FY0": 0.4798738,
+      "FY1": 1.178877,
+      "FY2": 0.5739133,
+      "FY3": 0.2982395
+    },
+    "Net_Margin": {
+      "FY-2": 0.07061266874350987,
+      "FY-1": 0.09192394291319998,
+      "FY0": 0.1391465677179963,
+      "FY1": 0.17185210579976326,
+      "FY2": 0.19151799393357918,
+      "FY3": 0.21146690174940955
+    },
+    "Asset_Turn": {
+      "FY-2": 1.239914,
+      "FY-1": 1.126303,
+      "FY0": 0.4358858,
+      "FY1": 0.3807118,
+      "FY2": 0.50297,
+      "FY3": 0.5456181
+    },
+    "Asset__Equity": {
+      "FY-2": 1.196123,
+      "FY-1": 1.308665,
+      "FY0": 1.365831,
+      "FY1": 2.498206,
+      "FY2": 2.305035,
+      "FY3": 2.091
+    },
+    "ROE": {
+      "FY-2": 10.630716,
+      "FY-1": 13.270018,
+      "FY0": 8.260118,
+      "FY1": 8.712674,
+      "FY2": 11.347936,
+      "FY3": 13.218765
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null,
+    "Rsik_Rank": null,
+    "Mgt_Rank": null
+  },
+  "_meta": {
+    "source_file": "20220309 HUB AU.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

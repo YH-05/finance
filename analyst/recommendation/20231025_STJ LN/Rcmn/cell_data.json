@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "St. James's Place Plc",
+    "STOCK_PRICE": 6.368,
+    "Date": 20231025.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 766937.0,
+    "Mkt_Cap_USD_mm": 4264.853,
+    "GICS_Sector": "Financials",
+    "Country": "UNITED KINGDOM",
+    "ITG_RIM-1": 8.256866,
+    "ITG_RIM-2": 0.3294997,
+    "ITG_RIM-3": 5.696622,
+    "ITG_RIM-4": 6.233548,
+    "ITG_rank_RIM-1": 4.0,
+    "ITG_rank_RIM-2": 1.0,
+    "ITG_rank_RIM-3": 2.0,
+    "ITG_rank_RIM-4": 2.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.2156471,
+    "Rel_3M": -0.4137475,
+    "Rel_6M": -0.5032118,
+    "Rel_1Y": -0.4164781,
+    "Rel_3Y": -0.6422083,
+    "Rel_5Y": -0.9859346999999999,
+    "Rel_10Y": -1.640114,
+    "RIM-1_Discount": 0.1542546,
+    "RIM-2_Discount": 0.10872547,
+    "RIM-3_Discount": 0.1392527,
+    "RIM-4_Discount": 0.1423755,
+    "Cash_per_Price_%": 7.691427,
+    "PER_N12M": 9.140141999999999,
+    "ESG_Rsik_Rank": 31.0,
+    "ESG_Mgt_Rank": 80.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 838.485,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": -1.640114,
+    "RIM-1_Discount": 0.1542546,
+    "RIM-2_Discount": 0.10872547,
+    "RIM-3_Discount": 0.1392527,
+    "RIM-4_Discount": 0.1423755,
+    "Cash_per_Price_%": 7.691427,
+    "PER_N12M": 9.140141999999999
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 822.8000000000001,
+      "FY-1": 723.95,
+      "FY0": 730.0667000000001,
+      "FY1": 709.6133,
+      "FY2": 747.53,
+      "FY3": 838.485
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": -0.12013853,
+      "FY0": 0.008448958000000001,
+      "FY1": -0.02801567,
+      "FY2": 0.05343294,
+      "FY3": 0.12167394
+    },
+    "Net_Income": {
+      "FY-2": 262.0,
+      "FY-1": 287.6,
+      "FY0": 405.0,
+      "FY1": 377.2787,
+      "FY2": 375.0216,
+      "FY3": 385.5609
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.09770989000000001,
+      "FY0": 0.4082059,
+      "FY1": -0.06844753,
+      "FY2": -0.005982757,
+      "FY3": 0.02810335
+    },
+    "Net_Margin": {
+      "FY-2": 0.318424890617404,
+      "FY-1": 0.39726500448926033,
+      "FY0": 0.5547438336798541,
+      "FY1": 0.5316680225694755,
+      "FY2": 0.5016810027691196,
+      "FY3": 0.45983040841517736
+    },
+    "Asset_Turn": {
+      "FY-2": 0.012809017,
+      "FY-1": 0.004993162000000001,
+      "FY0": 0.007020929,
+      "FY1": 0.004391225,
+      "FY2": 0.003931079000000001,
+      "FY3": null
+    },
+    "Asset__Equity": {
+      "FY-2": 57.74534000000001,
+      "FY-1": 126.14694,
+      "FY0": 76.86019,
+      "FY1": 108.47446,
+      "FY2": 128.0847,
+      "FY3": null
+    },
+    "ROE": {
+      "FY-2": 24.03286,
+      "FY-1": 35.90567,
+      "FY0": 33.27048000000001,
+      "FY1": 30.2108,
+      "FY2": 27.48555,
+      "FY3": 26.68205
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 31.0,
+    "ESG_Mgt_Rank": 80.0,
+    "Rsik_Rank": 31.0,
+    "Mgt_Rank": 80.0
+  },
+  "_meta": {
+    "source_file": "20231025 STJ LN.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

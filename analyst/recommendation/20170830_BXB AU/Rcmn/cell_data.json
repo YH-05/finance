@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Brambles Limited",
+    "STOCK_PRICE": 9.3,
+    "Date": 20170830.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B1FJ0C0",
+    "Mkt_Cap_USD_mm": 11745.208,
+    "GICS_Sector": "Commercial & Professional Services",
+    "Country": "AUSTRALIA",
+    "ITG_RIM-1": 4.308694,
+    "ITG_RIM-2": 3.743176,
+    "ITG_RIM-3": 3.174124,
+    "ITG_rank_RIM-1": 2.0,
+    "ITG_rank_RIM-2": 2.0,
+    "ITG_rank_RIM-3": 2.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.002620339,
+    "Rel_3M": -0.08044487,
+    "Rel_6M": -0.03669703,
+    "Rel_1Y": -0.407535,
+    "Rel_3Y": -0.288761,
+    "Rel_5Y": -0.470818,
+    "Rel_10Y": -0.6042931,
+    "RIM-1_Discount": 0.08813299999999999,
+    "RIM-2_Discount": 0.08430703,
+    "RIM-3_Discount": 0.08048106000000001,
+    "Cash_per_Price_%": 1.408463,
+    "PER_N12M": 18.19221
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 7729.297000000001,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": -0.6042931,
+    "RIM-1_Discount": 0.08813299999999999,
+    "RIM-2_Discount": 0.08430703,
+    "RIM-3_Discount": 0.08048106000000001,
+    "Cash_per_Price_%": 1.408463,
+    "PER_N12M": 18.19221
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 7511.511,
+      "FY-1": 7644.524,
+      "FY0": 6428.184,
+      "FY1": 6931.021,
+      "FY2": 7333.548,
+      "FY3": 7729.297000000001
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.01770782,
+      "FY0": -0.1591126,
+      "FY1": 0.07822382,
+      "FY2": 0.05807614,
+      "FY3": 0.05396414
+    },
+    "Net_Income": {
+      "FY-2": 853.687,
+      "FY-1": 769.7832000000001,
+      "FY0": 769.9767,
+      "FY1": 809.3539000000001,
+      "FY2": 871.2075000000001,
+      "FY3": 937.133
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": -0.09828407,
+      "FY0": 0.0002512932,
+      "FY1": 0.05114079,
+      "FY2": 0.07642353,
+      "FY3": 0.07567143
+    },
+    "Net_Margin": {
+      "FY-2": 0.11365050254203182,
+      "FY-1": 0.10069733576609873,
+      "FY0": 0.11978137215736202,
+      "FY1": 0.11677268038864694,
+      "FY2": 0.11879754519913147,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.719565,
+      "FY-1": 0.7010385,
+      "FY0": 0.6588164999999999,
+      "FY1": 0.6607653,
+      "FY2": 0.6653578,
+      "FY3": 0.6854182
+    },
+    "Asset__Equity": {
+      "FY-2": 2.8757,
+      "FY-1": 2.672059,
+      "FY0": 2.721513,
+      "FY1": 2.66786,
+      "FY2": 2.536205,
+      "FY3": 2.349633
+    },
+    "ROE": {
+      "FY-2": 22.42032,
+      "FY-1": 18.80933,
+      "FY0": 21.31464,
+      "FY1": 20.36411,
+      "FY2": 19.93427,
+      "FY3": 19.38752
+    }
+  },
+  "_meta": {
+    "source_file": "20170830 BXB AU.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}

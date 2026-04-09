@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Ping An Insurance (Group) Company of China, Ltd. Class H",
+    "STOCK_PRICE": 46.75,
+    "Date": 20220616.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B01FLR7",
+    "Mkt_Cap_USD_mm": 37700.64,
+    "GICS_Sector": "Financials",
+    "Country": "CHINA",
+    "ITG_RIM-1": null,
+    "ITG_RIM-2": null,
+    "ITG_RIM-3": null,
+    "ITG_RIM-4": null,
+    "ITG_rank_RIM-1": null,
+    "ITG_rank_RIM-2": null,
+    "ITG_rank_RIM-3": null,
+    "ITG_rank_RIM-4": null
+  },
+  "rel_return": {
+    "Rel_1M": 0.09050029999999999,
+    "Rel_3M": -0.02736831,
+    "Rel_6M": 0.02177024,
+    "Rel_1Y": -0.299359,
+    "Rel_3Y": -0.8115041,
+    "Rel_5Y": -0.4685049,
+    "Rel_10Y": -1.08974,
+    "RIM-1_Discount": 0.1598688,
+    "RIM-2_Discount": 0.10276743,
+    "RIM-3_Discount": 0.1394007,
+    "RIM-4_Discount": 0.10276743,
+    "Cash_per_Price_%": 372.5871,
+    "PER_N12M": 5.416606,
+    "ESG_Rsik_Rank": 32.0,
+    "ESG_Mgt_Rank": 77.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 969188.3,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": -1.08974,
+    "RIM-1_Discount": 0.1598688,
+    "RIM-2_Discount": 0.10276743,
+    "RIM-3_Discount": 0.1394007,
+    "RIM-4_Discount": 0.10276743,
+    "Cash_per_Price_%": 372.5871,
+    "PER_N12M": 5.416606
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 842317.3,
+      "FY-1": 924607.4,
+      "FY0": 911982.6000000001,
+      "FY1": 870632.2000000001,
+      "FY2": 916692.1000000001,
+      "FY3": 969188.3
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.09769487,
+      "FY0": -0.013654232,
+      "FY1": -0.04534119,
+      "FY2": 0.052904,
+      "FY3": 0.05726695
+    },
+    "Net_Income": {
+      "FY-2": 168524.1,
+      "FY-1": 172032.2,
+      "FY0": 125032.02,
+      "FY1": 139948.6,
+      "FY2": 166533.0,
+      "FY3": 189155.8
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.02081621,
+      "FY0": -0.2732056,
+      "FY1": 0.11930192,
+      "FY2": 0.1899583,
+      "FY3": 0.1358461
+    },
+    "Net_Margin": {
+      "FY-2": 0.20007199187289634,
+      "FY-1": 0.18605972653906946,
+      "FY0": 0.1370991288649586,
+      "FY1": 0.16074365271580812,
+      "FY2": 0.18166732319390555,
+      "FY3": 0.19516929785470993
+    },
+    "Asset_Turn": {
+      "FY-2": 0.0923251,
+      "FY-1": 0.08082265,
+      "FY0": 0.07303575,
+      "FY1": 0.06726967,
+      "FY2": 0.06486451,
+      "FY3": 0.06266507
+    },
+    "Asset__Equity": {
+      "FY-2": 12.168211,
+      "FY-1": 12.52517,
+      "FY0": 11.351066,
+      "FY1": 11.299816,
+      "FY2": 11.223557,
+      "FY3": 10.993309
+    },
+    "ROE": {
+      "FY-2": 22.53537,
+      "FY-1": 19.07393,
+      "FY0": 12.807218,
+      "FY1": 13.942586,
+      "FY2": 14.789079,
+      "FY3": 15.071342
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 32.0,
+    "ESG_Mgt_Rank": 77.0,
+    "Rsik_Rank": 32.0,
+    "Mgt_Rank": 77.0
+  },
+  "_meta": {
+    "source_file": "20220617 2318 HK.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
