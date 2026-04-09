@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "BUY",
+    "COMPANY_NAME": "Ashtead Group plc",
+    "STOCK_PRICE": 19.04,
+    "Date": 20171130.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 53673.0,
+    "Mkt_Cap_USD_mm": 12679.063,
+    "GICS_Sector": "Capital Goods",
+    "Country": "UNITED KINGDOM",
+    "ITG_RIM-1": 7.439594,
+    "ITG_RIM-2": 4.912805,
+    "ITG_RIM-3": 2.317678,
+    "ITG_rank_RIM-1": 3.0,
+    "ITG_rank_RIM-2": 2.0,
+    "ITG_rank_RIM-3": 1.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.01568842,
+    "Rel_3M": 0.1878493,
+    "Rel_6M": 0.1935351,
+    "Rel_1Y": 0.1411852,
+    "Rel_3Y": 0.301327,
+    "Rel_5Y": 3.736984,
+    "Rel_10Y": 21.10575,
+    "RIM-1_Discount": 0.1192716,
+    "RIM-2_Discount": 0.10197233,
+    "RIM-3_Discount": 0.08467306000000001,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 14.829829
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 4215.937,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 21.10575,
+    "RIM-1_Discount": 0.1192716,
+    "RIM-2_Discount": 0.10197233,
+    "RIM-3_Discount": 0.08467306000000001,
+    "Cash_per_Price_%": null,
+    "PER_N12M": 14.829829
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 2038.9,
+      "FY-1": 2545.7,
+      "FY0": 3186.8,
+      "FY1": 3603.542,
+      "FY2": 3913.834,
+      "FY3": 4215.937
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.2485653,
+      "FY0": 0.2518364,
+      "FY1": 0.1307714,
+      "FY2": 0.08610737,
+      "FY3": 0.07718849
+    },
+    "Net_Income": {
+      "FY-2": 303.4,
+      "FY-1": 407.6,
+      "FY0": 501.0,
+      "FY1": 584.6142,
+      "FY2": 651.3375,
+      "FY3": 704.7607
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.343441,
+      "FY0": 0.2291462,
+      "FY1": 0.1668946,
+      "FY2": 0.11413217,
+      "FY3": 0.08202088
+    },
+    "Net_Margin": {
+      "FY-2": 0.1488057285791358,
+      "FY-1": 0.16011313194799076,
+      "FY0": 0.15721099535584285,
+      "FY1": 0.1622332138767912,
+      "FY2": 0.16641929627061341,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.5280665,
+      "FY-1": 0.5360497,
+      "FY0": 0.5202089999999999,
+      "FY1": 0.5420708,
+      "FY2": 0.5565273,
+      "FY3": 0.5390018
+    },
+    "Asset__Equity": {
+      "FY-2": 3.494863,
+      "FY-1": 3.213615,
+      "FY0": 3.11173,
+      "FY1": 2.772609,
+      "FY2": 2.526224,
+      "FY3": 2.491618
+    },
+    "ROE": {
+      "FY-2": 28.42728,
+      "FY-1": 29.28784,
+      "FY0": 26.8929,
+      "FY1": 24.82221,
+      "FY2": 23.15338,
+      "FY3": 21.29262
+    }
+  },
+  "_meta": {
+    "source_file": "20171130 AHT LN.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
