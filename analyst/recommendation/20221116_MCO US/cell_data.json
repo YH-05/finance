@@ -1,0 +1,139 @@
+{
+  "recommendation": {
+    "Recommendation": "BUY",
+    "COMPANY_NAME": "Moody's Corporation",
+    "STOCK_PRICE": 298.74,
+    "Date": 20221116.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 2252058.0,
+    "Mkt_Cap_USD_mm": 49605.78,
+    "GICS_Sector": "Financials",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 8.393696,
+    "ITG_RIM-2": 6.785765,
+    "ITG_RIM-3": 6.430615,
+    "ITG_RIM-4": 8.219382999999999,
+    "ITG_rank_RIM-1": 3.0,
+    "ITG_rank_RIM-2": 3.0,
+    "ITG_rank_RIM-3": 3.0,
+    "ITG_rank_RIM-4": 3.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.1334656,
+    "Rel_3M": -0.01906157,
+    "Rel_6M": 0.04228234,
+    "Rel_1Y": -0.08513242,
+    "Rel_3Y": 0.2060929,
+    "Rel_5Y": 0.9386346,
+    "Rel_10Y": 8.142309,
+    "RIM-1_Discount": 0.1147462,
+    "RIM-2_Discount": 0.09980212000000001,
+    "RIM-3_Discount": 0.09650554,
+    "RIM-4_Discount": 0.11312467,
+    "Cash_per_Price_%": 3.025809,
+    "PER_N12M": 31.77219,
+    "ESG_Rsik_Rank": 2.0,
+    "ESG_Mgt_Rank": 97.0
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 6437.872,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": "RIM-3: RIM applying individual adj Beta",
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_RIM-4_RIM-3_Discount": null,
+    "ITG_rank_RIM-1_RIM-4_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null,
+    "ITG_rank_RIM-4": null,
+    "ESG_Rsik_Rank": null,
+    "ESG_Mgt_Rank": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 8.142309,
+    "RIM-1_Discount": 0.1147462,
+    "RIM-2_Discount": 0.09980212000000001,
+    "RIM-3_Discount": 0.09650554,
+    "RIM-4_Discount": 0.11312467,
+    "Cash_per_Price_%": 3.025809,
+    "PER_N12M": 31.77219
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 4829.0,
+      "FY-1": 5371.0,
+      "FY0": 6218.0,
+      "FY1": 5442.749,
+      "FY2": 5826.32,
+      "FY3": 6437.872
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.11223853,
+      "FY0": 0.1576988,
+      "FY1": -0.12467861,
+      "FY2": 0.07047379000000001,
+      "FY3": 0.10496378
+    },
+    "Net_Income": {
+      "FY-2": 1422.0,
+      "FY-1": 1778.0,
+      "FY0": 2214.0,
+      "FY1": 1357.852,
+      "FY2": 1596.825,
+      "FY3": 1920.905
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.2503517,
+      "FY0": 0.2452193,
+      "FY1": -0.3866973,
+      "FY2": 0.1759932,
+      "FY3": 0.2029529
+    },
+    "Net_Margin": {
+      "FY-2": 0.29447090494926487,
+      "FY-1": 0.3310370508285235,
+      "FY0": 0.3560630427790286,
+      "FY1": 0.24947907757642326,
+      "FY2": 0.27407094014746874,
+      "FY3": 0.29837576764496093
+    },
+    "Asset_Turn": {
+      "FY-2": 0.4710453,
+      "FY-1": 0.432831,
+      "FY0": 0.4232927,
+      "FY1": 0.3935647,
+      "FY2": 0.4175029,
+      "FY3": 0.4376924
+    },
+    "Asset__Equity": {
+      "FY-2": 12.336543,
+      "FY-1": 7.236974999999999,
+      "FY0": 5.063052,
+      "FY1": 5.739887,
+      "FY2": 5.239769,
+      "FY3": 4.6041
+    },
+    "ROE": {
+      "FY-2": 205.4023,
+      "FY-1": 115.04213,
+      "FY0": 80.25787000000001,
+      "FY1": 65.07392,
+      "FY2": 67.23563,
+      "FY3": 73.16223000000001
+    }
+  },
+  "esg": {
+    "ESG_Rsik_Rank": 2.0,
+    "ESG_Mgt_Rank": 97.0,
+    "Rsik_Rank": 2.0,
+    "Mgt_Rank": 97.0
+  },
+  "_meta": {
+    "source_file": "20221116 MCO US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
