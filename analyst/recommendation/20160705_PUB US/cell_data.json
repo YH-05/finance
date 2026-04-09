@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "SELL",
+    "COMPANY_NAME": "Publicis Groupe SA",
+    "STOCK_PRICE": 60.53,
+    "Date": 20160705.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": 4380429.0,
+    "Mkt_Cap_USD_mm": 12720.191,
+    "GICS_Sector": "Media",
+    "Country": "FRANCE",
+    "ITG_RIM-1": 5.408549,
+    "ITG_RIM-2": 3.810333,
+    "ITG_RIM-3": 2.162527,
+    "ITG_rank_RIM-1": 3.0,
+    "ITG_rank_RIM-2": 2.0,
+    "ITG_rank_RIM-3": 2.0
+  },
+  "rel_return": {
+    "Rel_1M": -0.03679347,
+    "Rel_3M": -0.03695422,
+    "Rel_6M": 0.007366776,
+    "Rel_1Y": -0.03318858,
+    "Rel_3Y": -0.2252307,
+    "Rel_5Y": -0.01938868,
+    "Rel_10Y": 0.441885,
+    "RIM-1_Discount": 0.1022746,
+    "RIM-2_Discount": 0.095139,
+    "RIM-3_Discount": 0.0880034,
+    "Cash_per_Price_%": 12.386662,
+    "PER_N12M": 12.804339
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 10678.6,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": 0.441885,
+    "RIM-1_Discount": 0.1022746,
+    "RIM-2_Discount": 0.095139,
+    "RIM-3_Discount": 0.0880034,
+    "Cash_per_Price_%": 12.386662,
+    "PER_N12M": 12.804339
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 6953.0,
+      "FY-1": 7255.0,
+      "FY0": 9601.0,
+      "FY1": 9902.544,
+      "FY2": 10261.295,
+      "FY3": 10678.6
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.0434345,
+      "FY0": 0.3233632,
+      "FY1": 0.03140759,
+      "FY2": 0.03622818,
+      "FY3": 0.04066789
+    },
+    "Net_Income": {
+      "FY-2": 794.2932000000001,
+      "FY-1": 760.179,
+      "FY0": 930.0031,
+      "FY1": 999.2754000000001,
+      "FY2": 1088.804,
+      "FY3": 1177.37
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": -0.0429492,
+      "FY0": 0.2234,
+      "FY1": 0.074486,
+      "FY2": 0.08959353,
+      "FY3": 0.08134246
+    },
+    "Net_Margin": {
+      "FY-2": 0.1142374802243636,
+      "FY-1": 0.10478001378359751,
+      "FY0": 0.09686523278825122,
+      "FY1": 0.10091097802746447,
+      "FY2": 0.1061078548077996,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.4063468,
+      "FY-1": 0.3517405,
+      "FY0": 0.3773088,
+      "FY1": 0.3893007,
+      "FY2": 0.39166,
+      "FY3": 0.3959583
+    },
+    "Asset__Equity": {
+      "FY-2": 3.450625,
+      "FY-1": 3.381034,
+      "FY0": 3.8962,
+      "FY1": 3.547192,
+      "FY2": 3.373449,
+      "FY3": 3.2148
+    },
+    "ROE": {
+      "FY-2": 14.866896,
+      "FY-1": 12.954918,
+      "FY0": 14.740154,
+      "FY1": 14.089225,
+      "FY2": 13.90731,
+      "FY3": 13.845917
+    }
+  },
+  "_meta": {
+    "source_file": "20160705 PUB FP.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
