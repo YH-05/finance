@@ -1,0 +1,123 @@
+{
+  "recommendation": {
+    "Recommendation": "BUY",
+    "COMPANY_NAME": "Verisk Analytics Inc",
+    "STOCK_PRICE": 94.22,
+    "Date": 20171130.0,
+    "FUND": "GEP2 & GEPAC"
+  },
+  "company_recommended": {
+    "TMA_LIST": "LIST",
+    "SEDOL": "B4P9W92",
+    "Mkt_Cap_USD_mm": 14799.415,
+    "GICS_Sector": "Commercial & Professional Services",
+    "Country": "UNITED STATES",
+    "ITG_RIM-1": 5.873737999999999,
+    "ITG_RIM-2": 5.636934999999999,
+    "ITG_RIM-3": 5.399836,
+    "ITG_rank_RIM-1": 3.0,
+    "ITG_rank_RIM-2": 3.0,
+    "ITG_rank_RIM-3": 3.0
+  },
+  "rel_return": {
+    "Rel_1M": 0.09340787,
+    "Rel_3M": 0.1260558,
+    "Rel_6M": 0.08050108,
+    "Rel_1Y": -0.11766111,
+    "Rel_3Y": 0.2453922,
+    "Rel_5Y": 0.2943664,
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.087195,
+    "RIM-2_Discount": 0.08520406,
+    "RIM-3_Discount": 0.08321311,
+    "Cash_per_Price_%": 1.03927,
+    "PER_N12M": 27.37406
+  },
+  "implied_growth_rate": {
+    "Rel_10Y_FY3": 2440.709,
+    "ITG_RIM-1": null,
+    "ITG_RIM-2_RIM-1_Discount": null,
+    "ITG_RIM-3_RIM-2_Discount": null,
+    "ITG_rank_RIM-1_RIM-3_Discount": null,
+    "ITG_rank_RIM-2_Cash_per_Price_%": null,
+    "ITG_rank_RIM-3_PER_N12M": null
+  },
+  "rim_discount": {
+    "Rel_10Y": null,
+    "RIM-1_Discount": 0.087195,
+    "RIM-2_Discount": 0.08520406,
+    "RIM-3_Discount": 0.08321311,
+    "Cash_per_Price_%": 1.03927,
+    "PER_N12M": 27.37406
+  },
+  "financials": {
+    "Sales": {
+      "FY-2": 1746.72,
+      "FY-1": 2068.01,
+      "FY0": 1995.2,
+      "FY1": 2130.063,
+      "FY2": 2296.134,
+      "FY3": 2440.709
+    },
+    "Sales_Growth": {
+      "FY-2": null,
+      "FY-1": 0.1839391,
+      "FY0": -0.03520781,
+      "FY1": 0.06759381,
+      "FY2": 0.07796526000000001,
+      "FY3": 0.06296456
+    },
+    "Net_Income": {
+      "FY-2": 370.865,
+      "FY-1": 507.577,
+      "FY0": 451.5,
+      "FY1": 459.72,
+      "FY2": 497.5803,
+      "FY3": 584.6157000000001
+    },
+    "Net_Income_Growth": {
+      "FY-2": null,
+      "FY-1": 0.36863,
+      "FY0": -0.11047977,
+      "FY1": 0.0182054,
+      "FY2": 0.08235574,
+      "FY3": 0.1749173
+    },
+    "Net_Margin": {
+      "FY-2": 0.2123208069982596,
+      "FY-1": 0.24544223673966759,
+      "FY0": 0.22629310344827586,
+      "FY1": 0.2158246023709158,
+      "FY2": 0.21670351120622752,
+      "FY3": null
+    },
+    "Asset_Turn": {
+      "FY-2": 0.74477,
+      "FY-1": 0.3682413,
+      "FY0": 0.4308263,
+      "FY1": 0.3801415,
+      "FY2": 0.4075584,
+      "FY3": 0.4243993
+    },
+    "Asset__Equity": {
+      "FY-2": 6.477061,
+      "FY-1": 4.058155999999999,
+      "FY0": 3.476106,
+      "FY1": 3.23718,
+      "FY2": 2.743648,
+      "FY3": 2.461787
+    },
+    "ROE": {
+      "FY-2": 120.15152,
+      "FY-1": 38.09784000000001,
+      "FY0": 39.48387,
+      "FY1": 30.37524,
+      "FY2": 27.86974,
+      "FY3": 26.96436
+    }
+  },
+  "_meta": {
+    "source_file": "20171130 VRSK US.xlsx",
+    "sheet_name": "Rcmn"
+  }
+}
