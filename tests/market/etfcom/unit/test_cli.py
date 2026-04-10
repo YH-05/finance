@@ -16,13 +16,16 @@ market.etfcom.cli : Implementation under test.
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from market.etfcom.cli import _build_parser, _resolve_tickers, main
 from market.etfcom.models import CollectionResult, CollectionSummary
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 # =============================================================================
@@ -181,7 +184,9 @@ class TestResolveTickers:
         with pytest.raises(SystemExit):
             _resolve_tickers(["  ", ""], None)
 
-    def test_異常系_tickers_fileが存在しない場合SystemExit(self, tmp_path: Path) -> None:
+    def test_異常系_tickers_fileが存在しない場合SystemExit(
+        self, tmp_path: Path
+    ) -> None:
         f = tmp_path / "nonexistent.json"
         with pytest.raises(SystemExit):
             _resolve_tickers(None, f)
@@ -200,9 +205,11 @@ class TestResolveTickers:
 
     def test_異常系_デフォルトファイルなしでSystemExit(self, tmp_path: Path) -> None:
         # default file does not exist in tmp context; patch _DEFAULT_TICKERS_FILE
-        with patch("market.etfcom.cli._DEFAULT_TICKERS_FILE", tmp_path / "nope.json"):
-            with pytest.raises(SystemExit):
-                _resolve_tickers(None, None)
+        with (
+            patch("market.etfcom.cli._DEFAULT_TICKERS_FILE", tmp_path / "nope.json"),
+            pytest.raises(SystemExit),
+        ):
+            _resolve_tickers(None, None)
 
     def test_正常系_デフォルトファイルが存在する場合読込む(
         self, tmp_path: Path
@@ -222,9 +229,7 @@ class TestResolveTickers:
 class TestMain:
     """Test ``main()`` with a mocked ``ETFComCollector``."""
 
-    def _patch_collector(
-        self, summary: CollectionSummary
-    ) -> MagicMock:
+    def _patch_collector(self, summary: CollectionSummary) -> MagicMock:
         """Create a mock collector with all collect methods returning ``summary``."""
         mock_collector = MagicMock()
         mock_collector.collect_daily.return_value = summary
@@ -239,7 +244,9 @@ class TestMain:
         summary = _make_summary(successful=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "daily", "--tickers-file", str(f)])
 
         assert code == 0
@@ -251,7 +258,9 @@ class TestMain:
         summary = _make_summary(successful=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "weekly", "--tickers-file", str(f)])
 
         assert code == 0
@@ -263,7 +272,9 @@ class TestMain:
         summary = _make_summary(successful=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "monthly", "--tickers-file", str(f)])
 
         assert code == 0
@@ -275,7 +286,9 @@ class TestMain:
         summary = _make_summary(successful=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "all", "--tickers-file", str(f)])
 
         assert code == 0
@@ -285,7 +298,9 @@ class TestMain:
         summary = _make_summary(successful=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "daily", "--tickers", "SPY,QQQ"])
 
         assert code == 0
@@ -297,7 +312,9 @@ class TestMain:
         summary = _make_summary(successful=1, failed=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "daily", "--tickers-file", str(f)])
 
         assert code == 1
@@ -308,7 +325,9 @@ class TestMain:
         summary = _make_summary(successful=0, failed=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "daily", "--tickers-file", str(f)])
 
         assert code == 1
@@ -319,7 +338,9 @@ class TestMain:
         mock_collector = MagicMock()
         mock_collector.collect_daily.side_effect = RuntimeError("storage init failed")
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--frequency", "daily", "--tickers-file", str(f)])
 
         assert code == 1
@@ -329,7 +350,9 @@ class TestMain:
         f.write_text('["SPY"]')
         mock_collector = MagicMock()
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--dry-run", "--frequency", "daily", "--tickers-file", str(f)])
 
         assert code == 0
@@ -355,7 +378,9 @@ class TestMain:
         self, tmp_path: Path
     ) -> None:
         with pytest.raises(SystemExit):
-            main(["--frequency", "daily", "--tickers-file", str(tmp_path / "nope.json")])
+            main(
+                ["--frequency", "daily", "--tickers-file", str(tmp_path / "nope.json")]
+            )
 
     def test_正常系_デフォルトfrequencyはall(self, tmp_path: Path) -> None:
         f = tmp_path / "t.json"
@@ -363,7 +388,9 @@ class TestMain:
         summary = _make_summary(successful=1)
         mock_collector = self._patch_collector(summary)
 
-        with patch("market.etfcom.collector.ETFComCollector", return_value=mock_collector):
+        with patch(
+            "market.etfcom.collector.ETFComCollector", return_value=mock_collector
+        ):
             code = main(["--tickers-file", str(f)])
 
         assert code == 0
