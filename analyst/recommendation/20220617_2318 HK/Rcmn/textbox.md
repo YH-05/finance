@@ -8,16 +8,16 @@
 
 ## TextBox 2
 
-<Views   valuations , implied  terminal growth
+<Views   valuations , implied  terminal growth
 CAGR見直し
 業界見通し(人口普及率上昇、マージン低下)、競争優位性の低下(シェア横ばい)を背景にCAGR修正を行う
 
 売上/EPS +7%/+7% (従前 +5%/+9%)
 前提
-保険 6割 +7% -実質GDP+4、CPI+2,普及率 +1%、シェア横ばい- (従前 +4%) 
+保険 6割 +7% -実質GDP+4、CPI+2,普及率 +1%、シェア横ばい- (従前 +4%)
 銀行 15% +6% -名目GDP - (従前 +6%)
 その他(手数料他) +8%  (従前 +8%)
-利益率/自社株買い 横ばい (従前 +3.5/+0.5%) 
+利益率/自社株買い 横ばい (従前 +3.5/+0.5%)
 
 株価評価
 PBR1以下(0.9)であり 残余利益モデルは機能せず
@@ -67,4 +67,3 @@ TMAMIアナリストによれば、ピンアンのフンテック子会社や銀
 <Views on ESG, SDGs, Sustainalytics Score>
 
 ---
-

@@ -34,4 +34,3 @@ ROE 過去サイクル平均12%を起点に、CAGR、自社株買いなどの前
 <Views on ESG, SDGs, Sustainalytics Score>
 
 ---
-

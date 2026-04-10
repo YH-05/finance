@@ -26,7 +26,7 @@ NSE shareholding APIのエンドポイント修正（PR #3902）完了後、
 
 - **目的**: 全銘柄のXBRL（in-bse-shp名前空間）を解析して詳細株主リストを生成
 - **入力**: SQLiteのshareholdingsテーブルから最新XBRL URLを取得
-- **出力**: 
+- **出力**:
   - `data/cache/nse/{SYMBOL}/shareholding_detail.csv`（銘柄別）
   - `data/cache/nse/all_shareholding_detail.csv`（全銘柄統合、146,195行、19MB）
 - **CSV列**: symbol, company_name, report_date, category, sub_category, shareholder_name, pan, num_shareholders, num_fully_paid_shares, num_voting_rights, pct_total_shares, pct_fully_diluted, num_shares_demat, is_category_total
