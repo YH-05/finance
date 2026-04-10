@@ -10,7 +10,7 @@
 
 <Views on valuations , implied  terminal growth>
 
-CAGR 
+CAGR
 従前 +HSD (売り上げ +MSD 利益率改善 +LSD)
 競争環境変化を折込み、売り上げ、利益率改善とも0-LSD程度の下押し要因を想定、 +M-HSDへ下方修正
 中長期成長率下方修正、競争激化からPEプレミアム7%からの従来レンジ1.0-1.4への回帰は限定的との判断に変更 SELL
@@ -45,4 +45,3 @@ Amazonの台頭について
  
 
 ---
-

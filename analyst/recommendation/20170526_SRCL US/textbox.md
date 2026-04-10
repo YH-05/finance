@@ -30,7 +30,7 @@
 中小病院の統合が進んでおり、顧客側が購買力をつけてきていること
 解約率を抑えるためにディスカントでの更新を進めていることから、価格圧力が続く模様
  
-# of Hospitals http://www.aha.org/research/rc/stat-studies/fast-facts.shtml  
+# of Hospitals http://www.aha.org/research/rc/stat-studies/fast-facts.shtml
 会社は今後の契約更改にかかるマイナス影響を120mi見込んでいるものの、
 経済合理性から病院の統廃合、グループ化は進むと思われることから顧客の購買力は高止まりが予想される
  
@@ -51,4 +51,3 @@ CF使途では当面債務返済が優先される
 
 
 ---
-

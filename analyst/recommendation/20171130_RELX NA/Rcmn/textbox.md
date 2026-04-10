@@ -31,4 +31,3 @@ RELXでは自社株買の寄与を見込むため、EPS CAGR+M-HSDとVRSK並も�
 <Views on competitive advantage, Terminal ROE>
 
 ---
-
