@@ -1,4 +1,4 @@
-"""Unit tests for market.asean_common.screener module.
+"""Unit tests for market.market_common.screener module.
 
 Tests cover:
 - fetch_tickers_from_screener: Single market ticker fetching via tradingview-screener
@@ -29,13 +29,13 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
-from market.asean_common.constants import (
+from market.market_common.constants import (
     SCREENER_MARKET_MAP,
     YFINANCE_SUFFIX_MAP,
-    AseanMarket,
+    MarketExchange,
 )
-from market.asean_common.errors import AseanScreenerError
-from market.asean_common.types import TickerRecord
+from market.market_common.errors import AseanScreenerError
+from market.market_common.types import TickerRecord
 
 # ============================================================================
 # Fixtures
@@ -106,9 +106,9 @@ class TestFetchTickersFromScreener:
         with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
         assert isinstance(result, list)
         assert len(result) == 3
@@ -122,9 +122,9 @@ class TestFetchTickersFromScreener:
         with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
         assert result[0].ticker == "D05"
         assert result[1].ticker == "O39"
@@ -138,9 +138,9 @@ class TestFetchTickersFromScreener:
         with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
         assert result[0].yfinance_ticker == "D05.SI"
         assert result[0].yfinance_suffix == ".SI"
@@ -149,15 +149,15 @@ class TestFetchTickersFromScreener:
         self,
         mock_scanner_df_sgx: pd.DataFrame,
     ) -> None:
-        """TickerRecord の market フィールドが正しい AseanMarket に設定されること."""
+        """TickerRecord の market フィールドが正しい MarketExchange に設定されること."""
         with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
-        assert all(t.market == AseanMarket.SGX for t in result)
+        assert all(t.market == MarketExchange.SGX for t in result)
 
     def test_正常系_オプショナルフィールドが正しく設定される(
         self,
@@ -167,9 +167,9 @@ class TestFetchTickersFromScreener:
         with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
         assert result[0].sector == "Finance"
         assert result[0].industry == "Major Banks"
@@ -184,9 +184,9 @@ class TestFetchTickersFromScreener:
         with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (1, mock_scanner_df_with_none)
 
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
         assert len(result) == 1
         assert result[0].sector is None
@@ -202,9 +202,9 @@ class TestFetchTickersFromScreener:
             "market.market_common.screener._query_screener",
             side_effect=ModuleNotFoundError("No module named 'tradingview_screener'"),
         ):
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
         assert result == []
 
@@ -216,13 +216,13 @@ class TestFetchTickersFromScreener:
             "market.market_common.screener._query_screener",
             side_effect=Exception("API connection failed"),
         ):
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
             with pytest.raises(
                 AseanScreenerError,
                 match="Failed to fetch tickers from screener for SGX",
             ):
-                fetch_tickers_from_screener(AseanMarket.SGX)
+                fetch_tickers_from_screener(MarketExchange.SGX)
 
     def test_正常系_空のDataFrameで空リストを返す(self) -> None:
         """API が空の DataFrame を返した場合に空リストを返すこと."""
@@ -244,9 +244,9 @@ class TestFetchTickersFromScreener:
         with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (0, empty_df)
 
-            from market.asean_common.screener import fetch_tickers_from_screener
+            from market.market_common.screener import fetch_tickers_from_screener
 
-            result = fetch_tickers_from_screener(AseanMarket.SGX)
+            result = fetch_tickers_from_screener(MarketExchange.SGX)
 
         assert result == []
 
@@ -259,20 +259,20 @@ class TestFetchTickersFromScreener:
 class TestFetchAllAseanTickers:
     """Tests for fetch_all_asean_tickers function."""
 
-    def test_正常系_全市場のキーを持つdictを返す(self) -> None:
-        """fetch_all_asean_tickers が全市場のキーを持つ dict を返すこと."""
+    def test_正常系_全6市場のキーを持つdictを返す(self) -> None:
+        """fetch_all_asean_tickers が全8市場（ASEAN 6 + India 2）のキーを持つ dict を返すこと."""
         with patch(
             "market.market_common.screener.fetch_tickers_from_screener"
         ) as mock_fetch:
             mock_fetch.return_value = []
 
-            from market.asean_common.screener import fetch_all_asean_tickers
+            from market.market_common.screener import fetch_all_asean_tickers
 
             result = fetch_all_asean_tickers()
 
         assert isinstance(result, dict)
-        assert len(result) == len(AseanMarket)
-        for market in AseanMarket:
+        assert len(result) == 8
+        for market in MarketExchange:
             assert market in result
 
     def test_正常系_各市場の結果がlist型である(self) -> None:
@@ -280,15 +280,15 @@ class TestFetchAllAseanTickers:
         mock_ticker = TickerRecord(
             ticker="D05",
             name="DBS",
-            market=AseanMarket.SGX,
-            yfinance_suffix=YFINANCE_SUFFIX_MAP[AseanMarket.SGX],
+            market=MarketExchange.SGX,
+            yfinance_suffix=YFINANCE_SUFFIX_MAP[MarketExchange.SGX],
         )
         with patch(
             "market.market_common.screener.fetch_tickers_from_screener"
         ) as mock_fetch:
             mock_fetch.return_value = [mock_ticker]
 
-            from market.asean_common.screener import fetch_all_asean_tickers
+            from market.market_common.screener import fetch_all_asean_tickers
 
             result = fetch_all_asean_tickers()
 
@@ -296,19 +296,19 @@ class TestFetchAllAseanTickers:
             assert isinstance(tickers, list)
 
     def test_正常系_fetch_tickers_from_screenerが各市場で呼ばれる(self) -> None:
-        """fetch_tickers_from_screener が全市場で呼ばれること."""
+        """fetch_tickers_from_screener が全8市場（ASEAN 6 + India 2）で呼ばれること."""
         with patch(
             "market.market_common.screener.fetch_tickers_from_screener"
         ) as mock_fetch:
             mock_fetch.return_value = []
 
-            from market.asean_common.screener import fetch_all_asean_tickers
+            from market.market_common.screener import fetch_all_asean_tickers
 
             fetch_all_asean_tickers()
 
-        assert mock_fetch.call_count == len(AseanMarket)
+        assert mock_fetch.call_count == 8
         called_markets = {call.args[0] for call in mock_fetch.call_args_list}
-        assert called_markets == set(AseanMarket)
+        assert called_markets == set(MarketExchange)
 
     def test_正常系_tradingview_screener未インストール時に全市場空リスト(
         self,
@@ -319,7 +319,7 @@ class TestFetchAllAseanTickers:
         ) as mock_fetch:
             mock_fetch.return_value = []
 
-            from market.asean_common.screener import fetch_all_asean_tickers
+            from market.market_common.screener import fetch_all_asean_tickers
 
             result = fetch_all_asean_tickers()
 
@@ -335,8 +335,8 @@ class TestFetchAllAseanTickers:
         これは意図的な fail-fast 設計であり、部分的な結果は返さない。
         """
 
-        def _side_effect(market: AseanMarket) -> list[TickerRecord]:
-            if market == AseanMarket.IDX:
+        def _side_effect(market: MarketExchange) -> list[TickerRecord]:
+            if market == MarketExchange.IDX:
                 raise AseanScreenerError(
                     "Failed to fetch tickers from screener for IDX"
                 )
@@ -346,7 +346,7 @@ class TestFetchAllAseanTickers:
             "market.market_common.screener.fetch_tickers_from_screener",
             side_effect=_side_effect,
         ):
-            from market.asean_common.screener import fetch_all_asean_tickers
+            from market.market_common.screener import fetch_all_asean_tickers
 
             with pytest.raises(AseanScreenerError, match="IDX"):
                 fetch_all_asean_tickers()
@@ -355,8 +355,8 @@ class TestFetchAllAseanTickers:
         """ThreadPoolExecutor 経由でも元の AseanScreenerError メッセージが保持されること."""
         error_msg = "Failed to fetch tickers from screener for SET"
 
-        def _side_effect(market: AseanMarket) -> list[TickerRecord]:
-            if market == AseanMarket.SET:
+        def _side_effect(market: MarketExchange) -> list[TickerRecord]:
+            if market == MarketExchange.SET:
                 raise AseanScreenerError(error_msg)
             return []
 
@@ -364,7 +364,7 @@ class TestFetchAllAseanTickers:
             "market.market_common.screener.fetch_tickers_from_screener",
             side_effect=_side_effect,
         ):
-            from market.asean_common.screener import fetch_all_asean_tickers
+            from market.market_common.screener import fetch_all_asean_tickers
 
             with pytest.raises(AseanScreenerError) as exc_info:
                 fetch_all_asean_tickers()
@@ -404,9 +404,9 @@ class TestQueryScreener:
             "sys.modules",
             {"tradingview_screener": mock_module},
         ):
-            from market.asean_common.screener import _query_screener
+            from market.market_common.screener import _query_screener
 
-            _query_screener(AseanMarket.SGX)
+            _query_screener(MarketExchange.SGX)
 
         mock_query_instance.set_markets.assert_called_once_with("singapore")
 
@@ -423,7 +423,7 @@ class TestQueryScreener:
             return original_import(name, *args, **kwargs)
 
         with patch("builtins.__import__", side_effect=mock_import):
-            from market.asean_common.screener import _query_screener
+            from market.market_common.screener import _query_screener
 
             with pytest.raises(ModuleNotFoundError):
-                _query_screener(AseanMarket.SGX)
+                _query_screener(MarketExchange.SGX)
