@@ -1,12 +1,12 @@
-"""Tests for market.asean_common.constants module.
+"""Tests for market.market_common.constants module.
 
 Tests verify all constant definitions for the ASEAN common module,
-including AseanMarket enum, yfinance suffix mapping, screener exchange
+including MarketExchange enum, yfinance suffix mapping, screener exchange
 mapping, screener market mapping, table name, DB path, and module exports.
 
 Test TODO List:
 - [x] Module exports: __all__ completeness and importability
-- [x] AseanMarket Enum: 6 members, str inheritance, values
+- [x] MarketExchange Enum: 6 members, str inheritance, values
 - [x] YFINANCE_SUFFIX_MAP: all 6 markets mapped to correct suffixes
 - [x] SCREENER_EXCHANGE_MAP: all 6 markets mapped to screener names
 - [x] SCREENER_MARKET_MAP: all 6 markets mapped to screener market names
@@ -17,13 +17,13 @@ Test TODO List:
 
 from typing import get_type_hints
 
-from market.asean_common.constants import (
+from market.market_common.constants import (
     DB_PATH,
     SCREENER_EXCHANGE_MAP,
     SCREENER_MARKET_MAP,
     TABLE_TICKERS,
     YFINANCE_SUFFIX_MAP,
-    AseanMarket,
+    MarketExchange,
     __all__,
 )
 
@@ -37,7 +37,7 @@ class TestModuleExports:
 
     def test_正常系_モジュールがインポートできる(self) -> None:
         """constants モジュールが正常にインポートできること。"""
-        from market.asean_common import constants
+        from market.market_common import constants
 
         assert constants is not None
 
@@ -48,73 +48,74 @@ class TestModuleExports:
 
     def test_正常系_allの全項目がモジュールに存在する(self) -> None:
         """__all__ の全項目がモジュールの属性として存在すること。"""
-        from market.asean_common import constants
+        from market.market_common import constants
 
         for name in __all__:
             assert hasattr(constants, name), (
                 f"{name} is not defined in constants module"
             )
 
-    def test_正常系_allが必須項目を含む(self) -> None:
-        """__all__ が全必須定数をエクスポートしていること。"""
+    def test_正常系_allが6項目を含む(self) -> None:
+        """__all__ が全6定数をエクスポートしていること。"""
         expected = {
-            "AseanMarket",
-            "DB_PATH",
             "MarketExchange",
+            "DB_PATH",
             "SCREENER_EXCHANGE_MAP",
             "SCREENER_MARKET_MAP",
             "TABLE_TICKERS",
             "YFINANCE_SUFFIX_MAP",
         }
-        assert expected.issubset(set(__all__))
+        assert set(__all__) == expected
 
     def test_正常系_モジュールDocstringが存在する(self) -> None:
         """モジュールの docstring が存在すること。"""
-        from market.asean_common import constants
+        from market.market_common import constants
 
         assert constants.__doc__ is not None
         assert len(constants.__doc__) > 0
 
 
 # =============================================================================
-# AseanMarket Enum
+# MarketExchange Enum
 # =============================================================================
 
 
-class TestAseanMarketEnum:
-    """Test AseanMarket Enum definition."""
+class TestMarketExchangeEnum:
+    """Test MarketExchange Enum definition."""
 
     def test_正常系_strを継承している(self) -> None:
-        """AseanMarket が str と Enum を継承していること。"""
+        """MarketExchange が str と Enum を継承していること。"""
         from enum import Enum
 
-        assert issubclass(AseanMarket, str)
-        assert issubclass(AseanMarket, Enum)
+        assert issubclass(MarketExchange, str)
+        assert issubclass(MarketExchange, Enum)
 
-    def test_正常系_ASEANメンバーを持つ(self) -> None:
-        """AseanMarket が SGX, BURSA, SET, IDX, HOSE, PSE の6ASEANメンバーを持つこと。"""
-        assert len(AseanMarket) >= 6
+    def test_正常系_6つのメンバーを持つ(self) -> None:
+        """MarketExchange が ASEAN 6市場 + India 2市場の8メンバーを持つこと。"""
+        assert len(MarketExchange) == 8
 
     def test_正常系_全メンバーの値が正しい(self) -> None:
-        """AseanMarket の全メンバーの値が設計通りであること。"""
-        assert AseanMarket.SGX.value == "SGX"
-        assert AseanMarket.BURSA.value == "BURSA"
-        assert AseanMarket.SET.value == "SET"
-        assert AseanMarket.IDX.value == "IDX"
-        assert AseanMarket.HOSE.value == "HOSE"
-        assert AseanMarket.PSE.value == "PSE"
+        """MarketExchange の全メンバーの値が設計通りであること。"""
+        assert MarketExchange.SGX.value == "SGX"
+        assert MarketExchange.BURSA.value == "BURSA"
+        assert MarketExchange.SET.value == "SET"
+        assert MarketExchange.IDX.value == "IDX"
+        assert MarketExchange.HOSE.value == "HOSE"
+        assert MarketExchange.PSE.value == "PSE"
+        assert MarketExchange.NSE.value == "NSE"
+        assert MarketExchange.BSE.value == "BSE"
 
     def test_正常系_文字列として使用できる(self) -> None:
-        """AseanMarket メンバーを文字列として直接使用できること。"""
-        value: str = AseanMarket.SGX
+        """MarketExchange メンバーを文字列として直接使用できること。"""
+        value: str = MarketExchange.SGX
         assert isinstance(value, str)
         assert value == "SGX"
 
-    def test_正常系_全ASEANメンバー名が含まれている(self) -> None:
-        """AseanMarket に全6ASEAN市場が含まれていること。"""
-        expected = {"SGX", "BURSA", "SET", "IDX", "HOSE", "PSE"}
-        actual = {member.value for member in AseanMarket}
-        assert expected.issubset(actual)
+    def test_正常系_全メンバー名が含まれている(self) -> None:
+        """MarketExchange に ASEAN 6市場 + India 2市場が含まれていること。"""
+        expected = {"SGX", "BURSA", "SET", "IDX", "HOSE", "PSE", "NSE", "BSE"}
+        actual = {member.value for member in MarketExchange}
+        assert actual == expected
 
 
 # =============================================================================
@@ -129,37 +130,45 @@ class TestYfinanceSuffixMap:
         """YFINANCE_SUFFIX_MAP が dict であること。"""
         assert isinstance(YFINANCE_SUFFIX_MAP, dict)
 
-    def test_正常系_全市場が含まれている(self) -> None:
-        """YFINANCE_SUFFIX_MAP が全市場のエントリを含むこと。"""
-        assert len(YFINANCE_SUFFIX_MAP) >= 6
-        # ASEAN6市場は必ず含まれる
-        for market in ["SGX", "BURSA", "SET", "IDX", "HOSE", "PSE"]:
-            key = AseanMarket(market)
-            assert key in YFINANCE_SUFFIX_MAP, f"{market} is not in YFINANCE_SUFFIX_MAP"
+    def test_正常系_全6市場が含まれている(self) -> None:
+        """YFINANCE_SUFFIX_MAP が全8市場（ASEAN 6 + India 2）のエントリを含むこと。"""
+        assert len(YFINANCE_SUFFIX_MAP) == 8
+        for market in MarketExchange:
+            assert market in YFINANCE_SUFFIX_MAP, (
+                f"{market.value} is not in YFINANCE_SUFFIX_MAP"
+            )
 
     def test_正常系_SGXのサフィックスが正しい(self) -> None:
         """SGX のサフィックスが .SI であること。"""
-        assert YFINANCE_SUFFIX_MAP[AseanMarket.SGX] == ".SI"
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.SGX] == ".SI"
 
     def test_正常系_BURSAのサフィックスが正しい(self) -> None:
         """BURSA のサフィックスが .KL であること。"""
-        assert YFINANCE_SUFFIX_MAP[AseanMarket.BURSA] == ".KL"
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.BURSA] == ".KL"
 
     def test_正常系_SETのサフィックスが正しい(self) -> None:
         """SET のサフィックスが .BK であること。"""
-        assert YFINANCE_SUFFIX_MAP[AseanMarket.SET] == ".BK"
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.SET] == ".BK"
 
     def test_正常系_IDXのサフィックスが正しい(self) -> None:
         """IDX のサフィックスが .JK であること。"""
-        assert YFINANCE_SUFFIX_MAP[AseanMarket.IDX] == ".JK"
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.IDX] == ".JK"
 
     def test_正常系_HOSEのサフィックスが正しい(self) -> None:
         """HOSE のサフィックスが .VN であること。"""
-        assert YFINANCE_SUFFIX_MAP[AseanMarket.HOSE] == ".VN"
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.HOSE] == ".VN"
 
     def test_正常系_PSEのサフィックスが正しい(self) -> None:
         """PSE のサフィックスが .PS であること。"""
-        assert YFINANCE_SUFFIX_MAP[AseanMarket.PSE] == ".PS"
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.PSE] == ".PS"
+
+    def test_正常系_NSEのサフィックスが正しい(self) -> None:
+        """NSE のサフィックスが .NS であること。"""
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.NSE] == ".NS"
+
+    def test_正常系_BSEのサフィックスが正しい(self) -> None:
+        """BSE のサフィックスが .BO であること。"""
+        assert YFINANCE_SUFFIX_MAP[MarketExchange.BSE] == ".BO"
 
     def test_正常系_全サフィックスがドットで始まる(self) -> None:
         """全サフィックスが . で始まること。"""
@@ -186,15 +195,31 @@ class TestScreenerExchangeMap:
         """SCREENER_EXCHANGE_MAP が dict であること。"""
         assert isinstance(SCREENER_EXCHANGE_MAP, dict)
 
-    def test_正常系_ASEAN市場が含まれている(self) -> None:
-        """SCREENER_EXCHANGE_MAP が全ASEAN6市場のエントリを含むこと (BSEは設計上除外)。"""
-        assert len(SCREENER_EXCHANGE_MAP) >= 6
-        # ASEAN6市場は必ず含まれる
-        for market_str in ["SGX", "BURSA", "SET", "IDX", "HOSE", "PSE"]:
-            key = AseanMarket(market_str)
-            assert key in SCREENER_EXCHANGE_MAP, (
-                f"{market_str} is not in SCREENER_EXCHANGE_MAP"
+    def test_正常系_全6市場が含まれている(self) -> None:
+        """SCREENER_EXCHANGE_MAP が ASEAN 6市場 + NSE の7エントリを含むこと。
+
+        Notes
+        -----
+        BSE は tradingview-screener で市場="india" に NSE と重複するため、
+        意図的に SCREENER_EXCHANGE_MAP から除外されている。
+        NSE では exchange フィルタ ("NSE") により重複排除を実施する。
+        """
+        expected_markets = {
+            MarketExchange.SGX,
+            MarketExchange.BURSA,
+            MarketExchange.SET,
+            MarketExchange.IDX,
+            MarketExchange.HOSE,
+            MarketExchange.PSE,
+            MarketExchange.NSE,
+        }
+        assert len(SCREENER_EXCHANGE_MAP) == 7
+        for market in expected_markets:
+            assert market in SCREENER_EXCHANGE_MAP, (
+                f"{market.value} is not in SCREENER_EXCHANGE_MAP"
             )
+        # BSE は意図的に除外
+        assert MarketExchange.BSE not in SCREENER_EXCHANGE_MAP
 
     def test_正常系_値がstr型である(self) -> None:
         """SCREENER_EXCHANGE_MAP の値が全て str であること。"""
@@ -222,15 +247,30 @@ class TestScreenerMarketMap:
         """SCREENER_MARKET_MAP が dict であること。"""
         assert isinstance(SCREENER_MARKET_MAP, dict)
 
-    def test_正常系_ASEAN市場が含まれている(self) -> None:
-        """SCREENER_MARKET_MAP が全ASEAN6市場のエントリを含むこと (BSEは設計上除外)。"""
-        assert len(SCREENER_MARKET_MAP) >= 6
-        # ASEAN6市場は必ず含まれる
-        for market_str in ["SGX", "BURSA", "SET", "IDX", "HOSE", "PSE"]:
-            key = AseanMarket(market_str)
-            assert key in SCREENER_MARKET_MAP, (
-                f"{market_str} is not in SCREENER_MARKET_MAP"
+    def test_正常系_全6市場が含まれている(self) -> None:
+        """SCREENER_MARKET_MAP が ASEAN 6市場 + NSE の7エントリを含むこと。
+
+        Notes
+        -----
+        BSE は tradingview-screener で市場="india" に NSE と重複するため、
+        意図的に SCREENER_MARKET_MAP から除外されている。
+        """
+        expected_markets = {
+            MarketExchange.SGX,
+            MarketExchange.BURSA,
+            MarketExchange.SET,
+            MarketExchange.IDX,
+            MarketExchange.HOSE,
+            MarketExchange.PSE,
+            MarketExchange.NSE,
+        }
+        assert len(SCREENER_MARKET_MAP) == 7
+        for market in expected_markets:
+            assert market in SCREENER_MARKET_MAP, (
+                f"{market.value} is not in SCREENER_MARKET_MAP"
             )
+        # BSE は意図的に除外
+        assert MarketExchange.BSE not in SCREENER_MARKET_MAP
 
     def test_正常系_値がstr型である(self) -> None:
         """SCREENER_MARKET_MAP の値が全て str であること。"""
@@ -316,13 +356,11 @@ class TestFinalAnnotations:
 
     def test_正常系_非Enum定数にFinal型アノテーションが付与されている(self) -> None:
         """非Enum の __all__ 定数に typing.Final アノテーションが付与されていること。"""
-        from market.market_common import constants as mc_constants
+        from market.market_common import constants
 
-        annotations = get_type_hints(mc_constants, include_extras=True)
+        annotations = get_type_hints(constants, include_extras=True)
 
-        # Enum クラスと AseanMarket エイリアスを除外
-        enum_or_alias_names = {"AseanMarket", "MarketExchange"}
-        non_enum_names = [name for name in __all__ if name not in enum_or_alias_names]
+        non_enum_names = [name for name in __all__ if name != "MarketExchange"]
 
         for name in non_enum_names:
             assert name in annotations, (

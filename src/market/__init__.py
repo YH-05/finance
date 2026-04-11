@@ -67,7 +67,9 @@ EdinetStorage
 EdinetSyncer
     6-phase sync orchestrator with checkpoint-based resume support
 AseanMarket
-    Enum for 6 ASEAN exchanges (SGX, Bursa, SET, IDX, HOSE, PSE)
+    Backward-compatible alias for MarketExchange
+MarketExchange
+    Enum for 8 exchanges (SGX, Bursa, SET, IDX, HOSE, PSE, NSE, BSE)
 TickerRecord
     Frozen dataclass representing an ASEAN ticker
 AseanTickerStorage
@@ -199,6 +201,7 @@ from .idx import (
     IdxValidationError,
 )
 from .jquants import JQuantsClient
+from .market_common import MarketExchange
 from .nasdaq import (
     ScreenerCollector,
     ScreenerFilter,
@@ -404,6 +407,7 @@ __all__ = [
     "MarketConfig",
     "MarketDataResult",
     "MarketError",
+    "MarketExchange",
     # NASDAQ
     "NasdaqAPIError",
     "NasdaqError",

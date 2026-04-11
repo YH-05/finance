@@ -17,12 +17,12 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
-from market.asean_common.constants import (
+from market.market_common.constants import (
     TABLE_TICKERS,
     YFINANCE_SUFFIX_MAP,
-    AseanMarket,
+    MarketExchange,
 )
-from market.asean_common.types import TickerRecord
+from market.market_common.types import TickerRecord
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -43,7 +43,7 @@ class TestAseanTickerStorageInit:
         duckdb_client: DuckDBClient,
     ) -> None:
         """AseanTickerStorageがDuckDBClientをDIで受け取ること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         assert storage._client is duckdb_client
@@ -53,7 +53,7 @@ class TestAseanTickerStorageInit:
         duckdb_client: DuckDBClient,
     ) -> None:
         """AseanTickerStorage初期化時にensure_tablesが自動で呼ばれること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         with patch.object(AseanTickerStorage, "ensure_tables") as mock_ensure:
             AseanTickerStorage(client=duckdb_client)
@@ -73,7 +73,7 @@ class TestEnsureTables:
         duckdb_client: DuckDBClient,
     ) -> None:
         """ensure_tablesでasean_tickersテーブルが作成されること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         _storage = AseanTickerStorage(client=duckdb_client)
         tables = duckdb_client.get_table_names()
@@ -84,7 +84,7 @@ class TestEnsureTables:
         duckdb_client: DuckDBClient,
     ) -> None:
         """asean_tickersテーブルに全必要カラムが存在すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         _storage = AseanTickerStorage(client=duckdb_client)
         df = duckdb_client.query_df(
@@ -111,7 +111,7 @@ class TestEnsureTables:
         duckdb_client: DuckDBClient,
     ) -> None:
         """ensure_tablesを複数回呼んでもエラーにならないこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         # Call ensure_tables again - should not raise
@@ -124,7 +124,7 @@ class TestEnsureTables:
         duckdb_client: DuckDBClient,
     ) -> None:
         """ensure_tablesがTABLE_TICKERSに対して_validate_identifierを呼ぶこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         with patch.object(
             type(duckdb_client),
@@ -140,7 +140,7 @@ class TestEnsureTables:
         duckdb_client: DuckDBClient,
     ) -> None:
         """不正なテーブル名が設定されている場合にValueErrorが発生すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         with (
@@ -166,7 +166,7 @@ class TestUpsertTickers:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """upsert_tickersがTickerRecordリストを挿入し件数を返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         count = storage.upsert_tickers(sample_tickers)
@@ -178,7 +178,7 @@ class TestUpsertTickers:
         sample_ticker_sgx: TickerRecord,
     ) -> None:
         """同じticker+marketのデータをupsertすると上書きされること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers([sample_ticker_sgx])
@@ -186,8 +186,8 @@ class TestUpsertTickers:
         updated = TickerRecord(
             ticker="D05",
             name="DBS Group Holdings Ltd (Updated)",
-            market=AseanMarket.SGX,
-            yfinance_suffix=YFINANCE_SUFFIX_MAP[AseanMarket.SGX],
+            market=MarketExchange.SGX,
+            yfinance_suffix=YFINANCE_SUFFIX_MAP[MarketExchange.SGX],
             sector="Financial Services",
             industry="Banks - Diversified",
             market_cap=110_000_000_000,
@@ -197,7 +197,7 @@ class TestUpsertTickers:
         assert count == 1
 
         # Verify only one record exists
-        tickers = storage.get_tickers(AseanMarket.SGX)
+        tickers = storage.get_tickers(MarketExchange.SGX)
         assert len(tickers) == 1
         assert tickers[0].name == "DBS Group Holdings Ltd (Updated)"
         assert tickers[0].market_cap == 110_000_000_000
@@ -207,7 +207,7 @@ class TestUpsertTickers:
         duckdb_client: DuckDBClient,
     ) -> None:
         """upsert_tickersに空リストを渡すと0を返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         count = storage.upsert_tickers([])
@@ -218,18 +218,18 @@ class TestUpsertTickers:
         duckdb_client: DuckDBClient,
     ) -> None:
         """オプショナルフィールドがNoneで保存されること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         ticker = TickerRecord(
             ticker="TEST",
             name="Test Company",
-            market=AseanMarket.IDX,
-            yfinance_suffix=YFINANCE_SUFFIX_MAP[AseanMarket.IDX],
+            market=MarketExchange.IDX,
+            yfinance_suffix=YFINANCE_SUFFIX_MAP[MarketExchange.IDX],
         )
         storage.upsert_tickers([ticker])
 
-        tickers = storage.get_tickers(AseanMarket.IDX)
+        tickers = storage.get_tickers(MarketExchange.IDX)
         assert len(tickers) == 1
         assert tickers[0].sector is None
         assert tickers[0].industry is None
@@ -255,21 +255,21 @@ class TestBuildTickerDf:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """_build_ticker_dfのmarket列がenum値ではなく文字列であること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         df = AseanTickerStorage._build_ticker_df(sample_tickers)
         for val in df["market"]:
             assert isinstance(val, str), f"Expected str, got {type(val)}"
-            assert not isinstance(val, AseanMarket), (
-                "market column should contain plain strings, not AseanMarket enum"
+            assert not isinstance(val, MarketExchange), (
+                "market column should contain plain strings, not MarketExchange enum"
             )
 
     def test_正常系_market列の値がenum_valueと一致する(
         self,
         sample_tickers: list[TickerRecord],
     ) -> None:
-        """_build_ticker_dfのmarket列値がAseanMarket.valueと一致すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        """_build_ticker_dfのmarket列値がMarketExchange.valueと一致すること."""
+        from market.market_common.storage import AseanTickerStorage
 
         df = AseanTickerStorage._build_ticker_df(sample_tickers)
         expected_markets = [t.market.value for t in sample_tickers]
@@ -280,21 +280,21 @@ class TestBuildTickerDf:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """_build_ticker_dfがDataFrame.apply()を使わずにenum変換すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         df = AseanTickerStorage._build_ticker_df(sample_tickers)
 
         # Verify the result is correct (market values are plain strings)
         for val in df["market"]:
             assert isinstance(val, str)
-            assert val in {m.value for m in AseanMarket}
+            assert val in {m.value for m in MarketExchange}
 
     def test_正常系_全カラムが正しく生成される(
         self,
         sample_ticker_sgx: TickerRecord,
     ) -> None:
         """_build_ticker_dfの全カラムが正しく生成されること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         df = AseanTickerStorage._build_ticker_df([sample_ticker_sgx])
         assert len(df) == 1
@@ -321,7 +321,7 @@ class TestBuildTickerDf:
         """
         import inspect
 
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         source = inspect.getsource(AseanTickerStorage._build_ticker_df)
         # apply() should not be used for enum conversion
@@ -338,9 +338,9 @@ class TestBuildTickerDf:
         """
         import time
 
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
-        markets = list(AseanMarket)
+        markets = list(MarketExchange)
         tickers = [
             TickerRecord(
                 ticker=f"T{i:04d}",
@@ -383,15 +383,15 @@ class TestGetTickers:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """get_tickersが指定市場のティッカーのみ返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
 
-        sgx_tickers = storage.get_tickers(AseanMarket.SGX)
+        sgx_tickers = storage.get_tickers(MarketExchange.SGX)
         assert len(sgx_tickers) == 1
         assert sgx_tickers[0].ticker == "D05"
-        assert sgx_tickers[0].market == AseanMarket.SGX
+        assert sgx_tickers[0].market == MarketExchange.SGX
 
     def test_正常系_存在しない市場で空リストを返す(
         self,
@@ -399,12 +399,12 @@ class TestGetTickers:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """get_tickersが存在しない市場に対して空リストを返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
 
-        hose_tickers = storage.get_tickers(AseanMarket.HOSE)
+        hose_tickers = storage.get_tickers(MarketExchange.HOSE)
         assert hose_tickers == []
 
     def test_正常系_返却値がTickerRecordのリストである(
@@ -413,12 +413,12 @@ class TestGetTickers:
         sample_ticker_sgx: TickerRecord,
     ) -> None:
         """get_tickersの返却値がTickerRecordのリストであること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers([sample_ticker_sgx])
 
-        tickers = storage.get_tickers(AseanMarket.SGX)
+        tickers = storage.get_tickers(MarketExchange.SGX)
         assert all(isinstance(t, TickerRecord) for t in tickers)
 
     def test_正常系_yfinance_tickerが正しく復元される(
@@ -427,12 +427,12 @@ class TestGetTickers:
         sample_ticker_sgx: TickerRecord,
     ) -> None:
         """get_tickersで取得したTickerRecordのyfinance_tickerが正しいこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers([sample_ticker_sgx])
 
-        tickers = storage.get_tickers(AseanMarket.SGX)
+        tickers = storage.get_tickers(MarketExchange.SGX)
         assert tickers[0].yfinance_ticker == "D05.SI"
 
 
@@ -450,7 +450,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerが名前の部分一致検索で結果を返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -465,13 +465,13 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerがmarket指定で検索範囲を絞れること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
 
         # Search for bank-related tickers in BURSA only
-        results = storage.lookup_ticker("May", market=AseanMarket.BURSA)
+        results = storage.lookup_ticker("May", market=MarketExchange.BURSA)
         assert len(results) == 1
         assert results[0].ticker == "1155"
 
@@ -481,7 +481,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerがmarket=Noneで全市場から検索すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -496,7 +496,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerが一致なしで空リストを返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -510,7 +510,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerが大文字小文字を区別せずに検索できること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -528,7 +528,7 @@ class TestLookupTicker:
         duckdb_client: DuckDBClient,
     ) -> None:
         """lookup_tickerが1文字の検索でValueErrorを送出すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         with pytest.raises(ValueError, match="at least 2 characters"):
@@ -539,7 +539,7 @@ class TestLookupTicker:
         duckdb_client: DuckDBClient,
     ) -> None:
         """lookup_tickerが空文字の検索でValueErrorを送出すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         with pytest.raises(ValueError, match="at least 2 characters"):
@@ -551,7 +551,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerが2文字の検索を受け付けること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -571,7 +571,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerがパーセント記号をリテラルとして扱うこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -587,7 +587,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerがアンダースコアをリテラルとして扱うこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -603,7 +603,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerがバックスラッシュをリテラルとして扱うこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -618,7 +618,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerに'%%'を渡しても全件返却しないこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -633,7 +633,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """lookup_tickerが混合ワイルドカード文字をエスケープすること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -648,7 +648,7 @@ class TestLookupTicker:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """エスケープ処理を追加しても通常の名前検索が正常に動作すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -667,7 +667,7 @@ class TestLookupTicker:
         duckdb_client: DuckDBClient,
     ) -> None:
         """lookup_tickerが空白のみの検索でValueErrorを送出すること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         with pytest.raises(ValueError, match="at least 2 characters"):
@@ -688,7 +688,7 @@ class TestCountTickers:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """count_tickersが市場別のティッカー数を返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -704,7 +704,7 @@ class TestCountTickers:
         duckdb_client: DuckDBClient,
     ) -> None:
         """count_tickersがデータなしで空dictを返すこと."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
 
@@ -717,7 +717,7 @@ class TestCountTickers:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """count_tickersの返却キーが市場名の文字列であること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
@@ -732,7 +732,7 @@ class TestCountTickers:
         sample_tickers: list[TickerRecord],
     ) -> None:
         """count_tickersの返却値が正の整数であること."""
-        from market.asean_common.storage import AseanTickerStorage
+        from market.market_common.storage import AseanTickerStorage
 
         storage = AseanTickerStorage(client=duckdb_client)
         storage.upsert_tickers(sample_tickers)
