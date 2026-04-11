@@ -2,13 +2,13 @@
 
 ## TextBox 2
 
-<Views on competitive advantage, Terminal ROE> 
-<Views on valuations , implied  terminal growth> 
+<Views on competitive advantage, Terminal ROE>
+<Views on valuations , implied  terminal growth>
 投資判断変更 SELL
  
 4月末から5/10に ITG3/4とも  6.5/7.0 → 8.3/8.8へ上昇
 INFO統合の結果、株式資本は大きく増加しBPS0は3倍増、EPS2 ほぼ変わらず
-結果EPS2/BPS0は38%から14%へ低下し、ITG 約+2%上昇の主因に 
+結果EPS2/BPS0は38%から14%へ低下し、ITG 約+2%上昇の主因に
 統合後CAGRは+10%と統合前からの上方修正幅は+1%にとどまるため、CAGR-ITGの魅力度は金融内下位1/3まで低下
 
 投資判断 SELL
@@ -19,4 +19,3 @@ ITG変化の正当化のためには、格付け部門以外の7割で MーHSD�
 CAGR対比の魅力度低下からSELLに変更
 
 ---
-

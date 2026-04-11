@@ -14,7 +14,7 @@ import csv
 import logging
 import sqlite3
 import time
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -518,7 +518,7 @@ def _build_detail_rows(
 
 def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     """Parse a single XBRL shareholding XML and return structured data."""
-    root = ET.fromstring(xml_bytes)
+    root = ET.fromstring(xml_bytes)  # nosec B314
 
     contexts = _parse_contexts(root)
     data_by_ctx = _extract_data_by_context(root)

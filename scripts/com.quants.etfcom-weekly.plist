@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+ETF.com 週次データ収集
+======================
+毎週日曜 04:00 に ETF.com から週次データ（保有銘柄・ポートフォリオ・セクター配分・
+スプレッド・プレミアム・流動性）を収集する。
+ティッカーリストは data/config/etfcom_tickers.json で管理する。
+
+インストール:
+  $ cp scripts/com.quants.etfcom-weekly.plist ~/Library/LaunchAgents/
+  $ launchctl load ~/Library/LaunchAgents/com.quants.etfcom-weekly.plist
+
+手動実行: $ launchctl start com.quants.etfcom-weekly
+ログ:     $ tail -f ~/Library/Logs/quants/etfcom-weekly.log
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quants.etfcom-weekly</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/yuki/.local/bin/uv</string>
+        <string>run</string>
+        <string>--env-file</string>
+        <string>/Users/yuki/Desktop/quants/.env</string>
+        <string>python</string>
+        <string>-u</string>
+        <string>-m</string>
+        <string>market.etfcom</string>
+        <string>--frequency</string>
+        <string>weekly</string>
+        <string>--tickers-file</string>
+        <string>/Users/yuki/Desktop/quants/data/config/etfcom_tickers.json</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yuki/Desktop/quants</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>0</integer>
+        <key>Hour</key>
+        <integer>4</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/yuki/Library/Logs/quants/etfcom-weekly.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yuki/Library/Logs/quants/etfcom-weekly-error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/yuki/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>

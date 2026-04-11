@@ -825,13 +825,13 @@ Yes. Great. Thanks, Peter. Brad, that's all the time we have today.
 Operator
 This concludes the conference call for today. Thank you for your participation and for using
 Verizon Conference Services. You may now disconnect.
-This transcript may not be 100 percent accurate and may contain misspellings and other inaccuracies. This transcript is 
-provided "as is", without express or implied warranties of any kind. Bloomberg retains all rights to this transcript and 
-provides it solely for your personal, non-commercial use. Bloomberg, its suppliers and third-party agents shall have no 
-liability for errors in this transcript or for lost profits, losses, or direct, indirect, incidental, consequential, special or 
-punitive damages in connection with the furnishing, performance or use of such transcript. Neither the information nor 
-any opinion expressed in this transcript constitutes a solicitation of the purchase or sale of securities or commodities. 
-Any opinion expressed in the transcript does not necessarily reflect the views of Bloomberg LP. © COPYRIGHT 2026, 
+This transcript may not be 100 percent accurate and may contain misspellings and other inaccuracies. This transcript is
+provided "as is", without express or implied warranties of any kind. Bloomberg retains all rights to this transcript and
+provides it solely for your personal, non-commercial use. Bloomberg, its suppliers and third-party agents shall have no
+liability for errors in this transcript or for lost profits, losses, or direct, indirect, incidental, consequential, special or
+punitive damages in connection with the furnishing, performance or use of such transcript. Neither the information nor
+any opinion expressed in this transcript constitutes a solicitation of the purchase or sale of securities or commodities.
+Any opinion expressed in the transcript does not necessarily reflect the views of Bloomberg LP. © COPYRIGHT 2026,
 BLOOMBERG LP. All rights reserved. Any reproduction, redistribution or retransmission is expressly prohibited.
 FINAL TRANSCRIPT
 2025-10-29

@@ -8,7 +8,7 @@
 
 ## TextBox 2
 
-<Views on valuations , implied terminal growth> 
+<Views on valuations , implied terminal growth>
 SELL 推奨
 取材を受け一部顧客の奪い合いがみられること、今後ネット生鮮販売の脅威あること、からプレミアムマルティプルの上昇余地は限定的と判断。
 
@@ -32,4 +32,3 @@ CAGR  6% (基調 +LSD, 外部 + L-MSD, 利益率、自社株寄与ゼロ)は維�
 
 
 ---
-

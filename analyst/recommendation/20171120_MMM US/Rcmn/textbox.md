@@ -33,4 +33,3 @@ PE x24 +43%プレミアムとなり過去レンジ1.1-1.3突破
 <Views on competitive advantage, Terminal ROE>
 
 ---
-

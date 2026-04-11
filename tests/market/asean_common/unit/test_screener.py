@@ -103,7 +103,7 @@ class TestFetchTickersFromScreener:
         mock_scanner_df_sgx: pd.DataFrame,
     ) -> None:
         """fetch_tickers_from_screener が有効な市場に対して TickerRecord リストを返すこと."""
-        with patch("market.asean_common.screener._query_screener") as mock_query:
+        with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -119,7 +119,7 @@ class TestFetchTickersFromScreener:
         mock_scanner_df_sgx: pd.DataFrame,
     ) -> None:
         """EXCHANGE:SYMBOL 形式から SYMBOL のみに変換されること."""
-        with patch("market.asean_common.screener._query_screener") as mock_query:
+        with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -135,7 +135,7 @@ class TestFetchTickersFromScreener:
         mock_scanner_df_sgx: pd.DataFrame,
     ) -> None:
         """yfinance_ticker が ticker + yfinance_suffix で正しく生成されること."""
-        with patch("market.asean_common.screener._query_screener") as mock_query:
+        with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -150,7 +150,7 @@ class TestFetchTickersFromScreener:
         mock_scanner_df_sgx: pd.DataFrame,
     ) -> None:
         """TickerRecord の market フィールドが正しい AseanMarket に設定されること."""
-        with patch("market.asean_common.screener._query_screener") as mock_query:
+        with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -164,7 +164,7 @@ class TestFetchTickersFromScreener:
         mock_scanner_df_sgx: pd.DataFrame,
     ) -> None:
         """sector, industry, market_cap, currency が正しく設定されること."""
-        with patch("market.asean_common.screener._query_screener") as mock_query:
+        with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (3, mock_scanner_df_sgx)
 
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -181,7 +181,7 @@ class TestFetchTickersFromScreener:
         mock_scanner_df_with_none: pd.DataFrame,
     ) -> None:
         """None/NaN フィールドが TickerRecord で None になること."""
-        with patch("market.asean_common.screener._query_screener") as mock_query:
+        with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (1, mock_scanner_df_with_none)
 
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -199,7 +199,7 @@ class TestFetchTickersFromScreener:
     ) -> None:
         """tradingview-screener 未インストール時に空リストを返すこと."""
         with patch(
-            "market.asean_common.screener._query_screener",
+            "market.market_common.screener._query_screener",
             side_effect=ModuleNotFoundError("No module named 'tradingview_screener'"),
         ):
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -213,7 +213,7 @@ class TestFetchTickersFromScreener:
     ) -> None:
         """API エラー時に AseanScreenerError を raise すること."""
         with patch(
-            "market.asean_common.screener._query_screener",
+            "market.market_common.screener._query_screener",
             side_effect=Exception("API connection failed"),
         ):
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -241,7 +241,7 @@ class TestFetchTickersFromScreener:
                 ]
             ),
         )
-        with patch("market.asean_common.screener._query_screener") as mock_query:
+        with patch("market.market_common.screener._query_screener") as mock_query:
             mock_query.return_value = (0, empty_df)
 
             from market.asean_common.screener import fetch_tickers_from_screener
@@ -259,10 +259,10 @@ class TestFetchTickersFromScreener:
 class TestFetchAllAseanTickers:
     """Tests for fetch_all_asean_tickers function."""
 
-    def test_正常系_全6市場のキーを持つdictを返す(self) -> None:
-        """fetch_all_asean_tickers が全6市場のキーを持つ dict を返すこと."""
+    def test_正常系_全市場のキーを持つdictを返す(self) -> None:
+        """fetch_all_asean_tickers が全市場のキーを持つ dict を返すこと."""
         with patch(
-            "market.asean_common.screener.fetch_tickers_from_screener"
+            "market.market_common.screener.fetch_tickers_from_screener"
         ) as mock_fetch:
             mock_fetch.return_value = []
 
@@ -271,7 +271,7 @@ class TestFetchAllAseanTickers:
             result = fetch_all_asean_tickers()
 
         assert isinstance(result, dict)
-        assert len(result) == 6
+        assert len(result) == len(AseanMarket)
         for market in AseanMarket:
             assert market in result
 
@@ -284,7 +284,7 @@ class TestFetchAllAseanTickers:
             yfinance_suffix=YFINANCE_SUFFIX_MAP[AseanMarket.SGX],
         )
         with patch(
-            "market.asean_common.screener.fetch_tickers_from_screener"
+            "market.market_common.screener.fetch_tickers_from_screener"
         ) as mock_fetch:
             mock_fetch.return_value = [mock_ticker]
 
@@ -296,9 +296,9 @@ class TestFetchAllAseanTickers:
             assert isinstance(tickers, list)
 
     def test_正常系_fetch_tickers_from_screenerが各市場で呼ばれる(self) -> None:
-        """fetch_tickers_from_screener が全6市場で呼ばれること."""
+        """fetch_tickers_from_screener が全市場で呼ばれること."""
         with patch(
-            "market.asean_common.screener.fetch_tickers_from_screener"
+            "market.market_common.screener.fetch_tickers_from_screener"
         ) as mock_fetch:
             mock_fetch.return_value = []
 
@@ -306,7 +306,7 @@ class TestFetchAllAseanTickers:
 
             fetch_all_asean_tickers()
 
-        assert mock_fetch.call_count == 6
+        assert mock_fetch.call_count == len(AseanMarket)
         called_markets = {call.args[0] for call in mock_fetch.call_args_list}
         assert called_markets == set(AseanMarket)
 
@@ -315,7 +315,7 @@ class TestFetchAllAseanTickers:
     ) -> None:
         """tradingview-screener 未インストール時に全市場が空リストになること."""
         with patch(
-            "market.asean_common.screener.fetch_tickers_from_screener"
+            "market.market_common.screener.fetch_tickers_from_screener"
         ) as mock_fetch:
             mock_fetch.return_value = []
 
@@ -343,7 +343,7 @@ class TestFetchAllAseanTickers:
             return []
 
         with patch(
-            "market.asean_common.screener.fetch_tickers_from_screener",
+            "market.market_common.screener.fetch_tickers_from_screener",
             side_effect=_side_effect,
         ):
             from market.asean_common.screener import fetch_all_asean_tickers
@@ -361,7 +361,7 @@ class TestFetchAllAseanTickers:
             return []
 
         with patch(
-            "market.asean_common.screener.fetch_tickers_from_screener",
+            "market.market_common.screener.fetch_tickers_from_screener",
             side_effect=_side_effect,
         ):
             from market.asean_common.screener import fetch_all_asean_tickers

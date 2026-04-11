@@ -31,4 +31,3 @@
 <Views on ESG, SDGs, Sustainalytics Score>
 
 ---
-

@@ -145,7 +145,7 @@ class TestEnsureTables:
         storage = AseanTickerStorage(client=duckdb_client)
         with (
             patch(
-                "market.asean_common.storage.TABLE_TICKERS", "Robert'; DROP TABLE --"
+                "market.market_common.storage.TABLE_TICKERS", "Robert'; DROP TABLE --"
             ),
             pytest.raises(ValueError, match="Invalid identifier"),
         ):
