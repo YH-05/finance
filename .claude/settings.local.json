@@ -116,7 +116,18 @@
       "WebFetch(domain:fredaccount.stlouisfed.org)",
       "WebFetch(domain:www.frbsf.org)",
       "WebFetch(domain:www.alphavantage.co)",
-      "mcp__sequential-thinking__sequentialthinking"
+      "mcp__sequential-thinking__sequentialthinking",
+      "WebFetch(domain:www.morphllm.com)",
+      "WebFetch(domain:blog.premai.io)",
+      "WebFetch(domain:www.bentoml.com)",
+      "WebFetch(domain:arxiv.org)",
+      "Bash(cp /Users/yukihata/Desktop/quants/.mcp.json /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3900/.mcp.json)",
+      "Bash(git -C /Users/yukihata/Desktop/quants worktree list)",
+      "Bash(git -C /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3900 status -sb)",
+      "Bash(git -C /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3900 log --oneline -1)",
+      "Bash(git -C /Users/yukihata/Desktop/quants worktree add -b feature/issue-3899 /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3899 main)",
+      "Bash(cp /Users/yukihata/Desktop/quants/.mcp.json /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3899/.mcp.json)",
+      "Bash(git -C /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3899 status -sb)"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",
