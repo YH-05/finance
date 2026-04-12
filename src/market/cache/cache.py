@@ -27,14 +27,27 @@ logger = get_logger(__name__)
 
 
 def _resolve_cache_db_path() -> Path:
-    """Resolve the default cache database path using DATA_DIR env var.
+    """Resolve the default cache database path.
+
+    Resolution order:
+
+    1. ``CACHE_DIR`` environment variable (if set and non-empty)
+    2. ``DATA_DIR`` environment variable via ``get_data_dir()``
+
+    Using a separate ``CACHE_DIR`` allows placing the cache on a local
+    filesystem while keeping bulk data on NAS, avoiding SQLite I/O
+    errors caused by unreliable network-mount file locking.
 
     Returns
     -------
     Path
-        ``get_data_dir() / "cache" / "market_data.db"``, which respects
-        the ``DATA_DIR`` environment variable.
+        Path to ``<resolved_dir>/cache/market_data.db``.
     """
+    import os
+
+    cache_dir = os.environ.get("CACHE_DIR", "").strip()
+    if cache_dir:
+        return Path(cache_dir) / "cache" / "market_data.db"
     return get_data_dir() / "cache" / "market_data.db"
 
 

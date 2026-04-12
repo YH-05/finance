@@ -283,10 +283,25 @@ class TestPersistentCache:
         custom_data_dir = tmp_path / "custom_data"
         custom_data_dir.mkdir()
 
-        with patch(
-            "market.cache.cache.get_data_dir",
-            return_value=custom_data_dir,
+        with (
+            patch.dict("os.environ", {"CACHE_DIR": ""}, clear=False),
+            patch(
+                "market.cache.cache.get_data_dir",
+                return_value=custom_data_dir,
+            ),
         ):
             result = _resolve_cache_db_path()
 
         assert result == custom_data_dir / "cache" / "market_data.db"
+
+    def test_正常系_resolve_cache_db_pathがCACHE_DIR環境変数を優先(
+        self, tmp_path: Path
+    ) -> None:
+        """_resolve_cache_db_path() が CACHE_DIR を DATA_DIR より優先すること。"""
+        cache_dir = tmp_path / "local_cache"
+        cache_dir.mkdir()
+
+        with patch.dict("os.environ", {"CACHE_DIR": str(cache_dir)}, clear=False):
+            result = _resolve_cache_db_path()
+
+        assert result == cache_dir / "cache" / "market_data.db"

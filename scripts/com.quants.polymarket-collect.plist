@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+quants Polymarket データ定期収集 launchd エージェント
+====================================================
+
+概要:
+  6時間ごとに Polymarket API からデータを収集し SQLite に蓄積する。
+  OI・オーダーブック等はスナップショットのみで過去データ取得不可のため、
+  定期的なポーリングが必要。
+
+  収集対象:
+    - イベント・マーケット・トークン (メタデータ)
+    - 価格時系列 (1d interval)
+    - 取引履歴
+    - オープンインタレスト (スナップショット)
+    - オーダーブック (スナップショット)
+    - リーダーボード (スナップショット)
+    - ホルダー情報
+
+インストール:
+  $ launchctl load ~/Library/LaunchAgents/com.quants.polymarket-collect.plist
+
+アンインストール:
+  $ launchctl unload ~/Library/LaunchAgents/com.quants.polymarket-collect.plist
+  $ rm ~/Library/LaunchAgents/com.quants.polymarket-collect.plist
+
+手動実行:
+  $ launchctl start com.quants.polymarket-collect
+
+ログ確認:
+  $ tail -f ~/Library/Logs/quants/polymarket-collect.log
+  $ tail -f ~/Library/Logs/quants/polymarket-collect-error.log
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quants.polymarket-collect</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/yuki/.local/bin/uv</string>
+        <string>run</string>
+        <string>--env-file</string>
+        <string>/Users/yuki/Desktop/quants/.env</string>
+        <string>python</string>
+        <string>-u</string>
+        <string>-m</string>
+        <string>market.polymarket</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yuki/Desktop/quants</string>
+
+    <!-- 6時間ごとに実行 (0:30, 6:30, 12:30, 18:30) -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Hour</key>
+            <integer>0</integer>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>6</integer>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>12</integer>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>18</integer>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string>/Users/yuki/Library/Logs/quants/polymarket-collect.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/yuki/Library/Logs/quants/polymarket-collect-error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/yuki/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
