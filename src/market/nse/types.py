@@ -495,12 +495,147 @@ class ShareholdingPattern:
     public: str = ""
 
 
+@dataclass(frozen=True)
+class CorporateShareHolding:
+    """Corporate share holding record from NSE XBRL shareholding filings.
+
+    Stores shareholding breakdown for an NSE-listed company derived from the
+    ``/api/corporate-share-holdings-master`` endpoint.  Numeric percentage
+    fields are stored as strings to accommodate both float-formatted and
+    non-numeric API responses (HF1: float/str dual compatibility).
+
+    Use the ``to_float_*()`` accessor methods to obtain numeric values;
+    they return ``None`` when the underlying string is empty or non-numeric.
+
+    Parameters
+    ----------
+    symbol : str
+        NSE stock symbol (e.g. ``"RELIANCE"``).
+    as_on_date : str
+        Reporting date string (e.g. ``"31-Dec-2025"``).
+    promoter_group_pct : str
+        Promoter & promoter group holding percentage string
+        (e.g. ``"50.01"``).  Empty string when no promoter holding.
+    public_pct : str
+        Public / institutional holding percentage string
+        (e.g. ``"49.99"``).
+    employee_trust_pct : str
+        Employee welfare trust holding percentage string
+        (e.g. ``"0.05"``).  Defaults to ``""`` when not present.
+    submission_date : str
+        Filing submission date string (e.g. ``"15-Jan-2026"``).
+        Defaults to ``""`` when not available.
+    broadcast_date : str
+        Date the filing was broadcast on the exchange
+        (e.g. ``"16-Jan-2026"``).  Defaults to ``""`` when not available.
+    xbrl_url : str
+        URL of the raw XBRL filing on NSE archives
+        (e.g. ``"https://archives.nseindia.com/...xml"``).
+        Defaults to ``""`` when not available.
+
+    Examples
+    --------
+    >>> holding = CorporateShareHolding(
+    ...     symbol="RELIANCE",
+    ...     as_on_date="31-Dec-2025",
+    ...     promoter_group_pct="50.01",
+    ...     public_pct="49.99",
+    ... )
+    >>> holding.symbol
+    'RELIANCE'
+    >>> holding.to_float_promoter_group_pct()
+    50.01
+    >>> empty = CorporateShareHolding(
+    ...     symbol="HDFCBANK",
+    ...     as_on_date="31-Dec-2025",
+    ...     promoter_group_pct="",
+    ...     public_pct="100.00",
+    ... )
+    >>> empty.to_float_promoter_group_pct() is None
+    True
+    """
+
+    symbol: str
+    as_on_date: str
+    promoter_group_pct: str
+    public_pct: str
+    employee_trust_pct: str = ""
+    submission_date: str = ""
+    broadcast_date: str = ""
+    xbrl_url: str = ""
+
+    def to_float_promoter_group_pct(self) -> float | None:
+        """Return promoter_group_pct as float, or None on failure.
+
+        Returns
+        -------
+        float | None
+            Parsed float value, or ``None`` if the field is empty or
+            cannot be converted (e.g. ``"N/A"``, ``"-"``).
+
+        Examples
+        --------
+        >>> CorporateShareHolding(
+        ...     symbol="R", as_on_date="d", promoter_group_pct="50.01", public_pct="49.99"
+        ... ).to_float_promoter_group_pct()
+        50.01
+        """
+        try:
+            return float(self.promoter_group_pct)
+        except (ValueError, TypeError):
+            return None
+
+    def to_float_public_pct(self) -> float | None:
+        """Return public_pct as float, or None on failure.
+
+        Returns
+        -------
+        float | None
+            Parsed float value, or ``None`` if the field is empty or
+            cannot be converted.
+
+        Examples
+        --------
+        >>> CorporateShareHolding(
+        ...     symbol="R", as_on_date="d", promoter_group_pct="50.01", public_pct="49.99"
+        ... ).to_float_public_pct()
+        49.99
+        """
+        try:
+            return float(self.public_pct)
+        except (ValueError, TypeError):
+            return None
+
+    def to_float_employee_trust_pct(self) -> float | None:
+        """Return employee_trust_pct as float, or None on failure.
+
+        Returns
+        -------
+        float | None
+            Parsed float value, or ``None`` if the field is empty or
+            cannot be converted.
+
+        Examples
+        --------
+        >>> CorporateShareHolding(
+        ...     symbol="R", as_on_date="d", promoter_group_pct="50.00",
+        ...     public_pct="49.95", employee_trust_pct="0.05"
+        ... ).to_float_employee_trust_pct()
+        0.05
+        """
+        try:
+            return float(self.employee_trust_pct)
+        except (ValueError, TypeError):
+            return None
+
+
 # =============================================================================
 # Module exports
 # =============================================================================
 
 __all__ = [
     "CorporateEvent",
+    "CorporateShareHolding",
     "FinancialResult",
     "IndexConstituent",
     "MarketStatus",

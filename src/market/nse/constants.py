@@ -51,6 +51,63 @@ All API requests are constructed by appending endpoint paths
 to this base URL (e.g., ``API_BASE_URL + "/equity-stockIndices?index=NIFTY 50"``).
 """
 
+CORPORATE_SHARE_HOLDINGS_ENDPOINT: Final[str] = (
+    f"{API_BASE_URL}/corporate-share-holdings-master"
+)
+"""Endpoint URL for NSE corporate share holdings master data.
+
+Returns XBRL-based shareholding pattern data for a given symbol and date range.
+Constructed by appending ``/corporate-share-holdings-master`` to ``API_BASE_URL``.
+
+See Also
+--------
+market.nse.types.CorporateShareHolding : Typed dataclass for shareholding entries.
+"""
+
+# ---------------------------------------------------------------------------
+# 1b. XBRL namespace constants (corporate share holdings)
+# ---------------------------------------------------------------------------
+
+XBRL_SHP_NS: Final[str] = (
+    "http://www.bseindia.com/xbrl/fin/ShareholdingPattern/2011-09-28"
+)
+"""XBRL namespace for NSE/BSE shareholding pattern taxonomy.
+
+Used to parse ``corporate-share-holdings-master`` XBRL files.
+Prefix ``shp`` is conventionally assigned to this namespace in ElementTree
+XPath queries.
+
+See Also
+--------
+XBRLI_NS : Core XBRL instance namespace.
+XBRLDI_NS : XBRL dimensions namespace.
+"""
+
+XBRLI_NS: Final[str] = "http://www.xbrl.org/2003/instance"
+"""Core XBRL instance namespace (xbrli).
+
+Standard namespace for XBRL instance documents.
+Used to locate ``<xbrli:context>`` and ``<xbrli:unit>`` elements when
+parsing shareholding XBRL filings.
+
+See Also
+--------
+XBRL_SHP_NS : Shareholding pattern taxonomy namespace.
+XBRLDI_NS : XBRL dimensions namespace.
+"""
+
+XBRLDI_NS: Final[str] = "http://xbrl.org/2006/xbrldi"
+"""XBRL dimensions namespace (xbrldi).
+
+Used to extract explicit dimension members (e.g., shareholder category)
+from ``<xbrldi:explicitMember>`` elements in shareholding XBRL filings.
+
+See Also
+--------
+XBRL_SHP_NS : Shareholding pattern taxonomy namespace.
+XBRLI_NS : Core XBRL instance namespace.
+"""
+
 # ---------------------------------------------------------------------------
 # 2. Security constants
 # ---------------------------------------------------------------------------
@@ -458,6 +515,7 @@ __all__ = [
     "API_BASE_URL",
     "BASE_URL",
     "COOKIE_REFRESH_INTERVAL",
+    "CORPORATE_SHARE_HOLDINGS_ENDPOINT",
     "DEFAULT_DELAY_JITTER",
     "DEFAULT_HEADERS",
     "DEFAULT_OUTPUT_SUBDIR",
@@ -473,4 +531,7 @@ __all__ = [
     "PREOPEN_COLUMN_MAP",
     "SHAREHOLDING_FIELD_MAP",
     "STOCK_LIST_COLUMN_MAP",
+    "XBRLDI_NS",
+    "XBRLI_NS",
+    "XBRL_SHP_NS",
 ]
