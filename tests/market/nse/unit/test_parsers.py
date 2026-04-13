@@ -1005,9 +1005,8 @@ class TestModuleExports:
     """Tests for module exports completeness."""
 
     def test_正常系_モジュールエクスポートが完全であること(self) -> None:
-        """__all__ に全パブリックシンボルが含まれていること。"""
+        """__all__ に全パブリックシンボルが含まれていること（プライベート定数は除く）。"""
         expected = {
-            "_MISSING_VALUES",
             "clean_indian_number",
             "clean_price",
             "clean_volume",

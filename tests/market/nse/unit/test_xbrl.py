@@ -356,33 +356,33 @@ class TestParseXbrl:
         pans = {r.pan for r in detail_rows}
         assert "AAAMT1234A" in pans
 
-    def test_正常系_空のbytesはET_ParseErrorが発生する(self) -> None:
+    def test_異常系_空bytesでET_ParseErrorが発生する(self) -> None:
         """Empty bytes should raise xml.etree.ElementTree.ParseError."""
         import xml.etree.ElementTree as ET
 
         with pytest.raises(ET.ParseError):
             parse_xbrl(b"")
 
-    def test_正常系_ParseResultはfrozenである(self) -> None:
+    def test_異常系_ParseResultはfrozenでフィールド変更不可(self) -> None:
         result = parse_xbrl(_MINIMAL_XBRL)
         with pytest.raises(AttributeError):
             result.symbol = "MODIFIED"  # type: ignore[misc]
 
 
 # ---------------------------------------------------------------------------
-# Tests: ET.fromstring nosec comment
+# Tests: defusedxml usage
 # ---------------------------------------------------------------------------
 
 
-class TestNosecComment:
-    """Verify that the nosec B314 comment is present in xbrl.py source."""
+class TestDefusedxmlUsage:
+    """Verify that defusedxml is used instead of stdlib xml.etree.ElementTree."""
 
-    def test_正常系_nosec_B314コメントがxbrl_pyに存在する(self) -> None:
-        """ET.fromstring call must retain # nosec B314 comment."""
+    def test_正常系_defusedxmlをインポートしている(self) -> None:
+        """xbrl.py must import defusedxml.ElementTree instead of stdlib ET."""
         import market.nse.xbrl as xbrl_module
 
         source_path = Path(xbrl_module.__file__)  # type: ignore[arg-type]
         source = source_path.read_text(encoding="utf-8")
-        assert "nosec B314" in source, (
-            "ET.fromstring in xbrl.py must have '# nosec B314' comment"
+        assert "import defusedxml.ElementTree as ET" in source, (
+            "xbrl.py must use 'import defusedxml.ElementTree as ET' for secure XML parsing"
         )

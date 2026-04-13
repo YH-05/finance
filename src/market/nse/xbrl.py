@@ -32,8 +32,9 @@ market.nse.errors : NseParseError.
 
 from __future__ import annotations
 
-import xml.etree.ElementTree as ET  # nosec B405
 from dataclasses import dataclass, field
+
+import defusedxml.ElementTree as ET
 
 from market.nse.constants import XBRLDI_NS, XBRLI_NS
 from market.nse.errors import NseParseError
@@ -752,7 +753,7 @@ def _build_detail_rows(
         groups[key].update(vals)
 
     rows: list[ShareholderRow] = []
-    for (axis_name, _domain), merged in groups.items():
+    for (axis_name, _), merged in groups.items():
         cat, sub = _resolve_detail_category(axis_name)
 
         row_kwargs: dict[str, str] = {
@@ -810,31 +811,40 @@ def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     """
     logger.debug("Parsing XBRL bytes", size=len(xml_bytes))
 
-    root = ET.fromstring(xml_bytes)  # nosec B314
+    root = ET.fromstring(xml_bytes)
 
-    # Validate namespace
-    ns_ok = any(
-        ns == _XBRL_SHP_NS_EXPECTED
-        for ns in (root.nsmap.values() if hasattr(root, "nsmap") else [])
-    )
-    if not ns_ok:
-        # Fall back to checking if the tag contains the expected namespace
-        # ET.fromstring may expand namespace in tag or in attrib
-        root_tag = root.tag
-        if _XBRL_SHP_NS_EXPECTED not in str(root_tag):
-            # Check document for expected namespace URI in any element tag
-            found_ns = False
-            for elem in root.iter():
-                if _XBRL_SHP_NS_EXPECTED in elem.tag:
-                    found_ns = True
-                    break
-            if not found_ns:
+    # Validate namespace: O(1) check via first SHP-namespaced element.
+    # XBRL documents use xbrli:xbrl as root, so the expected namespace appears
+    # in child elements (e.g. <in-bse-shp:Symbol>). We check the root tag first:
+    # if the root itself carries the expected namespace we know it's valid.
+    # Otherwise we look for the first child element that carries it, which
+    # avoids scanning the full document (typically found within the first few
+    # elements and short-circuits immediately).
+    root_tag = root.tag
+    if root_tag.startswith("{"):
+        found_ns = root_tag[1 : root_tag.index("}")]
+        if found_ns == _XBRL_SHP_NS_EXPECTED:
+            pass  # Root itself carries the expected namespace
+        else:
+            # Root uses a different namespace (e.g. xbrli); check first SHP child
+            first_shp = next(
+                (elem for elem in root.iter() if elem.tag.startswith(_SHP_PREFIX)),
+                None,
+            )
+            if first_shp is None:
                 raise NseParseError(
                     f"XBRL namespace mismatch: expected '{_XBRL_SHP_NS_EXPECTED}'"
                     " not found in document",
                     raw_data=None,
                     field="namespace",
                 )
+    elif _XBRL_SHP_NS_EXPECTED not in root_tag:
+        raise NseParseError(
+            f"XBRL namespace mismatch: expected '{_XBRL_SHP_NS_EXPECTED}'"
+            " not found in document",
+            raw_data=None,
+            field="namespace",
+        )
 
     contexts = _parse_contexts(root)
     data_by_ctx = _extract_data_by_context(root)

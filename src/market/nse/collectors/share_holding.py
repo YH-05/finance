@@ -41,6 +41,7 @@ from __future__ import annotations
 
 import re
 from typing import TYPE_CHECKING
+from urllib.parse import urlparse
 
 from market.nse.collectors._base import NseCollectorMixin
 from market.nse.constants import CORPORATE_SHARE_HOLDINGS_ENDPOINT
@@ -255,6 +256,16 @@ class ShareholdingCollector(NseCollectorMixin):
         >>> print(result.symbol, result.as_on_date, len(result.rows))
         RELIANCE 2025-12-31 128
         """
+        # 事前バリデーション（多層防御）
+        if not xbrl_url or not xbrl_url.strip():
+            raise ValueError("xbrl_url must not be empty")
+        parsed = urlparse(xbrl_url)
+        if parsed.scheme not in ("http", "https"):
+            raise ValueError(
+                f"xbrl_url scheme must be http/https, got '{parsed.scheme}'"
+            )
+        # ALLOWED_HOSTS チェックは NseSession 層に委譲
+
         logger.info(
             "Fetching XBRL detail",
             xbrl_url=xbrl_url,

@@ -200,10 +200,9 @@ class TestFetchShareholdingNormal:
         )
         collector = ShareholdingCollector(session=mock_session)
         collector.fetch_shareholding("RELIANCE")
-        call_args = mock_session.get_with_retry.call_args
-        assert (
-            CORPORATE_SHARE_HOLDINGS_ENDPOINT in call_args[0]
-            or call_args[0][0] == CORPORATE_SHARE_HOLDINGS_ENDPOINT
+        mock_session.get_with_retry.assert_called_once_with(
+            CORPORATE_SHARE_HOLDINGS_ENDPOINT,
+            params={"index": "equities", "symbol": "RELIANCE"},
         )
 
     def test_正常系_symbolパラメータがリクエストに含まれる(self) -> None:
