@@ -45,9 +45,7 @@ logger = get_logger(__name__)
 # Expected XBRL namespace (2022-09-30 revision)
 # ---------------------------------------------------------------------------
 
-_XBRL_SHP_NS_EXPECTED: str = (
-    "http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp"
-)
+_XBRL_SHP_NS_EXPECTED: str = "http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp"
 """Expected XBRL shareholding namespace URI.
 
 NSE XBRL files generated under the 2022-09-30 taxonomy use this namespace.
@@ -150,7 +148,10 @@ _ADDITIONAL_MEMBERS: dict[str, tuple[str, str]] = {
     "CentralAndStateGovernments": (_PROMOTER, "CentralAndStateGovernments"),
     "ForeignPromotersCumulativeOrAggregation": (_PROMOTER, "Foreign"),
     # Promoter — bodies corporate
-    "BodiesCorporateIncludingSubsidiaries": (_PROMOTER, "BodiesCorporateIncludingSubsidiaries"),
+    "BodiesCorporateIncludingSubsidiaries": (
+        _PROMOTER,
+        "BodiesCorporateIncludingSubsidiaries",
+    ),
     # Public — institutions domestic sub-types
     "SmallFinanceBanks": (_PUBLIC, "SmallFinanceBanks"),
     "PaymentBanks": (_PUBLIC, "PaymentBanks"),
@@ -181,9 +182,18 @@ _ADDITIONAL_MEMBERS: dict[str, tuple[str, str]] = {
     "Trusts": (_PUBLIC, "Trusts"),
     "OtherPublicShareholders": (_PUBLIC, "OtherPublicShareholders"),
     # Public — AIF sub-types
-    "AlternativeInvestmentFundsCategoryI": (_PUBLIC, "AlternativeInvestmentFundsCategoryI"),
-    "AlternativeInvestmentFundsCategoryII": (_PUBLIC, "AlternativeInvestmentFundsCategoryII"),
-    "AlternativeInvestmentFundsCategoryIII": (_PUBLIC, "AlternativeInvestmentFundsCategoryIII"),
+    "AlternativeInvestmentFundsCategoryI": (
+        _PUBLIC,
+        "AlternativeInvestmentFundsCategoryI",
+    ),
+    "AlternativeInvestmentFundsCategoryII": (
+        _PUBLIC,
+        "AlternativeInvestmentFundsCategoryII",
+    ),
+    "AlternativeInvestmentFundsCategoryIII": (
+        _PUBLIC,
+        "AlternativeInvestmentFundsCategoryIII",
+    ),
     # Public — qualified / retail
     "QualifiedInstitutionalBuyers": (_PUBLIC, "QualifiedInstitutionalBuyers"),
     "RetailInvestors": (_PUBLIC, "RetailInvestors"),
@@ -462,7 +472,7 @@ def _strip_member_suffix(name: str) -> str:
     # Strip whitespace first so startswith/endswith work on actual content
     name = name.strip()
     if name.startswith("in-bse-shp:"):
-        name = name[len("in-bse-shp:"):]
+        name = name[len("in-bse-shp:") :]
     if name.endswith("Member"):
         name = name[: -len("Member")]
     return name
@@ -487,7 +497,7 @@ def _strip_axis_ns(name: str) -> str:
     'DetailsOfSharesHeldByMutualFundsOrUtiAxis'
     """
     if name.startswith("in-bse-shp:"):
-        return name[len("in-bse-shp:"):]
+        return name[len("in-bse-shp:") :]
     return name
 
 
@@ -584,7 +594,7 @@ def _extract_data_by_context(
         if not ctx_ref:
             continue
 
-        local = tag[len(_SHP_PREFIX):]
+        local = tag[len(_SHP_PREFIX) :]
         text = (elem.text or "").strip()
 
         if ctx_ref not in data:

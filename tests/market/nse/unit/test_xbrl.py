@@ -19,11 +19,11 @@ import pytest
 
 from market.nse.errors import NseParseError
 from market.nse.xbrl import (
+    _AXIS_TO_SUBCATEGORY,
+    _MEMBER_CATEGORY,
     ContextInfo,
     ParseResult,
     ShareholderRow,
-    _AXIS_TO_SUBCATEGORY,
-    _MEMBER_CATEGORY,
     parse_xbrl,
 )
 
@@ -250,7 +250,10 @@ class TestAxisToSubcategoryConstant:
         assert len(_AXIS_TO_SUBCATEGORY) == 47
 
     def test_正常系_MutualFundsAxisが正しいサブカテゴリを返す(self) -> None:
-        assert _AXIS_TO_SUBCATEGORY["DetailsOfSharesHeldByMutualFundsOrUtiAxis"] == "MutualFundsOrUti"
+        assert (
+            _AXIS_TO_SUBCATEGORY["DetailsOfSharesHeldByMutualFundsOrUtiAxis"]
+            == "MutualFundsOrUti"
+        )
 
     def test_正常系_BanksAxisが含まれる(self) -> None:
         assert "DetailsOfSharesHeldByBanksAxis" in _AXIS_TO_SUBCATEGORY
@@ -336,8 +339,10 @@ class TestParseXbrl:
         xml_bytes = _XBRL_FIXTURE.read_bytes()
         result = parse_xbrl(xml_bytes)
         promoter_rows = [
-            r for r in result.rows
-            if r.category == "PromoterAndPromoterGroup" and r.is_category_total == "true"
+            r
+            for r in result.rows
+            if r.category == "PromoterAndPromoterGroup"
+            and r.is_category_total == "true"
         ]
         assert len(promoter_rows) == 1
         assert promoter_rows[0].num_fully_paid_shares == "40000000"
@@ -351,9 +356,11 @@ class TestParseXbrl:
         pans = {r.pan for r in detail_rows}
         assert "AAAMT1234A" in pans
 
-    def test_正常系_空のbytesはNseParseErrorまたはET例外(self) -> None:
-        """Empty bytes should raise some parse error."""
-        with pytest.raises(Exception):
+    def test_正常系_空のbytesはET_ParseErrorが発生する(self) -> None:
+        """Empty bytes should raise xml.etree.ElementTree.ParseError."""
+        import xml.etree.ElementTree as ET
+
+        with pytest.raises(ET.ParseError):
             parse_xbrl(b"")
 
     def test_正常系_ParseResultはfrozenである(self) -> None:
@@ -373,6 +380,7 @@ class TestNosecComment:
     def test_正常系_nosec_B314コメントがxbrl_pyに存在する(self) -> None:
         """ET.fromstring call must retain # nosec B314 comment."""
         import market.nse.xbrl as xbrl_module
+
         source_path = Path(xbrl_module.__file__)  # type: ignore[arg-type]
         source = source_path.read_text(encoding="utf-8")
         assert "nosec B314" in source, (
