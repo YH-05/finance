@@ -44,6 +44,8 @@ Data Records
 ------------
 CorporateEvent
     A corporate event from the NSE event calendar.
+CorporateShareHolding
+    A corporate shareholding record from NSE XBRL filings.
 FinancialResult
     A financial result record from NSE corporate filings.
 IndexConstituent
@@ -80,6 +82,8 @@ clean_volume
     Clean and convert NSE volume string to int.
 parse_all_indices
     Parse NSE all-indices summary JSON to DataFrame.
+parse_corporate_shareholding
+    Parse NSE corporate-share-holdings-master JSON to list of CorporateShareHolding.
 parse_event_calendar
     Parse NSE event-calendar JSON to list of CorporateEvent.
 parse_financial_results
@@ -117,6 +121,7 @@ from market.nse.parsers import (
     clean_price,
     clean_volume,
     parse_all_indices,
+    parse_corporate_shareholding,
     parse_event_calendar,
     parse_financial_results,
     parse_index_constituents,
@@ -129,6 +134,7 @@ from market.nse.parsers import (
 from market.nse.session import NseSession
 from market.nse.types import (
     CorporateEvent,
+    CorporateShareHolding,
     FinancialResult,
     IndexConstituent,
     MarketStatus,
@@ -142,6 +148,7 @@ from market.nse.types import (
 __all__ = [
     "CorporateCollector",
     "CorporateEvent",
+    "CorporateShareHolding",
     "FinancialResult",
     "IndexConstituent",
     "IndicesCollector",
@@ -164,6 +171,7 @@ __all__ = [
     "clean_price",
     "clean_volume",
     "parse_all_indices",
+    "parse_corporate_shareholding",
     "parse_event_calendar",
     "parse_financial_results",
     "parse_index_constituents",

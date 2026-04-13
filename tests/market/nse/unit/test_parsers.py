@@ -61,7 +61,7 @@ Test TODO List:
 - [x] parse_market_status: missing 'marketState' key raises NseParseError
 - [x] parse_market_status: empty marketState returns empty list
 - [x] parse_market_status: non-dict raises NseParseError
-- [x] Module exports: __all__ completeness
+- [x] Module exports: __all__ completeness (includes parse_corporate_shareholding)
 """
 
 import pandas as pd
@@ -1004,6 +1004,7 @@ class TestModuleExports:
             "clean_price",
             "clean_volume",
             "parse_all_indices",
+            "parse_corporate_shareholding",
             "parse_event_calendar",
             "parse_financial_results",
             "parse_index_constituents",
