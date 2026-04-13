@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """NSE 全上場銘柄 + インデックス構成 + Shareholding Pattern → SQLite 格納スクリプト.
 
+.. deprecated::
+    # AIDEV-NOTE: DEPRECATED: src/market/nse/ パッケージへ移行済み。
+    # 本スクリプトはスタンドアロン実装であり、後継は StockListCollector /
+    # IndicesCollector / ShareholdingCollector を使用する
+    # notebook/NSE/nse_full_download.ipynb です。
+
 NSE（National Stock Exchange of India）の全上場銘柄情報、インデックス構成銘柄、
 Shareholding Pattern を取得し、SQLite データベースに格納するスタンドアロンスクリプト。
 
