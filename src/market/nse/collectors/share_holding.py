@@ -268,9 +268,12 @@ class ShareholdingCollector(NseCollectorMixin):
             raise ValueError(f"xbrl_url host '{parsed.netloc}' is not in allowed hosts")
         # 最終的なURLバリデーションは NseSession._validate_url() に委譲
 
+        # ログにはフル URL ではなくパスのみ出力
+        # （アーカイブ URL が機微パラメータを含み得るため情報漏洩リスクを軽減）
+        url_path = urlparse(xbrl_url).path
         logger.info(
             "Fetching XBRL detail",
-            xbrl_url=xbrl_url,
+            xbrl_path=url_path,
         )
 
         session, should_close = self._get_session()

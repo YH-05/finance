@@ -21,8 +21,11 @@ Test TODO List:
 - [x] parse_shareholding_pattern: arbitrary list of dicts never raises exception
 - [x] parse_shareholding_pattern: all result fields are str type
 - [x] parse_shareholding_pattern: non-list input always raises NseParseError
+- [x] parse_corporate_shareholding: arbitrary list[dict] never raises exception
+- [x] parse_corporate_shareholding: all fields of every record are str type
 """
 
+import dataclasses
 import math
 
 import pytest
@@ -35,10 +38,11 @@ from market.nse.parsers import (
     clean_indian_number,
     clean_price,
     clean_volume,
+    parse_corporate_shareholding,
     parse_financial_results,
     parse_shareholding_pattern,
 )
-from market.nse.types import ShareholdingPattern
+from market.nse.types import CorporateShareHolding, ShareholdingPattern
 
 # =============================================================================
 # Strategies
@@ -460,3 +464,85 @@ class TestParseShareholdingPatternProperty:
         """dict 以外の入力は常に NseParseError を送出すること。"""
         with pytest.raises(NseParseError):
             parse_shareholding_pattern(non_dict)  # type: ignore[arg-type]
+
+
+# =============================================================================
+# parse_corporate_shareholding properties
+# =============================================================================
+
+# Strategy: arbitrary list of dicts with mixed value types. Each dict may
+# contain keys matching NSE's corporate-share-holdings-master response
+# (``symbol``, ``date``, ``pr_and_prgrp``, ``public_val`` など) as well as
+# junk keys. Values are text or None.
+_corporate_record_strategy = st.dictionaries(
+    keys=st.text(max_size=30),
+    values=st.one_of(st.text(max_size=100), st.none()),
+    max_size=10,
+)
+_corporate_data_strategy = st.lists(_corporate_record_strategy, max_size=5)
+
+
+class TestParseCorporateShareholdingProperty:
+    """Hypothesis property tests for parse_corporate_shareholding."""
+
+    @given(data=_corporate_data_strategy)
+    @settings(max_examples=200)
+    def test_プロパティ_任意list_dict入力で例外非送出(
+        self, data: list[dict[str, object]]
+    ) -> None:
+        """任意の list[dict] を渡しても例外を送出しないこと。
+
+        result は list であり、各要素は CorporateShareHolding、かつ全フィールドが str 型。
+        """
+        result = parse_corporate_shareholding(data)  # type: ignore[arg-type]
+        assert isinstance(result, list)
+        for item in result:
+            assert isinstance(item, CorporateShareHolding)
+            for field in dataclasses.fields(item):
+                assert isinstance(getattr(item, field.name), str), (
+                    f"field {field.name} is not str"
+                )
+
+    @given(
+        data=st.lists(
+            st.dictionaries(
+                keys=st.sampled_from(
+                    [
+                        "symbol",
+                        "date",
+                        "pr_and_prgrp",
+                        "public_val",
+                        "employeeTrusts",
+                        "submissionDate",
+                        "broadcastDate",
+                        "xbrl",
+                    ]
+                ),
+                values=st.text(max_size=100),
+                max_size=8,
+            ),
+            max_size=5,
+        )
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_想定キーのみでも例外非送出(
+        self, data: list[dict[str, str]]
+    ) -> None:
+        """NSE API の想定キーのみを持つ入力でも例外を送出しないこと。"""
+        result = parse_corporate_shareholding(data)
+        assert isinstance(result, list)
+        assert len(result) == len(data)
+
+    @given(
+        non_list=st.one_of(
+            st.dictionaries(st.text(), st.text(), max_size=3),
+            st.integers(),
+            st.text(),
+            st.none(),
+        )
+    )
+    @settings(max_examples=100)
+    def test_プロパティ_非list入力で常にNseParseError(self, non_list: object) -> None:
+        """list 以外の入力は常に NseParseError を送出すること。"""
+        with pytest.raises(NseParseError):
+            parse_corporate_shareholding(non_list)  # type: ignore[arg-type]

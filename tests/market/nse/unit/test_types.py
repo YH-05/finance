@@ -17,6 +17,7 @@ Test TODO List:
 - [x] CorporateShareHolding: frozen, all 8 fields, default values, to_float_* accessors
 """
 
+import math
 from dataclasses import FrozenInstanceError
 from enum import Enum
 
@@ -732,3 +733,84 @@ class TestCorporateShareHolding:
         result = holding.to_float_promoter_group_pct()
 
         assert result == pytest.approx(100.0)
+
+    # -------------------------------------------------------------------------
+    # エッジケース: inf / nan 入力 (E6)
+    # -------------------------------------------------------------------------
+    # 仕様: 現実装は float(s) をそのまま使用するため、'inf'/'-inf'/'nan' は
+    # float('inf') / float('-inf') / float('nan') を返す（None ではない）。
+    # 将来 None 返却に変更する場合はこれらのテストも同時に更新すること。
+
+    @pytest.mark.parametrize("value", ["inf", "Infinity", "+inf"])
+    def test_エッジケース_to_float_promoter_group_pctが正のinfを保持する(
+        self, value: str
+    ) -> None:
+        """'inf' / 'Infinity' 文字列で float('inf') を返す（現行仕様）。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct=value,
+            public_pct="0",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is not None
+        assert math.isinf(result) and result > 0
+
+    def test_エッジケース_to_float_promoter_group_pctが負のinfを保持する(self) -> None:
+        """'-inf' 文字列で float('-inf') を返す（現行仕様）。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="-inf",
+            public_pct="0",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is not None
+        assert math.isinf(result) and result < 0
+
+    def test_エッジケース_to_float_promoter_group_pctがnanを保持する(self) -> None:
+        """'nan' 文字列で float('nan') を返す（現行仕様）。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="nan",
+            public_pct="0",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is not None
+        assert math.isnan(result)
+
+    def test_エッジケース_to_float_public_pctがinfを保持する(self) -> None:
+        """public_pct でも 'inf' 入力で float('inf') を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="0",
+            public_pct="inf",
+        )
+
+        result = holding.to_float_public_pct()
+
+        assert result is not None
+        assert math.isinf(result)
+
+    def test_エッジケース_to_float_employee_trust_pctがnanを保持する(self) -> None:
+        """employee_trust_pct でも 'nan' 入力で float('nan') を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50",
+            public_pct="49",
+            employee_trust_pct="nan",
+        )
+
+        result = holding.to_float_employee_trust_pct()
+
+        assert result is not None
+        assert math.isnan(result)
