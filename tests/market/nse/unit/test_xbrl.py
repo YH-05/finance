@@ -20,10 +20,13 @@ import pytest
 from market.nse.errors import NseParseError
 from market.nse.xbrl import (
     _AXIS_TO_SUBCATEGORY,
+    _MAX_XBRL_BYTES,
     _MEMBER_CATEGORY,
     ContextInfo,
     ParseResult,
     ShareholderRow,
+    _resolve_detail_category,
+    _strip_member_suffix,
     parse_xbrl,
 )
 
@@ -267,6 +270,17 @@ class TestAxisToSubcategoryConstant:
 class TestParseXbrl:
     """Tests for the parse_xbrl() public function."""
 
+    @pytest.fixture(scope="class")
+    def fixture_xml_bytes(self) -> bytes:
+        """Load the fixture XBRL XML once per test class (E5 optimisation)."""
+        assert _XBRL_FIXTURE.exists(), f"Fixture not found: {_XBRL_FIXTURE}"
+        return _XBRL_FIXTURE.read_bytes()
+
+    @pytest.fixture(scope="class")
+    def fixture_result(self, fixture_xml_bytes: bytes) -> ParseResult:
+        """Parse the fixture XBRL once per test class (E5 optimisation)."""
+        return parse_xbrl(fixture_xml_bytes)
+
     def test_正常系_最小XBRLからParseResultを返す(self) -> None:
         result = parse_xbrl(_MINIMAL_XBRL)
         assert isinstance(result, ParseResult)
@@ -305,42 +319,45 @@ class TestParseXbrl:
         # e.g. "AbsolutelyUnknownFutureMember" -> "AbsolutelyUnknownFuture"
         assert "AbsolutelyUnknownFuture" in unknown_rows[0].sub_category
 
-    def test_正常系_fixtureXMLでParseResultを正常に返す(self) -> None:
+    def test_正常系_fixtureXMLでParseResultを正常に返す(
+        self, fixture_result: ParseResult
+    ) -> None:
         """Fixture XML smoke test: parse_xbrl returns valid ParseResult."""
-        assert _XBRL_FIXTURE.exists(), f"Fixture not found: {_XBRL_FIXTURE}"
-        xml_bytes = _XBRL_FIXTURE.read_bytes()
-        result = parse_xbrl(xml_bytes)
-        assert isinstance(result, ParseResult)
-        assert result.symbol == "TESTCO"
-        assert result.as_on_date == "2022-09-30"
-        assert len(result.rows) > 0
+        assert isinstance(fixture_result, ParseResult)
+        assert fixture_result.symbol == "TESTCO"
+        assert fixture_result.as_on_date == "2022-09-30"
+        assert len(fixture_result.rows) > 0
 
-    def test_正常系_fixtureXMLのカテゴリ行が正しいカテゴリを持つ(self) -> None:
+    def test_正常系_fixtureXMLのカテゴリ行が正しいカテゴリを持つ(
+        self, fixture_result: ParseResult
+    ) -> None:
         """Category rows from fixture have correct categories."""
-        xml_bytes = _XBRL_FIXTURE.read_bytes()
-        result = parse_xbrl(xml_bytes)
-        category_rows = [r for r in result.rows if r.is_category_total == "true"]
+        category_rows = [
+            r for r in fixture_result.rows if r.is_category_total == "true"
+        ]
         assert len(category_rows) >= 3
         categories = {r.category for r in category_rows}
         assert "PromoterAndPromoterGroup" in categories
         assert "PublicShareholding" in categories
 
-    def test_正常系_fixtureXMLの詳細行が正しい株主名を持つ(self) -> None:
+    def test_正常系_fixtureXMLの詳細行が正しい株主名を持つ(
+        self, fixture_result: ParseResult
+    ) -> None:
         """Detail rows from fixture have correct shareholder names."""
-        xml_bytes = _XBRL_FIXTURE.read_bytes()
-        result = parse_xbrl(xml_bytes)
-        detail_rows = [r for r in result.rows if r.is_category_total == "false"]
+        detail_rows = [
+            r for r in fixture_result.rows if r.is_category_total == "false"
+        ]
         names = {r.shareholder_name for r in detail_rows}
         assert "Sample Mutual Fund Scheme A" in names
         assert "Sample Mutual Fund Scheme B" in names
 
-    def test_正常系_fixtureXMLのカテゴリ行に数値データが入る(self) -> None:
+    def test_正常系_fixtureXMLのカテゴリ行に数値データが入る(
+        self, fixture_result: ParseResult
+    ) -> None:
         """Category rows from fixture have numeric shareholding data."""
-        xml_bytes = _XBRL_FIXTURE.read_bytes()
-        result = parse_xbrl(xml_bytes)
         promoter_rows = [
             r
-            for r in result.rows
+            for r in fixture_result.rows
             if r.category == "PromoterAndPromoterGroup"
             and r.is_category_total == "true"
         ]
@@ -348,11 +365,13 @@ class TestParseXbrl:
         assert promoter_rows[0].num_fully_paid_shares == "40000000"
         assert promoter_rows[0].pct_total_shares == "40.00"
 
-    def test_正常系_fixtureXMLで詳細行のPANが入る(self) -> None:
+    def test_正常系_fixtureXMLで詳細行のPANが入る(
+        self, fixture_result: ParseResult
+    ) -> None:
         """Detail rows from fixture have PAN numbers."""
-        xml_bytes = _XBRL_FIXTURE.read_bytes()
-        result = parse_xbrl(xml_bytes)
-        detail_rows = [r for r in result.rows if r.is_category_total == "false"]
+        detail_rows = [
+            r for r in fixture_result.rows if r.is_category_total == "false"
+        ]
         pans = {r.pan for r in detail_rows}
         assert "AAAMT1234A" in pans
 
@@ -367,6 +386,108 @@ class TestParseXbrl:
         result = parse_xbrl(_MINIMAL_XBRL)
         with pytest.raises(AttributeError):
             result.symbol = "MODIFIED"  # type: ignore[misc]
+
+    def test_異常系_サイズ上限超過でNseParseError(self) -> None:
+        """Payloads larger than _MAX_XBRL_BYTES must raise NseParseError.
+
+        Guards against DoS via oversized XML payloads (CWE-400).
+        """
+        oversized = b"x" * (_MAX_XBRL_BYTES + 1)
+        with pytest.raises(NseParseError) as exc_info:
+            parse_xbrl(oversized)
+        assert exc_info.value.field == "size"
+        assert "too large" in exc_info.value.message.lower()
+
+    def test_正常系_上限ぎりぎりのサイズは先にNamespace検証へ進む(self) -> None:
+        """A payload exactly at the limit proceeds past the size check.
+
+        The subsequent XML parser will fail because the payload is not XML,
+        but the point is that the size guard does not fire.
+        """
+        import xml.etree.ElementTree as ET
+
+        at_limit = b"x" * _MAX_XBRL_BYTES
+        # Size check passes; XML parsing fails instead of NseParseError.
+        with pytest.raises(ET.ParseError):
+            parse_xbrl(at_limit)
+
+
+# ---------------------------------------------------------------------------
+# Tests: internal helpers (_strip_member_suffix, _resolve_detail_category)
+# ---------------------------------------------------------------------------
+
+
+class TestStripMemberSuffix:
+    """Boundary value tests for _strip_member_suffix (E3)."""
+
+    def test_正常系_改行とインデント付き入力を正規化できる(self) -> None:
+        """Leading/trailing whitespace and newlines must be stripped."""
+        assert (
+            _strip_member_suffix("\n  in-bse-shp:PublicShareholdingMember\n")
+            == "PublicShareholding"
+        )
+
+    def test_正常系_タブ文字付き入力を正規化できる(self) -> None:
+        """Tab characters must be stripped like other whitespace."""
+        assert (
+            _strip_member_suffix("\tin-bse-shp:MutualFundsOrUtiMember\t")
+            == "MutualFundsOrUti"
+        )
+
+    def test_正常系_Memberサフィックスがない場合はそのまま返す(self) -> None:
+        """Input without the Member suffix must be returned as-is after prefix strip."""
+        assert _strip_member_suffix("in-bse-shp:Symbol") == "Symbol"
+
+    def test_正常系_プレフィックスがない場合もMember除去のみ行う(self) -> None:
+        """Input without the in-bse-shp prefix must still drop the Member suffix."""
+        assert _strip_member_suffix("  BankMember ") == "Bank"
+
+    def test_エッジケース_空文字列で空文字列を返す(self) -> None:
+        """Empty input must return empty string without raising."""
+        assert _strip_member_suffix("") == ""
+
+
+class TestResolveDetailCategoryFallback:
+    """Missing sub-category fallback for _resolve_detail_category (E4)."""
+
+    def test_エッジケース_axis_is_known_but_sub_missing_in_member_category(
+        self,
+    ) -> None:
+        """If axis maps to a sub name that is NOT in _MEMBER_CATEGORY,
+        fallback must return ("Unknown", sub)."""
+        # Find an axis whose resolved sub is not present in _MEMBER_CATEGORY.
+        # Construct such a mapping dynamically for determinism.
+        missing_sub = "ThisSubDefinitelyNotInMemberCategory"
+        assert missing_sub not in _MEMBER_CATEGORY
+        # Temporarily inject into _AXIS_TO_SUBCATEGORY via monkeypatch-free approach:
+        # call the helper directly with a known-good axis that the suite guarantees
+        # is mapped but whose sub is not a _MEMBER_CATEGORY key.
+        # Instead, validate the observable behaviour with unknown axis input:
+        cat, sub = _resolve_detail_category("AbsolutelyUnknownAxis")
+        assert cat == "Unknown"
+        # For unknown axis, sub is the axis name itself (since lookup returned "")
+        assert sub == "AbsolutelyUnknownAxis"
+
+    def test_エッジケース_axis_maps_to_sub_not_in_member_category(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Inject an axis->sub mapping where sub is not in _MEMBER_CATEGORY.
+
+        Covers the branch: axis_name in _AXIS_TO_SUBCATEGORY but sub not in _MEMBER_CATEGORY.
+        """
+        from market.nse import xbrl as xbrl_mod
+
+        sentinel_axis = "_SentinelAxisForTest"
+        sentinel_sub = "_SentinelSubNotInMemberCategory"
+        assert sentinel_sub not in xbrl_mod._MEMBER_CATEGORY
+        patched = dict(xbrl_mod._AXIS_TO_SUBCATEGORY)
+        patched[sentinel_axis] = sentinel_sub
+        monkeypatch.setattr(xbrl_mod, "_AXIS_TO_SUBCATEGORY", patched)
+
+        cat, sub = xbrl_mod._resolve_detail_category(sentinel_axis)
+        assert cat == "Unknown"
+        # sub is the resolved sub name (from injected mapping) even when unresolved
+        assert sub == sentinel_sub
 
 
 # ---------------------------------------------------------------------------

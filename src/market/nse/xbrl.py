@@ -36,7 +36,7 @@ from dataclasses import dataclass, field
 
 import defusedxml.ElementTree as ET
 
-from market.nse.constants import XBRLDI_NS, XBRLI_NS
+from market.nse.constants import XBRL_SHP_NS, XBRLDI_NS, XBRLI_NS
 from market.nse.errors import NseParseError
 from utils_core.logging import get_logger
 
@@ -46,28 +46,36 @@ logger = get_logger(__name__)
 # Expected XBRL namespace (2022-09-30 revision)
 # ---------------------------------------------------------------------------
 
-_XBRL_SHP_NS_EXPECTED: str = "http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp"
-"""Expected XBRL shareholding namespace URI.
+# AIDEV-NOTE: 参照は市場共通の constants.XBRL_SHP_NS に一本化 (2022-09-30 タクソノミ)
+# The public `market.nse.constants.XBRL_SHP_NS` constant is the single source of truth.
 
-NSE XBRL files generated under the 2022-09-30 taxonomy use this namespace.
-If the parsed document uses a different namespace, ``NseParseError`` is raised.
+# ---------------------------------------------------------------------------
+# Security limit
+# ---------------------------------------------------------------------------
+
+_MAX_XBRL_BYTES: int = 10 * 1024 * 1024  # 10 MiB upper bound for DoS防御 (CWE-400)
+"""Maximum allowed XBRL payload size in bytes (10 MiB).
+
+Protects against denial-of-service via excessively large XML payloads.
+Real NSE XBRL filings are typically 50-500 KiB, so 10 MiB provides ample
+headroom while bounding memory usage during parsing.
 """
 
 # ---------------------------------------------------------------------------
 # Namespace prefix helpers (computed from constants at module load time)
 # ---------------------------------------------------------------------------
 
-_SHP_PREFIX: str = f"{{{_XBRL_SHP_NS_EXPECTED}}}"
-_XBRLI_PREFIX: str = f"{{{XBRLI_NS}}}"
-_XBRLDI_PREFIX: str = f"{{{XBRLDI_NS}}}"
+_SHP_PREFIX: str = f"{{{XBRL_SHP_NS}}}"  # ElementTree XPath用の名前空間プレフィックス (Clark notation)
+_XBRLI_PREFIX: str = f"{{{XBRLI_NS}}}"  # xbrli 要素検索用の Clark notation プレフィックス
+_XBRLDI_PREFIX: str = f"{{{XBRLDI_NS}}}"  # xbrldi (dimensions) 要素検索用の Clark notation
 
 # ---------------------------------------------------------------------------
 # Module-private constants: category hierarchy mapping
 # ---------------------------------------------------------------------------
 
-_PROMOTER: str = "PromoterAndPromoterGroup"
-_PUBLIC: str = "PublicShareholding"
-_NON_PROMOTER: str = "NonPromoterNonPublic"
+_PROMOTER: str = "PromoterAndPromoterGroup"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
+_PUBLIC: str = "PublicShareholding"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
+_NON_PROMOTER: str = "NonPromoterNonPublic"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
 
 # Top-level members (4 entries)
 _TOP_LEVEL_MEMBERS: dict[str, str] = {
@@ -780,6 +788,52 @@ def _build_detail_rows(
 # ---------------------------------------------------------------------------
 
 
+def _validate_xbrl_namespace(root: ET.Element) -> None:
+    """Validate the root element exposes the expected SHP namespace.
+
+    Uses an O(1) check via the root tag. When the root itself does not
+    carry the SHP namespace (typical case: root is ``xbrli:xbrl``), scan
+    for the first child element that uses ``_SHP_PREFIX`` — this
+    short-circuits on the first match and avoids traversing the full
+    document for valid inputs.
+
+    Parameters
+    ----------
+    root : ET.Element
+        Root element of the parsed XBRL document.
+
+    Raises
+    ------
+    NseParseError
+        If no element in the document uses the expected SHP namespace.
+    """
+    root_tag = root.tag
+    if root_tag.startswith("{"):
+        found_ns = root_tag[1 : root_tag.index("}")]
+        if found_ns == XBRL_SHP_NS:
+            return  # Root itself carries the expected namespace
+        # Root uses a different namespace (e.g. xbrli); check first SHP child
+        first_shp = next(
+            (elem for elem in root.iter() if elem.tag.startswith(_SHP_PREFIX)),
+            None,
+        )
+        if first_shp is None:
+            raise NseParseError(
+                f"XBRL namespace mismatch: expected '{XBRL_SHP_NS}'"
+                " not found in document",
+                raw_data=None,
+                field="namespace",
+            )
+        return
+    if XBRL_SHP_NS not in root_tag:
+        raise NseParseError(
+            f"XBRL namespace mismatch: expected '{XBRL_SHP_NS}'"
+            " not found in document",
+            raw_data=None,
+            field="namespace",
+        )
+
+
 def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     """Parse a single XBRL shareholding XML and return structured data.
 
@@ -789,7 +843,9 @@ def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     Parameters
     ----------
     xml_bytes : bytes
-        Raw XML content of the XBRL shareholding file.
+        Raw XML content of the XBRL shareholding file. Must not exceed
+        ``_MAX_XBRL_BYTES`` (10 MiB) to guard against DoS via oversized
+        payloads.
 
     Returns
     -------
@@ -799,7 +855,8 @@ def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     Raises
     ------
     NseParseError
-        If the document does not use the expected XBRL namespace
+        If the payload size exceeds ``_MAX_XBRL_BYTES``, or if the document
+        does not use the expected XBRL namespace
         (``http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp``).
 
     Examples
@@ -809,42 +866,19 @@ def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     >>> print(result.symbol, result.as_on_date, len(result.rows))
     INFY 2022-09-30 128
     """
+    if len(xml_bytes) > _MAX_XBRL_BYTES:
+        raise NseParseError(
+            f"XBRL payload too large: {len(xml_bytes)} bytes"
+            f" (max {_MAX_XBRL_BYTES})",
+            raw_data=None,
+            field="size",
+        )
+
     logger.debug("Parsing XBRL bytes", size=len(xml_bytes))
 
     root = ET.fromstring(xml_bytes)
 
-    # Validate namespace: O(1) check via first SHP-namespaced element.
-    # XBRL documents use xbrli:xbrl as root, so the expected namespace appears
-    # in child elements (e.g. <in-bse-shp:Symbol>). We check the root tag first:
-    # if the root itself carries the expected namespace we know it's valid.
-    # Otherwise we look for the first child element that carries it, which
-    # avoids scanning the full document (typically found within the first few
-    # elements and short-circuits immediately).
-    root_tag = root.tag
-    if root_tag.startswith("{"):
-        found_ns = root_tag[1 : root_tag.index("}")]
-        if found_ns == _XBRL_SHP_NS_EXPECTED:
-            pass  # Root itself carries the expected namespace
-        else:
-            # Root uses a different namespace (e.g. xbrli); check first SHP child
-            first_shp = next(
-                (elem for elem in root.iter() if elem.tag.startswith(_SHP_PREFIX)),
-                None,
-            )
-            if first_shp is None:
-                raise NseParseError(
-                    f"XBRL namespace mismatch: expected '{_XBRL_SHP_NS_EXPECTED}'"
-                    " not found in document",
-                    raw_data=None,
-                    field="namespace",
-                )
-    elif _XBRL_SHP_NS_EXPECTED not in root_tag:
-        raise NseParseError(
-            f"XBRL namespace mismatch: expected '{_XBRL_SHP_NS_EXPECTED}'"
-            " not found in document",
-            raw_data=None,
-            field="namespace",
-        )
+    _validate_xbrl_namespace(root)
 
     contexts = _parse_contexts(root)
     data_by_ctx = _extract_data_by_context(root)

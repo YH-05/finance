@@ -69,18 +69,23 @@ market.nse.types.CorporateShareHolding : Typed dataclass for shareholding entrie
 # ---------------------------------------------------------------------------
 
 XBRL_SHP_NS: Final[str] = (
-    "http://www.bseindia.com/xbrl/fin/ShareholdingPattern/2011-09-28"
+    "http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp"
 )
-"""XBRL namespace for NSE/BSE shareholding pattern taxonomy.
+"""XBRL namespace for NSE/BSE shareholding pattern taxonomy (2022-09-30 revision).
 
 Used to parse ``corporate-share-holdings-master`` XBRL files.
-Prefix ``shp`` is conventionally assigned to this namespace in ElementTree
-XPath queries.
+Prefix ``in-bse-shp`` is conventionally assigned to this namespace in XBRL
+documents; ``shp`` may be used in ElementTree XPath queries.
+
+This value is the single source of truth for the SHP namespace URI.
+``market.nse.xbrl._SHP_PREFIX`` derives its Clark-notation prefix from this
+constant.
 
 See Also
 --------
 XBRLI_NS : Core XBRL instance namespace.
 XBRLDI_NS : XBRL dimensions namespace.
+market.nse.xbrl : Parses documents using this namespace.
 """
 
 XBRLI_NS: Final[str] = "http://www.xbrl.org/2003/instance"
