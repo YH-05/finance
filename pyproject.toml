@@ -43,7 +43,7 @@ dependencies = [
     # SEC EDGAR
     "edgartools>=3.0.0",
     "tiktoken>=0.7.0",
-    "pymupdf>=1.26.7",
+    "pymupdf>=1.27.2.2",
     "cssselect>=1.4.0",
     # news_scraper
     "curl_cffi>=0.15.0",
