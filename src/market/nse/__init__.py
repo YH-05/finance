@@ -32,6 +32,8 @@ IndicesCollector
     Collector for NSE index constituent data and market status.
 QuoteCollector
     Collector for NSE equity quote data.
+ShareholdingCollector
+    Collector for NSE corporate shareholding data and XBRL detail files.
 StockListCollector
     Collector for NSE equity stock list and pre-open session data.
 
@@ -72,6 +74,20 @@ NseParseError
 NseValidationError
     Exception for data validation failures.
 
+XBRL Data Structures
+--------------------
+ContextInfo
+    Parsed information about a single XBRL context element.
+ParseResult
+    Result of parsing a single XBRL shareholding file.
+ShareholderRow
+    A single row of shareholding data from an XBRL file.
+
+XBRL Parser Functions
+---------------------
+parse_xbrl
+    Parse a single XBRL shareholding XML and return structured data.
+
 Parser Functions
 ----------------
 clean_indian_number
@@ -106,6 +122,7 @@ from market.nse.collectors import (
     CorporateCollector,
     IndicesCollector,
     QuoteCollector,
+    ShareholdingCollector,
     StockListCollector,
 )
 from market.nse.errors import (
@@ -144,8 +161,15 @@ from market.nse.types import (
     ShareholdingPattern,
     StockQuote,
 )
+from market.nse.xbrl import (
+    ContextInfo,
+    ParseResult,
+    ShareholderRow,
+    parse_xbrl,
+)
 
 __all__ = [
+    "ContextInfo",
     "CorporateCollector",
     "CorporateEvent",
     "CorporateShareHolding",
@@ -162,8 +186,11 @@ __all__ = [
     "NseRateLimitError",
     "NseSession",
     "NseValidationError",
+    "ParseResult",
     "QuoteCollector",
     "RetryConfig",
+    "ShareholderRow",
+    "ShareholdingCollector",
     "ShareholdingPattern",
     "StockListCollector",
     "StockQuote",
@@ -180,4 +207,5 @@ __all__ = [
     "parse_quote_response",
     "parse_shareholding_pattern",
     "parse_stock_list_csv",
+    "parse_xbrl",
 ]

@@ -15,6 +15,9 @@ IndicesCollector
     and market status.
 QuoteCollector
     Collector for NSE equity quote data.
+ShareholdingCollector
+    Collector for NSE corporate shareholding data and XBRL detail files.
+    Does not inherit from DataCollector as it returns heterogeneous types.
 StockListCollector
     Collector for NSE equity stock list (EQUITY_L.csv), pre-open
     session data, and market turnover.
@@ -23,11 +26,13 @@ StockListCollector
 from market.nse.collectors.corporate import CorporateCollector
 from market.nse.collectors.indices import IndicesCollector
 from market.nse.collectors.quote import QuoteCollector
+from market.nse.collectors.share_holding import ShareholdingCollector
 from market.nse.collectors.stock_list import StockListCollector
 
 __all__ = [
     "CorporateCollector",
     "IndicesCollector",
     "QuoteCollector",
+    "ShareholdingCollector",
     "StockListCollector",
 ]

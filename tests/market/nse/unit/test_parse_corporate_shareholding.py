@@ -229,7 +229,9 @@ class TestParseCorporateShareHoldingSymbolArg:
 
     def test_正常系_symbolはkeyword_onlyで位置引数不可(self) -> None:
         """symbol が keyword-only 引数であることを確認。"""
-        data: list[dict] = [{"date": "31-Dec-2025", "pr_and_prgrp": "50.01", "public_val": "49.99"}]
+        data: list[dict] = [
+            {"date": "31-Dec-2025", "pr_and_prgrp": "50.01", "public_val": "49.99"}
+        ]
         with pytest.raises(TypeError):
             parse_corporate_shareholding(data, "RELIANCE")  # type: ignore[call-arg]
 
