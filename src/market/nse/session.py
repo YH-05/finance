@@ -516,7 +516,12 @@ class NseSession:
                 "Request blocked: host not in allowed hosts",
                 url=url,
                 host=parsed_host,
-                allowed_hosts=list(ALLOWED_HOSTS),
+            )
+            # allowed_hosts は運用上の機微情報になり得るため DEBUG ログに分離
+            logger.debug(
+                "SSRF block context",
+                host=parsed_host,
+                allowed_hosts=sorted(ALLOWED_HOSTS),
             )
             raise ValueError(
                 f"Host '{parsed_host}' is not in allowed hosts: {sorted(ALLOWED_HOSTS)}"

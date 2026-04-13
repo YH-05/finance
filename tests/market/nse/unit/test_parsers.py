@@ -61,7 +61,13 @@ Test TODO List:
 - [x] parse_market_status: missing 'marketState' key raises NseParseError
 - [x] parse_market_status: empty marketState returns empty list
 - [x] parse_market_status: non-dict raises NseParseError
-- [x] Module exports: __all__ completeness
+- [x] Module exports: __all__ completeness (includes parse_corporate_shareholding)
+- [x] parse_corporate_shareholding: リスト解析成功・全フィールド抽出
+- [x] parse_corporate_shareholding: xbrl_url 抽出
+- [x] parse_corporate_shareholding: symbol keyword-only 引数のデフォルト・指定
+- [x] parse_corporate_shareholding: 非 list 入力で NseParseError
+- [x] parse_corporate_shareholding: 空 list で空 list
+- [x] parse_corporate_shareholding: 欠損フィールドでデフォルト値
 """
 
 import pandas as pd
@@ -75,6 +81,7 @@ from market.nse.parsers import (
     clean_price,
     clean_volume,
     parse_all_indices,
+    parse_corporate_shareholding,
     parse_event_calendar,
     parse_financial_results,
     parse_index_constituents,
@@ -85,6 +92,7 @@ from market.nse.parsers import (
 )
 from market.nse.types import (
     CorporateEvent,
+    CorporateShareHolding,
     FinancialResult,
     IndexConstituent,
     MarketStatus,
@@ -997,13 +1005,13 @@ class TestModuleExports:
     """Tests for module exports completeness."""
 
     def test_正常系_モジュールエクスポートが完全であること(self) -> None:
-        """__all__ に全パブリックシンボルが含まれていること。"""
+        """__all__ に全パブリックシンボルが含まれていること（プライベート定数は除く）。"""
         expected = {
-            "_MISSING_VALUES",
             "clean_indian_number",
             "clean_price",
             "clean_volume",
             "parse_all_indices",
+            "parse_corporate_shareholding",
             "parse_event_calendar",
             "parse_financial_results",
             "parse_index_constituents",
@@ -1021,3 +1029,110 @@ class TestModuleExports:
         assert "N/A" in _MISSING_VALUES
         assert "NA" in _MISSING_VALUES
         assert "-" in _MISSING_VALUES
+
+
+# =============================================================================
+# parse_corporate_shareholding tests
+# =============================================================================
+
+
+def _make_corporate_shareholding_json(
+    *,
+    symbol: str = "RELIANCE",
+    date: str = "31-Dec-2025",
+    pr_and_prgrp: str = "50.01",
+    public_val: str = "49.99",
+    employee_trusts: str = "0.00",
+    submission_date: str = "15-Jan-2026",
+    broadcast_date: str = "16-Jan-2026",
+    xbrl: str = "https://archives.nseindia.com/corporate/xbrl/RELIANCE_123.xml",
+) -> dict:
+    """Build a single NSE corporate-share-holdings-master record."""
+    return {
+        "symbol": symbol,
+        "date": date,
+        "pr_and_prgrp": pr_and_prgrp,
+        "public_val": public_val,
+        "employeeTrusts": employee_trusts,
+        "submissionDate": submission_date,
+        "broadcastDate": broadcast_date,
+        "xbrl": xbrl,
+    }
+
+
+class TestParseCorporateShareholding:
+    """Unit tests for parse_corporate_shareholding."""
+
+    def test_正常系_リスト解析成功(self) -> None:
+        """有効なリストを CorporateShareHolding のリストに変換できること。"""
+        data = [_make_corporate_shareholding_json()]
+        holdings = parse_corporate_shareholding(data)
+
+        assert isinstance(holdings, list)
+        assert len(holdings) == 1
+        assert isinstance(holdings[0], CorporateShareHolding)
+
+    def test_正常系_全フィールドが抽出される(self) -> None:
+        """全フィールドが正しく CorporateShareHolding に設定されること。"""
+        data = [_make_corporate_shareholding_json()]
+        holdings = parse_corporate_shareholding(data)
+        h = holdings[0]
+
+        assert h.symbol == "RELIANCE"
+        assert h.as_on_date == "31-Dec-2025"
+        assert h.promoter_group_pct == "50.01"
+        assert h.public_pct == "49.99"
+        assert h.employee_trust_pct == "0.00"
+        assert h.submission_date == "15-Jan-2026"
+        assert h.broadcast_date == "16-Jan-2026"
+
+    def test_正常系_xbrl_urlが抽出される(self) -> None:
+        """xbrl フィールドが xbrl_url に正しくマッピングされること。"""
+        xbrl = "https://archives.nseindia.com/corporate/xbrl/RELIANCE_123.xml"
+        data = [_make_corporate_shareholding_json(xbrl=xbrl)]
+        holdings = parse_corporate_shareholding(data)
+
+        assert holdings[0].xbrl_url == xbrl
+
+    def test_正常系_symbol引数のデフォルト値が使われる(self) -> None:
+        """レコードに symbol がない場合、keyword-only 引数のデフォルト (空文字) が使われること。"""
+        record = _make_corporate_shareholding_json()
+        del record["symbol"]
+        holdings = parse_corporate_shareholding([record])
+
+        assert holdings[0].symbol == ""
+
+    def test_正常系_symbol引数の指定値が使われる(self) -> None:
+        """レコードに symbol がない場合、keyword-only 引数の指定値が使われること。"""
+        record = _make_corporate_shareholding_json()
+        del record["symbol"]
+        holdings = parse_corporate_shareholding([record], symbol="INFY")
+
+        assert holdings[0].symbol == "INFY"
+
+    def test_異常系_非リスト型はエラー(self) -> None:
+        """リストでない型を渡すと NseParseError が発生すること。"""
+        with pytest.raises(NseParseError):
+            parse_corporate_shareholding({"key": "value"})  # type: ignore[arg-type]
+
+    def test_エッジケース_空リストで空リストを返す(self) -> None:
+        """空リストを渡すと空リストを返すこと。"""
+        holdings = parse_corporate_shareholding([])
+        assert holdings == []
+
+    def test_エッジケース_欠損フィールドはデフォルト値になる(self) -> None:
+        """任意フィールドが欠損している場合、デフォルト値 (空文字) が使われること。"""
+        # 最低限 as_on_date と pct フィールドのみ持つ最小レコード
+        minimal: dict = {
+            "symbol": "TCS",
+            "date": "30-Sep-2025",
+            "pr_and_prgrp": "72.30",
+            "public_val": "27.70",
+        }
+        holdings = parse_corporate_shareholding([minimal])
+        h = holdings[0]
+
+        assert h.employee_trust_pct == ""
+        assert h.submission_date == ""
+        assert h.broadcast_date == ""
+        assert h.xbrl_url == ""

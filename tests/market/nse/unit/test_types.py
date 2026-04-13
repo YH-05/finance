@@ -2,8 +2,8 @@
 
 Tests verify all type definitions for the NSE data retrieval module,
 including Enum types (NseIndex), frozen dataclasses (NseConfig),
-data record dataclasses (StockQuote, IndexConstituent, FinancialResult),
-RetryConfig re-export, and module exports.
+data record dataclasses (StockQuote, IndexConstituent, FinancialResult,
+CorporateShareHolding), RetryConfig re-export, and module exports.
 
 Test TODO List:
 - [x] Module exports: __all__ completeness and importability
@@ -14,8 +14,10 @@ Test TODO List:
 - [x] StockQuote: frozen, all fields, field types
 - [x] IndexConstituent: frozen, all fields, field types
 - [x] FinancialResult: frozen, all fields, field types
+- [x] CorporateShareHolding: frozen, all 8 fields, default values, to_float_* accessors
 """
 
+import math
 from dataclasses import FrozenInstanceError
 from enum import Enum
 
@@ -28,6 +30,7 @@ from market.nse.constants import (
     DEFAULT_TIMEOUT,
 )
 from market.nse.types import (
+    CorporateShareHolding,
     FinancialResult,
     IndexConstituent,
     NseConfig,
@@ -63,10 +66,11 @@ class TestModuleExports:
         for name in __all__:
             assert hasattr(types, name), f"{name} is not defined in types module"
 
-    def test_正常系_allが9項目を含む(self) -> None:
-        """__all__ が全9型定義をエクスポートしていること。"""
+    def test_正常系_allが10項目を含む(self) -> None:
+        """__all__ が全10型定義をエクスポートしていること。"""
         expected = {
             "CorporateEvent",
+            "CorporateShareHolding",
             "FinancialResult",
             "IndexConstituent",
             "MarketStatus",
@@ -480,3 +484,333 @@ class TestFinancialResult:
         )
 
         assert result.result_type == "Standalone"
+
+
+# =============================================================================
+# CorporateShareHolding Dataclass
+# =============================================================================
+
+
+class TestCorporateShareHolding:
+    """CorporateShareHolding frozen dataclass のテスト。"""
+
+    def _make_holding(self) -> CorporateShareHolding:
+        """テスト用 CorporateShareHolding を生成する（必須フィールドのみ）。"""
+        return CorporateShareHolding(
+            symbol="RELIANCE",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50.01",
+            public_pct="49.99",
+        )
+
+    def _make_holding_full(self) -> CorporateShareHolding:
+        """テスト用 CorporateShareHolding を生成する（全フィールド）。"""
+        return CorporateShareHolding(
+            symbol="RELIANCE",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50.01",
+            public_pct="49.99",
+            employee_trust_pct="0.05",
+            submission_date="15-Jan-2026",
+            broadcast_date="16-Jan-2026",
+            xbrl_url="https://archives.nseindia.com/corporate/xbrl/RELIANCE_2025_Q3.xml",
+        )
+
+    # -------------------------------------------------------------------------
+    # 正常系: 初期化
+    # -------------------------------------------------------------------------
+
+    def test_正常系_必須フィールドで初期化できる(self) -> None:
+        """CorporateShareHolding が必須フィールドのみで初期化されること。"""
+        holding = self._make_holding()
+
+        assert holding.symbol == "RELIANCE"
+        assert holding.as_on_date == "31-Dec-2025"
+        assert holding.promoter_group_pct == "50.01"
+        assert holding.public_pct == "49.99"
+
+    def test_正常系_デフォルトフィールドが空文字列である(self) -> None:
+        """省略可能なフィールドのデフォルトが空文字列であること。"""
+        holding = self._make_holding()
+
+        assert holding.employee_trust_pct == ""
+        assert holding.submission_date == ""
+        assert holding.broadcast_date == ""
+        assert holding.xbrl_url == ""
+
+    def test_正常系_全フィールドで初期化できる(self) -> None:
+        """CorporateShareHolding が全フィールドで初期化されること。"""
+        holding = self._make_holding_full()
+
+        assert holding.symbol == "RELIANCE"
+        assert holding.as_on_date == "31-Dec-2025"
+        assert holding.promoter_group_pct == "50.01"
+        assert holding.public_pct == "49.99"
+        assert holding.employee_trust_pct == "0.05"
+        assert holding.submission_date == "15-Jan-2026"
+        assert holding.broadcast_date == "16-Jan-2026"
+        assert holding.xbrl_url == (
+            "https://archives.nseindia.com/corporate/xbrl/RELIANCE_2025_Q3.xml"
+        )
+
+    def test_正常系_frozenである(self) -> None:
+        """CorporateShareHolding が frozen dataclass であること。"""
+        holding = self._make_holding()
+
+        with pytest.raises(FrozenInstanceError):
+            holding.symbol = "TATAMOTORS"  # type: ignore[misc]
+
+    def test_正常系_全フィールドがstr型である(self) -> None:
+        """CorporateShareHolding の全フィールドが str 型であること。"""
+        holding = self._make_holding_full()
+
+        assert isinstance(holding.symbol, str)
+        assert isinstance(holding.as_on_date, str)
+        assert isinstance(holding.promoter_group_pct, str)
+        assert isinstance(holding.public_pct, str)
+        assert isinstance(holding.employee_trust_pct, str)
+        assert isinstance(holding.submission_date, str)
+        assert isinstance(holding.broadcast_date, str)
+        assert isinstance(holding.xbrl_url, str)
+
+    def test_正常系_floatの数値文字列で初期化できる(self) -> None:
+        """promoter_group_pct に float 表現の文字列を設定できること（HF1対応）。"""
+        holding = CorporateShareHolding(
+            symbol="TCS",
+            as_on_date="31-Mar-2025",
+            promoter_group_pct="72.19",
+            public_pct="27.81",
+        )
+
+        assert holding.promoter_group_pct == "72.19"
+
+    # -------------------------------------------------------------------------
+    # 正常系: to_float_promoter_group_pct
+    # -------------------------------------------------------------------------
+
+    def test_正常系_to_float_promoter_group_pctが正しい値を返す(self) -> None:
+        """to_float_promoter_group_pct() が float 値を返すこと。"""
+        holding = self._make_holding()
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result == pytest.approx(50.01)
+
+    def test_正常系_to_float_promoter_group_pctがfloat型を返す(self) -> None:
+        """to_float_promoter_group_pct() が float 型を返すこと。"""
+        holding = self._make_holding()
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert isinstance(result, float)
+
+    def test_異常系_to_float_promoter_group_pctが空文字列でNoneを返す(self) -> None:
+        """to_float_promoter_group_pct() が空文字列で None を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="HDFCBANK",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="",
+            public_pct="100.00",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is None
+
+    def test_異常系_to_float_promoter_group_pctが非数値でNoneを返す(self) -> None:
+        """to_float_promoter_group_pct() が非数値文字列で None を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="N/A",
+            public_pct="49.99",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is None
+
+    # -------------------------------------------------------------------------
+    # 正常系: to_float_public_pct
+    # -------------------------------------------------------------------------
+
+    def test_正常系_to_float_public_pctが正しい値を返す(self) -> None:
+        """to_float_public_pct() が float 値を返すこと。"""
+        holding = self._make_holding()
+
+        result = holding.to_float_public_pct()
+
+        assert result == pytest.approx(49.99)
+
+    def test_異常系_to_float_public_pctが空文字列でNoneを返す(self) -> None:
+        """to_float_public_pct() が空文字列で None を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50.01",
+            public_pct="",
+        )
+
+        result = holding.to_float_public_pct()
+
+        assert result is None
+
+    def test_異常系_to_float_public_pctが非数値でNoneを返す(self) -> None:
+        """to_float_public_pct() が非数値文字列で None を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50.01",
+            public_pct="-",
+        )
+
+        result = holding.to_float_public_pct()
+
+        assert result is None
+
+    # -------------------------------------------------------------------------
+    # 正常系: to_float_employee_trust_pct
+    # -------------------------------------------------------------------------
+
+    def test_正常系_to_float_employee_trust_pctが正しい値を返す(self) -> None:
+        """to_float_employee_trust_pct() が float 値を返すこと。"""
+        holding = self._make_holding_full()
+
+        result = holding.to_float_employee_trust_pct()
+
+        assert result == pytest.approx(0.05)
+
+    def test_異常系_to_float_employee_trust_pctがデフォルト空文字列でNoneを返す(
+        self,
+    ) -> None:
+        """to_float_employee_trust_pct() がデフォルト空文字列で None を返すこと。"""
+        holding = self._make_holding()
+
+        result = holding.to_float_employee_trust_pct()
+
+        assert result is None
+
+    def test_異常系_to_float_employee_trust_pctが非数値でNoneを返す(self) -> None:
+        """to_float_employee_trust_pct() が非数値文字列で None を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50.00",
+            public_pct="49.95",
+            employee_trust_pct="unknown",
+        )
+
+        result = holding.to_float_employee_trust_pct()
+
+        assert result is None
+
+    # -------------------------------------------------------------------------
+    # エッジケース
+    # -------------------------------------------------------------------------
+
+    def test_エッジケース_ゼロ文字列でto_floatが0点0を返す(self) -> None:
+        """to_float_promoter_group_pct() が '0' や '0.0' で 0.0 を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="HDFCBANK",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="0.0",
+            public_pct="100.00",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result == pytest.approx(0.0)
+
+    def test_エッジケース_to_float_promoter_group_pctが100を返す(self) -> None:
+        """to_float_promoter_group_pct() が '100' で 100.0 を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="PRIVATE",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="100",
+            public_pct="0",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result == pytest.approx(100.0)
+
+    # -------------------------------------------------------------------------
+    # エッジケース: inf / nan 入力 (E6)
+    # -------------------------------------------------------------------------
+    # 仕様: 現実装は float(s) をそのまま使用するため、'inf'/'-inf'/'nan' は
+    # float('inf') / float('-inf') / float('nan') を返す（None ではない）。
+    # 将来 None 返却に変更する場合はこれらのテストも同時に更新すること。
+
+    @pytest.mark.parametrize("value", ["inf", "Infinity", "+inf"])
+    def test_エッジケース_to_float_promoter_group_pctが正のinfを保持する(
+        self, value: str
+    ) -> None:
+        """'inf' / 'Infinity' 文字列で float('inf') を返す（現行仕様）。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct=value,
+            public_pct="0",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is not None
+        assert math.isinf(result) and result > 0
+
+    def test_エッジケース_to_float_promoter_group_pctが負のinfを保持する(self) -> None:
+        """'-inf' 文字列で float('-inf') を返す（現行仕様）。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="-inf",
+            public_pct="0",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is not None
+        assert math.isinf(result) and result < 0
+
+    def test_エッジケース_to_float_promoter_group_pctがnanを保持する(self) -> None:
+        """'nan' 文字列で float('nan') を返す（現行仕様）。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="nan",
+            public_pct="0",
+        )
+
+        result = holding.to_float_promoter_group_pct()
+
+        assert result is not None
+        assert math.isnan(result)
+
+    def test_エッジケース_to_float_public_pctがinfを保持する(self) -> None:
+        """public_pct でも 'inf' 入力で float('inf') を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="0",
+            public_pct="inf",
+        )
+
+        result = holding.to_float_public_pct()
+
+        assert result is not None
+        assert math.isinf(result)
+
+    def test_エッジケース_to_float_employee_trust_pctがnanを保持する(self) -> None:
+        """employee_trust_pct でも 'nan' 入力で float('nan') を返すこと。"""
+        holding = CorporateShareHolding(
+            symbol="TESTCO",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50",
+            public_pct="49",
+            employee_trust_pct="nan",
+        )
+
+        result = holding.to_float_employee_trust_pct()
+
+        assert result is not None
+        assert math.isnan(result)

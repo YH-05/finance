@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Anonymised minimal XBRL shareholding sample (in-bse-shp 2022-09-30 taxonomy) -->
+<!-- 3 categories: promoter / public / mutual funds + multiple contexts -->
+<xbrli:xbrl
+  xmlns:xbrli="http://www.xbrl.org/2003/instance"
+  xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+  xmlns:in-bse-shp="http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <!-- ==================== Contexts ==================== -->
+
+  <!-- B01: Summary / top-level (duration + instant) -->
+  <xbrli:context id="OneD">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:startDate>2022-04-01</xbrli:startDate>
+      <xbrli:endDate>2022-09-30</xbrli:endDate>
+    </xbrli:period>
+  </xbrli:context>
+
+  <xbrli:context id="OneI">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:instant>2022-09-30</xbrli:instant>
+    </xbrli:period>
+  </xbrli:context>
+
+  <!-- Promoter top-level category (instant) -->
+  <xbrli:context id="B01I">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:instant>2022-09-30</xbrli:instant>
+    </xbrli:period>
+    <xbrli:scenario>
+      <xbrldi:explicitMember dimension="in-bse-shp:ShareholdingPatternAxis">
+        in-bse-shp:ShareholdingOfPromoterAndPromoterGroupMember
+      </xbrldi:explicitMember>
+    </xbrli:scenario>
+  </xbrli:context>
+
+  <!-- Public shareholding category (instant) -->
+  <xbrli:context id="B02I">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:instant>2022-09-30</xbrli:instant>
+    </xbrli:period>
+    <xbrli:scenario>
+      <xbrldi:explicitMember dimension="in-bse-shp:ShareholdingPatternAxis">
+        in-bse-shp:PublicShareholdingMember
+      </xbrldi:explicitMember>
+    </xbrli:scenario>
+  </xbrli:context>
+
+  <!-- Mutual Funds sub-category under Public (instant) -->
+  <xbrli:context id="B03I">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:instant>2022-09-30</xbrli:instant>
+    </xbrli:period>
+    <xbrli:scenario>
+      <xbrldi:explicitMember dimension="in-bse-shp:ShareholdingPatternAxis">
+        in-bse-shp:MutualFundsOrUtiMember
+      </xbrldi:explicitMember>
+    </xbrli:scenario>
+  </xbrli:context>
+
+  <!-- Detail row context: Individual mutual fund (duration) -->
+  <xbrli:context id="I01D">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:startDate>2022-04-01</xbrli:startDate>
+      <xbrli:endDate>2022-09-30</xbrli:endDate>
+    </xbrli:period>
+    <xbrli:scenario>
+      <xbrldi:typedMember dimension="in-bse-shp:DetailsOfSharesHeldByMutualFundsOrUtiAxis">
+        <in-bse-shp:MutualFundDetails>MF001</in-bse-shp:MutualFundDetails>
+      </xbrldi:typedMember>
+    </xbrli:scenario>
+  </xbrli:context>
+
+  <!-- Detail row context: Individual mutual fund (instant) -->
+  <xbrli:context id="I01I">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:instant>2022-09-30</xbrli:instant>
+    </xbrli:period>
+    <xbrli:scenario>
+      <xbrldi:typedMember dimension="in-bse-shp:DetailsOfSharesHeldByMutualFundsOrUtiAxis">
+        <in-bse-shp:MutualFundDetails>MF001</in-bse-shp:MutualFundDetails>
+      </xbrldi:typedMember>
+    </xbrli:scenario>
+  </xbrli:context>
+
+  <!-- Detail row context: Second individual mutual fund (duration) -->
+  <xbrli:context id="I02D">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:startDate>2022-04-01</xbrli:startDate>
+      <xbrli:endDate>2022-09-30</xbrli:endDate>
+    </xbrli:period>
+    <xbrli:scenario>
+      <xbrldi:typedMember dimension="in-bse-shp:DetailsOfSharesHeldByMutualFundsOrUtiAxis">
+        <in-bse-shp:MutualFundDetails>MF002</in-bse-shp:MutualFundDetails>
+      </xbrldi:typedMember>
+    </xbrli:scenario>
+  </xbrli:context>
+
+  <!-- Detail row context: Second individual mutual fund (instant) -->
+  <xbrli:context id="I02I">
+    <xbrli:entity><xbrli:identifier scheme="in-bse-shp">TESTCO</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:instant>2022-09-30</xbrli:instant>
+    </xbrli:period>
+    <xbrli:scenario>
+      <xbrldi:typedMember dimension="in-bse-shp:DetailsOfSharesHeldByMutualFundsOrUtiAxis">
+        <in-bse-shp:MutualFundDetails>MF002</in-bse-shp:MutualFundDetails>
+      </xbrldi:typedMember>
+    </xbrli:scenario>
+  </xbrli:context>
+
+  <!-- ==================== Metadata ==================== -->
+  <in-bse-shp:Symbol contextRef="OneD">TESTCO</in-bse-shp:Symbol>
+  <in-bse-shp:NameOfTheCompany contextRef="OneD">Test Company Limited</in-bse-shp:NameOfTheCompany>
+  <in-bse-shp:DateOfReport contextRef="OneI">2022-09-30</in-bse-shp:DateOfReport>
+
+  <!-- ==================== Category-level data ==================== -->
+
+  <!-- Promoter: 40,000,000 shares = 40.00% -->
+  <in-bse-shp:NumberOfShareholders contextRef="B01I">5</in-bse-shp:NumberOfShareholders>
+  <in-bse-shp:NumberOfFullyPaidUpEquityShares contextRef="B01I">40000000</in-bse-shp:NumberOfFullyPaidUpEquityShares>
+  <in-bse-shp:NumberOfVotingRights contextRef="B01I">40000000</in-bse-shp:NumberOfVotingRights>
+  <in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares contextRef="B01I">40.00</in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares>
+  <in-bse-shp:ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants contextRef="B01I">40.00</in-bse-shp:ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants>
+  <in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm contextRef="B01I">40000000</in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm>
+
+  <!-- Public: 55,000,000 shares = 55.00% -->
+  <in-bse-shp:NumberOfShareholders contextRef="B02I">1000</in-bse-shp:NumberOfShareholders>
+  <in-bse-shp:NumberOfFullyPaidUpEquityShares contextRef="B02I">55000000</in-bse-shp:NumberOfFullyPaidUpEquityShares>
+  <in-bse-shp:NumberOfVotingRights contextRef="B02I">55000000</in-bse-shp:NumberOfVotingRights>
+  <in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares contextRef="B02I">55.00</in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares>
+  <in-bse-shp:ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants contextRef="B02I">55.00</in-bse-shp:ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants>
+  <in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm contextRef="B02I">55000000</in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm>
+
+  <!-- Mutual Funds sub-category: 10,000,000 shares = 10.00% -->
+  <in-bse-shp:NumberOfShareholders contextRef="B03I">15</in-bse-shp:NumberOfShareholders>
+  <in-bse-shp:NumberOfFullyPaidUpEquityShares contextRef="B03I">10000000</in-bse-shp:NumberOfFullyPaidUpEquityShares>
+  <in-bse-shp:NumberOfVotingRights contextRef="B03I">10000000</in-bse-shp:NumberOfVotingRights>
+  <in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares contextRef="B03I">10.00</in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares>
+  <in-bse-shp:ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants contextRef="B03I">10.00</in-bse-shp:ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants>
+  <in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm contextRef="B03I">10000000</in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm>
+
+  <!-- ==================== Detail-level data ==================== -->
+
+  <!-- Mutual fund #1 (duration: name + PAN) -->
+  <in-bse-shp:NameOfTheShareholder contextRef="I01D">Sample Mutual Fund Scheme A</in-bse-shp:NameOfTheShareholder>
+  <in-bse-shp:PermanentAccountNumberOfShareholder contextRef="I01D">AAAMT1234A</in-bse-shp:PermanentAccountNumberOfShareholder>
+
+  <!-- Mutual fund #1 (instant: numeric) -->
+  <in-bse-shp:NumberOfFullyPaidUpEquityShares contextRef="I01I">6000000</in-bse-shp:NumberOfFullyPaidUpEquityShares>
+  <in-bse-shp:NumberOfVotingRights contextRef="I01I">6000000</in-bse-shp:NumberOfVotingRights>
+  <in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares contextRef="I01I">6.00</in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares>
+  <in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm contextRef="I01I">6000000</in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm>
+
+  <!-- Mutual fund #2 (duration: name + PAN) -->
+  <in-bse-shp:NameOfTheShareholder contextRef="I02D">Sample Mutual Fund Scheme B</in-bse-shp:NameOfTheShareholder>
+  <in-bse-shp:PermanentAccountNumberOfShareholder contextRef="I02D">BBBMT5678B</in-bse-shp:PermanentAccountNumberOfShareholder>
+
+  <!-- Mutual fund #2 (instant: numeric) -->
+  <in-bse-shp:NumberOfFullyPaidUpEquityShares contextRef="I02I">4000000</in-bse-shp:NumberOfFullyPaidUpEquityShares>
+  <in-bse-shp:NumberOfVotingRights contextRef="I02I">4000000</in-bse-shp:NumberOfVotingRights>
+  <in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares contextRef="I02I">4.00</in-bse-shp:ShareholdingAsAPercentageOfTotalNumberOfShares>
+  <in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm contextRef="I02I">4000000</in-bse-shp:NumberOfEquitySharesHeldInDematerializedForm>
+
+</xbrli:xbrl>

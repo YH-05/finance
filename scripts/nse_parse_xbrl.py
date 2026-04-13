@@ -3,6 +3,12 @@
 Download XBRL files from NSE archives for each company's latest shareholding
 report and parse them into flat CSV files.
 
+.. deprecated::
+    # AIDEV-NOTE: DEPRECATED: src/market/nse/xbrl.py へ移行済み。
+    # 本スクリプトはスタンドアロン実装であり、後継は src/market/nse/xbrl.py の
+    # parse_xbrl() および ShareholdingCollector.fetch_xbrl_detail() を使用する
+    # notebook/NSE/nse_full_download.ipynb です。
+
 Usage
 -----
     uv run python scripts/nse_parse_xbrl.py

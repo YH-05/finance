@@ -3,11 +3,13 @@
 Tests verify all constant definitions for the NSE data retrieval module,
 including API URLs, SSRF prevention whitelist, default HTTP headers,
 User-Agent rotation list, polite delay, timeout, delay jitter,
-cookie refresh interval, output directory, and column name mappings.
+cookie refresh interval, output directory, column name mappings, and
+XBRL namespace constants.
 
 Test TODO List:
 - [x] Module exports: __all__ completeness and importability
 - [x] API URLs: BASE_URL and API_BASE_URL format and domain
+- [x] API URLs: CORPORATE_SHARE_HOLDINGS_ENDPOINT derived from API_BASE_URL
 - [x] Security: ALLOWED_HOSTS contains NSE domain
 - [x] Bot-blocking: DEFAULT_USER_AGENTS count, Mozilla prefix, uniqueness
 - [x] Bot-blocking: DEFAULT_POLITE_DELAY, DEFAULT_TIMEOUT, DEFAULT_DELAY_JITTER values
@@ -15,6 +17,7 @@ Test TODO List:
 - [x] Headers: DEFAULT_HEADERS required keys and values
 - [x] Output: DEFAULT_OUTPUT_SUBDIR format
 - [x] Column mapping: EQUITY_QUOTE_COLUMN_NAME_MAP, INDEX_CONSTITUENTS_COLUMN_NAME_MAP
+- [x] XBRL namespaces: XBRL_SHP_NS, XBRLI_NS, XBRLDI_NS are Final[str]
 - [x] Final annotations: all constants annotated with typing.Final
 """
 
@@ -25,6 +28,7 @@ from market.nse.constants import (
     API_BASE_URL,
     BASE_URL,
     COOKIE_REFRESH_INTERVAL,
+    CORPORATE_SHARE_HOLDINGS_ENDPOINT,
     DEFAULT_DELAY_JITTER,
     DEFAULT_HEADERS,
     DEFAULT_OUTPUT_SUBDIR,
@@ -34,6 +38,9 @@ from market.nse.constants import (
     EQUITY_QUOTE_COLUMN_NAME_MAP,
     FINANCIAL_RESULT_COLUMN_NAME_MAP,
     INDEX_CONSTITUENTS_COLUMN_NAME_MAP,
+    XBRL_SHP_NS,
+    XBRLDI_NS,
+    XBRLI_NS,
     __all__,
 )
 
@@ -65,9 +72,9 @@ class TestModuleExports:
                 f"{name} is not defined in constants module"
             )
 
-    def test_正常系_allが20項目を含む(self) -> None:
-        """__all__ が全20定数をエクスポートしていること。"""
-        assert len(__all__) == 20
+    def test_正常系_allが24項目を含む(self) -> None:
+        """__all__ が全24定数をエクスポートしていること。"""
+        assert len(__all__) == 24
 
     def test_正常系_モジュールDocstringが存在する(self) -> None:
         """モジュールの docstring が存在すること。"""
@@ -114,6 +121,72 @@ class TestAPIURLConstants:
     def test_正常系_BASE_URLがAPI_BASE_URLのプレフィックスである(self) -> None:
         """BASE_URL が API_BASE_URL のプレフィックスであること。"""
         assert API_BASE_URL.startswith(BASE_URL)
+
+    def test_正常系_CORPORATE_SHARE_HOLDINGS_ENDPOINTがAPI_BASE_URLで始まる(
+        self,
+    ) -> None:
+        """CORPORATE_SHARE_HOLDINGS_ENDPOINT が API_BASE_URL で始まること。"""
+        assert isinstance(CORPORATE_SHARE_HOLDINGS_ENDPOINT, str)
+        assert CORPORATE_SHARE_HOLDINGS_ENDPOINT.startswith(API_BASE_URL)
+
+    def test_正常系_CORPORATE_SHARE_HOLDINGS_ENDPOINTがhttpsで始まる(self) -> None:
+        """CORPORATE_SHARE_HOLDINGS_ENDPOINT が https:// で始まること。"""
+        assert CORPORATE_SHARE_HOLDINGS_ENDPOINT.startswith("https://")
+
+    def test_正常系_CORPORATE_SHARE_HOLDINGS_ENDPOINTがcorporate_share_holdingsを含む(
+        self,
+    ) -> None:
+        """CORPORATE_SHARE_HOLDINGS_ENDPOINT に corporate-share-holdings を含むこと。"""
+        assert "corporate-share-holdings" in CORPORATE_SHARE_HOLDINGS_ENDPOINT
+
+    def test_正常系_CORPORATE_SHARE_HOLDINGS_ENDPOINTがAPI_BASE_URLを結合して生成される(
+        self,
+    ) -> None:
+        """CORPORATE_SHARE_HOLDINGS_ENDPOINT が API_BASE_URL から正しく組み立てられること。"""
+        assert (
+            f"{API_BASE_URL}/corporate-share-holdings-master"
+        ) == CORPORATE_SHARE_HOLDINGS_ENDPOINT
+
+
+# =============================================================================
+# XBRL namespace constants
+# =============================================================================
+
+
+class TestXBRLNamespaceConstants:
+    """Test XBRL namespace constants for corporate shareholding parsing."""
+
+    def test_正常系_XBRL_SHP_NSが空でない文字列である(self) -> None:
+        """XBRL_SHP_NS が空でない文字列であること。"""
+        assert isinstance(XBRL_SHP_NS, str)
+        assert len(XBRL_SHP_NS.strip()) > 0
+
+    def test_正常系_XBRL_SHP_NSがURLフォーマットである(self) -> None:
+        """XBRL_SHP_NS が URL フォーマットであること（http/https プレフィックス）。"""
+        assert XBRL_SHP_NS.startswith("http")
+
+    def test_正常系_XBRLI_NSが空でない文字列である(self) -> None:
+        """XBRLI_NS が空でない文字列であること。"""
+        assert isinstance(XBRLI_NS, str)
+        assert len(XBRLI_NS.strip()) > 0
+
+    def test_正常系_XBRLI_NSがxbrl_orgドメインを含む(self) -> None:
+        """XBRLI_NS が xbrl.org ドメインを含むこと。"""
+        assert "xbrl.org" in XBRLI_NS
+
+    def test_正常系_XBRLDI_NSが空でない文字列である(self) -> None:
+        """XBRLDI_NS が空でない文字列であること。"""
+        assert isinstance(XBRLDI_NS, str)
+        assert len(XBRLDI_NS.strip()) > 0
+
+    def test_正常系_XBRLDI_NSがxbrl_orgドメインを含む(self) -> None:
+        """XBRLDI_NS が xbrl.org ドメインを含むこと。"""
+        assert "xbrl.org" in XBRLDI_NS
+
+    def test_正常系_3つのXBRL定数が互いに異なる(self) -> None:
+        """XBRL_SHP_NS / XBRLI_NS / XBRLDI_NS が互いに異なる値であること。"""
+        namespaces = {XBRL_SHP_NS, XBRLI_NS, XBRLDI_NS}
+        assert len(namespaces) == 3
 
 
 # =============================================================================

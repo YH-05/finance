@@ -52,6 +52,7 @@ from market.nse.constants import (
 from market.nse.errors import NseParseError
 from market.nse.types import (
     CorporateEvent,
+    CorporateShareHolding,
     FinancialResult,
     IndexConstituent,
     MarketStatus,
@@ -1285,15 +1286,116 @@ def parse_shareholding_pattern(
 
 
 # ---------------------------------------------------------------------------
+# Corporate shareholding parser
+# ---------------------------------------------------------------------------
+
+
+def parse_corporate_shareholding(
+    data: list[dict[str, Any]],
+    *,
+    symbol: str = "",
+) -> list[CorporateShareHolding]:
+    """Parse an NSE corporate-share-holdings-master JSON response.
+
+    The NSE corporate share holdings API
+    (``/api/corporate-share-holdings-master?index=equities&symbol=SYMBOL``)
+    returns a JSON list where each element represents one quarterly holding
+    record.  Each record contains promoter, public, and employee trust
+    holding percentages along with filing metadata.
+
+    Parameters
+    ----------
+    data : list[dict[str, Any]]
+        The raw JSON list from the NSE ``corporate-share-holdings-master``
+        endpoint.
+    symbol : str, default=""
+        NSE stock symbol to use as a fallback when the record does not
+        contain a ``"symbol"`` key.  Ignored if the record already has a
+        non-empty ``"symbol"`` field.
+
+    Returns
+    -------
+    list[CorporateShareHolding]
+        A list of frozen dataclasses, one per quarterly record, ordered
+        by the list iteration order (typically most recent first).
+
+    Raises
+    ------
+    NseParseError
+        If the input is not a list.
+
+    Examples
+    --------
+    >>> data = [
+    ...     {
+    ...         "symbol": "RELIANCE",
+    ...         "date": "31-Dec-2025",
+    ...         "pr_and_prgrp": "50.01",
+    ...         "public_val": "49.99",
+    ...         "employeeTrusts": "",
+    ...         "submissionDate": "15-Jan-2026",
+    ...         "broadcastDate": "16-Jan-2026",
+    ...         "xbrl": "https://archives.nseindia.com/corporate/xbrl/RELIANCE.xml",
+    ...     }
+    ... ]
+    >>> holdings = parse_corporate_shareholding(data, symbol="RELIANCE")
+    >>> len(holdings)
+    1
+    >>> holdings[0].symbol
+    'RELIANCE'
+    >>> holdings[0].promoter_group_pct
+    '50.01'
+    >>> holdings[0].xbrl_url
+    'https://archives.nseindia.com/corporate/xbrl/RELIANCE.xml'
+    """
+    logger.debug("Parsing NSE corporate shareholding response")
+
+    if not isinstance(data, list):
+        raise NseParseError(
+            f"Expected list for corporate shareholding response, got {type(data).__name__}",
+            raw_data=str(data)[:_MAX_RAW_DATA_LOG],
+            field=None,
+        )
+
+    holdings: list[CorporateShareHolding] = []
+
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+
+        # Use record-level symbol if present, fall back to keyword argument
+        record_symbol = str(item.get("symbol", "") or symbol)
+
+        holding = CorporateShareHolding(
+            symbol=record_symbol,
+            as_on_date=str(item.get("date", "")),
+            promoter_group_pct=str(item.get("pr_and_prgrp", "")),
+            public_pct=str(item.get("public_val", "")),
+            employee_trust_pct=str(item.get("employeeTrusts", "")),
+            submission_date=str(item.get("submissionDate", "")),
+            broadcast_date=str(item.get("broadcastDate", "")),
+            xbrl_url=str(item.get("xbrl", "")),
+        )
+        holdings.append(holding)
+
+    logger.info(
+        "NSE corporate shareholdings parsed",
+        holding_count=len(holdings),
+    )
+
+    return holdings
+
+
+# ---------------------------------------------------------------------------
 # Module exports
 # ---------------------------------------------------------------------------
 
 __all__ = [
-    "_MISSING_VALUES",
     "clean_indian_number",
     "clean_price",
     "clean_volume",
     "parse_all_indices",
+    "parse_corporate_shareholding",
     "parse_event_calendar",
     "parse_financial_results",
     "parse_index_constituents",

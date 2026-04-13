@@ -32,6 +32,8 @@ IndicesCollector
     Collector for NSE index constituent data and market status.
 QuoteCollector
     Collector for NSE equity quote data.
+ShareholdingCollector
+    Collector for NSE corporate shareholding data and XBRL detail files.
 StockListCollector
     Collector for NSE equity stock list and pre-open session data.
 
@@ -44,6 +46,8 @@ Data Records
 ------------
 CorporateEvent
     A corporate event from the NSE event calendar.
+CorporateShareHolding
+    A corporate shareholding record from NSE XBRL filings.
 FinancialResult
     A financial result record from NSE corporate filings.
 IndexConstituent
@@ -70,6 +74,20 @@ NseParseError
 NseValidationError
     Exception for data validation failures.
 
+XBRL Data Structures
+--------------------
+ContextInfo
+    Parsed information about a single XBRL context element.
+ParseResult
+    Result of parsing a single XBRL shareholding file.
+ShareholderRow
+    A single row of shareholding data from an XBRL file.
+
+XBRL Parser Functions
+---------------------
+parse_xbrl
+    Parse a single XBRL shareholding XML and return structured data.
+
 Parser Functions
 ----------------
 clean_indian_number
@@ -80,6 +98,8 @@ clean_volume
     Clean and convert NSE volume string to int.
 parse_all_indices
     Parse NSE all-indices summary JSON to DataFrame.
+parse_corporate_shareholding
+    Parse NSE corporate-share-holdings-master JSON to list of CorporateShareHolding.
 parse_event_calendar
     Parse NSE event-calendar JSON to list of CorporateEvent.
 parse_financial_results
@@ -102,6 +122,7 @@ from market.nse.collectors import (
     CorporateCollector,
     IndicesCollector,
     QuoteCollector,
+    ShareholdingCollector,
     StockListCollector,
 )
 from market.nse.errors import (
@@ -117,6 +138,7 @@ from market.nse.parsers import (
     clean_price,
     clean_volume,
     parse_all_indices,
+    parse_corporate_shareholding,
     parse_event_calendar,
     parse_financial_results,
     parse_index_constituents,
@@ -129,6 +151,7 @@ from market.nse.parsers import (
 from market.nse.session import NseSession
 from market.nse.types import (
     CorporateEvent,
+    CorporateShareHolding,
     FinancialResult,
     IndexConstituent,
     MarketStatus,
@@ -138,10 +161,18 @@ from market.nse.types import (
     ShareholdingPattern,
     StockQuote,
 )
+from market.nse.xbrl import (
+    ContextInfo,
+    ParseResult,
+    ShareholderRow,
+    parse_xbrl,
+)
 
 __all__ = [
+    "ContextInfo",
     "CorporateCollector",
     "CorporateEvent",
+    "CorporateShareHolding",
     "FinancialResult",
     "IndexConstituent",
     "IndicesCollector",
@@ -155,8 +186,11 @@ __all__ = [
     "NseRateLimitError",
     "NseSession",
     "NseValidationError",
+    "ParseResult",
     "QuoteCollector",
     "RetryConfig",
+    "ShareholderRow",
+    "ShareholdingCollector",
     "ShareholdingPattern",
     "StockListCollector",
     "StockQuote",
@@ -164,6 +198,7 @@ __all__ = [
     "clean_price",
     "clean_volume",
     "parse_all_indices",
+    "parse_corporate_shareholding",
     "parse_event_calendar",
     "parse_financial_results",
     "parse_index_constituents",
@@ -172,4 +207,5 @@ __all__ = [
     "parse_quote_response",
     "parse_shareholding_pattern",
     "parse_stock_list_csv",
+    "parse_xbrl",
 ]
