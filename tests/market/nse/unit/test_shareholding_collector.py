@@ -25,7 +25,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from market.nse.collectors import ShareholdingCollector
-from market.nse.collectors.share_holding import ShareholdingCollector as _ShareholdingCollectorDirect
+from market.nse.collectors.share_holding import (
+    ShareholdingCollector as _ShareholdingCollectorDirect,
+)
 from market.nse.errors import NseAPIError, NseParseError
 from market.nse.session import NseSession
 from market.nse.types import CorporateShareHolding
@@ -97,12 +99,14 @@ class TestShareholdingCollectorInit:
     def test_正常系_DataCollector_ABCを継承していない(self) -> None:
         try:
             from market.base_collector import DataCollector
+
             assert not issubclass(ShareholdingCollector, DataCollector)
         except ImportError:
             pass  # DataCollector が存在しない場合はスキップ
 
     def test_正常系_NseCollectorMixinを継承している(self) -> None:
         from market.nse.collectors._base import NseCollectorMixin
+
         assert issubclass(ShareholdingCollector, NseCollectorMixin)
 
 
@@ -190,14 +194,17 @@ class TestFetchShareholdingNormal:
 
     def test_正常系_正しいエンドポイントにリクエストされる(self) -> None:
         from market.nse.constants import CORPORATE_SHARE_HOLDINGS_ENDPOINT
+
         mock_session = _make_mock_session(
             response_json=_make_corporate_shareholding_json()
         )
         collector = ShareholdingCollector(session=mock_session)
         collector.fetch_shareholding("RELIANCE")
         call_args = mock_session.get_with_retry.call_args
-        assert CORPORATE_SHARE_HOLDINGS_ENDPOINT in call_args[0] or \
-               CORPORATE_SHARE_HOLDINGS_ENDPOINT == call_args[0][0]
+        assert (
+            CORPORATE_SHARE_HOLDINGS_ENDPOINT in call_args[0]
+            or call_args[0][0] == CORPORATE_SHARE_HOLDINGS_ENDPOINT
+        )
 
     def test_正常系_symbolパラメータがリクエストに含まれる(self) -> None:
         mock_session = _make_mock_session(
@@ -221,7 +228,9 @@ class TestFetchShareholdingNormal:
         mock_new_session = _make_mock_session(
             response_json=_make_corporate_shareholding_json()
         )
-        with patch("market.nse.collectors._base.NseSession", return_value=mock_new_session):
+        with patch(
+            "market.nse.collectors._base.NseSession", return_value=mock_new_session
+        ):
             collector = ShareholdingCollector()
             collector.fetch_shareholding("RELIANCE")
             mock_new_session.close.assert_called_once()
@@ -259,7 +268,10 @@ class TestFetchXbrlDetail:
             ),
         )
 
-        with patch("market.nse.collectors.share_holding.parse_xbrl", return_value=expected_result) as mock_parse:
+        with patch(
+            "market.nse.collectors.share_holding.parse_xbrl",
+            return_value=expected_result,
+        ) as mock_parse:
             result = collector.fetch_xbrl_detail(xbrl_url)
 
         assert result is expected_result
@@ -271,7 +283,9 @@ class TestFetchXbrlDetail:
         collector = ShareholdingCollector(session=mock_session)
 
         mock_result = ParseResult()
-        with patch("market.nse.collectors.share_holding.parse_xbrl", return_value=mock_result):
+        with patch(
+            "market.nse.collectors.share_holding.parse_xbrl", return_value=mock_result
+        ):
             collector.fetch_xbrl_detail(xbrl_url)
 
         call_args = mock_session.get_with_retry.call_args
@@ -283,20 +297,31 @@ class TestFetchXbrlDetail:
         mock_session = _make_mock_session(response_content=_make_minimal_xbrl_bytes())
         collector = ShareholdingCollector(session=mock_session)
 
-        with patch("market.nse.collectors.share_holding.parse_xbrl", return_value=ParseResult()):
+        with patch(
+            "market.nse.collectors.share_holding.parse_xbrl", return_value=ParseResult()
+        ):
             collector.fetch_xbrl_detail(xbrl_url)
 
         mock_session.close.assert_not_called()
 
     def test_正常系_内部生成sessionは_close_される(self) -> None:
         xbrl_url = "https://nsearchives.nseindia.com/corporate/xbrl/RELIANCE.xml"
-        mock_new_session = _make_mock_session(response_content=_make_minimal_xbrl_bytes())
+        mock_new_session = _make_mock_session(
+            response_content=_make_minimal_xbrl_bytes()
+        )
 
-        with patch("market.nse.collectors._base.NseSession", return_value=mock_new_session):
-            with patch("market.nse.collectors.share_holding.parse_xbrl", return_value=ParseResult()):
-                collector = ShareholdingCollector()
-                collector.fetch_xbrl_detail(xbrl_url)
-                mock_new_session.close.assert_called_once()
+        with (
+            patch(
+                "market.nse.collectors._base.NseSession", return_value=mock_new_session
+            ),
+            patch(
+                "market.nse.collectors.share_holding.parse_xbrl",
+                return_value=ParseResult(),
+            ),
+        ):
+            collector = ShareholdingCollector()
+            collector.fetch_xbrl_detail(xbrl_url)
+            mock_new_session.close.assert_called_once()
 
     def test_異常系_NseAPIError_が伝播する(self) -> None:
         xbrl_url = "https://nsearchives.nseindia.com/corporate/xbrl/RELIANCE.xml"
@@ -317,12 +342,16 @@ class TestFetchXbrlDetail:
         mock_session = _make_mock_session(response_content=b"<invalid>xml</invalid>")
         collector = ShareholdingCollector(session=mock_session)
 
-        with patch(
-            "market.nse.collectors.share_holding.parse_xbrl",
-            side_effect=NseParseError("namespace mismatch", raw_data=None, field="namespace"),
+        with (
+            patch(
+                "market.nse.collectors.share_holding.parse_xbrl",
+                side_effect=NseParseError(
+                    "namespace mismatch", raw_data=None, field="namespace"
+                ),
+            ),
+            pytest.raises(NseParseError),
         ):
-            with pytest.raises(NseParseError):
-                collector.fetch_xbrl_detail(xbrl_url)
+            collector.fetch_xbrl_detail(xbrl_url)
 
 
 # =============================================================================
@@ -333,6 +362,7 @@ class TestFetchXbrlDetail:
 class TestModuleExports:
     def test_正常系_collectors_initにShareholdingCollectorが含まれる(self) -> None:
         from market.nse import collectors
+
         assert hasattr(collectors, "ShareholdingCollector")
         assert "ShareholdingCollector" in collectors.__all__
 
@@ -341,6 +371,7 @@ class TestModuleExports:
             CorporateShareHolding,
             ShareholdingCollector,
         )
+
         assert ShareholdingCollector is not None
         assert CorporateShareHolding is not None
 
@@ -351,11 +382,15 @@ class TestModuleExports:
             ShareholderRow,
             parse_xbrl,
         )
+
         assert parse_xbrl is not None
         assert ParseResult is not None
         assert ShareholderRow is not None
         assert ContextInfo is not None
 
-    def test_正常系_parse_corporate_shareholdingをmarket_nse_initからインポートできる(self) -> None:
+    def test_正常系_parse_corporate_shareholdingをmarket_nse_initからインポートできる(
+        self,
+    ) -> None:
         from market.nse import parse_corporate_shareholding
+
         assert parse_corporate_shareholding is not None
