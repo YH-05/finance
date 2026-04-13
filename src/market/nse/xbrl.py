@@ -65,17 +65,27 @@ headroom while bounding memory usage during parsing.
 # Namespace prefix helpers (computed from constants at module load time)
 # ---------------------------------------------------------------------------
 
-_SHP_PREFIX: str = f"{{{XBRL_SHP_NS}}}"  # ElementTree XPath用の名前空間プレフィックス (Clark notation)
-_XBRLI_PREFIX: str = f"{{{XBRLI_NS}}}"  # xbrli 要素検索用の Clark notation プレフィックス
-_XBRLDI_PREFIX: str = f"{{{XBRLDI_NS}}}"  # xbrldi (dimensions) 要素検索用の Clark notation
+_SHP_PREFIX: str = (
+    f"{{{XBRL_SHP_NS}}}"  # ElementTree XPath用の名前空間プレフィックス (Clark notation)
+)
+_XBRLI_PREFIX: str = (
+    f"{{{XBRLI_NS}}}"  # xbrli 要素検索用の Clark notation プレフィックス
+)
+_XBRLDI_PREFIX: str = (
+    f"{{{XBRLDI_NS}}}"  # xbrldi (dimensions) 要素検索用の Clark notation
+)
 
 # ---------------------------------------------------------------------------
 # Module-private constants: category hierarchy mapping
 # ---------------------------------------------------------------------------
 
-_PROMOTER: str = "PromoterAndPromoterGroup"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
+_PROMOTER: str = (
+    "PromoterAndPromoterGroup"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
+)
 _PUBLIC: str = "PublicShareholding"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
-_NON_PROMOTER: str = "NonPromoterNonPublic"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
+_NON_PROMOTER: str = (
+    "NonPromoterNonPublic"  # XBRL member name: in-bse-shp taxonomy 2022-09-30
+)
 
 # Top-level members (4 entries)
 _TOP_LEVEL_MEMBERS: dict[str, str] = {
@@ -827,8 +837,7 @@ def _validate_xbrl_namespace(root: ET.Element) -> None:
         return
     if XBRL_SHP_NS not in root_tag:
         raise NseParseError(
-            f"XBRL namespace mismatch: expected '{XBRL_SHP_NS}'"
-            " not found in document",
+            f"XBRL namespace mismatch: expected '{XBRL_SHP_NS}' not found in document",
             raw_data=None,
             field="namespace",
         )
@@ -868,8 +877,7 @@ def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     """
     if len(xml_bytes) > _MAX_XBRL_BYTES:
         raise NseParseError(
-            f"XBRL payload too large: {len(xml_bytes)} bytes"
-            f" (max {_MAX_XBRL_BYTES})",
+            f"XBRL payload too large: {len(xml_bytes)} bytes (max {_MAX_XBRL_BYTES})",
             raw_data=None,
             field="size",
         )

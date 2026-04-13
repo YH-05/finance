@@ -344,9 +344,7 @@ class TestParseXbrl:
         self, fixture_result: ParseResult
     ) -> None:
         """Detail rows from fixture have correct shareholder names."""
-        detail_rows = [
-            r for r in fixture_result.rows if r.is_category_total == "false"
-        ]
+        detail_rows = [r for r in fixture_result.rows if r.is_category_total == "false"]
         names = {r.shareholder_name for r in detail_rows}
         assert "Sample Mutual Fund Scheme A" in names
         assert "Sample Mutual Fund Scheme B" in names
@@ -369,9 +367,7 @@ class TestParseXbrl:
         self, fixture_result: ParseResult
     ) -> None:
         """Detail rows from fixture have PAN numbers."""
-        detail_rows = [
-            r for r in fixture_result.rows if r.is_category_total == "false"
-        ]
+        detail_rows = [r for r in fixture_result.rows if r.is_category_total == "false"]
         pans = {r.pan for r in detail_rows}
         assert "AAAMT1234A" in pans
 

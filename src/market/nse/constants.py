@@ -68,9 +68,7 @@ market.nse.types.CorporateShareHolding : Typed dataclass for shareholding entrie
 # 1b. XBRL namespace constants (corporate share holdings)
 # ---------------------------------------------------------------------------
 
-XBRL_SHP_NS: Final[str] = (
-    "http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp"
-)
+XBRL_SHP_NS: Final[str] = "http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp"
 """XBRL namespace for NSE/BSE shareholding pattern taxonomy (2022-09-30 revision).
 
 Used to parse ``corporate-share-holdings-master`` XBRL files.
