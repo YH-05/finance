@@ -274,7 +274,9 @@ class TestFetchXbrlDetail:
             result = collector.fetch_xbrl_detail(xbrl_url)
 
         assert result is expected_result
-        mock_parse.assert_called_once()
+        mock_parse.assert_called_once_with(
+            mock_session.get_with_retry.return_value.content
+        )
 
     def test_正常系_get_with_retryにxbrl_urlを渡す(self) -> None:
         xbrl_url = "https://nsearchives.nseindia.com/corporate/xbrl/RELIANCE.xml"
@@ -287,9 +289,7 @@ class TestFetchXbrlDetail:
         ):
             collector.fetch_xbrl_detail(xbrl_url)
 
-        call_args = mock_session.get_with_retry.call_args
-        called_url = call_args[0][0] if call_args[0] else call_args[1].get("url", "")
-        assert called_url == xbrl_url
+        mock_session.get_with_retry.assert_called_once_with(xbrl_url)
 
     def test_正常系_注入session_は_close_されない(self) -> None:
         xbrl_url = "https://nsearchives.nseindia.com/corporate/xbrl/RELIANCE.xml"
@@ -321,6 +321,13 @@ class TestFetchXbrlDetail:
             collector = ShareholdingCollector()
             collector.fetch_xbrl_detail(xbrl_url)
             mock_new_session.close.assert_called_once()
+
+    def test_異常系_許可されていないホストでValueError(self) -> None:
+        xbrl_url = "https://evil.example.com/corporate/xbrl/RELIANCE.xml"
+        mock_session = _make_mock_session(response_content=b"")
+        collector = ShareholdingCollector(session=mock_session)
+        with pytest.raises(ValueError, match="not in allowed hosts"):
+            collector.fetch_xbrl_detail(xbrl_url)
 
     def test_異常系_NseAPIError_が伝播する(self) -> None:
         xbrl_url = "https://nsearchives.nseindia.com/corporate/xbrl/RELIANCE.xml"

@@ -44,7 +44,7 @@ from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 from market.nse.collectors._base import NseCollectorMixin
-from market.nse.constants import CORPORATE_SHARE_HOLDINGS_ENDPOINT
+from market.nse.constants import ALLOWED_HOSTS, CORPORATE_SHARE_HOLDINGS_ENDPOINT
 from market.nse.parsers import parse_corporate_shareholding
 from market.nse.xbrl import ParseResult, parse_xbrl
 from utils_core.logging import get_logger
@@ -264,7 +264,9 @@ class ShareholdingCollector(NseCollectorMixin):
             raise ValueError(
                 f"xbrl_url scheme must be http/https, got '{parsed.scheme}'"
             )
-        # ALLOWED_HOSTS チェックは NseSession 層に委譲
+        if parsed.netloc not in ALLOWED_HOSTS:
+            raise ValueError(f"xbrl_url host '{parsed.netloc}' is not in allowed hosts")
+        # 最終的なURLバリデーションは NseSession._validate_url() に委譲
 
         logger.info(
             "Fetching XBRL detail",
