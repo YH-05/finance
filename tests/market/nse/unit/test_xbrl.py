@@ -36,6 +36,8 @@ from market.nse.xbrl import (
 
 _FIXTURE_DIR = Path(__file__).parent.parent / "fixtures"
 _XBRL_FIXTURE = _FIXTURE_DIR / "xbrl_sample.xml"
+_XBRL_FIXTURE_2025_05_31 = _FIXTURE_DIR / "xbrl_sample_2025_05_31.xml"
+_XBRL_FIXTURE_2025_10_31 = _FIXTURE_DIR / "xbrl_sample_2025_10_31.xml"
 
 # ---------------------------------------------------------------------------
 # Minimal valid XBRL for unit tests (uses correct namespace)
@@ -530,4 +532,116 @@ class TestDefusedxmlUsage:
         source = source_path.read_text(encoding="utf-8")
         assert "import defusedxml.ElementTree as ET" in source, (
             "xbrl.py must use 'import defusedxml.ElementTree as ET' for secure XML parsing"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Tests: multi-taxonomy support (2025-05-31 / 2025-10-31 regression guards)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.skipif(
+    not _XBRL_FIXTURE_2025_05_31.exists(),
+    reason="fixture xbrl_sample_2025_05_31.xml not present",
+)
+class TestParseXbrl2025_05_31:
+    """Regression guard: 2025-05-31 taxonomy (AADHARHFC 30-JUN-2025)."""
+
+    @pytest.fixture(scope="class")
+    def result(self) -> ParseResult:
+        return parse_xbrl(_XBRL_FIXTURE_2025_05_31.read_bytes())
+
+    def test_正常系_namespaceが受理される(self, result: ParseResult) -> None:
+        # No NseParseError raised = namespace regex accepted 2025-05-31 URI
+        assert result.symbol != "" or result.as_on_date != "" or len(result.rows) > 0
+
+    def test_正常系_metadataがMainDコンテキストから取れる(self, result: ParseResult) -> None:
+        assert result.symbol == "AADHARHFC"
+        assert result.as_on_date == "2025-06-30"
+
+    def test_正常系_pct値がパーセント形式で保持される(self, result: ParseResult) -> None:
+        # 2025-05-31 taxonomy stores percentages in percentage form (75.50),
+        # so no scaling should be applied.
+        promoter_total = [
+            r
+            for r in result.rows
+            if r.category == "PromoterAndPromoterGroup"
+            and r.sub_category == ""
+            and r.is_category_total == "true"
+        ]
+        assert len(promoter_total) == 1
+        assert float(promoter_total[0].pct_total_shares) == pytest.approx(75.50)
+
+    def test_正常系_名称エイリアス_MutualFundsOrUTI(self, result: ParseResult) -> None:
+        # Renamed member "MutualFundsOrUTI" should resolve to the canonical
+        # sub_category "MutualFundsOrUti".
+        mf_rows = [
+            r
+            for r in result.rows
+            if r.sub_category == "MutualFundsOrUti" and r.is_category_total == "true"
+        ]
+        assert len(mf_rows) == 1
+        assert mf_rows[0].category == "PublicShareholding"
+
+
+@pytest.mark.skipif(
+    not _XBRL_FIXTURE_2025_10_31.exists(),
+    reason="fixture xbrl_sample_2025_10_31.xml not present",
+)
+class TestParseXbrl2025_10_31:
+    """Regression guard: 2025-10-31 taxonomy (AADHARHFC 31-MAR-2026)."""
+
+    @pytest.fixture(scope="class")
+    def result(self) -> ParseResult:
+        return parse_xbrl(_XBRL_FIXTURE_2025_10_31.read_bytes())
+
+    def test_正常系_namespaceが受理される(self, result: ParseResult) -> None:
+        assert result.symbol != "" or result.as_on_date != "" or len(result.rows) > 0
+
+    def test_正常系_metadataがMainDコンテキストから取れる(self, result: ParseResult) -> None:
+        assert result.symbol == "AADHARHFC"
+        assert result.as_on_date == "2026-03-31"
+
+    def test_正常系_小数表記のpct値が自動的にパーセント化される(
+        self, result: ParseResult
+    ) -> None:
+        # 2025-10-31 taxonomy stores pct as decimal ratios (0.649 = 64.9%).
+        # Parser should scale by 100x so downstream sees percentage form.
+        promoter_total = [
+            r
+            for r in result.rows
+            if r.category == "PromoterAndPromoterGroup"
+            and r.sub_category == ""
+            and r.is_category_total == "true"
+        ]
+        assert len(promoter_total) == 1
+        # Raw XBRL value is 0.649; scaled should be 64.9
+        pct = float(promoter_total[0].pct_total_shares)
+        assert pct == pytest.approx(64.9, rel=1e-3)
+        assert pct > 1.0  # sanity: must be in percentage form, not decimal
+
+    def test_正常系_pct_fully_diluted_ESOP別名が解決する(
+        self, result: ParseResult
+    ) -> None:
+        # 2025-10-31 renamed the diluted element to ...WarrantsAndESOP.
+        # Parser should find it via the tuple-based tag alternatives.
+        promoter_total = [
+            r
+            for r in result.rows
+            if r.category == "PromoterAndPromoterGroup"
+            and r.sub_category == ""
+            and r.is_category_total == "true"
+        ]
+        assert len(promoter_total) == 1
+        assert promoter_total[0].pct_fully_diluted != ""
+        # After scaling, the fully-diluted pct should also be in percentage form
+        diluted = float(promoter_total[0].pct_fully_diluted)
+        assert diluted > 1.0  # percentage form, not decimal
+
+    def test_正常系_Unknown_categoryが発生しない(self, result: ParseResult) -> None:
+        # All members in a normal 2025-10-31 filing should map to known
+        # categories via the taxonomy aliases.
+        unknown = [r for r in result.rows if r.category == "Unknown"]
+        assert len(unknown) == 0, (
+            f"Unknown rows found: {[r.sub_category for r in unknown]}"
         )

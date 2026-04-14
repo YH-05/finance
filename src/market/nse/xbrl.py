@@ -580,6 +580,14 @@ def _first_present(vals: dict[str, str], tag_alternatives: tuple[str, ...]) -> s
 # Earlier revisions use percentage form; these ones use decimal form.
 _DECIMAL_PCT_TAXONOMIES: frozenset[str] = frozenset({"2025-10-31"})
 
+# Taxonomy revisions that have been explicitly verified (either percentage
+# or decimal form). Any revision not in this set is "unknown" and triggers
+# a WARNING log so operators can investigate whether the new revision
+# continues the pattern or requires classification changes.
+_VERIFIED_TAXONOMIES: frozenset[str] = frozenset(
+    {"2018-03-31", "2022-09-30", "2025-05-31", "2025-10-31"}
+)
+
 
 def _taxonomy_stores_decimals(root: ET.Element) -> bool:
     """Return True if the document's SHP taxonomy stores pct fields as decimals.
@@ -588,6 +596,12 @@ def _taxonomy_stores_decimals(root: ET.Element) -> bool:
     (e.g. ``2025-10-31`` in
     ``http://www.bseindia.com/xbrl/shp/2025-10-31/in-bse-shp``). Returns
     True when the revision is in :data:`_DECIMAL_PCT_TAXONOMIES`.
+
+    Emits a WARNING log when the revision is not in
+    :data:`_VERIFIED_TAXONOMIES` so operators know to verify whether the
+    new revision continues the decimal-pct convention or reverts to
+    percentage form. Conservative default: treat unknown revisions as
+    percentage form (no scaling), matching the pre-2025-10-31 convention.
     """
     for elem in root.iter():
         match = _SHP_TAG_RE.match(elem.tag)
@@ -595,8 +609,20 @@ def _taxonomy_stores_decimals(root: ET.Element) -> bool:
             continue
         # Extract the YYYY-MM-DD portion from the namespace URI.
         ns_match = re.search(r"/xbrl/shp/(\d{4}-\d{2}-\d{2})/in-bse-shp", elem.tag)
-        if ns_match is not None:
-            return ns_match.group(1) in _DECIMAL_PCT_TAXONOMIES
+        if ns_match is None:
+            return False
+        revision = ns_match.group(1)
+        if revision not in _VERIFIED_TAXONOMIES:
+            logger.warning(
+                "Unknown BSE SHP taxonomy revision detected",
+                revision=revision,
+                action=(
+                    "treating pct fields as percentage form (no scaling); "
+                    "verify new revision and update _DECIMAL_PCT_TAXONOMIES "
+                    "if it stores decimals"
+                ),
+            )
+        return revision in _DECIMAL_PCT_TAXONOMIES
     return False
 
 
