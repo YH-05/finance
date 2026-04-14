@@ -5,8 +5,8 @@ Tests cover:
 - parse_xbrl() public function
 - NseParseError on namespace mismatch
 - Unknown member fallback behaviour
-- _MEMBER_CATEGORY count (88)
-- _AXIS_TO_SUBCATEGORY count (47)
+- _MEMBER_CATEGORY count (95) — 88 base + 7 new taxonomy-2025 aliases
+- _AXIS_TO_SUBCATEGORY count (48) — 47 base + 1 taxonomy-2025 alias
 - # nosec B314 comment presence
 - Fixture-based integration smoke test
 """
@@ -221,8 +221,27 @@ class TestParseResult:
 class TestMemberCategoryConstant:
     """Tests for the _MEMBER_CATEGORY constant."""
 
-    def test_正常系_エントリ数が88件(self) -> None:
-        assert len(_MEMBER_CATEGORY) == 88
+    def test_正常系_エントリ数が95件(self) -> None:
+        # 88 base entries + 7 new taxonomy-2025 aliases
+        # (MutualFundsOrUTI, NBFCsRegisteredWithRBI, Category One/Two/Three,
+        #  Shareholding...CorporateWhere..., Trusts...Is...)
+        # "Governments" alias re-uses an existing _ADDITIONAL_MEMBERS entry.
+        assert len(_MEMBER_CATEGORY) == 95
+
+    def test_正常系_タクソノミ2025エイリアスが含まれる(self) -> None:
+        # 新タクソノミの spelling が旧 spelling と同じカテゴリに解決することを検証
+        assert "MutualFundsOrUTI" in _MEMBER_CATEGORY
+        cat, sub = _MEMBER_CATEGORY["MutualFundsOrUTI"]
+        assert cat == "PublicShareholding"
+        assert sub == "MutualFundsOrUti"  # canonical old spelling
+
+        assert "NBFCsRegisteredWithRBI" in _MEMBER_CATEGORY
+        assert "InstitutionsForeignPortfolioInvestorCategoryOne" in _MEMBER_CATEGORY
+        assert (
+            "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroup"
+            "IsTrusteeOrBeneficiaryOrAuthorOfTrust"
+            in _MEMBER_CATEGORY
+        )
 
     def test_正常系_プロモーターサブカテゴリが含まれる(self) -> None:
         assert "IndividualsOrHinduUndividedFamily" in _MEMBER_CATEGORY
@@ -249,8 +268,17 @@ class TestMemberCategoryConstant:
 class TestAxisToSubcategoryConstant:
     """Tests for the _AXIS_TO_SUBCATEGORY constant."""
 
-    def test_正常系_エントリ数が47件(self) -> None:
-        assert len(_AXIS_TO_SUBCATEGORY) == 47
+    def test_正常系_エントリ数が48件(self) -> None:
+        # 47 base entries + 1 taxonomy-2025 alias
+        # (DetailsOfSharesHeldByMutualFundsOrUTIAxis)
+        assert len(_AXIS_TO_SUBCATEGORY) == 48
+
+    def test_正常系_タクソノミ2025_UTIエイリアスが解決する(self) -> None:
+        # 新タクソノミ (Uti → UTI) の axis 名が旧 sub_category に解決
+        assert (
+            _AXIS_TO_SUBCATEGORY["DetailsOfSharesHeldByMutualFundsOrUTIAxis"]
+            == "MutualFundsOrUti"
+        )
 
     def test_正常系_MutualFundsAxisが正しいサブカテゴリを返す(self) -> None:
         assert (

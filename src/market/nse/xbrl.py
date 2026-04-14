@@ -32,22 +32,32 @@ market.nse.errors : NseParseError.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 import defusedxml.ElementTree as ET
 
-from market.nse.constants import XBRL_SHP_NS, XBRLDI_NS, XBRLI_NS
+from market.nse.constants import (
+    XBRL_SHP_NS,
+    XBRL_SHP_NS_PATTERN,
+    XBRLDI_NS,
+    XBRLI_NS,
+)
 from market.nse.errors import NseParseError
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
 
 # ---------------------------------------------------------------------------
-# Expected XBRL namespace (2022-09-30 revision)
+# Expected XBRL namespace (multi-taxonomy support)
 # ---------------------------------------------------------------------------
 
-# AIDEV-NOTE: 参照は市場共通の constants.XBRL_SHP_NS に一本化 (2022-09-30 タクソノミ)
-# The public `market.nse.constants.XBRL_SHP_NS` constant is the single source of truth.
+# AIDEV-NOTE: BSE SHP タクソノミは複数バージョンが存在する。確認済み revisions:
+#   2018-03-31, 2022-09-30, 2025-05-31, 2025-10-31
+# 銘柄と as_on_date の組み合わせによってどのバージョンが使われるかが決まる。
+# 切り替えは四半期単位でほぼ同期 (2025-04-01 頃 → 2025-05-31、2025-10-01 頃
+# → 2025-10-31)。本パーサーは namespace のパターンマッチで任意の dated
+# revision を受け入れ、タグ/メンバー名のエイリアスで 3 バージョンを吸収する。
 
 # ---------------------------------------------------------------------------
 # Security limit
@@ -66,14 +76,48 @@ headroom while bounding memory usage during parsing.
 # ---------------------------------------------------------------------------
 
 _SHP_PREFIX: str = (
-    f"{{{XBRL_SHP_NS}}}"  # ElementTree XPath用の名前空間プレフィックス (Clark notation)
+    f"{{{XBRL_SHP_NS}}}"  # canonical (2022-09-30) Clark notation、後方互換のため保持
 )
+_SHP_TAG_RE: re.Pattern[str] = re.compile(r"\{" + XBRL_SHP_NS_PATTERN + r"\}")
+"""Matches the Clark-notation prefix of any dated BSE SHP taxonomy namespace.
+
+Used by :func:`_is_shp_tag` / :func:`_strip_shp_prefix` to accept tags from
+any taxonomy revision (2018-03-31, 2022-09-30, 2025-05-31, 2025-10-31, ...).
+"""
+
+_SHP_NS_RE: re.Pattern[str] = re.compile(XBRL_SHP_NS_PATTERN)
+"""Matches the bare namespace URI of any dated BSE SHP taxonomy revision."""
+
 _XBRLI_PREFIX: str = (
     f"{{{XBRLI_NS}}}"  # xbrli 要素検索用の Clark notation プレフィックス
 )
 _XBRLDI_PREFIX: str = (
     f"{{{XBRLDI_NS}}}"  # xbrldi (dimensions) 要素検索用の Clark notation
 )
+
+
+def _is_shp_tag(tag: str) -> bool:
+    """Return True if ``tag`` is in any BSE SHP taxonomy namespace.
+
+    Parameters
+    ----------
+    tag : str
+        Full Clark-notation tag (e.g.
+        ``"{http://www.bseindia.com/xbrl/shp/2025-10-31/in-bse-shp}NumberOfShareholders"``).
+    """
+    return _SHP_TAG_RE.match(tag) is not None
+
+
+def _strip_shp_prefix(tag: str) -> str:
+    """Strip BSE SHP namespace prefix from a Clark-notation tag.
+
+    Returns ``tag`` unchanged if it is not in a SHP namespace.
+    """
+    match = _SHP_TAG_RE.match(tag)
+    if match is None:
+        return tag
+    return tag[match.end() :]
+
 
 # ---------------------------------------------------------------------------
 # Module-private constants: category hierarchy mapping
@@ -226,9 +270,50 @@ _ADDITIONAL_MEMBERS: dict[str, tuple[str, str]] = {
     "TotalShareholdingOfPromoterAndPromoterGroup": (_PROMOTER, "Total"),
 }
 
-# Build the full _MEMBER_CATEGORY mapping (88 entries).
+# ---------------------------------------------------------------------------
+# Taxonomy 2025 aliases (name changes introduced by BSE in 2025-05-31 /
+# 2025-10-31 revisions). Each alias resolves to the same (category,
+# sub_category) tuple as the canonical 2022-09-30 spelling so downstream
+# consumers see consistent values across taxonomy versions.
+# ---------------------------------------------------------------------------
+
+_TAXONOMY_2025_MEMBER_ALIASES: dict[str, tuple[str, str]] = {
+    # Capitalisation fixes (Uti → UTI, Rbi → RBI)
+    "MutualFundsOrUTI": (_PUBLIC, "MutualFundsOrUti"),
+    "NBFCsRegisteredWithRBI": (_PUBLIC, "NBFCsRegisteredWithRbi"),
+    # Typo fix: Catergory → Category
+    "InstitutionsForeignPortfolioInvestorCategoryOne": (
+        _PUBLIC,
+        "InstitutionsForeignPortfolioInvestorCatergoryOne",
+    ),
+    "InstitutionsForeignPortfolioInvestorCategoryTwo": (
+        _PUBLIC,
+        "InstitutionsForeignPortfolioInvestorCatergoryTwo",
+    ),
+    "InstitutionsForeignPortfolioInvestorCategoryThree": (
+        _PUBLIC,
+        "InstitutionsForeignPortfolioInvestorCatergoryThree",
+    ),
+    # Typo fix: Goverments → Governments (matches existing _ADDITIONAL_MEMBERS entry)
+    "Governments": (_PROMOTER, "Governments"),
+    # Case fix: "where" → "Where"
+    "ShareholdingByCompaniesOrBodiesCorporateWhereCentralOrStateGovernmentIsPromoter": (
+        _PROMOTER,
+        "ShareholdingByCompaniesOrBodiesCorporatewhereCentralOrStateGovernmentIsPromoter",
+    ),
+    # Typo fix: "Isis" → "Is"
+    "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsTrusteeOrBeneficiaryOrAuthorOfTrust": (
+        _PROMOTER,
+        "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsisTrusteeOrBeneficiaryOrAuthorOfTrust",
+    ),
+}
+
+# Build the full _MEMBER_CATEGORY mapping (95 entries).
 # AIDEV-NOTE: This constant is intentionally module-private.
-# The count must remain at 88 to satisfy the acceptance criteria.
+# Count breakdown: 20 promoter + 29 public + 2 non_promoter + 4 top_level
+#                + 33 additional + 7 new taxonomy-2025 aliases = 95 entries.
+# ("Governments" alias overwrites an existing _ADDITIONAL_MEMBERS entry
+# with the same value, so the net addition is 7 rather than 8.)
 _MEMBER_CATEGORY: dict[str, tuple[str, str]] = {}
 
 for _m in _PROMOTER_SUBS:
@@ -240,6 +325,7 @@ for _m in _NON_PROMOTER_SUBS:
 for _m, _cat in _TOP_LEVEL_MEMBERS.items():
     _MEMBER_CATEGORY[_m] = (_cat, "")
 _MEMBER_CATEGORY.update(_ADDITIONAL_MEMBERS)
+_MEMBER_CATEGORY.update(_TAXONOMY_2025_MEMBER_ALIASES)
 
 # ---------------------------------------------------------------------------
 # Module-private constants: axis -> sub_category mapping (47 entries)
@@ -299,27 +385,34 @@ _AXIS_TO_SUBCATEGORY: dict[str, str] = {
     "DetailsOfSharesHeldByIndianFinancialInstitutionsOrBanksAxis": "IndianFinancialInstitutionsOrBanks",
     "DetailsOfSharesHeldByHighNetWorthIndividualsAxis": "HighNetWorthIndividuals",
     "DetailsOfSharesHeldByClearingMembersAxis": "ClearingMembers",
+    # Taxonomy 2025 alias (Uti → UTI)
+    "DetailsOfSharesHeldByMutualFundsOrUTIAxis": "MutualFundsOrUti",
 }
 
 # ---------------------------------------------------------------------------
-# Tags we extract for each row (local names without namespace prefix)
+# Tags we extract for each row (local names without namespace prefix).
+# Each CSV column maps to a tuple of alternative XBRL tag names; the first
+# tag present in the document wins. This supports multiple BSE SHP taxonomy
+# revisions (2022-09-30, 2025-05-31, 2025-10-31) with renamed elements.
 # ---------------------------------------------------------------------------
 
-_NUMERIC_TAG_MAP: dict[str, str] = {
-    "num_shareholders": "NumberOfShareholders",
-    "num_fully_paid_shares": "NumberOfFullyPaidUpEquityShares",
-    "num_voting_rights": "NumberOfVotingRights",
-    "pct_total_shares": "ShareholdingAsAPercentageOfTotalNumberOfShares",
+_NUMERIC_TAG_MAP: dict[str, tuple[str, ...]] = {
+    "num_shareholders": ("NumberOfShareholders",),
+    "num_fully_paid_shares": ("NumberOfFullyPaidUpEquityShares",),
+    "num_voting_rights": ("NumberOfVotingRights",),
+    "pct_total_shares": ("ShareholdingAsAPercentageOfTotalNumberOfShares",),
     "pct_fully_diluted": (
-        "ShareholdingAsAPercentageAssumingFullConversion"
-        "OfConvertibleSecuritiesAndWarrants"
+        # 2022-09-30 spelling
+        "ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants",
+        # 2025-05-31 / 2025-10-31 spelling (ESOP added)
+        "ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesWarrantsAndESOP",
     ),
-    "num_shares_demat": "NumberOfEquitySharesHeldInDematerializedForm",
+    "num_shares_demat": ("NumberOfEquitySharesHeldInDematerializedForm",),
 }
 
-_TEXT_TAG_MAP: dict[str, str] = {
-    "shareholder_name": "NameOfTheShareholder",
-    "pan": "PermanentAccountNumberOfShareholder",
+_TEXT_TAG_MAP: dict[str, tuple[str, ...]] = {
+    "shareholder_name": ("NameOfTheShareholder",),
+    "pan": ("PermanentAccountNumberOfShareholder",),
 }
 
 # ---------------------------------------------------------------------------
@@ -467,6 +560,79 @@ class ParseResult:
 # ---------------------------------------------------------------------------
 
 
+def _first_present(vals: dict[str, str], tag_alternatives: tuple[str, ...]) -> str:
+    """Return the value of the first tag in ``tag_alternatives`` present in ``vals``.
+
+    Supports BSE SHP taxonomy revisions where the same semantic field is
+    named differently (e.g. the 2025 taxonomy renamed
+    ``ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecurities``
+    ``AndWarrants`` to ``...WarrantsAndESOP``). The first tag that exists in
+    ``vals`` is returned; empty string if none match.
+    """
+    for tag in tag_alternatives:
+        if tag in vals:
+            return vals[tag]
+    return ""
+
+
+# Taxonomy revisions that store pct fields as decimals (0.xxx) rather than
+# percentage-form numbers (xx.xx). Empirically verified from real filings.
+# Earlier revisions use percentage form; these ones use decimal form.
+_DECIMAL_PCT_TAXONOMIES: frozenset[str] = frozenset({"2025-10-31"})
+
+
+def _taxonomy_stores_decimals(root: ET.Element) -> bool:
+    """Return True if the document's SHP taxonomy stores pct fields as decimals.
+
+    Detects the taxonomy revision date from the document's SHP namespace
+    (e.g. ``2025-10-31`` in
+    ``http://www.bseindia.com/xbrl/shp/2025-10-31/in-bse-shp``). Returns
+    True when the revision is in :data:`_DECIMAL_PCT_TAXONOMIES`.
+    """
+    for elem in root.iter():
+        match = _SHP_TAG_RE.match(elem.tag)
+        if match is None:
+            continue
+        # Extract the YYYY-MM-DD portion from the namespace URI.
+        ns_match = re.search(r"/xbrl/shp/(\d{4}-\d{2}-\d{2})/in-bse-shp", elem.tag)
+        if ns_match is not None:
+            return ns_match.group(1) in _DECIMAL_PCT_TAXONOMIES
+    return False
+
+
+# Row fields that represent percentages and therefore need scaling when
+# the source document stores them as decimals.
+_PCT_ROW_FIELDS: tuple[str, ...] = ("pct_total_shares", "pct_fully_diluted")
+
+
+def _scale_pct_fields(row: "ShareholderRow", factor: float) -> "ShareholderRow":
+    """Return a copy of ``row`` with pct fields scaled by ``factor``.
+
+    Used to normalise the 2025-10-31 taxonomy's decimal representation
+    (``0.649``) to the percentage form (``64.9``) expected by downstream
+    consumers. Empty strings and non-numeric values are passed through
+    unchanged.
+    """
+    updates: dict[str, str] = {}
+    for field_name in _PCT_ROW_FIELDS:
+        raw = getattr(row, field_name, "")
+        if not raw:
+            continue
+        try:
+            scaled = float(raw) * factor
+        except ValueError:
+            continue
+        # Preserve reasonable precision; trim trailing zeroes for readability.
+        formatted = f"{scaled:.6f}".rstrip("0").rstrip(".")
+        updates[field_name] = formatted or "0"
+    if not updates:
+        return row
+    # Dataclasses are frozen, so build a new instance via replace-like dict.
+    kwargs = {col: getattr(row, col) for col in _CSV_COLUMNS}
+    kwargs.update(updates)
+    return ShareholderRow(**kwargs)
+
+
 def _strip_member_suffix(name: str) -> str:
     """Remove ``in-bse-shp:`` prefix and trailing ``Member`` suffix.
 
@@ -607,13 +773,13 @@ def _extract_data_by_context(
 
     for elem in root.iter():
         tag = elem.tag
-        if not tag.startswith(_SHP_PREFIX):
+        if not _is_shp_tag(tag):
             continue
         ctx_ref = elem.get("contextRef")
         if not ctx_ref:
             continue
 
-        local = tag[len(_SHP_PREFIX) :]
+        local = _strip_shp_prefix(tag)
         text = (elem.text or "").strip()
 
         if ctx_ref not in data:
@@ -721,8 +887,8 @@ def _build_category_rows(
             "sub_category": sub,
             "is_category_total": "true",
         }
-        for csv_col, xbrl_tag in _NUMERIC_TAG_MAP.items():
-            row_kwargs[csv_col] = vals.get(xbrl_tag, "")
+        for csv_col, xbrl_tags in _NUMERIC_TAG_MAP.items():
+            row_kwargs[csv_col] = _first_present(vals, xbrl_tags)
 
         rows.append(ShareholderRow(**row_kwargs))
 
@@ -782,10 +948,10 @@ def _build_detail_rows(
             "sub_category": sub,
             "is_category_total": "false",
         }
-        for csv_col, xbrl_tag in _TEXT_TAG_MAP.items():
-            row_kwargs[csv_col] = merged.get(xbrl_tag, "")
-        for csv_col, xbrl_tag in _NUMERIC_TAG_MAP.items():
-            row_kwargs[csv_col] = merged.get(xbrl_tag, "")
+        for csv_col, xbrl_tags in _TEXT_TAG_MAP.items():
+            row_kwargs[csv_col] = _first_present(merged, xbrl_tags)
+        for csv_col, xbrl_tags in _NUMERIC_TAG_MAP.items():
+            row_kwargs[csv_col] = _first_present(merged, xbrl_tags)
 
         rows.append(ShareholderRow(**row_kwargs))
 
@@ -799,13 +965,12 @@ def _build_detail_rows(
 
 
 def _validate_xbrl_namespace(root: ET.Element) -> None:
-    """Validate the root element exposes the expected SHP namespace.
+    """Validate the document exposes a recognised BSE SHP taxonomy namespace.
 
-    Uses an O(1) check via the root tag. When the root itself does not
-    carry the SHP namespace (typical case: root is ``xbrli:xbrl``), scan
-    for the first child element that uses ``_SHP_PREFIX`` — this
-    short-circuits on the first match and avoids traversing the full
-    document for valid inputs.
+    Accepts any dated revision of the BSE SHP taxonomy
+    (``http://www.bseindia.com/xbrl/shp/YYYY-MM-DD/in-bse-shp``). Uses an
+    O(1) root-tag check and falls back to scanning for the first SHP child
+    element when the root is a generic wrapper such as ``xbrli:xbrl``.
 
     Parameters
     ----------
@@ -815,29 +980,31 @@ def _validate_xbrl_namespace(root: ET.Element) -> None:
     Raises
     ------
     NseParseError
-        If no element in the document uses the expected SHP namespace.
+        If no element in the document uses any recognised dated revision of
+        the BSE SHP taxonomy namespace.
     """
     root_tag = root.tag
     if root_tag.startswith("{"):
         found_ns = root_tag[1 : root_tag.index("}")]
-        if found_ns == XBRL_SHP_NS:
-            return  # Root itself carries the expected namespace
+        if _SHP_NS_RE.fullmatch(found_ns):
+            return  # Root itself carries a recognised SHP namespace
         # Root uses a different namespace (e.g. xbrli); check first SHP child
         first_shp = next(
-            (elem for elem in root.iter() if elem.tag.startswith(_SHP_PREFIX)),
+            (elem for elem in root.iter() if _is_shp_tag(elem.tag)),
             None,
         )
         if first_shp is None:
             raise NseParseError(
-                f"XBRL namespace mismatch: expected '{XBRL_SHP_NS}'"
-                " not found in document",
+                f"XBRL namespace mismatch: expected a BSE SHP taxonomy namespace "
+                f"(pattern '{XBRL_SHP_NS_PATTERN}') not found in document",
                 raw_data=None,
                 field="namespace",
             )
         return
-    if XBRL_SHP_NS not in root_tag:
+    if not _SHP_NS_RE.search(root_tag):
         raise NseParseError(
-            f"XBRL namespace mismatch: expected '{XBRL_SHP_NS}' not found in document",
+            f"XBRL namespace mismatch: expected a BSE SHP taxonomy namespace "
+            f"(pattern '{XBRL_SHP_NS_PATTERN}') not found in document",
             raw_data=None,
             field="namespace",
         )
@@ -891,9 +1058,12 @@ def parse_xbrl(xml_bytes: bytes) -> ParseResult:
     contexts = _parse_contexts(root)
     data_by_ctx = _extract_data_by_context(root)
 
-    # Extract company-level metadata from well-known contexts
-    meta_d = data_by_ctx.get("OneD", {})
-    meta_i = data_by_ctx.get("OneI", {})
+    # Extract company-level metadata from well-known contexts.
+    # AIDEV-NOTE: Context IDs changed between taxonomy revisions.
+    # 2018-03-31 / 2022-09-30 use "OneD"/"OneI"; 2025-05-31 and 2025-10-31
+    # use "MainD"/"MainI". Try both in order.
+    meta_d = data_by_ctx.get("OneD") or data_by_ctx.get("MainD") or {}
+    meta_i = data_by_ctx.get("OneI") or data_by_ctx.get("MainI") or {}
 
     meta: dict[str, str] = {
         "symbol": meta_d.get("Symbol", ""),
@@ -901,8 +1071,21 @@ def parse_xbrl(xml_bytes: bytes) -> ParseResult:
         "report_date": meta_i.get("DateOfReport", ""),
     }
 
+    # AIDEV-NOTE: The 2025-10-31 taxonomy stores percentage fields as
+    # decimal ratios (0.649 = 64.9 %) rather than the percentage form
+    # (75.50) used by earlier revisions. Detect taxonomy version from the
+    # document namespace and scale pct fields to percentage form so the
+    # output is consistent with Phase 3 (corporate-share-holdings-master
+    # API) and with historical XBRL rows.
+    needs_scaling = _taxonomy_stores_decimals(root)
+
     category_rows = _build_category_rows(contexts, data_by_ctx, meta)
     detail_rows = _build_detail_rows(contexts, data_by_ctx, meta)
+
+    if needs_scaling:
+        category_rows = [_scale_pct_fields(r, 100.0) for r in category_rows]
+        detail_rows = [_scale_pct_fields(r, 100.0) for r in detail_rows]
+
     all_rows = tuple(category_rows + detail_rows)
 
     logger.info(
