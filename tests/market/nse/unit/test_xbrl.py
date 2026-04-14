@@ -5,8 +5,8 @@ Tests cover:
 - parse_xbrl() public function
 - NseParseError on namespace mismatch
 - Unknown member fallback behaviour
-- _MEMBER_CATEGORY count (95) — 88 base + 7 new taxonomy-2025 aliases
-- _AXIS_TO_SUBCATEGORY count (48) — 47 base + 1 taxonomy-2025 alias
+- _MEMBER_CATEGORY count (104) — 88 base + 7 + 9 new 2025-10-31 members
+- _AXIS_TO_SUBCATEGORY count (56) — 47 base + 2 + 7 new 2025-10-31 axes
 - # nosec B314 comment presence
 - Fixture-based integration smoke test
 """
@@ -223,12 +223,11 @@ class TestParseResult:
 class TestMemberCategoryConstant:
     """Tests for the _MEMBER_CATEGORY constant."""
 
-    def test_正常系_エントリ数が95件(self) -> None:
-        # 88 base entries + 7 new taxonomy-2025 aliases
-        # (MutualFundsOrUTI, NBFCsRegisteredWithRBI, Category One/Two/Three,
-        #  Shareholding...CorporateWhere..., Trusts...Is...)
+    def test_正常系_エントリ数が104件(self) -> None:
+        # 88 base + 7 taxonomy-2025 capitalisation/typo fixes
+        # + 9 new 2025-10-31 members empirically found in filings.
         # "Governments" alias re-uses an existing _ADDITIONAL_MEMBERS entry.
-        assert len(_MEMBER_CATEGORY) == 95
+        assert len(_MEMBER_CATEGORY) == 104
 
     def test_正常系_タクソノミ2025エイリアスが含まれる(self) -> None:
         # 新タクソノミの spelling が旧 spelling と同じカテゴリに解決することを検証
@@ -270,10 +269,12 @@ class TestMemberCategoryConstant:
 class TestAxisToSubcategoryConstant:
     """Tests for the _AXIS_TO_SUBCATEGORY constant."""
 
-    def test_正常系_エントリ数が48件(self) -> None:
-        # 47 base entries + 1 taxonomy-2025 alias
-        # (DetailsOfSharesHeldByMutualFundsOrUTIAxis)
-        assert len(_AXIS_TO_SUBCATEGORY) == 48
+    def test_正常系_エントリ数が56件(self) -> None:
+        # 47 base entries + 1 (MutualFundsOrUTI) + 1 (NBFCsRegisteredWithRBI)
+        # + 7 new 2025-10-31 axes (PersonsInConcert, Governments-plural,
+        # CorporateWhere...IsPromoter, Trusts...Is, RelativesOfPromoters,
+        # OtherInstitutions, InstitutionsForeignPortfolioInvestor).
+        assert len(_AXIS_TO_SUBCATEGORY) == 56
 
     def test_正常系_タクソノミ2025_UTIエイリアスが解決する(self) -> None:
         # 新タクソノミ (Uti → UTI) の axis 名が旧 sub_category に解決

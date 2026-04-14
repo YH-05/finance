@@ -306,6 +306,28 @@ _TAXONOMY_2025_MEMBER_ALIASES: dict[str, tuple[str, str]] = {
         _PROMOTER,
         "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsisTrusteeOrBeneficiaryOrAuthorOfTrust",
     ),
+    # New 2025-10-31 members empirically observed in real filings
+    "PersonsActingInConcertForPublic": (_PUBLIC, "PersonsActingInConcertForPublic"),
+    "OtherInstitutions": (_PUBLIC, "OtherInstitutionsDomestic"),
+    "InstitutionsForeignPortfolioInvestor": (
+        _PUBLIC,
+        "InstitutionsForeignPortfolioInvestorCatergoryOne",
+    ),
+    "Institutions": (_PUBLIC, "InstitutionsDomestic"),
+    "IndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh": (
+        _PUBLIC,
+        "ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh",
+    ),
+    "IndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh": (
+        _PUBLIC,
+        "ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh",
+    ),
+    "FinancialInstitutionOrBanks": (_PUBLIC, "IndianFinancialInstitutionsOrBanks"),
+    "EmployeeTrusts": (_NON_PROMOTER, "EmployeeBenefitsTrusts"),
+    "CentralGovernmentOrStateGovernmentSOrPresidentOfIndia": (
+        _PROMOTER,
+        "CentralGovernmentOrPresidentOfIndia",
+    ),
 }
 
 # Build the full _MEMBER_CATEGORY mapping (95 entries).
@@ -385,8 +407,29 @@ _AXIS_TO_SUBCATEGORY: dict[str, str] = {
     "DetailsOfSharesHeldByIndianFinancialInstitutionsOrBanksAxis": "IndianFinancialInstitutionsOrBanks",
     "DetailsOfSharesHeldByHighNetWorthIndividualsAxis": "HighNetWorthIndividuals",
     "DetailsOfSharesHeldByClearingMembersAxis": "ClearingMembers",
-    # Taxonomy 2025 alias (Uti → UTI)
+    # Taxonomy 2025-05-31 / 2025-10-31 aliases (name changes vs 2022-09-30)
     "DetailsOfSharesHeldByMutualFundsOrUTIAxis": "MutualFundsOrUti",
+    "DetailsOfSharesHeldByNBFCsRegisteredWithRBIAxis": "NBFCsRegisteredWithRbi",
+    # New 2025-10-31 axes empirically observed in filings
+    "DetailsOfTheShareholdersActingAsPersonsInConcertForPublicAxis": (
+        "PersonsActingInConcertForPublic"
+    ),
+    "DetailsOfSharesHeldByCentralGovernmentOrStateGovernmentsAxis": (
+        "CentralGovernmentOrStateGovernmentS"  # sub 同じに寄せる
+    ),
+    "DetailsOfSharesHeldByShareholdingByCompaniesOrBodiesCorporateWhereCentralOrStateGovernmentIsPromoterAxis": (
+        "ShareholdingByCompaniesOrBodiesCorporatewhereCentralOrStateGovernmentIsPromoter"
+    ),
+    "DetailsOfSharesHeldByTrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsTrusteeOrBeneficiaryOrAuthorOfTrustAxis": (
+        "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsisTrusteeOrBeneficiaryOrAuthorOfTrust"
+    ),
+    "DetailsOfSharesHeldByRelativesOfPromotersOtherThanPromoterGroupAxis": (
+        "RelativesOfPromotersOtherThanPromoterGroup"
+    ),
+    "DetailsOfSharesHeldByOtherInstitutionsAxis": "OtherInstitutionsDomestic",
+    "DetailsOfSharesHeldByInstitutionsForeignPortfolioInvestorAxis": (
+        "InstitutionsForeignPortfolioInvestorCatergoryOne"
+    ),
 }
 
 # ---------------------------------------------------------------------------
