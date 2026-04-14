@@ -814,3 +814,118 @@ class TestCorporateShareHolding:
 
         assert result is not None
         assert math.isnan(result)
+
+
+# =============================================================================
+# to_normalized_pcts: 格納形式の自動検出
+# =============================================================================
+
+
+class TestCorporateShareHoldingNormalizedPcts:
+    """CorporateShareHolding.to_normalized_pcts() のテスト。
+
+    NSE API が散発的に percent×100 や ratio 形式で返すケースを
+    sum ベースで検出して percentage 形式に正規化する。
+    """
+
+    def test_正常系_percent形式はそのまま返される(self) -> None:
+        """sum ≈ 100 のとき source_format='percent' で値は変更されない。"""
+        holding = CorporateShareHolding(
+            symbol="RELIANCE",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="50.01",
+            public_pct="49.99",
+            employee_trust_pct="0.0",
+        )
+
+        promoter, public, trust, fmt = holding.to_normalized_pcts()
+
+        assert fmt == "percent"
+        assert promoter == pytest.approx(50.01)
+        assert public == pytest.approx(49.99)
+        assert trust == pytest.approx(0.0)
+
+    def test_正常系_percent形式でtrust欠損でも検出する(self) -> None:
+        """employee_trust_pct が空で sum ≈ 100 でも 'percent' と判定する。"""
+        holding = CorporateShareHolding(
+            symbol="RELIANCE",
+            as_on_date="31-Dec-2025",
+            promoter_group_pct="67.29",
+            public_pct="32.71",
+        )
+
+        promoter, public, trust, fmt = holding.to_normalized_pcts()
+
+        assert fmt == "percent"
+        assert promoter == pytest.approx(67.29)
+        assert public == pytest.approx(32.71)
+        assert trust is None
+
+    def test_正常系_x100形式を検出してdivide100する(self) -> None:
+        """sum ≈ 10000 (percent×100) を検出して /100 スケーリング。CHENNPETRO ケース。"""
+        holding = CorporateShareHolding(
+            symbol="CHENNPETRO",
+            as_on_date="31-Mar-2026",
+            promoter_group_pct="6729.0",
+            public_pct="3271.0",
+            employee_trust_pct="0.0",
+        )
+
+        promoter, public, trust, fmt = holding.to_normalized_pcts()
+
+        assert fmt == "x100"
+        assert promoter == pytest.approx(67.29)
+        assert public == pytest.approx(32.71)
+        assert trust == pytest.approx(0.0)
+
+    def test_正常系_ratio形式を検出してmultiply100する(self) -> None:
+        """sum ≈ 1.0 (ratio) を検出して ×100 スケーリング。"""
+        holding = CorporateShareHolding(
+            symbol="R",
+            as_on_date="d",
+            promoter_group_pct="0.5001",
+            public_pct="0.4999",
+            employee_trust_pct="0.0",
+        )
+
+        promoter, public, trust, fmt = holding.to_normalized_pcts()
+
+        assert fmt == "ratio"
+        assert promoter == pytest.approx(50.01)
+        assert public == pytest.approx(49.99)
+        assert trust == pytest.approx(0.0)
+
+    def test_異常系_未知形式はそのまま返される(self) -> None:
+        """sum が全区間外ならスケーリングせず 'unknown' を返す。"""
+        holding = CorporateShareHolding(
+            symbol="R",
+            as_on_date="d",
+            promoter_group_pct="200.0",
+            public_pct="300.0",
+            employee_trust_pct="0.0",
+        )
+
+        promoter, public, trust, fmt = holding.to_normalized_pcts()
+
+        assert fmt == "unknown"
+        # 値は変更されない（caller 側 validation で reject される）
+        assert promoter == pytest.approx(200.0)
+        assert public == pytest.approx(300.0)
+        assert trust == pytest.approx(0.0)
+
+    def test_エッジケース_全フィールド空なら_empty_を返す(self) -> None:
+        """to_float_* が全て None なら 'empty'。"""
+        holding = CorporateShareHolding(
+            symbol="R",
+            as_on_date="d",
+            promoter_group_pct="",
+            public_pct="",
+            employee_trust_pct="",
+        )
+
+        promoter, public, trust, fmt = holding.to_normalized_pcts()
+
+        assert fmt == "empty"
+        assert promoter is None
+        assert public is None
+        assert trust is None

@@ -628,6 +628,102 @@ class CorporateShareHolding:
         except (ValueError, TypeError):
             return None
 
+    def to_normalized_pcts(
+        self,
+    ) -> tuple[float | None, float | None, float | None, str]:
+        """Return promoter / public / employee_trust pct in normalised % form.
+
+        The NSE corporate-share-holdings-master API is usually consistent at
+        percentage form (``67.29`` for 67.29 %), but empirically returns
+        percent×100 form (``6729``) for a small subset of filings. This
+        method detects the storage format from the sum of the three fields
+        and auto-scales to percentage form so downstream callers can apply
+        a uniform ``[0, 100]`` range check.
+
+        Detection rules (sum = promoter + public + employee_trust):
+
+        - ``sum ≈ 100`` (range 99.0 – 101.0): already percentage form,
+          returned as-is with ``source_format = "percent"``.
+        - ``sum ≈ 10000`` (range 9900 – 10100): percent×100 form; all
+          three values divided by 100 with ``source_format = "x100"``.
+        - ``sum ≈ 1`` (range 0.95 – 1.05): ratio form (0-1); all three
+          multiplied by 100 with ``source_format = "ratio"``.
+        - Otherwise: returned unchanged with
+          ``source_format = "unknown"`` so callers can reject the record.
+
+        Returns
+        -------
+        tuple[float | None, float | None, float | None, str]
+            ``(promoter_pct, public_pct, employee_trust_pct, source_format)``.
+            Individual fields remain ``None`` if the underlying raw field
+            was not parseable as float.
+
+        Examples
+        --------
+        >>> # Normal percentage-form response
+        >>> h = CorporateShareHolding(
+        ...     symbol="R", as_on_date="d",
+        ...     promoter_group_pct="67.29", public_pct="32.71",
+        ... )
+        >>> h.to_normalized_pcts()
+        (67.29, 32.71, None, 'percent')
+
+        >>> # Buggy percent×100 response (empirically seen for CHENNPETRO)
+        >>> h = CorporateShareHolding(
+        ...     symbol="R", as_on_date="d",
+        ...     promoter_group_pct="6729.0", public_pct="3271.0",
+        ...     employee_trust_pct="0.0",
+        ... )
+        >>> h.to_normalized_pcts()
+        (67.29, 32.71, 0.0, 'x100')
+        """
+        promoter = self.to_float_promoter_group_pct()
+        public = self.to_float_public_pct()
+        trust = self.to_float_employee_trust_pct()
+        return _normalize_shareholding_pcts(promoter, public, trust)
+
+
+def _normalize_shareholding_pcts(
+    promoter: float | None,
+    public: float | None,
+    trust: float | None,
+) -> tuple[float | None, float | None, float | None, str]:
+    """Normalise promoter / public / employee_trust pct values to percentage form.
+
+    See :meth:`CorporateShareHolding.to_normalized_pcts` for the detection
+    rules and worked examples. Exposed as a module-level helper so
+    downstream code (notebooks, ETL scripts) can apply the same
+    normalisation to arbitrary triples without constructing a dataclass.
+    """
+    vals = [v for v in (promoter, public, trust) if v is not None]
+    if not vals:
+        return promoter, public, trust, "empty"
+
+    total = sum(vals)
+
+    # Already in percentage form; no scaling required.
+    if 99.0 <= total <= 101.0:
+        return promoter, public, trust, "percent"
+
+    # Percent × 100 form: divide by 100.
+    if 9900.0 <= total <= 10100.0:
+        scale = 1.0 / 100.0
+        fmt = "x100"
+    # Ratio form (0-1): multiply by 100.
+    elif 0.95 <= total <= 1.05:
+        scale = 100.0
+        fmt = "ratio"
+    else:
+        # Unknown format; leave untouched so callers can reject the record.
+        return promoter, public, trust, "unknown"
+
+    return (
+        promoter * scale if promoter is not None else None,
+        public * scale if public is not None else None,
+        trust * scale if trust is not None else None,
+        fmt,
+    )
+
 
 # =============================================================================
 # Module exports
