@@ -1,0 +1,1260 @@
+                                                                                                                                  Annexure - I
+                                                 Format of holding of specified securities
+
+
+1. Name of Entity: National Stock Exchange of India Limited
+2. Scrip Code/Name of Scrip/Class of Security: Equity Shares
+3. Share Holding Pattern Filed under: Reg. 31(1)(a)/Reg. 31(1)(b)/Reg.31(1)(c) for the quarter June 30, 2021
+      a. If under 31(1)(b) then indicate the report for Quarter ending
+      b. If under 31(1)(c) then indicate date of allotment/extinguishment
+
+4. Declaration: The Listed entity is required to submit the following declaration to the extent of submission of information: -
+
+          Particulars                                                                                 Yes*      No*
+     1    Whether the Listed Entity has issued any partly paid up shares?                                       No
+     2    Whether the Listed Entity has issued any Convertible Securities or Warrants?                          No
+     3    Whether the Listed Entity has any shares against which depository receipts are                        No
+          issued?
+     4    Whether the Listed Entity has any shares in locked-in?                                                No
+     5    Whether any shares held by promoters are pledged or otherwise encumbered?                             No
+
+   * If the Listed Entity selects the option „No‟ for the questions above, the columns for the partly paid up shares, Outstanding Convertible
+   Securities/Warrants, depository receipts, locked-in shares, No. of shares pledged or otherwise encumbered by promoters, as
+   applicable, shall not be displayed at the time of dissemination on the Stock Exchange website. Also, wherever there is “No’’ declared
+   by Listed Entity in above table the values will be considered as “Zero‟ by default on submission of the format of holding of specified
+   securities.
+
+5. The tabular format for disclosure of holding of specified securities is as follows: -
+                                                      Table I - Summary Statement holding of specified securities
+Category     Category of   Nos.           No. of        No No. of shares       Total       Sharehold          Number of Voting Rights held                   No. of Shareholding, as a     Number of          Number of          Number of
+  (I)        sharehol      shareh     fully paid up     .    underlying        nos.       ing as a %           in each class of securities                 Share % assuming full           Locked in            Shares             equity
+                 der       olders         equity        of                    shares      of total no.                                                   s          conversion of           shares            pledged or        shares held
+                 (II)        (III)     shares held     Par Depository         held         (calculated                        (IX)                       Underly Convertible securities                       otherwise              in
+                                           (IV)        tly  Receipts         (VII) =        per SCRR,                                                    ing          As a percentage of       (XII)         encumbered         dematerializ
+                                                       pai      (VI)       (IV)+(V)+            1957)                                                    Outstan      diluted share                              (XIII)           ed form
+                                                       d-                       (VI)            (VIII)                                                   ding            capital)
+                                                       equ                                  As a % of        No of Voting Rights              Total as   converti                          N         As a    No.        As a       (XIV)
+                                                       ity                                  (A+B+C2)                                          a          ble          (XI)= (VII)+(X)      o         % of    (a)        % of
+                                                       sha                                                Class eg: X     C   Total          % of          secur As a % of                 .         total              total
+                                                       re                                                                 l                  (A+B         ities         (A+B+C2)                     Shar              Share
+                                                          h                                                               a                  + C)         (inclu                           (         es                s held
+                                                         el                                                               s                               ding                             a         held                (b)
+                                                         d                                                                s                               Warra                            )         (b)
+                                                         (                                                                e                               nts)
+                                                         V                                                                g                                 (X)
+                                                         )
+
+
+  (A)      Promoter &                                                                                                                                                                                              -
+           Promoter
+                             -              -          -         -              -               -             -           -          -          -          -                -                   -                                    -
+           Group
+  (B)      Public*         1,109     26,42,67,901           -    -         26,42,67,901      53.39       26,42,67,901     -   26,42,67,901 53.39                -            -                   -                 -            26,42,67,901
+  (C)      Non               -              -               -    -              -               -             -           -          -          -               -            -                   -                 -                 -
+           Promoter-
+           Non Public
+ (C1)      Shares            -              -               -    -              -               -             -           -          -          -               -            -                   -                 -                 -
+           underlying
+           DRs
+ (C2)      Shares held       -              -               -    -              -               -             -           -          -          -               -            -                   -                 -                 -
+           by
+           Employee
+           Trusts
+
+ (C3)      Trading          181       23,07,32,099      -         -        23,07,32,099       46.61      23,07,32,099 -       23,07,32,099 46.61            -                -                   -                 -            23,07,32,099
+           Members
+           and
+           Associates
+           of Trading
+           Members
+           Total           1,290      49,50,00,000          -    -         49,50,00,000       100        49,50,00,000     -   49,50,00,000   100                -            -                   -                 -            49,50,00,000
+
+
+
+
+  *as per the meaning assigned to it under Securities Contracts (Regulation) (Stock Exchanges and Clearing Corporations) Regulations, 2018.
+                                               Table II - Statement showing shareholding pattern of the Promoter and Promoter Group: Not Applicable
+      Category & Name           PAN     No. of    No. of    Partly     Nos. of      Total    Sharehol    Number of Voting Rights held in        No. of    Shareholdin      Number of          Number of       Number of
+           of the                (II)   shareh     fully   paid-up     shares        nos.     ding %        each class of securities           Shares       g , as a %     Locked in            Shares          equity
+       Shareholders                      older     paid     equity   underlying    shares    calculate                 (IX)                 Underlying      assuming        shares            pledged or     shares held
+             (I)                          (III)      up    shares    Depository      held    d as per                                       Outstanding         full         (XII)            otherwise            in
+                                                  equity     held     Receipts      (VII =    SCRR,                                         Convertible    conversion                        encumbered      dematerializ
+                                                  share       (V)       (VI)      IV+V+VI)     1957                                          Securities          of                              (XIII)        ed form
+                                                  s held                                                 No. of Voting Rights    Total as    (including    convertible     No.       As a    No.     As a        (XIV)
+                                                    (IV)                                     As a % of                            a % of     Warrants)     securities (    (a)       % of    (a)     % of
+                                                                                             (A+B+C2)                              Total         (X)            as a                 total           total
+                                                                                               (VIII)    Class   Class    Tot     Voting                   percentage                Shar           share
+                                                                                                                                  rights                    of diluted                es            s held
+                                                                                                           X       Y       al
+                                                                                                                                                               share                 held              (b)
+                                                                                                                                                             capital)                 (b)
+                                                                                                                                                               (XI) =
+                                                                                                                                                          (VII)+(X) as a
+                                                                                                                                                                % of
+                                                                                                                                                             A+B+C2
+
+
+(1)   Indian                      -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(a)   Individuals/Hindu           -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+      undivided Family
+      Name (xyz…)                 -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(b)   Central Government/         -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+      State Government(s)
+
+      Name (xyz…)                 -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(c)   Financial Institutions/     -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+      Banks
+      Name (xyz…)                 -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(d)   Any Other (specify)         -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+      Name (xyz…)                 -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+      Sub-Total (A)(1)            -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(2)   Foreign                     -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(a)   Individuals (Non-           -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+      Resident
+      Individuals/
+      Foreign
+      Individuals)
+      Name (xyz…)                 -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(b)   Government                  -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+      Name (xyz…)                 -        -        -         -          -           -           -         -       -       -         -           -              -                -                 -              -
+(c)    Institutions                 -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+       Name (xyz…)                  -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+(d)    Foreign Portfolio            -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+       Investor
+       Name (xyz…)                  -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+(f)    Any Other (specify)          -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+       Name (xyz…)                  -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+       Sub-Total (A)(2)             -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+       Total                        -         -           -           -              -             -             -           -          -       -         -               -                -                -                 -        -
+       Shareholding of
+       Promoter and
+       Promoter Group
+       (A)= (A)(1)+(A)(2)
+                      Details of Shares which remain unclaimed may be given here along with details such as number of shareholders, outstanding shares held in demat/unclaimed suspense account, voting rights which are frozen etc.
+
+
+Note:
+(1) PAN would not be displayed on website of Stock Exchange(s).
+(2) The term “Encumbrance” has the same meaning as assigned under regulation 28(3) of SEBI (Substantial Acquisition of Shares and Takeovers) Regulations, 2011.
+                                                           Table III - Statement showing shareholding pattern of the Public shareholder
+         Category &          P       Nos.     No. of         Partly   Nos. of      Total      Shareh     Number of Voting Rights held in each class of       No. of      Total      Number of          Number of Shares            Number
+          Name of                A   of       fully          paid-     share       nos.       ol ding                      securities (IX)                   Shar     sharehold     Locked             pledged or                  of equity
+             the                 N   shar     paid up        up           s       shares         %                                                              es    in g , as a   in shares          otherwise                    shares
+         Shareholde              (   ehol     equity         equit    under      held VII      calc                                                           Und          %        (XII)              encumbered                   held in
+                                                                                    =           ula                                                                                                                               dematerial
+            rs (I)               I   der      shares         y         l ying                                                                                   erl   assuming                         (XIII)                     ized form
+                                 I   (III)    held (IV)      shar      Depo      IV+V+VI        te d                                                          ying        full                                                       (XIV)
+                                 )                           es           si                     as                   No of Voting Rights           Total     Out     conversio     No.       As a    (a)           As a
+                                                                                                per                                                 as a                            (a)       % of        No        % of
+                                                             held       tory                                                                        % of       sta        n of                total       .
+                                                             (V)       Recei                   SCR                                                            ndin    convertibl                                    total
+                                                                                                                                                    Total                                     Shar       (No
+                                                                        p ts                     R,       Class X            Cl          Tot al                  g         e                                       shares
+                                                                                                                                                    Votin                                      es       t
+                                                                         (VI)                   195                          as                       g       con     securities                                    held
+                                                                                                                              s                                                                hel      appl
+                                                                                                  7                                                 right      ver       (as a                                      (Not
+                                                                                                                             Y                        s                                         d       i
+                                                                                               As a                                                           tible   percentag                                    applica
+                                                                                               % of                                                                                            (b)      cabl
+                                                                                                                                                               sec        e of                                     ble) (b)
+                                                                                              (A+B+                                                                                                     e
+                                                                                                                                                               urit     diluted
+                                                                                              C2) VIII
+                                                                                                                                                               ies       share
+                                                                                                                                                              (incl    capital)
+                                                                                                                                                                ud        (XI)
+                                                                                                                                                               ing
+                                                                                                                                                              War
+                                                                                                                                                                ra
+                                                                                                                                                              nts)
+                                                                                                                                                               (X)
+B(1)    Institutions                                                                                                                                                                                           -
+
+(a)    Mutual Funds/             -      -         -            -           -         -           -            -               -             -        -         -           -              -                    -              -
+
+ (b)   Venture Capital           -     5     1,94,30,983       -           -    1,94,30,983    3.93      1,94,30,983              -   1,94,30,983   3.93       -           -              -                    -                  1,94,30,983
+           Funds
+       PI Opportunities          -     1     1,48,50,000       -           -    1,48,50,000    3.00      1,48,50,000          -       1,48,50,000   3.00       -           -              -                    -                  1,48,50,000
+           Fund-1
+
+ (c)       Alternate             -     1     11,75,000         -       -        11,75,000      0.24       11,75,000           -        11,75,000     0.24      -           -              -                    -                   11,75,000
+          Investment
+            Funds
+ (d)    Foreign Venture
+ (e)   Foreign Portfolio         -     4     1,76,79,205       -           -    1,76,79,205    3.57      1,76,79,205          -       1,76,79,205   3.57       -           -              -                    -                  1,76,79,205
+           Investors
+        Tiger global             -     1      66,00,000        -           -     66,00,000     1.33       66,00,000           -        66,00,000    1.33       -           -              -                    -                   66,00,000
+       Five holdings
+ (f)         Financial           -      -             -        -           -             -           -            -           -                 -        -     -           -              -                    -                       -
+       Institutions/ Banks
+ (g)    Insurance                -     4     1,92,75,000       -           -    1,92,75,000    3.89       1,92,75,000         -       1,92,75,000    3.89      -           -              -                    -                  1,92,75,000
+       Companies
+
+           National                    1       70,40,000       -           -     70,40,000     1.42       70,40,000           -       70,40,000      1.42      -           -              -                    -                   70,40,000
+          Insurance
+          Company
+            Limited
+        The Oriental          1      70,40,000    -       -         70,40,000    1.42      70,40,000     -       70,40,000       1.42    -   -       -       -        70,40,000
+         Insurance
+      Company Limited
+(h)   Provident Funds/        -         -         -       -            -           -           -         -            -          -       -   -       -       -             -
+       Pension Funds
+(i)        Trust              36    66,94,965         -       -   66,94,965      1.35      66,94,965         -    66,94,965      1.35    -       -       -       -    66,94,965
+
+      Any Other (specify)     36   13,15,91,142   -       -       13,15,91,142    26.58   13,15,91,142   -       13,15,91,142    26.58   -   -       -       -       13,15,91,142
+        Foreign Direct
+         Investment
+
+           Veracity           1     1,94,59,000   -       -        1,94,59,000    3.93     1,94,59,000   -         1,94,59,000   3.93    -   -       -       -        1,94,59,000
+         Investments
+            Limited
+
+
+            SAIF II SE        1     1,25,94,354   -       -        1,25,94,354    2.54     1,25,94,354   -         1,25,94,354   2.54    -   -       -       -        1,25,94,354
+      Investments Mauritius
+             Limited
+
+
+
+        Crown Capital         1    1,25,84,000    -       -       1,25,84,000     2.54    1,25,84,000    -       1,25,84,000     2.54    -   -       -       -       1,25,84,000
+           Limited
+
+
+
+
+        Acacia Banyan         1     1,23,75,000   -       -        1,23,75,000    2.50     1,23,75,000   -         1,23,75,000   2.50    -   -       -       -        1,23,75,000
+           Partners
+
+
+
+
+        TA Asia Pacific       1      11,547,217   -       -        11,547,217     2.33      11,547,217             11,547,217    2.33    -   -       -       -        11,547,217
+      Acquisitions Limited
+
+
+
+
+      DVI Fund (Mauritius)    1      99,00,000    -       -         99,00,000     2.00      99,00,000    -          99,00,000    2.00    -   -       -       -         99,00,000
+            Limited
+
+
+
+
+         TIMF Holdings        1      98,75,000    -       -         98,75,000     1.99      98,75,000    -          98,75,000    1.99    -   -       -       -         98,75,000
+
+
+
+
+      Canada pension plan     1      77,66,000    -       -         77,66,000     1.57      77,66,000               77,66,000    1.57    -   -       -       -         77,66,000
+       Investment Board
+      2726247 Ontario Inc     1      75,68,382    -       -         75,68,382     1.53      75,68,382               75,68,382    1.53    -   -       -       -         75,68,382
+
+
+       Rimco (Mauritius)      1      49,50,000    -       -         49,50,000     1.00      49,50,000    -          49,50,000    1.00    -   -       -       -         49,50,000
+           Limited
+        Sub-Total (B)(1)                          -       -                                              -                               -   -       -       -
+                              86   19,58,46,295                   19,58,46,295    39.56   19,58,46,295           19,58,46,295    39.56                               19,58,46,295
+
+(2)        Central            -         -         -       -            -          -            -         -            -          -       -   -       -       -             -
+      Government/ State
+       Government(s)/
+      President of India
+
+        Sub-Total (B)(2)      -         -         -       -            -          -            -         -            -          -       -   -       -       -             -
+ (3)     Non-institutions
+ (a)        Individuals -                                                -            -                                                         -
+          i. Individual
+       shareholders holding                                                                                       4.03                                                       4.03
+                                        843          1,99,43,481                                1,99,43,481                   1,99,43,481                 1,99,43,481                       -                  -   -
+       nominal share capital                                                                                                                                                                                           -   1,99,43,481
+         upto Rs. 2 lakhs.
+
+           ii. Individual
+       shareholders holding
+       nominal share capital                                                                    1,60,96,791                                               1,60,96,791        3.25
+                                                     1,60,96,791                                                  3.25        1,60,96,791                                                                                  1,60,96,791
+                                         16                              -            -                                                         -                                           -
+        in excess of Rs. 2                                                                                                                                                                                     -   -
+                 lakhs.                                                                                                                                                                                                -
+          Radhakishan S                  1            78,16,880          -            -          78,16,880        1.58        78,16,880         -         78,16,880          1.58           -                  -   -   -   78,16,880
+                 Damani
+
+ (b)     NBFCs registered                 -               -              -            -              -                 -          -             -              -               -            -                  -   -   -         -
+                                                                                                                              3,478,700
+            with RBI                                                                                                                                      3,478,700
+ (c)      Employee Trusts                 -               -              -            -              -                 -           -            -             -                -            -                  -   -   -         -
+
+ (d)       Overseas                       -               -              -            -              -                 -           -            -              -               -            -                  -   -   -        -
+       Depositories (holding
+         DRs) (balancing
+              figure)
+ (e)   Any Other (specify)               11          2,09,052            -            -         2,09,052          0.04          2,09,052        -           2,09,052         0.04           -                  -   -   -   2,09,052
+               HUF
+             Bodies                     147         1,65,17,282          -            -         1,65,17,282           3.34    1,65,17,282       -         1,65,17,282         3.34          -                  -   -   -   1,65,17,282
+       Corporates(Unlisted
+                 )
+             Bodies                      6          1,56,55,000          -            -         1,56,55,000           3.16    1,56,55,000       -         1,56,55,000         3.16          -                  -   -   -   1,56,55,000
+        Corporates(Listed)
+       General Insurance                 1           81,40,000           -            -          81,40,000            1.64     81,40,000        -         81,40,000           1.64          -                  -   -   -   81,40,000
+       Corporation of India
+
+          The New India                  1           70,40,000           -            -          70,40,000            1.42     70,40,000        -         70,40,000           1.42          -                  -       -   70,40,000
+       Assurance Company
+             Limited
+
+
+
+          Sub-Total (B)(3)              1023        6,84,21,606          -            -         6,84,21,606           13.83   6,84,21,606       -          6,84,21,606        13.83         -                  -   -   -   6,84,21,606
+
+            Total Public                1109        26,42,67,901         -            -        26,42,67,901           53.39   26,42,67,901      -         26,42,67,901        53.39         -                  -   -   -   26,42,67,901
+         Shareholding (B)=
+        (B)(1)+(B)(2)+(B)( 3)
+
+
+ Details of the shareholders acting as persons in Concert including their Shareholding (No. and %): See Table Below
+
+
+ Details of Shares which remain unclaimed may be given here along with details such as number of shareholders, outstanding shares held in demat/unclaimed suspense account, voting rights which are frozen etc.
+
+
+ (1) Note:
+ (2) PAN would not be displayed on website of Stock Exchange(s).
+ (3) The above format needs to be disclosed along with the name of following persons: Institutions/Non Institutions holding more than 1% of total number of shares.
+ (4) W.r.t. the information pertaining to Depository Receipts, the same may be disclosed in the respective columns to the extent information available and the balance to be disclosed as held by custodian.
+
+NOTE: Number of shares available in the non-public category is 1,18,17,901. Number of shares available for acquisition by persons resident outside
+India is 1,00,32,715 (2.03 %). However, the above is subject to FDI policy, RBI and SEBI Regulations currently in force
+                                      Table IV - Statement showing shareholding pattern of the Non Promoter- Non Public shareholder
+       Category & Name        PAN      No. of   No. of         Partly    Nos. of   Total no.     Share         Number of Voting Rights held in                No. of        Total      Number of             Number        Number of
+            of the             (II)    share     full         paid-      shares     shares       h                each class of securities                   Shares     shareholdin    Locked in                of            equity
+         Shareholders                    h       y            equit     underlyi     held          ding                       (IX)                         Underlying    g , as a %     shares               Shares        shares held
+              (I)                      older     pai          share        ng        (VII =      calcul                                                    Outstandin    assuming        (XII)             pledged or           in
+                                        (III)    d            held      Deposito   IV+V+VI)      a d as                                                         g            full                           otherwise      dematerializ
+                                                     u        (V)          ry                      SCR                                                     convertibl   conversion                        encumbere       ed form (XIV)
+                                                p                       Receipts                    195     No of Voting Rights             Total as            e             of       No.       As a    No. d (XIII)
+                                                                                                                                                                                                                  As a         (Not
+                                                equit                     (VI)                      7                                        a % of        securities   convertible              % of     (       % of     Applicable)
+                                                y                                                As a                                         Total        (including   securities (             total    N       total
+                                                share                                            %        Class X        Clas Tot al         Voting        Warrants)         as a                Shar     o      share
+                                                s                                                (A+B                        s               rights            (X)      percentage                es      t     s held
+                                                held                                             +                           Y                                           of diluted              held     a       (Not
+                                                  (IV)                                              (VIII                                                                  share                          p      applic
+                                                                                                    )                                                                     capital)                        p      able)
+                                                                                                                                                                             (XI)                         li
+                                                                                                                                                                                                          c
+                                                                                                                                                                                                          a
+                                                                                                                                                                                                          b
+                                                                                                                                                                                                           l
+                                                                                                                                                                                                          e
+                                                                                                                                                                                                          )
+
+(1)    Custodian/DR                                                                                                                                                                                            N
+       Holder
+                               -            -       -           -           -           -          -          -           -        -           -               -             -               -                 A                -
+(a)    Name of                                                                                                                                                                                                 N
+       DR Holder
+                               -            -       -           -           -           -          -          -           -        -           -               -             -               -                 A
+                                                                                                                                                                                                                                -
+       (if available)
+(i)    abc,.,..                                                                                                                                                                                                N
+                               -         -          -           -           -           -          -          -           -        -           -               -             -               -                 A                -
+(ii)   efg….                                                                                                                                                                                                   N
+                               -         -          -           -           -           -          -          -           -        -           -               -             -               -                 A                -
+(2)    Employee Benefit                                                                                                                                                                                        N
+       Trust (under
+                               -         -          -           -           -           -          -          -           -        -           -       -       -             -               -                 A                -
+       SEBI (Share
+       based Employee
+       Benefit)
+       Regulations,
+       2014)
+(a)    Name (abc…                                                                                                                                                                                              N
+                               -        -           -           -           -           -          -          -           -        -           -       -        -            -               -                 A                -
+3      Trading Members
+       and Associates of
+       Trading Members
+       Corporates                      36       5,27,14,840     -                  5,27,14,840   10.65   5,27,14,840                         10.65                                                                         5,27,14,840
+                               -                                           -                                              -        -                   -       -             -               -                  -
+
+       Stock Holding                    1       2,20,00,000     -                  2,20,00,000   4.44    2,20,00,000                          4.44                                                                         2,20,00,000
+       Corporation of India    -                                           -                                              -        -                           -             -               -                  -
+       Limited
+       SBI Capital Markets              1       2,14,50,000     -                  2,14,50,000   4.33    2,14,50,000                          4.33                                                                         2,14,50,000
+       Limited                 -                                           -                                              -        -                           -             -               -                  -
+       Financial                           6       2,28,05,946         -            -         2,28,05,946      4.61    2,28,05,946       -         -        4.61       -   -       -       -        2,28,05,946
+       Institutions/Banks
+
+
+       State Bank of India                 1       1,59,69,410         -                     1,59,69,410      3.23     1,59,69,410                         3.23                                     1,59,69,410
+                                 -                                                 -                                                    -         -                -       -       -       -
+
+                FDI                        26      5,84,96,938                               5,84,96,938     11.82     5,84,96,938                         11.82                                   5,84,96,938
+                                 -                                    -            -                                                    -         -                -       -       -       -
+
+          MS Strategic                     1       1,39,50,000                               1,39,50,000      2.82     1,39,50,000                         2.82                                    1,39,50,000
+       (Mauritius) Limited,      -                                    -            -                                                    -         -                -       -       -       -
+           Mauritius
+         Citigroup Strategic               1        8,128,570                                 8,128,570       1.64      8,128,570                          1.64                                     8,128,570
+             Holdings            -                                    -            -                                                    -         -                -       -       -       -
+        Mauritius Limited,
+             Mauritius
+            FIH Mauritius                  1        50,10,500                                 50,10,500       1.01      50,10,500                          1.01                                     50,10,500
+        Investments Limited      -                                    -            -                                                    -         -                -       -       -       -
+
+          GS Strategic                     1        49,50,000                                 49,50,000       1.00      49,50,000                          1.00                                     49,50,000
+       Investments Limited,      -                                    -            -                                                    -         -                -       -       -       -
+             Mauritius
+
+                FPI                        1       2,47,50,000                               2,47,50,000      5.00     2,47,50,000                         5.00                                    2,47,50,000
+                                 -                                    -            -                                                    -         -                -       -       -       -
+        Aranda Investments                 1       2,47,50,000                               2,47,50,000      5.00     2,47,50,000                         5.00                                    2,47,50,000
+        (Mauritius) Pte. Ltd.    -                                    -            -                                                    -         -                -       -       -       -
+
+          Insurance                            4   6,11,51,750                               6,11,51,750     12.35     6,11,51,750                         12.35                                   6,11,51,750
+          Company                -                                    -            -                                                    -         -                -       -       -       -
+
+        Life Insurance                         1   5,30,55,000                               5,30,55,000     10.72     5,30,55,000                         10.72                                   5,30,55,000
+        Corporation of           -                                    -            -                                                    -         -                -       -       -       -
+              India
+
+       Venture Capital                         3    52,71,559          -                      52,71,559       1.06      52,71,559                          1.06                                     52,71,559
+           Funds                 -                                                 -                                                    -         -                -       -       -       -
+
+            Individuals                     105                        -            -         55,41,066       1.12      55,41,066        -        -        1.12    -       -       -       -        55,41,066
+                                 -                  55,41,066
+
+
+      Total Non- Promoter-        -         181    23,07,32,099            -            -   23,07,32,099     46.61    23,07,32,099           -        -    46.61       -       -       -       -   23,07,32,099
+           Non Public
+       Shareholding (C)=
+          (C)(1)+(C)(2)
+
+Note
+(1) PAN would not be displayed on website of Stock Exchange(s).
+(2) The above format needs to disclose name of all holders holding more than 1% of total number of shares
+(3) W.r.t. the information pertaining to Depository Receipts, the same may be disclosed in the respective columns to the extent information is available
+                                             Table V- Statement showing details of significant beneficial owners
+Sr .No   Details of the significant beneficial owner       Details of the registered owner       Particulars of the shares in         Date of creation / acquisition of significant beneficial interest
+                                                                                                 which significant beneficial
+                                                                                                 interest is held by the beneficial
+                                                                                                 owner
+                           (I)                                       (II)                                          (III)                                               (IV)
+
+
+          Name             PAN             Nationality   Name       PAN           Nationality    Number of        Shareholding as
+                                                                                                 shares           a % of total no.
+                                                                                                                  of shares
+                                                                                                                  (calculated as
+                                                                                                                  per SCRR, 1957)
+                                                                                                                  As a % of
+                                                                                                                  (A+B+C2)
+                                                                                                NIL
+      Persons acting in concert
+
+Sr.           Name of the                   Category             Total holding                             Acting in concert with                                  Category of                 Total Holding of
+No.           shareholder                   of                                                                                                                     shareholder            shareholder along with
+                                            sharehold                                                                                                                                   Person(s) acting in concert
+                                            er            No. Of         % (rounded                                                                                                      No. of          % (rounded
+  (1)                   (2)                    (3)       shares               off to 2                                 (6)                                             (7)                shares            off to 2
+                                                           (4)               decimals)                                                                                                  [8=no. of          decimals
+                                                                                (5)                                                                                                     shares of             ) (9)
+                                                                                                                                                                                         persons
+                                                                                                                                                                                       covered in
+                                                                                                                                                                                       column (6)
+                                                                                                                                                                                             ]
+  1.             MSPL Limited                Public      21,61,500                0.44   Barclays Wealth Trustees (India)Private Limited - C/o Gravity Family          Public            24,75,000           0.50
+                                                                                                                        Trust
+  2.       Barclays Wealth Trustees          Public      24,75,000                0.50                              MSPL Limited                                       Public           21,61,500          0.44
+          (India)Private Limited - C/o
+              Gravity Family Trust
+  3.           State Bank of India         Trading      1,59,69,410               3.23      SBI Capital Markets Limited, SBI Life Insurance Company Limited        Associate of        2,30,91,750         4.66
+                                          Member                                                                                                                 Trading Member
+  4.        SBI   Life   Insurance       Associate of    16,41,750               0.33                             State Bank of India,                            Trading Member       37,419,410          7.56
+               Company Limited           Trading
+                                         Member                                                             SBI Capital Markets Limited                         Associate of Trading
+                                                                                                                                                                     Member
+
+  5.        SBI Capital Markets          Associate      2,14,50,000              4.33                             State Bank of India,                           Trading Member        1,76,11,160         3.56
+                  Limited                of Trading
+                                          Member                                                                 SBI   Life Insurance                              Associate of
+                                                                                                                   Company Limited                               Trading Member
+  6.             HDFC Limited            Associate of   8,11,250                 0.16                   HDFC Life Insurance Company Limited                        Associate of        24,75,000           0.50
+                                           Trading                                                                                                               Trading Member
+                                          Member
+  7.               HDFC Life             Associate of   24,75,000                0.50                                HDFC Limited                                  Associate of         8,11,250           0.16
+           Insurance       Company         Trading                                                                                                               Trading Member
+                    Limited               Member
+  8.           ICICI Bank Limited          Trading       2,629                   0.00             ICICI Lombard General Insurance Company Limited                    Associate of      39,80,000           0.80
+                                          Member                                                                                                                 Trading Member
+  9.         ICICI Lombard General       Associate of   39,80,000                0.80                             ICICI Bank Limited                              Trading Member         2,629             0.00
+           Insurance      Company          Trading                                                                                                              of Trading Member
+                    Limited               Member
+  10.           Mr. Kulbandhu R             Public      1,41,000                 0.03    Mr. Vineet Kulbandhu Sharma, Mr. Pavan Sharma, Ms Vibha Sharma &             Public            3,68,736           0.07
+                     Sharma                                                                                     Ms.Vandana Sharma
+  11.        Mr. Vineet Kulbandhu           Public         1,95,536              0.04      Mr. Kulbandhu R Sharma Mr. Pavan Sharma, Ms Vibha Sharma &                 Public            3,14,200           0.06
+                     Sharma                                                                                     Ms.Vandana Sharma
+  12.          Mr. Pavan R Sharma           Public          16291                0.00     Mr. Kulbandhu R Sharma Mr. Vineet R Sharma, Ms Vibha Sharma &               Public            493,445            0.10
+                                                                                                                Ms.Vandana Sharma
+  13.         Ms. Vibha P Sharma            Public          16291                0.00     Mr. Kulbandhu R Sharma Mr. Vineet R Sharma, Mr Pavan Sharma &               Public            493,445            0.10
+                                                                                                                Ms.Vandana Sharma
+14.        Ms. Vandana K Sharma           Public          140618   .0.03       Mr. Kulbandhu R Sharma Mr. Vineet R Sharma, Mr Pavan Sharma &                   Public           369,118      0.07
+                                                                                                        Ms.Vibha Sharma
+15.           Mr. Ketan Kothari        Associate of     82,500     0.02                        1.Mr. Mukesh Manekchand Kothari                          Associate of Trading    1,65,000     0.03
+                                         Trading                                                  2.Mr. Vivek Prithviraj Kothari                             Member
+16.       Mr. Mukesh Manekchand         Memberof
+                                       Associate        82,500     0.02                                1.Mr. Ketan Kothari                              Associate of Trading    1,65,000     0.03
+                    Kothari              Trading                                                  2.Mr. Vivek Prithviraj Kothari                             Member
+17.           Mr. Vivek Prithviraj          of of
+                                        Member
+                                       Associate        82,500     0.02                        1.Mr. Mukesh Manekchand Kothari                          Associate of Trading    1,65,000     0.03
+                    Kothari              Trading
+                                         Trading                                                       2.Mr. Ketan Kothari                                   Member
+                                        Member
+                                            of
+                                        Member
+18.       IIFL Special Opportunities   Associate of    43,53,946    0.88     IIFL Special Opportunities Fund – Series 2, IIFL Special Opportunities     Associate of Trading   1,92,13,149   3.88
+                     Fund                Trading
+                                         Trading                            Fund – Series 3, IIFL Special Opportunities Fund - Series 4, IIFL Special        Member
+                                        Member
+                                            of
+                                        Member                             Opportunities Fund - Series 5, IIFL Special Opportunities Fund - Series 6,
+                                         Trading                            IIFL Special Opportunities Fund - Series 7, IIFL Securities Limited, High
+                                        Member                             Conviction Fund- Series 1, IIFL High Growth Companies Fund, IIFL India
+                                                                                                 Private Equity Fund Series 1A.
+
+19.       IIFL Special Opportunities   Associate of    29,82,806    0.60   IIFL Special Opportunities Fund , IIFL Special Opportunities Fund – Series Associate of Trading     2,05,84,289   4.16
+                Fund – Series 2          Trading                             3, IIFL Special Opportunities Fund - Series 4, IIFL Special Opportunities     Member
+                                        Member                               Fund - Series 5, IIFL Special Opportunities Fund - Series 6, IIFL Special
+                                                                             Opportunities Fund - Series 7, IIFL Securities Limited, High Conviction
+                                                                              Fund- Series 1, IIFL High Growth Companies Fund, IIFL India Private
+                                                                                                      Equity Fund Series 1A.
+
+20.       IIFL Special Opportunities   Associate of    14,06,111    0.28   IIFL Special Opportunities Fund, IIFL Special Opportunities Fund – Series Associate of Trading      2,21,60,984   4.48
+                Fund – Series 3          Trading                            2, IIFL Special Opportunities Fund - Series 4, IIFL Special Opportunities     Member
+                                        Member                               Fund - Series 5, IIFL Special Opportunities Fund - Series 6, IIFL Special
+                                                                             Opportunities Fund - Series 7, IIFL Securities Limited, High Conviction
+                                                                              Fund- Series 1, IIFL High Growth Companies Fund, IIFL India Private
+                                                                                                      Equity Fund Series 1A.
+
+
+21.   IIFL Special Opportunities Fund - Associate of   42,62,644    0.86   IIFL Special Opportunities Fund , IIFL Special Opportunities Fund – Series Associate of Trading     1,93,04,451   3.90
+                   Series 4               Trading                            2, IIFL Special Opportunities Fund – Series 3, IIFL Special Opportunities     Member
+                                         Member                               Fund - Series 5, IIFL Special Opportunities Fund - Series 6, IIFL Special
+                                                                              Opportunities Fund - Series 7, IIFL Securities Limited, High Conviction
+                                                                               Fund- Series 1, IIFL High Growth Companies Fund, IIFL India Private
+                                                                                                       Equity Fund Series 1A.
+22.   IIFL Special Opportunities Fund - Associate of   33,95,956    0.67   IIFL Special Opportunities Fund , IIFL Special Opportunities Fund – Series Associate of Trading     2,01,71,139   4.07
+                   Series 5               Trading                            2, IIFL Special Opportunities Fund – Series 3, IIFL Special Opportunities     Member
+                                         Member                              Fund - Series 4, , IIFL Special Opportunities Fund - Series 6, IIFL Special
+                                                                              Opportunities Fund - Series 7, IIFL Securities Limited, High Conviction
+                                                                               Fund- Series 1, IIFL High Growth Companies Fund, IIFL India Private
+                                                                                                       Equity Fund Series 1A.
+
+
+23.   IIFL Special Opportunities Fund - Associate of    59,167      0.01     IIFL Special Opportunities Fund – Series 2, IIFL Special Opportunities     Associate of Trading   2,35,07,928   4.75
+                   Series 6               Trading                           Fund – Series 3, IIFL Special Opportunities Fund - Series 4, IIFL Special        Member
+                                         Member                               Opportunities Fund - Series 5, IIFL Special Opportunities Fund, IIFL
+                                                                               Special Opportunities Fund - Series 7, IIFL Securities Limited, High
+                                                                           Conviction Fund- Series 1, IIFL High Growth Companies Fund, IIFL India
+                                                                                                 Private Equity Fund Series 1A.
+24.   IIFL Special Opportunities Fund - Associate of   35,17,465     0.71       IIFL Special Opportunities Fund – Series 2, IIFL Special Opportunities   Associate of Trading   2,00,49,630   4.05
+                   Series 7               Trading                              Fund – Series 3, IIFL Special Opportunities Fund - Series 4, IIFL Special      Member
+                                         Member                              Opportunities Fund - Series 5, IIFL Special Opportunities Fund - Series 6,
+                                                                             IIFL Special Opportunities Fund -, IIFL Securities Limited, High Conviction
+                                                                                 Fund- Series 1, IIFL High Growth Companies Fund, IIFL India Private
+                                                                                                         Equity Fund Series 1A.
+
+
+
+25.          IIFL Securities Ltd         Trading         30,000      0.01    IIFL Special Opportunities Fund , IIFL Special Opportunities Fund – Series Associate of Trading    2,35,37,095   4.75
+                                         Member                                2, IIFL Special Opportunities Fund – Series 3, IIFL Special Opportunities     Member
+                                                                                Fund - Series 4, IIFL Special Opportunities Fund - Series 5, IIFL Special
+                                                                             Opportunities Fund - Series 6, IIFL Special Opportunities Fund - Series 7,
+                                                                               High Conviction Fund- Series 1, IIFL High Growth Companies Fund, IIFL
+                                                                                                  India Private Equity Fund Series 1A.
+
+
+26.   High Conviction Fund- Series 1    Associate of    1,50,000     0.03    IIFL Special Opportunities Fund , IIFL Special Opportunities Fund – Series Associate of Trading    2,34,17,095   4.73
+                                          Trading                              2, IIFL Special Opportunities Fund – Series 3, IIFL Special Opportunities     Member
+                                         Member                                 Fund - Series 4, IIFL Special Opportunities Fund - Series 5, IIFL Special
+                                                                             Opportunities Fund - Series 6, IIFL Special Opportunities Fund - Series 7,
+                                                                              Securities Limited, IIFL High Growth Companies Fund, IIFL India Private
+                                                                                                         Equity Fund Series 1A.
+
+
+27.     IIFL High Growth Companies      Associate of    3,00,000     0.06    IIFL Special Opportunities Fund , IIFL Special Opportunities Fund – Series Associate of Trading    2,32,67,095   4.70
+                    Fund                  Trading                              2, IIFL Special Opportunities Fund – Series 3, IIFL Special Opportunities     Member
+                                         Member                                 Fund - Series 4, IIFL Special Opportunities Fund - Series 5, IIFL Special
+                                                                             Opportunities Fund - Series 6, IIFL Special Opportunities Fund - Series 7,
+                                                                              High Conviction Fund- Series 1, IIFL Securities Limited, IIFL India Private
+                                                                                                         Equity Fund Series 1A.
+
+
+28.    IIFL India Private Equity Fund   Associate of   31,09,000     0.63    IIFL Special Opportunities Fund , IIFL Special Opportunities Fund – Series Associate of Trading    2,04,58,095   4.13
+                  Series 1A.              Trading                              2, IIFL Special Opportunities Fund – Series 3, IIFL Special Opportunities     Member
+                                         Member                                 Fund - Series 4, IIFL Special Opportunities Fund - Series 5, IIFL Special
+                                                                             Opportunities Fund - Series 6, IIFL Special Opportunities Fund - Series 7,
+                                                                               High Conviction Fund- Series 1, IIFL High Growth Companies Fund, IIFL
+                                                                                                           Securities Limited
+
+
+29.      IDBI Trusteeship Services      Associate of    9,90,000     0.20                       Life Insurance Corporation of India                       Trading Member        5,30,55,000   10.72
+                  Limited                 Trading
+                                         Member
+30.    Life Insurance Corporation of    Associate of   5,30,55,000   10.72                      IDBI Trusteeship Services Limited                       Associate of Trading     9,90,000     0.20
+                   India                  Trading                                                                                                            Member
+                                         Member
+31.      Moraine Master Fund LP            Public      14,42,998     0.29                              FO Mauritius III Ltd                                                      360,749      0.07
+                                                                                                                                                               Public
+
+32.         FO Mauritius III Ltd           Public       360,749      0.07                            Moraine Master Fund LP                                     Public          14,42,998     0.29
+33.     Ms.Mridula Jaysinh Kapadia        Public      23,650        0.00                         Mr. Ameet Jaysinh Kapadia                                 Public           23,650       0.00
+
+
+34.     Mr. Ameet Jaysinh Kapadia         Public      23,650        0.00                        Ms.Mridula Jaysinh Kapadia                                 Public           23,650       0.00
+
+
+
+35.   Mr. Viren Navinchandra Gandhi       Public      10,527        0.00     Mr. Navinchandra Premchand Gandhi & Mr. Darshan Navinchandra                  Public           21,054        0.00
+       & Mr. Darshan Navinchandra                                                                       Gandhi,
+                  Gandhi                                                    Mr. Darshan Navinchandra Gandhi and Mrs. Manisha Darshan Gandhi
+36.   Mr. Navinchandra Premchand          Public      10,527        0.00    Mr. Viren Navinchandra Gandhi & Mr. Darshan Navinchandra Gandhi,               Public           21,054        0.00
+          Gandhi & Mr. Darshan                                              Mr. Darshan Navinchandra Gandhi and Mrs. Manisha Darshan Gandhi
+           Navinchandra Gandhi
+
+
+
+37.     Mr. Darshan Navinchandra          Public      10,527        0.00    Mr. Viren Navinchandra Gandhi & Mr. Darshan Navinchandra Gandhi,               Public           21, 054       0.00
+        Gandhi and Mrs. Manisha                                              Mr. Navinchandra Premchand Gandhi & Mr. Darshan Navinchandra
+             Darshan Gandhi                                                                             Gandhi,
+
+
+
+38.    Mr. Rajesh Mannalal Agrawal        Public      44,736        0.01                       Mr. Yogesh Mannalal Agrawal                                 Public             44,736    0.01
+
+
+39.    Mr. Yogesh Mannalal Agrawal        Public      44,736        0.01                        Mr. Rajesh Mannalal Agrawal                                Public             44,736    0.01
+
+
+40.       Mr. Suman Kant Munjal           Public      55,249        0.01    Mr.Sunil Kant Munjal (holds shares on behalf of M/s Hero Enterprise            Public           23,37,000   0.47
+                                                                                          Venture Partners in capacity as Partner)
+41.      Mr.Sunil Kant Munjal (holds      Public      23,37,000     0.47                          Mr. Suman Kant Munjal                                    Public             55,249    0.01
+        shares on behalf of M/s Hero
+       Enterprise Venture Partners in
+            capacity as Partner)
+
+42.        Edelweiss Alternative     Associate of       37,09,924   0.74       Edelweiss Alternative Investment Opportunities Trust-Edelweiss        Associate of Trading   15,65,635     0.32
+      Investment Opportunities Trust   Trading                                            Crossover Opportunities Fund – Series II,                       Member
+           - Edelweiss Crossover      Member                               Edelweiss Multi Strategy Investment Trust –Edelweiss Alternative Equity
+            Opportunities Fund                                                 Scheme & Edeweiss Securities and Investments Private Limited.
+
+
+
+43.        Edelweiss Alternative       Associate of     12,75,920   0.26      Edelweiss Alternative Investment Opportunities Trust - Edelweiss       Associate of Trading   39,99,639     0.81
+      Investment Opportunities Trust-    Trading                           Crossover Opportunities Fund and Edelweiss Multi Strategy Investment           Member
+            Edelweiss Crossover         Member                             Trust –Edelweiss Alternative Equity Scheme & Edeweiss Securities and
+        Opportunities Fund – Series II                                                          Investments Private Limited.
+44.     Edelweiss Multi Strategy       Associate of   2,85,715   0.06     Edelweiss Alternative Investment Opportunities Trust - Edelweiss        Associate of Trading   49,89,844   1.00
+      Investment Trust –Edelweiss        Trading                          Crossover Opportunities Fund, Edelweiss Alternative Investment               Member
+       Alternative Equity Scheme        Member                          Opportunities Trust-Edelweiss Crossover Opportunities Fund – Series II
+                                                                               & Edeweiss Securities and Investments Private Limited.
+
+
+
+
+45.     Edelweiss Securities and       Associate of    4,000     0.00     Edelweiss Alternative Investment Opportunities Trust - Edelweiss        Associate of Trading   52,71,559   1.06
+         Investments Pvt. Ltd.           Trading                          Crossover Opportunities Fund, Edelweiss Alternative Investment               Member
+                                        Member                          Opportunities Trust-Edelweiss Crossover Opportunities Fund – Series II,
+                                                                         & Edelweiss Multi Strategy Investment Trust –Edelweiss Alternative
+                                                                                                   Equity Scheme.
+
+
+
+
+46.       Mr Sunil Kumar Gupta         Associate of    2,000     0.00                              Ms. Jyoti Singhal                                    Public            11,000     0.00
+                                         Trading
+                                        Member
+
+47.         Ms. Jyoti singhal            Public       11,000     0.00                           Mr Sunil Kumar Gupta                              Associate of Trading    2,000      0.00
+                                                                                                                                                       Member
+
+
+48.     Mr Hemant Kumar Goyal            Public        5,000     0.00                          Mr Hitesh Kumar Goyal                                    Public            5,000      0.00
+
+
+
+49.      Mr Hitesh kumar Goyal           Public        5,000     0.00                          Mr Hemant kumar Goyal                                    Public            5,000      0.00
+
+
+
+50.        Ms. Ritika Sachdeva           Public        5,555     0.00                           Ms. Madhu Sachdeva                                      Public            10,800     0.00
+
+
+
+51.       Ms. Madhu Sachdeva             Public       10,800     0.00                            Ms. Ritika Sachdeva                                    Public            5,555      0.00
+
+
+
+52.     Venktesh Investment and          Public       55,204     0.01                       Vijaykumar Bajrangilal Taparia                              Public            12,200     0.00
+        Trading Company Pvt Ltd
+
+
+53.   Vijaykumar Bajrangilal Taparia     Public       12,200     0.00             Venktesh Investment and Trading Company Pvt Ltd                       Public            55,204     0.01
+54.      Mr. Vinod Inderlal Jessani     Public      16,666     0.00                         Payal V Jessani                            Public           5,555     0.00
+
+
+
+55.           Payal V Jessani           Public       5,555     0.00                    Mr. Vinod Inderlal Jessani                      Public          16,666     0.00
+
+
+
+56.           Nikhil Agarwal            Public       5,555     0.00                    Narendra Kumar Agarwal                          Public          11,111     0.00
+
+
+
+57.      Narendra Kumar Agarwal         Public      11,111     0.00                         Nikhil Agarwal                             Public           5,555     0.00
+
+
+
+58.            Aditya Gupta             Public       5,555     0.00                          Nidhi Gupta                               Public           5,555     0.00
+
+
+
+59.            Nidhi Gupta              Public       5,555     0.00                          Aditya Gupta                              Public           5,555     0.00
+
+
+
+60.             Asha Apte               Public      11,110     0.00                  Ravindra C Apte & Asha R Apte                     Public          11,110     0.00
+
+
+
+61.   Ravindra C Apte & Asha R Apte     Public      11,110     0.00                           Asha Apte                                Public          11,110     0.00
+
+
+
+62.     Chaitanya Narendra Desai        Public      25,000     0.01                     Kushal Narendra Desai                          Public          25,000     0.01
+
+
+
+63.       Kushal Narendra Desai         Public      25,000     0.01                    Chaitanya Narendra Desai                        Public          25,000     0.01
+
+
+
+64.         Paulastya Sachdev           Public      35,000     0.01                        Yodhan Sachdev                              Public          65,000     0.02
+
+
+
+65.          Yodhan Sachdev             Public      65,000     0.01                       Paulastya Sachdev                            Public          35,000     0.01
+
+
+
+66.   Kalpraj Damji Dharamshi & Hina Associate of   1,00,000   0.02    HEMANG RAICHAND DHARAMSHI & HARSHA HEMANG DHARAMSHI      Associate of Trading   4,00,000   0.08
+             Kalpraj Dharamshi         Trading                        RAVINDRA RAICHAND DHARAMSHI & RUPALI RAVINDRA DHARAMSHI        Member
+                                      Member
+67.   Hemang Raichand Dharamshi & Associate of       2,00,000   0.04       KALPRAJ DAMJI DHARAMSHI & HINA KALPRAJ DHARAMSHI              Associate of Trading   3,00,000   0.06
+        Harsha Hemang Dharamshi     Trading                            RAVINDRA RAICHAND DHARAMSHI & RUPALI RAVINDRA DHARAMSHI                Member
+                                   Member
+
+68.   Ravindra Raichand Dharamshi & Associate of     2,00,000   0.04      KALPRAJ DAMJI DHARAMSHI & HINA KALPRAJ DHARAMSHI               Associate of Trading   3,00,000   0.06
+        RupalI Ravindra Dharamshi     Trading                          HEMANG RAICHAND DHARAMSHI & HARSHA HEMANG DHARAMSHI                    Member
+                                     Member
+
+69.         Manish Chokhani           Associate of   25,000     0.01    Vibhav Chokhani, Yogita Chokhani, Manish Chokhani on behalf of   Associate of Trading   2,75,000   0.06
+                                        Trading                                                  Jupiter Trust                                Member
+                                       Member
+
+70.          Vibhav Chokhani          Associate of   50,000     0.01    Manish Chokhani, Yogita Chokhani, Manish Chokhani on behalf of   Associate of Trading   2,50,000   0.05
+                                        Trading                                                  Jupiter Trust                                Member
+                                       Member
+
+71.          Yogita Chokhani          Associate of   50,000     0.01    Manish Chokhani, Vibhav Chokhani, Manish Chokhani on behalf of   Associate of Trading   2,50,000   0.05
+                                        Trading                                                  Jupiter Trust                                Member
+                                       Member
+
+72.    Manish Chokhani on behalf of   Associate of   1,75,000   0.04          Vibhav Chokhani, Yogita Chokhani, Manish Chokhani          Associate of Trading   1,25,000   0.03
+               Jupiter Trust            Trading                                                                                               Member
+                                       Member
+
+73.   Kumud Dedhia & Ketan Dedhia Associate of        5,000     0.00            Ketan Chaganlal Dedhia & Kumud Ketan Dedhia              Associate of Trading    5,000     0.00
+                                    Trading                                                                                                   Member
+                                   Member
+
+74.     Ketan Chaganlal Dedhia &      Associate of    5,000     0.00                    Kumud Dedhia & Ketan Dedhia                      Associate of Trading    5,000     0.00
+          Kumud Ketan Dedhia            Trading                                                                                               Member
+                                       Member
+
+75.         Paulastya Sachdev           Public       35,000     0.01                    Yodhan Sachdev, Rita Sachdeva                           Public          65,000     0.01
+
+
+
+76.          Yodhan Sachdev             Public       40,000     0.01                  Paulastya Sachdev & Rita Sachdeva                         Public          60,000     0.01
+
+
+
+77.           Rita Sachdeva             Public       25,000     0.01                 Yodhan Sachdev , Paulastya Sachdev                         Public          75,000     0.01
+
+
+
+78.     Chaitanya Narendra Desai        Public       25,000     0.01                        Kushal Narendra Desai                               Public          25,000     0.01
+
+
+
+79.       Kushal Narendra Desai         Public       25,000     0.01                      Chaitanya Narendra Desai                              Public          25,000     0.01
+80.   Rashesh Manharbhai Bhansali      Public   50,000     0.01                      ANMOL RASHESH BHANSALI                            Public   50,000     0.01
+
+
+
+81.     Anmol Rashesh Bhansali         Public   50,000     0.01                   RASHESH MANHARBHAI BHANSALI                          Public   50,000     0.01
+
+
+
+82.      Tejas Nanubhai Majithia       Public   1,33,800   0.03     RAJENDRA NANUBHAI MAJITHIA, KAUSHIK NANUBHAI MAJITHIA              Public   2,67,600   0.05
+
+
+
+83.    Rajendra Nanubhai Majithia      Public   1,33,800   0.03       TEJAS NANUBHAI MAJITHIA, KAUSHIK NANUBHAI MAJITHIA               Public   2,67,600   0.05
+
+
+
+84.    Kaushik Nanubhai Majithia       Public   1,33,800   0.03      TEJAS NANUBHAI MAJITHIA, RAJENDRA NANUBHAI MAJITHIA               Public   2,67,600   0.05
+
+
+
+85.          Aditya Chandak            Public   1,50,000   0.03                            Abhay Chandak                               Public   1,50,000   0.03
+
+
+
+86.          Abhay Chandak             Public   1,50,000   0.03                            Aditya Chandak                              Public   1,50,000   0.03
+
+
+
+87.      Bhaqwati Prasad Jalan         Public   25,000     0.01                           Parwati Devi Jalan                           Public   25,000     0.01
+
+
+
+88.         Parwati Devi Jalan         Public   25,000     0.01                         Bhaqwati Prasad Jalan                          Public   25,000     0.01
+
+
+
+89.   Suresh Maganlal Nagrecha &       Public    6,167     0.00          Kishore Maganlal Nagrecha &Suresh Maganlal Nagrecha,          Public   12,333     0.00
+       Kishore Maganlal Nagrecha                                  Jay Kishore Nagrecha , Kishore Maganlal Nagrecha & Suresh Maganlal
+                                                                                                Nagrecha
+
+90.    Kishore Maganlal Nagrecha       Public    6,167     0.00   Suresh Maganlal Nagrecha & Kishore Maganlal Nagrecha, Jay Kishore    Public   12,333     0.00
+       &Suresh Maganlal Nagrecha                                  Nagrecha , Kishore Maganlal Nagrecha & Suresh Maganlal Nagrecha
+
+
+91.   Jay Kishore Nagrecha , Kishore   Public    6,166     0.00    Suresh Maganlal Nagrecha & Kishore Maganlal Nagrecha, Kishore       Public   12,334     0.00
+       Maganlal Nagrecha & Suresh                                          Maganlal Nagrecha &Suresh Maganlal Nagrecha
+            Maganlal Nagrecha
+
+92.          Nikhil Agarwal            Public    5,555     0.00                        Narendra Kumar Agarwal                          Public   11,111     0.00
+93.       Narendra Kumar Agarwal        Public   11,111     0.00                         Nikhil Agarwal                      Public    5,555     0.00
+
+
+
+94.    Virendrasinh Pravinsinh Ghatge   Public    5,555     0.00   PRAVINSINH JAYSINGRAO GHATGE AND NANDITADEVI PRAVINSINH   Public    5,500     0.00
+                                                                                           GHATGE
+
+
+95.     Pravinsinh Jaysingrao Ghatge    Public    5,500     0.00               VIRENDRASINH PRAVINSINH GHATGE                Public    5,555     0.00
+         and Nanditadevi Pravinsinh
+                   Ghatge
+
+96.    Gayatri Bhattacharyya & Sanjoy   Public   50,000     0.01       SANJOY BHATTACHARYYA & GAYATRI BHATTACHARYYA          Public   50,000     0.01
+                Bhattacharyya
+
+
+97.    Sanjoy Bhattacharyya & Gayatri   Public   50,000     0.01       GAYATRI BHATTACHARYYA & SANJOY BHATTACHARYYA          Public   50,000     0.01
+               Bhattacharyya
+
+
+98.      Chaitanya Narendra Desai       Public   25,000     0.01                     Kushal Narendra Desai                   Public   25,000     0.01
+
+
+
+99.        Kushal Narendra Desai        Public   25,000     0.01                   Chaitanya Narendra Desai                  Public   25,000     0.01
+
+
+
+100.            Apurva Shah             Public   3,50,000   0.07                    Ashit Shah & Nehal Shah                  Public   2,07,000   0.04
+
+
+
+101.             Ashit Shah             Public   1,57,000   0.03                   Apurva Shah & Nehal Shah                  Public   4,00,000   0.08
+
+
+
+102.            Nehal Shah              Public   50,000     0.01                   Apurva Shah & Ashit Shah                  Public   5,07,000   0.10
+
+
+
+103.          Shirin Charania           Public   15,000     0.00                       Shabnam Charania                      Public   15,000     0.00
+
+
+
+104.         Shabnam Charania           Public   15,000     0.00                         Shirin Charania                     Public   15,000     0.00
+
+
+
+105.           Pooja Kajaria            Public    1,950     0.00                        Pankaj Kajaria &                     Public   16,527     0.00
+
+                                                                                  Pooja Kajaria & Pankaj Kajaria                      25,773     0.00
+106.          Pankaj Kajaria              Public       16,527   0.00                           Pooja Kajaria &                                   Public          1,950    0.00
+
+                                                                                        Pooja Kajaria & Pankaj Kajaria                                           25,773   0.00
+
+107.   Pooja Kajaria & Pankaj Kajaria     Public       25,773   0.00                            Pooja Kajaria                                    Public          1,950    0.00
+
+                                                                                                Pankaj Kajaria                                                   16,527
+
+108.    Pradip Shah & Sudha Shah          Public       69,796   0.01                 Pangea Econetassets Private Limited                         Public          25,520   0.01
+
+
+
+109.   Pangea Econetassets Private        Public       25,520   0.01                      Pradip Shah & Sudha Shah                               Public          69,796   0.01
+                Limited
+
+
+110.    Ishita Bagri & Archana Bagri    Associate of   5,000    0.00                      Stuti Bagri & Archana Bagri                     Associate of Trading   5,000    0.00
+                                          Trading                                                                                              Member
+                                         Member
+
+111.    Stuti Bagri & Archana Bagri     Associate of   5,000    0.00                     Ishita Bagri & Archana Bagri                     Associate of Trading   5,000    0.00
+                                          Trading                                                                                              Member
+                                         Member
+
+112. Naresh Navnitlal Shah,Jayshree       Public       5,000    0.00   Naresh Navnitlal Shah,Jayshree Naresh Shah & Tina Naresh Shah on          Public          5,000    0.00
+      Naresh Shah & Puja Naresh                                                             behalf of N J Enterprises
+         Shah on behalf of Jay
+              Enterprises
+113. Naresh Navnitlal Shah,Jayshree       Public       5,000    0.00   Naresh Navnitlal Shah,Jayshree Naresh Shah & Puja Naresh Shah on          Public          5,000    0.00
+      Naresh Shah & Tina Naresh                                                             behalf of Jay Enterprises
+         Shah on behalf of N J
+              Enterprises
+114.          Saket Todi                  Public       25,000   0.01                              Udit Todi                                      Public          25,000   0.01
+
+
+
+115.             Udit Todi                Public       25,000   0.01                              Saket Todi                                     Public          25,000   0.01
+
+
+
+116.           Ahalya Meka              Associate of   17,371   0.00                             Rajini Meka                              Associate of Trading   60,000   0.01
+                                          Trading                                                                                              Member
+                                         Member
+
+117.            Rajini Meka             Associate of   60,000   0.01                             Ahalya Meka                              Associate of Trading   17,371   0.00
+                                          Trading                                                                                              Member
+                                         Member
+
+118.       Tapan Sumanlal Shah          Associate of   5,000    0.00            Sumanlal B Shah on bealf of Suman B Shah HUF              Associate of Trading   4,000    0.00
+                                          Trading                                                                                              Member
+                                         Member
+119.   Sumanlal B Shah on bealf of   Associate of    4,000      0.00                           Tapan Sumanlal Shah                            Associate of Trading    5,000      0.00
+          Suman B Shah HUF             Trading                                                                                                     Member
+                                      Member
+
+120.   SHYAM SUNDAR DALMIA &         Associate of    4,000      0.00            MADHU SUDAN DALMIA & SHYAM SUNDAR DALMIA                      Associate of Trading    4,000      0.00
+        MADHU SUDAN DALMIA             Trading                                                                                                     Member
+                                      Member
+
+121.   MADHU SUDAN DALMIA &          Associate of    4,000      0.00            SHYAM SUNDAR DALMIA & MADHU SUDAN DALMIA                      Associate of Trading    4,000      0.00
+       SHYAM SUNDAR DALMIA             Trading                                                                                                     Member
+                                      Member
+
+122.    Eastern Financiers Limited    Trading        35,000     0.01    Abhishek Agarwal, Ajoy Agarwal, Ambrish & Ridhi Agarwal, Sudha &      Associate of Trading    15,000     0.00
+                                      Member                                                      Ajoy Agarwal                                     Member
+
+
+123.        Abhishek Agarwal         Associate of    2,500      0.00     Eastern Financiers Limited, Ajoy Agarwal, Ambrish & Ridhi Agarwal,   Trading Member &        47,500     0.01
+                                       Trading                                                 Sudha & Ajoy Agarwal                           Associate of Trading
+                                      Member                                                                                                       Member
+
+124.          Ajoy Agarwal           Associate of    5,000             Eastern Financiers Limited, Abhishek Agarwal, Ambrish & Ridhi Agarwal, Trading Member &        45,000     0.01
+                                       Trading                                                  Sudha & Ajoy Agarwal                          Associate of Trading
+                                      Member                                                                                                       Member
+
+125.    Ambrish & Ridhi Agarwal      Associate of    2,500      0.00    Eastern Financiers Limited, Abhishek Agarwal, Ajoy Agarwal, Sudha &   Trading Member &        47,500     0.01
+                                       Trading                                                      Ajoy Agarwal                              Associate of Trading
+                                      Member                                                                                                       Member
+
+126.      Sudha & Ajoy Agarwal       Associate of    5,000      0.00   Eastern Financiers Limited, Abhishek Agarwal, Ajoy Agarwal, Ambrish & Trading Member &         45,000     0.01
+                                       Trading                                                      Ridhi Agarwal                            Associate of Trading
+                                      Member                                                                                                      Member
+
+127.   Farooque Loveji Dadabhoy &      Public        27,000     0.01       Persis Farooque Dadabhoy & Farooque Loveji Dadabhoy, Shirin               Public           16,200     0.00
+        Persis Farooque Dadabhoy                                                       Watwani & Farooque Loveji Dadabhoy
+
+
+128.   Persis Farooque Dadabhoy &      Public        8,100      0.00       Farooque Loveji Dadabhoy & Persis Farooque Dadabhoy, Shirin               Public           35,100     0.01
+        Farooque Loveji Dadabhoy                                                      Watwani & Farooque Loveji Dadabhoy
+
+
+129.   Shirin Watwani & Farooque       Public        8,100      0.00       Farooque Loveji Dadabhoy & Persis Farooque Dadabhoy, Persis               Public           35,100     0.01
+             Loveji Dadabhoy                                                     Farooque Dadabhoy & Farooque Loveji Dadabhoy
+
+
+130.    Massachusetts Institute of     Public       14,40,000   0.29                          238 Plan Associates LCC                                Public          3,60,000    0.07
+              Technology
+
+
+131.     238 Plan Associates LCC       Public       3,60,000    0.07                   Massachusetts Institute of Technology                         Public          14,40,000   0.29
+132.   Agam Jignesh Shah & Jignesh    Associate of   69,000     0.01                         Jignesh Vijay Shah                                Public          2,15,000   0.04
+               Vijay Shah               Trading                                  Vijay Bhagubhai Shah &Jignesh Vijay Shah &                    Public           45,000    0.01
+                                       Member                                               KDS Trading Pvt Ltd.                               Public           21,000    0.01
+
+133.        Jignesh Vijay Shah          Public       2,15,000   0.04               Agam Jignesh Shah & Jignesh Vijay Shah               Associate of Trading   69,000     0.01
+                                                                                                                                             Member            45,000     0.01
+                                                                                Vijay Bhagubhai Shah & Jignesh Vijay Shah &                    Public          21,000     0.01
+                                                                                            KDS Trading Pvt Ltd                                Public
+134. Vijay Bhagubhai Shah & Jignesh     Public       45,000     0.01               Agam Jignesh Shah & Jignesh Vijay Shah               Associate of Trading    69,000    0.01
+               Vijay Shah                                                                                                                    Member            2,15,000   0.04
+                                                                                            Jignesh Vijay Shah &                               Public           21,000    0.01
+                                                                                             KDS Trading Pvt Ltd                               Public
+
+
+135.       KDS Trading Pvt Ltd          Public                  0.01               Agam Jignesh Shah & Jignesh Vijay Shah               Associate of Trading    69,000    0.01
+                                                                                                                                             Member             45,000    0.01
+                                                     21,000                    Vijay Bhagubhai Shah & Jignesh Vijay Shah and                   Public          2,15,000   0.04
+                                                                                            Jignesh Vijay Shah                                 Public
+136. MUKUL LALSHANKAR YAGNIK &          Public                  0.00           Jyoti Mukul Yagnik & Mukul Lalshanker Yagnik                    Public           4,000     0.00
+        JYOTI MUKUL YAGNIK                            4,500            Chandanben Lalshankar Yagnik & Mukul Lalshankar Yagnik & Jyoti                           4,800
+                                                                                               Mukul Yagnik
+
+137.                                    Public                  0.00        MUKUL LALSHANKAR YAGNIK & JYOTI MUKUL YAGNIK                       Public           4,500     0.00
+       Jyoti Mukul Yagnik & Mukul                                      Chandanben Lalshankar Yagnik & Mukul Lalshankar Yagnik & Jyoti                           4,800
+                                                      4,000
+             Lalshanker Yagnik                                                                Mukul Yagnik
+
+138. Chandanben Lalshankar Yagnik       Public                  0.00        MUKUL LALSHANKAR YAGNIK & JYOTI MUKUL YAGNIK                       Public           4,500     0.00
+      & Mukul Lalshankar Yagnik &                     4,800                   Jyoti Mukul Yagnik & Mukul Lalshanker Yagnik                                      4,800
+          Jyoti Mukul Yagnik
+139.   CHANDRAKANT VALLABHAJI           Public                  0.02                                                                           Public          20,000     0.00
+            COGRI & JAYA                                                                Chandrakant Vallabhaji Gogri
+                                                     1,00,000
+         CHANDRAKANT GOGRI
+
+140.                                    Public                  0.00             CHANDRAKANT VALLABHAJI COGRI & JAYA                           Public                     0.02
+       Chandrakant Vallabhaji Gogri                                                     CHANDRAKANT GOGRI
+                                                     20,000                                                                                                    1,00,000
+
+
+141.    Indian Express Commercial       Public                  0.01                     The Indian Express Pvt Ltd                            Public                     0.01
+             Ventures & P Ltd                        50,000                                                                                                    50,000
+
+142.                                    Public                  0.01             Indian Express Commercial Ventures & P Ltd                    Public                     0.01
+        The Indian Express Pvt Ltd
+                                                     50,000                                                                                                    50,000
+
+143.                                    Public                  0.04                                                                           Public                     0.04
+        Sushma Jain & Anand Jain                     2,00,000
+                                                                                                Sushma Jain                                                    2,00,000
+144.                                   Public              0.04                                                                     Public              0.04
+                                                                                      Sushma Jain & Anand Jain                               2,00,000
+               Sushma Jain                      2,00,000
+
+145.                                   Public              0.02                                                                     Public              0.02
+             Vaishali Dhankani                  73,100                                    Hitesh Dhankani                                    1,13,000
+
+146.                                   Public              0.02                                                                     Public              0.02
+              Hitesh Dhankani                   1,13,000                                 Vaishali Dhankani                                   73,100
+
+147.                                   Public              0.02                         Shruti Arihant Patni                        Public              0.03
+         Apoorva Ashokkumar Patni               1,00,000                                Ashokkumar S Patni                                   1,50,000
+                                                                                     Vasundhara Apoorva Patni
+148.                                   Public              0.01                      Apoorva Ashokkumar Patni                       Public              0.04
+            Shruti Arihant Patni                50,000                                  Ashokkumar S Patni                                   2,00,000
+                                                                                     Vasundhara Apoorva Patni
+149.                                   Public              0.01                      Apoorva Ashokkumar Patni                       Public              0.04
+            Ashokkumar S Patni                  50,000                                  Shruti Arihant Patni                                 2,00,000
+                                                                                     Vasundhara Apoorva Patni
+150.                                   Public              0.01                      Apoorva Ashokkumar Patni                       Public              0.04
+         Vasundhara Apoorva Patni               50,000                                  Shruti Arihant Patni                                 2,00,000
+                                                                                        Ashokkumar S Patni
+151.                                   Public              0.01                                                                     Public              0.01
+           JANMEJAI BAGRODIA                     4,000                                 DHANANJAI BAGRODIA                                     4,000
+
+152.                                   Public              0.01                                                                     Public              0.01
+          DHANANJAI BAGRODIA                     4,000                                  JANMEJAI BAGRODIA                                     4,000
+
+
+153.                                   Public              0.00   Ahsok Goel & Kaveeta Goel M/s DEVASHRI ASHOK GOEL FAMILY TRUST,   Public              0.02
+                                                                  Ahsok Goel & Kaveeta Goel M/s MASTER RIBBHAV ASHOK GOEL FAMILY
+       Ahsok Goel & Kaveeta Goel M/s                              TRUST, Ahsok Goel & Kaveeta Goel M/s RITUSHRI ASHOK GOEL FAMILY
+                                                10,000                                                                                       60,000
+            ASHOK GOEL TRUST                                        TRUST, Ahsok Goel & Kaveeta Goel M/s SHATAKKSHI ASHOK GOEL
+                                                                    FAMILY TRUST, hsok Goel & Kaveeta Goel M/s SHRRADDHA BAGLA
+                                                                               FAMILY TRUST, Kaveeta Goel & Ashok Goel
+154.                                   Public              0.00           Ahsok Goel & Kaveeta Goel M/s ASHOK GOEL TRUST,           Public              0.02
+                                                                  Ahsok Goel & Kaveeta Goel M/s MASTER RIBBHAV ASHOK GOEL FAMILY
+       Ahsok Goel & Kaveeta Goel M/s
+                                                                  TRUST, Ahsok Goel & Kaveeta Goel M/s RITUSHRI ASHOK GOEL FAMILY
+       DEVASHRI ASHOK GOEL FAMILY               10,000                                                                                       60,000
+                                                                    TRUST, Ahsok Goel & Kaveeta Goel M/s SHATAKKSHI ASHOK GOEL
+                   TRUST
+                                                                    FAMILY TRUST, hsok Goel & Kaveeta Goel M/s SHRRADDHA BAGLA
+                                                                               FAMILY TRUST, Kaveeta Goel & Ashok Goel
+155. Ahsok Goel & Kaveeta Goel M/s     Public              0.00   Ahsok Goel & Kaveeta Goel M/s DEVASHRI ASHOK GOEL FAMILY TRUST,   Public              0.02
+     MASTER RIBBHAV ASHOK GOEL                  10,000              Ahsok Goel & Kaveeta Goel M/s ASHOK GOEL TRUST, Ahsok Goel &             60,000
+            FAMILY TRUST                                          Kaveeta Goel M/s RITUSHRI ASHOK GOEL FAMILY TRUST, Ahsok Goel &
+                                                                   Kaveeta Goel M/s SHATAKKSHI ASHOK GOEL FAMILY TRUST, hsok Goel
+                                                                  & Kaveeta Goel M/s SHRRADDHA BAGLA FAMILY TRUST, Kaveeta Goel &
+                                                                                              Ashok Goel
+156.                                      Public              0.00                                                                           Public              0.02
+                                                                     Ahsok Goel & Kaveeta Goel M/s DEVASHRI ASHOK GOEL FAMILY TRUST,
+                                                                     Ahsok Goel & Kaveeta Goel M/s MASTER RIBBHAV ASHOK GOEL FAMILY
+       Ahsok Goel & Kaveeta Goel M/s
+                                                                       TRUST, Ahsok Goel & Kaveeta Goel M/s ASHOK GOEL TRUST, Ahsok
+       RITUSHRI ASHOK GOEL FAMILY                  10,000                                                                                             60,000
+                                                                       Goel & Kaveeta Goel M/s SHATAKKSHI ASHOK GOEL FAMILY TRUST,
+                   TRUST
+                                                                       hsok Goel & Kaveeta Goel M/s SHRRADDHA BAGLA FAMILY TRUST,
+                                                                                          Kaveeta Goel & Ashok Goel
+
+157.                                      Public              0.00                                                                           Public              0.02
+                                                                     Ahsok Goel & Kaveeta Goel M/s DEVASHRI ASHOK GOEL FAMILY TRUST,
+                                                                     Ahsok Goel & Kaveeta Goel M/s MASTER RIBBHAV ASHOK GOEL FAMILY
+       Ahsok Goel & Kaveeta Goel M/s
+                                                                     TRUST, Ahsok Goel & Kaveeta Goel M/s RITUSHRI ASHOK GOEL FAMILY
+         SHATAKKSHI ASHOK GOEL                     10,000                                                                                             60,000
+                                                                     TRUST, Ahsok Goel & Kaveeta Goel M/s ASHOK GOEL TRUST, hsok Goel
+              FAMILY TRUST
+                                                                     & Kaveeta Goel M/s SHRRADDHA BAGLA FAMILY TRUST, Kaveeta Goel &
+                                                                                                Ashok Goel
+
+158.                                      Public              0.00                                                                           Public              0.02
+                                                                     Ahsok Goel & Kaveeta Goel M/s DEVASHRI ASHOK GOEL FAMILY TRUST,
+                                                                     Ahsok Goel & Kaveeta Goel M/s MASTER RIBBHAV ASHOK GOEL FAMILY
+       Ahsok Goel & Kaveeta Goel M/s
+                                                                     TRUST, Ahsok Goel & Kaveeta Goel M/s RITUSHRI ASHOK GOEL FAMILY
+        SHRRADDHA BAGLA FAMILY                     10,000                                                                                             60,000
+                                                                       TRUST, Ahsok Goel & Kaveeta Goel M/s SHATAKKSHI ASHOK GOEL
+                   TRUST
+                                                                        FAMILY TRUST, hsok Goel & Kaveeta Goel M/s Ashok Goel TRUST,
+                                                                                          Kaveeta Goel & Ashok Goel
+
+159.                                      Public              0.00                                                                           Public              0.02
+                                                                     Ahsok Goel & Kaveeta Goel M/s DEVASHRI ASHOK GOEL FAMILY TRUST,
+                                                                     Ahsok Goel & Kaveeta Goel M/s MASTER RIBBHAV ASHOK GOEL FAMILY
+                                                                     TRUST, Ahsok Goel & Kaveeta Goel M/s RITUSHRI ASHOK GOEL FAMILY
+         Kaveeta Goel & Ashok Goel                 10,000                                                                                             60,000
+                                                                       TRUST, Ahsok Goel & Kaveeta Goel M/s SHATAKKSHI ASHOK GOEL
+                                                                       FAMILY TRUST, hsok Goel & Kaveeta Goel M/s SHRRADDHA BAGLA
+                                                                      FAMILY TRUST, Ahsok Goel & Kaveeta Goel M/s ASHOK GOEL TRUST
+
+160.     Satyapal Jaikumar Jain and       Public              0.01                                                                           Public              0.02
+       Laxmi Satyapal Jain on behalf of            26,400            Satyapal Jaikumar Jain & Gaurav Satyapal Jain on behalf of Mega Trust            45,600
+                  NK Trust
+161. Satyapal Jaikumar Jain & Gaurav      Public              0.02                                                                           Public              0.01
+       Satyapal Jain on behalf of Mega             45,600             Satyapal Jaikumar Jain and Laxmi Satyapal Jain on behalf of NK Trust            26,400
+                     Trust
+162.                                      Public              0.02                                                                           Public              0.02
+         Emerald Company Private
+                                                   1,00,000            Emerald Highrise Private Limited On Behalf Of Emerald Family Trust             1,00,000
+                 Limited
+
+163.      Emerald Highrise Private        Public              0.02                                                                           Public              0.02
+        Limited On Behalf Of Emerald               1,00,000                            Emerald Company Private Limited                                1,00,000
+                Family Trust
+164.                                      Public    2,500     0.00                                                                           Public    2,500     0.000
+              Bhawna Dhingra                                                                    Rajeev Dhingra
+165.                                      Public      2,500     0.000                                                                                Public      2,500     0.00
+               Rajeev Dhingra                                                                      Bhawna Dhingra
+
+166.                                      Public     10,000     0.00                                                                                 Public     20,000     0.00
+             Akila Krishnakumar                                                                     N Krishnakumar
+
+167.                                      Public     20,000     0.00                                                                                 Public     10,000     0.00
+              N Krishnakumar                                                                      Akila Krishnakumar
+
+168.                                      Public      5,000     0.00                                                                                 Public      5,000     0.00
+              Yogesh Kalwani                                                                       Namisha Kalwani
+
+169.                                      Public      5,000     0.00                                                                                 Public      5,000     0.00
+              Namisha Kalwani                                                                       Yogesh Kalwani
+
+
+170.                                    Associates   1,00,000   0.02                                                                               Associates   1,00,000   0.02
+       Saraswati Commercial (India)
+                                                                                              Singularity Holdings Limited
+                 Limited
+
+171.                                    Associates   1,00,000   0.02                                                                               Associates   1,00,000   0.02
+        Singularity Holdings Limited                                                     Saraswati Commercial (India) Limited
+
+
+172.                                      Public     1,25,000   0.03    Rohan Kumar Gupta on behalf of RR Foundation, Rajiv Kumar on behalf          Public     8,75,000   0.17
+       Rajiv Kumar on behalf of Riti                                     of Suruchi Foundation & Rajiv Kumar on behalf of Swati Foundation,
+               Foundation                                               Atul Jain & Puesh Kumar Gupta on behalf of Riti Foundation, Atul Jain &
+                                                                          Puesh Kumar on behalf of R R Foundation, Atul Jain & Puesh Kumar
+173.                                      Public     1,25,000   0.03      Gupta on behalf of Suruchi Foundation & Atul Jain & Puesh Kumar            Public     8,75,000   0.17
+                                                                           Rajiv Kumar on behalf ofRiti Foundation, Rajiv Kumar on behalf of
+                                                                                         Gupta on behalf of Swati Foundation.
+                                                                         Suruchi Foundation , Rajiv Kumar on behalf of Swati Foundation, Atul
+       Rohan Kumar Gupta on behalf                                        Jain & Puesh Kumar Gupta on behalf of Riti Foundation, Atul Jain &
+            of RR Foundation                                              Puesh Kumar on behalf of R R Foundation, Atul Jain & Puesh Kumar
+                                                                          Gupta on behalf of Suruchi Foundation & Atul Jain & Puesh Kumar
+                                                                                         Gupta on behalf of Swati Foundation.
+174.                                      Public     1,25,000   0.03    Rohan Kumar Gupta on behalf of RR Foundation, Rajiv Kumar on behalf          Public     8,75,000   0.17
+                                                                        of Riti Foundation & Rajiv Kumar on behalf of Swati Foundation Atul Jain
+          Rajiv Kumar on behalf of                                        & Puesh Kumar Gupta on behalf of Riti Foundation, Atul Jain & Puesh
+            Suruchi Foundation                                          Kumar on behalf of R R Foundation, Atul Jain & Puesh Kumar Gupta on
+                                                                           behalf of Suruchi Foundation & Atul Jain & Puesh Kumar Gupta on
+                                                                                              behalf of Swati Foundation.
+175.                                      Public     1,25,000   0.03    Rohan Kumar Gupta on behalf of RR Foundation, Rajiv Kumar on behalf          Public     8,75,000   0.17
+                                                                         of Suruchi Foundation & Rajiv Kumar on behalf of Riti Foundation, Atul
+       Rajiv Kumar on behalf of Swati                                      Jain & Puesh Kumar Gupta on behalf of Riti Foundation, Atul Jain &
+                Foundation                                                Puesh Kumar on behalf of R R Foundation, Atul Jain & Puesh Kumar
+                                                                           Gupta on behalf of Suruchi Foundation & Atul Jain & Puesh Kumar
+                                                                                         Gupta on behalf of Swati Foundation.
+176.                                   Public    55,000     0.01                                                                             Public   8,20,000    0.17
+                                                                   Rohan Kumar Gupta on behalf of RR Foundation, Rajiv Kumar on behalf
+                                                                   of Suruchi Foundation & Rajiv Kumar on behalf of Riti Foundation, Atul
+       Atul Jain & Puesh Kumar Gupta
+                                                                    Jain & Puesh Kumar Gupta on behalf of R R Foundation, Atul Jain &
+        on behalf of Riti Foundation
+                                                                   Puesh Kumar Gupta on behalf of Suruchi Foundation Atul Jain & Puesh
+                                                                                Kumar Gupta on behalf of Swati Foundation.
+
+177.                                   Public   3,35,000    0.07                                                                             Public   5,40,000    0.10
+                                                                   Rohan Kumar Gupta on behalf of RR Foundation, Rajiv Kumar on behalf
+                                                                   of Suruchi Foundation & Rajiv Kumar on behalf of Riti Foundation, Atul
+       Atul Jain & Puesh Kumar Gupta
+                                                                     Jain & Puesh Kumar Gupta on behalf of Riti Foundation, Atul Jain &
+        on behalf of R R Foundation
+                                                                     Puesh Kumar Gupta on behalf of Suruchi Foundation & Atul Jain &
+                                                                             Puesh Kumar Gupta on behalf of Swati Foundation.
+
+178.                                   Public    55,000     0.01                                                                             Public   8,20,000    0.17
+                                                                   Rohan Kumar Gupta on behalf of RR Foundation, Rajiv Kumar on behalf
+                                                                   of Suruchi Foundation & Rajiv Kumar on behalf of Riti Foundation, Atul
+       Atul Jain & Puesh Kumar Gupta
+                                                                     Jain & Puesh Kumar Gupta on behalf of Riti Foundation, Atul Jain &
+       on behalf of Swati Foundation
+                                                                    Puesh Kumar Gupta on behalf of R R Foundation & Atul Jain & Puesh
+                                                                              Kumar r Gupta on behalf of Suruchi Foundation.
+
+
+179.                                   Public    55,000     0.01                                                                             Public   8,20,000    0.17
+
+                                                                   Rohan Kumar Gupta on behalf of RR Foundation, Rajiv Kumar on behalf
+       Atul Jain & Puesh Kumar Gupta                                of Suruchi Foundation & Rajiv Kumar on behalf of Riti Foundation, Atul
+             on behalf of Suruchi                                     Jain & Puesh Kumar Gupta on behalf of Riti Foundation, Atul Jain &
+                  Foundation                                         Puesh Kumar Gupta on behalf of R R Foundation, Atul Jain & Puesh
+                                                                   Kumar & Atul Jain & Puesh Kumar Gupta on behalf of Swati Foundation.
+
+
+180.     LNJ Financial Services Ltd    Public    33,000     0.01                       Bharat Investment Growth Ltd                          Public    50,000     0.01
+
+
+181.   Bharat Investment Growth Ltd    Public    50,000     0.01                          LNJ Financial Services Ltd                         Public    33,000     0.01
+
+
+182.   VALIANT PEREGRINE FUND,         Public   5,00,000    0.10             Valiant Peregrine Special Opportunities Fund 3, L.P.            Public   32,95,646   0.67
+                 L.P
+
+183.    Valiant Peregrine Special      Public   32,95,646   0.67                       VALIANT PEREGRINE FUND, L.P                           Public   5,00,000    0.10
+        Opportunities Fund 3, L.P.
+

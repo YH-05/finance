@@ -127,7 +127,20 @@
       "Bash(git -C /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3900 log --oneline -1)",
       "Bash(git -C /Users/yukihata/Desktop/quants worktree add -b feature/issue-3899 /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3899 main)",
       "Bash(cp /Users/yukihata/Desktop/quants/.mcp.json /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3899/.mcp.json)",
-      "Bash(git -C /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3899 status -sb)"
+      "Bash(git -C /Users/yukihata/Desktop/.worktrees/quants/feature-issue-3899 status -sb)",
+      "WebFetch(domain:www.sebi.gov.in)",
+      "WebFetch(domain:www.bseindia.com)",
+      "WebFetch(domain:www.indiacode.nic.in)",
+      "Bash(cp /Users/yukihata/.claude/projects/-Users-yukihata-Desktop-quants/c8209d81-3970-45d4-9ad8-f537eb669d21/tool-results/webfetch-1776329236194-z6yht6.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/LODR_2015_original.pdf)",
+      "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/LODR_2015_original.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/LODR_2015.txt)",
+      "Bash(cp /Users/yukihata/.claude/projects/-Users-yukihata-Desktop-quants/c8209d81-3970-45d4-9ad8-f537eb669d21/tool-results/webfetch-1776329368721-dwnr9d.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/Format_Reguln_31_1_31_2.pdf)",
+      "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/Format_Reguln_31_1_31_2.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/Format_Reguln_31_1_31_2.txt)",
+      "WebFetch(domain:www.mca.gov.in)",
+      "WebFetch(domain:egazette.gov.in)",
+      "Bash(cp /Users/yukihata/.claude/projects/-Users-yukihata-Desktop-quants/c8209d81-3970-45d4-9ad8-f537eb669d21/tool-results/webfetch-1776329763981-quy7z7.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/egazette_158025.pdf)",
+      "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/egazette_158025.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/egazette_158025.txt)",
+      "Bash(cp /Users/yukihata/.claude/projects/-Users-yukihata-Desktop-quants/c8209d81-3970-45d4-9ad8-f537eb669d21/tool-results/webfetch-1776329879236-aycqzp.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.pdf)",
+      "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.txt)"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",

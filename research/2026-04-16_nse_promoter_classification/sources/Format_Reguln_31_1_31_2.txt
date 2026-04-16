@@ -1,0 +1,49 @@
+Format for disclosure by the Promoter(s) to the stock exchanges and to the Target Company for encumbrance of shares / invocation
+  of encumbrance/ release of encumbrance, in terms of Regulation 31(1) and 31(2) of SEBI (Substantial Acquisition of Shares and
+                                                   Takeovers) Regulations, 2011
+Name of the Target Company (TC)
+
+Names of the Stock Exchanges where the shares of the target company
+are listed
+Date of reporting
+Name of the promoter or PAC on whose shares encumbrance has been
+created/released/invoked
+Details of the creation/invocation/release of encumbrance:
+
+Name of     Promoter holding in the        Promoter                  Details of events pertaining to encumbrance (3)                Post event
+   the        target company (1)        holding already                                                                             holding of
+promoter                                encumbered (2)                                                                             encumbered
+  (s) or                                                                                                                               shares
+ PACs                                                                                                                                {creation
+   with                                                                                                                              [(2)+(3)] /
+ him(**)                                                                                                                           release [(2)-
+                                                                                                                                        (3)] /
+                                                                                                                                 invocation [(2)-
+                                                                                                                                         (3)]}
+           No. of    % of     % w.r.t   No. of    % of        Type of        Date of     Type of       No. of % of Name of the No. of       % of
+           shares    total    diluted   shares    total        event        creation/ encumbrance      shares total     entity in shares    total
+                    share     share              share      (creation /    invocation (pledge/ lien/          share whose favor            share
+                    capital   capital            capital     release /     release of non disposal            capital   shares             capital
+                                 (*)                       invocation)    encumbrance undertaking/                    encumbered
+                                                                                         others)
+ Signature of the Authorized Signatory:
+
+
+ Place:
+
+
+ Date:
+
+
+
+(**) The names of all the promoters, their shareholding in the target company and their pledged shareholding as on the reporting date should
+appear in the table irrespective of whether they are reporting on the date of event or not.
+
+
+(*) Total share capital to be taken as per the latest filing done by the company to the Stock Exchange under Clause 35 of the listing Agreement.
+Diluted share / voting capital means the total number of shares in the TC assuming full conversion of the outstanding convertible securities /
+warrants into equity shares of the TC.
+
+
+                                                                      *****
+
