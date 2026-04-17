@@ -1,6 +1,6 @@
 # NSE/BSE XBRL Shareholding Pattern カテゴリ/サブカテゴリ分類体系
 
-**生成日**: 2026-04-16
+**生成日**: 2026-04-17
 **対象 taxonomy**: BSE SHP XBRL (2018-03-31 / 2022-09-30 / 2025-05-31 / 2025-10-31)
 **出典**:
 - SEBI (ICDR) Regulations 2009/2018 (sebi.gov.in)
