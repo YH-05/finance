@@ -20,6 +20,13 @@
             "frequency": "Daily, 7-Day",
             "units": "Index",
             "description": "米国の経済政策に関する先行き不透明感を指数化したもの。選挙、貿易摩擦、規制変更など政治的イベントが市場に与える不安を可視化する。VIXが市場価格の変動（結果）を反映するのに対し、これは不安の「原因」の一つを測る指標。"
+        },
+        "PCEPILFE": {
+            "name_ja": "コアPCE価格指数",
+            "name_en": "Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index)",
+            "frequency": "Monthly",
+            "units": "Index 2017=100",
+            "description": "Fedが正式インフレ目標(2%)に採用するコアPCE価格指数。食品・エネルギーを除き、CPIに比べて住居費ウエイトが低く医療費・金融サービスの扱いも異なるため、CPIと乗離する場面がある。"
         }
     },
     "Interest Rates": {
@@ -284,6 +291,55 @@
             "frequency": "Monthly",
             "units": "Billions of Dollars",
             "description": "米国経済の約2/3を占める最重要要素。「ウォール街流」では実質時給の動向に追随するとされる。"
+        },
+        "RSAFS": {
+            "name_ja": "小売売上（季節調整済）",
+            "name_en": "Advance Retail Sales: Retail Trade and Food Services",
+            "frequency": "Monthly",
+            "units": "Millions of Dollars, SA",
+            "description": "米国の小売・外食業の売上総額（季節調整済）。消費の現状を月次で示す代表指標。"
+        },
+        "HOUST": {
+            "name_ja": "住宅着工件数",
+            "name_en": "New Privately-Owned Housing Units Started: Total Units",
+            "frequency": "Monthly",
+            "units": "Thousands of Units, SAAR",
+            "description": "新規着工された住宅戸数（季節調整年率換算）。住宅市場と建設関連需要の先行指標。"
+        },
+        "PERMIT": {
+            "name_ja": "住宅建築許可件数",
+            "name_en": "New Privately-Owned Housing Units Authorized in Permit-Issuing Places: Total Units",
+            "frequency": "Monthly",
+            "units": "Thousands of Units, SAAR",
+            "description": "住宅着工の先行指標として活用される建築許可件数（季節調整年率換算）。"
+        },
+        "DGORDER": {
+            "name_ja": "耐久財受注（総合）",
+            "name_en": "Manufacturers' New Orders: Durable Goods",
+            "frequency": "Monthly",
+            "units": "Millions of Dollars, SA",
+            "description": "耐用年数3年以上の財に対する新規受注額。設備投資・製造業活動の先行指標。"
+        },
+        "HSN1F": {
+            "name_ja": "新築一戸建て住宅販売",
+            "name_en": "New One Family Houses Sold: United States",
+            "frequency": "Monthly",
+            "units": "Thousands, SAAR",
+            "description": "新築一戸建て住宅の販売件数（季節調整年率換算）。住宅需要と消費者信用環境を反映。"
+        },
+        "GDPNOW": {
+            "name_ja": "GDPNow（アトランタ連銀リアルタイムGDP推計）",
+            "name_en": "GDPNow Real GDP Estimate (Atlanta Fed)",
+            "frequency": "As needed (typically several times per quarter)",
+            "units": "Percent Change at Annual Rate",
+            "description": "アトランタ連銀がリリースするGDP速報のリアルタイム推計。経済指標発表に応じて更新され、四半期GDP速報のサンドボックスとして広く参照される。"
+        },
+        "A191RL1Q225SBEA": {
+            "name_ja": "実質GDP（前期比年率）",
+            "name_en": "Real Gross Domestic Product (Percent Change from Preceding Period)",
+            "frequency": "Quarterly",
+            "units": "Percent Change at Annual Rate, SA",
+            "description": "BEAが発表する実質GDP前期比年率（季節調整済）。米国経済の総合的な成長度を示す主要指標。"
         }
     },
     "Population, Employment, & Labor Force": {
@@ -321,6 +377,13 @@
             "frequency": "Monthly",
             "units": "Thousands of Persons",
             "description": "JOLTS（求人労働異動調査）による、非農業部門の求人総数（季節調整済）。労働市場の需要（人手不足感）を示す指標。"
+        },
+        "ADPMNUSNERSA": {
+            "name_ja": "ADP雇用統計（民間非農業部門）",
+            "name_en": "ADP National Employment Report: Nonfarm Private Payroll Employment",
+            "frequency": "Monthly",
+            "units": "Thousands, NSA",
+            "description": "ADPが集計する民間非農業部門雇用者数（季節調整なし）。BLS発表の非農業部門雇用者数(NFP)の2日前にリリースされ、雇用統計の事前指標として注目される。"
         }
     },
     "Money, Banking, & Finance": {
