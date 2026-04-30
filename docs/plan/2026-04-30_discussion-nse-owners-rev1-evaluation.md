@@ -105,16 +105,23 @@ Tier 2 で owner_flag = director_only と判定されたら:
 
 ## アクションアイテム
 
-| ID | 内容 | 優先度 |
-|----|------|--------|
-| act-2026-04-30-001 | owners_rev1.normalized.json で owners.json を上書き commit / push | 高 |
-| act-2026-04-30-002 | nse_owner_analysis.ipynb 照合ロジックを ISIN ベースへ書き換え | 高 |
-| act-2026-04-30-003 | 既知一族リスト構築（data/config/nse_promoter_classifier.yaml 想定） | 高 |
-| act-2026-04-30-004 | Tier 2 にハイブリッドルール統合（OWNER_WEAK 降格 + ai_review_needed=True） | 高 |
-| act-2026-04-30-005 | AI 判定 vs rev1 不一致 3 件 (SPANDANA/GLAND/ROUTE) の個別ソース検証 | 中 |
-| act-2026-04-30-006 | excluded_no_natural_no_holding 4 件 (AWL/ASHOKLEY/AEGISLOG/HINDZINC) の例外ルール検討 | 中 |
-| act-2026-04-30-007 | owner_candidates.csv 生成時に rev1 GT との自動 diff レポート出力 | 中 |
-| act-2026-04-30-008 | Phase 3/4 を全 2,263 銘柄に拡大実行 (act-2026-04-13-001 継続) | 中 |
+| ID | 内容 | 優先度 | ステータス |
+|----|------|--------|------------|
+| act-2026-04-30-001 | owners_rev1.normalized.json で owners.json を上書き commit / push | 高 | ✅ 完了 (commit `8fb4aff`) |
+| act-2026-04-30-002 | nse_owner_analysis.ipynb 照合ロジックを ISIN ベースへ書き換え | 高 | pending |
+| act-2026-04-30-003 | 既知一族リスト構築（data/config/nse_promoter_classifier.yaml 想定） | 高 | pending |
+| act-2026-04-30-004 | Tier 2 にハイブリッドルール統合（OWNER_WEAK 降格 + ai_review_needed=True） | 高 | pending |
+| act-2026-04-30-005 | AI 判定 vs rev1 不一致 3 件 (SPANDANA/GLAND/ROUTE) の個別ソース検証 | 中 | pending |
+| act-2026-04-30-006 | excluded_no_natural_no_holding 4 件 (AWL/ASHOKLEY/AEGISLOG/HINDZINC) の例外ルール検討 | 中 | pending |
+| act-2026-04-30-007 | owner_candidates.csv 生成時に rev1 GT との自動 diff レポート出力 | 中 | pending |
+| act-2026-04-30-008 | Phase 3/4 を全 2,263 銘柄に拡大実行 (act-2026-04-13-001 継続) | 中 | pending |
+
+## セッション完了状況 (2026-04-30 時点)
+
+- **完了**: 1 / 8 ActionItem
+  - `act-2026-04-30-001`: commit `8fb4aff` で実装、`origin/main` へ push 済
+- **残**: 7 / 8 ActionItem（高 3 / 中 4）
+- **次セッション着手候補**: 高優先度の 3 件 (act-002, act-003, act-004) は連動するため、`act-2026-04-30-003 → act-2026-04-30-004 → act-2026-04-30-002` の順序で進めるのが効率的
 
 ## 次回の議論トピック
 
