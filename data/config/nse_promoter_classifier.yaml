@@ -1,0 +1,571 @@
+# NSE Promoter Classifier — 既知一族リスト
+#
+# 目的:
+#   `owner_confirmed_director_only` ラベルが付与された銘柄に対して、
+#   promoter_names_full_list を本リストと照合し、
+#   - Owner family match → OWNER 確定
+#   - Professional/State/MNC parent match → NOT_OWNER 確定
+#   - 未マッチ → OWNER_WEAK 降格 + ai_review_needed=True
+#
+# データソース:
+#   rev1 ground truth × director_only intersection 64 銘柄から逆引き
+#   (Professional 29 / Owner 22 / State 8 / MNC 5)
+#
+# 整備方針:
+#   - keyword は promoter_names_full_list に含まれる substring でマッチ判定（case-insensitive）
+#   - 1 keyword で 1 か複数の銘柄を救済できる粒度を選ぶ
+#   - 過剰マッチ（誤分類）を避けるため、固有名詞性が高い名称を選ぶ
+#   - rev1 は ISIN ベース canonical (632 件)。新規 corporate action 発生時はリスト追補
+#
+# 関連:
+#   - act-2026-04-30-003 (本ファイル構築)
+#   - act-2026-04-30-004 (本リストを Tier 2 にハイブリッド統合)
+#   - 議論メモ: docs/plan/2026-04-30_discussion-nse-owners-rev1-evaluation.md
+#
+# バージョン: 0.1.0 (seed)
+# 更新日: 2026-04-30
+
+version: "0.1.0"
+updated_at: "2026-04-30"
+
+# ============================================================
+# Owner family / vehicle keywords
+#   promoter_names_full_list にこれらが含まれるなら OWNER 確定
+# ============================================================
+owner_keywords:
+  # --- Bharti / Mittal Group ---
+  - keyword: "INDIAN CONTINENT INVESTMENT"
+    family: "Mittal"
+    sample_stocks: ["BHARTIARTL", "INDUSTOWER"]
+  - keyword: "PASTEL LIMITED"
+    family: "Mittal"
+    sample_stocks: ["BHARTIARTL"]
+  - keyword: "Viridian Limited"
+    family: "Mittal"
+    sample_stocks: ["BHARTIARTL"]
+  - keyword: "Airtel"
+    family: "Mittal"
+    sample_stocks: ["INDUSTOWER"]
+
+  # --- Mahindra Group ---
+  - keyword: "Mahindra"
+    family: "Mahindra"
+    sample_stocks: ["TECHM", "M&MFIN"]
+    note: "Anand Mahindra 一族が支配。M&M Holdings 経由保有が多い"
+  - keyword: "Bristlecone"
+    family: "Mahindra"
+    sample_stocks: ["TECHM", "M&MFIN"]
+  - keyword: "Automobili Pininfarina"
+    family: "Mahindra"
+    sample_stocks: ["TECHM", "M&MFIN"]
+  - keyword: "Classic Legends"
+    family: "Mahindra"
+    sample_stocks: ["M&MFIN"]
+  - keyword: "Erkunt"
+    family: "Mahindra"
+    sample_stocks: ["M&MFIN"]
+
+  # --- Birla / Aditya Birla Group ---
+  - keyword: "Aditya Birla"
+    family: "Birla"
+    sample_stocks: ["ABREL"]
+  - keyword: "KUMAR MANGALAM BIRLA"
+    family: "Birla"
+    sample_stocks: []
+  - keyword: "Birla Group Holdings"
+    family: "Birla"
+    sample_stocks: ["ABREL"]
+  - keyword: "Estate of Basant Kumar Birla"
+    family: "Birla"
+    sample_stocks: ["ABREL"]
+  - keyword: "Central India Industries"
+    family: "Birla"
+    sample_stocks: ["BSOFT"]
+  - keyword: "National Engineering Industries"
+    family: "Birla"
+    sample_stocks: ["BSOFT"]
+
+  # --- Adani Group ---
+  - keyword: "Gautambhai"
+    family: "Adani"
+    sample_stocks: []
+  - keyword: "Rajeshbhai"
+    family: "Adani"
+    sample_stocks: []
+  - keyword: "Adani"
+    family: "Adani"
+    sample_stocks: []
+
+  # --- Reliance / Ambani Group ---
+  - keyword: "Ambani"
+    family: "Ambani"
+    sample_stocks: []
+  - keyword: "RIL"
+    family: "Ambani"
+    sample_stocks: []
+
+  # --- Bajaj Group ---
+  - keyword: "Bajaj"
+    family: "Bajaj"
+    sample_stocks: ["BAJAJCON"]
+  - keyword: "ARYAN BAJAJ"
+    family: "Bajaj"
+    sample_stocks: ["BAJAJCON"]
+  - keyword: "DEEPA BAJAJ"
+    family: "Bajaj"
+    sample_stocks: ["BAJAJCON"]
+  - keyword: "Apoorv Bajaj"
+    family: "Bajaj"
+    sample_stocks: ["BAJAJCON"]
+  - keyword: "Kushagra Bajaj"
+    family: "Bajaj"
+    sample_stocks: ["BAJAJCON"]
+  - keyword: "Shishir Bajaj"
+    family: "Bajaj"
+    sample_stocks: ["BAJAJCON"]
+
+  # --- Hinduja Group ---
+  - keyword: "Hinduja"
+    family: "Hinduja"
+    sample_stocks: ["INDUSINDBK", "ASHOKLEY"]
+  - keyword: "Afrinex"
+    family: "Hinduja"
+    sample_stocks: ["INDUSINDBK"]
+  - keyword: "IndusInd International Holdings"
+    family: "Hinduja"
+    sample_stocks: ["INDUSINDBK"]
+
+  # --- Vedanta / Anil Agarwal ---
+  - keyword: "Anil Agarwal"
+    family: "Vedanta"
+    sample_stocks: ["HINDZINC"]
+  - keyword: "Vedanta"
+    family: "Vedanta"
+    sample_stocks: ["HINDZINC"]
+  - keyword: "Volcan Investments"
+    family: "Vedanta"
+    sample_stocks: ["HINDZINC"]
+
+  # --- Havells / Anil Rai Gupta ---
+  - keyword: "Abhinav Rai Gupta"
+    family: "Rai Gupta (Havells)"
+    sample_stocks: ["HAVELLS"]
+  - keyword: "Aditya Gupta"
+    family: "Rai Gupta (Havells)"
+    sample_stocks: ["HAVELLS"]
+  - keyword: "Ameet Kumar Gupta"
+    family: "Rai Gupta (Havells)"
+    sample_stocks: ["HAVELLS"]
+  - keyword: "Anil Rai Gupta"
+    family: "Rai Gupta (Havells)"
+    sample_stocks: ["HAVELLS"]
+
+  # --- Patanjali / Ramdev ---
+  - keyword: "Acharya Balkrishna"
+    family: "Patanjali"
+    sample_stocks: ["PATANJALI"]
+  - keyword: "Ram Bharat"
+    family: "Patanjali"
+    sample_stocks: ["PATANJALI"]
+
+  # --- Lodha Group ---
+  - keyword: "Lodha"
+    family: "Lodha"
+    sample_stocks: ["LODHA"]
+  - keyword: "Hightown Constructions"
+    family: "Lodha"
+    sample_stocks: ["LODHA"]
+  - keyword: "Homecraft Developers"
+    family: "Lodha"
+    sample_stocks: ["LODHA"]
+
+  # --- Trident / Rajinder Gupta ---
+  - keyword: "RAJINDER GUPTA"
+    family: "Rajinder Gupta (Trident)"
+    sample_stocks: ["TRIDENT"]
+  - keyword: "Madhuraj Foundation"
+    family: "Rajinder Gupta (Trident)"
+    sample_stocks: ["TRIDENT"]
+  - keyword: "Lotus Global Foundation"
+    family: "Rajinder Gupta (Trident)"
+    sample_stocks: ["TRIDENT"]
+
+  # --- India Cements / N Srinivasan ---
+  - keyword: "UltraTech Cement"
+    family: "Birla (UltraTech)"
+    sample_stocks: ["INDIACEM"]
+    note: "INDIACEM は UltraTech (Aditya Birla 系) に買収された結果 promoter group が UltraTech Cement のみ。Birla として分類"
+
+  # --- Poonawalla / Cyrus Poonawalla ---
+  - keyword: "Poonawalla"
+    family: "Poonawalla"
+    sample_stocks: ["POONAWALLA"]
+  - keyword: "Adar Cyrus"
+    family: "Poonawalla"
+    sample_stocks: ["POONAWALLA"]
+
+  # --- Bandhan / Ghosh ---
+  - keyword: "Bandhan"
+    family: "Bandhan (Ghosh)"
+    sample_stocks: ["BANDHANBNK"]
+
+  # --- RP Sanjiv Goenka ---
+  - keyword: "RPSG VENTURES"
+    family: "Goenka (RPSG)"
+    sample_stocks: ["FSL"]
+  - keyword: "RP-Sanjiv Goenka"
+    family: "Goenka (RPSG)"
+    sample_stocks: ["FSL"]
+
+  # --- Saregama / RP-SG ---
+  - keyword: "Composure Services"
+    family: "Goenka (RPSG)"
+    sample_stocks: ["SAREGAMA"]
+  - keyword: "Digidrive Distributors"
+    family: "Goenka (RPSG)"
+    sample_stocks: ["SAREGAMA"]
+  - keyword: "Quest Capital Markets"
+    family: "Goenka (RPSG)"
+    sample_stocks: ["SAREGAMA"]
+
+  # --- Wadia ---
+  - keyword: "MAUREEN NUSLI WADIA"
+    family: "Wadia"
+    sample_stocks: []
+  - keyword: "NESS NUSLI WADIA"
+    family: "Wadia"
+    sample_stocks: []
+
+  # --- Jindal ---
+  - keyword: "Jindal"
+    family: "Jindal"
+    sample_stocks: []
+  - keyword: "ARTI JINDAL"
+    family: "Jindal"
+    sample_stocks: []
+
+  # --- Cyient ---
+  - keyword: "Cyient Limited"
+    family: "Cyient (Mohan Reddy)"
+    sample_stocks: ["CYIENTDLM"]
+
+  # --- Shriram Group ---
+  - keyword: "SHRIRAM CAPITAL"
+    family: "Shriram"
+    sample_stocks: ["SHRIRAMFIN"]
+  - keyword: "SHRIRAM GENERAL INSURANCE"
+    family: "Shriram"
+    sample_stocks: ["SHRIRAMFIN"]
+  - keyword: "Shriram Ownership Trust"
+    family: "Shriram"
+    sample_stocks: ["SHRIRAMFIN"]
+
+  # --- Greaves Cotton / DBH ---
+  - keyword: "DBH Holdings"
+    family: "Thapar"
+    sample_stocks: ["GREAVESCOT"]
+  - keyword: "DBH INVESTMENT"
+    family: "Thapar"
+    sample_stocks: ["GREAVESCOT"]
+
+  # --- Alivus (旧 Glenmark Life Sciences buyer) / Karnavati ---
+  - keyword: "Karnavati Holdings"
+    family: "Karnavati / Searles"
+    sample_stocks: ["ALIVUS"]
+  - keyword: "Searles"
+    family: "Karnavati / Searles"
+    sample_stocks: ["ALIVUS"]
+
+  # --- VMM / Kedaara ---
+  - keyword: "Kedaara"
+    family: "Kedaara Capital (PE-backed)"
+    sample_stocks: ["VMM"]
+    note: "PE backed だが rev1 では Owner 分類"
+
+# ============================================================
+# Professional / Trust / Holding parent keywords
+#   promoter_names_full_list にこれらが含まれるなら NOT_OWNER 確定
+# ============================================================
+professional_keywords:
+  # --- Tata Group (Tata Sons / Tata Trusts) ---
+  - keyword: "Tata Sons"
+    parent: "Tata Sons Private Limited"
+    sample_stocks: ["TCS", "TATASTEEL", "TATAPOWER", "TATACHEM", "TATACOMM",
+                    "TATACONSUM", "TATAELXSI", "TMPV", "TRENT", "TTML"]
+    note: "Tata Trusts を最終支配。一族ではなく信託"
+  - keyword: "915 Labs"
+    parent: "Tata"
+    sample_stocks: ["TCS", "TATASTEEL", "TATACONSUM"]
+    note: "Tata Sons の subsidiary 群が director_only で大量に出現するパターン"
+  - keyword: "AFCL Ghana"
+    parent: "Tata"
+    sample_stocks: ["TCS", "TATASTEEL", "TATACOMM"]
+  - keyword: "AFCL Premium"
+    parent: "Tata"
+    sample_stocks: ["TCS"]
+  - keyword: "3-101-951221"
+    parent: "Tata"
+    sample_stocks: ["TATACHEM", "TATACOMM", "TATACONSUM"]
+  - keyword: "Tata Africa"
+    parent: "Tata"
+    sample_stocks: []
+  - keyword: "Tata Limited"
+    parent: "Tata"
+    sample_stocks: []
+
+  # --- HDFC Group ---
+  - keyword: "HDFC BANK"
+    parent: "HDFC Bank Limited"
+    sample_stocks: ["HDFCAMC", "HDFCLIFE"]
+  - keyword: "HDB Financial"
+    parent: "HDFC"
+    sample_stocks: ["HDFCLIFE"]
+  - keyword: "HDFC AMC International"
+    parent: "HDFC"
+    sample_stocks: ["HDFCLIFE"]
+  - keyword: "Griha Investments"
+    parent: "HDFC"
+    sample_stocks: ["HDFCAMC"]
+
+  # --- ICICI Group ---
+  - keyword: "ICICI BANK"
+    parent: "ICICI Bank Limited"
+    sample_stocks: ["ICICIGI", "ICICIPRULI"]
+  - keyword: "I-PROCESS SERVICES"
+    parent: "ICICI"
+    sample_stocks: ["ICICIGI"]
+  - keyword: "PRUDENTIAL CORPORATION HOLDINGS"
+    parent: "ICICI / Prudential JV"
+    sample_stocks: ["ICICIPRULI"]
+
+  # --- L&T Group (Larsen & Toubro) ---
+  - keyword: "BANGALORE GALAXY TECHPARK"
+    parent: "L&T (Larsen & Toubro)"
+    sample_stocks: ["LTF", "LTM", "LTTS"]
+  - keyword: "BHILAI POWER SUPPLY COMPANY"
+    parent: "L&T"
+    sample_stocks: ["LTF", "LTM", "LTTS"]
+  - keyword: "BUSINESS PARK (POWAI)"
+    parent: "L&T"
+    sample_stocks: ["LTF", "LTM", "LTTS"]
+  - keyword: "Larsen & Toubro"
+    parent: "L&T"
+    sample_stocks: []
+
+  # --- Aga Khan Fund ---
+  - keyword: "Aga Khan Fund"
+    parent: "Aga Khan Trust"
+    sample_stocks: ["DCBBANK"]
+  - keyword: "Platinum Jubilee Investments"
+    parent: "Aga Khan Trust"
+    sample_stocks: ["DCBBANK"]
+
+  # --- Independent Media Trust (Reliance/Network18) ---
+  - keyword: "Independent Media Trust"
+    parent: "Reliance (Network18 control)"
+    sample_stocks: ["NETWORK18"]
+    note: "rev1 で Network18 は Professional 扱い（信託経由保有）"
+
+  # --- Religare ---
+  - keyword: "M B FINMART"
+    parent: "Religare 系"
+    sample_stocks: ["RELIGARE"]
+  - keyword: "MILKY INVESTMENT AND TRADING"
+    parent: "Religare 系"
+    sample_stocks: ["RELIGARE"]
+  - keyword: "PURAN ASSOCIATES"
+    parent: "Religare 系"
+    sample_stocks: ["RELIGARE"]
+
+  # --- BCP / Blackstone ---
+  - keyword: "BCP Asia"
+    parent: "Blackstone PE"
+    sample_stocks: ["MPHASIS"]
+  - keyword: "BCP TOPCO"
+    parent: "Blackstone PE"
+    sample_stocks: ["MPHASIS"]
+
+  # --- Sapphire Foods / Mauritius PE ---
+  - keyword: "Ironman Investments"
+    parent: "Sapphire Foods PE"
+    sample_stocks: ["SAPPHIRE"]
+  - keyword: "Arinjaya (Mauritius)"
+    parent: "Sapphire Foods PE"
+    sample_stocks: ["SAPPHIRE"]
+  - keyword: "Karikala (Mauritius)"
+    parent: "Sapphire Foods PE"
+    sample_stocks: ["SAPPHIRE"]
+
+  # --- F&B Asia / Restaurant Brands ---
+  - keyword: "F&B Asia Ventures"
+    parent: "QSR Asia (PE)"
+    sample_stocks: ["RBA"]
+  - keyword: "Qsr Asia"
+    parent: "QSR Asia (PE)"
+    sample_stocks: ["RBA"]
+
+  # --- BSE (CDSL parent) ---
+  - keyword: "BSE Limited"
+    parent: "BSE (Stock Exchange)"
+    sample_stocks: ["CDSL"]
+
+  # --- AAVAS / Aquilo (Kedaara/Partners Group) ---
+  - keyword: "Aquilo House"
+    parent: "Aquilo (PE)"
+    sample_stocks: ["AAVAS"]
+  - keyword: "Aquilo Universe"
+    parent: "Aquilo (PE)"
+    sample_stocks: ["AAVAS"]
+
+  # --- JB Chemicals (Torrent / KKR) ---
+  - keyword: "Torrent"
+    parent: "Torrent / KKR"
+    sample_stocks: ["JBCHEPHARM"]
+  - keyword: "Curatio Inc"
+    parent: "Torrent / KKR"
+    sample_stocks: ["JBCHEPHARM"]
+  - keyword: "Heumann Pharma"
+    parent: "Torrent / KKR"
+    sample_stocks: ["JBCHEPHARM"]
+
+  # --- PNB Housing / PNB ---
+  - keyword: "Punjab National Bank"
+    parent: "PNB (政府系銀行 → Professional 扱い)"
+    sample_stocks: ["PNBHOUSING"]
+    note: "PNB Housing は PNB が筆頭株主だが rev1 では Professional"
+
+  # --- Tejas / Panatone ---
+  - keyword: "Panatone Finvest"
+    parent: "Tata 系 (経由 Tejas)"
+    sample_stocks: ["TEJASNET"]
+  - keyword: "BUC Mobile"
+    parent: "Tata Communications subsidiaries"
+    sample_stocks: ["TEJASNET"]
+
+# ============================================================
+# State / Government keywords
+#   promoter_names_full_list にこれらが含まれるなら STATE 扱い
+# ============================================================
+state_keywords:
+  - keyword: "PRESIDENT OF INDIA"
+    parent: "Government of India"
+    sample_stocks: ["HINDPETRO", "RECLTD", "TATACOMM"]
+    note: "Tata Communications は Tata + GOI の二重 promoter なので注意（rev1 では Professional）"
+  - keyword: "President of India"
+    parent: "Government of India"
+    sample_stocks: ["RECLTD"]
+  - keyword: "STATE BANK OF INDIA"
+    parent: "SBI Group"
+    sample_stocks: ["SBICARD", "SBILIFE"]
+  - keyword: "State Bank of India"
+    parent: "SBI Group"
+    sample_stocks: ["SBICARD", "SBILIFE"]
+  - keyword: "CANARA BANK"
+    parent: "Canara Bank"
+    sample_stocks: ["CANFINHOME"]
+  - keyword: "GUJARAT STATE INVESTMENTS"
+    parent: "Gujarat 政府"
+    sample_stocks: ["GSFC"]
+  - keyword: "Gujarat Mineral Development"
+    parent: "Gujarat 政府"
+    sample_stocks: ["GSFC"]
+  - keyword: "Hindustan Petroleum"
+    parent: "GOI 系"
+    sample_stocks: ["MRPL"]
+  - keyword: "Oil And Natural Gas Corporation"
+    parent: "GOI 系"
+    sample_stocks: ["MRPL", "HINDPETRO"]
+  - keyword: "BHARAT PETROLEUM CORPORATION"
+    parent: "GOI 系"
+    sample_stocks: ["PETRONET"]
+  - keyword: "GAIL (INDIA)"
+    parent: "GOI 系"
+    sample_stocks: ["PETRONET"]
+  - keyword: "INDIAN OIL CORPORATION"
+    parent: "GOI 系"
+    sample_stocks: ["PETRONET"]
+  - keyword: "POWER FINANCE CORPORATION"
+    parent: "GOI 系"
+    sample_stocks: ["RECLTD"]
+
+# ============================================================
+# MNC parent keywords
+#   promoter_names_full_list にこれらが含まれるなら MNC 扱い
+# ============================================================
+mnc_keywords:
+  - keyword: "Schneider Electric"
+    parent: "Schneider Electric SE"
+    sample_stocks: ["SCHNEIDER"]
+  - keyword: "Whirlpool"
+    parent: "Whirlpool Corporation"
+    sample_stocks: ["WHIRLPOOL"]
+  - keyword: "Procter & Gamble"
+    parent: "Procter & Gamble"
+    sample_stocks: ["GILLETTE"]
+  - keyword: "P&G"
+    parent: "Procter & Gamble"
+    sample_stocks: ["GILLETTE"]
+  - keyword: "Gillette"
+    parent: "Procter & Gamble"
+    sample_stocks: ["GILLETTE"]
+  - keyword: "Agile Pursuits"
+    parent: "Procter & Gamble"
+    sample_stocks: ["GILLETTE"]
+  - keyword: "1837, LLC"
+    parent: "Procter & Gamble"
+    sample_stocks: ["GILLETTE"]
+  - keyword: "EPSILON BIDCO"
+    parent: "Blackstone (EPL)"
+    sample_stocks: ["EPL"]
+  - keyword: "APM Terminals"
+    parent: "Maersk Group"
+    sample_stocks: ["GPPL"]
+
+# ============================================================
+# 解決アルゴリズム
+# ============================================================
+resolution:
+  algorithm: |
+    入力: promoter_names_full_list (string, '|' 区切り)
+    出力: classification = 'OWNER' | 'PROFESSIONAL' | 'STATE' | 'MNC' | 'UNKNOWN'
+
+    1. 各 keyword リストを順に走査:
+       - state_keywords (最強)
+       - mnc_keywords
+       - professional_keywords
+       - owner_keywords
+    2. 各 keyword について promoter_names_full_list に
+       case-insensitive な substring match があれば、
+       そのカテゴリを記録（matched_categories: list）
+    3. matched_categories の優先順位:
+       - state ∈ matched → STATE （ただし Owner 一族と共存する場合は Owner 優先 = Tata Communications 例外）
+       - 唯一 owner ∈ matched → OWNER
+       - 唯一 professional ∈ matched → PROFESSIONAL
+       - mnc ∈ matched → MNC
+       - 矛盾 (owner + professional 等) → UNKNOWN（AI レビューへ）
+       - すべて未マッチ → UNKNOWN（AI レビューへ）
+
+  conflict_resolution:
+    # Tata Communications は GOI + Tata Sons の二重 promoter で rev1=Professional
+    - rule: "if 'Tata Sons' in promoters AND 'PRESIDENT OF INDIA' in promoters → PROFESSIONAL"
+      sample_stocks: ["TATACOMM"]
+    # 「Tata」と「Mahindra」が同時に matched なケース → Mahindra 優先（Mahindra 系列の方が一族色が強い）
+    - rule: "owner family match strength > professional parent match strength"
+      note: "ただし Tata Sons / HDFC / ICICI のような大手機関 promoter が明示的に存在する場合は PROFESSIONAL"
+
+# ============================================================
+# メンテナンス
+# ============================================================
+maintenance:
+  expected_coverage:
+    director_only_in_rev1: 64  # rev1 GT × director_only intersection
+    fp_to_eliminate: 42        # Professional/State/MNC で誤って OWNER 判定された
+    tp_to_preserve: 22         # 真 Owner で持株会社経由の dir+kmp 極小ケース
+  review_cadence: "rev1 更新時 / 新規 corporate action 検出時"
+  validation:
+    # このリストで FP/FN を再評価し、想定と異なるケースを記録
+    benchmark_csv: "notebook/NSE/data/exports/nse/owners_rev1_false_positives.csv"
+    target_metrics:
+      precision: ">= 95%"
+      recall: ">= 97%"
+      f1: ">= 96%"
