@@ -108,26 +108,59 @@ Tier 2 で owner_flag = director_only と判定されたら:
 | ID | 内容 | 優先度 | ステータス |
 |----|------|--------|------------|
 | act-2026-04-30-001 | owners_rev1.normalized.json で owners.json を上書き commit / push | 高 | ✅ 完了 (commit `8fb4aff`) |
-| act-2026-04-30-002 | nse_owner_analysis.ipynb 照合ロジックを ISIN ベースへ書き換え | 高 | pending |
-| act-2026-04-30-003 | 既知一族リスト構築（data/config/nse_promoter_classifier.yaml 想定） | 高 | pending |
-| act-2026-04-30-004 | Tier 2 にハイブリッドルール統合（OWNER_WEAK 降格 + ai_review_needed=True） | 高 | pending |
-| act-2026-04-30-005 | AI 判定 vs rev1 不一致 3 件 (SPANDANA/GLAND/ROUTE) の個別ソース検証 | 中 | pending |
-| act-2026-04-30-006 | excluded_no_natural_no_holding 4 件 (AWL/ASHOKLEY/AEGISLOG/HINDZINC) の例外ルール検討 | 中 | pending |
-| act-2026-04-30-007 | owner_candidates.csv 生成時に rev1 GT との自動 diff レポート出力 | 中 | pending |
-| act-2026-04-30-008 | Phase 3/4 を全 2,263 銘柄に拡大実行 (act-2026-04-13-001 継続) | 中 | pending |
+| act-2026-04-30-002 | nse_owner_analysis.ipynb 照合ロジックを ISIN ベースへ書き換え (Section 6 新設) | 高 | ✅ 完了 (commit `35ed0cb`) |
+| act-2026-04-30-003 | 既知一族リスト構築 `data/config/nse_promoter_classifier.yaml` | 高 | ✅ 完了 (commit `5fdb649`) |
+| act-2026-04-30-004 | Tier 2 にハイブリッドルール統合（director_only 再分類 + OWNER_WEAK 降格） | 高 | ✅ 完了 (commit `35ed0cb`) |
+| act-2026-04-30-005 | AI 判定 vs rev1 不一致 (AWL/GLAND/ROUTE/SPANDANA) の個別ソース検証 | 中 | ✅ 完了 (commit `ab2d63b`, yaml v0.3.0) |
+| act-2026-04-30-006 | excluded_no_natural_no_holding 4 件 (AWL/ASHOKLEY/AEGISLOG/HINDZINC) の例外ルール検討 | 中 | 🔁 superseded by [A-2, 005] |
+| act-2026-04-30-007 | owner_candidates.csv 生成時に rev1 GT との自動 diff レポート出力 (Cell 23 追加) | 中 | ✅ 完了 (commit `befd315`) |
+| act-2026-04-30-008 | Phase 3/4 を全 2,263 銘柄に拡大実行 (act-2026-04-13-001 継続) | 中 | pending（act-009 完了後） |
+| act-2026-04-30-A1 | owner_confirmed_individual のパッシブ識別 (hufi_pct<0.5 AND dir=kmp=0 → passive ラベル切り出し) | 中 | ✅ 完了 (commit `093d03d`) |
+| act-2026-04-30-A2 | Tier 1.5 corporate-vehicle rescue (excluded/ambiguous でも family keyword match なら OWNER 救済) | 高 | ✅ 完了 (commit `ebbe7da`) |
+| act-2026-04-30-A3 | ambiguous_holding_*の自然人検出救済 (OtherIndian/ForeignShareholders 個別行から HUF/敬称/ALLCAPS 人名検出) | 中 | ✅ 完了 (commit `093d03d`) |
+| **act-2026-04-30-009** | **act-008 前提条件: 現状ロジック検証 + 銘柄リスト目視レビュー + ロジック体系レビュードキュメント作成** | **高** | **pending（次着手）** |
 
-## セッション完了状況 (2026-04-30 時点)
+## セッション完了状況 (2026-04-30 最終)
 
-- **完了**: 1 / 8 ActionItem
-  - `act-2026-04-30-001`: commit `8fb4aff` で実装、`origin/main` へ push 済
-- **残**: 7 / 8 ActionItem（高 3 / 中 4）
-- **次セッション着手候補**: 高優先度の 3 件 (act-002, act-003, act-004) は連動するため、`act-2026-04-30-003 → act-2026-04-30-004 → act-2026-04-30-002` の順序で進めるのが効率的
+### 完了状況サマリー
+- **完了**: 9 / 11 ActionItem
+- **superseded**: 1 (act-006 → A-2/005 に包含)
+- **pending**: 1 (act-008、ただし act-009 完了が前提)
+- **新規追加**: act-009 (act-008 の前提条件として追加、BLOCKS 関係を Neo4j に保存)
+
+### 最終メトリクス (rev1 GT 照合, intersection 564)
+
+| 指標 | 当初 | act-004 | A-2 | A-1+A-3 | act-005 | act-007 |
+|---|---|---|---|---|---|---|
+| TP | 403 | 403 | 408 | 408 | 410 | 410 |
+| FP | 45 | 3 | 3 | 3 | **3** | 3 |
+| FN | 7 | 7 | 2 | 2 | **0** | 0 |
+| Precision | 90.0% | 99.3% | 99.3% | 99.3% | **99.3%** | 99.3% |
+| Recall | 98.3% | 98.3% | 99.5% | 99.5% | **100.0%** | 100.0% |
+| F1 | 93.9% | 98.8% | 99.4% | 99.4% | **99.6%** | 99.6% |
+
+**累計改善**: Precision +9.3pt / Recall +1.7pt / F1 +5.7pt、FP 45→3 / FN 7→0
+
+### 残 FP 3 件 (構造的限界、本セッション対象外)
+- INFY (Professional, owner_confirmed_individual_and_director) - Murthy 一族 Director 混在
+- STARHEALTH (Professional, owner_confirmed_individual_and_director) - Jhunjhunwala estate
+- KSB (MNC, owner_confirmed_individual_passive) - A-1 で識別済み
+
+### 関連 commit (origin/main へ push 済)
+- `8fb4aff` - act-001 (rev1 canonical 化)
+- `35ed0cb` - act-002+act-004 (Section 6 + ハイブリッドルール)
+- `5fdb649` - act-003 (既知一族リスト yaml v0.1.0)
+- `ebbe7da` - act-A2 (Tier 1.5 + yaml v0.2.0)
+- `093d03d` - act-A1+act-A3 (passive 識別 + 自然人検出)
+- `ab2d63b` - act-005 (yaml v0.3.0、AWL/GLAND 救済、Recall 100% 達成)
+- `befd315` - act-007 (Cell 23 自動 diff レポート)
 
 ## 次回の議論トピック
 
-- 既知一族リスト (act-2026-04-30-003) の初期値設計：rev1 の FP 42 件 + 真Owner-director_only 22 件から逆引きで初期化、メンテナンスポリシー策定
-- ハイブリッドルール (act-2026-04-30-004) 実装後の再評価サイクル設計
-- AI 判定 vs rev1 不一致 3 件の最終決定（rev1 を信じるか AI を信じるか）
+- act-2026-04-30-009 (現状ロジック検証 + 銘柄リスト目視レビュー) を着手
+  - スコープ: owner_flag 別 全 787 銘柄レビューシート生成 + ロジック体系レビュードキュメント作成
+  - ユーザー目視レビュー結果に基づく yaml 追補・ロジック調整
+  - 完了後に act-008 (Phase 3/4 を 2,263 銘柄に拡大) 着手判断
 
 ## 成果物
 
