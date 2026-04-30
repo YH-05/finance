@@ -25,9 +25,12 @@
 # バージョン: 0.1.0 (seed)
 # 更新日: 2026-04-30
 
-version: "0.2.0"
+version: "0.3.0"
 updated_at: "2026-04-30"
 changelog:
+  v0.3.0:
+    - "AWL (Kuok/Wilmar) と GLAND (Guo/Fosun) を owner_keywords に追加 (act-005)"
+    - "誤マッチ回避のため AWL は 'Lence Pte'、GLAND は 'Fosun' で限定 (Wilmar/Kuok keyword は副作用大)"
   v0.2.0:
     - "Tier 1.5 corporate-vehicle rescue 用 keyword 追加 (act-2026-04-30-A2)"
     - "AEGISLOG (Malhotra), ROUTE (Gupta) family 追加"
@@ -319,6 +322,18 @@ owner_keywords:
   - keyword: "CHAMELIDEVI CHANDRAKANT GUPTA"
     family: "Gupta (Route Mobile)"
     sample_stocks: ["ROUTE"]
+
+  # --- AWL Agri Business / Kuok family (Wilmar International) ---
+  - keyword: "Lence Pte"
+    family: "Kuok (Wilmar)"
+    sample_stocks: ["AWL"]
+    note: "AWL の筆頭 promoter (56.94%)。Wilmar International (シンガポール上場) の 100% 子会社。Wilmar は Robert Kuok 一族 (マレーシア華僑) 支配。元 Adani Wilmar JV だが 2024 年に Adani 売却済で純 Kuok 一族支配。'Wilmar' keyword は RENUKA (rev1=MNC) で誤マッチするため不採用、'Lence Pte' で固有限定。"
+
+  # --- Gland Pharma / Guo family (Fosun) ---
+  - keyword: "Fosun"
+    family: "Guo (Fosun)"
+    sample_stocks: ["GLAND"]
+    note: "GLAND の筆頭 promoter (Fosun Pharma Industrial Pte. Ltd 51.83%)。Fosun = 中国最大の民間複合企業、創業者 Guo Guangchang 一族支配。AI が ai_mnc 判定したが rev1 では Owner 分類 (一族支配構造を尊重)。'Fosun' keyword は GLAND のみで他に副作用なし。"
 
 # ============================================================
 # Professional / Trust / Holding parent keywords
