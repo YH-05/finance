@@ -1,0 +1,46 @@
+isin,rev1_name,rev1_category,symbol,owner_flag,owner_flag_ai,dir_pct,kmp_pct,promoter_pct
+INE020B01018,REC LTD,State,RECLTD,owner_confirmed_director_only,,0.0,0.0,52.63
+INE123W01016,SBI LIFE INSURANCE CO LTD,State,SBILIFE,owner_confirmed_director_only,,0.0,0.0,55.34
+INE010V01017,L&T TECHNOLOGY SERVICES LTD,Professional,LTTS,owner_confirmed_director_only,,0.47,0.02,73.58
+INE127D01025,HDFC ASSET MANAGEMENT CO LTD,Professional,HDFCAMC,owner_confirmed_director_only,,0.19,0.0,52.38
+INE094A01015,HINDUSTAN PETROLEUM CORP,State,HINDPETRO,owner_confirmed_director_only,,0.0,0.0,54.9
+INE103A01014,MANGALORE REFINERY & PETRO,State,MRPL,owner_confirmed_director_only,,0.0,0.0,88.58
+INE839M01018,SCHNEIDER ELECTRIC INFRASTRU,MNC,SCHNEIDER,owner_confirmed_director_only,,0.0,0.0,75.0
+INE870H01013,NETWORK 18 MEDIA & INVTS LTD,Professional,NETWORK18,owner_confirmed_director_only,,0.0,0.0,56.89
+INE575P01011,STAR HEALTH & ALLIED INSURAN,Professional,STARHEALTH,owner_confirmed_individual_and_director,,0.24,0.13,57.98
+INE503A01015,DCB BANK LTD,Professional,DCBBANK,owner_confirmed_director_only,,0.16,0.01,16.24
+INE356A01018,MPHASIS LTD,Professional,MPHASIS,owner_confirmed_director_only,,0.21,0.0,30.59
+INE716A01013,WHIRLPOOL OF INDIA LTD,MNC,WHIRLPOOL,owner_confirmed_director_only,,0.0,0.0,39.76
+INE192A01025,TATA CONSUMER PRODUCTS LTD,Professional,TATACONSUM,owner_confirmed_director_only,,0.01,0.0,33.84
+INE151A01013,TATA COMMUNICATIONS LTD,Professional,TATACOMM,owner_confirmed_director_only,,0.0,0.0,58.86
+INE092A01019,TATA CHEMICALS LTD,Professional,TATACHEM,owner_confirmed_director_only,,0.0,0.0,37.98
+INE621H01010,RELIGARE ENTERPRISES LTD,Professional,RELIGARE,owner_confirmed_director_only,,0.0,0.0,26.27
+INE009A01021,INFOSYS LTD,Professional,INFY,owner_confirmed_individual_and_director,,0.04,0.01,14.52
+INE477A01020,CAN FIN HOMES LTD,State,CANFINHOME,owner_confirmed_director_only,,0.0,0.0,29.99
+INE081A01020,TATA STEEL LTD,Professional,TATASTEEL,owner_confirmed_director_only,,0.02,0.0,33.19
+INE322A01010,GILLETTE INDIA LTD,MNC,GILLETTE,owner_confirmed_director_only,,0.0,0.0,75.0
+INE010J01012,TEJAS NETWORKS LTD,Professional,TEJASNET,owner_confirmed_director_only,,0.19,0.01,53.46
+INE726G01019,ICICI PRUDENTIAL LIFE INSURA,Professional,ICICIPRULI,owner_confirmed_director_only,,0.0,0.0,72.88
+INE255A01020,EPL LTD,MNC,EPL,owner_confirmed_director_only,,0.22,0.01,26.38
+INE670A01012,TATA ELXSI LTD,Professional,TATAELXSI,owner_confirmed_director_only,,0.0,0.0,43.9
+INE795G01014,HDFC LIFE INSURANCE CO LTD,Professional,HDFCLIFE,owner_confirmed_director_only,,0.06,0.0,50.21
+INE517F01014,GUJARAT PIPAVAV PORT LTD,MNC,GPPL,owner_confirmed_director_only,,0.0,0.0,44.01
+INE053A01029,INDIAN HOTELS CO LTD,Professional,INDHOTEL,owner_confirmed_director_only,,0.01,0.0,38.12
+INE849A01020,TRENT LTD,Professional,TRENT,owner_confirmed_director_only,,0.27,0.0,37.01
+INE347G01014,PETRONET LNG LTD,State,PETRONET,owner_confirmed_director_only,,0.0,0.0,50.0
+INE572E01012,PNB HOUSING FINANCE LTD,Professional,PNBHOUSING,owner_confirmed_director_only,,0.0,0.01,28.04
+INE07T201019,RESTAURANT BRANDS ASIA LTD,Professional,RBA,owner_confirmed_director_only,,0.0,0.32,11.26
+INE736A01011,CENTRAL DEPOSITORY SERVICES,Professional,CDSL,owner_confirmed_director_only,,0.0,0.0,15.0
+INE467B01029,TATA CONSULTANCY SVCS LTD,Professional,TCS,owner_confirmed_director_only,,0.01,0.0,71.77
+INE216P01012,AAVAS FINANCIERS LTD,Professional,AAVAS,owner_confirmed_director_only,,0.0,0.93,48.95
+INE806T01020,SAPPHIRE FOODS INDIA LTD,Professional,SAPPHIRE,owner_confirmed_director_only,,0.5,0.0,26.07
+INE155A01022,TATA MOTORS PASSENGER VEHICL,Professional,TMPV,owner_confirmed_director_only,,0.03,0.0,42.56
+INE765G01017,ICICI LOMBARD GENERAL INSURA,Professional,ICICIGI,owner_confirmed_director_only,,0.0,0.05,51.31
+INE517B01013,TATA TELESERVICES MAHARASHTR,Professional,TTML,owner_confirmed_director_only,,0.0,0.0,74.36
+INE018E01016,SBI CARDS & PAYMENT SERVICES,State,SBICARD,owner_confirmed_director_only,,0.0,0.0,68.58
+INE999A01023,KSB LTD,MNC,KSB,owner_confirmed_individual,,0.0,0.0,69.8
+INE026A01025,GUJARAT STATE FERT & CHEMICA,State,GSFC,owner_confirmed_director_only,,0.0,0.0,37.84
+INE245A01021,TATA POWER CO LTD,Professional,TATAPOWER,owner_confirmed_director_only,,0.02,0.0,46.86
+INE572A01036,J.B. CHEMICALS & PHARMA LTD,Professional,JBCHEPHARM,owner_confirmed_director_only,,0.0,0.0,48.78
+INE214T01019,LTM LTD,Professional,LTM,owner_confirmed_director_only,,0.1,0.0,68.53
+INE498L01015,L&T FINANCE LTD,Professional,LTF,owner_confirmed_director_only,,0.01,0.02,66.03

@@ -1,0 +1,8 @@
+isin,rev1_name,symbol,owner_flag,owner_flag_ai,promoter_pct
+INE699H01024,AWL AGRI BUSINESS LTD,AWL,excluded_no_natural_no_holding,,56.94
+INE450U01017,ROUTE MOBILE LTD,ROUTE,ambiguous_holding_foreign,ai_mnc,74.85
+INE068V01023,GLAND PHARMA LTD,GLAND,ambiguous_holding_foreign,ai_mnc,51.83
+INE208C01025,AEGIS LOGISTICS LTD,AEGISLOG,excluded_no_natural_no_holding,,58.1
+INE208A01029,ASHOK LEYLAND LTD,ASHOKLEY,excluded_no_natural_no_holding,,51.51
+INE267A01025,HINDUSTAN ZINC LTD,HINDZINC,excluded_state_dominant,,61.84
+INE572J01011,SPANDANA SPHOORTY FINANCIAL,SPANDANA,ambiguous_holding_foreign,ai_professional,48.16
