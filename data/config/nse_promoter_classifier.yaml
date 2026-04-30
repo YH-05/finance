@@ -25,8 +25,16 @@
 # バージョン: 0.1.0 (seed)
 # 更新日: 2026-04-30
 
-version: "0.1.0"
+version: "0.2.0"
 updated_at: "2026-04-30"
+changelog:
+  v0.2.0:
+    - "Tier 1.5 corporate-vehicle rescue 用 keyword 追加 (act-2026-04-30-A2)"
+    - "AEGISLOG (Malhotra), ROUTE (Gupta) family 追加"
+    - "RIL keyword を 'RELIANCE INDUSTRIES LIMITED' に置換 (DRILLING/TRIL 過剰マッチ防止)"
+    - "SPANDANA を Kedaara sample_stocks に追記"
+  v0.1.0:
+    - "rev1 GT × director_only 64 銘柄からの seed 抽出"
 
 # ============================================================
 # Owner family / vehicle keywords
@@ -100,9 +108,10 @@ owner_keywords:
   - keyword: "Ambani"
     family: "Ambani"
     sample_stocks: []
-  - keyword: "RIL"
+  - keyword: "RELIANCE INDUSTRIES LIMITED"
     family: "Ambani"
     sample_stocks: []
+    note: "RIL 3文字は DRILLING/TRIL に substring 過剰マッチするため正式社名で照合"
 
   # --- Bajaj Group ---
   - keyword: "Bajaj"
@@ -139,12 +148,16 @@ owner_keywords:
   - keyword: "Anil Agarwal"
     family: "Vedanta"
     sample_stocks: ["HINDZINC"]
-  - keyword: "Vedanta"
+    override_state: true  # GOI と Vedanta 二重 promoter (HINDZINC) で Vedanta 優先
+  - keyword: "VEDANTA LIMITED"
     family: "Vedanta"
     sample_stocks: ["HINDZINC"]
+    override_state: true
+    note: "HINDZINC: 'VEDANTA LIMITED' が筆頭 promoter (33%+)、PRESIDENT OF INDIA は残 (28%)"
   - keyword: "Volcan Investments"
     family: "Vedanta"
     sample_stocks: ["HINDZINC"]
+    override_state: true
 
   # --- Havells / Anil Rai Gupta ---
   - keyword: "Abhinav Rai Gupta"
@@ -279,8 +292,33 @@ owner_keywords:
   # --- VMM / Kedaara ---
   - keyword: "Kedaara"
     family: "Kedaara Capital (PE-backed)"
-    sample_stocks: ["VMM"]
-    note: "PE backed だが rev1 では Owner 分類"
+    sample_stocks: ["VMM", "SPANDANA"]
+    note: "PE backed だが rev1 では Owner 分類。SPANDANA も Kedaara Capital Fund III LLP 経由"
+
+  # --- AEGIS LOGISTICS / Sudhir Malhotra Group ---
+  - keyword: "Sudhir Omprakash Malhotra"
+    family: "Malhotra (Aegis)"
+    sample_stocks: ["AEGISLOG"]
+  - keyword: "Asia Infrastructure Investment"
+    family: "Malhotra (Aegis)"
+    sample_stocks: ["AEGISLOG"]
+  - keyword: "Trans Asia Petroleum"
+    family: "Malhotra (Aegis)"
+    sample_stocks: ["AEGISLOG"]
+
+  # --- ROUTE MOBILE / Gupta family (Mumbai-based, Route Mobile founder) ---
+  - keyword: "RAJDIPKUMAR CHANDRAKANT GUPTA"
+    family: "Gupta (Route Mobile)"
+    sample_stocks: ["ROUTE"]
+  - keyword: "SANDIPKUMAR CHANDRAKANT GUPTA"
+    family: "Gupta (Route Mobile)"
+    sample_stocks: ["ROUTE"]
+  - keyword: "CHANDRAKANT JAGANNATH GUPTA"
+    family: "Gupta (Route Mobile)"
+    sample_stocks: ["ROUTE"]
+  - keyword: "CHAMELIDEVI CHANDRAKANT GUPTA"
+    family: "Gupta (Route Mobile)"
+    sample_stocks: ["ROUTE"]
 
 # ============================================================
 # Professional / Trust / Holding parent keywords
@@ -447,6 +485,10 @@ professional_keywords:
 #   promoter_names_full_list にこれらが含まれるなら STATE 扱い
 # ============================================================
 state_keywords:
+  - keyword: "Department of Investment and Public Asset Management"
+    parent: "DIPAM (GOI)"
+    sample_stocks: ["IDEA"]
+    note: "DIPAM = GOI 株式管理機関。IDEA (Vodafone Idea) で筆頭 promoter (>30%)、Birla 残 (16%)。Owner 救済過剰防止のため明示登録"
   - keyword: "PRESIDENT OF INDIA"
     parent: "Government of India"
     sample_stocks: ["HINDPETRO", "RECLTD", "TATACOMM"]
