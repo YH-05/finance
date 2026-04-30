@@ -1,547 +1,633 @@
-﻿isin,company_name_raw,owners_cat,symbol,company_name_owners,company_name_cand,owner_flag,owner_flag_ai,owner_flag_final
-INE280A01028,TITAN CO LTD,Professional,TITAN,Titan Company Limited,Titan Company Limited,excluded_state_dominant,,NOT_OWNER
-INE081A01020,TATA STEEL LTD,Professional,TATASTEEL,Tata Steel Limited,Tata Steel Limited,owner_confirmed_director_only,,OWNER
-INE226A01021,VOLTAS LTD,Professional,VOLTAS,Voltas Limited,Voltas Limited,ambiguous_holding_indian,ai_professional,NOT_OWNER
-INE095A01012,INDUSIND BANK LTD,Owner,INDUSINDBK,IndusInd Bank Limited,IndusInd Bank Limited,owner_confirmed_director_only,,OWNER
-INE849A01020,TRENT LTD,Professional,TRENT,Trent Limited,Trent Limited,owner_confirmed_director_only,,OWNER
-INE545A01024,HEG LTD,Owner,HEG,HEG Limited,HEG Limited,owner_confirmed_individual_and_director,,OWNER
-INE371A01025,GRAPHITE INDIA LTD,Owner,GRAPHITE,Graphite India Limited,Graphite India Limited,owner_confirmed_individual_and_director,,OWNER
-INE398A01010,VENKY'S (INDIA) LTD,Owner,VENKEYS,Venky's (India) Limited,Venky's (India) Limited,owner_confirmed_individual,,OWNER
-INE452O01016,FUTURE LIFESTYLE FASHIONS LT,Owner,FLFL,Future Lifestyle Fashions Limited,Future Lifestyle Fashions Limited,owner_confirmed_individual_and_director,,OWNER
-INE054A01027,V.I.P. INDUSTRIES LTD,Owner,VIPIND,VIP Industries Limited,VIP Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE296A01032,BAJAJ FINANCE LTD,Owner,BAJFINANCE,Bajaj Finance Limited,Bajaj Finance Limited,owner_confirmed_individual_and_director,,OWNER
-INE113A01013,GUJARAT NARMADA VALLEY FERT,State,GNFC,Gujarat Narmada Valley Fertilizers and Chemicals Limited,Gujarat Narmada Valley Fertilizers and Chemicals Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
-INE042A01014,ESCORTS KUBOTA LTD,Owner,ESCORTS,Escorts Kubota Limited,Escorts Kubota Limited,ambiguous_mnc_jv_candidate,ai_owner_weak,OWNER_WEAK
-INE089C01029,STERLITE TECHNOLOGIES LTD,Owner,STLTECH,Sterlite Technologies Limited,Sterlite Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE376G01013,BIOCON LTD,Owner,BIOCON,Biocon Limited,Biocon Limited,owner_confirmed_individual_and_director,,OWNER
-INE855B01025,RAIN INDUSTRIES LTD,Owner,RAIN,Rain Industries Limited,Rain Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE180C01042,CAPRI GLOBAL CAPITAL LTD,Owner,CGCL,Capri Global Capital Limited,Capri Global Capital Limited,owner_confirmed_individual_and_director,,OWNER
-INE410B01037,VINATI ORGANICS LTD,Owner,VINATIORGA,Vinati Organics Limited,Vinati Organics Limited,owner_confirmed_individual,,OWNER
-INE951I01027,V-GUARD INDUSTRIES LTD,Owner,VGUARD,V-Guard Industries Limited,V-Guard Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE944F01028,RADICO KHAITAN LTD,Owner,RADICO,Radico Khaitan Limited,Radico Khaitan Limited,owner_confirmed_individual_and_director,,OWNER
-INE789E01012,JK PAPER LTD,Owner,JKPAPER,JK Paper Limited,JK Paper Limited,owner_confirmed_individual,,OWNER
-INE918I01026,BAJAJ FINSERV LTD,Owner,BAJAJFINSV,Bajaj Finserv Limited,Bajaj Finserv Limited,owner_confirmed_individual_and_director,,OWNER
-INE124G01033,DELTA CORP LTD,Owner,DELTACORP,Delta Corp Limited,Delta Corp Limited,owner_confirmed_individual_and_director,,OWNER
-INE522D01027,MANAPPURAM FINANCE LTD,Owner,MANAPPURAM,Manappuram Finance Limited,Manappuram Finance Limited,owner_confirmed_individual_and_director,,OWNER
-INE532F01054,EDELWEISS FINANCIAL SERVICES,Owner,EDELWEISS,Edelweiss Financial Services Limited,Edelweiss Financial Services Limited,owner_confirmed_individual_and_director,,OWNER
-INE423A01024,ADANI ENTERPRISES LTD,Owner,ADANIENT,Adani Enterprises Limited,Adani Enterprises Limited,owner_confirmed_individual_and_director,,OWNER
-INE248A01017,ITI LTD,State,ITI,ITI Limited,ITI Limited,excluded_state_dominant,,NOT_OWNER
-INE288B01029,DEEPAK NITRITE LTD,Owner,DEEPAKNTR,Deepak Nitrite Limited,Deepak Nitrite Limited,owner_confirmed_individual_and_director,,OWNER
-INE878B01027,KEI INDUSTRIES LTD,Owner,KEI,KEI Industries Limited,KEI Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE019A01038,JSW STEEL LTD,Owner,JSWSTEEL,JSW Steel Limited,JSW Steel Limited,owner_confirmed_individual_and_director,,OWNER
-INE805D01034,SUNTECK REALTY LTD,Owner,SUNTECK,Sunteck Realty Limited,Sunteck Realty Limited,owner_confirmed_individual_and_director,,OWNER
-INE414G01012,MUTHOOT FINANCE LTD,Owner,MUTHOOTFIN,Muthoot Finance Limited,Muthoot Finance Limited,owner_confirmed_individual_and_director,,OWNER
-INE787D01026,BALKRISHNA INDUSTRIES LTD,Owner,BALKRISIND,Balkrishna Industries Limited,Balkrishna Industries Limited,owner_confirmed_individual,,OWNER
-INE769A01020,AARTI INDUSTRIES LIMITED,Owner,AARTIIND,Aarti Industries Limited,Aarti Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE038A01020,HINDALCO INDUSTRIES LTD,Owner,HINDALCO,Hindalco Industries Limited,Hindalco Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE050A01025,BOMBAY BURMAH TRADING CORP,Owner,BBTC,The Bombay Burmah Trading Corporation Limited,The Bombay Burmah Trading Corporation Limited,owner_confirmed_individual,,OWNER
-INE871C01038,AVANTI FEEDS LTD,Owner,AVANTIFEED,Avanti Feeds Limited,Avanti Feeds Limited,owner_confirmed_individual_and_director,,OWNER
-INE006I01046,ASTRAL LTD,Owner,ASTRAL,Astral Limited,Astral Limited,owner_confirmed_individual,,OWNER
-INE192R01011,AVENUE SUPERMARTS LTD,Owner,DMART,Avenue Supermarts Limited,Avenue Supermarts Limited,owner_confirmed_individual_and_director,,OWNER
-INE203G01027,INDRAPRASTHA GAS LTD,State,IGL,Indraprastha Gas Limited,Indraprastha Gas Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
-INE499A01024,DCM SHRIRAM LTD,Owner,DCMSHRIRAM,DCM Shriram Limited,DCM Shriram Limited,owner_confirmed_individual_and_director,,OWNER
-INE671A01010,HONEYWELL AUTOMATION INDIA,MNC,HONAUT,Honeywell Automation India Limited,Honeywell Automation India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE169A01031,COROMANDEL INTERNATIONAL LTD,Owner,COROMANDEL,Coromandel International Limited,Coromandel International Limited,owner_confirmed_individual_and_director,,OWNER
-INE176B01034,HAVELLS INDIA LTD,Owner,HAVELLS,Havells India Limited,Havells India Limited,owner_confirmed_director_only,,OWNER
-INE205A01025,VEDANTA LTD,Owner,VEDL,Vedanta Limited,Vedanta Limited,ambiguous_mnc_jv_candidate,ai_owner,OWNER
-INE176A01028,BATA INDIA LTD,MNC,BATAINDIA,Bata India Limited,Bata India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE716A01013,WHIRLPOOL OF INDIA LTD,MNC,WHIRLPOOL,Whirlpool of India Limited,Whirlpool of India Limited,owner_confirmed_director_only,,OWNER
-INE100A01010,ATUL LTD,Owner,ATUL,Atul Limited,Atul Limited,owner_confirmed_individual_and_director,,OWNER
-INE030A01027,HINDUSTAN UNILEVER LTD,MNC,HINDUNILVR,Hindustan Unilever Limited,Hindustan Unilever Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE562A01011,INDIAN BANK,State,INDIANB,Indian Bank,Indian Bank,excluded_state_dominant,,NOT_OWNER
-INE216A01030,BRITANNIA INDUSTRIES LTD,Owner,BRITANNIA,Britannia Industries Limited,Britannia Industries Limited,ambiguous_mnc_jv_candidate,ai_owner_weak,OWNER_WEAK
-INE503A01015,DCB BANK LTD,Professional,DCBBANK,DCB Bank Limited,DCB Bank Limited,owner_confirmed_director_only,,OWNER
-INE356A01018,MPHASIS LTD,Professional,MPHASIS,MphasiS Limited,MphasiS Limited,owner_confirmed_director_only,,OWNER
-INE010V01017,L&T TECHNOLOGY SERVICES LTD,Professional,LTTS,L&T Technology Services Limited,L&T Technology Services Limited,owner_confirmed_director_only,,OWNER
-INE318A01026,PIDILITE INDUSTRIES LTD,Owner,PIDILITIND,Pidilite Industries Limited,Pidilite Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE338I01027,MOTILAL OSWAL FINANCIAL SERV,Owner,MOTILALOFS,Motilal Oswal Financial Services Limited,Motilal Oswal Financial Services Limited,owner_confirmed_individual_and_director,,OWNER
-INE191H01014,PVR INOX LTD,Owner,PVRINOX,PVR INOX Limited,PVR INOX Limited,owner_confirmed_individual,,OWNER
-INE301A01014,RAYMOND LTD,Owner,RAYMOND,Raymond Limited,Raymond Limited,owner_confirmed_individual_and_director,,OWNER
-INE494B01023,TVS MOTOR CO LTD,Owner,TVSMOTOR,TVS Motor Company Limited,TVS Motor Company Limited,owner_confirmed_individual_and_director,,OWNER
-INE121A01024,CHOLAMANDALAM INVESTMENT AND,Owner,CHOLAFIN,Cholamandalam Investment and Finance Company Limited,Cholamandalam Investment and Finance Company Limited,owner_confirmed_individual_and_director,,OWNER
-INE774D01024,MAHINDRA & MAHINDRA FIN SECS,Owner,M&MFIN,Mahindra & Mahindra Financial Services Limited,Mahindra & Mahindra Financial Services Limited,owner_confirmed_director_only,,OWNER
-INE484J01027,GODREJ PROPERTIES LTD,Owner,GODREJPROP,Godrej Properties Limited,Godrej Properties Limited,owner_confirmed_individual_and_director,,OWNER
-INE389H01022,KEC INTERNATIONAL LTD,Owner,KEC,KEC International Limited,KEC International Limited,owner_confirmed_individual_and_director,,OWNER
-INE917M01012,DILIP BUILDCON LTD,Owner,DBL,Dilip Buildcon Limited,Dilip Buildcon Limited,owner_confirmed_individual,,OWNER
-INE267A01025,HINDUSTAN ZINC LTD,Owner,HINDZINC,Hindustan Zinc Limited,Hindustan Zinc Limited,excluded_state_dominant,,NOT_OWNER
-INE239A01024,NESTLE INDIA LTD,MNC,NESTLEIND,Nestle India Limited,Nestle India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE761H01022,PAGE INDUSTRIES LTD,Owner,PAGEIND,Page Industries Limited,Page Industries Limited,owner_probable_nri_family,ai_owner,OWNER
-INE102D01028,GODREJ CONSUMER PRODUCTS LTD,Owner,GODREJCP,Godrej Consumer Products Limited,Godrej Consumer Products Limited,owner_confirmed_individual_and_director,,OWNER
-INE302A01020,EXIDE INDUSTRIES LTD,Owner,EXIDEIND,Exide Industries Limited,Exide Industries Limited,owner_probable_nri_family,ai_owner,OWNER
-INE470A01017,3M INDIA LTD,MNC,3MINDIA,3M India Limited,3M India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE531A01024,KANSAI NEROLAC PAINTS LTD,MNC,KANSAINER,Kansai Nerolac Paints Limited,Kansai Nerolac Paints Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE200M01039,VARUN BEVERAGES LTD,Owner,VBL,Varun Beverages Limited,Varun Beverages Limited,owner_confirmed_individual_and_director,,OWNER
-INE118A01012,BAJAJ HOLDINGS AND INVESTMEN,Owner,BAJAJHLDNG,Bajaj Holdings & Investment Limited,Bajaj Holdings & Investment Limited,owner_confirmed_individual_and_director,,OWNER
-INE002S01010,MAHANAGAR GAS LTD,State,MGL,Mahanagar Gas Limited,Mahanagar Gas Limited,excluded_state_dominant,,NOT_OWNER
-INE092A01019,TATA CHEMICALS LTD,Professional,TATACHEM,Tata Chemicals Limited,Tata Chemicals Limited,owner_confirmed_director_only,,OWNER
-INE347G01014,PETRONET LNG LTD,State,PETRONET,Petronet LNG Limited,Petronet LNG Limited,owner_confirmed_director_only,,OWNER
-INE237A01036,KOTAK MAHINDRA BANK LTD,Owner,KOTAKBANK,Kotak Mahindra Bank Limited,Kotak Mahindra Bank Limited,owner_confirmed_individual_and_director,,OWNER
-INE628A01036,UPL LTD,Owner,UPL,UPL Limited,UPL Limited,owner_confirmed_individual_and_director,,OWNER
-INE797F01020,JUBILANT FOODWORKS LTD,Owner,JUBLFOOD,Jubilant Foodworks Limited,Jubilant Foodworks Limited,owner_confirmed_individual_and_director,,OWNER
-INE463A01038,BERGER PAINTS INDIA LTD,Owner,BERGEPAINT,Berger Paints (I) Limited,Berger Paints (I) Limited,owner_confirmed_individual_and_director,,OWNER
-INE129A01019,GAIL INDIA LTD,State,GAIL,GAIL (India) Limited,GAIL (India) Limited,excluded_state_dominant,,NOT_OWNER
-INE663F01032,INFO EDGE INDIA LTD,Owner,NAUKRI,Info Edge (India) Limited,Info Edge (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE883A01011,MRF LTD,Owner,MRF,MRF Limited,MRF Limited,owner_confirmed_individual_and_director,,OWNER
-INE211B01039,PHOENIX MILLS LTD,Owner,PHOENIXLTD,The Phoenix Mills Limited,The Phoenix Mills Limited,owner_confirmed_individual_and_director,,OWNER
-INE486A01021,CESC LTD,Owner,CESC,CESC Limited,CESC Limited,owner_confirmed_individual_and_director,,OWNER
-INE196A01026,MARICO LTD,Owner,MARICO,Marico Limited,Marico Limited,owner_confirmed_individual_and_director,,OWNER
-INE139A01034,NATIONAL ALUMINIUM CO LTD,State,NATIONALUM,National Aluminium Company Limited,National Aluminium Company Limited,excluded_state_dominant,,NOT_OWNER
-INE331A01037,RAMCO CEMENTS LTD/THE,Owner,RAMCOCEM,The Ramco Cements Limited,The Ramco Cements Limited,owner_confirmed_individual_and_director,,OWNER
-INE093I01010,OBEROI REALTY LTD,Owner,OBEROIRLTY,Oberoi Realty Limited,Oberoi Realty Limited,owner_confirmed_individual_and_director,,OWNER
-INE455I01029,KAVERI SEED CO LTD,Owner,KSCL,Kaveri Seed Company Limited,Kaveri Seed Company Limited,owner_confirmed_individual_and_director,,OWNER
-INE585B01010,MARUTI SUZUKI INDIA LTD,MNC,MARUTI,Maruti Suzuki India Limited,Maruti Suzuki India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE364U01010,ADANI GREEN ENERGY LTD,Owner,ADANIGREEN,Adani Green Energy Limited,Adani Green Energy Limited,owner_confirmed_individual_and_director,,OWNER
-INE647A01010,SRF LTD,Owner,SRF,SRF Limited,SRF Limited,owner_confirmed_individual_and_director,,OWNER
-INE814H01029,ADANI POWER LTD,Owner,ADANIPOWER,Adani Power Limited,Adani Power Limited,owner_confirmed_individual,,OWNER
-INE800H01010,OMAXE LTD,Owner,OMAXE,Omaxe Limited,Omaxe Limited,owner_confirmed_individual,,OWNER
-INE016A01026,DABUR INDIA LTD,Owner,DABUR,Dabur India Limited,Dabur India Limited,owner_confirmed_individual_and_director,,OWNER
-INE021A01026,ASIAN PAINTS LTD,Owner,ASIANPAINT,Asian Paints Limited,Asian Paints Limited,owner_confirmed_individual_and_director,,OWNER
-INE467B01029,TATA CONSULTANCY SVCS LTD,Professional,TCS,Tata Consultancy Services Limited,Tata Consultancy Services Limited,owner_confirmed_director_only,,OWNER
-INE271C01023,DLF LTD,Owner,DLF,DLF Limited,DLF Limited,owner_confirmed_individual_and_director,,OWNER
-INE220B01022,KALPATARU PROJECTS INTERNATI,Owner,KPIL,Kalpataru Projects International Limited,Kalpataru Projects International Limited,owner_confirmed_individual_and_director,,OWNER
-INE438A01022,APOLLO TYRES LTD,Owner,APOLLOTYRE,Apollo Tyres Limited,Apollo Tyres Limited,owner_confirmed_individual,,OWNER
-INE813H01021,TORRENT POWER LTD,Owner,TORNTPOWER,Torrent Power Limited,Torrent Power Limited,owner_confirmed_individual,,OWNER
-INE192A01025,TATA CONSUMER PRODUCTS LTD,Professional,TATACONSUM,TATA CONSUMER PRODUCTS LIMITED,TATA CONSUMER PRODUCTS LIMITED,owner_confirmed_director_only,,OWNER
-INE070A01015,SHREE CEMENT LTD,Owner,SHREECEM,SHREE CEMENT LIMITED,SHREE CEMENT LIMITED,owner_confirmed_individual,,OWNER
-INE742F01042,ADANI PORTS AND SPECIAL ECON,Owner,ADANIPORTS,Adani Ports and Special Economic Zone Limited,Adani Ports and Special Economic Zone Limited,owner_confirmed_individual_and_director,,OWNER
-INE671H01015,SOBHA LTD,Owner,SOBHA,Sobha Limited,Sobha Limited,owner_confirmed_individual_and_director,,OWNER
-INE119A01028,BALRAMPUR CHINI MILLS LTD,Owner,BALRAMCHIN,Balrampur Chini Mills Limited,Balrampur Chini Mills Limited,owner_confirmed_individual_and_director,,OWNER
-INE686F01025,UNITED BREWERIES LTD,MNC,UBL,United Breweries Limited,United Breweries Limited,ambiguous_mnc_jv_candidate,ai_mnc,NOT_OWNER
-INE233A01035,GODREJ INDUSTRIES LTD,Owner,GODREJIND,Godrej Industries Limited,Godrej Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE481G01011,ULTRATECH CEMENT LTD,Owner,ULTRACEMCO,UltraTech Cement Limited,UltraTech Cement Limited,owner_confirmed_individual_and_director,,OWNER
-INE424H01027,SUN TV NETWORK LTD,Owner,SUNTV,Sun TV Network Limited,Sun TV Network Limited,owner_confirmed_individual_and_director,,OWNER
-INE752E01010,POWER GRID CORP OF INDIA LTD,State,POWERGRID,Power Grid Corporation of India Limited,Power Grid Corporation of India Limited,excluded_state_dominant,,NOT_OWNER
-INE669C01036,TECH MAHINDRA LTD,Owner,TECHM,Tech Mahindra Limited,Tech Mahindra Limited,owner_confirmed_director_only,,OWNER
-INE259A01022,COLGATE PALMOLIVE (INDIA),MNC,COLPAL,Colgate Palmolive (India) Limited,Colgate Palmolive (India) Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE066A01021,EICHER MOTORS LTD,Owner,EICHERMOT,Eicher Motors Limited,Eicher Motors Limited,owner_confirmed_individual_and_director,,OWNER
-INE094A01015,HINDUSTAN PETROLEUM CORP,State,HINDPETRO,Hindustan Petroleum Corporation Limited,Hindustan Petroleum Corporation Limited,owner_confirmed_director_only,,OWNER
-INE053A01029,INDIAN HOTELS CO LTD,Professional,INDHOTEL,The Indian Hotels Company Limited,The Indian Hotels Company Limited,owner_confirmed_director_only,,OWNER
-INE477A01020,CAN FIN HOMES LTD,State,CANFINHOME,Can Fin Homes Limited,Can Fin Homes Limited,owner_confirmed_director_only,,OWNER
-INE603J01030,PI INDUSTRIES LTD,Owner,PIIND,PI Industries Limited,PI Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE062A01020,STATE BANK OF INDIA,State,SBIN,State Bank of India,State Bank of India,excluded_state_dominant,,NOT_OWNER
-INE047A01021,GRASIM INDUSTRIES LTD,Owner,GRASIM,Grasim Industries Limited,Grasim Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE540L01014,ALKEM LABORATORIES LTD,Owner,ALKEM,Alkem Laboratories Limited,Alkem Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
-INE111A01025,CONTAINER CORP OF INDIA LTD,State,CONCOR,Container Corporation of India Limited,Container Corporation of India Limited,excluded_state_dominant,,NOT_OWNER
-INE615P01015,QUESS CORP LTD,Owner,QUESS,Quess Corp Limited,Quess Corp Limited,owner_confirmed_individual_and_director,,OWNER
-INE216P01012,AAVAS FINANCIERS LTD,Professional,AAVAS,Aavas Financiers Limited,Aavas Financiers Limited,owner_confirmed_director_only,,OWNER
-INE136B01020,CYIENT LTD,Owner,CYIENT,Cyient Limited,Cyient Limited,owner_confirmed_individual_and_director,,OWNER
-INE246F01010,GUJARAT STATE PETRONET LTD,State,GSPL,Gujarat State Petronet Limited,Gujarat State Petronet Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
-INE361B01024,DIVI'S LABORATORIES LTD,Owner,DIVISLAB,Divi's Laboratories Limited,Divi's Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
-INE0FS801015,MOTHERSON SUMI WIRING INDIA,Owner,MSUMI,Motherson Sumi Wiring India Limited,Motherson Sumi Wiring India Limited,owner_confirmed_individual_and_director,,OWNER
-INE242A01010,INDIAN OIL CORP LTD,State,IOC,Indian Oil Corporation Limited,Indian Oil Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE101A01026,MAHINDRA & MAHINDRA LTD,Owner,M&M,Mahindra & Mahindra Limited,Mahindra & Mahindra Limited,owner_confirmed_individual_and_director,,OWNER
-INE765G01017,ICICI LOMBARD GENERAL INSURA,Professional,ICICIGI,ICICI Lombard General Insurance Company Limited,ICICI Lombard General Insurance Company Limited,owner_confirmed_director_only,,OWNER
-INE358A01014,ABBOTT INDIA LTD,MNC,ABBOTINDIA,Abbott India Limited,Abbott India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE482A01020,CEAT LTD,Owner,CEATLTD,CEAT Limited,CEAT Limited,owner_confirmed_individual_and_director,,OWNER
-INE152A01029,THERMAX LTD,Owner,THERMAX,Thermax Limited,Thermax Limited,owner_confirmed_individual_and_director,,OWNER
-INE685A01028,TORRENT PHARMACEUTICALS LTD,Owner,TORNTPHARM,Torrent Pharmaceuticals Limited,Torrent Pharmaceuticals Limited,owner_confirmed_individual_and_director,,OWNER
-INE029A01011,BHARAT PETROLEUM CORP LTD,State,BPCL,Bharat Petroleum Corporation Limited,Bharat Petroleum Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE476A01022,CANARA BANK,State,CANBK,Canara Bank,Canara Bank,excluded_state_dominant,,NOT_OWNER
-INE182A01018,PFIZER LIMITED,MNC,PFIZER,Pfizer Limited,Pfizer Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE191B01025,WELSPUN CORP LTD,Owner,WELCORP,Welspun Corp Limited,Welspun Corp Limited,owner_confirmed_individual_and_director,,OWNER
-INE151A01013,TATA COMMUNICATIONS LTD,Professional,TATACOMM,Tata Communications Limited,Tata Communications Limited,owner_confirmed_director_only,,OWNER
-INE117A01022,ABB INDIA LTD,MNC,ABB,ABB India Limited,ABB India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE009A01021,INFOSYS LTD,Professional,INFY,Infosys Limited,Infosys Limited,owner_confirmed_individual_and_director,,OWNER
-INE075A01022,WIPRO LTD,Owner,WIPRO,Wipro Limited,Wipro Limited,owner_confirmed_individual_and_director,,OWNER
-INE987B01026,NATCO PHARMA LTD,Owner,NATCOPHARM,Natco Pharma Limited,Natco Pharma Limited,owner_confirmed_individual_and_director,,OWNER
-INE545U01014,BANDHAN BANK LTD,Owner,BANDHANBNK,Bandhan Bank Limited,Bandhan Bank Limited,owner_confirmed_director_only,,OWNER
-INE208A01029,ASHOK LEYLAND LTD,Owner,ASHOKLEY,Ashok Leyland Limited,Ashok Leyland Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE114A01011,STEEL AUTHORITY OF INDIA,State,SAIL,Steel Authority of India Limited,Steel Authority of India Limited,excluded_state_dominant,,NOT_OWNER
-INE868B01028,NCC LTD,Owner,NCC,NCC Limited,NCC Limited,owner_confirmed_individual,,OWNER
-INE158A01026,HERO MOTOCORP LTD,Owner,HEROMOTOCO,Hero MotoCorp Limited,Hero MotoCorp Limited,owner_confirmed_individual_and_director,,OWNER
-INE465A01025,BHARAT FORGE LTD,Owner,BHARATFORG,Bharat Forge Limited,Bharat Forge Limited,owner_confirmed_individual_and_director,,OWNER
-INE406M01024,ERIS LIFESCIENCES LTD,Owner,ERIS,Eris Lifesciences Limited,Eris Lifesciences Limited,owner_confirmed_individual_and_director,,OWNER
-INE811K01011,PRESTIGE ESTATES PROJECTS,Owner,PRESTIGE,Prestige Estates Projects Limited,Prestige Estates Projects Limited,owner_confirmed_individual,,OWNER
-INE600L01024,DR LAL PATHLABS LTD,Owner,LALPATHLAB,Dr. Lal Path Labs Ltd.,Dr. Lal Path Labs Ltd.,owner_confirmed_individual_and_director,,OWNER
-INE245A01021,TATA POWER CO LTD,Professional,TATAPOWER,Tata Power Company Limited,Tata Power Company Limited,owner_confirmed_director_only,,OWNER
-INE860A01027,HCL TECHNOLOGIES LTD,Owner,HCLTECH,HCL Technologies Limited,HCL Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE079A01024,AMBUJA CEMENTS LTD,Owner,AMBUJACEM,Ambuja Cements Limited,Ambuja Cements Limited,ambiguous_holding_foreign,ai_owner,OWNER
-INE012A01025,ACC LTD,Owner,ACC,ACC Limited,ACC Limited,ambiguous_holding_indian,ai_owner,OWNER
-INE726G01019,ICICI PRUDENTIAL LIFE INSURA,Professional,ICICIPRULI,ICICI Prudential Life Insurance Company Limited,ICICI Prudential Life Insurance Company Limited,owner_confirmed_director_only,,OWNER
-INE684F01012,FIRSTSOURCE SOLUTIONS LTD,Owner,FSL,Firstsource Solutions Limited,Firstsource Solutions Limited,owner_confirmed_director_only,,OWNER
-INE571A01038,IPCA LABORATORIES LTD,Owner,IPCALAB,IPCA Laboratories Limited,IPCA Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
-INE020B01018,REC LTD,State,RECLTD,REC Limited,REC Limited,owner_confirmed_director_only,,OWNER
-INE584A01023,NMDC LTD,State,NMDC,NMDC Limited,NMDC Limited,excluded_state_dominant,,NOT_OWNER
-INE917I01010,BAJAJ AUTO LTD,Owner,BAJAJ-AUTO,Bajaj Auto Limited,Bajaj Auto Limited,owner_confirmed_individual_and_director,,OWNER
-INE134E01011,POWER FINANCE CORPORATION,State,PFC,Power Finance Corporation Limited,Power Finance Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE010B01027,ZYDUS LIFESCIENCES LTD,Owner,ZYDUSLIFE,Zydus Lifesciences Limited,Zydus Lifesciences Limited,owner_confirmed_individual_and_director,,OWNER
-INE854D01024,UNITED SPIRITS LTD,MNC,UNITDSPR,United Spirits Limited,United Spirits Limited,ambiguous_mnc_jv_candidate,ai_mnc,NOT_OWNER
-INE949L01017,AU SMALL FINANCE BANK LTD,Owner,AUBANK,AU Small Finance Bank Limited,AU Small Finance Bank Limited,owner_confirmed_individual_and_director,,OWNER
-INE323A01026,BOSCH LTD,MNC,BOSCHLTD,Bosch Limited,Bosch Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE510A01028,ENGINEERS INDIA LTD,State,ENGINERSIN,Engineers India Limited,Engineers India Limited,excluded_state_dominant,,NOT_OWNER
-INE320J01015,RITES LTD,State,RITES,RITES Limited,RITES Limited,excluded_state_dominant,,NOT_OWNER
-INE572E01012,PNB HOUSING FINANCE LTD,Professional,PNBHOUSING,PNB Housing Finance Limited,PNB Housing Finance Limited,owner_confirmed_director_only,,OWNER
-INE733E01010,NTPC LTD,State,NTPC,NTPC Limited,NTPC Limited,excluded_state_dominant,,NOT_OWNER
-INE399L01023,ADANI TOTAL GAS LTD,Owner,ATGL,Adani Total Gas Limited,Adani Total Gas Limited,owner_confirmed_individual_and_director,,OWNER
-INE795G01014,HDFC LIFE INSURANCE CO LTD,Professional,HDFCLIFE,HDFC Life Insurance Company Limited,HDFC Life Insurance Company Limited,owner_confirmed_director_only,,OWNER
-INE217B01036,KAJARIA CERAMICS LTD,Owner,KAJARIACER,Kajaria Ceramics Limited,Kajaria Ceramics Limited,owner_confirmed_individual_and_director,,OWNER
-INE00R701025,DALMIA BHARAT LTD,Owner,DALBHARAT,Dalmia Bharat Limited,Dalmia Bharat Limited,owner_confirmed_individual_and_director,,OWNER
-INE881D01027,ORACLE FINANCIAL SERVICES,MNC,OFSS,Oracle Financial Services Software Limited,Oracle Financial Services Software Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE383A01012,INDIA CEMENTS LTD,Owner,INDIACEM,The India Cements Limited,The India Cements Limited,owner_confirmed_director_only,,OWNER
-INE970X01018,LEMON TREE HOTELS LTD,Owner,LEMONTREE,Lemon Tree Hotels Limited,Lemon Tree Hotels Limited,owner_confirmed_individual_and_director,,OWNER
-INE741K01010,CREDITACCESS GRAMEEN LTD,Professional,CREDITACC,CREDITACCESS GRAMEEN LIMITED,CREDITACCESS GRAMEEN LIMITED,excluded_no_natural_no_holding,,NOT_OWNER
-INE115A01026,LIC HOUSING FINANCE LTD,State,LICHSGFIN,LIC Housing Finance Limited,LIC Housing Finance Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE646L01027,INTERGLOBE AVIATION LTD,Owner,INDIGO,InterGlobe Aviation Limited,InterGlobe Aviation Limited,owner_confirmed_individual_and_director,,OWNER
-INE213A01029,OIL & NATURAL GAS CORP LTD,State,ONGC,Oil & Natural Gas Corporation Limited,Oil & Natural Gas Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE397D01024,BHARTI AIRTEL LTD,Owner,BHARTIARTL,Bharti Airtel Limited,Bharti Airtel Limited,owner_confirmed_director_only,,OWNER
-INE274J01014,OIL INDIA LTD,State,OIL,Oil India Limited,Oil India Limited,excluded_state_dominant,,NOT_OWNER
-INE670A01012,TATA ELXSI LTD,Professional,TATAELXSI,Tata Elxsi Limited,Tata Elxsi Limited,owner_confirmed_director_only,,OWNER
-INE084A01016,BANK OF INDIA,State,BANKINDIA,Bank of India,Bank of India,excluded_state_dominant,,NOT_OWNER
-INE123W01016,SBI LIFE INSURANCE CO LTD,State,SBILIFE,SBI Life Insurance Company Limited,SBI Life Insurance Company Limited,owner_confirmed_director_only,,OWNER
-INE031B01049,AJANTA PHARMA LTD,Owner,AJANTPHARM,Ajanta Pharma Limited,Ajanta Pharma Limited,owner_confirmed_individual_and_director,,OWNER
-INE647O01011,ADITYA BIRLA FASHION AND RET,Owner,ABFRL,Aditya Birla Fashion and Retail Limited,Aditya Birla Fashion and Retail Limited,owner_confirmed_individual_and_director,,OWNER
-INE095N01031,NBCC INDIA LTD,State,NBCC,NBCC (India) Limited,NBCC (India) Limited,excluded_state_dominant,,NOT_OWNER
-INE003A01024,SIEMENS LTD,MNC,SIEMENS,Siemens Limited,Siemens Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE933K01021,BAJAJ CONSUMER CARE LTD,Owner,BAJAJCON,Bajaj Consumer Care Limited,Bajaj Consumer Care Limited,owner_confirmed_director_only,,OWNER
-INE437A01024,APOLLO HOSPITALS ENTERPRISE,Owner,APOLLOHOSP,Apollo Hospitals Enterprise Limited,Apollo Hospitals Enterprise Limited,owner_confirmed_individual_and_director,,OWNER
-INE495B01038,SUVEN LIFE SCIENCES LTD,Owner,SUVEN,Suven Life Sciences Limited,Suven Life Sciences Limited,owner_confirmed_individual_and_director,,OWNER
-INE089A01031,DR. REDDY'S LABORATORIES,Owner,DRREDDY,Dr. Reddy's Laboratories Limited,Dr. Reddy's Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
-INE548C01032,EMAMI LTD,Owner,EMAMILTD,Emami Limited,Emami Limited,owner_confirmed_individual_and_director,,OWNER
-INE343B01030,RAJESH EXPORTS LTD,Owner,RAJESHEXPO,Rajesh Exports Limited,Rajesh Exports Limited,owner_confirmed_individual,,OWNER
-INE406A01037,AUROBINDO PHARMA LTD,Owner,AUROPHARMA,Aurobindo Pharma Limited,Aurobindo Pharma Limited,owner_confirmed_individual_and_director,,OWNER
-INE298A01020,CUMMINS INDIA LTD,MNC,CUMMINSIND,Cummins India Limited,Cummins India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE127D01025,HDFC ASSET MANAGEMENT CO LTD,Professional,HDFCAMC,HDFC Asset Management Company Limited,HDFC Asset Management Company Limited,owner_confirmed_director_only,,OWNER
-INE059A01026,CIPLA LTD,Owner,CIPLA,Cipla Limited,Cipla Limited,owner_confirmed_individual_and_director,,OWNER
-INE935N01020,DIXON TECHNOLOGIES INDIA LTD,Owner,DIXON,Dixon Technologies (India) Limited,Dixon Technologies (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE061F01013,FORTIS HEALTHCARE LTD,MNC,FORTIS,Fortis Healthcare Limited,Fortis Healthcare Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE028A01039,BANK OF BARODA,State,BANKBARODA,Bank of Baroda,Bank of Baroda,excluded_state_dominant,,NOT_OWNER
-INE935A01035,GLENMARK PHARMACEUTICALS LTD,Owner,GLENMARK,Glenmark Pharmaceuticals Limited,Glenmark Pharmaceuticals Limited,owner_confirmed_individual,,OWNER
-INE522F01014,COAL INDIA LTD,State,COALINDIA,Coal India Limited,Coal India Limited,excluded_state_dominant,,NOT_OWNER
-INE258A01024,BEML LTD,State,BEML,BEML Limited,BEML Limited,excluded_state_dominant,,NOT_OWNER
-INE263A01024,BHARAT ELECTRONICS LTD,State,BEL,Bharat Electronics Limited,Bharat Electronics Limited,excluded_state_dominant,,NOT_OWNER
-INE008A01015,IDBI BANK LTD,State,IDBI,IDBI Bank Limited,IDBI Bank Limited,excluded_state_dominant,,NOT_OWNER
-INE172A01027,CASTROL INDIA LTD,MNC,CASTROLIND,Castrol India Limited,Castrol India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE160A01022,PUNJAB NATIONAL BANK,State,PNB,Punjab National Bank,Punjab National Bank,excluded_state_dominant,,NOT_OWNER
-INE821I01022,IRB INFRASTRUCTURE DEVELOPER,Owner,IRB,IRB Infrastructure Developers Limited,IRB Infrastructure Developers Limited,owner_confirmed_individual,,OWNER
-INE260B01028,GODFREY PHILLIPS INDIA LTD,Owner,GODFRYPHLP,Godfrey Phillips India Limited,Godfrey Phillips India Limited,owner_confirmed_individual_and_director,,OWNER
-INE257A01026,BHARAT HEAVY ELECTRICALS,State,BHEL,Bharat Heavy Electricals Limited,Bharat Heavy Electricals Limited,excluded_state_dominant,,NOT_OWNER
-INE481Y01014,GENERAL INS CORP OF INDIA,State,GICRE,General Insurance Corporation of India,General Insurance Corporation of India,excluded_state_dominant,,NOT_OWNER
-INE121J01017,INDUS TOWERS LTD,Owner,INDUSTOWER,Indus Towers Limited,Indus Towers Limited,owner_confirmed_director_only,,OWNER
-INE101D01020,GRANULES INDIA LTD,Owner,GRANULES,Granules India Limited,Granules India Limited,owner_confirmed_individual_and_director,,OWNER
-INE599M01018,JUST DIAL LTD,Owner,JUSTDIAL,Just Dial Limited,Just Dial Limited,owner_confirmed_individual_and_director,,OWNER
-INE298J01013,NIPPON LIFE INDIA ASSET MANA,MNC,NAM-INDIA,Nippon Life India Asset Management Limited,Nippon Life India Asset Management Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE692A01016,UNION BANK OF INDIA,State,UNIONBANK,Union Bank of India,Union Bank of India,excluded_state_dominant,,NOT_OWNER
-INE674K01013,ADITYA BIRLA CAPITAL LTD,Owner,ABCAPITAL,Aditya Birla Capital Limited,Aditya Birla Capital Limited,owner_confirmed_individual_and_director,,OWNER
-INE232I01014,SUN PHARMA ADVANCED RESEARCH,Owner,SPARC,Sun Pharma Advanced Research Company Limited,Sun Pharma Advanced Research Company Limited,owner_confirmed_individual_and_director,,OWNER
-INE044A01036,SUN PHARMACEUTICAL INDUS,Owner,SUNPHARMA,Sun Pharmaceutical Industries Limited,Sun Pharmaceutical Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE109A01011,SHIPPING CORP OF INDIA LTD,State,SCI,Shipping Corporation Of India Limited,Shipping Corporation Of India Limited,excluded_state_dominant,,NOT_OWNER
-INE326A01037,LUPIN LTD,Owner,LUPIN,Lupin Limited,Lupin Limited,owner_confirmed_individual_and_director,,OWNER
-INE051B01021,VAKRANGEE LTD,Owner,VAKRANGEE,Vakrangee Limited,Vakrangee Limited,owner_confirmed_individual_and_director,,OWNER
-INE939A01011,STRIDES PHARMA SCIENCE LTD,Owner,STAR,Strides Pharma Science Limited,Strides Pharma Science Limited,owner_confirmed_individual_and_director,,OWNER
-INE049B01025,WOCKHARDT LTD,Owner,WOCKPHARMA,Wockhardt Limited,Wockhardt Limited,owner_confirmed_individual_and_director,,OWNER
-INE669E01016,VODAFONE IDEA LTD,State,IDEA,Vodafone Idea Limited,Vodafone Idea Limited,excluded_state_dominant,,NOT_OWNER
-INE455K01017,POLYCAB INDIA LTD,Owner,POLYCAB,Polycab India Limited,Polycab India Limited,owner_confirmed_individual_and_director,,OWNER
-INE335Y01020,INDIAN RAILWAY CATERING & TO,State,IRCTC,Indian Railway Catering And Tourism Corporation Limited,Indian Railway Catering And Tourism Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE415G01027,RAIL VIKAS NIGAM LTD,State,RVNL,Rail Vikas Nigam Limited,Rail Vikas Nigam Limited,excluded_state_dominant,,NOT_OWNER
-INE933S01016,INDIAMART INTERMESH LTD,Owner,INDIAMART,Indiamart Intermesh Limited,Indiamart Intermesh Limited,owner_confirmed_individual_and_director,,OWNER
-INE00M201021,STERLING AND WILSON RENEWABL,Owner,SWSOLAR,Sterling and Wilson Renewable Energy Limited,Sterling and Wilson Renewable Energy Limited,owner_confirmed_individual_and_director,,OWNER
-INE00WC01027,AFFLE INDIA LTD,Owner,AFFLE,Affle 3i Limited,Affle 3i Limited,owner_probable_nri_family,ai_owner,OWNER
-INE572J01011,SPANDANA SPHOORTY FINANCIAL,Owner,SPANDANA,Spandana Sphoorty Financial Limited,Spandana Sphoorty Financial Limited,ambiguous_holding_foreign,ai_professional,NOT_OWNER
-INE212H01026,AIA ENGINEERING LTD,Owner,AIAENG,AIA Engineering Limited,AIA Engineering Limited,owner_confirmed_individual_and_director,,OWNER
-INE852O01025,APTUS VALUE HOUSING FINANCE,Owner,APTUS,Aptus Value Housing Finance India Limited,Aptus Value Housing Finance India Limited,owner_confirmed_individual_and_director,,OWNER
-INE120A01034,CARBORUNDUM UNIVERSAL LTD,Owner,CARBORUNIV,Carborundum Universal Limited,Carborundum Universal Limited,owner_confirmed_individual_and_director,,OWNER
-INE348B01021,CENTURY PLYBOARDS INDIA LTD,Owner,CENTURYPLY,Century Plyboards (India) Limited,Century Plyboards (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE913H01037,ENDURANCE TECHNOLOGIES LTD,Owner,ENDURANCE,Endurance Technologies Limited,Endurance Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE686Y01026,FINE ORGANIC INDUSTRIES LTD,Owner,FINEORG,Fine Organic Industries Limited,Fine Organic Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE388Y01029,FSN E-COMMERCE VENTURES LTD,Owner,NYKAA,FSN E-Commerce Ventures Limited,FSN E-Commerce Ventures Limited,owner_confirmed_individual_and_director,,OWNER
-INE600K01018,GALAXY SURFACTANTS LTD,Owner,GALAXYSURF,Galaxy Surfactants Limited,Galaxy Surfactants Limited,owner_confirmed_individual_and_director,,OWNER
-INE306R01017,INTELLECT DESIGN ARENA LTD,Owner,INTELLECT,Intellect Design Arena Limited,Intellect Design Arena Limited,owner_confirmed_individual_and_director,,OWNER
-INE0BY001018,JUBILANT INGREVIA LTD,Owner,JUBLINGREA,Jubilant Ingrevia Limited,Jubilant Ingrevia Limited,owner_confirmed_individual_and_director,,OWNER
-INE668F01031,JYOTHY LABS LTD,Owner,JYOTHYLAB,Jyothy Labs Limited,Jyothy Labs Limited,owner_confirmed_individual_and_director,,OWNER
-INE303R01014,KALYAN JEWELLERS INDIA LTD,Owner,KALYANKJIL,Kalyan Jewellers India Limited,Kalyan Jewellers India Limited,owner_confirmed_individual_and_director,,OWNER
-INE634I01029,KNR CONSTRUCTIONS LTD,Owner,KNRCON,KNR Constructions Limited,KNR Constructions Limited,owner_confirmed_individual,,OWNER
-INE759A01021,MASTEK LTD,Owner,MASTEK,Mastek Limited,Mastek Limited,owner_confirmed_individual_and_director,,OWNER
-INE410P01011,NARAYANA HRUDAYALAYA LTD,Owner,NH,Narayana Hrudayalaya Ltd.,Narayana Hrudayalaya Ltd.,owner_confirmed_individual_and_director,,OWNER
-INE262H01021,PERSISTENT SYSTEMS LTD,Owner,PERSISTENT,Persistent Systems Limited,Persistent Systems Limited,owner_confirmed_individual_and_director,,OWNER
-INE624Z01016,SOLARA ACTIVE PHARMA SCIENCE,Owner,SOLARA,Solara Active Pharma Sciences Limited,Solara Active Pharma Sciences Limited,owner_confirmed_individual_and_director,,OWNER
-INE073K01018,SONA BLW PRECISION FORGINGS,Owner,SONACOMS,Sona BLW Precision Forgings Limited,Sona BLW Precision Forgings Limited,owner_confirmed_individual_and_director,,OWNER
-INE586V01016,TCI EXPRESS LTD,Owner,TCIEXP,TCI Express Limited,TCI Express Limited,owner_confirmed_individual_and_director,,OWNER
-INE690A01028,TTK PRESTIGE LTD,Owner,TTKPRESTIG,TTK Prestige Limited,TTK Prestige Limited,owner_confirmed_individual_and_director,,OWNER
-INE665L01035,VARROC ENGINEERING LTD,Owner,VARROC,Varroc Engineering Limited,Varroc Engineering Limited,owner_confirmed_individual_and_director,,OWNER
-INE274F01020,WESTLIFE FOODWORLD LTD,Owner,WESTLIFE,WESTLIFE FOODWORLD LIMITED,WESTLIFE FOODWORLD LIMITED,owner_confirmed_individual_and_director,,OWNER
-INE702C01027,APL APOLLO TUBES LTD,Owner,APLAPOLLO,APL Apollo Tubes Limited,APL Apollo Tubes Limited,owner_confirmed_individual_and_director,,OWNER
-INE439A01020,ASAHI INDIA GLASS LTD,Owner,ASAHIINDIA,Asahi India Glass Limited,Asahi India Glass Limited,owner_confirmed_individual,,OWNER
-INE961O01016,RAINBOW CHILDREN'S MEDICARE,Owner,RAINBOW,Rainbow Childrens Medicare Limited,Rainbow Childrens Medicare Limited,owner_confirmed_individual_and_director,,OWNER
-INE825V01034,VEDANT FASHIONS LTD,Owner,MANYAVAR,Vedant Fashions Limited,Vedant Fashions Limited,owner_confirmed_individual,,OWNER
-INE04I401011,KPIT TECHNOLOGIES LTD,Owner,KPITTECH,KPIT Technologies Limited,KPIT Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE144Z01023,TARSONS PRODUCTS LTD,Owner,TARSONS,Tarsons Products Limited,Tarsons Products Limited,owner_confirmed_individual_and_director,,OWNER
-INE602A01031,PCBL LTD,Owner,PCBL,PCBL Chemical Limited,PCBL Chemical Limited,ambiguous_holding_indian,ai_owner,OWNER
-INE0BWX01014,AETHER INDUSTRIES LTD,Owner,AETHER,Aether Industries Limited,Aether Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE285K01026,TECHNO ELECTRIC & ENGINEERIN,Owner,TECHNOE,Techno Electric & Engineering Company Limited,Techno Electric & Engineering Company Limited,owner_confirmed_individual,,OWNER
-INE398R01022,SYNGENE INTERNATIONAL LTD,Owner,SYNGENE,Syngene International Limited,Syngene International Limited,owner_confirmed_individual_and_director,,OWNER
-INE979A01025,SAREGAMA INDIA LTD,Owner,SAREGAMA,Saregama India Limited,Saregama India Limited,owner_confirmed_director_only,,OWNER
-INE679V01027,ADITYA VISION LTD,Owner,AVL,Aditya Vision Limited,Aditya Vision Limited,owner_confirmed_individual_and_director,,OWNER
-INE930H01031,KPR MILL LTD,Owner,KPRMILL,K.P.R. Mill Limited,K.P.R. Mill Limited,owner_confirmed_individual,,OWNER
-INE864I01014,MTAR TECHNOLOGIES LTD,Owner,MTARTECH,Mtar Technologies Limited,Mtar Technologies Limited,owner_confirmed_individual,,OWNER
-INE645S01024,ROLEX RINGS LTD,Owner,ROLEXRINGS,Rolex Rings Limited,Rolex Rings Limited,owner_confirmed_individual,,OWNER
-INE405E01023,UNO MINDA LTD,Owner,UNOMINDA,UNO Minda Limited,UNO Minda Limited,owner_confirmed_individual_and_director,,OWNER
-INE541A01023,GMM PFAUDLER LTD,Owner,GMMPFAUDLR,GMM Pfaudler Limited,GMM Pfaudler Limited,owner_confirmed_individual,,OWNER
-INE703B01027,RATNAMANI METALS & TUBES LTD,Owner,RATNAMANI,Ratnamani Metals & Tubes Limited,Ratnamani Metals & Tubes Limited,owner_confirmed_individual_and_director,,OWNER
-INE126J01016,APOLLO PIPES LTD,Owner,APOLLOPIPE,Apollo Pipes Limited,Apollo Pipes Limited,owner_confirmed_individual_and_director,,OWNER
-INE421D01022,CCL PRODUCTS INDIA LTD,Owner,CCL,CCL Products (India) Limited,CCL Products (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE739E01017,CERA SANITARYWARE LTD,Owner,CERA,Cera Sanitaryware Limited,Cera Sanitaryware Limited,owner_confirmed_individual_and_director,,OWNER
-INE721A01047,SHRIRAM FINANCE LTD,Owner,SHRIRAMFIN,Shriram Finance Limited,Shriram Finance Limited,owner_confirmed_director_only,,OWNER
-INE974X01010,TUBE INVESTMENTS OF INDIA LT,Owner,TIINDIA,Tube Investments of India Limited,Tube Investments of India Limited,owner_confirmed_individual_and_director,,OWNER
-INE775A01035,SAMVARDHANA MOTHERSON INTERN,Owner,MOTHERSON,Samvardhana Motherson International Limited,Samvardhana Motherson International Limited,owner_confirmed_individual_and_director,,OWNER
-INE018E01016,SBI CARDS & PAYMENT SERVICES,State,SBICARD,SBI Cards and Payment Services Limited,SBI Cards and Payment Services Limited,owner_confirmed_director_only,,OWNER
-INE615H01020,TITAGARH RAIL SYSTEM LTD,Owner,TITAGARH,TITAGARH RAIL SYSTEMS LIMITED,TITAGARH RAIL SYSTEMS LIMITED,owner_confirmed_individual_and_director,,OWNER
-INE00F201020,PRUDENT CORPORATE ADVISORY S,Owner,PRUDENT,Prudent Corporate Advisory Services Limited,Prudent Corporate Advisory Services Limited,owner_confirmed_individual_and_director,,OWNER
-INE918Z01012,KAYNES TECHNOLOGY INDIA LTD,Owner,KAYNES,Kaynes Technology India Limited,Kaynes Technology India Limited,owner_confirmed_individual_and_director,,OWNER
-INE0DYJ01015,SYRMA SGS TECHNOLOGY LTD,Owner,SYRMA,Syrma SGS Technology Limited,Syrma SGS Technology Limited,owner_confirmed_individual_and_director,,OWNER
-INE067A01029,CG POWER AND INDUSTRIAL SOLU,Owner,CGPOWER,CG Power and Industrial Solutions Limited,CG Power and Industrial Solutions Limited,owner_confirmed_individual_and_director,,OWNER
-INE066F01020,HINDUSTAN AERONAUTICS LTD,State,HAL,Hindustan Aeronautics Limited,Hindustan Aeronautics Limited,excluded_state_dominant,,NOT_OWNER
-INE027H01010,MAX HEALTHCARE INSTITUTE LTD,Owner,MAXHEALTH,Max Healthcare Institute Limited,Max Healthcare Institute Limited,owner_confirmed_individual_and_director,,OWNER
-INE002A01018,RELIANCE INDUSTRIES LTD,Owner,RELIANCE,Reliance Industries Limited,Reliance Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE349Y01013,IDEAFORGE TECHNOLOGY LTD,Owner,IDEAFORGE,Ideaforge Technology Limited,Ideaforge Technology Limited,owner_confirmed_individual_and_director,,OWNER
-INE0ECP01024,HMA AGRO INDUSTRIES LTD,Owner,HMAAGRO,HMA Agro Industries Limited,HMA Agro Industries Limited,owner_confirmed_individual,,OWNER
-INE0LCL01028,AVALON TECHNOLOGIES LTD,Owner,AVALON,Avalon Technologies Limited,Avalon Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE138Y01010,KFIN TECHNOLOGIES LTD,Professional,KFINTECH,Kfin Technologies Limited,Kfin Technologies Limited,ambiguous_holding_foreign,ai_professional,NOT_OWNER
-INE142Q01026,SULA VINEYARDS LTD,Owner,SULA,Sula Vineyards Limited,Sula Vineyards Limited,owner_probable_nri_family,ai_owner,OWNER
-INE244O01017,UNIPARTS INDIA LTD,Owner,UNIPARTS,Uniparts India Limited,Uniparts India Limited,owner_confirmed_individual_and_director,,OWNER
-INE128X01021,ARCHEAN CHEMICAL INDUSTRIES,Owner,ACI,Archean Chemical Industries Limited,Archean Chemical Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE128S01021,FIVE-STAR BUSINESS FINANCE L,Owner,FIVESTAR,Five-Star Business Finance Limited,Five-Star Business Finance Limited,owner_confirmed_individual_and_director,,OWNER
-INE00E101023,BIKAJI FOODS INTERNATIONAL L,Owner,BIKAJI,Bikaji Foods International Limited,Bikaji Foods International Limited,owner_confirmed_individual_and_director,,OWNER
-INE139R01012,FUSION MICRO FINANCE LTD,Owner,FUSION,Fusion Finance Limited,Fusion Finance Limited,ambiguous_mnc_jv_candidate,ai_owner,OWNER
-INE474Q01031,GLOBAL HEALTH LTD/INDIA,Owner,MEDANTA,Global Health Limited,Global Health Limited,owner_confirmed_individual_and_director,,OWNER
-INE0JUS01029,HARSHA ENGINEERS INTERNATION,Owner,HARSHA,Harsha Engineers International Limited,Harsha Engineers International Limited,owner_confirmed_individual_and_director,,OWNER
-INE263M01029,KEYSTONE REALTORS LTD,Owner,RUSTOMJEE,Keystone Realtors Limited,Keystone Realtors Limited,owner_confirmed_individual_and_director,,OWNER
-INE088F01024,PARADEEP PHOSPHATES LTD,Owner,PARADEEP,Paradeep Phosphates Limited,Paradeep Phosphates Limited,owner_confirmed_individual_and_director,,OWNER
-INE278Y01022,CAMPUS ACTIVEWEAR LTD,Owner,CAMPUS,Campus Activewear Limited,Campus Activewear Limited,owner_confirmed_individual_and_director,,OWNER
-INE0J1Y01017,LIFE INSURANCE CORPORATION,State,LICI,Life Insurance Corporation Of India,Life Insurance Corporation Of India,excluded_state_dominant,,NOT_OWNER
-INE0IX101010,DATA PATTERNS INDIA LTD,Owner,DATAPATTNS,Data Patterns (India) Limited,Data Patterns (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE804L01022,MEDPLUS HEALTH SERVICES LTD,Owner,MEDPLUS,Medplus Health Services Limited,Medplus Health Services Limited,owner_confirmed_individual,,OWNER
-INE0BV301023,CE INFO SYSTEMS LTD,Owner,MAPMYINDIA,C.E. Info Systems Limited,C.E. Info Systems Limited,owner_confirmed_individual,,OWNER
-INE317I01021,METRO BRANDS LTD,Owner,METROBRAND,Metro Brands Limited,Metro Brands Limited,owner_confirmed_individual_and_director,,OWNER
-INE0CLI01024,RATEGAIN TRAVEL TECHNOLOGIES,Owner,RATEGAIN,Rategain Travel Technologies Limited,Rategain Travel Technologies Limited,owner_confirmed_individual,,OWNER
-INE463V01026,ANAND RATHI WEALTH LTD,Owner,ANANDRATHI,Anand Rathi Wealth Limited,Anand Rathi Wealth Limited,owner_confirmed_individual_and_director,,OWNER
-INE011K01018,TEGA INDUSTRIES LTD,Owner,TEGA,Tega Industries Limited,Tega Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE575P01011,STAR HEALTH & ALLIED INSURAN,Professional,STARHEALTH,Star Health and Allied Insurance Company Limited,Star Health and Allied Insurance Company Limited,owner_confirmed_individual_and_director,,OWNER
-INE0BJS01011,GO FASHION INDIA LTD,Owner,GOCOLORS,Go Fashion (India) Limited,Go Fashion (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE0I7C01011,LATENT VIEW ANALYTICS LTD,Owner,LATENTVIEW,Latent View Analytics Limited,Latent View Analytics Limited,owner_confirmed_individual_and_director,,OWNER
-INE806T01020,SAPPHIRE FOODS INDIA LTD,Professional,SAPPHIRE,Sapphire Foods India Limited,Sapphire Foods India Limited,owner_confirmed_director_only,,OWNER
-INE404A01024,ADITYA BIRLA SUN LIFE AMC LT,Owner,ABSLAMC,Aditya Birla Sun Life AMC Limited,Aditya Birla Sun Life AMC Limited,owner_confirmed_individual_and_director,,OWNER
-INE043W01024,VIJAYA DIAGNOSTIC CENTRE PVT,Owner,VIJAYA,Vijaya Diagnostic Centre Limited,Vijaya Diagnostic Centre Limited,owner_confirmed_individual_and_director,,OWNER
-INE488A01050,CHEMPLAST SANMAR LTD,Owner,CHEMPLASTS,Chemplast Sanmar Limited,Chemplast Sanmar Limited,owner_confirmed_individual_and_director,,OWNER
-INE0GK401011,TATVA CHINTAN PHARMA CHEM LT,Owner,TATVA,Tatva Chintan Pharma Chem Limited,Tatva Chintan Pharma Chem Limited,owner_confirmed_individual,,OWNER
-INE227W01023,CLEAN SCIENCE & TECHNOLOGY L,Owner,CLEAN,Clean Science and Technology Limited,Clean Science and Technology Limited,owner_confirmed_individual_and_director,,OWNER
-INE201P01022,G R INFRAPROJECTS LTD,Owner,GRINFRA,G R Infraprojects Limited,G R Infraprojects Limited,owner_confirmed_individual_and_director,,OWNER
-INE0D6701023,INDIA PESTICIDES LTD,Owner,IPL,India Pesticides Limited,India Pesticides Limited,owner_confirmed_individual,,OWNER
-INE021O01019,DODLA DAIRY LTD,Owner,DODLA,Dodla Dairy Limited,Dodla Dairy Limited,owner_confirmed_individual_and_director,,OWNER
-INE967H01025,KRISHNA INSTITUTE OF MEDICAL,Owner,KIMS,Krishna Institute of Medical Sciences Limited,Krishna Institute of Medical Sciences Limited,owner_confirmed_individual_and_director,,OWNER
-INE08LI01020,KRSNAA DIAGNOSTICS LTD,Owner,KRSNAA,Krsnaa Diagnostics Limited,Krsnaa Diagnostics Limited,owner_confirmed_individual_and_director,,OWNER
-INE872J01023,DEVYANI INTERNATIONAL LTD,Owner,DEVYANI,Devyani International Limited,Devyani International Limited,owner_confirmed_individual_and_director,,OWNER
-INE118D01016,NUVOCO VISTAS CORP LTD,Owner,NUVOCO,Nuvoco Vistas Corporation Limited,Nuvoco Vistas Corporation Limited,owner_confirmed_individual,,OWNER
-INE670K01029,MACROTECH DEVELOPERS LTD,Owner,LODHA,Lodha Developers Limited,Lodha Developers Limited,owner_confirmed_director_only,,OWNER
-INE418L01047,NAZARA TECHNOLOGIES LTD,Owner,NAZARA,Nazara Technologies Limited,Nazara Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE00LO01017,CRAFTSMAN AUTOMATION LTD,Owner,CRAFTSMAN,Craftsman Automation Limited,Craftsman Automation Limited,owner_confirmed_individual_and_director,,OWNER
-INE576O01020,LAXMI ORGANIC INDUSTRIES LTD,Owner,LXCHEM,Laxmi Organic Industries Limited,Laxmi Organic Industries Limited,owner_confirmed_individual,,OWNER
-INE428Q01011,SURYODAY SMALL FINANCE BANK,Owner,SURYODAY,Suryoday Small Finance Bank Limited,Suryoday Small Finance Bank Limited,owner_confirmed_individual_and_director,,OWNER
-INE930P01018,ANUPAM RASAYAN INDIA LTD,Owner,ANURAS,Anupam Rasayan India Limited,Anupam Rasayan India Limited,owner_confirmed_individual_and_director,,OWNER
-INE0DD101019,RAILTEL CORP OF INDIA LTD,State,RAILTEL,Railtel Corporation Of India Limited,Railtel Corporation Of India Limited,excluded_state_dominant,,NOT_OWNER
-INE09VQ01012,INDIGO PAINTS LTD,Owner,INDIGOPNTS,Indigo Paints Limited,Indigo Paints Limited,owner_confirmed_individual_and_director,,OWNER
-INE068V01023,GLAND PHARMA LTD,Owner,GLAND,Gland Pharma Limited,Gland Pharma Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE249Z01020,MAZAGON DOCK SHIPBUILDERS LT,State,MAZDOCK,Mazagon Dock Shipbuilders Limited,Mazagon Dock Shipbuilders Limited,excluded_state_dominant,,NOT_OWNER
-INE419U01012,HAPPIEST MINDS TECHNOLOGIES,Owner,HAPPSTMNDS,Happiest Minds Technologies Limited,Happiest Minds Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE053F01010,INDIAN RAILWAY FINANCE CORP,State,IRFC,Indian Railway Finance Corporation Limited,Indian Railway Finance Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE679A01013,CSB BANK LTD,Professional,CSBBANK,CSB Bank Limited,CSB Bank Limited,ambiguous_holding_foreign,ai_professional,NOT_OWNER
-INE07T201019,RESTAURANT BRANDS ASIA LTD,Professional,RBA,Restaurant Brands Asia Limited,Restaurant Brands Asia Limited,owner_confirmed_director_only,,OWNER
-INE810G01011,SHYAM METALICS & ENERGY LTD,Owner,SHYAMMETL,Shyam Metalics and Energy Limited,Shyam Metalics and Energy Limited,owner_confirmed_individual,,OWNER
-INE112L01020,METROPOLIS HEALTHCARE LTD,Owner,METROPOLIS,Metropolis Healthcare Limited,Metropolis Healthcare Limited,owner_confirmed_individual_and_director,,OWNER
-INE962Y01021,IRCON INTERNATIONAL LTD,State,IRCON,Ircon International Limited,Ircon International Limited,excluded_state_dominant,,NOT_OWNER
-INE602W01027,SENCO GOLD LTD,Owner,SENCO,Senco Gold Limited,Senco Gold Limited,owner_confirmed_individual_and_director,,OWNER
-INE953O01021,SANSERA ENGINEERING LTD,Owner,SANSERA,Sansera Engineering Limited,Sansera Engineering Limited,owner_confirmed_individual_and_director,,OWNER
-INE427F01016,CHALET HOTELS LTD,Owner,CHALET,Chalet Hotels Limited,Chalet Hotels Limited,owner_confirmed_individual_and_director,,OWNER
-INE758E01017,JIO FINANCIAL SERVICES LTD,Owner,JIOFIN,Jio Financial Services Limited,Jio Financial Services Limited,owner_confirmed_individual_and_director,,OWNER
-INE931S01010,ADANI ENERGY SOLUTIONS LTD,Owner,ADANIENSOL,Adani Energy Solutions Limited,Adani Energy Solutions Limited,owner_confirmed_individual_and_director,,OWNER
-INE565A01014,INDIAN OVERSEAS BANK,State,IOB,Indian Overseas Bank,Indian Overseas Bank,excluded_state_dominant,,NOT_OWNER
-INE121E01018,JSW ENERGY LTD,Owner,JSWENERGY,JSW Energy Limited,JSW Energy Limited,owner_confirmed_individual_and_director,,OWNER
-INE634S01028,MANKIND PHARMA LTD,Owner,MANKIND,Mankind Pharma Limited,Mankind Pharma Limited,owner_confirmed_individual_and_director,,OWNER
-INE848E01016,NHPC LTD,State,NHPC,NHPC Limited,NHPC Limited,excluded_state_dominant,,NOT_OWNER
-INE195A01028,SUPREME INDUSTRIES LTD,Owner,SUPREMEIND,Supreme Industries Limited,Supreme Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE691A01018,UCO BANK,State,UCOBANK,UCO Bank,UCO Bank,excluded_state_dominant,,NOT_OWNER
-INE513A01022,SCHAEFFLER INDIA LTD,MNC,SCHAEFFLER,Schaeffler India Limited,Schaeffler India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE473A01011,LINDE INDIA LTD,MNC,LINDEINDIA,Linde India Limited,Linde India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE619A01035,PATANJALI FOODS LTD,Owner,PATANJALI,Patanjali Foods Limited,Patanjali Foods Limited,owner_confirmed_director_only,,OWNER
-INE483A01010,CENTRAL BANK OF INDIA,State,CENTRALBK,Central Bank of India,Central Bank of India,excluded_state_dominant,,NOT_OWNER
-INE343H01029,SOLAR INDUSTRIES INDIA LTD,Owner,SOLARINDS,Solar Industries India Limited,Solar Industries India Limited,owner_confirmed_individual_and_director,,OWNER
-INE220G01021,JINDAL STAINLESS LTD,Owner,JSL,Jindal Stainless Limited,Jindal Stainless Limited,owner_confirmed_individual_and_director,,OWNER
-INE040H01021,SUZLON ENERGY LTD,Owner,SUZLON,Suzlon Energy Limited,Suzlon Energy Limited,owner_confirmed_individual_and_director,,OWNER
-INE188A01015,FERTILISERS & CHEM TRAVANCR,State,FACT,Fertilizers and Chemicals Travancore Limited,Fertilizers and Chemicals Travancore Limited,excluded_state_dominant,,NOT_OWNER
-INE660A01013,SUNDARAM FINANCE LTD,Owner,SUNDARMFIN,Sundaram Finance Limited,Sundaram Finance Limited,owner_confirmed_individual_and_director,,OWNER
-INE457A01014,BANK OF MAHARASHTRA,State,MAHABANK,Bank of Maharashtra,Bank of Maharashtra,excluded_state_dominant,,NOT_OWNER
-INE09N301011,GUJARAT FLUOROCHEMICALS LTD,Owner,FLUOROCHEM,Gujarat Fluorochemicals Limited,Gujarat Fluorochemicals Limited,owner_confirmed_individual,,OWNER
-INE342J01019,ZF COMMERCIAL VEHICLE CONTRO,MNC,ZFCVINDIA,ZF Commercial Vehicle Control Systems India Limited,ZF Commercial Vehicle Control Systems India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE511C01022,POONAWALLA FINCORP LTD,Owner,POONAWALLA,Poonawalla Fincorp Limited,Poonawalla Fincorp Limited,owner_confirmed_director_only,,OWNER
-INE002L01015,SJVN LTD,State,SJVN,SJVN Limited,SJVN Limited,excluded_state_dominant,,NOT_OWNER
-INE473B01035,HATSUN AGRO PRODUCT LTD,Owner,HATSUN,Hatsun Agro Product Limited,Hatsun Agro Product Limited,owner_confirmed_individual_and_director,,OWNER
-INE640A01023,SKF INDIA LTD,MNC,SKFINDIA,SKF India Limited,SKF India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE823G01014,JK CEMENT LTD,Owner,JKCEMENT,JK Cement Limited,JK Cement Limited,owner_confirmed_individual,,OWNER
-INE462A01022,BAYER CROPSCIENCE LTD,MNC,BAYERCROP,Bayer Cropscience Limited,Bayer Cropscience Limited,ambiguous_holding_indian,ai_mnc,NOT_OWNER
-INE325A01013,TIMKEN INDIA LTD,MNC,TIMKEN,Timken India Limited,Timken India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE470Y01017,NEW INDIA ASSURANCE CO LTD/T,State,NIACL,The New India Assurance Company Limited,The New India Assurance Company Limited,excluded_state_dominant,,NOT_OWNER
-INE572A01036,J.B. CHEMICALS & PHARMA LTD,Professional,JBCHEPHARM,JB Chemicals & Pharmaceuticals Limited,JB Chemicals & Pharmaceuticals Limited,owner_confirmed_director_only,,OWNER
-INE530B01024,IIFL FINANCE LTD,Owner,IIFL,IIFL Finance Limited,IIFL Finance Limited,owner_confirmed_individual_and_director,,OWNER
-INE149A01033,CHOLAMANDALAM FINANCIAL HOLD,Owner,CHOLAHLDNG,Cholamandalam Financial Holdings Limited,Cholamandalam Financial Holdings Limited,owner_confirmed_individual,,OWNER
-INE947Q01028,LAURUS LABS LTD,Owner,LAURUSLABS,Laurus Labs Limited,Laurus Labs Limited,owner_confirmed_individual_and_director,,OWNER
-INE372A01015,APAR INDUSTRIES LTD,Owner,APARINDS,Apar Industries Limited,Apar Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE322A01010,GILLETTE INDIA LTD,MNC,GILLETTE,Gillette India Limited,Gillette India Limited,owner_confirmed_director_only,,OWNER
-INE517B01013,TATA TELESERVICES MAHARASHTR,Professional,TTML,Tata Teleservices (Maharashtra) Limited,Tata Teleservices (Maharashtra) Limited,owner_confirmed_director_only,,OWNER
-INE064C01022,TRIDENT LTD,Owner,TRIDENT,Trident Limited,Trident Limited,owner_confirmed_director_only,,OWNER
-INE171Z01026,BHARAT DYNAMICS LTD,State,BDL,Bharat Dynamics Limited,Bharat Dynamics Limited,excluded_state_dominant,,NOT_OWNER
-INE589A01014,NLC INDIA LTD,State,NLCINDIA,NLC India Limited,NLC India Limited,excluded_state_dominant,,NOT_OWNER
-INE048G01026,NAVIN FLUORINE INTERNATIONAL,Owner,NAVINFLUOR,Navin Fluorine International Limited,Navin Fluorine International Limited,owner_confirmed_individual_and_director,,OWNER
-INE031A01017,HOUSING & URBAN DEV CORP LTD,State,HUDCO,Housing & Urban Development Corporation Limited,Housing & Urban Development Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE536H01010,CIE AUTOMOTIVE INDIA LTD,MNC,CIEINDIA,CIE Automotive India Limited,CIE Automotive India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE472A01039,BLUE STAR LTD,Owner,BLUESTARCO,Blue Star Limited,Blue Star Limited,owner_confirmed_individual_and_director,,OWNER
-INE235A01022,FINOLEX CABLES LTD,Owner,FINCABLES,Finolex Cables Limited,Finolex Cables Limited,owner_confirmed_individual,,OWNER
-INE103A01014,MANGALORE REFINERY & PETRO,State,MRPL,Mangalore Refinery and Petrochemicals Limited,Mangalore Refinery and Petrochemicals Limited,owner_confirmed_director_only,,OWNER
-INE914M01019,ASTER DM HEALTHCARE LTD,Owner,ASTERDM,Aster DM Healthcare Limited,Aster DM Healthcare Limited,owner_probable_nri_family,ai_owner,OWNER
-INE927D01051,JBM AUTO LTD,Owner,JBMA,JBM Auto Limited,JBM Auto Limited,owner_confirmed_individual_and_director,,OWNER
-INE285A01027,ELGI EQUIPMENTS LTD,Owner,ELGIEQUIP,Elgi Equipments Limited,Elgi Equipments Limited,owner_confirmed_individual_and_director,,OWNER
-INE531E01026,HINDUSTAN COPPER LTD,State,HINDCOPPER,Hindustan Copper Limited,Hindustan Copper Limited,excluded_state_dominant,,NOT_OWNER
-INE732I01021,ANGEL ONE LTD,Owner,ANGELONE,Angel One Limited,Angel One Limited,owner_confirmed_individual_and_director,,OWNER
-INE743M01012,RHI MAGNESITA INDIA LTD,MNC,RHIM,RHI MAGNESITA INDIA LIMITED,RHI MAGNESITA INDIA LIMITED,excluded_no_natural_no_holding,,NOT_OWNER
-INE230A01023,EIH LTD,Owner,EIHOTEL,EIH Limited,EIH Limited,owner_confirmed_individual,,OWNER
-INE0NNS01018,NMDC STEEL LTD,State,NSLNISP,NMDC Steel Limited,NMDC Steel Limited,excluded_state_dominant,,NOT_OWNER
-INE010J01012,TEJAS NETWORKS LTD,Professional,TEJASNET,Tejas Networks Limited,Tejas Networks Limited,owner_confirmed_director_only,,OWNER
-INE269A01021,SONATA SOFTWARE LTD,Owner,SONATSOFTW,Sonata Software Limited,Sonata Software Limited,owner_confirmed_individual_and_director,,OWNER
-INE704P01025,COCHIN SHIPYARD LTD,State,COCHINSHIP,Cochin Shipyard Limited,Cochin Shipyard Limited,excluded_state_dominant,,NOT_OWNER
-INE736A01011,CENTRAL DEPOSITORY SERVICES,Professional,CDSL,Central Depository Services (India) Limited,Central Depository Services (India) Limited,owner_confirmed_director_only,,OWNER
-INE483C01032,TANLA PLATFORMS LTD,Owner,TANLA,Tanla Platforms Limited,Tanla Platforms Limited,owner_confirmed_individual_and_director,,OWNER
-INE152M01016,TRIVENI TURBINE LTD,Owner,TRITURBINE,Triveni Turbine Limited,Triveni Turbine Limited,owner_confirmed_individual_and_director,,OWNER
-INE183A01024,FINOLEX INDUSTRIES LTD,Owner,FINPIPE,Finolex Industries Limited,Finolex Industries Limited,owner_confirmed_individual,,OWNER
-INE0DK501011,PIRAMAL PHARMA LTD,Owner,PPLPHARMA,Piramal Pharma Limited,Piramal Pharma Limited,owner_confirmed_individual_and_director,,OWNER
-INE836A01035,BIRLASOFT LTD,Owner,BSOFT,BIRLASOFT LIMITED,BIRLASOFT LIMITED,owner_confirmed_director_only,,OWNER
-INE205C01021,POLY MEDICURE LTD,Owner,POLYMED,Poly Medicure Limited,Poly Medicure Limited,owner_confirmed_individual_and_director,,OWNER
-INE209L01016,JUPITER WAGONS LTD,Owner,JWL,Jupiter Wagons Limited,Jupiter Wagons Limited,owner_confirmed_individual_and_director,,OWNER
-INE017A01032,GREAT EASTERN SHIPPING CO,Owner,GESHIP,The Great Eastern Shipping Company Limited,The Great Eastern Shipping Company Limited,owner_confirmed_individual_and_director,,OWNER
-INE520A01027,ZENSAR TECHNOLOGIES LTD,Owner,ZENSARTECH,Zensar Technologies Limited,Zensar Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE087H01022,SHREE RENUKA SUGARS LTD,MNC,RENUKA,Shree Renuka Sugars Limited,Shree Renuka Sugars Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE085A01013,CHAMBAL FERTILISERS & CHEM,Owner,CHAMBLFERT,Chambal Fertilizers & Chemicals Limited,Chambal Fertilizers & Chemicals Limited,owner_confirmed_individual_and_director,,OWNER
-INE338H01029,CONCORD BIOTECH LTD,Owner,CONCORDBIO,Concord Biotech Limited,Concord Biotech Limited,owner_confirmed_individual_and_director,,OWNER
-INE324A01032,JINDAL SAW LTD,Owner,JINDALSAW,Jindal Saw Limited,Jindal Saw Limited,owner_confirmed_individual,,OWNER
-INE548A01028,HFCL LTD,Owner,HFCL,HFCL Limited,HFCL Limited,owner_confirmed_individual_and_director,,OWNER
-INE074A01025,PRAJ INDUSTRIES LTD,Owner,PRAJIND,Praj Industries Limited,Praj Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE019C01026,HIMADRI SPECIALITY CHEMICAL,Owner,HSCL,Himadri Speciality Chemical Limited,Himadri Speciality Chemical Limited,owner_confirmed_individual_and_director,,OWNER
-INE228A01035,USHA MARTIN LTD,Owner,USHAMART,Usha Martin Limited,Usha Martin Limited,owner_confirmed_individual,,OWNER
-INE999A01023,KSB LTD,MNC,KSB,Ksb Limited,Ksb Limited,owner_confirmed_individual,,OWNER
-INE153T01027,BLS INTERNATIONAL LTD,Owner,BLS,BLS International Services Limited,BLS International Services Limited,owner_confirmed_individual_and_director,,OWNER
-INE399G01023,RAMKRISHNA FORGINGS LTD,Owner,RKFORGE,Ramkrishna Forgings Limited,Ramkrishna Forgings Limited,owner_confirmed_individual_and_director,,OWNER
-INE168A01041,JAMMU & KASHMIR BANK LTD,State,J&KBANK,The Jammu & Kashmir Bank Limited,The Jammu & Kashmir Bank Limited,excluded_state_dominant,,NOT_OWNER
-INE131A01031,GUJARAT MINERAL DEV CORP LTD,State,GMDCLTD,Gujarat Mineral Development Corporation Limited,Gujarat Mineral Development Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE371P01015,AMBER ENTERPRISES INDIA LTD,Owner,AMBER,Amber Enterprises India Limited,Amber Enterprises India Limited,owner_confirmed_individual_and_director,,OWNER
-INE450U01017,ROUTE MOBILE LTD,Owner,ROUTE,ROUTE MOBILE LIMITED,ROUTE MOBILE LIMITED,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
-INE260D01016,OLECTRA GREENTECH LTD,Owner,OLECTRA,Olectra Greentech Limited,Olectra Greentech Limited,ambiguous_holding_indian,ai_owner,OWNER
-INE382Z01011,GARDEN REACH SHIPBUILDERS &,State,GRSE,Garden Reach Shipbuilders & Engineers Limited,Garden Reach Shipbuilders & Engineers Limited,excluded_state_dominant,,NOT_OWNER
-INE001B01026,KRBL LTD,Owner,KRBL,KRBL Limited,KRBL Limited,owner_confirmed_individual,,OWNER
-INE340A01012,BIRLA CORP LTD,Owner,BIRLACORPN,Birla Corporation Limited,Birla Corporation Limited,owner_confirmed_individual_and_director,,OWNER
-INE395N01027,TVS SUPPLY CHAIN SOLUTIONS L,Owner,TVSSCS,TVS Supply Chain Solutions Limited,TVS Supply Chain Solutions Limited,owner_confirmed_individual_and_director,,OWNER
-INE270A01029,ALOK INDUSTRIES LTD,Owner,ALOKINDS,Alok Industries Limited,Alok Industries Limited,ambiguous_holding_indian,ai_owner_weak,OWNER_WEAK
-INE195J01029,PNC INFRATECH LTD,Owner,PNCINFRA,PNC Infratech Limited,PNC Infratech Limited,owner_confirmed_individual_and_director,,OWNER
-INE688D01026,RESPONSIVE INDUSTRIES LTD,Owner,RESPONIND,Responsive Industries Limited,Responsive Industries Limited,owner_confirmed_individual,,OWNER
-INE429E01023,SAFARI INDUSTRIES INDIA LTD,Owner,SAFARI,Safari Industries (India) Limited,Safari Industries (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE126A01031,EID PARRY INDIA LTD,Owner,EIDPARRY,EID Parry India Limited,EID Parry India Limited,owner_confirmed_individual_and_director,,OWNER
-INE423Y01016,SBFC FINANCE LTD,Professional,SBFC,SBFC Finance Limited,SBFC Finance Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE738I01010,ECLERX SERVICES LTD,Owner,ECLERX,eClerx Services Limited,eClerx Services Limited,owner_confirmed_individual_and_director,,OWNER
-INE123F01029,MMTC LTD,State,MMTC,MMTC Limited,MMTC Limited,excluded_state_dominant,,NOT_OWNER
-INE839M01018,SCHNEIDER ELECTRIC INFRASTRU,MNC,SCHNEIDER,Schneider Electric Infrastructure Limited,Schneider Electric Infrastructure Limited,owner_confirmed_director_only,,OWNER
-INE205B01031,ELECON ENGINEERING CO LTD,Owner,ELECON,Elecon Engineering Company Limited,Elecon Engineering Company Limited,owner_confirmed_individual_and_director,,OWNER
-INE177H01039,GODAWARI POWER AND ISPAT LTD,Owner,GPIL,Godawari Power And Ispat limited,Godawari Power And Ispat limited,owner_confirmed_individual_and_director,,OWNER
-INE256C01024,TRIVENI ENGINEERING & INDUS,Owner,TRIVENI,Triveni Engineering & Industries Limited,Triveni Engineering & Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE780C01023,JM FINANCIAL LTD,Owner,JMFINANCIL,JM Financial Limited,JM Financial Limited,owner_confirmed_individual_and_director,,OWNER
-INE271B01025,MAHARASHTRA SEAMLESS LTD,Owner,MAHSEAMLES,Maharashtra Seamless Limited,Maharashtra Seamless Limited,owner_confirmed_individual_and_director,,OWNER
-INE731H01025,ACTION CONSTRUCTION EQUIPMEN,Owner,ACE,Action Construction Equipment Limited,Action Construction Equipment Limited,owner_confirmed_individual_and_director,,OWNER
-INE501A01019,DEEPAK FERTILISERS & PETRO,Owner,DEEPAKFERT,Deepak Fertilizers and Petrochemicals Corporation Limited,Deepak Fertilizers and Petrochemicals Corporation Limited,owner_confirmed_individual_and_director,,OWNER
-INE036B01030,GUJARAT AMBUJA EXPORTS LTD,Owner,GAEL,Gujarat Ambuja Exports Limited,Gujarat Ambuja Exports Limited,owner_confirmed_individual_and_director,,OWNER
-INE842C01021,MINDA CORP LTD,Owner,MINDACORP,Minda Corporation Limited,Minda Corporation Limited,owner_confirmed_individual_and_director,,OWNER
-INE834M01019,RATTANINDIA ENTERPRISES LTD,Owner,RTNINDIA,RattanIndia Enterprises Limited,RattanIndia Enterprises Limited,owner_confirmed_individual_and_director,,OWNER
-INE621H01010,RELIGARE ENTERPRISES LTD,Professional,RELIGARE,Religare Enterprises Limited,Religare Enterprises Limited,owner_confirmed_director_only,,OWNER
-INE146L01010,KIRLOSKAR OIL ENGINES LTD,Owner,KIRLOSENG,Kirloskar Oil Engines Limited,Kirloskar Oil Engines Limited,owner_confirmed_individual_and_director,,OWNER
-INE099Z01011,MISHRA DHATU NIGAM LTD,State,MIDHANI,Mishra Dhatu Nigam Limited,Mishra Dhatu Nigam Limited,excluded_state_dominant,,NOT_OWNER
-INE570A01022,ION EXCHANGE (INDIA) LTD,Owner,IONEXCHANG,ION Exchange (India) Limited,ION Exchange (India) Limited,owner_confirmed_individual_and_director,,OWNER
-INE178A01016,CHENNAI PETROLEUM CORP LTD,State,CHENNPETRO,Chennai Petroleum Corporation Limited,Chennai Petroleum Corporation Limited,excluded_state_dominant,,NOT_OWNER
-INE786A01032,JK LAKSHMI CEMENT LTD,Owner,JKLAKSHMI,JK Lakshmi Cement Limited,JK Lakshmi Cement Limited,owner_confirmed_individual_and_director,,OWNER
-INE614G01033,RELIANCE POWER LTD,Owner,RPOWER,Reliance Power Limited,Reliance Power Limited,owner_confirmed_individual_and_director,,OWNER
-INE884A01027,VAIBHAV GLOBAL LTD,Owner,VAIBHAVGBL,Vaibhav Global Limited,Vaibhav Global Limited,owner_confirmed_individual_and_director,,OWNER
-INE242C01024,ANANT RAJ LTD,Owner,ANANTRAJ,Anant Raj Limited,Anant Raj Limited,owner_confirmed_individual_and_director,,OWNER
-INE07O001026,EASY TRIP PLANNERS LTD,Owner,EASEMYTRIP,Easy Trip Planners Limited,Easy Trip Planners Limited,owner_confirmed_individual,,OWNER
-INE351F01018,JAIPRAKASH POWER VENTURES LT,Owner,JPPOWER,Jaiprakash Power Ventures Limited,Jaiprakash Power Ventures Limited,owner_probable_relatives_trust,ai_owner_weak,OWNER_WEAK
-INE027A01015,RASHTRIYA CHEMICALS & FERT,State,RCF,Rashtriya Chemicals and Fertilizers Limited,Rashtriya Chemicals and Fertilizers Limited,excluded_state_dominant,,NOT_OWNER
-INE026A01025,GUJARAT STATE FERT & CHEMICA,State,GSFC,Gujarat State Fertilizers & Chemicals Limited,Gujarat State Fertilizers & Chemicals Limited,owner_confirmed_director_only,,OWNER
-INE036A01016,RELIANCE INFRASTRUCTURE LTD,Owner,RELINFRA,Reliance Infrastructure Limited,Reliance Infrastructure Limited,owner_confirmed_individual_and_director,,OWNER
-INE573A01042,JK TYRE & INDUSTRIES LTD,Owner,JKTYRE,JK Tyre & Industries Limited,JK Tyre & Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE091G01026,JAI BALAJI INDUSTRIES LTD,Owner,JAIBALAJI,Jai Balaji Industries Limited,Jai Balaji Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE870H01013,NETWORK 18 MEDIA & INVTS LTD,Professional,NETWORK18,Network18 Media & Investments Limited,Network18 Media & Investments Limited,owner_confirmed_director_only,,OWNER
-INE955D01029,GENUS POWER INFRASTRUCTURES,Owner,GENUSPOWER,Genus Power Infrastructures Limited,Genus Power Infrastructures Limited,owner_confirmed_individual_and_director,,OWNER
-INE725A01030,NAVA LTD,Owner,NAVA,NAVA LIMITED,NAVA LIMITED,owner_confirmed_individual_and_director,,OWNER
-INE251B01027,ZEN TECHNOLOGIES LTD,Owner,ZENTEC,Zen Technologies Limited,Zen Technologies Limited,owner_confirmed_individual,,OWNER
-INE366I01010,VRL LOGISTICS LTD,Owner,VRLLOG,VRL Logistics Limited,VRL Logistics Limited,owner_confirmed_individual_and_director,,OWNER
-INE024L01027,GRAVITA INDIA LTD,Owner,GRAVITA,Gravita India Limited,Gravita India Limited,owner_confirmed_individual_and_director,,OWNER
-INE039A01010,IFCI LTD,State,IFCI,IFCI Limited,IFCI Limited,excluded_state_dominant,,NOT_OWNER
-INE517F01014,GUJARAT PIPAVAV PORT LTD,MNC,GPPL,Gujarat Pipavav Port Limited,Gujarat Pipavav Port Limited,owner_confirmed_director_only,,OWNER
-INE255A01020,EPL LTD,MNC,EPL,EPL Limited,EPL Limited,owner_confirmed_director_only,,OWNER
-INE111Q01021,PDS LTD,Owner,PDSL,PDS Limited,PDS Limited,owner_probable_nri_family,ai_owner,OWNER
-INE539A01019,GHCL LTD,Owner,GHCL,GHCL Limited,GHCL Limited,owner_confirmed_individual_and_director,,OWNER
-INE415A01038,AGI GREENPAC LTD,Owner,AGI,AGI Greenpac Limited,AGI Greenpac Limited,owner_confirmed_individual_and_director,,OWNER
-INE055S01018,CYIENT DLM LTD,Owner,CYIENTDLM,Cyient DLM Limited,Cyient DLM Limited,owner_confirmed_director_only,,OWNER
-INE949H01023,MAN INFRACONSTRUCTION LTD,Owner,MANINFRA,Man Infraconstruction Limited,Man Infraconstruction Limited,owner_confirmed_individual_and_director,,OWNER
-INE666D01022,BOROSIL RENEWABLES LTD,Owner,BORORENEW,BOROSIL RENEWABLES LIMITED,BOROSIL RENEWABLES LIMITED,owner_confirmed_individual_and_director,,OWNER
-INE335A01020,SURYA ROSHNI LTD,Owner,SURYAROSNI,Surya Roshni Limited,Surya Roshni Limited,owner_confirmed_individual_and_director,,OWNER
-INE02YR01019,ELECTRONICS MART INDIA LTD,Owner,EMIL,Electronics Mart India Limited,Electronics Mart India Limited,owner_confirmed_individual,,OWNER
-INE451A01017,FORCE MOTORS LTD,Owner,FORCEMOT,FORCE MOTORS LTD,FORCE MOTORS LTD,owner_confirmed_individual,,OWNER
-INE767A01016,AARTI DRUGS LTD,Owner,AARTIDRUGS,Aarti Drugs Limited,Aarti Drugs Limited,owner_confirmed_individual_and_director,,OWNER
-INE750C01026,MARKSANS PHARMA LTD,Owner,MARKSANS,Marksans Pharma Limited,Marksans Pharma Limited,owner_confirmed_individual,,OWNER
-INE524A01029,GABRIEL INDIA LTD,Owner,GABRIEL,Gabriel India Limited,Gabriel India Limited,owner_confirmed_individual_and_director,,OWNER
-INE039C01032,JAMNA AUTO INDUSTRIES LTD,Owner,JAMNAAUTO,Jamna Auto Industries Limited,Jamna Auto Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE976A01021,WEST COAST PAPER MILLS LTD,Owner,WSTCSTPAPR,West Coast Paper Mills Limited,West Coast Paper Mills Limited,owner_confirmed_individual,,OWNER
-INE457L01029,PG ELECTROPLAST LTD,Owner,PGEL,PG Electroplast Limited,PG Electroplast Limited,owner_confirmed_individual_and_director,,OWNER
-INE540H01012,VOLTAMP TRANSFORMERS LTD,Owner,VOLTAMP,Voltamp Transformers Limited,Voltamp Transformers Limited,owner_confirmed_individual,,OWNER
-INE034A01011,ARVIND LTD,Owner,ARVIND,Arvind Limited,Arvind Limited,owner_confirmed_individual_and_director,,OWNER
-INE490G01020,MOIL LTD,State,MOIL,MOIL Limited,MOIL Limited,excluded_state_dominant,,NOT_OWNER
-INE150G01020,LUX INDUSTRIES LTD,Owner,LUXIND,Lux Industries Limited,Lux Industries Limited,owner_confirmed_individual,,OWNER
-INE802C01033,STEEL STRIPS WHEELS LTD,Owner,SSWL,Steel Strips Wheels Limited,Steel Strips Wheels Limited,owner_confirmed_individual_and_director,,OWNER
-INE086A01029,ELECTROSTEEL CASTINGS LTD,Owner,ELECTCAST,Electrosteel Castings Limited,Electrosteel Castings Limited,owner_confirmed_individual,,OWNER
-INE102B01014,CHOICE INTERNATIONAL LTD,Owner,CHOICEIN,Choice International Limited,Choice International Limited,owner_confirmed_individual_and_director,,OWNER
-INE549A01026,HINDUSTAN CONSTRUCTION CO,Owner,HCC,Hindustan Construction Company Limited,Hindustan Construction Company Limited,owner_confirmed_individual,,OWNER
-INE621L01012,TEXMACO RAIL & ENGINEERING L,Owner,TEXRAIL,Texmaco Rail & Engineering Limited,Texmaco Rail & Engineering Limited,owner_confirmed_individual_and_director,,OWNER
-INE175A01038,JAIN IRRIGATION SYSTEMS LTD,Owner,JISLJALEQS,Jain Irrigation Systems Limited,Jain Irrigation Systems Limited,owner_confirmed_individual_and_director,,OWNER
-INE244B01030,PATEL ENGINEERING LTD,Owner,PATELENG,Patel Engineering Limited,Patel Engineering Limited,owner_confirmed_individual_and_director,,OWNER
-INE877F01012,PTC INDIA LTD,State,PTC,PTC India Limited,PTC India Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
-INE391J01032,JTL INDUSTRIES LTD,Owner,JTLIND,JTL INDUSTRIES LIMITED,JTL INDUSTRIES LIMITED,owner_confirmed_individual,,OWNER
-INE461D01028,HLE GLASCOAT LTD,Owner,HLEGLAS,HLE Glascoat Limited,HLE Glascoat Limited,owner_confirmed_individual,,OWNER
-INE070D01027,JAI CORP LTD,Owner,JAICORPLTD,Jai Corp Limited,Jai Corp Limited,owner_confirmed_individual_and_director,,OWNER
-INE425B01027,BRIGHTCOM GROUP LTD,Owner,BCG,Brightcom Group Limited,Brightcom Group Limited,owner_confirmed_individual_and_director,,OWNER
-INE163A01018,NOCIL LTD,Owner,NOCIL,NOCIL Limited,NOCIL Limited,owner_confirmed_individual_and_director,,OWNER
-INE399K01017,RATTANINDIA POWER LTD,Owner,RTNPOWER,RattanIndia Power Limited,RattanIndia Power Limited,ambiguous_holding_indian,ai_owner,OWNER
-INE876N01018,ORIENT CEMENT LTD,Owner,ORIENTCEM,Orient Cement Limited,Orient Cement Limited,ambiguous_holding_indian,ai_owner,OWNER
-INE495A01022,DALMIA BHARAT SUGAR & INDUST,Owner,DALMIASUG,Dalmia Bharat Sugar and Industries Limited,Dalmia Bharat Sugar and Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE870D01012,NATIONAL FERTILIZERS LTD,State,NFL,National Fertilizers Limited,National Fertilizers Limited,excluded_state_dominant,,NOT_OWNER
-INE094I01018,KOLTE-PATIL DEVELOPERS LTD,Owner,KOLTEPATIL,Kolte - Patil Developers Limited,Kolte - Patil Developers Limited,owner_confirmed_individual_and_director,,OWNER
-INE982F01036,HATHWAY CABLE AND DATACOM,Owner,HATHWAY,Hathway Cable & Datacom Limited,Hathway Cable & Datacom Limited,owner_confirmed_individual,,OWNER
-INE442H01029,ASHOKA BUILDCON LTD,Owner,ASHOKA,Ashoka Buildcon Limited,Ashoka Buildcon Limited,owner_confirmed_individual_and_director,,OWNER
-INE508G01029,TIME TECHNOPLAST LTD,Owner,TIMETECHNO,Time Technoplast Limited,Time Technoplast Limited,owner_confirmed_individual_and_director,,OWNER
-INE306A01021,BAJAJ HINDUSTHAN SUGAR LTD,Owner,BAJAJHIND,Bajaj Hindusthan Sugar Limited,Bajaj Hindusthan Sugar Limited,owner_confirmed_individual_and_director,,OWNER
-INE516A01017,UFLEX LTD,Owner,UFLEX,UFLEX Limited,UFLEX Limited,owner_confirmed_individual_and_director,,OWNER
-INE224A01026,GREAVES COTTON LTD,Owner,GREAVESCOT,Greaves Cotton Limited,Greaves Cotton Limited,owner_confirmed_director_only,,OWNER
-INE559R01029,LANDMARK CARS LTD,Owner,LANDMARK,Landmark Cars Limited,Landmark Cars Limited,owner_confirmed_individual_and_director,,OWNER
-INE255X01014,MSTC LTD,State,MSTCLTD,Mstc Limited,Mstc Limited,excluded_state_dominant,,NOT_OWNER
-INE032A01023,BOMBAY DYEING & MFG CO LTD,Owner,BOMDYEING,Bombay Dyeing & Mfg Company Limited,Bombay Dyeing & Mfg Company Limited,owner_confirmed_individual,,OWNER
-INE045601023,PARAS DEFENCE & SPACE TECHNO,Owner,PARAS,Paras Defence and Space Technologies Limited,Paras Defence and Space Technologies Limited,owner_confirmed_individual_and_director,,OWNER
-INE0KL801015,DCX SYSTEMS LTD,Owner,DCXINDIA,DCX Systems Limited,DCX Systems Limited,owner_confirmed_individual_and_director,,OWNER
-INE485C01029,IOL CHEMICALS AND PHARMA LTD,Owner,IOLCP,IOL Chemicals and Pharmaceuticals Limited,IOL Chemicals and Pharmaceuticals Limited,owner_confirmed_individual_and_director,,OWNER
-INE052I01032,CAMLIN FINE SCIENCES LTD,Owner,CAMLINFINE,Camlin Fine Sciences Limited,Camlin Fine Sciences Limited,owner_confirmed_individual_and_director,,OWNER
-INE349A01021,NRB BEARINGS LTD,Owner,NRBBEARING,NRB Bearing Limited,NRB Bearing Limited,owner_confirmed_individual_and_director,,OWNER
-INE0JS101016,DREAMFOLKS SERVICES LTD,Owner,DREAMFOLKS,Dreamfolks Services Limited,Dreamfolks Services Limited,owner_confirmed_individual_and_director,,OWNER
-INE0JA001018,VENUS PIPES & TUBES LTD,Owner,VENUSPIPES,Venus Pipes & Tubes Limited,Venus Pipes & Tubes Limited,owner_confirmed_individual,,OWNER
-INE348A01023,ASHAPURA MINECHEM LTD,Owner,ASHAPURMIN,Ashapura Minechem Limited,Ashapura Minechem Limited,owner_confirmed_individual_and_director,,OWNER
-INE597J01018,SHALBY LTD,Owner,SHALBY,Shalby Limited,Shalby Limited,owner_confirmed_individual,,OWNER
-INE603A01013,PRAKASH INDUSTRIES LTD,Owner,PRAKASH,Prakash Industries Limited,Prakash Industries Limited,owner_confirmed_individual_and_director,,OWNER
-INE385W01011,DISHMAN CARBOGEN AMCIS LTD,Owner,DCAL,Dishman Carbogen Amcis Limited,Dishman Carbogen Amcis Limited,owner_confirmed_individual_and_director,,OWNER
-INE615I01010,GLOBUS SPIRITS LTD,Owner,GLOBUSSPR,Globus Spirits Limited,Globus Spirits Limited,owner_confirmed_individual_and_director,,OWNER
-INE883N01014,PARAG MILK FOODS LTD,Owner,PARAGMILK,Parag Milk Foods Limited,Parag Milk Foods Limited,owner_confirmed_individual_and_director,,OWNER
-INE776C01039,GMR AIRPORTS LTD,Owner,GMRAIRPORT,GMR AIRPORTS LIMITED,GMR AIRPORTS LIMITED,owner_confirmed_individual_and_director,,OWNER
-INE0V6F01027,HYUNDAI MOTOR INDIA LTD,MNC,HYUNDAI,Hyundai Motor India Limited,Hyundai Motor India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE07Y701011,HITACHI ENERGY INDIA LTD,MNC,POWERINDIA,Hitachi Energy India Limited,Hitachi Energy India Limited,excluded_no_natural_no_holding,,NOT_OWNER
-INE749A01030,JINDAL STEEL LTD,Owner,JINDALSTEL,JINDAL STEEL LIMITED,JINDAL STEEL LIMITED,owner_confirmed_individual_and_director,,OWNER
-INE01EA01019,VISHAL MEGA MART LTD,Owner,VMM,Vishal Mega Mart Limited,Vishal Mega Mart Limited,owner_confirmed_director_only,,OWNER
-INE377N01017,WAAREE ENERGIES LTD,Owner,WAAREEENER,Waaree Energies Limited,Waaree Energies Limited,owner_confirmed_individual_and_director,,OWNER
+﻿isin,company_name_owners,owners_cat,symbol,company_name_cand,owner_flag,owner_flag_ai,owner_flag_final
+INE749A01030,JINDAL STEEL LTD,Owner,JINDALSTEL,JINDAL STEEL LIMITED,owner_confirmed_individual_and_director,,OWNER
+INE776C01039,GMR AIRPORTS LTD,Owner,GMRAIRPORT,GMR AIRPORTS LIMITED,owner_confirmed_individual_and_director,,OWNER
+INE931S01010,ADANI ENERGY SOLUTIONS LTD,Owner,ADANIENSOL,Adani Energy Solutions Limited,owner_confirmed_individual_and_director,,OWNER
+INE498L01015,L&T FINANCE LTD,Professional,LTF,L&T Finance Limited,owner_confirmed_director_only,,OWNER
+INE055A01016,ADITYA BIRLA REAL ESTATE LTD,Owner,ABREL,Aditya Birla Real Estate Limited,owner_confirmed_director_only,,OWNER
+INE069I01010,EMBASSY DEVELOPMENTS LTD,Owner,EMBDL,Embassy Developments Limited,owner_confirmed_individual_and_director,,OWNER
+INE148I01020,SAMMAAN CAPITAL LTD,Owner,,,,,
+INE483S01020,AVENUESAI LTD,Owner,CCAVENUE,AvenuesAI Limited,owner_confirmed_individual_and_director,,OWNER
+INE885A01032,AMARA RAJA ENERGY & MOBILITY,Owner,ARE&M,Amara Raja Energy & Mobility Limited,ambiguous_holding_indian,ai_owner,OWNER
+INE155A01022,TATA MOTORS PASSENGER VEHICL,Professional,TMPV,Tata Motors Passenger Vehicles Limited,owner_confirmed_director_only,,OWNER
+INE208C01025,AEGIS LOGISTICS LTD,Owner,AEGISLOG,Aegis Logistics Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE214T01019,LTM LTD,Professional,LTM,LTM Limited,owner_confirmed_director_only,,OWNER
+INE699H01024,AWL AGRI BUSINESS LTD,Owner,AWL,AWL Agri Business Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE03Q201024,ALIVUS LIFE SCIENCES LTD,Owner,ALIVUS,Alivus Life Sciences Limited,owner_confirmed_director_only,,OWNER
+INE00FF01025,ACUTAAS CHEMICALS LTD,Owner,ACUTAAS,Acutaas Chemicals Limited,owner_confirmed_individual_and_director,,OWNER
+INE0BWS23018,ALTIUS TELECOM INFRASTRUCTUR,Professional,,,,,
+INE03QK01018,COHANCE LIFESCIENCES LTD,Professional,COHANCE,Cohance Lifesciences Limited,ambiguous_holding_foreign,ai_professional,NOT_OWNER
+INE192B01031,WELSPUN LIVING LTD,Owner,WELSPUNLIV,Welspun Living Limited,owner_confirmed_individual,,OWNER
+INE813A01018,MAHINDRA LIFESPACE DEVELOPER,Owner,,,,,
+INE665A01038,SWAN CORP LTD,Owner,SWANCORP,SWAN CORP LIMITED,owner_confirmed_individual,,OWNER
+INE292B01021,HBL ENGINEERING LTD,Owner,HBLENGINE,HBL Engineering Limited,owner_confirmed_individual,,OWNER
+INE818H01020,LT FOODS LTD,Owner,LTFOODS,LT Foods Limited,owner_confirmed_individual_and_director,,OWNER
+INE879I01012,VALOR ESTATE LTD,Owner,DBREALTY,Valor Estate Limited,owner_confirmed_individual_and_director,,OWNER
+INE686A01026,CEMINDIA PROJECTS LTD,MNC,CEMPRO,Cemindia Projects Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE001A01036,HOUSING DEVELOPMENT FINANCE,Professional,,,,,
+INE001B01026,KRBL LTD,Owner,KRBL,KRBL Limited,owner_confirmed_individual,,OWNER
+INE002A01018,RELIANCE INDUSTRIES LIMITED,Owner,RELIANCE,Reliance Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE002L01015,SJVN LTD,State,SJVN,SJVN Limited,excluded_state_dominant,,NOT_OWNER
+INE002S01010,MAHANAGAR GAS LTD,State,MGL,Mahanagar Gas Limited,excluded_state_dominant,,NOT_OWNER
+INE003A01024,SIEMENS LTD,MNC,SIEMENS,Siemens Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE006I01046,ASTRAL LTD,Owner,ASTRAL,Astral Limited,owner_confirmed_individual,,OWNER
+INE008A01015,IDBI BANK LTD,State,IDBI,IDBI Bank Limited,excluded_state_dominant,,NOT_OWNER
+INE009A01021,INFOSYS LTD,Professional,INFY,Infosys Limited,owner_confirmed_individual_and_director,,OWNER
+INE00E101023,BIKAJI FOODS INTERNATIONAL L,Owner,BIKAJI,Bikaji Foods International Limited,owner_confirmed_individual_and_director,,OWNER
+INE00F201020,PRUDENT CORPORATE ADVISORY S,Owner,PRUDENT,Prudent Corporate Advisory Services Limited,owner_confirmed_individual_and_director,,OWNER
+INE00H001014,SWIGGY LTD,Professional,,,,,
+INE00LO01017,CRAFTSMAN AUTOMATION LTD,Owner,CRAFTSMAN,Craftsman Automation Limited,owner_confirmed_individual_and_director,,OWNER
+INE00M201021,STERLING AND WILSON RENEWABL,Owner,SWSOLAR,Sterling and Wilson Renewable Energy Limited,owner_confirmed_individual_and_director,,OWNER
+INE00R701025,DALMIA BHARAT LTD,Owner,DALBHARAT,Dalmia Bharat Limited,owner_confirmed_individual_and_director,,OWNER
+INE00WC01027,AFFLE 3I LTD,Owner,AFFLE,Affle 3i Limited,owner_probable_nri_family,ai_owner,OWNER
+INE010B01027,ZYDUS LIFESCIENCES LTD,Owner,ZYDUSLIFE,Zydus Lifesciences Limited,owner_confirmed_individual_and_director,,OWNER
+INE010J01012,TEJAS NETWORKS LTD,Professional,TEJASNET,Tejas Networks Limited,owner_confirmed_director_only,,OWNER
+INE010V01017,L&T TECHNOLOGY SERVICES LTD,Professional,LTTS,L&T Technology Services Limited,owner_confirmed_director_only,,OWNER
+INE011K01018,TEGA INDUSTRIES LTD,Owner,TEGA,Tega Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE012A01025,ACC LTD,Owner,ACC,ACC Limited,ambiguous_holding_indian,ai_owner,OWNER
+INE016A01026,DABUR INDIA LTD,Owner,DABUR,Dabur India Limited,owner_confirmed_individual_and_director,,OWNER
+INE017A01032,GREAT EASTERN SHIPPING CO,Owner,GESHIP,The Great Eastern Shipping Company Limited,owner_confirmed_individual_and_director,,OWNER
+INE018A01030,LARSEN & TOUBRO LTD,Professional,,,,,
+INE018E01016,SBI CARDS & PAYMENT SERVICES,State,SBICARD,SBI Cards and Payment Services Limited,owner_confirmed_director_only,,OWNER
+INE019A01038,JSW STEEL LTD,Owner,JSWSTEEL,JSW Steel Limited,owner_confirmed_individual_and_director,,OWNER
+INE019C01026,HIMADRI SPECIALITY CHEMICAL,Owner,HSCL,Himadri Speciality Chemical Limited,owner_confirmed_individual_and_director,,OWNER
+INE01EA01019,VISHAL MEGA MART LTD,Owner,VMM,Vishal Mega Mart Limited,owner_confirmed_director_only,,OWNER
+INE020B01018,REC LTD,State,RECLTD,REC Limited,owner_confirmed_director_only,,OWNER
+INE021A01026,ASIAN PAINTS LTD,Owner,ASIANPAINT,Asian Paints Limited,owner_confirmed_individual_and_director,,OWNER
+INE021O01019,DODLA DAIRY LTD,Owner,DODLA,Dodla Dairy Limited,owner_confirmed_individual_and_director,,OWNER
+INE022Q01020,INDIAN ENERGY EXCHANGE LTD,Professional,,,,,
+INE024L01027,GRAVITA INDIA LTD,Owner,GRAVITA,Gravita India Limited,owner_confirmed_individual_and_director,,OWNER
+INE026A01025,GUJARAT STATE FERT & CHEMICA,State,GSFC,Gujarat State Fertilizers & Chemicals Limited,owner_confirmed_director_only,,OWNER
+INE027A01015,RASHTRIYA CHEMICALS & FERT,State,RCF,Rashtriya Chemicals and Fertilizers Limited,excluded_state_dominant,,NOT_OWNER
+INE027H01010,MAX HEALTHCARE INSTITUTE LTD,Owner,MAXHEALTH,Max Healthcare Institute Limited,owner_confirmed_individual_and_director,,OWNER
+INE028A01039,BANK OF BARODA,State,BANKBARODA,Bank of Baroda,excluded_state_dominant,,NOT_OWNER
+INE029A01011,BHARAT PETROLEUM CORP LTD,State,BPCL,Bharat Petroleum Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE02NC01014,FINO PAYMENTS BANK LTD,Professional,,,,,
+INE02YR01019,ELECTRONICS MART INDIA LTD,Owner,EMIL,Electronics Mart India Limited,owner_confirmed_individual,,OWNER
+INE030A01027,HINDUSTAN UNILEVER LTD,MNC,HINDUNILVR,Hindustan Unilever Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE031A01017,HOUSING & URBAN DEV CORP LTD,State,HUDCO,Housing & Urban Development Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE031B01049,AJANTA PHARMA LTD,Owner,AJANTPHARM,Ajanta Pharma Limited,owner_confirmed_individual_and_director,,OWNER
+INE032A01023,BOMBAY DYEING & MFG CO LTD,Owner,BOMDYEING,Bombay Dyeing & Mfg Company Limited,owner_confirmed_individual,,OWNER
+INE034A01011,ARVIND LTD,Owner,ARVIND,Arvind Limited,owner_confirmed_individual_and_director,,OWNER
+INE036A01016,RELIANCE INFRASTRUCTURE LTD,Owner,RELINFRA,Reliance Infrastructure Limited,owner_confirmed_individual_and_director,,OWNER
+INE036B01030,GUJARAT AMBUJA EXPORTS LTD,Owner,GAEL,Gujarat Ambuja Exports Limited,owner_confirmed_individual_and_director,,OWNER
+INE036D01028,KARUR VYSYA BANK LTD,Professional,,,,,
+INE038A01020,HINDALCO INDUSTRIES LTD,Owner,HINDALCO,Hindalco Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE039A01010,IFCI LTD,State,IFCI,IFCI Limited,excluded_state_dominant,,NOT_OWNER
+INE039C01032,JAMNA AUTO INDUSTRIES LTD,Owner,JAMNAAUTO,Jamna Auto Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE040A01034,HDFC BANK LIMITED,Professional,,,,,
+INE040H01021,SUZLON ENERGY LTD,Owner,SUZLON,Suzlon Energy Limited,owner_confirmed_individual_and_director,,OWNER
+INE041025011,EMBASSY OFFICE PARKS REIT,Owner,,,,,
+INE042A01014,ESCORTS KUBOTA LTD,Owner,ESCORTS,Escorts Kubota Limited,ambiguous_mnc_jv_candidate,ai_owner_weak,OWNER_WEAK
+INE043D01016,IDFC LTD,Professional,,,,,
+INE043W01024,VIJAYA DIAGNOSTIC CENTRE PVT,Owner,VIJAYA,Vijaya Diagnostic Centre Limited,owner_confirmed_individual_and_director,,OWNER
+INE044A01036,SUN PHARMACEUTICAL INDUS,Owner,SUNPHARMA,Sun Pharmaceutical Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE045601023,PARAS DEFENCE & SPACE TECHNO,Owner,PARAS,Paras Defence and Space Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE047A01021,GRASIM INDUSTRIES LTD,Owner,GRASIM,Grasim Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE048G01026,NAVIN FLUORINE INTERNATIONAL,Owner,NAVINFLUOR,Navin Fluorine International Limited,owner_confirmed_individual_and_director,,OWNER
+INE049B01025,WOCKHARDT LTD,Owner,WOCKPHARMA,Wockhardt Limited,owner_confirmed_individual_and_director,,OWNER
+INE04I401011,KPIT TECHNOLOGIES LTD,Owner,KPITTECH,KPIT Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE050A01025,BOMBAY BURMAH TRADING CORP,Owner,BBTC,The Bombay Burmah Trading Corporation Limited,owner_confirmed_individual,,OWNER
+INE051B01021,VAKRANGEE LTD,Owner,VAKRANGEE,Vakrangee Limited,owner_confirmed_individual_and_director,,OWNER
+INE052I01032,CAMLIN FINE SCIENCES LTD,Owner,CAMLINFINE,Camlin Fine Sciences Limited,owner_confirmed_individual_and_director,,OWNER
+INE053A01029,INDIAN HOTELS CO LTD,Professional,INDHOTEL,The Indian Hotels Company Limited,owner_confirmed_director_only,,OWNER
+INE053F01010,INDIAN RAILWAY FINANCE CORP,State,IRFC,Indian Railway Finance Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE054A01027,V.I.P. INDUSTRIES LTD,Owner,VIPIND,VIP Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE055S01018,CYIENT DLM LTD,Owner,CYIENTDLM,Cyient DLM Limited,owner_confirmed_director_only,,OWNER
+INE058A01010,SANOFI INDIA LTD,MNC,,,,,
+INE059A01026,CIPLA LTD,Owner,CIPLA,Cipla Limited,owner_confirmed_individual_and_director,,OWNER
+INE061F01013,FORTIS HEALTHCARE LTD,MNC,FORTIS,Fortis Healthcare Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE062A01020,STATE BANK OF INDIA,State,SBIN,State Bank of India,excluded_state_dominant,,NOT_OWNER
+INE063P01018,EQUITAS SMALL FINANCE BANK L,Professional,,,,,
+INE064C01022,TRIDENT LTD,Owner,TRIDENT,Trident Limited,owner_confirmed_director_only,,OWNER
+INE066A01021,EICHER MOTORS LTD,Owner,EICHERMOT,Eicher Motors Limited,owner_confirmed_individual_and_director,,OWNER
+INE066F01020,HINDUSTAN AERONAUTICS LTD,State,HAL,Hindustan Aeronautics Limited,excluded_state_dominant,,NOT_OWNER
+INE067A01029,CG POWER AND INDUSTRIAL SOLU,Owner,CGPOWER,CG Power and Industrial Solutions Limited,owner_confirmed_individual_and_director,,OWNER
+INE068V01023,GLAND PHARMA LTD,Owner,GLAND,Gland Pharma Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE070A01015,SHREE CEMENT LTD,Owner,SHREECEM,SHREE CEMENT LIMITED,owner_confirmed_individual,,OWNER
+INE070D01027,JAI CORP LTD,Owner,JAICORPLTD,Jai Corp Limited,owner_confirmed_individual_and_director,,OWNER
+INE073K01018,SONA BLW PRECISION FORGINGS,Owner,SONACOMS,Sona BLW Precision Forgings Limited,owner_confirmed_individual_and_director,,OWNER
+INE074A01025,PRAJ INDUSTRIES LTD,Owner,PRAJIND,Praj Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE075A01022,WIPRO LTD,Owner,WIPRO,Wipro Limited,owner_confirmed_individual_and_director,,OWNER
+INE079A01024,AMBUJA CEMENTS LTD,Owner,AMBUJACEM,Ambuja Cements Limited,ambiguous_holding_foreign,ai_owner,OWNER
+INE07O001026,EASY TRIP PLANNERS LTD,Owner,EASEMYTRIP,Easy Trip Planners Limited,owner_confirmed_individual,,OWNER
+INE07T201019,RESTAURANT BRANDS ASIA LTD,Professional,RBA,Restaurant Brands Asia Limited,owner_confirmed_director_only,,OWNER
+INE07Y701011,HITACHI ENERGY INDIA LTD,MNC,POWERINDIA,Hitachi Energy India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE081A01020,TATA STEEL LTD,Professional,TATASTEEL,Tata Steel Limited,owner_confirmed_director_only,,OWNER
+INE084A01016,BANK OF INDIA,State,BANKINDIA,Bank of India,excluded_state_dominant,,NOT_OWNER
+INE085A01013,CHAMBAL FERTILISERS & CHEM,Owner,CHAMBLFERT,Chambal Fertilizers & Chemicals Limited,owner_confirmed_individual_and_director,,OWNER
+INE086A01029,ELECTROSTEEL CASTINGS LTD,Owner,ELECTCAST,Electrosteel Castings Limited,owner_confirmed_individual,,OWNER
+INE087H01022,SHREE RENUKA SUGARS LTD,MNC,RENUKA,Shree Renuka Sugars Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE088F01024,PARADEEP PHOSPHATES LTD,Owner,PARADEEP,Paradeep Phosphates Limited,owner_confirmed_individual_and_director,,OWNER
+INE089A01031,DR. REDDY'S LABORATORIES,Owner,DRREDDY,Dr. Reddy's Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
+INE089C01029,STERLITE TECHNOLOGIES LTD,Owner,STLTECH,Sterlite Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE08LI01020,KRSNAA DIAGNOSTICS LTD,Owner,KRSNAA,Krsnaa Diagnostics Limited,owner_confirmed_individual_and_director,,OWNER
+INE090A01021,ICICI BANK LTD,Professional,,,,,
+INE091G01026,JAI BALAJI INDUSTRIES LTD,Owner,JAIBALAJI,Jai Balaji Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE092A01019,TATA CHEMICALS LTD,Professional,TATACHEM,Tata Chemicals Limited,owner_confirmed_director_only,,OWNER
+INE092T01019,IDFC FIRST BANK LTD,Professional,,,,,
+INE093I01010,OBEROI REALTY LTD,Owner,OBEROIRLTY,Oberoi Realty Limited,owner_confirmed_individual_and_director,,OWNER
+INE094A01015,HINDUSTAN PETROLEUM CORP,State,HINDPETRO,Hindustan Petroleum Corporation Limited,owner_confirmed_director_only,,OWNER
+INE094I01018,KOLTE-PATIL DEVELOPERS LTD,Owner,KOLTEPATIL,Kolte - Patil Developers Limited,owner_confirmed_individual_and_director,,OWNER
+INE094J01016,UTI ASSET MANAGEMENT CO LTD,Professional,,,,,
+INE095A01012,INDUSIND BANK LTD,Owner,INDUSINDBK,IndusInd Bank Limited,owner_confirmed_director_only,,OWNER
+INE095N01031,NBCC INDIA LTD,State,NBCC,NBCC (India) Limited,excluded_state_dominant,,NOT_OWNER
+INE099Z01011,MISHRA DHATU NIGAM LTD,State,MIDHANI,Mishra Dhatu Nigam Limited,excluded_state_dominant,,NOT_OWNER
+INE09N301011,GUJARAT FLUOROCHEMICALS LTD,Owner,FLUOROCHEM,Gujarat Fluorochemicals Limited,owner_confirmed_individual,,OWNER
+INE09VQ01012,INDIGO PAINTS LTD,Owner,INDIGOPNTS,Indigo Paints Limited,owner_confirmed_individual_and_director,,OWNER
+INE0BJS01011,GO FASHION INDIA LTD,Owner,GOCOLORS,Go Fashion (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE0BV301023,CE INFO SYSTEMS LTD,Owner,MAPMYINDIA,C.E. Info Systems Limited,owner_confirmed_individual,,OWNER
+INE0BWX01014,AETHER INDUSTRIES LTD,Owner,AETHER,Aether Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE0BY001018,JUBILANT INGREVIA LTD,Owner,JUBLINGREA,Jubilant Ingrevia Limited,owner_confirmed_individual_and_director,,OWNER
+INE0CCU25019,MINDSPACE BUSINESS PARKS REI,Owner,,,,,
+INE0CLI01024,RATEGAIN TRAVEL TECHNOLOGIES,Owner,RATEGAIN,Rategain Travel Technologies Limited,owner_confirmed_individual,,OWNER
+INE0D6701023,INDIA PESTICIDES LTD,Owner,IPL,India Pesticides Limited,owner_confirmed_individual,,OWNER
+INE0DD101019,RAILTEL CORP OF INDIA LTD,State,RAILTEL,Railtel Corporation Of India Limited,excluded_state_dominant,,NOT_OWNER
+INE0DK501011,PIRAMAL PHARMA LTD,Owner,PPLPHARMA,Piramal Pharma Limited,owner_confirmed_individual_and_director,,OWNER
+INE0DYJ01015,SYRMA SGS TECHNOLOGY LTD,Owner,SYRMA,Syrma SGS Technology Limited,owner_confirmed_individual_and_director,,OWNER
+INE0ECP01024,HMA AGRO INDUSTRIES LTD,Owner,HMAAGRO,HMA Agro Industries Limited,owner_confirmed_individual,,OWNER
+INE0FDU25010,BROOKFIELD INDIA REAL ESTATE,MNC,,,,,
+INE0FS801015,MOTHERSON SUMI WIRING INDIA,Owner,MSUMI,Motherson Sumi Wiring India Limited,owner_confirmed_individual_and_director,,OWNER
+INE0GGX23010,POWERGRID INFRASTRUCTURE INV,State,,,,,
+INE0GK401011,TATVA CHINTAN PHARMA CHEM LT,Owner,TATVA,Tatva Chintan Pharma Chem Limited,owner_confirmed_individual,,OWNER
+INE0I7C01011,LATENT VIEW ANALYTICS LTD,Owner,LATENTVIEW,Latent View Analytics Limited,owner_confirmed_individual_and_director,,OWNER
+INE0IX101010,DATA PATTERNS INDIA LTD,Owner,DATAPATTNS,Data Patterns (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE0J1Y01017,LIFE INSURANCE CORPORATION,State,LICI,Life Insurance Corporation Of India,excluded_state_dominant,,NOT_OWNER
+INE0JA001018,VENUS PIPES & TUBES LTD,Owner,VENUSPIPES,Venus Pipes & Tubes Limited,owner_confirmed_individual,,OWNER
+INE0JS101016,DREAMFOLKS SERVICES LTD,Owner,DREAMFOLKS,Dreamfolks Services Limited,owner_confirmed_individual_and_director,,OWNER
+INE0JUS01029,HARSHA ENGINEERS INTERNATION,Owner,HARSHA,Harsha Engineers International Limited,owner_confirmed_individual_and_director,,OWNER
+INE0KL801015,DCX SYSTEMS LTD,Owner,DCXINDIA,DCX Systems Limited,owner_confirmed_individual_and_director,,OWNER
+INE0LCL01028,AVALON TECHNOLOGIES LTD,Owner,AVALON,Avalon Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE0NDH25011,NEXUS SELECT TRUST,Professional,,,,,
+INE0NNS01018,NMDC STEEL LTD,State,NSLNISP,NMDC Steel Limited,excluded_state_dominant,,NOT_OWNER
+INE0V6F01027,HYUNDAI MOTOR INDIA LTD,MNC,HYUNDAI,Hyundai Motor India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE100A01010,ATUL LTD,Owner,ATUL,Atul Limited,owner_confirmed_individual_and_director,,OWNER
+INE101A01026,MAHINDRA & MAHINDRA LTD,Owner,M&M,Mahindra & Mahindra Limited,owner_confirmed_individual_and_director,,OWNER
+INE101D01020,GRANULES INDIA LTD,Owner,GRANULES,Granules India Limited,owner_confirmed_individual_and_director,,OWNER
+INE102B01014,CHOICE INTERNATIONAL LTD,Owner,CHOICEIN,Choice International Limited,owner_confirmed_individual_and_director,,OWNER
+INE102D01028,GODREJ CONSUMER PRODUCTS LTD,Owner,GODREJCP,Godrej Consumer Products Limited,owner_confirmed_individual_and_director,,OWNER
+INE103A01014,MANGALORE REFINERY & PETRO,State,MRPL,Mangalore Refinery and Petrochemicals Limited,owner_confirmed_director_only,,OWNER
+INE109A01011,SHIPPING CORP OF INDIA LTD,State,SCI,Shipping Corporation Of India Limited,excluded_state_dominant,,NOT_OWNER
+INE111A01025,CONTAINER CORP OF INDIA LTD,State,CONCOR,Container Corporation of India Limited,excluded_state_dominant,,NOT_OWNER
+INE111Q01021,PDS LTD,Owner,PDSL,PDS Limited,owner_probable_nri_family,ai_owner,OWNER
+INE112L01020,METROPOLIS HEALTHCARE LTD,Owner,METROPOLIS,Metropolis Healthcare Limited,owner_confirmed_individual_and_director,,OWNER
+INE113A01013,GUJARAT NARMADA VALLEY FERT,State,GNFC,Gujarat Narmada Valley Fertilizers and Chemicals Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
+INE114A01011,STEEL AUTHORITY OF INDIA,State,SAIL,Steel Authority of India Limited,excluded_state_dominant,,NOT_OWNER
+INE115A01026,LIC HOUSING FINANCE LTD,State,LICHSGFIN,LIC Housing Finance Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE117A01022,ABB INDIA LTD,MNC,ABB,ABB India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE118A01012,BAJAJ HOLDINGS AND INVESTMEN,Owner,BAJAJHLDNG,Bajaj Holdings & Investment Limited,owner_confirmed_individual_and_director,,OWNER
+INE118D01016,NUVOCO VISTAS CORP LTD,Owner,NUVOCO,Nuvoco Vistas Corporation Limited,owner_confirmed_individual,,OWNER
+INE118H01025,BSE LTD,Professional,,,,,
+INE119A01028,BALRAMPUR CHINI MILLS LTD,Owner,BALRAMCHIN,Balrampur Chini Mills Limited,owner_confirmed_individual_and_director,,OWNER
+INE120A01034,CARBORUNDUM UNIVERSAL LTD,Owner,CARBORUNIV,Carborundum Universal Limited,owner_confirmed_individual_and_director,,OWNER
+INE121A01024,CHOLAMANDALAM INVESTMENT AND,Owner,CHOLAFIN,Cholamandalam Investment and Finance Company Limited,owner_confirmed_individual_and_director,,OWNER
+INE121E01018,JSW ENERGY LTD,Owner,JSWENERGY,JSW Energy Limited,owner_confirmed_individual_and_director,,OWNER
+INE121J01017,INDUS TOWERS LTD,Owner,INDUSTOWER,Indus Towers Limited,owner_confirmed_director_only,,OWNER
+INE123F01029,MMTC LTD,State,MMTC,MMTC Limited,excluded_state_dominant,,NOT_OWNER
+INE123W01016,SBI LIFE INSURANCE CO LTD,State,SBILIFE,SBI Life Insurance Company Limited,owner_confirmed_director_only,,OWNER
+INE124G01033,DELTA CORP LTD,Owner,DELTACORP,Delta Corp Limited,owner_confirmed_individual_and_director,,OWNER
+INE126A01031,EID PARRY INDIA LTD,Owner,EIDPARRY,EID Parry India Limited,owner_confirmed_individual_and_director,,OWNER
+INE126J01016,APOLLO PIPES LTD,Owner,APOLLOPIPE,Apollo Pipes Limited,owner_confirmed_individual_and_director,,OWNER
+INE127D01025,HDFC ASSET MANAGEMENT CO LTD,Professional,HDFCAMC,HDFC Asset Management Company Limited,owner_confirmed_director_only,,OWNER
+INE128S01021,FIVE-STAR BUSINESS FINANCE L,Owner,FIVESTAR,Five-Star Business Finance Limited,owner_confirmed_individual_and_director,,OWNER
+INE128X01021,ARCHEAN CHEMICAL INDUSTRIES,Owner,ACI,Archean Chemical Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE129A01019,GAIL INDIA LTD,State,GAIL,GAIL (India) Limited,excluded_state_dominant,,NOT_OWNER
+INE131A01031,GUJARAT MINERAL DEV CORP LTD,State,GMDCLTD,Gujarat Mineral Development Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE134E01011,POWER FINANCE CORPORATION,State,PFC,Power Finance Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE136B01020,CYIENT LTD,Owner,CYIENT,Cyient Limited,owner_confirmed_individual_and_director,,OWNER
+INE138Y01010,KFIN TECHNOLOGIES LTD,Professional,KFINTECH,Kfin Technologies Limited,ambiguous_holding_foreign,ai_professional,NOT_OWNER
+INE139A01034,NATIONAL ALUMINIUM CO LTD,State,NATIONALUM,National Aluminium Company Limited,excluded_state_dominant,,NOT_OWNER
+INE139R01012,FUSION FINANCE LTD,Owner,FUSION,Fusion Finance Limited,ambiguous_mnc_jv_candidate,ai_owner,OWNER
+INE140A01024,PIRAMAL ENTERPRISES LTD,Owner,,,,,
+INE142Q01026,SULA VINEYARDS LTD,Owner,SULA,Sula Vineyards Limited,owner_probable_nri_family,ai_owner,OWNER
+INE144Z01023,TARSONS PRODUCTS LTD,Owner,TARSONS,Tarsons Products Limited,owner_confirmed_individual_and_director,,OWNER
+INE146L01010,KIRLOSKAR OIL ENGINES LTD,Owner,KIRLOSENG,Kirloskar Oil Engines Limited,owner_confirmed_individual_and_director,,OWNER
+INE148O01028,DELHIVERY LTD,Professional,,,,,
+INE149A01033,CHOLAMANDALAM FINANCIAL HOLD,Owner,CHOLAHLDNG,Cholamandalam Financial Holdings Limited,owner_confirmed_individual,,OWNER
+INE150G01020,LUX INDUSTRIES LTD,Owner,LUXIND,Lux Industries Limited,owner_confirmed_individual,,OWNER
+INE151A01013,TATA COMMUNICATIONS LTD,Professional,TATACOMM,Tata Communications Limited,owner_confirmed_director_only,,OWNER
+INE152A01029,THERMAX LTD,Owner,THERMAX,Thermax Limited,owner_confirmed_individual_and_director,,OWNER
+INE152M01016,TRIVENI TURBINE LTD,Owner,TRITURBINE,Triveni Turbine Limited,owner_confirmed_individual_and_director,,OWNER
+INE153T01027,BLS INTERNATIONAL LTD,Owner,BLS,BLS International Services Limited,owner_confirmed_individual_and_director,,OWNER
+INE154A01025,ITC LTD,Professional,,,,,
+INE158A01026,HERO MOTOCORP LTD,Owner,HEROMOTOCO,Hero MotoCorp Limited,owner_confirmed_individual_and_director,,OWNER
+INE160A01022,PUNJAB NATIONAL BANK,State,PNB,Punjab National Bank,excluded_state_dominant,,NOT_OWNER
+INE163A01018,NOCIL LTD,Owner,NOCIL,NOCIL Limited,owner_confirmed_individual_and_director,,OWNER
+INE164A01016,BALMER LAWRIE & CO LTD,State,,,,,
+INE168A01041,JAMMU & KASHMIR BANK LTD,State,J&KBANK,The Jammu & Kashmir Bank Limited,excluded_state_dominant,,NOT_OWNER
+INE169A01031,COROMANDEL INTERNATIONAL LTD,Owner,COROMANDEL,Coromandel International Limited,owner_confirmed_individual_and_director,,OWNER
+INE171A01029,FEDERAL BANK LTD,Professional,,,,,
+INE171Z01026,BHARAT DYNAMICS LTD,State,BDL,Bharat Dynamics Limited,excluded_state_dominant,,NOT_OWNER
+INE172A01027,CASTROL INDIA LTD,MNC,CASTROLIND,Castrol India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE175A01038,JAIN IRRIGATION SYSTEMS LTD,Owner,JISLJALEQS,Jain Irrigation Systems Limited,owner_confirmed_individual_and_director,,OWNER
+INE176A01028,BATA INDIA LTD,MNC,BATAINDIA,Bata India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE176B01034,HAVELLS INDIA LTD,Owner,HAVELLS,Havells India Limited,owner_confirmed_director_only,,OWNER
+INE177H01039,GODAWARI POWER AND ISPAT LTD,Owner,GPIL,Godawari Power And Ispat limited,owner_confirmed_individual_and_director,,OWNER
+INE178A01016,CHENNAI PETROLEUM CORP LTD,State,CHENNPETRO,Chennai Petroleum Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE179A01014,PROCTER & GAMBLE HYGIENE,MNC,,,,,
+INE180A01020,MAX FINANCIAL SERVICES LTD,Owner,,,,,
+INE180C01042,CAPRI GLOBAL CAPITAL LTD,Owner,CGCL,Capri Global Capital Limited,owner_confirmed_individual_and_director,,OWNER
+INE182A01018,PFIZER LIMITED,MNC,PFIZER,Pfizer Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE183A01024,FINOLEX INDUSTRIES LTD,Owner,FINPIPE,Finolex Industries Limited,owner_confirmed_individual,,OWNER
+INE186A01019,GUJARAT ALKALIES & CHEMICALS,State,,,,,
+INE188A01015,FERTILISERS & CHEM TRAVANCR,State,FACT,Fertilizers and Chemicals Travancore Limited,excluded_state_dominant,,NOT_OWNER
+INE191B01025,WELSPUN CORP LTD,Owner,WELCORP,Welspun Corp Limited,owner_confirmed_individual_and_director,,OWNER
+INE191H01014,PVR INOX LTD,Owner,PVRINOX,PVR INOX Limited,owner_confirmed_individual,,OWNER
+INE192A01025,TATA CONSUMER PRODUCTS LTD,Professional,TATACONSUM,TATA CONSUMER PRODUCTS LIMITED,owner_confirmed_director_only,,OWNER
+INE192R01011,AVENUE SUPERMARTS LTD,Owner,DMART,Avenue Supermarts Limited,owner_confirmed_individual_and_director,,OWNER
+INE195A01028,SUPREME INDUSTRIES LTD,Owner,SUPREMEIND,Supreme Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE195J01029,PNC INFRATECH LTD,Owner,PNCINFRA,PNC Infratech Limited,owner_confirmed_individual_and_director,,OWNER
+INE196A01026,MARICO LTD,Owner,MARICO,Marico Limited,owner_confirmed_individual_and_director,,OWNER
+INE199A01012,PROCTER & GAMBLE HEALTH LTD,MNC,,,,,
+INE200M01039,VARUN BEVERAGES LTD,Owner,VBL,Varun Beverages Limited,owner_confirmed_individual_and_director,,OWNER
+INE201P01022,G R INFRAPROJECTS LTD,Owner,GRINFRA,G R Infraprojects Limited,owner_confirmed_individual_and_director,,OWNER
+INE203G01027,INDRAPRASTHA GAS LTD,State,IGL,Indraprastha Gas Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
+INE205A01025,VEDANTA LTD,Owner,VEDL,Vedanta Limited,ambiguous_mnc_jv_candidate,ai_owner,OWNER
+INE205B01031,ELECON ENGINEERING CO LTD,Owner,ELECON,Elecon Engineering Company Limited,owner_confirmed_individual_and_director,,OWNER
+INE205C01021,POLY MEDICURE LTD,Owner,POLYMED,Poly Medicure Limited,owner_confirmed_individual_and_director,,OWNER
+INE208A01029,ASHOK LEYLAND LTD,Owner,ASHOKLEY,Ashok Leyland Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE209L01016,JUPITER WAGONS LTD,Owner,JWL,Jupiter Wagons Limited,owner_confirmed_individual_and_director,,OWNER
+INE211B01039,PHOENIX MILLS LTD,Owner,PHOENIXLTD,The Phoenix Mills Limited,owner_confirmed_individual_and_director,,OWNER
+INE212H01026,AIA ENGINEERING LTD,Owner,AIAENG,AIA Engineering Limited,owner_confirmed_individual_and_director,,OWNER
+INE213A01029,OIL & NATURAL GAS CORP LTD,State,ONGC,Oil & Natural Gas Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE216A01030,BRITANNIA INDUSTRIES LTD,Owner,BRITANNIA,Britannia Industries Limited,ambiguous_mnc_jv_candidate,ai_owner_weak,OWNER_WEAK
+INE216P01012,AAVAS FINANCIERS LTD,Professional,AAVAS,Aavas Financiers Limited,owner_confirmed_director_only,,OWNER
+INE217B01036,KAJARIA CERAMICS LTD,Owner,KAJARIACER,Kajaria Ceramics Limited,owner_confirmed_individual_and_director,,OWNER
+INE220B01022,KALPATARU PROJECTS INTERNATI,Owner,KPIL,Kalpataru Projects International Limited,owner_confirmed_individual_and_director,,OWNER
+INE220G01021,JINDAL STAINLESS LTD,Owner,JSL,Jindal Stainless Limited,owner_confirmed_individual_and_director,,OWNER
+INE224A01026,GREAVES COTTON LTD,Owner,GREAVESCOT,Greaves Cotton Limited,owner_confirmed_director_only,,OWNER
+INE226A01021,VOLTAS LTD,Professional,VOLTAS,Voltas Limited,ambiguous_holding_indian,ai_professional,NOT_OWNER
+INE227W01023,CLEAN SCIENCE & TECHNOLOGY L,Owner,CLEAN,Clean Science and Technology Limited,owner_confirmed_individual_and_director,,OWNER
+INE228A01035,USHA MARTIN LTD,Owner,USHAMART,Usha Martin Limited,owner_confirmed_individual,,OWNER
+INE230A01023,EIH LTD,Owner,EIHOTEL,EIH Limited,owner_confirmed_individual,,OWNER
+INE232I01014,SUN PHARMA ADVANCED RESEARCH,Owner,SPARC,Sun Pharma Advanced Research Company Limited,owner_confirmed_individual_and_director,,OWNER
+INE233A01035,GODREJ INDUSTRIES LTD,Owner,GODREJIND,Godrej Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE235A01022,FINOLEX CABLES LTD,Owner,FINCABLES,Finolex Cables Limited,owner_confirmed_individual,,OWNER
+INE237A01036,KOTAK MAHINDRA BANK LTD,Owner,KOTAKBANK,Kotak Mahindra Bank Limited,owner_confirmed_individual_and_director,,OWNER
+INE238A01034,AXIS BANK LTD,Professional,,,,,
+INE239A01024,NESTLE INDIA LTD,MNC,NESTLEIND,Nestle India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE242A01010,INDIAN OIL CORP LTD,State,IOC,Indian Oil Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE242C01024,ANANT RAJ LTD,Owner,ANANTRAJ,Anant Raj Limited,owner_confirmed_individual_and_director,,OWNER
+INE244B01030,PATEL ENGINEERING LTD,Owner,PATELENG,Patel Engineering Limited,owner_confirmed_individual_and_director,,OWNER
+INE244O01017,UNIPARTS INDIA LTD,Owner,UNIPARTS,Uniparts India Limited,owner_confirmed_individual_and_director,,OWNER
+INE245A01021,TATA POWER CO LTD,Professional,TATAPOWER,Tata Power Company Limited,owner_confirmed_director_only,,OWNER
+INE246F01010,GUJARAT STATE PETRONET LTD,State,GSPL,Gujarat State Petronet Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
+INE248A01017,ITI LTD,State,ITI,ITI Limited,excluded_state_dominant,,NOT_OWNER
+INE249Z01020,MAZAGON DOCK SHIPBUILDERS LT,State,MAZDOCK,Mazagon Dock Shipbuilders Limited,excluded_state_dominant,,NOT_OWNER
+INE251B01027,ZEN TECHNOLOGIES LTD,Owner,ZENTEC,Zen Technologies Limited,owner_confirmed_individual,,OWNER
+INE255A01020,EPL LTD,MNC,EPL,EPL Limited,owner_confirmed_director_only,,OWNER
+INE255X01014,MSTC LTD,State,MSTCLTD,Mstc Limited,excluded_state_dominant,,NOT_OWNER
+INE256A01028,ZEE ENTERTAINMENT ENTERPRISE,Owner,,,,,
+INE256C01024,TRIVENI ENGINEERING & INDUS,Owner,TRIVENI,Triveni Engineering & Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE257A01026,BHARAT HEAVY ELECTRICALS,State,BHEL,Bharat Heavy Electricals Limited,excluded_state_dominant,,NOT_OWNER
+INE258A01024,BEML LTD,State,BEML,BEML Limited,excluded_state_dominant,,NOT_OWNER
+INE259A01022,COLGATE PALMOLIVE (INDIA),MNC,COLPAL,Colgate Palmolive (India) Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE260B01028,GODFREY PHILLIPS INDIA LTD,Owner,GODFRYPHLP,Godfrey Phillips India Limited,owner_confirmed_individual_and_director,,OWNER
+INE260D01016,OLECTRA GREENTECH LTD,Owner,OLECTRA,Olectra Greentech Limited,ambiguous_holding_indian,ai_owner,OWNER
+INE262H01021,PERSISTENT SYSTEMS LTD,Owner,PERSISTENT,Persistent Systems Limited,owner_confirmed_individual_and_director,,OWNER
+INE263A01024,BHARAT ELECTRONICS LTD,State,BEL,Bharat Electronics Limited,excluded_state_dominant,,NOT_OWNER
+INE263M01029,KEYSTONE REALTORS LTD,Owner,RUSTOMJEE,Keystone Realtors Limited,owner_confirmed_individual_and_director,,OWNER
+INE267A01025,HINDUSTAN ZINC LTD,Owner,HINDZINC,Hindustan Zinc Limited,excluded_state_dominant,,NOT_OWNER
+INE269A01021,SONATA SOFTWARE LTD,Owner,SONATSOFTW,Sonata Software Limited,owner_confirmed_individual_and_director,,OWNER
+INE270A01029,ALOK INDUSTRIES LTD,Owner,ALOKINDS,Alok Industries Limited,ambiguous_holding_indian,ai_owner_weak,OWNER_WEAK
+INE271B01025,MAHARASHTRA SEAMLESS LTD,Owner,MAHSEAMLES,Maharashtra Seamless Limited,owner_confirmed_individual_and_director,,OWNER
+INE271C01023,DLF LTD,Owner,DLF,DLF Limited,owner_confirmed_individual_and_director,,OWNER
+INE274F01020,WESTLIFE FOODWORLD LTD,Owner,WESTLIFE,WESTLIFE FOODWORLD LIMITED,owner_confirmed_individual_and_director,,OWNER
+INE274G01010,DHANI SERVICES LTD,Owner,,,,,
+INE274J01014,OIL INDIA LTD,State,OIL,Oil India Limited,excluded_state_dominant,,NOT_OWNER
+INE278Y01022,CAMPUS ACTIVEWEAR LTD,Owner,CAMPUS,Campus Activewear Limited,owner_confirmed_individual_and_director,,OWNER
+INE280A01028,TITAN CO LTD,Professional,TITAN,Titan Company Limited,excluded_state_dominant,,NOT_OWNER
+INE285A01027,ELGI EQUIPMENTS LTD,Owner,ELGIEQUIP,Elgi Equipments Limited,owner_confirmed_individual_and_director,,OWNER
+INE285K01026,TECHNO ELECTRIC & ENGINEERIN,Owner,TECHNOE,Techno Electric & Engineering Company Limited,owner_confirmed_individual,,OWNER
+INE288B01029,DEEPAK NITRITE LTD,Owner,DEEPAKNTR,Deepak Nitrite Limited,owner_confirmed_individual_and_director,,OWNER
+INE290S01011,CARTRADE TECH LTD,Professional,,,,,
+INE296A01032,BAJAJ FINANCE LTD,Owner,BAJFINANCE,Bajaj Finance Limited,owner_confirmed_individual_and_director,,OWNER
+INE298A01020,CUMMINS INDIA LTD,MNC,CUMMINSIND,Cummins India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE298J01013,NIPPON LIFE INDIA ASSET MANA,MNC,NAM-INDIA,Nippon Life India Asset Management Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE299U01018,CROMPTON GREAVES CONSUMER EL,Professional,,,,,
+INE301A01014,RAYMOND LTD,Owner,RAYMOND,Raymond Limited,owner_confirmed_individual_and_director,,OWNER
+INE302A01020,EXIDE INDUSTRIES LTD,Owner,EXIDEIND,Exide Industries Limited,owner_probable_nri_family,ai_owner,OWNER
+INE303R01014,KALYAN JEWELLERS INDIA LTD,Owner,KALYANKJIL,Kalyan Jewellers India Limited,owner_confirmed_individual_and_director,,OWNER
+INE306A01021,BAJAJ HINDUSTHAN SUGAR LTD,Owner,BAJAJHIND,Bajaj Hindusthan Sugar Limited,owner_confirmed_individual_and_director,,OWNER
+INE306R01017,INTELLECT DESIGN ARENA LTD,Owner,INTELLECT,Intellect Design Arena Limited,owner_confirmed_individual_and_director,,OWNER
+INE317I01021,METRO BRANDS LTD,Owner,METROBRAND,Metro Brands Limited,owner_confirmed_individual_and_director,,OWNER
+INE318A01026,PIDILITE INDUSTRIES LTD,Owner,PIDILITIND,Pidilite Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE320J01015,RITES LTD,State,RITES,RITES Limited,excluded_state_dominant,,NOT_OWNER
+INE322A01010,GILLETTE INDIA LTD,MNC,GILLETTE,Gillette India Limited,owner_confirmed_director_only,,OWNER
+INE323A01026,BOSCH LTD,MNC,BOSCHLTD,Bosch Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE324A01032,JINDAL SAW LTD,Owner,JINDALSAW,Jindal Saw Limited,owner_confirmed_individual,,OWNER
+INE325A01013,TIMKEN INDIA LTD,MNC,TIMKEN,Timken India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE326A01037,LUPIN LTD,Owner,LUPIN,Lupin Limited,owner_confirmed_individual_and_director,,OWNER
+INE331A01037,RAMCO CEMENTS LTD/THE,Owner,RAMCOCEM,The Ramco Cements Limited,owner_confirmed_individual_and_director,,OWNER
+INE334L01012,UJJIVAN FINANCIAL SERVICES L,Professional,,,,,
+INE335A01020,SURYA ROSHNI LTD,Owner,SURYAROSNI,Surya Roshni Limited,owner_confirmed_individual_and_director,,OWNER
+INE335Y01020,INDIAN RAILWAY CATERING & TO,State,IRCTC,Indian Railway Catering And Tourism Corporation Limited,excluded_state_dominant,,NOT_OWNER
+INE338H01029,CONCORD BIOTECH LTD,Owner,CONCORDBIO,Concord Biotech Limited,owner_confirmed_individual_and_director,,OWNER
+INE338I01027,MOTILAL OSWAL FINANCIAL SERV,Owner,MOTILALOFS,Motilal Oswal Financial Services Limited,owner_confirmed_individual_and_director,,OWNER
+INE340A01012,BIRLA CORP LTD,Owner,BIRLACORPN,Birla Corporation Limited,owner_confirmed_individual_and_director,,OWNER
+INE342J01019,ZF COMMERCIAL VEHICLE CONTRO,MNC,ZFCVINDIA,ZF Commercial Vehicle Control Systems India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE343B01030,RAJESH EXPORTS LTD,Owner,RAJESHEXPO,Rajesh Exports Limited,owner_confirmed_individual,,OWNER
+INE343H01029,SOLAR INDUSTRIES INDIA LTD,Owner,SOLARINDS,Solar Industries India Limited,owner_confirmed_individual_and_director,,OWNER
+INE347G01014,PETRONET LNG LTD,State,PETRONET,Petronet LNG Limited,owner_confirmed_director_only,,OWNER
+INE348A01023,ASHAPURA MINECHEM LTD,Owner,ASHAPURMIN,Ashapura Minechem Limited,owner_confirmed_individual_and_director,,OWNER
+INE348B01021,CENTURY PLYBOARDS INDIA LTD,Owner,CENTURYPLY,Century Plyboards (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE349A01021,NRB BEARINGS LTD,Owner,NRBBEARING,NRB Bearing Limited,owner_confirmed_individual_and_director,,OWNER
+INE349Y01013,IDEAFORGE TECHNOLOGY LTD,Owner,IDEAFORGE,Ideaforge Technology Limited,owner_confirmed_individual_and_director,,OWNER
+INE351F01018,JAIPRAKASH POWER VENTURES LT,Owner,JPPOWER,Jaiprakash Power Ventures Limited,owner_probable_relatives_trust,ai_owner_weak,OWNER_WEAK
+INE356A01018,MPHASIS LTD,Professional,MPHASIS,MphasiS Limited,owner_confirmed_director_only,,OWNER
+INE358A01014,ABBOTT INDIA LTD,MNC,ABBOTINDIA,Abbott India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE361B01024,DIVI'S LABORATORIES LTD,Owner,DIVISLAB,Divi's Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
+INE364U01010,ADANI GREEN ENERGY LTD,Owner,ADANIGREEN,Adani Green Energy Limited,owner_confirmed_individual_and_director,,OWNER
+INE366I01010,VRL LOGISTICS LTD,Owner,VRLLOG,VRL Logistics Limited,owner_confirmed_individual_and_director,,OWNER
+INE371A01025,GRAPHITE INDIA LTD,Owner,GRAPHITE,Graphite India Limited,owner_confirmed_individual_and_director,,OWNER
+INE371P01015,AMBER ENTERPRISES INDIA LTD,Owner,AMBER,Amber Enterprises India Limited,owner_confirmed_individual_and_director,,OWNER
+INE372A01015,APAR INDUSTRIES LTD,Owner,APARINDS,Apar Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE376G01013,BIOCON LTD,Owner,BIOCON,Biocon Limited,owner_confirmed_individual_and_director,,OWNER
+INE377N01017,WAAREE ENERGIES LTD,Owner,WAAREEENER,Waaree Energies Limited,owner_confirmed_individual_and_director,,OWNER
+INE382Z01011,GARDEN REACH SHIPBUILDERS &,State,GRSE,Garden Reach Shipbuilders & Engineers Limited,excluded_state_dominant,,NOT_OWNER
+INE383A01012,INDIA CEMENTS LTD,Owner,INDIACEM,The India Cements Limited,owner_confirmed_director_only,,OWNER
+INE385W01011,DISHMAN CARBOGEN AMCIS LTD,Owner,DCAL,Dishman Carbogen Amcis Limited,owner_confirmed_individual_and_director,,OWNER
+INE386C01029,ASTRA MICROWAVE PRODUCTS LTD,Owner,,,,,
+INE388G01026,TWAMEV CONSTRUCTION AND INFR,Professional,,,,,
+INE388Y01029,FSN E-COMMERCE VENTURES LTD,Owner,NYKAA,FSN E-Commerce Ventures Limited,owner_confirmed_individual_and_director,,OWNER
+INE389H01022,KEC INTERNATIONAL LTD,Owner,KEC,KEC International Limited,owner_confirmed_individual_and_director,,OWNER
+INE391J01032,JTL INDUSTRIES LTD,Owner,JTLIND,JTL INDUSTRIES LIMITED,owner_confirmed_individual,,OWNER
+INE395N01027,TVS SUPPLY CHAIN SOLUTIONS L,Owner,TVSSCS,TVS Supply Chain Solutions Limited,owner_confirmed_individual_and_director,,OWNER
+INE397D01024,BHARTI AIRTEL LTD,Owner,BHARTIARTL,Bharti Airtel Limited,owner_confirmed_director_only,,OWNER
+INE398A01010,VENKY'S (INDIA) LTD,Owner,VENKEYS,Venky's (India) Limited,owner_confirmed_individual,,OWNER
+INE398R01022,SYNGENE INTERNATIONAL LTD,Owner,SYNGENE,Syngene International Limited,owner_confirmed_individual_and_director,,OWNER
+INE399G01023,RAMKRISHNA FORGINGS LTD,Owner,RKFORGE,Ramkrishna Forgings Limited,owner_confirmed_individual_and_director,,OWNER
+INE399K01017,RATTANINDIA POWER LTD,Owner,RTNPOWER,RattanIndia Power Limited,ambiguous_holding_indian,ai_owner,OWNER
+INE399L01023,ADANI TOTAL GAS LTD,Owner,ATGL,Adani Total Gas Limited,owner_confirmed_individual_and_director,,OWNER
+INE404A01024,ADITYA BIRLA SUN LIFE AMC LT,Owner,ABSLAMC,Aditya Birla Sun Life AMC Limited,owner_confirmed_individual_and_director,,OWNER
+INE405E01023,UNO MINDA LTD,Owner,UNOMINDA,UNO Minda Limited,owner_confirmed_individual_and_director,,OWNER
+INE406A01037,AUROBINDO PHARMA LTD,Owner,AUROPHARMA,Aurobindo Pharma Limited,owner_confirmed_individual_and_director,,OWNER
+INE406M01024,ERIS LIFESCIENCES LTD,Owner,ERIS,Eris Lifesciences Limited,owner_confirmed_individual_and_director,,OWNER
+INE410B01037,VINATI ORGANICS LTD,Owner,VINATIORGA,Vinati Organics Limited,owner_confirmed_individual,,OWNER
+INE410P01011,NARAYANA HRUDAYALAYA LTD,Owner,NH,Narayana Hrudayalaya Ltd.,owner_confirmed_individual_and_director,,OWNER
+INE414G01012,MUTHOOT FINANCE LTD,Owner,MUTHOOTFIN,Muthoot Finance Limited,owner_confirmed_individual_and_director,,OWNER
+INE415A01038,AGI GREENPAC LTD,Owner,AGI,AGI Greenpac Limited,owner_confirmed_individual_and_director,,OWNER
+INE415G01027,RAIL VIKAS NIGAM LTD,State,RVNL,Rail Vikas Nigam Limited,excluded_state_dominant,,NOT_OWNER
+INE417T01026,PB FINTECH LTD,Professional,,,,,
+INE418L01047,NAZARA TECHNOLOGIES LTD,Owner,NAZARA,Nazara Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE419U01012,HAPPIEST MINDS TECHNOLOGIES,Owner,HAPPSTMNDS,Happiest Minds Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE421D01022,CCL PRODUCTS INDIA LTD,Owner,CCL,CCL Products (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE423A01024,ADANI ENTERPRISES LTD,Owner,ADANIENT,Adani Enterprises Limited,owner_confirmed_individual_and_director,,OWNER
+INE423Y01016,SBFC FINANCE LTD,Professional,SBFC,SBFC Finance Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE424H01027,SUN TV NETWORK LTD,Owner,SUNTV,Sun TV Network Limited,owner_confirmed_individual_and_director,,OWNER
+INE425B01027,BRIGHTCOM GROUP LTD,Owner,BCG,Brightcom Group Limited,owner_confirmed_individual_and_director,,OWNER
+INE427F01016,CHALET HOTELS LTD,Owner,CHALET,Chalet Hotels Limited,owner_confirmed_individual_and_director,,OWNER
+INE428Q01011,SURYODAY SMALL FINANCE BANK,Owner,SURYODAY,Suryoday Small Finance Bank Limited,owner_confirmed_individual_and_director,,OWNER
+INE429E01023,SAFARI INDUSTRIES INDIA LTD,Owner,SAFARI,Safari Industries (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE437A01024,APOLLO HOSPITALS ENTERPRISE,Owner,APOLLOHOSP,Apollo Hospitals Enterprise Limited,owner_confirmed_individual_and_director,,OWNER
+INE438A01022,APOLLO TYRES LTD,Owner,APOLLOTYRE,Apollo Tyres Limited,owner_confirmed_individual,,OWNER
+INE439A01020,ASAHI INDIA GLASS LTD,Owner,ASAHIINDIA,Asahi India Glass Limited,owner_confirmed_individual,,OWNER
+INE442H01029,ASHOKA BUILDCON LTD,Owner,ASHOKA,Ashoka Buildcon Limited,owner_confirmed_individual_and_director,,OWNER
+INE450U01017,ROUTE MOBILE LTD,Owner,ROUTE,ROUTE MOBILE LIMITED,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE451A01017,FORCE MOTORS LTD,Owner,FORCEMOT,FORCE MOTORS LTD,owner_confirmed_individual,,OWNER
+INE452O01016,FUTURE LIFESTYLE FASHIONS LT,Owner,FLFL,Future Lifestyle Fashions Limited,owner_confirmed_individual_and_director,,OWNER
+INE455F01025,JAIPRAKASH ASSOCIATES LTD,Owner,,,,,
+INE455I01029,KAVERI SEED CO LTD,Owner,KSCL,Kaveri Seed Company Limited,owner_confirmed_individual_and_director,,OWNER
+INE455K01017,POLYCAB INDIA LTD,Owner,POLYCAB,Polycab India Limited,owner_confirmed_individual_and_director,,OWNER
+INE457A01014,BANK OF MAHARASHTRA,State,MAHABANK,Bank of Maharashtra,excluded_state_dominant,,NOT_OWNER
+INE457L01029,PG ELECTROPLAST LTD,Owner,PGEL,PG Electroplast Limited,owner_confirmed_individual_and_director,,OWNER
+INE461D01028,HLE GLASCOAT LTD,Owner,HLEGLAS,HLE Glascoat Limited,owner_confirmed_individual,,OWNER
+INE462A01022,BAYER CROPSCIENCE LTD,MNC,BAYERCROP,Bayer Cropscience Limited,ambiguous_holding_indian,ai_mnc,NOT_OWNER
+INE463A01038,BERGER PAINTS INDIA LTD,Owner,BERGEPAINT,Berger Paints (I) Limited,owner_confirmed_individual_and_director,,OWNER
+INE463V01026,ANAND RATHI WEALTH LTD,Owner,ANANDRATHI,Anand Rathi Wealth Limited,owner_confirmed_individual_and_director,,OWNER
+INE465A01025,BHARAT FORGE LTD,Owner,BHARATFORG,Bharat Forge Limited,owner_confirmed_individual_and_director,,OWNER
+INE466L01038,360 ONE WAM LTD,Owner,,,,,
+INE467B01029,TATA CONSULTANCY SVCS LTD,Professional,TCS,Tata Consultancy Services Limited,owner_confirmed_director_only,,OWNER
+INE470A01017,3M INDIA LTD,MNC,3MINDIA,3M India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE470Y01017,NEW INDIA ASSURANCE CO LTD/T,State,NIACL,The New India Assurance Company Limited,excluded_state_dominant,,NOT_OWNER
+INE472A01039,BLUE STAR LTD,Owner,BLUESTARCO,Blue Star Limited,owner_confirmed_individual_and_director,,OWNER
+INE473A01011,LINDE INDIA LTD,MNC,LINDEINDIA,Linde India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE473B01035,HATSUN AGRO PRODUCT LTD,Owner,HATSUN,Hatsun Agro Product Limited,owner_confirmed_individual_and_director,,OWNER
+INE474Q01031,GLOBAL HEALTH LTD/INDIA,Owner,MEDANTA,Global Health Limited,owner_confirmed_individual_and_director,,OWNER
+INE476A01022,CANARA BANK,State,CANBK,Canara Bank,excluded_state_dominant,,NOT_OWNER
+INE477A01020,CAN FIN HOMES LTD,State,CANFINHOME,Can Fin Homes Limited,owner_confirmed_director_only,,OWNER
+INE481G01011,ULTRATECH CEMENT LTD,Owner,ULTRACEMCO,UltraTech Cement Limited,owner_confirmed_individual_and_director,,OWNER
+INE481N01025,HOME FIRST FINANCE CO INDIA,Professional,,,,,
+INE481Y01014,GENERAL INS CORP OF INDIA,State,GICRE,General Insurance Corporation of India,excluded_state_dominant,,NOT_OWNER
+INE482A01020,CEAT LTD,Owner,CEATLTD,CEAT Limited,owner_confirmed_individual_and_director,,OWNER
+INE483A01010,CENTRAL BANK OF INDIA,State,CENTRALBK,Central Bank of India,excluded_state_dominant,,NOT_OWNER
+INE483C01032,TANLA PLATFORMS LTD,Owner,TANLA,Tanla Platforms Limited,owner_confirmed_individual_and_director,,OWNER
+INE484J01027,GODREJ PROPERTIES LTD,Owner,GODREJPROP,Godrej Properties Limited,owner_confirmed_individual_and_director,,OWNER
+INE485C01029,IOL CHEMICALS AND PHARMA LTD,Owner,IOLCP,IOL Chemicals and Pharmaceuticals Limited,owner_confirmed_individual_and_director,,OWNER
+INE486A01021,CESC LTD,Owner,CESC,CESC Limited,owner_confirmed_individual_and_director,,OWNER
+INE488A01050,CHEMPLAST SANMAR LTD,Owner,CHEMPLASTS,Chemplast Sanmar Limited,owner_confirmed_individual_and_director,,OWNER
+INE490G01020,MOIL LTD,State,MOIL,MOIL Limited,excluded_state_dominant,,NOT_OWNER
+INE491A01021,CITY UNION BANK LTD,Professional,,,,,
+INE493A01027,TATA COFFEE LTD,Professional,,,,,
+INE494B01023,TVS MOTOR CO LTD,Owner,TVSMOTOR,TVS Motor Company Limited,owner_confirmed_individual_and_director,,OWNER
+INE495A01022,DALMIA BHARAT SUGAR & INDUST,Owner,DALMIASUG,Dalmia Bharat Sugar and Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE495B01038,SUVEN LIFE SCIENCES LTD,Owner,SUVEN,Suven Life Sciences Limited,owner_confirmed_individual_and_director,,OWNER
+INE499A01024,DCM SHRIRAM LTD,Owner,DCMSHRIRAM,DCM Shriram Limited,owner_confirmed_individual_and_director,,OWNER
+INE501A01019,DEEPAK FERTILISERS & PETRO,Owner,DEEPAKFERT,Deepak Fertilizers and Petrochemicals Corporation Limited,owner_confirmed_individual_and_director,,OWNER
+INE503A01015,DCB BANK LTD,Professional,DCBBANK,DCB Bank Limited,owner_confirmed_director_only,,OWNER
+INE508G01029,TIME TECHNOPLAST LTD,Owner,TIMETECHNO,Time Technoplast Limited,owner_confirmed_individual_and_director,,OWNER
+INE510A01028,ENGINEERS INDIA LTD,State,ENGINERSIN,Engineers India Limited,excluded_state_dominant,,NOT_OWNER
+INE511C01022,POONAWALLA FINCORP LTD,Owner,POONAWALLA,Poonawalla Fincorp Limited,owner_confirmed_director_only,,OWNER
+INE513A01022,SCHAEFFLER INDIA LTD,MNC,SCHAEFFLER,Schaeffler India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE516A01017,UFLEX LTD,Owner,UFLEX,UFLEX Limited,owner_confirmed_individual_and_director,,OWNER
+INE517B01013,TATA TELESERVICES MAHARASHTR,Professional,TTML,Tata Teleservices (Maharashtra) Limited,owner_confirmed_director_only,,OWNER
+INE517F01014,GUJARAT PIPAVAV PORT LTD,MNC,GPPL,Gujarat Pipavav Port Limited,owner_confirmed_director_only,,OWNER
+INE520A01027,ZENSAR TECHNOLOGIES LTD,Owner,ZENSARTECH,Zensar Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE522D01027,MANAPPURAM FINANCE LTD,Owner,MANAPPURAM,Manappuram Finance Limited,owner_confirmed_individual_and_director,,OWNER
+INE522F01014,COAL INDIA LTD,State,COALINDIA,Coal India Limited,excluded_state_dominant,,NOT_OWNER
+INE524A01029,GABRIEL INDIA LTD,Owner,GABRIEL,Gabriel India Limited,owner_confirmed_individual_and_director,,OWNER
+INE528G01035,YES BANK LTD,Professional,,,,,
+INE530B01024,IIFL FINANCE LTD,Owner,IIFL,IIFL Finance Limited,owner_confirmed_individual_and_director,,OWNER
+INE531A01024,KANSAI NEROLAC PAINTS LTD,MNC,KANSAINER,Kansai Nerolac Paints Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE531E01026,HINDUSTAN COPPER LTD,State,HINDCOPPER,Hindustan Copper Limited,excluded_state_dominant,,NOT_OWNER
+INE532F01054,EDELWEISS FINANCIAL SERVICES,Owner,EDELWEISS,Edelweiss Financial Services Limited,owner_confirmed_individual_and_director,,OWNER
+INE536H01010,CIE AUTOMOTIVE INDIA LTD,MNC,CIEINDIA,CIE Automotive India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE539A01019,GHCL LTD,Owner,GHCL,GHCL Limited,owner_confirmed_individual_and_director,,OWNER
+INE540H01012,VOLTAMP TRANSFORMERS LTD,Owner,VOLTAMP,Voltamp Transformers Limited,owner_confirmed_individual,,OWNER
+INE540L01014,ALKEM LABORATORIES LTD,Owner,ALKEM,Alkem Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
+INE541A01023,GMM PFAUDLER LTD,Owner,GMMPFAUDLR,GMM Pfaudler Limited,owner_confirmed_individual,,OWNER
+INE545A01024,HEG LTD,Owner,HEG,HEG Limited,owner_confirmed_individual_and_director,,OWNER
+INE545U01014,BANDHAN BANK LTD,Owner,BANDHANBNK,Bandhan Bank Limited,owner_confirmed_director_only,,OWNER
+INE548A01028,HFCL LTD,Owner,HFCL,HFCL Limited,owner_confirmed_individual_and_director,,OWNER
+INE548C01032,EMAMI LTD,Owner,EMAMILTD,Emami Limited,owner_confirmed_individual_and_director,,OWNER
+INE549A01026,HINDUSTAN CONSTRUCTION CO,Owner,HCC,Hindustan Construction Company Limited,owner_confirmed_individual,,OWNER
+INE551W01018,UJJIVAN SMALL FINANCE BANK L,Professional,,,,,
+INE559R01029,LANDMARK CARS LTD,Owner,LANDMARK,Landmark Cars Limited,owner_confirmed_individual_and_director,,OWNER
+INE562A01011,INDIAN BANK,State,INDIANB,Indian Bank,excluded_state_dominant,,NOT_OWNER
+INE565A01014,INDIAN OVERSEAS BANK,State,IOB,Indian Overseas Bank,excluded_state_dominant,,NOT_OWNER
+INE570A01022,ION EXCHANGE (INDIA) LTD,Owner,IONEXCHANG,ION Exchange (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE571A01038,IPCA LABORATORIES LTD,Owner,IPCALAB,IPCA Laboratories Limited,owner_confirmed_individual_and_director,,OWNER
+INE572A01036,J.B. CHEMICALS & PHARMA LTD,Professional,JBCHEPHARM,JB Chemicals & Pharmaceuticals Limited,owner_confirmed_director_only,,OWNER
+INE572E01012,PNB HOUSING FINANCE LTD,Professional,PNBHOUSING,PNB Housing Finance Limited,owner_confirmed_director_only,,OWNER
+INE572J01011,SPANDANA SPHOORTY FINANCIAL,Owner,SPANDANA,Spandana Sphoorty Financial Limited,ambiguous_holding_foreign,ai_professional,NOT_OWNER
+INE573A01042,JK TYRE & INDUSTRIES LTD,Owner,JKTYRE,JK Tyre & Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE575P01011,STAR HEALTH & ALLIED INSURAN,Professional,STARHEALTH,Star Health and Allied Insurance Company Limited,owner_confirmed_individual_and_director,,OWNER
+INE576O01020,LAXMI ORGANIC INDUSTRIES LTD,Owner,LXCHEM,Laxmi Organic Industries Limited,owner_confirmed_individual,,OWNER
+INE584A01023,NMDC LTD,State,NMDC,NMDC Limited,excluded_state_dominant,,NOT_OWNER
+INE585B01010,MARUTI SUZUKI INDIA LTD,MNC,MARUTI,Maruti Suzuki India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE586V01016,TCI EXPRESS LTD,Owner,TCIEXP,TCI Express Limited,owner_confirmed_individual_and_director,,OWNER
+INE589A01014,NLC INDIA LTD,State,NLCINDIA,NLC India Limited,excluded_state_dominant,,NOT_OWNER
+INE591G01025,COFORGE LIMITED,MNC,,,,,
+INE596I01020,COMPUTER AGE MANAGEMENT SERV,Professional,,,,,
+INE597J01018,SHALBY LTD,Owner,SHALBY,Shalby Limited,owner_confirmed_individual,,OWNER
+INE599M01018,JUST DIAL LTD,Owner,JUSTDIAL,Just Dial Limited,owner_confirmed_individual_and_director,,OWNER
+INE600K01018,GALAXY SURFACTANTS LTD,Owner,GALAXYSURF,Galaxy Surfactants Limited,owner_confirmed_individual_and_director,,OWNER
+INE600L01024,DR LAL PATHLABS LTD,Owner,LALPATHLAB,Dr. Lal Path Labs Ltd.,owner_confirmed_individual_and_director,,OWNER
+INE602A01031,PCBL CHEMICAL LTD,Owner,PCBL,PCBL Chemical Limited,ambiguous_holding_indian,ai_owner,OWNER
+INE602W01027,SENCO GOLD LTD,Owner,SENCO,Senco Gold Limited,owner_confirmed_individual_and_director,,OWNER
+INE603A01013,PRAKASH INDUSTRIES LTD,Owner,PRAKASH,Prakash Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE603J01030,PI INDUSTRIES LTD,Owner,PIIND,PI Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE608A01012,PUNJAB & SIND BANK,State,,,,,
+INE614B01018,KARNATAKA BANK LTD,Professional,,,,,
+INE614G01033,RELIANCE POWER LTD,Owner,RPOWER,Reliance Power Limited,owner_confirmed_individual_and_director,,OWNER
+INE615H01020,TITAGARH RAIL SYSTEM LTD,Owner,TITAGARH,TITAGARH RAIL SYSTEMS LIMITED,owner_confirmed_individual_and_director,,OWNER
+INE615I01010,GLOBUS SPIRITS LTD,Owner,GLOBUSSPR,Globus Spirits Limited,owner_confirmed_individual_and_director,,OWNER
+INE615P01015,QUESS CORP LTD,Owner,QUESS,Quess Corp Limited,owner_confirmed_individual_and_director,,OWNER
+INE619A01035,PATANJALI FOODS LTD,Owner,PATANJALI,Patanjali Foods Limited,owner_confirmed_director_only,,OWNER
+INE621H01010,RELIGARE ENTERPRISES LTD,Professional,RELIGARE,Religare Enterprises Limited,owner_confirmed_director_only,,OWNER
+INE621L01012,TEXMACO RAIL & ENGINEERING L,Owner,TEXRAIL,Texmaco Rail & Engineering Limited,owner_confirmed_individual_and_director,,OWNER
+INE624Z01016,SOLARA ACTIVE PHARMA SCIENCE,Owner,SOLARA,Solara Active Pharma Sciences Limited,owner_confirmed_individual_and_director,,OWNER
+INE628A01036,UPL LTD,Owner,UPL,UPL Limited,owner_confirmed_individual_and_director,,OWNER
+INE634I01029,KNR CONSTRUCTIONS LTD,Owner,KNRCON,KNR Constructions Limited,owner_confirmed_individual,,OWNER
+INE634S01028,MANKIND PHARMA LTD,Owner,MANKIND,Mankind Pharma Limited,owner_confirmed_individual_and_director,,OWNER
+INE640A01023,SKF INDIA LTD,MNC,SKFINDIA,SKF India Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE645S01024,ROLEX RINGS LTD,Owner,ROLEXRINGS,Rolex Rings Limited,owner_confirmed_individual,,OWNER
+INE646L01027,INTERGLOBE AVIATION LTD,Owner,INDIGO,InterGlobe Aviation Limited,owner_confirmed_individual_and_director,,OWNER
+INE647A01010,SRF LTD,Owner,SRF,SRF Limited,owner_confirmed_individual_and_director,,OWNER
+INE647O01011,ADITYA BIRLA FASHION AND RET,Owner,ABFRL,Aditya Birla Fashion and Retail Limited,owner_confirmed_individual_and_director,,OWNER
+INE660A01013,SUNDARAM FINANCE LTD,Owner,SUNDARMFIN,Sundaram Finance Limited,owner_confirmed_individual_and_director,,OWNER
+INE663F01032,INFO EDGE INDIA LTD,Owner,NAUKRI,Info Edge (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE665L01035,VARROC ENGINEERING LTD,Owner,VARROC,Varroc Engineering Limited,owner_confirmed_individual_and_director,,OWNER
+INE666D01022,BOROSIL RENEWABLES LTD,Owner,BORORENEW,BOROSIL RENEWABLES LIMITED,owner_confirmed_individual_and_director,,OWNER
+INE668A01016,TAMILNAD MERCANTILE BANK,Professional,,,,,
+INE668F01031,JYOTHY LABS LTD,Owner,JYOTHYLAB,Jyothy Labs Limited,owner_confirmed_individual_and_director,,OWNER
+INE669C01036,TECH MAHINDRA LTD,Owner,TECHM,Tech Mahindra Limited,owner_confirmed_director_only,,OWNER
+INE669E01016,VODAFONE IDEA LTD,State,IDEA,Vodafone Idea Limited,excluded_state_dominant,,NOT_OWNER
+INE670A01012,TATA ELXSI LTD,Professional,TATAELXSI,Tata Elxsi Limited,owner_confirmed_director_only,,OWNER
+INE670K01029,LODHA DEVELOPERS LTD,Owner,LODHA,Lodha Developers Limited,owner_confirmed_director_only,,OWNER
+INE671A01010,HONEYWELL AUTOMATION INDIA,MNC,HONAUT,Honeywell Automation India Limited,ambiguous_holding_foreign,ai_mnc,NOT_OWNER
+INE671H01015,SOBHA LTD,Owner,SOBHA,Sobha Limited,owner_confirmed_individual_and_director,,OWNER
+INE674K01013,ADITYA BIRLA CAPITAL LTD,Owner,ABCAPITAL,Aditya Birla Capital Limited,owner_confirmed_individual_and_director,,OWNER
+INE679A01013,CSB BANK LTD,Professional,CSBBANK,CSB Bank Limited,ambiguous_holding_foreign,ai_professional,NOT_OWNER
+INE679V01027,ADITYA VISION LTD,Owner,AVL,Aditya Vision Limited,owner_confirmed_individual_and_director,,OWNER
+INE683A01023,SOUTH INDIAN BANK LTD,Professional,,,,,
+INE684F01012,FIRSTSOURCE SOLUTIONS LTD,Owner,FSL,Firstsource Solutions Limited,owner_confirmed_director_only,,OWNER
+INE685A01028,TORRENT PHARMACEUTICALS LTD,Owner,TORNTPHARM,Torrent Pharmaceuticals Limited,owner_confirmed_individual_and_director,,OWNER
+INE686F01025,UNITED BREWERIES LTD,MNC,UBL,United Breweries Limited,ambiguous_mnc_jv_candidate,ai_mnc,NOT_OWNER
+INE686Y01026,FINE ORGANIC INDUSTRIES LTD,Owner,FINEORG,Fine Organic Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE688D01026,RESPONSIVE INDUSTRIES LTD,Owner,RESPONIND,Responsive Industries Limited,owner_confirmed_individual,,OWNER
+INE690A01028,TTK PRESTIGE LTD,Owner,TTKPRESTIG,TTK Prestige Limited,owner_confirmed_individual_and_director,,OWNER
+INE691A01018,UCO BANK,State,UCOBANK,UCO Bank,excluded_state_dominant,,NOT_OWNER
+INE692A01016,UNION BANK OF INDIA,State,UNIONBANK,Union Bank of India,excluded_state_dominant,,NOT_OWNER
+INE702C01027,APL APOLLO TUBES LTD,Owner,APLAPOLLO,APL Apollo Tubes Limited,owner_confirmed_individual_and_director,,OWNER
+INE703B01027,RATNAMANI METALS & TUBES LTD,Owner,RATNAMANI,Ratnamani Metals & Tubes Limited,owner_confirmed_individual_and_director,,OWNER
+INE704P01025,COCHIN SHIPYARD LTD,State,COCHINSHIP,Cochin Shipyard Limited,excluded_state_dominant,,NOT_OWNER
+INE716A01013,WHIRLPOOL OF INDIA LTD,MNC,WHIRLPOOL,Whirlpool of India Limited,owner_confirmed_director_only,,OWNER
+INE721A01047,SHRIRAM FINANCE LTD,Owner,SHRIRAMFIN,Shriram Finance Limited,owner_confirmed_director_only,,OWNER
+INE725A01030,NAVA LTD,Owner,NAVA,NAVA LIMITED,owner_confirmed_individual_and_director,,OWNER
+INE726G01019,ICICI PRUDENTIAL LIFE INSURA,Professional,ICICIPRULI,ICICI Prudential Life Insurance Company Limited,owner_confirmed_director_only,,OWNER
+INE731H01025,ACTION CONSTRUCTION EQUIPMEN,Owner,ACE,Action Construction Equipment Limited,owner_confirmed_individual_and_director,,OWNER
+INE732I01021,ANGEL ONE LTD,Owner,ANGELONE,Angel One Limited,owner_confirmed_individual_and_director,,OWNER
+INE733E01010,NTPC LTD,State,NTPC,NTPC Limited,excluded_state_dominant,,NOT_OWNER
+INE735W01017,UTKARSH SMALL FINANCE BANK L,abb,,,,,
+INE736A01011,CENTRAL DEPOSITORY SERVICES,Professional,CDSL,Central Depository Services (India) Limited,owner_confirmed_director_only,,OWNER
+INE738I01010,ECLERX SERVICES LTD,Owner,ECLERX,eClerx Services Limited,owner_confirmed_individual_and_director,,OWNER
+INE739E01017,CERA SANITARYWARE LTD,Owner,CERA,Cera Sanitaryware Limited,owner_confirmed_individual_and_director,,OWNER
+INE741K01010,CREDITACCESS GRAMEEN LTD,Professional,CREDITACC,CREDITACCESS GRAMEEN LIMITED,excluded_no_natural_no_holding,,NOT_OWNER
+INE742F01042,ADANI PORTS AND SPECIAL ECON,Owner,ADANIPORTS,Adani Ports and Special Economic Zone Limited,owner_confirmed_individual_and_director,,OWNER
+INE743M01012,RHI MAGNESITA INDIA LTD,MNC,RHIM,RHI MAGNESITA INDIA LIMITED,excluded_no_natural_no_holding,,NOT_OWNER
+INE745G01043,MULTI COMMODITY EXCH INDIA,Professional,,,,,
+INE750C01026,MARKSANS PHARMA LTD,Owner,MARKSANS,Marksans Pharma Limited,owner_confirmed_individual,,OWNER
+INE752E01010,POWER GRID CORP OF INDIA LTD,State,POWERGRID,Power Grid Corporation of India Limited,excluded_state_dominant,,NOT_OWNER
+INE752P01024,FUTURE RETAIL LTD,Owner,,,,,
+INE758E01017,JIO FINANCIAL SERVICES LTD,Owner,JIOFIN,Jio Financial Services Limited,owner_confirmed_individual_and_director,,OWNER
+INE758T01015,ETERNAL LTD,Professional,,,,,
+INE759A01021,MASTEK LTD,Owner,MASTEK,Mastek Limited,owner_confirmed_individual_and_director,,OWNER
+INE761H01022,PAGE INDUSTRIES LTD,Owner,PAGEIND,Page Industries Limited,owner_probable_nri_family,ai_owner,OWNER
+INE763G01038,ICICI SECURITIES LTD,Professional,,,,,
+INE765G01017,ICICI LOMBARD GENERAL INSURA,Professional,ICICIGI,ICICI Lombard General Insurance Company Limited,owner_confirmed_director_only,,OWNER
+INE767A01016,AARTI DRUGS LTD,Owner,AARTIDRUGS,Aarti Drugs Limited,owner_confirmed_individual_and_director,,OWNER
+INE769A01020,AARTI INDUSTRIES LIMITED,Owner,AARTIIND,Aarti Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE774D01024,MAHINDRA & MAHINDRA FIN SECS,Owner,M&MFIN,Mahindra & Mahindra Financial Services Limited,owner_confirmed_director_only,,OWNER
+INE775A01035,SAMVARDHANA MOTHERSON INTERN,Owner,MOTHERSON,Samvardhana Motherson International Limited,owner_confirmed_individual_and_director,,OWNER
+INE778U01029,TCNS CLOTHING CO LTD,Owner,,,,,
+INE780C01023,JM FINANCIAL LTD,Owner,JMFINANCIL,JM Financial Limited,owner_confirmed_individual_and_director,,OWNER
+INE786A01032,JK LAKSHMI CEMENT LTD,Owner,JKLAKSHMI,JK Lakshmi Cement Limited,owner_confirmed_individual_and_director,,OWNER
+INE787D01026,BALKRISHNA INDUSTRIES LTD,Owner,BALKRISIND,Balkrishna Industries Limited,owner_confirmed_individual,,OWNER
+INE789E01012,JK PAPER LTD,Owner,JKPAPER,JK Paper Limited,owner_confirmed_individual,,OWNER
+INE795G01014,HDFC LIFE INSURANCE CO LTD,Professional,HDFCLIFE,HDFC Life Insurance Company Limited,owner_confirmed_director_only,,OWNER
+INE797F01020,JUBILANT FOODWORKS LTD,Owner,JUBLFOOD,Jubilant Foodworks Limited,owner_confirmed_individual_and_director,,OWNER
+INE800H01010,OMAXE LTD,Owner,OMAXE,Omaxe Limited,owner_confirmed_individual,,OWNER
+INE802C01033,STEEL STRIPS WHEELS LTD,Owner,SSWL,Steel Strips Wheels Limited,owner_confirmed_individual_and_director,,OWNER
+INE804L01022,MEDPLUS HEALTH SERVICES LTD,Owner,MEDPLUS,Medplus Health Services Limited,owner_confirmed_individual,,OWNER
+INE805D01034,SUNTECK REALTY LTD,Owner,SUNTECK,Sunteck Realty Limited,owner_confirmed_individual_and_director,,OWNER
+INE806T01020,SAPPHIRE FOODS INDIA LTD,Professional,SAPPHIRE,Sapphire Foods India Limited,owner_confirmed_director_only,,OWNER
+INE810G01011,SHYAM METALICS & ENERGY LTD,Owner,SHYAMMETL,Shyam Metalics and Energy Limited,owner_confirmed_individual,,OWNER
+INE811K01011,PRESTIGE ESTATES PROJECTS,Owner,PRESTIGE,Prestige Estates Projects Limited,owner_confirmed_individual,,OWNER
+INE813H01021,TORRENT POWER LTD,Owner,TORNTPOWER,Torrent Power Limited,owner_confirmed_individual,,OWNER
+INE814H01029,ADANI POWER LTD,Owner,ADANIPOWER,Adani Power Limited,owner_confirmed_individual,,OWNER
+INE821I01022,IRB INFRASTRUCTURE DEVELOPER,Owner,IRB,IRB Infrastructure Developers Limited,owner_confirmed_individual,,OWNER
+INE823G01014,JK CEMENT LTD,Owner,JKCEMENT,JK Cement Limited,owner_confirmed_individual,,OWNER
+INE825V01034,VEDANT FASHIONS LTD,Owner,MANYAVAR,Vedant Fashions Limited,owner_confirmed_individual,,OWNER
+INE834M01019,RATTANINDIA ENTERPRISES LTD,Owner,RTNINDIA,RattanIndia Enterprises Limited,owner_confirmed_individual_and_director,,OWNER
+INE836A01035,BIRLASOFT LTD,Owner,BSOFT,BIRLASOFT LIMITED,owner_confirmed_director_only,,OWNER
+INE836F01026,DISH TV INDIA LTD,Owner,,,,,
+INE839M01018,SCHNEIDER ELECTRIC INFRASTRU,MNC,SCHNEIDER,Schneider Electric Infrastructure Limited,owner_confirmed_director_only,,OWNER
+INE842C01021,MINDA CORP LTD,Owner,MINDACORP,Minda Corporation Limited,owner_confirmed_individual_and_director,,OWNER
+INE844O01030,GUJARAT GAS LTD,State,,,,,
+INE848E01016,NHPC LTD,State,NHPC,NHPC Limited,excluded_state_dominant,,NOT_OWNER
+INE849A01020,TRENT LTD,Professional,TRENT,Trent Limited,owner_confirmed_director_only,,OWNER
+INE852O01025,APTUS VALUE HOUSING FINANCE,Owner,APTUS,Aptus Value Housing Finance India Limited,owner_confirmed_individual_and_director,,OWNER
+INE854D01024,UNITED SPIRITS LTD,MNC,UNITDSPR,United Spirits Limited,ambiguous_mnc_jv_candidate,ai_mnc,NOT_OWNER
+INE855B01025,RAIN INDUSTRIES LTD,Owner,RAIN,Rain Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE860A01027,HCL TECHNOLOGIES LTD,Owner,HCLTECH,HCL Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE864I01014,MTAR TECHNOLOGIES LTD,Owner,MTARTECH,Mtar Technologies Limited,owner_confirmed_individual,,OWNER
+INE868B01028,NCC LTD,Owner,NCC,NCC Limited,owner_confirmed_individual,,OWNER
+INE870D01012,NATIONAL FERTILIZERS LTD,State,NFL,National Fertilizers Limited,excluded_state_dominant,,NOT_OWNER
+INE870H01013,NETWORK 18 MEDIA & INVTS LTD,Professional,NETWORK18,Network18 Media & Investments Limited,owner_confirmed_director_only,,OWNER
+INE871C01038,AVANTI FEEDS LTD,Owner,AVANTIFEED,Avanti Feeds Limited,owner_confirmed_individual_and_director,,OWNER
+INE872J01023,DEVYANI INTERNATIONAL LTD,Owner,DEVYANI,Devyani International Limited,owner_confirmed_individual_and_director,,OWNER
+INE876N01018,ORIENT CEMENT LTD,Owner,ORIENTCEM,Orient Cement Limited,ambiguous_holding_indian,ai_owner,OWNER
+INE877F01012,PTC INDIA LTD,State,PTC,PTC India Limited,ambiguous_holding_indian,ai_state,NOT_OWNER
+INE878B01027,KEI INDUSTRIES LTD,Owner,KEI,KEI Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE880L01014,KIOCL LTD,State,,,,,
+INE881D01027,ORACLE FINANCIAL SERVICES,MNC,OFSS,Oracle Financial Services Software Limited,excluded_no_natural_no_holding,,NOT_OWNER
+INE883A01011,MRF LTD,Owner,MRF,MRF Limited,owner_confirmed_individual_and_director,,OWNER
+INE883N01014,PARAG MILK FOODS LTD,Owner,PARAGMILK,Parag Milk Foods Limited,owner_confirmed_individual_and_director,,OWNER
+INE884A01027,VAIBHAV GLOBAL LTD,Owner,VAIBHAVGBL,Vaibhav Global Limited,owner_confirmed_individual_and_director,,OWNER
+INE886H01027,TV18 BROADCAST LTD,Owner,,,,,
+INE887G01027,GOKALDAS EXPORTS LTD,Professional,,,,,
+INE891D01026,REDINGTON LTD,MNC,,,,,
+INE913H01037,ENDURANCE TECHNOLOGIES LTD,Owner,ENDURANCE,Endurance Technologies Limited,owner_confirmed_individual_and_director,,OWNER
+INE914M01019,ASTER DM HEALTHCARE LTD,Owner,ASTERDM,Aster DM Healthcare Limited,owner_probable_nri_family,ai_owner,OWNER
+INE917I01010,BAJAJ AUTO LTD,Owner,BAJAJ-AUTO,Bajaj Auto Limited,owner_confirmed_individual_and_director,,OWNER
+INE917M01012,DILIP BUILDCON LTD,Owner,DBL,Dilip Buildcon Limited,owner_confirmed_individual,,OWNER
+INE918I01026,BAJAJ FINSERV LTD,Owner,BAJAJFINSV,Bajaj Finserv Limited,owner_confirmed_individual_and_director,,OWNER
+INE918Z01012,KAYNES TECHNOLOGY INDIA LTD,Owner,KAYNES,Kaynes Technology India Limited,owner_confirmed_individual_and_director,,OWNER
+INE925R01014,CMS INFO SYSTEMS LTD,Professional,,,,,
+INE927D01051,JBM AUTO LTD,Owner,JBMA,JBM Auto Limited,owner_confirmed_individual_and_director,,OWNER
+INE930H01031,KPR MILL LTD,Owner,KPRMILL,K.P.R. Mill Limited,owner_confirmed_individual,,OWNER
+INE930P01018,ANUPAM RASAYAN INDIA LTD,Owner,ANURAS,Anupam Rasayan India Limited,owner_confirmed_individual_and_director,,OWNER
+INE933K01021,BAJAJ CONSUMER CARE LTD,Owner,BAJAJCON,Bajaj Consumer Care Limited,owner_confirmed_director_only,,OWNER
+INE933S01016,INDIAMART INTERMESH LTD,Owner,INDIAMART,Indiamart Intermesh Limited,owner_confirmed_individual_and_director,,OWNER
+INE935A01035,GLENMARK PHARMACEUTICALS LTD,Owner,GLENMARK,Glenmark Pharmaceuticals Limited,owner_confirmed_individual,,OWNER
+INE935N01020,DIXON TECHNOLOGIES INDIA LTD,Owner,DIXON,Dixon Technologies (India) Limited,owner_confirmed_individual_and_director,,OWNER
+INE939A01011,STRIDES PHARMA SCIENCE LTD,Owner,STAR,Strides Pharma Science Limited,owner_confirmed_individual_and_director,,OWNER
+INE944F01028,RADICO KHAITAN LTD,Owner,RADICO,Radico Khaitan Limited,owner_confirmed_individual_and_director,,OWNER
+INE947Q01028,LAURUS LABS LTD,Owner,LAURUSLABS,Laurus Labs Limited,owner_confirmed_individual_and_director,,OWNER
+INE949H01023,MAN INFRACONSTRUCTION LTD,Owner,MANINFRA,Man Infraconstruction Limited,owner_confirmed_individual_and_director,,OWNER
+INE949L01017,AU SMALL FINANCE BANK LTD,Owner,AUBANK,AU Small Finance Bank Limited,owner_confirmed_individual_and_director,,OWNER
+INE951I01027,V-GUARD INDUSTRIES LTD,Owner,VGUARD,V-Guard Industries Limited,owner_confirmed_individual_and_director,,OWNER
+INE953O01021,SANSERA ENGINEERING LTD,Owner,SANSERA,Sansera Engineering Limited,owner_confirmed_individual_and_director,,OWNER
+INE955D01029,GENUS POWER INFRASTRUCTURES,Owner,GENUSPOWER,Genus Power Infrastructures Limited,owner_confirmed_individual_and_director,,OWNER
+INE961O01016,RAINBOW CHILDREN'S MEDICARE,Owner,RAINBOW,Rainbow Childrens Medicare Limited,owner_confirmed_individual_and_director,,OWNER
+INE962Y01021,IRCON INTERNATIONAL LTD,State,IRCON,Ircon International Limited,excluded_state_dominant,,NOT_OWNER
+INE967H01025,KRISHNA INSTITUTE OF MEDICAL,Owner,KIMS,Krishna Institute of Medical Sciences Limited,owner_confirmed_individual_and_director,,OWNER
+INE970X01018,LEMON TREE HOTELS LTD,Owner,LEMONTREE,Lemon Tree Hotels Limited,owner_confirmed_individual_and_director,,OWNER
+INE974X01010,TUBE INVESTMENTS OF INDIA LT,Owner,TIINDIA,Tube Investments of India Limited,owner_confirmed_individual_and_director,,OWNER
+INE976A01021,WEST COAST PAPER MILLS LTD,Owner,WSTCSTPAPR,West Coast Paper Mills Limited,owner_confirmed_individual,,OWNER
+INE976G01028,RBL BANK LTD,Professional,,,,,
+INE979A01025,SAREGAMA INDIA LTD,Owner,SAREGAMA,Saregama India Limited,owner_confirmed_director_only,,OWNER
+INE982F01036,HATHWAY CABLE AND DATACOM,Owner,HATHWAY,Hathway Cable & Datacom Limited,owner_confirmed_individual,,OWNER
+INE982J01020,ONE 97 COMMUNICATIONS LTD,Professional,,,,,
+INE987B01026,NATCO PHARMA LTD,Owner,NATCOPHARM,Natco Pharma Limited,owner_confirmed_individual_and_director,,OWNER
+INE999A01023,KSB LTD,MNC,KSB,Ksb Limited,owner_confirmed_individual,,OWNER
