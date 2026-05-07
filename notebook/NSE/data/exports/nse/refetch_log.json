@@ -1,0 +1,225 @@
+[
+  {
+    "symbol": "360ONE",
+    "category": "C",
+    "phase3": "skipped (already exists)",
+    "phase4": [
+      {
+        "as_on_date": "31-MAR-2025",
+        "ok": true,
+        "msg": "parsed 111 rows",
+        "row_count": 111
+      },
+      {
+        "as_on_date": "31-MAR-2024",
+        "ok": true,
+        "msg": "parsed 112 rows",
+        "row_count": 112
+      },
+      {
+        "as_on_date": "31-MAR-2023",
+        "ok": true,
+        "msg": "parsed 112 rows",
+        "row_count": 112
+      },
+      {
+        "as_on_date": "31-MAR-2022",
+        "ok": true,
+        "msg": "parsed 98 rows",
+        "row_count": 98
+      },
+      {
+        "as_on_date": "31-MAR-2021",
+        "ok": true,
+        "msg": "parsed 98 rows",
+        "row_count": 98
+      },
+      {
+        "as_on_date": "31-MAR-2020",
+        "ok": true,
+        "msg": "parsed 74 rows",
+        "row_count": 74
+      },
+      {
+        "as_on_date": "31-DEC-2025",
+        "ok": true,
+        "msg": "parsed 89 rows",
+        "row_count": 89
+      },
+      {
+        "as_on_date": "31-DEC-2024",
+        "ok": true,
+        "msg": "parsed 114 rows",
+        "row_count": 114
+      }
+    ]
+  },
+  {
+    "symbol": "MAHLIFE",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 91 holdings",
+      "count": 91
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 178 rows",
+      "row_count": 178
+    }
+  },
+  {
+    "symbol": "FINOPB",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 19 holdings",
+      "count": 19
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 63 rows",
+      "row_count": 63
+    }
+  },
+  {
+    "symbol": "SANOFI",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 84 holdings",
+      "count": 84
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 68 rows",
+      "row_count": 68
+    }
+  },
+  {
+    "symbol": "BALMLAWRIE",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 86 holdings",
+      "count": 86
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 27 rows",
+      "row_count": 27
+    }
+  },
+  {
+    "symbol": "PGHH",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 84 holdings",
+      "count": 84
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 289 rows",
+      "row_count": 289
+    }
+  },
+  {
+    "symbol": "GUJALKALI",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 84 holdings",
+      "count": 84
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48
+    }
+  },
+  {
+    "symbol": "PGHL",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 89 holdings",
+      "count": 89
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 285 rows",
+      "row_count": 285
+    }
+  },
+  {
+    "symbol": "TICL",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 11 holdings",
+      "count": 11
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 39 rows",
+      "row_count": 39
+    }
+  },
+  {
+    "symbol": "PSB",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 68 holdings",
+      "count": 68
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 54 rows",
+      "row_count": 54
+    }
+  },
+  {
+    "symbol": "UTKARSHBNK",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 13 holdings",
+      "count": 13
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 58 rows",
+      "row_count": 58
+    }
+  },
+  {
+    "symbol": "GUJGASLTD",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 46 holdings",
+      "count": 46
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 38 rows",
+      "row_count": 38
+    }
+  },
+  {
+    "symbol": "KIOCL",
+    "category": "B",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 40 holdings",
+      "count": 40
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 24 rows",
+      "row_count": 24
+    }
+  }
+]

@@ -140,7 +140,8 @@
       "Bash(cp /Users/yukihata/.claude/projects/-Users-yukihata-Desktop-quants/c8209d81-3970-45d4-9ad8-f537eb669d21/tool-results/webfetch-1776329763981-quy7z7.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/egazette_158025.pdf)",
       "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/egazette_158025.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/egazette_158025.txt)",
       "Bash(cp /Users/yukihata/.claude/projects/-Users-yukihata-Desktop-quants/c8209d81-3970-45d4-9ad8-f537eb669d21/tool-results/webfetch-1776329879236-aycqzp.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.pdf)",
-      "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.txt)"
+      "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.txt)",
+      "mcp__alphaxiv__paper_search"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",

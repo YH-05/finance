@@ -1,0 +1,67 @@
+[
+  {
+    "symbol": "360ONE",
+    "phase3_rows": 30,
+    "phase4_rows": 66
+  },
+  {
+    "symbol": "MAHLIFE",
+    "phase3_rows": 91,
+    "phase4_rows": 175
+  },
+  {
+    "symbol": "FINOPB",
+    "phase3_rows": 19,
+    "phase4_rows": 60
+  },
+  {
+    "symbol": "SANOFI",
+    "phase3_rows": 84,
+    "phase4_rows": 61
+  },
+  {
+    "symbol": "BALMLAWRIE",
+    "phase3_rows": 86,
+    "phase4_rows": 23
+  },
+  {
+    "symbol": "PGHH",
+    "phase3_rows": 84,
+    "phase4_rows": 284
+  },
+  {
+    "symbol": "GUJALKALI",
+    "phase3_rows": 84,
+    "phase4_rows": 41
+  },
+  {
+    "symbol": "PGHL",
+    "phase3_rows": 89,
+    "phase4_rows": 282
+  },
+  {
+    "symbol": "TICL",
+    "phase3_rows": 11,
+    "phase4_rows": 33
+  },
+  {
+    "symbol": "PSB",
+    "phase3_rows": 67,
+    "phase4_rows": 49
+  },
+  {
+    "symbol": "UTKARSHBNK",
+    "phase3_rows": 13,
+    "phase4_rows": 56
+  },
+  {
+    "symbol": "GUJGASLTD",
+    "phase3_rows": 46,
+    "phase4_rows": 34
+  },
+  {
+    "symbol": "KIOCL",
+    "phase3_rows": 40,
+    "phase4_rows": 20
+  }
+]

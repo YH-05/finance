@@ -25,9 +25,14 @@
 # バージョン: 0.1.0 (seed)
 # 更新日: 2026-04-30
 
-version: "0.3.0"
-updated_at: "2026-04-30"
+version: "0.4.0"
+updated_at: "2026-05-07"
 changelog:
+  v0.4.0:
+    - "act-2026-05-07-002: B カテゴリ 4 銘柄の救済"
+    - "mnc_keywords: SANOFI のため 'Sanofi'/'sanofi' 追加"
+    - "professional_keywords: UTKARSHBNK のため 'Utkarsh Coreinvest' 追加"
+    - "state_keywords: GUJGASLTD のため Gujarat State Petroleum/Petronet 系 4 keyword 追加"
   v0.3.0:
     - "AWL (Kuok/Wilmar) と GLAND (Guo/Fosun) を owner_keywords に追加 (act-005)"
     - "誤マッチ回避のため AWL は 'Lence Pte'、GLAND は 'Fosun' で限定 (Wilmar/Kuok keyword は副作用大)"
@@ -495,6 +500,12 @@ professional_keywords:
     parent: "Tata Communications subsidiaries"
     sample_stocks: ["TEJASNET"]
 
+  # --- Utkarsh Small Finance Bank (Utkarsh CoreInvest holding) ---
+  - keyword: "Utkarsh Coreinvest"
+    parent: "Utkarsh CoreInvest Ltd (NBFC holding)"
+    sample_stocks: ["UTKARSHBNK"]
+    note: "Utkarsh SFB は NBFC origin の SFB。promoter は holding company Utkarsh CoreInvest 1 社のみ"
+
 # ============================================================
 # State / Government keywords
 #   promoter_names_full_list にこれらが含まれるなら STATE 扱い
@@ -545,6 +556,21 @@ state_keywords:
     parent: "GOI 系"
     sample_stocks: ["RECLTD"]
 
+  # --- Gujarat 系 (PSU/政府保有) ---
+  - keyword: "Gujarat State Petroleum Corporation"
+    parent: "Gujarat 政府"
+    sample_stocks: ["GUJGASLTD"]
+    note: "GSPC = Gujarat 政府 100% 子会社、Gujarat Gas の筆頭 promoter"
+  - keyword: "GUJARAT STATE PETRONET"
+    parent: "Gujarat 政府"
+    sample_stocks: ["GUJGASLTD"]
+  - keyword: "GUJARAT INDUSTRIAL DEVELOPMENT CORPORATION"
+    parent: "Gujarat 政府"
+    sample_stocks: ["GUJGASLTD"]
+  - keyword: "GUJARAT STATE ENERGY GENERATION"
+    parent: "Gujarat 政府"
+    sample_stocks: ["GUJGASLTD"]
+
 # ============================================================
 # MNC parent keywords
 #   promoter_names_full_list にこれらが含まれるなら MNC 扱い
@@ -577,6 +603,14 @@ mnc_keywords:
   - keyword: "APM Terminals"
     parent: "Maersk Group"
     sample_stocks: ["GPPL"]
+  - keyword: "Sanofi"
+    parent: "Sanofi SA (France)"
+    sample_stocks: ["SANOFI"]
+    note: "SANOFI INDIA: Sanofi Healthcare India / sanofi aventis Korea 等が筆頭 promoter (60.40%)。仏 Sanofi SA の子会社"
+  - keyword: "sanofi"
+    parent: "Sanofi SA (France)"
+    sample_stocks: ["SANOFI"]
+    note: "小文字 'sanofi aventis Korea Co., Ltd.' などが promoter list に登場するためバリアント追加"
 
 # ============================================================
 # 解決アルゴリズム
