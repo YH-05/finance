@@ -18,30 +18,11 @@
 
 | 優先度 | 件数 | 推奨レビュー時間 |
 |--------|------|-----------------|
-| P0 | 10 | 1-2 分/件 |
+| P0 | 0 | 1-2 分/件 |
 | P1 | 5 | 1 分/件 |
 | P2 | 13 | 30 秒/件 |
-| P3 | 9 | 10 秒/件 |
-| P4 | 186 | サンプルのみ |
-
----
-
-## P0 (10 銘柄)
-
-**OWNER_WEAK** — yaml 既知一族リストにマッチせず、Tier 4 で AI レビュー対象だった銘柄。promoter_names を見て Owner/Professional/MNC/State を確定し、yaml v0.5.0 で keyword 追加してください。
-
-| symbol | company | flag (Tier 2) | final | yaml_cls | promoter% | promoter_names (先頭150文字) |
-|---|---|---|---|---|---|---|
-| WAAREERTL | Waaree Renewable Technologies Limit | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 74.3% | HITESH P MEHTA / BINDIYA KIRIT DOSHI / BINITA H DOSHI / HITESH C DOSHI / KIRIT CHIMANLAL DOSHI / NEEPA VIREN DOSHI / PANKAJ CHIMANLAL DOSHI / PUJAN PANKAJ DOSHI / RUS |
-| HCG | Healthcare Global Enterprises Limit | ambiguous_mnc_jv_candidate | OWNER_WEAK | UNKNOWN | 64.2% | AAGNIKA AJAIKUMAR / ANJALI AJAIKUMAR ROSSI / ASMITHA AJAIKUMAR / B S AJAIKUMAR / BHAGYA A AJAIKUMAR / HECTOR ASIA HOLDINGS II PTE. LTD. / CATALYST TRUSTEESHIP LIM |
-| THYROCARE | Thyrocare Technologies Limited | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 60.9% | API Holdings Limited / Docon Technologies Private Limited |
-| FEDFINA | Fedbank Financial Services Limited | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 60.8% | The Federal Bank Limited / Mr. Ajith Kumar K K Jointly with The Federal Bank Ltd / Mr. Ashutosh Khajuria Jointly with The Federal Bank Ltd / Mr. Divakar Dix |
-| AXISCADES | AXISCADES Technologies Limited | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 58.0% | INDIAN AERO VENTURES PRIVATE LIMITED / JUPITER CAPITAL PRIVATE LIMITED |
-| REFEX | Refex Industries Limited | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 55.8% | ANIL JAIN T / DIMPLE JAIN / TARACHAND JAIN / UGAMDEVI JAIN / YASH JAIN / REFEX HOLDING PRIVATE LIMITED |
-| GVT&D | GE Vernova T&D India Limited | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 51.0% | ALSTOM (Wuxi) Disconnector Co., Ltd. / AO Grid Solutions / COGELEX / FRENCH LIBYAN ELECTRICAL SERVICES COMPANY (FLESCO) / GE GRID SOLUTIONS, S.A. / GE Grid (Sha |
-| STYRENIX | Styrenix Performance Materials Limi | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 46.2% | Shiva Performance Materials Private Limited |
-| ITCHOTELS | ITC Hotels Limited | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 39.9% | Blazeclan Americas Inc. / Blazeclan Europe SRL. / Blazeclan Technologies Corporation / Blazeclan Technologies Inc. / Blazeclan Technologies LLC / Blazeclan Tech |
-| JSFB | Jana Small Finance Bank Limited | owner_confirmed_director_only | OWNER_WEAK | UNKNOWN | 21.9% | JANA CAPITAL LIMITED / JANA HOLDINGS LIMITED / JANA URBAN FOUNDATION |
+| P3 | 18 | 10 秒/件 |
+| P4 | 187 | サンプルのみ |
 
 ---
 
@@ -81,7 +62,7 @@
 
 ---
 
-## P3 (9 銘柄)
+## P3 (18 銘柄)
 
 **Tier 2 director_only + yaml 確定** — yaml が OWNER/PROFESSIONAL/STATE/MNC のいずれかにマッチして確定済み。サンプルでスポット確認するのみで OK。
 
@@ -90,16 +71,25 @@
 | AEGISVOPAK | Aegis Vopak Terminals Limited | owner_confirmed_director_only | OWNER | OWNER | 86.9% | ASIA INFRASTRUCTURE INVESTMENT  LIMITED / Aegis Group International Pte Limited / Aegis International Marine Services Pte Limited / B V Maatschappij Bierhav |
 | BAJAJHFL | Bajaj Housing Finance Limited | owner_confirmed_director_only | OWNER | OWNER | 86.7% | Sanjivnayan Bajaj / Bajaj Technology Services Inc / VH International LLC / Bajaj AIF Trustee Limited / Bajaj Alternate Investment Management Limited / Bajaj Fin |
 | TATACAP | Tata Capital Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 85.4% | 3-101-951221 SOCIEDAD ANONIMA / 915 Labs Inc / AFCL Ghana Limited / AFCL Premium Services Limited / AFCL RSA Pty Limited / AFCL Zambia Limited / Agratas LLC / Agrat |
+| WAAREERTL | Waaree Renewable Technologies Limit | owner_confirmed_director_only | OWNER | OWNER | 74.3% | HITESH P MEHTA / BINDIYA KIRIT DOSHI / BINITA H DOSHI / HITESH C DOSHI / KIRIT CHIMANLAL DOSHI / NEEPA VIREN DOSHI / PANKAJ CHIMANLAL DOSHI / PUJAN PANKAJ DOSHI / RUS |
 | HDBFS | HDB Financial Services Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 74.2% | Griha Investments / Griha Pte Limited / HDFC AMC International (IFSC) Limited / HDFC Asset Management Company Limited / HDFC Capital Advisors Limited / HDFC ERG |
 | TATAINVEST | Tata Investment Corporation Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 73.4% | 3-101-951221 SOCIEDAD ANONIMA / 915 Labs Inc / AFCL Ghana Ltd. / AFCL Premium Services Ltd. / AFCL RSA (Pty) Limited / AFCL Zambia Ltd. / AI Fleet Services IFSC L |
 | CANHLIFE | Canara HSBC Life Insurance Company  | owner_confirmed_director_only | NOT_OWNER | STATE | 62.0% | HSBC INSURANCE (ASIA-PACIFIC) HOLDINGS LIMITED / CANARA BANK / Canara Tanzania Limited / HSBC FinTech Services (Shanghai) Company Limited / HSBC Financial Adv |
+| THYROCARE | Thyrocare Technologies Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 60.9% | API Holdings Limited / Docon Technologies Private Limited |
+| FEDFINA | Fedbank Financial Services Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 60.8% | The Federal Bank Limited / Mr. Ajith Kumar K K Jointly with The Federal Bank Ltd / Mr. Ashutosh Khajuria Jointly with The Federal Bank Ltd / Mr. Divakar Dix |
+| AXISCADES | AXISCADES Technologies Limited | owner_confirmed_director_only | OWNER | OWNER | 58.0% | INDIAN AERO VENTURES PRIVATE LIMITED / JUPITER CAPITAL PRIVATE LIMITED |
+| REFEX | Refex Industries Limited | owner_confirmed_director_only | OWNER | OWNER | 55.8% | ANIL JAIN T / DIMPLE JAIN / TARACHAND JAIN / UGAMDEVI JAIN / YASH JAIN / REFEX HOLDING PRIVATE LIMITED |
 | TATATECH | Tata Technologies Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 55.2% | AWC Industries Limited / Bowler Motors Limited / Cambric Limited / Changshu Tata Autocomp Systems Limited / Chery Jaguar Land Rover Auto Sales Company Limited |
+| GVT&D | GE Vernova T&D India Limited | owner_confirmed_director_only | NOT_OWNER | MNC | 51.0% | ALSTOM (Wuxi) Disconnector Co., Ltd. / AO Grid Solutions / COGELEX / FRENCH LIBYAN ELECTRICAL SERVICES COMPANY (FLESCO) / GE GRID SOLUTIONS, S.A. / GE Grid (Sha |
 | MAHSCOOTER | Maharashtra Scooters Limited | owner_confirmed_director_only | OWNER | OWNER | 51.0% | Aarav Swamy / Aryan Bajaj / DEEPA BAJAJ / GEETIKA BAJAJ / KIRAN BAJAJ / KUMUD BAJAJ / Kriti Bajaj / MINAL BAJAJ / NEELIMA BAJAJ SWAMY / NIMISHA JAIPURIA / NIRAJ BAJAJ / NIR |
+| STYRENIX | Styrenix Performance Materials Limi | owner_confirmed_director_only | OWNER | OWNER | 46.2% | Shiva Performance Materials Private Limited |
 | TMCV | Tata Motors Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 42.6% | 3-101-951221 SOCIEDAD ANONIMA / 915 Labs Inc / AFCL Ghana Ltd / AFCL Premium Services Ltd. / AFCL RSA (Pty) Limited / AFCL Zambia Ltd / Agratas LLC / Agratas Limite |
+| ITCHOTELS | ITC Hotels Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 39.9% | Blazeclan Americas Inc. / Blazeclan Europe SRL. / Blazeclan Technologies Corporation / Blazeclan Technologies Inc. / Blazeclan Technologies LLC / Blazeclan Tech |
+| JSFB | Jana Small Finance Bank Limited | owner_confirmed_director_only | NOT_OWNER | PROFESSIONAL | 21.9% | JANA CAPITAL LIMITED / JANA HOLDINGS LIMITED / JANA URBAN FOUNDATION |
 
 ---
 
-## P4 (186 銘柄) — 低優先度
+## P4 (187 銘柄) — 低優先度
 
 Tier 1 高信頼 OWNER または明確 NOT_OWNER の銘柄群。サンプルのみ確認推奨。
 
@@ -113,6 +103,7 @@ Tier 1 高信頼 OWNER または明確 NOT_OWNER の銘柄群。サンプルの�
 | ambiguous_holding_foreign | 7 |
 | ambiguous_holding_indian | 3 |
 | excluded_state_dominant | 2 |
+| ambiguous_mnc_jv_candidate | 1 |
 | owner_probable_nri_family | 1 |
 
 ### owner_flag_final_hybrid 分布
@@ -120,6 +111,6 @@ Tier 1 高信頼 OWNER または明確 NOT_OWNER の銘柄群。サンプルの�
 | final | 件数 |
 |---|---|
 | OWNER | 159 |
-| NOT_OWNER | 27 |
+| NOT_OWNER | 28 |
 
 **詳細は `rev1_outside_review.csv` を Excel で開いて priority=P4 でフィルタ**

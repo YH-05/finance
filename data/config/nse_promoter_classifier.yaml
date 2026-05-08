@@ -25,9 +25,16 @@
 # バージョン: 0.1.0 (seed)
 # 更新日: 2026-04-30
 
-version: "0.4.0"
+version: "0.5.0"
 updated_at: "2026-05-07"
 changelog:
+  v0.5.0:
+    - "act-2026-05-07-001 + act-2026-05-07-004: rev1 圏外 P0 10 件の web 裏取り判定を反映"
+    - "owner_keywords: WAAREERTL/AXISCADES/REFEX/STYRENIX 用 4 keyword 追加"
+    - "professional_keywords: HCG (KKR 取得済)/THYROCARE/FEDFINA/ITCHOTELS/JSFB 用 7 keyword 追加"
+    - "mnc_keywords: GVT&D 用 3 keyword 追加 (GE Vernova/Alstom Grid)"
+    - "重要訂正: 当初 v0.5.0 提案で HCG=Owner (AJAIKUMAR) としたが、2025/02 KKR controlling 54% 取得により Professional 訂正"
+    - "重要訂正: STYRENIX は当初保留だったが Shiva Performance Materials 独立 buyout で Owner 確定"
   v0.4.0:
     - "act-2026-05-07-002: B カテゴリ 4 銘柄の救済"
     - "mnc_keywords: SANOFI のため 'Sanofi'/'sanofi' 追加"
@@ -340,6 +347,30 @@ owner_keywords:
     sample_stocks: ["GLAND"]
     note: "GLAND の筆頭 promoter (Fosun Pharma Industrial Pte. Ltd 51.83%)。Fosun = 中国最大の民間複合企業、創業者 Guo Guangchang 一族支配。AI が ai_mnc 判定したが rev1 では Owner 分類 (一族支配構造を尊重)。'Fosun' keyword は GLAND のみで他に副作用なし。"
 
+  # --- Waaree Group (Doshi family) [v0.5.0] ---
+  - keyword: "WAAREE ENERGIES LIMITED"
+    family: "Doshi (Waaree)"
+    sample_stocks: ["WAAREERTL"]
+    note: "WAAREERTL: 親会社 Waaree Energies の Doshi 一族支配 (Hitesh/Kirit/Pankaj/Rushabh/Pujan 等 8 名、Hitesh 単独 11.45%)。Waaree Renewable は Waaree Energies 系列子会社"
+
+  # --- AXISCADES / Jupiter Capital (Chandrasekhar family office) [v0.5.0] ---
+  - keyword: "JUPITER CAPITAL PRIVATE LIMITED"
+    family: "Chandrasekhar (Jupiter)"
+    sample_stocks: ["AXISCADES"]
+    note: "Jupiter Capital = 元 Karnataka MP Rajeev Chandrasekhar が 2005 創業した family office。AXISCADES は Jupiter Capital 51% 支配の航空・防衛 IT"
+
+  # --- Refex Industries (Jain family) [v0.5.0] ---
+  - keyword: "REFEX HOLDING PRIVATE LIMITED"
+    family: "Jain (Refex)"
+    sample_stocks: ["REFEX"]
+    note: "Anil Jain 創業の Refex Group。promoter は Anil Jain T / Dimple Jain / Tarachand Jain 一族 5 名 + Refex Holding"
+
+  # --- Styrenix Performance Materials (Shiva 独立 buyout) [v0.5.0] ---
+  - keyword: "Shiva Performance Materials Private Limited"
+    family: "Shiva Performance Materials (Vadodara independent)"
+    sample_stocks: ["STYRENIX"]
+    note: "STYRENIX = 旧 INEOS Styrolution India。2022 に Shiva Performance Materials が INEOS から 61.19% 取得して独立。INEOS や Reliance とは無関係の独立 buyer"
+
 # ============================================================
 # Professional / Trust / Holding parent keywords
 #   promoter_names_full_list にこれらが含まれるなら NOT_OWNER 確定
@@ -506,6 +537,45 @@ professional_keywords:
     sample_stocks: ["UTKARSHBNK"]
     note: "Utkarsh SFB は NBFC origin の SFB。promoter は holding company Utkarsh CoreInvest 1 社のみ"
 
+  # --- Healthcare Global / KKR PE [v0.5.0、当初 Owner 案を Professional に訂正] ---
+  - keyword: "HECTOR ASIA HOLDINGS"
+    parent: "KKR (PE controlling)"
+    sample_stocks: ["HCG"]
+    note: "HCG: 2025/02 KKR が CVC から $400M で controlling 54% 取得 (Hector Asia Holdings II Pte 経由)。創業者 Dr. BS Ajaikumar は minority へ降格。当初 Owner と推測したが PE controlling のため Professional"
+
+  # --- Thyrocare / PharmEasy (API Holdings) [v0.5.0] ---
+  - keyword: "API Holdings Limited"
+    parent: "PharmEasy / TPG-Prosus PE"
+    sample_stocks: ["THYROCARE"]
+    note: "THYROCARE: 2021 に PharmEasy (API Holdings) が元 promoter Velumani から 66.1% 取得 (Rs 6,900cr)。Docon Technologies (API 100% 子会社) が acquirer"
+  - keyword: "Docon Technologies"
+    parent: "PharmEasy / TPG-Prosus PE"
+    sample_stocks: ["THYROCARE"]
+
+  # --- Federal Bank subsidiary (FEDFINA) [v0.5.0] ---
+  - keyword: "The Federal Bank Limited"
+    parent: "Federal Bank"
+    sample_stocks: ["FEDFINA"]
+    note: "FEDFINA = Fedbank Financial Services は Federal Bank の subsidiary。Federal Bank が筆頭 promoter (60%+)"
+
+  # --- ITC Hotels demerger (ITC Limited parent) [v0.5.0] ---
+  - keyword: "ITC Limited"
+    parent: "ITC Limited"
+    sample_stocks: ["ITCHOTELS"]
+    note: "ITCHOTELS: 2025/01 ITC Limited から demerger。ITC が 39.85% promoter。ITC Limited 自体は BAT/LIC/insurance funds 機関分散保有で Professional 経営"
+
+  # --- Jana Small Finance Bank (NPO + PE backed) [v0.5.0] ---
+  - keyword: "JANA CAPITAL LIMITED"
+    parent: "Jana Group / TPG-Khosla PE"
+    sample_stocks: ["JSFB"]
+    note: "JSFB promoter: Jana Capital + Jana Holdings (33.76%)。Jana Urban Foundation NPO 起源、TPG Asia VI / Vinod Khosla 等 PE backed"
+  - keyword: "JANA HOLDINGS LIMITED"
+    parent: "Jana Group / TPG-Khosla PE"
+    sample_stocks: ["JSFB"]
+  - keyword: "JANA URBAN FOUNDATION"
+    parent: "Jana Group (NPO origin)"
+    sample_stocks: ["JSFB"]
+
 # ============================================================
 # State / Government keywords
 #   promoter_names_full_list にこれらが含まれるなら STATE 扱い
@@ -611,6 +681,20 @@ mnc_keywords:
     parent: "Sanofi SA (France)"
     sample_stocks: ["SANOFI"]
     note: "小文字 'sanofi aventis Korea Co., Ltd.' などが promoter list に登場するためバリアント追加"
+
+  # --- GE Vernova T&D India (旧 Alstom T&D India) [v0.5.0] ---
+  - keyword: "GE Grid Solutions"
+    parent: "GE Vernova"
+    sample_stocks: ["GVT&D"]
+    note: "GVT&D = GE Vernova T&D India。2015 GE が Alstom Power 部門買収、2024 GE Vernova spin-off。Grid Equipments Pte が 68.54% promoter"
+  - keyword: "Grid Equipments Pte"
+    parent: "GE Vernova"
+    sample_stocks: ["GVT&D"]
+    note: "GVT&D の筆頭 promoter (68.54%)、GE 系 SPV"
+  - keyword: "Alstom Grid"
+    parent: "GE Vernova (旧 Alstom Grid)"
+    sample_stocks: ["GVT&D"]
+    note: "Alstom Grid Holding B.V. (旧 Alstom 保有持分) が GE Grid Alliance B.V. に改称、GVT&D で 6.46% 保有"
 
 # ============================================================
 # 解決アルゴリズム

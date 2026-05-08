@@ -10,13 +10,13 @@
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 594 |
-| NOT_OWNER | 193 |
-| OWNER_WEAK | 13 |
+| OWNER | 598 |
+| NOT_OWNER | 199 |
+| OWNER_WEAK | 3 |
 
 (参考) CSV 上の `owner_flag_final` (ハイブリッド未適用) との差異:
 
-- ハイブリッドで再分類された銘柄: 74 件
+- ハイブリッドで再分類された銘柄: 71 件
 
 ## 判定状況
 
@@ -47,24 +47,8 @@
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 180 |
-| NOT_OWNER | 33 |
-| OWNER_WEAK | 10 |
-
-### rev1 圏外 OWNER_WEAK 銘柄 (AI レビューが必要)
-
-| symbol | company_name | owner_flag | promoter_pct |
-|---|---|---|---|
-| AXISCADES | AXISCADES Technologies Limited | owner_confirmed_director_only | 58.05% |
-| FEDFINA | Fedbank Financial Services Limited | owner_confirmed_director_only | 60.81% |
-| GVT&D | GE Vernova T&D India Limited | owner_confirmed_director_only | 51.00% |
-| ITCHOTELS | ITC Hotels Limited | owner_confirmed_director_only | 39.85% |
-| JSFB | Jana Small Finance Bank Limited | owner_confirmed_director_only | 21.85% |
-| REFEX | Refex Industries Limited | owner_confirmed_director_only | 55.80% |
-| STYRENIX | Styrenix Performance Materials Limited | owner_confirmed_director_only | 46.24% |
-| THYROCARE | Thyrocare Technologies Limited | owner_confirmed_director_only | 60.92% |
-| WAAREERTL | Waaree Renewable Technologies Limited | owner_confirmed_director_only | 74.32% |
-| HCG | Healthcare Global Enterprises Limited | ambiguous_mnc_jv_candidate | 64.21% |
+| OWNER | 184 |
+| NOT_OWNER | 39 |
 
 ### rev1 圏外で Tier 1.5 corporate-vehicle rescue / A-3 救済された銘柄
 
@@ -80,10 +64,15 @@
 
 | symbol | company_name | owner_flag | promoter_pct | natural_pct |
 |---|---|---|---|---|
+| FEDFINA | Fedbank Financial Services Limited | owner_confirmed_director_only | 60.81% | 0.28% |
 | HDBFS | HDB Financial Services Limited | owner_confirmed_director_only | 74.15% | 0.16% |
+| ITCHOTELS | ITC Hotels Limited | owner_confirmed_director_only | 39.85% | 0.02% |
+| JSFB | Jana Small Finance Bank Limited | owner_confirmed_director_only | 21.85% | 0.68% |
 | TATACAP | Tata Capital Limited | owner_confirmed_director_only | 85.41% | 0.18% |
 | TATAINVEST | Tata Investment Corporation Limited | owner_confirmed_director_only | 73.38% | 0.07% |
+| THYROCARE | Thyrocare Technologies Limited | owner_confirmed_director_only | 60.92% | 0.14% |
 | TMCV | Tata Motors Limited | owner_confirmed_director_only | 42.56% | 0.03% |
+| HCG | Healthcare Global Enterprises Limited | ambiguous_mnc_jv_candidate | 64.21% | 9.86% |
 | AADHARHFC | Aadhar Housing Finance Limited | excluded_no_natural_no_holding | 64.90% | 0.41% |
 | BBOX | Black Box Limited | excluded_no_natural_no_holding | 70.49% | 1.60% |
 | CRISIL | CRISIL Limited | excluded_no_natural_no_holding | 66.64% | 0.06% |
