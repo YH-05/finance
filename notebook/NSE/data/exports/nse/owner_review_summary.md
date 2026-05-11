@@ -10,21 +10,20 @@
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 598 |
-| NOT_OWNER | 199 |
-| OWNER_WEAK | 3 |
+| OWNER | 600 |
+| NOT_OWNER | 200 |
 
 (参考) CSV 上の `owner_flag_final` (ハイブリッド未適用) との差異:
 
-- ハイブリッドで再分類された銘柄: 71 件
+- ハイブリッドで再分類された銘柄: 73 件
 
 ## 判定状況
 
 | judge | 銘柄数 | 説明 |
 |---|---|---|
 | TP | 412 | rev1=Owner ∩ 予測=OWNER (true positive) |
-| TN | 160 | rev1≠Owner ∩ 予測=NOT_OWNER (true negative) |
-| FP | 5 | rev1≠Owner ∩ 予測=OWNER (false positive、要確認) |
+| TN | 161 | rev1≠Owner ∩ 予測=NOT_OWNER (true negative) |
+| FP | 4 | rev1≠Owner ∩ 予測=OWNER (false positive、要確認) |
 | FN | 0 | rev1=Owner ∩ 予測=NOT_OWNER (false negative、要確認) |
 | rev1_outside | 223 | rev1 GT 圏外、generated label のみ (act-05-07-001 対象) |
 
@@ -34,7 +33,7 @@
 |---|---|---|---|---|---|---|
 | owner_confirmed_individual_and_director | 299 | 0 | 2 | 0 | 121 | 422 |
 | owner_confirmed_individual | 64 | 0 | 2 | 0 | 50 | 116 |
-| owner_confirmed_director_only | 23 | 43 | 1 | 0 | 18 | 85 |
+| owner_confirmed_director_only | 23 | 44 | 0 | 0 | 18 | 85 |
 | excluded_state_dominant | 1 | 68 | 0 | 0 | 2 | 71 |
 | excluded_no_natural_no_holding | 3 | 25 | 0 | 0 | 15 | 43 |
 | ambiguous_holding_foreign | 4 | 14 | 0 | 0 | 7 | 25 |

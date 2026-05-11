@@ -25,9 +25,16 @@
 # バージョン: 0.1.0 (seed)
 # 更新日: 2026-04-30
 
-version: "0.5.0"
-updated_at: "2026-05-07"
+version: "0.5.1"
+updated_at: "2026-05-11"
 changelog:
+  v0.5.1:
+    - "act-2026-05-11-018: 残 OWNER_WEAK 3 件 (NETWORK18/JPPOWER/ESCORTS) 解消"
+    - "schema 拡張: owner_keywords エントリに exclude_when_also_matches: [keyword,...] を追加可能化 (信託 vehicle 経由保有のような OWNER+PROFESSIONAL 両マッチ問題への対処)"
+    - "RELIANCE INDUSTRIES LIMITED に exclude_when_also_matches: ['Independent Media Trust'] 追加 (NETWORK18: Reliance 信託経由保有 → Professional 確定)"
+    - "owner_keywords: JPPOWER 用 'JAIPRAKASH ASSOCIATES' / 'JAYPEE INFRA VENTURES' 追加 (family: Gaur (Jaypee))"
+    - "owner_keywords: ESCORTS 用 'NIKHIL NANDA' / 'HAR PARSHAD AND COMPANY' / 'NIKY TASHA' 追加 (family: Nanda)"
+    - "Kubota Corporation, Japan は MNC 扱いせず rev1=Owner を尊重 (Nanda 一族が CMD として支配継続)"
   v0.5.0:
     - "act-2026-05-07-001 + act-2026-05-07-004: rev1 圏外 P0 10 件の web 裏取り判定を反映"
     - "owner_keywords: WAAREERTL/AXISCADES/REFEX/STYRENIX 用 4 keyword 追加"
@@ -126,7 +133,8 @@ owner_keywords:
   - keyword: "RELIANCE INDUSTRIES LIMITED"
     family: "Ambani"
     sample_stocks: []
-    note: "RIL 3文字は DRILLING/TRIL に substring 過剰マッチするため正式社名で照合"
+    exclude_when_also_matches: ["Independent Media Trust"]
+    note: "RIL 3文字は DRILLING/TRIL に substring 過剰マッチするため正式社名で照合。Independent Media Trust 同時マッチは Reliance 信託 vehicle 経由保有 (NETWORK18) のため OWNER 認定から除外し professional_keywords 側で Professional 確定させる"
 
   # --- Bajaj Group ---
   - keyword: "Bajaj"
@@ -370,6 +378,27 @@ owner_keywords:
     family: "Shiva Performance Materials (Vadodara independent)"
     sample_stocks: ["STYRENIX"]
     note: "STYRENIX = 旧 INEOS Styrolution India。2022 に Shiva Performance Materials が INEOS から 61.19% 取得して独立。INEOS や Reliance とは無関係の独立 buyer"
+
+  # --- Jaypee Group / Gaur family [v0.5.1] ---
+  - keyword: "JAIPRAKASH ASSOCIATES"
+    family: "Gaur (Jaypee)"
+    sample_stocks: ["JPPOWER"]
+    note: "JPPOWER の promoter は Jaiprakash Associates Limited + Jaypee Infra Ventures Private Limited のみ (24.0%)。Gaur 一族 Jaypee Group 系列"
+  - keyword: "JAYPEE INFRA VENTURES"
+    family: "Gaur (Jaypee)"
+    sample_stocks: ["JPPOWER"]
+
+  # --- Escorts (Nanda family) [v0.5.1] ---
+  - keyword: "NIKHIL NANDA"
+    family: "Nanda"
+    sample_stocks: ["ESCORTS"]
+    note: "ESCORTS Kubota: 2022 Kubota が 54% 取得後も Nanda 一族 (CMD Nikhil Nanda) が支配継続、rev1=Owner。'Nanda' 単独は印度一般姓のため固有名詞性の高い 3 keyword で検出"
+  - keyword: "HAR PARSHAD AND COMPANY"
+    family: "Nanda"
+    sample_stocks: ["ESCORTS"]
+  - keyword: "NIKY TASHA"
+    family: "Nanda"
+    sample_stocks: ["ESCORTS"]
 
 # ============================================================
 # Professional / Trust / Holding parent keywords

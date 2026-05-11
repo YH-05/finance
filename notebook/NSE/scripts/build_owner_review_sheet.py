@@ -53,10 +53,16 @@ def classify_promoter_names(promoter_names: str, yaml_data: dict) -> tuple[str, 
     override_state = False
 
     for kw in yaml_data.get("owner_keywords", []):
-        if kw["keyword"].lower() in text_lower:
-            matched["OWNER"].append(f"{kw['keyword']}({kw.get('family','')})")
-            if kw.get("override_state"):
-                override_state = True
+        if kw["keyword"].lower() not in text_lower:
+            continue
+        # exclude_when_also_matches: いずれかが同時マッチしていれば OWNER 認定から除外
+        # (信託 vehicle 経由保有のような OWNER+PROFESSIONAL/STATE/MNC 両マッチ問題への対処)
+        excludes = kw.get("exclude_when_also_matches") or []
+        if any(ex.lower() in text_lower for ex in excludes):
+            continue
+        matched["OWNER"].append(f"{kw['keyword']}({kw.get('family','')})")
+        if kw.get("override_state"):
+            override_state = True
 
     for kw in yaml_data.get("professional_keywords", []):
         if kw["keyword"].lower() in text_lower:
@@ -167,6 +173,16 @@ def main() -> None:
             "excluded_state_dominant",
         }
         if flag in excluded_targets and cls == "OWNER":
+            return "OWNER"
+
+        # owner_probable_* / owner_via_individual_in_other (Tier 2 / 2.5):
+        # yaml で既知一族と確定マッチした場合は OWNER に昇格 (act-2026-05-11-018)
+        probable_targets = {
+            "owner_probable_relatives_trust",
+            "owner_probable_nri_family",
+            "owner_via_individual_in_other",
+        }
+        if flag in probable_targets and cls == "OWNER":
             return "OWNER"
 
         return row["owner_flag_final"]
