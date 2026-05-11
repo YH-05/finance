@@ -8,14 +8,14 @@
 
 ## 0. エグゼクティブサマリ
 
-| 主張                                  | 強い証拠                                                                                                                                       | 注意点                                       |     |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | --- |
-| **A. AI と人間の協調は単独より強い (Centaur)**   | Kasparov の advanced chess → 中堅 + AI + 良いプロセスがグランドマスター単独 / スーパーコンピュータ単独に勝利                                                                  | 2017 年以降、純粋な AI が人間を引き離した競技領域もある          |     |
-| **B. AI は熟練者の暗黙知を他者・組織に拡散する**       | Brynjolfsson, Li, Raymond (QJE 2025): AI 支援は「**より熟練したワーカーの暗黙的知識を伝播する**（disseminates the potentially tacit knowledge of more able workers）」 | 平均効果は低スキルワーカーで大きい（34%）/ 熟練者本人の効果は小さい場合がある |     |
-| **C. AI はルーチン外でも判断品質を向上させる**        | Dell'Acqua et al. (HBS WP 24-013, 758 名 BCG コンサル): タスク完遂 +12.2%、速度 +25.1%、品質 **+40%**                                                      | "Jagged Frontier" の外側では逆に -19%            |     |
-| **D. AI は判断のノイズを削減する**              | Kahneman, Sibony, Sunstein "Noise" (2021): アルゴリズムは人間より一貫性で勝る                                                                               | アルゴリズムは独自のバイアスを持ち得る → 人間との組み合わせが必要        |     |
-| **E. AI は専門家の認知を拡張する**              | "Augmenting Expert Cognition in the Age of GenAI" (UW/Adobe, 2025) 等多数                                                                     | 専門性の維持と AI 依存のバランスは設計課題                   |     |
-| **F. 暗黙知の形式知化は GenAI で実装可能になりつつある** | "Tacit Knowledge Management with Generative AI" (2026): SECI モデルを GenAI 拡張した GenAI-SECI を提案                                                | 形式知化は完全ではなく、ハイブリッド設計が必要 (Polanyi 起源)      |     |
+| 主張                                      | 強い証拠                                                                                                                                       | 注意点                                       |     |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | --- |
+| **A. AI と人間の協調は単独より強い (Centaur)**       | Kasparov の advanced chess → 中堅 + AI + 良いプロセスがグランドマスター単独 / スーパーコンピュータ単独に勝利                                                                  | 2017 年以降、純粋な AI が人間を引き離した競技領域もある          |     |
+| **B. AI は熟練者の暗黙知を他者・組織に拡散する**           | Brynjolfsson, Li, Raymond (QJE 2025): AI 支援は「**より熟練したワーカーの暗黙的知識を伝播する**（disseminates the potentially tacit knowledge of more able workers）」 | 平均効果は低スキルワーカーで大きい（34%）/ 熟練者本人の効果は小さい場合がある |     |
+| **C. AI はルーチン外でも判断品質を向上させる**            | Dell'Acqua et al. (HBS WP 24-013, 758 名 BCG コンサル): タスク完遂 +12.2%、速度 +25.1%、品質 **+40%**                                                      | "Jagged Frontier" の外側では逆に -19%            |     |
+| **D. AI は判断のノイズを削減する**                  | Kahneman, Sibony, Sunstein "Noise" (2021): アルゴリズムは人間より一貫性で勝る                                                                               | アルゴリズムは独自のバイアスを持ち得る → 人間との組み合わせが必要        |     |
+| **E. AI は専門家の認知を拡張する**                  | "Augmenting Expert Cognition in the Age of GenAI" (UW/Adobe, 2025) 等多数                                                                     | 専門性の維持と AI 依存のバランスは設計課題                   |     |
+| ~~**F. 暗黙知の形式知化は GenAI で実装可能になりつつある**~~ | "Tacit Knowledge Management with Generative AI" (2026): SECI モデルを GenAI 拡張した GenAI-SECI を提案                                                | 形式知化は完全ではなく、ハイブリッド設計が必要 (Polanyi 起源)      |     |
 
 **含意**: Y のような卓越したアナリストの暗黙知を AI で抽出・拡張・常時稼働化する設計は、複数の独立した実証研究系列から支持される。ファンドコンセプトの中核として「Centaur 型運用 + 暗黙知 SECI 形式知化 + ノイズ削減」の三本柱で訴求できる。
 
@@ -38,7 +38,7 @@
 - **重要な警鐘**: フロンティア外（人間の文脈判断が必要）タスクでは AI 利用群は **-19 ポイント** 正答率が低下
 - **URL**: https://www.hbs.edu/faculty/Pages/item.aspx?num=64700
 
-### 1.2 Brynjolfsson, Li, Raymond (2025) "Generative AI at Work" — **本ファンドコンセプトに最重要**
+### 1.2 （Research Done）Brynjolfsson, Li, Raymond (2023) "Generative AI at Work" 
 - **発行元**: Quarterly Journal of Economics 140(2), 889-942（NBER WP 31161）
 - **著者**: Erik Brynjolfsson (Stanford), Danielle Li (MIT Sloan), Lindsey R. Raymond
 - **デザイン**: Fortune 500 企業のカスタマーサポート 5,179 名 × LLM 対話アシスタント staggered rollout
@@ -52,7 +52,7 @@
 - **解釈**: AI は熟練者の暗黙知を抽出・パターン化して新人に転送する **ナレッジ・ディフューザー**として機能する → Y の暗黙知をシステム化することで「Y の判断を 24/7 並列稼働」が成立する根拠
 - **URL**: https://www.nber.org/papers/w31161
 
-### 1.3 Noy & Zhang (2023) "Experimental Evidence on the Productivity Effects of Generative AI"
+### 1.3 （Skip）Noy & Zhang (2023) "Experimental Evidence on the Productivity Effects of Generative AI"
 - **発行元**: Science 381, pp. 187-192
 - **デザイン**: 453 名のプロフェッショナル × ChatGPT × ライティングタスク
 - **結果**:
@@ -60,7 +60,7 @@
   - 品質スコア **+18%**
   - 低パフォーマー側で効果が大きく、生産性格差が縮小
 
-### 1.4 Peng, Kalliamvakou, Cihon, Demirer (2023) "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot"
+### 1.4 （Skip）Peng, Kalliamvakou, Cihon, Demirer (2023) "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot"
 - **arXiv ID**: 2302.06590
 - **発行元**: MIT Sloan + GitHub
 - **結果**: コーディング所要時間 **-55.8%**（AI ペアプログラマ利用群）
@@ -102,12 +102,12 @@
 | **Tool or Tutor? Cancer Diagnosis** (arXiv 2502.16411) | UCL / INSEAD, 2025 | AI を **ツール（タスク補助）** として使うか **チューター（学習）** として使うかで効果が異なる |
 
 ### 2.2 ソフトウェア開発・知識労働
-| 論文 | 結果 |
-|------|------|
-| Peng et al. (2023) GitHub Copilot | タスク時間 -55.8% |
-| Cui, Demirer et al. on coding | 同様の生産性向上を確認 |
-| **MIT Sloan / Johns Hopkins (2025) Pairit** (arXiv 2503.18238) | AI エージェントとのチームワーク field experiment |
-| **Augmenting Expert Cognition** (arXiv 2503.24334) | UW / Adobe, 2025 | ドキュメント中心の知識労働で専門家認知をどう保持・発展させるか |
+| 論文                                                             | 結果                                 |                                 |
+| -------------------------------------------------------------- | ---------------------------------- | ------------------------------- |
+| Peng et al. (2023) GitHub Copilot                              | タスク時間 -55.8%                       |                                 |
+| Cui, Demirer et al. on coding                                  | 同様の生産性向上を確認                        |                                 |
+| **MIT Sloan / Johns Hopkins (2025) Pairit** (arXiv 2503.18238) | AI エージェントとのチームワーク field experiment |                                 |
+| ~~**Augmenting Expert Cognition** (arXiv 2503.24334)~~         | UW / Adobe, 2025                   | ドキュメント中心の知識労働で専門家認知をどう保持・発展させるか |
 
 ### 2.3 ニュアンス：誰が一番得をするか
 - **大半の研究**: ノービスや低スキル層の伸び幅が大きい（スキルレベリング効果）
@@ -133,12 +133,12 @@
 | **Collins (2010)** | 暗黙知の三分類（relational / somatic / collective）。Polanyi の現代化 |
 
 ### 3.2 GenAI による暗黙知形式知化（最重要・新領域）
-| 論文 | 発行元 / 年 | 主張 |
-|------|------------|------|
-| **"Tacit Knowledge Management with Generative AI: GenAI-SECI Model"** (arXiv 2603.21866) | 2026 | SECI モデルを GenAI で拡張。LLM が externalization と internalization を担う |
-| **"Leveraging LLMs for Tacit Knowledge Discovery in Organizational Contexts"** (arXiv 2507.03811) | UFMG / USP, 2025 | 組織暗黙知の発見と保有者特定に LLM を活用 |
-| **"Augmenting Expert Cognition in the Age of GenAI"** (arXiv 2503.24334) | UW / Adobe, 2025 | 専門知識を保持しつつ AI ベネフィットを得る設計 |
-| **"The Paradox of Professional Input"** (arXiv 2504.12654) | IIT Jodhpur, 2025 | 専門家が AI と協働すると、その AI が将来の値打ちを規定するパラドックス |
+| 論文                                                                                                | 発行元 / 年           | 主張                                                              |
+| ------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------------------------------- |
+| ~~**"Tacit Knowledge Management with Generative AI: GenAI-SECI Model"** (arXiv 2603.21866)~~      | 2026              | SECI モデルを GenAI で拡張。LLM が externalization と internalization を担う |
+| **"Leveraging LLMs for Tacit Knowledge Discovery in Organizational Contexts"** (arXiv 2507.03811) | UFMG / USP, 2025  | 組織暗黙知の発見と保有者特定に LLM を活用                                         |
+| ~~**"Augmenting Expert Cognition in the Age of GenAI"** (arXiv 2503.24334)~~                      | UW / Adobe, 2025  | 専門知識を保持しつつ AI ベネフィットを得る設計                                       |
+| **"The Paradox of Professional Input"** (arXiv 2504.12654)                                        | IIT Jodhpur, 2025 | 専門家が AI と協働すると、その AI が将来の値打ちを規定するパラドックス                         |
 
 ### 3.3 医学教育からの示唆
 - **"Insights From Michael Polanyi: Tacit Knowledge in Medical Education"** (PMC, 2024) — ベッドサイド教育の代替として AI/ML 高忠実度シミュレーションを提案。**直接対話を完全代替はできないが、24/7 トレーニングと行動・認知トラッキングで補完可能**
@@ -181,7 +181,7 @@
 - **要旨**: LLM が「投資家ビュー」を体系的に生成し Black-Litterman に投入 → mean-variance 最適化のセンシティビティ問題を緩和
 - **本ファンドへの直接適用**: **Y の投資ビュー（暗黙知）を LLM で形式化し BL モデルに投入** という構造そのもの
 
-### 4.7 Are LLMs Rational Investors? (NYU / Tongji / Fudan, 2024)
+### 4.7 ~~Are LLMs Rational Investors? (NYU / Tongji / Fudan, 2024)~~
 - **arXiv ID**: 2402.12713
 - **要旨**: LLM 自体が金融バイアスを持つ → 検出と削減手法を提案
 - **示唆**: AI 単独でなく、Y の判断との突き合わせが品質保証となる
@@ -191,31 +191,31 @@
 ## 5. コンサル・研究機関レポート
 
 ### 5.1 McKinsey Global Institute
-| レポート | 年 | 主要数字 |
-|---------|-----|---------|
-| **"The economic potential of generative AI: The next productivity frontier"** | 2023.06 | 生成 AI による年間追加価値 **$6.1〜7.9 兆** |
-| **"Generative AI and the future of work in America"** | 2023.07 | 知識労働者で最大インパクト |
-| **"A new future of work: The race to deploy AI..."** | 2024.05 | 欧州・米国の自動化シナリオ詳細 |
-| **"Agents, robots, and us: Skill partnerships in the age of AI"** | 2025 | **72% のスキルが Human-AI 協働ゾーン**、純粋人間労働 11%、純粋 AI 17% |
-| **"Superagency in the workplace"** | 2025 | 米国で 2030 年までに $2.9T のアンロック可能性 |
+| レポート                                                                          | 年       | 主要数字                                              |
+| ----------------------------------------------------------------------------- | ------- | ------------------------------------------------- |
+| **"The economic potential of generative AI: The next productivity frontier"** | 2023.06 | 生成 AI による年間追加価値 **$6.1〜7.9 兆**                    |
+| **"Generative AI and the future of work in America"**                         | 2023.07 | 知識労働者で最大インパクト                                     |
+| **"A new future of work: The race to deploy AI..."**                          | 2024.05 | 欧州・米国の自動化シナリオ詳細                                   |
+| **"Agents, robots, and us: Skill partnerships in the age of AI"**             | 2025    | **72% のスキルが Human-AI 協働ゾーン**、純粋人間労働 11%、純粋 AI 17% |
+| **"Superagency in the workplace"**                                            | 2025    | 米国で 2030 年までに $2.9T のアンロック可能性                     |
 
 ### 5.2 BCG / BCG Henderson Institute
-| レポート | 年 | 内容 |
-|---------|-----|------|
-| **"AI at Work 2024: Friend and Foe"** | 2024 | 生成 AI への期待と恐れの並存、5 つの推奨 |
-| **"AI at Work 2025: Momentum Builds, but Gaps Remain"** | 2025 | 11,600 人サーベイ。リーダー 75% が週次 AI 利用、現場 51%。**ワークフロー再設計企業で意思決定の鋭さ向上** |
-| **"GenAI Increases Productivity & Expands Capabilities"** | 2024 | BHI 第二回フィールド実験。**自分の能力を超えるタスクを AI で達成可能に** |
-| Dell'Acqua et al. (Jagged Frontier) | 2023 | BCG × HBS 共同研究（上記 1.1） |
+| レポート                                                      | 年    | 内容                                                               |
+| --------------------------------------------------------- | ---- | ---------------------------------------------------------------- |
+| **"AI at Work 2024: Friend and Foe"**                     | 2024 | 生成 AI への期待と恐れの並存、5 つの推奨                                          |
+| **"AI at Work 2025: Momentum Builds, but Gaps Remain"**   | 2025 | 11,600 人サーベイ。リーダー 75% が週次 AI 利用、現場 51%。**ワークフロー再設計企業で意思決定の鋭さ向上** |
+| **"GenAI Increases Productivity & Expands Capabilities"** | 2024 | BHI 第二回フィールド実験。**自分の能力を超えるタスクを AI で達成可能に**                       |
+| Dell'Acqua et al. (Jagged Frontier)                       | 2023 | BCG × HBS 共同研究（上記 1.1）                                           |
 
 ### 5.3 Deloitte
-| レポート | 年 | 内容 |
-|---------|-----|------|
-| **"State of AI in the Enterprise (2026 AI report)"** | 2026 | **「人間 + AI > どちらか単独」** 設計を最重要視。新ロール（Quality Stewards 等）の出現 |
-| **"AI and the future of human decision-making"** | 2026 | 人間のエージェンシー保持 + AI 活用の両立 |
+| レポート                                                               | 年       | 内容                                                                |
+| ------------------------------------------------------------------ | ------- | ----------------------------------------------------------------- |
+| **"State of AI in the Enterprise (2026 AI report)"**               | 2026    | **「人間 + AI > どちらか単独」** 設計を最重要視。新ロール（Quality Stewards 等）の出現        |
+| **"AI and the future of human decision-making"**                   | 2026    | 人間のエージェンシー保持 + AI 活用の両立                                           |
 | **"Human capabilities are at the heart of high-performing teams"** | 2026.01 | AI 時代の人間スキル（curiosity, divergent thinking, informed agility）が決定要因 |
-| **"Human-centered approach to AI"** | — | "Humans **with** Machines, not vs." 哲学 |
+| ~~**"Human-centered approach to AI"**~~                            | —       | "Humans **with** Machines, not vs." 哲学                            |
 
-### 5.4 Accenture
+### ~~5.4 Accenture~~
 - **Daugherty & Wilson "Human + Machine"** (2018, 2024 改訂)
   - HBR Press 出版
   - **"Missing Middle"** 概念
