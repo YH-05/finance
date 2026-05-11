@@ -13,13 +13,15 @@ act-2026-05-07-002: NIFTY 750 universe メタデータ整備 + owner_companies.c
         index_members テーブル (NIFTY 50 / 100 / 200 / 500 / TOTAL MKT)
 
 出力:
-    - notebook/NSE/data/exports/nse/owner_companies.csv
-        確定版オーナー企業 (OWNER 600 件)
     - notebook/NSE/data/exports/nse/nifty750_universe.csv
-        800 銘柄全件 + universe メタデータ (is_owner_company / owner_family /
-        is_nifty50 / is_nifty100 / is_nifty200 / is_nifty500 / is_nifty_total_mkt)
+        全 800 銘柄 + universe メタデータ (is_owner_company / owner_family /
+        is_nifty50 / is_nifty100 / is_nifty200 / is_nifty500 / is_nifty_total_mkt)。
+        投資戦略側で OWNER のみ使う場合は df[df["is_owner_company"]] でフィルタ。
     - notebook/NSE/data/exports/nse/nifty750_universe_summary.md
         Owner 比率・family 別分布・index level 別分布のサマリー
+
+廃止 (2026-05-11、dec-2026-05-11-011):
+    - owner_companies.csv (旧版、nifty750_universe.csv に集約)
 """
 
 from __future__ import annotations
@@ -37,7 +39,6 @@ CACHE_DIR = ROOT / "notebook/NSE/data/cache/nse"
 REVIEW_SHEET = EXPORT_DIR / "owner_review_sheet.csv"
 INDEX_DB = CACHE_DIR / "nse_index.db"
 
-OUT_OWNERS = EXPORT_DIR / "owner_companies.csv"
 OUT_UNIVERSE = EXPORT_DIR / "nifty750_universe.csv"
 OUT_SUMMARY = EXPORT_DIR / "nifty750_universe_summary.md"
 
@@ -127,31 +128,9 @@ def main() -> None:
     for flag in INDEX_TARGETS:
         sheet[flag] = sheet[flag].fillna(False).astype(bool)
 
-    # ----- Step 1: owner_companies.csv 確定版 -----
-    owner_cols = [
-        "symbol",
-        "isin",
-        "company_name",
-        "owner_flag",
-        "owner_flag_final_hybrid",
-        "yaml_classification",
-        "owner_family",
-        "promoter_total_pct",
-        "natural_pct_sum",
-        "in_rev1",
-        "rev1_category",
-        "is_nifty50",
-        "is_nifty100",
-        "is_nifty200",
-        "is_nifty500",
-        "is_nifty_total_mkt",
-    ]
-    owners = sheet[sheet["is_owner_company"]][owner_cols].copy()
-    owners = owners.sort_values(["owner_family", "symbol"])
-    owners.to_csv(OUT_OWNERS, index=False)
-    print(f"Wrote: {OUT_OWNERS} ({len(owners)} owner companies)")
-
-    # ----- Step 2: nifty750_universe.csv (800 銘柄全件 + メタデータ) -----
+    # ----- Step 1+2: nifty750_universe.csv (全 800 銘柄 + メタデータ、唯一の確定版) -----
+    # 旧 owner_companies.csv は本ファイルに集約・廃止 (2026-05-11、dec-2026-05-11-011)。
+    # 投資戦略側で OWNER のみ使う場合は df[df["is_owner_company"]] でフィルタ可能。
     universe_cols = [
         "symbol",
         "isin",
@@ -172,9 +151,17 @@ def main() -> None:
         "is_nifty_total_mkt",
     ]
     universe = sheet[universe_cols].copy()
-    universe = universe.sort_values(["is_owner_company", "symbol"], ascending=[False, True])
+    # ソート: オーナー企業を先頭、その中で family 別 → symbol 順
+    universe = universe.sort_values(
+        ["is_owner_company", "owner_family", "symbol"], ascending=[False, True, True]
+    )
     universe.to_csv(OUT_UNIVERSE, index=False)
-    print(f"Wrote: {OUT_UNIVERSE} ({len(universe)} stocks)")
+    n_owner = int(universe["is_owner_company"].sum())
+    n_not_owner = len(universe) - n_owner
+    print(
+        f"Wrote: {OUT_UNIVERSE} ({len(universe)} stocks: "
+        f"{n_owner} owner / {n_not_owner} not_owner)"
+    )
 
     # ----- Step 3: nifty750_universe_summary.md -----
     lines: list[str] = []
@@ -255,7 +242,7 @@ def main() -> None:
     lines.append("# 全 universe (800 銘柄) を読み込み")
     lines.append('df = pd.read_csv("notebook/NSE/data/exports/nse/nifty750_universe.csv")')
     lines.append("")
-    lines.append("# OWNER 企業のみフィルタ (= owner_companies.csv 相当)")
+    lines.append("# OWNER 企業のみフィルタ")
     lines.append('owners = df[df["is_owner_company"]]')
     lines.append("")
     lines.append("# NIFTY 100 圏内 OWNER 企業のみ")

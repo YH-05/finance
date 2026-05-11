@@ -26,6 +26,12 @@ project-106 NSE owner labeling の v0.5.1 リリース時に役割終了した�
 | `_shareholding_detail.csv` | `notebook/NSE/data/exports/nse/` | 9.3 MB | `shareholding_detail.csv` (May 7, 11.9 MB) で更新済。`_` 接頭辞は古いバックアップ (Apr 17 時点) |
 | `_shareholdings.csv` | 同上 | 7.1 MB | `shareholdings.csv` (May 7, 9.0 MB) で更新済 |
 
+### nifty750_universe.csv に集約された冗長ファイル
+
+| ファイル | 元の位置 | 役割 | 廃止理由 |
+|----------|---------|------|----------|
+| `owner_companies.csv` | `notebook/NSE/data/exports/nse/` | 当初は OWNER 600 件のみだったが、ユーザー要望で全 800 銘柄 (NOT_OWNER 含む) + is_owner_company 列に拡張 → nifty750_universe.csv とほぼ同内容になった | dec-2026-05-11-011 で `nifty750_universe.csv` に集約。`df[df["is_owner_company"]]` でフィルタすれば旧 owner_companies.csv 相当の OWNER 600 件を取得可能 |
+
 ## 関連 Neo4j ノード
 
 - Discussion: `disc-2026-05-11-nse-owner-yaml-v051-plan` / `disc-2026-05-11-nse-owner-v051-implementation`

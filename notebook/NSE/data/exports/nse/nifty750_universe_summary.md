@@ -58,7 +58,7 @@ import pandas as pd
 # 全 universe (800 銘柄) を読み込み
 df = pd.read_csv("notebook/NSE/data/exports/nse/nifty750_universe.csv")
 
-# OWNER 企業のみフィルタ (= owner_companies.csv 相当)
+# OWNER 企業のみフィルタ
 owners = df[df["is_owner_company"]]
 
 # NIFTY 100 圏内 OWNER 企業のみ

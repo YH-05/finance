@@ -16,8 +16,7 @@
 | `owner_review_sheet.csv` | 全 800 銘柄レビューシート (yaml v0.5.1 適用済) |
 | `owner_review_summary.md` | 上記の集計サマリー |
 | `owner_review_rev1_outside.csv` | rev1 圏外 223 銘柄抽出 |
-| `owner_companies.csv` | OWNER 確定 600 件 (act-2026-05-07-002) |
-| `nifty750_universe.csv` | 800 銘柄 + メタデータ (act-2026-05-07-002) |
+| `nifty750_universe.csv` | **800 銘柄 + メタデータ (唯一の確定版)** (act-2026-05-07-002 + dec-2026-05-11-011)。`df[df["is_owner_company"]]` で OWNER 600 件をフィルタ |
 | `nifty750_universe_summary.md` | universe 全体サマリー |
 | `logic_system_review.md` | ロジック体系レビュー (v0.5.1 ベース) |
 | `rev1_outside_review.csv` / `.md` | rev1 圏外 P0-P4 優先度分類 (人間レビュー用、現役) |
@@ -65,6 +64,7 @@ v0.5.1 リリースで陳腐化、`trash/2026-05-11_nse-owner-obsolete/` へ移�
 - `yaml_extension_candidates.md`
 - `_shareholding_detail.csv` (古い snapshot)
 - `_shareholdings.csv` (古い snapshot)
+- `owner_companies.csv` (nifty750_universe.csv に集約、dec-2026-05-11-011)
 
 詳細 (廃止経緯): `docs/plan/2026-05-11_obsolete-nse-files.md` 参照
 実体 (ローカルのみ、`trash/` は `.gitignore` 除外): `trash/2026-05-11_nse-owner-obsolete/`

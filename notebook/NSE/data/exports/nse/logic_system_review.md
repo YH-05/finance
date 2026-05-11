@@ -233,7 +233,7 @@ return UNKNOWN
 ### 完了済み
 
 1. **act-2026-05-11-018**: yaml v0.5.1 (exclude_when_also_matches + JPPOWER/ESCORTS keyword 追加) + Tier 2/2.5 OWNER 昇格ハイブリッド (dec-2026-05-11-007) で **OWNER_WEAK 3→0**、**Precision 98.8%→99.04%**
-2. **act-2026-05-07-002**: NIFTY 750 universe 整備 (owner_companies.csv 確定版 600 件 + nifty750_universe.csv 800 銘柄 + メタデータ + サマリー)
+2. **act-2026-05-07-002**: NIFTY 750 universe 整備 (nifty750_universe.csv 800 銘柄 + is_owner_company 列でフィルタ可能 + サマリー)。当初 owner_companies.csv も別ファイルとして export していたが、ユーザー要望で全 800 銘柄含む形に拡張した結果 nifty750_universe.csv とほぼ同内容になり、dec-2026-05-11-011 で集約・廃止
 
 ### 次のアクション (pending)
 
@@ -252,7 +252,7 @@ return UNKNOWN
 |---|---|
 | `data/config/nse_promoter_classifier.yaml` (v0.5.1) | 既知一族リスト + exclude_when_also_matches 機構 |
 | `notebook/NSE/scripts/build_owner_review_sheet.py` | レビューシート生成 (yaml ハイブリッド + Tier 2/2.5 OWNER 昇格 + exclude_when 評価) |
-| `notebook/NSE/scripts/build_nifty750_universe.py` | NIFTY 750 universe 整備 (owner_companies.csv + nifty750_universe.csv + summary.md) |
+| `notebook/NSE/scripts/build_nifty750_universe.py` | NIFTY 750 universe 整備 (nifty750_universe.csv + summary.md) |
 
 ### データ
 
@@ -261,8 +261,7 @@ return UNKNOWN
 | `notebook/NSE/data/exports/nse/owner_review_sheet.csv` | 800 | 全銘柄レビュー用 (judge / hybrid / yaml_matched 列付) |
 | `notebook/NSE/data/exports/nse/owner_review_rev1_outside.csv` | 223 | rev1 圏外のみ |
 | `notebook/NSE/data/exports/nse/owner_review_summary.md` | — | 集計サマリー |
-| `notebook/NSE/data/exports/nse/owner_companies.csv` | 600 | **OWNER 確定版** (投資戦略フィルタ用) |
-| `notebook/NSE/data/exports/nse/nifty750_universe.csv` | 800 | **800銘柄全件 + メタデータ** (is_owner_company / owner_family / is_nifty50/100/200/500/total_mkt) |
+| `notebook/NSE/data/exports/nse/nifty750_universe.csv` | 800 | **800銘柄全件 + メタデータ** (is_owner_company / owner_family / is_nifty50/100/200/500/total_mkt) — 投資戦略では `df[df["is_owner_company"]]` で OWNER 600 件をフィルタ |
 | `notebook/NSE/data/exports/nse/nifty750_universe_summary.md` | — | Owner 比率 / family 別分布 / Index level 別分布 |
 | `notebook/NSE/data/exports/nse/owner_candidates.csv` | 800 | 元データ (Phase 3/4 出力) |
 | `notebook/NSE/data/cache/nse/owners.json` | 632 | rev1 GT (ISIN canonical) |
