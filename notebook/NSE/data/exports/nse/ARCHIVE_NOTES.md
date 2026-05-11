@@ -66,4 +66,5 @@ v0.5.1 リリースで陳腐化、`trash/2026-05-11_nse-owner-obsolete/` へ移�
 - `_shareholding_detail.csv` (古い snapshot)
 - `_shareholdings.csv` (古い snapshot)
 
-詳細: `trash/2026-05-11_nse-owner-obsolete/README.md` 参照
+詳細 (廃止経緯): `docs/plan/2026-05-11_obsolete-nse-files.md` 参照
+実体 (ローカルのみ、`trash/` は `.gitignore` 除外): `trash/2026-05-11_nse-owner-obsolete/`
