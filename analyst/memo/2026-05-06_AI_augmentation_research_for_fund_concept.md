@@ -8,14 +8,14 @@
 
 ## 0. エグゼクティブサマリ
 
-| 主張 | 強い証拠 | 注意点 |
-|------|---------|-------|
-| **A. AI と人間の協調は単独より強い (Centaur)** | Kasparov の advanced chess → 中堅 + AI + 良いプロセスがグランドマスター単独 / スーパーコンピュータ単独に勝利 | 2017 年以降、純粋な AI が人間を引き離した競技領域もある |
-| **B. AI は熟練者の暗黙知を他者・組織に拡散する** | Brynjolfsson, Li, Raymond (QJE 2025): AI 支援は「**より熟練したワーカーの暗黙的知識を伝播する**（disseminates the potentially tacit knowledge of more able workers）」 | 平均効果は低スキルワーカーで大きい（34%）/ 熟練者本人の効果は小さい場合がある |
-| **C. AI はルーチン外でも判断品質を向上させる** | Dell'Acqua et al. (HBS WP 24-013, 758 名 BCG コンサル): タスク完遂 +12.2%、速度 +25.1%、品質 **+40%** | "Jagged Frontier" の外側では逆に -19% | 
-| **D. AI は判断のノイズを削減する** | Kahneman, Sibony, Sunstein "Noise" (2021): アルゴリズムは人間より一貫性で勝る | アルゴリズムは独自のバイアスを持ち得る → 人間との組み合わせが必要 |
-| **E. AI は専門家の認知を拡張する** | "Augmenting Expert Cognition in the Age of GenAI" (UW/Adobe, 2025) 等多数 | 専門性の維持と AI 依存のバランスは設計課題 |
-| **F. 暗黙知の形式知化は GenAI で実装可能になりつつある** | "Tacit Knowledge Management with Generative AI" (2026): SECI モデルを GenAI 拡張した GenAI-SECI を提案 | 形式知化は完全ではなく、ハイブリッド設計が必要 (Polanyi 起源) |
+| 主張                                  | 強い証拠                                                                                                                                       | 注意点                                       |     |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | --- |
+| **A. AI と人間の協調は単独より強い (Centaur)**   | Kasparov の advanced chess → 中堅 + AI + 良いプロセスがグランドマスター単独 / スーパーコンピュータ単独に勝利                                                                  | 2017 年以降、純粋な AI が人間を引き離した競技領域もある          |     |
+| **B. AI は熟練者の暗黙知を他者・組織に拡散する**       | Brynjolfsson, Li, Raymond (QJE 2025): AI 支援は「**より熟練したワーカーの暗黙的知識を伝播する**（disseminates the potentially tacit knowledge of more able workers）」 | 平均効果は低スキルワーカーで大きい（34%）/ 熟練者本人の効果は小さい場合がある |     |
+| **C. AI はルーチン外でも判断品質を向上させる**        | Dell'Acqua et al. (HBS WP 24-013, 758 名 BCG コンサル): タスク完遂 +12.2%、速度 +25.1%、品質 **+40%**                                                      | "Jagged Frontier" の外側では逆に -19%            |     |
+| **D. AI は判断のノイズを削減する**              | Kahneman, Sibony, Sunstein "Noise" (2021): アルゴリズムは人間より一貫性で勝る                                                                               | アルゴリズムは独自のバイアスを持ち得る → 人間との組み合わせが必要        |     |
+| **E. AI は専門家の認知を拡張する**              | "Augmenting Expert Cognition in the Age of GenAI" (UW/Adobe, 2025) 等多数                                                                     | 専門性の維持と AI 依存のバランスは設計課題                   |     |
+| **F. 暗黙知の形式知化は GenAI で実装可能になりつつある** | "Tacit Knowledge Management with Generative AI" (2026): SECI モデルを GenAI 拡張した GenAI-SECI を提案                                                | 形式知化は完全ではなく、ハイブリッド設計が必要 (Polanyi 起源)      |     |
 
 **含意**: Y のような卓越したアナリストの暗黙知を AI で抽出・拡張・常時稼働化する設計は、複数の独立した実証研究系列から支持される。ファンドコンセプトの中核として「Centaur 型運用 + 暗黙知 SECI 形式知化 + ノイズ削減」の三本柱で訴求できる。
 
@@ -72,7 +72,7 @@
 - **要旨**: 人間と AI の **ハイブリッド意思決定（Centaur）が両者単独を上回る** 条件を理論化
 - **位置付け**: ファンドコンセプトの「人間 + AI > 人間 ∨ AI」を分析的に基礎付ける論文
 
-### 1.6 Daugherty & Wilson (2018, updated 2024) "Human + Machine: Reimagining Work in the Age of AI"
+### ~~1.6 Daugherty & Wilson (2018, updated 2024) "Human + Machine: Reimagining Work in the Age of AI"~~
 - **発行元**: Harvard Business Review Press / Accenture
 - **著者**: Paul Daugherty (Accenture CTO), H. James Wilson
 - **概念**: **"Missing Middle"** = 人間が AI を訓練・説明・維持し、AI が人間を増幅・対話・体現する協働領域
