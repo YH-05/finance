@@ -1,3 +1,10 @@
+> ⚠️ **HISTORICAL SNAPSHOT (2026-04-30)** — 当時の自動 diff レポート (787 銘柄 / FP=3 / Precision 99.3%)。
+> 現在 (2026-05-11 yaml v0.5.1 適用後) は **800 銘柄 / FP=4 / Precision 99.04%** に更新済み。
+> act-2026-04-30-007 の成果物として保存。
+> 最新メトリクスは `logic_system_review.md` または `owner_review_summary.md` を参照。
+
+---
+
 # NSE Owner Candidates - rev1 GT Diff Report
 
 **生成日時**: 2026-04-30T17:02:05

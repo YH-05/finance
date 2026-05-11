@@ -1,3 +1,10 @@
+> ⚠️ **HISTORICAL SNAPSHOT (2026-04-27)** — 当時の FP=42 件 Category 別分析。
+> 現在 (2026-05-11 yaml v0.5.1 適用後) は **FP=4 件まで縮減** 済み。
+> 失敗パターンの学習材料として保存。
+> 現状メトリクスは `logic_system_review.md` または `nifty750_universe_summary.md` を参照。
+
+---
+
 # owners.json 取得可否 + 偽陽性レポート
 
 **生成日時**: 2026-04-27T15:04:32

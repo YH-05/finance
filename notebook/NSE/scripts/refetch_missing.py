@@ -1,5 +1,9 @@
 """rev1 圏内・Phase 3/4 圏外 銘柄の再取得.
 
+⚠️ HISTORICAL SCRIPT (2026-05-07): act-2026-05-07-003 の一回限りの救済処理。
+全 13 銘柄 (360ONE + B カテゴリ 12 銘柄) の再取得は完了済み (refetch_log.json 参照)。
+再実行は不要。手順記録として保存。
+
 対応カテゴリ:
 - C カテゴリ (1件): 360ONE — Phase 3 取得済み、Phase 4 (XBRL) のみ再実行
 - B カテゴリ (12件): SANOFI/GUJGASLTD 等 — Phase 3 + Phase 4 を試行

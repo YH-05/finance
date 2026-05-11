@@ -1,5 +1,9 @@
 """rev1 圏内・Phase 3/4 圏外 13 銘柄の永続化 + Phase 5 分類.
 
+⚠️ HISTORICAL SCRIPT (2026-05-07): act-2026-05-07-003 の一回限りの救済処理。
+13 銘柄の永続化と Phase 5 分類は完了済み (persist_log.json 参照、owner_candidates.csv に統合済み)。
+再実行は不要。手順記録として保存。
+
 入力: refetch_log.json (Phase 3/4 試行成功確認済み)
 処理:
 1. Phase 3/4 を再実行して結果を SQLite に INSERT OR REPLACE
