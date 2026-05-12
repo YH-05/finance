@@ -98,25 +98,89 @@ NIFTY TOTAL MKT メンバー: 762 銘柄
 
 ### NSE Shareholding XBRL
 
-NSE が四半期ごと公開する **株主構成詳細 XBRL** を一次データとして使用:
+NSE が四半期ごと公開する **株主構成詳細 XBRL (Shareholding Pattern)** を一次データとして使用します。SEBI 開示規制 (LODR Regulation 31) に基づき、上場企業は四半期ごとに「誰がどれだけ株を持っているか」を XBRL 形式で公開する義務があります。
 
 ```
 取得経路:
   NSE Website → API → XBRL Parser → SQLite DB
-                                   → CSV 出力
-
-主要フィールド:
-  - PromoterAndPromoterGroup の sub_category 別保有比率
-    ├ IndividualsOrHinduUndividedFamily (= 個人 + HUF)
-    ├ NonResidentIndividualsOrForeignIndividuals (= 海外個人)
-    ├ DirectorsAndDirectorsRelatives (= 取締役 + 親族)
-    ├ KeyManagerialPersonnel (= 重要管理職員)
-    ├ RelativesOfPromotersOtherThanPromoterGroup (= 親族 - promoter group 外)
-    └ Trusts... (= promoter 信託)
-  - OtherIndianShareholders / OtherForeignShareholders (= 国内/海外法人 promoter)
-  - Government 関連 sub_category 群
-  - 各 promoter の shareholder_name (= promoter の生文字列)
+                                   → CSV 出力 (shareholdings.csv / shareholding_detail.csv)
 ```
+
+### NSE Shareholding XBRL の構造
+
+NSE の XBRL は **3 階層のカテゴリ構造** で promoter の保有を開示します:
+
+```
+Category (大分類)
+└── Sub-Category (中分類)
+    └── 個別 promoter 名 + 保有比率
+```
+
+**Category** (= `category` カラム) の主要分類:
+- `PromoterAndPromoterGroup`: promoter およびその関係者 (= 本ラベリング対象の中核)
+- `Public`: 一般株主
+- `NonPromoterNonPublic`: その他
+
+本ラベリングでは `PromoterAndPromoterGroup` のみを集計対象とします。
+
+### NSE sub_category とロジック変数の対応 ★
+
+NSE が開示する sub_category (= `sub_category` カラム) を、Phase 1 のロジックで使う変数に集約しています:
+
+| NSE sub_category | 集約変数 | 意味 | Phase 1 での使用 |
+|------------------|----------|------|------------------|
+| `IndividualsOrHinduUndividedFamily` | **`hufi_pct`** | 個人 + Hindu Undivided Family (HUF) の保有比率 | Tier 1 の主要判定軸 (HUFI≥5%なら Owner 確定の主候補) |
+| `NonResidentIndividualsOrForeignIndividuals` | **`nri_pct`** | 海外個人 / NRI (Non-Resident Indian) の保有比率 | Tier 2.5 で `owner_probable_nri_family` の根拠 |
+| `DirectorsAndDirectorsRelatives` | **`dir_pct`** | 取締役 + その親族の保有比率 | Tier 2 で `owner_confirmed_director_only` の根拠 (★FP の主犯) |
+| `KeyManagerialPersonnel` | **`kmp_pct`** | 重要管理職員 (KMP) の保有比率 | Tier 2 で dir_pct と並び director_only 判定の根拠 |
+| `RelativesOfPromotersOtherThanPromoterGroup` | **`rel_pct`** | promoter group 外の親族 | Tier 2.5 で `owner_probable_relatives_trust` の根拠 |
+| `TrustsWhereAnyPersonBelongingToPromoter...` | **`trust_pct`** | promoter 関連信託 | Tier 2.5 補助情報 |
+| `OtherIndianShareholders` | **`other_indian_pct`** | 国内法人 promoter (= corporate vehicle 経由保有) | Tier 4 で `ambiguous_holding_indian` の根拠 |
+| `OtherForeignShareholders` | **`other_foreign_pct`** | 海外法人 promoter (= 外国親会社・海外 vehicle) | Tier 4 で `ambiguous_holding_foreign` の根拠 |
+| `ForeignInstitutions` / `ForeignPortfolioInvestor` | **`foreign_non_govt_pct`** | 外国機関投資家 / FPI (= MNC promoter 候補) | Tier 4 で foreign 判定の根拠 |
+| `CentralGovernmentOrPresidentOfIndia` 他 7 種 | **`govt_pct`** | 政府関連 (中央政府 / 州政府 / 大統領 / 国営企業 holding 等) | Tier 3 で `excluded_state_dominant` の根拠 |
+| (sub_category なし、root) | **`promoter_total_pct`** | promoter 全体の保有比率 | NO_PROMOTER 判定 (= 全 promoter ゼロ) の根拠 |
+
+これらの集計ロジックは `notebook/NSE/scripts/persist_rev1_missing.py:142-178` に実装されています。
+
+### 派生変数
+
+| 派生変数 | 算出式 | 意味 |
+|----------|--------|------|
+| `natural_pct_sum` | `hufi + nri + dir + kmp + rel` | 自然人 promoter 合計。Tier 1/2/2.5 の分岐に使う |
+
+### promoter 名の取得 (Phase 2 で使用)
+
+各 promoter の生文字列 (= `shareholder_name` カラム) を `|` 区切りで結合したものが `promoter_names_full_list`。これが Phase 2 の yaml 辞書マッチの入力となります。
+
+```python
+# 個別 promoter 行 (is_category_total == 0) のみ抽出
+detail_rows = prom[prom["is_category_total"] == 0]
+names = [n for n in detail_rows["shareholder_name"].dropna().unique() if n.strip()]
+promoter_names_full_list = "|".join(names)
+```
+
+例 (RELIANCE):
+```
+"K. D. Ambani|Mukesh Dhirubhai Ambani|Nita Mukesh Ambani|Isha Mukesh Ambani|...
+ |Reliance Industries Holding Pvt Ltd|Devarshi Commercials LLP|..."
+```
+
+### データ取得 Phase (NSE 取得側の用語)
+
+NSE 開示の取得を 4 つの Phase に分けて運用しています (本ドキュメントの判定 Phase 1-5 とは別概念):
+
+| 取得 Phase | 取得対象 | 出力 |
+|-----------|----------|------|
+| Phase 1 (Universe) | NIFTY 50/100/200/500/TOTAL MKT のメンバー | `index_members.csv` |
+| Phase 2 (Stocks) | 各銘柄の symbol/ISIN/company_name | `stocks.csv` |
+| **Phase 3 (Shareholding)** | 各銘柄の四半期 shareholding pattern (promoter 合計のみ) | `shareholdings.csv` |
+| **Phase 4 (XBRL Detail)** | 各銘柄の XBRL 詳細 (個別 promoter ごとの sub_category 別保有) | `shareholding_detail.csv` ← **本ラベリングの主要入力** |
+
+`nse_fetch_status` カラムはこの取得 Phase 3/4 の成功状況を示します:
+- `ok`: Phase 3 + Phase 4 両方成功 (= 完全データ)
+- `phase4_failed_xbrl`: Phase 3 OK だが Phase 4 XBRL parse 失敗 (例: BSE 自社 taxonomy 不対応)
+- `unresolvable_isin`: NSE の stocks テーブルに ISIN が存在しない (M&A 消滅、REIT、上場廃止)
 
 ### Ground Truth (rev1)
 
@@ -181,6 +245,43 @@ NSE が四半期ごと公開する **株主構成詳細 XBRL** を一次デー�
 
 ## 5. Phase 1: Tier 1-4 機械判定
 
+### 何をする Phase か
+
+NSE が四半期ごとに開示する **株主構成データ (Shareholding Pattern XBRL)** を読み込み、各銘柄の promoter (= 大株主) がどのような構成になっているかを数値で読み取り、機械的に **12 種類のフラグ** に分類する Phase です。アナリストが財務諸表を見て「これは創業家経営の会社」「これは政府系」と直感的に判断する作業を、開示数値だけで再現することを目指しています。
+
+### 入力データ (NSE 開示との対応)
+
+Phase 1 が直接読むのは **`shareholding_detail.csv`** (Phase 4 XBRL Detail 取得分) です。第 3 章で示した sub_category 別の保有比率を以下のように使います:
+
+| 判定軸 | 元 NSE sub_category | 使う変数 |
+|--------|---------------------|---------|
+| 自然人主体か | `IndividualsOrHinduUndividedFamily` | `hufi_pct` |
+| 役員主体か | `DirectorsAndDirectorsRelatives` / `KeyManagerialPersonnel` | `dir_pct` / `kmp_pct` |
+| 海外個人主体か | `NonResidentIndividualsOrForeignIndividuals` | `nri_pct` |
+| 信託/親族主体か | `RelativesOfPromotersOtherThanPromoterGroup` | `rel_pct` |
+| 政府主体か | `CentralGovernmentOrPresidentOfIndia` 他 7 種 | `govt_pct` |
+| 国内法人 promoter | `OtherIndianShareholders` | `other_indian_pct` |
+| 海外法人 promoter | `OtherForeignShareholders` | `other_foreign_pct` |
+| 外国機関投資家 | `ForeignInstitutions` / `ForeignPortfolioInvestor` | `foreign_non_govt_pct` |
+
+これら 8 つの変数の組み合わせで 12 種類のフラグに分類します。
+
+### Tier 構造の考え方
+
+判定ロジックは Tier 1 から Tier 4 まで段階的に下りていく構造になっています。これは **「インドの企業オーナーシップは自然人 (Individuals/HUF) の保有比率を最優先で見るべき」** という業界知見を反映したものです。
+
+- **Tier 1 (自然人 promoter 主体)**: HUFI (個人 + Hindu Undivided Family) が一定以上保有 → 創業家経営の典型。「ある一族が会社の支配的株主であり経営にも関与している」ケース
+- **Tier 2 (役員のみ)**: 取締役 / KMP の名目保有のみ。これは一見オーナー寄りに見えるが **大企業の取締役慣行 (1株保有の Token holding)** とも区別がつかない。Phase 2/3 で補正が必要
+- **Tier 2.5 (NRI / 親族信託)**: 海外個人や親族信託のみの保有。一族支配だが構造が複雑で確証は低い
+- **Tier 3 (政府主体)**: govt_pct 50%以上で SBI / NTPC のような政府支配企業を自動識別
+- **Tier 4 (法人 promoter 主体 / 全 promoter ゼロ)**: 個人保有なしで法人 vehicle 経由のみ。これは Adani 系 corporate vehicle (= 創業家支配だが個人名が表面に出ない)、外国 MNC 子会社、PE-backed 等の **どれか判断不能** な状態。Phase 2 (yaml) と Phase 3 (hybrid) で確定させる
+
+### Phase 1 が単独で確定できる範囲
+
+Phase 1 だけでほぼ確実に判定できるのは **Tier 1 (HUFI 高保有)** と **Tier 3 (政府主体)** の 2 ケースのみです。Tier 2 / 2.5 / 4 は **判定保留** であり、後段の Phase で yaml 辞書や AI 判定で補完します。
+
+### コード参照
+
 **コード**: `notebook/NSE/scripts/persist_rev1_missing.py:122-251`
 
 NSE 開示の各 sub_category 別保有比率を入力に、12 種類の owner_flag を確定:
@@ -238,6 +339,46 @@ else:
 ---
 
 ## 6. Phase 2: yaml 辞書マッチ
+
+### 何をする Phase か
+
+NSE は promoter の名前を **「文字列のリスト」としてしか出してくれません**。例えば BHARTIARTL (Bharti Airtel) の開示には "INDIAN CONTINENT INVESTMENT LIMITED" や "Pastel Limited" といった会社名が並びますが、この文字列を見ただけでは **これが Mittal 一族の持株会社だ** とは機械にはわかりません。Phase 2 では、この文字列を **人間知識でまとめた辞書 (yaml)** と照合することで、「この vehicle は誰の支配下か」を構造情報として抽出します。
+
+### 入力データ (NSE 開示との対応)
+
+Phase 2 が直接読むのは Phase 1 で生成された **`promoter_names_full_list`** カラムです。これは NSE XBRL の **`shareholder_name`** フィールド (個別 promoter の生文字列) を、`is_category_total = 0` の行 (= 個別 promoter 行、合計行除く) だけ集めて `|` 区切りで結合したものです。
+
+```python
+# Phase 1 で生成済み (persist_rev1_missing.py:181-185)
+detail_rows = prom[prom["is_category_total"] == 0]
+names = [n for n in detail_rows["shareholder_name"].dropna().unique() if n.strip()]
+promoter_names_full_list = "|".join(names)
+```
+
+つまり Phase 2 は **NSE が文字列開示した個別 promoter 名のリスト** を入力として、yaml 辞書とテキストマッチします。
+
+### なぜ yaml 辞書が不可欠か
+
+インドの大企業オーナーシップには 3 つの特徴があります:
+
+1. **間接保有が主流**: 創業家 (例: Adani / Tata / Birla / Mittal) は個人保有ではなく **持株会社・LLP・信託 vehicle 経由で間接保有** することがほとんど。NSE 開示の表面には個人名ではなく vehicle 名が並びます
+2. **vehicle 名は会社固有**: vehicle 名は固有名詞 (例: "INDIAN CONTINENT INVESTMENT" や "Inuus Infrastructure") であり、機械的アルゴリズムでは「これが Mittal か」を当てる手段がありません
+3. **業界知識でしか紐付けできない**: 「Pastel Limited は Mittal の vehicle」と知るには市場ニュースや SEBI 開示の歴史を追う必要があり、これは **人間の暗黙知** です
+
+そこで、過去のアナリスト・チームのラベリング (rev1) と Web 公開情報をもとに **「キーワード → 実支配者」マッピング辞書** (175 keywords、78 family) を構築し、機械が文字列照合で実支配者を識別できるようにしています。
+
+### 辞書の 4 カテゴリの役割分担
+
+- **`owner_keywords`** (84 件): 創業家系 vehicle を Owner に紐付ける (Tier 1.5 救済の主役)
+- **`professional_keywords`** (49 件): プロ経営の corporate vehicle を Professional に紐付ける (Tata Sons / HDFC Bank / LIC など、それ自体は家族ではないが大企業 holding に頻出)
+- **`state_keywords`** (18 件): "President of India" など政府保有を明示する文字列を State に確定
+- **`mnc_keywords`** (14 件): "Unilever" "Nestle" など海外親会社名を MNC に確定
+
+### Phase 2 の限界
+
+yaml は **promoter_names に文字列が入っている前提**で動きます。SAMMAAN Capital のように 2023 年に de-promoterization (promoter 取り消し) された企業は文字列が空欄になり、yaml は何もマッチさせられず UNKNOWN を返します。この場合は Phase 3 (hybrid) で OWNER_WEAK 扱いになり、最終的には AI 判定で補完します。
+
+### コード参照
 
 **コード**: `notebook/NSE/scripts/build_owner_review_sheet.py:39-108`
 **辞書**: `data/config/nse_promoter_classifier.yaml` (775 行、175 keywords)
@@ -314,6 +455,42 @@ yaml 設定:
 
 ## 7. Phase 3: ハイブリッドルール
 
+### なぜ「ハイブリッド」と呼ぶか
+
+Phase 1 (数値ベースの Tier 判定) と Phase 2 (文字列ベースの yaml 判定) は **それぞれ単独では限界がある** ため、両者を組み合わせて補完しあう構造にしています。具体的には:
+
+- Phase 1 の **数値判定** (NSE sub_category 別保有比率) は客観的だが、Tier 2 や Tier 4 のように「判定保留」のケースが残る
+- Phase 2 の **文字列判定** (NSE shareholder_name + yaml 辞書) は人間知識を反映できるが、文字列が空欄だと無力
+
+両者の出力を **5 つの分岐ルール** で統合することで、最終的に「Owner / NOT_OWNER / 判定不能 (OWNER_WEAK)」のいずれかに確定させるのが Phase 3 の役割です。
+
+### 入力データ (NSE 開示との対応)
+
+Phase 3 自体は NSE 開示を直接読まず、Phase 1/2 の出力 (派生変数) のみを使います:
+
+| 入力 | 由来 | 元の NSE 開示 |
+|------|------|--------------|
+| `owner_flag` | Phase 1 出力 | sub_category 別保有比率の組み合わせ |
+| `yaml_classification` | Phase 2 出力 | shareholder_name 文字列 ✕ yaml 辞書 |
+
+### 5 つの分岐ルールの意図
+
+各ルールは特定の「機械判定の弱点」を補正するために設計されています:
+
+1. **Tier 2 director_only への yaml 適用**: HDFCBANK / ICICIBANK / ITC など Professional 系大企業が「取締役の名目 1 株保有」だけで Tier 2 を獲得してしまう問題への対策。yaml が「これは HDFC Bank の corporate vehicle」と判定すれば NOT_OWNER に確定、未判定 (UNKNOWN) なら OWNER_WEAK で AI に委ねる
+2. **ambiguous_* への yaml 適用 (Tier 1.5 corporate-vehicle rescue)**: Adani 系の銘柄は個人保有がなく法人 vehicle 経由のみのため、Phase 1 では Tier 4 ambiguous_* で「判定保留」になります。yaml で "Adani" にマッチすれば OWNER に格上げ救済する仕組み
+3. **excluded_* への yaml 救済**: HUL のように個人 promoter ゼロでも yaml で "Unilever" マッチなら MNC として NOT_OWNER 確定
+4. **owner_probable_* への yaml 救済**: NRI / 信託のみで判定が弱いケースも yaml で確定情報があれば OWNER 確定
+5. **それ以外**: 上記分岐に当てはまらない Tier 1 銘柄は、もともと Phase 1 で確度高く判定済みなので、その判定を維持
+
+### OWNER_WEAK (判定不能) の扱い
+
+Phase 3 の出力は OWNER / NOT_OWNER / OWNER_WEAK の 3 値です。OWNER_WEAK は **「機械では判定不能、AI 判定推奨」** を意味し、最終 universe では `is_owner_company=False` 扱いとなります。これは SAMMAAN や HDFCBANK のように **取締役名目保有のみ + yaml で family/parent 識別不可** のケースで発生します。
+
+このように OWNER と NOT_OWNER の二項判定ではなく **第三の「判定不能」状態** を設けることで、機械判定の品質を保ちつつ AI 補完が必要な銘柄を明示的に切り出せる構造になっています。
+
+### コード参照
+
 **コード**: `notebook/NSE/scripts/build_owner_review_sheet.py:145-188`
 
 Phase 1 (Tier 1-4) と Phase 2 (yaml) の結果を統合して **最終フラグ** を確定:
@@ -358,6 +535,42 @@ else:                                  → 元の owner_flag_final
 ---
 
 ## 8. Phase 4: ユニバース統合
+
+### 何をする Phase か
+
+Phase 1〜3 で確定した判定結果を **投資戦略チームが使いやすい単一の CSV ファイル** (`nifty750_universe.csv`) にまとめ、銘柄スクリーニング・ファクターモデル構築に必要なメタデータを付与する Phase です。
+
+### 入力データ (NSE 開示との対応)
+
+Phase 4 では複数の NSE 由来データを統合します:
+
+| 入力 | 由来 | NSE 開示元 |
+|------|------|-----------|
+| Phase 3 出力 (`owner_flag_final_hybrid`) | レビューシート | NSE XBRL Phase 3/4 集約 |
+| Index 帰属情報 (`is_nifty50` 等) | `index_members` テーブル | NSE Index Constituents API |
+| 銘柄基本情報 (`symbol`, `isin`, `company_name`) | `stocks` テーブル | NSE Securities API |
+| データ品質 (`nse_fetch_status`) | refetch ログ | Phase 3/4 取得成否 |
+
+### なぜシンプルなブール変換か
+
+最終的な投資戦略側の関心は「**この銘柄はオーナー企業か (True/False)**」という二項判定です。そのため Phase 3 の 3 値出力 (OWNER / NOT_OWNER / OWNER_WEAK) を `is_owner_company` という単一のブール値に集約します。判定不能 (OWNER_WEAK) は保守的に False 扱いとし、**「機械が確信できないものは Owner と認定しない」** という方針を取っています。これにより Owner フラグの **Precision を優先** した universe になります (Recall は別途 rev1 GT との照合で保証)。
+
+### 付与するメタデータの役割
+
+ブール判定の根拠を後から追跡・検証できるよう、以下の補助情報を併記します:
+
+- **`owner_flag` / `owner_flag_final_hybrid`**: どのロジックで判定されたか (デバッグ・レビュー用)
+- **`rev1_category`**: 人間チームの GT ラベル (機械 vs 人間の差分追跡用)
+- **`promoter_total_pct` / `hufi_pct` / `dir_pct` 等**: 元の NSE 開示数値 (判定根拠の数値証跡)
+- **`is_nifty50/100/200/500/total_mkt`**: index 帰属フラグ (投資戦略で「NIFTY 100 圏内の Owner 企業のみ」のような絞り込みに必須)
+- **`owner_family`**: 一族名 (例: "Adani" / "Tata" / "Birla")、グループ別分析に活用
+- **`nse_fetch_status`**: データ品質ラベル (`ok` / `phase4_failed_xbrl` / `unresolvable_isin`)、データ完全性を要する戦略で「ok のみ」フィルタが可能
+
+### 投資戦略との接続
+
+このユニバースは **ファクター投資戦略** での Owner ファクターや、**スクリーニング** での「Owner かつ NIFTY 100 圏内」のような絞り込みに直接使えるよう設計されています。さらに `owner_family` カラムでグループ別 (Adani 全銘柄、Tata 全銘柄) の分析・バックテストが可能です。
+
+### コード参照
 
 **コード**: `notebook/NSE/scripts/build_nifty750_universe.py`
 
