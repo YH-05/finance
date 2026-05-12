@@ -1,9 +1,9 @@
 # NSE オーナー企業ラベリング手法 — 上司向け説明書
 
-**作成日**: 2026-05-12
-**対象**: インド株式市場 (NSE 上場銘柄)
-**対象ユニバース**: NIFTY 750 (= NIFTY TOTAL MKT) を基準とした 855 銘柄
-**最終成果物**: `notebook/NSE/data/cache/nse/owners_universe_ai-judge.json`
+- **作成日**: 2026-05-12
+- **対象**: インド株式市場 (NSE 上場銘柄)
+- **対象ユニバース**: NIFTY 750 (= NIFTY TOTAL MKT) を基準とした 855 銘柄
+- **最終成果物**: `notebook/NSE/data/cache/nse/owners_universe_ai-judge.json`
 
 ---
 
