@@ -1,29 +1,30 @@
 # Owner Review Sheet Summary
 
 **生成元**: act-2026-04-30-009 / act-2026-05-07-001
-**対象**: 全 800 銘柄 (Phase 3/4 完了)
+**対象**: 全 855 銘柄 (Phase 3/4 完了)
 **rev1 GT**: 632 銘柄
-**intersection (rev1 圏内)**: 577 銘柄
+**intersection (rev1 圏内)**: 632 銘柄
 **rev1 圏外**: 223 銘柄 (← 目視レビュー優先対象)
 
 ## owner_flag_final_hybrid 分布 (ハイブリッドルール適用後)
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 600 |
-| NOT_OWNER | 200 |
+| OWNER | 614 |
+| NOT_OWNER | 216 |
+| OWNER_WEAK | 25 |
 
 (参考) CSV 上の `owner_flag_final` (ハイブリッド未適用) との差異:
 
-- ハイブリッドで再分類された銘柄: 73 件
+- ハイブリッドで再分類された銘柄: 99 件
 
 ## 判定状況
 
 | judge | 銘柄数 | 説明 |
 |---|---|---|
-| TP | 412 | rev1=Owner ∩ 予測=OWNER (true positive) |
-| TN | 161 | rev1≠Owner ∩ 予測=NOT_OWNER (true negative) |
-| FP | 4 | rev1≠Owner ∩ 予測=OWNER (false positive、要確認) |
+| TP | 425 | rev1=Owner ∩ 予測=OWNER (true positive) |
+| TN | 177 | rev1≠Owner ∩ 予測=NOT_OWNER (true negative) |
+| FP | 30 | rev1≠Owner ∩ 予測=OWNER (false positive、要確認) |
 | FN | 0 | rev1=Owner ∩ 予測=NOT_OWNER (false negative、要確認) |
 | rev1_outside | 223 | rev1 GT 圏外、generated label のみ (act-05-07-001 対象) |
 
@@ -31,16 +32,21 @@
 
 | owner_flag | TP | TN | FP | FN | rev1_outside | total |
 |---|---|---|---|---|---|---|
-| owner_confirmed_individual_and_director | 299 | 0 | 2 | 0 | 121 | 422 |
+| owner_confirmed_individual_and_director | 300 | 0 | 4 | 0 | 121 | 425 |
 | owner_confirmed_individual | 64 | 0 | 2 | 0 | 50 | 116 |
-| owner_confirmed_director_only | 23 | 44 | 0 | 0 | 18 | 85 |
+| owner_confirmed_director_only | 24 | 45 | 24 | 0 | 18 | 111 |
 | excluded_state_dominant | 1 | 68 | 0 | 0 | 2 | 71 |
-| excluded_no_natural_no_holding | 3 | 25 | 0 | 0 | 15 | 43 |
+| excluded_no_natural_no_holding | 3 | 30 | 0 | 0 | 15 | 48 |
 | ambiguous_holding_foreign | 4 | 14 | 0 | 0 | 7 | 25 |
 | ambiguous_holding_indian | 7 | 8 | 0 | 0 | 7 | 22 |
 | ambiguous_mnc_jv_candidate | 4 | 2 | 0 | 0 | 2 | 8 |
+| rev1_label_only_owner | 8 | 0 | 0 | 0 | 0 | 8 |
+| rev1_label_only_professional | 0 | 8 | 0 | 0 | 0 | 8 |
 | owner_probable_nri_family | 6 | 0 | 0 | 0 | 1 | 7 |
-| owner_probable_relatives_trust | 1 | 0 | 0 | 0 | 0 | 1 |
+| owner_confirmed_individual_passive | 2 | 0 | 0 | 0 | 0 | 2 |
+| owner_probable_relatives_trust | 2 | 0 | 0 | 0 | 0 | 2 |
+| rev1_label_only_mnc | 0 | 1 | 0 | 0 | 0 | 1 |
+| rev1_label_only_state | 0 | 1 | 0 | 0 | 0 | 1 |
 
 ## rev1 圏外 銘柄の owner_flag_final_hybrid 分布
 

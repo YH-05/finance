@@ -1,0 +1,610 @@
+[
+  {
+    "symbol": "SWIGGY",
+    "isin": "INE00H001014",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 9 holdings",
+      "count": 9
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 45 rows",
+      "row_count": 45,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "LT",
+    "isin": "INE018A01030",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 87 holdings",
+      "count": 87
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 47 rows",
+      "row_count": 47,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "IEX",
+    "isin": "INE022Q01020",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 37 holdings",
+      "count": 37
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 40 rows",
+      "row_count": 40,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "KARURVYSYA",
+    "isin": "INE036D01028",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 86 holdings",
+      "count": 86
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 83 rows",
+      "row_count": 83,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "HDFCBANK",
+    "isin": "INE040A01034",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 87 holdings",
+      "count": 87
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 57 rows",
+      "row_count": 57,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "EQUITASBNK",
+    "isin": "INE063P01018",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 27 holdings",
+      "count": 27
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 41 rows",
+      "row_count": 41,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "ICICIBANK",
+    "isin": "INE090A01021",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 86 holdings",
+      "count": 86
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 68 rows",
+      "row_count": 68,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "IDFCFIRSTB",
+    "isin": "INE092T01019",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 78 holdings",
+      "count": 78
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 55 rows",
+      "row_count": 55,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "UTIAMC",
+    "isin": "INE094J01016",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 24 holdings",
+      "count": 24
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 33 rows",
+      "row_count": 33,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "BSE",
+    "isin": "INE118H01025",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 42 holdings",
+      "count": 42
+    },
+    "phase4": {
+      "ok": false,
+      "msg": "NseParseError: XBRL namespace mismatch: expected a BSE SHP taxonomy namespace (pattern 'http://www\\.bseindia\\.com/xbrl/shp/\\d{4}-\\d{2}-\\d{2}/in-bse-shp') not found in document",
+      "row_count": 0,
+      "as_on_date": null
+    }
+  },
+  {
+    "symbol": "SAMMAANCAP",
+    "isin": "INE148I01020",
+    "rev1_category": "Owner",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 59 holdings",
+      "count": 59
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 43 rows",
+      "row_count": 43,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "DELHIVERY",
+    "isin": "INE148O01028",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 17 holdings",
+      "count": 17
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 69 rows",
+      "row_count": 69,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "ITC",
+    "isin": "INE154A01025",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 84 holdings",
+      "count": 84
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 68 rows",
+      "row_count": 68,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "FEDERALBNK",
+    "isin": "INE171A01029",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 88 holdings",
+      "count": 88
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 74 rows",
+      "row_count": 74,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "MFSL",
+    "isin": "INE180A01020",
+    "rev1_category": "Owner",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 85 holdings",
+      "count": 85
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 113 rows",
+      "row_count": 113,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "AXISBANK",
+    "isin": "INE238A01034",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 94 holdings",
+      "count": 94
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 68 rows",
+      "row_count": 68,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "ZEEL",
+    "isin": "INE256A01028",
+    "rev1_category": "Owner",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 84 holdings",
+      "count": 84
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 114 rows",
+      "row_count": 114,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "CARTRADE",
+    "isin": "INE290S01011",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 20 holdings",
+      "count": 20
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 63 rows",
+      "row_count": 63,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "CROMPTON",
+    "isin": "INE299U01018",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 41 holdings",
+      "count": 41
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 55 rows",
+      "row_count": 55,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "ASTRAMICRO",
+    "isin": "INE386C01029",
+    "rev1_category": "Owner",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 85 holdings",
+      "count": 85
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 43 rows",
+      "row_count": 43,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "POLICYBZR",
+    "isin": "INE417T01026",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 19 holdings",
+      "count": 19
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 54 rows",
+      "row_count": 54,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "HOMEFIRST",
+    "isin": "INE481N01025",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 23 holdings",
+      "count": 23
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "CUB",
+    "isin": "INE491A01021",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 87 holdings",
+      "count": 87
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 44 rows",
+      "row_count": 44,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "YESBANK",
+    "isin": "INE528G01035",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 91 holdings",
+      "count": 91
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "UJJIVANSFB",
+    "isin": "INE551W01018",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 29 holdings",
+      "count": 29
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 39 rows",
+      "row_count": 39,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "COFORGE",
+    "isin": "INE591G01025",
+    "rev1_category": "MNC",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 88 holdings",
+      "count": 88
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 49 rows",
+      "row_count": 49,
+      "as_on_date": "2026-04-23"
+    }
+  },
+  {
+    "symbol": "CAMS",
+    "isin": "INE596I01020",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 21 holdings",
+      "count": 21
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 66 rows",
+      "row_count": 66,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "KTKBANK",
+    "isin": "INE614B01018",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 87 holdings",
+      "count": 87
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 34 rows",
+      "row_count": 34,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "TMB",
+    "isin": "INE668A01016",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 16 holdings",
+      "count": 16
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 64 rows",
+      "row_count": 64,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "SOUTHBANK",
+    "isin": "INE683A01023",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 87 holdings",
+      "count": 87
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 35 rows",
+      "row_count": 35,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "MCX",
+    "isin": "INE745G01043",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 23 holdings",
+      "count": 23
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 66 rows",
+      "row_count": 66,
+      "as_on_date": "2018-12-31"
+    }
+  },
+  {
+    "symbol": "ETERNAL",
+    "isin": "INE758T01015",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 23 holdings",
+      "count": 23
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 89 rows",
+      "row_count": 89,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "DISHTV",
+    "isin": "INE836F01026",
+    "rev1_category": "Owner",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 77 holdings",
+      "count": 77
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 106 rows",
+      "row_count": 106,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "GOKEX",
+    "isin": "INE887G01027",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 88 holdings",
+      "count": 88
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "REDINGTON",
+    "isin": "INE891D01026",
+    "rev1_category": "MNC",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 94 holdings",
+      "count": 94
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 62 rows",
+      "row_count": 62,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "CMSINFO",
+    "isin": "INE925R01014",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 20 holdings",
+      "count": 20
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 63 rows",
+      "row_count": 63,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "RBLBANK",
+    "isin": "INE976G01028",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 44 holdings",
+      "count": 44
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 66 rows",
+      "row_count": 66,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "PAYTM",
+    "isin": "INE982J01020",
+    "rev1_category": "Professional",
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 20 holdings",
+      "count": 20
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 44 rows",
+      "row_count": 44,
+      "as_on_date": "2026-03-31"
+    }
+  }
+]

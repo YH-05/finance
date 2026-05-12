@@ -1,0 +1,224 @@
+[
+  {
+    "symbol": "SWIGGY",
+    "isin": "INE00H001014",
+    "phase3_rows": 9,
+    "phase4_rows": 45
+  },
+  {
+    "symbol": "LT",
+    "isin": "INE018A01030",
+    "phase3_rows": 87,
+    "phase4_rows": 47
+  },
+  {
+    "symbol": "IEX",
+    "isin": "INE022Q01020",
+    "phase3_rows": 37,
+    "phase4_rows": 40
+  },
+  {
+    "symbol": "KARURVYSYA",
+    "isin": "INE036D01028",
+    "phase3_rows": 86,
+    "phase4_rows": 83
+  },
+  {
+    "symbol": "HDFCBANK",
+    "isin": "INE040A01034",
+    "phase3_rows": 87,
+    "phase4_rows": 57
+  },
+  {
+    "symbol": "EQUITASBNK",
+    "isin": "INE063P01018",
+    "phase3_rows": 27,
+    "phase4_rows": 41
+  },
+  {
+    "symbol": "ICICIBANK",
+    "isin": "INE090A01021",
+    "phase3_rows": 86,
+    "phase4_rows": 68
+  },
+  {
+    "symbol": "IDFCFIRSTB",
+    "isin": "INE092T01019",
+    "phase3_rows": 78,
+    "phase4_rows": 55
+  },
+  {
+    "symbol": "UTIAMC",
+    "isin": "INE094J01016",
+    "phase3_rows": 24,
+    "phase4_rows": 33
+  },
+  {
+    "symbol": "SAMMAANCAP",
+    "isin": "INE148I01020",
+    "phase3_rows": 59,
+    "phase4_rows": 43
+  },
+  {
+    "symbol": "DELHIVERY",
+    "isin": "INE148O01028",
+    "phase3_rows": 17,
+    "phase4_rows": 69
+  },
+  {
+    "symbol": "ITC",
+    "isin": "INE154A01025",
+    "phase3_rows": 84,
+    "phase4_rows": 68
+  },
+  {
+    "symbol": "FEDERALBNK",
+    "isin": "INE171A01029",
+    "phase3_rows": 88,
+    "phase4_rows": 74
+  },
+  {
+    "symbol": "MFSL",
+    "isin": "INE180A01020",
+    "phase3_rows": 85,
+    "phase4_rows": 113
+  },
+  {
+    "symbol": "AXISBANK",
+    "isin": "INE238A01034",
+    "phase3_rows": 94,
+    "phase4_rows": 68
+  },
+  {
+    "symbol": "ZEEL",
+    "isin": "INE256A01028",
+    "phase3_rows": 84,
+    "phase4_rows": 114
+  },
+  {
+    "symbol": "CARTRADE",
+    "isin": "INE290S01011",
+    "phase3_rows": 20,
+    "phase4_rows": 63
+  },
+  {
+    "symbol": "CROMPTON",
+    "isin": "INE299U01018",
+    "phase3_rows": 41,
+    "phase4_rows": 55
+  },
+  {
+    "symbol": "ASTRAMICRO",
+    "isin": "INE386C01029",
+    "phase3_rows": 85,
+    "phase4_rows": 43
+  },
+  {
+    "symbol": "POLICYBZR",
+    "isin": "INE417T01026",
+    "phase3_rows": 19,
+    "phase4_rows": 54
+  },
+  {
+    "symbol": "HOMEFIRST",
+    "isin": "INE481N01025",
+    "phase3_rows": 23,
+    "phase4_rows": 48
+  },
+  {
+    "symbol": "CUB",
+    "isin": "INE491A01021",
+    "phase3_rows": 87,
+    "phase4_rows": 44
+  },
+  {
+    "symbol": "YESBANK",
+    "isin": "INE528G01035",
+    "phase3_rows": 91,
+    "phase4_rows": 48
+  },
+  {
+    "symbol": "UJJIVANSFB",
+    "isin": "INE551W01018",
+    "phase3_rows": 29,
+    "phase4_rows": 39
+  },
+  {
+    "symbol": "COFORGE",
+    "isin": "INE591G01025",
+    "phase3_rows": 88,
+    "phase4_rows": 49
+  },
+  {
+    "symbol": "CAMS",
+    "isin": "INE596I01020",
+    "phase3_rows": 21,
+    "phase4_rows": 66
+  },
+  {
+    "symbol": "KTKBANK",
+    "isin": "INE614B01018",
+    "phase3_rows": 87,
+    "phase4_rows": 34
+  },
+  {
+    "symbol": "TMB",
+    "isin": "INE668A01016",
+    "phase3_rows": 16,
+    "phase4_rows": 64
+  },
+  {
+    "symbol": "SOUTHBANK",
+    "isin": "INE683A01023",
+    "phase3_rows": 87,
+    "phase4_rows": 35
+  },
+  {
+    "symbol": "MCX",
+    "isin": "INE745G01043",
+    "phase3_rows": 23,
+    "phase4_rows": 66
+  },
+  {
+    "symbol": "ETERNAL",
+    "isin": "INE758T01015",
+    "phase3_rows": 23,
+    "phase4_rows": 89
+  },
+  {
+    "symbol": "DISHTV",
+    "isin": "INE836F01026",
+    "phase3_rows": 77,
+    "phase4_rows": 106
+  },
+  {
+    "symbol": "GOKEX",
+    "isin": "INE887G01027",
+    "phase3_rows": 88,
+    "phase4_rows": 48
+  },
+  {
+    "symbol": "REDINGTON",
+    "isin": "INE891D01026",
+    "phase3_rows": 94,
+    "phase4_rows": 62
+  },
+  {
+    "symbol": "CMSINFO",
+    "isin": "INE925R01014",
+    "phase3_rows": 20,
+    "phase4_rows": 63
+  },
+  {
+    "symbol": "RBLBANK",
+    "isin": "INE976G01028",
+    "phase3_rows": 44,
+    "phase4_rows": 66
+  },
+  {
+    "symbol": "PAYTM",
+    "isin": "INE982J01020",
+    "phase3_rows": 20,
+    "phase4_rows": 44
+  }
+]
