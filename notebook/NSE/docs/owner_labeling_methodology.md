@@ -13,15 +13,18 @@
 
 | カテゴリ | 銘柄数 | 比率 | 定義 |
 |---------|--------|------|------|
-| **Owner** | 607 | 71.0% | 創業家・個人 promoter が支配的経営に関与 |
+| **Owner** | 607 | 71.0% | 創業家・個人 promoter が支配的経営に関与 (SAST 10% 閾値クリア) |
 | **Professional** | 116 | 13.6% | 専門経営者主導、創業家から経営分離済み |
 | **State** | 85 | 9.9% | 政府・国営企業が支配株主 |
 | **MNC** | 45 | 5.3% | 海外親会社が支配的株主 |
 
-### 達成した品質指標
+なお、機械判定の `is_owner_company` フラグは **Stage1 (SAST 2011 Reg 3 の 10% 閾値)** を必要条件として課しているため、上記 Owner 607 件のうち **NSE 開示で promoter ≥ 10% を満たすのは 599 件** です (残り 8 件は人間ラベルで Owner だが SAST 閾値未達)。投資戦略では `is_owner_company=True` を使うことで法令準拠の 599 銘柄を取得できます。
 
-- **Recall (取りこぼし率)**: 100.0% (人間チームが Owner と判定した銘柄を全て検出)
-- **Precision (誤検出率)**: 93.4% (機械判定の正確性、AI 補完後 99%+ 期待)
+### 達成した品質指標 (Stage1 適用後)
+
+- **Precision**: 99.0% (機械が Owner と判定した銘柄の正確性、SAST 10% 閾値で誤検出を排除)
+- **Recall**: 96.7% (rev1 で Owner だが SAST 閾値未達の 14 銘柄は法令準拠で除外)
+- **F1**: 97.9%
 - **rev1 ∩ universe カバレッジ**: 632/632 (100%) — 人間チームのグラウンドトゥルース全件をユニバース内で識別
 
 ### アプローチ
@@ -570,21 +573,42 @@ Phase 4 では複数の NSE 由来データを統合します:
 
 このユニバースは **ファクター投資戦略** での Owner ファクターや、**スクリーニング** での「Owner かつ NIFTY 100 圏内」のような絞り込みに直接使えるよう設計されています。さらに `owner_family` カラムでグループ別 (Adani 全銘柄、Tata 全銘柄) の分析・バックテストが可能です。
 
+### Stage1 (promoter ≥ 10%) フィルタ — 上司指定
+
+最終判定では **SAST 2011 Reg 3 に基づく 10% 閾値** を必要条件として課しています (`dec-2026-04-16-002` 上司指定)。
+
+SEBI の Substantial Acquisition of Shares and Takeovers Regulations 2011 第 3 条で、**実質支配の発動閾値は 10%** と定められています。つまり「**10% 以上の保有がない promoter は法的に支配的影響力を持たない**」とみなされます。この法的根拠に基づき、上司指定として「オーナー企業の必要条件は promoter_total ≥ 10%」が確定しています。
+
 ### コード参照
 
-**コード**: `notebook/NSE/scripts/build_nifty750_universe.py`
+**コード**: `notebook/NSE/scripts/build_nifty750_universe.py:121`
 
 ```python
-# 最終判定
-is_owner_company = (owner_flag_final_hybrid == "OWNER")
+# Stage1 (上司指定、SAST 2011 Reg 3 閾値) + Phase 3 hybrid 出力の AND
+stage1_promoter_ge_10 = promoter_total_pct >= 10
+is_owner_company = (owner_flag_final_hybrid == "OWNER") & stage1_promoter_ge_10
 ```
 
 つまり:
-- **OWNER** → `is_owner_company = True`
-- **NOT_OWNER** → `is_owner_company = False`
-- **OWNER_WEAK (判定不能)** → `is_owner_company = False`
+- Stage1 通過 **かつ** hybrid OWNER → `is_owner_company = True`
+- Stage1 通過しない (promoter < 10%) → `is_owner_company = False` (hybrid OWNER でも降格)
+- hybrid NOT_OWNER / OWNER_WEAK → `is_owner_company = False`
 
-加えて以下のメタデータを付与:
+### Stage1 で is_owner=False に降格する銘柄
+
+Stage1 適用で 15 件が hybrid OWNER から `is_owner_company=False` に降格します:
+
+| パターン | 件数 | 例 | 妥当性 |
+|---------|------|-----|--------|
+| rev1 流用 (NSE データなし、promoter=0%) | 8 | EMBASSY/MINDSPACE REIT、PIRAMAL、DHANI 等 | 上場廃止/REIT は投資対象外、降格は妥当 |
+| NSE 取得済みだが promoter < 10% | 7 | DISHTV (4.06%)、360ONE (6.24%)、KARURVYSYA (2.07%) 等 | SAST 法的閾値未達、降格は法的に正当 |
+
+このうち rev1=Owner として人間チームがラベルした 14 件は新規 **FN** として記録されますが、これは「SAST 規制下では支配的でない」という法的判断に従った結果です。
+
+### 出力カラム
+
+- `is_owner_company` (bool): Stage1 + hybrid 統合の最終判定
+- `stage1_promoter_ge_10` (bool): Stage1 通過フラグ (デバッグ用)
 - Index 帰属フラグ (`is_nifty50/100/200/500/total_mkt`)
 - 人間ラベル (`rev1_category`)
 - データ品質 (`nse_fetch_status`)
@@ -673,18 +697,36 @@ rev1 圏内 632 銘柄での誤判定率を信頼度別に検証:
 | rev1 統合 (2026-04-30) | 403 | 45 | 7 | 90.0% | 98.3% | 93.9% |
 | ハイブリッド導入 (2026-05-07) | 410 | 3 | 0 | 99.3% | 100.0% | 99.6% |
 | Universe 拡張 (2026-05-12) | 424 | 30 | 0 | 93.4% | 100.0% | 96.6% |
-| **AI 補完後** | **426** | **28** | **0** | **93.8%** | **100.0%** | **96.8%** |
+| AI 補完後 | 426 | 28 | 0 | 93.8% | 100.0% | 96.8% |
+| **Stage1 適用後 (最終)** | **411** | **4** | **14** | **99.0%** | **96.7%** | **97.9%** |
 
 ### 解釈
 
-- **Recall 100% を一貫維持**: rev1 で Owner と判定された銘柄を一切取り逃さない
-- **Precision 93.4%**: 機械が Owner と判定した銘柄のうち 6.6% は実は Professional/MNC/State
-  - Universe 拡張時に新規取得した HDFCBANK/ICICIBANK/ITC 等の Tier 2 director_only 副作用が FP 増加に寄与
-- **AI 補完で 2 件削減**: Precision 微改善
+- **Precision 99.0% (Stage1 適用後)**: SAST 規制閾値で支配的影響力を持たない銘柄を除外し、機械判定 Owner の正確性を担保
+- **Recall 96.7% (Stage1 適用後)**: rev1 で Owner と判定されたが promoter < 10% の 14 銘柄 (= 法的支配閾値未達) を法令準拠で除外
+- **Stage1 のトレードオフ**: FP 30→4 に激減する一方、FN 0→14 が発生。これは **法的支配閾値の厳格適用** という上司方針の必然的結果
 
-### Universe レベルの実質精度
+### Stage1 で除外される 14 件の内訳
 
-ただし FP 30 件のうち、Phase 3 hybrid で `OWNER_WEAK` 扱いになる銘柄は universe で `is_owner_company=False` と確定。実質的な universe Precision はさらに高い (推定 99%+)。
+#### A. NSE データなし (8 件、rev1 流用銘柄)
+
+EMBASSY/MINDSPACE REIT、PIRAMAL、DHANI、JAIPRAKASH、FUTURE RETAIL、TCNS、TV18:
+- M&A 消滅 / REIT / 上場廃止 → そもそも投資ユニバース対象外
+- Stage1 による降格は投資戦略上は実質的影響なし
+
+#### B. NSE 取得済みだが promoter < 10% (6 件)
+
+| 銘柄 | promoter | 状況 |
+|------|---------|------|
+| SAMMAANCAP | 0.00% | de-promoterized 2023.02、すでに Professional 確定 (AI 修正済) |
+| MFSL | 1.25% | Max Financial、Singh family promoter 薄い |
+| KARURVYSYA | 2.07% | 銀行業 26% 上限制約、family promoter 制度的に薄い (★) |
+| ZEEL | 3.99% | Chandra family 経営危機・保有売却中 |
+| DISHTV | 4.06% | Zee 系の経営危機 |
+| 360ONE | 6.24% | Bansal family の保有薄い |
+| ASTRAMICRO | 6.54% | Reddy family + 役員保有 |
+
+★ KARURVYSYA のような銀行業の特殊規制下銘柄は **法的に promoter を 10% 以上保有できない**ため、Stage1 適用と銀行規制が矛盾します。これは個別検討が必要なケースですが、現状は上司指定どおり Stage1 で除外しています。
 
 ---
 

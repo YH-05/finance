@@ -118,7 +118,14 @@ def main() -> None:
 
     # owner_family 抽出
     sheet["owner_family"] = sheet["yaml_matched_detail"].apply(extract_owner_family)
-    sheet["is_owner_company"] = sheet["owner_flag_final_hybrid"] == "OWNER"
+
+    # is_owner_company: Stage1 (promoter_total>=10%) AND owner_flag_final_hybrid=='OWNER'
+    # 根拠: dec-2026-04-16-002 (上司指定、SAST 2011 Reg 3 閾値)
+    # SEBI SAST 規制の支配的取得閾値 10% を Owner 確定の必要条件とする
+    sheet["stage1_promoter_ge_10"] = sheet["promoter_total_pct"].fillna(0) >= 10
+    sheet["is_owner_company"] = (
+        (sheet["owner_flag_final_hybrid"] == "OWNER") & sheet["stage1_promoter_ge_10"]
+    )
 
     # index 帰属フラグを付与
     membership = load_index_membership()
@@ -136,6 +143,7 @@ def main() -> None:
         "isin",
         "company_name",
         "is_owner_company",
+        "stage1_promoter_ge_10",
         "owner_family",
         "owner_flag",
         "owner_flag_final_hybrid",

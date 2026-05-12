@@ -10,11 +10,6 @@
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
-    "company name": "360 ONE WAM LTD",
-    "isin": "INE466L01038",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
     "company name": "3P Land Holdings Limited",
     "isin": "INE105C01023",
     "Category (Owner, MNC, State, Professional)": "Owner"
@@ -272,11 +267,6 @@
   {
     "company name": "ASTRAL LTD",
     "isin": "INE006I01046",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "ASTRA MICROWAVE PRODUCTS LTD",
-    "isin": "INE386C01029",
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
@@ -650,11 +640,6 @@
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
-    "company name": "DISH TV INDIA LTD",
-    "isin": "INE836F01026",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
     "company name": "DIVI'S LABORATORIES LTD",
     "isin": "INE361B01024",
     "Category (Owner, MNC, State, Professional)": "Owner"
@@ -928,11 +913,6 @@
     "company name": "GODREJ PROPERTIES LTD",
     "isin": "INE484J01027",
     "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "GOKALDAS EXPORTS LTD",
-    "isin": "INE887G01027",
-    "Category (Owner, MNC, State, Professional)": "Professional"
   },
   {
     "company name": "Gokul Agro Resources Limited",
@@ -1280,11 +1260,6 @@
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
-    "company name": "KARUR VYSYA BANK LTD",
-    "isin": "INE036D01028",
-    "Category (Owner, MNC, State, Professional)": "Professional"
-  },
-  {
     "company name": "KAYNES TECHNOLOGY INDIA LTD",
     "isin": "INE918Z01012",
     "Category (Owner, MNC, State, Professional)": "Owner"
@@ -1522,11 +1497,6 @@
   {
     "company name": "METRO BRANDS LTD",
     "isin": "INE317I01021",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "MAX FINANCIAL SERVICES LTD",
-    "isin": "INE180A01020",
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
@@ -2500,11 +2470,6 @@
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
-    "company name": "ZEE ENTERTAINMENT ENTERPRISE",
-    "isin": "INE256A01028",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
     "company name": "ZENSAR TECHNOLOGIES LTD",
     "isin": "INE520A01027",
     "Category (Owner, MNC, State, Professional)": "Owner"
@@ -2522,46 +2487,6 @@
   {
     "company name": "Zydus Wellness Limited",
     "isin": "INE768C01028",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "EMBASSY OFFICE PARKS REIT",
-    "isin": "INE041025011",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "MINDSPACE BUSINESS PARKS REI",
-    "isin": "INE0CCU25019",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "PIRAMAL ENTERPRISES LTD",
-    "isin": "INE140A01024",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "DHANI SERVICES LTD",
-    "isin": "INE274G01010",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "JAIPRAKASH ASSOCIATES LTD",
-    "isin": "INE455F01025",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "FUTURE RETAIL LTD",
-    "isin": "INE752P01024",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "TCNS CLOTHING CO LTD",
-    "isin": "INE778U01029",
-    "Category (Owner, MNC, State, Professional)": "Owner"
-  },
-  {
-    "company name": "TV18 BROADCAST LTD",
-    "isin": "INE886H01027",
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
@@ -3070,6 +2995,11 @@
     "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
+    "company name": "360 ONE WAM LTD",
+    "isin": "INE466L01038",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
     "company name": "3M INDIA LTD",
     "isin": "INE470A01017",
     "Category (Owner, MNC, State, Professional)": "MNC"
@@ -3098,6 +3028,11 @@
     "company name": "Akzo Nobel India Limited",
     "isin": "INE133A01011",
     "Category (Owner, MNC, State, Professional)": "Professional"
+  },
+  {
+    "company name": "ASTRA MICROWAVE PRODUCTS LTD",
+    "isin": "INE386C01029",
+    "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
     "company name": "AXIS BANK LTD",
@@ -3315,6 +3250,11 @@
     "Category (Owner, MNC, State, Professional)": "Professional"
   },
   {
+    "company name": "DISH TV INDIA LTD",
+    "isin": "INE836F01026",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
     "company name": "ENGINEERS INDIA LTD",
     "isin": "INE510A01028",
     "Category (Owner, MNC, State, Professional)": "State"
@@ -3398,6 +3338,11 @@
     "company name": "GUJARAT NARMADA VALLEY FERT",
     "isin": "INE113A01013",
     "Category (Owner, MNC, State, Professional)": "State"
+  },
+  {
+    "company name": "GOKALDAS EXPORTS LTD",
+    "isin": "INE887G01027",
+    "Category (Owner, MNC, State, Professional)": "Professional"
   },
   {
     "company name": "GUJARAT PIPAVAV PORT LTD",
@@ -3635,6 +3580,11 @@
     "Category (Owner, MNC, State, Professional)": "MNC"
   },
   {
+    "company name": "KARUR VYSYA BANK LTD",
+    "isin": "INE036D01028",
+    "Category (Owner, MNC, State, Professional)": "Professional"
+  },
+  {
     "company name": "KFIN TECHNOLOGIES LTD",
     "isin": "INE138Y01010",
     "Category (Owner, MNC, State, Professional)": "Professional"
@@ -3708,6 +3658,11 @@
     "company name": "MULTI COMMODITY EXCH INDIA",
     "isin": "INE745G01043",
     "Category (Owner, MNC, State, Professional)": "Professional"
+  },
+  {
+    "company name": "MAX FINANCIAL SERVICES LTD",
+    "isin": "INE180A01020",
+    "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
     "company name": "MAHANAGAR GAS LTD",
@@ -4220,6 +4175,11 @@
     "Category (Owner, MNC, State, Professional)": "Professional"
   },
   {
+    "company name": "ZEE ENTERTAINMENT ENTERPRISE",
+    "isin": "INE256A01028",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
     "company name": "ZF COMMERCIAL VEHICLE CONTRO",
     "isin": "INE342J01019",
     "Category (Owner, MNC, State, Professional)": "MNC"
@@ -4268,6 +4228,46 @@
     "company name": "ICICI SECURITIES LTD",
     "isin": "INE763G01038",
     "Category (Owner, MNC, State, Professional)": "Professional"
+  },
+  {
+    "company name": "EMBASSY OFFICE PARKS REIT",
+    "isin": "INE041025011",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
+    "company name": "MINDSPACE BUSINESS PARKS REI",
+    "isin": "INE0CCU25019",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
+    "company name": "PIRAMAL ENTERPRISES LTD",
+    "isin": "INE140A01024",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
+    "company name": "DHANI SERVICES LTD",
+    "isin": "INE274G01010",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
+    "company name": "JAIPRAKASH ASSOCIATES LTD",
+    "isin": "INE455F01025",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
+    "company name": "FUTURE RETAIL LTD",
+    "isin": "INE752P01024",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
+    "company name": "TCNS CLOTHING CO LTD",
+    "isin": "INE778U01029",
+    "Category (Owner, MNC, State, Professional)": "Owner"
+  },
+  {
+    "company name": "TV18 BROADCAST LTD",
+    "isin": "INE886H01027",
+    "Category (Owner, MNC, State, Professional)": "Owner"
   },
   {
     "company name": "VODAFONE IDEA LTD",

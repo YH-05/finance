@@ -8,8 +8,8 @@
 
 | 区分 | 銘柄数 | 比率 |
 |---|---|---|
-| OWNER | 614 | 71.8% |
-| NOT_OWNER | 241 | 28.2% |
+| OWNER | 599 | 70.1% |
+| NOT_OWNER | 256 | 29.9% |
 | 合計 | 855 | 100.0% |
 
 ## Index level 別 OWNER 比率
@@ -18,10 +18,10 @@
 |---|---|---|---|
 | NIFTY 50 | 50 | 27 | 54.0% |
 | NIFTY 100 | 100 | 52 | 52.0% |
-| NIFTY 200 | 200 | 110 | 55.0% |
-| NIFTY 500 | 497 | 314 | 63.2% |
-| NIFTY TOTAL MKT | 744 | 522 | 70.2% |
-| (上記 5 index 圏外、rev1 補完銘柄) | 111 | 92 | 82.9% |
+| NIFTY 200 | 200 | 108 | 54.0% |
+| NIFTY 500 | 497 | 310 | 62.4% |
+| NIFTY TOTAL MKT | 744 | 516 | 69.4% |
+| (上記 5 index 圏外、rev1 補完銘柄) | 111 | 83 | 74.8% |
 
 ## OWNER family 別分布 (上位 20)
 
@@ -48,7 +48,7 @@
 | Thapar | 1 |
 | Shriram | 1 |
 
-**family 未取得 OWNER**: 513 件 (yaml owner_keywords 未マッチで Tier 1 自然人 promoter ベースで OWNER 判定された銘柄)
+**family 未取得 OWNER**: 498 件 (yaml owner_keywords 未マッチで Tier 1 自然人 promoter ベースで OWNER 判定された銘柄)
 
 ## 利用例
 
