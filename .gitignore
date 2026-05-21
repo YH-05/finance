@@ -99,3 +99,6 @@ research/ca_strategy_poc/transcripts/
 
 # CA Strategy workspace (generated data, checkpoints, outputs)
 research/ca_strategy_poc/workspace/
+
+# FILING_NLP experiment data (HF cache 1.7GB + edgar cache + intermediate parquets)
+notebook/FILING_NLP/data/
