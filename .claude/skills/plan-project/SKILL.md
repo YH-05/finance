@@ -56,7 +56,14 @@ Phase 1: リサーチ (project-researcher) ─── [HF1] リサーチ結果・
     |
 Phase 2: 計画策定 (project-planner) ─── [HF2] 計画承認
     |
-Phase 3: タスク分解 (project-decomposer) ─── [HF3] タスク確認
+Phase 3: タスク分解 (project-decomposer)
+    |
+Phase 3.5: Self-Review（plan-lead 直接）── 自動チェック
+    ├─ placeholder スキャン
+    ├─ spec coverage 検証
+    └─ 型・関数名の整合性確認
+    |
+[HF3] タスク確認 + Self-Review 結果提示
     |
 Phase 4: GitHub Project・Issue 登録 (plan-lead 直接) ─── 完了レポート
 ```
@@ -71,7 +78,20 @@ Phase 4: GitHub Project・Issue 登録 (plan-lead 直接) ─── 完了レポ
 | HF0 | Phase 0 完了時 | プロジェクトタイプ・方向性の確認 |
 | HF1 | Phase 1 完了時 | リサーチ結果の確認、情報ギャップへの回答 |
 | HF2 | Phase 2 完了時 | 実装計画の承認 |
-| HF3 | Phase 3 完了時 | タスクリスト・依存関係の確認 |
+| HF3 | Phase 3.5 完了時 | タスクリスト・依存関係 + **Self-Review 結果**の確認 |
+
+### Phase 3.5: Self-Review（自動チェック）
+
+`project-decomposer` の出力（`task-breakdown.json`）に対し、plan-lead が以下を **自動チェック**してから HF3 を出す。
+superpowers の writing-plans が要求する品質基準を Issue 単位で適用するための工程。
+
+| チェック項目 | 内容 | 違反時 |
+|-------------|------|--------|
+| **placeholder スキャン** | 各 Issue 本文に `TBD`, `TODO`, `implement later`, "適切な〜を追加", "Task N と同様" 等が含まれていないか | 該当 Issue を HF3 で flag、修正案を提示 |
+| **spec coverage** | `implementation-plan.json` の各要件が少なくとも1つの Issue にマップされているか | 未カバーの要件を列挙して HF3 で提示 |
+| **型・関数名整合性** | Issue 間で同じ関数/型を異なる名前で参照していないか（例: `clearLayers()` と `clearFullLayers()` の混在） | 不整合一覧を HF3 で提示 |
+
+Self-Review の結果は `{session_dir}/self-review.json` に保存し、HF3 でユーザーに提示する。
 
 ## Agent Team 構成
 
@@ -91,6 +111,7 @@ Phase 4: GitHub Project・Issue 登録 (plan-lead 直接) ─── 完了レポ
 ├── user-answers.json          <- HF1 出力
 ├── implementation-plan.json   <- Phase 2 出力
 ├── task-breakdown.json        <- Phase 3 出力
+├── self-review.json           <- Phase 3.5 出力（自動チェック結果）
 └── workflow-status.json       <- 進捗管理
 ```
 
@@ -111,6 +132,8 @@ GitHub Issue 本文テンプレート。
 ## 完了条件
 
 - [ ] 全 HF ゲートを通過している
+- [ ] **Phase 3.5 Self-Review が実行されている（`self-review.json` 生成）**
+- [ ] **Self-Review の placeholder スキャン / spec coverage / 命名整合性をユーザーに HF3 で提示している**
 - [ ] `.tmp/plan-project-{session_id}/` に全 JSON ファイルが生成されている
 - [ ] `docs/project/project-{N}/project.md` が作成されている
 - [ ] プランファイルが指定されていた場合、`docs/project/project-{N}/original-plan.md` として移動されている

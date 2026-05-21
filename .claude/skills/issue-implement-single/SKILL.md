@@ -55,7 +55,7 @@ Python ワークフローでは、各 Phase で必ず **Task ツール**を使�
 | 3 | `feature-implementer` | TDD実装 |
 | 4 | `code-simplifier` | コード整理 |
 | 5 | `quality-checker` | 品質自動修正 |
-| 5.5 | `pr-readability`, `pr-security-code`, `pr-test-coverage` | 簡易コードレビュー（3並列） |
+| 5.5 | `pr-spec-compliance`, `pr-readability`, `pr-security-code`, `pr-test-coverage` | 簡易コードレビュー（4並列：仕様準拠＋品質3観点） |
 
 ### 判定基準
 
@@ -103,12 +103,17 @@ Task ツールを使わずに直接実装した場合、そのワークフロー
 │    │                                                        │
 │    │  Phase 5.5: 簡易コードレビュー（常に実行）            │
 │    │  ├─ git diff HEAD で差分取得                          │
-│    │  ├─ 3並列: Task(pr-readability), Task(pr-security-code), │
+│    │  ├─ 4並列: Task(pr-spec-compliance),                  │
+│    │  │         Task(pr-readability),                      │
+│    │  │         Task(pr-security-code),                    │
 │    │  │         Task(pr-test-coverage)                     │
-│    │  │   └─ HIGH/CRITICAL のみ報告                        │
-│    │  ├─ 問題なし → Phase 6 へ                             │
-│    │  └─ 問題あり → 修正 → quality-checker --quick         │
-│    │       └─ 最大2サイクル、修正不可は警告で続行          │
+│    │  │   ├─ spec-compliance: missing/extra/misunderstand  │
+│    │  │   └─ 品質3観点: HIGH/CRITICAL のみ報告             │
+│    │  ├─ 仕様準拠 compliant + 品質問題なし → Phase 6 へ    │
+│    │  ├─ 仕様準拠 non_compliant → 修正→再検証（最大3回）  │
+│    │  │   └─ 3回超過 → 🚨 BLOCKED（Phase 6 へ進まない）   │
+│    │  └─ 品質 HIGH/CRITICAL あり → 修正→quality-checker    │
+│    │       └─ 最大2サイクル、超過は警告付きで Phase 6 へ  │
 │    │                                                        │
 │    └─ Agent/Command/Skill:                                  │
 │       └─ Task(xxx-creator/expert) に全委譲                  │
@@ -171,6 +176,7 @@ Task ツールを使わずに直接実装した場合、そのワークフロー
 | 3 | `feature-implementer` | Issue番号、ライブラリ名、Phase 2のモデル、**api_research結果** |
 | 4 | `code-simplifier` | 変更されたファイル一覧 |
 | 5 | `quality-checker` | --auto-fix モード |
+| 5.5 | `pr-spec-compliance` | Issue 受け入れ条件、git diff HEAD、feature-implementer の self_review サマリー（信用せず独立検証） |
 | 5.5 | `pr-readability`, `pr-security-code`, `pr-test-coverage` | 変更差分（git diff HEAD）、HIGH/CRITICALのみ報告指示 |
 | 6 | **直接実行** | `make check-all` でコミット前検証 |
 
@@ -277,13 +283,16 @@ api_research:
 
 **Phase 5（quality-checker --auto-fix）の後、Phase 6（make check-all）の前に実行。`--skip-pr` でも常に実行する。**
 
-### 使用エージェント（3並列）
+### 使用エージェント（4並列）
 
-| エージェント | チェック内容 | 選定理由 |
-|---|---|---|
-| `pr-readability` | 命名規則・型ヒント・Docstring | 軽量、規約違反の早期発見 |
-| `pr-security-code` | OWASP A01-A05・機密情報検出 | セキュリティ脆弱性は早期発見が重要 |
-| `pr-test-coverage` | テスト存在・カバレッジ・エッジケース | TDD原則によるテスト網羅性確認 |
+| エージェント | チェック内容 | 観点 | 選定理由 |
+|---|---|---|---|
+| `pr-spec-compliance` | Issue 受け入れ条件 vs 実装の過不足検証 | **仕様準拠** | 過剰実装・仕様未達の独立検証（信用ゼロ） |
+| `pr-readability` | 命名規則・型ヒント・Docstring | 品質 | 軽量、規約違反の早期発見 |
+| `pr-security-code` | OWASP A01-A05・機密情報検出 | 品質 | セキュリティ脆弱性は早期発見が重要 |
+| `pr-test-coverage` | テスト存在・カバレッジ・エッジケース | 品質 | TDD原則によるテスト網羅性確認 |
+
+**観点の分離**: `pr-spec-compliance` は他3エージェントとは **独立した観点**（実装が Issue 要求と過不足なく一致しているか）を担当する。品質観点の3エージェントが「**どう**作ったか」を見るのに対し、仕様準拠は「**何を**作ったか」を見る。
 
 ### 差分ベース入力
 
@@ -295,42 +304,135 @@ git diff HEAD --name-only   # 変更ファイル一覧
 
 ### プロンプト方針
 
-各エージェントに対し **HIGH/CRITICAL のみ報告** を指示:
+#### pr-spec-compliance（仕様準拠）
+
+```
+PR仕様準拠レビュー。Issue #{number} の受け入れ条件と git diff HEAD の実装を独立検証してください。
+
+## Issue 情報
+- 受け入れ条件: {acceptance_criteria}
+- 実装者の主張: {feature_implementer_summary}
+
+## CRITICAL
+実装者の自己申告は一切信用しない。実際のコードを直接読み、
+missing / extra / misunderstanding を file:line 付きで報告すること。
+```
+
+#### pr-readability / pr-security-code / pr-test-coverage（品質）
 
 ```
 簡易レビューモード（Issue実装後の差分のみ対象）。
 HIGH/CRITICAL の問題のみ報告してください。MEDIUM/LOW は省略。
 ```
 
-### 自動修正フロー
+### 自動修正フロー（観点別ループ制御）
+
+仕様準拠と品質観点は **異なる扱い**にする。仕様準拠の不一致は「実装の本質的な間違い」のため修正必須。品質観点は段階的改善のため警告続行可。
 
 ```
 Phase 5.5 結果集約
     |
-    +-- HIGH/CRITICAL なし → Phase 6 へ
+    +---【観点A: 仕様準拠（pr-spec-compliance）】
+    |    |
+    |    +-- verdict: "compliant" → 観点A クリア
+    |    |
+    |    +-- verdict: "non_compliant"
+    |        |
+    |        +-- 修正実施（直接 Edit/Write）
+    |        |   - missing: 不足機能を実装
+    |        |   - extra: 要件外の追加を削除
+    |        |   - misunderstanding: 仕様通りに修正
+    |        |
+    |        +-- pr-spec-compliance を再実行（再検証）
+    |        |
+    |        +-- 最大 3 サイクル
+    |        |   - 3回以内に compliant → 観点A クリア
+    |        |   - 3回超過 → 🚨 BLOCKED（Phase 6 へ進まない）
+    |        |     └── サマリーに blocking_reason を含めて返却
     |
-    +-- HIGH/CRITICAL あり
-        |
-        +-- 修正実施（直接 Edit/Write）
-        |   - 可読性: 命名修正、型ヒント追加、Docstring追加
-        |   - セキュリティ: recommendation に基づき修正
-        |   - テスト: 不足テストケース追加
-        |
-        +-- quality-checker --quick（修正後の整合性確認）
-        |
-        +-- 最大2サイクル。2回で修正不可 → 警告付きで Phase 6 へ続行
+    +---【観点B: 品質（pr-readability / pr-security-code / pr-test-coverage）】
+         |
+         +-- HIGH/CRITICAL なし → 観点B クリア
+         |
+         +-- HIGH/CRITICAL あり
+             |
+             +-- 修正実施（直接 Edit/Write）
+             |   - 可読性: 命名修正、型ヒント追加、Docstring追加
+             |   - セキュリティ: recommendation に基づき修正
+             |   - テスト: 不足テストケース追加
+             |
+             +-- quality-checker --quick（修正後の整合性確認）
+             |
+             +-- 最大 2 サイクル
+                 - 2回以内に解消 → 観点B クリア
+                 - 2回超過 → ⚠️ 警告付きで観点B クリア（Phase 6 へ続行）
 ```
+
+### ループ条件の意図
+
+| 観点 | 上限 | 超過時の扱い | 理由 |
+|------|------|-------------|------|
+| 仕様準拠 | **3 サイクル** | 🚨 **BLOCKED**（Phase 6 へ進まない） | 仕様外/未達のままコミットすると Issue の境界を破壊する。"Accept 'close enough'" は禁止 |
+| 品質 | 2 サイクル | ⚠️ 警告で続行 | 段階的改善が可能。PR レビュー（review-pr）で再度捕捉される |
+
+**重要**: 仕様準拠の BLOCKED は **絶対にスキップしてはいけない**。Issue を分割するか、修正アプローチを変える必要がある。
 
 ### 出力フォーマット
 
 ```yaml
 incremental_review:
-  status: passed | fixed | failed
-  agents_run: 3
-  issues_found: { critical: 0, high: 0 }
-  issues_fixed: { critical: 0, high: 0 }
-  issues_remaining: []  # status == failed の場合のみ
-  fix_cycles: 0
+  status: passed | fixed | blocked  # blocked は仕様準拠超過時のみ
+  agents_run: 4
+
+  spec_compliance:
+    verdict: "compliant" | "non_compliant"
+    cycles_used: 0  # 修正サイクル数（0 = 初回 compliant）
+    max_cycles: 3
+    missing_count: 0
+    extra_count: 0
+    misunderstanding_count: 0
+    remaining_issues: []  # blocked 時のみ
+
+  quality_review:
+    status: passed | fixed | warning  # warning は2サイクル超過時
+    cycles_used: 0
+    max_cycles: 2
+    issues_found: { critical: 0, high: 0 }
+    issues_fixed: { critical: 0, high: 0 }
+    issues_remaining: []  # warning 時のみ
+
+  blocking_reason: null  # status == blocked の場合のみ設定
+  # blocking_reason 例:
+  # "pr-spec-compliance が3サイクル後も non_compliant。
+  #  missing: AC-2 (AuthenticationError), extra: --json フラグ追加"
+```
+
+### blocked 時のサマリー返却（Phase 6 へ進まない）
+
+```yaml
+status: failed
+issue:
+  number: 123
+  title: "..."
+error:
+  phase: 5.5
+  message: "仕様準拠レビュー（pr-spec-compliance）が3サイクル後も解消されません"
+  details:
+    missing:
+      - "AC-2: 認証失敗時に AuthenticationError を投げる（src/auth/authenticator.py に該当ロジックなし）"
+    extra:
+      - "src/auth/authenticator.py:65: --json フラグ追加（要件外）"
+    misunderstandings: []
+incremental_review:
+  status: blocked
+  spec_compliance:
+    verdict: "non_compliant"
+    cycles_used: 3
+recommendation: |
+  以下のいずれかを検討してください:
+  1. Issue を再分解（タスクが大きすぎる可能性）
+  2. 受け入れ条件の解釈をユーザーに確認
+  3. extra な追加変更を別 Issue に分離
 ```
 
 ---
@@ -564,11 +666,19 @@ pre_commit_validation:  # Phase 6 の結果
   typecheck: PASS
   test: PASS (15 tests)
 incremental_review:  # Phase 5.5 の結果
-  status: passed
-  agents_run: 3
-  issues_found: { critical: 0, high: 0 }
-  issues_fixed: { critical: 0, high: 0 }
-  fix_cycles: 0
+  status: passed  # passed | fixed | blocked
+  agents_run: 4
+  spec_compliance:
+    verdict: "compliant"  # compliant | non_compliant
+    cycles_used: 0
+    missing_count: 0
+    extra_count: 0
+    misunderstanding_count: 0
+  quality_review:
+    status: passed  # passed | fixed | warning
+    cycles_used: 0
+    issues_found: { critical: 0, high: 0 }
+    issues_fixed: { critical: 0, high: 0 }
 commit:
   hash: "abc1234"
   message: "feat(auth): ユーザー認証機能を追加"
@@ -647,7 +757,8 @@ partial_commit:
 | 3 | Implementation failed | タスク分割して再試行 |
 | 4 | Code simplification failed | 変更対象を絞って再試行 |
 | 5 | Quality check failed | 自動修正（最大5回） |
-| 5.5 | Review found issues | 自動修正（最大2サイクル）、修正不可は警告で続行 |
+| 5.5 | 品質3観点で HIGH/CRITICAL あり | 自動修正（最大2サイクル）、超過は警告で続行 |
+| 5.5 | pr-spec-compliance が non_compliant | 自動修正（最大3サイクル）、超過は **BLOCKED**（Phase 6 へ進まない、エラーサマリー返却） |
 | 6 | **make check-all failed** | **処理中断、コミットしない、エラー詳細を返却** |
 | 7 | **CIチェック失敗** | **エラー修正→再プッシュ→再検証（最大3回）** |
 | 7 | **CI修正不可（3回失敗）** | **失敗詳細をサマリーに含めて返却** |
@@ -664,7 +775,9 @@ partial_commit:
 - [ ] Phase 3: Task(feature-implementer) で全タスクが実装
 - [ ] Phase 4: Task(code-simplifier) でコード整理が完了
 - [ ] Phase 5: Task(quality-checker) で品質自動修正が完了
-- [ ] **Phase 5.5: 3エージェント並列の簡易コードレビューが完了（HIGH/CRITICALは修正済み）**
+- [ ] **Phase 5.5: 4エージェント並列レビューが完了**
+  - [ ] `pr-spec-compliance`: verdict が compliant（非該当なら BLOCKED で Phase 6 へ進まない）
+  - [ ] 品質3観点（`pr-readability`/`pr-security-code`/`pr-test-coverage`）: HIGH/CRITICAL は修正済み（または警告付き続行）
 - [ ] **Phase 6: `make check-all` が成功（コミット前検証）**
 - [ ] コミットが作成されている（Phase 6 成功後のみ）
 - [ ] **Phase 6.5: Task(pr-design) でPR設計レビューが完了（`--skip-pr` でない場合のみ）**

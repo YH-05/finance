@@ -23,8 +23,15 @@ Phase 2: 計画策定
 │  └── [HF2] AskUserQuestion: 計画承認
 │
 Phase 3: タスク分解
-│  ├── Task(project-decomposer) → task-breakdown.json
-│  └── [HF3] AskUserQuestion: タスク確認
+│  └── Task(project-decomposer) → task-breakdown.json
+│
+Phase 3.5: Self-Review（plan-lead 直接、自動チェック）
+│  ├── placeholder スキャン
+│  ├── spec coverage 検証
+│  ├── 型・関数名の整合性確認
+│  └── self-review.json 書出し
+│
+│  └── [HF3] AskUserQuestion: タスク確認 + Self-Review 結果提示
 │
 Phase 4: GitHub Project・Issue 登録
    ├── docs/project/project-{N}/project.md 作成
@@ -415,6 +422,142 @@ Task(
 }
 ```
 
+## Phase 3.5: Self-Review（自動チェック）
+
+`project-decomposer` の出力（`task-breakdown.json`）に対し、plan-lead が直接以下の自動チェックを実行します。superpowers の writing-plans が要求する品質基準（No Placeholders / Spec coverage / Type consistency）を Issue 単位で適用するためのゲートです。
+
+### 目的
+
+HF3 でユーザーに「OK / 修正して再分解」を判断してもらう前に、機械的に検出可能な品質問題を先に潰しておく。ユーザーは内容判断に集中できる。
+
+### チェック1: Placeholder スキャン
+
+各タスクの `issue_body` に対して以下のパターンを検索:
+
+```yaml
+禁止パターン:
+  - "TBD"
+  - "TODO"
+  - "implement later"
+  - "fill in details"
+  - "適切な〜を追加"  # "適切なエラー処理を追加" 等
+  - "Task N と同様"   # タスク間の曖昧な参照
+  - "上記のテストを書く"  # コード断片なしの曖昧な指示
+  - "以下を実装"  # 続く具体的な記述がない場合
+```
+
+### チェック2: Spec Coverage
+
+`implementation-plan.json` の各要件（features / acceptance_criteria 等）が、少なくとも1つの Issue (`task-breakdown.json` の `tasks[].issue_body`) で言及されているかを確認:
+
+```python
+# 擬似コード
+for requirement in implementation_plan["features"]:
+    covered = any(
+        requirement["id"] in task["issue_body"] or
+        keyword_match(requirement, task["issue_body"])
+        for task in task_breakdown["tasks"]
+    )
+    if not covered:
+        gap_list.append(requirement)
+```
+
+未カバーの要件は HF3 でユーザーに提示。
+
+### チェック3: 型・関数名の整合性
+
+Issue 間で同じ概念を異なる名前で参照していないかを確認:
+
+```python
+# 擬似コード
+identifiers = extract_identifiers_from_issues(task_breakdown)
+# 例: {"clearLayers", "clearFullLayers"} のような近似名のペアを検出
+similar_pairs = find_similar_names(identifiers, threshold=0.85)
+```
+
+検出例:
+- `task-2` で `authenticate_user()` だが `task-5` で `authenticateUser()` を呼んでいる
+- `task-3` で `max_retries=3` だが `task-7` の Issue では `retry_count` と書かれている
+
+### self-review.json スキーマ
+
+```json
+{
+  "checked_at": "2026-05-21T14:30:00+09:00",
+  "task_breakdown_file": "task-breakdown.json",
+  "overall_status": "passed | warnings",
+  "placeholder_violations": [
+    {
+      "task_id": "task-3",
+      "task_title": "[Wave2] 認証ロジックの実装",
+      "pattern": "適切な〜を追加",
+      "snippet": "適切なエラー処理を追加してください",
+      "location_in_body": "受け入れ条件 セクション"
+    }
+  ],
+  "spec_coverage_gaps": [
+    {
+      "requirement_id": "F-3",
+      "requirement_description": "セッションタイムアウトの設定",
+      "reason": "どの Issue にも該当する記述が見当たらない"
+    }
+  ],
+  "naming_inconsistencies": [
+    {
+      "names": ["clearLayers", "clearFullLayers"],
+      "occurrences": [
+        { "task_id": "task-2", "location": "files/0/path" },
+        { "task_id": "task-5", "location": "issue_body" }
+      ],
+      "similarity": 0.88,
+      "recommendation": "統一を推奨"
+    }
+  ],
+  "summary": {
+    "total_tasks_checked": 7,
+    "placeholder_violations_count": 1,
+    "spec_coverage_gap_count": 1,
+    "naming_inconsistency_count": 1
+  }
+}
+```
+
+### overall_status の判定
+
+| 状態 | 条件 |
+|------|------|
+| `passed` | violations / gaps / inconsistencies すべて 0件 |
+| `warnings` | いずれか 1件以上存在 |
+
+**重要**: warnings でも処理は止めない（HF3 で人間の判断を仰ぐ）。仕様準拠の最終判断は人間が行う。
+
+### Phase 3.5 実装手順
+
+```python
+# 擬似コード（plan-lead が直接実行）
+
+# 1. task-breakdown.json を読み込み
+task_breakdown = read_json(f"{session_dir}/task-breakdown.json")
+implementation_plan = read_json(f"{session_dir}/implementation-plan.json")
+
+# 2. 3つのチェックを実行
+placeholder_violations = scan_placeholders(task_breakdown)
+spec_coverage_gaps = check_spec_coverage(task_breakdown, implementation_plan)
+naming_inconsistencies = check_naming(task_breakdown)
+
+# 3. self-review.json を書き出し
+write_json(f"{session_dir}/self-review.json", {
+    "checked_at": now(),
+    "overall_status": "passed" if all_empty else "warnings",
+    "placeholder_violations": placeholder_violations,
+    "spec_coverage_gaps": spec_coverage_gaps,
+    "naming_inconsistencies": naming_inconsistencies,
+    "summary": {...}
+})
+
+# 4. HF3 に進む（Self-Review 結果も提示）
+```
+
 ### HF3: タスク確認
 
 タスクリストと Mermaid 依存関係図を表示し、確認を取得。
@@ -442,6 +585,33 @@ Task(
 
 ### クリティカルパス
 {critical_path の表示}
+
+---
+
+## Phase 3.5 Self-Review 結果
+
+**ステータス**: {overall_status}  # passed | warnings
+
+{warnings の場合のみ以下を表示}
+
+### Placeholder 検出（{placeholder_violations_count} 件）
+| タスク | パターン | 該当箇所 |
+|--------|---------|---------|
+| task-3 | "適切な〜を追加" | 受け入れ条件セクション |
+
+### Spec Coverage ギャップ（{spec_coverage_gap_count} 件）
+| 要件ID | 内容 | 状態 |
+|--------|------|------|
+| F-3 | セッションタイムアウトの設定 | どの Issue にも紐付かない |
+
+### 命名の不整合（{naming_inconsistency_count} 件）
+| 名前候補 | 出現箇所 | 類似度 |
+|---------|---------|--------|
+| clearLayers / clearFullLayers | task-2, task-5 | 0.88 |
+
+⚠️ 上記の警告は HF3 で次のアクションを判断してください:
+1. 「修正して再分解」を選択 → Phase 3 に戻り再生成
+2. 「作成する」を選択 → 警告を許容したまま Issue 作成へ進む
 ```
 
 ```yaml

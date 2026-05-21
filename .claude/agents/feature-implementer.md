@@ -308,6 +308,87 @@ utils/実装:
 プロセス: docs/development-process.md
 ```
 
+## Self-Review（実装完了後に必ず実行）
+
+**すべてのチェックボックスを処理した後、コミット作成前に Self-Review を実行してください。**
+
+Self-Review は、後続の `pr-spec-compliance` エージェントによる独立検証の前に、実装者自身が自分の成果物を客観的にチェックする工程です。
+
+### Self-Review の目的
+
+- 仕様準拠の **自覚的な確認**（後段の独立レビュアーに丸投げしない）
+- 過剰実装（Issue 要件外の追加）の自己発見
+- 型・関数名の整合性確認
+
+### Self-Review チェックリスト
+
+実装完了後、以下を **`git diff HEAD` を実際に読みながら** 1項目ずつ判定すること。
+
+#### 1. 受け入れ条件カバレッジ
+
+Issue 本文の受け入れ条件（チェックリスト形式または明示的な要件）を1つずつ確認:
+
+```yaml
+- 受け入れ条件 AC-1: "<条件文>"
+  実装場所: src/<package>/<file>.py:<line>
+  状態: implemented | missing | partial
+  根拠: <該当コード断片>
+```
+
+各 AC について以下のいずれかを必ず判定:
+
+| 判定 | 意味 | アクション |
+|------|------|-----------|
+| `implemented` | diff に該当ロジックが存在し、要件通り動く | OK |
+| `missing` | diff に該当変更が無い、または空実装 | **修正必須**（Self-Review を通過させない） |
+| `partial` | 一部は実装したが要件の一部を満たしていない | **修正必須** |
+
+#### 2. 仕様外追加スキャン（過剰実装の自己検出）
+
+`git diff HEAD --name-only` で変更ファイル一覧を取得し、各ファイル・各変更が **いずれかの受け入れ条件に紐付くか** を確認:
+
+```yaml
+extra_check:
+  - file: src/<package>/<file>.py
+    change: "<変更概要>"
+    紐付く AC: AC-2  # または "none"
+```
+
+`紐付く AC: none` のものは:
+- リファクタリング（命名改善・型ヒント追加等の振る舞いを変えない変更）→ 許容
+- 機能追加・新フラグ・新パラメータ → **削除または別 Issue に分離**
+
+#### 3. 型・関数名整合性
+
+Issue 本文や受け入れ条件で言及されている **関数名・クラス名・パラメータ名** と実装が一致しているか:
+
+```yaml
+naming_consistency:
+  - issue 言及: "authenticate(username, password)"
+    実装: "authenticate(username: str, password: str) -> User"
+    一致: true
+
+  - issue 言及: "max_retries=3"
+    実装: "max_retries: int = 3"
+    一致: true
+```
+
+不一致がある場合は **修正必須**（または Issue に確認を残す）。
+
+### Self-Review 通過基準
+
+すべて満たした場合のみ Self-Review を通過とする:
+
+- [ ] 全 AC が `implemented` ステータス（`missing` / `partial` ゼロ）
+- [ ] `extra_check` で `紐付く AC: none` の機能追加がゼロ（リファクタリングは可）
+- [ ] `naming_consistency` で `一致: false` がゼロ
+
+### 通過しなかった場合
+
+実装に戻り、不足・余計な追加・不整合を修正してから再度 Self-Review を実行する。
+
+**警告**: ここで通過させずにコミットすると、後段の `pr-spec-compliance` で BLOCKED となり Phase 6 へ進めなくなる（仕様準拠は最大3サイクル後に強制停止）。Self-Review で先に潰しておくほうが速い。
+
 ## 出力フォーマット
 
 ```yaml
@@ -338,6 +419,23 @@ utils/実装:
   - タスク: [タスク名]
     理由: [技術的理由]
 
+self_review:
+  passed: true  # 通過した場合のみコミットへ進む
+  acceptance_criteria:
+    - id: AC-1
+      description: "<条件文>"
+      status: implemented
+      location: "src/<package>/<file>.py:42"
+    - id: AC-2
+      description: "<条件文>"
+      status: implemented
+      location: "src/<package>/<file>.py:78"
+  extra_check:
+    - file: "src/<package>/<file>.py"
+      change: "型ヒント追加"
+      linked_ac: "refactoring"  # AC番号 / "refactoring" / "none"
+  naming_consistency: all_matched  # all_matched / mismatches_found
+
 実行結果:
   quality-checker: [PASS/FAIL]
   テスト数: [作成したテスト数]
@@ -353,5 +451,6 @@ Issue URL: https://github.com/owner/repo/issues/<issue_number>
 - [ ] GitHub Issue の全チェックボックスが `[x]` または正当な理由でスキップ
 - [ ] 各タスクでTDDサイクル（Red→Green→Refactor）を実行
 - [ ] quality-checker(--quick) がパス
-- [ ] 実装レポートを出力
+- [ ] **Self-Review を実行し通過した（acceptance_criteria 全 implemented、仕様外追加ゼロ、命名整合）**
+- [ ] 実装レポートを出力（`self_review` フィールドを含む）
 - [ ] Issue の「振り返り」セクションを更新（該当する場合）
