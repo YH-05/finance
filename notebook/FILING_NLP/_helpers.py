@@ -222,7 +222,6 @@ def load_finbert(device=None):  # type: ignore[no-untyped-def]
     tuple
         (tokenizer, model) を返す。``model`` は ``.eval()`` 済み・指定 device 配置。
     """
-    import torch  # noqa: F401  (ensure available)
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
     if device is None:
