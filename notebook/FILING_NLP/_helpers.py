@@ -32,6 +32,7 @@ CHUNKS_PARQUET: Path = DATA_DIR / "chunks.parquet"
 SENTIMENTS_PARQUET: Path = DATA_DIR / "sentiments.parquet"
 EMBEDDINGS_PARQUET: Path = DATA_DIR / "embeddings.parquet"
 ENTITIES_PARQUET: Path = DATA_DIR / "entities.parquet"
+ENTITIES_GLINER_PARQUET: Path = DATA_DIR / "entities_gliner.parquet"
 
 
 # ---------------------------------------------------------------------------
