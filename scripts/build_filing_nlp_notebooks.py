@@ -51,8 +51,11 @@ def build_01_fetch_and_chunk() -> nbf.NotebookNode:
         ),
         _code(
             "# Cell 1: imports + setup (必ず最初に _helpers を import)\n"
+            "# Jupyter のモジュールキャッシュ対策: 古い _helpers / edgar を退避してから再 import\n"
             "import sys\n"
             "from pathlib import Path\n"
+            "for _m in [m for m in list(sys.modules) if m == '_helpers' or m == 'edgar' or m.startswith('edgar.')]:\n"
+            "    del sys.modules[_m]\n"
             "sys.path.insert(0, str(Path.cwd()))\n"
             "import _helpers\n"
             "_ = _helpers.setup_edgar()\n"
