@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import logging
 import os
-import re
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -124,70 +123,11 @@ def get_device():  # type: ignore[no-untyped-def]
 
 
 # ---------------------------------------------------------------------------
-# セクション抽出パターン + ヘルパー (edgartools filing.text() に直接適用)
+# セクション抽出は edgartools のネイティブ API に委譲
 # ---------------------------------------------------------------------------
-
-# Unicode 対応: ASCII の "'" だけでなく U+2019 (right single quotation) も許容。
-# SEC EDGAR の filing は Unicode apostrophe を使うケースが多い。
-_APO = r"[’']?"  # Apostrophe (optional, ASCII or Unicode)
-
-# 10-K: Item 1A (Risk Factors) と Item 7 (MD&A)
-SECTION_PATTERNS_10K: dict[str, re.Pattern[str]] = {
-    "item_1a": re.compile(r"(?i)item\s+1a[\.\s]+risk\s+factors"),
-    "item_7": re.compile(
-        rf"(?i)item\s+7[\.\s]+management{_APO}s?\s+discussion\s+and\s+analysis",
-    ),
-}
-
-# 10-Q: Part II Item 1A (Risk Factors) と Part I Item 2 (MD&A)
-# キー名は 10-K に揃え、後段の集計で同じカラムで扱えるようにする。
-SECTION_PATTERNS_10Q: dict[str, re.Pattern[str]] = {
-    "item_1a": re.compile(r"(?i)item\s+1a[\.\s]+risk\s+factors"),
-    "item_7": re.compile(  # 10-Q では MD&A は "Item 2"
-        rf"(?i)item\s+2[\.\s]+management{_APO}s?\s+discussion\s+and\s+analysis",
-    ),
-}
-
-
-def extract_sections(
-    text: str,
-    patterns: dict[str, re.Pattern[str]],
-) -> dict[str, str]:
-    """テキストから section_key → section テキストへの dict を返す.
-
-    10-K/10-Q では section header (例: "Item 1A. Risk Factors") が目次と
-    本体に 2 回現れるため、各パターンの **最後のマッチ位置** を section の
-    開始とみなす。これにより目次部分をスキップして本体テキストが取れる。
-
-    Parameters
-    ----------
-    text : str
-        対象テキスト (filing 全文)
-    patterns : dict[str, re.Pattern[str]]
-        section_key → コンパイル済み正規表現
-
-    Returns
-    -------
-    dict[str, str]
-        section_key → 抽出テキスト (マッチしない section は省略)
-    """
-    if not text:
-        return {}
-    matches: list[tuple[int, str]] = []
-    for key, pat in patterns.items():
-        last_start: int | None = None
-        for m in pat.finditer(text):
-            last_start = m.start()
-        if last_start is not None:
-            matches.append((last_start, key))
-    matches.sort()
-    result: dict[str, str] = {}
-    for i, (start, key) in enumerate(matches):
-        end = matches[i + 1][0] if i + 1 < len(matches) else len(text)
-        section = text[start:end].strip()
-        if section:
-            result[key] = section
-    return result
+# 自前の正規表現抽出は廃止。notebook 側で以下を直接呼び出す:
+#   - 10-K: filing.obj().risk_factors / .management_discussion (str)
+#   - 10-Q: filing.obj()['Part II, Item 1A'] / ['Part I, Item 2']  (str | None)
 
 
 # ---------------------------------------------------------------------------
