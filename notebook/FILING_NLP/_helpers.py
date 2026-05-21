@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -19,6 +20,9 @@ from pathlib import Path
 
 # このファイルがある notebook/FILING_NLP/ 直下
 PKG_DIR: Path = Path(__file__).resolve().parent
+
+# リポジトリルート ( notebook/FILING_NLP/_helpers.py → quants/ )
+REPO_ROOT: Path = PKG_DIR.parent.parent
 
 DATA_DIR: Path = PKG_DIR / "data"
 HF_CACHE_DIR: Path = DATA_DIR / "hf_cache"
@@ -29,6 +33,34 @@ SECTIONS_PARQUET: Path = DATA_DIR / "sections.parquet"
 CHUNKS_PARQUET: Path = DATA_DIR / "chunks.parquet"
 SENTIMENTS_PARQUET: Path = DATA_DIR / "sentiments.parquet"
 EMBEDDINGS_PARQUET: Path = DATA_DIR / "embeddings.parquet"
+
+
+# ---------------------------------------------------------------------------
+# src/ 解決順序の調整
+# ---------------------------------------------------------------------------
+# AIDEV-NOTE: edgartools (pypi) が ``edgar`` という import 名で site-packages に
+# 入るため、何もしないと ``import edgar`` が edgartools を解決し、quants の
+# ``src/edgar`` (set_identity 等を持つ) が見えなくなる。本モジュールが import
+# された時点で repo の ``src/`` を sys.path 先頭に挿入し、quants の src/edgar
+# を優先解決させる。edgar が既にロード済みなら sys.modules から退避させて
+# 再 import が src/edgar を引くようにする。
+def _prefer_src_edgar() -> None:
+    src_dir = str(REPO_ROOT / "src")
+    if src_dir not in sys.path:
+        sys.path.insert(0, src_dir)
+    elif sys.path[0] != src_dir:
+        sys.path.remove(src_dir)
+        sys.path.insert(0, src_dir)
+    # site-packages の edgar が先にロードされていれば退避
+    for mod_name in list(sys.modules):
+        if mod_name == "edgar" or mod_name.startswith("edgar."):
+            mod = sys.modules[mod_name]
+            mod_file = getattr(mod, "__file__", "") or ""
+            if "site-packages" in mod_file:
+                del sys.modules[mod_name]
+
+
+_prefer_src_edgar()
 
 # ---------------------------------------------------------------------------
 # HF キャッシュ設定 (transformers/sentence_transformers の import 前に必須)
