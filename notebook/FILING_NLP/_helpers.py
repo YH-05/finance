@@ -11,7 +11,6 @@ from __future__ import annotations
 import logging
 import os
 import re
-import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -34,33 +33,6 @@ CHUNKS_PARQUET: Path = DATA_DIR / "chunks.parquet"
 SENTIMENTS_PARQUET: Path = DATA_DIR / "sentiments.parquet"
 EMBEDDINGS_PARQUET: Path = DATA_DIR / "embeddings.parquet"
 
-
-# ---------------------------------------------------------------------------
-# src/ 解決順序の調整
-# ---------------------------------------------------------------------------
-# AIDEV-NOTE: edgartools (pypi) が ``edgar`` という import 名で site-packages に
-# 入るため、何もしないと ``import edgar`` が edgartools を解決し、quants の
-# ``src/edgar`` (set_identity 等を持つ) が見えなくなる。本モジュールが import
-# された時点で repo の ``src/`` を sys.path 先頭に挿入し、quants の src/edgar
-# を優先解決させる。edgar が既にロード済みなら sys.modules から退避させて
-# 再 import が src/edgar を引くようにする。
-def _prefer_src_edgar() -> None:
-    src_dir = str(REPO_ROOT / "src")
-    if src_dir not in sys.path:
-        sys.path.insert(0, src_dir)
-    elif sys.path[0] != src_dir:
-        sys.path.remove(src_dir)
-        sys.path.insert(0, src_dir)
-    # site-packages の edgar が先にロードされていれば退避
-    for mod_name in list(sys.modules):
-        if mod_name == "edgar" or mod_name.startswith("edgar."):
-            mod = sys.modules[mod_name]
-            mod_file = getattr(mod, "__file__", "") or ""
-            if "site-packages" in mod_file:
-                del sys.modules[mod_name]
-
-
-_prefer_src_edgar()
 
 # ---------------------------------------------------------------------------
 # HF キャッシュ設定 (transformers/sentence_transformers の import 前に必須)
@@ -124,16 +96,10 @@ def setup_edgar() -> str:
         )
         raise RuntimeError(msg)
 
-    # 既存の edgar.config.set_identity を使う
-    parts = identity.rsplit(" ", 1)
-    if len(parts) == 2:
-        name, email = parts
-    else:
-        name, email = "Anonymous", identity
+    # edgartools の set_identity は "Name email" 形式の単一文字列を受け取る
+    import edgar
 
-    from edgar.config import set_identity
-
-    set_identity(name, email)
+    edgar.set_identity(identity)
     return identity
 
 
@@ -158,21 +124,70 @@ def get_device():  # type: ignore[no-untyped-def]
 
 
 # ---------------------------------------------------------------------------
-# 10-Q セクションパターン (edgar.SectionExtractor の custom_patterns 用)
+# セクション抽出パターン + ヘルパー (edgartools filing.text() に直接適用)
 # ---------------------------------------------------------------------------
 
-# 10-Q の構造: Part I (Financial Information) / Part II (Other Information)
-# - Part I Item 2: Management's Discussion and Analysis (MD&A) → 10-K の Item 7 相当
-# - Part II Item 1A: Risk Factors → 10-K の Item 1A 相当
-# キー名は 10-K の SectionKey 値に揃え、後段の集計で同じカラムで扱えるようにする。
-SECTION_PATTERNS_10Q: dict[str, re.Pattern[str]] = {
-    "item_7": re.compile(  # MD&A (Part I Item 2)
-        r"(?i)item\s+2[\.\s]+management'?s?\s+discussion\s+and\s+analysis",
-    ),
-    "item_1a": re.compile(  # Risk Factors (Part II Item 1A)
-        r"(?i)item\s+1a[\.\s]+risk\s+factors",
+# Unicode 対応: ASCII の "'" だけでなく U+2019 (right single quotation) も許容。
+# SEC EDGAR の filing は Unicode apostrophe を使うケースが多い。
+_APO = r"[’']?"  # Apostrophe (optional, ASCII or Unicode)
+
+# 10-K: Item 1A (Risk Factors) と Item 7 (MD&A)
+SECTION_PATTERNS_10K: dict[str, re.Pattern[str]] = {
+    "item_1a": re.compile(r"(?i)item\s+1a[\.\s]+risk\s+factors"),
+    "item_7": re.compile(
+        rf"(?i)item\s+7[\.\s]+management{_APO}s?\s+discussion\s+and\s+analysis",
     ),
 }
+
+# 10-Q: Part II Item 1A (Risk Factors) と Part I Item 2 (MD&A)
+# キー名は 10-K に揃え、後段の集計で同じカラムで扱えるようにする。
+SECTION_PATTERNS_10Q: dict[str, re.Pattern[str]] = {
+    "item_1a": re.compile(r"(?i)item\s+1a[\.\s]+risk\s+factors"),
+    "item_7": re.compile(  # 10-Q では MD&A は "Item 2"
+        rf"(?i)item\s+2[\.\s]+management{_APO}s?\s+discussion\s+and\s+analysis",
+    ),
+}
+
+
+def extract_sections(
+    text: str,
+    patterns: dict[str, re.Pattern[str]],
+) -> dict[str, str]:
+    """テキストから section_key → section テキストへの dict を返す.
+
+    10-K/10-Q では section header (例: "Item 1A. Risk Factors") が目次と
+    本体に 2 回現れるため、各パターンの **最後のマッチ位置** を section の
+    開始とみなす。これにより目次部分をスキップして本体テキストが取れる。
+
+    Parameters
+    ----------
+    text : str
+        対象テキスト (filing 全文)
+    patterns : dict[str, re.Pattern[str]]
+        section_key → コンパイル済み正規表現
+
+    Returns
+    -------
+    dict[str, str]
+        section_key → 抽出テキスト (マッチしない section は省略)
+    """
+    if not text:
+        return {}
+    matches: list[tuple[int, str]] = []
+    for key, pat in patterns.items():
+        last_start: int | None = None
+        for m in pat.finditer(text):
+            last_start = m.start()
+        if last_start is not None:
+            matches.append((last_start, key))
+    matches.sort()
+    result: dict[str, str] = {}
+    for i, (start, key) in enumerate(matches):
+        end = matches[i + 1][0] if i + 1 < len(matches) else len(text)
+        section = text[start:end].strip()
+        if section:
+            result[key] = section
+    return result
 
 
 # ---------------------------------------------------------------------------
