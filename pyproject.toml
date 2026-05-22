@@ -66,6 +66,7 @@ dependencies = [
     "sentence-transformers>=3.0.0",
     "umap-learn>=0.5.5",
     "gliner>=0.2.10",
+    "accelerate>=1.13.0",
 ]
 [project.optional-dependencies]
 dev = [
@@ -158,7 +159,6 @@ exclude = [
     ".venv",
     "notebook_sample",
     "src_sample",
-    "notebook",
 ]
 
 [tool.ruff.lint]
@@ -166,6 +166,7 @@ exclude = [
     ".venv",
     "src/*/docs/.steering",
     "src/*/sample/",   # レガシーコード
+    "notebook",        # notebook は format のみ対象、lint は除外
 ]
 select = [
     "E",      # pycodestyle errors
