@@ -354,6 +354,13 @@
             "frequency": "Monthly",
             "units": "Index 2017=100",
             "description": "鉱工業セクターの生産活動を示す代表的指標。景気サイクルの実体経済側を捉える。"
+        },
+        "USREC": {
+            "name_ja": "NBER景気後退ダミー",
+            "name_en": "NBER based Recession Indicators for the United States",
+            "frequency": "Monthly",
+            "units": "Binary",
+            "description": "NBER が認定した景気後退期を 1、それ以外を 0 とする月次ダミー変数。"
         }
     },
     "Population, Employment, & Labor Force": {
