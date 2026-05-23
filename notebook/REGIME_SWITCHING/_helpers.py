@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from pathlib import Path
 
+import japanize_matplotlib  # 日本語フォント自動設定
 import numpy as np
 import pandas as pd
 from matplotlib.axes import Axes
