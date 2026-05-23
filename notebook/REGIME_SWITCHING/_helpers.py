@@ -101,3 +101,42 @@ def load_fred_weekly(
         date_range=[str(combined.index.min().date()), str(combined.index.max().date())],
     )
     return combined
+
+
+def transform_features(df_raw: pd.DataFrame) -> pd.DataFrame:
+    """7 系列を変換し Z-score 標準化した DataFrame を返す.
+
+    変換ルール:
+    - INDPRO, CPIAUCSL: 前年同期比 % (52 週前比)
+    - ICSA: 4 週移動平均の前年同期比 %
+    - T10YIE, STLFSI4, BAA10Y, T10Y2Y: レベルそのまま
+
+    Parameters
+    ----------
+    df_raw : pd.DataFrame
+        ``load_fred_weekly`` の出力 (W-FRI, 列が FRED 系列値).
+
+    Returns
+    -------
+    pd.DataFrame
+        Z-score 標準化後の特徴量。先頭 ~55 週は YoY 計算 (52 週) と ICSA の 4 週 MA で
+        欠損するので除去。
+    """
+    df = df_raw.copy()
+
+    # YoY% (52週前比)
+    yoy_cols = ["INDPRO", "CPIAUCSL"]
+    for col in yoy_cols:
+        df[col] = (df[col] / df[col].shift(52) - 1.0) * 100.0
+
+    # ICSA: 4週移動平均のYoY%
+    ma4 = df["ICSA"].rolling(window=4, min_periods=4).mean()
+    df["ICSA"] = (ma4 / ma4.shift(52) - 1.0) * 100.0
+
+    # 先頭の欠損週を除去
+    df = df.dropna(how="any")
+
+    # Z-score 標準化 (population std, ddof=0)
+    standardized = (df - df.mean()) / df.std(ddof=0)
+
+    return standardized[FRED_SERIES_IDS]
