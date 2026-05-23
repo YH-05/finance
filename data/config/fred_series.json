@@ -273,6 +273,13 @@
             "frequency": "Daily",
             "units": "Percent",
             "description": "最低投機的格付（CCC以下）のOAS。デフォルト（債務不履行）リスクが非常に高く、景気サイクル終盤での動向が注目される。"
+        },
+        "BAA10Y": {
+            "name_ja": "Baa社債-10年国債スプレッド",
+            "name_en": "Moody's Seasoned Baa Corporate Bond Yield Relative to Yield on 10-Year Treasury Constant Maturity",
+            "frequency": "Daily",
+            "units": "Percent",
+            "description": "Baa格社債利回りと10年国債利回りのスプレッド。信用リスクの代表的なバロメーター。"
         }
     },
     "Financial Data": {
@@ -340,6 +347,13 @@
             "frequency": "Quarterly",
             "units": "Percent Change at Annual Rate, SA",
             "description": "BEAが発表する実質GDP前期比年率（季節調整済）。米国経済の総合的な成長度を示す主要指標。"
+        },
+        "INDPRO": {
+            "name_ja": "鉱工業生産指数",
+            "name_en": "Industrial Production: Total Index",
+            "frequency": "Monthly",
+            "units": "Index 2017=100",
+            "description": "鉱工業セクターの生産活動を示す代表的指標。景気サイクルの実体経済側を捉える。"
         }
     },
     "Population, Employment, & Labor Force": {
