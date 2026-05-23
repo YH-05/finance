@@ -311,6 +311,7 @@ dev = [
     "hypothesis>=6.150.2",
     "ipywidgets>=8.1.8",
     "marimo>=0.23.0",
+    "nbconvert>=7.17.1",
     "pip>=26.0",
     "pip-audit>=2.10.0",
     "pre-commit>=4.5.1",
