@@ -102,3 +102,6 @@ research/ca_strategy_poc/workspace/
 
 # FILING_NLP experiment data (HF cache 1.7GB + edgar cache + intermediate parquets)
 notebook/FILING_NLP/data/
+
+# REGIME_SWITCHING experiment data (FRED weekly raw, features, S&P500 returns parquets)
+notebook/REGIME_SWITCHING/data/*.parquet
