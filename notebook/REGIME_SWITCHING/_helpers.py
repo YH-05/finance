@@ -11,6 +11,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from matplotlib.axes import Axes
 
 from market.fred import HistoricalCache
 from market.yfinance.fetcher import YFinanceFetcher
@@ -245,3 +246,83 @@ def label_hmm_states(
         labels = [f"拡大{i + 1}" for i in range(n - 1)] + ["後退・ストレス"]
 
     return {int(sid): label for sid, label in zip(state_ids, labels, strict=True)}
+
+
+def plot_regime_overlay(
+    ax: Axes,
+    series: pd.Series,
+    regimes: pd.Series,
+    palette: dict[int, str],
+    labels: dict[int, str] | None = None,
+    line_color: str = "black",
+    line_width: float = 1.2,
+) -> Axes:
+    """レジーム背景を塗りつぶした時系列プロットを描画.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        描画先 Axes.
+    series : pd.Series
+        プロットする時系列 (インデックスが日付).
+    regimes : pd.Series
+        各時点のレジーム ID. ``series`` と同じインデックス長を想定.
+    palette : dict[int, str]
+        state_id -> 色のマッピング.
+    labels : dict[int, str] | None
+        state_id -> 凡例ラベルのマッピング. None なら凡例なし.
+    line_color : str
+        メインラインの色.
+    line_width : float
+        メインラインの太さ.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        受け取った Axes (チェーン用).
+    """
+    common_idx = series.index.intersection(regimes.index)
+    s = series.loc[common_idx]
+    r = regimes.loc[common_idx]
+
+    # 連続する同一状態のセグメント区間に対して axvspan で塗りつぶし
+    state_arr = r.to_numpy()
+    times = r.index.to_numpy()
+    if len(state_arr) > 0:
+        seg_start = 0
+        current_state = int(state_arr[0])
+        legend_drawn: set[int] = set()
+        for i in range(1, len(state_arr)):
+            if int(state_arr[i]) != current_state:
+                label = (
+                    labels.get(current_state, str(current_state))
+                    if labels is not None and current_state not in legend_drawn
+                    else None
+                )
+                ax.axvspan(
+                    times[seg_start],
+                    times[i],
+                    color=palette.get(current_state, "#dddddd"),
+                    alpha=0.3,
+                    label=label,
+                )
+                if labels is not None:
+                    legend_drawn.add(current_state)
+                seg_start = i
+                current_state = int(state_arr[i])
+        # 最後のセグメント
+        label = (
+            labels.get(current_state, str(current_state))
+            if labels is not None and current_state not in legend_drawn
+            else None
+        )
+        ax.axvspan(
+            times[seg_start],
+            times[-1],
+            color=palette.get(current_state, "#dddddd"),
+            alpha=0.3,
+            label=label,
+        )
+
+    ax.plot(s.index, s.values, color=line_color, linewidth=line_width)
+    return ax

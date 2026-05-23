@@ -249,3 +249,31 @@ class TestLabelHmmStates:
         mapping = helpers.label_hmm_states(states, indpro)
         assert mapping[1] == "拡大"
         assert mapping[0] == "後退・ストレス"
+
+
+import matplotlib  # noqa: E402
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+
+
+class TestPlotRegimeOverlay:
+    def test_axesに塗りつぶしパッチと線が追加される(self) -> None:
+        helpers = _load_helpers()
+
+        idx = pd.date_range("2024-01-05", periods=30, freq="W-FRI")
+        series = pd.Series(np.arange(30, dtype=float), index=idx, name="value")
+        regimes = pd.Series([0] * 10 + [1] * 10 + [2] * 10, index=idx, name="regime")
+        palette = {0: "#cccccc", 1: "#aaaaaa", 2: "#888888"}
+        labels = {0: "拡大", 1: "減速", 2: "後退・ストレス"}
+
+        fig, ax = plt.subplots()
+        helpers.plot_regime_overlay(
+            ax=ax, series=series, regimes=regimes, palette=palette, labels=labels
+        )
+
+        # ラインが1本以上引かれている
+        assert len(ax.lines) >= 1
+        # 背景塗りつぶし(axvspanはpatch)が状態数以上存在する
+        assert len(ax.patches) >= 3
+        plt.close(fig)
