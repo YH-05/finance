@@ -6,11 +6,15 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from market.fred import HistoricalCache
+from market.yfinance.fetcher import YFinanceFetcher
+from market.yfinance.types import FetchOptions
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__, module="regime_switching.helpers")
@@ -140,3 +144,58 @@ def transform_features(df_raw: pd.DataFrame) -> pd.DataFrame:
     standardized = (df - df.mean()) / df.std(ddof=0)
 
     return standardized[FRED_SERIES_IDS]
+
+
+def fetch_sp500_weekly_returns(
+    start: str = DEFAULT_START_DATE,
+    end: str | None = None,
+    fetcher: YFinanceFetcher | None = None,
+) -> pd.Series:
+    """yfinance で ^GSPC を取得し W-FRI 週次対数リターンを返す.
+
+    Parameters
+    ----------
+    start : str
+        開始日 (YYYY-MM-DD).
+    end : str | None
+        終了日。None なら今日。
+    fetcher : YFinanceFetcher | None
+        テスト時に差し替え可能。
+
+    Returns
+    -------
+    pd.Series
+        ``sp500_logret`` という名前の週次対数リターン Series.
+    """
+    fetcher = fetcher if fetcher is not None else YFinanceFetcher()
+    end_date = (
+        end if end is not None else datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    )
+
+    options = FetchOptions(
+        symbols=["^GSPC"],
+        start_date=start,
+        end_date=end_date,
+    )
+    results = fetcher.fetch(options)
+    if not results:
+        raise RuntimeError("^GSPC fetch returned empty result")
+
+    daily = results[0].data
+    # 列名は yfinance フォーマット (lower-case 想定); 念のため小文字化
+    daily.columns = [c.lower() if isinstance(c, str) else c for c in daily.columns]
+    if "close" not in daily.columns:
+        raise RuntimeError(
+            f"^GSPC data missing 'close' column. columns={list(daily.columns)}"
+        )
+
+    weekly_close = daily["close"].resample("W-FRI").last().dropna()
+    log_ret = np.log(weekly_close / weekly_close.shift(1)).dropna()
+    log_ret.name = "sp500_logret"
+
+    logger.info(
+        "S&P500 weekly returns loaded",
+        n_weeks=len(log_ret),
+        date_range=[str(log_ret.index.min().date()), str(log_ret.index.max().date())],
+    )
+    return log_ret

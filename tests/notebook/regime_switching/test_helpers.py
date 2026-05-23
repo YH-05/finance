@@ -176,3 +176,40 @@ class TestTransformFeatures:
         assert (monotonic_segments >= 3).any(), (
             "4-week MA による滑らかな遷移が検出されなかった"
         )
+
+
+class TestFetchSP500WeeklyReturns:
+    def test_週次対数リターンSeriesを返す(self) -> None:
+        helpers = _load_helpers()
+
+        # 100日分の架空日次データ
+        idx = pd.date_range("2024-01-01", periods=100, freq="B")
+        fake_daily = pd.DataFrame(
+            {"close": 4000 + np.cumsum(np.random.default_rng(0).normal(0, 5, 100))},
+            index=idx,
+        )
+
+        from datetime import datetime
+
+        from market.yfinance.types import DataSource, MarketDataResult
+
+        fake_result = MarketDataResult(
+            data=fake_daily,
+            source=DataSource.YFINANCE,
+            symbol="^GSPC",
+            fetched_at=datetime.now(),
+            from_cache=False,
+        )
+
+        with patch(
+            "market.yfinance.fetcher.YFinanceFetcher.fetch",
+            return_value=[fake_result],
+        ):
+            ret = helpers.fetch_sp500_weekly_returns(start="2024-01-01")
+
+        assert isinstance(ret, pd.Series)
+        assert ret.name == "sp500_logret"
+        # インデックスは金曜
+        assert all(d.dayofweek == 4 for d in ret.index)
+        # 最初の値はNaN除去済み
+        assert not ret.isna().any()
