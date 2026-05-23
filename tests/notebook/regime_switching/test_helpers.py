@@ -213,3 +213,39 @@ class TestFetchSP500WeeklyReturns:
         assert all(d.dayofweek == 4 for d in ret.index)
         # 最初の値はNaN除去済み
         assert not ret.isna().any()
+
+
+class TestLabelHmmStates:
+    def test_INDPRO_YoY平均の降順で拡大_減速_後退をラベル付け(self) -> None:
+        helpers = _load_helpers()
+
+        # 30週分の状態ラベルと INDPRO YoY 値
+        states = pd.Series(
+            [0] * 10 + [1] * 10 + [2] * 10,
+            index=pd.date_range("2024-01-05", periods=30, freq="W-FRI"),
+        )
+        # state=0 のINDPRO YoY平均が最小、state=2が最大になるようなデータ
+        indpro = pd.Series(
+            [-2.0] * 10 + [1.0] * 10 + [5.0] * 10,
+            index=states.index,
+        )
+
+        mapping = helpers.label_hmm_states(states, indpro)
+
+        assert mapping[2] == "拡大"
+        assert mapping[1] == "減速"
+        assert mapping[0] == "後退・ストレス"
+
+    def test_2状態の場合は拡大_後退ストレスのみ(self) -> None:
+        helpers = _load_helpers()
+        states = pd.Series(
+            [0] * 10 + [1] * 10,
+            index=pd.date_range("2024-01-05", periods=20, freq="W-FRI"),
+        )
+        indpro = pd.Series(
+            [-2.0] * 10 + [5.0] * 10,
+            index=states.index,
+        )
+        mapping = helpers.label_hmm_states(states, indpro)
+        assert mapping[1] == "拡大"
+        assert mapping[0] == "後退・ストレス"

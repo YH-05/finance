@@ -199,3 +199,49 @@ def fetch_sp500_weekly_returns(
         date_range=[str(log_ret.index.min().date()), str(log_ret.index.max().date())],
     )
     return log_ret
+
+
+def label_hmm_states(
+    states: pd.Series,
+    indpro_yoy: pd.Series,
+) -> dict[int, str]:
+    """HMM 状態 ID を INDPRO YoY 平均でランク付けし、解釈ラベルを割り当てる.
+
+    Parameters
+    ----------
+    states : pd.Series
+        状態 ID 系列 (int).
+    indpro_yoy : pd.Series
+        INDPRO の YoY (transform_features の出力でも生のYoYでも可).
+        ``states`` と同じインデックスである必要がある.
+
+    Returns
+    -------
+    dict[int, str]
+        state_id -> ラベル文字列 のマッピング.
+        ラベルは状態数に応じて以下:
+        - 2 状態: 拡大 / 後退・ストレス
+        - 3 状態: 拡大 / 減速 / 後退・ストレス
+        - 4 状態以上: 拡大1, 拡大2, ..., 後退・ストレス (連番)
+    """
+    common_idx = states.index.intersection(indpro_yoy.index)
+    aligned_states = states.loc[common_idx]
+    aligned_indpro = indpro_yoy.loc[common_idx]
+
+    mean_by_state = (
+        pd.DataFrame({"state": aligned_states, "indpro": aligned_indpro})
+        .groupby("state")["indpro"]
+        .mean()
+        .sort_values(ascending=False)
+    )
+
+    state_ids = mean_by_state.index.tolist()
+    n = len(state_ids)
+    if n == 2:
+        labels = ["拡大", "後退・ストレス"]
+    elif n == 3:
+        labels = ["拡大", "減速", "後退・ストレス"]
+    else:
+        labels = [f"拡大{i + 1}" for i in range(n - 1)] + ["後退・ストレス"]
+
+    return {int(sid): label for sid, label in zip(state_ids, labels, strict=True)}
