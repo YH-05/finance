@@ -53,6 +53,7 @@ from market.fraser.rate_limiter import (
     DualWindowRateLimiter,
     get_fraser_rate_limiter,
 )
+from market.fraser.session import FraserSession
 from market.fraser.types import (
     DocType,
     FetchOptions,
@@ -78,6 +79,7 @@ __all__ = [
     "FraserNotFoundError",
     "FraserParseError",
     "FraserRateLimitError",
+    "FraserSession",
     "FraserSubject",
     "FraserTheme",
     "FraserTimelineEvent",
