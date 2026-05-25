@@ -37,13 +37,23 @@ import os
 import re
 import sys
 import time
-import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    import torch
+    from transformers import AutoModel, AutoTokenizer
+
+    TokenizerType = AutoTokenizer
+    ModelType = AutoModel
+else:
+    # ランタイムでは Any に解決 (transformers/torch を遅延 import)
+    TokenizerType = Any
+    ModelType = Any
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
@@ -109,7 +119,9 @@ def _load_model(model_id: str, device: str, dtype: str) -> tuple[Any, Any]:
 # ----------------------------------------------------------------------------
 # Pooling
 # ----------------------------------------------------------------------------
-def last_token_pool(last_hidden_states: Any, attention_mask: Any) -> Any:
+def last_token_pool(
+    last_hidden_states: "torch.Tensor", attention_mask: "torch.Tensor"
+) -> "torch.Tensor":
     """各サンプルで最終 non-pad トークンの hidden state を取り出す.
 
     right-padding / left-padding 両対応 (05_embedding.ipynb 流用).
@@ -128,6 +140,8 @@ def last_token_pool(last_hidden_states: Any, attention_mask: Any) -> Any:
     """
     import torch
 
+    # 最終列の attention_mask 合計が batch_size と等しい場合は
+    # 全サンプルが left-padding (右端が valid トークン) と判定する
     left_padding = bool((attention_mask[:, -1].sum() == attention_mask.shape[0]).item())
     if left_padding:
         return last_hidden_states[:, -1]
@@ -426,9 +440,21 @@ def _load_target_ciks(membership_path: Path, index_filter: str) -> list[int]:
 # Checkpoint (CIK 単位)
 # ----------------------------------------------------------------------------
 class _EmbedCheckpoint:
-    """CIK 単位の embedding 完了状況を JSON で永続化."""
+    """CIK 単位の embedding 完了状況を JSON で永続化.
+
+    アトミック書き込み (tmp → replace) で中断時のデータ破損を防止する。
+    JSON では int key が str に変換されるため、内部 dict のキーは ``str(cik)``。
+    """
 
     def __init__(self, path: Path) -> None:
+        """Checkpoint を初期化する.
+
+        Parameters
+        ----------
+        path : Path
+            JSON 永続化ファイルのパス。
+            既存ファイルがあれば読み込み、なければ新規作成して初期データを書き込む。
+        """
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if self.path.exists():
@@ -442,6 +468,7 @@ class _EmbedCheckpoint:
             self._save()
 
     def _save(self) -> None:
+        """atomic write (tmp → replace) で self.data を永続化する."""
         tmp = self.path.with_suffix(".tmp.json")
         tmp.write_text(
             json.dumps(self.data, ensure_ascii=False, indent=1), encoding="utf-8"
@@ -449,9 +476,20 @@ class _EmbedCheckpoint:
         tmp.replace(self.path)
 
     def is_done(self, cik: int) -> bool:
+        """指定 CIK が完了済みかを返す (キーは str(cik) で正規化)."""
         return str(cik) in self.data["completed"]
 
     def mark_done(self, cik: int, summary: dict[str, Any]) -> None:
+        """CIK を完了状態にマークし checkpoint を永続化する.
+
+        Parameters
+        ----------
+        cik : int
+            完了した CIK.
+        summary : dict[str, Any]
+            ``{'status': str, 'n_chunks': int, 'n_embedded': int, ...}`` 形式の
+            実行結果サマリー。``finished_at`` は自動付与される。
+        """
         self.data["completed"][str(cik)] = {
             "finished_at": datetime.now().isoformat(),
             **summary,
@@ -561,6 +599,83 @@ def _assert_nas_mounted() -> None:
 _RUN_ID_RE = re.compile(r"^[A-Za-z0-9_\-]{1,64}$")
 
 
+def _run_embedding_loop(
+    *,
+    todo: list[int],
+    chunks_dir: Path,
+    embeddings_dir: Path,
+    errors_path: Path,
+    unresolved_path: Path,
+    model: Any,
+    tokenizer: Any,
+    args: argparse.Namespace,
+    checkpoint: _EmbedCheckpoint,
+    summary: dict[str, Any],
+) -> None:
+    """CIK ループ本体を切り出した補助関数 (``main`` の SRP 対応).
+
+    各 CIK について embed_cik を呼び、結果を checkpoint と summary に反映する。
+    例外発生時は ``errors_path`` に append-only で記録 (NAS パス漏えい防止のため
+    traceback 本体はロガーの ``exc_info=True`` のみに残し、jsonl にはエラー種別と
+    メッセージのみを書き込む — CWE-209 対策).
+    """
+    with errors_path.open("a", encoding="utf-8") as errors_fp:
+        for cik in todo:
+            chunks_parquet = chunks_dir / f"chunks_cik{cik:010d}.parquet"
+            if not chunks_parquet.exists():
+                log.warning(
+                    "CIK %d: chunks parquet not found (%s). skip.", cik, chunks_parquet
+                )
+                summary["n_skipped_no_chunks"] += 1
+                checkpoint.mark_done(
+                    cik,
+                    {"status": "skipped_no_chunks", "n_chunks": 0, "n_embedded": 0},
+                )
+                continue
+
+            out_npy = embeddings_dir / f"embeddings_cik{cik:010d}.npy"
+            out_meta = embeddings_dir / f"chunks_meta_cik{cik:010d}.parquet"
+            try:
+                result = embed_cik(
+                    cik=cik,
+                    chunks_parquet=chunks_parquet,
+                    out_npy=out_npy,
+                    out_meta=out_meta,
+                    model=model,
+                    tokenizer=tokenizer,
+                    batch_size=args.batch_size,
+                    max_length=args.max_length,
+                    force_reencode=args.force_reencode,
+                    checkpoint_every_n_batches=args.checkpoint_every_n_batches,
+                    unresolved_path=unresolved_path,
+                )
+            except Exception as e:
+                summary["n_failed"] += 1
+                err = f"{type(e).__name__}: {e}"
+                # 詳細 traceback はロガーへ (NAS パス漏えい防止)
+                log.error("CIK %d fatal: %s", cik, err, exc_info=True)
+                errors_fp.write(
+                    json.dumps(
+                        {
+                            "timestamp": datetime.now().isoformat(),
+                            "cik": cik,
+                            "phase": "embed_cik",
+                            "error": err,
+                        },
+                        ensure_ascii=False,
+                    )
+                    + "\n"
+                )
+                errors_fp.flush()
+                # 失敗時は checkpoint に記録せず, resume で再試行可能にする
+                continue
+
+            checkpoint.mark_done(cik, {"status": "success", **result})
+            summary["n_processed"] += 1
+            summary["total_chunks"] += result["n_chunks"]
+            summary["total_embedded"] += result["n_embedded"]
+
+
 def main(argv: list[str] | None = None) -> None:
     """CLI エントリポイント."""
     args = _parse_args(argv)
@@ -651,64 +766,18 @@ def main(argv: list[str] | None = None) -> None:
     log.info("model loaded: %s", type(model).__name__)
 
     t0 = time.time()
-    errors_fp = errors_path.open("a", encoding="utf-8")
-    try:
-        for cik in todo:
-            chunks_parquet = chunks_dir / f"chunks_cik{cik:010d}.parquet"
-            if not chunks_parquet.exists():
-                log.warning(
-                    "CIK %d: chunks parquet not found (%s). skip.", cik, chunks_parquet
-                )
-                summary["n_skipped_no_chunks"] += 1
-                checkpoint.mark_done(
-                    cik, {"status": "skipped_no_chunks", "n_chunks": 0, "n_embedded": 0}
-                )
-                continue
-
-            out_npy = embeddings_dir / f"embeddings_cik{cik:010d}.npy"
-            out_meta = embeddings_dir / f"chunks_meta_cik{cik:010d}.parquet"
-            try:
-                result = embed_cik(
-                    cik=cik,
-                    chunks_parquet=chunks_parquet,
-                    out_npy=out_npy,
-                    out_meta=out_meta,
-                    model=model,
-                    tokenizer=tokenizer,
-                    batch_size=args.batch_size,
-                    max_length=args.max_length,
-                    force_reencode=args.force_reencode,
-                    checkpoint_every_n_batches=args.checkpoint_every_n_batches,
-                    unresolved_path=unresolved_path,
-                )
-            except Exception as e:
-                summary["n_failed"] += 1
-                err = f"{type(e).__name__}: {e}"
-                log.error("CIK %d fatal: %s", cik, err)
-                errors_fp.write(
-                    json.dumps(
-                        {
-                            "timestamp": datetime.now().isoformat(),
-                            "cik": cik,
-                            "phase": "embed_cik",
-                            "error": err,
-                            "traceback": traceback.format_exc(limit=3),
-                        },
-                        ensure_ascii=False,
-                    )
-                    + "\n"
-                )
-                errors_fp.flush()
-                # 失敗時は checkpoint に記録せず, resume で再試行可能にする
-                continue
-
-            checkpoint.mark_done(cik, {"status": "success", **result})
-            summary["n_processed"] += 1
-            summary["total_chunks"] += result["n_chunks"]
-            summary["total_embedded"] += result["n_embedded"]
-    finally:
-        errors_fp.close()
-
+    _run_embedding_loop(
+        todo=todo,
+        chunks_dir=chunks_dir,
+        embeddings_dir=embeddings_dir,
+        errors_path=errors_path,
+        unresolved_path=unresolved_path,
+        model=model,
+        tokenizer=tokenizer,
+        args=args,
+        checkpoint=checkpoint,
+        summary=summary,
+    )
     summary["finished_at"] = datetime.now().isoformat()
     summary["elapsed_sec"] = round(time.time() - t0, 1)
 

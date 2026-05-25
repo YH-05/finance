@@ -157,6 +157,34 @@ class TestLoadUniverse:
         with pytest.raises(ValueError, match="index_filter"):
             ri._load_universe(universe_parquet, membership_parquet, "in_unknown")
 
+    def test_異常系_membership列が存在しない時にValueError(
+        self,
+        universe_parquet: Path,
+        tmp_path: Path,
+    ) -> None:
+        """membership parquet に in_spx 列がない場合 utils.validate_index_filter が raise."""
+        ri = _load_run_indices()
+        broken_membership_path = tmp_path / "membership_broken.parquet"
+        # in_spx 列を持たない壊れた membership
+        broken_df = pd.DataFrame({"cik": [320193, 14693], "other_col": [True, False]})
+        broken_df.to_parquet(broken_membership_path, index=False)
+        with pytest.raises(ValueError, match="not found in membership columns"):
+            ri._load_universe(universe_parquet, broken_membership_path, "in_spx")
+
+
+# -----------------------------------------------------------------------------
+# _setup_edgar_identity
+# -----------------------------------------------------------------------------
+class TestSetupEdgarIdentity:
+    def test_異常系_EDGAR_IDENTITY未設定でRuntimeError(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """EDGAR_IDENTITY 環境変数が未設定の場合に RuntimeError が raise される."""
+        ri = _load_run_indices()
+        monkeypatch.delenv("EDGAR_IDENTITY", raising=False)
+        with pytest.raises(RuntimeError, match="EDGAR_IDENTITY"):
+            ri._setup_edgar_identity()
+
 
 # -----------------------------------------------------------------------------
 # _parse_args
@@ -176,36 +204,39 @@ class TestParseArgs:
                 "in_spx",
             ]
         )
+        ri_mod = _load_run_indices()
         assert args.run_id == "indices_v1"
         assert args.universe == "/tmp/universe.parquet"
         assert args.membership == "/tmp/membership.parquet"
         assert args.index_filter == "in_spx"
-        # デフォルト値
-        assert args.workers > 0
-        assert args.rate_rps > 0
-        assert args.rate_burst > 0
-        assert args.flush_every > 0
+        # デフォルト値は config の値と一致すること (範囲チェックではなく具体値で検証)
+        assert args.workers == ri_mod.config.DEFAULT_MAX_WORKERS
+        assert args.rate_rps == ri_mod.config.RATE_LIMIT_RPS
+        assert args.rate_burst == ri_mod.config.RATE_LIMIT_BURST
+        assert args.flush_every == 5
 
-    def test_正常系_index_filterの4種類全てを受け付ける(self) -> None:
+    @pytest.mark.parametrize("filter_value", ["in_spx", "in_sox", "in_riy", "in_ray"])
+    def test_正常系_index_filterの4種類全てを受け付ける(
+        self, filter_value: str
+    ) -> None:
         ri = _load_run_indices()
-        for f in ("in_spx", "in_sox", "in_riy", "in_ray"):
-            args = ri._parse_args(
-                [
-                    "--run-id",
-                    "indices_v1",
-                    "--universe",
-                    "/tmp/u.parquet",
-                    "--membership",
-                    "/tmp/m.parquet",
-                    "--index-filter",
-                    f,
-                ]
-            )
-            assert args.index_filter == f
+        args = ri._parse_args(
+            [
+                "--run-id",
+                "indices_v1",
+                "--universe",
+                "/tmp/u.parquet",
+                "--membership",
+                "/tmp/m.parquet",
+                "--index-filter",
+                filter_value,
+            ]
+        )
+        assert args.index_filter == filter_value
 
     def test_異常系_index_filterに無効値でSystemExit(self) -> None:
         ri = _load_run_indices()
-        with pytest.raises(SystemExit):
+        with pytest.raises(SystemExit) as exc_info:
             ri._parse_args(
                 [
                     "--run-id",
@@ -218,6 +249,8 @@ class TestParseArgs:
                     "in_invalid",
                 ]
             )
+        # argparse のエラー終了は exit code 2
+        assert exc_info.value.code == 2
 
     def test_正常系_オプション引数を全て指定できる(self) -> None:
         ri = _load_run_indices()

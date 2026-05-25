@@ -12,6 +12,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
@@ -24,8 +25,20 @@ if TYPE_CHECKING:
     from types import ModuleType
 
 
+_EI_MODULE_CACHE: ModuleType | None = None
+
+
 def _load_embed_indices() -> ModuleType:
-    """notebook/FILING_NLP/pipeline/embed_indices.py をモジュールとしてロード."""
+    """notebook/FILING_NLP/pipeline/embed_indices.py をモジュールとしてロード.
+
+    Notes
+    -----
+    モジュールスコープのキャッシュを保持し、重複した ``exec_module`` を回避する。
+    これにより複数テスト実行時の ``sys.path`` 累積汚染を抑制する。
+    """
+    global _EI_MODULE_CACHE  # noqa: PLW0603
+    if _EI_MODULE_CACHE is not None:
+        return _EI_MODULE_CACHE
     here = Path(__file__).resolve()
     repo_root = here.parent.parent.parent.parent  # tests/notebook/FILING_NLP/ → repo
     module_path = (
@@ -38,6 +51,7 @@ def _load_embed_indices() -> ModuleType:
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    _EI_MODULE_CACHE = module
     return module
 
 
@@ -99,7 +113,9 @@ def membership_parquet(tmp_path: Path, membership_df: pd.DataFrame) -> Path:
 # -----------------------------------------------------------------------------
 # Dummy encoder factory
 # -----------------------------------------------------------------------------
-def _make_dummy_encode(dim: int = 1536):
+def _make_dummy_encode(
+    dim: int = 1536,
+) -> Callable[[list[str], Any, Any, int, int], np.ndarray]:
     """encode_texts と同じシグネチャのダミー encoder を返す.
 
     入力 list[str] に対して shape (N, dim) の正規化済み float32 array を返す.
@@ -129,8 +145,7 @@ class TestLastTokenPool:
     def test_正常系_right_padding_attention_maskで最終非paddingトークンを取得(
         self,
     ) -> None:
-        import torch
-
+        torch = pytest.importorskip("torch")
         ei = _load_embed_indices()
         # batch=2, seq=4, hidden=3
         # sample0: seq_len=3 (positions 0,1,2 valid), sample1: seq_len=2 (positions 0,1)
@@ -152,8 +167,7 @@ class TestLastTokenPool:
         assert torch.allclose(pooled[1], torch.tensor([5.0, 5.0, 5.0]))
 
     def test_正常系_left_paddingで最終位置トークンを取得(self) -> None:
-        import torch
-
+        torch = pytest.importorskip("torch")
         ei = _load_embed_indices()
         # left-padding: mask の最終列がすべて 1 (batch_size と一致)
         hidden = torch.tensor(

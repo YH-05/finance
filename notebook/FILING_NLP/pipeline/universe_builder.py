@@ -167,31 +167,56 @@ def _stage2_normalized_join(
     1. Bloomberg ticker を正規化 (BF/B → BF-B)
     2. universe_v2 の all_tickers 列を展開した dict[ticker→cik] を構築
     3. 正規化後 ticker でマッチング
-    """
-    # all_tickers 列を展開した lookup dict を作成
-    lookup: dict[str, int] = {}
-    for _, row in universe_v2.iterrows():
-        cik = int(row["cik"])
-        # まず ticker 列
-        if isinstance(row.get("ticker"), str):
-            lookup.setdefault(row["ticker"], cik)
-        # 次に all_tickers (list/ndarray/NaN)
-        for t in _all_tickers_to_set(row.get("all_tickers")):
-            lookup.setdefault(t, cik)
 
-    out_rows: list[dict[str, Any]] = []
-    for _, row in unresolved.iterrows():
-        raw = row["ticker"]
-        normalized = _normalize_ticker(raw)
-        cik = lookup.get(normalized) or lookup.get(raw)
-        if cik is not None:
-            new = row.to_dict()
-            new["cik"] = int(cik)
-            out_rows.append(new)
-    if not out_rows:
+    Notes
+    -----
+    lookup dict 構築は vectorized (explode + dict comprehension) で行う。
+    ``iterrows`` を使わないことで universe_v2 が数千行のとき
+    10-50x の高速化が見込める。
+    """
+    # all_tickers 列を vectorize で展開して lookup dict を構築
+    lookup: dict[str, int] = {}
+
+    # まず ticker 列 (str 限定) を一括で dict に取り込む
+    valid_ticker_mask = universe_v2["ticker"].apply(lambda x: isinstance(x, str))
+    ticker_pairs = universe_v2.loc[valid_ticker_mask, ["ticker", "cik"]]
+    # 早い者勝ち (setdefault) を保つため iter で順次反映
+    for ticker_val, cik_val in zip(
+        ticker_pairs["ticker"], ticker_pairs["cik"], strict=True
+    ):
+        lookup.setdefault(ticker_val, int(cik_val))
+
+    # 次に all_tickers (list/ndarray/string/NaN) を set 化して explode
+    if "all_tickers" in universe_v2.columns:
+        normalized_sets = universe_v2["all_tickers"].apply(_all_tickers_to_set)
+        exploded = (
+            pd.DataFrame(
+                {"all_tickers_set": normalized_sets, "cik": universe_v2["cik"]}
+            )
+            .explode("all_tickers_set")
+            .dropna(subset=["all_tickers_set"])
+        )
+        for ticker_val, cik_val in zip(
+            exploded["all_tickers_set"], exploded["cik"], strict=True
+        ):
+            lookup.setdefault(str(ticker_val), int(cik_val))
+
+    if unresolved.empty:
         return pd.DataFrame(columns=[*unresolved.columns.tolist(), "cik"])
-    resolved = pd.DataFrame(out_rows)
-    resolved["cik"] = resolved["cik"].astype("int64")
+
+    # vectorize: normalized → fallback to raw ticker (Series.map で O(N))
+    normalized_series = unresolved["ticker"].map(_normalize_ticker)
+    cik_series = normalized_series.map(lookup)
+    cik_series = cik_series.where(
+        cik_series.notna(), unresolved["ticker"].map(lookup)
+    )
+
+    matched_mask = cik_series.notna()
+    if not matched_mask.any():
+        return pd.DataFrame(columns=[*unresolved.columns.tolist(), "cik"])
+
+    resolved = unresolved.loc[matched_mask].copy()
+    resolved["cik"] = cik_series[matched_mask].astype("int64").to_numpy()
     return resolved.reset_index(drop=True)
 
 
@@ -216,6 +241,14 @@ def _edgar_company_factory(ticker: str) -> Any:
     reraise=True,
 )
 def _edgar_lookup_with_retry(ticker: str) -> Any:
+    """``_edgar_company_factory`` を tenacity でラップして呼び出す.
+
+    Notes
+    -----
+    monkeypatch でのテスト容易化のため ``_edgar_company_factory`` と分離している。
+    retry 設定: ``stop_after_attempt(3)``, ``wait_exponential(min=1, max=8)``,
+    ``reraise=True`` (Network 例外を最大 3 回まで指数バックオフ再試行).
+    """
     return _edgar_company_factory(ticker)
 
 
@@ -394,6 +427,13 @@ def build_membership(
 # CLI
 # ----------------------------------------------------------------------------
 def _setup_logging() -> None:
+    """StreamHandler のみの簡易 logging 設定.
+
+    Notes
+    -----
+    universe_builder は短時間で完了する一回性スクリプトのため、
+    ``run_indices.py`` / ``embed_indices.py`` のような FileHandler は持たない。
+    """
     fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
     logging.basicConfig(level=logging.INFO, format=fmt, force=True)
 

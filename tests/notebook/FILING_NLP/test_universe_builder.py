@@ -422,3 +422,131 @@ class TestBuildMembership:
         bfb = mem[mem["cik"] == 14693].iloc[0]
         assert bool(bfb["in_spx"]) is True
         assert bool(bfb["in_sox"]) is False
+
+    def test_エッジケース_空のresolvedDataFrameでスキーマ保持の空membership(
+        self,
+    ) -> None:
+        """resolved が空の場合、必須スキーマ (cik / in_* / snapshot_date) を保持."""
+        ub = _load_universe_builder()
+        empty_resolved = pd.DataFrame(
+            columns=[
+                "cik",
+                "ticker",
+                "isin",
+                "sedol",
+                "mkt_cap",
+                "gics_sector",
+                "gics_industry_group",
+                "gics_industry",
+                "gics_sub_industry",
+                "index_name",
+            ]
+        )
+        mem = ub.build_membership(
+            empty_resolved,
+            index_names=["SPX", "SOX", "RIY", "RAY"],
+            snapshot_date="2026-05-22",
+        )
+        assert len(mem) == 0
+        for col in ("cik", "in_spx", "in_sox", "in_riy", "in_ray", "snapshot_date"):
+            assert col in mem.columns, f"必須列 {col} が欠落"
+
+
+# =============================================================================
+# _all_tickers_to_set: Stage2 精度に直結するユーティリティの直接テスト
+# =============================================================================
+class TestAllTickersToSet:
+    @pytest.mark.parametrize(
+        ("input_value", "expected"),
+        [
+            (None, set()),
+            (float("nan"), set()),
+            ("AAPL", {"AAPL"}),
+            (["AAPL", "MSFT"], {"AAPL", "MSFT"}),
+            (np.array(["AAPL", "MSFT"], dtype=object), {"AAPL", "MSFT"}),
+            ([], set()),
+            (12345, set()),  # 非 iterable (int) は空 set にフォールバック
+        ],
+    )
+    def test_正常系_様々な入力型を一律にsetに変換できる(
+        self, input_value: Any, expected: set[str]
+    ) -> None:
+        ub = _load_universe_builder()
+        result = ub._all_tickers_to_set(input_value)
+        assert result == expected
+
+
+# =============================================================================
+# _lookup_cik_via_edgar: 負 CIK ガード（edgartools の NotFound マーカー）
+# =============================================================================
+class TestLookupCikViaEdgar:
+    def test_異常系_負のCIKマーカーで_Noneを返す(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """edgartools が Not Found 時に返す cik=-999999999 を None に変換する."""
+        ub = _load_universe_builder()
+
+        class _FakeCompany:
+            cik = -999999999
+
+        monkeypatch.setattr(
+            ub, "_edgar_lookup_with_retry", lambda ticker: _FakeCompany()
+        )
+        assert ub._lookup_cik_via_edgar("UNKNOWN") is None
+
+
+# =============================================================================
+# main: CLI エンドツーエンドスモークテスト
+# =============================================================================
+class TestMain:
+    def test_異常系_全index_JSONファイルが存在しない場合_return1(
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+        universe_v2_fixture: pd.DataFrame,
+    ) -> None:
+        """--index-dir に対象 JSON が一つもない場合に main() が return 1 する."""
+        ub = _load_universe_builder()
+        # universe_v2 を tmp_path に書き出して config 参照を差し替える
+        universe_v2_path = tmp_path / "universe_v2.parquet"
+        universe_v2_fixture.to_parquet(universe_v2_path, index=False)
+        empty_index_dir = tmp_path / "empty_indices"
+        empty_index_dir.mkdir()
+
+        rc = ub.main(
+            [
+                "--indices",
+                "SPX",
+                "--snapshot-date",
+                "2026-05-22",
+                "--index-dir",
+                str(empty_index_dir),
+                "--universe-out",
+                str(tmp_path / "universe_out.parquet"),
+                "--membership-out",
+                str(tmp_path / "membership_out.parquet"),
+                "--universe-v2",
+                str(universe_v2_path),
+            ]
+        )
+        assert rc == 1
+
+    def test_異常系_snapshot_dateが不正な形式でreturn2(
+        self,
+        tmp_path: Path,
+    ) -> None:
+        """--snapshot-date が YYYY-MM-DD 形式でない場合に return 2 (CWE-22 対策)."""
+        ub = _load_universe_builder()
+        rc = ub.main(
+            [
+                "--snapshot-date",
+                "../../etc/passwd",
+                "--index-dir",
+                str(tmp_path),
+                "--universe-out",
+                str(tmp_path / "u.parquet"),
+                "--membership-out",
+                str(tmp_path / "m.parquet"),
+            ]
+        )
+        assert rc == 2

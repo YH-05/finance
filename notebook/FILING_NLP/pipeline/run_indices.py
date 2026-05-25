@@ -34,6 +34,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# transformers.AutoTokenizer 互換オブジェクトを示す型エイリアス
+# (transformers の型スタブが不完全なため Any にフォールバック)
+Tokenizer = Any
+
 # EDGAR_IDENTITY の .env ロードは main() 内で実行する (import 時の副作用を排除)
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 _ENV_PATH = _REPO_ROOT / ".env"
@@ -57,8 +61,14 @@ def _setup_logging(run_id: str, logs_dir: Path) -> None:
     utils.setup_pipeline_logging(run_id, logs_dir, suffix="run")
 
 
-def _load_tokenizer() -> Any:
-    """HuggingFace tokenizer をロード (config.TOKENIZER_MODEL_ID)."""
+def _load_tokenizer() -> "Tokenizer":
+    """HuggingFace tokenizer をロード (config.TOKENIZER_MODEL_ID).
+
+    Returns
+    -------
+    Tokenizer
+        ``transformers.AutoTokenizer`` 互換オブジェクト (型エイリアスは Any).
+    """
     from transformers import AutoTokenizer
 
     return AutoTokenizer.from_pretrained(
@@ -191,6 +201,12 @@ def _setup_edgar_identity() -> None:
     edgar.set_identity(os.environ["EDGAR_IDENTITY"])
 
     class _LegacyParserFilter(logging.Filter):
+        """edgar.core の legacy parser fallback 警告を静音化するフィルタ.
+
+        edgartools が HTML パーサーへフォールバックする際に大量の INFO ログが
+        出力されるため、パイプライン実行中のノイズを低減する。
+        """
+
         def filter(self, record: logging.LogRecord) -> bool:
             return "falling back to legacy parser" not in record.getMessage()
 
