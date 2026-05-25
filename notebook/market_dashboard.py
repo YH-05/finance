@@ -14,6 +14,7 @@ def _():
     import pandas as pd
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
+
     return datetime, go, make_subplots, mo, np, pd, timedelta
 
 
@@ -29,7 +30,6 @@ def _(mo):
         ---
         """
     )
-    return
 
 
 @app.cell
@@ -232,6 +232,7 @@ def _(datetime, timedelta):
             return {"data": df, "error": None}
         except Exception as e:
             return {"data": None, "error": str(e)}
+
     return (
         MarketData,
         fetch_commodity_data,
@@ -446,7 +447,7 @@ app._unparsable_cell(
 
     _()
     """,
-    name="_"
+    name="_",
 )
 
 
@@ -476,9 +477,7 @@ def _(
     metals_data = fetch_commodity_data(METALS, selected_days)
 
     # Calculate performance tables
-    indices_mag7_perf = calculate_performance_metrics(
-        indices_mag7_data, TICKER_NAMES
-    )
+    indices_mag7_perf = calculate_performance_metrics(indices_mag7_data, TICKER_NAMES)
     sector_perf = calculate_performance_metrics(sector_data, TICKER_NAMES)
     metals_perf = calculate_performance_metrics(metals_data, TICKER_NAMES)
 
@@ -498,9 +497,7 @@ def _(mo, pd):
     """Helper function to style performance tables with heatmap."""
     from typing import Any
 
-    def style_performance_table(
-        df: Any, return_cols: list[str] | None = None
-    ) -> Any:
+    def style_performance_table(df: Any, return_cols: list[str] | None = None) -> Any:
         """Apply heatmap styling to performance table.
 
         Parameters
@@ -537,6 +534,7 @@ def _(mo, pd):
             )
 
         return mo.ui.table(styled_df, selection=None)
+
     return (style_performance_table,)
 
 
@@ -666,7 +664,13 @@ def _(go, macro_data, mo):
             title="米国金利推移",
             xaxis_title="日付",
             yaxis_title="金利 (%)",
-            legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "xanchor": "right", "x": 1},
+            legend={
+                "orientation": "h",
+                "yanchor": "bottom",
+                "y": 1.02,
+                "xanchor": "right",
+                "x": 1,
+            },
             hovermode="x unified",
             template="plotly_white",
             height=400,
@@ -793,7 +797,13 @@ def _(go, macro_data, make_subplots, mo, vix_data, vix_error):
             template="plotly_white",
             height=500,
             showlegend=True,
-            legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "xanchor": "right", "x": 1},
+            legend={
+                "orientation": "h",
+                "yanchor": "bottom",
+                "y": 1.02,
+                "xanchor": "right",
+                "x": 1,
+            },
         )
 
         fig.update_yaxes(title_text="VIX", row=1, col=1)
@@ -881,9 +891,7 @@ def _(MarketData, np):
             end_date = datetime.now()
             start_date = end_date - timedelta(days=days)
 
-            df = data_client.fetch_stock(
-                symbol, start=start_date.strftime("%Y-%m-%d")
-            )
+            df = data_client.fetch_stock(symbol, start=start_date.strftime("%Y-%m-%d"))
 
             if df.empty:
                 return None
@@ -918,6 +926,7 @@ def _(MarketData, np):
             }
         except Exception:
             return None
+
     return (calculate_weekly_returns,)
 
 
@@ -1054,15 +1063,15 @@ def _(return_data, return_dist_symbols):
 
     | 指標 | 値 |
     |------|-----|
-    | サンプル数 | {data['count']} |
-    | 平均（週次） | {data['mean']:.4%} |
-    | 標準偏差（週次） | {data['std']:.4%} |
-    | 最小値 | {data['min']:.4%} |
-    | 最大値 | {data['max']:.4%} |
-    | 年率リターン | {data['annualized_return']:.2%} |
-    | 年率ボラティリティ | {data['annualized_vol']:.2%} |
-    | 歪度 | {data['skewness']:.3f} |
-    | 尖度 | {data['kurtosis']:.3f} |
+    | サンプル数 | {data["count"]} |
+    | 平均（週次） | {data["mean"]:.4%} |
+    | 標準偏差（週次） | {data["std"]:.4%} |
+    | 最小値 | {data["min"]:.4%} |
+    | 最大値 | {data["max"]:.4%} |
+    | 年率リターン | {data["annualized_return"]:.2%} |
+    | 年率ボラティリティ | {data["annualized_vol"]:.2%} |
+    | 歪度 | {data["skewness"]:.3f} |
+    | 尖度 | {data["kurtosis"]:.3f} |
     """
         return table
 
@@ -1114,7 +1123,6 @@ def _(mo, selected_period, tabs_with_all):
         ],
         gap=2,
     )
-    return
 
 
 @app.cell
@@ -1139,10 +1147,9 @@ def _():
 
     import pandas as pd
     import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-
     from market_analysis import CorrelationAnalyzer, MarketData
     from market_analysis.visualization import HeatmapChart
+    from plotly.subplots import make_subplots
 
     warnings.filterwarnings("ignore")
     return (

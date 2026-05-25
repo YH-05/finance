@@ -428,6 +428,11 @@ def plot_loadings_and_explained_variance(df_yield: pd.DataFrame):
     n_features = df_yield.shape[1]
     _, pca = analyze_yield_curve_pca(df_yield=df_yield, n_components=n_features)
 
+    # scikit-learn の新しい型ヒントでは PCA.components_ は ndarray | None
+    # (未 fit のインスタンスでは None)。analyze_yield_curve_pca は fit 済みを返すため
+    # ここでは確実に not None。
+    assert pca.components_ is not None
+
     # loadings(top3)
     df_loadings = pd.DataFrame(
         pca.components_[:3, :],  # 上位3成分のみ抽出

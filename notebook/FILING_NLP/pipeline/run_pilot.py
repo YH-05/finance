@@ -25,8 +25,9 @@ if _ENV_PATH.exists() and not os.environ.get("EDGAR_IDENTITY"):
             )
             break
 
-import edgar  # noqa: E402
 import pandas as pd  # noqa: E402
+
+import edgar  # noqa: E402
 
 if "EDGAR_IDENTITY" not in os.environ:
     raise RuntimeError(
@@ -34,6 +35,7 @@ if "EDGAR_IDENTITY" not in os.environ:
         "'Name email@example.com' 形式で設定してください。"
     )
 edgar.set_identity(os.environ["EDGAR_IDENTITY"])
+
 
 # edgartools の legacy parser 警告を抑制
 class _LegacyParserFilter(logging.Filter):
@@ -121,7 +123,9 @@ def main() -> None:
     )
     log.info(
         "sample tickers head: %s",
-        sample[["cik", "ticker", "exchange", "company"]].head(10).to_string(index=False),
+        sample[["cik", "ticker", "exchange", "company"]]
+        .head(10)
+        .to_string(index=False),
     )
 
     # Tokenizer

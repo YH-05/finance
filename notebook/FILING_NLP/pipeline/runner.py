@@ -92,9 +92,7 @@ def process_filing(
         try:
             text = obj.get_item_with_part(part, item, markdown=False)
         except Exception as e:
-            logger.debug(
-                "get_item_with_part fail: %s %s/%s: %s", ticker, part, item, e
-            )
+            logger.debug("get_item_with_part fail: %s %s/%s: %s", ticker, part, item, e)
             continue
         if not isinstance(text, str) or not text.strip():
             continue
@@ -449,7 +447,9 @@ def run_pipeline(
         pbar = None
 
     with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        futures = {ex.submit(_worker, cik, ticker): (cik, ticker) for cik, ticker in todo}
+        futures = {
+            ex.submit(_worker, cik, ticker): (cik, ticker) for cik, ticker in todo
+        }
         done_since_flush = 0
         for fut in as_completed(futures):
             cik, ticker = futures[fut]

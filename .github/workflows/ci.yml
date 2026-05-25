@@ -68,12 +68,28 @@ jobs:
     - name: Run pre-commit
       run: |
         uv run pre-commit run --all-files || true
-        if ! git diff --quiet; then
-          echo "Files were modified by pre-commit:"
-          git diff --name-only
+        # Lint 失敗判定対象を Python / 設定 / docs に限定。
+        # データ (data/, research/, analyst/, MAS4InvestmentTeam/, trash/, notebook/*/data/) や
+        # 既存メモ・XBRL fixture 等の trailing-whitespace / end-of-file 不整合は許容する。
+        LINT_PATHSPEC=(
+          '*.py' '*.pyi'
+          '*.toml' '*.yaml' '*.yml' '*.cfg' '*.ini'
+          'docs/**/*.md'
+          '.claude/**/*.md'
+          'Makefile' 'pyproject.toml' 'uv.lock'
+        )
+        if ! git diff --quiet -- "${LINT_PATHSPEC[@]}"; then
+          echo "Files were modified by pre-commit (Python / config / docs scope):"
+          git diff --name-only -- "${LINT_PATHSPEC[@]}"
           echo "---"
-          git diff
+          git diff -- "${LINT_PATHSPEC[@]}"
           exit 1
+        fi
+        # スコープ外の変更は警告のみ（CI は通す）
+        if ! git diff --quiet; then
+          echo ""
+          echo "::warning::pre-commit modified files outside lint scope (data/research/analyst/etc.). Not failing the build."
+          git diff --name-only
         fi
 
     - name: Check for security issues
@@ -140,6 +156,11 @@ jobs:
     - name: Run unit tests (no API key required)
       env:
         PYTHONPATH: ${{ github.workspace }}/src
+        # chromadb 経由で読み込まれる古い OpenTelemetry の *_pb2.py が
+        # protobuf >= 6.x の strict generated-file チェックで弾かれるため、
+        # pure-Python 実装に切り替えて collection error を回避する。
+        # 影響範囲は protobuf を使う一部のテストに限定。
+        PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
       run: |
         uv run pytest tests/ \
           -m "not integration" \
