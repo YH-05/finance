@@ -156,6 +156,11 @@ jobs:
     - name: Run unit tests (no API key required)
       env:
         PYTHONPATH: ${{ github.workspace }}/src
+        # chromadb 経由で読み込まれる古い OpenTelemetry の *_pb2.py が
+        # protobuf >= 6.x の strict generated-file チェックで弾かれるため、
+        # pure-Python 実装に切り替えて collection error を回避する。
+        # 影響範囲は protobuf を使う一部のテストに限定。
+        PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
       run: |
         uv run pytest tests/ \
           -m "not integration" \
