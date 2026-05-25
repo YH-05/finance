@@ -38,7 +38,12 @@ class TestLockFeeds:
     """Test lock_feeds context manager."""
 
     def test_lock_feeds_creates_lock_file(self, tmp_path: Path) -> None:
-        """Test that lock_feeds creates .feeds.lock file."""
+        """Test that lock_feeds creates .feeds.lock file while held.
+
+        Note: filelock 3.20+ UnixFileLock deletes the lock file on release
+        (see filelock._unix.UnixFileLock._release). Therefore we only assert
+        the file exists during the locked context, not after release.
+        """
         manager = LockManager(tmp_path)
         lock_file = tmp_path / ".feeds.lock"
 
@@ -48,8 +53,9 @@ class TestLockFeeds:
             # Lock file should exist while lock is held
             assert lock_file.exists()
 
-        # Lock file should still exist after release (FileLock behavior)
-        assert lock_file.exists()
+        # filelock 3.20+ removes the .lock file on release on Unix/macOS.
+        # We do not assert on post-release existence to remain compatible
+        # with both legacy and current filelock behavior.
 
     def test_lock_feeds_acquires_and_releases(self, tmp_path: Path) -> None:
         """Test that lock_feeds successfully acquires and releases lock."""
@@ -127,7 +133,12 @@ class TestLockItems:
     """Test lock_items context manager."""
 
     def test_lock_items_creates_lock_file(self, tmp_path: Path) -> None:
-        """Test that lock_items creates .items.lock file."""
+        """Test that lock_items creates .items.lock file while held.
+
+        Note: filelock 3.20+ UnixFileLock deletes the lock file on release
+        (see filelock._unix.UnixFileLock._release). Therefore we only assert
+        the file exists during the locked context, not after release.
+        """
         manager = LockManager(tmp_path)
         feed_id = "test-feed-id"
         lock_file = tmp_path / feed_id / ".items.lock"
@@ -138,8 +149,9 @@ class TestLockItems:
             # Lock file should exist while lock is held
             assert lock_file.exists()
 
-        # Lock file should still exist after release
-        assert lock_file.exists()
+        # filelock 3.20+ removes the .lock file on release on Unix/macOS.
+        # We do not assert on post-release existence to remain compatible
+        # with both legacy and current filelock behavior.
 
     def test_lock_items_creates_feed_directory(self, tmp_path: Path) -> None:
         """Test that lock_items creates feed directory if it doesn't exist."""
