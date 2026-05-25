@@ -65,6 +65,196 @@ def sample_fraser_config() -> FraserConfig:
 
 
 @pytest.fixture
+def sample_beige_book_items_response() -> dict[str, object]:
+    """Sample FRASER Beige Book ``/title/.../items`` style response.
+
+    Provides 4 items spanning 2023-2024 plus 1 historical 1995 entry
+    so that year-range filtering can be exercised. The 2024 items
+    include both PDF-only and PDF+TXT location variants.
+
+    Returns
+    -------
+    dict[str, object]
+        Mock JSON response containing 5 Beige Book items.
+    """
+    return {
+        "titleId": 1234,
+        "name": "Beige Book",
+        "items": [
+            {
+                "itemId": 2001,
+                "titleId": 1234,
+                "title": "Beige Book, January 2023",
+                "date": "2023-01-18",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/2001.pdf"],
+                    "textUrl": ["https://fraser.stlouisfed.org/files/doc/2001.txt"],
+                },
+            },
+            {
+                "itemId": 2002,
+                "titleId": 1234,
+                "title": "Beige Book, October 2023",
+                "date": "2023-10-18",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/2002.pdf"],
+                },
+            },
+            {
+                "itemId": 2003,
+                "titleId": 1234,
+                "title": "Beige Book, March 2024",
+                "date": "2024-03-06",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/2003.pdf"],
+                    "textUrl": ["https://fraser.stlouisfed.org/files/doc/2003.txt"],
+                },
+            },
+            {
+                "itemId": 2004,
+                "titleId": 1234,
+                "title": "Beige Book, September 2024",
+                "date": "2024-09-04",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/2004.pdf"],
+                },
+            },
+            {
+                "itemId": 2099,
+                "titleId": 1234,
+                "title": "Historical Beige Book Document",
+                "date": "1995",
+            },
+        ],
+    }
+
+
+@pytest.fixture
+def sample_speech_items_response() -> dict[str, object]:
+    """Sample FRASER FRB Speeches ``/title/.../items`` style response.
+
+    Includes speeches from multiple speakers (Powell, Volcker) in both
+    modern (2024) and historical (1980) years so that speaker filtering
+    and historical-archive year ranges can be exercised. Speaker
+    metadata is attached via the ``authors[]`` field.
+
+    Returns
+    -------
+    dict[str, object]
+        Mock JSON response containing 5 speech items.
+    """
+    return {
+        "titleId": 5678,
+        "name": "Speeches and Statements",
+        "items": [
+            {
+                "itemId": 3001,
+                "titleId": 5678,
+                "title": "Economic Outlook",
+                "date": "2024-02-07",
+                "authors": [{"name": "Jerome H. Powell", "role": "speaker"}],
+                "location": {
+                    "textUrl": ["https://fraser.stlouisfed.org/files/doc/3001.txt"],
+                },
+            },
+            {
+                "itemId": 3002,
+                "titleId": 5678,
+                "title": "Monetary Policy and Inflation",
+                "date": "2024-05-15",
+                "authors": [{"name": "Jerome H. Powell", "role": "speaker"}],
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/3002.pdf"],
+                },
+            },
+            {
+                "itemId": 3003,
+                "titleId": 5678,
+                "title": "Financial Stability",
+                "date": "2024-09-21",
+                "authors": [{"name": "Lisa D. Cook", "role": "speaker"}],
+            },
+            {
+                "itemId": 3004,
+                "titleId": 5678,
+                "title": "Anti-Inflation Strategy",
+                "date": "1980-10-09",
+                "authors": [{"name": "Paul A. Volcker", "role": "speaker"}],
+            },
+            {
+                "itemId": 3005,
+                "titleId": 5678,
+                "title": "Speech without author metadata",
+                "date": "2024-06-01",
+                "description": "Delivered by Powell at the Jackson Hole symposium",
+            },
+        ],
+    }
+
+
+@pytest.fixture
+def sample_mpr_items_response() -> dict[str, object]:
+    """Sample FRASER Monetary Policy Report ``/title/.../items`` response.
+
+    Includes modern semi-annual reports (2024 Feb / Jul) plus a
+    Humphrey-Hawkins-era report (1979 Jul) and a 2000 report so that
+    historical archive lookups can be exercised. All items are
+    PDF-only because the legacy archive rarely exposes TXT renditions.
+
+    Returns
+    -------
+    dict[str, object]
+        Mock JSON response containing 4 Monetary Policy Report items.
+    """
+    return {
+        "titleId": 9012,
+        "name": "Monetary Policy Report to the Congress",
+        "items": [
+            {
+                "itemId": 4001,
+                "titleId": 9012,
+                "title": "Monetary Policy Report - February 2024",
+                "date": "2024-02-09",
+                "reportPeriod": "February 2024",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/4001.pdf"],
+                },
+            },
+            {
+                "itemId": 4002,
+                "titleId": 9012,
+                "title": "Monetary Policy Report - July 2024",
+                "date": "2024-07-05",
+                "reportPeriod": "July 2024",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/4002.pdf"],
+                },
+            },
+            {
+                "itemId": 4099,
+                "titleId": 9012,
+                "title": "Monetary Policy Report - July 1979 (Humphrey-Hawkins)",
+                "date": "1979-07-17",
+                "reportPeriod": "July 1979",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/4099.pdf"],
+                },
+            },
+            {
+                "itemId": 4100,
+                "titleId": 9012,
+                "title": "Monetary Policy Report - July 2000",
+                "date": "2000-07-20",
+                "reportPeriod": "July 2000",
+                "location": {
+                    "pdfUrl": ["https://fraser.stlouisfed.org/files/doc/4100.pdf"],
+                },
+            },
+        ],
+    }
+
+
+@pytest.fixture
 def sample_fomc_items_response() -> dict[str, object]:
     """Sample FRASER ``/title/677/items`` style response with 5 items.
 

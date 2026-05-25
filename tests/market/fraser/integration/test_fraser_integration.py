@@ -36,12 +36,21 @@ import pytest
 from market.fraser.client import FraserClient
 from market.fraser.constants import KNOWN_TITLE_IDS
 from market.fraser.downloader import FraserDownloader
+from market.fraser.fetchers.beige_book import BeigeBookFetcher
 from market.fraser.fetchers.fomc import (
     FOMCMinutesFetcher,
     FOMCPressConferencesFetcher,
     FOMCStatementsFetcher,
 )
-from market.fraser.models import FOMCMeeting, FraserItem
+from market.fraser.fetchers.monetary_policy import MonetaryPolicyReportFetcher
+from market.fraser.fetchers.speeches import FRBSpeechFetcher
+from market.fraser.models import (
+    BeigeBookReport,
+    FOMCMeeting,
+    FraserItem,
+    FRBSpeech,
+    MonetaryPolicyReport,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -205,3 +214,69 @@ class TestFOMCPressConferencesFetcherE2E:
         assert len(press_confs) >= 1
         assert all(isinstance(m, FOMCMeeting) for m in press_confs)
         assert all(m.date.year == 2024 for m in press_confs)
+
+
+# ---------------------------------------------------------------------------
+# PR4 後半: Beige Book / FRB Speeches / Monetary Policy Report E2E smoke tests
+# ---------------------------------------------------------------------------
+
+
+class TestBeigeBookFetcherE2E:
+    """E2E smoke coverage for :class:`BeigeBookFetcher`."""
+
+    def test_E2E_BeigeBookFetcher_list_reports_2024(
+        self, fraser_client: FraserClient
+    ) -> None:
+        if KNOWN_TITLE_IDS.get("beige_book") is None:
+            pytest.skip(
+                "title_id for 'beige_book' is not yet configured "
+                "(run discover_titles to populate)"
+            )
+        fetcher = BeigeBookFetcher(client=fraser_client)
+        reports = fetcher.list_reports(year_range=(2024, 2024))
+        # Calendar year 2024 has 8 Beige Book releases; accept >= 1 to keep
+        # the smoke test tolerant of partial coverage in FRASER.
+        assert len(reports) >= 1
+        assert all(isinstance(r, BeigeBookReport) for r in reports)
+        assert all(r.date.year == 2024 for r in reports)
+
+
+class TestFRBSpeechFetcherE2E:
+    """E2E smoke coverage for :class:`FRBSpeechFetcher`."""
+
+    def test_E2E_FRBSpeechFetcher_list_speeches_Powell_2024(
+        self, fraser_client: FraserClient
+    ) -> None:
+        if KNOWN_TITLE_IDS.get("frb_speeches") is None:
+            pytest.skip(
+                "title_id for 'frb_speeches' is not yet configured "
+                "(run discover_titles to populate)"
+            )
+        fetcher = FRBSpeechFetcher(client=fraser_client)
+        powell_speeches = fetcher.list_speeches(
+            year_range=(2024, 2024), speaker="Powell"
+        )
+        # Powell delivers several speeches per year; accept >= 1 to be
+        # tolerant of partial coverage.
+        assert len(powell_speeches) >= 1
+        assert all(isinstance(s, FRBSpeech) for s in powell_speeches)
+        assert all(s.date.year == 2024 for s in powell_speeches)
+
+
+class TestMonetaryPolicyReportFetcherE2E:
+    """E2E smoke coverage for :class:`MonetaryPolicyReportFetcher`."""
+
+    def test_E2E_MonetaryPolicyReportFetcher_list_reports_2024(
+        self, fraser_client: FraserClient
+    ) -> None:
+        if KNOWN_TITLE_IDS.get("monetary_policy_report") is None:
+            pytest.skip(
+                "title_id for 'monetary_policy_report' is not yet configured "
+                "(run discover_titles to populate)"
+            )
+        fetcher = MonetaryPolicyReportFetcher(client=fraser_client)
+        reports = fetcher.list_reports(year_range=(2024, 2024))
+        # MPR is semi-annual: 2 reports per calendar year.
+        assert len(reports) >= 1
+        assert all(isinstance(r, MonetaryPolicyReport) for r in reports)
+        assert all(r.date.year == 2024 for r in reports)
