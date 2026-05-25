@@ -34,8 +34,13 @@ from typing import TYPE_CHECKING
 import pytest
 
 from market.fraser.client import FraserClient
+from market.fraser.constants import KNOWN_TITLE_IDS
 from market.fraser.downloader import FraserDownloader
-from market.fraser.fetchers.fomc import FOMCMinutesFetcher
+from market.fraser.fetchers.fomc import (
+    FOMCMinutesFetcher,
+    FOMCPressConferencesFetcher,
+    FOMCStatementsFetcher,
+)
 from market.fraser.models import FOMCMeeting, FraserItem
 
 if TYPE_CHECKING:
@@ -151,3 +156,52 @@ class TestFOMCMinutesFetcherFetchText:
         meta_path = path.with_suffix(".meta.json")
         assert meta_path.exists()
         assert isinstance(meeting, FOMCMeeting)
+
+
+# ---------------------------------------------------------------------------
+# FOMCStatementsFetcher / FOMCPressConferencesFetcher E2E smoke tests
+# ---------------------------------------------------------------------------
+
+# These two fetchers depend on FRASER ``title_id`` values that are not
+# yet hard-coded in :data:`KNOWN_TITLE_IDS`. The integration tests are
+# skipped automatically when the title_id is unknown so that the E2E
+# suite remains green until task-2 (discover_titles) populates the
+# mapping (per project-108 plan).
+
+
+class TestFOMCStatementsFetcherE2E:
+    """E2E smoke coverage for :class:`FOMCStatementsFetcher`."""
+
+    def test_E2E_FOMCStatementsFetcher_list_statements_2024(
+        self, fraser_client: FraserClient
+    ) -> None:
+        if KNOWN_TITLE_IDS.get("fomc_statements") is None:
+            pytest.skip(
+                "title_id for 'fomc_statements' is not yet configured "
+                "(run discover_titles to populate)"
+            )
+        fetcher = FOMCStatementsFetcher(client=fraser_client)
+        statements = fetcher.list_statements(year_range=(2024, 2024))
+        # Calendar year 2024 has 8 FOMC meetings; accept >= 1 to keep
+        # the smoke test tolerant of partial coverage in FRASER.
+        assert len(statements) >= 1
+        assert all(isinstance(m, FOMCMeeting) for m in statements)
+        assert all(m.date.year == 2024 for m in statements)
+
+
+class TestFOMCPressConferencesFetcherE2E:
+    """E2E smoke coverage for :class:`FOMCPressConferencesFetcher`."""
+
+    def test_E2E_FOMCPressConferencesFetcher_list_press_conferences_2024(
+        self, fraser_client: FraserClient
+    ) -> None:
+        if KNOWN_TITLE_IDS.get("fomc_press_conferences") is None:
+            pytest.skip(
+                "title_id for 'fomc_press_conferences' is not yet configured "
+                "(run discover_titles to populate)"
+            )
+        fetcher = FOMCPressConferencesFetcher(client=fraser_client)
+        press_confs = fetcher.list_press_conferences(year_range=(2024, 2024))
+        assert len(press_confs) >= 1
+        assert all(isinstance(m, FOMCMeeting) for m in press_confs)
+        assert all(m.date.year == 2024 for m in press_confs)
