@@ -50,3 +50,33 @@ DEFAULT_MAX_WORKERS = 8
 
 # === HF cache (tokenizer) ===
 HF_CACHE_DIR = Path.home() / ".cache" / "huggingface"
+
+# ============================================================
+# indices_v1 用定数 (act-101 / act-105)
+# ============================================================
+UNIVERSE_INDICES_V1_PARQUET: Path = (
+    NAS_ROOT / "universe" / "universe_indices_v1.parquet"
+)
+MEMBERSHIP_INDICES_V1_PARQUET: Path = (
+    NAS_ROOT / "index_membership" / "membership_indices_v1.parquet"
+)
+EMBEDDINGS_DIR: Path = NAS_ROOT / "embeddings"
+INDICES_V1_PROGRESS_PATH: Path = CHECKPOINTS_DIR / "indices_v1_progress.json"
+INDICES_V1_EMBED_PROGRESS_PATH: Path = (
+    CHECKPOINTS_DIR / "indices_v1_embed_progress.json"
+)
+
+# Embedding (gte-Qwen2-1.5B-instruct, MPS bfloat16)
+EMBEDDING_BATCH_SIZE: int = 16
+EMBEDDING_MAX_LENGTH: int = 512
+EMBEDDING_DTYPE: str = "bfloat16"
+EMBEDDING_DEVICE: str = "mps"
+EMBEDDING_VECTOR_DIM: int = 1536
+
+# 4 インデックス JSON ファイル名パターン (snapshot_date と組み合わせ)
+INDEX_SOURCES: dict[str, str] = {
+    "SPX": "{snapshot_date}_SPX Index.json",
+    "SOX": "{snapshot_date}_SOX Index.json",
+    "RIY": "{snapshot_date}_RIY Index.json",
+    "RAY": "{snapshot_date}_RAY Index.json",
+}
