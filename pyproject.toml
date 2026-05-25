@@ -62,7 +62,7 @@ dependencies = [
     "xlwings>=0.35.0",
     # NLP for filings (10-K/10-Q FinBERT + embedding)
     "torch>=2.3.0,<3.0.0",
-    "transformers>=4.40.0,<5.0.0",
+    "transformers>=4.40.0,<6.0.0",
     "sentence-transformers>=3.0.0",
     "umap-learn>=0.5.5",
     "gliner>=0.2.10",
