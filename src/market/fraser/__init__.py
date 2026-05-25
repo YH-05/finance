@@ -25,6 +25,17 @@ error hierarchy intentionally inherits directly from ``Exception``
 (not from ``MarketError``) to avoid circular imports.
 """
 
+from market.fraser.cache import (
+    AUTHOR_SUBJECT_THEME_TTL,
+    ITEM_METADATA_TTL,
+    ITEMS_LIST_TTL,
+    TIMELINE_TTL,
+    TITLE_METADATA_TTL,
+    get_fraser_cache,
+    make_fraser_cache_key,
+)
+from market.fraser.client import FraserClient
+from market.fraser.downloader import FraserDownloader
 from market.fraser.errors import (
     FraserAPIError,
     FraserAuthError,
@@ -62,6 +73,11 @@ from market.fraser.types import (
 )
 
 __all__ = [
+    "AUTHOR_SUBJECT_THEME_TTL",
+    "ITEMS_LIST_TTL",
+    "ITEM_METADATA_TTL",
+    "TIMELINE_TTL",
+    "TITLE_METADATA_TTL",
     "BeigeBookReport",
     "DocType",
     "DualWindowRateLimiter",
@@ -71,8 +87,10 @@ __all__ = [
     "FraserAPIError",
     "FraserAuthError",
     "FraserAuthor",
+    "FraserClient",
     "FraserConfig",
     "FraserDownloadError",
+    "FraserDownloader",
     "FraserError",
     "FraserItem",
     "FraserLocation",
@@ -88,5 +106,7 @@ __all__ = [
     "FraserValidationError",
     "MonetaryPolicyReport",
     "RetryConfig",
+    "get_fraser_cache",
     "get_fraser_rate_limiter",
+    "make_fraser_cache_key",
 ]
