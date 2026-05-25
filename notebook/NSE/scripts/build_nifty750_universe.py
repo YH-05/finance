@@ -123,15 +123,13 @@ def main() -> None:
     # 根拠: dec-2026-04-16-002 (上司指定、SAST 2011 Reg 3 閾値)
     # SEBI SAST 規制の支配的取得閾値 10% を Owner 確定の必要条件とする
     sheet["stage1_promoter_ge_10"] = sheet["promoter_total_pct"].fillna(0) >= 10
-    sheet["is_owner_company"] = (
-        (sheet["owner_flag_final_hybrid"] == "OWNER") & sheet["stage1_promoter_ge_10"]
-    )
+    sheet["is_owner_company"] = (sheet["owner_flag_final_hybrid"] == "OWNER") & sheet[
+        "stage1_promoter_ge_10"
+    ]
 
     # index 帰属フラグを付与
     membership = load_index_membership()
-    sheet = sheet.merge(
-        membership, left_on="symbol", right_index=True, how="left"
-    )
+    sheet = sheet.merge(membership, left_on="symbol", right_index=True, how="left")
     for flag in INDEX_TARGETS:
         sheet[flag] = sheet[flag].fillna(False).astype(bool)
 
@@ -175,8 +173,8 @@ def main() -> None:
     lines: list[str] = []
     lines.append("# NIFTY 750 Universe Summary (NSE Owner Extraction)")
     lines.append("")
-    lines.append(f"**生成元**: act-2026-05-07-002 (build_nifty750_universe.py)")
-    lines.append(f"**入力**: owner_review_sheet.csv (yaml v0.5.1)")
+    lines.append("**生成元**: act-2026-05-07-002 (build_nifty750_universe.py)")
+    lines.append("**入力**: owner_review_sheet.csv (yaml v0.5.1)")
     lines.append(f"**対象**: 全 {len(universe)} 銘柄 (NIFTY 750 + rev1 補完 50 銘柄)")
     lines.append("")
 
@@ -206,7 +204,9 @@ def main() -> None:
         lines.append(f"| {idx_name} | {n_members} | {n_member_owners} | {ratio:.1f}% |")
     n_outside = (~universe[list(INDEX_TARGETS.keys())].any(axis=1)).sum()
     n_outside_owners = int(
-        universe[~universe[list(INDEX_TARGETS.keys())].any(axis=1)]["is_owner_company"].sum()
+        universe[~universe[list(INDEX_TARGETS.keys())].any(axis=1)][
+            "is_owner_company"
+        ].sum()
     )
     outside_ratio = n_outside_owners / n_outside * 100 if n_outside > 0 else 0
     lines.append(
@@ -248,7 +248,9 @@ def main() -> None:
     lines.append("import pandas as pd")
     lines.append("")
     lines.append("# 全 universe (800 銘柄) を読み込み")
-    lines.append('df = pd.read_csv("notebook/NSE/data/exports/nse/nifty750_universe.csv")')
+    lines.append(
+        'df = pd.read_csv("notebook/NSE/data/exports/nse/nifty750_universe.csv")'
+    )
     lines.append("")
     lines.append("# OWNER 企業のみフィルタ")
     lines.append('owners = df[df["is_owner_company"]]')

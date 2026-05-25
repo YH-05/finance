@@ -85,8 +85,8 @@ def _(DATA_SOURCE, PORTFOLIO_SIZE, Path, json, mo, pd):
 
     # Portfolio file naming convention
     if _size == "30":
-        _price_file = f"ca_portfolio_close_prices.parquet"
-        _meta_file = f"ca_portfolio_close_prices.meta.json"
+        _price_file = "ca_portfolio_close_prices.parquet"
+        _meta_file = "ca_portfolio_close_prices.meta.json"
         _weights_file = "portfolio_weights.csv"
     else:
         _price_file = f"ca_portfolio_{_size}_close_prices.parquet"
@@ -155,7 +155,7 @@ def _(DATA_SOURCE, PORTFOLIO_SIZE, Path, json, mo, pd):
     | Period | {close_prices.index.min().date()} ~ {close_prices.index.max().date()} |
     | Rows | {len(close_prices):,} |
     | Weight Coverage | {_total_w:.1%} of original weights |
-    | Blacklisted | {_blacklist & set(close_prices.columns) if _blacklist else 'None'} |
+    | Blacklisted | {_blacklist & set(close_prices.columns) if _blacklist else "None"} |
     """
     )
     return close_prices, portfolio_weights
@@ -200,10 +200,14 @@ def _(RISK_FREE_RATE, daily_returns, ew_returns, mo, np, pd, weighted_returns):
         n_years = len(ret) / _ann
         return {
             "Portfolio": name,
-            "Sharpe": round(float(excess.mean() / std * np.sqrt(_ann)) if std > 0 else 0, 4),
+            "Sharpe": round(
+                float(excess.mean() / std * np.sqrt(_ann)) if std > 0 else 0, 4
+            ),
             "Max DD": round(float((cum / cum.cummax() - 1).min()), 4),
             "Cum. Return": round(cum_ret, 4),
-            "Ann. Return": round(float((1 + cum_ret) ** (1 / n_years) - 1) if n_years > 0 else 0, 4),
+            "Ann. Return": round(
+                float((1 + cum_ret) ** (1 / n_years) - 1) if n_years > 0 else 0, 4
+            ),
             "Ann. Vol": round(float(std * np.sqrt(_ann)), 4),
         }
 
@@ -232,11 +236,11 @@ def _(RISK_FREE_RATE, daily_returns, ew_returns, mo, np, pd, weighted_returns):
 
     | Metric | Score-Weighted | Equal-Weight |
     |--------|:-:|:-:|
-    | **Sharpe Ratio** | {_rows[0]['Sharpe']:.4f} | {_rows[1]['Sharpe']:.4f} |
-    | **Max Drawdown** | {_rows[0]['Max DD']:.2%} | {_rows[1]['Max DD']:.2%} |
-    | **Cumulative Return** | {_rows[0]['Cum. Return']:.2%} | {_rows[1]['Cum. Return']:.2%} |
-    | **Ann. Return** | {_rows[0]['Ann. Return']:.2%} | {_rows[1]['Ann. Return']:.2%} |
-    | **Ann. Volatility** | {_rows[0]['Ann. Vol']:.2%} | {_rows[1]['Ann. Vol']:.2%} |
+    | **Sharpe Ratio** | {_rows[0]["Sharpe"]:.4f} | {_rows[1]["Sharpe"]:.4f} |
+    | **Max Drawdown** | {_rows[0]["Max DD"]:.2%} | {_rows[1]["Max DD"]:.2%} |
+    | **Cumulative Return** | {_rows[0]["Cum. Return"]:.2%} | {_rows[1]["Cum. Return"]:.2%} |
+    | **Ann. Return** | {_rows[0]["Ann. Return"]:.2%} | {_rows[1]["Ann. Return"]:.2%} |
+    | **Ann. Volatility** | {_rows[0]["Ann. Vol"]:.2%} | {_rows[1]["Ann. Vol"]:.2%} |
     | **Beta vs EW** | {_beta} | — |
     | **Information Ratio** | {_ir} | — |
     """
@@ -270,7 +274,6 @@ def _(ew_returns, mo, np, pd, weighted_returns):
 @app.cell
 def _(mo, yearly_df):
     mo.ui.table(yearly_df)
-    return
 
 
 @app.cell
@@ -290,7 +293,9 @@ def _(daily_returns, ew_returns, mo, np, pd, portfolio_weights, weighted_returns
 
         row = {
             "Ticker": col,
-            "Weight (%)": round(_weights.loc[col, "weight"] * 100, 2) if col in _weights.index else 0,
+            "Weight (%)": round(_weights.loc[col, "weight"] * 100, 2)
+            if col in _weights.index
+            else 0,
             "Ann. Return (%)": round(ann_r * 100, 2),
             "Ann. Vol (%)": round(float(r.std() * np.sqrt(_ann) * 100), 2),
             "Cum. Return (%)": round(cum_r * 100, 2),
@@ -311,7 +316,6 @@ def _(daily_returns, ew_returns, mo, np, pd, portfolio_weights, weighted_returns
 @app.cell
 def _(mo, stock_stats):
     mo.ui.table(stock_stats.reset_index(drop=True))
-    return
 
 
 @app.cell
@@ -464,15 +468,32 @@ def _(mo, np, weighted_returns):
 
 
 @app.cell
-def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weights, weighted_returns):
+def _(
+    DATA_SOURCE,
+    Path,
+    daily_returns,
+    ew_returns,
+    mo,
+    np,
+    pd,
+    portfolio_weights,
+    weighted_returns,
+):
     """vs MSCI Kokusai benchmark analysis."""
     import plotly.graph_objects as go
 
     _source = DATA_SOURCE.value
-    _bench_path = Path(f"../data/raw/{_source}/stocks/msci_benchmark_close_prices.parquet")
+    _bench_path = Path(
+        f"../data/raw/{_source}/stocks/msci_benchmark_close_prices.parquet"
+    )
 
     if not _bench_path.exists():
-        mo.stop(True, mo.md("**MSCI Kokusai データが未取得です。** yfinance で TOK/URTH/ACWI を取得してください。"))
+        mo.stop(
+            True,
+            mo.md(
+                "**MSCI Kokusai データが未取得です。** yfinance で TOK/URTH/ACWI を取得してください。"
+            ),
+        )
 
     _bench_close = pd.read_parquet(_bench_path)
     _tok = _bench_close["TOK"].ffill()
@@ -483,7 +504,11 @@ def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weight
 
     # Align portfolio returns with benchmark
     _aligned = pd.concat(
-        [weighted_returns.rename("port"), ew_returns.rename("ew"), bench_msci_ret.rename("bench")],
+        [
+            weighted_returns.rename("port"),
+            ew_returns.rename("ew"),
+            bench_msci_ret.rename("bench"),
+        ],
         axis=1,
     ).dropna()
 
@@ -502,7 +527,11 @@ def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weight
 
     # Tracking error & IR
     _te = float(_active.std() * np.sqrt(_ann))
-    _ir = float(_active.mean() / _active.std() * np.sqrt(_ann)) if _active.std() > 0 else 0
+    _ir = (
+        float(_active.mean() / _active.std() * np.sqrt(_ann))
+        if _active.std() > 0
+        else 0
+    )
 
     # Beta & Alpha
     _cov = np.cov(_p, _b)
@@ -564,7 +593,11 @@ def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weight
 def _(bench_msci_ret, ew_returns, mo, pd, weighted_returns):
     """Yearly active return table vs MSCI Kokusai."""
     _aligned = pd.concat(
-        [weighted_returns.rename("port"), ew_returns.rename("ew"), bench_msci_ret.rename("bench")],
+        [
+            weighted_returns.rename("port"),
+            ew_returns.rename("ew"),
+            bench_msci_ret.rename("bench"),
+        ],
         axis=1,
     ).dropna()
 
@@ -595,7 +628,6 @@ def _(bench_msci_ret, ew_returns, mo, pd, weighted_returns):
 @app.cell
 def _(mo, yearly_vs_bench):
     mo.ui.table(yearly_vs_bench)
-    return
 
 
 @app.cell
@@ -604,7 +636,11 @@ def _(bench_msci_ret, ew_returns, mo, np, pd, weighted_returns):
     import plotly.graph_objects as go
 
     _aligned = pd.concat(
-        [weighted_returns.rename("port"), ew_returns.rename("ew"), bench_msci_ret.rename("bench")],
+        [
+            weighted_returns.rename("port"),
+            ew_returns.rename("ew"),
+            bench_msci_ret.rename("bench"),
+        ],
         axis=1,
     ).dropna()
 
@@ -614,13 +650,28 @@ def _(bench_msci_ret, ew_returns, mo, np, pd, weighted_returns):
 
     fig_vs_bench = go.Figure()
     fig_vs_bench.add_trace(
-        go.Scatter(x=_cum_sw.index, y=_cum_sw, name="Score-Weighted", line={"width": 2.5, "color": "#2563eb"})
+        go.Scatter(
+            x=_cum_sw.index,
+            y=_cum_sw,
+            name="Score-Weighted",
+            line={"width": 2.5, "color": "#2563eb"},
+        )
     )
     fig_vs_bench.add_trace(
-        go.Scatter(x=_cum_ew.index, y=_cum_ew, name="Equal-Weight", line={"width": 2, "dash": "dot", "color": "#6b7280"})
+        go.Scatter(
+            x=_cum_ew.index,
+            y=_cum_ew,
+            name="Equal-Weight",
+            line={"width": 2, "dash": "dot", "color": "#6b7280"},
+        )
     )
     fig_vs_bench.add_trace(
-        go.Scatter(x=_cum_bm.index, y=_cum_bm, name="MSCI Kokusai", line={"width": 2.5, "dash": "dash", "color": "#dc2626"})
+        go.Scatter(
+            x=_cum_bm.index,
+            y=_cum_bm,
+            name="MSCI Kokusai",
+            line={"width": 2.5, "dash": "dash", "color": "#dc2626"},
+        )
     )
     fig_vs_bench.update_layout(
         title="Cumulative Returns: Portfolio vs MSCI Kokusai",
@@ -665,19 +716,37 @@ def _(bench_msci_ret, mo, np, pd, weighted_returns):
     )
 
     fig_active.add_trace(
-        go.Scatter(x=_rolling_active.index, y=_rolling_active, name="Active Return", line={"color": "#2563eb"}),
-        row=1, col=1,
+        go.Scatter(
+            x=_rolling_active.index,
+            y=_rolling_active,
+            name="Active Return",
+            line={"color": "#2563eb"},
+        ),
+        row=1,
+        col=1,
     )
     fig_active.add_hline(y=0, line_dash="dash", line_color="gray", row=1, col=1)
 
     fig_active.add_trace(
-        go.Scatter(x=_rolling_te.index, y=_rolling_te, name="Tracking Error", line={"color": "orange"}),
-        row=2, col=1,
+        go.Scatter(
+            x=_rolling_te.index,
+            y=_rolling_te,
+            name="Tracking Error",
+            line={"color": "orange"},
+        ),
+        row=2,
+        col=1,
     )
 
     fig_active.add_trace(
-        go.Scatter(x=_rolling_ir.index, y=_rolling_ir, name="Info Ratio", line={"color": "green"}),
-        row=3, col=1,
+        go.Scatter(
+            x=_rolling_ir.index,
+            y=_rolling_ir,
+            name="Info Ratio",
+            line={"color": "green"},
+        ),
+        row=3,
+        col=1,
     )
     fig_active.add_hline(y=0, line_dash="dash", line_color="gray", row=3, col=1)
 
@@ -693,15 +762,32 @@ def _(bench_msci_ret, mo, np, pd, weighted_returns):
 
 
 @app.cell
-def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weights, weighted_returns):
+def _(
+    DATA_SOURCE,
+    Path,
+    daily_returns,
+    ew_returns,
+    mo,
+    np,
+    pd,
+    portfolio_weights,
+    weighted_returns,
+):
     """vs List Portfolio Universe benchmark analysis."""
     import plotly.graph_objects as go
 
     _source = DATA_SOURCE.value
-    _univ_path = Path(f"../data/raw/{_source}/stocks/universe_benchmark_close_prices.parquet")
+    _univ_path = Path(
+        f"../data/raw/{_source}/stocks/universe_benchmark_close_prices.parquet"
+    )
 
     if not _univ_path.exists():
-        mo.stop(True, mo.md("**Universe benchmark データが未取得です。** `/tmp/build_universe_benchmark.py` を実行してください。"))
+        mo.stop(
+            True,
+            mo.md(
+                "**Universe benchmark データが未取得です。** `/tmp/build_universe_benchmark.py` を実行してください。"
+            ),
+        )
 
     _univ_close = pd.read_parquet(_univ_path)
 
@@ -714,23 +800,72 @@ def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weight
 
     # Bloomberg → yfinance mapping (simplified)
     _exchange_map = {
-        "US": "", "LN": ".L", "SW": ".SW", "VX": ".SW", "GR": ".DE",
-        "HK": ".HK", "CN": ".TO", "AU": ".AX", "FP": ".PA", "SJ": ".JO",
-        "IJ": ".JK", "BZ": ".SA", "KS": ".KS", "NA": ".AS", "SS": ".SS",
-        "IN": ".NS", "IM": ".MI", "MM": ".MX", "TT": ".TW", "TB": ".BK",
-        "DC": ".CO", "BB": ".BR", "PM": ".PS", "MK": ".KL", "SM": ".MC",
-        "NO": ".OL", "FH": ".HE", "PL": ".WA", "NR": "", "NQ": "", "QM": "",
-        "GK": "", "LI": "", "TI": "",
+        "US": "",
+        "LN": ".L",
+        "SW": ".SW",
+        "VX": ".SW",
+        "GR": ".DE",
+        "HK": ".HK",
+        "CN": ".TO",
+        "AU": ".AX",
+        "FP": ".PA",
+        "SJ": ".JO",
+        "IJ": ".JK",
+        "BZ": ".SA",
+        "KS": ".KS",
+        "NA": ".AS",
+        "SS": ".SS",
+        "IN": ".NS",
+        "IM": ".MI",
+        "MM": ".MX",
+        "TT": ".TW",
+        "TB": ".BK",
+        "DC": ".CO",
+        "BB": ".BR",
+        "PM": ".PS",
+        "MK": ".KL",
+        "SM": ".MC",
+        "NO": ".OL",
+        "FH": ".HE",
+        "PL": ".WA",
+        "NR": "",
+        "NQ": "",
+        "QM": "",
+        "GK": "",
+        "LI": "",
+        "TI": "",
     }
     _manual = {
-        "GSK": "GSK", "AZN": "AZN", "BA/": "BAESY", "DGE": "DEO",
-        "BATS": None, "PRU": "PUK", "CBG": None, "STJ": None,
-        "RB/": "RBGLY", "VOD": "VOD", "ULVR": "UL", "ABI": "BUD",
-        "SAB": None, "SKY": None, "ARM": None, "ADN": None,
-        "NESN": "NSRGY", "NOVN": "NVS", "ROG": "RHHBY", "SCMN": None,
-        "SAP": "SAP", "BAYN": None, "CON": None, "HNR1": None,
-        "IFC": None, "DHL": None, "CBA": None, "CPI": None,
-        "005930": None, "COLOB": None,
+        "GSK": "GSK",
+        "AZN": "AZN",
+        "BA/": "BAESY",
+        "DGE": "DEO",
+        "BATS": None,
+        "PRU": "PUK",
+        "CBG": None,
+        "STJ": None,
+        "RB/": "RBGLY",
+        "VOD": "VOD",
+        "ULVR": "UL",
+        "ABI": "BUD",
+        "SAB": None,
+        "SKY": None,
+        "ARM": None,
+        "ADN": None,
+        "NESN": "NSRGY",
+        "NOVN": "NVS",
+        "ROG": "RHHBY",
+        "SCMN": None,
+        "SAP": "SAP",
+        "BAYN": None,
+        "CON": None,
+        "HNR1": None,
+        "IFC": None,
+        "DHL": None,
+        "CBA": None,
+        "CPI": None,
+        "005930": None,
+        "COLOB": None,
     }
 
     def _bbg_to_yf(bbg_ticker):
@@ -779,7 +914,11 @@ def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weight
     _rf = 0.045
 
     _aligned = pd.concat(
-        [weighted_returns.rename("port"), ew_returns.rename("ew"), bench_univ_ret.rename("bench")],
+        [
+            weighted_returns.rename("port"),
+            ew_returns.rename("ew"),
+            bench_univ_ret.rename("bench"),
+        ],
         axis=1,
     ).dropna()
 
@@ -795,7 +934,11 @@ def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weight
     _ann_active = _ann_p - _ann_b
 
     _te = float(_active.std() * np.sqrt(_ann))
-    _ir = float(_active.mean() / _active.std() * np.sqrt(_ann)) if _active.std() > 0 else 0
+    _ir = (
+        float(_active.mean() / _active.std() * np.sqrt(_ann))
+        if _active.std() > 0
+        else 0
+    )
 
     _cov = np.cov(_p, _b)
     _beta = float(_cov[0, 1] / _cov[1, 1]) if _cov[1, 1] > 0 else 1.0
@@ -850,7 +993,11 @@ def _(DATA_SOURCE, Path, daily_returns, ew_returns, mo, np, pd, portfolio_weight
 def _(bench_univ_ret, ew_returns, mo, pd, weighted_returns):
     """Yearly active return table vs Universe."""
     _aligned = pd.concat(
-        [weighted_returns.rename("port"), ew_returns.rename("ew"), bench_univ_ret.rename("bench")],
+        [
+            weighted_returns.rename("port"),
+            ew_returns.rename("ew"),
+            bench_univ_ret.rename("bench"),
+        ],
         axis=1,
     ).dropna()
 
@@ -872,7 +1019,6 @@ def _(bench_univ_ret, ew_returns, mo, pd, weighted_returns):
     mo.md("### Yearly Returns vs Universe")
     _yearly_df = pd.DataFrame(_rows)
     mo.ui.table(_yearly_df, selection=None)
-    return
 
 
 @app.cell
@@ -880,16 +1026,28 @@ def _(bench_univ_ret, mo, pd, weighted_returns):
     """Cumulative return chart: Portfolio vs Universe."""
     import plotly.graph_objects as go
 
-    _aligned = pd.concat([weighted_returns.rename("port"), bench_univ_ret.rename("bench")], axis=1).dropna()
+    _aligned = pd.concat(
+        [weighted_returns.rename("port"), bench_univ_ret.rename("bench")], axis=1
+    ).dropna()
     _cum_p = (1 + _aligned["port"]).cumprod()
     _cum_bm = (1 + _aligned["bench"]).cumprod()
 
     fig_univ = go.Figure()
     fig_univ.add_trace(
-        go.Scatter(x=_cum_p.index, y=_cum_p, name="CA Strategy Portfolio", line={"width": 2.5, "color": "#2563eb"})
+        go.Scatter(
+            x=_cum_p.index,
+            y=_cum_p,
+            name="CA Strategy Portfolio",
+            line={"width": 2.5, "color": "#2563eb"},
+        )
     )
     fig_univ.add_trace(
-        go.Scatter(x=_cum_bm.index, y=_cum_bm, name="Universe (MCap)", line={"width": 2.5, "dash": "dash", "color": "#d97706"})
+        go.Scatter(
+            x=_cum_bm.index,
+            y=_cum_bm,
+            name="Universe (MCap)",
+            line={"width": 2.5, "dash": "dash", "color": "#d97706"},
+        )
     )
     fig_univ.update_layout(
         title="Cumulative Returns: Portfolio vs Universe",
@@ -965,10 +1123,16 @@ def _(
             n_yr = len(r) / _ann
             _per_stock[col] = {
                 "weight": round(float(_weights.loc[col, "weight"]), 4),
-                "sector": _weights.loc[col, "sector"] if "sector" in _weights.columns else "",
-                "score": round(float(_weights.loc[col, "score"]), 4) if "score" in _weights.columns else 0,
+                "sector": _weights.loc[col, "sector"]
+                if "sector" in _weights.columns
+                else "",
+                "score": round(float(_weights.loc[col, "score"]), 4)
+                if "score" in _weights.columns
+                else 0,
                 "cum_return": round(cum_r, 4),
-                "ann_return": round(float((1 + cum_r) ** (1 / n_yr) - 1) if n_yr > 0 else 0, 4),
+                "ann_return": round(
+                    float((1 + cum_r) ** (1 / n_yr) - 1) if n_yr > 0 else 0, 4
+                ),
             }
 
     evaluation_result = {

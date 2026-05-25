@@ -40,9 +40,7 @@ import pandas as pd
 from market.nse.collectors.share_holding import ShareholdingCollector
 from market.nse.session import NseSession
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -76,9 +74,7 @@ def to_int(s: str) -> int:
         return 0
 
 
-def upsert_phase3(
-    conn: sqlite3.Connection, symbol: str, holdings: list
-) -> int:
+def upsert_phase3(conn: sqlite3.Connection, symbol: str, holdings: list) -> int:
     fetched_at = datetime.now(UTC).isoformat()
     rows = []
     for h in holdings:
@@ -150,8 +146,7 @@ def aggregate_owner_candidate(
     conn: sqlite3.Connection, symbol: str, isin: str
 ) -> dict | None:
     sd = pd.read_sql_query(
-        "SELECT * FROM shareholding_detail WHERE symbol = ? "
-        "ORDER BY report_date DESC",
+        "SELECT * FROM shareholding_detail WHERE symbol = ? ORDER BY report_date DESC",
         conn,
         params=(symbol,),
     )
@@ -197,10 +192,14 @@ def aggregate_owner_candidate(
             promoter_total_pct += float(r["pct_total_shares"].sum())
 
     other_indian_pct = float(
-        cat_total[cat_total["sub_category"] == "OtherIndianShareholders"]["pct_total_shares"].sum()
+        cat_total[cat_total["sub_category"] == "OtherIndianShareholders"][
+            "pct_total_shares"
+        ].sum()
     )
     other_foreign_pct = float(
-        cat_total[cat_total["sub_category"] == "OtherForeignShareholders"]["pct_total_shares"].sum()
+        cat_total[cat_total["sub_category"] == "OtherForeignShareholders"][
+            "pct_total_shares"
+        ].sum()
     )
 
     govt_subs = {
@@ -218,18 +217,16 @@ def aggregate_owner_candidate(
 
     foreign_non_govt_subs = {"ForeignInstitutions", "ForeignPortfolioInvestor"}
     foreign_non_govt_pct = float(
-        cat_total[cat_total["sub_category"].isin(foreign_non_govt_subs)]["pct_total_shares"].sum()
+        cat_total[cat_total["sub_category"].isin(foreign_non_govt_subs)][
+            "pct_total_shares"
+        ].sum()
     )
 
-    natural_pct_sum = (
-        hufi["pct"] + nri["pct"] + dir_["pct"] + kmp["pct"] + rel["pct"]
-    )
+    natural_pct_sum = hufi["pct"] + nri["pct"] + dir_["pct"] + kmp["pct"] + rel["pct"]
     natural_num_sum = hufi["num"] + nri["num"] + dir_["num"] + kmp["num"] + rel["num"]
 
     detail_rows = prom[prom["is_category_total"] == 0]
-    names = [
-        n for n in detail_rows["shareholder_name"].dropna().unique() if n.strip()
-    ]
+    names = [n for n in detail_rows["shareholder_name"].dropna().unique() if n.strip()]
     promoter_names = "|".join(names)
 
     has_natural = natural_pct_sum > 0
@@ -259,7 +256,9 @@ def aggregate_owner_candidate(
     else:
         owner_flag = "ambiguous_mnc_jv_candidate"
 
-    if owner_flag.startswith("owner_confirmed") or owner_flag.startswith("owner_probable"):
+    if owner_flag.startswith("owner_confirmed") or owner_flag.startswith(
+        "owner_probable"
+    ):
         owner_flag_final = "OWNER"
     elif owner_flag.startswith("excluded"):
         owner_flag_final = "NOT_OWNER"
@@ -452,9 +451,7 @@ def main() -> None:
 
     # Phase 4 OK 銘柄: 集計
     for entry in refetch_log:
-        if not (
-            isinstance(entry.get("phase4"), dict) and entry["phase4"].get("ok")
-        ):
+        if not (isinstance(entry.get("phase4"), dict) and entry["phase4"].get("ok")):
             continue
         row = aggregate_owner_candidate(conn, entry["symbol"], entry["isin"])
         if row:
@@ -516,11 +513,11 @@ def main() -> None:
     for col in new_df.columns:
         if col not in cand_filtered.columns:
             cand_filtered = cand_filtered.assign(**{col: ""})
-    merged = pd.concat(
-        [cand_filtered, new_df], ignore_index=True, sort=False
-    )
+    merged = pd.concat([cand_filtered, new_df], ignore_index=True, sort=False)
     merged.to_csv(CANDIDATES_CSV, index=False)
-    log.info(f"  owner_candidates.csv (after): {len(merged)} rows ({len(new_rows)} new)")
+    log.info(
+        f"  owner_candidates.csv (after): {len(merged)} rows ({len(new_rows)} new)"
+    )
     log.info(
         f"  nse_fetch_status distribution: "
         f"{merged['nse_fetch_status'].value_counts().to_dict()}"

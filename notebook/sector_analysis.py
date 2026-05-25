@@ -9,12 +9,13 @@ def _():
     import marimo as mo
     import pandas as pd
     import yfinance as yf
+
     return (yf,)
 
 
 @app.cell
 def _():
-    sector_list =  [
+    sector_list = [
         "basic-materials",
         "communication-services",
         "consumer-cyclical",
@@ -25,8 +26,8 @@ def _():
         "industrials",
         "real-estate",
         "technology",
-        "utilities"
-      ]
+        "utilities",
+    ]
 
     return (sector_list,)
 
@@ -37,7 +38,6 @@ def _(sector_list, yf):
         symbols_sector = yf.Sector(sector).top_companies
         print(f"===== {sector} =====")
         print(symbols_sector)
-    return
 
 
 @app.cell
@@ -48,15 +48,14 @@ def _(yf):
     print(forward_pe, trailing_pe)
 
     print(msft.earnings_dates)
-    return
 
 
 @app.cell
 def _(yf):
     # 1. スクリーナーオブジェクトを作成
     s = yf.screen("day_gainers")
-    quote_list = s['quotes']
-    ticker_list = [q['symbol'] for q in quote_list]
+    quote_list = s["quotes"]
+    ticker_list = [q["symbol"] for q in quote_list]
     ticker_list
     # # 2. テクノロジーセクターの定義をセット
     # # 'ms_technology' は Yahoo Finance のスクリーナーで使用される ID です
@@ -67,7 +66,6 @@ def _(yf):
 
     # print(f"取得件数: {len(tickers)}")
     # print(tickers[:10]) # 冒頭10件を表示
-    return
 
 
 @app.cell

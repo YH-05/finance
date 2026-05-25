@@ -42,8 +42,18 @@ PERSIST_LOG = EXPORT_DIR / "persist_log.json"
 
 C_SYMBOLS = ["360ONE"]
 B_SYMBOLS = [
-    "MAHLIFE", "FINOPB", "SANOFI", "BALMLAWRIE", "PGHH", "GUJALKALI",
-    "PGHL", "TICL", "PSB", "UTKARSHBNK", "GUJGASLTD", "KIOCL",
+    "MAHLIFE",
+    "FINOPB",
+    "SANOFI",
+    "BALMLAWRIE",
+    "PGHH",
+    "GUJALKALI",
+    "PGHL",
+    "TICL",
+    "PSB",
+    "UTKARSHBNK",
+    "GUJGASLTD",
+    "KIOCL",
 ]
 ALL_SYMBOLS = C_SYMBOLS + B_SYMBOLS
 
@@ -67,13 +77,19 @@ def upsert_phase3(conn: sqlite3.Connection, symbol: str, holdings: list) -> int:
     fetched_at = datetime.now(UTC).isoformat()
     rows = []
     for h in holdings:
-        rows.append((
-            h.symbol, h.as_on_date,
-            to_float(h.promoter_group_pct), to_float(h.public_pct),
-            to_float(getattr(h, "employee_trust_pct", "")),
-            getattr(h, "submission_date", ""), getattr(h, "broadcast_date", ""),
-            getattr(h, "xbrl_url", ""), fetched_at,
-        ))
+        rows.append(
+            (
+                h.symbol,
+                h.as_on_date,
+                to_float(h.promoter_group_pct),
+                to_float(h.public_pct),
+                to_float(getattr(h, "employee_trust_pct", "")),
+                getattr(h, "submission_date", ""),
+                getattr(h, "broadcast_date", ""),
+                getattr(h, "xbrl_url", ""),
+                fetched_at,
+            )
+        )
     cur = conn.cursor()
     cur.execute("DELETE FROM shareholdings WHERE symbol = ?", (symbol,))
     # API レスポンス内の重複 (re-filing 等) を許容
@@ -93,15 +109,24 @@ def upsert_phase4(conn: sqlite3.Connection, symbol: str, result) -> int:
     report_date = result.as_on_date  # YYYY-MM-DD
     rows = []
     for r in result.rows:
-        rows.append((
-            r.symbol, report_date,
-            r.category, r.sub_category, r.shareholder_name, r.pan,
-            to_int(r.num_shareholders), to_int(r.num_fully_paid_shares),
-            to_int(r.num_voting_rights), to_float(r.pct_total_shares),
-            to_float(r.pct_fully_diluted), to_int(r.num_shares_demat),
-            1 if str(r.is_category_total).lower() in ("true", "1") else 0,
-            fetched_at,
-        ))
+        rows.append(
+            (
+                r.symbol,
+                report_date,
+                r.category,
+                r.sub_category,
+                r.shareholder_name,
+                r.pan,
+                to_int(r.num_shareholders),
+                to_int(r.num_fully_paid_shares),
+                to_int(r.num_voting_rights),
+                to_float(r.pct_total_shares),
+                to_float(r.pct_fully_diluted),
+                to_int(r.num_shares_demat),
+                1 if str(r.is_category_total).lower() in ("true", "1") else 0,
+                fetched_at,
+            )
+        )
     cur = conn.cursor()
     cur.execute(
         "DELETE FROM shareholding_detail WHERE symbol = ? AND report_date = ?",
@@ -119,12 +144,14 @@ def upsert_phase4(conn: sqlite3.Connection, symbol: str, result) -> int:
     return cur.rowcount if cur.rowcount > 0 else len(rows)
 
 
-def aggregate_owner_candidate(conn: sqlite3.Connection, symbol: str, isin: str) -> dict | None:
+def aggregate_owner_candidate(
+    conn: sqlite3.Connection, symbol: str, isin: str
+) -> dict | None:
     """shareholding_detail から最新四半期の owner_candidates 行を集計."""
     sd = pd.read_sql_query(
-        "SELECT * FROM shareholding_detail WHERE symbol = ? "
-        "ORDER BY report_date DESC",
-        conn, params=(symbol,),
+        "SELECT * FROM shareholding_detail WHERE symbol = ? ORDER BY report_date DESC",
+        conn,
+        params=(symbol,),
     )
     if sd.empty:
         return None
@@ -150,19 +177,35 @@ def aggregate_owner_candidate(conn: sqlite3.Connection, symbol: str, isin: str) 
     dir_ = s("DirectorsAndDirectorsRelatives")
     kmp = s("KeyManagerialPersonnel")
     rel = s("RelativesOfPromotersOtherThanPromoterGroup")
-    trust = s("TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsisTrusteeOrBeneficiaryOrAuthorOfTrust")
+    trust = s(
+        "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsisTrusteeOrBeneficiaryOrAuthorOfTrust"
+    )
 
     # promoter total: row with sub_category empty/NaN (= the category rollup)
-    cat_total_root = cat_total[cat_total["sub_category"].isna() | (cat_total["sub_category"] == "")]
-    promoter_total_pct = float(cat_total_root["pct_total_shares"].sum()) if not cat_total_root.empty else 0.0
+    cat_total_root = cat_total[
+        cat_total["sub_category"].isna() | (cat_total["sub_category"] == "")
+    ]
+    promoter_total_pct = (
+        float(cat_total_root["pct_total_shares"].sum())
+        if not cat_total_root.empty
+        else 0.0
+    )
     if promoter_total_pct == 0.0:
         # フォールバック: 主要 sub_category の合計 (Indian + Foreign)
         for k in ("Indian", "Foreign"):
             r = cat_total[cat_total["sub_category"] == k]
             promoter_total_pct += float(r["pct_total_shares"].sum())
 
-    other_indian_pct = float(cat_total[cat_total["sub_category"] == "OtherIndianShareholders"]["pct_total_shares"].sum())
-    other_foreign_pct = float(cat_total[cat_total["sub_category"] == "OtherForeignShareholders"]["pct_total_shares"].sum())
+    other_indian_pct = float(
+        cat_total[cat_total["sub_category"] == "OtherIndianShareholders"][
+            "pct_total_shares"
+        ].sum()
+    )
+    other_foreign_pct = float(
+        cat_total[cat_total["sub_category"] == "OtherForeignShareholders"][
+            "pct_total_shares"
+        ].sum()
+    )
 
     govt_subs = {
         "CentralGovernmentOrPresidentOfIndia",
@@ -170,12 +213,19 @@ def aggregate_owner_candidate(conn: sqlite3.Connection, symbol: str, isin: str) 
         "ForeignGovernment",
         "ShareholdingByCompaniesOrBodiesCorporatewhereCentralOrStateGovernmentIsPromoter",
         "CentralGovernmentOrStateGovernmentS",
-        "Governments", "Goverments",
+        "Governments",
+        "Goverments",
     }
-    govt_pct = float(cat_total[cat_total["sub_category"].isin(govt_subs)]["pct_total_shares"].sum())
+    govt_pct = float(
+        cat_total[cat_total["sub_category"].isin(govt_subs)]["pct_total_shares"].sum()
+    )
 
     foreign_non_govt_subs = {"ForeignInstitutions", "ForeignPortfolioInvestor"}
-    foreign_non_govt_pct = float(cat_total[cat_total["sub_category"].isin(foreign_non_govt_subs)]["pct_total_shares"].sum())
+    foreign_non_govt_pct = float(
+        cat_total[cat_total["sub_category"].isin(foreign_non_govt_subs)][
+            "pct_total_shares"
+        ].sum()
+    )
 
     natural_pct_sum = hufi["pct"] + nri["pct"] + dir_["pct"] + kmp["pct"] + rel["pct"]
     natural_num_sum = hufi["num"] + nri["num"] + dir_["num"] + kmp["num"] + rel["num"]
@@ -214,14 +264,18 @@ def aggregate_owner_candidate(conn: sqlite3.Connection, symbol: str, isin: str) 
         owner_flag = "ambiguous_mnc_jv_candidate"
 
     # 簡易 owner_flag_final (AI レビュー未適用、ハイブリッド未適用)
-    if owner_flag.startswith("owner_confirmed") or owner_flag.startswith("owner_probable"):
+    if owner_flag.startswith("owner_confirmed") or owner_flag.startswith(
+        "owner_probable"
+    ):
         owner_flag_final = "OWNER"
     elif owner_flag.startswith("excluded"):
         owner_flag_final = "NOT_OWNER"
     else:
         owner_flag_final = "OWNER_WEAK"  # ambiguous は AI レビュー要
 
-    ai_review_needed = owner_flag.startswith("ambiguous") or owner_flag.startswith("owner_probable")
+    ai_review_needed = owner_flag.startswith("ambiguous") or owner_flag.startswith(
+        "owner_probable"
+    )
 
     return {
         "symbol": symbol,
@@ -229,12 +283,18 @@ def aggregate_owner_candidate(conn: sqlite3.Connection, symbol: str, isin: str) 
         "isin": isin,
         "report_date": latest_date,
         "promoter_total_pct": round(promoter_total_pct, 2),
-        "hufi_num": hufi["num"], "hufi_pct": round(hufi["pct"], 2),
-        "nri_num": nri["num"], "nri_pct": round(nri["pct"], 2),
-        "dir_num": dir_["num"], "dir_pct": round(dir_["pct"], 2),
-        "kmp_num": kmp["num"], "kmp_pct": round(kmp["pct"], 2),
-        "rel_num": rel["num"], "rel_pct": round(rel["pct"], 2),
-        "trust_num": trust["num"], "trust_pct": round(trust["pct"], 2),
+        "hufi_num": hufi["num"],
+        "hufi_pct": round(hufi["pct"], 2),
+        "nri_num": nri["num"],
+        "nri_pct": round(nri["pct"], 2),
+        "dir_num": dir_["num"],
+        "dir_pct": round(dir_["pct"], 2),
+        "kmp_num": kmp["num"],
+        "kmp_pct": round(kmp["pct"], 2),
+        "rel_num": rel["num"],
+        "rel_pct": round(rel["pct"], 2),
+        "trust_num": trust["num"],
+        "trust_pct": round(trust["pct"], 2),
         "natural_num_sum": natural_num_sum,
         "natural_pct_sum": round(natural_pct_sum, 2),
         "other_indian_pct": round(other_indian_pct, 2),
@@ -261,10 +321,18 @@ def main() -> None:
 
     sym_isin = {
         "360ONE": "INE466L01038",
-        "MAHLIFE": "INE813A01018", "FINOPB": "INE02NC01014", "SANOFI": "INE058A01010",
-        "BALMLAWRIE": "INE164A01016", "PGHH": "INE179A01014", "GUJALKALI": "INE186A01019",
-        "PGHL": "INE199A01012", "TICL": "INE388G01026", "PSB": "INE608A01012",
-        "UTKARSHBNK": "INE735W01017", "GUJGASLTD": "INE844O01030", "KIOCL": "INE880L01014",
+        "MAHLIFE": "INE813A01018",
+        "FINOPB": "INE02NC01014",
+        "SANOFI": "INE058A01010",
+        "BALMLAWRIE": "INE164A01016",
+        "PGHH": "INE179A01014",
+        "GUJALKALI": "INE186A01019",
+        "PGHL": "INE199A01012",
+        "TICL": "INE388G01026",
+        "PSB": "INE608A01012",
+        "UTKARSHBNK": "INE735W01017",
+        "GUJGASLTD": "INE844O01030",
+        "KIOCL": "INE880L01014",
     }
 
     persist_log: list[dict] = []
@@ -296,7 +364,9 @@ def main() -> None:
                     result = coll.fetch_xbrl_detail(holdings[0].xbrl_url)
                     n4 = upsert_phase4(conn, symbol, result)
                     entry["phase4_rows"] = n4
-                    log.info(f"  Phase 4: {n4} rows persisted (report_date={result.as_on_date})")
+                    log.info(
+                        f"  Phase 4: {n4} rows persisted (report_date={result.as_on_date})"
+                    )
                 except Exception as e:
                     entry["phase4_error"] = f"{type(e).__name__}: {e}"
                     log.error(f"  Phase 4 failed: {e}")
@@ -343,7 +413,9 @@ def main() -> None:
         row = aggregate_owner_candidate(conn, symbol, sym_isin[symbol])
         if row:
             new_rows.append(row)
-            log.info(f"  Aggregated {symbol}: flag={row['owner_flag']} → final={row['owner_flag_final']}")
+            log.info(
+                f"  Aggregated {symbol}: flag={row['owner_flag']} → final={row['owner_flag_final']}"
+            )
 
     if new_rows:
         new_df = pd.DataFrame(new_rows)
@@ -351,11 +423,15 @@ def main() -> None:
         cand_filtered = cand[~cand["symbol"].isin([r["symbol"] for r in new_rows])]
         merged = pd.concat([cand_filtered, new_df], ignore_index=True)
         merged.to_csv(EXPORT_DIR / "owner_candidates.csv", index=False)
-        log.info(f"  owner_candidates.csv (after): {len(merged)} rows ({len(new_rows)} new)")
+        log.info(
+            f"  owner_candidates.csv (after): {len(merged)} rows ({len(new_rows)} new)"
+        )
 
     conn.close()
 
-    PERSIST_LOG.write_text(json.dumps(persist_log, ensure_ascii=False, indent=2), encoding="utf-8")
+    PERSIST_LOG.write_text(
+        json.dumps(persist_log, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     log.info(f"\nPersist log: {PERSIST_LOG}")
 
 

@@ -60,25 +60,23 @@ def classify_promoter_names(promoter_names: str, yaml_data: dict) -> tuple[str, 
         excludes = kw.get("exclude_when_also_matches") or []
         if any(ex.lower() in text_lower for ex in excludes):
             continue
-        matched["OWNER"].append(f"{kw['keyword']}({kw.get('family','')})")
+        matched["OWNER"].append(f"{kw['keyword']}({kw.get('family', '')})")
         if kw.get("override_state"):
             override_state = True
 
     for kw in yaml_data.get("professional_keywords", []):
         if kw["keyword"].lower() in text_lower:
-            matched["PROFESSIONAL"].append(f"{kw['keyword']}({kw.get('parent','')})")
+            matched["PROFESSIONAL"].append(f"{kw['keyword']}({kw.get('parent', '')})")
 
     for kw in yaml_data.get("state_keywords", []):
         if kw["keyword"].lower() in text_lower:
-            matched["STATE"].append(f"{kw['keyword']}({kw.get('parent','')})")
+            matched["STATE"].append(f"{kw['keyword']}({kw.get('parent', '')})")
 
     for kw in yaml_data.get("mnc_keywords", []):
         if kw["keyword"].lower() in text_lower:
-            matched["MNC"].append(f"{kw['keyword']}({kw.get('parent','')})")
+            matched["MNC"].append(f"{kw['keyword']}({kw.get('parent', '')})")
 
-    detail = "; ".join(
-        f"{cat}=[{','.join(v)}]" for cat, v in matched.items() if v
-    )
+    detail = "; ".join(f"{cat}=[{','.join(v)}]" for cat, v in matched.items() if v)
 
     has_owner = bool(matched["OWNER"])
     has_prof = bool(matched["PROFESSIONAL"])
@@ -86,9 +84,8 @@ def classify_promoter_names(promoter_names: str, yaml_data: dict) -> tuple[str, 
     has_mnc = bool(matched["MNC"])
 
     # Tata Communications 例外: Tata Sons + PRESIDENT OF INDIA → PROFESSIONAL
-    if (
-        any("tata sons" in m.lower() for m in matched["PROFESSIONAL"])
-        and any("president of india" in m.lower() for m in matched["STATE"])
+    if any("tata sons" in m.lower() for m in matched["PROFESSIONAL"]) and any(
+        "president of india" in m.lower() for m in matched["STATE"]
     ):
         return "PROFESSIONAL", detail
 
@@ -220,9 +217,9 @@ def main() -> None:
         "excluded_no_natural_no_holding",
         "excluded_state_dominant",
     ]
-    merged["__flag_order"] = merged["owner_flag"].map(
-        {f: i for i, f in enumerate(flag_order)}
-    ).fillna(99)
+    merged["__flag_order"] = (
+        merged["owner_flag"].map({f: i for i, f in enumerate(flag_order)}).fillna(99)
+    )
     merged = merged.sort_values(["__flag_order", "judge", "symbol"]).drop(
         columns=["__flag_order"]
     )
@@ -268,7 +265,7 @@ def main() -> None:
 
     # サマリー Markdown
     lines = ["# Owner Review Sheet Summary", ""]
-    lines.append(f"**生成元**: act-2026-04-30-009 / act-2026-05-07-001")
+    lines.append("**生成元**: act-2026-04-30-009 / act-2026-05-07-001")
     lines.append(f"**対象**: 全 {len(merged)} 銘柄 (Phase 3/4 完了)")
     lines.append(f"**rev1 GT**: {len(rev1)} 銘柄")
     lines.append(f"**intersection (rev1 圏内)**: {merged['in_rev1'].sum()} 銘柄")
@@ -286,9 +283,7 @@ def main() -> None:
     for flag, n in final_dist.items():
         lines.append(f"| {flag} | {n} |")
     lines.append("")
-    lines.append(
-        "(参考) CSV 上の `owner_flag_final` (ハイブリッド未適用) との差異:"
-    )
+    lines.append("(参考) CSV 上の `owner_flag_final` (ハイブリッド未適用) との差異:")
     lines.append("")
     diff = merged[merged["owner_flag_final"] != merged["owner_flag_final_hybrid"]]
     lines.append(f"- ハイブリッドで再分類された銘柄: {len(diff)} 件")
@@ -369,7 +364,9 @@ def main() -> None:
         )
     ]
     if not rescued_outside.empty:
-        lines.append("### rev1 圏外で Tier 1.5 corporate-vehicle rescue / A-3 救済された銘柄")
+        lines.append(
+            "### rev1 圏外で Tier 1.5 corporate-vehicle rescue / A-3 救済された銘柄"
+        )
         lines.append("")
         lines.append(
             "| symbol | company_name | owner_flag (Tier 2) | owner_flag_final |"

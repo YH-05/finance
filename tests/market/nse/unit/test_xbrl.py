@@ -240,8 +240,7 @@ class TestMemberCategoryConstant:
         assert "InstitutionsForeignPortfolioInvestorCategoryOne" in _MEMBER_CATEGORY
         assert (
             "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroup"
-            "IsTrusteeOrBeneficiaryOrAuthorOfTrust"
-            in _MEMBER_CATEGORY
+            "IsTrusteeOrBeneficiaryOrAuthorOfTrust" in _MEMBER_CATEGORY
         )
 
     def test_正常系_プロモーターサブカテゴリが含まれる(self) -> None:
@@ -556,11 +555,15 @@ class TestParseXbrl2025_05_31:
         # No NseParseError raised = namespace regex accepted 2025-05-31 URI
         assert result.symbol != "" or result.as_on_date != "" or len(result.rows) > 0
 
-    def test_正常系_metadataがMainDコンテキストから取れる(self, result: ParseResult) -> None:
+    def test_正常系_metadataがMainDコンテキストから取れる(
+        self, result: ParseResult
+    ) -> None:
         assert result.symbol == "AADHARHFC"
         assert result.as_on_date == "2025-06-30"
 
-    def test_正常系_pct値がパーセント形式で保持される(self, result: ParseResult) -> None:
+    def test_正常系_pct値がパーセント形式で保持される(
+        self, result: ParseResult
+    ) -> None:
         # 2025-05-31 taxonomy stores percentages in percentage form (75.50),
         # so no scaling should be applied.
         promoter_total = [
@@ -599,7 +602,9 @@ class TestParseXbrl2025_10_31:
     def test_正常系_namespaceが受理される(self, result: ParseResult) -> None:
         assert result.symbol != "" or result.as_on_date != "" or len(result.rows) > 0
 
-    def test_正常系_metadataがMainDコンテキストから取れる(self, result: ParseResult) -> None:
+    def test_正常系_metadataがMainDコンテキストから取れる(
+        self, result: ParseResult
+    ) -> None:
         assert result.symbol == "AADHARHFC"
         assert result.as_on_date == "2026-03-31"
 

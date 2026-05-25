@@ -79,7 +79,9 @@ def _(Path, json, mo, pd):
     if not _list_path.exists():
         mo.stop(
             True,
-            mo.md("**Error**: `data/Transcript/list_portfolio_20151224.json` が見つかりません。"),
+            mo.md(
+                "**Error**: `data/Transcript/list_portfolio_20151224.json` が見つかりません。"
+            ),
         )
 
     with open(_list_path) as _f:
@@ -152,12 +154,16 @@ def _(Path, json, mo, pd):
 @app.cell
 def _(Path, all_entries, mo, np, pd, universe_data, us_short_tickers):
     """Build US-Only Universe Benchmark (MCap-weighted)."""
-    _univ_path = Path("../data/raw/yfinance/stocks/universe_benchmark_close_prices.parquet")
+    _univ_path = Path(
+        "../data/raw/yfinance/stocks/universe_benchmark_close_prices.parquet"
+    )
 
     if not _univ_path.exists():
         mo.stop(
             True,
-            mo.md("**Error**: `universe_benchmark_close_prices.parquet` が見つかりません。"),
+            mo.md(
+                "**Error**: `universe_benchmark_close_prices.parquet` が見つかりません。"
+            ),
         )
 
     _univ_close = pd.read_parquet(_univ_path)
@@ -166,23 +172,72 @@ def _(Path, all_entries, mo, np, pd, universe_data, us_short_tickers):
 
     # Bloomberg -> yfinance ticker mapping
     _exchange_map = {
-        "US": "", "LN": ".L", "SW": ".SW", "VX": ".SW", "GR": ".DE",
-        "HK": ".HK", "CN": ".TO", "AU": ".AX", "FP": ".PA", "SJ": ".JO",
-        "IJ": ".JK", "BZ": ".SA", "KS": ".KS", "NA": ".AS", "SS": ".SS",
-        "IN": ".NS", "IM": ".MI", "MM": ".MX", "TT": ".TW", "TB": ".BK",
-        "DC": ".CO", "BB": ".BR", "PM": ".PS", "MK": ".KL", "SM": ".MC",
-        "NO": ".OL", "FH": ".HE", "PL": ".WA", "NR": "", "NQ": "", "QM": "",
-        "GK": "", "LI": "", "TI": "",
+        "US": "",
+        "LN": ".L",
+        "SW": ".SW",
+        "VX": ".SW",
+        "GR": ".DE",
+        "HK": ".HK",
+        "CN": ".TO",
+        "AU": ".AX",
+        "FP": ".PA",
+        "SJ": ".JO",
+        "IJ": ".JK",
+        "BZ": ".SA",
+        "KS": ".KS",
+        "NA": ".AS",
+        "SS": ".SS",
+        "IN": ".NS",
+        "IM": ".MI",
+        "MM": ".MX",
+        "TT": ".TW",
+        "TB": ".BK",
+        "DC": ".CO",
+        "BB": ".BR",
+        "PM": ".PS",
+        "MK": ".KL",
+        "SM": ".MC",
+        "NO": ".OL",
+        "FH": ".HE",
+        "PL": ".WA",
+        "NR": "",
+        "NQ": "",
+        "QM": "",
+        "GK": "",
+        "LI": "",
+        "TI": "",
     }
     _manual_bbg_to_yf = {
-        "GSK": "GSK", "AZN": "AZN", "BA/": "BAESY", "DGE": "DEO",
-        "BATS": None, "PRU": "PUK", "CBG": None, "STJ": None,
-        "RB/": "RBGLY", "VOD": "VOD", "ULVR": "UL", "ABI": "BUD",
-        "SAB": None, "SKY": None, "ARM": None, "ADN": None,
-        "NESN": "NSRGY", "NOVN": "NVS", "ROG": "RHHBY", "SCMN": None,
-        "SAP": "SAP", "BAYN": None, "CON": None, "HNR1": None,
-        "IFC": None, "DHL": None, "CBA": None, "CPI": None,
-        "005930": None, "COLOB": None,
+        "GSK": "GSK",
+        "AZN": "AZN",
+        "BA/": "BAESY",
+        "DGE": "DEO",
+        "BATS": None,
+        "PRU": "PUK",
+        "CBG": None,
+        "STJ": None,
+        "RB/": "RBGLY",
+        "VOD": "VOD",
+        "ULVR": "UL",
+        "ABI": "BUD",
+        "SAB": None,
+        "SKY": None,
+        "ARM": None,
+        "ADN": None,
+        "NESN": "NSRGY",
+        "NOVN": "NVS",
+        "ROG": "RHHBY",
+        "SCMN": None,
+        "SAP": "SAP",
+        "BAYN": None,
+        "CON": None,
+        "HNR1": None,
+        "IFC": None,
+        "DHL": None,
+        "CBA": None,
+        "CPI": None,
+        "005930": None,
+        "COLOB": None,
     }
 
     def _bbg_to_yf(bbg_ticker: str) -> str | None:
@@ -318,15 +373,48 @@ def _(PORTFOLIO_SIZE, RETURN_CAP, Path, mo, np, pd, us_short_tickers):
         weights_all = pd.read_csv(_weights_path)
     else:
         weights_all = pd.DataFrame(
-            {"ticker": close_prices_all.columns, "weight": 1.0 / len(close_prices_all.columns)}
+            {
+                "ticker": close_prices_all.columns,
+                "weight": 1.0 / len(close_prices_all.columns),
+            }
         )
 
     # Known non-US tickers (from instructions)
     _known_non_us = {
-        "ITV", "CCEP", "ENB", "IFC", "HNR1", "CSL", "BAYN", "SHP", "CPI",
-        "AMS", "SAP", "SCMN", "FTI", "ROG", "COLOB", "DHL", "ASML", "NESN",
-        "KBC", "CON", "MC", "OR", "ITUB4", "AGU", "QIA", "BXB", "NOVN",
-        "005930", "SOL", "CBA", "CBG", "ML", "BATS", "RADL3",
+        "ITV",
+        "CCEP",
+        "ENB",
+        "IFC",
+        "HNR1",
+        "CSL",
+        "BAYN",
+        "SHP",
+        "CPI",
+        "AMS",
+        "SAP",
+        "SCMN",
+        "FTI",
+        "ROG",
+        "COLOB",
+        "DHL",
+        "ASML",
+        "NESN",
+        "KBC",
+        "CON",
+        "MC",
+        "OR",
+        "ITUB4",
+        "AGU",
+        "QIA",
+        "BXB",
+        "NOVN",
+        "005930",
+        "SOL",
+        "CBA",
+        "CBG",
+        "ML",
+        "BATS",
+        "RADL3",
     }
 
     # Blacklist tickers with bad data
@@ -344,23 +432,17 @@ def _(PORTFOLIO_SIZE, RETURN_CAP, Path, mo, np, pd, us_short_tickers):
             continue
         if _t in _known_non_us:
             _non_us_tickers.append(_t)
-        elif _t in us_short_tickers:
+        elif _t in us_short_tickers or not close_prices_all[_t].isna().all():
             _us_tickers.append(_t)
         else:
-            # Tickers not in either list - check if they appear in portfolio
-            # but not in universe (e.g., delisted/renamed US stocks)
-            # Default: if not in known_non_us list, treat as potentially US
-            # but only if they have valid data
-            if not close_prices_all[_t].isna().all():
-                _us_tickers.append(_t)
-            else:
-                _non_us_tickers.append(_t)
+            _non_us_tickers.append(_t)
 
     _us_tickers = sorted(_us_tickers)
 
     # --- Full portfolio (for comparison later) ---
     _full_valid = [
-        t for t in close_prices_all.columns
+        t
+        for t in close_prices_all.columns
         if t not in _blacklist and not close_prices_all[t].isna().all()
     ]
     full_close = close_prices_all[_full_valid].ffill()
@@ -382,7 +464,9 @@ def _(PORTFOLIO_SIZE, RETURN_CAP, Path, mo, np, pd, us_short_tickers):
     us_weights_df = weights_all[weights_all["ticker"].isin(_us_valid)].copy()
     _orig_us_weight = us_weights_df["weight"].sum()
     _orig_total_weight = weights_all["weight"].sum()
-    us_weights_df["weight"] = us_weights_df["weight"] / _orig_us_weight  # renormalize to 1.0
+    us_weights_df["weight"] = (
+        us_weights_df["weight"] / _orig_us_weight
+    )  # renormalize to 1.0
 
     _us_w = us_weights_df.set_index("ticker")["weight"]
     _us_aligned = _us_w.reindex(us_daily_returns.columns).fillna(0)
@@ -403,7 +487,7 @@ def _(PORTFOLIO_SIZE, RETURN_CAP, Path, mo, np, pd, us_short_tickers):
     | Original US Weight | {_orig_us_weight:.1%} of total |
     | Period | {us_close.index.min().date()} ~ {us_close.index.max().date()} |
 
-    **US tickers**: {', '.join(sorted(_us_valid))}
+    **US tickers**: {", ".join(sorted(_us_valid))}
     """
     )
     return (
@@ -427,7 +511,9 @@ def _(Path, RETURN_CAP, RISK_FREE_RATE, mo, np, pd, us_port_ret, us_universe_ret
     _ann = 252
 
     # Load MSCI Kokusai (TOK)
-    _bench_path = Path("../data/raw/yfinance/stocks/msci_benchmark_close_prices.parquet")
+    _bench_path = Path(
+        "../data/raw/yfinance/stocks/msci_benchmark_close_prices.parquet"
+    )
     if not _bench_path.exists():
         mo.stop(True, mo.md("**Error**: MSCI benchmark データが見つかりません。"))
 
@@ -485,25 +571,43 @@ def _(Path, RETURN_CAP, RISK_FREE_RATE, mo, np, pd, us_port_ret, us_universe_ret
             active = ret - bench
             cov = np.cov(ret, bench)
             beta = float(cov[0, 1] / cov[1, 1]) if cov[1, 1] > 0 else 1.0
-            ann_b = float((1 + float((1 + bench).prod() - 1)) ** (1 / n_yr) - 1) if n_yr > 0 else 0
+            ann_b = (
+                float((1 + float((1 + bench).prod() - 1)) ** (1 / n_yr) - 1)
+                if n_yr > 0
+                else 0
+            )
             alpha = ann_ret - (_rf + beta * (ann_b - _rf))
             te = float(active.std() * np.sqrt(_ann))
-            ir = float(active.mean() / active.std() * np.sqrt(_ann)) if active.std() > 0 else 0
+            ir = (
+                float(active.mean() / active.std() * np.sqrt(_ann))
+                if active.std() > 0
+                else 0
+            )
 
             # Up/Down capture
             up_mask = bench > 0
             dn_mask = bench < 0
-            up_cap = float(ret[up_mask].mean() / bench[up_mask].mean() * 100) if bench[up_mask].mean() != 0 else 0
-            dn_cap = float(ret[dn_mask].mean() / bench[dn_mask].mean() * 100) if bench[dn_mask].mean() != 0 else 0
+            up_cap = (
+                float(ret[up_mask].mean() / bench[up_mask].mean() * 100)
+                if bench[up_mask].mean() != 0
+                else 0
+            )
+            dn_cap = (
+                float(ret[dn_mask].mean() / bench[dn_mask].mean() * 100)
+                if bench[dn_mask].mean() != 0
+                else 0
+            )
 
-            result.update({
-                "Beta": round(beta, 4),
-                "Alpha": round(alpha, 4),
-                "TE": round(te, 4),
-                "IR": round(ir, 4),
-                "Up Cap": round(up_cap, 1),
-                "Dn Cap": round(dn_cap, 1),
-            })
+            result.update(
+                {
+                    "Beta": round(beta, 4),
+                    "Alpha": round(alpha, 4),
+                    "TE": round(te, 4),
+                    "IR": round(ir, 4),
+                    "Up Cap": round(up_cap, 1),
+                    "Dn Cap": round(dn_cap, 1),
+                }
+            )
 
         return result
 
@@ -520,36 +624,36 @@ def _(Path, RETURN_CAP, RISK_FREE_RATE, mo, np, pd, us_port_ret, us_universe_ret
 
     | Metric | US-Only Portfolio | US-Only Universe | MSCI Kokusai |
     |--------|:-:|:-:|:-:|
-    | **Sharpe Ratio** | {_port_vs_msci['Sharpe']:.4f} | {_univ_metrics['Sharpe']:.4f} | {_msci_metrics['Sharpe']:.4f} |
-    | **Sortino Ratio** | {_port_vs_msci['Sortino']:.4f} | {_univ_metrics['Sortino']:.4f} | {_msci_metrics['Sortino']:.4f} |
-    | **Calmar Ratio** | {_port_vs_msci['Calmar']:.4f} | {_univ_metrics['Calmar']:.4f} | {_msci_metrics['Calmar']:.4f} |
-    | **Max Drawdown** | {_port_vs_msci['Max DD']:.2%} | {_univ_metrics['Max DD']:.2%} | {_msci_metrics['Max DD']:.2%} |
-    | **Cum. Return** | {_port_vs_msci['Cum. Return']:.2%} | {_univ_metrics['Cum. Return']:.2%} | {_msci_metrics['Cum. Return']:.2%} |
-    | **Ann. Return** | {_port_vs_msci['Ann. Return']:.2%} | {_univ_metrics['Ann. Return']:.2%} | {_msci_metrics['Ann. Return']:.2%} |
-    | **Ann. Volatility** | {_port_vs_msci['Ann. Vol']:.2%} | {_univ_metrics['Ann. Vol']:.2%} | {_msci_metrics['Ann. Vol']:.2%} |
-    | **Win Rate (日次)** | {_port_vs_msci['Win Rate']:.1%} | {_univ_metrics['Win Rate']:.1%} | {_msci_metrics['Win Rate']:.1%} |
+    | **Sharpe Ratio** | {_port_vs_msci["Sharpe"]:.4f} | {_univ_metrics["Sharpe"]:.4f} | {_msci_metrics["Sharpe"]:.4f} |
+    | **Sortino Ratio** | {_port_vs_msci["Sortino"]:.4f} | {_univ_metrics["Sortino"]:.4f} | {_msci_metrics["Sortino"]:.4f} |
+    | **Calmar Ratio** | {_port_vs_msci["Calmar"]:.4f} | {_univ_metrics["Calmar"]:.4f} | {_msci_metrics["Calmar"]:.4f} |
+    | **Max Drawdown** | {_port_vs_msci["Max DD"]:.2%} | {_univ_metrics["Max DD"]:.2%} | {_msci_metrics["Max DD"]:.2%} |
+    | **Cum. Return** | {_port_vs_msci["Cum. Return"]:.2%} | {_univ_metrics["Cum. Return"]:.2%} | {_msci_metrics["Cum. Return"]:.2%} |
+    | **Ann. Return** | {_port_vs_msci["Ann. Return"]:.2%} | {_univ_metrics["Ann. Return"]:.2%} | {_msci_metrics["Ann. Return"]:.2%} |
+    | **Ann. Volatility** | {_port_vs_msci["Ann. Vol"]:.2%} | {_univ_metrics["Ann. Vol"]:.2%} | {_msci_metrics["Ann. Vol"]:.2%} |
+    | **Win Rate (日次)** | {_port_vs_msci["Win Rate"]:.1%} | {_univ_metrics["Win Rate"]:.1%} | {_msci_metrics["Win Rate"]:.1%} |
 
     #### vs MSCI Kokusai
 
     | Metric | US-Only Portfolio | US-Only Universe |
     |--------|:-:|:-:|
-    | **Beta** | {_port_vs_msci['Beta']:.4f} | {_univ_metrics['Beta']:.4f} |
-    | **Alpha (CAPM)** | {_port_vs_msci['Alpha']:+.2%} | {_univ_metrics['Alpha']:+.2%} |
-    | **Tracking Error** | {_port_vs_msci['TE']:.2%} | {_univ_metrics['TE']:.2%} |
-    | **Information Ratio** | {_port_vs_msci['IR']:.4f} | {_univ_metrics['IR']:.4f} |
-    | **Up Capture** | {_port_vs_msci['Up Cap']:.1f}% | {_univ_metrics['Up Cap']:.1f}% |
-    | **Down Capture** | {_port_vs_msci['Dn Cap']:.1f}% | {_univ_metrics['Dn Cap']:.1f}% |
+    | **Beta** | {_port_vs_msci["Beta"]:.4f} | {_univ_metrics["Beta"]:.4f} |
+    | **Alpha (CAPM)** | {_port_vs_msci["Alpha"]:+.2%} | {_univ_metrics["Alpha"]:+.2%} |
+    | **Tracking Error** | {_port_vs_msci["TE"]:.2%} | {_univ_metrics["TE"]:.2%} |
+    | **Information Ratio** | {_port_vs_msci["IR"]:.4f} | {_univ_metrics["IR"]:.4f} |
+    | **Up Capture** | {_port_vs_msci["Up Cap"]:.1f}% | {_univ_metrics["Up Cap"]:.1f}% |
+    | **Down Capture** | {_port_vs_msci["Dn Cap"]:.1f}% | {_univ_metrics["Dn Cap"]:.1f}% |
 
     #### vs US-Only Universe
 
     | Metric | US-Only Portfolio |
     |--------|:-:|
-    | **Beta** | {_port_vs_univ['Beta']:.4f} |
-    | **Alpha (CAPM)** | {_port_vs_univ['Alpha']:+.2%} |
-    | **Tracking Error** | {_port_vs_univ['TE']:.2%} |
-    | **Information Ratio** | {_port_vs_univ['IR']:.4f} |
-    | **Up Capture** | {_port_vs_univ['Up Cap']:.1f}% |
-    | **Down Capture** | {_port_vs_univ['Dn Cap']:.1f}% |
+    | **Beta** | {_port_vs_univ["Beta"]:.4f} |
+    | **Alpha (CAPM)** | {_port_vs_univ["Alpha"]:+.2%} |
+    | **Tracking Error** | {_port_vs_univ["TE"]:.2%} |
+    | **Information Ratio** | {_port_vs_univ["IR"]:.4f} |
+    | **Up Capture** | {_port_vs_univ["Up Cap"]:.1f}% |
+    | **Down Capture** | {_port_vs_univ["Dn Cap"]:.1f}% |
     """
     )
     return (msci_ret,)
@@ -603,26 +707,29 @@ def _(RISK_FREE_RATE, full_port_ret, mo, np, pd, us_port_ret):
 
     | Metric | Full Portfolio | US-Only Portfolio | Difference |
     |--------|:-:|:-:|:-:|
-    | **Sharpe Ratio** | {_f['sharpe']:.4f} | {_u['sharpe']:.4f} | {_u['sharpe'] - _f['sharpe']:+.4f} |
-    | **Sortino Ratio** | {_f['sortino']:.4f} | {_u['sortino']:.4f} | {_u['sortino'] - _f['sortino']:+.4f} |
-    | **Calmar Ratio** | {_f['calmar']:.4f} | {_u['calmar']:.4f} | {_u['calmar'] - _f['calmar']:+.4f} |
-    | **Max Drawdown** | {_f['max_dd']:.2%} | {_u['max_dd']:.2%} | {_u['max_dd'] - _f['max_dd']:+.2%} |
-    | **Cum. Return** | {_f['cum_ret']:.2%} | {_u['cum_ret']:.2%} | {_u['cum_ret'] - _f['cum_ret']:+.2%} |
-    | **Ann. Return** | {_f['ann_ret']:.2%} | {_u['ann_ret']:.2%} | {_u['ann_ret'] - _f['ann_ret']:+.2%} |
-    | **Ann. Volatility** | {_f['ann_vol']:.2%} | {_u['ann_vol']:.2%} | {_u['ann_vol'] - _f['ann_vol']:+.2%} |
+    | **Sharpe Ratio** | {_f["sharpe"]:.4f} | {_u["sharpe"]:.4f} | {_u["sharpe"] - _f["sharpe"]:+.4f} |
+    | **Sortino Ratio** | {_f["sortino"]:.4f} | {_u["sortino"]:.4f} | {_u["sortino"] - _f["sortino"]:+.4f} |
+    | **Calmar Ratio** | {_f["calmar"]:.4f} | {_u["calmar"]:.4f} | {_u["calmar"] - _f["calmar"]:+.4f} |
+    | **Max Drawdown** | {_f["max_dd"]:.2%} | {_u["max_dd"]:.2%} | {_u["max_dd"] - _f["max_dd"]:+.2%} |
+    | **Cum. Return** | {_f["cum_ret"]:.2%} | {_u["cum_ret"]:.2%} | {_u["cum_ret"] - _f["cum_ret"]:+.2%} |
+    | **Ann. Return** | {_f["ann_ret"]:.2%} | {_u["ann_ret"]:.2%} | {_u["ann_ret"] - _f["ann_ret"]:+.2%} |
+    | **Ann. Volatility** | {_f["ann_vol"]:.2%} | {_u["ann_vol"]:.2%} | {_u["ann_vol"] - _f["ann_vol"]:+.2%} |
 
     > Positive difference = US-Only is better than Full.
     > Negative difference = Full is better than US-Only.
     """
     )
-    return
 
 
 @app.cell
 def _(mo, msci_ret, np, pd, us_port_ret, us_universe_ret):
     """Yearly Returns Table: US-Only Portfolio vs US Universe vs MSCI Kokusai."""
     _aligned = pd.concat(
-        [us_port_ret.rename("port"), us_universe_ret.rename("univ"), msci_ret.rename("msci")],
+        [
+            us_port_ret.rename("port"),
+            us_universe_ret.rename("univ"),
+            msci_ret.rename("msci"),
+        ],
         axis=1,
     ).dropna()
 
@@ -654,7 +761,6 @@ def _(mo, msci_ret, np, pd, us_port_ret, us_universe_ret):
 def _(mo, yearly_us_df):
     """Display yearly returns table."""
     mo.ui.table(yearly_us_df, selection=None)
-    return
 
 
 @app.cell
@@ -663,7 +769,11 @@ def _(mo, msci_ret, pd, us_port_ret, us_universe_ret):
     import plotly.graph_objects as go
 
     _aligned = pd.concat(
-        [us_port_ret.rename("port"), us_universe_ret.rename("univ"), msci_ret.rename("msci")],
+        [
+            us_port_ret.rename("port"),
+            us_universe_ret.rename("univ"),
+            msci_ret.rename("msci"),
+        ],
         axis=1,
     ).dropna()
 
@@ -718,7 +828,11 @@ def _(mo, msci_ret, pd, us_port_ret, us_universe_ret):
     import plotly.graph_objects as go
 
     _aligned = pd.concat(
-        [us_port_ret.rename("port"), us_universe_ret.rename("univ"), msci_ret.rename("msci")],
+        [
+            us_port_ret.rename("port"),
+            us_universe_ret.rename("univ"),
+            msci_ret.rename("msci"),
+        ],
         axis=1,
     ).dropna()
 
@@ -914,11 +1028,13 @@ def _(PORTFOLIO_SIZE, mo, pd, us_weights_df, weights_all):
 
     _sector_df = pd.DataFrame(_table_rows)
 
-    mo.vstack([
-        mo.md(f"### Sector Weights: Full vs US-Only ({_size}-stock)"),
-        mo.ui.plotly(fig_sector),
-        mo.ui.table(_sector_df, selection=None),
-    ])
+    mo.vstack(
+        [
+            mo.md(f"### Sector Weights: Full vs US-Only ({_size}-stock)"),
+            mo.ui.plotly(fig_sector),
+            mo.ui.table(_sector_df, selection=None),
+        ]
+    )
     return (fig_sector,)
 
 
@@ -946,7 +1062,11 @@ def _(
 
     # Aligned returns
     _aligned = pd.concat(
-        [us_port_ret.rename("port"), us_universe_ret.rename("univ"), msci_ret.rename("msci")],
+        [
+            us_port_ret.rename("port"),
+            us_universe_ret.rename("univ"),
+            msci_ret.rename("msci"),
+        ],
         axis=1,
     ).dropna()
 
@@ -968,18 +1088,30 @@ def _(
     # vs MSCI
     _active_msci = _p - _m
     _te_msci = float(_active_msci.std() * np.sqrt(_ann))
-    _ir_msci = float(_active_msci.mean() / _active_msci.std() * np.sqrt(_ann)) if _active_msci.std() > 0 else 0
+    _ir_msci = (
+        float(_active_msci.mean() / _active_msci.std() * np.sqrt(_ann))
+        if _active_msci.std() > 0
+        else 0
+    )
     _cov_msci = np.cov(_p, _m)
-    _beta_msci = float(_cov_msci[0, 1] / _cov_msci[1, 1]) if _cov_msci[1, 1] > 0 else 1.0
+    _beta_msci = (
+        float(_cov_msci[0, 1] / _cov_msci[1, 1]) if _cov_msci[1, 1] > 0 else 1.0
+    )
     _ann_m = float((1 + float((1 + _m).prod() - 1)) ** (1 / _n_yr) - 1)
     _alpha_msci = _ann_ret - (_rf + _beta_msci * (_ann_m - _rf))
 
     # vs Universe
     _active_univ = _p - _u
     _te_univ = float(_active_univ.std() * np.sqrt(_ann))
-    _ir_univ = float(_active_univ.mean() / _active_univ.std() * np.sqrt(_ann)) if _active_univ.std() > 0 else 0
+    _ir_univ = (
+        float(_active_univ.mean() / _active_univ.std() * np.sqrt(_ann))
+        if _active_univ.std() > 0
+        else 0
+    )
     _cov_univ = np.cov(_p, _u)
-    _beta_univ = float(_cov_univ[0, 1] / _cov_univ[1, 1]) if _cov_univ[1, 1] > 0 else 1.0
+    _beta_univ = (
+        float(_cov_univ[0, 1] / _cov_univ[1, 1]) if _cov_univ[1, 1] > 0 else 1.0
+    )
     _ann_u = float((1 + float((1 + _u).prod() - 1)) ** (1 / _n_yr) - 1)
     _alpha_univ = _ann_ret - (_rf + _beta_univ * (_ann_u - _rf))
 
@@ -999,10 +1131,16 @@ def _(
             n_yr = len(r) / _ann
             _per_stock[col] = {
                 "weight": round(float(_weights.loc[col, "weight"]), 4),
-                "sector": _weights.loc[col, "sector"] if "sector" in _weights.columns else "",
-                "score": round(float(_weights.loc[col, "score"]), 4) if "score" in _weights.columns else 0,
+                "sector": _weights.loc[col, "sector"]
+                if "sector" in _weights.columns
+                else "",
+                "score": round(float(_weights.loc[col, "score"]), 4)
+                if "score" in _weights.columns
+                else 0,
                 "cum_return": round(cum_r, 4),
-                "ann_return": round(float((1 + cum_r) ** (1 / n_yr) - 1) if n_yr > 0 else 0, 4),
+                "ann_return": round(
+                    float((1 + cum_r) ** (1 / n_yr) - 1) if n_yr > 0 else 0, 4
+                ),
             }
 
     export_result = {
@@ -1056,15 +1194,15 @@ def _(
     ```json
     {{
       "analysis_type": "us_only",
-      "portfolio": "{export_result['portfolio']}",
-      "active_holdings": {export_result['config']['active_holdings']},
-      "sharpe_ratio": {export_result['performance']['sharpe_ratio']},
-      "annualized_return": {export_result['performance']['annualized_return']:.4f},
-      "max_drawdown": {export_result['performance']['max_drawdown']:.4f},
-      "alpha_vs_msci": {export_result['vs_msci_kokusai']['alpha']:.4f},
-      "ir_vs_msci": {export_result['vs_msci_kokusai']['information_ratio']:.4f},
-      "alpha_vs_us_univ": {export_result['vs_us_universe']['alpha']:.4f},
-      "ir_vs_us_univ": {export_result['vs_us_universe']['information_ratio']:.4f}
+      "portfolio": "{export_result["portfolio"]}",
+      "active_holdings": {export_result["config"]["active_holdings"]},
+      "sharpe_ratio": {export_result["performance"]["sharpe_ratio"]},
+      "annualized_return": {export_result["performance"]["annualized_return"]:.4f},
+      "max_drawdown": {export_result["performance"]["max_drawdown"]:.4f},
+      "alpha_vs_msci": {export_result["vs_msci_kokusai"]["alpha"]:.4f},
+      "ir_vs_msci": {export_result["vs_msci_kokusai"]["information_ratio"]:.4f},
+      "alpha_vs_us_univ": {export_result["vs_us_universe"]["alpha"]:.4f},
+      "ir_vs_us_univ": {export_result["vs_us_universe"]["information_ratio"]:.4f}
     }}
     ```
     """
