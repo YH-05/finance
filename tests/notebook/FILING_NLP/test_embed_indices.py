@@ -12,7 +12,6 @@ from __future__ import annotations
 import importlib.util
 import json
 import sys
-from collections.abc import Callable
 from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
@@ -22,6 +21,7 @@ import pandas as pd
 import pytest
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from types import ModuleType
 
 
@@ -36,7 +36,7 @@ def _load_embed_indices() -> ModuleType:
     モジュールスコープのキャッシュを保持し、重複した ``exec_module`` を回避する。
     これにより複数テスト実行時の ``sys.path`` 累積汚染を抑制する。
     """
-    global _EI_MODULE_CACHE  # noqa: PLW0603
+    global _EI_MODULE_CACHE
     if _EI_MODULE_CACHE is not None:
         return _EI_MODULE_CACHE
     here = Path(__file__).resolve()

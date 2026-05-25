@@ -260,7 +260,10 @@ def main(argv: list[str] | None = None) -> None:
 
     # EDGAR identity / tokenizer (NAS 検証後・universe 確定後にロード)
     _setup_edgar_identity()
-    log.info("EDGAR_IDENTITY: %s", utils.mask_edgar_identity(os.environ.get("EDGAR_IDENTITY")))
+    log.info(
+        "EDGAR_IDENTITY: %s",
+        utils.mask_edgar_identity(os.environ.get("EDGAR_IDENTITY")),
+    )
     log.info("loading tokenizer: %s", config.TOKENIZER_MODEL_ID)
     tokenizer = _load_tokenizer()
     log.info("tokenizer ready: %s", type(tokenizer).__name__)

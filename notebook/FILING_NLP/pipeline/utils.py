@@ -15,9 +15,12 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pandas as pd
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # index_filter として受け付ける値 (membership parquet の列名と一致)
 INDEX_FILTER_CHOICES: tuple[str, ...] = ("in_spx", "in_sox", "in_riy", "in_ray")
@@ -75,9 +78,7 @@ def mask_edgar_identity(identity: str | None) -> str:
     return f"{head} ***"
 
 
-def setup_pipeline_logging(
-    run_id: str, logs_dir: Path, *, suffix: str = "run"
-) -> Path:
+def setup_pipeline_logging(run_id: str, logs_dir: Path, *, suffix: str = "run") -> Path:
     """StreamHandler + FileHandler の logging 設定を行う.
 
     Parameters

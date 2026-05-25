@@ -429,18 +429,20 @@ class TestBuildMembership:
         """resolved が空の場合、必須スキーマ (cik / in_* / snapshot_date) を保持."""
         ub = _load_universe_builder()
         empty_resolved = pd.DataFrame(
-            columns=[
-                "cik",
-                "ticker",
-                "isin",
-                "sedol",
-                "mkt_cap",
-                "gics_sector",
-                "gics_industry_group",
-                "gics_industry",
-                "gics_sub_industry",
-                "index_name",
-            ]
+            columns=pd.Index(
+                [
+                    "cik",
+                    "ticker",
+                    "isin",
+                    "sedol",
+                    "mkt_cap",
+                    "gics_sector",
+                    "gics_industry_group",
+                    "gics_industry",
+                    "gics_sub_industry",
+                    "index_name",
+                ]
+            )
         )
         mem = ub.build_membership(
             empty_resolved,

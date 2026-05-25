@@ -202,18 +202,16 @@ def _stage2_normalized_join(
             lookup.setdefault(str(ticker_val), int(cik_val))
 
     if unresolved.empty:
-        return pd.DataFrame(columns=[*unresolved.columns.tolist(), "cik"])
+        return pd.DataFrame(columns=pd.Index([*unresolved.columns.tolist(), "cik"]))
 
     # vectorize: normalized → fallback to raw ticker (Series.map で O(N))
     normalized_series = unresolved["ticker"].map(_normalize_ticker)
     cik_series = normalized_series.map(lookup)
-    cik_series = cik_series.where(
-        cik_series.notna(), unresolved["ticker"].map(lookup)
-    )
+    cik_series = cik_series.where(cik_series.notna(), unresolved["ticker"].map(lookup))
 
     matched_mask = cik_series.notna()
     if not matched_mask.any():
-        return pd.DataFrame(columns=[*unresolved.columns.tolist(), "cik"])
+        return pd.DataFrame(columns=pd.Index([*unresolved.columns.tolist(), "cik"]))
 
     resolved = unresolved.loc[matched_mask].copy()
     resolved["cik"] = cik_series[matched_mask].astype("int64").to_numpy()
@@ -308,7 +306,7 @@ def _stage3_edgar_lookup(
 
     if not resolved_rows:
         return (
-            pd.DataFrame(columns=[*unresolved.columns.tolist(), "cik"]),
+            pd.DataFrame(columns=pd.Index([*unresolved.columns.tolist(), "cik"])),
             unresolved_list,
         )
     resolved = pd.DataFrame(resolved_rows)
@@ -366,7 +364,7 @@ def resolve_ciks_three_stage(
     resolved = (
         pd.concat(parts, ignore_index=True)
         if parts
-        else pd.DataFrame(columns=[*tickers.columns.tolist(), "cik"])
+        else pd.DataFrame(columns=pd.Index([*tickers.columns.tolist(), "cik"]))
     )
     if "cik" in resolved.columns and len(resolved) > 0:
         resolved["cik"] = resolved["cik"].astype("int64")
