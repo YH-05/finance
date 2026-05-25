@@ -27,9 +27,7 @@ import pandas as pd
 from market.nse.collectors.share_holding import ShareholdingCollector
 from market.nse.session import NseSession
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -65,9 +63,7 @@ def main() -> None:
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
 
     missing_df = pd.read_csv(INPUT_CSV)
-    targets = missing_df[
-        missing_df["resolution_status"] == "resolvable"
-    ].copy()
+    targets = missing_df[missing_df["resolution_status"] == "resolvable"].copy()
     log.info(f"Target symbols: {len(targets)} (resolvable from rev1_missing CSV)")
 
     log_entries: list[dict] = []
@@ -90,7 +86,10 @@ def main() -> None:
             log.info(f"  Phase 3: {'OK' if ok3 else 'FAIL'} — {msg3}")
 
             if not ok3 or not holdings:
-                entry["phase4"] = {"ok": False, "msg": "skipped (Phase 3 failed or empty)"}
+                entry["phase4"] = {
+                    "ok": False,
+                    "msg": "skipped (Phase 3 failed or empty)",
+                }
                 log_entries.append(entry)
                 time.sleep(RATE_LIMIT_SEC)
                 continue
@@ -123,7 +122,9 @@ def main() -> None:
 
     n_p3_ok = sum(1 for e in log_entries if e["phase3"]["ok"])
     n_p4_ok = sum(
-        1 for e in log_entries if isinstance(e.get("phase4"), dict) and e["phase4"].get("ok")
+        1
+        for e in log_entries
+        if isinstance(e.get("phase4"), dict) and e["phase4"].get("ok")
     )
     log.info(
         f"Summary: Phase 3 OK={n_p3_ok}/{len(log_entries)}, "

@@ -29,7 +29,9 @@ import pandas as pd
 from market.nse.collectors.share_holding import ShareholdingCollector
 from market.nse.session import NseSession
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
+)
 log = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -42,22 +44,24 @@ C_SYMBOLS = ["360ONE"]
 
 # B カテゴリ: 12 銘柄、Phase 3 + Phase 4
 B_SYMBOLS = [
-    "MAHLIFE",     # MAHINDRA LIFESPACE DEVELOPER (Owner)
-    "FINOPB",      # FINO PAYMENTS BANK (Professional)
-    "SANOFI",      # SANOFI INDIA (MNC)
+    "MAHLIFE",  # MAHINDRA LIFESPACE DEVELOPER (Owner)
+    "FINOPB",  # FINO PAYMENTS BANK (Professional)
+    "SANOFI",  # SANOFI INDIA (MNC)
     "BALMLAWRIE",  # BALMER LAWRIE & CO (State)
-    "PGHH",        # PROCTER & GAMBLE HYGIENE (MNC)
-    "GUJALKALI",   # GUJARAT ALKALIES & CHEMICALS (State)
-    "PGHL",        # PROCTER & GAMBLE HEALTH (MNC)
-    "TICL",        # TWAMEV CONSTRUCTION AND INFRA (Professional)
-    "PSB",         # PUNJAB & SIND BANK (State)
+    "PGHH",  # PROCTER & GAMBLE HYGIENE (MNC)
+    "GUJALKALI",  # GUJARAT ALKALIES & CHEMICALS (State)
+    "PGHL",  # PROCTER & GAMBLE HEALTH (MNC)
+    "TICL",  # TWAMEV CONSTRUCTION AND INFRA (Professional)
+    "PSB",  # PUNJAB & SIND BANK (State)
     "UTKARSHBNK",  # UTKARSH SMALL FINANCE BANK (typo: abb)
-    "GUJGASLTD",   # GUJARAT GAS (State)
-    "KIOCL",       # KIOCL (State)
+    "GUJGASLTD",  # GUJARAT GAS (State)
+    "KIOCL",  # KIOCL (State)
 ]
 
 
-def fetch_phase3(collector: ShareholdingCollector, symbol: str) -> tuple[bool, str, list]:
+def fetch_phase3(
+    collector: ShareholdingCollector, symbol: str
+) -> tuple[bool, str, list]:
     """Phase 3: shareholding pattern 取得."""
     try:
         holdings = collector.fetch_shareholding(symbol)
@@ -66,7 +70,9 @@ def fetch_phase3(collector: ShareholdingCollector, symbol: str) -> tuple[bool, s
         return False, f"{type(e).__name__}: {e}", []
 
 
-def fetch_phase4(collector: ShareholdingCollector, xbrl_url: str) -> tuple[bool, str, object]:
+def fetch_phase4(
+    collector: ShareholdingCollector, xbrl_url: str
+) -> tuple[bool, str, object]:
     """Phase 4: XBRL parse."""
     try:
         result = collector.fetch_xbrl_detail(xbrl_url)
@@ -163,7 +169,9 @@ def main() -> None:
                     "msg": msg4,
                     "row_count": len(result.rows) if ok4 and result else 0,
                 }
-                log.info(f"  {sym} Phase 4 (latest): {'OK' if ok4 else 'FAIL'} — {msg4}")
+                log.info(
+                    f"  {sym} Phase 4 (latest): {'OK' if ok4 else 'FAIL'} — {msg4}"
+                )
 
             log_entries.append(entry)
             time.sleep(0.5)
@@ -189,7 +197,8 @@ def main() -> None:
             p4 = e.get("phase4", {})
             p3_str = "OK" if (isinstance(p3, dict) and p3.get("ok")) else "FAIL"
             p4_str = (
-                "OK" if (isinstance(p4, dict) and p4.get("ok"))
+                "OK"
+                if (isinstance(p4, dict) and p4.get("ok"))
                 else ("OK" if p4 == "skipped (Phase 3 failed)" else "FAIL")
                 if isinstance(p4, dict)
                 else "SKIP"

@@ -49,16 +49,22 @@ def assign_priority(row: pd.Series) -> tuple[str, str]:
         "ambiguous_mnc_jv_candidate",
         "owner_via_individual_in_other",
     ):
-        return ("P1", f"Tier 1.5 corporate-vehicle rescue: {flag} → OWNER (yaml owner_keyword match)")
+        return (
+            "P1",
+            f"Tier 1.5 corporate-vehicle rescue: {flag} → OWNER (yaml owner_keyword match)",
+        )
 
     # P2: 中優先 — promoter 低いが OWNER 判定 (Tier 1 流入の可能性)
     if final == "OWNER" and promoter < 30 and flag.startswith("owner_confirmed"):
-        return ("P2", f"低 promoter ({promoter:.1f}%) で OWNER 判定: 構造的限界 (Tier 1 流入)")
+        return (
+            "P2",
+            f"低 promoter ({promoter:.1f}%) で OWNER 判定: 構造的限界 (Tier 1 流入)",
+        )
 
     # P3: 中優先 — Tier 2 director_only で yaml マッチ
     if flag == "owner_confirmed_director_only":
         if final == "OWNER" and yaml_cls == "OWNER":
-            return ("P3", f"Tier 2 hybrid OK: director_only + yaml owner match")
+            return ("P3", "Tier 2 hybrid OK: director_only + yaml owner match")
         if final == "NOT_OWNER":
             return ("P3", f"Tier 2 hybrid NOT_OWNER: yaml {yaml_cls} match")
         if final == "OWNER_WEAK":
@@ -85,32 +91,76 @@ def extract_yaml_candidates(df: pd.DataFrame) -> str:
     """223 銘柄の promoter_names から yaml 拡張候補を抽出."""
     text_lines = []
     text_lines.append("# yaml 拡張候補 (rev1 圏外 223 銘柄から抽出)\n")
-    text_lines.append("OWNER_WEAK 銘柄の promoter_names_full_list を分析し、共通する企業グループを特定。")
-    text_lines.append("ユーザー目視で「これは Owner/Professional/MNC/State」と判定したら、yaml v0.5.0 で keyword 追加。\n")
+    text_lines.append(
+        "OWNER_WEAK 銘柄の promoter_names_full_list を分析し、共通する企業グループを特定。"
+    )
+    text_lines.append(
+        "ユーザー目視で「これは Owner/Professional/MNC/State」と判定したら、yaml v0.5.0 で keyword 追加。\n"
+    )
 
     weak = df[df["owner_flag_final_hybrid"] == "OWNER_WEAK"].copy()
     text_lines.append(f"## OWNER_WEAK {len(weak)} 銘柄の promoter (詳細)\n")
-    text_lines.append("| symbol | company | promoter_% | promoter_names_full_list (先頭 300 char) |")
+    text_lines.append(
+        "| symbol | company | promoter_% | promoter_names_full_list (先頭 300 char) |"
+    )
     text_lines.append("|---|---|---|---|")
     for _, r in weak.sort_values("promoter_total_pct", ascending=False).iterrows():
         names = str(r.get("promoter_names_full_list", ""))[:300]
         # | をエスケープ
         names = names.replace("|", "<br>")
-        company = str(r.get("company_name", ""))[:40] if pd.notna(r.get("company_name")) else r["symbol"]
-        text_lines.append(f"| {r['symbol']} | {company} | {r['promoter_total_pct']:.1f}% | {names} |")
+        company = (
+            str(r.get("company_name", ""))[:40]
+            if pd.notna(r.get("company_name"))
+            else r["symbol"]
+        )
+        text_lines.append(
+            f"| {r['symbol']} | {company} | {r['promoter_total_pct']:.1f}% | {names} |"
+        )
     text_lines.append("")
 
     # promoter_names 全体から頻出企業グループ (P0+P1+P2 のみ)
     target = df[df["priority"].isin(["P0", "P1", "P2"])]
     word_counter = Counter()
     family_indicators = [
-        "Tata", "Adani", "Birla", "Mahindra", "Bajaj", "Mittal", "Hinduja",
-        "Goenka", "Lodha", "Patanjali", "Shriram", "Wadia", "Jindal",
-        "Reliance", "Ambani", "Vedanta", "Agarwal", "L&T", "Larsen",
-        "HDFC", "ICICI", "SBI", "Axis", "PNB",
-        "Schneider", "Siemens", "Whirlpool", "P&G", "Procter", "Sanofi",
-        "Government of", "President of", "PRESIDENT OF",
-        "Carlyle", "Blackstone", "KKR", "TPG", "Bain", "Warburg",
+        "Tata",
+        "Adani",
+        "Birla",
+        "Mahindra",
+        "Bajaj",
+        "Mittal",
+        "Hinduja",
+        "Goenka",
+        "Lodha",
+        "Patanjali",
+        "Shriram",
+        "Wadia",
+        "Jindal",
+        "Reliance",
+        "Ambani",
+        "Vedanta",
+        "Agarwal",
+        "L&T",
+        "Larsen",
+        "HDFC",
+        "ICICI",
+        "SBI",
+        "Axis",
+        "PNB",
+        "Schneider",
+        "Siemens",
+        "Whirlpool",
+        "P&G",
+        "Procter",
+        "Sanofi",
+        "Government of",
+        "President of",
+        "PRESIDENT OF",
+        "Carlyle",
+        "Blackstone",
+        "KKR",
+        "TPG",
+        "Bain",
+        "Warburg",
     ]
     for _, r in target.iterrows():
         text = str(r.get("promoter_names_full_list", ""))
@@ -122,21 +172,45 @@ def extract_yaml_candidates(df: pd.DataFrame) -> str:
     text_lines.append("| 出現キーワード | 件数 | 推定カテゴリ |")
     text_lines.append("|---|---|---|")
     cat_hint = {
-        "Tata": "Professional", "Adani": "Owner", "Birla": "Owner",
-        "Mahindra": "Owner", "Bajaj": "Owner", "Mittal": "Owner",
-        "Hinduja": "Owner", "Goenka": "Owner", "Lodha": "Owner",
-        "Patanjali": "Owner", "Shriram": "Owner", "Wadia": "Owner",
-        "Jindal": "Owner", "Reliance": "Owner", "Ambani": "Owner",
-        "Vedanta": "Owner", "Agarwal": "Owner",
-        "L&T": "Professional", "Larsen": "Professional",
-        "HDFC": "Professional", "ICICI": "Professional", "SBI": "State",
-        "Axis": "Professional", "PNB": "State",
-        "Schneider": "MNC", "Siemens": "MNC", "Whirlpool": "MNC",
-        "P&G": "MNC", "Procter": "MNC", "Sanofi": "MNC",
-        "Government of": "State", "President of": "State", "PRESIDENT OF": "State",
-        "Carlyle": "Professional", "Blackstone": "Professional",
-        "KKR": "Professional", "TPG": "Professional",
-        "Bain": "Professional", "Warburg": "Professional",
+        "Tata": "Professional",
+        "Adani": "Owner",
+        "Birla": "Owner",
+        "Mahindra": "Owner",
+        "Bajaj": "Owner",
+        "Mittal": "Owner",
+        "Hinduja": "Owner",
+        "Goenka": "Owner",
+        "Lodha": "Owner",
+        "Patanjali": "Owner",
+        "Shriram": "Owner",
+        "Wadia": "Owner",
+        "Jindal": "Owner",
+        "Reliance": "Owner",
+        "Ambani": "Owner",
+        "Vedanta": "Owner",
+        "Agarwal": "Owner",
+        "L&T": "Professional",
+        "Larsen": "Professional",
+        "HDFC": "Professional",
+        "ICICI": "Professional",
+        "SBI": "State",
+        "Axis": "Professional",
+        "PNB": "State",
+        "Schneider": "MNC",
+        "Siemens": "MNC",
+        "Whirlpool": "MNC",
+        "P&G": "MNC",
+        "Procter": "MNC",
+        "Sanofi": "MNC",
+        "Government of": "State",
+        "President of": "State",
+        "PRESIDENT OF": "State",
+        "Carlyle": "Professional",
+        "Blackstone": "Professional",
+        "KKR": "Professional",
+        "TPG": "Professional",
+        "Bain": "Professional",
+        "Warburg": "Professional",
     }
     for kw, cnt in word_counter.most_common(20):
         text_lines.append(f"| {kw} | {cnt} | {cat_hint.get(kw, '?')} |")
@@ -153,19 +227,34 @@ def main() -> None:
     out[["priority", "priority_reason"]] = out.apply(
         lambda r: pd.Series(assign_priority(r)), axis=1
     )
-    print(f"\n優先度分布:")
+    print("\n優先度分布:")
     print(out["priority"].value_counts().sort_index())
 
     # CSV 出力
     cols_csv = [
-        "priority", "priority_reason", "symbol", "company_name", "isin",
-        "owner_flag", "owner_flag_final_hybrid", "yaml_classification",
-        "yaml_matched_detail", "promoter_total_pct", "natural_pct_sum",
-        "hufi_pct", "dir_pct", "kmp_pct", "other_indian_pct",
-        "other_foreign_pct", "foreign_non_govt_pct", "govt_pct",
+        "priority",
+        "priority_reason",
+        "symbol",
+        "company_name",
+        "isin",
+        "owner_flag",
+        "owner_flag_final_hybrid",
+        "yaml_classification",
+        "yaml_matched_detail",
+        "promoter_total_pct",
+        "natural_pct_sum",
+        "hufi_pct",
+        "dir_pct",
+        "kmp_pct",
+        "other_indian_pct",
+        "other_foreign_pct",
+        "foreign_non_govt_pct",
+        "govt_pct",
         "promoter_names_full_list",
     ]
-    out_sorted = out.sort_values(["priority", "promoter_total_pct"], ascending=[True, False])
+    out_sorted = out.sort_values(
+        ["priority", "promoter_total_pct"], ascending=[True, False]
+    )
     out_sorted[cols_csv].to_csv(OUT_CSV, index=False)
     print(f"\n→ {OUT_CSV}")
 
@@ -173,19 +262,31 @@ def main() -> None:
     lines = []
     lines.append("# rev1 圏外 223 銘柄 — 目視レビュー用レポート")
     lines.append("")
-    lines.append(f"**生成日**: 2026-05-07 / **act-2026-05-07-001**")
+    lines.append("**生成日**: 2026-05-07 / **act-2026-05-07-001**")
     lines.append(f"**対象**: 全 800 銘柄中、rev1 GT 圏外 {len(out)} 銘柄")
-    lines.append(f"**目的**: ground truth 無しの generated label の妥当性をユーザー目視で確認")
+    lines.append(
+        "**目的**: ground truth 無しの generated label の妥当性をユーザー目視で確認"
+    )
     lines.append("")
     lines.append("## 優先度定義")
     lines.append("")
     lines.append("| 優先度 | 定義 | アクション |")
     lines.append("|--------|------|----------|")
-    lines.append("| **P0** | OWNER_WEAK (yaml 未マッチ) | 目視で Owner/Professional/MNC/State を確定 → yaml 追補 |")
-    lines.append("| **P1** | Tier 1.5 corporate-vehicle rescue で OWNER 化 | 救済が妥当か確認 (NOT_OWNER の可能性) |")
-    lines.append("| **P2** | 低 promoter (<30%) で OWNER 判定 | 真の Owner か Tier 1 誤流入か判定 |")
-    lines.append("| **P3** | Tier 2 director_only + yaml 確定 | スポット確認 (大半は正しい) |")
-    lines.append("| **P4** | Tier 1 高信頼 OWNER または明確 NOT_OWNER | 大量、サンプルチェックのみ |")
+    lines.append(
+        "| **P0** | OWNER_WEAK (yaml 未マッチ) | 目視で Owner/Professional/MNC/State を確定 → yaml 追補 |"
+    )
+    lines.append(
+        "| **P1** | Tier 1.5 corporate-vehicle rescue で OWNER 化 | 救済が妥当か確認 (NOT_OWNER の可能性) |"
+    )
+    lines.append(
+        "| **P2** | 低 promoter (<30%) で OWNER 判定 | 真の Owner か Tier 1 誤流入か判定 |"
+    )
+    lines.append(
+        "| **P3** | Tier 2 director_only + yaml 確定 | スポット確認 (大半は正しい) |"
+    )
+    lines.append(
+        "| **P4** | Tier 1 高信頼 OWNER または明確 NOT_OWNER | 大量、サンプルチェックのみ |"
+    )
     lines.append("")
     lines.append("## 優先度別件数")
     lines.append("")
@@ -193,8 +294,13 @@ def main() -> None:
     lines.append("|--------|------|-----------------|")
     for p in ["P0", "P1", "P2", "P3", "P4"]:
         n = (out["priority"] == p).sum()
-        time_est = {"P0": "1-2 分/件", "P1": "1 分/件", "P2": "30 秒/件",
-                     "P3": "10 秒/件", "P4": "サンプルのみ"}[p]
+        time_est = {
+            "P0": "1-2 分/件",
+            "P1": "1 分/件",
+            "P2": "30 秒/件",
+            "P3": "10 秒/件",
+            "P4": "サンプルのみ",
+        }[p]
         lines.append(f"| {p} | {n} | {time_est} |")
     lines.append("")
 
@@ -203,7 +309,7 @@ def main() -> None:
         sub = out_sorted[out_sorted["priority"] == priority]
         if sub.empty:
             continue
-        lines.append(f"---")
+        lines.append("---")
         lines.append("")
         lines.append(f"## {priority} ({len(sub)} 銘柄)")
         lines.append("")
@@ -229,12 +335,24 @@ def main() -> None:
             )
         lines.append("")
 
-        cols_md = ["symbol", "company_name", "owner_flag", "owner_flag_final_hybrid",
-                   "yaml_classification", "promoter_total_pct"]
-        lines.append("| symbol | company | flag (Tier 2) | final | yaml_cls | promoter% | promoter_names (先頭150文字) |")
+        cols_md = [
+            "symbol",
+            "company_name",
+            "owner_flag",
+            "owner_flag_final_hybrid",
+            "yaml_classification",
+            "promoter_total_pct",
+        ]
+        lines.append(
+            "| symbol | company | flag (Tier 2) | final | yaml_cls | promoter% | promoter_names (先頭150文字) |"
+        )
         lines.append("|---|---|---|---|---|---|---|")
         for _, r in sub.iterrows():
-            company = str(r.get("company_name", "")) if pd.notna(r.get("company_name")) else ""
+            company = (
+                str(r.get("company_name", ""))
+                if pd.notna(r.get("company_name"))
+                else ""
+            )
             company = company[:35]
             names = str(r.get("promoter_names_full_list", ""))[:150]
             names = names.replace("|", " / ").replace("\n", " ")
@@ -247,11 +365,13 @@ def main() -> None:
 
     # P4 サマリー
     p4 = out_sorted[out_sorted["priority"] == "P4"]
-    lines.append(f"---")
+    lines.append("---")
     lines.append("")
     lines.append(f"## P4 ({len(p4)} 銘柄) — 低優先度")
     lines.append("")
-    lines.append("Tier 1 高信頼 OWNER または明確 NOT_OWNER の銘柄群。サンプルのみ確認推奨。")
+    lines.append(
+        "Tier 1 高信頼 OWNER または明確 NOT_OWNER の銘柄群。サンプルのみ確認推奨。"
+    )
     lines.append("")
     lines.append("### owner_flag 分布")
     lines.append("")
@@ -267,7 +387,9 @@ def main() -> None:
     for f, cnt in p4["owner_flag_final_hybrid"].value_counts().items():
         lines.append(f"| {f} | {cnt} |")
     lines.append("")
-    lines.append(f"**詳細は `rev1_outside_review.csv` を Excel で開いて priority=P4 でフィルタ**")
+    lines.append(
+        "**詳細は `rev1_outside_review.csv` を Excel で開いて priority=P4 でフィルタ**"
+    )
     lines.append("")
 
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")

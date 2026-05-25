@@ -196,6 +196,9 @@ def generate_pca_fixtures() -> None:
     scores = pca.fit_transform(yield_changes_df)
     components = pca.components_
     explained_variance_ratio = pca.explained_variance_ratio_
+    # scikit-learn の新しい型ヒントでは PCA.components_ は ndarray | None
+    # (未 fit のインスタンスでは None)。fit_transform 直後のため確実に not None。
+    assert components is not None
 
     # Apply sign alignment (Level: sum positive, Slope: last positive, Curvature: mid positive)
     if np.sum(components[0]) < 0:
