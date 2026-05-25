@@ -137,6 +137,12 @@ class FraserSession:
             )
         )
 
+        # Resolve the API key once per session so repeated requests do
+        # not hit ``os.environ.get`` on every call (PR review LOW perf).
+        # ``_resolve_api_key`` raises ``FraserAuthError`` when missing,
+        # turning a hot-path error into a clear startup failure.
+        self._resolved_api_key: str = self._resolve_api_key()
+
         # Create httpx client with timeout and explicit SSL verification
         self._client: httpx.Client = httpx.Client(
             timeout=httpx.Timeout(self._config.timeout),
@@ -206,9 +212,8 @@ class FraserSession:
         # 1. URL whitelist + HTTPS validation (SSRF prevention, CWE-918).
         self._validate_url(url)
 
-        # 2. Resolve API key and inject into headers (X-API-Key).
-        api_key = self._resolve_api_key()
-        headers = {"X-API-Key": api_key}
+        # 2. Inject API key (resolved once in __init__) into headers.
+        headers = {"X-API-Key": self._resolved_api_key}
 
         # 3. Acquire rate limiter slot.
         self._rate_limiter.acquire()

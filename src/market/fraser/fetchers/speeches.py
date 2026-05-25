@@ -83,9 +83,7 @@ class FRBSpeechFetcher(BaseFraserFetcher):
         list[FRBSpeech]
             Filtered speeches.
         """
-        items = self._client.list_items(self.title_id, limit=limit)
-        year_filtered = self._filter_by_year_range(items, year_range)
-        speeches = [self._convert_to(item, FRBSpeech) for item in year_filtered]
+        speeches = self._fetch_filtered(year_range, FRBSpeech, limit=limit)
 
         if speaker is None:
             return speeches

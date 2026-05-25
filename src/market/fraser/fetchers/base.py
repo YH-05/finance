@@ -40,7 +40,7 @@ from typing import TYPE_CHECKING, Literal
 from pydantic import BaseModel
 
 from market.fraser.client import FraserClient
-from market.fraser.constants import DOC_TYPE_SUBDIRS, KNOWN_TITLE_IDS
+from market.fraser.constants import KNOWN_TITLE_IDS
 from market.fraser.downloader import FraserDownloader
 from market.fraser.errors import FraserValidationError
 from utils_core.logging import get_logger
@@ -102,8 +102,11 @@ class BaseFraserFetcher(ABC):
         self._client: FraserClient = client
 
         if downloader is None:
+            # Use the client's public ``session`` accessor instead of the
+            # private ``_session`` attribute so the dependency is on the
+            # public interface (DIP-compliant).
             downloader = FraserDownloader(
-                session=self._client._session, base_dir=base_dir
+                session=self._client.session, base_dir=base_dir
             )
         self._downloader: FraserDownloader = downloader
 
@@ -223,11 +226,11 @@ class BaseFraserFetcher(ABC):
 
     def _doc_subdir(self) -> str:
         """Return the on-disk subdirectory for :attr:`doc_type`."""
-        return DOC_TYPE_SUBDIRS[self.doc_type.value]
+        return self.doc_type.subdir
 
     @staticmethod
     def _convert_to[M: BaseModel](item: FraserItem, model_cls: type[M]) -> M:
-        """Re-validate ``item``'s fields against the more specific ``model_cls``.
+        """Project ``item`` into the more specific ``model_cls``.
 
         Used by concrete fetchers to upcast a generic :class:`FraserItem`
         returned by ``list_items`` into the document-type specific Pydantic
@@ -235,6 +238,12 @@ class BaseFraserFetcher(ABC):
         the conversion here removes the three-class duplication of
         ``_to_fomc_meeting`` that existed previously
         (see PR review HIGH-2 / project-115 Wave4).
+
+        ``model_validate`` is used (not ``model_construct``) because the
+        source ``item`` carries nested submodels (``FraserAuthor``,
+        ``FraserLocation``, ...) that need re-binding through the
+        validator chain when projected onto the target type. The
+        validation cost is small compared to the upstream HTTP round-trip.
 
         Parameters
         ----------
@@ -246,9 +255,43 @@ class BaseFraserFetcher(ABC):
         Returns
         -------
         M
-            Validated instance of ``model_cls``.
+            Instance of ``model_cls`` carrying the same field values
+            as ``item``.
         """
         return model_cls.model_validate(item.model_dump(by_alias=False))
+
+    def _fetch_filtered[DomainT: BaseModel](
+        self,
+        year_range: tuple[int, int],
+        model_cls: type[DomainT],
+        *,
+        limit: int,
+    ) -> list[DomainT]:
+        """Common ``list_items → filter → convert`` pipeline.
+
+        Centralises the three-line pattern repeated across six fetchers
+        (``list_minutes`` / ``list_statements`` / ``list_press_conferences``
+        / ``list_reports`` (Beige Book + MPR) / ``list_speeches``). Each
+        public ``list_*`` method becomes a one-liner that picks the
+        relevant ``model_cls``.
+
+        Parameters
+        ----------
+        year_range : tuple[int, int]
+            Inclusive ``(start_year, end_year)`` window.
+        model_cls : type[DomainT]
+            Pydantic V2 domain model to project into.
+        limit : int
+            Maximum number of items requested from FRASER.
+
+        Returns
+        -------
+        list[DomainT]
+            Year-filtered, type-projected items.
+        """
+        items = self._client.list_items(self.title_id, limit=limit)
+        filtered = self._filter_by_year_range(items, year_range)
+        return [self._convert_to(item, model_cls) for item in filtered]
 
     # =========================================================================
     # Public fetch operations

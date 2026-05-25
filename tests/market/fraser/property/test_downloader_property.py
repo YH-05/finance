@@ -57,6 +57,9 @@ class _FakeStreamContext:
     def __init__(self, chunks: list[bytes], raise_at: int | None) -> None:
         self._chunks = chunks
         self._raise_at = raise_at
+        # Empty integrity-header dict so ``_stream_to`` can call
+        # ``response.headers.get(...)`` without tripping ``AttributeError``.
+        self.headers: dict[str, str] = {}
 
     def __enter__(self) -> "_FakeStreamContext":
         return self

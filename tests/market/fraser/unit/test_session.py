@@ -209,15 +209,17 @@ class TestXAPIKeyHeaderInjection:
         self,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        """``FraserAuthError`` is raised when no API key is configured."""
+        """``FraserAuthError`` is raised when no API key is configured.
+
+        The session resolves the API key once at construction time so
+        the failure surfaces eagerly (instead of per-request); this test
+        asserts the error is raised by ``FraserSession.__init__`` itself.
+        """
         monkeypatch.delenv("FRASER_API_KEY", raising=False)
         config = FraserConfig(api_key="", timeout=5.0)
 
-        with (
-            FraserSession(config=config) as session,
-            pytest.raises(FraserAuthError, match="API key"),
-        ):
-            session.get(_FRASER_PATH)
+        with pytest.raises(FraserAuthError, match="API key"):
+            FraserSession(config=config)
 
 
 # =============================================================================

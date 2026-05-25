@@ -52,6 +52,9 @@ def _build_session_with_stream(
     response = MagicMock(spec=httpx.Response)
     response.status_code = status_code
     response.iter_bytes.return_value = iter(chunks or [])
+    # Integrity headers — empty by default; tests can override per case
+    # by reassigning ``response.headers`` to a dict-like object.
+    response.headers = {}
     if raise_http_status:
         # Simulate ``response.raise_for_status()`` raising on 4xx/5xx.
         request = httpx.Request("GET", "https://fraser.stlouisfed.org/x")
@@ -217,6 +220,7 @@ class TestParallelDeduplication:
             response.status_code = 200
             response.iter_bytes.return_value = iter([b"payload"])
             response.raise_for_status.return_value = None
+            response.headers = {}
             yield response
 
         session.stream.side_effect = _stream
@@ -302,3 +306,40 @@ class TestDownloadWithMeta:
         item = _make_item(item_id=6006, txt=False, pdf=False)
         with pytest.raises(FraserDownloadError):
             dl.download_with_meta(item, "fomc/minutes", prefer="txt")
+
+
+# ---------------------------------------------------------------------------
+# Branch coverage follow-ups (PR review MEDIUM / LOW)
+# ---------------------------------------------------------------------------
+
+
+class TestSelectURLEdgeCases:
+    """Cover the corners of ``FraserDownloader._select_url``."""
+
+    def test_異常系_preferが未知の値でFraserDownloadError(self, tmp_path: Path) -> None:
+        """``prefer`` outside the Literal must trip the final fallthrough.
+
+        At runtime ``Literal["txt", "pdf"]`` is not enforced, so an
+        accidental ``prefer="xml"`` from an unverified caller should
+        not return an asset whose extension is meaningless.
+        """
+        item = _make_item(item_id=7007, txt=True, pdf=True)
+
+        with pytest.raises(FraserDownloadError):
+            FraserDownloader._select_url(item, prefer="xml")  # type: ignore[arg-type]
+
+
+class TestEmptyChunk:
+    """Cover the ``if chunk:`` skip branch in ``_stream_to``."""
+
+    def test_正常系_空チャンクは書き込みをスキップ(self, tmp_path: Path) -> None:
+        # Mix in empty bytes between two real chunks. ``_stream_to`` must
+        # skip the empty entry without raising; the resulting file size
+        # equals the sum of the non-empty chunks.
+        session = _build_session_with_stream(chunks=[b"abc", b"", b"def"])
+        dl = FraserDownloader(session, base_dir=tmp_path)
+
+        target = tmp_path / "out" / "empty_chunk.txt"
+        result = dl.download("https://fraser.stlouisfed.org/x.txt", target)
+
+        assert result.read_bytes() == b"abcdef"

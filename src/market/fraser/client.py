@@ -132,6 +132,22 @@ class FraserClient:
         )
 
     # =========================================================================
+    # Public accessors
+    # =========================================================================
+
+    @property
+    def session(self) -> FraserSession:
+        """Return the underlying :class:`FraserSession`.
+
+        Exposing the session via a public property lets collaborators
+        (e.g. :class:`FraserDownloader`) reuse the same authenticated
+        HTTP client without reaching into the leading-underscore field
+        ``_session``. This keeps the DIP boundary clean: callers depend
+        on the public interface, not on the storage detail.
+        """
+        return self._session
+
+    # =========================================================================
     # Context manager
     # =========================================================================
 

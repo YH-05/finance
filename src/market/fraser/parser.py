@@ -278,7 +278,25 @@ def parse_items(data: dict[str, Any] | list[Any]) -> list[FraserItem]:
 
 
 def parse_toc(data: dict[str, Any] | list[Any]) -> list[FraserTocEntry]:
-    """Parse a table-of-contents payload into :class:`FraserTocEntry` list."""
+    """Parse a table-of-contents payload into :class:`FraserTocEntry` list.
+
+    Parameters
+    ----------
+    data : dict[str, Any] | list[Any]
+        Either a raw list of entry dicts or a payload of the form
+        ``{"toc": [...]}``.
+
+    Returns
+    -------
+    list[FraserTocEntry]
+        Validated table-of-contents entries.
+
+    Raises
+    ------
+    FraserParseError
+        If the payload shape does not resolve to a list of dicts, or if
+        any entry fails Pydantic validation.
+    """
     entries = (
         _require_list(data, container_key="toc")
         if isinstance(data, dict) and "toc" in data
@@ -288,7 +306,25 @@ def parse_toc(data: dict[str, Any] | list[Any]) -> list[FraserTocEntry]:
 
 
 def parse_authors(data: dict[str, Any] | list[Any]) -> list[FraserAuthor]:
-    """Parse an authors payload into :class:`FraserAuthor` list."""
+    """Parse an authors payload into :class:`FraserAuthor` list.
+
+    Parameters
+    ----------
+    data : dict[str, Any] | list[Any]
+        Either a raw list of author dicts or a payload of the form
+        ``{"authors": [...]}``.
+
+    Returns
+    -------
+    list[FraserAuthor]
+        Validated author records.
+
+    Raises
+    ------
+    FraserParseError
+        If the payload shape does not resolve to a list of dicts, or if
+        any entry fails Pydantic validation.
+    """
     entries = (
         _require_list(data, container_key="authors")
         if isinstance(data, dict) and "authors" in data
@@ -298,7 +334,25 @@ def parse_authors(data: dict[str, Any] | list[Any]) -> list[FraserAuthor]:
 
 
 def parse_subjects(data: dict[str, Any] | list[Any]) -> list[FraserSubject]:
-    """Parse a subjects payload into :class:`FraserSubject` list."""
+    """Parse a subjects payload into :class:`FraserSubject` list.
+
+    Parameters
+    ----------
+    data : dict[str, Any] | list[Any]
+        Either a raw list of subject dicts or a payload of the form
+        ``{"subjects": [...]}``.
+
+    Returns
+    -------
+    list[FraserSubject]
+        Validated subject records.
+
+    Raises
+    ------
+    FraserParseError
+        If the payload shape does not resolve to a list of dicts, or if
+        any entry fails Pydantic validation.
+    """
     entries = (
         _require_list(data, container_key="subjects")
         if isinstance(data, dict) and "subjects" in data
@@ -308,7 +362,25 @@ def parse_subjects(data: dict[str, Any] | list[Any]) -> list[FraserSubject]:
 
 
 def parse_themes(data: dict[str, Any] | list[Any]) -> list[FraserTheme]:
-    """Parse a themes payload into :class:`FraserTheme` list."""
+    """Parse a themes payload into :class:`FraserTheme` list.
+
+    Parameters
+    ----------
+    data : dict[str, Any] | list[Any]
+        Either a raw list of theme dicts or a payload of the form
+        ``{"themes": [...]}``.
+
+    Returns
+    -------
+    list[FraserTheme]
+        Validated theme records.
+
+    Raises
+    ------
+    FraserParseError
+        If the payload shape does not resolve to a list of dicts, or if
+        any entry fails Pydantic validation.
+    """
     entries = (
         _require_list(data, container_key="themes")
         if isinstance(data, dict) and "themes" in data
@@ -318,7 +390,25 @@ def parse_themes(data: dict[str, Any] | list[Any]) -> list[FraserTheme]:
 
 
 def parse_timeline(data: dict[str, Any] | list[Any]) -> list[FraserTimelineEvent]:
-    """Parse a timeline payload into :class:`FraserTimelineEvent` list."""
+    """Parse a timeline payload into :class:`FraserTimelineEvent` list.
+
+    Parameters
+    ----------
+    data : dict[str, Any] | list[Any]
+        Either a raw list of event dicts or a payload of the form
+        ``{"timeline": [...]}``.
+
+    Returns
+    -------
+    list[FraserTimelineEvent]
+        Validated timeline events.
+
+    Raises
+    ------
+    FraserParseError
+        If the payload shape does not resolve to a list of dicts, or if
+        any entry fails Pydantic validation.
+    """
     entries = (
         _require_list(data, container_key="timeline")
         if isinstance(data, dict) and "timeline" in data

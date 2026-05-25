@@ -73,9 +73,7 @@ class FOMCMinutesFetcher(BaseFraserFetcher):
         list[FOMCMeeting]
             FOMC Minutes covering the requested calendar window.
         """
-        items = self._client.list_items(self.title_id, limit=limit)
-        filtered = self._filter_by_year_range(items, year_range)
-        return [self._convert_to(item, FOMCMeeting) for item in filtered]
+        return self._fetch_filtered(year_range, FOMCMeeting, limit=limit)
 
     def fetch_text(
         self,
@@ -144,9 +142,7 @@ class FOMCStatementsFetcher(BaseFraserFetcher):
         list[FOMCMeeting]
             FOMC Statements covering the requested calendar window.
         """
-        items = self._client.list_items(self.title_id, limit=limit)
-        filtered = self._filter_by_year_range(items, year_range)
-        return [self._convert_to(item, FOMCMeeting) for item in filtered]
+        return self._fetch_filtered(year_range, FOMCMeeting, limit=limit)
 
     def fetch_text(
         self,
@@ -216,9 +212,7 @@ class FOMCPressConferencesFetcher(BaseFraserFetcher):
             FOMC Press Conference transcripts covering the requested
             calendar window.
         """
-        items = self._client.list_items(self.title_id, limit=limit)
-        filtered = self._filter_by_year_range(items, year_range)
-        return [self._convert_to(item, FOMCMeeting) for item in filtered]
+        return self._fetch_filtered(year_range, FOMCMeeting, limit=limit)
 
     def fetch_text(
         self,

@@ -405,3 +405,32 @@ def fraser_env_key(monkeypatch: pytest.MonkeyPatch) -> None:
         Pytest monkeypatch fixture.
     """
     monkeypatch.setenv("FRASER_API_KEY", "dummy_test_key")
+
+
+# =============================================================================
+# Cache fixture (PR review MEDIUM follow-up)
+# =============================================================================
+
+
+@pytest.fixture
+def fraser_cache() -> Any:
+    """Yield a per-test :class:`market.cache.cache.SQLiteCache` and close it.
+
+    Centralises the ``try / finally: cache.close()`` boilerplate that
+    used to live in every ``test_client.py`` test (PR review MEDIUM
+    follow-up). The default backing store is in-memory so each test gets
+    an isolated cache without leaking state.
+
+    Yields
+    ------
+    SQLiteCache
+        Freshly-constructed cache instance. Pytest's teardown closes
+        the cache automatically.
+    """
+    from market.cache.cache import SQLiteCache
+
+    cache = SQLiteCache()
+    try:
+        yield cache
+    finally:
+        cache.close()

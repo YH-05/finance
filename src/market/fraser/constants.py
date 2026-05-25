@@ -98,6 +98,10 @@ are to be populated by the ``scripts/discover_titles.py`` CLI added in
 task-2 of PR1 (manual fill-in, no automatic AST rewriting per HF1).
 """
 
+# NOTE: The canonical source of truth lives at
+# :pyattr:`market.fraser.types.DocType.subdir`. We expose a frozen copy
+# here for legacy callers that imported ``DOC_TYPE_SUBDIRS`` directly;
+# new code should reach the data through ``DocType.subdir`` (OCP).
 DOC_TYPE_SUBDIRS: Final[dict[str, str]] = {
     "fomc_minutes": "fomc/minutes",
     "fomc_statements": "fomc/statements",
@@ -108,8 +112,9 @@ DOC_TYPE_SUBDIRS: Final[dict[str, str]] = {
 }
 """Mapping of document type keys to their on-disk subdirectory layout.
 
-Used by the downloader to choose the destination directory under the
-configured ``download_dir`` root.
+Legacy direct accessor. Prefer :pyattr:`market.fraser.types.DocType.subdir`
+in new code so that adding a new ``DocType`` only requires editing the
+enum (Open/Closed Principle).
 """
 
 # ---------------------------------------------------------------------------

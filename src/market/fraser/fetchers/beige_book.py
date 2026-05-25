@@ -98,9 +98,7 @@ class BeigeBookFetcher(BaseFraserFetcher):
         list[BeigeBookReport]
             Beige Book reports covering the requested calendar window.
         """
-        items = self._client.list_items(self.title_id, limit=limit)
-        filtered = self._filter_by_year_range(items, year_range)
-        return [self._convert_to(item, BeigeBookReport) for item in filtered]
+        return self._fetch_filtered(year_range, BeigeBookReport, limit=limit)
 
     def fetch_text(
         self,

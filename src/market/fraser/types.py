@@ -177,8 +177,10 @@ class DocType(str, Enum):
     """FRASER document type identifier.
 
     Inherits from ``str`` so members may be used directly as dictionary
-    keys (e.g., into ``KNOWN_TITLE_IDS`` / ``DOC_TYPE_SUBDIRS``) and
-    serialised without manual conversion.
+    keys (e.g., into ``KNOWN_TITLE_IDS``) and serialised without manual
+    conversion. The associated on-disk subdirectory is exposed via the
+    :attr:`subdir` property so adding a new ``DocType`` only requires
+    edits to this enum (OCP-friendly).
 
     Members
     -------
@@ -199,6 +201,8 @@ class DocType(str, Enum):
     --------
     >>> DocType.FOMC_MINUTES.value
     'fomc_minutes'
+    >>> DocType.FOMC_MINUTES.subdir
+    'fomc/minutes'
     >>> DocType.FOMC_MINUTES == "fomc_minutes"
     True
     """
@@ -210,14 +214,35 @@ class DocType(str, Enum):
     FRB_SPEECHES = "frb_speeches"
     MONETARY_POLICY_REPORT = "monetary_policy_report"
 
+    @property
+    def subdir(self) -> str:
+        """On-disk subdirectory under ``data/raw/fraser`` for this document type."""
+        return _DOC_TYPE_SUBDIR_MAP[self.value]
+
+
+# Internal map kept private; exposed via :pyattr:`DocType.subdir` to keep
+# the subdir owner inside the ``DocType`` boundary.
+_DOC_TYPE_SUBDIR_MAP: dict[str, str] = {
+    "fomc_minutes": "fomc/minutes",
+    "fomc_statements": "fomc/statements",
+    "fomc_press_conferences": "fomc/press_conferences",
+    "beige_book": "beige_book",
+    "frb_speeches": "speeches",
+    "monetary_policy_report": "monetary_policy",
+}
+
 
 # =============================================================================
 # Module exports
 # =============================================================================
 
+# ``FetchOptions`` is intentionally omitted from ``__all__``: it has no
+# consumer in the current FRASER surface. The class stays importable
+# (``from market.fraser.types import FetchOptions``) for forward
+# compatibility, but is not advertised to ``import *`` users.
 __all__ = [
     "DocType",
-    "FetchOptions",
     "FraserConfig",
+    "PreferFormat",
     "RetryConfig",
 ]

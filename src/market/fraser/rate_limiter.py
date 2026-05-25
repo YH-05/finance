@@ -23,7 +23,7 @@ market.fraser.types : ``FraserConfig`` definition referenced by the
 """
 
 from market.alphavantage.rate_limiter import (
-    AsyncDualWindowRateLimiter,
+    AsyncDualWindowRateLimiter,  # reserved for future async fetchers
     DualWindowRateLimiter,
 )
 from market.fraser.types import FraserConfig
@@ -57,8 +57,11 @@ def get_fraser_rate_limiter(config: FraserConfig) -> DualWindowRateLimiter:
     )
 
 
+# ``AsyncDualWindowRateLimiter`` is import-only for now; it stays
+# accessible through ``from market.fraser.rate_limiter import
+# AsyncDualWindowRateLimiter`` but is not part of the curated public
+# surface until an async fetcher actually consumes it.
 __all__ = [
-    "AsyncDualWindowRateLimiter",
     "DualWindowRateLimiter",
     "get_fraser_rate_limiter",
 ]

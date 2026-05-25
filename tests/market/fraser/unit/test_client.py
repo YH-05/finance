@@ -250,3 +250,70 @@ class TestMasterTables:
             )
         finally:
             cache.close()
+
+
+# ---------------------------------------------------------------------------
+# _fetch_json branch coverage (PR review MEDIUM follow-up)
+# ---------------------------------------------------------------------------
+
+
+class TestFetchJsonBranches:
+    """Cover the cache-hit (non-str) and json.dumps-failure paths."""
+
+    def test_正常系_cacheヒット時にnon_strがそのまま返る(self) -> None:
+        """When the cache backend returns a non-str object, ``_fetch_json``
+        returns it directly without calling ``json.loads`` (else branch).
+        """
+        # Pre-populate the cache backend so the next call short-circuits.
+        cache = SQLiteCache()
+        try:
+            client, session, _ = _build_client(
+                session_payload={"unused": True}, cache=cache
+            )
+            cached_obj: dict[str, Any] = {
+                "items": [{"itemId": 1, "title": "x", "date": "2024"}]
+            }
+            with patch.object(cache, "get", return_value=cached_obj):
+                items = client.list_items(title_id=99, limit=5)
+            # Session must not be hit because the cache returned a non-None
+            # value through the non-str branch.
+            session.get_with_retry.assert_not_called()
+            assert items[0].item_id == 1
+        finally:
+            cache.close()
+
+    def test_正常系_json_dumpsが失敗してもsetをスキップして結果を返す(self) -> None:
+        """When ``json.dumps`` raises TypeError during the cache-write
+        step, ``cache.set`` is skipped but parsing still succeeds so the
+        caller receives the parsed result.
+
+        The mock is intermittent: the first ``dumps`` invocation (cache
+        key) returns the real string, the second (cache write) raises.
+        """
+        import market.fraser.client as client_module
+
+        cache = SQLiteCache()
+        try:
+            payload = {"items": [{"itemId": 1, "title": "x", "date": "2024"}]}
+            client, _, _ = _build_client(session_payload=payload, cache=cache)
+
+            real_dumps = client_module.json.dumps
+            call_count = {"value": 0}
+
+            def _intermittent_dumps(*args: Any, **kwargs: Any) -> Any:
+                call_count["value"] += 1
+                if call_count["value"] == 1:
+                    return real_dumps(*args, **kwargs)
+                raise TypeError("simulated serialisation failure")
+
+            with (
+                patch.object(cache, "set") as cache_set,
+                patch.object(
+                    client_module.json, "dumps", side_effect=_intermittent_dumps
+                ),
+            ):
+                items = client.list_items(title_id=99, limit=5)
+            cache_set.assert_not_called()
+            assert items[0].item_id == 1
+        finally:
+            cache.close()

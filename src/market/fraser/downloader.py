@@ -28,6 +28,7 @@ market.fraser.errors : :class:`FraserDownloadError` raised on failure.
 
 from __future__ import annotations
 
+import json
 import tempfile
 import threading
 from pathlib import Path
@@ -115,6 +116,22 @@ class FraserDownloader:
     ) -> Path:
         """Stream ``url`` to ``target_path`` with atomic rename semantics.
 
+        See :meth:`download_with_integrity` for the underlying
+        implementation. This convenience wrapper discards the integrity
+        headers — use :meth:`download_with_integrity` if you need them.
+        """
+        path, _integrity = self.download_with_integrity(url, target_path, force=force)
+        return path
+
+    def download_with_integrity(
+        self,
+        url: str,
+        target_path: Path,
+        *,
+        force: bool = False,
+    ) -> tuple[Path, dict[str, str]]:
+        """Stream ``url`` to ``target_path`` and capture integrity headers.
+
         Skips the download entirely when ``target_path`` already exists
         and ``force`` is ``False``. Otherwise the bytes are streamed into
         a same-directory ``tempfile.NamedTemporaryFile`` and atomically
@@ -134,8 +151,12 @@ class FraserDownloader:
 
         Returns
         -------
-        Path
-            The destination ``target_path``.
+        tuple[Path, dict[str, str]]
+            ``(target_path, integrity_headers)``. ``integrity_headers``
+            contains any of ``etag`` / ``content-md5`` / ``last-modified``
+            returned by the server (lower-cased keys, empty dict on
+            skip path). The caller can persist these to verify
+            file integrity on future runs (CWE-354).
 
         Raises
         ------
@@ -149,7 +170,7 @@ class FraserDownloader:
                 "Download skipped (exists, force=False)",
                 target=str(target_path),
             )
-            return target_path
+            return target_path, {}
 
         target_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -162,7 +183,7 @@ class FraserDownloader:
                 prefix=f"{target_path.stem}_",
             ) as tmp_file:
                 tmp_path = Path(tmp_file.name)
-                self._stream_to(url, tmp_file)
+                integrity = self._stream_to(url, tmp_file)
 
             # Atomic publish (same-volume rename guaranteed by tmp dir).
             tmp_path.replace(target_path)
@@ -171,10 +192,11 @@ class FraserDownloader:
                 url=url,
                 target=str(target_path),
                 bytes=target_path.stat().st_size,
+                integrity_keys=sorted(integrity.keys()),
             )
             # ``tmp_path`` has been moved; suppress finally cleanup.
             tmp_path = None
-            return target_path
+            return target_path, integrity
 
         except FraserDownloadError:
             # Already a domain error from ``_stream_to`` — re-raise.
@@ -257,10 +279,20 @@ class FraserDownloader:
                     target_dir / f"{item.date.isoformat()}_{item.item_id}.meta.json"
                 )
 
-                self.download(url, asset_path, force=force)
+                _path, integrity = self.download_with_integrity(
+                    url, asset_path, force=force
+                )
 
                 target_dir.mkdir(parents=True, exist_ok=True)
-                meta_payload = item.model_dump_json(indent=2, by_alias=False)
+                # Combine the item dump with the integrity headers so the
+                # sidecar carries enough information to spot-check the
+                # asset on future runs (ETag / Content-MD5 / Last-Modified).
+                meta_dict = item.model_dump(by_alias=False, mode="json")
+                if integrity:
+                    meta_dict["_integrity"] = integrity
+                meta_payload = json.dumps(
+                    meta_dict, indent=2, ensure_ascii=False, default=str
+                )
                 meta_path.write_text(meta_payload, encoding="utf-8")
 
                 logger.debug(
@@ -308,7 +340,7 @@ class FraserDownloader:
         with self._locks_master:
             self._locks.pop(item_id, None)
 
-    def _stream_to(self, url: str, tmp_file: IO[bytes]) -> None:
+    def _stream_to(self, url: str, tmp_file: IO[bytes]) -> dict[str, str]:
         """Stream ``url`` into the open ``tmp_file`` handle.
 
         Uses :meth:`FraserSession.stream` so the SSRF / HTTPS guards are
@@ -324,6 +356,13 @@ class FraserDownloader:
             Open writable binary file object (typically the handle
             returned by :class:`tempfile.NamedTemporaryFile`).
 
+        Returns
+        -------
+        dict[str, str]
+            Lower-cased mapping of any integrity-related response
+            headers (``etag`` / ``content-md5`` / ``last-modified``).
+            Missing headers are simply absent from the dict.
+
         Raises
         ------
         FraserValidationError
@@ -331,12 +370,20 @@ class FraserDownloader:
         FraserDownloadError
             On HTTP / I/O failure.
         """
+        integrity: dict[str, str] = {}
         try:
             with self._session.stream(url) as response:
                 response.raise_for_status()
                 for chunk in response.iter_bytes(chunk_size=self._chunk_size):
                     if chunk:
                         tmp_file.write(chunk)
+                # Capture integrity hints once the body has streamed
+                # without error. ``response.headers`` is case-insensitive.
+                for header_name in ("etag", "content-md5", "last-modified"):
+                    value = response.headers.get(header_name)
+                    if value:
+                        integrity[header_name] = value
+            return integrity
         except httpx.HTTPStatusError as exc:
             raise FraserDownloadError(
                 message=(f"HTTP {exc.response.status_code} while downloading {url}"),

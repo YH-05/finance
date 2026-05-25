@@ -109,6 +109,26 @@ def _coerce_date(v: Any) -> Any:
     text = v.strip()
     if not text:
         return None
+    # Fast path: the FRASER API overwhelmingly returns 10-char ISO dates.
+    # Trying ``YYYY-MM-DD`` first avoids two exception round-trips per
+    # item in the common case (PR review LOW perf).
+    text_len = len(text)
+    if text_len == 10:
+        try:
+            return datetime.strptime(text, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+    elif text_len == 7:
+        try:
+            return datetime.strptime(text, "%Y-%m").date()
+        except ValueError:
+            pass
+    elif text_len == 4:
+        try:
+            return datetime.strptime(text, "%Y").date()
+        except ValueError:
+            pass
+    # Fallback: try every format (handles padded / unusual inputs).
     for fmt in _DATE_FORMATS:
         try:
             return datetime.strptime(text, fmt).date()

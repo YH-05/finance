@@ -230,8 +230,12 @@ class TestDefaultDependencies:
         """When called with no arguments both dependencies are auto-built."""
         from market.fraser.fetchers import base as base_module
 
+        sentinel_session = MagicMock(name="default-session")
         sentinel_client = MagicMock(name="default-client")
-        sentinel_client._session = MagicMock(name="default-session")
+        # Default downloader construction now goes through the public
+        # ``client.session`` property (DIP-compliant), so wire the mock
+        # accordingly.
+        sentinel_client.session = sentinel_session
         sentinel_downloader = MagicMock(name="default-downloader")
 
         monkeypatch.setattr(base_module, "FraserClient", lambda: sentinel_client)
@@ -249,7 +253,7 @@ class TestDefaultDependencies:
 
         assert fetcher._client is sentinel_client
         assert fetcher._downloader is sentinel_downloader
-        assert captured_kwargs["session"] is sentinel_client._session
+        assert captured_kwargs["session"] is sentinel_session
         assert captured_kwargs["base_dir"] == tmp_path
 
     def test_正常系_doc_subdir_FOMC_MINUTES_returns_fomc_minutes(
