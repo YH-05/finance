@@ -353,4 +353,6 @@ class TestFetchAll:
         with patch.object(fetcher, "_fetch_text_path", side_effect=_fake_fetch):
             fetcher.fetch_all((2024, 2024), max_workers=2, prefer="pdf")
 
-        assert set(observed) == {"pdf"}, "fetch_all did not propagate prefer to _fetch_text_path"
+        assert set(observed) == {"pdf"}, (
+            "fetch_all did not propagate prefer to _fetch_text_path"
+        )
