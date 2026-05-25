@@ -152,13 +152,15 @@ class TestUpsertTickersSchemaValidation:
         )
 
         # Patch _build_ticker_df to return our invalid DataFrame
+        # Note: pandera raises SchemaErrors (plural) for coerce_dtype failures.
+        # Older versions raised SchemaError (singular); accept both for compatibility.
         with (
             patch.object(
                 storage,
                 "_build_ticker_df",
                 return_value=invalid_df,
             ),
-            pytest.raises(pandera.errors.SchemaError),
+            pytest.raises((pandera.errors.SchemaError, pandera.errors.SchemaErrors)),
         ):
             storage.upsert_tickers(
                 [
