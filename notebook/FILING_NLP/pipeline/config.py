@@ -19,8 +19,9 @@ LOGS_DIR = NAS_ROOT / "logs"
 FORMS_TARGET: tuple[str, ...] = ("10-K", "10-Q")
 FORMS_EXCLUDE: tuple[str, ...] = ("10-K/A", "10-Q/A")
 
-# Q2: 2002 年以降 (HTML 必須化以降)
-YEAR_CUTOFF = 2002
+# Q2: 2010 年以降 (indices_v1 範囲指定; 2026-05-25 ユーザー指示)
+# 旧: 2002 (HTML 必須化以降, pilot100 で使用)
+YEAR_CUTOFF = 2010
 
 # === Item specs (form ごと) ===
 # (section_key, section_role, part, item)

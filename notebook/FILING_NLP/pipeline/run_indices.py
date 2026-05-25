@@ -69,10 +69,11 @@ def _load_tokenizer() -> "Tokenizer":
     Tokenizer
         ``transformers.AutoTokenizer`` 互換オブジェクト (型エイリアスは Any).
     """
+    # AIDEV-NOTE: trust_remote_code=False で標準 Qwen2Tokenizer を使用。transformers v5 で Qwen2TokenizerFast クラスが削除され、HF Hub の gte-Qwen2 カスタムコード (Qwen2TokenizerFast 継承) がロード不能になったため。slow 版 Qwen2Tokenizer は同じ vocab/BPE で encode 結果が完全一致 (pilot100 比較済み)。
     from transformers import AutoTokenizer
 
     return AutoTokenizer.from_pretrained(
-        config.TOKENIZER_MODEL_ID, trust_remote_code=True
+        config.TOKENIZER_MODEL_ID, trust_remote_code=False, use_fast=False
     )
 
 
