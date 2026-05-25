@@ -31,7 +31,7 @@ from __future__ import annotations
 import tempfile
 import threading
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import IO, TYPE_CHECKING, Literal
 
 import httpx
 
@@ -210,7 +210,7 @@ class FraserDownloader:
         item: FraserItem,
         doc_subdir: str,
         *,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
         force: bool = False,
     ) -> tuple[Path, Path]:
         """Download an item's primary asset and write its metadata sidecar.
@@ -246,26 +246,33 @@ class FraserDownloader:
             When the item has no usable URL or the download fails.
         """
         lock = self._get_or_create_lock(item.item_id)
-        with lock:
-            url, ext = self._select_url(item, prefer=prefer)
+        try:
+            with lock:
+                url, ext = self._select_url(item, prefer=prefer)
 
-            target_dir = self.base_dir / doc_subdir
-            asset_filename = f"{item.date.isoformat()}_{item.item_id}.{ext}"
-            asset_path = target_dir / asset_filename
-            meta_path = target_dir / f"{item.date.isoformat()}_{item.item_id}.meta.json"
+                target_dir = self.base_dir / doc_subdir
+                asset_filename = f"{item.date.isoformat()}_{item.item_id}.{ext}"
+                asset_path = target_dir / asset_filename
+                meta_path = (
+                    target_dir / f"{item.date.isoformat()}_{item.item_id}.meta.json"
+                )
 
-            self.download(url, asset_path, force=force)
+                self.download(url, asset_path, force=force)
 
-            target_dir.mkdir(parents=True, exist_ok=True)
-            meta_payload = item.model_dump_json(indent=2, by_alias=False)
-            meta_path.write_text(meta_payload, encoding="utf-8")
+                target_dir.mkdir(parents=True, exist_ok=True)
+                meta_payload = item.model_dump_json(indent=2, by_alias=False)
+                meta_path.write_text(meta_payload, encoding="utf-8")
 
-            logger.debug(
-                "Meta sidecar written",
-                meta_path=str(meta_path),
-                item_id=item.item_id,
-            )
-            return asset_path, meta_path
+                logger.debug(
+                    "Meta sidecar written",
+                    meta_path=str(meta_path),
+                    item_id=item.item_id,
+                )
+                return asset_path, meta_path
+        finally:
+            # Release the per-item lock entry so a long-running batch does
+            # not accumulate one Lock object per processed item_id.
+            self._release_lock(item.item_id)
 
     # =========================================================================
     # Internal helpers
@@ -291,32 +298,41 @@ class FraserDownloader:
                 self._locks[item_id] = lock
             return lock
 
-    def _stream_to(self, url: str, tmp_file: Any) -> None:
+    def _release_lock(self, item_id: int) -> None:
+        """Drop the per-``item_id`` lock entry after the download settles.
+
+        Prevents unbounded growth of ``self._locks`` when a long-running
+        batch processes many distinct items. Safe to call even when the
+        entry is missing (no-op).
+        """
+        with self._locks_master:
+            self._locks.pop(item_id, None)
+
+    def _stream_to(self, url: str, tmp_file: IO[bytes]) -> None:
         """Stream ``url`` into the open ``tmp_file`` handle.
 
-        Uses ``httpx.stream`` so the response is consumed incrementally.
-        Status codes are checked via ``response.raise_for_status()``
-        before writing any bytes so that error pages are never persisted.
+        Uses :meth:`FraserSession.stream` so the SSRF / HTTPS guards are
+        enforced consistently with regular API calls (CWE-918). Status
+        codes are checked via ``response.raise_for_status()`` before
+        writing any bytes so that error pages are never persisted.
 
         Parameters
         ----------
         url : str
             Source URL.
-        tmp_file : Any
+        tmp_file : IO[bytes]
             Open writable binary file object (typically the handle
-            returned by ``tempfile.NamedTemporaryFile``).
+            returned by :class:`tempfile.NamedTemporaryFile`).
 
         Raises
         ------
+        FraserValidationError
+            If ``url`` fails SSRF / HTTPS validation.
         FraserDownloadError
             On HTTP / I/O failure.
         """
-        # Reuse the session's underlying httpx.Client so that timeout,
-        # SSL verification, and any session-level configuration are kept
-        # consistent with regular API requests.
-        client: httpx.Client = self._session._client
         try:
-            with client.stream("GET", url) as response:
+            with self._session.stream(url) as response:
                 response.raise_for_status()
                 for chunk in response.iter_bytes(chunk_size=self._chunk_size):
                     if chunk:
@@ -335,7 +351,9 @@ class FraserDownloader:
             ) from exc
 
     @staticmethod
-    def _select_url(item: FraserItem, *, prefer: str) -> tuple[str, str]:
+    def _select_url(
+        item: FraserItem, *, prefer: Literal["txt", "pdf"]
+    ) -> tuple[str, str]:
         """Pick a URL from ``item.location`` honouring the ``prefer`` flag.
 
         Falls back to the other format when the preferred one is

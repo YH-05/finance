@@ -23,6 +23,7 @@ market.fraser.errors : ``FraserValidationError`` raised by
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from typing import Literal
 
 from market.fraser.constants import (
     BASE_URL,
@@ -31,6 +32,11 @@ from market.fraser.constants import (
     DEFAULT_TIMEOUT,
 )
 from market.fraser.errors import FraserValidationError
+
+# Allowed values for asset format selection. Used as a single source of
+# truth across ``FetchOptions``, ``FraserDownloader``, and fetcher APIs
+# so a typo (e.g. ``"PDF"``) is caught at type-check time.
+PreferFormat = Literal["txt", "pdf"]
 
 # =============================================================================
 # Configuration Dataclasses
@@ -158,7 +164,7 @@ class FetchOptions:
     """
 
     use_cache: bool = True
-    prefer: str = "txt"
+    prefer: PreferFormat = "txt"
     download_dir: Path | None = None
 
 

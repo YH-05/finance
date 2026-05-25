@@ -52,7 +52,7 @@ def _unique_subdir(tmp_path: Path) -> Path:
 
 
 class _FakeStreamContext:
-    """Minimal context manager mimicking ``httpx.Client.stream``."""
+    """Minimal context manager mimicking the response yielded by ``stream``."""
 
     def __init__(self, chunks: list[bytes], raise_at: int | None) -> None:
         self._chunks = chunks
@@ -79,11 +79,14 @@ def _make_downloader(
     *,
     raise_at: int | None = None,
 ) -> FraserDownloader:
-    """Build a :class:`FraserDownloader` with a stub session."""
+    """Build a :class:`FraserDownloader` with a stub session.
+
+    Mocks :meth:`FraserSession.stream` (the public context manager) — the
+    downloader now invokes ``self._session.stream(url)`` rather than poking
+    ``self._session._client.stream`` directly (see PR #3967 HIGH-1 fix).
+    """
     session = MagicMock()
-    client = MagicMock()
-    client.stream.return_value = _FakeStreamContext(chunks, raise_at)
-    session._client = client
+    session.stream.return_value = _FakeStreamContext(chunks, raise_at)
     return FraserDownloader(session=session)
 
 
@@ -186,12 +189,10 @@ class TestDownloadSkipExistingProperty:
         target = workspace / "preexisting.bin"
         target.write_bytes(existing_bytes)
 
-        client = MagicMock()
-        client.stream = MagicMock(
+        session = MagicMock()
+        session.stream = MagicMock(
             side_effect=AssertionError("should not be called when force=False"),
         )
-        session = MagicMock()
-        session._client = client
         downloader = FraserDownloader(session=session)
 
         result = downloader.download(
@@ -202,8 +203,8 @@ class TestDownloadSkipExistingProperty:
 
         assert result == target
         assert target.read_bytes() == existing_bytes
-        # The mocked client must NEVER have been touched.
-        client.stream.assert_not_called()
+        # The session.stream context manager must NEVER have been touched.
+        session.stream.assert_not_called()
 
 
 # =============================================================================

@@ -625,10 +625,20 @@ class TestExponentialBackoffRetry:
     def test_正常系_429_Retry_Afterに従い_sleep(
         self,
         sample_fraser_config: FraserConfig,
-        fast_retry_config: RetryConfig,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        """Retry uses ``Retry-After`` value when present (preferred over backoff)."""
+        """Retry uses ``Retry-After`` value when present (preferred over backoff).
+
+        The session caps ``retry_after`` by ``RetryConfig.max_wait`` (CWE-400
+        guard), so this test uses ``max_wait=10.0`` to leave headroom above the
+        ``Retry-After: 3`` value while still keeping the backoff bounded.
+        """
+        # Use a retry config whose ``max_wait`` is greater than the Retry-After
+        # value so the ``min(retry_after, max_wait)`` cap does not zero out the
+        # observed sleep argument. ``fast_retry_config`` uses ``max_wait=0.0``
+        # and therefore cannot exercise this code path.
+        retry_config = RetryConfig(max_attempts=3, base_wait=0.0, max_wait=10.0)
+
         err_429 = _make_mock_response(
             status_code=429,
             text="Rate limit",
@@ -645,7 +655,7 @@ class TestExponentialBackoffRetry:
 
         with (
             FraserSession(
-                config=sample_fraser_config, retry_config=fast_retry_config
+                config=sample_fraser_config, retry_config=retry_config
             ) as session,
             patch.object(session._client, "get", side_effect=[err_429, ok]),
         ):

@@ -45,7 +45,7 @@ from market.fraser.cache import (
     make_fraser_cache_key,
 )
 from market.fraser.constants import FRASER_API_KEY_ENV
-from market.fraser.errors import FraserAuthError
+from market.fraser.errors import FraserAuthError, FraserValidationError
 from market.fraser.rate_limiter import get_fraser_rate_limiter
 from market.fraser.session import FraserSession
 from market.fraser.types import FraserConfig
@@ -183,10 +183,29 @@ class FraserClient:
         list[FraserItem]
             Items belonging to the title.
 
+        Raises
+        ------
+        FraserValidationError
+            When ``limit`` is outside ``[1, 1000]`` or ``page < 1``.
+
         Examples
         --------
         >>> items = client.list_items(title_id=677, limit=5)  # doctest: +SKIP
         """
+        # Surface bad pagination args before the network round-trip so
+        # the failure mode is a domain error, not an opaque 4xx (CWE-20).
+        if not 1 <= limit <= 1000:
+            raise FraserValidationError(
+                f"limit must be between 1 and 1000, got {limit}",
+                field="limit",
+                value=limit,
+            )
+        if page < 1:
+            raise FraserValidationError(
+                f"page must be >= 1, got {page}",
+                field="page",
+                value=page,
+            )
         endpoint = "/items"
         params: dict[str, Any] = {
             "titleId": title_id,

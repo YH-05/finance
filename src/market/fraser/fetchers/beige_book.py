@@ -25,7 +25,7 @@ edgar.batch : Reference ``_run_batch`` ThreadPoolExecutor pattern.
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from tqdm import tqdm
 
@@ -36,8 +36,6 @@ from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from market.fraser.models import FraserItem
 
 logger = get_logger(__name__)
 
@@ -102,22 +100,27 @@ class BeigeBookFetcher(BaseFraserFetcher):
         """
         items = self._client.list_items(self.title_id, limit=limit)
         filtered = self._filter_by_year_range(items, year_range)
-        return [self._to_beige_book_report(item) for item in filtered]
+        return [self._convert_to(item, BeigeBookReport) for item in filtered]
 
     def fetch_text(
         self,
         item_id: int,
         *,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
     ) -> tuple[Path, BeigeBookReport]:
         """Fetch and download a single Beige Book report.
 
         See :meth:`BaseFraserFetcher.fetch_text` for the underlying
         pipeline. The return type narrows the second element to
         :class:`BeigeBookReport`.
+
+        Returns
+        -------
+        tuple[Path, BeigeBookReport]
+            ``(asset_path, report)``.
         """
         path, item = super().fetch_text(item_id, prefer=prefer)
-        report = self._to_beige_book_report(item)
+        report = self._convert_to(item, BeigeBookReport)
         return path, report
 
     def fetch_all(
@@ -125,7 +128,7 @@ class BeigeBookFetcher(BaseFraserFetcher):
         year_range: tuple[int, int],
         *,
         max_workers: int = 4,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
         limit: int = 100,
     ) -> dict[int, Path | Exception]:
         """Download every Beige Book report in ``year_range`` in parallel.
@@ -145,9 +148,9 @@ class BeigeBookFetcher(BaseFraserFetcher):
             (default ``4``). Values above :data:`MAX_WORKERS_LIMIT` are
             silently clamped to keep the worker pool within the FRASER
             30 req/min ceiling.
-        prefer : str
+        prefer : Literal["txt", "pdf"]
             Preferred asset format passed through to :meth:`fetch_text`
-            (``"txt"`` or ``"pdf"``; default ``"txt"``).
+            (default ``"txt"``).
         limit : int
             Maximum number of items requested from FRASER when listing
             reports (default: ``100``).
@@ -220,7 +223,7 @@ class BeigeBookFetcher(BaseFraserFetcher):
     # Internal helpers
     # =========================================================================
 
-    def _fetch_text_path(self, item_id: int, prefer: str) -> Path:
+    def _fetch_text_path(self, item_id: int, prefer: Literal["txt", "pdf"]) -> Path:
         """Return only the ``Path`` portion of :meth:`fetch_text`.
 
         This thin wrapper keeps :meth:`fetch_all` independent of the
@@ -231,7 +234,7 @@ class BeigeBookFetcher(BaseFraserFetcher):
         ----------
         item_id : int
             FRASER item identifier.
-        prefer : str
+        prefer : Literal["txt", "pdf"]
             Preferred asset format.
 
         Returns
@@ -241,19 +244,6 @@ class BeigeBookFetcher(BaseFraserFetcher):
         """
         path, _report = self.fetch_text(item_id, prefer=prefer)
         return path
-
-    def _to_beige_book_report(self, item: FraserItem) -> BeigeBookReport:
-        """Convert a generic :class:`FraserItem` to :class:`BeigeBookReport`.
-
-        Mirrors the ``FOMCMeeting`` conversion pattern in
-        :mod:`market.fraser.fetchers.fomc` (the future refactor will
-        lift these helpers onto :class:`BaseFraserFetcher` — out of
-        scope per project-108 plan).
-        """
-        if isinstance(item, BeigeBookReport):
-            return item
-        payload = item.model_dump(by_alias=False)
-        return BeigeBookReport.model_validate(payload)
 
 
 __all__ = [

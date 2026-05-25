@@ -29,8 +29,9 @@ from __future__ import annotations
 import os
 import random
 import time
-from typing import Any
-from urllib.parse import urlparse
+from contextlib import contextmanager
+from typing import TYPE_CHECKING, Any
+from urllib.parse import urlparse, urlsplit
 
 import httpx
 
@@ -50,6 +51,9 @@ from market.fraser.errors import (
 from market.fraser.rate_limiter import DualWindowRateLimiter
 from market.fraser.types import FraserConfig, RetryConfig
 from utils_core.logging import get_logger
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 logger = get_logger(__name__)
 
@@ -289,9 +293,12 @@ class FraserSession:
 
                 last_error = e
 
+                # Drop the query string before logging — paths embed item_id
+                # or future PII; only the routing path is useful here (CWE-532).
+                safe_path = urlsplit(path).path
                 logger.warning(
                     "Request failed, will retry",
-                    path=path,
+                    path=safe_path,
                     attempt=attempt + 1,
                     max_attempts=self._retry_config.max_attempts,
                     error=str(e),
@@ -299,14 +306,16 @@ class FraserSession:
 
                 # If this is not the last attempt, apply backoff.
                 if attempt < self._retry_config.max_attempts - 1:
-                    # Prefer server-suggested Retry-After when present.
+                    # Prefer server-suggested Retry-After when present, but
+                    # cap by max_wait so a hostile server cannot lock the
+                    # process up with ``Retry-After: 999999`` (CWE-400).
                     retry_after: float | None = (
                         e.retry_after
                         if isinstance(e, FraserRateLimitError) and e.retry_after
                         else None
                     )
                     delay = (
-                        retry_after
+                        min(retry_after, self._retry_config.max_wait)
                         if retry_after is not None
                         else self._calculate_backoff_delay(attempt)
                     )
@@ -355,6 +364,40 @@ class FraserSession:
     ) -> None:
         """Close session on context exit."""
         self.close()
+
+    # =========================================================================
+    # Streaming (used by FraserDownloader)
+    # =========================================================================
+
+    @contextmanager
+    def stream(self, url: str) -> Iterator[httpx.Response]:
+        """Open a streaming GET response after enforcing SSRF guards.
+
+        Wraps :meth:`httpx.Client.stream` so that downloaders share the same
+        host whitelist and HTTPS enforcement as regular API calls
+        (CWE-918). Polite delays and rate limiting are intentionally **not**
+        applied here because streaming downloads of multi-megabyte PDFs
+        should not be billed against the 30 req/min budget for JSON calls.
+
+        Parameters
+        ----------
+        url : str
+            Absolute URL to stream. Validated by :meth:`_validate_url`.
+
+        Yields
+        ------
+        httpx.Response
+            Streaming response. The caller is responsible for iterating
+            ``response.iter_bytes`` inside the ``with`` block.
+
+        Raises
+        ------
+        FraserValidationError
+            When the URL fails SSRF / HTTPS validation.
+        """
+        self._validate_url(url)
+        with self._client.stream("GET", url) as response:
+            yield response
 
     # =========================================================================
     # Internal Methods
@@ -432,7 +475,10 @@ class FraserSession:
                 field="url.scheme",
                 value=parsed.scheme,
             )
-        parsed_host = parsed.netloc
+        # ``hostname`` strips the optional ``:port`` so that
+        # ``https://fraser.stlouisfed.org:443/...`` (explicit port form)
+        # is treated as the same host as the allow-listed bare name.
+        parsed_host = parsed.hostname or ""
         if parsed_host not in ALLOWED_HOSTS:
             logger.warning(
                 "Request blocked: host not in allowed hosts",

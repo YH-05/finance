@@ -9,10 +9,10 @@ This module exposes three FOMC fetchers, each a thin specialisation of
 - :class:`FOMCPressConferencesFetcher` — FOMC chair press conference
   transcripts (PR4 前半).
 
-All three share the ``_to_fomc_meeting`` conversion helper and expose
-the same public surface (``list_*`` + ``fetch_text``). Lifting the
-helper onto :class:`BaseFraserFetcher` is deliberately deferred to a
-future refactor (out of scope for PR4 前半 per project-108 plan).
+All three reuse :meth:`BaseFraserFetcher._convert_to` for the
+``FraserItem`` → :class:`FOMCMeeting` projection, so the previous
+three-way duplication of ``_to_fomc_meeting`` is gone
+(see PR review HIGH-2).
 
 See Also
 --------
@@ -22,7 +22,7 @@ market.fraser.models : :class:`FOMCMeeting` Pydantic V2 model.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from market.fraser.fetchers.base import BaseFraserFetcher
 from market.fraser.models import FOMCMeeting
@@ -31,8 +31,6 @@ from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from market.fraser.models import FraserItem
 
 logger = get_logger(__name__)
 
@@ -53,10 +51,6 @@ class FOMCMinutesFetcher(BaseFraserFetcher):
     def doc_type(self) -> DocType:
         """Return :data:`DocType.FOMC_MINUTES`."""
         return DocType.FOMC_MINUTES
-
-    # =========================================================================
-    # Public API
-    # =========================================================================
 
     def list_minutes(
         self,
@@ -81,43 +75,28 @@ class FOMCMinutesFetcher(BaseFraserFetcher):
         """
         items = self._client.list_items(self.title_id, limit=limit)
         filtered = self._filter_by_year_range(items, year_range)
-        return [self._to_fomc_meeting(item) for item in filtered]
+        return [self._convert_to(item, FOMCMeeting) for item in filtered]
 
     def fetch_text(
         self,
         item_id: int,
         *,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
     ) -> tuple[Path, FOMCMeeting]:
         """Fetch and download a single FOMC Minutes item.
 
         See :meth:`BaseFraserFetcher.fetch_text` for the underlying
         pipeline. The return type narrows the second element to
         :class:`FOMCMeeting` for ergonomic call-site typing.
+
+        Returns
+        -------
+        tuple[Path, FOMCMeeting]
+            ``(asset_path, meeting)``.
         """
         path, item = super().fetch_text(item_id, prefer=prefer)
-        meeting = self._to_fomc_meeting(item)
+        meeting = self._convert_to(item, FOMCMeeting)
         return path, meeting
-
-    # =========================================================================
-    # Internal helpers
-    # =========================================================================
-
-    def _to_fomc_meeting(self, item: FraserItem) -> FOMCMeeting:
-        """Convert a generic :class:`FraserItem` to :class:`FOMCMeeting`.
-
-        Uses ``model_dump`` + ``model_validate`` so that the inherited
-        fields (``item_id``, ``date``, ``location`` etc.) round-trip
-        through Pydantic's validation pipeline. This preserves any
-        ``meeting_date`` / ``meeting_type`` fields that the FRASER
-        response may carry.
-        """
-        if isinstance(item, FOMCMeeting):
-            return item
-        # ``by_alias=False`` keeps the snake_case keys ``FOMCMeeting``
-        # expects on input; ``model_validate`` handles the rest.
-        payload = item.model_dump(by_alias=False)
-        return FOMCMeeting.model_validate(payload)
 
 
 class FOMCStatementsFetcher(BaseFraserFetcher):
@@ -144,10 +123,6 @@ class FOMCStatementsFetcher(BaseFraserFetcher):
         """Return :data:`DocType.FOMC_STATEMENTS`."""
         return DocType.FOMC_STATEMENTS
 
-    # =========================================================================
-    # Public API
-    # =========================================================================
-
     def list_statements(
         self,
         year_range: tuple[int, int],
@@ -171,39 +146,28 @@ class FOMCStatementsFetcher(BaseFraserFetcher):
         """
         items = self._client.list_items(self.title_id, limit=limit)
         filtered = self._filter_by_year_range(items, year_range)
-        return [self._to_fomc_meeting(item) for item in filtered]
+        return [self._convert_to(item, FOMCMeeting) for item in filtered]
 
     def fetch_text(
         self,
         item_id: int,
         *,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
     ) -> tuple[Path, FOMCMeeting]:
         """Fetch and download a single FOMC Statement item.
 
         See :meth:`BaseFraserFetcher.fetch_text` for the underlying
         pipeline. The return type narrows the second element to
         :class:`FOMCMeeting` for ergonomic call-site typing.
+
+        Returns
+        -------
+        tuple[Path, FOMCMeeting]
+            ``(asset_path, statement)``.
         """
         path, item = super().fetch_text(item_id, prefer=prefer)
-        meeting = self._to_fomc_meeting(item)
+        meeting = self._convert_to(item, FOMCMeeting)
         return path, meeting
-
-    # =========================================================================
-    # Internal helpers
-    # =========================================================================
-
-    def _to_fomc_meeting(self, item: FraserItem) -> FOMCMeeting:
-        """Convert a generic :class:`FraserItem` to :class:`FOMCMeeting`.
-
-        See :meth:`FOMCMinutesFetcher._to_fomc_meeting` for details.
-        Duplicated here intentionally (project-108 task-5 scope) — the
-        future refactor will lift this onto :class:`BaseFraserFetcher`.
-        """
-        if isinstance(item, FOMCMeeting):
-            return item
-        payload = item.model_dump(by_alias=False)
-        return FOMCMeeting.model_validate(payload)
 
 
 class FOMCPressConferencesFetcher(BaseFraserFetcher):
@@ -230,10 +194,6 @@ class FOMCPressConferencesFetcher(BaseFraserFetcher):
         """Return :data:`DocType.FOMC_PRESS_CONFERENCES`."""
         return DocType.FOMC_PRESS_CONFERENCES
 
-    # =========================================================================
-    # Public API
-    # =========================================================================
-
     def list_press_conferences(
         self,
         year_range: tuple[int, int],
@@ -258,39 +218,28 @@ class FOMCPressConferencesFetcher(BaseFraserFetcher):
         """
         items = self._client.list_items(self.title_id, limit=limit)
         filtered = self._filter_by_year_range(items, year_range)
-        return [self._to_fomc_meeting(item) for item in filtered]
+        return [self._convert_to(item, FOMCMeeting) for item in filtered]
 
     def fetch_text(
         self,
         item_id: int,
         *,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
     ) -> tuple[Path, FOMCMeeting]:
         """Fetch and download a single FOMC Press Conference item.
 
         See :meth:`BaseFraserFetcher.fetch_text` for the underlying
         pipeline. The return type narrows the second element to
         :class:`FOMCMeeting` for ergonomic call-site typing.
+
+        Returns
+        -------
+        tuple[Path, FOMCMeeting]
+            ``(asset_path, press_conference)``.
         """
         path, item = super().fetch_text(item_id, prefer=prefer)
-        meeting = self._to_fomc_meeting(item)
+        meeting = self._convert_to(item, FOMCMeeting)
         return path, meeting
-
-    # =========================================================================
-    # Internal helpers
-    # =========================================================================
-
-    def _to_fomc_meeting(self, item: FraserItem) -> FOMCMeeting:
-        """Convert a generic :class:`FraserItem` to :class:`FOMCMeeting`.
-
-        See :meth:`FOMCMinutesFetcher._to_fomc_meeting` for details.
-        Duplicated here intentionally (project-108 task-5 scope) — the
-        future refactor will lift this onto :class:`BaseFraserFetcher`.
-        """
-        if isinstance(item, FOMCMeeting):
-            return item
-        payload = item.model_dump(by_alias=False)
-        return FOMCMeeting.model_validate(payload)
 
 
 __all__ = [

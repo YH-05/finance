@@ -169,11 +169,19 @@ class TestListSpeechesSpeakerFilter:
 
 
 # ---------------------------------------------------------------------------
-# _to_frb_speech
+# _convert_to (shared helper replacing the legacy ``_to_frb_speech``)
 # ---------------------------------------------------------------------------
 
 
-class TestToFrbSpeech:
+class TestConvertToFrbSpeech:
+    """Exercises :meth:`BaseFraserFetcher._convert_to` for FRBSpeech.
+
+    The legacy ``_to_frb_speech`` per-fetcher helper was removed in
+    PR #3967 in favour of the shared static helper. ``_convert_to``
+    always re-validates and therefore returns a fresh instance even when
+    the input already matches the target type.
+    """
+
     def test_正常系_FraserItemからFRBSpeechへ変換(self) -> None:
         item = FraserItem.model_validate(
             {
@@ -183,11 +191,12 @@ class TestToFrbSpeech:
             }
         )
         fetcher = FRBSpeechFetcher(client=MagicMock(), downloader=MagicMock())
-        speech = fetcher._to_frb_speech(item)
+        speech = fetcher._convert_to(item, FRBSpeech)
         assert isinstance(speech, FRBSpeech)
         assert speech.item_id == 42
 
-    def test_正常系_FRBSpeech入力はそのまま返却(self) -> None:
+    def test_正常系_FRBSpeech入力でもspeaker保持(self) -> None:
+        """``_convert_to`` re-validates so ``speaker`` survives the round-trip."""
         speech = FRBSpeech.model_validate(
             {
                 "itemId": 7,
@@ -197,8 +206,8 @@ class TestToFrbSpeech:
             }
         )
         fetcher = FRBSpeechFetcher(client=MagicMock(), downloader=MagicMock())
-        result = fetcher._to_frb_speech(speech)
-        assert result is speech
+        result = fetcher._convert_to(speech, FRBSpeech)
+        assert isinstance(result, FRBSpeech)
         assert result.speaker == "Powell"
 
 

@@ -18,7 +18,7 @@ market.fraser.fetchers.fomc : Reference fetcher pattern.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from market.fraser.fetchers.base import BaseFraserFetcher
 from market.fraser.models import FRBSpeech
@@ -27,8 +27,6 @@ from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from market.fraser.models import FraserItem
 
 logger = get_logger(__name__)
 
@@ -87,7 +85,7 @@ class FRBSpeechFetcher(BaseFraserFetcher):
         """
         items = self._client.list_items(self.title_id, limit=limit)
         year_filtered = self._filter_by_year_range(items, year_range)
-        speeches = [self._to_frb_speech(item) for item in year_filtered]
+        speeches = [self._convert_to(item, FRBSpeech) for item in year_filtered]
 
         if speaker is None:
             return speeches
@@ -97,16 +95,21 @@ class FRBSpeechFetcher(BaseFraserFetcher):
         self,
         item_id: int,
         *,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
     ) -> tuple[Path, FRBSpeech]:
         """Fetch and download a single FRB speech.
 
         See :meth:`BaseFraserFetcher.fetch_text` for the underlying
         pipeline. The return type narrows the second element to
         :class:`FRBSpeech`.
+
+        Returns
+        -------
+        tuple[Path, FRBSpeech]
+            ``(asset_path, speech)``.
         """
         path, item = super().fetch_text(item_id, prefer=prefer)
-        speech = self._to_frb_speech(item)
+        speech = self._convert_to(item, FRBSpeech)
         return path, speech
 
     # =========================================================================
@@ -152,18 +155,6 @@ class FRBSpeechFetcher(BaseFraserFetcher):
             if speech.description and needle in speech.description.lower():
                 result.append(speech)
         return result
-
-    def _to_frb_speech(self, item: FraserItem) -> FRBSpeech:
-        """Convert a generic :class:`FraserItem` to :class:`FRBSpeech`.
-
-        Mirrors the ``FOMCMeeting`` conversion in
-        :mod:`market.fraser.fetchers.fomc` (the future refactor will
-        lift these helpers onto :class:`BaseFraserFetcher`).
-        """
-        if isinstance(item, FRBSpeech):
-            return item
-        payload = item.model_dump(by_alias=False)
-        return FRBSpeech.model_validate(payload)
 
 
 __all__ = ["FRBSpeechFetcher"]

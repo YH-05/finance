@@ -112,11 +112,21 @@ class TestListReports:
 
 
 # ---------------------------------------------------------------------------
-# _to_beige_book_report
+# _convert_to (shared helper replacing the legacy ``_to_beige_book_report``)
 # ---------------------------------------------------------------------------
 
 
-class TestToBeigeBookReport:
+class TestConvertToBeigeBookReport:
+    """Exercises :meth:`BaseFraserFetcher._convert_to` for BeigeBookReport.
+
+    The legacy ``_to_beige_book_report`` per-fetcher helper was removed
+    in PR #3967 in favour of the shared ``_convert_to`` static helper.
+    Unlike the deleted helper, ``_convert_to`` always re-validates and
+    therefore returns a fresh instance even when the input already
+    matches the target type — the equality assertion below replaces the
+    previous identity check.
+    """
+
     def test_正常系_FraserItemからBeigeBookReportへ変換(self) -> None:
         item = FraserItem.model_validate(
             {
@@ -127,12 +137,18 @@ class TestToBeigeBookReport:
             }
         )
         fetcher = BeigeBookFetcher(client=MagicMock(), downloader=MagicMock())
-        report = fetcher._to_beige_book_report(item)
+        report = fetcher._convert_to(item, BeigeBookReport)
         assert isinstance(report, BeigeBookReport)
         assert report.item_id == 1
         assert report.date.isoformat() == "2024-01-17"
 
-    def test_正常系_BeigeBookReport入力はそのまま返却(self) -> None:
+    def test_正常系_BeigeBookReport入力でもdistrict保持(self) -> None:
+        """``_convert_to`` re-validates so ``district`` survives the round-trip.
+
+        The previous behaviour returned the same instance via ``isinstance``
+        short-circuit; ``_convert_to`` always builds a new model, so we
+        assert equality on the carried-over field instead of identity.
+        """
         report = BeigeBookReport.model_validate(
             {
                 "itemId": 9,
@@ -142,8 +158,8 @@ class TestToBeigeBookReport:
             }
         )
         fetcher = BeigeBookFetcher(client=MagicMock(), downloader=MagicMock())
-        result = fetcher._to_beige_book_report(report)
-        assert result is report
+        result = fetcher._convert_to(report, BeigeBookReport)
+        assert isinstance(result, BeigeBookReport)
         assert result.district == "Boston"
 
 

@@ -15,7 +15,7 @@ market.fraser.fetchers.fomc : Reference fetcher pattern.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from market.fraser.fetchers.base import BaseFraserFetcher
 from market.fraser.models import MonetaryPolicyReport
@@ -24,8 +24,6 @@ from utils_core.logging import get_logger
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from market.fraser.models import FraserItem
 
 logger = get_logger(__name__)
 
@@ -45,10 +43,6 @@ class MonetaryPolicyReportFetcher(BaseFraserFetcher):
     def doc_type(self) -> DocType:
         """Return :data:`DocType.MONETARY_POLICY_REPORT`."""
         return DocType.MONETARY_POLICY_REPORT
-
-    # =========================================================================
-    # Public API
-    # =========================================================================
 
     def list_reports(
         self,
@@ -76,13 +70,13 @@ class MonetaryPolicyReportFetcher(BaseFraserFetcher):
         """
         items = self._client.list_items(self.title_id, limit=limit)
         filtered = self._filter_by_year_range(items, year_range)
-        return [self._to_mpr(item) for item in filtered]
+        return [self._convert_to(item, MonetaryPolicyReport) for item in filtered]
 
     def fetch_text(
         self,
         item_id: int,
         *,
-        prefer: str = "pdf",
+        prefer: Literal["txt", "pdf"] = "pdf",
     ) -> tuple[Path, MonetaryPolicyReport]:
         """Fetch and download a single Monetary Policy Report.
 
@@ -94,26 +88,15 @@ class MonetaryPolicyReportFetcher(BaseFraserFetcher):
         See :meth:`BaseFraserFetcher.fetch_text` for the underlying
         pipeline. The return type narrows the second element to
         :class:`MonetaryPolicyReport`.
+
+        Returns
+        -------
+        tuple[Path, MonetaryPolicyReport]
+            ``(asset_path, report)``.
         """
         path, item = super().fetch_text(item_id, prefer=prefer)
-        report = self._to_mpr(item)
+        report = self._convert_to(item, MonetaryPolicyReport)
         return path, report
-
-    # =========================================================================
-    # Internal helpers
-    # =========================================================================
-
-    def _to_mpr(self, item: FraserItem) -> MonetaryPolicyReport:
-        """Convert a generic :class:`FraserItem` to :class:`MonetaryPolicyReport`.
-
-        Mirrors the ``FOMCMeeting`` conversion in
-        :mod:`market.fraser.fetchers.fomc` (the future refactor will
-        lift these helpers onto :class:`BaseFraserFetcher`).
-        """
-        if isinstance(item, MonetaryPolicyReport):
-            return item
-        payload = item.model_dump(by_alias=False)
-        return MonetaryPolicyReport.model_validate(payload)
 
 
 __all__ = ["MonetaryPolicyReportFetcher"]

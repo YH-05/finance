@@ -84,7 +84,7 @@ class TestAcquireBehaviour:
 
         waited = limiter.acquire()
 
-        assert waited == 0.0
+        assert waited == pytest.approx(0.0, abs=1e-9)
         assert limiter.available_minute == 4
         assert limiter.available_hour == 99
 
@@ -93,7 +93,7 @@ class TestAcquireBehaviour:
         limiter = get_fraser_rate_limiter(config)
 
         for _ in range(3):
-            assert limiter.acquire() == 0.0
+            assert limiter.acquire() == pytest.approx(0.0, abs=1e-9)
 
         assert limiter.available_minute == 2
         assert limiter.available_hour == 97
@@ -135,8 +135,8 @@ class TestTimeControlledBlocking:
         limiter = get_fraser_rate_limiter(config)
 
         # Consume the two allowed slots at t=1000.
-        assert limiter.acquire() == 0.0
-        assert limiter.acquire() == 0.0
+        assert limiter.acquire() == pytest.approx(0.0, abs=1e-9)
+        assert limiter.acquire() == pytest.approx(0.0, abs=1e-9)
 
         # The third acquire should wait until t = 1000 + 60 = 1060.
         waited = limiter.acquire()

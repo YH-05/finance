@@ -176,11 +176,19 @@ class TestFetchText:
 
 
 # ---------------------------------------------------------------------------
-# _to_mpr
+# _convert_to (shared helper replacing the legacy ``_to_mpr``)
 # ---------------------------------------------------------------------------
 
 
-class TestToMPR:
+class TestConvertToMPR:
+    """Exercises :meth:`BaseFraserFetcher._convert_to` for MonetaryPolicyReport.
+
+    The legacy ``_to_mpr`` per-fetcher helper was removed in PR #3967 in
+    favour of the shared static helper. ``_convert_to`` always
+    re-validates and therefore returns a fresh instance even when the
+    input already matches the target type.
+    """
+
     def test_正常系_FraserItemからMonetaryPolicyReportへ変換(self) -> None:
         item = FraserItem.model_validate(
             {
@@ -192,11 +200,12 @@ class TestToMPR:
         fetcher = MonetaryPolicyReportFetcher(
             client=MagicMock(), downloader=MagicMock()
         )
-        report = fetcher._to_mpr(item)
+        report = fetcher._convert_to(item, MonetaryPolicyReport)
         assert isinstance(report, MonetaryPolicyReport)
         assert report.item_id == 99
 
-    def test_正常系_MonetaryPolicyReport入力はそのまま返却(self) -> None:
+    def test_正常系_MonetaryPolicyReport入力でもreport_period保持(self) -> None:
+        """``_convert_to`` re-validates so ``report_period`` survives."""
         report = MonetaryPolicyReport.model_validate(
             {
                 "itemId": 11,
@@ -208,6 +217,6 @@ class TestToMPR:
         fetcher = MonetaryPolicyReportFetcher(
             client=MagicMock(), downloader=MagicMock()
         )
-        result = fetcher._to_mpr(report)
-        assert result is report
+        result = fetcher._convert_to(report, MonetaryPolicyReport)
+        assert isinstance(result, MonetaryPolicyReport)
         assert result.report_period == "February 2024"

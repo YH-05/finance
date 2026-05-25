@@ -3,16 +3,20 @@
 Covers:
 
 - ``list_minutes`` returns ``FOMCMeeting`` instances filtered by year.
-- ``_to_fomc_meeting`` correctly inherits ``FraserItem`` fields when
-  converting from a ``FraserItem``.
+- ``BaseFraserFetcher._convert_to`` correctly inherits ``FraserItem``
+  fields when converting from a ``FraserItem``. The shared helper
+  replaces the per-class ``_to_fomc_meeting`` duplication removed in
+  PR #3967 (HIGH-2).
 - ``fetch_text`` writes files under ``<base>/fomc/minutes/`` with the
   expected ``<YYYY-MM-DD>_<itemId>.txt`` naming.
 - Multiple ``date`` string formats are accepted (``YYYY-MM-DD``,
-  ``YYYY-MM``, ``YYYY``).
+  ``YYYY-MM``, ``YYYY``) — exercised via ``_convert_to(item, FOMCMeeting)``
+  to ensure the date-coercion path survives the consolidation.
 
 See Also
 --------
 market.fraser.fetchers.fomc : Class under test.
+market.fraser.fetchers.base : ``BaseFraserFetcher._convert_to`` helper.
 tests.market.fraser.conftest : Shared fixtures
     (``sample_fomc_items_response``).
 """
@@ -108,11 +112,19 @@ class TestListMinutes:
 
 
 # ---------------------------------------------------------------------------
-# _to_fomc_meeting
+# _convert_to (shared helper replacing the legacy ``_to_fomc_meeting``)
 # ---------------------------------------------------------------------------
 
 
-class TestToFomcMeeting:
+class TestConvertToFomcMeeting:
+    """Exercises :meth:`BaseFraserFetcher._convert_to` for FOMCMeeting.
+
+    The legacy ``_to_fomc_meeting`` per-fetcher helpers were removed in
+    PR #3967 in favour of the shared static helper. These tests pin the
+    date-coercion behaviour that callers relied on so the consolidation
+    does not silently regress ``YYYY-MM`` / ``YYYY`` handling.
+    """
+
     def test_正常系_FraserItemからFOMCMeetingへ変換できる(self) -> None:
         item = FraserItem.model_validate(
             {
@@ -123,7 +135,7 @@ class TestToFomcMeeting:
             }
         )
         fetcher = FOMCMinutesFetcher(client=MagicMock(), downloader=MagicMock())
-        meeting = fetcher._to_fomc_meeting(item)
+        meeting = fetcher._convert_to(item, FOMCMeeting)
         assert isinstance(meeting, FOMCMeeting)
         assert meeting.item_id == 1
         assert meeting.date.isoformat() == "2024-03-20"
@@ -141,7 +153,7 @@ class TestToFomcMeeting:
     ) -> None:
         item = FraserItem.model_validate({"itemId": 5, "title": "x", "date": date_str})
         fetcher = FOMCMinutesFetcher(client=MagicMock(), downloader=MagicMock())
-        meeting = fetcher._to_fomc_meeting(item)
+        meeting = fetcher._convert_to(item, FOMCMeeting)
         assert meeting.date.isoformat() == expected_iso
 
 

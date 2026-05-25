@@ -40,14 +40,14 @@ def _build_session_with_stream(
     status_code: int = 200,
     raise_http_status: bool = False,
 ) -> MagicMock:
-    """Return a MagicMock FraserSession whose ``_client.stream`` is controlled.
+    """Return a MagicMock FraserSession whose ``stream(url)`` is controlled.
 
-    ``_client`` is exposed as a private attribute on the real session;
-    the downloader accesses it via ``session._client``.
+    Mocks the public :meth:`FraserSession.stream` context manager — the
+    downloader now invokes ``self._session.stream(url)`` (which internally
+    enforces SSRF / HTTPS guards via ``_validate_url``) instead of poking
+    ``self._session._client.stream`` directly (see PR #3967 HIGH-1 fix).
     """
     session = MagicMock()
-    client = MagicMock()
-    session._client = client
 
     response = MagicMock(spec=httpx.Response)
     response.status_code = status_code
@@ -63,10 +63,10 @@ def _build_session_with_stream(
         response.raise_for_status.return_value = None
 
     @contextmanager
-    def _stream(method: str, url: str, **_: Any) -> Any:
+    def _stream(url: str, **_: Any) -> Any:
         yield response
 
-    client.stream.side_effect = _stream
+    session.stream.side_effect = _stream
     return session
 
 
@@ -141,8 +141,8 @@ class TestDownloadAtomic:
         assert result == target
         # Content remains unchanged.
         assert target.read_bytes() == b"original"
-        # Streaming client was never called.
-        session._client.stream.assert_not_called()
+        # Streaming session was never called.
+        session.stream.assert_not_called()
 
     def test_正常系_force_Trueで上書き(self, tmp_path: Path) -> None:
         session = _build_session_with_stream(chunks=[b"new"])
@@ -171,15 +171,13 @@ class TestDownloadAtomic:
 
     def test_異常系_httpx_NetworkErrorでtmp清掃(self, tmp_path: Path) -> None:
         session = MagicMock()
-        client = MagicMock()
-        session._client = client
 
         @contextmanager
-        def _stream(method: str, url: str, **_: Any) -> Any:
+        def _stream(url: str, **_: Any) -> Any:
             raise httpx.ConnectError("network down")
             yield  # pragma: no cover
 
-        client.stream.side_effect = _stream
+        session.stream.side_effect = _stream
         dl = FraserDownloader(session, base_dir=tmp_path)
 
         target = tmp_path / "out" / "doc.txt"
@@ -210,11 +208,9 @@ class TestParallelDeduplication:
         call_lock = threading.Lock()
 
         session = MagicMock()
-        client = MagicMock()
-        session._client = client
 
         @contextmanager
-        def _stream(method: str, url: str, **_: Any) -> Any:
+        def _stream(url: str, **_: Any) -> Any:
             with call_lock:
                 call_count["value"] += 1
             response = MagicMock(spec=httpx.Response)
@@ -223,7 +219,7 @@ class TestParallelDeduplication:
             response.raise_for_status.return_value = None
             yield response
 
-        client.stream.side_effect = _stream
+        session.stream.side_effect = _stream
 
         dl = FraserDownloader(session, base_dir=tmp_path)
         item = _make_item(item_id=1001, txt=True, pdf=False)

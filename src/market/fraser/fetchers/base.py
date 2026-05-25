@@ -33,8 +33,11 @@ from __future__ import annotations
 
 import json
 from abc import ABC, abstractmethod
+from functools import cached_property
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
+
+from pydantic import BaseModel
 
 from market.fraser.client import FraserClient
 from market.fraser.constants import DOC_TYPE_SUBDIRS, KNOWN_TITLE_IDS
@@ -125,9 +128,13 @@ class BaseFraserFetcher(ABC):
     # Public properties
     # =========================================================================
 
-    @property
+    @cached_property
     def title_id(self) -> int:
         """Resolve the FRASER ``title_id`` for :attr:`doc_type`.
+
+        The resolution is cached per-instance: the first access hits
+        :meth:`_resolve_title_id` (which may read
+        ``fraser_titles.json`` from disk), subsequent accesses are O(1).
 
         Returns
         -------
@@ -218,6 +225,31 @@ class BaseFraserFetcher(ABC):
         """Return the on-disk subdirectory for :attr:`doc_type`."""
         return DOC_TYPE_SUBDIRS[self.doc_type.value]
 
+    @staticmethod
+    def _convert_to[M: BaseModel](item: FraserItem, model_cls: type[M]) -> M:
+        """Re-validate ``item``'s fields against the more specific ``model_cls``.
+
+        Used by concrete fetchers to upcast a generic :class:`FraserItem`
+        returned by ``list_items`` into the document-type specific Pydantic
+        model (``FOMCMeeting``, ``BeigeBookReport``, etc.). Centralising
+        the conversion here removes the three-class duplication of
+        ``_to_fomc_meeting`` that existed previously
+        (see PR review HIGH-2 / project-115 Wave4).
+
+        Parameters
+        ----------
+        item : FraserItem
+            Generic item returned by ``FraserClient.list_items``.
+        model_cls : type[M]
+            Pydantic V2 model subclass to project ``item`` into.
+
+        Returns
+        -------
+        M
+            Validated instance of ``model_cls``.
+        """
+        return model_cls.model_validate(item.model_dump(by_alias=False))
+
     # =========================================================================
     # Public fetch operations
     # =========================================================================
@@ -226,7 +258,7 @@ class BaseFraserFetcher(ABC):
         self,
         item_id: int,
         *,
-        prefer: str = "txt",
+        prefer: Literal["txt", "pdf"] = "txt",
     ) -> tuple[Path, FraserItem]:
         """Fetch metadata for ``item_id`` and download the asset.
 
@@ -238,9 +270,9 @@ class BaseFraserFetcher(ABC):
         ----------
         item_id : int
             FRASER item identifier.
-        prefer : str
-            Preferred asset format (``"txt"`` or ``"pdf"``). The other
-            format is used as fallback when the preferred one is absent.
+        prefer : Literal["txt", "pdf"]
+            Preferred asset format. The other format is used as fallback
+            when the preferred one is absent.
 
         Returns
         -------
@@ -254,7 +286,13 @@ class BaseFraserFetcher(ABC):
         return asset_path, item
 
     def fetch_pdf(self, item_id: int) -> tuple[Path, FraserItem]:
-        """Convenience wrapper that forces ``prefer='pdf'`` on :meth:`fetch_text`."""
+        """Convenience wrapper that forces ``prefer='pdf'`` on :meth:`fetch_text`.
+
+        Returns
+        -------
+        tuple[Path, FraserItem]
+            ``(asset_path, item)`` — same shape as :meth:`fetch_text`.
+        """
         return self.fetch_text(item_id, prefer="pdf")
 
 
