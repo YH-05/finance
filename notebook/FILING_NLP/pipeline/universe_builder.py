@@ -21,6 +21,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -33,20 +34,12 @@ from tenacity import (
     wait_exponential,
 )
 
-# .env から EDGAR_IDENTITY を読み込み (run_pilot.py 流儀)
+# EDGAR_IDENTITY の .env ロードは main() 内で実行する (import 時の副作用を排除)
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 _ENV_PATH = _REPO_ROOT / ".env"
-if _ENV_PATH.exists() and not os.environ.get("EDGAR_IDENTITY"):
-    for _line in _ENV_PATH.read_text().splitlines():
-        _line = _line.strip()
-        if _line.startswith("EDGAR_IDENTITY="):
-            os.environ["EDGAR_IDENTITY"] = (
-                _line.split("=", 1)[1].strip().strip('"').strip("'")
-            )
-            break
 
 sys.path.insert(0, str(_REPO_ROOT))
-from notebook.FILING_NLP.pipeline import config  # noqa: E402
+from notebook.FILING_NLP.pipeline import config, utils  # noqa: E402
 
 log = logging.getLogger(__name__)
 
@@ -454,8 +447,16 @@ def main(argv: list[str] | None = None) -> int:
     _setup_logging()
     args = _parse_args(argv)
 
-    index_dir = Path(args.index_dir)
+    # snapshot_date のバリデーション (パストラバーサル防止)
     snapshot_date = args.snapshot_date
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", snapshot_date):
+        log.error("--snapshot-date must be YYYY-MM-DD, got %r", snapshot_date)
+        return 2
+
+    # .env から EDGAR_IDENTITY を取り込み (import 時の副作用を排除し main 内で実行)
+    utils.load_edgar_identity_from_env(_ENV_PATH)
+
+    index_dir = Path(args.index_dir)
     log.info("=" * 70)
     log.info("indices_v1 universe builder")
     log.info("=" * 70)

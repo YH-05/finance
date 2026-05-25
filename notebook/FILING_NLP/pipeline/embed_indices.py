@@ -34,6 +34,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import sys
 import time
 import traceback
@@ -48,12 +49,12 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from notebook.FILING_NLP.pipeline import config  # noqa: E402
+from notebook.FILING_NLP.pipeline import config, utils  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-# index_filter として受け付ける値 (membership parquet の列名と一致)
-_INDEX_FILTER_CHOICES: tuple[str, ...] = ("in_spx", "in_sox", "in_riy", "in_ray")
+# index_filter として受け付ける値 (utils 経由で参照)
+_INDEX_FILTER_CHOICES: tuple[str, ...] = utils.INDEX_FILTER_CHOICES
 _DTYPE_CHOICES: tuple[str, ...] = ("bfloat16", "float16", "float32")
 _DEVICE_CHOICES: tuple[str, ...] = ("mps", "cpu", "cuda")
 
@@ -221,8 +222,8 @@ def _try_resume(
             np.ones(n, dtype=bool),
         )
     try:
-        existing = np.load(out_npy)
-    except (OSError, ValueError) as e:
+        existing = np.load(out_npy, allow_pickle=False)
+    except (OSError, ValueError, EOFError) as e:
         log.warning("既存 %s の読み込み失敗 (%s). 新規作成.", out_npy, e)
         return (
             np.full((n, dim), np.nan, dtype=np.float32),
@@ -416,11 +417,7 @@ def _load_target_ciks(membership_path: Path, index_filter: str) -> list[int]:
             f"index_filter must be one of {_INDEX_FILTER_CHOICES}, got {index_filter!r}"
         )
     membership = pd.read_parquet(membership_path)
-    if index_filter not in membership.columns:
-        raise ValueError(
-            f"membership parquet has no column {index_filter!r}. "
-            f"columns: {list(membership.columns)}"
-        )
+    utils.validate_index_filter(index_filter, membership)
     target = membership.loc[membership[index_filter].astype(bool), "cik"]
     return [int(x) for x in target.tolist()]
 
@@ -466,15 +463,8 @@ class _EmbedCheckpoint:
 # Logging
 # ----------------------------------------------------------------------------
 def _setup_logging(run_id: str, logs_dir: Path) -> None:
-    """``run_indices.py`` 流儀の logging 設定 (Stream + File + force=True)."""
-    logs_dir.mkdir(parents=True, exist_ok=True)
-    log_path = logs_dir / f"{run_id}_embed_run.log"
-    fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-    handlers: list[logging.Handler] = [
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler(log_path, encoding="utf-8"),
-    ]
-    logging.basicConfig(level=logging.INFO, format=fmt, handlers=handlers, force=True)
+    """logging 設定 (utils.setup_pipeline_logging に委譲、suffix=embed_run)."""
+    utils.setup_pipeline_logging(run_id, logs_dir, suffix="embed_run")
 
 
 # ----------------------------------------------------------------------------
@@ -564,20 +554,22 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def _assert_nas_mounted() -> None:
-    """NAS マウントの存在を起動時に検証. 未マウントなら fail-fast."""
-    nas_root = Path(config.NAS_ROOT)
-    if not nas_root.exists():
-        msg = (
-            f"NAS root {nas_root} が見つかりません. "
-            f"マウントされているか確認してください."
-        )
-        print(f"[ERROR] {msg}", file=sys.stderr)
-        raise SystemExit(2)
+    """NAS マウントの存在を起動時に検証. 未マウントなら fail-fast (utils 経由)."""
+    utils.assert_nas_mounted(Path(config.NAS_ROOT))
+
+
+_RUN_ID_RE = re.compile(r"^[A-Za-z0-9_\-]{1,64}$")
 
 
 def main(argv: list[str] | None = None) -> None:
     """CLI エントリポイント."""
     args = _parse_args(argv)
+
+    # run_id のバリデーション (パストラバーサル防止)
+    if not _RUN_ID_RE.fullmatch(args.run_id):
+        raise SystemExit(
+            f"--run-id must match [A-Za-z0-9_-]{{1,64}}, got {args.run_id!r}"
+        )
 
     # 起動時 fail-fast (NAS マウント確認)
     _assert_nas_mounted()

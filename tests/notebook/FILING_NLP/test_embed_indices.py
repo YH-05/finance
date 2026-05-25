@@ -291,14 +291,16 @@ class TestEmbedCik:
         out_meta = tmp_path / "chunks_meta_cik0000320193.parquet"
         unresolved_path = tmp_path / "unresolved_chunks.jsonl"
 
-        # 既存 npy 全件埋まっている状態
+        # 既存 npy 全件埋まっている状態 (識別可能な乱数値、seed=1)
         n = 10
         dim = 1536
-        existing = np.full((n, dim), 0.1, dtype=np.float32)
+        rng_existing = np.random.default_rng(seed=1)
+        existing = rng_existing.standard_normal((n, dim)).astype(np.float32)
         existing /= np.linalg.norm(existing, axis=1, keepdims=True)
         np.save(out_npy, existing)
 
         call_log: list[int] = []
+        rng_new = np.random.default_rng(seed=2)
 
         def _spy_encode(
             texts: list[str],
@@ -309,7 +311,7 @@ class TestEmbedCik:
         ) -> np.ndarray:
             call_log.append(len(texts))
             n_in = len(texts)
-            arr = np.full((n_in, dim), 0.9, dtype=np.float32)
+            arr = rng_new.standard_normal((n_in, dim)).astype(np.float32)
             return arr / np.linalg.norm(arr, axis=1, keepdims=True)
 
         monkeypatch.setattr(ei, "encode_texts", _spy_encode)
@@ -330,7 +332,16 @@ class TestEmbedCik:
         assert summary["n_embedded"] == 10
         assert sum(call_log) == 10
 
-    def test_正常系_失敗バッチがunresolved_jsonlにappend記録(
+        # force_reencode=True により既存 npy が新しい値で上書きされていることを検証
+        arr = np.load(out_npy)
+        assert arr.shape == (n, dim)
+        assert not np.allclose(arr, existing), (
+            "force_reencode=True で既存 npy が上書きされていない"
+        )
+        # 新しい値は 0.9 ベースで L2 正規化されている
+        assert np.allclose(np.linalg.norm(arr, axis=1), 1.0, atol=1e-5)
+
+    def test_異常系_encode_texts例外発生時バッチがunresolved_jsonlに記録される(
         self,
         tmp_path: Path,
         chunks_parquet: Path,
@@ -378,6 +389,119 @@ class TestEmbedCik:
             assert rec["cik"] == 320193
             assert "batch_idx" in rec
             assert "MPS OOM" in rec["error"]
+
+    def test_エッジケース_空のchunks_parquetでzeros保存_n_embedded0(
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """空の chunks parquet (len==0) を渡したとき、zeros (0, 1536) が保存される."""
+        ei = _load_embed_indices()
+        monkeypatch.setattr(ei, "encode_texts", _make_dummy_encode(dim=1536))
+
+        empty_chunks = pd.DataFrame(
+            {
+                "chunk_id": pd.Series([], dtype="int64"),
+                "text": pd.Series([], dtype="str"),
+            }
+        )
+        empty_path = tmp_path / "chunks_empty.parquet"
+        empty_chunks.to_parquet(empty_path, index=False)
+
+        out_npy = tmp_path / "embeddings_cik0000000001.npy"
+        out_meta = tmp_path / "chunks_meta_cik0000000001.parquet"
+        unresolved_path = tmp_path / "unresolved_chunks.jsonl"
+
+        summary = ei.embed_cik(
+            cik=1,
+            chunks_parquet=empty_path,
+            out_npy=out_npy,
+            out_meta=out_meta,
+            model=object(),
+            tokenizer=object(),
+            batch_size=4,
+            max_length=512,
+            force_reencode=False,
+            checkpoint_every_n_batches=1,
+            unresolved_path=unresolved_path,
+        )
+        assert summary["n_chunks"] == 0
+        assert summary["n_embedded"] == 0
+        assert out_npy.exists()
+        arr = np.load(out_npy)
+        assert arr.shape == (0, 1536)
+
+    def test_エッジケース_既存npyのshape不一致でNaN初期化にフォールバック(
+        self,
+        tmp_path: Path,
+        chunks_parquet: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """既存 .npy が想定外 shape の場合に NaN 初期化へフォールバックする."""
+        ei = _load_embed_indices()
+        monkeypatch.setattr(ei, "encode_texts", _make_dummy_encode(dim=1536))
+
+        out_npy = tmp_path / "embeddings_cik0000320193.npy"
+        out_meta = tmp_path / "chunks_meta_cik0000320193.parquet"
+        unresolved_path = tmp_path / "unresolved_chunks.jsonl"
+
+        # 期待 shape (10, 1536) と異なる (8, 512) の壊れた既存ファイル
+        np.save(out_npy, np.ones((8, 512), dtype=np.float32))
+
+        summary = ei.embed_cik(
+            cik=320193,
+            chunks_parquet=chunks_parquet,
+            out_npy=out_npy,
+            out_meta=out_meta,
+            model=object(),
+            tokenizer=object(),
+            batch_size=4,
+            max_length=512,
+            force_reencode=False,
+            checkpoint_every_n_batches=1,
+            unresolved_path=unresolved_path,
+        )
+        # NaN 初期化にフォールバックして全件再生成される
+        assert summary["n_embedded"] == 10
+        arr = np.load(out_npy)
+        assert arr.shape == (10, 1536)
+        assert not np.isnan(arr).any()
+
+    def test_エッジケース_既存npyの破損でOSErrorからNaN初期化にフォールバック(
+        self,
+        tmp_path: Path,
+        chunks_parquet: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """既存 .npy が壊れている場合 OSError/ValueError からフォールバックする."""
+        ei = _load_embed_indices()
+        monkeypatch.setattr(ei, "encode_texts", _make_dummy_encode(dim=1536))
+
+        out_npy = tmp_path / "embeddings_cik0000320193.npy"
+        out_meta = tmp_path / "chunks_meta_cik0000320193.parquet"
+        unresolved_path = tmp_path / "unresolved_chunks.jsonl"
+
+        # 0 バイトの壊れたファイル
+        out_npy.write_bytes(b"")
+
+        summary = ei.embed_cik(
+            cik=320193,
+            chunks_parquet=chunks_parquet,
+            out_npy=out_npy,
+            out_meta=out_meta,
+            model=object(),
+            tokenizer=object(),
+            batch_size=4,
+            max_length=512,
+            force_reencode=False,
+            checkpoint_every_n_batches=1,
+            unresolved_path=unresolved_path,
+        )
+        # フォールバックで NaN 初期化 → 全件エンコード
+        assert summary["n_embedded"] == 10
+        arr = np.load(out_npy)
+        assert arr.shape == (10, 1536)
+        assert not np.isnan(arr).any()
 
     def test_正常系_metaファイルが先に書き出される(
         self,

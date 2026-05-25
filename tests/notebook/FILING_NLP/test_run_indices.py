@@ -251,7 +251,7 @@ class TestParseArgs:
 # main (smoke test with mocked runner)
 # -----------------------------------------------------------------------------
 class TestMain:
-    def test_正常系_NAS未マウント時にfail_fastする(
+    def test_異常系_NAS未マウント時にSystemExitでfail_fastする(
         self,
         universe_parquet: Path,
         membership_parquet: Path,
@@ -262,7 +262,7 @@ class TestMain:
         # NAS 検証関数を fail させる
         # config.NAS_ROOT を存在しないパスに差し替え
         monkeypatch.setattr(ri.config, "NAS_ROOT", tmp_path / "nonexistent_nas")
-        with pytest.raises(SystemExit):
+        with pytest.raises(SystemExit) as exc_info:
             ri.main(
                 [
                     "--run-id",
@@ -275,6 +275,7 @@ class TestMain:
                     "in_spx",
                 ]
             )
+        assert exc_info.value.code == 2
 
     def test_正常系_runner_run_pipelineが期待引数で呼ばれる(
         self,

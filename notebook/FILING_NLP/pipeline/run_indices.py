@@ -34,42 +34,27 @@ import sys
 from pathlib import Path
 from typing import Any
 
-# .env から EDGAR_IDENTITY を読み込み (run_pilot.py 流儀)
+# EDGAR_IDENTITY の .env ロードは main() 内で実行する (import 時の副作用を排除)
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 _ENV_PATH = _REPO_ROOT / ".env"
-if _ENV_PATH.exists() and not os.environ.get("EDGAR_IDENTITY"):
-    for _line in _ENV_PATH.read_text().splitlines():
-        _line = _line.strip()
-        if _line.startswith("EDGAR_IDENTITY="):
-            os.environ["EDGAR_IDENTITY"] = (
-                _line.split("=", 1)[1].strip().strip('"').strip("'")
-            )
-            break
 
 import pandas as pd  # noqa: E402
 
 sys.path.insert(0, str(_REPO_ROOT))
-from notebook.FILING_NLP.pipeline import config, runner  # noqa: E402
+from notebook.FILING_NLP.pipeline import config, runner, utils  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-# index_filter として受け付ける値 (membership parquet の列名と一致)
-_INDEX_FILTER_CHOICES: tuple[str, ...] = ("in_spx", "in_sox", "in_riy", "in_ray")
+# index_filter として受け付ける値 (utils 経由で参照)
+_INDEX_FILTER_CHOICES: tuple[str, ...] = utils.INDEX_FILTER_CHOICES
 
 
 # ----------------------------------------------------------------------------
 # logging / tokenizer
 # ----------------------------------------------------------------------------
 def _setup_logging(run_id: str, logs_dir: Path) -> None:
-    """run_pilot.py 流儀の logging 設定 (StreamHandler + FileHandler + force=True)."""
-    logs_dir.mkdir(parents=True, exist_ok=True)
-    log_path = logs_dir / f"{run_id}_run.log"
-    fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-    handlers: list[logging.Handler] = [
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler(log_path, encoding="utf-8"),
-    ]
-    logging.basicConfig(level=logging.INFO, format=fmt, handlers=handlers, force=True)
+    """StreamHandler + FileHandler の logging 設定 (utils.setup_pipeline_logging に委譲)."""
+    utils.setup_pipeline_logging(run_id, logs_dir, suffix="run")
 
 
 def _load_tokenizer() -> Any:
@@ -115,11 +100,7 @@ def _load_universe(
     universe = pd.read_parquet(universe_path)
     membership = pd.read_parquet(membership_path)
 
-    if index_filter not in membership.columns:
-        raise ValueError(
-            f"membership parquet has no column {index_filter!r}. "
-            f"columns: {list(membership.columns)}"
-        )
+    utils.validate_index_filter(index_filter, membership)
 
     # CIK で inner join し、index_filter == True を抽出
     target_ciks = membership.loc[membership[index_filter].astype(bool), ["cik"]]
@@ -194,13 +175,8 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def _assert_nas_mounted() -> None:
-    """NAS マウントの存在を起動時に検証. 未マウントなら fail-fast."""
-    nas_root = Path(config.NAS_ROOT)
-    if not nas_root.exists():
-        msg = f"NAS root {nas_root} が見つかりません. マウントされているか確認してください."
-        # logging より前に呼ばれる可能性があるので stderr へも出力
-        print(f"[ERROR] {msg}", file=sys.stderr)
-        raise SystemExit(2)
+    """NAS マウントの存在を起動時に検証. 未マウントなら fail-fast (utils 経由)."""
+    utils.assert_nas_mounted(Path(config.NAS_ROOT))
 
 
 def _setup_edgar_identity() -> None:
@@ -224,6 +200,9 @@ def _setup_edgar_identity() -> None:
 def main(argv: list[str] | None = None) -> None:
     """CLI エントリポイント."""
     args = _parse_args(argv)
+
+    # .env から EDGAR_IDENTITY を取り込み (import 時の副作用を排除し main 内で実行)
+    utils.load_edgar_identity_from_env(_ENV_PATH)
 
     # 起動時 fail-fast (NAS マウント確認)
     _assert_nas_mounted()
@@ -265,7 +244,7 @@ def main(argv: list[str] | None = None) -> None:
 
     # EDGAR identity / tokenizer (NAS 検証後・universe 確定後にロード)
     _setup_edgar_identity()
-    log.info("EDGAR_IDENTITY: %s", os.environ.get("EDGAR_IDENTITY"))
+    log.info("EDGAR_IDENTITY: %s", utils.mask_edgar_identity(os.environ.get("EDGAR_IDENTITY")))
     log.info("loading tokenizer: %s", config.TOKENIZER_MODEL_ID)
     tokenizer = _load_tokenizer()
     log.info("tokenizer ready: %s", type(tokenizer).__name__)
