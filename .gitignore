@@ -71,8 +71,8 @@ notebook/__marimo__/
 # ======================================================================
 data/Transcript/
 data/duckdb/
-data/raw/
-data/exports/
+data/raw
+data/exports
 data/processed/
 data/market/
 data/sqlite/
