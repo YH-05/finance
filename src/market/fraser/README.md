@@ -232,10 +232,18 @@ FraserError
 
 ## Examples
 
-実動作例は `notebook/FRASER/fraser_demo.ipynb` に追加予定（PR5 で整備）。
+動作確認用 thin demo notebook を用意しています:
 
-それまでは [Quick Start](#quick-start) のスニペットを Python REPL や
-スクリプトに貼り付けて実行することで動作確認できます。
+- [`notebook/FRASER/fraser_demo.ipynb`](../../../notebook/FRASER/fraser_demo.ipynb) — `FraserClient` 初期化、`FOMCMinutesFetcher` で 2024 年 FOMC Minutes 取得、`BeigeBookFetcher.fetch_all` で並列ダウンロードのデモ（5 セル構成、`.env` の `FRASER_API_KEY` 必須）
+
+実行手順:
+
+```bash
+# 前提: .env に FRASER_API_KEY を設定
+uv run jupyter nbconvert --to notebook --execute --inplace notebook/FRASER/fraser_demo.ipynb
+```
+
+下流の NLP 処理（FinBERT センチメント、ChromaDB 投入など）は別レイヤーで実装します。詳細は notebook の最終セル「次ステップ」を参照してください。
 
 ## Troubleshooting
 
@@ -281,12 +289,12 @@ uv run python -m market.fraser.scripts.discover_titles \
 
 ### 4. API キーを失効・再発行したい
 
-漏洩が疑われる場合は以下の手順で revoke + 再発行します。
+漏洩が疑われる場合・キーがコミット履歴等に残ってしまった場合は、以下の手順で revoke + 再発行します。
 
 ```bash
-# 1. 旧 API キーを revoke
-curl -X DELETE "https://fraser.stlouisfed.org/api/api_key" \
-  -H "X-Api-Key: <old_key>"
+# 1. 旧 API キーを revoke（FRASER ダッシュボード経由）
+#    https://fraser.stlouisfed.org/ にログインし、API キー管理画面から対象キーを削除
+#    REST API での revoke はサポートされていません（2026-05 時点）
 
 # 2. 新規 API キーを再発行
 curl -X POST "https://fraser.stlouisfed.org/api/api_key" \
@@ -295,9 +303,16 @@ curl -X POST "https://fraser.stlouisfed.org/api/api_key" \
 
 # 3. .env を更新
 sed -i '' 's/FRASER_API_KEY=.*/FRASER_API_KEY=<new_key>/' .env
+
+# 4. NAS 同期環境では .env をローカル ↔ NAS で同期
+#    （quants リポジトリでは /sync-nas コマンドを使用）
 ```
 
-詳細な運用手順は PR5（`notebook/FRASER/fraser_demo.ipynb`）で整備予定。
+**運用上の注意**:
+
+- 旧キーが過去の git 履歴・notebook 出力に残っている場合、revoke 完了後は履歴書き換え（`git filter-branch` 等）は **不要**（revoke 済みのキーは無効化されているため二次被害なし）。
+- notebook の出力セルにキーが残らないよう、コミット前に `jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace <notebook>` で出力をクリアすることを推奨。
+- API キーは `FraserConfig` で `repr=False` 指定されているため、`print(client.config)` 等でログ出力されることはありません（CWE-532 対策）。
 
 ### 5. ダウンロードファイルが `.tmp` のまま残る
 
