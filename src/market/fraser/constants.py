@@ -81,6 +81,8 @@ DEFAULT_TIMEOUT: Final[float] = 30.0
 # 6. Document type metadata
 # ---------------------------------------------------------------------------
 
+# AIDEV-TODO: project-115 task-2 で `python -m market.fraser.scripts.discover_titles`
+# を実行し、残り 5 つの None を確定値に置き換え、型を `dict[str, int]` に変更する。
 KNOWN_TITLE_IDS: Final[dict[str, int | None]] = {
     "fomc_minutes": 677,
     "fomc_statements": None,

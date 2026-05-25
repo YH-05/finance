@@ -157,8 +157,8 @@ class TestFetchOptions:
         assert options.prefer == "txt"
         assert options.download_dir is None
 
-    def test_正常系_カスタム値(self) -> None:
-        path = Path("/tmp/fraser")
+    def test_正常系_カスタム値(self, tmp_path: Path) -> None:
+        path = tmp_path / "fraser"
         options = FetchOptions(use_cache=False, prefer="pdf", download_dir=path)
         assert options.use_cache is False
         assert options.prefer == "pdf"

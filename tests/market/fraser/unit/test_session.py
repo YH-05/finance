@@ -715,14 +715,14 @@ class TestURLBuilding:
 # =============================================================================
 
 
-def test_session_module_exposes_FraserSession() -> None:
-    """Smoke test: :class:`FraserSession` is exported from session module."""
-    from market.fraser.session import FraserSession as _S
+class TestModuleStructure:
+    """Smoke tests for module-level invariants of ``market.fraser.session``."""
 
-    assert _S is FraserSession
+    def test_正常系_sessionモジュールがFraserSessionを公開する(self) -> None:
+        from market.fraser.session import FraserSession as _S
 
+        assert _S is FraserSession
 
-def test_time_import_marker() -> None:
-    """Sanity test ensuring the ``time`` module is importable in test scope."""
-    # Avoid flake8/ruff F401 noise without affecting runtime behaviour.
-    assert callable(time.monotonic)
+    def test_正常系_timeモジュールがimport可能(self) -> None:
+        # Avoid flake8/ruff F401 noise without affecting runtime behaviour.
+        assert callable(time.monotonic)

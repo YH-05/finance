@@ -19,7 +19,7 @@ market.fraser.errors : ``FraserParseError`` raised on validation failure.
 from __future__ import annotations
 
 import json
-from typing import Any, TypeVar
+from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
@@ -37,8 +37,6 @@ from market.fraser.models import (
 from utils_core.logging import get_logger
 
 logger = get_logger(__name__)
-
-_T = TypeVar("_T", bound=BaseModel)
 
 
 # ---------------------------------------------------------------------------
@@ -99,12 +97,12 @@ def _truncated_raw(data: Any) -> str:
     return rendered[:MAX_RESPONSE_BODY_LOG]
 
 
-def _parse_with_model(
-    model: type[_T],
+def _parse_with_model[T: BaseModel](
+    model: type[T],
     data: Any,
     *,
     object_label: str | None = None,
-) -> _T:
+) -> T:
     """Validate ``data`` against ``model``, wrapping failures.
 
     Parameters
