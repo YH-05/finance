@@ -5,7 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 # === NAS ストレージ ===
-NAS_ROOT = Path("/Volumes/personal_folder/Quants/FILING_NLP_v2")
+# AIDEV-NOTE: 2026-05-26 SMB write 遅延深刻化のためローカル SSD に切替 (B 案)。完走後 rsync で NAS に同期予定。
+# 旧: NAS_ROOT = Path("/Volumes/personal_folder/Quants/FILING_NLP_v2")
+NAS_ROOT = Path("/Users/yukihata/Desktop/quants/.tmp/FILING_NLP_v2_local")
 UNIVERSE_DIR = NAS_ROOT / "universe"
 UNIVERSE_PARQUET = UNIVERSE_DIR / "universe_v2.parquet"
 FILINGS_METADATA_DIR = NAS_ROOT / "filings_metadata"

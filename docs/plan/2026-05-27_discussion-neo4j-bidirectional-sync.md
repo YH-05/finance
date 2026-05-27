@@ -105,8 +105,41 @@ macOS 通知                                                            macOS �
 5. **自宅 Mac** 書き込み → Stop で push、`last_source=YukinoMac-mini`
 6. **MacBook Air** 次回起動 → `pull --auto` で load、通知
 
+## 実行ログ
+
+### 2026-05-27 MacBook Air (Phase 1〜4 + PR 作成・マージ)
+
+- 09:35-09:39: 設計を Neo4j に保存 (Discussion 1 / Decision 7 / ActionItem 5 / リレーション 14、計 13 ノード / 15 リレーション = quants DB の +13/+15 増分)
+- 10:30 ごろ: scripts/neo4j_sync.sh 拡張完了 (push/pull/--auto/--if-dirty/status)
+- 10:32: status コマンドで動作確認
+- 10:34: dirty フラグを touch → push --if-dirty 実行 → dump 成功 (191MB / 約 8 秒)
+- 10:35:57: sync-state.json 生成 (`last_source: Yukinonotobukkukonpyuta`)
+- 10:36: 冪等動作確認 (pull --auto self skip / push --if-dirty no-dirty skip)
+- 10:37:47: PR #3970 マージ (squash, ローカル main 同期)
+- 10:39:02: ActionItem を completed に更新
+
+### 2026-05-27 自宅 Mac (実 hook 接続)
+
+- 10:44 ごろ: `git pull origin main` で 4f5bdb7d → 08c12545 取り込み
+- status で 4 hook 反映 (PermissionRequest / PostToolUse / SessionStart / Stop)
+- `pull --auto` を手動実行 → 4 DB load 成功 (約 48 秒、合計 1.5GB)
+- macOS 通知センターに「Pulled 4 DBs from Yukinonotobukkukonpyuta」表示確認
+- `verify` で両 Mac の件数完全一致確認 (quants 3,802 / 8,360 等)
+
+## 発覚した課題
+
+### 課題 1: pull が sync-state.json を更新しない
+
+自宅 Mac で `pull --auto` 完了後も `sync-state.json.last_source` は `Yukinonotobukkukonpyuta` のまま残る。
+そのため次回 SessionStart hook で再度 pull --auto が走り、同じ dump を上書き load する (約 48 秒 / 1.5GB)。
+同一 dump の上書きなので安全だが無駄。
+
+→ `act-2026-05-27-006` で改善予定。
+
 ## 次回の議論トピック
 
+- act-2026-05-27-006 の実装方針 (synced_to キー追加 vs タイムスタンプ比較)
+- 実 hook (SessionStart/PostToolUse/Stop) の動作確認 (両 Mac で次回 Claude Code 起動時)
 - save-to-graph 以外で Neo4j 書き込みを行う箇所の網羅性確認
 - 同期エラー時の自動リトライ戦略 (今は手動再実行のみ)
 - 将来同時書き込みが発生した場合のエスカレーション策
