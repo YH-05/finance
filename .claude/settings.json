@@ -161,6 +161,16 @@
         ]
       }
     ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/scripts/neo4j_sync.sh pull --auto 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
@@ -168,6 +178,25 @@
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/skills/sync-claude-config/sync.py\" --auto 2>/dev/null || true"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__neo4j-cypher__write_neo4j_cypher",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch $HOME/.neo4j-sync-dirty 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/scripts/neo4j_sync.sh push --if-dirty 2>&1 | tail -3 || true"
           }
         ]
       }

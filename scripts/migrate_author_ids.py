@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from pathlib import Path
 from typing import Any
 
 from database.id_generator import generate_author_id
@@ -314,6 +315,14 @@ def main(argv: list[str] | None = None) -> int:
             migrated=migrated,
             total=len(plan),
         )
+
+        if migrated > 0:
+            # AIDEV-NOTE: Notify neo4j_sync.sh of Neo4j changes so the next Stop hook pushes to NAS.
+            # See docs/neo4j-sync-via-nas.md (bidirectional sync).
+            dirty_flag = Path.home() / ".neo4j-sync-dirty"
+            dirty_flag.touch()
+            logger.info("neo4j-sync dirty flag set", path=str(dirty_flag))
+
         return 0
 
     finally:

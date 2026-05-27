@@ -245,25 +245,77 @@ echo "Neo4j is ready"
 | **DB 存在** | 自宅 Mac に DB が未登録の場合は Step 2-B で対応 |
 | **データサイズ** | 現状約 191MB（dump 圧縮後）。NAS の SMB 帯域に依存 |
 | **停止時間** | dump 時は DB ごとに数秒〜数十秒停止 (load 時は overwrite なので接続不可) |
-| **片方向のみ** | MacBook Air → 自宅 Mac の片方向。逆方向に書き込むと差分が消える |
+| **双方向同期** | 2026-05-27 から双方向対応 (「最後に書いた側が source」)。同時書き込みは想定しない |
 | **`.DS_Store` 等** | macOS が SMB に作るメタファイル。dump 整合性には影響なし |
 | **ユーザー名差** | MacBook Air (`yukihata`) と自宅 Mac (`yuki`) でユーザー名が異なるが、`${HOME}` 展開で吸収 |
 
-## 自動化
+## 自動化 (Claude Code hooks 連動)
 
-スクリプト化版: [`scripts/neo4j_sync.sh`](../scripts/neo4j_sync.sh)
+2026-05-27 から、`scripts/neo4j_sync.sh` を Claude Code の hooks で自動実行する双方向同期に拡張。
+
+### Hooks 構成 (`.claude/settings.json`)
+
+| Hook | matcher | 動作 |
+|------|---------|------|
+| SessionStart | (なし) | `neo4j_sync.sh pull --auto` を実行。NAS の `last_source != hostname` なら 4 DB を load |
+| PostToolUse | `mcp__neo4j-cypher__write_neo4j_cypher` | `touch $HOME/.neo4j-sync-dirty` (フラグだけ立てる軽量処理) |
+| Stop | (なし) | `neo4j_sync.sh push --if-dirty` を同期実行 (dirty フラグがあれば push) |
+
+### NAS 上の `sync-state.json`
+
+`/Volumes/personal_folder/neo4j-dumps/sync-state.json`:
+
+```json
+{
+  "last_source": "yukihatas-macbook-air",
+  "last_dump_at": "2026-05-27T12:34:56Z",
+  "dbs": ["quants", "research", "note", "creator"]
+}
+```
+
+`pull --auto` は `last_source != hostname` のときだけ load を実行する。これにより「自分が書き込んだ dump を自分に load し直す」ループを防ぐ。
+
+### サブコマンド一覧
 
 ```bash
-# Phase 1 (MacBook Air で実行)
-./scripts/neo4j_sync.sh dump
-
-# Phase 2 (自宅 Mac で実行)
-./scripts/neo4j_sync.sh load
+./scripts/neo4j_sync.sh push              # dump + NAS push + sync-state.json 更新
+./scripts/neo4j_sync.sh push --if-dirty   # dirty フラグがあれば push、なければ skip (Stop hook 用)
+./scripts/neo4j_sync.sh pull              # 強制 pull (NAS → load)
+./scripts/neo4j_sync.sh pull --auto       # last_source != hostname なら pull (SessionStart hook 用)
+./scripts/neo4j_sync.sh status            # 現在の dirty / sync-state / lock を表示
+./scripts/neo4j_sync.sh dump              # 強制 dump (sync-state は更新しない、互換用)
+./scripts/neo4j_sync.sh load              # 強制 load (互換用)
+./scripts/neo4j_sync.sh verify            # 件数表示
 ```
+
+### 排他制御
+
+NAS 上に `.neo4j-sync.lock` ディレクトリを `mkdir` ベースで作成。同時 push/pull を防止する。
+30 秒待っても取得できなければ `die`。stale ロックは `rmdir /Volumes/personal_folder/neo4j-dumps/.neo4j-sync.lock` で手動解除。
+
+### macOS 通知
+
+`osascript` で通知センターに以下を表示：
+
+- 成功時: 「Pushed/Pulled 4 DBs from <source>」
+- エラー時: 「neo4j-sync ❌ <エラーメッセージ>」
+
+### Claude Code 経由以外の書き込み
+
+| 経路 | 対応 |
+|------|------|
+| `mcp__neo4j-cypher__write_neo4j_cypher` (Claude Code 経由) | PostToolUse hook で自動 dirty 化 |
+| `scripts/migrate_author_ids.py --execute` | スクリプト内で書き込み成功時に dirty フラグを touch (`migrated > 0`) |
+| Neo4j Browser UI / 直接 `cypher-shell` | 手動 `./scripts/neo4j_sync.sh push` を実行 |
+| その他カスタムスクリプト | `Path.home() / ".neo4j-sync-dirty"` を touch する処理を追加 |
+
+### ログ
+
+`~/Library/Logs/neo4j-sync.log` に全アクションを追記。
 
 ## 関連
 
-- 議論メモ: [docs/plan/2026-05-26_discussion-neo4j-multi-pc-sync.md](plan/2026-05-26_discussion-neo4j-multi-pc-sync.md)
-- 前回移行: [docs/plan/](plan/) 配下の関連メモ
+- 双方向化議論: [docs/plan/2026-05-27_discussion-neo4j-bidirectional-sync.md](plan/2026-05-27_discussion-neo4j-bidirectional-sync.md)
+- 初回確立議論: [docs/plan/2026-05-26_discussion-neo4j-multi-pc-sync.md](plan/2026-05-26_discussion-neo4j-multi-pc-sync.md)
 - Docker Compose 設定: `docker-compose.yml`
 - 接続設定: `.env` の `NEO4J_URI` / `NEO4J_PASSWORD`
