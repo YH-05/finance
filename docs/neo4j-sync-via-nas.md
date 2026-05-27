@@ -84,8 +84,14 @@ docker exec neo4j-enterprise rm -rf /tmp/dumps
 # NAS マウント確認 (4 ファイルが見えること)
 ls -lh /Volumes/personal_folder/neo4j-dumps/
 
-# コンテナ稼働確認
+# コンテナ稼働確認 (Status が "Up X minutes (healthy)" であること)
 docker ps --filter "name=neo4j-enterprise" --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
+
+# health が starting の場合は healthy になるまで待つ
+until [ "$(docker inspect -f '{{.State.Health.Status}}' neo4j-enterprise 2>/dev/null)" = "healthy" ]; do
+  echo "waiting Neo4j to become healthy..."
+  sleep 2
+done
 
 # 既存 DB の確認 (Step A/B の判断に使う)
 docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke -d system \
@@ -182,6 +188,7 @@ docker exec neo4j-enterprise rm -rf /tmp/dumps
 | `mkdir /host_mnt/Volumes/...: permission denied` | bind mount 先（外付け SSD）が切断 | `${HOME}/neo4j-data/` 構成に切り替え（`docker-compose.yml` 修正） |
 | `docker cp` 後にコンテナ内で `*.dump` が見つからない | 宛先パスの先頭 `/` 漏れ | `find / -name "*.dump"` で実際の場所を探す |
 | load 後に件数が 0 | DB 未起動 or 異なる DBMS にロード | `START DATABASE <name> WAIT`、`SHOW DATABASES` で確認 |
+| `cypher-shell ... \| grep -q "1 row"` の起動待ちループが終わらない | Neo4j 5.x の cypher-shell は `1 row` を出力しないため判定が永久に失敗 | `until [ "$(docker inspect -f '{{.State.Health.Status}}' neo4j-enterprise)" = "healthy" ]; do ...` で healthcheck の結果を見る |
 
 ---
 
@@ -218,7 +225,8 @@ cd ~/Desktop/quants
 docker compose up -d neo4j
 
 # 起動完了を待つ (初回は APOC ダウンロードで 1〜2 分)
-until docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke "RETURN 1" 2>/dev/null | grep -q "1 row"; do
+# Neo4j 5.x の cypher-shell は "1 row" を出力しないため、healthcheck の結果で判定する
+until [ "$(docker inspect -f '{{.State.Health.Status}}' neo4j-enterprise 2>/dev/null)" = "healthy" ]; do
   echo "waiting Neo4j startup..."
   sleep 3
 done
