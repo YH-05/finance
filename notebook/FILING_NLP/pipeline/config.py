@@ -5,9 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 
 # === NAS ストレージ ===
-# AIDEV-NOTE: 2026-05-26 SMB write 遅延深刻化のためローカル SSD に切替 (B 案)。完走後 rsync で NAS に同期予定。
-# 旧: NAS_ROOT = Path("/Volumes/personal_folder/Quants/FILING_NLP_v2")
-NAS_ROOT = Path("/Users/yukihata/Desktop/quants/.tmp/FILING_NLP_v2_local")
+# AIDEV-NOTE: 2026-05-27 Mac mini (蓋無し据置) で Step2 再開のため NAS 直接書き込みに復帰 (A 案)。
+# MacBook Air での LID_CLOSE 問題は Mac mini では発生しない。SMB fd 劣化兆候 (per-CIK 8min 連続3 / errors 5件 / progress 30min 停滞) を監視。
+# 経緯: 2026-05-26 SMB write 遅延深刻化でローカル SSD に切替 → 2026-05-27 ローカル成果 (140 CIK) を NAS rsync 同期完了 → Mac mini で NAS 直接書き込み再開。
+NAS_ROOT = Path("/Volumes/personal_folder/Quants/FILING_NLP_v2")
 UNIVERSE_DIR = NAS_ROOT / "universe"
 UNIVERSE_PARQUET = UNIVERSE_DIR / "universe_v2.parquet"
 FILINGS_METADATA_DIR = NAS_ROOT / "filings_metadata"
