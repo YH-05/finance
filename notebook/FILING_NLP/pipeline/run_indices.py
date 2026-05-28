@@ -228,7 +228,10 @@ def main(argv: list[str] | None = None) -> None:
     sections_dir = config.SECTIONS_DIR / args.run_id
     chunks_dir = config.CHUNKS_DIR / args.run_id
     filings_dir = config.FILINGS_METADATA_DIR / args.run_id
-    checkpoint_path = config.INDICES_V1_PROGRESS_PATH
+    # AIDEV-NOTE: 2026-05-27 dec-2026-05-27-016 で run_id ベースに改修 (RAY 並行起動対応)。
+    # run_id="indices_v1" のとき indices_v1_progress.json で SPX 完全互換、
+    # run_id="indices_v1_ray" のとき indices_v1_ray_progress.json で RAY 専用 checkpoint。
+    checkpoint_path = config.CHECKPOINTS_DIR / f"{args.run_id}_progress.json"
     errors_path = config.LOGS_DIR / f"{args.run_id}_errors.jsonl"
     summary_path = config.LOGS_DIR / f"{args.run_id}_summary.json"
 
