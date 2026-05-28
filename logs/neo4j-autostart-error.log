@@ -1,0 +1,6 @@
+/bin/bash: /Users/yuki/Desktop/quants/scripts/start-neo4j.sh: Operation not permitted
+/Users/yuki/.local/bin/start-quants-neo4j.sh: line 11: /Users/yuki/Desktop/quants/logs/neo4j-autostart.log: Operation not permitted
+/Users/yuki/.local/bin/start-quants-neo4j.sh: line 11: /Users/yuki/Desktop/quants/logs/neo4j-autostart.log: Operation not permitted
+/Users/yuki/.local/bin/start-quants-neo4j.sh: line 11: /Users/yuki/Desktop/quants/logs/neo4j-autostart.log: Operation not permitted
+/Users/yuki/.local/bin/start-quants-neo4j.sh: line 31: /Users/yuki/Desktop/quants/logs/neo4j-autostart.log: Operation not permitted
+/Users/yuki/.local/bin/start-quants-neo4j.sh: line 11: /Users/yuki/Desktop/quants/logs/neo4j-autostart.log: Operation not permitted
