@@ -75,10 +75,13 @@ _DEVICE_CHOICES: tuple[str, ...] = ("mps", "cpu", "cuda")
 def _load_model(model_id: str, device: str, dtype: str) -> tuple[Any, Any]:
     """gte-Qwen2-1.5B-instruct と tokenizer をロードする.
 
-    ``AutoModel.from_pretrained(model_id, trust_remote_code=True, dtype=torch.bfloat16,
-    device_map='mps', low_cpu_mem_usage=True)`` で MPS bfloat16 配置する。
-    ``use_cache=False`` を forward 時に渡すことで modeling_qwen.py の
-    DynamicCache 互換性問題を回避する (encode 側で対応)。
+    gte-Qwen2 の **カスタム modeling_qwen.py (bidirectional attention)** を
+    ``trust_remote_code=True`` でロードし MPS bfloat16 配置する。GTE は causal LLM の
+    attention mask を外して双方向エンコーダ化する設計 (model forward の
+    ``is_causal`` デフォルトが ``False``) のため、標準 ``Qwen2Model`` (常時 causal)
+    では埋め込みが別物になる。pilot (dec-2026-05-22-emb) も bidirectional で生成済み。
+    ``use_cache=False`` を forward 時に渡すことで DynamicCache 互換性問題を回避する
+    (encode 側で対応)。
 
     Parameters
     ----------
@@ -95,7 +98,7 @@ def _load_model(model_id: str, device: str, dtype: str) -> tuple[Any, Any]:
         ``(model, tokenizer)``. ``model`` は ``.eval()`` 済み.
     """
     import torch
-    from transformers import AutoModel, AutoTokenizer
+    from transformers import AutoConfig, AutoModel, AutoTokenizer
 
     dtype_map: dict[str, torch.dtype] = {
         "bfloat16": torch.bfloat16,
@@ -104,9 +107,29 @@ def _load_model(model_id: str, device: str, dtype: str) -> tuple[Any, Any]:
     }
     torch_dtype = dtype_map[dtype]
 
-    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    # AIDEV-NOTE: 2026-05-29 transformers v5 (5.1.0) 対応。HF Hub の gte-Qwen2 カスタム
+    # コードは v5 で 2 点が壊れるが、bidirectional attention は GTE 埋め込みの本質のため
+    # 標準 Qwen2Model (常時 causal) への置換は不可 (埋め込みが別物・pilot とも乖離)。
+    #   1. tokenizer: tokenization_qwen.py が削除済み Qwen2TokenizerFast を継承して fail。
+    #      → 標準 slow Qwen2Tokenizer を使用 (同一 vocab/BPE、pilot100 で encode 一致確認、
+    #        run_indices._load_tokenizer と同一対処)。
+    #   2. model: modeling_qwen.py が config.rope_theta を直接参照するが v5 で
+    #      rope_parameters dict に移動 (AttributeError)。→ rope_parameters/rope_scaling
+    #      から rope_theta を config に復元注入し、trust_remote_code=True でカスタム
+    #      bidirectional encoder をロードする (修正後 load 成功・L2 norm≈1.0・NaN 0 確認済)。
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_id, trust_remote_code=False, use_fast=False
+    )
+    cfg = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
+    if getattr(cfg, "rope_theta", None) is None:
+        rope_params = getattr(cfg, "rope_parameters", None) or getattr(
+            cfg, "rope_scaling", None
+        )
+        if rope_params and "rope_theta" in rope_params:
+            cfg.rope_theta = float(rope_params["rope_theta"])
     model = AutoModel.from_pretrained(
         model_id,
+        config=cfg,
         trust_remote_code=True,
         dtype=torch_dtype,
         device_map=device,
