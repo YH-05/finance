@@ -7,6 +7,7 @@
 #   ./scripts/neo4j_sync.sh verify          # ノード/リレーション件数を表示
 #   ./scripts/neo4j_sync.sh push            # dump → NAS + sync-state.json 更新
 #   ./scripts/neo4j_sync.sh push --if-dirty # dirty フラグがあれば push
+#   ./scripts/neo4j_sync.sh push --if-changed # lastTxId(APOC) 変化時のみ push
 #   ./scripts/neo4j_sync.sh pull            # 強制 pull (NAS → load)
 #   ./scripts/neo4j_sync.sh pull --auto     # NAS の last_source != hostname なら pull
 #   ./scripts/neo4j_sync.sh status          # 現在の dirty/sync 状態を表示
@@ -20,6 +21,7 @@
 #   NAS_DUMP_DIR     (default: /Volumes/personal_folder/neo4j-dumps)
 #   NEO4J_SYNC_DIRTY (default: $HOME/.neo4j-sync-dirty)
 #   NEO4J_SYNC_LOG   (default: $HOME/Library/Logs/neo4j-sync.log)
+#   NEO4J_SYNC_TXID  (default: $HOME/.neo4j-sync-txid.json) push --if-changed の基準値
 #
 # Reference: docs/neo4j-sync-via-nas.md
 
@@ -33,6 +35,7 @@ NAS_DIR="${NAS_DUMP_DIR:-/Volumes/personal_folder/neo4j-dumps}"
 CONTAINER_DUMP_DIR="/tmp/dumps"
 DIRTY_FLAG="${NEO4J_SYNC_DIRTY:-$HOME/.neo4j-sync-dirty}"
 LOG_FILE="${NEO4J_SYNC_LOG:-$HOME/Library/Logs/neo4j-sync.log}"
+TXID_STATE_FILE="${NEO4J_SYNC_TXID:-$HOME/.neo4j-sync-txid.json}"
 SYNC_STATE_FILE="$NAS_DIR/sync-state.json"
 LOCK_DIR="$NAS_DIR/.neo4j-sync.lock"
 LOCK_TIMEOUT="${NEO4J_SYNC_LOCK_TIMEOUT:-30}"
@@ -129,6 +132,49 @@ write_sync_state() {
     --arg ts "$now" \
     --argjson dbs "$dbs_json" \
     '{last_source: $src, last_dump_at: $ts, dbs: $dbs}' > "$SYNC_STATE_FILE"
+}
+
+# ----------------------------------------------------------------------------
+# txid 変更検知 (APOC apoc.monitor.tx → 各DBの lastTxId)
+# ----------------------------------------------------------------------------
+# 各DBの lastTxId を {"db": txid, ...} の JSON で返す。
+# 取得失敗時は -1 を入れ、比較側で「変更あり」(=安全側) に倒す。
+get_current_txids() {
+  local json="{}"
+  local db txid
+  for db in $DBS; do
+    txid=$(docker exec "$CONTAINER" cypher-shell -u "$USER_NAME" -p "$PASSWORD" -d "$db" \
+      "CALL apoc.monitor.tx() YIELD lastTxId RETURN lastTxId" --format plain 2>/dev/null \
+      | tail -1 | tr -d ' \r')
+    case "$txid" in
+      ''|*[!0-9]*) txid=-1 ;;
+    esac
+    json=$(echo "$json" | jq --arg db "$db" --argjson v "$txid" '. + {($db): $v}')
+  done
+  echo "$json"
+}
+
+# 引数 current(JSON) を baseline ファイルと比較し "changed" / "same" を echo。
+# baseline 無し / いずれかの txid が負(取得失敗) の場合は "changed"(安全側=push する)。
+txids_changed() {
+  local current="$1"
+  if echo "$current" | jq -e 'to_entries | any(.value < 0)' >/dev/null 2>&1; then
+    echo "changed"; return
+  fi
+  if [ ! -f "$TXID_STATE_FILE" ]; then
+    echo "changed"; return
+  fi
+  local baseline
+  baseline=$(cat "$TXID_STATE_FILE" 2>/dev/null || echo '{}')
+  if [ "$(echo "$current" | jq -S -c . 2>/dev/null)" = "$(echo "$baseline" | jq -S -c . 2>/dev/null)" ]; then
+    echo "same"
+  else
+    echo "changed"
+  fi
+}
+
+save_txids() {
+  echo "$1" > "$TXID_STATE_FILE"
 }
 
 # ----------------------------------------------------------------------------
@@ -230,9 +276,10 @@ cmd_verify() {
 # push: dump + NAS push + sync-state.json 更新
 # ----------------------------------------------------------------------------
 cmd_push() {
-  local if_dirty="${1:-}"
+  local mode="${1:-}"
+  local current_txids=""
 
-  if [ "$if_dirty" = "--if-dirty" ]; then
+  if [ "$mode" = "--if-dirty" ]; then
     if [ ! -f "$DIRTY_FLAG" ]; then
       log "push --if-dirty: no dirty flag at $DIRTY_FLAG, skipping"
       exit 0
@@ -240,13 +287,31 @@ cmd_push() {
     log "push --if-dirty: dirty flag found, proceeding"
   fi
 
+  if [ "$mode" = "--if-changed" ]; then
+    # txid 取得には container 稼働が必要。未起動なら静かに skip (エラー通知しない)
+    docker ps --filter "name=^${CONTAINER}$" --format '{{.Names}}' | grep -q "^${CONTAINER}$" || {
+      log "push --if-changed: container '$CONTAINER' not running, skipping"
+      exit 0
+    }
+    current_txids="$(get_current_txids)"
+    if [ "$(txids_changed "$current_txids")" = "same" ]; then
+      log "push --if-changed: no DB change (lastTxId unchanged), skipping"
+      exit 0
+    fi
+    log "push --if-changed: DB change detected, proceeding"
+  fi
+
   check_prereqs
   acquire_lock
+
+  # baseline 用 txid は dump 前に確定 (dump 中/後の書き込みは次回検知=安全側に倒す)
+  [ -n "$current_txids" ] || current_txids="$(get_current_txids)"
 
   log "push: host=$HOSTNAME_SHORT"
   do_dump_to_nas
   write_sync_state
   rm -f "$DIRTY_FLAG"
+  save_txids "$current_txids"
 
   log "Done. last_source updated to: $HOSTNAME_SHORT"
   notify "neo4j-sync ⬆️" "Pushed $(echo "$DBS" | wc -w | tr -d ' ') DBs to NAS" "$HOSTNAME_SHORT"
@@ -343,6 +408,7 @@ Commands:
   verify            ノード/リレーション件数を表示
   push              dump + NAS push + sync-state.json 更新
   push --if-dirty   ~/.neo4j-sync-dirty があれば push、なければ skip
+  push --if-changed lastTxId(APOC) が前回 push 時から変化していれば push (全write経路検知)
   pull              強制 pull (NAS → load) + sync-state.json 確認
   pull --auto       last_source != hostname なら pull、それ以外は skip
   status            現在の dirty / sync-state / lock を表示
@@ -357,6 +423,7 @@ Environment variables:
                    (default: /Volumes/personal_folder/neo4j-dumps)
   NEO4J_SYNC_DIRTY Dirty flag file (default: \$HOME/.neo4j-sync-dirty)
   NEO4J_SYNC_LOG   Log file (default: \$HOME/Library/Logs/neo4j-sync.log)
+  NEO4J_SYNC_TXID  push --if-changed baseline (default: \$HOME/.neo4j-sync-txid.json)
 
 Reference: docs/neo4j-sync-via-nas.md
 EOF

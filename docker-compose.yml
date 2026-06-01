@@ -62,6 +62,9 @@ services:
       - NEO4J_initial_dbms_default__database=neo4j
       - NEO4J_dbms_max__databases=10
       # プラグイン
+      # Core は NEO4J_PLUGINS で自動DL。Extended (apoc.monitor.tx 等) は別途手動:
+      #   ./scripts/install-apoc-extended.sh && docker restart neo4j-enterprise
+      #   ※ neo4j_sync.sh の push --if-changed が lastTxId 取得に使用
       - NEO4J_PLUGINS=["apoc"]
       - NEO4J_apoc_export_file_enabled=true
       - NEO4J_apoc_import_file_enabled=true

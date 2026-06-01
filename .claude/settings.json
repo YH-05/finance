@@ -196,7 +196,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/scripts/neo4j_sync.sh push --if-dirty 2>&1 | tail -3 || true"
+            "command": "$CLAUDE_PROJECT_DIR/scripts/neo4j_sync.sh push --if-changed 2>&1 | tail -3 || true"
           }
         ]
       }

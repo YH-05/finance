@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+Neo4j 変更検知バックアップ (NAS push --if-changed)
+==================================================
+1 時間ごとに neo4j_sync.sh push --if-changed を実行する。
+各DBの lastTxId (APOC apoc.monitor.tx) を前回 push 時の baseline と比較し、
+いずれかが変化していれば dump → NAS push、無変化ならスキップ (軽量)。
+
+目的:
+  Claude Code を介さないセッション外の書き込み (例: 毎朝3時の
+  pipeline-scraped-to-neo4j、手動 cypher-shell、bolt スクリプト) を、
+  書き込み経路に依存せず最大1時間で NAS に同期する (ケースB2)。
+
+  ※ Claude セッション内の書き込みは settings.json の Stop hook
+     (push --if-changed) が即座に拾う (ケースB1)。
+  ※ 毎朝4時の com.quants.neo4j-push (無条件 push) は full backup の保険として併存。
+  ※ いずれも NAS 上の mkdir ロックで排他され競合しない。
+
+前提: APOC Extended (apoc.monitor.tx) が導入済みであること。
+      未導入だと lastTxId 取得に失敗し「常に push」(安全側) に縮退する。
+      導入: ./scripts/install-apoc-extended.sh + docker restart neo4j-enterprise
+
+インストール:
+  $ cp scripts/com.quants.neo4j-push-changed.plist ~/Library/LaunchAgents/
+  $ launchctl load ~/Library/LaunchAgents/com.quants.neo4j-push-changed.plist
+
+手動実行: $ launchctl start com.quants.neo4j-push-changed
+ログ:     $ tail -f ~/Library/Logs/quants/neo4j-push-changed.log
+          $ tail -f ~/Library/Logs/neo4j-sync.log
+アンインストール:
+  $ launchctl unload ~/Library/LaunchAgents/com.quants.neo4j-push-changed.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quants.neo4j-push-changed</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/yuki/Desktop/quants/scripts/neo4j_sync.sh</string>
+        <string>push</string>
+        <string>--if-changed</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yuki/Desktop/quants</string>
+
+    <key>StartInterval</key>
+    <integer>3600</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/yuki/Library/Logs/quants/neo4j-push-changed.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yuki/Library/Logs/quants/neo4j-push-changed-error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/yuki/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
