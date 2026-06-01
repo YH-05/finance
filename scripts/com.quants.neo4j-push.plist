@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+Neo4j 日次バックアップ (NAS push)
+=================================
+毎日 04:00 (JST) に neo4j_sync.sh push を無条件実行し、4 DB (quants research
+note creator) を dump して NAS (/Volumes/personal_folder/neo4j-dumps) へ送る。
+
+目的:
+  note-finance の pipeline-scraped-to-neo4j (毎朝 03:00 JST) など、MCP を経由
+  せず bolt 直結で書き込むジョブは dirty フラグを立てないため、Claude Code の
+  Stop hook (push --if-dirty) では拾えない。本ジョブはそれらの変更を含め確実に
+  毎日バックアップする catch-all。
+
+  既存の dirty フラグ方式 (PostToolUse で touch → Stop hook で push --if-dirty)
+  はそのまま並存する。両者は NAS 上の mkdir ロックで排他されるため競合しない。
+
+インストール:
+  $ cp scripts/com.quants.neo4j-push.plist ~/Library/LaunchAgents/
+  $ launchctl load ~/Library/LaunchAgents/com.quants.neo4j-push.plist
+
+手動実行 (動作確認): $ launchctl start com.quants.neo4j-push
+ログ:                $ tail -f ~/Library/Logs/quants/neo4j-push.log
+                     $ tail -f ~/Library/Logs/neo4j-sync.log   (スクリプト本体のログ)
+アンインストール:
+  $ launchctl unload ~/Library/LaunchAgents/com.quants.neo4j-push.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quants.neo4j-push</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/yuki/Desktop/quants/scripts/neo4j_sync.sh</string>
+        <string>push</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yuki/Desktop/quants</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>4</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/yuki/Library/Logs/quants/neo4j-push.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yuki/Library/Logs/quants/neo4j-push-error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/yuki/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
