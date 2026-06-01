@@ -15,7 +15,8 @@
 #   NEO4J_CONTAINER  (default: neo4j-enterprise)
 #   NEO4J_USER       (default: neo4j)
 #   NEO4J_PASSWORD   (default: gomasuke)
-#   NEO4J_DBS        (default: "quants research note creator") space-separated
+#   NEO4J_DBS        (default: "quants research note creator neo4j") space-separated
+#                    neo4j = MCP (mcp-neo4j-cypher, NEO4J_DATABASE=neo4j) の書き込み先
 #   NAS_DUMP_DIR     (default: /Volumes/personal_folder/neo4j-dumps)
 #   NEO4J_SYNC_DIRTY (default: $HOME/.neo4j-sync-dirty)
 #   NEO4J_SYNC_LOG   (default: $HOME/Library/Logs/neo4j-sync.log)
@@ -27,7 +28,7 @@ set -euo pipefail
 CONTAINER="${NEO4J_CONTAINER:-neo4j-enterprise}"
 USER_NAME="${NEO4J_USER:-neo4j}"
 PASSWORD="${NEO4J_PASSWORD:-gomasuke}"
-DBS="${NEO4J_DBS:-quants research note creator}"
+DBS="${NEO4J_DBS:-quants research note creator neo4j}"
 NAS_DIR="${NAS_DUMP_DIR:-/Volumes/personal_folder/neo4j-dumps}"
 CONTAINER_DUMP_DIR="/tmp/dumps"
 DIRTY_FLAG="${NEO4J_SYNC_DIRTY:-$HOME/.neo4j-sync-dirty}"
@@ -248,7 +249,7 @@ cmd_push() {
   rm -f "$DIRTY_FLAG"
 
   log "Done. last_source updated to: $HOSTNAME_SHORT"
-  notify "neo4j-sync ⬆️" "Pushed 4 DBs to NAS" "$HOSTNAME_SHORT"
+  notify "neo4j-sync ⬆️" "Pushed $(echo "$DBS" | wc -w | tr -d ' ') DBs to NAS" "$HOSTNAME_SHORT"
 }
 
 # ----------------------------------------------------------------------------
@@ -284,7 +285,7 @@ cmd_pull() {
   do_load_from_nas
 
   log "Done. Loaded from source: $last_source"
-  notify "neo4j-sync ⬇️" "Pulled 4 DBs from $last_source" "$HOSTNAME_SHORT"
+  notify "neo4j-sync ⬇️" "Pulled $(echo "$DBS" | wc -w | tr -d ' ') DBs from $last_source" "$HOSTNAME_SHORT"
 }
 
 # ----------------------------------------------------------------------------
@@ -351,7 +352,7 @@ Environment variables:
   NEO4J_USER       Neo4j user     (default: neo4j)
   NEO4J_PASSWORD   Neo4j password (default: gomasuke)
   NEO4J_DBS        Space-separated DB list
-                   (default: "quants research note creator")
+                   (default: "quants research note creator neo4j")
   NAS_DUMP_DIR     NAS dump directory
                    (default: /Volumes/personal_folder/neo4j-dumps)
   NEO4J_SYNC_DIRTY Dirty flag file (default: \$HOME/.neo4j-sync-dirty)
