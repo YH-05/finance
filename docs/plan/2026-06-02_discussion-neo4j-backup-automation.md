@@ -43,15 +43,17 @@ APOC Core(5.26.24) は導入済だが `apoc.monitor.tx` は Extended 専用の�
 | dec-2026-06-02-002 | デフォルトDB `neo4j` を同期対象(NEO4J_DBS)に追加 | MCP書込先なのに対象外で未バックアップ。dec-2026-05-27-006 を拡張(4→5 DB) |
 | dec-2026-06-02-003 | 変更検知は APOC lastTxId 採用(Option B)。APOC Extended 5.26.4 を手動導入 | mtime より厳密・docker exec 不要・他用途流用可。Core では apoc.monitor.tx 不可 |
 | dec-2026-06-02-004 | `push --if-changed` 実装、Stop hook を --if-dirty→--if-changed(B1)+毎時launchd(B2)。dirty機構は温存 | dec-2026-05-27-003/004/005 の「MCPのみ検知」制約を解消。dec-2026-05-27-005 は不要化 |
+| dec-2026-06-02-005 | 多PC完全自動化（plist 可搬化 + 他PC への APOC/launchd 導入）は当面延期し現状を許容 | ユーザー判断「今は何もしない」。pull/push B1 hook は可搬で他PCでも機能 |
 
 ## アクションアイテム
 
-| ID | 内容 | 優先度 |
-|----|------|--------|
-| act-2026-06-02-001 | 他PC構築時に `scripts/install-apoc-extended.sh` 実行 + `docker restart` で APOC Extended 導入 | 中 |
-| act-2026-06-02-002 | `docs/neo4j-sync-via-nas.md` を push --if-changed / lastTxId / 3層構成に更新（act-2026-05-27-004 継続） | 中 |
-| act-2026-06-02-003 | 数日間ログ確認で毎時/毎朝4時の実バックアップを検証 | 低 |
-| act-2026-06-02-004 | `settings.local.json` の WebFetch 権限追加(maven.org/neo4j.com)未コミットの要否判断 | 低 |
+| ID | 内容 | 優先度 | 状態 |
+|----|------|--------|------|
+| act-2026-06-02-001 | 他PC構築時に `scripts/install-apoc-extended.sh` 実行 + `docker restart` で APOC Extended 導入 | 中 | pending |
+| act-2026-06-02-002 | `docs/neo4j-sync-via-nas.md` を push --if-changed / lastTxId / 3層構成に更新 | 中 | ✅ 完了(commit 74b097b3) |
+| act-2026-06-02-003 | 数日間ログ確認で毎時/毎朝4時の実バックアップを検証 | 低 | pending |
+| act-2026-06-02-004 | `settings.local.json` の WebFetch 権限追加(maven.org/neo4j.com)未コミットの要否判断 | 低 | pending |
+| act-2026-06-02-005 | launchd plist 2本の多PC可搬化（/Users/yuki 固定 → $HOME/$USER 反映 or PC別生成）。act-001 の前提 | 中 | pending |
 
 ## 実装・検証ログ（2026-06-02, YukinoMac-mini）
 
@@ -67,6 +69,25 @@ APOC Core(5.26.24) は導入済だが `apoc.monitor.tx` は Extended 専用の�
 - launchd: `scripts/com.quants.neo4j-push.plist`（毎朝4時無条件）, `scripts/com.quants.neo4j-push-changed.plist`（毎時 if-changed）
 - hooks: `.claude/settings.json`（Stop hook → push --if-changed）
 - compose: `docker-compose.yml`（APOC Extended 手動導入の注記）
+
+## 進捗追記（2026-06-02 後半）
+
+### act-2026-06-02-002 完了
+`docs/neo4j-sync-via-nas.md` を lastTxId 方式 / 3層構成 / 5DB に更新し push（commit `74b097b3`）。
+
+### 多PC自動同期の検証結果
+他PCで NAS への自動バックアップ／ダウンロードが成立するかを確認:
+
+| 機能 | 配布/可搬性 | 他PCでの自動化 |
+|------|------------|---------------|
+| ダウンロード（SessionStart `pull --auto`） | `.claude/settings.json`、`$CLAUDE_PROJECT_DIR` ベースで可搬・git配布 | ✅ Claude Code 起動時に自動（NAS の `last_source != hostname` なら 5DB load） |
+| バックアップ B1（Stop hook `push --if-changed`） | 同上、可搬 | ✅ Claude セッション終了時に自動（APOC未導入なら「常に push」へ縮退、安全） |
+| バックアップ B2/保険（毎時・毎朝4時 launchd） | **非可搬**（plist が `/Users/yuki` 固定）かつ他PC未インストール | ❌ セッション外の書込は未バックアップ |
+
+**結論**: 他PCは「Claude Code 連動のみ自動」。セッション外の書込を自動化するには (1) APOC Extended 導入（act-001）、(2) launchd plist の可搬化（act-005）、(3) plist の設置・load が必要。ユーザー判断により当面は延期（dec-2026-06-02-005）。
+
+### 未コミット
+`.claude/settings.local.json`（WebFetch 権限追加 maven.org/neo4j.com）は act-004 の判断保留として未コミットのまま。
 
 ## 次回の議論トピック
 
