@@ -8,8 +8,10 @@ MacBook Air（メイン PC）の Neo4j データを、自宅 Mac へ NAS 経由�
 
 - **方式**: `neo4j-admin database dump` / `load` による論理バックアップ
 - **転送経路**: NAS（`/Volumes/personal_folder`）を中継ストレージとして利用
-- **同期方向**: MacBook Air → 自宅 Mac（片方向）
-- **対象 DB**: `quants`, `research`, `note`, `creator`
+- **同期方向**: MacBook Air ⇄ 自宅 Mac（双方向、「最後に書いた側が source」）
+- **対象 DB**: `quants`, `research`, `note`, `creator`, `neo4j`（5 DB）
+- **変更検知**: APOC `apoc.monitor.tx` の lastTxId 比較で**全 write 経路**の更新を検知（`push --if-changed`）
+- **自動同期**: 3層（Stop hook / 毎時 launchd / 毎朝4時 launchd）。詳細は「[自動化](#自動化-claude-code-hooks-連動--launchd)」節
 
 ## 前提条件
 
@@ -21,19 +23,22 @@ MacBook Air（メイン PC）の Neo4j データを、自宅 Mac へ NAS 経由�
 | NAS マウント | 両 Mac で `/Volumes/personal_folder` にマウント済み |
 | bind mount | 両 Mac とも `${HOME}/neo4j-data/enterprise/` を使用（`docker-compose.yml` で `${HOME}` 展開） |
 | DB 存在 | 自宅 Mac 側に対象 DB が未作成でも OK（Phase 2 Step B で新規作成可能） |
+| APOC | Core は `NEO4J_PLUGINS=["apoc"]` で自動DL。`push --if-changed` が使う `apoc.monitor.tx` は **APOC Extended** 専用のため、別途 `scripts/install-apoc-extended.sh` で手動導入（先頭2桁が Neo4j と一致する 5.26.x、現状 5.26.4）。未導入時は lastTxId 取得に失敗し「常に push」へ安全側に縮退 |
 
-## 実測値（2026-05-27 時点）
+## 実測値（2026-06-02 時点）
 
 | DB | dump サイズ | ノード数 | リレーション数 |
 |----|------------|---------|---------------|
-| `quants` | 1.7M | 3,789 | 8,345 |
-| `research` | 59M | 28,100 | 516,807 |
-| `note` | 478K | 838 | 983 |
+| `quants` | 1.7M | 3,809 | 8,366 |
+| `research` | 64M | 34,059 | 529,078 |
+| `note` | 480K | 838 | 983 |
 | `creator` | 131M | 15,312 | 31,362 |
-| **合計** | **約 191M** | **48,039** | **557,497** |
+| `neo4j`（デフォルト） | 38K | 59 | 58 |
+| **合計** | **約 197M** | **54,077** | **569,847** |
 
-各 DB の dump 処理時間: 約 1.2〜3 秒（ローカル NVMe）。
-全工程（dump → NAS 転送 → load → 件数検証）の所要時間: 約 30 分以内。
+各 DB の dump 処理時間: 約 0.3〜1 秒（ローカル NVMe）。
+自動 push（5 DB の dump → NAS 転送 → sync-state 更新）の所要時間: 約 1〜2 分（NAS 転送が大半）。
+手動の全工程（dump → NAS 転送 → load → 件数検証）の所要時間: 約 30 分以内。
 
 ---
 
@@ -50,7 +55,7 @@ mkdir -p /Volumes/personal_folder/neo4j-dumps
 docker exec neo4j-enterprise mkdir -p /tmp/dumps
 
 # 4. 各 DB を停止 → dump → 起動
-for DB in quants research note creator; do
+for DB in quants research note creator neo4j; do
   echo "=== Dumping $DB ==="
   docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke -d system "STOP DATABASE $DB WAIT"
   docker exec neo4j-enterprise neo4j-admin database dump $DB \
@@ -59,7 +64,7 @@ for DB in quants research note creator; do
 done
 
 # 5. コンテナから NAS へコピー
-for DB in quants research note creator; do
+for DB in quants research note creator neo4j; do
   docker cp neo4j-enterprise:/tmp/dumps/$DB.dump /Volumes/personal_folder/neo4j-dumps/
 done
 
@@ -81,7 +86,7 @@ docker exec neo4j-enterprise rm -rf /tmp/dumps
 ### Step 0: 事前確認
 
 ```bash
-# NAS マウント確認 (4 ファイルが見えること)
+# NAS マウント確認 (5 ファイルが見えること)
 ls -lh /Volumes/personal_folder/neo4j-dumps/
 
 # コンテナ稼働確認 (Status が "Up X minutes (healthy)" であること)
@@ -104,8 +109,8 @@ docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke -d system \
 # 作業ディレクトリ作成
 docker exec neo4j-enterprise mkdir -p /tmp/dumps
 
-# 4 ファイルをコンテナへコピー
-for DB in quants research note creator; do
+# 5 ファイルをコンテナへコピー
+for DB in quants research note creator neo4j; do
   echo "=== Copying $DB.dump ==="
   docker cp /Volumes/personal_folder/neo4j-dumps/$DB.dump neo4j-enterprise:/tmp/dumps/
 done
@@ -119,7 +124,7 @@ docker exec neo4j-enterprise ls -lh /tmp/dumps/
 ### Step 2-A: DB が既に存在する場合（上書き load）
 
 ```bash
-for DB in quants research note creator; do
+for DB in quants research note creator neo4j; do
   echo "=== [$DB] Loading (overwrite) ==="
   docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke -d system "STOP DATABASE $DB WAIT"
   docker exec neo4j-enterprise neo4j-admin database load $DB \
@@ -133,7 +138,7 @@ done
 新規構築した Neo4j コンテナで初めて load する場合の標準手順。`load` を先にして、その後 `CREATE DATABASE` で DBMS に登録する。
 
 ```bash
-for DB in quants research note creator; do
+for DB in quants research note creator neo4j; do
   echo ""
   echo "============================================"
   echo "  [$DB] load + register"
@@ -148,15 +153,15 @@ for DB in quants research note creator; do
     "CREATE DATABASE $DB IF NOT EXISTS WAIT"
 done
 
-# 4 DB すべて online か確認
+# 5 DB すべて online か確認
 docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke -d system \
-  "SHOW DATABASES YIELD name, currentStatus WHERE name IN ['quants','research','note','creator'] RETURN name, currentStatus"
+  "SHOW DATABASES YIELD name, currentStatus WHERE name IN ['quants','research','note','creator','neo4j'] RETURN name, currentStatus"
 ```
 
 ### Step 3: 件数検証
 
 ```bash
-for DB in quants research note creator; do
+for DB in quants research note creator neo4j; do
   echo "=== $DB ==="
   docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke -d $DB \
     "MATCH (n) RETURN count(n) AS nodes"
@@ -233,6 +238,19 @@ done
 echo "Neo4j is ready"
 ```
 
+### 5. APOC Extended 導入（`push --if-changed` 用）
+
+`NEO4J_PLUGINS=["apoc"]` は Core のみ自動DLするため、変更検知に使う `apoc.monitor.tx`（Extended）を手動導入する。
+
+```bash
+cd ~/Desktop/quants
+./scripts/install-apoc-extended.sh        # ~/neo4j-data/enterprise/plugins/ に Extended jar を配置
+docker restart neo4j-enterprise           # 反映
+# 確認 (lastTxId が返れば OK)
+docker exec neo4j-enterprise cypher-shell -u neo4j -p gomasuke -d neo4j \
+  "CALL apoc.monitor.tx() YIELD lastTxId RETURN lastTxId"
+```
+
 その後 Phase 2 Step 1 から進める。
 
 ---
@@ -243,23 +261,40 @@ echo "Neo4j is ready"
 |------|------|
 | **バージョン一致** | 両 Mac とも Neo4j 5.26 Enterprise でないと load 失敗の可能性 |
 | **DB 存在** | 自宅 Mac に DB が未登録の場合は Step 2-B で対応 |
-| **データサイズ** | 現状約 191MB（dump 圧縮後）。NAS の SMB 帯域に依存 |
+| **データサイズ** | 現状約 197MB（5 DB の dump 合計）。NAS の SMB 帯域に依存 |
 | **停止時間** | dump 時は DB ごとに数秒〜数十秒停止 (load 時は overwrite なので接続不可) |
 | **双方向同期** | 2026-05-27 から双方向対応 (「最後に書いた側が source」)。同時書き込みは想定しない |
 | **`.DS_Store` 等** | macOS が SMB に作るメタファイル。dump 整合性には影響なし |
 | **ユーザー名差** | MacBook Air (`yukihata`) と自宅 Mac (`yuki`) でユーザー名が異なるが、`${HOME}` 展開で吸収 |
 
-## 自動化 (Claude Code hooks 連動)
+## 自動化 (Claude Code hooks 連動 + launchd)
 
-2026-05-27 から、`scripts/neo4j_sync.sh` を Claude Code の hooks で自動実行する双方向同期に拡張。
+`scripts/neo4j_sync.sh` を Claude Code の hooks と launchd で自動実行する。書き込み経路に依存しない **lastTxId 変更検知**（`push --if-changed`）を中心に、以下の **3 層**で全 write 経路をカバーする。
+
+| 層 | トリガ | コマンド | カバー範囲 |
+|----|--------|----------|-----------|
+| B1 | Claude 応答終了ごと（Stop hook） | `push --if-changed` | Claude セッション内の更新（MCP / 非MCP 問わず） |
+| B2 | 1 時間ごと（launchd `com.quants.neo4j-push-changed`） | `push --if-changed` | セッション外の更新（毎朝3時の `pipeline-scraped-to-neo4j`、手動 cypher-shell 等） |
+| 保険 | 毎日 04:00 JST（launchd `com.quants.neo4j-push`） | `push`（無条件） | 上記が漏れても毎日 full backup |
+
+3 層は NAS 上の `mkdir` ロックで排他されるため競合しない。逆方向は SessionStart hook の `pull --auto`（NAS の `last_source != hostname` なら load）。
+
+### 変更検知 (lastTxId / APOC Extended)
+
+`push --if-changed` は各 DB の `lastTxId`（最終コミット トランザクションID）を `apoc.monitor.tx`（**APOC Extended**）で取得し、`~/.neo4j-sync-txid.json` の前回 push 時 baseline と比較する。差分があれば dump → NAS push、無変化なら skip（軽量）。
+
+- 「どの経路で書いたか」ではなく「**DB が変わったか**」を見るため、MCP・Bash・cypher-shell・launchd パイプラインなど全 write 経路の更新を検知できる。
+- baseline は dump 前に確定するため、dump 中の書き込みは次回検知に倒れる（取りこぼしより再 push（無害）を優先する安全側設計）。
+- lastTxId 取得失敗時（APOC Extended 未導入等）は「常に push」へ縮退する。
+- APOC Extended 導入: `./scripts/install-apoc-extended.sh` → `docker restart neo4j-enterprise`。
 
 ### Hooks 構成 (`.claude/settings.json`)
 
 | Hook | matcher | 動作 |
 |------|---------|------|
-| SessionStart | (なし) | `neo4j_sync.sh pull --auto` を実行。NAS の `last_source != hostname` なら 4 DB を load |
-| PostToolUse | `mcp__neo4j-cypher__write_neo4j_cypher` | `touch $HOME/.neo4j-sync-dirty` (フラグだけ立てる軽量処理) |
-| Stop | (なし) | `neo4j_sync.sh push --if-dirty` を同期実行 (dirty フラグがあれば push) |
+| SessionStart | (なし) | `neo4j_sync.sh pull --auto` を実行。NAS の `last_source != hostname` なら 5 DB を load |
+| PostToolUse | `mcp__neo4j-cypher__write_neo4j_cypher` | `touch $HOME/.neo4j-sync-dirty`（dirty フラグ機構の互換維持。検知自体は lastTxId 方式が担うため必須ではない） |
+| Stop | (なし) | `neo4j_sync.sh push --if-changed` を同期実行（lastTxId が前回 push 時から変化していれば push） |
 
 ### NAS 上の `sync-state.json`
 
@@ -267,9 +302,9 @@ echo "Neo4j is ready"
 
 ```json
 {
-  "last_source": "yukihatas-macbook-air",
-  "last_dump_at": "2026-05-27T12:34:56Z",
-  "dbs": ["quants", "research", "note", "creator"]
+  "last_source": "YukinoMac-mini",
+  "last_dump_at": "2026-06-01T23:20:52Z",
+  "dbs": ["quants", "research", "note", "creator", "neo4j"]
 }
 ```
 
@@ -279,7 +314,8 @@ echo "Neo4j is ready"
 
 ```bash
 ./scripts/neo4j_sync.sh push              # dump + NAS push + sync-state.json 更新
-./scripts/neo4j_sync.sh push --if-dirty   # dirty フラグがあれば push、なければ skip (Stop hook 用)
+./scripts/neo4j_sync.sh push --if-changed # lastTxId(APOC) が前回 push 時から変化していれば push (Stop hook / 毎時 launchd 用)
+./scripts/neo4j_sync.sh push --if-dirty   # dirty フラグがあれば push、なければ skip (互換用)
 ./scripts/neo4j_sync.sh pull              # 強制 pull (NAS → load)
 ./scripts/neo4j_sync.sh pull --auto       # last_source != hostname なら pull (SessionStart hook 用)
 ./scripts/neo4j_sync.sh status            # 現在の dirty / sync-state / lock を表示
@@ -297,25 +333,35 @@ NAS 上に `.neo4j-sync.lock` ディレクトリを `mkdir` ベースで作成�
 
 `osascript` で通知センターに以下を表示：
 
-- 成功時: 「Pushed/Pulled 4 DBs from <source>」
+- 成功時: 「Pushed/Pulled <N> DBs from <source>」（N は対象 DB 数 = 現状 5）
 - エラー時: 「neo4j-sync ❌ <エラーメッセージ>」
 
-### Claude Code 経由以外の書き込み
+### 全 write 経路の自動同期
 
-| 経路 | 対応 |
-|------|------|
-| `mcp__neo4j-cypher__write_neo4j_cypher` (Claude Code 経由) | PostToolUse hook で自動 dirty 化 |
-| `scripts/migrate_author_ids.py --execute` | スクリプト内で書き込み成功時に dirty フラグを touch (`migrated > 0`) |
-| Neo4j Browser UI / 直接 `cypher-shell` | 手動 `./scripts/neo4j_sync.sh push` を実行 |
-| その他カスタムスクリプト | `Path.home() / ".neo4j-sync-dirty"` を touch する処理を追加 |
+lastTxId 変更検知（`push --if-changed`）により、**書き込み経路に関係なく**自動同期される。個別スクリプトに dirty フラグ更新を埋め込む必要はない（`dec-2026-06-02-004` で不要化）。
+
+| 経路 | 自動同期されるタイミング |
+|------|------------------------|
+| `mcp__neo4j-cypher__write_neo4j_cypher`（Claude Code 経由） | Stop hook の `push --if-changed`（B1） |
+| Claude セッション内の Bash 実行（`cypher-shell` / bolt スクリプト / `save-to-graph` 投入等） | Stop hook の `push --if-changed`（B1） |
+| セッション外の launchd / cron / 手動端末（例: `pipeline-scraped-to-neo4j`, `migrate_author_ids.py`） | 毎時 launchd `push --if-changed`（B2、最大1時間）／毎朝4時 `push`（保険） |
+| Neo4j Browser UI / 直接 `cypher-shell` | 同上（次の Stop hook か毎時 launchd で検知） |
+
+> 旧方式（`mcp__neo4j-cypher__write_neo4j_cypher` のみ dirty 化 → Stop hook `push --if-dirty`）は MCP 以外の書き込みを取りこぼしていた（`disc-2026-06-02-neo4j-backup-automation` 参照）。dirty フラグ機構は互換のため残置している。
 
 ### ログ
 
-`~/Library/Logs/neo4j-sync.log` に全アクションを追記。
+- `~/Library/Logs/neo4j-sync.log`: スクリプト本体の全アクション
+- `~/Library/Logs/quants/neo4j-push.log`: 毎朝4時 launchd（無条件 push）
+- `~/Library/Logs/quants/neo4j-push-changed.log`: 毎時 launchd（push --if-changed）
 
 ## 関連
 
+- バックアップ自動化議論: [docs/plan/2026-06-02_discussion-neo4j-backup-automation.md](plan/2026-06-02_discussion-neo4j-backup-automation.md)
 - 双方向化議論: [docs/plan/2026-05-27_discussion-neo4j-bidirectional-sync.md](plan/2026-05-27_discussion-neo4j-bidirectional-sync.md)
 - 初回確立議論: [docs/plan/2026-05-26_discussion-neo4j-multi-pc-sync.md](plan/2026-05-26_discussion-neo4j-multi-pc-sync.md)
+- 同期スクリプト: `scripts/neo4j_sync.sh`
+- APOC Extended インストーラ: `scripts/install-apoc-extended.sh`
+- launchd: `scripts/com.quants.neo4j-push.plist`（毎朝4時）, `scripts/com.quants.neo4j-push-changed.plist`（毎時）
 - Docker Compose 設定: `docker-compose.yml`
 - 接続設定: `.env` の `NEO4J_URI` / `NEO4J_PASSWORD`
