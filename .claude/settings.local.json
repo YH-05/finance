@@ -143,7 +143,9 @@
       "Bash(pdftotext -layout /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.pdf /Users/yukihata/Desktop/quants/research/2026-04-16_nse_promoter_classification/sources/sebi_gazette_1367922725672.txt)",
       "mcp__alphaxiv__paper_search",
       "WebFetch(domain:stooq.com)",
-      "WebFetch(domain:fraser.stlouisfed.org)"
+      "WebFetch(domain:fraser.stlouisfed.org)",
+      "WebFetch(domain:repo1.maven.org)",
+      "WebFetch(domain:neo4j.com)"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",
