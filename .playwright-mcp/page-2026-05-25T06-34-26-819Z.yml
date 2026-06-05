@@ -1,0 +1,2291 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - link "FED" [ref=e4] [cursor=pointer]:
+        - /url: https://www.stlouisfed.org
+        - img "FED" [ref=e5]
+    - navigation [ref=e6]:
+      - link "logo" [ref=e8] [cursor=pointer]:
+        - /url: /
+        - img "logo" [ref=e9]
+      - generic [ref=e10]:
+        - text:  
+        - generic [ref=e12]:
+          - button "All " [ref=e13] [cursor=pointer]:
+            - generic [ref=e14]: All
+            - generic [ref=e15]: 
+          - combobox "What are you looking for?" [ref=e16]
+          - button "search button" [ref=e17] [cursor=pointer]:
+            - img "search button" [ref=e18]
+        - button "explore our apps" [ref=e19] [cursor=pointer]:
+          - img "explore our apps" [ref=e20]
+    - navigation [ref=e21]:
+      - list [ref=e22]:
+        - listitem [ref=e23]:
+          - link "Explore" [ref=e24] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - generic [ref=e25]: 
+        - listitem [ref=e26]:
+          - link "Browse" [ref=e27] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - generic [ref=e28]: 
+        - listitem [ref=e29]:
+          - link "About" [ref=e30] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - generic [ref=e31]: 
+        - listitem [ref=e32]:
+          - link "API" [ref=e33] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - generic [ref=e34]: 
+        - listitem [ref=e35]:
+          - link "bookmarks" [ref=e36] [cursor=pointer]:
+            - /url: /bookmarks
+            - img [ref=e37]: 
+  - text:      
+  - main [ref=e38]:
+    - generic [ref=e41]:
+      - navigation [ref=e42]:
+        - generic [ref=e43]:
+          - button "REST API"
+          - link "OAI-PMH" [ref=e44] [cursor=pointer]:
+            - /url: /api-documentation/oai-pmh
+        - generic [ref=e45]:
+          - generic [ref=e46]:
+            - textbox "Filter" [ref=e47]
+            - generic [ref=e48] [cursor=pointer]: ↩
+          - button "SEARCH" [ref=e49] [cursor=pointer]
+        - navigation [ref=e50]:
+          - generic [ref=e51] [cursor=pointer]: FRASER REST API
+          - generic [ref=e52] [cursor=pointer]: API Servers
+          - generic [ref=e53] [cursor=pointer]: Authentication
+          - generic [ref=e55] [cursor=pointer]: OPERATIONS
+          - generic [ref=e56]:
+            - generic [ref=e57] [cursor=pointer]:
+              - generic: title
+            - generic [ref=e58]:
+              - generic [ref=e59] [cursor=pointer]:
+                - generic: Single title record
+              - generic [ref=e60] [cursor=pointer]:
+                - generic: All item records in title
+              - generic [ref=e61] [cursor=pointer]:
+                - generic: Table of contents for specified title
+          - generic [ref=e62]:
+            - generic [ref=e63] [cursor=pointer]:
+              - generic: item
+            - generic [ref=e64]:
+              - generic [ref=e65] [cursor=pointer]:
+                - generic: Single item record
+              - generic [ref=e66] [cursor=pointer]:
+                - generic: Item record table of contents
+              - generic [ref=e67] [cursor=pointer]:
+                - generic: All item records in title
+          - generic [ref=e68]:
+            - generic [ref=e69] [cursor=pointer]:
+              - generic: table of contents
+            - generic [ref=e70]:
+              - generic [ref=e71] [cursor=pointer]:
+                - generic: Item record table of contents
+              - generic [ref=e72] [cursor=pointer]:
+                - generic: Single table of contents record
+              - generic [ref=e73] [cursor=pointer]:
+                - generic: Table of contents for specified title
+          - generic [ref=e74]:
+            - generic [ref=e75] [cursor=pointer]:
+              - generic: author
+            - generic [ref=e76]:
+              - generic [ref=e77] [cursor=pointer]:
+                - generic: All author records
+              - generic [ref=e78] [cursor=pointer]:
+                - generic: Single author record
+              - generic [ref=e79] [cursor=pointer]:
+                - generic: All records for specified author
+          - generic [ref=e80]:
+            - generic [ref=e81] [cursor=pointer]:
+              - generic: subject
+            - generic [ref=e82]:
+              - generic [ref=e83] [cursor=pointer]:
+                - generic: Single subject record
+              - generic [ref=e84] [cursor=pointer]:
+                - generic: All subject records
+              - generic [ref=e85] [cursor=pointer]:
+                - generic: All records with specified subject
+          - generic [ref=e86]:
+            - generic [ref=e87] [cursor=pointer]:
+              - generic: theme
+            - generic [ref=e88]:
+              - generic [ref=e89] [cursor=pointer]:
+                - generic: All theme records
+              - generic [ref=e90] [cursor=pointer]:
+                - generic: Single theme record
+              - generic [ref=e91] [cursor=pointer]:
+                - generic: All records in theme
+          - generic [ref=e92]:
+            - generic [ref=e93] [cursor=pointer]:
+              - generic: timeline
+            - generic [ref=e94]:
+              - generic [ref=e95] [cursor=pointer]:
+                - generic: Single timeline record
+              - generic [ref=e96] [cursor=pointer]:
+                - generic: All timeline records
+              - generic [ref=e97] [cursor=pointer]:
+                - generic: All events in specified timeline
+      - main [ref=e98]:
+        - generic [ref=e100]:
+          - generic [ref=e101]:
+            - generic [ref=e102]:
+              - text: FRASER REST API
+              - generic [ref=e103]: 1.0.0
+            - generic [ref=e105]:
+              - heading "Overview" [level=1] [ref=e106]
+              - paragraph [ref=e107]:
+                - text: The FRASER REST API enables users to view or reuse data. If you are interested in contributing content to FRASER, refer to our
+                - link "Collection Development Policy" [ref=e108] [cursor=pointer]:
+                  - /url: https://fraser.stlouisfed.org/files/docs/FRASER-collection-development.pdf
+                - text: or
+                - link "contact us" [ref=e109] [cursor=pointer]:
+                  - /url: https://fraser.stlouisfed.org/contact
+                - text: . An API client is recommended for making requests. Command line environments are not currently supported.
+              - heading "Requests" [level=1] [ref=e110]
+              - heading "API Key" [level=2] [ref=e111]
+              - paragraph [ref=e112]: In order to access the FRASER API, you'll need an API key. To request a FRASER API key, submit a POST request with your email in the body.
+              - code [ref=e114]: "curl --data '{\"email\": \"myemailaddress@test.com\", \"description\": \"my api key\"}' https://fraser.stlouisfed.org/api/api_key"
+              - paragraph [ref=e115]: To make requests to the FRASER API, you'll need to include the API key as a request header. For example
+              - code [ref=e117]: "curl --header '{\"X-API-Key\": \"abcdefghijklmnopqrstuvwxyz123456\"}' https://fraser.stlouisfed.org/api/title"
+              - heading "Rate Limits" [level=2] [ref=e118]
+              - paragraph [ref=e119]: Each API key is limited to 30 requests per minute. The FRASER API automatically enforces the throttle limit.
+              - heading "FRASER Data Model" [level=2] [ref=e120]
+              - table [ref=e121]:
+                - rowgroup [ref=e122]:
+                  - row "record type description" [ref=e123]:
+                    - columnheader "record type" [ref=e124]
+                    - columnheader "description" [ref=e125]
+                - rowgroup [ref=e126]:
+                  - row "Title Titles are the top-level FRASER record type. They can be standalone records that contain a single relationship to a file (or files) (such as a PDF or MP3) or they can contain multiple children, called items. Sometimes, however, titles have more complex relationships to other FRASER records. Archival collections are titles that can have nested relationships to both other titles and individual items. Similarly, series are aggregated collections of other titles. Both of these categories are subsumed under the title type." [ref=e127]:
+                    - cell "Title" [ref=e128]
+                    - cell "Titles are the top-level FRASER record type. They can be standalone records that contain a single relationship to a file (or files) (such as a PDF or MP3) or they can contain multiple children, called items. Sometimes, however, titles have more complex relationships to other FRASER records. Archival collections are titles that can have nested relationships to both other titles and individual items. Similarly, series are aggregated collections of other titles. Both of these categories are subsumed under the title type." [ref=e129]:
+                      - strong [ref=e130]: Titles
+                      - text: are the top-level FRASER record type. They can be standalone records that contain a single relationship to a file (or files) (such as a PDF or MP3) or they can contain multiple children, called
+                      - strong [ref=e131]: items
+                      - text: . Sometimes, however, titles have more complex relationships to other FRASER records.
+                      - strong [ref=e132]: Archival collections
+                      - text: are titles that can have nested relationships to both other titles and individual items. Similarly,
+                      - strong [ref=e133]: series
+                      - text: are aggregated collections of other titles. Both of these categories are subsumed under the title type.
+                  - row "Item Item is the label given to records that are the children of parent titles. They almost always correspond to a file (sometimes multiple files), and cannot be parents themselves (though they may have tables of contents, see below). Because items always are always children, there is no root endpoint." [ref=e134]:
+                    - cell "Item" [ref=e135]
+                    - cell "Item is the label given to records that are the children of parent titles. They almost always correspond to a file (sometimes multiple files), and cannot be parents themselves (though they may have tables of contents, see below). Because items always are always children, there is no root endpoint." [ref=e136]:
+                      - strong [ref=e137]: Item
+                      - text: is the label given to records that are the children of parent
+                      - strong [ref=e138]: titles
+                      - text: . They almost always correspond to a file (sometimes multiple files), and cannot be parents themselves (though they may have
+                      - strong [ref=e139]: tables of contents
+                      - text: ", see below). Because items always are always children, there is no root endpoint."
+                  - row "Table of Contents Table of Contents entries are subunits of either titles or items that correspond to a specific page range within its parent record. They have associated descriptive metadata, as well as page range information, but do not relate to a unique file in any way." [ref=e140]:
+                    - cell "Table of Contents" [ref=e141]
+                    - cell "Table of Contents entries are subunits of either titles or items that correspond to a specific page range within its parent record. They have associated descriptive metadata, as well as page range information, but do not relate to a unique file in any way." [ref=e142]:
+                      - strong [ref=e143]: Table of Contents
+                      - text: entries are subunits of either
+                      - strong [ref=e144]: titles
+                      - text: or
+                      - strong [ref=e145]: items
+                      - text: that correspond to a specific page range within its parent record. They have associated descriptive metadata, as well as page range information, but do not relate to a unique file in any way.
+                  - 'row "Author In FRASER, authors are name entities that have specific relationships to FRASER titles, items and table of contents entries. Authors can be of the type personal, corporate or conference, and roles that may be assigned to authors in relation to records are: creator, contributor, editor, repository and uncertain. In addition to these roles, authors can be have a subject relationship to titles, items and table of contents entries." [ref=e146]':
+                    - cell "Author" [ref=e147]
+                    - 'cell "In FRASER, authors are name entities that have specific relationships to FRASER titles, items and table of contents entries. Authors can be of the type personal, corporate or conference, and roles that may be assigned to authors in relation to records are: creator, contributor, editor, repository and uncertain. In addition to these roles, authors can be have a subject relationship to titles, items and table of contents entries." [ref=e148]':
+                      - text: In FRASER,
+                      - strong [ref=e149]: authors
+                      - text: are name entities that have specific relationships to FRASER titles, items and table of contents entries. Authors can be of the type
+                      - emphasis [ref=e150]: personal
+                      - text: ","
+                      - emphasis [ref=e151]: corporate
+                      - text: or
+                      - emphasis [ref=e152]: conference
+                      - text: ", and roles that may be assigned to authors in relation to records are:"
+                      - emphasis [ref=e153]: creator
+                      - text: ","
+                      - emphasis [ref=e154]: contributor
+                      - text: ","
+                      - emphasis [ref=e155]: editor
+                      - text: ","
+                      - emphasis [ref=e156]: repository
+                      - text: and
+                      - emphasis [ref=e157]: uncertain
+                      - text: . In addition to these roles, authors can be have a
+                      - strong [ref=e158]: subject
+                      - text: relationship to titles, items and table of contents entries.
+                  - row "Subject Subjects are standardized terms to describe record topics in FRASER. They can be of the type topic, geographic, name or titleInfo. However, note that no subject record is a name record -- instead, authors are assigned as name subjects. Note that when requesting subject metadata, the key corresponding to the name of the subject will be the type of subject (that is, either topic, geographic or titleInfo)." [ref=e159]:
+                    - cell "Subject" [ref=e160]
+                    - cell "Subjects are standardized terms to describe record topics in FRASER. They can be of the type topic, geographic, name or titleInfo. However, note that no subject record is a name record -- instead, authors are assigned as name subjects. Note that when requesting subject metadata, the key corresponding to the name of the subject will be the type of subject (that is, either topic, geographic or titleInfo)." [ref=e161]:
+                      - text: Subjects are standardized terms to describe record topics in FRASER. They can be of the type
+                      - emphasis [ref=e162]: topic
+                      - text: ","
+                      - emphasis [ref=e163]: geographic
+                      - text: ","
+                      - emphasis [ref=e164]: name
+                      - text: or
+                      - emphasis [ref=e165]: titleInfo
+                      - text: . However, note that no subject record is a
+                      - emphasis [ref=e166]: name
+                      - text: record -- instead,
+                      - strong [ref=e167]: authors
+                      - text: are assigned as name subjects. Note that when requesting subject metadata, the key corresponding to the name of the subject will be the type of subject (that is, either
+                      - code [ref=e168]: topic
+                      - text: ","
+                      - code [ref=e169]: geographic
+                      - text: or
+                      - code [ref=e170]: titleInfo
+                      - text: ).
+                  - row "Theme Themes are aggregations of FRASER title and item records all centered around a particular topic." [ref=e171]:
+                    - cell "Theme" [ref=e172]
+                    - cell "Themes are aggregations of FRASER title and item records all centered around a particular topic." [ref=e173]:
+                      - text: Themes are aggregations of FRASER
+                      - strong [ref=e174]: title
+                      - text: and
+                      - strong [ref=e175]: item
+                      - text: records all centered around a particular topic.
+                  - row "Timeline Timelines are FRASER records that track events for a particular topic over time. Events are the component pieces of the timeline. Events occasionally reference other FRASER records, but these references are not reciprocal -- the referenced FRASER record does not reference back to the timeline. Note that timeline IDs are different from the other identifiers in that they are strings, as opposed to integers." [ref=e176]:
+                    - cell "Timeline" [ref=e177]
+                    - cell "Timelines are FRASER records that track events for a particular topic over time. Events are the component pieces of the timeline. Events occasionally reference other FRASER records, but these references are not reciprocal -- the referenced FRASER record does not reference back to the timeline. Note that timeline IDs are different from the other identifiers in that they are strings, as opposed to integers." [ref=e178]:
+                      - text: Timelines are FRASER records that track events for a particular topic over time.
+                      - strong [ref=e179]: Events
+                      - text: are the component pieces of the timeline. Events occasionally reference other FRASER records, but these references are not reciprocal -- the referenced FRASER record does not reference back to the timeline. Note that timeline IDs are different from the other identifiers in that they are strings, as opposed to integers.
+          - generic [ref=e180]:
+            - generic [ref=e181]: API SERVER
+            - generic [ref=e182]:
+              - radio "https://fraser.stlouisfed.org" [checked] [ref=e183] [cursor=pointer]
+              - generic [ref=e184] [cursor=pointer]: https://fraser.stlouisfed.org
+              - generic [ref=e185]: "SELECTED: https://fraser.stlouisfed.org"
+          - generic [ref=e186]:
+            - generic [ref=e187]: AUTHENTICATION
+            - generic [ref=e189]: No API key applied
+            - generic [ref=e191]: API Key (X-API-Key)
+            - generic [ref=e192]:
+              - text: Send
+              - code [ref=e193]: X-API-Key
+              - text: in
+              - code [ref=e194]: header
+            - generic [ref=e195]:
+              - textbox "api-token" [ref=e196]
+              - button "SET" [ref=e197] [cursor=pointer]
+          - generic [ref=e199]: title
+          - generic [ref=e200]:
+            - generic [ref=e202]:
+              - heading "Single title record" [level=2] [ref=e203]
+              - generic [ref=e204]:
+                - generic [ref=e205]: get
+                - generic [ref=e206]: "/api/title/{titleId}"
+              - paragraph [ref=e208]: Returns metadata for a single title record.
+              - generic [ref=e210]:
+                - img [ref=e211]
+                - link "API Key (X-API-Key)" [ref=e217] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e218]:
+                - generic [ref=e219]:
+                  - generic [ref=e220]: REQUEST
+                  - generic [ref=e221]:
+                    - generic [ref=e222]: PATH PARAMETERS
+                    - generic [ref=e223]:
+                      - generic [ref=e224]: "* titleId"
+                      - generic [ref=e225]: integer
+                      - textbox [ref=e226]: "41"
+                      - paragraph [ref=e228]: Title identifier
+                      - text: "Examples:"
+                      - generic "41" [ref=e229] [cursor=pointer]
+                    - generic [ref=e230]: QUERY-STRING PARAMETERS
+                    - generic [ref=e231]:
+                      - generic [ref=e232]: limit
+                      - generic [ref=e233]: integer
+                      - textbox [ref=e234]: "35"
+                      - generic [ref=e235]: "Default: 20"
+                      - paragraph [ref=e237]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e238] [cursor=pointer]
+                      - generic [ref=e239]: page
+                      - generic [ref=e240]: integer
+                      - textbox [ref=e241]: "10"
+                      - paragraph [ref=e243]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e244] [cursor=pointer]
+                      - generic [ref=e245]: format
+                      - generic [ref=e246]: enum
+                      - textbox [ref=e247]: xml
+                      - generic [ref=e248]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e249] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e250] [cursor=pointer]: xml
+                      - paragraph [ref=e252]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e253] [cursor=pointer]
+                      - generic [ref=e254]: fields
+                      - generic [ref=e255]: enum
+                      - textbox [ref=e256]: physicalDescription
+                      - generic [ref=e257]:
+                        - text: "Allowed:"
+                        - generic [ref=e258] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e259] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e260] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e261] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e262] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e263] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e264] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e265] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e266] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e267] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e268] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e269] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e270] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e271] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e272] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e273] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e274] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e275] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e276] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e278]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e279] [cursor=pointer]
+                    - generic [ref=e280]:
+                      - generic [ref=e281]:
+                        - generic [ref=e284]:
+                          - generic [ref=e285]: API Server
+                          - generic [ref=e286]: https://fraser.stlouisfed.org
+                        - generic [ref=e287]:
+                          - generic [ref=e288]: Authentication
+                          - generic [ref=e289]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e290] [cursor=pointer]
+                      - button "CLEAR" [ref=e291] [cursor=pointer]
+                      - button "TRY" [ref=e292] [cursor=pointer]
+                - generic [ref=e293]:
+                  - generic [ref=e294]: RESPONSE
+                  - generic [ref=e295]:
+                    - generic [ref=e296]: "200"
+                    - generic [ref=e297]:
+                      - paragraph [ref=e300]: Successful request
+                      - generic [ref=e301]:
+                        - generic [ref=e302]:
+                          - button "EXAMPLE" [ref=e303] [cursor=pointer]
+                          - button "SCHEMA" [ref=e304] [cursor=pointer]
+                          - generic [ref=e306]: application/json
+                        - generic [ref=e309]:
+                          - button "Copy" [ref=e311] [cursor=pointer]
+                          - generic [ref=e312] [cursor=pointer]: "{"
+                          - generic [ref=e314]:
+                            - text: "\"value\":"
+                            - generic [ref=e315]: "\"{\"format\":\"json\",\"page\":1,\"limit\":100,\"fields\":[\"*\"],\"total\":1,\"records\":[{\"name\":[{\"role\":\"creator\",\"namePart\":[\"Council of Economic Advisers (U.S.)\"],\"recordInfo\":{\"recordIdentifier\":[\"1\"]}},{\"role\":\"contributor\",\"namePart\":[\"United States. Congress. Joint Committee on the Economic Report\",{\"$\":\"1946-1956\",\"@type\":\"date\"}],\"recordInfo\":{\"recordIdentifier\":[\"2\"]}},{\"role\":\"contributor\",\"namePart\":[\"United States. Congress. Joint Economic Committee\",{\"$\":\"1956-\",\"@type\":\"date\"}],\"recordInfo\":{\"recordIdentifier\":[\"350\"]}}],\"genre\":[\"government publication\",\"periodical\"],\"subject\":{\"theme\":[{\"theme\":\"Economic Data\",\"recordInfo\":{\"recordIdentifier\":[\"21\"]}}],\"topic\":[{\"topic\":\"Economic indicators\",\"recordInfo\":{\"recordIdentifier\":[\"4149\"]}},{\"topic\":\"Economic conditions\",\"recordInfo\":{\"recordIdentifier\":[\"4145\"]}}],\"geographic\":[{\"geographic\":\"United States\",\"recordInfo\":{\"recordIdentifier\":[\"4293\"]}}]},\"abstract\":[\"This monthly publication is prepared by the Council of Economic Advisers for the Joint Economic Committee. It provides economic information on gross domestic product, income, employment, production, business activity, prices, money, credit, security markets, Federal finance, and international statistics.\"],\"language\":[\"eng\"],\"titleInfo\":[{\"title\":\"Economic Indicators\"}],\"identifier\":[{\"$\":\"1567401\",\"@type\":\"oclc\"}],\"originInfo\":{\"issuance\":\"periodical\",\"frequency\":\"monthly\",\"dateIssued\":[{\"$\":\"1948-05-01\",\"@point\":\"start\"},{\"$\":\"2021-03-01\",\"@point\":\"end\"}]},\"recordInfo\":{\"recordIdentifier\":[1],\"recordUpdatedDate\":\"2020-02-13 08:57:50\",\"recordCreationDate\":\"2003-06-12 09:07:50.681039\",\"recordType\":\"title\"},\"relatedItem\":[{\"@type\":\"similarTo\",\"titleInfo\":[{\"title\":\"Supplement to Economic Indicators\"},{\"@type\":\"alternate\",\"title\":\"Historical and Descriptive Supplement to Economic Indicators\",\"titlePartNumber\":\"1953-1957\"}],\"recordInfo\":{\"recordIdentifier\":[\"177\"]}}],\"classification\":[{\"$\":\"Y 4.Ec 7:Ec 7/\",\"@authority\":\"sudocs\"}],\"typeOfResource\":\"text\",\"accessCondition\":\"Public domain\",\"physicalDescription\":{\"form\":\"print\",\"digitalOrigin\":\"reformatted digital\"},\"location\":{\"url\":[\"https://fraser.stlouisfed.org/title/economic-indicators-1\",{\"@access\":\"preview\",\"$\":\"https://fraser.stlouisfed.org/images/record-thumbnail.jpg\"}],\"apiUrl\":[\"https://fraser.stlouisfed.org/api/title/1\"]}}],\"start\":0}\""
+                          - generic [ref=e316]: "}"
+            - generic [ref=e318]:
+              - heading "All item records in title" [level=2] [ref=e319]
+              - generic [ref=e320]:
+                - generic [ref=e321]: get
+                - generic [ref=e322]: "/api/title/{titleId}/items"
+              - paragraph [ref=e324]: Returns all child items for a single FRASER title. If a title has a more complex child-parent relationship (as in series and archival collection), endpoint returns all immediate children, regardless of whether they are items or titles.
+              - generic [ref=e326]:
+                - img [ref=e327]
+                - link "API Key (X-API-Key)" [ref=e333] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e334]:
+                - generic [ref=e335]:
+                  - generic [ref=e336]: REQUEST
+                  - generic [ref=e337]:
+                    - generic [ref=e338]: PATH PARAMETERS
+                    - generic [ref=e339]:
+                      - generic [ref=e340]: "* titleId"
+                      - generic [ref=e341]: integer
+                      - textbox [ref=e342]: "41"
+                      - paragraph [ref=e344]: Title identifier
+                      - text: "Examples:"
+                      - generic "41" [ref=e345] [cursor=pointer]
+                    - generic [ref=e346]: QUERY-STRING PARAMETERS
+                    - generic [ref=e347]:
+                      - generic [ref=e348]: limit
+                      - generic [ref=e349]: integer
+                      - textbox [ref=e350]: "35"
+                      - generic [ref=e351]: "Default: 20"
+                      - paragraph [ref=e353]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e354] [cursor=pointer]
+                      - generic [ref=e355]: page
+                      - generic [ref=e356]: integer
+                      - textbox [ref=e357]: "10"
+                      - paragraph [ref=e359]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e360] [cursor=pointer]
+                      - generic [ref=e361]: format
+                      - generic [ref=e362]: enum
+                      - textbox [ref=e363]: xml
+                      - generic [ref=e364]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e365] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e366] [cursor=pointer]: xml
+                      - paragraph [ref=e368]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e369] [cursor=pointer]
+                      - generic [ref=e370]: fields
+                      - generic [ref=e371]: enum
+                      - textbox [ref=e372]: physicalDescription
+                      - generic [ref=e373]:
+                        - text: "Allowed:"
+                        - generic [ref=e374] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e375] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e376] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e377] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e378] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e379] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e380] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e381] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e382] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e383] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e384] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e385] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e386] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e387] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e388] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e389] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e390] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e391] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e392] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e394]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e395] [cursor=pointer]
+                    - generic [ref=e396]:
+                      - generic [ref=e397]:
+                        - generic [ref=e400]:
+                          - generic [ref=e401]: API Server
+                          - generic [ref=e402]: https://fraser.stlouisfed.org
+                        - generic [ref=e403]:
+                          - generic [ref=e404]: Authentication
+                          - generic [ref=e405]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e406] [cursor=pointer]
+                      - button "CLEAR" [ref=e407] [cursor=pointer]
+                      - button "TRY" [ref=e408] [cursor=pointer]
+                - generic [ref=e409]:
+                  - generic [ref=e410]: RESPONSE
+                  - generic [ref=e411]:
+                    - generic [ref=e412]: "200"
+                    - paragraph [ref=e416]: Successful request
+            - generic [ref=e418]:
+              - heading "Table of contents for specified title" [level=2] [ref=e419]
+              - generic [ref=e420]:
+                - generic [ref=e421]: get
+                - generic [ref=e422]: "/api/title/{titleId}/toc"
+              - paragraph [ref=e424]: Returns table of contents entries for a specific FRASER title.
+              - generic [ref=e426]:
+                - img [ref=e427]
+                - link "API Key (X-API-Key)" [ref=e433] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e434]:
+                - generic [ref=e435]:
+                  - generic [ref=e436]: REQUEST
+                  - generic [ref=e437]:
+                    - generic [ref=e438]: PATH PARAMETERS
+                    - generic [ref=e439]:
+                      - generic [ref=e440]: "* titleId"
+                      - generic [ref=e441]: integer
+                      - textbox [ref=e442]: "41"
+                      - paragraph [ref=e444]: Title identifier
+                      - text: "Examples:"
+                      - generic "41" [ref=e445] [cursor=pointer]
+                    - generic [ref=e446]:
+                      - generic [ref=e447]:
+                        - generic [ref=e450]:
+                          - generic [ref=e451]: API Server
+                          - generic [ref=e452]: https://fraser.stlouisfed.org
+                        - generic [ref=e453]:
+                          - generic [ref=e454]: Authentication
+                          - generic [ref=e455]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e456] [cursor=pointer]
+                      - button "CLEAR" [ref=e457] [cursor=pointer]
+                      - button "TRY" [ref=e458] [cursor=pointer]
+                - generic [ref=e459]:
+                  - generic [ref=e460]: RESPONSE
+                  - generic [ref=e461]:
+                    - generic [ref=e462]: "200"
+                    - paragraph [ref=e466]: Successful request
+          - generic [ref=e468]: item
+          - generic [ref=e469]:
+            - generic [ref=e471]:
+              - heading "Single item record" [level=2] [ref=e472]
+              - generic [ref=e473]:
+                - generic [ref=e474]: get
+                - generic [ref=e475]: "/api/item/{itemId}"
+              - paragraph [ref=e477]: Returns metadata for a single item record.
+              - generic [ref=e479]:
+                - img [ref=e480]
+                - link "API Key (X-API-Key)" [ref=e486] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e487]:
+                - generic [ref=e488]:
+                  - generic [ref=e489]: REQUEST
+                  - generic [ref=e490]:
+                    - generic [ref=e491]: PATH PARAMETERS
+                    - generic [ref=e492]:
+                      - generic [ref=e493]: "* itemId"
+                      - generic [ref=e494]: integer
+                      - textbox [ref=e495]: "579676"
+                      - paragraph [ref=e497]: Item identifier
+                      - text: "Examples:"
+                      - generic "579676" [ref=e498] [cursor=pointer]
+                    - generic [ref=e499]: QUERY-STRING PARAMETERS
+                    - generic [ref=e500]:
+                      - generic [ref=e501]: format
+                      - generic [ref=e502]: enum
+                      - textbox [ref=e503]: xml
+                      - generic [ref=e504]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e505] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e506] [cursor=pointer]: xml
+                      - paragraph [ref=e508]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e509] [cursor=pointer]
+                      - generic [ref=e510]: fields
+                      - generic [ref=e511]: enum
+                      - textbox [ref=e512]: physicalDescription
+                      - generic [ref=e513]:
+                        - text: "Allowed:"
+                        - generic [ref=e514] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e515] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e516] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e517] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e518] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e519] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e520] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e521] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e522] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e523] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e524] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e525] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e526] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e527] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e528] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e529] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e530] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e531] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e532] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e534]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e535] [cursor=pointer]
+                    - generic [ref=e536]:
+                      - generic [ref=e537]:
+                        - generic [ref=e540]:
+                          - generic [ref=e541]: API Server
+                          - generic [ref=e542]: https://fraser.stlouisfed.org
+                        - generic [ref=e543]:
+                          - generic [ref=e544]: Authentication
+                          - generic [ref=e545]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e546] [cursor=pointer]
+                      - button "CLEAR" [ref=e547] [cursor=pointer]
+                      - button "TRY" [ref=e548] [cursor=pointer]
+                - generic [ref=e549]:
+                  - generic [ref=e550]: RESPONSE
+                  - generic [ref=e551]:
+                    - generic [ref=e552]: "200"
+                    - generic [ref=e553]:
+                      - paragraph [ref=e556]: Successful request
+                      - generic [ref=e557]:
+                        - generic [ref=e558]:
+                          - button "EXAMPLE" [ref=e559] [cursor=pointer]
+                          - button "SCHEMA" [ref=e560] [cursor=pointer]
+                          - generic [ref=e562]: application/json
+                        - generic [ref=e565]:
+                          - button "Copy" [ref=e567] [cursor=pointer]
+                          - generic [ref=e568] [cursor=pointer]: "{"
+                          - generic [ref=e570]:
+                            - text: "\"value\":"
+                            - generic [ref=e571]: "\"{\"format\":\"json\",\"page\":1,\"limit\":100,\"fields\":[\"*\"],\"total\":1,\"records\":[{\"genre\":[\"directory\"],\"titleInfo\":[{\"title\":\"January 1920\"}],\"originInfo\":{\"issuance\":\"periodical\",\"sortDate\":\"1920-01-01\",\"dateIssued\":\"January 1920\"},\"recordInfo\":{\"recordIdentifier\":[\"579676\"],\"recordUpdatedDate\":\"2018-10-23 07:21:25\",\"recordCreationDate\":\"2018-09-20 07:37:10\",\"recordType\":\"item\"},\"typeOfResource\":\"text\",\"physicalDescription\":{\"form\":\"print\",\"extent\":\"15 files\",\"digitalOrigin\":\"reformatted digital\",\"internetMediaType\":[\"application/pdf\"]},\"location\":{\"url\":[\"https://fraser.stlouisfed.org/title/rand-mcnally-bankers-directory-105/january-1920-579676\"],\"apiUrl\":[\"https://fraser.stlouisfed.org/api/item/579676\"],\"pdfUrl\":[\"https://fraser.stlouisfed.orgArray\"],\"textUrl\":[\"https://fraser.stlouisfed.orgArray\"]},\"relatedItem\":[{\"@type\":\"parent\",\"recordInfo\":{\"recordIdentifier\":[\"105\"]},\"titleInfo\":[{\"title\":\"Rand McNally Bankers Directory\"},{\"@type\":\"alternate\",\"title\":\"The Bankers' Directory and List of Bank Attorneys\",\"titlePartNumber\":\"1882-1899\"},{\"@type\":\"alternate\",\"title\":\"The Rand-McNally Bankers' Directory and List of Attorneys\",\"titlePartNumber\":\"1899-1918\"},{\"@type\":\"alternate\",\"title\":\"Rand McNally Bankers Directory and the Bankers Register with List of Attorneys\",\"titlePartNumber\":\"1919-1926\"},{\"@type\":\"alternate\",\"title\":\"Rand McNally Bankers Directory\",\"titlePartNumber\":\"1927-1954\"},{\"@type\":\"alternate\",\"title\":\"Rand McNally International Bankers Directory\",\"titlePartNumber\":\"1955-1986\"},{\"@type\":\"alternate\",\"title\":\"The Rand McNally Bankers Directory\",\"titlePartNumber\":\"1986-1990\"},{\"@type\":\"alternate\",\"title\":\"The Bankers Blue Book\"}],\"name\":[{\"role\":\"creator\",\"namePart\":[\"Rand McNally and Company\"],\"recordInfo\":{\"recordIdentifier\":[\"597\"]}}]}],\"accessCondition\":\"For more information on rights relating to this item, please see: https://fraser.stlouisfed.org/title/rand-mcnally-bankers-directory-105/january-1920-579676\"}],\"start\":0}\""
+                          - generic [ref=e572]: "}"
+            - generic [ref=e574]:
+              - heading "Item record table of contents" [level=2] [ref=e575]
+              - generic [ref=e576]:
+                - generic [ref=e577]: get
+                - generic [ref=e578]: "/api/item/{itemId}/toc"
+              - paragraph [ref=e580]: Returns table of contents entries for a specific FRASER item.
+              - generic [ref=e582]:
+                - img [ref=e583]
+                - link "API Key (X-API-Key)" [ref=e589] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e590]:
+                - generic [ref=e591]:
+                  - generic [ref=e592]: REQUEST
+                  - generic [ref=e593]:
+                    - generic [ref=e594]: PATH PARAMETERS
+                    - generic [ref=e595]:
+                      - generic [ref=e596]: "* itemId"
+                      - generic [ref=e597]: integer
+                      - textbox [ref=e598]: "579676"
+                      - paragraph [ref=e600]: Item identifier
+                      - text: "Examples:"
+                      - generic "579676" [ref=e601] [cursor=pointer]
+                    - generic [ref=e602]: QUERY-STRING PARAMETERS
+                    - generic [ref=e603]:
+                      - generic [ref=e604]: limit
+                      - generic [ref=e605]: integer
+                      - textbox [ref=e606]: "35"
+                      - generic [ref=e607]: "Default: 20"
+                      - paragraph [ref=e609]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e610] [cursor=pointer]
+                      - generic [ref=e611]: page
+                      - generic [ref=e612]: integer
+                      - textbox [ref=e613]: "10"
+                      - paragraph [ref=e615]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e616] [cursor=pointer]
+                      - generic [ref=e617]: format
+                      - generic [ref=e618]: enum
+                      - textbox [ref=e619]: xml
+                      - generic [ref=e620]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e621] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e622] [cursor=pointer]: xml
+                      - paragraph [ref=e624]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e625] [cursor=pointer]
+                      - generic [ref=e626]: fields
+                      - generic [ref=e627]: enum
+                      - textbox [ref=e628]: physicalDescription
+                      - generic [ref=e629]:
+                        - text: "Allowed:"
+                        - generic [ref=e630] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e631] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e632] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e633] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e634] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e635] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e636] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e637] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e638] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e639] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e640] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e641] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e642] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e643] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e644] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e645] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e646] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e647] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e648] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e650]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e651] [cursor=pointer]
+                    - generic [ref=e652]:
+                      - generic [ref=e653]:
+                        - generic [ref=e656]:
+                          - generic [ref=e657]: API Server
+                          - generic [ref=e658]: https://fraser.stlouisfed.org
+                        - generic [ref=e659]:
+                          - generic [ref=e660]: Authentication
+                          - generic [ref=e661]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e662] [cursor=pointer]
+                      - button "CLEAR" [ref=e663] [cursor=pointer]
+                      - button "TRY" [ref=e664] [cursor=pointer]
+                - generic [ref=e665]:
+                  - generic [ref=e666]: RESPONSE
+                  - generic [ref=e667]:
+                    - generic [ref=e668]: "200"
+                    - paragraph [ref=e672]: Successful request
+            - generic [ref=e674]:
+              - heading "All item records in title" [level=2] [ref=e675]
+              - generic [ref=e676]:
+                - generic [ref=e677]: get
+                - generic [ref=e678]: "/api/title/{titleId}/items"
+              - paragraph [ref=e680]: Returns all child items for a single FRASER title. If a title has a more complex child-parent relationship (as in series and archival collection), endpoint returns all immediate children, regardless of whether they are items or titles.
+              - generic [ref=e682]:
+                - img [ref=e683]
+                - link "API Key (X-API-Key)" [ref=e689] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e690]:
+                - generic [ref=e691]:
+                  - generic [ref=e692]: REQUEST
+                  - generic [ref=e693]:
+                    - generic [ref=e694]: PATH PARAMETERS
+                    - generic [ref=e695]:
+                      - generic [ref=e696]: "* titleId"
+                      - generic [ref=e697]: integer
+                      - textbox [ref=e698]: "41"
+                      - paragraph [ref=e700]: Title identifier
+                      - text: "Examples:"
+                      - generic "41" [ref=e701] [cursor=pointer]
+                    - generic [ref=e702]: QUERY-STRING PARAMETERS
+                    - generic [ref=e703]:
+                      - generic [ref=e704]: limit
+                      - generic [ref=e705]: integer
+                      - textbox [ref=e706]: "35"
+                      - generic [ref=e707]: "Default: 20"
+                      - paragraph [ref=e709]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e710] [cursor=pointer]
+                      - generic [ref=e711]: page
+                      - generic [ref=e712]: integer
+                      - textbox [ref=e713]: "10"
+                      - paragraph [ref=e715]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e716] [cursor=pointer]
+                      - generic [ref=e717]: format
+                      - generic [ref=e718]: enum
+                      - textbox [ref=e719]: xml
+                      - generic [ref=e720]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e721] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e722] [cursor=pointer]: xml
+                      - paragraph [ref=e724]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e725] [cursor=pointer]
+                      - generic [ref=e726]: fields
+                      - generic [ref=e727]: enum
+                      - textbox [ref=e728]: physicalDescription
+                      - generic [ref=e729]:
+                        - text: "Allowed:"
+                        - generic [ref=e730] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e731] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e732] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e733] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e734] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e735] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e736] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e737] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e738] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e739] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e740] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e741] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e742] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e743] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e744] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e745] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e746] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e747] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e748] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e750]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e751] [cursor=pointer]
+                    - generic [ref=e752]:
+                      - generic [ref=e753]:
+                        - generic [ref=e756]:
+                          - generic [ref=e757]: API Server
+                          - generic [ref=e758]: https://fraser.stlouisfed.org
+                        - generic [ref=e759]:
+                          - generic [ref=e760]: Authentication
+                          - generic [ref=e761]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e762] [cursor=pointer]
+                      - button "CLEAR" [ref=e763] [cursor=pointer]
+                      - button "TRY" [ref=e764] [cursor=pointer]
+                - generic [ref=e765]:
+                  - generic [ref=e766]: RESPONSE
+                  - generic [ref=e767]:
+                    - generic [ref=e768]: "200"
+                    - paragraph [ref=e772]: Successful request
+          - generic [ref=e774]: table of contents
+          - generic [ref=e775]:
+            - generic [ref=e777]:
+              - heading "Item record table of contents" [level=2] [ref=e778]
+              - generic [ref=e779]:
+                - generic [ref=e780]: get
+                - generic [ref=e781]: "/api/item/{itemId}/toc"
+              - paragraph [ref=e783]: Returns table of contents entries for a specific FRASER item.
+              - generic [ref=e785]:
+                - img [ref=e786]
+                - link "API Key (X-API-Key)" [ref=e792] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e793]:
+                - generic [ref=e794]:
+                  - generic [ref=e795]: REQUEST
+                  - generic [ref=e796]:
+                    - generic [ref=e797]: PATH PARAMETERS
+                    - generic [ref=e798]:
+                      - generic [ref=e799]: "* itemId"
+                      - generic [ref=e800]: integer
+                      - textbox [ref=e801]: "579676"
+                      - paragraph [ref=e803]: Item identifier
+                      - text: "Examples:"
+                      - generic "579676" [ref=e804] [cursor=pointer]
+                    - generic [ref=e805]: QUERY-STRING PARAMETERS
+                    - generic [ref=e806]:
+                      - generic [ref=e807]: limit
+                      - generic [ref=e808]: integer
+                      - textbox [ref=e809]: "35"
+                      - generic [ref=e810]: "Default: 20"
+                      - paragraph [ref=e812]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e813] [cursor=pointer]
+                      - generic [ref=e814]: page
+                      - generic [ref=e815]: integer
+                      - textbox [ref=e816]: "10"
+                      - paragraph [ref=e818]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e819] [cursor=pointer]
+                      - generic [ref=e820]: format
+                      - generic [ref=e821]: enum
+                      - textbox [ref=e822]: xml
+                      - generic [ref=e823]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e824] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e825] [cursor=pointer]: xml
+                      - paragraph [ref=e827]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e828] [cursor=pointer]
+                      - generic [ref=e829]: fields
+                      - generic [ref=e830]: enum
+                      - textbox [ref=e831]: physicalDescription
+                      - generic [ref=e832]:
+                        - text: "Allowed:"
+                        - generic [ref=e833] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e834] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e835] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e836] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e837] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e838] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e839] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e840] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e841] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e842] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e843] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e844] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e845] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e846] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e847] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e848] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e849] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e850] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e851] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e853]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e854] [cursor=pointer]
+                    - generic [ref=e855]:
+                      - generic [ref=e856]:
+                        - generic [ref=e859]:
+                          - generic [ref=e860]: API Server
+                          - generic [ref=e861]: https://fraser.stlouisfed.org
+                        - generic [ref=e862]:
+                          - generic [ref=e863]: Authentication
+                          - generic [ref=e864]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e865] [cursor=pointer]
+                      - button "CLEAR" [ref=e866] [cursor=pointer]
+                      - button "TRY" [ref=e867] [cursor=pointer]
+                - generic [ref=e868]:
+                  - generic [ref=e869]: RESPONSE
+                  - generic [ref=e870]:
+                    - generic [ref=e871]: "200"
+                    - paragraph [ref=e875]: Successful request
+            - generic [ref=e877]:
+              - heading "Single table of contents record" [level=2] [ref=e878]
+              - generic [ref=e879]:
+                - generic [ref=e880]: get
+                - generic [ref=e881]: "/api/toc/{tocId}"
+              - paragraph [ref=e883]: Returns metadata for a single table of contents record.
+              - generic [ref=e885]:
+                - img [ref=e886]
+                - link "API Key (X-API-Key)" [ref=e892] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e893]:
+                - generic [ref=e894]:
+                  - generic [ref=e895]: REQUEST
+                  - generic [ref=e896]:
+                    - generic [ref=e897]: PATH PARAMETERS
+                    - generic [ref=e898]:
+                      - generic [ref=e899]: "* tocId"
+                      - generic [ref=e900]: integer
+                      - textbox [ref=e901]: "237707"
+                      - paragraph [ref=e903]: Table of Contents identifier
+                      - text: "Examples:"
+                      - generic "237707" [ref=e904] [cursor=pointer]
+                    - generic [ref=e905]: QUERY-STRING PARAMETERS
+                    - generic [ref=e906]:
+                      - generic [ref=e907]: limit
+                      - generic [ref=e908]: integer
+                      - textbox [ref=e909]: "35"
+                      - generic [ref=e910]: "Default: 20"
+                      - paragraph [ref=e912]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e913] [cursor=pointer]
+                      - generic [ref=e914]: page
+                      - generic [ref=e915]: integer
+                      - textbox [ref=e916]: "10"
+                      - paragraph [ref=e918]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e919] [cursor=pointer]
+                      - generic [ref=e920]: format
+                      - generic [ref=e921]: enum
+                      - textbox [ref=e922]: xml
+                      - generic [ref=e923]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e924] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e925] [cursor=pointer]: xml
+                      - paragraph [ref=e927]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e928] [cursor=pointer]
+                      - generic [ref=e929]: fields
+                      - generic [ref=e930]: enum
+                      - textbox [ref=e931]: physicalDescription
+                      - generic [ref=e932]:
+                        - text: "Allowed:"
+                        - generic [ref=e933] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e934] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e935] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e936] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e937] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e938] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e939] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e940] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e941] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e942] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e943] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e944] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e945] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e946] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e947] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e948] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e949] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e950] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e951] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e953]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e954] [cursor=pointer]
+                    - generic [ref=e955]:
+                      - generic [ref=e956]:
+                        - generic [ref=e959]:
+                          - generic [ref=e960]: API Server
+                          - generic [ref=e961]: https://fraser.stlouisfed.org
+                        - generic [ref=e962]:
+                          - generic [ref=e963]: Authentication
+                          - generic [ref=e964]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e965] [cursor=pointer]
+                      - button "CLEAR" [ref=e966] [cursor=pointer]
+                      - button "TRY" [ref=e967] [cursor=pointer]
+                - generic [ref=e968]:
+                  - generic [ref=e969]: RESPONSE
+                  - generic [ref=e970]:
+                    - generic [ref=e971]: "200"
+                    - generic [ref=e972]:
+                      - paragraph [ref=e975]: Successful request
+                      - generic [ref=e976]:
+                        - generic [ref=e977]:
+                          - button "EXAMPLE" [ref=e978] [cursor=pointer]
+                          - button "SCHEMA" [ref=e979] [cursor=pointer]
+                          - generic [ref=e981]: application/json
+                        - generic [ref=e984]:
+                          - button "Copy" [ref=e986] [cursor=pointer]
+                          - generic [ref=e987] [cursor=pointer]: "{"
+                          - generic [ref=e989]:
+                            - text: "\"value\":"
+                            - generic [ref=e990]: "\"{\"format\":\"json\",\"page\":1,\"limit\":100,\"fields\":[\"*\"],\"total\":1,\"records\":[{\"extent\":{\"endPage\":\"4\",\"startPage\":\"3\"},\"titleInfo\":[{\"title\":\"Preface\"}],\"recordInfo\":{\"recordIdentifier\":[\"237707\"],\"recordType\":\"toc\"},\"location\":{\"url\":[\"https://fraser.stlouisfed.org/title/banking-monetary-statistics-1941-1970-41/preface-237707\"],\"apiUrl\":[\"https://fraser.stlouisfed.org/api/toc/237707\"],\"pdfUrl\":[\"https://fraser.stlouisfed.org/docs/publications/bms/1941-1970/BMS41-70_complete.pdf\"],\"textUrl\":[\"https://fraser.stlouisfed.org/files/text/publications/bms/1941-1970/BMS41-70_complete.txt\"]},\"relatedItem\":[{\"@type\":\"parent\",\"recordInfo\":{\"recordIdentifier\":[\"41\"]},\"titleInfo\":[{\"title\":\"Banking and Monetary Statistics, 1941-1970\"}],\"name\":[{\"role\":\"creator\",\"namePart\":[\"Board of Governors of the Federal Reserve System (U.S.)\",{\"$\":\"1935-\",\"@type\":\"date\"}],\"recordInfo\":{\"recordIdentifier\":[\"3\"]}}]}],\"accessCondition\":\"For more information on rights relating to this item, please see: https://fraser.stlouisfed.org/title/banking-monetary-statistics-1941-1970-41/preface-237707\"}],\"start\":0}\""
+                          - generic [ref=e991]: "}"
+            - generic [ref=e993]:
+              - heading "Table of contents for specified title" [level=2] [ref=e994]
+              - generic [ref=e995]:
+                - generic [ref=e996]: get
+                - generic [ref=e997]: "/api/title/{titleId}/toc"
+              - paragraph [ref=e999]: Returns table of contents entries for a specific FRASER title.
+              - generic [ref=e1001]:
+                - img [ref=e1002]
+                - link "API Key (X-API-Key)" [ref=e1008] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1009]:
+                - generic [ref=e1010]:
+                  - generic [ref=e1011]: REQUEST
+                  - generic [ref=e1012]:
+                    - generic [ref=e1013]: PATH PARAMETERS
+                    - generic [ref=e1014]:
+                      - generic [ref=e1015]: "* titleId"
+                      - generic [ref=e1016]: integer
+                      - textbox [ref=e1017]: "41"
+                      - paragraph [ref=e1019]: Title identifier
+                      - text: "Examples:"
+                      - generic "41" [ref=e1020] [cursor=pointer]
+                    - generic [ref=e1021]:
+                      - generic [ref=e1022]:
+                        - generic [ref=e1025]:
+                          - generic [ref=e1026]: API Server
+                          - generic [ref=e1027]: https://fraser.stlouisfed.org
+                        - generic [ref=e1028]:
+                          - generic [ref=e1029]: Authentication
+                          - generic [ref=e1030]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1031] [cursor=pointer]
+                      - button "CLEAR" [ref=e1032] [cursor=pointer]
+                      - button "TRY" [ref=e1033] [cursor=pointer]
+                - generic [ref=e1034]:
+                  - generic [ref=e1035]: RESPONSE
+                  - generic [ref=e1036]:
+                    - generic [ref=e1037]: "200"
+                    - paragraph [ref=e1041]: Successful request
+          - generic [ref=e1043]: author
+          - generic [ref=e1044]:
+            - generic [ref=e1046]:
+              - heading "All author records" [level=2] [ref=e1047]
+              - generic [ref=e1048]:
+                - generic [ref=e1049]: get
+                - generic [ref=e1050]: /api/author
+              - paragraph [ref=e1052]: Returns an array of all authors in FRASER.
+              - generic [ref=e1054]:
+                - img [ref=e1055]
+                - link "API Key (X-API-Key)" [ref=e1061] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1062]:
+                - generic [ref=e1063]:
+                  - generic [ref=e1064]: REQUEST
+                  - generic [ref=e1065]:
+                    - generic [ref=e1066]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1067]:
+                      - generic [ref=e1068]: limit
+                      - generic [ref=e1069]: integer
+                      - textbox [ref=e1070]: "35"
+                      - generic [ref=e1071]: "Default: 20"
+                      - paragraph [ref=e1073]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e1074] [cursor=pointer]
+                      - generic [ref=e1075]: page
+                      - generic [ref=e1076]: integer
+                      - textbox [ref=e1077]: "10"
+                      - paragraph [ref=e1079]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e1080] [cursor=pointer]
+                      - generic [ref=e1081]: format
+                      - generic [ref=e1082]: enum
+                      - textbox [ref=e1083]: xml
+                      - generic [ref=e1084]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1085] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1086] [cursor=pointer]: xml
+                      - paragraph [ref=e1088]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1089] [cursor=pointer]
+                      - generic [ref=e1090]: fields
+                      - generic [ref=e1091]: enum
+                      - textbox [ref=e1092]: physicalDescription
+                      - generic [ref=e1093]:
+                        - text: "Allowed:"
+                        - generic [ref=e1094] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1095] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1096] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1097] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1098] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1099] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1100] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1101] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1102] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1103] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1104] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1105] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1106] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1107] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1108] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1109] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1110] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1111] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1112] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1114]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1115] [cursor=pointer]
+                    - generic [ref=e1116]:
+                      - generic [ref=e1117]:
+                        - generic [ref=e1120]:
+                          - generic [ref=e1121]: API Server
+                          - generic [ref=e1122]: https://fraser.stlouisfed.org
+                        - generic [ref=e1123]:
+                          - generic [ref=e1124]: Authentication
+                          - generic [ref=e1125]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1126] [cursor=pointer]
+                      - button "CLEAR" [ref=e1127] [cursor=pointer]
+                      - button "TRY" [ref=e1128] [cursor=pointer]
+                - generic [ref=e1129]:
+                  - generic [ref=e1130]: RESPONSE
+                  - generic [ref=e1131]:
+                    - generic [ref=e1132]: "200"
+                    - paragraph [ref=e1136]: Auto generated using Swagger Inspector
+            - generic [ref=e1138]:
+              - heading "Single author record" [level=2] [ref=e1139]
+              - generic [ref=e1140]:
+                - generic [ref=e1141]: get
+                - generic [ref=e1142]: "/api/author/{authorId}"
+              - paragraph [ref=e1144]: Returns metadata for a single author record
+              - generic [ref=e1146]:
+                - img [ref=e1147]
+                - link "API Key (X-API-Key)" [ref=e1153] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1154]:
+                - generic [ref=e1155]:
+                  - generic [ref=e1156]: REQUEST
+                  - generic [ref=e1157]:
+                    - generic [ref=e1158]: PATH PARAMETERS
+                    - generic [ref=e1159]:
+                      - generic [ref=e1160]: "* authorId"
+                      - generic [ref=e1161]: integer
+                      - textbox [ref=e1162]: "23"
+                      - paragraph [ref=e1164]: Author identifier
+                      - text: "Examples:"
+                      - generic "23" [ref=e1165] [cursor=pointer]
+                    - generic [ref=e1166]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1167]:
+                      - generic [ref=e1168]: format
+                      - generic [ref=e1169]: enum
+                      - textbox [ref=e1170]: xml
+                      - generic [ref=e1171]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1172] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1173] [cursor=pointer]: xml
+                      - paragraph [ref=e1175]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1176] [cursor=pointer]
+                      - generic [ref=e1177]: fields
+                      - generic [ref=e1178]: enum
+                      - textbox [ref=e1179]: physicalDescription
+                      - generic [ref=e1180]:
+                        - text: "Allowed:"
+                        - generic [ref=e1181] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1182] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1183] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1184] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1185] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1186] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1187] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1188] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1189] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1190] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1191] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1192] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1193] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1194] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1195] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1196] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1197] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1198] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1199] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1201]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1202] [cursor=pointer]
+                    - generic [ref=e1203]:
+                      - generic [ref=e1204]:
+                        - generic [ref=e1207]:
+                          - generic [ref=e1208]: API Server
+                          - generic [ref=e1209]: https://fraser.stlouisfed.org
+                        - generic [ref=e1210]:
+                          - generic [ref=e1211]: Authentication
+                          - generic [ref=e1212]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1213] [cursor=pointer]
+                      - button "CLEAR" [ref=e1214] [cursor=pointer]
+                      - button "TRY" [ref=e1215] [cursor=pointer]
+                - generic [ref=e1216]:
+                  - generic [ref=e1217]: RESPONSE
+                  - generic [ref=e1218]:
+                    - generic [ref=e1219]: "200"
+                    - generic [ref=e1220]:
+                      - paragraph [ref=e1223]: Successful request
+                      - generic [ref=e1224]:
+                        - generic [ref=e1225]:
+                          - button "EXAMPLE" [ref=e1226] [cursor=pointer]
+                          - button "SCHEMA" [ref=e1227] [cursor=pointer]
+                          - generic [ref=e1229]: application/json
+                        - generic [ref=e1232]:
+                          - button "Copy" [ref=e1234] [cursor=pointer]
+                          - generic [ref=e1235] [cursor=pointer]: "{"
+                          - generic [ref=e1237]:
+                            - text: "\"value\":"
+                            - generic [ref=e1238]: "\"{\"format\":\"json\",\"page\":1,\"limit\":100,\"fields\":[\"*\"],\"total\":1,\"records\":[{\"name\":[{\"@type\":\"personal\",\"namePart\":[\"Volcker, Paul A.\"]}],\"recordInfo\":{\"recordIdentifier\":[\"23\"],\"recordUpdatedDate\":\"2020-08-11 14:45:02\",\"recordContentSource\":[{\"$\":\"frs\",\"@authorityURI\":\"https://www.federalreservehistory.org/people/paul_a_volcker\"},{\"$\":\"naf\",\"@authorityURI\":\"http://id.loc.gov/authorities/names/n78057465\"}],\"recordType\":\"author\"},\"affiliation\":[\"Board of Governors of the Federal Reserve System (U.S.) -- Chairman (1979-1987)\",\"Federal Reserve Bank of New York -- President (1975-1979)\"],\"location\":{\"url\":[\"https://fraser.stlouisfed.org/author/volcker-paul-a\"],\"apiUrl\":[\"https://fraser.stlouisfed.org/api/author/23\"]}}],\"start\":0}\""
+                          - generic [ref=e1239]: "}"
+            - generic [ref=e1241]:
+              - heading "All records for specified author" [level=2] [ref=e1242]
+              - generic [ref=e1243]:
+                - generic [ref=e1244]: get
+                - generic [ref=e1245]: "/api/author/{authorId}/records"
+              - paragraph [ref=e1247]: Returns all records associated with a single author.
+              - generic [ref=e1249]:
+                - img [ref=e1250]
+                - link "API Key (X-API-Key)" [ref=e1256] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1257]:
+                - generic [ref=e1258]:
+                  - generic [ref=e1259]: REQUEST
+                  - generic [ref=e1260]:
+                    - generic [ref=e1261]: PATH PARAMETERS
+                    - generic [ref=e1262]:
+                      - generic [ref=e1263]: "* authorId"
+                      - generic [ref=e1264]: integer
+                      - textbox [ref=e1265]: "23"
+                      - paragraph [ref=e1267]: Author identifier
+                      - text: "Examples:"
+                      - generic "23" [ref=e1268] [cursor=pointer]
+                    - generic [ref=e1269]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1270]:
+                      - generic [ref=e1271]: role
+                      - generic [ref=e1272]: enum
+                      - textbox [ref=e1273]: subject
+                      - generic [ref=e1274]:
+                        - text: "Allowed:"
+                        - generic [ref=e1275] [cursor=pointer]: creator
+                        - text: ┃
+                        - generic [ref=e1276] [cursor=pointer]: contributor
+                        - text: ┃
+                        - generic [ref=e1277] [cursor=pointer]: editor
+                        - text: ┃
+                        - generic [ref=e1278] [cursor=pointer]: repository
+                        - text: ┃
+                        - generic [ref=e1279] [cursor=pointer]: uncertain
+                        - text: ┃
+                        - generic [ref=e1280] [cursor=pointer]: subject
+                      - paragraph [ref=e1282]: "Limits results based upon the author's role. Applicable only for the /author/{id}/records endpoint."
+                      - text: "Examples:"
+                      - generic "subject" [ref=e1283] [cursor=pointer]
+                    - generic [ref=e1284]:
+                      - generic [ref=e1285]:
+                        - generic [ref=e1288]:
+                          - generic [ref=e1289]: API Server
+                          - generic [ref=e1290]: https://fraser.stlouisfed.org
+                        - generic [ref=e1291]:
+                          - generic [ref=e1292]: Authentication
+                          - generic [ref=e1293]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1294] [cursor=pointer]
+                      - button "CLEAR" [ref=e1295] [cursor=pointer]
+                      - button "TRY" [ref=e1296] [cursor=pointer]
+                - generic [ref=e1297]:
+                  - generic [ref=e1298]: RESPONSE
+                  - generic [ref=e1299]:
+                    - generic [ref=e1300]: "200"
+                    - paragraph [ref=e1304]: Successful request
+          - generic [ref=e1306]: subject
+          - generic [ref=e1307]:
+            - generic [ref=e1309]:
+              - heading "Single subject record" [level=2] [ref=e1310]
+              - generic [ref=e1311]:
+                - generic [ref=e1312]: get
+                - generic [ref=e1313]: "/api/subject/{subjectId}"
+              - paragraph [ref=e1315]: Returns metadata for a single subject.
+              - generic [ref=e1317]:
+                - img [ref=e1318]
+                - link "API Key (X-API-Key)" [ref=e1324] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1325]:
+                - generic [ref=e1326]:
+                  - generic [ref=e1327]: REQUEST
+                  - generic [ref=e1328]:
+                    - generic [ref=e1329]: PATH PARAMETERS
+                    - generic [ref=e1330]:
+                      - generic [ref=e1331]: "* subjectId"
+                      - generic [ref=e1332]: integer
+                      - textbox [ref=e1333]: "5510"
+                      - paragraph [ref=e1335]: Subject identifier
+                      - text: "Examples:"
+                      - generic "5510" [ref=e1336] [cursor=pointer]
+                    - generic [ref=e1337]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1338]:
+                      - generic [ref=e1339]: format
+                      - generic [ref=e1340]: enum
+                      - textbox [ref=e1341]: xml
+                      - generic [ref=e1342]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1343] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1344] [cursor=pointer]: xml
+                      - paragraph [ref=e1346]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1347] [cursor=pointer]
+                      - generic [ref=e1348]: fields
+                      - generic [ref=e1349]: enum
+                      - textbox [ref=e1350]: physicalDescription
+                      - generic [ref=e1351]:
+                        - text: "Allowed:"
+                        - generic [ref=e1352] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1353] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1354] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1355] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1356] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1357] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1358] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1359] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1360] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1361] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1362] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1363] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1364] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1365] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1366] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1367] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1368] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1369] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1370] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1372]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1373] [cursor=pointer]
+                    - generic [ref=e1374]:
+                      - generic [ref=e1375]:
+                        - generic [ref=e1378]:
+                          - generic [ref=e1379]: API Server
+                          - generic [ref=e1380]: https://fraser.stlouisfed.org
+                        - generic [ref=e1381]:
+                          - generic [ref=e1382]: Authentication
+                          - generic [ref=e1383]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1384] [cursor=pointer]
+                      - button "CLEAR" [ref=e1385] [cursor=pointer]
+                      - button "TRY" [ref=e1386] [cursor=pointer]
+                - generic [ref=e1387]:
+                  - generic [ref=e1388]: RESPONSE
+                  - generic [ref=e1389]:
+                    - generic [ref=e1390]: "200"
+                    - generic [ref=e1391]:
+                      - paragraph [ref=e1394]: Successful request
+                      - generic [ref=e1395]:
+                        - generic [ref=e1396]:
+                          - button "EXAMPLE" [ref=e1397] [cursor=pointer]
+                          - button "SCHEMA" [ref=e1398] [cursor=pointer]
+                          - generic [ref=e1400]: application/json
+                        - generic [ref=e1403]:
+                          - button "Copy" [ref=e1405] [cursor=pointer]
+                          - generic [ref=e1406] [cursor=pointer]: "{"
+                          - generic [ref=e1408]:
+                            - text: "\"value\":"
+                            - generic [ref=e1409]: "\"{\"format\":\"json\",\"page\":1,\"limit\":100,\"fields\":[\"*\"],\"total\":1,\"records\":[{\"topic\":\"Accounting\",\"recordInfo\":{\"recordIdentifier\":[\"5510\"],\"recordCreationDate\":\"2015-10-21 14:35:24\",\"recordType\":\"subject\"},\"location\":{\"url\":[\"https://fraser.stlouisfed.org/subject/accounting\"],\"apiUrl\":[\"https://fraser.stlouisfed.org/api/subject/5510\"]},\"accessCondition\":\"For more information on rights relating to this item, please see: https://fraser.stlouisfed.org/subject/accounting\"}],\"start\":0}\""
+                          - generic [ref=e1410]: "}"
+            - generic [ref=e1412]:
+              - heading "All subject records" [level=2] [ref=e1413]
+              - generic [ref=e1414]:
+                - generic [ref=e1415]: get
+                - generic [ref=e1416]: /api/subject
+              - paragraph [ref=e1418]: Returns an array of all subjects in FRASER.
+              - generic [ref=e1420]:
+                - img [ref=e1421]
+                - link "API Key (X-API-Key)" [ref=e1427] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1428]:
+                - generic [ref=e1429]:
+                  - generic [ref=e1430]: REQUEST
+                  - generic [ref=e1431]:
+                    - generic [ref=e1432]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1433]:
+                      - generic [ref=e1434]: limit
+                      - generic [ref=e1435]: integer
+                      - textbox [ref=e1436]: "35"
+                      - generic [ref=e1437]: "Default: 20"
+                      - paragraph [ref=e1439]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e1440] [cursor=pointer]
+                      - generic [ref=e1441]: page
+                      - generic [ref=e1442]: integer
+                      - textbox [ref=e1443]: "10"
+                      - paragraph [ref=e1445]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e1446] [cursor=pointer]
+                      - generic [ref=e1447]: format
+                      - generic [ref=e1448]: enum
+                      - textbox [ref=e1449]: xml
+                      - generic [ref=e1450]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1451] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1452] [cursor=pointer]: xml
+                      - paragraph [ref=e1454]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1455] [cursor=pointer]
+                      - generic [ref=e1456]: fields
+                      - generic [ref=e1457]: enum
+                      - textbox [ref=e1458]: physicalDescription
+                      - generic [ref=e1459]:
+                        - text: "Allowed:"
+                        - generic [ref=e1460] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1461] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1462] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1463] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1464] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1465] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1466] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1467] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1468] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1469] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1470] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1471] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1472] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1473] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1474] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1475] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1476] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1477] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1478] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1480]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1481] [cursor=pointer]
+                    - generic [ref=e1482]:
+                      - generic [ref=e1483]:
+                        - generic [ref=e1486]:
+                          - generic [ref=e1487]: API Server
+                          - generic [ref=e1488]: https://fraser.stlouisfed.org
+                        - generic [ref=e1489]:
+                          - generic [ref=e1490]: Authentication
+                          - generic [ref=e1491]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1492] [cursor=pointer]
+                      - button "CLEAR" [ref=e1493] [cursor=pointer]
+                      - button "TRY" [ref=e1494] [cursor=pointer]
+                - generic [ref=e1495]:
+                  - generic [ref=e1496]: RESPONSE
+                  - generic [ref=e1497]:
+                    - generic [ref=e1498]: "200"
+                    - paragraph [ref=e1502]: Successful request
+            - generic [ref=e1504]:
+              - heading "All records with specified subject" [level=2] [ref=e1505]
+              - generic [ref=e1506]:
+                - generic [ref=e1507]: get
+                - generic [ref=e1508]: "/api/subject/{subjectId}/records"
+              - paragraph [ref=e1510]: Returns an array of all records that have a specific subject, with corresponding metadata.
+              - generic [ref=e1512]:
+                - img [ref=e1513]
+                - link "API Key (X-API-Key)" [ref=e1519] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1520]:
+                - generic [ref=e1521]:
+                  - generic [ref=e1522]: REQUEST
+                  - generic [ref=e1523]:
+                    - generic [ref=e1524]: PATH PARAMETERS
+                    - generic [ref=e1525]:
+                      - generic [ref=e1526]: "* subjectId"
+                      - generic [ref=e1527]: integer
+                      - textbox [ref=e1528]: "5510"
+                      - paragraph [ref=e1530]: Subject identifier
+                      - text: "Examples:"
+                      - generic "5510" [ref=e1531] [cursor=pointer]
+                    - generic [ref=e1532]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1533]:
+                      - generic [ref=e1534]: limit
+                      - generic [ref=e1535]: integer
+                      - textbox [ref=e1536]: "35"
+                      - generic [ref=e1537]: "Default: 20"
+                      - paragraph [ref=e1539]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e1540] [cursor=pointer]
+                      - generic [ref=e1541]: page
+                      - generic [ref=e1542]: integer
+                      - textbox [ref=e1543]: "10"
+                      - paragraph [ref=e1545]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e1546] [cursor=pointer]
+                      - generic [ref=e1547]: format
+                      - generic [ref=e1548]: enum
+                      - textbox [ref=e1549]: xml
+                      - generic [ref=e1550]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1551] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1552] [cursor=pointer]: xml
+                      - paragraph [ref=e1554]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1555] [cursor=pointer]
+                      - generic [ref=e1556]: fields
+                      - generic [ref=e1557]: enum
+                      - textbox [ref=e1558]: physicalDescription
+                      - generic [ref=e1559]:
+                        - text: "Allowed:"
+                        - generic [ref=e1560] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1561] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1562] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1563] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1564] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1565] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1566] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1567] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1568] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1569] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1570] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1571] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1572] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1573] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1574] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1575] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1576] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1577] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1578] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1580]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1581] [cursor=pointer]
+                    - generic [ref=e1582]:
+                      - generic [ref=e1583]:
+                        - generic [ref=e1586]:
+                          - generic [ref=e1587]: API Server
+                          - generic [ref=e1588]: https://fraser.stlouisfed.org
+                        - generic [ref=e1589]:
+                          - generic [ref=e1590]: Authentication
+                          - generic [ref=e1591]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1592] [cursor=pointer]
+                      - button "CLEAR" [ref=e1593] [cursor=pointer]
+                      - button "TRY" [ref=e1594] [cursor=pointer]
+                - generic [ref=e1595]:
+                  - generic [ref=e1596]: RESPONSE
+                  - generic [ref=e1597]:
+                    - generic [ref=e1598]: "200"
+                    - paragraph [ref=e1602]: Auto generated using Swagger Inspector
+          - generic [ref=e1604]: theme
+          - generic [ref=e1605]:
+            - generic [ref=e1607]:
+              - heading "All theme records" [level=2] [ref=e1608]
+              - generic [ref=e1609]:
+                - generic [ref=e1610]: get
+                - generic [ref=e1611]: /api/theme
+              - paragraph [ref=e1613]: Returns an array of all themes in FRASER.
+              - generic [ref=e1615]:
+                - img [ref=e1616]
+                - link "API Key (X-API-Key)" [ref=e1622] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1623]:
+                - generic [ref=e1624]:
+                  - generic [ref=e1625]: REQUEST
+                  - generic [ref=e1626]:
+                    - generic [ref=e1627]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1628]:
+                      - generic [ref=e1629]: limit
+                      - generic [ref=e1630]: integer
+                      - textbox [ref=e1631]: "35"
+                      - generic [ref=e1632]: "Default: 20"
+                      - paragraph [ref=e1634]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e1635] [cursor=pointer]
+                      - generic [ref=e1636]: page
+                      - generic [ref=e1637]: integer
+                      - textbox [ref=e1638]: "10"
+                      - paragraph [ref=e1640]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e1641] [cursor=pointer]
+                      - generic [ref=e1642]: format
+                      - generic [ref=e1643]: enum
+                      - textbox [ref=e1644]: xml
+                      - generic [ref=e1645]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1646] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1647] [cursor=pointer]: xml
+                      - paragraph [ref=e1649]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1650] [cursor=pointer]
+                      - generic [ref=e1651]: fields
+                      - generic [ref=e1652]: enum
+                      - textbox [ref=e1653]: physicalDescription
+                      - generic [ref=e1654]:
+                        - text: "Allowed:"
+                        - generic [ref=e1655] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1656] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1657] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1658] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1659] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1660] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1661] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1662] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1663] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1664] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1665] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1666] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1667] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1668] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1669] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1670] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1671] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1672] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1673] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1675]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1676] [cursor=pointer]
+                    - generic [ref=e1677]:
+                      - generic [ref=e1678]:
+                        - generic [ref=e1681]:
+                          - generic [ref=e1682]: API Server
+                          - generic [ref=e1683]: https://fraser.stlouisfed.org
+                        - generic [ref=e1684]:
+                          - generic [ref=e1685]: Authentication
+                          - generic [ref=e1686]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1687] [cursor=pointer]
+                      - button "CLEAR" [ref=e1688] [cursor=pointer]
+                      - button "TRY" [ref=e1689] [cursor=pointer]
+                - generic [ref=e1690]:
+                  - generic [ref=e1691]: RESPONSE
+                  - generic [ref=e1692]:
+                    - generic [ref=e1693]: "200"
+                    - paragraph [ref=e1697]: Successful request
+            - generic [ref=e1699]:
+              - heading "Single theme record" [level=2] [ref=e1700]
+              - generic [ref=e1701]:
+                - generic [ref=e1702]: get
+                - generic [ref=e1703]: "/api/theme/{themeId}"
+              - paragraph [ref=e1705]: Returns metadata for a single theme.
+              - generic [ref=e1707]:
+                - img [ref=e1708]
+                - link "API Key (X-API-Key)" [ref=e1714] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1715]:
+                - generic [ref=e1716]:
+                  - generic [ref=e1717]: REQUEST
+                  - generic [ref=e1718]:
+                    - generic [ref=e1719]: PATH PARAMETERS
+                    - generic [ref=e1720]:
+                      - generic [ref=e1721]: "* themeId"
+                      - generic [ref=e1722]: integer
+                      - textbox [ref=e1723]: "5"
+                      - paragraph [ref=e1725]: Theme identifier
+                      - text: "Examples:"
+                      - generic "5" [ref=e1726] [cursor=pointer]
+                    - generic [ref=e1727]:
+                      - generic [ref=e1728]:
+                        - generic [ref=e1731]:
+                          - generic [ref=e1732]: API Server
+                          - generic [ref=e1733]: https://fraser.stlouisfed.org
+                        - generic [ref=e1734]:
+                          - generic [ref=e1735]: Authentication
+                          - generic [ref=e1736]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1737] [cursor=pointer]
+                      - button "CLEAR" [ref=e1738] [cursor=pointer]
+                      - button "TRY" [ref=e1739] [cursor=pointer]
+                - generic [ref=e1740]:
+                  - generic [ref=e1741]: RESPONSE
+                  - generic [ref=e1742]:
+                    - generic [ref=e1743]: "200"
+                    - generic [ref=e1744]:
+                      - paragraph [ref=e1747]: Successful request
+                      - generic [ref=e1748]:
+                        - generic [ref=e1749]:
+                          - button "EXAMPLE" [ref=e1750] [cursor=pointer]
+                          - button "SCHEMA" [ref=e1751] [cursor=pointer]
+                          - generic [ref=e1753]: application/json
+                        - generic [ref=e1756]:
+                          - button "Copy" [ref=e1758] [cursor=pointer]
+                          - generic [ref=e1759] [cursor=pointer]: "{"
+                          - generic [ref=e1761]:
+                            - text: "\"value\":"
+                            - generic [ref=e1762]: "\"{\"format\":\"json\",\"page\":1,\"limit\":100,\"fields\":[\"*\"],\"total\":1,\"records\":[{\"subject\":{\"topic\":[{\"recordInfo\":{\"recordIdentifier\":[\"4140\"]},\"topic\":\"Depressions\"},{\"recordInfo\":{\"recordIdentifier\":[\"4189\"]},\"topic\":\"Financial crises and bank panics\"},{\"recordInfo\":{\"recordIdentifier\":[\"4105\"]},\"topic\":\"Business cycles\"}]},\"abstract\":[\"A depression is a period of sustained downturn in economic growth and activity. A (banking) panic is a type of financial crisis affecting banks across a region or country in which bank customers lose confidence and withdraw their deposits, leading to bank failures. Panics and depressions are often linked.\"],\"titleInfo\":[{\"title\":\"Depressions and Panics\"}],\"recordInfo\":{\"recordIdentifier\":[\"5\"],\"recordUpdatedDate\":\"2020-06-03 12:10:25\",\"recordType\":\"theme\"},\"relatedItem\":[{\"url\":[\"http://www.library.hbs.edu/hc/crises/1837.html\"],\"@type\":\"link\",\"titleInfo\":[{\"title\":\"Harvard Library Historical Collections: Bubbles, Panics & Crashes\"}]},{\"url\":[\"http://www.moaf.org/exhibits/checks_balances/andrew-jackson/materials/Panic_of_1819.pdf\"],\"@type\":\"link\",\"titleInfo\":[{\"title\":\"Museum of American Finance: The Panic of 1819: America's First Great Depression (PDF)\"}]},{\"url\":[\"http://en.wikipedia.org/wiki/List_of_banking_crises\"],\"@type\":\"link\",\"titleInfo\":[{\"title\":\"Wikipedia: List of Banking Crises\"}]}],\"location\":{\"url\":[\"https://fraser.stlouisfed.org/theme/depressions-panics\"],\"apiUrl\":[\"https://fraser.stlouisfed.org/api/theme/5\"]},\"accessCondition\":\"For more information on rights relating to this item, please see: https://fraser.stlouisfed.org/theme/depressions-panics\"}],\"start\":0}\""
+                          - generic [ref=e1763]: "}"
+            - generic [ref=e1765]:
+              - heading "All records in theme" [level=2] [ref=e1766]
+              - generic [ref=e1767]:
+                - generic [ref=e1768]: get
+                - generic [ref=e1769]: "/api/theme/{themeId}/records"
+              - paragraph [ref=e1771]: Returns all the records associated with a specific theme, as well as with corresponding metadata.
+              - generic [ref=e1773]:
+                - img [ref=e1774]
+                - link "API Key (X-API-Key)" [ref=e1780] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1781]:
+                - generic [ref=e1782]:
+                  - generic [ref=e1783]: REQUEST
+                  - generic [ref=e1784]:
+                    - generic [ref=e1785]: PATH PARAMETERS
+                    - generic [ref=e1786]:
+                      - generic [ref=e1787]: "* themeId"
+                      - generic [ref=e1788]: integer
+                      - textbox [ref=e1789]: "5"
+                      - paragraph [ref=e1791]: Theme identifier
+                      - text: "Examples:"
+                      - generic "5" [ref=e1792] [cursor=pointer]
+                    - generic [ref=e1793]:
+                      - generic [ref=e1794]:
+                        - generic [ref=e1797]:
+                          - generic [ref=e1798]: API Server
+                          - generic [ref=e1799]: https://fraser.stlouisfed.org
+                        - generic [ref=e1800]:
+                          - generic [ref=e1801]: Authentication
+                          - generic [ref=e1802]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1803] [cursor=pointer]
+                      - button "CLEAR" [ref=e1804] [cursor=pointer]
+                      - button "TRY" [ref=e1805] [cursor=pointer]
+                - generic [ref=e1806]:
+                  - generic [ref=e1807]: RESPONSE
+                  - generic [ref=e1808]:
+                    - generic [ref=e1809]: "200"
+                    - paragraph [ref=e1813]: Successful request
+          - generic [ref=e1815]: timeline
+          - generic [ref=e1816]:
+            - generic [ref=e1818]:
+              - heading "Single timeline record" [level=2] [ref=e1819]
+              - generic [ref=e1820]:
+                - generic [ref=e1821]: get
+                - generic [ref=e1822]: "/api/timeline/{timelineId}"
+              - paragraph [ref=e1824]: Returns metadata for a single timeline.
+              - generic [ref=e1826]:
+                - img [ref=e1827]
+                - link "API Key (X-API-Key)" [ref=e1833] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1834]:
+                - generic [ref=e1835]:
+                  - generic [ref=e1836]: REQUEST
+                  - generic [ref=e1837]:
+                    - generic [ref=e1838]: PATH PARAMETERS
+                    - generic [ref=e1839]:
+                      - generic [ref=e1840]: "* timelineId"
+                      - generic [ref=e1841]: string
+                      - textbox [ref=e1842]: financial-crisis
+                      - paragraph [ref=e1844]: Timeline identifier
+                      - text: "Examples:"
+                      - generic "financial-crisis" [ref=e1845] [cursor=pointer]
+                    - generic [ref=e1846]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1847]:
+                      - generic [ref=e1848]: format
+                      - generic [ref=e1849]: enum
+                      - textbox [ref=e1850]: xml
+                      - generic [ref=e1851]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1852] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1853] [cursor=pointer]: xml
+                      - paragraph [ref=e1855]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1856] [cursor=pointer]
+                      - generic [ref=e1857]: fields
+                      - generic [ref=e1858]: enum
+                      - textbox [ref=e1859]: physicalDescription
+                      - generic [ref=e1860]:
+                        - text: "Allowed:"
+                        - generic [ref=e1861] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1862] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1863] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1864] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1865] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1866] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1867] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1868] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1869] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1870] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1871] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1872] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1873] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1874] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1875] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1876] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1877] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1878] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1879] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1881]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1882] [cursor=pointer]
+                    - generic [ref=e1883]:
+                      - generic [ref=e1884]:
+                        - generic [ref=e1887]:
+                          - generic [ref=e1888]: API Server
+                          - generic [ref=e1889]: https://fraser.stlouisfed.org
+                        - generic [ref=e1890]:
+                          - generic [ref=e1891]: Authentication
+                          - generic [ref=e1892]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e1893] [cursor=pointer]
+                      - button "CLEAR" [ref=e1894] [cursor=pointer]
+                      - button "TRY" [ref=e1895] [cursor=pointer]
+                - generic [ref=e1896]:
+                  - generic [ref=e1897]: RESPONSE
+                  - generic [ref=e1898]:
+                    - generic [ref=e1899]: "200"
+                    - generic [ref=e1900]:
+                      - paragraph [ref=e1903]: Successful request
+                      - generic [ref=e1904]:
+                        - generic [ref=e1905]:
+                          - button "EXAMPLE" [ref=e1906] [cursor=pointer]
+                          - button "SCHEMA" [ref=e1907] [cursor=pointer]
+                          - generic [ref=e1909]: application/json
+                        - generic [ref=e1912]:
+                          - button "Copy" [ref=e1914] [cursor=pointer]
+                          - generic [ref=e1915] [cursor=pointer]: "{"
+                          - generic [ref=e1917]:
+                            - text: "\"value\":"
+                            - generic [ref=e1918]: "\"{\"format\":\"json\",\"page\":1,\"limit\":100,\"fields\":[\"*\"],\"total\":1,\"records\":[{\"url\":\"https://fraser.stlouisfed.org/timeline/financial-crisis\",\"title\":\"Federal Reserve Bank of St. Louis' Financial Crisis Timeline\",\"description\":\"\",\"created\":\"2016-03-03 08:51:55.587701\",\"modified\":\"2020-11-30 12:04:51\",\"abstract\":\"In December of 2008, the Federal Reserve Bank of St. Louis launched an online hub of the latest news and developments regarding what would become known as the Financial Crisis of 2007-2009. The site provided a detailed and up-to-date timeline of key events and actions surrounding the crisis. The timelineÂ has been reproduced here for preservation. Additional documents, collections, and supporting resources regarding the Financial Crisis of 2007-2009 can be found in the Financial Crisis of 2007-2009 theme.\",\"id\":\"financial-crisis\"}],\"start\":0}\""
+                          - generic [ref=e1919]: "}"
+            - generic [ref=e1921]:
+              - heading "All timeline records" [level=2] [ref=e1922]
+              - generic [ref=e1923]:
+                - generic [ref=e1924]: get
+                - generic [ref=e1925]: /api/timeline
+              - paragraph [ref=e1927]: Returns an array of all timelines in FRASER.
+              - generic [ref=e1929]:
+                - img [ref=e1930]
+                - link "API Key (X-API-Key)" [ref=e1936] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e1937]:
+                - generic [ref=e1938]:
+                  - generic [ref=e1939]: REQUEST
+                  - generic [ref=e1940]:
+                    - generic [ref=e1941]: QUERY-STRING PARAMETERS
+                    - generic [ref=e1942]:
+                      - generic [ref=e1943]: limit
+                      - generic [ref=e1944]: integer
+                      - textbox [ref=e1945]: "35"
+                      - generic [ref=e1946]: "Default: 20"
+                      - paragraph [ref=e1948]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e1949] [cursor=pointer]
+                      - generic [ref=e1950]: page
+                      - generic [ref=e1951]: integer
+                      - textbox [ref=e1952]: "10"
+                      - paragraph [ref=e1954]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e1955] [cursor=pointer]
+                      - generic [ref=e1956]: format
+                      - generic [ref=e1957]: enum
+                      - textbox [ref=e1958]: xml
+                      - generic [ref=e1959]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e1960] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e1961] [cursor=pointer]: xml
+                      - paragraph [ref=e1963]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e1964] [cursor=pointer]
+                      - generic [ref=e1965]: fields
+                      - generic [ref=e1966]: enum
+                      - textbox [ref=e1967]: physicalDescription
+                      - generic [ref=e1968]:
+                        - text: "Allowed:"
+                        - generic [ref=e1969] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e1970] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e1971] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e1972] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e1973] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e1974] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e1975] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e1976] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e1977] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e1978] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e1979] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e1980] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e1981] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e1982] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e1983] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e1984] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e1985] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e1986] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e1987] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e1989]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e1990] [cursor=pointer]
+                    - generic [ref=e1991]:
+                      - generic [ref=e1992]:
+                        - generic [ref=e1995]:
+                          - generic [ref=e1996]: API Server
+                          - generic [ref=e1997]: https://fraser.stlouisfed.org
+                        - generic [ref=e1998]:
+                          - generic [ref=e1999]: Authentication
+                          - generic [ref=e2000]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e2001] [cursor=pointer]
+                      - button "CLEAR" [ref=e2002] [cursor=pointer]
+                      - button "TRY" [ref=e2003] [cursor=pointer]
+                - generic [ref=e2004]:
+                  - generic [ref=e2005]: RESPONSE
+                  - generic [ref=e2006]:
+                    - generic [ref=e2007]: "200"
+                    - paragraph [ref=e2011]: Auto generated using Swagger Inspector
+            - generic [ref=e2013]:
+              - heading "All events in specified timeline" [level=2] [ref=e2014]
+              - generic [ref=e2015]:
+                - generic [ref=e2016]: get
+                - generic [ref=e2017]: "/api/timeline/{timelineId}/events"
+              - paragraph [ref=e2019]: Returns all events associated with a specific timeline.
+              - generic [ref=e2021]:
+                - img [ref=e2022]
+                - link "API Key (X-API-Key)" [ref=e2028] [cursor=pointer]:
+                  - /url: "#auth"
+              - generic [ref=e2029]:
+                - generic [ref=e2030]:
+                  - generic [ref=e2031]: REQUEST
+                  - generic [ref=e2032]:
+                    - generic [ref=e2033]: PATH PARAMETERS
+                    - generic [ref=e2034]:
+                      - generic [ref=e2035]: "* timelineId"
+                      - generic [ref=e2036]: string
+                      - textbox [ref=e2037]: financial-crisis
+                      - paragraph [ref=e2039]: Timeline identifier
+                      - text: "Examples:"
+                      - generic "financial-crisis" [ref=e2040] [cursor=pointer]
+                    - generic [ref=e2041]: QUERY-STRING PARAMETERS
+                    - generic [ref=e2042]:
+                      - generic [ref=e2043]: limit
+                      - generic [ref=e2044]: integer
+                      - textbox [ref=e2045]: "35"
+                      - generic [ref=e2046]: "Default: 20"
+                      - paragraph [ref=e2048]: Specifies the number of results that return per page.
+                      - text: "Examples:"
+                      - generic "35" [ref=e2049] [cursor=pointer]
+                      - generic [ref=e2050]: page
+                      - generic [ref=e2051]: integer
+                      - textbox [ref=e2052]: "10"
+                      - paragraph [ref=e2054]: Pages through a long list of results.
+                      - text: "Examples:"
+                      - generic "10" [ref=e2055] [cursor=pointer]
+                      - generic [ref=e2056]: format
+                      - generic [ref=e2057]: enum
+                      - textbox [ref=e2058]: xml
+                      - generic [ref=e2059]:
+                        - text: "Default: json"
+                        - text: "Allowed:"
+                        - generic [ref=e2060] [cursor=pointer]: json
+                        - text: ┃
+                        - generic [ref=e2061] [cursor=pointer]: xml
+                      - paragraph [ref=e2063]: Enables users to specify the preferred response.
+                      - text: "Examples:"
+                      - generic "xml" [ref=e2064] [cursor=pointer]
+                      - generic [ref=e2065]: fields
+                      - generic [ref=e2066]: enum
+                      - textbox [ref=e2067]: physicalDescription
+                      - generic [ref=e2068]:
+                        - text: "Allowed:"
+                        - generic [ref=e2069] [cursor=pointer]: titleInfo
+                        - text: ┃
+                        - generic [ref=e2070] [cursor=pointer]: language
+                        - text: ┃
+                        - generic [ref=e2071] [cursor=pointer]: note
+                        - text: ┃
+                        - generic [ref=e2072] [cursor=pointer]: location
+                        - text: ┃
+                        - generic [ref=e2073] [cursor=pointer]: name
+                        - text: ┃
+                        - generic [ref=e2074] [cursor=pointer]: physicalDescription
+                        - text: ┃
+                        - generic [ref=e2075] [cursor=pointer]: subject
+                        - text: ┃
+                        - generic [ref=e2076] [cursor=pointer]: accessCondition
+                        - text: ┃
+                        - generic [ref=e2077] [cursor=pointer]: typeOfResource
+                        - text: ┃
+                        - generic [ref=e2078] [cursor=pointer]: abstract
+                        - text: ┃
+                        - generic [ref=e2079] [cursor=pointer]: classification
+                        - text: ┃
+                        - generic [ref=e2080] [cursor=pointer]: genre
+                        - text: ┃
+                        - generic [ref=e2081] [cursor=pointer]: tableOfContents
+                        - text: ┃
+                        - generic [ref=e2082] [cursor=pointer]: relatedItem
+                        - text: ┃
+                        - generic [ref=e2083] [cursor=pointer]: extension
+                        - text: ┃
+                        - generic [ref=e2084] [cursor=pointer]: originInfo
+                        - text: ┃
+                        - generic [ref=e2085] [cursor=pointer]: targetAudience
+                        - text: ┃
+                        - generic [ref=e2086] [cursor=pointer]: identifier
+                        - text: ┃
+                        - generic [ref=e2087] [cursor=pointer]: recordInfo
+                      - paragraph [ref=e2089]: Allows users to specify a bang ('!')-delimited list of metadata fields to return.
+                      - text: "Examples:"
+                      - generic "physicalDescription" [ref=e2090] [cursor=pointer]
+                    - generic [ref=e2091]:
+                      - generic [ref=e2092]:
+                        - generic [ref=e2095]:
+                          - generic [ref=e2096]: API Server
+                          - generic [ref=e2097]: https://fraser.stlouisfed.org
+                        - generic [ref=e2098]:
+                          - generic [ref=e2099]: Authentication
+                          - generic [ref=e2100]: Required (None Applied)
+                      - button "FILL EXAMPLE" [ref=e2101] [cursor=pointer]
+                      - button "CLEAR" [ref=e2102] [cursor=pointer]
+                      - button "TRY" [ref=e2103] [cursor=pointer]
+                - generic [ref=e2104]:
+                  - generic [ref=e2105]: RESPONSE
+                  - generic [ref=e2106]:
+                    - generic [ref=e2107]: "200"
+                    - paragraph [ref=e2111]: Auto generated using Swagger Inspector
+  - contentinfo [ref=e2112]:
+    - generic [ref=e2113]:
+      - generic [ref=e2114]:
+        - generic [ref=e2115]:
+          - heading "SUBSCRIBE TO THE FRASER NEWSLETTER" [level=2] [ref=e2116]
+          - generic [ref=e2118]:
+            - textbox "Email" [ref=e2119]
+            - button "Subscribe" [ref=e2120] [cursor=pointer]
+        - generic [ref=e2121]:
+          - generic [ref=e2123]:
+            - generic [ref=e2124]: FOLLOW FRASER
+            - link "@FedFRASER" [ref=e2125] [cursor=pointer]:
+              - /url: https://x.com/fedfraser
+              - img "@FedFRASER" [ref=e2126]
+          - generic [ref=e2128]:
+            - generic [ref=e2129]: WHAT'S NEW
+            - link "RSS Feed" [ref=e2130] [cursor=pointer]:
+              - /url: /rss/whatsnew.php
+              - generic [ref=e2131]: 
+      - generic [ref=e2132]:
+        - heading "NEED HELP?" [level=2] [ref=e2133]
+        - generic [ref=e2134]:
+          - link "About" [ref=e2135] [cursor=pointer]:
+            - /url: /about
+          - link "FAQ" [ref=e2136] [cursor=pointer]:
+            - /url: /faq
+          - link "Legal and Privacy" [ref=e2137] [cursor=pointer]:
+            - /url: https://www.stlouisfed.org/about-us/legal-information
+          - link "Contact Us" [ref=e2138] [cursor=pointer]:
+            - /url: /contact
