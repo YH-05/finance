@@ -51,7 +51,7 @@ $$ R_{Quality,t} = \alpha + \beta_{Val} R_{Value,t} + \beta_{Size} R_{Size,t} + 
 
 グロースL/Sが入手可能なら、デレーティング感応度をより直接的に切り分けられる。グロース銘柄は高マルチプル・高デュレーション資産であり、金利上昇局面でのデレーティングを最も強く受ける。
 
-$$ R_{Quality,t} = \alpha + \beta_{Val} R_{Value,t} + \beta_{Growth} R_{Growth,t} + (\text{他}) + \epsilon_t $$
+$$ R_{Quality,t} = \alpha + \beta_{Val} R_{Value,t} + \beta_{Growth} R_{Growth,t} + \beta_{Size} R_{Size,t} + \beta_{Mom} R_{Mom,t} + \beta_{LowVol} R_{LowVol,t} + \epsilon_t $$
 
 ただしバリューとグロースは強い負相関を持つため、両方を同時投入すると**多重共線性**が発生する。VIF(分散拡大係数)を確認し、必要なら一方のみ採用するか、両者の差(Value−Growth)を単一説明変数にする。
 
