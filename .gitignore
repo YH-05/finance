@@ -105,3 +105,6 @@ notebook/FILING_NLP/data/
 
 # REGIME_SWITCHING experiment data (FRED weekly raw, features, S&P500 returns parquets)
 notebook/REGIME_SWITCHING/data/*.parquet
+
+# FRASER FOMC corpus downloaded texts (fomc_corpus.py download で再取得可能)
+notebook/FRASER/data/texts/
