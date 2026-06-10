@@ -126,6 +126,31 @@ from .nasdaq import (
 from .nasdaq import (
     fetch_stock_news_api_paginated as fetch_nasdaq_stock_news_paginated,
 )
+from .reuters import (
+    collect_reuters_news,
+    save_reuters_news,
+)
+from .reuters import (
+    convert_rics as convert_reuters_rics,
+)
+from .reuters import (
+    entry_to_article as reuters_entry_to_article,
+)
+from .reuters import (
+    fetch_sitemap_index as fetch_reuters_sitemap_index,
+)
+from .reuters import (
+    filter_articles as filter_reuters_articles,
+)
+from .reuters import (
+    load_nasdaq_directory as load_reuters_nasdaq_directory,
+)
+from .reuters import (
+    parse_sitemap_xml as parse_reuters_sitemap_xml,
+)
+from .reuters import (
+    validate_nasdaq_tickers as validate_reuters_nasdaq_tickers,
+)
 from .session import create_async_session, create_session
 from .tdnet import (
     async_fetch_disclosure_feed,
@@ -245,8 +270,11 @@ __all__ = [
     "collect_financial_news_fast",
     "collect_nasdaq_historical",
     "collect_nasdaq_news",
+    # Reuters
+    "collect_reuters_news",
     # yfinance
     "collect_yfinance_news",
+    "convert_reuters_rics",
     # セッション
     "create_async_session",
     "create_session",
@@ -265,6 +293,7 @@ __all__ = [
     "fetch_nasdaq_stock_news",
     "fetch_nasdaq_stock_news_paginated",
     "fetch_nasdaq_stocks",
+    "fetch_reuters_sitemap_index",
     "fetch_tdnet_codes",
     # Toyokeizai
     "fetch_toyokeizai_categories",
@@ -277,8 +306,14 @@ __all__ = [
     "fetch_yf_searches",
     "fetch_yf_ticker_news",
     "fetch_yf_tickers",
+    "filter_reuters_articles",
     "gather_with_errors",
     "get_delay",
+    "load_reuters_nasdaq_directory",
+    "parse_reuters_sitemap_xml",
+    "reuters_entry_to_article",
+    "save_reuters_news",
+    "validate_reuters_nasdaq_tickers",
 ]
 
 __version__ = "0.1.0"
