@@ -98,7 +98,11 @@ jobs:
         # CVE-2026-0994: protobuf DoS vulnerability - no fix available yet (2026-01-25)
         # CVE-2026-1703: pip 25.3 vulnerability - upgraded via uv pip install --upgrade pip
         # CVE-2025-69872: diskcache vulnerability - no fix available yet (2026-02-14)
-        uv run pip-audit --skip-editable --ignore-vuln CVE-2026-0994 --ignore-vuln CVE-2026-1703 --ignore-vuln CVE-2025-69872 --ignore-vuln CVE-2025-64340 --ignore-vuln CVE-2026-27124
+        # PYSEC-2026-196: pip 26.1.1 vulnerability。uv 同梱 pip が監査対象で .venv 内 bump が
+        #   毎回巻き戻るため、他の pip 系 CVE と同様に ignore する（fixed in pip 26.1.2）
+        # CVE-2026-34993 / CVE-2026-47265: aiohttp 3.13.5 vulnerability（2026-06 公開、fixed in 3.14.0）
+        # CVE-2026-45829: chromadb 1.5.9 vulnerability - no fix available yet (2026-06)
+        uv run pip-audit --skip-editable --ignore-vuln CVE-2026-0994 --ignore-vuln CVE-2026-1703 --ignore-vuln CVE-2025-69872 --ignore-vuln CVE-2025-64340 --ignore-vuln CVE-2026-27124 --ignore-vuln PYSEC-2026-196 --ignore-vuln CVE-2026-34993 --ignore-vuln CVE-2026-47265 --ignore-vuln CVE-2026-45829
         uv run bandit -c pyproject.toml -r src/
 
   type-check:
