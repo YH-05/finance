@@ -2,9 +2,10 @@
 prepare_data.py
 """
 
-import pandas as pd
 from pathlib import Path
+
 import numpy as np
+import pandas as pd
 
 
 def invert_high_low_label(df: pd.DataFrame) -> pd.DataFrame:
