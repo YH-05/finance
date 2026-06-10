@@ -113,19 +113,21 @@ def copy_state_files(
         src = source_dir / name
         dst = target_dir / name
         if not src.exists():
-            logger.warning(
-                "state file not found in source", extra={"file": str(src)}
-            )
+            logger.warning("state file not found in source", extra={"file": str(src)})
             continue
         if dry_run:
-            logger.info("[dry-run] would copy", extra={"src": str(src), "dst": str(dst)})
+            logger.info(
+                "[dry-run] would copy", extra={"src": str(src), "dst": str(dst)}
+            )
             continue
         shutil.copy2(src, dst)
         copied.append(name)
     return copied
 
 
-def merge(source_db: Path, target_db: Path, *, dry_run: bool = False) -> dict[str, tuple[int, int]]:
+def merge(
+    source_db: Path, target_db: Path, *, dry_run: bool = False
+) -> dict[str, tuple[int, int]]:
     """source DB を target DB にマージする (テーブル単位 INSERT OR REPLACE).
 
     Parameters
