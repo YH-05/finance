@@ -1,0 +1,1576 @@
+The Beige Book
+Summary of Commentary on
+Current Economic Conditions by
+Federal Reserve District
+August 2025
+
+FEDERAL RESERVE SYSTEM
+
+i
+
+Contents
+About This Publication .................................................................................................... ii
+National Summary ........................................................................................................... 1
+Federal Reserve Bank of Boston .................................................................................. 5
+Federal Reserve Bank of New York .............................................................................. 9
+Federal Reserve Bank of Philadelphia ....................................................................... 13
+Federal Reserve Bank of Cleveland ............................................................................ 17
+Federal Reserve Bank of Richmond ........................................................................... 21
+Federal Reserve Bank of Atlanta ................................................................................ 24
+Federal Reserve Bank of Chicago .............................................................................. 28
+Federal Reserve Bank of St. Louis ............................................................................. 32
+Federal Reserve Bank of Minneapolis ....................................................................... 36
+Federal Reserve Bank of Kansas City ........................................................................ 40
+Federal Reserve Bank of Dallas .................................................................................. 44
+Federal Reserve Bank of San Francisco .................................................................... 48
+
+ii
+
+About This Publication
+What is the Beige Book?
+The Beige Book is a Federal Reserve System publication about current economic conditions
+across the 12 Federal Reserve Districts. It characterizes regional economic conditions and prospects based on a variety of mostly qualitative information, gathered directly from each District’s
+sources. Reports are published eight times per year.
+
+What is the purpose of the Beige Book?
+The Beige Book is intended to characterize the change in economic conditions since the last
+report. Outreach for the Beige Book is one of many ways the Federal Reserve System engages
+with businesses and other organizations about economic developments in their communities.
+Because this information is collected from a wide range of contacts through a variety of formal
+and informal methods, the Beige Book can complement other forms of regional information gathering. The Beige Book is not a commentary on the views of Federal Reserve officials.
+
+How is the information collected?
+Each Federal Reserve Bank gathers information on current economic conditions in its District
+through reports from Bank and Branch directors, plus interviews and online questionnaires completed by businesses, community organizations, economists, market experts, and other sources.
+Contacts are not selected at random; rather, Banks strive to curate a diverse set of sources that
+can provide accurate and objective information about a broad range of economic activities. The
+Beige Book serves as a regular summary of this information for the public.
+
+How is the information used?
+The information from contacts supplements the data and analysis used by Federal Reserve economists and staff to assess economic conditions in the Federal Reserve Districts. The qualitative
+nature of the Beige Book creates an opportunity to characterize dynamics and identify emerging
+trends in the economy that may not be readily apparent in the available economic data. This inforNote: The Federal Reserve officially identifies Districts by number and Reserve Bank city. In the 12th District, the Seattle
+Branch serves Alaska, and the San Francisco Bank serves Hawaii. The System serves commonwealths and territories as
+follows: the New York Bank serves the Commonwealth of Puerto Rico and the U.S. Virgin Islands; the San Francisco Bank
+serves American Samoa, Guam, and the Commonwealth of the Northern Mariana Islands. The Board of Governors revised
+the branch boundaries of the System in February 1996.
+
+iii
+
+The Beige Book
+
+mation enables comparison of economic conditions in different parts of the country, which can be
+helpful for assessing the outlook for the national economy.
+
+The Beige Book does not have the type of information I’m looking
+for. What other information is available?
+The Federal Reserve System conducts a wide array of recurring surveys of businesses, households, and community organizations. A list of statistical releases compiled by the Federal Reserve
+Board is available here, links to each of the Federal Reserve Banks are available here, and a summary of the System’s community outreach is available here. In addition, Fed Listens events have
+been held around the country to hear about how monetary policy affects peoples’ daily lives and
+livelihoods. The System also relies on a variety of advisory councils—whose members are drawn
+from a wide array of businesses, non-profit organizations, and community groups—to hear diverse
+perspectives on the economy in carrying out its responsibilities.
+
+1
+
+National Summary
+Overall Economic Activity
+Most of the twelve Federal Reserve Districts reported little or no change in economic activity since
+the prior Beige Book period—the four Districts that differed reported modest growth. Across
+Districts, contacts reported flat to declining consumer spending because, for many households,
+wages were failing to keep up with rising prices. Contacts frequently cited economic uncertainty
+and tariffs as negative factors. New York reported that “consumers were being squeezed by rising
+costs of insurance, utilities, and other expenses.” Contacts observed the following responses to
+the consumer pullback. Retail and hospitality sectors offered deals and promotions to help pricesensitive consumers stretch their dollars—supporting steady demand from domestic leisure tourists but not offsetting falling demand from international visitors. The auto sector noted flat to
+slightly higher sales, while consumer demand increased for parts and services to repair older
+vehicles. Manufacturing firms reported shifting to local supply chains where feasible and often
+using automation to cut costs. The push to deploy AI partly explains the surge of data center
+construction—a rare strength in commercial real estate noted by the Philadelphia, Cleveland, and
+Chicago Districts. Atlanta and Kansas City reported that data centers had increased energy
+demand in their Districts. Overall, sentiment was mixed among the Districts. Most firms either
+reported little to no change in optimism or expressed differing expectations about the direction of
+change from their contacts.
+
+Labor Markets
+Eleven Districts described little or no net change in overall employment levels, while one District
+described a modest decline. Seven Districts noted that firms were hesitant to hire workers
+because of weaker demand or uncertainty. Moreover, contacts in two Districts reported an
+increase in layoffs, while contacts in multiple Districts reported reducing headcounts through
+attrition—encouraged, at times, by return-to-office policies and facilitated, at times, by greater
+automation, including new AI tools. In turn, most Districts mentioned an increase in the number of
+people looking for jobs. However, half of the Districts noted that contacts reported a reduction in
+the availability of immigrant labor, with New York, Richmond, St. Louis, and San Francisco highlighting its impact on the construction industry. Half of the Districts described modest growth in
+wages, while most of the others reported moderate growth. Two Districts noted little or no change
+in wages.
+Note: This report was prepared at the Federal Reserve Bank of Philadelphia based on information collected on or before
+August 25, 2025. This document summarizes comments received from contacts outside the Federal Reserve System and
+is not a commentary on the views of Federal Reserve officials.
+
+2
+
+The Beige Book
+
+Prices
+Ten Districts characterized price growth as moderate or modest. The other two Districts described
+strong input price growth that outpaced moderate or modest selling price growth. Nearly all
+Districts noted tariff-related price increases, with contacts from many Districts reporting that tariffs
+were especially impactful on the prices of inputs. Contacts in multiple Districts also reported rising
+prices for insurance, utilities, and technology services. While some firms reported passing through
+their entire cost increases to customers, some firms in nearly all Districts described at least
+some hesitancy in raising prices, citing customer price sensitivity, lack of pricing power, and fear of
+losing business. In some cases, as highlighted by Cleveland and Minneapolis, firms reported
+being under pressure to lower prices because of competition, despite facing increased input
+costs. Most Districts reported that their firms were expecting price increases to continue in the
+months ahead, with three of those Districts noting that the pace of price increases was expected
+to rise further.
+
+Highlights by Federal Reserve District
+Boston
+Economic activity expanded slightly overall, but consumer spending was flat. Employment was
+down slightly, while wages and prices increased modestly. Home sales increased moderately from
+a year earlier. The outlook remained cautiously optimistic on balance, although tariff-related uncertainty dimmed the outlook for consumer spending.
+
+New York
+Economic activity declined slightly as tariff-related uncertainty continued to weigh on businesses.
+Employment in the region was mostly unchanged, and wage growth remained modest. Selling
+prices rose at a moderate pace, marking some acceleration since the previous reporting period,
+and input prices rose strongly.
+
+Philadelphia
+Business activity increased modestly in the current Beige Book period. Employment levels held
+steady, and wages rose at modest pre-pandemic rates. Firm prices rose moderately, straining budgets for many households and small businesses, and inflation expectations are higher still. In
+addition, tariffs and federal budget cuts are expected to add additional stress. Still, expectations
+for future growth broadened among most firms.
+
+National Summary
+
+Cleveland
+Fourth District business activity increased slightly in recent weeks, and contacts expected activity
+to rise modestly in the months ahead. Manufacturers reported flat demand because of uncertainty, and retailers said sales were flat because of affordability concerns. Contacts said cost
+growth remained robust, while their selling prices increased modestly.
+
+Richmond
+The regional economy grew modestly in recent weeks. Consumer spending drove the overall growth
+as activity in non-consumer facing sectors of the economy were flat to down slightly. In particular,
+manufacturing activity was down modestly this cycle. Employment levels were largely unchanged,
+and wage growth remained moderate. Price growth remained moderate, overall, despite some
+pickup in price growth in the services sector.
+
+Atlanta
+The Sixth District economy declined slightly. Employment remained steady, and wage pressures
+moderated. Prices rose moderately. Consumer spending slowed, leisure travel fell, and business
+travel was flat. Home sales rose slightly; commercial real estate weakened. Transportation and
+manufacturing declined modestly. Lending at District banks increased. Energy activity rose.
+
+Chicago
+Economic activity in the Seventh District increased modestly. Consumer spending increased moderately; manufacturing activity increased modestly; employment and business spending increased
+slightly; nonbusiness contacts saw no change in activity; and construction and real estate activity
+declined slightly. Prices rose moderately, wages rose modestly, and financial conditions loosened
+slightly. Prospects for 2025 farm income were unchanged.
+
+St. Louis
+Economic activity and employment levels have remained unchanged while wages and prices have
+increased at a faster pace in the recent past. Contacts continue to express a high degree of
+uncertainty and concern about the impact of immigration policies on labor supply; they expect
+prices to accelerate over the next year due to tariffs. The outlook remains slightly pessimistic, but
+deterioration has subsided.
+
+3
+
+4
+
+The Beige Book
+
+Minneapolis
+District economic activity contracted slightly. Employment fell as labor demand softened. Wage
+pressures were moderate, and prices ticked up modestly. Consumer spending fell as price sensitivity rose. Manufacturing also fell, with wide variation among contacts. Commercial and residential construction improved slightly, and home sales rose slightly. Agricultural conditions remained
+weak given poor commodity prices and despite good crop conditions.
+
+Kansas City
+Economic activity was generally flat across the District. Employment declined modestly, and wage
+pressures remained subdued, although growth in non-wage benefit expenses caused total labor
+costs to rise. Input price growth was broad-based and contributed to moderate growth in selling
+prices, declines in profit margins, and expectations of sustained price pressures.
+
+Dallas
+Economic activity in the Eleventh District economy rose modestly, buoyed by a pickup in nonfinancial services and manufacturing activity. Loan demand grew, but the housing market
+remained weak. Employment was flat and staffing firms noted slow hiring activity. Price pressures
+persisted, particularly in the manufacturing sector. Outlooks improved but there was widespread
+trepidation regarding shifting trade policy, high interest rates, and more restrictive immigration
+policy.
+
+San Francisco
+Economic activity edged down slightly. Employment levels were down slightly. Wages grew somewhat, and prices rose modestly. Conditions in agriculture, retail trade, and consumer and business
+services sectors eased slightly. Manufacturing activity declined modestly. Conditions in residential
+and commercial real estate were largely unchanged, and lending activity was stable.
+
+5
+
+Federal Reserve Bank of
+Boston
+Summary of Economic Activity
+Economic activity expanded slightly overall, with mixed results across sectors. Prices increased at
+a modest pace, as did wages. Consumer spending was roughly flat for retailers and restaurants,
+and tourism activity softened a bit. Manufacturing sales rose modestly on average, with strength
+in AI-related products. Staffing services activity increased slightly, driven by demand for temporary
+and administrative roles. Commercial real estate activity expanded but was still considered weak.
+Residential real estate activity rose at a modest pace as inventory growth helped to boost home
+sales. The outlook remained cautiously optimistic among manufacturing, staffing, and residential
+real estate contacts. Sentiment, however, remained pessimistic among commercial real estate
+contacts and became more guarded among retail and tourism contacts.
+
+Labor Markets
+Employment was down slightly overall, and wage growth was modest. Manufacturing employment
+contracted a bit, although most manufacturers maintained steady headcounts. Restaurant employment decreased modestly from a year earlier, reflecting a reduction in the number of establishments. Retail and hospitality headcounts were roughly unchanged. Staffing contacts described
+employment and labor demand as mostly flat from the previous quarter, aside from a modest
+uptick in hiring in the accounting, finance, and legal professions. According to those same contacts, some firms remained hesitant to make major hiring decisions, while others started to hire
+again after a pause, but with a preference for temporary positions. Firms remained highly selective, increasing the time to fill vacancies, while layoffs were unchanged or down slightly. Labor
+supply improved on balance. For white-collar roles, job candidates became less selective in
+accepting offers but maintained a preference for remote and hybrid work. Among retail and restaurant contacts, wage pressures were more muted than in recent years. One retailer implemented
+moderate merit wage increases. Manufacturers enacted modest wage increases on average,
+though one manufacturer postponed its annual wage increase to January 2026. One manufacturer
+planned moderate increases in hiring moving forward, but otherwise no major changes in employment were expected.
+
+6
+
+The Beige Book
+
+Prices
+Prices increased modestly on average. A clothing retailer marked up its prices by 10 to 15 percent
+on about half of its items, citing tariffs as the reason. Other retailers raised their prices only
+slightly, however, with one home furnishings seller noting that manufacturers had absorbed a
+greater share of tariffs than anticipated. Among restaurant contacts, menu prices increased
+slightly in response to increases in wholesale food prices, fuel prices, and insurance rates,
+although some inputs, such as dairy products, experienced price declines from a year earlier.
+Hotel prices rose modestly despite decreased occupancy rates. Among manufacturers, output
+prices increased modestly on average, driven in most cases by tariffs on inputs; however, price
+increases did not fully match cost increases, as firms were concerned about losing business. At
+least one manufacturer tried to mitigate the impact of tariffs by adjusting its supply chains. A few
+contacts expected further cost and price increases in the coming months, but most did not comment on the outlook for prices.
+
+Retail and Tourism
+First District retail and restaurant sales were roughly flat in recent months, while tourism activity
+softened slightly. A Massachusetts restaurant industry contact said that sales were generally flat
+compared with last year, with Cape Cod establishments reporting seasonally typical results
+despite a rainy start to the summer. A clothing retailer experienced flat sales on average in recent
+months. A home goods retailer noted continued softness throughout the sector but experienced a
+moderate increase in revenues as a result of gaining market share. A discount retailer reported a
+modest decline in sales, which were hurt by reduced cross-border activity with Canada. Airline passenger traffic through Boston was flat in recent months, and, relative to 2024, there was a slight
+decline in domestic passengers and an uptick in international passengers. Hotel occupancy in
+Greater Boston declined modestly in recent months. Several contacts perceived that the combination of tariffs and historically high uncertainty threatened to dampen consumer spending moving
+forward.
+
+Manufacturing and Related Services
+On average, manufacturing sales rose modestly from the previous quarter, although contacts
+reported results that ranged from moderate declines in sales to robust gains. The firm that experienced a decline in sales said that the timing of shipments was mostly to blame, as the underlying
+demand, especially for their AI-related products, remained quite strong. The contact reporting
+robust growth attributed it to a rebound in demand for digital data storage products, after clients
+depleted their previously large inventories of such goods. Capital expenditures were largely
+unchanged. The outlook called for modest to moderate sales growth going forward, with AI-related
+demand contributing to increased optimism for some firms.
+
+Federal Reserve Bank of Boston
+
+Staffing Services
+Staffing services contacts reported a slight increase in activity from the previous quarter overall,
+although some firms described labor demand as flat. Compared with one year earlier, total placements increased substantially for one firm, especially for temporary roles, and demand fell slightly
+at another firm for the same period. Billing rates were unchanged, while pay rates were up slightly.
+Some contacts noted significant increases in health insurance costs and employee onboarding
+costs. Staffing firms became somewhat more optimistic for their own businesses, and one perceived that uncertainty was waning. One contact anticipated significant growth in the overall
+staffing industry in New England in the coming year, linked to increased demand for administrative,
+engineering, and light industrial or manufacturing roles.
+
+Commercial Real Estate
+Commercial real estate activity expanded slightly, although contacts continued to view the market
+as weak overall. Retail properties experienced moderate rent growth, while rents were mostly
+unchanged in other sectors. Office leasing activity increased slightly further, driven by large companies, but contacts emphasized that the improvements were minimal. One contact pointed out that
+Boston’s office market, which typically tracks New York’s in broad terms, was not experiencing a
+resurgence in office demand on par with that seen recently in New York. New construction was limited, despite pent-up demand for multifamily housing and retail properties. Industrial leasing
+activity was quite sluggish, and the overall level was down from last year. Multifamily leasing and
+sales were stable, but rents were flat. The outlook for commercial real estate activity remained
+pessimistic on balance, although one contact became somewhat more optimistic, and another
+said that uncertainty was waning. Contacts said that high interest rates continued to deter real
+estate activity and that tariffs had weakened the outlook for overall economic growth.
+
+Residential Real Estate
+Single-family home sales increased moderately from a year earlier (as of June or July, depending
+on the respondent), buoyed by a combination of rising inventories and healthy, stable demand.
+Condominium sales varied from steep declines to strong increases depending on the state but
+rose slightly on average. Single-family home prices increased by moderate to above-average
+margins in all New England states except Vermont, which posted moderate price declines, and
+Connecticut, which furnished no data. Condominium price changes varied widely across markets.
+Contacts reported moderate-to-large increases in home inventories, especially for condominiums.
+The rise in single-family inventories was reportedly driven mainly by existing homes, whereas some
+of the rise in condominium inventories represented new construction. Despite recent inventory
+growth, contacts described supply as still tight in relation to a balanced market. Contacts
+
+7
+
+8
+
+The Beige Book
+
+remained optimistic that rising inventories would continue to support healthy sales moving
+forward.
+For more information about District economic conditions visit: https://www.bostonfed.org/in-theregion.aspx.
+
+9
+
+Federal Reserve Bank of
+New York
+Summary of Economic Activity
+Economic activity in the Second District continued to decline slightly as tariff-related uncertainty
+continued to weigh on businesses. Employment in the region was mostly unchanged during the
+reporting period, and wage growth remained modest. Selling prices rose at a moderate pace,
+marking some acceleration since the previous period. Input prices continued to rise at a strong
+pace. Manufacturing activity picked up modestly following a prolonged slump. Activity in the service sector declined at a moderate pace. Consumer spending increased slightly. With demand
+remaining solid, housing markets were steady across the District. Businesses were slightly pessimistic about the outlook.
+
+Labor Markets
+Employment in the region was mostly unchanged during the reporting period. Firms in information,
+construction, and education and health reported a decline in headcounts, while personal services
+firms as well as wholesalers reported some growth in employment.
+Labor supply continued to exceed demand in many industries. With heightened uncertainty, businesses are still in wait-and-see mode and have been reluctant to meaningfully reduce or expand
+their workforces, and larger businesses in particular have been less willing to make commitments.
+An employment agency in upstate New York reported that jobs were harder to get; workers were
+staying put, and attrition remained extremely low. Still, workers remained somewhat hard to find in
+some industries, particularly in manufacturing and healthcare, as well as construction, where a
+decline in immigrant labor has begun to lead to project delays. Some employers shifted to four-day
+workweeks to retain workers. There were no signs of major layoffs in the region.
+Wage growth held steady at a modest pace. Firms in construction and in leisure and hospitality
+saw strong growth in wages, while wage growth in finance and transportation remained more
+tepid. Contacts anticipated continued modest wage growth in the coming months.
+
+10
+
+The Beige Book
+
+Prices
+Pricing pressures continued to rise during the reporting period, driven mostly by tariff-related
+costs. Selling prices rose moderately, marking some acceleration since the previous period. Input
+prices continued to rise at a strong pace. Multiple contacts reported a significant rise in insurance
+and utility costs. So far, there has been little impact on new car prices from the tariffs due to
+exemptions and implementation lags, with some manufacturers absorbing increased costs. An
+importer of European stainless steel used in the auto and aerospace industries reported passing
+on the full cost of the tariffs to customers, and a shipping company noted customers were
+importing European steel that just became more expensive with higher tariffs and no alternative
+domestic suppliers. An IT provider noted that their input costs were starting to increase as they
+ran out of supplies purchased before tariff increases. Several businesses reported that they
+planned to hike prices to cover the higher cost of tariffed inputs. Contacts increasingly anticipated
+a pickup in the pace of price growth in the months ahead.
+
+Consumer Spending
+Consumer spending increased slightly. Still, contacts reported that consumers were being
+squeezed by rising costs of insurance, utilities, and other expenses, limiting their discretionary
+income. Low home sales reduced household shopping for home improvement products and furnishings. Alcohol sales were slow during the summer. A restaurant in upstate New York noted
+higher customer counts but lower average spending. Upstate New York auto dealers reported a
+modest sales rebound from a summer slowdown that followed a spring surge to avoid potential
+tariffs.
+
+Manufacturing and Distribution
+Manufacturing activity picked up modestly following a prolonged slump. New orders and shipments
+increased modestly. However, uncertainty and volatility related to tariffs and trade policy continued
+to weigh on firms, with many delaying decision-making and strategy-setting. One regional manufacturer reported significant delays in receiving inputs from a U.S. supplier that was exceedingly busy
+due to firms shifting purchases to domestic sources. A wood products manufacturer in upstate
+New York reported a sharp decline in sales to Canada, while shortages of pine logs resulted in a
+mill stoppage, even with solid demand for pine products. Wholesale and distribution-related firms
+saw slight increases in business activity. One contact noted that trucking rates remained lower
+than normal as sagging demand forced trucking companies to lower their rates. A coffee roaster
+reported that tariffs on Brazilian coffee and on other supplies were creating shockwaves through
+the supply chain. A wholesale firm in New Jersey noted a sharp decline in capital purchases from
+local governments. Delivery times lengthened, and supply availability worsened slightly. Inventories
+
+Federal Reserve Bank of New York
+
+declined. A trade contact noted that forthcoming restrictions on Chinese-built ships is expected to
+constrain shipping capacity. Manufacturers anticipated modest growth in the months ahead.
+
+Services
+Activity in the service sector declined at a moderate pace. There were more significant declines in
+retail and in leisure and hospitality, as well as in the education and health care sectors.
+Tourism activity in New York City picked up slightly. Visits from overseas travelers remained sluggish, partly due to a reduction in Canadian visitors, but domestic tourism stayed solid. In spite of
+high hotel occupancy and record daily rates, attendance at attractions continued to lag, and
+Broadway ticket sales were somewhat weaker than earlier in the summer. The outlook for next
+summer is more positive, with the World Cup expected to draw large numbers of both international
+and domestic visitors to New York City.
+
+Real Estate and Construction
+Housing markets were steady and demand remained solid. Supply has been increasing slowly, but
+with ongoing strong demand, prices have continued to rise in most parts of the District. Sales
+were steady, with supply still a limiting factor in the New York City suburbs and upstate New York.
+Bidding wars pushed many sales prices above asking price. Luxury home sales remained brisk,
+particularly in the Hamptons, where high-end buyers, often using cash, were less affected by high
+mortgage rates.
+The New York City rental market continued to reach historic highs this summer, with momentum
+from robust demand and a bump from the recent implementation of a new law governing broker
+fees on rental units.
+Commercial real estate markets showed ongoing improvement, despite lingering uncertainty and
+concerns about potential longer-term challenges. A commercial real estate contact noted that
+leasing activity in New York has surged with significant new and renewal leases, leading to
+reduced vacancies and stable asking rents. Major deals from prominent companies have driven
+record high rents in Class A Midtown office space. Industrial demand remained strong in Northern
+New Jersey, with a surge in leasing for warehouse and distribution space. Building sales declined
+in New York City, although there have been some positive signs in recent weeks. Construction
+activity continued to decline.
+
+11
+
+12
+
+The Beige Book
+
+Banking and Finance
+Activity in the broad finance sector continued to pick up after a prolonged slump. Still, small-tomedium-sized banks in the District reported weakening loan demand and shrinking deposits.
+Banking contacts reported that credit standards had eased for all loan types, including business
+loans, consumer loans, and both commercial and residential mortgages. Delinquency rates generally improved since the last reporting period, but an auto industry expert noted an uptick in
+repossessions.
+
+Community Perspectives
+Many rural areas are underserved by healthcare professionals, including nurses, doctors, and support staff, and funding constraints are likely to exacerbate existing shortages. Community leaders
+anticipated that upcoming changes to Medicaid may cause reductions in health care services
+more broadly, including hospital closures, as well as a greater number of uncompensated services. Additionally, community leaders expected the new work requirements for Medicaid recipients to exacerbate existing childcare shortages.
+For more information about District economic conditions visit: https://www.newyorkfed.org/
+regional-economy.
+
+13
+
+Federal Reserve Bank of
+Philadelphia
+Summary of Economic Activity
+Business activity in the Third District increased modestly after declining modestly in the prior
+period. Employment levels held steady during the period, as did wage growth, which remained near
+its modest pre-pandemic rate. For some entry-level positions and some workers, wage increases
+are no longer keeping pace with price increases—especially as firms adjust both workforces and
+prices in response to tariffs. Firms’ own price inflation ticked up but remained at a moderate pace,
+above its pre-pandemic rate. Moreover, firms reported that expectations for general inflation held
+above 4.6 percent and that expected wage inflation ticked down. Several contacts expressed concerns that joblessness rates and prices are rising and that wages are stagnating for lower-skilled
+workers and lower-income households; in addition, rising tariffs and tighter credit standards are
+straining small businesses. Expectations for economic growth over the next six months broadened
+across most sectors but were stronger among manufacturers than nonmanufacturers.
+
+Labor Markets
+On balance, employment was unchanged after falling slightly in the prior period. A modest rise in
+the full-time nonmanufacturing employment index for July was offset by a comparable decline in
+August, while the part-time employment index edged down over both months. However, over the
+same period, manufacturing firms reported a modest increase in employment. Also, the average
+workweek index rose among all surveyed firms.
+Several contacts continued to report a lack of certain skilled workers, although most contacts
+noted an overall increase in job candidates, in part because of an uptick in layoffs. One nonprofit
+reported receiving 275 applications for an executive-level position.
+Meanwhile, job opportunities have fallen, in part because existing workers “are hunkering down”
+in their current positions and because more firms are automating. Contacts in the banking,
+tourism, and auto sectors all reported the continued adoption of AI technology to replace some
+jobs/functions.
+Nonprofits noted rising unemployment among their clientele. One contact reported that people are
+working several part-time jobs (without benefits) to make a sufficient income if they either lose or
+
+14
+
+The Beige Book
+
+fail to secure a full-time job. Several private firms expressed concern that recent cuts to transit
+services, including the Southeastern Pennsylvania Transportation Authority in Greater Philadelphia,
+will hurt employees and customers.
+On balance, contacts reported that wage increases steadied near (modest) pre-pandemic rates
+after running somewhat hotter in the prior period. A staffing contact reported that clients with
+larger firms had slowed hiring, while some clients with smaller firms had lowered salaries for
+entry-level positions. However, a hotel contact reported ongoing upward wage pressure for lowskilled labor in urban markets with union contracts.
+On a quarterly basis, firms’ expectations of the one-year-ahead change in compensation cost per
+worker fell to a trimmed mean of 3.3 percent in the third quarter of 2025, from 3.7 percent in the
+second quarter. For comparison, wage expectations averaged 3.2 percent over the four years prior
+to the pandemic (2016–2019).
+
+Prices
+On a quarterly basis, firms continued to report moderate increases in prices received for their own
+goods and services over the past year. The trimmed mean for reported price changes, based on
+responses from all firms to our third-quarter survey, ticked up to 2.9 percent from 2.8 percent in
+the second quarter. Reported price increases averaged 2.0 percent over the prior five quarters.
+Several contacts noted that incomes are not keeping pace with rising prices for an increasing
+number of households. Firms reported that more than half of their customers have become more
+price sensitive since the prior quarter. One retailer reported reluctance to pass on price increases
+from its suppliers and is finding other ways to cut costs. Nonprofits reported that higher prices
+have increased the demand for basic needs, including food, shelter, and utilities. Contacts are
+concerned that federal budget cuts will increase the strain on more households and will affect
+their own customers and part-time staff.
+Looking ahead one year, the increases that firms anticipate in the prices for their own goods rose
+for the second consecutive quarter. The trimmed mean for all firms climbed to 3.3 percent in the
+third quarter of 2025, from 3.1 percent in the second quarter and 2.6 percent in the first quarter.
+However, firms continued to expect that tariffs will drive prices higher. The trimmed mean for inflation expectations was 4.7 percent for all firms in the third quarter of 2025—up from 3.0 percent
+last year.
+
+Federal Reserve Bank of Philadelphia
+
+Manufacturing
+On balance, current manufacturing activity increased modestly after edging up slightly in the prior
+period; however, the most recent reports for August were flat. The indexes for new orders and
+shipments rose moderately in our July surveys, then fell in August.
+Manufacturers remained optimistic for growth over the next six months. Almost 60 percent of the
+firms expect increases in new orders and shipments.
+
+Trade and Services
+On balance, firms across a broad spectrum of nonmanufacturing industries reported a moderate
+increase in activity, up from a moderate decline in the last period. Both the new orders and sales/
+revenues indexes rose modestly in July and moderately in August.
+Retailers (nonauto) reported a slight increase in sales over the current period, up from slight
+declines in the prior period; however, one contact noted that the uptick is partly attributable to
+aggressive price promotions.
+Auto dealers reported a slight increase in auto sales, up from slight decreases in the last period.
+One contact reported that pre-tariff inventory is almost sold out and that tariffs have begun to
+cause an increase in new car prices. However, manufacturers have increased incentives to
+drive sales.
+Activity in the tourism sector declined slightly, down from a slight increase in the last period. Leisure travel dipped slightly, despite discounts being offered to attract price-sensitive consumers.
+One contact noted that luxury travel is the only positive market segment.
+Expectations for growth over the next six months have broadened among nonmanufacturers since
+the prior period, but the future activity index remains below its nonrecession average.
+
+Real Estate and Construction
+Existing home sales continued to increase slightly. The inventory of for-sale properties and closed
+sales ticked up in June and July. New-home builders also reported a slight uptick in sales in June
+and July after recording modest declines in the prior period. One contact observed that some
+homebuyers who were previously on the sidelines because of increased economic uncertainty are
+now deciding to purchase.
+
+15
+
+16
+
+The Beige Book
+
+In nonresidential markets, leasing activity and transaction volumes recorded slight growth. Nonresidential construction activity continued to record slight declines in this period, despite the construction of some data centers and power generation plants. Noting the recent post-pandemic
+supply chain disruptions and rising prices for commodities and labor, project owners and developers are making greater use of escalator clauses and larger contingency funds.
+
+Credit Conditions
+The volume of bank lending (excluding credit cards) held steady during the period (not seasonally
+adjusted)—weaker than the slight growth observed during the comparable period in 2024—and
+after falling slightly in the prior period.
+District banks reported modest increases in commercial real estate lending and auto loans and
+moderate growth of residential mortgages and home equity lines. Growth was more robust for consumer lending (other than auto and credit cards), while overall loan growth was offset by a strong
+decrease in commercial and industrial loans. Credit card volumes increased slightly, down from
+modest increases during the same period one year ago.
+Banking contacts reported an uptick in activity, including deposits and loan originations. They also
+noted a slight rise in nonperforming loans. Likewise, a large service firm noted an acceleration in
+nonpayment activity that started among low-income consumers and has now spread to other
+income tiers. Other financial contacts noted that small businesses are disproportionately affected
+by tariffs and are facing new barriers to access capital.
+For more information about District economic conditions visit: https://www.philadelphiafed.org/
+regional-economy.
+
+17
+
+Federal Reserve Bank of
+Cleveland
+Summary of Economic Activity
+Fourth District contacts reported a slight increase in overall business activity in recent weeks and
+expected activity to rise modestly in the months ahead. Consumer spending was flat, with retailers
+noting continued affordability concerns among consumers. Manufacturers also reported flat
+demand for goods, citing trade policy uncertainty as the main driver. Demand for professional and
+business services grew moderately, albeit at a slower pace than in the past three reporting
+periods. Contacts generally reported flat employment levels and modest wage pressures. Nonlabor cost pressures remained robust, and selling prices continued to grow modestly.
+
+Labor Markets
+Overall, contact reports suggested flat employment levels in recent weeks. Many contacts noted
+decreased demand for labor in response to flattening demand. Multiple contacts across industries
+reported reducing costs by not replacing departing staff, and some manufacturers noted that they
+were decreasing hours. Some retailers said they were fully staffed, with one noting that they were
+“not actively hiring, not actively firing.” Still, some contacts noted hiring for growth in areas of
+increased demand such as cybersecurity, and others said they were taking advantage of increased
+labor availability to acquire talent with higher skill sets.
+On balance, contacts noted that wage pressures grew modestly in recent weeks. However, an
+unusually high share of contacts, nearly 80 percent, reported holding wages steady. Across industries, many contacts who noted raising wages cited a still-competitive job market. One real estate
+agent reported offering higher wages to attract experienced workers, and one law firm said
+attracting talent “hinged largely on compensation.” Among those holding wages steady, multiple
+manufacturers said they were increasing wages only during scheduled annual adjustments, while
+several restaurateurs said they were not raising wages because of lack of profitability and
+increased nonlabor costs.
+
+Prices
+Overall, nonlabor input costs continued to rise at a robust pace in recent weeks. Across sectors,
+many contacts cited tariff-related cost increases. Many manufacturers reported that tariffs had
+
+18
+
+The Beige Book
+
+increased the costs of electronic components, tools, metals, and other raw materials, with multiple contacts noting a lack of domestic suppliers for some items. Retail contacts cited higher
+costs related to tariffs on vehicles, beef, and other commodities. One healthcare contact said tariffs had affected hospital drug pricing, pushing up the cost per unit of service. Moreover, elevated
+costs for technology such as software and AI continued to impact banking and professional and
+business services contacts. Contacts generally expected costs to grow at a strong pace in the
+coming months.
+On balance, contacts reported that selling prices grew modestly in recent weeks, continuing the
+trend since the start of 2025. Across industries, contacts continued to report raising prices to
+offset higher materials costs. Some manufacturers and auto dealers reported passing along
+100 percent of tariff increases to customers, while others said they were slowly raising prices in
+response to higher tariffs. Pricing power diminished for some contacts, including some metal
+manufacturers, who were reducing prices to remain competitive. Several contacts in manufacturing
+and professional and business services reported waiting to see “how things settle” before
+increasing prices but anticipated doing so in the near term.
+
+Consumer Spending
+On balance, contacts reported flat consumer spending in recent weeks, with several citing affordability concerns, especially for low- and middle-income consumers. One auto dealership believed
+increased prices caused buyers to postpone purchases, while another thought customers were
+making purchases ahead of further tariff increases. Overall, contacts expected consumer
+spending to be unchanged in the coming months. Two auto dealers who expected sales to decline
+cited affordability concerns and increased strain on household budgets. Two retail store contacts
+who expected no change in sales cited concerns over the still-unclear impact of tariffs on consumer confidence and spending.
+
+Manufacturing
+On balance, contacts reported little change in demand for manufactured goods in recent weeks.
+Many firms continued to cite uncertainty about import tariffs as a primary reason for flat or lower
+orders, and a few contacts added that they or their customers were concerned about a possible
+weakening of overall economic conditions. Producers that reported higher demand attributed it to
+customers seeking domestic sources of imported products or moving forward with previously postponed purchases. By contrast, metal producers and others selling into heavy industry reported a
+softening of demand. Manufacturers generally expected demand to increase modestly in the
+coming months.
+
+Federal Reserve Bank of Cleveland
+
+Real Estate and Construction
+Overall, residential construction and real estate contacts noted increased demand in recent
+weeks, though individual reports were mixed. Some homebuilders saw increased demand. However, one real estate contact said higher mortgage rates were deterring current homeowners from
+moving. Another said potential buyers were delaying purchases in anticipation of mortgage rates
+falling toward the end of the year. Contacts expected continued demand growth in the near term.
+Nonresidential construction contacts saw flat demand over the last two months. Two commercial
+builders reported decreased demand, which they attributed to tariffs and broader uncertainty, and
+one real estate developer saw softening demand for retail space as consumers pulled back on
+spending. Conversely, a few contacts reported increased demand for some industrial projects
+including data center construction and upgrades to existing facilities. On balance, contacts
+expected demand to rise slightly in the coming months.
+
+Financial Services
+Overall, bankers reported that loan demand increased modestly in recent weeks. One commercial
+banker mentioned that clients had recently adjusted to changes in trade policy and moved forward
+with expansion plans. On the consumer side, one banker said clients continued to make large purchases ahead of anticipated tariffs, but the banker expected demand to decline in the near term
+as tariffs take effect. In the coming weeks, bankers expected lending activity to increase modestly
+overall, as some anticipated that clients would adapt to changes in trade policy.
+
+Nonfinancial Services
+Demand for professional and business services rose moderately in recent weeks, and contacts
+expected a robust increase in demand over the coming months. Accounting firms attributed
+increased demand for services to changes in tax policy. One law firm said it expects demand
+growth under two scenarios: (1) If tariffs have a modest impact and interest rates decline, it anticipates increased demand for transactional services, and (2) If tariffs have a large impact and
+interest rates do not decline, it expects increased demand for restructuring and bankruptcy services. On balance, freight and transportation contacts reported a slight decrease in demand in
+recent weeks. They generally expected modest demand growth in the coming months amid the
+resolution of tariff-related uncertainty.
+
+Community Conditions
+In a recent survey of Ohio’s Federally Qualified Health Centers, which provide services to underserved populations and areas, most respondents indicated that potential Medicaid cuts would sig-
+
+19
+
+20
+
+The Beige Book
+
+nificantly impact their budgets. Several reported that cuts would negatively affect their staffing
+levels, patient access to care, and recruitment and retention of providers. Some mentioned developing strategies to mitigate these effects, including increasing revenue from non-Medicaid
+sources. One respondent planned to shift more to value-based care, a model through which providers are paid for quality of care over quantity of patients. Another mentioned that credentialing
+with commercial plans allowed them to receive reimbursement from health insurance companies.
+Others suggested scaling back or cutting services and staff hours.
+For more information about District economic conditions visit: https://www.clevelandfed.org/en/
+region/regional-analysis.
+
+21
+
+Federal Reserve Bank of
+Richmond
+Summary of Economic Activity
+The Fifth District economy continued to grow modestly in recent weeks. Consumers continued to
+spend on retail and leisure travel. Additionally, new and used motor vehicle and boat sales
+increased this cycle. Manufacturing activity declined modestly amid continued cost increases and
+supply chain challenges due to tariffs. Activity in the remaining sectors was generally flat to down
+slightly. Employment was unchanged, on balance, with most firms making small changes to have
+the right headcount for the current level of demand. Wage growth remained moderate. Price growth
+picked up somewhat in the retail and wholesale services sector, but overall year-over-year price
+growth remained within a moderate range.
+
+Labor Markets
+Employment levels in the Fifth District were largely unchanged in the most recent period. Multiple
+contacts adjusted headcounts based on current and expected near-term changes in customer
+demand. For example, a dental implant manufacturer laid off several employees in anticipation of
+a slowdown in new orders. Policy changes created uncertainty for several firms, specifically
+affecting their ability to find workers or to make future hiring plans. Multiple construction contacts
+encountered increased difficulties finding workers due to the available immigrant labor pool, and
+they were not optimistic about future labor availability. A building materials supplier moderated
+their hiring plans due to increased economic uncertainty. Wages continued to increase moderately,
+as noted by a Maryland car lubrication system installer that increased wages to accommodate the
+rising cost of living.
+
+Prices
+Year-over-year price growth increased slightly in recent months but, overall, growth remained moderate. According to our most recent surveys, manufacturers reported growth in prices received
+remaining in the low three percent range. Non-manufacturers, however, reported an increase in
+annual price growth that rose from a low three percent range in July to nearly four percent in
+August. Within the services sector, the firms that reported the largest increases in year-over-year
+prices received generally had higher exposure to tariffs, such as wholesale and retail sellers of
+metals, wood-products, appliances, and other imported equipment and machinery.
+
+22
+
+The Beige Book
+
+Manufacturing
+Manufacturing activity in the Fifth District continued to decline in the recent reporting period. Many
+firms have started to increase prices after delaying passing on increased input costs. For
+example, a compressor manufacturer raised prices after months of resistance. Uncertainty in tariff
+policy has become a significant administrative burden for multiple businesses, requiring them to
+allocate resources to understand and track its impacts. Manufacturers not directly affected by tariffs experienced secondary effects. For example, a printer manufacturer that doesn’t import products experienced increased costs ranging from 5 percent to 15 percent from suppliers who were
+subject to tariffs. Additionally, a glass manufacturer reported that tariffs have forced their main
+supplier out of business and that other suppliers consolidated into fewer plants.
+
+Ports and Transportation
+Overall volumes at maritime ports were slightly down this cycle with the exception of auto and
+heavy machinery imports. Contacts attributed the decline to frontloading and high warehousing
+levels, though shipping from Southeast Asia did resume during tariff delays. Agriculture exports
+decreased, which contacts attributed to retaliatory tariffs from China. Ocean freight rates trended
+lower as carriers returned services and increased capacity to the East Coast. Contacts shared
+that carriers have been shuffling their vessels and service steams in response to the Chinese
+vessel tax, but they do not expect the tax to have much impact on volumes. Trucking demand
+remained flat, with contacts reporting a continuation of low volumes and low revenue. One
+Fifth District trucking firm acquired a company that, while still profitable, chose to sell because of
+slim profit margins and persistent market malaise.
+
+Retail, Travel, and Tourism
+Consumer spending continued to increase at a modest rate this cycle. Most retailers reported
+steady sales and foot traffic with some seeing big ticket sales go up. For example, a residential
+building products seller saw an increase in sales that were attributed to homeowners using savings and home equity loans to fund home improvement projects. Auto, motorcycle, and boat sales
+all increased in recent weeks. Travel and tourism activity picked up modestly this cycle, on balance. Hotel contacts reported modest growth driven by leisure travel to drive-to destinations like
+beaches and mountain resorts. Sport-related travel was reportedly performing well. In contrast,
+business travel was down, particularly around in the greater Washington D.C. area with fewer conferences and training events being held in recent months.
+
+Federal Reserve Bank of Richmond
+
+Real Estate and Construction
+Residential real estate activity saw a slight decrease as expected during the summer. A North
+Carolina agent said, “it feels like we are living in two markets, those listing at the right price or
+those listing like it is 2021.” Buyers continue to qualify, especially with rate incentives for new
+construction. The issue for many potential home buyers, according to a Virginia broker, is that
+“monthly payments aren’t realistic with today’s rates.” A Maryland agent fears the “golden age of
+renting” will stay as it can cost more to buy versus rent. Multiple builders in the Fifth District noted
+their concerns regarding tariffs, zoning regulations, an aging workforce, and immigration policies
+leading to higher construction costs.
+Commercial real estate activity remained unchanged, on balance. A Virgina broker noted investors
+and tenants were slowly “getting off the sidelines” despite economic uncertainties. A couple of
+agents noted “The Big Beautiful Bill” but were uncertain of its effects. With continued uncertainty,
+deals were taking longer, making them more susceptible to falling through. Brokers in Virgina,
+Maryland, and D.C. noted that office space was in “modern turmoil” as companies work through
+return to office mandates. In some cases, outdated office buildings were being torn down and sold
+for land value.
+
+Banking and Finance
+Financial institutions continued to report steady demand for all loan types, with a number of institutions reporting a slight increase in demand for residential mortgages and auto loans. One institution noted this uptick in demand was due to some softening in interest rates for these loan
+types, driven by an increase in competitors within the marketplace. Commercial borrowers continued to be cautious, but loan pipeline levels remained steady as well. Deposit levels continued
+to be stable with a continued easing of competition within the marketplace. Loan delinquencies
+remained stable among respondents with no meaningful change in the creditworthiness of
+borrowers.
+
+Nonfinancial Services
+Nonfinancial service providers continued to report stable demand for their services, but uncertainty continued to be a common thread throughout most of their comments. A digital marketing
+and consulting firm noted that their clients were hesitant to invest in their services until they have
+more clarity around the current economic environment. A business advisory firm also reported that
+they have observed a trend of fiscal conservatism with business owners that has evolved, forcing
+firms to defer investment and growth plans until the current economic picture becomes clearer
+and more defined.
+For more information about District economic conditions visit: https://www.richmondfed.org/
+research/data_analysis.
+
+23
+
+24
+
+Federal Reserve Bank of
+Atlanta
+Summary of Economic Activity
+The Sixth District economy declined slightly since the previous report. Labor markets remained
+unchanged as most firms kept headcounts flat; wage pressures moderated further. Prices
+increased moderately. Employers’ job requisitions at workforce intermediaries fell, requests for
+food assistance at direct service providers rose, and organizations relying on federal funding were
+faced with restricted cash flow. Consumer spending softened. Leisure travel slowed, and business
+travel was flat. Home sales ticked up slightly, inventory levels moderated, and home values
+declined, especially in Florida. Commercial real estate activity fell slightly. Demand for transportation slowed; manufacturing activity also fell. Lending increased, on net, even amid tightened standards. Energy activity expanded at a modest pace.
+
+Labor Markets
+Sixth District labor markets remained unchanged over the reporting period. Firms maintained a
+reluctance to hire given economic uncertainty and softening demand conditions, and some continued to welcome attrition in their workforce. Most contacts shared plans to keep headcount flat
+for the remainder of the year. Some businesses continued to note challenges around hiring for
+technical roles, but overall, firms reported an abundance of applicants for most positions. Concerns around immigration policy persisted, even though material impacts have yet to be seen in
+the aggregate. Some firms paused hiring plans or were considering scaling back on plans to
+increase staffing levels because of a recent pullback in federal spending.
+Wages were broadly unchanged over the reporting period.
+
+Prices
+Prices rose moderately over the reporting period. Some contacts reported recent price increases
+on final products as pre-tariff inventories were depleted. Cost pass-through was more difficult for
+small businesses, forcing many to make cost-cutting decisions, including changes in product offerings and reduced labor hours. In construction, rising input prices for steel, aluminum, and concrete were partially offset by stabilizing labor costs as worker availability increased amid slowing
+pipelines. More broadly, sourcing contracts frequently included or are expected to include tariff
+
+Federal Reserve Bank of Atlanta
+
+clauses, adding to uncertainty about firms’ future expenses. Many contacts expect to realize inflationary impacts from tariffs through the second half of this year and into 2026, and even those
+with little or no tariff pressure anticipate increasing prices to offset other costs.
+
+Community Perspectives
+Several workforce intermediaries reported continued signs of a weakening labor market, including
+fewer job requisitions from employers, and smaller employers increasingly opting for contract
+labor. Against a backdrop of constrained organizational resources, direct service providers noted
+increased demand for food assistance. Community development financial institutions and small
+business support providers observed a rise in business owners utilizing personal and other highinterest debt to cover elevated operating costs as well as the purchase of inventory in anticipation
+of higher costs due to tariffs. Federal funding volatility, including delayed disbursements, cuts, and
+clawbacks, has resulted in restricted cash flow for organizations providing employment, food,
+housing, and small business supports.
+
+Consumer Spending
+Consumer spending declined somewhat over the reporting period. Online and luxury retailers
+noted healthy sales, while restaurants and home goods merchants saw further softening in
+demand as value-conscious consumers continued to trade down. Some retailers expressed concern over further declines in demand in the coming months, as prices may increase after pre-tariff
+inventories are depleted. Automobile dealers experienced an increase in demand for parts and
+service as consumers chose to keep their vehicles longer. New car sales were flat to down.
+Demand for leisure travel declined slightly since the previous report, on net, mostly driven by a
+pullback from price-sensitive travelers and international visitors. Hotels in some markets experienced lower-than-expected occupancy rates even with discounts and promotions. The pace of
+bookings for group travel slowed and contract decision timelines lengthened amid heightened
+requests for concessions. Business travel remained flat over the reporting period. Travel and
+tourism contacts were cautiously optimistic about the fall and holiday travel season ahead.
+
+Construction and Real Estate
+Home sales ticked up slightly over the reporting period, owing to a slight moderation in interest
+rates combined with reduced market values of existing homes, as well as discounts and other
+incentive offers from builders. Florida saw the most meaningful price corrections, with a sharp
+drop in sales prices. Across the District, existing home inventory levels moderated as homeowners
+delisted properties rather than sell at a discounted price. However, consumer credit quality and
+lack of affordability contributed further to slowing demand.
+
+25
+
+26
+
+The Beige Book
+
+Commercial real estate activity declined slightly, with most sectors noting rising vacancy rates. As
+businesses continued to escalate in-office postures, demand for “highly amenitized” office space
+helped to stabilize class A properties, while others explored converting some office buildings to
+hotel or industrial space. Industrial property sales were healthy, though a slight increase in
+demand could not stave off increasing vacancy rates, or outpace new development. Oversupply in
+multi-family persisted, driving further rent concessions. Retail conditions weakened, as small businesses hit hardest by inflationary pressures requested reduced rent or other assistance from
+property owners. Retail property sales, however, were steady.
+
+Transportation
+Transportation contacts reported a modest decline in demand across the sector. While railroads
+reported notable increases in intermodal freight, attributed to growth in market share and lower
+year-earlier comparisons, industrial carloads were described as sluggish amid a recent deceleration in chemicals and metals shipments. Housing-related and auto shipments were also down.
+Container volumes at southeastern ports continued to grow, with some reporting notable yearover-year increases. Trucking firms noted softness in consumer and industrial-driven freight,
+though freight movements for data centers and alternative energy projects were strong for some
+firms. Expectations are for a soft peak shipping season this year, as contacts’ sentiment was
+clouded by tariff uncertainty and the potential for a slowing economy.
+
+Manufacturing
+Manufacturing activity declined modestly over the reporting period. Housewares, beverages, and
+chemicals producers noted weaker orders and sales, partially attributed to ongoing uncertainty
+surrounding trade policy. Demand for exports slowed, and backlogs of unfinished work declined.
+Some manufacturers shared strategies for shifting supply chains, such as sourcing domestically.
+The manufacturing outlook for the Sixth District deteriorated as contacts reported downward revisions to forecasts amid rising input costs, tariff uncertainty, a cautious consumer, and slowing
+global trade.
+
+Banking and Finance
+Loan growth across the District increased modestly even as several bankers reported tightened
+lending standards. Construction and consumer lending contracted while other portfolios saw
+growth. Capital investment slowed as firms exercised caution amid uncertainty, but credit line utilization increased, particularly for small businesses. Some banks noted weakness in Small
+Business Administration lending, attributed to heightened uncertainty around federal support programs. Delinquency and charge-off levels remained low by historical standards, and capital ratios
+were stable.
+
+Federal Reserve Bank of Atlanta
+
+Energy
+Energy activity grew at a modest pace. Liquefied natural gas production and exports remained
+robust over the reporting period. Electricity demand growth was led by the commercial and industrial sectors, driven largely by data center demand. Chemical manufacturers described flat to softening demand, particularly for compounds used in the production of consumer paper and pulp
+products. Oil and gas contacts noted that while domestic crude oil production was stable, many
+expect production to decline by year-end.
+For more information about District economic conditions visit: https://www.atlantafed.org/
+economy-matters/regional-economics.
+
+27
+
+28
+
+Federal Reserve Bank of
+Chicago
+Summary of Economic Activity
+Economic activity in the Seventh District increased modestly over the reporting period, and contacts expected a slight increase in activity over the next year. Consumer spending increased moderately; manufacturing activity increased modestly; employment and business spending increased
+slightly; nonbusiness contacts saw no change in activity; and construction and real estate activity
+declined slightly. Prices rose moderately, wages rose modestly, and financial conditions loosened
+slightly. Prospects for 2025 farm income were unchanged.
+
+Labor Markets
+Employment rose slightly over the reporting period, while contacts expected a modest pace of
+growth over the next 12 months. Reports on current labor market conditions were mixed. Several
+contacts in manufacturing, construction, and marketing were still having trouble hiring skilled
+workers. One contact reported that increased fear of immigration enforcement was reducing
+worker attendance in the nursing and hospitality industries. In contrast, there were also reports
+across several industries of further softening in the labor market. For example, a contact in financial services was not hiring to replace workers and another in the sector noted low attrition. Some
+other contacts said it was easier to hire, and one from an employment placement agency reported
+a decline in demand from auto and furniture manufacturers. Wages and benefits costs were up
+modestly overall.
+
+Prices
+Prices rose moderately in July and early August, and contacts expected a similar pace of growth
+over the next 12 months. Nonlabor input costs rose moderately, with contacts highlighting higher
+costs for energy and raw materials like chemicals, aluminum, and steel. Manufacturers attributed
+higher raw materials prices to tariffs and several said that they had passed on those increases to
+customers. In contrast, a roofing manufacturer had not passed on higher costs from increased tariffs on Chinese-made nails and fasteners. In addition, several contacts in the construction
+industry noted lower input prices in recent weeks. Overall, producer and consumer prices rose
+moderately. One retail industry analyst said that while higher tariffs had pushed up costs for items
+
+Federal Reserve Bank of Chicago
+
+like apparel and electronics, some retailers may not start passing along tariff price increases to
+consumers until the new year.
+
+Consumer Spending
+Consumer spending increased moderately over the reporting period. Nonauto retail sales
+increased overall, with growth in jewelry, landscaping, and computers and softening in mattresses
+and consumer electronics other than computers. Contacts noted that summer promotional periods
+were longer than usual this year. Spending on leisure and hospitality categories rose moderately,
+most noticeably for hotels and restaurants. Sales of light vehicles increased moderately, boosted
+by elevated EV sales in advance of tax incentives phasing out.
+
+Business Spending
+Business spending increased slightly in July and early August. Capital expenditures moved up from
+a low level and expectations for the coming year were for a further slight pickup in spending.
+Demand for truck transportation was flat and freight rates declined slightly. Manufacturing inventories were a little high. Retail inventories decreased from somewhat low levels, and contacts said
+that retailers had taken an even more cautious approach to orders and inventory accumulation for
+the coming months. Auto inventories declined slightly.
+
+Construction and Real Estate
+Construction and real estate activity decreased slightly overall. Residential construction edged
+down. There was stronger demand for home upgrades and renovations than for new single-family
+construction. Separately, some multifamily construction had fallen behind scheduled timelines due
+to permit delays and rezoning. Residential real estate demand decreased slightly, while prices and
+rents edged up. Contacts noted that absorption of newly finished multifamily rental properties
+slowed and that rents in the subsector had fallen. Nonresidential construction increased slightly.
+Building of projects that receive tax abatements or other government subsidies remained strong
+and demand for data centers continued to be robust. Contacts noted that contractors were more
+frequently pre-ordering materials to avoid cost fluctuations. Commercial real estate demand was
+unchanged. Rents increased while vacancy rates were flat. Demand was strong for new, top quality
+office space and warehouse space.
+
+Manufacturing
+Manufacturing activity increased modestly in July and early August. Steel production increased
+slightly, with one contact highlighting greater demand from the energy sector. Demand for fabricated metals rose, in part due to an increase in orders from the energy and construction indus-
+
+29
+
+30
+
+The Beige Book
+
+tries. Machinery sales picked up modestly, with one contact reporting growth in orders from the
+aerospace and oil sectors. One heavy machinery contact noted higher-than-expected sales over
+the summer but worried that some of the boost was from customers buying ahead to avoid tariffs.
+Auto production increased slightly, while heavy truck production was flat.
+
+Banking and Finance
+Financial conditions loosened slightly in July and early August. Bond values rose a bit, equity
+values were up modestly, and volatility edged down. Business loan demand increased slightly on
+net. One contact noted an increase in mergers and acquisitions activity after several months of
+little movement and attributed the boost to investors’ reduced sensitivity to policy uncertainty. In
+contrast, other contacts said policy uncertainty continued to make clients hesitate on taking out
+new loans. Business loan quality declined slightly and rates fell modestly. Terms remained flat. In
+the consumer sector, loan demand increased slightly with one contact noting increased activity in
+mortgage lending. Loan quality deteriorated slightly, rates were flat, and terms tightened slightly.
+
+Agriculture
+District farm income prospects were little changed over the reporting period as outlooks for lower
+crop revenues were offset by stronger expectations for livestock earnings. Crops were in good
+shape across most of the District. Corn prices fell on forecasts for record corn yields and production. Soybean prices increased after a downward revision in estimates of the number of soybean
+acres planted, though there, too, forecasts were for record per acre yields. Nonetheless, contacts
+expressed concern about crop disease with the potential to damage enough plants to curtail harvests. Uncertainty over the international trade situation continued to raise concerns about soybean exports. Dairy prices were mixed, egg prices declined, hog prices were flat, but cattle prices
+increased to historic highs. Farm machinery sales were described as “lackluster.” Increases in fertilizer prices due to higher tariffs raised farmers’ concerns over financing costs for their 2026
+operations.
+
+Community Conditions
+Community, nonprofit, and other nonbusiness contacts saw little change in activity over the
+reporting period and many expressed uncertainty about the state of the economy as major
+changes in federal policy continue to take effect. One state government contact saw a decline in
+overall tax revenues, but an increase in sales tax revenues. Small business contacts reported that
+in response to higher tariffs, owners were pivoting to find new suppliers and identifying other ways
+to contain costs. Leaders of nonprofit and social service organizations continued to experience
+uncertainty regarding program funding pending federal appropriations decisions. In the meantime,
+
+Federal Reserve Bank of Chicago
+
+they were hopeful for sustained local support heading into the back-to-school season, which carries additional costs for low-income families.
+For more information about District economic conditions visit: https://chicagofed.org/cfsec.
+
+31
+
+32
+
+Federal Reserve Bank of
+St. Louis
+Summary of Economic Activity
+Economic activity and employment levels have remained unchanged since our previous report.
+Wages and labor costs have increased moderately, rising at a faster pace than in previous reports.
+Contacts reported that immigration policies were resulting in labor shortages. Prices have
+increased moderately, but at a faster pace than in previous months; contacts expect prices to
+increase at a faster pace over the next year. Contacts expressed a high degree of uncertainty and
+they are concerned that tariffs will result in further cost increases. The outlook remains slightly
+pessimistic, but its deterioration has subsided.
+
+Labor Markets
+Employment has remained unchanged since our previous report. Most contacts reported no
+change to employment levels, and employers are cautious with hiring due to uncertainty. A staffing
+company reported that businesses were not hiring until they have more clarity on federal policies.
+A professional services firm reported that they would like to hire another person but are waiting
+until conditions have settled. A manufacturer reported no plans to cut staff or contractors. Contacts in manufacturing, construction, and agriculture continue to report labor shortages and abnormally high turnover, which they attribute to the loss of immigrant labor.
+Wage growth has been moderate, but higher than in previous reports. A recreational business in
+Missouri reported that their average cost per hour of labor had increased 5.5 percent this year,
+driven by H2A labor rates and the rise in the minimum wage at the beginning of the year. A contact
+in agribusiness reported that wages rose 8 to 10 percent annually, yet turnover remained high.
+Some contacts reported that wages were higher due to normal annual pay increases, and others
+attributed the rise to keeping up with higher living costs and retaining talented workers.
+
+Prices
+Prices have increased moderately since our previous report, but at a faster pace than in previous
+months. Contacts expect prices to increase at a faster pace over the next year, attributing this
+increase to tariffs as well as market opportunities to improve profit margins. A regional manufacturer sourcing most of its inputs domestically reported facing an 8 to 10 percent increase in
+
+Federal Reserve Bank of St. Louis
+
+domestic supply costs from the beginning of the year. Some contacts that absorbed their cost
+increases have found it unsustainable, and many reported passing some of the costs along and
+testing the impact on customers. A Kentucky manufacturer sourcing roughly 70 percent of its
+materials from Asia expressed concern about reaching a tipping point where consumers could no
+longer absorb additional price increases. An auto parts distributor was concerned that consumers
+would not be able to afford the rising costs. A restaurant owner in Arkansas was absorbing higher
+input costs where possible but raising some prices, with sensitivity to the customer value proposition. Another restaurant increased menu prices, testing their customers’ loyalty to their brand.
+
+Consumer Spending
+Consumer spending reports were mixed. Some retailers reported stronger-than-expected sales,
+while others reported a decrease in sales. A kitchen supply retailer reported that sales had been
+strong and above expectations. Auto sales were also mixed. A car dealer in Missouri reported that
+sales had been good because customers were buying before expected higher prices. Another
+dealer reported that sales had fallen below expectations, as prices of new vehicles were somewhat unaffordable and there was a shortage of used car inventory. Leisure and hospitality contacts reported a decrease in their sales. A hotel franchise reported that business travel was
+improving slightly and that leisure travel, although it remained subdued, was stabilizing. Contacts
+have also reported consumer spending volatility, with one retailer noting that on any given day they
+could be surprised by how busy they were or how few customers they had.
+
+Manufacturing
+Manufacturing activity has been flat relative to the previous quarter and one year ago, with many
+contacts reporting that sales had fallen below expectations. A manufacturer in the steel industry
+reported a flat first half of the year and expected the remainder of the year to be similar. A beverage manufacturer reported a major reduction in their exports due to retaliation against US tariffs; however, increased demand for other products was balancing their portfolio at some facilities.
+A food processing manufacturer reported that production volumes had decreased about 4 percent
+and that further declines were anticipated. A Kentucky manufacturer that had been in a holding
+pattern for any new capital spending projects since the beginning of the year was moving forward
+with acquisitions of distressed companies.
+
+Nonfinancial Services
+Activity in the nonfinancial services sector has been generally unchanged since our previous
+report. Transportation businesses reported slightly lower activity. A health care business reported
+mixed activity across their services. An auto repair firm reported that business had exceeded
+expectations year-to-date due to work on older-model vehicles that were being kept instead of
+
+33
+
+34
+
+The Beige Book
+
+traded in. Staffing companies reported lower demand for their services as companies were cutting
+back on costs where possible and that hiring activity was down. Professional services businesses
+reported that fewer construction projects were resulting in lower demand for their services, but
+they were expecting conditions to improve.
+
+Real Estate and Construction
+Residential real estate activity has remained unchanged since our previous report. While active
+listings and sales have increased slightly relative to a year ago, real estate agents across the
+District described the residential market as slow and expect this to continue for the remainder of
+2025. A home builder in Missouri reported that newly constructed homes were lingering on the
+market longer and discounts were being offered to move this inventory. Additionally, contacts have
+shared that high-end properties were sitting on the market longer.
+Commercial real estate activity has remained unchanged since our previous report. Contacts
+reported continuing progress on existing projects but no new business taking place. Developers
+cited economic uncertainty, high borrowing rates, and higher construction costs as factors. On the
+bright side, a development group in Tennessee reported that retail demand for space remained
+strong after a pause in the spring.
+
+Banking and Finance
+Banking activity has remained unchanged since our previous report; however, loan demand has
+been slightly better than previous-quarter expectations. A banker in Tennessee reported that loan
+growth continued to be moderate and forecasted the remainder of 2025 to be moderate. Credit
+conditions remain strong, although delinquency rates have slightly increased and bankers expect a
+continued rise into the next quarter. For example, a banker in Kentucky reported that credit quality
+in the consumer and commercial lines of business continued to be stable, apart from some consumer accounts that are attributable to CRA-related exposure. Overall, bankers noted that they
+would continue to be cautious: They were selective in their lending as consumer credit risk was
+building and as CRE loan pipelines were slowing.
+
+Agriculture and Natural Resources
+Agriculture conditions have remained strained but stable. One contact reported that, while they
+were appreciative of additional government support, farming remained a very difficult business as
+all the major row crop prices were below farmers’ break-even production costs. A farmer in
+Western Kentucky shared that, while soybean production was strong, they were prepared to store
+their production instead of selling it as usual, reflecting a weak market demand relative to production. A large farm equipment dealer reported that defaults on payment for equipment were
+
+Federal Reserve Bank of St. Louis
+
+increasing, and more farms were likely to fail this year. Nevertheless, most contacts do not expect
+a significant drop in land values. Cattle farming contacts reported strong profits but were not
+expanding due to the high cost of expansion and longer-term uncertainty.
+Visit our Regional Economic Data and Reports page for more information about District economic
+conditions.
+
+35
+
+36
+
+Federal Reserve Bank of
+Minneapolis
+Summary of Economic Activity
+Economic activity in the Ninth District was down slightly since the previous report. Employment
+was down slightly, and labor demand continued to soften. Price pressures increased modestly, and
+wage growth was moderate but easing. Consumer spending also softened. Construction was flat,
+while real estate markets were mostly flat. Manufacturing contracted slightly and agricultural conditions remained weak. Activity among minority- and women-owned business enterprises declined.
+
+Labor Markets
+Employment was down slightly since the last report. Surveys showed hiring sentiment and job
+openings continued to soften, and a slightly larger share of firms reported shrinking head counts
+compared with those seeing growth. Some firms were choosing not to fill turnover or other open
+positions given economic uncertainty. A construction subcontractor in Minnesota said that
+approved projects were being delayed due to the uncertainty, and “we are struggling to keep our
+people busy.” Recent layoffs remained low, however, and unemployment insurance claims fell
+slightly. Those firms that were hiring generally found improved labor availability. A Wisconsin manufacturer of personal care products said it was “getting people applying that are over-skilled” for
+open positions. A North Dakota manufacturer experiencing growth said it was “able to replace
+attrition more readily,” with most job candidates already employed elsewhere. A staffing firm saw
+demand for industrial workers increase for two consecutive months. A contact there said they
+were uncertain whether this was a sign of growing demand or employers’ increased reluctance to
+hire directly.
+Wage growth was modest to moderate and easing overall, according to recent surveys. Several
+contacts reported that recent trade union contracts saw significant wage gains. However, a professional services firm in Minneapolis–St. Paul said slow sales meant “the team will not receive any
+bonuses this year.” A North Dakota bakery reported using turnover to keep wages flat by lowering
+rates for new hires to “balance out any wage increases to longer-term staff.”
+
+Federal Reserve Bank of Minneapolis
+
+Prices
+Price increases over the reporting period were modest, about the same pace of increase as the
+last report. One-quarter of District firms increased the prices they charged to customers in July
+from a month earlier, according to a monthly survey, and roughly the same percentage anticipated
+increasing their prices in the month ahead. About half of respondents reported increased input
+prices over the previous month. A manufacturer of home furnishings reported increased pressure
+to lower prices due to competition in the sector, even though input costs have increased. Other
+contacts said margins were already thin and their ability to absorb cost increases was limited. A
+retail contact reported numerous notifications from suppliers indicating price increases were
+coming. Retail fuel prices decreased slightly since the last report.
+
+Worker Experience
+Workforce development professionals reported worsening conditions for people looking for jobs as
+software engineers, media and creative services professionals, managers, and business and
+finance professionals. Job seekers looking for employment in more physically demanding jobs like
+cooks, servers, landscapers, and hairstylists were still able to get jobs with relative ease, but
+overall, opportunities were contracting. Some contacts noted increasing impacts from artificial
+intelligence (AI) in the region’s labor market. While they referred to resume screening and AI interviewing tools as “barriers to employment,” they also acknowledged that job seekers who used AI
+to refine their resumes and do mock interviews were enhancing their confidence and streamlining
+their job search experience.
+
+Consumer Spending
+Consumer spending was slightly lower since the last report. Retail contacts overall reported slower
+sales and foot traffic. A Montana brewery contact said, “July is our busiest month of the year. But
+it is still slow compared to previous years.” Contacts reported increased price sensitivity. A home
+décor retailer in northern Wisconsin said that “right now, if we don’t provide sales [discounts] to
+people they will not even bother to come in.” International travel, especially from Canada,
+remained subdued, dampening sales for some businesses, particularly in regions nearer the
+border. Visitors to most national parks in the District were modestly lower in July year over year.
+Hotel occupancy rates were also lower in the Dakotas and Montana compared with last year, but
+higher in Minnesota and Wisconsin; average revenue per room was similarly mixed. A large vehicle
+dealer in the District experienced flat sales overall in July; new-vehicle sales were strong while
+sales of used vehicles fell.
+
+37
+
+38
+
+The Beige Book
+
+Construction and Real Estate
+Construction activity was flat since the last period. A recent survey revealed that interest rates,
+high material costs, and government policies were the top three challenges for construction firms.
+Most respondents were hiring but it remained difficult to find skilled workers. Employment in the
+sector was expected to grow modestly on balance over the coming months. The year-over-year
+value of permitting activity for new construction grew modestly, driven by stronger gains in residential permits. Permitting activity was strongest in Rochester, Minnesota; Rapid City, South Dakota;
+and Billings, Montana.
+Commercial real estate was flat overall. High financing rates and economic uncertainty continued
+to dampen new development in retail, multifamily, and industrial space, benefiting existing property owners. Residential real estate was slightly higher overall, but with some variability. Home
+sales in July rose across Montana and northern Wisconsin compared with last year, but were flat
+in Fargo, North Dakota, and Sioux Falls, South Dakota. Sales fell modestly in western Wisconsin
+and Minneapolis–St. Paul, but rose across the rest of Minnesota.
+
+Manufacturing
+District manufacturing activity contracted slightly since the previous report. Reports among
+manufacturing contacts were somewhat mixed, as slightly more contacts reported decreased
+orders than increased orders, but relatively few reported steady business activity. An index of
+regional manufacturing conditions indicated activity decreased in Minnesota and South Dakota in
+July from the previous month, while activity in North Dakota increased. An equipment producer
+noted, “Our actual dollar sales volume is only down slightly from last year, but this is mostly due
+to the increased prices we are forced to charge; the actual volume of equipment made is down
+quite a bit.”
+
+Agriculture Energy and Natural Resources
+District agricultural conditions remained weak. Preliminary estimates indicated strong expectations
+for crop yields and production in much of the District, given favorable weather and ample rainfall.
+However, crop prices were at or below break-even for many producers. An industry contact reported
+that the threat of tariffs was having a major impact on fertilizer prices. Oil and gas exploration
+activity was steady since the previous report, while production increased slightly.
+
+Minority- and Women-Owned Business Enterprises
+Activity among minority- and women-owned business enterprises (MWBEs) declined, and contacts
+expected further deceleration in the upcoming weeks. While activity slowed for the majority of con-
+
+Federal Reserve Bank of Minneapolis
+
+tacts, some experienced higher demand for their services. The owner of an auto repair shop in
+South Dakota noted that customers were “spending more on maintenance items than last year at
+this time,” adding that people seemed to be “planning to drive their used vehicles longer.” Both
+employment and labor demand trended down among MWBEs. Upward pressure on compensation
+and input prices continued.
+For more information about District economic conditions visit: https://www.minneapolisfed.org/
+region-and-community.
+
+39
+
+40
+
+Federal Reserve Bank of
+Kansas City
+Summary of Economic Activity
+Economic activity was generally flat across most sectors of the Tenth District economy. Employment levels fell modestly, and wage pressures remained subdued on softer hiring conditions. Total
+labor costs were still expected to rise as costs for non-wage benefits rose faster than wages.
+Prices grew moderately, with many businesses citing cost pressures coming from tariffs. Several
+contacts suggested input cost growth was more broad-based than the incidence of tariffs, citing
+both the rise in prices on non-tariffed items and the unwillingness of suppliers to reduce prices
+after applicable tariff rates were reduced over the summer. Higher input costs broadly led to compression in profit margins, which some bankers reported had a mild effect on credit quality. However, bankers indicated higher tariff rates and declining profit margins have not adversely affected
+their willingness to lend as overall loan quality remained sound. Consumer spending was steady
+but reportedly more oriented towards low-cost goods and services.
+
+Labor Markets
+Employment levels contracted modestly in the District, driven by declines in both services and
+manufacturing employment over the past month. Businesses anticipated slightly weaker hiring
+activity in coming quarters. Wages grew at a modest pace, and businesses expected similarly subdued wage pressures throughout the remainder of the year. However, contacts noted the costs for
+non-wage benefits will continue to increase faster than wages in the near term, adding to overall
+labor costs. Contacts in higher education reported strong enrollments for the fall term. Job placements for recent graduates were decidedly mixed across the District—most contacts reported a
+weaker job market for recent college graduates, including those graduating in STEM fields. However, some universities and many community colleges reported strong placements and starting
+salaries for their recent graduates.
+
+Prices
+Prices continued to grow moderately over the past month, with input prices outpacing growth in
+prices for finished goods and in retail. Several business contacts reported broad-based input price
+increases associated with, if not driven directly by, tariffs; several contacts suggested suppliers
+opportunistically raised prices beyond what is due to tariffs alone. Furthermore, contacts indicated
+their suppliers were reluctant to lower prices even when tariff rates fell, resulting in some sticki-
+
+Federal Reserve Bank of Kansas City
+
+ness in input costs. Overall expectations were for a moderate increase in both input and output
+prices in the coming quarters.
+
+Consumer Spending
+Consumer spending over the last several weeks was flat on average, though businesses reported
+notable shifts in consumers’ purchasing behavior. The clearest changes were in discretionary
+spending, where households were trading down to lower-cost alternatives. These adjustments
+reportedly reflected a combination of financial strain among lower-income households and cautious sentiment tied to expectations for the remainder of the year. Firms shared that households
+are not necessarily reducing overall consumption but reallocating it toward more affordable or
+“inferior” goods and services. Anecdotal reports include families opting for staycations in place of
+extended travel and some households returning vehicles within a year to avoid the burden of loan
+payments. As one pharmacy shared, shoppers are buying less retail merchandise but maintaining
+consumption for the more essential items. Firms anticipate this pattern to persist, with consumers prioritizing cost over quality.
+
+Community Conditions
+The housing market for lower-income homebuyers remains tight overall, but contacts reported
+slight softening in recent months. Home prices in the relatively lower range increased only slightly,
+but contacts said that interest rates, insurance costs, and property taxes remained barriers to
+new purchasing activity. Some reports of more low-income homeowners selling their houses
+emerged as escrow payments rose, but the more common trend was for lower-income buyers to
+avoid moving to keep their low-rate mortgage if they had one. As a result, inventories of lower
+priced homes have not risen as much as they have at higher price ranges. Contacts in most local
+markets reported continued competition with investor purchasers for lower-priced homes. However,
+rising availability of rental units and softening rent growth reportedly offset some of the price pressures associated with the additional institutional buyers active in local markets.
+
+Manufacturing and Other Business Activity
+Manufacturing and consumer service activities grew slightly, which was a shift from volatile reports
+of growth and declines during the first half of the year. Contacts generally expected the recent
+pick-up in activity to gain momentum, as expectations for growth over the next six months rose
+moderately. However, many contacts in professional service sectors across the District reported
+declining sales, weaker expectations, and lower employee headcounts. Contacts noted that downstream customers are reticent to commit to new service contracts as they try to protect free cash
+flow and profit margins. The majority of businesses indicated profit margins contracted in recent
+months. Declines in profit margins were reportedly broad-based across sectors but were most pro-
+
+41
+
+42
+
+The Beige Book
+
+nounced in heavy manufacturing sectors where tariffs exerted the greatest cost pressures.
+Looking ahead, contacts at heavy manufacturing businesses were relatively more pessimistic
+about the outlook for profitability over the next six months.
+
+Real Estate and Construction
+Commercial real estate (CRE) activities showed little-to-no change in recent months. Contacts
+noted nearly all aspects of CRE activity—including prices, sales, absorptions, access to credit,
+and new development—did not change meaningfully. The recent stabilization of activity is around
+levels that are in line with historical norms. However, commercial real estate developers noted the
+costs of contractors and subcontractors were beginning to rise due to a combination of limited
+availability of crews in certain markets and rising building materials prices across most markets.
+
+Community and Regional Banking
+Loan demand and credit standards were mostly unchanged across categories over the last month.
+Overall loan quality remained sound for District banks, though modest deterioration was noted and
+was broad-based across lending categories. The outlook for loan quality by most respondents,
+including the expected impact of tariffs, was unchanged for the next six months. However, some
+respondents expect tariffs to cause mild deterioration in credit quality due to higher input costs
+affecting businesses’ margins and leading to higher costs for consumers. During the same time
+frame, respondents indicated tariffs are not projected to affect their willingness to lend. Deposit
+levels remained stable, though competition on rates persists.
+
+Energy
+Tenth District oil and gas activity rebounded, growing slightly over the last month. Rig counts in
+Oklahoma and Colorado increased slightly despite oil prices falling near firms’ reported
+breakevens and natural gas prices remaining unprofitable. Exploration and production companies
+maintained steady oil and gas production levels so far this year. Contacts cited data center electricity demand and liquified natural gas exports as key natural gas demand drivers. However, they
+also mentioned OPEC+ production increases and falling European power demand as risks to their
+outlook. Drillers noted that contract pricing with oilfield service providers stayed flat, despite
+falling oil prices, due to increased equipment replacement costs from tariffs.
+
+Agriculture
+Agricultural economic conditions in the Tenth District worsened slightly during early August. Profit
+opportunities for crop producers remained weak, and corn prices declined moderately over the
+past month alongside expectations of record U.S. production. The majority of crops were in good
+
+Federal Reserve Bank of Kansas City
+
+or excellent condition and could support strong production levels, but low prices could limit revenues. Conditions in the crop sector weighed on the farm economy, but an increase in cattle
+prices during recent weeks further strengthened income prospects for some producers. Contacts
+throughout the District continued to cite low crop prices and elevated expenses as key factors
+weighing heavily on the outlook for farm financial conditions.
+For more information about District economic conditions visit: https://www.KansasCityFed.org/
+research/regional-research.
+
+43
+
+44
+
+Federal Reserve Bank of
+Dallas
+Summary of Economic Activity
+Economic activity in the Eleventh District expanded modestly. Growth picked up in nonfinancial services and manufacturing. Retail sales increased, and loan volume rose, driven by increases in
+residential and commercial real estate lending. Agricultural conditions were favorable. Meanwhile,
+housing market activity remained weak, and drilling activity and oil production were flat. Employment levels were unchanged, and wage growth was moderate. Prices increased modestly apart
+from the manufacturing sector, where price pressures intensified due to tariffs. Outlooks improved
+but there was widespread trepidation regarding shifting trade policy, high interest rates, and more
+restrictive immigration policy. Just over one-fifth of firms said they expect a decline in demand for
+their goods or services over the next six months.
+
+Labor Markets
+Employment was fairly flat over the reporting period. A roughly equal share of service firms
+reported increasing versus decreasing employment. Staffing firms reported slow hiring activity,
+with a couple of contacts noting that companies were opting to reallocate workload internally or
+cutting staff in response to cost pressures from tariffs. A restaurant chain cited plans to automate
+in some areas to reduce labor costs. Homebuilders, oilfield services firms, and nonprofits noted
+trimming headcounts. Meanwhile, overall manufacturing employment grew moderately, although
+some transportation equipment and petrochemical manufacturers reported reducing staff to contain costs. Overall, wage growth was moderate, and firms noted improved availability of
+applicants.
+
+Prices
+Selling prices increased at a modest pace, except for the manufacturing sector where price pressures rose reflecting the widespread impact of tariffs. According to an August Dallas Fed survey,
+nearly half of firms noted being negatively impacted by tariffs, and all of them noted facing higher
+input costs as a result. Among those passing through tariff cost increases to customers in the
+form of higher prices, roughly half noted doing so within a month of the tariff taking effect, and
+three quarters are doing so within three months. Reports on the extent of pass through were
+mixed, with only 21 percent noting full pass through thus far. Companies reported mitigating tariff
+
+Federal Reserve Bank of Dallas
+
+impacts by building up inventories prior to the tariff, absorbing higher costs, and finding alternative
+suppliers.
+
+Manufacturing
+Activity in the manufacturing sector rebounded, following weakness in the prior reporting period.
+New orders rose for the first time since January, led by increases in durable goods, namely transportation equipment, machinery, and construction-related products. Output for nondurable goods
+expanded as well, with strength noted in food and printing-related manufacturing. Gulf Coast refineries cited steady production levels and higher margins for refined products. Perceptions of
+broader business conditions stabilized, and manufacturing outlooks improved slightly, though
+there was continued widespread apprehension regarding tariffs, high interest rates, and immigration policy.
+
+Retail Sales
+Retail sales rose during the reporting period. Auto sales remained steady, but one auto dealer
+noted a reduction in demand for repair services. Building material and garden equipment retailers
+cited lower sales, while health care and food and beverage stores reported increased activity.
+Overall retail inventories continued to decline, and outlooks stabilized though uncertainty persisted, and various contacts cited concern about the impact of tariffs on prices or demand.
+
+Nonfinancial Services
+Activity in nonfinancial services grew modestly during the reporting period. Growth was driven in
+part by revenue increases in health care and administrative and support services. Staffing firms
+saw a slight increase in demand for their services, with one contact noting that clients were
+holding off on hiring due to uncertainty. Meanwhile, transportation and warehousing services
+activity was flat. Airlines reported a modest pickup in demand in July, though activity remained
+below last year’s levels. Service sector outlooks improved, but uncertainty remained a headwind.
+
+Construction and Real Estate
+Housing market activity remained weak. Foot traffic and sales were choppy and lackluster, with
+one contact characterizing the market as dismal. Existing and new home inventories rose further,
+and builders were increasingly relying on marketing and incentives, including discounting and mortgage rate buydowns, to close deals. Home starts have slowed, and lot supply is rising. Outlooks
+were pessimistic amid weak demand and elevated economic uncertainty.
+
+45
+
+46
+
+The Beige Book
+
+Commercial real estate activity increased slightly during the reporting period. Apartment demand
+remained solid and occupancy rates edged higher, but the influx of new units kept rents flat to
+down. Office leasing ticked up, and contacts said there appear to be more signs of stability. Industrial activity was characterized as solid. New commercial construction activity was subdued. Investment sales activity continued to be limited, with scattered reports of distressed property sales.
+Outlooks remained cautious.
+
+Financial Services
+Loan volume and demand rose in August. The increase was driven by a continued rise in commercial real estate loan volumes and a sharp acceleration in residential real estate loans, which had
+contracted in the prior period. Credit tightening continued, but loan pricing declined, both at a
+pace slightly faster than in June. Loan performance deteriorated across all loan types. Bankers
+reported declining general business activity; however, their outlook was mildly optimistic. Respondents expect growth in loan demand and business activity six months from now, with a minor deterioration in loan performance.
+
+Energy
+Both drilling and well completion activity was little changed over the past six weeks. Headcounts
+dipped and oil field service firms reported that significant idle equipment and workforce capacity
+was keeping margins razor thin. Rising production from OPEC members combined with oil prices
+hovering near break-even levels has dampened industry outlooks. If the price of West Texas Intermediate crude oil remained in the low 60 dollar range, production was expected to be flat in the
+remainder of 2025 but likely erode in 2026. One bright spot was the midstream sector, where contacts expect an acceleration in project starts in response to the One Big Beautiful Bill Act and
+recent regulatory decisions.
+
+Agriculture
+Soil conditions were favorable across much of the District, boosting crop production. While yields
+are expected to be above average, crop prices remained low and sub-profitable for many producers. Safety nets like crop insurance and U.S. farm program payments will likely serve an important role this year. Cattle prices remained historically high amid solid demand and a decline in
+beef production. One factor limiting production was the suspension of cattle imports from Mexico
+implemented last fall to protect U.S. livestock from the New World screwworm, a parasitic fly.
+Lower cattle supply is putting downward pressure on beef production and upward pressure
+on prices.
+
+Federal Reserve Bank of Dallas
+
+Community Perspectives
+Nonprofits continue to see elevated demand for a broad range of social services, including food,
+childcare, housing, transportation, and disaster assistance. Food assistance has emerged as one
+of the fastest growing needs among clients but rising costs and loss of federal funding are making
+it harder for nonprofits to meet that need. Subsidized childcare remains a critical barrier to
+employment for some families, with one organization noting that there are more than 11,000 children on the waitlist for their service area. One contact said that with the cut in FEMA funds they
+are having a hard time referring individuals to places for weather and disaster-related help. The
+current environment remains challenging for nonprofits as they contend with the impact of federal
+spending cuts amid high demand. Hence, even the most agile organizations are facing shifts in
+strategic priorities and staff reductions.
+For more information about District economic conditions visit: https://www.dallasfed.org/
+research/texas.
+
+47
+
+48
+
+Federal Reserve Bank of
+San Francisco
+Summary of Economic Activity
+Economic activity in the Twelfth District edged down slightly during the July to mid-August reporting
+period. Employment levels were down slightly as employers laid off workers and did not fill vacated
+positions. Wages grew somewhat, and prices rose modestly overall. Conditions in retail trade and
+the consumer and business services sector weakened slightly. Manufacturing activity declined
+modestly, and conditions in agriculture and resource-related sectors were somewhat weaker. In
+both residential and commercial real estate, activity was slow but unchanged. Financial sector
+conditions were stable. Community support organizations struggled to balance the continued
+demand for services against declines in funding. Looking ahead, contacts’ economic outlook
+weakened some relative to the prior reporting period.
+
+Labor Markets
+Employment levels fell slightly in recent weeks. Employers lowered head counts through layoffs,
+hiring freezes, and attrition. While some businesses turned to automation technologies to maintain output levels and reduce costs, others curtailed operating times, which reduced employee
+hours. However, several contacts in finance and food services expanded their workforce to staff
+new locations. Labor availability and applicant quality rose as regional pools of workers applying
+for jobs expanded. However, some contacts reported that businesses in agriculture and construction had difficulties filling positions due to constrained labor supplies from changes in immigration policy.
+Wages were up somewhat in recent weeks, as in the prior reporting period. Contacts reported that
+increases were in line with or below the rate of inflation. Wages were largely flat in finance, retail,
+nonprofits, and manufacturing, while in other industries, such as health care, education, and leisure and hospitality, wages were up slightly.
+
+Prices
+Price levels rose at a modest rate, similar to the previous reporting period. Prices were higher
+across a range of product categories such as insurance, retail and grocery items, and manufactured goods. In contrast, prices for some building materials, such as lumber and roofing, declined,
+
+Federal Reserve Bank of San Francisco
+
+driven by slower demand from the construction sector. Prices of most inputs increased, including
+business IT and security services, animal food products, and materials such as steel and aluminum. Contacts attributed price pressures to the tariffs on imported inputs and high demand for
+limited quantities of domestically produced components. In many instances these price increases
+were at least partially passed on to customers. However, in some instances, such as in food services and accommodations, weaker consumer demand led companies to absorb the higher costs.
+
+Community Conditions
+Community and support organizations continued to report elevated demand for services and limited funding, similar to the previous reporting period. As a result, organizations found it more challenging to fulfil needs for housing, food assistance, and health care. The start of the school year
+raised demand across the District for assistance in obtaining school supplies. Cuts in federal
+grants and corporate funding were reportedly more pronounced in nonprofits working with underrepresented populations or environmental groups. One contact noted that nonprofit organizations
+offering legal support had an easier time attracting and hiring law students who previously gravitated towards more conventional legal sector jobs.
+
+Retail Trade and Services
+Conditions in retail trade weakened somewhat in recent weeks. Contacts reported that higher
+prices reduced demand for many consumer goods including groceries, fresh produce, and pet supplies. Additionally, unfavorable weather in parts of the District held home centers’ sales down. In
+contrast, demand for athletic footwear and apparel remained strong. Several contacts across different retail sectors phased in price increases as old inventories were sold and replaced with
+goods subject to tariffs. Retailers expect additional price increases as this phase-in continues.
+Activity in consumer and business services eased slightly. Demand for business consulting
+remained weak as clients continued to put discretionary projects on hold. Conditions in tourism
+and hospitality deteriorated further. In California and Nevada, contacts reported notably fewer
+international visitors and reduced demand from business travelers, particularly from the government and nonprofit sectors. However, one contact from the Pacific Northwest noted a pickup in
+tourism activity in the region due to several major entertainment events and milder weather this
+summer. Demand for legal services and medical testing remained solid. Service providers highlighted efficiencies gained through adopting GenAI tools that help with interpreting medical tests in
+health care, auditing records in business consulting, and creating marketing materials across
+the board.
+
+49
+
+50
+
+The Beige Book
+
+Manufacturing
+Manufacturing activity declined modestly in recent weeks. Demand for manufactured goods, such
+as furniture, utility sector components, and manufactured wood products, generally weakened.
+Nonetheless, an automation equipment manufacturer experienced higher demand as some clients
+were willing to resume investments previously put on hold due to economic uncertainty. Additionally, some businesses started new investments in automation in response to stricter immigration
+policies that reportedly constrained labor supply.
+
+Agriculture and Resource-Related Industries
+Conditions in agriculture and resource-related sectors softened slightly. Contacts attributed lower
+exports of agricultural products to tariffs and dollar appreciation. Producers continued to turn to
+domestic markets to sell their products, increasing supply and lowering selling prices. Domestic
+sales were largely solid, but one Northern California contact observed slightly softer demand for
+some produce and nuts. Lower prices for agricultural products caused some growers to sell below
+cost, weakening their financial position. This development prompted concern from lenders, and
+some borrowers faced immediate loan repayment requests. Yields for crops such as nuts, fruits,
+and vegetables were above average, and inventories from past harvests were stable. Costs were
+up for labor, raw materials, and financing. One contact noted that processing tariff-related paperwork raised administrative expenses for their business.
+
+Real Estate and Construction
+Residential real estate activity was largely unchanged from the last reporting period and remained
+subdued overall. High mortgage rates and increasing costs for insurance and property taxes constrained demand for single-family homes. Builders offered more incentives to buyers, and some
+contacts observed a slight moderation in sale prices. Demand for multifamily rentals remained
+solid, but excess supply kept rents stable in some areas. Residential starts overall remained slow
+because of high construction and financing costs and concerns about availability of materials.
+Commercial real estate activity was unchanged and remained slow. Leasing demand was subdued
+as many businesses continued to postpone decisions about space needs due to slowing consumer demand and elevated costs. However, a Southern California contact noted an uptick in
+leasing demand as expiring contracts forced some to make decisions about what space to lease.
+Commercial construction was slow overall but somewhat offset by continued work on large institutional and government projects in some regions. Reports highlighted that project starts were
+delayed due to elevated financing costs and tariff-related concerns, such as the availability and
+cost of materials. Still, some contacts observed that with fewer available projects, competition
+increased among contractors and put downward pressure on prices of labor and materials in bids.
+
+Federal Reserve Bank of San Francisco
+
+Financial Institutions
+Lending activity was stable over the reporting period. Demand continued to be soft for consumer
+credit and for small business and construction loans. However, a few bankers from the Pacific
+Northwest reported a slight uptick in auto and business loan demand. Several large construction
+projects in Alaska boosted demand for commercial loans in that region. Deposit inflows were subdued, and deposit rates grew somewhat. Credit and asset quality remained stable.
+For more information about District economic conditions visit: https://www.frbsf.org/researchand-insights/publications/san-francisco-fed-twelfth-district-beige-book/.
+
+51
+
+www.federalreserve.gov
+0925
+
+
