@@ -28,7 +28,7 @@
 - アナリスト評価（CA）: 50%
 - アナリスト評価（CAGR）: 50％
 
-###コメント:
+### コメント:
 - 値上げは業界要因としてコメントされているが、占有率４割を占める業者として個社ベースの価格力も一定程度有するものと判断
 - +1-2％の価格上昇率は米国経済のインフレ並みであり、CAGR接続への納得度は中立
  
@@ -55,9 +55,40 @@
 - メンテナンス関連売上（6割）のもたらす収益ベースの安定性という主張＃５は、市場成長への接続分（+1％）では一定程度納得感あり。店舗・シェアゲイン（+1％）の背景説明としては、POOL固有の優位性への納得度が劣位なため、接続評価は中立
  
 
-＊8/15/25　SELL推奨時に添付された会社、AN資料
- 
- 
+### 8/15/25　SELL推奨時に添付された会社、AN資料（画像をマークダウンに変換）
+
+#### EXPANDING ABOVE A RECURRING GROWTH MARKET
+
+- 長期売上成長率: 6% to 9%
+    - Long-Term Sales Growth Driven by Industry-Related Factors and POOLCORP Differentiators
+
+#### Industry Growth Contributors
+
+| 要因 | 寄与度 |
+|------|--------|
+| Inflation | ~1% to 2% |
+| Larger installed base | ~1% to 2% |
+| Increased pool construction | ~1% to 2% |
+| **Industry Growth** | **~4% to 5%** |
+
+#### Growth from POOL Actions
+
+| 要因 | 寄与度 |
+|------|--------|
+| New products, market share | ~2% to 3% |
+| Acquisitions | <1% |
+| **Above-Market Growth** | **~2% to 3%** |
+
+
+#### Volume Growth 内訳
+
+| Revenue Weight (a) | Sub-Weight | LT YOY Volume Growth (b) | Weighted Growth (c = a × b) |
+|--------------------|------------|--------------------------|------------------------------|
+| 55% | Maintenance (Volume) | 1.0% | 0.5% |
+| 21% | R&R (Volume) | 1.0% | 0.2% |
+| 12% | New Construction (Volume) | 4.0% | 0.5% |
+| | | **合計** | **1.25%** |
+-  *10 yr avg in new pool units is close to 4%
  
 ## 6 Eコマース参入障壁
 
