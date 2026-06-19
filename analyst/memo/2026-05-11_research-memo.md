@@ -42,7 +42,7 @@
 	   - 損失原因を分析し、提案する対処計画を急落した資産担当のエージェントが作成する
 	   - FMエージェントおよび他の資産のエージェントが別の視点から提案を行う（バランス重視の対応策、逆張りや反転を狙った対応策など）。これが提案S
 	   - 提案Sを使って強化学習の最適方策を決定する
-	
+
 ![[Pasted image 20260512122928.png]]
 
 
@@ -67,4 +67,3 @@
 
 
 [Improving Factuality and Reasoning in Language Models through Multiagent Debate](https://www.alphaxiv.org/abs/2305.14325)
-

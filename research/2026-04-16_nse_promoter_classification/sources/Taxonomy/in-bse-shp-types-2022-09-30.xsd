@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--                     
+<!--
             ***************BSE Specific data types : 2022-09-30*************
-             ***************Developed By : Microvista Technologies************          
+             ***************Developed By : Microvista Technologies************
  -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-        xmlns:xbrli="http://www.xbrl.org/2003/instance" 
-          xmlns:link="http://www.xbrl.org/2003/linkbase" 
-  xmlns:xlink="http://www.w3.org/1999/xlink" 
-  xmlns:in-bse-shp-types="http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp-types" 
-    targetNamespace="http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp-types" 
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xbrli="http://www.xbrl.org/2003/instance"
+          xmlns:link="http://www.xbrl.org/2003/linkbase"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:in-bse-shp-types="http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp-types"
+    targetNamespace="http://www.bseindia.com/xbrl/shp/2022-09-30/in-bse-shp-types"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
    <xsd:import namespace="http://www.xbrl.org/2003/instance" schemaLocation="http://www.xbrl.org/2003/xbrl-instance-2003-12-31.xsd" />
@@ -30,7 +30,7 @@
       </xsd:restriction>
     </xsd:simpleContent>
   </xsd:complexType>
-  
+
   <xsd:complexType name="ISIN">
     <xsd:simpleContent>
       <xsd:restriction base="xbrli:stringItemType">
@@ -38,11 +38,11 @@
       </xsd:restriction>
     </xsd:simpleContent>
   </xsd:complexType>
- 
-  
-  
-  
-  
+
+
+
+
+
    <xsd:complexType name="PermanentAccountNumber">
     <xsd:simpleContent>
       <xsd:restriction base="xbrli:stringItemType">
@@ -90,22 +90,22 @@
       </xsd:restriction>
     </xsd:simpleContent>
   </xsd:complexType>
-  
-  
+
+
   <xsd:complexType name="PromoterAndPromoterGroup">
     <xsd:simpleContent>
-      <xsd:restriction base="xbrli:tokenItemType">        
+      <xsd:restriction base="xbrli:tokenItemType">
 		<xsd:enumeration value="Promoter" />
         <xsd:enumeration value="Promoter Group" />
       </xsd:restriction>
     </xsd:simpleContent>
   </xsd:complexType>
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 
   <xsd:complexType name="CategoryOfInstitutionShareholders">
     <xsd:simpleContent>
@@ -159,7 +159,7 @@
     </xsd:simpleContent>
   </xsd:complexType>
 
-  
+
     <xsd:complexType name="TypeOfDepositoryReceipts">
     <xsd:simpleContent>
       <xsd:restriction base="xbrli:tokenItemType">
@@ -194,5 +194,5 @@
   </xsd:complexType>
 
 
-  
+
 </xsd:schema>

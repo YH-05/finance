@@ -48,7 +48,7 @@ IC は **「マネージャーの予測が実現リターンとどれだけ相�
 
 ### 1.2 Y の暗黙知 = IC の源泉
 
-Y 型熟練アナリストの「暗黙知」(Polanyi 1966, *The Tacit Dimension*) は、 
+Y 型熟練アナリストの「暗黙知」(Polanyi 1966, *The Tacit Dimension*) は、
 
 - 銘柄選択（cross-sectional な相対判断）
 - タイミング（時系列上の確信度）

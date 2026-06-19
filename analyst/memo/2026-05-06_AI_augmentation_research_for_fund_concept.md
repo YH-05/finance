@@ -38,7 +38,7 @@
 - **重要な警鐘**: フロンティア外（人間の文脈判断が必要）タスクでは AI 利用群は **-19 ポイント** 正答率が低下
 - **URL**: https://www.hbs.edu/faculty/Pages/item.aspx?num=64700
 
-### 1.2 （Research Done）Brynjolfsson, Li, Raymond (2023) "Generative AI at Work" 
+### 1.2 （Research Done）Brynjolfsson, Li, Raymond (2023) "Generative AI at Work"
 - **発行元**: Quarterly Journal of Economics 140(2), 889-942（NBER WP 31161）
 - **著者**: Erik Brynjolfsson (Stanford), Danielle Li (MIT Sloan), Lindsey R. Raymond
 - **デザイン**: Fortune 500 企業のカスタマーサポート 5,179 名 × LLM 対話アシスタント staggered rollout

@@ -2,7 +2,7 @@
 [2026-04-04 23:17:39] Docker 起動確認 (試行 1回目)
 [2026-04-04 23:17:39] docker compose up -d neo4j を実行
 time="2026-04-04T23:17:39+09:00" level=warning msg="The \"ANTHROPIC_API_KEY\" variable is not set. Defaulting to a blank string."
- Container quants-neo4j Recreate 
- Container quants-neo4j Error response from daemon: Error when allocating new name: Conflict. The container name "/neo4j-enterprise" is already in use by container "6472f55d0d10d7d95a3eaed23dea897f9f53bf52071230974139946096222cd2". You have to remove (or rename) that container to be able to reuse that name. 
+ Container quants-neo4j Recreate
+ Container quants-neo4j Error response from daemon: Error when allocating new name: Conflict. The container name "/neo4j-enterprise" is already in use by container "6472f55d0d10d7d95a3eaed23dea897f9f53bf52071230974139946096222cd2". You have to remove (or rename) that container to be able to reuse that name.
 Error response from daemon: Error when allocating new name: Conflict. The container name "/neo4j-enterprise" is already in use by container "6472f55d0d10d7d95a3eaed23dea897f9f53bf52071230974139946096222cd2". You have to remove (or rename) that container to be able to reuse that name.
 [2026-04-04 23:17:40] ERROR: Neo4j 起動失敗 (exit code: 1)

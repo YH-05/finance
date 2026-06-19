@@ -145,7 +145,13 @@
       "WebFetch(domain:stooq.com)",
       "WebFetch(domain:fraser.stlouisfed.org)",
       "WebFetch(domain:repo1.maven.org)",
-      "WebFetch(domain:neo4j.com)"
+      "WebFetch(domain:neo4j.com)",
+      "WebFetch(domain:www.reuters.com)",
+      "WebFetch(domain:www.thomsonreuters.com)",
+      "WebFetch(domain:web.archive.org)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:legal.thomsonreuters.com)",
+      "WebFetch(domain:research.stlouisfed.org)"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",
