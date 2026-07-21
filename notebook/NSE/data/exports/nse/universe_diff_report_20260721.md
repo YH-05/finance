@@ -1,8 +1,8 @@
-# NIFTY 750 Universe 差分レポート (2026-06-30 版)
+# NIFTY 750 Universe 差分レポート (2026-07-21 版)
 
-**比較**: 前回確定版 `nifty750_universe_20260512.csv` (855 銘柄) vs 今回版 `nifty750_universe_20260630.csv` (863 銘柄)
-**実行日**: 2026-07-15（取得データは技術的根拠により 2026-06-30 時点相当として採用、詳細は「6月末時点構成の扱い」節を参照）
-**改訂**: 2026-07-21（AGL の基準日超過による除外、および OWNER 構成銘柄の入れ替えを追記。詳細は末尾2節を参照）
+**比較**: 前回確定版 `nifty750_universe.csv` (855 銘柄、05-12) vs 今回版 `nifty750_universe_20260721.csv` (864 銘柄)
+**データ取得時点**: 指数構成CSV は 2026-07-14 (Last-Modified)、`stocks` マスタと株主データは 2026-07-15 取得
+**経緯**: 初版は 2026-06-30 を基準日として作成した。以降の改訂で基準日を 2026-07-21 に変更している（末尾の改訂2節を参照）。6月末版の成果物は `archive/` に退避済み
 
 ## サマリー
 
@@ -188,3 +188,70 @@ ADANIENT（`hufi_num=2`, `hufi_pct=0.00`）が OWNER である一方、同条件
 判定意図が「自然人promoterが存在するか」なら A、「自然人が実質的な持分を持つか」なら B が整合する。**本項は方針未決のため、現時点の universe は INOXGREEN を除外した状態（OWNER 598）で確定させている。**
 
 関連する既存フォローアップ: `act-2026-04-17-006`（`owner_confirmed_director_only` ルール厳格化）
+
+---
+
+# 2026-07-21 改訂2: 基準日を 07-21 に変更、分類ルールを統一
+
+ユーザー判断により (1) AGL を universe に含める、(2) 分類ルールを株主数ベースに統一する、の2点を実施した。基準日が変わったため成果物を `_20260721` に改名した。
+
+## 最終結果
+
+| 項目 | 前回確定版 (05-12) | 今回 (07-21) | 差分 |
+|---|---|---|---|
+| 総銘柄数 | 855 | 864 | +9 |
+| OWNER 銘柄数 | 599 | **600** | +1 |
+| NOT_OWNER 銘柄数 | 256 | 264 | +8 |
+
+**OWNER の増加は AGL 1銘柄のみ。減少はゼロ。継続 599 銘柄。**
+
+つまりこの四半期でオーナー企業の顔ぶれは実質的に変化しておらず、新規上場の AGL が加わっただけである。
+
+## 変更1: 基準日を 2026-07-21 に変更
+
+初版は 2026-06-30 を基準日としたが、AGL (2026-07-03 上場) を含める判断となったため基準日を 2026-07-21 に変更した。`--cutoff-date 2026-07-21` で生成している。
+
+**データの実際の取得時点に注意**: 指数構成CSVは Last-Modified 2026-07-14、`stocks` マスタは 2026-07-15 取得である。基準日 07-21 との間に指数構成の変更がないことは未検証（NSE の定期見直しは3月末・9月末適用のため、通常はこの期間に構成変更は起きないが、新規上場の組み入れは随時発生しうる）。
+
+- 成果物: `nifty750_universe_20260721.csv` (864銘柄) / `nifty750_universe_summary_20260721.md`
+- `post_cutoff_pending_20260630.csv` と 06-30 版 universe は `archive/` に退避
+
+## 変更2: 分類ルールを株主数ベースに統一
+
+`owner_flag` の Tier 1 判定を `hufi_pct > 0` から `hufi_num >= 1` に変更した。判定ルールは `src/market/nse/analysis/owner_classification.py` に一元化し、`persist_incremental.py` / `persist_rev1_missing.py` / `persist_and_classify.py` の3スクリプトが同モジュールを import する形にした。単体テスト17件を追加。
+
+### 適用範囲を限定した理由（重要）
+
+**全864銘柄に新ルールを適用すると240銘柄のフラグが変化する**ことが判明したため、今回スクリプト経路で処理した45銘柄のみに適用した。
+
+240件も動く原因は、ノートブック実装とスクリプト実装の差異が `hufi` の判定軸だけではなかったことにある。調査の結果、以下の差異が追加で判明した。
+
+| 差異 | ノートブック | スクリプト |
+|---|---|---|
+| hufi の判定軸 | 株主数 | 保有比率 → **今回統一** |
+| **dir / kmp の判定軸** | **株主数** | **保有比率** → 未統一 |
+| **外資ガード** (`MAX_FOREIGN_NON_GOVT_PCT`) | **あり (4箇所)** | **なし** |
+| **独自 tier** | `excluded_low_promoter` / `ambiguous_minor_individual` / `owner_via_individual_in_other` | なし |
+
+したがって現状は「hufi の判定軸のみ統一され、他の差異は残っている」状態である。完全統一には dir/kmp の判定軸・外資ガード・独自tierそれぞれについて仕様判断が必要で、240銘柄規模の再判定を伴う。**別タスクとして扱う。**
+
+### 実際に変化した銘柄
+
+| symbol | owner_flag | 結果 |
+|---|---|---|
+| INOXGREEN | `director_only` → `individual_and_director` | OWNER_WEAK → **OWNER** (05-12 版の判定に復帰) |
+| ADANIENSOL | `director_only` → `individual_and_director` | OWNER のまま変化なし |
+
+## 変更3: apply_hybrid に STATE/MNC 否定チェックを追加
+
+`individual_and_director` は従来 yaml チェックを素通りして OWNER になっていた。株主数ベース化により該当銘柄が増えるため、`hufi_pct == 0`（自然人に実質持分なし）かつ yaml が `STATE` / `MNC` の場合に `NOT_OWNER` へ落とすガードを追加した。
+
+自然人 promoter が全員雇われ経営陣で、実体は政府系・外資系という銘柄を弾くのが目的である（想定例: FINOPB は自然人6名が全員KMPで、promoter に Bharat Petroleum (GOI系) を含む。現時点では `director_only` のままなので既存の yaml チェックで NOT_OWNER を維持しているが、再取得時にフラグが変わっても判定が壊れないようにした）。
+
+`PROFESSIONAL` を対象に含めていないのは意図的である。`STATE` / `MNC` は政府保有・外資親会社という構造的事実で誤りにくいが、`PROFESSIONAL` は判断を伴い yaml 辞書の誤りが混入しうるため。実例として TORNTPHARM は promoter が Mehta 一族（SUDHIR / SAMIR MEHTA、MEHTA FAMILY TRUST）でありながら `PROFESSIONAL=[Torrent(Torrent / KKR)]` と誤マッチしている。
+
+## 新たに判明したフォローアップ
+
+- **yaml 辞書の誤り**: TORNTPHARM の `Torrent(Torrent / KKR)` エントリ。現状は実害が出ていないが要修正
+- **ノートブックへの未反映**: `promoter_total_pct` のフォールバック修正 (INDGN / IXIGO 等) が `nse_owner_analysis.ipynb` Cell 12・14 に入っていない。全量再実行時に修正が失われる
+- **分類ルールの完全統一**: 上記の dir/kmp 判定軸・外資ガード・独自tier（240銘柄規模）

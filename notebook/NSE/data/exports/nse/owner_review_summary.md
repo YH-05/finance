@@ -10,13 +10,13 @@
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 615 |
+| OWNER | 616 |
 | NOT_OWNER | 214 |
-| OWNER_WEAK | 35 |
+| OWNER_WEAK | 34 |
 
 (参考) CSV 上の `owner_flag_final` (ハイブリッド未適用) との差異:
 
-- ハイブリッドで再分類された銘柄: 108 件
+- ハイブリッドで再分類された銘柄: 107 件
 
 ## 判定状況
 
@@ -32,9 +32,9 @@
 
 | owner_flag | TP | TN | FP | FN | rev1_outside | total |
 |---|---|---|---|---|---|---|
-| owner_confirmed_individual_and_director | 299 | 0 | 4 | 0 | 120 | 423 |
-| owner_confirmed_director_only | 25 | 45 | 24 | 0 | 24 | 118 |
+| owner_confirmed_individual_and_director | 300 | 0 | 4 | 0 | 121 | 425 |
 | owner_confirmed_individual | 64 | 0 | 2 | 0 | 51 | 117 |
+| owner_confirmed_director_only | 24 | 45 | 24 | 0 | 23 | 116 |
 | excluded_state_dominant | 1 | 68 | 0 | 0 | 2 | 71 |
 | excluded_no_natural_no_holding | 3 | 30 | 0 | 0 | 14 | 47 |
 | ambiguous_holding_foreign | 4 | 14 | 0 | 0 | 8 | 26 |
@@ -53,9 +53,9 @@
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 185 |
+| OWNER | 186 |
 | NOT_OWNER | 37 |
-| OWNER_WEAK | 10 |
+| OWNER_WEAK | 9 |
 
 ### rev1 圏外 OWNER_WEAK 銘柄 (AI レビューが必要)
 
@@ -63,7 +63,6 @@
 |---|---|---|---|
 | FIRSTCRY | nan | owner_confirmed_director_only | 5.31% |
 | INDGN | nan | owner_confirmed_director_only | 21.42% |
-| INOXGREEN | nan | owner_confirmed_director_only | 56.12% |
 | IXIGO | nan | owner_confirmed_director_only | 13.35% |
 | PINELABS | nan | owner_confirmed_director_only | 2.66% |
 | SAMHI | nan | owner_confirmed_director_only | 2.14% |

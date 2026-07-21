@@ -289,6 +289,21 @@ Phase 1 だけでほぼ確実に判定できるのは **Tier 1 (HUFI 高保有)*
 
 NSE 開示の各 sub_category 別保有比率を入力に、12 種類の owner_flag を確定:
 
+### 自然人 promoter の判定軸 (2026-07-21 変更)
+
+自然人 promoter が「存在するか」の判定には **株主数 (`hufi_num`)** を使う。保有比率
+(`hufi_pct`) は使わない。
+
+インドの支配的な promoter 構造は持株会社ピラミッドであり、一族は holdco 経由で
+支配して個人名義は名目的な株数にとどまる。`hufi_pct` は小数第2位で丸められるため
+この構造では 0.00% となり、比率で判定すると一族の存在を取りこぼす
+(実例: INOXGREEN は自然人3名で計500株、発行済4.01億株に対し `hufi_pct=0.00%`)。
+
+保有比率は、自然人の保有が微少かどうか (`hufi_pct < 0.5` → passive) の判定にのみ使う。
+
+本ルールの実装は `src/market/nse/analysis/owner_classification.py` に一元化されている
+(従来はスクリプト3本とノートブックに複製され、処理経路によって結果が変わっていた)。
+
 ### 判定の優先順位
 
 ```python
@@ -297,11 +312,11 @@ natural_pct = hufi_pct + nri_pct + dir_pct + kmp_pct + rel_pct
 
 if natural_pct > 0:                      # ── Tier 1, 2, 2.5
     if dir_pct > 0 or kmp_pct > 0:
-        if hufi_pct > 0:
+        if hufi_num >= 1:                # ★株主数で判定 (2026-07-21 変更)
             → owner_confirmed_individual_and_director   # 創業家 + 役員
         else:
             → owner_confirmed_director_only             # 役員名目のみ ★FP の主犯
-    elif hufi_pct > 0:
+    elif hufi_num >= 1:                  # ★株主数で判定 (2026-07-21 変更)
         if hufi_pct < 0.5 and dir_pct == 0:
             → owner_confirmed_individual_passive        # 微少保有
         else:

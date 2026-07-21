@@ -151,6 +151,23 @@ def main() -> None:
                 return "NOT_OWNER"
             return "OWNER_WEAK"
 
+        # 自然人 promoter は存在するが実質持分ゼロ (hufi_pct==0) のケースへの
+        # 否定チェック。持株会社経由で支配する一族を拾う一方、自然人が全員
+        # 雇われ経営陣で実体は政府系・外資系という銘柄を弾く (実例: FINOPB は
+        # 自然人6名が全員 KMP で、promoter に Bharat Petroleum (GOI系) を含む)。
+        #
+        # PROFESSIONAL を対象に含めないのは意図的である。STATE / MNC は
+        # 政府保有・外資親会社という構造的事実で誤りにくいのに対し、
+        # PROFESSIONAL は判断を伴い yaml 辞書の誤りが混入しうる
+        # (実例: TORNTPHARM は promoter が Mehta 一族だが
+        # PROFESSIONAL=[Torrent(Torrent / KKR)] と誤マッチしている)。
+        if (
+            flag == "owner_confirmed_individual_and_director"
+            and row["hufi_pct"] == 0
+            and cls in ("STATE", "MNC")
+        ):
+            return "NOT_OWNER"
+
         # ambiguous_*: yaml 分類で確定情報があればそれに従う
         ambiguous_targets = {
             "ambiguous_holding_indian",

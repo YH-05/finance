@@ -29,6 +29,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from market.nse.analysis.owner_classification import (
+    classify_owner_flag,
+    derive_owner_flag_final,
+)
 from market.nse.collectors.share_holding import ShareholdingCollector
 from market.nse.session import NseSession
 
@@ -235,43 +239,23 @@ def aggregate_owner_candidate(
     names = [n for n in detail_rows["shareholder_name"].dropna().unique() if n.strip()]
     promoter_names = "|".join(names)
 
-    # Tier 1-4 ロジック (簡易版)
-    has_natural = natural_pct_sum > 0
-    if has_natural:
-        if dir_["pct"] > 0 or kmp["pct"] > 0:
-            if hufi["pct"] > 0:
-                owner_flag = "owner_confirmed_individual_and_director"
-            else:
-                owner_flag = "owner_confirmed_director_only"
-        elif hufi["pct"] > 0:
-            if hufi["pct"] < 0.5 and dir_["pct"] == 0 and kmp["pct"] == 0:
-                owner_flag = "owner_confirmed_individual_passive"
-            else:
-                owner_flag = "owner_confirmed_individual"
-        elif nri["pct"] > 0:
-            owner_flag = "owner_probable_nri_family"
-        else:
-            owner_flag = "owner_probable_relatives_trust"
-    elif govt_pct >= 50:
-        owner_flag = "excluded_state_dominant"
-    elif other_indian_pct == 0 and other_foreign_pct == 0 and foreign_non_govt_pct == 0:
-        owner_flag = "excluded_no_natural_no_holding"
-    elif other_foreign_pct + foreign_non_govt_pct > other_indian_pct:
-        owner_flag = "ambiguous_holding_foreign"
-    elif other_indian_pct > 0:
-        owner_flag = "ambiguous_holding_indian"
-    else:
-        owner_flag = "ambiguous_mnc_jv_candidate"
-
-    # 簡易 owner_flag_final (AI レビュー未適用、ハイブリッド未適用)
-    if owner_flag.startswith("owner_confirmed") or owner_flag.startswith(
-        "owner_probable"
-    ):
-        owner_flag_final = "OWNER"
-    elif owner_flag.startswith("excluded"):
-        owner_flag_final = "NOT_OWNER"
-    else:
-        owner_flag_final = "OWNER_WEAK"  # ambiguous は AI レビュー要
+    # 判定ルールは市場ロジックとして src/market/nse/analysis に一元化した。
+    # 以前は本スクリプト群3本とノートブックに複製されており、同一データでも
+    # 処理経路によって結果が変わっていた (実例: INOXGREEN)。
+    owner_flag = classify_owner_flag(
+        hufi_num=hufi["num"],
+        hufi_pct=hufi["pct"],
+        nri_pct=nri["pct"],
+        dir_pct=dir_["pct"],
+        kmp_pct=kmp["pct"],
+        natural_pct_sum=natural_pct_sum,
+        govt_pct=govt_pct,
+        other_indian_pct=other_indian_pct,
+        other_foreign_pct=other_foreign_pct,
+        foreign_non_govt_pct=foreign_non_govt_pct,
+    )
+    # ハイブリッド未適用の暫定値 (ambiguous は後段の AI レビュー要)
+    owner_flag_final = derive_owner_flag_final(owner_flag)
 
     ai_review_needed = owner_flag.startswith("ambiguous") or owner_flag.startswith(
         "owner_probable"
