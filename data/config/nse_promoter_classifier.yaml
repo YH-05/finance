@@ -535,15 +535,21 @@ professional_keywords:
     parent: "Aquilo (PE)"
     sample_stocks: ["AAVAS"]
 
-  # --- JB Chemicals (Torrent / KKR) ---
+  # --- JB Chemicals (Torrent グループ傘下、旧 KKR) ---
+  # 注意: keyword "Torrent" は TORNTPHARM / TORNTPOWER の promoter にも含まれる
+  # Torrent グループ持株会社にマッチする。ただし両銘柄は owner_flag が
+  # individual_* (Mehta 一族の自然人 promoter が存在) となり yaml 判定を
+  # 通らないため、実際の判定には影響しない (いずれも rev1 GT = Owner に一致)。
+  # JBCHEPHARM のみ director_only 経由で本エントリが効き、rev1 GT = Professional
+  # と一致する。分類を OWNER に変えると JBCHEPHARM が FP になるため変更しないこと。
   - keyword: "Torrent"
-    parent: "Torrent / KKR"
+    parent: "Torrent グループ"
     sample_stocks: ["JBCHEPHARM"]
   - keyword: "Curatio Inc"
-    parent: "Torrent / KKR"
+    parent: "Torrent グループ"
     sample_stocks: ["JBCHEPHARM"]
   - keyword: "Heumann Pharma"
-    parent: "Torrent / KKR"
+    parent: "Torrent グループ"
     sample_stocks: ["JBCHEPHARM"]
 
   # --- PNB Housing / PNB ---

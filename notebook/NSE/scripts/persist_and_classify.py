@@ -243,12 +243,15 @@ def aggregate_owner_candidate(
     # 以前は本スクリプト群3本とノートブックに複製されており、同一データでも
     # 処理経路によって結果が変わっていた (実例: INOXGREEN)。
     owner_flag = classify_owner_flag(
+        promoter_total_pct=promoter_total_pct,
         hufi_num=hufi["num"],
         hufi_pct=hufi["pct"],
-        nri_pct=nri["pct"],
-        dir_pct=dir_["pct"],
-        kmp_pct=kmp["pct"],
-        natural_pct_sum=natural_pct_sum,
+        nri_num=nri["num"],
+        dir_num=dir_["num"],
+        kmp_num=kmp["num"],
+        rel_num=rel["num"],
+        trust_num=trust["num"],
+        natural_num_sum=natural_num_sum,
         govt_pct=govt_pct,
         other_indian_pct=other_indian_pct,
         other_foreign_pct=other_foreign_pct,

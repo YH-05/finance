@@ -255,3 +255,65 @@ ADANIENT（`hufi_num=2`, `hufi_pct=0.00`）が OWNER である一方、同条件
 - **yaml 辞書の誤り**: TORNTPHARM の `Torrent(Torrent / KKR)` エントリ。現状は実害が出ていないが要修正
 - **ノートブックへの未反映**: `promoter_total_pct` のフォールバック修正 (INDGN / IXIGO 等) が `nse_owner_analysis.ipynb` Cell 12・14 に入っていない。全量再実行時に修正が失われる
 - **分類ルールの完全統一**: 上記の dir/kmp 判定軸・外資ガード・独自tier（240銘柄規模）
+
+---
+
+# 2026-07-21 改訂3: 残タスク3件を完了
+
+改訂2で「別タスク」としていた3件に対応した。**universe の内容は一切変わっていない**（864銘柄 / OWNER 600、構成銘柄も同一）。
+
+## タスク1: 分類ルールの完全統一 — 完了
+
+### 実測でルールを選定した
+
+改訂2の時点では「どちらのルールが正しいか」を判断できていなかったため、rev1 手動ラベル425銘柄を正解として変種を実測評価した。段階的に差異を積み上げ、どれが精度に効くかを切り分けている。
+
+| 変種 | OWNER総数 | TP | FP | FN | Precision | Recall | F1 |
+|---|---|---|---|---|---|---|---|
+| V0 現行出荷版（混在状態） | 600 | 411 | 4 | 14 | 99.0% | 96.7% | 97.9% |
+| V1 hufi のみ株主数化 | 585 | 401 | 5 | 24 | 98.8% | 94.4% | 96.5% |
+| V2 +dir/kmp 株主数化 | 584 | 400 | 5 | 25 | 98.8% | 94.1% | 96.4% |
+| V3 +外資ガード | 584 | 400 | 5 | 25 | 98.8% | 94.1% | 96.4% |
+| V4 +govt閾値10% | 584 | 400 | 5 | 25 | 98.8% | 94.1% | 96.4% |
+| **V5 ノートブック完全版** | **600** | **411** | **4** | **14** | **99.0%** | **96.7%** | **97.9%** |
+| V6 V5 + govt閾値50% | 601 | 411 | 5 | 14 | 98.8% | 96.7% | 97.7% |
+
+**V5（ノートブックの完全なルール）が現行出荷版 V0 と完全一致した。** 864銘柄すべてについて `is_owner_company` が一致することも個別に確認済み。つまり出荷済み universe の実体はノートブック実装であり、スクリプト実装（V1〜V4）は F1 で 1.5 ポイント劣る。
+
+なお初回の評価では V0 が突出して見えたが、これは評価ハーネスが AI 補完レイヤー（55銘柄）を捨てていたことによる誤りだった。実パイプラインと同じ順序（ルール → AI → hybrid）に修正して上表を得ている。
+
+### 実施内容
+
+- **ノートブックのルールを正規実装として採用**し、`src/market/nse/analysis/owner_classification.py` に一元化した
+- `nse_owner_analysis.ipynb` Cell 14 と `persist_incremental.py` / `persist_rev1_missing.py` / `persist_and_classify.py` の4箇所すべてが同モジュールを呼び出す形にした
+- 単体テスト25件を追加（Tier 4 の先行除外、Tier 1 の株主数判定、外資ガード、境界値）
+- `owner_candidates.csv` の全845行を統一ルールで再計算（`owner_flag` は49行変化したが、hybrid と Stage1 適用後の `is_owner_company` は全864銘柄で不変）
+
+これにより、処理経路による判定の分岐は解消された。
+
+## タスク2: ノートブックへの `promoter_total_pct` フォールバック反映 — 完了
+
+`nse_owner_analysis.ipynb` Cell 13（features）に、promoter「総合計」行が省略された XBRL 開示への対応を追加した。`Indian + Foreign` → 自然人合計の順にフォールバックする、スクリプト側と同じ扱いである。
+
+これがないと、全量再実行時に INDGN・IXIGO・FIRSTCRY・PINELABS・SAMHI の `promoter_total_pct` が 0.0% に戻る状態だった。
+
+## タスク3: yaml 辞書の `Torrent` エントリ — 調査の結果、変更不要と判明
+
+改訂2で「誤り」と記載したが、rev1 正解ラベルと突き合わせた結果、**現状が正しい**ことが分かった。
+
+| 銘柄 | rev1 正解 | 現在の判定 | 評価 |
+|---|---|---|---|
+| TORNTPHARM | Owner | OWNER | TP |
+| TORNTPOWER | Owner | OWNER | TP |
+| JBCHEPHARM | **Professional** | NOT_OWNER | TN |
+
+`Torrent` → PROFESSIONAL のエントリは JBCHEPHARM を正しく TN にしている。TORNTPHARM / TORNTPOWER は `owner_flag` が `individual_*`（Mehta 一族の自然人 promoter が存在）となるため yaml 判定を通らず、影響を受けない。
+
+分類を OWNER に変更すると JBCHEPHARM が FP になり精度が下がるため、**変更してはならない**。この判断根拠を yaml のコメントとして記録し、`parent` の表記のみ実態に合わせて `Torrent / KKR` → `Torrent グループ` に更新した（分類は PROFESSIONAL のまま、判定への影響なし）。
+
+## 検証結果
+
+- universe: 864銘柄 / OWNER 600（統一前後で構成銘柄も完全一致）
+- 精度: Precision 99.0% / Recall 96.7% / F1 97.9%（TP 411 / FP 4 / FN 14）
+- テスト: `tests/market/nse/` 625 passed, 24 skipped
+- ruff format / ruff check / pyright: すべて通過

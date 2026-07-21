@@ -278,7 +278,7 @@ LATENTVIEW,INE0I7C01011,Latent View Analytics Limited,True,True,,owner_confirmed
 LAURUSLABS,INE947Q01028,Laurus Labs Limited,True,True,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,27.49,3.99,True,Owner,False,False,True,True,True
 LEMONTREE,INE970X01018,Lemon Tree Hotels Limited,True,True,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,22.28,0.46,True,Owner,False,False,False,True,True
 LENSKART,INE956O01016,Lenskart Solutions Limited,True,True,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,17.55,17.57,False,,False,False,True,True,True
-LLOYDSENGG,INE093R01011,,True,True,,owner_confirmed_individual_passive,OWNER,UNKNOWN,41.92,0.05,False,,False,False,False,False,True
+LLOYDSENGG,INE093R01011,,True,True,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,41.92,0.05,False,,False,False,False,False,True
 LLOYDSENT,INE080I01025,Lloyds Enterprises Limited,True,True,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,62.72,8.26,False,,False,False,False,False,True
 LLOYDSME,INE281B01032,Lloyds Metals And Energy Limited,True,True,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,61.64,6.4399999999999995,False,,False,False,False,True,True
 LOTUSDEV,INE0V9Q01010,Sri Lotus Developers and Realty Limited,True,True,,owner_confirmed_individual,OWNER,UNKNOWN,81.86,72.04,False,,False,False,False,False,True
@@ -518,7 +518,7 @@ BAJAJ-AUTO,INE917I01010,Bajaj Auto Limited,True,True,Bajaj,owner_confirmed_indiv
 BAJAJCON,INE933K01021,Bajaj Consumer Care Limited,True,True,Bajaj,owner_confirmed_director_only,OWNER,OWNER,42.97,0.01,True,Owner,False,False,False,False,False
 BAJAJELEC,INE193E01025,Bajaj Electricals Limited,True,True,Bajaj,owner_confirmed_individual_and_director,OWNER,OWNER,62.69,16.22,False,,False,False,False,False,True
 BAJAJFINSV,INE918I01026,Bajaj Finserv Limited,True,True,Bajaj,owner_confirmed_individual_and_director,OWNER,OWNER,58.81,7.23,True,Owner,True,True,True,True,True
-BAJAJHFL,INE377Y01014,,True,True,Bajaj,ambiguous_holding_indian,OWNER,OWNER,86.7,0.0,False,,False,False,False,True,True
+BAJAJHFL,INE377Y01014,,True,True,Bajaj,owner_confirmed_director_only,OWNER,OWNER,86.7,0.0,False,,False,False,False,True,True
 BAJAJHIND,INE306A01021,Bajaj Hindusthan Sugar Limited,True,True,Bajaj,owner_confirmed_individual_and_director,OWNER,OWNER,13.43,4.75,True,Owner,False,False,False,False,False
 BAJAJHLDNG,INE118A01012,Bajaj Holdings & Investment Limited,True,True,Bajaj,owner_confirmed_individual_and_director,OWNER,OWNER,51.46,7.09,True,Owner,False,True,True,True,True
 BAJFINANCE,INE296A01032,Bajaj Finance Limited,True,True,Bajaj,owner_confirmed_individual_and_director,OWNER,OWNER,54.7,0.19,True,Owner,True,True,True,True,True
@@ -526,7 +526,7 @@ EMIL,INE02YR01019,Electronics Mart India Limited,True,True,Bajaj,owner_confirmed
 MAHSCOOTER,INE288A01013,Maharashtra Scooters Limited,True,True,Bajaj,owner_confirmed_director_only,OWNER,OWNER,51.0,0.0,False,,False,False,False,False,True
 MEDANTA,INE474Q01031,Global Health Limited,True,True,Bajaj,owner_confirmed_individual_and_director,OWNER,OWNER,33.01,43.849999999999994,True,Owner,False,False,False,True,True
 METROPOLIS,INE112L01020,Metropolis Healthcare Limited,True,True,Bajaj,owner_confirmed_individual_and_director,OWNER,OWNER,48.87,0.42,True,Owner,False,False,False,False,True
-NETWEB,INE0NT901020,,True,True,Bajaj|Lodha,owner_confirmed_individual,OWNER,OWNER,66.98,66.98,False,,False,False,False,True,True
+NETWEB,INE0NT901020,,True,True,Bajaj|Lodha,owner_confirmed_individual_and_director,OWNER,OWNER,66.98,66.98,False,,False,False,False,True,True
 BANDHANBNK,INE545U01014,Bandhan Bank Limited,True,True,Bandhan (Ghosh),owner_confirmed_director_only,OWNER,OWNER,39.74,0.0,True,Owner,False,False,False,True,True
 ABREL,INE055A01016,Aditya Birla Real Estate Limited,True,True,Birla,owner_confirmed_director_only,OWNER,OWNER,50.21,0.01,True,Owner,False,False,False,True,True
 ABSLAMC,INE404A01024,Aditya Birla Sun Life AMC Limited,True,True,Birla,owner_confirmed_individual_and_director,OWNER,OWNER,74.82,0.01,True,Owner,False,False,False,True,True
@@ -599,16 +599,16 @@ VEDL,INE205A01025,Vedanta Limited,True,True,Vedanta,ambiguous_mnc_jv_candidate,O
 BBTC,INE050A01025,The Bombay Burmah Trading Corporation Limited,True,True,Wadia,owner_confirmed_individual,OWNER,OWNER,74.05,10.05,True,Owner,False,False,False,True,True
 BOMDYEING,INE032A01023,Bombay Dyeing & Mfg Company Limited,True,True,Wadia,owner_confirmed_individual,OWNER,OWNER,53.57,2.28,True,Owner,False,False,False,False,False
 BRITANNIA,INE216A01030,Britannia Industries Limited,True,True,Wadia,ambiguous_mnc_jv_candidate,OWNER,OWNER,50.55,0.01,True,Owner,False,True,True,True,True
-360ONE,INE466L01038,,False,False,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,6.24,7.52,True,Owner,False,False,True,True,True
+360ONE,INE466L01038,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,6.24,7.52,True,Owner,False,False,True,True,True
 3MINDIA,INE470A01017,3M India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,75.0,0.0,True,MNC,False,False,False,True,True
 AADHARHFC,INE883F01010,,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,64.9,0.41,False,,False,False,False,True,True
 AAVAS,INE216P01012,Aavas Financiers Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,48.95,0.93,True,Professional,False,False,False,True,True
 ABB,INE117A01022,ABB India Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,75.0,0.0,True,MNC,False,True,True,True,True
 ABBOTINDIA,INE358A01014,Abbott India Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,74.99,0.0,True,MNC,False,False,False,True,True
 AKZOINDIA,INE133A01011,Akzo Nobel India Limited,False,False,,nse_data_unavailable,OWNER_WEAK,UNKNOWN,0.0,0.0,False,,False,False,False,False,False
-ASTRAMICRO,INE386C01029,,False,False,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,6.54,10.27,True,Owner,False,False,False,False,True
-AXISBANK,INE238A01034,,False,False,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,8.14,0.0,True,Professional,True,True,True,True,True
-BALMLAWRIE,INE164A01016,,False,False,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,0.0,0.0,True,State,False,False,False,False,False
+ASTRAMICRO,INE386C01029,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,6.54,10.27,True,Owner,False,False,False,False,True
+AXISBANK,INE238A01034,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,8.14,0.0,True,Professional,True,True,True,True,True
+BALMLAWRIE,INE164A01016,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.0,True,State,False,False,False,False,False
 BANKBARODA,INE028A01039,Bank of Baroda,False,True,,excluded_state_dominant,NOT_OWNER,STATE,63.97,0.0,True,State,False,True,True,True,True
 BANKINDIA,INE084A01016,Bank of India,False,True,,excluded_state_dominant,NOT_OWNER,STATE,73.38,0.0,True,State,False,False,True,True,True
 BATAINDIA,INE176A01028,Bata India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,50.16,0.0,True,MNC,False,False,False,True,True
@@ -622,11 +622,11 @@ BLUEDART,INE233B01017,Blue Dart Express Limited,False,True,,excluded_no_natural_
 BOSCHLTD,INE323A01026,Bosch Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,70.54,0.0,True,MNC,False,True,True,True,True
 BPCL,INE029A01011,Bharat Petroleum Corporation Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,52.98,0.0,True,State,False,True,True,True,True
 BSE,INE118H01025,BSE LTD,False,False,,rev1_label_only_professional,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,True,True,True
-CAMS,INE596I01020,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.22,True,Professional,False,False,False,True,True
+CAMS,INE596I01020,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.22,True,Professional,False,False,False,True,True
 CANBK,INE476A01022,Canara Bank,False,True,,excluded_state_dominant,NOT_OWNER,STATE,62.93,0.0,True,State,False,True,True,True,True
 CANFINHOME,INE477A01020,Can Fin Homes Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,STATE,29.99,0.0,True,State,False,False,False,True,True
 CANHLIFE,INE01TY01017,Canara HSBC Life Insurance Company Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,STATE,62.0,0.0,False,,False,False,False,True,True
-CARTRADE,INE290S01011,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,2.89,True,Professional,False,False,False,True,True
+CARTRADE,INE290S01011,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,2.89,True,Professional,False,False,False,True,True
 CASTROLIND,INE172A01027,Castrol India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,51.0,0.0,True,MNC,False,False,False,True,True
 CDSL,INE736A01011,Central Depository Services (India) Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,15.0,0.0,True,Professional,False,False,False,True,True
 CEMPRO,INE686A01026,Cemindia Projects Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,67.46,0.0,True,MNC,False,False,False,True,True
@@ -634,34 +634,34 @@ CENTRALBK,INE483A01010,Central Bank of India,False,True,,excluded_state_dominant
 CHENNPETRO,INE178A01016,Chennai Petroleum Corporation Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,67.29,0.0,True,State,False,False,False,True,True
 CIEINDIA,INE536H01010,CIE Automotive India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,65.7,0.81,True,MNC,False,False,False,True,True
 CIGNITITEC,INE675C01017,,False,True,,ambiguous_holding_indian,OWNER_WEAK,UNKNOWN,54.0,0.0,False,,False,False,False,False,False
-CMSINFO,INE925R01014,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,6.5,True,Professional,False,False,False,False,True
+CMSINFO,INE925R01014,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,6.5,True,Professional,False,False,False,False,True
 COALINDIA,INE522F01014,Coal India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,63.13,0.0,True,State,True,True,True,True,True
 COCHINSHIP,INE704P01025,Cochin Shipyard Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,67.91,0.0,True,State,False,False,True,True,True
-COFORGE,INE591G01025,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.22,True,MNC,False,False,True,True,True
+COFORGE,INE591G01025,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.22,True,MNC,False,False,True,True,True
 COHANCE,INE03QK01018,Cohance Lifesciences Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,57.49,0.0,True,Professional,False,False,False,True,True
 COLPAL,INE259A01022,Colgate Palmolive (India) Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,51.0,0.0,True,MNC,False,False,True,True,True
 CONCOR,INE111A01025,Container Corporation of India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,54.8,0.0,True,State,False,False,True,True,True
 CRAMC,INE218I01013,Canara Robeco Asset Management Company Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,STATE,75.0,0.0,False,,False,False,False,False,True
 CREDITACC,INE741K01010,CREDITACCESS GRAMEEN LIMITED,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,66.28,0.03,True,Professional,False,False,False,True,True
 CRISIL,INE007A01025,CRISIL Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,66.64,0.06,False,,False,False,False,True,True
-CROMPTON,INE299U01018,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.18,True,Professional,False,False,False,True,True
+CROMPTON,INE299U01018,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.18,True,Professional,False,False,False,True,True
 CSBBANK,INE679A01013,CSB Bank Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,40.0,0.0,True,Professional,False,False,False,False,True
-CUB,INE491A01021,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,2.61,True,Professional,False,False,False,True,True
+CUB,INE491A01021,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,2.61,True,Professional,False,False,False,True,True
 CUMMINSIND,INE298A01020,Cummins India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,51.0,0.0,True,MNC,False,True,True,True,True
 DCBBANK,INE503A01015,DCB Bank Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,16.24,0.17,True,Professional,False,False,False,False,True
-DELHIVERY,INE148O01028,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,4.56,True,Professional,False,False,False,True,True
-DISHTV,INE836F01026,,False,False,,owner_confirmed_individual_passive,OWNER,UNKNOWN,4.06,0.07,True,Owner,False,False,False,False,False
+DELHIVERY,INE148O01028,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,4.56,True,Professional,False,False,False,True,True
+DISHTV,INE836F01026,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,4.06,0.07,True,Owner,False,False,False,False,False
 ENGINERSIN,INE510A01028,Engineers India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,51.32,0.0,True,State,False,False,False,True,True
 ENRIN,INE1NPP01017,Siemens Energy India Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,75.0,0.0,False,,False,True,True,True,True
 EPL,INE255A01020,EPL Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,MNC,26.38,0.23,True,MNC,False,False,False,False,True
-EQUITASBNK,INE063P01018,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.34,True,Professional,False,False,False,False,True
-ETERNAL,INE758T01015,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,4.53,True,Professional,True,True,True,True,True
+EQUITASBNK,INE063P01018,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.34,True,Professional,False,False,False,False,True
+ETERNAL,INE758T01015,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,4.53,True,Professional,True,True,True,True,True
 EUREKAFORB,INE0KCE01017,Eureka Forbes Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,62.56,0.0,False,,False,False,False,False,True
 FACT,INE188A01015,Fertilizers and Chemicals Travancore Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,90.0,0.0,True,State,False,False,False,True,True
-FEDERALBNK,INE171A01029,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.09,True,Professional,False,False,True,True,True
+FEDERALBNK,INE171A01029,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.09,True,Professional,False,False,True,True,True
 FEDFINA,INE007N01010,Fedbank Financial Services Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,60.81,0.28,False,,False,False,False,False,True
-FINOPB,INE02NC01014,,False,True,,owner_confirmed_director_only,NOT_OWNER,STATE,75.0,0.02,True,Professional,False,False,False,False,False
-FIRSTCRY,INE02RE01045,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,5.31,5.31,False,,False,False,False,True,True
+FINOPB,INE02NC01014,,False,True,,owner_confirmed_individual_and_director,NOT_OWNER,STATE,75.0,0.02,True,Professional,False,False,False,False,False
+FIRSTCRY,INE02RE01045,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,5.31,5.31,False,,False,False,False,True,True
 FORTIS,INE061F01013,Fortis Healthcare Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,31.17,0.0,True,MNC,False,False,True,True,True
 GAIL,INE129A01019,GAIL (India) Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,51.88,0.0,True,State,False,True,True,True,True
 GICRE,INE481Y01014,General Insurance Corporation of India,False,True,,excluded_state_dominant,NOT_OWNER,STATE,82.4,0.0,True,State,False,False,False,True,True
@@ -669,36 +669,36 @@ GILLETTE,INE322A01010,Gillette India Limited,False,True,,owner_confirmed_directo
 GLAXO,INE159A01016,GlaxoSmithKline Pharmaceuticals Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,75.0,0.0,False,,False,False,False,True,True
 GMDCLTD,INE131A01031,Gujarat Mineral Development Corporation Limited,False,True,,excluded_state_dominant,NOT_OWNER,UNKNOWN,74.0,0.0,True,state,False,False,False,True,True
 GNFC,INE113A01013,Gujarat Narmada Valley Fertilizers and Chemicals Limited,False,True,,ambiguous_holding_indian,NOT_OWNER,STATE,41.3,0.0,True,State,False,False,False,False,True
-GOKEX,INE887G01027,,False,False,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,9.15,2.59,True,Professional,False,False,False,False,True
+GOKEX,INE887G01027,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,9.15,2.59,True,Professional,False,False,False,False,True
 GPPL,INE517F01014,Gujarat Pipavav Port Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,MNC,44.01,0.0,True,MNC,False,False,False,False,True
 GRSE,INE382Z01011,Garden Reach Shipbuilders & Engineers Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,74.5,0.0,True,State,False,False,False,True,True
 GSFC,INE026A01025,Gujarat State Fertilizers & Chemicals Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,STATE,37.84,0.0,True,State,False,False,False,False,True
 GSPL,INE246F01010,Gujarat State Petronet Limited,False,True,,ambiguous_holding_indian,NOT_OWNER,STATE,37.63,0.0,True,State,False,False,False,False,False
 GUJALKALI,INE186A01019,,False,True,,ambiguous_holding_indian,NOT_OWNER,STATE,47.28,0.0,True,State,False,False,False,False,False
-GUJGASLTD,INE844O01030,,False,True,,ambiguous_holding_indian,NOT_OWNER,STATE,60.89,0.0,True,State,False,False,False,False,False
+GUJGASLTD,INE844O01030,,False,True,,excluded_state_dominant,NOT_OWNER,STATE,60.89,0.0,True,State,False,False,False,False,False
 GVT&D,INE200A01026,GE Vernova T&D India Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,MNC,51.0,0.0,False,,False,False,True,True,True
 HAL,INE066F01020,Hindustan Aeronautics Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,71.64,0.0,True,State,False,True,True,True,True
 HCG,INE075I01017,Healthcare Global Enterprises Limited,False,True,,ambiguous_mnc_jv_candidate,NOT_OWNER,PROFESSIONAL,64.21,9.86,False,,False,False,False,False,True
 HDBFS,INE756I01012,HDB Financial Services Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,74.15,0.16,False,,False,False,False,True,True
 HDFCAMC,INE127D01025,HDFC Asset Management Company Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,52.38,0.19,True,Professional,False,True,True,True,True
-HDFCBANK,INE040A01034,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.2,True,Professional,True,True,True,True,True
+HDFCBANK,INE040A01034,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.2,True,Professional,True,True,True,True,True
 HDFCLIFE,INE795G01014,HDFC Life Insurance Company Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,50.21,0.06,True,Professional,True,True,True,True,True
 HEMIPROP,INE0AJG01018,Hemisphere Properties India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,51.12,0.0,False,,False,False,False,False,True
 HEXT,INE093A01041,Hexaware Technologies Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,74.3,0.48,False,,False,False,False,True,True
 HINDCOPPER,INE531E01026,Hindustan Copper Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,66.14,0.0,True,State,False,False,False,True,True
 HINDPETRO,INE094A01015,Hindustan Petroleum Corporation Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,STATE,54.9,0.0,True,State,False,False,True,True,True
 HINDUNILVR,INE030A01027,Hindustan Unilever Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,61.9,0.01,True,MNC,True,True,True,True,True
-HOMEFIRST,INE481N01025,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,6.99,0.99,True,Professional,False,False,False,True,True
+HOMEFIRST,INE481N01025,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,6.99,0.99,True,Professional,False,False,False,True,True
 HONAUT,INE671A01010,Honeywell Automation India Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,75.0,0.0,True,MNC,False,False,False,True,True
 HUDCO,INE031A01017,Housing & Urban Development Corporation Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,75.0,0.0,True,State,False,False,True,True,True
 HYUNDAI,INE0V6F01027,Hyundai Motor India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,82.5,0.0,True,MNC,False,True,True,True,True
 ICICIAMC,INE346A01027,ICICI Prudential Asset Management Company Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,PROFESSIONAL,87.59,0.0,False,,False,False,True,True,True
-ICICIBANK,INE090A01021,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.05,True,Professional,True,True,True,True,True
+ICICIBANK,INE090A01021,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.05,True,Professional,True,True,True,True,True
 ICICIGI,INE765G01017,ICICI Lombard General Insurance Company Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,51.31,0.05,True,Professional,False,False,True,True,True
 ICICIPRULI,INE726G01019,ICICI Prudential Life Insurance Company Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,72.88,0.0,True,Professional,False,False,False,True,True
 IDBI,INE008A01015,IDBI Bank Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,94.71,0.0,True,State,False,False,False,True,True
-IDFCFIRSTB,INE092T01019,,False,False,,owner_confirmed_director_only,NOT_OWNER,STATE,0.0,0.83,True,Professional,False,False,True,True,True
-IEX,INE022Q01020,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.04,True,Professional,False,False,False,True,True
+IDFCFIRSTB,INE092T01019,,False,False,,excluded_low_promoter,NOT_OWNER,STATE,0.0,0.83,True,Professional,False,False,True,True,True
+IEX,INE022Q01020,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.04,True,Professional,False,False,False,True,True
 IFCI,INE039A01010,IFCI Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,72.57,0.0,True,State,False,False,False,True,True
 IGIL,INE0Q9301021,International Gemmological Institute (India) Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,PROFESSIONAL,76.55,0.0,False,,False,False,False,True,True
 IGL,INE203G01027,Indraprastha Gas Limited,False,True,,ambiguous_holding_indian,NOT_OWNER,STATE,45.0,0.0,True,State,False,False,False,True,True
@@ -711,7 +711,7 @@ IRCON,INE962Y01021,Ircon International Limited,False,True,,excluded_state_domina
 IRCTC,INE335Y01020,Indian Railway Catering And Tourism Corporation Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,62.4,0.0,True,State,False,False,True,True,True
 IREDA,INE202E01016,Indian Renewable Energy Development Agency Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,71.76,0.0,False,,False,False,True,True,True
 IRFC,INE053F01010,,False,True,,excluded_state_dominant,NOT_OWNER,STATE,84.65,0.0,True,State,False,True,True,True,True
-ITC,INE154A01025,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.02,True,Professional,True,True,True,True,True
+ITC,INE154A01025,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.02,True,Professional,True,True,True,True,True
 ITCHOTELS,INE379A01028,ITC Hotels Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,39.85,0.02,False,,False,False,False,True,True
 ITI,INE248A01017,ITI Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,90.02,0.0,True,State,False,False,False,True,True
 IXIGO,INE0HV901016,,False,True,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,13.35,13.35,False,,False,False,False,False,True
@@ -720,23 +720,23 @@ JBCHEPHARM,INE572A01036,JB Chemicals & Pharmaceuticals Limited,False,True,,owner
 JSFB,INE953L01027,Jana Small Finance Bank Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,21.85,0.68,False,,False,False,False,False,True
 JSWDULUX,INE133A01011,,False,True,,ambiguous_holding_indian,OWNER_WEAK,UNKNOWN,61.2,0.0,False,,False,False,False,True,True
 KANSAINER,INE531A01024,Kansai Nerolac Paints Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,74.98,0.0,True,MNC,False,False,False,False,True
-KARURVYSYA,INE036D01028,,False,False,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,2.07,2.1,True,Professional,False,False,False,True,True
+KARURVYSYA,INE036D01028,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,2.07,2.1,True,Professional,False,False,False,True,True
 KFINTECH,INE138Y01010,Kfin Technologies Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,22.87,0.0,True,Professional,False,False,False,True,True
 KIOCL,INE880L01014,,False,True,,excluded_state_dominant,NOT_OWNER,STATE,99.03,0.0,True,State,False,False,False,False,False
-KTKBANK,INE614B01018,,False,False,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,False,False,True
+KTKBANK,INE614B01018,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,False,False,True
 LGEINDIA,INE324D01010,LG Electronics India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,85.0,0.0,False,,False,False,True,True,True
 LICHSGFIN,INE115A01026,LIC Housing Finance Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,45.24,0.0,True,State,False,False,True,True,True
 LICI,INE0J1Y01017,Life Insurance Corporation Of India,False,True,,excluded_state_dominant,NOT_OWNER,STATE,96.5,0.0,True,State,False,False,False,True,True
 LINDEINDIA,INE473A01011,Linde India Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,75.0,0.0,True,MNC,False,False,False,True,True
-LT,INE018A01030,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.08,True,Professional,True,True,True,True,True
+LT,INE018A01030,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.08,True,Professional,True,True,True,True,True
 LTF,INE498L01015,L&T Finance Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,66.03,0.03,True,Professional,False,False,True,True,True
 LTM,INE214T01019,LTM Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,68.53,0.1,True,Professional,False,True,True,True,True
 LTTS,INE010V01017,L&T Technology Services Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,73.58,0.49,True,Professional,False,False,False,True,True
 MAHABANK,INE457A01014,Bank of Maharashtra,False,True,,excluded_state_dominant,NOT_OWNER,STATE,73.6,0.0,True,State,False,False,False,True,True
 MARUTI,INE585B01010,Maruti Suzuki India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,58.28,0.0,True,MNC,True,True,True,True,True
 MAZDOCK,INE249Z01020,Mazagon Dock Shipbuilders Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,81.22,0.0,True,State,False,True,True,True,True
-MCX,INE745G01043,JHUNJHUNWALA RAKESH RADHESHYAM,False,False,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,True,True,True
-MFSL,INE180A01020,,False,False,,owner_confirmed_individual_passive,OWNER,UNKNOWN,1.25,0.09,True,Owner,False,False,True,True,True
+MCX,INE745G01043,JHUNJHUNWALA RAKESH RADHESHYAM,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,True,True,True
+MFSL,INE180A01020,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,1.25,0.09,True,Owner,False,False,True,True,True
 MGL,INE002S01010,Mahanagar Gas Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,32.5,0.0,True,State,False,False,False,True,True
 MIDHANI,INE099Z01011,Mishra Dhatu Nigam Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,74.0,0.0,True,State,False,False,False,False,True
 MMTC,INE123F01029,MMTC Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,89.93,0.0,True,State,False,False,False,True,True
@@ -762,16 +762,16 @@ OFSS,INE881D01027,Oracle Financial Services Software Limited,False,True,,exclude
 OIL,INE274J01014,Oil India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,56.66,0.0,True,State,False,False,True,True,True
 ONGC,INE213A01029,Oil & Natural Gas Corporation Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,58.89,0.0,True,State,True,True,True,True,True
 ORKLAINDIA,INE16NZ01023,Orkla India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,75.0,0.01,False,,False,False,False,False,True
-PAYTM,INE982J01020,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,9.28,True,Professional,False,False,True,True,True
+PAYTM,INE982J01020,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,9.28,True,Professional,False,False,True,True,True
 PETRONET,INE347G01014,Petronet LNG Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,STATE,50.0,0.0,True,State,False,False,False,True,True
 PFC,INE134E01011,Power Finance Corporation Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,55.99,0.0,True,State,False,True,True,True,True
 PFIZER,INE182A01018,Pfizer Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,63.92,0.0,True,MNC,False,False,False,True,True
-PGHH,INE179A01014,,False,True,,ambiguous_holding_foreign,NOT_OWNER,MNC,70.64,0.0,True,MNC,False,False,False,False,False
+PGHH,INE179A01014,,False,True,,owner_confirmed_director_only,NOT_OWNER,MNC,70.64,0.0,True,MNC,False,False,False,False,False
 PGHL,INE199A01012,,False,True,,ambiguous_holding_foreign,NOT_OWNER,MNC,51.82,0.0,True,MNC,False,False,False,False,False
-PINELABS,INE15B701018,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,2.66,2.66,False,,False,False,False,True,True
+PINELABS,INE15B701018,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,2.66,2.66,False,,False,False,False,True,True
 PNB,INE160A01022,Punjab National Bank,False,True,,excluded_state_dominant,NOT_OWNER,STATE,70.08,0.0,True,State,False,True,True,True,True
 PNBHOUSING,INE572E01012,PNB Housing Finance Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,28.04,0.01,True,Professional,False,False,False,True,True
-POLICYBZR,INE417T01026,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,5.15,True,Professional,False,False,True,True,True
+POLICYBZR,INE417T01026,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,5.15,True,Professional,False,False,True,True,True
 POWERGRID,INE752E01010,Power Grid Corporation of India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,51.34,0.0,True,State,True,True,True,True,True
 POWERINDIA,INE07Y701011,Hitachi Energy India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,71.31,0.0,True,MNC,False,False,True,True,True
 PSB,INE608A01012,,False,True,,excluded_state_dominant,NOT_OWNER,STATE,93.85,0.0,True,State,False,False,False,False,False
@@ -779,10 +779,10 @@ PTC,INE877F01012,PTC India Limited,False,True,,ambiguous_holding_indian,NOT_OWNE
 RAILTEL,INE0DD101019,Railtel Corporation Of India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,72.84,0.0,True,State,False,False,False,True,True
 RALLIS,INE613A01020,Rallis India Limited,False,True,,ambiguous_holding_indian,NOT_OWNER,PROFESSIONAL,55.08,0.0,False,,False,False,False,False,True
 RBA,INE07T201019,Restaurant Brands Asia Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,11.26,0.32,True,Professional,False,False,False,False,True
-RBLBANK,INE976G01028,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.08,True,Professional,False,False,False,True,True
+RBLBANK,INE976G01028,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.08,True,Professional,False,False,False,True,True
 RCF,INE027A01015,Rashtriya Chemicals and Fertilizers Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,75.0,0.0,True,State,False,False,False,False,True
 RECLTD,INE020B01018,REC Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,STATE,52.63,0.0,True,State,False,True,True,True,True
-REDINGTON,INE891D01026,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.03,True,MNC,False,False,False,True,True
+REDINGTON,INE891D01026,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.03,True,MNC,False,False,False,True,True
 RELIGARE,INE621H01010,Religare Enterprises Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,26.27,0.0,True,Professional,False,False,False,False,True
 RENUKA,INE087H01022,Shree Renuka Sugars Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,62.48,0.03,True,MNC,False,False,False,False,True
 RHIM,INE743M01012,RHI MAGNESITA INDIA LIMITED,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,56.07,0.01,True,MNC,False,False,False,True,True
@@ -790,8 +790,8 @@ RITES,INE320J01015,RITES Limited,False,True,,excluded_state_dominant,NOT_OWNER,S
 RVNL,INE415G01027,Rail Vikas Nigam Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,72.84,0.0,True,State,False,False,True,True,True
 SAGILITY,INE0W2G01015,,False,True,,ambiguous_holding_foreign,OWNER_WEAK,UNKNOWN,50.95,0.0,False,,False,False,False,True,True
 SAIL,INE114A01011,Steel Authority of India Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,65.0,0.0,True,State,False,False,True,True,True
-SAMHI,INE08U801020,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,2.14,2.14,False,,False,False,False,False,True
-SAMMAANCAP,INE148I01020,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.36,True,Owner,False,False,False,True,True
+SAMHI,INE08U801020,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,2.14,2.14,False,,False,False,False,False,True
+SAMMAANCAP,INE148I01020,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.36,True,Owner,False,False,False,True,True
 SANOFI,INE058A01010,,False,True,,ambiguous_holding_foreign,NOT_OWNER,MNC,60.4,0.0,True,MNC,False,False,False,False,False
 SANOFICONR,INE0UOS01011,,False,True,,ambiguous_holding_foreign,NOT_OWNER,MNC,71.27,0.0,False,,False,False,False,False,True
 SAPPHIRE,INE806T01020,Sapphire Foods India Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,26.07,0.5,True,Professional,False,False,False,True,True
@@ -806,10 +806,10 @@ SIEMENS,INE003A01024,Siemens Limited,False,True,,excluded_no_natural_no_holding,
 SJVN,INE002L01015,SJVN Limited,False,True,,excluded_state_dominant,NOT_OWNER,STATE,81.85,0.0,True,State,False,False,False,True,True
 SKFINDIA,INE640A01023,SKF India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,52.58,0.0,True,MNC,False,False,False,False,True
 SKFINDUS,INE2J8701016,SKF India (Industrial) Limited,False,True,,ambiguous_holding_foreign,NOT_OWNER,UNKNOWN,52.58,0.0,False,,False,False,False,False,True
-SOUTHBANK,INE683A01023,,False,False,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,False,False,True
-SUDARSCHEM,INE659A01023,,False,False,,owner_confirmed_individual_and_director,OWNER,UNKNOWN,8.19,6.11,False,,False,False,False,False,True
+SOUTHBANK,INE683A01023,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,False,False,True
+SUDARSCHEM,INE659A01023,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,8.19,6.11,False,,False,False,False,False,True
 SUMICHEM,INE258G01013,Sumitomo Chemical India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,75.0,0.0,False,,False,False,False,True,True
-SWIGGY,INE00H001014,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,5.62,True,Professional,False,False,True,True,True
+SWIGGY,INE00H001014,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,5.62,True,Professional,False,False,True,True,True
 TATACAP,INE976I01016,Tata Capital Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,85.41,0.18,False,,False,True,True,True,True
 TATACHEM,INE092A01019,Tata Chemicals Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,37.98,0.0,True,Professional,False,False,False,True,True
 TATACOMM,INE151A01013,Tata Communications Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,58.86,0.0,True,Professional,False,False,True,True,True
@@ -827,23 +827,23 @@ THOMASCOOK,INE332A01027,Thomas Cook  (India)  Limited,False,True,,excluded_no_na
 THYROCARE,INE594H01019,Thyrocare Technologies Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,60.92,0.14,False,,False,False,False,False,True
 TIMKEN,INE325A01013,Timken India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,51.05,0.0,True,MNC,False,False,False,True,True
 TITAN,INE280A01028,Titan Company Limited,False,True,,excluded_state_dominant,NOT_OWNER,PROFESSIONAL,52.9,0.02,True,Professional,True,True,True,True,True
-TMB,INE668A01016,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,2.12,True,Professional,False,False,False,False,True
+TMB,INE668A01016,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,2.12,True,Professional,False,False,False,False,True
 TMCV,INE1TAE01010,Tata Motors Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,42.56,0.03,False,,False,True,True,True,True
 TMPV,INE155A01022,Tata Motors Passenger Vehicles Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,42.56,0.03,True,Professional,True,True,True,True,True
 TRENT,INE849A01020,Trent Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,37.01,0.27,True,Professional,True,True,True,True,True
 TTML,INE517B01013,Tata Teleservices (Maharashtra) Limited,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,74.36,0.0,True,Professional,False,False,False,True,True
 UBL,INE686F01025,United Breweries Limited,False,True,,ambiguous_mnc_jv_candidate,NOT_OWNER,UNKNOWN,70.83,8.08,True,MNC,False,False,False,True,True
 UCOBANK,INE691A01018,UCO Bank,False,True,,excluded_state_dominant,NOT_OWNER,STATE,90.95,0.0,True,State,False,False,False,True,True
-UJJIVANSFB,INE551W01018,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.07,True,Professional,False,False,False,False,True
+UJJIVANSFB,INE551W01018,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.07,True,Professional,False,False,False,False,True
 UNIONBANK,INE692A01016,Union Bank of India,False,True,,excluded_state_dominant,NOT_OWNER,STATE,74.76,0.0,True,State,False,True,True,True,True
 UNITDSPR,INE854D01024,United Spirits Limited,False,True,,ambiguous_mnc_jv_candidate,NOT_OWNER,UNKNOWN,56.67,0.01,True,MNC,False,True,True,True,True
-UTIAMC,INE094J01016,,False,False,,owner_confirmed_director_only,OWNER_WEAK,UNKNOWN,0.0,0.06,True,Professional,False,False,False,True,True
+UTIAMC,INE094J01016,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.06,True,Professional,False,False,False,True,True
 UTKARSHBNK,INE735W01017,,False,True,,owner_confirmed_director_only,NOT_OWNER,PROFESSIONAL,42.67,0.06,True,abb,False,False,False,False,False
 VIYASH,INE807F01027,Viyash Scientific Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,61.41,3.2,False,,False,False,False,False,True
 VOLTAS,INE226A01021,Voltas Limited,False,True,,ambiguous_holding_indian,NOT_OWNER,PROFESSIONAL,30.3,0.0,True,Professional,False,False,True,True,True
 WHIRLPOOL,INE716A01013,,False,True,,owner_confirmed_director_only,NOT_OWNER,MNC,39.76,0.01,True,MNC,False,False,False,True,True
-YESBANK,INE528G01035,,False,False,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,True,True,True
-ZEEL,INE256A01028,,False,False,,owner_probable_relatives_trust,OWNER,UNKNOWN,3.99,0.49,True,Owner,False,False,False,True,True
+YESBANK,INE528G01035,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,True,True,True
+ZEEL,INE256A01028,,False,False,,excluded_low_promoter,NOT_OWNER,UNKNOWN,3.99,0.49,True,Owner,False,False,False,True,True
 ZFCVINDIA,INE342J01019,ZF Commercial Vehicle Control Systems India Limited,False,True,,excluded_no_natural_no_holding,NOT_OWNER,UNKNOWN,60.0,0.01,True,MNC,False,False,False,True,True
 ,INE001A01036,HOUSING DEVELOPMENT FINANCE,False,False,,rev1_label_only_professional,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,False,False,False
 ,INE043D01016,IDFC LTD,False,False,,rev1_label_only_professional,NOT_OWNER,UNKNOWN,0.0,0.0,True,Professional,False,False,False,False,False

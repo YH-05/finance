@@ -10,42 +10,42 @@
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 616 |
-| NOT_OWNER | 214 |
-| OWNER_WEAK | 34 |
+| OWNER | 608 |
+| NOT_OWNER | 250 |
+| OWNER_WEAK | 6 |
 
 (参考) CSV 上の `owner_flag_final` (ハイブリッド未適用) との差異:
 
-- ハイブリッドで再分類された銘柄: 107 件
+- ハイブリッドで再分類された銘柄: 76 件
 
 ## 判定状況
 
 | judge | 銘柄数 | 説明 |
 |---|---|---|
-| TP | 425 | rev1=Owner ∩ 予測=OWNER (true positive) |
-| TN | 177 | rev1≠Owner ∩ 予測=NOT_OWNER (true negative) |
-| FP | 30 | rev1≠Owner ∩ 予測=OWNER (false positive、要確認) |
-| FN | 0 | rev1=Owner ∩ 予測=NOT_OWNER (false negative、要確認) |
+| TP | 419 | rev1=Owner ∩ 予測=OWNER (true positive) |
+| TN | 203 | rev1≠Owner ∩ 予測=NOT_OWNER (true negative) |
+| FP | 4 | rev1≠Owner ∩ 予測=OWNER (false positive、要確認) |
+| FN | 6 | rev1=Owner ∩ 予測=NOT_OWNER (false negative、要確認) |
 | rev1_outside | 232 | rev1 GT 圏外、generated label のみ (act-05-07-001 対象) |
 
 ## owner_flag × judge クロス集計
 
 | owner_flag | TP | TN | FP | FN | rev1_outside | total |
 |---|---|---|---|---|---|---|
-| owner_confirmed_individual_and_director | 300 | 0 | 4 | 0 | 121 | 425 |
-| owner_confirmed_individual | 64 | 0 | 2 | 0 | 51 | 117 |
-| owner_confirmed_director_only | 24 | 45 | 24 | 0 | 23 | 116 |
-| excluded_state_dominant | 1 | 68 | 0 | 0 | 2 | 71 |
-| excluded_no_natural_no_holding | 3 | 30 | 0 | 0 | 14 | 47 |
-| ambiguous_holding_foreign | 4 | 14 | 0 | 0 | 8 | 26 |
-| ambiguous_holding_indian | 7 | 8 | 0 | 0 | 8 | 23 |
+| owner_confirmed_individual_and_director | 298 | 1 | 2 | 0 | 122 | 423 |
+| owner_confirmed_individual | 64 | 0 | 2 | 0 | 50 | 116 |
+| owner_confirmed_director_only | 23 | 44 | 0 | 0 | 21 | 88 |
+| excluded_state_dominant | 1 | 69 | 0 | 0 | 2 | 72 |
+| excluded_low_promoter | 0 | 33 | 0 | 6 | 4 | 43 |
+| excluded_no_natural_no_holding | 3 | 24 | 0 | 0 | 14 | 41 |
+| ambiguous_holding_foreign | 4 | 13 | 0 | 0 | 8 | 25 |
+| ambiguous_holding_indian | 7 | 7 | 0 | 0 | 7 | 21 |
 | ambiguous_mnc_jv_candidate | 4 | 2 | 0 | 0 | 2 | 8 |
 | rev1_label_only_owner | 8 | 0 | 0 | 0 | 0 | 8 |
 | rev1_label_only_professional | 0 | 8 | 0 | 0 | 0 | 8 |
 | owner_probable_nri_family | 6 | 0 | 0 | 0 | 1 | 7 |
-| owner_confirmed_individual_passive | 2 | 0 | 0 | 0 | 1 | 3 |
-| owner_probable_relatives_trust | 2 | 0 | 0 | 0 | 0 | 2 |
 | nse_data_unavailable | 0 | 0 | 0 | 0 | 1 | 1 |
+| owner_probable_relatives_trust | 1 | 0 | 0 | 0 | 0 | 1 |
 | rev1_label_only_mnc | 0 | 1 | 0 | 0 | 0 | 1 |
 | rev1_label_only_state | 0 | 1 | 0 | 0 | 0 | 1 |
 
@@ -53,19 +53,16 @@
 
 | owner_flag_final_hybrid | 銘柄数 |
 |---|---|
-| OWNER | 186 |
-| NOT_OWNER | 37 |
-| OWNER_WEAK | 9 |
+| OWNER | 185 |
+| NOT_OWNER | 41 |
+| OWNER_WEAK | 6 |
 
 ### rev1 圏外 OWNER_WEAK 銘柄 (AI レビューが必要)
 
 | symbol | company_name | owner_flag | promoter_pct |
 |---|---|---|---|
-| FIRSTCRY | nan | owner_confirmed_director_only | 5.31% |
 | INDGN | nan | owner_confirmed_director_only | 21.42% |
 | IXIGO | nan | owner_confirmed_director_only | 13.35% |
-| PINELABS | nan | owner_confirmed_director_only | 2.66% |
-| SAMHI | nan | owner_confirmed_director_only | 2.14% |
 | CIGNITITEC | nan | ambiguous_holding_indian | 54.00% |
 | JSWDULUX | nan | ambiguous_holding_indian | 61.20% |
 | SAGILITY | nan | ambiguous_holding_foreign | 50.95% |
@@ -75,7 +72,6 @@
 
 | symbol | company_name | owner_flag (Tier 2) | owner_flag_final |
 |---|---|---|---|
-| BAJAJHFL | nan | ambiguous_holding_indian | OWNER_WEAK |
 | BHARTIHEXA | Bharti Hexacom Limited | ambiguous_holding_indian | OWNER_WEAK |
 | KITEX | Kitex Garments Limited | ambiguous_holding_indian | OWNER |
 | SMLMAH | SML Mahindra Limited | ambiguous_holding_indian | OWNER |
