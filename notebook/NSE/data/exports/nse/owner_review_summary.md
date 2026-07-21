@@ -61,42 +61,42 @@
 
 | symbol | company_name | owner_flag | promoter_pct |
 |---|---|---|---|
-| INDGN | nan | owner_confirmed_director_only | 21.42% |
-| IXIGO | nan | owner_confirmed_director_only | 13.35% |
-| CIGNITITEC | nan | ambiguous_holding_indian | 54.00% |
-| JSWDULUX | nan | ambiguous_holding_indian | 61.20% |
-| SAGILITY | nan | ambiguous_holding_foreign | 50.95% |
+| INDGN | Indegene Limited | owner_confirmed_director_only | 21.42% |
+| IXIGO | Le Travenues Technology Limited | owner_confirmed_director_only | 13.35% |
+| CIGNITITEC | Cigniti Technologies Limited | ambiguous_holding_indian | 54.00% |
+| JSWDULUX | JSW Dulux Limited | ambiguous_holding_indian | 61.20% |
+| SAGILITY | SAGILITY LIMITED | ambiguous_holding_foreign | 50.95% |
 | AKZOINDIA | Akzo Nobel India Limited | nse_data_unavailable | 0.00% |
 
 ### rev1 圏外で Tier 1.5 corporate-vehicle rescue / A-3 救済された銘柄
 
 | symbol | company_name | owner_flag (Tier 2) | owner_flag_final |
 |---|---|---|---|
-| BHARTIHEXA | nan | ambiguous_holding_indian | OWNER_WEAK |
-| KITEX | nan | ambiguous_holding_indian | OWNER |
-| SMLMAH | nan | ambiguous_holding_indian | OWNER |
-| TRAVELFOOD | nan | ambiguous_holding_indian | OWNER |
-| PFOCUS | nan | ambiguous_mnc_jv_candidate | OWNER |
+| BHARTIHEXA | Bharti Hexacom Limited | ambiguous_holding_indian | OWNER_WEAK |
+| KITEX | Kitex Garments Limited | ambiguous_holding_indian | OWNER |
+| SMLMAH | SML Mahindra Limited | ambiguous_holding_indian | OWNER |
+| TRAVELFOOD | Travel Food Services Limited | ambiguous_holding_indian | OWNER |
+| PFOCUS | Prime Focus Limited | ambiguous_mnc_jv_candidate | OWNER |
 
 ### rev1 圏外 NOT_OWNER だが natural_pct>0 & promoter>=10% (見落とし候補)
 
 | symbol | company_name | owner_flag | promoter_pct | natural_pct |
 |---|---|---|---|---|
-| FEDFINA | nan | owner_confirmed_director_only | 60.81% | 0.28% |
-| HDBFS | nan | owner_confirmed_director_only | 74.15% | 0.16% |
-| ITCHOTELS | nan | owner_confirmed_director_only | 39.85% | 0.02% |
-| JSFB | nan | owner_confirmed_director_only | 21.85% | 0.68% |
-| TATACAP | nan | owner_confirmed_director_only | 85.41% | 0.18% |
-| TATAINVEST | nan | owner_confirmed_director_only | 73.38% | 0.07% |
-| THYROCARE | nan | owner_confirmed_director_only | 60.92% | 0.14% |
-| TMCV | nan | owner_confirmed_director_only | 42.56% | 0.03% |
-| GRINDWELL | nan | ambiguous_mnc_jv_candidate | 58.03% | 6.44% |
-| HCG | nan | ambiguous_mnc_jv_candidate | 64.21% | 9.86% |
-| AADHARHFC | nan | excluded_no_natural_no_holding | 64.90% | 0.41% |
-| BBOX | nan | excluded_no_natural_no_holding | 70.49% | 1.60% |
-| CRISIL | nan | excluded_no_natural_no_holding | 66.64% | 0.06% |
-| HEXT | nan | excluded_no_natural_no_holding | 74.30% | 0.48% |
-| NIVABUPA | nan | excluded_no_natural_no_holding | 55.36% | 0.92% |
-| ORKLAINDIA | nan | excluded_no_natural_no_holding | 75.00% | 0.01% |
-| THOMASCOOK | nan | excluded_no_natural_no_holding | 63.83% | 0.09% |
-| VIYASH | nan | excluded_no_natural_no_holding | 61.41% | 3.20% |
+| FEDFINA | Fedbank Financial Services Limited | owner_confirmed_director_only | 60.81% | 0.28% |
+| HDBFS | HDB Financial Services Limited | owner_confirmed_director_only | 74.15% | 0.16% |
+| ITCHOTELS | ITC Hotels Limited | owner_confirmed_director_only | 39.85% | 0.02% |
+| JSFB | Jana Small Finance Bank Limited | owner_confirmed_director_only | 21.85% | 0.68% |
+| TATACAP | Tata Capital Limited | owner_confirmed_director_only | 85.41% | 0.18% |
+| TATAINVEST | Tata Investment Corporation Limited | owner_confirmed_director_only | 73.38% | 0.07% |
+| THYROCARE | Thyrocare Technologies Limited | owner_confirmed_director_only | 60.92% | 0.14% |
+| TMCV | Tata Motors Limited | owner_confirmed_director_only | 42.56% | 0.03% |
+| GRINDWELL | Grindwell Norton Limited | ambiguous_mnc_jv_candidate | 58.03% | 6.44% |
+| HCG | Healthcare Global Enterprises Limited | ambiguous_mnc_jv_candidate | 64.21% | 9.86% |
+| AADHARHFC | Aadhar Housing Finance Limited | excluded_no_natural_no_holding | 64.90% | 0.41% |
+| BBOX | Black Box Limited | excluded_no_natural_no_holding | 70.49% | 1.60% |
+| CRISIL | Crisil Limited | excluded_no_natural_no_holding | 66.64% | 0.06% |
+| HEXT | Hexaware Technologies Limited | excluded_no_natural_no_holding | 74.30% | 0.48% |
+| NIVABUPA | Niva Bupa Health Insurance Company Limited | excluded_no_natural_no_holding | 55.36% | 0.92% |
+| ORKLAINDIA | Orkla India Limited | excluded_no_natural_no_holding | 75.00% | 0.01% |
+| THOMASCOOK | Thomas Cook  (India)  Limited | excluded_no_natural_no_holding | 63.83% | 0.09% |
+| VIYASH | Viyash Scientific Limited | excluded_no_natural_no_holding | 61.41% | 3.20% |

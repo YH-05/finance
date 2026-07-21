@@ -196,7 +196,13 @@ def aggregate_owner_candidate(
 
     latest_date = sd["report_date"].max()
     df = sd[sd["report_date"] == latest_date].copy()
-    company_name = df["shareholder_name"].iloc[0] if not df.empty else symbol
+    # company_name は stocks マスタを正とする。XBRL の shareholder_name 先頭行は
+    # promoter 名または空文字であり会社名ではない (旧実装はこれを使っており、
+    # 全量再計算時に 786 銘柄の company_name が失われる不具合があった)。
+    _row = conn.execute(
+        "SELECT company_name FROM stocks WHERE symbol = ?", (symbol,)
+    ).fetchone()
+    company_name = (_row[0] if _row and _row[0] else None) or symbol
 
     prom = df[df["category"] == "PromoterAndPromoterGroup"]
     cat_total = prom[prom["is_category_total"] == 1]

@@ -388,3 +388,33 @@ GRINDWELL を取り込んだところ `owner_confirmed_individual_and_director` 
 - 成果物: `nifty750_universe_20260720.csv` (865銘柄) / `nifty750_universe_summary_20260720.md`
 - 07-21 版は archive/ に退避 (基準日を 7/20 に変更したため)
 - テスト: `tests/market/nse/` 632 passed, 24 skipped
+
+
+---
+
+# 2026-07-21 改訂5: company_name 欠損のリグレッション修正
+
+改訂4の全量再集計で **`company_name` が 786 銘柄分失われる**リグレッションを混入させていた（5月版の欠損 49 件に対し 845 件）。フォーマット点検で検出し修正した。
+
+## 原因
+
+`aggregate_owner_candidate()` が `company_name` を XBRL の `shareholder_name` 先頭行から取っていた。この値は promoter 名または空文字であり会社名ではない。従来は既存 CSV の値が保持されていたため表面化していなかったが、全量再集計で上書きされたことで欠損が一気に広がった。
+
+## 修正
+
+- `company_name` の取得元を `stocks` マスタ（`symbol` 参照）に変更し、スクリプト3本に適用
+- 既存 CSV は `stocks` マスタ（symbol → isin の順）と改訂4適用前の値から復元
+
+結果、**`company_name` の欠損は 0 件**となり、5月版（49件）・07-21版（92件）より改善した。長年の既知課題だった「company_name 欠損」もこれで解消している。
+
+## フォーマット検証 (5月版との比較)
+
+| 項目 | 結果 |
+|---|---|
+| 列数・列名・列順序 | 18列、完全一致（ヘッダー行の MD5 も一致） |
+| 各列の dtype | 完全一致 |
+| 値ドメイン (`owner_flag_final_hybrid` / `yaml_classification` / `rev1_category`) | 完全一致 |
+| ソート順 (OWNER 優先 → family → symbol) | 一致 |
+| 欠損 | `company_name` は 49 → 0 に改善。`symbol` 17件（上場廃止・REIT の rev1 補完銘柄）、`owner_family`・`rev1_category` の欠損は従来同様 |
+
+精度は Precision 99.0% / Recall 96.7% / F1 97.9% で変化なし。
