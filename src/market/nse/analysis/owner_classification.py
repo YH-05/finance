@@ -48,6 +48,80 @@ MINOR_HUFI_PCT = 0.5
 MIN_HOLDING_PCT = 10.0
 """自然人 promoter 不在時に holding 経由型とみなす法人保有の下限。"""
 
+NATURAL_SUBS = (
+    "IndividualsOrHinduUndividedFamily",
+    "NonResidentIndividualsOrForeignIndividuals",
+    "DirectorsAndDirectorsRelatives",
+    "KeyManagerialPersonnel",
+    "RelativesOfPromotersOtherThanPromoterGroup",
+    "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsisTrusteeOrBeneficiaryOrAuthorOfTrust",
+)
+"""自然人 promoter とみなす XBRL sub_category。"""
+
+GOVT_COMPONENT_SUBS = (
+    "CentralGovernmentOrPresidentOfIndia",
+    "StateGovernmentsOrGovernors",
+    "ShareholdingByCompaniesOrBodiesCorporatewhereCentralOrStateGovernmentIsPromoter",
+    "ForeignGovernment",
+    "CentralGovernmentOrStateGovernmentS",
+)
+"""政府系の内訳を表す XBRL sub_category。"""
+
+GOVT_ROLLUP_SUBS = ("Governments", "Goverments")
+"""政府系の合計を表す XBRL sub_category。
+
+:data:`GOVT_COMPONENT_SUBS` の合計行であり、内訳と同時に開示されることがある。
+``Goverments`` は NSE 側の綴り誤りだが実データに出現するため含める。
+"""
+
+FOREIGN_NON_GOVT_SUBS = (
+    "ForeignInstitutions",
+    "ForeignPortfolioInvestor",
+    "OtherForeignShareholders",
+)
+"""外資（非政府）とみなす XBRL sub_category。
+
+``OtherForeignShareholders`` は海外親会社が promoter として直接保有する枠であり、
+MNC 判定の主要シグナルとなるため必ず含める。これを外すと Saint-Gobain のような
+海外親会社の支配を検出できない (実例: GRINDWELL は Saint-Gobain 系2社が 51.33% を
+``OtherForeignShareholders`` で保有しており、除外すると Owner と誤判定される)。
+"""
+
+
+def compute_govt_pct(component_pct: float, rollup_pct: float) -> float:
+    """政府系保有比率を内訳と合計行から算出する.
+
+    XBRL は政府系保有を内訳 (:data:`GOVT_COMPONENT_SUBS`) と合計
+    (:data:`GOVT_ROLLUP_SUBS`) の両方で開示することがあり、単純に足すと二重計上
+    になる。逆に一方しか開示されない銘柄もあるため、大きい方を採用する。
+
+    Parameters
+    ----------
+    component_pct : float
+        :data:`GOVT_COMPONENT_SUBS` の保有比率合計。
+    rollup_pct : float
+        :data:`GOVT_ROLLUP_SUBS` の保有比率合計。
+
+    Returns
+    -------
+    float
+        政府系保有比率。
+
+    Examples
+    --------
+    内訳と合計の両方が開示されるケース (TORNTPOWER 相当)。単純加算だと 16.70%
+    となり誤って state-dominant 判定されるが、本関数は 8.35% を返す:
+
+    >>> compute_govt_pct(8.35, 8.35)
+    8.35
+
+    合計行のみが開示されるケース (GSFC 相当):
+
+    >>> compute_govt_pct(0.0, 5.65)
+    5.65
+    """
+    return max(component_pct, rollup_pct)
+
 
 def classify_owner_flag(
     *,
@@ -199,11 +273,16 @@ def derive_owner_flag_final(owner_flag: str) -> str:
 
 
 __all__ = [
+    "FOREIGN_NON_GOVT_SUBS",
+    "GOVT_COMPONENT_SUBS",
     "GOVT_DOMINANT_PCT",
+    "GOVT_ROLLUP_SUBS",
     "MAX_FOREIGN_NON_GOVT_PCT",
     "MINOR_HUFI_PCT",
     "MIN_HOLDING_PCT",
     "MIN_PROMOTER_PCT",
+    "NATURAL_SUBS",
     "classify_owner_flag",
+    "compute_govt_pct",
     "derive_owner_flag_final",
 ]

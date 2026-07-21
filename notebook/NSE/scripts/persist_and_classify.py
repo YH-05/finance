@@ -30,7 +30,11 @@ from pathlib import Path
 import pandas as pd
 
 from market.nse.analysis.owner_classification import (
+    FOREIGN_NON_GOVT_SUBS,
+    GOVT_COMPONENT_SUBS,
+    GOVT_ROLLUP_SUBS,
     classify_owner_flag,
+    compute_govt_pct,
     derive_owner_flag_final,
 )
 from market.nse.collectors.share_holding import ShareholdingCollector
@@ -211,22 +215,22 @@ def aggregate_owner_candidate(
         ].sum()
     )
 
-    govt_subs = {
-        "CentralGovernmentOrPresidentOfIndia",
-        "StateGovernmentsOrGovernors",
-        "ForeignGovernment",
-        "ShareholdingByCompaniesOrBodiesCorporatewhereCentralOrStateGovernmentIsPromoter",
-        "CentralGovernmentOrStateGovernmentS",
-        "Governments",
-        "Goverments",
-    }
-    govt_pct = float(
-        cat_total[cat_total["sub_category"].isin(govt_subs)]["pct_total_shares"].sum()
+    # Governments は内訳の合計行であり、内訳と同時に開示されると二重計上になる
+    govt_pct = compute_govt_pct(
+        float(
+            cat_total[cat_total["sub_category"].isin(GOVT_COMPONENT_SUBS)][
+                "pct_total_shares"
+            ].sum()
+        ),
+        float(
+            cat_total[cat_total["sub_category"].isin(GOVT_ROLLUP_SUBS)][
+                "pct_total_shares"
+            ].sum()
+        ),
     )
 
-    foreign_non_govt_subs = {"ForeignInstitutions", "ForeignPortfolioInvestor"}
     foreign_non_govt_pct = float(
-        cat_total[cat_total["sub_category"].isin(foreign_non_govt_subs)][
+        cat_total[cat_total["sub_category"].isin(FOREIGN_NON_GOVT_SUBS)][
             "pct_total_shares"
         ].sum()
     )

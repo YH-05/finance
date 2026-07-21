@@ -681,6 +681,15 @@ state_keywords:
 #   promoter_names_full_list にこれらが含まれるなら MNC 扱い
 # ============================================================
 mnc_keywords:
+  # GRINDWELL の筆頭 promoter。Saint Gobain Abrasives Inc 26.77% +
+  # Spafi (Saint-Gobain の投資子会社) 24.56% = 51.33% を OtherForeignShareholders
+  # 枠で保有し支配している。Mahajan / Narang 一族 6.44% は共同 promoter。
+  - keyword: "Saint Gobain"
+    parent: "Compagnie de Saint-Gobain"
+    sample_stocks: ["GRINDWELL"]
+  - keyword: "Spafi"
+    parent: "Compagnie de Saint-Gobain"
+    sample_stocks: ["GRINDWELL"]
   - keyword: "Schneider Electric"
     parent: "Schneider Electric SE"
     sample_stocks: ["SCHNEIDER"]

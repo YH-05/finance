@@ -27,12 +27,20 @@ Test TODO List:
 - [x] derive_owner_flag_final(): owner_confirmed_* / owner_probable_* → OWNER
 - [x] derive_owner_flag_final(): excluded_* → NOT_OWNER
 - [x] derive_owner_flag_final(): ambiguous_* → OWNER_WEAK
+- [x] compute_govt_pct(): 内訳と合計行の二重計上を防ぐ
+- [x] compute_govt_pct(): 一方のみ開示のケース
+- [x] 集計定数: OtherForeignShareholders を外資に含む
+- [x] 集計定数: 政府系の内訳と合計を分離
 """
 
 import pytest
 
 from market.nse.analysis.owner_classification import (
+    FOREIGN_NON_GOVT_SUBS,
+    GOVT_COMPONENT_SUBS,
+    GOVT_ROLLUP_SUBS,
     classify_owner_flag,
+    compute_govt_pct,
     derive_owner_flag_final,
 )
 
@@ -248,3 +256,50 @@ class TestDeriveOwnerFlagFinal:
     def test_正常系_ambiguousはOWNER_WEAK(self, flag: str) -> None:
         """ambiguous_* は OWNER_WEAK に集約されること。"""
         assert derive_owner_flag_final(flag) == "OWNER_WEAK"
+
+
+class TestComputeGovtPct:
+    """compute_govt_pct() 関数のテスト。
+
+    XBRL は政府系保有を内訳と合計行の両方で開示することがあり、単純加算すると
+    二重計上になる（実例: TORNTPOWER は StateGovernmentsOrGovernors 8.35% と
+    その合計行 Governments 8.35% が併存し、加算すると 16.70% となって
+    誤って state-dominant 判定される）。
+    """
+
+    def test_正常系_内訳と合計が併存する場合は二重計上しない(self) -> None:
+        """同額の内訳と合計行が併存しても合算せず一方を返すこと。"""
+        assert compute_govt_pct(8.35, 8.35) == 8.35
+
+    def test_正常系_合計行のみの場合は合計行を採用(self) -> None:
+        """内訳が開示されない銘柄では合計行の値を返すこと。"""
+        assert compute_govt_pct(0.0, 5.65) == 5.65
+
+    def test_正常系_内訳のみの場合は内訳を採用(self) -> None:
+        """合計行が開示されない銘柄では内訳合計を返すこと。"""
+        assert compute_govt_pct(51.0, 0.0) == 51.0
+
+    def test_エッジケース_両方ゼロならゼロ(self) -> None:
+        """政府系保有がない場合は 0 を返すこと。"""
+        assert compute_govt_pct(0.0, 0.0) == 0.0
+
+    def test_エッジケース_内訳が合計を上回る場合は内訳を採用(self) -> None:
+        """開示の不整合で内訳が合計を超える場合は大きい方を採る（保守的）。"""
+        assert compute_govt_pct(30.0, 12.0) == 30.0
+
+
+class TestAggregationConstants:
+    """集計対象 sub_category 定数のテスト。"""
+
+    def test_正常系_外資判定にOtherForeignShareholdersを含む(self) -> None:
+        """海外親会社の直接保有枠を外すと MNC を検出できないため必須。
+
+        実例: GRINDWELL は Saint-Gobain 系2社が 51.33% を
+        OtherForeignShareholders 枠で保有している。
+        """
+        assert "OtherForeignShareholders" in FOREIGN_NON_GOVT_SUBS
+
+    def test_正常系_政府系の内訳と合計を別定数に分離している(self) -> None:
+        """二重計上を防ぐため合計行は内訳と別に保持すること。"""
+        assert set(GOVT_COMPONENT_SUBS) & set(GOVT_ROLLUP_SUBS) == set()
+        assert "Governments" in GOVT_ROLLUP_SUBS

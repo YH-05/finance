@@ -1,0 +1,18 @@
+[
+  {
+    "symbol": "GRINDWELL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 80 holdings",
+      "count": 80
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48,
+      "as_on_date": "2026-06-30"
+    }
+  }
+]
