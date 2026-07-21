@@ -8,18 +8,19 @@ updated_at: 2026-03-07
 
 **Python 3.12+** | uv | Ruff | pyright | pytest + Hypothesis
 
-金融市場の分析とnote.comでの金融・投資コンテンツ発信を効率化するPythonライブラリ。
+金融市場の分析を効率化するPythonライブラリ。
 
 ## 基本ルール
+
 - 曖昧な表現はせず、可能な限り正確な情報を書く
-	- 非推奨: このAPIは制限を受ける可能性がある。
-	- 推奨: Github APIは短時間のリクエストを5000件に
+    - 非推奨: このAPIは制限を受ける可能性がある。
+    - 推奨: Github APIは短時間のリクエストを5000件に
 - 情報が不足していたり曖昧な状況であったりした場合は、ユーザーにAskUserQuestionツールを使って詳細を尋ねる
 - 自分だけで作業しない。可能な限りサブエージェントに作業を移譲する。適切なサブエージェントがなければ作成を提案する。
 - **Bash で `claude` CLI を起動してエージェントをスポーンしてはならない。** サブエージェントの起動は必ず Task tool（`team_name` パラメータ付き）を使用すること。Bash 経由の起動はネストセッション禁止エラー（`CLAUDECODE` 環境変数検出）を引き起こす。
 - **コードの動作・出力内容を回答する際は、必ず実装コード（`.py`）を一次情報とすること。** エージェント定義（`.claude/agents/`）やコマンド定義（`.claude/commands/`）は設計意図であり、実装と乖離している場合がある。定義ファイルのみを根拠に回答してはならない。
-	- 非推奨: `output-generator.md` の記述から「SEC エビデンスを含む」と回答する
-	- 推奨: `output.py` の `_build_rationale()` を読んで実際の出力内容を確認してから回答する
+    - 非推奨: `output-generator.md` の記述から「SEC エビデンスを含む」と回答する
+    - 推奨: `output.py` の `_build_rationale()` を読んで実際の出力内容を確認してから回答する
 
 ## Python実装時の必須サブエージェント
 
@@ -27,17 +28,17 @@ updated_at: 2026-03-07
 
 ### 目的別サブエージェント一覧
 
-| 目的 | サブエージェント | 説明 |
-|------|------------------|------|
-| **機能実装** | `feature-implementer` | TDDループ（Red→Green→Refactor）を自動実行。Issue のチェックボックスを更新しながら実装 |
-| **テスト作成** | `test-writer` | t-wada流TDDに基づくテスト作成 |
-| **単体テスト** | `test-unit-writer` | 関数・クラス単位の単体テスト作成 |
-| **プロパティテスト** | `test-property-writer` | Hypothesisを使用した不変条件テスト作成 |
-| **統合テスト** | `test-integration-writer` | コンポーネント間連携のテスト作成 |
-| **品質チェック** | `quality-checker` | `make check-all` 相当の品質検証・自動修正 |
-| **コード整理** | `code-simplifier` | 複雑性削減、可読性・保守性向上 |
-| **デバッグ** | `debugger` | 問題特定→根本原因分析→解決策実装 |
-| **セキュリティ** | `security-scanner` | OWASP Top 10に基づくセキュリティ監査 |
+| 目的                 | サブエージェント          | 説明                                                                                  |
+| -------------------- | ------------------------- | ------------------------------------------------------------------------------------- |
+| **機能実装**         | `feature-implementer`     | TDDループ（Red→Green→Refactor）を自動実行。Issue のチェックボックスを更新しながら実装 |
+| **テスト作成**       | `test-writer`             | t-wada流TDDに基づくテスト作成                                                         |
+| **単体テスト**       | `test-unit-writer`        | 関数・クラス単位の単体テスト作成                                                      |
+| **プロパティテスト** | `test-property-writer`    | Hypothesisを使用した不変条件テスト作成                                                |
+| **統合テスト**       | `test-integration-writer` | コンポーネント間連携のテスト作成                                                      |
+| **品質チェック**     | `quality-checker`         | `make check-all` 相当の品質検証・自動修正                                             |
+| **コード整理**       | `code-simplifier`         | 複雑性削減、可読性・保守性向上                                                        |
+| **デバッグ**         | `debugger`                | 問題特定→根本原因分析→解決策実装                                                      |
+| **セキュリティ**     | `security-scanner`        | OWASP Top 10に基づくセキュリティ監査                                                  |
 
 ### 実装フロー例
 
@@ -61,27 +62,30 @@ updated_at: 2026-03-07
 
 ### quality-checker のモード
 
-| モード | 用途 |
-|--------|------|
-| `--validate-only` | 検証のみ（CI/CD、最終確認） |
-| `--auto-fix` | 自動修正（`make check-all` 成功まで繰り返し） |
-| `--quick` | フォーマット・リントのみ（TDDサイクル中の高速チェック） |
+| モード            | 用途                                                    |
+| ----------------- | ------------------------------------------------------- |
+| `--validate-only` | 検証のみ（CI/CD、最終確認）                             |
+| `--auto-fix`      | 自動修正（`make check-all` 成功まで繰り返し）           |
+| `--quick`         | フォーマット・リントのみ（TDDサイクル中の高速チェック） |
 
 ## 目的別クイックガイド
 
 ### コード実装
+
 - コードを書く → `@.claude/rules/coding-standards.md` 参照
 - テストを書く → `/write-tests`
 - 品質チェック → `make check-all`
 - Issue を実装 → `/issue-implement <番号>`
 
 ### Git・PR操作
+
 - コミット・PR作成 → `/commit-and-pr`
 - PRマージ → `/merge-pr <番号>`
 - PRレビュー → `/review-pr`
 - コンフリクト分析 → `/analyze-conflicts`
 
 ### プロジェクト管理
+
 - Issue作成 → `/issue`
 - Issue改善 → `/issue-refine <番号>`
 - プロジェクト計画 → `/plan-project`
@@ -89,6 +93,7 @@ updated_at: 2026-03-07
 - worktree作成 → `/worktree <branch_name>`
 
 ### 金融コンテンツ作成
+
 - ニュース収集 → `/finance-news-workflow`
 - AI投資バリューチェーン収集 → `/ai-research-collect`
 - トピック提案 → `/finance-suggest-topics`
@@ -100,39 +105,42 @@ updated_at: 2026-03-07
 - 全工程一括 → `/finance-full`
 
 ### ナレッジグラフ
+
 - graph-queue 生成 → `/emit-graph-queue --command <cmd> --input <path>`
 - Neo4j 投入 → `/save-to-graph`
 
 ### 分析・改善
+
 - コード分析 → `/analyze`
 - 品質改善 → `/ensure-quality`
 - セキュリティ検証 → `/scan`
 - デバッグ → `/troubleshoot`
 
 ### 一覧表示
+
 - 全コマンド一覧 → `/index`
 
 ---
 
 ## Pythonパッケージ一覧
 
-| パッケージ | 説明 | 主な機能 |
-|------------|------|----------|
-| `database` | コアインフラパッケージ | SQLite/DuckDB接続、構造化ロギング、日付ユーティリティ |
-| `market` | 市場データ取得パッケージ | yfinance連携、FRED連携、Bloomberg連携、キャッシュ機能、業界データ収集（market.industry） |
-| `edgar` | SEC Filings抽出パッケージ | edgartoolsラッパー、テキスト・セクション抽出、並列処理、キャッシュ |
-| `analyze` | 市場データ分析パッケージ | テクニカル分析、統計分析、セクター分析、可視化 |
-| `rss` | RSSフィード管理パッケージ | フィード監視、記事抽出、MCP統合、キーワード検索 |
-| `factor` | ファクター投資・分析パッケージ | バリュー/モメンタム/クオリティ/サイズ/マクロファクター |
-| `strategy` | 投資戦略パッケージ | リスク計算、ポートフォリオ管理、リバランス分析 |
-| `news` | ニュース処理パイプライン | ニュース収集、フィルタリング、GitHub投稿 |
-| `news_scraper` | 金融ニューススクレイパー | CNBC/NASDAQ/yfinance RSS・APIスクレイピング、curl_cffi、sync/async対応 |
-| `utils_core` | 共通ユーティリティ | ロギング設定 |
-| `dev/ca_strategy` | AI駆動の競争優位性ベース投資戦略パッケージ（PoC） | トランスクリプト解析、LLM主張抽出・スコアリング、セクター中立化、ポートフォリオ構築 |
-| `automation` | 自動化パッケージ | ニュース収集自動化、開発タスク自動化 |
-| `embedding` | エンベディングパッケージ | ChromaDB連携、テキスト抽出、ベクトル検索パイプライン |
-| `notebooklm` | NotebookLM連携パッケージ | ブラウザ自動操作、MCP統合、コンテンツ管理 |
-| `academic` | 学術論文メタデータ取得パッケージ | S2/arXiv連携、著者・引用取得、graph-queue統合 |
+| パッケージ        | 説明                                              | 主な機能                                                                                 |
+| ----------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `database`        | コアインフラパッケージ                            | SQLite/DuckDB接続、構造化ロギング、日付ユーティリティ                                    |
+| `market`          | 市場データ取得パッケージ                          | yfinance連携、FRED連携、Bloomberg連携、キャッシュ機能、業界データ収集（market.industry） |
+| `edgar`           | SEC Filings抽出パッケージ                         | edgartoolsラッパー、テキスト・セクション抽出、並列処理、キャッシュ                       |
+| `analyze`         | 市場データ分析パッケージ                          | テクニカル分析、統計分析、セクター分析、可視化                                           |
+| `rss`             | RSSフィード管理パッケージ                         | フィード監視、記事抽出、MCP統合、キーワード検索                                          |
+| `factor`          | ファクター投資・分析パッケージ                    | バリュー/モメンタム/クオリティ/サイズ/マクロファクター                                   |
+| `strategy`        | 投資戦略パッケージ                                | リスク計算、ポートフォリオ管理、リバランス分析                                           |
+| `news`            | ニュース処理パイプライン                          | ニュース収集、フィルタリング、GitHub投稿                                                 |
+| `news_scraper`    | 金融ニューススクレイパー                          | CNBC/NASDAQ/yfinance RSS・APIスクレイピング、curl_cffi、sync/async対応                   |
+| `utils_core`      | 共通ユーティリティ                                | ロギング設定                                                                             |
+| `dev/ca_strategy` | AI駆動の競争優位性ベース投資戦略パッケージ（PoC） | トランスクリプト解析、LLM主張抽出・スコアリング、セクター中立化、ポートフォリオ構築      |
+| `automation`      | 自動化パッケージ                                  | ニュース収集自動化、開発タスク自動化                                                     |
+| `embedding`       | エンベディングパッケージ                          | ChromaDB連携、テキスト抽出、ベクトル検索パイプライン                                     |
+| `notebooklm`      | NotebookLM連携パッケージ                          | ブラウザ自動操作、MCP統合、コンテンツ管理                                                |
+| `academic`        | 学術論文メタデータ取得パッケージ                  | S2/arXiv連携、著者・引用取得、graph-queue統合                                            |
 
 ---
 
@@ -171,14 +179,14 @@ updated_at: 2026-03-07
 
 ## 規約・詳細参照
 
-| 規約 | パス |
-|------|------|
-| コーディング規約 | `@.claude/rules/coding-standards.md` |
-| テスト戦略 | `@.claude/rules/testing-strategy.md` |
-| Git運用 | `@.claude/rules/git-rules.md` |
-| 開発プロセス | `@.claude/rules/development-process.md` |
-| 共通指示 | `@.claude/rules/common-instructions.md` |
-| エビデンスベース | `@.claude/rules/evidence-based.md` |
+| 規約             | パス                                      |
+| ---------------- | ----------------------------------------- |
+| コーディング規約 | `@.claude/rules/coding-standards.md`      |
+| テスト戦略       | `@.claude/rules/testing-strategy.md`      |
+| Git運用          | `@.claude/rules/git-rules.md`             |
+| 開発プロセス     | `@.claude/rules/development-process.md`   |
+| 共通指示         | `@.claude/rules/common-instructions.md`   |
+| エビデンスベース | `@.claude/rules/evidence-based.md`        |
 | サブエージェント | `@.claude/rules/subagent-data-passing.md` |
 
 ---

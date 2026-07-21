@@ -151,7 +151,9 @@
       "WebFetch(domain:web.archive.org)",
       "WebFetch(domain:en.wikipedia.org)",
       "WebFetch(domain:legal.thomsonreuters.com)",
-      "WebFetch(domain:research.stlouisfed.org)"
+      "WebFetch(domain:research.stlouisfed.org)",
+      "Bash(mkdir -p /Users/yukihata/Desktop/analyst/.claude/sounds)",
+      "Bash(cp /Users/yukihata/Desktop/quants/.claude/sounds/notification.mp3 /Users/yukihata/Desktop/analyst/.claude/sounds/)"
     ],
     "additionalDirectories": [
       "/volumes/personal_folder",
