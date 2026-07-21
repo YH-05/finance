@@ -105,3 +105,7 @@ notebook/FILING_NLP/data/
 
 # REGIME_SWITCHING experiment data (FRED weekly raw, features, S&P500 returns parquets)
 notebook/REGIME_SWITCHING/data/*.parquet
+
+# NSE index DB の作業用スナップショット (本体 nse_index.db と確定版のみ追跡する)
+notebook/NSE/data/cache/nse/nse_index_backup_*.db
+notebook/NSE/data/cache/nse/nse_index_20260512.db

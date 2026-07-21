@@ -803,18 +803,31 @@ adani = universe[universe["owner_family"].fillna("").str.contains("Adani")]
 
 ### 維持運用
 
-四半期ごとに以下を再実行:
-1. NSE Phase 3/4 データ取得 (`refetch_rev1_missing.py`)
-2. 永続化 + 分類 (`persist_rev1_missing.py`)
-3. レビューシート生成 (`build_owner_review_sheet.py`)
-4. Universe 生成 (`build_nifty750_universe.py`)
-5. 必要に応じて Pattern B 同等の AI 補完
+**2026-06-30版で運用フローを刷新**（従来の `refetch_rev1_missing.py` は rev1 GT との差分専用ロジックであり、「前回universe vs 最新指数構成」の差分検出には対応していなかったため、増分更新専用のスクリプト群を新規実装した）。
+
+差分更新の実行手順:
+1. universe差分検出 (`src/market/nse/analysis/universe_diff.py::diff_universe()`、指数構成は `IndicesCollector.fetch_index_constituents_archive()` で静的CSV経由取得——動的API `equity-stockIndices` は2026-07時点で404となり不通のため代替手段が必須)
+2. promoter比率drift検出 (`src/market/nse/analysis/promoter_drift.py::detect_promoter_drift()`、既存 `shareholdings` テーブルの四半期時系列のみで新規取得不要)
+3. 差分銘柄（新規採用+drift検出）のNSEデータ取得 (`refetch_incremental.py --symbols-file`)
+4. 永続化 + 分類 (`persist_incremental.py --db-path`)
+5. index_members最新化 (`update_index_members.py --db-path`)
+6. レビューシート生成 (`build_owner_review_sheet.py`)
+7. Universe 生成 (`build_nifty750_universe.py --db-path --output-universe --output-summary`)
+8. 必要に応じて AI 補完
+
+前回版DBと今回版DBは別ファイル（例: `nse_index_20260512.db` / `nse_index_20260630.db`）として分離保持し、本体`nse_index.db`は最終確認後に置き換える運用とする。
 
 ### 半年ごとのレビュー対象
 
 - 新規上場銘柄の取り込み
 - yaml 辞書 (175 keywords) のメンテナンス (新規 family / corporate vehicle 追加)
 - rev1 ラベルの再検証
+- stocksテーブルの完全最新化（EQUITY_L.csv全体、新規上場銘柄のISIN解決に必要）
+
+### 2026-06-30版での変更・修正
+
+- **バグ修正**: `aggregate_owner_candidate()` の `promoter_total_pct` 算出ロジックが、`PromoterAndPromoterGroup` カテゴリの「総合計」行が省略されたXBRL開示（新規上場企業で確認）で0.0%を誤算出する不具合を修正。`natural_pct_sum`へのフォールバックを追加（`persist_incremental.py`・`persist_rev1_missing.py`両方に適用）。既存845銘柄のうち25銘柄が同一パターンの影響を受けていたが、Stage1判定への影響はゼロ（フォールバック後も全て10%未満）と確認済み
+- 詳細: `notebook/NSE/data/exports/nse/universe_diff_report_20260630.md`
 
 ---
 

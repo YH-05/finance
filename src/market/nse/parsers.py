@@ -45,6 +45,7 @@ from market.nse.constants import (
     ALL_INDICES_COLUMN_MAP,
     EVENT_CALENDAR_FIELD_MAP,
     FINANCIAL_FIELD_MAP,
+    INDEX_ARCHIVE_COLUMN_MAP,
     PREOPEN_COLUMN_MAP,
     SHAREHOLDING_FIELD_MAP,
     STOCK_LIST_COLUMN_MAP,
@@ -902,6 +903,96 @@ def parse_stock_list_csv(content: str | bytes) -> pd.DataFrame:
     return df
 
 
+def parse_index_constituents_archive_csv(content: str | bytes) -> pd.DataFrame:
+    """Parse an NSE index constituents archive CSV into a cleaned DataFrame.
+
+    Reads CSV content from an NSE Archives index constituents file
+    (``https://nsearchives.nseindia.com/content/indices/ind_niftyXXXlist.csv``),
+    renames columns from NSE CSV names to snake_case using
+    ``INDEX_ARCHIVE_COLUMN_MAP``, and strips whitespace.
+
+    Parameters
+    ----------
+    content : str | bytes
+        The raw CSV content from the NSE index constituents archive download.
+        Can be a string or bytes (utf-8 decoded automatically).
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame with columns: company_name, industry, symbol, series, isin.
+
+    Raises
+    ------
+    NseParseError
+        If the CSV content cannot be parsed or is empty.
+
+    Examples
+    --------
+    >>> csv_content = (
+    ...     "Company Name,Industry,Symbol,Series,ISIN Code\\n"
+    ...     "Reliance Industries Limited,Oil Gas & Consumable Fuels,"
+    ...     "RELIANCE,EQ,INE002A01018\\n"
+    ... )
+    >>> df = parse_index_constituents_archive_csv(csv_content)
+    >>> df["symbol"].iloc[0]
+    'RELIANCE'
+    """
+    logger.debug("Parsing NSE index constituents archive CSV")
+
+    if isinstance(content, bytes):
+        content = _decode_csv_bytes(content)
+
+    if not content.strip():
+        raise NseParseError(
+            "Empty NSE index constituents archive CSV content",
+            raw_data=None,
+            field=None,
+        )
+
+    try:
+        df = pd.read_csv(io.StringIO(content))
+    except Exception as e:
+        raise NseParseError(
+            f"Failed to parse NSE index constituents archive CSV: {e}",
+            raw_data=content[:_MAX_RAW_DATA_LOG]
+            if len(content) > _MAX_RAW_DATA_LOG
+            else content,
+            field=None,
+        ) from e
+
+    if df.empty:
+        logger.info("NSE index constituents archive CSV contains no rows")
+        return df
+
+    # Strip whitespace from column names
+    df.columns = pd.Index([col.strip() for col in df.columns])
+
+    # Rename columns
+    rename_map: dict[str, str] = {}
+    for col in df.columns:
+        mapped = INDEX_ARCHIVE_COLUMN_MAP.get(col)
+        if mapped is not None:
+            rename_map[col] = mapped
+        else:
+            rename_map[col] = col.strip().lower().replace(" ", "_")
+
+    df = df.rename(columns=rename_map)
+
+    # Strip whitespace from string columns
+    for col in df.columns:
+        if df[col].dtype == object:
+            df[col] = df[col].str.strip()
+
+    logger.info(
+        "NSE index constituents archive CSV parsed",
+        row_count=len(df),
+        columns=list(df.columns),
+    )
+
+    return df
+
+
 def parse_preopen_data(raw: dict[str, Any]) -> pd.DataFrame:
     """Parse an NSE market-data-pre-open JSON response into a DataFrame.
 
@@ -1399,6 +1490,7 @@ __all__ = [
     "parse_event_calendar",
     "parse_financial_results",
     "parse_index_constituents",
+    "parse_index_constituents_archive_csv",
     "parse_market_status",
     "parse_preopen_data",
     "parse_quote_response",

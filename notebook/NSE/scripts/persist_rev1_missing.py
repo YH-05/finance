@@ -178,6 +178,9 @@ def aggregate_owner_candidate(
         "TrustsWhereAnyPersonBelongingToPromoterAndPromoterGroupIsisTrusteeOrBeneficiaryOrAuthorOfTrust"
     )
 
+    natural_pct_sum = hufi["pct"] + nri["pct"] + dir_["pct"] + kmp["pct"] + rel["pct"]
+    natural_num_sum = hufi["num"] + nri["num"] + dir_["num"] + kmp["num"] + rel["num"]
+
     cat_total_root = cat_total[
         cat_total["sub_category"].isna() | (cat_total["sub_category"] == "")
     ]
@@ -190,6 +193,11 @@ def aggregate_owner_candidate(
         for k in ("Indian", "Foreign"):
             r = cat_total[cat_total["sub_category"] == k]
             promoter_total_pct += float(r["pct_total_shares"].sum())
+    if promoter_total_pct == 0.0:
+        # 一部XBRL開示（新規上場企業等）では「総合計」行自体が省略され、
+        # DirectorsAndDirectorsRelatives等の内訳行のみ存在するケースがある。
+        # その場合は内訳合計にフォールバックする（実例: INDGN, IXIGO, FIRSTCRY, PINELABS, SAMHI）。
+        promoter_total_pct = natural_pct_sum
 
     other_indian_pct = float(
         cat_total[cat_total["sub_category"] == "OtherIndianShareholders"][
@@ -221,9 +229,6 @@ def aggregate_owner_candidate(
             "pct_total_shares"
         ].sum()
     )
-
-    natural_pct_sum = hufi["pct"] + nri["pct"] + dir_["pct"] + kmp["pct"] + rel["pct"]
-    natural_num_sum = hufi["num"] + nri["num"] + dir_["num"] + kmp["num"] + rel["num"]
 
     detail_rows = prom[prom["is_category_total"] == 0]
     names = [n for n in detail_rows["shareholder_name"].dropna().unique() if n.strip()]

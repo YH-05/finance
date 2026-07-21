@@ -1,0 +1,736 @@
+[
+  {
+    "symbol": "AAATECH",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 20 holdings",
+      "count": 20
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 32 rows",
+      "row_count": 32,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "AADHARHFC",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 9 holdings",
+      "count": 9
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 55 rows",
+      "row_count": 55,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "ADANIENSOL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 46 holdings",
+      "count": 46
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 76 rows",
+      "row_count": 76,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "AGL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 1 holdings",
+      "count": 1
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 61 rows",
+      "row_count": 61,
+      "as_on_date": "2026-07-02"
+    }
+  },
+  {
+    "symbol": "AKZOINDIA",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 0 holdings",
+      "count": 0
+    },
+    "phase4": {
+      "ok": false,
+      "msg": "skipped (Phase 3 failed or empty)"
+    }
+  },
+  {
+    "symbol": "APOLLOPIPE",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 31 holdings",
+      "count": 31
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 38 rows",
+      "row_count": 38,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "BAJAJHFL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 8 holdings",
+      "count": 8
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 72 rows",
+      "row_count": 72,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "BELRISE",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 5 holdings",
+      "count": 5
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 122 rows",
+      "row_count": 122,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 88 holdings",
+      "count": 88
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 54 rows",
+      "row_count": 54,
+      "as_on_date": "2026-06-23"
+    }
+  },
+  {
+    "symbol": "BHEL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 87 holdings",
+      "count": 87
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 42 rows",
+      "row_count": 42,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "BIOCON",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 90 holdings",
+      "count": 90
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 54 rows",
+      "row_count": 54,
+      "as_on_date": "2026-06-29"
+    }
+  },
+  {
+    "symbol": "CIGNITITEC",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 49 holdings",
+      "count": 49
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 69 rows",
+      "row_count": 69,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "ELECTCAST",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 87 holdings",
+      "count": 87
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 118 rows",
+      "row_count": 118,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "FIRSTCRY",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 8 holdings",
+      "count": 8
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 54 rows",
+      "row_count": 54,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "GMRP&UI",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 20 holdings",
+      "count": 20
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 152 rows",
+      "row_count": 152,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "GODREJIND",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 86 holdings",
+      "count": 86
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 149 rows",
+      "row_count": 149,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "GUJALKALI",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 85 holdings",
+      "count": 85
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "HMAAGRO",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 16 holdings",
+      "count": 16
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 56 rows",
+      "row_count": 56,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "HOMEFIRST",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 23 holdings",
+      "count": 23
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "INDGN",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 9 holdings",
+      "count": 9
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 42 rows",
+      "row_count": 42,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "INOXGREEN",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 18 holdings",
+      "count": 18
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 70 rows",
+      "row_count": 70,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "IOLCP",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 66 holdings",
+      "count": 66
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 34 rows",
+      "row_count": 34,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "IRFC",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 22 holdings",
+      "count": 22
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 36 rows",
+      "row_count": 36,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "IXIGO",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 10 holdings",
+      "count": 10
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 43 rows",
+      "row_count": 43,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "JSWDULUX",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 84 holdings",
+      "count": 84
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 45 rows",
+      "row_count": 45,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "KRN",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 9 holdings",
+      "count": 9
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 45 rows",
+      "row_count": 45,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "LLOYDSENGG",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 53 holdings",
+      "count": 53
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 54 rows",
+      "row_count": 54,
+      "as_on_date": "2026-05-08"
+    }
+  },
+  {
+    "symbol": "MANAPPURAM",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 64 holdings",
+      "count": 64
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 63 rows",
+      "row_count": 63,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "MPHASIS",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 86 holdings",
+      "count": 86
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 52 rows",
+      "row_count": 52,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "NETWEB",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 12 holdings",
+      "count": 12
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 88 rows",
+      "row_count": 88,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "OLAELEC",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 9 holdings",
+      "count": 9
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 55 rows",
+      "row_count": 55,
+      "as_on_date": "2026-06-04"
+    }
+  },
+  {
+    "symbol": "PARAGMILK",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 46 holdings",
+      "count": 46
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 68 rows",
+      "row_count": 68,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "PINELABS",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 3 holdings",
+      "count": 3
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 48 rows",
+      "row_count": 48,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "POONAWALLA",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 91 holdings",
+      "count": 91
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 74 rows",
+      "row_count": 74,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "RATNAMANI",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 82 holdings",
+      "count": 82
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 76 rows",
+      "row_count": 76,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "RAYMONDLSL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 8 holdings",
+      "count": 8
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 55 rows",
+      "row_count": 55,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "ROLEXRINGS",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 21 holdings",
+      "count": 21
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 45 rows",
+      "row_count": 45,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "SAGILITY",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 7 holdings",
+      "count": 7
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 33 rows",
+      "row_count": 33,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "SAMHI",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 12 holdings",
+      "count": 12
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 34 rows",
+      "row_count": 34,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "SANOFICONR",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 9 holdings",
+      "count": 9
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 91 rows",
+      "row_count": 91,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "SHRIRAMFIN",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 89 holdings",
+      "count": 89
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 58 rows",
+      "row_count": 58,
+      "as_on_date": "2026-04-08"
+    }
+  },
+  {
+    "symbol": "SUDARSCHEM",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 85 holdings",
+      "count": 85
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 68 rows",
+      "row_count": 68,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "USHAMART",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 84 holdings",
+      "count": 84
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 81 rows",
+      "row_count": 81,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "VMM",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 8 holdings",
+      "count": 8
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 66 rows",
+      "row_count": 66,
+      "as_on_date": "2026-06-30"
+    }
+  },
+  {
+    "symbol": "WEBELSOLAR",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 85 holdings",
+      "count": 85
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 23 rows",
+      "row_count": 23,
+      "as_on_date": "2026-03-31"
+    }
+  },
+  {
+    "symbol": "WHIRLPOOL",
+    "isin": null,
+    "rev1_category": null,
+    "phase3": {
+      "ok": true,
+      "msg": "fetched 65 holdings",
+      "count": 65
+    },
+    "phase4": {
+      "ok": true,
+      "msg": "parsed 44 rows",
+      "row_count": 44,
+      "as_on_date": "2026-03-31"
+    }
+  }
+]

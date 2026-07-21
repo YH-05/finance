@@ -26,6 +26,7 @@ act-2026-05-07-002: NIFTY 750 universe メタデータ整備 + owner_companies.c
 
 from __future__ import annotations
 
+import argparse
 import re
 import sqlite3
 from pathlib import Path
@@ -37,10 +38,10 @@ EXPORT_DIR = ROOT / "notebook/NSE/data/exports/nse"
 CACHE_DIR = ROOT / "notebook/NSE/data/cache/nse"
 
 REVIEW_SHEET = EXPORT_DIR / "owner_review_sheet.csv"
-INDEX_DB = CACHE_DIR / "nse_index.db"
+DEFAULT_INDEX_DB = CACHE_DIR / "nse_index.db"
 
-OUT_UNIVERSE = EXPORT_DIR / "nifty750_universe.csv"
-OUT_SUMMARY = EXPORT_DIR / "nifty750_universe_summary.md"
+DEFAULT_OUT_UNIVERSE = EXPORT_DIR / "nifty750_universe.csv"
+DEFAULT_OUT_SUMMARY = EXPORT_DIR / "nifty750_universe_summary.md"
 
 INDEX_TARGETS = {
     "is_nifty50": "NIFTY 50",
@@ -90,15 +91,46 @@ def extract_owner_family(yaml_matched_detail: str) -> str:
     return "|".join(seen.keys())
 
 
-def load_index_membership() -> pd.DataFrame:
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="owner_review_sheet.csv と index_members テーブルから "
+        "NIFTY 750 universe (nifty750_universe.csv) を再構築する"
+    )
+    parser.add_argument(
+        "--db-path",
+        type=Path,
+        default=DEFAULT_INDEX_DB,
+        help=f"index_members テーブルを含む SQLite DB パス（デフォルト: {DEFAULT_INDEX_DB}）",
+    )
+    parser.add_argument(
+        "--output-universe",
+        type=Path,
+        default=DEFAULT_OUT_UNIVERSE,
+        help=f"universe CSV の出力先（デフォルト: {DEFAULT_OUT_UNIVERSE}）",
+    )
+    parser.add_argument(
+        "--output-summary",
+        type=Path,
+        default=DEFAULT_OUT_SUMMARY,
+        help=f"サマリー Markdown の出力先（デフォルト: {DEFAULT_OUT_SUMMARY}）",
+    )
+    return parser.parse_args()
+
+
+def load_index_membership(db_path: Path) -> pd.DataFrame:
     """nse_index.db から NIFTY 50/100/200/500/TOTAL MKT の構成銘柄を取得.
+
+    Parameters
+    ----------
+    db_path : Path
+        index_members テーブルを含む SQLite DB パス。
 
     Returns
     -------
     pd.DataFrame
         symbol を index に、各 is_niftyXX フラグを bool で持つ DataFrame
     """
-    with sqlite3.connect(INDEX_DB) as conn:
+    with sqlite3.connect(db_path) as conn:
         df = pd.read_sql(
             "SELECT index_name, symbol FROM index_members "
             f"WHERE index_name IN ({','.join(['?'] * len(INDEX_TARGETS))})",
@@ -113,6 +145,8 @@ def load_index_membership() -> pd.DataFrame:
 
 
 def main() -> None:
+    args = parse_args()
+
     sheet = pd.read_csv(REVIEW_SHEET)
     print(f"Loaded review sheet: {len(sheet)} rows")
 
@@ -128,7 +162,7 @@ def main() -> None:
     ]
 
     # index 帰属フラグを付与
-    membership = load_index_membership()
+    membership = load_index_membership(args.db_path)
     sheet = sheet.merge(membership, left_on="symbol", right_index=True, how="left")
     for flag in INDEX_TARGETS:
         sheet[flag] = sheet[flag].fillna(False).astype(bool)
@@ -161,11 +195,11 @@ def main() -> None:
     universe = universe.sort_values(
         ["is_owner_company", "owner_family", "symbol"], ascending=[False, True, True]
     )
-    universe.to_csv(OUT_UNIVERSE, index=False)
+    universe.to_csv(args.output_universe, index=False)
     n_owner = int(universe["is_owner_company"].sum())
     n_not_owner = len(universe) - n_owner
     print(
-        f"Wrote: {OUT_UNIVERSE} ({len(universe)} stocks: "
+        f"Wrote: {args.output_universe} ({len(universe)} stocks: "
         f"{n_owner} owner / {n_not_owner} not_owner)"
     )
 
@@ -263,8 +297,8 @@ def main() -> None:
     lines.append("```")
     lines.append("")
 
-    OUT_SUMMARY.write_text("\n".join(lines), encoding="utf-8")
-    print(f"Wrote: {OUT_SUMMARY}")
+    args.output_summary.write_text("\n".join(lines), encoding="utf-8")
+    print(f"Wrote: {args.output_summary}")
 
 
 if __name__ == "__main__":

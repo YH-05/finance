@@ -475,6 +475,20 @@ The NSE stock list CSV (``https://nsearchives.nseindia.com/content/equities/EQUI
 uses uppercase column names with spaces. Some column names include a leading space.
 """
 
+INDEX_ARCHIVE_COLUMN_MAP: Final[dict[str, str]] = {
+    "Company Name": "company_name",
+    "Industry": "industry",
+    "Symbol": "symbol",
+    "Series": "series",
+    "ISIN Code": "isin",
+}
+"""Mapping from NSE index constituents archive CSV column names to snake_case.
+
+The NSE index constituents archive CSV files
+(``https://nsearchives.nseindia.com/content/indices/ind_niftyXXXlist.csv``)
+use title-case column names.
+"""
+
 PREOPEN_COLUMN_MAP: Final[dict[str, str]] = {
     "symbol": "symbol",
     "xDt": "ex_date",
@@ -539,6 +553,7 @@ __all__ = [
     "FINANCIAL_FIELD_MAP",
     "FINANCIAL_FIELD_MAP_BANK",
     "FINANCIAL_RESULT_COLUMN_NAME_MAP",
+    "INDEX_ARCHIVE_COLUMN_MAP",
     "INDEX_CONSTITUENTS_COLUMN_NAME_MAP",
     "PREOPEN_COLUMN_MAP",
     "SHAREHOLDING_FIELD_MAP",

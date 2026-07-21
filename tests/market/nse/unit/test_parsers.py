@@ -1015,6 +1015,7 @@ class TestModuleExports:
             "parse_event_calendar",
             "parse_financial_results",
             "parse_index_constituents",
+            "parse_index_constituents_archive_csv",
             "parse_market_status",
             "parse_preopen_data",
             "parse_quote_response",

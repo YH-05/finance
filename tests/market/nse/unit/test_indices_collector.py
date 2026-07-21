@@ -16,6 +16,13 @@ Test TODO List:
 - [x] fetch_index(): セッションを正しくクローズ
 - [x] fetch_all_indices(): 全インデックス概要を取得
 - [x] fetch_market_status(): マーケットステータスを取得
+- [x] fetch_index_constituents_archive(): 静的CSVから構成銘柄を DataFrame で取得
+- [x] fetch_index_constituents_archive(): 正しいURLにリクエスト
+- [x] fetch_index_constituents_archive(): index_name のファイル名マッピング
+- [x] fetch_index_constituents_archive(): 未知の index_name で ValueError
+- [x] fetch_index_constituents_archive(): 空 CSV で空 DataFrame
+- [x] fetch_index_constituents_archive(): Symbol 列の前後空白除去
+- [x] fetch_index_constituents_archive(): セッションを正しくクローズ
 - [x] Module exports: __all__ completeness
 """
 
@@ -141,6 +148,25 @@ def _make_mock_session(
     return mock_session
 
 
+_INDEX_ARCHIVE_CSV_SAMPLE: str = (
+    "Company Name,Industry,Symbol,Series,ISIN Code\n"
+    "Reliance Industries Limited,Oil Gas & Consumable Fuels,RELIANCE,EQ,INE002A01018\n"
+    "Infosys Limited,Information Technology,INFY,EQ,INE009A01021\n"
+)
+"""Sample NSE index constituents archive CSV content (ind_niftyXXXlist.csv format)."""
+
+
+def _make_mock_csv_session(*, csv_content: str | None = None) -> MagicMock:
+    """Create a mock NseSession returning archive CSV content."""
+    mock_session = MagicMock(spec=NseSession)
+    mock_response = MagicMock()
+    content = csv_content if csv_content is not None else _INDEX_ARCHIVE_CSV_SAMPLE
+    mock_response.content = content.encode("utf-8")
+    mock_response.status_code = 200
+    mock_session.get_with_retry.return_value = mock_response
+    return mock_session
+
+
 # =============================================================================
 # Tests: Initialization
 # =============================================================================
@@ -241,6 +267,97 @@ class TestFetchIndex:
         ):
             collector = IndicesCollector()
             collector.fetch_index("NIFTY 50")
+        mock_new_session.close.assert_called_once()
+
+
+# =============================================================================
+# Tests: fetch_index_constituents_archive()
+# =============================================================================
+
+
+class TestFetchIndexConstituentsArchive:
+    def test_正常系_静的CSVから構成銘柄をDataFrameで取得(self) -> None:
+        mock_session = _make_mock_csv_session()
+        collector = IndicesCollector(session=mock_session)
+        df = collector.fetch_index_constituents_archive("NIFTY 50")
+        assert isinstance(df, pd.DataFrame)
+        assert len(df) == 2
+        assert list(df.columns) == [
+            "company_name",
+            "industry",
+            "symbol",
+            "series",
+            "isin",
+        ]
+        assert df["symbol"].tolist() == ["RELIANCE", "INFY"]
+
+    def test_正常系_正しいURLにリクエストNIFTY50(self) -> None:
+        mock_session = _make_mock_csv_session()
+        collector = IndicesCollector(session=mock_session)
+        collector.fetch_index_constituents_archive("NIFTY 50")
+        call_args = mock_session.get_with_retry.call_args
+        assert (
+            call_args[0][0]
+            == "https://nsearchives.nseindia.com/content/indices/ind_nifty50list.csv"
+        )
+
+    def test_正常系_NIFTY_TOTAL_MKTの不規則なファイル名マッピング(self) -> None:
+        mock_session = _make_mock_csv_session()
+        collector = IndicesCollector(session=mock_session)
+        collector.fetch_index_constituents_archive("NIFTY TOTAL MKT")
+        call_args = mock_session.get_with_retry.call_args
+        assert (
+            call_args[0][0]
+            == "https://nsearchives.nseindia.com/content/indices/ind_niftytotalmarket_list.csv"
+        )
+
+    def test_正常系_NIFTY500のファイル名マッピング(self) -> None:
+        mock_session = _make_mock_csv_session()
+        collector = IndicesCollector(session=mock_session)
+        collector.fetch_index_constituents_archive("NIFTY 500")
+        call_args = mock_session.get_with_retry.call_args
+        assert (
+            call_args[0][0]
+            == "https://nsearchives.nseindia.com/content/indices/ind_nifty500list.csv"
+        )
+
+    def test_異常系_未知のindex_nameでValueError(self) -> None:
+        collector = IndicesCollector(session=MagicMock(spec=NseSession))
+        with pytest.raises(ValueError, match="Unknown index_name"):
+            collector.fetch_index_constituents_archive("NIFTY JUNK")
+
+    def test_エッジケース_空CSVで空DataFrame(self) -> None:
+        mock_session = _make_mock_csv_session(
+            csv_content="Company Name,Industry,Symbol,Series,ISIN Code\n"
+        )
+        collector = IndicesCollector(session=mock_session)
+        df = collector.fetch_index_constituents_archive("NIFTY 50")
+        assert isinstance(df, pd.DataFrame)
+        assert df.empty
+
+    def test_エッジケース_Symbol列の前後空白を除去(self) -> None:
+        csv_content = (
+            "Company Name,Industry,Symbol,Series,ISIN Code\n"
+            "Reliance Industries Limited,Oil Gas,  RELIANCE  ,EQ,INE002A01018\n"
+        )
+        mock_session = _make_mock_csv_session(csv_content=csv_content)
+        collector = IndicesCollector(session=mock_session)
+        df = collector.fetch_index_constituents_archive("NIFTY 50")
+        assert df["symbol"].iloc[0] == "RELIANCE"
+
+    def test_正常系_注入セッションはクローズしない(self) -> None:
+        mock_session = _make_mock_csv_session()
+        collector = IndicesCollector(session=mock_session)
+        collector.fetch_index_constituents_archive("NIFTY 50")
+        mock_session.close.assert_not_called()
+
+    def test_正常系_非注入セッションはクローズする(self) -> None:
+        mock_new_session = _make_mock_csv_session()
+        with patch(
+            "market.nse.collectors._base.NseSession", return_value=mock_new_session
+        ):
+            collector = IndicesCollector()
+            collector.fetch_index_constituents_archive("NIFTY 50")
         mock_new_session.close.assert_called_once()
 
 

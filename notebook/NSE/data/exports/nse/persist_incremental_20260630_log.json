@@ -1,0 +1,272 @@
+[
+  {
+    "symbol": "AAATECH",
+    "isin": "INE0D0U01013",
+    "phase3_rows": 20,
+    "phase4_rows": 32
+  },
+  {
+    "symbol": "AADHARHFC",
+    "isin": "INE883F01010",
+    "phase3_rows": 9,
+    "phase4_rows": 55
+  },
+  {
+    "symbol": "ADANIENSOL",
+    "isin": "INE931S01010",
+    "phase3_rows": 46,
+    "phase4_rows": 76
+  },
+  {
+    "symbol": "AGL",
+    "isin": "",
+    "phase3_rows": 1,
+    "phase4_rows": 61
+  },
+  {
+    "symbol": "APOLLOPIPE",
+    "isin": "INE126J01016",
+    "phase3_rows": 31,
+    "phase4_rows": 38
+  },
+  {
+    "symbol": "BAJAJHFL",
+    "isin": "INE377Y01014",
+    "phase3_rows": 8,
+    "phase4_rows": 72
+  },
+  {
+    "symbol": "BELRISE",
+    "isin": "INE894V01022",
+    "phase3_rows": 5,
+    "phase4_rows": 122
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "isin": "INE397D01024",
+    "phase3_rows": 88,
+    "phase4_rows": 54
+  },
+  {
+    "symbol": "BHEL",
+    "isin": "INE257A01026",
+    "phase3_rows": 87,
+    "phase4_rows": 42
+  },
+  {
+    "symbol": "BIOCON",
+    "isin": "INE376G01013",
+    "phase3_rows": 90,
+    "phase4_rows": 54
+  },
+  {
+    "symbol": "CIGNITITEC",
+    "isin": "INE675C01017",
+    "phase3_rows": 49,
+    "phase4_rows": 69
+  },
+  {
+    "symbol": "ELECTCAST",
+    "isin": "INE086A01029",
+    "phase3_rows": 87,
+    "phase4_rows": 118
+  },
+  {
+    "symbol": "FIRSTCRY",
+    "isin": "INE02RE01045",
+    "phase3_rows": 8,
+    "phase4_rows": 54
+  },
+  {
+    "symbol": "GMRP&UI",
+    "isin": "INE0CU601026",
+    "phase3_rows": 20,
+    "phase4_rows": 152
+  },
+  {
+    "symbol": "GODREJIND",
+    "isin": "INE233A01035",
+    "phase3_rows": 86,
+    "phase4_rows": 149
+  },
+  {
+    "symbol": "GUJALKALI",
+    "isin": "INE186A01019",
+    "phase3_rows": 85,
+    "phase4_rows": 48
+  },
+  {
+    "symbol": "HMAAGRO",
+    "isin": "INE0ECP01024",
+    "phase3_rows": 16,
+    "phase4_rows": 56
+  },
+  {
+    "symbol": "HOMEFIRST",
+    "isin": "INE481N01025",
+    "phase3_rows": 23,
+    "phase4_rows": 48
+  },
+  {
+    "symbol": "INDGN",
+    "isin": "INE065X01017",
+    "phase3_rows": 9,
+    "phase4_rows": 42
+  },
+  {
+    "symbol": "INOXGREEN",
+    "isin": "INE510W01014",
+    "phase3_rows": 18,
+    "phase4_rows": 70
+  },
+  {
+    "symbol": "IOLCP",
+    "isin": "INE485C01029",
+    "phase3_rows": 66,
+    "phase4_rows": 34
+  },
+  {
+    "symbol": "IRFC",
+    "isin": "INE053F01010",
+    "phase3_rows": 22,
+    "phase4_rows": 36
+  },
+  {
+    "symbol": "IXIGO",
+    "isin": "INE0HV901016",
+    "phase3_rows": 10,
+    "phase4_rows": 43
+  },
+  {
+    "symbol": "JSWDULUX",
+    "isin": "INE133A01011",
+    "phase3_rows": 84,
+    "phase4_rows": 45
+  },
+  {
+    "symbol": "KRN",
+    "isin": "INE0Q3J01015",
+    "phase3_rows": 9,
+    "phase4_rows": 45
+  },
+  {
+    "symbol": "LLOYDSENGG",
+    "isin": "INE093R01011",
+    "phase3_rows": 53,
+    "phase4_rows": 54
+  },
+  {
+    "symbol": "MANAPPURAM",
+    "isin": "INE522D01027",
+    "phase3_rows": 64,
+    "phase4_rows": 63
+  },
+  {
+    "symbol": "MPHASIS",
+    "isin": "INE356A01018",
+    "phase3_rows": 86,
+    "phase4_rows": 52
+  },
+  {
+    "symbol": "NETWEB",
+    "isin": "INE0NT901020",
+    "phase3_rows": 12,
+    "phase4_rows": 88
+  },
+  {
+    "symbol": "OLAELEC",
+    "isin": "INE0LXG01040",
+    "phase3_rows": 9,
+    "phase4_rows": 55
+  },
+  {
+    "symbol": "PARAGMILK",
+    "isin": "INE883N01014",
+    "phase3_rows": 46,
+    "phase4_rows": 68
+  },
+  {
+    "symbol": "PINELABS",
+    "isin": "INE15B701018",
+    "phase3_rows": 3,
+    "phase4_rows": 48
+  },
+  {
+    "symbol": "POONAWALLA",
+    "isin": "INE511C01022",
+    "phase3_rows": 91,
+    "phase4_rows": 74
+  },
+  {
+    "symbol": "RATNAMANI",
+    "isin": "INE703B01027",
+    "phase3_rows": 82,
+    "phase4_rows": 76
+  },
+  {
+    "symbol": "RAYMONDLSL",
+    "isin": "INE02ID01020",
+    "phase3_rows": 8,
+    "phase4_rows": 55
+  },
+  {
+    "symbol": "ROLEXRINGS",
+    "isin": "INE645S01024",
+    "phase3_rows": 21,
+    "phase4_rows": 45
+  },
+  {
+    "symbol": "SAGILITY",
+    "isin": "INE0W2G01015",
+    "phase3_rows": 7,
+    "phase4_rows": 33
+  },
+  {
+    "symbol": "SAMHI",
+    "isin": "INE08U801020",
+    "phase3_rows": 12,
+    "phase4_rows": 34
+  },
+  {
+    "symbol": "SANOFICONR",
+    "isin": "INE0UOS01011",
+    "phase3_rows": 9,
+    "phase4_rows": 91
+  },
+  {
+    "symbol": "SHRIRAMFIN",
+    "isin": "INE721A01047",
+    "phase3_rows": 89,
+    "phase4_rows": 58
+  },
+  {
+    "symbol": "SUDARSCHEM",
+    "isin": "INE659A01023",
+    "phase3_rows": 85,
+    "phase4_rows": 68
+  },
+  {
+    "symbol": "USHAMART",
+    "isin": "INE228A01035",
+    "phase3_rows": 84,
+    "phase4_rows": 81
+  },
+  {
+    "symbol": "VMM",
+    "isin": "INE01EA01019",
+    "phase3_rows": 8,
+    "phase4_rows": 66
+  },
+  {
+    "symbol": "WEBELSOLAR",
+    "isin": "INE855C01023",
+    "phase3_rows": 85,
+    "phase4_rows": 23
+  },
+  {
+    "symbol": "WHIRLPOOL",
+    "isin": "INE716A01013",
+    "phase3_rows": 65,
+    "phase4_rows": 44
+  }
+]

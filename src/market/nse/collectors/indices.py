@@ -48,6 +48,7 @@ from market.nse.constants import API_BASE_URL
 from market.nse.parsers import (
     parse_all_indices,
     parse_index_constituents,
+    parse_index_constituents_archive_csv,
     parse_market_status,
 )
 from utils_core.logging import get_logger
@@ -62,6 +63,22 @@ logger = get_logger(__name__)
 _EQUITY_STOCK_INDICES_ENDPOINT: str = f"{API_BASE_URL}/equity-stockIndices"
 _ALL_INDICES_ENDPOINT: str = f"{API_BASE_URL}/allIndices"
 _MARKET_STATUS_ENDPOINT: str = f"{API_BASE_URL}/marketStatus"
+
+# NSE Archives static index constituents CSV files
+_INDEX_ARCHIVE_BASE_URL: str = "https://nsearchives.nseindia.com/content/indices"
+
+_INDEX_ARCHIVE_FILENAME_MAP: dict[str, str] = {
+    "NIFTY 50": "ind_nifty50list.csv",
+    "NIFTY 100": "ind_nifty100list.csv",
+    "NIFTY 200": "ind_nifty200list.csv",
+    "NIFTY 500": "ind_nifty500list.csv",
+    "NIFTY TOTAL MKT": "ind_niftytotalmarket_list.csv",
+}
+"""Mapping from NSE index names to their archive CSV filenames.
+
+Most index names map regularly (``NIFTY 500`` -> ``ind_nifty500list.csv``),
+but ``NIFTY TOTAL MKT`` maps irregularly to ``ind_niftytotalmarket_list.csv``.
+"""
 
 
 class IndicesCollector(NseCollectorMixin, DataCollector):
@@ -221,6 +238,78 @@ class IndicesCollector(NseCollectorMixin, DataCollector):
                 "Index fetched",
                 index_name=index_name,
                 constituent_count=len(constituents),
+            )
+
+            return df
+        finally:
+            if should_close:
+                session.close()
+
+    def fetch_index_constituents_archive(self, index_name: str) -> pd.DataFrame:
+        """Fetch constituent stocks for an NSE index from the static CSV archive.
+
+        Unlike ``fetch_index()``, which calls the dynamic
+        ``/api/equity-stockIndices`` endpoint, this method downloads a
+        static CSV file from NSE Archives
+        (``nsearchives.nseindia.com/content/indices/``). Use this method
+        when the dynamic API endpoint is unavailable.
+
+        Parameters
+        ----------
+        index_name : str
+            NSE index name. One of ``"NIFTY 50"``, ``"NIFTY 100"``,
+            ``"NIFTY 200"``, ``"NIFTY 500"``, ``"NIFTY TOTAL MKT"``.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with columns: company_name, industry, symbol, series, isin.
+
+        Raises
+        ------
+        ValueError
+            If ``index_name`` is not a recognised index.
+        NseParseError
+            If the CSV content cannot be parsed or is empty.
+        NseAPIError
+            If the download returns an error status code.
+        NseRateLimitError
+            If rate limiting is detected.
+        NseCookieError
+            If the NSE session cookie is expired.
+
+        Examples
+        --------
+        >>> collector = IndicesCollector()
+        >>> df = collector.fetch_index_constituents_archive("NIFTY 50")
+        >>> df["symbol"].iloc[0]
+        'RELIANCE'
+        """
+        filename = _INDEX_ARCHIVE_FILENAME_MAP.get(index_name)
+        if filename is None:
+            msg = (
+                f"Unknown index_name for archive CSV: {index_name!r}. "
+                f"Expected one of: {sorted(_INDEX_ARCHIVE_FILENAME_MAP)}"
+            )
+            raise ValueError(msg)
+
+        url = f"{_INDEX_ARCHIVE_BASE_URL}/{filename}"
+
+        logger.info(
+            "Fetching index constituents archive CSV",
+            index_name=index_name,
+            url=url,
+        )
+
+        session, should_close = self._get_session()
+        try:
+            response = session.get_with_retry(url)
+            df = parse_index_constituents_archive_csv(response.content)
+
+            logger.info(
+                "Index constituents archive CSV fetched",
+                index_name=index_name,
+                row_count=len(df),
             )
 
             return df
