@@ -13,6 +13,11 @@ Test TODO List:
 - [x] diff_universe(): current に symbol 列がない場合 KeyError
 - [x] diff_universe(): 戻り値が UniverseDiff 型でソート済みリストを持つ
 - [x] UniverseDiff: frozen dataclass であること
+- [x] find_post_cutoff_listings(): 基準日より後に上場した銘柄を検出
+- [x] find_post_cutoff_listings(): 基準日ちょうどの上場は除外対象外
+- [x] find_post_cutoff_listings(): listing_date 欠損・不正値は除外対象外
+- [x] find_post_cutoff_listings(): 該当なしで空リスト
+- [x] find_post_cutoff_listings(): 必須列がない場合 KeyError
 """
 
 from dataclasses import FrozenInstanceError
@@ -20,7 +25,11 @@ from dataclasses import FrozenInstanceError
 import pandas as pd
 import pytest
 
-from market.nse.analysis.universe_diff import UniverseDiff, diff_universe
+from market.nse.analysis.universe_diff import (
+    UniverseDiff,
+    diff_universe,
+    find_post_cutoff_listings,
+)
 
 
 class TestDiffUniverse:
@@ -119,3 +128,69 @@ class TestUniverseDiff:
 
         with pytest.raises(FrozenInstanceError):
             diff.added = ["D"]  # type: ignore[misc]
+
+
+class TestFindPostCutoffListings:
+    """find_post_cutoff_listings() 関数のテスト。
+
+    point-in-time 整合性の担保用。指数構成 CSV を基準日より後に取得した場合、
+    基準日時点で未上場の銘柄が混入する（実例: AGL は 2026-07-03 上場だが
+    2026-07-14 取得の構成 CSV 経由で 2026-06-30 版 universe に混入した）。
+    """
+
+    def test_正常系_基準日より後に上場した銘柄を検出する(self) -> None:
+        """listing_date が cutoff より後の銘柄のみ返すこと。"""
+        stocks = pd.DataFrame(
+            {
+                "symbol": ["AGL", "RELIANCE", "PINELABS"],
+                "listing_date": ["03-JUL-2026", "29-NOV-1995", "14-NOV-2025"],
+            }
+        )
+
+        assert find_post_cutoff_listings(stocks, "2026-06-30") == ["AGL"]
+
+    def test_エッジケース_基準日ちょうどの上場は除外対象にしない(self) -> None:
+        """cutoff 当日に上場した銘柄は基準日時点で上場済みとして扱うこと。"""
+        stocks = pd.DataFrame({"symbol": ["SAMEDAY"], "listing_date": ["30-JUN-2026"]})
+
+        assert find_post_cutoff_listings(stocks, "2026-06-30") == []
+
+    def test_エッジケース_listing_dateが欠損や不正値でも除外対象にしない(self) -> None:
+        """日付を解釈できない銘柄は保守的に universe へ残すこと。"""
+        stocks = pd.DataFrame(
+            {
+                "symbol": ["NODATE", "BROKEN", "AGL"],
+                "listing_date": [None, "not-a-date", "03-JUL-2026"],
+            }
+        )
+
+        assert find_post_cutoff_listings(stocks, "2026-06-30") == ["AGL"]
+
+    def test_エッジケース_該当銘柄なしで空リストを返す(self) -> None:
+        """全銘柄が基準日以前の上場なら空リストになること。"""
+        stocks = pd.DataFrame(
+            {
+                "symbol": ["RELIANCE", "INFY"],
+                "listing_date": ["29-NOV-1995", "08-FEB-1995"],
+            }
+        )
+
+        assert find_post_cutoff_listings(stocks, "2026-06-30") == []
+
+    def test_正常系_複数銘柄をソート済みで返す(self) -> None:
+        """検出結果が symbol の昇順で返ること。"""
+        stocks = pd.DataFrame(
+            {
+                "symbol": ["ZETA", "AGL"],
+                "listing_date": ["10-JUL-2026", "03-JUL-2026"],
+            }
+        )
+
+        assert find_post_cutoff_listings(stocks, "2026-06-30") == ["AGL", "ZETA"]
+
+    def test_異常系_必須列がない場合KeyError(self) -> None:
+        """listing_date 列がない DataFrame は KeyError を送出すること。"""
+        stocks = pd.DataFrame({"symbol": ["AGL"]})
+
+        with pytest.raises(KeyError, match="listing_date"):
+            find_post_cutoff_listings(stocks, "2026-06-30")

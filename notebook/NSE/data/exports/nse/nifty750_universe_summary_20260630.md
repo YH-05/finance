@@ -2,15 +2,15 @@
 
 **生成元**: act-2026-05-07-002 (build_nifty750_universe.py)
 **入力**: owner_review_sheet.csv (yaml v0.5.1)
-**対象**: 全 864 銘柄 (NIFTY 750 + rev1 補完 50 銘柄)
+**対象**: 全 863 銘柄 (NIFTY 750 + rev1 補完 50 銘柄)
 
 ## 全体サマリー
 
 | 区分 | 銘柄数 | 比率 |
 |---|---|---|
-| OWNER | 599 | 69.3% |
+| OWNER | 598 | 69.3% |
 | NOT_OWNER | 265 | 30.7% |
-| 合計 | 864 | 100.0% |
+| 合計 | 863 | 100.0% |
 
 ## Index level 別 OWNER 比率
 
@@ -20,7 +20,7 @@
 | NIFTY 100 | 100 | 52 | 52.0% |
 | NIFTY 200 | 200 | 108 | 54.0% |
 | NIFTY 500 | 500 | 310 | 62.0% |
-| NIFTY TOTAL MKT | 751 | 517 | 68.8% |
+| NIFTY TOTAL MKT | 750 | 516 | 68.8% |
 | (上記 5 index 圏外、rev1 補完銘柄) | 113 | 82 | 72.6% |
 
 ## OWNER family 別分布 (上位 20)
@@ -48,7 +48,7 @@
 | Thapar | 1 |
 | Shriram | 1 |
 
-**family 未取得 OWNER**: 498 件 (yaml owner_keywords 未マッチで Tier 1 自然人 promoter ベースで OWNER 判定された銘柄)
+**family 未取得 OWNER**: 497 件 (yaml owner_keywords 未マッチで Tier 1 自然人 promoter ベースで OWNER 判定された銘柄)
 
 ## 利用例
 

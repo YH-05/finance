@@ -1,16 +1,19 @@
 # NIFTY 750 Universe 差分レポート (2026-06-30 版)
 
-**比較**: 前回確定版 `nifty750_universe_20260512.csv` (855 銘柄) vs 今回版 `nifty750_universe_20260630.csv` (864 銘柄)
+**比較**: 前回確定版 `nifty750_universe_20260512.csv` (855 銘柄) vs 今回版 `nifty750_universe_20260630.csv` (863 銘柄)
 **実行日**: 2026-07-15（取得データは技術的根拠により 2026-06-30 時点相当として採用、詳細は「6月末時点構成の扱い」節を参照）
+**改訂**: 2026-07-21（AGL の基準日超過による除外、および OWNER 構成銘柄の入れ替えを追記。詳細は末尾2節を参照）
 
 ## サマリー
 
 | 項目 | 前回 (05-12) | 今回 (06-30) | 差分 |
 |------|------|------|------|
-| 総銘柄数 | 855 | 864 | +9 |
-| OWNER 銘柄数 | 599 | 599 | 0 |
+| 総銘柄数 | 855 | 863 | +8 |
+| OWNER 銘柄数 | 599 | 598 | -1 |
 | NOT_OWNER 銘柄数 | 256 | 265 | +9 |
-| NIFTY TOTAL MKT 構成銘柄数 (is_nifty_total_mkt=True) | 744 | 751 | +7 |
+| NIFTY TOTAL MKT 構成銘柄数 (is_nifty_total_mkt=True) | 744 | 750 | +6 |
+
+**注意**: OWNER 銘柄数の増減だけでは構成の入れ替えが見えない。銘柄単位の差分は「OWNER 構成銘柄の入れ替え」節を参照すること。
 
 ## 6月末時点構成の扱い
 
@@ -28,7 +31,7 @@ NSE の指数構成 API（`equity-stockIndices`）は現在時点の構成のみ
 
 | symbol | 会社名 | is_owner_company | promoter_total_pct | owner_flag_final_hybrid |
 |---|---|---|---|---|
-| AGL | Allcargo Global Limited | **True** | 63.28% | OWNER |
+| AGL | Allcargo Global Limited | — (universe から除外) | 63.28% | OWNER |
 | RATNAMANI | Ratnamani Metals & Tubes Limited | **True** | 59.77% | OWNER |
 | JSWDULUX | JSW Dulux Limited | False | 61.20% | OWNER_WEAK |
 | SANOFICONR | Sanofi Consumer Healthcare India Limited | False | 71.27% | NOT_OWNER (MNC) |
@@ -39,7 +42,14 @@ NSE の指数構成 API（`equity-stockIndices`）は現在時点の構成のみ
 | PINELABS | Pine Labs Limited | False | 2.66% | OWNER_WEAK |
 | SAMHI | Samhi Hotels Limited | False | 2.14% | OWNER_WEAK |
 
-OWNER確定は2銘柄（AGL, RATNAMANI）。INDGN/IXIGOはStage1閾値（10%）を超えているが、`owner_flag_final_hybrid`がyaml未知family・Tier2ハイブリッドルールにより`OWNER_WEAK`に留まり、`is_owner_company`はFalse（後述の既知課題を参照）。
+INDGN/IXIGOはStage1閾値（10%）を超えているが、`owner_flag_final_hybrid`がyaml未知family・Tier2ハイブリッドルールにより`OWNER_WEAK`に留まり、`is_owner_company`はFalse（後述の既知課題を参照）。
+
+**2026-07-21 訂正**: 当初この節は「OWNER確定は2銘柄（AGL, RATNAMANI）」と記載していたが、2点とも誤りだった。
+
+- **RATNAMANI は新規ではない**。前回版（05-12）に rev1 補完銘柄（`in_rev1=True`）として既に OWNER で収録済みであり、今回新規なのは「NIFTY TOTAL MKT 指数構成への採用」であって universe への追加ではない。
+- **AGL は基準日超過のため universe から除外した**（下記「AGL の除外」節）。
+
+結果として、この10銘柄による OWNER の純増は **0 銘柄**である。
 
 ### 除外 3 銘柄（NIFTY TOTAL MKT 構成から除外）
 
@@ -83,7 +93,8 @@ OWNER確定は2銘柄（AGL, RATNAMANI）。INDGN/IXIGOはStage1閾値（10%）�
 - `notebook/NSE/data/cache/nse/nse_index_backup_20260715.db`（安全バックアップ、無変更）
 
 ### 主要成果物
-- `notebook/NSE/data/exports/nse/nifty750_universe_20260630.csv`（864銘柄、確定版）
+- `notebook/NSE/data/exports/nse/nifty750_universe_20260630.csv`（863銘柄、確定版。2026-07-21 に AGL 除外で 864→863）
+- `notebook/NSE/data/exports/nse/post_cutoff_pending_20260630.csv`（基準日超過で除外した AGL、次回版で採用）
 - `notebook/NSE/data/exports/nse/nifty750_universe_summary_20260630.md`
 - `notebook/NSE/data/exports/nse/owner_review_sheet.csv`（更新、旧版は`owner_review_sheet_20260512.csv`にバックアップ）
 - `notebook/NSE/data/exports/nse/owner_candidates.csv`（1183行に拡張、旧版は`owner_candidates_before_promoter_fix.csv`等にバックアップ）
@@ -99,8 +110,81 @@ OWNER確定は2銘柄（AGL, RATNAMANI）。INDGN/IXIGOはStage1閾値（10%）�
 - `notebook/NSE/scripts/prepare_incremental_db.py`（DB複製）
 - `notebook/NSE/scripts/update_stocks_master.py`（stocksテーブル最新化）
 - `notebook/NSE/scripts/update_index_members.py`（index_members最新化）
-- `notebook/NSE/scripts/build_nifty750_universe.py`（`--db-path`/`--output-*`引数化）
+- `notebook/NSE/scripts/build_nifty750_universe.py`（`--db-path`/`--output-*`引数化、`--cutoff-date` 追加）
 
 ## NSE接続障害の記録（今回発生・解決済み）
 
 作業中、NSE公式サイトの`equity-stockIndices`動的APIが404エラーを返す障害が発生した（地理的ブロックではなく、このエンドポイント単体の問題と判明）。他の全API（`allIndices`, `corporate-share-holdings-master`, XBRL静的ファイル）は正常動作しており、代替の静的CSV配信（`nsearchives.nseindia.com/content/indices/`）で同等のデータを取得できることを確認し、恒久的な代替手段として実装した。
+
+---
+
+# 2026-07-21 改訂: 銘柄単位の検証で判明した事項
+
+初版のサマリー表は「OWNER 599 → 599、差分 0」と読めるが、実際には構成銘柄が入れ替わっていた。銘柄単位で突合した結果を以下に記録する。
+
+## OWNER 構成銘柄の入れ替え
+
+| 区分 | 銘柄数 | 内訳 |
+|---|---|---|
+| 継続 | 598 | — |
+| 追加 | 0 | AGL は基準日超過で除外（下記） |
+| 除外 | 1 | INOXGREEN（下記） |
+
+最終: OWNER **598 銘柄**（前回 599 から -1）。
+
+## AGL の除外（point-in-time 整合性）
+
+`stocks` テーブルの上場日は **2026-07-03**（series `BE`）、株主データの `report_date` も **2026-07-02** であり、**2026-06-30 時点では未上場**の銘柄だった。指数構成を静的CSV（Last-Modified: 2026-07-14）から取得したため、基準日より後の新規上場が混入した。
+
+「NIFTY系の定期見直しは3月末・9月末適用のため6月末時点の構成は現時点と一致する」という初版の根拠は、**定期見直し以外の経路で起きる新規上場銘柄の組み入れを考慮できていなかった**。
+
+対応として `build_nifty750_universe.py` に `--cutoff-date` オプションを追加し、基準日より後に上場した銘柄を universe から除外する処理を実装した（純粋関数 `market.nse.analysis.universe_diff.find_post_cutoff_listings()`、単体テスト6件を追加）。今回の実行では AGL 1銘柄が除外された。
+
+AGL 自体の判定は正しく（Shashi Kiran Shetty 54.26% ほか Shetty 一族で `hufi_pct=60.25%`）、次回版で採用する。データは取得済みで `post_cutoff_pending_20260630.csv` に保存した。
+
+## INOXGREEN の判定反転（未解決・方針決定待ち）
+
+`is_owner_company` が True → False に変化した唯一の銘柄。**promoter比率は56.12%で不変、Stage1も通過**しており、実態の変化ではない。
+
+| | 05-12 | 06-30 |
+|---|---|---|
+| `owner_flag` | `owner_confirmed_individual_and_director` | `owner_confirmed_director_only` |
+| `owner_flag_final_hybrid` | OWNER | OWNER_WEAK |
+| `is_owner_company` | True | False |
+
+### 根本原因: 分類ロジックの二重実装
+
+同一の Tier 1 ルールに対して、2つの異なる実装が存在する。
+
+| 実装 | 判定式 | INOXGREEN の結果 |
+|---|---|---|
+| `nse_owner_analysis.ipynb` Cell 14 `assign_owner_flag()` | **株主数**ベース `hufi_num >= 1` | `individual_and_director` → OWNER |
+| `persist_incremental.py` / `persist_rev1_missing.py` / `persist_and_classify.py` `aggregate_owner_candidate()` | **保有比率**ベース `hufi_pct > 0` | `director_only` → OWNER_WEAK |
+
+INOXGREEN の自然人promoter（Devansh Jain, Mukesh Patni, Vivek Kumar Jain）は合計500株（発行済4.01億株）で `hufi_pct` が丸めて **0.00%** となる。今回46銘柄の再取得でスクリプト経路を通ったため判定が反転した。株主構成データ自体は05-12版DBと同一であることを確認済み。
+
+なお同期間に promoter 名簿から Devendra Kumar Jain（100株）が消えているが、`hufi_num` は 4→3 でどちらも1以上のため、**この反転の原因ではない**。
+
+### 影響範囲: universe 内に16銘柄の不整合
+
+`hufi_num >= 1` かつ `hufi_pct == 0.00` かつ `dir_pct` または `kmp_pct` > 0 の銘柄が16件あり、実装経路によって扱いが分かれている。
+
+- ノートブック経路（13件）: ABSLAMC, ADANIENT, ADANIPORTS, AFCONS, DALBHARAT, GODREJPROP, JSWINFRA, JUBLFOOD, SONACOMS, SPLPETRO, TORNTPHARM, WELCORP, WELENT
+- スクリプト経路（3件）: INOXGREEN, ADANIENSOL, FINOPB
+
+ADANIENT（`hufi_num=2`, `hufi_pct=0.00`）が OWNER である一方、同条件の INOXGREEN が OWNER_WEAK になっており、universe は自己矛盾した状態にある。
+
+### 付随して判明した差異
+
+`owner_labeling_methodology.md` §296-305 は保有比率ベースで記述されており、ノートブック実装が仕様から外れている。一方、出荷済み universe の大半はノートブック実装の結果である。また今回の `promoter_total_pct` フォールバック修正はスクリプト2本にのみ適用され、**ノートブック（Cell 12・14）には未反映**であるため、次回の全量再実行で INDGN・IXIGO 等の修正が失われる。
+
+### 統一方針の選択肢
+
+| 方針 | INOXGREEN | 他への影響 |
+|---|---|---|
+| A: 株主数ベースに統一（スクリプト3本を修正） | OWNER 復帰 | 既存13銘柄は現状維持。仕様書の更新が必要 |
+| B: 保有比率ベースに統一（ノートブックを修正） | OWNER_WEAK のまま | AFCONS, DALBHARAT, GODREJPROP, JUBLFOOD, SONACOMS, SPLPETRO の6銘柄が OWNER_WEAK に転落し OWNER が純減6 |
+
+判定意図が「自然人promoterが存在するか」なら A、「自然人が実質的な持分を持つか」なら B が整合する。**本項は方針未決のため、現時点の universe は INOXGREEN を除外した状態（OWNER 598）で確定させている。**
+
+関連する既存フォローアップ: `act-2026-04-17-006`（`owner_confirmed_director_only` ルール厳格化）

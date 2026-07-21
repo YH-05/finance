@@ -138,4 +138,71 @@ def diff_universe(previous: pd.DataFrame, current: pd.DataFrame) -> UniverseDiff
     return result
 
 
-__all__ = ["UniverseDiff", "diff_universe"]
+def find_post_cutoff_listings(
+    stocks: pd.DataFrame, cutoff: str | pd.Timestamp
+) -> list[str]:
+    """基準日より後に上場した銘柄を検出する.
+
+    NSE の指数構成 API は point-in-time 取得に対応しておらず、基準日より後に
+    取得した構成データを使うと、基準日時点で未上場の銘柄が universe に混入する。
+    本関数はその混入分を検出し、universe から除外できるようにする。
+
+    Parameters
+    ----------
+    stocks : pd.DataFrame
+        ``symbol`` と ``listing_date`` 列を持つ銘柄マスタ。``listing_date`` は
+        NSE の EQUITY_L.csv 形式（``DD-MMM-YYYY``、例 ``03-JUL-2026``）を想定する。
+    cutoff : str | pd.Timestamp
+        基準日。この日より後に上場した銘柄が検出対象となる。基準日当日の
+        上場は「基準日時点で上場済み」として検出対象に含めない。
+
+    Returns
+    -------
+    list[str]
+        基準日より後に上場した symbol のリスト（昇順）。``listing_date`` が
+        欠損または解釈不能な銘柄は、誤除外を避けるため検出対象に含めない。
+
+    Raises
+    ------
+    KeyError
+        ``stocks`` が ``symbol`` または ``listing_date`` 列を持たない場合。
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> stocks = pd.DataFrame(
+    ...     {
+    ...         "symbol": ["AGL", "RELIANCE"],
+    ...         "listing_date": ["03-JUL-2026", "29-NOV-1995"],
+    ...     }
+    ... )
+    >>> find_post_cutoff_listings(stocks, "2026-06-30")
+    ['AGL']
+    """
+    missing = {"symbol", "listing_date"} - set(stocks.columns)
+    if missing:
+        msg = f"DataFrame is missing required column(s): {sorted(missing)}"
+        raise KeyError(msg)
+
+    cutoff_ts = pd.Timestamp(cutoff)
+    # NSE の EQUITY_L.csv は DD-MMM-YYYY 形式。文字列のままでは日付比較が
+    # 成立しないため必ず Timestamp に変換する。解釈できない値は NaT となり、
+    # 比較結果が False になるので保守的に「除外しない」挙動となる。
+    listed_at = pd.to_datetime(
+        stocks["listing_date"], format="%d-%b-%Y", errors="coerce"
+    )
+    post_cutoff = stocks.loc[listed_at > cutoff_ts, "symbol"]
+
+    result = sorted(post_cutoff.astype(str).str.strip().str.upper())
+
+    logger.info(
+        "Post-cutoff listings detected",
+        cutoff=str(cutoff_ts.date()),
+        total_count=len(stocks),
+        post_cutoff_count=len(result),
+    )
+
+    return result
+
+
+__all__ = ["UniverseDiff", "diff_universe", "find_post_cutoff_listings"]

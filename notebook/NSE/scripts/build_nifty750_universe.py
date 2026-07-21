@@ -29,11 +29,18 @@ from __future__ import annotations
 import argparse
 import re
 import sqlite3
+import sys
 from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "src"))
+
+from market.nse.analysis.universe_diff import (  # noqa: E402
+    find_post_cutoff_listings,
+)
+
 EXPORT_DIR = ROOT / "notebook/NSE/data/exports/nse"
 CACHE_DIR = ROOT / "notebook/NSE/data/cache/nse"
 
@@ -114,6 +121,16 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_OUT_SUMMARY,
         help=f"サマリー Markdown の出力先（デフォルト: {DEFAULT_OUT_SUMMARY}）",
     )
+    parser.add_argument(
+        "--cutoff-date",
+        default=None,
+        help=(
+            "universe の基準日 (YYYY-MM-DD)。指定すると、この日より後に上場した"
+            "銘柄を universe から除外する。NSE の指数構成 API は point-in-time "
+            "取得に対応しておらず、基準日より後に取得した構成データには基準日"
+            "時点で未上場の銘柄が含まれるため（実例: AGL は 2026-07-03 上場）。"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -166,6 +183,19 @@ def main() -> None:
     sheet = sheet.merge(membership, left_on="symbol", right_index=True, how="left")
     for flag in INDEX_TARGETS:
         sheet[flag] = sheet[flag].fillna(False).astype(bool)
+
+    # point-in-time 整合性: 基準日より後に上場した銘柄を除外
+    if args.cutoff_date:
+        with sqlite3.connect(args.db_path) as conn:
+            stocks = pd.read_sql("SELECT symbol, listing_date FROM stocks", conn)
+        post_cutoff = find_post_cutoff_listings(stocks, args.cutoff_date)
+        dropped = sheet["symbol"].isin(post_cutoff)
+        if dropped.any():
+            print(
+                f"Excluded {int(dropped.sum())} post-cutoff listing(s) "
+                f"(> {args.cutoff_date}): {sorted(sheet.loc[dropped, 'symbol'])}"
+            )
+        sheet = sheet[~dropped]
 
     # ----- Step 1+2: nifty750_universe.csv (全 800 銘柄 + メタデータ、唯一の確定版) -----
     # 旧 owner_companies.csv は本ファイルに集約・廃止 (2026-05-11、dec-2026-05-11-011)。
