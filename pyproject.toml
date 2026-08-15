@@ -111,7 +111,7 @@ playwright = [
 
 # automation optional dependencies
 automation = [
-    "claude-agent-sdk>=0.1.22",
+    "claude-agent-sdk>=0.1.58",
     "anyio>=4.0.0",
 ]
 market = [
@@ -308,7 +308,7 @@ members = [
 [dependency-groups]
 dev = [
     "apscheduler>=3.11.2",
-    "claude-agent-sdk>=0.1.22",
+    "claude-agent-sdk>=0.1.58",
     "cryptography>=46.0.7",
     "filelock>=3.20.3",
     "hypothesis>=6.150.2",
