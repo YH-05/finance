@@ -324,5 +324,5 @@ dev = [
     "pytest-httpserver>=1.1.3",
     "radon>=6.0.1",
     "ruff>=0.14.11",
-    "virtualenv>=20.36.1",
+    "virtualenv>=21.2.1",
 ]
