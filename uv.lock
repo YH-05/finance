@@ -3638,7 +3638,6 @@ name = "quants"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "accelerate" },
     { name = "anthropic" },
     { name = "beautifulsoup4" },
     { name = "brotli" },
@@ -3649,11 +3648,9 @@ dependencies = [
     { name = "duckdb" },
     { name = "edgartools" },
     { name = "fastmcp" },
-    { name = "fastopic" },
     { name = "feedparser" },
     { name = "filelock" },
     { name = "fredapi" },
-    { name = "gliner" },
     { name = "hmmlearn" },
     { name = "httpx" },
     { name = "ipykernel" },
@@ -3682,16 +3679,12 @@ dependencies = [
     { name = "scikit-learn" },
     { name = "scipy" },
     { name = "seaborn" },
-    { name = "sentence-transformers" },
     { name = "statsmodels" },
     { name = "structlog" },
     { name = "tenacity" },
     { name = "tiktoken" },
-    { name = "topmost" },
-    { name = "torch" },
     { name = "tqdm" },
     { name = "trafilatura" },
-    { name = "transformers" },
     { name = "umap-learn" },
     { name = "urllib3" },
     { name = "werkzeug" },
@@ -3746,6 +3739,15 @@ market = [
 mcp = [
     { name = "mcp" },
 ]
+nlp = [
+    { name = "accelerate" },
+    { name = "fastopic" },
+    { name = "gliner" },
+    { name = "sentence-transformers" },
+    { name = "topmost" },
+    { name = "torch" },
+    { name = "transformers" },
+]
 playwright = [
     { name = "playwright" },
 ]
@@ -3777,7 +3779,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "accelerate", specifier = ">=1.13.0" },
+    { name = "accelerate", marker = "extra == 'nlp'", specifier = ">=1.13.0" },
     { name = "anthropic", specifier = ">=0.76.0" },
     { name = "anyio", marker = "extra == 'automation'", specifier = ">=4.0.0" },
     { name = "apscheduler", marker = "extra == 'scheduler'", specifier = ">=3.10.0" },
@@ -3795,11 +3797,11 @@ requires-dist = [
     { name = "duckdb", specifier = ">=1.0.0" },
     { name = "edgartools", specifier = ">=3.0.0" },
     { name = "fastmcp", specifier = ">=3.2.0" },
-    { name = "fastopic", specifier = ">=1.0.1" },
+    { name = "fastopic", marker = "extra == 'nlp'", specifier = ">=1.0.1" },
     { name = "feedparser", specifier = ">=6.0.12" },
     { name = "filelock", specifier = ">=3.20.3" },
     { name = "fredapi", specifier = ">=0.5.0" },
-    { name = "gliner", specifier = ">=0.2.10" },
+    { name = "gliner", marker = "extra == 'nlp'", specifier = ">=0.2.10" },
     { name = "hmmlearn", specifier = ">=0.3.3" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.150.2" },
@@ -3845,7 +3847,7 @@ requires-dist = [
     { name = "scikit-learn", specifier = ">=1.8.0" },
     { name = "scipy", specifier = ">=1.17.0" },
     { name = "seaborn", specifier = ">=0.13.2" },
-    { name = "sentence-transformers", specifier = ">=3.0.0" },
+    { name = "sentence-transformers", marker = "extra == 'nlp'", specifier = ">=3.0.0" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=7.0.0" },
     { name = "sphinx-autodoc-typehints", marker = "extra == 'docs'", specifier = ">=2.0.0" },
     { name = "sphinx-rtd-theme", marker = "extra == 'docs'", specifier = ">=2.0.0" },
@@ -3853,19 +3855,19 @@ requires-dist = [
     { name = "structlog", specifier = ">=25.4.0" },
     { name = "tenacity", specifier = ">=9.1.2" },
     { name = "tiktoken", specifier = ">=0.7.0" },
-    { name = "topmost", specifier = ">=1.0.2" },
-    { name = "torch", specifier = ">=2.3.0,<3.0.0" },
+    { name = "topmost", marker = "extra == 'nlp'", specifier = ">=1.0.2" },
+    { name = "torch", marker = "extra == 'nlp'", specifier = ">=2.3.0,<3.0.0" },
     { name = "tqdm", specifier = ">=4.67.2" },
     { name = "tradingview-screener", marker = "extra == 'asean'", specifier = ">=3.1.0,<4.0.0" },
     { name = "trafilatura", specifier = ">=2.0.0" },
-    { name = "transformers", specifier = ">=4.40.0,<6.0.0" },
+    { name = "transformers", marker = "extra == 'nlp'", specifier = ">=4.40.0,<6.0.0" },
     { name = "umap-learn", specifier = ">=0.5.5" },
     { name = "urllib3", specifier = ">=2.6.3" },
     { name = "werkzeug", specifier = ">=3.1.6" },
     { name = "xlwings", specifier = ">=0.35.0" },
     { name = "yfinance", specifier = ">=0.2.0" },
 ]
-provides-extras = ["dev", "docs", "scheduler", "mcp", "cli", "playwright", "automation", "market", "bloomberg", "kalman", "embedding", "asean"]
+provides-extras = ["nlp", "dev", "docs", "scheduler", "mcp", "cli", "playwright", "automation", "market", "bloomberg", "kalman", "embedding", "asean"]
 
 [package.metadata.requires-dev]
 dev = [

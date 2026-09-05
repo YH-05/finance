@@ -60,19 +60,27 @@ dependencies = [
     "mojimoji>=0.0.13",
     "pillow>=12.1.1",
     "xlwings>=0.35.0",
-    # NLP for filings (10-K/10-Q FinBERT + embedding)
+    # NLP for filings のうち torch に依存しないもの
+    # torch 系は nlp extra へ分離した（下の [project.optional-dependencies] 参照）
+    "umap-learn>=0.5.5",
+    "hmmlearn>=0.3.3",
+    "japanize-matplotlib>=1.1.3",
+]
+[project.optional-dependencies]
+# 10-K/10-Q の文章解析（FinBERT 感情分析・埋め込み生成）。notebook/FILING_NLP が使う。
+# torch を引き込む依存をここにまとめてある。torch は NVIDIA GPU 用の CUDA
+# ライブラリ約 2.4GB を連れてくるが、GPU の無い環境では一切使われないため、
+# Docker イメージからは --no-extra nlp で除外している。
+# ローカルで FILING_NLP を動かす場合は uv sync --extra nlp を実行すること。
+nlp = [
     "torch>=2.3.0,<3.0.0",
     "transformers>=4.40.0,<6.0.0",
     "sentence-transformers>=3.0.0",
-    "umap-learn>=0.5.5",
     "gliner>=0.2.10",
     "accelerate>=1.13.0",
-    "hmmlearn>=0.3.3",
-    "japanize-matplotlib>=1.1.3",
     "fastopic>=1.0.1",
     "topmost>=1.0.2",
 ]
-[project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
     "pytest-cov>=7.0.0",
