@@ -101,7 +101,7 @@ NAS には quants のデータ置き場が **2 つ**あり、同名ファイル�
 | `uv` | 依存管理・実行。Makefile 全体が uv 前提 |
 | Docker | Neo4j コンテナ |
 | `gh` CLI | GitHub Projects 連携 |
-| NAS (SMB) マウント | `//yuki@192.168.11.14/personal_folder` |
+| NAS (SMB) マウント | 宅内 NAS の `personal_folder` 共有。接続情報は Mac の Finder サイドバー、または NAS 管理画面で確認する |
 
 | 任意 | 用途 |
 |---|---|
