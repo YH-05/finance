@@ -45,6 +45,7 @@ coverage.xml
 *.log
 !logs/news-workflow-*.log
 .mcp.json
+.mcp.json.bak
 
 # Documentation
 .sphinx/
